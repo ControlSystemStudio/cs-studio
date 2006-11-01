@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.alarm.table.LogViewArchive"
+            icon="icons/LogArchive.png"
+            id="org.csstudio.alarm.table.LogViewArchive"
+            name="JMS Log archive viewer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.alarm.table.LogView"
+            icon="icons/Log.png"
+            id="org.csstudio.alarm.table.LogView"
+            name="JMS Log viewer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.alarm.table.AlarmLogView"
+            icon="icons/Alarm.png"
+            id="org.csstudio.alarm.table.AlarmLogView"
+            name="JMS Alarm viewer"/>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc file="toc.xml"/>
+      <toc
+            file="testToc.xml"
+            primary="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="de.desy.css.jmsLogs.page3/"
+            class="org.csstudio.alarm.table.preferences.LogViewerPreferencePage"
+            id="de.desy.css.jmsLogs.preferences.JmsLogsPreferencePage"
+            name="Jms Log viewer"/>
+      <page
+            category="de.desy.css.jmsLogs.page3/"
+            class="org.csstudio.alarm.table.preferences.AlarmViewerPreferencePage"
+            id="de.desy.css.jmsLogs.preferences.AlarmViewerPreferencePage"
+            name="JMS Alarm viewer"/>
+      <page
+            category="de.desy.css.jmsLogs.page3/"
+            class="org.csstudio.alarm.table.preferences.LogArchiveViewerPreferencePage"
+            id="de.desy.css.jmsLogs.preferences.LogArchiveViewerPreferencePage"
+            name="JMS Log archive viewer"/>
+      <page
+            class="org.csstudio.alarm.table.preferences.JmsLogPreferencePage"
+            id="de.desy.css.jmsLogs.page3"
+            name="JMS Logs"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.alarm.table.preferences.LogViewerPreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.table.preferences.JmsLogPreferenceInitializer"/>
+      <initializer class="org.csstudio.alarm.table.preferences.AlarmViewerPreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="de.desy.css.jmsLogs"
+            label="CSS Action Set"
+            visible="true">
+         <menu
+               id="org.csstudio"
+               label="CSS"
+               path="additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <menu
+               id="org.csstudio.alarm"
+               label="Alarm"
+               path="org.csstudio/additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <menu
+               id="org.csstudio.diag"
+               label="Diagnostics"
+               path="org.csstudio/additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <action
+               class="org.csstudio.alarm.table.ShowLogArchive"
+               icon="icons/LogArchive.png"
+               id="de.desy.css.jmsLogs.ShowViewArchiveAction"
+               label="JMSLogsArchive"
+               menubarPath="org.csstudio/org.csstudio.alarm/content"
+               style="push"
+               tooltip="Show JMS Log archive"/>
+         <action
+               class="org.csstudio.alarm.table.ShowLog"
+               icon="icons/Log.png"
+               id="de.desy.css.jmsLogs.ShowViewLogAction"
+               label="JMSLogs"
+               menubarPath="org.csstudio/org.csstudio.diag/content"
+               style="push"
+               tooltip="Show JMS Log"/>
+         <action
+               class="org.csstudio.alarm.table.ShowAlarms"
+               icon="icons/Alarm.png"
+               id="de.desy.css.jmsLogs.ShowViewAlarmAction"
+               label="JMSAlarmLog"
+               menubarPath="org.csstudio/org.csstudio.alarm/content"
+               style="push"
+               tooltip="Show JMS Alarms"/>
+
+      </actionSet>
+   </extension>
+   
+
+</plugin>
