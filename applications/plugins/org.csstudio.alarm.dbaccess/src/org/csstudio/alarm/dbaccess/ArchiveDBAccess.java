@@ -18,7 +18,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	//Text t = null;
 	{
 		try{
-			DriverManager.registerDriver(new OracleDriver());			
+			DriverManager.registerDriver(new OracleDriver());
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -54,17 +54,17 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		  ")";
 			String user = "KRYKLOGT";
 			String password = "KRYKLOGT";
-			
+
 			con = DriverManager.getConnection(url, user, password);
 			OracleStatement stmt = (OracleStatement)con.createStatement();
 
 			stmt.execute(
 					sqlStatement
 			);
-					
+
 			OracleResultSet rset = (OracleResultSet)stmt.getResultSet();
 			int id =-1;
-			HashMap<String, String> hm = null; 
+			HashMap<String, String> hm = null;
 			while(rset.next()){
 					if(id!=rset.getNUMBER(1).intValue()){
 						if(hm!=null){
@@ -87,11 +87,37 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		}
 		return message;
 	}
-
-
+//	#############################################################
+//	Beispiel einen SQL-Strings mit abfrage Filter
+//	#############################################################
+//	select mc.message_id, mt.name as Nutzer, m.datum, mpt.name as Property,  mc.value
+//	from  msg_type mt
+//    join msg_type_property_type mtpt on mtpt.msg_type_id = mt.id
+//    join msg_property_type mpt on mtpt.msg_property_type_id = mpt.id
+//    join message m on m.msg_type_id = mt.id
+//    join message_content mc on m.msg_type_id = mt.id
+//    where mpt.id = mc.msg_property_type_id
+//	and m.id = mc.message_id
+//	and m.datum
+//	between to_date('2006-10-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+//	and to_date('2006-11-21 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+//	#############################################################
+//	Hier fängt der Filter an
+//	#############################################################
+//    and mc.message_id = ANY (
+//        select mc.message_id
+//		  from  msg_type mt
+//          join msg_type_property_type mtpt on mtpt.msg_type_id = mt.id
+//          join msg_property_type mpt on mtpt.msg_property_type_id = mpt.id
+//          join message m on m.msg_type_id = mt.id
+//          join message_content mc on m.msg_type_id = mt.id
+//          where mpt.id = mc.msg_property_type_id
+//   		  and ((mpt.name like 'TYPE' AND mc.value like 'alarm') or mpt.name like 'TEXT' )
+//   		  )
+//	order by mc.message_id;
 
 	private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to) {
-		
+
 		String sql = "select mc.message_id, mt.name as Nutzer, m.datum, mpt.name as Property,  mc.value "+
 			"from  msg_type mt, msg_type_property_type mtpt, msg_property_type mpt, message m, message_content mc "+
 			"where mtpt.msg_type_id = mt.id "+
@@ -118,9 +144,64 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		return sql;
 	}
 
+	private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to, String filter) {
+
+		String sql =
+			"select mc.message_id, mt.name as Nutzer, m.datum, mpt.name as Property,  mc.value "+
+			"from  msg_type mt "+
+		    "join msg_type_property_type mtpt on mtpt.msg_type_id = mt.id "+
+		    "join msg_property_type mpt on mtpt.msg_property_type_id = mpt.id "+
+		    "join message m on m.msg_type_id = mt.id "+
+		    "join message_content mc on m.msg_type_id = mt.id "+
+		    "where mpt.id = mc.msg_property_type_id "+
+			"and m.id = mc.message_id "+
+			"and m.datum "+
+			"between to_date('"+from.get(GregorianCalendar.YEAR)+
+			"-"+(from.get(GregorianCalendar.MONTH)+1)+
+			"-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
+			" "+from.get(GregorianCalendar.HOUR)+
+			":"+from.get(GregorianCalendar.MINUTE)+
+			":"+from.get(GregorianCalendar.SECOND)+
+			"', 'YYYY-MM-DD HH24:MI:SS') "+
+"and to_date('"+to.get(GregorianCalendar.YEAR)+
+			"-"+(to.get(GregorianCalendar.MONTH)+1)+
+			"-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
+			" "+to.get(GregorianCalendar.HOUR)+
+			":"+to.get(GregorianCalendar.MINUTE)+
+			":"+to.get(GregorianCalendar.SECOND)+
+			"', 'YYYY-MM-DD HH24:MI:SS') "+
+		    "and mc.message_id = ANY ( "+
+		        "select mc.message_id "+
+				  "from  msg_type mt "+
+		          "join msg_type_property_type mtpt on mtpt.msg_type_id = mt.id "+
+		          "join msg_property_type mpt on mtpt.msg_property_type_id = mpt.id "+
+		          "join message m on m.msg_type_id = mt.id "+
+		          "join message_content mc on m.msg_type_id = mt.id "+
+		          "where mpt.id = mc.msg_property_type_id "+
+		   		  filter+
+		   		  " )"+
+			"order by mc.message_id";
+		return sql;
+	}
+
+
 	public ArrayList<HashMap<String, String>> getLogMessages(GregorianCalendar from, GregorianCalendar to) {
 		String sql = buildSQLStatement(from, to);
-		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql); 
+		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql);
 		return ergebniss;
 	}
+
+//	public ArrayList<HashMap<String, String>> getLogMessages(GregorianCalendar from, GregorianCalendar to, HashMap filter) {
+//		String sql = buildSQLStatement(from, to);
+//		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql);
+//		return ergebniss;
+//	}
+
+	public ArrayList<HashMap<String, String>> getLogMessages(GregorianCalendar from, GregorianCalendar to, String filter) {
+		String sql = buildSQLStatement(from, to, filter);
+		System.out.println(sql);
+		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql);
+		return ergebniss;
+	}
+
 }

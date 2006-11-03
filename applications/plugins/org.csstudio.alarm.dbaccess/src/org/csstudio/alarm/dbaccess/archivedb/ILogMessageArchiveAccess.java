@@ -7,5 +7,5 @@ import java.util.HashMap;
 public interface ILogMessageArchiveAccess {
 
 	public ArrayList<HashMap<String, String>> getLogMessages(GregorianCalendar from, GregorianCalendar to);
-	
+	public ArrayList<HashMap<String, String>> getLogMessages(GregorianCalendar from, GregorianCalendar to, String filter);
 }
