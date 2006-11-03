@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.expertSearch.ExpertSearchDialog;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
 import org.csstudio.alarm.table.timeSelection.StartEndDialog;
@@ -71,12 +72,14 @@ public class LogViewArchive extends ViewPart {
 		buttons.setText("Period");
 		buttons.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1,
 				1));
-		buttons.setLayout(new GridLayout(4, true));
+		buttons.setLayout(new GridLayout(5, true));
 
 		create24hButton(buttons);
 		create72hButton(buttons);
 		createWeekButton(buttons);
 		createFlexButton(buttons);
+		createSearchButton(buttons);
+
 
 		Group from = new Group(comp, SWT.LINE_SOLID);
 		from.setText("from");
@@ -185,6 +188,38 @@ public class LogViewArchive extends ViewPart {
 		});
 
 	}
+
+	private void createSearchButton(Composite comp) {
+		Button bSearch = new Button(comp, SWT.PUSH);
+		bSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+				1, 1));
+		bSearch.setText("Expert");
+
+		bSearch.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("expert pushed");
+				Timestamp start = new Timestamp((new Date().getTime()) / 1000);
+				Timestamp end = new Timestamp((new Date().getTime()) / 1000);
+				System.out.println("expert 2");
+				ExpertSearchDialog dlg = new ExpertSearchDialog(parentShell, start, end);
+				if (dlg.open() == ExpertSearchDialog.OK) {
+					System.out.println("expert open");
+				}
+//				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
+//				GregorianCalendar to = new GregorianCalendar();
+//				GregorianCalendar from = (GregorianCalendar) to.clone();
+//				from.add(GregorianCalendar.HOUR, -72);
+//				showNewTime(from, to);
+//				ArrayList<HashMap<String, String>> am = adba.getLogMessages(
+//						from, to);
+//				jmsml.clearList();
+//				jlv.refresh();
+//				jmsml.addJMSMessageList(am);
+
+			}
+		});
+	}
+
 
 	private void create24hButton(Composite comp) {
 		Button b24hSearch = new Button(comp, SWT.PUSH);
