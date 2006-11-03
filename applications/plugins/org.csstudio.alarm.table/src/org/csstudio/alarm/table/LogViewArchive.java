@@ -197,24 +197,33 @@ public class LogViewArchive extends ViewPart {
 
 		bSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				System.out.println("expert pushed");
 				Timestamp start = new Timestamp((new Date().getTime()) / 1000);
 				Timestamp end = new Timestamp((new Date().getTime()) / 1000);
-				System.out.println("expert 2");
 				ExpertSearchDialog dlg = new ExpertSearchDialog(parentShell, start, end);
+				String filter= "";
+				GregorianCalendar to = new GregorianCalendar();
+				GregorianCalendar from = (GregorianCalendar) to.clone();
 				if (dlg.open() == ExpertSearchDialog.OK) {
-					System.out.println("expert open");
+					double low = dlg.getStart().toDouble();
+					double high = dlg.getEnd().toDouble();
+					if (low < high) {
+						from.setTimeInMillis((long) low * 1000);
+						to.setTimeInMillis((long) high * 1000);
+					} else {
+						from.setTimeInMillis((long) high * 1000);
+						to.setTimeInMillis((long) low * 1000);
+					}
+					showNewTime(from, to);
+
+					filter = dlg.getFilterString();
 				}
-//				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
-//				GregorianCalendar to = new GregorianCalendar();
-//				GregorianCalendar from = (GregorianCalendar) to.clone();
-//				from.add(GregorianCalendar.HOUR, -72);
-//				showNewTime(from, to);
-//				ArrayList<HashMap<String, String>> am = adba.getLogMessages(
-//						from, to);
-//				jmsml.clearList();
-//				jlv.refresh();
-//				jmsml.addJMSMessageList(am);
+				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
+//				from.add(GregorianCalendar.HOUR, -504);
+				showNewTime(from, to);
+				ArrayList<HashMap<String, String>> am = adba.getLogMessages(from, to, filter);
+				jmsml.clearList();
+				jlv.refresh();
+				jmsml.addJMSMessageList(am);
 
 			}
 		});

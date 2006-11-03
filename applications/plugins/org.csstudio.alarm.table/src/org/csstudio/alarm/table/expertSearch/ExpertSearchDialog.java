@@ -1,11 +1,11 @@
 package org.csstudio.alarm.table.expertSearch;
 
-import java.util.StringTokenizer;
+import java.util.HashMap;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
 import org.csstudio.alarm.table.timeSelection.TimestampWidget;
+import org.csstudio.alarm.table.timeSelection.TimestampWidgetListener;
 import org.csstudio.data.Timestamp;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
@@ -24,11 +24,18 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class ExpertSearchDialog extends Dialog{
+public class ExpertSearchDialog extends Dialog implements TimestampWidgetListener{
 
 	private Timestamp start;
 	private Timestamp end;
 	private Shell shell;
+	private HashMap<String, String> filterMap;
+	private Group down;
+	private String filterString;
+	private TimestampWidget start_widget;
+	private TimestampWidget end_widget;
+	private Label info;
+	private int windowXSize = 450;
 
 
 	public ExpertSearchDialog(Shell shell, Timestamp start, Timestamp end)
@@ -45,12 +52,14 @@ public class ExpertSearchDialog extends Dialog{
         super.configureShell(shell);
         this.shell=shell;
         shell.setText("Expert Search");
-        shell.setSize(400,235);
+        shell.setSize(windowXSize,445);
     }
 
     @Override
     protected Control createDialogArea(Composite parent)
     {
+//    	filter = new HashMap<String, String>();
+    	filterString = "AND (";
         Composite box = (Composite) super.createDialogArea(parent);
         GridLayout layout = (GridLayout) box.getLayout();
         layout.numColumns = 2;
@@ -61,8 +70,8 @@ public class ExpertSearchDialog extends Dialog{
         gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1,1);
         left.setLayoutData(gd);
         left.setLayout(new FillLayout());
-//        start_widget = new TimestampWidget(left, 0, start);
-//        start_widget.addListener(this);
+        start_widget = new TimestampWidget(left, 0, start);
+        start_widget.addListener(this);
 
         Group right = new Group(box, 0);
         right.setText("End Time");
@@ -70,34 +79,80 @@ public class ExpertSearchDialog extends Dialog{
         right.setLayoutData(gd);
         right.setLayout(new FillLayout());
 
-//        end_widget = new TimestampWidget(right, 0, end);
-//        end_widget.addListener(this);
+        end_widget = new TimestampWidget(right, 0, end);
+        end_widget.addListener(this);
 
-//        info = new Label(box, SWT.NULL);
-//        info.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
-//        gd = new GridData();
-//        gd.horizontalSpan = layout.numColumns;
-//        gd.grabExcessHorizontalSpace = true;
-//        gd.horizontalAlignment = SWT.FILL;
-//        info.setLayoutData(gd);
+        info = new Label(box, SWT.NULL);
+        info.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+        gd = new GridData();
+        gd.horizontalSpan = layout.numColumns;
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        info.setLayoutData(gd);
 
-        Group down = new Group(box, 0);
+        down = new Group(box, 0);
         down.setText("Search");
         gd = new GridData(SWT.FILL, SWT.FILL, true, false, 2,1);
         down.setLayoutData(gd);
         down.setLayout(new FillLayout(SWT.VERTICAL));
 
         addNewFilter(down);
+        constrainShellSize();
 
         return box;
     }
 
+    @Override
+    protected void okPressed(){
+    		Control[] children = down.getChildren();
+    		for(int i=0;i<children.length;i++){
+    			if (children[i] instanceof Composite){
+    				Control[] c2 = ((Composite)children[i]).getChildren();
+    				if(c2.length==2){
+    					if (c2[0] instanceof Composite){
+    						Control[] c3 = ((Composite)c2[0]).getChildren();
+    						if(c3[0] instanceof Combo && c3[1] instanceof Text){
+    							filterString 	+= " (lower(mpt.name) like lower('"
+    											+((Combo)c3[0]).getItem(((Combo)c3[0]).getSelectionIndex())
+    											+"')"
+    											+" AND lower(mc.value) like lower('"
+    											+((Text)c3[1]).getText()+
+    											"'))";
+    						}
+			    			if (c2[1] instanceof Label){
+			    				filterString += " "+((Label)c2[1]).getText()+" ";
+
+			    			}
+			    			else if (c2[1] instanceof Composite){
+			    				filterString += ")";
+			    			}
+			    			else System.out.println("\t\tERROR Ungültige Strucktur");
+						}
+    				}
+    			}
+    		}
+    		super.okPressed();
+    }
+
+
 	private void addNewFilter(final Group down) {
-		final Composite c = new Composite(down, SWT.BORDER);
-		c.setLayout(new GridLayout(2,false));
+		int bTop = 0;
+		int bBottom = 0;
+		int bHeignt = 0;
+		int bWidht = 0;
+		final Composite c = new Composite(down, SWT.NONE);
+		GridLayout glMain = new GridLayout(2,false);
+		glMain.marginBottom=bBottom;
+		glMain.marginTop=bTop;
+		glMain.marginHeight=bHeignt;
+		c.setLayout(glMain);
 		Composite filter = new Composite(c,SWT.NONE);
 		filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,false,1,1));
-		filter.setLayout(new GridLayout(2,false));
+		GridLayout glLeft = new GridLayout(2,false);
+		glLeft.marginBottom=bBottom;
+		glLeft.marginTop=bTop;
+		glLeft.marginHeight=bHeignt;
+		filter.setLayout(glLeft);
 		Combo title = new Combo(filter,SWT.SINGLE|SWT.READ_ONLY);
 		String[] test = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogArchiveViewerPreferenceConstants.P_STRINGArch).split(";");
 		title.setItems(test);
@@ -106,7 +161,12 @@ public class ExpertSearchDialog extends Dialog{
 		search.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,false,1,1));
 		final Composite comButton = new Composite(c, SWT.NONE);
 		comButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,false,1,1));
-		comButton.setLayout(new GridLayout(2,true));
+		GridLayout glRight = new GridLayout(2,true);
+		glRight.marginBottom=bBottom;
+		glRight.marginTop=bTop;
+		glRight.marginHeight=bHeignt;
+		glRight.marginWidth=bWidht;
+		comButton.setLayout(glRight);
 		Button and = new Button(comButton,SWT.UP);
 		and.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
 		and.setText("AND");
@@ -122,13 +182,13 @@ public class ExpertSearchDialog extends Dialog{
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				Text logic = new Text(c, SWT.READ_ONLY|SWT.SINGLE);
+				Label logic = new Label(c, SWT.CENTER);
 //				logic.setLayoutData(new GridData(SWT.CENTER,SWT.FILL,true,false,2,1));
 				logic.setText("AND");
 				addNewFilter(down);
 				comButton.dispose();
 				shell.pack();
-				shell.setSize(400,shell.getSize().y);
+				shell.setSize(windowXSize,shell.getSize().y);
 
 			}
 
@@ -141,13 +201,13 @@ public class ExpertSearchDialog extends Dialog{
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				Text logic = new Text(c, SWT.READ_ONLY|SWT.SINGLE);
+				Label logic = new Label(c, SWT.CENTER);
 //				logic.setLayoutData(new GridData(SWT.CENTER,SWT.FILL,true,false,2,1));
-				logic.setText("OR");
+				logic.setText(" OR ");
 				addNewFilter(down);
 				comButton.dispose();
 				shell.pack();
-				shell.setSize(400,shell.getSize().y);
+				shell.setSize(windowXSize,shell.getSize().y);
 
 			}
 
@@ -155,4 +215,38 @@ public class ExpertSearchDialog extends Dialog{
 
 	}
 
+	public HashMap<String, String> getFilterMap(){
+		return filterMap;
+	}
+	public String getFilterString(){
+		return filterString;
+	}
+    /** @return the start time */
+    public Timestamp getStart()
+    {
+        return start;
+    }
+
+    /** @return the end time */
+    public Timestamp getEnd()
+    {
+        return end;
+    }
+
+	  // TimestampWidgetListener
+    public void updatedTimestamp(TimestampWidget source, Timestamp stamp)
+    {
+        if (source == start_widget)
+            start = stamp;
+        else
+            end = stamp;
+
+        System.out.println("Start: " + start.format(Timestamp.FMT_DATE_HH_MM_SS));
+        System.out.println("End  : " + end.format(Timestamp.FMT_DATE_HH_MM_SS));
+
+        if (start.isGreaterOrEqual(end))
+            info.setText("Start time must be 'before' end time!");
+        else
+            info.setText("");
+    }
 }
