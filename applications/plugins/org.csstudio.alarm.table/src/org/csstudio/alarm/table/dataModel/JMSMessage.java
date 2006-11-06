@@ -1,40 +1,24 @@
 package org.csstudio.alarm.table.dataModel;
 
-
-import java.net.URI;
 import java.util.HashMap;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
+
 import org.csstudio.data.exchange.IProcessVariableName;
 import org.csstudio.data.exchange.ProcessVariableName;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceProxy;
-import org.eclipse.core.resources.IResourceProxyVisitor;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourceAttributes;
-import org.eclipse.core.runtime.CoreException;
+
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.PlatformObject;
-import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 
-public class JMSMessage implements IAdaptable { //org.csstudio.data.exchange.IProcessVariableName{//,
+public class JMSMessage implements IAdaptable ,org.csstudio.data.exchange.IProcessVariableName{//,
 //		org.csstudio.data.exchange.IFrontEndControllerName{
 
 	
 	private HashMap<String, String> messageProperties = new HashMap<String, String>();
 	private String[] propertyNames;
-	private IProcessVariableName ipvn;
+//	private IProcessVariableName ipvn;
 	
 	/**
 	 * Initialisation of HashMap with actual message properties.
@@ -56,7 +40,6 @@ public class JMSMessage implements IAdaptable { //org.csstudio.data.exchange.IPr
 	 * @param value
 	 */
 	public void setProperty(String property, String value) {
-//		System.out.println("setProp: " + property + value);
 		if (messageProperties.containsKey(property)) {
 			messageProperties.put(property, value);
 		}
@@ -71,7 +54,6 @@ public class JMSMessage implements IAdaptable { //org.csstudio.data.exchange.IPr
 	 */
 	public String getProperty(String property) {
 		
-//		System.out.println("get Prop: " + property + " " + messageProperties.get(property));
 		if (property.equals("SEVERITY")) {
 			if(messageProperties.get("SEVERITY") != null) {
 				try {
@@ -94,8 +76,6 @@ public class JMSMessage implements IAdaptable { //org.csstudio.data.exchange.IPr
 				return messageProperties.get("SEVERITY");
 			}
 		}
-				
-				
 		if (messageProperties.containsKey(property)) {
 			String s = messageProperties.get(property);
 			if (s != null) {
