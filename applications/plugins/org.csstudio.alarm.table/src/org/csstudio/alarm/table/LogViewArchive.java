@@ -49,8 +49,10 @@ public class LogViewArchive extends ViewPart {
 	private String[] columnNames;
 
 	private Text timeFrom;
-
 	private Text timeTo;
+
+	private Date fromTime;
+	private Date toTime;
 
 	public void createPartControl(Composite parent) {
 
@@ -161,8 +163,15 @@ public class LogViewArchive extends ViewPart {
 
 		bFlexSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				Timestamp start = new Timestamp((new Date().getTime()) / 1000);
-				Timestamp end = new Timestamp((new Date().getTime()) / 1000);
+				Date fromDate, toDate;
+				if((fromDate = getFromTime())==null)
+					fromDate = (new Date(new Date().getTime()-24*60*60*1000));
+
+				if((toDate = getToTime())==null)
+					toDate = (new Date(new Date().getTime()));
+
+				Timestamp start = new Timestamp(fromDate.getTime()/1000);
+				Timestamp end = new Timestamp((toDate.getTime()) / 1000);
 				StartEndDialog dlg = new StartEndDialog(parentShell, start, end);
 				if (dlg.open() == StartEndDialog.OK) {
 					double low = dlg.getStart().toDouble();
@@ -197,8 +206,16 @@ public class LogViewArchive extends ViewPart {
 
 		bSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				Timestamp start = new Timestamp((new Date().getTime()) / 1000);
-				Timestamp end = new Timestamp((new Date().getTime()) / 1000);
+				Date fromDate, toDate;
+				if((fromDate = getFromTime())==null)
+					fromDate = (new Date(new Date().getTime()-24*60*60*1000));
+
+				if((toDate = getToTime())==null)
+					toDate = (new Date(new Date().getTime()));
+
+				Timestamp start = new Timestamp(fromDate.getTime()/1000);
+				Timestamp end = new Timestamp((toDate.getTime()) / 1000);
+
 				ExpertSearchDialog dlg = new ExpertSearchDialog(parentShell, start, end);
 				String filter= "";
 				GregorianCalendar to = new GregorianCalendar();
@@ -257,8 +274,11 @@ public class LogViewArchive extends ViewPart {
 	private void showNewTime(GregorianCalendar from, GregorianCalendar to) {
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		timeFrom.setText(sdf.format(from.getTime()));
+		fromTime = from.getTime();
 		timeTo.setText(sdf.format(to.getTime()));
 		timeFrom.getParent().getParent().redraw();
+		toTime = to.getTime();
+
 	}
 
 	public void setFocus() {
@@ -304,4 +324,13 @@ public class LogViewArchive extends ViewPart {
 			jlv.refresh();
 		}
 	};
+
+	public Date getFromTime(){
+		return fromTime;
+
+	}
+	public Date getToTime(){
+		return toTime;
+
+	}
 }
