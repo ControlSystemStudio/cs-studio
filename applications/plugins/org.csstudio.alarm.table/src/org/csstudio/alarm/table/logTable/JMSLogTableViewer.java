@@ -5,28 +5,25 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
 
-import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.IJMSMessageViewer;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
+
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
-import org.csstudio.alarm.table.preferences.JmsLogPreferenceInitializer;
 import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
-import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
-import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferencePage;
-import org.eclipse.jface.action.Action;
+
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -43,64 +40,50 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 
 public class JMSLogTableViewer extends TableViewer {
-//	private MessageReceiver receiver;
-//	private TableViewer tableViewer;
+	
 	private Table table;
+	
 	String[] columnNames;
-	int max;
-	int rows;
+	
 	String colName = null;
+	
 	boolean sortAlarms = false;
+	
 	String columnSelection = null;
+	
 	private String lastSort = "";
-	private boolean sort =false;
-//	public void refresh() {
-//		this.refresh();
-//	}
-//	
-	private JMSMessageList jmsml;// = new JMSMessageList();
+	
+	private boolean sort = false;
+
+	private JMSMessageList jmsml;
 	
 	public JMSLogTableViewer(Composite parent, IWorkbenchPartSite site,
 			String[] colNames, JMSMessageList j) {
 		super(parent, SWT.SINGLE | SWT.FULL_SELECTION);
 		columnNames = colNames;
 		jmsml = j;
-//		tableViewer = new TableViewer(parent, SWT.SINGLE | SWT.FULL_SELECTION);
 		table = this.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-
 		
 		table.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
-//		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.P_STRING).split(";");
-//		max = JmsLogsPlugin.getDefault().getPluginPreferences().getInt(JmsLogPreferenceConstants.MAX);
-//		rows = JmsLogsPlugin.getDefault().getPluginPreferences().getInt(JmsLogPreferenceConstants.REMOVE);		
-		
-//		tableViewer.setSorter(new ViewerSorter(){
-//			public int compare(Viewer viewer, Object e1, Object e2) {
-//				return 1;
-//			}
-//		});
-		 
 		
 		for(int i = 0; i < columnNames.length; i++)	{
 			TableColumn tableColumn = new TableColumn(table, SWT.CENTER);
 			tableColumn.setText(columnNames[i]);
 			tableColumn.setWidth(100);
 			colName = columnNames[i];
-			System.out.println("listerner for col: " + colName);
-			
 			tableColumn.addSelectionListener(new SelectionAdapter() {
 			
 				private String cName = colName;
 				
 				public void widgetSelected(SelectionEvent e) {
-					System.out.println(cName);
 					if(cName.equals(lastSort)){
 						sort=!sort;
 						JMSLogTableViewer.this.setSorter(new JMSMessageColumnSorter(cName,sort));
@@ -113,8 +96,6 @@ public class JMSLogTableViewer extends TableViewer {
 			});
 		}
 		this.setContentProvider(new JMSMessageContentProvider());		
-		
-//		tableViewer.setLabelProvider(new PersonTableLabelProvider());
 		this.setLabelProvider(new JMSMessageLabelProvider());
 		this.setInput(jmsml);
 		
@@ -130,27 +111,16 @@ public class JMSLogTableViewer extends TableViewer {
 	
 	 private void makeContextMenu(IWorkbenchPartSite site)
 	    {
-		    // See Plug-ins book p. 285
 	        MenuManager manager = new MenuManager("#PopupMenu");
 	        Control contr = this.getControl(); 
-	        // Other plug-ins can contribute their actions here
-
 	        manager.addMenuListener(new IMenuListener() {
-
 				public void menuAboutToShow(IMenuManager manager) {
-					// TODO Auto-generated method stub
-					System.out.println("MenuListener");
-				
 					JMSLogTableViewer.this.fillContextMenu(manager);
 				}
 	        });
-
-	        
 	        contr.addMouseListener(new MouseAdapter() {
 	        	@Override
 	        	public void mouseDown(MouseEvent e) {
-	        		// TODO Auto-generated method stub
-	        		System.out.println("MouseListener");
 	        		super.mouseDown(e);
 	        		if (e.button == 3) {
 	        			JMSMessageLabelProvider jmsmlp = (JMSMessageLabelProvider) JMSLogTableViewer.this.getLabelProvider();
@@ -160,17 +130,12 @@ public class JMSLogTableViewer extends TableViewer {
 	        				Rectangle bounds = ti.getBounds(i);
         	                if (bounds.contains(e.x, e.y)) {
         	                	columnSelection = jmsmlp.getColumnName(i);
-        	                    System.out.println("index: " + jmsmlp.getColumnName(i));
         	                    break;
         	                }
 	        			}
 	        		}
 	        	}
 	        });
-	        
-	        
-	        
-	      //  manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	        Menu menu = manager.createContextMenu(contr);
 	        contr.setMenu(menu);
 	        site.registerContextMenu(manager, this);

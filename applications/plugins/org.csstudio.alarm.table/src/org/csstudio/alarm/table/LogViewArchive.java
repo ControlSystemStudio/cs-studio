@@ -105,7 +105,6 @@ public class LogViewArchive extends ViewPart {
 		parent.pack();
 		JmsLogsPlugin.getDefault().getPluginPreferences()
 				.addPropertyChangeListener(propertyChangeListener);
-
 	}
 
 	private void create72hButton(Composite comp) {

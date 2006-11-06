@@ -30,8 +30,8 @@ public class JmsLogsPlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-//		System.out.println("log plugin");
-//		this.getWorkbench().getViewRegistry().
+		System.out.println("log plugin");
+//		this.getWorkbench().getViewRegistry();
 //		jmsmAdapterFactory = new JMSMessageAdapterFactory();
 //		IAdapterManager mgr = Platform.getAdapterManager();
 //		mgr.registerAdapters(jmsmAdapterFactory, adaptable)

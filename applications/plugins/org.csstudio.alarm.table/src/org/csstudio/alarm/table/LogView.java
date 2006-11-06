@@ -8,6 +8,8 @@ import javax.jms.TextMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
+import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
+import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -15,6 +17,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
 
@@ -28,6 +32,8 @@ public class LogView extends ViewPart implements MessageListener {
 	private Shell parentShell = null;
 
 	private JMSMessageList jmsml = null;
+	
+	private JMSLogTableViewer jlv = null;
 	
 	private MessageReceiver receiver;
 
@@ -56,11 +62,12 @@ public class LogView extends ViewPart implements MessageListener {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(LogViewerPreferenceConstants.P_STRING).split(";");
 
-		JMSLogTableViewer jlv = new JMSLogTableViewer(parent, getSite(),
+		jlv = new JMSLogTableViewer(parent, getSite(),
 				columnNames, jmsml);
 		jlv.setAlarmSorting(false);
 		parent.pack();
-
+		JmsLogsPlugin.getDefault().getPluginPreferences()
+		.addPropertyChangeListener(propertyChangeListener);
 	}
 
 	private void initializeJMSReceiver(Shell ps) {
@@ -125,5 +132,40 @@ public class LogView extends ViewPart implements MessageListener {
 			System.err.println(e);
 		}
 	}
+
+	private final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
+
+		public void propertyChange(PropertyChangeEvent event) {
+			columnNames = JmsLogsPlugin
+					.getDefault()
+					.getPluginPreferences()
+					.getString(LogViewerPreferenceConstants.P_STRING)
+					.split(";");
+			jlv.setColumnNames(columnNames);
+
+			Table t = jlv.getTable();
+			TableColumn[] tc = t.getColumns();
+
+			int diff = tc.length - columnNames.length;
+
+			if (diff < 0) {
+				for (int i = 0; i < diff; i++) {
+					TableColumn tableColumn = new TableColumn(t, SWT.CENTER);
+					tableColumn.setText(new Integer(i).toString());
+					tableColumn.setWidth(100);
+				}
+			} else if (diff > 0) {
+				diff = (-1) * diff;
+				for (int i = 0; i < diff; i++) {
+					tc[i].dispose();
+				}
+			}
+
+			for (int i = 0; i < tc.length; i++) {
+				tc[i].setText(columnNames[i]);
+			}
+			jlv.refresh();
+		}
+	};
 
 }
