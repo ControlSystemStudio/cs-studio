@@ -12,13 +12,13 @@ public class LogArchiveViewerPreferenceInitializer extends AbstractPreferenceIni
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
-		store.setDefault(LogArchiveViewerPreferenceConstants.P_STRINGArch, 
-				"TYPE" + ";" + 
+		store.setDefault(LogArchiveViewerPreferenceConstants.P_STRINGArch,
+				"TYPE" + ";" +
 				"EVENTTIME" + ";" +
 				"TEXT" + ";" +
 				"USER" + ";" +
@@ -35,7 +35,7 @@ public class LogArchiveViewerPreferenceInitializer extends AbstractPreferenceIni
 				"VALUE" + ";" +
 				"DESTINATION"
 		);
-		
+		store.setDefault(LogArchiveViewerPreferenceConstants.DATE_FORMAT,"E d-MMMM-yyyy H:mm:ss");
 	}
 
 }
