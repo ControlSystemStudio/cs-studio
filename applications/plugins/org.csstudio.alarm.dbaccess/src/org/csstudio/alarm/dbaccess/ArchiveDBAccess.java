@@ -117,7 +117,10 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 //	order by mc.message_id;
 
 	private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to) {
-
+/*	Alter SQL_String
+ * 	Macht Probleme bei mehr als zwei AND abfragen
+ * 	(Methode private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to, String filter))
+ *
 		String sql = "select mc.message_id, mt.name as Nutzer, m.datum, mpt.name as Property,  mc.value "+
 			"from  msg_type mt, msg_type_property_type mtpt, msg_property_type mpt, message m, message_content mc "+
 			"where mtpt.msg_type_id = mt.id "+
@@ -141,10 +144,35 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 							":"+to.get(GregorianCalendar.SECOND)+
 							"', 'YYYY-MM-DD HH24:MI:SS') "+
 			"order by mc.message_id";
+*/
+/*
+ * Neue SQL-String unter hilfe nahme einer View
+ */
+		String sql = "select * from alarm_archive_messages aam where aam.datum "+
+					"between to_date('"+from.get(GregorianCalendar.YEAR)+
+						"-"+(from.get(GregorianCalendar.MONTH)+1)+
+						"-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
+						" "+from.get(GregorianCalendar.HOUR)+
+						":"+from.get(GregorianCalendar.MINUTE)+
+						":"+from.get(GregorianCalendar.SECOND)+
+						"', 'YYYY-MM-DD HH24:MI:SS') "+
+					"and to_date('"+to.get(GregorianCalendar.YEAR)+
+						"-"+(to.get(GregorianCalendar.MONTH)+1)+
+						"-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
+						" "+to.get(GregorianCalendar.HOUR)+
+						":"+to.get(GregorianCalendar.MINUTE)+
+						":"+to.get(GregorianCalendar.SECOND)+
+						"', 'YYYY-MM-DD HH24:MI:SS') "+
+					"order by aam.message_id";
+
 		return sql;
 	}
 
 	private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to, String filter) {
+		/*	Alter SQL_String
+		 * 	Macht Probleme bei mehr als zwei AND abfragen
+		 * 	(Methode private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to, String filter))
+		 *
 
 		String sql =
 			"select mc.message_id, mt.name as Nutzer, m.datum, mpt.name as Property,  mc.value "+
@@ -163,39 +191,46 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			":"+from.get(GregorianCalendar.MINUTE)+
 			":"+from.get(GregorianCalendar.SECOND)+
 			"', 'YYYY-MM-DD HH24:MI:SS') "+
-"and to_date('"+to.get(GregorianCalendar.YEAR)+
+			"AND to_date('"+to.get(GregorianCalendar.YEAR)+
 			"-"+(to.get(GregorianCalendar.MONTH)+1)+
 			"-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
 			" "+to.get(GregorianCalendar.HOUR)+
 			":"+to.get(GregorianCalendar.MINUTE)+
 			":"+to.get(GregorianCalendar.SECOND)+
 			"', 'YYYY-MM-DD HH24:MI:SS') "+
-		    "and mc.message_id = ANY ( "+
-		        "select mc.message_id "+
-				  "from  msg_type mt "+
-		          "join msg_type_property_type mtpt on mtpt.msg_type_id = mt.id "+
-		          "join msg_property_type mpt on mtpt.msg_property_type_id = mpt.id "+
-		          "join message m on m.msg_type_id = mt.id "+
-		          "join message_content mc on m.msg_type_id = mt.id "+
-		          "where mpt.id = mc.msg_property_type_id "+
-		   		  filter+
-		   		  " )"+
+			filter+
 			"order by mc.message_id";
+*/
+/*
+ * Neue SQL-String unter hilfe nahme einer View
+ */
+				String sql = "select * from alarm_archive_messages aam where aam.datum "+
+							"between to_date('"+from.get(GregorianCalendar.YEAR)+
+								"-"+(from.get(GregorianCalendar.MONTH)+1)+
+								"-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
+								" "+from.get(GregorianCalendar.HOUR)+
+								":"+from.get(GregorianCalendar.MINUTE)+
+								":"+from.get(GregorianCalendar.SECOND)+
+								"', 'YYYY-MM-DD HH24:MI:SS') "+
+							"and to_date('"+to.get(GregorianCalendar.YEAR)+
+								"-"+(to.get(GregorianCalendar.MONTH)+1)+
+								"-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
+								" "+to.get(GregorianCalendar.HOUR)+
+								":"+to.get(GregorianCalendar.MINUTE)+
+								":"+to.get(GregorianCalendar.SECOND)+
+								"', 'YYYY-MM-DD HH24:MI:SS') "+
+							filter+
+							"order by aam.message_id";
 		return sql;
 	}
 
 
 	public ArrayList<HashMap<String, String>> getLogMessages(GregorianCalendar from, GregorianCalendar to) {
 		String sql = buildSQLStatement(from, to);
+		System.out.println(sql);
 		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql);
 		return ergebniss;
 	}
-
-//	public ArrayList<HashMap<String, String>> getLogMessages(GregorianCalendar from, GregorianCalendar to, HashMap filter) {
-//		String sql = buildSQLStatement(from, to);
-//		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql);
-//		return ergebniss;
-//	}
 
 	public ArrayList<HashMap<String, String>> getLogMessages(GregorianCalendar from, GregorianCalendar to, String filter) {
 		String sql = buildSQLStatement(from, to, filter);
