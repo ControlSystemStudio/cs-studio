@@ -97,6 +97,7 @@ public class LogViewArchive extends ViewPart {
 		to.setLayout(new GridLayout(1, true));
 
 		timeTo = new Text(to, SWT.SINGLE);
+		timeTo.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
 		timeTo.setEditable(false);
 		timeTo.setText("                              ");
 
@@ -236,7 +237,13 @@ public class LogViewArchive extends ViewPart {
 				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
 //				from.add(GregorianCalendar.HOUR, -504);
 				showNewTime(from, to);
-				ArrayList<HashMap<String, String>> am = adba.getLogMessages(from, to, filter);
+				ArrayList<HashMap<String, String>> am;
+				if(filter.trim().length()>0){
+					am = adba.getLogMessages(from, to, filter);
+				}
+				else{
+					am = adba.getLogMessages(from, to);
+				}
 				jmsml.clearList();
 				jlv.refresh();
 				jmsml.addJMSMessageList(am);
@@ -272,6 +279,12 @@ public class LogViewArchive extends ViewPart {
 
 	private void showNewTime(GregorianCalendar from, GregorianCalendar to) {
 		SimpleDateFormat sdf = new SimpleDateFormat();
+		try{
+			sdf.applyPattern(JmsLogsPlugin.getDefault().getPreferenceStore().getString(LogArchiveViewerPreferenceConstants.DATE_FORMAT));
+		}catch(Exception e){
+			sdf.applyPattern(JmsLogsPlugin.getDefault().getPreferenceStore().getDefaultString(LogArchiveViewerPreferenceConstants.DATE_FORMAT));
+			JmsLogsPlugin.getDefault().getPreferenceStore().setToDefault(LogArchiveViewerPreferenceConstants.DATE_FORMAT);
+		}
 		timeFrom.setText(sdf.format(from.getTime()));
 		fromTime = from.getTime();
 		timeTo.setText(sdf.format(to.getTime()));
