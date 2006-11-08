@@ -1,10 +1,13 @@
 package org.csstudio.alarm.table;
 
+import java.util.Vector;
+
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
@@ -21,7 +24,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
-
 /**
  * Simple view more like console, used to write log messages
  */
@@ -32,16 +34,15 @@ public class LogView extends ViewPart implements MessageListener {
 	private Shell parentShell = null;
 
 	private JMSMessageList jmsml = null;
-	
+
 	private JMSLogTableViewer jlv = null;
-	
+
 	private MessageReceiver receiver;
 
 	private String[] columnNames;
 
-//	int max;
-//	int rows;
-
+	//	int max;
+	//	int rows;
 
 	public void createPartControl(Composite parent) {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
@@ -62,12 +63,11 @@ public class LogView extends ViewPart implements MessageListener {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(LogViewerPreferenceConstants.P_STRING).split(";");
 
-		jlv = new JMSLogTableViewer(parent, getSite(),
-				columnNames, jmsml);
+		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml);
 		jlv.setAlarmSorting(false);
 		parent.pack();
 		JmsLogsPlugin.getDefault().getPluginPreferences()
-		.addPropertyChangeListener(propertyChangeListener);
+				.addPropertyChangeListener(propertyChangeListener);
 	}
 
 	private void initializeJMSReceiver(Shell ps) {
@@ -83,7 +83,6 @@ public class LogView extends ViewPart implements MessageListener {
 
 	}
 
-	
 	public void setFocus() {
 	}
 
@@ -136,9 +135,9 @@ public class LogView extends ViewPart implements MessageListener {
 	private final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
 
 		public void propertyChange(PropertyChangeEvent event) {
-			columnNames = JmsLogsPlugin
-					.getDefault()
-					.getPluginPreferences()
+			System.out.println("Log ChangeListener");
+		
+			columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 					.getString(LogViewerPreferenceConstants.P_STRING)
 					.split(";");
 			jlv.setColumnNames(columnNames);
@@ -146,24 +145,30 @@ public class LogView extends ViewPart implements MessageListener {
 			Table t = jlv.getTable();
 			TableColumn[] tc = t.getColumns();
 
-			int diff = tc.length - columnNames.length;
+			int diff = columnNames.length - tc.length;
 
-			if (diff < 0) {
+			if (diff > 0) {
 				for (int i = 0; i < diff; i++) {
 					TableColumn tableColumn = new TableColumn(t, SWT.CENTER);
 					tableColumn.setText(new Integer(i).toString());
 					tableColumn.setWidth(100);
 				}
-			} else if (diff > 0) {
+			} else if (diff < 0) {
 				diff = (-1) * diff;
 				for (int i = 0; i < diff; i++) {
 					tc[i].dispose();
 				}
 			}
+			tc = t.getColumns();
 
 			for (int i = 0; i < tc.length; i++) {
 				tc[i].setText(columnNames[i]);
 			}
+			Vector<JMSMessage> jmsMessages = new Vector<JMSMessage>();
+			jmsMessages.addAll(jmsml.getJMSMessageList());
+			jmsml.clearList();
+			jlv.refresh();
+			jmsml.addJMSMessageList(jmsMessages);
 			jlv.refresh();
 		}
 	};

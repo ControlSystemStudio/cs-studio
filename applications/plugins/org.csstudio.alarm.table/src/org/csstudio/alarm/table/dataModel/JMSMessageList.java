@@ -81,7 +81,14 @@ public class JMSMessageList {
 		}
 	}
 	
-
+	public void addJMSMessageList(Vector<JMSMessage> messageList) {
+		JMSMessages.addAll(messageList);
+	}
+	
+	public Vector<JMSMessage> getJMSMessageList() {
+		return JMSMessages;
+	}
+	
 	public MapMessage hashMap2mapMessage(HashMap<String, String> message) {
 		MapMessage mm = null;
 		try {

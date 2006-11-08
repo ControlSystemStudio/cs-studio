@@ -140,6 +140,8 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 	private final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
 
 		public void propertyChange(PropertyChangeEvent event) {
+			System.out.println("AlarmLog  ChangeListener");
+			
 			columnNames = JmsLogsPlugin
 					.getDefault()
 					.getPluginPreferences()
@@ -150,20 +152,21 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 			Table t = jlv.getTable();
 			TableColumn[] tc = t.getColumns();
 
-			int diff = tc.length - columnNames.length;
+			int diff = columnNames.length - tc.length;
 
-			if (diff < 0) {
+			if (diff > 0) {
 				for (int i = 0; i < diff; i++) {
 					TableColumn tableColumn = new TableColumn(t, SWT.CENTER);
 					tableColumn.setText(new Integer(i).toString());
 					tableColumn.setWidth(100);
 				}
-			} else if (diff > 0) {
+			} else if (diff < 0) {
 				diff = (-1) * diff;
 				for (int i = 0; i < diff; i++) {
 					tc[i].dispose();
 				}
 			}
+			tc = t.getColumns();
 
 			for (int i = 0; i < tc.length; i++) {
 				tc[i].setText(columnNames[i]);

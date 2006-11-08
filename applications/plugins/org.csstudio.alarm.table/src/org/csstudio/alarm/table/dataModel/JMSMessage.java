@@ -53,7 +53,6 @@ public class JMSMessage implements IAdaptable ,org.csstudio.data.exchange.IProce
 	 * @return
 	 */
 	public String getProperty(String property) {
-		
 		if (property.equals("SEVERITY")) {
 			if(messageProperties.get("SEVERITY") != null) {
 				try {
