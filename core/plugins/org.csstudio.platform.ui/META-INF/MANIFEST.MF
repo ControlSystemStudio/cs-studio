@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui Plug-in
+Bundle-SymbolicName: org.csstudio.platform.ui;singleton:=true
+Bundle-Version: 0.0.2
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.ui.console,
+ org.eclipse.core.runtime,
+ org.csstudio.platform;visibility:=reexport,
+ org.eclipse.tomcat,
+ org.eclipse.help,
+ org.eclipse.core.resources,
+ org.eclipse.update.ui,
+ org.junit4
+Bundle-Vendor: Desy
+Export-Package: org.csstudio.platform.ui.dialogs,
+ org.csstudio.platform.ui.dnd,
+ org.csstudio.platform.ui.workbench
+Bundle-Activator: org.csstudio.platform.ui.CSSPlatformUiPlugin
+Eclipse-LazyStart: true

@@ -1,0 +1,328 @@
+package org.csstudio.platform.ui.workbench;
+
+import org.csstudio.platform.ui.internal.localization.Messages;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ContributionItemFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.eclipse.ui.application.IActionBarConfigurer;
+import org.eclipse.ui.application.IWorkbenchConfigurer;
+
+/**
+ * An action builder for the menu bars of the control system studio.
+ * 
+ * @author awill
+ * 
+ */
+public final class WorkbenchActionBuilder {
+	/**
+	 * The workbench window, this action builder is contributing to.
+	 */
+	private IWorkbenchWindow _window;
+
+	/**
+	 * A convenience variable and method so that the actionConfigurer doesn't
+	 * need to get passed into registerGlobalAction every time it's called.
+	 */
+	private IActionBarConfigurer _actionBarConfigurer;
+
+	/**
+	 * The exit action. This action closes the workbench.
+	 */
+	private IWorkbenchAction _exitAction;
+
+	/**
+	 * The preferences action. This action opens the central preferences dialog.
+	 */
+	private IWorkbenchAction _preferencesAction;
+
+	/**
+	 * The documentation action. This action starts up the help system.
+	 */
+	private IWorkbenchAction _documentationAction;
+
+	/**
+	 * The about action. This action opens up the about dialog.
+	 */
+	private IWorkbenchAction _aboutAction;
+	
+	/**
+	 * The save action. This action saves the current editor.
+	 */
+	private IWorkbenchAction _saveAction;
+
+	/**
+	 * Constructs a new action builder which contributes actions to the given
+	 * window.
+	 * 
+	 * @param window
+	 *            the _window
+	 */
+	public WorkbenchActionBuilder(final IWorkbenchWindow window) {
+		_window = window;
+	}
+
+	/**
+	 * Returns the window to which this action builder is contributing.
+	 * 
+	 * @return The window to which this action builder is contributing.
+	 */
+	private IWorkbenchWindow getWindow() {
+		return _window;
+	}
+
+	/**
+	 * Builds the actions and contributes them to the given _window.
+	 * 
+	 * @param windowConfigurer
+	 *            The workbench configurer.
+	 * @param actionBarConfigurer
+	 *            The action bar configurer.
+	 */
+	public void makeAndPopulateActions(
+			final IWorkbenchConfigurer windowConfigurer,
+			final IActionBarConfigurer actionBarConfigurer) {
+		makeActions(windowConfigurer, actionBarConfigurer);
+		populateMenuBar(actionBarConfigurer);
+	}
+
+	/**
+	 * Fills the menu bar with the workbench actions.
+	 * 
+	 * @param configurer
+	 *            The action bar configurer.
+	 */
+	public void populateMenuBar(final IActionBarConfigurer configurer) {
+		IMenuManager menubar = configurer.getMenuManager();
+		menubar.add(createFileMenu());
+		menubar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+		menubar.add(createCSSMenu());
+		menubar.add(createWindowMenu());
+		menubar.add(createHelpMenu());
+	}
+
+	/**
+	 * Creates and returns the CSS menu.
+	 * 
+	 * @return The CSS menu.
+	 */
+	private MenuManager createCSSMenu() {
+		MenuManager menu = new MenuManager(
+				Messages.getString("WorkbenchActionBuilder.MENU_CSS"), IWorkbenchIds.MENU_CSS); //$NON-NLS-1$
+
+		menu
+				.add(new MenuManager(
+						Messages
+								.getString("WorkbenchActionBuilder.MENU_CSS_DISPLAY"), IWorkbenchIds.MENU_CSS_DISPLAY)); //$NON-NLS-1$
+		menu
+				.add(new MenuManager(
+						Messages
+								.getString("WorkbenchActionBuilder.MENU_CSS_ALARM"), IWorkbenchIds.MENU_CSS_ALARM)); //$NON-NLS-1$
+		menu
+				.add(new MenuManager(
+						Messages
+								.getString("WorkbenchActionBuilder.MENU_CSS_TRENDS"), IWorkbenchIds.MENU_CSS_TRENDS)); //$NON-NLS-1$
+		menu.add(new MenuManager(Messages
+				.getString("WorkbenchActionBuilder.MENU_CSS_DIAGNOSTICS"), //$NON-NLS-1$
+				IWorkbenchIds.MENU_CSS_DIAGNOSTICS));
+		menu.add(new MenuManager(Messages
+				.getString("WorkbenchActionBuilder.MENU_CSS_DEBUGGING"), //$NON-NLS-1$
+				IWorkbenchIds.MENU_CSS_DEBUGGING));
+		menu.add(new MenuManager(Messages
+				.getString("WorkbenchActionBuilder.MENU_CSS_CONFIGURATION"), //$NON-NLS-1$
+				IWorkbenchIds.MENU_CSS_CONFIGURATION));
+		menu.add(new MenuManager(Messages
+				.getString("WorkbenchActionBuilder.MENU_CSS_MANAGEMENT"), //$NON-NLS-1$
+				IWorkbenchIds.MENU_CSS_MANAGEMENT));
+		menu
+				.add(new MenuManager(
+						Messages
+								.getString("WorkbenchActionBuilder.MENU_CSS_EDITORS"), IWorkbenchIds.MENU_CSS_EDITORS)); //$NON-NLS-1$
+		menu.add(new MenuManager(Messages
+				.getString("WorkbenchActionBuilder.MENU_CSS_UTILITIES"), //$NON-NLS-1$
+				IWorkbenchIds.MENU_CSS_UTILITIES));
+		menu
+				.add(new MenuManager(
+						Messages
+								.getString("WorkbenchActionBuilder.MENU_CSS_TEST"), IWorkbenchIds.MENU_CSS_TEST)); //$NON-NLS-1$
+		menu
+				.add(new MenuManager(
+						Messages
+								.getString("WorkbenchActionBuilder.MENU_CSS_OTHER"), IWorkbenchIds.MENU_CSS_OTHER)); //$NON-NLS-1$
+
+		menu.add(new Separator());
+		menu.add(_preferencesAction);
+
+		return menu;
+	}
+
+	/**
+	 * Creates and returns the Window menu.
+	 * 
+	 * @return The Window menu.
+	 */
+	private MenuManager createWindowMenu() {
+		MenuManager menu = new MenuManager(Messages.getString("WorkbenchActionBuilder.MENU_WINDOW"), //$NON-NLS-1$
+				IWorkbenchActionConstants.M_WINDOW);
+		IWorkbenchAction action = ActionFactory.OPEN_NEW_WINDOW
+				.create(getWindow());
+		menu.add(new Separator());
+		menu.add(action);
+		menu.add(new Separator());
+		addPerspectiveActions(menu);
+		menu.add(new Separator());
+
+		return menu;
+	}
+
+	/**
+	 * Adds the perspective actions to the specified menu.
+	 * 
+	 * @param menu
+	 *            The menu to which the perspective actions have to be added.
+	 */
+	private void addPerspectiveActions(final MenuManager menu) {
+		MenuManager changePerspMenuMgr = new MenuManager(Messages.getString("WorkbenchActionBuilder.OPEN_PERSPECTIVE"), //$NON-NLS-1$
+				"openPerspective"); //$NON-NLS-1$
+		IContributionItem changePerspMenuItem = ContributionItemFactory.PERSPECTIVES_SHORTLIST
+				.create(getWindow());
+		changePerspMenuMgr.add(changePerspMenuItem);
+		menu.add(changePerspMenuMgr);
+		MenuManager showViewMenuMgr = new MenuManager(Messages.getString("WorkbenchActionBuilder.SHOW_VIEW"), //$NON-NLS-1$
+				"showView"); //$NON-NLS-1$
+		IContributionItem showViewMenu = ContributionItemFactory.VIEWS_SHORTLIST
+				.create(getWindow());
+		showViewMenuMgr.add(showViewMenu);
+		menu.add(showViewMenuMgr);
+		menu.add(new Separator());
+	}
+
+	/**
+	 * Creates and returns the File menu.
+	 * 
+	 * @return The File menu.
+	 */
+	private MenuManager createFileMenu() {
+		MenuManager menu = new MenuManager(Messages.getString("WorkbenchActionBuilder.MENU_FILE"), //$NON-NLS-1$
+				IWorkbenchActionConstants.M_FILE);
+
+		menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
+		menu.add(_saveAction);
+		MenuManager newMenu = new MenuManager(Messages.getString("WorkbenchActionBuilder.EXIT"), ActionFactory.NEW.getId()); //$NON-NLS-1$
+		menu.add(newMenu);
+
+		menu.add(_exitAction);
+		return menu;
+	}
+
+	/**
+	 * Creates and returns the Help menu.
+	 * 
+	 * @return The Help menu.
+	 */
+	private MenuManager createHelpMenu() {
+		MenuManager menu = new MenuManager(Messages.getString("WorkbenchActionBuilder.MENU_HELP"), //$NON-NLS-1$
+				IWorkbenchActionConstants.M_HELP);
+
+		// about should always be at the bottom
+		menu.add(new Separator("group.about")); //$NON-NLS-1$
+		menu.add(_aboutAction);
+		menu.add(new GroupMarker("group.about.ext")); //$NON-NLS-1$
+		menu.add(_documentationAction);
+		menu.add(new Separator("group.updates")); //$NON-NLS-1$
+		menu.add(new GroupMarker("group.updates")); //$NON-NLS-1$
+		return menu;
+	}
+
+	/**
+	 * Disposes any resources and unhooks any listeners that are no longer
+	 * needed. Called when the _window is closed.
+	 */
+	public void dispose() {
+		if (_aboutAction != null) {
+			_aboutAction.dispose();
+		}
+
+		if (_documentationAction != null) {
+			_documentationAction.dispose();
+		}
+
+		if (_exitAction != null) {
+			_exitAction.dispose();
+		}
+
+		if (_preferencesAction != null) {
+			_preferencesAction.dispose();
+		}
+	}
+
+	/**
+	 * Creates actions (and contribution items) for the menu bar, toolbar and
+	 * status line.
+	 * 
+	 * @param workbenchConfigurer
+	 *            The workbench configurer.
+	 * @param actionBarConfigurer
+	 *            The action bar configurer.
+	 */
+	private void makeActions(final IWorkbenchConfigurer workbenchConfigurer,
+			final IActionBarConfigurer actionBarConfigurer) {
+		setCurrentActionBarConfigurer(actionBarConfigurer);
+
+		_aboutAction = ActionFactory.ABOUT.create(getWindow());
+		registerGlobalAction(_aboutAction);
+
+		_documentationAction = ActionFactory.HELP_CONTENTS
+				.create(getWindow());
+		registerGlobalAction(_documentationAction);
+
+		_exitAction = ActionFactory.QUIT.create(getWindow());
+		registerGlobalAction(_exitAction);
+
+		_preferencesAction = ActionFactory.PREFERENCES.create(_window);
+		registerGlobalAction(_preferencesAction);
+		
+		_saveAction = ActionFactory.SAVE.create(_window);
+		registerGlobalAction(_saveAction);
+	}
+
+	/**
+	 * Set the current action bar configurer.
+	 * 
+	 * @param actionBarConfigurer
+	 *            The current action bar configurer.
+	 */
+	private void setCurrentActionBarConfigurer(
+			final IActionBarConfigurer actionBarConfigurer) {
+		_actionBarConfigurer = actionBarConfigurer;
+	}
+
+	/**
+	 * Registers the given action with the key binding service (by calling
+	 * {@link IActionBarConfigurer#registerGlobalAction(IAction)}), and adds it
+	 * to the list of actions to be disposed when the _window is closed.
+	 * <p>
+	 * In order to participate in key bindings, the action must have an action
+	 * definition id (aka command id), and a corresponding command extension.
+	 * See the <code>org.eclipse.ui.commands</code> extension point
+	 * documentation for more details.
+	 * </p>
+	 * 
+	 * @param action
+	 *            the action to register
+	 * @see IAction#setActionDefinitionId(String)
+	 * @see #disposeAction(IAction)
+	 */
+	private void registerGlobalAction(final IAction action) {
+		String id = action.getId();
+		assert id != null : "id!=null"; //$NON-NLS-1$
+		_actionBarConfigurer.registerGlobalAction(action);
+	}
+}

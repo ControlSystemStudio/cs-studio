@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.startup.application"
+            name="CSS">
+         <property
+               name="aboutText"
+               value="Control System Studio"/>
+         <property
+               name="aboutImage"
+               value="resources/Desy-Logo.gif"/>
+         <property
+               name="windowImages"
+               value="resources/desy16x16.gif,resources/desy32x32.gif,resources/desy48x48.gif,resources/desy64x64.gif,resources/desy128x128.gif"/>
+      </product>
+   </extension>
+   <extension
+         id="application"
+         name="CSS Core"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run class="org.csstudio.startup.applications.Application"/>
+      </application>
+   </extension>
+
+</plugin>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective"
+            id="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective"
+            name="CSS Standard"/>
+   </extension>
+
+   <extension
+         id="logPreferences"
+         name="logPreferences"
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.log.logPreferences"
+            class="org.csstudio.platform.ui.internal.logging.ConsoleAppenderPreferencePage"
+            id="org.csstudio.platform.log.logPreferences.console"
+            name="Console Appender"/>
+      <page
+            class="org.csstudio.platform.ui.internal.logging.LoggingPreferencePage"
+            id="org.csstudio.platform.log.logPreferences"
+            name="Logging"/>
+      <page
+            category="org.csstudio.platform.log.logPreferences"
+            class="org.csstudio.platform.ui.internal.logging.FileAppenderPreferencePage"
+            id="org.csstudio.platform.log.logPreferences.file"
+            name="File Appender"/>
+      <page
+            category="org.csstudio.platform.log.logPreferences"
+            class="org.csstudio.platform.ui.internal.logging.JmsAppenderPreferencePage"
+            id="org.csstudio.platform.log.logPreferences.jms"
+            name="JMS Appender"/>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.core.resources.IResource"
+            class="org.csstudio.platform.ui.internal.workbench.ResourcesAdapterFactory">
+         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.platform.model.IProcessVariable"
+            class="org.csstudio.platform.ui.internal.workbench.ProcessVariableAdapterFactory">
+         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.platform.model.IControlSystemItem"
+            class="org.csstudio.platform.ui.internal.workbench.ControlSystemItemAdapterFactory">
+         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+      </factory>
+   </extension>
+
+   
+<!-- Update Actions -->
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Update Actions"
+            visible="true"
+            id="org.eclipse.csstudio.ui.softwareUpdates">
+         <menu
+               label="Software Updates"
+               path="help/group.updates"
+               id="org.csstudio.update.ui.updateMenu">
+            <groupMarker name="group0"/>
+         </menu>
+         <action
+               class="org.csstudio.platform.ui.internal.actions.ConfigurationManagerAction"
+               definitionId="org.csstudio.ui.update.manageConfiguration"
+               icon="icons/configs.gif"
+               id="org.csstudio.platform.ui.internal.actions.ConfigurationManagerAction"
+               label="Manage Configuration"
+               menubarPath="help/org.csstudio.update.ui.updateMenu/group0">
+         </action>
+         <action
+               class="org.csstudio.platform.ui.internal.actions.InstallWizardAction"
+               definitionId="org.csstudio.ui.update.findAndInstallUpdates"
+               icon="icons/usearch_obj.gif"
+               id="org.csstudio.platform.ui.internal.actions.InstallWizardAction"
+               label="Find and Install..."
+               menubarPath="help/org.csstudio.update.ui.updateMenu/group0">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
+            id="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
+            name="Authentication Settings"/>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml"
+            />
+   </extension>
+
+
+</plugin>
