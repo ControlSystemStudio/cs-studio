@@ -100,6 +100,10 @@
             class="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
             id="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
             name="Authentication Settings"/>
+      <page
+            class="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
+            id="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
+            name="Localization Settings"/>
    </extension>
    <extension
          point="org.eclipse.help.contexts">

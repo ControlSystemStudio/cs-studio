@@ -16,10 +16,10 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	private static CSSPlatformPlugin _plugin;
 
 	/**
-	 * This _plugin's ID.
+	 * This plugin's ID.
 	 */
 	public static final String ID = "org.csstudio.platform"; //$NON-NLS-1$
-
+	
 	/**
 	 * Standard constructor.
 	 */

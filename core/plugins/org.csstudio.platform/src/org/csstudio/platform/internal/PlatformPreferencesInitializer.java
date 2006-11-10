@@ -1,6 +1,7 @@
 package org.csstudio.platform.internal;
 
 import org.csstudio.platform.CSSPlatformPlugin;
+import org.csstudio.platform.LocaleService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.AuthenticationService;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -27,6 +28,7 @@ public final class PlatformPreferencesInitializer extends
 
 		initializeLoggingPreferences(node);
 		initializeAuthenticationPreferences(node);
+		initializeLocalePreferences(node);
 	}
 
 	/**
@@ -117,6 +119,16 @@ public final class PlatformPreferencesInitializer extends
 	private void initializeAuthenticationPreferences(
 			final IEclipsePreferences node) {
 		node.put(AuthenticationService.PROP_AUTH_LOGIN, "false"); //$NON-NLS-1$
+	}
+
+	/**
+	 * Initializes the localization settings.
+	 * 
+	 * @param node
+	 *            the preferences node to use
+	 */
+	private void initializeLocalePreferences(final IEclipsePreferences node) {
+		node.put(LocaleService.PROP_LOCALE, ""); //$NON-NLS-1$
 	}
 
 }

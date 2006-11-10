@@ -1,6 +1,7 @@
 package org.csstudio.startup.applications;
 
 import org.csstudio.platform.CSSPlatformPlugin;
+import org.csstudio.platform.LocaleService;
 import org.csstudio.platform.security.AuthenticationService;
 import org.csstudio.platform.ui.dialogs.LoginDialog;
 import org.csstudio.platform.ui.workbench.CssWorkbenchAdvisor;
@@ -24,10 +25,16 @@ public class Application implements IPlatformRunnable {
 	 * {@inheritDoc}
 	 */
 	public final Object run(final Object args) throws Exception {
-		Display display = PlatformUI.createDisplay();
+		IPreferenceStore coreStore = new ScopedPreferenceStore(
+				new InstanceScope(), CSSPlatformPlugin.getDefault().getBundle()
+						.getSymbolicName());
 
+		applyLocaleSetting(coreStore);
+		
+		Display display = PlatformUI.createDisplay();
+		
 		try {
-			boolean canLogin = handleLogin(display);
+			boolean canLogin = handleLogin(display, coreStore);
 
 			int returnCode = EXIT_OK;
 
@@ -68,14 +75,13 @@ public class Application implements IPlatformRunnable {
 	 * 
 	 * @param display
 	 *            The standard display.
+	 * @param coreStore
+	 *            The core preference store.
 	 * @return true, if the authentication succeeded.
 	 */
-	private boolean handleLogin(final Display display) {
+	private boolean handleLogin(final Display display,
+			final IPreferenceStore coreStore) {
 		boolean result = true;
-
-		IPreferenceStore coreStore = new ScopedPreferenceStore(
-				new InstanceScope(), CSSPlatformPlugin.getDefault().getBundle()
-						.getSymbolicName());
 
 		boolean performAuthentication = coreStore
 				.getBoolean(AuthenticationService.PROP_AUTH_LOGIN);
@@ -83,12 +89,23 @@ public class Application implements IPlatformRunnable {
 		if (performAuthentication) {
 			LoginDialog d = new LoginDialog(display.getActiveShell());
 			int ret = d.open();
-			
+
 			if (ret == Dialog.CANCEL) {
 				result = false;
 			}
 		}
 
 		return result;
+	}
+
+	/**
+	 * Set the system's default locate according to the CSS settings.
+	 * 
+	 * @param coreStore
+	 *            The core preference store.
+	 */
+	private void applyLocaleSetting(final IPreferenceStore coreStore) {
+		String locale = coreStore.getString(LocaleService.PROP_LOCALE);
+		LocaleService.setSystemLocale(locale);
 	}
 }
