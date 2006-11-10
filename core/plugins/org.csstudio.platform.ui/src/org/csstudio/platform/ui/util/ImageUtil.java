@@ -12,10 +12,10 @@ import org.osgi.framework.Bundle;
 
 /**
  * Utility class, which provides access to images. Images returned by this
- * utility are managed by a ImageRegistry
+ * utility are managed by a ImageRegistry and must not explicitly be disposed, when they are
+ * not used anymore.
  * 
- * @see {@link ImageRegistry} and must not explicitly be disposed, when they are
- *      not used anymore.
+ * @see {@link ImageRegistry} 
  * 
  * @author swende
  * 

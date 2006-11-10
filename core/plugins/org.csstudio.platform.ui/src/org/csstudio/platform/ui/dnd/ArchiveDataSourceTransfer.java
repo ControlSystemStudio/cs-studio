@@ -20,7 +20,7 @@ import org.eclipse.swt.dnd.TransferData;
  * <p>
  * This transfer type expects the data to transfer to implement the
  * <code>IArchiveDataSource</code> interface, and the resulting data is
- * provided as an array of <code>ArchiveDataSource</code>.
+ * provided as an array of <code>IArchiveDataSource</code>.
  * <p>
  * Most of this implementation is from the javadoc for ByteArrayTransfer.
  * 

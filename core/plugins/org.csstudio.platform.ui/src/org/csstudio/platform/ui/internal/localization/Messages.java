@@ -3,6 +3,8 @@ package org.csstudio.platform.ui.internal.localization;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.csstudio.platform.logging.CentralLogger;
+
 /**
  * Access to the localization message ressources within this
  * plugin.
@@ -39,7 +41,7 @@ public final class Messages {
 		try {
 			return RESOURCE_BUNDLE.getString(key);
 		} catch (MissingResourceException e) {
-			e.printStackTrace();
+			CentralLogger.getInstance().error(Messages.class, e);
 			return '!' + key + '!';
 		}
 	}

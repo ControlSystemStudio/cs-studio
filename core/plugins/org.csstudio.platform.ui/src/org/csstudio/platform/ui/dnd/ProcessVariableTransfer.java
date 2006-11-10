@@ -19,8 +19,8 @@ import org.eclipse.swt.dnd.TransferData;
  * Drag-and-Drop transfer type for <code>IProcessVariableName</code>.
  * <p>
  * This transfer type expects the data to transfer to implement the
- * <code>IProcessVariableName</code> interface, and the resulting data is
- * provided as an array of <code>ProcessVariableName</code>.
+ * <code>IProcessVariable</code> interface, and the resulting data is
+ * provided as an array of <code>IProcessVariable</code>.
  * <p>
  * Most of this implementation is from the javadoc for ByteArrayTransfer.
  * 
