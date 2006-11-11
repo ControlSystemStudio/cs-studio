@@ -2,15 +2,11 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension targetID="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective"/>
-   </extension>
-   <extension
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective"
             id="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective"
-            name="CSS Standard"/>
+            name="%cssPerspectiveName"/>
    </extension>
 
    <extension
@@ -21,21 +17,21 @@
             category="org.csstudio.platform.log.logPreferences"
             class="org.csstudio.platform.ui.internal.logging.ConsoleAppenderPreferencePage"
             id="org.csstudio.platform.log.logPreferences.console"
-            name="Console Appender"/>
+            name="%logConsoleAppenderPageName"/>
       <page
             class="org.csstudio.platform.ui.internal.logging.LoggingPreferencePage"
             id="org.csstudio.platform.log.logPreferences"
-            name="Logging"/>
+            name="%logPageName"/>
       <page
             category="org.csstudio.platform.log.logPreferences"
             class="org.csstudio.platform.ui.internal.logging.FileAppenderPreferencePage"
             id="org.csstudio.platform.log.logPreferences.file"
-            name="File Appender"/>
+            name="%logFileAppenderPageName"/>
       <page
             category="org.csstudio.platform.log.logPreferences"
             class="org.csstudio.platform.ui.internal.logging.JmsAppenderPreferencePage"
             id="org.csstudio.platform.log.logPreferences.jms"
-            name="JMS Appender"/>
+            name="%logJmsAppenderPageName"/>
    </extension>
    <extension
          point="org.eclipse.help.toc">
@@ -71,7 +67,7 @@
             visible="true"
             id="org.eclipse.csstudio.ui.softwareUpdates">
          <menu
-               label="Software Updates"
+               label="%menuSoftwareUpdates"
                path="help/group.updates"
                id="org.csstudio.update.ui.updateMenu">
             <groupMarker name="group0"/>
@@ -81,7 +77,7 @@
                definitionId="org.csstudio.ui.update.manageConfiguration"
                icon="icons/configs.gif"
                id="org.csstudio.platform.ui.internal.actions.ConfigurationManagerAction"
-               label="Manage Configuration"
+               label="%menuManageConfigurations"
                menubarPath="help/org.csstudio.update.ui.updateMenu/group0">
          </action>
          <action
@@ -89,7 +85,7 @@
                definitionId="org.csstudio.ui.update.findAndInstallUpdates"
                icon="icons/usearch_obj.gif"
                id="org.csstudio.platform.ui.internal.actions.InstallWizardAction"
-               label="Find and Install..."
+               label="%menuFindAndInstall"
                menubarPath="help/org.csstudio.update.ui.updateMenu/group0">
          </action>
       </actionSet>
@@ -99,11 +95,11 @@
       <page
             class="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
             id="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
-            name="Authentication Settings"/>
+            name="%authenticationPageName"/>
       <page
             class="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
             id="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
-            name="Localization Settings"/>
+            name="%localePageName"/>
    </extension>
    <extension
          point="org.eclipse.help.contexts">

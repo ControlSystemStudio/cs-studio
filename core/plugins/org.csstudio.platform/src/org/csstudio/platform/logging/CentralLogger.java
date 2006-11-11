@@ -2,6 +2,12 @@ package org.csstudio.platform.logging;
 
 import java.util.Properties;
 
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.platform.CSSPlatformPlugin;
@@ -10,14 +16,20 @@ import org.csstudio.platform.CSSPlatformPlugin;
  * The central logging service of the CSS platform. The service is implemented
  * as singleton. A reference can be obtained by
  * 
+ * <p/>
+ * 
  * <code>
  * 	CentralLogger.getInstance()
  * </code>
  * 
+ * <p/>
+ * 
  * Logging is straight forward. For example, you can use the Logger this way:
  * 
+ * <p/>
+ * 
  * <code>
- * 	CentralLogger.getInstance().debug(this, "test log message");
+ * 	CentralLogger.getInstance().debug(this, "test log message"); <br/>
  * 	CentralLogger.getInstance().info(this, "test log message");
  * </code>
  * 
@@ -454,22 +466,6 @@ public final class CentralLogger {
 			final org.eclipse.core.runtime.Preferences prefs) {
 		Properties result = new Properties();
 
-		// create the log4j root property
-		String rootProperty = "info"; //$NON-NLS-1$
-		if (prefs.getBoolean(PROP_LOG4J_CONSOLE)) {
-			rootProperty += "," + "css_console"; //$NON-NLS-1$ //$NON-NLS-2$
-		}
-
-		if (prefs.getBoolean(PROP_LOG4J_FILE)) {
-			rootProperty += "," + "css_file"; //$NON-NLS-1$ //$NON-NLS-2$
-		}
-
-		if (prefs.getBoolean(PROP_LOG4J_JMS)) {
-			rootProperty += "," + "css_jms"; //$NON-NLS-1$ //$NON-NLS-2$
-		}
-
-		result.setProperty("log4j.rootLogger", rootProperty); //$NON-NLS-1$
-
 		// console logger
 		fillFromStore(result, prefs, PROP_LOG4J_CONSOLE_APPENDER);
 		fillFromStore(result, prefs, PROP_LOG4J_CONSOLE_LAYOUT);
@@ -498,6 +494,22 @@ public final class CentralLogger {
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_PASSWORD);
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_TCFBN);
 
+		// create the log4j root property
+		String rootProperty = "info"; //$NON-NLS-1$
+		if (prefs.getBoolean(PROP_LOG4J_CONSOLE)) {
+			rootProperty += "," + "css_console"; //$NON-NLS-1$ //$NON-NLS-2$
+		}
+
+		if (prefs.getBoolean(PROP_LOG4J_FILE)) {
+			rootProperty += "," + "css_file"; //$NON-NLS-1$ //$NON-NLS-2$
+		}
+
+		if ((prefs.getBoolean(PROP_LOG4J_JMS) && checkJmsSettings(result))) {
+			rootProperty += "," + "css_jms"; //$NON-NLS-1$ //$NON-NLS-2$
+		}
+
+		result.setProperty("log4j.rootLogger", rootProperty); //$NON-NLS-1$
+
 		return result;
 	}
 
@@ -517,5 +529,36 @@ public final class CentralLogger {
 			final org.eclipse.core.runtime.Preferences prefs,
 			final String propertyID) {
 		p.setProperty(propertyID, prefs.getString(propertyID));
+	}
+
+	/**
+	 * Check if the given JMS settings are valid.
+	 * 
+	 * @param p
+	 *            System properties.
+	 * @return True, if the JMS settings are valid.
+	 */
+	private boolean checkJmsSettings(final Properties p) {
+		boolean result = true;
+
+		try {
+			p.put(Context.INITIAL_CONTEXT_FACTORY, p
+					.getProperty(PROP_LOG4J_JMS_ICFN));
+			p.put(Context.PROVIDER_URL, p.getProperty(PROP_LOG4J_JMS_URL));
+
+			Context context = new InitialContext(p);
+			ConnectionFactory factory = (ConnectionFactory) context
+					.lookup("ConnectionFactory"); //$NON-NLS-1$
+			factory.createConnection();
+		} catch (NamingException e) {
+			result = false;
+		} catch (JMSException e) {
+			result = false;
+		} finally {
+			p.remove(p.getProperty(PROP_LOG4J_JMS_ICFN));
+			p.remove(p.getProperty(PROP_LOG4J_JMS_URL));
+		}
+
+		return result;
 	}
 }

@@ -43,6 +43,7 @@ public final class Console {
 				return CSSPlatformUiPlugin.ID + ".console"; //$NON-NLS-1$
 			}
 		};
+
 		_stream = _console.newMessageStream();
 		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
 		consolePlugin.getConsoleManager().addConsoles(
