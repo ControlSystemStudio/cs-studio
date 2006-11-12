@@ -4,6 +4,7 @@ import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -91,6 +92,7 @@ public final class WorkbenchActionBuilder {
 			final IActionBarConfigurer actionBarConfigurer) {
 		makeActions(windowConfigurer, actionBarConfigurer);
 		populateMenuBar(actionBarConfigurer);
+		populateCoolBar(actionBarConfigurer);
 	}
 
 	/**
@@ -107,6 +109,18 @@ public final class WorkbenchActionBuilder {
 		menubar.add(createWindowMenu());
 		menubar.add(createHelpMenu());
 	}
+	
+	/**
+	 * Fills the cool bar with the workbench actions.
+	 * 
+	 * @param configurer
+	 *            The action bar configurer.
+	 */
+	public void populateCoolBar(final IActionBarConfigurer configurer) {
+		ICoolBarManager coolbar = configurer.getCoolBarManager();
+		coolbar.add(_documentationAction);
+	}
+	
 
 	/**
 	 * Creates and returns the CSS menu.
