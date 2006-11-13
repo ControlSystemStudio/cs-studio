@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="/de.desy.css.libs.jdbc/libs/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="/org.csstudio.libs.jdbc/libs/ojdbc14.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -12,8 +12,8 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Topic;
 
-import de.desy.css.libs.jms.*;
-import de.desy.css.libs.jms.preferences.*;
+import org.csstudio.libs.jms.*;
+import org.csstudio.libs.jms.preferences.*;
 /**
  * Class used to establish connection with jms server
  */

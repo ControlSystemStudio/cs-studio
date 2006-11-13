@@ -7,17 +7,17 @@ Bundle-Activator: org.csstudio.alarm.table.JmsLogsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- de.desy.css.core,
- de.desy.css.core.ui,
  org.eclipse.ui.views,
  org.eclipse.core.resources,
- de.desy.css.libs.jms,
+ org.csstudio.libs.jms,
  org.eclipse.help,
  org.eclipse.help.appserver,
  org.eclipse.help.base,
  org.eclipse.help.ui,
  org.eclipse.help.webapp,
+ org.csstudio.alarm.dbaccess,
  org.csstudio.data,
- org.csstudio.data.exchange,
- org.csstudio.alarm.dbaccess
+ org.csstudio.platform
 Eclipse-AutoStart: true
+Export-Package: org.csstudio.alarm.table,
+ org.csstudio.alarm.table.preferences

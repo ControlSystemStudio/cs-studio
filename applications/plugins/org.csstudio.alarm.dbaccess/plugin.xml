@@ -2,13 +2,6 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.views">
-      <view
-            class="org.csstudio.alarm.dbaccess.archiveDBView"
-            id="org.csstudio.utility.alarm.archiveDB.view"
-            name="AlarmArchiver"/>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             class="org.csstudio.alarm.dbaccess.archivedb.preferences.SamplePreferencePage"
