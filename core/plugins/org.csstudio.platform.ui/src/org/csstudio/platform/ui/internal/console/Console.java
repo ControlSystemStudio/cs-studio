@@ -2,6 +2,7 @@ package org.csstudio.platform.ui.internal.console;
 
 import java.io.PrintStream;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.swt.graphics.Color;
@@ -50,6 +51,9 @@ public final class Console {
 				new IConsole[] { _console });
 		consolePlugin.getConsoleManager().showConsoleView(_console);
 		System.setOut(new PrintStream(_stream));
+		
+		// the logging mechanism needs to be informed that the standard system out has changed!
+		CentralLogger.getInstance().configure();
 	}
 
 	/**

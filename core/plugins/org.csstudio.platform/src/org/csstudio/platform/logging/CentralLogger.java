@@ -78,6 +78,12 @@ public final class CentralLogger {
 	public static final String PROP_LOG4J_CONSOLE_THRESHOLD = "log4j.appender.css_console.Threshold"; //$NON-NLS-1$
 
 	/**
+	 * Log4j property that indicates that the console appender should be aware
+	 * of changing standard system output channels.
+	 */
+	public static final String PROP_LOG4J_CONSOLE_FOLLOW = "log4j.appender.css_console.Follow"; //$NON-NLS-1$
+
+	/**
 	 * Log4j property for the css file appender.
 	 */
 	public static final String PROP_LOG4J_FILE_APPENDER = "log4j.appender.css_file"; //$NON-NLS-1$

@@ -46,6 +46,7 @@ public final class PlatformPreferencesInitializer extends
 		node.put(CentralLogger.PROP_LOG4J_CONSOLE_PATTERN,
 				"%d{ISO8601} %-5p [%t] %c: %m%n"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_CONSOLE_THRESHOLD, "INFO"); //$NON-NLS-1$
+		node.put(CentralLogger.PROP_LOG4J_CONSOLE_FOLLOW, "true"); //$NON-NLS-1$
 	}
 
 	/**
