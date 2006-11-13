@@ -35,7 +35,7 @@ import org.eclipse.ui.IMemento;
  * This class defines a factory that is capable of recreating file editor inputs
  * stored in a memento.
  * 
- * @author swende
+ * @author Sven Wende
  * @version $Revision$
  */
 

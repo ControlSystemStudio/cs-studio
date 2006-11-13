@@ -28,7 +28,7 @@ import org.csstudio.platform.internal.model.ProcessVariable;
  * A factory for control system items. Central control system items (e.g.
  * IProcessVariables), can be obtained by static creation methods.
  * 
- * @author swende
+ * @author Sven Wende
  * 
  */
 public final class ControlSystemItemFactory {

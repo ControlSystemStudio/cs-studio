@@ -29,7 +29,7 @@ import org.eclipse.swt.SWT;
 /**
  * A preference page for the central css log service.
  * 
- * @author awill, swende
+ * @author awill, Sven Wende
  */
 public class LoggingPreferencePage extends AbstractAppenderPreferencePage {
 	/**

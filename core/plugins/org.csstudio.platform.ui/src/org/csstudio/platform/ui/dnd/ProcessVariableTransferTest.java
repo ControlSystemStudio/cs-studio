@@ -30,7 +30,7 @@ import org.junit.Test;
  * Test class.
  * 
  * @see {@link ProcessVariableTransfer}.
- * @author swende
+ * @author Sven Wende
  * 
  */
 public final class ProcessVariableTransferTest {

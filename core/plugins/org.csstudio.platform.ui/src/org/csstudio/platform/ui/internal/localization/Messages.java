@@ -25,6 +25,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Access to the localization message ressources within this
@@ -44,6 +45,13 @@ public final class Messages {
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);
 
+    static
+    {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    
 	/**
 	 * This constructor is private since this class only provides static
 	 * methods.

@@ -31,7 +31,7 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 /**
  * A workbench adapter implementation for workspace resources.
  * 
- * @author swende
+ * @author Sven Wende
  *
  */
 public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter {

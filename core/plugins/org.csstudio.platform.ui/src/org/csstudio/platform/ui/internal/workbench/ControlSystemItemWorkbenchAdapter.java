@@ -29,7 +29,7 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 /**
  * A workbench adapter implementation for control system items.
  * 
- * @author swende
+ * @author Sven Wende
  * 
  */
 public final class ControlSystemItemWorkbenchAdapter extends WorkbenchAdapter {

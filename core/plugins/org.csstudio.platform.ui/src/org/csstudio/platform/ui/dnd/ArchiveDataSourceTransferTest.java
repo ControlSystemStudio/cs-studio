@@ -30,7 +30,7 @@ import org.junit.Test;
  * Test class.
  * 
  * @see {@link ArchiveDataSourceTransfer}.
- * @author swende
+ * @author Sven Wende
  * 
  */
 public final class ArchiveDataSourceTransferTest {

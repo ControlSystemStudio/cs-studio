@@ -28,7 +28,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 /**
  * An adapter factory for workspace resources.
  * 
- * @author swende
+ * @author Sven Wende
  * 
  */
 public final class ResourcesAdapterFactory implements IAdapterFactory {

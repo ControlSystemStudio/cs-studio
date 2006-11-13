@@ -28,7 +28,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 /**
  * An adapter factory for process variables.
  * 
- * @author swende
+ * @author Sven Wende
  * 
  */
 public final class ProcessVariableAdapterFactory implements IAdapterFactory {

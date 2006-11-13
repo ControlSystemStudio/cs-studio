@@ -29,7 +29,7 @@ package org.csstudio.platform.model;
  * 
  * @see {@link ControlSystemItemFactory} factory.
  * 
- * @author Kay Kasemir, swende
+ * @author Kay Kasemir, Sven Wende
  */
 public interface IProcessVariable extends IControlSystemItem {
 	/**

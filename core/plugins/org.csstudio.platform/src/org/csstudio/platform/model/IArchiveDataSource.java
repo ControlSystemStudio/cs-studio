@@ -41,7 +41,7 @@ package org.csstudio.platform.model;
  * This interface is not intended to be implemented by clients. Instances of
  * archive datasources can be created via the @see {@link ControlSystemItemFactory} factory.
  * 
- * @author Kay Kasemir, swende
+ * @author Kay Kasemir, Sven Wende
  */
 public interface IArchiveDataSource extends IControlSystemItem {
 	/**

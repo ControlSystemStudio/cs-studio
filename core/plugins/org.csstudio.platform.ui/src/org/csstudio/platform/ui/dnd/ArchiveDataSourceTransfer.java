@@ -45,7 +45,7 @@ import org.eclipse.swt.dnd.TransferData;
  * <p>
  * Most of this implementation is from the javadoc for ByteArrayTransfer.
  * 
- * @author Kay Kasemir, swende
+ * @author Kay Kasemir, Sven Wende
  */
 public final class ArchiveDataSourceTransfer extends ByteArrayTransfer {
 	/**

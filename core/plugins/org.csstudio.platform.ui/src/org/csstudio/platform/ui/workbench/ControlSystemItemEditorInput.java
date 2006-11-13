@@ -33,7 +33,7 @@ import org.eclipse.ui.IPersistableElement;
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
  * 
- * @author swende
+ * @author Sven Wende
  * @version $Revision$
  */
 public final class ControlSystemItemEditorInput implements IEditorInput,

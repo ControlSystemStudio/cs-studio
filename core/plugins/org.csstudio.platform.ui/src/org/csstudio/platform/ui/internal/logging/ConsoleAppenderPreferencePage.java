@@ -32,7 +32,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * A preference page for the css console log appender.
  * 
- * @author awill, swende
+ * @author awill, Sven Wende
  */
 public class ConsoleAppenderPreferencePage extends
 		AbstractAppenderPreferencePage {

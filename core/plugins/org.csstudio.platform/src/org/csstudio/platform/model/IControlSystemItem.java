@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.IAdaptable;
  * object contributions for popup menus or other data exchange functionalities
  * between CSS applications.
  * 
- * @author Kay Kasemir, swende
+ * @author Kay Kasemir, Sven Wende
  */
 public interface IControlSystemItem extends IAdaptable {
 

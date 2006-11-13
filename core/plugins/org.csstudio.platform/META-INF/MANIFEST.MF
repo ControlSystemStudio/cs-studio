@@ -11,7 +11,8 @@ Bundle-Vendor: Desy
 Export-Package: org.csstudio.platform,
  org.csstudio.platform.logging,
  org.csstudio.platform.model,
- org.csstudio.platform.security
+ org.csstudio.platform.security,
+ org.csstudio.platform.util
 Bundle-ClassPath: .,
  lib/log4j/log4j-1.2.14.jar,
  lib/jms/jms-1.1.jar,

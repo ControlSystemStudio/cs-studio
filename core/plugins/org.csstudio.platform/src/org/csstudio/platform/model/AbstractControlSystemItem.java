@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.PlatformObject;
  * Central control system items (e.g. ProcessVariables) are already defined and
  * can be created using {@link ControlSystemItemFactory}.
  * 
- * @author swende
+ * @author Sven Wende
  * 
  */
 public abstract class AbstractControlSystemItem extends PlatformObject implements

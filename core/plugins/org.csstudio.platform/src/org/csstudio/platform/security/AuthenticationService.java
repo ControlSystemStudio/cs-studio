@@ -25,7 +25,7 @@ package org.csstudio.platform.security;
  * A simple mock up for a authentication service. By now it only holds a
  * property ID.
  * 
- * @author awill, swende
+ * @author awill, Sven Wende
  * 
  */
 public class AuthenticationService {

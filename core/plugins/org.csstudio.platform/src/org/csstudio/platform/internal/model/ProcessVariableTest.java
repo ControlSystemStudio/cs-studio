@@ -30,7 +30,7 @@ import org.junit.Test;
 /**
  * Test class for {@link org.csstudio.platform.internal.model.ProcessVariable}.
  * 
- * @author swende
+ * @author Sven Wende
  * 
  */
 public final class ProcessVariableTest {

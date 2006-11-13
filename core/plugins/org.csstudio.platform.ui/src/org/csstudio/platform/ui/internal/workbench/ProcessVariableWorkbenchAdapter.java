@@ -30,7 +30,7 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 /**
  * A workbench adapter implementation for process variables.
  * 
- * @author swende
+ * @author Sven Wende
  * 
  */
 public final class ProcessVariableWorkbenchAdapter extends WorkbenchAdapter {

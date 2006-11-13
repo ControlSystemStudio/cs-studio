@@ -31,7 +31,7 @@ import org.eclipse.swt.SWT;
 /**
  * A preference page for the css file log appender.
  * 
- * @author awill, swende
+ * @author awill, Sven Wende
  */
 public class FileAppenderPreferencePage extends AbstractAppenderPreferencePage {
 

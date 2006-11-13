@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  * preferences. New preference settings should be initialized in this class,
  * too.
  * 
- * @author awill, swende
+ * @author awill, Sven Wende
  */
 public final class PlatformPreferencesInitializer extends
 		AbstractPreferenceInitializer {

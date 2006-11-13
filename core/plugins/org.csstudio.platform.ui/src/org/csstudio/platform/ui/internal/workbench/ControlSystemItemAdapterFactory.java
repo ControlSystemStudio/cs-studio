@@ -28,7 +28,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 /**
  * An adapter factory for control system items.
  * 
- * @author swende
+ * @author Sven Wende
  * 
  */
 public final class ControlSystemItemAdapterFactory implements IAdapterFactory {

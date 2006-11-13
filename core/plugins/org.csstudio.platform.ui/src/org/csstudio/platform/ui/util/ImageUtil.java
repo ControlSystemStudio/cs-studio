@@ -38,7 +38,7 @@ import org.osgi.framework.Bundle;
  * 
  * @see {@link ImageRegistry} 
  * 
- * @author swende
+ * @author Sven Wende
  * 
  */
 public final class ImageUtil {

@@ -54,7 +54,7 @@ import org.csstudio.platform.CSSPlatformPlugin;
  * 	CentralLogger.getInstance().info(this, "test log message");
  * </code>
  * 
- * @author awill, swende
+ * @author awill, Sven Wende
  */
 public final class CentralLogger {
 
