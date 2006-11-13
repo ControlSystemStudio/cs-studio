@@ -13,10 +13,10 @@
                value="Control System Studio"/>
          <property
                name="aboutImage"
-               value="resources/Desy-Logo.gif"/>
+               value="resources/css128x128.gif"/>
          <property
                name="windowImages"
-               value="resources/desy16x16.gif,resources/desy32x32.gif,resources/desy48x48.gif,resources/desy64x64.gif,resources/desy128x128.gif"/>
+               value="resources/css16x16.gif,resources/css32x32.gif,resources/css48x48.gif,resources/css64x64.gif,resources/css128x128.gif"/>
       </product>
    </extension>
    <extension

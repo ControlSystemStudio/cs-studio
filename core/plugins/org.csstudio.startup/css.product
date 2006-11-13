@@ -4,7 +4,7 @@
 <product name="CSS" id="org.csstudio.startup.product" application="org.csstudio.startup.application" useFeatures="false">
 
    <aboutInfo>
-      <image path="/org.csstudio.startup/resources/Desy-Logo.gif"/>
+      <image path="/org.csstudio.startup/resources/css128x128.gif"/>
       <text>
          Control System Studio
       </text>
@@ -15,7 +15,7 @@
    <launcherArgs>
    </launcherArgs>
 
-   <windowImages i16="/org.csstudio.startup/resources/desy16x16.gif" i32="/org.csstudio.startup/resources/desy32x32.gif" i48="/org.csstudio.startup/resources/desy48x48.gif" i64="/org.csstudio.startup/resources/desy64x64.gif" i128="/org.csstudio.startup/resources/desy128x128.gif"/>
+   <windowImages i16="/org.csstudio.startup/resources/css16x16.gif" i32="/org.csstudio.startup/resources/css32x32.gif" i48="/org.csstudio.startup/resources/css48x48.gif" i64="/org.csstudio.startup/resources/css64x64.gif" i128="/org.csstudio.startup/resources/css128x128.gif"/>
 
    <splash
       location="org.csstudio.startup" />
