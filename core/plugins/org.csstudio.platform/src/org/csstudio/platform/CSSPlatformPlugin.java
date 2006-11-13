@@ -40,7 +40,7 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 * This plugin's ID.
 	 */
 	public static final String ID = "org.csstudio.platform"; //$NON-NLS-1$
-	
+
 	/**
 	 * Standard constructor.
 	 */
@@ -53,11 +53,12 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 */
 	@Override
 	protected final void doStart(final BundleContext context) throws Exception {
-		// generate a sample eclipse log message...
-		getLog()
-				.log(
-						new Status(IStatus.INFO, ID, 0,
-								"CSS core plugin started", null)); //$NON-NLS-1$
+		// TODO: generating a log message lets console messages appear on the
+		// Eclipse internal console instead of the CSS console
+		// getLog()
+		// .log(
+		// new Status(IStatus.INFO, ID, 0,
+		// "CSS core plugin started", null)); //$NON-NLS-1$
 	}
 
 	/**
