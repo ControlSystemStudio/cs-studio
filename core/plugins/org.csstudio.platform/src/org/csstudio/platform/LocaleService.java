@@ -25,7 +25,7 @@ import java.util.Locale;
 
 /**
  * 
- * @author awill
+ * @author Alexander Will
  * 
  */
 public final class LocaleService {

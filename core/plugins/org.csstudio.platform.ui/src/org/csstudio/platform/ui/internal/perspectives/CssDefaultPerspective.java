@@ -27,7 +27,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 /**
  * The css default perspective.
  * 
- * @author awill
+ * @author Alexander Will
  */
 public class CssDefaultPerspective implements IPerspectiveFactory {
 	/**

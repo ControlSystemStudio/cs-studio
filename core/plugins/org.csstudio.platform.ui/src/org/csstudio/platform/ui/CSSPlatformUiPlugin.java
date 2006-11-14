@@ -31,7 +31,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator for the CSS platform UI plugin.
  * 
- * @author awill
+ * @author Alexander Will
  */
 public class CSSPlatformUiPlugin extends AbstractUIPlugin {
 	/**

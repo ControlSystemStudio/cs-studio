@@ -33,7 +33,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * Common super class for the CSS log appender preference
  * pages.
  * 
- * @author awill
+ * @author Alexander Will
  */
 public abstract class AbstractAppenderPreferencePage extends
 		FieldEditorPreferencePage implements IWorkbenchPreferencePage {

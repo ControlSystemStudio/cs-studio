@@ -33,7 +33,7 @@ import org.eclipse.update.ui.UpdateManagerUI;
  * Action that opens up the <b>Find and Install...</b>
  * dialog.
  * 
- * @author awill
+ * @author Alexander Will
  * 
  */
 public class InstallWizardAction extends Action implements

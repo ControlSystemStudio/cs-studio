@@ -34,7 +34,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 /**
  * The preference page for the css authentication service.
  * 
- * @author awill
+ * @author Alexander Will
  */
 public class AuthenticationPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {

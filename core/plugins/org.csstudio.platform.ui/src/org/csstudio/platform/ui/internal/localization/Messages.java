@@ -31,7 +31,7 @@ import org.eclipse.osgi.util.NLS;
  * Access to the localization message ressources within this
  * plugin.
  * 
- * @author awill
+ * @author Alexander Will
  */
 public final class Messages {
 	/**

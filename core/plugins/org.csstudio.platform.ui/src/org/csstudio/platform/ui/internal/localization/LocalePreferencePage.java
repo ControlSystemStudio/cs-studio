@@ -39,7 +39,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  *
  * For an overview over supportes locale ID's, see {@link java.util.Locale}.
  * 
- * @author awill
+ * @author Alexander Will
  */
 public class LocalePreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {

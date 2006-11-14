@@ -36,7 +36,7 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
  * 
  * @see WorkbenchAdvisor
  * 
- * @author awill
+ * @author Alexander Will
  * 
  */
 public class CssWorkbenchAdvisor extends WorkbenchAdvisor {

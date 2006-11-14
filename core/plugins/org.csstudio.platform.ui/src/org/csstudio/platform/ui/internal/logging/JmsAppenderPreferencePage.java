@@ -30,7 +30,7 @@ import org.eclipse.swt.SWT;
 /**
  * A preference page for the css JMS log appender.
  * 
- * @author awill, Sven Wende
+ * @author Alexander Will, Sven Wende
  */
 public class JmsAppenderPreferencePage extends AbstractAppenderPreferencePage {
 

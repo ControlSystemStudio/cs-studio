@@ -32,7 +32,7 @@ import org.eclipse.update.ui.UpdateManagerUI;
  * Action that opens up the <b>Manage Configurations</b>
  * dialog.
  * 
- * @author awill
+ * @author Alexander Will
  * 
  */
 public class ConfigurationManagerAction implements

@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * A simple login dialog.
  * 
- * @author awill
+ * @author Alexander Will
  * 
  */
 public class LoginDialog extends TitleAreaDialog {

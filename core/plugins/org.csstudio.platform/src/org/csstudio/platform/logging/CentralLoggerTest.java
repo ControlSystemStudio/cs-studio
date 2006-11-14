@@ -28,7 +28,7 @@ import org.junit.Test;
 /**
  * Test class for {@link org.csstudio.platform.logging.CentralLogger}.
  * 
- * @author awill
+ * @author Alexander Will
  * 
  */
 public class CentralLoggerTest {

@@ -29,7 +29,7 @@ import org.junit.Test;
 /**
  * Test class for {@link org.csstudio.platform.internal.model.ArchiveDataSource}.
  * 
- * @author awill
+ * @author Alexander Will
  * 
  */
 public class ArchiveDataSourceTest {

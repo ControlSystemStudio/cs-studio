@@ -40,7 +40,7 @@ import org.eclipse.ui.application.IWorkbenchConfigurer;
 /**
  * An action builder for the menu bars of the control system studio.
  * 
- * @author awill
+ * @author Alexander Will
  * 
  */
 public final class WorkbenchActionBuilder {

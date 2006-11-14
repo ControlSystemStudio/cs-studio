@@ -29,7 +29,7 @@ import org.osgi.framework.BundleContext;
 /**
  * Common super class for all CSS plugin classes.
  * 
- * @author awill
+ * @author Alexander Will
  * 
  */
 public abstract class AbstractCssPlugin extends Plugin {

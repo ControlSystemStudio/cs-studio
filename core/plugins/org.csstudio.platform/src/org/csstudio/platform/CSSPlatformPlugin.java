@@ -28,7 +28,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator for the platform plugin.
  * 
- * @author awill, Sven Wende
+ * @author Alexander Will, Sven Wende
  */
 public class CSSPlatformPlugin extends AbstractCssPlugin {
 	/**

@@ -36,7 +36,7 @@ import org.eclipse.ui.console.MessageConsoleStream;
  * The standard css console that, if initialized, becomes the system's standard
  * output.
  * 
- * @author awill
+ * @author Alexander Will
  */
 public final class Console {
 	/**

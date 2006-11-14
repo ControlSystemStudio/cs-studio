@@ -40,7 +40,7 @@ import org.eclipse.core.runtime.IStatus;
  * <li>anything else ==> FATAL
  * </ul>
  * 
- * @author awill
+ * @author Alexander Will
  * 
  */
 public class CssLogListener implements ILogListener {

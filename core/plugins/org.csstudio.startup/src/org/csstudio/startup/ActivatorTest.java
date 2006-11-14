@@ -28,7 +28,7 @@ import org.junit.Test;
 /**
  * Test class for {@link org.csstudio.startup.Activator}.
  * 
- * @author awill
+ * @author Alexander Will
  * 
  */
 public class ActivatorTest {

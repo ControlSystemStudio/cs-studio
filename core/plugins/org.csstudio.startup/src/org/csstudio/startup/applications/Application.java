@@ -37,7 +37,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 /**
  * The RCP application for the Control System Studio.
  * 
- * @author awill
+ * @author Alexander Will
  * @version $Revision$
  * 
  */
