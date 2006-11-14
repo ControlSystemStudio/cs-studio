@@ -83,33 +83,12 @@
             id="de.desy.css.jmsLogs"
             label="CSS Action Set"
             visible="true">
-         <menu
-               id="org.csstudio"
-               label="CSS"
-               path="additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <menu
-               id="org.csstudio.alarm"
-               label="Alarm"
-               path="org.csstudio/additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <menu
-               id="org.csstudio.diag"
-               label="Diagnostics"
-               path="org.csstudio/additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
          <action
                class="org.csstudio.alarm.table.ShowLogArchive"
                icon="icons/LogArchive.png"
                id="de.desy.css.jmsLogs.ShowViewArchiveAction"
                label="JMSLogsArchive"
-               menubarPath="org.csstudio/org.csstudio.alarm/content"
+               menubarPath="css/alarm/"
                style="push"
                tooltip="Show JMS Log archive"/>
          <action
@@ -117,7 +96,7 @@
                icon="icons/Log.png"
                id="de.desy.css.jmsLogs.ShowViewLogAction"
                label="JMSLogs"
-               menubarPath="org.csstudio/org.csstudio.diag/content"
+               menubarPath="css/diagnostics/"
                style="push"
                tooltip="Show JMS Log"/>
          <action
@@ -125,7 +104,7 @@
                icon="icons/Alarm.png"
                id="de.desy.css.jmsLogs.ShowViewAlarmAction"
                label="JMSAlarmLog"
-               menubarPath="org.csstudio/org.csstudio.alarm/content"
+               menubarPath="css/alarm/"
                style="push"
                tooltip="Show JMS Alarms"/>
 

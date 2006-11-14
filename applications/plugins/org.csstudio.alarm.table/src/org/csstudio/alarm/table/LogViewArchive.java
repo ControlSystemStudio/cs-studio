@@ -89,6 +89,8 @@ public class LogViewArchive extends ViewPart {
 		from.setLayout(new GridLayout(1, true));
 
 		timeFrom = new Text(from, SWT.SINGLE);
+		timeFrom.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
+
 		timeFrom.setEditable(false);
 		timeFrom.setText("                            ");
 		Group to = new Group(comp, SWT.LINE_SOLID);
@@ -99,7 +101,7 @@ public class LogViewArchive extends ViewPart {
 		timeTo = new Text(to, SWT.SINGLE);
 		timeTo.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
 		timeTo.setEditable(false);
-		timeTo.setText("                              ");
+//		timeTo.setText("                              ");
 
 		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml);
 		jlv.setAlarmSorting(false);
