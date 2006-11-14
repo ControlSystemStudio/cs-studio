@@ -36,7 +36,10 @@
    <extension
          point="org.eclipse.help.toc">
       <toc
-            file="toc.xml"
+            file="tocApps.xml"
+            primary="true"/>
+      <toc
+            file="tocCore.xml"
             primary="true"/>
    </extension>
    <extension
