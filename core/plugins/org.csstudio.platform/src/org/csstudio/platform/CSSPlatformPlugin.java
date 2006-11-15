@@ -42,6 +42,12 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	public static final String ID = "org.csstudio.platform"; //$NON-NLS-1$
 
 	/**
+	 * Extension point ID for the <b>controlSystemItemFactories</b> extension point.
+	 */
+	public static final String EXTPOINT_CONTROL_SYSTEM_ITEM_FACTORIES = ID + ".controlSystemItemFactories";
+
+
+	/**
 	 * Standard constructor.
 	 */
 	public CSSPlatformPlugin() {
@@ -53,12 +59,10 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 */
 	@Override
 	protected final void doStart(final BundleContext context) throws Exception {
-		// TODO: generating a log message lets console messages appear on the
-		// Eclipse internal console instead of the CSS console
-		// getLog()
-		// .log(
-		// new Status(IStatus.INFO, ID, 0,
-		// "CSS core plugin started", null)); //$NON-NLS-1$
+		 getLog()
+		 .log(
+		 new Status(IStatus.INFO, ID, 0,
+		 "CSS core plugin started", null)); //$NON-NLS-1$
 	}
 
 	/**

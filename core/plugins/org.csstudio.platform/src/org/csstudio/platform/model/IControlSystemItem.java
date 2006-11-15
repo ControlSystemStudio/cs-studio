@@ -21,6 +21,7 @@
  */
 package org.csstudio.platform.model;
 
+import org.csstudio.platform.util.ControlSystemItemPath;
 import org.eclipse.core.runtime.IAdaptable;
 
 /**
@@ -28,8 +29,8 @@ import org.eclipse.core.runtime.IAdaptable;
  * control system item interface hierarchies.
  * 
  * As control system items are supposed to inherit from
- * {@link AbstractControlSystemItem}, which already implements this interface, there
- * are no further implementation efforts.
+ * {@link AbstractControlSystemItem}, which already implements this interface,
+ * there are no further implementation efforts.
  * 
  * Among other things, the interface is used to identify control system items in
  * object contributions for popup menus or other data exchange functionalities

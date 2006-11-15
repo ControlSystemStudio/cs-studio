@@ -19,39 +19,40 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.dnd;
+package org.csstudio.platform.ui.internal.dnd;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.CentralItemFactory;
+import org.csstudio.platform.model.IControlSystemItem;
+import org.csstudio.platform.util.ControlSystemItemPath;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
 /**
- * Drag-and-Drop transfer type for <code>IProcessVariableName</code>.
+ * Drag-and-Drop transfer type for {@link IControlSystemItem}.
  * <p>
  * This transfer type expects the data to transfer to implement the
- * <code>IProcessVariable</code> interface, and the resulting data is
- * provided as an array of <code>IProcessVariable</code>.
+ * <code>IControlSystemItem</code> interface, and the resulting data is
+ * provided as an array of <code>IControlSystemItem</code>.
  * <p>
  * Most of this implementation is from the javadoc for ByteArrayTransfer.
  * 
  * @author Kay Kasemir
  */
-public final class ProcessVariableTransfer extends ByteArrayTransfer {
+public final class ControlSystemItemTransfer extends ByteArrayTransfer {
 	/**
 	 * The type name.
 	 */
-	private static final String TYPE_NAME = "pv_name"; //$NON-NLS-1$
+	private static final String TYPE_NAME = "controlsystemitem_name"; //$NON-NLS-1$
 
 	/**
 	 * The type ID.
@@ -61,20 +62,20 @@ public final class ProcessVariableTransfer extends ByteArrayTransfer {
 	/**
 	 * The singleton instance.
 	 */
-	private static ProcessVariableTransfer _instance;
+	private static ControlSystemItemTransfer _instance;
 
 	/**
 	 * Hidden contructor.
 	 * 
 	 * @see #getInstance()
 	 */
-	private ProcessVariableTransfer() {
+	private ControlSystemItemTransfer() {
 	}
 
 	/** @return The singleton instance of the ProcessVariableNameTransfer. */
-	public static ProcessVariableTransfer getInstance() {
+	public static ControlSystemItemTransfer getInstance() {
 		if (_instance == null) {
-			_instance = new ProcessVariableTransfer();
+			_instance = new ControlSystemItemTransfer();
 		}
 		return _instance;
 	}
@@ -101,42 +102,46 @@ public final class ProcessVariableTransfer extends ByteArrayTransfer {
 	@Override
 	public void javaToNative(final Object object,
 			final TransferData transferData) {
-		if (object == null
-				|| !(object instanceof IProcessVariable[]
-						|| object instanceof Collection || object instanceof IProcessVariable)) {
+		if (!(object instanceof IControlSystemItem[]
+				|| object instanceof Collection || object instanceof IControlSystemItem)) {
 			return;
 		}
 
 		if (isSupportedType(transferData)) {
-			List<IProcessVariable> processVariables = new ArrayList<IProcessVariable>();
+			List<ControlSystemItemPath> paths = new ArrayList<ControlSystemItemPath>();
 
-			if (object instanceof IProcessVariable) {
-				processVariables.add((IProcessVariable) object);
+			if (object instanceof IControlSystemItem) {
+				paths
+						.add(CentralItemFactory
+								.createControlSystemItemPath((IControlSystemItem) object));
 			}
-			if (object instanceof IProcessVariable[]) {
-				for (IProcessVariable ds : (IProcessVariable[]) object) {
-					processVariables.add(ds);
+			if (object instanceof IControlSystemItem[]) {
+				for (IControlSystemItem ds : (IControlSystemItem[]) object) {
+					paths.add(CentralItemFactory
+							.createControlSystemItemPath(ds));
 				}
 			} else if (object instanceof Collection) {
 				for (Object o : (Collection) object) {
-					if (o instanceof IProcessVariable) {
-						processVariables.add((IProcessVariable) o);
+					if (o instanceof IControlSystemItem) {
+						IControlSystemItem item = (IControlSystemItem) o;
+						ControlSystemItemPath x = CentralItemFactory
+								.createControlSystemItemPath(item);
+						paths
+								.add(x);
 					}
 				}
 			}
 
 			try {
+				ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 				// write data to a byte array and then ask super to convert to
 				// pMedium
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				DataOutputStream writeOut = new DataOutputStream(out);
-				for (IProcessVariable processVariable : processVariables) {
-					byte[] buffer = processVariable.getName().getBytes();
-					writeOut.writeInt(buffer.length);
-					writeOut.write(buffer);
-				}
-				byte[] buffer = out.toByteArray();
-				writeOut.close();
+				ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
+				objectOut.writeObject(paths.toArray());
+
+				byte[] buffer = byteOut.toByteArray();
+				byteOut.close();
+				objectOut.close();
 
 				super.javaToNative(buffer, transferData);
 			} catch (IOException e) {
@@ -152,31 +157,34 @@ public final class ProcessVariableTransfer extends ByteArrayTransfer {
 	public Object nativeToJava(final TransferData transferData) {
 		assert transferData != null;
 
-		IProcessVariable[] result = null;
+		IControlSystemItem[] result = null;
 
 		if (isSupportedType(transferData)) {
 
 			byte[] buffer = (byte[]) super.nativeToJava(transferData);
 
-			List<IProcessVariable> received = new ArrayList<IProcessVariable>();
+			List<IControlSystemItem> received = new ArrayList<IControlSystemItem>();
+			ByteArrayInputStream byteIn = new ByteArrayInputStream(buffer);
+
 			try {
-				ByteArrayInputStream in = new ByteArrayInputStream(buffer);
-				DataInputStream readIn = new DataInputStream(in);
-				while (readIn.available() > 4) {
-					int size = readIn.readInt();
-					byte[] bytes = new byte[size];
-					readIn.read(bytes);
-					received.add(CentralItemFactory
-							.createProcessVariable(new String(bytes)));
+				ObjectInputStream objectIn = new ObjectInputStream(byteIn);
+
+				Object[] paths = (Object[]) objectIn.readObject();
+
+				for (Object path : paths) {
+					assert path instanceof ControlSystemItemPath : "path instanceof ControlSystemItemPath";
+					received
+							.add(CentralItemFactory
+									.createControlSystemItem((ControlSystemItemPath) path));
 				}
-				readIn.close();
-			} catch (IOException ex) {
-				return null;
+
+				byteIn.close();
+				objectIn.close();
+			} catch (Exception e) {
+				CentralLogger.getInstance().error(this, e);
 			}
-
-			result = received.toArray(new IProcessVariable[received.size()]);
+			result = received.toArray(new IControlSystemItem[received.size()]);
 		}
-
 		return result;
 	}
 }

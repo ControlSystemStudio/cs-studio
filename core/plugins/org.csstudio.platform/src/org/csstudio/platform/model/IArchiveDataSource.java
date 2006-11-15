@@ -39,7 +39,7 @@ package org.csstudio.platform.model;
  *  *
  * <p>
  * This interface is not intended to be implemented by clients. Instances of
- * archive datasources can be created via the @see {@link ControlSystemItemFactory} factory.
+ * archive datasources can be created via the @see {@link CentralItemFactory} factory.
  * 
  * @author Kay Kasemir, Sven Wende
  */

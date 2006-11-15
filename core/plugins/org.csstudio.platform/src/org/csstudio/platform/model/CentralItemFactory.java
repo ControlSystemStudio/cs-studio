@@ -23,6 +23,8 @@ package org.csstudio.platform.model;
 
 import org.csstudio.platform.internal.model.ArchiveDataSource;
 import org.csstudio.platform.internal.model.ProcessVariable;
+import org.csstudio.platform.internal.model.ControlSystemItemFactoriesRegistry;
+import org.csstudio.platform.util.ControlSystemItemPath;
 
 /**
  * A factory for control system items. Central control system items (e.g.
@@ -31,13 +33,13 @@ import org.csstudio.platform.internal.model.ProcessVariable;
  * @author Sven Wende
  * 
  */
-public final class ControlSystemItemFactory {
+public final class CentralItemFactory {
 
 	/**
 	 * Hidden constructor.
 	 * 
 	 */
-	private ControlSystemItemFactory() {
+	private CentralItemFactory() {
 
 	}
 
@@ -49,7 +51,6 @@ public final class ControlSystemItemFactory {
 	 * @return a process variable
 	 */
 	public static IProcessVariable createProcessVariable(final String name) {
-		assert name != null;
 		return new ProcessVariable(name);
 	}
 
@@ -69,5 +70,49 @@ public final class ControlSystemItemFactory {
 		assert url != null;
 		assert name != null;
 		return new ArchiveDataSource(url, key, name);
+	}
+
+	/**
+	 * Create a control system item from the specified path.
+	 * 
+	 * @param path
+	 *            the path
+	 * @return a control system item or null, if none was identified by the path
+	 */
+	public static IControlSystemItem createControlSystemItem(
+			final ControlSystemItemPath path) {
+		assert path != null;
+		IControlSystemItem result = null;
+
+		AbstractControlSystemItemFactory<IControlSystemItem> factory = ControlSystemItemFactoriesRegistry
+				.getInstance().getControlSystemItemFactory(path.getTypeId());
+
+		if (factory != null) {
+			result = factory.createControlSystemItem(path);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Creates a path for the specified control system item.
+	 * 
+	 * @param item
+	 *            the control system item
+	 * @return a path
+	 */
+	public static ControlSystemItemPath createControlSystemItemPath(
+			final IControlSystemItem item) {
+		assert item != null;
+		ControlSystemItemPath result = null;
+
+		AbstractControlSystemItemFactory<IControlSystemItem> factory = ControlSystemItemFactoriesRegistry
+				.getInstance().getControlSystemItemFactory(item.getTypeId());
+
+		if (factory != null) {
+			result = factory.getTransportablePath(item);
+		}
+
+		return result;
 	}
 }

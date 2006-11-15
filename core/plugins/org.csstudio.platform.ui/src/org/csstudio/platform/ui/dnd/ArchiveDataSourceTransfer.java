@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.ControlSystemItemFactory;
+import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -179,7 +179,7 @@ public final class ArchiveDataSourceTransfer extends ByteArrayTransfer {
 					readIn.read(bytes);
 					String name = new String(bytes);
 
-					received.add(ControlSystemItemFactory.createArchiveDataSource(url, key, name));
+					received.add(CentralItemFactory.createArchiveDataSource(url, key, name));
 				}
 				readIn.close();
 			} catch (IOException e) {

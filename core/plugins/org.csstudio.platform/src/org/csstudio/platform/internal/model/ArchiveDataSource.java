@@ -23,6 +23,7 @@ package org.csstudio.platform.internal.model;
 
 import org.csstudio.platform.model.AbstractControlSystemItem;
 import org.csstudio.platform.model.IArchiveDataSource;
+import org.csstudio.platform.util.ControlSystemItemPath;
 
 /**
  * Implementation of the {@link IArchiveDataSource} interface.
@@ -33,6 +34,7 @@ import org.csstudio.platform.model.IArchiveDataSource;
  */
 public class ArchiveDataSource extends AbstractControlSystemItem implements
 		IArchiveDataSource {
+
 	/** The URL of the archive data server. */
 	private String _url;
 

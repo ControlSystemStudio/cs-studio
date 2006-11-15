@@ -27,7 +27,7 @@ package org.csstudio.platform.model;
  * This interface is not intended to be implemented by clients. Instances of
  * ProcessVariables can be created via the
  * 
- * @see {@link ControlSystemItemFactory} factory.
+ * @see {@link CentralItemFactory} factory.
  * 
  * @author Kay Kasemir, Sven Wende
  */
