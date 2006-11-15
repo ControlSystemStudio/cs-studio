@@ -51,9 +51,11 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 	 */
 	public FilteredDropTargetAdapter(final Class[] acceptedTypes) {
 		// check filters first
-		for(Class clazz : acceptedTypes) {
-			if(!IControlSystemItem.class.isAssignableFrom(clazz)) {
-				throw new IllegalArgumentException("Drag&Drop Filter >>"+clazz.getName() +"<< is not derived from IControlSystemItem.");
+		for (Class clazz : acceptedTypes) {
+			if (!IControlSystemItem.class.isAssignableFrom(clazz)) {
+				throw new IllegalArgumentException("Drag&Drop Filter >>"
+						+ clazz.getName()
+						+ "<< is not derived from IControlSystemItem.");
 			}
 		}
 		_acceptedTypes = acceptedTypes;
@@ -62,7 +64,9 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 	/**
 	 * This method is called after a successfull drop operaton. It provides the
 	 * ability for subclasses to process the dropped control system items, that
-	 * passed filter.
+	 * passed the filter. Use the <i>instanceOf</i> operator, to distinguish
+	 * between the different types that are possible if you specified more than
+	 * one type in your filter.
 	 * 
 	 * @param items
 	 *            control system items, that were dropped
@@ -77,7 +81,8 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 	 *            the event
 	 * @return all items, that pass the filter
 	 */
-	private List<IControlSystemItem> getFilteredItems(final DropTargetEvent event) {
+	private List<IControlSystemItem> getFilteredItems(
+			final DropTargetEvent event) {
 		List<IControlSystemItem> filteredItems = new ArrayList<IControlSystemItem>();
 
 		// handle transfers of control system items
