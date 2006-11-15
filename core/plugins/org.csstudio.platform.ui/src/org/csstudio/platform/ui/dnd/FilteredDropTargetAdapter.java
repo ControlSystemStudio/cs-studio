@@ -3,7 +3,6 @@ package org.csstudio.platform.ui.dnd;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.model.AbstractControlSystemItem;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.internal.dnd.ControlSystemItemTransfer;
@@ -19,10 +18,10 @@ import org.eclipse.swt.dnd.TextTransfer;
  * This adapter class provides enhanced implementations for the methods
  * described by the <code>DropTargetListener</code> interface.
  * 
- * CSS clients, that use this adapter would benefit especially from the
+ * CSS clients that use this adapter will benefit especially from the
  * possibility to filter the resource types, that should be provided during a
  * DnD operation. An array of class types for resources, that are derived from
- * {@link AbstractControlSystemItem}, can be applied as filter.
+ * {@link IControlSystemItem} can be applied as filter.
  * 
  * <p>
  * Classes that wish to deal with <code>DropTargetEvent</code>s can extend
@@ -31,6 +30,7 @@ import org.eclipse.swt.dnd.TextTransfer;
  * 
  * @see DragSourceListener
  * @see DragSourceEvent
+ * @author Sven Wende, Stefan Hofer
  */
 public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 	/**

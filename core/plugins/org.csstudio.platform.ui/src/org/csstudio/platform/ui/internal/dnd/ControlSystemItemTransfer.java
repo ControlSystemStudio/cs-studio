@@ -38,7 +38,7 @@ import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
 /**
- * Drag-and-Drop transfer type for {@link IControlSystemItem}.
+ * Drag-and-Drop transfer type for {@link IControlSystemItem} and collections and arrays of {@link IControlSystemItem}.
  * <p>
  * This transfer type expects the data to transfer to implement the
  * <code>IControlSystemItem</code> interface, and the resulting data is
@@ -46,7 +46,7 @@ import org.eclipse.swt.dnd.TransferData;
  * <p>
  * Most of this implementation is from the javadoc for ByteArrayTransfer.
  * 
- * @author Kay Kasemir
+ * @author Sven Wende, Stefan Hofer
  */
 public final class ControlSystemItemTransfer extends ByteArrayTransfer {
 	/**
@@ -72,7 +72,9 @@ public final class ControlSystemItemTransfer extends ByteArrayTransfer {
 	private ControlSystemItemTransfer() {
 	}
 
-	/** @return The singleton instance of the ProcessVariableNameTransfer. */
+	/**
+	 *  @return The singleton instance of ControlSystemItemTransfer. 
+	 */
 	public static ControlSystemItemTransfer getInstance() {
 		if (_instance == null) {
 			_instance = new ControlSystemItemTransfer();
@@ -134,8 +136,6 @@ public final class ControlSystemItemTransfer extends ByteArrayTransfer {
 
 			try {
 				ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-				// write data to a byte array and then ask super to convert to
-				// pMedium
 				ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
 				objectOut.writeObject(paths.toArray());
 
