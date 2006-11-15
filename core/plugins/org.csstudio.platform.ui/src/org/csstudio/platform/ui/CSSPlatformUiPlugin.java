@@ -22,9 +22,11 @@
 package org.csstudio.platform.ui;
 
 import org.csstudio.platform.CSSPlatformPlugin;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
 
@@ -33,7 +35,7 @@ import org.osgi.framework.BundleContext;
  * 
  * @author Alexander Will
  */
-public class CSSPlatformUiPlugin extends AbstractUIPlugin {
+public class CSSPlatformUiPlugin extends AbstractCssUiPlugin {
 	/**
 	 * This _plugin's ID.
 	 */
@@ -45,27 +47,15 @@ public class CSSPlatformUiPlugin extends AbstractUIPlugin {
 	private static CSSPlatformUiPlugin _plugin;
 
 	/**
+	 * The preference store to access the css core preferences.
+	 */
+	private static IPreferenceStore _preferenceStore;
+
+	/**
 	 * Standard constructor.
 	 */
 	public CSSPlatformUiPlugin() {
 		_plugin = this;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void start(final BundleContext context) throws Exception {
-		super.start(context);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void stop(final BundleContext context) throws Exception {
-		_plugin = null;
-		super.stop(context);
 	}
 
 	/**
@@ -83,8 +73,49 @@ public class CSSPlatformUiPlugin extends AbstractUIPlugin {
 	 * @return The preference store of the css core plugin.
 	 */
 	public static IPreferenceStore getCorePreferenceStore() {
-		return new ScopedPreferenceStore(new InstanceScope(), CSSPlatformPlugin
-				.getDefault().getBundle().getSymbolicName());
+		if (_preferenceStore == null) {
+			_preferenceStore = new ScopedPreferenceStore(new InstanceScope(),
+					CSSPlatformPlugin.getDefault().getBundle()
+							.getSymbolicName());
 
+			_preferenceStore
+					.addPropertyChangeListener(new IPropertyChangeListener() {
+						public void propertyChange(
+								final PropertyChangeEvent event) {
+							CentralLogger.getInstance().info(this,
+									"Property [" + event.getProperty() //$NON-NLS-1$
+											+ "] changed from [" //$NON-NLS-1$
+											+ event.getOldValue() + "] to [" //$NON-NLS-1$
+											+ event.getNewValue() + "]"); //$NON-NLS-1$
+						}
+					});
+		}
+
+		return _preferenceStore;
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected final void doStart(final BundleContext context) throws Exception {
+		// do nothing specific
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void doStop(final BundleContext context) throws Exception {
+		// do nothing specific
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String getPluginId() {
+		return ID;
 	}
 }

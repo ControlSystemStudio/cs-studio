@@ -21,8 +21,6 @@
  */
 package org.csstudio.platform;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -42,10 +40,11 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	public static final String ID = "org.csstudio.platform"; //$NON-NLS-1$
 
 	/**
-	 * Extension point ID for the <b>controlSystemItemFactories</b> extension point.
+	 * Extension point ID for the <b>controlSystemItemFactories</b> extension
+	 * point.
 	 */
-	public static final String EXTPOINT_CONTROL_SYSTEM_ITEM_FACTORIES = ID + ".controlSystemItemFactories";
-
+	public static final String EXTPOINT_CONTROL_SYSTEM_ITEM_FACTORIES = ID
+			+ ".controlSystemItemFactories"; //$NON-NLS-1$
 
 	/**
 	 * Standard constructor.
@@ -59,10 +58,7 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 */
 	@Override
 	protected final void doStart(final BundleContext context) throws Exception {
-		 getLog()
-		 .log(
-		 new Status(IStatus.INFO, ID, 0,
-		 "CSS core plugin started", null)); //$NON-NLS-1$
+		// do nothing specific
 	}
 
 	/**
@@ -70,11 +66,7 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 */
 	@Override
 	protected final void doStop(final BundleContext context) throws Exception {
-		// generate a sample eclipse log message...
-		getLog()
-				.log(
-						new Status(IStatus.INFO, ID, 0,
-								"CSS core plugin stopped", null)); //$NON-NLS-1$
+		// do nothing specific
 	}
 
 	/**
@@ -84,6 +76,14 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 */
 	public static CSSPlatformPlugin getDefault() {
 		return _plugin;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String getPluginId() {
+		return ID;
 	}
 
 }

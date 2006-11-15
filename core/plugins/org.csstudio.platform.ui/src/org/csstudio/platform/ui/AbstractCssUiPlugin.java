@@ -19,21 +19,20 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform;
+package org.csstudio.platform.ui;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.CssLogListener;
 import org.eclipse.core.runtime.ILogListener;
-import org.eclipse.core.runtime.Plugin;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * Common super class for all CSS plugin classes.
+ * Common super class for all CSS UI plugin classes.
  * 
  * @author Alexander Will
- * 
  */
-public abstract class AbstractCssPlugin extends Plugin {
+public abstract class AbstractCssUiPlugin extends AbstractUIPlugin {
 	/**
 	 * Log listener that catches log events and redirects them to the central
 	 * log service.
@@ -43,7 +42,7 @@ public abstract class AbstractCssPlugin extends Plugin {
 	/**
 	 * Standard constructor.
 	 */
-	public AbstractCssPlugin() {
+	public AbstractCssUiPlugin() {
 		_logListener = new CssLogListener();
 	}
 
@@ -56,12 +55,12 @@ public abstract class AbstractCssPlugin extends Plugin {
 		getLog().addLogListener(_logListener);
 		doStart(context);
 		CentralLogger.getInstance().info(this,
-				"Plugin with ID " + getPluginId() + " started"); //$NON-NLS-1$ //$NON-NLS-2$	
+				"Plugin with ID " + getPluginId() + " started"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
 	 * Hook method that is called from
-	 * {@link AbstractCssPlugin#start(BundleContext)}.
+	 * {@link AbstractCssUiPlugin#start(BundleContext)}.
 	 * 
 	 * @param context
 	 *            the bundle context for this plug-in
@@ -80,13 +79,13 @@ public abstract class AbstractCssPlugin extends Plugin {
 		savePluginPreferences();
 		doStop(context);
 		CentralLogger.getInstance().info(this,
-				"Plugin with ID " + getPluginId() + " stopped"); //$NON-NLS-1$ //$NON-NLS-2$				
+				"Plugin with ID " + getPluginId() + " stopped"); //$NON-NLS-1$ //$NON-NLS-2$			
 		getLog().removeLogListener(_logListener);
 	}
 
 	/**
 	 * Hook method that is called from
-	 * {@link AbstractCssPlugin#stop(BundleContext)}.
+	 * {@link AbstractCssUiPlugin#stop(BundleContext)}.
 	 * 
 	 * @param context
 	 *            the bundle context for this plug-in
