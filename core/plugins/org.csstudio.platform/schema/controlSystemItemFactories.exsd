@@ -6,7 +6,9 @@
          <meta.schema plugin="org.csstudio.platform" id="controlSystemItemFactories" name="controlSystemItemFactories"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         This extension point allows plugins to contribute a control system item factory. A control system item factory, is responsible for the creation of a items of a certain
+type. For each control system item, that is derived from &lt;b&gt;AbstractControlSystemItem&lt;/b&gt; such a factory should be contributed, to ensure the complete integration of that
+item into the workbench.
       </documentation>
    </annotation>
 
@@ -52,14 +54,14 @@
          <attribute name="typeId" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  the type identification of the control system items this factory produces
                </documentation>
             </annotation>
          </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  the name of the class
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn="org.csstudio.platform.model.AbstractControlSystemItemFactory"/>
@@ -83,7 +85,14 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;p&gt;The following example contributes a factory for IProcessVariables. The provided typeId corresponds with the type identification that
+is returned by the getTypeId() method of the IControlSystemItem interface.&lt;/p&gt;
+
+&lt;pre&gt;
+&lt;extension point=&quot;org.csstudio.platform.controlSystemItemFactories&quot;&gt;
+	&lt;controlSystemItemFactory class=&quot;org.csstudio.platform.internal.model.ProcessVariableFactory&quot; typeId=&quot;css:processVariable&quot;/&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
@@ -92,7 +101,11 @@
          <meta.section type="apiInfo"/>
       </appInfo>
       <documentation>
-         [Enter API information here.]
+         &lt;p&gt;Do understand the whole story, a look into the following classes and interfaces is useful&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;IControlSystemItem&lt;/li&gt;
+	&lt;li&gt;AbstractControlSystemItemFactory&lt;/li&gt;
+&lt;/ul&gt;
       </documentation>
    </annotation>
 
@@ -101,7 +114,24 @@
          <meta.section type="implementation"/>
       </appInfo>
       <documentation>
-         [Enter information about supplied implementation of this extension point.]
+         &lt;p&gt;A simple, but fully functional implementation of the factory might look like this&lt;/p&gt;
+
+&lt;pre&gt;
+public final class ProcessVariableFactory extends
+		AbstractControlSystemItemFactory&lt;IProcessVariable&gt; {
+
+    @Override
+    protected String createStringRepresentationFromItem(final IProcessVariable item) {
+         return item.getName();
+    }
+
+    @Override
+    protected IProcessVariable createItemFromStringRepresentation(final String s) {
+        IProcessVariable result = new ProcessVariable(s);
+        return result;
+    }
+}
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
