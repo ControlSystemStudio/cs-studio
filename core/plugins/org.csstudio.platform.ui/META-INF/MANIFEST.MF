@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.update.ui,
  org.junit4
 Bundle-Vendor: Desy
-Export-Package: org.csstudio.platform.ui.dialogs,
+Export-Package: org.csstudio.platform.ui,
+ org.csstudio.platform.ui.dialogs,
  org.csstudio.platform.ui.dnd,
  org.csstudio.platform.ui.workbench
 Bundle-Activator: org.csstudio.platform.ui.CSSPlatformUiPlugin

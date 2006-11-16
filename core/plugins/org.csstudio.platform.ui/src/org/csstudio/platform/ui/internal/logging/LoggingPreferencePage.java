@@ -24,7 +24,7 @@ package org.csstudio.platform.ui.internal.logging;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.swt.SWT;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
 
 /**
  * A preference page for the central css log service.
@@ -36,7 +36,7 @@ public class LoggingPreferencePage extends AbstractAppenderPreferencePage {
 	 * Default constructor.
 	 */
 	public LoggingPreferencePage() {
-		super(SWT.NULL);
+		super(FieldEditorPreferencePage.GRID);
 		setMessage(Messages.getString("LoggingPreferencePage.PAGE_TITLE")); //$NON-NLS-1$
 	}
 

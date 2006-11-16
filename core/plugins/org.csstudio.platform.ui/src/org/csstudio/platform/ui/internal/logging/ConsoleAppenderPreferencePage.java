@@ -24,9 +24,9 @@ package org.csstudio.platform.ui.internal.logging;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.internal.localization.Messages;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -41,7 +41,7 @@ public class ConsoleAppenderPreferencePage extends
 	 * Default constructor.
 	 */
 	public ConsoleAppenderPreferencePage() {
-		super(SWT.NULL);
+		super(FieldEditorPreferencePage.GRID);
 		setMessage(Messages.getString("ConsoleAppenderPreferencePage.PAGE_TITLE")); //$NON-NLS-1$
 	}
 

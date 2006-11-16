@@ -23,9 +23,9 @@ package org.csstudio.platform.ui.internal.logging;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.localization.Messages;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.swt.SWT;
 
 /**
  * A preference page for the css JMS log appender.
@@ -38,7 +38,7 @@ public class JmsAppenderPreferencePage extends AbstractAppenderPreferencePage {
 	 * Default constructor.
 	 */
 	public JmsAppenderPreferencePage() {
-		super(SWT.NULL);
+		super(FieldEditorPreferencePage.GRID);
 		setMessage(Messages.getString("JmsAppenderPreferencePage.PAGE_TITLE")); //$NON-NLS-1$
 	}
 
