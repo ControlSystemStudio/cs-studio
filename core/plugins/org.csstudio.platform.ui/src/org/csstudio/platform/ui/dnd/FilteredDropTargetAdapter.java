@@ -7,6 +7,7 @@ import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.internal.dnd.ControlSystemItemTransfer;
 import org.csstudio.platform.util.ControlSystemItemPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
@@ -77,13 +78,35 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 	 * Gets all items from the drop target event, that pass the type class
 	 * filter.
 	 * 
-	 * @param event
-	 *            the event
+	 * @param providedItems
+	 *            the items, that are about to be dropped
 	 * @return all items, that pass the filter
 	 */
 	private List<IControlSystemItem> getFilteredItems(
-			final DropTargetEvent event) {
+			final List<IControlSystemItem> providedItems) {
+
 		List<IControlSystemItem> filteredItems = new ArrayList<IControlSystemItem>();
+
+		// handle transfers of control system items
+
+		for (IControlSystemItem item : providedItems) {
+			for (Class clazz : _acceptedTypes) {
+				if (clazz.isAssignableFrom(item.getClass())) {
+					filteredItems.add(item);
+				}
+			}
+		}
+
+		return filteredItems;
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void drop(final DropTargetEvent event) {
+		List<IControlSystemItem> providedItems = new ArrayList<IControlSystemItem>();
 
 		// handle transfers of control system items
 		if (ControlSystemItemTransfer.getInstance().isSupportedType(
@@ -92,10 +115,8 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 					.getInstance().nativeToJava(event.currentDataType);
 
 			for (IControlSystemItem item : items) {
-				for (Class clazz : _acceptedTypes) {
-					if (clazz.isAssignableFrom(item.getClass())) {
-						filteredItems.add(item);
-					}
+				if (item != null) {
+					providedItems.add(item);
 				}
 			}
 		}
@@ -115,26 +136,13 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 						.createControlSystemItem(path);
 
 				if (item != null) {
-					for (Class clazz : _acceptedTypes) {
-						if (clazz.isAssignableFrom(item.getClass())) {
-							filteredItems.add(item);
-						}
-					}
+					providedItems.add(item);
 				}
 			}
 
 		}
 
-		return filteredItems;
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void drop(final DropTargetEvent event) {
-		List<IControlSystemItem> filteredItems = getFilteredItems(event);
+		List<IControlSystemItem> filteredItems = getFilteredItems(providedItems);
 		doDrop(filteredItems);
 	}
 
@@ -143,10 +151,81 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 	 */
 	@Override
 	public void dragEnter(final DropTargetEvent event) {
-		List<IControlSystemItem> filteredItems = getFilteredItems(event);
+		List<IControlSystemItem> providedItems = new ArrayList<IControlSystemItem>();
 
-		if (filteredItems.size() == 0) {
-			event.detail = DND.DROP_NONE;
+		/*
+		 * To be able to provide the right drop feedback, handling needs to be
+		 * platform specific here.
+		 * 
+		 * For Windows operating systems, the .data can be accessed early.
+		 * 
+		 * For other operating systems (Mac, Linux) a workarround is applied,
+		 * which works on the latest local selection. This does work within the
+		 * same Eclipse instance.
+		 */
+		if (!Platform.getOS().equals(Platform.OS_WIN32)) {
+			if (ControlSystemItemTransfer.getInstance().isSupportedType(
+					event.currentDataType)) {
+				// get the current items that are about to be dropped as local
+				// objects
+				List<IControlSystemItem> items = ControlSystemItemTransfer
+						.getInstance().getSelectedItems();
+
+				if (items == null) {
+					// this should happen only in a few cases -> in this case,
+					// we do nothing about the dropped data and can only show a
+					// "Ok" icon for the current transfer
+					providedItems = null;
+				} else {
+					for (IControlSystemItem item : items) {
+						if (item != null) {
+							providedItems.add(item);
+						}
+					}
+				}
+			}
+		} else {
+			// on Windows systems the data can be accessed early
+			if (ControlSystemItemTransfer.getInstance().isSupportedType(
+					event.currentDataType)) {
+				IControlSystemItem[] items = (IControlSystemItem[]) ControlSystemItemTransfer
+						.getInstance().nativeToJava(event.currentDataType);
+
+				if (items != null) {
+					for (IControlSystemItem item : items) {
+						if (item != null) {
+							providedItems.add(item);
+						}
+					}
+				}
+			} else if (TextTransfer.getInstance().isSupportedType(
+					event.currentDataType)) {
+				String tmp = (String) TextTransfer.getInstance().nativeToJava(
+						event.currentDataType);
+
+				String[] rows = tmp.split("\n");
+
+				for (String row : rows) {
+					ControlSystemItemPath path = ControlSystemItemPath
+							.createFromPortableString(row);
+
+					IControlSystemItem item = CentralItemFactory
+							.createControlSystemItem(path);
+
+					if (item != null) {
+						providedItems.add(item);
+					}
+				}
+			}
+		}
+
+		if (providedItems != null) {
+			List<IControlSystemItem> filteredItems = getFilteredItems(providedItems);
+
+			if (filteredItems.size() == 0) {
+				event.detail = DND.DROP_NONE;
+			}
 		}
 	}
+
 }

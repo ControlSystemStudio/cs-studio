@@ -16,8 +16,8 @@ import org.eclipse.swt.dnd.TextTransfer;
  * described by the <code>DragSourceListener</code> interface.
  * 
  * CSS clients, that use this adapter will benefit especially from the
- * possibility to filter the resource types that should be provided during a
- * DnD operation. An array of class types for resources that are derived from
+ * possibility to filter the resource types that should be provided during a DnD
+ * operation. An array of class types for resources that are derived from
  * {@link IControlSystemItem} can be applied as filter.
  * 
  * <p>
@@ -30,11 +30,21 @@ import org.eclipse.swt.dnd.TextTransfer;
  * @author Sven Wende, Stefan Hofer
  */
 public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
+
 	/**
 	 * Contains all class types of resources, that will be provided during a DnD
 	 * operation.
 	 */
 	private Class[] _acceptedTypes;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void dragStart(DragSourceEvent event) {
+		super.dragStart(event);
+		ControlSystemItemTransfer.getInstance().setSelectedItems(getFilteredSelection());
+	}
 
 	/**
 	 * Constructs a drag source adapter, which only provides items during DnD,
@@ -48,17 +58,19 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 	 */
 	public FilteredDragSourceAdapter(final Class[] acceptedTypes) {
 		// check filters first
-		for(Class clazz : acceptedTypes) {
-			if(!IControlSystemItem.class.isAssignableFrom(clazz)) {
-				throw new IllegalArgumentException("Drag&Drop Filter >>"+clazz.getName() +"<< is not derived from IControlSystemItem.");
+		for (Class clazz : acceptedTypes) {
+			if (!IControlSystemItem.class.isAssignableFrom(clazz)) {
+				throw new IllegalArgumentException("Drag&Drop Filter >>"
+						+ clazz.getName()
+						+ "<< is not derived from IControlSystemItem.");
 			}
 		}
 		_acceptedTypes = acceptedTypes;
 	}
 
 	/**
-	 * Subclasses must implement this method and should return the
-	 * currently selected objects, e.g. the current selection of a TreeViewer.
+	 * Subclasses must implement this method and should return the currently
+	 * selected objects, e.g. the current selection of a TreeViewer.
 	 * 
 	 * @return the currently selected objects
 	 */

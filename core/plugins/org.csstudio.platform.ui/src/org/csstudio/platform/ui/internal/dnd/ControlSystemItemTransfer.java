@@ -28,17 +28,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.util.ControlSystemItemPath;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
 /**
- * Drag-and-Drop transfer type for {@link IControlSystemItem} and collections and arrays of {@link IControlSystemItem}.
+ * Drag-and-Drop transfer type for {@link IControlSystemItem} and collections
+ * and arrays of {@link IControlSystemItem}.
  * <p>
  * This transfer type expects the data to transfer to implement the
  * <code>IControlSystemItem</code> interface, and the resulting data is
@@ -46,9 +49,25 @@ import org.eclipse.swt.dnd.TransferData;
  * <p>
  * Most of this implementation is from the javadoc for ByteArrayTransfer.
  * 
+ * The handler contains a workarround for Non-Windows operating systems. The
+ * latest selection is made available directly for use in the
+ * DropTargetListener. dropEnter method. The DropTargetEvent passed to
+ * dropAccept does not contain the drop data. The selection may be used for
+ * validation purposes so that the drop can be aborted if appropriate.
+ * 
+ * See also {@link LocalSelectionTransfer} which uses the same prinicple.
+ * 
+ * This class is not intended to be subclassed.
+ * 
  * @author Sven Wende, Stefan Hofer
  */
 public final class ControlSystemItemTransfer extends ByteArrayTransfer {
+	/**
+	 * The time period in which a local selection expires. Needed to handle
+	 * cases, where data is dragged between different JVMs.
+	 */
+	private static final int SELECTION_EXPIRATION_PERIOD = 10000;
+
 	/**
 	 * The type name.
 	 */
@@ -65,15 +84,26 @@ public final class ControlSystemItemTransfer extends ByteArrayTransfer {
 	private static ControlSystemItemTransfer _instance;
 
 	/**
+	 * The items that were selected during the latest DnD operation.
+	 */
+	private List<IControlSystemItem> _selectedItems;
+
+	/**
+	 * The event time of the latest selection.
+	 */
+	private long _selectionSetTime;
+
+	/**
 	 * Hidden contructor.
 	 * 
 	 * @see #getInstance()
 	 */
 	private ControlSystemItemTransfer() {
+		_selectionSetTime = 0;
 	}
 
 	/**
-	 *  @return The singleton instance of ControlSystemItemTransfer. 
+	 * @return The singleton instance of ControlSystemItemTransfer.
 	 */
 	public static ControlSystemItemTransfer getInstance() {
 		if (_instance == null) {
@@ -128,8 +158,7 @@ public final class ControlSystemItemTransfer extends ByteArrayTransfer {
 						IControlSystemItem item = (IControlSystemItem) o;
 						ControlSystemItemPath x = CentralItemFactory
 								.createControlSystemItemPath(item);
-						paths
-								.add(x);
+						paths.add(x);
 					}
 				}
 			}
@@ -186,5 +215,29 @@ public final class ControlSystemItemTransfer extends ByteArrayTransfer {
 			result = received.toArray(new IControlSystemItem[received.size()]);
 		}
 		return result;
+	}
+
+	/**
+	 * @return Gets the transfer data for local use.
+	 */
+	public List<IControlSystemItem> getSelectedItems() {
+		long dist = new Date().getTime() - _selectionSetTime;
+
+		if (dist > SELECTION_EXPIRATION_PERIOD) {
+			return null;
+		} else {
+			return _selectedItems;
+		}
+	}
+
+	/**
+	 * Sets the transfer data for local use.
+	 * 
+	 * @param selectedItems
+	 *            the transfer data
+	 */
+	public void setSelectedItems(final List<IControlSystemItem> selectedItems) {
+		_selectedItems = selectedItems;
+		_selectionSetTime = new Date().getTime();
 	}
 }

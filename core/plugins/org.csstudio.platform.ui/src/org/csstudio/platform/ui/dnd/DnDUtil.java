@@ -45,7 +45,7 @@ public final class DnDUtil {
 
 		dropTarget.setTransfer(new Transfer[] {
 				ControlSystemItemTransfer.getInstance(),
-				TextTransfer.getInstance() });
+				TextTransfer.getInstance()});
 
 		dropTarget.addDropListener(dropTargetAdapter);
 	}
