@@ -21,8 +21,8 @@
  */
 package org.csstudio.platform;
 
+import org.csstudio.platform.internal.logging.CssLogListener;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.logging.CssLogListener;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
