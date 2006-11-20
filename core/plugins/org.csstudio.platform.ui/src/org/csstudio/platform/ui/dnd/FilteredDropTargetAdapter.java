@@ -174,7 +174,7 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 				if (items == null) {
 					// this should happen only in a few cases -> in this case,
 					// we do nothing about the dropped data and can only show a
-					// "Ok" icon for the current transfer
+					// "OK" icon for the current transfer
 					providedItems = null;
 				} else {
 					for (IControlSystemItem item : items) {
@@ -183,6 +183,11 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 						}
 					}
 				}
+			} else {
+				// Since we don't know anything about the dragged data, we will
+				// not change the DND feedback icon. Per default, an "OK" icon
+				// will be shown.
+				providedItems = null;
 			}
 		} else {
 			// on Windows systems the data can be accessed early
