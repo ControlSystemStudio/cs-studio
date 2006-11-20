@@ -21,7 +21,6 @@
  */
 package org.csstudio.platform.model;
 
-import org.csstudio.platform.util.ControlSystemItemPath;
 import org.eclipse.core.runtime.IAdaptable;
 
 /**

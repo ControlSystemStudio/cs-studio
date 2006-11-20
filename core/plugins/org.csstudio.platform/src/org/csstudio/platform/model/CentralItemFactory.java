@@ -22,8 +22,8 @@
 package org.csstudio.platform.model;
 
 import org.csstudio.platform.internal.model.ArchiveDataSource;
-import org.csstudio.platform.internal.model.ProcessVariable;
 import org.csstudio.platform.internal.model.ControlSystemItemFactoriesRegistry;
+import org.csstudio.platform.internal.model.ProcessVariable;
 import org.csstudio.platform.util.ControlSystemItemPath;
 
 /**

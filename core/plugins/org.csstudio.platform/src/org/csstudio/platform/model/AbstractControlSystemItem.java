@@ -26,15 +26,15 @@ import org.eclipse.core.runtime.PlatformObject;
 /**
  * An abstract superclass for CSS specific model items. The preferred way to
  * introduce new model items to the platform is to inherit from this class.
- *  
+ * 
  * Central control system items (e.g. ProcessVariables) are already defined and
  * can be created using {@link CentralItemFactory}.
  * 
  * @author Sven Wende
  * 
  */
-public abstract class AbstractControlSystemItem extends PlatformObject implements
-		IControlSystemItem {
+public abstract class AbstractControlSystemItem extends PlatformObject
+		implements IControlSystemItem {
 	/**
 	 * The name of the control system item.
 	 */
@@ -50,7 +50,7 @@ public abstract class AbstractControlSystemItem extends PlatformObject implement
 		assert name != null;
 		_name = name;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -65,6 +65,4 @@ public abstract class AbstractControlSystemItem extends PlatformObject implement
 	public String toString() {
 		return _name;
 	}
-	
-
 }

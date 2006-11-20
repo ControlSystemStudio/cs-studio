@@ -51,5 +51,4 @@ public class ProcessVariable extends AbstractControlSystemItem implements
 	public final String getTypeId() {
 		return TYPE_ID;
 	}
-
 }
