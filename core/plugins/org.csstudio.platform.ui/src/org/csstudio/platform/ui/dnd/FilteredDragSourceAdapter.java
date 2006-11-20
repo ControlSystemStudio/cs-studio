@@ -43,7 +43,7 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 	public void dragStart(final DragSourceEvent event) {
 		super.dragStart(event);
 		ControlSystemItemTransfer.getInstance().setSelectedItems(
-				getFilteredSelection());
+				getFilteredSelection(getCurrentSelection()));
 	}
 
 	/**
@@ -77,13 +77,14 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 	protected abstract List getCurrentSelection();
 
 	/**
+	 * @param fullSelection
+	 *            A list with the complete selection.
 	 * @return returns the currently selected items, that pass the class types
 	 *         filter
 	 */
-	private List<IControlSystemItem> getFilteredSelection() {
+	private List<IControlSystemItem> getFilteredSelection(
+			final List fullSelection) {
 		List<IControlSystemItem> filteredSelection = new ArrayList<IControlSystemItem>();
-
-		List fullSelection = getCurrentSelection();
 
 		for (Object item : fullSelection) {
 			for (Class clazz : _acceptedTypes) {
@@ -102,9 +103,10 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 	@Override
 	public void dragSetData(final DragSourceEvent event) {
 		List<IControlSystemItem> items = null;
-
-		if (getCurrentSelection() != null) {
-			items = getFilteredSelection();
+		List currentSelection = getCurrentSelection();
+		
+		if ((currentSelection != null) && (currentSelection.size() > 0)) {
+			items = getFilteredSelection(currentSelection);
 		} else {
 			items = ControlSystemItemTransfer.getInstance().getSelectedItems();
 		}
