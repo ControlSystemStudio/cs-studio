@@ -8,7 +8,6 @@ import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.internal.dnd.ControlSystemItemTransfer;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.TextTransfer;
 
 /**
@@ -41,9 +40,10 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void dragStart(DragSourceEvent event) {
+	public void dragStart(final DragSourceEvent event) {
 		super.dragStart(event);
-		ControlSystemItemTransfer.getInstance().setSelectedItems(getFilteredSelection());
+		ControlSystemItemTransfer.getInstance().setSelectedItems(
+				getFilteredSelection());
 	}
 
 	/**
@@ -101,7 +101,13 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 	 */
 	@Override
 	public void dragSetData(final DragSourceEvent event) {
-		List<IControlSystemItem> items = ControlSystemItemTransfer.getInstance().getSelectedItems();
+		List<IControlSystemItem> items = null;
+
+		if (getCurrentSelection() != null) {
+			items = getFilteredSelection();
+		} else {
+			items = ControlSystemItemTransfer.getInstance().getSelectedItems();
+		}
 
 		if (ControlSystemItemTransfer.getInstance().isSupportedType(
 				event.dataType)) {
