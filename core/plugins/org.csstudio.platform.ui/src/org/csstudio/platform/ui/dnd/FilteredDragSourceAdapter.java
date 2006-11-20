@@ -101,7 +101,7 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 	 */
 	@Override
 	public void dragSetData(final DragSourceEvent event) {
-		List<IControlSystemItem> items = getFilteredSelection();
+		List<IControlSystemItem> items = ControlSystemItemTransfer.getInstance().getSelectedItems();
 
 		if (ControlSystemItemTransfer.getInstance().isSupportedType(
 				event.dataType)) {
