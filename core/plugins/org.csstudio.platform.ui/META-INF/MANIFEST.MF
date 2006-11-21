@@ -17,6 +17,7 @@ Bundle-Vendor: Desy
 Export-Package: org.csstudio.platform.ui,
  org.csstudio.platform.ui.dialogs,
  org.csstudio.platform.ui.dnd,
+ org.csstudio.platform.ui.util,
  org.csstudio.platform.ui.workbench
 Bundle-Activator: org.csstudio.platform.ui.CSSPlatformUiPlugin
 Eclipse-LazyStart: true
