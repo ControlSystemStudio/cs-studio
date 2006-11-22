@@ -8,17 +8,35 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
 /**
- * This class provides several helper methods for SWT layout tasks.
+ * This class provides som useful static convinience methods for standard SWT
+ * layout tasks.
  * 
- * @author swende
+ * @author Sven Wende
  * 
  */
-public class LayoutUtil {
+public final class LayoutUtil {
+	/**
+	 * Private constructor to prevent instantiation.
+	 */
 	private LayoutUtil() {
 	}
 
-	public static GridLayout createGridLayout(final int columns, final int margin,
-			final int verticalSpacing, final int horizontalSpacing) {
+	/**
+	 * Creates a GridLayout.
+	 * 
+	 * @param columns
+	 *            number of columns
+	 * @param margin
+	 *            margin width
+	 * @param verticalSpacing
+	 *            vertical spacing
+	 * @param horizontalSpacing
+	 *            horizontal spacing
+	 * @return a GridLayout
+	 */
+	public static GridLayout createGridLayout(final int columns,
+			final int margin, final int verticalSpacing,
+			final int horizontalSpacing) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = columns;
 		layout.marginTop = 0;
@@ -33,9 +51,29 @@ public class LayoutUtil {
 		return layout;
 	}
 
-	public static GridLayout createGridLayout(final int columns, final int leftMargin,
-			final int rightMargin, final int topMargin, final int bottomMargin,
-			final int verticalSpacing, final int horizontalSpacing) {
+	/**
+	 * Creates a GridLayout.
+	 * 
+	 * @param columns
+	 *            number of columns
+	 * @param leftMargin
+	 *            left margin width
+	 * @param rightMargin
+	 *            right margin width
+	 * @param topMargin
+	 *            top margin width
+	 * @param bottomMargin
+	 *            bottom margin width
+	 * @param verticalSpacing
+	 *            vertical spacing
+	 * @param horizontalSpacing
+	 *            horizontal spacing
+	 * @return a GridLayout
+	 */
+	public static GridLayout createGridLayout(final int columns,
+			final int leftMargin, final int rightMargin, final int topMargin,
+			final int bottomMargin, final int verticalSpacing,
+			final int horizontalSpacing) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = columns;
 		layout.marginTop = topMargin;
@@ -50,6 +88,12 @@ public class LayoutUtil {
 		return layout;
 	}
 
+	/**
+	 * Creates a GridData, which will fill the current cell horizontally and
+	 * vertically.
+	 * 
+	 * @return a GridData
+	 */
 	public static GridData createGridData() {
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = false;
@@ -60,7 +104,18 @@ public class LayoutUtil {
 		return gd;
 	}
 
-	public static GridData createGridData(final int height, final int width) {
+	/**
+	 * Creates a GridData, which will fill the current cell horizontally and
+	 * grab the specified width and height.
+	 * 
+	 * @param width
+	 *            width hint
+	 * @param height
+	 *            height hint
+	 * 
+	 * @return a GridData
+	 */
+	public static GridData createGridData(final int width, final int height) {
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = false;
 		gd.grabExcessVerticalSpace = false;
@@ -73,7 +128,15 @@ public class LayoutUtil {
 
 		return gd;
 	}
-	
+
+	/**
+	 * Creates a GridData, which will fill the current cell horizontally and
+	 * grab the specified width.
+	 * 
+	 * @param width
+	 *            width hint
+	 * @return a GridData
+	 */
 	public static GridData createGridData(final int width) {
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = false;
@@ -86,6 +149,12 @@ public class LayoutUtil {
 		return gd;
 	}
 
+	/**
+	 * Creates a GridData, which will fill the current cell horizontally and
+	 * fully grab the available space.
+	 * 
+	 * @return a GridData
+	 */
 	public static GridData createGridDataForFillingCell() {
 		GridData gd = new GridData();
 		gd.verticalAlignment = 1;
@@ -98,7 +167,17 @@ public class LayoutUtil {
 		return gd;
 	}
 
-	public static GridData createGridDataForFillingCell(final int height, final int width) {
+	/**
+	 * Creates a GridData, which will grab the specified space.
+	 * 
+	 * @param width
+	 *            preferred width
+	 * @param height
+	 *            preferred height
+	 * @return a GridData
+	 */
+	public static GridData createGridDataForFillingCell(final int width,
+			final int height) {
 		GridData gd = createGridDataForFillingCell();
 		gd.minimumHeight = height;
 		gd.minimumWidth = width;
@@ -108,6 +187,11 @@ public class LayoutUtil {
 		return gd;
 	}
 
+	/**
+	 * Creates a GridData, which will grab the available horizontal space.
+	 * 
+	 * @return a GridData
+	 */
 	public static GridData createGridDataForHorizontalFillingCell() {
 		GridData gd = createGridDataForFillingCell();
 
@@ -117,6 +201,11 @@ public class LayoutUtil {
 		return gd;
 	}
 
+	/**
+	 * Creates a GridData, which will grab the available vertical space.
+	 * 
+	 * @return a GridData
+	 */
 	public static GridData createGridDataForVerticalFillingCell() {
 		GridData gd = createGridDataForFillingCell();
 
@@ -126,7 +215,17 @@ public class LayoutUtil {
 		return gd;
 	}
 
-	public static GridData createGridDataForHorizontalFillingCell(final int height) {
+	/**
+	 * Creates a GridData, which will grab the available horizontal space and
+	 * use the specified heigth.
+	 * 
+	 * @param height
+	 *            the preferred height
+	 * 
+	 * @return a GridData
+	 */
+	public static GridData createGridDataForHorizontalFillingCell(
+			final int height) {
 		GridData gd = createGridDataForFillingCell();
 
 		gd.grabExcessVerticalSpace = false;
@@ -138,6 +237,15 @@ public class LayoutUtil {
 		return gd;
 	}
 
+	/**
+	 * Creates a GridData, which will grab the available vertical space and use
+	 * the specified width.
+	 * 
+	 * @param width
+	 *            the preferred width
+	 * 
+	 * @return a GridData
+	 */
 	public static GridData createGridDataForVerticalFillingCell(final int width) {
 		GridData gd = createGridDataForFillingCell();
 
@@ -150,7 +258,17 @@ public class LayoutUtil {
 		return gd;
 	}
 
-	public static Group createGroupWithFillLayout(final Composite parent, final String text) {
+	/**
+	 * Creates a simple group with a FillLayout.
+	 * 
+	 * @param parent
+	 *            the parent composite
+	 * @param text
+	 *            a group description
+	 * @return a Group
+	 */
+	public static Group createGroupWithFillLayout(final Composite parent,
+			final String text) {
 		Group group = new Group(parent, SWT.NONE);
 		group.setText(text);
 		FillLayout layout = new FillLayout();
@@ -160,7 +278,5 @@ public class LayoutUtil {
 		group.setLayoutData(createGridDataForFillingCell());
 		return group;
 	}
-
-	
 
 }

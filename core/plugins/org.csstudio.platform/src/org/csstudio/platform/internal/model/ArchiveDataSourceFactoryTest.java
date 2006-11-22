@@ -3,8 +3,9 @@
  */
 package org.csstudio.platform.internal.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.junit.Before;
