@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/CSS Help.dwt" codeOutsideHTMLIsLocked="false" -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<link rel="stylesheet" type="text/css" href="../css/css_style.css">
+<link rel="stylesheet" type="text/css" href="../../css/css_style.css">
 <!-- InstanceBeginEditable name="doctitle" -->
-<title>JMS Appender Settings</title>
+<title>File Appender Settings</title>
 <!-- InstanceEndEditable -->
 <!-- InstanceBeginEditable name="head" -->
 <!-- InstanceEndEditable -->
@@ -15,12 +15,12 @@
         <td width="82%">
           	<h1 align="left">
 		  	<!-- InstanceBeginEditable name="chapterTitle" -->
-		  	JMS Appender Settings
+		  	File Appender Settings
 		  	<!-- InstanceEndEditable -->
 		  </h1>
 		</td>
         <td width="18%">
-			<img src="../images/css128x128.gif" width="128" height="128" border="0" align="right" />
+			<img src="../../images/css128x128.gif" width="128" height="128" border="0" align="right" />
 		</td>
       </tr>
     </table>
@@ -28,7 +28,7 @@
 	
 	<!-- The editable region stars here! -->
 	<!-- InstanceBeginEditable name="body" -->
-	<p><img src="../images/appenderjms.png" width="580" height="520" /></p>
+	<p><img src="../../images/appenderfile.png" width="580" height="520" /></p>
 	<p>&nbsp;</p>
 	<table border="1" cellspacing="0" cellpadding="0" width="600">
       <tr>
@@ -38,7 +38,7 @@
       </tr>
       <tr>
         <td width="100" valign="top"><p>Log level<strong></strong></p></td>
-        <td width="400" valign="top"><p>The log level defines the     threshold for log messages that are propagated over JMS. Only log messages     with at least the chosen log level are propageted. The possible log levels     are: INFO, DEBUG, WARNING, ERROR, FATAL.</p></td>
+        <td width="400" valign="top"><p>The log level defines the     threshold for log messages that are written to the file system. Only log     messages with at least the chosen log level are written. The possible log     levels are: INFO, DEBUG, WARNING, ERROR, FATAL.</p></td>
         <td width="100" valign="top"><p>INFO<strong></strong></p></td>
       </tr>
       <tr>
@@ -47,27 +47,16 @@
         <td width="100" valign="top"><p>%d{ISO8601} %-5p [%t] %c: %m%n</p></td>
       </tr>
       <tr>
-        <td width="100" valign="top"><p>URL</p></td>
-        <td width="400" valign="top"><p>The URL of the target JMS server.</p></td>
-        <td width="100" valign="top"><p>rmi://localhost:1099</p></td>
+        <td width="100" valign="top"><p>Log file</p></td>
+        <td width="400" valign="top"><p>The target file the log messages     are written to. This path is relative to the CSS installation directory.</p></td>
+        <td width="100" valign="top"><p>logs/event.log</p></td>
       </tr>
       <tr>
-        <td width="100" valign="top"><p>Topic</p></td>
-        <td width="400" valign="top"><p>The JMS topic on the target JMS     server.</p></td>
-        <td width="100" valign="top"><p>topic1</p></td>
-      </tr>
-      <tr>
-        <td width="100" valign="top"><p>User</p></td>
-        <td width="400" valign="top"><p>The user name for the target JMS     server.</p></td>
-        <td width="100" valign="top"><p>blank</p></td>
-      </tr>
-      <tr>
-        <td width="100" valign="top"><p>Password</p></td>
-        <td width="400" valign="top"><p>The password for the target JMS     server.</p></td>
-        <td width="100" valign="top"><p>blank</p></td>
+        <td width="100" valign="top"><p>Backup index</p></td>
+        <td width="400" valign="top"><p>If the log file exceeds the size     of 500KB, a new log file is created and the old one is archived by appending     an running backup index. This options defines how many backup files should     be kept.</p></td>
+        <td width="100" valign="top"><p>1</p></td>
       </tr>
     </table>
-	<p></p>
 	<!-- InstanceEndEditable -->	
 </body>
 <!-- InstanceEnd --></html>

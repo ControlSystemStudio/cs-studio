@@ -24,7 +24,6 @@ package org.csstudio.platform.ui.internal.logging;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -57,7 +56,7 @@ public class FileAppenderPreferencePage extends AbstractAppenderPreferencePage {
 		addField(new StringFieldEditor(CentralLogger.PROP_LOG4J_FILE_PATTERN,
 				Messages.getString("FileAppenderPreferencePage.PATTERN"), getFieldEditorParent())); //$NON-NLS-1$
 
-		addField(new FileFieldEditor(
+		addField(new StringFieldEditor(
 				CentralLogger.PROP_LOG4J_FILE_DESTINATION, Messages.getString("FileAppenderPreferencePage.LOG_FILE"), //$NON-NLS-1$
 				getFieldEditorParent()));
 

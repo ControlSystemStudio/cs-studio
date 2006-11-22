@@ -86,7 +86,7 @@ H1,H2,H3,H4,H5,H6,P,TD,UL,OL,LI,BLOCKQUOTE {
 }
 
 H1 {
-	line-height: 22px;
+	line-height: 24px;
 	margin-bottom: 2px;
 }
 
@@ -139,7 +139,7 @@ P,PRE {
 }
 
 P,TD,UL,OL {
-	font-size: 10pt;
+	font-size: 12pt;
 }
 
 INPUT,TEXTAREA,SELECT {
