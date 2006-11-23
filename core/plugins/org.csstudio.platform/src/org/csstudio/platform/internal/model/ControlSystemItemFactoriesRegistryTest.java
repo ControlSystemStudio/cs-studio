@@ -5,9 +5,7 @@ package org.csstudio.platform.internal.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
-import org.csstudio.platform.model.AbstractControlSystemItem;
 import org.csstudio.platform.model.AbstractControlSystemItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.junit.Test;
