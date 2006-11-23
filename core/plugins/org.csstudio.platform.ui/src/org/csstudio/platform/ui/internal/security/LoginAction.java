@@ -19,64 +19,58 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.util;
+package org.csstudio.platform.ui.internal.security;
 
-import java.util.Date;
-
-import org.csstudio.platform.internal.util.Timestamp;
+import org.csstudio.platform.ui.dialogs.LoginDialog;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 /**
- * A factory for time stamps.
- * 
- * @author Sven Wende
  * 
  */
-public final class TimestampFactory {
+public class LoginAction implements IWorkbenchWindowActionDelegate {
 
 	/**
-	 * Private constructor to prevent instantiation.
 	 * 
 	 */
-	private TimestampFactory() {
+	public void dispose() {
+		// TODO Auto-generated method stub
 
 	}
 
 	/**
-	 * Creates a timestamp with seconds since epoch.
 	 * 
-	 * @return a timestamp with seconds since epoch
+	 * 
+	 * @param window 
 	 */
-	public static ITimestamp createTimestamp() {
-		return new Timestamp();
+	public void init(IWorkbenchWindow window) {
+		// TODO Auto-generated method stub
+
 	}
 
 	/**
-	 * Creates a time stamp based on the specified seconds and nano seconds.
 	 * 
-	 * @param seconds
-	 *            the seconds
-	 * @param nanoSeconds
-	 *            the nano seconds
-	 * @return a timestamp
+	 * 
+	 * @param action 
 	 */
-	public static ITimestamp createTimestamp(final long seconds,
-			final long nanoSeconds) {
-		return new Timestamp(seconds, nanoSeconds);
+	public void run(IAction action) {
+		LoginDialog dialog = new LoginDialog(Display.getCurrent()
+				.getActiveShell());
+		dialog.open();
 	}
 
 	/**
-	 * Creates a time stamp for the current system time.
 	 * 
-	 * @return a time stamp for the current system time
+	 * 
+	 * @param action 
+	 * @param selection 
 	 */
-	public static Timestamp now() {
-		Date d = new Date();
-		long milli = d.getTime();
-		long secs = milli / 1000;
-		milli -= secs * 1000;
-		long nano = milli * 1000000;
-		Timestamp t = new Timestamp();
-		t.setSecondsAndNanoseconds(secs, nano);
-		return t;
+	public void selectionChanged(IAction action, ISelection selection) {
+		// TODO Auto-generated method stub
+
 	}
+
 }

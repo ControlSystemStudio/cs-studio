@@ -19,64 +19,65 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.util;
-
-import java.util.Date;
-
-import org.csstudio.platform.internal.util.Timestamp;
+package org.csstudio.platform.security;
 
 /**
- * A factory for time stamps.
+ * This is the superclass of all executeables that do not need an input or
+ * output in <code>doWork()</code>.
  * 
- * @author Sven Wende
- * 
+ * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
-public final class TimestampFactory {
+public abstract class AbstractExecuteable {
 
 	/**
-	 * Private constructor to prevent instantiation.
 	 * 
 	 */
-	private TimestampFactory() {
+	private String _rightId;
 
+	/**
+	 * 
+	 * 
+	 * @param rightId 
+	 */
+	public AbstractExecuteable(String rightId) {
+		assert rightId != null;
+		_rightId = rightId;
 	}
 
 	/**
-	 * Creates a timestamp with seconds since epoch.
 	 * 
-	 * @return a timestamp with seconds since epoch
+	 * 
+	 * @return 
 	 */
-	public static ITimestamp createTimestamp() {
-		return new Timestamp();
+	public final String getRightId() {
+		return _rightId;
 	}
 
 	/**
-	 * Creates a time stamp based on the specified seconds and nano seconds.
-	 * 
-	 * @param seconds
-	 *            the seconds
-	 * @param nanoSeconds
-	 *            the nano seconds
-	 * @return a timestamp
+	 * Method to execute this AbstractExecutable. This method is called by the
+	 * SecureContainer, if the User is allowed to run this. If you want to do
+	 * something before or after the actual work in <code>doWork()</code> in
+	 * every subclass, you can do it here.
 	 */
-	public static ITimestamp createTimestamp(final long seconds,
-			final long nanoSeconds) {
-		return new Timestamp(seconds, nanoSeconds);
+	public final void execute() {
+		if (ExecutionService.getInstance().canExecute(getRightId())) {
+			doWork();
+		}
 	}
 
 	/**
-	 * Creates a time stamp for the current system time.
 	 * 
-	 * @return a time stamp for the current system time
+	 * 
+	 * @return 
 	 */
-	public static Timestamp now() {
-		Date d = new Date();
-		long milli = d.getTime();
-		long secs = milli / 1000;
-		milli -= secs * 1000;
-		long nano = milli * 1000000;
-		Timestamp t = new Timestamp();
-		t.setSecondsAndNanoseconds(secs, nano);
-		return t;
+	public final boolean canExecute() {
+		return ExecutionService.getInstance().canExecute(getRightId());
 	}
+
+	/**
+	 * This method holds the protected code. It's called by
+	 * <code>execute()</code>.
+	 */
+	protected abstract void doWork();
+
 }

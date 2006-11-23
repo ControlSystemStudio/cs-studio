@@ -1,24 +1,23 @@
-/*
- *  SWTDayChooser.java  - A day chooser component for SWT
- *  Author: Mark Bryan Yu
- *  Modified by: Sergey Prigogin
- *  swtcalendar.sourceforge.net
+/* 
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy of
- *  this software and associated documentation files (the "Software"), to deal in the
- *  Software without restriction, including without limitation the rights to use, copy,
- *  modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- *  and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all copies
- *  or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- *  PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL SIMON TATHAM BE LIABLE FOR ANY CLAIM,
- *  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.platform.ui.internal.vafada.swtcalendar;
 
@@ -51,6 +50,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Widget;
 
+/**
+ * 
+ */
 public class SWTDayChooser extends Composite
         implements MouseListener, FocusListener, TraverseListener, KeyListener {
     /**
@@ -66,20 +68,77 @@ public class SWTDayChooser extends Composite
      */
     public static final int RED_WEEKEND = RED_SATURDAY | RED_SUNDAY;
 
+    /**
+     * 
+     */
     private Label[] dayTitles;
+    
+    /**
+     * 
+     */
     private DayControl[] days;
+    
+    /**
+     * 
+     */
     private int dayOffset;
+    
+    /**
+     * 
+     */
     private Color activeSelectionBackground;
+    
+    /**
+     * 
+     */
     private Color inactiveSelectionBackground;
+    
+    /**
+     * 
+     */
     private Color activeSelectionForeground;
+    
+    /**
+     * 
+     */
     private Color inactiveSelectionForeground;
+    
+    /**
+     * 
+     */
     private Color otherMonthColor;
+    
+    /**
+     * 
+     */
     private Calendar calendar;
+    
+    /**
+     * 
+     */
     private Calendar today;
+    
+    /**
+     * 
+     */
     private Locale locale;
+    
+    /**
+     * 
+     */
     private ArrayList<SWTCalendarListener> listeners;
+    
+    /**
+     * 
+     */
     private int style;
 
+    /**
+     * 
+     * 
+     * @param style 
+     * @param parent 
+     */
     public SWTDayChooser(Composite parent, int style) {
         super(parent, style & ~RED_WEEKEND);
         this.style = style;
@@ -155,6 +214,9 @@ public class SWTDayChooser extends Composite
         });
     }
 
+    /**
+     * 
+     */
     protected void init() {
         calendar = Calendar.getInstance(locale);
         calendar.setLenient(true);
@@ -207,6 +269,9 @@ public class SWTDayChooser extends Composite
         drawDays();
     }
 
+    /**
+     * 
+     */
     protected void drawDays() {
         calendar.get(Calendar.DAY_OF_YEAR); // Force calendar update
         Calendar cal = (Calendar) calendar.clone();
@@ -250,28 +315,59 @@ public class SWTDayChooser extends Composite
         }
     }
 
+    /**
+     * 
+     * 
+     * @param cal1 
+     * @param cal2 
+     * 
+     * @return 
+     */
     private static boolean isSameDay(Calendar cal1, Calendar cal2) {
         return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
                 cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
     }
 
+    /**
+     * 
+     * 
+     * @param cal1 
+     * @param cal2 
+     * 
+     * @return 
+     */
     private static boolean isSameMonth(Calendar cal1, Calendar cal2) {
         return cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
                 cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
     }
 
+    /**
+     * 
+     * 
+     * @param month 
+     */
     public void setMonth(int month) {
         calendar.set(Calendar.MONTH, month);
         drawDays();
         dateChanged();
     }
 
+    /**
+     * 
+     * 
+     * @param year 
+     */
     public void setYear(int year) {
         calendar.set(Calendar.YEAR, year);
         drawDays();
         dateChanged();
     }
 
+    /**
+     * 
+     * 
+     * @param cal 
+     */
     public void setCalendar(Calendar cal) {
         calendar = (Calendar) cal.clone();
         calendar.setLenient(true);
@@ -281,6 +377,11 @@ public class SWTDayChooser extends Composite
 
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.MouseListener#mouseDown(org.eclipse.swt.events.MouseEvent)
+     */
+    /**
+     * 
+     * 
+     * @param event 
      */
     public void mouseDown(MouseEvent event) {
         if (event.button == 1) { // Left click
@@ -296,17 +397,32 @@ public class SWTDayChooser extends Composite
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.MouseListener#mouseDoubleClick(org.eclipse.swt.events.MouseEvent)
      */
+    /**
+     * 
+     * 
+     * @param event 
+     */
     public void mouseDoubleClick(MouseEvent event) {
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.MouseListener#mouseUp(org.eclipse.swt.events.MouseEvent)
      */
+    /**
+     * 
+     * 
+     * @param event 
+     */
     public void mouseUp(MouseEvent event) {
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.FocusListener#focusGained(org.eclipse.swt.events.FocusEvent)
+     */
+    /**
+     * 
+     * 
+     * @param event 
      */
     public void focusGained(FocusEvent event) {
         DayControl selectedDay = getSelectedDayControl();
@@ -317,6 +433,11 @@ public class SWTDayChooser extends Composite
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.FocusListener#focusLost(org.eclipse.swt.events.FocusEvent)
      */
+    /**
+     * 
+     * 
+     * @param event 
+     */
     public void focusLost(FocusEvent event) {
         DayControl selectedDay = getSelectedDayControl();
         selectedDay.setBackground(getSelectionBackgroundColor());
@@ -325,6 +446,11 @@ public class SWTDayChooser extends Composite
 
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.TraverseListener#keyTraversed(org.eclipse.swt.events.TraverseEvent)
+     */
+    /**
+     * 
+     * 
+     * @param event 
      */
     public void keyTraversed(TraverseEvent event) {
         switch (event.detail) {
@@ -343,6 +469,11 @@ public class SWTDayChooser extends Composite
 
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
+     */
+    /**
+     * 
+     * 
+     * @param event 
      */
     public void keyPressed(KeyEvent event) {
         switch (event.keyCode) {
@@ -375,6 +506,11 @@ public class SWTDayChooser extends Composite
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
      */
+    /**
+     * 
+     * 
+     * @param event 
+     */
     public void keyReleased(KeyEvent event) {
     }
 
@@ -394,6 +530,11 @@ public class SWTDayChooser extends Composite
         return -1;
     }
 
+    /**
+     * 
+     * 
+     * @param day 
+     */
     private void selectDay(int day) {
         calendar.get(Calendar.DAY_OF_YEAR); // Force calendar update
         if (day >= calendar.getActualMinimum(Calendar.DAY_OF_MONTH) && day <= calendar.getActualMaximum(Calendar.DAY_OF_MONTH)) {
@@ -422,20 +563,40 @@ public class SWTDayChooser extends Composite
         dateChanged();
     }
 
+    /**
+     * 
+     * 
+     * @return 
+     */
     private DayControl getSelectedDayControl() {
         return days[calendar.get(Calendar.DAY_OF_MONTH) - 1 - dayOffset];
     }
 
+    /**
+     * 
+     * 
+     * @return 
+     */
     private Color getSelectionBackgroundColor() {
         return isFocusControl() ? activeSelectionBackground : inactiveSelectionBackground;
     }
 
+    /**
+     * 
+     * 
+     * @return 
+     */
     private Color getSelectionForegroundColor() {
         return isFocusControl() ? activeSelectionForeground : inactiveSelectionForeground;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.swt.widgets.Control#isFocusControl()
+     */
+    /**
+     * 
+     * 
+     * @return 
      */
     public boolean isFocusControl() {
         for (Control control = getDisplay().getFocusControl(); control != null; control = control.getParent()) {
@@ -447,14 +608,27 @@ public class SWTDayChooser extends Composite
         return false;
     }
 
+    /**
+     * 
+     * 
+     * @param listener 
+     */
     public void addSWTCalendarListener(SWTCalendarListener listener) {
         this.listeners.add(listener);
     }
 
+    /**
+     * 
+     * 
+     * @param listener 
+     */
     public void removeSWTCalendarListener(SWTCalendarListener listener) {
         this.listeners.remove(listener);
     }
 
+    /**
+     * 
+     */
     private void dateChanged() {
         if (!listeners.isEmpty()) {
             SWTCalendarListener[] listenersArray = new SWTCalendarListener[listeners.size()];
@@ -470,10 +644,20 @@ public class SWTDayChooser extends Composite
         }
     }
 
+    /**
+     * 
+     * 
+     * @return 
+     */
     public Calendar getCalendar() {
         return (Calendar) calendar.clone();
     }
 
+    /**
+     * 
+     * 
+     * @param locale 
+     */
     public void setLocale(Locale locale) {
         this.locale = locale;
         init();
@@ -481,6 +665,11 @@ public class SWTDayChooser extends Composite
 
     /* (non-Javadoc)
      * @see org.eclipse.swt.widgets.Control#setFont(org.eclipse.swt.graphics.Font)
+     */
+    /**
+     * 
+     * 
+     * @param font 
      */
     public void setFont(Font font) {
         super.setFont(font);
@@ -494,10 +683,26 @@ public class SWTDayChooser extends Composite
         }
     }
 
+    /**
+     * 
+     */
     static private class DayControl extends Composite implements Listener {
+        
+        /**
+         * 
+         */
         private Composite filler;
+        
+        /**
+         * 
+         */
         private Label label;
 
+        /**
+         * 
+         * 
+         * @param parent 
+         */
         public DayControl(Composite parent) {
             super(parent, SWT.NO_FOCUS);
             {
@@ -530,16 +735,31 @@ public class SWTDayChooser extends Composite
             setFont(parent.getFont());
         }
 
+        /**
+         * 
+         * 
+         * @param text 
+         */
         public void setText(String text) {
             label.setText(text);
         }
 
+        /**
+         * 
+         * 
+         * @return 
+         */
         public String getText() {
             return label.getText();
         }
 
         /* (non-Javadoc)
          * @see org.eclipse.swt.widgets.Control#setFont(org.eclipse.swt.graphics.Font)
+         */
+        /**
+         * 
+         * 
+         * @param font 
          */
         public void setFont(Font font) {
             super.setFont(font);
@@ -550,6 +770,11 @@ public class SWTDayChooser extends Composite
         /* (non-Javadoc)
          * @see org.eclipse.swt.widgets.Control#setBackground(org.eclipse.swt.graphics.Color)
          */
+        /**
+         * 
+         * 
+         * @param color 
+         */
         public void setBackground(Color color) {
             filler.setBackground(color);
             label.setBackground(color);
@@ -558,10 +783,20 @@ public class SWTDayChooser extends Composite
         /* (non-Javadoc)
          * @see org.eclipse.swt.widgets.Control#setForeground(org.eclipse.swt.graphics.Color)
          */
+        /**
+         * 
+         * 
+         * @param color 
+         */
         public void setForeground(Color color) {
             label.setForeground(color);
         }
 
+        /**
+         * 
+         * 
+         * @param color 
+         */
         public void setBorderColor(Color color) {
             super.setBackground(color);
         }
@@ -569,18 +804,42 @@ public class SWTDayChooser extends Composite
         /* (non-Javadoc)
          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
          */
+        /**
+         * 
+         * 
+         * @param event 
+         */
         public void handleEvent(Event event) {
             notifyListeners(event.type, event);
         }
     }
 
+    /**
+     * 
+     */
     static private class DayLabel extends Label {
+        
+        /**
+         * 
+         * 
+         * @param style 
+         * @param parent 
+         */
         public DayLabel(Composite parent, int style) {
             super(parent, style);
         }
 
         /* (non-Javadoc)
          * @see org.eclipse.swt.widgets.Control#computeSize(int, int, boolean)
+         */
+        /**
+         * 
+         * 
+         * @param changed 
+         * @param hHint 
+         * @param wHint 
+         * 
+         * @return 
          */
         public Point computeSize(int wHint, int hHint, boolean changed) {
             if (wHint == SWT.DEFAULT) {
@@ -594,6 +853,9 @@ public class SWTDayChooser extends Composite
 
         /* (non-Javadoc)
          * @see org.eclipse.swt.widgets.Widget#checkSubclass()
+         */
+        /**
+         * 
          */
         protected void checkSubclass() {
         }

@@ -1,24 +1,23 @@
-/*
- *  SWTCalendar.java  - A calendar component for SWT
- *  Author: Mark Bryan Yu
- *  Modified by: Sergey Prigogin
- *  swtcalendar.sourceforge.net
+/* 
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy of
- *  this software and associated documentation files (the "Software"), to deal in the
- *  Software without restriction, including without limitation the rights to use, copy,
- *  modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- *  and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all copies
- *  or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- *  PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL SIMON TATHAM BE LIABLE FOR ANY CLAIM,
- *  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.platform.ui.internal.vafada.swtcalendar;
 
@@ -53,14 +52,29 @@ public class SWTCalendar extends Composite {
 	 */
 	public static final int RED_WEEKEND = SWTDayChooser.RED_WEEKEND;
 
+	/**
+	 * 
+	 */
 	private boolean settingDate;
 
+	/**
+	 * 
+	 */
 	private Spinner yearChooser;
 
+	/**
+	 * 
+	 */
 	private SWTMonthChooser monthChooser;
 
+	/**
+	 * 
+	 */
 	private SWTDayChooser dayChooser;
 
+	/**
+	 * 
+	 */
 	private boolean settingYearMonth;
 
 	/**
@@ -177,10 +191,20 @@ public class SWTCalendar extends Composite {
 		setFont(parent.getFont());
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param parent 
+	 */
 	public SWTCalendar(Composite parent) {
 		this(parent, SWT.FLAT);
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param cal 
+	 */
 	public void setCalendar(Calendar cal) {
 		settingDate = true;
 		try {
@@ -191,6 +215,11 @@ public class SWTCalendar extends Composite {
 		}
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param cal 
+	 */
 	private void refreshYearMonth(Calendar cal) {
 		settingYearMonth = true;
 		yearChooser.setSelection(cal.get(Calendar.YEAR));
@@ -198,6 +227,9 @@ public class SWTCalendar extends Composite {
 		settingYearMonth = false;
 	}
 
+	/**
+	 * 
+	 */
 	public void nextMonth() {
 		Calendar cal = dayChooser.getCalendar();
 		cal.add(Calendar.MONTH, 1);
@@ -205,6 +237,9 @@ public class SWTCalendar extends Composite {
 		dayChooser.setCalendar(cal);
 	}
 
+	/**
+	 * 
+	 */
 	public void previousMonth() {
 		Calendar cal = dayChooser.getCalendar();
 		cal.add(Calendar.MONTH, -1);
@@ -212,18 +247,38 @@ public class SWTCalendar extends Composite {
 		dayChooser.setCalendar(cal);
 	}
 
+	/**
+	 * 
+	 * 
+	 * @return 
+	 */
 	public Calendar getCalendar() {
 		return dayChooser.getCalendar();
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param listener 
+	 */
 	public void addSWTCalendarListener(SWTCalendarListener listener) {
 		dayChooser.addSWTCalendarListener(listener);
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param listener 
+	 */
 	public void removeSWTCalendarListener(SWTCalendarListener listener) {
 		dayChooser.removeSWTCalendarListener(listener);
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param locale 
+	 */
 	public void setLocale(Locale locale) {
 		monthChooser.setLocale(locale);
 		dayChooser.setLocale(locale);
@@ -235,6 +290,11 @@ public class SWTCalendar extends Composite {
 	 * 
 	 * @see org.eclipse.swt.widgets.Control#setFont(org.eclipse.swt.graphics.Font)
 	 */
+	/**
+	 * 
+	 * 
+	 * @param font 
+	 */
 	public void setFont(Font font) {
 		super.setFont(font);
 		monthChooser.setFont(font);
@@ -242,6 +302,11 @@ public class SWTCalendar extends Composite {
 		dayChooser.setFont(font);
 	}
 
+	/**
+	 * 
+	 * 
+	 * @return 
+	 */
 	public boolean isSettingDate() {
 		return settingDate;
 	}

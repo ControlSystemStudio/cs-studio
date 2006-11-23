@@ -92,6 +92,17 @@
                menubarPath="help/org.csstudio.update.ui.updateMenu/group0">
          </action>
       </actionSet>
+      <actionSet
+            id="User Management Actions"
+            label="User Management Actions"
+            visible="true">
+         <action
+               class="org.csstudio.platform.ui.internal.security.LoginAction"
+               id="org.csstudio.platform.ui.internal.security.LoginAction"
+               label="Login"
+               menubarPath="css/other/"
+               style="push"/>
+      </actionSet>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">

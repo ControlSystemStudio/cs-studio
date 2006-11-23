@@ -23,7 +23,7 @@ package org.csstudio.startup.applications;
 
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.LocaleService;
-import org.csstudio.platform.security.AuthenticationService;
+import org.csstudio.platform.security.ExecutionService;
 import org.csstudio.platform.ui.dialogs.LoginDialog;
 import org.csstudio.platform.ui.workbench.CssWorkbenchAdvisor;
 import org.eclipse.core.runtime.IPlatformRunnable;
@@ -105,7 +105,7 @@ public class Application implements IPlatformRunnable {
 		boolean result = true;
 
 		boolean performAuthentication = coreStore
-				.getBoolean(AuthenticationService.PROP_AUTH_LOGIN);
+				.getBoolean(ExecutionService.PROP_AUTH_LOGIN);
 
 		if (performAuthentication) {
 			LoginDialog d = new LoginDialog(display.getActiveShell());

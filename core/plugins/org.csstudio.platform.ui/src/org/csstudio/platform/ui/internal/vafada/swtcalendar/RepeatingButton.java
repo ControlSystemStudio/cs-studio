@@ -1,23 +1,23 @@
-/*
- *  RepeatingButton.java  - A push button that repeats selection event based on timer.
- *  Author: Sergey Prigogin
- *  swtcalendar.sourceforge.net
+/* 
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy of
- *  this software and associated documentation files (the "Software"), to deal in the
- *  Software without restriction, including without limitation the rights to use, copy,
- *  modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- *  and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all copies
- *  or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- *  PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL SIMON TATHAM BE LIABLE FOR ANY CLAIM,
- *  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.platform.ui.internal.vafada.swtcalendar;
 
@@ -33,12 +33,36 @@ import java.util.ArrayList;
  * Push button that repeats selection event based on timer.
  */
 public class RepeatingButton extends Button {
+    
+    /**
+     * 
+     */
     public static final int DEFAULT_INITIAL_REPEAT_DELAY = 200; // Milliseconds
+    
+    /**
+     * 
+     */
     public static final int DEFAULT_REPEAT_DELAY = 50;          // Milliseconds
+    
+    /**
+     * 
+     */
     private int initialRepeatDelay = DEFAULT_INITIAL_REPEAT_DELAY;
+    
+    /**
+     * 
+     */
     private int repeatDelay = DEFAULT_REPEAT_DELAY;
+    
+    /**
+     * 
+     */
     private ArrayList<SelectionListener> selectionListeners =
         new ArrayList<SelectionListener>(3);
+    
+    /**
+     * 
+     */
     private Repeater repeater;
 
     /**
@@ -73,10 +97,20 @@ public class RepeatingButton extends Button {
         });
     }
 
+    /**
+     * 
+     * 
+     * @param listener 
+     */
     public void addSelectionListener(SelectionListener listener) {
         selectionListeners.add(listener);
     }
 
+    /**
+     * 
+     * 
+     * @param listener 
+     */
     public void removeSelectionListener(SelectionListener listener) {
         selectionListeners.remove(listener);
     }
@@ -109,6 +143,12 @@ public class RepeatingButton extends Button {
         this.repeatDelay = repeatDelay;
     }
 
+    /**
+     * 
+     * 
+     * @param time 
+     * @param stateMask 
+     */
     private void buttonPressed(int stateMask, int time) {
         SelectionListener[] listeners = new SelectionListener[selectionListeners.size()];
         selectionListeners.toArray(listeners);
@@ -124,6 +164,9 @@ public class RepeatingButton extends Button {
         }
     }
 
+    /**
+     * 
+     */
     private void cancelRepeater() {
         if (repeater != null) {
             repeater.cancel();
@@ -134,14 +177,33 @@ public class RepeatingButton extends Button {
     /* (non-Javadoc)
      * @see org.eclipse.swt.widgets.Widget#checkSubclass()
      */
+    /**
+     * 
+     */
     protected void checkSubclass() {
     }
 
 
+    /**
+     * 
+     */
     private class Repeater implements Runnable {
+        
+        /**
+         * 
+         */
         private boolean canceled;
+        
+        /**
+         * 
+         */
         private int stateMask;
 
+        /**
+         * 
+         * 
+         * @param stateMask 
+         */
         public Repeater(int stateMask) {
             super();
             this.stateMask = stateMask;
@@ -149,6 +211,9 @@ public class RepeatingButton extends Button {
 
         /* (non-Javadoc)
          * @see java.lang.Runnable#run()
+         */
+        /**
+         * 
          */
         public void run() {
             if (!canceled) {
@@ -158,6 +223,9 @@ public class RepeatingButton extends Button {
             }
         }
 
+        /**
+         * 
+         */
         public void cancel() {
             canceled = true;
         }

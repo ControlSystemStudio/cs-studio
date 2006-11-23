@@ -19,18 +19,62 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.security;
+package org.csstudio.platform.ui.security;
+
+import org.csstudio.platform.security.ExecutionService;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 /**
- * A simple mock up for a authentication service. By now it only holds a
- * property ID.
- * 
- * @author Alexander Will, Sven Wende
- * 
+ * This is the superclass for any IWorkbenchWindowActionDelegate that depends on the rights of the current user.
+ * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
-public class AuthenticationService {
+public abstract class AbstractUserDependentActionDelegate extends AbstractUserDependentAction implements IWorkbenchWindowActionDelegate {
+
 	/**
-	 * Property for the appearence of the CSS login window at system startup.
+	 * 
 	 */
-	public static final String PROP_AUTH_LOGIN = "auth_login"; //$NON-NLS-1$
+	private IAction _action;
+	
+	/**
+	 * 
+	 * 
+	 * @param rightId 
+	 */
+	public AbstractUserDependentActionDelegate(String rightId) {
+		super(rightId);
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param action 
+	 */
+	public void run(IAction action) {
+		_action = action;
+		updateState();
+		run();
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param action 
+	 * @param selection 
+	 */
+	public void selectionChanged(IAction action, ISelection selection) {
+		_action = action;
+		updateState();
+	}
+
+	/**
+	 * 
+	 */
+	protected void updateState() {
+		if (_action != null) {
+			_action.setEnabled(ExecutionService.getInstance().canExecute(getRightId()));
+		}
+	}
+	
 }

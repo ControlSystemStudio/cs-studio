@@ -10,6 +10,8 @@ Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
 Bundle-Vendor: Desy
 Export-Package: org.csstudio.platform,
  org.csstudio.platform.internal.logging;x-friends:="org.csstudio.platform.ui",
+ org.csstudio.platform.internal.rightsmanagement;x-friends:="org.csstudio.platform.ui",
+ org.csstudio.platform.internal.usermanagement;x-friends:="org.csstudio.platform.ui",
  org.csstudio.platform.logging,
  org.csstudio.platform.model,
  org.csstudio.platform.security,

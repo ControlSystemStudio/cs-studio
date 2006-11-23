@@ -19,56 +19,83 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.internal.security;
+package org.csstudio.platform.internal.rightsmanagement;
 
-import org.csstudio.platform.security.ExecutionService;
-import org.csstudio.platform.ui.CSSPlatformUiPlugin;
-import org.csstudio.platform.ui.internal.localization.Messages;
-import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.SWT;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
- * The preference page for the css authentication service.
- * 
- * @author Alexander Will
+ * This class implements a right, dependent on a role and user group.
+ * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
-public class AuthenticationPreferencePage extends FieldEditorPreferencePage
-		implements IWorkbenchPreferencePage {
-
+public class Right implements IRight{
+	
 	/**
-	 * Default constructor.
+	 * The user role.
 	 */
-	public AuthenticationPreferencePage() {
-		super(SWT.NULL);
-		setMessage(Messages
-				.getString("AuthenticationPreferencePage.PAGE_TITLE")); //$NON-NLS-1$
-	}
-
+	private final String _role;
+	
+	
 	/**
-	 * {@inheritDoc}
+	 * The user group. 
 	 */
-	protected final void createFieldEditors() {
-		addField(new BooleanFieldEditor(
-				ExecutionService.PROP_AUTH_LOGIN,
-				Messages
-						.getString("AuthenticationPreferencePage.LOGIN_ON_STARTUP"), getFieldEditorParent())); //$NON-NLS-1$
-	}
-
+	private final String _group;
+	
 	/**
-	 * {@inheritDoc}
+	 * Constructor.
+	 * @param role The role
+	 * @param group The group
+	 */
+	public Right(final String role, final String group) {
+		_role = role;
+		_group = group;
+	}
+	
+	/**
+	 * Delivers the group.
+	 * @return  The group
+	 */
+	public final String getGroup() {
+		return _group;
+	}
+	
+	/**
+	 * Delivers the role.
+	 * @return  The role
+	 */
+	public final String getRole() {
+		return _role;
+	}	
+	
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @param o another Right
+	 * @return true, if this right is equal to another right, false qotherwise.
 	 */
 	@Override
-	protected final IPreferenceStore doGetPreferenceStore() {
-		return CSSPlatformUiPlugin.getCorePreferenceStore();
+	public final boolean equals(final Object o) {
+		if (o instanceof Right) {
+			Right right = (Right) o;
+			return _role.equals(right.getRole()) && _group.equals(right.getGroup());
+		}
+		return super.equals(o);
+	}
+	
+	
+	/**
+	 * @see java.lang.Object#hashCode()
+	 * @return the hashCode of this right
+	 */
+	@Override
+	public final int hashCode() {
+		return super.hashCode();
+	}
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 * @return  a string representation of this right.
+	 */
+	@Override
+	public final String toString() {
+		return "(" + _role + "," + _group + ")";
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(final IWorkbench workbench) {
-	}
 }

@@ -21,6 +21,8 @@
  */
 package org.csstudio.platform.ui.dialogs;
 
+import org.csstudio.platform.internal.usermanagement.User;
+import org.csstudio.platform.internal.usermanagement.UserManagementService;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -96,5 +98,14 @@ public class LoginDialog extends TitleAreaDialog {
 		_password.setEchoChar('*');
 
 		return control;
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	protected void okPressed() {
+		UserManagementService.getInstance().setUser(new User(_username.getText(), _password.getText()));
+		super.okPressed();
 	}
 }

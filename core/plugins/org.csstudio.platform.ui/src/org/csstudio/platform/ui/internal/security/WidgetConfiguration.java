@@ -19,64 +19,57 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.util;
+package org.csstudio.platform.ui.internal.security;
 
-import java.util.Date;
-
-import org.csstudio.platform.internal.util.Timestamp;
 
 /**
- * A factory for time stamps.
+ * This class represents an object and its IWidgetAdapter.
  * 
- * @author Sven Wende
+ * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  * 
  */
-public final class TimestampFactory {
+public class WidgetConfiguration {
 
 	/**
-	 * Private constructor to prevent instantiation.
 	 * 
 	 */
-	private TimestampFactory() {
-
-	}
+	private boolean _changeEnablement;
 
 	/**
-	 * Creates a timestamp with seconds since epoch.
 	 * 
-	 * @return a timestamp with seconds since epoch
 	 */
-	public static ITimestamp createTimestamp() {
-		return new Timestamp();
-	}
+	private boolean _changeVisibility;
 
 	/**
-	 * Creates a time stamp based on the specified seconds and nano seconds.
+	 * Constructor.
 	 * 
-	 * @param seconds
-	 *            the seconds
-	 * @param nanoSeconds
-	 *            the nano seconds
-	 * @return a timestamp
+	 * @param object
+	 *            The widget to manage
+	 * @param adapter
+	 *            The IWidgetAdapter to activate the widget
 	 */
-	public static ITimestamp createTimestamp(final long seconds,
-			final long nanoSeconds) {
-		return new Timestamp(seconds, nanoSeconds);
+	public WidgetConfiguration(boolean changeEnablement,
+			boolean changeVisibility) {
+		_changeEnablement = changeEnablement;
+		_changeVisibility = changeVisibility;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @return 
+	 */
+	public boolean isChangeEnablement() {
+		return _changeEnablement;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @return 
+	 */
+	public boolean isChangeVisibility() {
+		return _changeVisibility;
 	}
 
-	/**
-	 * Creates a time stamp for the current system time.
-	 * 
-	 * @return a time stamp for the current system time
-	 */
-	public static Timestamp now() {
-		Date d = new Date();
-		long milli = d.getTime();
-		long secs = milli / 1000;
-		milli -= secs * 1000;
-		long nano = milli * 1000000;
-		Timestamp t = new Timestamp();
-		t.setSecondsAndNanoseconds(secs, nano);
-		return t;
-	}
 }
