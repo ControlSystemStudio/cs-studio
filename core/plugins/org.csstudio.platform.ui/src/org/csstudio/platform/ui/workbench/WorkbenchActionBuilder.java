@@ -79,7 +79,7 @@ public final class WorkbenchActionBuilder {
 	 * The save action. This action saves the current editor.
 	 */
 	private IWorkbenchAction _saveAction;
-
+	
 	/**
 	 * Constructs a new action builder which contributes actions to the given
 	 * window.
@@ -250,9 +250,9 @@ public final class WorkbenchActionBuilder {
 
 		menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
 		menu.add(_saveAction);
-		MenuManager newMenu = new MenuManager(Messages.getString("WorkbenchActionBuilder.EXIT"), ActionFactory.NEW.getId()); //$NON-NLS-1$
-		menu.add(newMenu);
-
+		menu.add(new Separator());
+		menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
+		menu.add(new Separator());
 		menu.add(_exitAction);
 		return menu;
 	}

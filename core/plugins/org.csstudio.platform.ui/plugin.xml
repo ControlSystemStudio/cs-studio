@@ -60,9 +60,6 @@
          <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
       </factory>
    </extension>
-
-   
-<!-- Update Actions -->
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
@@ -103,6 +100,18 @@
                menubarPath="css/other/"
                style="push"/>
       </actionSet>
+      <actionSet
+            id="org.eclipse.csstudio.ui.systemActions"
+            label="System Actions"
+            visible="true">
+         <action
+               class="org.csstudio.platform.ui.internal.actions.RestartAction"
+               id="org.csstudio.platform.ui.internal.actions.RestartAction"
+               label="%menuRestart"
+               menubarPath="file/fileEnd"
+               style="push"/>
+      </actionSet>
+      
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
