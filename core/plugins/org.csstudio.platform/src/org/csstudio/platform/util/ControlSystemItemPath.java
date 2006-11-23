@@ -41,19 +41,19 @@ public final class ControlSystemItemPath implements Serializable {
 	/**
 	 * Placeholder, which is used in PORTABLE_FORMAT.
 	 */
-	private static final String TYPE_PART = "TYPE";
+	private static final String TYPE_PART = "TYPE"; //$NON-NLS-1$
 
 	/**
 	 * Placeholder, which is used in PORTABLE_FORMAT.
 	 */
-	private static final String OBJECT_PART = "OBJECT_PART";
+	private static final String OBJECT_PART = "OBJECT_PART"; //$NON-NLS-1$
 
 	/**
 	 * Defines the format of the String representation. Should contain the
 	 * placeholders TYPE_PART and OBJECT_PART.
 	 */
-	private static final String PORTABLE_FORMAT = "##" + TYPE_PART + "###"
-			+ OBJECT_PART + "##";
+	private static final String PORTABLE_FORMAT = "##" + TYPE_PART + "###" //$NON-NLS-1$ //$NON-NLS-2$
+			+ OBJECT_PART + "##"; //$NON-NLS-1$
 
 	/**
 	 * The type identifier for the control system item, which should be
@@ -72,8 +72,8 @@ public final class ControlSystemItemPath implements Serializable {
 	 * Privat default constructur. Used only for serialization.
 	 */
 	private ControlSystemItemPath() {
-		_itemData = "";
-		_typeId = "";
+		_itemData = ""; //$NON-NLS-1$
+		_typeId = ""; //$NON-NLS-1$
 	}
 
 	/**
@@ -130,8 +130,8 @@ public final class ControlSystemItemPath implements Serializable {
 			final String portableString) {
 		ControlSystemItemPath path = null;
 
-		String regex = PORTABLE_FORMAT.replace(TYPE_PART, "(.*)").replace(
-				OBJECT_PART, "(.*)");
+		String regex = PORTABLE_FORMAT.replace(TYPE_PART, "(.*)").replace( //$NON-NLS-1$
+				OBJECT_PART, "(.*)"); //$NON-NLS-1$
 
 		Pattern pattern = Pattern.compile(regex);
 		// Get a Matcher based on the target string.
@@ -142,7 +142,7 @@ public final class ControlSystemItemPath implements Serializable {
 			String typeId = matcher.group(1);
 			String objecPart = matcher.group(2);
 
-			if (typeId != null && !typeId.equals("") && objecPart != null) {
+			if (typeId != null && !typeId.equals("") && objecPart != null) { //$NON-NLS-1$
 				path = new ControlSystemItemPath(typeId, objecPart);
 			}
 		}

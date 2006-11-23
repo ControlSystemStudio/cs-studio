@@ -27,7 +27,6 @@ import java.util.List;
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.internal.usermanagement.UserManagementService;
 
-
 /**
  * This is the SecureContainer. It performs instances of
  * Abstract(Object)Executeable only if the current user has the permission to
@@ -38,12 +37,12 @@ import org.csstudio.platform.internal.usermanagement.UserManagementService;
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
 public final class ExecutionService {
-	
+
 	/**
-	 * 
+	 * The only one instance of this class.
 	 */
 	private static ExecutionService _instance;
-	
+
 	/**
 	 * The listeners.
 	 */
@@ -53,10 +52,9 @@ public final class ExecutionService {
 	 * Property for the appearence of the CSS login window at system startup.
 	 */
 	public static final String PROP_AUTH_LOGIN = "auth_login"; //$NON-NLS-1$
-	
 
 	/**
-	 * Private constructor, to prevent instantiation.
+	 * Private constructor due to singleton pattern.
 	 */
 	private ExecutionService() {
 		_listeners = new ArrayList<ISecureContainerListener>();
@@ -65,7 +63,7 @@ public final class ExecutionService {
 	/**
 	 * 
 	 * 
-	 * @return 
+	 * @return
 	 */
 	public static ExecutionService getInstance() {
 		if (_instance == null) {
@@ -74,9 +72,6 @@ public final class ExecutionService {
 
 		return _instance;
 	}
-	
-
-
 
 	/**
 	 * Checks if the current user has the permission for the object behind the
@@ -86,8 +81,9 @@ public final class ExecutionService {
 	 *            The ID to check
 	 * @return True if the user has the permission; false otherwise
 	 */
-	public  boolean canExecute(final String id) {
-		return RightsManagementService.getInstance().hasRights(UserManagementService.getInstance().getUser(), id, null);
+	public boolean canExecute(final String id) {
+		return RightsManagementService.getInstance().hasRights(
+				UserManagementService.getInstance().getUser(), id);
 	}
 
 	/**
@@ -107,8 +103,7 @@ public final class ExecutionService {
 	 * @param listener
 	 *            The ISecureContainerListener, which should be deleted
 	 */
-	public void removeListener(
-			final ISecureContainerListener listener) {
+	public void removeListener(final ISecureContainerListener listener) {
 		_listeners.remove(listener);
 	}
 

@@ -21,81 +21,86 @@
  */
 package org.csstudio.platform.internal.rightsmanagement;
 
-
 /**
- * This class implements a right, dependent on a role and user group.
+ * Defines a right for the CSS core security system.<br>
+ * A CSS right consists of:
+ * <ul>
+ * <li>A site specific role ("MANAGER", for example).
+ * <li>A site specific group ("CRYO", for example).
+ * </ul>
+ * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
-public class Right implements IRight{
-	
+public class Right {
+
 	/**
 	 * The user role.
 	 */
-	private final String _role;
-	
-	
+	private String _role;
+
 	/**
-	 * The user group. 
+	 * The user group.
 	 */
-	private final String _group;
-	
+	private String _group;
+
 	/**
-	 * Constructor.
-	 * @param role The role
-	 * @param group The group
+	 * Standard constructor.
+	 * 
+	 * @param role
+	 *            The role.
+	 * @param group
+	 *            The group.
 	 */
 	public Right(final String role, final String group) {
 		_role = role;
 		_group = group;
 	}
-	
+
 	/**
-	 * Delivers the group.
-	 * @return  The group
+	 * Returns the group.
+	 * 
+	 * @return The group
 	 */
 	public final String getGroup() {
 		return _group;
 	}
-	
+
 	/**
-	 * Delivers the role.
-	 * @return  The role
+	 * Returns the role.
+	 * 
+	 * @return The role
 	 */
 	public final String getRole() {
 		return _role;
-	}	
-	
+	}
+
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 * @param o another Right
-	 * @return true, if this right is equal to another right, false qotherwise.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public final boolean equals(final Object o) {
 		if (o instanceof Right) {
 			Right right = (Right) o;
-			return _role.equals(right.getRole()) && _group.equals(right.getGroup());
+			return _role.equals(right.getRole())
+					&& _group.equals(right.getGroup());
 		}
 		return super.equals(o);
 	}
-	
-	
+
 	/**
-	 * @see java.lang.Object#hashCode()
-	 * @return the hashCode of this right
+	 * {@inheritDoc}
 	 */
 	@Override
 	public final int hashCode() {
 		return super.hashCode();
 	}
-	
+
 	/**
-	 * @see java.lang.Object#toString()
-	 * @return  a string representation of this right.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public final String toString() {
-		return "(" + _role + "," + _group + ")";
+		return "(" + _role + "," + _group + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 }

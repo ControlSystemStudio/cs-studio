@@ -23,7 +23,6 @@ package org.csstudio.platform.internal.model;
 
 import org.csstudio.platform.model.AbstractControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.util.ControlSystemItemPath;
 
 /**
  * Implementation of the {@link IProcessVariable} interface.

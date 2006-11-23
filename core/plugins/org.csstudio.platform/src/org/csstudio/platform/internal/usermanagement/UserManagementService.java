@@ -21,100 +21,115 @@
  */
 package org.csstudio.platform.internal.usermanagement;
 
-import java.util.LinkedList;
-
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * This class is responsible for the current user object.
+ * The <code>UserManagementService</code> provides the central CSS core
+ * functionalities for the management of <code>Users</code>. *
+ * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
-public final class UserManagementService  {
-	
+public final class UserManagementService {
 	/**
-	 * The current user.
+	 * The user that is currently logged into the running CSS instance.
 	 */
 	private static IUser _user;
-	
-	/**
-	 * The listeners.
-	 */
-	private static final LinkedList<IUserManagementListener> LISTENERS = new LinkedList<IUserManagementListener>();
 
 	/**
-	 * For singleton pattern.
+	 * Receivers of user management events..
+	 */
+	private final List<IUserManagementListener> _listeners = new ArrayList<IUserManagementListener>();
+
+	/**
+	 * The only one instance of the <code>UserManagementService</code>.
 	 */
 	private static UserManagementService _instance;
-	
+
 	/**
-	 * The constructor.
+	 * Private constructor due to singleton pattern.
 	 */
 	private UserManagementService() {
 	}
-	
+
 	/**
-	 * Delivers the current instance of the UserManagement.
-	 * @return The current UserManagement
+	 * Return the only one instance of the <code>UserManagementService</code>.
+	 * 
+	 * @return The only one instance of the <code>UserManagementService</code>.
 	 */
 	public static UserManagementService getInstance() {
-		if (_instance==null) {
+		if (_instance == null) {
 			_instance = new UserManagementService();
 		}
 		return _instance;
 	}
-	
-	
-	/**
-	 * @see testrcp.usermanagement.IUserManagement#checkUser(java.lang.String, java.lang.String)
-	 * @param name the name
-	 * @param password the password
-	 * @return true if an account exists, false otherwise
-	 */
-	public boolean checkUser(final String name, final String password) {
-		//TODO implement correctly
-		return true;
-	}
-	
 
 	/**
-	 * @see testrcp.usermanagement.IUserManagement#setUser(org.csstudio.platform.internal.usermanagement.IUser)
-	 * @param user the user
+	 * Check if the user with the given name can log into the CSS instance with
+	 * the given password.
+	 * 
+	 * @param name
+	 *            the user name.
+	 * @param password
+	 *            the password.
+	 * @return Rrue if the user with the given name can log into the CSS
+	 *         instance with the given password.
+	 */
+	public boolean checkUser(final String name, final String password) {
+		return true;
+	}
+
+	/**
+	 * Set the currently logged in user.
+	 * 
+	 * @param user
+	 *            The user that is currently logged into the running CSS
+	 *            instance.
 	 */
 	public void setUser(final IUser user) {
 		_user = user;
 		notifyListener(new UserManagementEvent());
 	}
 
-
 	/**
-	 * @see testrcp.usermanagement.IUserManagement#getUser()
-	 * @return the current user
+	 * Return the user that is currently logged into the running CSS instance.
+	 * 
+	 * @return The user that is currently logged into the running CSS instance.
 	 */
 	public IUser getUser() {
 		return _user;
 	}
-	
+
 	/**
-	 * @see testrcp.usermanagement.IUserManagement#addUserManagementListener(testrcp.usermanagement.internal.IUserManagementListener)
-	 * @param listener The IUserManagementListener, which should be added
+	 * Attach a user management listener to the
+	 * <code>UserManagementService</code>.
+	 * 
+	 * @param listener
+	 *            The listener.
 	 */
 	public void addUserManagementListener(final IUserManagementListener listener) {
-		LISTENERS.add(listener);
+		_listeners.add(listener);
 	}
-	
+
 	/**
-	 * @see testrcp.usermanagement.IUserManagement#removeListener(testrcp.usermanagement.internal.IUserManagementListener)
-	 * @param listener The IUserManagementListener, which should be deleted
+	 * Detach a user management listener from the
+	 * <code>UserManagementService</code>.
+	 * 
+	 * @param listener
+	 *            The listener.
 	 */
 	public void removeListener(final IUserManagementListener listener) {
-		LISTENERS.remove(listener);
+		_listeners.remove(listener);
 	}
-	
+
 	/**
-	 * Notifies all registered IUserManagementListener with the given AbstractUserManagementEvent.
-	 * @param event The AbstractUsermanagementEvent, which should be send
+	 * Notifies all registered user management listener with the given event.
+	 * 
+	 * @param event
+	 *            The event which should be sent.
 	 */
 	private void notifyListener(final UserManagementEvent event) {
-		for (IUserManagementListener listener : LISTENERS) {
+		for (IUserManagementListener listener : _listeners) {
 			listener.handleUserManagementEvent(event);
 		}
 	}

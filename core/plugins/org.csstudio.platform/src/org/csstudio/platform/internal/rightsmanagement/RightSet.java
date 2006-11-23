@@ -21,88 +21,101 @@
  */
 package org.csstudio.platform.internal.rightsmanagement;
 
-import java.util.LinkedList;
-
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * This class defines a rightset with a name and a list of IRights.
+ * A <code>RightSet</code> consists of an amount of <code>Rights</code> and
+ * a name.
+ * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
 public class RightSet {
-	
+
 	/**
-	 * The name of this rightset.
+	 * The name of this <code>RightSet</code>.
 	 */
 	private final String _name;
-	
+
 	/**
-	 * The list of IRights of this rightset.
+	 * The <code>Rights</code> that belong to this <code>RightSet</code>.
 	 */
-	private final LinkedList<IRight> _rights = new LinkedList<IRight>();
-	
+	private List<Right> _rights = new ArrayList<Right>();
+
 	/**
-	 * Constructor.
-	 * @param name The name of this RightSet
+	 * Standard cnstructor.
+	 * 
+	 * @param name
+	 *            The name of this <code>RightSet</code>
 	 */
 	public RightSet(final String name) {
 		_name = name;
 	}
-	
+
 	/**
-	 * Adds a right to this RightSet.
-	 * @param right  The right to add
+	 * Add a <code>Right</code> to this <code>RightSet</code>.
+	 * 
+	 * @param right
+	 *            The <code>Right</code> to add.
 	 */
-	public final void addRight(final IRight right) {
+	public final void addRight(final Right right) {
 		if (right != null) {
 			_rights.add(right);
 		}
 	}
-	
+
 	/**
-	 * Deletes a right from this RightSet.
-	 * @param right  The right to delete
+	 * Delete a <code>Right</code> from this <code>RightSet</code>.
+	 * 
+	 * @param right
+	 *            The <code>Right</code> to delete.
 	 */
-	public final void deleteRight(final IRight right) {
+	public final void deleteRight(final Right right) {
 		_rights.remove(right);
 	}
-	
+
 	/**
-	 * Delivers all rights of this RightSet.
-	 * @return  All rights of this RightSet
+	 * Return all <code>Rights</code> of this <code>RightSet</code>.
+	 * 
+	 * @return All <code>Rights</code> of this <code>RightSet</code>
 	 */
-	public final IRight[] getRights() {
-		return _rights.toArray(new IRight[0]);
+	public final List<Right> getRights() {
+		return new ArrayList<Right>(_rights);
 	}
-	
+
 	/**
-	 * Delivers the name of this RightSet.
-	 * @return  The name of this RightSet
+	 * Return the name of this <code>RightSet</code>.
+	 * 
+	 * @return The name of this <code>RightSet</code>.
 	 */
 	public final String getName() {
 		return _name;
 	}
-	
+
 	/**
-	 * Checks if this RightSet contains the given right.
-	 * @param right  The right to check
-	 * @return  True if this RightSet contains the right; false otherwise
+	 * Checks if this <code>RightSet</code> contains the given
+	 * <code>Right</code>.
+	 * 
+	 * @param right
+	 *            The <code>Right</code> to check.
+	 * @return True, if this <code>RightSet</code> contains the
+	 *         <code>Right</code>.
 	 */
-	public final boolean containsRight(final IRight right) {
+	public final boolean hasRight(final Right right) {
 		return _rights.contains(right);
 	}
-	
+
 	/**
 	 * @see java.lang.Object#toString()
 	 * @return a string representation of this rightset.
 	 */
 	@Override
 	public final String toString() {
-		String text = _name + " ";
+		String text = _name + " "; //$NON-NLS-1$
 		for (int i = 0; i < _rights.size(); i++) {
-			text = text + _rights.get(i).toString() + " ";
+			text = text + _rights.get(i).toString() + " "; //$NON-NLS-1$
 		}
 		return text;
 	}
 
 }
-

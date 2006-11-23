@@ -39,7 +39,7 @@ public final class ArchiveDataSourceFactory extends
 	 */
 	@Override
 	protected String createStringRepresentationFromItem(final IArchiveDataSource item) {
-		return item.getName() + ":" + item.getUrl() + ":" + item.getKey();
+		return item.getName() + ":" + item.getUrl() + ":" + item.getKey(); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -50,7 +50,7 @@ public final class ArchiveDataSourceFactory extends
 			final String string) {
 		IArchiveDataSource result = null;
 
-		String[] parts = string.split(":");
+		String[] parts = string.split(":"); //$NON-NLS-1$
 
 		try {
 			if (parts.length == 3) {

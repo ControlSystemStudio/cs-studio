@@ -23,12 +23,14 @@ package org.csstudio.platform.internal.usermanagement;
 
 /**
  * This interface must be implemented by any user-instance.
+ * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
 public interface IUser {
 
 	/**
 	 * Delivers the name of the user.
+	 * 
 	 * @return the name of the user
 	 */
 	String getName();

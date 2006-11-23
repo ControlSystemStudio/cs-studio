@@ -85,8 +85,8 @@ public final class ControlSystemItemFactoriesRegistry {
 
 			if (_factories.containsKey(typeId)) {
 				throw new IllegalArgumentException(
-						"Only one item factory for the type >>" + typeId
-								+ "<< should be registered.");
+						"Only one item factory for the type >>" + typeId //$NON-NLS-1$
+								+ "<< should be registered."); //$NON-NLS-1$
 			}
 			_factories.put(typeId, new FactoryDescriptor(element));
 		}
@@ -110,7 +110,7 @@ public final class ControlSystemItemFactoriesRegistry {
 
 		if (descriptor != null) {
 			result = descriptor.getFactory();
-			assert result != null : "type id was valid, but no factory was instantiated";
+			assert result != null : "type id was valid, but no factory was instantiated"; //$NON-NLS-1$
 		}
 
 		return result;
@@ -153,7 +153,7 @@ public final class ControlSystemItemFactoriesRegistry {
 			if (_factory == null) {
 				try {
 					_factory = (AbstractControlSystemItemFactory) _configurationElement
-							.createExecutableExtension("class");
+							.createExecutableExtension("class"); //$NON-NLS-1$
 				} catch (CoreException e) {
 					CentralLogger.getInstance().error(this, e);
 				}

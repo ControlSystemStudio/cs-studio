@@ -22,42 +22,44 @@
 package org.csstudio.platform.security;
 
 /**
- * This is the superclass of all executeables that do not need an input or
- * output in <code>doWork()</code>.
+ * Abstract super class for executables. An executable encapsulates code that
+ * should only be executed, if the currently logged in user has the rights to do
+ * so. An executable must be equipped with an abstract right ID that will be
+ * exposed to the system admistrator to configure which users can perform which
+ * executables.
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
 public abstract class AbstractExecuteable {
 
 	/**
-	 * 
+	 * The abstract right ID of this executable.
 	 */
 	private String _rightId;
 
 	/**
+	 * Standard constructor.
 	 * 
-	 * 
-	 * @param rightId 
+	 * @param rightId
+	 *            The abstract right ID of this executable.
 	 */
-	public AbstractExecuteable(String rightId) {
+	public AbstractExecuteable(final String rightId) {
 		assert rightId != null;
 		_rightId = rightId;
 	}
 
 	/**
+	 * Return the abstract right ID of this executable.
 	 * 
-	 * 
-	 * @return 
+	 * @return The abstract right ID of this executable.
 	 */
 	public final String getRightId() {
 		return _rightId;
 	}
 
 	/**
-	 * Method to execute this AbstractExecutable. This method is called by the
-	 * SecureContainer, if the User is allowed to run this. If you want to do
-	 * something before or after the actual work in <code>doWork()</code> in
-	 * every subclass, you can do it here.
+	 * Method to execute this AbstractExecutable. This method only performs an
+	 * action, if the currently logged in user is allowed to do so.
 	 */
 	public final void execute() {
 		if (ExecutionService.getInstance().canExecute(getRightId())) {
@@ -66,9 +68,11 @@ public abstract class AbstractExecuteable {
 	}
 
 	/**
+	 * Checks if this AbstractExecutable can be run by the currently logged in
+	 * user.
 	 * 
-	 * 
-	 * @return 
+	 * @return True, if this AbstractExecutable can be run by the currently
+	 *         logged in user.
 	 */
 	public final boolean canExecute() {
 		return ExecutionService.getInstance().canExecute(getRightId());

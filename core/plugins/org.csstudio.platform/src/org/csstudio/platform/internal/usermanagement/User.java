@@ -21,9 +21,9 @@
  */
 package org.csstudio.platform.internal.usermanagement;
 
-
 /**
- * Implements a user.
+ * Defines a CSS system user.
+ * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
 public class User implements IUser {
@@ -32,35 +32,39 @@ public class User implements IUser {
 	 * The name of this user.
 	 */
 	private final String _name;
-	
+
 	/**
 	 * The password of this user.
 	 */
-	private final String _passwort;
-	
+	private final String _password;
+
 	/**
 	 * Constructor with parameters.
-	 * @param name the name of this user
-	 * @param passwort the password of this user
+	 * 
+	 * @param name
+	 *            the name of this user
+	 * @param password
+	 *            the password of this user
 	 */
-	public User(final String name, final String passwort) {
+	public User(final String name, final String password) {
 		_name = name;
-		_passwort = passwort;
+		_password = password;
 	}
 
 	/**
 	 * @see org.csstudio.platform.internal.usermanagement.IUser#getName()
-	 * @return  the name of this user
+	 * @return the name of this user
 	 */
 	public final String getName() {
 		return _name;
 	}
-	
+
 	/**
 	 * Delivers the password of this user.
-	 * @return  the password of this user
+	 * 
+	 * @return the password of this user
 	 */
 	public final String getPassword() {
-		return _passwort;
+		return _password;
 	}
 }

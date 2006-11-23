@@ -52,7 +52,7 @@ public final class ArchiveDataSourceFactoryTest {
 	@Before
 	public void setUp() {
 		_factory = new ArchiveDataSourceFactory();
-		_archiveDataSource = new ArchiveDataSource("url1", 1, "name1");
+		_archiveDataSource = new ArchiveDataSource("url1", 1, "name1"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**

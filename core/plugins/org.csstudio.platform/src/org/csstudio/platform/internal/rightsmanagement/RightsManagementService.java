@@ -21,69 +21,83 @@
  */
 package org.csstudio.platform.internal.rightsmanagement;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.csstudio.platform.internal.usermanagement.IUser;
 
-
 /**
- * This class implements the rightsmanagement.
+ * The <code>RightsManagementService</code> provides the central CSS core
+ * functionalities for the management of <code>Rights</code>.
+ * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
 public final class RightsManagementService {
-	
+
 	/**
-	 * For singleton pattern.
+	 * The only one instance of the <code>RightsManagementService</code>.
 	 */
 	private static RightsManagementService _instance = null;
-	
+
 	/**
-	 * The listeners.
+	 * Receivers of rights management events.
 	 */
-	private final LinkedList<IRightsManagementListener> _listener = new LinkedList<IRightsManagementListener>();
-	
+	private List<IRightsManagementListener> _listener = new ArrayList<IRightsManagementListener>();
+
 	/**
-	 * Private constructor.
+	 * Private constructor due to singleton pattern.
 	 */
 	private RightsManagementService() {
 	}
-	
+
 	/**
-	 * Delivers the current instance of this RightsManagement.  
-	 * @return The current instance of this RightsManagement
+	 * Return the only one instance of the <code>RightsManagementService</code>.
+	 * 
+	 * @return The only one instance of the <code>RightsManagementService</code>.
 	 */
 	public static RightsManagementService getInstance() {
-		if (_instance==null) {
+		if (_instance == null) {
 			_instance = new RightsManagementService();
 		}
 		return _instance;
 	}
-	
+
 	/**
-	 * @see testrcp.rightsmanagement.interfaces.IRightsManagement#hasRights(testrcp.usermanagement.User, java.lang.String, testrcp.rightsmanagement.interfaces.IRight)
-	 * @param user The user
-	 * @param id The id of the requested object
-	 * @param defaultRight An IRight as default value if the ID is unknown
-	 * @return True, if the user has the permission; false otherwise
+	 * Check if the given user has the rights to perform the action with the
+	 * given ID.
+	 * 
+	 * @param user
+	 *            The user.
+	 * @param id
+	 *            The id of the requested action.
+	 * @return True, if the user has the permission to perform the action with
+	 *         the given ID.
 	 */
-	public boolean hasRights(final IUser user, final String id, final IRight defaultRight) {
-		return user!=null;
+	public boolean hasRights(final IUser user, final String id) {
+		return user != null;
 	}
-	
+
 	/**
-	 * @see testrcp.rightsmanagement.interfaces.IRightsManagement#addRightsManagementListener(org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener)
-	 * @param listener The IRightsManagementListener, which should be added 
+	 * Attach a rights management listener to the
+	 * <code>RightsManagementService</code>.
+	 * 
+	 * @param listener
+	 *            The listener.
 	 */
-	public void addRightsManagementListener(final IRightsManagementListener listener) {
+	public void addRightsManagementListener(
+			final IRightsManagementListener listener) {
 		_listener.add(listener);
 	}
-	
+
 	/**
-	 * @see testrcp.rightsmanagement.interfaces.IRightsManagement#removeListener(org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener)
-	 * @param listener The IRightsManagementListener, which should be deleted
+	 * Detach a rights management listener from the
+	 * <code>RightsManagementService</code>.
+	 * 
+	 * @param listener
+	 *            The listener.
 	 */
 	public void removeListener(final IRightsManagementListener listener) {
 		_listener.remove(listener);
 	}
-	
+
 }

@@ -50,7 +50,7 @@ public final class ProcessVariableFactoryTest {
 	@Before
 	public void setUp() {
 		_factory = new ProcessVariableFactory();
-		_processVariable = new ProcessVariable("pv");
+		_processVariable = new ProcessVariable("pv"); //$NON-NLS-1$
 	}
 
 	/**
