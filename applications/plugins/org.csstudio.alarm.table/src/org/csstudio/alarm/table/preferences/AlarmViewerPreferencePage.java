@@ -1,6 +1,7 @@
 package org.csstudio.alarm.table.preferences;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.alarm.table.Messages;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;
@@ -31,7 +32,7 @@ public class AlarmViewerPreferencePage
 	public AlarmViewerPreferencePage() {
 		super(GRID);
 		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-		setDescription("ALARM Column names must correspond the map message keys");
+		setDescription(Messages.AlarmViewerPreferencePage_columnNamesMessageKeys); 
 	}
 	
 	/**
@@ -41,16 +42,16 @@ public class AlarmViewerPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		System.out.println("AlarmPrefPage");
-		addField(new ListEditor(AlarmViewerPreferenceConstants.P_STRINGAlarm, AlarmViewerPreferenceConstants.P_STRINGAlarm + ": ", getFieldEditorParent()){
+		System.out.println("AlarmPrefPage"); //$NON-NLS-1$
+		addField(new ListEditor(AlarmViewerPreferenceConstants.P_STRINGAlarm, AlarmViewerPreferenceConstants.P_STRINGAlarm + ": ", getFieldEditorParent()){ //$NON-NLS-1$
 			
 			public String[] parseString(String stringList){
-				System.out.println("Alarm: " + stringList);
-				return stringList.split(";");
+				System.out.println("Alarm: " + stringList); //$NON-NLS-1$
+				return stringList.split(";"); //$NON-NLS-1$
 			}
 			
 			public String getNewInputObject(){
-				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), "Enter a new column name", "column: ", "", null);
+				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), Messages.AlarmViewerPreferencePage_enterColumnName, Messages.AlarmViewerPreferencePage_column, "", null); //$NON-NLS-3$
 				if (inputDialog.open() == Window.OK) {
 					return inputDialog.getValue();
 				}
@@ -58,9 +59,9 @@ public class AlarmViewerPreferencePage
 			}
 			
 			public String createList(String[] items){
-				String temp = "";
+				String temp = ""; //$NON-NLS-1$
 				for(int i = 0; i < items.length;i++){
-					temp = temp + items[i] + ";";
+					temp = temp + items[i] + ";"; //$NON-NLS-1$
 				}
 				return temp;
 			}
@@ -69,8 +70,8 @@ public class AlarmViewerPreferencePage
 		});
 		
 		
-		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.MAX, AlarmViewerPreferenceConstants.MAX + ": ", getFieldEditorParent()));
-		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.REMOVE, AlarmViewerPreferenceConstants.REMOVE + ": ", getFieldEditorParent()));
+		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.MAX, AlarmViewerPreferenceConstants.MAX + ": ", getFieldEditorParent())); //$NON-NLS-1$
+		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.REMOVE, AlarmViewerPreferenceConstants.REMOVE + ": ", getFieldEditorParent())); //$NON-NLS-1$
 		
 		
 	}

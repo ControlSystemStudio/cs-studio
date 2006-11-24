@@ -58,7 +58,7 @@ public class LogViewArchive extends ViewPart {
 
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(LogArchiveViewerPreferenceConstants.P_STRINGArch)
-				.split(";");
+				.split(";"); //$NON-NLS-1$
 		jmsml = new JMSMessageList(columnNames);
 
 		parentShell = parent.getShell();
@@ -71,7 +71,7 @@ public class LogViewArchive extends ViewPart {
 		comp.setLayout(new GridLayout(4, true));
 
 		Group buttons = new Group(comp, SWT.LINE_SOLID);
-		buttons.setText("Period");
+		buttons.setText(Messages.getString("LogViewArchive_period"));
 		buttons.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1,
 				1));
 		buttons.setLayout(new GridLayout(5, true));
@@ -84,7 +84,7 @@ public class LogViewArchive extends ViewPart {
 
 
 		Group from = new Group(comp, SWT.LINE_SOLID);
-		from.setText("from");
+		from.setText(Messages.getString("LogViewArchive_from"));
 		from.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		from.setLayout(new GridLayout(1, true));
 
@@ -92,9 +92,9 @@ public class LogViewArchive extends ViewPart {
 		timeFrom.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
 
 		timeFrom.setEditable(false);
-		timeFrom.setText("                            ");
+		timeFrom.setText("                            "); //$NON-NLS-1$
 		Group to = new Group(comp, SWT.LINE_SOLID);
-		to.setText("to");
+		to.setText(Messages.getString("LogViewArchive_to"));
 		to.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		to.setLayout(new GridLayout(1, true));
 
@@ -114,7 +114,7 @@ public class LogViewArchive extends ViewPart {
 		Button b72hSearch = new Button(comp, SWT.PUSH);
 		b72hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		b72hSearch.setText("3 DAYS");
+		b72hSearch.setText(Messages.getString("LogViewArchive_3days"));
 
 		b72hSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -136,7 +136,7 @@ public class LogViewArchive extends ViewPart {
 		Button b168hSearch = new Button(comp, SWT.PUSH);
 		b168hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		b168hSearch.setText("WEEK");
+		b168hSearch.setText(Messages.getString("LogViewArchive_week"));
 
 		b168hSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -159,7 +159,7 @@ public class LogViewArchive extends ViewPart {
 		Button bFlexSearch = new Button(comp, SWT.PUSH);
 		bFlexSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		bFlexSearch.setText("USER");
+		bFlexSearch.setText(Messages.getString("LogViewArchive_user"));
 
 		bFlexSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -202,7 +202,7 @@ public class LogViewArchive extends ViewPart {
 		Button bSearch = new Button(comp, SWT.PUSH);
 		bSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		bSearch.setText("Expert");
+		bSearch.setText(Messages.getString("LogViewArchive_expert"));
 
 		bSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -217,7 +217,7 @@ public class LogViewArchive extends ViewPart {
 				Timestamp end = new Timestamp((toDate.getTime()) / 1000);
 
 				ExpertSearchDialog dlg = new ExpertSearchDialog(parentShell, start, end);
-				String filter= "";
+				String filter= ""; //$NON-NLS-1$
 				GregorianCalendar to = new GregorianCalendar();
 				GregorianCalendar from = (GregorianCalendar) to.clone();
 				if (dlg.open() == ExpertSearchDialog.OK) {
@@ -257,7 +257,7 @@ public class LogViewArchive extends ViewPart {
 		Button b24hSearch = new Button(comp, SWT.PUSH);
 		b24hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		b24hSearch.setText("DAY");
+		b24hSearch.setText(Messages.getString("LogViewArchive_day"));
 
 		b24hSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -309,7 +309,7 @@ public class LogViewArchive extends ViewPart {
 					.getDefault()
 					.getPluginPreferences()
 					.getString(LogArchiveViewerPreferenceConstants.P_STRINGArch)
-					.split(";");
+					.split(";"); //$NON-NLS-1$
 			jlv.setColumnNames(columnNames);
 
 			Table t = jlv.getTable();

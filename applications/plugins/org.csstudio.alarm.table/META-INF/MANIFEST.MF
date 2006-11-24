@@ -10,14 +10,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.views,
  org.eclipse.core.resources,
  org.csstudio.libs.jms,
- org.eclipse.help,
- org.eclipse.help.appserver,
- org.eclipse.help.base,
- org.eclipse.help.ui,
- org.eclipse.help.webapp,
  org.csstudio.alarm.dbaccess,
  org.csstudio.data,
- org.csstudio.platform
+ org.csstudio.platform,
+ org.csstudio.platform.ui
 Eclipse-AutoStart: true
 Export-Package: org.csstudio.alarm.table,
  org.csstudio.alarm.table.preferences

@@ -1,6 +1,7 @@
 package org.csstudio.alarm.table.preferences;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.alarm.table.Messages;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;
@@ -31,7 +32,7 @@ public class LogViewerPreferencePage
 	public LogViewerPreferencePage() {
 		super(GRID);
 		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-		setDescription("LOG Column names must correspond the map message keys");
+		setDescription(Messages.columnNamesMessageKeys);
 	}
 	
 	/**
@@ -41,18 +42,18 @@ public class LogViewerPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		System.out.println("LogPrefPage");
+		System.out.println("LogPrefPage"); //$NON-NLS-1$
 
-		addField(new ListEditor(LogViewerPreferenceConstants.P_STRING, LogViewerPreferenceConstants.P_STRING + ": ", getFieldEditorParent()){
+		addField(new ListEditor(LogViewerPreferenceConstants.P_STRING, LogViewerPreferenceConstants.P_STRING + ": ", getFieldEditorParent()){ //$NON-NLS-1$
 			
 			public String[] parseString(String stringList){
-				System.out.println("Log: " + stringList);
+				System.out.println("Log: " + stringList); //$NON-NLS-1$
 
-				return stringList.split(";");
+				return stringList.split(";"); //$NON-NLS-1$
 			}
 			
 			public String getNewInputObject(){
-				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), "Enter a new column name", "column: ", "", null);
+				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), Messages.newColumnName, Messages.column, "", null); //$NON-NLS-3$
 				if (inputDialog.open() == Window.OK) {
 					return inputDialog.getValue();
 				}
@@ -60,9 +61,9 @@ public class LogViewerPreferencePage
 			}
 			
 			public String createList(String[] items){
-				String temp = "";
+				String temp = ""; //$NON-NLS-1$
 				for(int i = 0; i < items.length;i++){
-					temp = temp + items[i] + ";";
+					temp = temp + items[i] + ";"; //$NON-NLS-1$
 				}
 				return temp;
 			}
@@ -71,8 +72,8 @@ public class LogViewerPreferencePage
 		});
 		
 		
-		addField(new StringFieldEditor(LogViewerPreferenceConstants.MAX, LogViewerPreferenceConstants.MAX + ": ", getFieldEditorParent()));
-		addField(new StringFieldEditor(LogViewerPreferenceConstants.REMOVE, LogViewerPreferenceConstants.REMOVE + ": ", getFieldEditorParent()));
+		addField(new StringFieldEditor(LogViewerPreferenceConstants.MAX, LogViewerPreferenceConstants.MAX + ": ", getFieldEditorParent())); //$NON-NLS-1$
+		addField(new StringFieldEditor(LogViewerPreferenceConstants.REMOVE, LogViewerPreferenceConstants.REMOVE + ": ", getFieldEditorParent())); //$NON-NLS-1$
 		
 		
 	}

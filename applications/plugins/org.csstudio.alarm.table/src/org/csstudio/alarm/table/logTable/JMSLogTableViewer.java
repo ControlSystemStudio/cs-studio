@@ -1,5 +1,6 @@
 package org.csstudio.alarm.table.logTable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
@@ -7,16 +8,25 @@ import java.util.StringTokenizer;
 import org.csstudio.alarm.table.dataModel.IJMSMessageViewer;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.dataModel.TextContainer;
+import org.csstudio.alarm.table.dataModel.TextContainerFactory;
 
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.CentralItemFactory;
+import org.csstudio.platform.model.IControlSystemItem;
+import org.csstudio.platform.ui.dnd.DnDUtil;
+import org.csstudio.platform.ui.dnd.FilteredDragSourceAdapter;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -24,6 +34,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -54,6 +65,10 @@ public class JMSLogTableViewer extends TableViewer {
 	boolean sortAlarms = false;
 
 	String columnSelection = null;
+	
+	String[] selection = new String[2];
+	String selCol;
+	String selText;
 
 	private String lastSort = "";
 
@@ -104,6 +119,52 @@ public class JMSLogTableViewer extends TableViewer {
 			this.setSorter(new JMSMessageSorter());
 		}
 		makeContextMenu(site);
+		
+		FilteredDragSourceAdapter dragSourceAdapter = new FilteredDragSourceAdapter(
+				new Class[] { IControlSystemItem.class }) {
+
+			@Override
+			protected List getCurrentSelection() {
+				List<IAdaptable> l = new ArrayList<IAdaptable>();
+				if(selection[0].equalsIgnoreCase("NAME")) {
+					l.add(CentralItemFactory.createProcessVariable(selection[1]));
+					return l;
+				} else {
+					l.add(new TextContainer(selection[0], selection[1]));
+					return l;
+				}
+			}
+		};
+
+		DnDUtil.enableForDrag(this.getControl(), DND.DROP_MOVE | DND.DROP_COPY,
+				dragSourceAdapter);
+
+		this.getTable().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				super.mouseDown(e);
+				CentralLogger.getInstance().info(this, "DnD Mouse Listener");
+				if (e.button == 1) {
+					CentralLogger.getInstance().info(this, "DnD Mouse Listener mouse button 1");
+
+					JMSMessageLabelProvider jmsmlp = (JMSMessageLabelProvider) JMSLogTableViewer.this
+							.getLabelProvider();
+					Table t = JMSLogTableViewer.this.getTable();
+					TableItem ti = t.getItem(new Point(e.x, e.y));
+					for (int i = 0; i < JMSLogTableViewer.this.columnNames.length; i++) {
+						Rectangle bounds = ti.getBounds(i);
+						if (bounds.contains(e.x, e.y)) {
+							selection[0] = jmsmlp.getColumnName(i);
+							selection[1] = ti.getText(i);
+							CentralLogger.getInstance().info(this, "Selection Col: " + selection[0] +
+									" Text: " + selection[1]);
+
+							break;
+						}
+					}
+				}
+			}
+		});
 	}
 
 	public void setColumnNames(String[] colNames) {

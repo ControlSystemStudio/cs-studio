@@ -47,7 +47,7 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(
-						";");
+						";"); //$NON-NLS-1$
 		jmsml = new JMSMessageList(columnNames);
 
 		parentShell = parent.getShell();
@@ -63,7 +63,7 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(
-						";");
+						";"); //$NON-NLS-1$
 
 		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml);
 		jlv.setAlarmSorting(true);
@@ -78,7 +78,7 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 			receiver.startListener(this);
 		} catch (Exception e) {
 			MessageBox box = new MessageBox(ps, SWT.ICON_ERROR);
-			box.setText("Failed to initialise JMS Context");
+			box.setText("Failed to initialise JMS Context"); //$NON-NLS-1$
 			box.setMessage(e.getMessage());
 			box.open();
 		}
@@ -93,33 +93,33 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 	 */
 	public void onMessage(final Message message) {
 		if (message == null) {
-			System.out.println("message gleich null");
+			System.out.println("message gleich null"); //$NON-NLS-1$
 		}
-		System.out.println("in on message");
+		System.out.println("in on message"); //$NON-NLS-1$
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				try {
-					System.out.println("in runmethod");
+					System.out.println("in runmethod"); //$NON-NLS-1$
 					if (message instanceof TextMessage) {
 						System.out
-								.println("received message is not a map message: "
+								.println("received message is not a map message: " //$NON-NLS-1$
 										+ ((TextMessage) message).getText());
 					} else if (message instanceof MapMessage) {
 						// if(table.getItemCount() >= max)
 						// table.remove(table.getItemCount() - 1 - rows,
 						// table.getItemCount() - 1);
-						System.out.println("message received");
+						System.out.println("message received"); //$NON-NLS-1$
 						MapMessage mm = (MapMessage) message;
-						if (mm.getString("TYPE").equalsIgnoreCase("Alarm")) {
+						if (mm.getString("TYPE").equalsIgnoreCase("Alarm")) { //$NON-NLS-1$ //$NON-NLS-2$
 							jmsml.addJMSMessage((MapMessage) message);
 						}
 					} else {
 						System.out
-								.println("received message is unhandled type: "
+								.println("received message is unhandled type: " //$NON-NLS-1$
 										+ message.getJMSType());
 					}
 				} catch (Exception e) {
-					System.out.println("error");
+					System.out.println("error"); //$NON-NLS-1$
 					System.err.println(e);
 					e.printStackTrace();
 				}
@@ -140,13 +140,13 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 	private final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
 
 		public void propertyChange(PropertyChangeEvent event) {
-			System.out.println("AlarmLog  ChangeListener");
+			System.out.println("AlarmLog  ChangeListener"); //$NON-NLS-1$
 			
 			columnNames = JmsLogsPlugin
 					.getDefault()
 					.getPluginPreferences()
 					.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm)
-					.split(";");
+					.split(";"); //$NON-NLS-1$
 			jlv.setColumnNames(columnNames);
 
 			Table t = jlv.getTable();

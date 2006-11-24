@@ -1,5 +1,7 @@
 package org.csstudio.alarm.table.preferences;
 
+import org.csstudio.alarm.table.Messages;
+
 /**
  * Constant definitions for plug-in preferences
  */

@@ -3,6 +3,7 @@ package org.csstudio.alarm.table.expertSearch;
 import java.util.HashMap;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.alarm.table.Messages;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
 import org.csstudio.alarm.table.timeSelection.TimestampWidget;
 import org.csstudio.alarm.table.timeSelection.TimestampWidgetListener;
@@ -51,7 +52,7 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
     {
         super.configureShell(shell);
         this.shell=shell;
-        shell.setText("Expert Search");
+        shell.setText(Messages.ExpertSearchDialog_expertButton);
         shell.setSize(windowXSize,445);
     }
 
@@ -59,14 +60,14 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
     protected Control createDialogArea(Composite parent)
     {
 //    	filter = new HashMap<String, String>();
-    	filterString = "AND (";
+    	filterString = "AND ("; //$NON-NLS-1$
         Composite box = (Composite) super.createDialogArea(parent);
         GridLayout layout = (GridLayout) box.getLayout();
         layout.numColumns = 2;
         GridData gd;
 
         Group left = new Group(box, 0);
-        left.setText("Start Time");
+        left.setText(Messages.ExpertSearchDialog_startTime);
         gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1,1);
         left.setLayoutData(gd);
         left.setLayout(new FillLayout());
@@ -74,7 +75,7 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
         start_widget.addListener(this);
 
         Group right = new Group(box, 0);
-        right.setText("End Time");
+        right.setText(Messages.ExpertSearchDialog_endTime);
 //        gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1,1);
         right.setLayoutData(gd);
         right.setLayout(new FillLayout());
@@ -91,7 +92,7 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
         info.setLayoutData(gd);
 
         down = new Group(box, 0);
-        down.setText("Search");
+        down.setText(Messages.ExpertSearchDialog_search);
         gd = new GridData(SWT.FILL, SWT.FILL, true, false, 2,1);
         down.setLayoutData(gd);
         down.setLayout(new FillLayout(SWT.VERTICAL));
@@ -112,21 +113,21 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
     					if (c2[0] instanceof Composite){
     						Control[] c3 = ((Composite)c2[0]).getChildren();
     						if(c3[0] instanceof Combo && c3[1] instanceof Text){
-    							filterString 	+= " (lower(mpt.name) like lower('"
+    							filterString 	+= " (lower(mpt.name) like lower('" //$NON-NLS-1$
     											+((Combo)c3[0]).getItem(((Combo)c3[0]).getSelectionIndex())
-    											+"')"
-    											+" AND lower(mc.value) like lower('"
+    											+"')" //$NON-NLS-1$
+    											+" AND lower(mc.value) like lower('" //$NON-NLS-1$
     											+((Text)c3[1]).getText()+
-    											"'))";
+    											"'))"; //$NON-NLS-1$
     						}
 			    			if (c2[1] instanceof Label){
-			    				filterString += " "+((Label)c2[1]).getText()+" ";
+			    				filterString += " "+((Label)c2[1]).getText()+" "; //$NON-NLS-1$ //$NON-NLS-2$
 
 			    			}
 			    			else if (c2[1] instanceof Composite){
-			    				filterString += ")";
+			    				filterString += ")"; //$NON-NLS-1$
 			    			}
-			    			else System.out.println("\t\tERROR Ungültige Strucktur");
+			    			else System.out.println("\t\tERROR Ungültige Strucktur"); //$NON-NLS-1$
 						}
     				}
     			}
@@ -154,7 +155,7 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
 		glLeft.marginHeight=bHeignt;
 		filter.setLayout(glLeft);
 		Combo title = new Combo(filter,SWT.SINGLE|SWT.READ_ONLY);
-		String[] test = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogArchiveViewerPreferenceConstants.P_STRINGArch).split(";");
+		String[] test = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogArchiveViewerPreferenceConstants.P_STRINGArch).split(";"); //$NON-NLS-1$
 		title.setItems(test);
 		title.select(0);
 		Text search = new Text(filter,SWT.SINGLE|SWT.BORDER);
@@ -241,12 +242,12 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
         else
             end = stamp;
 
-        System.out.println("Start: " + start.format(Timestamp.FMT_DATE_HH_MM_SS));
-        System.out.println("End  : " + end.format(Timestamp.FMT_DATE_HH_MM_SS));
+        System.out.println(Messages.ExpertSearchDialog_start + start.format(Timestamp.FMT_DATE_HH_MM_SS));
+        System.out.println(Messages.ExpertSearchDialog_end + end.format(Timestamp.FMT_DATE_HH_MM_SS));
 
         if (start.isGreaterOrEqual(end))
-            info.setText("Start time must be 'before' end time!");
+            info.setText(Messages.ExpertSearchDialog_startEndMessage);
         else
-            info.setText("");
+            info.setText(""); //$NON-NLS-1$
     }
 }

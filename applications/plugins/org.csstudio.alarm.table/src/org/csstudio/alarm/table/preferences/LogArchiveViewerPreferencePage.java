@@ -2,6 +2,7 @@ package org.csstudio.alarm.table.preferences;
 
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.alarm.table.Messages;
 
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -34,7 +35,7 @@ public class LogArchiveViewerPreferencePage
 	public LogArchiveViewerPreferencePage() {
 		super(GRID);
 		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-		setDescription("ARCH Column names must correspond the map message keys");
+		setDescription(Messages.LogArchiveViewerPreferencePage_columnNamesMessageKeys);
 	}
 
 	/**
@@ -44,14 +45,14 @@ public class LogArchiveViewerPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		addField(new ListEditor(LogArchiveViewerPreferenceConstants.P_STRINGArch, LogArchiveViewerPreferenceConstants.P_STRINGArch + ": ", getFieldEditorParent()){
+		addField(new ListEditor(LogArchiveViewerPreferenceConstants.P_STRINGArch, LogArchiveViewerPreferenceConstants.P_STRINGArch + ": ", getFieldEditorParent()){ //$NON-NLS-1$
 
 			public String[] parseString(String stringList){
-				return stringList.split(";");
+				return stringList.split(";"); //$NON-NLS-1$
 			}
 
 			public String getNewInputObject(){
-				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), "Enter a new column name", "column: ", "", null);
+				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), Messages.LogArchiveViewerPreferencePage_newColumnName, Messages.LogArchiveViewerPreferencePage_column, "", null); //$NON-NLS-3$
 				if (inputDialog.open() == Window.OK) {
 					return inputDialog.getValue();
 				}
@@ -59,16 +60,16 @@ public class LogArchiveViewerPreferencePage
 			}
 
 			public String createList(String[] items){
-				String temp = "";
+				String temp = ""; //$NON-NLS-1$
 				for(int i = 0; i < items.length;i++){
-					temp = temp + items[i] + ";";
+					temp = temp + items[i] + ";"; //$NON-NLS-1$
 				}
 				return temp;
 			}
 
 		});
-		StringFieldEditor date = new StringFieldEditor(LogArchiveViewerPreferenceConstants.DATE_FORMAT,"Date format:",getFieldEditorParent());
-		date.getLabelControl(getFieldEditorParent()).setToolTipText("Java Date format");
+		StringFieldEditor date = new StringFieldEditor(LogArchiveViewerPreferenceConstants.DATE_FORMAT,Messages.LogArchiveViewerPreferencePage_dateFormat,getFieldEditorParent());
+		date.getLabelControl(getFieldEditorParent()).setToolTipText(Messages.LogArchiveViewerPreferencePage_javaDateFormat);
 		addField(date);
 		}
 

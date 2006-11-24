@@ -110,6 +110,13 @@
 
       </actionSet>
    </extension>
+   <extension
+         point="org.csstudio.platform.controlSystemItemFactories">
+      <controlSystemItemFactory
+            class="org.csstudio.alarm.table.dataModel.TextContainerFactory"
+            typeId="org.csstudio.alarm.table.controlSystemItemFactory1"/>
+   </extension>
+
    
 
 </plugin>
