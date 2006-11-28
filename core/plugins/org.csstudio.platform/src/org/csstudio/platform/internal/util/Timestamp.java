@@ -271,6 +271,18 @@ public final class Timestamp implements ITimestamp {
 		long secs = millis / 1000L;
 		return new Timestamp(secs, nanoseconds);
 	}
+	
+	/** Create timestamp from pieces.
+     *  Order of array elements is the same as returned by toPieces().
+     *  @see #fromPieces(int, int, int, int, int, int, long)
+     *  @see #toPieces()
+     */
+    public static Timestamp fromPieces(long pieces[])
+    {
+        return Timestamp.fromPieces((int)pieces[0], (int)pieces[1],
+                        (int)pieces[2], (int)pieces[3],
+                        (int)pieces[4], (int)pieces[5], pieces[6]);
+    }
 
 	/**
 	* {@inheritDoc}
@@ -292,47 +304,49 @@ public final class Timestamp implements ITimestamp {
 	/**
 	* {@inheritDoc}
 	*/
-	public String format(final int how) {
+	public String format(int how)
+	{
 		StringBuffer buf = new StringBuffer();
 		FieldPosition pos = new FieldPosition(0);
 		NumberFormat fmt = NumberFormat.getIntegerInstance();
 		fmt.setGroupingUsed(false);
-
-		long[] pieces = toPieces();
-
+		
+		long pieces[] = toPieces();
+		
 		// YYYY
 		fmt.setMinimumIntegerDigits(4);
-		fmt.format(pieces[0], buf, pos);
-		buf.append("/");
-		// MM
-		fmt.setMinimumIntegerDigits(2);
-		fmt.format(pieces[1], buf, pos);
-		buf.append("/");
-		// DD
-		fmt.format(pieces[2], buf, pos);
-		buf.append(" ");
-
-		if (how >= ITimestamp.FMT_DATE_HH_MM) {
-			// HH
-			fmt.format(pieces[3], buf, pos);
-			buf.append(":");
-			// MM
-			fmt.format(pieces[4], buf, pos);
-			buf.append(":");
-			if (how >= ITimestamp.FMT_DATE_HH_MM_SS) {
-				// SS
-				fmt.format(pieces[5], buf, pos);
-				if (how >= ITimestamp.FMT_DATE_HH_MM_SS_NANO) {
-					buf.append(".");
-					// 000000000
-					fmt.setMinimumIntegerDigits(9);
-					fmt.format(pieces[6], buf, pos);
-				}
-			}
-		}
+        fmt.format(pieces[0], buf, pos);
+        buf.append("/");
+        // MM
+        fmt.setMinimumIntegerDigits(2);
+        fmt.format(pieces[1], buf, pos);
+        buf.append("/");
+        // DD
+        fmt.format(pieces[2], buf, pos);
+        if (how >= FMT_DATE_HH_MM)
+        {
+            buf.append(" ");
+            // HH
+            fmt.format(pieces[3], buf, pos);
+            buf.append(":");
+            // MM
+            fmt.format(pieces[4], buf, pos);
+            if (how >= FMT_DATE_HH_MM_SS)
+            {
+                buf.append(":");
+                // SS
+                fmt.format(pieces[5], buf, pos);
+                if (how >= FMT_DATE_HH_MM_SS_NANO)
+                {
+                    buf.append(".");
+                    // 000000000
+                    fmt.setMinimumIntegerDigits(9);
+                    fmt.format(pieces[6], buf, pos);
+                }
+            }
+        }
 		return buf.toString();
 	}
-
 
 
 	/**
