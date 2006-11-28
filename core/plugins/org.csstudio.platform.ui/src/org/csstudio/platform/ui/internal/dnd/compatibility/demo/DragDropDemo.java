@@ -324,16 +324,23 @@ public class DragDropDemo {
 				new CssDropTargetAdapter() {
 					public void doDrop(List<IControlSystemItem> items) {
 						for (IControlSystemItem item : items) {
+							IArchiveDataSource dataSource = null;
+							
 							if (item instanceof IArchiveDataSource) {
-								IArchiveDataSource dataSource = (IArchiveDataSource) item;
+								dataSource = (IArchiveDataSource) item;
+							} else if (item instanceof IProcessVariableWithArchive) {
+								dataSource = ((IProcessVariableWithArchive) item).getArchiveDataSource();
+							}
+							
+							if (dataSource != null) {
 								appendText(archive_infos, " Archive '"
 										+ dataSource.getUrl() + "' ("
 										+ dataSource.getKey() + ", "
-										+ dataSource.getName() + ")");
+										+ dataSource.getName() + ")");								
 							}
 						}
 					}
-				}, new Class[] { IArchiveDataSource.class });
+				}, new Class[] { IArchiveDataSource.class, IProcessVariableWithArchive.class });
 
 		// DnDUtil.enableForDrop(pv_or_archs, DND.DROP_COPY,
 		// new ProcessVariableOrArchiveDataSourceDropTarget() {
@@ -405,7 +412,7 @@ public class DragDropDemo {
 								.getSelection()).toList();
 					}
 				}, new Class[] { IProcessVariableWithArchive.class,
-						IProcessVariable.class });
+						IProcessVariable.class, IArchiveDataSource.class });
 	}
 
 	public static void main(final String[] args) {
