@@ -64,6 +64,7 @@ public class LoginDialog extends TitleAreaDialog {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected final Control createDialogArea(final Composite parent) {
 		Control control = super.createDialogArea(parent);
 
@@ -101,7 +102,7 @@ public class LoginDialog extends TitleAreaDialog {
 	}
 
 	/**
-	 * 
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void okPressed() {

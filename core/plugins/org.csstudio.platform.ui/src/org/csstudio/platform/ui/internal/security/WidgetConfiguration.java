@@ -47,25 +47,21 @@ public class WidgetConfiguration {
 	 * @param changeEnablement Should enablement property be changed?
 	 * @param changeVisibility Should visibility property be changed?
 	 */
-	public WidgetConfiguration(boolean changeEnablement,
-			boolean changeVisibility) {
+	public WidgetConfiguration(final boolean changeEnablement,
+			final boolean changeVisibility) {
 		_changeEnablement = changeEnablement;
 		_changeVisibility = changeVisibility;
 	}
 	
 	/**
-	 * 
-	 * 
-	 * @return 
+	 * @return Should enablement property be changed?
 	 */
 	public boolean isChangeEnablement() {
 		return _changeEnablement;
 	}
 	
 	/**
-	 * 
-	 * 
-	 * @return 
+	 * @return Should visibility property be changed?
 	 */
 	public boolean isChangeVisibility() {
 		return _changeVisibility;

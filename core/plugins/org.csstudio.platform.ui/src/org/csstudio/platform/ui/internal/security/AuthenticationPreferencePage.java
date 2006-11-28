@@ -51,6 +51,7 @@ public class AuthenticationPreferencePage extends FieldEditorPreferencePage
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected final void createFieldEditors() {
 		addField(new BooleanFieldEditor(
 				ExecutionService.PROP_AUTH_LOGIN,

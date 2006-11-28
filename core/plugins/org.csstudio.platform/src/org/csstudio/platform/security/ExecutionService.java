@@ -72,11 +72,11 @@ public final class ExecutionService {
 	}
 
 	/**
-	 * Checks if the current user has the permission for the object behind the
+	 * Checks if the current user has the permission referenced by the 
 	 * given ID.
 	 * 
 	 * @param id
-	 *            The ID to check
+	 *            The ID of the right to check
 	 * @return True if the user has the permission; false otherwise
 	 */
 	public boolean canExecute(final String id) {

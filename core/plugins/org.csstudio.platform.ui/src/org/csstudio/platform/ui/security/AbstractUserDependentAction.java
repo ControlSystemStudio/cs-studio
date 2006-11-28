@@ -32,12 +32,12 @@ import org.eclipse.jface.action.Action;
 
 /**
  * This is the superclass for any Action that depends on the rights of the current user.
- * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
+ * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende & Stefan Hofer
  */
 public abstract class AbstractUserDependentAction extends Action implements IUserManagementListener, IRightsManagementListener {
 
 	/**
-	 * 
+	 * ID of the right necessary to execute this action.
 	 */
 	private String _rightId;
 	
@@ -56,16 +56,14 @@ public abstract class AbstractUserDependentAction extends Action implements IUse
 
 
 	/**
-	 * 
-	 * 
-	 * @return 
+	 * @return ID of the right necessary to execute this action.
 	 */
 	protected String getRightId() {
 		return _rightId;
 	}
 	
 	/**
-	 * 
+	 * Updates state depending on user permission.
 	 */
 	protected void updateState() {
 		setEnabled(ExecutionService.getInstance().canExecute(getRightId()));
@@ -73,7 +71,7 @@ public abstract class AbstractUserDependentAction extends Action implements IUse
 	
 
 	/**
-	 * @see org.eclipse.jface.action.Action#run()
+	 * {@inheritDoc} 
 	 */
 	@Override
 	public final void run() {
@@ -108,7 +106,7 @@ public abstract class AbstractUserDependentAction extends Action implements IUse
 
 	
 	/**
-	 * 
+	 * Removes listeners.
 	 * 
 	 * @throws Throwable 
 	 */

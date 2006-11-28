@@ -24,6 +24,8 @@ package org.csstudio.platform.internal.usermanagement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.platform.logging.CentralLogger;
+
 /**
  * The <code>UserManagementService</code> provides the central CSS core
  * functionalities for the management of <code>Users</code>. 
@@ -72,7 +74,7 @@ public final class UserManagementService {
 	 *            the user name.
 	 * @param password
 	 *            the password.
-	 * @return Rrue if the user with the given name can log into the CSS
+	 * @return True if the user with the given name can log into the CSS
 	 *         instance with the given password.
 	 */
 	public boolean checkUser(final String name, final String password) {
@@ -88,6 +90,7 @@ public final class UserManagementService {
 	 */
 	public void setUser(final IUser user) {
 		_user = user;
+		CentralLogger.getInstance().info(this, "User " + user.getName() + " logged in.");
 		notifyListener(new UserManagementEvent());
 	}
 

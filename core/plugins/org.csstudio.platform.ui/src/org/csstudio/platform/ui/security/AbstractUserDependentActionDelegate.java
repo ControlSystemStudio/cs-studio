@@ -28,28 +28,26 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 /**
  * This is the superclass for any IWorkbenchWindowActionDelegate that depends on the rights of the current user.
- * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
+ * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende & Stefan Hofer
  */
 public abstract class AbstractUserDependentActionDelegate extends AbstractUserDependentAction implements IWorkbenchWindowActionDelegate {
 
 	/**
-	 * 
+	 * The proxy of this action.
 	 */
 	private IAction _action;
 	
 	/**
+	 * Constructor.
 	 * 
-	 * 
-	 * @param rightId 
+	 * @param rightId ID of the right necessary to execute this action.
 	 */
 	public AbstractUserDependentActionDelegate(String rightId) {
 		super(rightId);
 	}
 
 	/**
-	 * 
-	 * 
-	 * @param action 
+	 * {@inheritDoc}
 	 */
 	public void run(IAction action) {
 		_action = action;
@@ -58,10 +56,7 @@ public abstract class AbstractUserDependentActionDelegate extends AbstractUserDe
 	}
 
 	/**
-	 * 
-	 * 
-	 * @param action 
-	 * @param selection 
+	 * {@inheritDoc}
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		_action = action;
@@ -69,8 +64,9 @@ public abstract class AbstractUserDependentActionDelegate extends AbstractUserDe
 	}
 
 	/**
-	 * 
+	 * {@inheritDoc} 
 	 */
+	@Override
 	protected void updateState() {
 		if (_action != null) {
 			_action.setEnabled(ExecutionService.getInstance().canExecute(getRightId()));
