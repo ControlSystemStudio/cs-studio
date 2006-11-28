@@ -22,19 +22,19 @@
 package org.csstudio.platform.security;
 
 /**
- * This interface must be implemented by a class that should react on events
- * from the SecureContainer.
+ * This interface must be implemented by a class that want to react on 
+ * security events.
  * 
- * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
+ * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende & Stefan Hofer
  */
-public interface ISecureContainerListener {
+public interface ISecurityListener {
 
 	/**
 	 * Handles the incoming event.
 	 * 
 	 * @param event
-	 *            The event
+	 *            The event to handle.
 	 */
-	void handleSecureContainerEvent(SecurityEvent event);
+	void handleSecurityEvent(SecurityEvent event);
 
 }

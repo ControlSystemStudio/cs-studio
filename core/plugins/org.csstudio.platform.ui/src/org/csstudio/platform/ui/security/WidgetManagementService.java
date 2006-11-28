@@ -37,9 +37,7 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * This class (de-)activates the registered widgets if the current user has the
- * permission for the id of the widget. A widget can be an ordernary object. The
- * IWidgetAdapter for this object have to manage what happens if the "widget"
- * should be (de-)activated.
+ * permission for the id of the widget. 
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  * 
@@ -93,20 +91,19 @@ public final class WidgetManagementService implements IUserManagementListener,
 
 	/**
 	 * 
-	 * 
-	 * @param changeEnablement 
-	 * @param control 
-	 * @param changeVisibility 
-	 * @param id 
+	 * @param control
+	 * @param id
+	 * @param changeEnablement Enable or disable the control.
+	 * @param changeVisibility View or hide the control.
 	 */
 	public void registerControl(Control control, String id, boolean changeEnablement, boolean changeVisibility) {
 		if (_controls.containsKey(control)) {
 			throw new IllegalArgumentException("Control is already registered.");
-		} else {
-			_controls.put(control, id);
-			_configurations.put(control, new WidgetConfiguration(changeEnablement, changeVisibility));
-			doRefreshControl(control, id);
 		}
+		
+		_controls.put(control, id);
+		_configurations.put(control, new WidgetConfiguration(changeEnablement, changeVisibility));
+		doRefreshControl(control, id);
 	}
 
 	/**

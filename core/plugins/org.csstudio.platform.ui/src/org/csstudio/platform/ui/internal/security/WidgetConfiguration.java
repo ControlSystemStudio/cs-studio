@@ -23,30 +23,29 @@ package org.csstudio.platform.ui.internal.security;
 
 
 /**
- * This class represents an object and its IWidgetAdapter.
+ * This class holds configuration information for widgets.
  * 
- * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
+ * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende & Stefan Hofer
  * 
  */
 public class WidgetConfiguration {
 
 	/**
-	 * 
+	 * Should enablement property be changed?
 	 */
 	private boolean _changeEnablement;
 
 	/**
-	 * 
+	 * Should visibility property be changed?
 	 */
 	private boolean _changeVisibility;
 
+	
 	/**
 	 * Constructor.
 	 * 
-	 * @param object
-	 *            The widget to manage
-	 * @param adapter
-	 *            The IWidgetAdapter to activate the widget
+	 * @param changeEnablement Should enablement property be changed?
+	 * @param changeVisibility Should visibility property be changed?
 	 */
 	public WidgetConfiguration(boolean changeEnablement,
 			boolean changeVisibility) {

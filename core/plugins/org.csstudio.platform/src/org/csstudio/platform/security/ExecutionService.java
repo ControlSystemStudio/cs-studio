@@ -28,8 +28,8 @@ import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.internal.usermanagement.UserManagementService;
 
 /**
- * This is the SecureContainer. It performs instances of
- * Abstract(Object)Executeable only if the current user has the permission to
+ * This Service executes instances of
+ * AbstractExecuteable if the current user has the permission to
  * run them. It also provides some methods to ask whether the current user has
  * the permission to access the objects behind an identifier. Offers methods to
  * get the current instance of the IRights- and IUserManagement.
@@ -46,7 +46,7 @@ public final class ExecutionService {
 	/**
 	 * The listeners.
 	 */
-	private List<ISecureContainerListener> _listeners;
+	private List<ISecurityListener> _listeners;
 
 	/**
 	 * Property for the appearence of the CSS login window at system startup.
@@ -57,13 +57,11 @@ public final class ExecutionService {
 	 * Private constructor due to singleton pattern.
 	 */
 	private ExecutionService() {
-		_listeners = new ArrayList<ISecureContainerListener>();
+		_listeners = new ArrayList<ISecurityListener>();
 	}
 
 	/**
-	 * 
-	 * 
-	 * @return
+	 * @return The singleton instance of this class.
 	 */
 	public static ExecutionService getInstance() {
 		if (_instance == null) {
@@ -75,7 +73,7 @@ public final class ExecutionService {
 
 	/**
 	 * Checks if the current user has the permission for the object behind the
-	 * given ID by calling IRightsManagement.hasRights(current_user, id, null).
+	 * given ID.
 	 * 
 	 * @param id
 	 *            The ID to check
@@ -87,23 +85,23 @@ public final class ExecutionService {
 	}
 
 	/**
-	 * Adds the given ISecureContainerListener to the internal list.
+	 * Adds the given listener to the internal list.
 	 * 
 	 * @param listener
-	 *            The ISecureContainerListener, which sould be added
+	 *            The ISecurityListener, which sould be added
 	 */
-	public void addISecureContainerListener(
-			final ISecureContainerListener listener) {
+	public void addListener(
+			final ISecurityListener listener) {
 		_listeners.add(listener);
 	}
 
 	/**
-	 * Deletes the given ISecureContainerListener from the internal list.
+	 * Deletes the given ISecurityListener from the internal list.
 	 * 
 	 * @param listener
-	 *            The ISecureContainerListener, which should be deleted
+	 *            The ISecurityListener, which should be deleted
 	 */
-	public void removeListener(final ISecureContainerListener listener) {
+	public void removeListener(final ISecurityListener listener) {
 		_listeners.remove(listener);
 	}
 
@@ -111,11 +109,11 @@ public final class ExecutionService {
 	 * Informs all registered ISecureContainerListeners.
 	 * 
 	 * @param event
-	 *            The ISecureContainerEvent, which should be send
+	 *            The event that the listeners are interested in.
 	 */
 	private void notifyListener(final SecurityEvent event) {
-		for (ISecureContainerListener listener : _listeners) {
-			listener.handleSecureContainerEvent(event);
+		for (ISecurityListener listener : _listeners) {
+			listener.handleSecurityEvent(event);
 		}
 	}
 

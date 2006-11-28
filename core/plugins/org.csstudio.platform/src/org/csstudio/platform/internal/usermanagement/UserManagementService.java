@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * The <code>UserManagementService</code> provides the central CSS core
- * functionalities for the management of <code>Users</code>. *
+ * functionalities for the management of <code>Users</code>. 
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */

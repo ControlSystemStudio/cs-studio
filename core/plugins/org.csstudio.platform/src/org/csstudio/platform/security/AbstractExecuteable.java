@@ -23,7 +23,7 @@ package org.csstudio.platform.security;
 
 /**
  * Abstract super class for executables. An executable encapsulates code that
- * should only be executed, if the currently logged in user has the rights to do
+ * should only be executed, if the currently logged in user has the right to do
  * so. An executable must be equipped with an abstract right ID that will be
  * exposed to the system admistrator to configure which users can perform which
  * executables.
