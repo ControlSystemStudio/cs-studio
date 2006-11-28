@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.dnd;
+package org.csstudio.platform.ui.internal.dnd;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -36,7 +36,7 @@ import org.junit.Test;
 public final class ProcessVariableTransferTest {
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.ui.dnd.ProcessVariableTransfer#getTypeIds()}.
+	 * {@link org.csstudio.platform.ui.internal.dnd.ProcessVariableTransfer#getTypeIds()}.
 	 */
 	@Test
 	public void testGetTypeIds() {
@@ -47,7 +47,7 @@ public final class ProcessVariableTransferTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.ui.dnd.ProcessVariableTransfer#getInstance()}.
+	 * {@link org.csstudio.platform.ui.internal.dnd.ProcessVariableTransfer#getInstance()}.
 	 */
 	@Test
 	public void testGetInstance() {
@@ -56,7 +56,7 @@ public final class ProcessVariableTransferTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.ui.dnd.ProcessVariableTransfer#getTypeNames()}.
+	 * {@link org.csstudio.platform.ui.internal.dnd.ProcessVariableTransfer#getTypeNames()}.
 	 */
 	@Test
 	public void testGetTypeNames() {
@@ -72,7 +72,7 @@ public final class ProcessVariableTransferTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.ui.dnd.ProcessVariableTransfer#javaToNative(java.lang.Object, org.eclipse.swt.dnd.TransferData)}.
+	 * {@link org.csstudio.platform.ui.internal.dnd.ProcessVariableTransfer#javaToNative(java.lang.Object, org.eclipse.swt.dnd.TransferData)}.
 	 */
 	@Test
 	public void testJavaToNativeObjectTransferData() {
@@ -81,7 +81,7 @@ public final class ProcessVariableTransferTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.ui.dnd.ProcessVariableTransfer#nativeToJava(org.eclipse.swt.dnd.TransferData)}.
+	 * {@link org.csstudio.platform.ui.internal.dnd.ProcessVariableTransfer#nativeToJava(org.eclipse.swt.dnd.TransferData)}.
 	 */
 	@Test
 	public void testNativeToJavaTransferData() {

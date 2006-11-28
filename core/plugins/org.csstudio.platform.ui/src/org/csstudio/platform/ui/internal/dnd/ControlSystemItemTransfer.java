@@ -35,7 +35,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.util.ControlSystemItemPath;
-import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
@@ -201,7 +200,7 @@ public final class ControlSystemItemTransfer extends ByteArrayTransfer {
 				Object[] paths = (Object[]) objectIn.readObject();
 
 				for (Object path : paths) {
-					assert path instanceof ControlSystemItemPath : "path instanceof ControlSystemItemPath";
+					assert path instanceof ControlSystemItemPath : "path instanceof ControlSystemItemPath"; //$NON-NLS-1$
 					received
 							.add(CentralItemFactory
 									.createControlSystemItem((ControlSystemItemPath) path));

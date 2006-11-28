@@ -19,25 +19,23 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.dnd;
+package org.csstudio.platform.ui.internal.dnd;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IControlSystemItem;
-import org.csstudio.platform.ui.internal.dnd.ControlSystemItemTransfer;
+import org.csstudio.platform.ui.dnd.ICssDropTargetListener;
 import org.csstudio.platform.util.ControlSystemItemPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 
 /**
- * This adapter class provides enhanced implementations for the methods
+ * This proxy class provides enhanced implementations for the methods
  * described by the <code>DropTargetListener</code> interface.
  * 
  * CSS clients that use this adapter will benefit especially from the
@@ -46,20 +44,24 @@ import org.eclipse.swt.dnd.TextTransfer;
  * {@link IControlSystemItem} can be applied as filter.
  * 
  * <p>
- * Classes that wish to deal with <code>DropTargetEvent</code>s can extend
- * this class and override only the methods which they are interested in.
+ * This class is not intended to be subclassed.
  * </p>
  * 
  * @see DragSourceListener
  * @see DragSourceEvent
  * @author Sven Wende, Stefan Hofer
  */
-public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
+public final class FilteredDropTargetProxy extends DropTargetAdapter {
 	/**
 	 * Contains all class types of resources, that will be provided during a DnD
 	 * operation.
 	 */
 	private Class[] _acceptedTypes;
+
+	/**
+	 * The drop target listener, the calls are delegated to.
+	 */
+	private ICssDropTargetListener _dropTargetListener;
 
 	/**
 	 * Constructs a drop target adapter, which only accepts items during DnD,
@@ -70,56 +72,13 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 	 * @param acceptedTypes
 	 *            the item types, that should be provided during DnD (need to be
 	 *            derived from {@link IControlSystemItem}
+	 * @param dropTargetListener
+	 *            The drop target listener, the calls are delegated to.
 	 */
-	public FilteredDropTargetAdapter(final Class[] acceptedTypes) {
-		// check filters first
-		for (Class clazz : acceptedTypes) {
-			if (!IControlSystemItem.class.isAssignableFrom(clazz)) {
-				throw new IllegalArgumentException("Drag&Drop Filter >>"
-						+ clazz.getName()
-						+ "<< is not derived from IControlSystemItem.");
-			}
-		}
+	public FilteredDropTargetProxy(final Class[] acceptedTypes,
+			final ICssDropTargetListener dropTargetListener) {
 		_acceptedTypes = acceptedTypes;
-	}
-
-	/**
-	 * This method is called after a successfull drop operaton. It provides the
-	 * ability for subclasses to process the dropped control system items, that
-	 * passed the filter. Use the <i>instanceOf</i> operator, to distinguish
-	 * between the different types that are possible if you specified more than
-	 * one type in your filter.
-	 * 
-	 * @param items
-	 *            control system items, that were dropped
-	 */
-	protected abstract void doDrop(List<IControlSystemItem> items);
-
-	/**
-	 * Gets all items from the drop target event, that pass the type class
-	 * filter.
-	 * 
-	 * @param providedItems
-	 *            the items, that are about to be dropped
-	 * @return all items, that pass the filter
-	 */
-	private List<IControlSystemItem> getFilteredItems(
-			final List<IControlSystemItem> providedItems) {
-
-		List<IControlSystemItem> filteredItems = new ArrayList<IControlSystemItem>();
-
-		// handle transfers of control system items
-
-		for (IControlSystemItem item : providedItems) {
-			for (Class clazz : _acceptedTypes) {
-				if (clazz.isAssignableFrom(item.getClass())) {
-					filteredItems.add(item);
-				}
-			}
-		}
-
-		return filteredItems;
-
+		_dropTargetListener = dropTargetListener;
 	}
 
 	/**
@@ -147,7 +106,7 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 			String tmp = (String) TextTransfer.getInstance().nativeToJava(
 					event.currentDataType);
 
-			String[] rows = tmp.split("\n");
+			String[] rows = tmp.split("\n"); //$NON-NLS-1$
 
 			for (String row : rows) {
 				ControlSystemItemPath path = ControlSystemItemPath
@@ -164,7 +123,7 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 		}
 
 		List<IControlSystemItem> filteredItems = getFilteredItems(providedItems);
-		doDrop(filteredItems);
+		_dropTargetListener.doDrop(filteredItems);
 	}
 
 	/**
@@ -229,7 +188,7 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 				String tmp = (String) TextTransfer.getInstance().nativeToJava(
 						event.currentDataType);
 
-				String[] rows = tmp.split("\n");
+				String[] rows = tmp.split("\n"); //$NON-NLS-1$
 
 				for (String row : rows) {
 					ControlSystemItemPath path = ControlSystemItemPath
@@ -254,4 +213,62 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void dragLeave(final DropTargetEvent event) {
+		_dropTargetListener.dragLeave(event);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void dragOperationChanged(final DropTargetEvent event) {
+		_dropTargetListener.dragOperationChanged(event);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void dragOver(final DropTargetEvent event) {
+		_dropTargetListener.dragOver(event);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void dropAccept(final DropTargetEvent event) {
+		_dropTargetListener.dropAccept(event);
+	}
+
+	/**
+	 * Gets all items from the drop target event, that pass the type class
+	 * filter.
+	 * 
+	 * @param providedItems
+	 *            the items, that are about to be dropped
+	 * @return all items, that pass the filter
+	 */
+	@SuppressWarnings("unchecked")
+	private List<IControlSystemItem> getFilteredItems(
+			final List<IControlSystemItem> providedItems) {
+
+		List<IControlSystemItem> filteredItems = new ArrayList<IControlSystemItem>();
+
+		// handle transfers of control system items
+
+		for (IControlSystemItem item : providedItems) {
+			for (Class clazz : _acceptedTypes) {
+				if (clazz.isAssignableFrom(item.getClass())) {
+					filteredItems.add(item);
+				}
+			}
+		}
+
+		return filteredItems;
+	}
 }

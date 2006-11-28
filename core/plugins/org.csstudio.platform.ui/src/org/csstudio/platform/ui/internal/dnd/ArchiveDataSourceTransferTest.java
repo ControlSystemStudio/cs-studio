@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.dnd;
+package org.csstudio.platform.ui.internal.dnd;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -36,7 +36,7 @@ import org.junit.Test;
 public final class ArchiveDataSourceTransferTest {
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.ui.dnd.ArchiveDataSourceTransfer#getTypeIds()}.
+	 * {@link org.csstudio.platform.ui.internal.dnd.ArchiveDataSourceTransfer#getTypeIds()}.
 	 */
 	@Test
 	public void testGetTypeIds() {
@@ -47,7 +47,7 @@ public final class ArchiveDataSourceTransferTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.ui.dnd.ArchiveDataSourceTransfer#getInstance()}.
+	 * {@link org.csstudio.platform.ui.internal.dnd.ArchiveDataSourceTransfer#getInstance()}.
 	 */
 	@Test
 	public void testGetInstance() {
@@ -56,7 +56,7 @@ public final class ArchiveDataSourceTransferTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.ui.dnd.ArchiveDataSourceTransfer#getTypeNames()}.
+	 * {@link org.csstudio.platform.ui.internal.dnd.ArchiveDataSourceTransfer#getTypeNames()}.
 	 */
 	@Test
 	public void testGetTypeNames() {
@@ -72,7 +72,7 @@ public final class ArchiveDataSourceTransferTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.ui.dnd.ArchiveDataSourceTransfer#javaToNative(java.lang.Object, org.eclipse.swt.dnd.TransferData)}.
+	 * {@link org.csstudio.platform.ui.internal.dnd.ArchiveDataSourceTransfer#javaToNative(java.lang.Object, org.eclipse.swt.dnd.TransferData)}.
 	 */
 	@Test
 	public void testJavaToNativeObjectTransferData() {
@@ -81,7 +81,7 @@ public final class ArchiveDataSourceTransferTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.ui.dnd.ArchiveDataSourceTransfer#nativeToJava(org.eclipse.swt.dnd.TransferData)}.
+	 * {@link org.csstudio.platform.ui.internal.dnd.ArchiveDataSourceTransfer#nativeToJava(org.eclipse.swt.dnd.TransferData)}.
 	 */
 	@Test
 	public void testNativeToJavaTransferData() {

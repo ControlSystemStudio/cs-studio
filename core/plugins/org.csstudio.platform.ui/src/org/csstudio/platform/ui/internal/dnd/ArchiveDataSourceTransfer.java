@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.dnd;
+package org.csstudio.platform.ui.internal.dnd;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,50 +31,51 @@ import java.util.Collection;
 import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.CentralItemFactory;
+import org.csstudio.platform.model.IArchiveDataSource;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
 /**
- * Drag-and-Drop transfer type for <code>IProcessVariableName</code>.
+ * Drag-and-Drop transfer type for <code>IArchiveDataSource</code>.
  * <p>
  * This transfer type expects the data to transfer to implement the
- * <code>IProcessVariable</code> interface, and the resulting data is
- * provided as an array of <code>IProcessVariable</code>.
+ * <code>IArchiveDataSource</code> interface, and the resulting data is
+ * provided as an array of <code>IArchiveDataSource</code>.
  * <p>
  * Most of this implementation is from the javadoc for ByteArrayTransfer.
  * 
- * @author Kay Kasemir
+ * @author Kay Kasemir, Sven Wende
  */
-public final class ProcessVariableTransfer extends ByteArrayTransfer {
+public final class ArchiveDataSourceTransfer extends ByteArrayTransfer {
 	/**
-	 * The type name.
+	 * The type name of this Transfer.
 	 */
-	private static final String TYPE_NAME = "pv_name"; //$NON-NLS-1$
+	private static final String TYPE_NAME = "archive_data_source"; //$NON-NLS-1$
 
 	/**
-	 * The type ID.
+	 * The type identification of this Transfer.
 	 */
-	private static final int TYPE_ID = registerType(TYPE_NAME);
+	private int TYPE_ID;
 
 	/**
 	 * The singleton instance.
 	 */
-	private static ProcessVariableTransfer _instance;
+	private static ArchiveDataSourceTransfer _instance;
 
 	/**
-	 * Hidden contructor.
+	 * Hidden constructor.
 	 * 
 	 * @see #getInstance()
 	 */
-	private ProcessVariableTransfer() {
+	private ArchiveDataSourceTransfer() {
+		TYPE_ID = registerType(TYPE_NAME);
 	}
 
-	/** @return The singleton instance of the ProcessVariableNameTransfer. */
-	public static ProcessVariableTransfer getInstance() {
+	/** @return The singleton instance of the ArchiveDataSourceTransfer. */
+	public static ArchiveDataSourceTransfer getInstance() {
 		if (_instance == null) {
-			_instance = new ProcessVariableTransfer();
+			_instance = new ArchiveDataSourceTransfer();
 		}
 		return _instance;
 	}
@@ -99,28 +100,27 @@ public final class ProcessVariableTransfer extends ByteArrayTransfer {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void javaToNative(final Object object,
-			final TransferData transferData) {
+	public void javaToNative(final Object object, final TransferData transferData) {
 		if (object == null
-				|| !(object instanceof IProcessVariable[]
-						|| object instanceof Collection || object instanceof IProcessVariable)) {
+				|| !(object instanceof IArchiveDataSource[]
+						|| object instanceof Collection || object instanceof IArchiveDataSource)) {
 			return;
 		}
 
 		if (isSupportedType(transferData)) {
-			List<IProcessVariable> processVariables = new ArrayList<IProcessVariable>();
+			List<IArchiveDataSource> archivesList = new ArrayList<IArchiveDataSource>();
 
-			if (object instanceof IProcessVariable) {
-				processVariables.add((IProcessVariable) object);
+			if (object instanceof IArchiveDataSource) {
+				archivesList.add((IArchiveDataSource) object);
 			}
-			if (object instanceof IProcessVariable[]) {
-				for (IProcessVariable ds : (IProcessVariable[]) object) {
-					processVariables.add(ds);
+			if (object instanceof IArchiveDataSource[]) {
+				for (IArchiveDataSource ds : (IArchiveDataSource[]) object) {
+					archivesList.add(ds);
 				}
 			} else if (object instanceof Collection) {
 				for (Object o : (Collection) object) {
-					if (o instanceof IProcessVariable) {
-						processVariables.add((IProcessVariable) o);
+					if (o instanceof IArchiveDataSource) {
+						archivesList.add((IArchiveDataSource) o);
 					}
 				}
 			}
@@ -130,8 +130,12 @@ public final class ProcessVariableTransfer extends ByteArrayTransfer {
 				// pMedium
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				DataOutputStream writeOut = new DataOutputStream(out);
-				for (IProcessVariable processVariable : processVariables) {
-					byte[] buffer = processVariable.getName().getBytes();
+				for (IArchiveDataSource archiveDataSource : archivesList) {
+					byte[] buffer = archiveDataSource.getUrl().getBytes();
+					writeOut.writeInt(buffer.length);
+					writeOut.write(buffer);
+					writeOut.writeInt(archiveDataSource.getKey());
+					buffer = archiveDataSource.getName().getBytes();
 					writeOut.writeInt(buffer.length);
 					writeOut.write(buffer);
 				}
@@ -152,29 +156,38 @@ public final class ProcessVariableTransfer extends ByteArrayTransfer {
 	public Object nativeToJava(final TransferData transferData) {
 		assert transferData != null;
 
-		IProcessVariable[] result = null;
+		IArchiveDataSource[] result = null;
 
 		if (isSupportedType(transferData)) {
-
 			byte[] buffer = (byte[]) super.nativeToJava(transferData);
 
-			List<IProcessVariable> received = new ArrayList<IProcessVariable>();
+			List<IArchiveDataSource> received = new ArrayList<IArchiveDataSource>();
+
 			try {
 				ByteArrayInputStream in = new ByteArrayInputStream(buffer);
 				DataInputStream readIn = new DataInputStream(in);
-				while (readIn.available() > 4) {
+				// URL length, key, name length = 12?
+				while (readIn.available() > 12) {
 					int size = readIn.readInt();
 					byte[] bytes = new byte[size];
 					readIn.read(bytes);
-					received.add(CentralItemFactory
-							.createProcessVariable(new String(bytes)));
+					String url = new String(bytes);
+
+					int key = readIn.readInt();
+
+					size = readIn.readInt();
+					bytes = new byte[size];
+					readIn.read(bytes);
+					String name = new String(bytes);
+
+					received.add(CentralItemFactory.createArchiveDataSource(url, key, name));
 				}
 				readIn.close();
-			} catch (IOException ex) {
-				return null;
+			} catch (IOException e) {
+				CentralLogger.getInstance().equals(e);
 			}
 
-			result = received.toArray(new IProcessVariable[received.size()]);
+			result = received.toArray(new IArchiveDataSource[received.size()]);
 		}
 
 		return result;

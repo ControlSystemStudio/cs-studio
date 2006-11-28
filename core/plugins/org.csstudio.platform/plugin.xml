@@ -25,6 +25,9 @@
       <controlSystemItemFactory
             class="org.csstudio.platform.internal.model.ArchiveDataSourceFactory"
             typeId="css:archiveDataSource"/>
+      <controlSystemItemFactory
+            class="org.csstudio.platform.internal.model.ProcessVariableWithArchive"
+            typeId="css:processVariableWithArchive"/>
    </extension>
 
 

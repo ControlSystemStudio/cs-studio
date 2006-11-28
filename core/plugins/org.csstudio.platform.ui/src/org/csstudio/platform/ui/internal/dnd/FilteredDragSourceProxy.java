@@ -19,20 +19,20 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.dnd;
+package org.csstudio.platform.ui.internal.dnd;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IControlSystemItem;
-import org.csstudio.platform.ui.internal.dnd.ControlSystemItemTransfer;
+import org.csstudio.platform.ui.dnd.ICssDragSourceListener;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 
 /**
- * This adapter class provides enhanced implementations for the methods
+ * This proxy class provides enhanced implementations for the methods
  * described by the <code>DragSourceListener</code> interface.
  * 
  * CSS clients, that use this adapter will benefit especially from the
@@ -41,15 +41,14 @@ import org.eclipse.swt.dnd.TextTransfer;
  * {@link IControlSystemItem} can be applied as filter.
  * 
  * <p>
- * Classes that wish to deal with <code>DragSourceEvent</code>s can extend
- * this class and override only the methods which they are interested in.
+ * This class is not intended to be subclassed.
  * </p>
  * 
  * @see DragSourceListener
  * @see DragSourceEvent
  * @author Sven Wende, Stefan Hofer
  */
-public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
+public final class FilteredDragSourceProxy extends DragSourceAdapter {
 
 	/**
 	 * Contains all class types of resources, that will be provided during a DnD
@@ -58,14 +57,9 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 	private Class[] _acceptedTypes;
 
 	/**
-	 * {@inheritDoc}
+	 * The drag source listener, the calls are delegated to.
 	 */
-	@Override
-	public void dragStart(final DragSourceEvent event) {
-		super.dragStart(event);
-		ControlSystemItemTransfer.getInstance().setSelectedItems(
-				getFilteredSelection(getCurrentSelection()));
-	}
+	private ICssDragSourceListener _dragSourceListener;
 
 	/**
 	 * Constructs a drag source adapter, which only provides items during DnD,
@@ -76,46 +70,22 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 	 * @param acceptedTypes
 	 *            The item types, that should be provided during DnD (need to be
 	 *            derived from {@link IControlSystemItem}.
+	 * @param dragSourceListener
+	 *            The drag source listener, the calls are delegated to.
 	 */
-	public FilteredDragSourceAdapter(final Class[] acceptedTypes) {
-		// check filters first
-		for (Class clazz : acceptedTypes) {
-			if (!IControlSystemItem.class.isAssignableFrom(clazz)) {
-				throw new IllegalArgumentException("Drag&Drop Filter >>"
-						+ clazz.getName()
-						+ "<< is not derived from IControlSystemItem.");
-			}
-		}
+	public FilteredDragSourceProxy(final Class[] acceptedTypes,
+			final ICssDragSourceListener dragSourceListener) {
+		_dragSourceListener = dragSourceListener;
 		_acceptedTypes = acceptedTypes;
 	}
 
 	/**
-	 * Subclasses must implement this method and should return the currently
-	 * selected objects, e.g. the current selection of a TreeViewer.
-	 * 
-	 * @return the currently selected objects
+	 * {@inheritDoc}
 	 */
-	protected abstract List getCurrentSelection();
-
-	/**
-	 * @param fullSelection
-	 *            A list with the complete selection.
-	 * @return returns the currently selected items, that pass the class types
-	 *         filter
-	 */
-	private List<IControlSystemItem> getFilteredSelection(
-			final List fullSelection) {
-		List<IControlSystemItem> filteredSelection = new ArrayList<IControlSystemItem>();
-
-		for (Object item : fullSelection) {
-			for (Class clazz : _acceptedTypes) {
-				if (clazz.isAssignableFrom(item.getClass())) {
-					filteredSelection.add((IControlSystemItem) item);
-				}
-			}
-		}
-
-		return filteredSelection;
+	@Override
+	public void dragStart(final DragSourceEvent event) {
+		ControlSystemItemTransfer.getInstance().setSelectedItems(
+				getFilteredSelection(_dragSourceListener.getCurrentSelection()));
 	}
 
 	/**
@@ -124,8 +94,8 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 	@Override
 	public void dragSetData(final DragSourceEvent event) {
 		List<IControlSystemItem> items = null;
-		List currentSelection = getCurrentSelection();
-		
+		List currentSelection = _dragSourceListener.getCurrentSelection();
+
 		if ((currentSelection != null) && (currentSelection.size() > 0)) {
 			items = getFilteredSelection(currentSelection);
 		} else {
@@ -142,11 +112,41 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 				String path = CentralItemFactory.createControlSystemItemPath(
 						item).toPortableString();
 				sb.append(path);
-				sb.append("\n");
+				sb.append("\n"); //$NON-NLS-1$
 			}
 
 			event.data = sb.toString();
 
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void dragFinished(final DragSourceEvent event) {
+		_dragSourceListener.dragFinished(event);
+	}	
+	
+	/**
+	 * @param fullSelection
+	 *            A list with the complete selection.
+	 * @return returns the currently selected items, that pass the class types
+	 *         filter
+	 */
+	@SuppressWarnings("unchecked")
+	private List<IControlSystemItem> getFilteredSelection(
+			final List fullSelection) {
+		List<IControlSystemItem> filteredSelection = new ArrayList<IControlSystemItem>();
+
+		for (Object item : fullSelection) {
+			for (Class clazz : _acceptedTypes) {
+				if (clazz.isAssignableFrom(item.getClass())) {
+					filteredSelection.add((IControlSystemItem) item);
+				}
+			}
+		}
+
+		return filteredSelection;
+	}	
 }

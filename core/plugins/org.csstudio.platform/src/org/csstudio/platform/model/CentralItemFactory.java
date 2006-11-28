@@ -24,6 +24,7 @@ package org.csstudio.platform.model;
 import org.csstudio.platform.internal.model.ArchiveDataSource;
 import org.csstudio.platform.internal.model.ControlSystemItemFactoriesRegistry;
 import org.csstudio.platform.internal.model.ProcessVariable;
+import org.csstudio.platform.internal.model.ProcessVariableWithArchive;
 import org.csstudio.platform.util.ControlSystemItemPath;
 
 /**
@@ -73,12 +74,32 @@ public final class CentralItemFactory {
 	}
 
 	/**
+	 * Creates a process variable with an archive data source.
+	 * 
+	 * @param pvName
+	 *            the name of the process variable
+	 * @param url
+	 *            an url
+	 * @param key
+	 *            a key
+	 * @param archiveName
+	 *            the archive name
+	 * @return A process variable with an archive data source.
+	 */
+	public static IProcessVariableWithArchive createProcessVariableWithArchive(
+			final String pvName, final String url, final int key,
+			final String archiveName) {
+		return new ProcessVariableWithArchive(pvName, url, key, archiveName);
+	}
+
+	/**
 	 * Create a control system item from the specified path.
 	 * 
 	 * @param path
 	 *            the path
 	 * @return a control system item or null, if none was identified by the path
 	 */
+	@SuppressWarnings("unchecked")
 	public static IControlSystemItem createControlSystemItem(
 			final ControlSystemItemPath path) {
 		assert path != null;
@@ -101,6 +122,7 @@ public final class CentralItemFactory {
 	 *            the control system item
 	 * @return a path
 	 */
+	@SuppressWarnings("unchecked")
 	public static ControlSystemItemPath createControlSystemItemPath(
 			final IControlSystemItem item) {
 		assert item != null;
