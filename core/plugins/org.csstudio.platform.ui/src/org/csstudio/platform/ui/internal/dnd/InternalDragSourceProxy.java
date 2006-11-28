@@ -31,6 +31,11 @@ public final class InternalDragSourceProxy extends DragSourceAdapter {
 	 * The drag source listener, the calls are delegated to.
 	 */
 	private ICssDragSourceListener _dragSourceListener;
+	
+	/**
+	 * Cache the offered selection.
+	 */
+	private List _selection;
 
 	/**
 	 * Constructs a drag source adapter, which only provides items during DnD,
@@ -56,9 +61,9 @@ public final class InternalDragSourceProxy extends DragSourceAdapter {
 	@Override
 	public void dragStart(final DragSourceEvent event) {
 		super.dragStart(event);
+		_selection = _dragSourceListener.getCurrentSelection();
 
-		if (getFilteredSelection(_dragSourceListener.getCurrentSelection())
-				.size() < 1) {
+		if (_selection.size() < 1) {
 			event.doit = false;
 		}
 	}
@@ -68,8 +73,7 @@ public final class InternalDragSourceProxy extends DragSourceAdapter {
 	 */
 	@Override
 	public void dragSetData(final DragSourceEvent event) {
-		List<IControlSystemItem> items = getFilteredSelection(_dragSourceListener
-				.getCurrentSelection());
+		List<IControlSystemItem> items = getFilteredSelection(_selection);
 
 		if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 			StringBuffer buf = new StringBuffer();

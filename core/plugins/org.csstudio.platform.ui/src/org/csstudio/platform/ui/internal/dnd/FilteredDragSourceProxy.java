@@ -60,7 +60,7 @@ public final class FilteredDragSourceProxy extends DragSourceAdapter {
 	 * The drag source listener, the calls are delegated to.
 	 */
 	private ICssDragSourceListener _dragSourceListener;
-
+	
 	/**
 	 * Constructs a drag source adapter, which only provides items during DnD,
 	 * that are of one of the specified types. The only prerequisite for the
