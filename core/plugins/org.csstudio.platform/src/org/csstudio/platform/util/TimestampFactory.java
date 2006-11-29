@@ -75,8 +75,6 @@ public final class TimestampFactory {
 		long secs = milli / 1000;
 		milli -= secs * 1000;
 		long nano = milli * 1000000;
-		Timestamp t = new Timestamp();
-		t.setSecondsAndNanoseconds(secs, nano);
-		return t;
+		return new Timestamp(secs, nano);
 	}
 }
