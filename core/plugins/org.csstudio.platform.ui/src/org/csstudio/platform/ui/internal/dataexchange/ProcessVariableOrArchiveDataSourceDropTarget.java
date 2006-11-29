@@ -1,4 +1,4 @@
-package org.csstudio.platform.ui.internal.data.exchange;
+package org.csstudio.platform.ui.internal.dataexchange;
 
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;

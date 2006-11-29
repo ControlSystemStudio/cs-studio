@@ -1,4 +1,4 @@
-package org.csstudio.platform.ui.internal.data.exchange;
+package org.csstudio.platform.ui.internal.dataexchange;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

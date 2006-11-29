@@ -1,16 +1,16 @@
-package org.csstudio.platform.ui.internal.data.exchange.demo;
+package org.csstudio.platform.ui.internal.dataexchange.demo;
 
 import java.util.Vector;
 
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.data.exchange.ArchiveDataSourceDragSource;
-import org.csstudio.platform.ui.internal.data.exchange.ArchiveDataSourceDropTarget;
-import org.csstudio.platform.ui.internal.data.exchange.ProcessVariableDragSource;
-import org.csstudio.platform.ui.internal.data.exchange.ProcessVariableDropTarget;
-import org.csstudio.platform.ui.internal.data.exchange.ProcessVariableOrArchiveDataSourceDropTarget;
-import org.csstudio.platform.ui.internal.data.exchange.ProcessVariableWithArchiveDragSource;
+import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDragSource;
+import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDropTarget;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDataSourceDropTarget;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithArchiveDragSource;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;

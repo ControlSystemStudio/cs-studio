@@ -1,4 +1,4 @@
-package org.csstudio.platform.ui.internal.data.exchange.demo;
+package org.csstudio.platform.ui.internal.dataexchange.demo;
 
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;

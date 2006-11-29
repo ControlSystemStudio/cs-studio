@@ -1,10 +1,9 @@
-package org.csstudio.platform.ui.internal.data.exchange;
+package org.csstudio.platform.ui.internal.dataexchange;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.platform.model.IProcessVariableWithArchive;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -17,36 +16,49 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Control;
 
-/** Support dragging a PV Name and Archive Data Source info out of a GUI item.
+/** Support dragging Archive Data Source info out of a GUI item.
  *  <p>
- *  @see IProcessVariableWithArchive
- *  @see ProcessVariableDragSource
- *  @see ArchiveDataSourceDragSource
+ *  The double "source" in the name sounds silly,
+ *  but note that this is a drag source (1)
+ *  for archive data source (2) information, i.e. where to get history data,
+ *  not a source of archive data, i.e. actual samples.
+ *  <p>
+ *  The user of this class has to provide the following:
+ *  <ol>
+ *  <li>A GUI item from which to drag data, for example a 'Table' or 'Tree'
+ *      widget, but any SWT Control would work.
+ *  <li>A selection provider that implements or adapts to
+ *      IArchiveDataSource.
+ *      In the table or tree example, that can be the associated JFace
+ *      TableViewer or TreeViewer. In other cases, you might have to
+ *      implement an ISelectionProvider.
+ *  </ol>
  *  @author Kay Kasemir
  */
-public class ProcessVariableWithArchiveDragSource implements DragSourceListener
+public class ArchiveDataSourceDragSource implements DragSourceListener
 {
-    private static final boolean debug = true;
     private ISelectionProvider selection_provider;
 	private DragSource source;
-    private ArrayList<IProcessVariableWithArchive> data
-        = new ArrayList<IProcessVariableWithArchive>();
+    private ArrayList<IArchiveDataSource> archives
+        = new ArrayList<IArchiveDataSource>();
 	
-    /** Create a drag source for the given GUI item.
+    /** Create an archive data source drag source for the given GUI item.
+     *  <p>
+     *  The current selection should implement or adapt to IArchiveDataSource,
+     *  because that is how the info to 'drag' will be requested
+     *  from the current selection.
      *  <p>
      *  @param control The GUI element from which "drag" should be supported.
      *  @param selection_provider Interface to whatver provides the current selection
      *  in your application.
      */
-	public ProcessVariableWithArchiveDragSource(Control control,
+	public ArchiveDataSourceDragSource(Control control,
             ISelectionProvider selection_provider)
 	{
 	    this.selection_provider = selection_provider;
 		source = new DragSource(control, DND.DROP_COPY);
         source.setTransfer(new Transfer[]
         {
-            ProcessVariableWithArchiveTransfer.getInstance(),
-            ProcessVariableNameTransfer.getInstance(),
             ArchiveDataSourceTransfer.getInstance(),
             TextTransfer.getInstance()
         });
@@ -62,9 +74,7 @@ public class ProcessVariableWithArchiveDragSource implements DragSourceListener
      */
 	public void dragStart(DragSourceEvent event)
 	{
-        if (debug)
-            System.out.println("DragStart for PV with Archive");
-        data.clear();
+        archives.clear();
         // Get all archives from the current selection.
         ISelection sel = selection_provider.getSelection();
         if (sel instanceof IStructuredSelection)
@@ -73,23 +83,21 @@ public class ProcessVariableWithArchiveDragSource implements DragSourceListener
             while (items.hasNext())
             {
                 Object item = items.next();
-                if (debug)
-                    System.out.println("Data: " + item.getClass().getName());
                 // Get archive ...
-                if (item instanceof IProcessVariableWithArchive)
-                    data.add((IProcessVariableWithArchive) item);
+                if (item instanceof IArchiveDataSource)
+                    archives.add((IArchiveDataSource) item);
                 else if (item instanceof IAdaptable)
                 {   // or adapt to archive
-                    IProcessVariableWithArchive archive_item =
-                        (IProcessVariableWithArchive)
-                        ((IAdaptable)item).getAdapter(IProcessVariableWithArchive.class);
+                    IArchiveDataSource archive_item =
+                        (IArchiveDataSource)
+                        ((IAdaptable)item).getAdapter(IArchiveDataSource.class);
                     if (item != null)
-                        data.add(archive_item);
+                        archives.add(archive_item);
                 }
                 // else: Can't use that item
             }
         }
-        if (data.size() < 1)
+        if (archives.size() < 1)
             event.doit = false;
 	}
 
@@ -99,37 +107,20 @@ public class ProcessVariableWithArchiveDragSource implements DragSourceListener
      */
 	public void dragSetData(DragSourceEvent event)
 	{
-        if (ProcessVariableWithArchiveTransfer.getInstance()
-                        .isSupportedType(event.dataType))
-        {   // Perfect match
-            event.data = data;
-        }
-        else if (ProcessVariableNameTransfer.getInstance()
+        if (ArchiveDataSourceTransfer.getInstance()
             .isSupportedType(event.dataType))
-        {   // IProcessVariableNameWithArchiveDataSource
-            // implies IProcessVariableName
-            event.data = data;
-        }
-        else if (ArchiveDataSourceTransfer.getInstance().
-                        isSupportedType(event.dataType))
         {
-            // Get the IArchiveDataSource
-            ArrayList<IArchiveDataSource> archives =
-                new ArrayList<IArchiveDataSource>(data.size());
-            for (int i = 0; i < data.size(); i++)
-                archives.add(data.get(i).getArchiveDataSource());
             event.data = archives;
         }
         else if (TextTransfer.getInstance().isSupportedType(event.dataType))
-		{   // Get a string
+		{
 			StringBuffer buf = new StringBuffer();
-			for (int i = 0; i < data.size(); i++)
+			for (int i = 0; i < archives.size(); i++)
 			{
 				if (i > 0)
 					buf.append(", ");
-                buf.append(data.get(i).getName());
-				IArchiveDataSource arch = data.get(i).getArchiveDataSource();
-                buf.append(" [ " + arch.getUrl() + ", "
+				IArchiveDataSource arch = archives.get(i);
+                buf.append("[ " + arch.getUrl() + ", "
                                 + arch.getKey() + ", "
                                 + arch.getName() + " ]");
 			}
@@ -143,6 +134,6 @@ public class ProcessVariableWithArchiveDragSource implements DragSourceListener
      */
 	public void dragFinished(DragSourceEvent event)
 	{
-		data.clear();
+		archives.clear();
 	}
 }
