@@ -1,0 +1,23 @@
+package org.csstudio.platform.ui.internal.data.exchange.demo;
+
+import org.csstudio.platform.ui.internal.data.exchange.ProcessVariableName;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
+
+/** <code>LabelProvider</code> for <class>ProcessVariableName</class> data. 
+ *  @author Kay Kasemir
+ */
+public class StringLabelProvider extends LabelProvider implements
+		ITableLabelProvider
+{
+	public String getColumnText(Object obj, int index)
+	{
+        return ((ProcessVariableName)obj).getName();
+	}
+
+	public Image getColumnImage(Object obj, int index)
+	{
+        return null;
+	}
+}

@@ -21,16 +21,10 @@
  */
 package org.csstudio.platform.ui.dnd;
 
-import java.util.List;
-
-import org.csstudio.platform.model.IControlSystemItem;
-import org.csstudio.platform.ui.internal.dnd.InternalDragSourceProxy;
-import org.csstudio.platform.ui.internal.dnd.InternalDropTargetProxy;
-import org.csstudio.platform.ui.internal.dnd.TransferRegistry;
+import org.csstudio.platform.ui.internal.dnd.ControlSystemItemTransfer;
+import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Control;
@@ -51,11 +45,7 @@ public final class DnDUtil {
 	}
 
 	/**
-	 * Prepares the specified control for drop operations.<br>
-	 * <p>
-	 * <b>This method is part of the DnD compatibility layer. Please use the CSS
-	 * DnD API for further developments.</b>
-	 * </p>
+	 * Prepares the specified control for drop operations.
 	 * 
 	 * @param control
 	 *            the <code>Control</code> over which the user positions the
@@ -65,43 +55,24 @@ public final class DnDUtil {
 	 *            combination of any of DND.DROP_NONE, DND.DROP_COPY,
 	 *            DND.DROP_MOVE, DND.DROP_LINK (further details can be found in
 	 *            {@link DND})
-	 * @param dropTargetListener
+	 * @param dropTargetAdapter
 	 *            the drop listener who will be notified when a drag and drop
 	 *            operation is in progress, by sending it one of the messages
 	 *            defined in the <code>DropTargetListener</code> interface.
-	 * @param acceptedTypes
-	 *            The item types, that should be provided during DnD (need to be
-	 *            derived from {@link IControlSystemItem}.
 	 */
 	public static void enableForDrop(final Control control, final int style,
-			final ICssDropTargetListener dropTargetListener,
-			final Class[] acceptedTypes) {
-
-		for (Class clazz : acceptedTypes) {
-			if (!IControlSystemItem.class.isAssignableFrom(clazz)) {
-				throw new IllegalArgumentException("Drag&Drop Filter >>" //$NON-NLS-1$
-						+ clazz.getName()
-						+ "<< is not derived from IControlSystemItem."); //$NON-NLS-1$
-			}
-		}
-
-		DropTargetAdapter dropTargetAdapter = new InternalDropTargetProxy(acceptedTypes,
-				dropTargetListener);
-
-		List<Transfer> transferList = TransferRegistry
-				.getTransfers(acceptedTypes);
+			final FilteredDropTargetAdapter dropTargetAdapter) {
 		DropTarget dropTarget = new DropTarget(control, style);
-		dropTarget.setTransfer(transferList.toArray(new Transfer[transferList
-				.size()]));
+
+		dropTarget.setTransfer(new Transfer[] {
+				ControlSystemItemTransfer.getInstance(),
+				TextTransfer.getInstance()});
+
 		dropTarget.addDropListener(dropTargetAdapter);
 	}
 
 	/**
-	 * Prepares the specified control for drop operations.<br>
-	 * <p>
-	 * <b>This method is part of the DnD compatibility layer. Please use the CSS
-	 * DnD API for further developments.</b>
-	 * </p>
+	 * Prepares the specified control for drop operations.
 	 * 
 	 * @param control
 	 *            the <code>Control</code> that the user clicks on to initiate
@@ -112,36 +83,23 @@ public final class DnDUtil {
 	 *            DND.DROP_MOVE, DND.DROP_LINK (further details can be found in
 	 *            {@link DND})
 	 * 
-	 * @param dragSourceListener
+	 * @param dragSourceAdapter
 	 *            the listener who will be notified when a drag and drop
 	 *            operation is in progress, by sending it one of the messages
 	 *            defined in the <code>DragSourceListener</code> interface.
-	 * @param acceptedTypes
-	 *            The item types, that should be provided during DnD (need to be
-	 *            derived from {@link IControlSystemItem}.
 	 */
 	public static void enableForDrag(final Control control, final int style,
-			final ICssDragSourceListener dragSourceListener,
-			final Class[] acceptedTypes) {
-
-		for (Class clazz : acceptedTypes) {
-			if (!IControlSystemItem.class.isAssignableFrom(clazz)) {
-				throw new IllegalArgumentException("Drag&Drop Filter >>" //$NON-NLS-1$
-						+ clazz.getName()
-						+ "<< is not derived from IControlSystemItem."); //$NON-NLS-1$
-			}
-		}
-
-		DragSourceAdapter dragSourceAdapter = new InternalDragSourceProxy(acceptedTypes,
-				dragSourceListener);
-
-		List<Transfer> transferList = TransferRegistry
-				.getTransfers(acceptedTypes);
-		transferList.add(TextTransfer.getInstance());
+			final FilteredDragSourceAdapter dragSourceAdapter) {
 
 		DragSource dragSource = new DragSource(control, style);
-		dragSource.setTransfer(transferList.toArray(new Transfer[transferList
-				.size()]));
+
+		Transfer[] types = new Transfer[] {
+				ControlSystemItemTransfer.getInstance(),
+				TextTransfer.getInstance() };
+
+		dragSource.setTransfer(types);
+
 		dragSource.addDragListener(dragSourceAdapter);
 	}
+
 }

@@ -18,7 +18,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-Vendor: Desy
 Export-Package: org.csstudio.platform.ui,
  org.csstudio.platform.ui.dialogs,
- org.csstudio.platform.ui.dnd,
+ org.csstudio.platform.ui.dnd;x-friends:="org.csstudio.platform.dnddemo",
  org.csstudio.platform.ui.security,
  org.csstudio.platform.ui.util,
  org.csstudio.platform.ui.workbench

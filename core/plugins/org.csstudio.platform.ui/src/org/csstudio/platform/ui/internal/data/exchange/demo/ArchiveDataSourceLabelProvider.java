@@ -1,6 +1,6 @@
-package org.csstudio.platform.ui.internal.dnd.compatibility.demo;
+package org.csstudio.platform.ui.internal.data.exchange.demo;
 
-import org.csstudio.platform.model.IArchiveDataSource;
+import org.csstudio.platform.ui.internal.data.exchange.IArchiveDataSource;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -11,7 +11,7 @@ import org.eclipse.swt.graphics.Image;
 public class ArchiveDataSourceLabelProvider extends LabelProvider implements
 		ITableLabelProvider
 {
-	public String getColumnText(final Object obj, final int index)
+	public String getColumnText(Object obj, int index)
 	{
         IArchiveDataSource arch = (IArchiveDataSource) obj;
         switch (index)
@@ -23,7 +23,7 @@ public class ArchiveDataSourceLabelProvider extends LabelProvider implements
         return null;
 	}
 
-	public Image getColumnImage(final Object obj, final int index)
+	public Image getColumnImage(Object obj, int index)
 	{
         return null;
 	}

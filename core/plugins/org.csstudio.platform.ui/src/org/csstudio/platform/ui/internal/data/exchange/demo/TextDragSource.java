@@ -1,4 +1,4 @@
-package org.csstudio.platform.ui.internal.dnd.compatibility.demo;
+package org.csstudio.platform.ui.internal.data.exchange.demo;
 
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -17,7 +17,7 @@ public class TextDragSource implements DragSourceListener
     private DragSource source;
 
 	
-	public TextDragSource(final Control control, final String text)
+	public TextDragSource(Control control, String text)
 	{
 	    this.text = text;
 		source = new DragSource(control, DND.DROP_COPY);
@@ -25,18 +25,17 @@ public class TextDragSource implements DragSourceListener
 		source.addDragListener(this);
 	}
 
-	public void dragStart(final DragSourceEvent event)
+	public void dragStart(DragSourceEvent event)
 	{
 	}
 
-	public void dragSetData(final DragSourceEvent event)
+	public void dragSetData(DragSourceEvent event)
 	{
-		if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+		if (TextTransfer.getInstance().isSupportedType(event.dataType))
 			event.data = text;
-		}
 	}
 
-	public void dragFinished(final DragSourceEvent event)
+	public void dragFinished(DragSourceEvent event)
 	{
 	}
 }
