@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.csstudio.platform.libs.epics.preferences.EpicsPreferencePage"
+            id="de.desy.css.libs.epics.preferences.EpicsPreferencePage"
+            name="JCA/CAJ Preferences"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.platform.libs.epics.preferences.PreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc file="toc.xml"/>
+      <toc
+            file="testToc.xml"
+            primary="true"/>
+   </extension>
+
+</plugin>

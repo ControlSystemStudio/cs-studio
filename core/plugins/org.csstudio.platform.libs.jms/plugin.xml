@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc file="toc.xml"/>
+      <toc
+            file="testToc.xml"
+            primary="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.csstudio.platform.libs.jms.preferences.JMSPreferencePage"
+            id="org.csstudio.platform.libs.jms.preferences.JMSPreferencePage"
+            name="JMS Preferences"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.platform.libs.jms.preferences.PreferenceInitializer"/>
+   </extension>
+
+</plugin>
