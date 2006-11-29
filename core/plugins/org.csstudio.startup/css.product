@@ -46,13 +46,15 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       </win>
    </launcher>
 
-
    <plugins>
       <plugin id="com.ibm.icu"/>
       <plugin id="org.apache.ant"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.xerces"/>
       <plugin id="org.csstudio.platform"/>
+      <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.platform.libs.jdbc"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.startup"/>
       <plugin id="org.eclipse.ant.core"/>
