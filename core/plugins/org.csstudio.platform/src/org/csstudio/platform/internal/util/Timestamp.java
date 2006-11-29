@@ -396,11 +396,11 @@ public final class Timestamp implements ITimestamp {
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (!(obj instanceof Timestamp)) {
+		if (!(obj instanceof ITimestamp)) {
 			return false;
 		}
-		Timestamp rhs = (Timestamp) obj;
-		return rhs._seconds == _seconds && rhs._nanoseconds == _nanoseconds;
+		ITimestamp rhs = (ITimestamp) obj;
+		return rhs.seconds() == _seconds && rhs.nanoseconds() == _nanoseconds;
 	}
 
 	/**
@@ -415,7 +415,7 @@ public final class Timestamp implements ITimestamp {
 	 * {@inheritDoc}
 	 */
 	public int compareTo(final ITimestamp rhs) {
-		if (isGreaterThan((Timestamp) rhs)) {
+		if (isGreaterThan(rhs)) {
 			return 1;
 		}
 		if (equals(rhs)) {
