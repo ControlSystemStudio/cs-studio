@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import org.csstudio.platform.model.CentralItemFactory;
+import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
@@ -60,17 +62,17 @@ public class ProcessVariableNameTransfer extends ByteArrayTransfer
         if (!isSupportedType(transferData))
             return;
         
-        IProcessVariableName[] pvs;
+        IProcessVariable[] pvs;
         if (object == null)
             return;
-        if (object instanceof IProcessVariableName[])
-            pvs = (IProcessVariableName[]) object;
+        if (object instanceof IProcessVariable[])
+            pvs = (IProcessVariable[]) object;
         else if (object instanceof ArrayList)
         {   // Table selection seems to use ArrayList
             ArrayList list = (ArrayList) object;
-            pvs = new IProcessVariableName[list.size()];
+            pvs = new IProcessVariable[list.size()];
             for (int i = 0; i < pvs.length; i++)
-                pvs[i] = (IProcessVariableName) list.get(i);
+                pvs[i] = (IProcessVariable) list.get(i);
         }
         else
             return;
@@ -107,7 +109,7 @@ public class ProcessVariableNameTransfer extends ByteArrayTransfer
         if (buffer == null)
             return null;
 
-        Vector<ProcessVariableName> received = new Vector<ProcessVariableName>();
+        Vector<IProcessVariable> received = new Vector<IProcessVariable>();
         try
         {
             ByteArrayInputStream in = new ByteArrayInputStream(buffer);
@@ -117,7 +119,7 @@ public class ProcessVariableNameTransfer extends ByteArrayTransfer
                 int size = readIn.readInt();
                 byte[] bytes = new byte[size];
                 readIn.read(bytes);
-                received.add(new ProcessVariableName(new String(bytes)));
+                received.add(CentralItemFactory.createProcessVariable(new String(bytes)));
             }
             readIn.close();
         }
@@ -125,7 +127,7 @@ public class ProcessVariableNameTransfer extends ByteArrayTransfer
         {
             return null;
         }
-        ProcessVariableName array[] = new ProcessVariableName[received.size()];
+        IProcessVariable array[] = new IProcessVariable[received.size()];
         return received.toArray(array);
     }
 }

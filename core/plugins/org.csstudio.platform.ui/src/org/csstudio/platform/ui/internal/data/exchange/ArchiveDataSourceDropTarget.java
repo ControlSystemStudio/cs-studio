@@ -1,5 +1,6 @@
 package org.csstudio.platform.ui.internal.data.exchange;
 
+import org.csstudio.platform.model.IArchiveDataSource;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;

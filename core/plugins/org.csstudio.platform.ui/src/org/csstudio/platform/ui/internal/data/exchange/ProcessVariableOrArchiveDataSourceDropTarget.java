@@ -1,5 +1,8 @@
 package org.csstudio.platform.ui.internal.data.exchange;
 
+import org.csstudio.platform.model.IArchiveDataSource;
+import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.model.IProcessVariableWithArchive;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
@@ -41,7 +44,7 @@ public abstract class ProcessVariableOrArchiveDataSourceDropTarget extends DropT
      *  @param name The dropped PV name
      *  @param event The original event, in case you need e.g. the x/y position.
      */
-    public abstract void handleDrop(IProcessVariableName name,
+    public abstract void handleDrop(IProcessVariable name,
                                     DropTargetEvent event);
 
     /** Callback for a dropped archive data source.
@@ -58,7 +61,7 @@ public abstract class ProcessVariableOrArchiveDataSourceDropTarget extends DropT
      *  @param archive The dropped archive info
      *  @param event The original event in case you need details.
      */
-    public abstract void handleDrop(IProcessVariableName name,
+    public abstract void handleDrop(IProcessVariable name,
                                     IArchiveDataSource archive,
                                     DropTargetEvent event);
     
@@ -84,9 +87,9 @@ public abstract class ProcessVariableOrArchiveDataSourceDropTarget extends DropT
             for (int i = 0; i < names.length; i++)
                 handleDrop(names[i], names[i].getArchiveDataSource(), event);
         }
-        else if (event.data instanceof IProcessVariableName[])
+        else if (event.data instanceof IProcessVariable[])
         {
-            IProcessVariableName names[] = (IProcessVariableName [])event.data;
+            IProcessVariable names[] = (IProcessVariable [])event.data;
             for (int i = 0; i < names.length; i++)
                 handleDrop(names[i], event);
         }

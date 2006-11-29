@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import org.csstudio.platform.model.CentralItemFactory;
+import org.csstudio.platform.model.IArchiveDataSource;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
@@ -111,7 +113,7 @@ public class ArchiveDataSourceTransfer extends ByteArrayTransfer
         if (buffer == null)
             return null;
 
-        Vector<ArchiveDataSource> received = new Vector<ArchiveDataSource>();
+        Vector<IArchiveDataSource> received = new Vector<IArchiveDataSource>();
         try
         {
             ByteArrayInputStream in = new ByteArrayInputStream(buffer);
@@ -131,7 +133,7 @@ public class ArchiveDataSourceTransfer extends ByteArrayTransfer
                 readIn.read(bytes);
                 String name = new String(bytes);
                 
-                received.add(new ArchiveDataSource(url, key, name));
+                received.add(CentralItemFactory.createArchiveDataSource(url, key, name));
             }
             readIn.close();
         }
@@ -139,7 +141,7 @@ public class ArchiveDataSourceTransfer extends ByteArrayTransfer
         {
             return null;
         }
-        ArchiveDataSource array[] = new ArchiveDataSource[received.size()];
+        IArchiveDataSource array[] = new IArchiveDataSource[received.size()];
         return received.toArray(array);
     }
 }

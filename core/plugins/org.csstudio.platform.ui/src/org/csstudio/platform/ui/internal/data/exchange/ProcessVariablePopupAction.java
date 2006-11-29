@@ -3,6 +3,7 @@ package org.csstudio.platform.ui.internal.data.exchange;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -45,23 +46,23 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
         if (! (selection instanceof IStructuredSelection))
             return;
         Iterator iter = ((IStructuredSelection)selection).iterator();
-        Vector<IProcessVariableName> pv_names = new Vector<IProcessVariableName>();
+        Vector<IProcessVariable> pv_names = new Vector<IProcessVariable>();
         while (iter.hasNext())
         {
             Object element = iter.next();
-            IProcessVariableName pv = null;
-            if (element instanceof IProcessVariableName)
-                pv = (IProcessVariableName) element;
+            IProcessVariable pv = null;
+            if (element instanceof IProcessVariable)
+                pv = (IProcessVariable) element;
             else if (element instanceof IAdaptable)
-                pv = (IProcessVariableName)
-                ((IAdaptable)element).getAdapter(IProcessVariableName.class);
+                pv = (IProcessVariable)
+                ((IAdaptable)element).getAdapter(IProcessVariable.class);
             if (pv != null)
                 pv_names.add(pv);
         }
         if (pv_names.size() > 0)
         {
-            IProcessVariableName pvs[] = 
-                new IProcessVariableName[pv_names.size()];
+            IProcessVariable pvs[] = 
+                new IProcessVariable[pv_names.size()];
             handlePVs(pv_names.toArray(pvs));
         }
     }
@@ -74,5 +75,5 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
      *  or analyzed or ...
      *  @param pv_name Array of received PV names.
      */
-    abstract public void handlePVs(IProcessVariableName pv_names[]);
+    abstract public void handlePVs(IProcessVariable pv_names[]);
 }

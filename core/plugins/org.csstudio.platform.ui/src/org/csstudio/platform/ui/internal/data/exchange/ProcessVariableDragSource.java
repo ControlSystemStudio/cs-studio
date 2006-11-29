@@ -3,6 +3,7 @@ package org.csstudio.platform.ui.internal.data.exchange;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -32,12 +33,12 @@ public class ProcessVariableDragSource implements DragSourceListener
 {
     private ISelectionProvider selection_provider;
 	private DragSource source;
-    private ArrayList<IProcessVariableName> pvs
-        = new ArrayList<IProcessVariableName>();
+    private ArrayList<IProcessVariable> pvs
+        = new ArrayList<IProcessVariable>();
 	
     /** Create a PV drag source for the given GUI item.
      *  <p>
-     *  The current selection should implement or adapt to IProcessVariableName,
+     *  The current selection should implement or adapt to IProcessVariable,
      *  because that is how the PV name to 'drag' will be requested
      *  from the current selection.
      *  <p>
@@ -77,13 +78,13 @@ public class ProcessVariableDragSource implements DragSourceListener
             {
                 Object item = items.next();
                 // Get PV ...
-                if (item instanceof IProcessVariableName)
-                    pvs.add((IProcessVariableName) item);
+                if (item instanceof IProcessVariable)
+                    pvs.add((IProcessVariable) item);
                 else if (item instanceof IAdaptable)
                 {   // or adapt to PV
-                    IProcessVariableName pv_item =
-                        (IProcessVariableName)
-                        ((IAdaptable)item).getAdapter(IProcessVariableName.class);
+                    IProcessVariable pv_item =
+                        (IProcessVariable)
+                        ((IAdaptable)item).getAdapter(IProcessVariable.class);
                     if (pv_item != null)
                         pvs.add(pv_item);
                 }

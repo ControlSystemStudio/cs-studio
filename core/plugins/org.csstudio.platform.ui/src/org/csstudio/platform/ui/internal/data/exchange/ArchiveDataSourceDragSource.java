@@ -3,6 +3,7 @@ package org.csstudio.platform.ui.internal.data.exchange;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.csstudio.platform.model.IArchiveDataSource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;

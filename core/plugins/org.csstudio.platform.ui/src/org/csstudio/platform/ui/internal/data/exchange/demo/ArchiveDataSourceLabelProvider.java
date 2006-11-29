@@ -1,6 +1,6 @@
 package org.csstudio.platform.ui.internal.data.exchange.demo;
 
-import org.csstudio.platform.ui.internal.data.exchange.IArchiveDataSource;
+import org.csstudio.platform.model.IArchiveDataSource;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;

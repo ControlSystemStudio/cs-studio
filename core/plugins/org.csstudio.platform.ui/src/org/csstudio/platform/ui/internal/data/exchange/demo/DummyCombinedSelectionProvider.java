@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.csstudio.platform.ui.internal.data.exchange.ProcessVariableWithArchive;
+import org.csstudio.platform.model.CentralItemFactory;
+import org.csstudio.platform.model.IProcessVariableWithArchive;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -15,8 +16,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
  */
 public class DummyCombinedSelectionProvider implements ISelectionProvider
 {
-    private ProcessVariableWithArchive data =
-        new ProcessVariableWithArchive("fred",
+    private IProcessVariableWithArchive data =
+       CentralItemFactory.createProcessVariableWithArchive("fred",
                                         "http://server", 42, "main archive");
     private ISelection selection;
     

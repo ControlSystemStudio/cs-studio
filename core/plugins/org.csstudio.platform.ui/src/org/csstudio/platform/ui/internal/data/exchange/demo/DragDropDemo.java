@@ -2,14 +2,13 @@ package org.csstudio.platform.ui.internal.data.exchange.demo;
 
 import java.util.Vector;
 
-import org.csstudio.platform.ui.internal.data.exchange.ArchiveDataSource;
+import org.csstudio.platform.model.CentralItemFactory;
+import org.csstudio.platform.model.IArchiveDataSource;
+import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.data.exchange.ArchiveDataSourceDragSource;
 import org.csstudio.platform.ui.internal.data.exchange.ArchiveDataSourceDropTarget;
-import org.csstudio.platform.ui.internal.data.exchange.IArchiveDataSource;
-import org.csstudio.platform.ui.internal.data.exchange.IProcessVariableName;
 import org.csstudio.platform.ui.internal.data.exchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.data.exchange.ProcessVariableDropTarget;
-import org.csstudio.platform.ui.internal.data.exchange.ProcessVariableName;
 import org.csstudio.platform.ui.internal.data.exchange.ProcessVariableOrArchiveDataSourceDropTarget;
 import org.csstudio.platform.ui.internal.data.exchange.ProcessVariableWithArchiveDragSource;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -108,9 +107,9 @@ public class DragDropDemo
         pv_table_viewer.setContentProvider(new ArrayContentProvider());
         pv_table_viewer.setLabelProvider(new StringLabelProvider());
         
-        Vector<ProcessVariableName> names = new Vector<ProcessVariableName>();
-        names.add(new ProcessVariableName("jane"));
-        names.add(new ProcessVariableName("fred"));
+        Vector<IProcessVariable> names = new Vector<IProcessVariable>();
+        names.add(CentralItemFactory.createProcessVariable("jane"));
+        names.add(CentralItemFactory.createProcessVariable("fred"));
         pv_table_viewer.setInput(names);
         
         label = new Label(sources, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -150,10 +149,10 @@ public class DragDropDemo
         arch_table_viewer.setContentProvider(new ArrayContentProvider());
         arch_table_viewer.setLabelProvider(new ArchiveDataSourceLabelProvider());
         
-        Vector<ArchiveDataSource> archives = new Vector<ArchiveDataSource>();
-        archives.add(new ArchiveDataSource("http://server1", 1, "main"));
-        archives.add(new ArchiveDataSource("http://server1", 2, "alternate"));
-        archives.add(new ArchiveDataSource("http://server2", 1, "Egon's"));
+        Vector<IArchiveDataSource> archives = new Vector<IArchiveDataSource>();
+        archives.add(CentralItemFactory.createArchiveDataSource("http://server1", 1, "main"));
+        archives.add(CentralItemFactory.createArchiveDataSource("http://server1", 2, "alternate"));
+        archives.add(CentralItemFactory.createArchiveDataSource("http://server2", 1, "Egon's"));
         arch_table_viewer.setInput(archives);
         
         label = new Label(sources, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -278,7 +277,7 @@ public class DragDropDemo
         new ProcessVariableDropTarget(pv_name)
         {
             @Override
-            public void handleDrop(IProcessVariableName name,
+            public void handleDrop(IProcessVariable name,
                             DropTargetEvent event)
             {
                 appendText(pv_name, " PV '" + name.getName() + "'");
@@ -303,7 +302,7 @@ public class DragDropDemo
         new ProcessVariableOrArchiveDataSourceDropTarget(pv_or_archs)
         {
             @Override
-            public void handleDrop(IProcessVariableName name,
+            public void handleDrop(IProcessVariable name,
                             DropTargetEvent event)
             {
                 appendText(pv_or_archs, " PV '" + name.getName() + "'");
@@ -320,7 +319,7 @@ public class DragDropDemo
                            + ")");
             }
             @Override
-            public void handleDrop(IProcessVariableName name,
+            public void handleDrop(IProcessVariable name,
                             IArchiveDataSource archive, DropTargetEvent event)
             {
                 appendText(pv_or_archs,

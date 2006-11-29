@@ -1,5 +1,6 @@
 package org.csstudio.platform.ui.internal.data.exchange;
 
+import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
@@ -40,7 +41,7 @@ public abstract class ProcessVariableDropTarget extends DropTargetAdapter
      *  @param name The dropped PV name
      *  @param event The original event, in case you need e.g. the x/y position.
      */
-    public abstract void handleDrop(IProcessVariableName name,
+    public abstract void handleDrop(IProcessVariable name,
                                     DropTargetEvent event);
 
 	/** Used internally by the system when a DnD operation enters the control.
@@ -59,7 +60,7 @@ public abstract class ProcessVariableDropTarget extends DropTargetAdapter
      */
 	public void drop(DropTargetEvent event)
 	{
-        IProcessVariableName names[] = (IProcessVariableName [])event.data;
+		IProcessVariable names[] = (IProcessVariable [])event.data;
         for (int i = 0; i < names.length; i++)
             handleDrop(names[i], event);
 	}
