@@ -21,7 +21,6 @@
  */
 package org.csstudio.platform.util;
 
-import org.csstudio.platform.internal.util.Timestamp;
 
 /**
  * Describes a time stamp.
@@ -172,7 +171,7 @@ public interface ITimestamp extends Comparable<ITimestamp> {
 	 * @param other
 	 *            the other time stamp
 	 */
-	boolean isGreaterThan(final Timestamp other);
+	boolean isGreaterThan(final ITimestamp other);
 
 	/**
 	 * @return Returns <code>true</code> if this time stamp is greater than or
@@ -180,7 +179,7 @@ public interface ITimestamp extends Comparable<ITimestamp> {
 	 * @param other
 	 *            the other time stamp
 	 */
-	boolean isGreaterOrEqual(final Timestamp other);
+	boolean isGreaterOrEqual(final ITimestamp other);
 
 	/**
 	 * @return Returns <code>true</code> if this time stamp is smaller than
@@ -188,7 +187,7 @@ public interface ITimestamp extends Comparable<ITimestamp> {
 	 * @param other
 	 *            the other time stamp
 	 */
-	boolean isLessThan(final Timestamp other);
+	boolean isLessThan(final ITimestamp other);
 
 	/**
 	 * @return Returns <code>true</code> if this time stamp is smaller than or
@@ -196,6 +195,6 @@ public interface ITimestamp extends Comparable<ITimestamp> {
 	 * @param other
 	 *            the other time stamp
 	 */
-	boolean isLessOrEqual(final Timestamp other);
+	boolean isLessOrEqual(final ITimestamp other);
 
 }

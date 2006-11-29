@@ -352,42 +352,42 @@ public final class Timestamp implements ITimestamp {
 	/**
 	* {@inheritDoc}
 	*/
-	public boolean isGreaterThan(final Timestamp other) {
-		if (_seconds > other._seconds) {
+	public boolean isGreaterThan(final ITimestamp other) {
+		if (_seconds > other.seconds()) {
 			return true;
 		}
-		if (_seconds < other._seconds) {
+		if (_seconds < other.seconds()) {
 			return false;
 		}
 		// Seconds tie, let nanoseconds decide.
-		return _nanoseconds > other._nanoseconds;
+		return _nanoseconds > other.nanoseconds();
 	}
 
 	/**
 	* {@inheritDoc}
 	*/
-	public boolean isGreaterOrEqual(final Timestamp other) {
-		if (_seconds > other._seconds) {
+	public boolean isGreaterOrEqual(final ITimestamp other) {
+		if (_seconds > other.seconds()) {
 			return true;
 		}
-		if (_seconds < other._seconds) {
+		if (_seconds < other.seconds()) {
 			return false;
 		}
 		// Seconds tie, let nanoseconds decide.
-		return _nanoseconds >= other._nanoseconds;
+		return _nanoseconds >= other.nanoseconds();
 	}
 
 	/**
 	* {@inheritDoc}
 	*/
-	public boolean isLessThan(final Timestamp other) {
+	public boolean isLessThan(final ITimestamp other) {
 		return !isGreaterOrEqual(other);
 	}
 
 	/**
 	* {@inheritDoc}
 	*/
-	public boolean isLessOrEqual(final Timestamp other) {
+	public boolean isLessOrEqual(final ITimestamp other) {
 		return !isGreaterThan(other);
 	}
 
