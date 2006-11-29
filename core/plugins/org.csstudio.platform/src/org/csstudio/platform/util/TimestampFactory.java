@@ -69,7 +69,7 @@ public final class TimestampFactory {
 	 * 
 	 * @return a time stamp for the current system time
 	 */
-	public static Timestamp now() {
+	public static ITimestamp now() {
 		Date d = new Date();
 		long milli = d.getTime();
 		long secs = milli / 1000;
