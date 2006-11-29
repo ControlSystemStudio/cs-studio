@@ -123,9 +123,9 @@ public final class TimestampTests {
 	@Test
 	public void testEquality() {
 		// Basic conversions from/to pieces and strings
-		Timestamp a = Timestamp.fromPieces(1990, 1, 18, 13, 30, 20, 0);
-		Timestamp b = Timestamp.fromPieces(1990, 1, 18, 13, 30, 20, 0);
-		Timestamp c = TimestampFactory.now();
+		ITimestamp a = Timestamp.fromPieces(1990, 1, 18, 13, 30, 20, 0);
+		ITimestamp b = Timestamp.fromPieces(1990, 1, 18, 13, 30, 20, 0);
+		ITimestamp c = TimestampFactory.now();
 
 		assertTrue(a.equals(a));
 		assertTrue(a.equals(b));
