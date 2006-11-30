@@ -19,60 +19,96 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.internal.localization;
+package org.csstudio.platform.internal.developmentsupport.util;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
-import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.osgi.util.NLS;
+import org.csstudio.platform.model.AbstractControlSystemItem;
 
 /**
- * Access to the localization message ressources within this
- * plugin.
+ * A simple data object, which consists of a title and text.
  * 
- * @author Alexander Will
+ * @author Sven Wende
+ * 
  */
-public final class Messages extends NLS {
+public final class TextContainer extends AbstractControlSystemItem {
 	/**
-	 * The bundle name of the localization messages ressources.
+	 * Type ID for text containers.
 	 */
-	private static final String BUNDLE_NAME = "org.csstudio.platform.ui.internal.localization.messages"; //$NON-NLS-1$
+	public static final String TYPE_ID = "css:sandbox:textContainer"; //$NON-NLS-1$
 
 	/**
-	 * The localzation messages ressource bundle.
+	 * The title.
 	 */
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-			.getBundle(BUNDLE_NAME);
+	private String _title;
 
-    static
-    {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
-
-    
 	/**
-	 * This constructor is private since this class only provides static
-	 * methods.
+	 * The text.
 	 */
-	private Messages() {
-	}
+	private String _text;
 
 	/**
-	 * Return the localization message string for the given key.
+	 * Constructs a TextContainer.
 	 * 
-	 * @param key
-	 *            Message key.
-	 * @return The localization message string for the given key.
+	 * @param title
+	 *            the initial title
+	 * @param text
+	 *            the initial text
 	 */
-	public static String getString(final String key) {
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
-			CentralLogger.getInstance().error(Messages.class, e);
-			return '!' + key + '!';
-		}
+	public TextContainer(final String title, final String text) {
+		super(title);
+		_title = title;
+		_text = text;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getTypeId() {
+		return TYPE_ID;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return _title;
+	}
+
+	/**
+	 * Gets the text.
+	 * 
+	 * @return the text
+	 */
+	public String getText() {
+		return _text;
+	}
+
+	/**
+	 * Sets the text.
+	 * 
+	 * @param text
+	 *            the text
+	 */
+	public void setText(final String text) {
+		_text = text;
+	}
+
+	/**
+	 * Gets the title.
+	 * 
+	 * @return the title
+	 */
+	public String getTitle() {
+		return _title;
+	}
+
+	/**
+	 * Sets the title.
+	 * 
+	 * @param title
+	 *            the title
+	 */
+	public void setTitle(final String title) {
+		_title = title;
+	}
 }

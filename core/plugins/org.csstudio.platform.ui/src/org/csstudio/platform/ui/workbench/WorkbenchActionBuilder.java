@@ -74,12 +74,12 @@ public final class WorkbenchActionBuilder {
 	 * The about action. This action opens up the about dialog.
 	 */
 	private IWorkbenchAction _aboutAction;
-	
+
 	/**
 	 * The save action. This action saves the current editor.
 	 */
 	private IWorkbenchAction _saveAction;
-	
+
 	/**
 	 * Constructs a new action builder which contributes actions to the given
 	 * window.
@@ -130,7 +130,7 @@ public final class WorkbenchActionBuilder {
 		menubar.add(createWindowMenu());
 		menubar.add(createHelpMenu());
 	}
-	
+
 	/**
 	 * Fills the cool bar with the workbench actions.
 	 * 
@@ -141,7 +141,6 @@ public final class WorkbenchActionBuilder {
 		ICoolBarManager coolbar = configurer.getCoolBarManager();
 		coolbar.add(_documentationAction);
 	}
-	
 
 	/**
 	 * Creates and returns the CSS menu.
@@ -152,45 +151,42 @@ public final class WorkbenchActionBuilder {
 		MenuManager menu = new MenuManager(
 				Messages.getString("WorkbenchActionBuilder.MENU_CSS"), IWorkbenchIds.MENU_CSS); //$NON-NLS-1$
 
-		menu
-				.add(new MenuManager(
-						Messages
-								.getString("WorkbenchActionBuilder.MENU_CSS_DISPLAY"), IWorkbenchIds.MENU_CSS_DISPLAY)); //$NON-NLS-1$
-		menu
-				.add(new MenuManager(
-						Messages
-								.getString("WorkbenchActionBuilder.MENU_CSS_ALARM"), IWorkbenchIds.MENU_CSS_ALARM)); //$NON-NLS-1$
-		menu
-				.add(new MenuManager(
-						Messages
-								.getString("WorkbenchActionBuilder.MENU_CSS_TRENDS"), IWorkbenchIds.MENU_CSS_TRENDS)); //$NON-NLS-1$
-		menu.add(new MenuManager(Messages
-				.getString("WorkbenchActionBuilder.MENU_CSS_DIAGNOSTICS"), //$NON-NLS-1$
-				IWorkbenchIds.MENU_CSS_DIAGNOSTICS));
-		menu.add(new MenuManager(Messages
-				.getString("WorkbenchActionBuilder.MENU_CSS_DEBUGGING"), //$NON-NLS-1$
-				IWorkbenchIds.MENU_CSS_DEBUGGING));
-		menu.add(new MenuManager(Messages
-				.getString("WorkbenchActionBuilder.MENU_CSS_CONFIGURATION"), //$NON-NLS-1$
-				IWorkbenchIds.MENU_CSS_CONFIGURATION));
-		menu.add(new MenuManager(Messages
-				.getString("WorkbenchActionBuilder.MENU_CSS_MANAGEMENT"), //$NON-NLS-1$
-				IWorkbenchIds.MENU_CSS_MANAGEMENT));
-		menu
-				.add(new MenuManager(
-						Messages
-								.getString("WorkbenchActionBuilder.MENU_CSS_EDITORS"), IWorkbenchIds.MENU_CSS_EDITORS)); //$NON-NLS-1$
-		menu.add(new MenuManager(Messages
-				.getString("WorkbenchActionBuilder.MENU_CSS_UTILITIES"), //$NON-NLS-1$
-				IWorkbenchIds.MENU_CSS_UTILITIES));
-		menu
-				.add(new MenuManager(
-						Messages
-								.getString("WorkbenchActionBuilder.MENU_CSS_TEST"), IWorkbenchIds.MENU_CSS_TEST)); //$NON-NLS-1$
-		menu
-				.add(new MenuManager(
-						Messages
-								.getString("WorkbenchActionBuilder.MENU_CSS_OTHER"), IWorkbenchIds.MENU_CSS_OTHER)); //$NON-NLS-1$
+		appendVisibleSubMenu(
+				menu,
+				Messages.getString("WorkbenchActionBuilder.MENU_CSS_DISPLAY"), IWorkbenchIds.MENU_CSS_DISPLAY); //$NON-NLS-1$
+		appendVisibleSubMenu(
+				menu,
+				Messages.getString("WorkbenchActionBuilder.MENU_CSS_ALARM"), IWorkbenchIds.MENU_CSS_ALARM); //$NON-NLS-1$
+		appendVisibleSubMenu(
+				menu,
+				Messages.getString("WorkbenchActionBuilder.MENU_CSS_TRENDS"), IWorkbenchIds.MENU_CSS_TRENDS); //$NON-NLS-1$
+		appendVisibleSubMenu(
+				menu,
+				Messages
+						.getString("WorkbenchActionBuilder.MENU_CSS_DIAGNOSTICS"), IWorkbenchIds.MENU_CSS_DIAGNOSTICS); //$NON-NLS-1$
+		appendVisibleSubMenu(
+				menu,
+				Messages.getString("WorkbenchActionBuilder.MENU_CSS_DEBUGGING"), IWorkbenchIds.MENU_CSS_DEBUGGING); //$NON-NLS-1$
+		appendVisibleSubMenu(
+				menu,
+				Messages
+						.getString("WorkbenchActionBuilder.MENU_CSS_CONFIGURATION"), IWorkbenchIds.MENU_CSS_CONFIGURATION); //$NON-NLS-1$
+		appendVisibleSubMenu(
+				menu,
+				Messages
+						.getString("WorkbenchActionBuilder.MENU_CSS_MANAGEMENT"), IWorkbenchIds.MENU_CSS_MANAGEMENT); //$NON-NLS-1$
+		appendVisibleSubMenu(
+				menu,
+				Messages.getString("WorkbenchActionBuilder.MENU_CSS_EDITORS"), IWorkbenchIds.MENU_CSS_EDITORS); //$NON-NLS-1$
+		appendVisibleSubMenu(
+				menu,
+				Messages.getString("WorkbenchActionBuilder.MENU_CSS_UTILITIES"), IWorkbenchIds.MENU_CSS_UTILITIES); //$NON-NLS-1$
+		appendVisibleSubMenu(
+				menu,
+				Messages.getString("WorkbenchActionBuilder.MENU_CSS_TEST"), IWorkbenchIds.MENU_CSS_TEST); //$NON-NLS-1$
+		appendVisibleSubMenu(
+				menu,
+				Messages.getString("WorkbenchActionBuilder.MENU_CSS_OTHER"), IWorkbenchIds.MENU_CSS_OTHER); //$NON-NLS-1$
 
 		menu.add(new Separator());
 		menu.add(_preferencesAction);
@@ -199,12 +195,41 @@ public final class WorkbenchActionBuilder {
 	}
 
 	/**
+	 * Add a sub menu entry to the given parent menu that is always visible -
+	 * even if it does not contain child menu entries.
+	 * 
+	 * @param parentMenu
+	 *            The parent menu item menu.
+	 * @param entryTitle
+	 *            The title of the sub menu entry.
+	 * @param id
+	 *            The id of the sub menu entry.
+	 */
+	private void appendVisibleSubMenu(final MenuManager parentMenu,
+			final String entryTitle, final String id) {
+		MenuManager menuEntry = new MenuManager(entryTitle, id) {
+			/*
+			 * Since empty menus are not visible by default, we have to tell the
+			 * newly created sub menu entry that it is, even if it doesn't have
+			 * child entries, yet.
+			 */
+			@Override
+			public boolean isVisible() {
+				return true;
+			}
+		};
+
+		parentMenu.add(menuEntry);
+	}
+
+	/**
 	 * Creates and returns the Window menu.
 	 * 
 	 * @return The Window menu.
 	 */
 	private MenuManager createWindowMenu() {
-		MenuManager menu = new MenuManager(Messages.getString("WorkbenchActionBuilder.MENU_WINDOW"), //$NON-NLS-1$
+		MenuManager menu = new MenuManager(Messages
+				.getString("WorkbenchActionBuilder.MENU_WINDOW"), //$NON-NLS-1$
 				IWorkbenchActionConstants.M_WINDOW);
 		IWorkbenchAction action = ActionFactory.OPEN_NEW_WINDOW
 				.create(getWindow());
@@ -224,13 +249,15 @@ public final class WorkbenchActionBuilder {
 	 *            The menu to which the perspective actions have to be added.
 	 */
 	private void addPerspectiveActions(final MenuManager menu) {
-		MenuManager changePerspMenuMgr = new MenuManager(Messages.getString("WorkbenchActionBuilder.OPEN_PERSPECTIVE"), //$NON-NLS-1$
+		MenuManager changePerspMenuMgr = new MenuManager(Messages
+				.getString("WorkbenchActionBuilder.OPEN_PERSPECTIVE"), //$NON-NLS-1$
 				"openPerspective"); //$NON-NLS-1$
 		IContributionItem changePerspMenuItem = ContributionItemFactory.PERSPECTIVES_SHORTLIST
 				.create(getWindow());
 		changePerspMenuMgr.add(changePerspMenuItem);
 		menu.add(changePerspMenuMgr);
-		MenuManager showViewMenuMgr = new MenuManager(Messages.getString("WorkbenchActionBuilder.SHOW_VIEW"), //$NON-NLS-1$
+		MenuManager showViewMenuMgr = new MenuManager(Messages
+				.getString("WorkbenchActionBuilder.SHOW_VIEW"), //$NON-NLS-1$
 				"showView"); //$NON-NLS-1$
 		IContributionItem showViewMenu = ContributionItemFactory.VIEWS_SHORTLIST
 				.create(getWindow());
@@ -245,7 +272,8 @@ public final class WorkbenchActionBuilder {
 	 * @return The File menu.
 	 */
 	private MenuManager createFileMenu() {
-		MenuManager menu = new MenuManager(Messages.getString("WorkbenchActionBuilder.MENU_FILE"), //$NON-NLS-1$
+		MenuManager menu = new MenuManager(Messages
+				.getString("WorkbenchActionBuilder.MENU_FILE"), //$NON-NLS-1$
 				IWorkbenchActionConstants.M_FILE);
 
 		menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
@@ -263,7 +291,8 @@ public final class WorkbenchActionBuilder {
 	 * @return The Help menu.
 	 */
 	private MenuManager createHelpMenu() {
-		MenuManager menu = new MenuManager(Messages.getString("WorkbenchActionBuilder.MENU_HELP"), //$NON-NLS-1$
+		MenuManager menu = new MenuManager(Messages
+				.getString("WorkbenchActionBuilder.MENU_HELP"), //$NON-NLS-1$
 				IWorkbenchActionConstants.M_HELP);
 
 		// about should always be at the bottom
@@ -314,8 +343,7 @@ public final class WorkbenchActionBuilder {
 		_aboutAction = ActionFactory.ABOUT.create(getWindow());
 		registerGlobalAction(_aboutAction);
 
-		_documentationAction = ActionFactory.HELP_CONTENTS
-				.create(getWindow());
+		_documentationAction = ActionFactory.HELP_CONTENTS.create(getWindow());
 		registerGlobalAction(_documentationAction);
 
 		_exitAction = ActionFactory.QUIT.create(getWindow());
@@ -323,7 +351,7 @@ public final class WorkbenchActionBuilder {
 
 		_preferencesAction = ActionFactory.PREFERENCES.create(_window);
 		registerGlobalAction(_preferencesAction);
-		
+
 		_saveAction = ActionFactory.SAVE.create(_window);
 		registerGlobalAction(_saveAction);
 	}

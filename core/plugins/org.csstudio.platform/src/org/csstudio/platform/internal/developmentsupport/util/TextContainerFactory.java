@@ -19,60 +19,44 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.internal.localization;
+package org.csstudio.platform.internal.developmentsupport.util;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
-import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.osgi.util.NLS;
+import org.csstudio.platform.model.AbstractControlSystemItemFactory;
 
 /**
- * Access to the localization message ressources within this
- * plugin.
+ * Implementation of {@link AbstractControlSystemItemFactory} for text
+ * containers.
  * 
- * @author Alexander Will
+ * @author Sven Wende
+ * 
  */
-public final class Messages extends NLS {
-	/**
-	 * The bundle name of the localization messages ressources.
-	 */
-	private static final String BUNDLE_NAME = "org.csstudio.platform.ui.internal.localization.messages"; //$NON-NLS-1$
+public final class TextContainerFactory extends
+		AbstractControlSystemItemFactory<TextContainer> {
 
 	/**
-	 * The localzation messages ressource bundle.
+	 * {@inheritDoc}
 	 */
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-			.getBundle(BUNDLE_NAME);
-
-    static
-    {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-    }
-
-    
-	/**
-	 * This constructor is private since this class only provides static
-	 * methods.
-	 */
-	private Messages() {
+	@Override
+	protected String createStringRepresentationFromItem(final TextContainer item) {
+		return item.getTitle() + ":" + item.getTitle(); //$NON-NLS-1$
 	}
 
 	/**
-	 * Return the localization message string for the given key.
-	 * 
-	 * @param key
-	 *            Message key.
-	 * @return The localization message string for the given key.
+	 * {@inheritDoc}
 	 */
-	public static String getString(final String key) {
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
-			CentralLogger.getInstance().error(Messages.class, e);
-			return '!' + key + '!';
-		}
+	@Override
+	protected TextContainer createItemFromStringRepresentation(final String string) {
+		assert string != null;
+
+		String[] pieces = string.split(":"); //$NON-NLS-1$
+
+		String title = pieces[0];
+		String text = pieces[1];
+
+		TextContainer textContainer = new TextContainer(title, text);
+
+		return textContainer;
+
 	}
 
 }

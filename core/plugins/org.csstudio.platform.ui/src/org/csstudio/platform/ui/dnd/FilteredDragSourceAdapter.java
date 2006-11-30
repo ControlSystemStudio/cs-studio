@@ -81,9 +81,9 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 		// check filters first
 		for (Class clazz : acceptedTypes) {
 			if (!IControlSystemItem.class.isAssignableFrom(clazz)) {
-				throw new IllegalArgumentException("Drag&Drop Filter >>"
+				throw new IllegalArgumentException("Drag&Drop Filter >>" //$NON-NLS-1$
 						+ clazz.getName()
-						+ "<< is not derived from IControlSystemItem.");
+						+ "<< is not derived from IControlSystemItem."); //$NON-NLS-1$
 			}
 		}
 		_acceptedTypes = acceptedTypes;
