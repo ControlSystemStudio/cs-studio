@@ -81,6 +81,11 @@ public final class WorkbenchActionBuilder {
 	private IWorkbenchAction _saveAction;
 
 	/**
+	 * The intro action.
+	 */
+	private IWorkbenchAction _introAction;
+
+	/**
 	 * Constructs a new action builder which contributes actions to the given
 	 * window.
 	 * 
@@ -295,6 +300,12 @@ public final class WorkbenchActionBuilder {
 				.getString("WorkbenchActionBuilder.MENU_HELP"), //$NON-NLS-1$
 				IWorkbenchActionConstants.M_HELP);
 
+		// See if a welcome or intro page is specified
+		if (_introAction != null) {
+			menu.add(_introAction);
+			menu.add(new Separator());
+		}
+
 		// about should always be at the bottom
 		menu.add(new Separator("group.about")); //$NON-NLS-1$
 		menu.add(_aboutAction);
@@ -325,6 +336,10 @@ public final class WorkbenchActionBuilder {
 		if (_preferencesAction != null) {
 			_preferencesAction.dispose();
 		}
+		
+		if (_introAction != null) {
+			_introAction.dispose();
+		}
 	}
 
 	/**
@@ -354,6 +369,11 @@ public final class WorkbenchActionBuilder {
 
 		_saveAction = ActionFactory.SAVE.create(_window);
 		registerGlobalAction(_saveAction);
+
+		if (_window.getWorkbench().getIntroManager().hasIntro()) {
+			_introAction = ActionFactory.INTRO.create(_window);
+			registerGlobalAction(_introAction);
+		}
 	}
 
 	/**

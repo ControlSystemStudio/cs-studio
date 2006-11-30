@@ -27,5 +27,28 @@
          <run class="org.csstudio.startup.applications.Application"/>
       </application>
    </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            icon="resources/css16x16.gif"
+            id="org.csstudio.startup.intro"/>
+      <introProductBinding
+            introId="org.csstudio.startup.intro"
+            productId="org.csstudio.startup.product"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.config">
+      <config
+            content="/intro/welcomepage.xml"
+            id="org.csstudio.startup.intro.config"
+            introId="org.csstudio.startup.intro">
+         <presentation
+               home-page-id="root"
+               standby-page-id="standby">
+            <implementation kind="html"/>
+         </presentation>
+      </config>
+   </extension>
 
 </plugin>
