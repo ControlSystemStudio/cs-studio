@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PV Plug-in
+Bundle-SymbolicName: org.csstudio.utility.pv
+Bundle-Version: 1.0.0
+Bundle-Vendor: Kay Kasemir
+Bundle-Localization: plugin
+Require-Bundle: org.csstudio.platform.libs.epics;visibility:=reexport,
+ org.csstudio.platform
+Export-Package: org.csstudio.utility.pv

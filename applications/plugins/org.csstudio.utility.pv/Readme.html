@@ -1,0 +1,46 @@
+<body>
+This library serves two purposes:
+For one, it simply offers a PV interface
+for EPICS ChannelAccess that I found
+very convenient.
+<p>
+It actually 'connects' in several steps:
+<ol>
+<li>First, it obviously tries to connect to a channel.
+<li>When that suceeds, and we thus know the native type etc. of the channel,
+    it requests meta information (units, precision, ...).
+<li>When receiving that, it subscribes to updates of timestamp/value/status
+<li>When receiving the first subscription update, we declare the PV
+    fully 'connected'.
+</ol>
+Consequently, users of this API get the full value and meta information
+without having to worry about details.
+<p>
+In addition, it uses internal reference counting.
+When one requests the same PV more than once
+from the pure java CA client library, one
+always receives the same channel instance.
+<p>
+When several plug-ins use CA, it is on one hand
+desired that they use the same CA client library context,
+but the above feature means that they receive
+the same channel reference without knowing.
+<p>
+This makes it impossible to write proper cleanup code:
+If the channel is left open, resources are wasted,
+also on the IOC. If it is closed, one might accidentally
+close a channel that is still used by another plugin.
+<p>
+If all plugins go through this PV interface,
+the PV interface will perform the reference counting
+for the one and only channel that is obtained
+from the CA client libraries.
+
+<address>
+The 'raw' access to CA should be replaced by DAL.
+The reference counting aspect of this package should then
+become obsolete. Unclear if certain apps then still prefer
+this 'PV' interface, or directly use DAL.
+</address>
+
+</body>
