@@ -132,8 +132,7 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 		// handle transfers of control system items
 		if (ControlSystemItemTransfer.getInstance().isSupportedType(
 				event.currentDataType)) {
-			IControlSystemItem[] items = (IControlSystemItem[]) ControlSystemItemTransfer
-					.getInstance().nativeToJava(event.currentDataType);
+			IControlSystemItem[] items = (IControlSystemItem[]) event.data; 
 
 			for (IControlSystemItem item : items) {
 				if (item != null) {
@@ -144,8 +143,7 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 
 		// handle text transfers
 		if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
-			String tmp = (String) TextTransfer.getInstance().nativeToJava(
-					event.currentDataType);
+			String tmp = (String)event.data;
 
 			String[] rows = tmp.split("\n");
 
