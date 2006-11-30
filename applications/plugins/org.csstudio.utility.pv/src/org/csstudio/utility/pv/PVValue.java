@@ -55,8 +55,9 @@ public class PVValue
     {
         if (a == null  ||  b == null)
             return true;
-        if (a instanceof String  &&  b instanceof String)
-        {
+        if (a instanceof String  ||  b instanceof String ||
+            a instanceof EnumValue  ||  b instanceof EnumValue)
+        {   // Compare as strings, no tolerance
             String s_a = a.toString();
             String s_b = b.toString();
             return s_a.equals(s_b);
