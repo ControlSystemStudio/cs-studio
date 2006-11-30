@@ -6,7 +6,7 @@
       <page
             class="org.csstudio.platform.libs.epics.preferences.EpicsPreferencePage"
             id="de.desy.css.libs.epics.preferences.EpicsPreferencePage"
-            name="JCA/CAJ Preferences"/>
+            name="%prefPageTitle"/>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -14,9 +14,8 @@
    </extension>
    <extension
          point="org.eclipse.help.toc">
-      <toc file="toc.xml"/>
       <toc
-            file="testToc.xml"
+            file="toc.xml"
             primary="true"/>
    </extension>
 

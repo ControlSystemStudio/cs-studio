@@ -19,30 +19,32 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.libs.epics.preferences;
+package org.csstudio.platform.libs.epics.internal.localization;
 
-import org.csstudio.platform.libs.epics.EpicsPlugin;
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
-
+import org.eclipse.osgi.util.NLS;
 
 /**
- * Class used to initialize default preference values.
+ * Access to the localization message ressources within this plugin.
+ * 
+ * @author Alexander Will
  */
-public class PreferenceInitializer extends AbstractPreferenceInitializer {
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+public class Messages extends NLS {
+	/**
+	 * The bundle name of the localization messages ressources.
 	 */
-	public void initializeDefaultPreferences() {
-		IPreferenceStore store = EpicsPlugin.getDefault().getPreferenceStore();
-		for(int i = 0; i < PreferenceConstants.constants.length; i++){
-			store.setDefault(PreferenceConstants.constants[i], PreferenceConstants.defaults[i]);
-		}
-		
-		
+	private static final String BUNDLE_NAME = "org.csstudio.platform.libs.epics.internal.localization.messages"; //$NON-NLS-1$
+
+	public static String EpicsPreferencePage_RESTART_MESSAGE;
+
+	static {
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+	/**
+	 * This constructor is private since this class only provides static
+	 * methods.
+	 */
+	private Messages() {
+	}
 }
