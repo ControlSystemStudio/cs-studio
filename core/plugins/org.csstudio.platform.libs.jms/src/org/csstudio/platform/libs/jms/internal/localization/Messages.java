@@ -19,30 +19,33 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.libs.epics.preferences;
+package org.csstudio.platform.libs.jms.internal.localization;
 
-import org.csstudio.platform.libs.epics.EpicsPlugin;
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
-
+import org.eclipse.osgi.util.NLS;
 
 /**
- * Class used to initialize default preference values.
+ * Access to the localization message ressources within this plugin.
+ * 
+ * @author Alexander Will
  */
-public class PreferenceInitializer extends AbstractPreferenceInitializer {
+public class Messages extends NLS {
+	private static final String BUNDLE_NAME = "org.csstudio.platform.libs.jms.internal.localization.messages"; //$NON-NLS-1$
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-	 */
-	public void initializeDefaultPreferences() {
-		IPreferenceStore store = EpicsPlugin.getDefault().getPreferenceStore();
-		for(int i = 0; i < PreferenceConstants.constants.length; i++){
-			store.setDefault(PreferenceConstants.constants[i], PreferenceConstants.defaults[i]);
-		}
-		
-		
+	public static String JMSPreferencePage_CONTEXT_FACTORY;
+
+	public static String JMSPreferencePage_PROVIDER_URL;
+
+	public static String JMSPreferencePage_QUEUE_NAME;
+	
+	static {
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
+	/**
+	 * This constructor is private since this class only provides static
+	 * methods.
+	 */
+	private Messages() {
+	}
 }

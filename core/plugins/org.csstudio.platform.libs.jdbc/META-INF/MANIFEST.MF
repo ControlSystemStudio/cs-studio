@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.help.base,
  org.eclipse.help.ui,
  org.eclipse.help.webapp
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Bundle-ClassPath: libs/ojdbc14.jar,
  .
 Export-Package: oracle.core.lmx,
