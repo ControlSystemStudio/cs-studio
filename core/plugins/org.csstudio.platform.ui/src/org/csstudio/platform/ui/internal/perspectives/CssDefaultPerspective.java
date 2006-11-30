@@ -23,6 +23,7 @@ package org.csstudio.platform.ui.internal.perspectives;
 
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.console.IConsoleConstants;
 
 /**
  * The css default perspective.
@@ -38,6 +39,8 @@ public class CssDefaultPerspective implements IPerspectiveFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void createInitialLayout(final IPageLayout layout) {
+	public final void createInitialLayout(final IPageLayout layout) {
+		layout.addView(IConsoleConstants.ID_CONSOLE_VIEW, IPageLayout.RIGHT,
+				0.66f, IPageLayout.ID_EDITOR_AREA);
 	}
 }

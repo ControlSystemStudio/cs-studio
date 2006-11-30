@@ -70,7 +70,6 @@ public final class Console {
 		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
 		consolePlugin.getConsoleManager().addConsoles(
 				new IConsole[] { _console });
-		consolePlugin.getConsoleManager().showConsoleView(_console);
 		System.setOut(new PrintStream(_stream));
 		
 		// the logging mechanism needs to be informed that the standard system out has changed!
