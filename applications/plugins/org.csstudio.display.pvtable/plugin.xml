@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="xml,pvtable"
+            id="PVTable"
+            name="PVTable"
+            priority="normal">
+         <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+            <parameter
+                  name="element"
+                  value="pvtable"/>
+         </describer>
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            id="org.csstudio.display.pvtable.ui.editor.PVTableEditor"
+            class="org.csstudio.display.pvtable.ui.editor.PVTableEditor"
+            contributorClass="org.csstudio.display.pvtable.ui.editor.PVTableEditorActionBarContributor"
+            default="false"
+            icon="icons/table.gif"
+            name="PV Table">
+         <contentTypeBinding contentTypeId="org.csstudio.pvtable.PVTable"/>
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.csstudio"
+            name="CSS"/>
+      <wizard
+            category="org.csstudio"
+            id="org.csstudio.display.pvtable.NewPVTableWizard"
+            class="org.csstudio.display.pvtable.NewPVTableWizard"
+            icon="icons/table.gif"
+            name="PV Table"/>
+   </extension>
+   <!-- <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+      <toc file="tocconcepts.xml"/>
+   </extension> -->
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.display.pvtable.preferences.PreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            id="org.csstudio.display.pvtable.preferences.PreferencePage"
+            class="org.csstudio.display.pvtable.preferences.SamplePreferencePage"
+            name="PVTable Preferences"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.csstudio.pvtable.popupMenu"
+            objectClass="org.csstudio.platform.model.IProcessVariable">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS"
+               path="additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <action
+               id="org.csstudio.display.pvtable.PVpopupAction"
+               class="org.csstudio.display.pvtable.PVpopupAction"
+               icon="icons/table.gif"
+               label="PV Table"
+               menubarPath="org.csstudio.popmenu/content"
+               tooltip="Send selected PV to a PV Table"/>
+      </objectContribution>
+   </extension>
+   <!-- extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.display.pvtable"
+            label="CSS Action Set"
+            visible="true">
+         <menu
+               id="org.csstudio"
+               label="CSS"
+               path="additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <menu
+               id="org.csstudio.display"
+               label="Display"
+               path="org.csstudio/additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <action
+               id="org.csstudio.display.pvtable.NewPVTableAction"
+               class="org.csstudio.display.pvtable.NewPVTableAction"
+               icon="icons/table.gif"
+               label="PV Table"
+               menubarPath="org.csstudio/org.csstudio.display/content"
+               style="push"
+               tooltip="Open a new PV Table"/>
+      </actionSet>
+   </extension -->
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.display.pvtable"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.display.pvtable.NewPVTableAction"
+               icon="icons/table.gif"
+               id="org.csstudio.display.pvtable.NewPVTableAction"
+               label="PV Table"
+               menubarPath="css/editors/"
+               style="push"
+               tooltip="Open a new PV Table"/>
+      </actionSet>
+   </extension>
+   
+</plugin>

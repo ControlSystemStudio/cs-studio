@@ -1,0 +1,22 @@
+# Example for dotting & viewing:
+# dot -Tpng -o value_chain.png value_chain.dot && open value_chain.png &
+
+digraph ValueChain
+{
+    ChannelAccess [ shape=box,label="Network Library\n(ChannelAccess)" ];
+
+    Model [ shape=box,label="Application Data Model:\nMark entries as changed,\ncache most recent value" ];
+
+    UpdateThread [ shape=box,label="Periodic Update Thread:\nCheck model for changed entries" ];
+
+    GUIHelper [ shape=box,label="GUI Helper" ];
+
+    GUI [ shape=box,label="Table Widget,\nGUI Elements" ];
+
+    ChannelAccess -> Model [ label=" value updates,\npossibly at high rate" ];
+    Model -> UpdateThread;
+    UpdateThread -> GUIHelper [ label=" forward changed entries" ];
+    GUIHelper -> GUI [ label=" schedule redraw\nvia 'syncExec(...)'" ];
+}
+
+
