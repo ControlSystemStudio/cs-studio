@@ -6,33 +6,39 @@ package org.csstudio.utility.pv;
 public class PVValue
 {
     /** @return Returns the given object as a 'double'. */
+    @SuppressWarnings("nls")
     public static final double toDouble(Object value) throws Exception
     {
-            if (value instanceof Double)
-                    return ((Double) value).doubleValue();
-            if (value instanceof Integer)
-                    return ((Integer) value).doubleValue();
-            if (value instanceof String)
-                    return Double.parseDouble((String) value);
-            if (value instanceof Boolean)
-                    return ((Boolean) value).booleanValue() ? 1.0 : 0.0;
-            throw new Exception("Cannot convert " + value.getClass()
-                            + " to double.");
+        if (value instanceof Double)
+            return ((Double) value).doubleValue();
+        if (value instanceof Integer)
+            return ((Integer) value).doubleValue();
+        if (value instanceof String)
+            return Double.parseDouble((String) value);
+        if (value instanceof EnumValue)
+            return ((EnumValue)value).getValue();
+        if (value instanceof Boolean)
+            return ((Boolean) value).booleanValue() ? 1.0 : 0.0;
+        throw new Exception("Cannot convert " + value.getClass()
+                        + " to double.");
     }
 
     /** @return Returns the given object as an 'int'. */
+    @SuppressWarnings("nls")
     public static final int toInt(Object value) throws Exception
     {
-            if (value instanceof Double)
-                    return ((Double) value).intValue();
-            if (value instanceof Integer)
-                    return ((Integer) value).intValue();
-            if (value instanceof String)
-                    return Integer.parseInt((String) value);
-            if (value instanceof Boolean)
-                    return ((Boolean) value).booleanValue() ? 1 : 0;
-            throw new Exception("Cannot convert " + value.getClass()
-                            + " to int.");
+        if (value instanceof Double)
+            return ((Double) value).intValue();
+        if (value instanceof Integer)
+            return ((Integer) value).intValue();
+        if (value instanceof String)
+            return Integer.parseInt((String) value);
+        if (value instanceof EnumValue)
+            return ((EnumValue)value).getValue();
+        if (value instanceof Boolean)
+            return ((Boolean) value).booleanValue() ? 1 : 0;
+        throw new Exception("Cannot convert " + value.getClass()
+                        + " to int.");
     }
 
     /** Check if the values match within the given tolerance.
@@ -72,7 +78,8 @@ public class PVValue
     public static final String toString(Object value) throws Exception
     {
         if (value == null)
-            return "";
+            return ""; //$NON-NLS-1$
+        // All the rest, including EnumValue, go here:
         return value.toString();
     }
 }

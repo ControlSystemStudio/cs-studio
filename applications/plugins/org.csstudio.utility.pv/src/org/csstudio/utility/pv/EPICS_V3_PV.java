@@ -9,7 +9,7 @@ import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_CTRL_Short;
 import gov.aps.jca.dbr.DBR_Double;
-import gov.aps.jca.dbr.DBR_Enum;
+import gov.aps.jca.dbr.DBR_LABELS_Enum;
 import gov.aps.jca.dbr.DBR_Short;
 import gov.aps.jca.dbr.DBR_String;
 import gov.aps.jca.dbr.DBR_TIME_Double;
@@ -44,6 +44,7 @@ import org.csstudio.platform.util.TimestampFactory;
  * @see PV
  * @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class EPICS_V3_PV 
           implements PV, ConnectionListener, GetListener, MonitorListener
 {
@@ -171,10 +172,13 @@ public class EPICS_V3_PV
     // Meta data
     
     /** The unit description. */
-    private String units = "";
+    private String units;
     
     /** The display precision. */
-    private int precision = 0;
+    private int precision;
+
+    /** Labels used for enumerated values, or null. */
+    private String enum_labels[];
 
     // The most recent 'live' data
     
@@ -197,7 +201,7 @@ public class EPICS_V3_PV
     {
         this(name, false);
     }
-
+   
     /** Generate an EPICS PV.
      *  @param name The PV name.
      *  @param plain When <code>true</code>, only the plain value is requested.
@@ -213,8 +217,17 @@ public class EPICS_V3_PV
         connected = false;
         value = null;
         time = null;
+        clearMetaData();
     }
 
+    /** Reset meta data to zero/nothing/empty. */
+    private void clearMetaData()
+    {
+        units = ""; //$NON-NLS-1$
+        precision = 0;
+        enum_labels = null;
+    }
+ 
     /** @return Returns the name. */
     public String getName()
     {   return name;  }
@@ -382,13 +395,15 @@ public class EPICS_V3_PV
         try
         {
             DBRType type = channel_ref.getChannel().getFieldType();
-            if (! (plain || type.isSTRING() || type.isENUM()))
+            if (! (plain || type.isSTRING()))
             {
                 if (debug)
                     System.out.println("Getting meta info for type "
                                     + type.getName());
                 if (type.isDOUBLE()  ||  type.isFLOAT())
                     type = DBRType.CTRL_DOUBLE;
+                else if (type.isENUM())
+                    type = DBRType.LABELS_ENUM;
                 else 
                     type = DBRType.CTRL_SHORT;
                 channel_ref.getChannel().get(type, 1, this);
@@ -405,39 +420,50 @@ public class EPICS_V3_PV
         // Meta info is not requested, not available for this type,
         // or there was an error in the get call.
         // So reset it, then just move on to the subscription.
-        units = "";
-        precision = 0;
+        clearMetaData();
         subscribe();
     }
- 
+
     /** GetListener interface, handles result of getting DBR_CTRL... */
     public void getCompleted(GetEvent event)
     {
         if (event.getStatus().isSuccessful())
         {
             DBR dbr = event.getDBR();
-            if (! dbr.isCTRL())
+            if (dbr.isLABELS())
             {
-                System.out.println("Channel '" + name + "' getCompleted: "
-                                + "got " + dbr.getClass().getName());
+                DBR_LABELS_Enum labels = (DBR_LABELS_Enum)dbr;
+                enum_labels = labels.getLabels();
+                if (debug)
+                {
+                    System.out.println("Channel '" + name + "' got meta info:");
+                    for (int i = 0; i < enum_labels.length; ++i)
+                        System.out.println("State " + i
+                                           + " = " + enum_labels[i]);
+                }
             }
-            else
+            else if (dbr instanceof DBR_CTRL_Double)
             {
-                if (dbr.isDOUBLE())
-                {
-                    DBR_CTRL_Double ctrl = (DBR_CTRL_Double)dbr;
-                    units = ctrl.getUnits();
-                    precision = ctrl.getPrecision();
-                }
-                else
-                {
-                    DBR_CTRL_Short ctrl = (DBR_CTRL_Short)dbr;
-                    units = ctrl.getUnits();
-                }
+                DBR_CTRL_Double ctrl = (DBR_CTRL_Double)dbr;
+                units = ctrl.getUnits();
+                precision = ctrl.getPrecision();
                 if (debug)
                     System.out.println("Channel '" + name + "' got meta info\n"
                                     + "Units    : '" + units + "'\n"
                                     + "Precision: " + precision);
+            }
+            else if (dbr instanceof DBR_CTRL_Short)
+            {
+                DBR_CTRL_Short ctrl = (DBR_CTRL_Short)dbr;
+                units = ctrl.getUnits();
+                if (debug)
+                    System.out.println("Channel '" + name + "' got meta info\n"
+                                    + "Units    : '" + units);
+            }
+            else
+            {
+                System.out.println("Channel '" + name + "' getCompleted: "
+                                + "got " + dbr.getClass().getName());
             }
         }
         else
@@ -460,16 +486,21 @@ public class EPICS_V3_PV
                     type = plain ? DBRType.DOUBLE : DBRType.TIME_DOUBLE;
                 else if (type.isSHORT())
                     type = plain ? DBRType.SHORT : DBRType.TIME_SHORT;
+                else if (type.isENUM())
+                    type = plain ? DBRType.SHORT : DBRType.TIME_ENUM;
                 else
                     // default: get as string
                     type = plain ? DBRType.STRING : DBRType.TIME_STRING;
+                if (debug)
+                    System.out.println("Channel '" + name
+                                    + "': subscribing as " + type.getName());
                 channel_ref.getChannel().addMonitor(type,
                         channel_ref.getChannel().getElementCount(), 1, this);
                 jca_context.flushIO();
             }
             catch (Exception e)
             {
-                System.out.println("Channel '" + name + "' subscribe:\n"
+                System.out.println("Channel '" + name + "' subscribe error:\n"
                         + e.getMessage());
             }
         }
@@ -518,7 +549,7 @@ public class EPICS_V3_PV
                     value = new Double(v[0]);
                     if (debug)
                         System.out.println("Channel '" + name
-                                + "': double value.");
+                                + "': double value " + value);
                 }
                 else if (dbr.isSHORT())
                 {
@@ -533,10 +564,10 @@ public class EPICS_V3_PV
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getShortValue();
                     }
-                    value = new Double(v[0]);
+                    value = new Integer(v[0]);
                     if (debug)
                         System.out.println("Channel '" + name
-                                + "': short value.");
+                                + "': short value " + value);
                 }
                 else if (dbr.isSTRING())
                 {
@@ -554,25 +585,22 @@ public class EPICS_V3_PV
                     value = v[0];
                     if (debug)
                         System.out.println("Channel '" + name
-                                + "': string value.");
+                                + "': string value " + value);
                 }
                 else if (dbr.isENUM())
                 {
                     short v[];
-                    if (plain)
-                        v = ((DBR_Enum)dbr).getEnumValue();
-                    else
-                    {
-                        DBR_TIME_Enum dt = (DBR_TIME_Enum) dbr;
-                        severity = dt.getSeverity().getValue();
-                        status = dt.getStatus().getName();
-                        time = createTimeFromEPICS(dt.getTimeStamp());
-                        v = dt.getEnumValue();
-                    }
-                    value = new Integer((int) v[0]);
+                    // 'plain' mode would subscribe to SHORT,
+                    // so this must be a TIME_Enum:
+                    DBR_TIME_Enum dt = (DBR_TIME_Enum) dbr;
+                    severity = dt.getSeverity().getValue();
+                    status = dt.getStatus().getName();
+                    time = createTimeFromEPICS(dt.getTimeStamp());
+                    v = dt.getEnumValue();
+                    value = EnumValue.fromData((int) v[0], enum_labels);
                     if (debug)
                         System.out.println("Channel '" + name
-                                + "': enum value.");
+                                + "': enum value " + value);
                 }
                 else
                     // handle many more types!!

@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
+import org.csstudio.archive.MetaData;
 import org.csstudio.archive.util.SampleUtil;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.swt.chart.ChartSample;
@@ -20,22 +21,21 @@ import org.csstudio.swt.chart.ChartSample;
  */
 public class ModelSample implements ChartSample
 {
+    // TODO: Change this into archive's Sample?
+    // In any case, just info isn't good enough to preserve
+    // the alarm severity, which is needed for proper display
+    // in the sample view and also for export.
     private double x, y;
     private String info;
     
     /** Create ModelSample from Archive Sample. */
-    static ModelSample
-                     fromArchiveSample(org.csstudio.archive.Sample arch_sample)
+    static ModelSample fromArchiveSample(
+                     org.csstudio.archive.Sample arch_sample,
+                     MetaData meta)
     {
         ITimestamp time = arch_sample.getTime();
         double value = SampleUtil.getDouble(arch_sample);
-        String info = null;
-        String sevr = arch_sample.getSeverity().toString();
-        String stat = arch_sample.getStatus();
-        if (sevr.length() > 0  ||  stat.length() > 0)
-            info = sevr + " " + stat; //$NON-NLS-1$
-        if (! arch_sample.getSeverity().hasValue())
-            value = Double.NEGATIVE_INFINITY;
+        String info = SampleUtil.getInfo(arch_sample, meta);
         return new ModelSample(time, value, info); 
     }
     

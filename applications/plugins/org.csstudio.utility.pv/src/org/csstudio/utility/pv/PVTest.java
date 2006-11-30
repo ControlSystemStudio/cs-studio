@@ -5,10 +5,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import junit.framework.TestCase;
 import junit.framework.Assert;
 
-/** These tests require the 'excas' server from EPICS base
+/** These tests require the 'excas' server from EPICS base,
+ *  or (better) the soft-IOC database from lib/test.db.
  * 
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVTest extends TestCase
 {
     private AtomicInteger updates = new AtomicInteger();
@@ -112,4 +114,22 @@ public class PVTest extends TestCase
         Thread.sleep(4000);
         pva.stop();
     }
+
+    public void testEnum() throws Exception
+    {
+        PV pva = new EPICS_V3_PV("fred.SCAN");
+        
+        pva.start();
+        while (!pva.isConnected())
+            Thread.sleep(100);
+        Assert.assertTrue(pva.isConnected());
+        Assert.assertTrue(pva.getValue() instanceof EnumValue);
+        EnumValue e = (EnumValue) pva.getValue();
+        Assert.assertEquals(6, e.getValue());
+        Assert.assertEquals("1 second", e.toString());
+       
+        
+        pva.stop();
+    }
+
 }

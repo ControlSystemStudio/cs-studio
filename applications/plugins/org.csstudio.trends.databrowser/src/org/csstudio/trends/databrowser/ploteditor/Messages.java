@@ -6,8 +6,6 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.ploteditor.messages"; //$NON-NLS-1$
 
-    public static String End;
-
     public static String EndTime;
 
     public static String OpenArchiveView;
@@ -23,8 +21,6 @@ public class Messages extends NLS
     public static String RemoveMarkers_TT;
 
     public static String SaveBrowserConfig;
-
-    public static String Start;
 
     public static String StartEndTitle;
 

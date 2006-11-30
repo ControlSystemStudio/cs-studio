@@ -1,0 +1,19 @@
+# Test database
+#
+#   softIoc -s -d test.db
+
+record(calc, "fred")
+{
+   field(SCAN, "1 second")
+   field(CALC, "RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "janet")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}

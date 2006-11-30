@@ -55,10 +55,20 @@ public interface PV
     public int getPrecision();
     
     /** Get the value.
-     * 
+     *  <p>
      *  This is the most recent value.
      *  Check isConnected() to see if this is valid,
      *  or use inside a PV listener's value update.
+     *  <p>
+     *  The value should be one of these types:
+     *  <ul>
+     *  <li><code>Double</code>
+     *  <li><code>String</code>
+     *  <li><code>Integer</code>
+     *  <li><code>EnumValue</code>
+     *  </ul>
+     *  So except for the last one, ordinary Java types.
+     *  <p>
      *  
      *  @see PVListener
      *  @see #isConnected()

@@ -136,7 +136,6 @@ public class Probe extends ViewPart implements PVListener
             {
                 Object pvs[] = new Object[1];
                 pvs[0] = CentralItemFactory.createProcessVariable(txt_name.getText());
-                System.out.println("Probe drags " + txt_name.getText());
                 return new StructuredSelection(pvs);
             }
         });
@@ -460,7 +459,7 @@ public class Probe extends ViewPart implements PVListener
      */
     private void showInfo()
     {
-
+        final String nl = "\n"; //$NON-NLS-1$
         if (Probe.debug) {
             System.out.println("infoButtonOnSelected: " //$NON-NLS-1$
                     + Thread.currentThread().toString());
@@ -469,18 +468,18 @@ public class Probe extends ViewPart implements PVListener
         StringBuffer info = new StringBuffer();
         if (pv == null)
         {
-            info.append(Messages.S_NotConnected + "\n");
+            info.append(Messages.S_NotConnected + nl);
         }
         else
         {
-            info.append("\n" + Messages.S_ChannelInfo + "\n"); //$NON-NLS-1$ //$NON-NLS-3$
-            info.append(Messages.S_CHANNEL + pv.getName() + "\n"); //$NON-NLS-2$
+            info.append(nl + Messages.S_ChannelInfo + nl);
+            info.append(Messages.S_CHANNEL + pv.getName() + nl);
             if (pv.isConnected())
-                info.append(Messages.S_STATEConn + "\n"); //$NON-NLS-2$
+                info.append(Messages.S_STATEConn + nl);
             else
-                info.append(Messages.S_STATEDisconn + "\n"); //$NON-NLS-2$
+                info.append(Messages.S_STATEDisconn + nl);
         }
-        info.append("\n" + Messages.S_EnvInfo + "\n"); //$NON-NLS-1$ //$NON-NLS-3$
+        info.append(nl + Messages.S_EnvInfo + nl);
         if (info.length() == 0)
             info.append(Messages.S_NoInfo);
         MessageBox box =

@@ -87,10 +87,6 @@ public class StartEndDialog extends Dialog implements TimestampWidgetListener
             start = stamp;
         else
             end = stamp;
-        
-        System.out.println(Messages.Start + start.format(ITimestamp.FMT_DATE_HH_MM_SS));
-        System.out.println(Messages.End + end.format(ITimestamp.FMT_DATE_HH_MM_SS));
-        
         if (start.isGreaterOrEqual(end))
             info.setText(Messages.StartExceedsEnd);
         else

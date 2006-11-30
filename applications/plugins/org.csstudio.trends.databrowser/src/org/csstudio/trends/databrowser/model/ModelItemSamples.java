@@ -6,6 +6,7 @@ import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
+import org.csstudio.utility.pv.EnumValue;
 import org.csstudio.utility.pv.PVValue;
 import org.eclipse.swt.widgets.Display;
 
@@ -100,10 +101,19 @@ class ModelItemSamples implements ChartSampleSequence
         try
         {
             String info;
+            // Use any non-OK severity/status for info
             if (current_severity != null && current_status != null)
                 info = current_severity + " " + current_status; //$NON-NLS-1$
             else
                 info = current_severity;
+            // For enums, append the string representation
+            if (current_value instanceof EnumValue)
+            {
+                if (info == null)
+                    info = current_value.toString();
+                else
+                    info = info + " " + current_value.toString(); //$NON-NLS-1$
+            }
             live_samples.add(now, PVValue.toDouble(current_value), info);
         }
         catch (Exception e)
