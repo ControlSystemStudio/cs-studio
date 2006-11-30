@@ -28,6 +28,9 @@
       <controlSystemItemFactory
             class="org.csstudio.platform.internal.model.ProcessVariableWithArchive"
             typeId="css:processVariableWithArchive"/>
+      <controlSystemItemFactory
+            class="org.csstudio.platform.internal.developmentsupport.util.TextContainerFactory"
+            typeId="css:sandbox:textContainer"/>
    </extension>
 
 
