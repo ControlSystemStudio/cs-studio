@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            id="DataBrowser"
+            name="%Databrowser"
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="xml"
+            priority="normal">
+         <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+            <parameter
+                  name="element"
+                  value="databrowser"/>
+         </describer>
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.csstudio"
+            name="%CSS"/>
+      <wizard
+            category="org.csstudio"
+            id="org.csstudio.trends.databrowser.NewChartEditorWizard"
+            class="org.csstudio.trends.databrowser.NewChartEditorWizard"
+            icon="icons/chart.gif"
+            name="%Databrowser"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            id="org.csstudio.trends.databrowser.ploteditor.PlotEditor"
+            class="org.csstudio.trends.databrowser.ploteditor.PlotEditor"
+            contributorClass="org.csstudio.trends.databrowser.ploteditor.PlotEditorActionBarContributor"
+            default="false"
+            icon="icons/chart.gif"
+            name="%Databrowser">
+         <contentTypeBinding contentTypeId="org.csstudio.trends.databrowser.DataBrowser"/>
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.csstudio"
+            name="%CSS"/>
+      <view
+            category="org.csstudio"
+            id="org.csstudio.trends.databrowser.configview.ConfigView"
+            class="org.csstudio.trends.databrowser.configview.ConfigView"
+            icon="icons/chart.gif"
+            name="%DatabrowserConfig"/>
+      <view
+            category="org.csstudio"
+            id="org.csstudio.trends.databrowser.archiveview.ArchiveView"
+            class="org.csstudio.trends.databrowser.archiveview.ArchiveView"
+            icon="icons/chart.gif"
+            name="%DatabrowserArchives"/>
+      <view
+            category="org.csstudio"
+            id="org.csstudio.trends.databrowser.sampleview.SampleView"
+            class="org.csstudio.trends.databrowser.sampleview.SampleView"
+            icon="icons/chart.gif"
+            name="%DatabrowserSamples"/>
+      <view
+            category="org.csstudio"
+            id="org.csstudio.trends.databrowser.exportview.ExportView"
+            class="org.csstudio.trends.databrowser.exportview.ExportView"
+            icon="icons/chart.gif"
+            name="%DatabrowserExport"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.csstudio.trends.databrowser.popupMenu"
+            objectClass="org.csstudio.platform.model.IProcessVariable">
+         <menu
+               id="org.csstudio.popmenu"
+               label="%CSS"
+               path="additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <action
+               id="org.csstudio.trends.databrowser.PVpopupAction"
+               class="org.csstudio.trends.databrowser.PVpopupAction"
+               icon="icons/chart.gif"
+               label="%Databrowser"
+               menubarPath="org.csstudio.popmenu/content"
+               tooltip="%PopmenuTooltip"/>
+      </objectContribution>
+   </extension>
+   <!-- extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.trends.databrowser"
+            label="CSS Action Set"
+            visible="true">
+         <menu
+               id="org.csstudio"
+               label="%CSS"
+               path="additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <menu
+               id="org.csstudio.trends"
+               label="%CSSTrends"
+               path="org.csstudio/additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <action
+               id="org.csstudio.trends.databrowser.NewDataBrowserAction"
+               class="org.csstudio.trends.databrowser.NewDataBrowserAction"
+               icon="icons/chart.gif"
+               label="%Databrowser"
+               menubarPath="org.csstudio/org.csstudio.trends/content"
+               style="push"
+               tooltip="%MenuTooltip"/>
+      </actionSet>
+   </extension -->
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.trends.databrowser"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.trends.databrowser.NewDataBrowserAction"
+               icon="icons/chart.gif"
+               id="org.csstudio.trends.databrowser.NewDataBrowserAction"
+               label="%Databrowser"
+               menubarPath="css/trends/"
+               style="push"
+               tooltip="%MenuTooltip"/>
+      </actionSet>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.csstudio.trends.databrowser.preferences.PreferencePage"
+            id="org.csstudio.trends.databrowser.preferences.PreferencePage"
+            name="%PreferenceTitle"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.trends.databrowser.preferences.Preferences"/>
+   </extension>
+</plugin>

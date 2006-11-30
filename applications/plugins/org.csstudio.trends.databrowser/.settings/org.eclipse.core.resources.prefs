@@ -1,0 +1,14 @@
+#Wed Nov 22 14:29:01 EST 2006
+eclipse.preferences.version=1
+encoding//src/org/csstudio/swt/chart/messages.properties=8859_1
+encoding//src/org/csstudio/trends/databrowser/archiveview/messages.properties=8859_1
+encoding//src/org/csstudio/trends/databrowser/configview/messages.properties=8859_1
+encoding//src/org/csstudio/trends/databrowser/exportview/messages_de.properties=8859_1
+encoding//src/org/csstudio/trends/databrowser/messages.properties=8859_1
+encoding//src/org/csstudio/trends/databrowser/model/messages.properties=8859_1
+encoding//src/org/csstudio/trends/databrowser/ploteditor/messages.properties=8859_1
+encoding//src/org/csstudio/trends/databrowser/preferences/messages.properties=8859_1
+encoding//src/org/csstudio/trends/databrowser/sampleview/messages.properties=8859_1
+encoding//src/org/csstudio/util/editor/messages.properties=8859_1
+encoding//src/org/csstudio/util/swt/messages.properties=8859_1
+encoding//src/org/csstudio/util/wizard/messages.properties=8859_1

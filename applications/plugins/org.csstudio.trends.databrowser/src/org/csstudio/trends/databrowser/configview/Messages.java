@@ -1,0 +1,89 @@
+package org.csstudio.trends.databrowser.configview;
+
+import org.eclipse.osgi.util.NLS;
+
+/** Eclipse-generated keeper of externalized strings. */
+public class Messages extends NLS
+{
+    private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.configview.messages"; //$NON-NLS-1$
+
+    public static String Archive;
+
+    public static String ArchsForPVs;
+
+    public static String AxisIndex;
+    
+    public static String BufferSize;
+
+    public static String Color;
+
+    public static String ConfigPV;
+
+    public static String ConfigPVUpdates;
+
+    public static String Delete;
+
+    public static String DeleteSelectedEntry;
+
+    public static String Down;
+
+    public static String EnterCount;
+
+    public static String EnterSecs;
+
+    public static String Key;
+    
+    public static String LinearAxisType;
+
+    public static String LineWidth;
+    
+    public static String LiveConfig;
+    
+    public static String LivePVConfig;
+
+    public static String LogAxisType;    
+    
+    public static String AxisType;
+
+    public static String MoveArchsDown;
+
+    public static String MoveArchsUp;
+
+    public static String PVs;
+
+    public static String PV;
+
+    public static String RingBuffer;
+
+    public static String RingBufferMinSize;
+
+    public static String ScanPeriodMustBeGt;
+
+    public static String ScanPeriodSecs;
+
+    public static String Secs;
+
+    public static String Up;
+
+    public static String UpdatePeriodMustBeGt;
+
+    public static String UpdatePeriodSecs;
+
+    public static String UpdateVsScanPeriod;
+    
+    public static String URL;
+
+    public static String ValueRangeMax;
+
+    public static String ValueRangeMin;
+
+    static
+    {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
+
+    private Messages()
+    {
+    }
+}

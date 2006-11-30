@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Databrowser
+Bundle-SymbolicName: org.csstudio.trends.databrowser; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.trends.databrowser.Plugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.views,
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources,
+ org.csstudio.utility.pv,
+ org.csstudio.archive.channelarchiver,
+ org.csstudio.platform.ui,
+ org.csstudio.platform
+Eclipse-LazyStart: true
+Bundle-Vendor: Kay Kasemir
