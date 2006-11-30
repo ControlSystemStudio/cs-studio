@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+      Build file for the Eclipse Plugin
+  -->
+<project name="org.csstudio.utility.clock" default="plugin_jar" basedir=".">
+
+    <!-- Config -->
+    <property name="plug_basename" value="${ant.project.name}" />
+    <property name="version" value="1.0.0" />
+
+    <!-- Rather fixed stuff, no need to change -->
+    <property name="jartemp" location="jartemp" />
+    <property name="plugjar" location="${plug_basename}_${version}.jar" />
+
+    <target name="plugin_jar" description="Create the plugin jar file">
+        <echo>Collecting files in ${jartemp}</echo>
+        <delete dir="${jartemp}"/>
+        <mkdir dir="${jartemp}"/>
+        <mkdir dir="${jartemp}/html"/>
+        <mkdir dir="${jartemp}/icons"/>
+
+        <echo>Compiled class files</echo>
+        <copy todir="${jartemp}" failonerror="true" overwrite="false">
+            <fileset dir="bin" includes="**/*.class"/>
+        </copy>
+        <echo>Images, manifest, ...</echo>
+        <copy todir="${jartemp}" failonerror="true" overwrite="false">
+            <fileset dir="${basedir}" includes="plugin.xml,META-INF/,html/,icons/"/>
+        </copy>
+        <copy todir="${jartemp}" failonerror="true" overwrite="false">
+            <fileset dir="${basedir}" includes="toc.xml"/>
+        </copy>
+
+        <echo>Creating ${plugjar}:</echo>
+        <zip destfile="${plugjar}" basedir="${jartemp}" />
+
+        <delete dir="${jartemp}"/>
+    </target>
+
+    <target name="mac_install" depends="plugin_jar" description="Install jar into Eclipse on my Mac laptop">
+    	<copy file="${plugjar}" todir="/Users/kasemir/MacStuff/Eclipse/eclipse/plugins"/>
+        <echo>Installed a new plugin. Run Eclipse once with '-clean' option!</echo>
+    </target>
+
+    <target name="win_install" depends="plugin_jar" description="Install jar into Eclipse on my windows laptop">
+    	<copy file="${plugjar}" todir="/Documents and Settings/Kay/Desktop/Eclipse/eclipse/plugins"/>
+        <echo>Installed a new plugin. Run Eclipse once with '-clean' option!</echo>
+    </target>
+	
+    <target name="clean" description="Delete temporary files">
+        <delete dir="${jartemp}"/>
+    </target>
+
+</project>

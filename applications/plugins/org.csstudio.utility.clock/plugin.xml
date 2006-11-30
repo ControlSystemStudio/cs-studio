@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            name="Clock"
+            icon="icons/clock.png"
+            category="org.csstudio"
+            class="org.csstudio.utility.clock.ClockView"
+            id="org.csstudio.utility.clock.ClockView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.utility.clock"
+            label="CSS Action Set"
+            visible="true">
+         <menu
+               id="org.csstudio"
+               label="CSS"
+               path="additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <menu
+               id="org.csstudio.utility"
+               label="Utilities"
+               path="org.csstudio/additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <action
+               class="org.csstudio.utility.clock.ShowClockAction"
+               icon="icons/clock.png"
+               id="org.csstudio.utility.clock.showclockaction"
+               label="Clock"
+               menubarPath="org.csstudio/org.csstudio.utility/content"
+               style="push"
+               tooltip="Show the Clock"/>
+      </actionSet>
+   </extension>
+</plugin>
