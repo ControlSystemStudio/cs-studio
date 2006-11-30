@@ -1,6 +1,6 @@
 package org.csstudio.alarm.table.timeSelection;
 
-import org.csstudio.data.Timestamp;
+import org.csstudio.platform.util.ITimestamp;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -16,13 +16,13 @@ import org.eclipse.swt.widgets.Shell;
 
 public class StartEndDialog extends Dialog implements TimestampWidgetListener
 {
-    private Timestamp start;
-    private Timestamp end;
+    private ITimestamp start;
+    private ITimestamp end;
     private TimestampWidget start_widget;
     private TimestampWidget end_widget;
     private Label info;
     
-    public StartEndDialog(Shell shell, Timestamp start, Timestamp end)
+    public StartEndDialog(Shell shell, ITimestamp start, ITimestamp end)
     {
         super(shell);
         this.start = start;
@@ -30,13 +30,13 @@ public class StartEndDialog extends Dialog implements TimestampWidgetListener
     }
     
     /** @return the start time */
-    public Timestamp getStart()
+    public ITimestamp getStart()
     {
         return start;
     }
 
     /** @return the end time */
-    public Timestamp getEnd()
+    public ITimestamp getEnd()
     {
         return end;
     }
@@ -84,15 +84,15 @@ public class StartEndDialog extends Dialog implements TimestampWidgetListener
     }
 
     // TimestampWidgetListener
-    public void updatedTimestamp(TimestampWidget source, Timestamp stamp)
+    public void updatedTimestamp(TimestampWidget source, ITimestamp stamp)
     {
         if (source == start_widget)
             start = stamp;
         else
             end = stamp;
         
-        System.out.println("Start: " + start.format(Timestamp.FMT_DATE_HH_MM_SS));
-        System.out.println("End  : " + end.format(Timestamp.FMT_DATE_HH_MM_SS));
+        System.out.println("Start: " + start.format(ITimestamp.FMT_DATE_HH_MM_SS));
+        System.out.println("End  : " + end.format(ITimestamp.FMT_DATE_HH_MM_SS));
         
         if (start.isGreaterOrEqual(end))
             info.setText("Start time must be 'before' end time!");

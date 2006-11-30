@@ -3,7 +3,8 @@ package org.csstudio.alarm.table.timeSelection;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import org.csstudio.data.Timestamp;
+import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.util.TimestampFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -22,7 +23,7 @@ public class TimestampWidget extends Composite
     private Label current_label;
     private SWTCalendar calendar;
     private Spinner hour, minute, second;
-    private Timestamp timestamp = new Timestamp();
+    private ITimestamp timestamp = TimestampFactory.createTimestamp(); //new Timestamp();
     /** Used to prevent recursion when the widget updates the GUI,
      *  which in turn fires listener notifications...
      */
@@ -37,14 +38,14 @@ public class TimestampWidget extends Composite
      */
     public TimestampWidget(Composite parent, int flags)
     {
-        this(parent, flags, Timestamp.now());
+        this(parent, flags, TimestampFactory.now());
     }
         
     /** Construct widget, initialized to given time.
      *  @param parent Widget parent.
      *  @param flags SWT widget flags.
      */
-    public TimestampWidget(Composite parent, int flags, Timestamp stamp)
+    public TimestampWidget(Composite parent, int flags, ITimestamp stamp)
     {
         super(parent, flags);
         GridLayout layout = new GridLayout();
@@ -177,13 +178,13 @@ public class TimestampWidget extends Composite
     /** Set the widget to display the given time.
      *  @see #setNow()
      */
-    public void setTimestamp(Timestamp stamp)
+    public void setTimestamp(ITimestamp stamp)
     {
         // Initialize with 0 nanoseconds.
         // Since we don't show and allow modification of the
         // nanoseconds, odd things can happen in start/end time
         // comparisons when there are 'hidden', non-zero nanosecs.
-        timestamp = new Timestamp(stamp.seconds(), 0);
+        timestamp = TimestampFactory.createTimestamp(stamp.seconds(), 0); //new Timestamp(stamp.seconds(), 0);
         updateGUIfromTimestamp();
     }
 
@@ -192,11 +193,11 @@ public class TimestampWidget extends Composite
      */
     public void setNow()
     {
-        setTimestamp(Timestamp.now());
+        setTimestamp(TimestampFactory.now());
     }
 
     /** @return Returns the currently selected time. */
-    public Timestamp getTimestamp()
+    public ITimestamp getTimestamp()
     {
         return timestamp;
     }
@@ -219,16 +220,16 @@ public class TimestampWidget extends Composite
     {
         long pieces[] = timestamp.toPieces();
         Calendar cal = Calendar.getInstance();
-        cal.set((int)pieces[Timestamp.YEAR],
-                (int)pieces[Timestamp.MONTH] - 1,
-                (int)pieces[Timestamp.DAY],
+        cal.set((int)pieces[ITimestamp.YEAR],
+                (int)pieces[ITimestamp.MONTH] - 1,
+                (int)pieces[ITimestamp.DAY],
                 0, 0, 0);
         in_GUI_update = true;
         calendar.setCalendar(cal);
-        hour.setSelection((int)pieces[Timestamp.HOUR]);
-        minute.setSelection((int)pieces[Timestamp.MINUTE]);
-        second.setSelection((int)pieces[Timestamp.SECOND]);
-        current_label.setText(timestamp.format(Timestamp.FMT_DATE_HH_MM_SS));
+        hour.setSelection((int)pieces[ITimestamp.HOUR]);
+        minute.setSelection((int)pieces[ITimestamp.MINUTE]);
+        second.setSelection((int)pieces[ITimestamp.SECOND]);
+        current_label.setText(timestamp.format(ITimestamp.FMT_DATE_HH_MM_SS));
         in_GUI_update = false;
         
         // fireUpdatedTimestamp

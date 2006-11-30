@@ -12,8 +12,8 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Topic;
 
-import org.csstudio.libs.jms.*;
-import org.csstudio.libs.jms.preferences.*;
+import org.csstudio.platform.libs.jms.JmsPlugin;
+import org.csstudio.platform.libs.jms.preferences.PreferenceConstants;
 /**
  * Class used to establish connection with jms server
  */

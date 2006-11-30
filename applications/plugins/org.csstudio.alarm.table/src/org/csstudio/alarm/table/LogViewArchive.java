@@ -13,7 +13,8 @@ import org.csstudio.alarm.table.expertSearch.ExpertSearchDialog;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
 import org.csstudio.alarm.table.timeSelection.StartEndDialog;
-import org.csstudio.data.Timestamp;
+import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.util.TimestampFactory;
 
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
@@ -170,8 +171,8 @@ public class LogViewArchive extends ViewPart {
 				if((toDate = getToTime())==null)
 					toDate = (new Date(new Date().getTime()));
 
-				Timestamp start = new Timestamp(fromDate.getTime()/1000);
-				Timestamp end = new Timestamp((toDate.getTime()) / 1000);
+				ITimestamp start = TimestampFactory.now(); //new Timestamp(fromDate.getTime()/1000);
+				ITimestamp end = TimestampFactory.now(); //new Timestamp((toDate.getTime()) / 1000);
 				StartEndDialog dlg = new StartEndDialog(parentShell, start, end);
 				if (dlg.open() == StartEndDialog.OK) {
 					double low = dlg.getStart().toDouble();
@@ -213,8 +214,8 @@ public class LogViewArchive extends ViewPart {
 				if((toDate = getToTime())==null)
 					toDate = (new Date(new Date().getTime()));
 
-				Timestamp start = new Timestamp(fromDate.getTime()/1000);
-				Timestamp end = new Timestamp((toDate.getTime()) / 1000);
+				ITimestamp start = TimestampFactory.now(); //new Timestamp(fromDate.getTime()/1000);
+				ITimestamp end = TimestampFactory.now(); //new Timestamp((toDate.getTime()) / 1000);
 
 				ExpertSearchDialog dlg = new ExpertSearchDialog(parentShell, start, end);
 				String filter= ""; //$NON-NLS-1$

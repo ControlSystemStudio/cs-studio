@@ -7,7 +7,7 @@ import org.csstudio.alarm.table.Messages;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
 import org.csstudio.alarm.table.timeSelection.TimestampWidget;
 import org.csstudio.alarm.table.timeSelection.TimestampWidgetListener;
-import org.csstudio.data.Timestamp;
+import org.csstudio.platform.util.ITimestamp;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -27,8 +27,8 @@ import org.eclipse.swt.widgets.Text;
 
 public class ExpertSearchDialog extends Dialog implements TimestampWidgetListener{
 
-	private Timestamp start;
-	private Timestamp end;
+	private ITimestamp start;
+	private ITimestamp end;
 	private Shell shell;
 	private HashMap<String, String> filterMap;
 	private Group down;
@@ -39,7 +39,7 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
 	private int windowXSize = 450;
 
 
-	public ExpertSearchDialog(Shell shell, Timestamp start, Timestamp end)
+	public ExpertSearchDialog(Shell shell, ITimestamp start, ITimestamp end)
 	    {
 	        super(shell);
 	        this.shell=shell;
@@ -223,27 +223,27 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
 		return filterString;
 	}
     /** @return the start time */
-    public Timestamp getStart()
+    public ITimestamp getStart()
     {
         return start;
     }
 
     /** @return the end time */
-    public Timestamp getEnd()
+    public ITimestamp getEnd()
     {
         return end;
     }
 
 	  // TimestampWidgetListener
-    public void updatedTimestamp(TimestampWidget source, Timestamp stamp)
+    public void updatedTimestamp(TimestampWidget source, ITimestamp stamp)
     {
         if (source == start_widget)
             start = stamp;
         else
             end = stamp;
 
-        System.out.println(Messages.ExpertSearchDialog_start + start.format(Timestamp.FMT_DATE_HH_MM_SS));
-        System.out.println(Messages.ExpertSearchDialog_end + end.format(Timestamp.FMT_DATE_HH_MM_SS));
+        System.out.println(Messages.ExpertSearchDialog_start + start.format(ITimestamp.FMT_DATE_HH_MM_SS));
+        System.out.println(Messages.ExpertSearchDialog_end + end.format(ITimestamp.FMT_DATE_HH_MM_SS));
 
         if (start.isGreaterOrEqual(end))
             info.setText(Messages.ExpertSearchDialog_startEndMessage);

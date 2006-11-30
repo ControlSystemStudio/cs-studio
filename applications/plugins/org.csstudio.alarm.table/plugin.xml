@@ -41,13 +41,6 @@
             name="JMS Alarm viewer"/>
    </extension>
    <extension
-         point="org.eclipse.help.toc">
-      <toc file="toc.xml"/>
-      <toc
-            file="testToc.xml"
-            primary="true"/>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="de.desy.css.jmsLogs.page3/"
@@ -115,6 +108,13 @@
       <controlSystemItemFactory
             class="org.csstudio.alarm.table.dataModel.TextContainerFactory"
             typeId="org.csstudio.alarm.table.controlSystemItemFactory1"/>
+   </extension>
+      <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
    </extension>
 
    

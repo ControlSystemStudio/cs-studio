@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
+import org.csstudio.platform.model.IProcessVariable;
 
 //import org.csstudio.platform.model.IProcessVariableName;
 //import org.csstudio.data.exchange.ProcessVariableName;
@@ -12,7 +13,7 @@ import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.eclipse.core.runtime.IAdaptable;
 
 
-public class JMSMessage implements IAdaptable{// ,org.csstudio.data.exchange.IProcessVariableName{//,
+public class JMSMessage implements IProcessVariable {//,
 //		org.csstudio.data.exchange.IFrontEndControllerName{
 
 	
@@ -119,6 +120,11 @@ public class JMSMessage implements IAdaptable{// ,org.csstudio.data.exchange.IPr
 	public String getUrl() {
 		// TODO Auto-generated method stub
 		return "url jan";
+	}
+
+	public String getTypeId() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

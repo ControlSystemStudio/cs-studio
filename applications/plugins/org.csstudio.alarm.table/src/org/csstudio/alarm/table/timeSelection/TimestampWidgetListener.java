@@ -1,6 +1,7 @@
 package org.csstudio.alarm.table.timeSelection;
 
-import org.csstudio.data.Timestamp;
+import org.csstudio.platform.util.ITimestamp;
+
 
 /** Listener interface for the TimestampWidget.
  *  @author Kay Kasemir
@@ -11,5 +12,5 @@ public interface TimestampWidgetListener
      *  @param source The affected widget.
      *  @param stamp The current time stamp.
      */
-    public void updatedTimestamp(TimestampWidget source, Timestamp stamp);
+    public void updatedTimestamp(TimestampWidget source, ITimestamp stamp);
 }

@@ -17,7 +17,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.dnd.DnDUtil;
-import org.csstudio.platform.ui.dnd.FilteredDragSourceAdapter;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IMenuListener;
@@ -120,51 +120,53 @@ public class JMSLogTableViewer extends TableViewer {
 		}
 		makeContextMenu(site);
 		
-		FilteredDragSourceAdapter dragSourceAdapter = new FilteredDragSourceAdapter(
-				new Class[] { IControlSystemItem.class }) {
+		new ProcessVariableDragSource(this.getTable(), this);
+		
+//		FilteredDragSourceAdapter dragSourceAdapter = new FilteredDragSourceAdapter(
+//				new Class[] { IControlSystemItem.class }) {
+//
+//			@Override
+//			protected List getCurrentSelection() {
+//				List<IAdaptable> l = new ArrayList<IAdaptable>();
+//				if(selection[0].equalsIgnoreCase("NAME")) {
+//					l.add(CentralItemFactory.createProcessVariable(selection[1]));
+//					return l;
+//				} else {
+//					l.add(new TextContainer(selection[0], selection[1]));
+//					return l;
+//				}
+//			}
+//		};
 
-			@Override
-			protected List getCurrentSelection() {
-				List<IAdaptable> l = new ArrayList<IAdaptable>();
-				if(selection[0].equalsIgnoreCase("NAME")) {
-					l.add(CentralItemFactory.createProcessVariable(selection[1]));
-					return l;
-				} else {
-					l.add(new TextContainer(selection[0], selection[1]));
-					return l;
-				}
-			}
-		};
+//		DnDUtil.enableForDrag(this.getControl(), DND.DROP_MOVE | DND.DROP_COPY,
+//				dragSourceAdapter);
 
-		DnDUtil.enableForDrag(this.getControl(), DND.DROP_MOVE | DND.DROP_COPY,
-				dragSourceAdapter);
-
-		this.getTable().addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				super.mouseDown(e);
-				CentralLogger.getInstance().info(this, "DnD Mouse Listener");
-				if (e.button == 1) {
-					CentralLogger.getInstance().info(this, "DnD Mouse Listener mouse button 1");
-
-					JMSMessageLabelProvider jmsmlp = (JMSMessageLabelProvider) JMSLogTableViewer.this
-							.getLabelProvider();
-					Table t = JMSLogTableViewer.this.getTable();
-					TableItem ti = t.getItem(new Point(e.x, e.y));
-					for (int i = 0; i < JMSLogTableViewer.this.columnNames.length; i++) {
-						Rectangle bounds = ti.getBounds(i);
-						if (bounds.contains(e.x, e.y)) {
-							selection[0] = jmsmlp.getColumnName(i);
-							selection[1] = ti.getText(i);
-							CentralLogger.getInstance().info(this, "Selection Col: " + selection[0] +
-									" Text: " + selection[1]);
-
-							break;
-						}
-					}
-				}
-			}
-		});
+//		this.getTable().addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseDown(MouseEvent e) {
+//				super.mouseDown(e);
+//				CentralLogger.getInstance().info(this, "DnD Mouse Listener");
+//				if (e.button == 1) {
+//					CentralLogger.getInstance().info(this, "DnD Mouse Listener mouse button 1");
+//
+//					JMSMessageLabelProvider jmsmlp = (JMSMessageLabelProvider) JMSLogTableViewer.this
+//							.getLabelProvider();
+//					Table t = JMSLogTableViewer.this.getTable();
+//					TableItem ti = t.getItem(new Point(e.x, e.y));
+//					for (int i = 0; i < JMSLogTableViewer.this.columnNames.length; i++) {
+//						Rectangle bounds = ti.getBounds(i);
+//						if (bounds.contains(e.x, e.y)) {
+//							selection[0] = jmsmlp.getColumnName(i);
+//							selection[1] = ti.getText(i);
+//							CentralLogger.getInstance().info(this, "Selection Col: " + selection[0] +
+//									" Text: " + selection[1]);
+//
+//							break;
+//						}
+//					}
+//				}
+//			}
+//		});
 	}
 
 	public void setColumnNames(String[] colNames) {
