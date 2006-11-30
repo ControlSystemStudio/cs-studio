@@ -31,7 +31,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
    </license>
 
    <url>
-      <discovery label="Control System Studio (CSS) Update Site" url="http://www.sven-wende.de/css_update_site"/>
+      <discovery label="Control System Studio (CSS) Update Site" url="http://eclipse.desy.de/update"/>
    </url>
 
    <includes
