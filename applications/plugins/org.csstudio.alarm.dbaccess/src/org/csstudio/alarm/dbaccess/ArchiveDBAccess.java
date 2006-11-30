@@ -11,7 +11,6 @@ import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleStatement;
 
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
-import org.eclipse.swt.widgets.Text;
 
 public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 
@@ -19,6 +18,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	{
 		try{
 			DriverManager.registerDriver(new OracleDriver());
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
