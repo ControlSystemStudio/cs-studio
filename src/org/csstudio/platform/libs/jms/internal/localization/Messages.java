@@ -19,57 +19,33 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.libs.jms;
+package org.csstudio.platform.libs.jms.internal.localization;
 
-import org.eclipse.ui.plugin.*;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.osgi.framework.BundleContext;
+import org.eclipse.osgi.util.NLS;
 
 /**
- * The main plugin class to be used in the desktop.
+ * Access to the localization message ressources within this plugin.
+ * 
+ * @author Alexander Will
  */
-public class JmsPlugin extends AbstractUIPlugin {
+public class Messages extends NLS {
+	private static final String BUNDLE_NAME = "org.csstudio.platform.libs.jms.internal.localization.messages"; //$NON-NLS-1$
 
-	//The shared instance.
-	private static JmsPlugin plugin;
+	public static String JMSPreferencePage_CONTEXT_FACTORY;
+
+	public static String JMSPreferencePage_PROVIDER_URL;
+
+	public static String JMSPreferencePage_QUEUE_NAME;
 	
-	/**
-	 * The constructor.
-	 */
-	public JmsPlugin() {
-		plugin = this;
+	static {
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
 	/**
-	 * This method is called upon plug-in activation
+	 * This constructor is private since this class only provides static
+	 * methods.
 	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-	}
-
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-		plugin = null;
-	}
-
-	/**
-	 * Returns the shared instance.
-	 */
-	public static JmsPlugin getDefault() {
-		return plugin;
-	}
-
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path.
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.csstudio.platform.libs.jms", path); //$NON-NLS-1$
+	private Messages() {
 	}
 }
