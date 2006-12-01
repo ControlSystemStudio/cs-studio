@@ -1,62 +1,42 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.archive.MetaData;
 import org.csstudio.archive.Sample;
 import org.csstudio.archive.util.SampleUtil;
-import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.swt.chart.ChartSample;
 
 /** One sample of a ModelItem.
  *  <p>
- *  The archive presents samples in one way,
- *  for example with numeric status codes
- *  that get decoded via meta info from the data server.
+ *  The archive presents samples in the fullest,
+ *  with timestamp, status, severity.
  *  <p>
- *  The plot library wants the samples in another format.
+ *  The plot library wants the samples as x/y coordinate,
+ *  with info for tooltip and representation.
  *  <p>
  *  This class interfaces between the two:
- *  It keeps the decoded info from the archive sample and presents it
+ *  It keeps the archive sample and presents it
  *  via an interface suitable for the plot library. 
  *  
  *  @author Kay Kasemir
  */
 public class ModelSample implements ChartSample
 {
-    // TODO: Change this to keep an archive's Sample?
-    /** This is an archive sample. */
-    private Sample sample;
-    // In any case, just info isn't good enough to preserve
-    // the alarm severity, which is needed for proper display
-    // in the sample view and also for export.
-    private double x, y;
-    private String info;
+    /** This is the 'real' archive sample. */
+    private final Sample sample;
     
     /** Create ModelSample from Archive Sample. */
-    static ModelSample fromArchiveSample(
-                     org.csstudio.archive.Sample arch_sample)
+    ModelSample(Sample sample)
     {
-        ITimestamp time = arch_sample.getTime();
-        double value = SampleUtil.getDouble(arch_sample);
-        String info = SampleUtil.getInfo(arch_sample);
-        return new ModelSample(time, value, info); 
+        this.sample = sample;
     }
     
-    /** Construct one model sample.
-     *  @param time The sample's time stamp.
-     *  @param value Ask 'W'.
-     *  @param info Added info, may be used as a tool-tip.
-     *              May be <code>null</code>
-     */
-    ModelSample(ITimestamp time, double value, String info)
-    {
-        this.x = time.toDouble();
-        this.y = value;
-        this.info = info;
-    }
+    /** @return The archive sample. */
+    public Sample getSample()
+    {   return sample;  }
     
     /** @see org.csstudio.swt.chart.ChartSample */
     public int getType()
     {
+        double y = getY();
         if (Double.isInfinite(y)  ||  Double.isNaN(y))
             return ChartSample.TYPE_POINT;
         return ChartSample.TYPE_NORMAL;
@@ -65,19 +45,19 @@ public class ModelSample implements ChartSample
     /** @see org.csstudio.swt.chart.ChartSample */
     public double getX()
     {
-        return x;
+        return sample.getTime().toDouble();
     }
 
     /** @see org.csstudio.swt.chart.ChartSample */
     public double getY()
     {
-        return y;
+        return SampleUtil.getDouble(sample);
     }
 
     /** @see org.csstudio.swt.chart.ChartSample */
     public String getInfo()
     {
-        return info;
+        return SampleUtil.getInfo(sample);
     }
 
     @Override
@@ -86,8 +66,10 @@ public class ModelSample implements ChartSample
         if (! (obj instanceof ModelSample))
             return false;
         ModelSample o = (ModelSample) obj;
-        return x == o.x &&
-               y == o.y &&
-               (info == null ? o.info == null : info.equals(o.info));
+        return sample.equals(o.getSample());
     }
+    
+    @Override
+    public String toString()
+    {   return "ModelSample: " + sample.toString();  } //$NON-NLS-1$
 }

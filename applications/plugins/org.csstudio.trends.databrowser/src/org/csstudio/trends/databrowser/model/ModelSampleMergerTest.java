@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.model;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.csstudio.archive.DoubleSample;
 import org.csstudio.archive.util.TimestampUtil;
 
 /** Tests for ModelSampleMerger.
@@ -15,7 +16,13 @@ public class ModelSampleMergerTest extends TestCase
 
     private ModelSample makeSample(long l)
     {
-        return new ModelSample(TimestampUtil.fromDouble(l), l, null);
+        return new ModelSample(
+                     new DoubleSample(   
+                        TimestampUtil.fromDouble(l),
+                        SeverityUtil.getOK("OK"),
+                        "",
+                        MetaDataUtil.getNumeric(),
+                        new double[] { l }));
     }
 
     public void testPassOld()

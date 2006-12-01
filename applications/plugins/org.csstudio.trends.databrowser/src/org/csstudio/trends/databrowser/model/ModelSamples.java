@@ -1,12 +1,12 @@
 package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.archive.ArchiveSamples;
+import org.csstudio.archive.DoubleSample;
 import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
-import org.csstudio.utility.pv.EnumValue;
 import org.csstudio.utility.pv.PVValue;
 import org.eclipse.swt.widgets.Display;
 
@@ -85,36 +85,36 @@ class ModelSamples implements ChartSampleSequence
             if (info != null && info.equals(Messages.LivePVDisconnected))
                 return;
         }
-        live_samples.add(now, Double.NEGATIVE_INFINITY,
-                        Messages.LivePVDisconnected);
+        
+        DoubleSample disconnected = new DoubleSample(now,
+                        SeverityUtil.getInvalid(Messages.Sevr_INVALID),
+                        Messages.LivePVDisconnected,
+                        MetaDataUtil.getNumeric(),
+                        new double[] {Double.NEGATIVE_INFINITY });
+        
+        live_samples.add(disconnected);
     }
     
     /** Add most recent timestamp/value */
     synchronized void addLiveSample(ITimestamp now,
-                    Object current_value,
-                    String current_severity,
-                    String current_status)
+                    Object value,
+                    int    severity_code,
+                    String severity,
+                    String status)
     {
         // We expect all access to this method from the UI thread.
         if (Display.getCurrent() == null)
             throw new Error("Accessed from non-UI thread"); //$NON-NLS-1$
         try
         {
-            String info;
-            // Use any non-OK severity/status for info
-            if (current_severity != null && current_status != null)
-                info = current_severity + " " + current_status; //$NON-NLS-1$
-            else
-                info = current_severity;
-            // For enums, append the string representation
-            if (current_value instanceof EnumValue)
-            {
-                if (info == null)
-                    info = current_value.toString();
-                else
-                    info = info + " " + current_value.toString(); //$NON-NLS-1$
-            }
-            live_samples.add(now, PVValue.toDouble(current_value), info);
+            // TODO: Get the real MetaData
+            double values[] = new double[] { PVValue.toDouble(value) };
+            DoubleSample sample = new DoubleSample(now,
+                            SeverityUtil.get(severity_code, severity),
+                            status,
+                            MetaDataUtil.getNumeric(),
+                            values);
+            live_samples.add(sample);
         }
         catch (Exception e)
         {

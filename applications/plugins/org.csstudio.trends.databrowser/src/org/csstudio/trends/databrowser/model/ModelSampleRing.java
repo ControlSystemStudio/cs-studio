@@ -1,6 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.archive.Sample;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
 
@@ -56,14 +56,8 @@ public class ModelSampleRing implements ChartSampleSequence
         return real_capacity-1;
     }
     
-    /** Add a new sample with x/y coords. */
-    synchronized public void add(ITimestamp time, double value)
-    {
-        add(time, value, null);
-    }
-
-    /** Add a new sample with x/y coords and info (or <code>null</code>). */
-    synchronized public void add(ITimestamp time, double value, String info)
+    /** Add a new sample. */
+    synchronized public void add(Sample sample)
     {
         // Obtain index of next element
         if (++head >= real_capacity)
@@ -75,7 +69,7 @@ public class ModelSampleRing implements ChartSampleSequence
                 tail = 0;
         }
         // Update that element
-        samples[head] = new ModelSample(time, value, info);
+        samples[head] = new ModelSample(sample);
     }
     
     /** @return Returns the number of valid entries.

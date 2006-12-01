@@ -70,6 +70,10 @@ public class ModelItem
     /** synchronize on 'this'!
      *  @see current_value.
      */
+    private volatile int current_severity_code;
+    /** synchronize on 'this'!
+     *  @see current_value.
+     */
     private volatile String current_severity;
     /** synchronize on 'this'!
      *  @see current_value.
@@ -477,7 +481,8 @@ public class ModelItem
         synchronized (this)
         {
             current_value = pv.getValue();
-            if (pv.getSeverityCode() == 0)
+            current_severity_code = pv.getSeverityCode();
+            if (current_severity_code == 0)
             {
                 current_severity = null;
                 current_status = null;
@@ -500,7 +505,9 @@ public class ModelItem
                 samples.markCurrentlyDisconnected(now);
             else
                 samples.addLiveSample(now,
-                              current_value, current_severity, current_status);
+                              current_value,
+                              current_severity_code, current_severity,
+                              current_status);
             if (! units.equals(pv.getUnits()))
             {
                 units = pv.getUnits();

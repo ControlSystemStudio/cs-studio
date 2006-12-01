@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.model;
 import java.util.ArrayList;
 
 import org.csstudio.archive.ArchiveSamples;
+import org.csstudio.archive.Sample;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.swt.chart.ChartSampleSequence;
 
@@ -35,23 +36,18 @@ public class ModelSampleArray extends ArrayList<ModelSample> implements ChartSam
         // Anything?
         if (arch_samples == null)
             return null;
-        org.csstudio.archive.Sample as[] = arch_samples.getSamples();
+        Sample as[] = arch_samples.getSamples();
         // Any samples?
         if (as.length < 1)
             return null;
-        double border_x;
-        if (border != null)
-            border_x = border.toDouble();
-        else
-            border_x = Double.MAX_VALUE;
         ModelSampleArray model_samples = new ModelSampleArray(as.length);
         for (int i=0; i<as.length; ++i)
-        {   // Convert 'archive' samples into 'model' samples
-            ModelSample s = ModelSample.fromArchiveSample(as[i]);
-            // .. until border
-            if (s.getX() > border_x)
+        {   
+            Sample sample = as[i];
+            // Stop at border
+            if (border != null  &&  sample.getTime().isGreaterThan(border))
                 break;
-            model_samples.add(s); 
+            model_samples.add(new ModelSample(sample)); 
         }
         if (model_samples.size() <= 0)
             return null;
