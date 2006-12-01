@@ -63,33 +63,6 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            label="Update Actions"
-            visible="true"
-            id="org.eclipse.csstudio.ui.softwareUpdates">
-         <menu
-               label="%menuSoftwareUpdates"
-               path="help/group.updates"
-               id="org.csstudio.update.ui.updateMenu">
-            <groupMarker name="group0"/>
-         </menu>
-         <action
-               class="org.csstudio.platform.ui.internal.actions.ConfigurationManagerAction"
-               definitionId="org.csstudio.ui.update.manageConfiguration"
-               icon="icons/configs.gif"
-               id="org.csstudio.platform.ui.internal.actions.ConfigurationManagerAction"
-               label="%menuManageConfigurations"
-               menubarPath="help/org.csstudio.update.ui.updateMenu/group0">
-         </action>
-         <action
-               class="org.csstudio.platform.ui.internal.actions.InstallWizardAction"
-               definitionId="org.csstudio.ui.update.findAndInstallUpdates"
-               icon="icons/usearch_obj.gif"
-               id="org.csstudio.platform.ui.internal.actions.InstallWizardAction"
-               label="%menuFindAndInstall"
-               menubarPath="help/org.csstudio.update.ui.updateMenu/group0">
-         </action>
-      </actionSet>
-      <actionSet
             id="User Management Actions"
             label="User Management Actions"
             visible="true">

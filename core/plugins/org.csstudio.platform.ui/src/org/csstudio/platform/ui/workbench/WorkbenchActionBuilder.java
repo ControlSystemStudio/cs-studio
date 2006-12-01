@@ -156,40 +156,40 @@ public final class WorkbenchActionBuilder {
 		MenuManager menu = new MenuManager(
 				Messages.getString("WorkbenchActionBuilder.MENU_CSS"), IWorkbenchIds.MENU_CSS); //$NON-NLS-1$
 
-		appendVisibleSubMenu(
+		appendSubMenu(
 				menu,
 				Messages.getString("WorkbenchActionBuilder.MENU_CSS_DISPLAY"), IWorkbenchIds.MENU_CSS_DISPLAY); //$NON-NLS-1$
-		appendVisibleSubMenu(
+		appendSubMenu(
 				menu,
 				Messages.getString("WorkbenchActionBuilder.MENU_CSS_ALARM"), IWorkbenchIds.MENU_CSS_ALARM); //$NON-NLS-1$
-		appendVisibleSubMenu(
+		appendSubMenu(
 				menu,
 				Messages.getString("WorkbenchActionBuilder.MENU_CSS_TRENDS"), IWorkbenchIds.MENU_CSS_TRENDS); //$NON-NLS-1$
-		appendVisibleSubMenu(
+		appendSubMenu(
 				menu,
 				Messages
 						.getString("WorkbenchActionBuilder.MENU_CSS_DIAGNOSTICS"), IWorkbenchIds.MENU_CSS_DIAGNOSTICS); //$NON-NLS-1$
-		appendVisibleSubMenu(
+		appendSubMenu(
 				menu,
 				Messages.getString("WorkbenchActionBuilder.MENU_CSS_DEBUGGING"), IWorkbenchIds.MENU_CSS_DEBUGGING); //$NON-NLS-1$
-		appendVisibleSubMenu(
+		appendSubMenu(
 				menu,
 				Messages
 						.getString("WorkbenchActionBuilder.MENU_CSS_CONFIGURATION"), IWorkbenchIds.MENU_CSS_CONFIGURATION); //$NON-NLS-1$
-		appendVisibleSubMenu(
+		appendSubMenu(
 				menu,
 				Messages
 						.getString("WorkbenchActionBuilder.MENU_CSS_MANAGEMENT"), IWorkbenchIds.MENU_CSS_MANAGEMENT); //$NON-NLS-1$
-		appendVisibleSubMenu(
+		appendSubMenu(
 				menu,
 				Messages.getString("WorkbenchActionBuilder.MENU_CSS_EDITORS"), IWorkbenchIds.MENU_CSS_EDITORS); //$NON-NLS-1$
-		appendVisibleSubMenu(
+		appendSubMenu(
 				menu,
 				Messages.getString("WorkbenchActionBuilder.MENU_CSS_UTILITIES"), IWorkbenchIds.MENU_CSS_UTILITIES); //$NON-NLS-1$
-		appendVisibleSubMenu(
+		appendSubMenu(
 				menu,
 				Messages.getString("WorkbenchActionBuilder.MENU_CSS_TEST"), IWorkbenchIds.MENU_CSS_TEST); //$NON-NLS-1$
-		appendVisibleSubMenu(
+		appendSubMenu(
 				menu,
 				Messages.getString("WorkbenchActionBuilder.MENU_CSS_OTHER"), IWorkbenchIds.MENU_CSS_OTHER); //$NON-NLS-1$
 
@@ -200,8 +200,7 @@ public final class WorkbenchActionBuilder {
 	}
 
 	/**
-	 * Add a sub menu entry to the given parent menu that is always visible -
-	 * even if it does not contain child menu entries.
+	 * Add a sub menu entry to the given parent menu.
 	 * 
 	 * @param parentMenu
 	 *            The parent menu item menu.
@@ -210,20 +209,9 @@ public final class WorkbenchActionBuilder {
 	 * @param id
 	 *            The id of the sub menu entry.
 	 */
-	private void appendVisibleSubMenu(final MenuManager parentMenu,
+	private void appendSubMenu(final MenuManager parentMenu,
 			final String entryTitle, final String id) {
-		MenuManager menuEntry = new MenuManager(entryTitle, id) {
-			/*
-			 * Since empty menus are not visible by default, we have to tell the
-			 * newly created sub menu entry that it is, even if it doesn't have
-			 * child entries, yet.
-			 */
-			@Override
-			public boolean isVisible() {
-				return true;
-			}
-		};
-
+		MenuManager menuEntry = new MenuManager(entryTitle, id);
 		parentMenu.add(menuEntry);
 	}
 
@@ -311,8 +299,6 @@ public final class WorkbenchActionBuilder {
 		menu.add(_aboutAction);
 		menu.add(new GroupMarker("group.about.ext")); //$NON-NLS-1$
 		menu.add(_documentationAction);
-		menu.add(new Separator("group.updates")); //$NON-NLS-1$
-		menu.add(new GroupMarker("group.updates")); //$NON-NLS-1$
 		return menu;
 	}
 
