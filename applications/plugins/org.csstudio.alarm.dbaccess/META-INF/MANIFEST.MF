@@ -9,6 +9,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.ide,
  org.eclipse.ui.views,
- org.csstudio.platform.libs.jdbc
+ org.csstudio.platform.libs.jdbc,
+ org.eclipse.core.resources
 Eclipse-LazyStart: true
-Export-Package: org.csstudio.alarm.dbaccess, org.csstudio.alarm.dbaccess.archivedb
+Export-Package: org.csstudio.alarm.dbaccess,
+ org.csstudio.alarm.dbaccess.archivedb,
+ org.csstudio.alarm.dbaccess.archivedb.preferences

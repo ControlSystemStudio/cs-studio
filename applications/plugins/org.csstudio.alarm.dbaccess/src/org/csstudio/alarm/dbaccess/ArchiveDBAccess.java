@@ -1,14 +1,14 @@
 package org.csstudio.alarm.dbaccess;
-
+import oracle.jdbc.OracleDriver;
+import oracle.jdbc.OracleResultSet;
+import oracle.jdbc.OracleStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import oracle.jdbc.OracleDriver;
-import oracle.jdbc.OracleResultSet;
-import oracle.jdbc.OracleStatement;
+
 
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 
