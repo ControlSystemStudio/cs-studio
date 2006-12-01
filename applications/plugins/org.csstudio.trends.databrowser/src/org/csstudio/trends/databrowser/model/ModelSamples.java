@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Display;
  *  @author Kay Kasemir
  *  @see ChartSampleSequence
  */
-class ModelItemSamples implements ChartSampleSequence
+class ModelSamples implements ChartSampleSequence
 {
     /** The 'archived' samples for this item.
      *  Read from the GUI thread, but updated from an archive reader thread.
@@ -32,7 +32,7 @@ class ModelItemSamples implements ChartSampleSequence
     private volatile ModelSampleRing live_samples;
 
     /** Construct with given initial 'live' buffer size */
-    ModelItemSamples(int ring_size)
+    ModelSamples(int ring_size)
     {
         archive_samples = null;
         live_samples = new ModelSampleRing(ring_size);

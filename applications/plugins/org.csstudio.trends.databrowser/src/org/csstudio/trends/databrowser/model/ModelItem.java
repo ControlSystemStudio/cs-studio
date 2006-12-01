@@ -81,7 +81,7 @@ public class ModelItem
         = new ArrayList<IArchiveDataSource>();
     
     /** All the samples of this model item. */
-    private ModelItemSamples samples;
+    private ModelSamples samples;
         
     /** Constructor
      *  @param pv_name Name of the PV
@@ -114,7 +114,7 @@ public class ModelItem
         {
             current_value = null;
         }
-        samples = new ModelItemSamples(ring_size);
+        samples = new ModelSamples(ring_size);
     }    
     
     /** Must be called to dispose the color. */

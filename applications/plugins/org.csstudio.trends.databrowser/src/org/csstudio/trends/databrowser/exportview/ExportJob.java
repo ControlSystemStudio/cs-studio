@@ -6,8 +6,8 @@ package org.csstudio.trends.databrowser.exportview;
 import java.io.PrintWriter;
 
 import org.csstudio.archive.ArchiveServer;
+import org.csstudio.archive.Sample;
 import org.csstudio.archive.cache.ArchiveCache;
-import org.csstudio.archive.crawl.RawSampleInfo;
 import org.csstudio.archive.crawl.RawSampleIterator;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.util.ITimestamp;
@@ -86,11 +86,11 @@ class ExportJob extends Job
                     keys[i] = archives[i].getKey();
                 }
                 // Actual sample export
-                RawSampleIterator iter = new RawSampleIterator(
+                Iterable<Sample> iter = new RawSampleIterator(
                                 servers, keys, item_name, start, end);
-                for (RawSampleInfo sample : iter)
+                for (Sample sample : iter)
                 {
-                    out.println(sample.toString());
+                    out.println(sample);
                     ++lines;
                     if ((lines % PROGRESS_LINE_GRANULARITY) == 0)
                         monitor.subTask(Messages.LinesWritten + lines);
