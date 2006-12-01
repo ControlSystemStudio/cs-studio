@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Display;
  *  @author Kay Kasemir
  *  @see ChartSampleSequence
  */
-class ModelSamples implements ChartSampleSequence
+public class ModelSamples implements ChartSampleSequence
 {
     /** The 'archived' samples for this item.
      *  Read from the GUI thread, but updated from an archive reader thread.
@@ -123,7 +123,7 @@ class ModelSamples implements ChartSampleSequence
     }
     
     /** @see ChartSampleSequence */
-    synchronized public ChartSample get(int i)
+    synchronized public ModelSample get(int i)
     {
         if (archive_samples != null)
         {

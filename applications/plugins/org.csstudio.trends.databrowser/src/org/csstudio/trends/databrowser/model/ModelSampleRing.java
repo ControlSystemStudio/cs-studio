@@ -1,7 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.archive.Sample;
-import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
 
 /** Synchronized circular buffer implementation of a <code>ChartSampleSequence</code>.
@@ -9,7 +8,7 @@ import org.csstudio.swt.chart.ChartSampleSequence;
  *  
  *  @author Kay Kasemir
  */
-public class ModelSampleRing implements ChartSampleSequence
+public class ModelSampleRing 
 {
     //  The Circular buffer implementation:
     //
@@ -87,7 +86,7 @@ public class ModelSampleRing implements ChartSampleSequence
     }
 
     // @see Series
-    synchronized public ChartSample get(int i)
+    synchronized public ModelSample get(int i)
     {
         if (i<0 || i >= size())
             throw new ArrayIndexOutOfBoundsException(i);

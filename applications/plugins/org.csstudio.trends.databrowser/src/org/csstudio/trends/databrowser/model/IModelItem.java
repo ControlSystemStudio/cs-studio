@@ -2,7 +2,6 @@ package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.archive.ArchiveSamples;
 import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.swt.chart.ChartSampleSequence;
 import org.eclipse.swt.graphics.Color;
 
 /** This is the user's interface to one item of the Model.
@@ -57,7 +56,7 @@ public interface IModelItem
     public abstract void setLogScale(boolean use_log_scale);
 
 	/** @return The samples. */
-	public abstract ChartSampleSequence getSamples();
+	public abstract ModelSamples getSamples();
     
     /** Add samples obtained from the archive.
      *  <p>

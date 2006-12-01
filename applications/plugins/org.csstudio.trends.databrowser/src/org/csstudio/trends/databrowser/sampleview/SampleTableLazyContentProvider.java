@@ -1,6 +1,6 @@
 package org.csstudio.trends.databrowser.sampleview;
 
-import org.csstudio.swt.chart.ChartSampleSequence;
+import org.csstudio.trends.databrowser.model.ModelSamples;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -27,7 +27,7 @@ public class SampleTableLazyContentProvider implements ILazyContentProvider
     /** Called by 'lazy' table, needs to 'replace' entry of given row. */
 	public void updateElement(int row)
 	{
-        ChartSampleSequence samples = sample_view.getSamples();
+        ModelSamples samples = sample_view.getSamples();
         synchronized (samples)
         {
             final int N = samples.size();

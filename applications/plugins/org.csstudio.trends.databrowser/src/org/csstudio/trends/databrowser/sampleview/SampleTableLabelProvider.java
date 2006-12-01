@@ -1,7 +1,7 @@
 package org.csstudio.trends.databrowser.sampleview;
 
-import org.csstudio.archive.util.TimestampUtil;
-import org.csstudio.swt.chart.ChartSample;
+import org.csstudio.archive.Severity;
+import org.csstudio.trends.databrowser.model.ModelSample;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -10,27 +10,25 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-/** The JFace label provider for ChartSample data. 
+/** The JFace label provider for ModelSample data. 
  *  @author Kay Kasemir
  */
 public class SampleTableLabelProvider extends LabelProvider implements
 		ITableLabelProvider, ITableColorProvider
 {
-    /** Get text for all but the 'select' column. */
+    /** Get text for all but the columns.
+     *  @param index: 0, 1, 2 for Time, Value, Info
+     */
 	public String getColumnText(Object obj, int index)
 	{
-        ChartSample sample = (ChartSample) obj;
-        if (index == 0)
-            return TimestampUtil.fromDouble(sample.getX()).toString();
-        else if (index == 1)
+        ModelSample sample = (ModelSample) obj;
+        switch (index)
         {
-            double value = sample.getY();
-            if (Double.isInfinite(value))
-                return ""; //$NON-NLS-1$
-            return Double.toString(value);
-        }
-        else
-        {
+        case 0:
+            return sample.getSample().getTime().toString();
+        case 1:
+            return sample.getSample().format();
+        default:
             String info = sample.getInfo();
             return info == null ? "" : info; //$NON-NLS-1$
         }
@@ -45,12 +43,17 @@ public class SampleTableLabelProvider extends LabelProvider implements
     /** @see org.eclipse.jface.viewers.ITableColorProvider */
     public Color getBackground(Object obj, int index)
     {
-        ChartSample sample = (ChartSample) obj;
-        if (sample.getInfo() == null)
+        ModelSample sample = (ModelSample) obj;
+        Severity severity = sample.getSample().getSeverity();
+        if (severity.isOK())
             return null; // no special color
         // Make entry stand out, 
         // using system color that we don't have to dispose
-        return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+        if (severity.isMinor())
+            return Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
+        if (severity.isMajor())
+            return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+        return Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
     }
 
     /** @see org.eclipse.jface.viewers.ITableColorProvider */

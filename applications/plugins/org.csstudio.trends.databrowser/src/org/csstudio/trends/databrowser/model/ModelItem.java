@@ -7,7 +7,6 @@ import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.xml.DOMHelper;
 import org.csstudio.util.xml.XMLHelper;
@@ -277,7 +276,7 @@ public class ModelItem
     }
     
     /** @see IModelItem#getSamples() */
-    public final ChartSampleSequence getSamples()
+    public final ModelSamples getSamples()
     {
         return samples;
     }

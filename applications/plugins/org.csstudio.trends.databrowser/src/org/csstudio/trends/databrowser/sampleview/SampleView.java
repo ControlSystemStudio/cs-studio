@@ -1,8 +1,8 @@
 package org.csstudio.trends.databrowser.sampleview;
 
-import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
+import org.csstudio.trends.databrowser.model.ModelSamples;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.util.swt.AutoSizeColumn;
 import org.csstudio.util.swt.AutoSizeControlListener;
@@ -25,7 +25,7 @@ public class SampleView extends PlotAwareView
     private Model model = null;
     private Combo pv_name;
     private TableViewer table_viewer;
-    private ChartSampleSequence samples = null;
+    private ModelSamples samples = null;
     
     /** Create the GUI elements. */
     @Override
@@ -176,7 +176,7 @@ public class SampleView extends PlotAwareView
      *  Remember to synchronize on them!
      *  @return the samples or <code>null</code>.
      */
-    ChartSampleSequence getSamples()
+    ModelSamples getSamples()
     {
         return samples;
     }
