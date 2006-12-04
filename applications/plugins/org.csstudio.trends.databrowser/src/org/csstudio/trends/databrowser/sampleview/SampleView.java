@@ -19,6 +19,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 
+/** A View that shows all the current Model Samples in a list.
+ *  <p>
+ *  TODO: Sort of works, but doesn't refresh automatically when samples
+ *        are added, and might have some performance issue:
+ *        Especially when switching PVs, or closing after looking
+ *        at many samples, Eclipse freezes for a while.
+ *  @author Kay Kasemir
+ */
 public class SampleView extends PlotAwareView
 {
     public static final String ID = SampleView.class.getName();
@@ -126,10 +134,7 @@ public class SampleView extends PlotAwareView
         {
             String pvs[] = new String[model.getNumItems()];
             for (int i=0; i<pvs.length; ++i)
-            {
                 pvs[i] = model.getItem(i).getName();
-                System.out.println(pvs[i]);
-            }
             pv_name.setItems(pvs);
             pv_name.setEnabled(true);
             if (change)
@@ -164,6 +169,7 @@ public class SampleView extends PlotAwareView
                 synchronized (samples)
                 {
                     table_viewer.setItemCount(samples.size());
+                    table_viewer.refresh();
                 }
                 return;
             }
