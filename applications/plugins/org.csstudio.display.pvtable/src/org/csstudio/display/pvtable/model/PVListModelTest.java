@@ -10,6 +10,7 @@ import junit.framework.TestCase;
  * 
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVListModelTest extends TestCase implements
     PVListModelListener
 {

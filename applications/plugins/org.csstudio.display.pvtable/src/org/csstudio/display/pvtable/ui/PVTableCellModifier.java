@@ -16,8 +16,7 @@ import org.eclipse.swt.widgets.Table;
  */
 public class PVTableCellModifier implements ICellModifier
 {
-    private static final boolean debug = false;
-    private PVListModel pv_list;
+    private final PVListModel pv_list;
     
     /** Create a CellModifier for the PV Table and attach it to the TableViewer
      *  @param table_viewer The TableViewer to which to attach. 
@@ -54,12 +53,11 @@ public class PVTableCellModifier implements ICellModifier
     /** @return Returns true for cells that may be edited */
     public boolean canModify(Object element, String property)
     {
-        if (debug)
-            System.out.println("CellModifier checks " + property 
-                + " of " + element + " ...");
         try
         {
             int id = PVTableHelper.getPropertyID(property);
+            if (element == PVTableViewerHelper.empty_row)
+                return id == PVTableHelper.NAME;
             return id == PVTableHelper.SELECT  ||  id == PVTableHelper.READBACK;
         }
         catch (Exception e)
@@ -72,11 +70,10 @@ public class PVTableCellModifier implements ICellModifier
     /** @returns Returns the string for the given property. */
     public Object getValue(Object element, String property)
     {
-        if (debug)
-            System.out.println("CellModifier gets " + property 
-                + " of " + element + " ...");
         try
         {
+            if (element == PVTableViewerHelper.empty_row)
+                return ""; //$NON-NLS-1$
             return PVTableHelper.getProperty((PVListEntry)element, property);
         }
         catch (Exception e)
@@ -92,17 +89,18 @@ public class PVTableCellModifier implements ICellModifier
         // Did some validator reject the value?
         if (value == null)
             return;
+        
         // Javadoc from ICellModifier:
         // Note that it is possible for an SWT Item to be passed instead of 
         // the model element. To handle this case in a safe way, ...
-        PVListEntry entry;
         if (element instanceof Item)
-            entry = (PVListEntry) ((Item) element).getData();
-        else
-            entry = (PVListEntry) element;
-        if (debug)
-            System.out.println("CellModifier wants to set " + property + " to "
-                    + value + " ...");
+            element = ((Item) element).getData();
+        if (element == PVTableViewerHelper.empty_row)
+        {
+            pv_list.addPV(value.toString());
+            return;
+        }
+        PVListEntry entry = (PVListEntry) element;
         try
         {
             int id = PVTableHelper.getPropertyID(property);

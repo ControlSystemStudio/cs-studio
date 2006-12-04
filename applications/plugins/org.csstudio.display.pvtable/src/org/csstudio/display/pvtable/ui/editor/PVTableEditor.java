@@ -3,6 +3,7 @@ package org.csstudio.display.pvtable.ui.editor;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.AbstractPVListModelListener;
 import org.csstudio.display.pvtable.model.PVListEntry;
@@ -95,7 +96,7 @@ public class PVTableEditor extends EditorPart
             }
             catch (Exception e)
             {
-                throw new PartInitException("Load error", e);
+                throw new PartInitException("Load error", e); //$NON-NLS-1$
             }
         }
 
@@ -166,7 +167,7 @@ public class PVTableEditor extends EditorPart
     {
         boolean ok = true;
         if (monitor != null)
-            monitor.beginTask("Save PV Table", IProgressMonitor.UNKNOWN);
+            monitor.beginTask(Messages.Editor_SaveTask, IProgressMonitor.UNKNOWN);
         InputStream stream =
             new ByteArrayInputStream(model.getXMLContent().getBytes());
         try
@@ -186,7 +187,7 @@ public class PVTableEditor extends EditorPart
             ok = false;
             if (monitor != null)
                 monitor.setCanceled(true);
-            Plugin.logException("Save error", e);
+            Plugin.logException("Save error", e); //$NON-NLS-1$
         }
         finally
         {
@@ -240,7 +241,7 @@ public class PVTableEditor extends EditorPart
         IEditorInput input = getEditorInput();
         String title = getEditorInput().getName();
         if (model.getDescription().length() > 0)
-            title = title + " - " + model.getDescription();
+            title = title + " - " + model.getDescription(); //$NON-NLS-1$
         setPartName(title);
         setTitleToolTip(input.getToolTipText());
     }

@@ -13,8 +13,8 @@ public class NewPVTableWizard extends NewFileWizard
     public NewPVTableWizard()
     {
         super(Plugin.getDefault(), 
-                "PV Table",
-                "pv_table.xml",
+                Messages.PVTable,
+                "pv_table.xml", //$NON-NLS-1$
                 new PVListModel().getXMLContent());
     }
 }

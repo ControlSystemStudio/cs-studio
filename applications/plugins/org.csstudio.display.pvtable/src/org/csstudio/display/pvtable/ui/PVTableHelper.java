@@ -1,5 +1,6 @@
 package org.csstudio.display.pvtable.ui;
 
+import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVListEntry;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.utility.pv.PV;
@@ -30,9 +31,9 @@ public class PVTableHelper
     final public static int SAVED_READBACK = 7;
 	
 	/** Strings that one can use as column headers. */
-	final public static String properties[] =
+    final public static String properties[] =
 	{
-		"Sel", "Name", "Time", "Value", "Saved", "Readback", "RB Value", "Saved RB"
+		Messages.TableCol_Sel, Messages.TableCol_Name, Messages.TableCol_Time, Messages.TableCol_Value, Messages.TableCol_SavedValue, Messages.TableCol_ReadbackPV, Messages.TableCol_ReadbackValue, Messages.TableCol_SavedReadbackValue
 	};
 
     final public static int sizes[] =
@@ -42,7 +43,7 @@ public class PVTableHelper
     
     final public static int weights[] =
     {
-        0, 50, 100, 80, 80, 100, 80, 80 
+        0, 100, 100, 80, 80, 100, 80, 80 
     };
 
 	/** Get ID for a property.
@@ -51,12 +52,12 @@ public class PVTableHelper
 	 * @return Returns the requested property ID, e.g. NAME.
 	 * @throws Exception on error.
 	 */
-	static public int getPropertyID(String property) throws Exception
+    static public int getPropertyID(String property) throws Exception
 	{
 		for (int id=0; id<properties.length; ++id)
 			if (properties[id].equals(property))
 				return id;
-		throw new Exception("Unknown property '" + property + "'");
+		throw new Exception("Unknown property '" + property + "'");  //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	/** Get e.g. the "NAME" from a PVListEntry.
@@ -91,7 +92,7 @@ public class PVTableHelper
                 return entry.getPV().getName();
             case TIME:
                 ITimestamp time = entry.getPV().getTime();            	
-                return (time == null) ? "" : time.toString();
+                return (time == null) ? "" : time.toString(); //$NON-NLS-1$
             case VALUE:
                 return PVValue.toString(entry.getPV().getValue());
             case SAVED_VALUE:
@@ -99,12 +100,12 @@ public class PVTableHelper
             case READBACK:
                 pv = entry.getReadbackPV();
                 if (pv == null)
-                    return "";
+                    return ""; //$NON-NLS-1$
                 return pv.getName();
             case READBACK_VALUE:
                 pv = entry.getReadbackPV();
                 if (pv == null)
-                    return "";
+                    return ""; //$NON-NLS-1$
                 return PVValue.toString(pv.getValue());
             case SAVED_READBACK:
                 return PVValue.toString(entry.getSavedReadbackValue());

@@ -2,6 +2,7 @@ package org.csstudio.display.pvtable.ui;
 
 import java.util.Iterator;
 
+import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVListEntry;
 import org.csstudio.display.pvtable.model.PVListModel;
@@ -34,6 +35,8 @@ import org.eclipse.ui.actions.ActionFactory;
  */
 public class PVTableViewerHelper
 {
+    public final static String empty_row = Messages.EmptyRowMarker;
+    
     private TableViewer table_viewer;
     private PVListModel pv_list;
     private PVListModelListener listener;
@@ -118,7 +121,8 @@ public class PVTableViewerHelper
         table_viewer.setLabelProvider(new PVTableLabelProvider(pv_list));
         table_viewer.setContentProvider(
                 new PVTableLazyContentProvider(table_viewer, pv_list));
-        table_viewer.setItemCount(pv_list.getEntryCount());
+        // + 1 for the final 'add new PV' row
+        table_viewer.setItemCount(pv_list.getEntryCount() + 1);
         
         // Allow editing.
         new PVTableCellModifier(table_viewer, pv_list);
@@ -155,7 +159,8 @@ public class PVTableViewerHelper
 
             public void entriesChanged()
             {
-                table_viewer.setItemCount(getPVListModel().getEntryCount());
+                // '+1' for the final 'add new PV' row
+                table_viewer.setItemCount(getPVListModel().getEntryCount() + 1);
                 table_viewer.refresh();
             }
 
@@ -196,7 +201,7 @@ public class PVTableViewerHelper
     public void dispose()
     {
         if (pv_list.isDisposed())
-            System.err.println("PVTableViewerHelper was disposed after its PVListModel!");
+            System.err.println("PVTableViewerHelper was disposed after its PVListModel!"); //$NON-NLS-1$
         pv_list.removeModelListener(listener);
         pv_list.stop();
         if (clipboard != null)
@@ -217,7 +222,7 @@ public class PVTableViewerHelper
     private void makeContextMenu(IWorkbenchPartSite site)
     {
         // See Plug-ins book p. 285
-        MenuManager manager = new MenuManager("#PopupMenu");
+        MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         manager.add(add_action);
         manager.add(config_action);
         manager.add(cut_action);
@@ -252,8 +257,7 @@ public class PVTableViewerHelper
             entries[i++] = entry;
             if (i > num)
             {
-                Plugin.logError(
-                        "Selection grew beyond " + num);
+                Plugin.logError("Selection grew beyond " + num); //$NON-NLS-1$
                 return null;
             }
         }

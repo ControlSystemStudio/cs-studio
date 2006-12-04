@@ -48,6 +48,7 @@ public class PVListModelValueUpdateThread implements Runnable
     }
 
     /** @param delay The new periodic check delay in millisecs. */
+    @SuppressWarnings("nls")
     public void setDelay(int delay)
     {
         if (delay > 1)
@@ -60,11 +61,10 @@ public class PVListModelValueUpdateThread implements Runnable
     /**  @see java.lang.Runnable#run() */
     public void run()
     {
-        System.out.println("ValueUpdateThread starts");
         while (go)
         {
             if (debug)
-                System.out.println("ValueUpdateThread checking");
+                System.out.println("ValueUpdateThread checking"); //$NON-NLS-1$
             pv_list.updateAnyChangedEntries();
             try
             {
@@ -75,6 +75,5 @@ public class PVListModelValueUpdateThread implements Runnable
                 break;
             }
         }
-        System.out.println("ValueUpdateThread quitting");
     }
 }

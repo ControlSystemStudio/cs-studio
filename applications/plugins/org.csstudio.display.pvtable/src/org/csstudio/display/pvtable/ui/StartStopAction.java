@@ -1,5 +1,6 @@
 package org.csstudio.display.pvtable.ui;
 
+import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.AbstractPVListModelListener;
 import org.csstudio.display.pvtable.model.PVListModel;
@@ -42,15 +43,15 @@ public class StartStopAction extends PVListModelAction
         PVListModel pv_list = getPVListModel();
         if (pv_list == null  ||  pv_list.isRunning())
         {
-            setText("Stop");
-            setToolTipText("Stop PV updates");
-            setImageDescriptor(Plugin.getImageDescriptor("icons/off.gif"));
+            setText(Messages.StartStop_Stop);
+            setToolTipText(Messages.StartStop_Stop_TT);
+            setImageDescriptor(Plugin.getImageDescriptor("icons/off.gif")); //$NON-NLS-1$
         }
         else
         {
-            setText("Start");
-            setToolTipText("Start PV updates");
-            setImageDescriptor(Plugin.getImageDescriptor("icons/on.gif"));
+            setText(Messages.StartStop_Start);
+            setToolTipText(Messages.StartStop_Start_TT);
+            setImageDescriptor(Plugin.getImageDescriptor("icons/on.gif")); //$NON-NLS-1$
         }
     }
         

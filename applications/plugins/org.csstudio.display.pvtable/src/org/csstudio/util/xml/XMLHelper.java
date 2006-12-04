@@ -4,6 +4,7 @@ package org.csstudio.util.xml;
  *  
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class XMLHelper
 {
     /** @return Returns string for intentation to given level. */

@@ -13,7 +13,7 @@ public class RestoreAction extends PVListModelAction
         super(pv_list);
         setText("Restore");
         setToolTipText("Restore values from snapshot");
-        setImageDescriptor(Plugin.getImageDescriptor("icons/restore.gif"));
+        setImageDescriptor(Plugin.getImageDescriptor("icons/restore.gif")); //$NON-NLS-1$
     }
 
     @Override

@@ -25,11 +25,11 @@ public class PVListModel
 {
     private static final boolean debug = false;
     
-    private static final String file_header = "<pvtable version=\"1.0\">\n";
-    private static final String file_tail = "</pvtable>\n";
+    private static final String file_header = "<pvtable version=\"1.0\">\n"; //$NON-NLS-1$
+    private static final String file_tail = "</pvtable>\n"; //$NON-NLS-1$
 	private static final double DEFAULT_TOLERANCE = 0.001;    
 
-    private String description = "";
+    private String description = ""; //$NON-NLS-1$
     private double tolerance = DEFAULT_TOLERANCE;
     private boolean isRunning = false;    
     
@@ -151,7 +151,7 @@ public class PVListModel
         int i = entries.indexOf(entry);
         if (i < 0)
         {
-            System.err.println("PVListModel.removeEntry: Cannot find " + entry);
+            System.err.println("PVListModel.removeEntry: Cannot find " + entry); //$NON-NLS-1$
             return;
         }
         removeEntry(i);
@@ -187,6 +187,7 @@ public class PVListModel
         fireEntriesChanged();
     }
     
+    @SuppressWarnings("nls")
     public void modifyReadbackPV(PVListEntry entry_to_change, String new_readback_name)
     {
         PVListModelEntry entry = (PVListModelEntry) entry_to_change;
@@ -212,6 +213,7 @@ public class PVListModel
     }
 
     /** Load model from DOM document. */
+    @SuppressWarnings("nls")
     private void loadFromDocument(Document doc) throws Exception
     {
         boolean was_running = isRunning;
@@ -314,6 +316,7 @@ public class PVListModel
      */
 
     /** @return Returns the whole model as an XML string. */
+    @SuppressWarnings("nls")
     public String getXMLContent()
     {
         StringBuffer b = new StringBuffer(1024);

@@ -20,14 +20,15 @@ import org.eclipse.swt.widgets.Display;
 public class PVTableLabelProvider extends LabelProvider implements
 		ITableLabelProvider, ITableColorProvider
 {
-    private PVListModel pv_list;
+    private final PVListModel pv_list;
     private Color red;
     
     // For the checkbox images
-    public static final String SELECTED = "checked";
-    public static final String UNSELECTED  = "unchecked";
+    public static final String SELECTED = "checked"; //$NON-NLS-1$
+    public static final String UNSELECTED  = "unchecked"; //$NON-NLS-1$
     private static ImageRegistry images = null;
     
+    @SuppressWarnings("nls")
     public PVTableLabelProvider(PVListModel pv_list)
     {
         this.pv_list = pv_list;
@@ -58,13 +59,17 @@ public class PVTableLabelProvider extends LabelProvider implements
     /** Get text for all but the 'select' column. */
 	public String getColumnText(Object obj, int index)
 	{
+        if (obj == PVTableViewerHelper.empty_row)
+            return index == PVTableHelper.NAME ?
+                            PVTableViewerHelper.empty_row : ""; //$NON-NLS-1$
         return PVTableHelper.getText((PVListEntry) obj, index);
 	}
 
     /** Get column image (only for the 'select' column) */
 	public Image getColumnImage(Object obj, int index)
 	{
-        if (index == PVTableHelper.SELECT)
+        if (index == PVTableHelper.SELECT  &&
+            obj != PVTableViewerHelper.empty_row)
         {
             PVListEntry entry = (PVListEntry) obj;
             if (entry.isSelected())
@@ -92,6 +97,9 @@ public class PVTableLabelProvider extends LabelProvider implements
     /** Determine if the table cell should shown in a special way. */
     private boolean shouldStandout(Object obj, int index)
     {
+        if (obj == PVTableViewerHelper.empty_row)
+            return false;
+
         PVListEntry entry = (PVListEntry) obj;
         double tolerance = pv_list.getTolerance();
         PV pv;

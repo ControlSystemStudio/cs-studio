@@ -14,7 +14,7 @@ public class ConfigAction extends PVListModelAction
         super(pv_list);
         setText("Config");
         setToolTipText("Configure PV Table");
-        setImageDescriptor(Plugin.getImageDescriptor("icons/config.gif"));
+        setImageDescriptor(Plugin.getImageDescriptor("icons/config.gif")); //$NON-NLS-1$
     }
 
     @Override

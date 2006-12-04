@@ -12,7 +12,7 @@ import org.osgi.framework.BundleContext;
  */
 public class Plugin extends AbstractUIPlugin
 {
-    public static final String ID = "org.csstudio.pvtable";
+    public static final String ID = "org.csstudio.pvtable"; //$NON-NLS-1$
     // The shared instance.
     private static Plugin plugin;
     
@@ -20,7 +20,7 @@ public class Plugin extends AbstractUIPlugin
     public Plugin()
     {
         if (plugin != null)
-            throw new IllegalStateException("Plugin is singleton");
+            throw new IllegalStateException("Plugin is singleton"); //$NON-NLS-1$
         plugin = this;
     }
 

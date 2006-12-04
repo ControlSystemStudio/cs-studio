@@ -182,6 +182,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
         return result;
     }
     
+    @SuppressWarnings("nls")
     public String toXML()
     {
         StringBuffer buf = new StringBuffer();

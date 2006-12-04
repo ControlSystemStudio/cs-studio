@@ -1,5 +1,6 @@
 package org.csstudio.display.pvtable.ui;
 
+import org.csstudio.display.pvtable.Messages;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -45,7 +46,7 @@ public class ConfigDialog extends Dialog
     protected void configureShell(Shell newShell)
     {
         super.configureShell(newShell);
-        newShell.setText("PV Table Configuration");
+        newShell.setText(Messages.ConfigDlg_Title);
     }
 
     /** @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite) */
@@ -59,7 +60,7 @@ public class ConfigDialog extends Dialog
 
         // Row 1
         Label l = new Label(composite, 0);
-        l.setText("Description:");
+        l.setText(Messages.ConfigDlg_Description);
         gd = new GridData();
         l.setLayoutData(gd);
         
@@ -73,7 +74,7 @@ public class ConfigDialog extends Dialog
         
         // Row 2
         l = new Label(composite, 0);
-        l.setText("Tolerance:");
+        l.setText(Messages.ConfigDlg_Tolerance);
         gd = new GridData();
         l.setLayoutData(gd);
         
@@ -94,7 +95,7 @@ public class ConfigDialog extends Dialog
 
         // Row 4
         l = new Label(composite, 0);
-        l.setText("Update Period:");
+        l.setText(Messages.ConfigDlg_UpdatePeriod);
         gd = new GridData();
         l.setLayoutData(gd);
         
@@ -122,14 +123,14 @@ public class ConfigDialog extends Dialog
                 // Nothing to check for description
                 
                 String txt = update_period_text.getText();                
-                String help = "Enter update period in seconds";
+                String help = Messages.ConfigDlg_UpdatePeriod_TT;
                 try
                 {
                     period = Double.parseDouble(txt);
                     if (period > 0.0)
                         help = null;
                     else
-                        help = "Enter positive update period in seconds";
+                        help = Messages.ConfigDlg_UpdatePeriodError;
                 }
                 catch (Exception e)
                 {
@@ -137,19 +138,19 @@ public class ConfigDialog extends Dialog
                 
                 boolean ok = (help == null);
                 if (ok)
-                    update_period_help.setText("");
+                    update_period_help.setText(""); //$NON-NLS-1$
                 else
                     update_period_help.setText(help);
                 
                 txt = tolerance_text.getText();
-                help = "Enter tolerance";
+                help = Messages.ConfigDlg_Tolerance_TT;
                 try
                 {
                     tolerance = Double.parseDouble(txt);
                     if (tolerance > 0.0)
                         help = null;
                     else
-                        help = "Enter small, positive tolerance value";
+                        help = Messages.ConfigDlg_ToleranceError;
                 }
                 catch (Exception e)
                 {
@@ -161,7 +162,7 @@ public class ConfigDialog extends Dialog
                     tolerance_help.setText(help);
                 }
                 else
-                    tolerance_help.setText("");
+                    tolerance_help.setText(""); //$NON-NLS-1$
                 
                 getButton(IDialogConstants.OK_ID).setEnabled(ok);
             }

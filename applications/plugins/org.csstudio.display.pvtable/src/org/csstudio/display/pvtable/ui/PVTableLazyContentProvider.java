@@ -23,7 +23,10 @@ public class PVTableLazyContentProvider implements ILazyContentProvider
 	/** Called by 'lazy' table, needs to 'replace' entry of given row. */
 	public void updateElement(int row)
 	{	// System.out.println("LazyLogContentProvider update row " + row);
-		table_viewer.replace(pv_list.getEntry(row), row);
+        if (row < pv_list.getEntryCount())
+            table_viewer.replace(pv_list.getEntry(row), row);
+        else
+            table_viewer.replace(PVTableViewerHelper.empty_row, row);
 	}
 
 	public void dispose() 

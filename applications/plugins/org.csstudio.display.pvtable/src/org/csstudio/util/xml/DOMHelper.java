@@ -18,6 +18,7 @@ import org.xml.sax.SAXParseException;
  * 
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DOMHelper
 { 
     /** Reads a string that contains XML markup as a DOM.
