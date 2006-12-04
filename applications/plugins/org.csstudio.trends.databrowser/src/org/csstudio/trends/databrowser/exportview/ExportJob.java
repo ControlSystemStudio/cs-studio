@@ -25,27 +25,63 @@ import org.eclipse.core.runtime.jobs.Job;
 class ExportJob extends Job
 {
     private static final int PROGRESS_LINE_GRANULARITY = 100;
-    Model model;
-    ITimestamp start, end;
-    String filename;
+    private final Model model;
+    private final ITimestamp start, end;
+
+    enum Source
+    {
+        Plot, Raw, Average
+    };
+    private final Source source;
+    private final boolean add_live_samples;
+    private final boolean format_spreadsheet;
+    private final boolean format_severity;
+
+    private final String filename;
     
-    /** Create job that searches given server's keys for pattern,
-     *  then notifies view about received names.
-     */
+    /** Create job for exporting data.
+     *  @param start
+     *  @param end Start and end time.
+     *  @param source Where to get the data.
+     *  @param add_live_samples Include the live samples, or only archive?
+     *  @param format_spreadsheet Spreadsheet, or plain list?
+     *  @param format_severity Include severity/status/info, or omit?
+     */     
     public ExportJob(Model model,
-                    ITimestamp start, ITimestamp end, String filename)
+                    ITimestamp start, ITimestamp end,
+                    Source source,
+                    boolean add_live_samples,
+                    boolean format_spreadsheet,
+                    boolean format_severity,
+                    String filename)
     {
         super(Messages.ExportJobTitle);
         this.model = model;
         this.start = start;
         this.end = end;
+        this.source = source;
+        this.add_live_samples = add_live_samples;
+        this.format_spreadsheet = format_spreadsheet;
+        this.format_severity = format_severity;
         this.filename = filename;
     }
 
     /* @see org.eclipse.core.runtime.jobs.Job#run() */
+    @SuppressWarnings("nls")
     @Override
     protected IStatus run(IProgressMonitor monitor)
     {
+        {
+            System.out.println("Export:");
+            System.out.println("Start                : " + start);
+            System.out.println("End                  : " + end);
+            System.out.println("Source               : " + source);
+            System.out.println("Add live samples     : " + add_live_samples);
+            System.out.println("Format as Spreadsheet: " + format_spreadsheet);
+            System.out.println("Format with info     : " + format_severity);
+        }
+        
+        
         monitor.beginTask(Messages.ExportJobTask, IProgressMonitor.UNKNOWN);
         ArchiveCache cache = ArchiveCache.getInstance();
         try

@@ -32,29 +32,22 @@ public class ExportView extends PlotAwareView
     public static final String ID = ExportView.class.getName();
 
     private Shell shell;
-    private ITimestamp start;
-    private ITimestamp end;
     private Text start_txt;
     private Text end_txt;
     private Button use_plot_time;
-    private Text filename_txt;
     private Button time_config;
-
+    private Button source_plot, source_raw, source_avg;
+    private Button add_live_samples;
+    private Button format_spreadsheet;
+    private Button format_severity;
+    private Text filename_txt;
     private Button browse;
 
     private Button export;
-
-    private Button source_plot;
-
-    private Button source_raw;
-
-    private Button source_avg;
-
-    private Button add_live;
-
-    private Button spreadsheet;
-
-    private Button severity;
+    
+    private ITimestamp start;
+    private ITimestamp end;
+    private ExportJob.Source source;
     
     public ExportView()
     {
@@ -170,27 +163,43 @@ public class ExportView extends PlotAwareView
         source_plot = new Button(frame, SWT.RADIO);
         source_plot.setText(Messages.Source_Plot);
         source_plot.setToolTipText(Messages.Source_Plot_TT);
+        source_plot.addSelectionListener(new SelectionAdapter()
+        {
+            @Override public void widgetSelected(SelectionEvent e)
+            {   source = ExportJob.Source.Plot; }
+        });
         
         source_raw = new Button(frame, SWT.RADIO);
         source_raw.setText(Messages.Source_Raw);
         source_raw.setToolTipText(Messages.Source_Raw_TT);
+        source_raw.addSelectionListener(new SelectionAdapter()
+        {
+            @Override public void widgetSelected(SelectionEvent e)
+            {   source = ExportJob.Source.Raw; }
+        });
 
         source_avg = new Button(frame, SWT.RADIO);
         source_avg.setText(Messages.Source_Average);
         source_avg.setToolTipText(Messages.Source_Average_TT);
+        source_avg.addSelectionListener(new SelectionAdapter()
+        {
+            @Override public void widgetSelected(SelectionEvent e)
+            {   source = ExportJob.Source.Average; }
+        });
+
         // ... end of radio buttons
         
         // 'add live' row
         l = new Label(parent, 0); // placeholder
         l.setLayoutData(new GridData());
         
-        add_live = new Button(parent, SWT.CHECK);
-        add_live.setText(Messages.AddLive);
-        add_live.setToolTipText(Messages.AddLive_TT);
+        add_live_samples = new Button(parent, SWT.CHECK);
+        add_live_samples.setText(Messages.AddLive);
+        add_live_samples.setToolTipText(Messages.AddLive_TT);
         gd = new GridData();
         gd.horizontalSpan = layout.numColumns - 1;
         gd.grabExcessHorizontalSpace = true;
-        add_live.setLayoutData(gd);
+        add_live_samples.setLayoutData(gd);
         
         // 'Format' row
         l = new Label(parent, 0);
@@ -209,13 +218,13 @@ public class ExportView extends PlotAwareView
         gd.horizontalSpan = layout.numColumns - 1;
         frame.setLayoutData(gd);
 
-        spreadsheet = new Button(frame, SWT.CHECK);
-        spreadsheet.setText(Messages.Spreadsheet);
-        spreadsheet.setToolTipText(Messages.Spreadsheet_TT);
+        format_spreadsheet = new Button(frame, SWT.CHECK);
+        format_spreadsheet.setText(Messages.Spreadsheet);
+        format_spreadsheet.setToolTipText(Messages.Spreadsheet_TT);
 
-        severity = new Button(frame, SWT.CHECK);
-        severity.setText(Messages.ShowSeverity);
-        severity.setToolTipText(Messages.ShowSeverity_TT);
+        format_severity = new Button(frame, SWT.CHECK);
+        format_severity.setText(Messages.ShowSeverity);
+        format_severity.setToolTipText(Messages.ShowSeverity_TT);
         
         // 'filename' row
         l = new Label(parent, 0);
@@ -290,11 +299,11 @@ public class ExportView extends PlotAwareView
         
         // Initial settings
         setStartEndFromTimestamps();
-        
         source_raw.setSelection(true);
-        add_live.setSelection(true);
-        spreadsheet.setSelection(true);
-        severity.setSelection(true);
+        source = ExportJob.Source.Raw;
+        add_live_samples.setSelection(true);
+        format_spreadsheet.setSelection(true);
+        format_severity.setSelection(true);
         
         // Enable updateModel() notification:
         super.createPartControl(parent);
@@ -332,10 +341,10 @@ public class ExportView extends PlotAwareView
             source_plot.setEnabled(false);
             source_raw.setEnabled(false);
             source_avg.setEnabled(false);
-            add_live.setEnabled(false);
+            add_live_samples.setEnabled(false);
             
-            spreadsheet.setEnabled(false);
-            severity.setEnabled(false);
+            format_spreadsheet.setEnabled(false);
+            format_severity.setEnabled(false);
             
             filename_txt.setEnabled(false);
             browse.setEnabled(false);
@@ -349,10 +358,10 @@ public class ExportView extends PlotAwareView
             source_plot.setEnabled(true);
             source_raw.setEnabled(true);
             source_avg.setEnabled(true);
-            add_live.setEnabled(true);
+            add_live_samples.setEnabled(true);
             
-            spreadsheet.setEnabled(true);
-            severity.setEnabled(true);
+            format_spreadsheet.setEnabled(true);
+            format_severity.setEnabled(true);
             
             filename_txt.setEnabled(true);
             browse.setEnabled(true);
@@ -407,7 +416,11 @@ public class ExportView extends PlotAwareView
                 return;
             }
         }
-        Job job = new ExportJob(model, start, end, filename_txt.getText());
+        Job job = new ExportJob(model, start, end, source,
+                                add_live_samples.getSelection(),
+                                format_spreadsheet.getSelection(),
+                                format_severity.getSelection(),
+                                filename_txt.getText());
         job.schedule();
     }
 }
