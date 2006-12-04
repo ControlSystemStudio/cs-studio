@@ -97,9 +97,12 @@ public class ConfigView extends PlotAwareView
         public void entryAdded(IModelItem new_item)
         {   entriesChanged(); }
 
-        public void entryLookChanged(IModelItem item)
+        public void entryConfigChanged(IModelItem item)
         {   entriesChanged(); }
 
+        public void entryLookChanged(IModelItem item)
+        {   /* not configurable */ }
+        
         public void entryArchivesChanged(IModelItem item)
         {   entriesChanged(); }
 

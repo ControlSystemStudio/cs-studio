@@ -15,13 +15,22 @@ public interface ModelListener
     /** Invoked when an entry was added. */
     public void entryAdded(IModelItem new_item);
 
-    /** Invoked when an item's look was changed.
+    /** Invoked when an item's configuration was changed.
      *  <p>
      *  This includes color, line width, axis on which it's
      *  plotted.
-     *  The item needs to be redrawn, but there is no new data.
+     *  The item needs to be redrawn, and the model is 'dirty',
+     *  but there is no new data.
      */
-    public void entryLookChanged(IModelItem item);
+    public void entryConfigChanged(IModelItem item);
+    
+    /** Invoked when an item's look was changed.
+     *  <p>
+     *  This includes the engineering units.
+     *  The item needs to be redrawn,
+     *  but there is no new data, and nothing needs to be saved.
+     */
+    public void entryLookChanged(IModelItem item);    
     
     /** Invoked when the archive config of an item was changed.
      *  <p>

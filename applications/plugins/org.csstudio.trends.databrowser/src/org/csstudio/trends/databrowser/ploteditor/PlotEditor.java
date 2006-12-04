@@ -54,7 +54,7 @@ public class PlotEditor extends EditorPart
     private Action remove_markers_action, add_action;
     private Action config_action, archive_action, sample_action, export_action;
     private BrowserUI gui;
-    private boolean is_dirty;
+    private boolean is_dirty = false;
     private ModelListener listener;
 
     /** Create a new, empty editor, not attached to a file.
@@ -80,12 +80,6 @@ public class PlotEditor extends EditorPart
     	return null;
     }
     
-    public PlotEditor()
-    {
-        super();
-        is_dirty = false;
-    }
-
     /** @return Returns the model. */
     public Model getModel()
     {   return model; }
@@ -150,8 +144,11 @@ public class PlotEditor extends EditorPart
             public void entryAdded(IModelItem new_item) 
             {   entriesChanged();  }
             
-            public void entryLookChanged(IModelItem item) 
+            public void entryConfigChanged(IModelItem item) 
             {   entriesChanged();  }
+            
+            public void entryLookChanged(IModelItem item) 
+            {   /* so what */ }
             
             public void entryArchivesChanged(IModelItem item)
             {   entriesChanged();  }

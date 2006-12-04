@@ -60,7 +60,7 @@ public class Controller implements ScannerAndScrollerListener
                 getArchivedData(new_item);
             }
 
-            public void entryLookChanged(IModelItem item)
+            public void entryConfigChanged(IModelItem item)
             {   // Avoid infinite loops if we are changing the model ourselves
                 if (controller_changes_model)
                     return;
@@ -69,11 +69,17 @@ public class Controller implements ScannerAndScrollerListener
                 removeUnusedAxes();
             }
 
+            public void entryLookChanged(IModelItem item)
+            {   entryConfigChanged(item);  }
+            
             public void entryArchivesChanged(IModelItem item)
             {   getArchivedData(item); }
             
             public void entryRemoved(IModelItem removed_item)
-            {   removeFromDisplay(removed_item); }
+            {   
+                removeFromDisplay(removed_item);
+                removeUnusedAxes();
+            }
         };
         
         chart_listener = new ChartListener()

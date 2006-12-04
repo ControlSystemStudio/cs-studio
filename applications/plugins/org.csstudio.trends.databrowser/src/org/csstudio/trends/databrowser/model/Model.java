@@ -216,7 +216,7 @@ public class Model
                 continue;
             // Don't call setAxisMin(), Max(), since that would recurse.
             item.setAxisLimitsSilently(low, high);
-            fireEntryLookChanged(item);
+            fireEntryConfigChanged(item);
         }
     }
     
@@ -232,7 +232,7 @@ public class Model
                 continue;
             // Don't call setAxisMin(), Max(), since that would recurse.
             item.setLogScaleSilently(use_log_scale);
-            fireEntryLookChanged(item);
+            fireEntryConfigChanged(item);
         }
     }
     
@@ -396,6 +396,13 @@ public class Model
             start();
     }
 
+    /** @see ModelListener#entryConfigChanged(IModelItem) */
+    void fireEntryConfigChanged(IModelItem item)
+    {
+        for (ModelListener l : listeners)
+            l.entryConfigChanged(item);
+    }
+    
     /** @see ModelListener#entryLookChanged(IModelItem) */
     void fireEntryLookChanged(IModelItem item)
     {

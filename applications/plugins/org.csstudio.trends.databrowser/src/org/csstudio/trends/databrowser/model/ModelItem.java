@@ -190,7 +190,7 @@ public class ModelItem
                 break;
             }
         }
-		model.fireEntryLookChanged(this);
+		model.fireEntryConfigChanged(this);
 	}
 
     /** @return The lower Y-axis limit. */
@@ -237,7 +237,7 @@ public class ModelItem
     	color.dispose();
     	color = new_color;
     	// Notify model of this change.
-    	model.fireEntryLookChanged(this);
+    	model.fireEntryConfigChanged(this);
     }
     
     /** @return Returns the trace line width. */
@@ -251,7 +251,7 @@ public class ModelItem
     {
         line_width = new_width;
         // Notify model of this change.
-        model.fireEntryLookChanged(this);
+        model.fireEntryConfigChanged(this);
     }
     
     /** @return <code>true</code> if using log. scale */
