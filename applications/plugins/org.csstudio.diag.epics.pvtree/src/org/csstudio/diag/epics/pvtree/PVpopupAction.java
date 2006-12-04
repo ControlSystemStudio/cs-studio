@@ -24,7 +24,7 @@ public class PVpopupAction extends ProcessVariablePopupAction
         }
         catch (Exception e)
         {
-            Plugin.logException("Cannot open PVTreeView" , e);
+            Plugin.logException("Cannot open PVTreeView" , e); //$NON-NLS-1$
         }
     }
 }

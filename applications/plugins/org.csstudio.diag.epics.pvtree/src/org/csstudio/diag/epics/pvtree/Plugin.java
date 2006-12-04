@@ -1,9 +1,8 @@
 package org.csstudio.diag.epics.pvtree;
 
-import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /** Plugin class for EPICS PV Tree.
@@ -56,16 +55,5 @@ public class Plugin extends AbstractUIPlugin
                                 IStatus.OK,
                                 message,
                                 e));
-    }
-    
-    /** Returns an image descriptor for the image file at the given plug-in
-     *  relative path.
-     *  @param path the path
-     *  @return the image descriptor
-     */
-    public static ImageDescriptor getImageDescriptor(String path)
-    {
-        return AbstractUIPlugin.imageDescriptorFromPlugin(
-                "org.csstudio.diag.epics.pvtree", path);
     }
 }

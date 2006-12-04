@@ -24,14 +24,18 @@ import org.eclipse.swt.widgets.Display;
  */
 class PVTreeItem extends PlatformObject implements IProcessVariable
 {
+    private static final boolean debug = false;
+    
+    @SuppressWarnings("nls")
     private static final String input_types[] =
     {
         "ai", "aai", "bi","mbbiDirect", "mbbi",
         "mbboDirect","longin", "waveform", "subArray", "stringin",
     };
+    @SuppressWarnings("nls")
     private static final String output_types[] =
     {
-        "ao", "aao", "bo", "mbbo",  "longout", "stringout", "fanout",
+        "ao", "aao", "bo", "mbbo",  "longout", "stringout", "fanout"
     };    
     // TODO: Handle "sub", "genSub", "compress",
     // "event", "histogram", "permissive", "sel", "seq", "state",
@@ -63,9 +67,10 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     {
         public void pvDisconnected(PV pv)
         {
-            value = "<disconnected>";
+            value = "<disconnected>"; //$NON-NLS-1$
             updateValue();
         }
+        @SuppressWarnings("nls")
         public void pvValueUpdate(PV pv)
         {
             try
@@ -151,7 +156,8 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             String info,
             String pv_name)
     {
-        System.out.println("New Tree item " + pv_name);
+        if (debug)
+            System.out.println("New Tree item " + pv_name); //$NON-NLS-1$
         this.model = model;
         this.parent = parent;
         this.info = info;
@@ -190,13 +196,14 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         if (other != null)
         {
             type = other.type;
-            System.out.println("Known item, not traversing inputs (again)");
+            if (debug)
+                System.out.println("Known item, not traversing inputs (again)"); //$NON-NLS-1$
         }
         else
         {
             try
             {
-                type_pv = new EPICS_V3_PV(record_name + ".RTYP", true);
+                type_pv = new EPICS_V3_PV(record_name + ".RTYP", true); //$NON-NLS-1$
                 type_pv.addListener(type_pv_listener);
                 type_pv.start();
             }
@@ -286,6 +293,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     }
 
     /** @return Returns a String. No really, it does! */
+    @SuppressWarnings("nls")
     public String toString()
     {
         StringBuffer b = new StringBuffer();
@@ -321,9 +329,11 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     }
 
     /** Thread-save handling of the 'type' update. */
+    @SuppressWarnings("nls")
     private void updateType()
     {
-        System.out.println(pv_name + " received type '" + type + "'");
+        if (debug)
+            System.out.println(pv_name + " received type '" + type + "'");
         Display.getDefault().asyncExec(new Runnable()
         {
             public void run()
@@ -356,6 +366,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     }
     
     /** Helper for reading a calc record's input link. */
+    @SuppressWarnings("nls")
     private void getCalcInput(int i)
     {
         input_index = i;
@@ -381,9 +392,11 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     }
 
     /** Thread-save handling of the 'input_value' update. */
+    @SuppressWarnings("nls")
     private void updateInput()
     {
-        System.out.println(link_pv.getName() + " received '" + link_value + "'");
+        if (debug)
+            System.out.println(link_pv.getName() + " received '" + link_value + "'");
         Display.getDefault().asyncExec(new Runnable()
         {
             public void run()
