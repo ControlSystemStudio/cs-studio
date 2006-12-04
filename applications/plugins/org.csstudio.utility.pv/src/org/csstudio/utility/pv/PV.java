@@ -94,5 +94,4 @@ public interface PV
     
     /** @return Returns the status string or <code>null</code>. */
     public String getStatus();
-
 }
