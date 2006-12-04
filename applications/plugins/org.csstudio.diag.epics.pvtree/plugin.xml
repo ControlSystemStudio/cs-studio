@@ -9,7 +9,7 @@
             id="org.csstudio">
       </category>
       <view
-            name="EPICS PV Tree"
+            name="%PVTree"
             icon="icons/pvtree.gif"
             category="org.csstudio"
             class="org.csstudio.diag.epics.pvtree.PVTreeView"
@@ -34,9 +34,9 @@
                enablesFor="1"
                icon="icons/pvtree.gif"
                id="org.csstudio.diag.epics.pvtree.PVpopupAction"
-               label="EPICS PV Tree"
+               label="%PVTree"
                menubarPath="org.csstudio.popmenu/content"
-               tooltip="Send selected PV to the EPICS PV Tree"/>
+               tooltip="%ObjectMenu_TT"/>
       </objectContribution>
    </extension>
    <!-- extension point="org.eclipse.ui.actionSets">
@@ -76,10 +76,10 @@
                class="org.csstudio.diag.epics.pvtree.ShowPVTreeAction"
                icon="icons/pvtree.gif"
                id="org.csstudio.diag.epics.pvtree.showpvtreeaction"
-               label="EPICS PV Tree"
-               menubarPath="css/alarm/"
+               label="%PVTree"
+               menubarPath="css/diagnostics/"
                style="push"
-               tooltip="Show EPICS PV Tree"/>
+               tooltip="%PVTree_TT"/>
       </actionSet>
    </extension>
    
