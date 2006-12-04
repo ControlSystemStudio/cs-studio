@@ -10,6 +10,8 @@ public class Messages extends NLS
 
     public static String AddLive_TT;
 
+    public static String AddLiveSamples;
+
     public static String Archives;
 
     public static String Browse;
@@ -48,6 +50,8 @@ public class Messages extends NLS
 
     public static String Format;
 
+    public static String IncludeSeverity;
+
     public static String LinesWritten;
 
     public static String PV;
@@ -77,6 +81,8 @@ public class Messages extends NLS
     public static String Spreadsheet;
 
     public static String Spreadsheet_TT;
+
+    public static String SpreadsheetFormat;
 
     public static String Start;
 

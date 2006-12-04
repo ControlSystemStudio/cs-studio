@@ -9,6 +9,8 @@ import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.Sample;
 import org.csstudio.archive.cache.ArchiveCache;
 import org.csstudio.archive.crawl.RawSampleIterator;
+import org.csstudio.archive.crawl.SpreadsheetIterator;
+import org.csstudio.archive.util.SampleUtil;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.trends.databrowser.Plugin;
@@ -67,41 +69,29 @@ class ExportJob extends Job
     }
 
     /* @see org.eclipse.core.runtime.jobs.Job#run() */
-    @SuppressWarnings("nls")
+    @SuppressWarnings("nls") //$NON-NLS-1$
     @Override
     protected IStatus run(IProgressMonitor monitor)
     {
-        {
-            System.out.println("Export:");
-            System.out.println("Start                : " + start);
-            System.out.println("End                  : " + end);
-            System.out.println("Source               : " + source);
-            System.out.println("Add live samples     : " + add_live_samples);
-            System.out.println("Format as Spreadsheet: " + format_spreadsheet);
-            System.out.println("Format with info     : " + format_severity);
-        }
-        
-        
         monitor.beginTask(Messages.ExportJobTask, IProgressMonitor.UNKNOWN);
         ArchiveCache cache = ArchiveCache.getInstance();
         try
         {
-            int lines = 0;
+            int line_count = 0;
             PrintWriter out = new PrintWriter(filename);
-            
-            // Overall Header
-            out.println(Messages.Comment + Messages.DataBrowserExport);
-            out.println(Messages.Comment + Messages.Version + Plugin.Version);
-            out.println(Messages.Comment + Messages.Start + start);
-            out.println(Messages.Comment + Messages.End + end);
+            printHeader(out);
+
+            // Get sample iterator for each channel.
+            // Either dump it ASAP, or keep it for spreadsheet-iteration.
             int N = model.getNumItems();
-            for (int item_idx=0;
-                item_idx<N  &&  !monitor.isCanceled(); 
-                ++item_idx)
+            RawSampleIterator iters[] = new RawSampleIterator[N];
+            for (int ch_idx=0;  ch_idx<N  &&  !monitor.isCanceled(); ++ch_idx)
             {
-                IModelItem item = model.getItem(item_idx);
+                IModelItem item = model.getItem(ch_idx);
                 String item_name = item.getName();
 
+                monitor.subTask("Fetching " + item_name);
+                
                 out.println();
                 out.println(Messages.Comment);
                 out.println(Messages.Comment + Messages.PV + item_name);
@@ -121,15 +111,46 @@ class ExportJob extends Job
                     servers[i] = cache.getServer(archives[i].getUrl());
                     keys[i] = archives[i].getKey();
                 }
-                // Actual sample export
-                Iterable<Sample> iter = new RawSampleIterator(
+                iters[ch_idx] = new RawSampleIterator(
                                 servers, keys, item_name, start, end);
-                for (Sample sample : iter)
+                if (format_spreadsheet == false)
+                {   // Plain list: dump this channel's samples...
+                    line_count = dumpOneItem(monitor, line_count,
+                                             out, iters[ch_idx]);
+                    // ... then release iterator ASAP
+                    iters[ch_idx] = null;
+                }
+            }
+
+            // No spreadsheet? Then we're done.
+            // Spreadsheed: Dump it
+            if (format_spreadsheet)
+            {
+                // Spreadsheet Header
+                out.print(Messages.Comment + " Time");
+                for (int item_idx=0;  item_idx<N;   ++item_idx)
                 {
-                    out.println(sample);
-                    ++lines;
-                    if ((lines % PROGRESS_LINE_GRANULARITY) == 0)
-                        monitor.subTask(Messages.LinesWritten + lines);
+                    IModelItem item = model.getItem(item_idx);
+                    out.print("\t" + item.getName());
+                    if (format_severity)
+                        out.print("\t" + "Info");
+                }
+                out.println();
+                
+                // Dump the spreadsheet lines
+                SpreadsheetIterator sheet = new SpreadsheetIterator(iters);
+                while (sheet.hasNext())
+                {
+                    ITimestamp time = sheet.getTime();
+                    Sample line[] = sheet.next();
+                    out.print(time);
+                    for (int i=0; i<line.length; ++i)
+                        out.print("\t" + formatValue(line[i]));
+                    out.println();
+                    
+                    ++line_count;
+                    if ((line_count % PROGRESS_LINE_GRANULARITY) == 0)
+                        monitor.subTask(Messages.LinesWritten + line_count);
                     if (monitor.isCanceled())
                     {
                         out.println(Messages.Comment + Messages.Cancelled);
@@ -137,9 +158,7 @@ class ExportJob extends Job
                     }
                 }
             }
-            // TODO: spreadsheet formatter.
-            // Can't use the one from the data server, since this
-            // request might span archive servers!
+            
             out.close();
         }
         catch (Exception e)
@@ -150,5 +169,58 @@ class ExportJob extends Job
         }
         monitor.done();
         return Status.OK_STATUS;
+    }
+
+    /** The very first entry in the export file, the overall header. */
+    private void printHeader(PrintWriter out)
+    {
+        out.println(Messages.Comment + Messages.DataBrowserExport);
+        out.println(Messages.Comment + Messages.Version + Plugin.Version);
+        out.println(Messages.Comment + Messages.Start + start);
+        out.println(Messages.Comment + Messages.End + end);
+        out.println(Messages.Comment + Messages.Source + source);
+        out.println(Messages.Comment + Messages.AddLiveSamples + add_live_samples);
+        out.println(Messages.Comment + Messages.SpreadsheetFormat + format_spreadsheet);
+        out.println(Messages.Comment + Messages.IncludeSeverity + format_severity);
+    }
+    
+    /** Dump all the samples for one item.
+     *  @param monitor
+     *  @param line_count
+     *  @param out
+     *  @param channel_iter
+     *  @return New line count
+     */
+    private int dumpOneItem(IProgressMonitor monitor,
+                            int line_count, PrintWriter out,
+                            Iterable<Sample> channel_iter)
+    {
+        for (Sample sample : channel_iter)
+        {
+            out.println(sample.getTime() + "\t" + formatValue(sample));
+            ++line_count;
+            if ((line_count % PROGRESS_LINE_GRANULARITY) == 0)
+                monitor.subTask(Messages.LinesWritten + line_count);
+            if (monitor.isCanceled())
+            {
+                out.println(Messages.Comment + Messages.Cancelled);
+                break;
+            }
+        }
+        return line_count;
+    }
+    
+    /** Format one value, maybe with severity/status info. */
+    private String formatValue(Sample sample)
+    {
+        String value = (sample == null) ? "#N/A" : sample.format();
+        if (format_severity)
+        {
+            String info = (sample == null) ? "" : SampleUtil.getInfo(sample); //$NON-NLS-1$
+            if (info == null)
+                info = ""; //$NON-NLS-1$
+            return value + "\t" + info;
+        }
+        return value;
     }
 }
