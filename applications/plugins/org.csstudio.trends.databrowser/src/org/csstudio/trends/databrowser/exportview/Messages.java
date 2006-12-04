@@ -25,10 +25,10 @@ public class Messages extends NLS
     public static String CannotDecodeStart;
 
     public static String Comment;
+    
+    public static String ColSep;
 
     public static String DataBrowserExport;
-
-    public static String End;
 
     public static String EndLabel;
     
@@ -52,7 +52,13 @@ public class Messages extends NLS
 
     public static String IncludeSeverity;
 
+    public static String InfoColHeader;
+
+    public static String Job_Fetching;
+
     public static String LinesWritten;
+
+    public static String NoDataMarker;
 
     public static String PV;
 
@@ -64,7 +70,7 @@ public class Messages extends NLS
 
     public static String ShowSeverity_TT;
 
-    public static String Source;
+    public static String SourceLabel;
 
     public static String Source_Average;
 
@@ -84,15 +90,16 @@ public class Messages extends NLS
 
     public static String SpreadsheetFormat;
 
-    public static String Start;
-
     public static String StartLabel;
+
+    public static String TimeColHeader;
 
     public static String UsePlotTime;
 
     public static String UsePlotTime_TT;
 
     public static String Version;
+
     static
     {
         // initialize resource bundle

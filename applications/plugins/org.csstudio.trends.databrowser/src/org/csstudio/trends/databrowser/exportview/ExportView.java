@@ -143,7 +143,7 @@ public class ExportView extends PlotAwareView
 
         // 'Source' row
         l = new Label(parent, 0);
-        l.setText(Messages.Source);
+        l.setText(Messages.SourceLabel);
         gd = new GridData();
         gd.verticalAlignment = SWT.TOP;
         l.setLayoutData(gd);

@@ -90,7 +90,7 @@ class ExportJob extends Job
                 IModelItem item = model.getItem(ch_idx);
                 String item_name = item.getName();
 
-                monitor.subTask("Fetching " + item_name);
+                monitor.subTask(Messages.Job_Fetching + item_name);
                 
                 out.println();
                 out.println(Messages.Comment);
@@ -127,13 +127,14 @@ class ExportJob extends Job
             if (format_spreadsheet)
             {
                 // Spreadsheet Header
-                out.print(Messages.Comment + " Time");
+                out.println();
+                out.print(Messages.Comment + Messages.TimeColHeader);
                 for (int item_idx=0;  item_idx<N;   ++item_idx)
                 {
                     IModelItem item = model.getItem(item_idx);
-                    out.print("\t" + item.getName());
+                    out.print(Messages.ColSep + item.getName());
                     if (format_severity)
-                        out.print("\t" + "Info");
+                        out.print(Messages.ColSep + Messages.InfoColHeader);
                 }
                 out.println();
                 
@@ -145,7 +146,7 @@ class ExportJob extends Job
                     Sample line[] = sheet.next();
                     out.print(time);
                     for (int i=0; i<line.length; ++i)
-                        out.print("\t" + formatValue(line[i]));
+                        out.print(Messages.ColSep + formatValue(line[i]));
                     out.println();
                     
                     ++line_count;
@@ -176,9 +177,9 @@ class ExportJob extends Job
     {
         out.println(Messages.Comment + Messages.DataBrowserExport);
         out.println(Messages.Comment + Messages.Version + Plugin.Version);
-        out.println(Messages.Comment + Messages.Start + start);
-        out.println(Messages.Comment + Messages.End + end);
-        out.println(Messages.Comment + Messages.Source + source);
+        out.println(Messages.Comment + Messages.StartLabel + start);
+        out.println(Messages.Comment + Messages.EndLabel + end);
+        out.println(Messages.Comment + Messages.SourceLabel + source);
         out.println(Messages.Comment + Messages.AddLiveSamples + add_live_samples);
         out.println(Messages.Comment + Messages.SpreadsheetFormat + format_spreadsheet);
         out.println(Messages.Comment + Messages.IncludeSeverity + format_severity);
@@ -197,7 +198,7 @@ class ExportJob extends Job
     {
         for (Sample sample : channel_iter)
         {
-            out.println(sample.getTime() + "\t" + formatValue(sample));
+            out.println(sample.getTime() + Messages.ColSep + formatValue(sample));
             ++line_count;
             if ((line_count % PROGRESS_LINE_GRANULARITY) == 0)
                 monitor.subTask(Messages.LinesWritten + line_count);
@@ -213,13 +214,13 @@ class ExportJob extends Job
     /** Format one value, maybe with severity/status info. */
     private String formatValue(Sample sample)
     {
-        String value = (sample == null) ? "#N/A" : sample.format();
+        String value = (sample == null) ? Messages.NoDataMarker : sample.format();
         if (format_severity)
         {
             String info = (sample == null) ? "" : SampleUtil.getInfo(sample); //$NON-NLS-1$
             if (info == null)
                 info = ""; //$NON-NLS-1$
-            return value + "\t" + info;
+            return value + Messages.ColSep + info;
         }
         return value;
     }
