@@ -506,15 +506,10 @@ public class ModelItem
             if (current_value == null)
                 samples.markCurrentlyDisconnected(now);
             else
-            {
-                if (current_severity == null || current_status == null)
-                    System.err.println("Kacke"); //$NON-NLS-1$
-                
                 samples.addLiveSample(now,
                               current_value,
                               current_severity_code, current_severity,
                               current_status);
-            }
             if (! units.equals(pv.getUnits()))
             {
                 units = pv.getUnits();
