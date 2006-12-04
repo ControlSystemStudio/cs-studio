@@ -6,6 +6,10 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.exportview.messages"; //$NON-NLS-1$
 
+    public static String AddLive;
+
+    public static String AddLive_TT;
+
     public static String Archives;
 
     public static String Browse;
@@ -42,6 +46,8 @@ public class Messages extends NLS
 
     public static String FilenameLabel;
 
+    public static String Format;
+
     public static String LinesWritten;
 
     public static String PV;
@@ -49,6 +55,28 @@ public class Messages extends NLS
     public static String SelectTime;
 
     public static String SelectTime_TT;
+
+    public static String ShowSeverity;
+
+    public static String ShowSeverity_TT;
+
+    public static String Source;
+
+    public static String Source_Average;
+
+    public static String Source_Average_TT;
+
+    public static String Source_Plot;
+
+    public static String Source_Plot_TT;
+
+    public static String Source_Raw;
+
+    public static String Source_Raw_TT;
+
+    public static String Spreadsheet;
+
+    public static String Spreadsheet_TT;
 
     public static String Start;
 

@@ -15,6 +15,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
@@ -42,6 +43,18 @@ public class ExportView extends PlotAwareView
     private Button browse;
 
     private Button export;
+
+    private Button source_plot;
+
+    private Button source_raw;
+
+    private Button source_avg;
+
+    private Button add_live;
+
+    private Button spreadsheet;
+
+    private Button severity;
     
     public ExportView()
     {
@@ -54,15 +67,20 @@ public class ExportView extends PlotAwareView
     public void createPartControl(Composite parent)
     {
         shell = parent.getShell();
-        GridLayout layout = new GridLayout();
+        final GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         parent.setLayout(layout);
         GridData gd;
 
-        /* Start:    ____________________________ 
-         * End  :    ____________________________ [ ... ]
-         *           Use start/end of plot [x]
+        /* Start:    ____________________________ [ ... ]
+         * End  :    ____________________________ 
+         *           [x] from plot
+         *
+         * Source:   ( ) plot (*) raw ... ( ) averaged archive
+         *           [x] add 'live' data
          * 
+         * Format:   [x] Spreadsheet  [x] .. with Severity/Status
+         *
          * Filename: ________________ [ Browse ]
          *                            [ Export ]
          */
@@ -78,26 +96,7 @@ public class ExportView extends PlotAwareView
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
         start_txt.setLayoutData(gd);
-
-        l = new Label(parent, 0); // placeholder
-        gd = new GridData();
-        l.setLayoutData(gd);
-
-        // 'start' row        
-        l = new Label(parent, 0);
-        l.setText(Messages.EndLabel);
-        gd = new GridData();
-        l.setLayoutData(gd);
         
-        end_txt = new Text(parent, SWT.BORDER);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        end_txt.setLayoutData(gd);
-
-        // Init start/end time texts
-        setStartEndFromTimestamps();
-
         time_config = new Button(parent, SWT.CENTER);
         time_config.setText(Messages.SelectTime);
         time_config.setToolTipText(Messages.SelectTime_TT);
@@ -116,16 +115,31 @@ public class ExportView extends PlotAwareView
             }
         });
        
-        // 'use time from plot' row
-        l = new Label(parent, 0); // placeholder
+        // 'end' row        
+        l = new Label(parent, 0);
+        l.setText(Messages.EndLabel);
         gd = new GridData();
         l.setLayoutData(gd);
-       
+        
+        end_txt = new Text(parent, SWT.BORDER);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        end_txt.setLayoutData(gd);
+        
+        l = new Label(parent, 0); // placeholder
+        l.setLayoutData(new GridData());
+        
+        // 'use plot time' row
+        l = new Label(parent, 0); // placeholder
+        l.setLayoutData(new GridData());
+
         use_plot_time = new Button(parent, SWT.CHECK);
         use_plot_time.setText(Messages.UsePlotTime);
         use_plot_time.setToolTipText(Messages.UsePlotTime_TT);
         gd = new GridData();
-        gd.horizontalSpan = 2;
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalSpan = layout.numColumns - 1;
         use_plot_time.setLayoutData(gd);
         use_plot_time.setSelection(true);
         use_plot_time.addSelectionListener(new SelectionAdapter()
@@ -134,6 +148,75 @@ public class ExportView extends PlotAwareView
             {   conditionallyEnableTimeConfig();  }
         });
 
+        // 'Source' row
+        l = new Label(parent, 0);
+        l.setText(Messages.Source);
+        gd = new GridData();
+        gd.verticalAlignment = SWT.TOP;
+        l.setLayoutData(gd);
+
+        // ... 'source' radio button group
+        Composite frame = new Composite(parent, 0);
+        RowLayout row_layout = new RowLayout();
+        row_layout.marginLeft = 0;
+        row_layout.marginTop = 0;
+        frame.setLayout(row_layout);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalSpan = layout.numColumns - 1;
+        gd.horizontalAlignment = SWT.FILL;
+        frame.setLayoutData(gd);
+        
+        source_plot = new Button(frame, SWT.RADIO);
+        source_plot.setText(Messages.Source_Plot);
+        source_plot.setToolTipText(Messages.Source_Plot_TT);
+        
+        source_raw = new Button(frame, SWT.RADIO);
+        source_raw.setText(Messages.Source_Raw);
+        source_raw.setToolTipText(Messages.Source_Raw_TT);
+
+        source_avg = new Button(frame, SWT.RADIO);
+        source_avg.setText(Messages.Source_Average);
+        source_avg.setToolTipText(Messages.Source_Average_TT);
+        // ... end of radio buttons
+        
+        // 'add live' row
+        l = new Label(parent, 0); // placeholder
+        l.setLayoutData(new GridData());
+        
+        add_live = new Button(parent, SWT.CHECK);
+        add_live.setText(Messages.AddLive);
+        add_live.setToolTipText(Messages.AddLive_TT);
+        gd = new GridData();
+        gd.horizontalSpan = layout.numColumns - 1;
+        gd.grabExcessHorizontalSpace = true;
+        add_live.setLayoutData(gd);
+        
+        // 'Format' row
+        l = new Label(parent, 0);
+        l.setText(Messages.Format);
+        gd = new GridData();
+        gd.verticalAlignment = SWT.TOP;
+        l.setLayoutData(gd);
+
+        frame = new Composite(parent, 0);
+        row_layout = new RowLayout();
+        row_layout.marginLeft = 0;
+        row_layout.marginTop = 0;
+        frame.setLayout(row_layout);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalSpan = layout.numColumns - 1;
+        frame.setLayoutData(gd);
+
+        spreadsheet = new Button(frame, SWT.CHECK);
+        spreadsheet.setText(Messages.Spreadsheet);
+        spreadsheet.setToolTipText(Messages.Spreadsheet_TT);
+
+        severity = new Button(frame, SWT.CHECK);
+        severity.setText(Messages.ShowSeverity);
+        severity.setToolTipText(Messages.ShowSeverity_TT);
+        
         // 'filename' row
         l = new Label(parent, 0);
         l.setText(Messages.FilenameLabel);
@@ -190,20 +273,13 @@ public class ExportView extends PlotAwareView
         });
         
         // 'export' row        
-        l = new Label(parent, 0);
-        l.setText(Messages.Export_Info);
-        gd = new GridData();
-        gd.horizontalSpan = 2;
-        gd.horizontalAlignment = SWT.RIGHT;
-        gd.verticalAlignment = SWT.TOP;
-        l.setLayoutData(gd);
-        
         export = new Button(parent, SWT.CENTER);
         export.setText(Messages.Export);
         export.setToolTipText(Messages.Export_TT);
         gd = new GridData();
         gd.horizontalAlignment = SWT.RIGHT;
         gd.grabExcessVerticalSpace = true;
+        gd.horizontalSpan = layout.numColumns;
         gd.verticalAlignment = SWT.BOTTOM;
         export.setLayoutData(gd);
         export.addSelectionListener(new SelectionAdapter()
@@ -211,6 +287,14 @@ public class ExportView extends PlotAwareView
             public void widgetSelected(SelectionEvent e)
             {   exportRequested();  }
         });
+        
+        // Initial settings
+        setStartEndFromTimestamps();
+        
+        source_raw.setSelection(true);
+        add_live.setSelection(true);
+        spreadsheet.setSelection(true);
+        severity.setSelection(true);
         
         // Enable updateModel() notification:
         super.createPartControl(parent);
@@ -244,6 +328,15 @@ public class ExportView extends PlotAwareView
             end_txt.setEnabled(false);
             time_config.setEnabled(false);
             use_plot_time.setEnabled(false);
+            
+            source_plot.setEnabled(false);
+            source_raw.setEnabled(false);
+            source_avg.setEnabled(false);
+            add_live.setEnabled(false);
+            
+            spreadsheet.setEnabled(false);
+            severity.setEnabled(false);
+            
             filename_txt.setEnabled(false);
             browse.setEnabled(false);
             export.setEnabled(false);
@@ -252,6 +345,15 @@ public class ExportView extends PlotAwareView
         {
             conditionallyEnableTimeConfig();
             use_plot_time.setEnabled(true);
+
+            source_plot.setEnabled(true);
+            source_raw.setEnabled(true);
+            source_avg.setEnabled(true);
+            add_live.setEnabled(true);
+            
+            spreadsheet.setEnabled(true);
+            severity.setEnabled(true);
+            
             filename_txt.setEnabled(true);
             browse.setEnabled(true);
             export.setEnabled(filename_txt.getText().length() > 0);
