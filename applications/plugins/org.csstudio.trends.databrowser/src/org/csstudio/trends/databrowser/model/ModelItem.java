@@ -116,6 +116,9 @@ public class ModelItem
         synchronized (this)
         {
             current_value = null;
+            current_severity_code = 0;
+            current_severity = ""; //$NON-NLS-1$
+            current_status = ""; //$NON-NLS-1$
         }
         samples = new ModelSamples(ring_size);
     }    
@@ -483,8 +486,8 @@ public class ModelItem
             current_severity_code = pv.getSeverityCode();
             if (current_severity_code == 0)
             {
-                current_severity = null;
-                current_status = null;
+                current_severity = ""; //$NON-NLS-1$
+                current_status = ""; //$NON-NLS-1$
             }
             else
             {
@@ -503,10 +506,15 @@ public class ModelItem
             if (current_value == null)
                 samples.markCurrentlyDisconnected(now);
             else
+            {
+                if (current_severity == null || current_status == null)
+                    System.err.println("Kacke"); //$NON-NLS-1$
+                
                 samples.addLiveSample(now,
                               current_value,
                               current_severity_code, current_severity,
                               current_status);
+            }
             if (! units.equals(pv.getUnits()))
             {
                 units = pv.getUnits();

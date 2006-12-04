@@ -147,21 +147,22 @@ public class EPICS_V3_PV
         new HashMap<String, RefCountedChannel>();
 
     /** PVListeners of this PV */
-    private CopyOnWriteArrayList<PVListener> listeners;
+    private CopyOnWriteArrayList<PVListener> listeners
+        = new CopyOnWriteArrayList<PVListener>();
 
     /** Use plain mode?
      *  @see #EPICS_V3_PV(String, boolean)
      */
-    private boolean plain;
+    private final boolean plain;
     
     /** Channel name. */
-    private String name;
+    private final String name;
 
     /** isRunning? */
-    private volatile boolean running;
+    private volatile boolean running = false;
 
     /** isConnected? */
-    private volatile boolean connected;
+    private volatile boolean connected = false;
 
     /** JCA channel. */
     private RefCountedChannel channel_ref;
@@ -183,16 +184,16 @@ public class EPICS_V3_PV
     // The most recent 'live' data
     
     /** Most recent time. */
-    private volatile ITimestamp time;
+    private volatile ITimestamp time = null;
 
     /** Most recent value. */
-    private volatile Object value;
+    private volatile Object value = null;
 
     /** Most recent severity code. */
-    private volatile int severity;
+    private volatile int severity = 0;
 
     /** Most recent status info. */
-    private volatile String status;
+    private volatile String status = "";
 
     /** Generate an EPICS PV.
      *  @param name The PV name.
@@ -210,13 +211,8 @@ public class EPICS_V3_PV
      */
     public EPICS_V3_PV(String name, boolean plain)
     {
-        listeners = new CopyOnWriteArrayList<PVListener>();
         this.name = name;
         this.plain = plain;
-        running = false;
-        connected = false;
-        value = null;
-        time = null;
         clearMetaData();
     }
 
