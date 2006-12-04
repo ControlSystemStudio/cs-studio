@@ -132,7 +132,7 @@
                icon="icons/table.gif"
                id="org.csstudio.display.pvtable.NewPVTableAction"
                label="PV Table"
-               menubarPath="css/editors/"
+               menubarPath="css/display/"
                style="push"
                tooltip="Open a new PV Table"/>
       </actionSet>
