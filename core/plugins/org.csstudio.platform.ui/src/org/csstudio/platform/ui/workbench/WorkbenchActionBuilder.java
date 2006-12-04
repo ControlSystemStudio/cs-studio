@@ -61,11 +61,6 @@ public final class WorkbenchActionBuilder {
 	private IWorkbenchAction _exitAction;
 
 	/**
-	 * The preferences action. This action opens the central preferences dialog.
-	 */
-	private IWorkbenchAction _preferencesAction;
-
-	/**
 	 * The documentation action. This action starts up the help system.
 	 */
 	private IWorkbenchAction _documentationAction;
@@ -131,7 +126,6 @@ public final class WorkbenchActionBuilder {
 		IMenuManager menubar = configurer.getMenuManager();
 		menubar.add(createFileMenu());
 		menubar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		menubar.add(createCSSMenu());
 		menubar.add(createWindowMenu());
 		menubar.add(createHelpMenu());
 	}
@@ -145,74 +139,6 @@ public final class WorkbenchActionBuilder {
 	public void populateCoolBar(final IActionBarConfigurer configurer) {
 		ICoolBarManager coolbar = configurer.getCoolBarManager();
 		coolbar.add(_documentationAction);
-	}
-
-	/**
-	 * Creates and returns the CSS menu.
-	 * 
-	 * @return The CSS menu.
-	 */
-	private MenuManager createCSSMenu() {
-		MenuManager menu = new MenuManager(
-				Messages.getString("WorkbenchActionBuilder.MENU_CSS"), IWorkbenchIds.MENU_CSS); //$NON-NLS-1$
-
-		appendSubMenu(
-				menu,
-				Messages.getString("WorkbenchActionBuilder.MENU_CSS_DISPLAY"), IWorkbenchIds.MENU_CSS_DISPLAY); //$NON-NLS-1$
-		appendSubMenu(
-				menu,
-				Messages.getString("WorkbenchActionBuilder.MENU_CSS_ALARM"), IWorkbenchIds.MENU_CSS_ALARM); //$NON-NLS-1$
-		appendSubMenu(
-				menu,
-				Messages.getString("WorkbenchActionBuilder.MENU_CSS_TRENDS"), IWorkbenchIds.MENU_CSS_TRENDS); //$NON-NLS-1$
-		appendSubMenu(
-				menu,
-				Messages
-						.getString("WorkbenchActionBuilder.MENU_CSS_DIAGNOSTICS"), IWorkbenchIds.MENU_CSS_DIAGNOSTICS); //$NON-NLS-1$
-		appendSubMenu(
-				menu,
-				Messages.getString("WorkbenchActionBuilder.MENU_CSS_DEBUGGING"), IWorkbenchIds.MENU_CSS_DEBUGGING); //$NON-NLS-1$
-		appendSubMenu(
-				menu,
-				Messages
-						.getString("WorkbenchActionBuilder.MENU_CSS_CONFIGURATION"), IWorkbenchIds.MENU_CSS_CONFIGURATION); //$NON-NLS-1$
-		appendSubMenu(
-				menu,
-				Messages
-						.getString("WorkbenchActionBuilder.MENU_CSS_MANAGEMENT"), IWorkbenchIds.MENU_CSS_MANAGEMENT); //$NON-NLS-1$
-		appendSubMenu(
-				menu,
-				Messages.getString("WorkbenchActionBuilder.MENU_CSS_EDITORS"), IWorkbenchIds.MENU_CSS_EDITORS); //$NON-NLS-1$
-		appendSubMenu(
-				menu,
-				Messages.getString("WorkbenchActionBuilder.MENU_CSS_UTILITIES"), IWorkbenchIds.MENU_CSS_UTILITIES); //$NON-NLS-1$
-		appendSubMenu(
-				menu,
-				Messages.getString("WorkbenchActionBuilder.MENU_CSS_TEST"), IWorkbenchIds.MENU_CSS_TEST); //$NON-NLS-1$
-		appendSubMenu(
-				menu,
-				Messages.getString("WorkbenchActionBuilder.MENU_CSS_OTHER"), IWorkbenchIds.MENU_CSS_OTHER); //$NON-NLS-1$
-
-		menu.add(new Separator());
-		menu.add(_preferencesAction);
-
-		return menu;
-	}
-
-	/**
-	 * Add a sub menu entry to the given parent menu.
-	 * 
-	 * @param parentMenu
-	 *            The parent menu item menu.
-	 * @param entryTitle
-	 *            The title of the sub menu entry.
-	 * @param id
-	 *            The id of the sub menu entry.
-	 */
-	private void appendSubMenu(final MenuManager parentMenu,
-			final String entryTitle, final String id) {
-		MenuManager menuEntry = new MenuManager(entryTitle, id);
-		parentMenu.add(menuEntry);
 	}
 
 	/**
@@ -319,10 +245,6 @@ public final class WorkbenchActionBuilder {
 			_exitAction.dispose();
 		}
 
-		if (_preferencesAction != null) {
-			_preferencesAction.dispose();
-		}
-		
 		if (_introAction != null) {
 			_introAction.dispose();
 		}
@@ -349,9 +271,6 @@ public final class WorkbenchActionBuilder {
 
 		_exitAction = ActionFactory.QUIT.create(getWindow());
 		registerGlobalAction(_exitAction);
-
-		_preferencesAction = ActionFactory.PREFERENCES.create(_window);
-		registerGlobalAction(_preferencesAction);
 
 		_saveAction = ActionFactory.SAVE.create(_window);
 		registerGlobalAction(_saveAction);

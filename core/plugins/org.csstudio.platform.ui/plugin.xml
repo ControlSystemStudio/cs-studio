@@ -85,6 +85,80 @@
                menubarPath="file/fileEnd"
                style="push"/>
       </actionSet>
+      <actionSet
+            id="org.eclipse.csstudio.ui.menuDefinition"
+            label="CSS Menu Definition"
+            visible="true">
+         <menu
+               id="css"
+               label="%menuCss"
+               path="additions">
+            <groupMarker name="group1"/>
+            <groupMarker name="group2"/>
+            <groupMarker name="group3"/>
+            <groupMarker name="group4"/>
+            <groupMarker name="group5"/>
+            <groupMarker name="group6"/>
+            <groupMarker name="group7"/>
+            <groupMarker name="group8"/>
+            <groupMarker name="group9"/>
+            <groupMarker name="group10"/>
+            <groupMarker name="group11"/>
+            <separator name="separator1"/>
+            <groupMarker name="group12"/>
+         </menu>
+         <menu
+               id="display"
+               label="%menuCssDisplay"
+               path="css/group1"/>
+         <menu
+               id="alarm"
+               label="%menuCssAlarm"
+               path="css/group2"/>
+         <menu
+               id="diagnostics"
+               label="%menuCssDiagnostics"
+               path="css/group4"/>
+         <menu
+               id="debugging"
+               label="%menuCssDebugging"
+               path="css/group5"/>
+         <menu
+               id="configuration"
+               label="%menuCssConfiguration"
+               path="css/group6"/>
+         <menu
+               id="management"
+               label="%menuCssManagement"
+               path="css/group7"/>
+         <menu
+               id="editors"
+               label="%menuCssEditors"
+               path="css/group8"/>
+         <menu
+               id="utilities"
+               label="%menuCssUtilities"
+               path="css/group9"/>
+         <menu
+               id="trends"
+               label="%menuCssTrends"
+               path="css/group3"/>
+         <menu
+               id="test"
+               label="%menuCssTest"
+               path="css/group10"/>
+         <menu
+               id="other"
+               label="%menuCssOther"
+               path="css/group11"/>
+         <action
+               class="org.csstudio.platform.ui.internal.actions.OpenPreferencesAction"
+               id="org.csstudio.platform.ui.internal.actions.PreferencesAction"
+               label="%menuCssPreferences_Label"
+               menubarPath="css/group12"
+               style="push"
+               tooltip="%menuCssPreferences_Tooltip"/>
+      </actionSet>
       
    </extension>
    <extension
