@@ -8,6 +8,9 @@ import org.csstudio.trends.databrowser.model.ModelItem;
  */
 public class PVTableHelper
 {
+    /** Placeholder, magic entry for the last row in the PV table. */
+    public static final String empty_row = Messages.EmptyPVRowMarker;
+    
     /** Name column identifier */
 	final public static int NAME = 0;
     /** Axis minimum */

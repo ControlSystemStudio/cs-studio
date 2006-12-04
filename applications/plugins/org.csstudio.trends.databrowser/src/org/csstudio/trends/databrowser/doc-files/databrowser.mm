@@ -27,6 +27,10 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
+<node CREATED="1164990266807" ID="Freemind_Link_965035988" MODIFIED="1165013996542" STYLE="fork" TEXT="ModelSample looks like...">
+<node CREATED="1164990241260" ID="Freemind_Link_1009011039" MODIFIED="1164990282562" STYLE="fork" TEXT="ChartSampleSequence for plotting," VSHIFT="2"/>
+<node CREATED="1164990283720" ID="Freemind_Link_1471130849" MODIFIED="1164990303195" STYLE="fork" TEXT="Archive Sample Iterator for export"/>
+</node>
 </node>
 </node>
 </node>

@@ -27,6 +27,8 @@ public class Messages extends NLS
 
     public static String Down;
 
+    public static String EmptyPVRowMarker;
+
     public static String EnterCount;
 
     public static String EnterSecs;

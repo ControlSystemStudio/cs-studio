@@ -38,6 +38,8 @@ public class PVTableLabelProvider extends LabelProvider implements
     /** Get text for all but the 'select' column. */
 	public String getColumnText(Object obj, int index)
 	{
+        if (obj == PVTableHelper.empty_row)
+            return index == 0 ? PVTableHelper.empty_row : ""; //$NON-NLS-1$
         return PVTableHelper.getText((ModelItem) obj, index);
 	}
 
@@ -50,7 +52,7 @@ public class PVTableLabelProvider extends LabelProvider implements
     /** @see org.eclipse.jface.viewers.ITableColorProvider */
     public Color getBackground(Object obj, int index)
     {
-        if (index == PVTableHelper.COLOR)
+        if (index == PVTableHelper.COLOR  &&  obj != PVTableHelper.empty_row)
         {
             IModelItem entry = (IModelItem) obj;
             return entry.getColor();

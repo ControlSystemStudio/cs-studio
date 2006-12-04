@@ -316,7 +316,7 @@ public class ConfigView extends PlotAwareView
         editors[PVTableHelper.TYPE] = new CheckboxCellEditor(table);
         pv_table_viewer.setColumnProperties(PVTableHelper.properties);
         pv_table_viewer.setCellEditors(editors);
-        pv_table_viewer.setCellModifier(new PVTableCellModifier());
+        pv_table_viewer.setCellModifier(new PVTableCellModifier(this));
 
         // SashForm item -------------------------------------
         box = new Composite(form, SWT.NULL);
@@ -564,7 +564,8 @@ public class ConfigView extends PlotAwareView
             scan_period_text.setText(Double.toString(model.getScanPeriod()));
             update_period_text.setText(Double.toString(model.getUpdatePeriod()));
             ring_size_text.setText(Integer.toString(model.getRingSize()));
-            pv_table_viewer.setItemCount(model.getNumItems());
+            // The '+1' is the line that allows entry of new PVs!!
+            pv_table_viewer.setItemCount(model.getNumItems() + 1);
         }
         help.setText(""); //$NON-NLS-1$
         pv_table_viewer.refresh();
@@ -598,10 +599,17 @@ public class ConfigView extends PlotAwareView
     {
         IStructuredSelection sel = 
             (IStructuredSelection) pv_table_viewer.getSelection();
-        if (sel.isEmpty()  ||  sel.size() > 1)
-            archive_table_viewer.setInput(null);
-        else
-            archive_table_viewer.setInput(
-            ((IModelItem)sel.getFirstElement()).getArchiveDataSources());
+        if (sel.size() == 1)
+        {
+            Object item = sel.getFirstElement();
+            if (item != PVTableHelper.empty_row)
+            {
+                archive_table_viewer.setInput(
+                                ((IModelItem)item).getArchiveDataSources());
+                return;
+            }
+        }
+        // else: clear archive table
+        archive_table_viewer.setInput(null);
     }
 }

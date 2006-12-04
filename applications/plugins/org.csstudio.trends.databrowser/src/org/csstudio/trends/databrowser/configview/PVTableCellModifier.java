@@ -13,13 +13,29 @@ import org.eclipse.swt.widgets.Item;
  */
 public class PVTableCellModifier implements ICellModifier
 {
-	/** All columns can change. */
+    private final ConfigView view;
+    
+    PVTableCellModifier(ConfigView view)
+    {
+        this.view = view;
+    }
+    
+	/** All columns of the model can change.
+     *  The last row only allows name entry.
+     */
 	public boolean canModify(Object element, String property)
-	{	return true; }
+	{
+        if (element == PVTableHelper.empty_row)
+            return property.equals(
+                            PVTableHelper.properties[PVTableHelper.NAME]);
+        return true;
+    }
 
 	/** @return Returns the original cell value. */
     public Object getValue(Object element, String property)
     {
+        if (element == PVTableHelper.empty_row)
+            return ""; //$NON-NLS-1$
         try
         {
             ModelItem entry = (ModelItem) element;
@@ -50,11 +66,16 @@ public class PVTableCellModifier implements ICellModifier
         try
         {   // Note that it is possible for an SWT Item to be passed
             // instead of the model element.
-            IModelItem entry;
             if (element instanceof Item)
-                entry = (IModelItem) ((Item) element).getData();
-            else
-                entry = (IModelItem) element;
+                element = ((Item) element).getData();
+            // Was this the magic last row?
+            if (element == PVTableHelper.empty_row)
+            {
+                view.addPV(value.toString());
+                return;
+            }
+            // Edit existing item
+            IModelItem entry = (IModelItem) element;
             int id = PVTableHelper.getPropertyID(property);
             
             if (id == PVTableHelper.NAME && value != null)
