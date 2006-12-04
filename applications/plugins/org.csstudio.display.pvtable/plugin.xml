@@ -8,7 +8,7 @@
             base-type="org.eclipse.core.runtime.xml"
             file-extensions="xml,pvtable"
             id="PVTable"
-            name="PVTable"
+            name="%PVTable"
             priority="normal">
          <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
             <parameter
@@ -25,7 +25,7 @@
             contributorClass="org.csstudio.display.pvtable.ui.editor.PVTableEditorActionBarContributor"
             default="false"
             icon="icons/table.gif"
-            name="PV Table">
+            name="%PVTable">
          <contentTypeBinding contentTypeId="org.csstudio.pvtable.PVTable"/>
       </editor>
    </extension>
@@ -39,7 +39,7 @@
             id="org.csstudio.display.pvtable.NewPVTableWizard"
             class="org.csstudio.display.pvtable.NewPVTableWizard"
             icon="icons/table.gif"
-            name="PV Table"/>
+            name="%PVTable"/>
    </extension>
    <!-- <extension
          point="org.eclipse.help.toc">
@@ -65,7 +65,7 @@
       <page
             id="org.csstudio.display.pvtable.preferences.PreferencePage"
             class="org.csstudio.display.pvtable.preferences.SamplePreferencePage"
-            name="PVTable Preferences"/>
+            name="%PVTablePrefs"/>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -84,9 +84,9 @@
                id="org.csstudio.display.pvtable.PVpopupAction"
                class="org.csstudio.display.pvtable.PVpopupAction"
                icon="icons/table.gif"
-               label="PV Table"
+               label="%PVTable"
                menubarPath="org.csstudio.popmenu/content"
-               tooltip="Send selected PV to a PV Table"/>
+               tooltip="%PVTableObject_TT"/>
       </objectContribution>
    </extension>
    <!-- extension
@@ -131,10 +131,10 @@
                class="org.csstudio.display.pvtable.NewPVTableAction"
                icon="icons/table.gif"
                id="org.csstudio.display.pvtable.NewPVTableAction"
-               label="PV Table"
+               label="%PVTable"
                menubarPath="css/display/"
                style="push"
-               tooltip="Open a new PV Table"/>
+               tooltip="%PVTableMenu_TT"/>
       </actionSet>
    </extension>
    
