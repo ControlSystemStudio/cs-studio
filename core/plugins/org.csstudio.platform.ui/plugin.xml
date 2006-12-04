@@ -19,6 +19,7 @@
             id="org.csstudio.platform.log.logPreferences.console"
             name="%logConsoleAppenderPageName"/>
       <page
+            category="org.csstudio.platform.ui.css.platform"
             class="org.csstudio.platform.ui.internal.logging.LoggingPreferencePage"
             id="org.csstudio.platform.log.logPreferences"
             name="%logPageName"/>
@@ -89,10 +90,12 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            category="org.csstudio.platform.ui.css.platform"
             class="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
             id="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
             name="%authenticationPageName"/>
       <page
+            category="org.csstudio.platform.ui.css.platform"
             class="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
             id="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
             name="%localePageName"/>
@@ -112,6 +115,74 @@
             icon="icons/containerView.gif"
             id="org.csstudio.platform.ui.internal.developmentsupport.util.ContainerView"
             name="Container View"/>
+   </extension>
+   <extension
+         id="cssPreferenceCategories"
+         name="cssPreferencesCategories"
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.csstudio.platform.ui.internal.preferences.CSSPlatformPreferencePage"
+            id="org.csstudio.platform.ui.css.platform"
+            name="%platformPreferencesName"/>
+      <page
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications"
+            name="%applicationsPreferencesName"/>
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.display"
+            name="%displayPreferencesName"/>
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.alarm"
+            name="%alarmPreferencesName"/>
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.trends"
+            name="%trendsPreferencesName"/>
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.diagnostics"
+            name="%diagnosticsPreferencesName"/>            
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.debugging"
+            name="%debuggingPreferencesName"/>
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.configuration"
+            name="%configurationPreferencesName"/>
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.management"
+            name="%managementPreferencesName"/>
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.editors"
+            name="%editorsPreferencesName"/>
+      <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.utilities"
+            name="%utilitiesPreferencesName"/>                                                
+	  <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.test"
+            name="%testPreferencesName"/> 
+	  <page
+            category="org.csstudio.platform.ui.css.applications"
+            class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
+            id="org.csstudio.platform.ui.css.applications.others"
+            name="%othersPreferencesName"/>                         
    </extension>
 
 </plugin>
