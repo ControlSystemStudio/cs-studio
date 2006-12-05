@@ -12,23 +12,23 @@ package org.csstudio.swt.chart;
  */
 public class ChartSampleContainer implements ChartSample
 {
-    private int type;
+    private Type type;
     private double x;
     private double y;
     private String info;
     
     /** Construct new sample from values.
-     *  @see #ChartSampleContainer(int, double, double, String)
+     *  @see #ChartSampleContainer(Type, double, double, String)
      */
     public ChartSampleContainer(double x, double y)
     {
-        this(ChartSample.TYPE_NORMAL, x, y, null);
+        this(Type.Normal, x, y, null);
     }
 
     /** Construct new sample from values.
-     *  @see #ChartSampleContainer(int, double, double, String)
+     *  @see #ChartSampleContainer(Type, double, double, String)
      */
-    public ChartSampleContainer(int type, double x, double y)
+    public ChartSampleContainer(Type type, double x, double y)
     {
         this(type, x, y, null);
     }
@@ -39,7 +39,7 @@ public class ChartSampleContainer implements ChartSample
      *  @param y Y coordinate
      *  @param info Info string, e.g. for tooltip, or <code>null</code>.
      */
-    public ChartSampleContainer(int type, double x, double y, String info)
+    public ChartSampleContainer(Type type, double x, double y, String info)
     {
         this.type = type;
         this.x = x;
@@ -47,8 +47,8 @@ public class ChartSampleContainer implements ChartSample
         this.info = info;
     }
     
-    /** @return Returns one of the TYPE_... values. */
-    public int getType()
+    /** @return Returns one of the Type values. */
+    public Type getType()
     {
         return type;
     }

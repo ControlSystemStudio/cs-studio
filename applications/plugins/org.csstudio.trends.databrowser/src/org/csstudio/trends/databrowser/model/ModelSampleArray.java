@@ -10,7 +10,8 @@ import org.csstudio.swt.chart.ChartSampleSequence;
 /** An array of <code>ModelSample</code>.
  *  @author Kay Kasemir
  */
-public class ModelSampleArray extends ArrayList<ModelSample> implements ChartSampleSequence
+public class ModelSampleArray extends ArrayList<ModelSample>
+      implements ChartSampleSequence
 {
     /** Required ID for serialization... */
     private static final long serialVersionUID = 1L;
@@ -54,5 +55,6 @@ public class ModelSampleArray extends ArrayList<ModelSample> implements ChartSam
         return model_samples;
     }
     
-    // SampleSequence.get(int i) and size() are implemented by the ArrayList...
+    // ChartSampleSequence.get(int i) and size() are 
+    // implemented by ArrayList<ModelSample> ...
 }

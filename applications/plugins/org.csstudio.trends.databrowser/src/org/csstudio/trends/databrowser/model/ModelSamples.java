@@ -52,7 +52,7 @@ public class ModelSamples implements ChartSampleSequence
     }
     
     /** Add samples from an archive. */
-    @SuppressWarnings("nls")
+    @SuppressWarnings("nls") //$NON-NLS-1$
     synchronized void add(ArchiveSamples samples)
     {
         // To prevent archived samples from overlapping 'live' data,
@@ -126,9 +126,23 @@ public class ModelSamples implements ChartSampleSequence
     {
         if (archive_samples != null)
         {
-            if (i < archive_samples.size())
-                return archive_samples.get(i);
-            i -= archive_samples.size();
+            int arch_size = archive_samples.size();
+            if (i < arch_size)
+            {
+                ModelSample sample = archive_samples.get(i);
+                // Patch the last 'archive' sample to indicate
+                // that that's the end of historic samples.
+                // Note that the original sample is kept unchanged,
+                // since after the next archive request, it might no
+                // longer be the 'last' one.
+                // We only morph it right here and now, temporarily.
+                if (i == arch_size - 1)
+                    return new ModelSampleMorpher(sample,
+                                    ChartSample.Type.Point,
+                                    Messages.LastArchivedSample);
+                return sample;
+            }
+            i -= arch_size;
         }
         return live_samples.get(i);
     }

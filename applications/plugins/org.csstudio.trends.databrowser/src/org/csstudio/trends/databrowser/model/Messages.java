@@ -6,6 +6,8 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.model.messages"; //$NON-NLS-1$
     
+    public static String LastArchivedSample;
+
     public static String LivePVDisconnected;
 
     public static String Sevr_INVALID;

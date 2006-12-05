@@ -11,14 +11,16 @@ package org.csstudio.swt.chart;
  */
 public interface ChartSample
 {
-    /** A normal sample, plot it together with the rest. */
-    public static final int TYPE_NORMAL = 0;
+    enum Type
+    {
+        /** A normal sample, plot it together with the rest. */
+        Normal, 
+        /** A gap, terminating a "line",displayed as a single point. */
+        Point
+    };
     
-    /** A gap, terminating a "line",displayed as a single point. */
-    public static final int TYPE_POINT = 1;
-    
-    /** @return One of the TYPE_... values. */
-    public int getType();
+    /** @return One of the Type values. */
+    public Type getType();
     
     /** @return The x value. */
     public double getX();

@@ -12,8 +12,8 @@ import org.csstudio.swt.chart.ChartSample;
  *  The plot library wants the samples as x/y coordinate,
  *  with info for tooltip and representation.
  *  <p>
- *  This class interfaces between the two:
- *  It keeps the archive sample and presents it
+ *  This interface allows both:
+ *  It provides the archive sample, but also presents it
  *  via an interface suitable for the plot library. 
  *  
  *  @author Kay Kasemir
@@ -34,12 +34,12 @@ public class ModelSample implements ChartSample
     {   return sample;  }
     
     /** @see org.csstudio.swt.chart.ChartSample */
-    public int getType()
+    public ChartSample.Type getType()
     {
         double y = getY();
         if (Double.isInfinite(y)  ||  Double.isNaN(y))
-            return ChartSample.TYPE_POINT;
-        return ChartSample.TYPE_NORMAL;
+            return ChartSample.Type.Point;
+        return ChartSample.Type.Normal;
     }
 
     /** @see org.csstudio.swt.chart.ChartSample */

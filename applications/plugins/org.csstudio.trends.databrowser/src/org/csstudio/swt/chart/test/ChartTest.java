@@ -194,11 +194,11 @@ public class ChartTest
         double x0 = TimestampFactory.now().toDouble();
         for (i=0; i<=N; ++i)
         {
-            int type;
+            ChartSample.Type type;
             if (Math.random() > 0.95  ||  i==N)
-                type = ChartSample.TYPE_POINT;
+                type = ChartSample.Type.Point;
             else
-                type = ChartSample.TYPE_NORMAL;
+                type = ChartSample.Type.Normal;
             double x;
             if ((chart_flags & Chart.TIME_CHART) != 0)
                 x = x0 + 10*i;
@@ -208,7 +208,7 @@ public class ChartTest
             double y = shift +
                        50*(0.1*Math.random() + Math.sin(twopi*0.01*i + phase));
             String info = null;
-            if (type == ChartSample.TYPE_POINT)
+            if (type == ChartSample.Type.Point)
             {
                 info = "Comment";
                 y = Double.NEGATIVE_INFINITY;

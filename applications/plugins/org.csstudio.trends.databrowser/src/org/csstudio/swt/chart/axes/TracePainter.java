@@ -64,7 +64,7 @@ public class TracePainter
                     y0 = y1;
                 }
                 // TODO Move this into a 'SampleDecorator'?
-                if (sample.getType() == ChartSample.TYPE_POINT)
+                if (sample.getType() == ChartSample.Type.Point)
                 {
                     if (true)
                     {   // Square
