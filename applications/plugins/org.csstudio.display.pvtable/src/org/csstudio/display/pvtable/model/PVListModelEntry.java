@@ -1,8 +1,10 @@
 package org.csstudio.display.pvtable.model;
 
 import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.utility.pv.EnumValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
+import org.csstudio.utility.pv.StringValue;
 import org.csstudio.utility.pv.Value;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.core.runtime.PlatformObject;
@@ -199,7 +201,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
         if (saved_value != null)
         {
             buf.append(" <saved_value>");
-            buf.append(saved_value.toString());
+            buf.append(formatValue(saved_value));
             buf.append("</saved_value>");
         }
         if (readback_pv != null)
@@ -211,7 +213,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
         if (saved_readback_value != null)
         {
             buf.append(" <readback_value>");
-            buf.append(saved_readback_value.toString());
+            buf.append(formatValue(saved_readback_value));
             buf.append("</readback_value>");
         }
         buf.append(" </pv>");
@@ -222,5 +224,16 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
     public String toString()
     {
         return toXML();
+    }
+    
+    /** @return value formated as String. */
+    private String formatValue(Value value)
+    {
+    	 if (value == null)
+             return ""; //$NON-NLS-1$
+         if (value instanceof StringValue || value instanceof EnumValue)
+         	return value.toString();
+         // Don't show units, don't use precision, just print the number.
+         return Double.toString(value.toDouble());
     }
 }

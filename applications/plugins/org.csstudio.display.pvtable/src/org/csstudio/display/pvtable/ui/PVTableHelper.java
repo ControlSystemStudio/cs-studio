@@ -90,7 +90,7 @@ public class PVTableHelper
     {
         if (value == null)
             return ""; //$NON-NLS-1$
-        return value.toString();
+    	return value.toString();
     }
     
 	/** Get a data piece of the entry.
