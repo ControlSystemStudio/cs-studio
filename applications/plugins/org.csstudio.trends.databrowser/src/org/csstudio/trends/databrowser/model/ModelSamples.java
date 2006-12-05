@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.model;
 import org.csstudio.archive.ArchiveSamples;
 import org.csstudio.archive.DoubleSample;
 import org.csstudio.archive.MetaData;
+import org.csstudio.archive.Severity;
 import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
@@ -80,10 +81,9 @@ public class ModelSamples implements ChartSampleSequence
         int size = live_samples.size();
         if (size > 0)
         {
-            ChartSample last_sample = live_samples.get(size - 1);
-            // If the last sample is already a 'disconnected' message, we're done.
-            String info = last_sample.getInfo();
-            if (info != null && info.equals(Messages.LivePVDisconnected))
+            String last = live_samples.get(size - 1).getSample().getStatus();
+            // Does last sample already have 'disconnected' status?
+            if (last != null && last.equals(Messages.LivePVDisconnected))
                 return;
         }
         
