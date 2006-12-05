@@ -3,7 +3,6 @@ package org.csstudio.trends.databrowser.model;
 import org.csstudio.archive.ArchiveSamples;
 import org.csstudio.archive.DoubleSample;
 import org.csstudio.archive.MetaData;
-import org.csstudio.archive.Severity;
 import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;

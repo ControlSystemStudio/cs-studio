@@ -37,7 +37,6 @@ public class ExportView extends PlotAwareView
     private Button use_plot_time;
     private Button time_config;
     private Button source_plot, source_raw, source_avg;
-    private Button add_live_samples;
     private Button format_spreadsheet;
     private Button format_severity;
     private Text filename_txt;
@@ -48,6 +47,15 @@ public class ExportView extends PlotAwareView
     private ITimestamp start;
     private ITimestamp end;
     private ExportJob.Source source;
+    private ExportJob.Format format;
+
+    private Text precision;
+
+    private Button format_default;
+
+    private Button format_decimal;
+
+    private Button format_exponential;
     
     public ExportView()
     {
@@ -65,20 +73,38 @@ public class ExportView extends PlotAwareView
         parent.setLayout(layout);
         GridData gd;
 
-        /* Start:    ____________________________ [ ... ]
+        /*           [x] from plot
+         * Start:    ____________________________ [ ... ]
          * End  :    ____________________________ 
-         *           [x] from plot
          *
          * Source:   ( ) plot (*) raw ... ( ) averaged archive
-         *           [x] add 'live' data
          * 
-         * Format:   [x] Spreadsheet  [x] .. with Severity/Status
-         *
+         * Output:   [x] Spreadsheet  [x] .. with Severity/Status
+         * Format:   (*) default ( ) decimal ( ) exponential __ fractional digits
+         *           
          * Filename: ________________ [ Browse ]
          *                            [ Export ]
          */
         Label l;
         
+        // 'use plot time' row
+        l = new Label(parent, 0); // placeholder
+        l.setLayoutData(new GridData());
+
+        use_plot_time = new Button(parent, SWT.CHECK);
+        use_plot_time.setText(Messages.UsePlotTime);
+        use_plot_time.setToolTipText(Messages.UsePlotTime_TT);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalSpan = layout.numColumns - 1;
+        use_plot_time.setLayoutData(gd);
+        use_plot_time.setSelection(true);
+        use_plot_time.addSelectionListener(new SelectionAdapter()
+        {
+            public void widgetSelected(SelectionEvent e)
+            {   conditionallyEnableTimeConfig();  }
+        });
+
         // 'start' row
         l = new Label(parent, 0);
         l.setText(Messages.StartLabel);
@@ -123,24 +149,6 @@ public class ExportView extends PlotAwareView
         l = new Label(parent, 0); // placeholder
         l.setLayoutData(new GridData());
         
-        // 'use plot time' row
-        l = new Label(parent, 0); // placeholder
-        l.setLayoutData(new GridData());
-
-        use_plot_time = new Button(parent, SWT.CHECK);
-        use_plot_time.setText(Messages.UsePlotTime);
-        use_plot_time.setToolTipText(Messages.UsePlotTime_TT);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalSpan = layout.numColumns - 1;
-        use_plot_time.setLayoutData(gd);
-        use_plot_time.setSelection(true);
-        use_plot_time.addSelectionListener(new SelectionAdapter()
-        {
-            public void widgetSelected(SelectionEvent e)
-            {   conditionallyEnableTimeConfig();  }
-        });
-
         // 'Source' row
         l = new Label(parent, 0);
         l.setText(Messages.SourceLabel);
@@ -189,21 +197,9 @@ public class ExportView extends PlotAwareView
 
         // ... end of radio buttons
         
-        // 'add live' row
-        l = new Label(parent, 0); // placeholder
-        l.setLayoutData(new GridData());
-        
-        add_live_samples = new Button(parent, SWT.CHECK);
-        add_live_samples.setText(Messages.AddLive);
-        add_live_samples.setToolTipText(Messages.AddLive_TT);
-        gd = new GridData();
-        gd.horizontalSpan = layout.numColumns - 1;
-        gd.grabExcessHorizontalSpace = true;
-        add_live_samples.setLayoutData(gd);
-        
-        // 'Format' row
+        // 'Output' row
         l = new Label(parent, 0);
-        l.setText(Messages.Format);
+        l.setText(Messages.OutputLabel);
         gd = new GridData();
         gd.verticalAlignment = SWT.TOP;
         l.setLayoutData(gd);
@@ -225,6 +221,58 @@ public class ExportView extends PlotAwareView
         format_severity = new Button(frame, SWT.CHECK);
         format_severity.setText(Messages.ShowSeverity);
         format_severity.setToolTipText(Messages.ShowSeverity_TT);
+
+        // Number format row
+        l = new Label(parent, 0);
+        l.setText(Messages.FormatLabel);
+        l.setLayoutData(new GridData());
+        
+        frame = new Composite(parent, 0);
+        row_layout = new RowLayout();
+        row_layout.pack = false;
+        row_layout.marginLeft = 0;
+        row_layout.marginTop = 0;
+        frame.setLayout(row_layout);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalSpan = layout.numColumns - 1;
+        gd.horizontalAlignment = SWT.FILL;
+        frame.setLayoutData(gd);
+        
+        format_default = new Button(frame, SWT.RADIO);
+        format_default.setText(Messages.FormatDefaultLabel);
+        format_default.setToolTipText(Messages.FormatDefault_TT);
+        format_default.addSelectionListener(new SelectionAdapter()
+        {
+            @Override public void widgetSelected(SelectionEvent e)
+            {   format = ExportJob.Format.Default; }
+        });
+        
+        format_decimal = new Button(frame, SWT.RADIO);
+        format_decimal.setText(Messages.FormatDecimalLabel);
+        format_decimal.setToolTipText(Messages.FormatDecimal_TT);
+        format_decimal.addSelectionListener(new SelectionAdapter()
+        {
+            @Override public void widgetSelected(SelectionEvent e)
+            {   format = ExportJob.Format.Decimal; }
+        });
+
+        format_exponential = new Button(frame, SWT.RADIO);
+        format_exponential.setText(Messages.FormatExponentialLabel);
+        format_exponential.setToolTipText(Messages.FormatExponential_TT);
+        format_exponential.addSelectionListener(new SelectionAdapter()
+        {
+            @Override public void widgetSelected(SelectionEvent e)
+            {   format = ExportJob.Format.Exponential; }
+        });
+        // ... end of radio buttons
+        
+        precision = new Text(frame, SWT.BORDER);
+        precision.setTextLimit(3);
+        precision.setToolTipText(Messages.FormatPrecision_TT);
+
+        l = new Label(frame, 0);
+        l.setText(Messages.FormatPrecisionLabel);
         
         // 'filename' row
         l = new Label(parent, 0);
@@ -301,7 +349,17 @@ public class ExportView extends PlotAwareView
         setStartEndFromTimestamps();
         source_raw.setSelection(true);
         source = ExportJob.Source.Raw;
-        add_live_samples.setSelection(true);
+        precision.setText("4"); //$NON-NLS-1$
+        // precision 'enables' whenever non-default format selected
+        format_default.addSelectionListener(new SelectionAdapter()
+        {
+            public void widgetSelected(SelectionEvent e)
+            {   precision.setEnabled(! format_default.getSelection());   }
+        });
+        
+        format_default.setSelection(true);
+        format = ExportJob.Format.Default;
+        
         format_spreadsheet.setSelection(true);
         format_severity.setSelection(true);
         
@@ -341,10 +399,13 @@ public class ExportView extends PlotAwareView
             source_plot.setEnabled(false);
             source_raw.setEnabled(false);
             source_avg.setEnabled(false);
-            add_live_samples.setEnabled(false);
             
             format_spreadsheet.setEnabled(false);
             format_severity.setEnabled(false);
+            format_default.setEnabled(false);
+            format_decimal.setEnabled(false);
+            format_exponential.setEnabled(false);
+            precision.setEnabled(false);
             
             filename_txt.setEnabled(false);
             browse.setEnabled(false);
@@ -358,10 +419,14 @@ public class ExportView extends PlotAwareView
             source_plot.setEnabled(true);
             source_raw.setEnabled(true);
             source_avg.setEnabled(true);
-            add_live_samples.setEnabled(true);
             
             format_spreadsheet.setEnabled(true);
             format_severity.setEnabled(true);
+            
+            format_default.setEnabled(true);
+            format_decimal.setEnabled(true);
+            format_exponential.setEnabled(true);
+            precision.setEnabled(! format_default.getSelection());
             
             filename_txt.setEnabled(true);
             browse.setEnabled(true);
@@ -416,8 +481,7 @@ public class ExportView extends PlotAwareView
                 return;
             }
         }
-        Job job = new ExportJob(model, start, end, source,
-                                add_live_samples.getSelection(),
+        Job job = new ExportJob(model, start, end, source, format,
                                 format_spreadsheet.getSelection(),
                                 format_severity.getSelection(),
                                 filename_txt.getText());

@@ -37,8 +37,12 @@ class ExportJob extends Job
     {
         Plot, Raw, Average
     };
+    enum Format
+    {
+        Default, Decimal, Exponential
+    };
     private final Source source;
-    private final boolean add_live_samples;
+    private final Format format;
     private final boolean format_spreadsheet;
     private final boolean format_severity;
 
@@ -55,7 +59,7 @@ class ExportJob extends Job
     public ExportJob(Model model,
                     ITimestamp start, ITimestamp end,
                     Source source,
-                    boolean add_live_samples,
+                    Format format,
                     boolean format_spreadsheet,
                     boolean format_severity,
                     String filename)
@@ -65,7 +69,7 @@ class ExportJob extends Job
         this.start = start;
         this.end = end;
         this.source = source;
-        this.add_live_samples = add_live_samples;
+        this.format = format;
         this.format_spreadsheet = format_spreadsheet;
         this.format_severity = format_severity;
         this.filename = filename;
@@ -194,8 +198,8 @@ class ExportJob extends Job
         out.println(Messages.Comment + Messages.StartLabel + start);
         out.println(Messages.Comment + Messages.EndLabel + end);
         out.println(Messages.Comment + Messages.SourceLabel + source);
-        out.println(Messages.Comment + Messages.AddLiveSamples + add_live_samples);
-        out.println(Messages.Comment + Messages.SpreadsheetFormat + format_spreadsheet);
+        out.println(Messages.Comment + Messages.OutputLabel + format_spreadsheet);
+        out.println(Messages.Comment + Messages.FormatLabel + format);
         out.println(Messages.Comment + Messages.IncludeSeverity + format_severity);
     }
     
