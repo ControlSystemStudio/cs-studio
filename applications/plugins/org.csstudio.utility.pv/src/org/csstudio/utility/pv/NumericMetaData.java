@@ -8,7 +8,10 @@ public class NumericMetaData implements MetaData
     private final int precision;
     private final String units;
     
-    /** Constructor. */
+    /** Constructor.
+     *  @param precision The display precision, -1 for 'default'.
+     *  @param unit The engineering units String.
+     */
     public NumericMetaData(final int precision, final String units)
     {
         this.precision = precision;

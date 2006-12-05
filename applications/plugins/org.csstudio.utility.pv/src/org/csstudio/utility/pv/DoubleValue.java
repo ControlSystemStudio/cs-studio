@@ -23,11 +23,23 @@ public class DoubleValue extends NumericValue
 
     public String toString()
     {
-        NumberFormat format = NumberFormat.getNumberInstance();
+    	
         NumericMetaData meta = (NumericMetaData)getMeta();
-        format.setMinimumFractionDigits(meta.getPrecision());
-        format.setMaximumFractionDigits(meta.getPrecision());
-        return format.format(value) + " " + meta.getUnits(); //$NON-NLS-1$
+        final int precision = meta.getPrecision();
+        String val_txt;
+        if (precision < 0)
+        	val_txt = Double.toString(value);
+        else
+        {
+	        NumberFormat format = NumberFormat.getNumberInstance();
+			format.setMinimumFractionDigits(precision);
+	        format.setMaximumFractionDigits(precision);
+	        val_txt = format.format(value);
+        }
+        final String units = meta.getUnits();
+        if (units != null  &&  units.length() > 0)
+        	return val_txt + " " + units; //$NON-NLS-1$
+        return val_txt;
     }
 
     public boolean match(Value other, double tolerance)
