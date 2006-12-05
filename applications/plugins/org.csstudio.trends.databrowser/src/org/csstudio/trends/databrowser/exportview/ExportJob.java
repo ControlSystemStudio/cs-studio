@@ -4,11 +4,13 @@
 package org.csstudio.trends.databrowser.exportview;
 
 import java.io.PrintWriter;
+import java.util.Iterator;
 
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.Sample;
 import org.csstudio.archive.cache.ArchiveCache;
 import org.csstudio.archive.crawl.RawSampleIterator;
+import org.csstudio.archive.crawl.SampleIterator;
 import org.csstudio.archive.crawl.SpreadsheetIterator;
 import org.csstudio.archive.util.SampleUtil;
 import org.csstudio.platform.model.IArchiveDataSource;
@@ -16,6 +18,7 @@ import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
+import org.csstudio.trends.databrowser.model.ModelSamples;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -84,7 +87,7 @@ class ExportJob extends Job
             // Get sample iterator for each channel.
             // Either dump it ASAP, or keep it for spreadsheet-iteration.
             int N = model.getNumItems();
-            RawSampleIterator iters[] = new RawSampleIterator[N];
+            SampleIterator iters[] = new SampleIterator[N];
             for (int ch_idx=0;  ch_idx<N  &&  !monitor.isCanceled(); ++ch_idx)
             {
                 IModelItem item = model.getItem(ch_idx);
@@ -98,21 +101,32 @@ class ExportJob extends Job
                 out.println(Messages.Comment);
                 out.println(Messages.Comment + Messages.Archives);
 
-                // RawSampleIterator handles reading from multiple archives.
-                // Build arrays of servers & keys
-                IArchiveDataSource archives[] = item.getArchiveDataSources();
-                ArchiveServer servers[] = new ArchiveServer[archives.length];
-                int keys[] = new int[archives.length];
-                for (int i=0; i < archives.length; ++i)
+                if (source == Source.Plot)
                 {
-                    out.println(Messages.Comment + (i+1)
-                                    + Messages.EnumerationSep
-                                    + archives[i].getName());
-                    servers[i] = cache.getServer(archives[i].getUrl());
-                    keys[i] = archives[i].getKey();
+                    // TODO: Rethink the synchronization?
+                    // Use lock/unlock semaphore, so samples
+                    // can stay locked for the duration of the export job?
+                    ModelSamples samples = item.getSamples();
+                    iters[ch_idx] = new ModelSampleIterator(samples);
                 }
-                iters[ch_idx] = new RawSampleIterator(
-                                servers, keys, item_name, start, end);
+                else
+                {
+                    // RawSampleIterator handles reading from multiple archives.
+                    // Build arrays of servers & keys
+                    IArchiveDataSource archives[] = item.getArchiveDataSources();
+                    ArchiveServer servers[] = new ArchiveServer[archives.length];
+                    int keys[] = new int[archives.length];
+                    for (int i=0; i < archives.length; ++i)
+                    {
+                        out.println(Messages.Comment + (i+1)
+                                        + Messages.EnumerationSep
+                                        + archives[i].getName());
+                        servers[i] = cache.getServer(archives[i].getUrl());
+                        keys[i] = archives[i].getKey();
+                    }
+                    iters[ch_idx] = new RawSampleIterator(
+                                    servers, keys, item_name, start, end);
+                }
                 if (format_spreadsheet == false)
                 {   // Plain list: dump this channel's samples...
                     line_count = dumpOneItem(monitor, line_count,
@@ -194,10 +208,11 @@ class ExportJob extends Job
      */
     private int dumpOneItem(IProgressMonitor monitor,
                             int line_count, PrintWriter out,
-                            Iterable<Sample> channel_iter)
+                            Iterator<Sample> channel_iter)
     {
-        for (Sample sample : channel_iter)
+        while (channel_iter.hasNext())
         {
+            Sample sample = channel_iter.next();
             out.println(sample.getTime() + Messages.ColSep + formatValue(sample));
             ++line_count;
             if ((line_count % PROGRESS_LINE_GRANULARITY) == 0)
