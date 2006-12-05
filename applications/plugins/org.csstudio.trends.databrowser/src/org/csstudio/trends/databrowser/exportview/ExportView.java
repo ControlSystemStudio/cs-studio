@@ -481,10 +481,21 @@ public class ExportView extends PlotAwareView
                 return;
             }
         }
-        Job job = new ExportJob(model, start, end, source, format,
-                                format_spreadsheet.getSelection(),
-                                format_severity.getSelection(),
-                                filename_txt.getText());
+        int prec;
+        try
+        {
+            prec = Integer.parseInt(precision.getText());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            prec = 0;
+        }
+        Job job = new ExportJob(model, start, end, source,
+                        format_spreadsheet.getSelection(),
+                        format_severity.getSelection(),
+                        format, prec,
+                        filename_txt.getText());
         job.schedule();
     }
 }

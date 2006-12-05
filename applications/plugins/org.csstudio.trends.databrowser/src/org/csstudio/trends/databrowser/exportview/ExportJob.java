@@ -4,10 +4,13 @@
 package org.csstudio.trends.databrowser.exportview;
 
 import java.io.PrintWriter;
+import java.text.NumberFormat;
 import java.util.Iterator;
 
 import org.csstudio.archive.ArchiveServer;
+import org.csstudio.archive.EnumSample;
 import org.csstudio.archive.Sample;
+import org.csstudio.archive.StringSample;
 import org.csstudio.archive.cache.ArchiveCache;
 import org.csstudio.archive.crawl.RawSampleIterator;
 import org.csstudio.archive.crawl.SampleIterator;
@@ -42,9 +45,10 @@ class ExportJob extends Job
         Default, Decimal, Exponential
     };
     private final Source source;
-    private final Format format;
     private final boolean format_spreadsheet;
     private final boolean format_severity;
+    private final Format format;
+    private final int precision;
 
     private final String filename;
     
@@ -59,9 +63,10 @@ class ExportJob extends Job
     public ExportJob(Model model,
                     ITimestamp start, ITimestamp end,
                     Source source,
-                    Format format,
                     boolean format_spreadsheet,
                     boolean format_severity,
+                    Format format,
+                    int precision,
                     String filename)
     {
         super(Messages.ExportJobTitle);
@@ -69,9 +74,10 @@ class ExportJob extends Job
         this.start = start;
         this.end = end;
         this.source = source;
-        this.format = format;
         this.format_spreadsheet = format_spreadsheet;
         this.format_severity = format_severity;
+        this.format = format;
+        this.precision = precision;
         this.filename = filename;
     }
 
@@ -230,10 +236,41 @@ class ExportJob extends Job
         return line_count;
     }
     
-    /** Format one value, maybe with severity/status info. */
+    /** Format one value, according to the format/precision settings,
+     *  maybe with severity/status info.
+     */
     private String formatValue(Sample sample)
     {
-        String value = (sample == null) ? Messages.NoDataMarker : sample.format();
+        String value;
+        if (sample == null)
+            value = Messages.NoDataMarker;
+        else
+        {
+            if (format == Format.Default  ||
+                sample instanceof StringSample || sample instanceof EnumSample)
+            {
+                value = sample.format();
+            }
+            else
+            {
+                final double number = SampleUtil.getDouble(sample);
+                if (Double.isInfinite(number))
+                    value = Messages.NoDataMarker;
+                else if (format == Format.Decimal)
+                {
+                    NumberFormat fmt = NumberFormat.getNumberInstance();
+                    fmt.setMinimumFractionDigits(precision);
+                    fmt.setMaximumFractionDigits(precision);
+                    value = fmt.format(number);
+                }
+                else // format == Format.Exponential
+                {
+                    final String fmt = "%." + precision + "e"; //$NON-NLS-1$//$NON-NLS-2$
+                    value = String.format(fmt, number);
+                }
+            }
+        }
+        // value is set, maybe add severity/status.
         if (format_severity)
         {
             String info = (sample == null) ? "" : SampleUtil.getInfo(sample); //$NON-NLS-1$
