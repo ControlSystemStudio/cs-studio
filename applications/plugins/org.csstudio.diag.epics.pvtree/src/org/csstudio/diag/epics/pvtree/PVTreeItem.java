@@ -6,10 +6,9 @@ package org.csstudio.diag.epics.pvtree;
 import java.util.ArrayList;
 
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.utility.pv.EPICS_V3_PV;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.PVValue;
+import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.widgets.Display;
 
@@ -75,7 +74,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             try
             {
-                value = PVValue.toString(pv.getValue());
+                value = pv.getValue().toString();
                 severity_code = pv.getSeverityCode();
                 if (severity_code != 0)
                     value = value + " [" + pv.getSeverity() + "]";
@@ -99,7 +98,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             try
             {
-                type = PVValue.toString(pv.getValue());
+                type = pv.getValue().toString();
                 updateType();
             }
             catch (Exception e)
@@ -121,7 +120,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             try
             {
-                link_value = PVValue.toString(pv.getValue());
+                link_value = pv.getValue().toString();
                 // The value could be
                 // a) a record name followed by "... NPP NMS". Remove that.
                 // b) a hardware input/output "@... " or "#...". Keep that.

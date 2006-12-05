@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.model;
 import java.util.ArrayList;
 
 import org.csstudio.archive.ArchiveSamples;
+import org.csstudio.archive.MetaData;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
@@ -10,9 +11,11 @@ import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.xml.DOMHelper;
 import org.csstudio.util.xml.XMLHelper;
-import org.csstudio.utility.pv.EPICS_V3_PV;
+import org.csstudio.utility.pv.NumericValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
+import org.csstudio.utility.pv.Value;
+import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
@@ -65,7 +68,7 @@ public class ModelItem
      *  <p>
      *  Read from the GUI thread, updated from a PV monitor thread.
      */
-    private volatile Object current_value;
+    private volatile Value current_value;
     /** synchronize on 'this'!
      *  @see current_value.
      */
@@ -78,6 +81,10 @@ public class ModelItem
      *  @see current_value.
      */
     private volatile String current_status;
+    /** synchronize on 'this'!
+     *  @see current_value.
+     */
+    private volatile MetaData current_metadata;
     
     /** Where to get archived data for this item. */
     private ArrayList<IArchiveDataSource> archives
@@ -474,6 +481,7 @@ public class ModelItem
         synchronized (this)
         {
             current_value = null;
+            current_metadata = null;
         }
     }
 
@@ -494,6 +502,9 @@ public class ModelItem
                 current_severity = pv.getSeverity();
                 current_status = pv.getStatus();
             }
+            // Get MetaData, but only once after a connection
+            if (current_metadata == null  &&  current_value != null)
+                current_metadata = MetaDataUtil.forValue(current_value);
         }
     }
 
@@ -506,21 +517,29 @@ public class ModelItem
             if (current_value == null)
                 samples.markCurrentlyDisconnected(now);
             else
+            {
                 samples.addLiveSample(now,
                               current_value,
                               current_severity_code, current_severity,
-                              current_status);
-            if (! units.equals(pv.getUnits()))
-            {
-                units = pv.getUnits();
-                // Notify model of change, but in the UI thread
-                Display.getDefault().asyncExec(new Runnable()
+                              current_status, current_metadata);
+                if (current_value instanceof NumericValue)
                 {
-                    public void run()
+                    String new_units = 
+                        ((org.csstudio.utility.pv.NumericMetaData)
+                                           current_value.getMeta()).getUnits();
+                    if (! units.equals(new_units))
                     {
-                        model.fireEntryLookChanged(ModelItem.this);
+                        units = new_units;
+                        // Notify model of change, but in the UI thread
+                        Display.getDefault().asyncExec(new Runnable()
+                        {
+                            public void run()
+                            {
+                                model.fireEntryLookChanged(ModelItem.this);
+                            }
+                        });
                     }
-                });
+                }
             }
         }
     }

@@ -4,7 +4,7 @@ import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVListEntry;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVValue;
+import org.csstudio.utility.pv.Value;
 
 
 /** Helper for creating a table of PVListEntry rows.
@@ -75,7 +75,24 @@ public class PVTableHelper
         // else
 	    return getText(entry, id);
 	}
+    
+    /** @return String for PV's Value, handle all the <code>null</code>s. */
+    private static String getPVValueString(PV pv)
+    {
+        if (pv == null)
+            return ""; //$NON-NLS-1$
+        Value value = pv.getValue();
+        return getValueString(value);
+    }
 
+    /** @return String for PV's Value, handle all the <code>null</code>s. */
+    private static String getValueString(Value value)
+    {
+        if (value == null)
+            return ""; //$NON-NLS-1$
+        return value.toString();
+    }
+    
 	/** Get a data piece of the entry.
 	 * @param entry The PVListEntry.
 	 * @param item 0 for properties[0] piece etc.
@@ -94,21 +111,18 @@ public class PVTableHelper
                 ITimestamp time = entry.getPV().getTime();            	
                 return (time == null) ? "" : time.toString(); //$NON-NLS-1$
             case VALUE:
-                return PVValue.toString(entry.getPV().getValue());
+                return getPVValueString(entry.getPV());
             case SAVED_VALUE:
-                return PVValue.toString(entry.getSavedValue());
+                return getValueString(entry.getSavedValue());
             case READBACK:
                 pv = entry.getReadbackPV();
                 if (pv == null)
                     return ""; //$NON-NLS-1$
                 return pv.getName();
             case READBACK_VALUE:
-                pv = entry.getReadbackPV();
-                if (pv == null)
-                    return ""; //$NON-NLS-1$
-                return PVValue.toString(pv.getValue());
+                getPVValueString(entry.getReadbackPV());
             case SAVED_READBACK:
-                return PVValue.toString(entry.getSavedReadbackValue());
+                return getValueString(entry.getSavedReadbackValue());
             }
 		}
 		catch (Exception e)

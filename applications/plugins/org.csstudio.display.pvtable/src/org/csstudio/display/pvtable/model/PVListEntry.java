@@ -2,6 +2,7 @@ package org.csstudio.display.pvtable.model;
 
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.Value;
 
 /** Interface to one entry in the PVListModel.
  * 
@@ -31,11 +32,11 @@ public interface PVListEntry extends IProcessVariable
     public PV getPV();
 
     /** @return Returns the saved_value. */
-    public Object getSavedValue();    
+    public Value getSavedValue();    
 
     /** @return Returns the readback PV. */
     public PV getReadbackPV();
 
     /** @return Returns the saved readback value. */
-    public Object getSavedReadbackValue();
+    public Value getSavedReadbackValue();
 }

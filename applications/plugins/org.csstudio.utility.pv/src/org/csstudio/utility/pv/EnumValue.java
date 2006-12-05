@@ -6,34 +6,47 @@ package org.csstudio.utility.pv;
  *  and the corresponding string.
  *  @author Kay Kasemir
  */
-public class EnumValue
+public class EnumValue implements Value
 {
-    private int value;
-    private String text;
-    
-    static EnumValue fromData(final int value, final String strings[])
-    {
-        if (strings == null  ||  value < 0  ||  value >= strings.length)
-            return new EnumValue(value,
-                            "<" + Integer.toString(value) + ">");  //$NON-NLS-1$//$NON-NLS-2$
-        return new EnumValue(value, strings[value]);
-    }
+    private final EnumeratedMetaData meta;
+    private final int value;
     
     /** Constructor
+     *  @param meta Meta data for this value.
      *  @param value Numeric value
-     *  @param text String representation
      */
-    public EnumValue(final int value, final String text)
+    public EnumValue(final EnumeratedMetaData meta, final int value)
     {
+        this.meta = meta;
         this.value = value;
-        this.text = text;
+    }
+
+    public double toDouble()
+    {   return value;    }
+
+    public int toInt()
+    {   return value;    }
+
+    public String toString()
+    {   return meta.getState(value);  }
+    
+    public MetaData getMeta()
+    {   return meta;    }
+    
+    public boolean match(Value other, double tolerance)
+    {
+        if (other != null  &&  other instanceof EnumValue)
+            return ((EnumValue)other).value == value;
+        return false;
     }
     
-    /** @return the numeric (positive integer) value */
-    public int getValue()
-    {   return value; }
-    
-    /** @return the string representation */
-    public String toString()
-    {   return text;  }
+    public int compareTo(Value other)
+    {
+        int diff = value - other.toInt();
+        if (diff < 0)
+            return -1;
+        if (diff > 0)
+            return 1;
+        return 0;
+    }
 }

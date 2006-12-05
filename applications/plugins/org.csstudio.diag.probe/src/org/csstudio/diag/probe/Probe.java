@@ -7,10 +7,9 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.utility.pv.EPICS_V3_PV;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.PVValue;
+import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -319,7 +318,7 @@ public class Probe extends ViewPart implements PVListener
             return;
         try
         {
-            value = PVValue.toString(pv.getValue());
+            value = pv.getValue().toString();
             ITimestamp new_time = pv.getTime();
             if (time != null)
             {

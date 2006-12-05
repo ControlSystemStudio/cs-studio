@@ -37,46 +37,21 @@ public interface PV
     /** Stop the PV: disconnect, ... */
     public void stop();
 
-    /** The engineering units description.
-     *  <p>
-     *  Part of the meta information obtained during the initial
-     *  connection cycle.
-     *  Should be valid when <code>isConnected</code>.
-     *  Will stay at its last value on disconnect.
-     *  @return The units string.
-     *  @see #getPrecision()
-     */
-    public String getUnits();
-    
-    /** Display precision, i.e. number of digits after the decimal point.
-     *  @return The suggested display precision.
-     *  @see #getUnits()
-     */
-    public int getPrecision();
-    
     /** Get the value.
      *  <p>
      *  This is the most recent value.
      *  Check isConnected() to see if this is valid,
      *  or use inside a PV listener's value update.
-     *  <p>
-     *  The value should be one of these types:
-     *  <ul>
-     *  <li><code>Double</code>
-     *  <li><code>String</code>
-     *  <li><code>Integer</code>
-     *  <li><code>EnumValue</code>
-     *  </ul>
-     *  So except for the last one, ordinary Java types.
-     *  <p>
      *  
      *  @see PVListener
      *  @see #isConnected()
-     *  @return Returns the most recent value.
+     *  @return Returns the most recent value. Might be <code>null</code>!
      */
-    public Object getValue();
+    public Value getValue();
 
-    /** Set PV to given value. */
+    /** Set PV to given value.
+     *  Should accept Double, String, maybe more.
+     */
     public void setValue(Object new_value);
     
     /** @return Returns the last time stamp. */

@@ -1,7 +1,7 @@
 package org.csstudio.display.pvtable.ui;
 
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVValue;
+import org.csstudio.utility.pv.Value;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
@@ -78,26 +78,14 @@ public class PVTableSorter extends ViewerSorter
 	// Example: v1 > v2 --> positive
 	private int compareValues(PV pv1, PV pv2)
 	{
-		Object v1 = pv1.getValue();
-		Object v2 = pv2.getValue();
+		Value v1 = pv1.getValue();
+        Value v2 = pv2.getValue();
 		// Handle null
 		if (v1 == null)
 			return (v2 == null) ? 0 : -1;
 		if (v2 == null)
 			return 1;
-		// If one string is involved, compare as strings.
-		if (v1 instanceof String  ||  v2 instanceof String)
-			return v1.toString().compareTo(v2.toString());
-		try
-		{
-			double diff = PVValue.toDouble(v1) - PVValue.toDouble(v2);
-			if (diff > 0.0)
-				return 1;
-			return -1;
-		}
-		catch (Exception e) {}
-		// Default: same number or cannot parse number...
-		return 0;
+        return v1.compareTo(v2);
 	}	
 
 	private int compareConnection(PV pv1, PV pv2)

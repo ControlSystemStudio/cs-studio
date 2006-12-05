@@ -2,7 +2,6 @@ package org.csstudio.trends.databrowser.configview;
 
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.ModelItem;
-import org.csstudio.utility.pv.PVValue;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -80,7 +79,7 @@ public class PVTableCellModifier implements ICellModifier
             
             if (id == PVTableHelper.NAME && value != null)
             {
-                entry.changeName(PVValue.toString(value));
+                entry.changeName(value.toString());
             }
             else if (id == PVTableHelper.COLOR && value != null)
             {
@@ -89,22 +88,22 @@ public class PVTableCellModifier implements ICellModifier
             }
             else if (id == PVTableHelper.MIN && value != null)
             {
-                double new_limit = PVValue.toDouble(value);
+                double new_limit = Double.valueOf(value.toString());
                 entry.setAxisLow(new_limit);
             }
             else if (id == PVTableHelper.MAX && value != null)
             {
-                double new_limit = PVValue.toDouble(value);
+                double new_limit = Double.valueOf(value.toString());
                 entry.setAxisHigh(new_limit);
             }
             else if (id == PVTableHelper.AXIS && value != null)
             {
-                int new_axis = PVValue.toInt(value);
+                int new_axis = Integer.valueOf(value.toString());
                 entry.setAxisIndex(new_axis);
             }
             else if (id == PVTableHelper.LINEWIDTH && value != null)
             {
-                int new_width = PVValue.toInt(value);
+                int new_width = Integer.valueOf(value.toString());
                 entry.setLineWidth(new_width);
             }
             else if (id == PVTableHelper.TYPE && value != null)

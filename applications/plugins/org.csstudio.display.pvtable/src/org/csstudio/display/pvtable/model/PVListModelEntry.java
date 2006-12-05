@@ -1,9 +1,10 @@
 package org.csstudio.display.pvtable.model;
 
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.utility.pv.EPICS_V3_PV;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
+import org.csstudio.utility.pv.Value;
+import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.core.runtime.PlatformObject;
 
 /** Implementation of the PVListEntry as used by the PVListModel.
@@ -15,14 +16,14 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
 {
     private boolean selected;
     private PV pv, readback_pv;
-    private Object saved_value, saved_readback_value;
+    private Value saved_value, saved_readback_value;
     private int new_values;
     private PVListener pv_listener;
 
     /** Create new entry from pieces. */
     public PVListModelEntry(boolean selected, 
-            String pv_name, Object saved_value,
-            String readback_name, Object readback_value)
+            String pv_name, Value saved_value,
+            String readback_name, Value readback_value)
     {
         this.selected = selected;
         this.pv = new EPICS_V3_PV(pv_name);
@@ -66,13 +67,13 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
     public PV getPV()
     {   return pv; }
 
-    public Object getSavedValue()
+    public Value getSavedValue()
     {   return saved_value; }
 
     public PV getReadbackPV()
     {   return readback_pv; }
 
-    public Object getSavedReadbackValue()
+    public Value getSavedReadbackValue()
     {   return saved_readback_value; }
 
     /** Mark entry as disposed. */

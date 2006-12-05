@@ -1,4 +1,4 @@
-package org.csstudio.utility.pv;
+package org.csstudio.utility.pv.epics;
 
 import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
@@ -29,6 +29,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.utility.pv.DoubleValue;
+import org.csstudio.utility.pv.EnumValue;
+import org.csstudio.utility.pv.EnumeratedMetaData;
+import org.csstudio.utility.pv.IntegerValue;
+import org.csstudio.utility.pv.MetaData;
+import org.csstudio.utility.pv.NumericMetaData;
+import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVListener;
+import org.csstudio.utility.pv.StringValue;
+import org.csstudio.utility.pv.Value;
 
 /**
  * EPICS ChannelAccess implementation of the PV interface.
@@ -170,16 +180,7 @@ public class EPICS_V3_PV
     /** Assert that we only subscribe once. */
     private volatile boolean was_connected;
 
-    // Meta data
-    
-    /** The unit description. */
-    private String units;
-    
-    /** The display precision. */
-    private int precision;
-
-    /** Labels used for enumerated values, or null. */
-    private String enum_labels[];
+    private MetaData meta = null;
 
     // The most recent 'live' data
     
@@ -187,7 +188,7 @@ public class EPICS_V3_PV
     private volatile ITimestamp time = null;
 
     /** Most recent value. */
-    private volatile Object value = null;
+    private volatile Value value = null;
 
     /** Most recent severity code. */
     private volatile int severity = 0;
@@ -213,23 +214,14 @@ public class EPICS_V3_PV
     {
         this.name = name;
         this.plain = plain;
-        clearMetaData();
     }
 
-    /** Reset meta data to zero/nothing/empty. */
-    private void clearMetaData()
-    {
-        units = ""; //$NON-NLS-1$
-        precision = 0;
-        enum_labels = null;
-    }
- 
     /** @return Returns the name. */
     public String getName()
     {   return name;  }
 
     /** @return Returns the value. */
-    public Object getValue()
+    public Value getValue()
     {   return value;  }
     
     public void addListener(PVListener listener)
@@ -312,12 +304,6 @@ public class EPICS_V3_PV
         fireDisconnected();
     }
     
-    public String getUnits()
-    {   return units; }
-
-    public int getPrecision()
-    {   return precision; }
-    
     /** Set PV to given value. */
     public void setValue(Object new_value)
     {
@@ -330,8 +316,18 @@ public class EPICS_V3_PV
                 channel_ref.getChannel().put((String)new_value);
             else
             {   // other types as double.
-                double val = PVValue.toDouble(new_value);
-                channel_ref.getChannel().put(val);
+                if (new_value instanceof Double)
+                {
+                    double val = ((Double)new_value).doubleValue();
+                    channel_ref.getChannel().put(val);
+                }
+                else if (new_value instanceof Integer)
+                {
+                    double val = ((Integer)new_value).intValue();
+                    channel_ref.getChannel().put(val);
+                }
+                else throw new Exception("Cannot handle type "
+                                + new_value.getClass().getName());
             }
             // TODO: Delay the flush for multiple 'setValue' calls?
             // this applies to all the flushIO() calls in here...
@@ -416,7 +412,7 @@ public class EPICS_V3_PV
         // Meta info is not requested, not available for this type,
         // or there was an error in the get call.
         // So reset it, then just move on to the subscription.
-        clearMetaData();
+        meta = null;
         subscribe();
     }
 
@@ -429,32 +425,26 @@ public class EPICS_V3_PV
             if (dbr.isLABELS())
             {
                 DBR_LABELS_Enum labels = (DBR_LABELS_Enum)dbr;
-                enum_labels = labels.getLabels();
+                meta = new EnumeratedMetaData(labels.getLabels());
                 if (debug)
-                {
-                    System.out.println("Channel '" + name + "' got meta info:");
-                    for (int i = 0; i < enum_labels.length; ++i)
-                        System.out.println("State " + i
-                                           + " = " + enum_labels[i]);
-                }
+                    System.out.println("Channel '" + name + "' got meta:"
+                                    + meta);
             }
             else if (dbr instanceof DBR_CTRL_Double)
             {
                 DBR_CTRL_Double ctrl = (DBR_CTRL_Double)dbr;
-                units = ctrl.getUnits();
-                precision = ctrl.getPrecision();
+                meta = new NumericMetaData(ctrl.getPrecision(), ctrl.getUnits());
                 if (debug)
-                    System.out.println("Channel '" + name + "' got meta info\n"
-                                    + "Units    : '" + units + "'\n"
-                                    + "Precision: " + precision);
+                    System.out.println("Channel '" + name + "' got meta:"
+                                    + meta);
             }
             else if (dbr instanceof DBR_CTRL_Short)
             {
                 DBR_CTRL_Short ctrl = (DBR_CTRL_Short)dbr;
-                units = ctrl.getUnits();
+                meta = new NumericMetaData(0, ctrl.getUnits());
                 if (debug)
-                    System.out.println("Channel '" + name + "' got meta info\n"
-                                    + "Units    : '" + units);
+                    System.out.println("Channel '" + name + "' got meta:"
+                                    + meta);
             }
             else
             {
@@ -542,7 +532,7 @@ public class EPICS_V3_PV
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getDoubleValue();
                     }
-                    value = new Double(v[0]);
+                    value = new DoubleValue((NumericMetaData)meta, v[0]);
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': double value " + value);
@@ -560,7 +550,7 @@ public class EPICS_V3_PV
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getShortValue();
                     }
-                    value = new Integer(v[0]);
+                    value = new IntegerValue((NumericMetaData)meta, v[0]);
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': short value " + value);
@@ -578,7 +568,7 @@ public class EPICS_V3_PV
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getStringValue();
                     }
-                    value = v[0];
+                    value = new StringValue(v[0]);
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': string value " + value);
@@ -593,7 +583,7 @@ public class EPICS_V3_PV
                     status = dt.getStatus().getName();
                     time = createTimeFromEPICS(dt.getTimeStamp());
                     v = dt.getEnumValue();
-                    value = EnumValue.fromData((int) v[0], enum_labels);
+                    value = new EnumValue((EnumeratedMetaData)meta, (int) v[0]);
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': enum value " + value);

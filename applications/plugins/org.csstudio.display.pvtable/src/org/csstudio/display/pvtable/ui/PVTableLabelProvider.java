@@ -4,7 +4,6 @@ import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVListEntry;
 import org.csstudio.display.pvtable.model.PVListModel;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVValue;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -122,7 +121,7 @@ public class PVTableLabelProvider extends LabelProvider implements
             pv = entry.getPV();
             if (pv == null  || ! pv.isConnected())
                 return false;
-            if (PVValue.match(pv.getValue(), entry.getSavedValue(), tolerance))
+            if (pv.getValue().match(entry.getSavedValue(), tolerance))
                 return false;
             return true;
         case PVTableHelper.READBACK_VALUE:
@@ -130,7 +129,7 @@ public class PVTableLabelProvider extends LabelProvider implements
             pv = entry.getReadbackPV();
             if (pv == null  || ! pv.isConnected())
                 return false;
-            if (PVValue.match(pv.getValue(), entry.getSavedReadbackValue(), tolerance))
+            if (pv.getValue().match(entry.getSavedReadbackValue(), tolerance))
                 return false;
             return true;
         }

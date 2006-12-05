@@ -7,6 +7,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.csstudio.util.xml.DOMHelper;
+import org.csstudio.utility.pv.StringValue;
+import org.csstudio.utility.pv.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -136,7 +138,7 @@ public class PVListModel
 
     /** Add PV without checking for duplicates and without informing listeners. */
     private PVListModelEntry silentlyAddPV(boolean selected, String pv_name,
-            Object saved_value, String readback_name, Object readback_value)
+            Value saved_value, String readback_name, Value readback_value)
     {
         PVListModelEntry entry = new PVListModelEntry(selected,
                 pv_name, saved_value,
@@ -281,7 +283,9 @@ public class PVListModel
                     if (readback_value.length() < 1)
                         readback_value = null;
                     silentlyAddPV(selected,
-                            name, saved_value, readback_name, readback_value);
+                            name, new StringValue(saved_value),
+                            readback_name,
+                            new StringValue(readback_value));
                     pv = DOMHelper.findNextElementNode(pv, "pv");
                 }
             }
