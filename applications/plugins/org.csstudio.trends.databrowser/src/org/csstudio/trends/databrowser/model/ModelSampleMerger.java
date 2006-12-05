@@ -1,6 +1,5 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.swt.chart.ChartSampleSearch;
 
@@ -29,10 +28,10 @@ public class ModelSampleMerger
             return old;
         // Both lists have at least one sample.
         // Determine start/end times.
-        ITimestamp old_start = TimestampUtil.fromDouble(old.get(0).getX());
-        ITimestamp old_end = TimestampUtil.fromDouble(old.get(old.size()-1).getX());
-        ITimestamp add_start = TimestampUtil.fromDouble(add.get(0).getX());
-        ITimestamp add_end = TimestampUtil.fromDouble(add.get(add.size()-1).getX());
+        ITimestamp old_start = old.get(0).getSample().getTime();
+        ITimestamp old_end = old.get(old.size()-1).getSample().getTime();
+        ITimestamp add_start = add.get(0).getSample().getTime();
+        ITimestamp add_end = add.get(add.size()-1).getSample().getTime();
 
         /*
         System.out.print("Have samples " + old_start.toString());
