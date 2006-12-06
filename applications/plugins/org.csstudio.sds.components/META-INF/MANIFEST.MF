@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Components Plug-in
+Bundle-SymbolicName: org.csstudio.sds.components;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.sds.components.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.sds,
+ org.eclipse.draw2d
+Eclipse-LazyStart: true
+Export-Package: org.csstudio.sds.components.internal.model;x-friends:="org.csstudio.sds.components.ui"

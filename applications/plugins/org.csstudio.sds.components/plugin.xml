@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.csstudio.sds.modelElementFactories">
+      <modelElementFactory
+            class="org.csstudio.sds.components.internal.model.RectangleElementFactory"
+            description="Rectangle"
+            icon="icons/rectangle.gif"
+            name="Rectangle"
+            typeId="element.rectangle"/>
+      <modelElementFactory
+            class="org.csstudio.sds.components.internal.model.EllipseElementFactory"
+            description="Ellipse"
+            icon="icons/ellipse.gif"
+            name="Ellipse"
+            typeId="element.ellipse"/>
+      <modelElementFactory
+            class="org.csstudio.sds.components.internal.model.MeterElementFactory"
+            description="Meter"
+            icon="icons/meter.gif"
+            name="Meter"
+            typeId="element.meter"/>
+      <modelElementFactory
+            class="org.csstudio.sds.components.internal.model.LabelElementFactory"
+            description="Label"
+            icon="icons/label.gif"
+            name="Label"
+            typeId="element.label"/>
+      <modelElementFactory
+            class="org.csstudio.sds.components.internal.model.PolygonElementFactory"
+            description="Polygon"
+            icon="icons/polygon.gif"
+            name="Polygon"
+            typeId="element.polygon"/>
+   </extension>
+
+</plugin>

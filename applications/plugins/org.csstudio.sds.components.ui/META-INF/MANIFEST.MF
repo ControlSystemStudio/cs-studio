@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui Plug-in
+Bundle-SymbolicName: org.csstudio.sds.components.ui;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.sds.components.ui.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.sds.ui,
+ org.csstudio.sds.components,
+ org.eclipse.gef
+Eclipse-LazyStart: true

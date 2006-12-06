@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <extension
+        point="org.csstudio.sds.ui.sdsEditParts">
+     <sdsEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.RectangleEditPart"
+           typeId="element.rectangle"/>
+     <sdsEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.EllipseEditPart"
+           typeId="element.ellipse"/>
+     <sdsEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.MeterEditPart"
+           typeId="element.meter"/>
+     <sdsEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.LabelEditPart"
+           typeId="element.label"/>
+     <sdsEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.PolygonEditPart"
+           typeId="element.polygon"/>
+  </extension>
+</plugin>
