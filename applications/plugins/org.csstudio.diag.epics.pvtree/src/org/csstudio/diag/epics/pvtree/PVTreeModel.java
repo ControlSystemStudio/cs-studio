@@ -71,6 +71,8 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     {
         if (root != null)
         {
+            if (PVTreeItem.debug)
+                System.out.println("PVTreeModel disposed"); //$NON-NLS-1$
             root.dispose();
             root = null;
         }

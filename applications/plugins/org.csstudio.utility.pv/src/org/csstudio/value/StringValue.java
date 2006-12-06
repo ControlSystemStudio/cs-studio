@@ -29,7 +29,7 @@ public class StringValue extends Value
 	public String format()
 	{
 		if (getSeverity().hasValue())
-            return Messages.StringDelimiter + value + Messages.StringDelimiter;
+            return value;
 		else
 			return Messages.NoValue;
 	}

@@ -10,7 +10,7 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.csstudio.value.Severity;
-import org.csstudio.value.Value;
+import org.csstudio.value.ValueUtil;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.widgets.Display;
 
@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Display;
  */
 class PVTreeItem extends PlatformObject implements IProcessVariable
 {
-    private static final boolean debug = false;
+    static final boolean debug = false;
     
     @SuppressWarnings("nls")
     private static final String input_types[] =
@@ -42,23 +42,23 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     // "event", "histogram", "permissive", "sel", "seq", "state",
    
    /** The model to which this whole tree belongs. */
-    private PVTreeModel model;
+    private final PVTreeModel model;
 
     /** The parent of this item, or <code>null</code>. */
-    private PVTreeItem parent;
+    private final PVTreeItem parent;
 
     /** The info provided by the parent or creator ("PV", "INPA", ...) */
-    private String info;
+    private final String info;
 
     /** The name of this PV tree item as shown in the tree. */
-    private String pv_name;
+    private final String pv_name;
 
     /** The name of the record.
      *  <p>
      *  For example, the 'name' could be 'fred.SEVR', then 'fred'
      *  would be the record name.
      */
-    private String record_name;
+    private final String record_name;
     
     /** The PV used for getting the current value. */
     private PV pv;
@@ -82,11 +82,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             try
             {
-                Value v = pv.getValue();
-                value = v.format();
-                severity = v.getSeverity();
-                if (!severity.isOK())
-                    value = value + " [" + severity.toString() + "]";
+                value = ValueUtil.formatValueAndSeverity(pv.getValue());
                 updateValue();
             }
             catch (Exception e)
@@ -107,7 +103,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             try
             {
-                type = pv.getValue().toString();
+                type = pv.getValue().format();
                 updateType();
             }
             catch (Exception e)
@@ -129,7 +125,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             try
             {
-                link_value = pv.getValue().toString();
+                link_value = pv.getValue().format();
                 // The value could be
                 // a) a record name followed by "... NPP NMS". Remove that.
                 // b) a hardware input/output "@... " or "#...". Keep that.
@@ -233,7 +229,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         disposeLinkPV();
         disposeTypePV();
     }
-
+    
     private void disposeTypePV()
     {
         if (type_pv != null)
@@ -311,9 +307,8 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         if (value != null)
         {
-            b.append("  =  '");
+            b.append("  =  ");
             b.append(value);
-            b.append("'");
         }
         return b.toString();
     }
@@ -340,6 +335,9 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             public void run()
             {
+                // Already disposed?
+                if (type_pv == null)
+                    return;
                 // We got the type, so close the connection.
                 disposeTypePV();
                 // Display the received type of this record.
@@ -349,19 +347,22 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
                     // Read the calc or calcout's first input
                     getCalcInput(0);
                 else
-                {   // read INP or DOL
+                {   // read INP?
                     for (String typ : input_types)
                         if (type.equals(typ))
                         {
                             getLink(record_name + ".INP");
                             return;
                         }
+                    // read DOL?
                     for (String typ : output_types)
                         if (type.equals(typ))
                         {
                             getLink(record_name + ".DOL");
                             return;
                         }
+                    // Give up
+                    Plugin.logError("Unknown record type '" + type + "'");
                 }
             }
         });
@@ -403,6 +404,12 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             public void run()
             {
+                if (link_pv == null)
+                {
+                    if (debug)
+                        System.out.println(pv_name + " already disposed");
+                    return;
+                }
                 boolean is_output = link_pv.getName().endsWith("DOL");
                 disposeLinkPV();
                 boolean is_calc = type.startsWith("calc");

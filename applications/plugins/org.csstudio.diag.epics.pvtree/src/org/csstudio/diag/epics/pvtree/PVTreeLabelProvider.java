@@ -39,6 +39,8 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider
             return null;
         
         Severity severity = ((PVTreeItem)element).getSeverity();
+        if (severity == null)
+            return null;
         if (severity.isInvalid())
             return Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
         if (severity.isMajor())

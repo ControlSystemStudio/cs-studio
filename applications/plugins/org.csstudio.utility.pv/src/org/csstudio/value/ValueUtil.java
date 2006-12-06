@@ -69,18 +69,21 @@ public class ValueUtil
     }
     
     /** @return Non-<code>null</code> String for the value and its
-     *          severity/status info.
+     *          severity/status.
      *  @see Value#format()
      *  @see #getInfo(Value)
      */
-    public static String formatValueAndInfo(Value value)
+    public static String formatValueAndSeverity(Value value)
     {
         if (value == null)
             return ""; //$NON-NLS-1$
         String v = value.format();
-        String i = getInfo(value);
-        if (i != null && i.length() > 0)
-            return v + Messages.SevrStatSeparator + i;
-        return v;
+        if (value.getSeverity().isOK())
+            return v;
+        return v + Messages.ValueSevrStatSeparator
+               + value.getSeverity().toString()
+               + Messages.SevrStatSeparator
+               + value.getStatus()
+               + Messages.SevrStatEnd;
     }
 }

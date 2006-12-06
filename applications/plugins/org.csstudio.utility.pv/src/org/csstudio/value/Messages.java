@@ -12,8 +12,9 @@ package org.csstudio.value;
 public class Messages
 {
     public final static String ColumnSeperator = "\t";
+    public final static String ValueSevrStatSeparator = " [";
     public final static String SevrStatSeparator = " ";
+    public final static String SevrStatEnd = "]";
     public final static String ArrayElementSeparator = ", ";
-    public final static char StringDelimiter = '"';
     public final static String NoValue = "#N/A";
 }

@@ -49,7 +49,7 @@ import org.eclipse.ui.part.ViewPart;
 public class Probe extends ViewPart implements PVListener
 {
     public static final String ID = Probe.class.getName();
-    public static final boolean debug = true;
+    public static final boolean debug = false;
 
     // GUI
     private Text txt_name = null;
@@ -335,7 +335,7 @@ public class Probe extends ViewPart implements PVListener
         try
         {
             Value value = pv.getValue();
-            value_txt = ValueUtil.formatValueAndInfo(value);
+            value_txt = ValueUtil.formatValueAndSeverity(value);
             ITimestamp new_time = value.getTime();
             if (time != null)
             {

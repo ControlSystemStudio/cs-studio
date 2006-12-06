@@ -11,6 +11,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -38,11 +40,6 @@ public class PVTreeView extends ViewPart
     
     /** Allows 'zoom in' and then going back up via context menu. */
     private DrillDownAdapter drillDownAdapter;
-
-    /** Constructor. */
-    public PVTreeView()
-    {
-    }
 
     /** Update the tree with information for a newly entered PV name. */
     public void setPVName(String new_pv_name)
@@ -108,6 +105,15 @@ public class PVTreeView extends ViewPart
             }
         };
         
+        
+        // Stop the press when we're no more
+        pv_name.addDisposeListener(new DisposeListener()
+        {
+            public void widgetDisposed(DisposeEvent e)
+            {
+                model.dispose();
+            }
+        });
         hookContextMenu();
     }
 
@@ -127,7 +133,7 @@ public class PVTreeView extends ViewPart
 
     private void hookContextMenu()
     {
-        MenuManager menuMgr = new MenuManager("#PopupMenu");
+        MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener()
         {
