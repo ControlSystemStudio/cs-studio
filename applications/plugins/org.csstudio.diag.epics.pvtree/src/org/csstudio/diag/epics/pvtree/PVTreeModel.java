@@ -52,14 +52,19 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     /** Searches for item from given item on down. */
     private PVTreeItem findPV(String pv_name, PVTreeItem item)
     {
+        // Dead end?
         if (item == null)
             return null;
+        // Is it this one?
         if (item.getName().equals(pv_name))
             return item;
-        
+        // Check each child recursively
         for (PVTreeItem child : item.getLinks())
-            if (child.getName().equals(pv_name))
-                return child;
+        {
+            PVTreeItem found = findPV(pv_name, child);
+            if (found != null)
+                return found;
+        }
         return null;
     }
     

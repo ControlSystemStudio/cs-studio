@@ -160,31 +160,32 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             String info,
             String pv_name)
     {
-        if (debug)
-            System.out.println("New Tree item " + pv_name); //$NON-NLS-1$
         this.model = model;
         this.parent = parent;
         this.info = info;
         this.pv_name = pv_name;
         this.type = null;
         
-        // Split the record name off.
+        // In case this is "record.field", get the record name.
         int sep = pv_name.lastIndexOf('.');
         if (sep > 0)
             record_name = pv_name.substring(0, sep);
         else
             record_name = pv_name;
 
+        if (debug)
+        {
+            System.out.print("New Tree item '" + pv_name + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+            System.out.println(", record name '" + record_name + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
         // Avoid loops.
         // If the model already contains an entry with this name,
         // we simply display this new item, but we won't
         // follow its input links.
         PVTreeItem other = model.findPV(pv_name);
-
         // Now add this one, otherwise the previous call would have found 'this'.
         if (parent != null)
             parent.links.add(this);
-
         try
         {
             pv = new EPICS_V3_PV(pv_name);        
@@ -195,7 +196,6 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             e.printStackTrace();
         }
-        
         // Get type from 'other', previously used PV or via CA
         if (other != null)
         {
