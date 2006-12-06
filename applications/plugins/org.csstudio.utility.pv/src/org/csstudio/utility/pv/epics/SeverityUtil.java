@@ -73,7 +73,7 @@ public class SeverityUtil
     private static final Severity invalid = new Severity()
     {
         public boolean hasValue()
-        {   return false;  }
+        {   return true;  }
 
         public boolean isInvalid()
         {   return true;   }
