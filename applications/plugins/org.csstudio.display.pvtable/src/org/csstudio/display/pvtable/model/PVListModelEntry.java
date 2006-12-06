@@ -4,7 +4,6 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
-import org.csstudio.value.Value;
 import org.eclipse.core.runtime.PlatformObject;
 
 /** Implementation of the PVListEntry as used by the PVListModel.
@@ -16,14 +15,14 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
 {
     private boolean selected;
     private PV pv, readback_pv;
-    private Value saved_value, saved_readback_value;
+    private final SavedValue saved_value, saved_readback_value;
     private int new_values;
     private PVListener pv_listener;
 
     /** Create new entry from pieces. */
     public PVListModelEntry(boolean selected, 
-            String pv_name, Value saved_value,
-            String readback_name, Value readback_value)
+            String pv_name, SavedValue saved_value,
+            String readback_name, SavedValue readback_value)
     {
         this.selected = selected;
         this.pv = new EPICS_V3_PV(pv_name);
@@ -67,13 +66,13 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
     public PV getPV()
     {   return pv; }
 
-    public Value getSavedValue()
+    public SavedValue getSavedValue()
     {   return saved_value; }
 
     public PV getReadbackPV()
     {   return readback_pv; }
 
-    public Value getSavedReadbackValue()
+    public SavedValue getSavedReadbackValue()
     {   return saved_readback_value; }
 
     /** Mark entry as disposed. */
@@ -129,9 +128,8 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
     /** Save the current values of the PVs. */
     public void takeSnapshot()
     {
-        saved_value = pv.getValue();
-        if (readback_pv != null)
-            saved_readback_value = readback_pv.getValue();
+        saved_value.readFromPV(pv);
+        saved_readback_value.readFromPV(readback_pv);
     }
     
     /** Restore values from snapshot.
@@ -140,10 +138,8 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
     {
         if (!selected)
             return false;
-        if (saved_value != null)
-            pv.setValue(saved_value);
-        if (readback_pv != null && saved_readback_value != null)
-            readback_pv.setValue(saved_readback_value);
+        saved_value.restoreToPV(pv);
+        saved_readback_value.restoreToPV(readback_pv);
         return true;
     }
 
@@ -199,7 +195,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
         if (saved_value != null)
         {
             buf.append(" <saved_value>");
-            buf.append(formatValue(saved_value));
+            buf.append(saved_value);
             buf.append("</saved_value>");
         }
         if (readback_pv != null)
@@ -211,7 +207,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
         if (saved_readback_value != null)
         {
             buf.append(" <readback_value>");
-            buf.append(formatValue(saved_readback_value));
+            buf.append(saved_readback_value);
             buf.append("</readback_value>");
         }
         buf.append(" </pv>");
@@ -222,13 +218,5 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
     public String toString()
     {
         return toXML();
-    }
-    
-    /** @return value formated as String. */
-    private String formatValue(Value value)
-    {
-    	 if (value == null)
-             return ""; //$NON-NLS-1$
-         return value.format();
     }
 }

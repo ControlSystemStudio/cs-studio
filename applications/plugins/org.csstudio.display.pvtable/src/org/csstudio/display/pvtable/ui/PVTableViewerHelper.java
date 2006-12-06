@@ -121,8 +121,7 @@ public class PVTableViewerHelper
         table_viewer.setLabelProvider(new PVTableLabelProvider(pv_list));
         table_viewer.setContentProvider(
                 new PVTableLazyContentProvider(table_viewer, pv_list));
-        // + 1 for the final 'add new PV' row
-        table_viewer.setItemCount(pv_list.getEntryCount() + 1);
+        setTableViewerItemCount();
         
         // Allow editing.
         new PVTableCellModifier(table_viewer, pv_list);
@@ -159,8 +158,7 @@ public class PVTableViewerHelper
 
             public void entriesChanged()
             {
-                // '+1' for the final 'add new PV' row
-                table_viewer.setItemCount(getPVListModel().getEntryCount() + 1);
+                setTableViewerItemCount();
                 table_viewer.refresh();
             }
 
@@ -177,6 +175,17 @@ public class PVTableViewerHelper
             }
         };
         pv_list.addModelListener(listener);
+    }
+
+    /** Update the item count. */
+    private void setTableViewerItemCount()
+    {
+        // The +1 triggers the display of a final 'add new PV' row.
+        // But that doesn't work when the model is running:
+        // Any edit action is abruptly stopped when
+        // new values get displayed.
+        // Needs further though, for now disabled.
+        table_viewer.setItemCount(pv_list.getEntryCount() /* + 1 */);
     }
 
     /** Connect actions to the global 'Edit' menu. */

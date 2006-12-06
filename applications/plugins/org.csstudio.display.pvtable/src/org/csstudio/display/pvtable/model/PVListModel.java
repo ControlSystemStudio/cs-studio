@@ -6,12 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.util.xml.DOMHelper;
-import org.csstudio.value.DoubleValue;
-import org.csstudio.value.NumericMetaData;
-import org.csstudio.value.StringValue;
-import org.csstudio.value.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -133,15 +128,18 @@ public class PVListModel
             if (e.getPV().getName().equals(pv_name))
                 return;
         
-        PVListModelEntry entry = silentlyAddPV(true, pv_name, null, null, null);
+        PVListModelEntry entry = silentlyAddPV(true,
+                        pv_name, new SavedValue(),
+                        null, new SavedValue());
         if (isRunning)
             entry.start();
         fireEntryAdded(entry);
 	}
-
+    
     /** Add PV without checking for duplicates and without informing listeners. */
-    private PVListModelEntry silentlyAddPV(boolean selected, String pv_name,
-            Value saved_value, String readback_name, Value readback_value)
+    private PVListModelEntry silentlyAddPV(boolean selected, 
+                    String pv_name, SavedValue saved_value,
+                    String readback_name, SavedValue readback_value)
     {
         PVListModelEntry entry = new PVListModelEntry(selected,
                 pv_name, saved_value,
@@ -274,53 +272,15 @@ public class PVListModel
                     String sel_txt= DOMHelper.getSubelementString(pv, "selected");
                     boolean selected =
                         sel_txt.length() < 1  ||  sel_txt.equals("true");
-                    String name = DOMHelper.getSubelementString(pv, "name");
-                    String txt =
-                        DOMHelper.getSubelementString(pv, "saved_value");
-                    
-                    // Try to get the saved values as DoubleValues.
-                    // Fall back to StringValue.
-                    NumericMetaData meta = new NumericMetaData(
-                                    10, 0, 0, 0, 0, 0, -1, "");
-                    Value saved = null;
-                    if (txt.length() > 0)
-                    {
-                    	try
-	                    {
-	                    	saved = new DoubleValue(TimestampFactory.now(),
-                                            null, null, meta,
-                                            new double[]
-                                            { Double.parseDouble(txt) });
-	                    }
-	                    catch (Exception e)
-	                    {
-	                    	saved = new StringValue(TimestampFactory.now(),
-                                            null, null, txt);
-	                    }
-                    }
-                    
+                    String pv_name = DOMHelper.getSubelementString(pv, "name");
+                    SavedValue saved = SavedValue.fromString(
+                             DOMHelper.getSubelementString(pv, "saved_value"));
                     String readback_name =
                         DOMHelper.getSubelementString(pv, "readback");
-                  
-                    Value readback = null;
-                    txt = DOMHelper.getSubelementString(pv, "readback_value");
-                    if (txt.length() > 0)
-                    {
-                    	try
-                    	{
-	                    	readback = new DoubleValue(TimestampFactory.now(),
-                                            null, null, meta,
-                                            new double[]
-                                            { Double.parseDouble(txt) });
-	                    }
-	                    catch (Exception e)
-	                    {
-	                    	readback = new StringValue(TimestampFactory.now(),
-                                            null, null, txt);
-	                    }
-                    }
-                    silentlyAddPV(selected, name, saved,
-                            						readback_name, readback);
+                    SavedValue readback = SavedValue.fromString(
+                          DOMHelper.getSubelementString(pv, "readback_value"));
+                    silentlyAddPV(selected, pv_name, saved,
+                            	  readback_name, readback);
                     pv = DOMHelper.findNextElementNode(pv, "pv");
                 }
             }

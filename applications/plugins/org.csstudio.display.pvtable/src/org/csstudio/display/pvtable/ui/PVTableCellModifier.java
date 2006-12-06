@@ -97,7 +97,9 @@ public class PVTableCellModifier implements ICellModifier
             element = ((Item) element).getData();
         if (element == PVTableViewerHelper.empty_row)
         {
-            pv_list.addPV(value.toString());
+            String pv_name = value.toString();
+            if (pv_name.length() > 0)
+                pv_list.addPV(pv_name);
             return;
         }
         PVListEntry entry = (PVListEntry) element;

@@ -4,9 +4,6 @@ import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVListEntry;
 import org.csstudio.display.pvtable.model.PVListModel;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.value.StringValue;
-import org.csstudio.value.Value;
-import org.csstudio.value.ValueUtil;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -120,38 +117,10 @@ public class PVTableLabelProvider extends LabelProvider implements
                 return true;
             return false;
         case PVTableHelper.VALUE:
-            // Set value to red while it differs from the saved value
-            pv = entry.getPV();
-            if (pv == null  || ! pv.isConnected())
-                return false;
-            if (match(pv.getValue(), entry.getSavedValue(), tolerance))
-                return false;
-            return true;
+            return entry.getSavedValue().differ(entry.getPV(), tolerance);
         case PVTableHelper.READBACK_VALUE:
-            // Set saved readback value to red while it differs from the saved value
-            pv = entry.getReadbackPV();
-            if (pv == null  || ! pv.isConnected())
-                return false;
-            if (match(pv.getValue(), entry.getSavedReadbackValue(), tolerance))
-                return false;
-            return true;
+            return entry.getSavedReadbackValue().differ(entry.getReadbackPV(), tolerance);
         }
         return false;
-    }
-    
-    /** @return <code>true</code> if values match with given tolerance. */
-    private boolean match(Value a, Value b, double tolerance)
-    {
-        System.out.println("PV Table comparison: ");
-        System.out.println("Current:  " + a.getClass().getName() + " " + a);
-        System.out.println("Tolerance : " + tolerance);
-
-        if (a == null  ||  b == null)
-            return true;
-        if (a instanceof StringValue)
-            return a.format().equals(b.format());
-        double d1 = ValueUtil.getDouble(a);
-        double d2 = ValueUtil.getDouble(b);
-        return Math.abs(d1 - d2) <= tolerance;
     }
 }

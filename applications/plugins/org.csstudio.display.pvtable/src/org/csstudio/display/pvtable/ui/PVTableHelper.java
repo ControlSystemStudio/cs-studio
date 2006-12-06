@@ -82,12 +82,6 @@ public class PVTableHelper
         if (pv == null)
             return ""; //$NON-NLS-1$
         Value value = pv.getValue();
-        return getValueString(value);
-    }
-
-    /** @return String for PV's Value, handle all the <code>null</code>s. */
-    private static String getValueString(Value value)
-    {
         if (value == null)
             return ""; //$NON-NLS-1$
     	return value.format();
@@ -103,17 +97,22 @@ public class PVTableHelper
         PV pv;
 		try
         {
-			switch (item)
+            switch (item)
             {
             case NAME:
                 return entry.getPV().getName();
             case TIME:
-                ITimestamp time = entry.getPV().getValue().getTime();            	
+            {
+                Value value = entry.getPV().getValue();
+                if (value == null)
+                    return ""; //$NON-NLS-1$
+                ITimestamp time = value.getTime();            	
                 return (time == null) ? "" : time.toString(); //$NON-NLS-1$
+            }
             case VALUE:
                 return getPVValueString(entry.getPV());
             case SAVED_VALUE:
-                return getValueString(entry.getSavedValue());
+                return entry.getSavedValue().toString();
             case READBACK:
                 pv = entry.getReadbackPV();
                 if (pv == null)
@@ -122,7 +121,7 @@ public class PVTableHelper
             case READBACK_VALUE:
                 getPVValueString(entry.getReadbackPV());
             case SAVED_READBACK:
-                return getValueString(entry.getSavedReadbackValue());
+                return entry.getSavedReadbackValue().toString();
             }
 		}
 		catch (Exception e)
