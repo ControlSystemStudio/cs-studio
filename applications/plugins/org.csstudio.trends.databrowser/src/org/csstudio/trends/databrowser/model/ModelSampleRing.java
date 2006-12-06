@@ -1,7 +1,7 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.archive.Sample;
 import org.csstudio.swt.chart.ChartSampleSequence;
+import org.csstudio.value.Value;
 
 /** Synchronized circular buffer implementation of a <code>ChartSampleSequence</code>.
  *  @see ChartSampleSequence
@@ -56,7 +56,7 @@ public class ModelSampleRing
     }
     
     /** Add a new sample. */
-    synchronized public void add(Sample sample)
+    synchronized public void add(Value sample)
     {
         // Obtain index of next element
         if (++head >= real_capacity)

@@ -5,10 +5,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.csstudio.utility.pv.EnumValue;
-import org.csstudio.utility.pv.NumericMetaData;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
+import org.csstudio.value.EnumValue;
+import org.csstudio.value.NumericMetaData;
+import org.csstudio.value.Value;
 
 /** These tests require the 'excas' server from EPICS base,
  *  or (better) the soft-IOC database from lib/test.db.
@@ -33,10 +34,11 @@ public class PVTest extends TestCase
         public void pvValueUpdate(PV pv)
         {
             updates.addAndGet(1);
+            Value v = pv.getValue();
             System.out.println(name + ": "
                     + pv.getName() + ", "
-                    + pv.getTime().toString() + " "
-                    + pv.getValue());
+                    + v.getTime() + " "
+                    + v);
         }
 
         /** @see org.csstudio.pvtable.pv.PVListener#pvDisconnected(org.csstudio.pvtable.pv.PV) */
@@ -65,7 +67,7 @@ public class PVTest extends TestCase
         // Did we get anything?
         Assert.assertTrue(updates.get() > 2);
         // Meta info as expected?
-        NumericMetaData meta = (NumericMetaData)pv.getValue().getMeta();
+        NumericMetaData meta = (NumericMetaData)pv.getValue().getMetaData();
         Assert.assertEquals("furlong", meta.getUnits());
         Assert.assertEquals(4, meta.getPrecision());
         
@@ -131,8 +133,8 @@ public class PVTest extends TestCase
         Assert.assertTrue(pva.isConnected());
         Assert.assertTrue(pva.getValue() instanceof EnumValue);
         EnumValue e = (EnumValue) pva.getValue();
-        Assert.assertEquals(6, e.toInt());
-        Assert.assertEquals("1 second", e.toString());
+        Assert.assertEquals(6, e.getValue());
+        Assert.assertEquals("1 second", e.format());
         
         pva.stop();
     }

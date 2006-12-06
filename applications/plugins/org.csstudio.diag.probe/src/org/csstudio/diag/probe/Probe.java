@@ -10,6 +10,8 @@ import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
+import org.csstudio.value.Value;
+import org.csstudio.value.ValueUtil;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -18,6 +20,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -45,7 +49,7 @@ import org.eclipse.ui.part.ViewPart;
 public class Probe extends ViewPart implements PVListener
 {
     public static final String ID = Probe.class.getName();
-    public static final boolean debug = false;
+    public static final boolean debug = true;
 
     // GUI
     private Text txt_name = null;
@@ -58,7 +62,7 @@ public class Probe extends ViewPart implements PVListener
     /** The process variable that we monitor. */
     private PV pv = null;
     /** The most recent value of the PV. */
-    private String value = null;
+    private String value_txt = null;
     /** The most recent time stamp of the PV. */
     private ITimestamp time = null;
     /** Smoothed period in seconds between received values. */
@@ -150,7 +154,8 @@ public class Probe extends ViewPart implements PVListener
     private void createGUI(Composite parent)
     {
         if (Probe.debug)
-            System.out.println("swtInit: " + Thread.currentThread().toString()); //$NON-NLS-1$
+            System.out.println("createGUIProbe createGUI, "       //$NON-NLS-1$
+                            + Thread.currentThread().toString()); 
 
         GridLayout layout = new GridLayout();
         layout.numColumns = 3;
@@ -182,6 +187,13 @@ public class Probe extends ViewPart implements PVListener
                 {
                     setPVName(txt_name.getText());
                 }
+            }
+        });
+        txt_name.addDisposeListener(new DisposeListener()
+        {
+            public void widgetDisposed(DisposeEvent e)
+            {
+                disposeChannel();
             }
         });
         
@@ -270,11 +282,15 @@ public class Probe extends ViewPart implements PVListener
     public boolean setPVName(String name)
     {
         if (Probe.debug)
-            System.out.println("newChannel: " + Thread.currentThread().toString()); //$NON-NLS-1$
+            System.out.println("Probe setPVName," + Thread.currentThread().toString()); //$NON-NLS-1$
 
         // Update displayed name, unless it's already current
         if (! txt_name.getText().equals(name))
             txt_name.setText(name);
+        // Reset rest of GUI
+        lbl_value.setText("");  //$NON-NLS-1$
+        lbl_time.setText("");  //$NON-NLS-1$
+        time = null;
         
         // Close a previous channel
         disposeChannel();
@@ -312,14 +328,15 @@ public class Probe extends ViewPart implements PVListener
     public void pvValueUpdate(PV pv)
     {
         if (Probe.debug)
-            System.out.println("pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
+            System.out.println("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
         // We might receive events after the view is already disposed....
         if (lbl_value.isDisposed())
             return;
         try
         {
-            value = pv.getValue().toString();
-            ITimestamp new_time = pv.getTime();
+            Value value = pv.getValue();
+            value_txt = ValueUtil.formatValueAndInfo(value);
+            ITimestamp new_time = value.getTime();
             if (time != null)
             {
                 double period = new_time.toDouble() - time.toDouble();
@@ -335,8 +352,17 @@ public class Probe extends ViewPart implements PVListener
                 {   // Might run after the view is already disposed...
                     if (lbl_value.isDisposed())
                         return;
-                    lbl_value.setText(value);
-                    lbl_time.setText(time.toString());
+                    lbl_value.setText(value_txt);
+                    if (time == null)
+                        lbl_time.setText(""); //$NON-NLS-1$
+                    else
+                        lbl_time.setText(time.toString());
+
+                    if (Probe.debug)
+                        System.out.println("Probe displays " //$NON-NLS-1$
+                                        + lbl_time.getText()
+                                        + " " + lbl_value.getText()); //$NON-NLS-1$
+                    
                     if (value_period.get() > 0)
                         lbl_status.setText(Messages.S_Period
                                     + period_format.format(value_period.get())
@@ -357,78 +383,13 @@ public class Probe extends ViewPart implements PVListener
     {
         if (pv != null)
         {
+            if (debug)
+                System.out.println("Probe: disposeChannel " + pv.getName()); //$NON-NLS-1$
             pv.removeListener(this);
             pv.stop();
             pv = null;
         }
     }
-    
-    /** TODO: jca is for now not accessible
-     * Gets Property information
-     * @return info
-    public String getPropertyInfo() {
-        String info = "";
-        try {
-            String[] name = {"java.home", "java.runtime.name",
-                    "java.runtime.version", "java.library.path",
-                    "java.class.path", "os.name", "user.name", "user.home",};
-            for (int i = 0; i < name.length; i++) {
-                String value = jca.getProperty(name[i]);
-                String line = name[i] + ": " + value + "\n";
-                info += line;
-                // Echo the values (to find where Eclipse puts the SWT libraries)
-                boolean echo = false;
-                if (echo) {
-                    System.out.print(line);
-                }
-            }
-        } catch (Exception ex) {
-            info += "Get Property info failed: " + ex.getMessage() + "\n";
-        }
-        return info;
-    }
-     */
-
-    /** TODO: jca is for now not accessible
-     * Gets JCA Library information
-     * @return info
-    public String getLibraryInfo() {
-        String info = "";
-        try {
-            if (jca != null) {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                PrintStream ps = new PrintStream(baos);
-                jca.printInfo(ps);
-                ps.close();
-                info += baos.toString();
-            }
-        } catch (Exception ex) {
-            errMsg("Get JCA library info failed: " + ex.getMessage());
-            info += "Get JCA library info failed: " + ex.getMessage() + "\n";
-        }
-        return info;
-    }
-     */
-
-    /** TODO: jca is for now not accessible
-     * Gets Context information
-     * @return info
-    public String getContextInfo() {
-        String info = "";
-        try {
-            if (ctxt != null) {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                PrintStream ps = new PrintStream(baos);
-                ctxt.printInfo(ps);
-                ps.close();
-                info += baos.toString() + "\n";
-            }
-        } catch (Exception ex) {
-            info += "Get context info failed: " + ex.getMessage() + "\n";
-        }
-        return info;
-    }
-     */
 
     /** Updates the status bar with given string.
      *  <p>
@@ -442,11 +403,7 @@ public class Probe extends ViewPart implements PVListener
             {
                 public void run()
                 {
-                    if (Probe.debug)
-                        System.out.println("statusBar.setText: " //$NON-NLS-1$
-                                + Thread.currentThread().toString() + ": " + text); //$NON-NLS-1$
                     lbl_status.setText(text);
-                    time = null;
                 }
             });
         }
@@ -459,10 +416,6 @@ public class Probe extends ViewPart implements PVListener
     private void showInfo()
     {
         final String nl = "\n"; //$NON-NLS-1$
-        if (Probe.debug) {
-            System.out.println("infoButtonOnSelected: " //$NON-NLS-1$
-                    + Thread.currentThread().toString());
-        }
 
         StringBuffer info = new StringBuffer();
         if (pv == null)
@@ -491,9 +444,6 @@ public class Probe extends ViewPart implements PVListener
     /** Interactively adjust the PV's value. */
     private void adjustValue()
     {
-        if (Probe.debug)
-            System.out.println("adjustButtonOnSelected: " //$NON-NLS-1$
-                    + Thread.currentThread().toString());
         try
         {
             if (pv == null)
@@ -509,7 +459,7 @@ public class Probe extends ViewPart implements PVListener
             InputDialog inputDialog =
                     new InputDialog(lbl_value.getShell(),
                         Messages.S_AdjustValue, Messages.S_Value,
-                        value, null);
+                        value_txt, null);
                 if (inputDialog.open() == Window.OK)
                     pv.setValue(inputDialog.getValue());
         }

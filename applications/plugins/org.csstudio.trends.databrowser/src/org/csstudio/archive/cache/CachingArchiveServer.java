@@ -3,7 +3,7 @@ package org.csstudio.archive.cache;
 import java.util.LinkedList;
 
 import org.csstudio.archive.ArchiveInfo;
-import org.csstudio.archive.ArchiveSamples;
+import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.NameInfo;
 import org.csstudio.platform.util.ITimestamp;
@@ -33,15 +33,15 @@ public class CachingArchiveServer extends ArchiveServer
     class SampleCacheEntry
     {
         private SampleHashKey key;
-        private ArchiveSamples data;
+        private ArchiveValues data;
  
-        public SampleCacheEntry(SampleHashKey key, ArchiveSamples data)
+        public SampleCacheEntry(SampleHashKey key, ArchiveValues data)
         {
             this.key = key;
             this.data = data;
         }
 
-        public ArchiveSamples getData()
+        public ArchiveValues getData()
         {   return data; }
 
         public SampleHashKey getKey()
@@ -77,7 +77,7 @@ public class CachingArchiveServer extends ArchiveServer
 
     @SuppressWarnings("nls")
     @Override
-    synchronized public ArchiveSamples[] getSamples(int key, String[] names,
+    synchronized public ArchiveValues[] getSamples(int key, String[] names,
                     ITimestamp start, ITimestamp end,
                     int request_type, int request_parm) throws Exception
     {
@@ -93,13 +93,13 @@ public class CachingArchiveServer extends ArchiveServer
                     System.out.println("It's bloody marvelous, "
                                     + "we found data for this:\n"
                                     + hash_key );
-                ArchiveSamples result[] = new ArchiveSamples[1];
+                ArchiveValues result[] = new ArchiveValues[1];
                 result[0] = entry.getData();
                 return result;
             }
         
         // Fall back to server
-        ArchiveSamples result[] = server.getSamples(key,
+        ArchiveValues result[] = server.getSamples(key,
                         names, start, end, request_type, request_parm);
         // Nothing? That's OK, but don't cache, since a later request might
         // actually find data that's just been added.
@@ -108,7 +108,7 @@ public class CachingArchiveServer extends ArchiveServer
         // Expect one result for single-name request.
         if (result.length != 1)
             throw new Exception("Received " + result.length + " responses");
-        ArchiveSamples samples = result[0];
+        ArchiveValues samples = result[0];
         // Remember the result
         if (samples != null)
         {

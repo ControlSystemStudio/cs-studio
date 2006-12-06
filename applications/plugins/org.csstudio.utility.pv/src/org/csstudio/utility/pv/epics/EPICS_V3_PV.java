@@ -16,6 +16,7 @@ import gov.aps.jca.dbr.DBR_TIME_Double;
 import gov.aps.jca.dbr.DBR_TIME_Enum;
 import gov.aps.jca.dbr.DBR_TIME_Short;
 import gov.aps.jca.dbr.DBR_TIME_String;
+import gov.aps.jca.dbr.Status;
 import gov.aps.jca.dbr.TimeStamp;
 import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
@@ -29,16 +30,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
-import org.csstudio.utility.pv.DoubleValue;
-import org.csstudio.utility.pv.EnumValue;
-import org.csstudio.utility.pv.EnumeratedMetaData;
-import org.csstudio.utility.pv.IntegerValue;
-import org.csstudio.utility.pv.MetaData;
-import org.csstudio.utility.pv.NumericMetaData;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.StringValue;
-import org.csstudio.utility.pv.Value;
+import org.csstudio.value.DoubleValue;
+import org.csstudio.value.EnumValue;
+import org.csstudio.value.EnumeratedMetaData;
+import org.csstudio.value.IntegerValue;
+import org.csstudio.value.MetaData;
+import org.csstudio.value.NumericMetaData;
+import org.csstudio.value.Severity;
+import org.csstudio.value.StringValue;
+import org.csstudio.value.Value;
 
 /**
  * EPICS ChannelAccess implementation of the PV interface.
@@ -180,21 +182,11 @@ public class EPICS_V3_PV
     /** Assert that we only subscribe once. */
     private volatile boolean was_connected;
 
+    /** Meta data obtained during connection cycle. */
     private MetaData meta = null;
 
-    // The most recent 'live' data
-    
-    /** Most recent time. */
-    private volatile ITimestamp time = null;
-
-    /** Most recent value. */
+    /** Most recent 'live' value. */
     private volatile Value value = null;
-
-    /** Most recent severity code. */
-    private volatile int severity = 0;
-
-    /** Most recent status info. */
-    private volatile String status = "";
 
     /** Generate an EPICS PV.
      *  @param name The PV name.
@@ -339,35 +331,6 @@ public class EPICS_V3_PV
         }
     }
 
-    /** @return Returns the last time stamp. */
-    public ITimestamp getTime()
-    {   return time; }
-
-    /** A severity code, where 0 means 'OK',
-     *  higher numbers reflect a higher severity.
-     *  @return Returns the severity code.
-     *  @see #getSeverity(int)
-     */
-    public int getSeverityCode()
-    {   return severity;  }
-
-    /** @return Returns the severity text or <code>null</code>. */
-    public String getSeverity()
-    {
-        switch (severity)
-        {
-        case 0: return "";
-        case 1: return "MINOR";
-        case 2: return "MAYOR";
-        case 3: return "INVALID";
-        }
-        return "Unkown severity " + severity;
-    }
-    
-    /** @return Returns the status string or <code>null</code>. */
-    public String getStatus()
-    {   return status; }
-
     /** ConnectionListener interface. */
     public void connectionChanged(ConnectionEvent ev)
     {
@@ -433,7 +396,15 @@ public class EPICS_V3_PV
             else if (dbr instanceof DBR_CTRL_Double)
             {
                 DBR_CTRL_Double ctrl = (DBR_CTRL_Double)dbr;
-                meta = new NumericMetaData(ctrl.getPrecision(), ctrl.getUnits());
+                meta = new NumericMetaData(
+                                ctrl.getUpperDispLimit().doubleValue(),
+                                ctrl.getLowerDispLimit().doubleValue(), 
+                                ctrl.getUpperAlarmLimit().doubleValue(),
+                                ctrl.getLowerAlarmLimit().doubleValue(),
+                                ctrl.getUpperWarningLimit().doubleValue(),
+                                ctrl.getLowerWarningLimit().doubleValue(),
+                                ctrl.getPrecision(),
+                                ctrl.getUnits());
                 if (debug)
                     System.out.println("Channel '" + name + "' got meta:"
                                     + meta);
@@ -441,7 +412,15 @@ public class EPICS_V3_PV
             else if (dbr instanceof DBR_CTRL_Short)
             {
                 DBR_CTRL_Short ctrl = (DBR_CTRL_Short)dbr;
-                meta = new NumericMetaData(0, ctrl.getUnits());
+                meta = new NumericMetaData(
+                                ctrl.getUpperDispLimit().doubleValue(),
+                                ctrl.getLowerDispLimit().doubleValue(), 
+                                ctrl.getUpperAlarmLimit().doubleValue(),
+                                ctrl.getLowerAlarmLimit().doubleValue(),
+                                ctrl.getUpperWarningLimit().doubleValue(),
+                                ctrl.getLowerWarningLimit().doubleValue(),
+                                0, // no precision
+                                ctrl.getUnits());
                 if (debug)
                     System.out.println("Channel '" + name + "' got meta:"
                                     + meta);
@@ -519,6 +498,14 @@ public class EPICS_V3_PV
             DBR dbr = ev.getDBR();
             try
             {
+                ITimestamp time = null;
+                Severity severity = null;
+                String status = "";
+                if (plain)
+                {
+                    time = TimestampFactory.now();
+                    severity = SeverityUtil.forCode(0);
+                }
                 if (dbr.isDOUBLE())
                 {
                     double v[];
@@ -527,12 +514,14 @@ public class EPICS_V3_PV
                     else
                     {
                         DBR_TIME_Double dt = (DBR_TIME_Double) dbr;
-                        severity = dt.getSeverity().getValue();
-                        status = dt.getStatus().getName();
+                        severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                        Status stat = dt.getStatus();
+                        status = stat.getValue() == 0 ? "" : stat.getName();
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getDoubleValue();
                     }
-                    value = new DoubleValue((NumericMetaData)meta, v[0]);
+                    value = new DoubleValue(time, severity, status,
+                                    (NumericMetaData)meta, v);
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': double value " + value);
@@ -545,12 +534,14 @@ public class EPICS_V3_PV
                     else
                     {
                         DBR_TIME_Short dt = (DBR_TIME_Short) dbr;
-                        severity = dt.getSeverity().getValue();
-                        status = dt.getStatus().getName();
+                        severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                        Status stat = dt.getStatus();
+                        status = stat.getValue() == 0 ? "" : stat.getName();
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getShortValue();
                     }
-                    value = new IntegerValue((NumericMetaData)meta, v[0]);
+                    value = new IntegerValue(time, severity, status,
+                                    (NumericMetaData)meta, short2int(v));
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': short value " + value);
@@ -563,12 +554,13 @@ public class EPICS_V3_PV
                     else
                     {
                         DBR_TIME_String dt = (DBR_TIME_String) dbr;
-                        severity = dt.getSeverity().getValue();
-                        status = dt.getStatus().getName();
+                        severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                        Status stat = dt.getStatus();
+                        status = stat.getValue() == 0 ? "" : stat.getName();
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getStringValue();
                     }
-                    value = new StringValue(v[0]);
+                    value = new StringValue(time, severity, status, v[0]);
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': string value " + value);
@@ -579,11 +571,13 @@ public class EPICS_V3_PV
                     // 'plain' mode would subscribe to SHORT,
                     // so this must be a TIME_Enum:
                     DBR_TIME_Enum dt = (DBR_TIME_Enum) dbr;
-                    severity = dt.getSeverity().getValue();
-                    status = dt.getStatus().getName();
+                    severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                    Status stat = dt.getStatus();
+                    status = stat.getValue() == 0 ? "" : stat.getName();
                     time = createTimeFromEPICS(dt.getTimeStamp());
                     v = dt.getEnumValue();
-                    value = new EnumValue((EnumeratedMetaData)meta, (int) v[0]);
+                    value = new EnumValue(time, severity, status,
+                                    (EnumeratedMetaData)meta, short2int(v));
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': enum value " + value);
@@ -606,6 +600,15 @@ public class EPICS_V3_PV
             System.out.println("Channel '" + name + "':"
                     + ev.getStatus().getMessage());
         }
+    }
+
+    /** Convert short array to int array. */
+    private int[] short2int(final short[] v)
+    {
+        int ival[] = new int[v.length];
+        for (int i = 0; i < ival.length; i++)
+            ival[i] = v[i];
+        return ival;
     }
 
     /** Notify all listeners. */

@@ -4,7 +4,7 @@ import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVListEntry;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.Value;
+import org.csstudio.value.Value;
 
 
 /** Helper for creating a table of PVListEntry rows.
@@ -90,7 +90,7 @@ public class PVTableHelper
     {
         if (value == null)
             return ""; //$NON-NLS-1$
-    	return value.toString();
+    	return value.format();
     }
     
 	/** Get a data piece of the entry.
@@ -108,7 +108,7 @@ public class PVTableHelper
             case NAME:
                 return entry.getPV().getName();
             case TIME:
-                ITimestamp time = entry.getPV().getTime();            	
+                ITimestamp time = entry.getPV().getValue().getTime();            	
                 return (time == null) ? "" : time.toString(); //$NON-NLS-1$
             case VALUE:
                 return getPVValueString(entry.getPV());

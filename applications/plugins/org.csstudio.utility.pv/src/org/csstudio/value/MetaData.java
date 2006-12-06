@@ -1,11 +1,11 @@
-package org.csstudio.utility.pv;
+package org.csstudio.value;
 
-/** Base interface that identifies MetaData.
+/** Base interface for a sample's meta data.
+ *  @see Value
  *  @see NumericMetaData
  *  @see EnumeratedMetaData
  *  @author Kay Kasemir
  */
 public interface MetaData
 {
-    // Nothing...
 }

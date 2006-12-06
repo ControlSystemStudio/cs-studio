@@ -9,6 +9,8 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
+import org.csstudio.value.Severity;
+import org.csstudio.value.Value;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.widgets.Display;
 
@@ -60,13 +62,19 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     
     /** The PV used for getting the current value. */
     private PV pv;
+    
+    /** Most recent value. */
     private String value = null;
-    private int severity_code;
+   
+    /** Most recent severity. */
+    private Severity severity = null;
+    
     private PVListener pv_listener = new PVListener()
     {
         public void pvDisconnected(PV pv)
         {
             value = "<disconnected>"; //$NON-NLS-1$
+            severity = null;
             updateValue();
         }
         @SuppressWarnings("nls")
@@ -74,10 +82,11 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             try
             {
-                value = pv.getValue().toString();
-                severity_code = pv.getSeverityCode();
-                if (severity_code != 0)
-                    value = value + " [" + pv.getSeverity() + "]";
+                Value v = pv.getValue();
+                value = v.format();
+                severity = v.getSeverity();
+                if (!severity.isOK())
+                    value = value + " [" + severity.toString() + "]";
                 updateValue();
             }
             catch (Exception e)
@@ -249,27 +258,21 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     public String getName()
     {   return pv_name; }
     
+    /** @return Severity of current value. May be <code>null</code>. */
+    public Severity getSeverity()
+    {   return severity; }
+    
     // @see IProcessVariable
     public String getTypeId()
     {   return IProcessVariable.TYPE_ID;    }
 
-    /** @return Returns the severity code of this PV's value. */
-    public int getSeverityCode()
-    {
-        return severity_code;
-    }
-    
     /** @return Returns the record type of this item or <code>null</code>. */
     public String getType()
-    {
-        return type;
-    }
+    {   return type;    }
     
     /** @return Returns the parent or <code>null</code>. */
     public PVTreeItem getParent()
-    {
-        return parent;
-    }
+    {   return parent;    }
 
     /** @return Returns the first link or <code>null</code>. */
     public PVTreeItem getFirstLink()

@@ -1,7 +1,7 @@
 package org.csstudio.trends.databrowser.sampleview;
 
-import org.csstudio.archive.Severity;
 import org.csstudio.trends.databrowser.model.ModelSample;
+import org.csstudio.value.Severity;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;

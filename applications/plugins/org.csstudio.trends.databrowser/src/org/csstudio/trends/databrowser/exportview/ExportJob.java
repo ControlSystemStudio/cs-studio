@@ -8,20 +8,20 @@ import java.text.NumberFormat;
 import java.util.Iterator;
 
 import org.csstudio.archive.ArchiveServer;
-import org.csstudio.archive.EnumSample;
-import org.csstudio.archive.Sample;
-import org.csstudio.archive.StringSample;
 import org.csstudio.archive.cache.ArchiveCache;
-import org.csstudio.archive.crawl.RawSampleIterator;
-import org.csstudio.archive.crawl.SampleIterator;
+import org.csstudio.archive.crawl.RawValueIterator;
+import org.csstudio.archive.crawl.ValueIterator;
 import org.csstudio.archive.crawl.SpreadsheetIterator;
-import org.csstudio.archive.util.SampleUtil;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelSamples;
+import org.csstudio.value.EnumValue;
+import org.csstudio.value.StringValue;
+import org.csstudio.value.Value;
+import org.csstudio.value.ValueUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -97,7 +97,7 @@ class ExportJob extends Job
             // Get sample iterator for each channel.
             // Either dump it ASAP, or keep it for spreadsheet-iteration.
             int N = model.getNumItems();
-            SampleIterator iters[] = new SampleIterator[N];
+            ValueIterator iters[] = new ValueIterator[N];
             for (int ch_idx=0;  ch_idx<N  &&  !monitor.isCanceled(); ++ch_idx)
             {
                 IModelItem item = model.getItem(ch_idx);
@@ -134,7 +134,7 @@ class ExportJob extends Job
                         servers[i] = cache.getServer(archives[i].getUrl());
                         keys[i] = archives[i].getKey();
                     }
-                    iters[ch_idx] = new RawSampleIterator(
+                    iters[ch_idx] = new RawValueIterator(
                                     servers, keys, item_name, start, end);
                 }
                 if (format_spreadsheet == false)
@@ -167,7 +167,7 @@ class ExportJob extends Job
                 while (sheet.hasNext())
                 {
                     ITimestamp time = sheet.getTime();
-                    Sample line[] = sheet.next();
+                    Value line[] = sheet.next();
                     out.print(time);
                     for (int i=0; i<line.length; ++i)
                         out.print(Messages.ColSep + formatValue(line[i]));
@@ -218,11 +218,11 @@ class ExportJob extends Job
      */
     private int dumpOneItem(IProgressMonitor monitor,
                             int line_count, PrintWriter out,
-                            Iterator<Sample> channel_iter)
+                            Iterator<Value> channel_iter)
     {
         while (channel_iter.hasNext())
         {
-            Sample sample = channel_iter.next();
+            Value sample = channel_iter.next();
             out.println(sample.getTime() + Messages.ColSep + formatValue(sample));
             ++line_count;
             if ((line_count % PROGRESS_LINE_GRANULARITY) == 0)
@@ -239,7 +239,7 @@ class ExportJob extends Job
     /** Format one value, according to the format/precision settings,
      *  maybe with severity/status info.
      */
-    private String formatValue(Sample sample)
+    private String formatValue(Value sample)
     {
         String value;
         if (sample == null)
@@ -247,13 +247,13 @@ class ExportJob extends Job
         else
         {
             if (format == Format.Default  ||
-                sample instanceof StringSample || sample instanceof EnumSample)
+                sample instanceof StringValue || sample instanceof EnumValue)
             {
                 value = sample.format();
             }
             else
             {
-                final double number = SampleUtil.getDouble(sample);
+                final double number = ValueUtil.getDouble(sample);
                 if (Double.isInfinite(number))
                     value = Messages.NoDataMarker;
                 else if (format == Format.Decimal)
@@ -273,7 +273,7 @@ class ExportJob extends Job
         // value is set, maybe add severity/status.
         if (format_severity)
         {
-            String info = (sample == null) ? "" : SampleUtil.getInfo(sample); //$NON-NLS-1$
+            String info = (sample == null) ? "" : ValueUtil.getInfo(sample); //$NON-NLS-1$
             if (info == null)
                 info = ""; //$NON-NLS-1$
             return value + Messages.ColSep + info;

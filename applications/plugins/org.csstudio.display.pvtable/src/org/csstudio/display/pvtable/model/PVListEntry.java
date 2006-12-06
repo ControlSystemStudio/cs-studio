@@ -2,7 +2,7 @@ package org.csstudio.display.pvtable.model;
 
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.Value;
+import org.csstudio.value.Value;
 
 /** Interface to one entry in the PVListModel.
  * 

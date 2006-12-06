@@ -1,5 +1,6 @@
 package org.csstudio.diag.epics.pvtree;
 
+import org.csstudio.value.Severity;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
@@ -37,12 +38,13 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider
         if (! (element instanceof PVTreeItem))
             return null;
         
-        switch (((PVTreeItem)element).getSeverityCode())
-        {
-        case 0: return null;
-        case 1: return Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
-        case 2: return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
-        }
-        return Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
+        Severity severity = ((PVTreeItem)element).getSeverity();
+        if (severity.isInvalid())
+            return Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
+        if (severity.isMajor())
+            return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+        if (severity.isMinor())
+            return Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW);
+        return null;
     }
 }

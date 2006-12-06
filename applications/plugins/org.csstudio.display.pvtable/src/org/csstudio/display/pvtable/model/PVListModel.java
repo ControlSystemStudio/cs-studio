@@ -6,11 +6,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.util.xml.DOMHelper;
-import org.csstudio.utility.pv.DoubleValue;
-import org.csstudio.utility.pv.NumericMetaData;
-import org.csstudio.utility.pv.StringValue;
-import org.csstudio.utility.pv.Value;
+import org.csstudio.value.DoubleValue;
+import org.csstudio.value.NumericMetaData;
+import org.csstudio.value.StringValue;
+import org.csstudio.value.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -279,21 +280,24 @@ public class PVListModel
                     
                     // Try to get the saved values as DoubleValues.
                     // Fall back to StringValue.
-                    NumericMetaData meta = new NumericMetaData(-1, "");
+                    NumericMetaData meta = new NumericMetaData(
+                                    10, 0, 0, 0, 0, 0, -1, "");
                     Value saved = null;
                     if (txt.length() > 0)
                     {
                     	try
 	                    {
-	                    	saved = new DoubleValue(meta, 
-	                    			            Double.parseDouble(txt));
+	                    	saved = new DoubleValue(TimestampFactory.now(),
+                                            null, null, meta,
+                                            new double[]
+                                            { Double.parseDouble(txt) });
 	                    }
 	                    catch (Exception e)
 	                    {
-	                    	saved = new StringValue(txt);
+	                    	saved = new StringValue(TimestampFactory.now(),
+                                            null, null, txt);
 	                    }
                     }
-                    
                     
                     String readback_name =
                         DOMHelper.getSubelementString(pv, "readback");
@@ -304,12 +308,15 @@ public class PVListModel
                     {
                     	try
                     	{
-	                    	readback = new DoubleValue(meta, 
-                 	        			            Double.parseDouble(txt));
+	                    	readback = new DoubleValue(TimestampFactory.now(),
+                                            null, null, meta,
+                                            new double[]
+                                            { Double.parseDouble(txt) });
 	                    }
 	                    catch (Exception e)
 	                    {
-	                    	readback = new StringValue(txt);
+	                    	readback = new StringValue(TimestampFactory.now(),
+                                            null, null, txt);
 	                    }
                     }
                     silentlyAddPV(selected, name, saved,

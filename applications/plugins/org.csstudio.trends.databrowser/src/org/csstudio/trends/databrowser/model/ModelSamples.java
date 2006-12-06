@@ -1,14 +1,13 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.archive.ArchiveSamples;
-import org.csstudio.archive.DoubleSample;
-import org.csstudio.archive.MetaData;
+import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
-import org.csstudio.utility.pv.Value;
+import org.csstudio.value.DoubleValue;
+import org.csstudio.value.Value;
 import org.eclipse.swt.widgets.Display;
 
 /** Samples of a model item, combination of archived and live samples,
@@ -53,7 +52,7 @@ public class ModelSamples implements ChartSampleSequence
     
     /** Add samples from an archive. */
     @SuppressWarnings("nls") //$NON-NLS-1$
-    synchronized void add(ArchiveSamples samples)
+    synchronized void add(ArchiveValues samples)
     {
         // To prevent archived samples from overlapping 'live' data,
         // use only archived samples only until reaching the 'border':
@@ -86,38 +85,22 @@ public class ModelSamples implements ChartSampleSequence
                 return;
         }
         
-        DoubleSample disconnected = new DoubleSample(now,
-                        SeverityUtil.getInvalid(Messages.Sevr_INVALID),
+        DoubleValue disconnected = new DoubleValue(now,
+                        SeverityFactory.getInvalid(),
                         Messages.LivePVDisconnected,
-                        MetaDataUtil.getNumeric(),
-                        new double[] {Double.NEGATIVE_INFINITY });
+                        MetaDataFactory.getNumeric(),
+                        new double[] { Double.NEGATIVE_INFINITY });
         
         live_samples.add(disconnected);
     }
     
     /** Add most recent timestamp/value */
-    synchronized void addLiveSample(ITimestamp now,
-                    Value  value,
-                    int    severity_code,
-                    String severity,
-                    String status,
-                    MetaData meta)
+    synchronized void addLiveSample(Value value)
     {
         // We expect all access to this method from the UI thread.
         if (Display.getCurrent() == null)
             throw new Error("Accessed from non-UI thread"); //$NON-NLS-1$
-        try
-        {
-            double values[] = new double[] { value.toDouble() };
-            DoubleSample sample = new DoubleSample(now,
-                            SeverityUtil.get(severity_code, severity),
-                            status, meta, values);
-            live_samples.add(sample);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        live_samples.add(value);
     }
     
     /** @see ChartSampleSequence */

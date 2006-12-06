@@ -3,19 +3,19 @@ package org.csstudio.trends.databrowser.model;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.csstudio.archive.DoubleSample;
-import org.csstudio.archive.Sample;
 import org.csstudio.archive.util.TimestampUtil;
+import org.csstudio.value.DoubleValue;
+import org.csstudio.value.Value;
 
 @SuppressWarnings("nls")
 public class ModelSampleRingTest extends TestCase
 {
-    private Sample create(double tick)
+    private Value create(double tick)
     {
-        return new DoubleSample(TimestampUtil.fromDouble(tick),
-                        SeverityUtil.getOK("OK"),
+        return new DoubleValue(TimestampUtil.fromDouble(tick),
+                        SeverityFactory.getInvalid(),
                         "",
-                        MetaDataUtil.getNumeric(),
+                        MetaDataFactory.getNumeric(),
                         new double[] { 0.0 });
     }
     

@@ -1,6 +1,6 @@
 package org.csstudio.utility.pv;
 
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.value.Value;
 
 /** A control system PV.
  *  <p>
@@ -53,20 +53,4 @@ public interface PV
      *  Should accept Double, String, maybe more.
      */
     public void setValue(Object new_value);
-    
-    /** @return Returns the last time stamp. */
-    public ITimestamp getTime();
-    
-    /** A severity code, where 0 means 'OK',
-     *  higher numbers reflect a higher severity.
-     *  @return Returns the severity code.
-     *  @see #getSeverity(int)
-     */
-    public int getSeverityCode();
-
-    /** @return Returns the severity text or <code>null</code>. */
-    public String getSeverity();
-    
-    /** @return Returns the status string or <code>null</code>. */
-    public String getStatus();
 }

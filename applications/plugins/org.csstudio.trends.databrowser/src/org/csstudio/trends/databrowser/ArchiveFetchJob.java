@@ -3,7 +3,7 @@
  */
 package org.csstudio.trends.databrowser;
 
-import org.csstudio.archive.ArchiveSamples;
+import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.cache.ArchiveCache;
 import org.csstudio.platform.model.IArchiveDataSource;
@@ -56,7 +56,7 @@ class ArchiveFetchJob extends Job
                 int request_type = 
                     server.getRequestType(ArchiveServer.GET_PLOTBINNED);
                 int request_parm = 800;
-                ArchiveSamples result[] = server.getSamples(
+                ArchiveValues result[] = server.getSamples(
                         archives[i].getKey(), new String[] { item.getName() },
                         start, end, request_type, request_parm);
                 if (result.length == 1)

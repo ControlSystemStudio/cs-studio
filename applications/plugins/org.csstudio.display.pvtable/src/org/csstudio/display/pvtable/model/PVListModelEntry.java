@@ -1,12 +1,10 @@
 package org.csstudio.display.pvtable.model;
 
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.utility.pv.EnumValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.StringValue;
-import org.csstudio.utility.pv.Value;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
+import org.csstudio.value.Value;
 import org.eclipse.core.runtime.PlatformObject;
 
 /** Implementation of the PVListEntry as used by the PVListModel.
@@ -231,9 +229,6 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
     {
     	 if (value == null)
              return ""; //$NON-NLS-1$
-         if (value instanceof StringValue || value instanceof EnumValue)
-         	return value.toString();
-         // Don't show units, don't use precision, just print the number.
-         return Double.toString(value.toDouble());
+         return value.format();
     }
 }

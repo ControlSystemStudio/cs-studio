@@ -2,8 +2,7 @@ package org.csstudio.trends.databrowser.model;
 
 import java.util.ArrayList;
 
-import org.csstudio.archive.ArchiveSamples;
-import org.csstudio.archive.MetaData;
+import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
@@ -11,11 +10,12 @@ import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.xml.DOMHelper;
 import org.csstudio.util.xml.XMLHelper;
-import org.csstudio.utility.pv.NumericValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.Value;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
+import org.csstudio.value.MetaData;
+import org.csstudio.value.NumericMetaData;
+import org.csstudio.value.Value;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
@@ -69,22 +69,6 @@ public class ModelItem
      *  Read from the GUI thread, updated from a PV monitor thread.
      */
     private volatile Value current_value;
-    /** synchronize on 'this'!
-     *  @see current_value.
-     */
-    private volatile int current_severity_code;
-    /** synchronize on 'this'!
-     *  @see current_value.
-     */
-    private volatile String current_severity;
-    /** synchronize on 'this'!
-     *  @see current_value.
-     */
-    private volatile String current_status;
-    /** synchronize on 'this'!
-     *  @see current_value.
-     */
-    private volatile MetaData current_metadata;
     
     /** Where to get archived data for this item. */
     private ArrayList<IArchiveDataSource> archives
@@ -120,13 +104,6 @@ public class ModelItem
         this.line_width = line_width;
         this.log_scale = log_scale;
         pv = new EPICS_V3_PV(pv_name);
-        synchronized (this)
-        {
-            current_value = null;
-            current_severity_code = 0;
-            current_severity = ""; //$NON-NLS-1$
-            current_status = ""; //$NON-NLS-1$
-        }
         samples = new ModelSamples(ring_size);
     }    
     
@@ -293,7 +270,7 @@ public class ModelItem
     
     /** @see IModelItem#addSamples() */
     @SuppressWarnings("nls")
-    public void addArchiveSamples(ArchiveSamples archive_samples)
+    public void addArchiveSamples(ArchiveValues archive_samples)
     {
         samples.add(archive_samples);
     }
@@ -481,7 +458,6 @@ public class ModelItem
         synchronized (this)
         {
             current_value = null;
-            current_metadata = null;
         }
     }
 
@@ -491,20 +467,6 @@ public class ModelItem
         synchronized (this)
         {
             current_value = pv.getValue();
-            current_severity_code = pv.getSeverityCode();
-            if (current_severity_code == 0)
-            {
-                current_severity = ""; //$NON-NLS-1$
-                current_status = ""; //$NON-NLS-1$
-            }
-            else
-            {
-                current_severity = pv.getSeverity();
-                current_status = pv.getStatus();
-            }
-            // Get MetaData, but only once after a connection
-            if (current_metadata == null  &&  current_value != null)
-                current_metadata = MetaDataUtil.forValue(current_value);
         }
     }
 
@@ -518,15 +480,11 @@ public class ModelItem
                 samples.markCurrentlyDisconnected(now);
             else
             {
-                samples.addLiveSample(now,
-                              current_value,
-                              current_severity_code, current_severity,
-                              current_status, current_metadata);
-                if (current_value instanceof NumericValue)
+                samples.addLiveSample(current_value);
+                MetaData meta = current_value.getMetaData();
+                if (meta instanceof NumericMetaData)
                 {
-                    String new_units = 
-                        ((org.csstudio.utility.pv.NumericMetaData)
-                                           current_value.getMeta()).getUnits();
+                    String new_units =  ((NumericMetaData)meta).getUnits();
                     if (! units.equals(new_units))
                     {
                         units = new_units;

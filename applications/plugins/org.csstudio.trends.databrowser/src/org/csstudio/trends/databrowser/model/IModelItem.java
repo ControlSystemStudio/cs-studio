@@ -1,6 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.archive.ArchiveSamples;
+import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.eclipse.swt.graphics.Color;
 
@@ -62,7 +62,7 @@ public interface IModelItem
      *  <p>
      *  Called from a non-GUI thread!
      */
-	public abstract void addArchiveSamples(ArchiveSamples samples);
+	public abstract void addArchiveSamples(ArchiveValues samples);
 
     /** @return The archive data source descriptions. */
     public abstract IArchiveDataSource[] getArchiveDataSources();

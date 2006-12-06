@@ -1,8 +1,8 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.archive.Sample;
-import org.csstudio.archive.util.SampleUtil;
 import org.csstudio.swt.chart.ChartSample;
+import org.csstudio.value.Value;
+import org.csstudio.value.ValueUtil;
 
 /** One sample of a ModelItem.
  *  <p>
@@ -21,16 +21,16 @@ import org.csstudio.swt.chart.ChartSample;
 public class ModelSample implements ChartSample
 {
     /** This is the 'real' archive sample. */
-    private final Sample sample;
+    private final Value sample;
     
     /** Create ModelSample from Archive Sample. */
-    ModelSample(Sample sample)
+    ModelSample(Value sample)
     {
         this.sample = sample;
     }
     
     /** @return The archive sample. */
-    public Sample getSample()
+    public Value getSample()
     {   return sample;  }
     
     /** @see org.csstudio.swt.chart.ChartSample */
@@ -51,13 +51,13 @@ public class ModelSample implements ChartSample
     /** @see org.csstudio.swt.chart.ChartSample */
     public double getY()
     {
-        return SampleUtil.getDouble(sample);
+        return ValueUtil.getDouble(sample);
     }
 
     /** @see org.csstudio.swt.chart.ChartSample */
     public String getInfo()
     {
-        return SampleUtil.getInfo(sample);
+        return ValueUtil.getInfo(sample);
     }
 
     @Override
