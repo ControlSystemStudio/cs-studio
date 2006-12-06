@@ -116,7 +116,7 @@
                label="%menuCssAlarm"
                path="css/group2"/>
          <menu
-               id="diagnostics"
+               id="diag"
                label="%menuCssDiagnostics"
                path="css/group4"/>
          <menu
@@ -220,7 +220,7 @@
       <page
             category="org.csstudio.platform.ui.css.applications"
             class="org.csstudio.platform.ui.internal.preferences.CSSApplicationsPreferencePage"
-            id="org.csstudio.platform.ui.css.applications.diagnostics"
+            id="org.csstudio.platform.ui.css.applications.diag"
             name="%diagnosticsPreferencesName"/>            
       <page
             category="org.csstudio.platform.ui.css.applications"
