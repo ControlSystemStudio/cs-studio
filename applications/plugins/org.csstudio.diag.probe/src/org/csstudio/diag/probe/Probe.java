@@ -430,7 +430,6 @@ public class Probe extends ViewPart implements PVListener
             else
                 info.append(Messages.S_STATEDisconn + nl);
         }
-        info.append(nl + Messages.S_EnvInfo + nl);
         if (info.length() == 0)
             info.append(Messages.S_NoInfo);
         MessageBox box =

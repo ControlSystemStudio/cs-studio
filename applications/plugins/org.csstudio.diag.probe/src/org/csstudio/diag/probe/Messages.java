@@ -22,6 +22,7 @@ public class Messages extends NLS
 
     public static String S_EnterPVName;
 
+    // Not used...
     public static String S_EnvInfo;
 
     public static String S_Info;
