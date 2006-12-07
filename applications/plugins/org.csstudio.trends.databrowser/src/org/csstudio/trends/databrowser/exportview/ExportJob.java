@@ -56,6 +56,7 @@ class ExportJob extends Job
      *  @param start
      *  @param end Start and end time.
      *  @param source Where to get the data.
+     *  @param seconds Seconds between averaged samples
      *  @param add_live_samples Include the live samples, or only archive?
      *  @param format_spreadsheet Spreadsheet, or plain list?
      *  @param format_severity Include severity/status/info, or omit?
@@ -63,6 +64,7 @@ class ExportJob extends Job
     public ExportJob(Model model,
                     ITimestamp start, ITimestamp end,
                     Source source,
+                    double seconds,
                     boolean format_spreadsheet,
                     boolean format_severity,
                     Format format,

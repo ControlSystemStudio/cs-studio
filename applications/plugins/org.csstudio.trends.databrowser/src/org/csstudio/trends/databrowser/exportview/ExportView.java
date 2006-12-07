@@ -25,37 +25,37 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /** View to configure and start "export" of samples to a file.
+ *  @see ExportJob
  *  @author Kay Kasemir
  */
 public class ExportView extends PlotAwareView
 {
     public static final String ID = ExportView.class.getName();
 
+    // GUI Elements
     private Shell shell;
     private Text start_txt;
     private Text end_txt;
     private Button use_plot_time;
     private Button time_config;
     private Button source_plot, source_raw, source_avg;
+    private Text   avg_seconds;
     private Button format_spreadsheet;
     private Button format_severity;
+    private Button format_default;
+    private Button format_decimal;
+    private Button format_exponential;
+    private Text precision;
     private Text filename_txt;
     private Button browse;
-
     private Button export;
     
+    // Stuff that's updated by the GUI
+    // (rest directly read from the GUI elements)
     private ITimestamp start;
     private ITimestamp end;
     private ExportJob.Source source;
     private ExportJob.Format format;
-
-    private Text precision;
-
-    private Button format_default;
-
-    private Button format_decimal;
-
-    private Button format_exponential;
     
     public ExportView()
     {
@@ -171,30 +171,46 @@ public class ExportView extends PlotAwareView
         source_plot = new Button(frame, SWT.RADIO);
         source_plot.setText(Messages.Source_Plot);
         source_plot.setToolTipText(Messages.Source_Plot_TT);
-        source_plot.addSelectionListener(new SelectionAdapter()
-        {
-            @Override public void widgetSelected(SelectionEvent e)
-            {   source = ExportJob.Source.Plot; }
-        });
         
         source_raw = new Button(frame, SWT.RADIO);
         source_raw.setText(Messages.Source_Raw);
         source_raw.setToolTipText(Messages.Source_Raw_TT);
-        source_raw.addSelectionListener(new SelectionAdapter()
-        {
-            @Override public void widgetSelected(SelectionEvent e)
-            {   source = ExportJob.Source.Raw; }
-        });
 
         source_avg = new Button(frame, SWT.RADIO);
         source_avg.setText(Messages.Source_Average);
         source_avg.setToolTipText(Messages.Source_Average_TT);
+        
+        avg_seconds = new Text(frame, SWT.BORDER);
+        avg_seconds.setText("60");  //$NON-NLS-1$
+        avg_seconds.setToolTipText(Messages.Source_Seconds_TT);
+        l = new Label(frame, 0);
+        l.setText(Messages.Source_Seconds);
+        
+        source_plot.addSelectionListener(new SelectionAdapter()
+        {
+            @Override public void widgetSelected(SelectionEvent e)
+            { 
+                source = ExportJob.Source.Plot;
+                avg_seconds.setEnabled(false);
+            }
+        });
+        source_raw.addSelectionListener(new SelectionAdapter()
+        {
+            @Override public void widgetSelected(SelectionEvent e)
+            {  
+                source = ExportJob.Source.Raw;
+                avg_seconds.setEnabled(false);
+            }
+        });
         source_avg.addSelectionListener(new SelectionAdapter()
         {
             @Override public void widgetSelected(SelectionEvent e)
-            {   source = ExportJob.Source.Average; }
+            { 
+                source = ExportJob.Source.Average;
+                avg_seconds.setEnabled(true);
+            }
         });
-
+        
         // ... end of radio buttons
         
         // 'Output' row
@@ -347,8 +363,12 @@ public class ExportView extends PlotAwareView
         
         // Initial settings
         setStartEndFromTimestamps();
+        // Plot/raw/averaged data?
         source_raw.setSelection(true);
         source = ExportJob.Source.Raw;
+        avg_seconds.setEnabled(source_avg.getSelection());
+        
+        // Format
         precision.setText("4"); //$NON-NLS-1$
         // precision 'enables' whenever non-default format selected
         format_default.addSelectionListener(new SelectionAdapter()
@@ -356,10 +376,8 @@ public class ExportView extends PlotAwareView
             public void widgetSelected(SelectionEvent e)
             {   precision.setEnabled(! format_default.getSelection());   }
         });
-        
         format_default.setSelection(true);
         format = ExportJob.Format.Default;
-        
         format_spreadsheet.setSelection(true);
         format_severity.setSelection(true);
         
@@ -385,6 +403,7 @@ public class ExportView extends PlotAwareView
         time_config.setEnabled(allow_config);
     }
 
+    // Another Model becomes current.
     // @see PlotAwareView
     @Override
     protected void updateModel(Model old_model, Model new_model)
@@ -481,6 +500,16 @@ public class ExportView extends PlotAwareView
                 return;
             }
         }
+        double secs;
+        try
+        {
+            secs = Double.parseDouble(avg_seconds.getText());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            secs = 60.0;
+        }
         int prec;
         try
         {
@@ -491,7 +520,9 @@ public class ExportView extends PlotAwareView
             e.printStackTrace();
             prec = 0;
         }
+        // Launch the actual export
         Job job = new ExportJob(model, start, end, source,
+                        secs,
                         format_spreadsheet.getSelection(),
                         format_severity.getSelection(),
                         format, prec,

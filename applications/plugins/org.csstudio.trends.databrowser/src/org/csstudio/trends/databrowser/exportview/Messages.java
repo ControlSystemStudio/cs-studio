@@ -82,6 +82,10 @@ public class Messages extends NLS
 
     public static String ShowSeverity_TT;
 
+    public static String Source_Seconds;
+
+    public static String Source_Seconds_TT;
+
     public static String SourceLabel;
 
     public static String Source_Average;
