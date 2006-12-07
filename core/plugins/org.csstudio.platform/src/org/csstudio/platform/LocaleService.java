@@ -24,6 +24,7 @@ package org.csstudio.platform;
 import java.util.Locale;
 
 /**
+ * Service to manage the system locale settings.
  * 
  * @author Alexander Will
  * 
@@ -38,8 +39,8 @@ public final class LocaleService {
 	 * This class can not be instantiated.
 	 */
 	private LocaleService() {
-	}	
-	
+	}
+
 	/**
 	 * Set the system's default locate according to the CSS settings.
 	 * 
