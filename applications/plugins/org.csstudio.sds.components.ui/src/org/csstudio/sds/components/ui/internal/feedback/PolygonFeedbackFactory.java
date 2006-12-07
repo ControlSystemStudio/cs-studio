@@ -86,7 +86,10 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 		polygon.setPoints(points);
 	}
 
-	public Class getCreationTool(String typeId) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public Class getCreationTool() {
 		return PolygonCreationTool.class;
 	}
 }

@@ -5,7 +5,6 @@ import java.util.Date;
 import org.csstudio.sds.components.internal.model.PolygonElement;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -14,33 +13,39 @@ import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SharedCursors;
 import org.eclipse.gef.SnapToHelper;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.gef.requests.CreationFactory;
-import org.eclipse.gef.tools.AbstractTool;
 import org.eclipse.gef.tools.TargetingTool;
 
 /**
- * A custom creation tool for polygon elements.
- * 
- * The tool ...
+ * A custom creation tool for polygon elements. The tool produces a polygon, by
+ * interpreting each left click as location for a new polygon point.
  * 
  * @author Sven Wende
- *
+ * 
  */
 
-//TODO: swende: Klasse ist momentan noch in experimentellem Zustand!
-
-public class PolygonCreationTool extends TargetingTool {
+public final class PolygonCreationTool extends TargetingTool {
 	/**
-	 * Property to be used in {@link AbstractTool#setProperties(java.util.Map)}
-	 * for {@link #setFactory(CreationFactory)}.
+	 * Property to be used in AbstractTool#setProperties(java.util.Map) for
+	 * {@link #setFactory(CreationFactory)}.
 	 */
 	public static final Object PROPERTY_CREATION_FACTORY = "factory"; //$NON-NLS-1$
 
-	private CreationFactory factory;
+	/**
+	 * Time of the last click (ms since 1970). Used to determine doubleclicks.
+	 */
+	private long _lastClick = 0;
 
-	private SnapToHelper helper;
+	/**
+	 * The creation factory.
+	 */
+	private CreationFactory _factory;
+
+	/**
+	 * A SnapToHelper.
+	 */
+	private SnapToHelper _snap2Helper;
 
 	/**
 	 * Default constructor. Sets the default and disabled cursors.
@@ -53,9 +58,9 @@ public class PolygonCreationTool extends TargetingTool {
 			public Object getNewObject() {
 				PolygonElement polygon = new PolygonElement();
 				PointList points = getCreateRequest().getPoints();
-				
+
 				polygon.setPoints(points);
-				
+
 				return polygon;
 			}
 
@@ -78,24 +83,21 @@ public class PolygonCreationTool extends TargetingTool {
 	}
 
 	/**
-	 * @see org.eclipse.gef.tools.AbstractTool#applyProperty(java.lang.Object,
-	 *      java.lang.Object)
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void applyProperty(final Object key, final Object value) {
 		if (PROPERTY_CREATION_FACTORY.equals(key)) {
-			if (value instanceof CreationFactory)
+			if (value instanceof CreationFactory) {
 				setFactory((CreationFactory) value);
+			}
 			return;
 		}
 		super.applyProperty(key, value);
 	}
 
 	/**
-	 * Creates a {@link CreateRequest} and sets this tool's factory on the
-	 * request.
-	 * 
-	 * @see org.eclipse.gef.tools.TargetingTool#createTargetRequest()
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected Request createTargetRequest() {
@@ -105,16 +107,16 @@ public class PolygonCreationTool extends TargetingTool {
 	}
 
 	/**
-	 * @see org.eclipse.gef.Tool#deactivate()
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void deactivate() {
 		super.deactivate();
-		helper = null;
+		_snap2Helper = null;
 	}
 
 	/**
-	 * @see org.eclipse.gef.tools.AbstractTool#getCommandName()
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getCommandName() {
@@ -132,7 +134,7 @@ public class PolygonCreationTool extends TargetingTool {
 	}
 
 	/**
-	 * @see org.eclipse.gef.tools.AbstractTool#getDebugName()
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected String getDebugName() {
@@ -145,86 +147,75 @@ public class PolygonCreationTool extends TargetingTool {
 	 * @return the creation factory
 	 */
 	protected CreationFactory getFactory() {
-		return factory;
+		return _factory;
 	}
 
-	long lastClick = 0;
-
 	/**
-	 * The creation tool only works by clicking mouse button 1 (the left mouse
-	 * button in a right-handed world). If any other button is pressed, the tool
-	 * goes into an invalid state. Otherwise, it goes into the drag state,
-	 * updates the request's location and calls
-	 * {@link TargetingTool#lockTargetEditPart(EditPart)} with the edit part
-	 * that was just clicked on.
-	 * 
-	 * @see org.eclipse.gef.tools.AbstractTool#handleButtonDown(int)
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected boolean handleButtonDown(final int button) {
+		// only react on left clicks
 		if (button != 1) {
 			setState(STATE_INVALID);
-
-			// handleInvalidInput();
 			return true;
 		}
-		setState(STATE_DRAG);
 
+		// the tool is in progress mode, until a doubleclick occurs
+		setState(STATE_DRAG_IN_PROGRESS);
+
+		// determine, whether a doubleclick occured
 		long now = new Date().getTime();
-		if (now - lastClick < 200) {
-			System.out.println("DOUBLECLICK");
+		boolean doubleClick = (now - _lastClick < 200);
+		_lastClick = now;
+
+		// handle clicks
+		if (doubleClick) {
+			PointList points = getCreateRequest().getPoints();
+			// remove the last point, which was just created for previewing the
+			// next axis
+			points.removePoint(points.size() - 1);
+
+			// perform creation of the material
 			if (stateTransition(STATE_DRAG | STATE_DRAG_IN_PROGRESS,
 					STATE_TERMINAL)) {
 				eraseTargetFeedback();
 				unlockTargetEditPart();
 				performCreation(button);
 			}
-
+			// terminate
 			setState(STATE_TERMINAL);
 			handleFinished();
 		} else {
-			getCreateRequest().addPoint(getLocation());
+
+			PointList points = getCreateRequest().getPoints();
+
+			if (points.size() == 0) {
+				// add a new point
+				points.addPoint(getLocation());
+			} else {
+				// override the last point, which was the "preview" point before
+				points.setPoint(getLocation(), points.size() - 1);
+
+			}
+			// add an additional point, which is just for previewing the next
+			// axis in the graphical feedback
+			points.addPoint(getLocation());
 		}
-		
-		
-		lastClick = now;
-		// getCreateRequest().setLocation(getLocation());
-		// lockTargetEditPart(getTargetEditPart());
-		// Snap only when size on drop is employed
-		// if (getTargetEditPart() != null)
-		// helper = (SnapToHelper) getTargetEditPart().getAdapter(
-		// SnapToHelper.class);
-		// }
+
 		return true;
 	}
 
 	/**
-	 * If the tool is currently in a drag or drag-in-progress state, it goes
-	 * into the terminal state, performs some cleanup (erasing feedback,
-	 * unlocking target edit part), and then calls {@link #performCreation(int)}.
-	 * 
-	 * @see org.eclipse.gef.tools.AbstractTool#handleButtonUp(int)
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected boolean handleButtonUp(final int button) {
-		// add point (HACK)
-		getCreateRequest().addPoint(getLocation());
-
-//		if (stateTransition(STATE_DRAG | STATE_DRAG_IN_PROGRESS, STATE_TERMINAL)) {
-//			eraseTargetFeedback();
-//			unlockTargetEditPart();
-//			performCreation(button);
-//		}
-//
-//		setState(STATE_TERMINAL);
-//		handleFinished();
 		return true;
 	}
 
 	/**
-	 * Updates the request, sets the current command, and asks to show feedback.
-	 * 
-	 * @see org.eclipse.gef.tools.AbstractTool#handleDragInProgress()
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected boolean handleDragInProgress() {
@@ -237,7 +228,7 @@ public class PolygonCreationTool extends TargetingTool {
 	}
 
 	/**
-	 * @see org.eclipse.gef.tools.AbstractTool#handleDragStarted()
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected boolean handleDragStarted() {
@@ -245,10 +236,7 @@ public class PolygonCreationTool extends TargetingTool {
 	}
 
 	/**
-	 * If the user is in the middle of creating a new edit part, the tool erases
-	 * feedback and goes into the invalid state when focus is lost.
-	 * 
-	 * @see org.eclipse.gef.tools.AbstractTool#handleFocusLost()
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected boolean handleFocusLost() {
@@ -261,34 +249,26 @@ public class PolygonCreationTool extends TargetingTool {
 		return false;
 	}
 
-	@Override
-	protected void showTargetFeedback() {
-		// TODO Auto-generated method stub
-		super.showTargetFeedback();
-	}
-
 	/**
-	 * @see org.eclipse.gef.tools.TargetingTool#handleHover()
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected boolean handleHover() {
-		if (isInState(STATE_INITIAL))
+		if (isInState(STATE_INITIAL)) {
 			updateAutoexposeHelper();
+		}
 		return true;
 	}
 
 	/**
-	 * Updates the request and mouse target, gets the current command and asks
-	 * to show feedback.
-	 * 
-	 * @see org.eclipse.gef.tools.AbstractTool#handleMove()
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected boolean handleMove() {
-		// System.out.println("Location" + getLocation());
-		// // add point (HACK)
 		PointList points = getCreateRequest().getPoints();
 		if (points.size() > 0) {
+			// update the last point in the list to update the graphical
+			// feedback
 			points.setPoint(getLocation(), points.size() - 1);
 		}
 
@@ -315,19 +295,17 @@ public class PolygonCreationTool extends TargetingTool {
 		selectAddedObject(viewer);
 	}
 
-	@Override
-	protected void setCurrentCommand(final Command c) {
-		// TODO Auto-generated method stub
-		super.setCurrentCommand(c);
-	}
-
-	/*
+	/**
 	 * Add the newly created object to the viewer's selected objects.
+	 * 
+	 * @param viewer
+	 *            the EditPartViewer
 	 */
 	private void selectAddedObject(final EditPartViewer viewer) {
 		final Object model = getCreateRequest().getNewObject();
-		if (model == null || viewer == null)
+		if (model == null || viewer == null) {
 			return;
+		}
 		Object editpart = viewer.getEditPartRegistry().get(model);
 		if (editpart instanceof EditPart) {
 			// Force the new object to get positioned in the viewer.
@@ -343,31 +321,27 @@ public class PolygonCreationTool extends TargetingTool {
 	 *            the factory
 	 */
 	public void setFactory(final CreationFactory factory) {
-		this.factory = factory;
+		_factory = factory;
 	}
 
 	/**
-	 * Sets the location (and size if the user is performing size-on-drop) of
-	 * the request.
-	 * 
-	 * @see org.eclipse.gef.tools.TargetingTool#updateTargetRequest()
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void updateTargetRequest() {
 		PolygonRequest req = getCreateRequest();
 		if (isInState(STATE_DRAG_IN_PROGRESS)) {
-//			Point loq = getStartLocation();
-//			Rectangle bounds = new Rectangle(loq, loq);
-//			bounds.union(loq.getTranslated(getDragMoveDelta()));
+			// use the rectangle, which is defined by the point lists as new
+			// bounds
 			Rectangle bounds = req.getPoints().getBounds();
 			req.setSize(bounds.getSize());
 			req.setLocation(bounds.getLocation());
 			req.getExtendedData().clear();
-			if (!getCurrentInput().isAltKeyDown() && helper != null) {
+			if (!getCurrentInput().isAltKeyDown() && _snap2Helper != null) {
 				PrecisionRectangle baseRect = new PrecisionRectangle(bounds);
 				PrecisionRectangle result = baseRect.getPreciseCopy();
-				helper.snapRectangle(req, PositionConstants.NSEW, baseRect,
-						result);
+				_snap2Helper.snapRectangle(req, PositionConstants.NSEW,
+						baseRect, result);
 				req.setLocation(result.getLocation());
 				req.setSize(result.getSize());
 			}
@@ -377,13 +351,22 @@ public class PolygonCreationTool extends TargetingTool {
 		}
 	}
 
-	public class PolygonRequest extends CreateRequest {
+	/**
+	 * A custom request type, which is only used for the creation of polygons.
+	 * 
+	 * @author Sven Wende
+	 */
+	public final class PolygonRequest extends CreateRequest {
+		/**
+		 * The points of the polygons, that have already been set.
+		 */
 		private PointList _points = new PointList();
 
-		public void addPoint(final Point p) {
-			_points.addPoint(p);
-		}
-
+		/**
+		 * Gets the point list, which contains the polygon points.
+		 * 
+		 * @return the polygon point list
+		 */
 		public PointList getPoints() {
 			return _points;
 		}
