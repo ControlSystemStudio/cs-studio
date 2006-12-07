@@ -13,8 +13,12 @@ import org.csstudio.util.xml.XMLHelper;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
+import org.csstudio.value.DoubleValue;
+import org.csstudio.value.EnumValue;
+import org.csstudio.value.IntegerValue;
 import org.csstudio.value.MetaData;
 import org.csstudio.value.NumericMetaData;
+import org.csstudio.value.StringValue;
 import org.csstudio.value.Value;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.graphics.Color;
@@ -479,7 +483,34 @@ public class ModelItem
             if (current_value == null)
                 samples.markCurrentlyDisconnected(now);
             else
-            {
+            {   // Add the most recent value after tweaking its
+                // time stamp to be 'now'
+                if (current_value instanceof DoubleValue)
+                    current_value = new DoubleValue(now,
+                                    current_value.getSeverity(),
+                                    current_value.getStatus(),
+                                    current_value.getMetaData(),
+                                    ((DoubleValue)current_value).getValues());
+                else if (current_value instanceof EnumValue)
+                    current_value = new EnumValue(now,
+                                    current_value.getSeverity(),
+                                    current_value.getStatus(),
+                                    current_value.getMetaData(),
+                                    ((EnumValue)current_value).getValues());
+                else if (current_value instanceof IntegerValue)
+                    current_value = new IntegerValue(now,
+                                    current_value.getSeverity(),
+                                    current_value.getStatus(),
+                                    current_value.getMetaData(),
+                                    ((IntegerValue)current_value).getValues());
+                else if (current_value instanceof StringValue)
+                    current_value = new StringValue(now,
+                                    current_value.getSeverity(),
+                                    current_value.getStatus(),
+                                    current_value.format());
+                else
+                    Plugin.logError("ModelItem cannot update timestamp of type " //$NON-NLS-1$
+                                    + current_value.getClass().getName());
                 samples.addLiveSample(current_value);
                 MetaData meta = current_value.getMetaData();
                 if (meta instanceof NumericMetaData)
