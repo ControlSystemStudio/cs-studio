@@ -19,7 +19,7 @@ public final class RectangleEditPart extends AbstractSDSEditPart {
 	@Override
 	protected RefreshableRectangle createFigure() {
 		CentralLogger.getInstance().debug(this,
-				"Creating RefreshableRectangle...");
+				"Creating RefreshableRectangle..."); //$NON-NLS-1$
 		return new RefreshableRectangle();
 	}
 

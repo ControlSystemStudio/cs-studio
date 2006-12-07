@@ -38,7 +38,7 @@ public final class PolygonEditPart extends AbstractSDSEditPart {
 		RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) getFigure();
 
 		if (propertyName.equals(PolygonElement.PROP_POINTS)) {
-			assert newValue instanceof PointList : "newValue instanceof PointList";
+			assert newValue instanceof PointList : "newValue instanceof PointList"; //$NON-NLS-1$
 			PointList points = (PointList) newValue;
 			polygon.setPoints(points);
 		}

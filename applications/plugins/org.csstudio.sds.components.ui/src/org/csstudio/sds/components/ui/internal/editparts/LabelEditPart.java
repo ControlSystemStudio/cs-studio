@@ -29,7 +29,7 @@ public final class LabelEditPart extends AbstractSDSEditPart {
 			final Object newValue) {
 		if (propertyName.equals(LabelElement.PROP_LABEL)) {
 			RefreshableLabelFigure label = (RefreshableLabelFigure) getFigure();
-			label.setText("" + newValue);
+			label.setText("" + newValue); //$NON-NLS-1$
 			label.repaint();
 		}
 	}
