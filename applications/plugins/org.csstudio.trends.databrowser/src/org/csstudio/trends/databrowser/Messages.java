@@ -15,13 +15,12 @@ public class Messages extends NLS
     public static String FetchingSample;
 
     public static String AddPV;
+
     public static String AddPV_TT;
 
     public static String EnterPVName;
 
     public static String EnterNewPVName;
-
-    public static String PVContainsInvalidChars;
 
     public static String UnitMarkerEnd;
 

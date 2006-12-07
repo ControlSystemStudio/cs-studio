@@ -18,9 +18,8 @@ public abstract class AbstractAddPVAction extends Action
 		{
 			if (name == null  ||  name.length() < 1)
 				return (Messages.EnterPVName);
-			if (name.matches("^[a-zA-Z0-9_:.]+$")) //$NON-NLS-1$
-				return null;
-			return Messages.PVContainsInvalidChars;
+            // Is there a way to check the names validity?
+			return null;
 		}
 	}
 
