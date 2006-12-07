@@ -34,18 +34,8 @@ public abstract class SecurityEvent {
 	/**
 	 * 
 	 */
-	public static int EVENT_1 = 1;
+	public static final int EVENT_1 = 1;
 
-	/**
-	 * 
-	 */
-	public String _rightId;
-
-	/**
-	 * 
-	 */
-	public int _event;
-	
 	/**
 	 * The timestamp in milliseconds.
 	 */
@@ -54,7 +44,7 @@ public abstract class SecurityEvent {
 	/**
 	 * The default-dateformat.
 	 */
-	private final String _dateFormat = "dd.MM.yyyy' - 'HH:mm:ss";
+	private final String _dateFormat = "dd.MM.yyyy' - 'HH:mm:ss"; //$NON-NLS-1$
 	
 	/**
 	 * Constructor.
@@ -103,7 +93,7 @@ public abstract class SecurityEvent {
 	 * @return A representation as a String of the timestamp
 	 */
 	public final String getTimeStampAsString() {
-		return this.getTimeStampAsString(_dateFormat);
+		return getTimeStampAsString(_dateFormat);
 	}
 
 }
