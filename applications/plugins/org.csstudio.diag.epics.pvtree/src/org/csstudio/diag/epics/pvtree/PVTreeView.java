@@ -4,25 +4,28 @@ package org.csstudio.diag.epics.pvtree;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
+import org.csstudio.util.swt.ComboHistoryHelper;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
@@ -31,8 +34,12 @@ import org.eclipse.ui.part.ViewPart;
 public class PVTreeView extends ViewPart
 {
     public static final String ID = PVTreeView.class.getName();
+
+    // Memento tags
+    private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
+    
     /** The root PV name. */
-    private Text pv_name;
+    private Combo pv_name;
     
     private PVTreeModel model;
 
@@ -41,13 +48,7 @@ public class PVTreeView extends ViewPart
     /** Allows 'zoom in' and then going back up via context menu. */
     private DrillDownAdapter drillDownAdapter;
 
-    /** Update the tree with information for a newly entered PV name. */
-    public void setPVName(String new_pv_name)
-    {
-        if (! pv_name.getText().equals(new_pv_name))
-            pv_name.setText(new_pv_name);
-        model.setRootPV(new_pv_name);
-    }
+    private ComboHistoryHelper pv_name_helper;
 
     /** Create the GUI. */
     public void createPartControl(Composite parent)
@@ -62,21 +63,20 @@ public class PVTreeView extends ViewPart
         gd = new GridData();
         l.setLayoutData(gd);
         
-        pv_name = new Text(parent, SWT.LEFT);
+        pv_name = new Combo(parent, SWT.LEFT);
         pv_name.setToolTipText("Enter PV name, press <RETURN>");
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         pv_name.setLayoutData(gd);
-        pv_name.addSelectionListener(new SelectionListener()
+        pv_name_helper =
+            new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
+                                   PV_LIST_TAG, pv_name)
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {   setPVName(pv_name.getText()); }
-
-            public void widgetSelected(SelectionEvent e)
-            {}
-        });
-
+            public void newSelection(String new_pv_name)
+            {   setPVName(new_pv_name); }
+        };
+        
         Tree tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         gd = new GridData();
         gd.horizontalSpan = gl.numColumns;
@@ -112,9 +112,13 @@ public class PVTreeView extends ViewPart
             public void widgetDisposed(DisposeEvent e)
             {
                 model.dispose();
+                pv_name_helper.saveSettings();
             }
         });
         hookContextMenu();
+        
+        // Populate PV list
+        pv_name_helper.loadSettings();
     }
 
     /** Set initial focus. */
@@ -129,6 +133,12 @@ public class PVTreeView extends ViewPart
     {
         model.dispose();
         super.dispose();
+    }
+
+    /** Update the tree with information for a newly entered PV name. */
+    public void setPVName(String new_pv_name)
+    {
+        model.setRootPV(new_pv_name);
     }
 
     private void hookContextMenu()

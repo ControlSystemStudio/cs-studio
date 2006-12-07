@@ -9,11 +9,13 @@ import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDropTarget;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithArchiveDragSource;
+import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.util.swt.AutoSizeColumn;
 import org.csstudio.util.swt.AutoSizeControlListener;
+import org.csstudio.util.swt.ComboHistoryHelper;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -52,6 +54,8 @@ public class ArchiveView extends PlotAwareView
 {
     public static final String ID = ArchiveView.class.getName();
 
+    private static final String URL_LIST_TAG = "url_list"; //$NON-NLS-1$
+
     private ArchiveServer server;
 
     // Sash for the two GUI sub-sections
@@ -73,6 +77,8 @@ public class ArchiveView extends PlotAwareView
     private TableViewer name_table_viewer;
     private ArrayList<NameTableItem> name_table_items =
         new ArrayList<NameTableItem>();
+
+    private ComboHistoryHelper url_helper;
     
     /** Remove selected items from the name_table_viewer. */
     class RemoveAction extends Action
@@ -167,28 +173,13 @@ public class ArchiveView extends PlotAwareView
         gd.horizontalAlignment = SWT.FILL;
         url.setLayoutData(gd);
         url.setEnabled(false);
-        // React whenever an existing entry is selected,
-        // or a new name is entered.
-        // New names are also added to the list.
-        url.addSelectionListener(new SelectionListener()
-        {
-            // Called after <Return> was pressed
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-                Combo combo = (Combo) e.widget;
-                String name = combo.getText();
-                connectToURL(name);
-            }
-
-            // Called after existing entry was picked from list
-            public void widgetSelected(SelectionEvent e)
-            {
-                Combo combo = (Combo) e.widget;
-                String name = combo.getText();
-                connectToURL(name);
-            }
-        });
-        
+        url_helper = new ComboHistoryHelper(
+                                Plugin.getDefault().getDialogSettings(),
+                                URL_LIST_TAG, url)
+                {
+                    public void newSelection(String new_pv_name)
+                    {   connectToURL(new_pv_name); }
+                };
         info = new Button(box, SWT.PUSH);
         info.setText(Messages.Info);
         info.setToolTipText(Messages.Info_TT);
@@ -365,6 +356,9 @@ public class ArchiveView extends PlotAwareView
         connect.setEnabled(true);
         url.setEnabled(true);
         replace_results.setSelection(true);
+        
+        // Load? Or use values from prefs?
+        // url_helper.loadSettings();
     }
 
     @Override
@@ -373,6 +367,13 @@ public class ArchiveView extends PlotAwareView
         url.setFocus();
     }
     
+    @Override
+    public void dispose()
+    {
+        url_helper.saveSettings();
+        super.dispose();
+    }
+
     /** We have a new model because the editor changed. */
     @Override
     protected void updateModel(Model old_model, Model model)

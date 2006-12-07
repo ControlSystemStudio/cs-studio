@@ -7,6 +7,7 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.util.swt.ComboHistoryHelper;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
@@ -22,18 +23,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -49,15 +48,17 @@ import org.eclipse.ui.part.ViewPart;
 public class Probe extends ViewPart implements PVListener
 {
     public static final String ID = Probe.class.getName();
+    private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
     public static final boolean debug = false;
 
     // GUI
-    private Text txt_name = null;
-    private Label lbl_value = null;
-    private Label lbl_time = null;
-    private Button btn_info = null;
-    private Button btn_adjust = null;
-    private Label lbl_status = null;
+    private Combo txt_name;
+    private ComboHistoryHelper name_helper;
+    private Label lbl_value;
+    private Label lbl_time;
+    private Button btn_info;
+    private Button btn_adjust;
+    private Label lbl_status;
 
     /** The process variable that we monitor. */
     private PV pv = null;
@@ -173,27 +174,25 @@ public class Probe extends ViewPart implements PVListener
         gd = new GridData();
         label.setLayoutData(gd);
 
-        txt_name = new Text(parent, SWT.SINGLE | SWT.BORDER);
+        txt_name = new Combo(parent, SWT.SINGLE | SWT.BORDER);
         txt_name.setToolTipText(Messages.S_EnterPVName);
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;
         txt_name.setLayoutData(gd);
-        txt_name.addKeyListener(new KeyAdapter()
+        name_helper = new ComboHistoryHelper(
+                        Plugin.getDefault().getDialogSettings(),
+                        PV_LIST_TAG, txt_name)
         {
-            public void keyPressed(KeyEvent ev) 
-            {   // Only do CR
-                if (ev.character == SWT.CR)
-                {
-                    setPVName(txt_name.getText());
-                }
-            }
-        });
+            public void newSelection(String pv_name) 
+            {   setPVName(pv_name);       }
+        };
         txt_name.addDisposeListener(new DisposeListener()
         {
             public void widgetDisposed(DisposeEvent e)
             {
                 disposeChannel();
+                name_helper.saveSettings();
             }
         });
         
@@ -232,9 +231,7 @@ public class Probe extends ViewPart implements PVListener
         btn_adjust.addSelectionListener(new SelectionAdapter()
         {
             public void widgetSelected(SelectionEvent ev) 
-            {
-                adjustValue();
-            }
+            {   adjustValue();   }
         });
 
         // Row 3
@@ -272,6 +269,8 @@ public class Probe extends ViewPart implements PVListener
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;
         lbl_status.setLayoutData(gd);
+        
+        name_helper.loadSettings();
     }
 
     /** Update the PV name that is probed.
