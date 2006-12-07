@@ -10,6 +10,7 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.csstudio.value.Severity;
+import org.csstudio.value.Value;
 import org.csstudio.value.ValueUtil;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.widgets.Display;
@@ -64,10 +65,10 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     private PV pv;
     
     /** Most recent value. */
-    private String value = null;
+    private volatile String value = null;
    
     /** Most recent severity. */
-    private Severity severity = null;
+    private volatile Severity severity = null;
     
     private PVListener pv_listener = new PVListener()
     {
@@ -82,7 +83,9 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             try
             {
-                value = ValueUtil.formatValueAndSeverity(pv.getValue());
+                Value pv_value = pv.getValue();
+                value = ValueUtil.formatValueAndSeverity(pv_value);
+                severity = pv_value.getSeverity();
                 updateValue();
             }
             catch (Exception e)
