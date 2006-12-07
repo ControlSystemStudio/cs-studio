@@ -30,8 +30,6 @@ import org.csstudio.platform.ui.internal.dnd.ControlSystemItemTransfer;
 import org.csstudio.platform.util.ControlSystemItemPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TextTransfer;
