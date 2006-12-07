@@ -95,7 +95,7 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 		_workbenchWindowconfigurer.setTitle(Messages.getString("CssWorkbenchAdvisor.WINDOW_TITLE")); //$NON-NLS-1$
 		_workbenchWindowconfigurer.setShowPerspectiveBar(true);
 		_workbenchWindowconfigurer.setShowMenuBar(true);
-		_workbenchWindowconfigurer.setShowCoolBar(false);
+		_workbenchWindowconfigurer.setShowCoolBar(true);
 		_workbenchWindowconfigurer.setShowFastViewBars(false);
 		_workbenchWindowconfigurer.setShowProgressIndicator(false);
 		_workbenchWindowconfigurer.setShowStatusLine(true);

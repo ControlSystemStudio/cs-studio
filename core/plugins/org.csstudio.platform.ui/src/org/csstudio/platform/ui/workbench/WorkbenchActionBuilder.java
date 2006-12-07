@@ -27,8 +27,10 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
@@ -139,6 +141,13 @@ public final class WorkbenchActionBuilder {
 	public void populateCoolBar(final IActionBarConfigurer configurer) {
 		ICoolBarManager coolbar = configurer.getCoolBarManager();
 		coolbar.add(_documentationAction);
+		
+		IToolBarManager fileToolBar = new ToolBarManager();
+		fileToolBar.add(_saveAction);
+		fileToolBar.add(new Separator());
+		
+        // Add to the cool bar manager
+		coolbar.add(fileToolBar);		
 	}
 
 	/**
