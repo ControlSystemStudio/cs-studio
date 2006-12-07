@@ -6,4 +6,7 @@
     <fileset name="Alle" enabled="true" check-config-name="CSS Checkstyle Configuration" local="true">
         <file-match-pattern match-pattern="." include-pattern="true"/>
     </fileset>
+    <filter name="FilesFromPackage" enabled="false">
+        <filter-data value="src/org/csstudio/platform/internal/util"/>
+    </filter>
 </fileset-config>

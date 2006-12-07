@@ -90,7 +90,7 @@ public final class UserManagementService {
 	 */
 	public void setUser(final IUser user) {
 		_user = user;
-		CentralLogger.getInstance().info(this, "User " + user.getName() + " logged in.");
+		CentralLogger.getInstance().info(this, "User " + user.getName() + " logged in."); //$NON-NLS-1$ //$NON-NLS-2$
 		notifyListener(new UserManagementEvent());
 	}
 
