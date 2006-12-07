@@ -33,10 +33,9 @@ import org.csstudio.platform.security.ExecutionService;
 import org.csstudio.platform.ui.internal.security.WidgetConfiguration;
 import org.eclipse.swt.widgets.Control;
 
-
 /**
  * This class (de-)activates the registered widgets if the current user has the
- * permission for the id of the widget. 
+ * permission for the id of the widget.
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  * 
@@ -82,27 +81,35 @@ public final class WidgetManagementService implements IUserManagementListener,
 	}
 
 	/**
-	 * Register the given control for widget management. Controls can only be registered once.
+	 * Register the given control for widget management. Controls can only be
+	 * registered once.
 	 * 
-	 * @param control The control to register
-	 * @param rightID The right necessary to use the control
-	 * @param changeEnablement Enable or disable the control depending on user permission.
-	 * @param changeVisibility View or hide the control  depending on user permission.
+	 * @param control
+	 *            The control to register
+	 * @param rightID
+	 *            The right necessary to use the control
+	 * @param changeEnablement
+	 *            Enable or disable the control depending on user permission.
+	 * @param changeVisibility
+	 *            View or hide the control depending on user permission.
 	 */
-	public void registerControl(Control control, String rightID, boolean changeEnablement, boolean changeVisibility) {
+	public void registerControl(final Control control, final String rightID,
+			final boolean changeEnablement, final boolean changeVisibility) {
 		if (_controls.containsKey(control)) {
-			throw new IllegalArgumentException("Control is already registered.");
+			throw new IllegalArgumentException("Control is already registered."); //$NON-NLS-1$
 		}
-		
+
 		_controls.put(control, rightID);
-		_configurations.put(control, new WidgetConfiguration(changeEnablement, changeVisibility));
+		_configurations.put(control, new WidgetConfiguration(changeEnablement,
+				changeVisibility));
 		doRefreshControl(control, rightID);
 	}
 
 	/**
 	 * Unregister the given control from widget management.
 	 * 
-	 * @param control The control to unregister.
+	 * @param control
+	 *            The control to unregister.
 	 */
 	public void unregisterControl(final Control control) {
 		if (_controls.containsKey(control)) {
@@ -124,8 +131,10 @@ public final class WidgetManagementService implements IUserManagementListener,
 	/**
 	 * Performs refresh of controls.
 	 * 
-	 * @param control The control to refresh. 
-	 * @param rightId The right associated with the control.
+	 * @param control
+	 *            The control to refresh.
+	 * @param rightId
+	 *            The right associated with the control.
 	 */
 	private void doRefreshControl(final Control control, final String rightId) {
 		WidgetConfiguration configuration = _configurations.get(control);
@@ -145,8 +154,7 @@ public final class WidgetManagementService implements IUserManagementListener,
 	 * @param event
 	 *            the UserManagementEvent to handle
 	 */
-	public void handleUserManagementEvent(
-			final UserManagementEvent event) {
+	public void handleUserManagementEvent(final UserManagementEvent event) {
 		doRefreshState();
 	}
 

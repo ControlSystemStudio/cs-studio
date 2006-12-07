@@ -49,6 +49,9 @@ public final class ContainerView extends ViewPart {
 	 */
 	public static final String ID = "org.csstudio.platform.developmentsupport.util.ui.ContainerView"; //$NON-NLS-1$
 
+	/**
+	 * The data model that is provided by the tree viewer.
+	 */
 	private List<IAdaptable> _treeModel = DummyContentModelProvider
 			.getInstance().getModel();
 
@@ -73,9 +76,11 @@ public final class ContainerView extends ViewPart {
 				return ((List) element).toArray();
 			}
 
+			/**
+			 * {@inheritDoc}
+			 */
 			@Override
 			public Object[] getChildren(final Object element) {
-				// TODO Auto-generated method stub
 				return super.getChildren(element);
 			}
 		});
@@ -96,6 +101,9 @@ public final class ContainerView extends ViewPart {
 		configureContextMenu();
 	}
 
+	/**
+	 * Equip the tree viewer with drag&drop support.
+	 */
 	private void addDragSupport() {
 		FilteredDragSourceAdapter dragSourceListener = new FilteredDragSourceAdapter(
 				new Class[] { IProcessVariable.class, IArchiveDataSource.class,
@@ -140,33 +148,12 @@ public final class ContainerView extends ViewPart {
 	 * Configures all listeners for the TreeViewer.
 	 */
 	private void configureContextMenu() {
-		MenuManager menuMgr = new MenuManager("", ID);
+		MenuManager menuMgr = new MenuManager("", ID); //$NON-NLS-1$
 		menuMgr.add(new GroupMarker(IWorkbenchIds.GROUP_CSS_MB3));
 		menuMgr.add(new Separator());
 		menuMgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 
 		menuMgr.setRemoveAllWhenShown(true);
-//		menuMgr.addMenuListener(new IMenuListener() {
-//			/**
-//			 * {@inheritDoc}
-//			 */
-//			public void menuAboutToShow(final IMenuManager menuMgr) {
-//				menuMgr.add(new GroupMarker(
-//						IWorkbenchActionConstants.MB_ADDITIONS));
-//				menuMgr.add(new Separator());
-//				menuMgr.add(new GroupMarker(
-//						IWorkbenchActionConstants.GROUP_MANAGING));
-//				menuMgr.add(new Action("Tu watt") {
-//
-//					@Override
-//					public void run() {
-//						super.run();
-//						System.out.println("ss");
-//					}
-//
-//				});
-//			}
-//		});
 
 		Menu contextMenu = menuMgr.createContextMenu(_treeViewer.getTree());
 		_treeViewer.getTree().setMenu(contextMenu);

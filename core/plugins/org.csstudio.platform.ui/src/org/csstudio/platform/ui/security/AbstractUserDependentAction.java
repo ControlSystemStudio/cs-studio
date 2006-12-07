@@ -31,47 +31,52 @@ import org.csstudio.platform.security.ExecutionService;
 import org.eclipse.jface.action.Action;
 
 /**
- * This is the superclass for any Action that depends on the rights of the current user.
- * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende & Stefan Hofer
+ * This is the superclass for any Action that depends on the rights of the
+ * current user.
+ * 
+ * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende & Stefan
+ *         Hofer
  */
-public abstract class AbstractUserDependentAction extends Action implements IUserManagementListener, IRightsManagementListener {
+public abstract class AbstractUserDependentAction extends Action implements
+		IUserManagementListener, IRightsManagementListener {
 
 	/**
 	 * ID of the right necessary to execute this action.
 	 */
 	private String _rightId;
-	
+
 	/**
-	 * Constructor.
-	 * Registers this action as UserManagementListener and RightsManagementListener.
+	 * Constructor. Registers this action as UserManagementListener and
+	 * RightsManagementListener.
+	 * 
+	 * @param rightId
+	 *            ID of the right necessary to execute this action.
 	 */
-	public AbstractUserDependentAction(String rightId) {
+	public AbstractUserDependentAction(final String rightId) {
 		assert rightId != null;
 		_rightId = rightId;
-		
+
 		UserManagementService.getInstance().addUserManagementListener(this);
 		RightsManagementService.getInstance().addRightsManagementListener(this);
 		updateState();
 	}
 
-
 	/**
 	 * @return ID of the right necessary to execute this action.
 	 */
-	protected String getRightId() {
+	protected final String getRightId() {
 		return _rightId;
 	}
-	
+
 	/**
 	 * Updates state depending on user permission.
 	 */
 	protected void updateState() {
 		setEnabled(ExecutionService.getInstance().canExecute(getRightId()));
 	}
-	
 
 	/**
-	 * {@inheritDoc} 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public final void run() {
@@ -79,43 +84,39 @@ public abstract class AbstractUserDependentAction extends Action implements IUse
 			doWork();
 		}
 	}
-	
+
 	/**
-	 * This method holds the protected code.
-	 * It's called by <code>run()</code>.
+	 * This method holds the protected code. It's called by <code>run()</code>.
 	 */
 	protected abstract void doWork();
-	
 
 	/**
 	 * @see org.csstudio.platform.internal.usermanagement.IUserManagementListener#handleUserManagementEvent(org.csstudio.platform.internal.usermanagement.AbstractUserManagementEvent)
-	 * @param event the UserManagementEvent to handle
+	 * @param event
+	 *            the UserManagementEvent to handle
 	 */
 	public final void handleUserManagementEvent(final UserManagementEvent event) {
 		updateState();
 	}
-	
-	
+
 	/**
 	 * @see org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener#handleRightsManagementEvent(org.csstudio.platform.internal.rightsmanagement.AbstractRightsManagementEvent)
-	 * @param event the RightsManagementEvent to handle
+	 * @param event
+	 *            the RightsManagementEvent to handle
 	 */
-	public final void handleRightsManagementEvent(final RightsManagementEvent event) {
+	public final void handleRightsManagementEvent(
+			final RightsManagementEvent event) {
 		updateState();
 	}
 
-	
 	/**
-	 * Removes listeners.
-	 * 
-	 * @throws Throwable 
+	 * {@inheritDoc}
 	 */
 	@Override
-	protected void finalize() throws Throwable {
+	protected final void finalize() throws Throwable {
 		super.finalize();
 		UserManagementService.getInstance().removeListener(this);
 		RightsManagementService.getInstance().removeListener(this);
 	}
 
-		
 }

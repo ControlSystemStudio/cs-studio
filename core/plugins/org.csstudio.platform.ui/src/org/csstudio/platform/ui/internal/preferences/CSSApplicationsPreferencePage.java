@@ -22,7 +22,7 @@ public class CSSApplicationsPreferencePage extends PreferencePage implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Control createContents(final Composite parent) {
+	protected final Control createContents(final Composite parent) {
 		Label label = new Label(parent, SWT.NULL);
 		label.setText(Messages.getString("CSSApplicationsPreferencePage.MESSAGE")); //$NON-NLS-1$
 		return label;
@@ -34,6 +34,5 @@ public class CSSApplicationsPreferencePage extends PreferencePage implements
 	 */
 	public void init(final IWorkbench workbench) {
 		// nothing to do here
-		
 	}
 }

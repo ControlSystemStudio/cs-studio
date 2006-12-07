@@ -103,6 +103,7 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 	 * @return returns the currently selected items, that pass the class types
 	 *         filter
 	 */
+	@SuppressWarnings("unchecked")
 	private List<IControlSystemItem> getFilteredSelection(
 			final List fullSelection) {
 		List<IControlSystemItem> filteredSelection = new ArrayList<IControlSystemItem>();
@@ -142,7 +143,7 @@ public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 				String path = CentralItemFactory.createControlSystemItemPath(
 						item).toPortableString();
 				sb.append(path);
-				sb.append("\n");
+				sb.append("\n"); //$NON-NLS-1$
 			}
 
 			event.data = sb.toString();

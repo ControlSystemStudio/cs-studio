@@ -28,7 +28,7 @@ package org.csstudio.platform.ui.internal.security;
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende & Stefan Hofer
  * 
  */
-public class WidgetConfiguration {
+public final class WidgetConfiguration {
 
 	/**
 	 * Should enablement property be changed?

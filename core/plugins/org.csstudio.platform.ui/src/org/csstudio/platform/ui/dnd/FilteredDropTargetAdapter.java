@@ -73,9 +73,9 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 		// check filters first
 		for (Class clazz : acceptedTypes) {
 			if (!IControlSystemItem.class.isAssignableFrom(clazz)) {
-				throw new IllegalArgumentException("Drag&Drop Filter >>"
+				throw new IllegalArgumentException("Drag&Drop Filter >>" //$NON-NLS-1$
 						+ clazz.getName()
-						+ "<< is not derived from IControlSystemItem.");
+						+ "<< is not derived from IControlSystemItem."); //$NON-NLS-1$
 			}
 		}
 		_acceptedTypes = acceptedTypes;
@@ -101,6 +101,7 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 	 *            the items, that are about to be dropped
 	 * @return all items, that pass the filter
 	 */
+	@SuppressWarnings("unchecked")
 	private List<IControlSystemItem> getFilteredItems(
 			final List<IControlSystemItem> providedItems) {
 
@@ -143,7 +144,7 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 		if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
 			String tmp = (String)event.data;
 
-			String[] rows = tmp.split("\n");
+			String[] rows = tmp.split("\n"); //$NON-NLS-1$
 
 			for (String row : rows) {
 				ControlSystemItemPath path = ControlSystemItemPath
@@ -225,7 +226,7 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 				String tmp = (String) TextTransfer.getInstance().nativeToJava(
 						event.currentDataType);
 
-				String[] rows = tmp.split("\n");
+				String[] rows = tmp.split("\n"); //$NON-NLS-1$
 
 				for (String row : rows) {
 					ControlSystemItemPath path = ControlSystemItemPath

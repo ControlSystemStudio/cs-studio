@@ -22,7 +22,6 @@
 package org.csstudio.platform.ui.dnd;
 
 import org.csstudio.platform.ui.internal.dnd.ControlSystemItemTransfer;
-import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.TextTransfer;

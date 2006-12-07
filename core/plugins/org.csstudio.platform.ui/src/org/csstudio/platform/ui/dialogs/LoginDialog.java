@@ -105,7 +105,7 @@ public class LoginDialog extends TitleAreaDialog {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void okPressed() {
+	protected final void okPressed() {
 		UserManagementService.getInstance().setUser(new User(_username.getText(), _password.getText()));
 		super.okPressed();
 	}

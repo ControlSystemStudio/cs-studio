@@ -42,14 +42,14 @@ public abstract class AbstractUserDependentActionDelegate extends AbstractUserDe
 	 * 
 	 * @param rightId ID of the right necessary to execute this action.
 	 */
-	public AbstractUserDependentActionDelegate(String rightId) {
+	public AbstractUserDependentActionDelegate(final String rightId) {
 		super(rightId);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void run(IAction action) {
+	public final void run(final IAction action) {
 		_action = action;
 		updateState();
 		run();
@@ -58,7 +58,7 @@ public abstract class AbstractUserDependentActionDelegate extends AbstractUserDe
 	/**
 	 * {@inheritDoc}
 	 */
-	public void selectionChanged(IAction action, ISelection selection) {
+	public final void selectionChanged(final IAction action, final ISelection selection) {
 		_action = action;
 		updateState();
 	}
@@ -67,7 +67,7 @@ public abstract class AbstractUserDependentActionDelegate extends AbstractUserDe
 	 * {@inheritDoc} 
 	 */
 	@Override
-	protected void updateState() {
+	protected final void updateState() {
 		if (_action != null) {
 			_action.setEnabled(ExecutionService.getInstance().canExecute(getRightId()));
 		}

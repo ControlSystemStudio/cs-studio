@@ -11,31 +11,27 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * The root page for all CSS platform preference pages.
- *   
+ * 
  * @author Stefan Hofer
- *
+ * 
  */
 public class CSSPlatformPreferencePage extends PreferencePage implements
-IWorkbenchPreferencePage {
-
+		IWorkbenchPreferencePage {
 	/**
 	 * 
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Control createContents(final Composite parent) {
+	protected final Control createContents(final Composite parent) {
 		Label label = new Label(parent, SWT.NULL);
-		label.setText(Messages
-				.getString("CSSPlatformPreferencePage.MESSAGE")); //$NON-NLS-1$
+		label.setText(Messages.getString("CSSPlatformPreferencePage.MESSAGE")); //$NON-NLS-1$
 		return label;
 	}
 
 	/**
-	 * 
 	 * {@inheritDoc}
 	 */
 	public void init(final IWorkbench workbench) {
 		// nothing to do here
-		
 	}
 }

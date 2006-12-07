@@ -29,31 +29,31 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 /**
- * An action that shows a login dialog. This is just used for demonstration purposes.
+ * An action that shows a login dialog. This is just used for demonstration
+ * purposes.
  * 
  * @author Stefan Hofer & Sven Wende
  */
-public class LoginAction implements IWorkbenchWindowActionDelegate {
+public final class LoginAction implements IWorkbenchWindowActionDelegate {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void dispose() {
 		// nothing to do
-
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(IWorkbenchWindow window) {
+	public void init(final IWorkbenchWindow window) {
 		// nothing to do
-
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void run(IAction action) {
+	public void run(final IAction action) {
 		LoginDialog dialog = new LoginDialog(Display.getCurrent()
 				.getActiveShell());
 		dialog.open();
@@ -62,9 +62,8 @@ public class LoginAction implements IWorkbenchWindowActionDelegate {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void selectionChanged(IAction action, ISelection selection) {
+	public void selectionChanged(final IAction action, final ISelection selection) {
 		// nothing to do
-
 	}
 
 }
