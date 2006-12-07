@@ -17,16 +17,6 @@ public final class LabelElement extends DisplayModelElement {
 	public static final String ID = "element.label";
 
 	/**
-	 * The default value of the Y coordinate property.
-	 */
-	private static final int DEFAULT_Y = 100;
-
-	/**
-	 * The default value of the X coordinate property.
-	 */
-	private static final int DEFAULT_X = 100;
-
-	/**
 	 * The default value of the height property.
 	 */
 	private static final int DEFAULT_HEIGHT = 20;
@@ -47,7 +37,6 @@ public final class LabelElement extends DisplayModelElement {
 	 */
 	public LabelElement() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		setLocation(DEFAULT_X, DEFAULT_Y);
 	}
 
 	/**
