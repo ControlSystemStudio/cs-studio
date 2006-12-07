@@ -19,4 +19,10 @@
            class="org.csstudio.sds.components.ui.internal.editparts.PolygonEditPart"
            typeId="element.polygon"/>
   </extension>
+  <extension
+        point="org.csstudio.sds.ui.graphicalFeedbackFactories">
+     <graphicalFeedbackFactory
+           class="org.csstudio.sds.components.ui.internal.feedback.PolygonFeedbackFactory"
+           typeId="element.polygon"/>
+  </extension>
 </plugin>

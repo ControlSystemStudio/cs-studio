@@ -51,7 +51,12 @@ public class PolygonCreationTool extends TargetingTool {
 		setFactory(new CreationFactory() {
 
 			public Object getNewObject() {
-				return new PolygonElement();
+				PolygonElement polygon = new PolygonElement();
+				PointList points = getCreateRequest().getPoints();
+				
+				polygon.setPoints(points);
+				
+				return polygon;
 			}
 
 			public Object getObjectType() {
@@ -349,11 +354,12 @@ public class PolygonCreationTool extends TargetingTool {
 	 */
 	@Override
 	protected void updateTargetRequest() {
-		CreateRequest req = getCreateRequest();
+		PolygonRequest req = getCreateRequest();
 		if (isInState(STATE_DRAG_IN_PROGRESS)) {
-			Point loq = getStartLocation();
-			Rectangle bounds = new Rectangle(loq, loq);
-			bounds.union(loq.getTranslated(getDragMoveDelta()));
+//			Point loq = getStartLocation();
+//			Rectangle bounds = new Rectangle(loq, loq);
+//			bounds.union(loq.getTranslated(getDragMoveDelta()));
+			Rectangle bounds = req.getPoints().getBounds();
 			req.setSize(bounds.getSize());
 			req.setLocation(bounds.getLocation());
 			req.getExtendedData().clear();

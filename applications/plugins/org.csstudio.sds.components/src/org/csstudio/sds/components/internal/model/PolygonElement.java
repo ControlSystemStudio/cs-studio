@@ -4,6 +4,7 @@ import org.csstudio.sds.model.DataTypeEnum;
 import org.csstudio.sds.model.DisplayModelElement;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * A polygon model element.
@@ -80,7 +81,8 @@ public final class PolygonElement extends DisplayModelElement {
 	 */
 	@Override
 	public void setSize(final int width, final int height) {
-
+		int targetW = Math.max(10, width);
+		int targetH = Math.max(10, height);
 		PointList pointList = getPoints();
 		double oldW = pointList.getBounds().width;
 		double oldH = pointList.getBounds().height;
@@ -94,23 +96,22 @@ public final class PolygonElement extends DisplayModelElement {
 			int y = pointList.getPoint(i).y;
 
 			Point newPoint = new Point(x, y);
-			if (oldW != 0 && oldH != 0) {
+			if (oldW > 0 && oldH > 0) {
 				double oldRelX = (x - topLeftX) / oldW;
 				double oldRelY = (y - topLeftY) / oldH;
 
-				double newX = topLeftX + (oldRelX * width);
-				double newY = topLeftY + (oldRelY * height);
+				double newX = topLeftX + (oldRelX * targetW);
+				double newY = topLeftY + (oldRelY * targetH);
 				newPoint = new Point((int) newX, (int) newY);
 			}
 
 			newPoints.addPoint(newPoint);
 		}
 
-		System.out.println("OLD " + width + ":" + height + " NEW "
-				+ newPoints.getBounds().width + ":"
-				+ newPoints.getBounds().height);
 		setPoints(newPoints);
-		super.setSize(width, height);
+		
+		Rectangle newBounds = newPoints.getBounds();
+		super.setSize(newBounds.width, newBounds.height);
 	}
 
 	/**
