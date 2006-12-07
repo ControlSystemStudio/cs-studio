@@ -6,4 +6,10 @@
     <fileset name="Alle" enabled="true" check-config-name="CSS Checkstyle Configuration" local="true">
         <file-match-pattern match-pattern="." include-pattern="true"/>
     </fileset>
+    <filter name="FilesFromPackage" enabled="true">
+        <filter-data value="src/org/csstudio/platform/ui/internal/dataexchange"/>
+        <filter-data value="src/org/csstudio/platform/ui/internal/dataexchange/demo"/>
+        <filter-data value="src/org/csstudio/platform/ui/internal/vafada"/>
+        <filter-data value="src/org/csstudio/platform/ui/internal/vafada/swtcalendar"/>
+    </filter>
 </fileset-config>

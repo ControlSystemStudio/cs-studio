@@ -277,7 +277,7 @@ public final class Timestamp implements ITimestamp {
      *  @see #fromPieces(int, int, int, int, int, int, long)
      *  @see #toPieces()
      */
-    public static Timestamp fromPieces(long pieces[])
+    public static Timestamp fromPieces(long[] pieces)
     {
         return Timestamp.fromPieces((int)pieces[0], (int)pieces[1],
                         (int)pieces[2], (int)pieces[3],
@@ -311,7 +311,7 @@ public final class Timestamp implements ITimestamp {
 		NumberFormat fmt = NumberFormat.getIntegerInstance();
 		fmt.setGroupingUsed(false);
 		
-		long pieces[] = toPieces();
+		long[] pieces = toPieces();
 		
 		// YYYY
 		fmt.setMinimumIntegerDigits(4);
