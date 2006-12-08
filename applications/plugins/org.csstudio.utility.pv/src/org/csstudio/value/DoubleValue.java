@@ -1,5 +1,6 @@
 package org.csstudio.value;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import org.csstudio.platform.util.ITimestamp;
@@ -34,22 +35,39 @@ public class DoubleValue extends Value
 	public double getValue()
 	{	return values[0];	}
 	
-	public String format()
+	public String format(Format how, int precision)
 	{
-	    NumericMetaData num_meta = (NumericMetaData)getMetaData();
 		StringBuffer buf = new StringBuffer();
 		if (getSeverity().hasValue())
 		{
-            NumberFormat fmt = NumberFormat.getNumberInstance();
-            fmt.setMinimumFractionDigits(num_meta.getPrecision());
-            fmt.setMaximumFractionDigits(num_meta.getPrecision());
-			buf.append(fmt.format(values[0]));
-			for (int i = 1; i < values.length; i++)
-			{
-				buf.append(Messages.ArrayElementSeparator);
-				buf.append(fmt.format(values[i]));
-			}
-		}
+            NumberFormat fmt;
+            if (how == Format.Exponential)
+            {   // Is there a better way to get this silly format?
+                StringBuffer pattern = new StringBuffer(10);
+                pattern.append("0."); //$NON-NLS-1$
+                for (int i=0; i<precision; ++i)
+                    pattern.append('0');
+                pattern.append("E0"); //$NON-NLS-1$
+                fmt = new DecimalFormat(pattern.toString());
+            }
+            else
+            {
+                fmt = NumberFormat.getNumberInstance();
+                if (how == Format.Default)
+                {
+                    NumericMetaData num_meta = (NumericMetaData)getMetaData();
+                    precision = num_meta.getPrecision();
+                }
+                fmt.setMinimumFractionDigits(precision);
+                fmt.setMaximumFractionDigits(precision);
+            }
+            buf.append(fmt.format(values[0]));
+            for (int i = 1; i < values.length; i++)
+            {
+                buf.append(Messages.ArrayElementSeparator);
+                buf.append(fmt.format(values[i]));
+            }
+        }
 		else
 			buf.append(Messages.NoValue);
 		return buf.toString();

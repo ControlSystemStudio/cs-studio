@@ -26,7 +26,7 @@ public class StringValue extends Value
 		return value;
 	}
 	
-	public String format()
+	public String format(Format how, int precision)
 	{
 		if (getSeverity().hasValue())
             return value;

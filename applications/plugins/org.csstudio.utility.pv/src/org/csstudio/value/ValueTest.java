@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.value.Value.Format;
 
 /** Some very basic tests of the Sample implementation.
  *  @author Kay Kasemir
@@ -78,5 +79,10 @@ public class ValueTest extends TestCase
         
         Assert.assertEquals("3.140", a.format());
         Assert.assertEquals("42.000", c.format());
-	}
+
+        Assert.assertEquals("3.1400", a.format(Format.Decimal, 4));
+        Assert.assertEquals("3", a.format(Format.Decimal, 0));
+        Assert.assertEquals("3.14E0", a.format(Format.Exponential, 2));
+        Assert.assertEquals("3.140E0", a.format(Format.Exponential, 3));
+    }
 }

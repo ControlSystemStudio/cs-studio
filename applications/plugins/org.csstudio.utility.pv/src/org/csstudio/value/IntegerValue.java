@@ -30,7 +30,7 @@ public class IntegerValue extends Value
 	public int getValue()
 	{	return values[0];	}
 	
-	public String format()
+	public String format(Format how, int precision)
 	{
 	    StringBuffer buf = new StringBuffer();
 		if (getSeverity().hasValue())

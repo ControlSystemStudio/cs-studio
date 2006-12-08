@@ -4,22 +4,19 @@
 package org.csstudio.trends.databrowser.exportview;
 
 import java.io.PrintWriter;
-import java.text.NumberFormat;
 import java.util.Iterator;
 
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.cache.ArchiveCache;
 import org.csstudio.archive.crawl.RawValueIterator;
-import org.csstudio.archive.crawl.ValueIterator;
 import org.csstudio.archive.crawl.SpreadsheetIterator;
+import org.csstudio.archive.crawl.ValueIterator;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelSamples;
-import org.csstudio.value.EnumValue;
-import org.csstudio.value.StringValue;
 import org.csstudio.value.Value;
 import org.csstudio.value.ValueUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -40,14 +37,10 @@ class ExportJob extends Job
     {
         Plot, Raw, Average
     };
-    enum Format
-    {
-        Default, Decimal, Exponential
-    };
     private final Source source;
     private final boolean format_spreadsheet;
     private final boolean format_severity;
-    private final Format format;
+    private final Value.Format format;
     private final int precision;
 
     private final String filename;
@@ -67,7 +60,7 @@ class ExportJob extends Job
                     double seconds,
                     boolean format_spreadsheet,
                     boolean format_severity,
-                    Format format,
+                    Value.Format format,
                     int precision,
                     String filename)
     {
@@ -209,7 +202,8 @@ class ExportJob extends Job
         out.println(Messages.Comment + Messages.StartLabel + start);
         out.println(Messages.Comment + Messages.EndLabel + end);
         out.println(Messages.Comment + Messages.SourceLabel + source);
-        out.println(Messages.Comment + Messages.OutputLabel + format_spreadsheet);
+        out.println(Messages.Comment + Messages.Spreadsheet + format_spreadsheet);
+        out.println(Messages.Comment + Messages.IncludeSeverity + format_severity);
         out.println(Messages.Comment + Messages.FormatLabel + format);
         out.println(Messages.Comment + Messages.IncludeSeverity + format_severity);
     }
@@ -244,53 +238,21 @@ class ExportJob extends Job
     /** Format one value, according to the format/precision settings,
      *  maybe with severity/status info.
      */
-    private String formatValue(Value sample)
+    private String formatValue(Value value)
     {
-        String value;
-        if (sample == null)
-            value = Messages.NoDataMarker;
+        String text;
+        if (value == null)
+            text = Messages.NoDataMarker;
         else
-        {
-            if (format == Format.Default  ||
-                sample instanceof StringValue || sample instanceof EnumValue)
-            {   // Handles all types, including arrays
-                value = sample.format();
-            }
-            else
-            {   // Manually format each array element from a 'double'
-                StringBuffer buf = new StringBuffer();
-                int N = ValueUtil.getSize(sample);
-                for (int i=0; i<N; ++i)
-                {
-                    if (i > 0)
-                        buf.append(Messages.ColSep);
-                    final double number = ValueUtil.getDouble(sample, i);
-                    if (Double.isInfinite(number))
-                        buf.append(Messages.NoDataMarker);
-                    else if (format == Format.Decimal)
-                    {
-                        NumberFormat fmt = NumberFormat.getNumberInstance();
-                        fmt.setMinimumFractionDigits(precision);
-                        fmt.setMaximumFractionDigits(precision);
-                        buf.append(fmt.format(number));
-                    }
-                    else // format == Format.Exponential
-                    {
-                        final String fmt = "%." + precision + "e"; //$NON-NLS-1$//$NON-NLS-2$
-                        buf.append(String.format(fmt, number));
-                    }
-                }
-                value = buf.toString();
-            }
-        }
+            text = value.format(format, precision);
         // value is set, maybe add severity/status.
         if (format_severity)
         {
-            String info = (sample == null) ? "" : ValueUtil.getInfo(sample); //$NON-NLS-1$
+            String info = (value == null) ? "" : ValueUtil.getInfo(value); //$NON-NLS-1$
             if (info == null)
                 info = ""; //$NON-NLS-1$
-            return value + Messages.ColSep + info;
+            return text + Messages.ColSep + info;
         }
-        return value;
+        return text;
     }
 }

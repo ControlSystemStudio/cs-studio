@@ -31,7 +31,7 @@ public class EnumValue extends Value
 	public int getValue()
 	{	return values[0];  }
 	
-	public String format()
+	public String format(Format how, int precision)
 	{
 		EnumeratedMetaData enum_meta = (EnumeratedMetaData)getMetaData();
 		StringBuffer buf = new StringBuffer();

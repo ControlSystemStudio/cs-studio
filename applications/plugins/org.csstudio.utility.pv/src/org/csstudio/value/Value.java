@@ -53,15 +53,38 @@ abstract public class Value
     final public MetaData getMetaData()
     {   return meta_data;    }
     
-    /** Format the value as a string, using the meta data.
+    /** @see #format(Format, int) */
+    public enum Format
+    {
+        /** Use all the MetaData information. */
+        Default,
+        /** Use decimal representation. */
+        Decimal,
+        /** Use exponential notation. */
+        Exponential
+    };
+
+    /** Format the value as a string.
      *  <p>
      *  This means only the numeric or string value.
      *  Not the timestamp, not the severity and status.
      *  <p>
+     *  @param how Detail on how to format.
+     *  @param precision Might be used by some format types.
      *  @return This Value's value as a string.
      *  @see #toString() 
      */
-	abstract public String format();
+    abstract public String format(Format how, int precision);
+    
+    /** Format the value via the Default format.
+     *  Typically this means: using the meta data.
+     *  <p>
+     *  @return This Value's value as a string.
+     *  @see #format(Format, int)
+     *  @see #toString() 
+     */
+	final public String format()
+    {   return format(Format.Default, -1); }
     
     /** Format the Value as a string.
      *  <p>
@@ -71,7 +94,7 @@ abstract public class Value
      *  @return This Value as a string.
      *  @see #format() 
      */
-    public String toString()
+    final public String toString()
     {
         StringBuffer buffer = new StringBuffer();
         buffer.append(getTime().toString());
