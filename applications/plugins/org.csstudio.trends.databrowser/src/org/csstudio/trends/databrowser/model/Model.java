@@ -174,7 +174,7 @@ public class Model
      *  @param green,
      *  @param blue The color to use.
      *  @param line_width The line width.
-     *  @return Returns the newly added chart item.
+     *  @return Returns the newly added chart item, or <code>null</code>.
      */
     private IModelItem add(String pv_name, int axis_index,
             int red, int green, int blue, int line_width)

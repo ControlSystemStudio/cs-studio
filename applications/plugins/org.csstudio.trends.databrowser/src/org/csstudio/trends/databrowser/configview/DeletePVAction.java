@@ -43,11 +43,25 @@ public class DeletePVAction extends Action
 	public void run()
 	{
         IModelItem items[] = config.getSelectedModelEntries();
-		if (items == null)
-			return;
+        if (items == null)
+            return;
         Model model = config.getModel();
         if (model == null)
             return;
+        // The act of invoking this action via a context menu
+        // may also start a cell editor on the PV name.
+        // The 'refresh' caused by the item removal
+        // will cause that editor to think that somebody just entered
+        // a name.
+        // The result: It re-enters the PV Name that we just deleted!
+        // At least that's what I saw happening when invoking the
+        // context menu with 'delete' on OS X via conrol-click.
+        // With a 3-button mouse, the editor never gets invoked
+        // on the 'right' button.
+        //
+        // Anyway: Close any editor before proceeding,
+        // since that seems to help in all cases.
+        config.getPVTableViewer().cancelEditing();
 		for (int i = 0; i < items.length; i++)
             model.remove(items[i].getName());
 	}
