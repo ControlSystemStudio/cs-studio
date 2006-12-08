@@ -33,6 +33,12 @@
             icon="icons/polygon.gif"
             name="Polygon"
             typeId="element.polygon"/>
+      <modelElementFactory
+            class="org.csstudio.sds.components.internal.model.PolylineElementFactory"
+            description="Polyline"
+            icon="icons/polyline.gif"
+            name="Polyline"
+            typeId="element.polyline"/>
    </extension>
 
 </plugin>

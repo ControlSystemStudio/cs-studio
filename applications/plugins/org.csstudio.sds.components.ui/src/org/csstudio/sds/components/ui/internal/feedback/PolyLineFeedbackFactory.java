@@ -1,7 +1,7 @@
 package org.csstudio.sds.components.ui.internal.feedback;
 
 import org.csstudio.sds.components.internal.model.PointListHelper;
-import org.csstudio.sds.components.internal.model.PolygonElement;
+import org.csstudio.sds.components.internal.model.PolylineElement;
 import org.csstudio.sds.model.DisplayModelElement;
 import org.csstudio.sds.ui.feedback.IGraphicalFeedbackFactory;
 import org.eclipse.draw2d.ColorConstants;
@@ -9,6 +9,7 @@ import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polygon;
+import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Insets;
@@ -18,19 +19,19 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.requests.CreateRequest;
 
 /**
- * Graphical feedback factory for polygon elements.
+ * Graphical feedback factory for polyline elements.
  * 
  * @author Sven Wende
  */
-public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
+public final class PolyLineFeedbackFactory implements IGraphicalFeedbackFactory {
 	/**
 	 * {@inheritDoc}
 	 */
 	public IFigure createDragSourceFeedbackFigure(
 			final DisplayModelElement model, final Rectangle initalBounds) {
-		PolygonElement polygonElement = (PolygonElement) model;
-		PointList points = polygonElement.getPoints();
-		RectangleWithPolygonFigure r = new RectangleWithPolygonFigure(points);
+		PolylineElement polyLineElement = (PolylineElement) model;
+		PointList points = polyLineElement.getPoints();
+		RectangleWithPolyLineFigure r = new RectangleWithPolyLineFigure(points);
 		FigureUtilities.makeGhostShape(r);
 		r.setLineStyle(Graphics.LINE_DOT);
 		r.setForegroundColor(ColorConstants.white);
@@ -53,15 +54,16 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 	 */
 	public Shape createSizeOnDropFeedback(final CreateRequest createRequest) {
 		assert createRequest instanceof PolygonRequest : "createRequest instanceof PolygonRequest";
-		Polygon polygon = new Polygon();
+		Polyline polyline = new Polyline();
 
 		PointList points = ((PolygonRequest) createRequest).getPoints();
 
 		assert points != null;
 
-		polygon.setPoints(points);
+		polyline.setPoints(points);
 
-		return polygon;
+		polyline.setLineWidth(4);
+		return polyline;
 	}
 
 	/**
@@ -71,32 +73,32 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 			final IFigure feedbackFigure, final Insets insets) {
 		assert createRequest instanceof PolygonRequest : "createRequest instanceof PolygonRequest";
 		assert feedbackFigure instanceof Polygon : "feedbackFigure instanceof Polygon";
-		Polygon polygon = (Polygon) feedbackFigure;
+		Polyline polyline = (Polyline) feedbackFigure;
 		PolygonRequest polygonRequest = (PolygonRequest) createRequest;
 
 		PointList points = polygonRequest.getPoints();
-		polygon.setPoints(points);
+		polyline.setPoints(points);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Class getCreationTool() {
-		return PolygonCreationTool.class;
+		return PolylineCreationTool.class;
 	}
 
 	/**
-	 * Custom feedback figure for polygons. The figure shows a rectangle, which
-	 * does also include the shape of the polygon.
+	 * Custom feedback figure for polyglines. The figure shows a rectangle,
+	 * which does also include the shape of the polyline.
 	 * 
 	 * @author Sven Wende
 	 * 
 	 */
-	class RectangleWithPolygonFigure extends RectangleFigure {
+	class RectangleWithPolyLineFigure extends RectangleFigure {
 		/**
-		 * The "included" polygon.
+		 * The "included" polyline.
 		 */
-		private Polygon _polygon;
+		private Polyline _polyLine;
 
 		/**
 		 * Constructor.
@@ -104,15 +106,15 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 		 * @param points
 		 *            the polygon points
 		 */
-		public RectangleWithPolygonFigure(final PointList points) {
-			_polygon = new Polygon();
+		public RectangleWithPolyLineFigure(final PointList points) {
+			_polyLine = new Polyline();
 
-			FigureUtilities.makeGhostShape(_polygon);
-			_polygon.setLineStyle(Graphics.LINE_DOT);
-			_polygon.setForegroundColor(ColorConstants.white);
+			FigureUtilities.makeGhostShape(_polyLine);
+			_polyLine.setLineStyle(Graphics.LINE_DOT);
+			_polyLine.setForegroundColor(ColorConstants.white);
 
-			_polygon.setPoints(points.getCopy());
-			add(_polygon);
+			_polyLine.setPoints(points.getCopy());
+			add(_polyLine);
 		}
 
 		/**
@@ -121,11 +123,11 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 		@Override
 		public void setBounds(final Rectangle rect) {
 			super.setBounds(rect);
-			PointList points = _polygon.getPoints();
+			PointList points = _polyLine.getPoints();
 			PointList newPoints = PointListHelper.scaleTo(points, rect
 					.getCopy());
 
-			_polygon.setPoints(newPoints);
+			_polyLine.setPoints(newPoints);
 
 		}
 
