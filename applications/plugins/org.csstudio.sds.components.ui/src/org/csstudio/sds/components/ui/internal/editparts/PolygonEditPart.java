@@ -41,6 +41,9 @@ public final class PolygonEditPart extends AbstractSDSEditPart {
 			assert newValue instanceof PointList : "newValue instanceof PointList"; //$NON-NLS-1$
 			PointList points = (PointList) newValue;
 			polygon.setPoints(points);
+		} else if (propertyName.equals(PolygonElement.PROP_FILL_GRADE)) {
+			polygon.setFill((Double) newValue);
+			polygon.repaint();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.internal.model.RectangleElement;
+import org.csstudio.sds.components.internal.model.EllipseElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipse;
 import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
 import org.eclipse.draw2d.IFigure;
@@ -27,7 +27,7 @@ public final class EllipseEditPart extends AbstractSDSEditPart {
 	@Override
 	protected void doRefreshFigure(final String propertyName,
 			final Object newValue) {
-		if (propertyName.equals(RectangleElement.PROP_FILL_PERCENTAGE)) {
+		if (propertyName.equals(EllipseElement.PROP_FILL_PERCENTAGE)) {
 			RefreshableEllipse ellipse = (RefreshableEllipse) getFigure();
 			ellipse.setFill((Double) newValue);
 			ellipse.repaint();

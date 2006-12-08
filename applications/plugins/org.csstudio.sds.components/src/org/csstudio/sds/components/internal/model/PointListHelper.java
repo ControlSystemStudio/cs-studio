@@ -2,6 +2,7 @@ package org.csstudio.sds.components.internal.model;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * A transformator utility for {@link PointList} objects.
@@ -27,10 +28,16 @@ public final class PointListHelper {
 	 *            the new width
 	 * @param height
 	 *            the new height
-	 * @return the transformed point list
+	 * @return a point list copy, which has been scaled to the new size
 	 */
-	public static PointList moveToSize(final PointList points, final int width,
+	public static PointList scaleToSize(final PointList points, final int width,
 			final int height) {
+		assert points != null;
+		if (width <= 0 || height <= 0) {
+			throw new IllegalArgumentException(
+					"Illegal dimensions. Width and height must be > 0.");
+		}
+		
 		double oldW = points.getBounds().width;
 		double oldH = points.getBounds().height;
 		double topLeftX = points.getBounds().x;
@@ -60,8 +67,7 @@ public final class PointListHelper {
 
 	/**
 	 * Moves the origin (0,0) of the coordinate system of all the points in the
-	 * specified point list to the Point (x,y). This updates the position of all
-	 * the points in the point list.
+	 * specified point list to the Point (x,y).
 	 * 
 	 * @param points
 	 *            the point list
@@ -69,13 +75,31 @@ public final class PointListHelper {
 	 *            the x coordinate
 	 * @param y
 	 *            the y coordinate
-	 * @return the transformed point list
+	 * @return a point list copy, which has been scaled to the new location
 	 */
-	public static PointList moveToLocation(final PointList points, final int x,
+	public static PointList scaleToLocation(final PointList points, final int x,
 			final int y) {
 		int oldX = points.getBounds().x;
 		int oldY = points.getBounds().y;
-		points.translate(x - oldX, y - oldY);
-		return points;
+		
+		PointList result = points.getCopy();
+		result.translate(x - oldX, y - oldY);
+		return result;
+	}
+	
+	/**
+	 * Scales the point list to the new bounds.
+	 * 
+	 * @param points the point list
+	 * @param targetBounds the target bounds
+	 * @return a point list copy, which has been scaled to the new bounds
+	 */
+	public static PointList scaleTo(final PointList points, final Rectangle targetBounds) {
+		PointList result = scaleToLocation(points, targetBounds.x,
+				targetBounds.y);
+		result = scaleToSize(result, targetBounds.width, targetBounds.height);
+
+		return result;
+
 	}
 }

@@ -10,6 +10,7 @@ import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polygon;
+import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.PointList;
@@ -28,14 +29,14 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 	 */
 	public IFigure createDragSourceFeedbackFigure(
 			final DisplayModelElement model, final Rectangle initalBounds) {
-		Polygon r = new Polygon();
 		PolygonElement polygonElement = (PolygonElement) model;
-		r.setPoints(polygonElement.getPoints());
+		PointList points = polygonElement.getPoints();
+		RectangleWithPolygonFigure r = new RectangleWithPolygonFigure(points);
 		FigureUtilities.makeGhostShape(r);
 		r.setLineStyle(Graphics.LINE_DOT);
 		r.setForegroundColor(ColorConstants.white);
-		r.setBackgroundColor(ColorConstants.red);
 		r.setBounds(initalBounds);
+
 		return r;
 	}
 
@@ -44,16 +45,8 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 	 */
 	public void showChangeBoundsFeedback(final PrecisionRectangle targetBounds,
 			final IFigure feedbackFigure) {
-		Polygon polygon = (Polygon) feedbackFigure;
-		PointList pointsOld = polygon.getPoints();
-
-		polygon.repaint();
-
-		PointList pointsNew = PointListHelper.moveToLocation(pointsOld,
-				targetBounds.x, targetBounds.y);
-		pointsNew = PointListHelper.moveToSize(pointsNew, targetBounds.width,
-				targetBounds.height);
-		polygon.setPoints(pointsNew);
+		feedbackFigure.translateToRelative(targetBounds);
+		feedbackFigure.setBounds(targetBounds);
 	}
 
 	/**
@@ -91,5 +84,51 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 	 */
 	public Class getCreationTool() {
 		return PolygonCreationTool.class;
+	}
+
+	/**
+	 * Custom feedback figure for polygons. The figure shows a rectangle, which
+	 * does also include the shape of the polygon.
+	 * 
+	 * @author Sven Wende
+	 * 
+	 */
+	class RectangleWithPolygonFigure extends RectangleFigure {
+		/**
+		 * The "included" polygon.
+		 */
+		private Polygon _polygon;
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param points
+		 *            the polygon points
+		 */
+		public RectangleWithPolygonFigure(final PointList points) {
+			_polygon = new Polygon();
+
+			FigureUtilities.makeGhostShape(_polygon);
+			_polygon.setLineStyle(Graphics.LINE_DOT);
+			_polygon.setForegroundColor(ColorConstants.white);
+
+			_polygon.setPoints(points.getCopy());
+			add(_polygon);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setBounds(final Rectangle rect) {
+			super.setBounds(rect);
+			PointList points = _polygon.getPoints();
+			PointList newPoints = PointListHelper.scaleTo(points, rect
+					.getCopy());
+
+			_polygon.setPoints(newPoints);
+
+		}
+
 	}
 }

@@ -26,7 +26,7 @@ public final class PolygonElementFactory implements IModelElementFactory {
 		points.addPoint(80, 90);
 		points.addPoint(80, 1);
 
-		PointListHelper.moveToLocation(points, 100, 100);
+		PointListHelper.scaleToLocation(points, 100, 100);
 
 		polygonElement.setPoints(points);
 

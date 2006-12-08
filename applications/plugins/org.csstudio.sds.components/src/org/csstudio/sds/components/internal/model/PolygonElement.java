@@ -16,9 +16,14 @@ import org.eclipse.draw2d.geometry.Rectangle;
 public final class PolygonElement extends DisplayModelElement {
 
 	/**
-	 * The ID of the fill points property.
+	 * The ID of the points property.
 	 */
 	public static final String PROP_POINTS = "polygon.points";
+
+	/**
+	 * The ID of the fill grade property.
+	 */
+	public static final String PROP_FILL_GRADE = "polygon.fillgrade";
 
 	/**
 	 * The ID of this model element.
@@ -46,6 +51,7 @@ public final class PolygonElement extends DisplayModelElement {
 	protected void configureProperties() {
 		addProperty(PROP_POINTS, "points", DataTypeEnum.POINTLIST,
 				new PointList());
+		addProperty(PROP_FILL_GRADE, "fill grade", DataTypeEnum.DOUBLE, 1.0);
 	}
 
 	/**
@@ -53,12 +59,11 @@ public final class PolygonElement extends DisplayModelElement {
 	 */
 	@Override
 	public String getDoubleTestProperty() {
-		// FIXME: swende: kein Null zurückgeben
-		return null;
+		return PROP_FILL_GRADE;
 	}
 
 	/**
-	 * Sets the specified points for the polygon.
+	 * Sets the specified _points for the polygon.
 	 * 
 	 * @param points
 	 *            the polygon points
@@ -68,9 +73,9 @@ public final class PolygonElement extends DisplayModelElement {
 	}
 
 	/**
-	 * Gets the polygon points.
+	 * Gets the polygon _points.
 	 * 
-	 * @return the polygon points
+	 * @return the polygon _points
 	 */
 	public PointList getPoints() {
 		return (PointList) getProperty(PROP_POINTS).getPropertyValue();
@@ -109,7 +114,7 @@ public final class PolygonElement extends DisplayModelElement {
 		}
 
 		setPoints(newPoints);
-		
+
 		Rectangle newBounds = newPoints.getBounds();
 		super.setSize(newBounds.width, newBounds.height);
 	}

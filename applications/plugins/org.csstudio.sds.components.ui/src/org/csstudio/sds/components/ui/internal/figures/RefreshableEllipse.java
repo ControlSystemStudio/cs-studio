@@ -5,7 +5,6 @@ import org.csstudio.sds.ui.editparts.IRefreshableFigure;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
@@ -39,11 +38,13 @@ public final class RefreshableEllipse extends Ellipse implements
 		Rectangle bounds = getBounds();
 
 		int newW = (int) Math.round(bounds.width * (getFill() / 100));
+
+		graphics.setClip(new Rectangle(bounds.x, bounds.y, newW, bounds.height));
 		graphics.setBackgroundColor(ColorConstants.black);
-		graphics.fillOval(getBounds());
+		graphics.fillOval(bounds);
+		graphics.setClip(new Rectangle(bounds.x+newW, bounds.y, bounds.width-newW, bounds.height));
 		graphics.setBackgroundColor(ColorConstants.blue);
-		graphics.fillOval(new Rectangle(bounds.getLocation(), new Dimension(
-				newW, bounds.height)));
+		graphics.fillOval(bounds);
 	}
 
 	/**

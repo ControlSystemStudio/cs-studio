@@ -358,12 +358,12 @@ public final class PolygonCreationTool extends TargetingTool {
 	 */
 	public final class PolygonRequest extends CreateRequest {
 		/**
-		 * The points of the polygons, that have already been set.
+		 * The _points of the polygons, that have already been set.
 		 */
 		private PointList _points = new PointList();
 
 		/**
-		 * Gets the point list, which contains the polygon points.
+		 * Gets the point list, which contains the polygon _points.
 		 * 
 		 * @return the polygon point list
 		 */
