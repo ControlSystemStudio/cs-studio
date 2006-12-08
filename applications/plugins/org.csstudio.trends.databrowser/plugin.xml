@@ -31,11 +31,12 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            id="org.csstudio.trends.databrowser.ploteditor.PlotEditor"
             class="org.csstudio.trends.databrowser.ploteditor.PlotEditor"
             contributorClass="org.csstudio.trends.databrowser.ploteditor.PlotEditorActionBarContributor"
             default="false"
+            filenames="plt"
             icon="icons/chart.gif"
+            id="org.csstudio.trends.databrowser.ploteditor.PlotEditor"
             name="%Databrowser">
          <contentTypeBinding contentTypeId="org.csstudio.trends.databrowser.DataBrowser"/>
       </editor>

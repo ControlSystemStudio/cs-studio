@@ -5,6 +5,18 @@ package org.csstudio.value;
  */
 public class ValueUtil
 {
+    /** @return Array length of the value. <code>1</code> for scalars. */
+    public static int getSize(Value value)
+    {
+        if (value instanceof DoubleValue)
+            return ((DoubleValue) value).getValues().length;
+        else if (value instanceof IntegerValue)
+            return ((IntegerValue) value).getValues().length;
+        else if (value instanceof EnumValue)
+            return ((EnumValue) value).getValues().length;
+        return 1;
+    }
+    
     /** Try to get a double number from the Sample.
      *  @param value The sample to decode.
      *  @return A double, or <code>Double.NaN</code> in case the Sample type
@@ -14,14 +26,25 @@ public class ValueUtil
      */
     public static double getDouble(Value value)
     {
+        return getDouble(value, 0);
+    }
+
+    /** Try to get a double-typed array element from the Sample.
+     *  @param value The sample to decode.
+     *  @param index The array index, 0 ... getSize()-1.
+     *  @see #getSize(Value)
+     *  @see #getDouble(Value)
+     */
+    public static double getDouble(Value value, int index)
+    {
         if (value.getSeverity().hasValue())
         {
             if (value instanceof DoubleValue)
-                return ((DoubleValue) value).getValue();
+                return ((DoubleValue) value).getValues()[index];
             else if (value instanceof IntegerValue)
-                return ((IntegerValue) value).getValue();
+                return ((IntegerValue) value).getValues()[index];
             else if (value instanceof EnumValue)
-                return ((EnumValue) value).getValue();
+                return ((EnumValue) value).getValues()[index];
             // else:
             // Cannot decode that sample type as a number.
             return Double.NaN;

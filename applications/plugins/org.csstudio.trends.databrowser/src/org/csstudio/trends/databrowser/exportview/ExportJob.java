@@ -136,7 +136,10 @@ class ExportJob extends Job
                         servers[i] = cache.getServer(archives[i].getUrl());
                         keys[i] = archives[i].getKey();
                     }
-                    iters[ch_idx] = new RawValueIterator(
+                    if (archives.length <= 0)
+                        iters[ch_idx] = null;
+                    else
+                        iters[ch_idx] = new RawValueIterator(
                                     servers, keys, item_name, start, end);
                 }
                 if (format_spreadsheet == false)
@@ -250,26 +253,34 @@ class ExportJob extends Job
         {
             if (format == Format.Default  ||
                 sample instanceof StringValue || sample instanceof EnumValue)
-            {
+            {   // Handles all types, including arrays
                 value = sample.format();
             }
             else
-            {
-                final double number = ValueUtil.getDouble(sample);
-                if (Double.isInfinite(number))
-                    value = Messages.NoDataMarker;
-                else if (format == Format.Decimal)
+            {   // Manually format each array element from a 'double'
+                StringBuffer buf = new StringBuffer();
+                int N = ValueUtil.getSize(sample);
+                for (int i=0; i<N; ++i)
                 {
-                    NumberFormat fmt = NumberFormat.getNumberInstance();
-                    fmt.setMinimumFractionDigits(precision);
-                    fmt.setMaximumFractionDigits(precision);
-                    value = fmt.format(number);
+                    if (i > 0)
+                        buf.append(Messages.ColSep);
+                    final double number = ValueUtil.getDouble(sample, i);
+                    if (Double.isInfinite(number))
+                        buf.append(Messages.NoDataMarker);
+                    else if (format == Format.Decimal)
+                    {
+                        NumberFormat fmt = NumberFormat.getNumberInstance();
+                        fmt.setMinimumFractionDigits(precision);
+                        fmt.setMaximumFractionDigits(precision);
+                        buf.append(fmt.format(number));
+                    }
+                    else // format == Format.Exponential
+                    {
+                        final String fmt = "%." + precision + "e"; //$NON-NLS-1$//$NON-NLS-2$
+                        buf.append(String.format(fmt, number));
+                    }
                 }
-                else // format == Format.Exponential
-                {
-                    final String fmt = "%." + precision + "e"; //$NON-NLS-1$//$NON-NLS-2$
-                    value = String.format(fmt, number);
-                }
+                value = buf.toString();
             }
         }
         // value is set, maybe add severity/status.
