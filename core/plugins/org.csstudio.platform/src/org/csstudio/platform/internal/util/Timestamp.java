@@ -278,8 +278,10 @@ public final class Timestamp implements ITimestamp {
 	 * 
 	 * @see #fromPieces(int, int, int, int, int, int, long)
 	 * @see #toPieces()
+	 * @param pieces the pieces
+	 * @return a timestamp
 	 */
-	public static Timestamp fromPieces(long[] pieces) {
+	public static Timestamp fromPieces(final long[] pieces) {
 		return Timestamp.fromPieces((int) pieces[0], (int) pieces[1],
 				(int) pieces[2], (int) pieces[3], (int) pieces[4],
 				(int) pieces[5], pieces[6]);
@@ -305,7 +307,7 @@ public final class Timestamp implements ITimestamp {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String format(int how) {
+	public String format(final int how) {
 		StringBuffer buf = new StringBuffer();
 		FieldPosition pos = new FieldPosition(0);
 		NumberFormat fmt = NumberFormat.getIntegerInstance();
