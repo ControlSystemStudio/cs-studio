@@ -2,6 +2,7 @@ package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.model.DataTypeEnum;
 import org.csstudio.sds.model.DisplayModelElement;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * This class defines an rectangle model element.
@@ -14,12 +15,22 @@ public final class RectangleElement extends DisplayModelElement {
 	/**
 	 * The ID of the fill grade property.
 	 */
-	public static final String PROP_FILL_PERCENTAGE = "rectangle.fillpercentage";
+	public static final String PROP_FILL_PERCENTAGE = "rectangle.fillpercentage"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the background color property.
+	 */
+	public static final String PROP_BACKGROUND_COLOR = "color.background"; //$NON-NLS-1$
 
+	/**
+	 * The ID of the foreground color property.
+	 */
+	public static final String PROP_FOREGROUND_COLOR = "color.foreground"; //$NON-NLS-1$
+	
 	/**
 	 * The ID of this model element.
 	 */
-	public static final String ID = "element.rectangle";
+	public static final String ID = "element.rectangle"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.
@@ -56,8 +67,13 @@ public final class RectangleElement extends DisplayModelElement {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL_PERCENTAGE, "fill percentage",
+		addProperty(PROP_FILL_PERCENTAGE, "Fill Grade",
 				DataTypeEnum.DOUBLE, DEFAULT_FILL_GRADE);
+		addProperty(PROP_BACKGROUND_COLOR, "Background Color", DataTypeEnum.COLOR,
+				new RGB(100, 100, 100));
+		addProperty(PROP_FOREGROUND_COLOR, "Foreground Color", DataTypeEnum.COLOR,
+				new RGB(200, 100, 100));
+
 	}
 
 	/**
