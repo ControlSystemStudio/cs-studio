@@ -52,7 +52,7 @@ public final class LabelElement extends DisplayModelElement {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_LABEL, "Label", DataTypeEnum.DOUBLE, "empty");
+		addProperty(PROP_LABEL, "Label", DataTypeEnum.STRING, "empty");
 	}
 
 	/**
