@@ -22,17 +22,23 @@
 package org.csstudio.platform.ui.internal.workbench;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.CSSPlatformUiPlugin;
+import org.csstudio.platform.ui.util.ImageUtil;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.WorkbenchAdapter;
 
 /**
  * A workbench adapter implementation for workspace resources.
  * 
  * @author Sven Wende
- *
+ * 
  */
 public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter {
 	/**
@@ -53,6 +59,22 @@ public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter {
 			}
 		}
 
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ImageDescriptor getImageDescriptor(Object object) {
+		ImageDescriptor result = null;
+		// return the icon from the editor registry or a default icon, if none such exists
+		if(object instanceof IFile) {
+			result = PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(((IFile)object).getName());
+		} else if (object instanceof IContainer) {
+			result = ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/folder.png");  //$NON-NLS-1$
+		}
+		
 		return result;
 	}
 
