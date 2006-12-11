@@ -33,9 +33,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
@@ -49,8 +52,11 @@ public class Probe extends ViewPart implements PVListener
 {
     public static final String ID = Probe.class.getName();
     private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
+    private static final String PV_TAG = "PVName"; //$NON-NLS-1$
     public static final boolean debug = false;
 
+    private IMemento memento = null;
+    
     // GUI
     private Combo txt_name;
     private ComboHistoryHelper name_helper;
@@ -102,7 +108,23 @@ public class Probe extends ViewPart implements PVListener
         period_format.setMaximumFractionDigits(2);
     }
 
-    // ViewPart interface
+    /** ViewPart interface, keep the memento. */
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException
+    {
+        super.init(site, memento);
+        this.memento = memento;
+    }
+    
+    /** ViewPart interface, persist state */
+    @Override
+    public void saveState(IMemento memento)
+    {
+        super.saveState(memento);
+        memento.putString(PV_TAG, txt_name.getText());
+    }
+
+    /** ViewPart interface, create UI. */
     public void createPartControl(Composite parent)
     {
         createGUI(parent);
@@ -271,6 +293,13 @@ public class Probe extends ViewPart implements PVListener
         lbl_status.setLayoutData(gd);
         
         name_helper.loadSettings();
+        
+        if (memento != null)
+        {
+            String pv_name = memento.getString(PV_TAG);
+            if (pv_name.length() > 0)
+                setPVName(pv_name);
+        }
     }
 
     /** Update the PV name that is probed.
