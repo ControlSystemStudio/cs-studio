@@ -1,10 +1,13 @@
 package org.csstudio.sds.components.ui.internal.feedback;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.sds.components.internal.model.PolygonElement;
-import org.csstudio.sds.components.internal.model.PolylineElement;
+import org.csstudio.sds.components.ui.internal.editparts.MovePolyPointHandle;
+import org.csstudio.sds.components.ui.internal.editparts.PointListHelper;
 import org.csstudio.sds.model.DisplayModelElement;
 import org.csstudio.sds.ui.feedback.IGraphicalFeedbackFactory;
-import org.csstudio.sds.ui.internal.policies.PointListHelper;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
@@ -16,6 +19,9 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.Handle;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
 
@@ -100,37 +106,62 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doInitializeModelElementFromRequest(
-			final DisplayModelElement modelElement, final CreateRequest request,
-			final Rectangle bounds) {
+	public Command doInitializeModelElementFromRequest(
+			final DisplayModelElement modelElement,
+			final CreateRequest request, final Rectangle bounds) {
+		assert modelElement instanceof PolygonElement : "modelElement instanceof PolygonElement"; //$NON-NLS-1$
+		assert request != null;
+		assert bounds != null;
+
+		Command command = null;
+
 		PolygonElement polygonElement = (PolygonElement) modelElement;
 		PointList points = (PointList) request.getExtendedData().get("points");
 		PointList scaled = PointListHelper.scaleTo(points, bounds);
 		if (points != null) {
-			polygonElement.setPoints(scaled);
+			command = new ChangePolygonPointsCommand(polygonElement, scaled);
+			// polylineElement.setPoints(scaled);
 		}
+
+		return command;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void handleRequest(final DisplayModelElement modelElement,
-			final ChangeBoundsRequest request, final Rectangle constraints) {
-		assert modelElement instanceof PolylineElement : "modelElement instanceof PolylineElement"; //$NON-NLS-1$
+	public Command handleRequest(final DisplayModelElement modelElement,
+			final ChangeBoundsRequest request, final Rectangle targetBounds) {
+		assert modelElement instanceof PolygonElement : "modelElement instanceof PolygonElement"; //$NON-NLS-1$
+
 		PolygonElement polygonElement = (PolygonElement) modelElement;
 		PointList points = (PointList) request.getExtendedData().get("points");
-		boolean changedPoints = false;
-		if (points != null) {
-			if (!polygonElement.getPoints().equals(points)) {
-				polygonElement.setPoints(points);
-				changedPoints = true;
-			}
+
+		if (points == null) {
+			points = PointListHelper.scaleTo(polygonElement.getPoints(),
+					targetBounds);
 		}
 
-		if (!changedPoints) {
-			polygonElement.setLocation(constraints.x, constraints.y);
-			polygonElement.setSize(constraints.width, constraints.height);
+		return new ChangePolygonPointsCommand(polygonElement, points);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Handle> createHandles(final GraphicalEditPart hostEP) {
+		assert hostEP != null;
+		assert hostEP.getModel() instanceof PolygonElement : "hostEP.getModel() instanceof PolygonElement"; //$NON-NLS-1$
+		List<Handle> handles = new ArrayList<Handle>();
+
+		PolygonElement polygonElement = (PolygonElement) hostEP.getModel();
+
+		int pointCount = polygonElement.getPoints().size();
+
+		for (int i = 0; i < pointCount; i++) {
+			MovePolyPointHandle myHandle = new MovePolyPointHandle(hostEP, i);
+			handles.add(myHandle);
 		}
+
+		return handles;
 	}
 
 	/**
@@ -175,7 +206,7 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 
 			_polygon.setPoints(newPoints);
 		}
-		
+
 		/**
 		 * Gets the point list for the polygon part of this figure.
 		 * 
@@ -184,11 +215,12 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 		public PointList getPoints() {
 			return _polygon.getPoints();
 		}
-		
+
 		/**
 		 * Sets the point list for the polygon part.
 		 * 
-		 * @param points the point list
+		 * @param points
+		 *            the point list
 		 */
 		public void setPoints(final PointList points) {
 			_polygon.setPoints(points);

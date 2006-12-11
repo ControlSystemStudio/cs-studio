@@ -1,9 +1,13 @@
 package org.csstudio.sds.components.ui.internal.feedback;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.sds.components.internal.model.PolylineElement;
+import org.csstudio.sds.components.ui.internal.editparts.MovePolyPointHandle;
+import org.csstudio.sds.components.ui.internal.editparts.PointListHelper;
 import org.csstudio.sds.model.DisplayModelElement;
 import org.csstudio.sds.ui.feedback.IGraphicalFeedbackFactory;
-import org.csstudio.sds.ui.internal.policies.PointListHelper;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
@@ -16,6 +20,9 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.Handle;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
 
@@ -102,37 +109,62 @@ public final class PolyLineFeedbackFactory implements IGraphicalFeedbackFactory 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void doInitializeModelElementFromRequest(
+	public Command doInitializeModelElementFromRequest(
 			final DisplayModelElement modelElement,
 			final CreateRequest request, final Rectangle bounds) {
+		assert modelElement instanceof PolylineElement : "modelElement instanceof PolylineElement"; //$NON-NLS-1$
+		assert request != null;
+		assert bounds != null;
+		
+		Command command = null;
+
 		PolylineElement polylineElement = (PolylineElement) modelElement;
 		PointList points = (PointList) request.getExtendedData().get("points");
 		PointList scaled = PointListHelper.scaleTo(points, bounds);
 		if (points != null) {
-			polylineElement.setPoints(scaled);
+			command = new ChangePolylinePointsCommand(polylineElement, scaled);
+			// polylineElement.setPoints(scaled);
 		}
+
+		return command;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void handleRequest(final DisplayModelElement modelElement,
-			final ChangeBoundsRequest request, final Rectangle constraints) {
+	public Command handleRequest(final DisplayModelElement modelElement,
+			final ChangeBoundsRequest request, final Rectangle targetBounds) {
 		assert modelElement instanceof PolylineElement : "modelElement instanceof PolylineElement"; //$NON-NLS-1$
+
 		PolylineElement polylineElement = (PolylineElement) modelElement;
 		PointList points = (PointList) request.getExtendedData().get("points");
-		boolean changedPoints = false;
-		if (points != null) {
-			if (!polylineElement.getPoints().equals(points)) {
-				polylineElement.setPoints(points);
-				changedPoints = true;
-			}
+
+		if (points == null) {
+			points = PointListHelper.scaleTo(polylineElement.getPoints(),
+					targetBounds);
 		}
 
-		if (!changedPoints) {
-			polylineElement.setLocation(constraints.x, constraints.y);
-			polylineElement.setSize(constraints.width, constraints.height);
+		return new ChangePolylinePointsCommand(polylineElement, points);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Handle> createHandles(final GraphicalEditPart hostEP) {
+		assert hostEP != null;
+		assert hostEP.getModel() instanceof PolylineElement : "hostEP.getModel() instanceof PolylineElement"; //$NON-NLS-1$
+		List<Handle> handles = new ArrayList<Handle>();
+
+		PolylineElement polylineElement = (PolylineElement) hostEP.getModel();
+
+		int pointCount = polylineElement.getPoints().size();
+
+		for (int i = 0; i < pointCount; i++) {
+			MovePolyPointHandle myHandle = new MovePolyPointHandle(hostEP, i);
+			handles.add(myHandle);
 		}
+
+		return handles;
 	}
 
 	/**
