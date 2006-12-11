@@ -1,9 +1,10 @@
 package org.csstudio.sds.components.ui.internal.feedback;
 
-import org.csstudio.sds.components.internal.model.PointListHelper;
 import org.csstudio.sds.components.internal.model.PolygonElement;
+import org.csstudio.sds.components.internal.model.PolylineElement;
 import org.csstudio.sds.model.DisplayModelElement;
 import org.csstudio.sds.ui.feedback.IGraphicalFeedbackFactory;
+import org.csstudio.sds.ui.internal.policies.PointListHelper;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
@@ -15,6 +16,7 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
 
 /**
@@ -43,19 +45,29 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 	 * {@inheritDoc}
 	 */
 	public void showChangeBoundsFeedback(final PrecisionRectangle targetBounds,
-			final IFigure feedbackFigure) {
-		feedbackFigure.translateToRelative(targetBounds);
-		feedbackFigure.setBounds(targetBounds);
+			final IFigure feedbackFigure, final ChangeBoundsRequest request) {
+		RectangleWithPolygonFigure figure = (RectangleWithPolygonFigure) feedbackFigure;
+
+		figure.translateToRelative(targetBounds);
+
+		PointList points = (PointList) request.getExtendedData().get("points");
+
+		if (points == null) {
+			points = figure.getPoints();
+		}
+		points = PointListHelper.scaleTo(points.getCopy(), targetBounds);
+		figure.setPoints(points);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Shape createSizeOnDropFeedback(final CreateRequest createRequest) {
-		assert createRequest instanceof PolygonRequest : "createRequest instanceof PolygonRequest";
+		assert createRequest != null;
 		Polygon polygon = new Polygon();
 
-		PointList points = ((PolygonRequest) createRequest).getPoints();
+		PointList points = (PointList) createRequest.getExtendedData().get(
+				"points");
 
 		assert points != null;
 
@@ -69,12 +81,12 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 	 */
 	public void showSizeOnDropFeedback(final CreateRequest createRequest,
 			final IFigure feedbackFigure, final Insets insets) {
-		assert createRequest instanceof PolygonRequest : "createRequest instanceof PolygonRequest";
+		assert createRequest != null;
 		assert feedbackFigure instanceof Polygon : "feedbackFigure instanceof Polygon";
 		Polygon polygon = (Polygon) feedbackFigure;
-		PolygonRequest polygonRequest = (PolygonRequest) createRequest;
 
-		PointList points = polygonRequest.getPoints();
+		PointList points = (PointList) createRequest.getExtendedData().get(
+				"points");
 		polygon.setPoints(points);
 	}
 
@@ -83,6 +95,42 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 	 */
 	public Class getCreationTool() {
 		return PolygonCreationTool.class;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void doInitializeModelElementFromRequest(
+			final DisplayModelElement modelElement, final CreateRequest request,
+			final Rectangle bounds) {
+		PolygonElement polygonElement = (PolygonElement) modelElement;
+		PointList points = (PointList) request.getExtendedData().get("points");
+		PointList scaled = PointListHelper.scaleTo(points, bounds);
+		if (points != null) {
+			polygonElement.setPoints(scaled);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void handleRequest(final DisplayModelElement modelElement,
+			final ChangeBoundsRequest request, final Rectangle constraints) {
+		assert modelElement instanceof PolylineElement : "modelElement instanceof PolylineElement"; //$NON-NLS-1$
+		PolygonElement polygonElement = (PolygonElement) modelElement;
+		PointList points = (PointList) request.getExtendedData().get("points");
+		boolean changedPoints = false;
+		if (points != null) {
+			if (!polygonElement.getPoints().equals(points)) {
+				polygonElement.setPoints(points);
+				changedPoints = true;
+			}
+		}
+
+		if (!changedPoints) {
+			polygonElement.setLocation(constraints.x, constraints.y);
+			polygonElement.setSize(constraints.width, constraints.height);
+		}
 	}
 
 	/**
@@ -126,8 +174,27 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 					.getCopy());
 
 			_polygon.setPoints(newPoints);
-
+		}
+		
+		/**
+		 * Gets the point list for the polygon part of this figure.
+		 * 
+		 * @return a point list
+		 */
+		public PointList getPoints() {
+			return _polygon.getPoints();
+		}
+		
+		/**
+		 * Sets the point list for the polygon part.
+		 * 
+		 * @param points the point list
+		 */
+		public void setPoints(final PointList points) {
+			_polygon.setPoints(points);
+			setBounds(points.getBounds());
 		}
 
 	}
+
 }

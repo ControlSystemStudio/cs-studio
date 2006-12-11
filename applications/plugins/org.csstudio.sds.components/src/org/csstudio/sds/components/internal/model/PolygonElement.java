@@ -69,7 +69,13 @@ public final class PolygonElement extends DisplayModelElement {
 	 *            the polygon points
 	 */
 	public void setPoints(final PointList points) {
-		setPropertyValue(PROP_POINTS, points);
+		PointList copy = points.getCopy();
+		setPropertyValue(PROP_POINTS, copy);
+		Rectangle bounds = copy.getBounds();
+		setPropertyValue(PROP_X, bounds.x);
+		setPropertyValue(PROP_Y, bounds.y);
+		setPropertyValue(PROP_W, bounds.width);
+		setPropertyValue(PROP_H, bounds.height);
 	}
 
 	/**

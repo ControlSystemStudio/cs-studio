@@ -2,7 +2,6 @@ package org.csstudio.sds.components.ui.internal.feedback;
 
 import org.csstudio.sds.components.internal.model.PolygonElement;
 import org.eclipse.draw2d.Cursors;
-import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.gef.SharedCursors;
 import org.eclipse.gef.requests.CreationFactory;
 
@@ -23,9 +22,6 @@ public final class PolygonCreationTool extends PointListCreationTool {
 		setFactory(new CreationFactory() {
 			public Object getNewObject() {
 				PolygonElement polygon = new PolygonElement();
-				PointList points = getCreateRequest().getPoints();
-
-				polygon.setPoints(points);
 
 				return polygon;
 			}

@@ -10,6 +10,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToHelper;
+import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.tools.TargetingTool;
 
@@ -37,6 +38,11 @@ abstract class PointListCreationTool extends TargetingTool {
 	 * The creation factory.
 	 */
 	private CreationFactory _factory;
+	
+	/**
+	 * The point list, which is manipulated by this tool.
+	 */
+	private PointList _points = new PointList();
 
 	/**
 	 * A SnapToHelper.
@@ -69,7 +75,8 @@ abstract class PointListCreationTool extends TargetingTool {
 	 */
 	@Override
 	protected Request createTargetRequest() {
-		PolygonRequest request = new PolygonRequest();
+		_points = new PointList();
+		CreateRequest request = new CreateRequest();
 		request.setFactory(getFactory());
 		return request;
 	}
@@ -97,8 +104,9 @@ abstract class PointListCreationTool extends TargetingTool {
 	 * @return the target request as a CreateRequest
 	 * @see TargetingTool#getTargetRequest()
 	 */
-	protected PolygonRequest getCreateRequest() {
-		return (PolygonRequest) getTargetRequest();
+	protected CreateRequest getCreateRequest() {
+		
+		return (CreateRequest) getTargetRequest();
 	}
 
 	/**
@@ -136,13 +144,11 @@ abstract class PointListCreationTool extends TargetingTool {
 		long now = new Date().getTime();
 		boolean doubleClick = (now - _lastClick < 200);
 		_lastClick = now;
-
 		// handle clicks
 		if (doubleClick) {
-			PointList points = getCreateRequest().getPoints();
 			// remove the last point, which was just created for previewing the
 			// next axis
-			points.removePoint(points.size() - 1);
+			_points.removePoint(_points.size() - 1);
 
 			// perform creation of the material
 			if (stateTransition(STATE_DRAG | STATE_DRAG_IN_PROGRESS,
@@ -156,29 +162,30 @@ abstract class PointListCreationTool extends TargetingTool {
 			handleFinished();
 		} else {
 
-			PointList points = getCreateRequest().getPoints();
-
-			if (points.size() == 0) {
+			if (_points.size() == 0) {
 				// add a new point
-				points.addPoint(getLocation());
+				_points.addPoint(getLocation());
 			} else {
 				// override the last point, which was the "preview" point before
-				points.setPoint(getLocation(), points.size() - 1);
+				_points.setPoint(getLocation(), _points.size() - 1);
 
 			}
 			// add an additional point, which is just for previewing the next
 			// axis in the graphical feedback
-			points.addPoint(getLocation());
+			_points.addPoint(getLocation());
 		}
 
+		updateTargetRequest();
 		return true;
 	}
+
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected boolean handleButtonUp(final int button) {
+		System.out.println("Up");
 		return true;
 	}
 
@@ -233,11 +240,10 @@ abstract class PointListCreationTool extends TargetingTool {
 	 */
 	@Override
 	protected boolean handleMove() {
-		PointList points = getCreateRequest().getPoints();
-		if (points.size() > 0) {
+		if (_points.size() > 0) {
 			// update the last point in the list to update the graphical
 			// feedback
-			points.setPoint(getLocation(), points.size() - 1);
+			_points.setPoint(getLocation(), _points.size() - 1);
 		}
 
 		updateTargetRequest();
@@ -297,14 +303,15 @@ abstract class PointListCreationTool extends TargetingTool {
 	 */
 	@Override
 	protected void updateTargetRequest() {
-		PolygonRequest req = getCreateRequest();
+		CreateRequest req = getCreateRequest();
 		if (isInState(STATE_DRAG_IN_PROGRESS)) {
 			// use the rectangle, which is defined by the point lists as new
 			// bounds
-			Rectangle bounds = req.getPoints().getBounds();
+			Rectangle bounds = _points.getBounds();
 			req.setSize(bounds.getSize());
 			req.setLocation(bounds.getLocation());
-			req.getExtendedData().clear();
+			req.getExtendedData().put("points", _points);
+//			req.getExtendedData().clear();
 			if (!getCurrentInput().isAltKeyDown() && _snap2Helper != null) {
 				PrecisionRectangle baseRect = new PrecisionRectangle(bounds);
 				PrecisionRectangle result = baseRect.getPreciseCopy();

@@ -1,7 +1,6 @@
 package org.csstudio.sds.components.ui.internal.feedback;
 
 import org.csstudio.sds.components.internal.model.PolylineElement;
-import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.gef.requests.CreationFactory;
 
 /**
@@ -19,9 +18,9 @@ public final class PolylineCreationTool extends PointListCreationTool {
 		CreationFactory factory = new CreationFactory() {
 			public Object getNewObject() {
 				PolylineElement polygon = new PolylineElement();
-				PointList points = getCreateRequest().getPoints();
-
-				polygon.setPoints(points);
+//				PointList points = getCreateRequest().getPoints();
+//
+//				polygon.setPoints(points);
 
 				return polygon;
 			}
