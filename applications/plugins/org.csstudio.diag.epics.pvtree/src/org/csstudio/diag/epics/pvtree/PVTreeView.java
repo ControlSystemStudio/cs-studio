@@ -9,7 +9,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -36,7 +35,10 @@ public class PVTreeView extends ViewPart
     public static final String ID = PVTreeView.class.getName();
 
     // Memento tags
+    private static final String PV_TAG = "pv"; //$NON-NLS-1$
     private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
+    
+    private IMemento memento;
     
     /** The root PV name. */
     private Combo pv_name;
@@ -49,6 +51,22 @@ public class PVTreeView extends ViewPart
     private DrillDownAdapter drillDownAdapter;
 
     private ComboHistoryHelper pv_name_helper;
+    
+    /** ViewPart interface, keep the memento. */
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException
+    {
+        super.init(site, memento);
+        this.memento = memento;
+    }
+    
+    /** ViewPart interface, persist state */
+    @Override
+    public void saveState(IMemento memento)
+    {
+        super.saveState(memento);
+        memento.putString(PV_TAG, pv_name.getText());
+    }
 
     /** Create the GUI. */
     public void createPartControl(Composite parent)
@@ -119,6 +137,13 @@ public class PVTreeView extends ViewPart
         
         // Populate PV list
         pv_name_helper.loadSettings();
+        
+        if (memento != null)
+        {
+            String pv_name = memento.getString(PV_TAG);
+            if (pv_name.length() > 0)
+                setPVName(pv_name);
+        }
     }
 
     /** Set initial focus. */
