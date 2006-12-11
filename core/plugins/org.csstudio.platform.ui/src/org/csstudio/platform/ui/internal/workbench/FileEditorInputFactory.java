@@ -44,12 +44,12 @@ public final class FileEditorInputFactory implements IElementFactory {
 	/**
 	 * Factory TYPE_ID (needed to establish a link to the plugin.xml).
 	 */
-	public static final String ID = "de.smartpls.platform.ui.common.FileEditorInputFactory"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.platform.ui.internal.workbench.FileEditorInputFactory"; //$NON-NLS-1$
 
 	/**
 	 * IMemento key for <code>FileEditorInput</code>'s.
 	 */
-	public static final String KEY = "de.smartpls.domainresources.FileIdentifier"; //$NON-NLS-1$
+	public static final String KEY = "org.csstudio.platform.ui.internal.workbench.FileIdentifier"; //$NON-NLS-1$
 
 	/**
 	 * {@inheritDoc}

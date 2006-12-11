@@ -258,5 +258,11 @@
             id="org.csstudio.platform.ui.css.applications.others"
             name="%othersPreferencesName"/>                         
    </extension>
+   <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.csstudio.platform.ui.internal.workbench.FileEditorInputFactory"
+            id="org.csstudio.platform.ui.internal.workbench.FileEditorInputFactory"/>
+   </extension>
 
 </plugin>
