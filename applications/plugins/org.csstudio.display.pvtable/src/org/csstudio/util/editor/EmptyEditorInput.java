@@ -19,13 +19,13 @@ public class EmptyEditorInput implements IEditorInput
     /** Cause application title to reflect the 'not saved' state. */
     public String getName()
     {
-        return "<not saved>";
+        return Messages.NotSaved;
     }
 
     /** Cause tool top to reflect the 'not saved' state. */
     public String getToolTipText()
     {
-        return "This file has not been saved";
+        return Messages.NotSaved_TT;
     }
     
     /** @return Returns <code>false</code> since no file exists. */

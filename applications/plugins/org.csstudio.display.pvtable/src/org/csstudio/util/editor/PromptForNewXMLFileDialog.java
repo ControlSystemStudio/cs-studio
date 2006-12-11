@@ -5,7 +5,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.dialogs.SaveAsDialog;
 
 /** Helper for running 'SaveAs' dialog for new XML file.
  *  @author Kay Kasemir
@@ -21,23 +20,34 @@ public class PromptForNewXMLFileDialog
     public static IFile run(Shell shell, IFile old_file)
     {
         // Query for new name.
-        SaveAsDialog dlg = new SaveAsDialog(shell);
-        dlg.setBlockOnOpen(true);
-        if (old_file != null)
-            dlg.setOriginalFile(old_file);
-        dlg.open();
         // The path to the new resource relative to the workspace
-        IPath new_resource_path = dlg.getResult();
+        IPath new_resource_path = null;
+        try
+        {
+            // This is the IDE's SaveAsDialog
+            SaveAsDialog dlg = new SaveAsDialog(shell);
+            dlg.setBlockOnOpen(true);
+            if (old_file != null)
+                dlg.setOriginalFile(old_file);
+            dlg.open();
+            // The path to the new resource relative to the workspace
+            new_resource_path = dlg.getResult();
+        }
+        catch (Exception e)
+        {   // If it fails, because we are in a crippled CSS RCP,
+            // run a plain version of a file Dialog.
+            
+        }
         if (new_resource_path == null)
             return null;
         // Assert it's an '.xml' file
         String ext = new_resource_path.getFileExtension();
-        if (ext == null  ||  !ext.equals("xml"))
+        if (ext == null  ||  !ext.equals("xml")) //$NON-NLS-1$
         {
             String filename = new_resource_path.lastSegment();
             new_resource_path =
                 new_resource_path.removeLastSegments(1)
-                .append(filename + ".xml");
+                .append(filename + ".xml"); //$NON-NLS-1$
         }
         // Get the file for the new resource's path.
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();

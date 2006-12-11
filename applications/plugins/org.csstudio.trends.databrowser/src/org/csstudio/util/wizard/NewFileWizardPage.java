@@ -157,7 +157,8 @@ public class NewFileWizardPage extends WizardPage
     /** Get an existing file name. */
     private void handleOpen()
     {
-        // TODO: Use FileDialog?
+        // TODO IDE dependency to remove?
+        // Use FileDialog?
         // The problem with that:
         // How to restrict it to the files in the workspace,
         // or how to handle files outside of the workspace.

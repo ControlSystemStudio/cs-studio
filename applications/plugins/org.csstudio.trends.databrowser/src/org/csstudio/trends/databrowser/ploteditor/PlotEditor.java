@@ -244,6 +244,7 @@ public class PlotEditor extends EditorPart
         if (file == null  ||  !saveToFile(null, file))
             return;
         // Update input and title
+        // TODO IDE FileEditorInput
         setInput(new FileEditorInput(file));
         updateTitle();
     }

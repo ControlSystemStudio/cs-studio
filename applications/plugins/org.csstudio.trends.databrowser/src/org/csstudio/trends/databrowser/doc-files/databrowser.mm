@@ -5,7 +5,7 @@
 <node COLOR="#000000" CREATED="1155840172422" HGAP="38" ID="_" MODIFIED="1158682428861" POSITION="right" STYLE="bubble" TEXT="Model" VSHIFT="-9">
 <font NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="desktop_new"/>
-<node CREATED="1155840175950" HGAP="41" ID="Freemind_Link_1315106477" MODIFIED="1163007156257" TEXT="ModelItem[]">
+<node CREATED="1155840175950" ID="Freemind_Link_1315106477" MODIFIED="1165604328459" TEXT="ModelItem[]" VSHIFT="4">
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1155840196383" HGAP="45" ID="Freemind_Link_102027334" MODIFIED="1164232142222" TEXT="(PV-) Name" VSHIFT="141"/>
 <node CREATED="1158179285550" HGAP="42" ID="Freemind_Link_1602308751" MODIFIED="1164232139812" TEXT="Y Axis Index, Range (min, max), Color, Line width" VSHIFT="6"/>
@@ -34,7 +34,7 @@
 </node>
 </node>
 </node>
-<node CREATED="1155938814319" HGAP="132" ID="Freemind_Link_1333792926" MODIFIED="1162415583968" POSITION="right" TEXT="Controller" VSHIFT="26">
+<node CREATED="1155938814319" HGAP="62" ID="Freemind_Link_1333792926" MODIFIED="1165604338046" POSITION="right" TEXT="Controller" VSHIFT="44">
 <icon BUILTIN="penguin"/>
 <node CREATED="1155843846384" HGAP="41" ID="Freemind_Link_1636229449" MODIFIED="1163003569639" TEXT="ScannerAndScroller" VSHIFT="6">
 <node CREATED="1155842752003" HGAP="26" ID="Freemind_Link_1985827728" MODIFIED="1158682349812" STYLE="fork" TEXT="Periodically (configurable rate) add&#xa;Current Value&#xa;to Live Samples." VSHIFT="6">

@@ -142,6 +142,9 @@ public class ModelItem
         if (model.findEntry(new_name) >= 0)
             return;
         boolean was_running = pv.isRunning();
+        // TODO: I've seen null pointer errors in stop
+        // when called from here, but have not been able to
+        // reproduce them.
         if (was_running)
             stop();
         // Name change looks like remove/add back in

@@ -163,6 +163,7 @@ public class NewFileWizard extends Wizard implements INewWizard
                         .getActiveWorkbenchWindow().getActivePage();
                 try
                 {
+                    // TODO IDE dependency
                     IDE.openEditor(page, file, true);
                 }
                 catch (PartInitException e)
