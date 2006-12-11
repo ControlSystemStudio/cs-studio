@@ -35,7 +35,7 @@ public final class PolyPointLocator implements Locator {
 	 */
 	public PolyPointLocator(final Polyline referenceFigure, final int pointIndex) {
 		assert referenceFigure != null;
-		assert pointIndex>0 : "pointIndex>0"; //$NON-NLS-1$
+		assert pointIndex>=0 : "pointIndex>=0"; //$NON-NLS-1$
 		assert referenceFigure.getPoints().size()>pointIndex : "referenceFigure.getPoints().size()>pointIndex"; //$NON-NLS-1$
 		_pointIndex = pointIndex;
 		_referenceFigure = referenceFigure;

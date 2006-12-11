@@ -89,7 +89,7 @@ public final class PolyLineFeedbackFactory implements IGraphicalFeedbackFactory 
 	public void showSizeOnDropFeedback(final CreateRequest createRequest,
 			final IFigure feedbackFigure, final Insets insets) {
 		assert createRequest != null;
-		assert feedbackFigure instanceof Polygon : "feedbackFigure instanceof Polygon";
+		assert feedbackFigure instanceof Polyline : "feedbackFigure instanceof Polyline";
 		Polyline polyline = (Polyline) feedbackFigure;
 
 		PointList points = (PointList) createRequest.getExtendedData().get(
