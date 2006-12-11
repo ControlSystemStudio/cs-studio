@@ -2,9 +2,12 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.internal.model.PolygonElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolygonFigure;
+import org.csstudio.sds.model.DisplayModelElement;
 import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
+import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for <code>PolygonElement</code> elements.
@@ -20,9 +23,10 @@ public final class PolygonEditPart extends AbstractSDSEditPart {
 	@Override
 	protected IFigure createFigure() {
 		RefreshablePolygonFigure polygon = new RefreshablePolygonFigure();
+		DisplayModelElement modelElement = getCastedModel();
 
-		for (String key : getCastedModel().getPropertyNames()) {
-			polygon.refresh(key, getCastedModel().getProperty(key)
+		for (String key : modelElement.getPropertyNames()) {
+			polygon.refresh(key, modelElement.getProperty(key)
 					.getPropertyValue());
 		}
 
@@ -43,6 +47,14 @@ public final class PolygonEditPart extends AbstractSDSEditPart {
 			polygon.setPoints(points);
 		} else if (propertyName.equals(PolygonElement.PROP_FILL_GRADE)) {
 			polygon.setFill((Double) newValue);
+			polygon.repaint();
+		} else if (propertyName.equals(PolygonElement.PROP_BACKGROUND_COLOR)) {
+			polygon.setBackgroundColor(CustomMediaFactory.getInstance()
+					.getColor((RGB) newValue));
+			polygon.repaint();
+		} else if (propertyName.equals(PolygonElement.PROP_FOREGROUND_COLOR)) {
+			polygon.setForegroundColor(CustomMediaFactory.getInstance()
+					.getColor((RGB) newValue));
 			polygon.repaint();
 		}
 	}

@@ -1,6 +1,5 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.internal.model.RectangleElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangle;
 import org.csstudio.sds.model.DisplayModelElement;

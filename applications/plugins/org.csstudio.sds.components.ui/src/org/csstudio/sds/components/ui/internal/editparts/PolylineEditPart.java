@@ -2,14 +2,17 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.internal.model.PolylineElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
+import org.csstudio.sds.model.DisplayModelElement;
 import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
+import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for <code>PolylineElement</code> elements.
  * 
- * @author Sven Wende
+ * @author Sven Wende, Alexander Will
  * 
  */
 public final class PolylineEditPart extends AbstractSDSEditPart {
@@ -20,9 +23,10 @@ public final class PolylineEditPart extends AbstractSDSEditPart {
 	@Override
 	protected IFigure createFigure() {
 		RefreshablePolylineFigure polyline = new RefreshablePolylineFigure();
+		DisplayModelElement modelElement = getCastedModel();
 
 		for (String key : getCastedModel().getPropertyNames()) {
-			polyline.refresh(key, getCastedModel().getProperty(key)
+			polyline.refresh(key, modelElement.getProperty(key)
 					.getPropertyValue());
 		}
 
@@ -43,6 +47,14 @@ public final class PolylineEditPart extends AbstractSDSEditPart {
 			polyline.setPoints(points);
 		} else if (propertyName.equals(PolylineElement.PROP_FILL_GRADE)) {
 			polyline.setFill((Double) newValue);
+			polyline.repaint();
+		} else if (propertyName.equals(PolylineElement.PROP_BACKGROUND_COLOR)) {
+			polyline.setBackgroundColor(CustomMediaFactory.getInstance()
+					.getColor((RGB) newValue));
+			polyline.repaint();
+		} else if (propertyName.equals(PolylineElement.PROP_FOREGROUND_COLOR)) {
+			polyline.setForegroundColor(CustomMediaFactory.getInstance()
+					.getColor((RGB) newValue));
 			polyline.repaint();
 		}
 	}

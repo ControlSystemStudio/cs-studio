@@ -50,9 +50,9 @@ public final class RefreshableRectangle extends RectangleFigure implements
 
 		int newW = (int) Math.round(bounds.width * (getFill() / 100));
 
-		graphics.setBackgroundColor(_backgroundColor);
+		graphics.setBackgroundColor(getBackgroundColor());
 		graphics.fillRectangle(getBounds());
-		graphics.setBackgroundColor(_foregroundColor);
+		graphics.setBackgroundColor(getForegroundColor());
 		graphics.fillRectangle(new Rectangle(bounds.getLocation(),
 				new Dimension(newW, bounds.height)));
 	}

@@ -1,16 +1,18 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.sds.components.internal.model.LabelElement;
 import org.csstudio.sds.dataconnection.StatisticUtil;
 import org.csstudio.sds.ui.editparts.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * A label figure.
  * 
- * @author Sven Wende
+ * @author Sven Wende, Alexander Will
  * 
  */
 public final class RefreshableLabelFigure extends Label implements
@@ -19,30 +21,34 @@ public final class RefreshableLabelFigure extends Label implements
 	 * Default label font.
 	 */
 	public static final Font FONT = CustomMediaFactory.getInstance().getFont(
-			"Arial", 8, SWT.NONE);
+			"Arial", 8, SWT.NONE); //$NON-NLS-1$
 
 	/**
 	 * Constructor.
 	 */
 	public RefreshableLabelFigure() {
-
 		setFont(FONT);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void repaint() {
-		super.repaint();
+	public void refresh(final String propertyName, final Object propertyValue) {
 		StatisticUtil.getInstance().recordWidgetRefresh(this);
+
+		if (propertyName.equals(LabelElement.PROP_LABEL)) {
+			setText((String) propertyValue);
+		} else if (propertyName.equals(LabelElement.PROP_BACKGROUND_COLOR)) {
+			setBackgroundColor(CustomMediaFactory.getInstance().getColor(
+					(RGB) propertyValue));
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void randomNoiseRefresh() {
-		setText("" + Math.random());
+		setText("" + Math.random()); //$NON-NLS-1$
 	}
 
 	/**
