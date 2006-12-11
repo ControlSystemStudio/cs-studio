@@ -1,4 +1,4 @@
-package org.csstudio.sds.components.ui.internal.editparts;
+package org.csstudio.sds.components.ui.internal.feedback;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
@@ -14,7 +14,7 @@ import org.eclipse.swt.graphics.Color;
  * @author Sven Wende
  * 
  */
-public final class MovePolyPointHandle extends SquareHandle {
+public final class PolyPointHandle extends SquareHandle {
 	/**
 	 * Index of the polygon point, that should be moved.
 	 */
@@ -28,7 +28,7 @@ public final class MovePolyPointHandle extends SquareHandle {
 	 * @param pointIndex
 	 *            index of the polygon point, that should be moved
 	 */
-	public MovePolyPointHandle(final GraphicalEditPart owner, final int pointIndex) {
+	public PolyPointHandle(final GraphicalEditPart owner, final int pointIndex) {
 		super();
 		_pointIndex = pointIndex;
 		setOwner(owner);

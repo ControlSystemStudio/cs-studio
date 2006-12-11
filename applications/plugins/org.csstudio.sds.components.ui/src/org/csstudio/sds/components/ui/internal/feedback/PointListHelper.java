@@ -1,4 +1,4 @@
-package org.csstudio.sds.components.ui.internal.editparts;
+package org.csstudio.sds.components.ui.internal.feedback;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;

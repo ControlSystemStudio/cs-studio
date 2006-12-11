@@ -1,4 +1,4 @@
-package org.csstudio.sds.components.ui.internal.editparts;
+package org.csstudio.sds.components.ui.internal.feedback;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Locator;

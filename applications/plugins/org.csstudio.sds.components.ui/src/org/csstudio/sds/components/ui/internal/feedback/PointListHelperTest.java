@@ -1,7 +1,7 @@
 /**
  * Owned by DESY.
  */
-package org.csstudio.sds.components.ui.internal.editparts;
+package org.csstudio.sds.components.ui.internal.feedback;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +39,7 @@ public final class PointListHelperTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.PointListHelper#scaleToSize(org.eclipse.draw2d.geometry.PointList, int, int)}.
+	 * {@link org.csstudio.sds.components.ui.internal.feedback.PointListHelper#scaleToSize(org.eclipse.draw2d.geometry.PointList, int, int)}.
 	 */
 	@Test
 	public void testScaleToSize() {
@@ -69,7 +69,7 @@ public final class PointListHelperTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.PointListHelper#scaleToLocation(org.eclipse.draw2d.geometry.PointList, int, int)}.
+	 * {@link org.csstudio.sds.components.ui.internal.feedback.PointListHelper#scaleToLocation(org.eclipse.draw2d.geometry.PointList, int, int)}.
 	 */
 	@Test
 	public void testScaleToLocation() {
@@ -88,7 +88,7 @@ public final class PointListHelperTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.PointListHelper#scaleTo(org.eclipse.draw2d.geometry.PointList, org.eclipse.draw2d.geometry.Rectangle)}.
+	 * {@link org.csstudio.sds.components.ui.internal.feedback.PointListHelper#scaleTo(org.eclipse.draw2d.geometry.PointList, org.eclipse.draw2d.geometry.Rectangle)}.
 	 */
 	@Test
 	public void testScaleTo() {

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.sds.components.internal.model.PolygonElement;
-import org.csstudio.sds.components.ui.internal.editparts.MovePolyPointHandle;
-import org.csstudio.sds.components.ui.internal.editparts.PointListHelper;
 import org.csstudio.sds.model.DisplayModelElement;
 import org.csstudio.sds.ui.feedback.IGraphicalFeedbackFactory;
 import org.eclipse.draw2d.ColorConstants;
@@ -100,13 +98,13 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 	 * {@inheritDoc}
 	 */
 	public Class getCreationTool() {
-		return PolygonCreationTool.class;
+		return PointListCreationTool.class;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Command doInitializeModelElementFromRequest(
+	public Command createInitialBoundsCommand(
 			final DisplayModelElement modelElement,
 			final CreateRequest request, final Rectangle bounds) {
 		assert modelElement instanceof PolygonElement : "modelElement instanceof PolygonElement"; //$NON-NLS-1$
@@ -129,7 +127,7 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Command handleRequest(final DisplayModelElement modelElement,
+	public Command createChangeBoundsCommand(final DisplayModelElement modelElement,
 			final ChangeBoundsRequest request, final Rectangle targetBounds) {
 		assert modelElement instanceof PolygonElement : "modelElement instanceof PolygonElement"; //$NON-NLS-1$
 
@@ -147,7 +145,7 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<Handle> createHandles(final GraphicalEditPart hostEP) {
+	public List<Handle> createCustomHandles(final GraphicalEditPart hostEP) {
 		assert hostEP != null;
 		assert hostEP.getModel() instanceof PolygonElement : "hostEP.getModel() instanceof PolygonElement"; //$NON-NLS-1$
 		List<Handle> handles = new ArrayList<Handle>();
@@ -157,7 +155,7 @@ public final class PolygonFeedbackFactory implements IGraphicalFeedbackFactory {
 		int pointCount = polygonElement.getPoints().size();
 
 		for (int i = 0; i < pointCount; i++) {
-			MovePolyPointHandle myHandle = new MovePolyPointHandle(hostEP, i);
+			PolyPointHandle myHandle = new PolyPointHandle(hostEP, i);
 			handles.add(myHandle);
 		}
 

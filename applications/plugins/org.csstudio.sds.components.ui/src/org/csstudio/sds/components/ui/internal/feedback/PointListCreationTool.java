@@ -22,7 +22,7 @@ import org.eclipse.gef.tools.TargetingTool;
  * 
  */
 
-abstract class PointListCreationTool extends TargetingTool {
+public final class PointListCreationTool extends TargetingTool {
 	/**
 	 * Property to be used in AbstractTool#setProperties(java.util.Map) for
 	 * {@link #setFactory(CreationFactory)}.
@@ -302,6 +302,7 @@ abstract class PointListCreationTool extends TargetingTool {
 	 * {@inheritDoc}
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	protected void updateTargetRequest() {
 		CreateRequest req = getCreateRequest();
 		if (isInState(STATE_DRAG_IN_PROGRESS)) {
