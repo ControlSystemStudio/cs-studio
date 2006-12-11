@@ -6,6 +6,7 @@ import org.csstudio.sds.model.DisplayModelElement;
 import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -24,10 +25,11 @@ public final class LabelEditPart extends AbstractSDSEditPart {
 		DisplayModelElement modelElement = getCastedModel();
 
 		for (String key : getCastedModel().getPropertyNames()) {
-			label.refresh(key, modelElement.getProperty(key)
-					.getPropertyValue());
+			label
+					.refresh(key, modelElement.getProperty(key)
+							.getPropertyValue());
 		}
-		
+
 		return label;
 	}
 
@@ -42,10 +44,15 @@ public final class LabelEditPart extends AbstractSDSEditPart {
 			label.setText("" + newValue); //$NON-NLS-1$
 			label.repaint();
 		} else if (propertyName.equals(LabelElement.PROP_BACKGROUND_COLOR)) {
-			label.setBackgroundColor(CustomMediaFactory.getInstance()
-					.getColor((RGB) newValue));
+			label.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
+					(RGB) newValue));
+			label.repaint();
+		} else if (propertyName.equals(LabelElement.PROP_FONT)) {
+			FontData fontData = (FontData) newValue;
+			label.setFont(CustomMediaFactory.getInstance().getFont(
+					fontData.getName(), fontData.getHeight(),
+					fontData.getStyle()));
 			label.repaint();
 		}
 	}
-
 }

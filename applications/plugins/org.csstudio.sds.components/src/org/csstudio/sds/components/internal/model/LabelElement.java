@@ -24,6 +24,8 @@ package org.csstudio.sds.components.internal.model;
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.DataTypeEnum;
 import org.csstudio.sds.model.DisplayModelElement;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -35,7 +37,7 @@ import org.eclipse.swt.graphics.RGB;
  */
 public final class LabelElement extends DisplayModelElement {
 	/**
-	 * The default value of the fill grade property.
+	 * The ID of the label property.
 	 */
 	public static final String PROP_LABEL = "label"; //$NON-NLS-1$
 
@@ -43,6 +45,11 @@ public final class LabelElement extends DisplayModelElement {
 	 * The ID of the background color property.
 	 */
 	public static final String PROP_BACKGROUND_COLOR = "color.background"; //$NON-NLS-1$
+
+	/**
+	 * The ID of the font property.
+	 */
+	public static final String PROP_FONT = "font"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this model element.
@@ -61,7 +68,6 @@ public final class LabelElement extends DisplayModelElement {
 
 	/**
 	 * Standard constructor.
-	 * 
 	 */
 	public LabelElement() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -85,6 +91,8 @@ public final class LabelElement extends DisplayModelElement {
 		addProperty(PROP_BACKGROUND_COLOR,
 				Messages.LabelElement_BACKGROUND_COLOR, DataTypeEnum.COLOR,
 				new RGB(100, 100, 100));
+		addProperty(PROP_FONT, "Font", DataTypeEnum.FONT, new FontData("Arial",
+				8, SWT.NONE));
 	}
 
 	/**
