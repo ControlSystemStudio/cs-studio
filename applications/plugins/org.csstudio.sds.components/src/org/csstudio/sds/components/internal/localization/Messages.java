@@ -7,7 +7,7 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Alexander Will
  */
-public class Messages extends NLS {
+public final class Messages extends NLS {
 	/**
 	 * The bundle name of the localization messages ressources.
 	 */
