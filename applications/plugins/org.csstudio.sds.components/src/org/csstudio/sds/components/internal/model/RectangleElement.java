@@ -67,7 +67,7 @@ public final class RectangleElement extends DisplayModelElement {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL_PERCENTAGE, "Fill Grade",
+		addProperty(PROP_FILL_PERCENTAGE, "Fill Grade (in %)",
 				DataTypeEnum.DOUBLE, DEFAULT_FILL_GRADE);
 		addProperty(PROP_BACKGROUND_COLOR, "Background Color", DataTypeEnum.COLOR,
 				new RGB(100, 100, 100));

@@ -3,6 +3,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.internal.model.RectangleElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangle;
+import org.csstudio.sds.model.DisplayModelElement;
 import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.swt.graphics.RGB;
@@ -20,20 +21,20 @@ public final class RectangleEditPart extends AbstractSDSEditPart {
 	 */
 	@Override
 	protected RefreshableRectangle createFigure() {
-		CentralLogger.getInstance().debug(this,
-				"Creating RefreshableRectangle..."); //$NON-NLS-1$
-
 		RefreshableRectangle rectangle = new RefreshableRectangle();
+		DisplayModelElement modelElement = getCastedModel();
 
-		RGB backRgb = (RGB) getCastedModel().getProperty(
+		RGB backRgb = (RGB) modelElement.getProperty(
 				RectangleElement.PROP_BACKGROUND_COLOR).getPropertyValue();
-		RGB foreRgb = (RGB) getCastedModel().getProperty(
+		RGB foreRgb = (RGB) modelElement.getProperty(
 				RectangleElement.PROP_FOREGROUND_COLOR).getPropertyValue();
 
 		rectangle.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 				backRgb));
 		rectangle.setForegroundColor(CustomMediaFactory.getInstance().getColor(
 				foreRgb));
+		rectangle.setFill((Double) modelElement.getProperty(
+				RectangleElement.PROP_FILL_PERCENTAGE).getPropertyValue());
 
 		return rectangle;
 	}
@@ -50,11 +51,13 @@ public final class RectangleEditPart extends AbstractSDSEditPart {
 			rectangle.repaint();
 		} else if (propertyName.equals(RectangleElement.PROP_BACKGROUND_COLOR)) {
 			RefreshableRectangle rectangle = (RefreshableRectangle) getFigure();
-			rectangle.setBackgroundColor(CustomMediaFactory.getInstance().getColor((RGB) newValue));
+			rectangle.setBackgroundColor(CustomMediaFactory.getInstance()
+					.getColor((RGB) newValue));
 			rectangle.repaint();
 		} else if (propertyName.equals(RectangleElement.PROP_FOREGROUND_COLOR)) {
 			RefreshableRectangle rectangle = (RefreshableRectangle) getFigure();
-			rectangle.setForegroundColor(CustomMediaFactory.getInstance().getColor((RGB) newValue));
+			rectangle.setForegroundColor(CustomMediaFactory.getInstance()
+					.getColor((RGB) newValue));
 			rectangle.repaint();
 		}
 	}
