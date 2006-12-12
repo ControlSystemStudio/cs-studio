@@ -1,14 +1,10 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.sds.components.internal.model.EllipseElement;
 import org.csstudio.sds.dataconnection.StatisticUtil;
-import org.csstudio.sds.ui.editparts.IRefreshableFigure;
-import org.csstudio.sds.uil.CustomMediaFactory;
+import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * An ellipse figure.
@@ -23,34 +19,18 @@ public final class RefreshableEllipse extends Ellipse implements
 	 * The fill grade (0 - 100%).
 	 */
 	private double _fill = 100.0;
-
+	
 	/**
-	 * The background color.
-	 */
-	private Color _backgroundColor;
-
-	/**
-	 * The foreground color.
-	 */
-	private Color _foregroundColor;
-
-	/**
+	 * 
 	 * {@inheritDoc}
 	 */
-	public void refresh(final String propertyName, final Object propertyValue) {
+	@Override
+	public void paint(final Graphics graphics) {
+		super.paint(graphics);
 		StatisticUtil.getInstance().recordWidgetRefresh(this);
-
-		if (propertyName.equals(EllipseElement.PROP_FILL_PERCENTAGE)) {
-			Double fillGrade = (Double) propertyValue;
-			setFill(fillGrade);
-		} else if (propertyName.equals(EllipseElement.PROP_BACKGROUND_COLOR)) {
-			setBackgroundColor(CustomMediaFactory.getInstance().getColor(
-					(RGB) propertyValue));
-		} else if (propertyName.equals(EllipseElement.PROP_FOREGROUND_COLOR)) {
-			setForegroundColor(CustomMediaFactory.getInstance().getColor(
-					(RGB) propertyValue));
-		}
 	}
+
+
 
 	/**
 	 * {@inheritDoc}
@@ -96,43 +76,5 @@ public final class RefreshableEllipse extends Ellipse implements
 	 */
 	public double getFill() {
 		return _fill;
-	}
-
-	/**
-	 * Gets the background color.
-	 * 
-	 * @return the background color.
-	 */
-	public Color getBackgroundColor() {
-		return _backgroundColor;
-	}
-
-	/**
-	 * Sets the background color.
-	 * 
-	 * @param backgroundColor
-	 *            the background color.
-	 */
-	public void setBackgroundColor(final Color backgroundColor) {
-		_backgroundColor = backgroundColor;
-	}
-
-	/**
-	 * Gets the foreground color.
-	 * 
-	 * @return the foreground color.
-	 */
-	public Color getForegroundColor() {
-		return _foregroundColor;
-	}
-
-	/**
-	 * Sets the foreground color.
-	 * 
-	 * @param foregroundColor
-	 *            the foreground color.
-	 */
-	public void setForegroundColor(final Color foregroundColor) {
-		_foregroundColor = foregroundColor;
 	}
 }

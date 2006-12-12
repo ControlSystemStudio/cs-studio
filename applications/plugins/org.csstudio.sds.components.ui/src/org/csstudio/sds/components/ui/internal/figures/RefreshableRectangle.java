@@ -1,12 +1,11 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.dataconnection.StatisticUtil;
-import org.csstudio.sds.ui.editparts.IRefreshableFigure;
+import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.Color;
 
 /**
  * A rectangle figure.
@@ -23,21 +22,12 @@ public final class RefreshableRectangle extends RectangleFigure implements
 	private double _fill = 100.0;
 
 	/**
-	 * The background color.
-	 */
-	private Color _backgroundColor;
-
-	/**
-	 * The foreground color.
-	 */
-	private Color _foregroundColor;
-
-	/**
+	 * 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void repaint() {
-		super.repaint();
+	public void paint(Graphics graphics) {
+		super.paint(graphics);
 		StatisticUtil.getInstance().recordWidgetRefresh(this);
 	}
 
@@ -83,43 +73,4 @@ public final class RefreshableRectangle extends RectangleFigure implements
 	public double getFill() {
 		return _fill;
 	}
-
-	/**
-	 * Gets the background color.
-	 * 
-	 * @return the background color.
-	 */
-	public Color getBackgroundColor() {
-		return _backgroundColor;
-	}
-
-	/**
-	 * Sets the background color.
-	 * 
-	 * @param backgroundColor
-	 *            the background color.
-	 */
-	public void setBackgroundColor(final Color backgroundColor) {
-		_backgroundColor = backgroundColor;
-	}
-
-	/**
-	 * Gets the foreground color.
-	 * 
-	 * @return the foreground color.
-	 */
-	public Color getForegroundColor() {
-		return _foregroundColor;
-	}
-
-	/**
-	 * Sets the foreground color.
-	 * 
-	 * @param foregroundColor
-	 *            the foreground color.
-	 */
-	public void setForegroundColor(final Color foregroundColor) {
-		_foregroundColor = foregroundColor;
-	}
-
 }

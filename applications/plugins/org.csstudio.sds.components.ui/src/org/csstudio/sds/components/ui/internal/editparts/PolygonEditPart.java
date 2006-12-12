@@ -12,7 +12,7 @@ import org.eclipse.swt.graphics.RGB;
 /**
  * EditPart controller for <code>PolygonElement</code> elements.
  * 
- * @author Sven Wende
+ * @author Sven Wende & Stefan Hofer
  * 
  */
 public final class PolygonEditPart extends AbstractSDSEditPart {
@@ -26,8 +26,8 @@ public final class PolygonEditPart extends AbstractSDSEditPart {
 		DisplayModelElement modelElement = getCastedModel();
 
 		for (String key : modelElement.getPropertyNames()) {
-			polygon.refresh(key, modelElement.getProperty(key)
-					.getPropertyValue());
+			setFigureProperties(key, modelElement.getProperty(key)
+					.getPropertyValue(), polygon);
 		}
 
 		return polygon;
@@ -40,22 +40,33 @@ public final class PolygonEditPart extends AbstractSDSEditPart {
 	protected void doRefreshFigure(final String propertyName,
 			final Object newValue) {
 		RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) getFigure();
+		setFigureProperties(propertyName, newValue, polygon);
+		
+		// performance optimization: super.setPoints() already performs repaint
+		if (!propertyName.equals(PolygonElement.PROP_POINTS)) {
+			polygon.repaint();
+		}
+	}
 
+	/**
+	 * Sets a property of a figure.
+	 * @param propertyName The property to set.
+	 * @param newValue The value to set.
+	 * @param polygon The figure that is configured.
+	 */
+	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshablePolygonFigure polygon) {
 		if (propertyName.equals(PolygonElement.PROP_POINTS)) {
 			assert newValue instanceof PointList : "newValue instanceof PointList"; //$NON-NLS-1$
 			PointList points = (PointList) newValue;
 			polygon.setPoints(points);
 		} else if (propertyName.equals(PolygonElement.PROP_FILL_GRADE)) {
 			polygon.setFill((Double) newValue);
-			polygon.repaint();
 		} else if (propertyName.equals(PolygonElement.PROP_BACKGROUND_COLOR)) {
 			polygon.setBackgroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
-			polygon.repaint();
 		} else if (propertyName.equals(PolygonElement.PROP_FOREGROUND_COLOR)) {
 			polygon.setForegroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
-			polygon.repaint();
 		}
 	}
 }

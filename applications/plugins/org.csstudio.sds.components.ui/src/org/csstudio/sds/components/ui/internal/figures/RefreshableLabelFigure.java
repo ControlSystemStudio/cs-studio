@@ -1,18 +1,17 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.sds.components.internal.model.LabelElement;
 import org.csstudio.sds.dataconnection.StatisticUtil;
-import org.csstudio.sds.ui.editparts.IRefreshableFigure;
+import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * A label figure.
  * 
- * @author Sven Wende, Alexander Will
+ * @author Sven Wende, Alexander Will, Stefan Hofer
  * 
  */
 public final class RefreshableLabelFigure extends Label implements
@@ -29,19 +28,16 @@ public final class RefreshableLabelFigure extends Label implements
 	public RefreshableLabelFigure() {
 		setFont(FONT);
 	}
+	
 
 	/**
+	 * 
 	 * {@inheritDoc}
 	 */
-	public void refresh(final String propertyName, final Object propertyValue) {
+	@Override
+	public void paint(final Graphics graphics) {
+		super.paint(graphics);
 		StatisticUtil.getInstance().recordWidgetRefresh(this);
-
-		if (propertyName.equals(LabelElement.PROP_LABEL)) {
-			setText((String) propertyValue);
-		} else if (propertyName.equals(LabelElement.PROP_BACKGROUND_COLOR)) {
-			setBackgroundColor(CustomMediaFactory.getInstance().getColor(
-					(RGB) propertyValue));
-		}
 	}
 
 	/**

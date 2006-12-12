@@ -23,18 +23,10 @@ public final class RectangleEditPart extends AbstractSDSEditPart {
 		RefreshableRectangle rectangle = new RefreshableRectangle();
 		DisplayModelElement modelElement = getCastedModel();
 
-		RGB backRgb = (RGB) modelElement.getProperty(
-				RectangleElement.PROP_BACKGROUND_COLOR).getPropertyValue();
-		RGB foreRgb = (RGB) modelElement.getProperty(
-				RectangleElement.PROP_FOREGROUND_COLOR).getPropertyValue();
-
-		rectangle.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
-				backRgb));
-		rectangle.setForegroundColor(CustomMediaFactory.getInstance().getColor(
-				foreRgb));
-		rectangle.setFill((Double) modelElement.getProperty(
-				RectangleElement.PROP_FILL_PERCENTAGE).getPropertyValue());
-
+		for (String key : modelElement.getPropertyNames()) {
+			setFigureProperties(key, modelElement.getProperty(key)
+					.getPropertyValue(), rectangle);
+		}
 		return rectangle;
 	}
 
@@ -44,20 +36,26 @@ public final class RectangleEditPart extends AbstractSDSEditPart {
 	@Override
 	protected void doRefreshFigure(final String propertyName,
 			final Object newValue) {
+		RefreshableRectangle rectangle = (RefreshableRectangle) getFigure();
+		setFigureProperties(propertyName, newValue, rectangle);
+		rectangle.repaint();
+	}
+
+	/**
+	 * Sets a property of a figure.
+	 * @param propertyName The property to set.
+	 * @param newValue The value to set.
+	 * @param rectangle The figure that is configured.
+	 */
+	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshableRectangle rectangle) {
 		if (propertyName.equals(RectangleElement.PROP_FILL_PERCENTAGE)) {
-			RefreshableRectangle rectangle = (RefreshableRectangle) getFigure();
 			rectangle.setFill((Double) newValue);
-			rectangle.repaint();
 		} else if (propertyName.equals(RectangleElement.PROP_BACKGROUND_COLOR)) {
-			RefreshableRectangle rectangle = (RefreshableRectangle) getFigure();
 			rectangle.setBackgroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
-			rectangle.repaint();
 		} else if (propertyName.equals(RectangleElement.PROP_FOREGROUND_COLOR)) {
-			RefreshableRectangle rectangle = (RefreshableRectangle) getFigure();
 			rectangle.setForegroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
-			rectangle.repaint();
 		}
 	}
 

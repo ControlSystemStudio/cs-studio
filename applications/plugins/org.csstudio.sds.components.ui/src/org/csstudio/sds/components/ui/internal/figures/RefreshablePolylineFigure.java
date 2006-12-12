@@ -2,7 +2,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.components.internal.model.PolylineElement;
 import org.csstudio.sds.dataconnection.StatisticUtil;
-import org.csstudio.sds.ui.editparts.IRefreshableFigure;
+import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
@@ -45,13 +45,21 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		setBackgroundColor(ColorConstants.darkGreen);
 		setLineWidth(4);
 	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void paint(Graphics graphics) {
+		super.paint(graphics);
+		StatisticUtil.getInstance().recordWidgetRefresh(this);
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void refresh(final String propertyName, final Object propertyValue) {
-		StatisticUtil.getInstance().recordWidgetRefresh(this);
-
 		if (propertyName.equals(PolylineElement.PROP_POINTS)) {
 			PointList points = (PointList) propertyValue;
 			setPoints(points);

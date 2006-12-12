@@ -1,7 +1,7 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.dataconnection.StatisticUtil;
-import org.csstudio.sds.ui.editparts.IRefreshableFigure;
+import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.AntialiasingUtil;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;
@@ -92,11 +92,12 @@ public final class RefreshableMeterFigure extends ImageFigure implements
 	}
 
 	/**
+	 * 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void paint(final Graphics arg0) {
-		super.paint(arg0);
+	public void paint(Graphics graphics) {
+		super.paint(graphics);
 		StatisticUtil.getInstance().recordWidgetRefresh(this);
 	}
 

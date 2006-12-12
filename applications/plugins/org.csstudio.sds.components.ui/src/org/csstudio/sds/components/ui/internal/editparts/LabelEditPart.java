@@ -25,9 +25,8 @@ public final class LabelEditPart extends AbstractSDSEditPart {
 		DisplayModelElement modelElement = getCastedModel();
 
 		for (String key : getCastedModel().getPropertyNames()) {
-			label
-					.refresh(key, modelElement.getProperty(key)
-							.getPropertyValue());
+			setFigureProperties(key, modelElement.getProperty(key)
+					.getPropertyValue(), label);
 		}
 
 		return label;
@@ -40,19 +39,27 @@ public final class LabelEditPart extends AbstractSDSEditPart {
 	protected void doRefreshFigure(final String propertyName,
 			final Object newValue) {
 		RefreshableLabelFigure label = (RefreshableLabelFigure) getFigure();
+		setFigureProperties(propertyName, newValue, label);
+		label.repaint();
+	}
+
+	/**
+	 * Sets a property of a figure. Does not cause the figure to be (re-)painted! 
+	 * @param propertyName The property to set.
+	 * @param newValue The value to set.
+	 * @param label The figure that is configured.
+	 */
+	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshableLabelFigure label) {
 		if (propertyName.equals(LabelElement.PROP_LABEL)) {
-			label.setText("" + newValue); //$NON-NLS-1$
-			label.repaint();
+			label.setText(newValue.toString());
 		} else if (propertyName.equals(LabelElement.PROP_BACKGROUND_COLOR)) {
 			label.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 					(RGB) newValue));
-			label.repaint();
 		} else if (propertyName.equals(LabelElement.PROP_FONT)) {
 			FontData fontData = (FontData) newValue;
 			label.setFont(CustomMediaFactory.getInstance().getFont(
 					fontData.getName(), fontData.getHeight(),
 					fontData.getStyle()));
-			label.repaint();
 		}
 	}
 }

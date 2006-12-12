@@ -25,10 +25,9 @@ public final class EllipseEditPart extends AbstractSDSEditPart {
 		DisplayModelElement modelElement = getCastedModel();
 
 		for (String key : modelElement.getPropertyNames()) {
-			ellipse.refresh(key, modelElement.getProperty(key)
-					.getPropertyValue());
+			setFigureProperties(key, modelElement.getProperty(key)
+					.getPropertyValue(), ellipse);
 		}
-
 		return ellipse;
 	}
 
@@ -39,18 +38,25 @@ public final class EllipseEditPart extends AbstractSDSEditPart {
 	protected void doRefreshFigure(final String propertyName,
 			final Object newValue) {
 		RefreshableEllipse ellipse = (RefreshableEllipse) getFigure();
+		setFigureProperties(propertyName, newValue, ellipse);
+		ellipse.repaint();
+	}
 
+	/**
+	 * Sets a property of a figure. Does not cause the figure to be (re-)painted! 
+	 * @param propertyName The property to set.
+	 * @param newValue The value to set.
+	 * @param ellipse The figure that is configured.
+	 */
+	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshableEllipse ellipse) {
 		if (propertyName.equals(EllipseElement.PROP_FILL_PERCENTAGE)) {
 			ellipse.setFill((Double) newValue);
-			ellipse.repaint();
 		} else if (propertyName.equals(EllipseElement.PROP_BACKGROUND_COLOR)) {
 			ellipse.setBackgroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
-			ellipse.repaint();
 		} else if (propertyName.equals(EllipseElement.PROP_FOREGROUND_COLOR)) {
 			ellipse.setForegroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
-			ellipse.repaint();
 		}
 	}
 

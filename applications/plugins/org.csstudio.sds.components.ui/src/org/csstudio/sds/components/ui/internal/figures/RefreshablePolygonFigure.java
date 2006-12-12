@@ -1,22 +1,17 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.sds.components.internal.model.PolygonElement;
 import org.csstudio.sds.dataconnection.StatisticUtil;
-import org.csstudio.sds.ui.editparts.IRefreshableFigure;
-import org.csstudio.sds.uil.CustomMediaFactory;
+import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polygon;
-import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * A polygon figure.
  * 
- * @author Sven Wende
+ * @author Sven Wende & Stefan Hofer
  * 
  */
 public final class RefreshablePolygonFigure extends Polygon implements
@@ -28,16 +23,6 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	private double _fill = 100.0;
 
 	/**
-	 * The background color.
-	 */
-	private Color _backgroundColor;
-
-	/**
-	 * The foreground color.
-	 */
-	private Color _foregroundColor;
-
-	/**
 	 * Constructor.
 	 */
 	public RefreshablePolygonFigure() {
@@ -45,27 +30,16 @@ public final class RefreshablePolygonFigure extends Polygon implements
 		setBackgroundColor(ColorConstants.darkGreen);
 
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	public void refresh(final String propertyName, final Object propertyValue) {
+	@Override
+	public void paint(Graphics graphics) {
+		super.paint(graphics);
 		StatisticUtil.getInstance().recordWidgetRefresh(this);
-
-		if (propertyName.equals(PolygonElement.PROP_POINTS)) {
-			PointList points = (PointList) propertyValue;
-			setPoints(points);
-		} else if (propertyName.equals(PolygonElement.PROP_FILL_GRADE)) {
-			Double fillGrade = (Double) propertyValue;
-			setFill(fillGrade);
-		} else if (propertyName.equals(PolygonElement.PROP_BACKGROUND_COLOR)) {
-			setBackgroundColor(CustomMediaFactory.getInstance().getColor(
-					(RGB) propertyValue));
-		} else if (propertyName.equals(PolygonElement.PROP_FOREGROUND_COLOR)) {
-			setForegroundColor(CustomMediaFactory.getInstance().getColor(
-					(RGB) propertyValue));
-		}
 	}
+
 
 	/**
 	 * {@inheritDoc}
@@ -101,7 +75,8 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	 * {@inheritDoc}
 	 */
 	public void randomNoiseRefresh() {
-		// TODO: swende: make some noise
+		setFill(Math.random() * 100);
+		repaint();
 	}
 
 	/**
@@ -130,41 +105,4 @@ public final class RefreshablePolygonFigure extends Polygon implements
 		return _fill;
 	}
 
-	/**
-	 * Gets the background color.
-	 * 
-	 * @return the background color.
-	 */
-	public Color getBackgroundColor() {
-		return _backgroundColor;
-	}
-
-	/**
-	 * Sets the background color.
-	 * 
-	 * @param backgroundColor
-	 *            the background color.
-	 */
-	public void setBackgroundColor(final Color backgroundColor) {
-		_backgroundColor = backgroundColor;
-	}
-
-	/**
-	 * Gets the foreground color.
-	 * 
-	 * @return the foreground color.
-	 */
-	public Color getForegroundColor() {
-		return _foregroundColor;
-	}
-
-	/**
-	 * Sets the foreground color.
-	 * 
-	 * @param foregroundColor
-	 *            the foreground color.
-	 */
-	public void setForegroundColor(final Color foregroundColor) {
-		_foregroundColor = foregroundColor;
-	}
 }
