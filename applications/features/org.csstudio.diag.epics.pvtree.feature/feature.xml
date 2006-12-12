@@ -4,11 +4,11 @@
       label="PV Tree"
       version="1.0.0">
 
-   <description url="http://www.example.com/description">
-      Tree for process variables
+   <description>
+      Display data flow hierarchy of EPICS PVs.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
+   <copyright>
       Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
 Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
    </copyright>

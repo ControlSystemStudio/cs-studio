@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-
    <extension
          point="org.eclipse.ui.views">
       <category
@@ -77,10 +76,15 @@
                icon="icons/pvtree.gif"
                id="org.csstudio.diag.epics.pvtree.showpvtreeaction"
                label="%PVTree"
-               menubarPath="css/diagnostics/"
+               menubarPath="css/diag/"
                style="push"
                tooltip="%PVTree_TT"/>
       </actionSet>
    </extension>
-   
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
 </plugin>

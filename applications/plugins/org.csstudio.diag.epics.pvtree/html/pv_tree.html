@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>CSS EPICS PV Tree</title>
+</head>
+
+<body>
+<h1>Overview</h1>
+The CSS EPICS PV Tree displays the hierarchical data flow between EPICS
+records.
+It displays the record types, their current values as well as
+severity/status.
+It attempts to follow the data flow by traversing input links
+(INP, INPA, DOL, ...).
+
+<h2>Usage</h2>
+Enter a name into the "PV" text box, and see what happens.
+Names can be entered in various ways:
+<ul>
+<li>Type a PV name, followed by "Return".
+<li>Select a previously entered PV name from the drop-down list
+    attached to the PV name text box.
+<li>Drop a PV name from another CSS application into the "Tree" area
+    below the PV name.
+<li>Send a PV name to the EPICS PV tree via the context menu of another
+    CSS application. 
+</ul>
+    
+<h2>Examples</h2>
+The first screenshot shows an analog input (ai) record, which reads its
+input (INP) directly from a device support module that happens to understand
+the input description "adm606m....". 
+<p>
+<center>
+<img src=screenshot1.png>
+</center>
+
+The second screenshot shows a more interesting hierarchy:
+A binary input record (bi) reads from a calculation (calc), whose first input
+(INPA) reads from an mbbi which in turn reads from another calc and so on.
+Note how the color-coding of severities.
+<p>
+<center>
+<img src=screenshot2.png>
+</center>
+
+<h2>Limitations</h2>
+This tool uses the EPICS network protocol, Channel Access, to read PVs.
+Since there is no way to query EPICS V3 IOCs for their database information,
+the knowledge of record types as well as their input links is hard-coded
+into the application. It will not handle record types outside of EPICS 'base',
+and it might not even fully handle all record types inside EPICS 'base'.
+
+</body>
+</html>

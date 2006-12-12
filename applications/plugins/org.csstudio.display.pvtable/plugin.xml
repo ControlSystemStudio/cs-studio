@@ -41,13 +41,6 @@
             icon="icons/table.gif"
             name="%PVTable"/>
    </extension>
-   <!-- <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="toc.xml"
-            primary="true"/>
-      <toc file="tocconcepts.xml"/>
-   </extension> -->
    <extension
          point="org.eclipse.help.toc">
       <toc
@@ -55,7 +48,6 @@
             primary="true">
       </toc>
    </extension>
-   
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.csstudio.display.pvtable.preferences.PreferenceInitializer"/>

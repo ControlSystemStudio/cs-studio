@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Jprobe Plug-in
+Bundle-Name: Probe Plug-in
 Bundle-SymbolicName: org.csstudio.diag.probe; singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-Activator: org.csstudio.diag.probe.Plugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -18,3 +18,4 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.csstudio.platform
 Eclipse-LazyStart: true
+Bundle-Vendor: Kay Kasemir

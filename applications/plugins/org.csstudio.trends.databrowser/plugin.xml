@@ -141,7 +141,6 @@
                tooltip="%MenuTooltip"/>
       </actionSet>
    </extension>
-   
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -152,5 +151,12 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.csstudio.trends.databrowser.preferences.Preferences"/>
+   </extension>
+      <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
    </extension>
 </plugin>

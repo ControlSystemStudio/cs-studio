@@ -2,6 +2,6 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#utility" label="">
-	<topic label="Clock"  href="html/clock.html">
+	<topic label="EPICS PV Tree"  href="html/pv_tree.html">
 	</topic>
 </toc>

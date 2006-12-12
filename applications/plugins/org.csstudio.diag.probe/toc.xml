@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<!-- toc label="Probe" topic="resources/index.html"-->
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#diagnostics" label="">
-
-<topic label="Probe" href="resources/index.html">
-	<!-- topic label="Reference" href="resources/reference.html">
-		<topic label="API References" href="resources/apireference.html">
-			<topic label="CSS HelloWorld" href="docs/index.html" />
-		</topic>
-	</topic-->
-</topic>
+<toc link_to="../org.csstudio.platform.ui/tocApps.xml#diag" label="">
+	<topic label="Probe"  href="html/probe.html">
+	</topic>
 </toc>
