@@ -74,13 +74,13 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	protected void outlineShape(final Graphics graphics) {
 		Rectangle bounds = getBounds();
 
-		int newW = (int) Math.round(bounds.width * getFill());
-
+		int newW = (int) Math.round(bounds.width * (getFill() / 100));
+		
 		graphics.setClip(new Rectangle(bounds.x, bounds.y, newW, bounds.height));
 		graphics.setForegroundColor(getBackgroundColor());
 		graphics.drawPolyline(getPoints());
 		graphics.setClip(new Rectangle(bounds.x+newW, bounds.y, bounds.width-newW, bounds.height));
-		graphics.setForegroundColor(getBackgroundColor());
+		graphics.setForegroundColor(getForegroundColor());
 		graphics.drawPolyline(getPoints());
 	}
 

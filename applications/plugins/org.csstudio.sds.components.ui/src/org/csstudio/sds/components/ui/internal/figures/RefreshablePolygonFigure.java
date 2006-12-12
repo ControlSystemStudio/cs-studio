@@ -74,7 +74,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	protected void fillShape(final Graphics graphics) {
 		Rectangle bounds = getBounds();
 
-		int newW = (int) Math.round(bounds.width * getFill());
+		int newW = (int) Math.round(bounds.width * (getFill() / 100));
 
 		graphics
 				.setClip(new Rectangle(bounds.x, bounds.y, newW, bounds.height));
