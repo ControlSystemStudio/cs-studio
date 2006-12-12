@@ -22,8 +22,8 @@
 package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.DataTypeEnum;
 import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -45,7 +45,7 @@ public final class PolylineElement extends DisplayModelElement {
 	 * The ID of the fill grade property.
 	 */
 	public static final String PROP_FILL_GRADE = "line.fillgrade"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the background color property.
 	 */
@@ -91,14 +91,16 @@ public final class PolylineElement extends DisplayModelElement {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_POINTS, Messages.PolylineElement_POINTS, DataTypeEnum.POINTLIST,
-				new PointList());
-		addProperty(PROP_FILL_GRADE, Messages.PolylineElement_FILL_GRADE, DataTypeEnum.DOUBLE,
-				100.0);
-		addProperty(PROP_BACKGROUND_COLOR, Messages.PolylineElement_BACKGROUND_COLOR,
-				DataTypeEnum.COLOR, new RGB(100, 100, 100));
-		addProperty(PROP_FOREGROUND_COLOR, Messages.PolylineElement_FOREGROUND_COLOR,
-				DataTypeEnum.COLOR, new RGB(200, 100, 100));		
+		addProperty(PROP_POINTS, Messages.PolylineElement_POINTS,
+				PropertyTypeRegistry.POINT_LIST, new PointList());
+		addProperty(PROP_FILL_GRADE, Messages.PolylineElement_FILL_GRADE,
+				PropertyTypeRegistry.DOUBLE, 100.0);
+		addProperty(PROP_BACKGROUND_COLOR,
+				Messages.PolylineElement_BACKGROUND_COLOR,
+				PropertyTypeRegistry.COLOR, new RGB(100, 100, 100));
+		addProperty(PROP_FOREGROUND_COLOR,
+				Messages.PolylineElement_FOREGROUND_COLOR,
+				PropertyTypeRegistry.COLOR, new RGB(200, 100, 100));
 	}
 
 	/**
@@ -133,7 +135,7 @@ public final class PolylineElement extends DisplayModelElement {
 	public PointList getPoints() {
 		return (PointList) getProperty(PROP_POINTS).getPropertyValue();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

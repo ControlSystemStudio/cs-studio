@@ -22,14 +22,14 @@
 package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.DataTypeEnum;
 import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 import org.eclipse.swt.graphics.RGB;
 
 /**
  * This class defines an rectangle model element.
  * 
- * @author Sven Wende,  Alexander Will
+ * @author Sven Wende, Alexander Will
  * @version $Revision$
  * 
  */
@@ -90,13 +90,13 @@ public final class RectangleElement extends DisplayModelElement {
 	@Override
 	protected void configureProperties() {
 		addProperty(PROP_FILL_PERCENTAGE, Messages.RectangleElement_FILL_GRADE,
-				DataTypeEnum.DOUBLE, DEFAULT_FILL_GRADE);
+				PropertyTypeRegistry.DOUBLE, DEFAULT_FILL_GRADE);
 		addProperty(PROP_BACKGROUND_COLOR,
-				Messages.RectangleElement_BACKGROUND_COLOR, DataTypeEnum.COLOR,
-				new RGB(100, 100, 100));
+				Messages.RectangleElement_BACKGROUND_COLOR,
+				PropertyTypeRegistry.COLOR, new RGB(100, 100, 100));
 		addProperty(PROP_FOREGROUND_COLOR,
-				Messages.RectangleElement_FOREGROUND_COLOR, DataTypeEnum.COLOR,
-				new RGB(200, 100, 100));
+				Messages.RectangleElement_FOREGROUND_COLOR,
+				PropertyTypeRegistry.COLOR, new RGB(200, 100, 100));
 	}
 
 	/**

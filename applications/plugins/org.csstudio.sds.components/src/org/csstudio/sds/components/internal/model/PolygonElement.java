@@ -22,8 +22,8 @@
 package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.DataTypeEnum;
 import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -82,14 +82,16 @@ public final class PolygonElement extends DisplayModelElement {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_POINTS, Messages.PolygonElement_POINTS, DataTypeEnum.POINTLIST,
-				new PointList());
-		addProperty(PROP_FILL_GRADE, Messages.PolygonElement_FILL_GRADE, DataTypeEnum.DOUBLE,
-				100.0);
-		addProperty(PROP_BACKGROUND_COLOR, Messages.PolygonElement_BACKGROUND_COLOR,
-				DataTypeEnum.COLOR, new RGB(100, 100, 100));
-		addProperty(PROP_FOREGROUND_COLOR, Messages.PolygonElement_FOREGROUND_COLOR,
-				DataTypeEnum.COLOR, new RGB(200, 100, 100));
+		addProperty(PROP_POINTS, Messages.PolygonElement_POINTS,
+				PropertyTypeRegistry.POINT_LIST, new PointList());
+		addProperty(PROP_FILL_GRADE, Messages.PolygonElement_FILL_GRADE,
+				PropertyTypeRegistry.DOUBLE, 100.0);
+		addProperty(PROP_BACKGROUND_COLOR,
+				Messages.PolygonElement_BACKGROUND_COLOR,
+				PropertyTypeRegistry.COLOR, new RGB(100, 100, 100));
+		addProperty(PROP_FOREGROUND_COLOR,
+				Messages.PolygonElement_FOREGROUND_COLOR,
+				PropertyTypeRegistry.COLOR, new RGB(200, 100, 100));
 	}
 
 	/**

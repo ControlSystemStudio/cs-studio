@@ -22,8 +22,8 @@
 package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.DataTypeEnum;
 import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -87,12 +87,12 @@ public final class LabelElement extends DisplayModelElement {
 	@Override
 	protected void configureProperties() {
 		addProperty(PROP_LABEL, Messages.LabelElement_LABEL,
-				DataTypeEnum.STRING, ""); //$NON-NLS-1$
+				PropertyTypeRegistry.STRING, ""); //$NON-NLS-1$
 		addProperty(PROP_BACKGROUND_COLOR,
-				Messages.LabelElement_BACKGROUND_COLOR, DataTypeEnum.COLOR,
+				Messages.LabelElement_BACKGROUND_COLOR, PropertyTypeRegistry.COLOR,
 				new RGB(100, 100, 100));
-		addProperty(PROP_FONT, "Font", DataTypeEnum.FONT, new FontData("Arial",
-				8, SWT.NONE));
+		addProperty(PROP_FONT, "Font", PropertyTypeRegistry.FONT, new FontData(
+				"Arial", 8, SWT.NONE)); //$NON-NLS-1$
 	}
 
 	/**

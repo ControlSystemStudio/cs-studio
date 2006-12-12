@@ -21,8 +21,8 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.model.DataTypeEnum;
 import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 
 /**
  * A meter model element.
@@ -139,18 +139,18 @@ public final class MeterElement extends DisplayModelElement {
 	@Override
 	protected void configureProperties() {
 		addProperty(PROP_INTERVAL1_LOWER_BORDER, "Interval 1 lower border",
-				DataTypeEnum.DOUBLE, INTERVAL1_LOWER_BORDER_DEFAULT);
+				PropertyTypeRegistry.DOUBLE, INTERVAL1_LOWER_BORDER_DEFAULT);
 		addProperty(PROP_INTERVAL1_UPPER_BORDER, "Interval 1 upper border",
-				DataTypeEnum.DOUBLE, INTERVAL1_UPPER_BORDER_DEFAULT);
+				PropertyTypeRegistry.DOUBLE, INTERVAL1_UPPER_BORDER_DEFAULT);
 		addProperty(PROP_INTERVAL2_LOWER_BORDER, "Interval 2 lower border",
-				DataTypeEnum.DOUBLE, INTERVAL2_LOWER_BORDER_DEFAULT);
+				PropertyTypeRegistry.DOUBLE, INTERVAL2_LOWER_BORDER_DEFAULT);
 		addProperty(PROP_INTERVAL2_UPPER_BORDER, "Interval 2 upper border",
-				DataTypeEnum.DOUBLE, INTERVAL2_UPPER_BORDER_DEFAULT);
+				PropertyTypeRegistry.DOUBLE, INTERVAL2_UPPER_BORDER_DEFAULT);
 		addProperty(PROP_INTERVAL3_LOWER_BORDER, "Interval 3 lower border",
-				DataTypeEnum.DOUBLE, INTERVAL3_LOWER_BORDER_DEFAULT);
+				PropertyTypeRegistry.DOUBLE, INTERVAL3_LOWER_BORDER_DEFAULT);
 		addProperty(PROP_INTERVAL3_UPPER_BORDER, "Interval 3 upper border",
-				DataTypeEnum.DOUBLE, INTERVAL3_UPPER_BORDER_DEFAULT);
-		addProperty(PROP_VALUE, "value", DataTypeEnum.DOUBLE, VALUE_DEFAULT);
+				PropertyTypeRegistry.DOUBLE, INTERVAL3_UPPER_BORDER_DEFAULT);
+		addProperty(PROP_VALUE, "value", PropertyTypeRegistry.DOUBLE, VALUE_DEFAULT);
 	}
 
 	/**
