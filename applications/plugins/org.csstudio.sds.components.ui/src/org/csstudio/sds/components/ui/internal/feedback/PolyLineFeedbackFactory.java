@@ -10,7 +10,6 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Polygon;
 import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.Shape;
