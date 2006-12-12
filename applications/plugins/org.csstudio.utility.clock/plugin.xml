@@ -65,7 +65,7 @@
                icon="icons/clock.png"
                id="org.csstudio.utility.clock.showclockaction"
                label="Clock"
-               menubarPath="css/utilities/"
+               menubarPath="css/utility/"
                style="push"
                tooltip="Show the Clock"/>
       </actionSet>

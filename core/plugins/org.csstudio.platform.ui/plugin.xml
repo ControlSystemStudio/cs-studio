@@ -136,7 +136,7 @@
                label="%menuCssEditors"
                path="css/group8"/>
          <menu
-               id="utilities"
+               id="utility"
                label="%menuCssUtilities"
                path="css/group9"/>
          <menu

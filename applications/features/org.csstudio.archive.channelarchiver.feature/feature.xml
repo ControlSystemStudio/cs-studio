@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.archive.channelarchiver.feature"
       label="Channel Archiver"
-      version="1.0.0">
+      version="1.0.1">
 
    <description url="http://www.example.com/description">
       Layer for access to archive data.
