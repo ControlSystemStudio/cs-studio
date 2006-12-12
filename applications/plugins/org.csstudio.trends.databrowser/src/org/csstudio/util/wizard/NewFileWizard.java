@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
+import org.csstudio.platform.ui.workbench.FileEditorInput;
+import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -14,20 +16,20 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWizard;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
 
 // Originally created with the PDE wizard
 
@@ -159,15 +161,24 @@ public class NewFileWizard extends Wizard implements INewWizard
         {
             public void run()
             {
-                IWorkbenchPage page = PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getActivePage();
+                // Code based on email from Alexander Will,
+                // replacing the IDE dependency IDE.openEditor(...)
                 try
                 {
-                    // TODO IDE dependency
-                    IDE.openEditor(page, file, true);
+                    IEditorInput editorInput = new FileEditorInput(file);
+                    IEditorRegistry editorRegistry =
+                            PlatformUI.getWorkbench().getEditorRegistry();
+                    IEditorDescriptor descriptor =
+                            editorRegistry.getDefaultEditor(file.getName());
+                    if (descriptor != null && editorInput != null)
+                        throw new Exception(Messages.NoEditorFound);
+                    IWorkbenchPage page = PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow().getActivePage();
+                    page.openEditor(editorInput, descriptor.getId());
                 }
-                catch (PartInitException e)
+                catch (Exception e)
                 {
+                    Plugin.logException(Messages.CannotOpenEditor, e);
                 }
             }
         });

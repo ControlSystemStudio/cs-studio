@@ -159,4 +159,12 @@
             primary="true">
       </toc>
    </extension>
+      <extension
+            point="org.eclipse.ui.perspectives">
+         <perspective
+               class="org.csstudio.trends.databrowser.Perspective"
+               icon="icons/chart.gif"
+               id="org.csstudio.trends.databrowser.perspective"
+               name="%Databrowser"/>
+      </extension>
 </plugin>

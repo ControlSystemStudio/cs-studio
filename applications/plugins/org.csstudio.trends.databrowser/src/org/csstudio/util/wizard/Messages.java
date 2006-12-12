@@ -10,6 +10,8 @@ public class Messages extends NLS
 
     public static String Browse;
 
+    public static String CannotOpenEditor;
+
     public static String ContainerNotFound;
 
     public static String CreateNew___;
@@ -27,6 +29,8 @@ public class Messages extends NLS
     public static String InvalidFilename;
 
     public static String NeedXML;
+
+    public static String NoEditorFound;
 
     public static String NoFilenameSelected;
 

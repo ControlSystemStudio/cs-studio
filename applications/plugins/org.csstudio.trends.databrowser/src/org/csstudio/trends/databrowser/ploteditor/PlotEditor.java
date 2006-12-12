@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.csstudio.archive.util.TimestampUtil;
+import org.csstudio.platform.ui.workbench.FileEditorInput;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.trends.databrowser.Controller;
 import org.csstudio.trends.databrowser.Plugin;
@@ -38,7 +39,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.ui.part.FileEditorInput;
 
 /** The eclipse 'editor' for the data browser.
  *  This is really more of a 'view' to the user, but since each data browser
