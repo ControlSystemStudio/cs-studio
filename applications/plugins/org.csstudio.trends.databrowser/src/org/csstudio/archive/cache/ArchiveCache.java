@@ -54,9 +54,8 @@ public class ArchiveCache
         // Since we're 'synchronized', this blocks all other calls.
         // But the alternative would be to risk multiple concurrent
         // connection attempts, which is overall worse.
-        // TODO: Allow implementations other than ChannelArchiver
         ArchiveServer real_server = 
-            org.csstudio.archive.channelarchiver.ArchiveServer.getInstance(url);
+            org.csstudio.archive.factory.ArchiveServerFactory.getInstance(url);
         CachingArchiveServer server = new CachingArchiveServer(real_server);
         server_cache.add(server);
         return server;
