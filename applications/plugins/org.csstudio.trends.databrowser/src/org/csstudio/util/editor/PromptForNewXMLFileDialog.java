@@ -21,23 +21,14 @@ public class PromptForNewXMLFileDialog
     {
         // Query for new name.
         // The path to the new resource relative to the workspace
-        IPath new_resource_path = null;
-        try
-        {
-            // This is the IDE's SaveAsDialog
-            SaveAsDialog dlg = new SaveAsDialog(shell);
-            dlg.setBlockOnOpen(true);
-            if (old_file != null)
-                dlg.setOriginalFile(old_file);
-            dlg.open();
-            // The path to the new resource relative to the workspace
-            new_resource_path = dlg.getResult();
-        }
-        catch (Exception e)
-        {   // If it fails, because we are in a crippled CSS RCP,
-            // run a plain version of a file Dialog.
-            
-        }
+        // Use the OS-specific org.eclipse.swt.widgets.FileDialog fs;
+        SaveAsDialog dlg = new SaveAsDialog(shell);
+        dlg.setBlockOnOpen(true);
+        if (old_file != null)
+            dlg.setOriginalFile(old_file);
+        dlg.open();
+        // The path to the new resource relative to the workspace
+        IPath new_resource_path = dlg.getResult();
         if (new_resource_path == null)
             return null;
         // Assert it's an '.xml' file
