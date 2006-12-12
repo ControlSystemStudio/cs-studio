@@ -40,7 +40,7 @@ public class ExportView extends PlotAwareView
     private Button use_plot_time;
     private Button time_config;
     private Button source_plot, source_raw, source_avg;
-    private Text   avg_seconds;
+    private Text   avg_count;
     private Button format_spreadsheet;
     private Button format_severity;
     private Button format_default;
@@ -181,18 +181,18 @@ public class ExportView extends PlotAwareView
         source_avg.setText(Messages.Source_Average);
         source_avg.setToolTipText(Messages.Source_Average_TT);
         
-        avg_seconds = new Text(frame, SWT.BORDER);
-        avg_seconds.setText("60");  //$NON-NLS-1$
-        avg_seconds.setToolTipText(Messages.Source_Seconds_TT);
+        avg_count = new Text(frame, SWT.BORDER);
+        avg_count.setText("100");  //$NON-NLS-1$
+        avg_count.setToolTipText(Messages.Avg_Count_TT);
         l = new Label(frame, 0);
-        l.setText(Messages.Source_Seconds);
+        l.setText(Messages.Avg_Count);
         
         source_plot.addSelectionListener(new SelectionAdapter()
         {
             @Override public void widgetSelected(SelectionEvent e)
             { 
                 source = ExportJob.Source.Plot;
-                avg_seconds.setEnabled(false);
+                avg_count.setEnabled(false);
             }
         });
         source_raw.addSelectionListener(new SelectionAdapter()
@@ -200,7 +200,7 @@ public class ExportView extends PlotAwareView
             @Override public void widgetSelected(SelectionEvent e)
             {  
                 source = ExportJob.Source.Raw;
-                avg_seconds.setEnabled(false);
+                avg_count.setEnabled(false);
             }
         });
         source_avg.addSelectionListener(new SelectionAdapter()
@@ -208,7 +208,7 @@ public class ExportView extends PlotAwareView
             @Override public void widgetSelected(SelectionEvent e)
             { 
                 source = ExportJob.Source.Average;
-                avg_seconds.setEnabled(true);
+                avg_count.setEnabled(true);
             }
         });
         
@@ -367,7 +367,7 @@ public class ExportView extends PlotAwareView
         // Plot/raw/averaged data?
         source_raw.setSelection(true);
         source = ExportJob.Source.Raw;
-        avg_seconds.setEnabled(source_avg.getSelection());
+        avg_count.setEnabled(source_avg.getSelection());
         
         // Format
         precision.setText("4"); //$NON-NLS-1$
@@ -501,10 +501,20 @@ public class ExportView extends PlotAwareView
                 return;
             }
         }
+        int request_parm;
+        try
+        {
+            request_parm = Integer.parseInt(avg_count.getText());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            request_parm = 0;
+        }
         double secs;
         try
         {
-            secs = Double.parseDouble(avg_seconds.getText());
+            secs = Double.parseDouble(avg_count.getText());
         }
         catch (Exception e)
         {
@@ -522,7 +532,9 @@ public class ExportView extends PlotAwareView
             prec = 0;
         }
         // Launch the actual export
-        Job job = new ExportJob(model, start, end, source,
+        Job job = new ExportJob(model, start, end,
+                        source,
+                        request_parm,
                         secs,
                         format_spreadsheet.getSelection(),
                         format_severity.getSelection(),

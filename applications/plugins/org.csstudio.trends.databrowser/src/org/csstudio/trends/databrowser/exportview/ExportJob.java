@@ -38,6 +38,7 @@ class ExportJob extends Job
         Plot, Raw, Average
     };
     private final Source source;
+    private final int request_parm;
     private final boolean format_spreadsheet;
     private final boolean format_severity;
     private final Value.Format format;
@@ -57,6 +58,7 @@ class ExportJob extends Job
     public ExportJob(Model model,
                     ITimestamp start, ITimestamp end,
                     Source source,
+                    int request_parm,
                     double seconds,
                     boolean format_spreadsheet,
                     boolean format_severity,
@@ -69,6 +71,7 @@ class ExportJob extends Job
         this.start = start;
         this.end = end;
         this.source = source;
+        this.request_parm = request_parm;
         this.format_spreadsheet = format_spreadsheet;
         this.format_severity = format_severity;
         this.format = format;
@@ -131,9 +134,14 @@ class ExportJob extends Job
                     }
                     if (archives.length <= 0)
                         iters[ch_idx] = null;
+                    else if (source == Source.Average)
+                        iters[ch_idx] = new RawValueIterator(
+                            servers, keys, item_name, start, end,
+                            ArchiveServer.GET_AVERAGE, request_parm);
                     else
                         iters[ch_idx] = new RawValueIterator(
-                                    servers, keys, item_name, start, end);
+                                        servers, keys, item_name, start, end);
+
                 }
                 if (format_spreadsheet == false)
                 {   // Plain list: dump this channel's samples...
