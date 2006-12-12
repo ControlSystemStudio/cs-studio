@@ -83,6 +83,21 @@ public final class WorkbenchActionBuilder {
 	private IWorkbenchAction _introAction;
 
 	/**
+	 * The generic "save as" action.
+	 */
+	private IWorkbenchAction _saveAsAction;
+
+	/**
+	 * The "new" action for the menu bar.
+	 */
+	private IWorkbenchAction _newWizardMenuAction;
+
+	/**
+	 * A special "new" action for the tool bar.
+	 */
+	private IWorkbenchAction _newWizardToolbarAction;
+
+	/**
 	 * Constructs a new action builder which contributes actions to the given
 	 * window.
 	 * 
@@ -141,13 +156,14 @@ public final class WorkbenchActionBuilder {
 	public void populateCoolBar(final IActionBarConfigurer configurer) {
 		ICoolBarManager coolbar = configurer.getCoolBarManager();
 		coolbar.add(_documentationAction);
-		
+
 		IToolBarManager fileToolBar = new ToolBarManager();
+		fileToolBar.add(_newWizardToolbarAction);
 		fileToolBar.add(_saveAction);
 		fileToolBar.add(new Separator());
-		
-        // Add to the cool bar manager
-		coolbar.add(fileToolBar);		
+
+		// Add to the cool bar manager
+		coolbar.add(fileToolBar);
 	}
 
 	/**
@@ -203,9 +219,11 @@ public final class WorkbenchActionBuilder {
 		MenuManager menu = new MenuManager(Messages
 				.getString("WorkbenchActionBuilder.MENU_FILE"), //$NON-NLS-1$
 				IWorkbenchActionConstants.M_FILE);
-
+		menu.add(_newWizardMenuAction);
+		menu.add(new Separator());
 		menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
 		menu.add(_saveAction);
+		menu.add(_saveAsAction);
 		menu.add(new Separator());
 		menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
 		menu.add(new Separator());
@@ -257,6 +275,18 @@ public final class WorkbenchActionBuilder {
 		if (_introAction != null) {
 			_introAction.dispose();
 		}
+
+		if (_saveAsAction != null) {
+			_saveAsAction.dispose();
+		}
+
+		if (_newWizardMenuAction != null) {
+			_newWizardMenuAction.dispose();
+		}
+
+		if (_newWizardToolbarAction != null) {
+			_newWizardToolbarAction.dispose();
+		}
 	}
 
 	/**
@@ -283,6 +313,16 @@ public final class WorkbenchActionBuilder {
 
 		_saveAction = ActionFactory.SAVE.create(_window);
 		registerGlobalAction(_saveAction);
+
+		_saveAsAction = ActionFactory.SAVE_AS.create(_window);
+		registerGlobalAction(_saveAsAction);
+
+		_newWizardMenuAction = ActionFactory.NEW.create(_window);
+		registerGlobalAction(_newWizardMenuAction);
+
+		_newWizardToolbarAction = ActionFactory.NEW_WIZARD_DROP_DOWN
+				.create(_window);
+		registerGlobalAction(_newWizardToolbarAction);
 
 		if (_window.getWorkbench().getIntroManager().hasIntro()) {
 			_introAction = ActionFactory.INTRO.create(_window);
