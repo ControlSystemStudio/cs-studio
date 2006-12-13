@@ -3,11 +3,14 @@ package org.csstudio.sds.components.ui.internal.feedback;
 import java.util.Date;
 
 import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.requests.CreateRequest;
@@ -38,7 +41,7 @@ public final class PointListCreationTool extends TargetingTool {
 	 * The creation factory.
 	 */
 	private CreationFactory _factory;
-	
+
 	/**
 	 * The point list, which is manipulated by this tool.
 	 */
@@ -105,7 +108,7 @@ public final class PointListCreationTool extends TargetingTool {
 	 * @see TargetingTool#getTargetRequest()
 	 */
 	protected CreateRequest getCreateRequest() {
-		
+
 		return (CreateRequest) getTargetRequest();
 	}
 
@@ -126,11 +129,25 @@ public final class PointListCreationTool extends TargetingTool {
 		return _factory;
 	}
 
+	private Point getAbsoluteLocation() {
+		Point p = getLocation().getCopy();
+		if (getTargetEditPart() != null) {
+			((GraphicalEditPart) getTargetEditPart()).getFigure()
+					.translateToRelative(p);
+		}
+		return p;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected boolean handleButtonDown(final int button) {
+		if (getTargetEditPart() != null) {
+			_snap2Helper = (SnapToHelper) getTargetEditPart().getAdapter(
+					SnapToHelper.class);
+		}
+		
 		// only react on left clicks
 		if (button != 1) {
 			setState(STATE_INVALID);
@@ -161,31 +178,31 @@ public final class PointListCreationTool extends TargetingTool {
 			setState(STATE_TERMINAL);
 			handleFinished();
 		} else {
-
+			Point p = getSnapedLocation();
 			if (_points.size() == 0) {
 				// add a new point
-				_points.addPoint(getLocation());
+				_points.addPoint(p);
 			} else {
 				// override the last point, which was the "preview" point before
-				_points.setPoint(getLocation(), _points.size() - 1);
+				_points.setPoint(p, _points.size() - 1);
 
 			}
 			// add an additional point, which is just for previewing the next
 			// axis in the graphical feedback
-			_points.addPoint(getLocation());
+			_points.addPoint(p);
 		}
+
+
 
 		updateTargetRequest();
 		return true;
 	}
-
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected boolean handleButtonUp(final int button) {
-		System.out.println("Up");
 		return true;
 	}
 
@@ -240,10 +257,17 @@ public final class PointListCreationTool extends TargetingTool {
 	 */
 	@Override
 	protected boolean handleMove() {
+
 		if (_points.size() > 0) {
+			Point p = getLocation().getCopy();
+
+			// ** SNAP
+			PrecisionPoint location = getSnapedLocation();
+			// **
+
 			// update the last point in the list to update the graphical
 			// feedback
-			_points.setPoint(getLocation(), _points.size() - 1);
+			_points.setPoint(location, _points.size() - 1);
 		}
 
 		updateTargetRequest();
@@ -252,6 +276,19 @@ public final class PointListCreationTool extends TargetingTool {
 		showTargetFeedback();
 
 		return true;
+	}
+
+	private PrecisionPoint getSnapedLocation() {
+		CreateRequest req = getCreateRequest();
+		PrecisionPoint location = new PrecisionPoint(getLocation().x,
+				getLocation().y);
+
+		if (_snap2Helper != null) {
+			_snap2Helper.snapPoint(req, SnapToHelper.NORTH_WEST,
+					new PrecisionPoint(getLocation().x, getLocation().y),
+					location);
+		}
+		return location;
 	}
 
 	/**
@@ -305,6 +342,7 @@ public final class PointListCreationTool extends TargetingTool {
 	@SuppressWarnings("unchecked")
 	protected void updateTargetRequest() {
 		CreateRequest req = getCreateRequest();
+
 		if (isInState(STATE_DRAG_IN_PROGRESS)) {
 			// use the rectangle, which is defined by the point lists as new
 			// bounds
@@ -312,7 +350,7 @@ public final class PointListCreationTool extends TargetingTool {
 			req.setSize(bounds.getSize());
 			req.setLocation(bounds.getLocation());
 			req.getExtendedData().put("points", _points);
-//			req.getExtendedData().clear();
+			// req.getExtendedData().clear();
 			if (!getCurrentInput().isAltKeyDown() && _snap2Helper != null) {
 				PrecisionRectangle baseRect = new PrecisionRectangle(bounds);
 				PrecisionRectangle result = baseRect.getPreciseCopy();

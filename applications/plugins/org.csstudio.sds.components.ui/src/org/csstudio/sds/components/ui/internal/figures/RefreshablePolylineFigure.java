@@ -43,7 +43,6 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	public RefreshablePolylineFigure() {
 		setFill(true);
 		setBackgroundColor(ColorConstants.darkGreen);
-		setLineWidth(4);
 	}
 	
 	/**
@@ -51,7 +50,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void paint(Graphics graphics) {
+	public void paint(final Graphics graphics) {
 		super.paint(graphics);
 		StatisticUtil.getInstance().recordWidgetRefresh(this);
 	}
@@ -94,7 +93,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
 
 	/**
 	 * Overridden, to ensure that the bounds rectangle gets repainted each time,
-	 * the _points of the polygon change. {@inheritDoc}
+	 * the points of the polygon change. {@inheritDoc}
 	 */
 	@Override
 	public void setBounds(final Rectangle rect) {

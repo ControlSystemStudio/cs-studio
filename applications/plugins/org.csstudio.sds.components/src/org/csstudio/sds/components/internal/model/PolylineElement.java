@@ -21,172 +21,23 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.DisplayModelElement;
-import org.csstudio.sds.model.properties.PropertyTypeRegistry;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.PointList;
-import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * A line model element.
  * 
  * @author Sven Wende, Alexander Will
  */
-public final class PolylineElement extends DisplayModelElement {
-
-	/**
-	 * The ID of the points property.
-	 */
-	public static final String PROP_POINTS = "polyline.points"; //$NON-NLS-1$
-
-	/**
-	 * The ID of the fill grade property.
-	 */
-	public static final String PROP_FILL_GRADE = "line.fillgrade"; //$NON-NLS-1$
-
-	/**
-	 * The ID of the background color property.
-	 */
-	public static final String PROP_BACKGROUND_COLOR = "color.background"; //$NON-NLS-1$
-
-	/**
-	 * The ID of the foreground color property.
-	 */
-	public static final String PROP_FOREGROUND_COLOR = "color.foreground"; //$NON-NLS-1$		
-
-	/**
-	 * The default value of the height property.
-	 */
-	private static final int DEFAULT_HEIGHT = 10;
-
-	/**
-	 * The default value of the width property.
-	 */
-	private static final int DEFAULT_WIDTH = 20;
-
+public final class PolylineElement extends AbstractPolyElement {
 	/**
 	 * The ID of this model element.
 	 */
 	public static final String ID = "element.polyline"; //$NON-NLS-1$
-
-	/**
-	 * Constructor.
-	 */
-	public PolylineElement() {
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getTypeID() {
 		return ID;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		addProperty(PROP_POINTS, Messages.PolylineElement_POINTS,
-				PropertyTypeRegistry.POINT_LIST, new PointList());
-		addProperty(PROP_FILL_GRADE, Messages.PolylineElement_FILL_GRADE,
-				PropertyTypeRegistry.DOUBLE, 100.0);
-		addProperty(PROP_BACKGROUND_COLOR,
-				Messages.PolylineElement_BACKGROUND_COLOR,
-				PropertyTypeRegistry.COLOR, new RGB(100, 100, 100));
-		addProperty(PROP_FOREGROUND_COLOR,
-				Messages.PolylineElement_FOREGROUND_COLOR,
-				PropertyTypeRegistry.COLOR, new RGB(200, 100, 100));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDoubleTestProperty() {
-		return PROP_FILL_GRADE;
-	}
-
-	/**
-	 * Sets the specified _points for the polygon.
-	 * 
-	 * @param points
-	 *            the polygon points
-	 */
-	public void setPoints(final PointList points) {
-		PointList copy = points.getCopy();
-		setPropertyValue(PROP_POINTS, copy);
-		Rectangle bounds = copy.getBounds();
-		setPropertyValue(PROP_X, bounds.x);
-		setPropertyValue(PROP_Y, bounds.y);
-		setPropertyValue(PROP_W, bounds.width);
-		setPropertyValue(PROP_H, bounds.height);
-	}
-
-	/**
-	 * Gets the polygon _points.
-	 * 
-	 * @return the polygon _points
-	 */
-	public PointList getPoints() {
-		return (PointList) getProperty(PROP_POINTS).getPropertyValue();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setSize(final int width, final int height) {
-		int targetW = Math.max(10, width);
-		int targetH = Math.max(10, height);
-		PointList pointList = getPoints();
-		double oldW = pointList.getBounds().width;
-		double oldH = pointList.getBounds().height;
-		double topLeftX = pointList.getBounds().x;
-		double topLeftY = pointList.getBounds().y;
-
-		PointList newPoints = new PointList();
-
-		for (int i = 0; i < pointList.size(); i++) {
-			int x = pointList.getPoint(i).x;
-			int y = pointList.getPoint(i).y;
-
-			Point newPoint = new Point(x, y);
-			if (oldW > 0 && oldH > 0) {
-				double oldRelX = (x - topLeftX) / oldW;
-				double oldRelY = (y - topLeftY) / oldH;
-
-				double newX = topLeftX + (oldRelX * targetW);
-				double newY = topLeftY + (oldRelY * targetH);
-				newPoint = new Point((int) newX, (int) newY);
-			}
-
-			newPoints.addPoint(newPoint);
-		}
-
-		setPoints(newPoints);
-
-		Rectangle newBounds = newPoints.getBounds();
-		super.setSize(newBounds.width, newBounds.height);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setLocation(final int x, final int y) {
-		PointList points = getPoints();
-		int oldX = points.getBounds().x;
-		int oldY = points.getBounds().y;
-		points.translate(x - oldX, y - oldY);
-
-		setPoints(points);
-		int newX = points.getBounds().x;
-		int newY = points.getBounds().y;
-		super.setLocation(newX, newY);
 	}
 }

@@ -21,21 +21,6 @@ public final class Messages extends NLS {
 	/**
 	 * PolygonElement_BACKGROUND_COLOR.
 	 */
-	public static String PolygonElement_FILL_GRADE;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String PolygonElement_FOREGROUND_COLOR;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String PolygonElement_POINTS;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
 	public static String RectangleElement_BACKGROUND_COLOR;
 
 	/**
@@ -66,22 +51,22 @@ public final class Messages extends NLS {
 	/**
 	 * PolygonElement_BACKGROUND_COLOR.
 	 */
-	public static String PolylineElement_BACKGROUND_COLOR;
+	public static String PolyElement_BACKGROUND_COLOR;
 
 	/**
 	 * PolygonElement_BACKGROUND_COLOR.
 	 */
-	public static String PolylineElement_FILL_GRADE;
+	public static String PolyElement_FILL_GRADE;
 
 	/**
 	 * PolygonElement_BACKGROUND_COLOR.
 	 */
-	public static String PolylineElement_FOREGROUND_COLOR;
+	public static String PolyElement_FOREGROUND_COLOR;
 
 	/**
 	 * PolygonElement_BACKGROUND_COLOR.
 	 */
-	public static String PolylineElement_POINTS;
+	public static String PolyElement_POINTS;
 
 	/**
 	 * PolygonElement_BACKGROUND_COLOR.

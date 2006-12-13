@@ -2,7 +2,9 @@ package org.csstudio.sds.components.ui.internal.feedback;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polyline;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.handles.SquareHandle;
@@ -38,6 +40,7 @@ public final class PolyPointHandle extends SquareHandle {
 		setLocator(locator);
 
 		setCursor(Cursors.CROSS);
+		
 	}
 
 	/**
@@ -46,6 +49,12 @@ public final class PolyPointHandle extends SquareHandle {
 	@Override
 	protected DragTracker createDragTracker() {
 		return new PolyPointDragTracker(getOwner(), _pointIndex);
+	}
+
+	@Override
+	public void paintFigure(Graphics g) {
+		// TODO Auto-generated method stub
+		super.paintFigure(g);
 	}
 
 	/**
