@@ -43,11 +43,11 @@ public final class RefreshableEllipse extends Ellipse implements
 
 		graphics
 				.setClip(new Rectangle(bounds.x, bounds.y, newW, bounds.height));
-		graphics.setBackgroundColor(getBackgroundColor());
+		graphics.setBackgroundColor(getForegroundColor());
 		graphics.fillOval(bounds);
 		graphics.setClip(new Rectangle(bounds.x + newW, bounds.y, bounds.width
 				- newW, bounds.height));
-		graphics.setBackgroundColor(getForegroundColor());
+		graphics.setBackgroundColor(getBackgroundColor());
 		graphics.fillOval(bounds);
 	}
 

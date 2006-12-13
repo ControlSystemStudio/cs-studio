@@ -35,7 +35,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void paint(Graphics graphics) {
+	public void paint(final Graphics graphics) {
 		super.paint(graphics);
 		StatisticUtil.getInstance().recordWidgetRefresh(this);
 	}
@@ -52,11 +52,11 @@ public final class RefreshablePolygonFigure extends Polygon implements
 
 		graphics
 				.setClip(new Rectangle(bounds.x, bounds.y, newW, bounds.height));
-		graphics.setBackgroundColor(getBackgroundColor());
+		graphics.setBackgroundColor(getForegroundColor());
 		graphics.fillPolygon(getPoints());
 		graphics.setClip(new Rectangle(bounds.x + newW, bounds.y, bounds.width
 				- newW, bounds.height));
-		graphics.setBackgroundColor(getForegroundColor());
+		graphics.setBackgroundColor(getBackgroundColor());
 		graphics.fillPolygon(getPoints());
 	}
 
