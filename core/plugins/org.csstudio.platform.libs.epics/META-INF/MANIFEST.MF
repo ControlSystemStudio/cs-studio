@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Epics Plug-in
+Bundle-Name: EPICS Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.epics;singleton:=true
-Bundle-Version: 0.9.0
+Bundle-Version: 0.9.1
 Bundle-Activator: org.csstudio.platform.libs.epics.EpicsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -14,12 +14,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.help.webapp
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
- libs/CAJ/caj-1.0.4.jar,
- libs/Concurrent/concurrent-1.3.1.jar,
- libs/JCA/jca-2.1.6.jar
-Export-Package: EDU.oswego.cs.dl.util.concurrent,
- EDU.oswego.cs.dl.util.concurrent.misc,
- EDU.oswego.cs.dl.util.concurrent.taskDemo,
+ libs/CAJ/caj-1.1.2.jar,
+ libs/JCA/jca-2.3.0.jar
+Export-Package: 
  com.cosylab.epics.caj,
  com.cosylab.epics.caj.impl,
  com.cosylab.epics.caj.impl.handlers,
