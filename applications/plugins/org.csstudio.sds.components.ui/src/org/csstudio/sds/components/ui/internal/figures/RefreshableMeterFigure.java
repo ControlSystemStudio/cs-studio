@@ -92,16 +92,6 @@ public final class RefreshableMeterFigure extends ImageFigure implements
 	}
 
 	/**
-	 * 
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void paint(Graphics graphics) {
-		super.paint(graphics);
-		StatisticUtil.getInstance().recordWidgetRefresh(this);
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override

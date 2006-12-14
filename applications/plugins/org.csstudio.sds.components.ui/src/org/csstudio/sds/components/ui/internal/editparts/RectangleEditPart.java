@@ -2,6 +2,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.internal.model.RectangleElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangle;
+import org.csstudio.sds.dataconnection.StatisticUtil;
 import org.csstudio.sds.model.DisplayModelElement;
 import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
 import org.csstudio.sds.uil.CustomMediaFactory;

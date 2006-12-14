@@ -28,17 +28,6 @@ public final class RefreshableLabelFigure extends Label implements
 	public RefreshableLabelFigure() {
 		setFont(FONT);
 	}
-	
-
-	/**
-	 * 
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void paint(final Graphics graphics) {
-		super.paint(graphics);
-		StatisticUtil.getInstance().recordWidgetRefresh(this);
-	}
 
 	/**
 	 * {@inheritDoc}

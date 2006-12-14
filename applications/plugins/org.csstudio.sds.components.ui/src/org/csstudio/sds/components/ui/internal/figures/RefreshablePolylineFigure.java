@@ -46,16 +46,6 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	}
 	
 	/**
-	 * 
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void paint(final Graphics graphics) {
-		super.paint(graphics);
-		StatisticUtil.getInstance().recordWidgetRefresh(this);
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public void refresh(final String propertyName, final Object propertyValue) {

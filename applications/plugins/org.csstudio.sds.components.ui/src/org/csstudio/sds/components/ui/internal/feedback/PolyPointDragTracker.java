@@ -42,10 +42,17 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 	 */
 	private SnapToHelper _snapToHelper;
 
+	/**
+	 * The initial point list, when a drag operation starts. Used to calculate
+	 * deviations for feedback.
+	 */
 	private PointList _oldPoints;
 
-	Request sourceRequest;
-	
+	/**
+	 * The request, which is currently used to communicate with the edit part.
+	 */
+	private Request _sourceRequest;
+
 	/**
 	 * Constructs a new DragEditPartsTracker with the given source edit part and
 	 * point index.
@@ -81,8 +88,9 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 	 *         {@link ResizeTracker#ResizeTracker(int) constructor}.
 	 */
 	protected GraphicalEditPart getTargetEditPart() {
-		if (_owner != null)
+		if (_owner != null) {
 			return (GraphicalEditPart) _owner.getParent();
+		}
 		return null;
 	}
 
@@ -183,8 +191,6 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 		return _owner.getCommand(getSourceRequest());
 	}
 
-	
-
 	/**
 	 * Returns the request for the source of the drag, creating it if necessary.
 	 * 
@@ -192,9 +198,10 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 	 */
 	protected Request getSourceRequest() {
 
-		if (sourceRequest == null)
-			sourceRequest = createSourceRequest();
-		return sourceRequest;
+		if (_sourceRequest == null) {
+			_sourceRequest = createSourceRequest();
+		}
+		return _sourceRequest;
 	}
 
 	/**
@@ -203,8 +210,15 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 	@Override
 	protected void performDrag() {
 		super.performDrag();
+		resetRequestState();
+	}
+
+	/**
+	 * Clears and resets the state of the tracker.
+	 */
+	private void resetRequestState() {
 		_oldPoints = ((AbstractPolyElement) _owner.getModel()).getPoints()
 				.getCopy();
-		sourceRequest = null;
+		_sourceRequest = null;
 	}
 }

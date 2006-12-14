@@ -35,16 +35,6 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void paint(final Graphics graphics) {
-		super.paint(graphics);
-		StatisticUtil.getInstance().recordWidgetRefresh(this);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected void fillShape(final Graphics graphics) {
 		Rectangle bounds = getBounds();
 

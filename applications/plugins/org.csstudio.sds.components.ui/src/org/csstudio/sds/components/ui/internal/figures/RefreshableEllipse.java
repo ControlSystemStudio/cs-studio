@@ -21,18 +21,6 @@ public final class RefreshableEllipse extends Ellipse implements
 	private double _fill = 100.0;
 	
 	/**
-	 * 
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void paint(final Graphics graphics) {
-		super.paint(graphics);
-		StatisticUtil.getInstance().recordWidgetRefresh(this);
-	}
-
-
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override

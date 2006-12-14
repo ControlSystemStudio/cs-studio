@@ -51,12 +51,6 @@ public final class PolyPointHandle extends SquareHandle {
 		return new PolyPointDragTracker(getOwner(), _pointIndex);
 	}
 
-	@Override
-	public void paintFigure(Graphics g) {
-		// TODO Auto-generated method stub
-		super.paintFigure(g);
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
