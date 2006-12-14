@@ -85,7 +85,7 @@
                icon="icons/probe.gif"
                id="org.csstudio.diag.probe.showprobeaction"
                label="%Probe"
-               menubarPath="css/diagnostics/"
+               menubarPath="css/diag/"
                style="push"
                tooltip="%MenuTooltip"/>
       </actionSet>
