@@ -35,6 +35,9 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.csstudio.platform.libs.epics.internal.localization.messages"; //$NON-NLS-1$
 
 	public static String EpicsPreferencePage_RESTART_MESSAGE;
+    public static String EpicsPreferencePage_CONTEXT;
+    public static String EpicsPreferencePage_CONTEXT_CAJ;
+    public static String EpicsPreferencePage_CONTEXT_JNI;
 
 	static {
 		// initialize resource bundle

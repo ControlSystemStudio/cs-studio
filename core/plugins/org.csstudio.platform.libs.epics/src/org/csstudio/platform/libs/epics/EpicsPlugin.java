@@ -23,6 +23,7 @@ package org.csstudio.platform.libs.epics;
 
 import org.csstudio.platform.libs.epics.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -37,12 +38,19 @@ public class EpicsPlugin extends AbstractUIPlugin
 	public static final String ID = "org.csstudio.platform.libs.epics"; //$NON-NLS-1$
     //The shared instance.
 	private static EpicsPlugin plugin;
+    private boolean use_pure_java;
 	
 	/** The constructor. */
 	public EpicsPlugin()
     {
 		plugin = this;
 	}
+    
+    /** @return <code>true</code> if preferences suggest the use
+     *  of pure java CA.
+     */
+    public boolean usePureJava()
+    {   return use_pure_java; }
 
     /** Update the CAJ settings with the data from the
      *  preference page.
@@ -50,23 +58,49 @@ public class EpicsPlugin extends AbstractUIPlugin
      *  Unfortunately this only takes effect after a restart,
      *  the current setup seems to remain unaffected.
      */
-	public void installPreferences()
+	@SuppressWarnings("nls")
+    public void installPreferences()
     {
         try
         {
-            System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", getDefault().getPluginPreferences().getString(PreferenceConstants.constants[0])); //$NON-NLS-1$
-    		boolean yes_no = getDefault().getPluginPreferences().getBoolean(PreferenceConstants.constants[1]);
-            System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", //$NON-NLS-1$
-                            (yes_no ? "YES" : "NO")); //$NON-NLS-1$ //$NON-NLS-2$
-    		System.setProperty("com.cosylab.epics.caj.CAJContext.connection_timeout", getDefault().getPluginPreferences().getString(PreferenceConstants.constants[2])); //$NON-NLS-1$
-    		System.setProperty("com.cosylab.epics.caj.CAJContext.beacon_period", getDefault().getPluginPreferences().getString(PreferenceConstants.constants[3])); //$NON-NLS-1$
-    		System.setProperty("com.cosylab.epics.caj.CAJContext.repeater_port", getDefault().getPluginPreferences().getString(PreferenceConstants.constants[4])); //$NON-NLS-1$
-    		System.setProperty("com.cosylab.epics.caj.CAJContext.server_port", getDefault().getPluginPreferences().getString(PreferenceConstants.constants[5])); //$NON-NLS-1$
-    		System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", getDefault().getPluginPreferences().getString(PreferenceConstants.constants[6])); //$NON-NLS-1$
+            final Preferences prefs = getDefault().getPluginPreferences();
+            use_pure_java = prefs.getBoolean(PreferenceConstants.constants[0]);
+            // Set the 'CAJ' copy of the settings
+            System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", 
+                            prefs.getString(PreferenceConstants.constants[1]));
+    		boolean yes_no = prefs.getBoolean(PreferenceConstants.constants[2]);
+            System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
+                            (yes_no ? "YES" : "NO")); 
+    		System.setProperty("com.cosylab.epics.caj.CAJContext.connection_timeout",
+                            prefs.getString(PreferenceConstants.constants[3]));
+    		System.setProperty("com.cosylab.epics.caj.CAJContext.beacon_period", 
+                            prefs.getString(PreferenceConstants.constants[4])); 
+    		System.setProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
+                            prefs.getString(PreferenceConstants.constants[5]));
+    		System.setProperty("com.cosylab.epics.caj.CAJContext.server_port", 
+                            prefs.getString(PreferenceConstants.constants[6]));
+    		System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", 
+                            prefs.getString(PreferenceConstants.constants[7]));
+
+            // Set the 'JNI' copy of the settings
+            System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", 
+                            prefs.getString(PreferenceConstants.constants[1]));
+            System.setProperty("gov.aps.jca.jni.JNIContext.auto_addr_list",
+                            (yes_no ? "YES" : "NO")); 
+            System.setProperty("gov.aps.jca.jni.JNIContext.connection_timeout",
+                            prefs.getString(PreferenceConstants.constants[3]));
+            System.setProperty("gov.aps.jca.jni.JNIContext.beacon_period", 
+                            prefs.getString(PreferenceConstants.constants[4])); 
+            System.setProperty("gov.aps.jca.jni.JNIContext.repeater_port",
+                            prefs.getString(PreferenceConstants.constants[5]));
+            System.setProperty("gov.aps.jca.jni.JNIContext.server_port", 
+                            prefs.getString(PreferenceConstants.constants[6]));
+            System.setProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", 
+                            prefs.getString(PreferenceConstants.constants[7]));
         }
         catch (Exception e)
         {
-            logException("Cannot set preferences", e); //$NON-NLS-1$
+            logException("Cannot set preferences", e);
         }
 	}
 	

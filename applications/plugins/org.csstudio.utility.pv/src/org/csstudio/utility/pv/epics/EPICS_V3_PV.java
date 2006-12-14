@@ -63,6 +63,12 @@ public class EPICS_V3_PV
     /** Compile-time option for debug messages. */
     private static final boolean debug = false;
 
+    /** Set to <code>true</code> if the pure Java CA context should be used.
+     *  <p>
+     *  Changes only have an effect before the very first channel is created.
+     */
+    public static boolean use_pure_java = true;
+    
     /** The Java CA Library instance. */
     static private JCALibrary jca = null;
 
@@ -80,9 +86,12 @@ public class EPICS_V3_PV
             if (jca_refs == 0)
             {
                 if (debug)
-                    System.out.println("Initializing JCA");
+                    System.out.println("Initializing JCA "
+                                    + (use_pure_java ? "(pure Java)" : "(JNI)"));
                 jca = JCALibrary.getInstance();
-                jca_context = jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
+                final String type = use_pure_java ?
+                    JCALibrary.CHANNEL_ACCESS_JAVA : JCALibrary.JNI_THREAD_SAFE;
+                jca_context = jca.createContext(type);
             }
             ++jca_refs;
         }
@@ -237,8 +246,10 @@ public class EPICS_V3_PV
             {
                 if (debug)
                     System.out.println("Creating CA channel " + name);
-                channel_ref = new RefCountedChannel(
-                        jca_context.createChannel(name));
+                final Channel channel = jca_context.createChannel(name);
+                if (channel == null)
+                    throw new Exception("Cannot create channel '" + name + "'");
+                channel_ref = new RefCountedChannel(channel);
                 channels.put(name, channel_ref);
                 jca_context.flushIO();
             }

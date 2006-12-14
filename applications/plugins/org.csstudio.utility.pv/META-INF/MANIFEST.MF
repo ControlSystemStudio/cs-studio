@@ -10,3 +10,5 @@ Require-Bundle: org.csstudio.platform.libs.epics;visibility:=reexport,
 Export-Package: org.csstudio.utility.pv,
  org.csstudio.utility.pv.epics,
  org.csstudio.value
+Bundle-Activator: org.csstudio.utility.pv.Plugin
+Eclipse-LazyStart: true
