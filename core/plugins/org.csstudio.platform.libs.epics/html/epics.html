@@ -40,7 +40,16 @@ no additional steps should be required.
 When using the JNI version, the OS-specific binaries
 need to be installed from a subfolder "libs/JCA"
 of the plugin source tree.
+<p>
+The symptom for not installing them properly:
+Error messages including "Context not initialized"
+whenever access to EPICS PVs is attempted.
 <ul>
+<li>RedHat Linux (x86, g++ 3.4.4, kernel 2.6.9-22.EL):<br>
+    From the "linux-x86" subfolder, copy all shared libraries to
+    a location of your choice, for example "~/lib",
+    and set the environment variable LD_LIBRARY_PATH to include
+    that location.
 <li>Mac OS X (PPC):<br>
     From the "osx-ppc" subfolder, copy
     "libjca.jnilib" to "~/Library/Java/Extensions".
@@ -48,6 +57,9 @@ of the plugin source tree.
     for example "~/lib",
     and set the environment variable DYLIB_LIBRARY_PATH to include
     that location.
+<li>Other:<br>
+    You need to obtain sources for EPICS base
+    and JCA, and build the binaries yourself. See references.
 </ul>
 
 <h2>References</h2>
