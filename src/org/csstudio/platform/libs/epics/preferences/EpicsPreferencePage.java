@@ -26,30 +26,37 @@ import org.csstudio.platform.libs.epics.internal.localization.Messages;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-/**
- * This class represents a preference page that
- * is contributed to the Preferences dialog. By 
- * subclassing <samp>FieldEditorPreferencePage</samp>, we
- * can use the field support built into JFace that allows
- * us to create a page that is small and knows how to 
- * save, restore and apply itself.
- * <p>
- * This page is used to modify preferences only. They
- * are stored in the preference store that belongs to
- * the main plug-in class. That way, preferences can
- * be accessed directly via the preference store.
+/** Preference page for the 'EPICS' configuration, i.e. ChannelAccess client.
+ *  <p>
+ *  Original wizard-created info:<br>
+ *  This class represents a preference page that
+ *  is contributed to the Preferences dialog. By 
+ *  subclassing <samp>FieldEditorPreferencePage</samp>, we
+ *  can use the field support built into JFace that allows
+ *  us to create a page that is small and knows how to 
+ *  save, restore and apply itself.
+ *  <p>
+ *  This page is used to modify preferences only. They
+ *  are stored in the preference store that belongs to
+ *  the main plug-in class. That way, preferences can
+ *  be accessed directly via the preference store.
+ *  <p>
+ *  @author Original author unknown
+ *  @author Kay Kasemir
  */
-
 public class EpicsPreferencePage
 	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
-
-	public EpicsPreferencePage() {
+	implements IWorkbenchPreferencePage
+{
+	public EpicsPreferencePage()
+    {
 		super(GRID);
 		setPreferenceStore(EpicsPlugin.getDefault().getPreferenceStore());
 	}
@@ -60,34 +67,47 @@ public class EpicsPreferencePage
 	 * of preferences. Each field editor knows how to save and
 	 * restore itself.
 	 */
-	public void createFieldEditors() {
-		addField(new StringFieldEditor(PreferenceConstants.constants[0], PreferenceConstants.constants[0] + ":", getFieldEditorParent())); //$NON-NLS-1$
-		addField(new BooleanFieldEditor(PreferenceConstants.constants[1], PreferenceConstants.constants[1] + ":", getFieldEditorParent())); //$NON-NLS-1$
-		addField(new StringFieldEditor(PreferenceConstants.constants[2], PreferenceConstants.constants[2] + ":", getFieldEditorParent())); //$NON-NLS-1$
-		addField(new StringFieldEditor(PreferenceConstants.constants[3], PreferenceConstants.constants[3] + ":", getFieldEditorParent())); //$NON-NLS-1$
-		addField(new StringFieldEditor(PreferenceConstants.constants[4], PreferenceConstants.constants[4] + ":", getFieldEditorParent())); //$NON-NLS-1$
-		addField(new StringFieldEditor(PreferenceConstants.constants[5], PreferenceConstants.constants[5] + ":", getFieldEditorParent())); //$NON-NLS-1$
-		addField(new StringFieldEditor(PreferenceConstants.constants[6], PreferenceConstants.constants[6] + ":", getFieldEditorParent())); //$NON-NLS-1$
+	@SuppressWarnings("nls")
+    public void createFieldEditors()
+    {
+        final String sep = ":"; 
+        final String labels_and_values[][] = 
+        {
+            { Messages.EpicsPreferencePage_CONTEXT_CAJ, "true" },
+            { Messages.EpicsPreferencePage_CONTEXT_JNI, "false" }
+        };
+        final Composite parent = getFieldEditorParent();
+        addField(new RadioGroupFieldEditor(PreferenceConstants.constants[0],
+                        Messages.EpicsPreferencePage_CONTEXT + sep,
+                        labels_and_values.length,
+                        labels_and_values,
+                        parent));
+        for (int i=1; i<8; ++i)
+        {
+            if (i==2)
+                addField(new BooleanFieldEditor(PreferenceConstants.constants[i],
+                                PreferenceConstants.constants[i] + sep, parent));
+            else
+                addField(new StringFieldEditor(PreferenceConstants.constants[i],
+                                PreferenceConstants.constants[i] + sep, parent));
+        }
 	}
 	
-	public boolean performOk(){
+	public boolean performOk()
+    {
 		boolean ret = super.performOk();
 		EpicsPlugin.getDefault().installPreferences();
 		return ret;
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
-	public void init(IWorkbench workbench) {
-	}
+    /** {@inheritDoc} */
+	public void init(IWorkbench workbench)
+    {}
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	/** {@inheritDoc} */
 	@Override
-	public final void propertyChange(final PropertyChangeEvent event) {
+	public final void propertyChange(final PropertyChangeEvent event)
+    {
 		setMessage(Messages.EpicsPreferencePage_RESTART_MESSAGE, IMessageProvider.INFORMATION);
 		super.propertyChange(event);
 	}

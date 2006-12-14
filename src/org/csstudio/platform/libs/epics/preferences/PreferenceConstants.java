@@ -21,29 +21,32 @@
  */
 package org.csstudio.platform.libs.epics.preferences;
 
-/**
- * Constant definitions for plug-in preferences
+/** Constant definitions for plug-in preferences
+ *  @author Original author unknown
+ *  @author Kay Kasemir
  */
-public class PreferenceConstants {
-	
-	public static String[] constants = new String[]{
-			"addr_list", //$NON-NLS-1$
-			"auto_addr_list", //$NON-NLS-1$
-			"conn_tmo", //$NON-NLS-1$
-			"beacon_period", //$NON-NLS-1$
-			"reapeter_port", //$NON-NLS-1$
-			"server_port", //$NON-NLS-1$
-			"max_array_bytes" //$NON-NLS-1$
+@SuppressWarnings("nls")
+public class PreferenceConstants
+{
+    public static String[] constants = new String[]{
+	        "use_pure_java", 
+			"addr_list", 
+			"auto_addr_list",
+			"conn_tmo", 
+			"beacon_period",
+			"reapeter_port",
+			"server_port",
+			"max_array_bytes" 
 	};
 	
 	public static String[] defaults = new String[]{
-			"", //$NON-NLS-1$
-			"true", //$NON-NLS-1$
-			"30.0", //$NON-NLS-1$
-			"15.0", //$NON-NLS-1$
-			"5065", //$NON-NLS-1$
-			"5064", //$NON-NLS-1$
-			"16384" //$NON-NLS-1$
+            "true",
+			"",
+			"true",
+			"30.0",
+			"15.0",
+			"5065",
+			"5064",
+			"16384"
 	};
-
 }

@@ -8,28 +8,52 @@
 
 <body>
 <h1>EPICS Library</h1>
-This provides the ChannelAccess client library
-for accessing Process Variables on EPICS IOCs.
-<p>
-There is a preference page for basic configuration,
-where the address list is of primary interest:<br>
-Set it to the IP addresses of IOCs or IOC subnets.
-Refer to the EPICS Channel Access reference manual
-for details.
+This provides the ChannelAccess (CA) client library
+for accessing Process Variables on EPICS IOCs
+via the network.
 
-<h2>Nerdy Details</h2>
-This uses the 'pure java' version, CAJ.
-It caused hangups on SNS IOCs, so it is not
-advisable for production.
+<h2>Preferences</h2>
+There are two main items to configure:
+<ul>
+<li>JCA Context:<br>
+    There is a pure Java as well as a JNI implementation
+    available.
+    The pure Java version is easier to install and should
+    work "out of the box", while the JNI implementation
+    might provide maximum compatibility with existing
+    EPICS installations.
+<li>addr_list and auto_addr_list:<br>
+    Unless all CA servers (IOCs) are on the same subnet
+    as the CSS application, you need to list the IP addresses
+    of IOCs or IOC subnets, and un-check the auto_addr_list.
+    For details on this as well as the remaining settings,
+    refer to the EPICS Channel Access reference manual.
+</ul>
 <p>
-See org.csstudio.utility.pv for a utility wrapper.
+Note that changes require a restart of the application,
+they do not take effect at runtime!
+
+<h2>Installation</h2>
+When using the 'pure java' version, aka. CAJ,
+no additional steps should be required.
 <p>
-Note that this includes only the pure Java client code.
-In addition, one typically also needs the 'caRepeater'.
-This code does not include the very latest, pure java CA repeater,
-so you probably have to launch the 'native' version of the
-repeater for e.g. Win32 yourself before running a CSS app
-that uses the CA client library.
+When using the JNI version, the OS-specific binaries
+need to be installed from a subfolder "libs/JCA"
+of the plugin source tree.
+<ul>
+<li>Mac OS X (PPC):<br>
+    From the "osx-ppc" subfolder, copy
+    "libjca.jnilib" to "~/Library/Java/Extensions".
+    Copy the other shared libraries to a location of your choice,
+    for example "~/lib",
+    and set the environment variable DYLIB_LIBRARY_PATH to include
+    that location.
+</ul>
+
+<h2>References</h2>
+The CAJ and JCA sources as well as more details are available from 
+<a href="http://www.cosylab.com">http://www.cosylab.com</a>.
+
 </body>
 </html>
 
