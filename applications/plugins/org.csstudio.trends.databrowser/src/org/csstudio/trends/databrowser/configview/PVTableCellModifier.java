@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.configview;
 
+import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.ModelItem;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -54,7 +55,7 @@ public class PVTableCellModifier implements ICellModifier
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Plugin.logException("Error", e); //$NON-NLS-1$
         }
         return null;
     }
@@ -114,7 +115,7 @@ public class PVTableCellModifier implements ICellModifier
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Plugin.logException("Error", e); //$NON-NLS-1$
         }
     }
 }

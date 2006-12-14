@@ -75,7 +75,7 @@ public class PlotEditor extends EditorPart
     	}
     	catch (Exception e)
     	{
-    		System.out.println(e.getMessage());
+            Plugin.logException("Cannot create Plot", e); //$NON-NLS-1$
     	}
     	return null;
     }

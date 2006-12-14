@@ -11,6 +11,7 @@ import org.csstudio.swt.chart.axes.XAxisListener;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisFactory;
 import org.csstudio.swt.chart.axes.YAxisListener;
+import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -178,6 +179,7 @@ public class Chart extends Canvas
         // Allow this widget to draw itself
         addPaintListener(new PaintListener()
         {
+            @SuppressWarnings("nls")
             public void paintControl(PaintEvent e)
             {   // All sorts of issues with the data model of
                 // the application can result in errors while
@@ -190,7 +192,7 @@ public class Chart extends Canvas
                 }
                 catch (Throwable error)
                 {
-                    error.printStackTrace();
+                    Plugin.logException("Chart paint error", error);
                 }
             }
         });

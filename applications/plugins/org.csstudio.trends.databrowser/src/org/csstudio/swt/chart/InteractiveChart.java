@@ -61,6 +61,7 @@ public class InteractiveChart extends Composite
      *  @param parent Parent widget.
      *  @param style SWT style.
      */
+    @SuppressWarnings("nls")
     public InteractiveChart(Composite parent, int style)
     {
         super(parent, style & Chart.STYLE_MASK);
@@ -70,20 +71,20 @@ public class InteractiveChart extends Composite
             button_images = new ImageRegistry();
             try
             {
-                button_images.put(UP, Plugin.getImageDescriptor("icons/up.gif")); //$NON-NLS-1$
-                button_images.put(DOWN, Plugin.getImageDescriptor("icons/down.gif")); //$NON-NLS-1$
-                button_images.put(Y_IN, Plugin.getImageDescriptor("icons/y_in.gif")); //$NON-NLS-1$
-                button_images.put(Y_OUT, Plugin.getImageDescriptor("icons/y_out.gif")); //$NON-NLS-1$
-                button_images.put(ZOOM, Plugin.getImageDescriptor("icons/autozoom.gif")); //$NON-NLS-1$
-                button_images.put(STAGGER, Plugin.getImageDescriptor("icons/stagger.gif")); //$NON-NLS-1$
-                button_images.put(LEFT, Plugin.getImageDescriptor("icons/left.gif")); //$NON-NLS-1$
-                button_images.put(RIGHT, Plugin.getImageDescriptor("icons/right.gif")); //$NON-NLS-1$
-                button_images.put(X_IN, Plugin.getImageDescriptor("icons/x_in.gif")); //$NON-NLS-1$
-                button_images.put(X_OUT, Plugin.getImageDescriptor("icons/x_out.gif")); //$NON-NLS-1$
+                button_images.put(UP, Plugin.getImageDescriptor("icons/up.gif"));
+                button_images.put(DOWN, Plugin.getImageDescriptor("icons/down.gif"));
+                button_images.put(Y_IN, Plugin.getImageDescriptor("icons/y_in.gif"));
+                button_images.put(Y_OUT, Plugin.getImageDescriptor("icons/y_out.gif"));
+                button_images.put(ZOOM, Plugin.getImageDescriptor("icons/autozoom.gif"));
+                button_images.put(STAGGER, Plugin.getImageDescriptor("icons/stagger.gif"));
+                button_images.put(LEFT, Plugin.getImageDescriptor("icons/left.gif"));
+                button_images.put(RIGHT, Plugin.getImageDescriptor("icons/right.gif"));
+                button_images.put(X_IN, Plugin.getImageDescriptor("icons/x_in.gif"));
+                button_images.put(X_OUT, Plugin.getImageDescriptor("icons/x_out.gif"));
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                Plugin.logException("InteractiveChart cannot init. images", e);
             }
         }
         

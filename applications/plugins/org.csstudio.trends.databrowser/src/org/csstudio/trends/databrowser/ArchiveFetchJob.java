@@ -74,7 +74,7 @@ class ArchiveFetchJob extends Job
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                Plugin.logException("ArchiveFetchJob", e); //$NON-NLS-1$
             }
             // Stop and ignore further results when canceled.
             if (monitor.isCanceled())

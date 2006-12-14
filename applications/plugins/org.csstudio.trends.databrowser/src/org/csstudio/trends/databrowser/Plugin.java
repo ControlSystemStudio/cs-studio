@@ -1,7 +1,6 @@
 package org.csstudio.trends.databrowser;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -39,33 +38,24 @@ public class Plugin extends AbstractUIPlugin
 
     /** Returns the shared instance. */
     public static Plugin getDefault()
+    {   return plugin;   }
+
+    /** Add info message to the plugin log. */
+    public static void logInfo(String message)
     {
-        return plugin;
+        CentralLogger.getInstance().info(getDefault(), message);
     }
     
     /** Add error message to the plugin log. */
     public static void logError(String message)
     {
-        getDefault().log(IStatus.ERROR, message, null);
+        CentralLogger.getInstance().error(getDefault(), message);
     }
 
     /** Add an exception to the plugin log. */
-    public static void logException(String message, Exception e)
+    public static void logException(String message, Throwable e)
     {
-        getDefault().log(IStatus.ERROR, message, e);
-    }
-
-    /** Add a message to the log.
-     * @param type
-     * @param message
-     */
-    private void log(int type, String message, Exception e)
-    {
-        getLog().log(new Status(type,
-                                getClass().getName(),
-                                IStatus.OK,
-                                message,
-                                e));
+        CentralLogger.getInstance().error(getDefault(), message, e);
     }
 
     /** Returns an image descriptor for the image file.
@@ -80,6 +70,7 @@ public class Plugin extends AbstractUIPlugin
      *  @param path the path
      *  @return the image descriptor
      */
+    @SuppressWarnings("nls")
     public static ImageDescriptor getImageDescriptor(String path)
     {
         // If the plugin is running, get descriptor from the bundle
@@ -94,7 +85,7 @@ public class Plugin extends AbstractUIPlugin
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            logException("Cannot load image '" + path + "'", e);
         }
         return null;
     }

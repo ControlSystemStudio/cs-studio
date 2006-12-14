@@ -5,6 +5,7 @@ import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariableWithArchive;
 import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.core.runtime.PlatformObject;
 
 /** One item (row) of the name table.
@@ -53,7 +54,8 @@ public class NameTableItem
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Plugin.logException("Archive NameTableItem: No name for key " //$NON-NLS-1$
+                            + archive.getKey(), e);
             return "<unknown>"; //$NON-NLS-1$
         }
     }

@@ -511,7 +511,7 @@ public class ArchiveView extends PlotAwareView
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Plugin.logException("Cannot add name", e); //$NON-NLS-1$
         }
     }
 }

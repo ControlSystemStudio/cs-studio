@@ -2,6 +2,7 @@ package org.csstudio.swt.chart.axes;
 
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ITicks;
+import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -102,7 +103,7 @@ public class Axis
     {
         if (low >= high)
         {
-            System.out.println("Axis " + getLabel() 
+            Plugin.logError("Axis " + getLabel() 
                       + ": Cannot set value range to " + low + " ... " + high);
             return;
         }

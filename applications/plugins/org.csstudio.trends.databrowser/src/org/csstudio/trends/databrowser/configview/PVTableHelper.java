@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.configview;
 
+import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.ModelItem;
 
 /** Helper for creating a table of PV rows from the model.
@@ -99,7 +100,7 @@ public class PVTableHelper
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+            Plugin.logException("Error", e); //$NON-NLS-1$
 		}
 		return null;
 	}

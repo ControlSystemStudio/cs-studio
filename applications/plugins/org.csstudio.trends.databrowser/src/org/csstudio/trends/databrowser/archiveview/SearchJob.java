@@ -5,6 +5,7 @@ package org.csstudio.trends.databrowser.archiveview;
 
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.NameInfo;
+import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -79,7 +80,7 @@ class SearchJob extends Job
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Plugin.logException("Archive search error", e); //$NON-NLS-1$
             monitor.setCanceled(true);
             return Status.CANCEL_STATUS;
         }

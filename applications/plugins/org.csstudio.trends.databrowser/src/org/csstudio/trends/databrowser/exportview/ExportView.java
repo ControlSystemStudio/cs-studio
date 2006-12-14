@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.exportview;
 import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
@@ -508,7 +509,6 @@ public class ExportView extends PlotAwareView
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             request_parm = 0;
         }
         double secs;
@@ -518,7 +518,6 @@ public class ExportView extends PlotAwareView
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             secs = 60.0;
         }
         int prec;
@@ -528,7 +527,6 @@ public class ExportView extends PlotAwareView
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             prec = 0;
         }
         // Launch the actual export

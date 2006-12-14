@@ -3,6 +3,7 @@ package org.csstudio.archive.cache;
 import java.util.LinkedList;
 
 import org.csstudio.archive.ArchiveServer;
+import org.csstudio.trends.databrowser.Plugin;
 
 /** Cache access to archive servers.
  *  <p>
@@ -15,7 +16,6 @@ import org.csstudio.archive.ArchiveServer;
  */
 public class ArchiveCache
 {
-    static boolean debug = false;
     private static ArchiveCache singleton = null;
     private LinkedList<CachingArchiveServer> server_cache =
         new LinkedList<CachingArchiveServer>();
@@ -48,8 +48,7 @@ public class ArchiveCache
         for (ArchiveServer server : server_cache)
             if (server.getURL().equals(url))
                 return server;
-        if (debug)
-            System.out.println("ArchiveCache connects to " + url); //$NON-NLS-1$
+        Plugin.logInfo("ArchiveCache connects to " + url); //$NON-NLS-1$
         // Not cached, create new connection.
         // Since we're 'synchronized', this blocks all other calls.
         // But the alternative would be to risk multiple concurrent

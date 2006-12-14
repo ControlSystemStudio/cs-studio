@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.archiveview;
 import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.cache.ArchiveCache;
+import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -86,8 +87,8 @@ class ConnectJob extends Job
             // Usually, this happens because somebody entered
             // a bad server URL, so the user should learn about the error...
             new AsyncErrorDialog(shell, e.getMessage());
-            // Also show it on the console
-            e.printStackTrace();
+            // Also log it.
+            Plugin.logException("Archive connection error", e); //$NON-NLS-1$
             monitor.setCanceled(true);
             return Status.CANCEL_STATUS;
         }

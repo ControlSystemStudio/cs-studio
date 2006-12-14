@@ -31,7 +31,7 @@ public class ArchiveDownAction extends Action
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Plugin.logException("Missing image", e); //$NON-NLS-1$
         }
         setText(Messages.Down);
 		setToolTipText(Messages.MoveArchsDown);

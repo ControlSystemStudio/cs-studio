@@ -3,10 +3,11 @@ package org.csstudio.archive.cache;
 import java.util.LinkedList;
 
 import org.csstudio.archive.ArchiveInfo;
-import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.ArchiveServer;
+import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.NameInfo;
 import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.trends.databrowser.Plugin;
 
 /** ArchiveServer implementation that uses a cache whenever possible, 
  *  and forwards the rest to the 'real' server.
@@ -87,13 +88,11 @@ public class CachingArchiveServer extends ArchiveServer
         // See if we find the result for this request in the cache:
         SampleHashKey hash_key = new SampleHashKey(key, names[0],
                        start, end, request_type, request_parms);
+        Plugin.logInfo("CachingArchiveServer.getSamples: " + hash_key);
         for (SampleCacheEntry entry : sample_cache)
             if (entry.getKey().equals(hash_key))
             {
-                if (ArchiveCache.debug)
-                    System.out.println("It's bloody marvelous, "
-                                    + "we found data for this:\n"
-                                    + hash_key );
+                Plugin.logInfo("Found data on cache");
                 ArchiveValues result[] = new ArchiveValues[1];
                 result[0] = entry.getData();
                 return result;
@@ -114,11 +113,7 @@ public class CachingArchiveServer extends ArchiveServer
         if (samples != null)
         {
             if (sample_cache.size() >= SAMPLE_CACHE_LENGTH-1)
-            {
-                SampleHashKey popped = sample_cache.removeLast().getKey();
-                if (ArchiveCache.debug)
-                    System.out.println("ArchiveCache popped:\n" + popped);
-            }
+                sample_cache.removeLast().getKey();
             sample_cache.addFirst(new SampleCacheEntry(hash_key, samples));
         }
         return result;
