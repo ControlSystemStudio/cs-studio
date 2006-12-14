@@ -55,10 +55,11 @@ class ArchiveFetchJob extends Job
                 ArchiveServer server = cache.getServer(archives[i].getUrl()); 
                 int request_type = 
                     server.getRequestType(ArchiveServer.GET_PLOTBINNED);
-                int request_parm = 800;
+                int bins = 800;
                 ArchiveValues result[] = server.getSamples(
                         archives[i].getKey(), new String[] { item.getName() },
-                        start, end, request_type, request_parm);
+                        start, end, request_type,
+                        new Object[] { new Integer(bins) });
                 if (result.length == 1)
                 {   // Notify model of new samples.
                     // Even when monitor.isCanceled at this point?

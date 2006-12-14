@@ -534,7 +534,7 @@ public class ExportView extends PlotAwareView
         // Launch the actual export
         Job job = new ExportJob(model, start, end,
                         source,
-                        request_parm,
+                        new Object[] { new Integer(request_parm) },
                         secs,
                         format_spreadsheet.getSelection(),
                         format_severity.getSelection(),

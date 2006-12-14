@@ -79,13 +79,14 @@ public class CachingArchiveServer extends ArchiveServer
     @Override
     synchronized public ArchiveValues[] getSamples(int key, String[] names,
                     ITimestamp start, ITimestamp end,
-                    int request_type, int request_parm) throws Exception
+                    int request_type,
+                    Object request_parms[]) throws Exception
     {
         if (names.length != 1)
             throw new Exception("Only supporting single-name requests.");
         // See if we find the result for this request in the cache:
         SampleHashKey hash_key = new SampleHashKey(key, names[0],
-                       start, end, request_type, request_parm);
+                       start, end, request_type, request_parms);
         for (SampleCacheEntry entry : sample_cache)
             if (entry.getKey().equals(hash_key))
             {
@@ -100,7 +101,7 @@ public class CachingArchiveServer extends ArchiveServer
         
         // Fall back to server
         ArchiveValues result[] = server.getSamples(key,
-                        names, start, end, request_type, request_parm);
+                        names, start, end, request_type, request_parms);
         // Nothing? That's OK, but don't cache, since a later request might
         // actually find data that's just been added.
         if (result == null)

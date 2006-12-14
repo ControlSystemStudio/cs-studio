@@ -38,7 +38,7 @@ class ExportJob extends Job
         Plot, Raw, Average
     };
     private final Source source;
-    private final int request_parm;
+    private final Object request_parms[];
     private final boolean format_spreadsheet;
     private final boolean format_severity;
     private final Value.Format format;
@@ -58,7 +58,7 @@ class ExportJob extends Job
     public ExportJob(Model model,
                     ITimestamp start, ITimestamp end,
                     Source source,
-                    int request_parm,
+                    Object request_parms[],
                     double seconds,
                     boolean format_spreadsheet,
                     boolean format_severity,
@@ -71,7 +71,7 @@ class ExportJob extends Job
         this.start = start;
         this.end = end;
         this.source = source;
-        this.request_parm = request_parm;
+        this.request_parms = request_parms;
         this.format_spreadsheet = format_spreadsheet;
         this.format_severity = format_severity;
         this.format = format;
@@ -137,7 +137,7 @@ class ExportJob extends Job
                     else if (source == Source.Average)
                         iters[ch_idx] = new RawValueIterator(
                             servers, keys, item_name, start, end,
-                            ArchiveServer.GET_AVERAGE, request_parm);
+                            ArchiveServer.GET_AVERAGE, request_parms);
                     else
                         iters[ch_idx] = new RawValueIterator(
                                         servers, keys, item_name, start, end);

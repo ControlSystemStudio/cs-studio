@@ -12,20 +12,20 @@ class SampleHashKey
     private ITimestamp start;
     private ITimestamp end;
     private int request_type;
-    private int request_parm;
+    private Object request_parms[];
     
     /** Construct a key from pieces that identify a sample request on a server.
      */
     SampleHashKey(int key, String name,
                   ITimestamp start, ITimestamp end, int request_type,
-                  int request_parm)
+                  Object request_parms[])
     {
         this.key = key;
         this.name = name;
         this.start = start;
         this.end = end;
         this.request_type = request_type;
-        this.request_parm = request_parm;
+        this.request_parms = request_parms;
     }
 
     /** Keys are equal when all their pieces match. */
@@ -42,14 +42,25 @@ class SampleHashKey
                start.equals(o.start) &&
                end.equals(o.end) &&
                request_type == o.request_type &&
-               request_parm == o.request_parm;
+               equalObjects(request_parms, o.request_parms);
+    }
+    
+    /** @return <code>true</code> if given object arrays match by value. */
+    private boolean equalObjects(final Object a[], final Object b[])
+    {
+        if (a.length != b.length)
+            return false;
+        for (int i=0; i<a.length; ++i)
+            if (! a[i].equals(b[i]))
+                return false;
+        return true;
     }
 
     @Override
     public int hashCode()
     {
         return key + name.hashCode() + start.hashCode() + end.hashCode()
-            + request_type + request_parm;
+            + request_type + request_parms.hashCode();
     }
 
     @SuppressWarnings("nls")
