@@ -2,8 +2,8 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.internal.model.EllipseElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipse;
-import org.csstudio.sds.model.DisplayModelElement;
-import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
+import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
@@ -14,7 +14,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Stefan Hofer & Sven Wende
  * 
  */
-public final class EllipseEditPart extends AbstractSDSEditPart {
+public final class EllipseEditPart extends AbstractElementEditPart {
 
 	/**
 	 * {@inheritDoc}
@@ -22,10 +22,10 @@ public final class EllipseEditPart extends AbstractSDSEditPart {
 	@Override
 	protected IFigure createFigure() {
 		RefreshableEllipse ellipse = new RefreshableEllipse();
-		DisplayModelElement modelElement = getCastedModel();
+		AbstractElementModel elementModel = getCastedModel();
 
-		for (String key : modelElement.getPropertyNames()) {
-			setFigureProperties(key, modelElement.getProperty(key)
+		for (String key : elementModel.getPropertyNames()) {
+			setFigureProperties(key, elementModel.getProperty(key)
 					.getPropertyValue(), ellipse);
 		}
 		return ellipse;

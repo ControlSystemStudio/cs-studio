@@ -2,8 +2,8 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.internal.model.PolygonElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolygonFigure;
-import org.csstudio.sds.model.DisplayModelElement;
-import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
+import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.PointList;
@@ -15,7 +15,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Sven Wende & Stefan Hofer
  * 
  */
-public final class PolygonEditPart extends AbstractSDSEditPart {
+public final class PolygonEditPart extends AbstractElementEditPart {
 
 	/**
 	 * {@inheritDoc}
@@ -23,10 +23,10 @@ public final class PolygonEditPart extends AbstractSDSEditPart {
 	@Override
 	protected IFigure createFigure() {
 		RefreshablePolygonFigure polygon = new RefreshablePolygonFigure();
-		DisplayModelElement modelElement = getCastedModel();
+		AbstractElementModel elementModel = getCastedModel();
 
-		for (String key : modelElement.getPropertyNames()) {
-			setFigureProperties(key, modelElement.getProperty(key)
+		for (String key : elementModel.getPropertyNames()) {
+			setFigureProperties(key, elementModel.getProperty(key)
 					.getPropertyValue(), polygon);
 		}
 

@@ -23,7 +23,7 @@ package org.csstudio.sds.components.internal.model;
 
 import static org.junit.Assert.*;
 
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,21 +49,21 @@ public final class EllipseElementFactoryTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.EllipseElementFactory#createModelElement()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.EllipseElementFactory#createElementModel()}.
 	 */
 	@Test
 	public void testCreateModelElement() {
-		DisplayModelElement element = _elementFactory.createModelElement();
+		AbstractElementModel element = _elementFactory.createElementModel();
 		assertNotNull(element);
 		assertTrue(element instanceof EllipseElement);
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.EllipseElementFactory#getModelElementType()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.EllipseElementFactory#getElementModelType()}.
 	 */
 	@Test
 	public void testGetModelElementType() {
-		assertEquals(EllipseElement.class, _elementFactory.getModelElementType());
+		assertEquals(EllipseElement.class, _elementFactory.getElementModelType());
 	}
 
 }

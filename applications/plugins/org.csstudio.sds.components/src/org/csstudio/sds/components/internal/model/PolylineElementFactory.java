@@ -21,8 +21,8 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.model.IModelElementFactory;
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.IElementModelFactory;
+import org.csstudio.sds.model.AbstractElementModel;
 
 /**
  * Model element factory for polyline model elements.
@@ -31,18 +31,18 @@ import org.csstudio.sds.model.DisplayModelElement;
  * @version $Revision$
  * 
  */
-public final class PolylineElementFactory implements IModelElementFactory {
+public final class PolylineElementFactory implements IElementModelFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public DisplayModelElement createModelElement() {
+	public AbstractElementModel createElementModel() {
 		return new PolylineElement();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Class getModelElementType() {
+	public Class getElementModelType() {
 		return PolylineElement.class;
 	}
 }

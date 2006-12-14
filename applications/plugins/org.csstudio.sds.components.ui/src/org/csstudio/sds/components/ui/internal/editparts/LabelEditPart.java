@@ -2,8 +2,8 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.internal.model.LabelElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
-import org.csstudio.sds.model.DisplayModelElement;
-import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
+import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
@@ -15,17 +15,17 @@ import org.eclipse.swt.graphics.RGB;
  * @author Stefan Hofer & Sven Wende
  * 
  */
-public final class LabelEditPart extends AbstractSDSEditPart {
+public final class LabelEditPart extends AbstractElementEditPart {
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected IFigure createFigure() {
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
-		DisplayModelElement modelElement = getCastedModel();
+		AbstractElementModel elementModel = getCastedModel();
 
 		for (String key : getCastedModel().getPropertyNames()) {
-			setFigureProperties(key, modelElement.getProperty(key)
+			setFigureProperties(key, elementModel.getProperty(key)
 					.getPropertyValue(), label);
 		}
 

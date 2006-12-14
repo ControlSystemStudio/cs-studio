@@ -21,7 +21,7 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 
 /**
@@ -31,7 +31,7 @@ import org.csstudio.sds.model.properties.PropertyTypeRegistry;
  * @version $Revision$
  * 
  */
-public final class MeterElement extends DisplayModelElement {
+public final class MeterElement extends AbstractElementModel {
 
 	/**
 	 * The default value.

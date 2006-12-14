@@ -21,8 +21,8 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.model.IModelElementFactory;
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.IElementModelFactory;
+import org.csstudio.sds.model.AbstractElementModel;
 
 /**
  * A model element factory for {@link EllipseElement}. 
@@ -30,19 +30,19 @@ import org.csstudio.sds.model.DisplayModelElement;
  * @author Alexander Will & Sven Wende
  * @version $Revision$
  */
-public final class EllipseElementFactory implements IModelElementFactory {
+public final class EllipseElementFactory implements IElementModelFactory {
 	
 	/**
 	 * {@inheritDoc}.
 	 */
-	public DisplayModelElement createModelElement() {
+	public AbstractElementModel createElementModel() {
 		return new EllipseElement();
 	}
 
 	/**
 	 * {@inheritDoc}.
 	 */
-	public Class getModelElementType() {
+	public Class getElementModelType() {
 		return EllipseElement.class;
 	}
 }

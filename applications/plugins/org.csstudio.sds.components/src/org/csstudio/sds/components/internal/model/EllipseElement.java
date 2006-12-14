@@ -22,7 +22,7 @@
 package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 import org.eclipse.swt.graphics.RGB;
 
@@ -33,7 +33,7 @@ import org.eclipse.swt.graphics.RGB;
  * @version $Revision$
  * 
  */
-public final class EllipseElement extends DisplayModelElement {
+public final class EllipseElement extends AbstractElementModel {
 	/**
 	 * The ID of the fill grade property.
 	 */

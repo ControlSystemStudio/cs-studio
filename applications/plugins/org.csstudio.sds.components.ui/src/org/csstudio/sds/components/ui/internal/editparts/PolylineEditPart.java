@@ -2,8 +2,8 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.internal.model.PolylineElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
-import org.csstudio.sds.model.DisplayModelElement;
-import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
+import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.PointList;
@@ -15,7 +15,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Sven Wende, Alexander Will
  * 
  */
-public final class PolylineEditPart extends AbstractSDSEditPart {
+public final class PolylineEditPart extends AbstractElementEditPart {
 
 	/**
 	 * {@inheritDoc}
@@ -23,10 +23,10 @@ public final class PolylineEditPart extends AbstractSDSEditPart {
 	@Override
 	protected IFigure createFigure() {
 		RefreshablePolylineFigure polyline = new RefreshablePolylineFigure();
-		DisplayModelElement modelElement = getCastedModel();
+		AbstractElementModel elementModel = getCastedModel();
 
 		for (String key : getCastedModel().getPropertyNames()) {
-			polyline.refresh(key, modelElement.getProperty(key)
+			polyline.refresh(key, elementModel.getProperty(key)
 					.getPropertyValue());
 		}
 

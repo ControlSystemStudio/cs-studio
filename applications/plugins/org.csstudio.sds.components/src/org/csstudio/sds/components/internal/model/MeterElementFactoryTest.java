@@ -23,7 +23,7 @@ package org.csstudio.sds.components.internal.model;
 
 import static org.junit.Assert.*;
 
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,21 +49,21 @@ public final class MeterElementFactoryTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.MeterElementFactory#createModelElement()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.MeterElementFactory#createElementModel()}.
 	 */
 	@Test
 	public void testCreateModelElement() {
-		DisplayModelElement element = _elementFactory.createModelElement();
+		AbstractElementModel element = _elementFactory.createElementModel();
 		assertNotNull(element);
 		assertTrue(element instanceof MeterElement);
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.MeterElementFactory#getModelElementType()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.MeterElementFactory#getElementModelType()}.
 	 */
 	@Test
 	public void testGetModelElementType() {
-		assertEquals(MeterElement.class, _elementFactory.getModelElementType());
+		assertEquals(MeterElement.class, _elementFactory.getElementModelType());
 	}
 
 }

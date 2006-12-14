@@ -23,7 +23,7 @@ package org.csstudio.sds.components.internal.model;
 
 import static org.junit.Assert.*;
 
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,21 +49,21 @@ public final class PolygonElementFactoryTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonElementFactory#createModelElement()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonElementFactory#createElementModel()}.
 	 */
 	@Test
 	public void testCreateModelElement() {
-		DisplayModelElement element = _elementFactory.createModelElement();
+		AbstractElementModel element = _elementFactory.createElementModel();
 		assertNotNull(element);
 		assertTrue(element instanceof PolygonElement);
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonElementFactory#getModelElementType()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonElementFactory#getElementModelType()}.
 	 */
 	@Test
 	public void testGetModelElementType() {
-		assertEquals(PolygonElement.class, _elementFactory.getModelElementType());
+		assertEquals(PolygonElement.class, _elementFactory.getElementModelType());
 	}
 
 }

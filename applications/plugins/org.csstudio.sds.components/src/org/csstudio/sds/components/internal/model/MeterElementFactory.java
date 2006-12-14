@@ -21,8 +21,8 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.model.IModelElementFactory;
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.IElementModelFactory;
+import org.csstudio.sds.model.AbstractElementModel;
 
 /**
  * A model element factory for {@link MeterElement}.
@@ -30,19 +30,19 @@ import org.csstudio.sds.model.DisplayModelElement;
  * @author Sven Wende
  * 
  */
-public final class MeterElementFactory implements IModelElementFactory {
+public final class MeterElementFactory implements IElementModelFactory {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public DisplayModelElement createModelElement() {
+	public AbstractElementModel createElementModel() {
 		return new MeterElement();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Class getModelElementType() {
+	public Class getElementModelType() {
 		return MeterElement.class;
 	}
 

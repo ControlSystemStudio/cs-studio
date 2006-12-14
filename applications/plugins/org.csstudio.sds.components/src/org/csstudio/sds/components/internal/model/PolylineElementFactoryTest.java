@@ -23,7 +23,7 @@ package org.csstudio.sds.components.internal.model;
 
 import static org.junit.Assert.*;
 
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,21 +49,21 @@ public final class PolylineElementFactoryTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineElementFactory#createModelElement()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineElementFactory#createElementModel()}.
 	 */
 	@Test
 	public void testCreateModelElement() {
-		DisplayModelElement element = _elementFactory.createModelElement();
+		AbstractElementModel element = _elementFactory.createElementModel();
 		assertNotNull(element);
 		assertTrue(element instanceof PolylineElement);
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineElementFactory#getModelElementType()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineElementFactory#getElementModelType()}.
 	 */
 	@Test
 	public void testGetModelElementType() {
-		assertEquals(PolylineElement.class, _elementFactory.getModelElementType());
+		assertEquals(PolylineElement.class, _elementFactory.getElementModelType());
 	}
 
 }

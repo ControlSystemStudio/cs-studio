@@ -3,8 +3,8 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import org.csstudio.sds.components.internal.model.RectangleElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangle;
 import org.csstudio.sds.dataconnection.StatisticUtil;
-import org.csstudio.sds.model.DisplayModelElement;
-import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
+import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.swt.graphics.RGB;
 
@@ -14,7 +14,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Sven Wende & Stefan Hofer
  * 
  */
-public final class RectangleEditPart extends AbstractSDSEditPart {
+public final class RectangleEditPart extends AbstractElementEditPart {
 
 	/**
 	 * {@inheritDoc}
@@ -22,10 +22,10 @@ public final class RectangleEditPart extends AbstractSDSEditPart {
 	@Override
 	protected RefreshableRectangle createFigure() {
 		RefreshableRectangle rectangle = new RefreshableRectangle();
-		DisplayModelElement modelElement = getCastedModel();
+		AbstractElementModel elementModel = getCastedModel();
 
-		for (String key : modelElement.getPropertyNames()) {
-			setFigureProperties(key, modelElement.getProperty(key)
+		for (String key : elementModel.getPropertyNames()) {
+			setFigureProperties(key, elementModel.getProperty(key)
 					.getPropertyValue(), rectangle);
 		}
 		return rectangle;

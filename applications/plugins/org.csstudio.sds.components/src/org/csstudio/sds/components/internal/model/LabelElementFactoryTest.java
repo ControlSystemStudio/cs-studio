@@ -23,7 +23,7 @@ package org.csstudio.sds.components.internal.model;
 
 import static org.junit.Assert.*;
 
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,21 +49,21 @@ public final class LabelElementFactoryTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.LabelElementFactory#createModelElement()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.LabelElementFactory#createElementModel()}.
 	 */
 	@Test
 	public void testCreateModelElement() {
-		DisplayModelElement element = _elementFactory.createModelElement();
+		AbstractElementModel element = _elementFactory.createElementModel();
 		assertNotNull(element);
 		assertTrue(element instanceof LabelElement);
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.LabelElementFactory#getModelElementType()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.LabelElementFactory#getElementModelType()}.
 	 */
 	@Test
 	public void testGetModelElementType() {
-		assertEquals(LabelElement.class, _elementFactory.getModelElementType());
+		assertEquals(LabelElement.class, _elementFactory.getElementModelType());
 	}
 
 }

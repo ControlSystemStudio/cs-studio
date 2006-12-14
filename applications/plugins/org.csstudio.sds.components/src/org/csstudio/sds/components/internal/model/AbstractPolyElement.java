@@ -22,7 +22,7 @@
 package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -33,7 +33,7 @@ import org.eclipse.swt.graphics.RGB;
  * 
  * @author Sven Wende
  */
-public abstract class AbstractPolyElement extends DisplayModelElement {
+public abstract class AbstractPolyElement extends AbstractElementModel {
 
 	/**
 	 * The ID of the points property.

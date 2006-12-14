@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.sds.components.internal.model.AbstractPolyElement;
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.feedback.IGraphicalFeedbackFactory;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -34,7 +34,7 @@ public abstract class AbstractPolyFeedbackFactory implements
 	 * {@inheritDoc}
 	 */
 	public IFigure createDragSourceFeedbackFigure(
-			final DisplayModelElement model, final Rectangle initalBounds) {
+			final AbstractElementModel model, final Rectangle initalBounds) {
 		assert model != null;
 		assert model instanceof AbstractPolyElement : "model instanceof AbstractPolyElement"; //$NON-NLS-1$
 		assert initalBounds != null;
@@ -56,7 +56,7 @@ public abstract class AbstractPolyFeedbackFactory implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void showChangeBoundsFeedback(final DisplayModelElement model,
+	public void showChangeBoundsFeedback(final AbstractElementModel model,
 			final PrecisionRectangle bounds, final IFigure feedbackFigure,
 			final ChangeBoundsRequest request) {
 		assert model != null;
@@ -146,13 +146,13 @@ public abstract class AbstractPolyFeedbackFactory implements
 	 * {@inheritDoc}
 	 */
 	public Command createInitialBoundsCommand(
-			final DisplayModelElement modelElement,
+			final AbstractElementModel elementModel,
 			final CreateRequest request, final Rectangle bounds) {
-		assert modelElement instanceof AbstractPolyElement : "modelElement instanceof AbstractPolyElement"; //$NON-NLS-1$
+		assert elementModel instanceof AbstractPolyElement : "modelElement instanceof AbstractPolyElement"; //$NON-NLS-1$
 		assert request != null;
 		assert bounds != null;
 
-		AbstractPolyElement AbstractPolyElement = (AbstractPolyElement) modelElement;
+		AbstractPolyElement AbstractPolyElement = (AbstractPolyElement) elementModel;
 
 		PointList points = (PointList) request.getExtendedData().get("points");
 		assert points != null;
@@ -167,7 +167,7 @@ public abstract class AbstractPolyFeedbackFactory implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public Command createChangeBoundsCommand(final DisplayModelElement model,
+	public Command createChangeBoundsCommand(final AbstractElementModel model,
 			final ChangeBoundsRequest request, final Rectangle targetBounds) {
 		assert model instanceof AbstractPolyElement : "model instanceof AbstractPolyElement"; //$NON-NLS-1$
 

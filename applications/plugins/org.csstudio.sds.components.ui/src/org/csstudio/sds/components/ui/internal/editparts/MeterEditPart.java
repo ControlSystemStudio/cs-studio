@@ -2,7 +2,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.internal.model.MeterElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
-import org.csstudio.sds.ui.editparts.AbstractSDSEditPart;
+import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -11,7 +11,7 @@ import org.eclipse.draw2d.IFigure;
  * @author Sven Wende
  * 
  */
-public final class MeterEditPart extends AbstractSDSEditPart {
+public final class MeterEditPart extends AbstractElementEditPart {
 
 	/**
 	 * {@inheritDoc}

@@ -21,8 +21,8 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.model.DisplayModelElement;
-import org.csstudio.sds.model.IModelElementFactory;
+import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.model.IElementModelFactory;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**
@@ -33,12 +33,12 @@ import org.eclipse.draw2d.geometry.PointList;
  * @version $Revision$
  * 
  */
-public final class PolygonElementFactory implements IModelElementFactory {
+public final class PolygonElementFactory implements IElementModelFactory {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public DisplayModelElement createModelElement() {
+	public AbstractElementModel createElementModel() {
 		PolygonElement polygonElement = new PolygonElement();
 		PointList points = new PointList();
 		points.addPoint(1, 1);
@@ -55,7 +55,7 @@ public final class PolygonElementFactory implements IModelElementFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Class getModelElementType() {
+	public Class getElementModelType() {
 		return PolygonElement.class;
 	}
 

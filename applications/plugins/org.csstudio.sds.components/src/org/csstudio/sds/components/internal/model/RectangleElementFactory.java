@@ -21,8 +21,8 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.model.IModelElementFactory;
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.IElementModelFactory;
+import org.csstudio.sds.model.AbstractElementModel;
 
 /**
  * This class defines a model element factory for rectangle model elements.
@@ -31,18 +31,18 @@ import org.csstudio.sds.model.DisplayModelElement;
  * @version $Revision$
  * 
  */
-public final class RectangleElementFactory implements IModelElementFactory {
+public final class RectangleElementFactory implements IElementModelFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public DisplayModelElement createModelElement() {
+	public AbstractElementModel createElementModel() {
 		return new RectangleElement();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Class getModelElementType() {
+	public Class getElementModelType() {
 		return RectangleElement.class;
 	}
 }

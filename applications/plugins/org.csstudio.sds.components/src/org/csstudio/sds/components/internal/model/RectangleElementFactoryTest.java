@@ -23,7 +23,7 @@ package org.csstudio.sds.components.internal.model;
 
 import static org.junit.Assert.*;
 
-import org.csstudio.sds.model.DisplayModelElement;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,21 +49,21 @@ public final class RectangleElementFactoryTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.RectangleElementFactory#createModelElement()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.RectangleElementFactory#createElementModel()}.
 	 */
 	@Test
 	public void testCreateModelElement() {
-		DisplayModelElement element = _elementFactory.createModelElement();
+		AbstractElementModel element = _elementFactory.createElementModel();
 		assertNotNull(element);
 		assertTrue(element instanceof RectangleElement);
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.RectangleElementFactory#getModelElementType()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.RectangleElementFactory#getElementModelType()}.
 	 */
 	@Test
 	public void testGetModelElementType() {
-		assertEquals(RectangleElement.class, _elementFactory.getModelElementType());
+		assertEquals(RectangleElement.class, _elementFactory.getElementModelType());
 	}
 
 }
