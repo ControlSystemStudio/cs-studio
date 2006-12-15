@@ -7,6 +7,7 @@ import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.ui.workbench.FileEditorInput;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.trends.databrowser.Controller;
+import org.csstudio.trends.databrowser.Perspective;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.archiveview.ArchiveView;
 import org.csstudio.trends.databrowser.configview.ConfigView;
@@ -53,6 +54,7 @@ public class PlotEditor extends EditorPart
     private Controller controller;
     private Action remove_markers_action, add_action;
     private Action config_action, archive_action, sample_action, export_action;
+    private Action perspective_action;
     private BrowserUI gui;
     private boolean is_dirty = false;
     private ModelListener listener;
@@ -298,6 +300,7 @@ public class PlotEditor extends EditorPart
         archive_action = new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID);
         sample_action = new OpenViewAction(this, Messages.OpenSampleView, SampleView.ID);
         export_action = new OpenViewAction(this, Messages.OpenExportView, ExportView.ID);
+        perspective_action = new OpenPerspectiveAction(Messages.OpenPerspective, Perspective.ID);
     }
 
     /** Create and connect the context menu. */
@@ -307,10 +310,13 @@ public class PlotEditor extends EditorPart
         MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         manager.add(remove_markers_action);
         manager.add(add_action);
+        manager.add(new Separator());
         manager.add(config_action);
         manager.add(archive_action);
         manager.add(sample_action);
         manager.add(export_action);
+        manager.add(new Separator());
+        manager.add(perspective_action);
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
         Control ctl = controller.getBrowserUI().getChart();

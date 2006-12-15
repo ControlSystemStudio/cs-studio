@@ -164,7 +164,7 @@
          <perspective
                class="org.csstudio.trends.databrowser.Perspective"
                icon="icons/chart.gif"
-               id="org.csstudio.trends.databrowser.perspective"
+               id="org.csstudio.trends.databrowser.Perspective"
                name="%Databrowser"/>
       </extension>
 </plugin>

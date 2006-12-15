@@ -13,6 +13,7 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class Perspective implements IPerspectiveFactory
 {
+    public static final String ID = Perspective.class.getName();
     @SuppressWarnings("nls")
     public void createInitialLayout(IPageLayout layout)
     {

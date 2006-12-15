@@ -12,6 +12,8 @@ public class Messages extends NLS
 
     public static String OpenConfigView;
 
+    public static String OpenPerspective;
+
     public static String OpenSampleView;
     
     public static String OpenExportView;
