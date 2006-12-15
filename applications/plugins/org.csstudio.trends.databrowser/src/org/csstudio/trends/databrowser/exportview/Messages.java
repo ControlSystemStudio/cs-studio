@@ -16,6 +16,8 @@ public class Messages extends NLS
 
     public static String CannotDecodeEnd;
 
+    public static String CannotDecodeSeconds;
+    
     public static String CannotDecodeStart;
 
     public static String Comment;
@@ -82,9 +84,9 @@ public class Messages extends NLS
 
     public static String ShowSeverity_TT;
 
-    public static String Avg_Count;
+    public static String Avg_Time;
 
-    public static String Avg_Count_TT;
+    public static String Avg_Time_TT;
 
     public static String SourceLabel;
 

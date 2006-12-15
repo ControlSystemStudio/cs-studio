@@ -40,7 +40,7 @@ public class ExportView extends PlotAwareView
     private Button use_plot_time;
     private Button time_config;
     private Button source_plot, source_raw, source_avg;
-    private Text   avg_count;
+    private Text   avg_seconds;
     private Button format_spreadsheet;
     private Button format_severity;
     private Button format_default;
@@ -181,18 +181,18 @@ public class ExportView extends PlotAwareView
         source_avg.setText(Messages.Source_Average);
         source_avg.setToolTipText(Messages.Source_Average_TT);
         
-        avg_count = new Text(frame, SWT.BORDER);
-        avg_count.setText("100");  //$NON-NLS-1$
-        avg_count.setToolTipText(Messages.Avg_Count_TT);
+        avg_seconds = new Text(frame, SWT.BORDER);
+        avg_seconds.setText(" 00:01:00");  //$NON-NLS-1$
+        avg_seconds.setToolTipText(Messages.Avg_Time_TT);
         l = new Label(frame, 0);
-        l.setText(Messages.Avg_Count);
+        l.setText(Messages.Avg_Time);
         
         source_plot.addSelectionListener(new SelectionAdapter()
         {
             @Override public void widgetSelected(SelectionEvent e)
             { 
                 source = ExportJob.Source.Plot;
-                avg_count.setEnabled(false);
+                avg_seconds.setEnabled(false);
             }
         });
         source_raw.addSelectionListener(new SelectionAdapter()
@@ -200,7 +200,7 @@ public class ExportView extends PlotAwareView
             @Override public void widgetSelected(SelectionEvent e)
             {  
                 source = ExportJob.Source.Raw;
-                avg_count.setEnabled(false);
+                avg_seconds.setEnabled(false);
             }
         });
         source_avg.addSelectionListener(new SelectionAdapter()
@@ -208,7 +208,7 @@ public class ExportView extends PlotAwareView
             @Override public void widgetSelected(SelectionEvent e)
             { 
                 source = ExportJob.Source.Average;
-                avg_count.setEnabled(true);
+                avg_seconds.setEnabled(true);
             }
         });
         
@@ -246,7 +246,7 @@ public class ExportView extends PlotAwareView
         
         frame = new Composite(parent, 0);
         row_layout = new RowLayout();
-        row_layout.pack = false;
+        row_layout.pack = true;
         row_layout.marginLeft = 0;
         row_layout.marginTop = 0;
         frame.setLayout(row_layout);
@@ -367,10 +367,10 @@ public class ExportView extends PlotAwareView
         // Plot/raw/averaged data?
         source_raw.setSelection(true);
         source = ExportJob.Source.Raw;
-        avg_count.setEnabled(source_avg.getSelection());
+        avg_seconds.setEnabled(source_avg.getSelection());
         
         // Format
-        precision.setText("4"); //$NON-NLS-1$
+        precision.setText("  4"); //$NON-NLS-1$
         // precision 'enables' whenever non-default format selected
         format_default.addSelectionListener(new SelectionAdapter()
         {
@@ -501,28 +501,27 @@ public class ExportView extends PlotAwareView
                 return;
             }
         }
-        int request_parm;
+        double seconds;
         try
         {
-            request_parm = Integer.parseInt(avg_count.getText());
+            seconds = TimestampUtil.parseSeconds(avg_seconds.getText());
         }
         catch (Exception e)
         {
-            request_parm = 0;
-        }
-        double secs;
-        try
-        {
-            secs = Double.parseDouble(avg_count.getText());
-        }
-        catch (Exception e)
-        {
-            secs = 60.0;
+            if (source == ExportJob.Source.Average)
+            {
+                MessageBox msg = new MessageBox(shell, SWT.OK);
+                msg.setText(Messages.Error);
+                msg.setMessage(Messages.CannotDecodeSeconds);
+                msg.open();
+            return;
+            }
+            seconds = 0;
         }
         int prec;
         try
         {
-            prec = Integer.parseInt(precision.getText());
+            prec = Integer.parseInt(precision.getText().trim());
         }
         catch (Exception e)
         {
@@ -531,8 +530,7 @@ public class ExportView extends PlotAwareView
         // Launch the actual export
         Job job = new ExportJob(model, start, end,
                         source,
-                        new Object[] { new Integer(request_parm) },
-                        secs,
+                        seconds,
                         format_spreadsheet.getSelection(),
                         format_severity.getSelection(),
                         format, prec,

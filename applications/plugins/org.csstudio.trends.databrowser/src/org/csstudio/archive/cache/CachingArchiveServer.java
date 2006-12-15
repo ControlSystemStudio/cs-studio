@@ -30,24 +30,6 @@ public class CachingArchiveServer extends ArchiveServer
     // to the front, and remove the (old) entries from the tail when
     // exceeding the SAMPLE_CACHE_LENGTH.
     private static int SAMPLE_CACHE_LENGTH = 40;
-
-    class SampleCacheEntry
-    {
-        private SampleHashKey key;
-        private ArchiveValues data;
- 
-        public SampleCacheEntry(SampleHashKey key, ArchiveValues data)
-        {
-            this.key = key;
-            this.data = data;
-        }
-
-        public ArchiveValues getData()
-        {   return data; }
-
-        public SampleHashKey getKey()
-        {   return key; }
-    }
     private LinkedList<SampleCacheEntry> sample_cache =
                                 new LinkedList<SampleCacheEntry>();
 

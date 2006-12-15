@@ -38,7 +38,7 @@ class ExportJob extends Job
         Plot, Raw, Average
     };
     private final Source source;
-    private final Object request_parms[];
+    private final double seconds;
     private final boolean format_spreadsheet;
     private final boolean format_severity;
     private final Value.Format format;
@@ -58,7 +58,6 @@ class ExportJob extends Job
     public ExportJob(Model model,
                     ITimestamp start, ITimestamp end,
                     Source source,
-                    Object request_parms[],
                     double seconds,
                     boolean format_spreadsheet,
                     boolean format_severity,
@@ -71,7 +70,7 @@ class ExportJob extends Job
         this.start = start;
         this.end = end;
         this.source = source;
-        this.request_parms = request_parms;
+        this.seconds = seconds;
         this.format_spreadsheet = format_spreadsheet;
         this.format_severity = format_severity;
         this.format = format;
@@ -84,6 +83,7 @@ class ExportJob extends Job
     @Override
     protected IStatus run(IProgressMonitor monitor)
     {
+        Plugin.logInfo("ExportJob starts");
         monitor.beginTask(Messages.ExportJobTask, IProgressMonitor.UNKNOWN);
         ArchiveCache cache = ArchiveCache.getInstance();
         try
@@ -137,7 +137,8 @@ class ExportJob extends Job
                     else if (source == Source.Average)
                         iters[ch_idx] = new RawValueIterator(
                             servers, keys, item_name, start, end,
-                            ArchiveServer.GET_AVERAGE, request_parms);
+                            ArchiveServer.GET_AVERAGE,
+                            new Object[] { new Double(seconds) });
                     else
                         iters[ch_idx] = new RawValueIterator(
                                         servers, keys, item_name, start, end);
@@ -185,6 +186,7 @@ class ExportJob extends Job
                     if (monitor.isCanceled())
                     {
                         out.println(Messages.Comment + Messages.Cancelled);
+                        Plugin.logInfo("ExportJob cancelled");
                         break;
                     }
                 }
@@ -194,11 +196,12 @@ class ExportJob extends Job
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Plugin.logException("ExportJob error", e);
             monitor.setCanceled(true);
             return Status.CANCEL_STATUS;
         }
         monitor.done();
+        Plugin.logInfo("ExportJob finishes");
         return Status.OK_STATUS;
     }
 
@@ -209,7 +212,11 @@ class ExportJob extends Job
         out.println(Messages.Comment + Messages.Version + Plugin.Version);
         out.println(Messages.Comment + Messages.StartLabel + start);
         out.println(Messages.Comment + Messages.EndLabel + end);
-        out.println(Messages.Comment + Messages.SourceLabel + source);
+        if (source == Source.Average)
+            out.println(Messages.Comment + Messages.SourceLabel + source
+                            + " (" + seconds + ")");  //$NON-NLS-1$//$NON-NLS-2$
+        else
+            out.println(Messages.Comment + Messages.SourceLabel + source);
         out.println(Messages.Comment + Messages.Spreadsheet + format_spreadsheet);
         out.println(Messages.Comment + Messages.IncludeSeverity + format_severity);
         out.println(Messages.Comment + Messages.FormatLabel + format);
@@ -237,6 +244,7 @@ class ExportJob extends Job
             if (monitor.isCanceled())
             {
                 out.println(Messages.Comment + Messages.Cancelled);
+                Plugin.logInfo("ExportJob cancelled"); //$NON-NLS-1$
                 break;
             }
         }
