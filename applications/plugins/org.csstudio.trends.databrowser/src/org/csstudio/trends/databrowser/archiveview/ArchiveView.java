@@ -39,7 +39,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
@@ -78,8 +77,6 @@ public class ArchiveView extends PlotAwareView
     private ArrayList<NameTableItem> name_table_items =
         new ArrayList<NameTableItem>();
 
-    private ComboHistoryHelper url_helper;
-    
     /** Remove selected items from the name_table_viewer. */
     class RemoveAction extends Action
     {
@@ -173,13 +170,13 @@ public class ArchiveView extends PlotAwareView
         gd.horizontalAlignment = SWT.FILL;
         url.setLayoutData(gd);
         url.setEnabled(false);
-        url_helper = new ComboHistoryHelper(
-                                Plugin.getDefault().getDialogSettings(),
-                                URL_LIST_TAG, url)
-                {
-                    public void newSelection(String new_pv_name)
-                    {   connectToURL(new_pv_name); }
-                };
+        new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
+                               URL_LIST_TAG, url, true)
+        {
+            public void newSelection(String new_pv_name)
+            {   connectToURL(new_pv_name); }
+        };
+        
         info = new Button(box, SWT.PUSH);
         info.setText(Messages.Info);
         info.setToolTipText(Messages.Info_TT);
@@ -195,13 +192,8 @@ public class ArchiveView extends PlotAwareView
             {
                 if (server == null)
                     throw new Error("Info button should be disabled"); //$NON-NLS-1$
-                MessageBox box =
-                    new MessageBox(info.getShell(), SWT.OK);
-                box.setText(Messages.Info_Title);
-                box.setMessage(Messages.URL
-                                + server.getURL() + "\n" //$NON-NLS-1$
-                                + server.getDescription());
-                box.open();
+                InfoDialog dlg = new InfoDialog(info.getShell(), server);
+                dlg.open();
             }
         });
         
@@ -367,13 +359,6 @@ public class ArchiveView extends PlotAwareView
         url.setFocus();
     }
     
-    @Override
-    public void dispose()
-    {
-        url_helper.saveSettings();
-        super.dispose();
-    }
-
     /** We have a new model because the editor changed. */
     @Override
     protected void updateModel(Model old_model, Model model)

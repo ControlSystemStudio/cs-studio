@@ -1,6 +1,8 @@
 package org.csstudio.util.swt;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
@@ -16,32 +18,27 @@ import org.eclipse.swt.widgets.Combo;
  */
 public abstract class ComboHistoryHelper
 {
+    private static final int DEFAULT_HISTORY_SIZE = 10;
     private static final String TAG = "values"; //$NON-NLS-1$
-    private static final int DEFAULT_MAX = 10;
     private final IDialogSettings settings;
     private final String tag;
     private final Combo combo;
     private final int max;
     
-    /** Attach helper to given combo box, using default list length. */
-    public ComboHistoryHelper(IDialogSettings settings, String tag, Combo combo)
-    {
-        this(settings, tag, combo, DEFAULT_MAX);
-    }
-    
     /** Attach helper to given combo box, using max list length.
-     *  @param settings Where to persist the combo box list
-     *  @param tag      Tag used for persistence
-     *  @param combo    The combo box
-     *  @param max      Max list length
+     *  @param settings         Where to persist the combo box list
+     *  @param tag              Tag used for persistence
+     *  @param combo            The combo box
+     *  @param save_on_dispose  Set <code>true</code> if you want 
+     *                          to save current values on widget disposal
      */
     public ComboHistoryHelper(IDialogSettings settings, String tag,
-                              Combo combo, int max)
+                              Combo combo, boolean save_on_dispose)
     {
         this.settings = settings;
         this.tag = tag;
         this.combo = combo;
-        this.max = max;
+        this.max = DEFAULT_HISTORY_SIZE;
     
         // React whenever an existing entry is selected,
         // or a new name is entered.
@@ -59,6 +56,13 @@ public abstract class ComboHistoryHelper
             // Called after existing entry was picked from list
             public void widgetSelected(SelectionEvent e)
             {   handleNewSelection();    }
+        });
+        
+        if (save_on_dispose)
+            combo.addDisposeListener(new DisposeListener()
+        {
+            public void widgetDisposed(DisposeEvent e)
+            {   saveSettings();  }
         });
     }
 
@@ -104,5 +108,4 @@ public abstract class ComboHistoryHelper
         IDialogSettings values = settings.addNewSection(tag);
         values.put(TAG, combo.getItems());
     }
-
 }

@@ -3,7 +3,6 @@ package org.csstudio.trends.databrowser.exportview;
 import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
-import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
