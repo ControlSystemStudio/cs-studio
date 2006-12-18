@@ -64,7 +64,6 @@ public class ArchiveView extends PlotAwareView
     // Archive info GUI Elements
     private Combo url;
     private Button info;
-    private Button connect;
     private TableViewer archive_table_viewer;
     private ArrayList<ArchiveTableItem> archive_table_items =
         new ArrayList<ArchiveTableItem>();
@@ -141,7 +140,7 @@ public class ArchiveView extends PlotAwareView
         parent.setLayout(new FillLayout());
         // SashForm with these children:
         //
-        // URL: ________(url)_________________________ [Info?] [Connect!]
+        // URL: ________(url)_________________________ [Info?]
         // Table with list of archives
         //
         // Search: ____ (pattern) ____  [Search !]
@@ -153,7 +152,7 @@ public class ArchiveView extends PlotAwareView
         // First box under sash form. --------------------------------
         Composite box = new Composite(form, SWT.NULL);
         GridLayout layout = new GridLayout();
-        layout.numColumns = 4;
+        layout.numColumns = 3;
         box.setLayout(layout);
         GridData gd;
         
@@ -196,24 +195,7 @@ public class ArchiveView extends PlotAwareView
                 dlg.open();
             }
         });
-        
-        connect = new Button(box, SWT.PUSH);
-        connect.setText(Messages.Connect);
-        connect.setToolTipText(Messages.Connect_TT);
-        gd = new GridData();
-        connect.setLayoutData(gd);
-        connect.setEnabled(false);
-        connect.addSelectionListener(new SelectionListener()
-        {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
-
-            public void widgetSelected(SelectionEvent e)
-            {
-                connectToURL(url.getText());
-            }
-        });
-        
+                
         // Table with list of archives
         Table table;
         table = new Table(box,
@@ -345,7 +327,6 @@ public class ArchiveView extends PlotAwareView
             if (s.length() > 0)
                 url.add(s);
         }
-        connect.setEnabled(true);
         url.setEnabled(true);
         replace_results.setSelection(true);
         
