@@ -13,9 +13,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.help.ui,
  org.eclipse.help.webapp
 Eclipse-LazyStart: true
-Bundle-ClassPath: .,
- libs/CAJ/caj-1.1.2.jar,
- libs/JCA/jca-2.3.0.jar
+Bundle-ClassPath: .
 Export-Package: 
  com.cosylab.epics.caj,
  com.cosylab.epics.caj.impl,
