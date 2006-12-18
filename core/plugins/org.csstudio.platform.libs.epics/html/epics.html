@@ -66,6 +66,13 @@ whenever access to EPICS PVs is attempted.
 The CAJ and JCA sources as well as more details are available from 
 <a href="http://www.cosylab.com">http://www.cosylab.com</a>.
 
+<h2>Release Notes</h2>
+The JCA JNI binaries were built from the jca-2.3.0 sources,
+with all DetachCurrentThread() calls in JNI.cpp commented out.
+This had to be done to avoid a memory leak in DetachCurrentThread(),
+but is obviously not perfect, since these DetachCurrentThread() calls
+were originally added for a reason.
+
 </body>
 </html>
 
