@@ -43,7 +43,7 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
    </requires>
 
    <plugin
-         id="org.csstudio.pvtable"
+         id="org.csstudio.display.pvtable"
          download-size="0"
          install-size="0"
          version="0.0.0"

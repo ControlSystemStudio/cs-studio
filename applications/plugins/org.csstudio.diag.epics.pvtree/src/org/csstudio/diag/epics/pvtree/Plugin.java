@@ -1,15 +1,17 @@
 package org.csstudio.diag.epics.pvtree;
 
+import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /** Plugin class for EPICS PV Tree.
  *  @author Kay Kasemir
  */
-public class Plugin extends AbstractUIPlugin
+public class Plugin extends AbstractCssUiPlugin
 {
+    public static final String ID = "org.csstudio.diag.epics.pvtree"; //$NON-NLS-1$
+
     // The shared instance.
     private static Plugin plugin;
 
@@ -18,11 +20,21 @@ public class Plugin extends AbstractUIPlugin
     {
         plugin = this;
     }
+    
+    /** @see AbstractCssUiPlugin */
+    @Override
+    public String getPluginId()
+    {   return ID;  }
 
-    /** Called when the plug-in is stopped */
-    public void stop(BundleContext context) throws Exception
+    /** @see AbstractCssUiPlugin */
+    @Override
+    protected void doStart(BundleContext context) throws Exception
+    {}
+
+    /** @see AbstractCssUiPlugin */
+    @Override
+    protected void doStop(BundleContext context) throws Exception
     {
-        super.stop(context);
         plugin = null;
     }
 
@@ -50,10 +62,6 @@ public class Plugin extends AbstractUIPlugin
      */
     private void log(int type, String message, Exception e)
     {
-        getLog().log(new Status(type,
-                                getClass().getName(),
-                                IStatus.OK,
-                                message,
-                                e));
+        getLog().log(new Status(type, ID, IStatus.OK, message, e));
     }
 }

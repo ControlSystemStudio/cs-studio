@@ -96,6 +96,7 @@ public class Probe extends ViewPart implements PVListener
         }
         catch (Exception e)
         {
+            Plugin.logException("activateWithPV", e); //$NON-NLS-1$
             e.printStackTrace();
         }
         return false;
@@ -176,10 +177,6 @@ public class Probe extends ViewPart implements PVListener
     /** Construct GUI. */
     private void createGUI(Composite parent)
     {
-        if (Probe.debug)
-            System.out.println("createGUIProbe createGUI, "       //$NON-NLS-1$
-                            + Thread.currentThread().toString()); 
-
         GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         parent.setLayout(layout);
@@ -310,7 +307,7 @@ public class Probe extends ViewPart implements PVListener
     public boolean setPVName(String name)
     {
         if (Probe.debug)
-            System.out.println("Probe setPVName," + Thread.currentThread().toString()); //$NON-NLS-1$
+            Plugin.logInfo("setPVName(" + name + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 
         // Update displayed name, unless it's already current
         if (! txt_name.getText().equals(name))
@@ -340,6 +337,7 @@ public class Probe extends ViewPart implements PVListener
         }
         catch (Exception ex)
         {
+            Plugin.logException(Messages.S_CreateError, ex);
             updateStatus(Messages.S_CreateError + ex.getMessage());
             return false;
         }
@@ -356,7 +354,7 @@ public class Probe extends ViewPart implements PVListener
     public void pvValueUpdate(PV pv)
     {
         if (Probe.debug)
-            System.out.println("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
+            Plugin.logInfo("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
         // We might receive events after the view is already disposed....
         if (lbl_value.isDisposed())
             return;
@@ -402,6 +400,7 @@ public class Probe extends ViewPart implements PVListener
         }
         catch (Exception e)
         {
+            Plugin.logException("pvValueUpdate error", e); //$NON-NLS-1$
             updateStatus(e.getMessage());
         }
     }
@@ -492,6 +491,7 @@ public class Probe extends ViewPart implements PVListener
         }
         catch (Exception ex)
         {
+            Plugin.logException(Messages.S_AdjustFailed, ex);
             updateStatus(Messages.S_AdjustFailed + ex.getMessage());
         }
     }

@@ -90,7 +90,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                Plugin.logException("pvValueUpdate", e);
             }
         }
     };
@@ -111,7 +111,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                Plugin.logException("pvValueUpdate", e); //$NON-NLS-1$
             }
         }
     };
@@ -144,7 +144,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                Plugin.logException("pvValueUpdate", e); //$NON-NLS-1$
             }
         }
     };
@@ -197,7 +197,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Plugin.logException("PV creation error", e); //$NON-NLS-1$
         }
         // Get type from 'other', previously used PV or via CA
         if (other != null)
@@ -216,7 +216,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                Plugin.logException("PV creation error", e); //$NON-NLS-1$
             }
         }
     }
@@ -393,7 +393,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Plugin.logException("PV creation error", e); //$NON-NLS-1$
         }
     }
 

@@ -26,7 +26,7 @@
             default="false"
             icon="icons/table.gif"
             name="%PVTable">
-         <contentTypeBinding contentTypeId="org.csstudio.pvtable.PVTable"/>
+         <contentTypeBinding contentTypeId="org.csstudio.display.pvtable.PVTable"/>
       </editor>
    </extension>
    <extension
@@ -63,7 +63,7 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
-            id="org.csstudio.pvtable.popupMenu"
+            id="org.csstudio.display.pvtable.popupMenu"
             objectClass="org.csstudio.platform.model.IProcessVariable">
          <menu
                id="org.csstudio.popmenu"

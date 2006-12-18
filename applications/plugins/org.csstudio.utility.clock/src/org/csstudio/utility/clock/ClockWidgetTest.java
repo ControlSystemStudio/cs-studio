@@ -16,6 +16,7 @@ public class ClockWidgetTest
 {
     private static boolean run = true;
     
+    @SuppressWarnings("nls")
     public static void main(String[] args)
     {
         Display display = new Display();

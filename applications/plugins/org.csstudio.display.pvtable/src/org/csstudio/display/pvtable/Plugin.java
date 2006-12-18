@@ -1,5 +1,6 @@
 package org.csstudio.display.pvtable;
 
+import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -10,9 +11,9 @@ import org.osgi.framework.BundleContext;
  * 
  *  @author Kay Kasemir
  */
-public class Plugin extends AbstractUIPlugin
+public class Plugin extends AbstractCssUiPlugin
 {
-    public static final String ID = "org.csstudio.pvtable"; //$NON-NLS-1$
+    public static final String ID = "org.csstudio.display.pvtable"; //$NON-NLS-1$
     // The shared instance.
     private static Plugin plugin;
     
@@ -28,6 +29,23 @@ public class Plugin extends AbstractUIPlugin
     public static Plugin getDefault()
     {
         return plugin;
+    }
+    
+    /** @see AbstractCssUiPlugin */
+    @Override
+    public String getPluginId()
+    {   return ID;  }
+    
+    /** @see AbstractCssUiPlugin */
+    @Override
+    protected void doStart(BundleContext context) throws Exception
+    {}
+
+    /** @see AbstractCssUiPlugin */
+    @Override
+    protected void doStop(BundleContext context) throws Exception
+    {
+        plugin = null;
     }
 
     /** Add informational message to the plugin log. */
@@ -54,24 +72,7 @@ public class Plugin extends AbstractUIPlugin
      */
     private void log(int type, String message, Exception e)
     {
-        getLog().log(new Status(type,
-                                getClass().getName(),
-                                IStatus.OK,
-                                message,
-                                e));
-    }
-    
-    /** This method is called upon plug-in activation */
-    public void start(BundleContext context) throws Exception
-    {
-        super.start(context);
-    }
-
-    /** This method is called when the plug-in is stopped */
-    public void stop(BundleContext context) throws Exception
-    {
-        super.stop(context);
-        plugin = null;
+        getLog().log(new Status(type, ID, IStatus.OK, message, e));
     }
 
     /** @return Returns an image descriptor for the image file at the given plug-in
