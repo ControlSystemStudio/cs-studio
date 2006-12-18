@@ -61,6 +61,13 @@ public class BrowserUI extends Composite
         return scroll_enable;
     }
     
+    /** @return Returns <code>true</code> if scrolling is enabled (requested). */
+    public void enableScrolling(boolean enable)
+    {
+        scroll_enable = enable;
+        updateScrollPauseButton();
+    }
+    
     /** Create the GUI elements. */
     private void makeGUI()
     {

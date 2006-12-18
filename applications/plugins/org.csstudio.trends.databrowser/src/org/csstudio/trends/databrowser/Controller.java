@@ -88,6 +88,12 @@ public class Controller implements ScannerAndScrollerListener
             {
                 if (controller_changes_xaxis)
                     return;
+                final BrowserUI gui = Controller.this.gui;
+                // This is a user-driven pan or zoom.
+                // If we scroll, that would change what the user just did,
+                // so don't
+                if (gui.isScrollEnabled())
+                    gui.enableScrolling(false);
                 getArchivedData(null);
             }
 
