@@ -1,8 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	<title>Overview</title>
 </head>
 
@@ -37,29 +34,14 @@ they do not take effect at runtime!
 When using the 'pure java' version, aka. CAJ,
 no additional steps should be required.
 <p>
-When using the JNI version, the OS-specific binaries
-need to be installed from a subfolder "libs/JCA"
-of the plugin source tree.
-<p>
-The symptom for not installing them properly:
-Error messages including "Context not initialized"
-whenever access to EPICS PVs is attempted.
+To use the JNI version, the OS-specific binaries
+need to be available as well. If you select the JNI context
+and get error messages including "Context not initialized"
+whenever access to EPICS PVs is attempted, you lack the proper
+JNI binaries. This plugin currently includes binaries for these:
 <ul>
-<li>RedHat Linux (x86, g++ 3.4.4, kernel 2.6.9-22.EL):<br>
-    From the "linux-x86" subfolder, copy all shared libraries to
-    a location of your choice, for example "~/lib",
-    and set the environment variable LD_LIBRARY_PATH to include
-    that location.
-<li>Mac OS X (PPC):<br>
-    From the "osx-ppc" subfolder, copy
-    "libjca.jnilib" to "~/Library/Java/Extensions".
-    Copy the other shared libraries to a location of your choice,
-    for example "~/lib",
-    and set the environment variable DYLIB_LIBRARY_PATH to include
-    that location.
-<li>Other:<br>
-    You need to obtain sources for EPICS base
-    and JCA, and build the binaries yourself. See references.
+<li>RedHat Linux (x86, g++ 3.4.4, kernel 2.6.9-22.EL)
+<li>Mac OS X (PPC)
 </ul>
 
 <h2>References</h2>

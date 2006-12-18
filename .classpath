@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry exported="true" kind="lib" path="libs/JCA/jca-2.3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/CAJ/caj-1.1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="caj-1.1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="jca-2.3.0.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
