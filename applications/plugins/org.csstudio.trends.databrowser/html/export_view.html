@@ -6,6 +6,46 @@
 <h2>Data Browser Export View</h2>
 This view allows export of samples from the current plot
 to files for further analysis.
+<p>
+<img src=export.png width=494 height=298/>
+<ul>
+<li>Start/End Time:<br>
+    You can use the start and time time of the current plot,
+    i.e. use the X-Axis range of that plot,
+    or manually select times.
+    You can either enter them in the YYYY/MM/DD HH:MM:SS format for year, month,
+    day, hour, minute seconds, or use the 
+    "Select" button to open a calendar-type dialog.
+<li>Source:<br>
+    You can export data from the current plot as it is currently kept in the
+    Data Browser memory. This will include the 'live' samples which might not
+    yet be in the archive. On the downside, the 'historic' data will be
+    exported as shown in the plot, which is usually data that has been
+    reduced for plotting purposes, and not the full-detailed archived data.
+    <p>
+    To export the original archive data, select "Raw Archive".
+    Alternatively, you can also export data from the archive that has been
+    averaged to the provided time interval. "00:01:00" as shown in the
+    screenshot means: One averaged sample every minute (HH:MM:SS format).
+<li>Output:<br>
+    You typically want to export data in a spreadsheet-type format,
+    including a column for additional severity/status information.
+    In the spreadsheet, samples that did not receive a 'new' value, yet,
+    will repeat their previous values in following rows in order to allow
+    spreadsheet-type operations.
+    Alternatively, you can export the PVs one by one into the file by
+    not selecting the spreadsheet output, and you can also omit the severity/
+    status column.
+<li>Format:<br>
+    The default format uses information that might have come with the
+    PV from the control system. Alternatively, you can force "decimal"
+    or "exponential" notation with a specific number of fractional digits.
+<li>Filename:<br>
+    Enter the filename into which the exported data is to be written,
+    or "Browse" to get a file name dialog.
+</ul>
+Finally, the "Export" button starts the actual export.
+
 
 </body>
 </html>
