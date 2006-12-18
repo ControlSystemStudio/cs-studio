@@ -3,11 +3,14 @@
 <title>Data Browser</title>
 </head>
 <body>
-<h2>Starting a new Data Browser</h2>
+
+<h2>Starting a new, empty Data Browser</h2>
 You can open a new Data Browser via the menu item
 <pre>CSS/Trends/Data Browser</pre>
 <p>
-This will result in an empty plot window.
+This will result in an empty plot window
+to which one can then <a href=add_pvs.html>add PVs</a>.
+One can create more than one Data Browser instance.
 
 <h2>Data Browser Perspective</h2>
 Especially for first-time users it might be
@@ -15,18 +18,82 @@ advisable to switch to the designated Data Browser
 Perspective, which results in a predefined
 arrangement of the plot window
 as well as a common set of related views
-(Archive, Config and Export Views):
+(Navigator, Config, Archive, and Export):
+<br>
 Invoke the plot's context menu,
 typically by "right-clicking" inside the Data Browser plot,
-and select <pre>Data Browser Perspective</pre> menu item.
+and select the <pre>Data Browser Perspective</pre> menu item.
 <p>
-If your screen significantly differs from the snapshow
+If your screen differs significantly from the snapshow
 shown below, somebody has already customized the
 Data Browser Perspective.
 If you want to reset it, select the menu item
 <pre>Window/Reset Perspective</pre>
 <p>
 <img src=perspective.png width=785 height=715>
+
+<h2>Stopping a Data Browser Instance</h2>
+You can simply close a Data Browser Plot window via the usual
+icon in the window title bar or the context menu of the window
+title bar.
+<p>
+If the Data Browser configuration has not been saved,
+either because it was never saved,
+or because a saved confguration has been modified,
+you will be prompted with a dialog that asks you
+to either save the configuration or close without
+saving it.
+
+<h2>The Workspace, "Project" Folders</h2>
+All configuration files are saved in "Project" folders in the "Workspace".
+When starting for the very first time, you might have to create
+an initial "Project" folder.
+At later times, you might want to create additional "Project" folders
+to better organize your files.
+<p>
+To create a "Project" folder:
+<ol>
+<li>Unless it is already open, obtain a "Navigator" view,
+    accessible via the Menu
+   <pre>Window/Show View.../Other/General,Navigator</pre>
+<li>Each top-level folder in that view is a "Project" in your
+    "Workspace".
+    If there is no folder, create at least one via the Navigator context menu
+    <pre>New/Project.../General/Project</pre>
+    In the resulting "New Project" dialog, enter a project name.
+</ol>
+
+<h2>Saving Data Browser Configurations</h2>
+All configuration files are stored in "Project" folders,
+see previous section.
+
+In order to save files, one can use the "File/Save As.." menu.
+If the configuration has already been saved, the Plot window title
+bar will show the current configuration file name,
+and a "File/Save" menu allows saving changes to the current file name.
+
+<h2>Re-loading a Data Browser Configurations</h2>
+You open a saved Data Browser configuration by double-clicking on the
+configuration file in the "Navigator",
+or via the "Open..." item in the Navigator context menu.
+
+<h2>Creating a new, empty Data Browser Configurations</h2>
+You can of course open a new Data Browser Plot window and then
+use "File/Save As" to save its configuration as shown above.
+<p>
+Alternatively, you can directly create a new, empty Data Browser
+configuration file like this:
+<ul>
+<li>Opening the "Navigator" view.
+<li>Invoke its context menu
+    <pre>New, Other..., CSS, Data Browser</pre>
+    <br>
+    <img src="new_wizard.png" width=491 height=474/>
+<li>In the resulting dialog, select the Project folder
+    as well as the configuration file name:
+    <p>
+    <img src="new_databrowser.png" width=496 height=294/>
+</ul>
 
 </body>
 </html>

@@ -9,28 +9,46 @@ accessible via the context menu of the plot window.
 <br>
 It has two sub-sections or "tabs".
 
-<h3>Process Variables</h3>
-This subsection configures which PVs are shown.
-One can add PVs by entering their name in the
-"<Add PV" cell of the Process Variable table,
-delete PVs via the context menu of the same table,
-change their color, line width and axis type
-(linear, log. scale).
+<img src=config.png width=750 height=321/>
+
+<h3>"Process Variables" Tab</h3>
+This subsection configures which PVs are shown in the plot and how.
+You can add PVs by entering their name in the
+"&lt;Add PV&gt;" cell of the "Process Variables" table.
+To delete PVs, select them and then use the context menu of the PV table.
 <p>
-One can also change the axis assignments by
-modifying the "Axis" index, which identifies
+You can change the axis assigment, color, and line width of each PV.
+For the the axis assignments, the number in the "Axis" column identifies
 the Y-Axes via numbers 0, 1, 2, ...
+So to put PVs on the same, first axis, enter "0".
+To place them on two axes, enter "0" or "1" for the respective PV.
 <p>
-One can drop archive data sources from the
+The "Min" and "Max" settings determine the Y-Axis range. The "Type" selects
+a linear or log. axis. Since these settings modify the Y-Axis, they percolate
+to all PVs on that axis.
+
+<h4>Archive Table</h4>
+This table lists the archive data sources which are used to read samples
+for the selected PV.
+<p>
+To add archive data sources, Drag-and-Drop from the
 <a href=archive_view.html>Archive View</a>
-onto a PV, and rearrange the order of 
+onto a PV. You can drop them onto the Plot Window,
+which adds the source to all PVs in the plot,
+or onto a selected PV in the config view.
+Then, you can rearrange the order of 
 archives for a PV via the context menu
 of the "Archives used for ..." table.
 
-<h3>Live Data Config</h3>
+<h3>"Live Data Config" Tab</h3>
 This subsection configures how often 'live'
 data samples are taken for the PVs,
 and how often the plot redraws.
+For example, one can sample a PV every 2 seconds, and redraw
+every 4 seconds.
+Note that redraws are quite costly in terms of CPU usage, so
+reducing the redraw rate by increasing the update period can
+help to reduce the CPU load.
 
 </body>
 </html>

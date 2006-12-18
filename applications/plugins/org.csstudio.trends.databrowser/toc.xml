@@ -3,12 +3,13 @@
 
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#trends" label="">
 	<topic label="Data Browser"  href="html/databrowser.html">
-	  <topic label="Starting, Perspective" href="html/setup.html"/>
+	  <topic label="Starting, Setup, Load, Save" href="html/setup.html"/>
 	  <topic label="Adding PVs" href="html/add_pvs.html"/>
 	  <topic label="Plot Window" href="html/plot_window.html"/>
 	  <topic label="Config View" href="html/config_view.html"/>
 	  <topic label="Archive View" href="html/archive_view.html"/>
 	  <topic label="Sample View" href="html/sample_view.html"/>
 	  <topic label="Export View" href="html/export_view.html"/>
+	  <topic label="Internals" href="html/sampling.html"/>
 	</topic>
 </toc>
