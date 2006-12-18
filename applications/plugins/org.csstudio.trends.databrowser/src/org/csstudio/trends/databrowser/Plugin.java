@@ -1,6 +1,8 @@
 package org.csstudio.trends.databrowser;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -10,7 +12,7 @@ import org.osgi.framework.BundleContext;
 /** The main plugin class to be used in the desktop.
  *  @author Kay Kasemir
  */
-public class Plugin extends AbstractUIPlugin
+public class Plugin extends AbstractCssUiPlugin
 {
     public static final String ID = "org.csstudio.trends.databrowser"; //$NON-NLS-1$
     public static final String Version = "0.1"; //$NON-NLS-1$
@@ -23,41 +25,52 @@ public class Plugin extends AbstractUIPlugin
         plugin = this;
     }
 
-    /** This method is called upon plug-in activation */
-    public void start(BundleContext context) throws Exception
-    {
-        super.start(context);
-    }
-
-    /** This method is called when the plug-in is stopped */
-    public void stop(BundleContext context) throws Exception
-    {
-        super.stop(context);
-        plugin = null;
-    }
-
     /** Returns the shared instance. */
     public static Plugin getDefault()
     {   return plugin;   }
 
+    /** @see AbstractCssUiPlugin */
+    public String getPluginId()
+    {   return ID;  }
+    
+    /** @see AbstractCssUiPlugin */
+    protected void doStart(final BundleContext context) throws Exception
+    {}
+
+    /** @see AbstractCssUiPlugin */
+    protected void doStop(final BundleContext context) throws Exception
+    {
+        plugin = null;
+    }
+
     /** Add info message to the plugin log. */
     public static void logInfo(String message)
     {
-        CentralLogger.getInstance().info(getDefault(), message);
+        getDefault().log(IStatus.INFO, message, null);
     }
     
     /** Add error message to the plugin log. */
     public static void logError(String message)
     {
-        CentralLogger.getInstance().error(getDefault(), message);
+        getDefault().log(IStatus.ERROR, message, null);
     }
 
     /** Add an exception to the plugin log. */
     public static void logException(String message, Throwable e)
     {
-        CentralLogger.getInstance().error(getDefault(), message, e);
+        getDefault().log(IStatus.ERROR, message, e);
     }
 
+    /** Add a message to the log.
+     *  @param type
+     *  @param message
+     *  @param e Exception or <code>null</code>
+     */
+    private void log(int type, String message, Throwable e)
+    {
+        getLog().log(new Status(type, ID, IStatus.OK, message, e));
+    }
+    
     /** Returns an image descriptor for the image file.
      *  <p>
      *  Usually, this is the image found via the the given plug-in
