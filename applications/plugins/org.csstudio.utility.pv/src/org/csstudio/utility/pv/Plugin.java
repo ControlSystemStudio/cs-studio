@@ -12,19 +12,29 @@ import org.osgi.framework.BundleContext;
  */
 public class Plugin extends AbstractCssPlugin
 {
-	public final static String ID = "org.csstudio.utility.pv";
+	public final static String ID = "org.csstudio.utility.pv"; //$NON-NLS-1$
 	
 	public String getPluginId()
 	{   return ID; }
 
     /** @see AbstractCssPlugin */
+    @SuppressWarnings("nls")
     @Override
     protected void doStart(BundleContext context) throws Exception
     {
-        EPICS_V3_PV.use_pure_java = EpicsPlugin.getDefault().usePureJava();
-        final String message = EPICS_V3_PV.use_pure_java ?
-		        				"Using pure java CAJ" : "Using JCA with JNI";
-		getLog().log(new Status(IStatus.INFO, ID, IStatus.OK, message, null));
+        try
+        {
+            EPICS_V3_PV.use_pure_java = EpicsPlugin.getDefault().usePureJava();
+            final String message = EPICS_V3_PV.use_pure_java ?
+    		        				"Using pure java CAJ" : "Using JCA with JNI";
+    		getLog().log(new Status(IStatus.INFO, ID, IStatus.OK, message, null));
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+            getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK,
+                            "Cannot load EPICS_V3_PV", e));
+        }
     }
     /** @see AbstractCssPlugin */
     @Override
