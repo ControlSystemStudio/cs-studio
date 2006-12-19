@@ -21,11 +21,17 @@
  */
 package org.csstudio.platform.libs.epics;
 
+import gov.aps.jca.jni.JNITargetArch;
+
 import org.csstudio.platform.libs.epics.preferences.PreferenceConstants;
+import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 
@@ -33,7 +39,8 @@ import org.osgi.framework.BundleContext;
  *  @author Original author unknown
  *  @author Kay Kasemir
   */
-public class EpicsPlugin extends AbstractUIPlugin
+@SuppressWarnings("nls")
+public class EpicsPlugin extends AbstractCssUiPlugin
 {
 	public static final String ID = "org.csstudio.platform.libs.epics"; //$NON-NLS-1$
     //The shared instance.
@@ -41,24 +48,109 @@ public class EpicsPlugin extends AbstractUIPlugin
     private boolean use_pure_java;
 	
 	/** The constructor. */
-	public EpicsPlugin()
+	@SuppressWarnings("nls")
+    public EpicsPlugin()
     {
+        super();
 		plugin = this;
+        
+        final String jni_target = JNITargetArch.getTargetArch();
+        logInfo("JCA JNI Target Arch: " + jni_target);
+        try
+        {
+            // Turn "os/..." path relative to the plugin...
+            Bundle bundle = Platform.getBundle(ID);
+            Path rel_path = new Path(getOSPath());
+            // into an absolute path in the file system ...
+            String path = FileLocator.resolve(FileLocator.find(bundle, rel_path, null)).getFile();
+            // Chop the final '/' off
+            if (path.charAt(path.length()-1) == '/')
+                path = path.substring(0, path.length()-1);
+            // ... and point the JCA JNI class loader there
+            String jni_lib_path_property = "gov.aps.jca.jni.epics."
+                                              + jni_target + ".library.path";
+            logInfo("Setting " + jni_lib_path_property + "=" + path);
+            System.setProperty(jni_lib_path_property, path);
+        }
+        catch (Exception e)
+        {
+            logException("Error while setting JNI properties", e);
+        }
 	}
     
+    private String getOSPath() throws Exception
+    {
+        String osname=System.getProperty( "os.name", "" );
+        String osarch=System.getProperty( "os.arch", "" );
+        if (osname.equals("Mac OS X"))
+            return "os/macosx/" + osarch;
+        else if (osname.equals( "Linux" ))
+            return "os/linux/x86";
+        else if (osname.startsWith("Win" ))
+        {
+            // ??
+        }
+        throw new Exception("Cannot determine os/<os>/<arch> path from os.name="
+                        + osname + " and os.arch=" + osarch);
+    }
+
     /** @return <code>true</code> if preferences suggest the use
      *  of pure java CA.
      */
     public boolean usePureJava()
     {   return use_pure_java; }
 
+    /** @return Returns the shared instance. */
+    public static EpicsPlugin getDefault()
+    {   return plugin;    }
+    	
+	/** @see org.csstudio.platform.AbstractCssPlugin#getPluginId() */
+    @Override
+    public String getPluginId()
+    {   return ID;    }
+
+    /** @see org.csstudio.platform.AbstractCssPlugin#getPluginId() */
+    @Override
+	protected void doStart(BundleContext context) throws Exception 
+    {
+		installPreferences();
+	}
+
+    /** @see org.csstudio.platform.AbstractCssPlugin#getPluginId() */
+    @Override
+    protected void doStop(BundleContext context) throws Exception
+    {
+		plugin = null;
+	}
+
+    /** Add info to the plugin log. */
+    public static void logInfo(String message)
+    {
+        getDefault().log(IStatus.INFO, message, null);
+    }
+    
+    /** Add an exception to the plugin log. */
+    public static void logException(String message, Exception e)
+    {
+        getDefault().log(IStatus.ERROR, message, e);
+    }
+
+    /** Add a message to the log.
+     *  @param type
+     *  @param message
+     */
+    private void log(int type, String message, Exception e)
+    {
+        getLog().log(new Status(type, ID, IStatus.OK, message, e));
+    }
+    
     /** Update the CAJ settings with the data from the
      *  preference page.
      *  <p>
      *  Unfortunately this only takes effect after a restart,
      *  the current setup seems to remain unaffected.
      */
-	@SuppressWarnings("nls")
+    @SuppressWarnings("nls")
     public void installPreferences()
     {
         try
@@ -68,18 +160,18 @@ public class EpicsPlugin extends AbstractUIPlugin
             // Set the 'CAJ' copy of the settings
             System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", 
                             prefs.getString(PreferenceConstants.constants[1]));
-    		boolean yes_no = prefs.getBoolean(PreferenceConstants.constants[2]);
+            boolean yes_no = prefs.getBoolean(PreferenceConstants.constants[2]);
             System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
                             (yes_no ? "YES" : "NO")); 
-    		System.setProperty("com.cosylab.epics.caj.CAJContext.connection_timeout",
+            System.setProperty("com.cosylab.epics.caj.CAJContext.connection_timeout",
                             prefs.getString(PreferenceConstants.constants[3]));
-    		System.setProperty("com.cosylab.epics.caj.CAJContext.beacon_period", 
+            System.setProperty("com.cosylab.epics.caj.CAJContext.beacon_period", 
                             prefs.getString(PreferenceConstants.constants[4])); 
-    		System.setProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
+            System.setProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
                             prefs.getString(PreferenceConstants.constants[5]));
-    		System.setProperty("com.cosylab.epics.caj.CAJContext.server_port", 
+            System.setProperty("com.cosylab.epics.caj.CAJContext.server_port", 
                             prefs.getString(PreferenceConstants.constants[6]));
-    		System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", 
+            System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", 
                             prefs.getString(PreferenceConstants.constants[7]));
 
             // Set the 'JNI' copy of the settings
@@ -102,44 +194,5 @@ public class EpicsPlugin extends AbstractUIPlugin
         {
             logException("Cannot set preferences", e);
         }
-	}
-	
-    /** Add an exception to the plugin log. */
-    public static void logException(String message, Exception e)
-    {
-        getDefault().log(IStatus.ERROR, message, e);
     }
-
-    /** Add a message to the log.
-     *  @param type
-     *  @param message
-     */
-    private void log(int type, String message, Exception e)
-    {
-        getLog().log(new Status(type,
-                                getClass().getName(),
-                                IStatus.OK,
-                                message,
-                                e));
-    }
-    	
-	/** This method is called upon plug-in activation */
-	public void start(BundleContext context) throws Exception 
-    {
-		super.start(context);
-		installPreferences();
-	}
-
-	/** This method is called when the plug-in is stopped */
-	public void stop(BundleContext context) throws Exception
-    {
-		super.stop(context);
-		plugin = null;
-	}
-
-	/** @return Returns the shared instance. */
-	public static EpicsPlugin getDefault()
-    {
-		return plugin;
-	}
 }
