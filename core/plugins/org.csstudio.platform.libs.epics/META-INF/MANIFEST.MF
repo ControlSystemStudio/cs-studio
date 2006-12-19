@@ -11,7 +11,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.help.appserver,
  org.eclipse.help.base,
  org.eclipse.help.ui,
- org.eclipse.help.webapp
+ org.eclipse.help.webapp,
+ org.csstudio.platform,
+ org.csstudio.platform.ui
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  jca-2.3.0.jar,
