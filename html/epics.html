@@ -34,15 +34,23 @@ they do not take effect at runtime!
 When using the 'pure java' version, aka. CAJ,
 no additional steps should be required.
 <p>
-To use the JNI version, the OS-specific binaries
-need to be available as well. If you select the JNI context
-and get error messages including "Context not initialized"
-whenever access to EPICS PVs is attempted, you lack the proper
-JNI binaries. This plugin currently includes binaries for these:
+To use the JNI version, you need to install OS-specific binaries.
+This plugin currently includes binaries for:
 <ul>
 <li>RedHat Linux (x86, g++ 3.4.4, kernel 2.6.9-22.EL)
 <li>Mac OS X (PPC)
 </ul>
+To install them, you need to locate the org.csstudio.platform.libs.epics
+plugin file in the "plugin" subdirectory of your Eclipse installation.
+Unzip it, and install the shared libraries from
+the "os/..." subdirectory for your architecture,
+for example "os/linux/x86".
+You can either copy them to a location in the file system that your
+OS searches by default ("/lib" on Linux or OS X),
+or copy them to a location of your choice
+like "$HOME/lib" and then list that location in
+the environment variable LD_LIBRARY_PATH,
+DYNLIB_LIBRARY_PATH (OS X) or PATH (Windows).
 
 <h2>References</h2>
 The CAJ and JCA sources as well as more details are available from 
