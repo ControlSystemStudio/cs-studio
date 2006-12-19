@@ -1,6 +1,7 @@
 package org.csstudio.trends.databrowser.preferences;
 
 import org.eclipse.jface.preference.*;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.csstudio.trends.databrowser.Plugin;
@@ -40,13 +41,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements
      */
     public void createFieldEditors()
     {
-        if (Preferences.getNumURLs() != 3)
-            throw new Error("DataBrowser Preferences changed from 3 URLs."); //$NON-NLS-1$
-        addField(new StringFieldEditor(Preferences.P_URL1,
-                        Messages.URL_Label1, getFieldEditorParent()));
-        addField(new StringFieldEditor(Preferences.P_URL2,
-                        Messages.URL_Label2, getFieldEditorParent()));
-        addField(new StringFieldEditor(Preferences.P_URL3,
-                        Messages.URL_Label3, getFieldEditorParent()));
+        final Composite parent = getFieldEditorParent();
+        addField(new URLListEditor(Preferences.P_URLS, parent));
     }
 }
