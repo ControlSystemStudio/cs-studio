@@ -54,6 +54,58 @@ public class EpicsPlugin extends AbstractCssUiPlugin
         super();
 		plugin = this;
         
+	}
+    
+    /** @return <code>true</code> if preferences suggest the use
+     *  of pure java CA.
+     */
+    public boolean usePureJava()
+    {   return use_pure_java; }
+
+    /** @return Returns the shared instance. */
+    public static EpicsPlugin getDefault()
+    {   return plugin;    }
+    	
+	/** @see org.csstudio.platform.AbstractCssPlugin#getPluginId() */
+    @Override
+    public String getPluginId()
+    {   return ID;    }
+
+    /** @see org.csstudio.platform.AbstractCssPlugin#getPluginId() */
+    @Override
+	protected void doStart(BundleContext context) throws Exception 
+    {
+    	
+    	/* Still broken:
+    	Eclipse magically locates the JCA JNI library as long as it's
+		placed under <plugin>/os/<os>/<arch>,
+		where the correct values for <os> and <arch> aren't known,
+		except that "linux", "x86" and "macosx", "ppc" work.
+		No idea what to use for Windows, or OS X on Intel.
+		
+		Anyway, the (java portion of the) JCA code tries to load
+		shared libraries for EPICS base 'Com' and 'ca'.
+	    Their location is obtained from the compiled-in
+	    JCAProperties.properties file, which points to the EPICS base
+	    sources.
+	    But for deployment, I'd like to use shared libs that are
+	    in the plugin, so I copied them into the same
+	    <plugin>/os/<os>/<arch> that has the JNI lib.
+	    In here, I (successfully) bend the properties to point to the
+	    <plugin>/os/<os>/<arch> directory.
+	    With that, the 'Com' library loads OK, but the 'ca' library
+	    results in an java.lang.UnsatisfiedLinkError:
+	    
+	     /home/kasemir/Eclipse/Workbench/org.csstudio.platform.libs.epics/os/linux/x86/libca.so:
+	     libCom.so: cannot open shared object file: No such file or directory
+	     
+	    The only way around:
+	    Set environment variables LD_LIBRARY_PATH (Linux)
+	    or DYLD_LIBRARY_PATH (OS X) to <plugin>/os/<os>/<arch>.
+	    
+	    ...
+	     */
+    	
         final String jni_target = JNITargetArch.getTargetArch();
         logInfo("JCA JNI Target Arch: " + jni_target);
         try
@@ -76,43 +128,7 @@ public class EpicsPlugin extends AbstractCssUiPlugin
         {
             logException("Error while setting JNI properties", e);
         }
-	}
-    
-    private String getOSPath() throws Exception
-    {
-        String osname=System.getProperty( "os.name", "" );
-        String osarch=System.getProperty( "os.arch", "" );
-        if (osname.equals("Mac OS X"))
-            return "os/macosx/" + osarch;
-        else if (osname.equals( "Linux" ))
-            return "os/linux/x86";
-        else if (osname.startsWith("Win" ))
-        {
-            // ??
-        }
-        throw new Exception("Cannot determine os/<os>/<arch> path from os.name="
-                        + osname + " and os.arch=" + osarch);
-    }
 
-    /** @return <code>true</code> if preferences suggest the use
-     *  of pure java CA.
-     */
-    public boolean usePureJava()
-    {   return use_pure_java; }
-
-    /** @return Returns the shared instance. */
-    public static EpicsPlugin getDefault()
-    {   return plugin;    }
-    	
-	/** @see org.csstudio.platform.AbstractCssPlugin#getPluginId() */
-    @Override
-    public String getPluginId()
-    {   return ID;    }
-
-    /** @see org.csstudio.platform.AbstractCssPlugin#getPluginId() */
-    @Override
-	protected void doStart(BundleContext context) throws Exception 
-    {
 		installPreferences();
 	}
 
@@ -123,7 +139,75 @@ public class EpicsPlugin extends AbstractCssUiPlugin
 		plugin = null;
 	}
 
-    /** Add info to the plugin log. */
+    private String getOSPath() throws Exception
+	{
+	    String osname=System.getProperty( "os.name", "" );
+	    String osarch=System.getProperty( "os.arch", "" );
+	    if (osname.equals("Mac OS X"))
+	        return "os/macosx/" + osarch;
+	    else if (osname.equals( "Linux" ))
+	        return "os/linux/x86";
+	    else if (osname.startsWith("Win" ))
+	    {
+	        // ??
+	    }
+	    throw new Exception("Cannot determine os/<os>/<arch> path from os.name="
+	                    + osname + " and os.arch=" + osarch);
+	}
+
+	/** Update the CAJ settings with the data from the
+	 *  preference page.
+	 *  <p>
+	 *  Unfortunately this only takes effect after a restart,
+	 *  the current setup seems to remain unaffected.
+	 */
+	@SuppressWarnings("nls")
+	public void installPreferences()
+	{
+	    try
+	    {
+	        final Preferences prefs = getDefault().getPluginPreferences();
+	        use_pure_java = prefs.getBoolean(PreferenceConstants.constants[0]);
+	        // Set the 'CAJ' copy of the settings
+	        System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", 
+	                        prefs.getString(PreferenceConstants.constants[1]));
+	        boolean yes_no = prefs.getBoolean(PreferenceConstants.constants[2]);
+	        System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
+	                        (yes_no ? "YES" : "NO")); 
+	        System.setProperty("com.cosylab.epics.caj.CAJContext.connection_timeout",
+	                        prefs.getString(PreferenceConstants.constants[3]));
+	        System.setProperty("com.cosylab.epics.caj.CAJContext.beacon_period", 
+	                        prefs.getString(PreferenceConstants.constants[4])); 
+	        System.setProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
+	                        prefs.getString(PreferenceConstants.constants[5]));
+	        System.setProperty("com.cosylab.epics.caj.CAJContext.server_port", 
+	                        prefs.getString(PreferenceConstants.constants[6]));
+	        System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", 
+	                        prefs.getString(PreferenceConstants.constants[7]));
+	
+	        // Set the 'JNI' copy of the settings
+	        System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", 
+	                        prefs.getString(PreferenceConstants.constants[1]));
+	        System.setProperty("gov.aps.jca.jni.JNIContext.auto_addr_list",
+	                        (yes_no ? "YES" : "NO")); 
+	        System.setProperty("gov.aps.jca.jni.JNIContext.connection_timeout",
+	                        prefs.getString(PreferenceConstants.constants[3]));
+	        System.setProperty("gov.aps.jca.jni.JNIContext.beacon_period", 
+	                        prefs.getString(PreferenceConstants.constants[4])); 
+	        System.setProperty("gov.aps.jca.jni.JNIContext.repeater_port",
+	                        prefs.getString(PreferenceConstants.constants[5]));
+	        System.setProperty("gov.aps.jca.jni.JNIContext.server_port", 
+	                        prefs.getString(PreferenceConstants.constants[6]));
+	        System.setProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", 
+	                        prefs.getString(PreferenceConstants.constants[7]));
+	    }
+	    catch (Exception e)
+	    {
+	        logException("Cannot set preferences", e);
+	    }
+	}
+
+	/** Add info to the plugin log. */
     public static void logInfo(String message)
     {
         getDefault().log(IStatus.INFO, message, null);
@@ -142,57 +226,5 @@ public class EpicsPlugin extends AbstractCssUiPlugin
     private void log(int type, String message, Exception e)
     {
         getLog().log(new Status(type, ID, IStatus.OK, message, e));
-    }
-    
-    /** Update the CAJ settings with the data from the
-     *  preference page.
-     *  <p>
-     *  Unfortunately this only takes effect after a restart,
-     *  the current setup seems to remain unaffected.
-     */
-    @SuppressWarnings("nls")
-    public void installPreferences()
-    {
-        try
-        {
-            final Preferences prefs = getDefault().getPluginPreferences();
-            use_pure_java = prefs.getBoolean(PreferenceConstants.constants[0]);
-            // Set the 'CAJ' copy of the settings
-            System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", 
-                            prefs.getString(PreferenceConstants.constants[1]));
-            boolean yes_no = prefs.getBoolean(PreferenceConstants.constants[2]);
-            System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
-                            (yes_no ? "YES" : "NO")); 
-            System.setProperty("com.cosylab.epics.caj.CAJContext.connection_timeout",
-                            prefs.getString(PreferenceConstants.constants[3]));
-            System.setProperty("com.cosylab.epics.caj.CAJContext.beacon_period", 
-                            prefs.getString(PreferenceConstants.constants[4])); 
-            System.setProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
-                            prefs.getString(PreferenceConstants.constants[5]));
-            System.setProperty("com.cosylab.epics.caj.CAJContext.server_port", 
-                            prefs.getString(PreferenceConstants.constants[6]));
-            System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", 
-                            prefs.getString(PreferenceConstants.constants[7]));
-
-            // Set the 'JNI' copy of the settings
-            System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", 
-                            prefs.getString(PreferenceConstants.constants[1]));
-            System.setProperty("gov.aps.jca.jni.JNIContext.auto_addr_list",
-                            (yes_no ? "YES" : "NO")); 
-            System.setProperty("gov.aps.jca.jni.JNIContext.connection_timeout",
-                            prefs.getString(PreferenceConstants.constants[3]));
-            System.setProperty("gov.aps.jca.jni.JNIContext.beacon_period", 
-                            prefs.getString(PreferenceConstants.constants[4])); 
-            System.setProperty("gov.aps.jca.jni.JNIContext.repeater_port",
-                            prefs.getString(PreferenceConstants.constants[5]));
-            System.setProperty("gov.aps.jca.jni.JNIContext.server_port", 
-                            prefs.getString(PreferenceConstants.constants[6]));
-            System.setProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", 
-                            prefs.getString(PreferenceConstants.constants[7]));
-        }
-        catch (Exception e)
-        {
-            logException("Cannot set preferences", e);
-        }
     }
 }
