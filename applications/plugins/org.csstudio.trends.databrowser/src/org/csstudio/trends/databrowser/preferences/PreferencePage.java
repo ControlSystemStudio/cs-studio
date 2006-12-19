@@ -43,5 +43,6 @@ public class PreferencePage extends FieldEditorPreferencePage implements
     {
         final Composite parent = getFieldEditorParent();
         addField(new URLListEditor(Preferences.P_URLS, parent));
+        addField(new ArchiveListEditor(Preferences.P_ARCHIVES, parent));
     }
 }

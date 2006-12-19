@@ -15,6 +15,7 @@ import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.ploteditor.BrowserUI;
+import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.dnd.DropTargetEvent;
 
@@ -127,7 +128,10 @@ public class Controller implements ScannerAndScrollerListener
             public void handleDrop(IProcessVariable name, DropTargetEvent event)
             {
                 YAxis yaxis = chart.getYAxisAtScreenPoint(event.x, event.y);
-                nameDropped(name.getName(), yaxis);
+                IModelItem item = nameDropped(name.getName(), yaxis);
+                IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
+                for (int i = 0; i < archives.length; i++)
+                    item.addArchiveDataSource(archives[i]);
             }
 
             @Override

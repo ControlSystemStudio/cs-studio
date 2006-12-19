@@ -10,6 +10,7 @@ import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
+import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.util.swt.AutoSizeColumn;
 import org.csstudio.util.swt.AutoSizeControlListener;
 import org.csstudio.util.swt.RGBCellEditor;
@@ -581,7 +582,11 @@ public class ConfigView extends PlotAwareView
         Model model = getModel();
         if (model == null)
             return null;
-        return model.add(name);
+        IModelItem item = model.add(name);
+        IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
+        for (int i = 0; i < archives.length; i++)
+            item.addArchiveDataSource(archives[i]);
+        return item;
     }
     
     /** Add an archive source to a specific or all items.

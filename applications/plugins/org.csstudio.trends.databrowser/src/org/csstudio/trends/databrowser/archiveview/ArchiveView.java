@@ -321,7 +321,7 @@ public class ArchiveView extends PlotAwareView
         site.registerContextMenu(manager, name_table_viewer);
         
         // Get the URLs from preferences.
-        String urls[] = Preferences.getURLs();
+        String urls[] = Preferences.getArchiveServerURLs();
         for (int i=0; i<urls.length; ++i)
         {
             if (urls[i].length() > 0)
