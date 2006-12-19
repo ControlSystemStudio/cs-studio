@@ -75,7 +75,6 @@ public class EpicsPlugin extends AbstractCssUiPlugin
     @Override
 	protected void doStart(BundleContext context) throws Exception 
     {
-    	
     	/* Still broken:
     	Eclipse magically locates the JCA JNI library as long as it's
 		placed under <plugin>/os/<os>/<arch>,
@@ -102,8 +101,6 @@ public class EpicsPlugin extends AbstractCssUiPlugin
 	    The only way around:
 	    Set environment variables LD_LIBRARY_PATH (Linux)
 	    or DYLD_LIBRARY_PATH (OS X) to <plugin>/os/<os>/<arch>.
-	    
-	    ...
 	     */
     	
         final String jni_target = JNITargetArch.getTargetArch();
