@@ -28,8 +28,8 @@ public class URLListEditor extends ListEditor
     protected String getNewInputObject()
     {
         InputDialog dialog = new InputDialog(getShell(),
-                        "Archive Server URLs",
-                        "Enter Archive Server URL",
+                        Messages.URLInput_Title,
+                        Messages.URLInput_Message,
                         last_url, null);
         if (dialog.open() != InputDialog.OK)
             return null;

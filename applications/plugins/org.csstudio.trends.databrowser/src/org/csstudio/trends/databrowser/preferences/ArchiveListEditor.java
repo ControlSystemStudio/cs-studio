@@ -1,6 +1,5 @@
 package org.csstudio.trends.databrowser.preferences;
 
-import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -22,7 +21,7 @@ public class ArchiveListEditor extends ListEditor
             IArchiveDataSource archive = Preferences.parseArchiveDataSource(text);
             if (archive != null)
                 return null;
-            return "Format has to match 'name|key|url'";
+            return Messages.ArchiveFormatMessage;
         }
     };
 
@@ -32,7 +31,7 @@ public class ArchiveListEditor extends ListEditor
      */
     public ArchiveListEditor(String name, Composite parent)
     {
-        init(name, "Default Archives for new PVs:");
+        init(name, Messages.Label_Archives);
         createControl(parent);
     }
     
@@ -42,8 +41,8 @@ public class ArchiveListEditor extends ListEditor
     protected String getNewInputObject()
     {
         InputDialog dialog = new InputDialog(getShell(),
-                        "Default Archives",
-                        "Enter Archive Server URL",
+                        Messages.ArchiveInputTitle,
+                        Messages.ArchiveInputMessage,
                         last_archive, validator);
         if (dialog.open() != InputDialog.OK)
             return null;
