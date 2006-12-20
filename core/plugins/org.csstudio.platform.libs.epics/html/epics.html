@@ -15,14 +15,20 @@ There are two main items to configure:
 <li>JCA Context:<br>
     There is a pure Java as well as a JNI implementation
     available.
-    The pure Java version is easier to install and should
+    The pure Java version is the default because it is
+    easier to install and should
     work "out of the box", while the JNI implementation
     might provide maximum compatibility with existing
     EPICS installations.
 <li>addr_list and auto_addr_list:<br>
-    Unless all CA servers (IOCs) are on the same subnet
-    as the CSS application, you need to list the IP addresses
-    of IOCs or IOC subnets, and un-check the auto_addr_list.
+    If all CA servers (IOCs) are on the same subnet
+    as the computer running the CSS application,
+    you can stay with the default: Empty addr_list,
+    using auto_addr_list.
+    Otherwise, if you need to access PVs on a gateway or
+    in another subnet, list the IP addresses
+    of IOCs or IOC subnets in the addr_list,
+    and un-check the auto_addr_list.
     For details on this as well as the remaining settings,
     refer to the EPICS Channel Access reference manual.
 </ul>
@@ -38,9 +44,9 @@ To use the JNI version, you need to install OS-specific binaries.
 This plugin currently includes binaries for:
 <ul>
 <li>RedHat Linux (x86, g++ 3.4.4, kernel 2.6.9-22.EL)
-<li>Mac OS X (PPC)
+<li>Mac OS X (10.4.8 on PPC)
 </ul>
-To install them, you need to locate the org.csstudio.platform.libs.epics
+Locate the org.csstudio.platform.libs.epics
 plugin file in the "plugin" subdirectory of your Eclipse installation.
 Unzip it, and install the shared libraries from
 the "os/..." subdirectory for your architecture,
@@ -50,18 +56,17 @@ OS searches by default ("/lib" on Linux or OS X),
 or copy them to a location of your choice
 like "$HOME/lib" and then list that location in
 the environment variable LD_LIBRARY_PATH,
-DYNLIB_LIBRARY_PATH (OS X) or PATH (Windows).
-
-<h2>References</h2>
-The CAJ and JCA sources as well as more details are available from 
-<a href="http://www.cosylab.com">http://www.cosylab.com</a>.
+DYLD_LIBRARY_PATH (OS X) or PATH (Windows).
 
 <h2>Release Notes</h2>
-The JCA JNI binaries were built from the jca-2.3.0 sources,
-with all DetachCurrentThread() calls in JNI.cpp commented out.
-This had to be done to avoid a memory leak in DetachCurrentThread(),
-but is obviously not perfect, since these DetachCurrentThread() calls
-were originally added for a reason.
+<ul>
+<li>2006, Dec 20<br>
+The JCA JNI binaries were built with EPICS base R3.14.8.2 from the jca-2.3.0 sources.
+Those sources had all DetachCurrentThread() calls in JNI.cpp commented out
+to avoid a JVM memory leak.
+The CAJ and JCA sources as well as more details are available from 
+<a href="http://www.cosylab.com">http://www.cosylab.com</a>.
+</ul>
 
 </body>
 </html>
