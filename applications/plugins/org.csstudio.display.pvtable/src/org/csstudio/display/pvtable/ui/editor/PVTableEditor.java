@@ -10,6 +10,7 @@ import org.csstudio.display.pvtable.model.PVListEntry;
 import org.csstudio.display.pvtable.model.PVListModel;
 import org.csstudio.display.pvtable.model.PVListModelListener;
 import org.csstudio.display.pvtable.ui.PVTableViewerHelper;
+import org.csstudio.platform.ui.workbench.FileEditorInput;
 import org.csstudio.util.editor.EmptyEditorInput;
 import org.csstudio.util.editor.PromptForNewXMLFileDialog;
 import org.eclipse.core.resources.IFile;
@@ -28,7 +29,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.ui.part.FileEditorInput;
 
 /** EditorPart for the PV Table
  * 
@@ -135,16 +135,22 @@ public class PVTableEditor extends EditorPart
         // resource API, since otherwise one keeps converting between those
         // two APIs anyway, plus runs into errors with 'resources' being
         // out of sync....
-    
-        // IEditorInput happens to come as IPathEditorInput, which
-        // only has the file system 'location' via getPath(),
-        // and not the workspace-relative path.
-        // Resource gymnastics: Convert file system 'location'...
-        IPath location = ((IPathEditorInput) input).getPath();
-        // .. into file inside the workspace.
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IFile file = root.getFileForLocation(location);
-        return file;
+        if (input instanceof FileEditorInput)
+            return ((FileEditorInput)input).getFile();
+        if (input instanceof IPathEditorInput)
+        {   // IEditorInput happens to come as IPathEditorInput, which
+            // only has the file system 'location' via getPath(),
+            // and not the workspace-relative path.
+            // Resource gymnastics: Convert file system 'location'...
+            IPath location = ((IPathEditorInput) input).getPath();
+            // .. into file inside the workspace.
+            IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+            IFile file = root.getFileForLocation(location);
+            return file;
+        }
+        Plugin.logError("PVTableEditor.getEditorInputFile got " //$NON-NLS-1$
+                        + input.getClass().getName());
+        return null;
     }
 
     @Override

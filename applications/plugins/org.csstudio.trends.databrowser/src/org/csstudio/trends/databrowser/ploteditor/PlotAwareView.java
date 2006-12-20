@@ -1,9 +1,11 @@
 package org.csstudio.trends.databrowser.ploteditor;
 
+import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.part.ViewPart;
 
@@ -58,12 +60,18 @@ public abstract class PlotAwareView extends ViewPart
         part_listener = new IPartListener2()
         {
             // Remember the editor when activated...
+            @SuppressWarnings("nls")
             public void partActivated(IWorkbenchPartReference ref)
             {
                 if (ref.getId().equals(PlotEditor.ID))
                 {
                     //System.out.println("Activate " + ref.getPartName());
-                    updateEditor((PlotEditor) ref.getPart(false));
+                    final IWorkbenchPart part = ref.getPart(false);
+                    if (part instanceof PlotEditor)
+                        updateEditor((PlotEditor) part);
+                    else
+                        Plugin.logError("PlotAwareView: expected PlotEditor, " +
+                                        "got " + part.getClass().getName());
                 }
             }
             // ... until another one gets activated, or the current one closes.

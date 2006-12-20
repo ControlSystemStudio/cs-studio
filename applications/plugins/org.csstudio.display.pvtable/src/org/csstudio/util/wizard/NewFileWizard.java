@@ -22,9 +22,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -44,22 +42,24 @@ import org.eclipse.ui.PlatformUI;
  */
 public class NewFileWizard extends Wizard implements INewWizard
 {
-    private String title, default_filename, default_content;
+    private final String plugin_id;
+    private final String editor_ID;
+    private final String title, default_filename, default_content;
     
     private NewFileWizardPage page;
 
     private ISelection selection;
-    private String plugin_id;
 
     /** Constructor
      *  @param title The title and "Create new ... file" text piece.
      *  @param default_contents Initial XML content for new files.
      */
-    public NewFileWizard(Plugin plugin, String title,
+    public NewFileWizard(Plugin plugin, String editor_ID, String title,
             String default_filename, String default_content)
     {
         super();
         plugin_id = plugin.getBundle().getSymbolicName();
+        this.editor_ID = editor_ID;
         this.title = title;
         this.default_filename = default_filename;
         this.default_content = default_content;
@@ -161,20 +161,31 @@ public class NewFileWizard extends Wizard implements INewWizard
         {
             public void run()
             {
-                // Code based on email from Alexander Will,
-                // replacing the IDE dependency IDE.openEditor(...)
                 try
                 {
+                    IWorkbenchPage page = PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow().getActivePage();
+
+                    // This works, but adds an IDE dependency
+                    //IDE.openEditor(page, file, true);
+
+                    // Code based on email from Alexander Will,
+                    // replacing the IDE dependency IDE.openEditor(...)
+                    // Instead of the correct editor based on
+                    // cregistered content types,
+                    // it always gets a Text Editor.
+                    /*
                     IEditorInput editorInput = new FileEditorInput(file);
                     IEditorRegistry editorRegistry =
                             PlatformUI.getWorkbench().getEditorRegistry();
                     IEditorDescriptor descriptor =
                             editorRegistry.getDefaultEditor(file.getName());
-                    if (descriptor != null && editorInput != null)
+                    if (descriptor == null || editorInput == null)
                         throw new Exception(Messages.NoEditorFound);
-                    IWorkbenchPage page = PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getActivePage();
                     page.openEditor(editorInput, descriptor.getId());
+                    */
+                    IEditorInput editorInput = new FileEditorInput(file);
+                    page.openEditor(editorInput, editor_ID, true);
                 }
                 catch (Exception e)
                 {

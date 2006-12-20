@@ -174,16 +174,22 @@ public class PlotEditor extends EditorPart
         // resource API, since otherwise one keeps converting between those
         // two APIs anyway, plus runs into errors with 'resources' being
         // out of sync....
-
-        // IEditorInput happens to come as IPathEditorInput, which
-        // only has the file system 'location' via getPath(),
-        // and not the workspace-relative path.
-        // Resource gymnastics: Convert file system 'location'...
-        IPath location = ((IPathEditorInput) input).getPath();
-        // .. into file inside the workspace.
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IFile file = root.getFileForLocation(location);
-        return file;
+        if (input instanceof FileEditorInput)
+            return ((FileEditorInput)input).getFile();
+        if (input instanceof IPathEditorInput)
+        {   // IEditorInput happens to come as IPathEditorInput, which
+            // only has the file system 'location' via getPath(),
+            // and not the workspace-relative path.
+            // Resource gymnastics: Convert file system 'location'...
+            IPath location = ((IPathEditorInput) input).getPath();
+            // .. into file inside the workspace.
+            IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+            IFile file = root.getFileForLocation(location);
+            return file;
+        }
+        Plugin.logError("PlotEditor.getEditorInputFile got " //$NON-NLS-1$
+                        + input.getClass().getName());
+        return null;
     }
 
     @Override
