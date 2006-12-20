@@ -43,8 +43,13 @@ no additional steps should be required.
 To use the JNI version, you need to install OS-specific binaries.
 This plugin currently includes binaries for:
 <ul>
-<li>RedHat Linux (x86, g++ 3.4.4, kernel 2.6.9-22.EL)
-<li>Mac OS X (10.4.8 on PPC)
+<li>RedHat Linux (x86, g++ 3.4.4, kernel 2.6.9-22.EL)<br>
+    Build 2006, Dec 20 with EPICS base R3.14.7 from the jca-2.3.0 sources.
+    R3.14.8.2 resulted in error messages related to
+    "exception during virtual circuit creation"
+    after closing all channels and then trying to create new ones.
+<li>Mac OS X (10.4.8 on PPC)<br>
+    Build 2006, Dec 20 with EPICS base R3.14.8.2 from the jca-2.3.0 sources.
 </ul>
 Locate the org.csstudio.platform.libs.epics
 plugin file in the "plugin" subdirectory of your Eclipse installation.
@@ -57,13 +62,7 @@ or copy them to a location of your choice
 like "$HOME/lib" and then list that location in
 the environment variable LD_LIBRARY_PATH,
 DYLD_LIBRARY_PATH (OS X) or PATH (Windows).
-
-<h2>Release Notes</h2>
-<ul>
-<li>2006, Dec 20<br>
-The JCA JNI binaries were built with EPICS base R3.14.7 from the jca-2.3.0 sources.
-Those sources had all DetachCurrentThread() calls in JNI.cpp commented out
-to avoid a JVM memory leak.
+<p>
 The CAJ and JCA sources as well as more details are available from 
 <a href="http://www.cosylab.com">http://www.cosylab.com</a>.
 </ul>
