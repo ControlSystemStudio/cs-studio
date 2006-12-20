@@ -23,11 +23,23 @@ public final class RefreshableRectangle extends RectangleFigure implements
 	 */
 	private double _fill = 100.0;
 
+	@Override
+	public synchronized void repaint() {
+		// TODO Auto-generated method stub
+		super.repaint();
+	}
+
+	@Override
+	public synchronized void revalidate() {
+		// TODO Auto-generated method stub
+		super.revalidate();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void fillShape(final Graphics graphics) {
+	protected synchronized void fillShape(final Graphics graphics) {
 		Rectangle bounds = getBounds();
 
 		int newW = (int) Math.round(bounds.width * (getFill() / 100));

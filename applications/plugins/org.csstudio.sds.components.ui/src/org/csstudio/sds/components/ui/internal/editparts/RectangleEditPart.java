@@ -35,10 +35,11 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doRefreshFigure(final String propertyName,
+	protected synchronized void doRefreshFigure(final String propertyName,
 			final Object newValue) {
 		RefreshableRectangle rectangle = (RefreshableRectangle) getFigure();
 		setFigureProperties(propertyName, newValue, rectangle);
+		rectangle.revalidate();
 		rectangle.repaint();
 	}
 
