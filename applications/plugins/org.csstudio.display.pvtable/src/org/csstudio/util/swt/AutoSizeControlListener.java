@@ -25,7 +25,8 @@ public class AutoSizeControlListener
 	private Composite container;
 	private Table table;
 
-	public AutoSizeControlListener(Composite container, Table table)
+	@SuppressWarnings("nls")
+    public AutoSizeControlListener(Composite container, Table table)
 	{
 		this.container = container;
 		this.table = table;

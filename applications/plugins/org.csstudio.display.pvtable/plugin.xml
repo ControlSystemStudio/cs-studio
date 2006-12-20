@@ -49,17 +49,6 @@
       </toc>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer class="org.csstudio.display.pvtable.preferences.PreferenceInitializer"/>
-   </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            id="org.csstudio.display.pvtable.preferences.PreferencePage"
-            class="org.csstudio.display.pvtable.preferences.SamplePreferencePage"
-            name="%PVTablePrefs"/>
-   </extension>
-   <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"

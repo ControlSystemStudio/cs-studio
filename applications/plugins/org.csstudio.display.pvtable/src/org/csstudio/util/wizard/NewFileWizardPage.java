@@ -49,9 +49,9 @@ public class NewFileWizardPage extends WizardPage
     public NewFileWizardPage(String title, String default_filename, 
             ISelection selection)
     {
-        super("wizardPage");
+        super("wizardPage"); //$NON-NLS-1$
         setTitle(title);
-        setDescription("Create a new " + title + " file.");
+        setDescription(Messages.CreateNew___ + title + Messages.___TypeFile);
         this.default_filename = default_filename;
         this.selection = selection;
     }
@@ -65,7 +65,7 @@ public class NewFileWizardPage extends WizardPage
         layout.numColumns = 3;
         layout.verticalSpacing = 9;
         Label label = new Label(container, SWT.NULL);
-        label.setText("&Parent folder:");
+        label.setText(Messages.Folder);
 
         ModifyListener runDialogChanged = new ModifyListener()
         {
@@ -82,7 +82,7 @@ public class NewFileWizardPage extends WizardPage
 
         Button button;
         button = new Button(container, SWT.PUSH);
-        button.setText("Browse...");
+        button.setText(Messages.Browse);
         button.addSelectionListener(new SelectionAdapter()
         {
             public void widgetSelected(SelectionEvent e)
@@ -92,7 +92,7 @@ public class NewFileWizardPage extends WizardPage
         });
 
         label = new Label(container, SWT.NULL);
-        label.setText("&File name:");
+        label.setText(Messages.Filename);
 
         fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
         gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -100,7 +100,7 @@ public class NewFileWizardPage extends WizardPage
         fileText.addModifyListener(runDialogChanged);
 
         button = new Button(container, SWT.PUSH);
-        button.setText("Open...");
+        button.setText(Messages.Open);
         button.addSelectionListener(new SelectionAdapter()
         {
             public void widgetSelected(SelectionEvent e)
@@ -144,7 +144,7 @@ public class NewFileWizardPage extends WizardPage
     {
         ContainerSelectionDialog dialog = new ContainerSelectionDialog(
                 getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
-                "Select new file container");
+                Messages.SelectFolder);
         if (dialog.open() != ContainerSelectionDialog.OK)
             return;
         Object[] result = dialog.getResult();
@@ -157,7 +157,8 @@ public class NewFileWizardPage extends WizardPage
     /** Get an existing file name. */
     private void handleOpen()
     {
-        // TODO: Use FileDialog?
+        // TODO IDE dependency to remove?
+        // Use FileDialog?
         // The problem with that:
         // How to restrict it to the files in the workspace,
         // or how to handle files outside of the workspace.
@@ -166,7 +167,7 @@ public class NewFileWizardPage extends WizardPage
         ResourceSelectionDialog dialog
             = new ResourceSelectionDialog(getShell(),
                     ResourcesPlugin.getWorkspace().getRoot(),
-                    "Select file");
+                    Messages.SelectFile);
             if (dialog.open() != ResourceSelectionDialog.OK)
             return;
         Object results[] = dialog.getResult();
@@ -189,37 +190,37 @@ public class NewFileWizardPage extends WizardPage
 
         if (getContainerName().length() == 0)
         {
-            updateStatus("File container must be specified");
+            updateStatus(Messages.NoFolderSelected);
             return;
         }
         if (container == null
                 || (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0)
         {
-            updateStatus("File container must exist");
+            updateStatus(Messages.FolderNotFound);
             return;
         }
         if (!container.isAccessible())
         {
-            updateStatus("Project must be writable");
+            updateStatus(Messages.ReadonlyProject);
             return;
         }
         if (fileName.length() == 0)
         {
-            updateStatus("File name must be specified");
+            updateStatus(Messages.NoFilenameSelected);
             return;
         }
         if (fileName.replace('\\', '/').indexOf('/', 1) > 0)
         {
-            updateStatus("File name must be valid");
+            updateStatus(Messages.InvalidFilename);
             return;
         }
         int dotLoc = fileName.lastIndexOf('.');
         if (dotLoc != -1)
         {
             String ext = fileName.substring(dotLoc + 1);
-            if (ext.equalsIgnoreCase("xml") == false)
+            if (ext.equalsIgnoreCase("xml") == false) //$NON-NLS-1$
             {
-                updateStatus("File extension must be \"xml\"");
+                updateStatus(Messages.NeedXML);
                 return;
             }
         }
