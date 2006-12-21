@@ -19,9 +19,6 @@ import org.csstudio.trends.databrowser.sampleview.SampleView;
 import org.csstudio.util.editor.EmptyEditorInput;
 import org.csstudio.util.editor.PromptForNewXMLFileDialog;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -32,7 +29,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
@@ -161,7 +157,11 @@ public class PlotEditor extends EditorPart
         model.addListener(listener);
     }
     
-    /** @return Returns the <code>IFile</code> for the current editor input. */
+    /** @return Returns the <code>IFile</code> for the current editor input.
+     *  The file is 'relative' to the workspace, not 'absolute' in the
+     *  file system. However, the file might be a linked resource to a
+     *  file that physically resides outside of the workspace tree.
+     */
     private IFile getEditorInputFile()
     {  
         IEditorInput input = getEditorInput();
@@ -173,21 +173,11 @@ public class PlotEditor extends EditorPart
         // java.io.file, I found it best to give up and use the Eclipse
         // resource API, since otherwise one keeps converting between those
         // two APIs anyway, plus runs into errors with 'resources' being
-        // out of sync....
-        if (input instanceof FileEditorInput)
-            return ((FileEditorInput)input).getFile();
-        if (input instanceof IPathEditorInput)
-        {   // IEditorInput happens to come as IPathEditorInput, which
-            // only has the file system 'location' via getPath(),
-            // and not the workspace-relative path.
-            // Resource gymnastics: Convert file system 'location'...
-            IPath location = ((IPathEditorInput) input).getPath();
-            // .. into file inside the workspace.
-            IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            IFile file = root.getFileForLocation(location);
+        // out of sync....        
+        IFile file = (IFile) input.getAdapter(IFile.class);
+        if (file != null)
             return file;
-        }
-        Plugin.logError("PlotEditor.getEditorInputFile got " //$NON-NLS-1$
+        Plugin.logError("getEditorInputFile got " //$NON-NLS-1$
                         + input.getClass().getName());
         return null;
     }
