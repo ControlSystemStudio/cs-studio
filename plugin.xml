@@ -9,10 +9,6 @@
             name="%prefPageTitle"/>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer class="org.csstudio.platform.libs.epics.preferences.PreferenceInitializer"/>
-   </extension>
-   <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
