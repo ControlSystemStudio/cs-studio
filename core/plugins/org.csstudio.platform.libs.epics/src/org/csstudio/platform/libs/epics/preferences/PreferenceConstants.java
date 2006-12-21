@@ -34,19 +34,8 @@ public class PreferenceConstants
 			"auto_addr_list",
 			"conn_tmo", 
 			"beacon_period",
-			"reapeter_port",
+			"repeater_port",
 			"server_port",
 			"max_array_bytes" 
-	};
-	
-	public static String[] defaults = new String[]{
-            "true",
-			"",
-			"true",
-			"30.0",
-			"15.0",
-			"5065",
-			"5064",
-			"16384"
 	};
 }
