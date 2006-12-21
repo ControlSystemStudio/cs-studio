@@ -43,7 +43,7 @@ public class SavedValue
     /** Save the current value of the PV into this SavedValue. */
     public void readFromPV(PV pv)
     {
-        if (pv == null)
+        if (pv == null  ||  ! pv.isConnected())
         {
             saved = null;
             return;
@@ -59,7 +59,7 @@ public class SavedValue
     /** Restore this SavedValue to the given PV. */
     public void restoreToPV(PV pv)
     {
-        if (pv != null && saved != null)
+        if (pv != null && saved != null  &&  pv.isConnected())
             pv.setValue(saved);
     }
     
