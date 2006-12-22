@@ -65,7 +65,7 @@ public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ImageDescriptor getImageDescriptor(Object object) {
+	public ImageDescriptor getImageDescriptor(final Object object) {
 		ImageDescriptor result = null;
 		// return the icon from the editor registry or a default icon, if none such exists
 		if(object instanceof IFile) {
