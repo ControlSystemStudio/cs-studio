@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.csstudio.utility.ldap.preference.PreferencePage"
+            id="org.csstudio.utility.ldap.preference.PreferencePage"
+            name="LDAP"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.utility.ldap.preference.PreferenceInitializer"/>
+   </extension>
+
+</plugin>
