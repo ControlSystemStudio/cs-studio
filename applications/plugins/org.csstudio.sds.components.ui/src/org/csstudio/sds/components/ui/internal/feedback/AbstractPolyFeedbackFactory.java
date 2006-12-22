@@ -6,10 +6,8 @@ import java.util.List;
 import org.csstudio.sds.components.internal.model.AbstractPolyElement;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.feedback.IGraphicalFeedbackFactory;
-import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;
-import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.PointList;
@@ -26,22 +24,33 @@ import org.eclipse.gef.requests.CreateRequest;
  * 
  * @author Sven Wende
  */
-public abstract class AbstractPolyFeedbackFactory implements
+abstract class AbstractPolyFeedbackFactory implements
 		IGraphicalFeedbackFactory {
+	/**
+	 * An identifier which is used as key for extended data in request objects.
+	 */
+	public static final String PROP_POINTS = "points";
+
+	/**
+	 * Subclasses should return an appropriate feedback figure. This basically
+	 * supports code inheritance for the polyline and polygon implementations.
+	 * 
+	 * @return a polyline or polygon figure which is used for graphical feedback
+	 */
 	protected abstract Polyline createFeedbackFigure();
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IFigure createDragSourceFeedbackFigure(
+	public final IFigure createDragSourceFeedbackFigure(
 			final AbstractElementModel model, final Rectangle initalBounds) {
 		assert model != null;
 		assert model instanceof AbstractPolyElement : "model instanceof AbstractPolyElement"; //$NON-NLS-1$
 		assert initalBounds != null;
 
 		// get the points from the model
-		AbstractPolyElement AbstractPolyElement = (AbstractPolyElement) model;
-		PointList points = AbstractPolyElement.getPoints();
+		AbstractPolyElement abstractPolyElement = (AbstractPolyElement) model;
+		PointList points = abstractPolyElement.getPoints();
 
 		// create feedbackfigure
 		// RectangleWithPolyLineFigure r = new
@@ -49,16 +58,16 @@ public abstract class AbstractPolyFeedbackFactory implements
 
 		PolyFeedbackFigureWithRectangle feedbackFigure = new PolyFeedbackFigureWithRectangle(
 				createFeedbackFigure(), points);
-		
+
 		return feedbackFigure;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void showChangeBoundsFeedback(final AbstractElementModel model,
-			final PrecisionRectangle bounds, final IFigure feedbackFigure,
-			final ChangeBoundsRequest request) {
+	public final void showChangeBoundsFeedback(
+			final AbstractElementModel model, final PrecisionRectangle bounds,
+			final IFigure feedbackFigure, final ChangeBoundsRequest request) {
 		assert model != null;
 		assert model instanceof AbstractPolyElement : "model instanceof AbstractPolyElement"; //$NON-NLS-1$
 		assert bounds != null;
@@ -72,7 +81,8 @@ public abstract class AbstractPolyFeedbackFactory implements
 
 		// try to get a point list from the request (this happens only, when
 		// poly point handles are dragged arround)
-		PointList points = (PointList) request.getExtendedData().get("points");
+		PointList points = (PointList) request.getExtendedData().get(
+				PROP_POINTS);
 
 		// otherwise take the points from the model
 		if (points == null) {
@@ -91,7 +101,8 @@ public abstract class AbstractPolyFeedbackFactory implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public Shape createSizeOnDropFeedback(final CreateRequest createRequest) {
+	public final Shape createSizeOnDropFeedback(
+			final CreateRequest createRequest) {
 		assert createRequest != null;
 
 		// Polyline polyline = new Polyline();
@@ -99,7 +110,7 @@ public abstract class AbstractPolyFeedbackFactory implements
 		// the request should contain a point list, because the creation is done
 		// by a special creation tool
 		PointList points = (PointList) createRequest.getExtendedData().get(
-				"points");
+				PROP_POINTS);
 
 		assert points != null;
 
@@ -107,14 +118,14 @@ public abstract class AbstractPolyFeedbackFactory implements
 
 		Polyline feedbackFigure = createFeedbackFigure();
 		feedbackFigure.setPoints(points);
-		
+
 		return feedbackFigure;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void showSizeOnDropFeedback(final CreateRequest createRequest,
+	public final void showSizeOnDropFeedback(final CreateRequest createRequest,
 			final IFigure feedbackFigure, final Insets insets) {
 		assert createRequest != null;
 		assert feedbackFigure instanceof Polyline : "feedbackFigure instanceof Polyline";
@@ -123,7 +134,7 @@ public abstract class AbstractPolyFeedbackFactory implements
 		// the request should contain a point list, because the creation is done
 		// by a special creation tool
 		PointList points = ((PointList) createRequest.getExtendedData().get(
-				"points")).getCopy();
+				PROP_POINTS)).getCopy();
 
 		assert points != null;
 
@@ -138,44 +149,47 @@ public abstract class AbstractPolyFeedbackFactory implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public Class getCreationTool() {
+	public final Class getCreationTool() {
 		return PointListCreationTool.class;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Command createInitialBoundsCommand(
+	public final Command createInitialBoundsCommand(
 			final AbstractElementModel elementModel,
 			final CreateRequest request, final Rectangle bounds) {
 		assert elementModel instanceof AbstractPolyElement : "modelElement instanceof AbstractPolyElement"; //$NON-NLS-1$
 		assert request != null;
 		assert bounds != null;
 
-		AbstractPolyElement AbstractPolyElement = (AbstractPolyElement) elementModel;
+		AbstractPolyElement abstractPolyElement = (AbstractPolyElement) elementModel;
 
-		PointList points = (PointList) request.getExtendedData().get("points");
+		PointList points = (PointList) request.getExtendedData().get(
+				PROP_POINTS);
 		assert points != null;
 
 		// the points are viewer relative and need to be translated to the
 		// specified bounds, to reflect zoom level, scrollbar occurence etc.
 		PointList scaledPoints = PointListHelper.scaleTo(points, bounds);
 
-		return new ChangePolyPointsCommand(AbstractPolyElement, scaledPoints);
+		return new ChangePolyPointsCommand(abstractPolyElement, scaledPoints);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Command createChangeBoundsCommand(final AbstractElementModel model,
+	public final Command createChangeBoundsCommand(
+			final AbstractElementModel model,
 			final ChangeBoundsRequest request, final Rectangle targetBounds) {
 		assert model instanceof AbstractPolyElement : "model instanceof AbstractPolyElement"; //$NON-NLS-1$
 
-		AbstractPolyElement AbstractPolyElement = (AbstractPolyElement) model;
+		AbstractPolyElement abstractPolyElement = (AbstractPolyElement) model;
 
 		// try to get a point list from the request (this happens only, when
 		// poly point handles are dragged arround)
-		PointList points = (PointList) request.getExtendedData().get("points");
+		PointList points = (PointList) request.getExtendedData().get(
+				PROP_POINTS);
 
 		// otherwise take the points from the model
 		if (points == null) {
@@ -188,13 +202,13 @@ public abstract class AbstractPolyFeedbackFactory implements
 		// specified bounds, to reflect zoom level, scrollbar occurence etc.
 		points = PointListHelper.scaleTo(points, targetBounds);
 
-		return new ChangePolyPointsCommand(AbstractPolyElement, points);
+		return new ChangePolyPointsCommand(abstractPolyElement, points);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<Handle> createCustomHandles(final GraphicalEditPart hostEP) {
+	public final List<Handle> createCustomHandles(final GraphicalEditPart hostEP) {
 		assert hostEP != null;
 		assert hostEP.getModel() instanceof AbstractPolyElement : "hostEP.getModel() instanceof AbstractPolyElement"; //$NON-NLS-1$
 
@@ -202,10 +216,10 @@ public abstract class AbstractPolyFeedbackFactory implements
 		// single points of the polyline
 		List<Handle> handles = new ArrayList<Handle>();
 
-		AbstractPolyElement AbstractPolyElement = (AbstractPolyElement) hostEP
+		AbstractPolyElement abstractPolyElement = (AbstractPolyElement) hostEP
 				.getModel();
 
-		int pointCount = AbstractPolyElement.getPoints().size();
+		int pointCount = abstractPolyElement.getPoints().size();
 
 		for (int i = 0; i < pointCount; i++) {
 			PolyPointHandle myHandle = new PolyPointHandle(hostEP, i);
@@ -214,62 +228,5 @@ public abstract class AbstractPolyFeedbackFactory implements
 
 		return handles;
 	}
-
-	// /**
-	// * Custom feedback figure for polyglines. The figure shows a rectangle,
-	// * which does also include the shape of the polyline.
-	// *
-	// * @author Sven Wende
-	// *
-	// */
-	// class RectangleWithPolyLineFigure extends RectangleFigure {
-	// /**
-	// * The "included" polyline.
-	// */
-	// private Polyline _polyLine;
-	//
-	// /**
-	// * Constructor.
-	// *
-	// * @param points
-	// * the polygon points
-	// */
-	// public RectangleWithPolyLineFigure(final PointList points) {
-	// _polyLine = new Polyline();
-	// add(_polyLine);
-	// setPoints(points);
-	// }
-	//
-	// /**
-	// * Gets the point list for the polyline part of this figure.
-	// *
-	// * @return a point list
-	// */
-	// public PointList getPoints() {
-	// return _polyLine.getPoints();
-	// }
-	//
-	// /**
-	// * Sets the point list for the polyline part.
-	// *
-	// * @param points
-	// * the point list
-	// */
-	// public void setPoints(final PointList points) {
-	// _polyLine.setPoints(points);
-	// setBounds(points.getBounds());
-	// }
-	//
-	// /**
-	// * {@inheritDoc}
-	// */
-	// @Override
-	// public void paint(final Graphics graphics) {
-	// // enable tranparency
-	// graphics.setAlpha(120);
-	// super.paint(graphics);
-	// }
-	//
-	// }
 
 }

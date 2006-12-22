@@ -10,7 +10,6 @@ import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
-import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.requests.CreateRequest;
@@ -127,15 +126,6 @@ public final class PointListCreationTool extends TargetingTool {
 	 */
 	protected CreationFactory getFactory() {
 		return _factory;
-	}
-
-	private Point getAbsoluteLocation() {
-		Point p = getLocation().getCopy();
-		if (getTargetEditPart() != null) {
-			((GraphicalEditPart) getTargetEditPart()).getFigure()
-					.translateToRelative(p);
-		}
-		return p;
 	}
 
 	/**
@@ -259,11 +249,8 @@ public final class PointListCreationTool extends TargetingTool {
 	protected boolean handleMove() {
 
 		if (_points.size() > 0) {
-			Point p = getLocation().getCopy();
-
-			// ** SNAP
+			// snap
 			PrecisionPoint location = getSnapedLocation();
-			// **
 
 			// update the last point in the list to update the graphical
 			// feedback
@@ -278,6 +265,10 @@ public final class PointListCreationTool extends TargetingTool {
 		return true;
 	}
 
+	/**
+	 * Gets the "snapped" location based on the current location of the mouse.
+	 * @return the point of the snapped location
+	 */
 	private PrecisionPoint getSnapedLocation() {
 		CreateRequest req = getCreateRequest();
 		PrecisionPoint location = new PrecisionPoint(getLocation().x,
@@ -349,7 +340,7 @@ public final class PointListCreationTool extends TargetingTool {
 			Rectangle bounds = _points.getBounds();
 			req.setSize(bounds.getSize());
 			req.setLocation(bounds.getLocation());
-			req.getExtendedData().put("points", _points);
+			req.getExtendedData().put(AbstractPolyFeedbackFactory.PROP_POINTS, _points);
 			// req.getExtendedData().clear();
 			if (!getCurrentInput().isAltKeyDown() && _snap2Helper != null) {
 				PrecisionRectangle baseRect = new PrecisionRectangle(bounds);

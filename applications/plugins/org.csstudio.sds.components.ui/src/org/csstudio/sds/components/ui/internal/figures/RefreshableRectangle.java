@@ -1,8 +1,5 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
-import java.util.Date;
-
-import org.csstudio.sds.dataconnection.StatisticUtil;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.RectangleFigure;
@@ -22,18 +19,6 @@ public final class RefreshableRectangle extends RectangleFigure implements
 	 * The fill grade (0 - 100%).
 	 */
 	private double _fill = 100.0;
-
-	@Override
-	public synchronized void repaint() {
-		// TODO Auto-generated method stub
-		super.repaint();
-	}
-
-	@Override
-	public synchronized void revalidate() {
-		// TODO Auto-generated method stub
-		super.revalidate();
-	}
 
 	/**
 	 * {@inheritDoc}

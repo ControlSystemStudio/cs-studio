@@ -21,8 +21,8 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.model.IElementModelFactory;
 import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.model.IElementModelFactory;
 
 /**
  * This class defines a model element factory for rectangle model elements.

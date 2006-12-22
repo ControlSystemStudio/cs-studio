@@ -21,7 +21,9 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.csstudio.sds.model.AbstractElementModel;
 import org.junit.Before;

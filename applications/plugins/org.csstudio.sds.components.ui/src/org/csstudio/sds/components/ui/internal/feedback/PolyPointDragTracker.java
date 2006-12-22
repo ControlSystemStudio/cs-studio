@@ -94,6 +94,11 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 		return null;
 	}
 
+	/**
+	 * Gets the source bounds of the owners figure.
+	 * 
+	 * @return the source bounds
+	 */
 	protected PrecisionRectangle getSourceBounds() {
 		PrecisionRectangle sourceRect;
 
@@ -127,7 +132,7 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 		PointList points = ((AbstractPolyElement) _owner.getModel())
 				.getPoints();
 
-		request.getExtendedData().put("points", points.getCopy());
+		request.getExtendedData().put(AbstractPolyFeedbackFactory.PROP_POINTS, points.getCopy());
 		request.setType(RequestConstants.REQ_RESIZE);
 
 		_oldPoints = points.getCopy();

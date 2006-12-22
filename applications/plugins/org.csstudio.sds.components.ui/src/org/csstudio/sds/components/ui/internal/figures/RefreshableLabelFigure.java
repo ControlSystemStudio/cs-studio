@@ -1,9 +1,7 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.sds.dataconnection.StatisticUtil;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
-import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
