@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
+
 public class CSSView extends Composite {
 
 	private Composite parent;
@@ -111,6 +112,7 @@ public class CSSView extends Composite {
 	 	});
 	 	list.setLabelProvider(new myLabelProvider());
 	 	list.setContentProvider(new ArrayContentProvider());
+	 	list.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
 
  		try{
  		 	String tmp= selection.split("=")[0]; //$NON-NLS-1$
@@ -153,7 +155,10 @@ public class CSSView extends Composite {
 
 		list.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
+				// TODO: Checken dadurch vermieden werden kann elemente zu höfig anzuklicken
+				parent.setEnabled(false);
 				makeChildren(para);
+				parent.setEnabled(true);
 			}
 		});
 
@@ -184,6 +189,7 @@ public class CSSView extends Composite {
 	private void makeFilterField() {
 		filter = new Text(group,SWT.SINGLE|SWT.BORDER);
 		filter.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
+		filter.setToolTipText(Messages.getString("CSSView_ToolTip1"));
 //		 Eclipse
 		int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
 	 	DropTarget target = new DropTarget(filter, operations);
