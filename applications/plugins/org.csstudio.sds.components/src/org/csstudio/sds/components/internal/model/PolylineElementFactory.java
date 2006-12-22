@@ -23,6 +23,7 @@ package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.IElementModelFactory;
+import org.eclipse.draw2d.geometry.PointList;
 
 /**
  * Model element factory for polyline model elements.
@@ -36,7 +37,16 @@ public final class PolylineElementFactory implements IElementModelFactory {
 	 * {@inheritDoc}
 	 */
 	public AbstractElementModel createElementModel() {
-		return new PolylineElement();
+		PolylineElement polylineElement = new PolylineElement();
+		PointList points = new PointList();
+		points.addPoint(15, 1);
+		points.addPoint(30, 15);
+		points.addPoint(30, 30);
+		points.addPoint(15, 45);
+
+		polylineElement.setPoints(points);
+
+		return polylineElement;
 	}
 
 	/**

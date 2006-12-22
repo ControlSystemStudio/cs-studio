@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.sstudio.sds.feature"
+      id="org.csstudio.sds.feature"
       label="Synoptic Display Studio"
       version="1.0.0">
 
@@ -34,7 +34,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          version="0.0.0"/>
 
    <requires>
-      <import feature="org.csstudio.platform.feature" version="1.0.0"/>
+      <import feature="org.csstudio.platform.feature" version="0.9.1"/>
    </requires>
 
    <plugin

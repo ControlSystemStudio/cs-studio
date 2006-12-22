@@ -41,11 +41,12 @@ public final class PolygonElementFactory implements IElementModelFactory {
 	public AbstractElementModel createElementModel() {
 		PolygonElement polygonElement = new PolygonElement();
 		PointList points = new PointList();
-		points.addPoint(1, 1);
-		points.addPoint(10, 1);
-		points.addPoint(20, 30);
-		points.addPoint(80, 90);
-		points.addPoint(80, 1);
+		points.addPoint(15, 1);
+		points.addPoint(30, 15);
+		points.addPoint(30, 30);
+		points.addPoint(15, 45);
+		points.addPoint(1, 30);
+		points.addPoint(1, 15);
 
 		polygonElement.setPoints(points);
 
