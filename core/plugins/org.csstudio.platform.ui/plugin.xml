@@ -308,6 +308,18 @@
               label="New Folder"
               menubarPath="additions"/>
      </viewerContribution>
+     <viewerContribution
+           id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
+           targetID="org.csstudio.platform.ui.views.WorkspaceExplorerView">
+        <visibility>
+           <objectClass name="org.eclipse.core.resources.IResource"/>
+        </visibility>
+        <action
+              class="org.csstudio.platform.ui.views.DeleteResourceAction"
+              id="org.csstudio.platform.ui.views.DeleteResourceAction"
+              label="Delete Resource"
+              menubarPath="additions"/>
+     </viewerContribution>
   </extension>
 
 </plugin>
