@@ -189,6 +189,11 @@
             icon="icons/containerView.gif"
             id="org.csstudio.platform.ui.internal.developmentsupport.util.ContainerView"
             name="Container View"/>
+     <view
+           class="org.csstudio.platform.ui.views.WorkspaceExplorerView"
+           icon="icons/folder.png"
+           id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
+           name="Workspace Explorer"/>            
    </extension>
    <extension
          id="cssPreferenceCategories"
@@ -264,5 +269,45 @@
             class="org.csstudio.platform.ui.internal.workbench.FileEditorInputFactory"
             id="org.csstudio.platform.ui.internal.workbench.FileEditorInputFactory"/>
    </extension>
+
+  <extension
+        point="org.eclipse.ui.viewActions">
+     <viewContribution
+           id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
+           targetID="org.csstudio.platform.ui.views.WorkspaceExplorerView">
+        <action
+              class="org.csstudio.platform.ui.views.DeleteResourceAction"
+              icon="icons/fileDelete.png"
+              id="org.csstudio.platform.ui.views.DeleteResourceAction"
+              label="Delete Resource"
+              menubarPath="additions"
+              style="push"
+              toolbarPath="additions"/>
+     </viewContribution>
+  </extension>
+  <extension
+        point="org.eclipse.ui.popupMenus">
+     <viewerContribution
+           id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
+           targetID="org.csstudio.platform.ui.views.WorkspaceExplorerView">
+        <action
+              class="org.csstudio.platform.ui.views.CreateProjectAction"
+              id="org.csstudio.platform.ui.views.CreateProjectAction"
+              label="New Project"
+              menubarPath="additions"/>
+     </viewerContribution>
+     <viewerContribution
+           id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
+           targetID="org.csstudio.platform.ui.views.WorkspaceExplorerView">
+        <visibility>
+           <objectClass name="org.eclipse.core.resources.IContainer"/>
+        </visibility>
+        <action
+              class="org.csstudio.platform.ui.views.CreateFolderAction"
+              id="org.csstudio.platform.ui.views.CreateFolderAction"
+              label="New Folder"
+              menubarPath="additions"/>
+     </viewerContribution>
+  </extension>
 
 </plugin>

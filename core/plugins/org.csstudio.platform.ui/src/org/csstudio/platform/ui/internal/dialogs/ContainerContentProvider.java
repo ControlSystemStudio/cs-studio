@@ -24,6 +24,7 @@ package org.csstudio.platform.ui.internal.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -96,8 +97,7 @@ public final class ContainerContentProvider implements ITreeContentProvider {
 					}
 					return children.toArray();
 				} catch (CoreException e) {
-					// this should never happen because we call #isAccessible
-					// before invoking #members
+					CentralLogger.getInstance().error(this, e);
 				}
 			}
 		}
@@ -131,7 +131,8 @@ public final class ContainerContentProvider implements ITreeContentProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
+	public void inputChanged(final Viewer viewer, final Object oldInput,
+			final Object newInput) {
 	}
 
 	/**

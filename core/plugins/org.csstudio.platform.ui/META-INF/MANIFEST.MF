@@ -22,6 +22,7 @@ Export-Package: org.csstudio.platform.ui,
  org.csstudio.platform.ui.internal.dataexchange,
  org.csstudio.platform.ui.security,
  org.csstudio.platform.ui.util,
+ org.csstudio.platform.ui.views,
  org.csstudio.platform.ui.wizards,
  org.csstudio.platform.ui.workbench
 Bundle-Activator: org.csstudio.platform.ui.CSSPlatformUiPlugin

@@ -23,6 +23,7 @@ package org.csstudio.platform.ui.dialogs;
 
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.internal.dialogs.ResourceAndContainerGroup;
+import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -105,7 +106,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
 	 */
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
-		shell.setText("Save As");
+		shell.setText(Messages.getString("SaveAsDialog.TITLE")); //$NON-NLS-1$
 	}
 
 	/**
@@ -118,8 +119,8 @@ public final class SaveAsDialog extends TitleAreaDialog {
 		initializeControls();
 		validatePage();
 		_resourceGroup.setFocus();
-		setTitle("Save As");
-		setMessage("Save file to another location.");
+		setTitle(Messages.getString("SaveAsDialog.TITLE")); //$NON-NLS-1$
+		setMessage(Messages.getString("SaveAsDialog.MESSAGE")); //$NON-NLS-1$
 
 		return contents;
 	}
@@ -159,7 +160,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
 		};
 
 		_resourceGroup = new ResourceAndContainerGroup(composite, listener,
-				"&File name:", "file");
+				Messages.getString("SaveAsDialog.FILE_LABEL"), Messages.getString("SaveAsDialog.FILE")); //$NON-NLS-1$ //$NON-NLS-2$
 		_resourceGroup.setAllowExistingResources(true);
 
 		return parentComposite;
@@ -223,9 +224,9 @@ public final class SaveAsDialog extends TitleAreaDialog {
 					IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL };
 			String question = NLS
 					.bind(
-							"The file ''{0}'' already exists. Do you want to replace the existing file?",
+							Messages.getString("SaveAsDialog.OVERWRITE_QUESTION"), //$NON-NLS-1$
 							path.toOSString());
-			MessageDialog d = new MessageDialog(getShell(), "Question", null,
+			MessageDialog d = new MessageDialog(getShell(), Messages.getString("SaveAsDialog.QUESTION"), null, //$NON-NLS-1$
 					question, MessageDialog.QUESTION, buttons, 0);
 			int overwrite = d.open();
 			switch (overwrite) {

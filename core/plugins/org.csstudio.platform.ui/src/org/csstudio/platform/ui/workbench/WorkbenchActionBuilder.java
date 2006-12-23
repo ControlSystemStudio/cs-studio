@@ -22,6 +22,7 @@
 package org.csstudio.platform.ui.workbench;
 
 import org.csstudio.platform.ui.internal.localization.Messages;
+import org.csstudio.platform.ui.internal.workspace.OpenWorkspaceAction;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -96,6 +97,11 @@ public final class WorkbenchActionBuilder {
 	 * A special "new" action for the tool bar.
 	 */
 	private IWorkbenchAction _newWizardToolbarAction;
+	
+	/**
+	 * "Switch workspace" action.
+	 */
+	private IWorkbenchAction _openWorkspaceAction;
 
 	/**
 	 * Constructs a new action builder which contributes actions to the given
@@ -287,6 +293,10 @@ public final class WorkbenchActionBuilder {
 		if (_newWizardToolbarAction != null) {
 			_newWizardToolbarAction.dispose();
 		}
+		
+		if (_openWorkspaceAction != null) {
+			_openWorkspaceAction.dispose();
+		}
 	}
 
 	/**
@@ -328,6 +338,22 @@ public final class WorkbenchActionBuilder {
 			_introAction = ActionFactory.INTRO.create(_window);
 			registerGlobalAction(_introAction);
 		}
+		
+		// switch workspace action
+		ActionFactory f = new ActionFactory("openWorkspace") { //$NON-NLS-1$
+			@Override
+			public IWorkbenchAction create(final IWorkbenchWindow window) {
+				if (window == null) {
+					throw new IllegalArgumentException();
+				}
+				IWorkbenchAction action = new OpenWorkspaceAction(window);
+				action.setId(getId());
+				return action;
+			}
+		};
+
+		_openWorkspaceAction = f.create(_window);
+		registerGlobalAction(_openWorkspaceAction);
 	}
 
 	/**

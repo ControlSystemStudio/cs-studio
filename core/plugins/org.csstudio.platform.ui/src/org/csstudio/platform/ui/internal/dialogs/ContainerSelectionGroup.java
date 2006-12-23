@@ -24,6 +24,7 @@ package org.csstudio.platform.ui.internal.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -167,7 +168,7 @@ public final class ContainerSelectionGroup extends Composite {
 		if (message != null) {
 			createContents(message, heightHint, widthHint);
 		} else {
-			createContents("Select the folder:", heightHint, widthHint);
+			createContents(Messages.getString("ContainerSelectionGroup.TITLE"), heightHint, widthHint); //$NON-NLS-1$
 		}
 	}
 

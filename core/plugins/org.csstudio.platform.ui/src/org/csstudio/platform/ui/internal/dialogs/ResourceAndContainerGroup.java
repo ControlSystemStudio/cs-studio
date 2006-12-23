@@ -21,6 +21,7 @@
  */
 package org.csstudio.platform.ui.internal.dialogs;
 
+import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -109,7 +110,7 @@ public final class ResourceAndContainerGroup implements Listener {
 	/**
 	 * Resource type (file, folder, project).
 	 */
-	private String _resourceType = "resource";
+	private String _resourceType = "resource"; //$NON-NLS-1$
 
 	/**
 	 * Show closed projects in the tree, by default.
@@ -407,7 +408,8 @@ public final class ResourceAndContainerGroup implements Listener {
 		IPath path = _containerGroup.getContainerFullPath();
 		if (path == null) {
 			_problemType = PROBLEM_CONTAINER_EMPTY;
-			_problemMessage = "The folder is empty.";
+			_problemMessage = Messages
+					.getString("ResourceAndContainerGroup.PROBLEM_EMPTY"); //$NON-NLS-1$
 			return false;
 		}
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -415,7 +417,8 @@ public final class ResourceAndContainerGroup implements Listener {
 		if (projectName == null
 				|| !workspace.getRoot().getProject(projectName).exists()) {
 			_problemType = PROBLEM_PROJECT_DOES_NOT_EXIST;
-			_problemMessage = "The specified project does not exist.";
+			_problemMessage = Messages
+					.getString("ResourceAndContainerGroup.PROBLEM_DOES_NOT_EXIST"); //$NON-NLS-1$
 			return false;
 		}
 		// path is invalid if any prefix is occupied by a file
@@ -423,9 +426,11 @@ public final class ResourceAndContainerGroup implements Listener {
 		while (path.segmentCount() > 1) {
 			if (root.getFile(path).exists()) {
 				_problemType = PROBLEM_PATH_OCCUPIED;
-				_problemMessage = NLS.bind(
-						"A file already exists at that location: {0}.", path
-								.makeRelative());
+				_problemMessage = NLS
+						.bind(
+								Messages
+										.getString("ResourceAndContainerGroup.PROBLEM_FILE_ALREADY_EXISTS_AT_LOCATION"), path //$NON-NLS-1$
+										.makeRelative());
 				return false;
 			}
 			path = path.removeLastSegments(1);
@@ -483,7 +488,8 @@ public final class ResourceAndContainerGroup implements Listener {
 				&& (workspace.getRoot().getFolder(resourcePath).exists() || workspace
 						.getRoot().getFile(resourcePath).exists())) {
 			_problemType = PROBLEM_RESOURCE_EXIST;
-			_problemMessage = "The same name already exists.";
+			_problemMessage = Messages
+					.getString("ResourceAndContainerGroup.PROBLEM_FILE_ALREADY_EXISTS"); //$NON-NLS-1$
 			return false;
 		}
 		return true;
@@ -502,15 +508,19 @@ public final class ResourceAndContainerGroup implements Listener {
 
 		if (resourceName.equals("")) {//$NON-NLS-1$
 			_problemType = PROBLEM_RESOURCE_EMPTY;
-			_problemMessage = NLS.bind("The ''{0}'' name is empty.",
+			_problemMessage = NLS.bind(Messages
+					.getString("ResourceAndContainerGroup.PROBLEM_EMPTY_NAME"), //$NON-NLS-1$
 					_resourceType);
 			return false;
 		}
 
 		if (!(new Path("")).isValidPath(resourceName)) { //$NON-NLS-1$
 			_problemType = PROBLEM_NAME_INVALID;
-			_problemMessage = NLS.bind("''{0}'' is not a valid file name.",
-					resourceName);
+			_problemMessage = NLS
+					.bind(
+							Messages
+									.getString("ResourceAndContainerGroup.PROBLEM_INVALID_FILE_NAME"), //$NON-NLS-1$
+							resourceName);
 			return false;
 		}
 		return true;
@@ -524,7 +534,7 @@ public final class ResourceAndContainerGroup implements Listener {
 	private String getResourceNameWithExtension() {
 		String result = _resourceNameField.getText();
 
-		if (_fileExtension.length() > 0) {
+		if ((_fileExtension != null) && (_fileExtension.length() > 0)) {
 			result = result + "." + _fileExtension; //$NON-NLS-1$
 		}
 

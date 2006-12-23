@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 import org.csstudio.platform.ui.internal.dialogs.ResourceAndContainerGroup;
+import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -131,13 +132,16 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 		// IIDEHelpContextIds.NEW_FILE_WIZARD_PAGE);
 
 		// resource and container group
-		_resourceGroup = new ResourceAndContainerGroup(topLevel, this,
-				getNewFileLabel(), "file", false, 250);
-		
+		_resourceGroup = new ResourceAndContainerGroup(
+				topLevel,
+				this,
+				getNewFileLabel(),
+				Messages.getString("WizardNewFileCreationPage.LABEL_FILE"), false, 250); //$NON-NLS-1$
+
 		if (getFileExtension() != null) {
 			_resourceGroup.setFileExtension(getFileExtension());
 		}
-		
+
 		_resourceGroup.setAllowExistingResources(false);
 		initialPopulateContainerNameField();
 		if (_initialFileName != null) {
@@ -247,8 +251,11 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 		try {
 			createFile(newFileHandle, initialContents);
 		} catch (CoreException e) {
-			ErrorDialog.openError(getContainer().getShell(),
-					"Creation Problems", null, e.getStatus());
+			ErrorDialog
+					.openError(
+							getContainer().getShell(),
+							Messages
+									.getString("WizardNewFileCreationPage.ERROR_TITLE"), null, e.getStatus()); //$NON-NLS-1$
 
 			newFileHandle = null;
 		}
@@ -306,13 +313,16 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 	 *         component group
 	 */
 	protected String getNewFileLabel() {
-		return "File na&me:";
+		return Messages.getString("WizardNewFileCreationPage.LABEL_FILE_NAME"); //$NON-NLS-1$
 	}
 
 	/**
 	 * The <code>WizardNewFileCreationPage</code> implementation of this
 	 * <code>Listener</code> method handles all events and enablements for
 	 * controls on this page. Subclasses may extend.
+	 * 
+	 * @param event
+	 *            The event to handle.
 	 */
 	public void handleEvent(final Event event) {
 		setPageComplete(validatePage());
