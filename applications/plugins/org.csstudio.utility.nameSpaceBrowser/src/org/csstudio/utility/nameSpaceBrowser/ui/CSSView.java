@@ -47,9 +47,21 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
+/***
+ *
+ * @author Helge Rickens
+ *
+ * CSSView is a NameSpaceBrowser View-Elemet.
+ * Composed of
+ *  - A Grpup with name of "Type"
+ *  - A Filter: Textfield [filter]
+ *  - A List of Elemets
+ *    - is the Elemet a IProzessVariuable
+ *
+ *
+ */
 
 public class CSSView extends Composite {
-
 	private Composite parent;
 	private Group group;
 	private final ListViewer list;
@@ -239,6 +251,12 @@ public class CSSView extends Composite {
 		});
 	}
 
+	/*****************************
+	 *
+	 * @param list
+	 * Fill the list with ProcessVariable or ControlSystemItem
+	 *
+	 */
 	private void fillItemList(String[] list) {
 		if(list==null) return;
 		itemList = new LinkedHashMap<String, ControlSystemItem>();
@@ -251,6 +269,7 @@ public class CSSView extends Composite {
 
 		for(int i=0;i<list.length;i++){
 			String saubereListe = list[i];
+			// Delete "-Chars that add from LDAP-Reader when the result contains special character
 			if(saubereListe.startsWith("\"")){ //$NON-NLS-1$
 				if(saubereListe.endsWith("\"")) //$NON-NLS-1$
 					saubereListe = saubereListe.substring(1,saubereListe.length()-1);
@@ -279,6 +298,7 @@ public class CSSView extends Composite {
 		}
 	}
 
+	// make a new CSSView Children
 	protected void makeChildren(CSSViewParameter parameter) {
 		parent.setRedraw(false);
 
@@ -320,6 +340,7 @@ public class CSSView extends Composite {
 	}
 
 	@Override
+	// dispose self and Children
 	public void dispose() {
 		if(haveChildern){
 			haveChildern =false;
@@ -334,6 +355,7 @@ public class CSSView extends Composite {
 
 	}
 
+	// Make the MB3 ContextMenu
 	private void makeContextMenu() {
 		MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 		Control contr = list.getControl();
@@ -355,6 +377,8 @@ public class CSSView extends Composite {
 		contr.setMenu(menu);
 		site.registerContextMenu(manager, list);
 	}
+
+	// Setzt den Defaultfilter für IProzessVariablen
 	public void setDefaultFilter(String defaultPVFilter) {
 		this.defaultPVFilter = defaultPVFilter;
 		if(!para.newCSSView)
