@@ -7,12 +7,6 @@ public class ProcessVariable implements IProcessVariable {
 	private String name;
 	private String[] path;
 
-
-//	public ProcessVariable(String name) {
-//		this.name = name;
-//		this.path = "";
-//	}
-
 	public ProcessVariable(String name, String[] path) {
 		this.name = name;
 		this.path = path;

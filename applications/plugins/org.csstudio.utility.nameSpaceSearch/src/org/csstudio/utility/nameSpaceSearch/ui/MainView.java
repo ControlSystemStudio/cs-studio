@@ -1,9 +1,7 @@
 package org.csstudio.utility.nameSpaceSearch.ui;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
@@ -35,15 +33,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -55,14 +49,16 @@ public class MainView extends ViewPart {
 	public static final String ID = MainView.class.getName();
 	private Text searchText;
 	private TableViewer ergebnissTableView;
-	private int lastSort;
+//	private int lastSort;
 	private boolean lastSortBackward;
 	private int[] sorts = {0,0,0};
 	private Image up;
 	private Image down;
+	private HashMap<String, String> headline = new HashMap<String, String>();
 
 	class myTableLabelProvider implements ITableLabelProvider{
 
+		// No Image
 		public Image getColumnImage(Object element, int columnIndex) {return null;}
 
 		public String getColumnText(Object element, int columnIndex) {
@@ -109,7 +105,17 @@ public class MainView extends ViewPart {
 
 	}
 
-	public MainView() {	}
+//	public MainView() {	}
+	/***************************************************************************
+	 *
+	 * Make the Plugin UI
+	 * - A Textfield for the Searchword [searchText]
+	 * - A Pushbutton to start search [serachButton]
+	 * - A resulttable to view the resulte [ergebnissTable]
+	 *   - Header as Button to Sort the table
+	 *   - D&D/MB3 function on a row
+	 *
+	 ***************************************************************************/
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -117,23 +123,22 @@ public class MainView extends ViewPart {
 		up = new Image(parent.getDisplay(),"c://tmp//up.gif");
 		down = new Image(parent.getDisplay(),"c://tmp//down.gif");
 		searchText = makeSearchField(parent);
+
 		Button serachButton = new Button(parent,SWT.PUSH);
 		serachButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
 		serachButton.setFont(new Font(parent.getDisplay(),"SimSun",10,SWT.NONE));
 		serachButton.setText(Messages.getString("MainView_searchButton")); //$NON-NLS-1$
 
-//		Label l = new Label(parent,SWT.NONE);
 		ergebnissTableView = new TableViewer(parent,SWT.SINGLE|SWT.FULL_SELECTION);
 
 		Table ergebnissTable = ergebnissTableView.getTable();
 		ergebnissTable.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
 		ergebnissTable.setLinesVisible (true);
 		ergebnissTable.setHeaderVisible (true);
+
 		ergebnissTableView.setContentProvider(new myContentProvider());
 		ergebnissTableView.setLabelProvider(new myTableLabelProvider());
-//		ergebnissTableView.setSorter(new ViewerSorter(){
-//
-//		});
+
 		serachButton.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent e) {
@@ -156,7 +161,7 @@ public class MainView extends ViewPart {
 
 		});
 
-		// Make List Drageble
+		// Make Table row Drageble
 		new ProcessVariableDragSource(ergebnissTableView.getControl(), ergebnissTableView);
 		// MB3
 		makeContextMenu();
@@ -174,6 +179,16 @@ public class MainView extends ViewPart {
 		searchText.setText(search);
 		search(ergebnissTableView, search);
 	}
+
+	/***************************************************************************
+	 *
+	 * @param search
+	 * - Clear the resulttable
+	 * - start a LDAP search
+	 * - fill the  resulttable
+	 *   - first step generate the tableheadbuttons for sort the table
+	 *
+	 ***************************************************************************/
 	protected void search(final TableViewer ergebnissTable, String search) {
 //		ArrayList<ArrayList<IControlSystemItem>> tableElements = new ArrayList<ArrayList<IControlSystemItem>>();
 		ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
@@ -181,12 +196,14 @@ public class MainView extends ViewPart {
 //		ergebnissTable.getTable().dispose();
 		ergebnissTable.getTable().clearAll();
 		LDAPReader ldapr = new LDAPReader("ou=EpicsControls","eren="+search); //$NON-NLS-1$ //$NON-NLS-2$
-		HashMap<String, String> headline = new HashMap<String, String>();
-		headline.put("efan", Messages.getString("MainView_facility")); //$NON-NLS-1$ //$NON-NLS-2$
-		headline.put("ecom", Messages.getString("MainView_ecom")); //$NON-NLS-1$ //$NON-NLS-2$
-		headline.put("econ", Messages.getString("MainView_Controller")); //$NON-NLS-1$ //$NON-NLS-2$
-		headline.put("eren", Messages.getString("MainView_Record")); //$NON-NLS-1$ //$NON-NLS-2$
+		if(headline.isEmpty()){
+			headline.put("efan", Messages.getString("MainView_facility")); //$NON-NLS-1$ //$NON-NLS-2$
+			headline.put("ecom", Messages.getString("MainView_ecom")); //$NON-NLS-1$ //$NON-NLS-2$
+			headline.put("econ", Messages.getString("MainView_Controller")); //$NON-NLS-1$ //$NON-NLS-2$
+			headline.put("eren", Messages.getString("MainView_Record")); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		String[] list = ldapr.getStringArray();
+
 		// Versuch das Image auf die rechte Seite zu bekommen.
 //		System.out.println(new File(".").getAbsoluteFile());
 //		Listener paintListener = new Listener() {
@@ -292,6 +309,10 @@ public class MainView extends ViewPart {
 		 ergebnissTable.setInput(tableElements);
 	}
 
+	/*****************************************************************************
+	 * Make the MB3-ContextMenu
+	 *
+	 */
 	private void makeContextMenu() {
 		MenuManager manager = new MenuManager("#PopupMenu");
 		Control contr = ergebnissTableView.getControl();
@@ -320,11 +341,18 @@ public class MainView extends ViewPart {
 		contr.setMenu(menu);
 		getSite().registerContextMenu(manager, ergebnissTableView);
 	}
-
+	/***
+	 *
+	 * - Make the searchtext
+	 *   - Layout
+	 *   - Dropsource
+	 *
+	 * @return
+	 */
 	private Text makeSearchField(Composite parent) {
 			searchText = new Text(parent,SWT.BORDER|SWT.SINGLE);
 			searchText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
-			searchText.setText("*b_ai"); //$NON-NLS-1$
+			searchText.setText("*"); //$NON-NLS-1$
 			searchText.setToolTipText(Messages.getString("MainView_ToolTip"));
 
 			//	 Eclipse

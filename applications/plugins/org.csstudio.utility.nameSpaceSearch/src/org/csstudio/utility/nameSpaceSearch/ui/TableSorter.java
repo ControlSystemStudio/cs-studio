@@ -3,8 +3,6 @@ package org.csstudio.utility.nameSpaceSearch.ui;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-import com.sun.org.apache.bcel.internal.generic.LSTORE;
-
 public class TableSorter extends ViewerSorter {
 	private int spalte;
 	private boolean backward;
@@ -17,7 +15,7 @@ public class TableSorter extends ViewerSorter {
 		this.lastSort = lastSort;
 		this.lastSortBackward = lastSortBackward;
 	}
-
+	// Sort a table at the last two selected tableheader
 	public int compare(Viewer viewer, Object o1, Object o2) {
 		if (o1 instanceof ProcessVariable&&o2 instanceof ProcessVariable) {
 			ProcessVariable vp1 = (ProcessVariable) o1;

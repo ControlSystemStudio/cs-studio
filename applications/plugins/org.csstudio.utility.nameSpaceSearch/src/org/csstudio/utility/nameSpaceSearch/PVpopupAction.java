@@ -10,9 +10,6 @@ import org.eclipse.ui.PlatformUI;
 
 public class PVpopupAction extends ProcessVariablePopupAction{
 
-//	public PVpopupAction() {
-//		// TODO Auto-generated constructor stub
-//	}
 	public void handlePVs(IProcessVariable pv_names[])
     {
         if (pv_names.length < 1)
@@ -22,10 +19,9 @@ public class PVpopupAction extends ProcessVariablePopupAction{
         IWorkbenchPage page = window.getActivePage();
         try
         {
-        	System.out.println("Rufe Fenster");
+//        	System.out.println("Rufe Fenster");
             MainView view = (MainView) page.showView(MainView.ID);
             view.startSearch(pv_names[0].getName());
-//            view.setDefaultPVFilter(pv_names[0].getName());
         }
         catch (Exception e)
         {
