@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.csstudio.utility.pv,
  org.csstudio.archive,
- org.csstudio.platform,
- org.eclipse.ui.ide
+ org.csstudio.platform
 Eclipse-LazyStart: true
 Bundle-Vendor: Kay Kasemir
