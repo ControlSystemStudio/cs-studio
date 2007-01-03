@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
-import org.csstudio.display.pvtable.Plugin;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.workbench.FileEditorInput;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -13,13 +13,14 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IEditorInput;
@@ -48,7 +49,7 @@ public class NewFileWizard extends Wizard implements INewWizard
     
     private NewFileWizardPage page;
 
-    private ISelection selection;
+    private IStructuredSelection selection;
 
     /** Constructor
      *  @param title The title and "Create new ... file" text piece.
@@ -86,7 +87,7 @@ public class NewFileWizard extends Wizard implements INewWizard
      */
     public boolean performFinish()
     {
-        final String containerName = page.getContainerName();
+        final IPath container = page.getContainerFullPath();
         final String fileName = page.getFileName();
         IRunnableWithProgress op = new IRunnableWithProgress()
         {
@@ -95,7 +96,7 @@ public class NewFileWizard extends Wizard implements INewWizard
             {
                 try
                 {
-                    doFinish(containerName, fileName, monitor);
+                    doFinish(container, fileName, monitor);
                 }
                 catch (CoreException e)
                 {
@@ -129,16 +130,16 @@ public class NewFileWizard extends Wizard implements INewWizard
      *  or just replace its contents, and open the editor on the newly created
      *  file.
      */
-    private void doFinish(String containerName, String fileName,
+    private void doFinish(IPath containerPath, String fileName,
             IProgressMonitor monitor) throws CoreException
     {
         // create a sample file
         monitor.beginTask(Messages.Creating___ + fileName, 2);
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IResource resource = root.findMember(new Path(containerName));
+        IResource resource = root.findMember(containerPath);
         if (!resource.exists() || !(resource instanceof IContainer))
         {
-            throwCoreException(Messages.ContainerNotFound + containerName);
+            throwCoreException(Messages.ContainerNotFound + containerPath);
         }
         IContainer container = (IContainer) resource;
         final IFile file = container.getFile(new Path(fileName));
@@ -189,7 +190,8 @@ public class NewFileWizard extends Wizard implements INewWizard
                 }
                 catch (Exception e)
                 {
-                    Plugin.logException(Messages.CannotOpenEditor, e);
+                    CentralLogger.getInstance().error(this,
+                                    Messages.CannotOpenEditor, e);
                 }
             }
         });

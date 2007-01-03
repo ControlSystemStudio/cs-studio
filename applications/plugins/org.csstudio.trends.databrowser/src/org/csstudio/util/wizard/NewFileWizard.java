@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.workbench.FileEditorInput;
-import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -189,7 +190,8 @@ public class NewFileWizard extends Wizard implements INewWizard
                 }
                 catch (Exception e)
                 {
-                    Plugin.logException(Messages.CannotOpenEditor, e);
+                    CentralLogger.getInstance().error(this,
+                                    Messages.CannotOpenEditor, e);
                 }
             }
         });

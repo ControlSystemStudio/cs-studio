@@ -25,7 +25,6 @@ public class PromptForNewXMLFileDialog
         IPath new_resource_path = null;
         try
         {
-            // This is the IDE's SaveAsDialog
             SaveAsDialog dlg = new SaveAsDialog(shell);
             dlg.setBlockOnOpen(true);
             if (old_file != null)
