@@ -106,4 +106,12 @@ public final class RectangleElement extends AbstractElementModel {
 	public String getDoubleTestProperty() {
 		return PROP_FILL_PERCENTAGE;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getColorTestProperty() {
+		return PROP_FOREGROUND_COLOR;
+	}
 }
