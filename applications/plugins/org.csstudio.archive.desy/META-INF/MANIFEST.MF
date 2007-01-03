@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Desy Plug-in
-Bundle-SymbolicName: org.csstudio.all.desy;singleton:=true
+Bundle-SymbolicName: org.csstudio.archive.desy;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.archive.desy.Activator
 Bundle-Localization: plugin
