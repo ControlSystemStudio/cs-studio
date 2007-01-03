@@ -37,7 +37,6 @@ public class Activator extends AbstractCssPlugin
     protected void doStop(BundleContext context) throws Exception
     {
         plugin = null;
-        super.stop(context);
     }
 
 	/** @return shared instance */
