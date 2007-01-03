@@ -1,0 +1,11 @@
+<body>
+API for accessing archived data.
+<p>
+ArchiveServer is the base for getting at actual data.
+Plugins that provide an ArchiveServer should do this
+by implementing the ArchiveImplementation extension point.
+<p>
+Client code that wants to access archived data should
+use the ArchiveImplementationRegistry to obtain an ArchiveServer
+based on a URL.
+</body>

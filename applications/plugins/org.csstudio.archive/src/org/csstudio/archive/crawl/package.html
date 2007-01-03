@@ -1,0 +1,22 @@
+<body>
+Data crawler with sample-by-sample callbacks.
+<p>
+The basic ArchiveServer interface to the network data server supports
+getting values for one or more channels in various ways.
+However, there are limitations to the amount of data one can
+get "at once".
+Since the amount of memory might be too big when getting
+all channels of interest for e.g. a whole year,
+the data server sets some limit to the 'count' one can request.
+Realistically, it would also take too much time and memory when
+trying to transfer huge requests over the network.
+<p>
+The crawler helps by breaking a "huge" request into batches,
+presenting the user with a stream of samples (via iterators),
+and automatically requesting another batch of samples
+when the samples of the current batch have all been handled.
+<p>
+The user code receives those samples one-by-one, which allows
+things like statistical calculations on a full year of data
+without having to hold that full year of data in memory.
+</body>
