@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Access to ChannelArchiver Data
+Bundle-SymbolicName: org.csstudio.archive.channelarchiver;singleton:=true
+Bundle-Version: 1.0.1
+Bundle-ClassPath: lib/xmlrpc-2.0.1/xmlrpc-2.0.1.jar,
+ lib/commons-codec/commons-codec-1.3.jar,
+ lib/aapi-2.02.jar,
+ .
+Bundle-Localization: plugin
+Bundle-Vendor: Kay Kasemir
+Require-Bundle: org.csstudio.platform;visibility:=reexport,
+ org.csstudio.utility.pv;visibility:=reexport,
+ org.csstudio.archive;visibility:=reexport
