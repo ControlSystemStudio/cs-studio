@@ -8,7 +8,7 @@
 %% Connect to an archive server.
 %  This is the main SNS one:
 url='http://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi';
-server = org.csstudio.archive.channelarchiver.ArchiveServer.getInstance(url);
+server = org.csstudio.archive.channelarchiver.ArchiveServer(url);
 
 % Dump some basic info
 % Note that the command-line completion of the Matlab command window
@@ -108,7 +108,8 @@ server.GET_RAW
 request = server.getRequestType(server.GET_RAW)
 
 %% Get Data
-result = server.getSamples(key, { 'CCL_LLRF:FCM1:cavAmpAvg' }, t0, t1, request, 10);
+count = java.lang.Integer(10);
+result = server.getSamples(key, { 'CCL_LLRF:FCM1:cavAmpAvg' }, t0, t1, request, { count });
 % Always returns an array, one element per channel.
 % Get the first result for the one and only channel we requested:
 result = result(1)
@@ -146,7 +147,7 @@ channels = { 'CCL_LLRF:FCM1:cavAmpAvg', 'CCL_LLRF:FCM2:cavAmpAvg' };
 t0 = org.csstudio.archive.util.TimestampUtil.fromPieces(2006, 1, 18, 10, 18, 0, 0);
 t1 = org.csstudio.archive.util.TimestampUtil.fromPieces(2006, 1, 18, 14, 0, 0, 0);
 request = server.getRequestType(server.GET_RAW);
-result = server.getSamples(key, channels, t0, t1, request, 1000);
+result = server.getSamples(key, channels, t0, t1, request, { java.lang.Integer(1000) });
 %% Extract time and values as matlab date and double vectors for plotting
 samples = result(1).getSamples();
 ccl1_t = [];

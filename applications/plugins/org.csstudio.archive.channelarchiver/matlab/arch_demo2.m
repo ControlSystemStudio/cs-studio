@@ -14,7 +14,7 @@
 %% Connect to an archive server.
 %  This is the main SNS one:
 url='http://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi';
-server = org.csstudio.archive.channelarchiver.ArchiveServer.getInstance(url);
+server = org.csstudio.archive.channelarchiver.ArchiveServer(url);
 
 %% Get archive keys, start/end times
 keys = [ server.getArchiveKey('RF') server.getArchiveKey('RF llrf (last restart)') ]
@@ -28,7 +28,7 @@ t1 = org.csstudio.archive.util.TimestampUtil.fromPieces(2006, 1, 18, 14, 0, 0, 0
 % actually things like 'archive off' markers,
 % indicated by their severity
 servers = [ server server ];
-iter = org.csstudio.archive.crawl.RawSampleIterator(servers, keys, 'CCL_LLRF:FCM1:cavAmpAvg', t0, t1);
+iter = org.csstudio.archive.crawl.RawValueIterator(servers, keys, 'CCL_LLRF:FCM1:cavAmpAvg', t0, t1);
 
 %%
 tim = [];

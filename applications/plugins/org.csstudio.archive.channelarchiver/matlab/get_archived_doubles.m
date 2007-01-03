@@ -12,7 +12,7 @@ function [ tim, val ] = get_archived_doubles(servers, keys, channel, start_time,
 %
 % Example:
 %  url='http://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi';
-%  server = org.csstudio.archive.channelarchiver.ArchiveServer.getInstance(url);
+%  server = org.csstudio.archive.channelarchiver.ArchiveServer(url);
 %  servers = [ server server ];
 %  keys = [ server.getArchiveKey('RF') server.getArchiveKey('RF llrf (last restart)') ];
 %  t0 = org.csstudio.archive.util.TimestampUtil.fromPieces(2006, 10, 24, 0, 0, 0, 0);
@@ -28,8 +28,8 @@ function [ tim, val ] = get_archived_doubles(servers, keys, channel, start_time,
 % and plot the result.
 
 %  Uses the DoubleIterator filter to simplify the loop.
-raw = org.csstudio.archive.crawl.RawSampleIterator(servers, keys, channel, start_time, end_time);
-iter = org.csstudio.archive.crawl.DoubleSampleIterator(raw);
+raw = org.csstudio.archive.crawl.RawValueIterator(servers, keys, channel, start_time, end_time);
+iter = org.csstudio.archive.crawl.DoubleValueIterator(raw);
 tim = [];
 val = [];
 while iter.hasNext() > 0
