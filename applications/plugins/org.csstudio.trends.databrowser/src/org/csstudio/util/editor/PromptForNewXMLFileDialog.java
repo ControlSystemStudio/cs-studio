@@ -1,5 +1,6 @@
 package org.csstudio.util.editor;
 
+import org.csstudio.platform.ui.dialogs.SaveAsDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
