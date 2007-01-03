@@ -2,6 +2,7 @@ package org.csstudio.archive.cache;
 
 import java.util.LinkedList;
 
+import org.csstudio.archive.ArchiveImplementationRegistry;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.trends.databrowser.Plugin;
 
@@ -54,7 +55,7 @@ public class ArchiveCache
         // But the alternative would be to risk multiple concurrent
         // connection attempts, which is overall worse.
         ArchiveServer real_server = 
-            org.csstudio.archive.factory.ArchiveServerFactory.getInstance(url);
+            ArchiveImplementationRegistry.getInstance().getServer(url);
         CachingArchiveServer server = new CachingArchiveServer(real_server);
         server_cache.add(server);
         return server;

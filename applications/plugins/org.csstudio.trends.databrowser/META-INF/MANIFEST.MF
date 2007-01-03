@@ -9,9 +9,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.views,
  org.eclipse.core.resources,
- org.csstudio.utility.pv,
- org.csstudio.archive.channelarchiver,
  org.csstudio.platform.ui,
+ org.csstudio.utility.pv,
+ org.csstudio.archive,
  org.csstudio.platform,
  org.eclipse.ui.ide
 Eclipse-LazyStart: true
