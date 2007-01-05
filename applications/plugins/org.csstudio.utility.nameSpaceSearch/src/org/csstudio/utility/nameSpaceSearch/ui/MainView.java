@@ -195,7 +195,7 @@ public class MainView extends ViewPart {
 		ergebnissTable.getTable().removeAll();
 //		ergebnissTable.getTable().dispose();
 		ergebnissTable.getTable().clearAll();
-		LDAPReader ldapr = new LDAPReader("ou=EpicsControls","eren="+search); //$NON-NLS-1$ //$NON-NLS-2$
+		LDAPReader ldapr = new LDAPReader("ou=EpicsControls","eren="+search+'*'); //$NON-NLS-1$ //$NON-NLS-2$
 		if(headline.isEmpty()){
 			headline.put("efan", Messages.getString("MainView_facility")); //$NON-NLS-1$ //$NON-NLS-2$
 			headline.put("ecom", Messages.getString("MainView_ecom")); //$NON-NLS-1$ //$NON-NLS-2$
