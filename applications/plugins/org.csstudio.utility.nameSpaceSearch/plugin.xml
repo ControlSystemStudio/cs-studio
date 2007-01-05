@@ -4,9 +4,14 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            category="org.csstudio"
             class="org.csstudio.utility.nameSpaceSearch.ui.MainView"
+            icon="icons/LDAPLupe.gif"
             id="org.csstudio.utility.nameSpaceSearch.ui.MainView"
             name="Namespace Search"/>
+      <category
+            id="org.csstudio"
+            name="CSS"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
@@ -16,6 +21,7 @@
             visible="true">
          <action
                class="org.csstudio.utility.nameSpaceSearch.ui.ShowNamespaceSearch"
+               icon="icons/LDAPLupe.gif"
                id="org.csstudio.utility.nameSpaceSearch.action2"
                label="Namespace Search"
                menubarPath="css/utilities/"
@@ -38,6 +44,7 @@
          <action
                class="org.csstudio.utility.nameSpaceSearch.PVpopupAction"
                enablesFor="1"
+               icon="icons/LDAPLupe.gif"
                id="org.csstudio.utility.nameSpaceSearch.PVpopupAction"
                label="Name Space Search"
                menubarPath="org.csstudio.popmenu/content"

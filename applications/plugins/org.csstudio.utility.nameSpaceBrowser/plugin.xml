@@ -6,7 +6,7 @@
       <view
             category="org.csstudio"
             class="org.csstudio.utility.nameSpaceBrowser.ui.MainView"
-            icon="icons/nameSpaceBrowser.gif"
+            icon="icons/LDAPBrowser.gif"
             id="org.csstudio.utility.nameSpaceBrowser.ui.MainView"
             name="Namespace Browser"/>
       <category
@@ -21,7 +21,7 @@
             visible="true">
          <action
                class="org.csstudio.utility.nameSpaceBrowser.ui.ShowNamespaceBrowser"
-               icon="icons/nameSpaceBrowser.gif"
+               icon="icons/LDAPBrowser.gif"
                id="org.csstudio.utility.nameSpaceBrowser.action1"
                label="Namespace Browser"
                menubarPath="css/utilities/"
