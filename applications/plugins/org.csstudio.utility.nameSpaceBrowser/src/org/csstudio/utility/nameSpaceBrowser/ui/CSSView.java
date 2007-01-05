@@ -157,7 +157,7 @@ public class CSSView extends Composite {
 					String name=""; //$NON-NLS-1$
 					if (element instanceof IControlSystemItem)
 						name= ((IControlSystemItem) element).getName();
-					if(search.length()==0||name.toLowerCase().matches(search.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace("?", ".?").toLowerCase())){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
+					if(search.length()==0||name.toLowerCase().matches(search.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace("?", ".?").toLowerCase()+".*")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 						al.add(element);
 					}
 				}
