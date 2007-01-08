@@ -44,6 +44,7 @@
          <action
                class="org.csstudio.utility.nameSpaceBrowser.PVpopupAction"
                enablesFor="1"
+               icon="icons/LDAPBrowser.gif"
                id="org.csstudio.utility.nameSpaceBrowser.PVpopupAction"
                label="Name Space Browser"
                menubarPath="org.csstudio.popmenu/content"
