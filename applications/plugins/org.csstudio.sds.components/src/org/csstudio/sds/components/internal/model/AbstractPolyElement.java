@@ -175,4 +175,23 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 		int newY = points.getBounds().y;
 		super.setLocation(newX, newY);
 	}
+
+	@Override
+	public synchronized void setPropertyValue(String propertyID, Object value) {
+		if (propertyID.equals(AbstractElementModel.PROP_X)
+				&& ((Integer) value != getPoints().getBounds().x)) {
+			setLocation((Integer) value, getY());
+		} else if (propertyID.equals(AbstractElementModel.PROP_Y)
+				&& ((Integer) value != getPoints().getBounds().y)) {
+			setLocation(getX(), (Integer) value);
+		} else if (propertyID.equals(AbstractElementModel.PROP_W)
+				&& ((Integer) value != getPoints().getBounds().width)) {
+			setSize((Integer) value, getHeight());
+		} else if (propertyID.equals(AbstractElementModel.PROP_H)
+				&& ((Integer) value != getPoints().getBounds().height)) {
+			setSize(getWidth(),(Integer) value);
+		} else {
+			super.setPropertyValue(propertyID, value);
+		}
+	}
 }
