@@ -296,7 +296,6 @@ public final class LayoutUtil {
 		layout.marginHeight = 3;
 		layout.marginWidth = 3;
 		group.setLayout(layout);
-		group.setLayoutData(createGridDataForFillingCell());
 		return group;
 	}
 
