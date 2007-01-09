@@ -196,7 +196,7 @@ public class MainView extends ViewPart {
 		search = search.replaceAll("\\*\\**", "*");
 		String filter = "eren="+search;
 		if(search.compareTo("*")!=0)
-			filter.concat("*");
+			filter = filter.concat("*");
 		LDAPReader ldapr = new LDAPReader("ou=EpicsControls",filter); //$NON-NLS-1$ //$NON-NLS-2$
 		if(headline.isEmpty()){
 			headline.put("efan", Messages.getString("MainView_facility")); //$NON-NLS-1$ //$NON-NLS-2$
