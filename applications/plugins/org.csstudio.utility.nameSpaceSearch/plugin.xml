@@ -24,7 +24,7 @@
                icon="icons/LDAPLupe.gif"
                id="org.csstudio.utility.nameSpaceSearch.action2"
                label="Namespace Search"
-               menubarPath="css/utilities/"
+               menubarPath="css/utility/"
                style="push"/>
       </actionSet>
    </extension>

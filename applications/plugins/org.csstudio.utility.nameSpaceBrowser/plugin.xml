@@ -24,7 +24,7 @@
                icon="icons/LDAPBrowser.gif"
                id="org.csstudio.utility.nameSpaceBrowser.action1"
                label="Namespace Browser"
-               menubarPath="css/utilities/"
+               menubarPath="css/utility/"
                style="push"/>
       </actionSet>
    </extension>
