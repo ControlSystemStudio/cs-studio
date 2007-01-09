@@ -190,12 +190,14 @@ public class MainView extends ViewPart {
 	 *
 	 ***************************************************************************/
 	protected void search(final TableViewer ergebnissTable, String search) {
-//		ArrayList<ArrayList<IControlSystemItem>> tableElements = new ArrayList<ArrayList<IControlSystemItem>>();
 		ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
 		ergebnissTable.getTable().removeAll();
-//		ergebnissTable.getTable().dispose();
 		ergebnissTable.getTable().clearAll();
-		LDAPReader ldapr = new LDAPReader("ou=EpicsControls","eren="+search+'*'); //$NON-NLS-1$ //$NON-NLS-2$
+		search = search.replaceAll("\\*\\**", "*");
+		String filter = "eren="+search;
+		if(search.compareTo("*")!=0)
+			filter.concat("*");
+		LDAPReader ldapr = new LDAPReader("ou=EpicsControls",filter); //$NON-NLS-1$ //$NON-NLS-2$
 		if(headline.isEmpty()){
 			headline.put("efan", Messages.getString("MainView_facility")); //$NON-NLS-1$ //$NON-NLS-2$
 			headline.put("ecom", Messages.getString("MainView_ecom")); //$NON-NLS-1$ //$NON-NLS-2$
