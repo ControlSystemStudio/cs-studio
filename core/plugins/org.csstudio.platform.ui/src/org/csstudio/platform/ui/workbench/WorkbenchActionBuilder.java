@@ -97,7 +97,7 @@ public final class WorkbenchActionBuilder {
 	 * A special "new" action for the tool bar.
 	 */
 	private IWorkbenchAction _newWizardToolbarAction;
-	
+
 	/**
 	 * "Switch workspace" action.
 	 */
@@ -225,7 +225,11 @@ public final class WorkbenchActionBuilder {
 		MenuManager menu = new MenuManager(Messages
 				.getString("WorkbenchActionBuilder.MENU_FILE"), //$NON-NLS-1$
 				IWorkbenchActionConstants.M_FILE);
-		menu.add(_newWizardMenuAction);
+		MenuManager newMenu = new MenuManager(Messages
+				.getString("WorkbenchActionBuilder.MENU_FILE_NEW"), //$NON-NLS-1$
+				"file/new"); //$NON-NLS-1$
+		newMenu.add(_newWizardMenuAction);
+		menu.add(newMenu);
 		menu.add(new Separator());
 		menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
 		menu.add(_saveAction);
@@ -293,7 +297,7 @@ public final class WorkbenchActionBuilder {
 		if (_newWizardToolbarAction != null) {
 			_newWizardToolbarAction.dispose();
 		}
-		
+
 		if (_openWorkspaceAction != null) {
 			_openWorkspaceAction.dispose();
 		}
@@ -338,7 +342,7 @@ public final class WorkbenchActionBuilder {
 			_introAction = ActionFactory.INTRO.create(_window);
 			registerGlobalAction(_introAction);
 		}
-		
+
 		// switch workspace action
 		ActionFactory f = new ActionFactory("openWorkspace") { //$NON-NLS-1$
 			@Override
