@@ -102,4 +102,13 @@ public final class LabelElement extends AbstractElementModel {
 	public String getDoubleTestProperty() {
 		return PROP_LABEL;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getColorTestProperty() {
+		return PROP_BACKGROUND_COLOR;
+	}
+	
 }

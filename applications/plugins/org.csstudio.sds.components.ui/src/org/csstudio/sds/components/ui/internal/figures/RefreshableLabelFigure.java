@@ -49,5 +49,4 @@ public final class RefreshableLabelFigure extends Label implements
 	public void setText(final String s) {
 		super.setText(s);
 	}
-
 }
