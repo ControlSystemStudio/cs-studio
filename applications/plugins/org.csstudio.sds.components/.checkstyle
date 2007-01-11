@@ -6,4 +6,7 @@
     <fileset name="Alle" enabled="true" check-config-name="DESY Checkstyle Configuration" local="true">
         <file-match-pattern match-pattern="." include-pattern="true"/>
     </fileset>
+    <filter name="FilesFromPackage" enabled="true">
+        <filter-data value="src/org/csstudio/sds/components/internal/localization"/>
+    </filter>
 </fileset-config>
