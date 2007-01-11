@@ -1,13 +1,27 @@
 package org.csstudio.utility.nameSpaceSearch.ui;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+
+import javax.imageio.stream.FileImageInputStream;
 
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
+import org.csstudio.platform.ui.views.WorkspaceExplorerView;
+import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
 import org.csstudio.utility.ldap.reader.LDAPReader;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -43,6 +57,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.internal.util.BundleUtility;
 import org.eclipse.ui.part.ViewPart;
 
 public class MainView extends ViewPart {
@@ -53,7 +68,9 @@ public class MainView extends ViewPart {
 	private boolean lastSortBackward;
 	private int[] sorts = {0,0,0};
 	private Image up;
+	private Image up_old;
 	private Image down;
+	private Image down_old;
 	private HashMap<String, String> headline = new HashMap<String, String>();
 
 	class myTableLabelProvider implements ITableLabelProvider{
@@ -120,8 +137,67 @@ public class MainView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(2,false));
-		up = new Image(parent.getDisplay(),"c://tmp//up.gif");
-		down = new Image(parent.getDisplay(),"c://tmp//down.gif");
+		URL url = Platform.getBundle(Activator.PLUGIN_ID).getEntry("icons/up.gif");
+		try{
+			System.out.println("V E R 0.10");
+			System.out.println(FileLocator.resolve(url));
+//			URL zielURL = FileLocator.resolve(url);
+//			System.out.println("1");
+			try {
+//				File zielFile = new File(url.toURI());
+////				File zielFile = new File(zielURL.toURI());
+//				System.out.println("2");
+//				InputStream is = new FileInputStream(zielFile);
+//				System.out.println("i");
+//				Image i = new Image(parent.getDisplay(),is);
+
+
+			String zielPath = FileLocator.resolve(url).getPath();//.substring(1);
+			System.out.println(zielPath);
+			System.out.println("if");
+			if(zielPath.startsWith("jar:"))
+				zielPath=zielPath.substring(4);
+			if(zielPath.startsWith("file:"))
+				zielPath=zielPath.substring(5);
+			System.out.println(zielPath);
+			//zielPath=zielPath.replaceAll("/", File.separator);
+			if(zielPath.indexOf("\\")>-1)
+				System.out.println("!!!!!!!!!!");
+			System.out.println("z");
+			zielPath=zielPath.replaceAll("\\\\", "/");
+			System.out.println(zielPath);
+//			up = new Image(parent.getDisplay(),zielPath+"up.gif");
+//			down = new Image(parent.getDisplay(),zielPath+"down.gif");
+			System.out.println("+++++++++++++++++");
+//			System.out.println(zielFile);
+//			System.out.println(zielFile.getAbsolutePath());
+//			System.out.println(i.getBounds());
+//			System.out.println(i.getImageData());
+			System.out.println("+++++++++++++++++");
+//			up = i;
+//			down = i;
+			up = null;
+			down = null;
+
+				try{
+					up_old = new Image(parent.getDisplay(),zielPath+"up_old.gif");
+					down_old = new Image(parent.getDisplay(),zielPath+"down_old.gif");
+				}catch (Exception e){
+					up_old = down_old = null;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}catch (Exception e){
+			System.out.println("pfad nicht gefunden");
+			File p1 = new File("");
+			System.out.println("\t: "+p1.getAbsolutePath());
+			File p2 = new File("icons//");
+			System.out.println("icons//\t: "+p2.getAbsolutePath());
+			up = down = up_old = down_old = null;
+		}
+
 		searchText = makeSearchField(parent);
 
 		Button serachButton = new Button(parent,SWT.PUSH);
@@ -190,6 +266,35 @@ public class MainView extends ViewPart {
 	 *
 	 ***************************************************************************/
 	protected void search(final TableViewer ergebnissTable, String search) {
+		System.out.println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+		String str[] ={"","icons/","/"};
+		for (String string : str) {
+			URL url = Platform.getBundle(Activator.PLUGIN_ID).getResource(string);
+			System.out.println(string+" URL\t:"+url);
+			System.out.println(string+" URL-Path\t:"+url.getPath());
+			try{
+				URL rurl = FileLocator.resolve(url);
+				System.out.println(rurl);
+				System.out.println(rurl.getContent());
+				System.out.println(rurl.getFile());
+				System.out.println(rurl.getPath());
+				System.out.println(rurl.getProtocol());
+				System.out.println(rurl.getQuery());
+				System.out.println(rurl.getRef());
+
+				URL r2url = FileLocator.resolve(rurl);
+				System.out.println(r2url);
+				System.out.println(r2url.getPath());
+				URL r3url = FileLocator.resolve(r2url);
+				System.out.println(r3url);
+				System.out.println(r3url.getPath());
+
+			}catch (Exception e){
+				System.out.println("--- R-URL Exception--");
+			}
+			System.out.println(".............................................");
+		}
+		System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 		ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
 		ergebnissTable.getTable().removeAll();
 		ergebnissTable.getTable().clearAll();
@@ -277,9 +382,9 @@ public class MainView extends ViewPart {
 									sorts[1]=sorts[0];
 									lastSortBackward=backward;
 									if(lastSortBackward)
-										chil[sorts[1]].setImage(new Image(ergebnissTable.getTable().getDisplay(),"c://tmp//down_old.gif"));
+										chil[sorts[1]].setImage(down_old);
 									else
-										chil[sorts[1]].setImage(new Image(ergebnissTable.getTable().getDisplay(),"c://tmp//up_old.gif"));
+										chil[sorts[1]].setImage(up_old);
 								}
 								sorts[0]=spalte;
 								ergebnissTable.setSorter(new TableSorter(sorts[0],backward,sorts[1], lastSortBackward));

@@ -3,28 +3,31 @@
 <plugin>
    <extension
          point="org.eclipse.ui.views">
-      <view
-            category="org.csstudio"
-            class="org.csstudio.utility.nameSpaceBrowser.ui.MainView"
-            icon="icons/LDAPBrowser.gif"
-            id="org.csstudio.utility.nameSpaceBrowser.ui.MainView"
-            name="Namespace Browser"/>
       <category
             id="org.csstudio"
             name="CSS"/>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.utility.nameSpaceBrowser.ui.MainView"
+            icon="icons/LDAPBrowserHover.gif"
+            id="org.csstudio.utility.nameSpaceBrowser.ui.MainView"
+            name="Namespace Browser"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
+            description="Global CSS menu actions"
             id="org.eclipse.csstudio.ui.nameSpaceBrowserAction"
-            label="Name Space Browser Action"
+            label="CSS Action Set"
             visible="true">
          <action
                class="org.csstudio.utility.nameSpaceBrowser.ui.ShowNamespaceBrowser"
-               icon="icons/LDAPBrowser.gif"
+               disabledIcon="icons/LDAPBrowserOff.gif"
+               hoverIcon="icons/LDAPBrowserHover.gif"
+               icon="icons/LDAPBrowserHover.gif"
                id="org.csstudio.utility.nameSpaceBrowser.action1"
                label="Namespace Browser"
-               menubarPath="css/utility/"
+               menubarPath="css/diag/"
                style="push"/>
       </actionSet>
    </extension>
@@ -44,7 +47,7 @@
          <action
                class="org.csstudio.utility.nameSpaceBrowser.PVpopupAction"
                enablesFor="1"
-               icon="icons/LDAPBrowser.gif"
+               icon="icons/LDAPBrowserHover.gif"
                id="org.csstudio.utility.nameSpaceBrowser.PVpopupAction"
                label="Name Space Browser"
                menubarPath="org.csstudio.popmenu/content"
