@@ -52,5 +52,4 @@
                tooltip="Send selected PV to the Name Space Search"/>
       </objectContribution>
    </extension>
-
 </plugin>

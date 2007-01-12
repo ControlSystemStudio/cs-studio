@@ -59,6 +59,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.internal.util.BundleUtility;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.framework.Bundle;
 
 public class MainView extends ViewPart {
 	public static final String ID = MainView.class.getName();
@@ -137,51 +138,29 @@ public class MainView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(2,false));
-		URL url = Platform.getBundle(Activator.PLUGIN_ID).getEntry("icons/up.gif");
 		try{
-			System.out.println("V E R 0.10");
-			System.out.println(FileLocator.resolve(url));
-//			URL zielURL = FileLocator.resolve(url);
-//			System.out.println("1");
+			Bundle b = Platform.getBundle(Activator.PLUGIN_ID);
+			URL urlUp = b.getEntry("icons/up.gif");
+			URL urlUpOld = b.getEntry("icons/up_old.gif");
+			URL urlDown = b.getEntry("icons/down.gif");
+			URL urlDownOld = b.getEntry("icons/down_old.gif");
+			URL zielURLUp = FileLocator.resolve(urlUp);
+			URL zielURLUpOld = FileLocator.resolve(urlUpOld);
+			URL zielURLDown = FileLocator.resolve(urlDown);
+			URL zielURLDownUp = FileLocator.resolve(urlDownOld);
+
+			up=down=up_old = down_old = null;
 			try {
 //				File zielFile = new File(url.toURI());
-////				File zielFile = new File(zielURL.toURI());
-//				System.out.println("2");
+//				File zielFile = new File(zielURL.toURI());
 //				InputStream is = new FileInputStream(zielFile);
-//				System.out.println("i");
-//				Image i = new Image(parent.getDisplay(),is);
-
-
-			String zielPath = FileLocator.resolve(url).getPath();//.substring(1);
-			System.out.println(zielPath);
-			System.out.println("if");
-			if(zielPath.startsWith("jar:"))
-				zielPath=zielPath.substring(4);
-			if(zielPath.startsWith("file:"))
-				zielPath=zielPath.substring(5);
-			System.out.println(zielPath);
-			//zielPath=zielPath.replaceAll("/", File.separator);
-			if(zielPath.indexOf("\\")>-1)
-				System.out.println("!!!!!!!!!!");
-			System.out.println("z");
-			zielPath=zielPath.replaceAll("\\\\", "/");
-			System.out.println(zielPath);
-//			up = new Image(parent.getDisplay(),zielPath+"up.gif");
-//			down = new Image(parent.getDisplay(),zielPath+"down.gif");
-			System.out.println("+++++++++++++++++");
-//			System.out.println(zielFile);
-//			System.out.println(zielFile.getAbsolutePath());
-//			System.out.println(i.getBounds());
-//			System.out.println(i.getImageData());
-			System.out.println("+++++++++++++++++");
-//			up = i;
-//			down = i;
-			up = null;
-			down = null;
+//				Image up = new Image(parent.getDisplay(),is);
+//				...
+//				...
 
 				try{
-					up_old = new Image(parent.getDisplay(),zielPath+"up_old.gif");
-					down_old = new Image(parent.getDisplay(),zielPath+"down_old.gif");
+//					up_old = new Image(parent.getDisplay(),zielPath+"up_old.gif");
+//					down_old = new Image(parent.getDisplay(),zielPath+"down_old.gif");
 				}catch (Exception e){
 					up_old = down_old = null;
 				}
@@ -266,35 +245,6 @@ public class MainView extends ViewPart {
 	 *
 	 ***************************************************************************/
 	protected void search(final TableViewer ergebnissTable, String search) {
-		System.out.println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
-		String str[] ={"","icons/","/"};
-		for (String string : str) {
-			URL url = Platform.getBundle(Activator.PLUGIN_ID).getResource(string);
-			System.out.println(string+" URL\t:"+url);
-			System.out.println(string+" URL-Path\t:"+url.getPath());
-			try{
-				URL rurl = FileLocator.resolve(url);
-				System.out.println(rurl);
-				System.out.println(rurl.getContent());
-				System.out.println(rurl.getFile());
-				System.out.println(rurl.getPath());
-				System.out.println(rurl.getProtocol());
-				System.out.println(rurl.getQuery());
-				System.out.println(rurl.getRef());
-
-				URL r2url = FileLocator.resolve(rurl);
-				System.out.println(r2url);
-				System.out.println(r2url.getPath());
-				URL r3url = FileLocator.resolve(r2url);
-				System.out.println(r3url);
-				System.out.println(r3url.getPath());
-
-			}catch (Exception e){
-				System.out.println("--- R-URL Exception--");
-			}
-			System.out.println(".............................................");
-		}
-		System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 		ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
 		ergebnissTable.getTable().removeAll();
 		ergebnissTable.getTable().clearAll();
@@ -439,7 +389,7 @@ public class MainView extends ViewPart {
 						System.out.println("First is"+((ArrayList)o).get(0));
 
 					}
-					System.out.println("S= "+s);
+//					System.out.println("S= "+s);
 //					list.getList().setSelection(e.y/list.getList().getItemHeight());
 				}
 			}
