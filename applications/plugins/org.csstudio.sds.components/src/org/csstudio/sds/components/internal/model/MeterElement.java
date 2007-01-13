@@ -22,6 +22,7 @@
 package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 
 /**
@@ -138,19 +139,27 @@ public final class MeterElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_INTERVAL1_LOWER_BORDER, "Interval 1 lower border",
-				PropertyTypeRegistry.DOUBLE, INTERVAL1_LOWER_BORDER_DEFAULT);
-		addProperty(PROP_INTERVAL1_UPPER_BORDER, "Interval 1 upper border",
-				PropertyTypeRegistry.DOUBLE, INTERVAL1_UPPER_BORDER_DEFAULT);
-		addProperty(PROP_INTERVAL2_LOWER_BORDER, "Interval 2 lower border",
-				PropertyTypeRegistry.DOUBLE, INTERVAL2_LOWER_BORDER_DEFAULT);
-		addProperty(PROP_INTERVAL2_UPPER_BORDER, "Interval 2 upper border",
-				PropertyTypeRegistry.DOUBLE, INTERVAL2_UPPER_BORDER_DEFAULT);
-		addProperty(PROP_INTERVAL3_LOWER_BORDER, "Interval 3 lower border",
-				PropertyTypeRegistry.DOUBLE, INTERVAL3_LOWER_BORDER_DEFAULT);
-		addProperty(PROP_INTERVAL3_UPPER_BORDER, "Interval 3 upper border",
-				PropertyTypeRegistry.DOUBLE, INTERVAL3_UPPER_BORDER_DEFAULT);
-		addProperty(PROP_VALUE, "value", PropertyTypeRegistry.DOUBLE, VALUE_DEFAULT);
+		addProperty(PROP_INTERVAL1_LOWER_BORDER, PropertyTypeRegistry.DOUBLE,
+				"Interval 1 lower border", PropertyCategory.Display,
+				INTERVAL1_LOWER_BORDER_DEFAULT);
+		addProperty(PROP_INTERVAL1_UPPER_BORDER, PropertyTypeRegistry.DOUBLE,
+				"Interval 1 upper border", PropertyCategory.Display,
+				INTERVAL1_UPPER_BORDER_DEFAULT);
+		addProperty(PROP_INTERVAL2_LOWER_BORDER, PropertyTypeRegistry.DOUBLE,
+				"Interval 2 lower border", PropertyCategory.Display,
+				INTERVAL2_LOWER_BORDER_DEFAULT);
+		addProperty(PROP_INTERVAL2_UPPER_BORDER, PropertyTypeRegistry.DOUBLE,
+				"Interval 2 upper border", PropertyCategory.Display,
+				INTERVAL2_UPPER_BORDER_DEFAULT);
+		addProperty(PROP_INTERVAL3_LOWER_BORDER, PropertyTypeRegistry.DOUBLE,
+				"Interval 3 lower border", PropertyCategory.Display,
+				INTERVAL3_LOWER_BORDER_DEFAULT);
+		addProperty(PROP_INTERVAL3_UPPER_BORDER, PropertyTypeRegistry.DOUBLE,
+				"Interval 3 upper border", PropertyCategory.Display,
+				INTERVAL3_UPPER_BORDER_DEFAULT);
+
+		addProperty(PROP_VALUE, PropertyTypeRegistry.DOUBLE, "value",
+				PropertyCategory.Behaviour, VALUE_DEFAULT);
 	}
 
 	/**

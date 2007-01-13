@@ -13,69 +13,10 @@ public final class Messages extends NLS {
 	 */
 	private static final String BUNDLE_NAME = "org.csstudio.sds.components.internal.localization.messages"; //$NON-NLS-1$
 
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String PolygonElement_BACKGROUND_COLOR;
+	public static String FillGradeProperty;
 
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String RectangleElement_BACKGROUND_COLOR;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String RectangleElement_FILL_GRADE;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String RectangleElement_FOREGROUND_COLOR;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String EllipseElement_BACKGROUND_COLOR;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String EllipseElement_FILL_GRADE;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String EllipseElement_FOREGROUND_COLOR;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String PolyElement_BACKGROUND_COLOR;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String PolyElement_FILL_GRADE;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String PolyElement_FOREGROUND_COLOR;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
 	public static String PolyElement_POINTS;
 
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
-	public static String LabelElement_BACKGROUND_COLOR;
-
-	/**
-	 * PolygonElement_BACKGROUND_COLOR.
-	 */
 	public static String LabelElement_LABEL;
 
 	static {

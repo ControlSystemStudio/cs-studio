@@ -23,8 +23,8 @@ package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.PropertyTypeRegistry;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * This class defines an rectangle model element.
@@ -89,14 +89,9 @@ public final class RectangleElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL_PERCENTAGE, Messages.RectangleElement_FILL_GRADE,
-				PropertyTypeRegistry.DOUBLE, DEFAULT_FILL_GRADE);
-		addProperty(PROP_BACKGROUND_COLOR,
-				Messages.RectangleElement_BACKGROUND_COLOR,
-				PropertyTypeRegistry.COLOR, new RGB(100, 100, 100));
-		addProperty(PROP_FOREGROUND_COLOR,
-				Messages.RectangleElement_FOREGROUND_COLOR,
-				PropertyTypeRegistry.COLOR, new RGB(200, 100, 100));
+		addProperty(PROP_FILL_PERCENTAGE, PropertyTypeRegistry.DOUBLE,
+				Messages.FillGradeProperty,
+				PropertyCategory.Behaviour, DEFAULT_FILL_GRADE);
 	}
 
 	/**

@@ -23,11 +23,11 @@ package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * 
@@ -77,16 +77,12 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 	 */
 	@Override
 	protected final void configureProperties() {
-		addProperty(PROP_POINTS, Messages.PolyElement_POINTS,
-				PropertyTypeRegistry.POINT_LIST, new PointList());
-		addProperty(PROP_FILL_GRADE, Messages.PolyElement_FILL_GRADE,
-				PropertyTypeRegistry.DOUBLE, 100.0);
-		addProperty(PROP_BACKGROUND_COLOR,
-				Messages.PolyElement_BACKGROUND_COLOR,
-				PropertyTypeRegistry.COLOR, new RGB(100, 100, 100));
-		addProperty(PROP_FOREGROUND_COLOR,
-				Messages.PolyElement_FOREGROUND_COLOR,
-				PropertyTypeRegistry.COLOR, new RGB(200, 100, 100));
+		addProperty(PROP_POINTS, PropertyTypeRegistry.POINT_LIST,
+				Messages.PolyElement_POINTS, PropertyCategory.Position,
+				new PointList());
+		addProperty(PROP_FILL_GRADE, PropertyTypeRegistry.DOUBLE,
+				Messages.FillGradeProperty, PropertyCategory.Behaviour,
+				100.0);
 	}
 
 	/**
@@ -180,7 +176,8 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final synchronized void setPropertyValue(final String propertyID, final Object value) {
+	public final synchronized void setPropertyValue(final String propertyID,
+			final Object value) {
 		if (propertyID.equals(AbstractElementModel.PROP_X)
 				&& ((Integer) value != getPoints().getBounds().x)) {
 			setLocation((Integer) value, getY());

@@ -23,10 +23,10 @@ package org.csstudio.sds.components.internal.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * An label model element.
@@ -86,12 +86,9 @@ public final class LabelElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_LABEL, Messages.LabelElement_LABEL,
-				PropertyTypeRegistry.STRING, ""); //$NON-NLS-1$
-		addProperty(PROP_BACKGROUND_COLOR,
-				Messages.LabelElement_BACKGROUND_COLOR, PropertyTypeRegistry.COLOR,
-				new RGB(100, 100, 100));
-		addProperty(PROP_FONT, "Font", PropertyTypeRegistry.FONT, new FontData(
+		addProperty(PROP_LABEL, PropertyTypeRegistry.STRING, Messages.LabelElement_LABEL,
+				PropertyCategory.Display, ""); //$NON-NLS-1$
+		addProperty(PROP_FONT, PropertyTypeRegistry.FONT, "Font", PropertyCategory.Display,  new FontData(
 				"Arial", 8, SWT.NONE)); //$NON-NLS-1$
 	}
 
