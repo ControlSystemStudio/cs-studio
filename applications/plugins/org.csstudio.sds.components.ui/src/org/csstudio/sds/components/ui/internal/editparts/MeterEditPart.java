@@ -2,8 +2,10 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.internal.model.MeterElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * EditPart controller for <code>MeterElement</code> elements.
@@ -48,6 +50,9 @@ public final class MeterEditPart extends AbstractElementEditPart {
 		} else if (propertyName
 				.equals(MeterElement.PROP_INTERVAL3_UPPER_BORDER)) {
 			meter.setInterval3UpperBorder((Double) newValue);
+		} else if (propertyName
+				.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
+			meter.setBackgroundColor((Color) newValue);
 		}
 		meter.repaint();
 
