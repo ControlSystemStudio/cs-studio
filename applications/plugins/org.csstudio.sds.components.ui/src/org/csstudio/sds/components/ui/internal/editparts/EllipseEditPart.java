@@ -1,6 +1,6 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.internal.model.EllipseElement;
+import org.csstudio.sds.components.model.EllipseElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipse;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;

@@ -19,77 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.internal.model;
+package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.PropertyCategory;
-import org.csstudio.sds.model.properties.PropertyTypeRegistry;
+
 
 /**
- * An ellipse model element.
+ * A polygon model element.
  * 
  * @author Sven Wende, Alexander Will
  * @version $Revision$
  * 
  */
-public final class EllipseElement extends AbstractElementModel {
-	/**
-	 * The ID of the fill grade property.
-	 */
-	public static final String PROP_FILL_PERCENTAGE = "ellipse.fillpercentage"; //$NON-NLS-1$
-
+public final class PolygonElement extends AbstractPolyElement {
 	/**
 	 * The ID of this model element.
 	 */
-	public static final String ID = "element.ellipse"; //$NON-NLS-1$
-
-	/**
-	 * The default value of the height property.
-	 */
-	private static final int DEFAULT_HEIGHT = 10;
-
-	/**
-	 * The default value of the width property.
-	 */
-	private static final int DEFAULT_WIDTH = 20;
-
-	/**
-	 * The default value of the fill grade property.
-	 */
-	private static final double DEFAULT_FILL_GRADE = 100.0;
-
-	/**
-	 * Standard constructor.
-	 * 
-	 */
-	public EllipseElement() {
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	}
-
+	public static final String ID = "element.polygon"; //$NON-NLS-1$
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getTypeID() {
 		return ID;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		addProperty(PROP_FILL_PERCENTAGE, PropertyTypeRegistry.DOUBLE,
-				Messages.FillGradeProperty, PropertyCategory.Behaviour,
-				DEFAULT_FILL_GRADE);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDoubleTestProperty() {
-		return PROP_FILL_PERCENTAGE;
 	}
 }

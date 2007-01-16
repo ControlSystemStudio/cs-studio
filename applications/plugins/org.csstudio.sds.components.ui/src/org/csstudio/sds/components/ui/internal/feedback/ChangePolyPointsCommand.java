@@ -1,6 +1,6 @@
 package org.csstudio.sds.components.ui.internal.feedback;
 
-import org.csstudio.sds.components.internal.model.AbstractPolyElement;
+import org.csstudio.sds.components.model.AbstractPolyElement;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.gef.commands.Command;
 

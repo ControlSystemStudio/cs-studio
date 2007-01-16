@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.csstudio.sds.components.model.EllipseElement;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.junit.Before;
 import org.junit.Test;

@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.internal.model;
+package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;

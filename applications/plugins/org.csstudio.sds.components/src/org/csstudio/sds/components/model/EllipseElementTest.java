@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.internal.model;
+package org.csstudio.sds.components.model;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -48,7 +48,7 @@ public final class EllipseElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.EllipseElement#getDoubleTestProperty()}.
+	 * Test method for {@link org.csstudio.sds.components.model.EllipseElement#getDoubleTestProperty()}.
 	 */
 	@Test
 	public void testGetDoubleTestProperty() {
@@ -57,7 +57,7 @@ public final class EllipseElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.EllipseElement#getTypeID()}.
+	 * Test method for {@link org.csstudio.sds.components.model.EllipseElement#getTypeID()}.
 	 */
 	@Test
 	public void testGetTypeID() {

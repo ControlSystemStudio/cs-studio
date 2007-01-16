@@ -13,7 +13,7 @@ public final class Activator extends Plugin {
 	/**
 	 * The plug-in ID.
 	 */
-	public static final String PLUGIN_ID = "org.csstudio.sds.components";
+	public static final String PLUGIN_ID = "org.csstudio.sds.components"; //$NON-NLS-1$
 
 	/**
 	 * The shared instance.

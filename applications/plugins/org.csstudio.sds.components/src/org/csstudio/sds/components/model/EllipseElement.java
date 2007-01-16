@@ -19,57 +19,51 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.internal.model;
+package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.PropertyTypeRegistry;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 
 /**
- * An label model element.
+ * An ellipse model element.
  * 
- * @author Sven Wende & Alexander Will
+ * @author Sven Wende, Alexander Will
  * @version $Revision$
  * 
  */
-public final class LabelElement extends AbstractElementModel {
+public final class EllipseElement extends AbstractElementModel {
 	/**
-	 * The ID of the label property.
+	 * The ID of the fill grade property.
 	 */
-	public static final String PROP_LABEL = "label"; //$NON-NLS-1$
-
-	/**
-	 * The ID of the background color property.
-	 */
-	public static final String PROP_BACKGROUND_COLOR = "color.background"; //$NON-NLS-1$
-
-	/**
-	 * The ID of the font property.
-	 */
-	public static final String PROP_FONT = "font"; //$NON-NLS-1$
+	public static final String PROP_FILL_PERCENTAGE = "ellipse.fillpercentage"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this model element.
 	 */
-	public static final String ID = "element.label"; //$NON-NLS-1$
+	public static final String ID = "element.ellipse"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.
 	 */
-	private static final int DEFAULT_HEIGHT = 20;
+	private static final int DEFAULT_HEIGHT = 10;
 
 	/**
 	 * The default value of the width property.
 	 */
-	private static final int DEFAULT_WIDTH = 80;
+	private static final int DEFAULT_WIDTH = 20;
+
+	/**
+	 * The default value of the fill grade property.
+	 */
+	private static final double DEFAULT_FILL_GRADE = 100.0;
 
 	/**
 	 * Standard constructor.
+	 * 
 	 */
-	public LabelElement() {
+	public EllipseElement() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
@@ -86,10 +80,9 @@ public final class LabelElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_LABEL, PropertyTypeRegistry.STRING, Messages.LabelElement_LABEL,
-				PropertyCategory.Display, ""); //$NON-NLS-1$
-		addProperty(PROP_FONT, PropertyTypeRegistry.FONT, "Font", PropertyCategory.Display,  new FontData(
-				"Arial", 8, SWT.NONE)); //$NON-NLS-1$
+		addProperty(PROP_FILL_PERCENTAGE, PropertyTypeRegistry.DOUBLE,
+				Messages.FillGradeProperty, PropertyCategory.Behaviour,
+				DEFAULT_FILL_GRADE);
 	}
 
 	/**
@@ -97,15 +90,6 @@ public final class LabelElement extends AbstractElementModel {
 	 */
 	@Override
 	public String getDoubleTestProperty() {
-		return PROP_LABEL;
+		return PROP_FILL_PERCENTAGE;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getColorTestProperty() {
-		return PROP_BACKGROUND_COLOR;
-	}
-	
 }

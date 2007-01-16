@@ -1,6 +1,6 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.internal.model.LabelElement;
+import org.csstudio.sds.components.model.LabelElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;

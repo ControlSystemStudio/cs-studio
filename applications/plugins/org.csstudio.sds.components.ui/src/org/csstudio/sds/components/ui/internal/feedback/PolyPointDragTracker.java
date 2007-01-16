@@ -1,6 +1,6 @@
 package org.csstudio.sds.components.ui.internal.feedback;
 
-import org.csstudio.sds.components.internal.model.AbstractPolyElement;
+import org.csstudio.sds.components.model.AbstractPolyElement;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;

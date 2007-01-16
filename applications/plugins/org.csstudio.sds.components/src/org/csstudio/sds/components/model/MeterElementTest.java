@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.internal.model;
+package org.csstudio.sds.components.model;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -28,41 +28,41 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test cases for {@link PolygonElement}.
+ * Test cases for {@link MeterElement}.
  * 
  * @author Sven Wende
  *
  */
-public final class PolygonElementTest {
+public final class MeterElementTest {
 
 	/**
 	 * A test instance.
 	 */
-	private PolygonElement _polygonElement;
+	private MeterElement _meterElement;
 	
 	/**
 	 * Test setup.
 	 */
 	@Before
 	public void setUp() {
-		_polygonElement = new PolygonElement();
+		_meterElement = new MeterElement();
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonElement#getDoubleTestProperty()}.
+	 * Test method for {@link org.csstudio.sds.components.model.MeterElement#getDoubleTestProperty()}.
 	 */
 	@Test
 	public void testGetDoubleTestProperty() {
-		assertNotNull(_polygonElement.getDoubleTestProperty());
-		assertTrue(_polygonElement.hasProperty(_polygonElement.getDoubleTestProperty()));
+		assertNotNull(_meterElement.getDoubleTestProperty());
+		assertTrue(_meterElement.hasProperty(_meterElement.getDoubleTestProperty()));
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonElement#getTypeID()}.
+	 * Test method for {@link org.csstudio.sds.components.model.MeterElement#getTypeID()}.
 	 */
 	@Test
 	public void testGetTypeID() {
-		_polygonElement.getTypeID().equals(PolygonElement.ID);
+		_meterElement.getTypeID().equals(MeterElement.ID);
 	}
 
 	/**
@@ -70,8 +70,13 @@ public final class PolygonElementTest {
 	 */
 	@Test
 	public void testProperties () {
-		assertTrue(_polygonElement.hasProperty(PolygonElement.PROP_POINTS));
-		assertTrue(_polygonElement.hasProperty(PolygonElement.PROP_FILL_GRADE));
+		assertTrue(_meterElement.hasProperty(MeterElement.PROP_VALUE));
+		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL1_LOWER_BORDER));
+		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL1_UPPER_BORDER));
+		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL2_LOWER_BORDER));
+		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL2_UPPER_BORDER));
+		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL3_LOWER_BORDER));
+		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL3_UPPER_BORDER));
 		// Add further properties here
 	}
 

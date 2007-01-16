@@ -1,6 +1,6 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.internal.model.RectangleElement;
+import org.csstudio.sds.components.model.RectangleElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangle;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;

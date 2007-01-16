@@ -1,6 +1,6 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.internal.model.PolylineElement;
+import org.csstudio.sds.components.model.PolylineElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;

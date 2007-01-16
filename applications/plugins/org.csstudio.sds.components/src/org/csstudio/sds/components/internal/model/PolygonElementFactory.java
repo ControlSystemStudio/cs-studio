@@ -21,6 +21,7 @@
  */
 package org.csstudio.sds.components.internal.model;
 
+import org.csstudio.sds.components.model.PolygonElement;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.IElementModelFactory;
 import org.eclipse.draw2d.geometry.PointList;

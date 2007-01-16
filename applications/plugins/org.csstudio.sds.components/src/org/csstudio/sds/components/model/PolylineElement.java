@@ -19,60 +19,26 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.internal.model;
+package org.csstudio.sds.components.model;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
 
 /**
- * Test cases for {@link PolylineElement}.
+ * A line model element.
  * 
- * @author Sven Wende
- *
+ * @author Sven Wende, Alexander Will
  */
-public final class PolylineElementTest {
-
+public final class PolylineElement extends AbstractPolyElement {
 	/**
-	 * A test instance.
+	 * The ID of this model element.
 	 */
-	private PolylineElement _polylineElement;
+	public static final String ID = "element.polyline"; //$NON-NLS-1$
 	
 	/**
-	 * Test setup.
+	 * {@inheritDoc}
 	 */
-	@Before
-	public void setUp() {
-		_polylineElement = new PolylineElement();
+	@Override
+	public String getTypeID() {
+		return ID;
 	}
-
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineElement#getDoubleTestProperty()}.
-	 */
-	@Test
-	public void testGetDoubleTestProperty() {
-		assertNotNull(_polylineElement.getDoubleTestProperty());
-		assertTrue(_polylineElement.hasProperty(_polylineElement.getDoubleTestProperty()));
-	}
-
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineElement#getTypeID()}.
-	 */
-	@Test
-	public void testGetTypeID() {
-		_polylineElement.getTypeID().equals(PolylineElement.ID);
-	}
-
-	/**
-	 * Tests, if all properties where properly installed.
-	 */
-	@Test
-	public void testProperties () {
-		assertTrue(_polylineElement.hasProperty(PolylineElement.PROP_POINTS));
-		assertTrue(_polylineElement.hasProperty(PolylineElement.PROP_FILL_GRADE));
-		// Add further properties here
-	}
-
 }

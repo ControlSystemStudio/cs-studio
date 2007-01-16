@@ -19,27 +19,59 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.internal.model;
+package org.csstudio.sds.components.model;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * A polygon model element.
+ * Test cases for {@link LabelElement}.
  * 
- * @author Sven Wende, Alexander Will
- * @version $Revision$
- * 
+ * @author Sven Wende
+ *
  */
-public final class PolygonElement extends AbstractPolyElement {
+public final class LabelElementTest {
+
 	/**
-	 * The ID of this model element.
+	 * A test instance.
 	 */
-	public static final String ID = "element.polygon"; //$NON-NLS-1$
+	private LabelElement _labelElement;
 	
 	/**
-	 * {@inheritDoc}
+	 * Test setup.
 	 */
-	@Override
-	public String getTypeID() {
-		return ID;
+	@Before
+	public void setUp() {
+		_labelElement = new LabelElement();
 	}
+
+	/**
+	 * Test method for {@link org.csstudio.sds.components.model.LabelElement#getDoubleTestProperty()}.
+	 */
+	@Test
+	public void testGetDoubleTestProperty() {
+		assertNotNull(_labelElement.getDoubleTestProperty());
+		assertTrue(_labelElement.hasProperty(_labelElement.getDoubleTestProperty()));
+	}
+
+	/**
+	 * Test method for {@link org.csstudio.sds.components.model.LabelElement#getTypeID()}.
+	 */
+	@Test
+	public void testGetTypeID() {
+		_labelElement.getTypeID().equals(LabelElement.ID);
+	}
+
+	/**
+	 * Tests, if all properties where properly installed.
+	 */
+	@Test
+	public void testProperties () {
+		assertTrue(_labelElement.hasProperty(LabelElement.PROP_LABEL));
+		// Add further properties here
+	}
+
 }

@@ -3,7 +3,7 @@ package org.csstudio.sds.components.ui.internal.feedback;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.sds.components.internal.model.AbstractPolyElement;
+import org.csstudio.sds.components.model.AbstractPolyElement;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.feedback.IGraphicalFeedbackFactory;
 import org.eclipse.draw2d.IFigure;

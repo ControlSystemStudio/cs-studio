@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.internal.model;
+package org.csstudio.sds.components.model;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -28,41 +28,41 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test cases for {@link LabelElement}.
+ * Test cases for {@link PolylineElement}.
  * 
  * @author Sven Wende
  *
  */
-public final class LabelElementTest {
+public final class PolylineElementTest {
 
 	/**
 	 * A test instance.
 	 */
-	private LabelElement _labelElement;
+	private PolylineElement _polylineElement;
 	
 	/**
 	 * Test setup.
 	 */
 	@Before
 	public void setUp() {
-		_labelElement = new LabelElement();
+		_polylineElement = new PolylineElement();
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.LabelElement#getDoubleTestProperty()}.
+	 * Test method for {@link org.csstudio.sds.components.model.PolylineElement#getDoubleTestProperty()}.
 	 */
 	@Test
 	public void testGetDoubleTestProperty() {
-		assertNotNull(_labelElement.getDoubleTestProperty());
-		assertTrue(_labelElement.hasProperty(_labelElement.getDoubleTestProperty()));
+		assertNotNull(_polylineElement.getDoubleTestProperty());
+		assertTrue(_polylineElement.hasProperty(_polylineElement.getDoubleTestProperty()));
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.LabelElement#getTypeID()}.
+	 * Test method for {@link org.csstudio.sds.components.model.PolylineElement#getTypeID()}.
 	 */
 	@Test
 	public void testGetTypeID() {
-		_labelElement.getTypeID().equals(LabelElement.ID);
+		_polylineElement.getTypeID().equals(PolylineElement.ID);
 	}
 
 	/**
@@ -70,7 +70,8 @@ public final class LabelElementTest {
 	 */
 	@Test
 	public void testProperties () {
-		assertTrue(_labelElement.hasProperty(LabelElement.PROP_LABEL));
+		assertTrue(_polylineElement.hasProperty(PolylineElement.PROP_POINTS));
+		assertTrue(_polylineElement.hasProperty(PolylineElement.PROP_FILL_GRADE));
 		// Add further properties here
 	}
 
