@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.csstudio.sds.controlSystemSchema">
+      <controlSystemSchema
+            class="org.csstudio.sds.test.TestSchema"
+            description="For unit tests only!"
+            typeId="schema.test"/>
+   </extension>
+   <extension
+         point="org.csstudio.sds.elementModelInitializers">
+      <ElementModelInitializer
+            class="org.csstudio.sds.test.TestInitializer"
+            typeId="schema.test:element.test"/>
+   </extension>
+
+</plugin>
