@@ -6,6 +6,9 @@
       <ElementModelInitializer
             class="org.csstudio.sds.components.epics.EpicsMeterInitializer"
             typeId="schema.epics:element.meter"/>
+      <ElementModelInitializer
+            class="org.csstudio.sds.components.epics.EpicsRectangleInitializer"
+            typeId="schema.epics:element.rectangle"/>
    </extension>
    <extension
          point="org.csstudio.sds.controlSystemSchema">

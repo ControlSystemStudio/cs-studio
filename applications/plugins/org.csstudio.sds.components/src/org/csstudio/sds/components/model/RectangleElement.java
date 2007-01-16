@@ -40,16 +40,6 @@ public final class RectangleElement extends AbstractElementModel {
 	public static final String PROP_FILL_PERCENTAGE = "rectangle.fillpercentage"; //$NON-NLS-1$
 
 	/**
-	 * The ID of the background color property.
-	 */
-	public static final String PROP_BACKGROUND_COLOR = "color.background"; //$NON-NLS-1$
-
-	/**
-	 * The ID of the foreground color property.
-	 */
-	public static final String PROP_FOREGROUND_COLOR = "color.foreground"; //$NON-NLS-1$
-
-	/**
 	 * The ID of this model element.
 	 */
 	public static final String ID = "element.rectangle"; //$NON-NLS-1$
