@@ -1,27 +1,16 @@
 package org.csstudio.utility.nameSpaceSearch.ui;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-
-import javax.imageio.stream.FileImageInputStream;
 
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.platform.ui.views.WorkspaceExplorerView;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
+import org.csstudio.utility.ioc_socket_communication.IOCCommunkation;
 import org.csstudio.utility.ldap.reader.LDAPReader;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Platform;
+
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -57,9 +46,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.internal.util.BundleUtility;
 import org.eclipse.ui.part.ViewPart;
-import org.osgi.framework.Bundle;
 
 public class MainView extends ViewPart {
 	public static final String ID = MainView.class.getName();
@@ -73,7 +60,6 @@ public class MainView extends ViewPart {
 	private Image down;
 	private Image down_old;
 	private HashMap<String, String> headline = new HashMap<String, String>();
-
 	class myTableLabelProvider implements ITableLabelProvider{
 
 		// No Image
@@ -136,50 +122,16 @@ public class MainView extends ViewPart {
 	 ***************************************************************************/
 
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(Composite parent){
 		parent.setLayout(new GridLayout(2,false));
-		try{
-			Bundle b = Platform.getBundle(Activator.PLUGIN_ID);
-			URL urlUp = b.getEntry("icons/up.gif");
-			URL urlUpOld = b.getEntry("icons/up_old.gif");
-			URL urlDown = b.getEntry("icons/down.gif");
-			URL urlDownOld = b.getEntry("icons/down_old.gif");
-			URL zielURLUp = FileLocator.resolve(urlUp);
-			URL zielURLUpOld = FileLocator.resolve(urlUpOld);
-			URL zielURLDown = FileLocator.resolve(urlDown);
-			URL zielURLDownUp = FileLocator.resolve(urlDownOld);
-
-			up=down=up_old = down_old = null;
-			try {
-//				File zielFile = new File(url.toURI());
-//				File zielFile = new File(zielURL.toURI());
-//				InputStream is = new FileInputStream(zielFile);
-//				Image up = new Image(parent.getDisplay(),is);
-//				...
-//				...
-
-				try{
-//					up_old = new Image(parent.getDisplay(),zielPath+"up_old.gif");
-//					down_old = new Image(parent.getDisplay(),zielPath+"down_old.gif");
-				}catch (Exception e){
-					up_old = down_old = null;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		}catch (Exception e){
-			System.out.println("pfad nicht gefunden");
-			File p1 = new File("");
-			System.out.println("\t: "+p1.getAbsolutePath());
-			File p2 = new File("icons//");
-			System.out.println("icons//\t: "+p2.getAbsolutePath());
-			up = down = up_old = down_old = null;
-		}
+		up = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up.gif").createImage();
+		down = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down.gif").createImage();
+		up_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up_old.gif").createImage();
+		down_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down_old.gif").createImage();
 
 		searchText = makeSearchField(parent);
 
-		Button serachButton = new Button(parent,SWT.PUSH);
+		final Button serachButton = new Button(parent,SWT.PUSH);
 		serachButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
 		serachButton.setFont(new Font(parent.getDisplay(),"SimSun",10,SWT.NONE));
 		serachButton.setText(Messages.getString("MainView_searchButton")); //$NON-NLS-1$
@@ -199,7 +151,6 @@ public class MainView extends ViewPart {
 			public void widgetSelected(SelectionEvent e) {
 				search(ergebnissTableView, searchText.getText());
 			}
-
 			public void widgetDefaultSelected(SelectionEvent e) {}
 
 		});
