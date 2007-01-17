@@ -224,9 +224,8 @@ public final class ControlSystemItemTransfer extends ByteArrayTransfer {
 
 		if (dist > SELECTION_EXPIRATION_PERIOD) {
 			return null;
-		} else {
-			return _selectedItems;
 		}
+		return _selectedItems;
 	}
 
 	/**
