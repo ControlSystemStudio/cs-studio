@@ -46,16 +46,6 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 	public static final String PROP_FILL_GRADE = "line.fillgrade"; //$NON-NLS-1$
 
 	/**
-	 * The ID of the background color property.
-	 */
-	public static final String PROP_BACKGROUND_COLOR = "color.background"; //$NON-NLS-1$
-
-	/**
-	 * The ID of the foreground color property.
-	 */
-	public static final String PROP_FOREGROUND_COLOR = "color.foreground"; //$NON-NLS-1$		
-
-	/**
 	 * The default value of the height property.
 	 */
 	private static final int DEFAULT_HEIGHT = 10;

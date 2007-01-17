@@ -42,11 +42,6 @@ public final class LabelElement extends AbstractElementModel {
 	public static final String PROP_LABEL = "label"; //$NON-NLS-1$
 
 	/**
-	 * The ID of the background color property.
-	 */
-	public static final String PROP_BACKGROUND_COLOR = "color.background"; //$NON-NLS-1$
-
-	/**
 	 * The ID of the font property.
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
