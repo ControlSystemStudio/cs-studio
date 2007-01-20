@@ -96,7 +96,7 @@ public final class RefreshableMeterFigure extends ImageFigure implements
 	@Override
 	protected void paintFigure(final Graphics g2) {
 		AntialiasingUtil.getInstance().enableAntialiasing(g2);
-		g2.setBackgroundColor(ColorConstants.gray);
+		g2.setBackgroundColor(getBackgroundColor());
 		g2.fillOval(getBounds().getCropped(new Insets(2)));
 		AntialiasingUtil.getInstance().disableAntialiasing(g2);
 		drawAngle(g2);

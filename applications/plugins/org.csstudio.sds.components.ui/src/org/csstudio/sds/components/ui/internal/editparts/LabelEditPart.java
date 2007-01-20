@@ -28,7 +28,6 @@ public final class LabelEditPart extends AbstractElementEditPart {
 			setFigureProperties(key, elementModel.getProperty(key)
 					.getPropertyValue(), label);
 		}
-
 		return label;
 	}
 
@@ -45,14 +44,17 @@ public final class LabelEditPart extends AbstractElementEditPart {
 
 	/**
 	 * Sets a property of a figure. Does not cause the figure to be (re-)painted! 
-	 * @param propertyName The property to set.
+	 * @param propertyName The property to set. Required.
 	 * @param newValue The value to set.
-	 * @param label The figure that is configured.
+	 * @param label The figure that is configured. Required.
 	 */
 	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshableLabelFigure label) {
+		assert propertyName != null : "Precondition violated: propertyName != null"; //$NON-NLS-1$
+		assert label != null : "Precondition violated: label != null"; //$NON-NLS-1$
+		
 		if (propertyName.equals(LabelElement.PROP_LABEL)) {
 			label.setText(newValue.toString());
-		} else if (propertyName.equals(LabelElement.PROP_BACKGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
 			label.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 					(RGB) newValue));
 		} else if (propertyName.equals(LabelElement.PROP_FONT)) {

@@ -1,6 +1,6 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.model.PolylineElement;
+import org.csstudio.sds.components.model.AbstractPolyElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
@@ -41,18 +41,18 @@ public final class PolylineEditPart extends AbstractElementEditPart {
 			final Object newValue) {
 		RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) getFigure();
 
-		if (propertyName.equals(PolylineElement.PROP_POINTS)) {
+		if (propertyName.equals(AbstractPolyElement.PROP_POINTS)) {
 			assert newValue instanceof PointList : "newValue instanceof PointList"; //$NON-NLS-1$
 			PointList points = (PointList) newValue;
 			polyline.setPoints(points);
-		} else if (propertyName.equals(PolylineElement.PROP_FILL_GRADE)) {
+		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL_GRADE)) {
 			polyline.setFill((Double) newValue);
 			polyline.repaint();
-		} else if (propertyName.equals(PolylineElement.PROP_BACKGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
 			polyline.setBackgroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
 			polyline.repaint();
-		} else if (propertyName.equals(PolylineElement.PROP_FOREGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_FOREGROUND_COLOR)) {
 			polyline.setForegroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
 			polyline.repaint();

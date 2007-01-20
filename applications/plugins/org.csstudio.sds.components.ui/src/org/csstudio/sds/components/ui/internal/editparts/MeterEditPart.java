@@ -4,8 +4,9 @@ import org.csstudio.sds.components.model.MeterElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
+import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for <code>MeterElement</code> elements.
@@ -20,16 +21,38 @@ public final class MeterEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		return new RefreshableMeterFigure();
+		final RefreshableMeterFigure meter = new RefreshableMeterFigure();
+		AbstractElementModel elementModel = getCastedModel();
+
+		for (String key : elementModel.getPropertyNames()) {
+			setFigureProperties(key, elementModel.getProperty(key)
+					.getPropertyValue(), meter);
+		}
+		return meter;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void doRefreshFigure(final String propertyName,
 			final Object newValue) {
+
 		RefreshableMeterFigure meter = (RefreshableMeterFigure) getFigure();
+		setFigureProperties(propertyName, newValue, meter);
+		meter.repaint();
+	}
+
+	/**
+	 * Sets a property of a figure. Does not cause the figure to be (re-)painted!
+	 * @param propertyName Required.
+	 * @param newValue May be null.
+	 * @param meter Required.
+	 */
+	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshableMeterFigure meter) {
+		assert propertyName != null : "Precondition violated: propertyName != null"; //$NON-NLS-1$
+		assert meter != null : "Precondition violated: meter != null"; //$NON-NLS-1$
+		
 		if (propertyName.equals(MeterElement.PROP_VALUE)) {
 			meter.setValue((Double) newValue);
 		} else if (propertyName
@@ -52,10 +75,9 @@ public final class MeterEditPart extends AbstractElementEditPart {
 			meter.setInterval3UpperBorder((Double) newValue);
 		} else if (propertyName
 				.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
-			meter.setBackgroundColor((Color) newValue);
+			meter.setBackgroundColor(CustomMediaFactory.getInstance()
+					.getColor((RGB) newValue));
 		}
-		meter.repaint();
-
 	}
 
 }

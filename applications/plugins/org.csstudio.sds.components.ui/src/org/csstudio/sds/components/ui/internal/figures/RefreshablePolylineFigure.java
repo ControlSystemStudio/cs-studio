@@ -1,6 +1,8 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.sds.components.model.AbstractPolyElement;
 import org.csstudio.sds.components.model.PolylineElement;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
@@ -48,16 +50,16 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	 * {@inheritDoc}
 	 */
 	public void refresh(final String propertyName, final Object propertyValue) {
-		if (propertyName.equals(PolylineElement.PROP_POINTS)) {
+		if (propertyName.equals(AbstractPolyElement.PROP_POINTS)) {
 			PointList points = (PointList) propertyValue;
 			setPoints(points);
-		} else if (propertyName.equals(PolylineElement.PROP_FILL_GRADE)) {
+		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL_GRADE)) {
 			Double fillGrade = (Double) propertyValue;
 			setFill(fillGrade);
-		} else if (propertyName.equals(PolylineElement.PROP_BACKGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
 			setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 					(RGB) propertyValue));
-		} else if (propertyName.equals(PolylineElement.PROP_FOREGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_FOREGROUND_COLOR)) {
 			setForegroundColor(CustomMediaFactory.getInstance().getColor(
 					(RGB) propertyValue));
 		}

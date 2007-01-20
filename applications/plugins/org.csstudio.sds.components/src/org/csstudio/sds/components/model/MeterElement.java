@@ -26,7 +26,7 @@ import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.PropertyTypeRegistry;
 
 /**
- * A meter model element.
+ * A meter element model.
  * 
  * @author Sven Wende
  * @version $Revision$
@@ -72,42 +72,42 @@ public final class MeterElement extends AbstractElementModel {
 	/**
 	 * The property id for the interval 1 lower border setting.
 	 */
-	public static final String PROP_INTERVAL1_LOWER_BORDER = "meter.PROP_INTERVAL1_LOWER_BORDER";
+	public static final String PROP_INTERVAL1_LOWER_BORDER = "meter.PROP_INTERVAL1_LOWER_BORDER"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the interval 1 upper border setting.
 	 */
-	public static final String PROP_INTERVAL1_UPPER_BORDER = "meter.PROP_INTERVAL1_UPPER_BORDER";
+	public static final String PROP_INTERVAL1_UPPER_BORDER = "meter.PROP_INTERVAL1_UPPER_BORDER"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the interval 2 lower border setting.
 	 */
-	public static final String PROP_INTERVAL2_LOWER_BORDER = "meter.PROP_INTERVAL2_LOWER_BORDER";
+	public static final String PROP_INTERVAL2_LOWER_BORDER = "meter.PROP_INTERVAL2_LOWER_BORDER"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the interval 2 upper border setting.
 	 */
-	public static final String PROP_INTERVAL2_UPPER_BORDER = "meter.PROP_INTERVAL2_UPPER_BORDER";
+	public static final String PROP_INTERVAL2_UPPER_BORDER = "meter.PROP_INTERVAL2_UPPER_BORDER"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the interval 3 lower border setting.
 	 */
-	public static final String PROP_INTERVAL3_LOWER_BORDER = "meter.PROP_INTERVAL3_LOWER_BORDER";
+	public static final String PROP_INTERVAL3_LOWER_BORDER = "meter.PROP_INTERVAL3_LOWER_BORDER"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the interval 3 upper border setting.
 	 */
-	public static final String PROP_INTERVAL3_UPPER_BORDER = "meter.PROP_INTERVAL3_UPPER_BORDER";
+	public static final String PROP_INTERVAL3_UPPER_BORDER = "meter.PROP_INTERVAL3_UPPER_BORDER"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the value setting.
 	 */
-	public static final String PROP_VALUE = "meter.PROP_VALUE";
+	public static final String PROP_VALUE = "meter.PROP_VALUE"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this model element.
 	 */
-	public static final String ID = "element.meter";
+	public static final String ID = "element.meter"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.

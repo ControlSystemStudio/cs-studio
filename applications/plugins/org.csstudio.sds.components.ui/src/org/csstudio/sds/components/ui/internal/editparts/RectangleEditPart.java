@@ -43,18 +43,21 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 	}
 
 	/**
-	 * Sets a property of a figure.
-	 * @param propertyName The property to set.
+	 * Sets a property of a figure. Does not perform (re-)paint! 
+	 * @param propertyName The property to set. Required.
 	 * @param newValue The value to set.
-	 * @param rectangle The figure that is configured.
+	 * @param rectangle The figure that is configured. Required.
 	 */
 	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshableRectangle rectangle) {
+		assert propertyName != null : "Precondition violated: propertyName != null"; //$NON-NLS-1$
+		assert rectangle != null : "Precondition violated: rectangle != null"; //$NON-NLS-1$
+		
 		if (propertyName.equals(RectangleElement.PROP_FILL_PERCENTAGE)) {
 			rectangle.setFill((Double) newValue);
-		} else if (propertyName.equals(RectangleElement.PROP_BACKGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
 			rectangle.setBackgroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
-		} else if (propertyName.equals(RectangleElement.PROP_FOREGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_FOREGROUND_COLOR)) {
 			rectangle.setForegroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
 		}
