@@ -12,7 +12,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * @author Sven Wende
  * 
  */
-public final class RefreshableRectangle extends RectangleFigure implements
+public final class RefreshableRectangleFigure extends RectangleFigure implements
 		IRefreshableFigure {
 
 	/**

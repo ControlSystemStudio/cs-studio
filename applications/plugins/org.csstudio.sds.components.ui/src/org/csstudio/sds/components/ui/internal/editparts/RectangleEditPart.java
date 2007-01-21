@@ -1,7 +1,7 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.RectangleElement;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangle;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigure;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.uil.CustomMediaFactory;
@@ -19,8 +19,8 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected RefreshableRectangle createFigure() {
-		RefreshableRectangle rectangle = new RefreshableRectangle();
+	protected RefreshableRectangleFigure createFigure() {
+		RefreshableRectangleFigure rectangle = new RefreshableRectangleFigure();
 		AbstractElementModel elementModel = getCastedModel();
 
 		for (String key : elementModel.getPropertyNames()) {
@@ -36,7 +36,7 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 	@Override
 	protected synchronized void doRefreshFigure(final String propertyName,
 			final Object newValue) {
-		RefreshableRectangle rectangle = (RefreshableRectangle) getFigure();
+		RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) getFigure();
 		setFigureProperties(propertyName, newValue, rectangle);
 		rectangle.revalidate();
 		rectangle.repaint();
@@ -48,7 +48,7 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 	 * @param newValue The value to set.
 	 * @param rectangle The figure that is configured. Required.
 	 */
-	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshableRectangle rectangle) {
+	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshableRectangleFigure rectangle) {
 		assert propertyName != null : "Precondition violated: propertyName != null"; //$NON-NLS-1$
 		assert rectangle != null : "Precondition violated: rectangle != null"; //$NON-NLS-1$
 		

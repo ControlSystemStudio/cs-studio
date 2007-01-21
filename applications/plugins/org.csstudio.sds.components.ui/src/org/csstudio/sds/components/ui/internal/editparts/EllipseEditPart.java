@@ -1,7 +1,7 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.EllipseElement;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipse;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.uil.CustomMediaFactory;
@@ -21,7 +21,7 @@ public final class EllipseEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IFigure createFigure() {
-		RefreshableEllipse ellipse = new RefreshableEllipse();
+		RefreshableEllipseFigure ellipse = new RefreshableEllipseFigure();
 		AbstractElementModel elementModel = getCastedModel();
 
 		for (String key : elementModel.getPropertyNames()) {
@@ -37,7 +37,7 @@ public final class EllipseEditPart extends AbstractElementEditPart {
 	@Override
 	protected void doRefreshFigure(final String propertyName,
 			final Object newValue) {
-		RefreshableEllipse ellipse = (RefreshableEllipse) getFigure();
+		RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) getFigure();
 		setFigureProperties(propertyName, newValue, ellipse);
 		ellipse.repaint();
 	}
@@ -48,7 +48,7 @@ public final class EllipseEditPart extends AbstractElementEditPart {
 	 * @param newValue The value to set. 
 	 * @param ellipse The figure that is configured. Required.
 	 */
-	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshableEllipse ellipse) {
+	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshableEllipseFigure ellipse) {
 		assert propertyName != null : "Precondition violated: propertyName != null"; //$NON-NLS-1$
 		assert ellipse != null : "Precondition violated: ellipse != null"; //$NON-NLS-1$
 		

@@ -1,7 +1,6 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.components.model.AbstractPolyElement;
-import org.csstudio.sds.components.model.PolylineElement;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
@@ -11,7 +10,6 @@ import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -27,16 +25,6 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	 * The fill grade (0 - 100%).
 	 */
 	private double _fill = 100.0;
-	
-	/**
-	 * The background color.
-	 */
-	private Color _backgroundColor;
-
-	/**
-	 * The foreground color.
-	 */
-	private Color _foregroundColor;	
 	
 	/**
 	 * Constructor.
@@ -127,42 +115,4 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		return _fill;
 	}
 	
-	/**
-	 * Gets the background color.
-	 * 
-	 * @return the background color.
-	 */
-	public Color getBackgroundColor() {
-		return _backgroundColor;
-	}
-
-	/**
-	 * Sets the background color.
-	 * 
-	 * @param backgroundColor
-	 *            the background color.
-	 */
-	public void setBackgroundColor(final Color backgroundColor) {
-		_backgroundColor = backgroundColor;
-	}
-
-	/**
-	 * Gets the foreground color.
-	 * 
-	 * @return the foreground color.
-	 */
-	public Color getForegroundColor() {
-		return _foregroundColor;
-	}
-
-	/**
-	 * Sets the foreground color.
-	 * 
-	 * @param foregroundColor
-	 *            the foreground color.
-	 */
-	public void setForegroundColor(final Color foregroundColor) {
-		_foregroundColor = foregroundColor;
-	}	
-
 }

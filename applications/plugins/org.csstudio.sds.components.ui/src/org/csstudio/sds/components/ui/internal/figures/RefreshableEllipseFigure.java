@@ -11,7 +11,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * @author Sven Wende, Alexander Will
  * 
  */
-public final class RefreshableEllipse extends Ellipse implements
+public final class RefreshableEllipseFigure extends Ellipse implements
 		IRefreshableFigure {
 
 	/**

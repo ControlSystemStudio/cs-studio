@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.csstudio.sds.components.model.EllipseElement;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipse;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
 import org.eclipse.draw2d.IFigure;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public final class EllipseEditPartTest {
 	 */
 	@Test
 	public void testDoRefreshFigure() {
-		RefreshableEllipse ellipseFigure = (RefreshableEllipse) _editPart.getFigure();
+		RefreshableEllipseFigure ellipseFigure = (RefreshableEllipseFigure) _editPart.getFigure();
 		
 		final double oldFillValue = ellipseFigure.getFill();
 		final double newFillValue = oldFillValue+1;
@@ -51,7 +51,7 @@ public final class EllipseEditPartTest {
 	@Test
 	public void testCreateFigure() {
 		IFigure figure = _editPart.createFigure();
-		assertTrue(figure instanceof RefreshableEllipse);
+		assertTrue(figure instanceof RefreshableEllipseFigure);
 	}
 
 }
