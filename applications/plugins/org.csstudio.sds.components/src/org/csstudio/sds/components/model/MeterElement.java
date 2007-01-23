@@ -23,7 +23,7 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
-import org.csstudio.sds.model.properties.SupportedTypesEnum;
+import org.csstudio.sds.model.properties.PropertyTypesEnum;
 
 /**
  * A meter element model.
@@ -139,26 +139,26 @@ public final class MeterElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_INTERVAL1_LOWER_BORDER, SupportedTypesEnum.DOUBLE,
+		addProperty(PROP_INTERVAL1_LOWER_BORDER, PropertyTypesEnum.DOUBLE,
 				"Interval 1 lower border", PropertyCategory.Display,
 				INTERVAL1_LOWER_BORDER_DEFAULT);
-		addProperty(PROP_INTERVAL1_UPPER_BORDER, SupportedTypesEnum.DOUBLE,
+		addProperty(PROP_INTERVAL1_UPPER_BORDER, PropertyTypesEnum.DOUBLE,
 				"Interval 1 upper border", PropertyCategory.Display,
 				INTERVAL1_UPPER_BORDER_DEFAULT);
-		addProperty(PROP_INTERVAL2_LOWER_BORDER, SupportedTypesEnum.DOUBLE,
+		addProperty(PROP_INTERVAL2_LOWER_BORDER, PropertyTypesEnum.DOUBLE,
 				"Interval 2 lower border", PropertyCategory.Display,
 				INTERVAL2_LOWER_BORDER_DEFAULT);
-		addProperty(PROP_INTERVAL2_UPPER_BORDER, SupportedTypesEnum.DOUBLE,
+		addProperty(PROP_INTERVAL2_UPPER_BORDER, PropertyTypesEnum.DOUBLE,
 				"Interval 2 upper border", PropertyCategory.Display,
 				INTERVAL2_UPPER_BORDER_DEFAULT);
-		addProperty(PROP_INTERVAL3_LOWER_BORDER, SupportedTypesEnum.DOUBLE,
+		addProperty(PROP_INTERVAL3_LOWER_BORDER, PropertyTypesEnum.DOUBLE,
 				"Interval 3 lower border", PropertyCategory.Display,
 				INTERVAL3_LOWER_BORDER_DEFAULT);
-		addProperty(PROP_INTERVAL3_UPPER_BORDER, SupportedTypesEnum.DOUBLE,
+		addProperty(PROP_INTERVAL3_UPPER_BORDER, PropertyTypesEnum.DOUBLE,
 				"Interval 3 upper border", PropertyCategory.Display,
 				INTERVAL3_UPPER_BORDER_DEFAULT);
 
-		addProperty(PROP_VALUE, SupportedTypesEnum.DOUBLE, "value",
+		addProperty(PROP_VALUE, PropertyTypesEnum.DOUBLE, "value",
 				PropertyCategory.Behaviour, VALUE_DEFAULT);
 	}
 
