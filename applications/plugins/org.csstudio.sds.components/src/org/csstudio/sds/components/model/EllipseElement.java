@@ -24,7 +24,7 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
-import org.csstudio.sds.model.properties.PropertyTypeRegistry;
+import org.csstudio.sds.model.properties.SupportedTypesEnum;
 
 /**
  * An ellipse model element.
@@ -80,7 +80,7 @@ public final class EllipseElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL_PERCENTAGE, PropertyTypeRegistry.DOUBLE,
+		addProperty(PROP_FILL_PERCENTAGE, SupportedTypesEnum.DOUBLE,
 				Messages.FillGradeProperty, PropertyCategory.Behaviour,
 				DEFAULT_FILL_GRADE);
 	}

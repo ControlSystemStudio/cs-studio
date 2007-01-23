@@ -70,8 +70,8 @@ public final class PolylineElementTest {
 	 */
 	@Test
 	public void testProperties () {
-		assertTrue(_polylineElement.hasProperty(PolylineElement.PROP_POINTS));
-		assertTrue(_polylineElement.hasProperty(PolylineElement.PROP_FILL_GRADE));
+		assertTrue(_polylineElement.hasProperty(AbstractPolyElement.PROP_POINTS));
+		assertTrue(_polylineElement.hasProperty(AbstractPolyElement.PROP_FILL_GRADE));
 		// Add further properties here
 	}
 

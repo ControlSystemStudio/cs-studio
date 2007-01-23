@@ -10,6 +10,8 @@ import org.csstudio.sds.model.logic.DirectConnectionRule;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 
 /**
+ * Initializes a rectangle with EPICS specific property values.
+ * 
  * @author Stefan Hofer
  * @version $Revision$
  *
