@@ -7,7 +7,8 @@ import org.csstudio.archive.NameInfo;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.value.Severity;
 
-import de.desy.AAPI.AAPI;
+import AAPI.AAPI;
+
 
 /** Main access point to the DESY Archive API (AAPI) data 
  *  @author Albert Kagarmanov
@@ -145,6 +146,6 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 	@Override
 	public String getURL() {
 		// TODO Auto-generated method stub
-		return null;
+		return "aapi://krynfs.desy.de:4053";
 	}
 }

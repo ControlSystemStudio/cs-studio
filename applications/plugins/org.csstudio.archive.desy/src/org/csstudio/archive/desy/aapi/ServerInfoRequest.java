@@ -3,8 +3,9 @@ package org.csstudio.archive.desy.aapi;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import AAPI.AAPI;
 
-import de.desy.AAPI.AAPI;
+
 
 /** Handles the "archiver.info" request and its results.
  *  @author Albert Kagarmanov

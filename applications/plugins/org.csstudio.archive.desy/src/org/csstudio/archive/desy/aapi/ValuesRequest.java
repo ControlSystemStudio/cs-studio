@@ -9,9 +9,10 @@ import org.csstudio.value.NumericMetaData;
 import org.csstudio.value.Severity;
 import org.csstudio.value.Value;
 
-import de.desy.AAPI.AAPI;
-import de.desy.AAPI.AnswerData;
-import de.desy.AAPI.RequestData;
+import AAPI.AAPI;
+import AAPI.AnswerData;
+import AAPI.RequestData;
+
 
 /** Handles the "archiver.values" request and its results.
  *  @author Albert Kagarmanov
@@ -109,7 +110,10 @@ public class ValuesRequest implements ClientRequest
 				int sevr = answerClass.getStatus()[si];
 				if((stat<0)||(stat>AAPI.alarmStatusString.length-1)) stat=AAPI.alarmStatusString.length-1;
 				if((sevr<0)||(sevr>AAPI.severityList.length -1))     sevr=AAPI.severityList.length -1;
-				Severity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],false,false);
+
+				//Changed 23.1.07
+				//				Severity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],false,false);
+				Severity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],true,true);
 			
 				double values[] = new double[count]; // count=1
 			    for (int vi=0; vi<count; ++vi) values[vi] = answerClass.getData()[si];

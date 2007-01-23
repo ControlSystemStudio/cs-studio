@@ -15,11 +15,11 @@ public class ArchivesRequest implements ClientRequest
 	public void read() //throws Exception
 	{
 		archive_infos = new ArchiveInfo[1];
-//		archive_infos[0] =  new org.csstudio.archive.channelarchiver.ArchiveInfoImpl(
-//		0,"AAPI","DESY_AAPI_SERVER");		
-		//	{  int32 key,
-		//     string name,
-		//     string path }[] = archiver.archives()
+		archive_infos[0] =  new org.csstudio.archive.desy.aapi.ArchiveInfoImpl(
+		0,"AAPI","DESY_AAPI_SERVER");		
+//			{  int32 key,
+//		     string name,
+//		     string path }[] = archiver.archives()
 	}
 
 	/** @return Returns all the archive infos obtained in the request. */

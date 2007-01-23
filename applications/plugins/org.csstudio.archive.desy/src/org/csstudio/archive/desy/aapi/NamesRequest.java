@@ -3,8 +3,9 @@ package org.csstudio.archive.desy.aapi;
 import org.csstudio.archive.NameInfo;
 import org.csstudio.platform.util.TimestampFactory;
 
-import de.desy.AAPI.AAPI;
-import de.desy.AAPI.AnswerChannelInfo;
+import AAPI.AAPI;
+import AAPI.AnswerChannelInfo;
+
 
 /** Handles the "archiver.names" request and its results. 
  *  @author Albert Kagarmanov
