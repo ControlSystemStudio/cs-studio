@@ -31,54 +31,13 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
    </license>
 
    <url>
+      <update url="http://eclipse.desy.de/update/"/>
       <discovery label="Control System Studio (CSS) Update Site" url="http://eclipse.desy.de/update"/>
    </url>
 
    <includes
          id="org.eclipse.rcp"
          version="0.0.0"/>
-
-   <plugin
-         id="org.csstudio.platform"
-         download-size="0"
-         install-size="0"
-         version="0.9.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.epics"
-         download-size="0"
-         install-size="0"
-         version="0.9.1"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.jdbc"
-         download-size="0"
-         install-size="0"
-         version="0.9.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.jms"
-         download-size="0"
-         install-size="0"
-         version="0.9.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.ui"
-         download-size="0"
-         install-size="0"
-         version="0.9.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.startup"
-         download-size="0"
-         install-size="0"
-         version="0.9.0"
-         unpack="false"/>
 
    <plugin
          id="org.junit4"
