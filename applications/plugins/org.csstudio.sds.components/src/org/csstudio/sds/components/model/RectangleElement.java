@@ -81,7 +81,7 @@ public final class RectangleElement extends AbstractElementModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(PROP_FILL, PropertyTypesEnum.DOUBLE,
-				Messages.FillGradeProperty,
+				Messages.FillLevelProperty,
 				PropertyCategory.Behaviour, DEFAULT_FILL);
 	}
 	

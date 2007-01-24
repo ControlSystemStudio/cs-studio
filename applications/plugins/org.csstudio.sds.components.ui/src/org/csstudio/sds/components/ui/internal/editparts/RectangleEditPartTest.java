@@ -5,9 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.csstudio.sds.components.model.RectangleElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigure;
-import org.csstudio.sds.model.AbstractElementModel;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,13 +40,12 @@ public final class RectangleEditPartTest {
 		RefreshableRectangleFigure rectangleFigure = (RefreshableRectangleFigure) _editPart
 				.getFigure();
 
-		RGB oldBackgroundColor = rectangleFigure.getBackgroundColor().getRGB();
-		RGB newBackgroundColor = new RGB((oldBackgroundColor.red + 100) % 255,
-				0, 0);
-		_editPart.doRefreshFigure(AbstractElementModel.PROP_COLOR_BACKGROUND,
-				newBackgroundColor, _editPart.getFigure());
-		assertEquals(newBackgroundColor, rectangleFigure.getBackgroundColor()
-				.getRGB());
+		double oldFill = rectangleFigure.getFill();
+		double newFill = (oldFill + 10) % 100;
+		
+		_editPart.doRefreshFigure(RectangleElement.PROP_FILL,
+				newFill, _editPart.getFigure());
+		assertEquals(newFill, rectangleFigure.getFill());
 	}
 
 	/**

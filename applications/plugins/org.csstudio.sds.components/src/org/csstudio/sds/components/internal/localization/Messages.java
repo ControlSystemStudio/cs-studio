@@ -13,7 +13,7 @@ public final class Messages extends NLS {
 	 */
 	private static final String BUNDLE_NAME = "org.csstudio.sds.components.internal.localization.messages"; //$NON-NLS-1$
 
-	public static String FillGradeProperty;
+	public static String FillLevelProperty;
 
 	public static String PolyElement_POINTS;
 

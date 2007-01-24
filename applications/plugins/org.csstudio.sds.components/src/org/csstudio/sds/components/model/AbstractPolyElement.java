@@ -71,7 +71,7 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 				Messages.PolyElement_POINTS, PropertyCategory.Position,
 				new PointList());
 		addProperty(PROP_FILL, PropertyTypesEnum.DOUBLE,
-				Messages.FillGradeProperty, PropertyCategory.Behaviour,
+				Messages.FillLevelProperty, PropertyCategory.Behaviour,
 				100.0);
 	}
 

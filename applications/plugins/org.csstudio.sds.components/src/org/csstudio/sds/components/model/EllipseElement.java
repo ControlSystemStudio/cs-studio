@@ -81,7 +81,7 @@ public final class EllipseElement extends AbstractElementModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(PROP_FILL, PropertyTypesEnum.DOUBLE,
-				Messages.FillGradeProperty, PropertyCategory.Behaviour,
+				Messages.FillLevelProperty, PropertyCategory.Behaviour,
 				DEFAULT_FILL);
 	}
 

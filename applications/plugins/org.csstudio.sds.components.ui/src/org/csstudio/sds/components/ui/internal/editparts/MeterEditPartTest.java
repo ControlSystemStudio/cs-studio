@@ -5,9 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.csstudio.sds.components.model.MeterElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
-import org.csstudio.sds.model.AbstractElementModel;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,13 +46,14 @@ public final class MeterEditPartTest {
 				lowerBorderNewValue, _editPart.getFigure());
 		assertEquals(lowerBorderNewValue, meterFigure.getInterval1LowerBorder());
 
-		RGB oldBackgroundColor = meterFigure.getBackgroundColor().getRGB();
-		RGB newBackgroundColor = new RGB((oldBackgroundColor.red + 100) % 255,
-				0, 0);
-		_editPart.doRefreshFigure(AbstractElementModel.PROP_COLOR_BACKGROUND,
-				newBackgroundColor, _editPart.getFigure());
-		assertEquals(newBackgroundColor, meterFigure.getBackgroundColor()
-				.getRGB());
+		
+
+		double oldValue = meterFigure.getValue();
+		double newValue = (oldValue + 10) % 100;
+
+		_editPart.doRefreshFigure(MeterElement.PROP_VALUE, newValue, _editPart.getFigure());
+		assertEquals(newValue, meterFigure.getValue());
+		
 	}
 
 	/**
