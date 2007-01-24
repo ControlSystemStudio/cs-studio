@@ -42,7 +42,7 @@ public final class PolygonEditPartTest {
 		final double oldFillValue = polygonFigure.getFill();
 		final double newFillValue = oldFillValue+1;
 		
-		_editPart.doRefreshFigure(AbstractPolyElement.PROP_FILL_GRADE, newFillValue);
+		_editPart.doRefreshFigure(AbstractPolyElement.PROP_FILL, newFillValue);
 		assertEquals(newFillValue, polygonFigure.getFill());
 	}
 

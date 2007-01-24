@@ -73,7 +73,7 @@ public final class RectangleElementTest {
 	@Test
 	public void testProperties() {
 		assertTrue(_rectangleElement
-				.hasProperty(RectangleElement.PROP_FILL_PERCENTAGE));
+				.hasProperty(RectangleElement.PROP_FILL));
 		// Add further properties here
 	}
 

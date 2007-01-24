@@ -72,37 +72,37 @@ public final class MeterElement extends AbstractElementModel {
 	/**
 	 * The property id for the interval 1 lower border setting.
 	 */
-	public static final String PROP_INTERVAL1_LOWER_BORDER = "meter.PROP_INTERVAL1_LOWER_BORDER"; //$NON-NLS-1$
+	public static final String PROP_INTERVAL1_LOWER_BORDER = "interval1.lower"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the interval 1 upper border setting.
 	 */
-	public static final String PROP_INTERVAL1_UPPER_BORDER = "meter.PROP_INTERVAL1_UPPER_BORDER"; //$NON-NLS-1$
+	public static final String PROP_INTERVAL1_UPPER_BORDER = "interval1.upper"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the interval 2 lower border setting.
 	 */
-	public static final String PROP_INTERVAL2_LOWER_BORDER = "meter.PROP_INTERVAL2_LOWER_BORDER"; //$NON-NLS-1$
+	public static final String PROP_INTERVAL2_LOWER_BORDER = "interval2.lower"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the interval 2 upper border setting.
 	 */
-	public static final String PROP_INTERVAL2_UPPER_BORDER = "meter.PROP_INTERVAL2_UPPER_BORDER"; //$NON-NLS-1$
+	public static final String PROP_INTERVAL2_UPPER_BORDER = "interval2.upper"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the interval 3 lower border setting.
 	 */
-	public static final String PROP_INTERVAL3_LOWER_BORDER = "meter.PROP_INTERVAL3_LOWER_BORDER"; //$NON-NLS-1$
+	public static final String PROP_INTERVAL3_LOWER_BORDER = "interval3.lower"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the interval 3 upper border setting.
 	 */
-	public static final String PROP_INTERVAL3_UPPER_BORDER = "meter.PROP_INTERVAL3_UPPER_BORDER"; //$NON-NLS-1$
+	public static final String PROP_INTERVAL3_UPPER_BORDER = "interval3.uppper"; //$NON-NLS-1$
 
 	/**
 	 * The property id for the value setting.
 	 */
-	public static final String PROP_VALUE = "meter.PROP_VALUE"; //$NON-NLS-1$
+	public static final String PROP_VALUE = "value"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this model element.

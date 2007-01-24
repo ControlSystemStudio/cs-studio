@@ -35,9 +35,9 @@ import org.csstudio.sds.model.properties.PropertyTypesEnum;
  */
 public final class EllipseElement extends AbstractElementModel {
 	/**
-	 * The ID of the fill grade property.
+	 * The ID of the fill level property.
 	 */
-	public static final String PROP_FILL_PERCENTAGE = "ellipse.fillpercentage"; //$NON-NLS-1$
+	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this model element.
@@ -55,9 +55,9 @@ public final class EllipseElement extends AbstractElementModel {
 	private static final int DEFAULT_WIDTH = 20;
 
 	/**
-	 * The default value of the fill grade property.
+	 * The default value of the fill level property.
 	 */
-	private static final double DEFAULT_FILL_GRADE = 100.0;
+	private static final double DEFAULT_FILL = 100.0;
 
 	/**
 	 * Standard constructor.
@@ -80,9 +80,9 @@ public final class EllipseElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL_PERCENTAGE, PropertyTypesEnum.DOUBLE,
+		addProperty(PROP_FILL, PropertyTypesEnum.DOUBLE,
 				Messages.FillGradeProperty, PropertyCategory.Behaviour,
-				DEFAULT_FILL_GRADE);
+				DEFAULT_FILL);
 	}
 
 	/**
@@ -90,6 +90,6 @@ public final class EllipseElement extends AbstractElementModel {
 	 */
 	@Override
 	public String getDoubleTestProperty() {
-		return PROP_FILL_PERCENTAGE;
+		return PROP_FILL;
 	}
 }

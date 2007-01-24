@@ -34,7 +34,7 @@ public class EpicsRectangleInitializer implements IElementModelInitializer {
 		
 		final DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor(DirectConnectionRule.TYPE_ID);
 		dynamicsDescriptor.addInputParameterBinding(new ParameterDescriptor("$record$_calc", Double.class)); //$NON-NLS-1$
-		model.setDynamicsDescriptor(RectangleElement.PROP_FILL_PERCENTAGE, dynamicsDescriptor);
+		model.setDynamicsDescriptor(RectangleElement.PROP_FILL, dynamicsDescriptor);
 	}
 
 }

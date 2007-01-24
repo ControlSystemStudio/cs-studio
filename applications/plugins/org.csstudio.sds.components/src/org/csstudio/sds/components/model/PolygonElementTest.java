@@ -72,7 +72,7 @@ public final class PolygonElementTest {
 	@Test
 	public void testProperties () {
 		assertTrue(_polygonElement.hasProperty(PolygonElement.PROP_POINTS));
-		assertTrue(_polygonElement.hasProperty(PolygonElement.PROP_FILL_GRADE));
+		assertTrue(_polygonElement.hasProperty(PolygonElement.PROP_FILL));
 		// Add further properties here
 	}
 

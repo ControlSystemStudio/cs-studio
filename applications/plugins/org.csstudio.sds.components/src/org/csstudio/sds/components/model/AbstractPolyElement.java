@@ -38,12 +38,12 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 	/**
 	 * The ID of the points property.
 	 */
-	public static final String PROP_POINTS = "poly.points"; //$NON-NLS-1$
+	public static final String PROP_POINTS = "points"; //$NON-NLS-1$
 
 	/**
-	 * The ID of the fill grade property.
+	 * The ID of the fill level property.
 	 */
-	public static final String PROP_FILL_GRADE = "line.fillgrade"; //$NON-NLS-1$
+	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.
@@ -70,7 +70,7 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 		addProperty(PROP_POINTS, PropertyTypesEnum.POINT_LIST,
 				Messages.PolyElement_POINTS, PropertyCategory.Position,
 				new PointList());
-		addProperty(PROP_FILL_GRADE, PropertyTypesEnum.DOUBLE,
+		addProperty(PROP_FILL, PropertyTypesEnum.DOUBLE,
 				Messages.FillGradeProperty, PropertyCategory.Behaviour,
 				100.0);
 	}
@@ -80,7 +80,7 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 	 */
 	@Override
 	public final String getDoubleTestProperty() {
-		return PROP_FILL_GRADE;
+		return PROP_FILL;
 	}
 
 	/**

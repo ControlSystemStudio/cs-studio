@@ -52,7 +52,7 @@ public final class EllipseEditPart extends AbstractElementEditPart {
 		assert propertyName != null : "Precondition violated: propertyName != null"; //$NON-NLS-1$
 		assert ellipse != null : "Precondition violated: ellipse != null"; //$NON-NLS-1$
 		
-		if (propertyName.equals(EllipseElement.PROP_FILL_PERCENTAGE)) {
+		if (propertyName.equals(EllipseElement.PROP_FILL)) {
 			ellipse.setFill((Double) newValue);
 		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
 			ellipse.setBackgroundColor(CustomMediaFactory.getInstance()

@@ -62,7 +62,7 @@ public final class PolygonEditPart extends AbstractElementEditPart {
 			assert newValue instanceof PointList : "newValue instanceof PointList"; //$NON-NLS-1$
 			PointList points = (PointList) newValue;
 			polygon.setPoints(points);
-		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL_GRADE)) {
+		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL)) {
 			polygon.setFill((Double) newValue);
 		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
 			polygon.setBackgroundColor(CustomMediaFactory.getInstance()

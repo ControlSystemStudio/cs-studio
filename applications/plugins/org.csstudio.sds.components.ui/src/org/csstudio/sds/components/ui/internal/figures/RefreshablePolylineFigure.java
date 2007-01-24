@@ -41,7 +41,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		if (propertyName.equals(AbstractPolyElement.PROP_POINTS)) {
 			PointList points = (PointList) propertyValue;
 			setPoints(points);
-		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL_GRADE)) {
+		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL)) {
 			Double fillGrade = (Double) propertyValue;
 			setFill(fillGrade);
 		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {

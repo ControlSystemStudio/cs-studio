@@ -52,7 +52,7 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 		assert propertyName != null : "Precondition violated: propertyName != null"; //$NON-NLS-1$
 		assert rectangle != null : "Precondition violated: rectangle != null"; //$NON-NLS-1$
 		
-		if (propertyName.equals(RectangleElement.PROP_FILL_PERCENTAGE)) {
+		if (propertyName.equals(RectangleElement.PROP_FILL)) {
 			rectangle.setFill((Double) newValue);
 		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
 			rectangle.setBackgroundColor(CustomMediaFactory.getInstance()

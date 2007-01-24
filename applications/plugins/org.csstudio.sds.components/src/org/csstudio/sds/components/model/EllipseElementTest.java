@@ -69,7 +69,7 @@ public final class EllipseElementTest {
 	 */
 	@Test
 	public void testProperties () {
-		assertTrue(_ellipseElement.hasProperty(EllipseElement.PROP_FILL_PERCENTAGE));
+		assertTrue(_ellipseElement.hasProperty(EllipseElement.PROP_FILL));
 		// Add further properties here
 	}
 

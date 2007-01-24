@@ -45,7 +45,7 @@ public final class PolylineEditPart extends AbstractElementEditPart {
 			assert newValue instanceof PointList : "newValue instanceof PointList"; //$NON-NLS-1$
 			PointList points = (PointList) newValue;
 			polyline.setPoints(points);
-		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL_GRADE)) {
+		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL)) {
 			polyline.setFill((Double) newValue);
 			polyline.repaint();
 		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {

@@ -41,7 +41,7 @@ public final class EllipseEditPartTest {
 		final double oldFillValue = ellipseFigure.getFill();
 		final double newFillValue = oldFillValue+1;
 		
-		_editPart.doRefreshFigure(EllipseElement.PROP_FILL_PERCENTAGE, newFillValue);
+		_editPart.doRefreshFigure(EllipseElement.PROP_FILL, newFillValue);
 		assertEquals(newFillValue, ellipseFigure.getFill());
 	}
 
