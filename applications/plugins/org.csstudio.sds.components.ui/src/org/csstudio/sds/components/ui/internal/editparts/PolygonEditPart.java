@@ -64,10 +64,10 @@ public final class PolygonEditPart extends AbstractElementEditPart {
 			polygon.setPoints(points);
 		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL_GRADE)) {
 			polygon.setFill((Double) newValue);
-		} else if (propertyName.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
 			polygon.setBackgroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
-		} else if (propertyName.equals(AbstractElementModel.PROP_FOREGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_FOREGROUND)) {
 			polygon.setForegroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
 		}

@@ -54,10 +54,10 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 		
 		if (propertyName.equals(RectangleElement.PROP_FILL_PERCENTAGE)) {
 			rectangle.setFill((Double) newValue);
-		} else if (propertyName.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
 			rectangle.setBackgroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
-		} else if (propertyName.equals(AbstractElementModel.PROP_FOREGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_FOREGROUND)) {
 			rectangle.setForegroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
 		}

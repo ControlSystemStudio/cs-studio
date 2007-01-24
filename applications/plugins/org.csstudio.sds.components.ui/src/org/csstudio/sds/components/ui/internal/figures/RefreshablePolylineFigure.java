@@ -44,10 +44,10 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL_GRADE)) {
 			Double fillGrade = (Double) propertyValue;
 			setFill(fillGrade);
-		} else if (propertyName.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
 			setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 					(RGB) propertyValue));
-		} else if (propertyName.equals(AbstractElementModel.PROP_FOREGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_FOREGROUND)) {
 			setForegroundColor(CustomMediaFactory.getInstance().getColor(
 					(RGB) propertyValue));
 		}

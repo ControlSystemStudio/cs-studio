@@ -93,10 +93,10 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 		PointList copy = points.getCopy();
 		setPropertyValue(PROP_POINTS, copy);
 		Rectangle bounds = copy.getBounds();
-		setPropertyValue(PROP_X, bounds.x);
-		setPropertyValue(PROP_Y, bounds.y);
-		setPropertyValue(PROP_W, bounds.width);
-		setPropertyValue(PROP_H, bounds.height);
+		setPropertyValue(PROP_POS_X, bounds.x);
+		setPropertyValue(PROP_POS_Y, bounds.y);
+		setPropertyValue(PROP_WIDTH, bounds.width);
+		setPropertyValue(PROP_HEIGHT, bounds.height);
 	}
 
 	/**
@@ -168,16 +168,16 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 	@Override
 	public final synchronized void setPropertyValue(final String propertyID,
 			final Object value) {
-		if (propertyID.equals(AbstractElementModel.PROP_X)
+		if (propertyID.equals(AbstractElementModel.PROP_POS_X)
 				&& ((Integer) value != getPoints().getBounds().x)) {
 			setLocation((Integer) value, getY());
-		} else if (propertyID.equals(AbstractElementModel.PROP_Y)
+		} else if (propertyID.equals(AbstractElementModel.PROP_POS_Y)
 				&& ((Integer) value != getPoints().getBounds().y)) {
 			setLocation(getX(), (Integer) value);
-		} else if (propertyID.equals(AbstractElementModel.PROP_W)
+		} else if (propertyID.equals(AbstractElementModel.PROP_WIDTH)
 				&& ((Integer) value != getPoints().getBounds().width)) {
 			setSize((Integer) value, getHeight());
-		} else if (propertyID.equals(AbstractElementModel.PROP_H)
+		} else if (propertyID.equals(AbstractElementModel.PROP_HEIGHT)
 				&& ((Integer) value != getPoints().getBounds().height)) {
 			setSize(getWidth(), (Integer) value);
 		} else {

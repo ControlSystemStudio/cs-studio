@@ -42,7 +42,7 @@ public final class RectangleEditPartTest {
 		
 		RGB oldBackgroundColor = rectangleFigure.getBackgroundColor().getRGB();
 		RGB newBackgroundColor = new RGB((oldBackgroundColor.red +100)%255, 0, 0);
-		_editPart.doRefreshFigure(AbstractElementModel.PROP_BACKGROUND_COLOR, newBackgroundColor);
+		_editPart.doRefreshFigure(AbstractElementModel.PROP_COLOR_BACKGROUND, newBackgroundColor);
 		assertEquals(newBackgroundColor, rectangleFigure.getBackgroundColor().getRGB());
 	}
 

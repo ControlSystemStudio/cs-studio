@@ -48,11 +48,11 @@ public final class PolylineEditPart extends AbstractElementEditPart {
 		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL_GRADE)) {
 			polyline.setFill((Double) newValue);
 			polyline.repaint();
-		} else if (propertyName.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
 			polyline.setBackgroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
 			polyline.repaint();
-		} else if (propertyName.equals(AbstractElementModel.PROP_FOREGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_FOREGROUND)) {
 			polyline.setForegroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
 			polyline.repaint();

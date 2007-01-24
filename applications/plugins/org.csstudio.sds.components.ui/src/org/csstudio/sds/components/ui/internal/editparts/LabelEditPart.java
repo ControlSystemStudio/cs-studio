@@ -54,7 +54,7 @@ public final class LabelEditPart extends AbstractElementEditPart {
 		
 		if (propertyName.equals(LabelElement.PROP_LABEL)) {
 			label.setText(newValue.toString());
-		} else if (propertyName.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
 			label.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
 					(RGB) newValue));
 		} else if (propertyName.equals(LabelElement.PROP_FONT)) {

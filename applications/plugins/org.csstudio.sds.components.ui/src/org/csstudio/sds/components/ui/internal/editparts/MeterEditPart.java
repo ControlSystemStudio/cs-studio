@@ -74,7 +74,7 @@ public final class MeterEditPart extends AbstractElementEditPart {
 				.equals(MeterElement.PROP_INTERVAL3_UPPER_BORDER)) {
 			meter.setInterval3UpperBorder((Double) newValue);
 		} else if (propertyName
-				.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
+				.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
 			meter.setBackgroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
 		}

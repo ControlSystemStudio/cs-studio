@@ -97,6 +97,6 @@ public final class RectangleElement extends AbstractElementModel {
 	 */
 	@Override
 	public String getColorTestProperty() {
-		return PROP_FOREGROUND_COLOR;
+		return PROP_COLOR_FOREGROUND;
 	}
 }

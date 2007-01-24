@@ -25,11 +25,11 @@ public class EpicsMeterInitializer implements IElementModelInitializer {
 	 */
 	public void initialize(AbstractElementModel model, AbstractControlSystemSchema schema) {
 		if (MeterElement.ID.equals(model.getTypeID())) {
-			model.setPropertyValue(AbstractElementModel.PROP_FOREGROUND_COLOR, schema.getColorProperty(AbstractElementModel.PROP_FOREGROUND_COLOR));
+			model.setPropertyValue(AbstractElementModel.PROP_COLOR_FOREGROUND, schema.getColorProperty(AbstractElementModel.PROP_COLOR_FOREGROUND));
 			
 			final DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("scriptedColor"); //$NON-NLS-1$
 			dynamicsDescriptor.addInputParameterBinding(new ParameterDescriptor("abc", Double.class)); //$NON-NLS-1$
-			model.setDynamicsDescriptor(AbstractElementModel.PROP_BACKGROUND_COLOR, dynamicsDescriptor);
+			model.setDynamicsDescriptor(AbstractElementModel.PROP_COLOR_BACKGROUND, dynamicsDescriptor);
 		} else {
 			CentralLogger.getInstance().error(this, "The initialization schema of the type '" //$NON-NLS-1$
 					+ schema.getTypeId() +"' cannot be applied to a model of type '" //$NON-NLS-1$

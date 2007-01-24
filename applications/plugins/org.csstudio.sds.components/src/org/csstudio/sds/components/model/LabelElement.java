@@ -100,7 +100,7 @@ public final class LabelElement extends AbstractElementModel {
 	 */
 	@Override
 	public String getColorTestProperty() {
-		return PROP_BACKGROUND_COLOR;
+		return PROP_COLOR_BACKGROUND;
 	}
 	
 }

@@ -25,8 +25,8 @@ final public class EpicsSchema extends AbstractControlSystemSchema {
 	protected Map<String, Object> createPropertyMap() {
 		Map<String, Object> properties = new HashMap<String, Object>();
 		
-		properties.put(AbstractElementModel.PROP_BACKGROUND_COLOR, new RGB(255, 0, 0));
-		properties.put(AbstractElementModel.PROP_FOREGROUND_COLOR, new RGB(0, 255, 0));
+		properties.put(AbstractElementModel.PROP_COLOR_BACKGROUND, new RGB(255, 0, 0));
+		properties.put(AbstractElementModel.PROP_COLOR_FOREGROUND, new RGB(0, 255, 0));
 		//TODO add more properties
 		
 		return properties;

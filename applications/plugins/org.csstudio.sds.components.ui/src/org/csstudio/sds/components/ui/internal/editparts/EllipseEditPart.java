@@ -54,10 +54,10 @@ public final class EllipseEditPart extends AbstractElementEditPart {
 		
 		if (propertyName.equals(EllipseElement.PROP_FILL_PERCENTAGE)) {
 			ellipse.setFill((Double) newValue);
-		} else if (propertyName.equals(AbstractElementModel.PROP_BACKGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
 			ellipse.setBackgroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
-		} else if (propertyName.equals(AbstractElementModel.PROP_FOREGROUND_COLOR)) {
+		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_FOREGROUND)) {
 			ellipse.setForegroundColor(CustomMediaFactory.getInstance()
 					.getColor((RGB) newValue));
 		}

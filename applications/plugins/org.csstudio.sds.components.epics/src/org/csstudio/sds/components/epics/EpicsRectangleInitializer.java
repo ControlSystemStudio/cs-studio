@@ -26,8 +26,8 @@ public class EpicsRectangleInitializer implements IElementModelInitializer {
 		
 		assert model instanceof RectangleElement : "Precondition violated: model instanceof RectangleElement"; //$NON-NLS-1$
 	
-		model.setPropertyValue(AbstractElementModel.PROP_BACKGROUND_COLOR, schema.getColorProperty(AbstractElementModel.PROP_BACKGROUND_COLOR));
-		model.setPropertyValue(AbstractElementModel.PROP_FOREGROUND_COLOR, schema.getColorProperty(AbstractElementModel.PROP_FOREGROUND_COLOR));
+		model.setPropertyValue(AbstractElementModel.PROP_COLOR_BACKGROUND, schema.getColorProperty(AbstractElementModel.PROP_COLOR_BACKGROUND));
+		model.setPropertyValue(AbstractElementModel.PROP_COLOR_FOREGROUND, schema.getColorProperty(AbstractElementModel.PROP_COLOR_FOREGROUND));
 		
 		AliasDescriptor aliasDescriptor = new AliasDescriptor("record", "", "Enter the record name into the 'value' column.");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 		model.addAliasDescriptor(aliasDescriptor);
