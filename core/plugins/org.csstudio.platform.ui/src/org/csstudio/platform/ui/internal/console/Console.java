@@ -71,8 +71,9 @@ public final class Console {
 		consolePlugin.getConsoleManager().addConsoles(
 				new IConsole[] { _console });
 		System.setOut(new PrintStream(_stream));
-		
-		// the logging mechanism needs to be informed that the standard system out has changed!
+
+		// the logging mechanism needs to be informed that the standard system
+		// out has changed!
 		CentralLogger.getInstance().configure();
 	}
 

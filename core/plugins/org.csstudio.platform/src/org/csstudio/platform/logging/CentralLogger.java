@@ -522,7 +522,7 @@ public final class CentralLogger {
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_TCFBN);
 
 		// create the log4j root property
-		String rootProperty = "info"; //$NON-NLS-1$
+		String rootProperty = "debug"; //$NON-NLS-1$
 		if (prefs.getBoolean(PROP_LOG4J_CONSOLE)) {
 			rootProperty += "," + "css_console"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
