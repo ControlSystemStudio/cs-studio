@@ -2,11 +2,8 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.EllipseElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
-import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
-import org.csstudio.sds.uil.CustomMediaFactory;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
+import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
 /**
  * EditPart controller for <code>EllipseElement</code> elements.
@@ -20,47 +17,24 @@ public final class EllipseEditPart extends AbstractElementEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IFigure createFigure() {
-		RefreshableEllipseFigure ellipse = new RefreshableEllipseFigure();
-		AbstractElementModel elementModel = getCastedModel();
-
-		for (String key : elementModel.getPropertyNames()) {
-			setFigureProperties(key, elementModel.getProperty(key)
-					.getPropertyValue(), ellipse);
-		}
-		return ellipse;
+	protected IRefreshableFigure doCreateFigure() {
+		return new RefreshableEllipseFigure();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doRefreshFigure(final String propertyName,
-			final Object newValue) {
-		RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) getFigure();
-		setFigureProperties(propertyName, newValue, ellipse);
-		ellipse.repaint();
-	}
-
-	/**
-	 * Sets a property of a figure. Does not cause the figure to be (re-)painted! 
-	 * @param propertyName The property to set. Required.
-	 * @param newValue The value to set. 
-	 * @param ellipse The figure that is configured. Required.
-	 */
-	private void setFigureProperties(final String propertyName, final Object newValue, final RefreshableEllipseFigure ellipse) {
-		assert propertyName != null : "Precondition violated: propertyName != null"; //$NON-NLS-1$
-		assert ellipse != null : "Precondition violated: ellipse != null"; //$NON-NLS-1$
+	protected boolean doRefreshFigure(final String propertyName,
+			final Object newValue, final IRefreshableFigure figure) {
+		RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) figure;
 		
 		if (propertyName.equals(EllipseElement.PROP_FILL)) {
 			ellipse.setFill((Double) newValue);
-		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
-			ellipse.setBackgroundColor(CustomMediaFactory.getInstance()
-					.getColor((RGB) newValue));
-		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_FOREGROUND)) {
-			ellipse.setForegroundColor(CustomMediaFactory.getInstance()
-					.getColor((RGB) newValue));
+			return true;
 		}
+		
+		return false;
 	}
 
 }

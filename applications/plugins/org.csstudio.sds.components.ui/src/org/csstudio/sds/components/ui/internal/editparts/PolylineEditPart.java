@@ -4,10 +4,8 @@ import org.csstudio.sds.components.model.AbstractPolyElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
-import org.csstudio.sds.uil.CustomMediaFactory;
-import org.eclipse.draw2d.IFigure;
+import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.geometry.PointList;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for <code>PolylineElement</code> elements.
@@ -21,7 +19,7 @@ public final class PolylineEditPart extends AbstractElementEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IFigure createFigure() {
+	protected IRefreshableFigure doCreateFigure() {
 		RefreshablePolylineFigure polyline = new RefreshablePolylineFigure();
 		AbstractElementModel elementModel = getCastedModel();
 
@@ -37,25 +35,21 @@ public final class PolylineEditPart extends AbstractElementEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doRefreshFigure(final String propertyName,
-			final Object newValue) {
-		RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) getFigure();
+	protected boolean doRefreshFigure(final String propertyName,
+			final Object newValue, final IRefreshableFigure figure) {
+		RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) figure;
 
 		if (propertyName.equals(AbstractPolyElement.PROP_POINTS)) {
 			assert newValue instanceof PointList : "newValue instanceof PointList"; //$NON-NLS-1$
 			PointList points = (PointList) newValue;
 			polyline.setPoints(points);
+			return false; // Performance Optimization (setPoints() already
+			// refreshes the figure)
 		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL)) {
 			polyline.setFill((Double) newValue);
-			polyline.repaint();
-		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
-			polyline.setBackgroundColor(CustomMediaFactory.getInstance()
-					.getColor((RGB) newValue));
-			polyline.repaint();
-		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_FOREGROUND)) {
-			polyline.setForegroundColor(CustomMediaFactory.getInstance()
-					.getColor((RGB) newValue));
-			polyline.repaint();
+			return true;
 		}
+		
+		return false;
 	}
 }

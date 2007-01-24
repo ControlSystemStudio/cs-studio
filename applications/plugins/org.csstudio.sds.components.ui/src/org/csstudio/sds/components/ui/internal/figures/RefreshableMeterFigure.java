@@ -1,5 +1,6 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.AntialiasingUtil;
 import org.eclipse.draw2d.ColorConstants;
@@ -35,6 +36,11 @@ public final class RefreshableMeterFigure extends ImageFigure implements
 	/** The dial extent (measured in degrees). */
 	private int _meterAngle = 270;
 
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
+	
 	/**
 	 * The current value.
 	 */
@@ -287,6 +293,19 @@ public final class RefreshableMeterFigure extends ImageFigure implements
 	 */
 	public double getInterval3UpperBorder() {
 		return _interval3UpperBorder;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if(_borderAdapter==null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
+		return null;
 	}
 
 }

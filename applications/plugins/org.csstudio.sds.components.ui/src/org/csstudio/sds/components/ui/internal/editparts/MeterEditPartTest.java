@@ -15,7 +15,7 @@ import org.junit.Test;
  * @author Stefan Hofer
  * 
  * @version $Revision$
- *
+ * 
  */
 public final class MeterEditPartTest {
 
@@ -34,29 +34,36 @@ public final class MeterEditPartTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.MeterEditPart#doRefreshFigure(java.lang.String, java.lang.Object)}.
+	 * Test method for
+	 * {@link org.csstudio.sds.components.ui.internal.editparts.MeterEditPart#doRefreshFigure(java.lang.String, java.lang.Object)}.
 	 */
 	@Test
 	public void testDoRefreshFigure() {
-		RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) _editPart.getFigure();
+		RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) _editPart
+				.getFigure();
 		final double lowerBorderValue = meterFigure.getInterval1LowerBorder();
-		final double lowerBorderNewValue = lowerBorderValue+1;
-		
-		_editPart.doRefreshFigure(MeterElement.PROP_INTERVAL1_LOWER_BORDER, lowerBorderNewValue);
+		final double lowerBorderNewValue = lowerBorderValue + 1;
+
+		_editPart.doRefreshFigure(MeterElement.PROP_INTERVAL1_LOWER_BORDER,
+				lowerBorderNewValue, _editPart.getFigure());
 		assertEquals(lowerBorderNewValue, meterFigure.getInterval1LowerBorder());
-		
+
 		RGB oldBackgroundColor = meterFigure.getBackgroundColor().getRGB();
-		RGB newBackgroundColor = new RGB((oldBackgroundColor.red +100)%255, 0, 0);
-		_editPart.doRefreshFigure(AbstractElementModel.PROP_COLOR_BACKGROUND, newBackgroundColor);
-		assertEquals(newBackgroundColor, meterFigure.getBackgroundColor().getRGB());
+		RGB newBackgroundColor = new RGB((oldBackgroundColor.red + 100) % 255,
+				0, 0);
+		_editPart.doRefreshFigure(AbstractElementModel.PROP_COLOR_BACKGROUND,
+				newBackgroundColor, _editPart.getFigure());
+		assertEquals(newBackgroundColor, meterFigure.getBackgroundColor()
+				.getRGB());
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.MeterEditPart#createFigure()}.
+	 * Test method for
+	 * {@link org.csstudio.sds.components.ui.internal.editparts.MeterEditPart#createFigure()}.
 	 */
 	@Test
 	public void testCreateFigure() {
-		IFigure figure = _editPart.createFigure();
+		IFigure figure = _editPart.doCreateFigure();
 		assertTrue(figure instanceof RefreshableMeterFigure);
 	}
 

@@ -25,6 +25,7 @@ import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.PropertyTypesEnum;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * This class defines an rectangle model element.
@@ -35,7 +36,7 @@ import org.csstudio.sds.model.properties.PropertyTypesEnum;
  */
 public final class RectangleElement extends AbstractElementModel {
 	/**
-	 * The ID of the fill level property.
+	 * The ID of the fill grade property.
 	 */
 	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
 
@@ -55,7 +56,7 @@ public final class RectangleElement extends AbstractElementModel {
 	private static final int DEFAULT_WIDTH = 20;
 
 	/**
-	 * The default value of the fill level property.
+	 * The default value of the fill grade property.
 	 */
 	private static final double DEFAULT_FILL = 100.0;
 
@@ -83,7 +84,15 @@ public final class RectangleElement extends AbstractElementModel {
 				Messages.FillGradeProperty,
 				PropertyCategory.Behaviour, DEFAULT_FILL);
 	}
-
+	
+	/**
+	 * Gets the fill grade.
+	 * @return the fill grade
+	 */
+	public double getFillGrad() {
+		return (Double) getProperty(PROP_FILL).getPropertyValue();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

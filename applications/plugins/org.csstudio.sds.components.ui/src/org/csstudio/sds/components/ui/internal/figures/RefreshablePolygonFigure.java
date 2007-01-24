@@ -1,5 +1,6 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
@@ -21,6 +22,11 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	 */
 	private double _fill = 100.0;
 
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
+	
 	/**
 	 * Constructor.
 	 */
@@ -94,4 +100,16 @@ public final class RefreshablePolygonFigure extends Polygon implements
 		return _fill;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if(_borderAdapter==null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
+		return null;
+	}
 }

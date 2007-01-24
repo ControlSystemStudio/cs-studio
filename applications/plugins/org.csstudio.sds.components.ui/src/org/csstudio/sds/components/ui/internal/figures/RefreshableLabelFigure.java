@@ -1,5 +1,6 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.Label;
@@ -20,6 +21,11 @@ public final class RefreshableLabelFigure extends Label implements
 	public static final Font FONT = CustomMediaFactory.getInstance().getFont(
 			"Arial", 8, SWT.NONE); //$NON-NLS-1$
 
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
+	
 	/**
 	 * Constructor.
 	 */
@@ -48,5 +54,18 @@ public final class RefreshableLabelFigure extends Label implements
 	@Override
 	public void setText(final String s) {
 		super.setText(s);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if(_borderAdapter==null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
+		return null;
 	}
 }

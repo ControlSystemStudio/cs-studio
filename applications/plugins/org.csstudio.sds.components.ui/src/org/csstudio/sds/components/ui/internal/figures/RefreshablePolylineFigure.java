@@ -2,10 +2,12 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.components.model.AbstractPolyElement;
 import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -27,6 +29,11 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	private double _fill = 100.0;
 	
 	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
+	
+	/**
 	 * Constructor.
 	 */
 	public RefreshablePolylineFigure() {
@@ -38,6 +45,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	 * {@inheritDoc}
 	 */
 	public void refresh(final String propertyName, final Object propertyValue) {
+		//TODO: SETTER BAUEN (swende)
 		if (propertyName.equals(AbstractPolyElement.PROP_POINTS)) {
 			PointList points = (PointList) propertyValue;
 			setPoints(points);
@@ -115,4 +123,16 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		return _fill;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if(_borderAdapter==null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
+		return null;
+	}
 }

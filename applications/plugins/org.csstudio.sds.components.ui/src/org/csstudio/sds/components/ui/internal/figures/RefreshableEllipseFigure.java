@@ -1,8 +1,11 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
@@ -18,6 +21,11 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 	 * The fill grade (0 - 100%).
 	 */
 	private double _fill = 100.0;
+	
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
 	
 	/**
 	 * {@inheritDoc}
@@ -63,5 +71,18 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 	 */
 	public double getFill() {
 		return _fill;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if(_borderAdapter==null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
+		return null;
 	}
 }

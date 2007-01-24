@@ -15,7 +15,7 @@ import org.junit.Test;
  * @author Stefan Hofer
  * 
  * @version $Revision$
- *
+ * 
  */
 public final class RectangleEditPartTest {
 
@@ -34,24 +34,30 @@ public final class RectangleEditPartTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.RectangleEditPart#doRefreshFigure(java.lang.String, java.lang.Object)}.
+	 * Test method for
+	 * {@link org.csstudio.sds.components.ui.internal.editparts.RectangleEditPart#doRefreshFigure(java.lang.String, java.lang.Object)}.
 	 */
 	@Test
 	public void testDoRefreshFigure() {
-		RefreshableRectangleFigure rectangleFigure = (RefreshableRectangleFigure) _editPart.getFigure();
-		
+		RefreshableRectangleFigure rectangleFigure = (RefreshableRectangleFigure) _editPart
+				.getFigure();
+
 		RGB oldBackgroundColor = rectangleFigure.getBackgroundColor().getRGB();
-		RGB newBackgroundColor = new RGB((oldBackgroundColor.red +100)%255, 0, 0);
-		_editPart.doRefreshFigure(AbstractElementModel.PROP_COLOR_BACKGROUND, newBackgroundColor);
-		assertEquals(newBackgroundColor, rectangleFigure.getBackgroundColor().getRGB());
+		RGB newBackgroundColor = new RGB((oldBackgroundColor.red + 100) % 255,
+				0, 0);
+		_editPart.doRefreshFigure(AbstractElementModel.PROP_COLOR_BACKGROUND,
+				newBackgroundColor, _editPart.getFigure());
+		assertEquals(newBackgroundColor, rectangleFigure.getBackgroundColor()
+				.getRGB());
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.RectangleEditPart#createFigure()}.
+	 * Test method for
+	 * {@link org.csstudio.sds.components.ui.internal.editparts.RectangleEditPart#createFigure()}.
 	 */
 	@Test
 	public void testCreateFigure() {
-		IFigure figure = _editPart.createFigure();
+		IFigure figure = _editPart.doCreateFigure();
 		assertTrue(figure instanceof RefreshableRectangleFigure);
 	}
 

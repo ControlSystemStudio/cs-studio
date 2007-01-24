@@ -27,6 +27,7 @@ import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.PropertyTypesEnum;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * An label model element.

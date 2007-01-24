@@ -1,10 +1,14 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * A rectangle figure.
@@ -18,7 +22,13 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	/**
 	 * The fill grade (0 - 100%).
 	 */
-	private double _fill = 100.0;
+	private double _fillGrade = 100;
+
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
+
 
 	/**
 	 * {@inheritDoc}
@@ -51,7 +61,7 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	 *            the fill grade.
 	 */
 	public void setFill(final double fill) {
-		_fill = fill;
+		_fillGrade = fill;
 	}
 
 	/**
@@ -60,6 +70,20 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	 * @return the fill grade
 	 */
 	public double getFill() {
-		return _fill;
+		return _fillGrade;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if(_borderAdapter==null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
+		return null;
+	}
+
 }

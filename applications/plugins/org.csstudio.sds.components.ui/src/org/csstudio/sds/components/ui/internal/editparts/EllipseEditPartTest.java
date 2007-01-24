@@ -41,7 +41,7 @@ public final class EllipseEditPartTest {
 		final double oldFillValue = ellipseFigure.getFill();
 		final double newFillValue = oldFillValue+1;
 		
-		_editPart.doRefreshFigure(EllipseElement.PROP_FILL, newFillValue);
+		_editPart.doRefreshFigure(EllipseElement.PROP_FILL, newFillValue, _editPart.getFigure());
 		assertEquals(newFillValue, ellipseFigure.getFill());
 	}
 
@@ -50,7 +50,7 @@ public final class EllipseEditPartTest {
 	 */
 	@Test
 	public void testCreateFigure() {
-		IFigure figure = _editPart.createFigure();
+		IFigure figure = _editPart.doCreateFigure();
 		assertTrue(figure instanceof RefreshableEllipseFigure);
 	}
 
