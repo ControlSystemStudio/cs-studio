@@ -37,6 +37,10 @@ WITH THE DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML.
 IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM.
    </license>
 
+   <url>
+      <update url="http://eclipse.desy.de/update/"/>
+   </url>
+
    <requires>
       <import feature="org.csstudio.platform.feature" version="0.9.0"/>
    </requires>
@@ -46,5 +50,12 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="org.csstudio.archive"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
