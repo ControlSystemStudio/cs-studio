@@ -89,6 +89,11 @@ public final class SaveAsDialog extends TitleAreaDialog {
 	 * The OK button.
 	 */
 	private Button _okButton;
+	
+	/**
+	 * The default file extension.
+	 */
+	private String _fileExtension = ""; //$NON-NLS-1$
 
 	/**
 	 * Creates a new Save As dialog for no specific file.
@@ -118,6 +123,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
 
 		initializeControls();
 		validatePage();
+		_resourceGroup.setFileExtension(_fileExtension);
 		_resourceGroup.setFocus();
 		setTitle(Messages.getString("SaveAsDialog.TITLE")); //$NON-NLS-1$
 		setMessage(Messages.getString("SaveAsDialog.MESSAGE")); //$NON-NLS-1$
@@ -159,7 +165,9 @@ public final class SaveAsDialog extends TitleAreaDialog {
 			}
 		};
 
-		_resourceGroup = new ResourceAndContainerGroup(composite, listener,
+		_resourceGroup = new ResourceAndContainerGroup(
+				composite,
+				listener,
 				Messages.getString("SaveAsDialog.FILE_LABEL"), Messages.getString("SaveAsDialog.FILE")); //$NON-NLS-1$ //$NON-NLS-2$
 		_resourceGroup.setAllowExistingResources(true);
 
@@ -222,11 +230,11 @@ public final class SaveAsDialog extends TitleAreaDialog {
 		if (file.exists()) {
 			String[] buttons = new String[] { IDialogConstants.YES_LABEL,
 					IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL };
-			String question = NLS
-					.bind(
-							Messages.getString("SaveAsDialog.OVERWRITE_QUESTION"), //$NON-NLS-1$
-							path.toOSString());
-			MessageDialog d = new MessageDialog(getShell(), Messages.getString("SaveAsDialog.QUESTION"), null, //$NON-NLS-1$
+			String question = NLS.bind(Messages
+					.getString("SaveAsDialog.OVERWRITE_QUESTION"), //$NON-NLS-1$
+					path.toOSString());
+			MessageDialog d = new MessageDialog(getShell(), Messages
+					.getString("SaveAsDialog.QUESTION"), null, //$NON-NLS-1$
 					question, MessageDialog.QUESTION, buttons, 0);
 			int overwrite = d.open();
 			switch (overwrite) {
@@ -278,6 +286,16 @@ public final class SaveAsDialog extends TitleAreaDialog {
 	 */
 	public void setOriginalName(final String originalName) {
 		_originalName = originalName;
+	}
+
+	/**
+	 * Set the file extension.
+	 * 
+	 * @param fileExtension
+	 *            The file extension to set
+	 */
+	public void setFileExtension(final String fileExtension) {
+		_fileExtension = fileExtension;
 	}
 
 	/**
