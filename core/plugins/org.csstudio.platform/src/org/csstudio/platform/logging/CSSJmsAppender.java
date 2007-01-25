@@ -413,6 +413,8 @@ public class CSSJmsAppender extends AppenderSkeleton
             msg.setString("TYPE", getMessageType());
             msg.setString("TEXT", this.layout.format(event).trim());
             
+            msg.setString("CREATETIME", format.format(cal.getTime()));
+            
             cal.setTimeInMillis(event.timeStamp);
             
             msg.setString("EVENTTIME", format.format(cal.getTime()));
