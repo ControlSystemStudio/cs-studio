@@ -95,9 +95,11 @@ public class LogViewArchive extends ViewPart {
 
 		Group buttons = new Group(comp, SWT.LINE_SOLID);
 		buttons.setText(Messages.getString("LogViewArchive_period"));
-		buttons.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1,
-				1));
 		buttons.setLayout(new GridLayout(5, true));
+		GridData gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
+		gd.minimumHeight = 60;
+		gd.minimumWidth = 300;
+		buttons.setLayoutData(gd);
 
 		create24hButton(buttons);
 		create72hButton(buttons);
