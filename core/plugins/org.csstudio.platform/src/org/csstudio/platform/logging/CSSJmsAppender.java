@@ -424,7 +424,7 @@ public class CSSJmsAppender extends AppenderSkeleton
             if(location != null)
             {
                 msg.setString("CLASS", location.getClassName());
-                msg.setString("METHODNAME", location.getMethodName());
+                msg.setString("NAME", location.getMethodName());
                 msg.setString("FILENAME", location.getFileName());
             }
       
