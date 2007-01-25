@@ -99,7 +99,7 @@ public final class PlatformPreferencesInitializer extends
 	 */
 	private void initializeJmsAppenderPreferences(final IEclipsePreferences node) {
 		node.put(CentralLogger.PROP_LOG4J_JMS_APPENDER,
-				"org.apache.log4j.net.JMSAppender"); //$NON-NLS-1$
+				"org.csstudio.platform.logging.CSSJmsAppender"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_JMS_THRESHOLD, "INFO"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_JMS_LAYOUT,
 				"org.apache.log4j.PatternLayout"); //$NON-NLS-1$
