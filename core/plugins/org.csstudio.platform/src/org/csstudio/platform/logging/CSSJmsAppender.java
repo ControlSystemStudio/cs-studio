@@ -105,22 +105,22 @@ import javax.naming.NamingException;
 
 public class CSSJmsAppender extends AppenderSkeleton
 {
-    protected String securityPrincipalName;
-    protected String securityCredentials;
-    protected String initialContextFactoryName;
-    protected String urlPkgPrefixes;
-    protected String providerURL;
-    protected String topicBindingName;
-    protected String tcfBindingName;
-    protected String userName;
-    protected String password;
-    protected String messageType;
+    private String securityPrincipalName;
+    private String securityCredentials;
+    private String initialContextFactoryName;
+    private String urlPkgPrefixes;
+    private String providerURL;
+    private String topicBindingName;
+    private String tcfBindingName;
+    private String userName;
+    private String password;
+    private String messageType;
 
-    protected boolean locationInfo;
+    private boolean locationInfo;
 
-    protected TopicConnection  topicConnection;
-    protected TopicSession topicSession;
-    protected TopicPublisher  topicPublisher;
+    private TopicConnection  topicConnection;
+    private TopicSession topicSession;
+    private TopicPublisher  topicPublisher;
 
     /**
      * CSS needs a Constructor without any parameter. 
