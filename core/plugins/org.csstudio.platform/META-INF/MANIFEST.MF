@@ -6,7 +6,8 @@ Bundle-Version: 0.9.2
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.junit4,
- org.csstudio.platform.libs.jms
+ org.csstudio.platform.libs.jms,
+ org.eclipse.core.resources
 Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
 Bundle-Vendor: Desy
 Export-Package: org.csstudio.platform,
