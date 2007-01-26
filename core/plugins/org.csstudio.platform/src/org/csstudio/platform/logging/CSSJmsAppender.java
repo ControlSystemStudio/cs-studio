@@ -23,6 +23,8 @@ import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.helpers.LogLog;
+import org.csstudio.platform.CSSPlatformInfo;
+
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Properties;
@@ -429,7 +431,16 @@ public class CSSJmsAppender extends AppenderSkeleton
                 msg.setString("NAME", location.getMethodName());
                 msg.setString("FILENAME", location.getFileName());
             }
-      
+
+            CSSPlatformInfo pinfo = CSSPlatformInfo.getInstance();
+            
+            if(pinfo != null)
+            {
+                msg.setString("APPLICATION-ID", pinfo.getApplicationId());
+                msg.setString("HOST", pinfo.getHostId());
+                msg.setString("USER", pinfo.getUserId());
+            }
+
             topicPublisher.publish(msg);
         }
         catch(Exception e)
