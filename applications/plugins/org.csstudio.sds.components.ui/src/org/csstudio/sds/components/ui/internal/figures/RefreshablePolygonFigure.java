@@ -41,16 +41,16 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	 */
 	@Override
 	protected void fillShape(final Graphics graphics) {
-		Rectangle bounds = getBounds();
+		Rectangle figureBounds = getBounds();
 
-		int newW = (int) Math.round(bounds.width * (getFill() / 100));
+		int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
 
 		graphics
-				.setClip(new Rectangle(bounds.x, bounds.y, newW, bounds.height));
+				.setClip(new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height));
 		graphics.setBackgroundColor(getForegroundColor());
 		graphics.fillPolygon(getPoints());
-		graphics.setClip(new Rectangle(bounds.x + newW, bounds.y, bounds.width
-				- newW, bounds.height));
+		graphics.setClip(new Rectangle(figureBounds.x + newW, figureBounds.y, figureBounds.width
+				- newW, figureBounds.height));
 		graphics.setBackgroundColor(getBackgroundColor());
 		graphics.fillPolygon(getPoints());
 	}

@@ -27,8 +27,8 @@ public final class PolygonEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected boolean doRefreshFigure(final String propertyName,
-			final Object newValue, final IRefreshableFigure figure) {
-		RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) figure;
+			final Object newValue, final IRefreshableFigure f) {
+		RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) f;
 
 		if (propertyName.equals(AbstractPolyElement.PROP_POINTS)) {
 			assert newValue instanceof PointList : "newValue instanceof PointList"; //$NON-NLS-1$

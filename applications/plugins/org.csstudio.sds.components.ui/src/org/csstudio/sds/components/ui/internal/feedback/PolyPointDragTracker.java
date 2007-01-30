@@ -4,6 +4,7 @@ import org.csstudio.sds.components.model.AbstractPolyElement;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -17,7 +18,6 @@ import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.handles.HandleBounds;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
-import org.eclipse.gef.tools.ResizeTracker;
 import org.eclipse.gef.tools.SimpleDragTracker;
 
 /**
@@ -124,6 +124,7 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Request createSourceRequest() {
 		ChangeBoundsRequest request = new ChangeBoundsRequest();
@@ -152,7 +153,7 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 				getLocation().y);
 
 		if (_snapToHelper != null) {
-			_snapToHelper.snapPoint(request, SnapToHelper.NORTH_WEST,
+			_snapToHelper.snapPoint(request, PositionConstants.NORTH_WEST,
 					new PrecisionPoint(getLocation().x, getLocation().y),
 					location);
 		}
@@ -201,6 +202,7 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 	 * 
 	 * @return the source request
 	 */
+	@Override
 	protected Request getSourceRequest() {
 
 		if (_sourceRequest == null) {

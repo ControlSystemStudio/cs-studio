@@ -36,8 +36,8 @@ public final class PolylineEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected boolean doRefreshFigure(final String propertyName,
-			final Object newValue, final IRefreshableFigure figure) {
-		RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) figure;
+			final Object newValue, final IRefreshableFigure f) {
+		RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) f;
 
 		if (propertyName.equals(AbstractPolyElement.PROP_POINTS)) {
 			assert newValue instanceof PointList : "newValue instanceof PointList"; //$NON-NLS-1$

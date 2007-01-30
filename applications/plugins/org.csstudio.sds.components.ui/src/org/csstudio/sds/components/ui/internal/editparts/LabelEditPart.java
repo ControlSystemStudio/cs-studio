@@ -27,8 +27,8 @@ public final class LabelEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected boolean doRefreshFigure(final String propertyName,
-			final Object newValue, final IRefreshableFigure figure) {
-		RefreshableLabelFigure label = (RefreshableLabelFigure) figure;
+			final Object newValue, final IRefreshableFigure f) {
+		RefreshableLabelFigure label = (RefreshableLabelFigure) f;
 		
 		if (propertyName.equals(LabelElement.PROP_LABEL)) {
 			label.setText(newValue.toString());

@@ -29,7 +29,7 @@ abstract class AbstractPolyFeedbackFactory implements
 	/**
 	 * An identifier which is used as key for extended data in request objects.
 	 */
-	public static final String PROP_POINTS = "points";
+	public static final String PROP_POINTS = "points"; //$NON-NLS-1$
 
 	/**
 	 * Subclasses should return an appropriate feedback figure. This basically
@@ -128,7 +128,7 @@ abstract class AbstractPolyFeedbackFactory implements
 	public final void showSizeOnDropFeedback(final CreateRequest createRequest,
 			final IFigure feedbackFigure, final Insets insets) {
 		assert createRequest != null;
-		assert feedbackFigure instanceof Polyline : "feedbackFigure instanceof Polyline";
+		assert feedbackFigure instanceof Polyline : "feedbackFigure instanceof Polyline"; //$NON-NLS-1$
 		Polyline polyline = (Polyline) feedbackFigure;
 
 		// the request should contain a point list, because the creation is done

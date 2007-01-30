@@ -26,8 +26,8 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected synchronized boolean doRefreshFigure(final String propertyName,
-			final Object newValue, final IRefreshableFigure figure) {
-		RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) figure;
+			final Object newValue, final IRefreshableFigure f) {
+		RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) f;
 		
 		if (propertyName.equals(RectangleElement.PROP_FILL)) {
 			rectangle.setFill((Double) newValue);

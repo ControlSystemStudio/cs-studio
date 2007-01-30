@@ -275,7 +275,7 @@ public final class PointListCreationTool extends TargetingTool {
 				getLocation().y);
 
 		if (_snap2Helper != null) {
-			_snap2Helper.snapPoint(req, SnapToHelper.NORTH_WEST,
+			_snap2Helper.snapPoint(req, PositionConstants.NORTH_WEST,
 					new PrecisionPoint(getLocation().x, getLocation().y),
 					location);
 		}

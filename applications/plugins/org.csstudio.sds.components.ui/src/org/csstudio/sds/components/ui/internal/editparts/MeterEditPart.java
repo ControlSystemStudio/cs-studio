@@ -26,9 +26,9 @@ public final class MeterEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected boolean doRefreshFigure(final String propertyName,
-			final Object newValue, final IRefreshableFigure figure) {
+			final Object newValue, final IRefreshableFigure f) {
 
-		RefreshableMeterFigure meter = (RefreshableMeterFigure) figure;
+		RefreshableMeterFigure meter = (RefreshableMeterFigure) f;
 		
 		if (propertyName.equals(MeterElement.PROP_VALUE)) {
 			meter.setValue((Double) newValue);
