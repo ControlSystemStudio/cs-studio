@@ -39,6 +39,12 @@
             icon="icons/polyline.gif"
             name="Polyline"
             typeId="element.polyline"/>
+      <modelElementFactory
+            class="org.csstudio.sds.components.internal.model.TextInputElementFactory"
+            description="Text Input"
+            icon="icons/label.gif"
+            name="Text Input"
+            typeId="element.textinput"/>            
    </extension>
 
 </plugin>

@@ -21,6 +21,9 @@
      <sdsEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.PolylineEditPart"
            typeId="element.polyline"/>
+     <sdsEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.TextInputEditPart"
+           typeId="element.textinput"/>           
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">
