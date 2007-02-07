@@ -36,8 +36,7 @@ class SearchJob extends Job
         
         public void run()
         {
-            for (int i=0; i<infos.length; ++i)
-                archives_view.addNameInfo(infos[i], key);
+            archives_view.addNameInfos(infos, key);
         }
     }
     

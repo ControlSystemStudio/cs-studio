@@ -106,8 +106,12 @@ public class ArchiveView extends PlotAwareView
                 (IStructuredSelection) name_table_viewer.getSelection();
             if (sel.isEmpty())
                 return;
-            Object o[] = sel.toArray();
-            name_table_viewer.remove(o);
+            Object items[] = sel.toArray();
+            for (int i = 0; i < items.length; i++)
+            {
+                name_table_items.remove(items[i]);
+            }
+            name_table_viewer.setItemCount(name_table_items.size());
         }
     };
 
@@ -285,7 +289,8 @@ public class ArchiveView extends PlotAwareView
         
         // Table with list of names
         table = new Table(box,
-               SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
+               SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
+               | SWT.VIRTUAL);
         // ...
         gd = new GridData();
         gd.horizontalSpan = layout.numColumns;
@@ -303,9 +308,12 @@ public class ArchiveView extends PlotAwareView
         // Configure table to auto-size the columns
         new AutoSizeControlListener(box, table);
         name_table_viewer = new TableViewer(table);
+        name_table_viewer.setUseHashlookup(true);
         name_table_viewer.setLabelProvider(new NameTableItemLabelProvider());
-        name_table_viewer.setContentProvider(new ArrayContentProvider());
-        name_table_viewer.setInput(name_table_items);
+        name_table_viewer.setContentProvider(
+            new LazyNameTableContentProvider(name_table_viewer,
+                                             name_table_items));
+        name_table_viewer.setItemCount(name_table_items.size());
 
         // Set initial (relative) sizes
         form.setWeights(new int[] {50,50});
@@ -461,23 +469,26 @@ public class ArchiveView extends PlotAwareView
     public void clearNames()
     {
         name_table_items.clear();
-        name_table_viewer.refresh();
+        name_table_viewer.setItemCount(name_table_items.size());
     }
     
-    /** Add given name info to the list of names. */
-    public void addNameInfo(NameInfo name_info, int key)
+    /** Add given name infos to the list of names. */
+    public void addNameInfos(NameInfo name_infos[], int key)
     {
         try
         {
-            name_table_items.add(new NameTableItem(server, key,
-                                                   name_info.getName(),
-                                                   name_info.getStart(),
-                                                   name_info.getEnd()));
-            name_table_viewer.refresh();
+            for (int i = 0; i < name_infos.length; i++)
+            {
+                name_table_items.add(new NameTableItem(server, key,
+                                name_infos[i].getName(),
+                                name_infos[i].getStart(),
+                                name_infos[i].getEnd()));
+            }
         }
         catch (Exception e)
         {
             Plugin.logException("Cannot add name", e); //$NON-NLS-1$
         }
+        name_table_viewer.setItemCount(name_table_items.size());
     }
 }
