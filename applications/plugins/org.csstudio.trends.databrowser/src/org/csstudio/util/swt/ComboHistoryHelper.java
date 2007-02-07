@@ -10,9 +10,17 @@ import org.eclipse.swt.widgets.Combo;
 /** Maintains a 'history' Combo box.
  *  <p>
  *  Newly entered items are added to the top of the combo list,
- *  dropping last items off the list when reaching a comfigurable maximum
+ *  dropping last items off the list when reaching a configurable maximum
  *  list size.
  *  <p>
+ *  You must
+ *  <ul>
+ *  <li>implement newSelection() to handle entered/selected values
+ *  <li>decide if you want to call loadSettings() to restore the saved
+ *      values
+ *  <li>save values via saveSettings, or use the save_on_dispose
+ *      option of the constructor.
+ *  </ul>
  *  @see #newSelection(String)
  *  @author Kay Kasemir
  */
