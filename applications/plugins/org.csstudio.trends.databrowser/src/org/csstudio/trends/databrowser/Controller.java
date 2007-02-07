@@ -171,7 +171,14 @@ public class Controller implements ScannerAndScrollerListener
     /** Add a PV. */
     public void add(String pv_name)
     {
-        nameDropped(pv_name, null);
+        IModelItem item = nameDropped(pv_name, null);
+
+        //If the new item has no archive data source add the default archive data source.
+        if (item.getArchiveDataSources().length == 0) {
+        	IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
+        	for (int i = 0; i < archives.length; i++)
+        		item.addArchiveDataSource(archives[i]);
+        }
     }
 
     private IModelItem nameDropped(String name, YAxis yaxis)

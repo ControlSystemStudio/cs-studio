@@ -57,7 +57,9 @@ public class ArchiveCache
         ArchiveServer real_server = 
             ArchiveImplementationRegistry.getInstance().getServer(url);
         CachingArchiveServer server = new CachingArchiveServer(real_server);
-        server_cache.add(server);
+
+        if(real_server != null)
+        	server_cache.add(server);
         return server;
     }
 }

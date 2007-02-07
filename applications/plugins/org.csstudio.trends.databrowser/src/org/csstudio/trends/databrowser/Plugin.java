@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser;
 
+import org.csstudio.platform.ResourceService;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -35,7 +36,9 @@ public class Plugin extends AbstractCssUiPlugin
     
     /** @see AbstractCssUiPlugin */
     protected void doStart(final BundleContext context) throws Exception
-    {}
+    {
+    	ResourceService.getInstance().createWorkspaceProject("CSS");
+    }
 
     /** @see AbstractCssUiPlugin */
     protected void doStop(final BundleContext context) throws Exception
