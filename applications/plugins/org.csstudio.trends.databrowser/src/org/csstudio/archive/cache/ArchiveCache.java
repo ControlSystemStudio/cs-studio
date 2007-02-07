@@ -56,10 +56,12 @@ public class ArchiveCache
         // connection attempts, which is overall worse.
         ArchiveServer real_server = 
             ArchiveImplementationRegistry.getInstance().getServer(url);
+        // ArchiveImplementationRegistry didn't throw exception to
+        // tell us anything, but also didn't return a server?
+        if (real_server == null)
+            return null;
         CachingArchiveServer server = new CachingArchiveServer(real_server);
-
-        if(real_server != null)
-        	server_cache.add(server);
+    	server_cache.add(server);
         return server;
     }
 }
