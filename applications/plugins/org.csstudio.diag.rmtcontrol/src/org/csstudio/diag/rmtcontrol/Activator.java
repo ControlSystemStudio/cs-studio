@@ -53,26 +53,18 @@ public class Activator extends AbstractCssUiPlugin {
 	protected void doStart(BundleContext context) throws Exception {
 //		super.start(context);
 		File defaultFile = new File(getPluginPreferences().getString(SampleService.RMT_XML_FILE_PATH));
-		System.out.println("Start-start"); //$NON-NLS-1$
 		if(!defaultFile.isFile()){
-			System.out.println("dont File exist"); //$NON-NLS-1$
 			if(defaultFile.isDirectory()){
-				System.out.println("isn't Dir"); //$NON-NLS-1$
 				defaultFile = new File(defaultFile,"rmt.xml"); //$NON-NLS-1$
 			}
 			else{
-				System.out.println("get default"); //$NON-NLS-1$
 				defaultFile = new File(getPluginPreferences().getDefaultString(SampleService.RMT_XML_FILE_PATH));
 			}
 			getPluginPreferences().setValue(SampleService.RMT_XML_FILE_PATH, defaultFile.toString());
 			if(defaultFile.createNewFile()){
-				System.out.println("Neues File erstellt"); //$NON-NLS-1$
 				WriteDefaultXML.writeDefault(defaultFile);
 			}
-		}else
-			System.out.println("File exist"); //$NON-NLS-1$
-
-		System.out.println("defaultFile: "+defaultFile); //$NON-NLS-1$
+		}
 	}
 
 	@Override
