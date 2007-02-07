@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -54,6 +53,7 @@ public class ArchiveView extends PlotAwareView
     public static final String ID = ArchiveView.class.getName();
 
     private static final String URL_LIST_TAG = "url_list"; //$NON-NLS-1$
+    private static final String PATTERN_LIST_TAG = "pattern_list"; //$NON-NLS-1$
 
     private ArchiveServer server;
 
@@ -69,7 +69,7 @@ public class ArchiveView extends PlotAwareView
         new ArrayList<ArchiveTableItem>();
 
     // Name search GUI Elements
-    private Text pattern;
+    private Combo pattern;
     private Button search;
     private Button replace_results;
     private TableViewer name_table_viewer;
@@ -173,7 +173,8 @@ public class ArchiveView extends PlotAwareView
         gd.horizontalAlignment = SWT.FILL;
         url.setLayoutData(gd);
         url.setEnabled(false);
-        new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
+        ComboHistoryHelper url_helper =
+            new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
                                URL_LIST_TAG, url, true)
         {
             public void newSelection(String new_pv_name)
@@ -244,20 +245,20 @@ public class ArchiveView extends PlotAwareView
         
         // TODO: Add a regular expression helper dialog, xlate 'glob' patterns?
         
-        pattern = new Text(box, SWT.BORDER | SWT.LEFT);
+        pattern = new Combo(box, SWT.DROP_DOWN);
         pattern.setToolTipText(Messages.Pattern_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         pattern.setLayoutData(gd);
         pattern.setEnabled(false);
-        pattern.addSelectionListener(new SelectionListener()
+        ComboHistoryHelper pattern_helper =
+            new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
+                               PATTERN_LIST_TAG, pattern, true)
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {   search(pattern.getText());  }
-            public void widgetSelected(SelectionEvent e)
-            {}
-        });
+            public void newSelection(String new_pattern)
+            {   search(new_pattern); }
+        };
 
         search = new Button(box, SWT.PUSH);
         search.setText(Messages.Seach);
@@ -338,8 +339,12 @@ public class ArchiveView extends PlotAwareView
         url.setEnabled(true);
         replace_results.setSelection(true);
         
-        // Load? Or use values from prefs?
-        // url_helper.loadSettings();
+        // Then load the user's last values, which might cause values
+        // from prefs to drop off the list
+        url_helper.loadSettings();
+        
+        // Load previously entered patterns
+        pattern_helper.loadSettings();
     }
 
     @Override

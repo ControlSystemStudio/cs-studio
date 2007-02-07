@@ -99,7 +99,8 @@ public abstract class ComboHistoryHelper
         String values[] = pvs.getArray(TAG);
         if (values != null)
             for (int i = 0; i < values.length; i++)
-                combo.add(values[i]);
+                // Load as if they were entered, i.e. skip duplicates
+                addEntry(values[i]);
     }
 
     /** Save list values to persistent storage. */
