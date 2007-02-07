@@ -8,7 +8,6 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
-import org.csstudio.utility.ioc_socket_communication.IOCCommunkation;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 
 import org.eclipse.jface.action.IMenuListener;
