@@ -1,8 +1,11 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.sds.components.model.EllipseElement;
 import org.csstudio.sds.components.model.MeterElement;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
+import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
 /**
@@ -61,5 +64,23 @@ public final class MeterEditPart extends AbstractElementEditPart {
 		
 		return false;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void registerPropertyChangeHandlers() {
+		// fill
+		IElementPropertyChangeHandler valueHandler = new IElementPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue,
+					IRefreshableFigure figure) {
+				RefreshableMeterFigure meter = (RefreshableMeterFigure) figure;
+				meter.setValue((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(MeterElement.PROP_VALUE, valueHandler);
+	}
+
 
 }

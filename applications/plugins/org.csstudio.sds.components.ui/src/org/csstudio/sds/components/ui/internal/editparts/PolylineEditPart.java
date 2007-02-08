@@ -1,9 +1,11 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.AbstractPolyElement;
+import org.csstudio.sds.components.ui.internal.figures.RefreshablePolygonFigure;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
+import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.geometry.PointList;
 
@@ -51,5 +53,34 @@ public final class PolylineEditPart extends AbstractElementEditPart {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void registerPropertyChangeHandlers() {
+		// fill
+		IElementPropertyChangeHandler fillHandler = new IElementPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue,
+					IRefreshableFigure figure) {
+				RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) figure;
+				polyline.setFill((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractPolyElement.PROP_FILL, fillHandler);
+		
+		// points
+		IElementPropertyChangeHandler pointsHandler = new IElementPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue,
+					IRefreshableFigure figure) {
+				RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) figure;
+				PointList points = (PointList) newValue;
+				polyline.setPoints(points);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractPolyElement.PROP_POINTS, pointsHandler);
 	}
 }

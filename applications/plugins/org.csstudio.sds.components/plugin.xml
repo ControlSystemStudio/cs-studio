@@ -42,9 +42,15 @@
       <modelElementFactory
             class="org.csstudio.sds.components.internal.model.TextInputElementFactory"
             description="Text Input"
-            icon="icons/label.gif"
+            icon="icons/text.gif"
             name="Text Input"
-            typeId="element.textinput"/>            
+            typeId="element.textinput"/>
+      <modelElementFactory
+            class="org.csstudio.sds.components.internal.model.SliderElementFactory"
+            description="Slider"
+            icon="icons/slider.gif"
+            name="Slider"
+            typeId="element.slider"/>            
    </extension>
 
 </plugin>

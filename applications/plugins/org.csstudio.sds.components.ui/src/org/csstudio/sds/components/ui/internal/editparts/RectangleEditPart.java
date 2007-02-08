@@ -1,8 +1,11 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.sds.components.model.EllipseElement;
 import org.csstudio.sds.components.model.RectangleElement;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
+import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
 /**
@@ -36,4 +39,22 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 
 		return false;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void registerPropertyChangeHandlers() {
+		// fill
+		IElementPropertyChangeHandler fillHandler = new IElementPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue,
+					IRefreshableFigure figure) {
+				RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) figure;
+				rectangle.setFill((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(RectangleElement.PROP_FILL, fillHandler);
+	}
+
 }

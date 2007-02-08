@@ -341,9 +341,10 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 				_oldInputText = inputTextProperty.getPropertyValue().toString();
 				inputTextProperty.setPropertyValue(_newInputText);
 
-				propertyChange(new PropertyChangeEvent(this,
-						TextInputElement.PROP_INPUT_TEXT, _oldInputText,
-						_newInputText));
+//				TODO: Auskommentiert wg. Refactoring (swende)
+//				propertyChange(new PropertyChangeEvent(this,
+//						TextInputElement.PROP_INPUT_TEXT, _oldInputText,
+//						_newInputText));
 			}
 		}
 
@@ -368,9 +369,10 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 			if (inputTextProperty != null) {
 				inputTextProperty.setPropertyValue(_oldInputText);
 
-				propertyChange(new PropertyChangeEvent(this,
-						TextInputElement.PROP_INPUT_TEXT, _newInputText,
-						_oldInputText));
+				//TODO: Auskommentiert wg. Refactoring (swende)
+//				propertyChange(new PropertyChangeEvent(this,
+//						TextInputElement.PROP_INPUT_TEXT, _newInputText,
+//						_oldInputText));
 			}
 		}
 	}
@@ -395,5 +397,11 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 		@Override
 		protected void showCurrentEditValue(final DirectEditRequest request) {
 		}
+	}
+
+	@Override
+	protected void registerPropertyChangeHandlers() {
+		// TODO Auto-generated method stub
+		
 	}
 }
