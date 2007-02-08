@@ -70,7 +70,6 @@ public class Activator extends AbstractCssUiPlugin {
 	@Override
 	protected void doStop(BundleContext context) throws Exception {
 		plugin = null;
-		super.stop(context);
 	}
 
 

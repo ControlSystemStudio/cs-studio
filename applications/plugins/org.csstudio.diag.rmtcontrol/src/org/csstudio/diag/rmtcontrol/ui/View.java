@@ -14,6 +14,8 @@ import org.csstudio.diag.rmtcontrol.Preference.SampleService;
 import org.csstudio.utility.ioc_socket_communication.IOCAnswer;
 import org.csstudio.utility.ioc_socket_communication.RMTControl;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.LineStyleEvent;
+import org.eclipse.swt.custom.LineStyleListener;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -191,6 +193,28 @@ public class View extends ViewPart implements Observer {
 
 		});
 
+		answer.addLineStyleListener(new LineStyleListener(){
+
+			public void lineGetStyle(LineStyleEvent event) {
+				// TODO Auto-generated method stub
+				System.out.println("----------------------------------------------------");
+				System.out.println("Test LineStyleListener");
+				System.out.println("Text: "+event.lineText);
+				System.out.println("alig: "+event.alignment);
+				System.out.println("bullet: "+event.bulletIndex);
+				System.out.println("indent: "+event.indent);
+				System.out.println("lineOffset: "+event.lineOffset);
+				System.out.println("time: "+event.time);
+				System.out.println("range: "+event.ranges);
+				System.out.println("styles: "+event.styles);
+//				StyleRange sr = new StyleRange(event.lineOffset,event.lineText.length(),new Color(answer.getDisplay(),100,200,100),new Color(answer.getDisplay(),200,100,200));
+//				answer.setLineBackground(event.lineOffset-1,0,new Color(answer.getDisplay(),100,200,100));
+//				answer.setStyleRange(sr);
+//				event.
+			}
+
+		});
+
 	}
 
 	@Override
@@ -199,7 +223,20 @@ public class View extends ViewPart implements Observer {
 	public void update(Observable arg0, Object arg1) {
 		disp.syncExec(new Runnable() {
 			public void run() {
-				answer.setText(iocAnswer.getAnswer());
+				String text = iocAnswer.getAnswer();
+//				System.out.println("run");
+//				StyleRange tmp[] = answer.getStyleRanges();
+//				StyleRange style[] = new StyleRange[tmp.length+1];
+//				for(int i=0;i<tmp.length;i++){
+//					style[i]=tmp[i];
+//				}
+//				style[0] = new StyleRange(style[0].start+style[0].length, text.length(), answer.getDisplay().getSystemColor(SWT.COLOR_BLUE), answer.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+//
+//				String tmp = iocAnswer.getAnswer();
+//				StyleRange sr = new StyleRange(answer.getCharCount()-1,tmp.length(),new Color(answer.getDisplay(),100,200,100),new Color(answer.getDisplay(),200,100,200));
+				answer.setText(text);
+//				answer.setStyleRanges(style);
+
 				answer.getParent().layout();
 			}
 		});
