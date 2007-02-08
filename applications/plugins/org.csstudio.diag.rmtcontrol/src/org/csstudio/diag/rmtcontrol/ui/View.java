@@ -97,7 +97,7 @@ public class View extends ViewPart implements Observer {
 	    labelIoc.setText(Messages.getString("View.0")); //$NON-NLS-1$
 		ioc = new Text(menu, SWT.BORDER);
 		ioc.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,false,false,1,1));
-		ioc.setText("131.169.112.111"); //$NON-NLS-1$
+		ioc.setText(Activator.getDefault().getPluginPreferences().getString(SampleService.IOC_ADDRESS)); //$NON-NLS-1$
 		// BefehlsGroup
 		Group befehl = new Group(menu,SWT.NONE);
 		befehl.setText(Messages.getString("View.list")); //$NON-NLS-1$
@@ -179,7 +179,7 @@ public class View extends ViewPart implements Observer {
 			public void widgetSelected(SelectionEvent e) {
 				answer.setText(""); //$NON-NLS-1$
 				RMTControl iocContr = RMTControl.getInstance();
-				iocContr.send(ioc.getText(), requestMassage, iocAnswer);
+				iocContr.send(ioc.getText(), request.getText(), iocAnswer);
 			}
 
 		});

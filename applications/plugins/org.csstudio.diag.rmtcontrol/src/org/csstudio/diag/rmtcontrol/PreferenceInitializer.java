@@ -14,6 +14,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(SampleService.RMT_XML_FILE_PATH,
 				new File(Activator.getDefault().getStateLocation().toFile(),"rmt.xml").getAbsolutePath()); //$NON-NLS-1$
+		store.setDefault(SampleService.IOC_ADDRESS,"131.169.112.111");
 	}
 
 }

@@ -36,4 +36,5 @@ package org.csstudio.diag.rmtcontrol.Preference;
  */
 public class SampleService {
 	public static final String RMT_XML_FILE_PATH = "org.csstudio.diag.rmtcontrol.preferences.RMT_XML_FILE_PATH"; //$NON-NLS-1$
+	public static final String IOC_ADDRESS = "org.csstudio.diag.rmtcontrol.preferences.IOC_ADDRESS"; //$NON-NLS-1$
 }

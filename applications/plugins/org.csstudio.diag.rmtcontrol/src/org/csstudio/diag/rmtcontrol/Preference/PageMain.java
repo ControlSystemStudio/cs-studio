@@ -5,6 +5,7 @@ import org.csstudio.diag.rmtcontrol.Preference.SampleService;
 import org.csstudio.diag.rmtcontrol.Messages;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -20,6 +21,7 @@ public class PageMain extends FieldEditorPreferencePage implements
 
 	@Override
 	protected void createFieldEditors() {
+		addField(new StringFieldEditor(SampleService.IOC_ADDRESS,Messages.getString("PageMain.Ioc"),getFieldEditorParent()));
 		FileFieldEditor ffe = new FileFieldEditor(SampleService.RMT_XML_FILE_PATH,Messages.getString("PageMain.File"),getFieldEditorParent()); //$NON-NLS-1$
 		ffe.setFileExtensions(new String[]{"*.xml"}); //$NON-NLS-1$
 		ffe.setStringValue("rmt.xml"); //$NON-NLS-1$
