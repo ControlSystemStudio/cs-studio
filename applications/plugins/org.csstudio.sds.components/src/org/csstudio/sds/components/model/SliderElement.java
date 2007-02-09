@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.PropertyTypesEnum;
@@ -37,7 +36,7 @@ public final class SliderElement extends AbstractElementModel {
 	/**
 	 * The ID of the fill level property.
 	 */
-	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
+	public static final String PROP_VALUE = "value"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this model element.
@@ -53,11 +52,6 @@ public final class SliderElement extends AbstractElementModel {
 	 * The default value of the width property.
 	 */
 	private static final int DEFAULT_WIDTH = 20;
-
-	/**
-	 * The default value of the fill level property.
-	 */
-	private static final double DEFAULT_FILL = 100.0;
 
 	/**
 	 * Standard constructor.
@@ -80,9 +74,9 @@ public final class SliderElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL, PropertyTypesEnum.DOUBLE,
-				Messages.FillLevelProperty, PropertyCategory.Behaviour,
-				DEFAULT_FILL);
+		addProperty(PROP_VALUE, PropertyTypesEnum.INTEGER,
+				"Slider Value", PropertyCategory.Behaviour,
+				1);
 	}
 
 	/**
@@ -90,6 +84,6 @@ public final class SliderElement extends AbstractElementModel {
 	 */
 	@Override
 	public String getDoubleTestProperty() {
-		return PROP_FILL;
+		return PROP_VALUE;
 	}
 }

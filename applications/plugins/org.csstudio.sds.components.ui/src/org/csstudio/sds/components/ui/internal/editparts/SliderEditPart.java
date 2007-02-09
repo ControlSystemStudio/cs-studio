@@ -1,5 +1,6 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.sds.components.model.SliderElement;
 import org.csstudio.sds.components.ui.internal.figures.SliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
@@ -17,7 +18,14 @@ public final class SliderEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		return new SliderFigure();
+		SliderFigure slider =  new SliderFigure();
+		slider.addSliderListener(new SliderFigure.ISliderListener(){
+			public void sliderValueChanged(int newValue) {
+				getCastedModel().getProperty(SliderElement.PROP_VALUE).setManualValue(newValue);
+			}
+		});
+		
+		return slider;
 	}
 
 	/**
@@ -26,8 +34,6 @@ public final class SliderEditPart extends AbstractElementEditPart {
 	@Override
 	protected synchronized boolean doRefreshFigure(final String propertyName,
 			final Object newValue, final IRefreshableFigure figure) {
-		SliderFigure rectangle = (SliderFigure) figure;
-		
 		return false;
 	}
 
