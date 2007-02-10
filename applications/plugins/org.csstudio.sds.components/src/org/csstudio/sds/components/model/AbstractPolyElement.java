@@ -24,7 +24,8 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
-import org.csstudio.sds.model.properties.PropertyTypesEnum;
+import org.csstudio.sds.model.properties.DoubleProperty;
+import org.csstudio.sds.model.properties.PointlistProperty;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -67,12 +68,11 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 	 */
 	@Override
 	protected final void configureProperties() {
-		addProperty(PROP_POINTS, PropertyTypesEnum.POINT_LIST,
+		addProperty(PROP_POINTS, new PointlistProperty(
 				Messages.PolyElement_POINTS, PropertyCategory.Position,
-				new PointList());
-		addProperty(PROP_FILL, PropertyTypesEnum.DOUBLE,
-				Messages.FillLevelProperty, PropertyCategory.Behaviour,
-				100.0);
+				new PointList()));
+		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
+				PropertyCategory.Behaviour, 100.0, 0.0, 100.0));
 	}
 
 	/**

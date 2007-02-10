@@ -24,7 +24,9 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
+import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.PropertyTypesEnum;
+import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -81,10 +83,10 @@ public final class LabelElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_LABEL, PropertyTypesEnum.STRING, Messages.LabelElement_LABEL,
-				PropertyCategory.Display, ""); //$NON-NLS-1$
-		addProperty(PROP_FONT, PropertyTypesEnum.FONT, "Font", PropertyCategory.Display,  new FontData(
-				"Arial", 8, SWT.NONE)); //$NON-NLS-1$
+		addProperty(PROP_LABEL, new StringProperty(Messages.LabelElement_LABEL,
+				PropertyCategory.Display, "")); //$NON-NLS-1$
+		addProperty(PROP_FONT, new FontProperty("Font",
+				PropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
 	}
 
 	/**
@@ -94,7 +96,7 @@ public final class LabelElement extends AbstractElementModel {
 	public String getDoubleTestProperty() {
 		return PROP_LABEL;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -102,5 +104,5 @@ public final class LabelElement extends AbstractElementModel {
 	public String getColorTestProperty() {
 		return PROP_COLOR_BACKGROUND;
 	}
-	
+
 }

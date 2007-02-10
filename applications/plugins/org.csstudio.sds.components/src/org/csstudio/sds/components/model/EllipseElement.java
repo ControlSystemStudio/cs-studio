@@ -24,6 +24,7 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
+import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.PropertyTypesEnum;
 
 /**
@@ -80,9 +81,8 @@ public final class EllipseElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL, PropertyTypesEnum.DOUBLE,
-				Messages.FillLevelProperty, PropertyCategory.Behaviour,
-				DEFAULT_FILL);
+		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty, PropertyCategory.Behaviour,
+				DEFAULT_FILL, 0.0, 100.0));
 	}
 
 	/**

@@ -23,6 +23,7 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
+import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.PropertyTypesEnum;
 
 /**
@@ -74,9 +75,9 @@ public final class SliderElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_VALUE, PropertyTypesEnum.INTEGER,
+		addProperty(PROP_VALUE, new IntegerProperty(
 				"Slider Value", PropertyCategory.Behaviour,
-				1);
+				50, 0, 100 ));
 	}
 
 	/**

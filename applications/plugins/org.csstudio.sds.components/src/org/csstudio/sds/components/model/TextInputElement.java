@@ -23,7 +23,9 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
+import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.PropertyTypesEnum;
+import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -85,12 +87,12 @@ public final class TextInputElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_INPUT_TEXT, PropertyTypesEnum.STRING,
-				"Input Text", PropertyCategory.Misc, ""); //$NON-NLS-1$
-		addProperty(PROP_OUTPUT_CHANNEL, PropertyTypesEnum.STRING,
-				"Output Channel", PropertyCategory.Misc, "");
-		addProperty(PROP_FONT, PropertyTypesEnum.FONT, "Font",
-				PropertyCategory.Display, new FontData("Arial", 8, SWT.NONE)); //$NON-NLS-1$
+		addProperty(PROP_INPUT_TEXT, new StringProperty(
+				"Input Text", PropertyCategory.Behaviour, "")); //$NON-NLS-1$
+		addProperty(PROP_OUTPUT_CHANNEL, new StringProperty(
+				"Output Channel", PropertyCategory.Misc, ""));
+		addProperty(PROP_FONT, new FontProperty("Font",
+				PropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
 	}
 
 	/**
