@@ -88,4 +88,6 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 		}
 		_figure.setBorder(border);
 	}
+	
+	
 }

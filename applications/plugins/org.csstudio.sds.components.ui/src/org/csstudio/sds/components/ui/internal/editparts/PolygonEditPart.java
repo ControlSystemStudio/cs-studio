@@ -1,12 +1,18 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.AbstractPolyElement;
+import org.csstudio.sds.components.model.PolygonElement;
 import org.csstudio.sds.components.model.RectangleElement;
+import org.csstudio.sds.components.ui.internal.figures.BorderAdapter;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolygonFigure;
+import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigure;
+import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.csstudio.sds.uil.CustomMediaFactory;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**
@@ -22,9 +28,15 @@ public final class PolygonEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		return new RefreshablePolygonFigure();
+		RefreshablePolygonFigure polygon = new RefreshablePolygonFigure();
+		PolygonElement elementModel = (PolygonElement) getCastedModel();
+		polygon.setPoints(elementModel.getPoints());
+		polygon.setFill(elementModel.getFill());
+		
+		return polygon;
 	}
 
+	
 	/**
 	 * {@inheritDoc}
 	 */

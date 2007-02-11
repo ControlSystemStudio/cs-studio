@@ -1,12 +1,15 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.EllipseElement;
+import org.csstudio.sds.components.model.LabelElement;
 import org.csstudio.sds.components.model.RectangleElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.csstudio.sds.uil.CustomMediaFactory;
 
 /**
  * EditPart controller for <code>RectangleElement</code> elements.
@@ -21,7 +24,13 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		return new RefreshableRectangleFigure();
+		RectangleElement model = (RectangleElement) getCastedModel();
+		
+		RefreshableRectangleFigure rectangle = new RefreshableRectangleFigure();
+		rectangle.setFill(model.getFillGrade());
+		
+		return rectangle;
+		
 	}
 
 	/**

@@ -21,7 +21,19 @@ public final class MeterEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		return  new RefreshableMeterFigure();
+		MeterElement model = (MeterElement) getCastedModel();
+
+		RefreshableMeterFigure meter = new RefreshableMeterFigure();
+
+		meter.setInterval1LowerBorder(model.getInterval1LowerBorder());
+		meter.setInterval1UpperBorder(model.getInterval1UpperBorder());
+		meter.setInterval2LowerBorder(model.getInterval2LowerBorder());
+		meter.setInterval2UpperBorder(model.getInterval2UpperBorder());
+		meter.setInterval3LowerBorder(model.getInterval3LowerBorder());
+		meter.setInterval3UpperBorder(model.getInterval3UpperBorder());
+		meter.setValue(model.getValue());
+		
+		return meter;
 	}
 
 	/**
@@ -32,7 +44,7 @@ public final class MeterEditPart extends AbstractElementEditPart {
 			final Object newValue, final IRefreshableFigure f) {
 
 		RefreshableMeterFigure meter = (RefreshableMeterFigure) f;
-		
+
 		if (propertyName.equals(MeterElement.PROP_VALUE)) {
 			meter.setValue((Double) newValue);
 			return true;
@@ -60,17 +72,17 @@ public final class MeterEditPart extends AbstractElementEditPart {
 				.equals(MeterElement.PROP_INTERVAL3_UPPER_BORDER)) {
 			meter.setInterval3UpperBorder((Double) newValue);
 			return true;
-		} 
-		
+		}
+
 		return false;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		// fill
+		// value
 		IElementPropertyChangeHandler valueHandler = new IElementPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IRefreshableFigure figure) {
@@ -80,7 +92,8 @@ public final class MeterEditPart extends AbstractElementEditPart {
 			}
 		};
 		setPropertyChangeHandler(MeterElement.PROP_VALUE, valueHandler);
+		
+		//TODO: Register change handlers for upper and lower intervals
 	}
-
 
 }

@@ -92,4 +92,12 @@ public final class EllipseElement extends AbstractElementModel {
 	public String getDoubleTestProperty() {
 		return PROP_FILL;
 	}
+	
+	/**
+	 * Gets the fill grade.
+	 * @return the fill grade
+	 */
+	public double getFillGrade() {
+		return (Double) getProperty(PROP_FILL).getPropertyValue();
+	}
 }

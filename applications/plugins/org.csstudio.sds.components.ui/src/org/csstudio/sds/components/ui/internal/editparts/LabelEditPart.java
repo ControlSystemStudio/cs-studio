@@ -22,7 +22,13 @@ public final class LabelEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		return new RefreshableLabelFigure();
+		LabelElement model = (LabelElement) getCastedModel();
+		
+		RefreshableLabelFigure label = new RefreshableLabelFigure();
+		label.setText(model.getLabel());
+		label.setFont(CustomMediaFactory.getInstance().getFont(model.getFont()));
+		
+		return label;
 	}
 
 	/**

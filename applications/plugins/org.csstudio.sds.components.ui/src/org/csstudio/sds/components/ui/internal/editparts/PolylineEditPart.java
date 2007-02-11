@@ -1,9 +1,8 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.AbstractPolyElement;
-import org.csstudio.sds.components.ui.internal.figures.RefreshablePolygonFigure;
+import org.csstudio.sds.components.model.PolylineElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
-import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
@@ -23,12 +22,10 @@ public final class PolylineEditPart extends AbstractElementEditPart {
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
 		RefreshablePolylineFigure polyline = new RefreshablePolylineFigure();
-		AbstractElementModel elementModel = getCastedModel();
+		PolylineElement elementModel = (PolylineElement) getCastedModel();
 
-		for (String key : getCastedModel().getPropertyNames()) {
-			polyline.refresh(key, elementModel.getProperty(key)
-					.getPropertyValue());
-		}
+		polyline.setPoints(elementModel.getPoints());
+		polyline.setFill(elementModel.getFill());
 
 		return polyline;
 	}

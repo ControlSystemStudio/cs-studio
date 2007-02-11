@@ -151,22 +151,28 @@ public final class MeterElement extends AbstractElementModel {
 	protected void configureProperties() {
 		addProperty(PROP_INTERVAL1_LOWER_BORDER, new DoubleProperty(
 				"Interval 1 lower border", PropertyCategory.Display,
-				INTERVAL1_LOWER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM, CIRCLE_DEGREES_TO));
+				INTERVAL1_LOWER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
+				CIRCLE_DEGREES_TO));
 		addProperty(PROP_INTERVAL1_UPPER_BORDER, new DoubleProperty(
 				"Interval 1 upper border", PropertyCategory.Display,
-				INTERVAL1_UPPER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM, CIRCLE_DEGREES_TO));
+				INTERVAL1_UPPER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
+				CIRCLE_DEGREES_TO));
 		addProperty(PROP_INTERVAL2_LOWER_BORDER, new DoubleProperty(
 				"Interval 2 lower border", PropertyCategory.Display,
-				INTERVAL2_LOWER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM, CIRCLE_DEGREES_TO));
+				INTERVAL2_LOWER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
+				CIRCLE_DEGREES_TO));
 		addProperty(PROP_INTERVAL2_UPPER_BORDER, new DoubleProperty(
 				"Interval 2 upper border", PropertyCategory.Display,
-				INTERVAL2_UPPER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM, CIRCLE_DEGREES_TO));
+				INTERVAL2_UPPER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
+				CIRCLE_DEGREES_TO));
 		addProperty(PROP_INTERVAL3_LOWER_BORDER, new DoubleProperty(
 				"Interval 3 lower border", PropertyCategory.Display,
-				INTERVAL3_LOWER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM, CIRCLE_DEGREES_TO));
+				INTERVAL3_LOWER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
+				CIRCLE_DEGREES_TO));
 		addProperty(PROP_INTERVAL3_UPPER_BORDER, new DoubleProperty(
 				"Interval 3 upper border", PropertyCategory.Display,
-				INTERVAL3_UPPER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM, CIRCLE_DEGREES_TO));
+				INTERVAL3_UPPER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
+				CIRCLE_DEGREES_TO));
 
 		addProperty(PROP_VALUE, new DoubleProperty("value",
 				PropertyCategory.Behaviour, VALUE_DEFAULT, 0.0, 360.0));
@@ -178,5 +184,40 @@ public final class MeterElement extends AbstractElementModel {
 	@Override
 	public String getDoubleTestProperty() {
 		return PROP_VALUE;
+	}
+
+	public double getInterval1LowerBorder() {
+		return (Double) getProperty(PROP_INTERVAL1_LOWER_BORDER)
+				.getPropertyValue();
+	}
+
+	public double getInterval1UpperBorder() {
+		return (Double) getProperty(PROP_INTERVAL1_UPPER_BORDER)
+				.getPropertyValue();
+	}
+
+	public double getInterval2LowerBorder() {
+		return (Double) getProperty(PROP_INTERVAL2_LOWER_BORDER)
+				.getPropertyValue();
+	}
+
+	public double getInterval2UpperBorder() {
+		return (Double) getProperty(PROP_INTERVAL2_UPPER_BORDER)
+				.getPropertyValue();
+	}
+
+	public double getInterval3LowerBorder() {
+		return (Double) getProperty(PROP_INTERVAL3_LOWER_BORDER)
+				.getPropertyValue();
+	}
+
+	public double getInterval3UpperBorder() {
+		return (Double) getProperty(PROP_INTERVAL3_UPPER_BORDER)
+				.getPropertyValue();
+	}
+	
+	public double getValue() {
+		return (Double) getProperty(PROP_VALUE)
+				.getPropertyValue();
 	}
 }

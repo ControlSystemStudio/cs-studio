@@ -1,7 +1,9 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.EllipseElement;
+import org.csstudio.sds.components.model.RectangleElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigure;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
@@ -21,7 +23,13 @@ public final class EllipseEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		return new RefreshableEllipseFigure();
+		EllipseElement model = (EllipseElement) getCastedModel();
+		
+		RefreshableEllipseFigure ellipse = new RefreshableEllipseFigure();
+		ellipse.setFill(model.getFillGrade());
+		
+		return ellipse;
+		
 	}
 
 	/**

@@ -109,6 +109,14 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 	}
 
 	/**
+	 * Returns the fill grade.
+	 * @return the fill grade
+	 */
+	public final double getFill() {
+		return (Double) getProperty(PROP_FILL).getPropertyValue();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override

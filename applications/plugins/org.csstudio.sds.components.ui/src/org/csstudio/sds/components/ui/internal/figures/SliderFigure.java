@@ -17,69 +17,89 @@ import org.eclipse.draw2d.geometry.Dimension;
 
 public class SliderFigure extends Panel implements IRefreshableFigure {
 	List<ISliderListener> _sliderListeners;
+
 	/**
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
-	
-	
-	public SliderFigure(){
+
+	private ScrollBar _scrollBar;
+
+	public SliderFigure() {
 		_sliderListeners = new ArrayList<ISliderListener>();
-		
-		ScrollBar scrollBar = new ScrollBar();
-//		scrollBar.setExtent(1000);
-		scrollBar.setMaximum(1000);
-		scrollBar.setMinimum(1);
-		scrollBar.setValue(400);
-		Ellipse thumb = new Ellipse();
-		thumb.setSize(10,20);
-		thumb.setMinimumSize(new Dimension(60, 60));
-		thumb.setBackgroundColor(ColorConstants.red);
 
-//		thumb.setBorder(new SchemeBorder(SchemeBorder.SCHEMES.RIDGED));
+		_scrollBar = new ScrollBar();
+		// scrollBar.setExtent(1000);
+		_scrollBar.setMaximum(1000);
+		_scrollBar.setMinimum(1);
+		_scrollBar.setValue(400);
+		// Ellipse thumb = new Ellipse();
+		// thumb.setSize(10,20);
+		// thumb.setMinimumSize(new Dimension(60, 60));
+		// thumb.setBackgroundColor(ColorConstants.red);
 
-		scrollBar.setThumb(thumb);
-//		setLayoutManager(new ScrollPaneLayout());
+		// thumb.setBorder(new SchemeBorder(SchemeBorder.SCHEMES.RIDGED));
+
+		// _scrollBar.setThumb(thumb);
+		// setLayoutManager(new ScrollPaneLayout());
 		setLayoutManager(new BorderLayout());
-		add(scrollBar, BorderLayout.CENTER);
-		scrollBar.setHorizontal(true);
-		scrollBar.validate();
+		add(_scrollBar, BorderLayout.CENTER);
+		_scrollBar.setHorizontal(true);
+		_scrollBar.validate();
 		validate();
-		
+
 		// add listener
-		scrollBar.addPropertyChangeListener(RangeModel.PROPERTY_VALUE, new PropertyChangeListener(){
-			public void propertyChange(PropertyChangeEvent event) {
-				int newValue = (Integer) event.getNewValue();
-				for(ISliderListener l : _sliderListeners) {
-					l.sliderValueChanged(newValue);
-				}
-			}
-		});
+		_scrollBar.addPropertyChangeListener(RangeModel.PROPERTY_VALUE,
+				new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent event) {
+						int newValue = (Integer) event.getNewValue();
+						for (ISliderListener l : _sliderListeners) {
+							l.sliderValueChanged(newValue);
+						}
+					}
+				});
+	}
+
+	public void setMin(int min) {
+		_scrollBar.setMinimum(min);
+
+	}
+
+	public void setMax(int max) {
+		_scrollBar.setMaximum(max);
+	}
+
+	public void setIncrement(int increment) {
+		_scrollBar.setExtent(increment);
+	}
+
+	public void setValue(int value) {
+		_scrollBar.setValue(value);
 	}
 
 	public void addSliderListener(ISliderListener listener) {
 		_sliderListeners.add(listener);
 	}
-	
+
 	public void removeSliderListener(ISliderListener listener) {
 		_sliderListeners.remove(listener);
 	}
 
 	public void randomNoiseRefresh() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public Object getAdapter(Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
-			if(_borderAdapter==null) {
+			if (_borderAdapter == null) {
 				_borderAdapter = new BorderAdapter(this);
 			}
 			return _borderAdapter;
 		}
 		return null;
 	}
-	
+
 	public interface ISliderListener {
 		void sliderValueChanged(int newValue);
 	}

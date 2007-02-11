@@ -43,26 +43,6 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void refresh(final String propertyName, final Object propertyValue) {
-		//TODO: SETTER BAUEN (swende)
-		if (propertyName.equals(AbstractPolyElement.PROP_POINTS)) {
-			PointList points = (PointList) propertyValue;
-			setPoints(points);
-		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL)) {
-			Double fillGrade = (Double) propertyValue;
-			setFill(fillGrade);
-		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_BACKGROUND)) {
-			setBackgroundColor(CustomMediaFactory.getInstance().getColor(
-					(RGB) propertyValue));
-		} else if (propertyName.equals(AbstractElementModel.PROP_COLOR_FOREGROUND)) {
-			setForegroundColor(CustomMediaFactory.getInstance().getColor(
-					(RGB) propertyValue));
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void outlineShape(final Graphics graphics) {
 		Rectangle figureBounds = getBounds();

@@ -88,7 +88,7 @@ public final class RectangleElement extends AbstractElementModel {
 	 * Gets the fill grade.
 	 * @return the fill grade
 	 */
-	public double getFillGrad() {
+	public double getFillGrade() {
 		return (Double) getProperty(PROP_FILL).getPropertyValue();
 	}
 	
