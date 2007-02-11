@@ -25,7 +25,6 @@ import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.DoubleProperty;
-import org.csstudio.sds.model.properties.PropertyTypesEnum;
 
 /**
  * An ellipse model element.

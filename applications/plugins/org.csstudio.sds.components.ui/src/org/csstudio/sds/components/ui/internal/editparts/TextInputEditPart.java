@@ -102,8 +102,7 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void createEditPolicies() {
-		super.createEditPolicies();
+	protected void createEditPoliciesHook() {
 		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
 				new LabelDirectEditPolicy());
 
@@ -272,9 +271,18 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 	 * The direct edit command that changes the input text.
 	 */
 	private class DirectEditCommand extends Command {
+		/**
+		 * The entered input text.
+		 */
 		private String _text;
 
-		public DirectEditCommand(String text) {
+		/**
+		 * Standard constructor.
+		 * 
+		 * @param text
+		 *            The entered input text.
+		 */
+		public DirectEditCommand(final String text) {
 			_text = text;
 		}
 
@@ -322,13 +330,16 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		// text
 		IElementPropertyChangeHandler textHandler = new IElementPropertyChangeHandler() {
-			public boolean handleChange(Object oldValue, Object newValue,
-					IRefreshableFigure figure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) figure;
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
 				label.setText((String) newValue);
 				return true;
 			}
