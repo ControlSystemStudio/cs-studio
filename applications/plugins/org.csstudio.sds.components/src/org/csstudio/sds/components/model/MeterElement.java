@@ -186,38 +186,72 @@ public final class MeterElement extends AbstractElementModel {
 		return PROP_VALUE;
 	}
 
+	/**
+	 * Return the lower border value of interval #1.
+	 * 
+	 * @return The lower border value of interval #1.
+	 */
 	public double getInterval1LowerBorder() {
 		return (Double) getProperty(PROP_INTERVAL1_LOWER_BORDER)
 				.getPropertyValue();
 	}
 
+	/**
+	 * Return the upper border value of interval #1.
+	 * 
+	 * @return The upper border value of interval #1.
+	 */
 	public double getInterval1UpperBorder() {
 		return (Double) getProperty(PROP_INTERVAL1_UPPER_BORDER)
 				.getPropertyValue();
 	}
 
+	/**
+	 * Return the lower border value of interval #2.
+	 * 
+	 * @return The lower border value of interval #2.
+	 */
 	public double getInterval2LowerBorder() {
 		return (Double) getProperty(PROP_INTERVAL2_LOWER_BORDER)
 				.getPropertyValue();
 	}
 
+	/**
+	 * Return the upper border value of interval #2.
+	 * 
+	 * @return The upper border value of interval #2.
+	 */
 	public double getInterval2UpperBorder() {
 		return (Double) getProperty(PROP_INTERVAL2_UPPER_BORDER)
 				.getPropertyValue();
 	}
 
+	/**
+	 * Return the lower border value of interval #3.
+	 * 
+	 * @return The lower border value of interval #3.
+	 */
 	public double getInterval3LowerBorder() {
 		return (Double) getProperty(PROP_INTERVAL3_LOWER_BORDER)
 				.getPropertyValue();
 	}
 
+	/**
+	 * Return the upper border value of interval #3.
+	 * 
+	 * @return The upper border value of interval #3.
+	 */
 	public double getInterval3UpperBorder() {
 		return (Double) getProperty(PROP_INTERVAL3_UPPER_BORDER)
 				.getPropertyValue();
 	}
-	
+
+	/**
+	 * Return the current meter value.
+	 * 
+	 * @return The current meter value.
+	 */
 	public double getValue() {
-		return (Double) getProperty(PROP_VALUE)
-				.getPropertyValue();
+		return (Double) getProperty(PROP_VALUE).getPropertyValue();
 	}
 }

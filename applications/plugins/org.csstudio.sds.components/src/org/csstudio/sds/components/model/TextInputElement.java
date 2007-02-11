@@ -24,7 +24,6 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.FontProperty;
-import org.csstudio.sds.model.properties.PropertyTypesEnum;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;

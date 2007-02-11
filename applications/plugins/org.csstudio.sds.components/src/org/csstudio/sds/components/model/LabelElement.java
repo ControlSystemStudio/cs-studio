@@ -104,10 +104,20 @@ public final class LabelElement extends AbstractElementModel {
 		return PROP_COLOR_BACKGROUND;
 	}
 
+	/**
+	 * Return the label text.
+	 * 
+	 * @return The label text.
+	 */
 	public String getLabel() {
 		return (String) getProperty(PROP_LABEL).getPropertyValue();
 	}
-	
+
+	/**
+	 * Return the label font.
+	 * 
+	 * @return The label font.
+	 */
 	public FontData getFont() {
 		return (FontData) getProperty(PROP_FONT).getPropertyValue();
 	}

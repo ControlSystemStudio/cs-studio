@@ -24,7 +24,6 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.PropertyTypesEnum;
 
 /**
  * An ellipse model element.
@@ -43,17 +42,17 @@ public final class SliderElement extends AbstractElementModel {
 	 * The ID of the minimum property.
 	 */
 	public static final String PROP_MIN = "min"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the maximum property.
 	 */
 	public static final String PROP_MAX = "max"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the increment property.
 	 */
 	public static final String PROP_INCREMENT = "increment"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of this model element.
 	 */
@@ -90,18 +89,14 @@ public final class SliderElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_VALUE, new IntegerProperty(
-				"Slider Value", PropertyCategory.Behaviour,
-				50, 0, Integer.MAX_VALUE ));
-		addProperty(PROP_MIN, new IntegerProperty(
-				"Min", PropertyCategory.Behaviour,
-				0, 0, Integer.MAX_VALUE ));
-		addProperty(PROP_MAX, new IntegerProperty(
-				"Max", PropertyCategory.Behaviour,
-				100, 0, Integer.MAX_VALUE ));
-		addProperty(PROP_INCREMENT, new IntegerProperty(
-				"Increment", PropertyCategory.Behaviour,
-				1, 0, Integer.MAX_VALUE ));
+		addProperty(PROP_VALUE, new IntegerProperty("Slider Value",
+				PropertyCategory.Behaviour, 50, 0, Integer.MAX_VALUE));
+		addProperty(PROP_MIN, new IntegerProperty("Min",
+				PropertyCategory.Behaviour, 0, 0, Integer.MAX_VALUE));
+		addProperty(PROP_MAX, new IntegerProperty("Max",
+				PropertyCategory.Behaviour, 100, 0, Integer.MAX_VALUE));
+		addProperty(PROP_INCREMENT, new IntegerProperty("Increment",
+				PropertyCategory.Behaviour, 1, 0, Integer.MAX_VALUE));
 	}
 
 	/**
@@ -111,22 +106,41 @@ public final class SliderElement extends AbstractElementModel {
 	public String getDoubleTestProperty() {
 		return PROP_VALUE;
 	}
-	
+
+	/**
+	 * Return the min value.
+	 * 
+	 * @return The min value.
+	 */
 	public int getMin() {
 		return (Integer) getProperty(PROP_MIN).getPropertyValue();
 	}
-	
-	
+
+	/**
+	 * Return the max value.
+	 * 
+	 * @return The max value.
+	 */
 	public int getMax() {
 		return (Integer) getProperty(PROP_MAX).getPropertyValue();
 	}
-	
+
+	/**
+	 * Return the increment value.
+	 * 
+	 * @return The increment value.
+	 */
 	public int getIncrement() {
 		return (Integer) getProperty(PROP_INCREMENT).getPropertyValue();
 	}
-	
+
+	/**
+	 * Return the current slider value.
+	 * 
+	 * @return The current slider value.
+	 */
 	public int getValue() {
 		return (Integer) getProperty(PROP_VALUE).getPropertyValue();
 	}
-	
+
 }
