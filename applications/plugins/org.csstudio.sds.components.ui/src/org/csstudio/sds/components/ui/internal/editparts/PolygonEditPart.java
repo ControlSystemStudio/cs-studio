@@ -41,27 +41,6 @@ public final class PolygonEditPart extends AbstractElementEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected boolean doRefreshFigure(final String propertyName,
-			final Object newValue, final IRefreshableFigure f) {
-		RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) f;
-
-		if (propertyName.equals(AbstractPolyElement.PROP_POINTS)) {
-			assert newValue instanceof PointList : "newValue instanceof PointList"; //$NON-NLS-1$
-			PointList points = (PointList) newValue;
-			polygon.setPoints(points);
-			return false; // Performance Optimization (setPoints() already
-			// refreshes the figure)
-		} else if (propertyName.equals(AbstractPolyElement.PROP_FILL)) {
-			polygon.setFill((Double) newValue);
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected void registerPropertyChangeHandlers() {
 		// fill
 		IElementPropertyChangeHandler fillHandler = new IElementPropertyChangeHandler() {

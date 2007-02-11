@@ -33,31 +33,6 @@ public final class MeterEditPartTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.MeterEditPart#doRefreshFigure(java.lang.String, java.lang.Object)}.
-	 */
-	@Test
-	public void testDoRefreshFigure() {
-		RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) _editPart
-				.getFigure();
-		final double lowerBorderValue = meterFigure.getInterval1LowerBorder();
-		final double lowerBorderNewValue = lowerBorderValue + 1;
-
-		_editPart.doRefreshFigure(MeterElement.PROP_INTERVAL1_LOWER_BORDER,
-				lowerBorderNewValue, _editPart.getFigure());
-		assertEquals(lowerBorderNewValue, meterFigure.getInterval1LowerBorder());
-
-		
-
-		double oldValue = meterFigure.getValue();
-		double newValue = (oldValue + 10) % 100;
-
-		_editPart.doRefreshFigure(MeterElement.PROP_VALUE, newValue, _editPart.getFigure());
-		assertEquals(newValue, meterFigure.getValue());
-		
-	}
-
-	/**
-	 * Test method for
 	 * {@link org.csstudio.sds.components.ui.internal.editparts.MeterEditPart#createFigure()}.
 	 */
 	@Test

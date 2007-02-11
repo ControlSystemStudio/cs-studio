@@ -33,23 +33,6 @@ public final class RectangleEditPartTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.RectangleEditPart#doRefreshFigure(java.lang.String, java.lang.Object)}.
-	 */
-	@Test
-	public void testDoRefreshFigure() {
-		RefreshableRectangleFigure rectangleFigure = (RefreshableRectangleFigure) _editPart
-				.getFigure();
-
-		double oldFill = rectangleFigure.getFill();
-		double newFill = (oldFill + 10) % 100;
-		
-		_editPart.doRefreshFigure(RectangleElement.PROP_FILL,
-				newFill, _editPart.getFigure());
-		assertEquals(newFill, rectangleFigure.getFill());
-	}
-
-	/**
-	 * Test method for
 	 * {@link org.csstudio.sds.components.ui.internal.editparts.RectangleEditPart#createFigure()}.
 	 */
 	@Test

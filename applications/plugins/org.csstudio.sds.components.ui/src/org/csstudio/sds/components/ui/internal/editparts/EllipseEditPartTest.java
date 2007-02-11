@@ -32,20 +32,6 @@ public final class EllipseEditPartTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.EllipseEditPart#doRefreshFigure(java.lang.String, java.lang.Object)}.
-	 */
-	@Test
-	public void testDoRefreshFigure() {
-		RefreshableEllipseFigure ellipseFigure = (RefreshableEllipseFigure) _editPart.getFigure();
-		
-		final double oldFillValue = ellipseFigure.getFill();
-		final double newFillValue = oldFillValue+1;
-		
-		_editPart.doRefreshFigure(EllipseElement.PROP_FILL, newFillValue, _editPart.getFigure());
-		assertEquals(newFillValue, ellipseFigure.getFill());
-	}
-
-	/**
 	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.EllipseEditPart#createFigure()}.
 	 */
 	@Test

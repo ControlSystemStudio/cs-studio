@@ -39,15 +39,6 @@ public final class SliderEditPart extends AbstractElementEditPart {
 		return slider;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected synchronized boolean doRefreshFigure(final String propertyName,
-			final Object newValue, final IRefreshableFigure figure) {
-		return false;
-	}
-
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		// value

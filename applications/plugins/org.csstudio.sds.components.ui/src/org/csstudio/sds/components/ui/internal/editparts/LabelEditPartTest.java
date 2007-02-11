@@ -41,7 +41,6 @@ public final class LabelEditPartTest {
 		final String oldText = labelFigure.getText();
 		final String newText = oldText+oldText;
 		
-		_editPart.doRefreshFigure(LabelElement.PROP_LABEL, newText, _editPart.getFigure());
 		assertEquals(newText, labelFigure.getText());
 	}
 

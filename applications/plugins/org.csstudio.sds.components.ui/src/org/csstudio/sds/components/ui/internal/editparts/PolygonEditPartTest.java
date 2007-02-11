@@ -33,20 +33,6 @@ public final class PolygonEditPartTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.PolygonEditPart#doRefreshFigure(java.lang.String, java.lang.Object)}.
-	 */
-	@Test
-	public void testDoRefreshFigure() {
-		RefreshablePolygonFigure polygonFigure = (RefreshablePolygonFigure) _editPart.getFigure();
-		
-		final double oldFillValue = polygonFigure.getFill();
-		final double newFillValue = oldFillValue+1;
-		
-		_editPart.doRefreshFigure(AbstractPolyElement.PROP_FILL, newFillValue, _editPart.getFigure());
-		assertEquals(newFillValue, polygonFigure.getFill());
-	}
-
-	/**
 	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.PolygonEditPart#createFigure()}.
 	 */
 	@Test

@@ -36,22 +36,6 @@ public final class EllipseEditPart extends AbstractElementEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected boolean doRefreshFigure(final String propertyName,
-			final Object newValue, final IRefreshableFigure f) {
-		RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) f;
-
-		if (propertyName.equals(EllipseElement.PROP_FILL)) {
-			ellipse.setFill((Double) newValue);
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected void registerPropertyChangeHandlers() {
 		// fill
 		IElementPropertyChangeHandler fillHandler = new IElementPropertyChangeHandler() {

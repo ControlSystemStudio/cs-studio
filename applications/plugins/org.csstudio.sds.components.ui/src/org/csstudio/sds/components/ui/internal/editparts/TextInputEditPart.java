@@ -21,15 +21,12 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import java.beans.PropertyChangeEvent;
-
 import org.csstudio.sds.components.model.TextInputElement;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
-import org.csstudio.sds.dataconnection.AbstractConnectionService;
-import org.csstudio.sds.dataconnection.ConnectionUtil;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.ElementProperty;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
+import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
@@ -89,60 +86,16 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		return new RefreshableLabelFigure();
-	}
+		TextInputElement model = (TextInputElement) getCastedModel();
 
-	/**
-	 * Use the currently activated connection service to set the given value to
-	 * the configured output channel.
-	 * 
-	 * @param value
-	 *            The value that will be set to the configured output channel.
-	 */
-	protected void setDalPropertyValue(final Object value) {
-		AbstractConnectionService connectionService = ConnectionUtil
-				.getInstance().getActiveConncetionService();
+		RefreshableLabelFigure label = new RefreshableLabelFigure();
 
-		String outputChannel = ""; //$NON-NLS-1$
+		label.setText(model.getInputText());
+		label
+				.setFont(CustomMediaFactory.getInstance().getFont(
+						model.getFont()));
 
-		ElementProperty outputChannelProperty = getCastedModel().getProperty(
-				TextInputElement.PROP_OUTPUT_CHANNEL);
-
-		if (outputChannelProperty != null) {
-			outputChannel = outputChannelProperty.getPropertyValue().toString();
-		}
-
-		if (connectionService != null) {
-			// TODO: A better error handling is needed here!
-			connectionService.setPropertyValue(outputChannel, value,
-					getCastedModel().getAliasDescriptors());
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean doRefreshFigure(final String propertyName,
-			final Object newValue, final IRefreshableFigure f) {
-		RefreshableLabelFigure label = (RefreshableLabelFigure) f;
-
-		if (!_isEditing) {
-			if (propertyName.equals(TextInputElement.PROP_INPUT_TEXT)) {
-				label.setText(newValue.toString());
-				setDalPropertyValue(newValue);
-
-				return true;
-			} else if (propertyName.equals(TextInputElement.PROP_FONT)) {
-				FontData fontData = (FontData) newValue;
-				label.setFont(CustomMediaFactory.getInstance().getFont(
-						fontData.getName(), fontData.getHeight(),
-						fontData.getStyle()));
-				return true;
-			}
-		}
-
-		return false;
+		return label;
 	}
 
 	/**
@@ -319,15 +272,11 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 	 * The direct edit command that changes the input text.
 	 */
 	private class DirectEditCommand extends Command {
-		/**
-		 * The old input text.
-		 */
-		private String _oldInputText;
+		private String _text;
 
-		/**
-		 * The new input text.
-		 */
-		private String _newInputText;
+		public DirectEditCommand(String text) {
+			_text = text;
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -338,42 +287,16 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 					TextInputElement.PROP_INPUT_TEXT);
 
 			if (inputTextProperty != null) {
-				_oldInputText = inputTextProperty.getPropertyValue().toString();
-				inputTextProperty.setPropertyValue(_newInputText);
-
-//				TODO: Auskommentiert wg. Refactoring (swende)
-//				propertyChange(new PropertyChangeEvent(this,
-//						TextInputElement.PROP_INPUT_TEXT, _oldInputText,
-//						_newInputText));
+				inputTextProperty.setManualValue(_text);
 			}
-		}
-
-		/**
-		 * Set the input text.
-		 * 
-		 * @param inputText
-		 *            The input text.
-		 */
-		public void setInputText(final String inputText) {
-			_newInputText = inputText;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
-		public void undo() {
-			ElementProperty inputTextProperty = getCastedModel().getProperty(
-					TextInputElement.PROP_INPUT_TEXT);
-
-			if (inputTextProperty != null) {
-				inputTextProperty.setPropertyValue(_oldInputText);
-
-				//TODO: Auskommentiert wg. Refactoring (swende)
-//				propertyChange(new PropertyChangeEvent(this,
-//						TextInputElement.PROP_INPUT_TEXT, _newInputText,
-//						_oldInputText));
-			}
+		public boolean canUndo() {
+			return false;
 		}
 	}
 
@@ -386,8 +309,8 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 		 */
 		@Override
 		protected Command getDirectEditCommand(final DirectEditRequest request) {
-			DirectEditCommand command = new DirectEditCommand();
-			command.setInputText((String) request.getCellEditor().getValue());
+			DirectEditCommand command = new DirectEditCommand((String) request
+					.getCellEditor().getValue());
 			return command;
 		}
 
@@ -401,7 +324,16 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		// TODO Auto-generated method stub
-		
+		// text
+		IElementPropertyChangeHandler textHandler = new IElementPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue,
+					IRefreshableFigure figure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) figure;
+				label.setText((String) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(TextInputElement.PROP_INPUT_TEXT, textHandler);
+
 	}
 }

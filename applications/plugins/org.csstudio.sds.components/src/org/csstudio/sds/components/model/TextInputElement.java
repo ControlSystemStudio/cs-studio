@@ -43,11 +43,6 @@ public final class TextInputElement extends AbstractElementModel {
 	public static final String PROP_INPUT_TEXT = "textinput"; //$NON-NLS-1$
 
 	/**
-	 * The name of the output channel.
-	 */
-	public static final String PROP_OUTPUT_CHANNEL = "outputchannel"; //$NON-NLS-1$
-
-	/**
 	 * The ID of the font property.
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
@@ -89,8 +84,6 @@ public final class TextInputElement extends AbstractElementModel {
 	protected void configureProperties() {
 		addProperty(PROP_INPUT_TEXT, new StringProperty(
 				"Input Text", PropertyCategory.Behaviour, "")); //$NON-NLS-1$
-		addProperty(PROP_OUTPUT_CHANNEL, new StringProperty(
-				"Output Channel", PropertyCategory.Misc, ""));
 		addProperty(PROP_FONT, new FontProperty("Font",
 				PropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
 	}
@@ -109,6 +102,22 @@ public final class TextInputElement extends AbstractElementModel {
 	@Override
 	public String getColorTestProperty() {
 		return PROP_COLOR_BACKGROUND;
+	}
+	
+	/**
+	 * Gets the input text.
+	 * @return the input text
+	 */
+	public String getInputText() {
+		return (String) getProperty(PROP_INPUT_TEXT).getPropertyValue();
+	}
+	
+	/**
+	 * Gets the font.
+	 * @return the font
+	 */
+	public FontData getFont() {
+		return (FontData) getProperty(PROP_FONT).getPropertyValue();
 	}
 
 }

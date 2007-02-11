@@ -35,30 +35,6 @@ public final class PolylineEditPartTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.PolylineEditPart#doRefreshFigure(java.lang.String, java.lang.Object)}.
-	 */
-	@Test
-	public void testDoRefreshFigure() {
-		RefreshablePolylineFigure polygonFigure = (RefreshablePolylineFigure) _editPart
-				.getFigure();
-
-		final double oldFillValue = polygonFigure.getFill();
-		final double newFillValue = oldFillValue + 1;
-
-		_editPart.doRefreshFigure(AbstractPolyElement.PROP_FILL,
-				newFillValue, _editPart.getFigure());
-		assertEquals(newFillValue, polygonFigure.getFill());
-
-		final PointList oldPointList = polygonFigure.getPoints();
-		final PointList newPointList = new PointList(oldPointList.size() + 2);
-		newPointList.addPoint(17, 4);
-		_editPart.doRefreshFigure(AbstractPolyElement.PROP_POINTS,
-				newPointList, _editPart.getFigure());
-		assertEquals(newPointList, polygonFigure.getPoints());
-	}
-
-	/**
-	 * Test method for
 	 * {@link org.csstudio.sds.components.ui.internal.editparts.PolylineEditPart#createFigure()}.
 	 */
 	@Test
