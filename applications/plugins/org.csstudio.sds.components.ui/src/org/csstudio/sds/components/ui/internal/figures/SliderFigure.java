@@ -30,6 +30,7 @@ import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.Panel;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RangeModel;
 import org.eclipse.draw2d.ScrollBar;
 
@@ -80,10 +81,12 @@ public final class SliderFigure extends Panel implements IRefreshableFigure {
 		_sliderListeners = new ArrayList<ISliderListener>();
 
 		_scrollBar = new ScrollBar();
-		// scrollBar.setExtent(1000);
+		_scrollBar.setExtent(0);
 		_scrollBar.setMaximum(1000);
 		_scrollBar.setMinimum(1);
 		_scrollBar.setValue(400);
+		_scrollBar.setStepIncrement(1);
+		_scrollBar.setOrientation(ScrollBar.VERTICAL);
 		// Ellipse thumb = new Ellipse();
 		// thumb.setSize(10,20);
 		// thumb.setMinimumSize(new Dimension(60, 60));
@@ -95,7 +98,6 @@ public final class SliderFigure extends Panel implements IRefreshableFigure {
 		// setLayoutManager(new ScrollPaneLayout());
 		setLayoutManager(new BorderLayout());
 		add(_scrollBar, BorderLayout.CENTER);
-		_scrollBar.setHorizontal(true);
 		_scrollBar.validate();
 		validate();
 
@@ -139,7 +141,19 @@ public final class SliderFigure extends Panel implements IRefreshableFigure {
 	 *            The increment value.
 	 */
 	public void setIncrement(final int increment) {
-		_scrollBar.setExtent(increment);
+		_scrollBar.setStepIncrement(increment);
+	}
+
+	/**
+	 * Sets the orientation. Choose one of {@link PositionConstants#HORIZONTAL}
+	 * or {@link PositionConstants#VERTICAL}.
+	 * 
+	 * @param horizontal
+	 *            true for horizontal and false for vertical layout
+	 */
+	public void setOrientation(final boolean horizontal) {
+		_scrollBar.setOrientation(horizontal ? ScrollBar.HORIZONTAL
+				: ScrollBar.VERTICAL);
 	}
 
 	/**
@@ -190,4 +204,5 @@ public final class SliderFigure extends Panel implements IRefreshableFigure {
 		}
 		return null;
 	}
+
 }

@@ -24,6 +24,7 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.AbstractElementModel;
 import org.csstudio.sds.model.PropertyCategory;
 import org.csstudio.sds.model.properties.IntegerProperty;
+import org.csstudio.sds.model.properties.OptionProperty;
 
 /**
  * An ellipse model element.
@@ -33,6 +34,7 @@ import org.csstudio.sds.model.properties.IntegerProperty;
  * 
  */
 public final class SliderElement extends AbstractElementModel {
+
 	/**
 	 * The ID of the value property.
 	 */
@@ -52,6 +54,11 @@ public final class SliderElement extends AbstractElementModel {
 	 * The ID of the increment property.
 	 */
 	public static final String PROP_INCREMENT = "increment"; //$NON-NLS-1$
+
+	/**
+	 * The ID of the orientation property.
+	 */
+	public static final String PROP_ORIENTATION = "orientation"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this model element.
@@ -97,6 +104,8 @@ public final class SliderElement extends AbstractElementModel {
 				PropertyCategory.Behaviour, 100, 0, Integer.MAX_VALUE));
 		addProperty(PROP_INCREMENT, new IntegerProperty("Increment",
 				PropertyCategory.Behaviour, 1, 0, Integer.MAX_VALUE));
+		addProperty(PROP_ORIENTATION, new OptionProperty("Orientation",
+				PropertyCategory.Display, new String[] {"Horizontal", "Vertical"}, 0));
 	}
 
 	/**
@@ -143,4 +152,7 @@ public final class SliderElement extends AbstractElementModel {
 		return (Integer) getProperty(PROP_VALUE).getPropertyValue();
 	}
 
+	public boolean isHorizontal() {
+		return (Integer) getProperty(PROP_ORIENTATION).getPropertyValue()==0;
+	}
 }

@@ -26,6 +26,8 @@ import org.csstudio.sds.components.ui.internal.figures.SliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.ScrollBar;
 
 /**
  * EditPart controller for <code>RectangleElement</code> elements.
@@ -54,6 +56,7 @@ public final class SliderEditPart extends AbstractElementEditPart {
 		slider.setMin(model.getMin());
 		slider.setIncrement(model.getIncrement());
 		slider.setValue(model.getValue());
+		slider.setOrientation(model.isHorizontal());
 
 		return slider;
 	}
@@ -110,6 +113,27 @@ public final class SliderEditPart extends AbstractElementEditPart {
 			}
 		};
 		setPropertyChangeHandler(SliderElement.PROP_INCREMENT, incrementHandler);
+
+		// increment
+		IElementPropertyChangeHandler orientationHandler = new IElementPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				SliderFigure slider = (SliderFigure) refreshableFigure;
+
+				int orientation = (Integer) newValue;
+				slider.setOrientation(orientation==0);
+				
+				SliderElement element = (SliderElement) getModel();
+				
+				// invert the size of the element
+				element.setSize(element.getHeight(), element.getWidth());
+				
+				return true;
+			}
+		};
+		setPropertyChangeHandler(SliderElement.PROP_ORIENTATION,
+				orientationHandler);
 
 	}
 }
