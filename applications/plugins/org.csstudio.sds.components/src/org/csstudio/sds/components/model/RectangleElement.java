@@ -79,19 +79,19 @@ public final class RectangleElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL,  new DoubleProperty(
-				Messages.FillLevelProperty,
+		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
 				PropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0));
 	}
-	
+
 	/**
-	 * Gets the fill grade.
-	 * @return the fill grade
+	 * Gets the fill level.
+	 * 
+	 * @return the fill level
 	 */
-	public double getFillGrade() {
+	public double getFillLevel() {
 		return (Double) getProperty(PROP_FILL).getPropertyValue();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

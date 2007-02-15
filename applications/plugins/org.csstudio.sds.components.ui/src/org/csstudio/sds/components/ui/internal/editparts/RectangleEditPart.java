@@ -43,7 +43,7 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 		RectangleElement model = (RectangleElement) getCastedModel();
 
 		RefreshableRectangleFigure rectangle = new RefreshableRectangleFigure();
-		rectangle.setFill(model.getFillGrade());
+		rectangle.setFill(model.getFillLevel());
 
 		return rectangle;
 

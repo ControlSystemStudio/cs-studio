@@ -28,7 +28,7 @@ public class EpicsMeterInitializer implements IElementModelInitializer {
 			model.setPropertyValue(AbstractElementModel.PROP_COLOR_FOREGROUND, schema.getColorProperty(AbstractElementModel.PROP_COLOR_FOREGROUND));
 			
 			final DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("scriptedColor"); //$NON-NLS-1$
-			dynamicsDescriptor.addInputParameterBinding(new ParameterDescriptor("abc", Double.class)); //$NON-NLS-1$
+			dynamicsDescriptor.addInputChannel(new ParameterDescriptor("abc", Double.class)); //$NON-NLS-1$
 			model.setDynamicsDescriptor(AbstractElementModel.PROP_COLOR_BACKGROUND, dynamicsDescriptor);
 		} else {
 			CentralLogger.getInstance().error(this, "The initialization schema of the type '" //$NON-NLS-1$
