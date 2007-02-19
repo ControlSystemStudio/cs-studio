@@ -16,7 +16,7 @@ public class AAPITest {
     //cmd=AAPI.HIERARCHY_CHANNEL_LIST_CMD;
     //cmd=AAPI.FILTER_LIST_CMD;
      
-    AAPI aapiClient = new AAPI("epicsk.desy.de",3949); 
+    AAPI aapiClient = new AAPI("krynfs.desy.de",4054); 
     switch (cmd) {
     // 1) Ask version
     case AAPI.VERSION_CMD :
@@ -30,7 +30,8 @@ public class AAPITest {
         RequestData input = new RequestData();
         input.setFrom(1171480000); // Feb 2007
         input.setU_from(0);
-        input.setTo(input.getFrom() + 3600*24*10 );
+//        input.setTo(input.getFrom() + 3600*24*10 );
+        input.setTo(input.getFrom() + 3600*1 );
         input.setU_to(0);
         input.setNum(3);
     
