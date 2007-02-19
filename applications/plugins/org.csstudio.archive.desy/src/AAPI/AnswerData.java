@@ -8,6 +8,8 @@ public class AnswerData
 {
     private final static String undefEgu = " ";
     private int count;
+    private int error;
+    private int type;
     private double[] data;
     private int[] time; 
     private int[] u_time;
@@ -35,8 +37,11 @@ public class AnswerData
     public void setLowAlarm(double Low)    {lowAlarm=Low;} 
     public void setLowWarning(double Low)  {lowWarning=Low;} 
     public void setEgu(String Egu)         {egu=Egu;} 
+    
         
     public  int      getCount()      {return (count);} 
+    public  int      getType()       {return (type);}
+    public  int      getError()      {return (error);} 
     public  double[] getData()       {return (data);} 
     public  int[]    getTime()       {return (time);} 
     public  int[]    getUtime()      {return (u_time);} 
@@ -49,6 +54,7 @@ public class AnswerData
     public  double   getLowAlarm()   {return (lowAlarm);} 
     public  double   getLowWarning() {return (lowWarning);} 
     public  String   getEgu()        {return (egu);} 
+    
     public boolean debug=true;
     //
     // Analyzing of byteArray package coming from AAPI-server
@@ -72,8 +78,8 @@ public class AnswerData
             int ver = readStream.readInt();
             int PV_size = readStream.readInt();
             for(int i=0;i<PV_size;i++) {
-                int error = readStream.readInt();
-                int type = readStream.readInt();
+                error = readStream.readInt();
+                type = readStream.readInt();
                 count = readStream.readInt();
                 if (count < 0) { 
                     System.err.println("AAPI analyzeAnswer: negative array size");

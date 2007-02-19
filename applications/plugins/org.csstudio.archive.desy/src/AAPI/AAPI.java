@@ -83,6 +83,70 @@ public class AAPI {
 			"SIMM",
 			"READ_ACCESS",
 			"WRITE_ACCESS", "UNDEF"};
+	public final static int TCP_READ_ERROR          =1;
+	public final static int NO_MEMORY               =2;
+	public final static int BAD_CMD_NUM             =3;
+	public final static int CANT_READ_LENGTH        =4;
+	public final static int CANT_READ_PACKET        =5;
+	public final static int DESERIALISATION_PROBLEM =6;
+	public final static int BAD_CMD                 =7;
+	public final static int CANT_DESERIAL           =8;
+	public final static int ADD_HEADER_PROBLEM      =9;
+	public final static int BAD_DATA_HANDLE         =10;
+	public final static int NO_SUCH_METHOD          =11;
+	public final static int FROM_MORE_THEN_TO       =12;
+	public final static int BAD_MAX_NUM             =13;
+	public final static int BAD_AVER_METHOD         =14; 
+	public final static int BAD_TIME                =15; 
+	public final static int CAN_T_OPEN_FILE         =16; 
+	public final static int BAD_FGETS               =17; 
+	public final static int BAD_HR_FILE             =18; 
+	public final static int BAD_GET_CHANNEL_INFO    =19;  
+	public final static int BAD_GET_CHANNEL_LIST    =20; 
+	public final static int BAD_GET_HIERARCHY       =21;
+	public final static int BAD_RAW_METHOD          =22; 
+	public final static int BAD_GET_FILTER_LIST     =23;
+	public final static int BAD_NO_FILTER_METHOD    =24; 
+	public final static int NO_FILTER_BIG           =25;
+	public final static int BAD_FFT_METHOD          =26;
+	public final static int BAD_GET_REG_EXP         =27;
+	public final static int BAD_GET_SKELETON_INFO   =28; 
+	public final static int BAD_MMA_METHOD          =29;
+	public final static int MAX_SERVER_ERR          =BAD_MMA_METHOD+1;
+	
+	public final static String aapiServerSideErrorString[]={	
+	"NO ERROR",
+	"TCP_READ_ERROR: Try (re)start server or Network Problem",
+	"NO_MEMORY:No enough memory in server side",
+	"BAD_CMD_NUM:Server or Network Problem",
+	"CANT_READ_LENGTH:Server or Network Problem",
+	"CANT_READ_PACKET:Server or Network Problem:",
+	"DESERIALISATION_PROBLEM:Server or Network Problem",
+	"BAD_CMD:Server or Network Problem",
+	"CANT_DESERIAL:Server or Network Problem",
+	"ADD_HEADER_PROBLEM:Server or Network Problem",
+	"BAD_DATA_HANDLE:Server Problem",
+	"NO_SUCH_METHOD:Server Problem",
+	"FROM_MORE_THEN_TO:Bad region choosen",
+	"BAD_MAX_NUM: Problem with number of points in server side",
+	"BAD_AVER_METHOD:Server Problem with average Method",
+	"BAD_TIME:Bad time region choose",
+	"CAN_T_OPEN_FILE:Server side file reading problem",
+	"BAD_FGETS:Server side file reading problem",
+	"BAD_HR_FILE:Server side file reading problem",
+	"BAD_GET_CHANNEL_INFO:Server side get info about channels problem",
+	"BAD_GET_CHANNEL_LIST:Server side get list of channels problem",
+	"BAD_GET_HIERARCHY:Server side get hierarchy list of channels problem",
+	"BAD_RAW_METHOD:Server Problem with raw Method",
+	"BAD_GET_FILTER_LIST:Server side get list of method problem",
+	"BAD_NO_FILTER_METHOD:Server Problem with RAW Method",
+	"Server: Number of return points exeed limit, decrease plot region",
+	"BAD_FFT_METHOD:Server Problem with FFT Method",
+	"BAD_GET_REG_EXP:Server side get regExp list of channels problem",
+	"BAD_GET_SKELETON_INFO:Server Problem with Get Skeleton Info Method",
+	"BAD_MMA_METHOD:Server Problem with Min/MAX/Average Method"
+	};
+	
 	
 	// Next 10 varaibles not used in current version of AAPI
 	//because only DOUBLE_DATA implemented, but agreement

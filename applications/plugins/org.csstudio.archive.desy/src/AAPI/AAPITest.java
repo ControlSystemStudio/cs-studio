@@ -30,11 +30,12 @@ public class AAPITest {
         RequestData input = new RequestData();
         input.setFrom(1171480000); // Feb 2007
         input.setU_from(0);
-        input.setTo(input.getFrom() + 3600 );
+        input.setTo(input.getFrom() + 3600*24*10 );
         input.setU_to(0);
         input.setNum(3);
     
-        input.setConversionTag(AAPI.MIN_MAX_AVERAGE_METHOD);
+        input.setConversionTag(AAPI.MIN_MAX_AVERAGE_METHOD); 	
+        input.setConversionTag(AAPI.NO_FILTERING_METHOD); 
         input.setConvers_param(AAPI.DEADBAND_PARAM);
     
         int pvCount=1;
@@ -51,6 +52,18 @@ public class AAPITest {
         }   
         System.out.println("Name='"+input.getPV()[0]+"'");
         System.out.println("count="+answerClass.getCount());
+        System.out.println("count="+answerClass.getError());
+        
+        if ( answerClass.getError()!= 0) {
+            System.out.println( "AAPI client:Error in server side=" + 
+            		answerClass.getError() );
+            
+            if( answerClass.getError() == AAPI.NO_FILTER_BIG ) {
+            	System.out.println( "RAW_DATA -- Number of return points is VERY big!");
+            	}            
+            //return;
+        }
+        
         for(int j=0;j<answerClass.getCount();j++) {
             System.out.print("T U S D="+answerClass.getTime()[j]); 
             System.out.print("; "+answerClass.getUtime()[j]); 
