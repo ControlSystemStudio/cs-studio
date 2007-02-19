@@ -16,7 +16,7 @@ public class AAPITest {
     //cmd=AAPI.HIERARCHY_CHANNEL_LIST_CMD;
     //cmd=AAPI.FILTER_LIST_CMD;
      
-    AAPI aapiClient = new AAPI(AAPI.AAPI_HOST,AAPI.AAPI_PORT); 
+    AAPI aapiClient = new AAPI("epicsk.desy.de",3949); 
     switch (cmd) {
     // 1) Ask version
     case AAPI.VERSION_CMD :
@@ -28,18 +28,19 @@ public class AAPITest {
     // 2) Ask data
     case AAPI.DATA_REQUEST_CMD :
         RequestData input = new RequestData();
-        input.setFrom(1070000000); // November 2003
+        input.setFrom(1171480000); // Feb 2007
         input.setU_from(0);
         input.setTo(input.getFrom() + 3600 );
         input.setU_to(0);
         input.setNum(3);
     
-        input.setConversionTag(AAPI.AVERAGE_METHOD);
+        input.setConversionTag(AAPI.MIN_MAX_AVERAGE_METHOD);
         input.setConvers_param(AAPI.DEADBAND_PARAM);
     
         int pvCount=1;
         String[] strArray = new String[pvCount];
-        strArray[0]=new String("AL:K:KV:A1:UL1L2TA1_ai");
+        strArray[0]=new String("AL:K:HZ:S1:DI1_RBi1_bi");
+        //strArray[0]=new String("P1N:BUSERR_calc");
         input.setPV_size(pvCount);
         input.setPV(strArray);
     

@@ -101,10 +101,10 @@ public class AnswerData
                 int eguLen =readStream.readInt();
                 if (debug) System.out.println("eguLen="+eguLen);
                 eguLen--; //Looks like one more symbol here
-                if ( eguLen < 0) { 
+                if ( eguLen < -1) { 
                     System.err.println("AAPI analyzeAnswer: negative array size");
                     return null;   
-                } else if (eguLen == 0) egu= new String(undefEgu);
+                } else if ((eguLen == -1)|| (eguLen == 0) ) egu= new String(undefEgu);
                 else {
                     char[] eguAsArray = new char[eguLen];
                     for (int j=0;j<eguLen;j++) { // Looks like one more symbol here

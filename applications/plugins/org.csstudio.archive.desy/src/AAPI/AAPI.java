@@ -38,7 +38,7 @@ public class AAPI {
 	public final static int		FILTER_LIST_CMD				= 6;
 	
 	public final static int		REGEXP_LIST_CMD				= 7;
-public final static int HIERARCHY_SKELETON_CMD =8;
+    public final static int     HIERARCHY_SKELETON_CMD      = 8;
 
 	public final static int		MAX_FUNCT_NUMBER			= HIERARCHY_SKELETON_CMD;
 
@@ -49,15 +49,16 @@ public final static int HIERARCHY_SKELETON_CMD =8;
 	public final static int		SPLINE_METHOD				= 4;
 	public final static int		FFT_METHOD					= 5;
 	public final static int		NO_FILTERING_METHOD			= 6;
-	public final static int		LINEAR_INT_METHOD			= 7;
-	public final static int		STEP_FUNCTION_METHOD		= 8;
-	public final static int		LINEAR_AND_STEP_METHOD		= 9;
+	public final static int		MIN_MAX_AVERAGE_METHOD		= 7;
+	public final static int		LINEAR_INT_METHOD			= 8;
+	public final static int		STEP_FUNCTION_METHOD		= 9;
+	public final static int		LINEAR_AND_STEP_METHOD		= 10;
 	public final static int		MAX_METHOD_NUMBER			= LINEAR_AND_STEP_METHOD;
 //	 Next stringArrray corespondent with data reduction methods list:
 	
 	//19.1.07 AVERAGE changed to plot-binning
 	public final static String requestedTypeList[]={"plot-binning","RAW","SHARP",
-		"SPLINE","FFT","NO_FILTERING","LINEAR_INT","STEP_FUNCTION","LINEAR_AND_STEP"};
+		"SPLINE","FFT","NO_FILTERING","MIN_MAX_AVERAGE","LINEAR_INT","STEP_FUNCTION","LINEAR_AND_STEP"};
 	public final static String severityList[]={"NO_ALARM","MINOR","MAJOR","INVALID","UNDEF"};
 	public final static String alarmStatusString[]={
 			"NO_ALARM",  // This list coming from  $Epics/base/include/alarmString.h
