@@ -21,50 +21,54 @@
  */
 package org.csstudio.platform.internal.usermanagement;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Defines a CSS system user.
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
-public class User implements IUser {
+public final class User implements IUser {
 
 	/**
-	 * The name of this user.
+	 * Holds all properties.
 	 */
-	private final String _name;
-
-	/**
-	 * The password of this user.
-	 */
-	private final String _password;
-
+	private Map <String, Object> _propetyMap = new HashMap <String, Object> ();
+	
 	/**
 	 * Constructor with parameters.
 	 * 
 	 * @param name
 	 *            the name of this user
-	 * @param password
-	 *            the password of this user
 	 */
-	public User(final String name, final String password) {
-		_name = name;
-		_password = password;
+	protected User(final String name) {
+		_propetyMap.put(IUser.USERNAME, name);
+	}
+
+	/**
+	 * @see org.csstudio.platform.internal.usermanagement.IUser#addProperty(java.lang.String,java.lang.Object)
+	 * @param key  with which the specified value is to be associated 
+	 * @param value  to be associated with the specified key
+	 */
+	public void addProperty(final String key, final Object value) {
+		_propetyMap.put(key, value);
 	}
 
 	/**
 	 * @see org.csstudio.platform.internal.usermanagement.IUser#getName()
-	 * @return the name of this user
+	 * @return  the name of the user
 	 */
-	public final String getName() {
-		return _name;
+	public String getName() {
+		return (String) _propetyMap.get(IUser.USERNAME);
 	}
 
 	/**
-	 * Delivers the password of this user.
-	 * 
-	 * @return the password of this user
+	 * @see org.csstudio.platform.internal.usermanagement.IUser#getProperty(java.lang.String)
+	 * @param key key whose associated value is to be returned
+	 * @return the value associated to the specified key or null if there is no match for the key
 	 */
-	public final String getPassword() {
-		return _password;
+	public Object getProperty(final String key) {
+		return _propetyMap.get(key);
 	}
 }

@@ -78,20 +78,27 @@ public final class UserManagementService {
 	 *         instance with the given password.
 	 */
 	public boolean checkUser(final String name, final String password) {
+		//TODO implement correctly
 		return true;
 	}
-
+	
 	/**
-	 * Set the currently logged in user.
-	 * 
-	 * @param user
-	 *            The user that is currently logged into the running CSS
-	 *            instance.
+	 * Logs in current user if and only if the username and password are valid.
+	 * This is when <code>checkUser()</code> returns true
+	 * @param username The name of the user
+	 * @param password The password.
+	 * @throws UserAlreadyLoggedInException is thrown if a new user tries to log in, while another user is logged in.
 	 */
-	public void setUser(final IUser user) {
-		_user = user;
-		CentralLogger.getInstance().info(this, "User " + user.getName() + " logged in."); //$NON-NLS-1$ //$NON-NLS-2$
-		notifyListener(new UserManagementEvent());
+	public void login(final String username, final String password) throws UserAlreadyLoggedInException {
+		if (checkUser(username, password)) {
+			if (_user==null) {
+				_user = new User(username);
+				CentralLogger.getInstance().info(this, "User " + _user.getName() + " logged in."); //$NON-NLS-1$ //$NON-NLS-2$
+				notifyListener(new UserManagementEvent());
+			} else {
+				throw new UserAlreadyLoggedInException("A user is already logged in!");
+			}
+		}	
 	}
 
 	/**

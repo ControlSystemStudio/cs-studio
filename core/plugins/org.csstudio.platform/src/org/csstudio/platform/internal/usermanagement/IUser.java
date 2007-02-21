@@ -29,9 +29,30 @@ package org.csstudio.platform.internal.usermanagement;
 public interface IUser {
 
 	/**
+	 * key for the users name. 
+	 */
+	String USERNAME = "username";
+
+	/**
 	 * Delivers the name of the user.
 	 * 
 	 * @return the name of the user
 	 */
 	String getName();
+	
+	/**
+	 * Adds a property with the specified key.
+	 * if the key already exists the old value is replaced by this value
+	 * @param key with which the specified value is to be associated 
+	 * @param value to be associated with the specified key
+	 */
+	void addProperty(String key, Object value);
+	
+	/**
+	 * Returns the value associated to the specified key.
+	 * @param key key whose associated value is to be returned
+	 * @return the value associated to the specified key or null if there is no match for the key
+	 */
+	Object getProperty(String key);
+	
 }
