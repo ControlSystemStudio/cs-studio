@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="dummyLogin"
+         name="Dummy Login"
+         point="org.csstudio.platform.loginModule">
+      <loginModule
+            class="org.csstudio.platform.login.dummy.DummyLoginModule"
+            id="org.csstudio.platform.login.dummy.loginModule"
+            name="Dummy Login"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.platform.login.dummy.actionSet"
+            label="Sample Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.platform.login.dummy.DummyLoginAction"
+               id="org.csstudio.platform.login.dummy.DummyLoginAction"
+               label="&amp;Dummy Login"
+               menubarPath="css/other/"
+               style="push"/>
+      </actionSet>
+   </extension>
+
+</plugin>
