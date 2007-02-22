@@ -21,7 +21,7 @@
  */
 package org.csstudio.platform.ui.internal.security;
 
-import org.csstudio.platform.security.ExecutionService;
+import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.jface.preference.BooleanFieldEditor;
@@ -54,7 +54,7 @@ public class AuthenticationPreferencePage extends FieldEditorPreferencePage
 	@Override
 	protected final void createFieldEditors() {
 		addField(new BooleanFieldEditor(
-				ExecutionService.PROP_AUTH_LOGIN,
+				SecurityFacade.PROP_AUTH_LOGIN,
 				Messages
 						.getString("AuthenticationPreferencePage.LOGIN_ON_STARTUP"), getFieldEditorParent())); //$NON-NLS-1$
 	}

@@ -26,8 +26,7 @@ import org.csstudio.platform.internal.rightsmanagement.RightsManagementEvent;
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
-import org.csstudio.platform.internal.usermanagement.UserManagementService;
-import org.csstudio.platform.security.ExecutionService;
+import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.action.Action;
 
 /**
@@ -56,7 +55,8 @@ public abstract class AbstractUserDependentAction extends Action implements
 		assert rightId != null;
 		_rightId = rightId;
 
-		UserManagementService.getInstance().addUserManagementListener(this);
+		// TODO: this should be checked by Kai and Torsten
+		//UserManagementService.getInstance().addUserManagementListener(this);
 		RightsManagementService.getInstance().addRightsManagementListener(this);
 		updateState();
 	}
@@ -72,7 +72,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 * Updates state depending on user permission.
 	 */
 	protected void updateState() {
-		setEnabled(ExecutionService.getInstance().canExecute(getRightId()));
+		setEnabled(SecurityFacade.getInstance().canExecute(getRightId()));
 	}
 
 	/**
@@ -80,7 +80,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 */
 	@Override
 	public final void run() {
-		if (ExecutionService.getInstance().canExecute(getRightId())) {
+		if (SecurityFacade.getInstance().canExecute(getRightId())) {
 			doWork();
 		}
 	}
@@ -115,7 +115,8 @@ public abstract class AbstractUserDependentAction extends Action implements
 	@Override
 	protected final void finalize() throws Throwable {
 		super.finalize();
-		UserManagementService.getInstance().removeListener(this);
+		// TODO: to be checked by Kai and Torsten
+		//UserManagementService.getInstance().removeListener(this);
 		RightsManagementService.getInstance().removeListener(this);
 	}
 

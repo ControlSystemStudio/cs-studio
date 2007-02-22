@@ -21,8 +21,8 @@
  */
 package org.csstudio.platform.ui.dialogs;
 
-import org.csstudio.platform.internal.usermanagement.User;
-import org.csstudio.platform.internal.usermanagement.UserManagementService;
+import org.csstudio.platform.security.Credentials;
+import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Alexander Will
  * 
  */
-public class LoginDialog extends TitleAreaDialog {
+public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandler  {
 	/**
 	 * Standard constructor.
 	 * 
@@ -61,6 +61,10 @@ public class LoginDialog extends TitleAreaDialog {
 	 */
 	private Text _password;
 
+	/**
+	 * Stores the credentials object after OK has been pressed.
+	 */
+	private Credentials _credentials;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -106,7 +110,21 @@ public class LoginDialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected final void okPressed() {
-		UserManagementService.getInstance().setUser(new User(_username.getText(), _password.getText()));
+		_credentials = new Credentials(this._username.getText(), 
+										this._password.getText());
+		// reset the username & password field
+		_username = null;
+		_password = null;
 		super.okPressed();
+	}
+
+	/**
+	 * Opens the login window and queries the user
+	 * for credentials which it returns.
+	 */
+	public Credentials getCredentials() {
+		this.setBlockOnOpen(true);
+		this.open();
+		return _credentials;
 	}
 }

@@ -21,7 +21,7 @@
  */
 package org.csstudio.platform.ui.security;
 
-import org.csstudio.platform.security.ExecutionService;
+import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -69,7 +69,7 @@ public abstract class AbstractUserDependentActionDelegate extends AbstractUserDe
 	@Override
 	protected final void updateState() {
 		if (_action != null) {
-			_action.setEnabled(ExecutionService.getInstance().canExecute(getRightId()));
+			_action.setEnabled(SecurityFacade.getInstance().canExecute(getRightId()));
 		}
 	}
 	

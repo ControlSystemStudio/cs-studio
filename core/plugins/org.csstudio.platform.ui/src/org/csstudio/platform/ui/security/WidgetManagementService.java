@@ -28,8 +28,7 @@ import org.csstudio.platform.internal.rightsmanagement.RightsManagementEvent;
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
-import org.csstudio.platform.internal.usermanagement.UserManagementService;
-import org.csstudio.platform.security.ExecutionService;
+import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.internal.security.WidgetConfiguration;
 import org.eclipse.swt.widgets.Control;
 
@@ -66,7 +65,8 @@ public final class WidgetManagementService implements IUserManagementListener,
 		_controls = new HashMap<Control, String>();
 		_configurations = new HashMap<Control, WidgetConfiguration>();
 
-		UserManagementService.getInstance().addUserManagementListener(this);
+		// TODO: to be checked by Kai and Torsten
+	//	UserManagementService.getInstance().addUserManagementListener(this);
 		RightsManagementService.getInstance().addRightsManagementListener(this);
 	}
 
@@ -139,7 +139,7 @@ public final class WidgetManagementService implements IUserManagementListener,
 	private void doRefreshControl(final Control control, final String rightId) {
 		WidgetConfiguration configuration = _configurations.get(control);
 
-		boolean flag = ExecutionService.getInstance().canExecute(rightId);
+		boolean flag = SecurityFacade.getInstance().canExecute(rightId);
 
 		if (configuration.isChangeEnablement()) {
 			control.setEnabled(flag);
