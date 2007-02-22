@@ -13,31 +13,45 @@ import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 
-public class LDAPReader {
-	public enum  Ebene {KRYO, FACILITY, CONTROLLER, DEVICE, RECORD}
+public class LDAPReader extends Job {
+//	public enum  Ebene {KRYO, FACILITY, CONTROLLER, DEVICE, RECORD};
 
 	private String name;
 	private String filter;
 	private int defaultScope=SearchControls.SUBTREE_SCOPE;
+	private int searchScope;
+	private ArrayList<String> list;
+	private ErgebnisListe ergebnisListe;
 
-
-	public LDAPReader(String[] nameUFilter){
+	public LDAPReader(String[] nameUFilter, ErgebnisListe ergebnisListe){
+		super("LDAPReader");
+		this.ergebnisListe = ergebnisListe;
 		name=nameUFilter[0];
 		filter=nameUFilter[1];
 	}
-	public LDAPReader(String[] nameUFilter, int searchScope){
+	public LDAPReader(String[] nameUFilter, int searchScope, ErgebnisListe ergebnisListe){
+		super("LDAPReader");
+		this.ergebnisListe = ergebnisListe;
 		name=nameUFilter[0];
 		filter=nameUFilter[1];
 		defaultScope = searchScope;
 	}
 
-	public LDAPReader(String name, String filter){
+	public LDAPReader(String name, String filter, ErgebnisListe ergebnisListe){
+		super("LDAPReader");
+		this.ergebnisListe = ergebnisListe;
 		this.name = name;
 		this.filter = filter;
 	}
 
-	public LDAPReader(String name, String filter, int searchScope){
+	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe){
+		super("LDAPReader");
+		this.ergebnisListe = ergebnisListe;
 		this.name = name;
 		this.filter = filter;
 		defaultScope = searchScope;
@@ -65,37 +79,44 @@ public class LDAPReader {
 		return null;
 	}
 
-	public String[] getStringArray(){
-		return getStringArray(defaultScope);
-	}
+//	public ArrayList<String> getStringArray(){
+//		return list;
+//	}
+//
+//	public void set(String name, String filter) {
+//		this.name=name;
+//		this.filter=filter;
+//	}
+//	public void setScope(int scope){
+//		searchScope= scope;
+//	}
 
-	public String[] getStringArray(int searchScope){
+
+	@Override
+	protected IStatus run(IProgressMonitor monitor ) {
 		DirContext ctx;
 		if((ctx = initial())!=null){
 	        SearchControls ctrl = new SearchControls();
+	        // TODO: Muss noch richtig gemacht werden.
+	        searchScope=defaultScope;
 	        ctrl.setSearchScope(searchScope);
 	        try{
-	        	ArrayList<String> list = new ArrayList<String>();
+	        	list = new ArrayList<String>();
 	            NamingEnumeration answer = ctx.search(name, filter, ctrl);
 				while(answer.hasMore()){
 					String name = ((SearchResult)answer.next()).getName();
 					list.add(name);
-
 				}
-				return list.toArray(new String[0]);
+				answer.close();
+				ctx.close();
+				ergebnisListe.setAnswer(list);
+				return this.ASYNC_FINISH;
+//				return Status.OK_STATUS;
+//				return list.toArray(new String[0]);
 			} catch (NamingException e) {
 				e.printStackTrace();
 			}
 		}
-		return null;
-	}
-
-	public void set(String name, String filter) {
-		this.name=name;
-		this.filter=filter;
-	}
-
-	public void setSearchScope(int searchScop) {
-		defaultScope = searchScop;
+		return Status.CANCEL_STATUS;
 	}
 }
