@@ -24,7 +24,7 @@ package org.csstudio.platform.internal.rightsmanagement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.internal.usermanagement.IUser;
+import org.csstudio.platform.security.User;
 
 /**
  * The <code>RightsManagementService</code> provides the central CSS core
@@ -73,7 +73,7 @@ public final class RightsManagementService {
 	 * @return True, if the user has the permission to perform the action with
 	 *         the given ID.
 	 */
-	public boolean hasRights(final IUser user, final String id) {
+	public boolean hasRights(final User user, final String id) {
 		return user != null;
 	}
 

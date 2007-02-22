@@ -24,7 +24,7 @@ package org.csstudio.platform.internal;
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.LocaleService;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.ExecutionService;
+import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -140,7 +140,7 @@ public final class PlatformPreferencesInitializer extends
 	 */
 	private void initializeAuthenticationPreferences(
 			final IEclipsePreferences node) {
-		node.put(ExecutionService.PROP_AUTH_LOGIN, "false"); //$NON-NLS-1$
+		node.put(SecurityFacade.PROP_AUTH_LOGIN, "false"); //$NON-NLS-1$
 	}
 
 	/**

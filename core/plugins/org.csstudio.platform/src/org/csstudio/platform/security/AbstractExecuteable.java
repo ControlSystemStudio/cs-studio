@@ -62,7 +62,7 @@ public abstract class AbstractExecuteable {
 	 * action, if the currently logged in user is allowed to do so.
 	 */
 	public final void execute() {
-		if (ExecutionService.getInstance().canExecute(getRightId())) {
+		if (SecurityFacade.getInstance().canExecute(getRightId())) {
 			doWork();
 		}
 	}
@@ -75,7 +75,7 @@ public abstract class AbstractExecuteable {
 	 *         logged in user.
 	 */
 	public final boolean canExecute() {
-		return ExecutionService.getInstance().canExecute(getRightId());
+		return SecurityFacade.getInstance().canExecute(getRightId());
 	}
 
 	/**

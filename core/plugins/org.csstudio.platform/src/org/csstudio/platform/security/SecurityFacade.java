@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
-import org.csstudio.platform.internal.usermanagement.UserManagementService;
+import org.csstudio.platform.internal.usermanagement.LoginContext;
 
 /**
  * This Service executes instances of
@@ -35,13 +35,19 @@ import org.csstudio.platform.internal.usermanagement.UserManagementService;
  * get the current instance of the IRights- and IUserManagement.
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
+ * & Jörg Rathlev & Anze Vodovnik
  */
-public final class ExecutionService {
+public final class SecurityFacade {
 
+	/**
+	 * This holds the current LoginContext.
+	 */
+	private LoginContext _context;
+	
 	/**
 	 * The only one instance of this class.
 	 */
-	private static ExecutionService _instance;
+	private static SecurityFacade _instance;
 
 	/**
 	 * The listeners.
@@ -56,16 +62,17 @@ public final class ExecutionService {
 	/**
 	 * Private constructor due to singleton pattern.
 	 */
-	private ExecutionService() {
+	private SecurityFacade() {
 		_listeners = new ArrayList<ISecurityListener>();
+		_context = new LoginContext("PrimaryLoginContext");
 	}
 
 	/**
 	 * @return The singleton instance of this class.
 	 */
-	public static ExecutionService getInstance() {
+	public static SecurityFacade getInstance() {
 		if (_instance == null) {
-			_instance = new ExecutionService();
+			_instance = new SecurityFacade();
 		}
 
 		return _instance;
@@ -80,10 +87,33 @@ public final class ExecutionService {
 	 * @return True if the user has the permission; false otherwise
 	 */
 	public boolean canExecute(final String id) {
+		return canExecute(id, _context);
+	}
+	
+	/**
+	 * Checks if the current user has the permission referenced by the
+	 * given ID based on the given login context.
+	 * @param id The ID of the right to check.
+	 * @param context The login context under which the right is needed.
+	 * @return Returns true if the user has permission and false otherwise.
+	 */
+	public boolean canExecute(final String id, LoginContext context) {
 		return RightsManagementService.getInstance().hasRights(
-				UserManagementService.getInstance().getUser(), id);
+				context.getUser(), id);
 	}
 
+	public User getCurrentUser() {
+		return _context.getUser();
+	}
+	
+	/**
+	 * Performs the login procedure.
+	 *
+	 */
+	public void login(ILoginCallbackHandler handler) {
+		this._context.login(handler);
+	}
+	
 	/**
 	 * Adds the given listener to the internal list.
 	 * 

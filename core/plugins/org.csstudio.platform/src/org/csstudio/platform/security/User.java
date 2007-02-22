@@ -19,40 +19,49 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.internal.usermanagement;
+package org.csstudio.platform.security;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This interface must be implemented by any user-instance.
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
-public interface IUser {
-
+public class User {
+	private String _username;
+	private Map<String, Object> _attributes = new HashMap<String, Object>();
+	
+	public User(String username) {
+		_username = username;
+	}
 	/**
-	 * key for the users name. 
-	 */
-	String USERNAME = "username";
-
-	/**
-	 * Delivers the name of the user.
+	 * Delivers the username of the user.
 	 * 
-	 * @return the name of the user
+	 * @return the username
 	 */
-	String getName();
+	public String getUsername() {
+		return _username;
+	}
 	
 	/**
-	 * Adds a property with the specified key.
-	 * if the key already exists the old value is replaced by this value
+	 * Sets a property with the specified key.
+	 * If the key already exists the old value is replaced by this value
 	 * @param key with which the specified value is to be associated 
 	 * @param value to be associated with the specified key
 	 */
-	void addProperty(String key, Object value);
+	public void setProperty(String key, Object value) {
+		_attributes.put(key, value);
+	}
 	
 	/**
 	 * Returns the value associated to the specified key.
 	 * @param key key whose associated value is to be returned
 	 * @return the value associated to the specified key or null if there is no match for the key
 	 */
-	Object getProperty(String key);
+	public Object getProperty(String key) {
+		return _attributes.get(key);
+	}
 	
 }
