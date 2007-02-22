@@ -21,6 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.SliderElement;
 import org.csstudio.sds.components.ui.internal.figures.SliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
@@ -97,6 +98,7 @@ public final class SliderEditPart extends AbstractElementEditPart {
 					final IRefreshableFigure refreshableFigure) {
 				SliderFigure slider = (SliderFigure) refreshableFigure;
 				slider.setValue((Integer) newValue);
+				CentralLogger.getInstance().info(this, ""+(Integer) newValue);
 				return true;
 			}
 		};
