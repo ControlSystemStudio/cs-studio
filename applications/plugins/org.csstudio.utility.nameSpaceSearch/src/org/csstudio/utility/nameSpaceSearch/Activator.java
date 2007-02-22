@@ -1,12 +1,12 @@
 package org.csstudio.utility.nameSpaceSearch;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class Activator extends AbstractCssUiPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.utility.nameSpaceSearch";
@@ -25,17 +25,15 @@ public class Activator extends AbstractUIPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
+	public void doStart(BundleContext context) throws Exception {
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void stop(BundleContext context) throws Exception {
+	public void doStop(BundleContext context) throws Exception {
 		plugin = null;
-		super.stop(context);
 	}
 
 	/**
@@ -45,6 +43,12 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+
+	@Override
+	public String getPluginId() {
+		// TODO Auto-generated method stub
+		return PLUGIN_ID;
 	}
 
 }
