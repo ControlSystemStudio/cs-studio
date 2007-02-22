@@ -95,20 +95,23 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 	 * Refresh the border.
 	 */
 	private void refreshBorder() {
-		LineBorder border = new LineBorder();
-		border.setWidth(_borderWidth);
-		border.setColor(_borderColor);
-		switch (_borderStyle) {
+		if (_borderWidth > 0) {
+			LineBorder border = new LineBorder();
+			border.setWidth(_borderWidth);
+			border.setColor(_borderColor);
+			switch (_borderStyle) {
 
-		case 0:
-			// TODO: Vary Border Style !
-			break;
-		default:
-			// TODO: Vary Border Style !
-			break;
+			case 0:
+				// TODO: Vary Border Style !
+				break;
+			default:
+				// TODO: Vary Border Style !
+				break;
+			}
+			_figure.setBorder(border);
+		} else {
+			_figure.setBorder(null);
 		}
-		_figure.setBorder(border);
 	}
-	
-	
+
 }

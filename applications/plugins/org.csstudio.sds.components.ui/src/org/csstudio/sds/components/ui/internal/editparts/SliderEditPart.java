@@ -26,8 +26,10 @@ import org.csstudio.sds.components.ui.internal.figures.SliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
-import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.draw2d.ScrollBar;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.progress.UIJob;
 
 /**
  * EditPart controller for <code>RectangleElement</code> elements.
@@ -38,17 +40,38 @@ import org.eclipse.draw2d.ScrollBar;
 public final class SliderEditPart extends AbstractElementEditPart {
 
 	/**
+	 * A UI job, which is used to reset the manual value of the slider figure
+	 * after a certain amount of time.
+	 */
+	private UIJob _resetManualValueDisplayJob;
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		SliderElement model = (SliderElement) getCastedModel();
+		final SliderElement model = (SliderElement) getCastedModel();
 
-		SliderFigure slider = new SliderFigure();
+		final SliderFigure slider = new SliderFigure();
 		slider.addSliderListener(new SliderFigure.ISliderListener() {
 			public void sliderValueChanged(final int newValue) {
-				getCastedModel().getProperty(SliderElement.PROP_VALUE)
-						.setManualValue(newValue);
+				model.getProperty(SliderElement.PROP_VALUE).setManualValue(
+						newValue);
+
+				slider.setManualValue((Integer) newValue);
+
+				if (_resetManualValueDisplayJob == null) {
+					_resetManualValueDisplayJob = new UIJob("reset") {
+						@Override
+						public IStatus runInUIThread(final IProgressMonitor monitor) {
+							slider.setManualValue(model.getValue());
+							return Status.OK_STATUS;
+						}
+					};
+
+				}
+				_resetManualValueDisplayJob.schedule(5000);
+
 			}
 		});
 
@@ -56,6 +79,7 @@ public final class SliderEditPart extends AbstractElementEditPart {
 		slider.setMin(model.getMin());
 		slider.setIncrement(model.getIncrement());
 		slider.setValue(model.getValue());
+		slider.setManualValue(model.getValue());
 		slider.setOrientation(model.isHorizontal());
 
 		return slider;
@@ -122,13 +146,13 @@ public final class SliderEditPart extends AbstractElementEditPart {
 				SliderFigure slider = (SliderFigure) refreshableFigure;
 
 				int orientation = (Integer) newValue;
-				slider.setOrientation(orientation==0);
-				
+				slider.setOrientation(orientation == 0);
+
 				SliderElement element = (SliderElement) getModel();
-				
+
 				// invert the size of the element
 				element.setSize(element.getHeight(), element.getWidth());
-				
+
 				return true;
 			}
 		};
