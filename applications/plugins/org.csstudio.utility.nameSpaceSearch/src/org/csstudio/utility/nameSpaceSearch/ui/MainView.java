@@ -2,14 +2,19 @@ package org.csstudio.utility.nameSpaceSearch.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
+import org.csstudio.utility.ldap.reader.ErgebnisListe;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -35,11 +40,14 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -47,11 +55,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 
-public class MainView extends ViewPart {
+public class MainView extends ViewPart implements Observer{
 	public static final String ID = MainView.class.getName();
 	private Text searchText;
 	private TableViewer ergebnissTableView;
-//	private int lastSort;
 	private boolean lastSortBackward;
 	private int[] sorts = {0,0,0};
 	private Image up;
@@ -59,8 +66,15 @@ public class MainView extends ViewPart {
 	private Image down;
 	private Image down_old;
 	private HashMap<String, String> headline = new HashMap<String, String>();
-	class myTableLabelProvider implements ITableLabelProvider{
+//	private Image world;
+	private Image work_disable;
+	private Label workIcon;
+	private LDAPReader ldapr;
+	private Display disp;
+	private ErgebnisListe ergebnisListe;
+	private Button searchButton;
 
+	class myTableLabelProvider implements ITableLabelProvider{
 		// No Image
 		public Image getColumnImage(Object element, int columnIndex) {return null;}
 
@@ -93,6 +107,7 @@ public class MainView extends ViewPart {
 		public void removeListener(ILabelProviderListener listener) {}
 
 	}
+
 	class myContentProvider implements IStructuredContentProvider{
 
 		public Object[] getElements(Object inputElement) {
@@ -120,35 +135,58 @@ public class MainView extends ViewPart {
 	 *
 	 ***************************************************************************/
 
+	public MainView() {
+		ergebnisListe = new ErgebnisListe();
+		ergebnisListe.addObserver(this);
+	}
+
 	@Override
 	public void createPartControl(Composite parent){
-		parent.setLayout(new GridLayout(2,false));
+		disp = parent.getDisplay();
+		parent.setLayout(new GridLayout(3,false));
 		up = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up.gif").createImage();
 		down = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down.gif").createImage();
 		up_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up_old.gif").createImage();
 		down_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down_old.gif").createImage();
+//		work_disable = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/work_disable2.gif").createImage();
+//		world = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/work_do.gif").createImage();
+		work_disable = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/LDAPLupe.gif").createImage();
+//		world = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/LDAPLupe.gif").createImage();
 
 		searchText = makeSearchField(parent);
 
-		final Button serachButton = new Button(parent,SWT.PUSH);
-		serachButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
-		serachButton.setFont(new Font(parent.getDisplay(),"SimSun",10,SWT.NONE));
-		serachButton.setText(Messages.getString("MainView_searchButton")); //$NON-NLS-1$
+		// make Search Button
+		searchButton = new Button(parent,SWT.PUSH);
+		searchButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
+		searchButton.setFont(new Font(parent.getDisplay(),"SimSun",10,SWT.NONE));
+		searchButton.setText(Messages.getString("MainView_searchButton")); //$NON-NLS-1$
 
+		// make Serach Activity Icon
+		workIcon = new Label(parent,SWT.NONE);
+		workIcon.setImage(work_disable);
+		workIcon.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
+		workIcon.setEnabled(false);
+//		world.getImageData().
+
+		// make ErgebnisTable
 		ergebnissTableView = new TableViewer(parent,SWT.SINGLE|SWT.FULL_SELECTION);
-
 		Table ergebnissTable = ergebnissTableView.getTable();
-		ergebnissTable.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
+		ergebnissTable.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,3,1));
 		ergebnissTable.setLinesVisible (true);
 		ergebnissTable.setHeaderVisible (true);
 
 		ergebnissTableView.setContentProvider(new myContentProvider());
 		ergebnissTableView.setLabelProvider(new myTableLabelProvider());
 
-		serachButton.addSelectionListener(new SelectionListener() {
+
+		// add Listeners
+		searchButton.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent e) {
-				search(ergebnissTableView, searchText.getText());
+				workIcon.setEnabled(true);
+				searchButton.setEnabled(false);
+//				workIcon.setImage(world);
+				search(searchText.getText());
 			}
 			public void widgetDefaultSelected(SelectionEvent e) {}
 
@@ -158,7 +196,10 @@ public class MainView extends ViewPart {
 
 			public void keyReleased(KeyEvent e) {
 				if(e.keyCode==SWT.CR){
-					search(ergebnissTableView, searchText.getText());
+					workIcon.setEnabled(true);
+					searchButton.setEnabled(false);
+//					workIcon.setImage(world);
+					search(searchText.getText());
 				}
 			}
 
@@ -182,7 +223,7 @@ public class MainView extends ViewPart {
 
 	public void startSearch(String search){
 		searchText.setText(search);
-		search(ergebnissTableView, search);
+		search(search);
 	}
 
 	/***************************************************************************
@@ -194,82 +235,54 @@ public class MainView extends ViewPart {
 	 *   - first step generate the tableheadbuttons for sort the table
 	 *
 	 ***************************************************************************/
-	protected void search(final TableViewer ergebnissTable, String search) {
-		ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
-		ergebnissTable.getTable().removeAll();
-		ergebnissTable.getTable().clearAll();
+	protected void search(String search) {
+		// Leere die Tabelle
+		ergebnissTableView.getTable().removeAll();
+		ergebnissTableView.getTable().clearAll();
+		ergebnissTableView.refresh();
+		// ersetzt mehrfach vorkommende '*' durch einen. Da die LDAP abfrage damit nicht zurecht kommt.
 		search = search.replaceAll("\\*\\**", "*");
 		String filter = "eren="+search;
 		if(search.compareTo("*")!=0)
 			filter = filter.concat("*");
-		LDAPReader ldapr = new LDAPReader("ou=EpicsControls",filter); //$NON-NLS-1$ //$NON-NLS-2$
+
 		if(headline.isEmpty()){
 			headline.put("efan", Messages.getString("MainView_facility")); //$NON-NLS-1$ //$NON-NLS-2$
 			headline.put("ecom", Messages.getString("MainView_ecom")); //$NON-NLS-1$ //$NON-NLS-2$
 			headline.put("econ", Messages.getString("MainView_Controller")); //$NON-NLS-1$ //$NON-NLS-2$
 			headline.put("eren", Messages.getString("MainView_Record")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		String[] list = ldapr.getStringArray();
 
-		// Versuch das Image auf die rechte Seite zu bekommen.
-//		System.out.println(new File(".").getAbsoluteFile());
-//		Listener paintListener = new Listener() {
-//			public void handleEvent(Event event) {
-//				System.out.println(event);
-//				System.out.println(event.type);
-//				switch(event.type) {
-//					case SWT.MeasureItem: {
-//						System.out.println("MeasureItem");
-//						Rectangle rect = up.getBounds();
-//						event.width += rect.width;
-//						event.height = Math.max(event.height, rect.height + 2);
-//						break;
-//					}
-//					case SWT.PaintItem: {
-//						System.out.println("PaintItem");
-//						int x = event.x + event.width;
-//						Rectangle rect = up.getBounds();
-//						int offset = Math.max(0, (event.height - rect.height) / 2);
-//						event.gc.drawImage(up, x, event.y + offset);
-//						break;
-//					}
-//					case SWT.Paint: {
-//						System.out.println("Paint");
-//						int x = event.x + event.width;
-//						Rectangle rect = up.getBounds();
-//						int offset = Math.max(0, (event.height - rect.height) / 2);
-//						event.gc.drawImage(up, x, event.y + offset);
-//						break;
-//					}
-////					case SWT.Selection:{
-////						System.out.println("Selection");
-////						int x = event.x + event.width;
-////						Rectangle rect = down.getBounds();
-////						int offset = Math.max(0, (event.height - rect.height) / 2);
-////						event.gc.drawImage(down, x, event.y + offset);
-////						break;
-////					}
-//
-//				}
-//			}
-//		};
+		ldapr = new LDAPReader("ou=EpicsControls",filter, ergebnisListe); //$NON-NLS-1$ //$NON-NLS-2$
+		ldapr.addJobChangeListener(new JobChangeAdapter() {
+	        public void done(IJobChangeEvent event) {
+	        if (event.getResult().isOK())
+	        	MainView.this.ergebnisListe.notifyView();
+	        }
+	     });
+		ldapr.schedule();
+	}
 
-		for(int i=0;i<list.length;i++){
-			String[] elements = list[i].split(","); //$NON-NLS-1$
+	private void getText() {
+//		System.out.println("Thread test Start");
+		ergebnissTableView.refresh(false);
+		ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
+		ArrayList<String> list = new ArrayList<String>();
+		list.addAll(ergebnisListe.getAnswer());
+		int i=0;
+		for (String row : list) {
+//			System.out.println(list.size()+": "+row);
+			String[] elements = row.split(","); //$NON-NLS-1$
 			String path ="";
 			for(int j=0;j<elements.length;j++){
-				if(i==0&&j>=ergebnissTable.getTable().getColumnCount()){
+				if(i==0&&j>=ergebnissTableView.getTable().getColumnCount()){
 //					lastSort = new int[elements.length-1];
-					final TableColumn tc = new TableColumn(ergebnissTable.getTable(),SWT.NONE);
+					final TableColumn tc = new TableColumn(ergebnissTableView.getTable(),SWT.NONE);
 					tc.setResizable(true);
-					tc.setWidth(ergebnissTable.getTable().getSize().x/4);
+					tc.setWidth(ergebnissTableView.getTable().getSize().x/4-4);
 					tc.setToolTipText(Messages.getString("MainView_ToolTip_Sort"));
 					tc.setMoveable(true);
 					final int spalte = j;
-//					tc.addListener(SWT.MeasureItem, paintListener);
-//					tc.addListener(SWT.PaintItem, paintListener);
-//					tc.addListener(SWT.Paint, paintListener);
-
 					tc.addSelectionListener(new SelectionListener(){
 						boolean backward = true;
 						public void widgetDefaultSelected(SelectionEvent e) {}
@@ -287,33 +300,42 @@ public class MainView extends ViewPart {
 										chil[sorts[1]].setImage(up_old);
 								}
 								sorts[0]=spalte;
-								ergebnissTable.setSorter(new TableSorter(sorts[0],backward,sorts[1], lastSortBackward));
+								ergebnissTableView.setSorter(new TableSorter(sorts[0],backward,sorts[1], lastSortBackward));
 								if(backward)
 									tc.setImage(down);
 								else
 									tc.setImage(up);
 								lastSortBackward=backward;
 						}
-
 					});
 					String temp;
-					if((temp=headline.get(elements[j].split("=")[0]))!=null) //$NON-NLS-1$
-						 tc.setText(temp);
-					else
-						 tc.setText(elements[j].split("=")[0]);
+					if((temp=headline.get(elements[j].split("=")[0]))==null) //$NON-NLS-1$
+						 temp = elements[j].split("=")[0];
+					if(j==0){
+						temp=temp.concat(" ("+list.size()+")");
+					}
+					tc.setText(temp);
+				}else if(i==0&&j==0){
+					String tmp = ergebnissTableView.getTable().getColumn(j).getText();
+					tmp = tmp.substring(0,tmp.lastIndexOf("(")+1)+list.size()+")";
+					ergebnissTableView.getTable().getColumn(j).setText(tmp);
 				}
 				path +=elements[j];
 			}
 //			System.out.println(path);
 			tableElements.add(new ProcessVariable(elements[0].split("=")[1],elements));
-		 }
-//		ergebnissTableView.getTable().addListener(SWT.MeasureItem, paintListener);
-//		ergebnissTableView.getTable().addListener(SWT.PaintItem, paintListener);
-//		ergebnissTableView.getTable().addListener(SWT.Paint, paintListener);
-//		ergebnissTableView.getTable().addListener(SWT.Selection, paintListener);
-		 ergebnissTableView.setContentProvider(new myContentProvider());
-		 ergebnissTableView.setLabelProvider(new myTableLabelProvider());
-		 ergebnissTable.setInput(tableElements);
+			i++;
+		}
+//		System.out.println("Thread test 2");
+		ergebnissTableView.setContentProvider(new myContentProvider());
+		ergebnissTableView.setLabelProvider(new myTableLabelProvider());
+		ergebnissTableView.setInput(tableElements);
+		ergebnissTableView.refresh(true);
+//		workIcon.setImage(work_disable);
+		searchButton.setEnabled(true);
+		workIcon.setEnabled(false);
+//		parent.layout();
+//		System.out.println("Thread test ende");
 	}
 
 	/*****************************************************************************
@@ -403,5 +425,13 @@ public class MainView extends ViewPart {
 		return searchText;
 	}
 
+	public void update(Observable arg0, Object arg1) {
+		disp.syncExec(new Runnable() {
+			public void run() {
+				getText();
+//				answer.setText(text);
+//				answer.getParent().layout();
+			}
+		});
+	}
 }
-
