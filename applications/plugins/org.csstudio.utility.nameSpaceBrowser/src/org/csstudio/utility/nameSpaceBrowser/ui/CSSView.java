@@ -3,13 +3,18 @@ package org.csstudio.utility.nameSpaceBrowser.ui;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.nameSpaceBrowser.Messages;
+import org.csstudio.utility.ldap.reader.ErgebnisListe;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -41,6 +46,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
@@ -61,7 +67,9 @@ import org.eclipse.ui.IWorkbenchPartSite;
  *
  */
 
-public class CSSView extends Composite {
+public class CSSView extends Composite implements Observer{
+
+	private Display disp;
 	private Composite parent;
 	private Group group;
 	private final ListViewer list;
@@ -77,6 +85,7 @@ public class CSSView extends Composite {
 
 	private CSSViewParameter para;
 	private Text filter;
+	private ErgebnisListe ergebnisListe;
 
 	class myLabelProvider implements ILabelProvider{
 
@@ -109,6 +118,10 @@ public class CSSView extends Composite {
 		super(parent, SWT.NONE);
 		this.parent = parent;
 		this.site = site;
+		disp = parent.getDisplay();
+		ergebnisListe = new ErgebnisListe();
+		ergebnisListe.addObserver(this);
+
 		defaultPVFilter = defaultFilter;
 		auto = automat;
 		init();
@@ -133,55 +146,65 @@ public class CSSView extends Composite {
 			para = auto.event(Automat.Ereignis.UNKNOWN,selection);
 		}
 		try{
-			LDAPReader reader = new LDAPReader(para.name, para.filter);
-			fillItemList(reader.getStringArray());
+//			LDAPReader reader = new LDAPReader(para.name, para.filter,ergebnisListe);
+			LDAPReader ldapr = new LDAPReader(para.name, para.filter,ergebnisListe);
+			ldapr.addJobChangeListener(new JobChangeAdapter() {
+		        public void done(IJobChangeEvent event) {
+		        if (event.getResult().isOK())
+		        	CSSView.this.ergebnisListe.notifyView();
+		        }
+		     });
+			ldapr.schedule();
+
+			//TODO: Hier muss geändert werden. Da LDAPReader auf Job umgestellt wurde
+//			fillItemList(reader.getStringArray());
 		}catch (IllegalArgumentException e) {
 			// TODO: Errorhandling
 		}
 
-		// fill the List
-		if(itemList!=null){
-			list.setInput(new ArrayList<ControlSystemItem>(itemList.values()).toArray(new ControlSystemItem[0]));
-		}
-
-		list.addFilter(new ViewerFilter() {
-			@Override
-			public boolean select(Viewer viewer, Object parentElement, Object element) {
-				return true;
-			}
-			@Override
-			public Object[] filter(Viewer viewer, Object parent, Object[] elements){
-				String search = filter.getText().trim();
-				ArrayList<Object> al = new ArrayList<Object>();
-				for (Object element : elements) {
-					String name=""; //$NON-NLS-1$
-					if (element instanceof IControlSystemItem)
-						name= ((IControlSystemItem) element).getName();
-					if(search.length()==0||name.toLowerCase().matches(search.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace("?", ".?").toLowerCase()+".*")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
-						al.add(element);
-					}
-				}
-				return al.toArray();
-			}
-   	    });
-
-		list.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				// TODO: Checken dadurch vermieden werden kann elemente zu höfig anzuklicken
-				parent.setEnabled(false);
-				makeChildren(para);
-				parent.setEnabled(true);
-			}
-		});
-
-		parent.layout();
-		parent.pack();
-
-		// Make List Drageble
-		new ProcessVariableDragSource(list.getControl(), list);
-		// MB3
-		makeContextMenu();
-
+//		// fill the List
+//		if(itemList!=null){
+//			list.setInput(new ArrayList<ControlSystemItem>(itemList.values()).toArray(new ControlSystemItem[0]));
+//		}
+//
+//		list.addFilter(new ViewerFilter() {
+//			@Override
+//			public boolean select(Viewer viewer, Object parentElement, Object element) {
+//				return true;
+//			}
+//			@Override
+//			public Object[] filter(Viewer viewer, Object parent, Object[] elements){
+//				String search = filter.getText().trim();
+//				ArrayList<Object> al = new ArrayList<Object>();
+//				for (Object element : elements) {
+//					String name=""; //$NON-NLS-1$
+//					if (element instanceof IControlSystemItem)
+//						name= ((IControlSystemItem) element).getName();
+//					if(search.length()==0||name.toLowerCase().matches(search.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace("?", ".?").toLowerCase()+".*")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
+//						al.add(element);
+//					}
+//				}
+//				return al.toArray();
+//			}
+//   	    });
+//
+//		list.addSelectionChangedListener(new ISelectionChangedListener() {
+//			public void selectionChanged(SelectionChangedEvent event) {
+//				// TODO: Checken dadurch vermieden werden kann elemente zu höfig anzuklicken
+//				parent.setEnabled(false);
+//				makeChildren(para);
+//				parent.setEnabled(true);
+//			}
+//		});
+//
+//		parent.layout();
+//		parent.pack();
+//
+//		// Make List Drageble
+//		new ProcessVariableDragSource(list.getControl(), list);
+//		// MB3
+//		makeContextMenu();
+//
 	}
 
 	private void init() {
@@ -257,7 +280,7 @@ public class CSSView extends Composite {
 	 * Fill the list with ProcessVariable or ControlSystemItem
 	 *
 	 */
-	private void fillItemList(String[] list) {
+	private void fillItemList(ArrayList<String> list) {
 		if(list==null) return;
 		itemList = new LinkedHashMap<String, ControlSystemItem>();
 		if(para.newCSSView){
@@ -266,9 +289,10 @@ public class CSSView extends Composite {
 		}
 		else
 			filter.setText(defaultPVFilter);
-
-		for(int i=0;i<list.length;i++){
-			String saubereListe = list[i];
+		boolean first=true;
+		for (String row : list) {
+//		for(int i=0;i<list.length;i++){
+			String saubereListe = row;
 			// Delete "-Chars that add from LDAP-Reader when the result contains special character
 			if(saubereListe.startsWith("\"")){ //$NON-NLS-1$
 				if(saubereListe.endsWith("\"")) //$NON-NLS-1$
@@ -278,7 +302,7 @@ public class CSSView extends Composite {
 			}
 			String[] token = saubereListe.split("[,=]"); //$NON-NLS-1$
 
-			if(token.length<2) {System.out.println(Messages.getString("CSSView.Error1")+list[i]+"'");break;} //$NON-NLS-1$ //$NON-NLS-2$
+			if(token.length<2) {System.out.println(Messages.getString("CSSView.Error1")+row+"'");break;} //$NON-NLS-1$ //$NON-NLS-2$
 
 			if(token[0].compareTo("eren")==0){ //$NON-NLS-1$
 				itemList.put(token[1],new ProcessVariable(token[1], saubereListe));
@@ -286,8 +310,8 @@ public class CSSView extends Composite {
 			else{
 				itemList.put(token[1],new ControlSystemItem(token[1], saubereListe));
 			}
-
-			if(i==0){
+			if(first){
+				first=false;
 				String temp;
 				if(	(temp = headline.get(token[0]))==null)
 					group.setText(saubereListe);
@@ -298,6 +322,52 @@ public class CSSView extends Composite {
 		}
 	}
 
+	private void workItemList(){
+		// fill the List
+		if(itemList!=null){
+			list.setInput(new ArrayList<ControlSystemItem>(itemList.values()).toArray(new ControlSystemItem[0]));
+		}
+
+		list.addFilter(new ViewerFilter() {
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+				return true;
+			}
+			@Override
+			public Object[] filter(Viewer viewer, Object parent, Object[] elements){
+				String search = filter.getText().trim();
+				ArrayList<Object> al = new ArrayList<Object>();
+				for (Object element : elements) {
+					String name=""; //$NON-NLS-1$
+					if (element instanceof IControlSystemItem)
+						name= ((IControlSystemItem) element).getName();
+					if(search.length()==0||name.toLowerCase().matches(search.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace("?", ".?").toLowerCase()+".*")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
+						al.add(element);
+					}
+				}
+				return al.toArray();
+			}
+   	    });
+
+		list.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				// TODO: Checken dadurch vermieden werden kann elemente zu höfig anzuklicken
+				parent.setEnabled(false);
+				makeChildren(para);
+				parent.setEnabled(true);
+			}
+		});
+
+		parent.layout();
+		parent.pack();
+
+		// Make List Drageble
+		new ProcessVariableDragSource(list.getControl(), list);
+		// MB3
+		makeContextMenu();
+
+
+	}
 	// make a new CSSView Children
 	protected void makeChildren(CSSViewParameter parameter) {
 		parent.setRedraw(false);
@@ -386,6 +456,18 @@ public class CSSView extends Composite {
 		if(haveChildern)
 			children.setDefaultFilter(defaultPVFilter);
 
+
+	}
+
+	public void update(Observable arg0, Object arg1) {
+		disp.syncExec(new Runnable() {
+			public void run() {
+				fillItemList(ergebnisListe.getAnswer());
+				workItemList();
+//				answer.setText(text);
+//				answer.getParent().layout();
+			}
+		});
 
 	}
 }
