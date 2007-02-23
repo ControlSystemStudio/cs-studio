@@ -21,29 +21,52 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.components.model.TextInputElement;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.IElementModelFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.csstudio.sds.components.model.PolylineModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * A model element factory for {@link TextInputElement}.
+ * Test cases for {@link PolylineModelFactory}.
  * 
- * @author Alexander Will & Sven Wende
- * @version $Revision$
+ * @author Sven Wende
+ *
  */
-public final class TextInputElementFactory implements IElementModelFactory {
+public final class PolylineModelFactoryTest {
 
 	/**
-	 * {@inheritDoc}.
+	 * A factory instance for testing issues.
 	 */
-	public AbstractElementModel createElementModel() {
-		return new TextInputElement();
+	private PolylineModelFactory _factory;
+	
+	/**
+	 * Test setup.
+	 */
+	@Before
+	public void setUp()  {
+		_factory= new PolylineModelFactory();
 	}
 
 	/**
-	 * {@inheritDoc}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineModelFactory#createWidgetModel()}.
 	 */
-	public Class getElementModelType() {
-		return TextInputElement.class;
+	@Test
+	public void testCreateModelElement() {
+		AbstractWidgetModel model = _factory.createWidgetModel();
+		assertNotNull(model);
+		assertTrue(model instanceof PolylineModel);
 	}
+
+	/**
+	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineModelFactory#getWidgetModelType()}.
+	 */
+	@Test
+	public void testGetModelElementType() {
+		assertEquals(PolylineModel.class, _factory.getWidgetModelType());
+	}
+
 }

@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test cases for {@link MeterElement}.
+ * Test cases for {@link MeterModel}.
  * 
  * @author Sven Wende
  *
@@ -38,18 +38,18 @@ public final class MeterElementTest {
 	/**
 	 * A test instance.
 	 */
-	private MeterElement _meterElement;
+	private MeterModel _meterElement;
 	
 	/**
 	 * Test setup.
 	 */
 	@Before
 	public void setUp() {
-		_meterElement = new MeterElement();
+		_meterElement = new MeterModel();
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.MeterElement#getDoubleTestProperty()}.
+	 * Test method for {@link org.csstudio.sds.components.model.MeterModel#getDoubleTestProperty()}.
 	 */
 	@Test
 	public void testGetDoubleTestProperty() {
@@ -58,11 +58,11 @@ public final class MeterElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.MeterElement#getTypeID()}.
+	 * Test method for {@link org.csstudio.sds.components.model.MeterModel#getTypeID()}.
 	 */
 	@Test
 	public void testGetTypeID() {
-		_meterElement.getTypeID().equals(MeterElement.ID);
+		_meterElement.getTypeID().equals(MeterModel.ID);
 	}
 
 	/**
@@ -70,13 +70,13 @@ public final class MeterElementTest {
 	 */
 	@Test
 	public void testProperties () {
-		assertTrue(_meterElement.hasProperty(MeterElement.PROP_VALUE));
-		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL1_LOWER_BORDER));
-		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL1_UPPER_BORDER));
-		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL2_LOWER_BORDER));
-		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL2_UPPER_BORDER));
-		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL3_LOWER_BORDER));
-		assertTrue(_meterElement.hasProperty(MeterElement.PROP_INTERVAL3_UPPER_BORDER));
+		assertTrue(_meterElement.hasProperty(MeterModel.PROP_VALUE));
+		assertTrue(_meterElement.hasProperty(MeterModel.PROP_INTERVAL1_LOWER_BORDER));
+		assertTrue(_meterElement.hasProperty(MeterModel.PROP_INTERVAL1_UPPER_BORDER));
+		assertTrue(_meterElement.hasProperty(MeterModel.PROP_INTERVAL2_LOWER_BORDER));
+		assertTrue(_meterElement.hasProperty(MeterModel.PROP_INTERVAL2_UPPER_BORDER));
+		assertTrue(_meterElement.hasProperty(MeterModel.PROP_INTERVAL3_LOWER_BORDER));
+		assertTrue(_meterElement.hasProperty(MeterModel.PROP_INTERVAL3_UPPER_BORDER));
 		// Add further properties here
 	}
 

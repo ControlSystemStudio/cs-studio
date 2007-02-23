@@ -21,14 +21,15 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.model.MeterElement;
+import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
 /**
- * EditPart controller for <code>MeterElement</code> elements.
+ * EditPart controller for the Meter widget. The controller mediates between
+ * {@link MeterModel} and {@link RefreshableMeterFigure}.
  * 
  * @author Sven Wende
  * 
@@ -40,7 +41,7 @@ public final class MeterEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		MeterElement model = (MeterElement) getCastedModel();
+		MeterModel model = (MeterModel) getCastedModel();
 
 		RefreshableMeterFigure meter = new RefreshableMeterFigure();
 
@@ -70,7 +71,7 @@ public final class MeterEditPart extends AbstractElementEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(MeterElement.PROP_VALUE, valueHandler);
+		setPropertyChangeHandler(MeterModel.PROP_VALUE, valueHandler);
 
 		// TODO: Register change handlers for upper and lower intervals
 	}

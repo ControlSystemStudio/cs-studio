@@ -21,29 +21,52 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.components.model.LabelElement;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.IElementModelFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.csstudio.sds.components.model.PolygonModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * A model element factory for {@link LabelElement}. 
+ * Test cases for {@link PolygonModelFactory}.
  * 
- * @author Alexander Will & Sven Wende
- * @version $Revision$
+ * @author Sven Wende
+ *
  */
-public final class LabelElementFactory implements IElementModelFactory {
+public final class PolygonModelFactoryTest {
+
+	/**
+	 * A factory instance for testing issues.
+	 */
+	private PolygonModelFactory _factory;
 	
 	/**
-	 * {@inheritDoc}.
+	 * Test setup.
 	 */
-	public AbstractElementModel createElementModel() {
-		return new LabelElement();
+	@Before
+	public void setUp()  {
+		_factory= new PolygonModelFactory();
 	}
 
 	/**
-	 * {@inheritDoc}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonModelFactory#createWidgetModel()}.
 	 */
-	public Class getElementModelType() {
-		return LabelElement.class;
+	@Test
+	public void testCreateModelElement() {
+		AbstractWidgetModel model = _factory.createWidgetModel();
+		assertNotNull(model);
+		assertTrue(model instanceof PolygonModel);
 	}
+
+	/**
+	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonModelFactory#getWidgetModelType()}.
+	 */
+	@Test
+	public void testGetModelElementType() {
+		assertEquals(PolygonModel.class, _factory.getWidgetModelType());
+	}
+
 }

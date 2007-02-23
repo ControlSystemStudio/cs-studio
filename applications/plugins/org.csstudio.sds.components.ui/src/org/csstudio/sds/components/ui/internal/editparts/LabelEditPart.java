@@ -21,7 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.model.LabelElement;
+import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
@@ -30,7 +30,8 @@ import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.swt.graphics.FontData;
 
 /**
- * EditPart controller for <code>LabelElement</code> elements.
+ * EditPart controller for the Label widget. The controller mediates between
+ * {@link LabelModel} and {@link RefreshableLabelFigure}.
  * 
  * @author Stefan Hofer & Sven Wende
  * 
@@ -41,7 +42,7 @@ public final class LabelEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		LabelElement model = (LabelElement) getCastedModel();
+		LabelModel model = (LabelModel) getCastedModel();
 
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
 		label.setText(model.getLabel());
@@ -67,7 +68,7 @@ public final class LabelEditPart extends AbstractElementEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelElement.PROP_LABEL, labelHandler);
+		setPropertyChangeHandler(LabelModel.PROP_LABEL, labelHandler);
 		// font
 		IElementPropertyChangeHandler fontHandler = new IElementPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -81,7 +82,7 @@ public final class LabelEditPart extends AbstractElementEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelElement.PROP_FONT, fontHandler);
+		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
 
 	}
 }

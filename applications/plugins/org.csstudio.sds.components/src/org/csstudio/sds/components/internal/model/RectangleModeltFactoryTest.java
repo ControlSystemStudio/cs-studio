@@ -25,48 +25,48 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.EllipseElement;
-import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.components.model.RectangleModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test cases for {@link EllipseElementFactory}.
+ * Test cases for {@link RectangleModelFactory}.
  * 
  * @author Sven Wende
  *
  */
-public final class EllipseElementFactoryTest {
+public final class RectangleModeltFactoryTest {
 
 	/**
-	 * A element instanc for testing issues.
+	 * A factory instance for testing issues.
 	 */
-	private EllipseElementFactory _elementFactory;
+	private RectangleModelFactory _factory;
 	
 	/**
 	 * Test setup.
 	 */
 	@Before
 	public void setUp()  {
-		_elementFactory= new EllipseElementFactory();
+		_factory= new RectangleModelFactory();
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.EllipseElementFactory#createElementModel()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.RectangleModelFactory#createWidgetModel()}.
 	 */
 	@Test
 	public void testCreateModelElement() {
-		AbstractElementModel element = _elementFactory.createElementModel();
-		assertNotNull(element);
-		assertTrue(element instanceof EllipseElement);
+		AbstractWidgetModel model = _factory.createWidgetModel();
+		assertNotNull(model);
+		assertTrue(model instanceof RectangleModel);
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.EllipseElementFactory#getElementModelType()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.RectangleModelFactory#getWidgetModelType()}.
 	 */
 	@Test
 	public void testGetModelElementType() {
-		assertEquals(EllipseElement.class, _elementFactory.getElementModelType());
+		assertEquals(RectangleModel.class, _factory.getWidgetModelType());
 	}
 
 }

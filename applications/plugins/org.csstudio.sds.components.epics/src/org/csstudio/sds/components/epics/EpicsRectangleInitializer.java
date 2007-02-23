@@ -1,11 +1,11 @@
 package org.csstudio.sds.components.epics;
 
-import org.csstudio.sds.components.model.RectangleElement;
-import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.components.model.RectangleModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.AliasDescriptor;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
-import org.csstudio.sds.model.initializers.IElementModelInitializer;
+import org.csstudio.sds.model.initializers.IWidgetModelInitializer;
 import org.csstudio.sds.model.logic.DirectConnectionRule;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 
@@ -16,25 +16,25 @@ import org.csstudio.sds.model.logic.ParameterDescriptor;
  * @version $Revision$
  *
  */
-public class EpicsRectangleInitializer implements IElementModelInitializer {
+public class EpicsRectangleInitializer implements IWidgetModelInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void initialize(AbstractElementModel model,
+	public void initialize(AbstractWidgetModel model,
 			AbstractControlSystemSchema schema) {
 		
-		assert model instanceof RectangleElement : "Precondition violated: model instanceof RectangleElement"; //$NON-NLS-1$
+		assert model instanceof RectangleModel : "Precondition violated: model instanceof RectangleModel"; //$NON-NLS-1$
 	
-		model.setPropertyValue(AbstractElementModel.PROP_COLOR_BACKGROUND, schema.getColorProperty(AbstractElementModel.PROP_COLOR_BACKGROUND));
-		model.setPropertyValue(AbstractElementModel.PROP_COLOR_FOREGROUND, schema.getColorProperty(AbstractElementModel.PROP_COLOR_FOREGROUND));
+		model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, schema.getColorProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
+		model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND, schema.getColorProperty(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
 		
 		AliasDescriptor aliasDescriptor = new AliasDescriptor("record", "", "Enter the record name into the 'value' column.");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 		model.addAliasDescriptor(aliasDescriptor);
 		
 		final DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor(DirectConnectionRule.TYPE_ID);
 		dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$record$_calc", Double.class)); //$NON-NLS-1$
-		model.setDynamicsDescriptor(RectangleElement.PROP_FILL, dynamicsDescriptor);
+		model.setDynamicsDescriptor(RectangleModel.PROP_FILL, dynamicsDescriptor);
 	}
 
 }

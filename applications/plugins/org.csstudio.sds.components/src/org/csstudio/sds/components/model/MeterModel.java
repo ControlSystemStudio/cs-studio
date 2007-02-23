@@ -21,18 +21,18 @@
  */
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.PropertyCategory;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
- * A meter element model.
+ * A meter widget model.
  * 
  * @author Sven Wende
  * @version $Revision$
  * 
  */
-public final class MeterElement extends AbstractElementModel {
+public final class MeterModel extends AbstractWidgetModel {
 
 	/**
 	 * A constant value, which describes the circle radius.
@@ -115,7 +115,7 @@ public final class MeterElement extends AbstractElementModel {
 	public static final String PROP_VALUE = "value"; //$NON-NLS-1$
 
 	/**
-	 * The ID of this model element.
+	 * The ID of this widget model.
 	 */
 	public static final String ID = "element.meter"; //$NON-NLS-1$
 
@@ -132,7 +132,7 @@ public final class MeterElement extends AbstractElementModel {
 	/**
 	 * Standard constructor.
 	 */
-	public MeterElement() {
+	public MeterModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
@@ -150,32 +150,32 @@ public final class MeterElement extends AbstractElementModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(PROP_INTERVAL1_LOWER_BORDER, new DoubleProperty(
-				"Interval 1 lower border", PropertyCategory.Display,
+				"Interval 1 lower border", WidgetPropertyCategory.Display,
 				INTERVAL1_LOWER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
 				CIRCLE_DEGREES_TO));
 		addProperty(PROP_INTERVAL1_UPPER_BORDER, new DoubleProperty(
-				"Interval 1 upper border", PropertyCategory.Display,
+				"Interval 1 upper border", WidgetPropertyCategory.Display,
 				INTERVAL1_UPPER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
 				CIRCLE_DEGREES_TO));
 		addProperty(PROP_INTERVAL2_LOWER_BORDER, new DoubleProperty(
-				"Interval 2 lower border", PropertyCategory.Display,
+				"Interval 2 lower border", WidgetPropertyCategory.Display,
 				INTERVAL2_LOWER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
 				CIRCLE_DEGREES_TO));
 		addProperty(PROP_INTERVAL2_UPPER_BORDER, new DoubleProperty(
-				"Interval 2 upper border", PropertyCategory.Display,
+				"Interval 2 upper border", WidgetPropertyCategory.Display,
 				INTERVAL2_UPPER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
 				CIRCLE_DEGREES_TO));
 		addProperty(PROP_INTERVAL3_LOWER_BORDER, new DoubleProperty(
-				"Interval 3 lower border", PropertyCategory.Display,
+				"Interval 3 lower border", WidgetPropertyCategory.Display,
 				INTERVAL3_LOWER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
 				CIRCLE_DEGREES_TO));
 		addProperty(PROP_INTERVAL3_UPPER_BORDER, new DoubleProperty(
-				"Interval 3 upper border", PropertyCategory.Display,
+				"Interval 3 upper border", WidgetPropertyCategory.Display,
 				INTERVAL3_UPPER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
 				CIRCLE_DEGREES_TO));
 
 		addProperty(PROP_VALUE, new DoubleProperty("value",
-				PropertyCategory.Behaviour, VALUE_DEFAULT, 0.0, 360.0));
+				WidgetPropertyCategory.Behaviour, VALUE_DEFAULT, 0.0, 360.0));
 	}
 
 	/**

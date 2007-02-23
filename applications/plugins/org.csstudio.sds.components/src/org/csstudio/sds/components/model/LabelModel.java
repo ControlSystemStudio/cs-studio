@@ -22,21 +22,21 @@
 package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.PropertyCategory;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
 /**
- * An label model element.
+ * An label widget model.
  * 
  * @author Sven Wende & Alexander Will
  * @version $Revision$
  * 
  */
-public final class LabelElement extends AbstractElementModel {
+public final class LabelModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the label property.
 	 */
@@ -48,7 +48,7 @@ public final class LabelElement extends AbstractElementModel {
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
 
 	/**
-	 * The ID of this model element.
+	 * The ID of this widget model.
 	 */
 	public static final String ID = "element.label"; //$NON-NLS-1$
 
@@ -65,7 +65,7 @@ public final class LabelElement extends AbstractElementModel {
 	/**
 	 * Standard constructor.
 	 */
-	public LabelElement() {
+	public LabelModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
@@ -83,9 +83,9 @@ public final class LabelElement extends AbstractElementModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(PROP_LABEL, new StringProperty(Messages.LabelElement_LABEL,
-				PropertyCategory.Display, "")); //$NON-NLS-1$
+				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
 		addProperty(PROP_FONT, new FontProperty("Font",
-				PropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
+				WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
 	}
 
 	/**

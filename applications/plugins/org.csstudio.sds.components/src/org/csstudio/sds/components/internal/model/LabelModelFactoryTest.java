@@ -25,48 +25,48 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.RectangleElement;
-import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.components.model.LabelModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test cases for {@link RectangleElementFactory}.
+ * Test cases for {@link LabelModelFactory}.
  * 
  * @author Sven Wende
  *
  */
-public final class RectangleElementFactoryTest {
+public final class LabelModelFactoryTest {
 
 	/**
-	 * A element instanc for testing issues.
+	 * A factory instance for testing issues.
 	 */
-	private RectangleElementFactory _elementFactory;
+	private LabelModelFactory _factory;
 	
 	/**
 	 * Test setup.
 	 */
 	@Before
 	public void setUp()  {
-		_elementFactory= new RectangleElementFactory();
+		_factory= new LabelModelFactory();
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.RectangleElementFactory#createElementModel()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.LabelModelFactory#createWidgetModel()}.
 	 */
 	@Test
 	public void testCreateModelElement() {
-		AbstractElementModel element = _elementFactory.createElementModel();
-		assertNotNull(element);
-		assertTrue(element instanceof RectangleElement);
+		AbstractWidgetModel model = _factory.createWidgetModel();
+		assertNotNull(model);
+		assertTrue(model instanceof LabelModel);
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.RectangleElementFactory#getElementModelType()}.
+	 * Test method for {@link org.csstudio.sds.components.internal.model.LabelModelFactory#getWidgetModelType()}.
 	 */
 	@Test
 	public void testGetModelElementType() {
-		assertEquals(RectangleElement.class, _elementFactory.getElementModelType());
+		assertEquals(LabelModel.class, _factory.getWidgetModelType());
 	}
 
 }

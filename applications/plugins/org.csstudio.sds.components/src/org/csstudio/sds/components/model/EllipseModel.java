@@ -22,27 +22,27 @@
 package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.PropertyCategory;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
- * This class defines an rectangle model element.
+ * An ellipse widget model.
  * 
  * @author Sven Wende, Alexander Will
  * @version $Revision$
  * 
  */
-public final class RectangleElement extends AbstractElementModel {
+public final class EllipseModel extends AbstractWidgetModel {
 	/**
-	 * The ID of the fill grade property.
+	 * The ID of the fill level property.
 	 */
 	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
 
 	/**
-	 * The ID of this model element.
+	 * The ID of this widget model.
 	 */
-	public static final String ID = "element.rectangle"; //$NON-NLS-1$
+	public static final String ID = "element.ellipse"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.
@@ -55,14 +55,15 @@ public final class RectangleElement extends AbstractElementModel {
 	private static final int DEFAULT_WIDTH = 20;
 
 	/**
-	 * The default value of the fill grade property.
+	 * The default value of the fill level property.
 	 */
 	private static final double DEFAULT_FILL = 100.0;
 
 	/**
 	 * Standard constructor.
+	 * 
 	 */
-	public RectangleElement() {
+	public EllipseModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
@@ -79,17 +80,8 @@ public final class RectangleElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
-				PropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0));
-	}
-
-	/**
-	 * Gets the fill level.
-	 * 
-	 * @return the fill level
-	 */
-	public double getFillLevel() {
-		return (Double) getProperty(PROP_FILL).getPropertyValue();
+		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty, WidgetPropertyCategory.Behaviour,
+				DEFAULT_FILL, 0.0, 100.0));
 	}
 
 	/**
@@ -99,12 +91,12 @@ public final class RectangleElement extends AbstractElementModel {
 	public String getDoubleTestProperty() {
 		return PROP_FILL;
 	}
-
+	
 	/**
-	 * {@inheritDoc}
+	 * Gets the fill grade.
+	 * @return the fill grade
 	 */
-	@Override
-	public String getColorTestProperty() {
-		return PROP_COLOR_FOREGROUND;
+	public double getFillGrade() {
+		return (Double) getProperty(PROP_FILL).getPropertyValue();
 	}
 }

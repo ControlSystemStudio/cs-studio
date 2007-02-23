@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test cases for {@link LabelElement}.
+ * Test cases for {@link LabelModel}.
  * 
  * @author Sven Wende
  *
@@ -38,18 +38,18 @@ public final class LabelElementTest {
 	/**
 	 * A test instance.
 	 */
-	private LabelElement _labelElement;
+	private LabelModel _labelElement;
 	
 	/**
 	 * Test setup.
 	 */
 	@Before
 	public void setUp() {
-		_labelElement = new LabelElement();
+		_labelElement = new LabelModel();
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.LabelElement#getDoubleTestProperty()}.
+	 * Test method for {@link org.csstudio.sds.components.model.LabelModel#getDoubleTestProperty()}.
 	 */
 	@Test
 	public void testGetDoubleTestProperty() {
@@ -58,11 +58,11 @@ public final class LabelElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.LabelElement#getTypeID()}.
+	 * Test method for {@link org.csstudio.sds.components.model.LabelModel#getTypeID()}.
 	 */
 	@Test
 	public void testGetTypeID() {
-		_labelElement.getTypeID().equals(LabelElement.ID);
+		_labelElement.getTypeID().equals(LabelModel.ID);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public final class LabelElementTest {
 	 */
 	@Test
 	public void testProperties () {
-		assertTrue(_labelElement.hasProperty(LabelElement.PROP_LABEL));
+		assertTrue(_labelElement.hasProperty(LabelModel.PROP_LABEL));
 		// Add further properties here
 	}
 

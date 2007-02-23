@@ -38,7 +38,7 @@ import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.tools.TargetingTool;
 
 /**
- * A custom creation tool for PointList dependend elements. The tool produces a
+ * A custom creation tool for PointList dependend widgets. The tool produces a
  * point list, by interpreting each left click as location for a new point.
  * 
  * @author Sven Wende

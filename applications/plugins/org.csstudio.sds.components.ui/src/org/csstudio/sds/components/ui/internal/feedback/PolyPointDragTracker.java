@@ -21,7 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.feedback;
 
-import org.csstudio.sds.components.model.AbstractPolyElement;
+import org.csstudio.sds.components.model.AbstractPolyModel;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;
@@ -161,7 +161,7 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 		ChangeBoundsRequest request = new ChangeBoundsRequest();
 		// TODO: swende: ugly
 
-		PointList points = ((AbstractPolyElement) _owner.getModel())
+		PointList points = ((AbstractPolyModel) _owner.getModel())
 				.getPoints();
 
 		request.getExtendedData().put(AbstractPolyFeedbackFactory.PROP_POINTS,
@@ -255,7 +255,7 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 	 * Clears and resets the state of the tracker.
 	 */
 	private void resetRequestState() {
-		_oldPoints = ((AbstractPolyElement) _owner.getModel()).getPoints()
+		_oldPoints = ((AbstractPolyModel) _owner.getModel()).getPoints()
 				.getCopy();
 		_sourceRequest = null;
 	}

@@ -21,44 +21,39 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.components.model.PolygonElement;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.IElementModelFactory;
+import org.csstudio.sds.components.model.PolylineModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.IWidgetModelFactory;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**
- * A model element factory for {@link PolygonElement}.
+ * Model widget model factory for polyline widget models.
  * 
  * @author Sven Wende
- * 
  * @version $Revision$
  * 
  */
-public final class PolygonElementFactory implements IElementModelFactory {
-
+public final class PolylineModelFactory implements IWidgetModelFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public AbstractElementModel createElementModel() {
-		PolygonElement polygonElement = new PolygonElement();
+	public AbstractWidgetModel createWidgetModel() {
+		PolylineModel polylineElement = new PolylineModel();
 		PointList points = new PointList();
 		points.addPoint(15, 1);
 		points.addPoint(30, 15);
 		points.addPoint(30, 30);
 		points.addPoint(15, 45);
-		points.addPoint(1, 30);
-		points.addPoint(1, 15);
 
-		polygonElement.setPoints(points);
+		polylineElement.setPoints(points);
 
-		return polygonElement;
+		return polylineElement;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Class getElementModelType() {
-		return PolygonElement.class;
+	public Class getWidgetModelType() {
+		return PolylineModel.class;
 	}
-
 }

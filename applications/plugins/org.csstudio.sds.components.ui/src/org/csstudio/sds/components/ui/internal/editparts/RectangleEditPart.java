@@ -21,14 +21,15 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.model.RectangleElement;
+import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
 /**
- * EditPart controller for <code>RectangleElement</code> elements.
+ * EditPart controller for the Rectangle widget. The controller mediates between
+ * {@link RectangleModel} and {@link RefreshableRectangleFigure}.
  * 
  * @author Sven Wende & Stefan Hofer
  * 
@@ -40,7 +41,7 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		RectangleElement model = (RectangleElement) getCastedModel();
+		RectangleModel model = (RectangleModel) getCastedModel();
 
 		RefreshableRectangleFigure rectangle = new RefreshableRectangleFigure();
 		rectangle.setFill(model.getFillLevel());
@@ -64,7 +65,7 @@ public final class RectangleEditPart extends AbstractElementEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(RectangleElement.PROP_FILL, fillHandler);
+		setPropertyChangeHandler(RectangleModel.PROP_FILL, fillHandler);
 	}
 
 }

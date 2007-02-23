@@ -21,49 +21,50 @@
  */
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.PropertyCategory;
-import org.csstudio.sds.model.properties.DoubleProperty;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.properties.FontProperty;
+import org.csstudio.sds.model.properties.StringProperty;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
 
 /**
- * An ellipse model element.
+ * A widget model for text inputs.
  * 
- * @author Sven Wende, Alexander Will
+ * @author Alexander Will
  * @version $Revision$
  * 
  */
-public final class EllipseElement extends AbstractElementModel {
+public final class TextInputModel extends AbstractWidgetModel {
 	/**
-	 * The ID of the fill level property.
+	 * The ID of the text input.
 	 */
-	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
+	public static final String PROP_INPUT_TEXT = "textinput"; //$NON-NLS-1$
 
 	/**
-	 * The ID of this model element.
+	 * The ID of the font property.
 	 */
-	public static final String ID = "element.ellipse"; //$NON-NLS-1$
+	public static final String PROP_FONT = "font"; //$NON-NLS-1$
+
+	/**
+	 * The ID of this widget model.
+	 */
+	public static final String ID = "element.textinput"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.
 	 */
-	private static final int DEFAULT_HEIGHT = 10;
+	private static final int DEFAULT_HEIGHT = 20;
 
 	/**
 	 * The default value of the width property.
 	 */
-	private static final int DEFAULT_WIDTH = 20;
-
-	/**
-	 * The default value of the fill level property.
-	 */
-	private static final double DEFAULT_FILL = 100.0;
+	private static final int DEFAULT_WIDTH = 80;
 
 	/**
 	 * Standard constructor.
-	 * 
 	 */
-	public EllipseElement() {
+	public TextInputModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
@@ -80,8 +81,10 @@ public final class EllipseElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty, PropertyCategory.Behaviour,
-				DEFAULT_FILL, 0.0, 100.0));
+		addProperty(PROP_INPUT_TEXT, new StringProperty(
+				"Input Text", WidgetPropertyCategory.Behaviour, "")); //$NON-NLS-1$
+		addProperty(PROP_FONT, new FontProperty("Font",
+				WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
 	}
 
 	/**
@@ -89,14 +92,31 @@ public final class EllipseElement extends AbstractElementModel {
 	 */
 	@Override
 	public String getDoubleTestProperty() {
-		return PROP_FILL;
+		return PROP_INPUT_TEXT;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getColorTestProperty() {
+		return PROP_COLOR_BACKGROUND;
 	}
 	
 	/**
-	 * Gets the fill grade.
-	 * @return the fill grade
+	 * Gets the input text.
+	 * @return the input text
 	 */
-	public double getFillGrade() {
-		return (Double) getProperty(PROP_FILL).getPropertyValue();
+	public String getInputText() {
+		return (String) getProperty(PROP_INPUT_TEXT).getPropertyValue();
 	}
+	
+	/**
+	 * Gets the font.
+	 * @return the font
+	 */
+	public FontData getFont() {
+		return (FontData) getProperty(PROP_FONT).getPropertyValue();
+	}
+
 }

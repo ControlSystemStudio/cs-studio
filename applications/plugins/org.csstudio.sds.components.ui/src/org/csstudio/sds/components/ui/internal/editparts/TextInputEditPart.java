@@ -21,10 +21,10 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.model.TextInputElement;
+import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.ElementProperty;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
@@ -52,8 +52,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * EditPart controller for <code>TextInputElement</code> elements with support
+ * EditPart controller for <code>TextInputModel</code> elements with support
  * for direct editing.
+ * 
+ * EditPart controller for the TextInput widget. The controller mediates between
+ * {@link TextInputModel} and {@link RefreshableLabelFigure}.
  * 
  * @author Alexander Will
  * 
@@ -86,7 +89,7 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		TextInputElement model = (TextInputElement) getCastedModel();
+		TextInputModel model = (TextInputModel) getCastedModel();
 
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
 
@@ -186,8 +189,8 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 		protected void initCellEditor() {
 			String currentValue = "N/A"; //$NON-NLS-1$
 
-			ElementProperty inputTextProperty = getCastedModel().getProperty(
-					TextInputElement.PROP_INPUT_TEXT);
+			WidgetProperty inputTextProperty = getCastedModel().getProperty(
+					TextInputModel.PROP_INPUT_TEXT);
 
 			if (inputTextProperty != null) {
 				currentValue = inputTextProperty.getPropertyValue().toString();
@@ -198,20 +201,20 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 
 			// get the chosen font
 			FontData fontData = (FontData) getCastedModel().getProperty(
-					TextInputElement.PROP_FONT).getPropertyValue();
+					TextInputModel.PROP_FONT).getPropertyValue();
 			Font font = CustomMediaFactory.getInstance().getFont(
 					new FontData[] { fontData });
 
 			// get the chosen foreground color
 			RGB foregroundRgb = (RGB) getCastedModel().getProperty(
-					AbstractElementModel.PROP_COLOR_FOREGROUND)
+					AbstractWidgetModel.PROP_COLOR_FOREGROUND)
 					.getPropertyValue();
 			Color foregroundColor = CustomMediaFactory.getInstance().getColor(
 					foregroundRgb);
 
 			// get the chosen background color
 			RGB backgroundRgb = (RGB) getCastedModel().getProperty(
-					AbstractElementModel.PROP_COLOR_BACKGROUND)
+					AbstractWidgetModel.PROP_COLOR_BACKGROUND)
 					.getPropertyValue();
 
 			int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
@@ -291,8 +294,8 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 		 */
 		@Override
 		public void execute() {
-			ElementProperty inputTextProperty = getCastedModel().getProperty(
-					TextInputElement.PROP_INPUT_TEXT);
+			WidgetProperty inputTextProperty = getCastedModel().getProperty(
+					TextInputModel.PROP_INPUT_TEXT);
 
 			if (inputTextProperty != null) {
 				inputTextProperty.setManualValue(_text);
@@ -344,7 +347,7 @@ public final class TextInputEditPart extends AbstractElementEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(TextInputElement.PROP_INPUT_TEXT, textHandler);
+		setPropertyChangeHandler(TextInputModel.PROP_INPUT_TEXT, textHandler);
 
 	}
 }

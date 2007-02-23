@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.RectangleElement;
+import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigure;
 import org.eclipse.draw2d.IFigure;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public final class RectangleEditPartTest {
 	@Before
 	public void setUp() {
 		_editPart = new RectangleEditPart();
-		_editPart.setModel(new RectangleElement());
+		_editPart.setModel(new RectangleModel());
 	}
 
 	/**

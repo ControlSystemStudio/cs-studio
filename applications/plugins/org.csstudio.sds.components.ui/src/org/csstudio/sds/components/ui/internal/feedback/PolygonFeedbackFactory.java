@@ -25,7 +25,7 @@ import org.eclipse.draw2d.Polygon;
 import org.eclipse.draw2d.Polyline;
 
 /**
- * Graphical feedback factory for polygon elements.
+ * Graphical feedback factory for polygon widgets.
  * 
  * @author Sven Wende
  */

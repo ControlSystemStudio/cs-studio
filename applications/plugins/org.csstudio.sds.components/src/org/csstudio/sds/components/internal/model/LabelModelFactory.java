@@ -21,29 +21,29 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.components.model.SliderElement;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.IElementModelFactory;
+import org.csstudio.sds.components.model.LabelModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
- * This class defines a model element factory for rectangle model elements.
+ * A widget model factory for {@link LabelModel}. 
  * 
- * @author Sven Wende & Alexander Will
+ * @author Alexander Will & Sven Wende
  * @version $Revision$
- * 
  */
-public final class SliderElementFactory implements IElementModelFactory {
+public final class LabelModelFactory implements IWidgetModelFactory {
+	
 	/**
-	 * {@inheritDoc}
+	 * {@inheritDoc}.
 	 */
-	public AbstractElementModel createElementModel() {
-		return new SliderElement();
+	public AbstractWidgetModel createWidgetModel() {
+		return new LabelModel();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@inheritDoc}.
 	 */
-	public Class getElementModelType() {
-		return SliderElement.class;
+	public Class getWidgetModelType() {
+		return LabelModel.class;
 	}
 }

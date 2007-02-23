@@ -19,54 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.internal.model;
+package org.csstudio.sds.components.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.MeterElement;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
- * Test cases for {@link MeterElementFactory}.
+ * A polygon widget model.
  * 
- * @author Sven Wende
- *
+ * @author Sven Wende, Alexander Will
+ * @version $Revision$
+ * 
  */
-public final class MeterElementFactoryTest {
-
+public final class PolygonModel extends AbstractPolyModel {
 	/**
-	 * A element instanc for testing issues.
+	 * The ID of this widget model.
 	 */
-	private MeterElementFactory _elementFactory;
+	public static final String ID = "element.polygon"; //$NON-NLS-1$
 	
 	/**
-	 * Test setup.
+	 * {@inheritDoc}
 	 */
-	@Before
-	public void setUp()  {
-		_elementFactory= new MeterElementFactory();
+	@Override
+	public String getTypeID() {
+		return ID;
 	}
-
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.MeterElementFactory#createElementModel()}.
-	 */
-	@Test
-	public void testCreateModelElement() {
-		AbstractElementModel element = _elementFactory.createElementModel();
-		assertNotNull(element);
-		assertTrue(element instanceof MeterElement);
-	}
-
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.MeterElementFactory#getElementModelType()}.
-	 */
-	@Test
-	public void testGetModelElementType() {
-		assertEquals(MeterElement.class, _elementFactory.getElementModelType());
-	}
-
 }

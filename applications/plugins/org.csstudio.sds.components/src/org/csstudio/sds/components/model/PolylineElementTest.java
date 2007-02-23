@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test cases for {@link PolylineElement}.
+ * Test cases for {@link PolylineModel}.
  * 
  * @author Sven Wende
  *
@@ -38,18 +38,18 @@ public final class PolylineElementTest {
 	/**
 	 * A test instance.
 	 */
-	private PolylineElement _polylineElement;
+	private PolylineModel _polylineElement;
 	
 	/**
 	 * Test setup.
 	 */
 	@Before
 	public void setUp() {
-		_polylineElement = new PolylineElement();
+		_polylineElement = new PolylineModel();
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.PolylineElement#getDoubleTestProperty()}.
+	 * Test method for {@link org.csstudio.sds.components.model.PolylineModel#getDoubleTestProperty()}.
 	 */
 	@Test
 	public void testGetDoubleTestProperty() {
@@ -58,11 +58,11 @@ public final class PolylineElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.PolylineElement#getTypeID()}.
+	 * Test method for {@link org.csstudio.sds.components.model.PolylineModel#getTypeID()}.
 	 */
 	@Test
 	public void testGetTypeID() {
-		_polylineElement.getTypeID().equals(PolylineElement.ID);
+		_polylineElement.getTypeID().equals(PolylineModel.ID);
 	}
 
 	/**
@@ -70,8 +70,8 @@ public final class PolylineElementTest {
 	 */
 	@Test
 	public void testProperties () {
-		assertTrue(_polylineElement.hasProperty(AbstractPolyElement.PROP_POINTS));
-		assertTrue(_polylineElement.hasProperty(AbstractPolyElement.PROP_FILL));
+		assertTrue(_polylineElement.hasProperty(AbstractPolyModel.PROP_POINTS));
+		assertTrue(_polylineElement.hasProperty(AbstractPolyModel.PROP_FILL));
 		// Add further properties here
 	}
 

@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.PolylineElement;
+import org.csstudio.sds.components.model.PolylineModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
 import org.eclipse.draw2d.IFigure;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public final class PolylineEditPartTest {
 	@Before
 	public void setUp() {
 		_editPart = new PolylineEditPart();
-		_editPart.setModel(new PolylineElement());
+		_editPart.setModel(new PolylineModel());
 	}
 
 	/**

@@ -1,4 +1,3 @@
-
 /* 
  * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -29,72 +28,61 @@ import java.net.UnknownHostException;
 /**
  * 
  * @author Markus Moeller
- *
+ * 
  */
 
-public final class CSSPlatformInfo
-{
-    /** Holds the host name. */
-    private String hostID   = null;
-    
-    /** Holds the user name. */
-    private String userID   = null;
-    
-    /** Holds the css application id */
-    private String applicationID   = null;
-    
-    /** Holds the only one instance of this class. */
-    private static CSSPlatformInfo _instance = null;
+public final class CSSPlatformInfo {
+	/** Holds the host name. */
+	private String hostID = null;
 
-    private CSSPlatformInfo()
-    {
-        init();
-    }
-    
-    private void init()
-    {
-        userID = System.getProperty("user.name");
+	/** Holds the user name. */
+	private String userID = null;
 
-        try
-        {
-            hostID = InetAddress.getLocalHost().getHostName();
-        }
-        catch(UnknownHostException uhe)
-        {
-            hostID = "NA";
-        }
-        
-        applicationID = "CSS";
-    }
-    
-    /**
-     * Return the only one instance of this class.
-     * 
-     * @return The only one instance of this class.
-     */
-    
-    public static synchronized CSSPlatformInfo getInstance()
-    {
-        if (_instance == null)
-        {
-            _instance = new CSSPlatformInfo();
-        }
+	/** Holds the css application id */
+	private String applicationID = null;
 
-        return _instance;
-    }
+	/** Holds the only one instance of this class. */
+	private static CSSPlatformInfo _instance = null;
 
-    public String getHostId()
-    {
-        return hostID;
-    }
-    
-    public String getUserId()
-    {
-        return userID;
-    }
-    
-    public String getApplicationId()
-    {
-        return applicationID;
-    }
+	private CSSPlatformInfo() {
+		init();
+	}
+
+	private void init() {
+		userID = System.getProperty("user.name");
+
+		try {
+			hostID = InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException uhe) {
+			hostID = "NA";
+		}
+
+		applicationID = "CSS";
+	}
+
+	/**
+	 * Return the only one instance of this class.
+	 * 
+	 * @return The only one instance of this class.
+	 */
+
+	public static synchronized CSSPlatformInfo getInstance() {
+		if (_instance == null) {
+			_instance = new CSSPlatformInfo();
+		}
+
+		return _instance;
+	}
+
+	public String getHostId() {
+		return hostID;
+	}
+
+	public String getUserId() {
+		return userID;
+	}
+
+	public String getApplicationId() {
+		return applicationID;
+	}
 }

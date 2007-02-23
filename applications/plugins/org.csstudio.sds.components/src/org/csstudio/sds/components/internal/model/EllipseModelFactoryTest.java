@@ -19,28 +19,54 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.model;
+package org.csstudio.sds.components.internal.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import org.csstudio.sds.components.model.EllipseModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * A polygon model element.
+ * Test cases for {@link EllipseModelFactory}.
  * 
- * @author Sven Wende, Alexander Will
- * @version $Revision$
- * 
+ * @author Sven Wende
+ *
  */
-public final class PolygonElement extends AbstractPolyElement {
+public final class EllipseModelFactoryTest {
+
 	/**
-	 * The ID of this model element.
+	 * A factory instance for testing issues.
 	 */
-	public static final String ID = "element.polygon"; //$NON-NLS-1$
+	private EllipseModelFactory _factory;
 	
 	/**
-	 * {@inheritDoc}
+	 * Test setup.
 	 */
-	@Override
-	public String getTypeID() {
-		return ID;
+	@Before
+	public void setUp()  {
+		_factory= new EllipseModelFactory();
 	}
+
+	/**
+	 * Test method for {@link org.csstudio.sds.components.internal.model.EllipseModelFactory#createWidgetModel()}.
+	 */
+	@Test
+	public void testCreateModelElement() {
+		AbstractWidgetModel model = _factory.createWidgetModel();
+		assertNotNull(model);
+		assertTrue(model instanceof EllipseModel);
+	}
+
+	/**
+	 * Test method for {@link org.csstudio.sds.components.internal.model.EllipseModelFactory#getWidgetModelType()}.
+	 */
+	@Test
+	public void testGetModelElementType() {
+		assertEquals(EllipseModel.class, _factory.getWidgetModelType());
+	}
+
 }

@@ -21,29 +21,29 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.components.model.RectangleElement;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.IElementModelFactory;
+import org.csstudio.sds.components.model.TextInputModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
- * This class defines a model element factory for rectangle model elements.
+ * A widget model factory for {@link TextInputModel}.
  * 
- * @author Sven Wende & Alexander Will
+ * @author Alexander Will & Sven Wende
  * @version $Revision$
- * 
  */
-public final class RectangleElementFactory implements IElementModelFactory {
+public final class TextInputModelFactory implements IWidgetModelFactory {
+
 	/**
-	 * {@inheritDoc}
+	 * {@inheritDoc}.
 	 */
-	public AbstractElementModel createElementModel() {
-		return new RectangleElement();
+	public AbstractWidgetModel createWidgetModel() {
+		return new TextInputModel();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@inheritDoc}.
 	 */
-	public Class getElementModelType() {
-		return RectangleElement.class;
+	public Class getWidgetModelType() {
+		return TextInputModel.class;
 	}
 }

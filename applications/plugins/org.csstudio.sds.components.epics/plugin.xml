@@ -2,11 +2,11 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.csstudio.sds.elementModelInitializers">
-      <ElementModelInitializer
+         point="org.csstudio.sds.widgetModelInitializers">
+      <widgetModelInitializer
             class="org.csstudio.sds.components.epics.EpicsMeterInitializer"
             typeId="schema.epics:element.meter"/>
-      <ElementModelInitializer
+      <widgetModelInitializer
             class="org.csstudio.sds.components.epics.EpicsRectangleInitializer"
             typeId="schema.epics:element.rectangle"/>
    </extension>

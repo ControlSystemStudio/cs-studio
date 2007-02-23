@@ -22,7 +22,7 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.components.model.SliderElement;
+import org.csstudio.sds.components.model.SliderModel;
 import org.csstudio.sds.components.ui.internal.figures.SliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
@@ -33,7 +33,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.progress.UIJob;
 
 /**
- * EditPart controller for <code>RectangleElement</code> elements.
+ * EditPart controller for the Slider widget. The controller mediates between
+ * {@link SliderModel} and {@link SliderFigure}.
  * 
  * @author Sven Wende & Stefan Hofer
  * 
@@ -51,12 +52,12 @@ public final class SliderEditPart extends AbstractElementEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		final SliderElement model = (SliderElement) getCastedModel();
+		final SliderModel model = (SliderModel) getCastedModel();
 
 		final SliderFigure slider = new SliderFigure();
 		slider.addSliderListener(new SliderFigure.ISliderListener() {
 			public void sliderValueChanged(final int newValue) {
-				model.getProperty(SliderElement.PROP_VALUE).setManualValue(
+				model.getProperty(SliderModel.PROP_VALUE).setManualValue(
 						newValue);
 
 				slider.setManualValue((Integer) newValue);
@@ -64,7 +65,8 @@ public final class SliderEditPart extends AbstractElementEditPart {
 				if (_resetManualValueDisplayJob == null) {
 					_resetManualValueDisplayJob = new UIJob("reset") {
 						@Override
-						public IStatus runInUIThread(final IProgressMonitor monitor) {
+						public IStatus runInUIThread(
+								final IProgressMonitor monitor) {
 							slider.setManualValue(model.getValue());
 							return Status.OK_STATUS;
 						}
@@ -98,11 +100,11 @@ public final class SliderEditPart extends AbstractElementEditPart {
 					final IRefreshableFigure refreshableFigure) {
 				SliderFigure slider = (SliderFigure) refreshableFigure;
 				slider.setValue((Integer) newValue);
-				CentralLogger.getInstance().info(this, ""+(Integer) newValue);
+				CentralLogger.getInstance().info(this, "" + (Integer) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SliderElement.PROP_VALUE, valHandler);
+		setPropertyChangeHandler(SliderModel.PROP_VALUE, valHandler);
 
 		// min
 		IElementPropertyChangeHandler minHandler = new IElementPropertyChangeHandler() {
@@ -114,7 +116,7 @@ public final class SliderEditPart extends AbstractElementEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SliderElement.PROP_MIN, minHandler);
+		setPropertyChangeHandler(SliderModel.PROP_MIN, minHandler);
 
 		// max
 		IElementPropertyChangeHandler maxHandler = new IElementPropertyChangeHandler() {
@@ -126,7 +128,7 @@ public final class SliderEditPart extends AbstractElementEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SliderElement.PROP_MAX, maxHandler);
+		setPropertyChangeHandler(SliderModel.PROP_MAX, maxHandler);
 
 		// increment
 		IElementPropertyChangeHandler incrementHandler = new IElementPropertyChangeHandler() {
@@ -138,7 +140,7 @@ public final class SliderEditPart extends AbstractElementEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SliderElement.PROP_INCREMENT, incrementHandler);
+		setPropertyChangeHandler(SliderModel.PROP_INCREMENT, incrementHandler);
 
 		// increment
 		IElementPropertyChangeHandler orientationHandler = new IElementPropertyChangeHandler() {
@@ -150,15 +152,15 @@ public final class SliderEditPart extends AbstractElementEditPart {
 				int orientation = (Integer) newValue;
 				slider.setOrientation(orientation == 0);
 
-				SliderElement element = (SliderElement) getModel();
+				SliderModel model = (SliderModel) getModel();
 
 				// invert the size of the element
-				element.setSize(element.getHeight(), element.getWidth());
+				model.setSize(model.getHeight(), model.getWidth());
 
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SliderElement.PROP_ORIENTATION,
+		setPropertyChangeHandler(SliderModel.PROP_ORIENTATION,
 				orientationHandler);
 
 	}

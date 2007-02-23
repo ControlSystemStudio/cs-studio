@@ -24,7 +24,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.LabelElement;
+import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.eclipse.draw2d.IFigure;
 import org.junit.Before;
@@ -49,7 +49,7 @@ public final class LabelEditPartTest {
 	@Before
 	public void setUp() {
 		_editPart = new LabelEditPart();
-		_editPart.setModel(new LabelElement());
+		_editPart.setModel(new LabelModel());
 	}
 
 	/**

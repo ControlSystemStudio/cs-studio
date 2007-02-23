@@ -3,7 +3,7 @@ package org.csstudio.sds.components.epics;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.sds.model.AbstractElementModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.eclipse.swt.graphics.RGB;
 
@@ -25,8 +25,8 @@ final public class EpicsSchema extends AbstractControlSystemSchema {
 	protected Map<String, Object> createPropertyMap() {
 		Map<String, Object> properties = new HashMap<String, Object>();
 		
-		properties.put(AbstractElementModel.PROP_COLOR_BACKGROUND, new RGB(255, 0, 0));
-		properties.put(AbstractElementModel.PROP_COLOR_FOREGROUND, new RGB(0, 255, 0));
+		properties.put(AbstractWidgetModel.PROP_COLOR_BACKGROUND, new RGB(255, 0, 0));
+		properties.put(AbstractWidgetModel.PROP_COLOR_FOREGROUND, new RGB(0, 255, 0));
 		//TODO add more properties
 		
 		return properties;

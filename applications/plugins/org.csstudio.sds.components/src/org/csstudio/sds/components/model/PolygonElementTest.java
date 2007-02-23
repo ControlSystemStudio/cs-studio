@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test cases for {@link PolygonElement}.
+ * Test cases for {@link PolygonModel}.
  * 
  * @author Sven Wende
  *
@@ -38,18 +38,18 @@ public final class PolygonElementTest {
 	/**
 	 * A test instance.
 	 */
-	private PolygonElement _polygonElement;
+	private PolygonModel _polygonElement;
 	
 	/**
 	 * Test setup.
 	 */
 	@Before
 	public void setUp() {
-		_polygonElement = new PolygonElement();
+		_polygonElement = new PolygonModel();
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.PolygonElement#getDoubleTestProperty()}.
+	 * Test method for {@link org.csstudio.sds.components.model.PolygonModel#getDoubleTestProperty()}.
 	 */
 	@Test
 	public void testGetDoubleTestProperty() {
@@ -58,11 +58,11 @@ public final class PolygonElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.PolygonElement#getTypeID()}.
+	 * Test method for {@link org.csstudio.sds.components.model.PolygonModel#getTypeID()}.
 	 */
 	@Test
 	public void testGetTypeID() {
-		_polygonElement.getTypeID().equals(PolygonElement.ID);
+		_polygonElement.getTypeID().equals(PolygonModel.ID);
 	}
 
 	/**
@@ -71,8 +71,8 @@ public final class PolygonElementTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testProperties () {
-		assertTrue(_polygonElement.hasProperty(PolygonElement.PROP_POINTS));
-		assertTrue(_polygonElement.hasProperty(PolygonElement.PROP_FILL));
+		assertTrue(_polygonElement.hasProperty(PolygonModel.PROP_POINTS));
+		assertTrue(_polygonElement.hasProperty(PolygonModel.PROP_FILL));
 		// Add further properties here
 	}
 

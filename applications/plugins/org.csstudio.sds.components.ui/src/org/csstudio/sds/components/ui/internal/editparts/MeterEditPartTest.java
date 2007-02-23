@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.MeterElement;
+import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
 import org.eclipse.draw2d.IFigure;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public final class MeterEditPartTest {
 	@Before
 	public void setUp() {
 		_editPart = new MeterEditPart();
-		_editPart.setModel(new MeterElement());
+		_editPart.setModel(new MeterModel());
 	}
 
 	/**

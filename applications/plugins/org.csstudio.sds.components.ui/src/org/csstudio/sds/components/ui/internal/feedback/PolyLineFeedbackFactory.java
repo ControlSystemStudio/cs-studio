@@ -24,7 +24,7 @@ package org.csstudio.sds.components.ui.internal.feedback;
 import org.eclipse.draw2d.Polyline;
 
 /**
- * Graphical feedback factory for polyline elements.
+ * Graphical feedback factory for polyline widgets.
  * 
  * @author Sven Wende
  */

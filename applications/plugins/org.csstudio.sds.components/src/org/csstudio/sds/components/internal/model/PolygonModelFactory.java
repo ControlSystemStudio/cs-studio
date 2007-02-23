@@ -21,30 +21,44 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.components.model.MeterElement;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.IElementModelFactory;
+import org.csstudio.sds.components.model.PolygonModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.IWidgetModelFactory;
+import org.eclipse.draw2d.geometry.PointList;
 
 /**
- * A model element factory for {@link MeterElement}.
+ * A widget model factory for {@link PolygonModel}.
  * 
  * @author Sven Wende
  * 
+ * @version $Revision$
+ * 
  */
-public final class MeterElementFactory implements IElementModelFactory {
+public final class PolygonModelFactory implements IWidgetModelFactory {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public AbstractElementModel createElementModel() {
-		return new MeterElement();
+	public AbstractWidgetModel createWidgetModel() {
+		PolygonModel polygonElement = new PolygonModel();
+		PointList points = new PointList();
+		points.addPoint(15, 1);
+		points.addPoint(30, 15);
+		points.addPoint(30, 30);
+		points.addPoint(15, 45);
+		points.addPoint(1, 30);
+		points.addPoint(1, 15);
+
+		polygonElement.setPoints(points);
+
+		return polygonElement;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Class getElementModelType() {
-		return MeterElement.class;
+	public Class getWidgetModelType() {
+		return PolygonModel.class;
 	}
 
 }

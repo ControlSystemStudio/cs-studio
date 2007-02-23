@@ -21,8 +21,8 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.model.AbstractPolyElement;
-import org.csstudio.sds.components.model.PolylineElement;
+import org.csstudio.sds.components.model.AbstractPolyModel;
+import org.csstudio.sds.components.model.PolylineModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
 import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
@@ -30,7 +30,8 @@ import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**
- * EditPart controller for <code>PolylineElement</code> elements.
+ * EditPart controller for the Polyline widget. The controller mediates between
+ * {@link PolylineModel} and {@link RefreshablePolylineFigure}.
  * 
  * @author Sven Wende, Alexander Will
  * 
@@ -43,10 +44,10 @@ public final class PolylineEditPart extends AbstractElementEditPart {
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
 		RefreshablePolylineFigure polyline = new RefreshablePolylineFigure();
-		PolylineElement elementModel = (PolylineElement) getCastedModel();
+		PolylineModel model = (PolylineModel) getCastedModel();
 
-		polyline.setPoints(elementModel.getPoints());
-		polyline.setFill(elementModel.getFill());
+		polyline.setPoints(model.getPoints());
+		polyline.setFill(model.getFill());
 
 		return polyline;
 	}
@@ -66,7 +67,7 @@ public final class PolylineEditPart extends AbstractElementEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractPolyElement.PROP_FILL, fillHandler);
+		setPropertyChangeHandler(AbstractPolyModel.PROP_FILL, fillHandler);
 
 		// points
 		IElementPropertyChangeHandler pointsHandler = new IElementPropertyChangeHandler() {
@@ -79,6 +80,6 @@ public final class PolylineEditPart extends AbstractElementEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractPolyElement.PROP_POINTS, pointsHandler);
+		setPropertyChangeHandler(AbstractPolyModel.PROP_POINTS, pointsHandler);
 	}
 }

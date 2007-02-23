@@ -21,19 +21,19 @@
  */
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.PropertyCategory;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 
 /**
- * An ellipse model element.
+ * An ellipse widget model.
  * 
  * @author Sven Wende, Alexander Will
  * @version $Revision$
  * 
  */
-public final class SliderElement extends AbstractElementModel {
+public final class SliderModel extends AbstractWidgetModel {
 
 	/**
 	 * The ID of the value property.
@@ -61,7 +61,7 @@ public final class SliderElement extends AbstractElementModel {
 	public static final String PROP_ORIENTATION = "orientation"; //$NON-NLS-1$
 
 	/**
-	 * The ID of this model element.
+	 * The ID of this widget model.
 	 */
 	public static final String ID = "element.slider"; //$NON-NLS-1$
 
@@ -79,7 +79,7 @@ public final class SliderElement extends AbstractElementModel {
 	 * Standard constructor.
 	 * 
 	 */
-	public SliderElement() {
+	public SliderModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
@@ -97,15 +97,15 @@ public final class SliderElement extends AbstractElementModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(PROP_VALUE, new IntegerProperty("Slider Value",
-				PropertyCategory.Behaviour, 50, 0, Integer.MAX_VALUE));
+				WidgetPropertyCategory.Behaviour, 50, 0, Integer.MAX_VALUE));
 		addProperty(PROP_MIN, new IntegerProperty("Min",
-				PropertyCategory.Behaviour, 0, 0, Integer.MAX_VALUE));
+				WidgetPropertyCategory.Behaviour, 0, 0, Integer.MAX_VALUE));
 		addProperty(PROP_MAX, new IntegerProperty("Max",
-				PropertyCategory.Behaviour, 100, 0, Integer.MAX_VALUE));
+				WidgetPropertyCategory.Behaviour, 100, 0, Integer.MAX_VALUE));
 		addProperty(PROP_INCREMENT, new IntegerProperty("Increment",
-				PropertyCategory.Behaviour, 1, 0, Integer.MAX_VALUE));
+				WidgetPropertyCategory.Behaviour, 1, 0, Integer.MAX_VALUE));
 		addProperty(PROP_ORIENTATION, new OptionProperty("Orientation",
-				PropertyCategory.Display, new String[] {"Horizontal", "Vertical"}, 0));
+				WidgetPropertyCategory.Display, new String[] {"Horizontal", "Vertical"}, 0));
 	}
 
 	/**

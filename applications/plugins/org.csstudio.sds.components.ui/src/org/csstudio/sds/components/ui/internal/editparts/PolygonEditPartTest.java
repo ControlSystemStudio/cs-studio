@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.PolygonElement;
+import org.csstudio.sds.components.model.PolygonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolygonFigure;
 import org.eclipse.draw2d.IFigure;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public final class PolygonEditPartTest {
 	@Before
 	public void setUp() {
 		_editPart = new PolygonEditPart();
-		_editPart.setModel(new PolygonElement());
+		_editPart.setModel(new PolygonModel());
 	}
 
 	/**

@@ -19,31 +19,26 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.internal.model;
+package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.components.model.EllipseElement;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.IElementModelFactory;
+
 
 /**
- * A model element factory for {@link EllipseElement}. 
+ * A line widget model.
  * 
- * @author Alexander Will & Sven Wende
- * @version $Revision$
+ * @author Sven Wende, Alexander Will
  */
-public final class EllipseElementFactory implements IElementModelFactory {
+public final class PolylineModel extends AbstractPolyModel {
+	/**
+	 * The ID of this widget model.
+	 */
+	public static final String ID = "element.polyline"; //$NON-NLS-1$
 	
 	/**
-	 * {@inheritDoc}.
+	 * {@inheritDoc}
 	 */
-	public AbstractElementModel createElementModel() {
-		return new EllipseElement();
-	}
-
-	/**
-	 * {@inheritDoc}.
-	 */
-	public Class getElementModelType() {
-		return EllipseElement.class;
+	@Override
+	public String getTypeID() {
+		return ID;
 	}
 }

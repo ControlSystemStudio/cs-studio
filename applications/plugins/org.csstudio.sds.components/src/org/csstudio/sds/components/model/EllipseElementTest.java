@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test cases for {@link EllipseElement}.
+ * Test cases for {@link EllipseModel}.
  * @author Sven Wende
  *
  */
@@ -37,18 +37,18 @@ public final class EllipseElementTest {
 	/**
 	 * A test instance.
 	 */
-	private EllipseElement _ellipseElement;
+	private EllipseModel _ellipseElement;
 	
 	/**
 	 * Test setup.
 	 */
 	@Before
 	public void setUp() {
-		_ellipseElement = new EllipseElement();
+		_ellipseElement = new EllipseModel();
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.EllipseElement#getDoubleTestProperty()}.
+	 * Test method for {@link org.csstudio.sds.components.model.EllipseModel#getDoubleTestProperty()}.
 	 */
 	@Test
 	public void testGetDoubleTestProperty() {
@@ -57,11 +57,11 @@ public final class EllipseElementTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.model.EllipseElement#getTypeID()}.
+	 * Test method for {@link org.csstudio.sds.components.model.EllipseModel#getTypeID()}.
 	 */
 	@Test
 	public void testGetTypeID() {
-		_ellipseElement.getTypeID().equals(EllipseElement.ID);
+		_ellipseElement.getTypeID().equals(EllipseModel.ID);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public final class EllipseElementTest {
 	 */
 	@Test
 	public void testProperties () {
-		assertTrue(_ellipseElement.hasProperty(EllipseElement.PROP_FILL));
+		assertTrue(_ellipseElement.hasProperty(EllipseModel.PROP_FILL));
 		// Add further properties here
 	}
 

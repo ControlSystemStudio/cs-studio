@@ -21,52 +21,29 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import org.csstudio.sds.components.model.PolygonElement;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.csstudio.sds.components.model.RectangleModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
- * Test cases for {@link PolygonElementFactory}.
+ * This class defines a widget model factory for rectangle widget models.
  * 
- * @author Sven Wende
- *
+ * @author Sven Wende & Alexander Will
+ * @version $Revision$
+ * 
  */
-public final class PolygonElementFactoryTest {
-
+public final class RectangleModelFactory implements IWidgetModelFactory {
 	/**
-	 * A element instanc for testing issues.
+	 * {@inheritDoc}
 	 */
-	private PolygonElementFactory _elementFactory;
-	
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp()  {
-		_elementFactory= new PolygonElementFactory();
+	public AbstractWidgetModel createWidgetModel() {
+		return new RectangleModel();
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonElementFactory#createElementModel()}.
+	 * {@inheritDoc}
 	 */
-	@Test
-	public void testCreateModelElement() {
-		AbstractElementModel element = _elementFactory.createElementModel();
-		assertNotNull(element);
-		assertTrue(element instanceof PolygonElement);
+	public Class getWidgetModelType() {
+		return RectangleModel.class;
 	}
-
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolygonElementFactory#getElementModelType()}.
-	 */
-	@Test
-	public void testGetModelElementType() {
-		assertEquals(PolygonElement.class, _elementFactory.getElementModelType());
-	}
-
 }

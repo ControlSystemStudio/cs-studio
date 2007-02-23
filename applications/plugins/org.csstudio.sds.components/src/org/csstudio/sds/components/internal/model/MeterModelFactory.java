@@ -21,52 +21,30 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import org.csstudio.sds.components.model.PolylineElement;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.junit.Before;
-import org.junit.Test;
+import org.csstudio.sds.components.model.MeterModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
- * Test cases for {@link PolylineElementFactory}.
+ * A widget model factory for {@link MeterModel}.
  * 
  * @author Sven Wende
- *
+ * 
  */
-public final class PolylineElementFactoryTest {
+public final class MeterModelFactory implements IWidgetModelFactory {
 
 	/**
-	 * A element instanc for testing issues.
+	 * {@inheritDoc}
 	 */
-	private PolylineElementFactory _elementFactory;
-	
-	/**
-	 * Test setup.
-	 */
-	@Before
-	public void setUp()  {
-		_elementFactory= new PolylineElementFactory();
+	public AbstractWidgetModel createWidgetModel() {
+		return new MeterModel();
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineElementFactory#createElementModel()}.
+	 * {@inheritDoc}
 	 */
-	@Test
-	public void testCreateModelElement() {
-		AbstractElementModel element = _elementFactory.createElementModel();
-		assertNotNull(element);
-		assertTrue(element instanceof PolylineElement);
-	}
-
-	/**
-	 * Test method for {@link org.csstudio.sds.components.internal.model.PolylineElementFactory#getElementModelType()}.
-	 */
-	@Test
-	public void testGetModelElementType() {
-		assertEquals(PolylineElement.class, _elementFactory.getElementModelType());
+	public Class getWidgetModelType() {
+		return MeterModel.class;
 	}
 
 }

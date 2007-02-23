@@ -21,50 +21,48 @@
  */
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.PropertyCategory;
-import org.csstudio.sds.model.properties.FontProperty;
-import org.csstudio.sds.model.properties.StringProperty;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
+import org.csstudio.sds.components.internal.localization.Messages;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
- * A model element for text inputs.
+ * This class defines an rectangle widget model.
  * 
- * @author Alexander Will
+ * @author Sven Wende, Alexander Will
  * @version $Revision$
  * 
  */
-public final class TextInputElement extends AbstractElementModel {
+public final class RectangleModel extends AbstractWidgetModel {
 	/**
-	 * The ID of the text input.
+	 * The ID of the fill grade property.
 	 */
-	public static final String PROP_INPUT_TEXT = "textinput"; //$NON-NLS-1$
+	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
 
 	/**
-	 * The ID of the font property.
+	 * The ID of this widget model.
 	 */
-	public static final String PROP_FONT = "font"; //$NON-NLS-1$
-
-	/**
-	 * The ID of this model element.
-	 */
-	public static final String ID = "element.textinput"; //$NON-NLS-1$
+	public static final String ID = "element.rectangle"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.
 	 */
-	private static final int DEFAULT_HEIGHT = 20;
+	private static final int DEFAULT_HEIGHT = 10;
 
 	/**
 	 * The default value of the width property.
 	 */
-	private static final int DEFAULT_WIDTH = 80;
+	private static final int DEFAULT_WIDTH = 20;
+
+	/**
+	 * The default value of the fill grade property.
+	 */
+	private static final double DEFAULT_FILL = 100.0;
 
 	/**
 	 * Standard constructor.
 	 */
-	public TextInputElement() {
+	public RectangleModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
@@ -81,10 +79,17 @@ public final class TextInputElement extends AbstractElementModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_INPUT_TEXT, new StringProperty(
-				"Input Text", PropertyCategory.Behaviour, "")); //$NON-NLS-1$
-		addProperty(PROP_FONT, new FontProperty("Font",
-				PropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
+		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
+				WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0));
+	}
+
+	/**
+	 * Gets the fill level.
+	 * 
+	 * @return the fill level
+	 */
+	public double getFillLevel() {
+		return (Double) getProperty(PROP_FILL).getPropertyValue();
 	}
 
 	/**
@@ -92,7 +97,7 @@ public final class TextInputElement extends AbstractElementModel {
 	 */
 	@Override
 	public String getDoubleTestProperty() {
-		return PROP_INPUT_TEXT;
+		return PROP_FILL;
 	}
 
 	/**
@@ -100,23 +105,6 @@ public final class TextInputElement extends AbstractElementModel {
 	 */
 	@Override
 	public String getColorTestProperty() {
-		return PROP_COLOR_BACKGROUND;
+		return PROP_COLOR_FOREGROUND;
 	}
-	
-	/**
-	 * Gets the input text.
-	 * @return the input text
-	 */
-	public String getInputText() {
-		return (String) getProperty(PROP_INPUT_TEXT).getPropertyValue();
-	}
-	
-	/**
-	 * Gets the font.
-	 * @return the font
-	 */
-	public FontData getFont() {
-		return (FontData) getProperty(PROP_FONT).getPropertyValue();
-	}
-
 }

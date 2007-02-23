@@ -21,20 +21,20 @@
  */
 package org.csstudio.sds.components.ui.internal.feedback;
 
-import org.csstudio.sds.components.model.AbstractPolyElement;
+import org.csstudio.sds.components.model.AbstractPolyModel;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.gef.commands.Command;
 
 /**
- * A command, that changes the point list of a poly element.
+ * A command, that changes the point list of a poly widget.
  * @author Sven Wende
  *
  */
 public final class ChangePolyPointsCommand extends Command {
 	/**
-	 * The polyline element, whose points should be changed.
+	 * The model, whose points should be changed.
 	 */
-	private AbstractPolyElement _polyElement;
+	private AbstractPolyModel _polyModel;
 
 	/**
 	 * The old point list.
@@ -48,14 +48,14 @@ public final class ChangePolyPointsCommand extends Command {
 
 	/**
 	 * Constructor.
-	 * @param polyElement the polyline element, whose points should be changed
+	 * @param polyModel the polyline element, whose points should be changed
 	 * @param newPoints the new point list
 	 */
-	public ChangePolyPointsCommand(final AbstractPolyElement polyElement,
+	public ChangePolyPointsCommand(final AbstractPolyModel polyModel,
 			final PointList newPoints) {
-		assert polyElement != null;
+		assert polyModel != null;
 		assert newPoints != null;
-		_polyElement = polyElement;
+		_polyModel = polyModel;
 		_newPoints = newPoints;
 	}
 
@@ -65,8 +65,8 @@ public final class ChangePolyPointsCommand extends Command {
 	
 	@Override
 	public void execute() {
-		_oldPoints = _polyElement.getPoints();
-		_polyElement.setPoints(_newPoints);
+		_oldPoints = _polyModel.getPoints();
+		_polyModel.setPoints(_newPoints);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public final class ChangePolyPointsCommand extends Command {
 	 */
 	@Override
 	public void undo() {
-		_polyElement.setPoints(_oldPoints);
+		_polyModel.setPoints(_oldPoints);
 	}
 
 }

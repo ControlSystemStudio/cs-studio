@@ -22,8 +22,8 @@
 package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.components.internal.localization.Messages;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.PropertyCategory;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.PointlistProperty;
 import org.eclipse.draw2d.geometry.Point;
@@ -34,7 +34,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * 
  * @author Sven Wende
  */
-public abstract class AbstractPolyElement extends AbstractElementModel {
+public abstract class AbstractPolyModel extends AbstractWidgetModel {
 
 	/**
 	 * The ID of the points property.
@@ -59,7 +59,7 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 	/**
 	 * Constructor.
 	 */
-	public AbstractPolyElement() {
+	public AbstractPolyModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
@@ -69,10 +69,10 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 	@Override
 	protected final void configureProperties() {
 		addProperty(PROP_POINTS, new PointlistProperty(
-				Messages.PolyElement_POINTS, PropertyCategory.Position,
+				Messages.PolyElement_POINTS, WidgetPropertyCategory.Position,
 				new PointList()));
 		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
-				PropertyCategory.Behaviour, 100.0, 0.0, 100.0));
+				WidgetPropertyCategory.Behaviour, 100.0, 0.0, 100.0));
 	}
 
 	/**
@@ -176,16 +176,16 @@ public abstract class AbstractPolyElement extends AbstractElementModel {
 	@Override
 	public final synchronized void setPropertyValue(final String propertyID,
 			final Object value) {
-		if (propertyID.equals(AbstractElementModel.PROP_POS_X)
+		if (propertyID.equals(AbstractWidgetModel.PROP_POS_X)
 				&& ((Integer) value != getPoints().getBounds().x)) {
 			setLocation((Integer) value, getY());
-		} else if (propertyID.equals(AbstractElementModel.PROP_POS_Y)
+		} else if (propertyID.equals(AbstractWidgetModel.PROP_POS_Y)
 				&& ((Integer) value != getPoints().getBounds().y)) {
 			setLocation(getX(), (Integer) value);
-		} else if (propertyID.equals(AbstractElementModel.PROP_WIDTH)
+		} else if (propertyID.equals(AbstractWidgetModel.PROP_WIDTH)
 				&& ((Integer) value != getPoints().getBounds().width)) {
 			setSize((Integer) value, getHeight());
-		} else if (propertyID.equals(AbstractElementModel.PROP_HEIGHT)
+		} else if (propertyID.equals(AbstractWidgetModel.PROP_HEIGHT)
 				&& ((Integer) value != getPoints().getBounds().height)) {
 			setSize(getWidth(), (Integer) value);
 		} else {

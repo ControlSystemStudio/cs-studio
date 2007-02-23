@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test cases for {@link RectangleElement}.
+ * Test cases for {@link RectangleModel}.
  * 
  * @author Sven Wende
  * 
@@ -38,19 +38,19 @@ public final class RectangleElementTest {
 	/**
 	 * A test instance.
 	 */
-	private RectangleElement _rectangleElement;
+	private RectangleModel _rectangleElement;
 
 	/**
 	 * Test setup.
 	 */
 	@Before
 	public void setUp() {
-		_rectangleElement = new RectangleElement();
+		_rectangleElement = new RectangleModel();
 	}
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.model.RectangleElement#getDoubleTestProperty()}.
+	 * {@link org.csstudio.sds.components.model.RectangleModel#getDoubleTestProperty()}.
 	 */
 	@Test
 	public void testGetDoubleTestProperty() {
@@ -60,11 +60,11 @@ public final class RectangleElementTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.model.RectangleElement#getTypeID()}.
+	 * {@link org.csstudio.sds.components.model.RectangleModel#getTypeID()}.
 	 */
 	@Test
 	public void testGetTypeID() {
-		_rectangleElement.getTypeID().equals(RectangleElement.ID);
+		_rectangleElement.getTypeID().equals(RectangleModel.ID);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public final class RectangleElementTest {
 	@Test
 	public void testProperties() {
 		assertTrue(_rectangleElement
-				.hasProperty(RectangleElement.PROP_FILL));
+				.hasProperty(RectangleModel.PROP_FILL));
 		// Add further properties here
 	}
 

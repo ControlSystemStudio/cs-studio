@@ -9,8 +9,8 @@
             typeId="schema.test"/>
    </extension>
    <extension
-         point="org.csstudio.sds.elementModelInitializers">
-      <ElementModelInitializer
+         point="org.csstudio.sds.widgetModelInitializers">
+      <widgetModelInitializer
             class="org.csstudio.sds.test.TestInitializer"
             typeId="schema.test:element.test"/>
    </extension>

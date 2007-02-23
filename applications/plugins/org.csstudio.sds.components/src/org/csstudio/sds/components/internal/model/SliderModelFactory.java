@@ -19,26 +19,31 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.model;
+package org.csstudio.sds.components.internal.model;
 
-
+import org.csstudio.sds.components.model.SliderModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
- * A line model element.
+ * This class defines a widget model factory for rectangle widget models.
  * 
- * @author Sven Wende, Alexander Will
+ * @author Sven Wende & Alexander Will
+ * @version $Revision$
+ * 
  */
-public final class PolylineElement extends AbstractPolyElement {
-	/**
-	 * The ID of this model element.
-	 */
-	public static final String ID = "element.polyline"; //$NON-NLS-1$
-	
+public final class SliderModelFactory implements IWidgetModelFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public String getTypeID() {
-		return ID;
+	public AbstractWidgetModel createWidgetModel() {
+		return new SliderModel();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Class getWidgetModelType() {
+		return SliderModel.class;
 	}
 }

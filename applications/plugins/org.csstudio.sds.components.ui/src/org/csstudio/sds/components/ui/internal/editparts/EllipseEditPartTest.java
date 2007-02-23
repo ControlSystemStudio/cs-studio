@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.EllipseElement;
+import org.csstudio.sds.components.model.EllipseModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
 import org.eclipse.draw2d.IFigure;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public final class EllipseEditPartTest {
 	@Before
 	public void setUp() {
 		_editPart = new EllipseEditPart();
-		_editPart.setModel(new EllipseElement());
+		_editPart.setModel(new EllipseModel());
 	}
 
 	/**

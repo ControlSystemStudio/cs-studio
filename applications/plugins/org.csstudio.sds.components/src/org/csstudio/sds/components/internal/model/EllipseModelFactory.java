@@ -21,39 +21,29 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.components.model.PolylineElement;
-import org.csstudio.sds.model.AbstractElementModel;
-import org.csstudio.sds.model.IElementModelFactory;
-import org.eclipse.draw2d.geometry.PointList;
+import org.csstudio.sds.components.model.EllipseModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
- * Model element factory for polyline model elements.
+ * A widget model factory for {@link EllipseModel}. 
  * 
- * @author Sven Wende
+ * @author Alexander Will & Sven Wende
  * @version $Revision$
- * 
  */
-public final class PolylineElementFactory implements IElementModelFactory {
+public final class EllipseModelFactory implements IWidgetModelFactory {
+	
 	/**
-	 * {@inheritDoc}
+	 * {@inheritDoc}.
 	 */
-	public AbstractElementModel createElementModel() {
-		PolylineElement polylineElement = new PolylineElement();
-		PointList points = new PointList();
-		points.addPoint(15, 1);
-		points.addPoint(30, 15);
-		points.addPoint(30, 30);
-		points.addPoint(15, 45);
-
-		polylineElement.setPoints(points);
-
-		return polylineElement;
+	public AbstractWidgetModel createWidgetModel() {
+		return new EllipseModel();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@inheritDoc}.
 	 */
-	public Class getElementModelType() {
-		return PolylineElement.class;
+	public Class getWidgetModelType() {
+		return EllipseModel.class;
 	}
 }
