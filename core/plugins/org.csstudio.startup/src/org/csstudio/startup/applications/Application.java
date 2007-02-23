@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.LocaleService;
+import org.csstudio.platform.ui.workbench.CssWorkbenchAdvisor;
 import org.csstudio.startup.ServiceProxy;
 import org.csstudio.startup.StartupServiceEnumerator;
 import org.eclipse.core.runtime.IPlatformRunnable;
@@ -57,7 +58,7 @@ public class Application implements IPlatformRunnable {
 		try {
 //			boolean canLogin = handleLogin(display, coreStore);
 //
-//			int returnCode = EXIT_OK;
+			int returnCode = EXIT_OK;
 //
 //			if (canLogin) {
 //				// create the workbench with this advisor and run it until it
@@ -104,7 +105,14 @@ public class Application implements IPlatformRunnable {
 				proxy.run();
 			}
 
-			return EXIT_OK;
+			returnCode = PlatformUI.createAndRunWorkbench(display,
+					new CssWorkbenchAdvisor());
+			
+			if (returnCode != PlatformUI.RETURN_RESTART) {
+				return EXIT_OK;
+			}
+					
+			return EXIT_RESTART;
 		} finally {
 			if (display != null) {
 				display.dispose();

@@ -31,7 +31,7 @@ public class StartupServiceEnumerator {
 
 		// ok, get the extension
 		IExtension[] extensions = Platform.getExtensionRegistry()
-				.getExtensionPoint("de.desy.css.management.simpleActions")
+				.getExtensionPoint("org.csstudio.startup.startupListener")
 				.getExtensions();
 
 		// define an array
