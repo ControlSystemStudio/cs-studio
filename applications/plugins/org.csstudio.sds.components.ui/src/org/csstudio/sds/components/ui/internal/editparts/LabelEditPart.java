@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
-import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
+import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
@@ -36,7 +36,7 @@ import org.eclipse.swt.graphics.FontData;
  * @author Stefan Hofer & Sven Wende
  * 
  */
-public final class LabelEditPart extends AbstractElementEditPart {
+public final class LabelEditPart extends AbstractWidgetEditPart {
 	/**
 	 * {@inheritDoc}
 	 */

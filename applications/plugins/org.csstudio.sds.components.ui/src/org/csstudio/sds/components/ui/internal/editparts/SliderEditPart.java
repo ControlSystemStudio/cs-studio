@@ -24,7 +24,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.SliderModel;
 import org.csstudio.sds.components.ui.internal.figures.SliderFigure;
-import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
+import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,7 +39,7 @@ import org.eclipse.ui.progress.UIJob;
  * @author Sven Wende & Stefan Hofer
  * 
  */
-public final class SliderEditPart extends AbstractElementEditPart {
+public final class SliderEditPart extends AbstractWidgetEditPart {
 
 	/**
 	 * A UI job, which is used to reset the manual value of the slider figure

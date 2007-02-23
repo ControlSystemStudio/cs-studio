@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.EllipseModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
-import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
+import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
@@ -34,7 +34,7 @@ import org.csstudio.sds.ui.figures.IRefreshableFigure;
  * @author Stefan Hofer & Sven Wende
  * 
  */
-public final class EllipseEditPart extends AbstractElementEditPart {
+public final class EllipseEditPart extends AbstractWidgetEditPart {
 
 	/**
 	 * {@inheritDoc}

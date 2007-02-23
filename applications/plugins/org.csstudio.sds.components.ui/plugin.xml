@@ -2,29 +2,29 @@
 <?eclipse version="3.2"?>
 <plugin>
   <extension
-        point="org.csstudio.sds.ui.sdsEditParts">
-     <sdsEditPart
+        point="org.csstudio.sds.ui.widgetEditParts">
+     <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.RectangleEditPart"
            typeId="element.rectangle"/>
-     <sdsEditPart
+     <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.EllipseEditPart"
            typeId="element.ellipse"/>
-     <sdsEditPart
+     <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.MeterEditPart"
            typeId="element.meter"/>
-     <sdsEditPart
+     <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.LabelEditPart"
            typeId="element.label"/>
-     <sdsEditPart
+     <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.PolygonEditPart"
            typeId="element.polygon"/>
-     <sdsEditPart
+     <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.PolylineEditPart"
            typeId="element.polyline"/>
-     <sdsEditPart
+     <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.TextInputEditPart"
            typeId="element.textinput"/>
-     <sdsEditPart
+     <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.SliderEditPart"
            typeId="element.slider"/>           
   </extension>

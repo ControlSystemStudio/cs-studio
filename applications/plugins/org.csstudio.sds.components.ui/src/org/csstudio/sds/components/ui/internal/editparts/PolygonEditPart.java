@@ -24,7 +24,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import org.csstudio.sds.components.model.AbstractPolyModel;
 import org.csstudio.sds.components.model.PolygonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolygonFigure;
-import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
+import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.geometry.PointList;
@@ -36,7 +36,7 @@ import org.eclipse.draw2d.geometry.PointList;
  * @author Sven Wende & Stefan Hofer
  * 
  */
-public final class PolygonEditPart extends AbstractElementEditPart {
+public final class PolygonEditPart extends AbstractWidgetEditPart {
 
 	/**
 	 * {@inheritDoc}

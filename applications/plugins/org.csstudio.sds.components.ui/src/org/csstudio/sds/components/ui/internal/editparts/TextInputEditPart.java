@@ -25,7 +25,7 @@ import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetProperty;
-import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
+import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
@@ -61,7 +61,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Alexander Will
  * 
  */
-public final class TextInputEditPart extends AbstractElementEditPart {
+public final class TextInputEditPart extends AbstractWidgetEditPart {
 	/**
 	 * The direct edit manager.
 	 */

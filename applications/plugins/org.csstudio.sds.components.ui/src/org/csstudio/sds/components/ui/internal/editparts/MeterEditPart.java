@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
-import org.csstudio.sds.ui.editparts.AbstractElementEditPart;
+import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
@@ -34,7 +34,7 @@ import org.csstudio.sds.ui.figures.IRefreshableFigure;
  * @author Sven Wende
  * 
  */
-public final class MeterEditPart extends AbstractElementEditPart {
+public final class MeterEditPart extends AbstractWidgetEditPart {
 
 	/**
 	 * {@inheritDoc}
