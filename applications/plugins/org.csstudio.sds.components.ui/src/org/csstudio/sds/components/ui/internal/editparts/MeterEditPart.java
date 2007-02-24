@@ -24,7 +24,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
-import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
+import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
 /**
@@ -62,7 +62,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		// value
-		IElementPropertyChangeHandler valueHandler = new IElementPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {

@@ -25,7 +25,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.SliderModel;
 import org.csstudio.sds.components.ui.internal.figures.SliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
-import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
+import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -94,7 +94,7 @@ public final class SliderEditPart extends AbstractWidgetEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		// value
-		IElementPropertyChangeHandler valHandler = new IElementPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler valHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
@@ -107,7 +107,7 @@ public final class SliderEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(SliderModel.PROP_VALUE, valHandler);
 
 		// min
-		IElementPropertyChangeHandler minHandler = new IElementPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
@@ -119,7 +119,7 @@ public final class SliderEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(SliderModel.PROP_MIN, minHandler);
 
 		// max
-		IElementPropertyChangeHandler maxHandler = new IElementPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
@@ -131,7 +131,7 @@ public final class SliderEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(SliderModel.PROP_MAX, maxHandler);
 
 		// increment
-		IElementPropertyChangeHandler incrementHandler = new IElementPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
@@ -143,7 +143,7 @@ public final class SliderEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(SliderModel.PROP_INCREMENT, incrementHandler);
 
 		// increment
-		IElementPropertyChangeHandler orientationHandler = new IElementPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {

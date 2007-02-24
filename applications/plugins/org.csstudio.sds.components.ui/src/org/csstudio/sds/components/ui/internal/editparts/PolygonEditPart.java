@@ -25,7 +25,7 @@ import org.csstudio.sds.components.model.AbstractPolyModel;
 import org.csstudio.sds.components.model.PolygonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshablePolygonFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
-import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
+import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.geometry.PointList;
 
@@ -57,7 +57,7 @@ public final class PolygonEditPart extends AbstractWidgetEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		// fill
-		IElementPropertyChangeHandler fillHandler = new IElementPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
@@ -69,7 +69,7 @@ public final class PolygonEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(AbstractPolyModel.PROP_FILL, fillHandler);
 
 		// points
-		IElementPropertyChangeHandler pointsHandler = new IElementPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler pointsHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {

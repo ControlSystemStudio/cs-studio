@@ -24,7 +24,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import org.csstudio.sds.components.model.EllipseModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
-import org.csstudio.sds.ui.editparts.IElementPropertyChangeHandler;
+import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
 /**
@@ -56,7 +56,7 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		// fill
-		IElementPropertyChangeHandler fillHandler = new IElementPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
