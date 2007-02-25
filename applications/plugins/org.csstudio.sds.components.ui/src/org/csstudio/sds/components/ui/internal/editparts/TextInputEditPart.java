@@ -41,14 +41,11 @@ import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -66,11 +63,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 	 * The direct edit manager.
 	 */
 	private LabelDirectEditManager _directManager;
-
-	/**
-	 * Flag that indicates if the text input field is currently edited.
-	 */
-	private boolean _isEditing = false;
 
 	/**
 	 * The actual figure will be surrounded with a small frame that can be used
@@ -142,7 +134,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 			_directManager = new LabelDirectEditManager(
 					new LabelCellEditorLocator(getFigure()));
 		}
-		_isEditing = true;
 		_directManager.show();
 	}
 
@@ -158,28 +149,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		 */
 		public LabelDirectEditManager(final CellEditorLocator locator) {
 			super(TextInputEditPart.this, TextCellEditor.class, locator);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected CellEditor createCellEditorOn(final Composite composite) {
-			TextCellEditor result = new TextCellEditor(composite, SWT.CENTER);
-			result.addListener(new ICellEditorListener() {
-				public void applyEditorValue() {
-					_isEditing = false;
-				}
-
-				public void cancelEditor() {
-					_isEditing = false;
-				}
-
-				public void editorValueChanged(final boolean oldValidState,
-						final boolean newValidState) {
-				}
-			});
-			return result;
 		}
 
 		/**
@@ -338,6 +307,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		// input text
 		IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
@@ -349,5 +319,19 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(TextInputModel.PROP_INPUT_TEXT, textHandler);
 
+		// font
+		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+				FontData fontData = (FontData) newValue;
+				label.setFont(CustomMediaFactory.getInstance().getFont(
+						fontData.getName(), fontData.getHeight(),
+						fontData.getStyle()));
+				return true;
+			}
+		};
+		setPropertyChangeHandler(TextInputModel.PROP_FONT, fontHandler);
 	}
 }
