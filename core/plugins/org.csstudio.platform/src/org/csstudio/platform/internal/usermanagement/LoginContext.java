@@ -33,6 +33,9 @@ public final class LoginContext {
 	}
 	
 	private ILoginModule getLoginModule() {
+		// TODO: add preference page lookup
+	//	return LoginCallbackHandlerEnumerator.getProxies("org.csstudio.platform.loginModule",
+			//	configElementName)[0];
 		IExtension[] extension = Platform.getExtensionRegistry()
 			.getExtensionPoint("org.csstudio.platform.loginModule")
 			.getExtensions();
