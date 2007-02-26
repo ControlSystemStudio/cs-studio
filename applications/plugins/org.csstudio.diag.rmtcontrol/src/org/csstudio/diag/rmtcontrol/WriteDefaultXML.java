@@ -33,7 +33,7 @@ import org.jdom.output.*;
 
 public final class WriteDefaultXML {
 
-	static void writeDefault(File file){
+	public static void writeDefault(File file){
 		if(file.isFile()){
 			SAXBuilder b = new  SAXBuilder(false);
 			try {
@@ -42,6 +42,7 @@ public final class WriteDefaultXML {
 				FileOutputStream out =  new  FileOutputStream(file);
 				XMLOutputter serializer = new XMLOutputter();
 				serializer.output(xml,out);
+				System.out.println("write");
 				out.flush();
 				out.close();
 			} catch (JDOMException e) {
@@ -53,72 +54,83 @@ public final class WriteDefaultXML {
 	}
 
 	private static String getDefaultXML() {
+		/*
+		 * Ab Version 0.0.2 werden so genannte Count Vartiablen unterstützt.
+		 * -- Variablenformt: $(varname)
+		 * -- Typ die zahl wird als Integer interprätiert
+		 * -- Wird jetzt eine Abfrage ausgewählt wird der Verariable an die entsprechnende Stelle
+		 * 	  eingesetzt und um ein erhöht. So das für die nächste aus Auswahl der neue Wert zur
+		 * 	  verfügung steht.
+		 */
 		String def =
-			"<RMT version=\"0.0.1\">\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"Config\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4711\">\r\n"+ //$NON-NLS-1$
-				   	"\t<Command command=\"0\" filename=\"110.conf\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"Start\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4711\">\r\n"+ //$NON-NLS-1$
-		   			"\t<Command command=\"1\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"Stop\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4711\">\r\n"+ //$NON-NLS-1$
-		   			"\t<Command command=\"2\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"Shutdown\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4711\">\r\n"+ //$NON-NLS-1$
-			   		"\t<Command command=\"3\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"TestIO\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4712\">\r\n"+ //$NON-NLS-1$
-			   		"\t<Command command=\"4\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"Failover\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4712\">\r\n"+ //$NON-NLS-1$
-					"\t<Command command=\"5\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"Failoverwitch ExecTime\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4712\">\r\n"+ //$NON-NLS-1$
-					"\t<Command command=\"5\" exectime=\"2006-12-31 12:59:59\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"ChangeUpdateMode\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4712\">\r\n"+ //$NON-NLS-1$
-			   		"\t<Command command=\"6\" updatemode=\"-1\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"Small Diagnose\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4714\">\r\n"+ //$NON-NLS-1$
-					"\t<Command command=\"7\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"Diagnose\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4714\">\r\n"+ //$NON-NLS-1$
-			   		"\t<Command command=\"8\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"Report\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4712\">\r\n"+ //$NON-NLS-1$
-					"\t<Command command=\"9\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-			"\t<Befehl name=\"Driver\">\r\n"+ //$NON-NLS-1$
-				"\t<Root version=\"1.0.0\" invokeid=\"4713\">\r\n"+ //$NON-NLS-1$
-		   			"\t<Command destination=\"CAN1\" property1=\"sample\" property2=\"sample\">\r\n"+ //$NON-NLS-1$
-		      			"\t<element1>sample</element1>\r\n"+ //$NON-NLS-1$
-		      			"\t<element2 attrib1=\"sample\" attrib2=\"sample\">sample</element2>\r\n"+ //$NON-NLS-1$
-		   			"\t</Command>\r\n"+ //$NON-NLS-1$
-				"\t</Root>\r\n"+ //$NON-NLS-1$
-			"\t</Befehl>\r\n"+ //$NON-NLS-1$
-		"\t</RMT>"; //$NON-NLS-1$
+			"<RMT version=\"0.0.2\">\r\n"+ //$NON-NLS-1$
+				"\t<var name=\"$(invokeid)\" typ=\"count\">"+
+					"\t\t1"+
+				"\t</var>"+
+				"\t<Befehl name=\"Config\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+					   	"\t<Command command=\"0\" filename=\"110.conf\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+				"\t<Befehl name=\"Start\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+			   			"\t<Command command=\"1\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+				"\t<Befehl name=\"Stop\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+			   			"\t<Command command=\"2\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+				"\t<Befehl name=\"Shutdown\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+				   		"\t<Command command=\"3\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+				"\t<Befehl name=\"TestIO\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+				   		"\t<Command command=\"4\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+				"\t<Befehl name=\"Failover\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+						"\t<Command command=\"5\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+				"\t<Befehl name=\"Failoverwitch ExecTime\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+						"\t<Command command=\"5\" exectime=\"2006-12-31 12:59:59\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+				"\t<Befehl name=\"ChangeUpdateMode\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+				   		"\t<Command command=\"6\" updatemode=\"-1\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+				"\t<Befehl name=\"Small Diagnose\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+						"\t<Command command=\"7\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+				"\t<Befehl name=\"Diagnose\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+				   		"\t<Command command=\"8\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+				"\t<Befehl name=\"Report\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+						"\t<Command command=\"9\" destination=\"RMT\"/>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+				"\t<Befehl name=\"Driver\">\r\n"+ //$NON-NLS-1$
+					"\t<Root version=\"1.0.0\" invokeid=\"$(invokeid)\">\r\n"+ //$NON-NLS-1$
+			   			"\t<Command destination=\"CAN1\" property1=\"sample\" property2=\"sample\">\r\n"+ //$NON-NLS-1$
+			      			"\t<element1>sample</element1>\r\n"+ //$NON-NLS-1$
+			      			"\t<element2 attrib1=\"sample\" attrib2=\"sample\">sample</element2>\r\n"+ //$NON-NLS-1$
+			   			"\t</Command>\r\n"+ //$NON-NLS-1$
+					"\t</Root>\r\n"+ //$NON-NLS-1$
+				"\t</Befehl>\r\n"+ //$NON-NLS-1$
+			"\t</RMT>"; //$NON-NLS-1$
 		return def;
 	}
 }

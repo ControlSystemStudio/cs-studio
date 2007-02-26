@@ -31,6 +31,7 @@ import java.util.Observer;
 
 import org.csstudio.diag.rmtcontrol.Activator;
 import org.csstudio.diag.rmtcontrol.Messages;
+import org.csstudio.diag.rmtcontrol.WriteDefaultXML;
 import org.csstudio.diag.rmtcontrol.Preference.SampleService;
 import org.csstudio.utility.ioc_socket_communication.IOCAnswer;
 import org.csstudio.utility.ioc_socket_communication.RMTControl;
@@ -61,12 +62,13 @@ public class View extends ViewPart implements Observer {
 	private Text ioc2;
 	StyledText request;
 	StyledText answer;
-	String requestMassage;
+	StringBuffer requestMassage;
 	IOCAnswer iocAnswer;
 	Display disp;
 	Element root;
 
 	private Group befehl;
+	private static HashMap<String, Integer> varMap;
 
 	public View() {
 		iocAnswer = new IOCAnswer();
@@ -182,15 +184,37 @@ public class View extends ViewPart implements Observer {
 		/***********************************/
 		File inputFile = new File(Activator.getDefault().getPluginPreferences().getString(SampleService.RMT_XML_FILE_PATH));
 		if(!inputFile.isFile()){
-			System.out.println(Messages.getString("View.WrongFile")+inputFile); //$NON-NLS-1$
+//			WriteDefaultXML.writeDefault(inputFile);
+			System.out.println("hIER._"+Messages.getString("View.WrongFile")+inputFile); //$NON-NLS-1$
 		}
 		SAXBuilder saxb = new SAXBuilder(false);
 		Document befehlsDoc;// = new Document();
 		try {
 			befehlsDoc = saxb.build(inputFile);
 			root = befehlsDoc.getRootElement();
-//			if(checkVerion(root.getAttribute("version")){//TODO: Versionkontrolle einfüren}
-			List befehlsListe = root.getChildren();
+//			if(checkVerion(root.getAttribute("version")){//TODO: Versionkontrolle einführen}
+			// Variablen einlesen
+			List varListe = root.getChildren("var");
+			Iterator varIte = varListe.iterator();
+			varMap = new HashMap<String, Integer>();
+//			befehlsreihenfolge = new String[varListe.size()];
+			while(varIte.hasNext()){
+				Element elm = (Element) varIte.next();
+				Integer i1;
+				try{
+					i1 = new Integer(elm.getTextNormalize());
+				}catch(NumberFormatException nfe){
+					Activator.logInfo("Das File "+inputFile+" enthält ein ungültigen Variablen eintrag.\r\n"+
+									  "Im Element "+elm.getName()+"->"+elm.getAttributeValue("name")+" Wert '"+elm.getText()+"'\r\nDer wert wurde auf 1 gesetzt.");
+					i1=new Integer(1);
+
+				}
+
+				varMap.put(elm.getAttribute("name").getValue(),i1); //$NON-NLS-1$
+			}
+
+			// Befehle einlesen
+			List befehlsListe = root.getChildren("Befehl");
 			Iterator befehleIte = befehlsListe.iterator();
 			befehlsreihenfolge = new String[befehlsListe.size()];
 			int i=0;
@@ -228,10 +252,27 @@ public class View extends ViewPart implements Observer {
 				public void widgetDefaultSelected(SelectionEvent e) {}
 
 				public void widgetSelected(SelectionEvent e) {
-					Element ele = befehlsliste.get(button.getText());
+					if(!button.getSelection())
+						return;
+
+					requestMassage = new StringBuffer();
+					String text = button.getText();
+					Element ele = befehlsliste.get(text);
 					XMLOutputter outp = new XMLOutputter();
-					requestMassage=outp.outputString(ele);
-					request.setText(requestMassage);
+					String xml = outp.outputString(ele);
+					requestMassage.append(xml);
+//					String[] tmp = requestMassage.split("$");
+//					boolean varExist = false;
+					int pos=0;
+//					String send ="";
+					while((pos= requestMassage.indexOf("$("))>-1){
+						int pos2=requestMassage.indexOf(")",pos);
+						String key = requestMassage.substring(pos,pos2+1);
+						Integer value = varMap.get(key);
+						requestMassage = requestMassage.replace(pos, pos2+1, value.toString());
+						varMap.put(key, value+1);
+					}
+					request.setText(requestMassage.toString());
 				}
 
 			});
@@ -243,8 +284,6 @@ public class View extends ViewPart implements Observer {
 			public void widgetDefaultSelected(SelectionEvent e) {}
 
 			public void widgetSelected(SelectionEvent e) {
-				System.out.println(e);
-				System.out.println(button.getText());
 				request.setText(""); //$NON-NLS-1$
 			}
 
@@ -268,19 +307,7 @@ public class View extends ViewPart implements Observer {
 		disp.syncExec(new Runnable() {
 			public void run() {
 				String text = iocAnswer.getAnswer();
-//				System.out.println("run");
-//				StyleRange tmp[] = answer.getStyleRanges();
-//				StyleRange style[] = new StyleRange[tmp.length+1];
-//				for(int i=0;i<tmp.length;i++){
-//					style[i]=tmp[i];
-//				}
-//				style[0] = new StyleRange(style[0].start+style[0].length, text.length(), answer.getDisplay().getSystemColor(SWT.COLOR_BLUE), answer.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
-//
-//				String tmp = iocAnswer.getAnswer();
-//				StyleRange sr = new StyleRange(answer.getCharCount()-1,tmp.length(),new Color(answer.getDisplay(),100,200,100),new Color(answer.getDisplay(),200,100,200));
 				answer.setText(text);
-//				answer.setStyleRanges(style);
-
 				answer.getParent().layout();
 			}
 		});
