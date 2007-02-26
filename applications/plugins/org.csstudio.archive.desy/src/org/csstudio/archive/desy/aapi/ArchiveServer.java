@@ -23,6 +23,7 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 	private AAPI aapiClient;
 	private ServerInfoRequest server_info_request;
 	private ArchivesRequest archives_request;
+	private int last_request_error = 0;
 		
     /** Factory method.
      *  @return Returns initialized instance of the Archive interface
@@ -137,12 +138,15 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 	{  
 		ValuesRequest values = new ValuesRequest(this,
 				key, names, start, end, request_type, request_parms);
-		values.read(aapiClient);
+		this.last_request_error = values.read(aapiClient);
 		return values.getArchivedSamples();
-		
-
 	}
 
+	@Override
+	public int getLastRequestError() {
+		return last_request_error;
+	}
+	
 	@Override
 	public String getURL() {
 		// TODO Auto-generated method stub

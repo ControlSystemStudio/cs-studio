@@ -245,4 +245,12 @@ public abstract class ArchiveServer
 			ITimestamp start, ITimestamp end,
             int request_type, Object request_parms[])
         throws Exception;
+    
+    /** Returns an id of last error which occured on request.
+     * 
+     * @return 0 if there was no error, otherwise error id.
+     */
+    public int getLastRequestError() {
+    	return 0;
+    }
 }

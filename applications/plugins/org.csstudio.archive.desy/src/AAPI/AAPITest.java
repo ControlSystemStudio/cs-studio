@@ -33,7 +33,7 @@ public class AAPITest {
 //        input.setTo(input.getFrom() + 3600*24*10 );
         input.setTo(input.getFrom() + 3600*1 );
         input.setU_to(0);
-        input.setNum(3);
+        input.setNum(2);
     
         input.setConversionTag(AAPI.MIN_MAX_AVERAGE_METHOD); 	
         input.setConversionTag(AAPI.NO_FILTERING_METHOD); 

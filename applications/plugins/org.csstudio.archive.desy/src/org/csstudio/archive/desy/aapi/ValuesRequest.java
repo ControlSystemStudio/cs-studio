@@ -63,9 +63,9 @@ public class ValuesRequest implements ClientRequest
 	}
 
 	/** @see org.csstudio.archive.channelarchiver.ClientRequest#read() */
-	public void read(AAPI aapi)  throws Exception
+	public int read(AAPI aapi)  throws Exception
 	{
-		
+		int error = 0;
 		 RequestData input = new RequestData();
 		 
         input.setFrom( (int) this.start.seconds());
@@ -75,7 +75,7 @@ public class ValuesRequest implements ClientRequest
         if (parms.length == 1  &&  parms[0] instanceof Integer)
             input.setNum(((Integer)parms[0]).intValue());
     
-        input.setConversionTag(AAPI.AVERAGE_METHOD); // TODO this.how 
+        input.setConversionTag(this.how + 1);
         input.setConvers_param(AAPI.DEADBAND_PARAM); // DESY specific
     
         int num_returned_channels = this.channels.length;
@@ -89,6 +89,7 @@ public class ValuesRequest implements ClientRequest
             input.setPV_size(pvCount);
             input.setPV(strArray);            	    
 	        AnswerData answerClass=aapi.getData(input);
+	        error = Math.max(answerClass.getError(), error);
 	        if (answerClass == null) {
 	            System.out.println("AAPI client:bad getData command");
 	            throw new Exception("AAPI getData call failed");
@@ -121,8 +122,10 @@ public class ValuesRequest implements ClientRequest
 			}
 			archived_samples[COUNT] =
 				new ArchiveValues(server, strArray[0], samples );
+			
+			
         } // end of foreach COUNT=0 ... channels.length 
-        
+        return error;
 	}
 
 	/** @return Returns one <code>ArchivedValues</code> per channel. */
