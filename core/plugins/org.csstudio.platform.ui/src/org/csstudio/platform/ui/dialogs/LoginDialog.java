@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * A simple login dialog.
  * 
- * @author Alexander Will
+ * @author Alexander Will, Jõrg Rathlev, Anže Vodovnik
  * 
  */
 public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandler  {
@@ -69,7 +69,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected final Control createDialogArea(final Composite parent) {
+	protected Control createDialogArea(final Composite parent) {
 		Control control = super.createDialogArea(parent);
 
 		getShell().setText(Messages.getString("LoginDialog.WINDOW_TITLE")); //$NON-NLS-1$
