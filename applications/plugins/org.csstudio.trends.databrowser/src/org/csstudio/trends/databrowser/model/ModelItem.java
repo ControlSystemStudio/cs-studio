@@ -2,7 +2,9 @@ package org.csstudio.trends.databrowser.model;
 
 import java.util.ArrayList;
 
+import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.ArchiveValues;
+import org.csstudio.archive.cache.ArchiveCache;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
@@ -21,6 +23,7 @@ import org.csstudio.value.NumericMetaData;
 import org.csstudio.value.StringValue;
 import org.csstudio.value.Value;
 import org.eclipse.core.runtime.PlatformObject;
+import org.csstudio.archive.cache.CachingArchiveServer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.Element;
@@ -32,7 +35,7 @@ import org.w3c.dom.Element;
 public class ModelItem 
        extends PlatformObject
        implements IModelItem, PVListener, IProcessVariable
-{
+{	
 	/** The model to which this item belongs. */
 	private Model model;
 	
@@ -44,6 +47,15 @@ public class ModelItem
     
     /** The Y axis to use. */
     private int axis_index;
+    
+    /** The type of data being passed to viewer */
+    private int data_type;
+    
+    /** The count of bins */
+    private int bins;
+    
+    /** The display type */
+    private IModelItem.DisplayType display_type;
     
     /** Y-axis range. */
     private double axis_low, axis_high;
@@ -107,6 +119,9 @@ public class ModelItem
         this.color = new Color(null, red, green, blue);
         this.line_width = line_width;
         this.log_scale = log_scale;
+        this.data_type = 0;
+        this.bins = 400;
+        this.display_type = DisplayType.Lines;
         pv = new EPICS_V3_PV(pv_name);
         samples = new ModelSamples(ring_size);
     }    
@@ -231,6 +246,46 @@ public class ModelItem
     	model.fireEntryConfigChanged(this);
     }
     
+    public final int getDataType() 
+    {	
+    	return data_type;
+    }
+    
+    public void setDataType(int new_data_type) 
+    {	
+    	data_type = new_data_type;
+    	// If data is cached we should clear the cache.
+    	ArchiveCache cache = ArchiveCache.getInstance();
+    	
+		for (int i=0; i < archives.size(); ++i) 
+		{
+			try {
+				ArchiveServer server = cache.getServer(archives.get(i).getUrl());
+				if(server != null && server instanceof CachingArchiveServer)
+				{
+					// Clear server cache.
+					((CachingArchiveServer)server).clearCache();
+				}
+			}
+			catch(Exception e) { // Don't do anything. 
+			}
+		}
+    	
+    	// Notify model of this change.
+    	model.fireEntryConfigChanged(this);
+    }
+    
+    public final int getBins() {
+    	return bins;
+    }
+    
+    public void setBins(int new_bins) 
+    {	
+    	bins = new_bins;
+    	// Notify model of this change.
+        model.fireEntryConfigChanged(this);
+    }
+    
     /** @return Returns the trace line width. */
     public int getLineWidth()
     {
@@ -243,6 +298,20 @@ public class ModelItem
         line_width = new_width;
         // Notify model of this change.
         model.fireEntryConfigChanged(this);
+    }
+    
+    /** @return Returns current model display type */
+    public IModelItem.DisplayType getDisplayType() 
+    {
+    	return this.display_type;
+    } 
+    
+    /** Set new display type */
+    public void setDisplayType(IModelItem.DisplayType new_display_type) 
+    {
+    	display_type = new_display_type;
+    	// Notify model of this change.
+    	model.fireEntryConfigChanged(this);
     }
     
     /** @return <code>true</code> if using log. scale */

@@ -2,6 +2,7 @@ package org.csstudio.swt.chart;
 
 import org.csstudio.swt.chart.axes.YAxis;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Rectangle;
 
 /** A trace is sequence of samples with color, assiged Y Axis, ...
  *  <p>
@@ -20,7 +21,22 @@ public class Trace
     private Color  color;
     private int line_width;
     private YAxis  yaxis;
+    private Rectangle labelLayout;
+    private Type type;
     
+    public enum Type 
+    {
+    	Lines,
+    	Markers,
+    	Candlestick,
+    	HighLowArea
+    }
+    
+    public Trace(String name, ChartSampleSequence series, Color color,
+            int line_width, YAxis yaxis) {
+    	
+    	this(name, series, color, line_width, yaxis, Type.Lines);
+    }
     /** Create a new trace.
      * 
      *  @param series The SampleSeries interface.
@@ -29,13 +45,14 @@ public class Trace
      *  @param yaxis The axis to which the trace attaches.
      */
     public Trace(String name, ChartSampleSequence series, Color color,
-                    int line_width, YAxis yaxis)
+                    int line_width, YAxis yaxis, Trace.Type type)
     {
         this.name = name;
         this.samples = series;
         this.color = color;
         this.line_width = line_width;
         this.yaxis = yaxis;
+        this.type = type;
         yaxis.addTrace(this);
     }
 
@@ -98,5 +115,21 @@ public class Trace
     void setYAxis(YAxis yaxis)
     {
         this.yaxis = yaxis;
+    }
+    
+    /** @return Returns trace type */
+    public final Trace.Type getType() 
+    {
+    	return type;
+    }
+    
+    public final Rectangle getLabelLayout() 
+    {
+    	return labelLayout;
+    }
+    
+    public final void setLabelLayout(Rectangle layout) 
+    {
+    	this.labelLayout = layout;
     }
 }

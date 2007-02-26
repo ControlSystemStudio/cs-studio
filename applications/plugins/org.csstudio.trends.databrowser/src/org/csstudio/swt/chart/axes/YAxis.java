@@ -13,6 +13,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
 /** A 'Y' or 'vertical' axis.
@@ -210,8 +211,12 @@ public class YAxis extends Axis
                 }
             }
         }
-        if (low == high)
+        
+        if (low == high) {
+        	//If low equals high we'll move the trace to the middle.
             high += 1.0;
+            low -= 1.0;
+        }
         if (low < high)
         {
             if (isLogarithmic())
@@ -327,6 +332,16 @@ public class YAxis extends Axis
         return 2*char_size.y + TICK_LENGTH;
     }
     
+    public Trace getTraceAt(int x, int y) 
+    {
+    	 for (Trace trace : traces)
+         {
+    		 if(trace.getLabelLayout() != null && trace.getLabelLayout().contains(x, y))
+    			 return trace;
+         }
+    	 return null;
+    }
+    
     /** Paint the axis.
      *  <p>
      *  Does not paint any series data, only the axis (labels, ticks, ...)
@@ -343,13 +358,24 @@ public class YAxis extends Axis
         GC gc = e.gc;
         Point char_size = gc.textExtent("X"); //$NON-NLS-1$
         
+        Color pbgColor = gc.getBackground();
+        
         // Axis and Tick marks
-        if (selected) // "thicken" line by drawing a parallel one
+        if (selected) {
+        	
+        	// Let's fill the background to make selected axis more clear to distinguish.
+        	Color bgColor = gc.getDevice().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+        	gc.setBackground(bgColor);
+        	gc.fillRectangle(region.x + 1, region.y, region.width - 2, region.height);
+        	bgColor.dispose();
+        	
+        	// "thicken" line by drawing a parallel one
             gc.drawRectangle(
                 region.x + region.width-2,
                 region.y, 
                 1,
                 region.height-1);
+        }
         else
             gc.drawLine(
                 region.x + region.width-1,
@@ -395,6 +421,8 @@ public class YAxis extends Axis
         paintLabel(gc);
         if (Chart.debug)
             gc.drawRectangle(region.x, region.y, region.width-1, region.height-1);
+        
+        gc.setBackground(pbgColor);
     }
 
     protected void paintLabel(GC gc)
@@ -403,10 +431,12 @@ public class YAxis extends Axis
         Color fg = gc.getForeground();
         gc.setForeground(getColor());
         Point label_size = gc.textExtent(label);
+    
         GraphicsUtils.drawVerticalText(label,
                 region.x + 1,
                 region.y + (region.height-label_size.x)/2,
                 gc, SWT.UP);
+    
         gc.setForeground(fg);
     }
     

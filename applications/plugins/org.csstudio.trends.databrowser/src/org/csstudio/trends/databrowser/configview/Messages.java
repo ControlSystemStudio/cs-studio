@@ -13,6 +13,8 @@ public class Messages extends NLS
 
     public static String AxisIndex;
     
+    public static String Bins;
+    
     public static String BufferSize;
 
     public static String Color;
@@ -26,6 +28,10 @@ public class Messages extends NLS
     public static String DeleteSelectedEntry;
 
     public static String Down;
+    
+    public static String DataType;
+    
+    public static String DisplayType;
 
     public static String EmptyPVRowMarker;
 

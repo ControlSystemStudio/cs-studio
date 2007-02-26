@@ -16,6 +16,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
 /** Basic chart with buttons for zoom/pan.
  *  <p>
@@ -98,7 +100,6 @@ public class InteractiveChart extends Composite
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         button_bar.setLayoutData(gd);
-        
         button_bar.setLayout(new RowLayout());
         
         // Buttons, info

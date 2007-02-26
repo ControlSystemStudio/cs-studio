@@ -10,6 +10,41 @@ import org.eclipse.swt.graphics.Color;
  */
 public interface IModelItem
 {
+	/** Defines basic display types for this model */
+	public enum DisplayType 
+    {
+		Lines(0),
+    	Markers(1),
+    	Candlestick(2),
+    	HighLowArea(3);
+    	
+    	private final byte value;
+    	
+    	DisplayType(int value) {
+		   this.value = (byte) value;
+		}
+
+		public byte convert() {
+		   return value;
+		}
+		
+		public final static DisplayType fromInteger(int value) {
+			for(DisplayType type : DisplayType.values()) {
+				if(value == type.convert())
+					return type;
+			}
+			return DisplayType.Lines;
+		}
+		
+		public final static String[] toStringArray() {
+			DisplayType[] displayTypes = DisplayType.values();
+	        String[] strDisplayTypes = new String[displayTypes.length]; 
+	        for(int i = 0; i < displayTypes.length; i++)
+	        	strDisplayTypes[i] = displayTypes[i].toString();
+	        return strDisplayTypes;
+		}
+    }
+	
 	/** @return The name to use for this item in the legend or axis label. */
 	public abstract String getName();
 
@@ -42,12 +77,30 @@ public interface IModelItem
 
 	/** Set item to a new color. */
 	public abstract void setColor(Color new_color);
+	
+	/** @return The data type */
+	public abstract int getDataType();
+	
+	/** Set new data type to an item. */
+	public abstract void setDataType(int new_dataType);
+	
+	/** @return Count of bins */
+	public abstract int getBins();
+	
+	/** Set new count of bins */
+	public abstract void setBins(int new_bins);
     
     /** @return Returns the trace line width. */
     public abstract int getLineWidth();
     
     /** Set the trace to a new line width. */
     public abstract void setLineWidth(int new_width);
+    
+    /** @return Returns current display type */
+    public abstract DisplayType getDisplayType();
+    
+    /** Set new display type for this model. */
+    public abstract void setDisplayType(DisplayType new_display_type);
     
     /** @return <code>true</code> if using log. scale */
     public abstract boolean getLogScale();

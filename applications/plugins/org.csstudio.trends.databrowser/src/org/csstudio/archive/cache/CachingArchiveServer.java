@@ -108,4 +108,14 @@ public class CachingArchiveServer extends ArchiveServer
     @Override
     public int getVersion()
     {   return server.getVersion();  }
+    
+    @Override
+    public int getLastRequestError() {
+    	return server.getLastRequestError(); }
+    
+    @SuppressWarnings("nls")
+    synchronized public void clearCache() {
+    	Plugin.logInfo("Cleared data on cache");
+    	sample_cache.clear();
+    }
 }

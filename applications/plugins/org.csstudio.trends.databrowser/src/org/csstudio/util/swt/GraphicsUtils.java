@@ -29,12 +29,13 @@ public class GraphicsUtils
      * @param y the y coordinate of the top left corner of the drawing rectangle
      * @param gc the GC on which to draw the text
      * @param style the style (SWT.UP or SWT.DOWN)
+     * @param transparent boolean to set transparent background on or off
      *            <p>
      *            Note: Only one of the style UP or DOWN may be specified.
      *            </p>
      */
     public static void drawVerticalText(String string, int x, int y, GC gc,
-            int style)
+            int style, boolean transparent)
     {
         // Get the current display
         Display display = Display.getCurrent();
@@ -56,10 +57,11 @@ public class GraphicsUtils
         stringGc.setFont(gc.getFont());
 
         // Draw the text onto the image
-        stringGc.drawText(string, 0, 0);
+        stringGc.drawText(string, 0, 0, transparent);
 
         // Draw the image vertically onto the original GC
         drawVerticalImage(stringImage, x, y, gc, style);
+        
 
         // Dispose the new GC
         stringGc.dispose();
@@ -68,6 +70,29 @@ public class GraphicsUtils
         stringImage.dispose();
     }
 
+    /**
+     * Draws text vertically (rotates plus or minus 90 degrees). Uses the
+     * current font, color, and background.
+     * <dl>
+     * <dt><b>Styles: </b></dt>
+     * <dd>UP, DOWN</dd>
+     * </dl>
+     * 
+     * @param string the text to draw
+     * @param x the x coordinate of the top left corner of the drawing rectangle
+     * @param y the y coordinate of the top left corner of the drawing rectangle
+     * @param gc the GC on which to draw the text
+     * @param style the style (SWT.UP or SWT.DOWN)
+     *            <p>
+     *            Note: Only one of the style UP or DOWN may be specified.
+     *            </p>
+     */
+    public static void drawVerticalText(String string, int x, int y, GC gc,
+            int style)
+    {
+    	drawVerticalText(string, x, y, gc, style, false);
+    }
+    
     /**
      * Draws an image vertically (rotates plus or minus 90 degrees)
      * <dl>

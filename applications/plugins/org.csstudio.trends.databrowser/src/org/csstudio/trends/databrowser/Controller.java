@@ -18,11 +18,13 @@ import org.csstudio.trends.databrowser.ploteditor.BrowserUI;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
 
 /** Data Browser Controller: Creates model, UI and handles everything between them.
  *  @author Kay Kasemir
  */ 
-public class Controller implements ScannerAndScrollerListener
+public class Controller implements ScannerAndScrollerListener, ArchiveFetchJobListener
 {
     private Model model;
     private BrowserUI gui;
@@ -68,6 +70,7 @@ public class Controller implements ScannerAndScrollerListener
                 removeFromDisplay(item);
                 addToDisplay(item);
                 removeUnusedAxes();
+                getArchivedData(item);
             }
 
             public void entryLookChanged(IModelItem item)
@@ -225,7 +228,7 @@ public class Controller implements ScannerAndScrollerListener
                 new_item.getSamples(),
                 new_item.getColor(),
                 new_item.getLineWidth(),
-                yaxis_index, false);
+                yaxis_index, false, Trace.Type.valueOf(new_item.getDisplayType().toString()));
         // Set initial axis range from model
         controller_changes_yaxes = true;
         YAxis yaxis = trace.getYAxis();
@@ -342,7 +345,13 @@ public class Controller implements ScannerAndScrollerListener
     private void getArchivedData(IModelItem item,
                     ITimestamp start, ITimestamp end)
     {
-        Job job = new ArchiveFetchJob(item, start, end);
+    	ArchiveFetchJob job = new ArchiveFetchJob(item, start, end);
+        job.addArchiveFetchJobListener(this);
         job.schedule();
+    }
+    
+    public void errorOccured(int errorId) 
+    {
+    	//this.chart.ShowMessage("A", "B", SWT.ICON_ERROR | SWT.OK);
     }
 }

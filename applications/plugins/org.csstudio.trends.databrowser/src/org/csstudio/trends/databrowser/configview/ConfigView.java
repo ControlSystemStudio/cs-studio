@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.configview;
 
+import org.csstudio.archive.ArchiveServer;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDragSource;
@@ -318,6 +319,10 @@ public class ConfigView extends PlotAwareView
         editors[PVTableHelper.COLOR] = new RGBCellEditor(table);
         editors[PVTableHelper.LINEWIDTH] = new TextCellEditor(table);
         editors[PVTableHelper.TYPE] = new CheckboxCellEditor(table);
+        editors[PVTableHelper.DATATYPE] = new ComboBoxCellEditor(table, new String[] {}, SWT.READ_ONLY);
+        editors[PVTableHelper.BINS] = new TextCellEditor(table);
+        editors[PVTableHelper.DISPLAYTYPE] = new ComboBoxCellEditor(table, IModelItem.DisplayType.toStringArray(), SWT.READ_ONLY);
+        
         pv_table_viewer.setColumnProperties(PVTableHelper.properties);
         pv_table_viewer.setCellEditors(editors);
         pv_table_viewer.setCellModifier(new PVTableCellModifier(this));
@@ -356,7 +361,7 @@ public class ConfigView extends PlotAwareView
         archive_table_viewer = new TableViewer(table);
         archive_table_viewer.setLabelProvider(new ArchiveDataSourceLabelProvider());
         archive_table_viewer.setContentProvider(new ArrayContentProvider());
-    }
+    }     
 
     /** Create one tab of the TabFolder GUI. */
     private void createLiveTab(TabFolder tabs)

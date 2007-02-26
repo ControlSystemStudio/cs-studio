@@ -12,6 +12,7 @@ import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisFactory;
 import org.csstudio.swt.chart.axes.YAxisListener;
 import org.csstudio.trends.databrowser.Plugin;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -20,15 +21,19 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tracker;
+import org.eclipse.swt.widgets.MessageBox;
 
 /** Basic chart widget.
  * 
@@ -106,10 +111,13 @@ public class Chart extends Canvas
                 if (plot_region != null)
                 {
                     // Compute redraw region for X axis and plot, not y axes
-                    Rectangle xreg = xaxis.getRegion();
-                    redraw(plot_region.x+1, plot_region.y,
-                           plot_region.width-1,
-                           plot_region.height + xreg.height, true);
+                    
+                    	Rectangle xreg = xaxis.getRegion();
+                    	redraw(plot_region.x+1, plot_region.y,
+                    			plot_region.width-1,
+                    			plot_region.height + xreg.height, true);
+                    
+                       
                 }
                 // Forward to ChartListeners
                 for (ChartListener listener : listeners)
@@ -135,6 +143,7 @@ public class Chart extends Canvas
                     redraw(yreg.x+1, yreg.y,
                            plot_region.x - yreg.x + plot_region.width-1,
                            plot_region.height-1, true);
+                	
                 }
                 // Forward to chart listeners
                 for (YAxisListener l : listeners)
@@ -175,7 +184,7 @@ public class Chart extends Canvas
             public void controlResized(ControlEvent e)
             {   dirty_layout = true;  }
         });
-        
+       
         // Allow this widget to draw itself
         addPaintListener(new PaintListener()
         {
@@ -196,6 +205,8 @@ public class Chart extends Canvas
                 }
             }
         });
+        
+        new CrossHairCursorListener();
         
         // Mouse-down: Mark a point, maybe start rubberband-zoom
         addMouseListener(new MouseListener()
@@ -244,7 +255,7 @@ public class Chart extends Canvas
                 // the tracker can be 'invisible' when the
                 // program has been moved between screens
                 // since startup. Still 'works', but no rubberband...
-                Tracker tracker = new Tracker(Chart.this, SWT.RESIZE);
+                //Tracker tracker = new Tracker(Chart.this, SWT.RESIZE);
                 // Keep rectangle normalized
                 if (dx < 0)
                 {
@@ -256,10 +267,10 @@ public class Chart extends Canvas
                     mouse_down_y = e.y;
                     dy = -dy;
                 }
-                tracker.setRectangles(new Rectangle[]
-                { new Rectangle(mouse_down_x, mouse_down_y, dx, dy), });
-                if (tracker.open())
-                    rubberZoom(tracker.getRectangles()[0]);
+                //tracker.setRectangles(new Rectangle[]
+                //{ new Rectangle(mouse_down_x, mouse_down_y, dx, dy), });
+                //if (tracker.open())
+                //    rubberZoom(tracker.getRectangles()[0]);
                 mouse_down = false;
             }
         });
@@ -399,17 +410,17 @@ public class Chart extends Canvas
      */
     public Trace addTrace(String name, ChartSampleSequence series,
                     Color color, int line_width,
-                    int yaxis_index, boolean autozoom)
+                    int yaxis_index, boolean autozoom, Trace.Type type)
     {
         YAxis yaxis = yaxes.get(yaxis_index);
         setRedraw(false);
-        Trace trace = new Trace(name, series, color, line_width, yaxis);
+        Trace trace = new Trace(name, series, color, line_width, yaxis, type);
         traces.add(trace);
         if (autozoom)
             yaxis.autozoom(xaxis);
         setRedraw(true);
         return trace;
-    }
+    } 
     
     /** Remove a trace.
      * 
@@ -693,6 +704,11 @@ public class Chart extends Canvas
             YAxis yaxis = yaxes.get(i);
             boolean selected = yaxis.getRegion().contains(x, y);
             yaxes.get(i).setSelected(selected);
+            
+            org.csstudio.swt.chart.Trace trace = yaxes.get(i).getTraceAt(x, y);
+            if(trace != null)
+            	Plugin.logInfo("Trace " + trace.getName() + " selected.");            	
+            
             if (selected)
                 any_selected = true;
         }
@@ -731,5 +747,172 @@ public class Chart extends Canvas
                 xaxis.getValue(zoom.x),
                 xaxis.getValue(zoom.x + zoom.width - 1));
         setRedraw(true); // now redraw all
+    }
+    
+    public int ShowMessage(String title, String message, int style)
+    {
+    	MessageBox msgDialog = new MessageBox(this.getShell(), style);
+    	msgDialog.setMessage(message);
+    	msgDialog.setText(title);
+    	return msgDialog.open();
+    }
+    
+    private boolean isAutoZoom = true;
+    
+    public boolean getIsAutoZoom() {
+    	return this.isAutoZoom;
+    }
+    
+    public void setIsAutoZoom(boolean value) {
+    	this.isAutoZoom = value;
+    	if(this.isAutoZoom)
+    		autozoom();
+    }
+    
+    private void redraw(Rectangle rect) 
+    {
+	    this.redraw(rect.x, rect.y, rect.width, rect.height, false);
+    }
+    
+    private class CrossHairCursorListener
+    {
+    	private final Cursor cursorCross;
+    	private final Cursor cursorDefault;
+    	
+    	private final Point EmptyPoint = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
+    	  
+    	private Point mouseLocation = EmptyPoint;
+    	private Point mousePoint = EmptyPoint;
+    	
+    	public CrossHairCursorListener() 
+    	{    		
+    		this.cursorCross = new Cursor(getDisplay(), SWT.CURSOR_CROSS);
+    		this.cursorDefault = new Cursor(getDisplay(), SWT.CURSOR_ARROW);
+    		
+    		addMouseListener(new MouseListener() 
+    		{
+    			public void mouseDown(MouseEvent e)
+    			{
+    				if(plot_region.contains(e.x, e.y))
+    					mousePoint = new Point(e.x, e.y);
+    			}
+    			
+    			public void mouseUp(MouseEvent e)
+    			{
+    				rubberZoom(getZoomRect());
+    				mousePoint = EmptyPoint;
+    				redrawTraces();
+    			}
+
+				public void mouseDoubleClick(MouseEvent e) 
+				{
+	
+				}
+    		});
+    		
+    		addMouseTrackListener(new MouseTrackListener() 
+    		{
+    			public void mouseEnter(MouseEvent e) 
+    			{ 
+    				mouseLocation = EmptyPoint;
+    			} 
+    			
+    			public void mouseExit(MouseEvent e)
+    			{ 
+    				mouseLocation = EmptyPoint;
+    				redraw();
+    			} 
+    			
+    			public void mouseHover(MouseEvent e) {}
+    		});
+    		
+    		addMouseMoveListener(new MouseMoveListener() {
+    			
+    			public void mouseMove(MouseEvent e) 
+    	    	{
+    	    		if(plot_region.contains(e.x, e.y)) {
+    	    			
+    	    			// TODO: Why we can not redraw a whole region!!!
+    	    			// We can not use XOR either.
+    	    			
+    	    			/*Chart.this.redraw(getVerticalLine(mouseLocation));
+    	    			Chart.this.redraw(getHorizontalLine(mouseLocation));
+    	    			Chart.this.redraw(getZoomRect());*/
+    	    			
+    	    			setCursor(cursorCross);
+    	    			mouseLocation = new Point(e.x, e.y);
+    	    			redraw(plot_region.x, plot_region.y,
+     			               plot_region.width, plot_region.height,
+     			               false);
+    	    			
+    	    			
+    	    			// Get region to redraw.
+    	    			/*Chart.this.redraw(getVerticalLine(mouseLocation));
+    	    			Chart.this.redraw(getHorizontalLine(mouseLocation));
+    	    			Chart.this.redraw(getZoomRect());*/
+    	    		}
+    	    		else {
+    	    			if(mouseLocation.x != Integer.MIN_VALUE || mouseLocation.y != Integer.MIN_VALUE)
+    	    			{
+    	    				mouseLocation = EmptyPoint;
+    	    				redraw();
+    	    			}
+    	    			setCursor(cursorDefault);
+    	    		}
+    	    	}
+    		});
+    		
+    		addPaintListener(new PaintListener() {
+    			
+    			public void paintControl(PaintEvent e) 
+    			{
+    				if(mouseLocation == EmptyPoint)
+    					return;
+    				
+    				Color color = new Color(e.gc.getDevice(), 150, 150, 150);
+    				e.gc.setForeground(color);
+    				e.gc.setLineStyle(SWT.LINE_DOT);
+    				e.gc.drawLine(mouseLocation.x, plot_region.y, mouseLocation.x, plot_region.y + plot_region.height - 2);
+    				e.gc.drawLine(plot_region.x + 1, mouseLocation.y, plot_region.x + plot_region.width - 2, mouseLocation.y);
+    				if(mousePoint != EmptyPoint) 
+    				{
+    					e.gc.drawLine(mousePoint.x, plot_region.y, mousePoint.x, plot_region.y + plot_region.height - 2);
+        				e.gc.drawLine(plot_region.x + 1, mousePoint.y, plot_region.x + plot_region.width - 2, mousePoint.y);
+        				
+        				Color c1 = Chart.this.getDisplay().getSystemColor(SWT.COLOR_BLUE);
+        				e.gc.setAlpha(70);
+        				e.gc.setBackground(c1);
+        				e.gc.fillRectangle(CrossHairCursorListener.this.getZoomRect());
+        				e.gc.setAlpha(255);
+        				c1.dispose();
+    				}
+    				color.dispose();
+    			}
+    		});
+    	}
+    	
+    	private Rectangle getVerticalLine(Point p) 
+    	{
+    		// Add current mouse location pointers.
+    		return new Rectangle(p.x - 1, plot_region.y, 3, plot_region.height);
+    	}
+    	
+    	private Rectangle getHorizontalLine(Point p) {
+    		
+    		return new Rectangle(plot_region.x, p.y - 1,  plot_region.width, 3);
+    	}
+    	
+    	private Rectangle getZoomRect() {
+    		
+    		if(mousePoint == EmptyPoint || mouseLocation  == EmptyPoint) 
+    			return new Rectangle(0, 0, 0, 0);
+    		
+    		int x = Math.min(mousePoint.x, mouseLocation.x) + 1;
+			int y = Math.min(mousePoint.y, mouseLocation.y) + 1;
+			int width = Math.abs(mousePoint.x - mouseLocation.x) - 1;
+			int height = Math.abs(mousePoint.y - mouseLocation.y) - 1;
+			
+			return new Rectangle(x, y, width, height);
+    	}
     }
 }

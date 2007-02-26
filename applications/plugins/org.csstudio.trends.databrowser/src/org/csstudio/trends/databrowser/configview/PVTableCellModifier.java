@@ -1,8 +1,12 @@
 package org.csstudio.trends.databrowser.configview;
 
+import org.csstudio.archive.ArchiveServer;
+import org.csstudio.archive.cache.ArchiveCache;
+import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.ModelItem;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -48,8 +52,27 @@ public class PVTableCellModifier implements ICellModifier
                 // Otherwise: fall through to String for text editor
                 return new Integer(entry.getAxisIndex());
             }
-            else if (id == PVTableHelper.TYPE)
+            else if (id == PVTableHelper.TYPE) {
                 return new Boolean(entry.getLogScale());
+            }
+            else if (id == PVTableHelper.DATATYPE) 
+            {
+            	try {
+            		// Let's update the columns datatype options.
+            		IArchiveDataSource archives[] = entry.getArchiveDataSources();
+                	((ComboBoxCellEditor)view.getPVTableViewer().getCellEditors()[PVTableHelper.DATATYPE]).setItems(ArchiveCache.getInstance().getServer(archives[0].getUrl()).getRequestTypes());
+            	}
+                catch(Exception e) 
+                {
+                	// If we catch an exception than we allowe only one option.
+                	((ComboBoxCellEditor)view.getPVTableViewer().getCellEditors()[PVTableHelper.DATATYPE]).setItems(new String[] {"N/A"});
+                }
+                return new Integer(entry.getDataType());
+            }
+            else if(id == PVTableHelper.DISPLAYTYPE) 
+            {
+            	return (int)entry.getDisplayType().convert();
+            }
             // Default: return item as String
             return PVTableHelper.getText(entry, id);
         }
@@ -111,6 +134,21 @@ public class PVTableCellModifier implements ICellModifier
             {
                 boolean use_log = ((Boolean)value).booleanValue();
                 entry.setLogScale(use_log);
+            }
+            else if (id == PVTableHelper.DATATYPE && value != null) 
+            {
+            	int new_data_type = Integer.valueOf(value.toString());
+            	entry.setDataType(new_data_type);
+            }
+            else if(id == PVTableHelper.BINS && value != null)
+            {
+            	int new_bins = Integer.valueOf(value.toString());
+                entry.setBins(new_bins);
+            }
+            else if(id == PVTableHelper.DISPLAYTYPE && value != null) {
+            	//IModelItem.DisplayType new_display_type = IModelItem.DisplayType.valueOf(value.toString());
+            	int new_display_type = Integer.valueOf(value.toString());
+            	entry.setDisplayType(IModelItem.DisplayType.fromInteger(new_display_type));
             }
         }
         catch (Exception e)

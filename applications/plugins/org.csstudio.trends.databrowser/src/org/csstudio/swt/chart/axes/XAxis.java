@@ -1,5 +1,7 @@
 package org.csstudio.swt.chart.axes;
 
+import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.Chart;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.graphics.GC;
@@ -46,6 +48,21 @@ public class XAxis extends Axis
         // Need room for ticks, tick labels, and axis label
         // Plus a few pixels space at the bottom.
         return TICK_LENGTH + 2*char_size.y+2;
+    }
+    
+    public final void setValueRange(int secondsUntilNow) 
+    {
+		ITimestamp s1 = TimestampFactory.now();
+		ITimestamp s2 = TimestampFactory.now();
+		
+		s2.setSeconds(s2.seconds() - secondsUntilNow);
+		s1.setSeconds(s1.seconds() - 60);
+		
+        double low = s2.toDouble();
+        double high = s1.toDouble();
+        
+        if (low < high)
+            this.setValueRange(low, high);
     }
 
     public void paint(PaintEvent e)

@@ -13,7 +13,10 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.layout.GridData;
 
 /** The user interface for the data browser.
  *  <p>
@@ -69,6 +72,7 @@ public class BrowserUI extends Composite
     }
     
     /** Create the GUI elements. */
+    @SuppressWarnings("nls")
     private void makeGUI()
     {
         // Create chart
@@ -90,6 +94,29 @@ public class BrowserUI extends Composite
             {
                 scroll_enable = !scroll_enable;
                 updateScrollPauseButton();
+            }
+        });
+        
+        
+        Label l1 = new Label(i_chart.getButtonBar(), SWT.LEFT | SWT.CENTER);
+        l1.setText(" " + Messages.ShowLast); //$NON-NLS-1$
+
+        final Combo timeScale = new Combo(i_chart.getButtonBar(), SWT.READ_ONLY);
+        String item;
+        // Let's fill the combo with date range options.
+        for(int i = 1; i <= 10; i++) 
+        {
+        	item = String.valueOf(12 * i) + " h";
+        	if((i % 2) == 0) {
+        		item += " (" + String.valueOf(i / 2) + " d)";
+        	}
+        	timeScale.add(item);
+        }
+        timeScale.addSelectionListener(new SelectionAdapter() 
+        {
+        	public void widgetSelected(SelectionEvent e)
+            {
+        		updateChartRange((Integer.valueOf(timeScale.getSelectionIndex()) + 1) * 12);
             }
         });
         
@@ -115,6 +142,15 @@ public class BrowserUI extends Composite
                 }
             }
         });
+    }
+   
+    private void updateChartRange(int hours)
+    {
+    	scroll_enable = false;
+        updateScrollPauseButton();
+        
+        i_chart.getChart().getXAxis().setValueRange(60 * 60 * hours);
+        i_chart.getChart().autozoom();
     }
     
     /** Update the scroll button's image and tooltip. */
