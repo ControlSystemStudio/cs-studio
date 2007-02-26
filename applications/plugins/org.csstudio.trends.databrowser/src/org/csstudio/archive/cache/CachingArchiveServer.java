@@ -109,6 +109,10 @@ public class CachingArchiveServer extends ArchiveServer
     public int getVersion()
     {   return server.getVersion();  }
     
+    @Override 
+    public String getServerName() 
+    {	return server.getServerName(); }
+    
     @Override
     public int getLastRequestError() {
     	return server.getLastRequestError(); }

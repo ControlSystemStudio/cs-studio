@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<servers>
+	<server name="AAPIServer" >
+		<datatype name="MIN_MAX_AVERAGE" mapping="MinMaxAverage" />
+		<datatype name="RAW"  mapping="Markers" />
+		<datatype name="NO_FILTERING" mapping="Markers" />
+	</server>
+	<server name="XNDSServer">
+		<datatype name="raw" mapping="Lines" />
+		<datatype name="average" mapping="MinMaxAverage" />
+	</server>
+</servers>

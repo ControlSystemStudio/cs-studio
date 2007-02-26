@@ -16,9 +16,12 @@ public interface IModelItem
 		Lines(0),
     	Markers(1),
     	Candlestick(2),
-    	HighLowArea(3);
+    	HighLowArea(3),
+		MinMaxAverage(4);
     	
     	private final byte value;
+    	
+    	private static String[] strDisplayTypes;
     	
     	DisplayType(int value) {
 		   this.value = (byte) value;
@@ -36,12 +39,18 @@ public interface IModelItem
 			return DisplayType.Lines;
 		}
 		
-		public final static String[] toStringArray() {
-			DisplayType[] displayTypes = DisplayType.values();
-	        String[] strDisplayTypes = new String[displayTypes.length]; 
-	        for(int i = 0; i < displayTypes.length; i++)
-	        	strDisplayTypes[i] = displayTypes[i].toString();
-	        return strDisplayTypes;
+		public final static String[] toStringArray()
+		{
+			if(strDisplayTypes == null) 
+			{
+				DisplayType[] displayTypes = DisplayType.values();
+	        	strDisplayTypes = new String[displayTypes.length]; 
+	        	
+	        	for(int i = 0; i < displayTypes.length; i++)
+	        		strDisplayTypes[i] = displayTypes[i].toString();
+			}
+			
+			return strDisplayTypes;
 		}
     }
 	

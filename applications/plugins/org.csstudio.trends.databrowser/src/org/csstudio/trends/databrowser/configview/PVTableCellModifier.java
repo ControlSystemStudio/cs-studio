@@ -6,6 +6,7 @@ import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.ModelItem;
+import org.csstudio.trends.databrowser.DataTypeMapper;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.graphics.Color;
@@ -65,7 +66,7 @@ public class PVTableCellModifier implements ICellModifier
                 catch(Exception e) 
                 {
                 	// If we catch an exception than we allowe only one option.
-                	((ComboBoxCellEditor)view.getPVTableViewer().getCellEditors()[PVTableHelper.DATATYPE]).setItems(new String[] {"N/A"});
+                	((ComboBoxCellEditor)view.getPVTableViewer().getCellEditors()[PVTableHelper.DATATYPE]).setItems(new String[] {"N/A"}); //$NON-NLS-1$
                 }
                 return new Integer(entry.getDataType());
             }
@@ -138,7 +139,37 @@ public class PVTableCellModifier implements ICellModifier
             else if (id == PVTableHelper.DATATYPE && value != null) 
             {
             	int new_data_type = Integer.valueOf(value.toString());
-            	entry.setDataType(new_data_type);
+            	
+            	// We'll set data only if needed.
+            	if (new_data_type != entry.getDataType()) 
+            	{
+            		entry.setDataType(new_data_type);
+            		
+					// Set default display type.
+					try {
+						// Let's update the columns datatype options.
+						IArchiveDataSource archives[] = entry
+								.getArchiveDataSources();
+						// We can current server name.
+						String serverName = ArchiveCache.getInstance()
+								.getServer(archives[0].getUrl())
+								.getServerName();
+						// Now lets chech if there is an default display type
+						// value.
+						String dataTypeString = ((ComboBoxCellEditor) view
+								.getPVTableViewer().getCellEditors()[PVTableHelper.DATATYPE])
+								.getItems()[new_data_type];
+						entry.setDisplayType(DataTypeMapper.getInstance()
+								.getDisplayType(serverName, dataTypeString));
+					} catch (Exception e) {
+						// If we catch an exception than we allow only one
+						// option.
+						((ComboBoxCellEditor) view.getPVTableViewer()
+								.getCellEditors()[PVTableHelper.DATATYPE])
+								.setItems(new String[] { "N/A" }); //$NON-NLS-1$
+					}
+
+				}
             }
             else if(id == PVTableHelper.BINS && value != null)
             {

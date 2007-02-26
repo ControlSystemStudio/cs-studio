@@ -26,6 +26,10 @@ public class Messages extends NLS
 
     public static String UnitMarkerStart;
     
+    public static String ErrorMessageTitle;
+    
+    public static String ErrorMessage;
+    
     static
     {
         // initialize resource bundle

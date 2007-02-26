@@ -25,6 +25,6 @@ public class LogTransform implements ITransform
      */
     public void config(double x1, double x2, double y1, double y2)
     {
-        linear.config(Log10.log10(x1), Log10.log10(x2), y1, y2);
+        linear.config(Log10.log10(Math.abs(x1)), Log10.log10(Math.abs(x2)), y1, y2);
     }
 }

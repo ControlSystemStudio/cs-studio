@@ -12,7 +12,6 @@ import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisFactory;
 import org.csstudio.swt.chart.axes.YAxisListener;
 import org.csstudio.trends.databrowser.Plugin;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -206,8 +205,6 @@ public class Chart extends Canvas
             }
         });
         
-        new CrossHairCursorListener();
-        
         // Mouse-down: Mark a point, maybe start rubberband-zoom
         addMouseListener(new MouseListener()
         {
@@ -274,6 +271,10 @@ public class Chart extends Canvas
                 mouse_down = false;
             }
         });
+        
+        // We'll init an advanced cross hair selection tool
+        new CrossHairSelectionTool();
+        
     }
     
     /** Add a listener. */
@@ -443,6 +444,13 @@ public class Chart extends Canvas
         // the plot region gets redrawn.
         redraw(plot_region.x+1, plot_region.y,
                plot_region.width-1, plot_region.height-1,
+               false);
+    }
+    
+    public void redrawTracesWithBounds()
+    {
+    	redraw(plot_region.x, plot_region.y,
+               plot_region.width, plot_region.height,
                false);
     }
 
@@ -749,43 +757,38 @@ public class Chart extends Canvas
         setRedraw(true); // now redraw all
     }
     
-    public int ShowMessage(String title, String message, int style)
+    public int showMessage(String title, String message, int style)
     {
     	MessageBox msgDialog = new MessageBox(this.getShell(), style);
     	msgDialog.setMessage(message);
     	msgDialog.setText(title);
     	return msgDialog.open();
     }
-    
-    private boolean isAutoZoom = true;
-    
-    public boolean getIsAutoZoom() {
-    	return this.isAutoZoom;
-    }
-    
-    public void setIsAutoZoom(boolean value) {
-    	this.isAutoZoom = value;
-    	if(this.isAutoZoom)
-    		autozoom();
-    }
-    
-    private void redraw(Rectangle rect) 
-    {
-	    this.redraw(rect.x, rect.y, rect.width, rect.height, false);
-    }
-    
-    private class CrossHairCursorListener
+
+    /**
+     * A simple class which uses xor to draw selection. It is fast and optimized
+     * to display selected region without flickering. However this implementation
+     * won't work on MacOS, but it is a nice feature for Windows and Linux users.
+     *  
+     * @author blipusce
+     *
+     */
+    private class CrossHairSelectionTool
     {
     	private final Cursor cursorCross;
     	private final Cursor cursorDefault;
     	
     	private final Point EmptyPoint = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
-    	  
+    	private final Rectangle EmptyRect = new Rectangle(0, 0, 0, 0);
+    	private final Color selectionColor;
+    	
+    	private Rectangle prevZoomRect = EmptyRect;
     	private Point mouseLocation = EmptyPoint;
     	private Point mousePoint = EmptyPoint;
     	
-    	public CrossHairCursorListener() 
-    	{    		
+    	public CrossHairSelectionTool() 
+    	{   
+    		this.selectionColor = new Color(Chart.this.getDisplay(), 57, 41, 16);
     		this.cursorCross = new Cursor(getDisplay(), SWT.CURSOR_CROSS);
     		this.cursorDefault = new Cursor(getDisplay(), SWT.CURSOR_ARROW);
     		
@@ -793,34 +796,32 @@ public class Chart extends Canvas
     		{
     			public void mouseDown(MouseEvent e)
     			{
-    				if(plot_region.contains(e.x, e.y))
+    				if(plot_region.contains(e.x, e.y)) 
+    				{
     					mousePoint = new Point(e.x, e.y);
+    					Chart.this.redrawTracesWithBounds();
+    				}
     			}
     			
     			public void mouseUp(MouseEvent e)
     			{
     				rubberZoom(getZoomRect());
     				mousePoint = EmptyPoint;
-    				redrawTraces();
+    				prevZoomRect = EmptyRect;
+    				Chart.this.redrawTracesWithBounds();
     			}
 
-				public void mouseDoubleClick(MouseEvent e) 
-				{
-	
-				}
+				public void mouseDoubleClick(MouseEvent e) {}
     		});
     		
     		addMouseTrackListener(new MouseTrackListener() 
     		{
-    			public void mouseEnter(MouseEvent e) 
-    			{ 
-    				mouseLocation = EmptyPoint;
-    			} 
+    			public void mouseEnter(MouseEvent e) { mouseLocation = EmptyPoint; } 
     			
     			public void mouseExit(MouseEvent e)
     			{ 
     				mouseLocation = EmptyPoint;
-    				redraw();
+    				Chart.this.redrawTracesWithBounds();
     			} 
     			
     			public void mouseHover(MouseEvent e) {}
@@ -830,32 +831,32 @@ public class Chart extends Canvas
     			
     			public void mouseMove(MouseEvent e) 
     	    	{
-    	    		if(plot_region.contains(e.x, e.y)) {
-    	    			
-    	    			// TODO: Why we can not redraw a whole region!!!
-    	    			// We can not use XOR either.
-    	    			
-    	    			/*Chart.this.redraw(getVerticalLine(mouseLocation));
-    	    			Chart.this.redraw(getHorizontalLine(mouseLocation));
-    	    			Chart.this.redraw(getZoomRect());*/
+    	    		if(plot_region.contains(e.x, e.y)) 
+    	    		{
+    	    			if(mouseLocation == EmptyPoint)
+    	    			{
+    	    				prevZoomRect = EmptyRect;
+    	    				redrawTraces();
+    	    			}
     	    			
     	    			setCursor(cursorCross);
+    	    			// Let's paint it.
+    	    			GC gc = new GC(Chart.this);
+    	    			// First lets erase previous crosshair trace.
+    	    			paintCrossHair(gc, false);
+    	    			// Set new location.
     	    			mouseLocation = new Point(e.x, e.y);
-    	    			redraw(plot_region.x, plot_region.y,
-     			               plot_region.width, plot_region.height,
-     			               false);
-    	    			
-    	    			
-    	    			// Get region to redraw.
-    	    			/*Chart.this.redraw(getVerticalLine(mouseLocation));
-    	    			Chart.this.redraw(getHorizontalLine(mouseLocation));
-    	    			Chart.this.redraw(getZoomRect());*/
+    	    			// Redraw again.
+    	    			paintCrossHair(gc, false);
+    	    			// Let's clear resources.
+    	    			gc.dispose();
     	    		}
     	    		else {
     	    			if(mouseLocation.x != Integer.MIN_VALUE || mouseLocation.y != Integer.MIN_VALUE)
     	    			{
     	    				mouseLocation = EmptyPoint;
-    	    				redraw();
+    	    				prevZoomRect = EmptyRect;
+    	    				Chart.this.redrawTracesWithBounds();
     	    			}
     	    			setCursor(cursorDefault);
     	    		}
@@ -863,54 +864,104 @@ public class Chart extends Canvas
     		});
     		
     		addPaintListener(new PaintListener() {
-    			
-    			public void paintControl(PaintEvent e) 
-    			{
-    				if(mouseLocation == EmptyPoint)
-    					return;
-    				
-    				Color color = new Color(e.gc.getDevice(), 150, 150, 150);
-    				e.gc.setForeground(color);
-    				e.gc.setLineStyle(SWT.LINE_DOT);
-    				e.gc.drawLine(mouseLocation.x, plot_region.y, mouseLocation.x, plot_region.y + plot_region.height - 2);
-    				e.gc.drawLine(plot_region.x + 1, mouseLocation.y, plot_region.x + plot_region.width - 2, mouseLocation.y);
-    				if(mousePoint != EmptyPoint) 
-    				{
-    					e.gc.drawLine(mousePoint.x, plot_region.y, mousePoint.x, plot_region.y + plot_region.height - 2);
-        				e.gc.drawLine(plot_region.x + 1, mousePoint.y, plot_region.x + plot_region.width - 2, mousePoint.y);
-        				
-        				Color c1 = Chart.this.getDisplay().getSystemColor(SWT.COLOR_BLUE);
-        				e.gc.setAlpha(70);
-        				e.gc.setBackground(c1);
-        				e.gc.fillRectangle(CrossHairCursorListener.this.getZoomRect());
-        				e.gc.setAlpha(255);
-        				c1.dispose();
-    				}
-    				color.dispose();
-    			}
+    			public void paintControl(PaintEvent e) { paintCrossHair(e.gc, true); }
     		});
     	}
     	
-    	private Rectangle getVerticalLine(Point p) 
+    	public void paintCrossHair(GC gc, boolean completePaint) {
+			try {
+				if (mouseLocation == EmptyPoint)
+					return;
+
+				// Lets get xor color.
+				gc.setForeground(Chart.this.getBackground());
+
+				// We enter xor mode.
+				gc.setXORMode(true);
+				gc.setLineStyle(SWT.LINE_DOT);
+
+				// Draw vertical and horizontal position lines.
+				if (mouseLocation.x != mousePoint.x)
+					gc.drawLine(mouseLocation.x, plot_region.y,
+							mouseLocation.x, plot_region.y + plot_region.height
+									- 2);
+				if (mouseLocation.y != mousePoint.y)
+					gc.drawLine(plot_region.x + 1, mouseLocation.y,
+							plot_region.x + plot_region.width - 2,
+							mouseLocation.y);
+
+				if (mousePoint != EmptyPoint) {
+					if (completePaint) {
+						// Draw selected start position lines.
+						gc.drawLine(mousePoint.x, plot_region.y, mousePoint.x,
+								plot_region.y + plot_region.height - 2);
+						gc.drawLine(plot_region.x + 1, mousePoint.y,
+								plot_region.x + plot_region.width - 2,
+								mousePoint.y);
+					}
+
+					// Draw selection.
+					gc.setBackground(selectionColor);
+					Rectangle zoomRect = getZoomRect();
+
+					if (!completePaint) {
+						Region regIntersection = new Region();
+						Region regRepaint = new Region();
+
+						// Lets get tha part we'll not repaint.
+						regIntersection.add(prevZoomRect);
+						regIntersection.intersect(zoomRect);
+
+						// Now calculate repaint region.
+						regRepaint.add(zoomRect);
+						regRepaint.add(prevZoomRect);
+						regRepaint.subtract(regIntersection);
+
+						// Get repaint area union.
+						Rectangle redrawRect = new Rectangle(prevZoomRect.x,
+								prevZoomRect.y, prevZoomRect.width,
+								prevZoomRect.height);
+						redrawRect.add(zoomRect);
+
+						// Repaint with clipping.
+						Rectangle rectClip = gc.getClipping();
+						gc.setClipping(regRepaint);
+						gc.fillRectangle(Chart.this.plot_region);
+						gc.setClipping(rectClip);
+
+						// Set new rectangle.
+						prevZoomRect = zoomRect;
+
+						// Dispose resources.
+						regIntersection.dispose();
+						regRepaint.dispose();
+
+					} else {
+						// It is a simple repaint, just paint zoom rectangle.
+						gc.fillRectangle(zoomRect);
+					}
+				}
+				// Reset xor mode.
+				gc.setXORMode(false);
+			} catch (Exception e) {
+				// Just catch any exceptions.
+			}
+		}
+    	
+    	private Rectangle getZoomRect() 
     	{
-    		// Add current mouse location pointers.
-    		return new Rectangle(p.x - 1, plot_region.y, 3, plot_region.height);
+    		return getZoomRect(mousePoint, mouseLocation);
     	}
     	
-    	private Rectangle getHorizontalLine(Point p) {
+    	private Rectangle getZoomRect(Point p1, Point p2) {
     		
-    		return new Rectangle(plot_region.x, p.y - 1,  plot_region.width, 3);
-    	}
-    	
-    	private Rectangle getZoomRect() {
+    		if(p1 == EmptyPoint || p2  == EmptyPoint) 
+    			return EmptyRect;
     		
-    		if(mousePoint == EmptyPoint || mouseLocation  == EmptyPoint) 
-    			return new Rectangle(0, 0, 0, 0);
-    		
-    		int x = Math.min(mousePoint.x, mouseLocation.x) + 1;
-			int y = Math.min(mousePoint.y, mouseLocation.y) + 1;
-			int width = Math.abs(mousePoint.x - mouseLocation.x) - 1;
-			int height = Math.abs(mousePoint.y - mouseLocation.y) - 1;
+    		int x = Math.min(p1.x, p2.x) + 1;
+			int y = Math.min(p1.y, p2.y) + 1;
+			int width = Math.max(0, Math.abs(p1.x - p2.x) - 1);
+			int height = Math.max(0, Math.abs(p1.y - p2.y) - 1);
 			
 			return new Rectangle(x, y, width, height);
     	}

@@ -228,7 +228,7 @@ public class Controller implements ScannerAndScrollerListener, ArchiveFetchJobLi
                 new_item.getSamples(),
                 new_item.getColor(),
                 new_item.getLineWidth(),
-                yaxis_index, false, Trace.Type.valueOf(new_item.getDisplayType().toString()));
+                yaxis_index, true, Trace.Type.valueOf(new_item.getDisplayType().toString()));
         // Set initial axis range from model
         controller_changes_yaxes = true;
         YAxis yaxis = trace.getYAxis();
@@ -352,6 +352,25 @@ public class Controller implements ScannerAndScrollerListener, ArchiveFetchJobLi
     
     public void errorOccured(int errorId) 
     {
-    	//this.chart.ShowMessage("A", "B", SWT.ICON_ERROR | SWT.OK);
+    	this.chart.getDisplay().asyncExec(
+         	    new Runnable () {
+         	      public void run () {
+         	    	  chart.showMessage(Messages.ErrorMessageTitle, Messages.ErrorMessage, SWT.ICON_ERROR | SWT.OK);
+         	      } }
+         	   );	
+    }
+    
+    public void updateDone(final boolean success) 
+    {
+    	// We'll auto zoom the updated data. This is the only way to do it.
+    	// Since this notification is from another thread, we should invoke autozoom method
+    	// to avoid invalid thread call exception.
+   	 	this.chart.getDisplay().asyncExec(
+     	    new Runnable () {
+     	      public void run () {
+     	    	  if(success)
+     	    		  chart.autozoom();
+     	      } }
+     	   );	
     }
 }

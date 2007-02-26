@@ -241,7 +241,10 @@ public class YAxis extends Axis
             if (Chart.debug)
                 System.out.println("Autozoom " + getLabel() + " to "
                                    + low + " ... " + high);
-            setValueRange(low, high);
+            
+            if(!(super.low_value == low && super.high_value == high))
+            	setValueRange(low, high);
+            
         }
         // else: leave as is
     }

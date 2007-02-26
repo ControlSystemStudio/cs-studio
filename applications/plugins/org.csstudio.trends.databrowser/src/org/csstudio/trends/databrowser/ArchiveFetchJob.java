@@ -54,9 +54,9 @@ class ArchiveFetchJob extends Job
             ArchiveCache cache = ArchiveCache.getInstance();
             try
             {   // Invoke the possibly lengthy search.
-                ArchiveServer server = cache.getServer(archives[i].getUrl()); 
+                ArchiveServer server = cache.getServer(archives[i].getUrl());
+
                 //int request_type = server.getRequestType(ArchiveServer.GET_PLOTBINNED);
-                int bins = 50;
                 ArchiveValues result[] = server.getSamples(
                         archives[i].getKey(), new String[] { item.getName() },
                         start, end, item.getDataType(),
@@ -65,6 +65,7 @@ class ArchiveFetchJob extends Job
                 if(server.getLastRequestError() != 0) {
                 	fireErrorEvent(server.getLastRequestError());
                 }
+                
                 if (result.length == 1)
                 {   // Notify model of new samples.
                     // Even when monitor.isCanceled at this point?
@@ -74,8 +75,12 @@ class ArchiveFetchJob extends Job
                 }
                 else
                 {
+                	fireUpdateDoneEvent(false);
                     throw new Exception("Didn't get expected response"); //$NON-NLS-1$
                 }
+                
+                // Notify controler we are done.
+                fireUpdateDoneEvent(true);
             }
             catch (Exception e)
             {
@@ -108,6 +113,12 @@ class ArchiveFetchJob extends Job
     void fireErrorEvent(int errorId) {
     	for(ArchiveFetchJobListener listener : listeners) {
     		listener.errorOccured(errorId);
+    	}
+    }
+    
+    void fireUpdateDoneEvent(boolean success) {
+    	for(ArchiveFetchJobListener listener : listeners) {
+    		listener.updateDone(success);
     	}
     }
 }

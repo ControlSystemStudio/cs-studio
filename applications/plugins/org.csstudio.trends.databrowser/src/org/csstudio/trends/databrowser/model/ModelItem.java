@@ -253,6 +253,9 @@ public class ModelItem
     
     public void setDataType(int new_data_type) 
     {	
+    	if(data_type == new_data_type)
+    		return;
+    	
     	data_type = new_data_type;
     	// If data is cached we should clear the cache.
     	ArchiveCache cache = ArchiveCache.getInstance();
@@ -309,6 +312,9 @@ public class ModelItem
     /** Set new display type */
     public void setDisplayType(IModelItem.DisplayType new_display_type) 
     {
+    	if(display_type == new_display_type)
+    		return;
+    	
     	display_type = new_display_type;
     	// Notify model of this change.
     	model.fireEntryConfigChanged(this);

@@ -32,21 +32,78 @@ public class TracePainter
         YAxis yaxis = trace.getYAxis();
         ChartSampleSequence samples = trace.getSampleSequence();
         
+        // We draw only if we have to.
+        if(samples.size() <= 0)
+        	return;
+        
         i0 = limiter.getLowIndex(samples);
 		i1 = limiter.getHighIndex(samples);
 
-//		 ** Lock the samples, so they don't change on us! **  
+		ChartSample sample;
+		 
+		//** Lock the samples, so they don't change on us! **  
         synchronized (samples)
         {
         	switch(trace.getType()) {
         	
+        	case MinMaxAverage :
+        		
+        		x1 = Integer.MIN_VALUE;
+                y1 = Integer.MIN_VALUE;
+                i = i0;
+
+                int[] triplet = new int[] { Integer.MIN_VALUE,  Integer.MIN_VALUE,  Integer.MIN_VALUE};
+                int k = 0;
+                int x2 = 0;
+
+                double realX0, realX1;
+                realX1 = samples.get(0).getX();
+                x1 = xaxis.getScreenCoord(realX1);
+
+                while(i <= i1) 
+                {
+                	// Previous value was not a triplet so we ignore it.
+                	if(k != 3) {
+                		triplet = new int[] { Integer.MIN_VALUE,  Integer.MIN_VALUE,  Integer.MIN_VALUE};
+                	}
+                	
+                	k = 0;
+                	
+                	while(true)
+                	{         
+                		sample = samples.get(i);
+                		realX0 = sample.getX();
+                		
+                		x0 = xaxis.getScreenCoord(realX0);
+                		y0 = yaxis.getScreenCoord(sample.getY());
+
+                		// We'll check if we are on the same triplet here.
+                		if(realX0 != realX1 || k > 2) 
+                			break;
+
+                		// Connect previous value of triplet with current one using line.
+                		if(triplet[k] != Integer.MIN_VALUE)
+                			gc.drawLine(x2, triplet[k], x0, y0);
+                		
+                		// Let's set new value.
+                		triplet[k] = y0;
+                		
+                		// Move foward.
+                		k++;
+                		i++;
+                	}
+
+                	// Assign new values.
+                	x2 = x1;
+                	x1 = x0;
+                	realX1 = realX0;
+                }
+        		break;
+        		
         	case HighLowArea :
         		
         		ArrayList<Integer> maxPoints = new ArrayList<Integer>();
             	ArrayList<Integer> minPoints = new ArrayList<Integer>();
-            	
-            	i0 = limiter.getLowIndex(samples);
-                i1 = limiter.getHighIndex(samples);
                 
                 // We'll have to find max and min y values at same x value.
                 int minY = Integer.MAX_VALUE;
@@ -57,7 +114,7 @@ public class TracePainter
                 
                 for (i = i0; i <= i1; ++i)
                 {
-                    ChartSample sample = samples.get(i);
+                    sample = samples.get(i);
                     
                     x0 = xaxis.getScreenCoord(sample.getX());
                     y0 = yaxis.getScreenCoord(sample.getY());
@@ -106,16 +163,16 @@ public class TracePainter
                     gc.drawPolyline(points);
                 }
         		
-        		
         		break;
         		
+        	// Paints each point.
         	case Markers:
         		
         		int d1 = trace.getLineWidth();
         		
         		for (i = i0; i <= i1; ++i)
                 {
-                    ChartSample sample = samples.get(i);
+                    sample = samples.get(i);
                     
                     x0 = xaxis.getScreenCoord(sample.getX());
                     y0 = yaxis.getScreenCoord(sample.getY());
@@ -128,17 +185,15 @@ public class TracePainter
                 }
         		break;
         		
+        	// Paints values on same x as candlesticks.
         	case Candlestick:
         		
                 x1 = Integer.MIN_VALUE;
                 y1 = Integer.MIN_VALUE;
-                
-                //int minY0, maxY0;
-                //int minY1, maxY1;
-                
+               
                 for (i = i0; i <= i1; ++i)
                 {
-                    ChartSample sample = samples.get(i);
+                    sample = samples.get(i);
                     
                     x0 = xaxis.getScreenCoord(sample.getX());
                     y0 = yaxis.getScreenCoord(sample.getY());
@@ -155,7 +210,6 @@ public class TracePainter
                     	y1 = y0;
                     }
                 }
-
                 break;
         	
         	case Lines:
@@ -166,7 +220,7 @@ public class TracePainter
 				
 				double y;
 				for (i = i0; i <= i1; ++i) {
-					ChartSample sample = samples.get(i);
+					sample = samples.get(i);
 					y = sample.getY();
 					boolean plottable = !Double.isInfinite(y)
 							&& !Double.isNaN(y);

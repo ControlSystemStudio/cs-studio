@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.layout.GridData;
 
 /** The user interface for the data browser.
  *  <p>
@@ -150,7 +149,7 @@ public class BrowserUI extends Composite
         updateScrollPauseButton();
         
         i_chart.getChart().getXAxis().setValueRange(60 * 60 * hours);
-        i_chart.getChart().autozoom();
+        //i_chart.getChart().autozoom();
     }
     
     /** Update the scroll button's image and tooltip. */
