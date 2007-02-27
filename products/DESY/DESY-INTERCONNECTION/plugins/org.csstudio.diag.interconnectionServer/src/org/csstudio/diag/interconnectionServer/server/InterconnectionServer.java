@@ -24,6 +24,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 
 /**
  * This version uses <code>DatagramSockets</code> instead of Sockets.
@@ -32,7 +36,7 @@ import javax.naming.NamingException;
  *
  */
 
-public class InterconnectionServer
+public class InterconnectionServer extends Job
 {
     private static InterconnectionServer		thisServer = null;
     private String                      instanceName    = null;    
@@ -55,9 +59,9 @@ public class InterconnectionServer
      * @param name
      */
     
-    public InterconnectionServer( ) {
-    	
-    }
+    public InterconnectionServer(String name) {
+		super(name);
+	}
     
     synchronized public boolean setupConnections ( )
     {
@@ -415,8 +419,25 @@ public class InterconnectionServer
 			return this.value;
 		}
 	}
+	
+	protected IStatus run(IProgressMonitor monitor) {
+		/*
+		for (int i = 0; i < 5000; i++) {
+			System.out.println("nummer " + i);
+		}
+		*/
+		System.out.println( "Commands : " + ServerCommands.getCommands());
+		
+		thisServer = new InterconnectionServer( "Server-1");
+		
+		thisServer.executeMe();
+		
+        System.out.println("Hello World (from a background job)");
+        return Status.OK_STATUS;
 
-    
+	}
+
+    /*
     public static void main(String[] args)
     {
         String  n;
@@ -443,4 +464,5 @@ public class InterconnectionServer
         
         System.exit(0);
     }
+    */
 }

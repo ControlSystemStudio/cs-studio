@@ -7,6 +7,7 @@ public class TagList {
 	public static TagList tagListInstance = null;
 	private Hashtable<String,TagProperties>	tagList	= null;
 	private Hashtable<String,Integer>	messageTypes	= null;
+	private Hashtable<String,Integer>	replyTypes	= null;
 	
 	public static final int ALARM_MESSAGE = 1;
 	public static final int SYSTEM_LOG_MESSAGE = 2;
@@ -19,6 +20,15 @@ public class TagList {
 	public static final int ALARM_STATUS_MESSAGE = 9;
 	public static final int TEST_COMMAND = 10;
 	
+	public static final int REPLY_TYPE_DONE = 1;
+	public static final int REPLY_TYPE_OK = 2;
+	public static final int REPLY_TYPE_ERROR = 3;
+	public static final int REPLY_TYPE_CMD_UNKNOWN = 4;
+	public static final int REPLY_TYPE_CMD_MISSING = 5;
+	public static final int REPLY_TYPE_REFUSED = 6;
+	public static final int REPLY_TYPE_SELECTED = 7;
+	public static final int REPLY_TYPE_NOT_SELECTED = 8;
+	
 	
 	public TagList () {
 		//
@@ -28,6 +38,7 @@ public class TagList {
 		messageTypes = new Hashtable<String,Integer>();
 		fillTagList();
 		fillMessageTypes();
+		fillReplyTypes();
 	}
 	
 	public static TagList getInstance() {
@@ -46,19 +57,29 @@ public class TagList {
 	
 	private void fillMessageTypes() {
 		
-		messageTypes.put("Alarm", ALARM_MESSAGE);
-		messageTypes.put("AlarmStatus", ALARM_STATUS_MESSAGE);
-		messageTypes.put("SysLog", SYSTEM_LOG_MESSAGE);
-		messageTypes.put("SysMsg", SYSTEM_LOG_MESSAGE);
-		messageTypes.put("AppLog", APPLICATION_LOG_MESSAGE);
-		messageTypes.put("Event", EVENT_MESSAGE);
-		messageTypes.put("Status", STATUS_MESSAGE);
-		messageTypes.put("Beacon", BEACON_MESSAGE);
-		messageTypes.put("Unknown", UNKNOWN_MESSAGE);
-		messageTypes.put("PutLog", PUT_LOG_MESSAGE);
-		messageTypes.put("TCom", TEST_COMMAND);
-		
-		
+		messageTypes.put("alarm", 			ALARM_MESSAGE);
+		messageTypes.put("alarmStatus", 	ALARM_STATUS_MESSAGE);
+		messageTypes.put("sysLog", 			SYSTEM_LOG_MESSAGE);
+		messageTypes.put("sysMsg", 			SYSTEM_LOG_MESSAGE);
+		messageTypes.put("appLog", 			APPLICATION_LOG_MESSAGE);
+		messageTypes.put("event", 			EVENT_MESSAGE);
+		messageTypes.put("status", 			STATUS_MESSAGE);
+		messageTypes.put("beacon", 			BEACON_MESSAGE);
+		messageTypes.put("unknown", 		UNKNOWN_MESSAGE);
+		messageTypes.put("putLog", 			PUT_LOG_MESSAGE);
+		messageTypes.put("TCom", 			TEST_COMMAND);
+	}
+	
+	private void fillReplyTypes() {
+			
+		replyTypes.put("done", 			REPLY_TYPE_DONE);
+		replyTypes.put("ok", 			REPLY_TYPE_ERROR);
+		replyTypes.put("error", 		REPLY_TYPE_ERROR);
+		replyTypes.put("cmdUnknown", 	REPLY_TYPE_CMD_UNKNOWN);
+		replyTypes.put("cmdMissing", 	REPLY_TYPE_CMD_MISSING);
+		replyTypes.put("refused", 		REPLY_TYPE_REFUSED);
+		replyTypes.put("selected", 		REPLY_TYPE_SELECTED);
+		replyTypes.put("notSelected", 	REPLY_TYPE_NOT_SELECTED);
 	}
 	
 	private void fillTagList() {
@@ -151,6 +172,16 @@ public class TagList {
 			messageType = (int)semiInt;
 		}
 		return messageType;
+	}
+	
+	public int getReplyType ( String messageTypeString) {
+		int replyType = REPLY_TYPE_CMD_UNKNOWN;
+		Integer semiInt = null;
+		if ( ( messageTypeString != null) && replyTypes.containsKey(messageTypeString)) {
+			semiInt = (Integer)replyTypes.get( messageTypeString);
+			replyType = (int)semiInt;
+		}
+		return replyType;
 	}
 	
 	

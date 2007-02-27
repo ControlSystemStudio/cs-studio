@@ -35,6 +35,15 @@ public class PreferenceProperties {
 	public static String REPLY_IS_OK = "ok";
 	public static String REPLY_IS_ERROR = "error";
 	
+	public static String COMMAND_TAKE_OVER 			= "takeOver";
+	public static String COMMAND_DISCONNECT 		= "disconnect";
+	public static String COMMAND_SEND_ALARM			= "sendAlarm";
+	public static String COMMAND_SEND_ALL_ALARMS 	= "sendAllAlarms";
+	public static String COMMAND_SEND_STATUS 		= "sendStatus";
+	
+	public static String[]	COMMAND_LIST = {COMMAND_TAKE_OVER, COMMAND_DISCONNECT, COMMAND_SEND_ALARM, 
+		COMMAND_SEND_ALARM, COMMAND_SEND_STATUS };
+	
 	public static final int 	TAG_TYPE_LOG_SERVER_REPLY = 1;
 	public static final String 	TAG_LOG_SERVER_REPLY = "TEST-KEY";
 	public static final int 	TAG_TYPE_IS_TYPE = 2;

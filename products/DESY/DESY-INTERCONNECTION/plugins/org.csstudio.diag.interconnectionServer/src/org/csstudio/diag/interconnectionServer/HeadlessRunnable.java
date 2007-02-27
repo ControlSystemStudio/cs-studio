@@ -1,6 +1,7 @@
 package org.csstudio.diag.interconnectionServer;
 
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
+import org.csstudio.diag.interconnectionServer.server.ServerCommands;
 import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -12,17 +13,31 @@ public class HeadlessRunnable implements IPlatformRunnable {
 	
 	public Object run(Object args) throws Exception {
 
-		System.out.println("start");
-		testJob job = new testJob("hello");
+		System.out.println("start IcServer");
 		
-		job.addJobChangeListener(new JobChangeAdapter() {
+		thisServer = new InterconnectionServer( "Server-2");
+        
+        //System.out.println ("vor start init");
+        //Timer.Start.init();
+        
+        //System.out.println ("vor start all timer");
+        //Timer.Start.all();
+		
+		System.out.println( "Commands : " + ServerCommands.getCommands());
+
+        
+        thisServer.executeMe();
+		
+		///testJob job = new testJob("hello");
+		
+        thisServer.addJobChangeListener(new JobChangeAdapter() {
 	        public void done(IJobChangeEvent event) {
 	        //if (event.getResult().isOK())
 	        	SHUTDOWN = true;
 	        }
 	     });
 		
-		job.schedule();
+        thisServer.schedule();
 		
 		while(SHUTDOWN == false) {
 			Thread.sleep(10000);

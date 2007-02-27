@@ -2,6 +2,9 @@ package org.csstudio.diag.interconnectionServer.server;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.Enumeration;
+
+import org.csstudio.diag.interconnectionServer.server.Statistic.StatisticContent;
 
 public class ServerCommands extends Thread{
 	
@@ -94,6 +97,19 @@ public class ServerCommands extends Thread{
             	Statistic.getInstance().getContentObject( packet.getAddress().getHostName() + ":" + packet.getPort()).incrementErrorCounter();
             }
         }
+	}
+	
+	public static String getNodeNames () {
+		return Statistic.getInstance().getNodeNames();
+	}
+	public static String getCommands () {
+		String commandList;
+		int length = PreferenceProperties.COMMAND_LIST.length;
+		commandList = PreferenceProperties.COMMAND_LIST[0] + ",";
+		for ( int i = 1; i < length; i++) {
+			commandList += PreferenceProperties.COMMAND_LIST[i] + ",";
+		}
+		return commandList;
 	}
 
 }

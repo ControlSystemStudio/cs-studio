@@ -157,16 +157,34 @@ public class SendCommands {
 			//
 			// check reply
 			//
-			if ( (reply !=null) && reply.equals( PreferenceProperties.REPLY_IS_OK)) {
+			if ( reply == null){
+				System.out.println ("SendCommand - NO ID received");
+			}
+			switch (TagList.getInstance().getReplyType(reply)) {
+			
+			case TagList.REPLY_TYPE_DONE:
+			case TagList.REPLY_TYPE_OK:
 				//
 				// ok - done - remove from list
 				//
 				commandList.remove(id);
-			} else {
+				break;
+			case TagList.REPLY_TYPE_ERROR:
+				// send one more time
 				sendCommand( id);
+				break;
+				//
+				// not handled here
+				//TODO: handle it!
+				//
+			case TagList.REPLY_TYPE_CMD_MISSING:
+			case TagList.REPLY_TYPE_CMD_UNKNOWN:
+			case TagList.REPLY_TYPE_NOT_SELECTED:
+			case TagList.REPLY_TYPE_REFUSED:
+			case TagList.REPLY_TYPE_SELECTED:
+				default:
+					System.out.println ("SendCommand - unknown ID received");
 			}
-		} else {
-			System.out.println ("SendCommand - unknown ID received");
 		}
 		
 	}

@@ -266,5 +266,22 @@ public class Statistic {
 		
 		
 	}
+	
+	public String getNodeNames () {
+		 String nodeNames = null;
+		 
+		 try {
+			 // just in case no enum is possible
+			 Enumeration connections = this.connectionList.elements();
+			 while (connections.hasMoreElements()) {
+				 StatisticContent thisContent = (StatisticContent)connections.nextElement();
+				 nodeNames += thisContent.host + ",";
+			 }
+		 } catch (Exception e) {
+			 nodeNames = "NONE";
+		 }
+		 return nodeNames;
+		 
+	}
 
 }
