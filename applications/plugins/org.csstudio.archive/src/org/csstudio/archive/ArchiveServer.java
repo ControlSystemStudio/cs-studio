@@ -49,6 +49,13 @@ public abstract class ArchiveServer
      */
     abstract public int getVersion();
     
+    /** Server name information.
+     * <p>
+     * The unique name of this implementation of ArchiveServer
+     * @return A name of the server.
+     */
+    abstract public String getServerName();
+    
     /** Request type for getting raw samples.
      *  <p>
      *  Additional <code>request_parms</code>:
