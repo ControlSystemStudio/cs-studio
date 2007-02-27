@@ -148,6 +148,11 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 	}
 	
 	@Override
+	public String getServerName() {
+		return "AAPIServer";
+	}
+	
+	@Override
 	public String getURL() {
 		// TODO Auto-generated method stub
 		return "aapi://krynfs.desy.de:4053";

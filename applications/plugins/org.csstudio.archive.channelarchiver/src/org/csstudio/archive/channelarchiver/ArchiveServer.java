@@ -69,6 +69,11 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
         return server_info_request.getRequestTypes();
     }
     
+    public String getServerName() 
+    {
+    	return "XNDSServer";
+    }
+    
     /** @return Severity for an EPICS severity code. */
     SeverityImpl getSeverity(int severity)
     {
