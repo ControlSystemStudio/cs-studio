@@ -16,5 +16,12 @@
             application="org.csstudio.diag.interconnectionServer.application"
             name="product"/>
    </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.diag.interconnectionServer.LoginCallbackHandler1"
+            id="org.csstudio.diag.interconnectionServer.loginHandler1"
+            name="org.csstudio.diag.interconnectionServer.loginHandler1"/>
+   </extension>
 
 </plugin>

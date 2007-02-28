@@ -1,6 +1,8 @@
 package org.csstudio.diag.interconnectionServer;
 
 import org.csstudio.platform.AbstractCssPlugin;
+import org.csstudio.startup.IStartupServiceListener;
+import org.csstudio.startup.StartupServiceEnumerator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
@@ -34,7 +36,9 @@ public class Activator extends AbstractCssPlugin {
 
 	@Override
 	protected void doStart(BundleContext context) throws Exception {
-		// TODO Auto-generated method stub
+		for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
+			s.run();
+		}
 		
 	}
 

@@ -7,5 +7,8 @@ Bundle-Activator: org.csstudio.diag.interconnectionServer.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
- org.csstudio.platform.libs.jms
+ org.csstudio.platform.libs.jms,
+ org.csstudio.platform.libs.xmpp,
+ org.csstudio.platform.libs.dcf,
+ org.csstudio.startup
 Eclipse-LazyStart: true
