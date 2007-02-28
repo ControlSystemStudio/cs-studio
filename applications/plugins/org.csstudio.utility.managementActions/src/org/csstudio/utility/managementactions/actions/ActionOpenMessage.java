@@ -18,13 +18,17 @@ public class ActionOpenMessage implements IAction {
 		if(!(param instanceof Map)) {
 			return null;
 		}
-		Map paramMap = (Map)param;
-		Display d = Display.getCurrent();
-		if(d == null)
-			d = new Display();
+		final Map paramMap = (Map)param;
+		final Display d = Display.getDefault();
 			
-		MessageDialog.openInformation(d.getActiveShell(),
-				"MGX Message", paramMap.get("message").toString());
+		d.asyncExec(new Runnable() {
+
+			public void run() {
+				MessageDialog.openInformation(d.getActiveShell(),
+						"MGX Message", paramMap.get("message").toString());
+			}
+		
+		});
 		return null;
 	}
 

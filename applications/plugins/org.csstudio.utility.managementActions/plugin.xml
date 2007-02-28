@@ -13,6 +13,10 @@
             id="org.csstudio.utility.managementActions.testEnum"
             name="Test Enum Action"
             values="value1,value2,value3,value4"/>
+      <simpleAction
+            class="org.csstudio.utility.managementactions.actions.ArrayStringAction"
+            id="org.csstudio.utility.managementActions.arrayViewerTest"
+            name="Array Tester"/>
    </extension>
 
 </plugin>
