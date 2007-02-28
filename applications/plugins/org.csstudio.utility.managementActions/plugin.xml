@@ -17,6 +17,12 @@
             class="org.csstudio.utility.managementactions.actions.ArrayStringAction"
             id="org.csstudio.utility.managementActions.arrayViewerTest"
             name="Array Tester"/>
+      <dynamicValuesAction
+            class="org.csstudio.utility.managementactions.actions.DynamicActionTest"
+            id="org.csstudio.utility.managementActions.dynamicValuesAction1"
+            loaderActionId="org.csstudio.utility.managementActions.arrayViewerTest"
+            name="Dynamic Test"
+            parameters="param1,param2,param3"/>
    </extension>
 
 </plugin>
