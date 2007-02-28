@@ -2,12 +2,19 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         id="org.csstudio.diag.interconnectionServer.org.csstudio.diag.interconnectionServer"
+         id="application"
 
          point="org.eclipse.core.runtime.applications">
       <application>
          <run class="org.csstudio.diag.interconnectionServer.HeadlessRunnable"/>
       </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.diag.interconnectionServer.application"
+            name="product"/>
    </extension>
 
 </plugin>

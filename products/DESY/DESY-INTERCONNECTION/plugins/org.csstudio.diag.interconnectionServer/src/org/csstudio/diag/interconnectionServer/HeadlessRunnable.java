@@ -15,7 +15,7 @@ public class HeadlessRunnable implements IPlatformRunnable {
 
 		System.out.println("start IcServer");
 		
-		thisServer = new InterconnectionServer( "Server-2");
+		thisServer = new InterconnectionServer();
         
         //System.out.println ("vor start init");
         //Timer.Start.init();
@@ -23,56 +23,10 @@ public class HeadlessRunnable implements IPlatformRunnable {
         //System.out.println ("vor start all timer");
         //Timer.Start.all();
 		
-		System.out.println( "Commands : " + ServerCommands.getCommands());
-
+		System.out.println( "Head Commands : " + ServerCommands.getCommands());
         
         thisServer.executeMe();
-		
-		///testJob job = new testJob("hello");
-		
-        thisServer.addJobChangeListener(new JobChangeAdapter() {
-	        public void done(IJobChangeEvent event) {
-	        //if (event.getResult().isOK())
-	        	SHUTDOWN = true;
-	        }
-	     });
-		
-        thisServer.schedule();
-		
-		while(SHUTDOWN == false) {
-			Thread.sleep(10000);
-		}
 
-		System.out.println("vor exit_ok");
 		return EXIT_OK;
 	}
-
-	
-//    public static void main(String[] args)
-//    {
-//        String  n;
-//        
-//        if(args.length > 0)
-//        {
-//            n = args[0];
-//        }
-//        else
-//        {
-//            n = "NO NAME";
-//        }
-//        
-//        thisServer = new InterconnectionServer( );
-//        
-//        //System.out.println ("vor start init");
-//        //Timer.Start.init();
-//        
-//        //System.out.println ("vor start all timer");
-//        //Timer.Start.all();
-//
-//        
-//        thisServer.executeMe();
-//        
-//        System.exit(0);
-//    }
-	
 }

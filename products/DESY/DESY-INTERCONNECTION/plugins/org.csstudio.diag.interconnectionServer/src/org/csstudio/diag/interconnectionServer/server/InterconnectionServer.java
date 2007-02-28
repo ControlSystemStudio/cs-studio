@@ -36,7 +36,7 @@ import org.eclipse.core.runtime.jobs.Job;
  *
  */
 
-public class InterconnectionServer extends Job
+public class InterconnectionServer
 {
     private static InterconnectionServer		thisServer = null;
     private String                      instanceName    = null;    
@@ -52,16 +52,6 @@ public class InterconnectionServer extends Job
     public final String VERSION = " 0.5";
     public final String BUILD   = " - BUILD 09.02.2007 17:00";
     
-    /**
-     *  Der Konstruktor InterconnectionServer(String) erledigt alle nötigen
-     *  Vorbereitungen. Die Queue, die zurzeit benutzt wird, ist ALARM. 
-     *  
-     * @param name
-     */
-    
-    public InterconnectionServer(String name) {
-		super(name);
-	}
     
     synchronized public boolean setupConnections ( )
     {
@@ -419,50 +409,4 @@ public class InterconnectionServer extends Job
 			return this.value;
 		}
 	}
-	
-	protected IStatus run(IProgressMonitor monitor) {
-		/*
-		for (int i = 0; i < 5000; i++) {
-			System.out.println("nummer " + i);
-		}
-		*/
-		System.out.println( "Commands : " + ServerCommands.getCommands());
-		
-		thisServer = new InterconnectionServer( "Server-1");
-		
-		thisServer.executeMe();
-		
-        System.out.println("Hello World (from a background job)");
-        return Status.OK_STATUS;
-
-	}
-
-    /*
-    public static void main(String[] args)
-    {
-        String  n;
-        
-        if(args.length > 0)
-        {
-            n = args[0];
-        }
-        else
-        {
-            n = "NO NAME";
-        }
-        
-        thisServer = new InterconnectionServer( );
-        
-        //System.out.println ("vor start init");
-        //Timer.Start.init();
-        
-        //System.out.println ("vor start all timer");
-        //Timer.Start.all();
-
-        
-        thisServer.executeMe();
-        
-        System.exit(0);
-    }
-    */
 }
