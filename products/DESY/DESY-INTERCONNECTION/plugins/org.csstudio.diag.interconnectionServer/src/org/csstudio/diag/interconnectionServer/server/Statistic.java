@@ -267,6 +267,35 @@ public class Statistic {
 		
 	}
 	
+	public String getStatisticAsString () {
+		String result = "";
+		result += "\nTotal incomin messages     	= " + this.totalNumberOfIncomingMessages ;
+		result += "\nTotal outgoing messages     	= " + this.totalNumberOfOutgoingMessages ;
+		result += "\n" ;
+		 
+		 Enumeration connections = this.connectionList.elements( );
+		 while (connections.hasMoreElements()) {
+			 StatisticContent thisContent = (StatisticContent)connections.nextElement();
+			result += "\n---------- statistische Auswertung ---------------" ;
+			result += "\nHost:Port: " +  thisContent.host + ":" + thisContent.port ;
+			result += "\nCurrent ConnectState			: " + thisContent.getCurrentConnectState() ;
+			result += "\nNumber of Incoming Messages 	: " + thisContent.numberOfIncomingMessages ;
+			result += "\nNumber of Outgoing Messages 	: " + thisContent.numberOfOutgoingMessages ;
+			result += "\nNumber of Errors			 	: " + thisContent.errorCounter ;
+			result += "\nLast Message				 	: " + thisContent.lastMessage ;
+			result += "\nLast Message Size			 	: " + thisContent.lastMessageSize ;
+			result += "\nAccumulated Message Size		: " + thisContent.accumulatedMessageSize ;
+			result += "\nStart Time         	: " + thisContent.dateToString(thisContent.timeStarted) ;
+			result += "\nLast Beacon Time		: " + thisContent.dateToString(thisContent.timeLastBeaconReceived) ;
+			result += "\nLast Message Received  : " + thisContent.dateToString(thisContent.timeLastReceived) ;
+			result += "\nLast Command Sent Time : " + thisContent.dateToString(thisContent.timeLastCommandSent) ;
+			result += "\nLast Error Occured     : " + thisContent.dateToString(thisContent.timeLastErrorOccured) ;
+			result += "\n" ;
+			
+		 }
+		 return result;
+	}
+	
 	public String getNodeNames () {
 		 String nodeNames = null;
 		 boolean first = true;
@@ -285,6 +314,26 @@ public class Statistic {
 			 }
 		 } catch (Exception e) {
 			 nodeNames = "NONE";
+		 }
+		 return nodeNames;
+		 
+	}
+	
+	public String[] getNodeNameArray () {
+		 String[] nodeNames = null;
+		 boolean first = true;
+		 int index = 0;
+		 
+		 try {
+			 // just in case no enum is possible
+			 Enumeration connections = this.connectionList.elements();
+			 while (connections.hasMoreElements()) {
+				 StatisticContent thisContent = (StatisticContent)connections.nextElement();
+				 nodeNames[index] = thisContent.host;
+				 index++;
+			 }
+		 } catch (Exception e) {
+			 nodeNames[0] = "NONE";
 		 }
 		 return nodeNames;
 		 

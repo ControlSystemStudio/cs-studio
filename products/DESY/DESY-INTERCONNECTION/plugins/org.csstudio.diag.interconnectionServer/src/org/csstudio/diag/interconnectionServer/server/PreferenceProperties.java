@@ -41,6 +41,12 @@ public class PreferenceProperties {
 	public static String COMMAND_SEND_ALL_ALARMS 	= "sendAllAlarms";
 	public static String COMMAND_SEND_STATUS 		= "sendStatus";
 	
+	public static final int COMMAND_TAKE_OVER_I 			= 0;
+	public static final int COMMAND_DISCONNECT_I 			= 1;
+	public static final int COMMAND_SEND_ALARM_I			= 2;
+	public static final int COMMAND_SEND_ALL_ALARMS_I 	= 3;
+	public static final int COMMAND_SEND_STATUS_I 		= 4;
+	
 	public static String[]	COMMAND_LIST = {COMMAND_TAKE_OVER, COMMAND_DISCONNECT, COMMAND_SEND_ALARM, 
 		COMMAND_SEND_ALARM, COMMAND_SEND_STATUS };
 	

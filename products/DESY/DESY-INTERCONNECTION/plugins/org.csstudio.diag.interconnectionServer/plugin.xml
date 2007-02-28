@@ -30,6 +30,19 @@
             id="org.csstudio.diag.interconnectionServer.sampleAction"
             name="Sample Action"
             parameters="param1,param2"/>
+      <simpleAction
+            class="org.csstudio.diag.interconnectionServer.GetListOfClients"
+            id="org.csstudio.diag.interconnectionServer.getListOfClients"
+            name="Get List Of Clients"/>
+      <simpleAction
+            class="org.csstudio.diag.interconnectionServer.GetStatisticInformation"
+            id="org.csstudio.diag.interconnectionServer.getStatisticInformation"
+            name="GetStatisticInformation"/>
+      <parametrizedAction
+            class="org.csstudio.diag.interconnectionServer.ExecuteRemoteCommand"
+            id="org.csstudio.diag.interconnectionServer.executeRemoteCommand"
+            name="Execute Remote Command"
+            parameters="param1,param2"/>
    </extension>
 
 </plugin>
