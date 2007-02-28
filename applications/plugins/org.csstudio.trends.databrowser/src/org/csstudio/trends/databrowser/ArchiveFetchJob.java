@@ -71,7 +71,8 @@ class ArchiveFetchJob extends Job
                     // Even when monitor.isCanceled at this point?
                     // Yes, since we have the samples, might as well show them
                     // before bailing out.
-                    item.addArchiveSamples(result[0]);         
+                    item.addArchiveSamples(result[0]);
+                    //item.setAxisHigh(limit)
                 }
                 else
                 {

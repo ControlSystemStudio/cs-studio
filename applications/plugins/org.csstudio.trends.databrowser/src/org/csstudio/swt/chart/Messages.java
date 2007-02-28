@@ -6,6 +6,8 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.swt.chart.messages"; //$NON-NLS-1$
 
+    public static String Chart_Default_Scale;
+    
     public static String Chart_DeselectY_TT;
 
     public static String Chart_MoveDown;

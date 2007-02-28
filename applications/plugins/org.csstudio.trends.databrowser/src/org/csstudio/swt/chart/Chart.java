@@ -411,11 +411,12 @@ public class Chart extends Canvas
      */
     public Trace addTrace(String name, ChartSampleSequence series,
                     Color color, int line_width,
-                    int yaxis_index, boolean autozoom, Trace.Type type)
+                    int yaxis_index, double defaultScaleMin, double defaultScaleMax,
+                    boolean autozoom, Trace.Type type)
     {
         YAxis yaxis = yaxes.get(yaxis_index);
         setRedraw(false);
-        Trace trace = new Trace(name, series, color, line_width, yaxis, type, autozoom);
+        Trace trace = new Trace(name, series, color, line_width, yaxis, defaultScaleMin, defaultScaleMax, type, autozoom);
         traces.add(trace);
         if (autozoom)
             yaxis.autozoom(xaxis);
@@ -462,10 +463,31 @@ public class Chart extends Canvas
             yaxis.autozoom(xaxis, checkTraceAutoscale);
         else
         {
-            // Defer redraw until all axes are adjusted...
-            setRedraw(false);
+            autoZoomAll(checkTraceAutoscale);
+        }
+    }
+    
+    /** Auto scales all Y axis */
+    public void autoZoomAll(boolean checkTraceAutoscale)
+    {
+    	// Defer redraw until all axes are adjusted...
+        setRedraw(false);
+        for (YAxis y : yaxes)
+            y.autozoom(xaxis, checkTraceAutoscale);
+        setRedraw(true);
+    }
+    
+    /** Sets the default server specified range to the selected or all Y axes. */
+    public void setDefaultRanges() 
+    {
+    	YAxis yaxis = getSelectedYAxis();
+        if (yaxis != null)
+            yaxis.setDefaultRange();
+        else
+        {
+        	setRedraw(false);
             for (YAxis y : yaxes)
-                y.autozoom(xaxis, checkTraceAutoscale);
+                y.setDefaultRange();
             setRedraw(true);
         }
     }
@@ -756,7 +778,6 @@ public class Chart extends Canvas
                 xaxis.getValue(zoom.x + zoom.width - 1));
         setRedraw(true); // now redraw all
     }
-    
     public int showMessage(String title, String message, int style)
     {
     	MessageBox msgDialog = new MessageBox(this.getShell(), style);

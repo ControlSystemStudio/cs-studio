@@ -226,7 +226,7 @@ public class ChartTest
                                 DefaultColors.getGreen(i),
                                 DefaultColors.getBlue(i));
         // Add to chart
-        chart.addTrace(name, seq, color, 0, chart.getYAxisIndex(yaxis), true, Trace.Type.Lines);
+        chart.addTrace(name, seq, color, 0, chart.getYAxisIndex(yaxis), 0, 10, true, Trace.Type.Lines);
         return yaxis;
     }
 

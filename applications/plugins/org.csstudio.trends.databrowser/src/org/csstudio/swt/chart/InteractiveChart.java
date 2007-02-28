@@ -55,6 +55,7 @@ public class InteractiveChart extends Composite
     private static final String RIGHT = "right"; //$NON-NLS-1$
     private static final String X_IN = "x_in"; //$NON-NLS-1$
     private static final String X_OUT = "x_out"; //$NON-NLS-1$
+    private static final String DEFAULT_SCALE = "defaultscale"; //$NON-NLS-1$
     
     /** Was ZOOM_X_FROM_END set? */
     private boolean zoom_from_end;
@@ -83,6 +84,7 @@ public class InteractiveChart extends Composite
                 button_images.put(RIGHT, Plugin.getImageDescriptor("icons/right.gif"));
                 button_images.put(X_IN, Plugin.getImageDescriptor("icons/x_in.gif"));
                 button_images.put(X_OUT, Plugin.getImageDescriptor("icons/x_out.gif"));
+                button_images.put(DEFAULT_SCALE, Plugin.getImageDescriptor("icons/defaultscale.gif"));
             }
             catch (Exception e)
             {
@@ -155,6 +157,15 @@ public class InteractiveChart extends Composite
             public void widgetSelected(SelectionEvent e)
             {
                 chart.stagger();
+            }
+        });
+        addButton(DEFAULT_SCALE, Messages.Chart_Default_Scale, new SelectionListener()
+        {
+        	public void widgetDefaultSelected(SelectionEvent e)
+            {}
+            public void widgetSelected(SelectionEvent e)
+            {
+                chart.setDefaultRanges();
             }
         });
         

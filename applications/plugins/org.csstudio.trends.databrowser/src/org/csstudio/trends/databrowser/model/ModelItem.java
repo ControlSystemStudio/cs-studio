@@ -54,6 +54,12 @@ public class ModelItem
     /** The count of bins */
     private int bins;
     
+    /** The default yaxis max */
+    private double default_scale_max;
+    
+    /** The default xaxis max */
+    private double default_scale_min;
+    
     /** The display type */
     private IModelItem.DisplayType display_type;
     
@@ -117,15 +123,15 @@ public class ModelItem
     	this.model = model;
         name = pv_name;
         this.axis_index = axis_index;
-        this.axis_low = min;
-        this.axis_high = max;
+        this.axis_low = this.default_scale_min = min;
+        this.axis_high = this.default_scale_max = max;
         this.color = new Color(null, red, green, blue);
         this.line_width = line_width;
         this.log_scale = log_scale;
         this.data_type = 1;
         this.bins = 400;
         this.display_type = DisplayType.Lines;
-        this.isTraceAutoScalable = true;
+        this.isTraceAutoScalable = false;
         pv = new EPICS_V3_PV(pv_name);
         samples = new ModelSamples(ring_size);
     }    
@@ -261,7 +267,6 @@ public class ModelItem
     		return;
     	
     	data_type = new_data_type;
-
     	// Notify model of this change.
     	model.fireEntryConfigChanged(this);
     }
@@ -276,7 +281,6 @@ public class ModelItem
     		return;
     	
     	bins = new_bins;
-    	
     	// Clear cache.
     	clearSampleCache();
     	// Notify model of this change.
@@ -325,10 +329,19 @@ public class ModelItem
     		return;
     	
     	clearSampleCache();
-    	
     	display_type = new_display_type;
     	// Notify model of this change.
     	model.fireEntryConfigChanged(this);
+    }
+    
+    public double getDefaultScaleMax() 
+    {
+    	return this.default_scale_max;
+    }
+    
+    public double getDefaultScaleMin() 
+    {
+    	return this.default_scale_min;
     }
     
     /** @return <code>true</code> if using log. scale */
@@ -366,6 +379,35 @@ public class ModelItem
     public void addArchiveSamples(ArchiveValues archive_samples)
     {
         samples.add(archive_samples);
+        
+        // Get sample.
+        if(archive_samples.getSamples().length > 0)
+        {
+        	// Get meta data from sample.
+        	MetaData metaData = archive_samples.getSamples()[0].getMetaData();
+        	
+        	if(metaData instanceof NumericMetaData) 
+        	{
+        		// Cast to NumericMetaData.
+        		NumericMetaData numericMetaData = (NumericMetaData)metaData;
+        		// Let's set default scale.
+        		setDefaultScale(numericMetaData.getDisplayLow(), numericMetaData.getDisplayHigh());
+        	}
+        }
+    }
+    
+    private void setDefaultScale(double yMin, double yMax) 
+    {
+    	// Set values.
+    	this.default_scale_max = yMax;
+    	this.default_scale_min = yMin;
+    	
+    	if(default_scale_max < default_scale_min) 
+    	{
+    		double d = default_scale_max;
+    		default_scale_max = default_scale_min;
+    		default_scale_min = d;
+    	}		
     }
     
     /** @see IModelItem#getArchiveDataSources() */
@@ -622,6 +664,7 @@ public class ModelItem
         }
     }
     
+    //TODO: Check if this does a job of clearing cache, otherwise change this function.
     private void clearSampleCache()
     {
     	// If data is cached we should clear the cache.

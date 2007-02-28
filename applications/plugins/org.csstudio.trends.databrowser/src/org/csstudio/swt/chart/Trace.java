@@ -24,6 +24,8 @@ public class Trace
     private Rectangle labelLayout;
     private Type type;
     private boolean isAutoScalable;
+    private double defaultScaleMax;
+    private double defaultScaleMin;
     
     public enum Type 
     {
@@ -37,7 +39,7 @@ public class Trace
     public Trace(String name, ChartSampleSequence series, Color color,
             int line_width, YAxis yaxis) {
     	
-    	this(name, series, color, line_width, yaxis, Type.Lines, true);
+    	this(name, series, color, line_width, yaxis, 0, 10, Type.Lines, true);
     }
     
     /** Create a new trace.
@@ -48,7 +50,8 @@ public class Trace
      *  @param yaxis The axis to which the trace attaches.
      */
     public Trace(String name, ChartSampleSequence series, Color color,
-                    int line_width, YAxis yaxis, Trace.Type type, boolean autoScale)
+                    int line_width, YAxis yaxis, double defaultScaleMin, double defaultScaleMax,
+                    Trace.Type type, boolean autoScale)
     {
         this.name = name;
         this.samples = series;
@@ -57,6 +60,8 @@ public class Trace
         this.yaxis = yaxis;
         this.type = type;
         this.isAutoScalable = autoScale;
+        this.defaultScaleMax = defaultScaleMax;
+        this.defaultScaleMin = defaultScaleMin;
         yaxis.addTrace(this);
     }
 
@@ -154,5 +159,15 @@ public class Trace
     public final void setLabelLayout(Rectangle layout) 
     {
     	this.labelLayout = layout;
+    }
+    
+    public double getDefaultScaleMax() 
+    {
+    	return this.defaultScaleMax;
+    }
+    
+    public double getDefaultScaleMin() 
+    {
+    	return this.defaultScaleMin;
     }
 }

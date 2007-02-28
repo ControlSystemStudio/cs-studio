@@ -114,6 +114,12 @@ public interface IModelItem
     /** @return Returns weather trace should be auto scaled. */
     public abstract boolean getIsTraceAutoScalable();
     
+    /** @return Returns server default top range value for y axis */ 
+    public abstract double getDefaultScaleMax(); 
+    
+    /** @return Returns server default bottom range value for y axis */
+    public abstract double getDefaultScaleMin();
+    
     /** Set weather trace should be auto scaled. */
     public abstract void setIsTraceAutoScalable(boolean scalable); 
     

@@ -179,6 +179,21 @@ public class YAxis extends Axis
         fireEvent(YAxisListener.RANGE);
     }
     
+    public void setDefaultRange()
+    {
+    	double min = Double.MAX_VALUE;
+    	double max = Double.MIN_VALUE;
+    	
+    	for (Trace trace : traces)
+        {
+    		// 
+    		min = Math.min(trace.getDefaultScaleMin(), min);
+    		max = Math.max(trace.getDefaultScaleMax(), max);
+        }
+    	
+    	this.setValueRange(min, max);
+    }
+    
     public void autozoom(XAxis xaxis) 
     {
     	// Scale every trace.
@@ -194,7 +209,7 @@ public class YAxis extends Axis
         double high = -Double.MAX_VALUE;
         for (Trace trace : traces)
         {
-        	// We'll chceck if autoscale should be done on this trace
+        	// We'll check if autoscale should be done on this trace
         	if(checkTraceAutoscale && !trace.getIsAutoScalable())
         		continue;
         	

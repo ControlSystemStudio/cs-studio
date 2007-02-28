@@ -228,7 +228,9 @@ public class Controller implements ScannerAndScrollerListener, ArchiveFetchJobLi
                 new_item.getSamples(),
                 new_item.getColor(),
                 new_item.getLineWidth(),
-                yaxis_index, new_item.getIsTraceAutoScalable(), Trace.Type.valueOf(new_item.getDisplayType().toString()));
+                yaxis_index,
+                new_item.getDefaultScaleMin(), new_item.getDefaultScaleMax(),
+                new_item.getIsTraceAutoScalable(), Trace.Type.valueOf(new_item.getDisplayType().toString()));
         // Set initial axis range from model
         controller_changes_yaxes = true;
         YAxis yaxis = trace.getYAxis();
@@ -370,7 +372,8 @@ public class Controller implements ScannerAndScrollerListener, ArchiveFetchJobLi
      	      public void run () {
      	    	  if(success)
      	    		  try {
-     	    		  chart.autozoom(true);
+     	    			  Plugin.logInfo("Auto scaling ..."); //$NON-NLS-1$
+     	    			  chart.autoZoomAll(true);
      	    		  } catch(Exception e) {}
      	      } }
      	   );
