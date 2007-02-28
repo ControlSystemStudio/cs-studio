@@ -4,6 +4,7 @@ package org.csstudio.sds.components.epics;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.AliasDescriptor;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.IWidgetModelInitializer;
@@ -26,6 +27,10 @@ public class EpicsMeterInitializer implements IWidgetModelInitializer {
 	public void initialize(AbstractWidgetModel model, AbstractControlSystemSchema schema) {
 		if (MeterModel.ID.equals(model.getTypeID())) {
 			model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND, schema.getColorProperty(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+			
+			AliasDescriptor aliasDescriptor = new AliasDescriptor("input", "", "Enter the record name into the 'value' column.");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+			model.addAliasDescriptor(aliasDescriptor);
+
 			
 			final DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("scriptedColor"); //$NON-NLS-1$
 			dynamicsDescriptor.addInputChannel(new ParameterDescriptor("abc", Double.class)); //$NON-NLS-1$
