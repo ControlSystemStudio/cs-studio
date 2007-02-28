@@ -13,6 +13,8 @@ public class Messages extends NLS
 
     public static String AxisIndex;
     
+    public static String AutoScale;
+    
     public static String Bins;
     
     public static String BufferSize;

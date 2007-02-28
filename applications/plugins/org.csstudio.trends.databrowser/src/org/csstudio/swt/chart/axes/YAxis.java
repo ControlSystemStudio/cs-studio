@@ -179,15 +179,25 @@ public class YAxis extends Axis
         fireEvent(YAxisListener.RANGE);
     }
     
+    public void autozoom(XAxis xaxis) 
+    {
+    	// Scale every trace.
+    	autozoom(xaxis, false);
+    }
+    
     /** Auto-Zoom the value range of this Y axis to include all traces. */
     @SuppressWarnings("nls")
-    public void autozoom(XAxis xaxis)
+    public void autozoom(XAxis xaxis, boolean checkTraceAutoscale)
     {
         AxisRangeLimiter limiter = new AxisRangeLimiter(xaxis);
         double low = Double.MAX_VALUE;
         double high = -Double.MAX_VALUE;
         for (Trace trace : traces)
         {
+        	// We'll chceck if autoscale should be done on this trace
+        	if(checkTraceAutoscale && !trace.getIsAutoScalable())
+        		continue;
+        	
             ChartSampleSequence samples = trace.getSampleSequence();
             // Lock samples so they don't change on us.
             synchronized (samples)

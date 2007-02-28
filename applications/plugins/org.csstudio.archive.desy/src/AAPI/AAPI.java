@@ -44,7 +44,7 @@ public class AAPI {
 
 	// Data reduction (filtering) methods for cmd=DATA_REQUEST_CMD :
 	public final static int		AVERAGE_METHOD				= 1;
-	public final static int		RAW_METHOD					= 2;
+	public final static int		TAIL_RAW_METHOD					= 2;
 	public final static int		SHARP_METHOD				= 3;
 	public final static int		SPLINE_METHOD				= 4;
 	public final static int		FFT_METHOD					= 5;
@@ -54,11 +54,26 @@ public class AAPI {
 	public final static int		STEP_FUNCTION_METHOD		= 9;
 	public final static int		LINEAR_AND_STEP_METHOD		= 10;
 	public final static int		MAX_METHOD_NUMBER			= LINEAR_AND_STEP_METHOD;
+	
+	public final static int		AVERAGE_M				= 1;
+	public final static int		NO_FILTERING_M		= 6;
+	public final static int		MIN_MAX_AVERAGE_M		= 7;
+	public final static int		SHARP_M			= 3;
+	public final static int		SPLINE_M			= 4;
+	public final static int		FFT_M				= 5;
+	public final static int		TAIL_RAW_M				= 2;
+	
+	
+
 //	 Next stringArrray corespondent with data reduction methods list:
 	
 	//19.1.07 AVERAGE changed to plot-binning
-	public final static String requestedTypeList[]={"plot-binning","RAW","SHARP",
-		"SPLINE","FFT","NO_FILTERING","MIN_MAX_AVERAGE","LINEAR_INT","STEP_FUNCTION","LINEAR_AND_STEP"};
+//	public final static String requestedTypeList[]={"plot-binning","RAW","SHARP",
+//		"SPLINE","FFT","NO_FILTERING","MIN_MAX_AVERAGE","LINEAR_INT","STEP_FUNCTION","LINEAR_AND_STEP"};
+	
+	public final static String requestedTypeList[]={"AVERAGE","RAW","MIN_MAX_AVERAGE","SHARP",
+			"SPLINE","FFT","TAIL_RAW"};
+		
 	public final static String severityList[]={"NO_ALARM","MINOR","MAJOR","INVALID","UNDEF"};
 	public final static String alarmStatusString[]={
 			"NO_ALARM",  // This list coming from  $Epics/base/include/alarmString.h

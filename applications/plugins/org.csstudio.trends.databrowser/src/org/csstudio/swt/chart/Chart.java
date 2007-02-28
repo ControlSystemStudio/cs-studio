@@ -415,7 +415,7 @@ public class Chart extends Canvas
     {
         YAxis yaxis = yaxes.get(yaxis_index);
         setRedraw(false);
-        Trace trace = new Trace(name, series, color, line_width, yaxis, type);
+        Trace trace = new Trace(name, series, color, line_width, yaxis, type, autozoom);
         traces.add(trace);
         if (autozoom)
             yaxis.autozoom(xaxis);
@@ -455,17 +455,17 @@ public class Chart extends Canvas
     }
 
     /** Auto-Zoom the selected or all Y axes. */
-    public void autozoom()
+    public void autozoom(boolean checkTraceAutoscale)
     {
         YAxis yaxis = getSelectedYAxis();
         if (yaxis != null)
-            yaxis.autozoom(xaxis);
+            yaxis.autozoom(xaxis, checkTraceAutoscale);
         else
         {
             // Defer redraw until all axes are adjusted...
             setRedraw(false);
             for (YAxis y : yaxes)
-                y.autozoom(xaxis);
+                y.autozoom(xaxis, checkTraceAutoscale);
             setRedraw(true);
         }
     }

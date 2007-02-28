@@ -157,4 +157,25 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 		// TODO Auto-generated method stub
 		return "aapi://krynfs.desy.de:4053";
 	}
+	
+	 @Override
+	 public int getRequestType(String request_name) throws Exception
+	 {
+		if (request_name == "AVERAGE") {
+			return AAPI.AVERAGE_M;
+		} else if (request_name == "RAW") {
+			return AAPI.NO_FILTERING_M;
+		} else if (request_name == "MIN_MAX_AVERAGE") {
+			return AAPI.MIN_MAX_AVERAGE_M;
+		} else if (request_name == "SHARP") {
+			return AAPI.SHARP_M;
+		} else if (request_name == "SPLINE") {
+			return AAPI.SPLINE_M;
+		} else if (request_name == "FFT") {
+			return AAPI.FFT_M;
+		} else if (request_name == "TAIL_RAW") {
+			return AAPI.TAIL_RAW_M;
+		}
+		return 1;
+	}
 }

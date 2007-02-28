@@ -81,8 +81,8 @@ public class BrowserUI extends Composite
                       | Chart.USE_TRACE_NAMES
                       | InteractiveChart.ZOOM_X_FROM_END);
         // Init the X (Time) axis range
-        long now = TimestampFactory.now().seconds();
-        i_chart.getChart().getXAxis().setValueRange(now, now+60);
+        //long now = TimestampFactory.now().seconds();
+        i_chart.getChart().getXAxis().setValueRange(3600);
                 
         // Add scroll button
         scroll_pause = new Button(i_chart.getButtonBar(), SWT.CENTER);        

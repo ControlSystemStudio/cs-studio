@@ -75,7 +75,7 @@ public class ValuesRequest implements ClientRequest
         if (parms.length == 1  &&  parms[0] instanceof Integer)
             input.setNum(((Integer)parms[0]).intValue());
     
-        input.setConversionTag(this.how + 1);
+        input.setConversionTag(this.how );
         input.setConvers_param(AAPI.DEADBAND_PARAM); // DESY specific
     
         int num_returned_channels = this.channels.length;

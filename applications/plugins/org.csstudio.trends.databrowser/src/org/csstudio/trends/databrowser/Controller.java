@@ -228,7 +228,7 @@ public class Controller implements ScannerAndScrollerListener, ArchiveFetchJobLi
                 new_item.getSamples(),
                 new_item.getColor(),
                 new_item.getLineWidth(),
-                yaxis_index, true, Trace.Type.valueOf(new_item.getDisplayType().toString()));
+                yaxis_index, new_item.getIsTraceAutoScalable(), Trace.Type.valueOf(new_item.getDisplayType().toString()));
         // Set initial axis range from model
         controller_changes_yaxes = true;
         YAxis yaxis = trace.getYAxis();
@@ -366,11 +366,13 @@ public class Controller implements ScannerAndScrollerListener, ArchiveFetchJobLi
     	// Since this notification is from another thread, we should invoke autozoom method
     	// to avoid invalid thread call exception.
    	 	this.chart.getDisplay().asyncExec(
-     	    new Runnable () {
+     	   new Runnable () {
      	      public void run () {
      	    	  if(success)
-     	    		  chart.autozoom();
+     	    		  try {
+     	    		  chart.autozoom(true);
+     	    		  } catch(Exception e) {}
      	      } }
-     	   );	
+     	   );
     }
 }

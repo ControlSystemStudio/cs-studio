@@ -60,6 +60,9 @@ public class ModelItem
     /** Y-axis range. */
     private double axis_low, axis_high;
     
+    /** Auto scale trace */
+    private boolean isTraceAutoScalable;
+    
     /** The color for this item.
      *  <p>
      *  Issue:
@@ -119,9 +122,10 @@ public class ModelItem
         this.color = new Color(null, red, green, blue);
         this.line_width = line_width;
         this.log_scale = log_scale;
-        this.data_type = 0;
+        this.data_type = 1;
         this.bins = 400;
         this.display_type = DisplayType.Lines;
+        this.isTraceAutoScalable = true;
         pv = new EPICS_V3_PV(pv_name);
         samples = new ModelSamples(ring_size);
     }    
@@ -257,23 +261,7 @@ public class ModelItem
     		return;
     	
     	data_type = new_data_type;
-    	// If data is cached we should clear the cache.
-    	ArchiveCache cache = ArchiveCache.getInstance();
-    	
-		for (int i=0; i < archives.size(); ++i) 
-		{
-			try {
-				ArchiveServer server = cache.getServer(archives.get(i).getUrl());
-				if(server != null && server instanceof CachingArchiveServer)
-				{
-					// Clear server cache.
-					((CachingArchiveServer)server).clearCache();
-				}
-			}
-			catch(Exception e) { // Don't do anything. 
-			}
-		}
-    	
+
     	// Notify model of this change.
     	model.fireEntryConfigChanged(this);
     }
@@ -284,9 +272,30 @@ public class ModelItem
     
     public void setBins(int new_bins) 
     {	
+    	if(bins == new_bins)
+    		return;
+    	
     	bins = new_bins;
+    	
+    	// Clear cache.
+    	clearSampleCache();
     	// Notify model of this change.
         model.fireEntryConfigChanged(this);
+    }
+    
+    public void setIsTraceAutoScalable(boolean scalable) 
+    {
+    	if(scalable != isTraceAutoScalable) 
+    	{
+    		isTraceAutoScalable = scalable;
+    		// Notify model of this change.
+    		model.fireEntryConfigChanged(this);
+    	}
+    }
+    
+    public final boolean getIsTraceAutoScalable()
+    {
+    	return isTraceAutoScalable;
     }
     
     /** @return Returns the trace line width. */
@@ -314,6 +323,8 @@ public class ModelItem
     {
     	if(display_type == new_display_type)
     		return;
+    	
+    	clearSampleCache();
     	
     	display_type = new_display_type;
     	// Notify model of this change.
@@ -609,6 +620,28 @@ public class ModelItem
                 }
             }
         }
+    }
+    
+    private void clearSampleCache()
+    {
+    	// If data is cached we should clear the cache.
+    	ArchiveCache cache = ArchiveCache.getInstance();
+    	
+		for (int i=0; i < archives.size(); ++i) 
+		{
+			try {
+				ArchiveServer server = cache.getServer(archives.get(i).getUrl());
+				if(server != null && server instanceof CachingArchiveServer)
+				{
+					// Clear server cache.
+					((CachingArchiveServer)server).clearCache();
+					// Clear samples archive.
+					this.samples.clearArchive();
+				}
+			}
+			catch(Exception e) { // Don't do anything. 
+			}
+		}
     }
     
     @Override

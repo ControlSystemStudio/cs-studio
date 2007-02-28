@@ -57,6 +57,12 @@ public class CachingArchiveServer extends ArchiveServer
     @Override
     public String[] getRequestTypes()
     {   return server.getRequestTypes();  }
+    
+    @Override
+    public int getRequestType(String request_name) throws Exception
+	{
+    	return server.getRequestType(request_name);
+	}
 
     @SuppressWarnings("nls")
     @Override

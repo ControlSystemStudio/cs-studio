@@ -23,6 +23,7 @@ public class Trace
     private YAxis  yaxis;
     private Rectangle labelLayout;
     private Type type;
+    private boolean isAutoScalable;
     
     public enum Type 
     {
@@ -36,8 +37,9 @@ public class Trace
     public Trace(String name, ChartSampleSequence series, Color color,
             int line_width, YAxis yaxis) {
     	
-    	this(name, series, color, line_width, yaxis, Type.Lines);
+    	this(name, series, color, line_width, yaxis, Type.Lines, true);
     }
+    
     /** Create a new trace.
      * 
      *  @param series The SampleSeries interface.
@@ -46,7 +48,7 @@ public class Trace
      *  @param yaxis The axis to which the trace attaches.
      */
     public Trace(String name, ChartSampleSequence series, Color color,
-                    int line_width, YAxis yaxis, Trace.Type type)
+                    int line_width, YAxis yaxis, Trace.Type type, boolean autoScale)
     {
         this.name = name;
         this.samples = series;
@@ -54,6 +56,7 @@ public class Trace
         this.line_width = line_width;
         this.yaxis = yaxis;
         this.type = type;
+        this.isAutoScalable = autoScale;
         yaxis.addTrace(this);
     }
 
@@ -70,7 +73,16 @@ public class Trace
     /** @return Returns the name of this trace. */
     public final String getName()
     {
-        return name;
+    	return name;
+    }
+    
+    /** @return Returns the name of this trace as it is displayed on the chart. */
+    public final String getDisplayName() 
+    {
+    	if(!this.getIsAutoScalable())
+    		return this.getName();
+    	
+    	return this.getName() + "*"; //$NON-NLS-1$
     }
 
     /** @return Returns the SampleSequence interface for this trace. */
@@ -116,6 +128,16 @@ public class Trace
     void setYAxis(YAxis yaxis)
     {
         this.yaxis = yaxis;
+    }
+    
+    public void setIsAutoScalable(boolean scalable) 
+    {
+    	isAutoScalable = scalable;
+    }
+    
+    public final boolean getIsAutoScalable()
+    {
+    	return isAutoScalable;
     }
     
     /** @return Returns trace type */

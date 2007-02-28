@@ -137,4 +137,8 @@ public class ModelSamples implements ChartSampleSequence
             size += archive_samples.size();
         return size;
     }
+    
+    synchronized public void clearArchive() {
+    	this.archive_samples = null;
+    }
 }

@@ -56,19 +56,34 @@ public class PVTableCellModifier implements ICellModifier
             else if (id == PVTableHelper.TYPE) {
                 return new Boolean(entry.getLogScale());
             }
+            else if (id == PVTableHelper.AUTOSCALE) {
+            	return new Boolean(entry.getIsTraceAutoScalable());
+            }
             else if (id == PVTableHelper.DATATYPE) 
             {
             	try {
             		// Let's update the columns datatype options.
             		IArchiveDataSource archives[] = entry.getArchiveDataSources();
-                	((ComboBoxCellEditor)view.getPVTableViewer().getCellEditors()[PVTableHelper.DATATYPE]).setItems(ArchiveCache.getInstance().getServer(archives[0].getUrl()).getRequestTypes());
+            		// Get server.
+            		ArchiveServer server = ArchiveCache.getInstance().getServer(archives[0].getUrl());
+            		// Get dataTypes.
+            		String[] dataTypes = server.getRequestTypes();
+            		// Fill combo box
+                	((ComboBoxCellEditor)view.getPVTableViewer().getCellEditors()[PVTableHelper.DATATYPE]).setItems(dataTypes);
+                	// Find index.
+                	for(int i = 0; i < dataTypes.length; i++) 
+                	{
+                		if(server.getRequestType(dataTypes[i]) == entry.getDataType())
+                			return new Integer(i);
+                	}
             	}
                 catch(Exception e) 
                 {
                 	// If we catch an exception than we allowe only one option.
                 	((ComboBoxCellEditor)view.getPVTableViewer().getCellEditors()[PVTableHelper.DATATYPE]).setItems(new String[] {"N/A"}); //$NON-NLS-1$
                 }
-                return new Integer(entry.getDataType());
+                // We'll return the default value.
+                return new Integer(0);
             }
             else if(id == PVTableHelper.DISPLAYTYPE) 
             {
@@ -136,39 +151,50 @@ public class PVTableCellModifier implements ICellModifier
                 boolean use_log = ((Boolean)value).booleanValue();
                 entry.setLogScale(use_log);
             }
+            else if(id == PVTableHelper.AUTOSCALE && value != null) 
+            {
+            	boolean auto_scale = ((Boolean)value).booleanValue();
+            	entry.setIsTraceAutoScalable(auto_scale);
+            }
             else if (id == PVTableHelper.DATATYPE && value != null) 
             {
-            	int new_data_type = Integer.valueOf(value.toString());
-            	
-            	// We'll set data only if needed.
-            	if (new_data_type != entry.getDataType()) 
+            	try
             	{
-            		entry.setDataType(new_data_type);
-            		
-					// Set default display type.
-					try {
-						// Let's update the columns datatype options.
-						IArchiveDataSource archives[] = entry
-								.getArchiveDataSources();
-						// We can current server name.
-						String serverName = ArchiveCache.getInstance()
-								.getServer(archives[0].getUrl())
-								.getServerName();
-						// Now lets chech if there is an default display type
-						// value.
-						String dataTypeString = ((ComboBoxCellEditor) view
-								.getPVTableViewer().getCellEditors()[PVTableHelper.DATATYPE])
-								.getItems()[new_data_type];
-						entry.setDisplayType(DataTypeMapper.getInstance()
-								.getDisplayType(serverName, dataTypeString));
-					} catch (Exception e) {
-						// If we catch an exception than we allow only one
-						// option.
-						((ComboBoxCellEditor) view.getPVTableViewer()
-								.getCellEditors()[PVTableHelper.DATATYPE])
-								.setItems(new String[] { "N/A" }); //$NON-NLS-1$
-					}
+					int comboIndex = Integer.valueOf(value.toString());
 
+					// Now let's get the actual selected string. eg.
+					// MIN_MAX_AVERAGe
+					String dataTypeString = ((ComboBoxCellEditor) view
+							.getPVTableViewer().getCellEditors()[PVTableHelper.DATATYPE])
+							.getItems()[comboIndex];
+
+					// We'll need to get an archive server.
+					IArchiveDataSource archives[] = entry
+							.getArchiveDataSources();
+					ArchiveServer archiveServer = ArchiveCache.getInstance()
+							.getServer(archives[0].getUrl());
+
+					int new_data_type = archiveServer.getRequestType(dataTypeString);
+					
+					// We'll set data only if needed.
+					if (new_data_type != entry.getDataType()) {
+						
+						// Now set new data type
+						entry.setDataType(new_data_type);
+
+						// Now lets chech if there is an default display
+						// type value.
+						entry.setDisplayType(DataTypeMapper.getInstance()
+									.getDisplayType(
+											archiveServer.getServerName(),
+											dataTypeString));
+					}
+				} catch (Exception e) {
+					// If we catch an exception than we allow only one
+					// option.
+					((ComboBoxCellEditor) view.getPVTableViewer()
+							.getCellEditors()[PVTableHelper.DATATYPE])
+							.setItems(new String[] { "N/A" }); //$NON-NLS-1$
 				}
             }
             else if(id == PVTableHelper.BINS && value != null)

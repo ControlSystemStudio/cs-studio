@@ -111,6 +111,12 @@ public interface IModelItem
     /** Set new display type for this model. */
     public abstract void setDisplayType(DisplayType new_display_type);
     
+    /** @return Returns weather trace should be auto scaled. */
+    public abstract boolean getIsTraceAutoScalable();
+    
+    /** Set weather trace should be auto scaled. */
+    public abstract void setIsTraceAutoScalable(boolean scalable); 
+    
     /** @return <code>true</code> if using log. scale */
     public abstract boolean getLogScale();
 

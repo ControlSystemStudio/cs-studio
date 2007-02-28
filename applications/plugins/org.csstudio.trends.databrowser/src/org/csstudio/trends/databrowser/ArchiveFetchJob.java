@@ -76,7 +76,7 @@ class ArchiveFetchJob extends Job
                 else
                 {
                 	fireUpdateDoneEvent(false);
-                    throw new Exception("Didn't get expected response"); //$NON-NLS-1$
+                    throw new Exception("Didn't get expected response."); //$NON-NLS-1$
                 }
                 
                 // Notify controler we are done.

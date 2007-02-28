@@ -322,6 +322,7 @@ public class ConfigView extends PlotAwareView
         editors[PVTableHelper.DATATYPE] = new ComboBoxCellEditor(table, new String[] {}, SWT.READ_ONLY);
         editors[PVTableHelper.BINS] = new TextCellEditor(table);
         editors[PVTableHelper.DISPLAYTYPE] = new ComboBoxCellEditor(table, IModelItem.DisplayType.toStringArray(), SWT.READ_ONLY);
+        editors[PVTableHelper.AUTOSCALE] = new CheckboxCellEditor(table);
         
         pv_table_viewer.setColumnProperties(PVTableHelper.properties);
         pv_table_viewer.setCellEditors(editors);
