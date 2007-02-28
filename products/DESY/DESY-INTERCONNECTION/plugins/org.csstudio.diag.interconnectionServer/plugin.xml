@@ -23,5 +23,13 @@
             id="org.csstudio.diag.interconnectionServer.loginHandler1"
             name="org.csstudio.diag.interconnectionServer.loginHandler1"/>
    </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <parametrizedAction
+            class="org.csstudio.diag.interconnectionServer.SampleAction"
+            id="org.csstudio.diag.interconnectionServer.sampleAction"
+            name="Sample Action"
+            parameters="param1,param2"/>
+   </extension>
 
 </plugin>
