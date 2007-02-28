@@ -22,6 +22,8 @@
 package org.csstudio.utility.nameSpaceBrowser;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -70,5 +72,32 @@ public class Activator extends AbstractCssUiPlugin {
 	public String getPluginId() {
 		return PLUGIN_ID;
 	}
+
+	/** Add informational message to the plugin log. */
+    public static void logInfo(String message)
+    {
+        getDefault().log(IStatus.INFO, message, null);
+    }
+
+    /** Add error message to the plugin log. */
+    public static void logError(String message)
+    {
+        getDefault().log(IStatus.ERROR, message, null);
+    }
+
+    /** Add an exception to the plugin log. */
+    public static void logException(String message, Exception e)
+    {
+        getDefault().log(IStatus.ERROR, message, e);
+    }
+
+    /** Add a message to the log.
+     * @param type
+     * @param message
+     */
+    private void log(int type, String message, Exception e)
+    {
+        getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
+    }
 
 }

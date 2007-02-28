@@ -8,6 +8,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform,
- org.csstudio.platform.ui,
- org.csstudio.utility.ldap
+ org.csstudio.utility.ldap,
+ org.csstudio.platform.ui
 Eclipse-LazyStart: true

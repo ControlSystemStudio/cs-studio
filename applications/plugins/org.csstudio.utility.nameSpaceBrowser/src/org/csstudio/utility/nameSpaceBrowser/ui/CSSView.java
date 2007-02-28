@@ -27,13 +27,17 @@ import java.util.LinkedHashMap;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.naming.directory.SearchControls;
+
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
+import org.csstudio.utility.nameSpaceBrowser.Activator;
 import org.csstudio.utility.nameSpaceBrowser.Messages;
 import org.csstudio.utility.ldap.reader.ErgebnisListe;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
+import org.csstudio.utility.nameSpaceBrowser.utility.Automat.Zustand;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuListener;
@@ -57,8 +61,6 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
@@ -93,10 +95,10 @@ public class CSSView extends Composite implements Observer{
 	private Display disp;
 	private Composite parent;
 	private Group group;
-	private final ListViewer list;
+	private final ListViewer listViewer;
 	private boolean haveChildern = false;
 	private CSSView children;
-	private Automat auto;
+	private Automat automat;
 	private LinkedHashMap<String, ControlSystemItem> itemList;
 	private int start =-1;
 
@@ -137,38 +139,51 @@ public class CSSView extends Composite implements Observer{
 
 	public CSSView(final Composite parent, Automat automat, IWorkbenchPartSite site , String defaultFilter, String selection) {
 		super(parent, SWT.NONE);
+
 		this.parent = parent;
 		this.site = site;
+		defaultPVFilter = defaultFilter;
+
 		disp = parent.getDisplay();
 		ergebnisListe = new ErgebnisListe();
 		ergebnisListe.addObserver(this);
 
-		defaultPVFilter = defaultFilter;
-		auto = automat;
+
+		this.automat = automat;
 		init();
 		// Make a Textfield to Filter the list. Can text drop
 		makeFilterField();
 		//
-	 	list = new ListViewer(group,SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
-	 	list.getList().setSize(getClientArea().x-100, getClientArea().y-100);
-	 	list.getList().addPaintListener(new PaintListener(){
-			public void paintControl(PaintEvent e) {
-				list.getList().setSize(getSize().x-16, getSize().y-(filter.getSize().y+31));
-			}
-	 	});
-	 	list.setLabelProvider(new myLabelProvider());
-	 	list.setContentProvider(new ArrayContentProvider());
-	 	list.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
-
  		try{
  		 	String tmp= selection.split("=")[0]; //$NON-NLS-1$
- 			para = auto.event(Automat.Ereignis.valueOf(tmp),selection);
+ 			para = this.automat.event(Automat.Ereignis.valueOf(tmp),selection);
 		}catch (IllegalArgumentException e) {
-			para = auto.event(Automat.Ereignis.UNKNOWN,selection);
+			para = this.automat.event(Automat.Ereignis.UNKNOWN,selection);
 		}
+
+		Zustand zu = Automat.getZustand();
+		if(zu==Zustand.RECORD){
+				listViewer = new ListViewer(group,SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+		}
+		else{
+			listViewer = new ListViewer(group,SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
+		}
+	 	listViewer.getControl().getStyle();
+	 	listViewer.getList().setSize(getClientArea().x-100, getClientArea().y-100);
+	 	listViewer.getList().addPaintListener(new PaintListener(){
+			public void paintControl(PaintEvent e) {
+				listViewer.getList().setSize(getSize().x-16, getSize().y-(filter.getSize().y+31));
+			}
+	 	});
+	 	listViewer.setLabelProvider(new myLabelProvider());
+	 	listViewer.setContentProvider(new ArrayContentProvider());
+	 	listViewer.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
 		try{
-//			LDAPReader reader = new LDAPReader(para.name, para.filter,ergebnisListe);
-			LDAPReader ldapr = new LDAPReader(para.name, para.filter,ergebnisListe);
+			LDAPReader ldapr;
+			if(selection.endsWith("=*"))
+				ldapr = new LDAPReader(para.name, para.filter,SearchControls.SUBTREE_SCOPE, ergebnisListe);
+			else
+				ldapr = new LDAPReader(para.name, para.filter,SearchControls.ONELEVEL_SCOPE, ergebnisListe);
 			ldapr.addJobChangeListener(new JobChangeAdapter() {
 		        public void done(IJobChangeEvent event) {
 		        if (event.getResult().isOK())
@@ -176,56 +191,9 @@ public class CSSView extends Composite implements Observer{
 		        }
 		     });
 			ldapr.schedule();
-
-			//TODO: Hier muss geändert werden. Da LDAPReader auf Job umgestellt wurde
-//			fillItemList(reader.getStringArray());
 		}catch (IllegalArgumentException e) {
-			// TODO: Errorhandling
+			Activator.logException("", e);
 		}
-
-//		// fill the List
-//		if(itemList!=null){
-//			list.setInput(new ArrayList<ControlSystemItem>(itemList.values()).toArray(new ControlSystemItem[0]));
-//		}
-//
-//		list.addFilter(new ViewerFilter() {
-//			@Override
-//			public boolean select(Viewer viewer, Object parentElement, Object element) {
-//				return true;
-//			}
-//			@Override
-//			public Object[] filter(Viewer viewer, Object parent, Object[] elements){
-//				String search = filter.getText().trim();
-//				ArrayList<Object> al = new ArrayList<Object>();
-//				for (Object element : elements) {
-//					String name=""; //$NON-NLS-1$
-//					if (element instanceof IControlSystemItem)
-//						name= ((IControlSystemItem) element).getName();
-//					if(search.length()==0||name.toLowerCase().matches(search.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace("?", ".?").toLowerCase()+".*")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
-//						al.add(element);
-//					}
-//				}
-//				return al.toArray();
-//			}
-//   	    });
-//
-//		list.addSelectionChangedListener(new ISelectionChangedListener() {
-//			public void selectionChanged(SelectionChangedEvent event) {
-//				// TODO: Checken dadurch vermieden werden kann elemente zu höfig anzuklicken
-//				parent.setEnabled(false);
-//				makeChildren(para);
-//				parent.setEnabled(true);
-//			}
-//		});
-//
-//		parent.layout();
-//		parent.pack();
-//
-//		// Make List Drageble
-//		new ProcessVariableDragSource(list.getControl(), list);
-//		// MB3
-//		makeContextMenu();
-//
 	}
 
 	private void init() {
@@ -287,7 +255,7 @@ public class CSSView extends Composite implements Observer{
 		filter.addKeyListener(new KeyListener() {
 			public void keyReleased(KeyEvent e) {
 				if(e.keyCode==SWT.CR){
-					list.setInput(new ArrayList<Object>(itemList.values()).toArray());
+					listViewer.setInput(new ArrayList<Object>(itemList.values()).toArray());
 				}
 			}
 			public void keyPressed(KeyEvent e) {}
@@ -323,7 +291,7 @@ public class CSSView extends Composite implements Observer{
 			}
 			String[] token = saubereListe.split("[,=]"); //$NON-NLS-1$
 
-			if(token.length<2) {System.out.println(Messages.getString("CSSView.Error1")+row+"'");break;} //$NON-NLS-1$ //$NON-NLS-2$
+			if(token.length<2) {Activator.logError(Messages.getString("CSSView.Error1")+row+"'");break;} //$NON-NLS-1$ //$NON-NLS-2$
 
 			if(token[0].compareTo("eren")==0){ //$NON-NLS-1$
 				itemList.put(token[1],new ProcessVariable(token[1], saubereListe));
@@ -346,10 +314,10 @@ public class CSSView extends Composite implements Observer{
 	private void workItemList(){
 		// fill the List
 		if(itemList!=null){
-			list.setInput(new ArrayList<ControlSystemItem>(itemList.values()).toArray(new ControlSystemItem[0]));
+			listViewer.setInput(new ArrayList<ControlSystemItem>(itemList.values()).toArray(new ControlSystemItem[0]));
 		}
 
-		list.addFilter(new ViewerFilter() {
+		listViewer.addFilter(new ViewerFilter() {
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				return true;
@@ -370,12 +338,14 @@ public class CSSView extends Composite implements Observer{
 			}
    	    });
 
-		list.addSelectionChangedListener(new ISelectionChangedListener() {
+		listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				// TODO: Checken dadurch vermieden werden kann elemente zu höfig anzuklicken
-				parent.setEnabled(false);
-				makeChildren(para);
-				parent.setEnabled(true);
+				// TODO: Checken ob dadurch vermieden werden kann das ein Elemente zu häufig angeklickt werden kann.
+				if(para.newCSSView){
+					parent.setEnabled(false);
+					makeChildren(para);
+					parent.setEnabled(true);
+				}
 			}
 		});
 
@@ -383,7 +353,7 @@ public class CSSView extends Composite implements Observer{
 		parent.pack();
 
 		// Make List Drageble
-		new ProcessVariableDragSource(list.getControl(), list);
+		new ProcessVariableDragSource(listViewer.getControl(), listViewer);
 		// MB3
 		makeContextMenu();
 
@@ -399,26 +369,26 @@ public class CSSView extends Composite implements Observer{
 			while(!children.isDisposed()){;}
 		}
 //		make new Children
-		if(parameter.newCSSView){
-			((GridLayout) parent.getLayout()).numColumns++;
+
+		((GridLayout) parent.getLayout()).numColumns++;
 //			The first element is the "All" element
-			if(list.getList().getSelectionIndex()>start){
-				// if instanceof ProcessVariable
-				if (itemList.get(list.getSelection().toString().substring(1, list.getSelection().toString().length()-1)) instanceof ProcessVariable) {
-					ProcessVariable pv = (ProcessVariable) itemList.get(list.getSelection().toString().substring(1, list.getSelection().toString().length()-1));
-					children = new CSSView(parent, auto,site,defaultPVFilter,pv.getPath()+","); //$NON-NLS-1$
-				}
-				else{
-					ControlSystemItem csi = (ControlSystemItem) itemList.get(list.getSelection().toString().substring(1, list.getSelection().toString().length()-1));
-					children = new CSSView(parent, auto,site,defaultPVFilter,csi.getPath()+","); //$NON-NLS-1$
-				}
+		if(listViewer.getList().getSelectionIndex()>start){
+			// if instanceof ProcessVariable
+			if (itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1)) instanceof ProcessVariable) {
+				ProcessVariable pv = (ProcessVariable) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
+				children = new CSSView(parent, this.automat,site,defaultPVFilter,pv.getPath()+","); //$NON-NLS-1$
 			}
 			else{
-				String df = itemList.values().toArray(new ControlSystemItem[0])[1].getPath().split("=")[0]+"=*"; //$NON-NLS-1$ //$NON-NLS-2$
-				children = new CSSView(parent, auto, site,defaultPVFilter,df); //$NON-NLS-1$
+				ControlSystemItem csi = (ControlSystemItem) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
+				children = new CSSView(parent, this.automat,site,defaultPVFilter,csi.getPath()+","); //$NON-NLS-1$
 			}
-			haveChildern=true;
 		}
+		else{
+			String df = itemList.values().toArray(new ControlSystemItem[0])[1].getPath().split("=")[0]+"=*"; //$NON-NLS-1$ //$NON-NLS-2$
+			children = new CSSView(parent, this.automat, site,defaultPVFilter,df); //$NON-NLS-1$
+		}
+		haveChildern=true;
+
 		parent.setRedraw(true);
 	}
 
@@ -427,7 +397,7 @@ public class CSSView extends Composite implements Observer{
 	}
 
 	public org.eclipse.swt.widgets.List getList(){
-		return list.getList();
+		return listViewer.getList();
 	}
 
 	@Override
@@ -449,24 +419,25 @@ public class CSSView extends Composite implements Observer{
 	// Make the MB3 ContextMenu
 	private void makeContextMenu() {
 		MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-		Control contr = list.getControl();
+		Control contr = listViewer.getControl();
 		manager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
 				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 			}
 		});
-		contr.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				super.mouseDown(e);
-				if (e.button == 3) {
-					list.getList().setSelection(e.y/list.getList().getItemHeight()+list.getList().getVerticalBar().getSelection());
-				}
-			}
-		});
+//		contr.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseDown(MouseEvent e) {
+//				super.mouseDown(e);
+//				if (e.button == 3) {
+//					list.getSelection();
+////					list.getList().setSelection(e.y/list.getList().getItemHeight()+list.getList().getVerticalBar().getSelection());
+//				}
+//			}
+//		});
 		Menu menu = manager.createContextMenu(contr);
 		contr.setMenu(menu);
-		site.registerContextMenu(manager, list);
+		site.registerContextMenu(manager, listViewer);
 	}
 
 	// Setzt den Defaultfilter für IProzessVariablen
@@ -485,8 +456,6 @@ public class CSSView extends Composite implements Observer{
 			public void run() {
 				fillItemList(ergebnisListe.getAnswer());
 				workItemList();
-//				answer.setText(text);
-//				answer.getParent().layout();
 			}
 		});
 

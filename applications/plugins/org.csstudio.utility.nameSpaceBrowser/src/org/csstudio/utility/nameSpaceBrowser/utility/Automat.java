@@ -27,7 +27,7 @@ import java.util.ListIterator;
 //import org.csstudio.utility.nameSpaceBrowser.Messages;
 
 public class Automat {
-	private enum Zustand {FACILITY,CONTROLLER,RECORD};
+	public enum Zustand {FACILITY,CONTROLLER,RECORD};
 	public enum Ereignis {ou,efan,econ,UNKNOWN};
 	private static Zustand zustand = Zustand.FACILITY;
 //	private static String[] nuf ={"",""};
@@ -206,5 +206,10 @@ public class Automat {
 		Ereignis e;
 		e= Ereignis.valueOf(zustand.name());
 		return e;
+	}
+
+	public Zustand name() {
+		return zustand;
+
 	}
 }
