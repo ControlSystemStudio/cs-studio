@@ -189,7 +189,7 @@ public class MainView extends ViewPart implements Observer{
 //		world.getImageData().
 
 		// make ErgebnisTable
-		ergebnissTableView = new TableViewer(parent,SWT.SINGLE|SWT.FULL_SELECTION);
+		ergebnissTableView = new TableViewer(parent,SWT.MULTI|SWT.FULL_SELECTION);
 		Table ergebnissTable = ergebnissTableView.getTable();
 		ergebnissTable.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,3,1));
 		ergebnissTable.setLinesVisible (true);
