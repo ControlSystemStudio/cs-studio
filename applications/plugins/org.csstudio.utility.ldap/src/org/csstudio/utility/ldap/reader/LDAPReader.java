@@ -40,12 +40,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 public class LDAPReader extends Job {
-//	public enum  Ebene {KRYO, FACILITY, CONTROLLER, DEVICE, RECORD};
-
 	private String name;
 	private String filter;
 	private int defaultScope=SearchControls.SUBTREE_SCOPE;
-	private int searchScope;
 	private ArrayList<String> list;
 	private ErgebnisListe ergebnisListe;
 
@@ -84,57 +81,54 @@ public class LDAPReader extends Job {
 		env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
 		env.put(Context.PROVIDER_URL,
 				Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_URL));
+		if(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.SECURITY_PROTOCOL).trim().length()>0)
+			env.put(Context.SECURITY_PROTOCOL,
+					Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.SECURITY_PROTOCOL));
+		if(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.SECURITY_AUTHENTICATION).trim().length()>0)
+			env.put(Context.SECURITY_AUTHENTICATION,
+				Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.SECURITY_AUTHENTICATION));
 		// user
-		env.put(Context.SECURITY_PRINCIPAL, Activator
+		if(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_USER_DN).trim().length()>0)
+			env.put(Context.SECURITY_PRINCIPAL, Activator
 				.getDefault().getPluginPreferences().getString(	PreferenceConstants.P_STRING_USER_DN));
 		// password
-		env.put(Context.SECURITY_CREDENTIALS, Activator
+		if(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_USER_PASSWORD).trim().length()>0)
+			env.put(Context.SECURITY_CREDENTIALS, Activator
 				.getDefault().getPluginPreferences().getString(	PreferenceConstants.P_STRING_USER_PASSWORD));
 		// Create initial context
 		try {
-			return new InitialDirContext(env);
+			InitialDirContext ctx = new InitialDirContext(env);
+			return ctx;
 		}catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Activator.logException("Ungültiger LDAP Pfad", e);
 		}
 		return null;
 	}
-
-//	public ArrayList<String> getStringArray(){
-//		return list;
-//	}
-//
-//	public void set(String name, String filter) {
-//		this.name=name;
-//		this.filter=filter;
-//	}
-//	public void setScope(int scope){
-//		searchScope= scope;
-//	}
-
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor ) {
 		DirContext ctx;
 		if((ctx = initial())!=null){
 	        SearchControls ctrl = new SearchControls();
-	        // TODO: Muss noch richtig gemacht werden.
-	        searchScope=defaultScope;
-	        ctrl.setSearchScope(searchScope);
+	        ctrl.setSearchScope(defaultScope);
 	        try{
 	        	list = new ArrayList<String>();
 	            NamingEnumeration answer = ctx.search(name, filter, ctrl);
-				while(answer.hasMore()){
-					String name = ((SearchResult)answer.next()).getName();
-					list.add(name);
+	            ctx.search(name, filter, ctrl);
+				try {
+					while(answer.hasMore()){
+						String name = ((SearchResult)answer.next()).getName();
+						list.add(name);
+					}
+				} catch (NamingException e) {
+					Activator.logException("LDAP Fehler", e);
 				}
 				answer.close();
 				ctx.close();
 				ergebnisListe.setAnswer(list);
 				return ASYNC_FINISH;
-//				return Status.OK_STATUS;
-//				return list.toArray(new String[0]);
 			} catch (NamingException e) {
+				Activator.logException("Falscher LDAP Suchpfad.", e);
 				e.printStackTrace();
 			}
 		}

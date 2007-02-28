@@ -25,6 +25,11 @@ import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.Messages;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -48,10 +53,14 @@ public class PreferencePage extends FieldEditorPreferencePage
 		addField(
 			new StringFieldEditor(PreferenceConstants.P_STRING_URL, Messages.getString("PreferencePage.URL"), getFieldEditorParent())); //$NON-NLS-1$
 		addField(
-				new StringFieldEditor(PreferenceConstants.P_STRING_USER_DN, Messages.getString("PreferencePage.DN"), getFieldEditorParent())); //$NON-NLS-1$
-		StringFieldEditor field = new StringFieldEditor(PreferenceConstants.P_STRING_USER_PASSWORD, Messages.getString("PreferencePage.PASS"), getFieldEditorParent()); //$NON-NLS-1$
-		field.getTextControl(getFieldEditorParent()).setEchoChar('*');
-		addField(field);
+			new StringFieldEditor(PreferenceConstants.P_STRING_USER_DN, Messages.getString("PreferencePage.DN"), getFieldEditorParent())); //$NON-NLS-1$
+		addField(
+				new StringFieldEditor(PreferenceConstants.P_STRING_USER_PASSWORD, Messages.getString("PreferencePage.PASS"), getFieldEditorParent())); //$NON-NLS-1$
+		addField(
+				new StringFieldEditor(PreferenceConstants.SECURITY_PROTOCOL, Messages.getString("PreferencePage.SECURITY_PROTOCOL"), getFieldEditorParent())); //$NON-NLS-1$
+		addField(
+				new StringFieldEditor(PreferenceConstants.SECURITY_AUTHENTICATION, Messages.getString("PreferencePage.SECURITY_AUTHENTICATION"), getFieldEditorParent())); //$NON-NLS-1$
+
 	}
 
 	/* (non-Javadoc)

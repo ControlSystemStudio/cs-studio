@@ -21,13 +21,15 @@
  */
 package org.csstudio.utility.ldap;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class Activator extends AbstractCssUiPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.utility.ldap";
@@ -46,17 +48,17 @@ public class Activator extends AbstractUIPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
+	public void doStart(BundleContext context) throws Exception {
+//		super.start(context);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void stop(BundleContext context) throws Exception {
+	public void doStop(BundleContext context) throws Exception {
 		plugin = null;
-		super.stop(context);
+//		super.stop(context);
 	}
 
 	/**
@@ -68,4 +70,34 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	@Override
+	public String getPluginId() {
+		return PLUGIN_ID;
+	}
+	/** Add informational message to the plugin log. */
+    public static void logInfo(String message)
+    {
+        getDefault().log(IStatus.INFO, message, null);
+    }
+
+    /** Add error message to the plugin log. */
+    public static void logError(String message)
+    {
+        getDefault().log(IStatus.ERROR, message, null);
+    }
+
+    /** Add an exception to the plugin log. */
+    public static void logException(String message, Exception e)
+    {
+        getDefault().log(IStatus.ERROR, message, e);
+    }
+
+    /** Add a message to the log.
+     * @param type
+     * @param message
+     */
+    private void log(int type, String message, Exception e)
+    {
+        getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
+    }
 }

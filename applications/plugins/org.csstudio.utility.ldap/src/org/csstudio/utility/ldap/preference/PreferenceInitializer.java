@@ -37,11 +37,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceConstants.P_STRING_URL,
-				"ldap://krykpcr.desy.de:389/o=DESY,c=DE");
-		store.setDefault(PreferenceConstants.P_STRING_USER_DN,
-		"cn=Manager,o=DESY,c=DE");
-		store.setDefault(PreferenceConstants.P_STRING_USER_PASSWORD,"desy");
+		store.setDefault(PreferenceConstants.P_STRING_URL,"ldap://krynfs.desy.de:389/o=DESY,c=DE");
+		store.setDefault(PreferenceConstants.P_STRING_USER_DN,"");
+		store.setDefault(PreferenceConstants.P_STRING_USER_PASSWORD,"");
+		store.setDefault(PreferenceConstants.SECURITY_PROTOCOL,"");
+		store.setDefault(PreferenceConstants.SECURITY_AUTHENTICATION,"");
 	}
 
 }

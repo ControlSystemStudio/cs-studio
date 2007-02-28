@@ -28,4 +28,6 @@ public class PreferenceConstants {
 	public static final String P_STRING_URL = "P_STRING_URL";
 	public static final String P_STRING_USER_DN = "P_STRING_USER_DN";
 	public static final String P_STRING_USER_PASSWORD = "P_STRING_USER_PASSWORD";
-}
+	public static final String SECURITY_PROTOCOL = "SECURITY_PROTOCOL";
+	public static final String SECURITY_AUTHENTICATION = "SECURITY_AUTHENTICATION";
+	}
