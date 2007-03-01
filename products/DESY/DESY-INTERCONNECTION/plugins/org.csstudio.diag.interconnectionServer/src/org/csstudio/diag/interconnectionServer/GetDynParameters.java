@@ -31,9 +31,9 @@ public class GetDynParameters  implements IAction {
 
 	public Object run(Object param) {
 		if ((param != null) && (param.toString().equals("IOC"))) {
-			String[] iocs = {"IOC1", "IOC2", "IOC3"};
-			return iocs;
-//			return Statistic.getInstance().getNodeNameArray();
+//			String[] iocs = {"IOC1", "IOC2", "IOC3"};
+//			return iocs;
+			return Statistic.getInstance().getNodeNameArray();
 		}
 		if ((param != null) && (param.toString().equals("Command"))) {
 			return PreferenceProperties.COMMAND_LIST;
