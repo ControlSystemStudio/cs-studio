@@ -183,13 +183,23 @@ public class InterconnectionServer
         } else {
         	return false;
         }
+	}
+    
+    private InterconnectionServer() {
+    	// absicherung
     }
     
     public static InterconnectionServer getInstance() {
 		//
 		// get an instance of our sigleton
 		//
-
+		if ( thisServer == null) {
+			synchronized (InterconnectionServer.class) {
+				if (thisServer == null) {
+					thisServer = new InterconnectionServer();
+				}
+			}
+		}
 		return thisServer;
 	}
     

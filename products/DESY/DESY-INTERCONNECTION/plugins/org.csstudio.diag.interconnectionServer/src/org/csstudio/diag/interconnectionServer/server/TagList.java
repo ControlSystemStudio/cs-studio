@@ -36,6 +36,8 @@ public class TagList {
 		//
 		tagList  = new Hashtable<String,TagProperties>();
 		messageTypes = new Hashtable<String,Integer>();
+		replyTypes = new Hashtable<String,Integer>();
+
 		fillTagList();
 		fillMessageTypes();
 		fillReplyTypes();

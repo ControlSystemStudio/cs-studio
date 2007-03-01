@@ -9,15 +9,20 @@ public class PreferenceProperties {
 	//
 	
 	public static int DATA_PORT_NUMBER = 18324;
-	public static int COMMAND_PORT_NUMBER = 18326;
+	public static int COMMAND_PORT_NUMBER = 18325;
 
 	public static int SENT_START_ID	= 5000000;
 	
 	//
 	// RMI message transfer takes about 300mS
 	//	
+	/*
 	public static String PRIMARY_JMS_URL = "rmi://krynfs.desy.de:1099/";	//RMI
 	public static String SECONDARY_JMS_URL = "rmi://krykelog.desy.de:1099/";
+	*/
+	
+	public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";	//RMI
+	public static String PRIMARY_JMS_URL = "rmi://krykelog.desy.de:1099/";
 	
 	public static int ERROR_COUNT_BEFORE_SWITCH_JMS_SERVER = 10;
 	
@@ -53,9 +58,9 @@ public class PreferenceProperties {
 	public static final int 	TAG_TYPE_LOG_SERVER_REPLY = 1;
 	public static final String 	TAG_LOG_SERVER_REPLY = "TEST-KEY";
 	public static final int 	TAG_TYPE_IS_TYPE = 2;
-	public static final String 	TAG_IS_TYPE = "ID";
+	public static final String 	TAG_IS_TYPE = "TYPE";
 	public static final int 	TAG_TYPE_IS_ID = 3;
-	public static final String 	TAG_IS_ID = "TYPE";
+	public static final String 	TAG_IS_ID = "ID";
 	public static final int 	TAG_TYPE_IS_REPLY = 4;
 	public static final String 	TAG_IS_REPLY = "REPLY";
 	public static final int 	TAG_TYPE_IS_COMMAND = 5;

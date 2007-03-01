@@ -15,7 +15,7 @@ public class HeadlessRunnable implements IPlatformRunnable {
 
 		System.out.println("start IcServer");
 		
-		thisServer = new InterconnectionServer();
+		thisServer = InterconnectionServer.getInstance();
         
         //System.out.println ("vor start init");
         //Timer.Start.init();
