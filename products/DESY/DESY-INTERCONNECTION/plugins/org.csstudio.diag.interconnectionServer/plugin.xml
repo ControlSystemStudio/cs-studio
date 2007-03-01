@@ -43,6 +43,16 @@
             id="org.csstudio.diag.interconnectionServer.executeRemoteCommand"
             name="Execute Remote Command"
             parameters="param1,param2"/>
+      <dynamicValuesAction
+            class="org.csstudio.diag.interconnectionServer.ExecuteRemoteCommandDyn"
+            id="org.csstudio.diag.interconnectionServer.ExecuteRemoteCommandDyn"
+            loaderActionId="org.csstudio.diag.interconnectionServer.getDynParameters"
+            name="Execute Remote Command Dyn"
+            parameters="Command,IOC"/>
+      <simpleAction
+            class="org.csstudio.diag.interconnectionServer.GetDynParameters"
+            id="org.csstudio.diag.interconnectionServer.getDynParameters"
+            name="GetDynParameters"/>
    </extension>
 
 </plugin>
