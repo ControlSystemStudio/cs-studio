@@ -251,8 +251,6 @@ public final class SimpleSliderFigure extends Panel implements
 	 *            the current slider value
 	 */
 	public void setValue(final int value) {
-		assert value >= _min && value <= _max;
-
 		// disable eventing
 		_populateEvents = false;
 
@@ -260,8 +258,14 @@ public final class SimpleSliderFigure extends Panel implements
 		_currentValue = value;
 
 		// update scrollbar
-		_scrollBar.setValue(_currentValue);
-		_scrollBar.invalidate();
+		if(value < _min || value > _max){
+			// current value is out of the sliders range -> disable the slider
+			_scrollBar.setEnabled(false);
+		} else {
+			_scrollBar.setEnabled(true);
+			_scrollBar.setValue(_currentValue);
+			_scrollBar.invalidate();
+		}
 
 		updateValueText();
 

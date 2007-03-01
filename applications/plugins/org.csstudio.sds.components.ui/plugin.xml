@@ -29,7 +29,10 @@
            typeId="element.slider.simple"/>
      <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.AdvancedSliderEditPart"
-           typeId="element.slider.advanced"/>           
+           typeId="element.slider.advanced"/>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.WaveformEditPart"
+           typeId="element.waveform"/>           
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">

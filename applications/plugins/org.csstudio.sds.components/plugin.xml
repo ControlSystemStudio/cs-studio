@@ -56,7 +56,13 @@
             description="Advanced Slider"
             icon="icons/advancedslider.gif"
             name="Advanced Slider"
-            typeId="element.slider.advanced"/>            
+            typeId="element.slider.advanced"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.WaveformModelFactory"
+            description="Waveform"
+            icon="icons/waveform.gif"
+            name="Waveform"
+            typeId="element.waveform"/>            
    </extension>
 
 </plugin>
