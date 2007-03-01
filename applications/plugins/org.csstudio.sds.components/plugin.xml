@@ -46,11 +46,17 @@
             name="Text Input"
             typeId="element.textinput"/>
       <widgetModelFactory
-            class="org.csstudio.sds.components.internal.model.SliderModelFactory"
-            description="Slider"
+            class="org.csstudio.sds.components.internal.model.SimpleSliderModelFactory"
+            description="Simple Slider"
             icon="icons/slider.gif"
-            name="Slider"
-            typeId="element.slider"/>            
+            name="Simple Slider"
+            typeId="element.slider.simple"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.AdvancedSliderModelFactory"
+            description="Advanced Slider"
+            icon="icons/advancedslider.gif"
+            name="Advanced Slider"
+            typeId="element.slider.advanced"/>            
    </extension>
 
 </plugin>

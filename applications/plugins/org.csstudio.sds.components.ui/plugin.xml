@@ -25,8 +25,11 @@
            class="org.csstudio.sds.components.ui.internal.editparts.TextInputEditPart"
            typeId="element.textinput"/>
      <widgetEditPart
-           class="org.csstudio.sds.components.ui.internal.editparts.SliderEditPart"
-           typeId="element.slider"/>           
+           class="org.csstudio.sds.components.ui.internal.editparts.SimpleSliderEditPart"
+           typeId="element.slider.simple"/>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.AdvancedSliderEditPart"
+           typeId="element.slider.advanced"/>           
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">

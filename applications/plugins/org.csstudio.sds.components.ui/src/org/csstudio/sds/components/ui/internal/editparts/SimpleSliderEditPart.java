@@ -22,8 +22,9 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.components.model.SliderModel;
-import org.csstudio.sds.components.ui.internal.figures.SliderFigure;
+import org.csstudio.sds.components.model.SimpleSliderModel;
+import org.csstudio.sds.components.ui.internal.figures.AdvancedSliderFigure;
+import org.csstudio.sds.components.ui.internal.figures.SimpleSliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
@@ -34,12 +35,12 @@ import org.eclipse.ui.progress.UIJob;
 
 /**
  * EditPart controller for the Slider widget. The controller mediates between
- * {@link SliderModel} and {@link SliderFigure}.
+ * {@link SimpleSliderModel} and {@link AdvancedSliderFigure}.
  * 
  * @author Sven Wende & Stefan Hofer
  * 
  */
-public final class SliderEditPart extends AbstractWidgetEditPart {
+public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 
 	/**
 	 * A UI job, which is used to reset the manual value of the slider figure
@@ -52,12 +53,12 @@ public final class SliderEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		final SliderModel model = (SliderModel) getCastedModel();
+		final SimpleSliderModel model = (SimpleSliderModel) getCastedModel();
 
-		final SliderFigure slider = new SliderFigure();
-		slider.addSliderListener(new SliderFigure.ISliderListener() {
+		final SimpleSliderFigure slider = new SimpleSliderFigure();
+		slider.addSliderListener(new SimpleSliderFigure.ISliderListener() {
 			public void sliderValueChanged(final int newValue) {
-				model.getProperty(SliderModel.PROP_VALUE).setManualValue(
+				model.getProperty(SimpleSliderModel.PROP_VALUE).setManualValue(
 						newValue);
 
 				slider.setManualValue((Integer) newValue);
@@ -98,61 +99,61 @@ public final class SliderEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
-				SliderFigure slider = (SliderFigure) refreshableFigure;
-				slider.setValue((Integer) newValue);
+				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				CentralLogger.getInstance().info(this, "" + (Integer) newValue);
+				slider.setValue((Integer) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SliderModel.PROP_VALUE, valHandler);
+		setPropertyChangeHandler(SimpleSliderModel.PROP_VALUE, valHandler);
 
 		// min
 		IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
-				SliderFigure slider = (SliderFigure) refreshableFigure;
+				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setMin((Integer) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SliderModel.PROP_MIN, minHandler);
+		setPropertyChangeHandler(SimpleSliderModel.PROP_MIN, minHandler);
 
 		// max
 		IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
-				SliderFigure slider = (SliderFigure) refreshableFigure;
+				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setMax((Integer) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SliderModel.PROP_MAX, maxHandler);
+		setPropertyChangeHandler(SimpleSliderModel.PROP_MAX, maxHandler);
 
 		// increment
 		IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
-				SliderFigure slider = (SliderFigure) refreshableFigure;
+				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setIncrement((Integer) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SliderModel.PROP_INCREMENT, incrementHandler);
+		setPropertyChangeHandler(SimpleSliderModel.PROP_INCREMENT, incrementHandler);
 
 		// increment
 		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
-				SliderFigure slider = (SliderFigure) refreshableFigure;
+				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 
 				int orientation = (Integer) newValue;
 				slider.setOrientation(orientation == 0);
 
-				SliderModel model = (SliderModel) getModel();
+				SimpleSliderModel model = (SimpleSliderModel) getModel();
 
 				// invert the size of the element
 				model.setSize(model.getHeight(), model.getWidth());
@@ -160,7 +161,7 @@ public final class SliderEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SliderModel.PROP_ORIENTATION,
+		setPropertyChangeHandler(SimpleSliderModel.PROP_ORIENTATION,
 				orientationHandler);
 
 	}

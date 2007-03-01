@@ -21,7 +21,7 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.components.model.SliderModel;
+import org.csstudio.sds.components.model.SimpleSliderModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.IWidgetModelFactory;
 
@@ -32,18 +32,18 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * @version $Revision$
  * 
  */
-public final class SliderModelFactory implements IWidgetModelFactory {
+public final class SimpleSliderModelFactory implements IWidgetModelFactory {
 	/**
 	 * {@inheritDoc}
 	 */
 	public AbstractWidgetModel createWidgetModel() {
-		return new SliderModel();
+		return new SimpleSliderModel();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Class getWidgetModelType() {
-		return SliderModel.class;
+		return SimpleSliderModel.class;
 	}
 }

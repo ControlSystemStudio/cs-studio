@@ -58,7 +58,7 @@ import org.eclipse.swt.SWT;
  * @version $Revision$
  * 
  */
-public final class SliderFigure extends Panel implements IRefreshableFigure {
+public final class AdvancedSliderFigure extends Panel implements IRefreshableFigure {
 	/**
 	 * Insets for the whole figure.
 	 */
@@ -175,7 +175,7 @@ public final class SliderFigure extends Panel implements IRefreshableFigure {
 	/**
 	 * Standard constructor.
 	 */
-	public SliderFigure() {
+	public AdvancedSliderFigure() {
 
 		_sliderListeners = new ArrayList<ISliderListener>();
 

@@ -33,7 +33,7 @@ import org.csstudio.sds.model.properties.OptionProperty;
  * @version $Revision$
  * 
  */
-public final class SliderModel extends AbstractWidgetModel {
+public final class AdvancedSliderModel extends AbstractWidgetModel {
 
 	/**
 	 * The ID of the value property.
@@ -63,7 +63,7 @@ public final class SliderModel extends AbstractWidgetModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "element.slider"; //$NON-NLS-1$
+	public static final String ID = "element.slider.advanced"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.
@@ -79,7 +79,7 @@ public final class SliderModel extends AbstractWidgetModel {
 	 * Standard constructor.
 	 * 
 	 */
-	public SliderModel() {
+	public AdvancedSliderModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
