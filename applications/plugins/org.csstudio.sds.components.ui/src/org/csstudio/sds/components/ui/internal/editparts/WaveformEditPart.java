@@ -27,10 +27,10 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
 /**
- * EditPart controller for the Label widget. The controller mediates between
+ * EditPart controller for the Waveform widget. The controller mediates between
  * {@link WafeformModel} and {@link WaveformFigure}.
  * 
- * @author Stefan Hofer & Sven Wende
+ * @author Sven Wende
  * 
  */
 public final class WaveformEditPart extends AbstractWidgetEditPart {
