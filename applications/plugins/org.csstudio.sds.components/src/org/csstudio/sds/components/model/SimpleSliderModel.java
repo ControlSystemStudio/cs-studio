@@ -23,7 +23,6 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.eclipse.swt.graphics.RGB;
@@ -107,9 +106,10 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 		addProperty(PROP_INCREMENT, new IntegerProperty("Increment",
 				WidgetPropertyCategory.Behaviour, 1, 0, Integer.MAX_VALUE));
 		addProperty(PROP_ORIENTATION, new OptionProperty("Orientation",
-				WidgetPropertyCategory.Display, new String[] {"Horizontal", "Vertical"}, 0));
-		
-		setBackgroundColor(new RGB(255,255,255));
+				WidgetPropertyCategory.Display, new String[] { "Horizontal",
+						"Vertical" }, 0));
+
+		setBackgroundColor(new RGB(255, 255, 255));
 	}
 
 	/**
@@ -156,7 +156,12 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 		return (Integer) getProperty(PROP_VALUE).getPropertyValue();
 	}
 
+	/**
+	 * Return whether the slider has a horizontal or a vertical orientation.
+	 * 
+	 * @return True if the slider has a horizontal orientation.
+	 */
 	public boolean isHorizontal() {
-		return (Integer) getProperty(PROP_ORIENTATION).getPropertyValue()==0;
+		return (Integer) getProperty(PROP_ORIENTATION).getPropertyValue() == 0;
 	}
 }

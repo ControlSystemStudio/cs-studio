@@ -33,12 +33,11 @@ import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.Orientable;
 import org.eclipse.draw2d.Panel;
-import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RangeModel;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.ScrollBar;
-import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 
 /**
@@ -69,7 +68,7 @@ public final class SimpleSliderFigure extends Panel implements
 	 * A label, which display the current value.
 	 */
 	private Label _valueLabel;
-	
+
 	/**
 	 * Lower border of the displayed value.
 	 */
@@ -97,37 +96,17 @@ public final class SimpleSliderFigure extends Panel implements
 	private boolean _populateEvents = true;
 
 	/**
-	 * The LowLow border.
-	 */
-	private int _lolo = 10;
-
-	/**
-	 * The Low border.
-	 */
-	private int _lo = 25;
-
-	/**
-	 * The High border.
-	 */
-	private int _hi = 70;
-
-	/**
-	 * The HighHigh border.
-	 */
-	private int _hihi = 95;
-
-	/**
 	 * Standard constructor.
 	 */
 	public SimpleSliderFigure() {
 		_populateEvents = false;
-		
+
 		_sliderListeners = new ArrayList<ISliderListener>();
 
 		BorderLayout layout = new BorderLayout();
 		layout.setVerticalSpacing(2);
 		layout.setHorizontalSpacing(2);
-		
+
 		setLayoutManager(layout);
 
 		_valueLabel = new Label();
@@ -135,7 +114,7 @@ public final class SimpleSliderFigure extends Panel implements
 
 		_scrollBar = createScrollbarFigure();
 		add(_scrollBar, BorderLayout.CENTER);
-		
+
 		_populateEvents = true;
 	}
 
@@ -151,7 +130,7 @@ public final class SimpleSliderFigure extends Panel implements
 		bar.setMinimum(1);
 		bar.setValue(400);
 		bar.setStepIncrement(1);
-		bar.setOrientation(ScrollBar.VERTICAL);
+		bar.setOrientation(Orientable.VERTICAL);
 		bar.setBackgroundColor(ColorConstants.blue);
 		Ellipse thumb = new Ellipse();
 		thumb.setSize(new Dimension(40, 40));
@@ -230,15 +209,15 @@ public final class SimpleSliderFigure extends Panel implements
 	}
 
 	/**
-	 * Sets the orientation. Choose one of {@link PositionConstants#HORIZONTAL}
-	 * or {@link PositionConstants#VERTICAL}.
+	 * Sets the orientation. Choose one of PositionConstants#HORIZONTAL or
+	 * PositionConstants#VERTICAL.
 	 * 
 	 * @param horizontal
 	 *            true for horizontal and false for vertical layout
 	 */
 	public void setOrientation(final boolean horizontal) {
-		_scrollBar.setOrientation(horizontal ? ScrollBar.HORIZONTAL
-				: ScrollBar.VERTICAL);
+		_scrollBar.setOrientation(horizontal ? Orientable.HORIZONTAL
+				: Orientable.VERTICAL);
 	}
 
 	/**
@@ -258,7 +237,7 @@ public final class SimpleSliderFigure extends Panel implements
 		_currentValue = value;
 
 		// update scrollbar
-		if(value < _min || value > _max){
+		if (value < _min || value > _max) {
 			// current value is out of the sliders range -> disable the slider
 			_scrollBar.setEnabled(false);
 		} else {
@@ -295,7 +274,8 @@ public final class SimpleSliderFigure extends Panel implements
 	 */
 	private void updateValueText() {
 		// update the value label text
-		_valueLabel.setText("" + _currentValue + " [MAN: " + _manualValue+"]");
+		_valueLabel
+				.setText("" + _currentValue + " [MAN: " + _manualValue + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	/**

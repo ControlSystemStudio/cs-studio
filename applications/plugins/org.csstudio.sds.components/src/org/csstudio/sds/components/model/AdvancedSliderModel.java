@@ -152,6 +152,11 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 		return (Integer) getProperty(PROP_VALUE).getPropertyValue();
 	}
 
+	/**
+	 * Return whether the slider has a horizontal or a vertical orientation.
+	 * 
+	 * @return True if the slider has a horizontal orientation.
+	 */
 	public boolean isHorizontal() {
 		return (Integer) getProperty(PROP_ORIENTATION).getPropertyValue()==0;
 	}

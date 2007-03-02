@@ -21,19 +21,14 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.WaveformModel;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.components.ui.internal.figures.WaveformFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
-import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
-import org.csstudio.sds.uil.CustomMediaFactory;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * EditPart controller for the Label widget. The controller mediates between
- * {@link LabelModel} and {@link RefreshableLabelFigure}.
+ * {@link WafeformModel} and {@link WaveformFigure}.
  * 
  * @author Stefan Hofer & Sven Wende
  * 
@@ -55,6 +50,5 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-
 	}
 }
