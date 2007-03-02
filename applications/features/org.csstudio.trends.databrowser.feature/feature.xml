@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.trends.databrowser.feature"
       label="Databrowser"
-      version="1.0.1">
+      version="1.0.2">
 
    <description url="http://www.example.com/description">
       Databrowser for process variables.
