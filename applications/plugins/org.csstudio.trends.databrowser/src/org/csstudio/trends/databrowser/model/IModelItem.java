@@ -16,8 +16,9 @@ public interface IModelItem
 		Lines(0),
     	Markers(1),
     	Candlestick(2),
-    	HighLowArea(3),
-		MinMaxAverage(4);
+    	//HighLowArea(3),
+		MinMaxAverage(3),
+		Bars(4);
     	
     	private final byte value;
     	

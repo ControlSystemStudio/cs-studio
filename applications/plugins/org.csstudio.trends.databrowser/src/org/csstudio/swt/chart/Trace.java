@@ -32,8 +32,8 @@ public class Trace
     	Lines,
     	Markers,
     	Candlestick,
-    	HighLowArea,
-    	MinMaxAverage
+    	MinMaxAverage,
+    	Bars
     }
     
     public Trace(String name, ChartSampleSequence series, Color color,
