@@ -1,0 +1,214 @@
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+
+/**
+ *
+ */
+package org.epics.css.dal.simulation;
+
+import com.cosylab.naming.URIName;
+
+import org.epics.css.dal.DoubleProperty;
+import org.epics.css.dal.DoubleSeqProperty;
+import org.epics.css.dal.DoubleSeqSimpleProperty;
+import org.epics.css.dal.DoubleSimpleProperty;
+import org.epics.css.dal.EnumProperty;
+import org.epics.css.dal.EnumSimpleProperty;
+import org.epics.css.dal.LongProperty;
+import org.epics.css.dal.LongSimpleProperty;
+import org.epics.css.dal.PatternProperty;
+import org.epics.css.dal.PatternSimpleProperty;
+import org.epics.css.dal.SimpleProperty;
+import org.epics.css.dal.StringProperty;
+import org.epics.css.dal.StringSimpleProperty;
+import org.epics.css.dal.device.AbstractDevice;
+import org.epics.css.dal.proxy.DeviceProxy;
+import org.epics.css.dal.proxy.PropertyProxy;
+import org.epics.css.dal.spi.Plugs;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+
+
+/**
+ * @author ikriznar
+ *
+ */
+public final class SimulatorUtilities
+{
+	private SimulatorUtilities()
+	{
+		super();
+	}
+
+	/**
+	 * Loads to properties configuration, which enables EPICS plug.
+	 * @param p configuration
+	 */
+	public static void configureSimulatorPlug(Properties p)
+	{
+		String[] s = Plugs.getPlugNames(p);
+		Set<String> set = new HashSet<String>(Arrays.asList(s));
+
+		if (!set.contains(SimulatorPlug.PLUG_TYPE)) {
+			set.add(SimulatorPlug.PLUG_TYPE);
+
+			StringBuffer sb = new StringBuffer();
+
+			for (Iterator iter = set.iterator(); iter.hasNext();) {
+				if (sb.length() > 0) {
+					sb.append(',');
+				}
+
+				sb.append(iter.next());
+			}
+
+			p.put(Plugs.PLUGS, sb.toString());
+		}
+
+		p.put(Plugs.PLUGS_DEFAULT, SimulatorPlug.PLUG_TYPE);
+		p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + SimulatorPlug.PLUG_TYPE,
+		    PropertyFactoryImpl.class.getName());
+		p.put(Plugs.PLUG_DEVICE_FACTORY_CLASS + SimulatorPlug.PLUG_TYPE,
+		    DeviceFactoryImpl.class.getName());
+	}
+
+	public static Class<?extends PropertyProxy> getPropertyProxyImplementationClass(
+	    Class<?extends SimpleProperty> propertyType)
+	{
+		if (propertyType.equals(DoubleProperty.class)
+		    || propertyType.equals(DoubleSimpleProperty.class)) {
+			return DoublePropertyProxyImpl.class;
+		}
+
+		if (propertyType.equals(LongProperty.class)
+		    || propertyType.equals(LongSimpleProperty.class)) {
+			return LongPropertyProxyImpl.class;
+		}
+
+		if (propertyType.equals(PatternProperty.class)
+		    || propertyType.equals(PatternSimpleProperty.class)) {
+			return PatternPropertyProxyImpl.class;
+		}
+
+		if (propertyType.equals(StringProperty.class)
+		    || propertyType.equals(StringSimpleProperty.class)) {
+			return StringPropertyProxyImpl.class;
+		}
+
+		if (propertyType.equals(DoubleSeqProperty.class)
+		    || propertyType.equals(DoubleSeqSimpleProperty.class)) {
+			return DoubleSeqPropertyProxyImpl.class;
+		}
+
+		if (propertyType.equals(EnumProperty.class)
+		    || propertyType.equals(EnumSimpleProperty.class)) {
+			return EnumPropertyProxyImpl.class;
+		}
+
+		return DoublePropertyProxyImpl.class;
+	}
+
+	public static Class<?extends DeviceProxy> getDeviceProxyImplementationClass(
+	    Class<?extends AbstractDevice> deviceType)
+	{
+		return DeviceProxyImpl.class;
+	}
+
+	public static Object getCharacteristic(String characteristicName,
+	    PropertyProxy ppi)
+	{
+		DirContext ctx = SimulatorPlug.getInstance().getDefaultDirectory();
+
+		try {
+			URIName uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
+				    ppi.getUniqueName(), null);
+			Attributes attr = ctx.getAttributes(uri);
+			Object characteristic = null;
+
+			if (attr instanceof org.epics.css.dal.directory.Attributes) {
+				org.epics.css.dal.directory.Attributes at = (org.epics.css.dal.directory.Attributes)attr;
+				characteristic = at.getAttributeValue(characteristicName);
+			} else if (attr != null) {
+				characteristic = attr.get(characteristicName).get();
+			}
+
+			if (characteristic == null) {
+				uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
+					    ppi.getClass().getSimpleName(), null);
+				attr = ctx.getAttributes(uri);
+
+				if (attr instanceof org.epics.css.dal.directory.Attributes) {
+					org.epics.css.dal.directory.Attributes at = (org.epics.css.dal.directory.Attributes)attr;
+					characteristic = at.getAttributeValue(characteristicName);
+				} else if (attr != null) {
+					characteristic = attr.get(characteristicName).get();
+				}
+			}
+
+			return characteristic;
+		} catch (NamingException e) {
+			throw new RuntimeException("Cannot instanitate URIName.", e);
+		}
+	}
+
+	public static String[] getCharacteristicNames(PropertyProxy ppi)
+	{
+		DirContext ctx = SimulatorPlug.getInstance().getDefaultDirectory();
+
+		try {
+			URIName uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
+				    ppi.getUniqueName(), null);
+			Attributes attr = ctx.getAttributes(uri);
+
+			if (attr == null) {
+				uri = new URIName(null, SimulatorPlug.DEFAULT_AUTHORITY,
+					    ppi.getClass().getSimpleName(), null);
+				attr = ctx.getAttributes(uri);
+			}
+
+			NamingEnumeration<String> en = attr.getIDs();
+			ArrayList<String> list = new ArrayList<String>();
+
+			while (en.hasMore()) {
+				list.add(en.next());
+			}
+
+			String[] names = new String[list.size()];
+
+			return list.toArray(names);
+		} catch (NamingException e) {
+			throw new RuntimeException("Cannot instanitate URIName.", e);
+		}
+	}
+}
+
+/* __oOo__ */

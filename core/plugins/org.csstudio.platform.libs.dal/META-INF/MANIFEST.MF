@@ -1,19 +1,18 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dal Plug-in
-Bundle-SymbolicName: org.csstudio.platform.libs.dal
+Bundle-SymbolicName: org.csstudio.platform.libs.dal;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.csstudio.dal.Activator
+Bundle-Activator: org.csstudio.dal.DalPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.platform.libs.epics,
  org.junit
 Eclipse-LazyStart: true
-Bundle-ClassPath: lib/caj-1.1.2.jar,
- lib/css-dal-0.2-SNAPSHOT.jar,
- lib/java-common-4.0-SNAPSHOT.jar,
- lib/jca-2.3.0.jar,
+Eclipse-BuddyPolicy: registered
+Bundle-ClassPath: lib/java-common-4.0-SNAPSHOT.jar,
+ lib/concurrent-1.3.1.jar,
  lib/junit-3.8.1.jar,
  .
 Export-Package: com.cosylab.application.state,
@@ -29,17 +28,11 @@ Export-Package: com.cosylab.application.state,
  org.epics.css.dal,
  org.epics.css.dal.commands,
  org.epics.css.dal.context,
- org.epics.css.dal.datatypes.usecase,
  org.epics.css.dal.device,
  org.epics.css.dal.directory,
- org.epics.css.dal.epics,
- org.epics.css.dal.epics.demo,
- org.epics.css.dal.epics.test,
  org.epics.css.dal.group,
  org.epics.css.dal.impl,
- org.epics.css.dal.impl.test,
  org.epics.css.dal.proxy,
  org.epics.css.dal.simulation,
  org.epics.css.dal.simulation.ps,
- org.epics.css.dal.simulator.test,
  org.epics.css.dal.spi
