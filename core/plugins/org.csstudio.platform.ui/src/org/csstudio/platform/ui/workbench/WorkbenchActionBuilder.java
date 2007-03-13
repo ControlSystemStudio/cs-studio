@@ -41,7 +41,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 
 /**
- * An action builder for the menu bars of the control system studio.
+ * An  action builder for the menu bars of the control system studio.
  * 
  * @author Alexander Will
  * 
