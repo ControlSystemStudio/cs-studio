@@ -21,9 +21,12 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.sds.components.model.AbstractPolyModel;
 import org.csstudio.sds.components.model.WaveformModel;
+import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
 import org.csstudio.sds.components.ui.internal.figures.WaveformFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
+import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
 /**
@@ -50,5 +53,16 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		// data array
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setData((double[]) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_WAVE_FORM, handler);
 	}
 }

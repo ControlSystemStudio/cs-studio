@@ -77,25 +77,21 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 */
 	@Override
 	protected void paintFigure(final Graphics graphics) {
+		super.paintFigure(graphics);
+		
 		Rectangle figureBounds = getBounds();
 
-		double i = 0;
-
-		Point lastPoint = null;
-
-		for (double value : _data) {
-			if (lastPoint == null) {
-				lastPoint = new Point(i, value).translate(figureBounds
-						.getTopLeft());
-			}
-
-			Point currentPoint = new Point(i, value).translate(figureBounds
-					.getTopLeft());
-
-			graphics.drawLine(lastPoint, currentPoint);
-
-			lastPoint = currentPoint.getCopy();
-			i += 5;
+	int x = 0;
+		
+		for (int i=0;i<_data.length;i+=5) {
+			x++;
+			double y =150+  _data[i]*100;
+			
+			Point p = new Point(x,y).translate(figureBounds.getTopLeft());
+			
+			graphics.drawPoint(p.x, p.y);
 		}
+	
+	
 	}
 }
