@@ -4,7 +4,7 @@ import org.csstudio.archive.crawl.ValueIterator;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.value.Value;
 
-/** Iterates several <code>RawSampleIterator</code> instances 'in lockstep'
+/** Iterates several <code>ValueIterator</code> instances 'in lockstep'
  *  as required to generate spreadsheet-type output.
  *  <p>
  *  It uses staircase interpolation, basically keeping the last value
@@ -72,7 +72,7 @@ public class SpreadsheetIterator
      *  <pre>
      *    while (sheet.hasNext())
      *    {
-     *        Timestamp time = sheet.getTime();
+     *        ITimestamp time = sheet.getTime();
      *        Value[] line[] = sheet.next();
      *        // time, line[] now contains info
      *        // for the current spreadsheet line
