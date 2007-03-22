@@ -1,12 +1,9 @@
 package org.csstudio.platform.ui.views;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.localization.Messages;
+import org.csstudio.platform.util.ResourceUtil;
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -59,19 +56,9 @@ public final class CreateFolderAction implements IViewActionDelegate {
 				String folderName = inputDialog.getValue();
 
 				if (folderName != null) {
-					IFolder folder = parentContainer.getFolder(new Path(
-							folderName));
-
-					if (folder.exists()) {
-						MessageDialog.openInformation(_view.getSite()
-								.getShell(), Messages.getString("CreateFolderAction.ERROR_TITLE"), //$NON-NLS-1$
+					if (ResourceUtil.getInstance().createFolder(parentContainer, folderName)==ResourceUtil.FOLDEREXISTS) {
+						MessageDialog.openInformation(_view.getSite().getShell(), Messages.getString("CreateFolderAction.ERROR_TITLE"), //$NON-NLS-1$
 								Messages.getString("CreateFolderAction.ERROR_MESSAGE")); //$NON-NLS-1$
-					} else {
-						try {
-							folder.create(true, true, null);
-						} catch (CoreException e) {
-							CentralLogger.getInstance().error(this, e);
-						}
 					}
 				}
 			}

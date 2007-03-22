@@ -24,11 +24,21 @@ package org.csstudio.platform.ui.internal.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.internal.localization.Messages;
+import org.csstudio.platform.ui.util.ImageUtil;
+import org.csstudio.platform.util.ResourceUtil;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -38,6 +48,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -45,8 +56,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.eclipse.ui.part.DrillDownComposite;
 
 /**
  * Workbench-level composite for choosing a container.
@@ -61,6 +73,107 @@ import org.eclipse.ui.part.DrillDownComposite;
  * @version $Revision$
  */
 public final class ContainerSelectionGroup extends Composite {
+	
+	/**
+	 * This action is for creating a new folder.
+	 * 
+	 * @author Kai Meyer
+	 *
+	 */
+	private final class NewFolderAction extends Action {
+		
+		/**
+		 * The Shell.
+		 */
+		private final Shell _shell;
+		
+		/**
+		 * Constructor.
+		 * @param shell
+		 * 			The Shell for this Action
+		 */
+		public NewFolderAction(final Shell shell) {
+			_shell = shell;
+			this.setText("Create new folder");
+			this.setToolTipText("Creates a new folder");
+			this.setImageDescriptor(ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/folder.gif")); //$NON-NLS-1$
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		public void run() {
+			final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(getContainerFullPath());
+			final StringBuffer buffer = new StringBuffer(Messages.getString("CreateFolderAction.DIALOG_MESSAGE"));
+			buffer.append(" (");
+			buffer.append(resource.getFullPath());
+			buffer.append("/..)");
+			final InputDialog inputDialog = new InputDialog(_shell, Messages.getString("CreateFolderAction.DIALOG_TITLE"), //$NON-NLS-1$
+					buffer.toString(), "", null);
+			final int ret = inputDialog.open();
+
+			if (ret == Window.OK) {
+				final String folderName = inputDialog.getValue();
+				if (folderName != null) {
+					if (resource instanceof IContainer) {
+						if (ResourceUtil.getInstance().createFolder((IContainer) resource, folderName)==ResourceUtil.FOLDEREXISTS) {
+							MessageDialog.openInformation(_shell, Messages.getString("CreateFolderAction.ERROR_TITLE"), //$NON-NLS-1$
+									Messages.getString("CreateFolderAction.ERROR_MESSAGE")); //$NON-NLS-1$
+						}
+						refreshTree();
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * This action is for creating a new project.
+	 * 
+	 * @author Kai Meyer
+	 *
+	 */
+	private final class NewProjectAction extends Action {
+		
+		/**
+		 * The Shell.
+		 */
+		private final Shell _shell;
+		
+		/**
+		 * Constructor.
+		 * @param shell
+		 * 			The Shell for this Action
+		 */
+		public NewProjectAction(final Shell shell) {
+			_shell = shell;
+			this.setText("Create new project");
+			this.setToolTipText("Creates a new project");
+			this.setImageDescriptor(ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/project_open.gif"));
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		public void run() {
+			InputDialog inputDialog = new InputDialog(_shell, Messages.getString("CreateProjectAction.DIALOG_TITLE"), //$NON-NLS-1$
+					Messages.getString("CreateProjectAction.DIALOG_MESSAGE"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+			int ret = inputDialog.open();
+
+			if (ret == Window.OK) {
+				String projectName = inputDialog.getValue();
+				if (projectName != null) {
+					if (ResourceUtil.getInstance().createProject(projectName)==ResourceUtil.PROJECTEXISTS) {
+						MessageDialog.openInformation(_shell, Messages.getString("CreateProjectAction.ERROR_TITLE"), //$NON-NLS-1$
+								Messages.getString("CreateProjectAction.ERROR_MESSAGE")); //$NON-NLS-1$
+					}
+					refreshTree();
+				}
+			}
+		}
+	}
+	
+	
 	/**
 	 * The listener to notify of events.
 	 */
@@ -80,6 +193,14 @@ public final class ContainerSelectionGroup extends Composite {
 	 * The tree widget.
 	 */
 	private TreeViewer _treeViewer;
+	/**
+	 * The NewFolderAction.
+	 */
+	private Action _newFolderAction;
+	/**
+	 * The NewProjectAction.
+	 */
+	private Action _newProjectAction;
 
 	/**
 	 * Sizing constant for the width of the tree.
@@ -226,6 +347,15 @@ public final class ContainerSelectionGroup extends Composite {
 		createTreeViewer(heightHint);
 		Dialog.applyDialogFont(this);
 	}
+	
+	/**
+	 * Makes all Actions for this Component.
+	 */
+	private void makeActions() {
+		_newFolderAction = new NewFolderAction(this.getShell());
+		_newFolderAction.setEnabled(false);
+		_newProjectAction = new NewProjectAction(this.getShell());
+	}
 
 	/**
 	 * Returns a new drill down viewer for this dialog.
@@ -259,6 +389,11 @@ public final class ContainerSelectionGroup extends Composite {
 								.getSelection();
 						containerSelectionChanged((IContainer) selection
 								.getFirstElement()); // allow null
+						if (_newFolderAction!=null) {
+							System.out
+									.println("ContainerSelectionGroup.setSelectedContainer() Action");
+							_newFolderAction.setEnabled(selection!=null);
+						}
 					}
 				});
 		_treeViewer.addDoubleClickListener(new IDoubleClickListener() {
@@ -281,6 +416,45 @@ public final class ContainerSelectionGroup extends Composite {
 
 		// This has to be done after the viewer has been laid out
 		_treeViewer.setInput(ResourcesPlugin.getWorkspace());
+		this.makeActions();
+		this.addAdditionalActions(drillDown.getToolBarManager());
+		this.addPopupMenu(_treeViewer);
+	}
+	
+	/**
+	 * Adds a NewFolder- and a NewProjectAction to the given ToolbarManager.
+	 * @param manager 
+	 * 			The ToolBarManager, where the Actions are added
+	 */
+	private void addAdditionalActions(final ToolBarManager manager) {
+		manager.add(new Separator());
+		manager.add(_newFolderAction);
+		manager.add(_newProjectAction);
+		manager.update(true);
+	}
+	
+	/**
+	 * Adds a PopupMenu to the given TreeViewer.
+	 * @param viewer
+	 * 			The TreeViewer, where the PopupMenu is added
+	 */
+	private void addPopupMenu(final TreeViewer viewer) {
+		MenuManager popupMenu = new MenuManager();
+		popupMenu.add(_newFolderAction);
+		popupMenu.add(_newProjectAction);
+		Menu menu = popupMenu.createContextMenu(viewer.getTree());
+		viewer.getTree().setMenu(menu);
+	}
+	
+	/**
+	 * Refreshes the Tree in an async-thread.
+	 */
+	private void refreshTree() {
+		_treeViewer.getTree().getDisplay().asyncExec(new Runnable() {
+			public void run() {
+				_treeViewer.refresh();
+			}
+		});
 	}
 
 	/**
