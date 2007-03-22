@@ -32,7 +32,10 @@
            typeId="element.slider.advanced"/>
      <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.WaveformEditPart"
-           typeId="element.waveform"/>           
+           typeId="element.waveform"/>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.BargraphEditPart"
+           typeId="element.bargraph"/>           
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">

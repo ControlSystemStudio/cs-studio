@@ -62,7 +62,13 @@
             description="Waveform"
             icon="icons/waveform.gif"
             name="Waveform"
-            typeId="element.waveform"/>            
+            typeId="element.waveform"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.BargraphModelFactory"
+            description="Bargraph"
+            icon="icons/bargraph.gif"
+            name="Bargraph"
+            typeId="element.bargraph"/>            
    </extension>
 
 </plugin>
