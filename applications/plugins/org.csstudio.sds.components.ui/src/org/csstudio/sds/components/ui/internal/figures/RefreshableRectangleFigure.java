@@ -25,7 +25,6 @@ import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.RectangleFigure;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
@@ -41,12 +40,16 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	 * The fill grade (0 - 100%).
 	 */
 	private double _fillGrade = 100;
+	
+	/**
+	 * The orientation (horizontal==true | vertical==false).
+	 */
+	private boolean _orientationHorizontal = true;
 
 	/**
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
-
 
 	/**
 	 * {@inheritDoc}
@@ -55,13 +58,21 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	protected synchronized void fillShape(final Graphics graphics) {
 		Rectangle figureBounds = getBounds();
 
-		int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+		//
 
 		graphics.setBackgroundColor(getBackgroundColor());
 		graphics.fillRectangle(getBounds());
 		graphics.setBackgroundColor(getForegroundColor());
-		graphics.fillRectangle(new Rectangle(figureBounds.getLocation(),
-				new Dimension(newW, figureBounds.height)));
+		Rectangle fillRectangle;
+		if (_orientationHorizontal) {
+			int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+			fillRectangle = new Rectangle(figureBounds.x,figureBounds.y,newW,figureBounds.height);
+		} else {
+			int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
+			fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
+		}
+		//new Rectangle(figureBounds.getLocation(),new Dimension(newW, figureBounds.height))
+		graphics.fillRectangle(fillRectangle);
 	}
 
 	/**
@@ -89,6 +100,26 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	 */
 	public double getFill() {
 		return _fillGrade;
+	}
+	
+	/**
+	 * Sets the orientation (horizontal==true | vertical==false).
+	 * 
+	 * @param horizontal
+	 *            The orientation.
+	 */
+	public void setOrientation(final boolean horizontal) {
+		_orientationHorizontal = horizontal;
+	}
+
+	/**
+	 * Gets the orientation (horizontal==true | vertical==false).
+	 * 
+	 * @return boolean
+	 * 				The orientation
+	 */
+	public boolean getOrientation() {
+		return _orientationHorizontal;
 	}
 
 	/**

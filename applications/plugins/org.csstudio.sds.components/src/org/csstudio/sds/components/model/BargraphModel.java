@@ -43,7 +43,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
 	
 	/**
-	 * The ID of the fill grade property.
+	 * The ID of the orientation property.
 	 */
 	public static final String PROP_ORIENTATION = "orientation"; //$NON-NLS-1$
 	
@@ -84,7 +84,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	/**
 	 * The default value of the fill grade property.
 	 */
-	private static final double DEFAULT_FILL = 0.25;//FILL_LO;
+	private static final double DEFAULT_FILL = 25;
 	
 	/**
 	 * The default value of the orientation property.
@@ -156,9 +156,9 @@ public final class BargraphModel extends AbstractWidgetModel {
 	}
 	
 	/**
-	 * Gets the fill level.
+	 * Gets the orientation.
 	 * 
-	 * @return the fill level
+	 * @return the orientation
 	 */
 	public boolean getOrientation() {
 		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();

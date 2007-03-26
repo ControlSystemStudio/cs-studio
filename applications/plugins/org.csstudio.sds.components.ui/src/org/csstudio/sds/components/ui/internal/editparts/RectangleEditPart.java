@@ -44,6 +44,7 @@ public final class RectangleEditPart extends AbstractWidgetEditPart {
 		RectangleModel model = (RectangleModel) getCastedModel();
 
 		RefreshableRectangleFigure rectangle = new RefreshableRectangleFigure();
+		rectangle.setOrientation(model.getOrientation());
 		rectangle.setFill(model.getFillLevel());
 
 		return rectangle;
@@ -65,7 +66,18 @@ public final class RectangleEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(RectangleModel.PROP_FILL, fillHandler);
+		setPropertyChangeHandler(RectangleModel.PROP_FILL, fillHandler);		
+		//orientation
+		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) refreshableFigure;
+				rectangle.setOrientation((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(RectangleModel.PROP_ORIENTATION, orientationHandler);
 	}
 
 }

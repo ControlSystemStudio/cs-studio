@@ -42,6 +42,11 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 	private double _fill = 100.0;
 	
 	/**
+	 * The orientation (horizontal==true | vertical==false).
+	 */
+	private boolean _orientationHorizontal = true;
+	
+	/**
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
@@ -52,15 +57,21 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 	@Override
 	protected void fillShape(final Graphics graphics) {
 		Rectangle figureBounds = getBounds();
-
-		int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-
-		graphics
-				.setClip(new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height));
+		Rectangle backgroundRectangle;
+		Rectangle fillRectangle;
+		if (_orientationHorizontal) {
+			int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+			backgroundRectangle = new Rectangle(figureBounds.x + newW, figureBounds.y, figureBounds.width - newW, figureBounds.height);
+			fillRectangle = new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height); 
+		} else {
+			int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
+			backgroundRectangle = new Rectangle(figureBounds.x, figureBounds.y, figureBounds.width, figureBounds.height-newH);
+			fillRectangle = new Rectangle(figureBounds.x, figureBounds.y+figureBounds.height-newH, figureBounds.width, newH);
+		}
+		graphics.setClip(backgroundRectangle);
 		graphics.setBackgroundColor(getForegroundColor());
 		graphics.fillOval(figureBounds);
-		graphics.setClip(new Rectangle(figureBounds.x + newW, figureBounds.y, figureBounds.width
-				- newW, figureBounds.height));
+		graphics.setClip(fillRectangle);
 		graphics.setBackgroundColor(getBackgroundColor());
 		graphics.fillOval(figureBounds);
 	}
@@ -90,6 +101,26 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 	 */
 	public double getFill() {
 		return _fill;
+	}
+	
+	/**
+	 * Sets the orientation (horizontal==true | vertical==false).
+	 * 
+	 * @param horizontal
+	 *            The orientation.
+	 */
+	public void setOrientation(final boolean horizontal) {
+		_orientationHorizontal = horizontal;
+	}
+
+	/**
+	 * Gets the orientation (horizontal==true | vertical==false).
+	 * 
+	 * @return boolean
+	 * 				The orientation
+	 */
+	public boolean getOrientation() {
+		return _orientationHorizontal;
 	}
 	
 	/**
