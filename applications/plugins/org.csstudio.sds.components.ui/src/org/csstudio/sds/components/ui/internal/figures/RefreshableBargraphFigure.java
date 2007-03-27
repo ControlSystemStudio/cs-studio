@@ -42,11 +42,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		IRefreshableFigure {
 	
 	/**
-	 * Insets for the whole figure.
-	 */
-	private static final int INSETS = 7;
-	
-	/**
 	 * Height of the text.
 	 */
 	private static final int TEXTHEIGHT = 20;
@@ -54,7 +49,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * Width of the text.
 	 */
-	private static final int TEXTWIDTH = 30;
+	private static final int TEXTWIDTH = 35;
 	
 	/**
 	 * The Strings, which are displayed in this figure.
@@ -85,6 +80,16 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * Max value for hihi fill level.
 	 */
 	private static final double HIHI_MAX = 1.0;
+	
+	/**
+	 * The default height of this figure.
+	 */
+	private static final int DEFAULT_HEIGHT = 30;
+	
+	/**
+	 * The default width of this figure.
+	 */
+	private static final int DEFAULT_WIDTH = 200;
 	
 	/**
 	 * The fill grade (0 - 1).
@@ -127,6 +132,14 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	private IBorderEquippedWidget _borderAdapter;
 	
 	/**
+	 * Constructor.
+	 *
+	 */
+	public RefreshableBargraphFigure() {
+		this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	protected synchronized void fillShape(final Graphics graphics) {
@@ -152,9 +165,9 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 */
 	private Rectangle getBarRectangle(final Rectangle bounds) {
 		if (_orientationHorizontal) {
-			return new Rectangle(bounds.x+INSETS+(TEXTWIDTH/2),bounds.y,bounds.width-(2*INSETS)-TEXTWIDTH,bounds.height-(2*INSETS)-TEXTHEIGHT);
+			return new Rectangle(bounds.x+(TEXTWIDTH/2),bounds.y,bounds.width-TEXTWIDTH,bounds.height-TEXTHEIGHT);
 		}
-		return new Rectangle(bounds.x,bounds.y+INSETS,bounds.width-(2*INSETS)-TEXTWIDTH,bounds.height-(2*INSETS));
+		return new Rectangle(bounds.x,bounds.y+TEXTHEIGHT/2,bounds.width-TEXTWIDTH,bounds.height-TEXTHEIGHT);
 	}
 	
 	/**
