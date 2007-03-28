@@ -23,7 +23,10 @@ package org.csstudio.sds.components.ui.internal.feedback;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polyline;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.handles.SquareHandle;
@@ -40,6 +43,11 @@ public final class PolyPointHandle extends SquareHandle {
 	 * Index of the polygon point, that should be moved.
 	 */
 	private int _pointIndex;
+	
+	/**
+	 * The Polyline for this PolyPointHandle.
+	 */
+	private Polyline _polyline = null;
 
 	/**
 	 * Creates a new Handle for the given GraphicalEditPart.
@@ -51,6 +59,9 @@ public final class PolyPointHandle extends SquareHandle {
 	 */
 	public PolyPointHandle(final GraphicalEditPart owner, final int pointIndex) {
 		super();
+		if (owner.getFigure() instanceof Polyline) {
+			_polyline = (Polyline) owner.getFigure();
+		}
 		_pointIndex = pointIndex;
 		setOwner(owner);
 
@@ -59,7 +70,6 @@ public final class PolyPointHandle extends SquareHandle {
 		setLocator(locator);
 
 		setCursor(Cursors.CROSS);
-		
 	}
 
 	/**
@@ -84,6 +94,22 @@ public final class PolyPointHandle extends SquareHandle {
 	@Override
 	protected Color getFillColor() {
 		return ColorConstants.yellow;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void paintFigure(final Graphics graphics) {
+		//System.out.println("PPH.paintF "+getBounds());
+		if (_polyline!=null) {
+			int height = this.getBounds().height;
+			int width = this.getBounds().width;
+			Point point = _polyline.getPoints().getPoint(_pointIndex);
+			this.setBounds(new Rectangle(point.x-width/2,point.y-height/2,width,height));
+			//System.out.println("PPH.paintF2 "+getBounds());
+		}
+		super.paintFigure(graphics);
 	}
 
 }

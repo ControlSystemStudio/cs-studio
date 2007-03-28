@@ -63,6 +63,12 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	protected void outlineShape(final Graphics graphics) {
 		Rectangle figureBounds = getBounds();
 
+//		PointList pointList = this.getPoints();
+//		for (int i=0;i<pointList.size();i++) {
+//			Point point = pointList.getPoint(i);
+//			graphics.drawString("("+point.x+","+point.y+")", point);
+//		}
+		
 		int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
 		
 		graphics.setClip(new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height));

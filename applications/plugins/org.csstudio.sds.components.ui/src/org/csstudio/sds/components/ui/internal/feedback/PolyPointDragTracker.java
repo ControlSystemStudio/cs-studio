@@ -235,7 +235,6 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 	 */
 	@Override
 	protected Request getSourceRequest() {
-
 		if (_sourceRequest == null) {
 			_sourceRequest = createSourceRequest();
 		}
@@ -255,8 +254,7 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
 	 * Clears and resets the state of the tracker.
 	 */
 	private void resetRequestState() {
-		_oldPoints = ((AbstractPolyModel) _owner.getModel()).getPoints()
-				.getCopy();
+		_oldPoints = ((AbstractPolyModel) _owner.getModel()).getPoints().getCopy();
 		_sourceRequest = null;
 	}
 }
