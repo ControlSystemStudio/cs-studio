@@ -1,22 +1,26 @@
 package org.csstudio.alarm.table.preferences;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.Messages;
+import org.csstudio.alarm.table.internal.localization.Messages;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 
 /**
  * This class represents a preference page that
- * is contributed to the Preferences dialog. By 
+ * is contributed to the Preferences dialog. By
  * subclassing <samp>FieldEditorPreferencePage</samp>, we
  * can use the field support built into JFace that allows
- * us to create a page that is small and knows how to 
+ * us to create a page that is small and knows how to
  * save, restore and apply itself.
  * <p>
  * This page is used to modify preferences only. They
@@ -32,9 +36,9 @@ public class AlarmViewerPreferencePage
 	public AlarmViewerPreferencePage() {
 		super(GRID);
 		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-		setDescription(Messages.AlarmViewerPreferencePage_columnNamesMessageKeys); 
+		setDescription(Messages.AlarmViewerPreferencePage_columnNamesMessageKeys);
 	}
-	
+
 	/**
 	 * Creates the field editors. Field editors are abstractions of
 	 * the common GUI blocks needed to manipulate various types
@@ -44,12 +48,12 @@ public class AlarmViewerPreferencePage
 	public void createFieldEditors() {
 		System.out.println("AlarmPrefPage"); //$NON-NLS-1$
 		addField(new ListEditor(AlarmViewerPreferenceConstants.P_STRINGAlarm, AlarmViewerPreferenceConstants.P_STRINGAlarm + ": ", getFieldEditorParent()){ //$NON-NLS-1$
-			
+
 			public String[] parseString(String stringList){
 				System.out.println("Alarm: " + stringList); //$NON-NLS-1$
 				return stringList.split(";"); //$NON-NLS-1$
 			}
-			
+
 			public String getNewInputObject(){
 				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), Messages.AlarmViewerPreferencePage_enterColumnName, Messages.AlarmViewerPreferencePage_column, "", null); //$NON-NLS-3$
 				if (inputDialog.open() == Window.OK) {
@@ -57,7 +61,7 @@ public class AlarmViewerPreferencePage
 				}
 				return null;
 			}
-			
+
 			public String createList(String[] items){
 				String temp = ""; //$NON-NLS-1$
 				for(int i = 0; i < items.length;i++){
@@ -65,25 +69,41 @@ public class AlarmViewerPreferencePage
 				}
 				return temp;
 			}
-			
-			
+
+
 		});
-		
-		
-		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.MAX, AlarmViewerPreferenceConstants.MAX + ": ", getFieldEditorParent())); //$NON-NLS-1$
-		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.REMOVE, AlarmViewerPreferenceConstants.REMOVE + ": ", getFieldEditorParent())); //$NON-NLS-1$
-		
-		
+
+		Group g1 = new Group(getFieldEditorParent(), SWT.NONE);
+		g1.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
+		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.MAX, AlarmViewerPreferenceConstants.MAX + ": ", g1)); //$NON-NLS-1$
+		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.REMOVE, AlarmViewerPreferenceConstants.REMOVE + ": ", g1)); //$NON-NLS-1$
+		Group g2 = new Group(getFieldEditorParent(), SWT.NONE);
+		g2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
+		Label l1 = new Label(g2,SWT.NONE);
+//		l1.setText(Messages.JMSPreferencePage_ALARM_PRIMERY_SERVER);
+		l1.setText("TEST");
+		l1.setLayoutData(new GridData(2,1));
+		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, Messages.JMSPreferencePage_ALARM_CONTEXT_FACTORY, g2));
+		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.PRIMARY_URL, Messages.JMSPreferencePage_ALARM_PROVIDER_URL, g2));
+		Label l2 = new Label(g2,SWT.NONE);
+		l2.setText(Messages.JMSPreferencePage_ALARM_SECONDARY_SERVER);
+		l2.setLayoutData(new GridData(2,1));
+		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, Messages.JMSPreferencePage_ALARM_CONTEXT_FACTORY, g2));
+		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.SECONDARY_URL, Messages.JMSPreferencePage_ALARM_PROVIDER_URL, g2));
+		Label l3 = new Label(g2,SWT.HORIZONTAL);
+		l3.setLayoutData(new GridData(2,1));
+		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.QUEUE, Messages.JMSPreferencePage_ALARM_QUEUE_NAME, g2));
+
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
-	
+
 	public void performApply(){
 	}
-	
+
 	public void init(IWorkbench workbench) {
 	}
-	
+
 }

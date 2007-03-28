@@ -3,7 +3,7 @@ package org.csstudio.alarm.table.preferences;
 import java.util.StringTokenizer;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.Messages;
+import org.csstudio.alarm.table.internal.localization.Messages;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -68,7 +68,7 @@ public class JmsLogPreferencePage extends FieldEditorPreferencePage implements
 		c3.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
 		new Label(c3,SWT.NONE).setText(Messages.JmsLogPreferencePage_color);
 		for(int i= 0;i<keys.length;i++){
-			newRow(g1, keys[i], values[i], colors[i]);			
+			newRow(g1, keys[i], values[i], colors[i]);
 		}
 	}
 
@@ -98,9 +98,9 @@ public class JmsLogPreferencePage extends FieldEditorPreferencePage implements
 		addField(sfeColor);
 		return parent;
 	}
-	
 
-	
+
+
 	public void init(IWorkbench workbench) {
 		// TODO Auto-generated method stub
 

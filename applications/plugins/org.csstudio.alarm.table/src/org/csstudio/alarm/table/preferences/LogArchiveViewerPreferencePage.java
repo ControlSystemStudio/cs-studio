@@ -2,7 +2,7 @@ package org.csstudio.alarm.table.preferences;
 
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.Messages;
+import org.csstudio.alarm.table.internal.localization.Messages;
 
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;

@@ -36,6 +36,8 @@ public class JmsLogPreferenceConstants {
 	public static final String VALUE7 = "value 7";
 	public static final String VALUE8 = "value 8";
 	public static final String VALUE9 = "value 9";
-	
-	
+	public static final String INITIAL_CONTEXT_FACTORY = "context factory"; //$NON-NLS-1$
+	public static final String URL = "provider url"; //$NON-NLS-1$
+	public static final String QUEUE = "message queue"; //$NON-NLS-1$
+
 }

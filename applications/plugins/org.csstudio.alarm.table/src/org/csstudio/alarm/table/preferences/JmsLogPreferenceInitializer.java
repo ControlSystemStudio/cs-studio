@@ -1,6 +1,7 @@
 package org.csstudio.alarm.table.preferences;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.platform.libs.jms.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -12,7 +13,7 @@ public class JmsLogPreferenceInitializer extends AbstractPreferenceInitializer {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
@@ -47,6 +48,10 @@ public class JmsLogPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(JmsLogPreferenceConstants.VALUE7,"NOT DEFINED");
 		store.setDefault(JmsLogPreferenceConstants.VALUE8,"NOT DEFINED");
 		store.setDefault(JmsLogPreferenceConstants.VALUE9,"NOT DEFINED");
+		store.setDefault(JmsLogPreferenceConstants.INITIAL_CONTEXT_FACTORY, "org.exolab.jms.jndi.InitialContextFactory"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.URL, "rmi://krykelog.desy.de:1099/"); //$NON-NLS-1$
+		store.setDefault(JmsLogPreferenceConstants.QUEUE, "LOG"); //$NON-NLS-1$
+
 
 	}
 

@@ -3,7 +3,7 @@ package org.csstudio.alarm.table.expertSearch;
 import java.util.HashMap;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.Messages;
+import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
 import org.csstudio.alarm.table.timeSelection.TimestampWidget;
 import org.csstudio.alarm.table.timeSelection.TimestampWidgetListener;
