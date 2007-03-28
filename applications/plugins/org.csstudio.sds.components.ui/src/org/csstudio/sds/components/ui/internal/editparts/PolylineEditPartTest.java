@@ -53,7 +53,7 @@ public final class PolylineEditPartTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.PolylineEditPart#createFigure()}.
+	 * {@link org.csstudio.sds.components.ui.internal.editparts.PolylineEditPart#doCreateFigure()}.
 	 */
 	@Test
 	public void testCreateFigure() {

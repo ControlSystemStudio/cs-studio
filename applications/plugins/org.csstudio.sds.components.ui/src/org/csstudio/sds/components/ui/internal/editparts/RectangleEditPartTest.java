@@ -53,7 +53,7 @@ public final class RectangleEditPartTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.RectangleEditPart#createFigure()}.
+	 * {@link org.csstudio.sds.components.ui.internal.editparts.RectangleEditPart#doCreateFigure()}.
 	 */
 	@Test
 	public void testCreateFigure() {

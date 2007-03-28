@@ -21,9 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.model.AbstractPolyModel;
 import org.csstudio.sds.components.model.WaveformModel;
-import org.csstudio.sds.components.ui.internal.figures.RefreshablePolylineFigure;
 import org.csstudio.sds.components.ui.internal.figures.WaveformFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
@@ -31,7 +29,7 @@ import org.csstudio.sds.ui.figures.IRefreshableFigure;
 
 /**
  * EditPart controller for the Waveform widget. The controller mediates between
- * {@link WafeformModel} and {@link WaveformFigure}.
+ * {@link WaveformModel} and {@link WaveformFigure}.
  * 
  * @author Sven Wende
  * 

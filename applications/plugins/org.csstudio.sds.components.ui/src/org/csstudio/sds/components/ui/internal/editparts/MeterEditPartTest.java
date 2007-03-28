@@ -53,7 +53,7 @@ public final class MeterEditPartTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.MeterEditPart#createFigure()}.
+	 * {@link org.csstudio.sds.components.ui.internal.editparts.MeterEditPart#doCreateFigure()}.
 	 */
 	@Test
 	public void testCreateFigure() {

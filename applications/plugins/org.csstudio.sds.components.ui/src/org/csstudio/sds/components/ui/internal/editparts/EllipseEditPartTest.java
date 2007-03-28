@@ -52,7 +52,7 @@ public final class EllipseEditPartTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.EllipseEditPart#createFigure()}.
+	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.EllipseEditPart#doCreateFigure()}.
 	 */
 	@Test
 	public void testCreateFigure() {

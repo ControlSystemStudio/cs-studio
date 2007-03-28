@@ -66,7 +66,7 @@ public final class LabelEditPartTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.LabelEditPart#createFigure()}.
+	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.LabelEditPart#doCreateFigure()}.
 	 */
 	@Test
 	public void testCreateFigure() {

@@ -52,7 +52,7 @@ public final class PolygonEditPartTest {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.PolygonEditPart#createFigure()}.
+	 * Test method for {@link org.csstudio.sds.components.ui.internal.editparts.PolygonEditPart#doCreateFigure()}.
 	 */
 	@Test
 	public void testCreateFigure() {
