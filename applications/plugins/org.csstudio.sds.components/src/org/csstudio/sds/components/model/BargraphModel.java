@@ -26,6 +26,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
+import org.csstudio.sds.model.properties.DoubleArrayProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.eclipse.swt.graphics.RGB;
 
@@ -71,6 +72,11 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * The ID of the hihi-Color property.
 	 */
 	public static final String PROP_HIHI_COLOR = "hihi_color";
+	
+	/**
+	 * The ID of the levels property.
+	 */
+	public static final String PROP_LEVELS = "levels";
 //	/**
 //	 * The ID of the lolo-max property.
 //	 */
@@ -115,6 +121,11 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * The default value of the lolo color property. 
 	 */
 	private static final RGB DEFAULT_HIHI_COLOR = new RGB(255,255,255);
+	
+	/**
+	 * The default value of the levels property. 
+	 */
+	private static final double[] DEFAULT_LEVELS = new double[]{0.2, 0.4, 0.6, 0.8, 1.0};
 
 //	/**
 //	 * The default value of the lolo max property.
@@ -134,6 +145,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 		addProperty(PROP_M_COLOR, new ColorProperty("M Color",WidgetPropertyCategory.Display,DEFAULT_M_COLOR));
 		addProperty(PROP_HI_COLOR, new ColorProperty("HI Color",WidgetPropertyCategory.Display,DEFAULT_HI_COLOR));
 		addProperty(PROP_HIHI_COLOR, new ColorProperty("HIHI Color",WidgetPropertyCategory.Display,DEFAULT_HIHI_COLOR));
+		addProperty(PROP_LEVELS, new DoubleArrayProperty("Levels",WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS));
 		//addProperty(PROP_LOLO_MAX, new DoubleProperty("LOLO Max",WidgetPropertyCategory.Behaviour, DEFAULT_LOLO_MAX, 0.0, 1.0));
 	}
 
@@ -205,6 +217,14 @@ public final class BargraphModel extends AbstractWidgetModel {
 	}
 	
 	/**
+	 * Gets the levels for LOLO, Lo, M, HI, HIHI.
+	 * @return The levels for LOLO, Lo, M, HI, HIHI
+	 */
+	public double[] getLevels() {
+		return (double[]) getProperty(PROP_LEVELS).getPropertyValue();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -218,6 +238,51 @@ public final class BargraphModel extends AbstractWidgetModel {
 	@Override
 	public String getColorTestProperty() {
 		return PROP_COLOR_FOREGROUND;
+	}
+	
+	/**
+	 * Return the Id of the widget model lolo color property.
+	 * @return String
+	 * 				The Id of the widget model lolo color property
+	 */
+	public String getLoloColorTestProperty() {
+		return PROP_LOLO_COLOR;
+	}
+	
+	/**
+	 * Return the Id of the widget model lo color property.
+	 * @return String
+	 * 				The Id of the widget model lo color property
+	 */
+	public String getLoColorTestProperty() {
+		return PROP_LO_COLOR;
+	}
+	
+	/**
+	 * Return the Id of the widget model m color property.
+	 * @return String
+	 * 				The Id of the widget model m color property
+	 */
+	public String getMColorTestProperty() {
+		return PROP_M_COLOR;
+	}
+	
+	/**
+	 * Return the Id of the widget model hi color property.
+	 * @return String
+	 * 				The Id of the widget model hi color property
+	 */
+	public String getHiColorTestProperty() {
+		return PROP_HI_COLOR;
+	}
+	
+	/**
+	 * Return the Id of the widget model hihi color property.
+	 * @return String
+	 * 				The Id of the widget model hihi color property
+	 */
+	public String getHihiColorTestProperty() {
+		return PROP_HIHI_COLOR;
 	}
 
 }

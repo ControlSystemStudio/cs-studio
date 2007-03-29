@@ -48,6 +48,11 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setFill(model.getFillLevel());
 		bargraph.setOrientation(model.getOrientation());
 		bargraph.setLoloColor(model.getLoloColor());
+		bargraph.setLoColor(model.getLoColor());
+		bargraph.setMColor(model.getMColor());
+		bargraph.setHiColor(model.getHiColor());
+		bargraph.setHihiColor(model.getHihiColor());
+		bargraph.setLevels(model.getLevels());
 		//bargraph.setLoloMax(model.getLoloMax());
 		
 		return bargraph;
@@ -131,6 +136,17 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(BargraphModel.PROP_HIHI_COLOR, hihiColorHandler);
+		//levels
+		IWidgetPropertyChangeHandler levelsHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setLevels((double[]) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_LEVELS, levelsHandler);
 		//lolo max
 //		IWidgetPropertyChangeHandler loloMaxHandler = new IWidgetPropertyChangeHandler() {
 //			public boolean handleChange(final Object oldValue,

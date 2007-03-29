@@ -21,6 +21,8 @@
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
+import java.util.Arrays;
+
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
@@ -59,27 +61,27 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * Max value for lolo fill level.
 	 */
-	private static final double LOLO_MAX = 0.2;
+	private double _loloMax = 0.2;
 	
 	/**
 	 * Max value for lo fill level.
 	 */
-	private static final double LO_MAX = 0.4;
+	private double _loMax = 0.4;
 	
 	/**
 	 * Max value for m fill level.
 	 */
-	private static final double M_MAX = 0.6;
+	private double _mMax = 0.6;
 	
 	/**
 	 * Max value for hi fill level.
 	 */
-	private static final double HI_MAX= 0.8;
+	private double _hiMax= 0.8;
 	
 	/**
 	 * Max value for hihi fill level.
 	 */
-	private static final double HIHI_MAX = 1.0;
+	private double _hihiMax = 1.0;
 	
 	/**
 	 * The default height of this figure.
@@ -218,19 +220,19 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * 				The rectangle to draw
 	 */
 	private void drawFillLevel(final Graphics graphics, final Rectangle fillRectangle) {
-		if (this.getFill()<=LOLO_MAX) {
+		if (this.getFill()<=_loloMax) {
 			graphics.setBackgroundColor(this.getLoloColor());
 		} else
-		if (this.getFill()<=LO_MAX) {
+		if (this.getFill()<=_loMax) {
 			graphics.setBackgroundColor(this.getLoColor());
 		} else
-		if (this.getFill()<=M_MAX) {
+		if (this.getFill()<=_mMax) {
 			graphics.setBackgroundColor(this.getMColor());
 		} else
-		if (this.getFill()<=HI_MAX) {
+		if (this.getFill()<=_hiMax) {
 			graphics.setBackgroundColor(this.getHiColor());
 		} else
-		if (this.getFill()<=HIHI_MAX) {
+		if (this.getFill()<=_hihiMax) {
 			graphics.setBackgroundColor(this.getHihiColor());
 		} else {
 			graphics.setBackgroundColor(this.getForegroundColor());
@@ -262,17 +264,17 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 */
 	private void drawMarkers(final Graphics graphics, final Rectangle barRectangle) {
 		if (_orientationHorizontal) {
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*LOLO_MAX), barRectangle.y+barRectangle.height, LABELS[0]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*LO_MAX), barRectangle.y+barRectangle.height, LABELS[1]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*M_MAX), barRectangle.y+barRectangle.height, LABELS[2]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*HI_MAX), barRectangle.y+barRectangle.height, LABELS[3]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*HIHI_MAX), barRectangle.y+barRectangle.height, LABELS[4]).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*_loloMax), barRectangle.y+barRectangle.height, LABELS[0]).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*_loMax), barRectangle.y+barRectangle.height, LABELS[1]).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*_mMax), barRectangle.y+barRectangle.height, LABELS[2]).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*_hiMax), barRectangle.y+barRectangle.height, LABELS[3]).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*_hihiMax), barRectangle.y+barRectangle.height, LABELS[4]).draw(graphics);
 		} else {
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-LOLO_MAX)), LABELS[0]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-LO_MAX)), LABELS[1]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-M_MAX)), LABELS[2]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-HI_MAX)), LABELS[3]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-HIHI_MAX)), LABELS[4]).draw(graphics);	
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_loloMax)), LABELS[0]).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_loMax)), LABELS[1]).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_mMax)), LABELS[2]).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_hiMax)), LABELS[3]).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_hihiMax)), LABELS[4]).draw(graphics);	
 		}
 	}
 	
@@ -412,6 +414,51 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 */
 	public Color getHihiColor() {
 		return _hihiColor;
+	}
+	
+	/**
+	 * Sets the levels for LOLO, LO, M, HI, HIHI.
+	 * For correct drawing the values should be between 0.0 and 1.0
+	 * 
+	 * @param levels
+	 *            The levels.
+	 */
+	public void setLevels(final double[] levels) {
+		Arrays.sort(levels);
+		double maxValue = levels[levels.length-1];
+		for (int i=0;i<levels.length;i++) {
+			switch (i) {
+			case 0:	_loloMax = this.getWeight(levels[i], maxValue); break; 
+			case 1:	_loMax = this.getWeight(levels[i], maxValue); break;
+			case 2:	_mMax = this.getWeight(levels[i], maxValue); break;
+			case 3:	_hiMax = this.getWeight(levels[i], maxValue); break;
+			case 4:	_hihiMax = this.getWeight(levels[i], maxValue); break;
+			default: System.out.println("RefreshableBargraphFigure.setLevels() unknown value");
+			}
+		}
+	}
+	
+	/**
+	 * Gets the weight (0.0 - 1.0) of the value regarding the maxValue.
+	 * @param value
+	 * 				The value, which weight has to be calculated
+	 * @param maxValue
+	 * 				The upper limit
+	 * @return double
+	 * 				The corresponding weight for the value
+	 */
+	private double getWeight(final double value, final double maxValue) {
+		return value / maxValue;  
+	}
+
+	/**
+	 * Gets the levels for LOLO, LO, M, HI, HIHI.
+	 * 
+	 * @return double[]
+	 * 				The levels
+	 */
+	public double[] getLevels() {
+		return new double[]{_loloMax, _loMax, _mMax, _hiMax, _hihiMax};
 	}
 
 	/**
