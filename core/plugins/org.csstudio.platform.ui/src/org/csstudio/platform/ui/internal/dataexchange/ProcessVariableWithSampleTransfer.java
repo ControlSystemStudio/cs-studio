@@ -105,7 +105,8 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 				writeOut.write(buffer);
 				double[] values = data[i].getSampleValue();
 				double[] time = data[i].getTimeStamp();
-				
+				String[] status =  data[i].getStatus();
+				String[] severity =  data[i].getSeverity();
 				writeOut.writeInt(values.length);
 				for (int n=0;n<values.length&&n<time.length;n++) {
 					buffer = new Double(values[n]).toString().getBytes();
@@ -114,7 +115,12 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 					buffer = new Double(time[n]).toString().getBytes();
 					writeOut.writeInt(buffer.length);
 					writeOut.write(buffer);
-
+					buffer = status[n].getBytes();
+					writeOut.writeInt(buffer.length);
+					writeOut.write(buffer);
+					buffer = severity[n].getBytes();
+					writeOut.writeInt(buffer.length);
+					writeOut.write(buffer);
 				}
 			}
 			byte[] buffer = out.toByteArray();
@@ -174,6 +180,8 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 				size = readIn.readInt();
 				double[] sampleValues= new double[size];
 				double[] timeStamp = new double[size];
+				String[] status =  new String[size];
+				String[] severity =  new String[size];
 
 				for (int n=0;n<size;n++) {
 					int s = readIn.readInt();
@@ -183,10 +191,13 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 					s = readIn.readInt();
 					bytes = new byte[s];
 					readIn.read(bytes);
-					timeStamp[n] = Double.parseDouble(new String(bytes));
+					status[n] = new String(bytes);
+					bytes = new byte[s];
+					readIn.read(bytes);
+					severity[n] = new String(bytes);
 				}
 				received.add(CentralItemFactory
-						.createProcessVariableWithSample(pvName, dbrTyp, egu, low, high,precision, sampleValues, timeStamp));
+						.createProcessVariableWithSample(pvName, dbrTyp, egu, low, high,precision, sampleValues, timeStamp, status,severity));
 			}
 			readIn.close();
 		} catch (IOException ex) {

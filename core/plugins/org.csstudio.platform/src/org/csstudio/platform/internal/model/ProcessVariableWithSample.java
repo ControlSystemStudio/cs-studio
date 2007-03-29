@@ -21,6 +21,8 @@ public class ProcessVariableWithSample extends AbstractControlSystemItem
 
 	private double[] sampleValue;
 	private double[] timeStamp;
+	private String[] status;
+	private String[] severity;
 	private int dbrType;
 	private String egu;
 	private int precision;
@@ -36,8 +38,10 @@ public class ProcessVariableWithSample extends AbstractControlSystemItem
 	 * @param precision
 	 * @param low
 	 * @param high
+	 * @param severity 
+	 * @param status 
 	 */
-	public ProcessVariableWithSample(final String pvName, double[] sampleValue, double[] timeStamp, int dbrType, String egu, int precision, double low, double high) {
+	public ProcessVariableWithSample(final String pvName, double[] sampleValue, double[] timeStamp, int dbrType, String egu, int precision, double low, double high, String[] status, String[] severity) {
 		super(pvName);
 		this.sampleValue = sampleValue;
 		this.timeStamp = timeStamp;
@@ -46,6 +50,8 @@ public class ProcessVariableWithSample extends AbstractControlSystemItem
 		this.precision = precision;
 		this.low = low;
 		this.high = high;
+		this.status = status;
+		this.severity = severity;
 	}
 
 
@@ -83,4 +89,13 @@ public class ProcessVariableWithSample extends AbstractControlSystemItem
 	public double[] getTimeStamp() {
 		return timeStamp;
 	}
+
+	public String[] getStatus() {
+		return status;
+	}
+
+	public String[] getSeverity() {
+		return severity;
+	}
+
 }

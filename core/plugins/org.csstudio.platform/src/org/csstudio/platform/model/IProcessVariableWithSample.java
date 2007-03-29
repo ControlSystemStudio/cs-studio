@@ -31,6 +31,18 @@ public interface IProcessVariableWithSample extends IProcessVariable {
 	 * 
 	 * @return 
 	 */
+	String[] getStatus();
+	/**
+	 * 
+	 * 
+	 * @return 
+	 */
+	String[] getSeverity();
+	/**
+	 * 
+	 * 
+	 * @return 
+	 */
 	int getDBRTyp();
 	/**
 	 * 

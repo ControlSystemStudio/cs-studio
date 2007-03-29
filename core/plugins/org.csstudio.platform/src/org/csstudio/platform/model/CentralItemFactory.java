@@ -105,8 +105,8 @@ public final class CentralItemFactory {
 	 * @param timeStamp
 	 * @return A process variable with an sample data.
 	 */
-	public static IProcessVariableWithSample createProcessVariableWithSample(String pvName, int dbrTyp, String egu, double low, double high, int precision, double[] sampleValues, double[] timeStamp) {
-		return new ProcessVariableWithSample(pvName,sampleValues, timeStamp, dbrTyp, egu, precision, low, high);
+	public static IProcessVariableWithSample createProcessVariableWithSample(String pvName, int dbrTyp, String egu, double low, double high, int precision, double[] sampleValues, double[] timeStamp, String[] status, String[] severity) {
+		return new ProcessVariableWithSample(pvName,sampleValues, timeStamp, dbrTyp, egu, precision, low, high, status, severity);
 	}
 
 	
