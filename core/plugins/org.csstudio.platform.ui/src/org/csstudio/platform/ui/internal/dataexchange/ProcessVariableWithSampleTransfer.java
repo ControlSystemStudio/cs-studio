@@ -66,6 +66,8 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 			return;
 		if (object instanceof IProcessVariableWithSample[])
 			data = (IProcessVariableWithSample[]) object;
+		if (object instanceof IProcessVariableWithSample)
+			data = new IProcessVariableWithSample[]{(IProcessVariableWithSample) object};
 		else if (object instanceof ArrayList) { // Table selection seems to use
 												// ArrayList
 			ArrayList list = (ArrayList) object;
@@ -145,7 +147,7 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 			ByteArrayInputStream in = new ByteArrayInputStream(buffer);
 			DataInputStream readIn = new DataInputStream(in);
 			// URL length, key, name length = 12?
-			while (readIn.available() > 12) {
+			while (readIn.available() > 1) {
 				int size = readIn.readInt();
 				byte[] bytes = new byte[size];
 				readIn.read(bytes);
@@ -188,10 +190,18 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 					bytes = new byte[s];
 					readIn.read(bytes);
 					sampleValues[n] = Double.parseDouble(new String(bytes));
+
+					s = readIn.readInt();
+					bytes = new byte[s];
+					readIn.read(bytes);
+					timeStamp[n] = Double.parseDouble(new String(bytes));
+					
 					s = readIn.readInt();
 					bytes = new byte[s];
 					readIn.read(bytes);
 					status[n] = new String(bytes);
+
+					s = readIn.readInt();
 					bytes = new byte[s];
 					readIn.read(bytes);
 					severity[n] = new String(bytes);
@@ -203,6 +213,10 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 		} catch (IOException ex) {
 			return null;
 		}
+		 catch (Exception ex) {
+			System.out.println(ex);;
+		}
+
 		IProcessVariableWithArchive array[] = new IProcessVariableWithArchive[received
 				.size()];
 		return received.toArray(array);

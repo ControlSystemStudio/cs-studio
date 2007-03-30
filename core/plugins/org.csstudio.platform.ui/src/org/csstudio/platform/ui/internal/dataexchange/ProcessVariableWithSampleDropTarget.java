@@ -69,6 +69,7 @@ public abstract class ProcessVariableWithSampleDropTarget extends DropTargetAdap
      */
 	public void drop(DropTargetEvent event)
 	{
+		System.out.println("hallo");
         if (event.data instanceof IProcessVariableWithSample[])
         {
             IProcessVariableWithSample names[] = (IProcessVariableWithSample [])event.data;
