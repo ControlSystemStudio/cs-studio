@@ -95,21 +95,4 @@ public final class PolyPointHandle extends SquareHandle {
 	protected Color getFillColor() {
 		return ColorConstants.yellow;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void paintFigure(final Graphics graphics) {
-		//System.out.println("PPH.paintF "+getBounds());
-		if (_polyline!=null) {
-			int height = this.getBounds().height;
-			int width = this.getBounds().width;
-			Point point = _polyline.getPoints().getPoint(_pointIndex);
-			this.setBounds(new Rectangle(point.x-width/2,point.y-height/2,width,height));
-			//System.out.println("PPH.paintF2 "+getBounds());
-		}
-		super.paintFigure(graphics);
-	}
-
 }
