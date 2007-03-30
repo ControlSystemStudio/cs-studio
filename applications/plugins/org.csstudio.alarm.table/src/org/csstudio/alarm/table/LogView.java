@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -32,6 +32,7 @@ import javax.jms.TextMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
+import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
@@ -59,7 +60,8 @@ public class LogView extends ViewPart implements MessageListener {
 
 	private JMSLogTableViewer jlv = null;
 
-	private MessageReceiver receiver;
+	private MessageReceiver receiver1;
+	private MessageReceiver receiver2;
 
 	private String[] columnNames;
 
@@ -93,12 +95,29 @@ public class LogView extends ViewPart implements MessageListener {
 	}
 
 	private void initializeJMSReceiver(Shell ps) {
+		String[] queues = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.QUEUE).split(",");
 		try {
-			receiver = new MessageReceiver();
-			receiver.startListener(this);
+			receiver1 = new MessageReceiver(
+					JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY),
+					JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.PRIMARY_URL),
+					queues
+					);
+			receiver1.startListener(this);
 		} catch (Exception e) {
 			MessageBox box = new MessageBox(ps, SWT.ICON_ERROR);
-			box.setText("Failed to initialise JMS Context");
+			box.setText("Failed to initialise primary JMS Context");
+			box.setMessage(e.getMessage());
+			box.open();
+		}
+		try{
+			receiver2 = new MessageReceiver(
+					JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY),
+					JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.SECONDARY_URL),
+					queues);
+			receiver2.startListener(this);
+		} catch (Exception e) {
+			MessageBox box = new MessageBox(ps, SWT.ICON_ERROR);
+			box.setText("Failed to initialise secondary JMS Context");
 			box.setMessage(e.getMessage());
 			box.open();
 		}
@@ -147,8 +166,14 @@ public class LogView extends ViewPart implements MessageListener {
 	public void dispose() {
 		super.dispose();
 		try {
-			if (receiver != null)
-				receiver.stopListening();
+			if (receiver1 != null)
+				receiver1.stopListening();
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		try {
+			if (receiver2 != null)
+				receiver2.stopListening();
 		} catch (Exception e) {
 			System.err.println(e);
 		}
@@ -158,7 +183,7 @@ public class LogView extends ViewPart implements MessageListener {
 
 		public void propertyChange(PropertyChangeEvent event) {
 			System.out.println("Log ChangeListener");
-		
+
 			columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 					.getString(LogViewerPreferenceConstants.P_STRING)
 					.split(";");

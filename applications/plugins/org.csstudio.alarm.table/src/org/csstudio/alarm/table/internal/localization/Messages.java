@@ -37,13 +37,17 @@ public class Messages extends NLS {
 
 	public static String JMSPreferencePage_ALARM_PRIMERY_SERVER;
 
+	public static String JMSPreferencePage_ALARM_SECONDARY_SERVER;
+
 	public static String JMSPreferencePage_ALARM_CONTEXT_FACTORY;
 
 	public static String JMSPreferencePage_ALARM_PROVIDER_URL;
 
-	public static String JMSPreferencePage_ALARM_SECONDARY_SERVER;
-
 	public static String JMSPreferencePage_ALARM_QUEUE_NAME;
+
+	public static String JMSPreferencePage_LOG_PRIMERY_SERVER;
+
+	public static String JMSPreferencePage_LOG_SECONDARY_SERVER;
 
 	public static String JMSPreferencePage_LOG_CONTEXT_FACTORY;
 

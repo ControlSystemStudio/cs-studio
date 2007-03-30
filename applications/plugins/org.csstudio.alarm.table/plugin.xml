@@ -43,21 +43,22 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="de.desy.css.jmsLogs.page3/"
+            category="de.desy.css.jmsLogs.page3"
             class="org.csstudio.alarm.table.preferences.LogViewerPreferencePage"
             id="de.desy.css.jmsLogs.preferences.JmsLogsPreferencePage"
             name="Jms Log viewer"/>
       <page
-            category="de.desy.css.jmsLogs.page3/"
+            category="de.desy.css.jmsLogs.page3"
             class="org.csstudio.alarm.table.preferences.AlarmViewerPreferencePage"
             id="de.desy.css.jmsLogs.preferences.AlarmViewerPreferencePage"
             name="JMS Alarm viewer"/>
       <page
-            category="de.desy.css.jmsLogs.page3/"
+            category="de.desy.css.jmsLogs.page3"
             class="org.csstudio.alarm.table.preferences.LogArchiveViewerPreferencePage"
             id="de.desy.css.jmsLogs.preferences.LogArchiveViewerPreferencePage"
             name="JMS Log archive viewer"/>
       <page
+            category="org.csstudio.platform.ui.css.applications.alarm"
             class="org.csstudio.alarm.table.preferences.JmsLogPreferencePage"
             id="de.desy.css.jmsLogs.page3"
             name="JMS Logs"/>

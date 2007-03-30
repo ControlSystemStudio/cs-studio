@@ -12,13 +12,13 @@ public class LogViewerPreferenceInitializer extends AbstractPreferenceInitialize
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
-		store.setDefault(LogViewerPreferenceConstants.P_STRING, 
-				"TYPE" + ";" + 
+		store.setDefault(LogViewerPreferenceConstants.P_STRING,
+				"TYPE" + ";" +
 				"EVENTTIME" + ";" +
 				"TEXT" + ";" +
 				"USER" + ";" +
@@ -35,9 +35,14 @@ public class LogViewerPreferenceInitializer extends AbstractPreferenceInitialize
 				"VALUE" + ";" +
 				"DESTINATION"
 		);
-		
+
 		store.setDefault(LogViewerPreferenceConstants.MAX, 100);
 		store.setDefault(LogViewerPreferenceConstants.REMOVE, 10);
-	}
+		store.setDefault(LogViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, "org.exolab.jms.jndi.InitialContextFactory"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.PRIMARY_URL, "rmi://krykelog.desy.de:1099/"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, "org.exolab.jms.jndi.InitialContextFactory"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.SECONDARY_URL, "rmi://krynfs.desy.de:1099/"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.QUEUE, "LOG");
+}
 
 }

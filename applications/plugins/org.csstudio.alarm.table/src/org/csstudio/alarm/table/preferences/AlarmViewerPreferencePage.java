@@ -77,12 +77,12 @@ public class AlarmViewerPreferencePage
 		});
 		//
 		Group g1 = new Group(getFieldEditorParent(), SWT.NONE);
-		g1.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
+		g1.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
 		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.MAX, AlarmViewerPreferenceConstants.MAX + ": ", g1)); //$NON-NLS-1$
 		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.REMOVE, AlarmViewerPreferenceConstants.REMOVE + ": ", g1)); //$NON-NLS-1$
 		// Server Settings
 		Group g2 = new Group(getFieldEditorParent(), SWT.NONE);
-		g2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
+		g2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
 		g2.setLayout(new GridLayout(2,false));
 		// -- Primery Server
 		Label l1 = new Label(g2,SWT.NONE);

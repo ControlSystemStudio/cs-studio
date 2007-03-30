@@ -9,7 +9,9 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -73,16 +75,30 @@ public class LogViewerPreferencePage
 
 
 		});
-
-
 		Group g1 = new Group(getFieldEditorParent(), SWT.NONE);
-		g1.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
+		g1.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
 		addField(new StringFieldEditor(LogViewerPreferenceConstants.MAX, LogViewerPreferenceConstants.MAX + ": ", g1)); //$NON-NLS-1$
 		addField(new StringFieldEditor(LogViewerPreferenceConstants.REMOVE, LogViewerPreferenceConstants.REMOVE + ": ", g1)); //$NON-NLS-1$
+		// Server Settings
 		Group g2 = new Group(getFieldEditorParent(), SWT.NONE);
-		g2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
+		g2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
+		g2.setLayout(new GridLayout(2,false));
+		// -- Primery Server
+		Label l1 = new Label(g2,SWT.NONE);
+		l1.setText(Messages.JMSPreferencePage_ALARM_PRIMERY_SERVER);
+		l1.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
+
 		addField(new StringFieldEditor(LogViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, Messages.JMSPreferencePage_LOG_CONTEXT_FACTORY, g2));
 		addField(new StringFieldEditor(LogViewerPreferenceConstants.PRIMARY_URL, Messages.JMSPreferencePage_LOG_PROVIDER_URL, g2));
+		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
+		// -- Secondary Server
+		Label l2 = new Label(g2,SWT.NONE);
+		l2.setText(Messages.JMSPreferencePage_LOG_SECONDARY_SERVER);
+		l2.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
+		addField(new StringFieldEditor(LogViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, Messages.JMSPreferencePage_LOG_CONTEXT_FACTORY, g2));
+		addField(new StringFieldEditor(LogViewerPreferenceConstants.SECONDARY_URL, Messages.JMSPreferencePage_LOG_PROVIDER_URL, g2));
+		// --INITIAL_CONTEXT_FACTORY
+		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
 		addField(new StringFieldEditor(LogViewerPreferenceConstants.QUEUE, Messages.JMSPreferencePage_LOG_QUEUE_NAME, g2));
 
 
