@@ -46,7 +46,7 @@ import org.csstudio.value.Value;
  * EPICS ChannelAccess implementation of the PV interface.
  * <p>
  * Also creates a shared pool of PVs:<br>
- * The underlying pure java CA client implementation actually returns the 
+ * The underlying pure java CA client implementation actually returns the
  * same 'channel' when trying to access the same PV name multiple times.
  * That's good, but I don't know how to determine if the channel for this
  * EPICS_V3_PV is actually shared.
@@ -57,7 +57,7 @@ import org.csstudio.value.Value;
  * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class EPICS_V3_PV 
+public class EPICS_V3_PV
           implements PV, ConnectionListener, GetListener, MonitorListener
 {
     /** Compile-time option for debug messages. */
@@ -68,7 +68,7 @@ public class EPICS_V3_PV
      *  Changes only have an effect before the very first channel is created.
      */
     public static boolean use_pure_java = true;
-    
+
     /** The Java CA Library instance. */
     static private JCALibrary jca = null;
 
@@ -175,7 +175,7 @@ public class EPICS_V3_PV
      *  @see #EPICS_V3_PV(String, boolean)
      */
     private final boolean plain;
-    
+
     /** Channel name. */
     private final String name;
 
@@ -187,7 +187,7 @@ public class EPICS_V3_PV
 
     /** JCA channel. */
     private RefCountedChannel channel_ref;
-    
+
     /** Assert that we only subscribe once. */
     private volatile boolean was_connected;
 
@@ -204,7 +204,7 @@ public class EPICS_V3_PV
     {
         this(name, false);
     }
-   
+
     /** Generate an EPICS PV.
      *  @param name The PV name.
      *  @param plain When <code>true</code>, only the plain value is requested.
@@ -224,7 +224,7 @@ public class EPICS_V3_PV
     /** @return Returns the value. */
     public Value getValue()
     {   return value;  }
-    
+
     public void addListener(PVListener listener)
     {   listeners.add(listener);  }
 
@@ -265,7 +265,7 @@ public class EPICS_V3_PV
         {
             if (debug)
                 System.out.println("Channel is immediately connected: " + name);
-            
+
             handleConnected();
         }
     }
@@ -306,7 +306,7 @@ public class EPICS_V3_PV
         connected = false;
         fireDisconnected();
     }
-    
+
     /** Set PV to given value. */
     public void setValue(Object new_value)
     {
@@ -370,7 +370,7 @@ public class EPICS_V3_PV
                     type = DBRType.CTRL_DOUBLE;
                 else if (type.isENUM())
                     type = DBRType.LABELS_ENUM;
-                else 
+                else
                     type = DBRType.CTRL_SHORT;
                 channel_ref.getChannel().get(type, 1, this);
                 jca_context.flushIO();
@@ -382,7 +382,7 @@ public class EPICS_V3_PV
             System.out.println("Channel '" + name + "' handleConnected:\n"
                             + e.getMessage());
         }
-        
+
         // Meta info is not requested, not available for this type,
         // or there was an error in the get call.
         // So reset it, then just move on to the subscription.
@@ -409,7 +409,7 @@ public class EPICS_V3_PV
                 DBR_CTRL_Double ctrl = (DBR_CTRL_Double)dbr;
                 meta = new NumericMetaData(
                                 ctrl.getUpperDispLimit().doubleValue(),
-                                ctrl.getLowerDispLimit().doubleValue(), 
+                                ctrl.getLowerDispLimit().doubleValue(),
                                 ctrl.getUpperAlarmLimit().doubleValue(),
                                 ctrl.getLowerAlarmLimit().doubleValue(),
                                 ctrl.getUpperWarningLimit().doubleValue(),
@@ -425,7 +425,7 @@ public class EPICS_V3_PV
                 DBR_CTRL_Short ctrl = (DBR_CTRL_Short)dbr;
                 meta = new NumericMetaData(
                                 ctrl.getUpperDispLimit().doubleValue(),
-                                ctrl.getLowerDispLimit().doubleValue(), 
+                                ctrl.getLowerDispLimit().doubleValue(),
                                 ctrl.getUpperAlarmLimit().doubleValue(),
                                 ctrl.getLowerAlarmLimit().doubleValue(),
                                 ctrl.getUpperWarningLimit().doubleValue(),
@@ -449,7 +449,7 @@ public class EPICS_V3_PV
         }
         subscribe();
     }
-    
+
     private void subscribe()
     {
         if (was_connected == false)
@@ -497,7 +497,7 @@ public class EPICS_V3_PV
         return TimestampFactory.createTimestamp(
                         t.secPastEpoch() + 631152000L, t.nsec());
     }
-    
+
    /** MonitorListener interface. */
     public void monitorChanged(MonitorEvent ev)
     {
@@ -634,5 +634,13 @@ public class EPICS_V3_PV
     {
         for (PVListener listener : listeners)
             listener.pvDisconnected(this);
+    }
+
+    public int getPrecision(){
+    	if (meta instanceof NumericMetaData) {
+			NumericMetaData numMeta = (NumericMetaData) meta;
+			return numMeta.getPrecision();
+
+		}else return 0;
     }
 }
