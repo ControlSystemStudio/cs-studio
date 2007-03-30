@@ -32,6 +32,9 @@
       <controlSystemItemFactory
             class="org.csstudio.platform.internal.developmentsupport.util.TextContainerFactory"
             typeId="css:sandbox:textContainer"/>
+      <controlSystemItemFactory
+            class="org.csstudio.platform.internal.model.ProcessVariableWithSample"
+            typeId="css:processVariableWithSample"/>
    </extension>
 
 
