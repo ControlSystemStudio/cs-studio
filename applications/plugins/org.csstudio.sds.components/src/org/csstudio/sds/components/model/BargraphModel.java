@@ -26,7 +26,6 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
-import org.csstudio.sds.model.properties.DoubleArrayProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.eclipse.swt.graphics.RGB;
 
@@ -74,9 +73,38 @@ public final class BargraphModel extends AbstractWidgetModel {
 	public static final String PROP_HIHI_COLOR = "hihi_color";
 	
 	/**
+	 * The ID of the minimum property.
+	 */
+	public static final String PROP_MIN = "minimum";
+	/**
+	 * The ID of the lolo level property.
+	 */
+	public static final String PROP_LOLO_LEVEL = "lolo_level";
+	/**
+	 * The ID of the lo level property.
+	 */
+	public static final String PROP_LO_LEVEL = "lo_level";
+	/**
+	 * The ID of the m level property.
+	 */
+	public static final String PROP_M_LEVEL = "m_level";
+	/**
+	 * The ID of the hi level property.
+	 */
+	public static final String PROP_HI_LEVEL = "hi_level";
+	/**
+	 * The ID of the hihi level property.
+	 */
+	public static final String PROP_HIHI_LEVEL = "hihi_level";
+	/**
+	 * The ID of the maximum property.
+	 */
+	public static final String PROP_MAX = "maximum";
+	
+	/**
 	 * The ID of the levels property.
 	 */
-	public static final String PROP_LEVELS = "levels";
+	//public static final String PROP_LEVELS = "levels";
 //	/**
 //	 * The ID of the lolo-max property.
 //	 */
@@ -125,7 +153,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	/**
 	 * The default value of the levels property. 
 	 */
-	private static final double[] DEFAULT_LEVELS = new double[]{0.2, 0.4, 0.6, 0.8, 1.0};
+	private static final double[] DEFAULT_LEVELS = new double[]{0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.0};
 
 //	/**
 //	 * The default value of the lolo max property.
@@ -145,8 +173,14 @@ public final class BargraphModel extends AbstractWidgetModel {
 		addProperty(PROP_M_COLOR, new ColorProperty("M Color",WidgetPropertyCategory.Display,DEFAULT_M_COLOR));
 		addProperty(PROP_HI_COLOR, new ColorProperty("HI Color",WidgetPropertyCategory.Display,DEFAULT_HI_COLOR));
 		addProperty(PROP_HIHI_COLOR, new ColorProperty("HIHI Color",WidgetPropertyCategory.Display,DEFAULT_HIHI_COLOR));
-		addProperty(PROP_LEVELS, new DoubleArrayProperty("Levels",WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS));
-		//addProperty(PROP_LOLO_MAX, new DoubleProperty("LOLO Max",WidgetPropertyCategory.Behaviour, DEFAULT_LOLO_MAX, 0.0, 1.0));
+		//addProperty(PROP_LEVELS, new DoubleArrayProperty("Levels",WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS));
+		addProperty(PROP_MIN, new DoubleProperty("Minimum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[0]));
+		addProperty(PROP_LOLO_LEVEL, new DoubleProperty("LOLO Level", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[1]));
+		addProperty(PROP_LO_LEVEL, new DoubleProperty("LO Level", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[2]));
+		addProperty(PROP_M_LEVEL, new DoubleProperty("M Level", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[3]));
+		addProperty(PROP_HI_LEVEL, new DoubleProperty("HI Level", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[4]));
+		addProperty(PROP_HIHI_LEVEL, new DoubleProperty("HIHI Level", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[5]));
+		addProperty(PROP_MAX, new DoubleProperty("Maximum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[6]));
 	}
 
 	/**
@@ -216,12 +250,75 @@ public final class BargraphModel extends AbstractWidgetModel {
 		return (RGB) getProperty(PROP_HIHI_COLOR).getPropertyValue();
 	}
 	
+//	/**
+//	 * Gets the levels for LOLO, LO, M, HI, HIHI.
+//	 * @return The levels for LOLO, LO, M, HI, HIHI
+//	 */
+//	public double[] getLevels() {
+//		return (double[]) getProperty(PROP_LEVELS).getPropertyValue();
+//	}
+	
 	/**
-	 * Gets the levels for LOLO, Lo, M, HI, HIHI.
-	 * @return The levels for LOLO, Lo, M, HI, HIHI
+	 * Gets the minimum value for this model.
+	 * @return double
+	 * 				The minimum value
 	 */
-	public double[] getLevels() {
-		return (double[]) getProperty(PROP_LEVELS).getPropertyValue();
+	public double getMinimum() {
+		return (Double) getProperty(PROP_MIN).getPropertyValue();
+	}
+	
+	/**
+	 * Gets the lolo level for this model.
+	 * @return double
+	 * 				The lolo level
+	 */
+	public double getLoloLevel() {
+		return (Double) getProperty(PROP_LOLO_LEVEL).getPropertyValue();
+	}
+	
+	/**
+	 * Gets the lo level for this model.
+	 * @return double
+	 * 				The lo level
+	 */
+	public double getLoLevel() {
+		return (Double) getProperty(PROP_LO_LEVEL).getPropertyValue();
+	}
+	
+	/**
+	 * Gets the m level for this model.
+	 * @return double
+	 * 				The m level
+	 */
+	public double getMLevel() {
+		return (Double) getProperty(PROP_M_LEVEL).getPropertyValue();
+	}
+	
+	/**
+	 * Gets the hi level for this model.
+	 * @return double
+	 * 				The hi level
+	 */
+	public double getHiLevel() {
+		return (Double) getProperty(PROP_HI_LEVEL).getPropertyValue();
+	}
+	
+	/**
+	 * Gets the minimum value for this model.
+	 * @return double
+	 * 				The minimum value
+	 */
+	public double getHihiLevel() {
+		return (Double) getProperty(PROP_HIHI_LEVEL).getPropertyValue();
+	}
+	
+	/**
+	 * Gets the maximum value for this model.
+	 * @return double
+	 * 				The maximum value
+	 */
+	public double getMaximum() {
+		return (Double) getProperty(PROP_MAX).getPropertyValue();
 	}
 	
 	/**

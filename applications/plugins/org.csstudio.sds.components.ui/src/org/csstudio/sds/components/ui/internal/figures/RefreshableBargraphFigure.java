@@ -21,8 +21,6 @@
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
-import java.util.Arrays;
-
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
@@ -59,29 +57,39 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	private static final String[] LABELS = new String[] {"LOLO", "LO", "M", "HI", "HIHI"};
 	
 	/**
-	 * Max value for lolo fill level.
+	 * Minimum value for this figure.
 	 */
-	private double _loloMax = 0.2;
+	private double _minimum = 0.0;
 	
 	/**
-	 * Max value for lo fill level.
+	 * Value for lolo fill level.
 	 */
-	private double _loMax = 0.4;
+	private double _loloLevel = 0.2;
 	
 	/**
-	 * Max value for m fill level.
+	 * Value for lo fill level.
 	 */
-	private double _mMax = 0.6;
+	private double _loLevel = 0.4;
 	
 	/**
-	 * Max value for hi fill level.
+	 * Value for m fill level.
 	 */
-	private double _hiMax= 0.8;
+	private double _mLevel = 0.6;
 	
 	/**
-	 * Max value for hihi fill level.
+	 * Value for hi fill level.
 	 */
-	private double _hihiMax = 1.0;
+	private double _hiLevel= 0.8;
+	
+	/**
+	 * Value for hihi fill level.
+	 */
+	private double _hihiLevel = 1.0;
+	
+	/**
+	 * Maximum value for this figure.
+	 */
+	private double _maximum = 1.0;
 	
 	/**
 	 * The default height of this figure.
@@ -220,19 +228,19 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * 				The rectangle to draw
 	 */
 	private void drawFillLevel(final Graphics graphics, final Rectangle fillRectangle) {
-		if (this.getFill()<=_loloMax) {
+		if (this.getFill()<=_loloLevel) {
 			graphics.setBackgroundColor(this.getLoloColor());
 		} else
-		if (this.getFill()<=_loMax) {
+		if (this.getFill()<=_loLevel) {
 			graphics.setBackgroundColor(this.getLoColor());
 		} else
-		if (this.getFill()<=_mMax) {
+		if (this.getFill()<=_mLevel) {
 			graphics.setBackgroundColor(this.getMColor());
 		} else
-		if (this.getFill()<=_hiMax) {
+		if (this.getFill()<=_hiLevel) {
 			graphics.setBackgroundColor(this.getHiColor());
 		} else
-		if (this.getFill()<=_hihiMax) {
+		if (this.getFill()<=_hihiLevel) {
 			graphics.setBackgroundColor(this.getHihiColor());
 		} else {
 			graphics.setBackgroundColor(this.getForegroundColor());
@@ -264,18 +272,40 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 */
 	private void drawMarkers(final Graphics graphics, final Rectangle barRectangle) {
 		if (_orientationHorizontal) {
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*_loloMax), barRectangle.y+barRectangle.height, LABELS[0]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*_loMax), barRectangle.y+barRectangle.height, LABELS[1]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*_mMax), barRectangle.y+barRectangle.height, LABELS[2]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*_hiMax), barRectangle.y+barRectangle.height, LABELS[3]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*_hihiMax), barRectangle.y+barRectangle.height, LABELS[4]).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_loloLevel)), barRectangle.y+barRectangle.height, LABELS[0]).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_loLevel)), barRectangle.y+barRectangle.height, LABELS[1]).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_mLevel)), barRectangle.y+barRectangle.height, LABELS[2]).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_hiLevel)), barRectangle.y+barRectangle.height, LABELS[3]).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_hihiLevel)), barRectangle.y+barRectangle.height, LABELS[4]).draw(graphics);
 		} else {
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_loloMax)), LABELS[0]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_loMax)), LABELS[1]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_mMax)), LABELS[2]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_hiMax)), LABELS[3]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_hihiMax)), LABELS[4]).draw(graphics);	
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_loloLevel)), LABELS[0]).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_loLevel)), LABELS[1]).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_mLevel)), LABELS[2]).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_hiLevel)), LABELS[3]).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_hihiLevel)), LABELS[4]).draw(graphics);	
 		}
+	}
+	
+	/**
+	 * Gets the weight (0.0 - 1.0) for the value.
+	 * @param value
+	 * 					The value, which weight should be calculated.
+	 * @return double
+	 * 					The weight for the value
+	 */
+	private double getWeight(final double value) {
+		double max = _maximum-_minimum;
+		if (max==0) {
+			max = 0.01;
+		}
+		double weight = (value-_minimum) / max;
+		if (weight<0) {
+			weight = 0;
+		}
+		if (weight>1) {
+			weight = 1;
+		}
+		return weight; 
 	}
 	
 	/**
@@ -416,49 +446,175 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		return _hihiColor;
 	}
 	
+//	/**
+//	 * Sets the levels for LOLO, LO, M, HI, HIHI.
+//	 * For correct drawing the values should be between 0.0 and 1.0
+//	 * 
+//	 * @param levels
+//	 *            The levels.
+//	 */
+//	public void setLevels(final double[] levels) {
+//		Arrays.sort(levels);
+//		double maxValue = levels[levels.length-1];
+//		for (int i=0;i<levels.length;i++) {
+//			switch (i) {
+//			case 0:	_loloMax = this.getWeight(levels[i], maxValue); break; 
+//			case 1:	_loMax = this.getWeight(levels[i], maxValue); break;
+//			case 2:	_mMax = this.getWeight(levels[i], maxValue); break;
+//			case 3:	_hiMax = this.getWeight(levels[i], maxValue); break;
+//			case 4:	_hihiMax = this.getWeight(levels[i], maxValue); break;
+//			default: System.out.println("RefreshableBargraphFigure.setLevels() unknown value");
+//			}
+//		}
+//	}
+//	
+//	/**
+//	 * Gets the weight (0.0 - 1.0) of the value regarding the maxValue.
+//	 * @param value
+//	 * 				The value, which weight has to be calculated
+//	 * @param maxValue
+//	 * 				The upper limit
+//	 * @return double
+//	 * 				The corresponding weight for the value
+//	 */
+//	private double getWeight(final double value, final double maxValue) {
+//		return value / maxValue;  
+//	}
+//
+//	/**
+//	 * Gets the levels for LOLO, LO, M, HI, HIHI.
+//	 * 
+//	 * @return double[]
+//	 * 				The levels
+//	 */
+//	public double[] getLevels() {
+//		return new double[]{_loloMax, _loMax, _mMax, _hiMax, _hihiMax};
+//	}
+	
 	/**
-	 * Sets the levels for LOLO, LO, M, HI, HIHI.
-	 * For correct drawing the values should be between 0.0 and 1.0
-	 * 
-	 * @param levels
-	 *            The levels.
+	 * Sets the minimum value.
+	 * @param min
+	 * 				The minimum value
 	 */
-	public void setLevels(final double[] levels) {
-		Arrays.sort(levels);
-		double maxValue = levels[levels.length-1];
-		for (int i=0;i<levels.length;i++) {
-			switch (i) {
-			case 0:	_loloMax = this.getWeight(levels[i], maxValue); break; 
-			case 1:	_loMax = this.getWeight(levels[i], maxValue); break;
-			case 2:	_mMax = this.getWeight(levels[i], maxValue); break;
-			case 3:	_hiMax = this.getWeight(levels[i], maxValue); break;
-			case 4:	_hihiMax = this.getWeight(levels[i], maxValue); break;
-			default: System.out.println("RefreshableBargraphFigure.setLevels() unknown value");
-			}
-		}
+	public void setMinimum(final double min) {
+		_minimum = min;
 	}
 	
 	/**
-	 * Gets the weight (0.0 - 1.0) of the value regarding the maxValue.
-	 * @param value
-	 * 				The value, which weight has to be calculated
-	 * @param maxValue
-	 * 				The upper limit
+	 * Gets the minimum value.
 	 * @return double
-	 * 				The corresponding weight for the value
+	 * 				The minimum value
 	 */
-	private double getWeight(final double value, final double maxValue) {
-		return value / maxValue;  
+	public double getMinimum() {
+		return _minimum;
 	}
-
+	
 	/**
-	 * Gets the levels for LOLO, LO, M, HI, HIHI.
-	 * 
-	 * @return double[]
-	 * 				The levels
+	 * Sets the lolo level.
+	 * @param loloLevel
+	 * 				The lolo level
 	 */
-	public double[] getLevels() {
-		return new double[]{_loloMax, _loMax, _mMax, _hiMax, _hihiMax};
+	public void setLoloLevel(final double loloLevel) {
+		_loloLevel = loloLevel;
+	}
+	
+	/**
+	 * Gets the lolo level.
+	 * @return double
+	 * 				The lolo level
+	 */
+	public double getLoloLevel() {
+		return _loloLevel;
+	}
+	
+	/**
+	 * Sets the lo level.
+	 * @param loLevel
+	 * 				The lo level
+	 */
+	public void setLoLevel(final double loLevel) {
+		_loLevel = loLevel;
+	}
+	
+	/**
+	 * Gets the lo level.
+	 * @return double
+	 * 				The lo level
+	 */
+	public double getLoLevel() {
+		return _loLevel;
+	}
+	
+	/**
+	 * Sets the m level.
+	 * @param mLevel
+	 * 				The m level
+	 */
+	public void setMLevel(final double mLevel) {
+		_mLevel = mLevel;
+	}
+	
+	/**
+	 * Gets the m level.
+	 * @return double
+	 * 				The m level
+	 */
+	public double getMLevel() {
+		return _mLevel;
+	}
+	
+	/**
+	 * Sets the hi level.
+	 * @param hiLevel
+	 * 				The hi level
+	 */
+	public void setHiLevel(final double hiLevel) {
+		_hiLevel = hiLevel;
+	}
+	
+	/**
+	 * Gets the hi level.
+	 * @return double
+	 * 				The hi level
+	 */
+	public double getHiLevel() {
+		return _hiLevel;
+	}
+	
+	/**
+	 * Sets the hihi level.
+	 * @param hihiLevel
+	 * 				The hihi level
+	 */
+	public void setHihiLevel(final double hihiLevel) {
+		_hihiLevel = hihiLevel;
+	}
+	
+	/**
+	 * Gets the hihi level.
+	 * @return double
+	 * 				The hihi level
+	 */
+	public double getHihiLevel() {
+		return _hihiLevel;
+	}
+	
+	/**
+	 * Sets the maximum value.
+	 * @param max
+	 * 				The maximum value
+	 */
+	public void setMaximum(final double max) {
+		_maximum = max;
+	}
+	
+	/**
+	 * Gets the maximum value.
+	 * @return double
+	 * 				The maximum value
+	 */
+	public double getMaximum() {
+		return _maximum;
 	}
 
 	/**

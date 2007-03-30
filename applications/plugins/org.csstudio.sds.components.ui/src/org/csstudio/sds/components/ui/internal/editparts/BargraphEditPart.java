@@ -52,8 +52,14 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setMColor(model.getMColor());
 		bargraph.setHiColor(model.getHiColor());
 		bargraph.setHihiColor(model.getHihiColor());
-		bargraph.setLevels(model.getLevels());
-		//bargraph.setLoloMax(model.getLoloMax());
+		//bargraph.setLevels(model.getLevels());
+		bargraph.setMinimum(model.getMinimum());
+		bargraph.setLoloLevel(model.getLoloLevel());
+		bargraph.setLoLevel(model.getLoLevel());
+		bargraph.setMLevel(model.getMLevel());
+		bargraph.setHiLevel(model.getHiLevel());
+		bargraph.setHihiLevel(model.getHihiLevel());
+		bargraph.setMaximum(model.getMaximum());
 		
 		return bargraph;
 	}
@@ -137,27 +143,76 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(BargraphModel.PROP_HIHI_COLOR, hihiColorHandler);
 		//levels
-		IWidgetPropertyChangeHandler levelsHandler = new IWidgetPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler minimumHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-				bargraph.setLevels((double[]) newValue);
+				bargraph.setMinimum((Double) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(BargraphModel.PROP_LEVELS, levelsHandler);
-		//lolo max
-//		IWidgetPropertyChangeHandler loloMaxHandler = new IWidgetPropertyChangeHandler() {
-//			public boolean handleChange(final Object oldValue,
-//					final Object newValue,
-//					final IRefreshableFigure refreshableFigure) {
-//				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-//				bargraph.setLoloMax((Double) newValue);
-//				return true;
-//			}
-//		};
-//		setPropertyChangeHandler(BargraphModel.PROP_LOLO_MAX, loloMaxHandler);
+		setPropertyChangeHandler(BargraphModel.PROP_MIN, minimumHandler);
+		IWidgetPropertyChangeHandler loloHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setLoloLevel((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_LOLO_LEVEL, loloHandler);
+		IWidgetPropertyChangeHandler loHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setLoLevel((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_LO_LEVEL, loHandler);
+		IWidgetPropertyChangeHandler mHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setMLevel((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_M_LEVEL, mHandler);
+		IWidgetPropertyChangeHandler hiHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setHiLevel((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_HI_LEVEL, hiHandler);
+		IWidgetPropertyChangeHandler hihiHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setHihiLevel((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_HIHI_LEVEL, hihiHandler);
+		IWidgetPropertyChangeHandler maximumHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setMaximum((Double) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_MAX, maximumHandler);
 	}
 
 }
