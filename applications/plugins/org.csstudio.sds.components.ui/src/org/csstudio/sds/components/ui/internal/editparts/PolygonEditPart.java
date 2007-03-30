@@ -76,6 +76,8 @@ public final class PolygonEditPart extends AbstractWidgetEditPart {
 				RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) refreshableFigure;
 				PointList points = (PointList) newValue;
 				polygon.setPoints(points);
+				
+				doRefreshVisuals(polygon);
 				return true;
 			}
 		};

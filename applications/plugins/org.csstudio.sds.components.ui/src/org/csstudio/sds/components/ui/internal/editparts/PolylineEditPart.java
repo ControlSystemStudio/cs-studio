@@ -77,6 +77,7 @@ public final class PolylineEditPart extends AbstractWidgetEditPart {
 				RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
 				PointList points = (PointList) newValue;
 				polyline.setPoints(points);
+				doRefreshVisuals(polyline);
 				return true;
 			}
 		};

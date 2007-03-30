@@ -69,6 +69,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 						public IStatus runInUIThread(
 								final IProgressMonitor monitor) {
 							slider.setManualValue(model.getValue());
+							slider.setValue(model.getValue());
 							return Status.OK_STATUS;
 						}
 					};
@@ -100,7 +101,6 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				CentralLogger.getInstance().info(this, "" + (Integer) newValue);
 				slider.setValue((Integer) newValue);
 				return true;
 			}
