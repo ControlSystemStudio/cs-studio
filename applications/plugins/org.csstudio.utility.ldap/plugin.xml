@@ -4,6 +4,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            category="org.csstudio.platform.ui.css.applications.configuration"
             class="org.csstudio.utility.ldap.preference.PreferencePage"
             id="org.csstudio.utility.ldap.preference.PreferencePage"
             name="LDAP"/>
