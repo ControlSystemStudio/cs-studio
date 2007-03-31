@@ -92,6 +92,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	private double _maximum = 1.0;
 	
 	/**
+	 * The boolean, whch indicates, if the values should be shown or not.
+	 */
+	private boolean _showValues = false;
+	/**
 	 * The default height of this figure.
 	 */
 	private static final int DEFAULT_HEIGHT = 30;
@@ -146,6 +150,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 *
 	 */
 	public RefreshableBargraphFigure() {
+		super();
 		this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 	
@@ -175,9 +180,15 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 */
 	private Rectangle getBarRectangle(final Rectangle bounds) {
 		if (_orientationHorizontal) {
+			if (_showValues) {
+				return new Rectangle(bounds.x+(TEXTWIDTH/2),bounds.y,bounds.width-TEXTWIDTH,bounds.height-(TEXTHEIGHT*2));
+			}
 			return new Rectangle(bounds.x+(TEXTWIDTH/2),bounds.y,bounds.width-TEXTWIDTH,bounds.height-TEXTHEIGHT);
 		}
-		return new Rectangle(bounds.x,bounds.y+TEXTHEIGHT/2,bounds.width-TEXTWIDTH,bounds.height-TEXTHEIGHT);
+		if (_showValues) {
+			return new Rectangle(bounds.x,bounds.y+(TEXTHEIGHT/2),bounds.width-(TEXTWIDTH*2),bounds.height-TEXTHEIGHT);
+		}
+		return new Rectangle(bounds.x,bounds.y+(TEXTHEIGHT/2),bounds.width-TEXTWIDTH,bounds.height-TEXTHEIGHT);
 	}
 	
 	/**
@@ -228,19 +239,19 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * 				The rectangle to draw
 	 */
 	private void drawFillLevel(final Graphics graphics, final Rectangle fillRectangle) {
-		if (this.getFill()<=_loloLevel) {
+		if (this.getFill()<=this.getWeight(_loloLevel)) {
 			graphics.setBackgroundColor(this.getLoloColor());
 		} else
-		if (this.getFill()<=_loLevel) {
+		if (this.getFill()<=this.getWeight(_loLevel)) {
 			graphics.setBackgroundColor(this.getLoColor());
 		} else
-		if (this.getFill()<=_mLevel) {
+		if (this.getFill()<=this.getWeight(_mLevel)) {
 			graphics.setBackgroundColor(this.getMColor());
 		} else
-		if (this.getFill()<=_hiLevel) {
+		if (this.getFill()<=this.getWeight(_hiLevel)) {
 			graphics.setBackgroundColor(this.getHiColor());
 		} else
-		if (this.getFill()<=_hihiLevel) {
+		if (this.getFill()<=this.getWeight(_hihiLevel)) {
 			graphics.setBackgroundColor(this.getHihiColor());
 		} else {
 			graphics.setBackgroundColor(this.getForegroundColor());
@@ -272,17 +283,17 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 */
 	private void drawMarkers(final Graphics graphics, final Rectangle barRectangle) {
 		if (_orientationHorizontal) {
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_loloLevel)), barRectangle.y+barRectangle.height, LABELS[0]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_loLevel)), barRectangle.y+barRectangle.height, LABELS[1]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_mLevel)), barRectangle.y+barRectangle.height, LABELS[2]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_hiLevel)), barRectangle.y+barRectangle.height, LABELS[3]).draw(graphics);
-			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_hihiLevel)), barRectangle.y+barRectangle.height, LABELS[4]).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_loloLevel)), barRectangle.y+barRectangle.height, _loloLevel, LABELS[0], _showValues).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_loLevel)), barRectangle.y+barRectangle.height, _loLevel, LABELS[1], _showValues).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_mLevel)), barRectangle.y+barRectangle.height, _mLevel, LABELS[2], _showValues).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_hiLevel)), barRectangle.y+barRectangle.height, _hiLevel, LABELS[3], _showValues).draw(graphics);
+			new HorizontalMarker(barRectangle.x+(int)(barRectangle.width*this.getWeight(_hihiLevel)), barRectangle.y+barRectangle.height, _hihiLevel, LABELS[4], _showValues).draw(graphics);
 		} else {
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_loloLevel)), LABELS[0]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_loLevel)), LABELS[1]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_mLevel)), LABELS[2]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_hiLevel)), LABELS[3]).draw(graphics);
-			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-_hihiLevel)), LABELS[4]).draw(graphics);	
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-this.getWeight(_loloLevel))), _loloLevel, LABELS[0], _showValues).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-this.getWeight(_loLevel))), _loLevel, LABELS[1], _showValues).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-this.getWeight(_mLevel))), _mLevel, LABELS[2], _showValues).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-this.getWeight(_hiLevel))), _hiLevel, LABELS[3], _showValues).draw(graphics);
+			new VerticalMarker(barRectangle.x+barRectangle.width, barRectangle.y+(int)(barRectangle.height*(1-this.getWeight(_hihiLevel))), _hihiLevel, LABELS[4], _showValues).draw(graphics);	
 		}
 	}
 	
@@ -446,51 +457,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		return _hihiColor;
 	}
 	
-//	/**
-//	 * Sets the levels for LOLO, LO, M, HI, HIHI.
-//	 * For correct drawing the values should be between 0.0 and 1.0
-//	 * 
-//	 * @param levels
-//	 *            The levels.
-//	 */
-//	public void setLevels(final double[] levels) {
-//		Arrays.sort(levels);
-//		double maxValue = levels[levels.length-1];
-//		for (int i=0;i<levels.length;i++) {
-//			switch (i) {
-//			case 0:	_loloMax = this.getWeight(levels[i], maxValue); break; 
-//			case 1:	_loMax = this.getWeight(levels[i], maxValue); break;
-//			case 2:	_mMax = this.getWeight(levels[i], maxValue); break;
-//			case 3:	_hiMax = this.getWeight(levels[i], maxValue); break;
-//			case 4:	_hihiMax = this.getWeight(levels[i], maxValue); break;
-//			default: System.out.println("RefreshableBargraphFigure.setLevels() unknown value");
-//			}
-//		}
-//	}
-//	
-//	/**
-//	 * Gets the weight (0.0 - 1.0) of the value regarding the maxValue.
-//	 * @param value
-//	 * 				The value, which weight has to be calculated
-//	 * @param maxValue
-//	 * 				The upper limit
-//	 * @return double
-//	 * 				The corresponding weight for the value
-//	 */
-//	private double getWeight(final double value, final double maxValue) {
-//		return value / maxValue;  
-//	}
-//
-//	/**
-//	 * Gets the levels for LOLO, LO, M, HI, HIHI.
-//	 * 
-//	 * @return double[]
-//	 * 				The levels
-//	 */
-//	public double[] getLevels() {
-//		return new double[]{_loloMax, _loMax, _mMax, _hiMax, _hihiMax};
-//	}
-	
 	/**
 	 * Sets the minimum value.
 	 * @param min
@@ -616,6 +582,24 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	public double getMaximum() {
 		return _maximum;
 	}
+	
+	/**
+	 * Sets, if the values should be shown.
+	 * @param showValues
+	 * 				True, if the values should be shown, false otherwise
+	 */
+	public void setShowValues(final boolean showValues) {
+		_showValues = showValues;
+	}
+	
+	/**
+	 * Gets, if the values should be shown.
+	 * @return boolean
+	 * 				True, if the values should be shown, false otherwise
+	 */
+	public boolean getShowValues() {
+		return _showValues;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -655,9 +639,19 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		private static final int HEIGHT = 5;
 		
 		/**
+		 * A boolean, which indicates whether the value shoulb be shown.
+		 */
+		private boolean _showValue = false;
+		
+		/**
+		 * The drawed value.
+		 */
+		private double _value;
+		
+		/**
 		 * The drawed text.
 		 */
-		private final String _text;
+		private String _text;
 		
 		/**
 		 * Construktor.
@@ -665,13 +659,19 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 * 				The x coordinate for this Marker
 		 * @param y
 		 * 				The y coordinate for this Marker
+		 * @param value
+		 * 				The double to display
 		 * @param text
 		 * 				The text to display
+		 * @param showValues
+		 * 				True, if the values should be shown, false otherwise
 		 */
-		public HorizontalMarker(final int x, final int y, final String text) {
+		public HorizontalMarker(final int x, final int y, final double value, final String text, final boolean showValues) {
 			_x = x;
 			_y = y;
 			_text = text;
+			_showValue = showValues;
+			_value = value;
 		}
 		
 		/**
@@ -681,7 +681,12 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 */
 		public void draw(final Graphics graphics) {
 			graphics.fillRectangle(_x,_y,WIDTH,HEIGHT);
-			graphics.drawString(_text, this.getTextPositionX(_x, _text, graphics.getFontMetrics().getAverageCharWidth()), _y+HEIGHT+2);
+			int y = _y+HEIGHT+2;
+			if (_showValue) {
+				graphics.drawString(String.valueOf(_value), this.getTextPositionX(_x, _text, graphics.getFontMetrics().getAverageCharWidth()), y);
+				y = y + graphics.getFontMetrics().getHeight();
+			}
+			graphics.drawString(_text, this.getTextPositionX(_x, _text, graphics.getFontMetrics().getAverageCharWidth()), y);
 		}
 		
 		/**
@@ -726,6 +731,16 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		private static final int HEIGHT = 2;
 		
 		/**
+		 * A boolean, which indicates whether the value shoulb be shown.
+		 */
+		private boolean _showValue = false;
+		
+		/**
+		 * The drawed value.
+		 */
+		private double _value;
+		
+		/**
 		 * The drawed text.
 		 */
 		private final String _text;
@@ -736,13 +751,19 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 * 				The x coordinate for this Marker
 		 * @param y
 		 * 				The y coordinate for this Marker
+		 * @param value
+		 * 				The value to display
 		 * @param text
 		 * 				The text to display
+		 * @param showValues
+		 * 				True, if the values should be shown, false otherwise
 		 */
-		public VerticalMarker(final int x, final int y, final String text) {
+		public VerticalMarker(final int x, final int y, final double value, final String text, final boolean showValues) {
 			_x = x;
 			_y = y;
 			_text = text;
+			_showValue = showValues;
+			_value = value;
 		}
 		
 		/**
@@ -752,7 +773,12 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 */
 		public void draw(final Graphics graphics) {
 			graphics.fillRectangle(_x,_y,WIDTH,HEIGHT);
-			graphics.drawString(_text, _x+WIDTH+2, this.getTextPositionY(_y, graphics.getFontMetrics().getHeight()));
+			int x = _x+WIDTH+2;
+			if (_showValue) {
+				graphics.drawString(String.valueOf(_value), x, this.getTextPositionY(_y, graphics.getFontMetrics().getHeight()));
+				x = x + TEXTWIDTH;
+			}
+			graphics.drawString(_text.toString(), x, this.getTextPositionY(_y, graphics.getFontMetrics().getHeight()));
 		}
 		
 		/**

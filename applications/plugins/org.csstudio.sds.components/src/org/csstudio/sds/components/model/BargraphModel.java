@@ -73,6 +73,11 @@ public final class BargraphModel extends AbstractWidgetModel {
 	public static final String PROP_HIHI_COLOR = "hihi_color";
 	
 	/**
+	 * The ID of the show_value property.
+	 */
+	public static final String PROP_SHOW_VALUES = "show_value";
+	
+	/**
 	 * The ID of the minimum property.
 	 */
 	public static final String PROP_MIN = "minimum";
@@ -100,15 +105,6 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * The ID of the maximum property.
 	 */
 	public static final String PROP_MAX = "maximum";
-	
-	/**
-	 * The ID of the levels property.
-	 */
-	//public static final String PROP_LEVELS = "levels";
-//	/**
-//	 * The ID of the lolo-max property.
-//	 */
-//	public static final String PROP_LOLO_MAX = "lolo_max";
 
 	/**
 	 * The ID of this widget model.
@@ -151,6 +147,11 @@ public final class BargraphModel extends AbstractWidgetModel {
 	private static final RGB DEFAULT_HIHI_COLOR = new RGB(255,255,255);
 	
 	/**
+	 * The default value of the show_value property. 
+	 */
+	private static final boolean DEFAULT_SHOW_VALUES = false;
+	
+	/**
 	 * The default value of the levels property. 
 	 */
 	private static final double[] DEFAULT_LEVELS = new double[]{0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.0};
@@ -168,19 +169,22 @@ public final class BargraphModel extends AbstractWidgetModel {
 		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
 				WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0));
 		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal Orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
-		addProperty(PROP_LOLO_COLOR, new ColorProperty("LOLO Color",WidgetPropertyCategory.Display,DEFAULT_LOLO_COLOR));
-		addProperty(PROP_LO_COLOR, new ColorProperty("LO Color",WidgetPropertyCategory.Display,DEFAULT_LO_COLOR));
-		addProperty(PROP_M_COLOR, new ColorProperty("M Color",WidgetPropertyCategory.Display,DEFAULT_M_COLOR));
-		addProperty(PROP_HI_COLOR, new ColorProperty("HI Color",WidgetPropertyCategory.Display,DEFAULT_HI_COLOR));
-		addProperty(PROP_HIHI_COLOR, new ColorProperty("HIHI Color",WidgetPropertyCategory.Display,DEFAULT_HIHI_COLOR));
-		//addProperty(PROP_LEVELS, new DoubleArrayProperty("Levels",WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS));
+		//Colors
+		addProperty(PROP_LOLO_COLOR, new ColorProperty("Color LOLO",WidgetPropertyCategory.Display,DEFAULT_LOLO_COLOR));
+		addProperty(PROP_LO_COLOR, new ColorProperty("Color LO",WidgetPropertyCategory.Display,DEFAULT_LO_COLOR));
+		addProperty(PROP_M_COLOR, new ColorProperty("Color M",WidgetPropertyCategory.Display,DEFAULT_M_COLOR));
+		addProperty(PROP_HI_COLOR, new ColorProperty("Color HI",WidgetPropertyCategory.Display,DEFAULT_HI_COLOR));
+		addProperty(PROP_HIHI_COLOR, new ColorProperty("Color HIHI",WidgetPropertyCategory.Display,DEFAULT_HIHI_COLOR));
+		//Levels
 		addProperty(PROP_MIN, new DoubleProperty("Minimum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[0]));
-		addProperty(PROP_LOLO_LEVEL, new DoubleProperty("LOLO Level", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[1]));
-		addProperty(PROP_LO_LEVEL, new DoubleProperty("LO Level", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[2]));
-		addProperty(PROP_M_LEVEL, new DoubleProperty("M Level", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[3]));
-		addProperty(PROP_HI_LEVEL, new DoubleProperty("HI Level", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[4]));
-		addProperty(PROP_HIHI_LEVEL, new DoubleProperty("HIHI Level", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[5]));
+		addProperty(PROP_LOLO_LEVEL, new DoubleProperty("Level LOLO", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[1]));
+		addProperty(PROP_LO_LEVEL, new DoubleProperty("Level LO", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[2]));
+		addProperty(PROP_M_LEVEL, new DoubleProperty("Level M", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[3]));
+		addProperty(PROP_HI_LEVEL, new DoubleProperty("Level HI", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[4]));
+		addProperty(PROP_HIHI_LEVEL, new DoubleProperty("Level HIHI", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[5]));
 		addProperty(PROP_MAX, new DoubleProperty("Maximum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[6]));
+		//Show_Value
+		addProperty(PROP_SHOW_VALUES, new BooleanProperty("Show values", WidgetPropertyCategory.Display, DEFAULT_SHOW_VALUES));
 	}
 
 	/**
@@ -250,14 +254,6 @@ public final class BargraphModel extends AbstractWidgetModel {
 		return (RGB) getProperty(PROP_HIHI_COLOR).getPropertyValue();
 	}
 	
-//	/**
-//	 * Gets the levels for LOLO, LO, M, HI, HIHI.
-//	 * @return The levels for LOLO, LO, M, HI, HIHI
-//	 */
-//	public double[] getLevels() {
-//		return (double[]) getProperty(PROP_LEVELS).getPropertyValue();
-//	}
-	
 	/**
 	 * Gets the minimum value for this model.
 	 * @return double
@@ -319,6 +315,15 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	public double getMaximum() {
 		return (Double) getProperty(PROP_MAX).getPropertyValue();
+	}
+	
+	/**
+	 * Gets, if the values showed be shown or not.
+	 * @return boolean
+	 * 				true, if the values should be shown, false otherwise
+	 */
+	public boolean getShowValues() {
+		return (Boolean) getProperty(PROP_SHOW_VALUES).getPropertyValue();
 	}
 	
 	/**

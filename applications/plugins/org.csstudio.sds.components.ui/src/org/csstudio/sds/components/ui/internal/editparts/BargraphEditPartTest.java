@@ -26,6 +26,8 @@ import static org.junit.Assert.assertTrue;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableBargraphFigure;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,16 +49,32 @@ public final class BargraphEditPartTest {
 	public void setUp() {
 		_editPart = new BargraphEditPart();
 		_editPart.setModel(new BargraphModel());
+		System.out.println("BargraphEditPartTest.setUp()");
+		((RefreshableBargraphFigure)_editPart.getFigure()).setLoloColor(new RGB(100,100,100));
 	}
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.RectangleEditPart#doCreateFigure()}.
+	 * {@link org.csstudio.sds.components.ui.internal.editparts.BargraphEditPart#doCreateFigure()}.
 	 */
 	@Test
 	public void testCreateFigure() {
+		System.out.println("BargraphEditPartTest.testCreateFigure()");
 		IFigure figure = _editPart.doCreateFigure();
 		assertTrue(figure instanceof RefreshableBargraphFigure);
+	}
+	
+	/**
+	 * Test method for
+	 * {@link org.csstudio.sds.components.ui.internal.editparts.BargraphEditPart#registerPropertyChangeHandlers()}.
+	 */
+	public void testPropertyChangeHandler() {
+		Color oldLoloColor = ((RefreshableBargraphFigure)_editPart.getFigure()).getLoloColor();
+		RGB newRGB = new RGB(255,0,0);
+		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_LOLO_COLOR, newRGB);
+		Color newLoloColor = ((RefreshableBargraphFigure)_editPart.getFigure()).getLoloColor();
+		assertTrue(!oldLoloColor.equals(newLoloColor));
+		assertTrue(newLoloColor.getRGB().equals(newRGB));
 	}
 
 }
