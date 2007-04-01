@@ -42,12 +42,9 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		System.out.println("BargraphEditPart.doCreateFigure()");
 		BargraphModel model = (BargraphModel)getCastedModel();
-		System.out.println("BargraphEditPart.doCreateFigure() post model");
 		
 		RefreshableBargraphFigure bargraph = new RefreshableBargraphFigure();
-		System.out.println("BargraphEditPart.doCreateFigure() post figure");
 		bargraph.setFill(model.getFillLevel());
 		bargraph.setOrientation(model.getOrientation());
 		//Colors
@@ -66,7 +63,6 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setMaximum(model.getMaximum());
 		//show_VAlue
 		bargraph.setShowValues(model.getShowValues());
-		System.out.println("BargraphEditPart.doCreateFigure() post set");
 		return bargraph;
 	}
 
