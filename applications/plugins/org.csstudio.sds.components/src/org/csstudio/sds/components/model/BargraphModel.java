@@ -27,6 +27,8 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
+import org.csstudio.sds.model.properties.IntegerProperty;
+import org.csstudio.sds.model.properties.OptionProperty;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -105,6 +107,18 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * The ID of the maximum property.
 	 */
 	public static final String PROP_MAX = "maximum";
+	/**
+	 * The ID of the show status of the marks.
+	 */
+	public static final String PROP_SHOW_MARKS = "marks_show_status";
+	/**
+	 * The ID of the show status of the marks.
+	 */
+	public static final String PROP_SHOW_SCALE = "scale_show_status";
+	/**
+	 * The ID of the show status of the marks.
+	 */
+	public static final String PROP_SCALE_SECTION_COUNT = "section_count";
 
 	/**
 	 * The ID of this widget model.
@@ -152,6 +166,26 @@ public final class BargraphModel extends AbstractWidgetModel {
 	private static final boolean DEFAULT_SHOW_VALUES = false;
 	
 	/**
+	 * The default value for the show status of the marks.
+	 */
+	private static final int DEFAULT_SHOW_MARKS = 1;
+	
+	/**
+	 * The default value for the show status of the scale.
+	 */
+	private static final int DEFAULT_SHOW_SCALE = 1;
+	
+	/**
+	 * The default value for the section count.
+	 */
+	private static final int DEFAULT_SECTION_COUNT = 10;
+	
+	/**
+	 * The labels for the MARKS_SHOW_STATUS- property.
+	 */
+	private static final String[] SHOW_LABELS = new String[] {"None", "Bottom / Right", "Top / Left"};
+	
+	/**
 	 * The default value of the levels property. 
 	 */
 	private static final double[] DEFAULT_LEVELS = new double[]{0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.0};
@@ -185,6 +219,9 @@ public final class BargraphModel extends AbstractWidgetModel {
 		addProperty(PROP_MAX, new DoubleProperty("Maximum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[6]));
 		//Show_Value
 		addProperty(PROP_SHOW_VALUES, new BooleanProperty("Show values", WidgetPropertyCategory.Display, DEFAULT_SHOW_VALUES));
+		addProperty(PROP_SHOW_MARKS, new OptionProperty("Tipmarks",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_MARKS));
+		addProperty(PROP_SHOW_SCALE, new OptionProperty("Scale",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_SCALE));
+		addProperty(PROP_SCALE_SECTION_COUNT, new IntegerProperty("Section count", WidgetPropertyCategory.Display,DEFAULT_SECTION_COUNT,1,Integer.MAX_VALUE));
 	}
 
 	/**
@@ -318,12 +355,39 @@ public final class BargraphModel extends AbstractWidgetModel {
 	}
 	
 	/**
-	 * Gets, if the values showed be shown or not.
+	 * Gets, if the values should be shown or not.
 	 * @return boolean
 	 * 				true, if the values should be shown, false otherwise
 	 */
 	public boolean getShowValues() {
 		return (Boolean) getProperty(PROP_SHOW_VALUES).getPropertyValue();
+	}
+	
+	/**
+	 * Gets, if the marks should be shown or not.
+	 * @return int
+	 * 				0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
+	 */
+	public int getShowMarks() {
+		return (Integer) getProperty(PROP_SHOW_MARKS).getPropertyValue();
+	}
+	
+	/**
+	 * Gets, if the scale should be shown or not.
+	 * @return int
+	 * 				0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
+	 */
+	public int getShowScale() {
+		return (Integer) getProperty(PROP_SHOW_SCALE).getPropertyValue();
+	}
+	
+	/**
+	 * Gets the count of section in the scale.
+	 * @return int
+	 * 				The count of sections in  the scale
+	 */
+	public int getScaleSectionCount() {
+		return (Integer) getProperty(PROP_SCALE_SECTION_COUNT).getPropertyValue();
 	}
 	
 	/**

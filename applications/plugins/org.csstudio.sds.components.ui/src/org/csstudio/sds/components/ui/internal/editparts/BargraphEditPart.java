@@ -61,8 +61,11 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setHiLevel(model.getHiLevel());
 		bargraph.setHihiLevel(model.getHihiLevel());
 		bargraph.setMaximum(model.getMaximum());
-		//show_VAlue
+		//show_Value
 		bargraph.setShowValues(model.getShowValues());
+		bargraph.setShowMarks(model.getShowMarks());
+		bargraph.setShowScale(model.getShowScale());
+		bargraph.setScaleSectionCount(model.getScaleSectionCount());
 		return bargraph;
 	}
 
@@ -108,6 +111,39 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(BargraphModel.PROP_SHOW_VALUES, showValuesHandler);
+//		Show_marks
+		IWidgetPropertyChangeHandler showMarksHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setShowMarks((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_SHOW_MARKS, showMarksHandler);
+		//Show_scale
+		IWidgetPropertyChangeHandler showScaleHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setShowScale((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_SHOW_SCALE, showScaleHandler);
+//		Scale_count
+		IWidgetPropertyChangeHandler scaleCountHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setScaleSectionCount((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_SCALE_SECTION_COUNT, scaleCountHandler);
 	}
 	
 	/**
