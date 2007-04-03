@@ -390,8 +390,6 @@ public final class ContainerSelectionGroup extends Composite {
 						containerSelectionChanged((IContainer) selection
 								.getFirstElement()); // allow null
 						if (_newFolderAction!=null) {
-							System.out
-									.println("ContainerSelectionGroup.setSelectedContainer() Action");
 							_newFolderAction.setEnabled(selection!=null);
 						}
 					}

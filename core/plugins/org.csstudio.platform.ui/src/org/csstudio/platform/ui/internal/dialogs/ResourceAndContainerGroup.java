@@ -263,40 +263,6 @@ public final class ResourceAndContainerGroup implements Listener {
 					null, _showClosedProjects, heightHint,
 					SIZING_TEXT_FIELD_WIDTH);
 		}
-		
-		//TODO Marker
-		/*Button newDirectoryButton = new Button(composite,SWT.PUSH);
-		newDirectoryButton.setText("Create new Directory");
-		final Shell shell = composite.getShell();
-		newDirectoryButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				InputDialog inputDialog = new InputDialog(shell, Messages.getString("CreateFolderAction.DIALOG_TITLE"), //$NON-NLS-1$
-						Messages.getString("CreateFolderAction.DIALOG_MESSAGE"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
-				int ret = inputDialog.open();
-
-				if (ret == Window.OK) {
-					String folderName = inputDialog.getValue();
-					if (folderName != null) {
-						IResource container = ResourcesPlugin.getWorkspace().getRoot().findMember(_containerGroup.getContainerFullPath());
-						if (container instanceof IContainer) {
-							IFolder folder = ((IContainer) container).getFolder(new Path(folderName));
-							if (folder.exists()) {
-								MessageDialog.openInformation(shell, Messages.getString("CreateFolderAction.ERROR_TITLE"), //$NON-NLS-1$
-										Messages.getString("CreateFolderAction.ERROR_MESSAGE")); //$NON-NLS-1$
-							} else {
-								try {
-									folder.create(true, true, null);
-								} catch (CoreException coreE) {
-									CentralLogger.getInstance().error(this, coreE);
-								}
-							}	
-							_containerGroup.refreshTree();
-						}
-					}
-				}
-						
-			}
-		});*/
 
 		// resource name group
 		Composite nameGroup = new Composite(composite, SWT.NONE);
@@ -323,6 +289,10 @@ public final class ResourceAndContainerGroup implements Listener {
 		_resourceNameField.setBackground(FieldAssistColors
 				.getRequiredFieldBackgroundColor(_resourceNameField));
 
+//		label = new Label(nameGroup, SWT.NONE);
+//		label.setText("Full path");
+//		label = new Label(nameGroup, SWT.NONE);
+//		label.setText(_containerGroup.getContainerFullPath().toString());
 		validateControls();
 	}
 
