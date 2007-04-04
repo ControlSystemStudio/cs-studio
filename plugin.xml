@@ -6,10 +6,14 @@
       <toc
             file="toc.xml"
             primary="true"/>
+      <toc
+            file="testToc.xml"
+            primary="true"/>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            category="org.csstudio.platform.ui.css.applications.configuration"
             class="org.csstudio.platform.libs.jms.preferences.JMSPreferencePage"
             id="org.csstudio.platform.libs.jms.preferences.JMSPreferencePage"
             name="%prefPageTitle"/>
