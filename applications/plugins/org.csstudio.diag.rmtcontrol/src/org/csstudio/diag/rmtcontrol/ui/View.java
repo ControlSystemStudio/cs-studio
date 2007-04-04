@@ -31,7 +31,6 @@ import java.util.Observer;
 
 import org.csstudio.diag.rmtcontrol.Activator;
 import org.csstudio.diag.rmtcontrol.Messages;
-import org.csstudio.diag.rmtcontrol.WriteDefaultXML;
 import org.csstudio.diag.rmtcontrol.Preference.SampleService;
 import org.csstudio.utility.ioc_socket_communication.IOCAnswer;
 import org.csstudio.utility.ioc_socket_communication.RMTControl;
@@ -49,7 +48,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
