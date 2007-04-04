@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="JMS library" topic="html/toc.html">
-	<topic label="Main Topic"  href="html/maintopic.html"> 
-		<topic label="Sub Topic" href="html/subtopic.html"/> 
-	</topic>
+<toc label="JMS">
+	<topic label="JMS"  href="html/maintopic.html"/>
 </toc>
