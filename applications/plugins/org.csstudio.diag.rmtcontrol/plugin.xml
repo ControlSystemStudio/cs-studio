@@ -30,6 +30,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            category="org.csstudio.platform.ui.css.applications.diag"
             class="org.csstudio.diag.rmtcontrol.Preference.PageMain"
             id="org.csstudio.diag.RMTControl.PreferencePage"
             name="RMT"/>
@@ -37,6 +38,15 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.csstudio.diag.rmtcontrol.PreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="testToc.xml"
+            primary="true"/>
+      <toc
+            file="toc.xml"
+            primary="true"/>
    </extension>
    <!--extension
          point="org.eclipse.ui.preferencePages">
