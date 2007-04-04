@@ -53,4 +53,13 @@
                style="push"/>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+      <toc
+            file="testToc.xml"
+            primary="true"/>
+   </extension>
 </plugin>

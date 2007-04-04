@@ -101,7 +101,7 @@ public class MainView extends ViewPart implements Observer{
 		public String getColumnText(Object element, int columnIndex) {
 			if (element instanceof ProcessVariable) {
 				ProcessVariable pv = (ProcessVariable) element;
-				return ""+pv.getPath()[columnIndex].split("=")[1];
+				return pv.getPath()[columnIndex].split("=")[1]; //$NON-NLS-1$
 
 			}
 			if (element instanceof ArrayList) {
@@ -109,9 +109,9 @@ public class MainView extends ViewPart implements Observer{
 				if (o instanceof IControlSystemItem) {
 					return ((IProcessVariable)o).getName();
 				}
-				return "AL: "+o.toString();
+				return "AL: "+o.toString(); //$NON-NLS-1$
 			}
-			return "toStr: "+element.toString();
+			return "toStr: "+element.toString(); //$NON-NLS-1$
 
 		}
 
@@ -164,13 +164,13 @@ public class MainView extends ViewPart implements Observer{
 	public void createPartControl(Composite parent){
 		disp = parent.getDisplay();
 		parent.setLayout(new GridLayout(3,false));
-		up = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up.gif").createImage();
-		down = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down.gif").createImage();
-		up_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up_old.gif").createImage();
-		down_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down_old.gif").createImage();
+		up = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up.gif").createImage(); //$NON-NLS-1$
+		down = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down.gif").createImage(); //$NON-NLS-1$
+		up_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up_old.gif").createImage(); //$NON-NLS-1$
+		down_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down_old.gif").createImage(); //$NON-NLS-1$
 //		work_disable = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/work_disable2.gif").createImage();
 //		world = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/work_do.gif").createImage();
-		work_disable = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/LDAPLupe.gif").createImage();
+		work_disable = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/LDAPLupe.gif").createImage(); //$NON-NLS-1$
 //		world = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/LDAPLupe.gif").createImage();
 
 		searchText = makeSearchField(parent);
@@ -178,7 +178,7 @@ public class MainView extends ViewPart implements Observer{
 		// make Search Button
 		searchButton = new Button(parent,SWT.PUSH);
 		searchButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
-		searchButton.setFont(new Font(parent.getDisplay(),"SimSun",10,SWT.NONE));
+		searchButton.setFont(new Font(parent.getDisplay(),Messages.MainView_SearchButtonFont,10,SWT.NONE));
 		searchButton.setText(Messages.getString("MainView_searchButton")); //$NON-NLS-1$
 
 		// make Serach Activity Icon
@@ -261,10 +261,10 @@ public class MainView extends ViewPart implements Observer{
 		ergebnissTableView.getTable().clearAll();
 		ergebnissTableView.refresh();
 		// ersetzt mehrfach vorkommende '*' durch einen. Da die LDAP abfrage damit nicht zurecht kommt.
-		search = search.replaceAll("\\*\\**", "*");
-		String filter = "eren="+search;
-		if(search.compareTo("*")!=0)
-			filter = filter.concat("*");
+		search = search.replaceAll("\\*\\**", "*"); //$NON-NLS-1$ //$NON-NLS-2$
+		String filter = "eren="+search; //$NON-NLS-1$
+		if(search.compareTo("*")!=0) //$NON-NLS-1$
+			filter = filter.concat("*"); //$NON-NLS-1$
 
 		if(headline.isEmpty()){
 			headline.put("efan", Messages.getString("MainView_facility")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -293,7 +293,7 @@ public class MainView extends ViewPart implements Observer{
 		for (String row : list) {
 //			System.out.println(list.size()+": "+row);
 			String[] elements = row.split(","); //$NON-NLS-1$
-			String path ="";
+			String path =""; //$NON-NLS-1$
 			for(int j=0;j<elements.length;j++){
 				if(i==0&&j>=ergebnissTableView.getTable().getColumnCount()){
 //					lastSort = new int[elements.length-1];
@@ -330,20 +330,20 @@ public class MainView extends ViewPart implements Observer{
 					});
 					String temp;
 					if((temp=headline.get(elements[j].split("=")[0]))==null) //$NON-NLS-1$
-						 temp = elements[j].split("=")[0];
+						 temp = elements[j].split("=")[0]; //$NON-NLS-1$
 					if(j==0){
-						temp=temp.concat(" ("+list.size()+")");
+						temp=temp.concat(" ("+list.size()+")"); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					tc.setText(temp);
 				}else if(i==0&&j==0){
 					String tmp = ergebnissTableView.getTable().getColumn(j).getText();
-					tmp = tmp.substring(0,tmp.lastIndexOf("(")+1)+list.size()+")";
+					tmp = tmp.substring(0,tmp.lastIndexOf("(")+1)+list.size()+")"; //$NON-NLS-1$ //$NON-NLS-2$
 					ergebnissTableView.getTable().getColumn(j).setText(tmp);
 				}
 				path +=elements[j];
 			}
 //			System.out.println(path);
-			tableElements.add(new ProcessVariable(elements[0].split("=")[1],elements));
+			tableElements.add(new ProcessVariable(elements[0].split("=")[1],elements)); //$NON-NLS-1$
 			i++;
 		}
 //		System.out.println("Thread test 2");
@@ -363,7 +363,7 @@ public class MainView extends ViewPart implements Observer{
 	 *
 	 */
 	private void makeContextMenu() {
-		MenuManager manager = new MenuManager("#PopupMenu");
+		MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 		Control contr = ergebnissTableView.getControl();
 		manager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {

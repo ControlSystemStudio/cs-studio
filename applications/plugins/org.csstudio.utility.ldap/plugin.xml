@@ -13,5 +13,14 @@
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.csstudio.utility.ldap.preference.PreferenceInitializer"/>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="testToc.xml"
+            primary="true"/>
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
 
 </plugin>

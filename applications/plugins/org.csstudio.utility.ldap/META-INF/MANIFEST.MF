@@ -7,6 +7,7 @@ Bundle-Activator: org.csstudio.utility.ldap.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.platform.ui
+ org.csstudio.platform.ui,
+ org.eclipse.help
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.utility.ldap.reader

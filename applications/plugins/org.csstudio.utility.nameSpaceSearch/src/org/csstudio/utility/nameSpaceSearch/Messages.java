@@ -41,6 +41,8 @@ public class Messages extends NLS {
 
 	public static String MainView_searchButton;
 
+	public static String MainView_SearchButtonFont;
+
 	public static String PreferencePage_DN;
 
 	public static String PreferencePage_LDAP;

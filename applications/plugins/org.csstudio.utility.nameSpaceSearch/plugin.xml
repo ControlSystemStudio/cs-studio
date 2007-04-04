@@ -52,4 +52,13 @@
                tooltip="Send selected PV to the Name Space Search"/>
       </objectContribution>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="testToc.xml"
+            primary="true"/>
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
 </plugin>

@@ -180,7 +180,7 @@ public class CSSView extends Composite implements Observer{
 	 	listViewer.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
 		try{
 			LDAPReader ldapr;
-			if(selection.endsWith("=*"))
+			if(selection.endsWith("=*")) //$NON-NLS-1$
 				ldapr = new LDAPReader(para.name, para.filter,SearchControls.SUBTREE_SCOPE, ergebnisListe);
 			else
 				ldapr = new LDAPReader(para.name, para.filter,SearchControls.ONELEVEL_SCOPE, ergebnisListe);
@@ -192,7 +192,7 @@ public class CSSView extends Composite implements Observer{
 		     });
 			ldapr.schedule();
 		}catch (IllegalArgumentException e) {
-			Activator.logException("", e);
+			Activator.logException(Messages.getString("CSSView.exp.IAE.1"), e); //$NON-NLS-1$
 		}
 	}
 
@@ -330,7 +330,7 @@ public class CSSView extends Composite implements Observer{
 					String name=""; //$NON-NLS-1$
 					if (element instanceof IControlSystemItem)
 						name= ((IControlSystemItem) element).getName();
-					if(search.length()==0||name.toLowerCase().matches(search.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace("?", ".?").toLowerCase()+".*")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
+					if(search.length()==0||name.toLowerCase().matches(search.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace("?", ".?").toLowerCase()+".*")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
 						al.add(element);
 					}
 				}
