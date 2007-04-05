@@ -8,6 +8,14 @@
             id="org.csstudio.utility.managementActions.sendMessage"
             name="Send message"
             parameters="Message"/>
+      <simpleAction
+            class="org.csstudio.utility.managementactions.actions.GetPlatformInformationAction"
+            id="org.csstudio.utility.managementActions.getPlatformInformation"
+            name="Get platform information"/>
+      <simpleAction
+            class="org.csstudio.utility.managementactions.actions.RestartAction"
+            id="org.csstudio.utility.managementActions.restartAction"
+            name="Restart"/>
    </extension>
 
 </plugin>
