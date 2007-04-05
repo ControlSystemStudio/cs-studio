@@ -8,5 +8,7 @@ Bundle-Vendor: DESY
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.dcf,
- org.eclipse.ui
+ org.eclipse.ui,
+ org.csstudio.platform,
+ org.csstudio.platform.ui
 Eclipse-LazyStart: true

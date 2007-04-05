@@ -7,22 +7,7 @@
             class="org.csstudio.utility.managementactions.actions.ActionOpenMessage"
             id="org.csstudio.utility.managementActions.sendMessage"
             name="Send message"
-            parameters="message,param2,param3,param4"/>
-      <enumAction 
-            class="org.csstudio.utility.managementactions.actions.ActionEnumTestAction"
-            id="org.csstudio.utility.managementActions.testEnum"
-            name="Test Enum Action"
-            values="value1,value2,value3,value4"/>
-      <simpleAction
-            class="org.csstudio.utility.managementactions.actions.ArrayStringAction"
-            id="org.csstudio.utility.managementActions.arrayViewerTest"
-            name="Array Tester"/>
-      <dynamicValuesAction
-            class="org.csstudio.utility.managementactions.actions.DynamicActionTest"
-            id="org.csstudio.utility.managementActions.dynamicValuesAction1"
-            loaderActionId="org.csstudio.utility.managementActions.arrayViewerTest"
-            name="Dynamic Test"
-            parameters="param1,param2,param3"/>
+            parameters="Message"/>
    </extension>
 
 </plugin>

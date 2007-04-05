@@ -1,12 +1,13 @@
 package org.csstudio.utility.managementactions;
 
+import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the plug-in life cycle
+ * Controls this plug-in's lifecycle.
  */
-public class Activator extends Plugin {
+public class Activator extends AbstractCssUiPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.utility.managementActions";
@@ -21,23 +22,6 @@ public class Activator extends Plugin {
 		plugin = this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
-
 	/**
 	 * Returns the shared instance
 	 *
@@ -47,4 +31,18 @@ public class Activator extends Plugin {
 		return plugin;
 	}
 
+	@Override
+	protected void doStart(BundleContext context) throws Exception {
+		// do nothing
+	}
+
+	@Override
+	protected void doStop(BundleContext context) throws Exception {
+		plugin = null;
+	}
+
+	@Override
+	public String getPluginId() {
+		return PLUGIN_ID;
+	}
 }
