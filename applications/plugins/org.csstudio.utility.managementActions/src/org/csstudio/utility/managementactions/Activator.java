@@ -1,7 +1,6 @@
 package org.csstudio.utility.managementactions;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
-import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /**
