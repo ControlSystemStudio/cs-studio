@@ -3,70 +3,71 @@ package org.csstudio.platform.model;
 /**
  * Interface to a control system process variable with archive data source.
  * <p>
- * 
+ *
  * @see IProcessVariableName
  * @see IArchiveDataSource
- * @author Kay Kasemir
+ * @author Jan Hatje and Helge Rickens
+ *
  */
 public interface IProcessVariableWithSample extends IProcessVariable {
 	/**
 	 * The global type id.
 	 */
-	String TYPE_ID = "css:processVariableWithSample"; //$NON-NLS-1$	
+	String TYPE_ID = "css:processVariableWithSample"; //$NON-NLS-1$
 
 	/**
-	 * 
-	 * 
-	 * @return 
+	 *
+	 *
+	 * @return
 	 */
 	double[] getSampleValue();
 	/**
-	 * 
-	 * 
-	 * @return 
+	 *
+	 *
+	 * @return
 	 */
 	double[] getTimeStamp();
 	/**
-	 * 
-	 * 
-	 * @return 
+	 *
+	 *
+	 * @return
 	 */
 	String[] getStatus();
 	/**
-	 * 
-	 * 
-	 * @return 
+	 *
+	 *
+	 * @return
 	 */
 	String[] getSeverity();
 	/**
-	 * 
-	 * 
-	 * @return 
+	 *
+	 *
+	 * @return
 	 */
 	int getDBRTyp();
 	/**
-	 * 
-	 * 
-	 * @return 
+	 *
+	 *
+	 * @return
 	 */
 	String getEGU();
 	/**
-	 * 
-	 * 
-	 * @return 
+	 *
+	 *
+	 * @return
 	 */
 	int getPrecision();
 	/**
-	 * 
-	 * 
-	 * @return 
+	 *
+	 *
+	 * @return
 	 */
 	double getLow();
 	/**
-	 * 
-	 * 
-	 * @return 
+	 *
+	 *
+	 * @return
 	 */
 	double getHigh();
-	
+
 }
