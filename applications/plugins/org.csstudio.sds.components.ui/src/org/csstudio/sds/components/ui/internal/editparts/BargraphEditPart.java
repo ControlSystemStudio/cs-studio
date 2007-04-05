@@ -53,6 +53,8 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setMColor(model.getMColor());
 		bargraph.setHiColor(model.getHiColor());
 		bargraph.setHihiColor(model.getHihiColor());
+		bargraph.setBorderColor(model.getBorderColor());
+		bargraph.setFillBackgroundColor(model.getFillbackgroundColor());
 		//Levels
 		bargraph.setMinimum(model.getMinimum());
 		bargraph.setLoloLevel(model.getLoloLevel());
