@@ -52,7 +52,7 @@ public class LogArchiveViewerPreferencePage
 			}
 
 			public String getNewInputObject(){
-				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), Messages.LogArchiveViewerPreferencePage_newColumnName, Messages.LogArchiveViewerPreferencePage_column, "", null); //$NON-NLS-3$
+				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), Messages.LogArchiveViewerPreferencePage_newColumnName, Messages.LogArchiveViewerPreferencePage_column, "", null); //$NON-NLS-1$
 				if (inputDialog.open() == Window.OK) {
 					return inputDialog.getValue();
 				}

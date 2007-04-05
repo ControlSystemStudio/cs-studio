@@ -13,7 +13,7 @@ public final class TextContainer extends AbstractControlSystemItem {
 	/**
 	 * Type ID for text containers.
 	 */
-	public static final String TYPE_ID = "css:sandbox:textContainer";
+	public static final String TYPE_ID = "css:sandbox:textContainer"; //$NON-NLS-1$
 
 	/**
 	 * The title.

@@ -34,6 +34,7 @@ import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
+import org.csstudio.platform.libs.jms.MessageReceiver;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
@@ -70,7 +71,7 @@ public class LogView extends ViewPart implements MessageListener {
 
 	public void createPartControl(Composite parent) {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
-				.getString(LogViewerPreferenceConstants.P_STRING).split(";");
+				.getString(LogViewerPreferenceConstants.P_STRING).split(";"); //$NON-NLS-1$
 		jmsml = new JMSMessageList(columnNames);
 
 		parentShell = parent.getShell();
@@ -85,7 +86,7 @@ public class LogView extends ViewPart implements MessageListener {
 		comp.setLayout(new GridLayout(4, true));
 
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
-				.getString(LogViewerPreferenceConstants.P_STRING).split(";");
+				.getString(LogViewerPreferenceConstants.P_STRING).split(";"); //$NON-NLS-1$
 
 		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml);
 		jlv.setAlarmSorting(false);
@@ -95,7 +96,7 @@ public class LogView extends ViewPart implements MessageListener {
 	}
 
 	private void initializeJMSReceiver(Shell ps) {
-		String[] queues = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.QUEUE).split(",");
+		String[] queues = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.QUEUE).split(","); //$NON-NLS-1$
 		try {
 			receiver1 = new MessageReceiver(
 					JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY),
@@ -105,7 +106,7 @@ public class LogView extends ViewPart implements MessageListener {
 			receiver1.startListener(this);
 		} catch (Exception e) {
 			MessageBox box = new MessageBox(ps, SWT.ICON_ERROR);
-			box.setText("Failed to initialise primary JMS Context");
+			box.setText(Messages.getString("LogView.error.JMS.1")); //$NON-NLS-1$
 			box.setMessage(e.getMessage());
 			box.open();
 		}
@@ -117,7 +118,7 @@ public class LogView extends ViewPart implements MessageListener {
 			receiver2.startListener(this);
 		} catch (Exception e) {
 			MessageBox box = new MessageBox(ps, SWT.ICON_ERROR);
-			box.setText("Failed to initialise secondary JMS Context");
+			box.setText(Messages.getString("LogView.error.JMS.2")); //$NON-NLS-1$
 			box.setMessage(e.getMessage());
 			box.open();
 		}
@@ -151,11 +152,11 @@ public class LogView extends ViewPart implements MessageListener {
 						jmsml.addJMSMessage((MapMessage) message);
 					} else {
 						System.out
-								.println("received message is unhandled type: "
+								.println(Messages.getString("LogView.error.JMS.type") //$NON-NLS-1$
 										+ message.getJMSType());
 					}
 				} catch (Exception e) {
-					System.out.println("error");
+					System.out.println(Messages.getString("LogView.error.error.1")); //$NON-NLS-1$
 					System.err.println(e);
 					e.printStackTrace();
 				}
@@ -182,11 +183,11 @@ public class LogView extends ViewPart implements MessageListener {
 	private final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
 
 		public void propertyChange(PropertyChangeEvent event) {
-			System.out.println("Log ChangeListener");
+			System.out.println(Messages.getString("LogView.12")); //$NON-NLS-1$
 
 			columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 					.getString(LogViewerPreferenceConstants.P_STRING)
-					.split(";");
+					.split(";"); //$NON-NLS-1$
 			jlv.setColumnNames(columnNames);
 
 			Table t = jlv.getTable();

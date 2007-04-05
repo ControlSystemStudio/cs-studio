@@ -58,7 +58,7 @@ public class LogViewerPreferencePage
 			}
 
 			public String getNewInputObject(){
-				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), Messages.newColumnName, Messages.column, "", null); //$NON-NLS-3$
+				InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), Messages.newColumnName, Messages.column, "", null); //$NON-NLS-1$
 				if (inputDialog.open() == Window.OK) {
 					return inputDialog.getValue();
 				}
@@ -85,7 +85,7 @@ public class LogViewerPreferencePage
 		g2.setLayout(new GridLayout(2,false));
 		// -- Primery Server
 		Label l1 = new Label(g2,SWT.NONE);
-		l1.setText(Messages.JMSPreferencePage_ALARM_PRIMERY_SERVER);
+		l1.setText(Messages.JMSPreferencePage_LOG_PRIMERY_SERVER);
 		l1.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
 
 		addField(new StringFieldEditor(LogViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, Messages.JMSPreferencePage_LOG_CONTEXT_FACTORY, g2));

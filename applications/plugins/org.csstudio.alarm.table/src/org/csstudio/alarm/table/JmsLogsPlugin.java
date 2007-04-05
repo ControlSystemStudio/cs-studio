@@ -82,6 +82,6 @@ public class JmsLogsPlugin extends AbstractUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.csstudio.alarm.table", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.csstudio.alarm.table", path); //$NON-NLS-1$
 	}
 }

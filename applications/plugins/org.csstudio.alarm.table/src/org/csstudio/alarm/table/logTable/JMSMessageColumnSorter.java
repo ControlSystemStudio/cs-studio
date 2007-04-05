@@ -10,6 +10,8 @@ public class JMSMessageColumnSorter extends ViewerSorter {
 
 	private boolean ascending = false;
 
+	private static final String SEVERITY = "SEVERITY"; //$NON-NLS-1$
+
 	public JMSMessageColumnSorter(String colName) {
 		super();
 		columnName = colName;
@@ -53,23 +55,23 @@ public class JMSMessageColumnSorter extends ViewerSorter {
 		case 0:
 			if (einsInt == zweiInt) {
 				return bw
-						* collator.compare(jmsm1.getProperty("SEVERITY"), jmsm2
-								.getProperty("SEVERITY"));
+						* collator.compare(jmsm1.getProperty(SEVERITY), jmsm2
+								.getProperty(SEVERITY));
 			} else
 				return bw * (einsInt - zweiInt);
 		case 1:
 			if (einsF == zweiF) {
 				return bw
-						* collator.compare(jmsm1.getProperty("SEVERITY"), jmsm2
-								.getProperty("SEVERITY"));
+						* collator.compare(jmsm1.getProperty(SEVERITY), jmsm2
+								.getProperty(SEVERITY));
 			} else
 				return (int) (bw * (einsF - zweiF));
 		default:
 			int comp = collator.compare(s1, s2);
 			if (comp == 0) {
 				return bw
-						* collator.compare(jmsm1.getProperty("SEVERITY"), jmsm2
-								.getProperty("SEVERITY"));
+						* collator.compare(jmsm1.getProperty(SEVERITY), jmsm2
+								.getProperty(SEVERITY));
 			} else if (s1.length() == 0) {
 				return 1;
 			} else if (s2.length() == 0) {

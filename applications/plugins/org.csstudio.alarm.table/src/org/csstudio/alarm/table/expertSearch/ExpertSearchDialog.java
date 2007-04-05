@@ -170,10 +170,10 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
 		comButton.setLayout(glRight);
 		Button and = new Button(comButton,SWT.UP);
 		and.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
-		and.setText("AND");
+		and.setText(Messages.ExpertSearchDialog_Button_And);
 		Button or = new Button(comButton,SWT.DOWN);
 		or.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
-		or.setText("OR");
+		or.setText(Messages.ExpertSearchDialog_Button_Or);
 		down.getParent().pack();
 		and.addSelectionListener(new SelectionListener(){
 
@@ -185,7 +185,7 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
 			public void widgetSelected(SelectionEvent e) {
 				Label logic = new Label(c, SWT.CENTER);
 //				logic.setLayoutData(new GridData(SWT.CENTER,SWT.FILL,true,false,2,1));
-				logic.setText("AND");
+				logic.setText(Messages.ExpertSearchDialog_Label_And);
 				addNewFilter(down);
 				comButton.dispose();
 				shell.pack();
@@ -204,7 +204,7 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
 			public void widgetSelected(SelectionEvent e) {
 				Label logic = new Label(c, SWT.CENTER);
 //				logic.setLayoutData(new GridData(SWT.CENTER,SWT.FILL,true,false,2,1));
-				logic.setText(" OR ");
+				logic.setText(Messages.ExpertSearchDialog_Label_Or);
 				addNewFilter(down);
 				comButton.dispose();
 				shell.pack();

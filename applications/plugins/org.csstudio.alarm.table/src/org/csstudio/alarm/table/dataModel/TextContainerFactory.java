@@ -17,7 +17,7 @@ public final class TextContainerFactory extends
 	 */
 	@Override
 	protected String createStringRepresentationFromItem(final TextContainer item) {
-		return item.getTitle() + ":" + item.getTitle();
+		return item.getTitle() + ":" + item.getTitle(); //$NON-NLS-1$
 	}
 
 	/**
@@ -27,7 +27,7 @@ public final class TextContainerFactory extends
 	protected TextContainer createItemFromStringRepresentation(final String string) {
 		assert string != null;
 
-		String[] pieces = string.split(":");
+		String[] pieces = string.split(":"); //$NON-NLS-1$
 
 		String title = pieces[0];
 		String text = pieces[1];

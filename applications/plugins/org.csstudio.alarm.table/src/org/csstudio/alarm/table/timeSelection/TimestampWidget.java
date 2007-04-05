@@ -66,14 +66,14 @@ public class TimestampWidget extends Composite
         current_label.setLayoutData(gd);
         
         Button now = new Button(this, SWT.PUSH);
-        now.setText("Now");
-        now.setToolTipText("Set to current time");
+        now.setText(Messages.getString("TimestampWidget.now")); //$NON-NLS-1$
+        now.setToolTipText(Messages.getString("TimestampWidget.current_time")); //$NON-NLS-1$
         gd = new GridData();
         gd.horizontalAlignment = SWT.RIGHT;
         now.setLayoutData(gd);
 
         calendar = new SWTCalendar(this, SWTCalendar.RED_WEEKEND);
-        calendar.setToolTipText("Select date");
+        calendar.setToolTipText(Messages.getString("TimestampWidget.date")); //$NON-NLS-1$
         gd = new GridData();
         gd.horizontalSpan = layout.numColumns;
         gd.grabExcessHorizontalSpace = true;
@@ -83,12 +83,12 @@ public class TimestampWidget extends Composite
         calendar.setLayoutData(gd);
         
         Label l = new Label(this, SWT.NONE);
-        l.setText("Time:");
+        l.setText(Messages.getString("TimestampWidget.time")); //$NON-NLS-1$
         gd = new GridData();
         l.setLayoutData(gd);
 
         hour = new Spinner(this, SWT.BORDER | SWT.WRAP);
-        hour.setToolTipText("Select hour (0..23)");
+        hour.setToolTipText(Messages.getString("TimestampWidget.hour")); //$NON-NLS-1$
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -98,12 +98,12 @@ public class TimestampWidget extends Composite
         hour.setIncrement(1);
         hour.setPageIncrement(6);
         l = new Label(this, SWT.NONE);
-        l.setText(":");
+        l.setText(":"); //$NON-NLS-1$
         gd = new GridData();
         l.setLayoutData(gd);
 
         minute = new Spinner(this, SWT.BORDER | SWT.WRAP);
-        hour.setToolTipText("Select minutes (0..59)");
+        hour.setToolTipText(Messages.getString("TimestampWidget.min")); //$NON-NLS-1$
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -114,12 +114,12 @@ public class TimestampWidget extends Composite
         minute.setPageIncrement(10);
 
         l = new Label(this, SWT.NONE);
-        l.setText(":");
+        l.setText(":"); //$NON-NLS-1$
         gd = new GridData();
         l.setLayoutData(gd);
 
         second = new Spinner(this, SWT.BORDER | SWT.WRAP);
-        hour.setToolTipText("Select seconds (0..59)");
+        hour.setToolTipText(Messages.getString("TimestampWidget.sec")); //$NON-NLS-1$
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;

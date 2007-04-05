@@ -95,7 +95,7 @@ public class LogViewArchive extends ViewPart {
 		comp.setLayout(new GridLayout(4, true));
 
 		Group buttons = new Group(comp, SWT.LINE_SOLID);
-		buttons.setText(Messages.getString("LogViewArchive_period"));
+		buttons.setText(Messages.getString("LogViewArchive_period")); //$NON-NLS-1$
 		buttons.setLayout(new GridLayout(5, true));
 		GridData gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
 		gd.minimumHeight = 60;
@@ -110,7 +110,7 @@ public class LogViewArchive extends ViewPart {
 
 
 		Group from = new Group(comp, SWT.LINE_SOLID);
-		from.setText(Messages.getString("LogViewArchive_from"));
+		from.setText(Messages.getString("LogViewArchive_from")); //$NON-NLS-1$
 		from.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		from.setLayout(new GridLayout(1, true));
 
@@ -120,7 +120,7 @@ public class LogViewArchive extends ViewPart {
 		timeFrom.setEditable(false);
 		timeFrom.setText("                            "); //$NON-NLS-1$
 		Group to = new Group(comp, SWT.LINE_SOLID);
-		to.setText(Messages.getString("LogViewArchive_to"));
+		to.setText(Messages.getString("LogViewArchive_to")); //$NON-NLS-1$
 		to.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		to.setLayout(new GridLayout(1, true));
 
@@ -140,7 +140,7 @@ public class LogViewArchive extends ViewPart {
 		Button b72hSearch = new Button(comp, SWT.PUSH);
 		b72hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		b72hSearch.setText(Messages.getString("LogViewArchive_3days"));
+		b72hSearch.setText(Messages.getString("LogViewArchive_3days")); //$NON-NLS-1$
 
 		b72hSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -162,7 +162,7 @@ public class LogViewArchive extends ViewPart {
 		Button b168hSearch = new Button(comp, SWT.PUSH);
 		b168hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		b168hSearch.setText(Messages.getString("LogViewArchive_week"));
+		b168hSearch.setText(Messages.getString("LogViewArchive_week")); //$NON-NLS-1$
 
 		b168hSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -185,7 +185,7 @@ public class LogViewArchive extends ViewPart {
 		Button bFlexSearch = new Button(comp, SWT.PUSH);
 		bFlexSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		bFlexSearch.setText(Messages.getString("LogViewArchive_user"));
+		bFlexSearch.setText(Messages.getString("LogViewArchive_user")); //$NON-NLS-1$
 
 		bFlexSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -228,7 +228,7 @@ public class LogViewArchive extends ViewPart {
 		Button bSearch = new Button(comp, SWT.PUSH);
 		bSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		bSearch.setText(Messages.getString("LogViewArchive_expert"));
+		bSearch.setText(Messages.getString("LogViewArchive_expert")); //$NON-NLS-1$
 
 		bSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -283,7 +283,7 @@ public class LogViewArchive extends ViewPart {
 		Button b24hSearch = new Button(comp, SWT.PUSH);
 		b24hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		b24hSearch.setText(Messages.getString("LogViewArchive_day"));
+		b24hSearch.setText(Messages.getString("LogViewArchive_day")); //$NON-NLS-1$
 
 		b24hSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {

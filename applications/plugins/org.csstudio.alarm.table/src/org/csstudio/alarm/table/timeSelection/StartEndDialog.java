@@ -45,7 +45,7 @@ public class StartEndDialog extends Dialog implements TimestampWidgetListener
     protected void configureShell(Shell shell)
     {
         super.configureShell(shell);
-        shell.setText("Start/End Time");
+        shell.setText(Messages.getString("StartEndDialog.Shell.Name")); //$NON-NLS-1$
     }
     
     @Override
@@ -57,7 +57,7 @@ public class StartEndDialog extends Dialog implements TimestampWidgetListener
         GridData gd;
 
         Group left = new Group(box, 0);
-        left.setText("Start Time");
+        left.setText(Messages.getString("StartEndDialog.Time.Start")); //$NON-NLS-1$
         gd = new GridData();
         left.setLayoutData(gd);
         left.setLayout(new FillLayout());
@@ -65,7 +65,7 @@ public class StartEndDialog extends Dialog implements TimestampWidgetListener
         start_widget.addListener(this);
 
         Group right = new Group(box, 0);
-        right.setText("End Time");
+        right.setText(Messages.getString("StartEndDialog.Time.End")); //$NON-NLS-1$
         gd = new GridData();
         right.setLayoutData(gd);
         right.setLayout(new FillLayout());
@@ -91,12 +91,12 @@ public class StartEndDialog extends Dialog implements TimestampWidgetListener
         else
             end = stamp;
         
-        System.out.println("Start: " + start.format(ITimestamp.FMT_DATE_HH_MM_SS));
-        System.out.println("End  : " + end.format(ITimestamp.FMT_DATE_HH_MM_SS));
+        System.out.println("Start: " + start.format(ITimestamp.FMT_DATE_HH_MM_SS)); //$NON-NLS-1$
+        System.out.println("End  : " + end.format(ITimestamp.FMT_DATE_HH_MM_SS)); //$NON-NLS-1$
         
         if (start.isGreaterOrEqual(end))
-            info.setText("Start time must be 'before' end time!");
+            info.setText(Messages.getString("StartEndDialog.Lable.Text")); //$NON-NLS-1$
         else
-            info.setText("");
+            info.setText(""); //$NON-NLS-1$
     }
 }

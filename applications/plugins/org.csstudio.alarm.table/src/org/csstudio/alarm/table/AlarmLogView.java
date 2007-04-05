@@ -30,9 +30,11 @@ import javax.jms.TextMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
-import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
+import org.csstudio.platform.libs.jms.MessageReceiver;
+
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -97,7 +99,7 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 	}
 
 	private void initializeJMSReceiver(Shell ps) {
-		String[] queues = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.QUEUE).split(",");
+		String[] queues = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.QUEUE).split(","); //$NON-NLS-1$
 		try {
 			receiver1 = new MessageReceiver(
 					JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY),

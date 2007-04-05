@@ -35,6 +35,14 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.csstudio.alarm.table.internal.localization.messages"; //$NON-NLS-1$
 //	private static final String BUNDLE_NAME = "org.csstudio.alarm.table.messages"; //$NON-NLS-1$
 
+	public static String ExpertSearchDialog_Button_And;
+
+	public static String ExpertSearchDialog_Button_Or;
+
+	public static String ExpertSearchDialog_Label_And;
+
+	public static String ExpertSearchDialog_Label_Or;
+
 	public static String JMSPreferencePage_ALARM_PRIMERY_SERVER;
 
 	public static String JMSPreferencePage_ALARM_SECONDARY_SERVER;
