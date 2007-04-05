@@ -25,6 +25,8 @@ import org.csstudio.utility.nameSpaceBrowser.Activator;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -55,15 +57,27 @@ public class MainView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		System.out.println("start new NsB");
 		automat = new Automat();
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(
-				this.getSite().getShell(),
-				Activator.PLUGIN_ID + ".NsB");
 		ScrolledComposite sc = new ScrolledComposite(parent,SWT.H_SCROLL);
 		Composite c = new Composite(sc,SWT.NONE);
 		sc.setContent(c);
 	    sc.setExpandVertical(true);
 		c.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1,1));
 		c.setLayout(new GridLayout(1,false));
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(
+				parent.getShell(),
+				Activator.PLUGIN_ID + ".nsB");
+
+
+		c.getShell().addKeyListener(new KeyListener() {
+			public void keyReleased(KeyEvent e) {
+				if(e.keyCode==SWT.F1){
+					PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
+				}
+			}
+
+			public void keyPressed(KeyEvent e) {}
+		});
+
 		cssview = new CSSView(c, automat,getSite(),defaultPVFilter);
 	}
 

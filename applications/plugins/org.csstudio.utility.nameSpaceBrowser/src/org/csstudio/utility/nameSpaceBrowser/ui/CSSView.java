@@ -75,6 +75,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.PlatformUI;
 
 /***
  *
@@ -153,8 +154,7 @@ public class CSSView extends Composite implements Observer{
 		init();
 		// Make a Textfield to Filter the list. Can text drop
 		makeFilterField();
-		//^
-		System.out.println("----------------------------------------------------------");
+		//
 		para = getParameter(selection);
 
 		Zustand zu = automat.getZustand();
@@ -176,7 +176,6 @@ public class CSSView extends Composite implements Observer{
 	 	listViewer.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
 		try{
 			LDAPReader ldapr;
-			System.out.println("name: "+para.name+"\r\nFilter: "+para.filter+"\r\nErgebnisListe: "+ergebnisListe);
 			if(selection.endsWith("=*")) //$NON-NLS-1$
 				ldapr = new LDAPReader(para.name, para.filter,SearchControls.SUBTREE_SCOPE, ergebnisListe);
 			else
@@ -191,6 +190,15 @@ public class CSSView extends Composite implements Observer{
 		}catch (IllegalArgumentException e) {
 			Activator.logException(Messages.getString("CSSView.exp.IAE.1"), e); //$NON-NLS-1$
 		}
+		listViewer.getList().addKeyListener(new KeyListener() {
+			public void keyReleased(KeyEvent e) {
+				if(e.keyCode==SWT.F1){
+					PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
+				}
+			}
+
+			public void keyPressed(KeyEvent e) {}
+		});
 	}
 
 	/**
@@ -200,7 +208,6 @@ public class CSSView extends Composite implements Observer{
 	private CSSViewParameter getParameter(String selection) {
  		try{
  		 	String tmp= selection.split("=")[0]; //$NON-NLS-1$
- 		 	System.out.println("--tmp: "+tmp+"\r\n--selection "+selection);
  			return automat.event(Automat.Ereignis.valueOf(tmp),selection);
 		}catch (IllegalArgumentException e) {
 			return automat.event(Automat.Ereignis.UNKNOWN,selection);
@@ -270,10 +277,14 @@ public class CSSView extends Composite implements Observer{
 				if(e.keyCode==SWT.CR){
 					listViewer.setInput(new ArrayList<Object>(itemList.values()).toArray());
 				}
+				else if(e.keyCode==SWT.F1){
+					PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
+				}
 			}
 			public void keyPressed(KeyEvent e) {}
 
 		});
+
 	}
 
 	/*****************************
