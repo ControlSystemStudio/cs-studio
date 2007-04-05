@@ -21,12 +21,14 @@
  */
 package org.csstudio.utility.nameSpaceBrowser.ui;
 
+import org.csstudio.utility.nameSpaceBrowser.Activator;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 /**********************************************************************************
  *
@@ -43,6 +45,7 @@ public class MainView extends ViewPart {
 	public static final String ID = MainView.class.getName();
 	private static String defaultPVFilter =""; //$NON-NLS-1$
 	CSSView cssview;
+	Automat automat ;
 
 	public MainView() {
 		// TODO Auto-generated constructor stub
@@ -50,13 +53,18 @@ public class MainView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		System.out.println("start new NsB");
+		automat = new Automat();
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(
+				this.getSite().getShell(),
+				Activator.PLUGIN_ID + ".NsB");
 		ScrolledComposite sc = new ScrolledComposite(parent,SWT.H_SCROLL);
 		Composite c = new Composite(sc,SWT.NONE);
 		sc.setContent(c);
 	    sc.setExpandVertical(true);
 		c.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1,1));
 		c.setLayout(new GridLayout(1,false));
-		cssview = new CSSView(c, new Automat(),getSite(),defaultPVFilter);
+		cssview = new CSSView(c, automat,getSite(),defaultPVFilter);
 	}
 
 	@Override
@@ -71,6 +79,10 @@ public class MainView extends ViewPart {
 
 	}
 
+	@Override
+	public void dispose(){
+		automat = null;
+	}
 
 }
 

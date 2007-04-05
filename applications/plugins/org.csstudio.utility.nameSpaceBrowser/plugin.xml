@@ -58,8 +58,9 @@
       <toc
             file="toc.xml"
             primary="true"/>
-      <toc
-            file="testToc.xml"
-            primary="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts file="org.csstudio.utility.nameSpaceBrowser.contexts"/>
    </extension>
 </plugin>

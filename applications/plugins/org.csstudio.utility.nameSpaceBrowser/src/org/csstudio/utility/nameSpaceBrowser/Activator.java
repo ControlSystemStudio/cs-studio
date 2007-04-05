@@ -49,6 +49,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	public void doStart(BundleContext context) throws Exception {
+//		super.start(context);
 	}
 
 	/*
@@ -56,6 +57,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void doStop(BundleContext context) throws Exception {
+//		super.stop(context);
 		plugin = null;
 	}
 

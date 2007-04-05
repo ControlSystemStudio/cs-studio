@@ -2,12 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NameSpaceBrowser Plug-in
 Bundle-SymbolicName: org.csstudio.utility.nameSpaceBrowser;singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 1.0.7
 Bundle-Activator: org.csstudio.utility.nameSpaceBrowser.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.utility.ldap,
- org.csstudio.platform.ui
+ org.csstudio.platform.ui,
+ org.eclipse.help
 Eclipse-LazyStart: true

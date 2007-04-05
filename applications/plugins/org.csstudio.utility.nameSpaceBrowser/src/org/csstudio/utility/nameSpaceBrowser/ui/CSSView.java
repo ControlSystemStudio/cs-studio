@@ -153,15 +153,11 @@ public class CSSView extends Composite implements Observer{
 		init();
 		// Make a Textfield to Filter the list. Can text drop
 		makeFilterField();
-		//
- 		try{
- 		 	String tmp= selection.split("=")[0]; //$NON-NLS-1$
- 			para = this.automat.event(Automat.Ereignis.valueOf(tmp),selection);
-		}catch (IllegalArgumentException e) {
-			para = this.automat.event(Automat.Ereignis.UNKNOWN,selection);
-		}
+		//^
+		System.out.println("----------------------------------------------------------");
+		para = getParameter(selection);
 
-		Zustand zu = Automat.getZustand();
+		Zustand zu = automat.getZustand();
 		if(zu==Zustand.RECORD){
 				listViewer = new ListViewer(group,SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 		}
@@ -180,6 +176,7 @@ public class CSSView extends Composite implements Observer{
 	 	listViewer.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
 		try{
 			LDAPReader ldapr;
+			System.out.println("name: "+para.name+"\r\nFilter: "+para.filter+"\r\nErgebnisListe: "+ergebnisListe);
 			if(selection.endsWith("=*")) //$NON-NLS-1$
 				ldapr = new LDAPReader(para.name, para.filter,SearchControls.SUBTREE_SCOPE, ergebnisListe);
 			else
@@ -194,6 +191,22 @@ public class CSSView extends Composite implements Observer{
 		}catch (IllegalArgumentException e) {
 			Activator.logException(Messages.getString("CSSView.exp.IAE.1"), e); //$NON-NLS-1$
 		}
+	}
+
+	/**
+	 * @param selection
+	 * @return
+	 */
+	private CSSViewParameter getParameter(String selection) {
+ 		try{
+ 		 	String tmp= selection.split("=")[0]; //$NON-NLS-1$
+ 		 	System.out.println("--tmp: "+tmp+"\r\n--selection "+selection);
+ 			return automat.event(Automat.Ereignis.valueOf(tmp),selection);
+		}catch (IllegalArgumentException e) {
+			return automat.event(Automat.Ereignis.UNKNOWN,selection);
+		}
+
+
 	}
 
 	private void init() {
@@ -376,16 +389,16 @@ public class CSSView extends Composite implements Observer{
 			// if instanceof ProcessVariable
 			if (itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1)) instanceof ProcessVariable) {
 				ProcessVariable pv = (ProcessVariable) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
-				children = new CSSView(parent, this.automat,site,defaultPVFilter,pv.getPath()+","); //$NON-NLS-1$
+				children = new CSSView(parent, automat,site,defaultPVFilter,pv.getPath()+","); //$NON-NLS-1$
 			}
 			else{
 				ControlSystemItem csi = (ControlSystemItem) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
-				children = new CSSView(parent, this.automat,site,defaultPVFilter,csi.getPath()+","); //$NON-NLS-1$
+				children = new CSSView(parent, automat,site,defaultPVFilter,csi.getPath()+","); //$NON-NLS-1$
 			}
 		}
 		else{
 			String df = itemList.values().toArray(new ControlSystemItem[0])[1].getPath().split("=")[0]+"=*"; //$NON-NLS-1$ //$NON-NLS-2$
-			children = new CSSView(parent, this.automat, site,defaultPVFilter,df); //$NON-NLS-1$
+			children = new CSSView(parent, automat, site,defaultPVFilter,df); //$NON-NLS-1$
 		}
 		haveChildern=true;
 

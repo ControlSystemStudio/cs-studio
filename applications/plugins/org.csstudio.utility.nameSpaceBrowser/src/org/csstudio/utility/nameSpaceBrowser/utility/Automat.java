@@ -29,14 +29,18 @@ import java.util.ListIterator;
 public class Automat {
 	public enum Zustand {FACILITY,CONTROLLER,RECORD};
 	public enum Ereignis {ou,efan,econ,UNKNOWN};
-	private static Zustand zustand = Zustand.FACILITY;
+	private Zustand zustand = Zustand.FACILITY;
 //	private static String[] nuf ={"",""};
-	private static ArrayList<String> name = new ArrayList<String>();
+	private ArrayList<String> name = new ArrayList<String>();
 //	private String select=""; //$NON-NLS-1$
 
 	private Ereignis ereignis;
 	private String select;
 	private CSSViewParameter para;
+
+	public Automat(){
+		System.out.println("new Automat");
+	}
 
 	public CSSViewParameter event(Ereignis ereignis, String select){
 		this.ereignis=ereignis;
@@ -199,16 +203,16 @@ public class Automat {
 		}
 	}
 
-	public static Zustand getZustand() {
+	public Zustand getZustand() {
 		return zustand;
 	}
-	public static Ereignis getEreignis() {
+	public Ereignis getEreignis() {
 		Ereignis e;
 		e= Ereignis.valueOf(zustand.name());
 		return e;
 	}
 
-	public Zustand name() {
+	public Zustand getName() {
 		return zustand;
 
 	}
