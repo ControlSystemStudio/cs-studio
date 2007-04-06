@@ -141,6 +141,11 @@ public final class ResourceAndContainerGroup implements Listener {
 	 * The name of the resource.
 	 */
 	private Text _resourceNameField;
+	
+	/**
+	 * The full path to the resource.
+	 */
+	private Label _fullPathLabel;
 
 	/**
 	 * Sizing constand for the text field width.
@@ -289,10 +294,14 @@ public final class ResourceAndContainerGroup implements Listener {
 		_resourceNameField.setBackground(FieldAssistColors
 				.getRequiredFieldBackgroundColor(_resourceNameField));
 
-//		label = new Label(nameGroup, SWT.NONE);
-//		label.setText("Full path");
-//		label = new Label(nameGroup, SWT.NONE);
-//		label.setText(_containerGroup.getContainerFullPath().toString());
+		//full path
+		label = new Label(nameGroup, SWT.NONE);
+		label.setText("Full path:");
+		_fullPathLabel = new Label(nameGroup, SWT.NONE | SWT.WRAP);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
+		data.widthHint = SIZING_TEXT_FIELD_WIDTH;
+		_fullPathLabel.setLayoutData(data);
+		this.refreshFullPath();
 		validateControls();
 	}
 
@@ -345,6 +354,7 @@ public final class ResourceAndContainerGroup implements Listener {
 	 */
 	public void handleEvent(final Event e) {
 		validateControls();
+		this.refreshFullPath();
 		if (_client != null) {
 			_client.handleEvent(e);
 		}
@@ -528,6 +538,22 @@ public final class ResourceAndContainerGroup implements Listener {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * Refreshes the displayed full path of the resource.
+	 */
+	private void refreshFullPath() {
+		StringBuffer buffer = new StringBuffer();
+		if (_containerGroup.getContainerFullPath()!=null) {
+			buffer.append(ResourcesPlugin.getWorkspace().getRoot().getLocation());
+			buffer.append(_containerGroup.getContainerFullPath());
+			buffer.append("/");
+			if (_resourceNameField.getText()!=null && _resourceNameField.getText().trim().length()>0) {
+				buffer.append(this.getResourceNameWithExtension());
+			}
+		}
+		_fullPathLabel.setText(buffer.toString());
 	}
 
 	/**
