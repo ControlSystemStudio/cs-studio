@@ -56,7 +56,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	/**
 	 * Width of the text.
 	 */
-	private static final int TEXTWIDTH = 45;
+	private static final int TEXTWIDTH = 46;
 	
 	/**
 	 * The Strings, which are displayed in this figure.
@@ -115,11 +115,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 * The default width of this figure.
 	 */
 	private static final int DEFAULT_WIDTH = 200;
-	
-	/**
-	 * The fill grade (0 - 1).
-	 */
-	private double _fillGrade = 0.5;
 	
 	/**
 	 * The orientation (horizontal==true | vertical==false).
@@ -351,15 +346,15 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	private double getWeight(final double value) {
 		double max = _maximum-_minimum;
 		if (max==0) {
-			max = 0.01;
+			max = 0.001;
 		}
 		double weight = (value-_minimum) / max;
-		if (weight<0) {
+		/*if (weight<0) {
 			weight = 0;
 		}
 		if (weight>1) {
 			weight = 1;
-		}
+		}*/
 		return weight; 
 	}
 	
@@ -423,7 +418,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 *            The fill grade.
 	 */
 	public void setFill(final double fill) {
-		_fillGrade = fill/100;
+		_fillRectangleFigure.setFill(fill/100);
 	}
 
 	/**
@@ -433,7 +428,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 * 				The fill grade
 	 */
 	public double getFill() {
-		return _fillGrade;
+		return _fillRectangleFigure.getFill();
 	}
 	
 	/**
@@ -769,6 +764,11 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	private final class FillRectangleFigure extends RectangleFigure {
 		
 		/**
+		 * The fill grade (0 - 1).
+		 */
+		private double _fillGrade = 0.5;
+		
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
@@ -799,11 +799,31 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		 */
 		private Rectangle getFillLevelRectangle(final Rectangle area) {
 			if (_orientationHorizontal) {
-				int newW = (int) Math.round(area.width * (getFill()));
+				int newW = (int) Math.round(area.width * (this.getFill()));
 				return new Rectangle(area.getLocation(),new Dimension(newW, area.height));
 			}
-			int newH = (int) Math.round(area.height * (getFill()));
+			int newH = (int) Math.round(area.height * (this.getFill()));
 			return new Rectangle(area.x,area.y+area.height-newH,area.width,newH);
+		}
+		
+		/**
+		 * Sets the fill grade.
+		 * 
+		 * @param fill
+		 *            The fill grade.
+		 */
+		public void setFill(final double fill) {
+			_fillGrade = fill;
+		}
+
+		/**
+		 * Gets the fill grade.
+		 * 
+		 * @return double
+		 * 				The fill grade
+		 */
+		public double getFill() {
+			return _fillGrade;
 		}
 	}
 	
@@ -848,7 +868,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			Marker marker = null;
 			for (int i=0;i<LABELS.length;i++) {
 				marker = new Marker(LABELS[i], _topLeft, _isHorizontal);
-				//marker.setBackgroundColor(_colorMap.get(LABELS[i]));
 				marker.setForegroundColor(this.getForegroundColor());
 				this.add(marker);
 				_markerList.add(marker);
@@ -866,27 +885,26 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			graphics.fillRectangle(bounds);
 			if (_isHorizontal) {
 				for (int i=0;i<_markerList.size();i++) {
-					int x = _start + (int)((_end-_start)*getWeight(_levelMap.get(LABELS[i])))-TEXTWIDTH/2;
-					this.setConstraint(_markerList.get(i), new Rectangle(x,0,TEXTWIDTH, bounds.height ));
+					double weight = getWeight(_levelMap.get(LABELS[i])); 
+					if (weight<0 || weight>1) {
+						this.setConstraint(_markerList.get(i), new Rectangle(0,0,0,0));
+					} else {
+						int x = _start + (int)((_end-_start)*weight)-1 - TEXTWIDTH/2;
+						this.setConstraint(_markerList.get(i), new Rectangle(x,0,TEXTWIDTH, bounds.height ));
+					}
 				}
 			} else {
 				for (int i=0;i<_markerList.size();i++) {
-					int y = _start + (int) ((_end-_start)*(1-getWeight(_levelMap.get(LABELS[i]))))-TEXTHEIGHT/2;
-					this.setConstraint(_markerList.get(i), new Rectangle(1, y, bounds.width, TEXTHEIGHT));
+					double weight = getWeight(_levelMap.get(LABELS[i])); 
+					if (weight<0 || weight>1) {
+						this.setConstraint(_markerList.get(i), new Rectangle(0,0,0,0));
+					} else {
+						int y = _start + (int) ((_end-_start)*(1-weight)) - TEXTHEIGHT/2;
+						this.setConstraint(_markerList.get(i), new Rectangle(1, y, bounds.width, TEXTHEIGHT));
+					}
 				}
 			}
 		}
-		
-//		/**
-//		 * Sets the Marker backgroundcolor
-//		 * @param bg
-//		 */
-//		public void setMarkerBackgroundColor(final Color bg) {
-//			super.setBackgroundColor(bg);
-//			for (Marker marker : _markerList) {
-//				marker.setBackgroundColor(bg);
-//			}
-//		}
 		
 		/**
 		 * Sets the reference values for this figure.
