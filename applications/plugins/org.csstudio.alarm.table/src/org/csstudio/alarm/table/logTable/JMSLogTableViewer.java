@@ -1,5 +1,6 @@
 package org.csstudio.alarm.table.logTable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
@@ -7,17 +8,25 @@ import java.util.StringTokenizer;
 import org.csstudio.alarm.table.dataModel.IJMSMessageViewer;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
+import org.csstudio.alarm.table.dataModel.TextContainer;
+import org.csstudio.alarm.table.dataModel.TextContainerFactory;
 
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.CentralItemFactory;
+import org.csstudio.platform.model.IControlSystemItem;
+import org.csstudio.platform.ui.dnd.DnDUtil;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -25,6 +34,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -55,20 +65,16 @@ public class JMSLogTableViewer extends TableViewer {
 	boolean sortAlarms = false;
 
 	String columnSelection = null;
-
+	
 	String[] selection = new String[2];
 	String selCol;
 	String selText;
 
-	private String lastSort = ""; //$NON-NLS-1$
+	private String lastSort = "";
 
 	private boolean sort = false;
 
 	private JMSMessageList jmsml;
-
-
-	private static final String SEVERITY_NUMBER = "SEVERITY_NUMBER"; //$NON-NLS-1$
-	private static final String SEPARATOR = ","; //$NON-NLS-1$
 
 	public JMSLogTableViewer(Composite parent, IWorkbenchPartSite site,
 			String[] colNames, JMSMessageList j) {
@@ -113,9 +119,9 @@ public class JMSLogTableViewer extends TableViewer {
 			this.setSorter(new JMSMessageSorter());
 		}
 		makeContextMenu(site);
-
+		
 		new ProcessVariableDragSource(this.getTable(), this);
-
+		
 //		FilteredDragSourceAdapter dragSourceAdapter = new FilteredDragSourceAdapter(
 //				new Class[] { IControlSystemItem.class }) {
 //
@@ -168,7 +174,7 @@ public class JMSLogTableViewer extends TableViewer {
 	}
 
 	private void makeContextMenu(IWorkbenchPartSite site) {
-		MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+		MenuManager manager = new MenuManager("#PopupMenu");
 		Control contr = this.getControl();
 		manager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
@@ -251,7 +257,7 @@ public class JMSLogTableViewer extends TableViewer {
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
 		 *      int)
 		 */
@@ -262,7 +268,7 @@ public class JMSLogTableViewer extends TableViewer {
 
 		/*
 		 * (non-Javadoc)
-		 *
+		 * 
 		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object,
 		 *      int)
 		 */
@@ -284,74 +290,78 @@ public class JMSLogTableViewer extends TableViewer {
 			JMSMessage jmsm = (JMSMessage) element;
 			IPreferenceStore lvpp = new JmsLogPreferencePage()
 					.getPreferenceStore();
-			if ((jmsm.getProperty("TYPE").equalsIgnoreCase("Alarm"))) {
-				if ((jmsm.getProperty(SEVERITY_NUMBER).equals(lvpp
+			//
+			// if we connect to the ALARM topic - we get alarms
+			// we do not have to check for the type!
+			//if ((jmsm.getProperty("TYPE").equalsIgnoreCase("Alarm"))) {
+			if ( true) {
+				if ((jmsm.getProperty("SEVERITY").equals(lvpp
 						.getString(JmsLogPreferenceConstants.KEY0)))) {
 					StringTokenizer st = new StringTokenizer(lvpp
-							.getString(JmsLogPreferenceConstants.COLOR0), SEPARATOR);
+							.getString(JmsLogPreferenceConstants.COLOR0), ",");
 					return new Color(null, Integer.parseInt(st.nextToken()),
 							Integer.parseInt(st.nextToken()), Integer
 									.parseInt(st.nextToken()));
-				} else if ((jmsm.getProperty(SEVERITY_NUMBER).equals(lvpp
+				} else if ((jmsm.getProperty("SEVERITY").equals(lvpp
 						.getString(JmsLogPreferenceConstants.KEY1)))) {
 					StringTokenizer st = new StringTokenizer(lvpp
-							.getString(JmsLogPreferenceConstants.COLOR1), SEPARATOR);
+							.getString(JmsLogPreferenceConstants.COLOR1), ",");
 					return new Color(null, Integer.parseInt(st.nextToken()),
 							Integer.parseInt(st.nextToken()), Integer
 									.parseInt(st.nextToken()));
-				} else if ((jmsm.getProperty(SEVERITY_NUMBER).equals(lvpp
+				} else if ((jmsm.getProperty("SEVERITY").equals(lvpp
 						.getString(JmsLogPreferenceConstants.KEY2)))) {
 					StringTokenizer st = new StringTokenizer(lvpp
-							.getString(JmsLogPreferenceConstants.COLOR2), SEPARATOR);
+							.getString(JmsLogPreferenceConstants.COLOR2), ",");
 					return new Color(null, Integer.parseInt(st.nextToken()),
 							Integer.parseInt(st.nextToken()), Integer
 									.parseInt(st.nextToken()));
-				} else if ((jmsm.getProperty(SEVERITY_NUMBER).equals(lvpp
+				} else if ((jmsm.getProperty("SEVERITY").equals(lvpp
 						.getString(JmsLogPreferenceConstants.KEY3)))) {
 					StringTokenizer st = new StringTokenizer(lvpp
-							.getString(JmsLogPreferenceConstants.COLOR3), SEPARATOR);
+							.getString(JmsLogPreferenceConstants.COLOR3), ",");
 					return new Color(null, Integer.parseInt(st.nextToken()),
 							Integer.parseInt(st.nextToken()), Integer
 									.parseInt(st.nextToken()));
-				} else if ((jmsm.getProperty(SEVERITY_NUMBER).equals(lvpp
+				} else if ((jmsm.getProperty("SEVERITY").equals(lvpp
 						.getString(JmsLogPreferenceConstants.KEY4)))) {
 					StringTokenizer st = new StringTokenizer(lvpp
-							.getString(JmsLogPreferenceConstants.COLOR4), SEPARATOR);
+							.getString(JmsLogPreferenceConstants.COLOR4), ",");
 					return new Color(null, Integer.parseInt(st.nextToken()),
 							Integer.parseInt(st.nextToken()), Integer
 									.parseInt(st.nextToken()));
-				} else if ((jmsm.getProperty(SEVERITY_NUMBER).equals(lvpp
+				} else if ((jmsm.getProperty("SEVERITY").equals(lvpp
 						.getString(JmsLogPreferenceConstants.KEY5)))) {
 					StringTokenizer st = new StringTokenizer(lvpp
-							.getString(JmsLogPreferenceConstants.COLOR5), SEPARATOR);
+							.getString(JmsLogPreferenceConstants.COLOR5), ",");
 					return new Color(null, Integer.parseInt(st.nextToken()),
 							Integer.parseInt(st.nextToken()), Integer
 									.parseInt(st.nextToken()));
-				} else if ((jmsm.getProperty(SEVERITY_NUMBER).equals(lvpp
+				} else if ((jmsm.getProperty("SEVERITY").equals(lvpp
 						.getString(JmsLogPreferenceConstants.KEY6)))) {
 					StringTokenizer st = new StringTokenizer(lvpp
-							.getString(JmsLogPreferenceConstants.COLOR6), SEPARATOR);
+							.getString(JmsLogPreferenceConstants.COLOR6), ",");
 					return new Color(null, Integer.parseInt(st.nextToken()),
 							Integer.parseInt(st.nextToken()), Integer
 									.parseInt(st.nextToken()));
-				} else if ((jmsm.getProperty(SEVERITY_NUMBER).equals(lvpp
+				} else if ((jmsm.getProperty("SEVERITY").equals(lvpp
 						.getString(JmsLogPreferenceConstants.KEY7)))) {
 					StringTokenizer st = new StringTokenizer(lvpp
-							.getString(JmsLogPreferenceConstants.COLOR7), SEPARATOR);
+							.getString(JmsLogPreferenceConstants.COLOR7), ",");
 					return new Color(null, Integer.parseInt(st.nextToken()),
 							Integer.parseInt(st.nextToken()), Integer
 									.parseInt(st.nextToken()));
-				} else if ((jmsm.getProperty(SEVERITY_NUMBER).equals(lvpp
+				} else if ((jmsm.getProperty("SEVERITY").equals(lvpp
 						.getString(JmsLogPreferenceConstants.KEY8)))) {
 					StringTokenizer st = new StringTokenizer(lvpp
-							.getString(JmsLogPreferenceConstants.COLOR8), SEPARATOR);
+							.getString(JmsLogPreferenceConstants.COLOR8), ",");
 					return new Color(null, Integer.parseInt(st.nextToken()),
 							Integer.parseInt(st.nextToken()), Integer
 									.parseInt(st.nextToken()));
-				} else if ((jmsm.getProperty(SEVERITY_NUMBER).equals(lvpp
+				} else if ((jmsm.getProperty("SEVERITY").equals(lvpp
 						.getString(JmsLogPreferenceConstants.KEY9)))) {
 					StringTokenizer st = new StringTokenizer(lvpp
-							.getString(JmsLogPreferenceConstants.COLOR9), SEPARATOR);
+							.getString(JmsLogPreferenceConstants.COLOR9), ",");
 					return new Color(null, Integer.parseInt(st.nextToken()),
 							Integer.parseInt(st.nextToken()), Integer
 									.parseInt(st.nextToken()));
