@@ -30,11 +30,9 @@ import javax.jms.TextMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
-import org.csstudio.platform.libs.jms.MessageReceiver;
-
+import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -44,6 +42,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.csstudio.platform.libs.jms.*;
 
 import org.eclipse.ui.part.ViewPart;
 
@@ -99,7 +98,7 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 	}
 
 	private void initializeJMSReceiver(Shell ps) {
-		String[] queues = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.QUEUE).split(","); //$NON-NLS-1$
+		String[] queues = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.QUEUE).split(",");
 		try {
 			receiver1 = new MessageReceiver(
 					JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY),
@@ -153,9 +152,14 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 						// table.getItemCount() - 1);
 						System.out.println("message received"); //$NON-NLS-1$
 						MapMessage mm = (MapMessage) message;
-						if (mm.getString("TYPE").equalsIgnoreCase("Alarm")) { //$NON-NLS-1$ //$NON-NLS-2$
-							jmsml.addJMSMessage((MapMessage) message);
-						}
+						//
+						// We only connect to alarm messages - so we'll display everything that shows up here
+						// Matthias 05-04-2007
+						//if (mm.getString("TYPE").equalsIgnoreCase("Alarm")) { //$NON-NLS-1$ //$NON-NLS-2$
+						//jmsml.addJMSMessage((MapMessage) message);
+						//
+						//}
+						jmsml.addJMSMessage((MapMessage) message);
 					} else {
 						System.out
 								.println("received message is unhandled type: " //$NON-NLS-1$
