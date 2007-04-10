@@ -1,6 +1,7 @@
 package org.csstudio.alarm.table.preferences;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.platform.libs.jms.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -17,10 +18,10 @@ public class JmsLogPreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
-		store.setDefault(JmsLogPreferenceConstants.KEY0,"0");
-		store.setDefault(JmsLogPreferenceConstants.KEY1,"1");
-		store.setDefault(JmsLogPreferenceConstants.KEY2,"2");
-		store.setDefault(JmsLogPreferenceConstants.KEY3,"3");
+		store.setDefault(JmsLogPreferenceConstants.KEY0,"NO_ALARM");
+		store.setDefault(JmsLogPreferenceConstants.KEY1,"MINOR");
+		store.setDefault(JmsLogPreferenceConstants.KEY2,"MAJOR");
+		store.setDefault(JmsLogPreferenceConstants.KEY3,"INVALID");
 		store.setDefault(JmsLogPreferenceConstants.KEY4,"4");
 		store.setDefault(JmsLogPreferenceConstants.KEY5,"5");
 		store.setDefault(JmsLogPreferenceConstants.KEY6,"6");
