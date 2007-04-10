@@ -50,6 +50,11 @@ public final class BargraphModel extends AbstractWidgetModel {
 	public static final String PROP_ORIENTATION = "orientation"; //$NON-NLS-1$
 	
 	/**
+	 * The ID of the default-fill-Color property.
+	 */
+	public static final String PROP_DEFAULT_FILL_COLOR = "default_fill_color";
+	
+	/**
 	 * The ID of the lolo-Color property.
 	 */
 	public static final String PROP_LOLO_COLOR = "lolo_color";
@@ -141,6 +146,11 @@ public final class BargraphModel extends AbstractWidgetModel {
 	private static final boolean DEFAULT_ORIENTATION_HORIZONTAL = true;
 
 	/**
+	 * The default value of the default fill color property. 
+	 */
+	private static final RGB DEFAULT_FILL_COLOR = new RGB(0,0,255);
+	
+	/**
 	 * The default value of the lolo color property. 
 	 */
 	private static final RGB DEFAULT_LOLO_COLOR = new RGB(255,0,0);
@@ -199,11 +209,6 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	private static final double[] DEFAULT_LEVELS = new double[]{0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.0};
 
-//	/**
-//	 * The default value of the lolo max property.
-//	 */
-//	private static final double DEFAULT_LOLO_MAX = 0.1;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -213,6 +218,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0));
 		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal Orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
 		//Colors
+		addProperty(PROP_DEFAULT_FILL_COLOR, new ColorProperty("Default fill color",WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));
 		addProperty(PROP_LOLO_COLOR, new ColorProperty("Color LOLO",WidgetPropertyCategory.Display,DEFAULT_LOLO_COLOR));
 		addProperty(PROP_LO_COLOR, new ColorProperty("Color LO",WidgetPropertyCategory.Display,DEFAULT_LO_COLOR));
 		addProperty(PROP_M_COLOR, new ColorProperty("Color M",WidgetPropertyCategory.Display,DEFAULT_M_COLOR));
@@ -259,6 +265,14 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	public boolean getOrientation() {
 		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();
+	}
+	
+	/**
+	 * Gets the RGB for the default fill color.
+	 * @return The default fill color
+	 */
+	public RGB getDefaultFillColor() {
+		return (RGB) getProperty(PROP_DEFAULT_FILL_COLOR).getPropertyValue();
 	}
 	
 	/**

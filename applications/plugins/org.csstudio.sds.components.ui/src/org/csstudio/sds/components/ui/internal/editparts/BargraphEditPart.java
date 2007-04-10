@@ -48,6 +48,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setFill(model.getFillLevel());
 		bargraph.setOrientation(model.getOrientation());
 		//Colors
+		bargraph.setDefaultFillColor(model.getDefaultFillColor());
 		bargraph.setLoloColor(model.getLoloColor());
 		bargraph.setLoColor(model.getLoColor());
 		bargraph.setMColor(model.getMColor());
@@ -202,6 +203,16 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(BargraphModel.PROP_HIHI_COLOR, hihiColorHandler);
+		IWidgetPropertyChangeHandler defaultFillColorHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setDefaultFillColor((RGB) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_DEFAULT_FILL_COLOR, defaultFillColorHandler);
 	}
 	
 	/**

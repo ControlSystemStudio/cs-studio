@@ -29,8 +29,10 @@ import java.util.Map;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
+import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.XYLayout;
@@ -51,7 +53,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	/**
 	 * Height of the text.
 	 */
-	private static final int TEXTHEIGHT = 22;
+	private static final int TEXTHEIGHT = 24;
 	
 	/**
 	 * Width of the text.
@@ -382,6 +384,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 */
 	public void setBorderColor(final RGB borderRGB) {
 		_borderColor = CustomMediaFactory.getInstance().getColor(borderRGB);
+		_fillRectangleFigure.setBorderColor(_borderColor);
 	}
 	
 	/**
@@ -391,6 +394,24 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 */
 	public Color getBorderColor() {
 		return _borderColor;
+	}
+	
+	/**
+	 * Sets the default fill Color.
+	 * @param defaultFillRGB
+	 * 				The RGB-value of the default fill Color
+	 */
+	public void setDefaultFillColor(final RGB defaultFillRGB) {
+		_fillRectangleFigure.setDefaultFillColor(CustomMediaFactory.getInstance().getColor(defaultFillRGB));
+	}
+	
+	/**
+	 * Gets the default fill Color.
+	 * @return Color
+	 * 				The color default fill Color
+	 */
+	public Color getDefaultFillColor() {
+		return _fillRectangleFigure.getDefaultFillColor();
 	}
 	
 	/**
@@ -769,6 +790,16 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		private double _fillGrade = 0.5;
 		
 		/**
+		 * The default fill Color.
+		 */
+		private Color _defaultFillColor;
+		
+		/**
+		 * The Color for the border.
+		 */
+		private Color _borderColor;
+		
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
@@ -777,8 +808,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			graphics.setForegroundColor(this.getForegroundColor());
 			graphics.setBackgroundColor(this.getBackgroundColor());
 			graphics.fillRectangle(bounds);
-			graphics.drawRectangle(new Rectangle(bounds.x,bounds.y,bounds.width-1,bounds.height-1));
-			graphics.setBackgroundColor(this.getForegroundColor());
+			graphics.setBackgroundColor(this.getDefaultFillColor());
 			for (int i=0; i<LABELS.length;i++) {
 				if (getFill()<=getWeight(_levelMap.get(LABELS[i]))) {
 					graphics.setBackgroundColor(_colorMap.get(LABELS[i]));
@@ -787,6 +817,8 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			}
 			Rectangle fillRectangle = this.getFillLevelRectangle(bounds); 
 			graphics.fillRectangle(fillRectangle);
+			graphics.setForegroundColor(this.getBorderColor());
+			graphics.drawRectangle(new Rectangle(bounds.x,bounds.y,bounds.width-1,bounds.height-1));
 			graphics.drawRectangle(new Rectangle(fillRectangle.x,fillRectangle.y,fillRectangle.width-1,fillRectangle.height-1));
 		}
 		
@@ -824,6 +856,42 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		 */
 		public double getFill() {
 			return _fillGrade;
+		}
+		
+		/**
+		 * Sets the default fill Color.
+		 * @param defaultFillColor
+		 * 				The default fill Color
+		 */
+		public void setDefaultFillColor(final Color defaultFillColor) {
+			_defaultFillColor = defaultFillColor;
+		}
+		
+		/**
+		 * Gets the default fill Color.
+		 * @return Color
+		 * 				The color default fill Color
+		 */
+		public Color getDefaultFillColor() {
+			return _defaultFillColor;
+		}
+		
+		/**
+		 * Sets the color for the border.
+		 * @param borderColor
+		 * 				The Color for the border
+		 */
+		public void setBorderColor(final Color borderColor) {
+			_borderColor = borderColor;
+		}
+		
+		/**
+		 * Gets the color for the border.
+		 * @return Color
+		 * 				The color for the border
+		 */
+		public Color getBorderColor() {
+			return _borderColor;
 		}
 	}
 	
@@ -949,27 +1017,27 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 * @author Kai Meyer
 	 *
 	 */
-	private final class Marker extends RectangleFigure {	
-		/**
-		 * The width of this marker.
-		 */
-		private int _width;
-		/**
-		 * The height of this marker.
-		 */
-		private int _height;		
+	private final class Marker extends RectangleFigure {			
 		/**
 		 * The key of this Marker, which is the drwaed text.
 		 */
 		private String _key;
 		/**
-		 * The direction of this Marker.
-		 */
-		private int _direction = 1;
-		/**
 		 * The orientation of this Marker.
 		 */
 		private boolean _isHorizontal;
+		/**
+		 * The alignment of this Marker.
+		 */
+		private boolean _topLeft;
+		/**
+		 * The Label for the text.
+		 */
+		private Label _textLabel;
+		/**
+		 * The Tipmark.
+		 */
+		private TipMark _tipMark; 
 		
 		/**
 		 * Construktor.
@@ -981,20 +1049,16 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		 * 				True, if the marker should have a horizontal orientation, false otherwise
 		 */
 		public Marker(final String key, final boolean topLeft, final boolean isHorizontal) {
+			BorderLayout borderLayout = new BorderLayout();
+			this.setLayoutManager(borderLayout);
 			_key = key;
-			if (topLeft) {
-				_direction = -1;
-			} else {
-				_direction = -1;
-			}
-			_isHorizontal = isHorizontal;
-			if (isHorizontal) {
-				_width = 3;
-				_height = 5;
-			} else {
-				_width = 5;
-				_height = 3;	
-			}
+			_textLabel = new Label(key.toString());
+			_textLabel.setForegroundColor(this.getForegroundColor());
+			_tipMark = new TipMark();
+			_tipMark.setForegroundColor(this.getForegroundColor());
+			_tipMark.setBackgroundColor(_colorMap.get(_key));
+			this.add(_tipMark, BorderLayout.CENTER);
+			this.refreshLabel();
 		}
 		
 		/**
@@ -1002,77 +1066,8 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		 */
 		@Override
 		public void paintFigure(final Graphics graphics) {
-			Rectangle bounds = this.getBounds();
-			graphics.setForegroundColor(this.getForegroundColor());
-			graphics.setBackgroundColor(_colorMap.get(_key));
-			PointList pointList = new PointList();
-			int x;
-			int y;
-			if (_isHorizontal) {
-				x = bounds.x+bounds.width/2;
-				y = bounds.y;
-				if (_direction<0) {
-					y = y + bounds.height;
-				}
-				pointList.addPoint(x, y);
-				pointList.addPoint(x-_width, y+_height*_direction);
-				pointList.addPoint(x+_width, y+_height*_direction);
-				pointList.addPoint(x, y);
-			} else {
-				x = bounds.x;
-				y = bounds.y+bounds.height/2;
-				if (_direction<0) {
-					x = x + bounds.width-2;
-				}
-				pointList.addPoint(x, y);
-				pointList.addPoint(x+_width*_direction, y-_height);
-				pointList.addPoint(x+_width*_direction, y+_height);
-				pointList.addPoint(x, y);
-			}
-			graphics.fillPolygon(pointList);
-			graphics.drawPolyline(pointList);
-			if (_isHorizontal) {
-				y = y+(_height+2)*_direction;
-				if (_direction<0) {
-					y = y - graphics.getFontMetrics().getHeight();
-				}
-				graphics.drawString(_key, this.getTextPositionX(x, _key, graphics.getFontMetrics().getAverageCharWidth()), y);	
-			} else {
-				x = x+(_width+2)*_direction;
-				if (_direction<0) {
-					x = x +_width*2- TEXTWIDTH;
-				}
-				graphics.drawString(_key.toString(), x, this.getTextPositionY(y, graphics.getFontMetrics().getHeight()));
-			}
+			//nothing to do;
 		};
-		
-		/**
-		 * Gets the x value for drawing the text.
-		 * @param currentX 
-		 * 				The x value of the center of the text
-		 * @param text
-		 * 				The text to draw
-		 * @param charWidth
-		 * 				The average charwidth from the current font
-		 * @return int 
-		 * 				The x value for drawing the text
-		 */
-		private int getTextPositionX(final int currentX, final String text, final int charWidth) {
-			return currentX-charWidth*(text.length()/2);
-		}
-		
-		/**
-		 * Gets the y value for drawing the text.
-		 * @param currentY 
-		 * 				The y value of the center of the text
-		 * @param charHeight
-		 * 				The average charheight from the current font
-		 * @return int 
-		 * 				The y value for drawing the text
-		 */
-		private int getTextPositionY(final int currentY, final int charHeight) {
-			return currentY-(charHeight/2);
-		}
 		
 		/**
 		 * Sets the orientation of this figure.
@@ -1081,13 +1076,8 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		 */
 		public void setHorizontalOrientation(final boolean isHorizontal) {
 			_isHorizontal = isHorizontal;
-			if (isHorizontal) {
-				_width = 3;
-				_height = 5;
-			} else {
-				_width = 5;
-				_height = 3;	
-			}
+			_tipMark.setHorizontalOrientation(isHorizontal);
+			this.refreshLabel();
 		}
 		
 		/**
@@ -1096,11 +1086,122 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		 * 				The alignment of this figure (true=top/left;false=bottom/right)
 		 */
 		public void setTopLeftAlignment(final boolean topLeft) {
-			if (topLeft) {
-				_direction = -1;
-			} else {
-				_direction = 1;
+			_topLeft = topLeft;
+			_tipMark.setTopLeftAlignment(topLeft);
+			this.refreshLabel();
+		}
+		
+		/**
+		 * Refreshes the Label.
+		 */
+		private void refreshLabel() {
+			if (this.getChildren().contains(_textLabel)) {
+				this.remove(_textLabel);	
 			}
+			Integer place;
+			if (_isHorizontal) {
+				if (_topLeft) {
+					place = BorderLayout.TOP;
+				} else {
+					place = BorderLayout.BOTTOM;
+				}
+			} else {
+				if (_topLeft) {
+					place = BorderLayout.LEFT;
+				} else {
+					place = BorderLayout.RIGHT;
+				}
+			}
+			this.add(_textLabel, place);
+		}
+		
+		/**
+		 * This class represents a tipmark.
+		 * @author Kai Meyer
+		 */
+		private final class TipMark extends RectangleFigure {
+			/**
+			 * The width of this marker.
+			 */
+			private int _width;
+			/**
+			 * The height of this marker.
+			 */
+			private int _height;
+			/**
+			 * The direction of this Marker.
+			 */
+			private int _direction = 1;
+			/**
+			 * The orientation of this Marker.
+			 */
+			private boolean _isHorizontal;
+			
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public void paintFigure(final Graphics graphics) {
+				Rectangle bounds = this.getBounds();
+				graphics.setForegroundColor(this.getForegroundColor());
+				graphics.setBackgroundColor(_colorMap.get(_key));
+				PointList pointList = new PointList();
+				int x;
+				int y;
+				if (_isHorizontal) {
+					x = bounds.x+bounds.width/2;
+					y = bounds.y;
+					if (_direction<0) {
+						y = y + bounds.height;
+					}
+					pointList.addPoint(x, y);
+					pointList.addPoint(x-_width, y+_height*_direction);
+					pointList.addPoint(x+_width, y+_height*_direction);
+					pointList.addPoint(x, y);
+				} else {
+					x = bounds.x;
+					y = bounds.y+bounds.height/2;
+					if (_direction<0) {
+						x = x + bounds.width-2;
+					}
+					pointList.addPoint(x, y);
+					pointList.addPoint(x+_width*_direction, y-_height);
+					pointList.addPoint(x+_width*_direction, y+_height);
+					pointList.addPoint(x, y);
+				}
+				graphics.fillPolygon(pointList);
+				graphics.drawPolyline(pointList);
+			}
+			
+			/**
+			 * Sets the orientation of this figure.
+			 * @param isHorizontal
+			 * 				The orientation of this figure (true=horizontal;false=vertical)
+			 */
+			public void setHorizontalOrientation(final boolean isHorizontal) {
+				_isHorizontal = isHorizontal;
+				if (isHorizontal) {
+					_width = 3;
+					_height = 5;
+				} else {
+					_width = 5;
+					_height = 3;	
+				}
+			}
+			
+			/**
+			 * Sets the alignment of this figure.
+			 * @param topLeft
+			 * 				The alignment of this figure (true=top/left;false=bottom/right)
+			 */
+			public void setTopLeftAlignment(final boolean topLeft) {
+				if (topLeft) {
+					_direction = -1;
+				} else {
+					_direction = 1;
+				}
+			}
+			
 		}
 		
 	}
