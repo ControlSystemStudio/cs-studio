@@ -554,6 +554,10 @@ public final class ResourceAndContainerGroup implements Listener {
 			}
 		}
 		_fullPathLabel.setText(buffer.toString());
+		Composite comp = _fullPathLabel.getParent().getParent();
+		if (comp!=null) {
+			comp.layout();
+		}
 	}
 
 	/**

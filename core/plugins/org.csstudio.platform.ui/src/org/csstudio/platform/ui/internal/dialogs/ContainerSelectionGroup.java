@@ -58,6 +58,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
@@ -417,6 +418,20 @@ public final class ContainerSelectionGroup extends Composite {
 		this.makeActions();
 		this.addAdditionalActions(drillDown.getToolBarManager());
 		this.addPopupMenu(_treeViewer);
+		
+		this.setDefaultSelection(_treeViewer);
+	}
+	
+	/**
+	 * Sets the first Element of the TreeViewer as selected Item.
+	 * @param viewer
+	 * 					The TreeViewer, which selection should be set
+	 */
+	private void setDefaultSelection(final TreeViewer viewer) {
+		TreeItem item = viewer.getTree().getItem(0);
+		if (item!=null) {
+			viewer.getTree().setSelection(item);
+		}
 	}
 	
 	/**
