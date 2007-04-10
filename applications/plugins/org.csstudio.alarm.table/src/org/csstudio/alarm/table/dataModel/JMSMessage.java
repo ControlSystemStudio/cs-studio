@@ -16,13 +16,11 @@ import org.eclipse.core.runtime.IAdaptable;
 public class JMSMessage implements IProcessVariable {//,
 //		org.csstudio.data.exchange.IFrontEndControllerName{
 
-	private static final String SEVERITY = "SEVERITY"; //$NON-NLS-1$
-	private static final String SEVERITY_NUMBER = "SEVERITY_NUMBER"; //$NON-NLS-1$
-
+	
 	private HashMap<String, String> messageProperties = new HashMap<String, String>();
 	private String[] propertyNames;
 //	private IProcessVariableName ipvn;
-
+	
 	/**
 	 * Initialisation of HashMap with actual message properties.
 	 *
@@ -30,16 +28,16 @@ public class JMSMessage implements IProcessVariable {//,
 	public JMSMessage(String[] propNames) {
 		super();
 		propertyNames = JmsLogsPlugin.getDefault().getPluginPreferences().
-			getString(LogViewerPreferenceConstants.P_STRING).split(";"); //$NON-NLS-1$
+			getString(LogViewerPreferenceConstants.P_STRING).split(";");
 		for(int i = 0; i < propertyNames.length; i++) {
-			messageProperties.put(propertyNames[i], ""); //$NON-NLS-1$
+			messageProperties.put(propertyNames[i], "");
 		}
 	}
-
+	
 	/**
 	 * Setting value of message a message property
-	 *
-	 * @param property
+	 * 
+	 * @param property 
 	 * @param value
 	 */
 	public void setProperty(String property, String value) {
@@ -47,19 +45,20 @@ public class JMSMessage implements IProcessVariable {//,
 			messageProperties.put(property, value);
 		}
 	}
-
-
+	
+	
 	/**
-	 * Returns value of the requested property
-	 *
+	 * Returns value of the requested property 
+	 * 
 	 * @param property
 	 * @return
 	 */
 	public String getProperty(String property) {
-		if (property.equals(SEVERITY)) {
-			if(messageProperties.get(SEVERITY) != null) {
+		if (property.equals("SEVERITY")) {
+			if(messageProperties.get("SEVERITY") != null) {
 				try {
-					switch(new Integer(messageProperties.get(SEVERITY))) {
+					// Matthias 05-04-2007
+					switch( severityToNumber(messageProperties.get("SEVERITY"))) {
 					case 0 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE0);
 					case 1 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE1);
 					case 2 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE2);
@@ -73,9 +72,9 @@ public class JMSMessage implements IProcessVariable {//,
 				}
 			}
 		}
-		if (property.equals(SEVERITY_NUMBER)) {
-			if(messageProperties.get(SEVERITY) != null) {
-				return messageProperties.get(SEVERITY);
+		if (property.equals("SEVERITY_NUMBER")) {
+			if(messageProperties.get("SEVERITY") != null) {
+				return messageProperties.get("SEVERITY");
 			}
 		}
 		if (messageProperties.containsKey(property)) {
@@ -83,11 +82,48 @@ public class JMSMessage implements IProcessVariable {//,
 			if (s != null) {
 				return s;
 			} else {
-				return ""; //$NON-NLS-1$
+				return "";
 			}
 		} else {
-			return ""; //$NON-NLS-1$
+			return "";
 		}
+	}
+	
+	public static Integer severityToNumber ( String severity) {
+		Integer severityAsNumber = null;
+		//
+		// this is a really dumb implementation to convert severity strings into an Integer
+		// This only works for EPICS severity strings...
+		// TODO - make this more generic
+		// Matthias 05-04-2007
+		if ( severity == null) {
+			//no string compares with null string !
+			return -1;
+		}
+		if ( severity.toUpperCase().equals("NO_ALARM")){
+			severityAsNumber = 0;
+		} else if ( severity.toUpperCase().equals("MINOR")){
+			severityAsNumber = 1;
+		} else if ( severity.toUpperCase().equals("MAJOR")){
+			severityAsNumber = 2;
+		} else if ( severity.toUpperCase().equals("INVALID")){
+			severityAsNumber = 3;
+		} else if ( severity.toUpperCase().equals("das wars")){
+			severityAsNumber = 4;
+		} else {
+			//
+			// maybe it's already a number?
+			//
+			try {
+				severityAsNumber = new Integer( severity);
+				
+			} catch (NumberFormatException e) {
+				return -1;
+			}
+			
+		}
+		
+		return severityAsNumber;
 	}
 
 	public String getName() {
@@ -97,15 +133,15 @@ public class JMSMessage implements IProcessVariable {//,
 
 	public Object getAdapter(Class adapter) {
 		System.out.println("hallo get adapter: " + adapter);
-
-
+		
+		
 //	    if (adapter.equals(IProcessVariableName.class)) {
 //	    	System.out.println(adapter);
 //	    	IProcessVariableName pvn = new ProcessVariableName("hallo jan");
 //	    	return pvn;
-//	    }
+//	    } 
         return null;
-
+		
 //		if (adapter.isInstance(ipvn)) {
 //			IProcessVariableName pvn = new ProcessVariableName("hallo jan");
 //			return pvn;
@@ -129,5 +165,5 @@ public class JMSMessage implements IProcessVariable {//,
 		return null;
 	}
 
-
+	
 }
