@@ -162,7 +162,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	/**
 	 * The wideness of the Scale.
 	 */
-	private int _scaleWideness = 5;
+	private int _scaleWideness = 10;
 	
 	/**
 	 * Constructor.
@@ -801,18 +801,62 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			graphics.setForegroundColor(this.getForegroundColor());
 			graphics.setBackgroundColor(this.getBackgroundColor());
 			graphics.fillRectangle(bounds);
-			graphics.setBackgroundColor(this.getDefaultFillColor());
-			for (int i=0; i<LABELS.length;i++) {
-				if (getFill()<=getWeight(_levelMap.get(LABELS[i]))) {
-					graphics.setBackgroundColor(_colorMap.get(LABELS[i]));
-					break;
-				}
-			}
+			graphics.setBackgroundColor(this.getFillColor());
 			Rectangle fillRectangle = this.getFillLevelRectangle(bounds); 
 			graphics.fillRectangle(fillRectangle);
 			graphics.setForegroundColor(this.getBorderColor());
 			graphics.drawRectangle(new Rectangle(bounds.x,bounds.y,bounds.width-1,bounds.height-1));
 			graphics.drawRectangle(new Rectangle(fillRectangle.x,fillRectangle.y,fillRectangle.width-1,fillRectangle.height-1));
+		}
+		
+		/**
+		 * Gets the fill Color.
+		 * @return Color
+		 * 				The Color for the fill-area
+		 */
+		private Color getFillColor() {
+			List<String> labelList = new LinkedList<String>();
+			for (int i=0;i<LABELS.length;i++) {
+				if (labelList.isEmpty()) {
+					labelList.add(LABELS[i]);
+				} else {
+					labelList.add(this.getLabelIndex(labelList, LABELS[i]), LABELS[i]);
+				}
+			}
+			String[] tempLabels = labelList.toArray(new String[labelList.size()]);
+			if (_minimum<_maximum) {
+				for (int i=0; i<tempLabels.length;i++) {
+					if (this.getFill()<=getWeight(_levelMap.get(tempLabels[i]))) {
+						return _colorMap.get(tempLabels[i]);
+					}
+				}
+				return this.getDefaultFillColor();
+			} else {
+				for (int i=tempLabels.length-1; i>=0;i--) {
+					if (this.getFill()<=getWeight(_levelMap.get(tempLabels[i]))) {
+						return _colorMap.get(tempLabels[i]);
+					}
+				}
+				return this.getDefaultFillColor();
+			}
+		}
+		
+		/**
+		 * Gets the index for the label.
+		 * @param labelList
+		 * 				The list, where the label should be added
+		 * @param label
+		 * 				The label, which should be added
+		 * @return int
+		 * 				The index for the label
+		 */
+		private int getLabelIndex(final List<String> labelList, final String label) {
+			for (int j=0;j<labelList.size();j++) {
+				if (_levelMap.get(label)<_levelMap.get(labelList.get(j))) {
+					return j;
+				}
+			}
+			return labelList.size();
 		}
 		
 		/**
@@ -1262,21 +1306,18 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			graphics.setForegroundColor(this.getForegroundColor());
 			graphics.setBackgroundColor(this.getBackgroundColor());
 			if (_isHorizontal) {
-				height = 5;
+				height = _scaleWideness;
 				sectionWidth = _length/_sectionCount;
 				for (int i=0;i<_sectionCount+1;i++) {
 					graphics.drawLine(this.getBounds().x+_start+i*sectionWidth, this.getBounds().y+i*sectionHeight, this.getBounds().x+_start+i*sectionWidth+width , this.getBounds().y+i*sectionHeight+height);
 				}
 			} else {
-				width = 5;
+				width = _scaleWideness;
 				sectionHeight = _length/_sectionCount;
 				for (int i=0;i<_sectionCount+1;i++) {
 					graphics.drawLine(this.getBounds().x+i*sectionWidth, this.getBounds().y+_start+i*sectionHeight, this.getBounds().x+i*sectionWidth+width , this.getBounds().y+_start+i*sectionHeight);
 				}
 			}
-//			graphics.setBackgroundColor(ColorConstants.blue);
-//			graphics.setForegroundColor(ColorConstants.blue);
-//			graphics.fillRectangle(this.getBounds());
 		}		
 		
 		/**
