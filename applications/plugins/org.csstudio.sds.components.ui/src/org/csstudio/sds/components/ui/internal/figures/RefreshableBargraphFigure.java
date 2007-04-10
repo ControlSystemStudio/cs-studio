@@ -207,7 +207,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	/**
 	 * {@inheritDoc}
 	 */
-	protected synchronized void fillShape(final Graphics graphics) {
+	public synchronized void paintFigure(final Graphics graphics) {
 		_barRectangle = this.getBarRectangle();
 		graphics.setBackgroundColor(this.getBackgroundColor());
 		graphics.fillRectangle(this.getBounds());
@@ -350,14 +350,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		if (max==0) {
 			max = 0.001;
 		}
-		double weight = (value-_minimum) / max;
-		/*if (weight<0) {
-			weight = 0;
-		}
-		if (weight>1) {
-			weight = 1;
-		}*/
-		return weight; 
+		return (value-_minimum) / max; 
 	}
 	
 	/**
