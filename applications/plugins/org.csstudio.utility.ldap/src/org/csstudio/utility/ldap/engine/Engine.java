@@ -8,22 +8,23 @@ import javax.naming.directory.ModificationItem;
 
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
+import org.csstudio.utility.ldap.reader.LDAPReader;
 
 public class Engine extends Thread {
 
 	private static 		Engine thisEngine = null;
 	private boolean 	doWork = false;
+	private DirContext 	ctx;
 	/**
 	 * @param args
 	 */
 	public void run () {
 		Integer intSleepTimer = null;
-		DirContext ctx;
 		
 		//
 		// initialize LDAP connection (dir context
 		//
-		
+		ctx = LDAPReader.initial();
 		
 		while (true) {
 			//
@@ -67,67 +68,47 @@ public class Engine extends Thread {
 		return thisEngine;
 	}
     
-    public void setSeverityStatusTimestamp ( String severity, String status, ) {
-		ModificationItem epicsStatus, epicsSeverity, epicsTimeStamp;
+    synchronized public void setSeverityStatusTimeStamp ( String channel, String severity, String status, String timeStamp) {
+		ModificationItem epicsStatus, epicsSeverity, epicsTimeStamp, epicsAcknowledgeTimeStamp ;
+		ModificationItem[] modItem = null;
+		int i = 0;
 
+		String channelName = "eren=" + channel;
+		
 		//
 		// change severity if value is entered
 		//
-		if ((recordSeverity.getText() != null)
-				&& (recordSeverity.getText().length() > 0)) {
-			epicsSeverity = new ModificationItem(
-					DirContext.REPLACE_ATTRIBUTE,
-					new BasicAttribute(
-							"epicsAlarmSeverity",
-							recordSeverity.getText()));
-			//
-			// create modification item 'array' with single
-			// entry
-			//
-			ModificationItem[] modItems = new ModificationItem[] { epicsSeverity };
-			ctx.modifyAttributes(result.getName(),modItems);
-			message += "New: epicsAlarmSeverity: "
-					+ recordSeverity.getText() + "\n";
+		if ((severity != null)&& (severity.length() > 0)) {
+			epicsSeverity = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,	new BasicAttribute(	"epicsAlarmSeverity", severity));
+			modItem[i++] = epicsSeverity;
 		}
 
 		//
 		// change status if value is entered
 		//
-		if ((recordStatus.getText() != null)
-				&& (recordStatus.getText().length() > 0)) {
-			epicsStatus = new ModificationItem(
-					DirContext.REPLACE_ATTRIBUTE,
-					new BasicAttribute("epicsAlarmStatus",
-							recordStatus.getText()));
-			//
-			// create modification item 'array' with single
-			// entry
-			//
-			ModificationItem[] modItems = new ModificationItem[] { epicsStatus };
-			ctx.modifyAttributes(result.getName(),modItems);
-			message += "New: epicsAlarmStatus: "
-					+ recordStatus.getText() + "\n";
+		if ((status != null) && (status.length() > 0)) {
+			epicsStatus = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmStatus", status));
 		}
 		
 		//
-		// change time stamp in any case
+		// change alarm time stamp
+		//
+		if ((timeStamp != null) && (timeStamp.length() > 0)) {
+			epicsTimeStamp = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmTimeStamp", timeStamp));
+		}
+		
+		//
+		// change time stamp acknowledged time
 		//
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S");
         java.util.Date currentDate = new java.util.Date();
         String eventTime = sdf.format(currentDate);
         
-		epicsTimeStamp = new ModificationItem(
-				DirContext.REPLACE_ATTRIBUTE,
-				new BasicAttribute("epicsAlarmTimeStamp",
-						eventTime));
-		//
-		// create modification item 'array' with single
-		// entry
-		//
-		ModificationItem[] modItems = new ModificationItem[] { epicsTimeStamp };
-		ctx.modifyAttributes(result.getName(),modItems);
-		message += "New: epicsAlarmTimeStamp: "
-				+ eventTime + "\n";
+        epicsAcknowledgeTimeStamp = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmAcknTimeStamp", eventTime));
+        
+        ctx.modifyAttributes(channelName, modItem);
+        
+        
     }
 
 }
