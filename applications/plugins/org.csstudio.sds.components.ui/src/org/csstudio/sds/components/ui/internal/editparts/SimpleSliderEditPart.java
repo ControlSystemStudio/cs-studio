@@ -57,11 +57,11 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 
 		final SimpleSliderFigure slider = new SimpleSliderFigure();
 		slider.addSliderListener(new SimpleSliderFigure.ISliderListener() {
-			public void sliderValueChanged(final int newValue) {
+			public void sliderValueChanged(final double newValue) {
 				model.getProperty(SimpleSliderModel.PROP_VALUE).setManualValue(
 						newValue);
 
-				slider.setManualValue((Integer) newValue);
+				slider.setManualValue((Double) newValue);
 
 				if (_resetManualValueDisplayJob == null) {
 					_resetManualValueDisplayJob = new UIJob("reset") {
@@ -86,6 +86,8 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		slider.setValue(model.getValue());
 		slider.setManualValue(model.getValue());
 		slider.setOrientation(model.isHorizontal());
+		slider.setPrecision(model.getPrecision());
+		slider.setMinSliderWide(model.getMinSliderWide());
 
 		return slider;
 	}
@@ -101,7 +103,8 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setValue((Integer) newValue);
+				//slider.setValue((Integer) newValue);
+				slider.setValue((Double) newValue);
 				return true;
 			}
 		};
@@ -113,7 +116,8 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setMin((Integer) newValue);
+				//slider.setMin((Integer) newValue);
+				slider.setMin((Double) newValue);
 				return true;
 			}
 		};
@@ -125,7 +129,8 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setMax((Integer) newValue);
+				//slider.setMax((Integer) newValue);
+				slider.setMax((Double) newValue);
 				return true;
 			}
 		};
@@ -137,21 +142,44 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setIncrement((Integer) newValue);
+				//slider.setIncrement((Integer) newValue);
+				slider.setIncrement((Double) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(SimpleSliderModel.PROP_INCREMENT, incrementHandler);
+		
+		// precision
+		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+				slider.setPrecision((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(SimpleSliderModel.PROP_PRECISION, precisionHandler);
+		
+		// minSliderWide
+		IWidgetPropertyChangeHandler minSliderWideHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+				slider.setMinSliderWide((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(SimpleSliderModel.PROP_MIN_SLIDER_WIDE, minSliderWideHandler);
 
-		// increment
+		// orientation
 		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-
-				int orientation = (Integer) newValue;
-				slider.setOrientation(orientation == 0);
+				slider.setOrientation((Boolean) newValue);
 
 				SimpleSliderModel model = (SimpleSliderModel) getModel();
 

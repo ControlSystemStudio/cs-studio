@@ -23,8 +23,9 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.properties.BooleanProperty;
+import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.OptionProperty;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -55,6 +56,16 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * The ID of the increment property.
 	 */
 	public static final String PROP_INCREMENT = "increment"; //$NON-NLS-1$
+
+	/**
+	 * The ID of the precision property.
+	 */
+	public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the minimum slider wide property.
+	 */
+	public static final String PROP_MIN_SLIDER_WIDE = "min_slider_wide"; //$NON-NLS-1$
 
 	/**
 	 * The ID of the orientation property.
@@ -97,17 +108,29 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_VALUE, new IntegerProperty("Slider Value",
-				WidgetPropertyCategory.Behaviour, 50, 0, Integer.MAX_VALUE));
-		addProperty(PROP_MIN, new IntegerProperty("Min",
-				WidgetPropertyCategory.Behaviour, 0, 0, Integer.MAX_VALUE));
-		addProperty(PROP_MAX, new IntegerProperty("Max",
-				WidgetPropertyCategory.Behaviour, 100, 0, Integer.MAX_VALUE));
-		addProperty(PROP_INCREMENT, new IntegerProperty("Increment",
-				WidgetPropertyCategory.Behaviour, 1, 0, Integer.MAX_VALUE));
-		addProperty(PROP_ORIENTATION, new OptionProperty("Orientation",
-				WidgetPropertyCategory.Display, new String[] { "Horizontal",
-						"Vertical" }, 0));
+//		addProperty(PROP_VALUE, new IntegerProperty("Slider Value",
+//				WidgetPropertyCategory.Behaviour, 50, 0, Integer.MAX_VALUE));
+//		addProperty(PROP_MIN, new IntegerProperty("Min",
+//				WidgetPropertyCategory.Behaviour, 0, 0, Integer.MAX_VALUE));
+//		addProperty(PROP_MAX, new IntegerProperty("Max",
+//				WidgetPropertyCategory.Behaviour, 100, 0, Integer.MAX_VALUE));
+//		addProperty(PROP_INCREMENT, new IntegerProperty("Increment",
+//				WidgetPropertyCategory.Behaviour, 1, 0, Integer.MAX_VALUE));
+//		addProperty(PROP_ORIENTATION, new OptionProperty("Orientation",
+//				WidgetPropertyCategory.Display, new String[] { "Horizontal",
+//						"Vertical" }, 0));
+		addProperty(PROP_VALUE, new DoubleProperty("Slider Value",
+				WidgetPropertyCategory.Behaviour, 50, 0, Double.MAX_VALUE));
+		addProperty(PROP_MIN, new DoubleProperty("Min",
+				WidgetPropertyCategory.Behaviour, 0, 0, Double.MAX_VALUE));
+		addProperty(PROP_MAX, new DoubleProperty("Max",
+				WidgetPropertyCategory.Behaviour, 100, 0, Double.MAX_VALUE));
+		addProperty(PROP_INCREMENT, new DoubleProperty("Increment",
+				WidgetPropertyCategory.Behaviour, 1, 0, Double.MAX_VALUE));
+		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal orientation",
+				WidgetPropertyCategory.Display, true));
+		addProperty(PROP_PRECISION, new IntegerProperty("Precision", WidgetPropertyCategory.Behaviour, 100, 0, Integer.MAX_VALUE));
+		addProperty(PROP_MIN_SLIDER_WIDE, new IntegerProperty("Minimum slider wide", WidgetPropertyCategory.Display, 5, 0, Integer.MAX_VALUE));
 
 		setBackgroundColor(new RGB(255, 255, 255));
 	}
@@ -125,8 +148,8 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * 
 	 * @return The min value.
 	 */
-	public int getMin() {
-		return (Integer) getProperty(PROP_MIN).getPropertyValue();
+	public double getMin() {
+		return (Double) getProperty(PROP_MIN).getPropertyValue();
 	}
 
 	/**
@@ -134,8 +157,8 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * 
 	 * @return The max value.
 	 */
-	public int getMax() {
-		return (Integer) getProperty(PROP_MAX).getPropertyValue();
+	public double getMax() {
+		return (Double) getProperty(PROP_MAX).getPropertyValue();
 	}
 
 	/**
@@ -143,8 +166,8 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * 
 	 * @return The increment value.
 	 */
-	public int getIncrement() {
-		return (Integer) getProperty(PROP_INCREMENT).getPropertyValue();
+	public double getIncrement() {
+		return (Double) getProperty(PROP_INCREMENT).getPropertyValue();
 	}
 
 	/**
@@ -152,8 +175,26 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * 
 	 * @return The current slider value.
 	 */
-	public int getValue() {
-		return (Integer) getProperty(PROP_VALUE).getPropertyValue();
+	public double getValue() {
+		return (Double) getProperty(PROP_VALUE).getPropertyValue();
+	}
+	
+	/**
+	 * Return the precision.
+	 * 
+	 * @return The precision.
+	 */
+	public int getPrecision() {
+		return (Integer) getProperty(PROP_PRECISION).getPropertyValue();
+	}
+	
+	/**
+	 * Return the minimum slider wide.
+	 * 
+	 * @return The minimum slider wide.
+	 */
+	public int getMinSliderWide() {
+		return (Integer) getProperty(PROP_MIN_SLIDER_WIDE).getPropertyValue();
 	}
 
 	/**
@@ -162,6 +203,6 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * @return True if the slider has a horizontal orientation.
 	 */
 	public boolean isHorizontal() {
-		return (Integer) getProperty(PROP_ORIENTATION).getPropertyValue() == 0;
+		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();
 	}
 }

@@ -88,6 +88,16 @@ public final class SimpleSliderFigure extends Panel implements
 	 * The current manual value.
 	 */
 	private int _manualValue = 30;
+	
+	/**
+	 * The precision of this slider.
+	 */
+	private int _precision = 100;
+	
+	/**
+	 * The minimum wide for the slider.	 
+	 */
+	private int _minSliderWide = 500;
 
 	/**
 	 * Flag which is used to disable slider events. When the current value is
@@ -125,7 +135,7 @@ public final class SimpleSliderFigure extends Panel implements
 	 */
 	private ScrollBar createScrollbarFigure() {
 		ScrollBar bar = new ScrollBar();
-		bar.setExtent(0);
+		bar.setExtent(5);
 		bar.setMaximum(1000);
 		bar.setMinimum(1);
 		bar.setValue(400);
@@ -169,7 +179,7 @@ public final class SimpleSliderFigure extends Panel implements
 
 		if (_populateEvents) {
 			for (ISliderListener l : _sliderListeners) {
-				l.sliderValueChanged(tmp);
+				l.sliderValueChanged(this.getDoubleFor(tmp));
 			}
 		}
 	}
@@ -180,9 +190,9 @@ public final class SimpleSliderFigure extends Panel implements
 	 * @param min
 	 *            The minimum value.
 	 */
-	public void setMin(final int min) {
-		_scrollBar.setMinimum(min);
-		_min = min;
+	public void setMin(final double min) {
+		_min = (int)(min*_precision);
+		_scrollBar.setMinimum(_min);
 	}
 
 	/**
@@ -191,9 +201,61 @@ public final class SimpleSliderFigure extends Panel implements
 	 * @param max
 	 *            The maximum value.
 	 */
-	public void setMax(final int max) {
-		_scrollBar.setMaximum(max);
-		_max = max;
+	public void setMax(final double max) {		
+		_max = (int)(max*_precision);
+		_scrollBar.setMaximum(_max);
+		
+	}
+	
+	/**
+	 * Sets the value for the precision of this slider.
+	 * The value should be one of 1, 10, 100, 1000,...
+	 * @param precision
+	 * 			  The precision
+	 */
+	public void setPrecision(final int precision) {
+		_populateEvents = false;
+		double min = this.getDoubleFor(_min);
+		double max = this.getDoubleFor(_max);
+		int minWide = _minSliderWide/_precision;
+		double increment = this.getDoubleFor(_scrollBar.getStepIncrement()); 
+		double value = this.getDoubleFor(_currentValue);
+		double manualValue = this.getDoubleFor(_manualValue);
+		_precision = precision;
+		this.setMin(min);
+		this.setMax(max);
+		this.setMinSliderWide(minWide);
+		this.setIncrement(increment);
+		this.setValue(value);
+		this.setManualValue(manualValue);
+		_populateEvents = true;
+	}
+	
+	/**
+	 * Gets the precision of this slider.
+	 * @return
+	 * 			  The precision
+	 */
+	public int getPrecision() {
+		return _precision;
+	}
+	
+	/**
+	 * Sets the minimum wide for the slider.
+	 * @param minWide
+	 * 			  The minimum wide
+	 */
+	public void setMinSliderWide(final int minWide) {
+		_minSliderWide = minWide*_precision;
+	}
+	
+	/**
+	 * Gets the minimum slider wide.
+	 * @return int
+	 * 			  The minimum slider wide
+	 */
+	public int getMinSliderWide() {
+		return (_minSliderWide/_precision);
 	}
 
 	/**
@@ -202,15 +264,16 @@ public final class SimpleSliderFigure extends Panel implements
 	 * @param increment
 	 *            The increment value.
 	 */
-	public void setIncrement(final int increment) {
-		_scrollBar.setStepIncrement(increment);
-		_scrollBar.setExtent(increment);
-		_scrollBar.setPageIncrement(increment);
+	public void setIncrement(final double increment) {
+		int inc = (int)(increment*_precision);
+		_scrollBar.setStepIncrement(inc);
+		_scrollBar.setExtent(Math.max(_minSliderWide, inc));
+		_scrollBar.setPageIncrement(inc);
 	}
 
+//Choose one of PositionConstants#HORIZONTAL or * PositionConstants#VERTICAL.
 	/**
-	 * Sets the orientation. Choose one of PositionConstants#HORIZONTAL or
-	 * PositionConstants#VERTICAL.
+	 * Sets the orientation. 
 	 * 
 	 * @param horizontal
 	 *            true for horizontal and false for vertical layout
@@ -229,12 +292,12 @@ public final class SimpleSliderFigure extends Panel implements
 	 * @param value
 	 *            the current slider value
 	 */
-	public void setValue(final int value) {
+	public void setValue(final double value) {
 		// disable eventing
 		_populateEvents = false;
 
 		// store current value
-		_currentValue = value;
+		_currentValue = (int)(value*_precision);
 
 		// update scrollbar
 		if (value < _min || value > _max) {
@@ -261,10 +324,11 @@ public final class SimpleSliderFigure extends Panel implements
 	 * @param value
 	 *            the current slider value
 	 */
-	public void setManualValue(final int value) {
-		assert value >= _min && value <= _max;
+	public void setManualValue(final double value) {
+		int tempValue = (int) (value*_precision);
+		assert tempValue >= _min && tempValue <= _max;
 
-		_manualValue = value;
+		_manualValue = tempValue;
 
 		updateValueText();
 	}
@@ -275,7 +339,18 @@ public final class SimpleSliderFigure extends Panel implements
 	private void updateValueText() {
 		// update the value label text
 		_valueLabel
-				.setText("" + _currentValue + " [MAN: " + _manualValue + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				.setText("" + this.getDoubleFor(_currentValue) + " [MAN: " + this.getDoubleFor(_manualValue) + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	}
+	
+	/**
+	 * Gets a double, which has the given int value divided by the precision of this slider.
+	 * @param value
+	 * 				The int value
+	 * @return
+	 * 				The corresponding double
+	 */
+	private double getDoubleFor(final int value) {
+		return ((double)value)/_precision;
 	}
 
 	/**
@@ -331,7 +406,7 @@ public final class SimpleSliderFigure extends Panel implements
 		 * @param newValue
 		 *            The new slider value.
 		 */
-		void sliderValueChanged(int newValue);
+		void sliderValueChanged(double newValue);
 	}
 
 }
