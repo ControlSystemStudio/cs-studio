@@ -75,7 +75,8 @@ public class LDAPReader extends Job {
 		defaultScope = searchScope;
 	}
 
-	private DirContext initial() {
+	public static DirContext initial() {
+		// MCL changed to static
 		// Set up the environment for creating the initial context
 		Hashtable<Object,String> env = new Hashtable<Object,String>(11);
 		env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
