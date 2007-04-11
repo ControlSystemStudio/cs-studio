@@ -205,8 +205,8 @@ public class AAPI {
 	String						host;
 
 	int							port;
-	public boolean debug=true;
-	public boolean debugOut=true;
+	public boolean debug=false;
+	public boolean debugOut=false;
 	//
 	// Dummy constructor
 	//
