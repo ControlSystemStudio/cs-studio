@@ -88,7 +88,7 @@ public class LogView extends ViewPart implements MessageListener {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(LogViewerPreferenceConstants.P_STRING).split(";"); //$NON-NLS-1$
 
-		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml);
+		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 1);
 		jlv.setAlarmSorting(false);
 		parent.pack();
 		JmsLogsPlugin.getDefault().getPluginPreferences()
@@ -135,11 +135,9 @@ public class LogView extends ViewPart implements MessageListener {
 		if (message == null) {
 			System.out.println("message gleich null");
 		}
-		System.out.println("in on message");
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				try {
-					System.out.println("in runmethod");
 					if (message instanceof TextMessage) {
 						System.out
 								.println("received message is not a map message: "

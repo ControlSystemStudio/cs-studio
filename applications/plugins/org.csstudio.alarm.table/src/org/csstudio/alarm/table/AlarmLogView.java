@@ -90,13 +90,17 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 				.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(
 						";"); //$NON-NLS-1$
 
-		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml);
+		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2);
 		jlv.setAlarmSorting(true);
 		parent.pack();
 		JmsLogsPlugin.getDefault().getPluginPreferences()
 		.addPropertyChangeListener(propertyChangeListener);
 	}
 
+	/**
+	 * 
+	 * @param ps
+	 */
 	private void initializeJMSReceiver(Shell ps) {
 		String[] queues = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.QUEUE).split(",");
 		try {
@@ -137,20 +141,11 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 		if (message == null) {
 			System.out.println("message gleich null"); //$NON-NLS-1$
 		}
-		System.out.println("in on message"); //$NON-NLS-1$
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				try {
-					System.out.println("in runmethod"); //$NON-NLS-1$
 					if (message instanceof TextMessage) {
-						System.out
-								.println("received message is not a map message: " //$NON-NLS-1$
-										+ ((TextMessage) message).getText());
 					} else if (message instanceof MapMessage) {
-						// if(table.getItemCount() >= max)
-						// table.remove(table.getItemCount() - 1 - rows,
-						// table.getItemCount() - 1);
-						System.out.println("message received"); //$NON-NLS-1$
 						MapMessage mm = (MapMessage) message;
 						//
 						// We only connect to alarm messages - so we'll display everything that shows up here

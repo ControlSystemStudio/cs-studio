@@ -75,9 +75,20 @@ public class JMSLogTableViewer extends TableViewer {
 	private boolean sort = false;
 
 	private JMSMessageList jmsml;
-
+	
+	/**
+	 * Setting Column names from preference pages, providers. 
+	 * tableType: (1: log table, 2: alarm table, 3: archive table)
+	 * The table type is necessary for sorting the messages.
+	 * 
+	 * @param parent
+	 * @param site
+	 * @param colNames
+	 * @param j
+	 * @param tableType (1: log table, 2: alarm table, 3: archive table)
+	 */
 	public JMSLogTableViewer(Composite parent, IWorkbenchPartSite site,
-			String[] colNames, JMSMessageList j) {
+			String[] colNames, JMSMessageList j, int tableType) {
 		super(parent, SWT.SINGLE | SWT.FULL_SELECTION);
 		columnNames = colNames;
 		jmsml = j;
@@ -113,60 +124,18 @@ public class JMSLogTableViewer extends TableViewer {
 		}
 		this.setContentProvider(new JMSMessageContentProvider());
 		this.setLabelProvider(new JMSMessageLabelProvider());
+		if (tableType == 1) {
+			JMSLogTableViewer.this.setSorter(new JMSMessageSorterLog());
+		} else if (tableType == 2) {
+			JMSLogTableViewer.this.setSorter(new JMSMessageSorterAlarm());
+		}
+
 		this.setInput(jmsml);
 
-		if (sortAlarms == true) {
-			this.setSorter(new JMSMessageSorter());
-		}
 		makeContextMenu(site);
 		
 		new ProcessVariableDragSource(this.getTable(), this);
 		
-//		FilteredDragSourceAdapter dragSourceAdapter = new FilteredDragSourceAdapter(
-//				new Class[] { IControlSystemItem.class }) {
-//
-//			@Override
-//			protected List getCurrentSelection() {
-//				List<IAdaptable> l = new ArrayList<IAdaptable>();
-//				if(selection[0].equalsIgnoreCase("NAME")) {
-//					l.add(CentralItemFactory.createProcessVariable(selection[1]));
-//					return l;
-//				} else {
-//					l.add(new TextContainer(selection[0], selection[1]));
-//					return l;
-//				}
-//			}
-//		};
-
-//		DnDUtil.enableForDrag(this.getControl(), DND.DROP_MOVE | DND.DROP_COPY,
-//				dragSourceAdapter);
-
-//		this.getTable().addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseDown(MouseEvent e) {
-//				super.mouseDown(e);
-//				CentralLogger.getInstance().info(this, "DnD Mouse Listener");
-//				if (e.button == 1) {
-//					CentralLogger.getInstance().info(this, "DnD Mouse Listener mouse button 1");
-//
-//					JMSMessageLabelProvider jmsmlp = (JMSMessageLabelProvider) JMSLogTableViewer.this
-//							.getLabelProvider();
-//					Table t = JMSLogTableViewer.this.getTable();
-//					TableItem ti = t.getItem(new Point(e.x, e.y));
-//					for (int i = 0; i < JMSLogTableViewer.this.columnNames.length; i++) {
-//						Rectangle bounds = ti.getBounds(i);
-//						if (bounds.contains(e.x, e.y)) {
-//							selection[0] = jmsmlp.getColumnName(i);
-//							selection[1] = ti.getText(i);
-//							CentralLogger.getInstance().info(this, "Selection Col: " + selection[0] +
-//									" Text: " + selection[1]);
-//
-//							break;
-//						}
-//					}
-//				}
-//			}
-//		});
 	}
 
 	public void setColumnNames(String[] colNames) {
@@ -227,9 +196,9 @@ public class JMSLogTableViewer extends TableViewer {
 
 		public void addJMSMessage(JMSMessage jmsm) {
 			JMSLogTableViewer.this.add(jmsm);
-			if (sortAlarms == true) {
-				JMSLogTableViewer.this.setSorter(new JMSMessageSorter());
-			}
+//			if (sortAlarms == true) {
+//				JMSLogTableViewer.this.setSorter(new JMSMessageSorterAlarm());
+//			}
 		}
 
 		public void removeJMSMessage(JMSMessage jmsm) {
