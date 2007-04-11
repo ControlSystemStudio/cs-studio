@@ -30,4 +30,5 @@ public class PreferenceConstants {
 	public static final String P_STRING_USER_PASSWORD = "P_STRING_USER_PASSWORD";
 	public static final String SECURITY_PROTOCOL = "SECURITY_PROTOCOL";
 	public static final String SECURITY_AUTHENTICATION = "SECURITY_AUTHENTICATION";
+	public static final String ENGINE_TIMER = "ENGINE_TIMER";
 	}

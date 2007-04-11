@@ -42,6 +42,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.P_STRING_USER_PASSWORD,"");
 		store.setDefault(PreferenceConstants.SECURITY_PROTOCOL,"");
 		store.setDefault(PreferenceConstants.SECURITY_AUTHENTICATION,"");
+		store.setDefault(PreferenceConstants.ENGINE_TIMER,"100");
 	}
 
 }
