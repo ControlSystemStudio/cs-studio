@@ -24,6 +24,7 @@ import javax.jms.Session;
 import javax.jms.MessageProducer;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import org.csstudio.utility.ldap.engine.*;
 
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer.TagValuePairs;
 
@@ -97,6 +98,7 @@ public class ClientRequest extends Thread
         statisticContent.setLastMessageSize( length); 
         
         Vector<TagValuePairs> tagValuePairs	= new Vector<TagValuePairs>();
+        Hashtable tagValue = new Hashtable();	// could replace the Vector above
         TagValuePairs	id		= InterconnectionServer.getInstance().new TagValuePairs();
         TagValuePairs	type	= InterconnectionServer.getInstance().new TagValuePairs();
         
@@ -120,7 +122,7 @@ public class ClientRequest extends Thread
         }
         
         
-        if ( parseMessage( tagValuePairs, id, type, statisticId)) {
+        if ( parseMessage(  tagValue, tagValuePairs, id, type, statisticId)) {
         	
         	System.out.println("Time: - after parse 	= " + dateToString(new GregorianCalendar()));
         	boolean status	= true;
@@ -159,6 +161,10 @@ public class ClientRequest extends Thread
                 }
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
         		System.out.println("Time-ALARM: - after send UDP reply	= " + dateToString(new GregorianCalendar()));
+        		//
+        		// time to update the LDAP server entry
+        		//
+        		updateLdapEntry( tagValue);
         		
         		break;
         		
@@ -285,7 +291,7 @@ public class ClientRequest extends Thread
         }         
 	}
 	
-	private boolean parseMessage ( Vector<TagValuePairs> tagValuePairs, TagValuePairs tag, TagValuePairs type, String statisticId) {
+	private boolean parseMessage ( Hashtable<String,String> tagValue, Vector<TagValuePairs> tagValuePairs, TagValuePairs tag, TagValuePairs type, String statisticId) {
 		boolean success = false;
 		String[] attribute = null;
 		boolean gotTag 		= false;
@@ -329,6 +335,10 @@ public class ClientRequest extends Thread
 	                		
 	                		// TODO: make this a debug message
 		                    System.out.println(statisticId + " : " + attribute[0] + " := "+ attribute[1]);
+		                    //
+		                    // fill Hash table in any case
+		                    //
+		                    tagValue.put(attribute[0].toString(), attribute[1].toString());
 		                    
 		                    if ( tagList.getTagType( attribute[0].toString()) == PreferenceProperties.TAG_TYPE_IS_ID) {
 		                    	tag.setTag(attribute[0].toString());
@@ -362,6 +372,23 @@ public class ClientRequest extends Thread
 		SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.S" );
 	    //DateFormat df = DateFormat.getDateInstance();
 	    return df.format(d);
+	}
+	private void updateLdapEntry ( Hashtable<String,String> tagValue) {
+		//
+		// find necessary entries and activate ldapUpdateMethod
+		//
+		String channel,status,severity,timeStamp = null;
+		if ( tagValue.containsKey("NAME") && tagValue.containsKey("STATUS") && tagValue.containsKey("SEVERITY") && tagValue.containsKey("TIME")) {
+			channel = tagValue.get("NAME");
+			status = tagValue.get("STATUS");
+			severity = tagValue.get("SEVERITY");
+			timeStamp = tagValue.get("TIME");
+			//
+			// send values to LDAP engine
+			//
+			Engine.getInstance().setSeverityStatusTimeStamp ( channel, status, severity, timeStamp);
+		}
+		
 	}
 	
 }
