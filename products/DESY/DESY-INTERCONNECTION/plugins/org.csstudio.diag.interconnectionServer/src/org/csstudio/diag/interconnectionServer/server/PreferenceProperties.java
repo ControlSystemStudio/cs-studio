@@ -16,13 +16,14 @@ public class PreferenceProperties {
 	//
 	// RMI message transfer takes about 300mS
 	//	
-	/*
+
 	public static String PRIMARY_JMS_URL = "rmi://krynfs.desy.de:1099/";	//RMI
 	public static String SECONDARY_JMS_URL = "rmi://krykelog.desy.de:1099/";
-	*/
+
 	
-	public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";	//RMI
-	public static String PRIMARY_JMS_URL = "rmi://krykelog.desy.de:1099/";
+//	public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";	//RMI
+//	public static String PRIMARY_JMS_URL = "rmi://krykelog.desy.de:1099/";
+	
 	
 	public static int ERROR_COUNT_BEFORE_SWITCH_JMS_SERVER = 10;
 	

@@ -320,22 +320,20 @@ public class Statistic {
 	}
 	
 	public String[] getNodeNameArray () {
-		 String[] nodeNames = null;
+		 List<String> nodeNames = new ArrayList<String>();
 		 boolean first = true;
-		 int index = 0;
 		 
 		 try {
 			 // just in case no enum is possible
 			 Enumeration connections = this.connectionList.elements();
 			 while (connections.hasMoreElements()) {
 				 StatisticContent thisContent = (StatisticContent)connections.nextElement();
-				 nodeNames[index] = thisContent.host;
-				 index++;
+				 nodeNames.add(thisContent.host);
 			 }
 		 } catch (Exception e) {
-			 nodeNames[0] = "NONE";
+			 nodeNames.add("NONE");
 		 }
-		 return nodeNames;
+		 return nodeNames.toArray(new String[0]);
 		 
 	}
 
