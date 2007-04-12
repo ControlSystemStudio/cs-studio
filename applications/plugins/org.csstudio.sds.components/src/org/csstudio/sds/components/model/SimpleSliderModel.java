@@ -65,7 +65,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the minimum slider wide property.
 	 */
-	public static final String PROP_MIN_SLIDER_WIDE = "min_slider_wide"; //$NON-NLS-1$
+	public static final String PROP_SLIDER_WIDE = "slider_wide"; //$NON-NLS-1$
 
 	/**
 	 * The ID of the orientation property.
@@ -129,8 +129,8 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, 1, 0, Double.MAX_VALUE));
 		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal orientation",
 				WidgetPropertyCategory.Display, true));
-		addProperty(PROP_PRECISION, new IntegerProperty("Precision", WidgetPropertyCategory.Behaviour, 100, 0, Integer.MAX_VALUE));
-		addProperty(PROP_MIN_SLIDER_WIDE, new IntegerProperty("Minimum slider wide", WidgetPropertyCategory.Display, 5, 0, Integer.MAX_VALUE));
+		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places", WidgetPropertyCategory.Behaviour, 2, 0, 5));
+		addProperty(PROP_SLIDER_WIDE, new IntegerProperty("Slider wide", WidgetPropertyCategory.Display, 5, 0, Integer.MAX_VALUE));
 
 		setBackgroundColor(new RGB(255, 255, 255));
 	}
@@ -189,12 +189,12 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	}
 	
 	/**
-	 * Return the minimum slider wide.
+	 * Return the slider wide.
 	 * 
-	 * @return The minimum slider wide.
+	 * @return The slider wide.
 	 */
-	public int getMinSliderWide() {
-		return (Integer) getProperty(PROP_MIN_SLIDER_WIDE).getPropertyValue();
+	public int getSliderWide() {
+		return (Integer) getProperty(PROP_SLIDER_WIDE).getPropertyValue();
 	}
 
 	/**
