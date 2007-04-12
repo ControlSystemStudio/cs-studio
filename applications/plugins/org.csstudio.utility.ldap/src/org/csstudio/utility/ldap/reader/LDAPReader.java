@@ -44,7 +44,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 public class LDAPReader extends Job {
-	private boolean debug = true;
+	private boolean debug = false;
 	private String name;
 	private String filter;
 	private int defaultScope=SearchControls.SUBTREE_SCOPE;

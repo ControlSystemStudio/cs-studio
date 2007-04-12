@@ -2,6 +2,7 @@ package org.csstudio.utility.ldap.engine;
 
 import java.text.SimpleDateFormat;
 
+import javax.naming.NamingException;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
@@ -20,18 +21,19 @@ public class Engine extends Thread {
 	 */
 	public void run () {
 		Integer intSleepTimer = null;
-		
+
 		//
 		// initialize LDAP connection (dir context
 		//
-		ctx = LDAPReader.initial();
-		
+//		ctx = LDAPReader.initial();
+		ctx = null;
+
 		while (true) {
 			//
 			// do the work actually prepared
 			//
 			if (doWork) {
-				
+
 			}
 			/*
         	 * sleep before we check for work again
@@ -45,15 +47,15 @@ public class Engine extends Thread {
         		Thread.sleep( (long)intSleepTimer );
         	}
         	catch (InterruptedException  e) {
-        		
+
         	}
 		}
 	}
-	
+
 	private Engine() {
     	// absicherung
     }
-    
+
     public static Engine getInstance() {
 		//
 		// get an instance of our sigleton
@@ -67,14 +69,14 @@ public class Engine extends Thread {
 		}
 		return thisEngine;
 	}
-    
+
     synchronized public void setSeverityStatusTimeStamp ( String channel, String severity, String status, String timeStamp) {
 		ModificationItem epicsStatus, epicsSeverity, epicsTimeStamp, epicsAcknowledgeTimeStamp ;
 		ModificationItem[] modItem = null;
 		int i = 0;
 
 		String channelName = "eren=" + channel;
-		
+
 		//
 		// change severity if value is entered
 		//
@@ -89,26 +91,31 @@ public class Engine extends Thread {
 		if ((status != null) && (status.length() > 0)) {
 			epicsStatus = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmStatus", status));
 		}
-		
+
 		//
 		// change alarm time stamp
 		//
 		if ((timeStamp != null) && (timeStamp.length() > 0)) {
 			epicsTimeStamp = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmTimeStamp", timeStamp));
 		}
-		
+
 		//
 		// change time stamp acknowledged time
 		//
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S");
         java.util.Date currentDate = new java.util.Date();
         String eventTime = sdf.format(currentDate);
-        
+
         epicsAcknowledgeTimeStamp = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmAcknTimeStamp", eventTime));
-        
-        ctx.modifyAttributes(channelName, modItem);
-        
-        
+
+        try {
+			ctx.modifyAttributes(channelName, modItem);
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
     }
 
 }

@@ -42,7 +42,6 @@ public class PreferencePage extends FieldEditorPreferencePage
 		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
 				Activator.getDefault().getBundle().getSymbolicName()));
 		setDescription(Messages.getString("PreferencePage.LDAP")); //$NON-NLS-1$
-		System.out.println("SymbolicName: "+Activator.getDefault().getBundle().getSymbolicName());
 	}
 
 	/**
@@ -52,7 +51,6 @@ public class PreferencePage extends FieldEditorPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		new Label(getFieldEditorParent(),SWT.NONE).setText("SymbolicName: "+Activator.getDefault().getBundle().getSymbolicName());
 		addField(
 			new StringFieldEditor(PreferenceConstants.P_STRING_URL, Messages.getString("PreferencePage.URL"), getFieldEditorParent())); //$NON-NLS-1$
 		addField(
