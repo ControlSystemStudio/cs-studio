@@ -33,15 +33,14 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.Activator;
+import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 public class LDAPReader extends Job {
 	private boolean debug = false;
@@ -50,7 +49,7 @@ public class LDAPReader extends Job {
 	private int defaultScope=SearchControls.SUBTREE_SCOPE;
 	private ArrayList<String> list;
 	private ErgebnisListe ergebnisListe;
-	private Hashtable<Object,String> env = new Hashtable<Object,String>(11);
+//	private Hashtable<Object,String> env = new Hashtable<Object,String>(11);
 
 	/**
 	 * Used the connection settings from org.csstudio.utility.ldap.ui
@@ -61,7 +60,7 @@ public class LDAPReader extends Job {
 	 */
 	public LDAPReader(String[] nameUFilter, ErgebnisListe ergebnisListe){
 		super("LDAPReader");
-		setBasics(nameUFilter[0], nameUFilter[1], ergebnisListe, getUIenv());
+		setBasics(nameUFilter[0], nameUFilter[1], ergebnisListe);
 	}
 
 
@@ -78,7 +77,7 @@ public class LDAPReader extends Job {
 
 		super("LDAPReader");
 
-		setBasics(nameUFilter[0], nameUFilter[1], ergebnisListe, getUIenv());
+		setBasics(nameUFilter[0], nameUFilter[1], ergebnisListe);
 		setDefaultScope(searchScope);
 	}
 
@@ -92,7 +91,7 @@ public class LDAPReader extends Job {
 	 */
 	public LDAPReader(String name, String filter, ErgebnisListe ergebnisListe){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe, getUIenv());
+		setBasics(name, filter, ergebnisListe);
 	}
 
 	/**
@@ -106,7 +105,7 @@ public class LDAPReader extends Job {
 	 */
 	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe, getUIenv());
+		setBasics(name, filter, ergebnisListe);
 		setDefaultScope(searchScope);
 	}
 
@@ -124,7 +123,7 @@ public class LDAPReader extends Job {
 
 	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe, Hashtable<Object,String> env){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe, env);
+		setBasics(name, filter, ergebnisListe);
 		setDefaultScope(searchScope);
 	}
 	/**
@@ -145,7 +144,7 @@ public class LDAPReader extends Job {
 	 */
 	public LDAPReader(String name, String filter,  ErgebnisListe ergebnisListe, String[] env){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe, makeENV(env));
+		setBasics(name, filter, ergebnisListe);
 	}
 	/**
 	 *
@@ -165,7 +164,7 @@ public class LDAPReader extends Job {
 	 */
 	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe, String[] env){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe, makeENV(env));
+		setBasics(name, filter, ergebnisListe);
 		setDefaultScope(searchScope);
 	}
 
@@ -174,32 +173,18 @@ public class LDAPReader extends Job {
 	 * @param name
 	 * @param filter
 	 * @param ergebnisListe
-	 * @param env connection settings.
 	 */
-	private void setBasics(String name, String filter, ErgebnisListe ergebnisListe, Hashtable<Object, String> env) {
+	private void setBasics(String name, String filter, ErgebnisListe ergebnisListe) {
 		this.ergebnisListe = ergebnisListe;
 		this.name = name;
 		this.filter = filter;
-		this.env = env;
-	}
-
-	private DirContext initial() {
-		// Create initial context
-		try {
-			InitialDirContext ctx = new InitialDirContext(env);
-			return ctx;
-		}catch (NamingException e) {
-//			Activator.logException("Ungültiger LDAP Pfad", e);
-			System.out.println("Ungültiger LDAP Pfad\r\n"+env);
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor ) {
 		DirContext ctx;
-		if((ctx = initial())!=null){
+		LDAPConnector ldpc = new LDAPConnector();
+		if((ctx = ldpc.getDirContext())!=null){
 	        SearchControls ctrl = new SearchControls();
 	        ctrl.setSearchScope(defaultScope);
 	        try{
@@ -229,80 +214,7 @@ public class LDAPReader extends Job {
 		return Status.CANCEL_STATUS;
 	}
 
-	/**
-	 * @param env
-	 * @return
-	 */
-	private Hashtable<Object, String> makeENV(String[] env) {
-		// Set up the environment for creating the initial context
-		Hashtable<Object, String> tmpENV = new Hashtable<Object, String>(11);
-		tmpENV.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
-		switch(env.length){
-			default:
-			case 5:
-				tmpENV.put(Context.SECURITY_CREDENTIALS, env[4]);
-			case 4:
-				tmpENV.put(Context.SECURITY_PRINCIPAL, env[3]);
-			case 3:
-				tmpENV.put(Context.SECURITY_AUTHENTICATION, env[2]);
-			case 2:
-				tmpENV.put(Context.SECURITY_PROTOCOL, env[1]);
-			case 1:
-				tmpENV.put(Context.PROVIDER_URL, env[0]);
-			case 0:
-				break;
-		}
-		return tmpENV;
-	}
 
-	/**
-	 * @return env with the setings from PreferencPage
-	 */
-	private Hashtable<Object, String> getUIenv() {
-
-		IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
-		// Set up the environment for creating the initial context
-		if(debug){
-			System.out.println("Path: "+prefs.absolutePath());
-			System.out.println("PLUGIN_ID: "+Activator.PLUGIN_ID);
-			System.out.println("P_STRING_URL: "+prefs.get(PreferenceConstants.P_STRING_URL,"1"));
-			System.out.println("SECURITY_PROTOCOL: "+prefs.get(PreferenceConstants.SECURITY_PROTOCOL,"2"));
-			System.out.println("SECURITY_AUTHENTICATION: "+prefs.get(PreferenceConstants.SECURITY_AUTHENTICATION,"3"));
-			System.out.println("P_STRING_USER_DN: "+prefs.get(PreferenceConstants.P_STRING_USER_DN,"4"));
-			System.out.println("P_STRING_USER_PASSWORD: "+prefs.get(PreferenceConstants.P_STRING_USER_PASSWORD,"5"));
-		}
-		String[] env = null;
-		// password
-		if(prefs.get(PreferenceConstants.P_STRING_USER_PASSWORD,"").trim().length()>0){
-			env = new String[5];
-			env[4]=prefs.get(PreferenceConstants.P_STRING_USER_PASSWORD,"");
-		}
-		// user
-		if(prefs.get(PreferenceConstants.P_STRING_USER_DN,"").trim().length()>0){
-			if(env==null){
-				env = new String[4];
-			}
-			env[3]=prefs.get(PreferenceConstants.P_STRING_USER_DN,"");
-		}
-		if(prefs.get(PreferenceConstants.SECURITY_AUTHENTICATION,"").trim().length()>0){
-			if(env==null){
-				env = new String[3];
-			}
-			env[2]=prefs.get(PreferenceConstants.SECURITY_AUTHENTICATION,"");
-		}
-		if(prefs.get(PreferenceConstants.SECURITY_PROTOCOL,"").trim().length()>0){
-			if(env==null){
-				env = new String[2];
-			}
-			env[1]=prefs.get(PreferenceConstants.SECURITY_PROTOCOL,"");
-		}
-		if(env==null){
-			env = new String[1];
-		}
-		env[0]=prefs.get(PreferenceConstants.P_STRING_URL,"");
-
-		return makeENV(env);
-	}
 
 
 	private void setDefaultScope(int defaultScope) {
