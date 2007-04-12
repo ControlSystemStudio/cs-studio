@@ -22,10 +22,12 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * A simple waveform figure.
@@ -39,6 +41,19 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * The displayed waveform data.
 	 */
 	private double[] _data;
+	
+	/**
+	 * An int, representing in which way the scale should be drawn.
+	 */
+	private int _showScale = 0;
+	/**
+	 * An int, representing in which way the help lines should be drawn.
+	 */
+	private int _showHelpLines = 0;
+	/**
+	 * A boolean, which indicates, if the lines from point to point should be drawn.
+	 */
+	private boolean _showPointLines = false;
 
 	/**
 	 * Standard constructor.
@@ -81,7 +96,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		
 		Rectangle figureBounds = getBounds();
 
-	int x = 0;
+		int x = 0;
 		
 		for (int i=0;i<_data.length;i+=5) {
 			x++;
@@ -93,5 +108,77 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		}
 	
 	
+	}
+
+	/**
+	 * Sets in which way the scale should be drawn.
+	 * @param showScale
+	 * 			0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
+	 */
+	public void setShowScale(final int showScale) {
+		_showScale = showScale;
+	}
+	
+	/**
+	 * Gets in which way the scale should be drawn.
+	 * @return int
+	 * 			0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
+	 */
+	public int getShowScale() {
+		return _showScale;
+	}
+
+	/**
+	 * Sets in which way the help lines should be drawn.
+	 * @param showHelpLines
+	 * 			0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
+	 */
+	public void setShowHelplLines(final int showHelpLines) {
+		_showHelpLines = showHelpLines;
+	}
+	
+	/**
+	 * Gets in which way the help lines should be drawn.
+	 * @return int
+	 * 			0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
+	 */
+	public int getShowHelpLines() {
+		return _showHelpLines;
+	}
+
+	/**
+	 * Sets if the point lines should be drawn.
+	 * @param showPointLines
+	 * 			true, the point lines should be drawn, false otherwise
+	 */
+	public void setShowPointLines(final boolean showPointLines) {
+		_showPointLines = showPointLines;
+	}
+	
+	/**
+	 * Gets if the point lines should be drawn.
+	 * @return boolean
+	 * 			true, the point lines should be drawn, false otherwise
+	 */
+	public boolean getShowPointLines() {
+		return _showPointLines;
+	}
+
+	/**
+	 * Sets the background color of this figure.
+	 * @param backgroundRGB 
+	 * 				The RGB-value for the color
+	 */
+	public void setBackgroundColor(final RGB backgroundRGB) {
+		this.setBackgroundColor(CustomMediaFactory.getInstance().getColor(backgroundRGB));
+	}
+
+	/**
+	 * Sets the foreground color of this figure.
+	 * @param foregroundRGB 
+	 * 				The RGB-value for the color
+	 */
+	public void setForegroundColor(final RGB foregroundRGB) {
+		this.setForegroundColor(CustomMediaFactory.getInstance().getColor(foregroundRGB));
 	}
 }

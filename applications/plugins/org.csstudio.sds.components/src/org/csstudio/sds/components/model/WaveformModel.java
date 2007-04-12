@@ -23,7 +23,9 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.DoubleArrayProperty;
+import org.csstudio.sds.model.properties.OptionProperty;
 
 /**
  * This class defines a simple waverform widget model.
@@ -37,6 +39,26 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * Property ID for the <i>wave</i>.
 	 */
 	public static final String PROP_WAVE_FORM = "wave"; //$NON-NLS-1$
+	
+	/**
+	 * Property ID for the scale.
+	 */
+	public static final String PROP_SHOW_SCALE = "show_scale"; //$NON-NLS-1$
+	
+	/**
+	 * Property ID for the help lines.
+	 */
+	public static final String PROP_SHOW_HELP_LINES = "show_help_lines"; //$NON-NLS-1$
+	
+	/**
+	 * Property ID for the point-lines.
+	 */
+	public static final String PROP_SHOW_POINT_LINES = "show_point_lines"; //$NON-NLS-1$
+	
+	/**
+	 * The diplay options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
+	 */
+	private static final String[] DISPLAY_OPTIONS = new String[] {"None", "Vertical", "Horizontal", "Both"};
 
 	/**
 	 * {@inheritDoc}
@@ -46,6 +68,9 @@ public final class WaveformModel extends AbstractWidgetModel {
 		addProperty(PROP_WAVE_FORM, new DoubleArrayProperty("Waveform Array",
 				WidgetPropertyCategory.Behaviour, new double[] { 20.0, 15.0,
 						33.0, 44.0, 22.0, 3.0, 25.0, 4.0 }));
+		addProperty(PROP_SHOW_SCALE, new OptionProperty("Scale",WidgetPropertyCategory.Display, DISPLAY_OPTIONS,0));
+		addProperty(PROP_SHOW_HELP_LINES, new OptionProperty("Help lines", WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
+		addProperty(PROP_SHOW_POINT_LINES, new BooleanProperty("Show point lines", WidgetPropertyCategory.Display, false));
 	}
 
 	/**
@@ -63,5 +88,32 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 */
 	public double[] getData() {
 		return (double[]) getProperty(PROP_WAVE_FORM).getPropertyValue();
+	}
+	
+	/**
+	 * Returns, if the scales should be shown or not.
+	 * @return int
+	 * 				0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
+	 */
+	public int getShowScale() {
+		return (Integer) getProperty(PROP_SHOW_SCALE).getPropertyValue(); 
+	}
+	
+	/**
+	 * Returns, if the help lines should be shown or not.
+	 * @return int
+	 * 				0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
+	 */
+	public int getShowHelpLines() {
+		return (Integer) getProperty(PROP_SHOW_HELP_LINES).getPropertyValue(); 
+	}
+	
+	/**
+	 * Returns, if the point lines should be shown or not.
+	 * @return boolean
+	 * 				true, if they should be shown, false otherwise
+	 */
+	public boolean getShowPointLines() {
+		return (Boolean) getProperty(PROP_SHOW_POINT_LINES).getPropertyValue(); 
 	}
 }

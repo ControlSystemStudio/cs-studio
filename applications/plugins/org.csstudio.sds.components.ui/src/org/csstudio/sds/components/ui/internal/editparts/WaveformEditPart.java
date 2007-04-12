@@ -43,6 +43,11 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		WaveformModel model = (WaveformModel) getCastedModel();
 		WaveformFigure waveform = new WaveformFigure();
 		waveform.setData(model.getData());
+		waveform.setShowScale(model.getShowScale());
+		waveform.setShowHelplLines(model.getShowHelpLines());
+		waveform.setShowPointLines(model.getShowPointLines());
+		waveform.setBackgroundColor(model.getBackgroundColor());
+		waveform.setForegroundColor(model.getForegroundColor());
 		return waveform;
 	}
 
