@@ -1,6 +1,8 @@
 package org.csstudio.utility.ldap.engine;
 
 import java.text.SimpleDateFormat;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.naming.NamingException;
 import javax.naming.directory.BasicAttribute;
@@ -8,14 +10,15 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 
 import org.csstudio.utility.ldap.Activator;
+import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
-import org.csstudio.utility.ldap.reader.LDAPReader;
 
 public class Engine extends Thread {
 
 	private static 		Engine thisEngine = null;
-	private boolean 	doWork = false;
+	private boolean 	doWrite = false;
 	private DirContext 	ctx;
+	private Vector<WriteRequest>	writeVector;
 	/**
 	 * @param args
 	 */
@@ -26,14 +29,14 @@ public class Engine extends Thread {
 		// initialize LDAP connection (dir context
 		//
 //		ctx = LDAPReader.initial();
-		ctx = null;
+		ctx = new LDAPConnector().getDirContext();
 
 		while (true) {
 			//
 			// do the work actually prepared
 			//
-			if (doWork) {
-
+			if (doWrite) {
+				performLdapWrite();
 			}
 			/*
         	 * sleep before we check for work again
@@ -69,8 +72,45 @@ public class Engine extends Thread {
 		}
 		return thisEngine;
 	}
+    
+    synchronized public void addLdapWriteRequest(String attribute, String channel, String value) {
+    	
+		WriteRequest writeRequest = new WriteRequest( attribute, channel, value);
+		//
+		// add request to vector
+		//
+		writeVector.add(writeRequest);
+		doWrite = true;
+	}
+    
+    private void performLdapWrite() {
+    	WriteRequest writeRequest;
+    	ModificationItem[] modItem = null;
+    	int i = 0;
+    	String channel;
+    	
+    	channel = null;
+    	
+    	for ( Enumeration eWriteVector = writeVector.elements(); eWriteVector.hasMoreElements(); ){ 
+    		Object tempObject = eWriteVector.nextElement();
+    		writeRequest = (WriteRequest)tempObject;
+    		
+    		//
+    		// prepare LDAP request for all entries matching the same channel
+    		//
+    		String channel = writeRequest.getChannel();
+    		
+    		modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,	
+    				new BasicAttribute(	writeRequest.getAttribute(), writeRequest.getValue()));
+    		
+    		//setLdapValue (writeRequest.getAttribute(), writeRequest.getChannel(), writeRequest.getValue(), writeRequest.getTimeStamp());
+    		writeVector.remove(tempObject);
+    	}
+    	
+    	doWrite = false;
+    }
 
-    synchronized public void setSeverityStatusTimeStamp ( String channel, String severity, String status, String timeStamp) {
+    public void setLdapValue ( String channel, String severity, String status, String timeStamp) {
 		ModificationItem epicsStatus, epicsSeverity, epicsTimeStamp, epicsAcknowledgeTimeStamp ;
 		ModificationItem[] modItem = null;
 		int i = 0;
@@ -115,6 +155,31 @@ public class Engine extends Thread {
 			e.printStackTrace();
 		}
 
+
+    }
+    private class WriteRequest {
+    	private String 	attribute = null;
+    	private String 	channel	= null;
+    	private String	value = null;
+    	
+    	private WriteRequest ( String attribute, String channel, String value) {
+    		
+    		this.attribute = attribute;
+    		this.channel = channel;
+    		this.value = value;
+    	}
+    	
+    	public String getAttribute () {
+    		return this.attribute;
+    	}
+    	
+    	public String getChannel () {
+    		return this.channel;
+    	}
+    	
+    	public String getValue () {
+    		return this.value;
+    	}
 
     }
 
