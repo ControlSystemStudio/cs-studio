@@ -88,8 +88,10 @@ public class Engine extends Thread {
     	ModificationItem[] modItem = null;
     	int i = 0;
     	String channel;
+    	String ldapChannelName;
     	
     	channel = null;
+    	i = 0;
     	
     	for ( Enumeration eWriteVector = writeVector.elements(); eWriteVector.hasMoreElements(); ){ 
     		Object tempObject = eWriteVector.nextElement();
@@ -98,13 +100,66 @@ public class Engine extends Thread {
     		//
     		// prepare LDAP request for all entries matching the same channel
     		//
-    		String channel = writeRequest.getChannel();
+    		if ( channel == null) {
+    			// first time setting
+    			channel = writeRequest.getChannel();
+    		} 
     		
-    		modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,	
-    				new BasicAttribute(	writeRequest.getAttribute(), writeRequest.getValue()));
+    		if ( channel.equals(writeRequest.getChannel())){
+    			//
+    			// combine all items that are related to the same channel
+    			//
+    			modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,	
+        				new BasicAttribute(	writeRequest.getAttribute(), writeRequest.getValue()));
+    		} else {
+    			//
+    			// channel name changed
+    			// first write all values
+    			//
+    			ldapChannelName = "eren=" + channel;
+    			try {
+    				ctx.modifyAttributes(ldapChannelName, modItem);
+    			} catch (NamingException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    				//
+    				// too bad it did not work
+    				doWrite = false;	// wait for next time
+    				return;
+    			}
+    			//
+    			// reset for to get ready for values of next channel
+    			//
+    			modItem = null;
+    			i = 0;
+    			//
+    			// define next channel name
+    			//
+    			channel = writeRequest.getChannel();
+    			modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,	
+        				new BasicAttribute(	writeRequest.getAttribute(), writeRequest.getValue()));
+    		}
+    		
     		
     		//setLdapValue (writeRequest.getAttribute(), writeRequest.getChannel(), writeRequest.getValue(), writeRequest.getTimeStamp());
     		writeVector.remove(tempObject);
+    	}
+    	//
+    	// still something left to do?
+    	//
+    	if (i != 0 ) {
+    		//
+			ldapChannelName = "eren=" + channel;
+			try {
+				ctx.modifyAttributes(ldapChannelName, modItem);
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				//
+				// too bad it did not work
+				doWrite = false;	// wait for next time
+				return;
+			}
     	}
     	
     	doWrite = false;
