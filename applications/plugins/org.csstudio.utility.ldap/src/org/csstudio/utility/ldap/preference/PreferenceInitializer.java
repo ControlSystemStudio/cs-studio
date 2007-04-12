@@ -23,7 +23,8 @@ package org.csstudio.utility.ldap.preference;
 
 import org.csstudio.utility.ldap.Activator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * Class used to initialize default preference values.
@@ -36,13 +37,14 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceConstants.P_STRING_URL,"ldap://krynfs.desy.de:389/o=DESY,c=DE");
-		store.setDefault(PreferenceConstants.P_STRING_USER_DN,"");
-		store.setDefault(PreferenceConstants.P_STRING_USER_PASSWORD,"");
-		store.setDefault(PreferenceConstants.SECURITY_PROTOCOL,"");
-		store.setDefault(PreferenceConstants.SECURITY_AUTHENTICATION,"");
-		store.setDefault(PreferenceConstants.ENGINE_TIMER,"100");
+		IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+		System.out.println("Path init"+prefs.absolutePath());
+		prefs.put(PreferenceConstants.P_STRING_URL,"ldap://krynfs.desy.de:389/o=DESY,c=DE"); //$NON-NLS-1$
+		prefs.put(PreferenceConstants.P_STRING_USER_DN,""); //$NON-NLS-1$
+		prefs.put(PreferenceConstants.P_STRING_USER_PASSWORD,""); //$NON-NLS-1$
+		prefs.put(PreferenceConstants.SECURITY_PROTOCOL,""); //$NON-NLS-1$
+		prefs.put(PreferenceConstants.SECURITY_AUTHENTICATION,""); //$NON-NLS-1$
+		prefs.put(PreferenceConstants.ENGINE_TIMER,"100");//$NON-NLS-1$
 	}
 
 }

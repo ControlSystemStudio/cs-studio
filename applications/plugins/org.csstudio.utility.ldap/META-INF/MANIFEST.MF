@@ -5,9 +5,10 @@ Bundle-SymbolicName: org.csstudio.utility.ldap;singleton:=true
 Bundle-Version: 1.0.1
 Bundle-Activator: org.csstudio.utility.ldap.Activator
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.csstudio.platform.ui,
- org.eclipse.help
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.help,
+ org.csstudio.platform
 Eclipse-LazyStart: true
-Export-Package: org.csstudio.utility.ldap.reader
+Export-Package: org.csstudio.utility.ldap,
+ org.csstudio.utility.ldap.preference,
+ org.csstudio.utility.ldap.reader
