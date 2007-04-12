@@ -9,6 +9,9 @@
       <widgetModelInitializer
             class="org.csstudio.sds.components.epics.EpicsRectangleInitializer"
             typeId="schema.epics:element.rectangle"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.EpicsBargraphInitializer"
+            typeId="schema.epics:element.bargraph"/>
    </extension>
    <extension
          point="org.csstudio.sds.controlSystemSchema">
