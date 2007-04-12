@@ -31,7 +31,9 @@ import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.RectangleFigure;
@@ -106,7 +108,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	/**
 	 * The count of sections in the scale.
 	 */
-	private int _scaleSectionCount;
+	private int _scaleSectionCount = 1;
 	
 	/**
 	 * The default height of this figure.
@@ -180,6 +182,14 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		this.add(_fillRectangleFigure);
 		this.add(_markerPanel);
 		this.add(_scale);
+		this.refreshConstraints();
+		
+//		 listen to figure movement events
+		addFigureListener(new FigureListener() {
+			public void figureMoved(final IFigure source) {
+				refreshConstraints();
+			}
+		});
 	}
 	
 	/**
@@ -208,10 +218,9 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 * {@inheritDoc}
 	 */
 	public synchronized void paintFigure(final Graphics graphics) {
-		_barRectangle = this.getBarRectangle();
 		graphics.setBackgroundColor(this.getBackgroundColor());
 		graphics.fillRectangle(this.getBounds());
-		this.refreshConstraints();
+		//this.refreshConstraints();
 		graphics.setBackgroundColor(this.getBackgroundColor());
 		graphics.setForegroundColor(this.getBorderColor());
 	}
@@ -220,6 +229,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 * Refreshes the Constraints.
 	 */
 	private void refreshConstraints() {
+		_barRectangle = this.getBarRectangle();
 		this.setConstraint(_fillRectangleFigure, _barRectangle);
 		this.setConstraint(_markerPanel, this.getMarkerPanelConstraint(this.getBounds()));
 		this.setConstraint(_scale, this.getScaleConstraint(this.getBounds()));
@@ -455,6 +465,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		_orientationHorizontal = horizontal;
 		_scale.setHorizontalOrientation(_orientationHorizontal);
 		_markerPanel.setHorizontalOrientation(horizontal);
+		this.refreshConstraints();
 	}
 
 	/**
@@ -564,6 +575,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 */
 	public void setMinimum(final double min) {
 		_minimum = min;
+		this.refreshConstraints();
 	}
 	
 	/**
@@ -582,6 +594,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 */
 	public void setLoloLevel(final double loloLevel) {
 		_levelMap.put(LABELS[0], loloLevel);
+		this.refreshConstraints();
 	}
 	
 	/**
@@ -600,6 +613,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 */
 	public void setLoLevel(final double loLevel) {
 		_levelMap.put(LABELS[1], loLevel);
+		this.refreshConstraints();
 	}
 	
 	/**
@@ -618,6 +632,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 */
 	public void setMLevel(final double mLevel) {
 		_levelMap.put(LABELS[2], mLevel);
+		this.refreshConstraints();
 	}
 	
 	/**
@@ -636,6 +651,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 */
 	public void setHiLevel(final double hiLevel) {
 		_levelMap.put(LABELS[3], hiLevel);
+		this.refreshConstraints();
 	}
 	
 	/**
@@ -654,6 +670,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 */
 	public void setHihiLevel(final double hihiLevel) {
 		_levelMap.put(LABELS[4], hihiLevel);
+		this.refreshConstraints();
 	}
 	
 	/**
@@ -672,6 +689,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 */
 	public void setMaximum(final double max) {
 		_maximum = max;
+		this.refreshConstraints();
 	}
 	
 	/**
@@ -709,6 +727,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	public void setShowMarks(final int showMarks) {
 		_showMarks = showMarks;
 		_markerPanel.setTopLeftAlignment(showMarks==TOP_LEFT);
+		this.refreshConstraints();
 	}
 	
 	/**
@@ -727,6 +746,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 */
 	public void setShowScale(final int showScale) {
 		_showScale = showScale;
+		this.refreshConstraints();
 	}
 	
 	/**
@@ -746,6 +766,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	public void setScaleSectionCount(final int scaleSectionCount) {
 		_scaleSectionCount = scaleSectionCount;
 		_scale.setSectionCount(scaleSectionCount);
+		this.refreshConstraints();
 	}
 	
 	/**

@@ -163,7 +163,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	/**
 	 * The default value of the lolo color property. 
 	 */
-	private static final RGB DEFAULT_M_COLOR = new RGB(0,255,255);
+	private static final RGB DEFAULT_M_COLOR = new RGB(0,255,0);
 	
 	/**
 	 * The default value of the lolo color property. 
