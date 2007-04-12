@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ldap UI Plug-in
+Bundle-SymbolicName: org.csstudio.utility.ui.ldap;singleton:=true
+Bundle-Version: 1.0.1
+Bundle-Activator: org.csstudio.utility.ldap.ui.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.help,
+ org.csstudio.platform.ui,
+ org.csstudio.utility.ldap
+Eclipse-LazyStart: true
