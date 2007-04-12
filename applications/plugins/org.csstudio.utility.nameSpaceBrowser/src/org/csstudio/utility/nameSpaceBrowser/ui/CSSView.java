@@ -33,7 +33,7 @@ import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.nameSpaceBrowser.Activator;
 import org.csstudio.utility.nameSpaceBrowser.Messages;
-import org.csstudio.utility.ldap.reader.ErgebnisListe;
+import org.csstudio.utility.ldap.reader.*;//reader.ErgebnisListe;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
@@ -93,6 +93,9 @@ import org.eclipse.ui.PlatformUI;
 
 public class CSSView extends Composite implements Observer{
 
+	private static final int JAVA_REG_EXP = 1;
+	private static final int JAVA_REG_EXP_NO_CASE = 2;
+	private static final int SIMPLE_WIN = 3;
 	private Display disp;
 	private Composite parent;
 	private Group group;
@@ -203,7 +206,7 @@ public class CSSView extends Composite implements Observer{
 
 	/**
 	 * @param selection
-	 * @return
+	 * @return CSSViewParameter
 	 */
 	private CSSViewParameter getParameter(String selection) {
  		try{
@@ -354,7 +357,7 @@ public class CSSView extends Composite implements Observer{
 					String name=""; //$NON-NLS-1$
 					if (element instanceof IControlSystemItem)
 						name= ((IControlSystemItem) element).getName();
-					if(search.length()==0||name.toLowerCase().matches(search.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace("?", ".?").toLowerCase()+".*")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
+					if(search.length()==0||searchString(name, search)){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
 						al.add(element);
 					}
 				}
@@ -383,10 +386,44 @@ public class CSSView extends Composite implements Observer{
 
 
 	}
+	/**
+	 * @param serach1 this String a not modified (by no Casesensitivity toLowerCase)
+	 * @param regExp this String a modified
+	 * @return true match search and regExp
+	 * 	and false don´t match
+	 */
+	protected boolean searchString(String search1, String regExp) {
+		return searchString(search1, regExp, SIMPLE_WIN);
+	}
+	/**
+	 * @param serach1 this String a not modified (by no Casesensitivity toLowerCase)
+	 * @param regExp this String a modified by searchType
+	 * @param searchTyp: <pre> SIMPLE_WIN: Search used only * and ? as Wildcard
+	 * JAVA_REG_EXP: used String match
+	 * JAVA_REG_EXP_NO_CASE: used String match after toLowerCase</pre>
+	 * @return true match search and regExp
+	 * 	and false don´t match
+	 */
+
+	protected boolean searchString(String search1, String regExp,int searchTyp) {
+		switch(searchTyp){
+			case JAVA_REG_EXP:
+				return search1.matches(regExp);
+			case JAVA_REG_EXP_NO_CASE:
+				return search1.toLowerCase().matches(regExp.toLowerCase());
+			case SIMPLE_WIN:
+			default :
+				return search1.toLowerCase().matches(regExp.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace("?", ".?").toLowerCase()+".*");
+		}
+
+	}
+
 	// make a new CSSView Children
+	/**
+	 * @param parameter
+	 */
 	protected void makeChildren(CSSViewParameter parameter) {
 		parent.setRedraw(false);
-
 //		Have a Children, destroy it.
 		if(haveChildern){
 			children.dispose();
@@ -425,7 +462,9 @@ public class CSSView extends Composite implements Observer{
 	}
 
 	@Override
-	// dispose self and Children
+	/**
+	 *  dispose self and Children
+	 */
 	public void dispose() {
 		if(haveChildern){
 			haveChildern =false;

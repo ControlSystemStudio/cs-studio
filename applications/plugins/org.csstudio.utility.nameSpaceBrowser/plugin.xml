@@ -13,7 +13,7 @@
             id="org.csstudio"
             name="CSS"/>
    </extension>
- 
+
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -61,6 +61,6 @@
    </extension>
    <extension
          point="org.eclipse.help.contexts">
-      <contexts file="org.csstudio.utility.nameSpaceBrowser.contexts"/>
+      <contexts file="contexts.xml"/>
    </extension>
 </plugin>

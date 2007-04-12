@@ -2,5 +2,12 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#utility" label="">
-	<topic label="Namespace Browser"  href="html/maintopic.html"/>
+	<topic label="Namespace Brower">
+		<topic label="English">
+			<topic label="Namespace Browser"  href="html/maintopic.html"/>
+		</topic>
+		<topic label="German">
+			<topic label="Namespace Browser"  href="html/NamespaceBrowser_de.html"/>
+		</topic>
+	</topic>
 </toc>
