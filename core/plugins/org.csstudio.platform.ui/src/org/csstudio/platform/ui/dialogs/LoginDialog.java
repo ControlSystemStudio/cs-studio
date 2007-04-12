@@ -123,6 +123,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	 * for credentials which it returns.
 	 */
 	public Credentials getCredentials() {
+		_credentials = null;
 		this.setBlockOnOpen(true);
 		this.open();
 		return _credentials;
