@@ -80,6 +80,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 			}
 		});
 
+		slider.setPopulateEvents(false);
 		slider.setMax(model.getMax());
 		slider.setMin(model.getMin());
 		slider.setIncrement(model.getIncrement());
@@ -88,7 +89,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		slider.setOrientation(model.isHorizontal());
 		slider.setDecimalPlaces(model.getPrecision());
 		slider.setSliderWide(model.getSliderWide());
-
+		slider.setPopulateEvents(true);
 		return slider;
 	}
 
@@ -103,9 +104,11 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+				slider.setPopulateEvents(false);
 				//slider.setValue((Integer) newValue);
 				slider.setValue((Double) newValue);
 				slider.setManualValue((Double) newValue);
+				slider.setPopulateEvents(true);
 				return true;
 			}
 		};
@@ -117,8 +120,10 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+				slider.setPopulateEvents(false);
 				//slider.setMin((Integer) newValue);
 				slider.setMin((Double) newValue);
+				slider.setPopulateEvents(true);
 				return true;
 			}
 		};
@@ -130,8 +135,10 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+				slider.setPopulateEvents(false);
 				//slider.setMax((Integer) newValue);
 				slider.setMax((Double) newValue);
+				slider.setPopulateEvents(true);
 				return true;
 			}
 		};
@@ -143,8 +150,10 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+				slider.setPopulateEvents(false);
 				//slider.setIncrement((Integer) newValue);
 				slider.setIncrement((Double) newValue);
+				slider.setPopulateEvents(true);
 				return true;
 			}
 		};
@@ -156,7 +165,9 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+				slider.setPopulateEvents(false);
 				slider.setDecimalPlaces((Integer) newValue);
+				slider.setPopulateEvents(true);
 				return true;
 			}
 		};
@@ -168,7 +179,9 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+				slider.setPopulateEvents(false);
 				slider.setSliderWide((Integer) newValue);
+				slider.setPopulateEvents(true);
 				return true;
 			}
 		};
@@ -180,13 +193,15 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+				slider.setPopulateEvents(false);
+				
 				slider.setOrientation((Boolean) newValue);
 
 				SimpleSliderModel model = (SimpleSliderModel) getModel();
 
 				// invert the size of the element
 				model.setSize(model.getHeight(), model.getWidth());
-
+				slider.setPopulateEvents(true);
 				return true;
 			}
 		};
