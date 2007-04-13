@@ -12,35 +12,60 @@ import javax.naming.directory.ModificationItem;
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.Job;
 
-public class Engine extends Thread {
+public class Engine extends Job {
 
+	public Engine(String name) {
+		super(name);
+		// TODO Auto-generated constructor stub
+	}
 	private static 		Engine thisEngine = null;
 	private boolean 	doWrite = false;
 	private DirContext 	ctx;
-	private Vector<WriteRequest>	writeVector;
+	private Vector<WriteRequest>	writeVector = new Vector<WriteRequest>();
 	/**
 	 * @param args
 	 */
-	public void run () {
+
+	protected IStatus run(IProgressMonitor monitor) {
 		Integer intSleepTimer = null;
 
 		//
 		// initialize LDAP connection (dir context
 		//
 //		ctx = LDAPReader.initial();
+		// TODO: 
+		/*
+		 *  create message ONCE
+		 *  retry forever if ctx == null
+		 *  BUT do NOT block caller (calling sigleton)
+		 *  submit ctx = new LDAPConnector().getDirContext(); to 'background process'
+		 *  
+		 */
+		System.out.println("$$$$$$$$$$$$$$$$$$$$$ Engine.run - start");
 		ctx = new LDAPConnector().getDirContext();
+		System.out.println("##################### Engine.run - ctx: " + ctx.toString());
+		if ( ctx  != null) {
+			System.out.println("Engine.run - successfully connected to LDAP server");
+		} else {
+			System.out.println("Engine.run - connection to LDAP server failed");
+		}
 
 		while (true) {
 			//
 			// do the work actually prepared
 			//
 			if (doWrite) {
+				System.out.println("Engine.run - performLdapWrite");
 				performLdapWrite();
 			}
 			/*
         	 * sleep before we check for work again
         	 */
+			System.out.println("Engine.run - waiting...");
         	try {
         		if(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.SECURITY_PROTOCOL).trim().length()>0) {
         			intSleepTimer = new Integer(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.SECURITY_PROTOCOL));
@@ -50,14 +75,11 @@ public class Engine extends Thread {
         		Thread.sleep( (long)intSleepTimer );
         	}
         	catch (InterruptedException  e) {
-
+        		return null;
         	}
 		}
 	}
 
-	private Engine() {
-    	// absicherung
-    }
 
     public static Engine getInstance() {
 		//
@@ -66,7 +88,9 @@ public class Engine extends Thread {
 		if ( thisEngine == null) {
 			synchronized (Engine.class) {
 				if (thisEngine == null) {
-					thisEngine = new Engine();
+					thisEngine = new Engine("LdapEngine");
+					thisEngine.schedule();
+					System.out.println("Engine.getInstance - exit");
 				}
 			}
 		}
@@ -217,7 +241,7 @@ public class Engine extends Thread {
     	private String 	channel	= null;
     	private String	value = null;
     	
-    	private WriteRequest ( String attribute, String channel, String value) {
+    	public WriteRequest ( String attribute, String channel, String value) {
     		
     		this.attribute = attribute;
     		this.channel = channel;
@@ -237,5 +261,6 @@ public class Engine extends Thread {
     	}
 
     }
+	
 
 }
