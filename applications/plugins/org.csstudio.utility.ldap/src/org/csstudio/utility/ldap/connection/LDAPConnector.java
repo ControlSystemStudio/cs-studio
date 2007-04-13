@@ -44,30 +44,40 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  */
 public class LDAPConnector {
 	private boolean debug = false;
-	private static Hashtable<Object,String> env = new Hashtable<Object,String>(11);
 	InitialDirContext ctx = null;
 
-	public LDAPConnector (){
-		env = getUIenv();
-	}
-	public LDAPConnector (Hashtable<Object,String> env){
-		this.env = env;
-	}
-
-
-	public DirContext getDirContext() {
-		// Create initial context
+	/**
+	 * The connection settings come from
+	 * {@link org.csstudio.utility.ldap.ui.preference}
+	 * @throws NamingException
+	 *
+	 */
+	public LDAPConnector (){// throws NamingException{
 		try {
-			if(ctx==null){
-				ctx = new InitialDirContext(env);
-			}
-			return ctx;
-		}catch (NamingException e) {
-//			Activator.logException("Ungültiger LDAP Pfad", e);
-			System.out.println("Ungültiger LDAP Pfad\r\n"+env);
-			e.printStackTrace();
+			setEnv(getUIenv());
+		} catch (NamingException e) {
+			System.out.println("The follow setting(s) a invalid: \r\n"+e.getRemainingName());
+//			throw e;
 		}
-		return null;
+	}
+
+	/**
+	 *
+	 * @param env connection settings.
+	 * @throws NamingException
+	 * 	@see javax.naming.directory.DirContext;
+	 * 	@see	javax.naming.Context;
+	 */
+	public LDAPConnector (Hashtable<Object,String> env) throws NamingException{
+		setEnv(env);
+	}
+
+	/**
+	 *
+	 * @return the LDAP Connection
+	 */
+	public DirContext getDirContext() {
+		return ctx;
 	}
 
 	/**
@@ -147,8 +157,8 @@ public class LDAPConnector {
 	}
 
 
-	public void setEnv(Hashtable<Object, String> env) {
-		LDAPConnector.env = env;
+	private void setEnv(Hashtable<Object, String> env) throws NamingException {
+		ctx = new InitialDirContext(env);
 	}
 
 
