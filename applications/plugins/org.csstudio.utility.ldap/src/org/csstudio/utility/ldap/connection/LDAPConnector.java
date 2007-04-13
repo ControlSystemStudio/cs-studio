@@ -56,7 +56,12 @@ public class LDAPConnector {
 		try {
 			setEnv(getUIenv());
 		} catch (NamingException e) {
-			System.out.println("The follow setting(s) a invalid: \r\n"+e.getRemainingName());
+			System.out.println("The follow setting(s) a invalid: \r\n"
+					+e.getRemainingName()+"\r\n"
+					+e.getResolvedObj()+"\r\n"
+					+e.getExplanation()
+					);
+			e.printStackTrace();
 //			throw e;
 		}
 	}
@@ -88,18 +93,34 @@ public class LDAPConnector {
 		// Set up the environment for creating the initial context
 		Hashtable<Object, String> tmpENV = new Hashtable<Object, String>(11);
 		tmpENV.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
+		int i=0;
 		switch(env.length){
 			default:
 			case 5:
-				tmpENV.put(Context.SECURITY_CREDENTIALS, env[4]);
+				i=4;
+				if(env[i]!=null){
+					tmpENV.put(Context.SECURITY_CREDENTIALS, env[i]);
+				}
 			case 4:
-				tmpENV.put(Context.SECURITY_PRINCIPAL, env[3]);
+				i=3;
+				if(env[i]!=null){
+					tmpENV.put(Context.SECURITY_PRINCIPAL, env[i]);
+				}
 			case 3:
-				tmpENV.put(Context.SECURITY_AUTHENTICATION, env[2]);
+				i=2;
+				if(env[i]!=null){
+					tmpENV.put(Context.SECURITY_AUTHENTICATION, env[i]);
+				}
 			case 2:
-				tmpENV.put(Context.SECURITY_PROTOCOL, env[1]);
+				i=1;
+				if(env[i]!=null){
+					tmpENV.put(Context.SECURITY_PROTOCOL, env[i]);
+				}
 			case 1:
-				tmpENV.put(Context.PROVIDER_URL, env[0]);
+				i=0;
+				if(env[i]!=null){
+					tmpENV.put(Context.PROVIDER_URL, env[i]);
+				}
 			case 0:
 				break;
 		}
@@ -158,7 +179,18 @@ public class LDAPConnector {
 
 
 	private void setEnv(Hashtable<Object, String> env) throws NamingException {
-		ctx = new InitialDirContext(env);
+		try{
+			ctx = new InitialDirContext(env);
+		} catch (NamingException e) {
+			System.out.println("The follow setting(s) a invalid: \r\n"
+					+e.getRemainingName()+"\r\n"
+					+e.getResolvedObj()+"\r\n"
+					+e.getExplanation()
+					);
+			System.out.println("env: "+env.toString());
+			e.printStackTrace();
+	//		throw e;
+		}
 	}
 
 

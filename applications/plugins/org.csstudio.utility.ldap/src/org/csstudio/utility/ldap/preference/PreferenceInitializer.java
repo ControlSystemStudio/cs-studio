@@ -40,7 +40,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
 		System.out.println("Path init"+prefs.absolutePath());
 		prefs.put(PreferenceConstants.P_STRING_URL,"ldap://krynfs.desy.de:389/o=DESY,c=DE"); //$NON-NLS-1$
-		prefs.put(PreferenceConstants.P_STRING_USER_DN,"css_user"); //$NON-NLS-1$
+		prefs.put(PreferenceConstants.P_STRING_USER_DN,"uid=css_user,ou=people,o=DESY,c=DE"); //$NON-NLS-1$
 		prefs.put(PreferenceConstants.P_STRING_USER_PASSWORD,"cssPass"); //$NON-NLS-1$
 		prefs.put(PreferenceConstants.SECURITY_PROTOCOL,""); //$NON-NLS-1$
 		prefs.put(PreferenceConstants.SECURITY_AUTHENTICATION,""); //$NON-NLS-1$
