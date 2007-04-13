@@ -16,8 +16,8 @@ import org.exolab.jms.message.MapMessageImpl;
 
 public class JMSMessageList {
 
-	private Vector<JMSMessage> JMSMessages = new Vector<JMSMessage>();
-	private Set<IJMSMessageViewer> changeListeners = new HashSet<IJMSMessageViewer>();
+	protected Vector<JMSMessage> JMSMessages = new Vector<JMSMessage>();
+	protected Set<IJMSMessageViewer> changeListeners = new HashSet<IJMSMessageViewer>();
 	private String[] propertyNames;
 	
 	public JMSMessageList(String[] propNames) {
@@ -34,8 +34,7 @@ public class JMSMessageList {
 	/**
 	 * Add a new JMSMessage to the collection of JMSMessages 
 	 */
-	public void addJMSMessage() {
-		JMSMessage jmsm = new JMSMessage(propertyNames);
+	public void addJMSMessage(JMSMessage jmsm) {
 		JMSMessages.add(JMSMessages.size(), jmsm);
 		Iterator iterator = changeListeners.iterator();
 		while (iterator.hasNext())
@@ -110,7 +109,7 @@ public class JMSMessageList {
 		return mm;
 	}
 
-	private JMSMessage addMessageProperties(MapMessage mm) {
+	protected JMSMessage addMessageProperties(MapMessage mm) {
 		JMSMessage jmsm = new JMSMessage(propertyNames);
 		try {
 			Enumeration lst = mm.getMapNames();
@@ -133,7 +132,13 @@ public class JMSMessageList {
 		while (iterator.hasNext())
 			((IJMSMessageViewer) iterator.next()).removeJMSMessage(jmsm);
 	}
-
+	
+//	public void modelChanged() {
+//		Iterator iterator = changeListeners.iterator();
+//		while (iterator.hasNext())
+//			((IJMSMessageViewer) iterator.next()).removeJMSMessage(jmsm);
+//	}
+		
 	/**
 	 * @param viewer
 	 */

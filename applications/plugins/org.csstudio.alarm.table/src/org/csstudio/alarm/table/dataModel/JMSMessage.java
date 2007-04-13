@@ -16,10 +16,13 @@ import org.eclipse.core.runtime.IAdaptable;
 public class JMSMessage implements IProcessVariable {//,
 //		org.csstudio.data.exchange.IFrontEndControllerName{
 
-	
 	private HashMap<String, String> messageProperties = new HashMap<String, String>();
 	private String[] propertyNames;
-//	private IProcessVariableName ipvn;
+	
+	//for alarm table: false->no other message with the same pv name and an other
+	//severity is in the table. true->another OLDER message with same pv an other
+	// severity is in the table and the label provider change the color to gray.
+	private boolean backgroundColorGray = false;
 	
 	/**
 	 * Initialisation of HashMap with actual message properties.
@@ -157,12 +160,20 @@ public class JMSMessage implements IProcessVariable {//,
 
 	public String getUrl() {
 		// TODO Auto-generated method stub
-		return "url jan";
+		return "url";
 	}
 
 	public String getTypeId() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public boolean isBackgroundColorGray() {
+		return backgroundColorGray;
+	}
+
+	public void setBackgroundColorGray(boolean backgroundColorGray) {
+		this.backgroundColorGray = backgroundColorGray;
 	}
 
 	

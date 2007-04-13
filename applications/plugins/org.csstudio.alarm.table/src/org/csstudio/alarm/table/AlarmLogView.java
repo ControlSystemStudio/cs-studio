@@ -22,11 +22,14 @@
 
 package org.csstudio.alarm.table;
 
+import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.csstudio.alarm.table.dataModel.JMSAlarmMessageList;
+import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
@@ -45,6 +48,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.csstudio.platform.libs.jms.*;
 
 import org.eclipse.ui.part.ViewPart;
+import org.exolab.jms.message.MapMessageImpl;
 
 
 /**
@@ -73,7 +77,7 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(
 						";"); //$NON-NLS-1$
-		jmsml = new JMSMessageList(columnNames);
+		jmsml = new JMSAlarmMessageList(columnNames);
 
 		parentShell = parent.getShell();
 
@@ -95,6 +99,26 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 		parent.pack();
 		JmsLogsPlugin.getDefault().getPluginPreferences()
 		.addPropertyChangeListener(propertyChangeListener);
+
+		//TEstData
+//		for (int i = 0; i < 10; i++) {
+//			try {
+//				MapMessage mm = new MapMessageImpl();
+//				mm.setString("NAME", "pv name");
+//				mm.setString("SEVERITY", "MINOR");
+//				jmsml.addJMSMessage(mm);
+//				mm.setString("NAME", "pv name X" + i);
+//				mm.setString("SEVERITY", "NO_ALARM");
+//				jmsml.addJMSMessage(mm);
+//				mm.setString("NAME", "pv name X" + i);
+//				mm.setString("SEVERITY", "MAJOR");
+//				jmsml.addJMSMessage(mm);
+//			} catch (JMSException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//				System.out.println(e.getMessage());
+//			}
+//		}
 	}
 
 	/**
