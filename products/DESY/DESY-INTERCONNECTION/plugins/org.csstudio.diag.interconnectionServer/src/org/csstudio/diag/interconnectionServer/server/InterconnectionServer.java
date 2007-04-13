@@ -24,6 +24,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -211,6 +212,12 @@ public class InterconnectionServer
         boolean         quit        = false;
         byte 			buffer[]	=  new byte[ PreferenceProperties.BUFFER_ZIZE];
 
+        
+        //
+        // start LdapEngine
+        //
+        //Engine.getInstance();
+        
         // Ausgabe in eine Datei umlenken
         /*
         try

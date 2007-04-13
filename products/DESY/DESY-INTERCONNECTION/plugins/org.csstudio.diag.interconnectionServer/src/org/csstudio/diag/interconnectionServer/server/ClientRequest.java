@@ -98,7 +98,7 @@ public class ClientRequest extends Thread
         statisticContent.setLastMessageSize( length); 
         
         Vector<TagValuePairs> tagValuePairs	= new Vector<TagValuePairs>();
-        Hashtable tagValue = new Hashtable();	// could replace the Vector above
+        Hashtable<String,String> tagValue = new Hashtable<String,String>();	// could replace the Vector above
         TagValuePairs	id		= InterconnectionServer.getInstance().new TagValuePairs();
         TagValuePairs	type	= InterconnectionServer.getInstance().new TagValuePairs();
         
@@ -378,15 +378,21 @@ public class ClientRequest extends Thread
 		// find necessary entries and activate ldapUpdateMethod
 		//
 		String channel,status,severity,timeStamp = null;
-		if ( tagValue.containsKey("NAME") && tagValue.containsKey("STATUS") && tagValue.containsKey("SEVERITY") && tagValue.containsKey("TIME")) {
+		System.out.println("tagValue : " + tagValue.toString());		
+		
+		if ( tagValue.containsKey("NAME") && tagValue.containsKey("STATUS") && tagValue.containsKey("SEVERITY") && tagValue.containsKey("EVENTTIME")) {
 			channel = tagValue.get("NAME");
 			status = tagValue.get("STATUS");
 			severity = tagValue.get("SEVERITY");
-			timeStamp = tagValue.get("TIME");
+			timeStamp = tagValue.get("EVENTTIME");
 			//
 			// send values to LDAP engine
 			//
-			Engine.getInstance().setSeverityStatusTimeStamp ( channel, status, severity, timeStamp);
+			
+			Engine.getInstance().addLdapWriteRequest( "epicsAlarmSeverity", channel, severity);
+			Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channel, status);
+			Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channel, timeStamp);		
+				
 		}
 		
 	}
