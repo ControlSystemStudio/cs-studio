@@ -31,7 +31,10 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 
 	private static final int TYPE_ID = registerType(TYPE_NAME);
 
-	private static ProcessVariableWithSampleTransfer singleton_instance = new ProcessVariableWithSampleTransfer();
+	private static final boolean debug = false;
+
+	private static ProcessVariableWithSampleTransfer singleton_instance =
+		new ProcessVariableWithSampleTransfer();
 
 	/**
 	 * Hidden contructor.
@@ -58,6 +61,9 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 
 	@Override
 	public void javaToNative(Object object, TransferData transferData) {
+		if(debug){
+			System.out.println("ProcessVariableWithSampleTransfer javaToNative used");
+		}
 		if (!isSupportedType(transferData))
 			return;
 
@@ -135,6 +141,10 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 
 	@Override
 	public Object nativeToJava(TransferData transferData) {
+		if(debug){
+			System.out.println("ProcessVariableWithSampleTransfer nativeToJava used");
+		}
+
 		if (!isSupportedType(transferData))
 			return null;
 
@@ -217,7 +227,7 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 			System.out.println(ex);;
 		}
 
-		IProcessVariableWithArchive array[] = new IProcessVariableWithArchive[received
+		IProcessVariableWithSample array[] = new IProcessVariableWithSample[received
 				.size()];
 		return received.toArray(array);
 	}
