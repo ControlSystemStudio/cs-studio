@@ -23,16 +23,18 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.RGB;
 
 /**
  * A simple waveform figure.
  * 
- * @author Sven Wende
+ * @author Sven Wende, Kai Meyer
  * @version $Revision$
  * 
  */
@@ -53,7 +55,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	/**
 	 * A boolean, which indicates, if the lines from point to point should be drawn.
 	 */
-	private boolean _showPointLines = false;
+	private boolean _showConnectionLines = false;
 
 	/**
 	 * Standard constructor.
@@ -83,7 +85,17 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 *            The waveform data that is to be displayed
 	 */
 	public void setData(final double[] data) {
-		_data = data;
+		//_data = data;
+		
+		int count = 2000;
+		int amplitude = 50;
+		int verschiebung = 0;
+		double[] result = new double[count];
+		double value = (Math.PI*2)/count;
+		for (int i=0;i<count;i++) {
+			result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
+		}
+		_data = result;
 		repaint();
 	}
 
@@ -92,22 +104,134 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 */
 	@Override
 	protected void paintFigure(final Graphics graphics) {
+//		super.paintFigure(graphics);
+//		
+//		Rectangle figureBounds = getBounds();
+//
+//		int x = 0;
+//		
+//		for (int i=0;i<_data.length;i+=5) {
+//			x++;
+//			double y =150+  _data[i]*100;
+//			
+//			Point p = new Point(x,y).translate(figureBounds.getTopLeft());
+//			
+//			graphics.drawPoint(p.x, p.y);
+//		}
 		super.paintFigure(graphics);
+		graphics.setForegroundColor(ColorConstants.black);
 		
-		Rectangle figureBounds = getBounds();
-
-		int x = 0;
+		Rectangle figureBounds = this.getBounds();
 		
-		for (int i=0;i<_data.length;i+=5) {
-			x++;
-			double y =150+  _data[i]*100;
-			
-			Point p = new Point(x,y).translate(figureBounds.getTopLeft());
-			
-			graphics.drawPoint(p.x, p.y);
+		PointList pointList = this.calculatePoints(figureBounds);
+		
+		Point p = this.getMinMaxY(pointList);
+		int min = p.y;
+		int max = p.x;		
+		System.out.println(max+"/"+min);
+		
+		int x = figureBounds.x;
+		int y;
+		if (min<0 && max<0) {
+			y = figureBounds.y;
+			System.out.println("<:"+y);
+		} else if (min>=0 && max >=0) {
+			y = figureBounds.y+figureBounds.height-1;
+			System.out.println(">:"+y);
+		} else {
+			y = figureBounds.y + (int)(((double)figureBounds.height/(max-min))*max);
+			System.out.println("<>:"+y);
 		}
+		graphics.drawLine(x, figureBounds.y, x, figureBounds.y+figureBounds.height);
+		graphics.drawLine(x, y, x+figureBounds.width, y);
+		
+		//pointList.performTranslate(x, y);
+		pointList = this.translatePointList(pointList, x, y);
+		if (_showConnectionLines) {
+			graphics.drawPolyline(pointList);
+		}
+		graphics.setForegroundColor(ColorConstants.red);
+		for (int i=0;i<pointList.size();i++) {
+			p = pointList.getPoint(i);//.translate(figureBounds.getTopLeft());
+			graphics.drawPoint(p.x,p.y);
+		}
+	}
 	
+	/**
+	 * Calculates all Points for the curve and add them into a PointList.
+	 * Caution! These points are zero-related.
+	 * @param bounds
+	 * 			The bounds for the Rectangle of the curve
+	 * @return PoinList
+	 * 			The PointList with all Points
+	 */
+	private PointList calculatePoints(final Rectangle bounds) {
+		PointList pointList = new PointList();
+		
+		int stepSize = Math.max(1, (int)Math.ceil((double)_data.length/bounds.width));
+		int pointCount;
+		if (_data.length>bounds.width) {
+			pointCount = (int) Math.ceil((double)_data.length / stepSize);
+		}  else {
+			pointCount = _data.length;
+		}
+				
+		for (int i=0;i<pointCount;i++) {
+			double yValue = 0; 
+			for (int j=0;j<stepSize;j++) {
+				int index = Math.min(_data.length-1, j+i*stepSize);
+				yValue = yValue + _data[index];
+			}
+			yValue = yValue / stepSize;
+			pointList.addPoint( new Point( ((bounds.width-1)*i)/(pointCount-1), yValue ) );
+		}
+		return pointList;
+	}
 	
+	/**
+	 * Gets the minimal and the maximal value for y of all Points.
+	 * @param pointList
+	 * 				The PointList of the points
+	 * @return Point
+	 * 				The x value is the maximum, the y value is the minimum.  
+	 */
+	private Point getMinMaxY(final PointList pointList) {
+		int min = pointList.getPoint(0).y;
+		int max = pointList.getPoint(0).y;
+		for (int i=1;i<pointList.size();i++) {
+			Point p = pointList.getPoint(i); 
+			if (p.y<min) {
+				min = p.y;
+			}
+			if (p.y>max) {
+				max = p.y;
+			}
+		}
+		return new Point(max, min);
+	}
+	
+	/**
+	 * Translates all Points in PointList. 
+	 * @param pointList 
+	 * 				The PointList
+	 * @param x
+	 * 				The reference x value
+	 * @param y
+	 * 				The reference y value
+	 * @return PointList
+	 * 				The new PointList
+	 */
+	private PointList translatePointList(final PointList pointList, final int x, final int y) {
+		Point start = new Point(x,y);
+		PointList result = new PointList();
+		for (int i=0;i<pointList.size();i++) {
+			start = new Point(x,y);
+			Point p = pointList.getPoint(i);
+			p.y = -p.y;
+			//Point newPoint = start.translate(p);
+			result.addPoint(start.translate(p));
+		}
+		return result;
 	}
 
 	/**
@@ -133,7 +257,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * @param showHelpLines
 	 * 			0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
 	 */
-	public void setShowHelplLines(final int showHelpLines) {
+	public void setShowLedgerlLines(final int showHelpLines) {
 		_showHelpLines = showHelpLines;
 	}
 	
@@ -151,8 +275,8 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * @param showPointLines
 	 * 			true, the point lines should be drawn, false otherwise
 	 */
-	public void setShowPointLines(final boolean showPointLines) {
-		_showPointLines = showPointLines;
+	public void setShowConnectionLines(final boolean showPointLines) {
+		_showConnectionLines = showPointLines;
 	}
 	
 	/**
@@ -161,7 +285,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * 			true, the point lines should be drawn, false otherwise
 	 */
 	public boolean getShowPointLines() {
-		return _showPointLines;
+		return _showConnectionLines;
 	}
 
 	/**

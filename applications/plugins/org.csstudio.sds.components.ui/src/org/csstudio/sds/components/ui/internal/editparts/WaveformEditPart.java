@@ -31,10 +31,11 @@ import org.csstudio.sds.ui.figures.IRefreshableFigure;
  * EditPart controller for the Waveform widget. The controller mediates between
  * {@link WaveformModel} and {@link WaveformFigure}.
  * 
- * @author Sven Wende
+ * @author Sven Wende, Kai Meyer
  * 
  */
 public final class WaveformEditPart extends AbstractWidgetEditPart {
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -44,8 +45,8 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		WaveformFigure waveform = new WaveformFigure();
 		waveform.setData(model.getData());
 		waveform.setShowScale(model.getShowScale());
-		waveform.setShowHelplLines(model.getShowHelpLines());
-		waveform.setShowPointLines(model.getShowPointLines());
+		waveform.setShowLedgerlLines(model.getShowLedgerLines());
+		waveform.setShowConnectionLines(model.getShowConnectionLines());
 		waveform.setBackgroundColor(model.getBackgroundColor());
 		waveform.setForegroundColor(model.getForegroundColor());
 		return waveform;
@@ -67,5 +68,38 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_WAVE_FORM, handler);
+		// show help lines
+		IWidgetPropertyChangeHandler ledgerLinesHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setShowLedgerlLines((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_SHOW_LEDGER_LINES, ledgerLinesHandler);
+		// show scale
+		IWidgetPropertyChangeHandler scaleHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setShowScale((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_SHOW_SCALE, scaleHandler);
+		// shoe connection lines
+		IWidgetPropertyChangeHandler connectionLinesHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setShowConnectionLines((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_SHOW_CONNECTION_LINES, connectionLinesHandler);
 	}
 }

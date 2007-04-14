@@ -30,7 +30,7 @@ import org.csstudio.sds.model.properties.OptionProperty;
 /**
  * This class defines a simple waverform widget model.
  * 
- * @author Sven Wende
+ * @author Sven Wende, Kai Meyer
  * @version $Revision$
  * 
  */
@@ -48,12 +48,12 @@ public final class WaveformModel extends AbstractWidgetModel {
 	/**
 	 * Property ID for the help lines.
 	 */
-	public static final String PROP_SHOW_HELP_LINES = "show_help_lines"; //$NON-NLS-1$
+	public static final String PROP_SHOW_LEDGER_LINES = "show_help_lines"; //$NON-NLS-1$
 	
 	/**
 	 * Property ID for the point-lines.
 	 */
-	public static final String PROP_SHOW_POINT_LINES = "show_point_lines"; //$NON-NLS-1$
+	public static final String PROP_SHOW_CONNECTION_LINES = "show_point_lines"; //$NON-NLS-1$
 	
 	/**
 	 * The diplay options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
@@ -69,8 +69,8 @@ public final class WaveformModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, new double[] { 20.0, 15.0,
 						33.0, 44.0, 22.0, 3.0, 25.0, 4.0 }));
 		addProperty(PROP_SHOW_SCALE, new OptionProperty("Scale",WidgetPropertyCategory.Display, DISPLAY_OPTIONS,0));
-		addProperty(PROP_SHOW_HELP_LINES, new OptionProperty("Help lines", WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
-		addProperty(PROP_SHOW_POINT_LINES, new BooleanProperty("Show point lines", WidgetPropertyCategory.Display, false));
+		addProperty(PROP_SHOW_LEDGER_LINES, new OptionProperty("Help lines", WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
+		addProperty(PROP_SHOW_CONNECTION_LINES, new BooleanProperty("Show connection lines", WidgetPropertyCategory.Display, false));
 	}
 
 	/**
@@ -104,8 +104,8 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * @return int
 	 * 				0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
 	 */
-	public int getShowHelpLines() {
-		return (Integer) getProperty(PROP_SHOW_HELP_LINES).getPropertyValue(); 
+	public int getShowLedgerLines() {
+		return (Integer) getProperty(PROP_SHOW_LEDGER_LINES).getPropertyValue(); 
 	}
 	
 	/**
@@ -113,7 +113,8 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * @return boolean
 	 * 				true, if they should be shown, false otherwise
 	 */
-	public boolean getShowPointLines() {
-		return (Boolean) getProperty(PROP_SHOW_POINT_LINES).getPropertyValue(); 
+	public boolean getShowConnectionLines() {
+		return (Boolean) getProperty(PROP_SHOW_CONNECTION_LINES).getPropertyValue(); 
 	}
+	
 }
