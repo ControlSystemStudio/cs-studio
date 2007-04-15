@@ -107,11 +107,8 @@ public final class PlugRegistry {
 				p.put(Plugs.PLUGS, sb.toString());
 			}
 
-			if (d.isDefault()) {
-				p.put(Plugs.PLUGS_DEFAULT, d.getPlugId());
-				CentralLogger.getInstance().info(this,
-						"Set " + Plugs.PLUGS_DEFAULT + " to " + d.getPlugId());
-			}
+			// TODO: manage default plug with a preference page
+			// p.put(Plugs.PLUGS_DEFAULT, d.getPlugId());
 
 			p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + d.getPlugId(), d
 					.getPropertyFactoryClass());
@@ -150,14 +147,11 @@ public final class PlugRegistry {
 
 		for (IConfigurationElement element : confElements) {
 			String plugId = element.getAttribute("id"); //$NON-NLS-1$
-			boolean isDefault = Boolean.getBoolean(element
-					.getAttribute("default")); //$NON-NLS-1$
-
 			String propertyFactoryClass = element
 					.getAttribute("propertyFactoryClass"); //$NON-NLS-1$
 
 			if (plugId != null) {
-				descriptors.put(plugId, new PlugDescriptor(plugId, isDefault,
+				descriptors.put(plugId, new PlugDescriptor(plugId,
 						propertyFactoryClass));
 			}
 		}
@@ -179,12 +173,6 @@ public final class PlugRegistry {
 		private String _plugId;
 
 		/**
-		 * A flag that signals if the extension is to be used as the default
-		 * plug.
-		 */
-		private boolean _isDefault;
-
-		/**
 		 * The full qualified name of the property factory class of the plug.
 		 */
 		private String _propertyFactoryClass;
@@ -194,28 +182,14 @@ public final class PlugRegistry {
 		 * 
 		 * @param plugId
 		 *            The ID of the extension.
-		 * @param isDefault
-		 *            A flag that signals if the extension is to be used as the
-		 *            default plug.
 		 * @param propertyFactoryClass
 		 *            The full qualified name of the property factory class of
 		 *            the plug.
 		 */
-		public PlugDescriptor(String plugId, boolean isDefault,
-				String propertyFactoryClass) {
+		public PlugDescriptor(String plugId, String propertyFactoryClass) {
 			super();
 			_plugId = plugId;
-			_isDefault = isDefault;
 			_propertyFactoryClass = propertyFactoryClass;
-		}
-
-		/**
-		 * Return whether the extension should be used as the default plug.
-		 * 
-		 * @return True, if the extension should be used as the default plug.
-		 */
-		public boolean isDefault() {
-			return _isDefault;
 		}
 
 		/**

@@ -4,7 +4,6 @@
    <extension
          point="org.csstudio.platform.libs.dal.plugs">
       <plug
-            default="true"
             id="EPICS"
             name="EPICS plug"
             propertyFactoryClass="org.epics.css.dal.epics.PropertyFactoryImpl"/>

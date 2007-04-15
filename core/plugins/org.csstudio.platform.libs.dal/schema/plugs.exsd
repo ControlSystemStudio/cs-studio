@@ -63,13 +63,6 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="default" type="boolean" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
          <attribute name="propertyFactoryClass" type="string" use="required">
             <annotation>
                <documentation>
