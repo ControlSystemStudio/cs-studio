@@ -171,11 +171,7 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 			return AAPI.SHARP_M;
 		} else if (request_name == "SPLINE") {
 			return AAPI.SPLINE_M;
-		} else if (request_name == "FFT") {
-			return AAPI.FFT_M;
-		} else if (request_name == "TAIL_RAW") {
-			return AAPI.TAIL_RAW_M;
-		}
+		}  
 		return 1;
 	}
 }
