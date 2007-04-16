@@ -205,8 +205,9 @@ public class AAPI {
 	String						host;
 
 	int							port;
-	public boolean debug=false;
-	public boolean debugOut=false;
+	private boolean debug=false;
+	private boolean debugOut=false;
+	private boolean debugUrgent=false;
 	//
 	// Dummy constructor
 	//
@@ -377,7 +378,8 @@ public class AAPI {
 		int cmd = REGEXP_LIST_CMD;
 		int len = regExp.length(); //parameters length in bytes
 		byte[] header, answer;
-		if ((header = createConnectionAndHeader(cmd, len)) == null)
+		if(debugUrgent) System.out.println("getRegExpChannelList.reg=" + regExp);
+		if ((header = createConnectionAndHeader(cmd, len+1)) == null)
 																	return null;
 		if ((answer = sendReceivedPacket(header, buildPacketFromString(regExp,
 																		cmd))) == null)
@@ -394,7 +396,6 @@ public class AAPI {
 		try {
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			DataOutputStream dout = new DataOutputStream(bout);
-			//dout.writeInt(str.length()); // write length of name first
 			char[] strArr = str.toCharArray(); // and name as string second
 			for (int i = 0; i < strArr.length; i++)
 				dout.writeByte(strArr[i]);
