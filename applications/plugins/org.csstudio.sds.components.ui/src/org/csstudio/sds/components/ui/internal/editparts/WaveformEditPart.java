@@ -26,6 +26,7 @@ import org.csstudio.sds.components.ui.internal.figures.WaveformFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * EditPart controller for the Waveform widget. The controller mediates between
@@ -49,6 +50,8 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		waveform.setShowConnectionLines(model.getShowConnectionLines());
 		waveform.setBackgroundColor(model.getBackgroundColor());
 		waveform.setForegroundColor(model.getForegroundColor());
+		waveform.setGraphColor(model.getGraphColor());
+		waveform.setConnectionLineColor(model.getConnectionLineColor());
 		return waveform;
 	}
 
@@ -90,7 +93,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_SHOW_SCALE, scaleHandler);
-		// shoe connection lines
+		// show connection lines
 		IWidgetPropertyChangeHandler connectionLinesHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
@@ -101,5 +104,27 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_SHOW_CONNECTION_LINES, connectionLinesHandler);
+		// graph color
+		IWidgetPropertyChangeHandler graphColorHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setGraphColor((RGB) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_GRAPH_COLOR, graphColorHandler);
+		// connection line color
+		IWidgetPropertyChangeHandler connectionColorHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setConnectionLineColor((RGB) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_CONNECTION_LINE_COLOR, connectionColorHandler);
 	}
 }

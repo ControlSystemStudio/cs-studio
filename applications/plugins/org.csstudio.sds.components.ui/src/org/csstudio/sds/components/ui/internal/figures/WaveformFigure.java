@@ -25,10 +25,16 @@ import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Panel;
+import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -39,29 +45,89 @@ import org.eclipse.swt.graphics.RGB;
  * 
  */
 public final class WaveformFigure extends Panel implements IRefreshableFigure {
+	
+	/**
+	 * Show vertical.
+	 */
+	private static final int SHOW_VERTICAL = 1;  
+	/**
+	 * Show vertical.
+	 */
+	private static final int SHOW_HORIZONTAL = 2;
+	/**
+	 * Show both.
+	 */
+	private static final int SHOW_BOTH = 3;
+	
+	/**
+	 * The Color for the graph.
+	 */
+	private Color _graphColor = ColorConstants.red;
+	
+	/**
+	 * The Color for the connection lines.
+	 */
+	private Color _connectionLineColor = ColorConstants.red;
+	
 	/**
 	 * The displayed waveform data.
 	 */
 	private double[] _data;
+	/**
+	 * An int, representing the maximum value of the data.
+	 */
+	private int _max = 0;
+	/**
+	 * An int, representing the minimum value of the data.
+	 */
+	private int _min = 0;
 	
 	/**
 	 * An int, representing in which way the scale should be drawn.
+	 * 0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
 	 */
 	private int _showScale = 0;
 	/**
-	 * An int, representing in which way the help lines should be drawn.
+	 * The wideness of the Scale.
 	 */
-	private int _showHelpLines = 0;
+	private int _scaleWideness = 10;
+	/**
+	 * An int, representing in which way the ledger lines should be drawn.
+	 */
+	private int _showLedgerLines = 0;
 	/**
 	 * A boolean, which indicates, if the lines from point to point should be drawn.
 	 */
 	private boolean _showConnectionLines = false;
+	
+	/**
+	 * The vertical scale of this waveform.
+	 */
+	private Scale _verticalScale;
+	/**
+	 * The horizontal scale of this waveform.
+	 */
+	private Scale _horizontalScale;
 
 	/**
 	 * Standard constructor.
 	 */
 	public WaveformFigure() {
 		_data = new double[0];
+		this.setLayoutManager(new XYLayout());
+		_verticalScale = new Scale();
+		_verticalScale.setHorizontalOrientation(false);
+		_verticalScale.setLength(20);
+		_verticalScale.setShowNegativeSections(true);
+		_verticalScale.setForegroundColor(this.getForegroundColor());
+		this.add(_verticalScale);
+		_horizontalScale = new Scale();
+		_horizontalScale.setHorizontalOrientation(true);
+		_horizontalScale.setLength(20);
+		_horizontalScale.setShowNegativeSections(false);
+		_horizontalScale.setReferencePositions(0);
+		_horizontalScale.setForegroundColor(this.getForegroundColor());
+		this.add(_horizontalScale);
 	}
 
 	/**
@@ -88,8 +154,8 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		//_data = data;
 		
 		int count = 2000;
-		int amplitude = 50;
-		int verschiebung = 0;
+		int amplitude = 100;
+		int verschiebung = 00;
 		double[] result = new double[count];
 		double value = (Math.PI*2)/count;
 		for (int i=0;i<count;i++) {
@@ -119,42 +185,69 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 //			graphics.drawPoint(p.x, p.y);
 //		}
 		super.paintFigure(graphics);
-		graphics.setForegroundColor(ColorConstants.black);
 		
-		Rectangle figureBounds = this.getBounds();
-		
-		PointList pointList = this.calculatePoints(figureBounds);
-		
-		Point p = this.getMinMaxY(pointList);
-		int min = p.y;
-		int max = p.x;		
-		System.out.println(max+"/"+min);
-		
-		int x = figureBounds.x;
-		int y;
-		if (min<0 && max<0) {
-			y = figureBounds.y;
-			System.out.println("<:"+y);
-		} else if (min>=0 && max >=0) {
-			y = figureBounds.y+figureBounds.height-1;
-			System.out.println(">:"+y);
+		Rectangle figureBounds = this.getBounds();	
+		Rectangle graphBounds;
+		if (_showScale==SHOW_VERTICAL || _showScale==SHOW_BOTH) {
+			graphBounds = new Rectangle(figureBounds.x+_scaleWideness,figureBounds.y,figureBounds.width-_scaleWideness,figureBounds.height);
 		} else {
-			y = figureBounds.y + (int)(((double)figureBounds.height/(max-min))*max);
-			System.out.println("<>:"+y);
+			graphBounds = new Rectangle(figureBounds.x,figureBounds.y,figureBounds.width,figureBounds.height);
 		}
-		graphics.drawLine(x, figureBounds.y, x, figureBounds.y+figureBounds.height);
-		graphics.drawLine(x, y, x+figureBounds.width, y);
 		
-		//pointList.performTranslate(x, y);
-		pointList = this.translatePointList(pointList, x, y);
+		PointList pointList = this.calculatePoints(graphBounds);		
+		this.getMinMaxY(pointList);			
+		int x = graphBounds.x;
+		int y;
+		if (_min<0 && _max<0) {
+			y = graphBounds.y;
+		} else if (_min>=0 && _max >=0) {
+			y = graphBounds.y+graphBounds.height-1;
+		} else {
+			y = graphBounds.y + (int)(((double)graphBounds.height/(_max-_min))*_max);
+		}
+		graphics.setForegroundColor(this.getForegroundColor());
+		graphics.drawLine(x, graphBounds.y, x, graphBounds.y+graphBounds.height);
+		graphics.drawLine(x, y, x+graphBounds.width, y);
+		
+		if (_showScale==SHOW_VERTICAL || _showScale==SHOW_BOTH) {
+			this.setConstraint(_verticalScale, new Rectangle(0,0,_scaleWideness,figureBounds.height));
+			_verticalScale.setReferencePositions(y-figureBounds.y);
+		} else {
+			this.setConstraint(_verticalScale, new Rectangle(0,0,0,0));
+		}
+		if (_showScale==SHOW_HORIZONTAL || _showScale==SHOW_BOTH) {
+			this.setConstraint(_horizontalScale, new Rectangle(graphBounds.x-figureBounds.x,graphBounds.y+graphBounds.height-y-(_scaleWideness/2)+1,graphBounds.width,_scaleWideness));
+		} else {
+			this.setConstraint(_horizontalScale, new Rectangle(0,0,0,0));
+		}
+		
+		pointList = this.translatePointList(pointList, x, y, graphBounds);
 		if (_showConnectionLines) {
+			graphics.setForegroundColor(_connectionLineColor);
 			graphics.drawPolyline(pointList);
 		}
-		graphics.setForegroundColor(ColorConstants.red);
+		graphics.setForegroundColor(_graphColor);
 		for (int i=0;i<pointList.size();i++) {
-			p = pointList.getPoint(i);//.translate(figureBounds.getTopLeft());
+			Point p = pointList.getPoint(i);
 			graphics.drawPoint(p.x,p.y);
 		}
+		
+		this.setToolTip(this.getToolTipFigure());
+	}
+	
+	/**
+	 * Gets the IFigure for the tooltip.
+	 * @return IFigure
+	 * 			The IFigure for the tooltip
+	 */
+	private IFigure getToolTipFigure() {
+		Panel panel = new Panel();
+		panel.setLayoutManager(new ToolbarLayout(false));
+		panel.add(new Label("Count of data points: "+_data.length));
+		panel.add(new Label("Minimum value: "+_min));
+		panel.add(new Label("Maximum value: "+_max));
+		panel.setBackgroundColor(ColorConstants.tooltipBackground);
+		return panel;
 	}
 	
 	/**
@@ -183,7 +276,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 				yValue = yValue + _data[index];
 			}
 			yValue = yValue / stepSize;
-			pointList.addPoint( new Point( ((bounds.width-1)*i)/(pointCount-1), yValue ) );
+			pointList.addPoint( new Point(  ((bounds.width-1)*i)/(pointCount-1), yValue ) );
 		}
 		return pointList;
 	}
@@ -192,10 +285,8 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * Gets the minimal and the maximal value for y of all Points.
 	 * @param pointList
 	 * 				The PointList of the points
-	 * @return Point
-	 * 				The x value is the maximum, the y value is the minimum.  
 	 */
-	private Point getMinMaxY(final PointList pointList) {
+	private void getMinMaxY(final PointList pointList) {
 		int min = pointList.getPoint(0).y;
 		int max = pointList.getPoint(0).y;
 		for (int i=1;i<pointList.size();i++) {
@@ -207,7 +298,8 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 				max = p.y;
 			}
 		}
-		return new Point(max, min);
+		_min = min;
+		_max = max;
 	}
 	
 	/**
@@ -218,18 +310,25 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * 				The reference x value
 	 * @param y
 	 * 				The reference y value
+	 * @param figureBounds
+	 * 				The bounds of the waveform
 	 * @return PointList
 	 * 				The new PointList
 	 */
-	private PointList translatePointList(final PointList pointList, final int x, final int y) {
-		Point start = new Point(x,y);
+	private PointList translatePointList(final PointList pointList, final int x, final int y, final Rectangle figureBounds) {
 		PointList result = new PointList();
+		double posWeight = (double)(y-figureBounds.y)/_max;
+		double negWeight = (double)(figureBounds.y+figureBounds.height-y-1)/Math.abs(_min);
 		for (int i=0;i<pointList.size();i++) {
-			start = new Point(x,y);
 			Point p = pointList.getPoint(i);
-			p.y = -p.y;
-			//Point newPoint = start.translate(p);
-			result.addPoint(start.translate(p));
+			int newY; 
+			if (p.y>=0) {
+				 newY = (int) (p.y * posWeight);
+			} else {
+				newY = (int) (p.y * negWeight);
+			}
+			Point newPoint = new Point(p.x+x, y - newY);
+			result.addPoint(newPoint);
 		}
 		return result;
 	}
@@ -258,7 +357,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * 			0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
 	 */
 	public void setShowLedgerlLines(final int showHelpLines) {
-		_showHelpLines = showHelpLines;
+		_showLedgerLines = showHelpLines;
 	}
 	
 	/**
@@ -267,7 +366,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * 			0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
 	 */
 	public int getShowHelpLines() {
-		return _showHelpLines;
+		return _showLedgerLines;
 	}
 
 	/**
@@ -304,5 +403,153 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 */
 	public void setForegroundColor(final RGB foregroundRGB) {
 		this.setForegroundColor(CustomMediaFactory.getInstance().getColor(foregroundRGB));
+	}
+	
+	/**
+	 * Sets the color for the graph.
+	 * @param graphRGB 
+	 * 				The RGB-value for the color
+	 */
+	public void setGraphColor(final RGB graphRGB) {
+		_graphColor = CustomMediaFactory.getInstance().getColor(graphRGB);
+	}
+	
+	/**
+	 * Sets the color for the connection lines.
+	 * @param lineRGB 
+	 * 				The RGB-value for the color
+	 */
+	public void setConnectionLineColor(final RGB lineRGB) {
+		_connectionLineColor = CustomMediaFactory.getInstance().getColor(lineRGB);
+	}
+	
+	/**
+	 * This class represents a scale.
+	 * 
+	 * @author Kai Meyer
+	 *
+	 */
+	private final class Scale extends RectangleFigure {	
+		/**
+		 * The length of this Scale.
+		 */
+		private int _length;
+		/**
+		 * The count of sections in this Scale.
+		 */
+		private int _sectionCount = -1;
+		/**
+		 * The direction of this Scale.
+		 */
+		private boolean _isHorizontal;
+		/**
+		 * The start position.
+		 */
+		private int _start = 10;
+		/**
+		 * True, if the negativ sections should be draan, false otherwise.
+		 */
+		private boolean _showNegativSections = false;
+		
+		/**
+		 * Sets the length of this Scale.
+		 * @param length
+		 * 					The lenght of this Scale
+		 */
+		public void setLength(final int length) {
+			_length = length;
+		}
+		
+		/**
+		 * Sets the orientation of this Scale.
+		 * @param isHorizontal
+		 * 					The orientation of this Scale (true=horizontal;false=vertical)
+		 */
+		public void setHorizontalOrientation(final boolean isHorizontal) {
+			_isHorizontal = isHorizontal;
+		}
+		
+		/**
+		 * Sets the count of setcion in this Scale.
+		 * @param sectionCount
+		 * 					The count of setcion in this Scale
+		 */
+		public void setSectionCount(final int sectionCount) {
+			_sectionCount = sectionCount;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void paintFigure(final Graphics graphics) {
+			int sectionWidth = 0;
+			int sectionHeight = 0;
+			int height = 0;
+			int width = 0;
+			graphics.setForegroundColor(this.getForegroundColor());
+			graphics.setBackgroundColor(this.getBackgroundColor());
+			if (_isHorizontal) {
+				height = _scaleWideness;
+				if (_sectionCount>0) {
+					sectionWidth = _length/_sectionCount;
+					for (int i=0;i<_sectionCount+1;i++) {
+						graphics.drawLine(this.getBounds().x+_start+i*sectionWidth, this.getBounds().y, this.getBounds().x+_start+i*sectionWidth+width , this.getBounds().y+height);
+					}
+				} else {
+					int pos = _start;
+					while (pos<this.getBounds().width) {
+						graphics.drawLine(this.getBounds().x+pos, this.getBounds().y, this.getBounds().x+pos , this.getBounds().y+height);
+						pos = pos +_length;
+					}
+					if (_showNegativSections) {
+						pos = _start;
+						while (pos>0) {
+							graphics.drawLine(this.getBounds().x, this.getBounds().y+pos, this.getBounds().x+width , this.getBounds().y+pos);
+							pos = pos - _length;
+						}	
+					}
+				}
+			} else {
+				width = _scaleWideness;
+				if (_sectionCount>0) {
+					sectionHeight = _length/_sectionCount;
+					for (int i=0;i<_sectionCount+1;i++) {
+						graphics.drawLine(this.getBounds().x, this.getBounds().y+_start+i*sectionHeight, this.getBounds().x+width , this.getBounds().y+_start+i*sectionHeight);
+					}	
+				} else {
+					int pos = _start;
+					while (pos<this.getBounds().height) {
+						graphics.drawLine(this.getBounds().x, this.getBounds().y+pos, this.getBounds().x+width , this.getBounds().y+pos);
+						pos = pos +_length;
+					}
+					if (_showNegativSections) {
+						pos = _start;
+						while (pos>0) {
+							graphics.drawLine(this.getBounds().x, this.getBounds().y+pos, this.getBounds().x+width , this.getBounds().y+pos);
+							pos = pos - _length;
+						}	
+					}
+				}
+			}
+		}		
+		
+		/**
+		 * Sets the reference values for this figure.
+		 * @param start
+		 * 				The start value
+		 */
+		public void setReferencePositions(final int start) {
+			_start = start;
+		}
+		
+		/**
+		 * Sets if the negative sections should be drawn.
+		 * @param showNegativ
+		 * 				True, if the negativ sections should be drawn, false otherwise.
+		 */
+		public void setShowNegativeSections(final boolean showNegativ) {
+			_showNegativSections = showNegativ;
+		}
 	}
 }

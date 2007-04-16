@@ -24,8 +24,10 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
+import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleArrayProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * This class defines a simple waverform widget model.
@@ -48,12 +50,22 @@ public final class WaveformModel extends AbstractWidgetModel {
 	/**
 	 * Property ID for the help lines.
 	 */
-	public static final String PROP_SHOW_LEDGER_LINES = "show_help_lines"; //$NON-NLS-1$
+	public static final String PROP_SHOW_LEDGER_LINES = "show_ledger_lines"; //$NON-NLS-1$
 	
 	/**
 	 * Property ID for the point-lines.
 	 */
-	public static final String PROP_SHOW_CONNECTION_LINES = "show_point_lines"; //$NON-NLS-1$
+	public static final String PROP_SHOW_CONNECTION_LINES = "show_connection_lines"; //$NON-NLS-1$
+	
+	/**
+	 * Property ID for the color of the graph.
+	 */
+	public static final String PROP_GRAPH_COLOR = "graph_color"; //$NON-NLS-1$
+	
+	/**
+	 * Property ID for the color of the connection lines.
+	 */
+	public static final String PROP_CONNECTION_LINE_COLOR = "connection_lines_color"; //$NON-NLS-1$
 	
 	/**
 	 * The diplay options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
@@ -71,6 +83,8 @@ public final class WaveformModel extends AbstractWidgetModel {
 		addProperty(PROP_SHOW_SCALE, new OptionProperty("Scale",WidgetPropertyCategory.Display, DISPLAY_OPTIONS,0));
 		addProperty(PROP_SHOW_LEDGER_LINES, new OptionProperty("Help lines", WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
 		addProperty(PROP_SHOW_CONNECTION_LINES, new BooleanProperty("Show connection lines", WidgetPropertyCategory.Display, false));
+		addProperty(PROP_GRAPH_COLOR, new ColorProperty("Color graph", WidgetPropertyCategory.Display, new RGB(255,0,0)));
+		addProperty(PROP_CONNECTION_LINE_COLOR, new ColorProperty("Color connection line", WidgetPropertyCategory.Display, new RGB(255,100,100)));
 	}
 
 	/**
@@ -91,6 +105,26 @@ public final class WaveformModel extends AbstractWidgetModel {
 	}
 	
 	/**
+	 * Return the RGB for the color of the graph.
+	 * 
+	 * @return RGB 
+	 * 			The RGB for the color of the graph
+	 */
+	public RGB getGraphColor() {
+		return (RGB) getProperty(PROP_GRAPH_COLOR).getPropertyValue();
+	}
+	
+	/**
+	 * Return the RGB for the color of the connection lines.
+	 * 
+	 * @return RGB 
+	 * 			The RGB for the color of the connection lines
+	 */
+	public RGB getConnectionLineColor() {
+		return (RGB) getProperty(PROP_CONNECTION_LINE_COLOR).getPropertyValue();
+	}
+	
+	/**
 	 * Returns, if the scales should be shown or not.
 	 * @return int
 	 * 				0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
@@ -100,7 +134,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	}
 	
 	/**
-	 * Returns, if the help lines should be shown or not.
+	 * Returns, if the ledger lines should be shown or not.
 	 * @return int
 	 * 				0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
 	 */
