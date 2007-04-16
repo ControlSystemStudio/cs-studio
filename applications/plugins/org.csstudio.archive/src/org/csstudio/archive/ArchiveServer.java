@@ -171,7 +171,7 @@ public abstract class ArchiveServer
     {
         final String request_types[] = getRequestTypes();
         for (int i=0; i<request_types.length; ++i)
-            if (request_types[i].equals(request_name))
+            if (request_types[i].equalsIgnoreCase(request_name)) // add  IgnoreCase Albert
                 return i;
         throw new Exception("Unsupported request type '" + request_name + "'");
     }

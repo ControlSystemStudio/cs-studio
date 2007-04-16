@@ -16,7 +16,7 @@ import AAPI.AAPI;
 public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 {
 	private final static String defaultAAPIhost = "krynfs.desy.de";
-	private final static int    defaultAAPIport = 4053;
+	private final static int    defaultAAPIport = 4054;
 	
 	private String AAPIhost;
 	private int AAPIport;
