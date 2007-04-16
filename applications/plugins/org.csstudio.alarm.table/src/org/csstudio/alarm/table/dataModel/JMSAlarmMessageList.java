@@ -25,7 +25,7 @@ public class JMSAlarmMessageList extends JMSMessageList {
 	/**
 	 * Add a new JMSMessage to the collection of JMSMessages 
 	 */
-	public void addJMSMessage(MapMessage mm) {
+	synchronized public void addJMSMessage(MapMessage mm) {
 		if (mm == null) {
 			return;
 		} else {

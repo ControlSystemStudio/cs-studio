@@ -101,34 +101,34 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 		.addPropertyChangeListener(propertyChangeListener);
 
 		//TEstData
-//		for (int i = 0; i < 10; i++) {
-//			try {
-//				MapMessage mm = new MapMessageImpl();
-//				mm.setString("NAME", "pv name");
-//				mm.setString("SEVERITY", "MINOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name X" + i);
-//				mm.setString("SEVERITY", "MAJOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name X" + i);
-//				mm.setString("SEVERITY", "MINOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name xx");
-//				mm.setString("SEVERITY", "MINOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name Xx" + i);
-//				mm.setString("SEVERITY", "NO_ALARM");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name Xy" + i);
-//				mm.setString("SEVERITY", "MAJOR");
-//				jmsml.addJMSMessage(mm);
-//
-//			} catch (JMSException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//				System.out.println(e.getMessage());
-//			}
-//		}
+		for (int i = 0; i < 10; i++) {
+			try {
+				MapMessage mm = new MapMessageImpl();
+				mm.setString("NAME", "pv name");
+				mm.setString("SEVERITY", "MINOR");
+				jmsml.addJMSMessage(mm);
+				mm.setString("NAME", "pv name X" + i);
+				mm.setString("SEVERITY", "MAJOR");
+				jmsml.addJMSMessage(mm);
+				mm.setString("NAME", "pv name X" + i);
+				mm.setString("SEVERITY", "MINOR");
+				jmsml.addJMSMessage(mm);
+				mm.setString("NAME", "pv name xx");
+				mm.setString("SEVERITY", "MINOR");
+				jmsml.addJMSMessage(mm);
+				mm.setString("NAME", "pv name Xx" + i);
+				mm.setString("SEVERITY", "NO_ALARM");
+				jmsml.addJMSMessage(mm);
+				mm.setString("NAME", "pv name Xy" + i);
+				mm.setString("SEVERITY", "MAJOR");
+				jmsml.addJMSMessage(mm);
+
+			} catch (JMSException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println(e.getMessage());
+			}
+		}
 		
 		
 	}

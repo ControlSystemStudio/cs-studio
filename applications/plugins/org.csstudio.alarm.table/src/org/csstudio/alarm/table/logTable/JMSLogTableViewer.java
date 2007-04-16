@@ -342,18 +342,18 @@ public class JMSLogTableViewer extends TableViewer {
 				int red = backgroundColor.getRed();
 				int green = backgroundColor.getGreen();
 				int blue = backgroundColor.getBlue();
-				if (red < 155) {
-					red = red + 100;
+				if (red < 125) {
+					red = red + 130;
 				} else {
 					red = 255;
 				}
-				if (green < 155) {
-					green = green + 100;
+				if (green < 125) {
+					green = green + 130;
 				} else {
 					green = 255;
 				}
-				if (blue < 155) {
-					blue = blue + 100;
+				if (blue < 125) {
+					blue = blue + 130;
 				} else {
 					blue = 255;
 				}
