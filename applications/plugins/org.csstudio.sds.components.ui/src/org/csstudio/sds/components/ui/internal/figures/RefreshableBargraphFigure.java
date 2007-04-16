@@ -37,6 +37,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.PointList;
@@ -220,9 +221,28 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	public synchronized void paintFigure(final Graphics graphics) {
 		graphics.setBackgroundColor(this.getBackgroundColor());
 		graphics.fillRectangle(this.getBounds());
-		//this.refreshConstraints();
+		this.refreshConstraints();
 		graphics.setBackgroundColor(this.getBackgroundColor());
 		graphics.setForegroundColor(this.getBorderColor());
+		this.setToolTip(this.getToolTipFigure());
+	}
+	
+	/**
+	 * Gets the IFigure for the tooltip.
+	 * @return IFigure
+	 * 			The IFigure for the tooltip
+	 */
+	private IFigure getToolTipFigure() {
+		Panel panel = new Panel();
+		panel.setLayoutManager(new ToolbarLayout(false));
+		panel.add(new Label("Fill level: "+this.getFill()+"%"));
+		panel.add(new Label("Minimum value: "+_minimum));
+		panel.add(new Label("Maximum value: "+_maximum));
+		for (int i=0;i<LABELS.length;i++) {
+			panel.add(new Label(LABELS[i]+" level: "+_levelMap.get(LABELS[i])));
+		}
+		panel.setBackgroundColor(ColorConstants.tooltipBackground);
+		return panel;
 	}
 	
 	/**
@@ -270,7 +290,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	 * 					The Constraints for the Scale
 	 */
 	private Rectangle getScaleConstraint(final Rectangle bounds) {
-		_scale.setSectionCount(this.getScaleSectionCount());
 		_scale.setHorizontalOrientation(_orientationHorizontal);
 		if (_orientationHorizontal) {
 			_scale.setLength(_barRectangle.width);
@@ -282,8 +301,8 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 				return new Rectangle(0,_barRectangle.y,bounds.width,_scaleWideness);
 			}
 		} else {
-			_scale.setReferencePositions(_barRectangle.y);
 			_scale.setLength(_fillRectangleFigure.getBounds().height);
+			_scale.setReferencePositions(_barRectangle.y);
 			if (_showScale==BOTTOM_RIGHT) {
 				return new Rectangle(_barRectangle.x+_barRectangle.width-_scaleWideness,0,_scaleWideness,bounds.height);
 			}
@@ -296,7 +315,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	
 	/**
 	 * Calculate the real length of this bargraph.
-	 * The value is calculated, to fit the scale completly intp the bargraph
+	 * The value is calculated, to fit the scale completly into the bargraph
 	 * @param length
 	 * 					The given length
 	 * @return int 
@@ -1278,7 +1297,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		/**
 		 * The count of sections in this Scale.
 		 */
-		private int _sectionCount;
+		private int _sectionCount = -1;
 		/**
 		 * The direction of this Scale.
 		 */
@@ -1287,6 +1306,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		 * The start position.
 		 */
 		private int _start = 10;
+		/**
+		 * True, if the negativ sections should be draan, false otherwise.
+		 */
+		private boolean _showNegativSections = false;
 		
 		/**
 		 * Sets the length of this Scale.
@@ -1328,15 +1351,45 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			graphics.setBackgroundColor(this.getBackgroundColor());
 			if (_isHorizontal) {
 				height = _scaleWideness;
-				sectionWidth = _length/_sectionCount;
-				for (int i=0;i<_sectionCount+1;i++) {
-					graphics.drawLine(this.getBounds().x+_start+i*sectionWidth, this.getBounds().y+i*sectionHeight, this.getBounds().x+_start+i*sectionWidth+width , this.getBounds().y+i*sectionHeight+height);
+				if (_sectionCount>0) {
+					sectionWidth = _length/_sectionCount;
+					for (int i=0;i<_sectionCount+1;i++) {
+						graphics.drawLine(this.getBounds().x+_start+i*sectionWidth, this.getBounds().y, this.getBounds().x+_start+i*sectionWidth+width , this.getBounds().y+height);
+					}
+				} else {
+					int pos = _start;
+					while (pos<this.getBounds().width) {
+						graphics.drawLine(this.getBounds().x+pos, this.getBounds().y, this.getBounds().x+pos , this.getBounds().y+height);
+						pos = pos +_length;
+					}
+					if (_showNegativSections) {
+						pos = _start;
+						while (pos>0) {
+							graphics.drawLine(this.getBounds().x, this.getBounds().y+pos, this.getBounds().x+width , this.getBounds().y+pos);
+							pos = pos - _length;
+						}	
+					}
 				}
 			} else {
 				width = _scaleWideness;
-				sectionHeight = _length/_sectionCount;
-				for (int i=0;i<_sectionCount+1;i++) {
-					graphics.drawLine(this.getBounds().x+i*sectionWidth, this.getBounds().y+_start+i*sectionHeight, this.getBounds().x+i*sectionWidth+width , this.getBounds().y+_start+i*sectionHeight);
+				if (_sectionCount>0) {
+					sectionHeight = _length/_sectionCount;
+					for (int i=0;i<_sectionCount+1;i++) {
+						graphics.drawLine(this.getBounds().x, this.getBounds().y+_start+i*sectionHeight, this.getBounds().x+width , this.getBounds().y+_start+i*sectionHeight);
+					}	
+				} else {
+					int pos = _start;
+					while (pos<this.getBounds().height) {
+						graphics.drawLine(this.getBounds().x, this.getBounds().y+pos, this.getBounds().x+width , this.getBounds().y+pos);
+						pos = pos +_length;
+					}
+					if (_showNegativSections) {
+						pos = _start;
+						while (pos>0) {
+							graphics.drawLine(this.getBounds().x, this.getBounds().y+pos, this.getBounds().x+width , this.getBounds().y+pos);
+							pos = pos - _length;
+						}	
+					}
 				}
 			}
 		}		
@@ -1349,6 +1402,102 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		public void setReferencePositions(final int start) {
 			_start = start;
 		}
+		
+		/**
+		 * Sets if the negative sections should be drawn.
+		 * @param showNegativ
+		 * 				True, if the negativ sections should be drawn, false otherwise.
+		 */
+		public void setShowNegativeSections(final boolean showNegativ) {
+			_showNegativSections = showNegativ;
+		}
 	}
+	
+//	/**
+//	 * This class represents a scale.
+//	 * 
+//	 * @author Kai Meyer
+//	 *
+//	 */
+//	private final class Scale extends RectangleFigure {	
+//		/**
+//		 * The length of this Scale.
+//		 */
+//		private int _length;
+//		/**
+//		 * The count of sections in this Scale.
+//		 */
+//		private int _sectionCount;
+//		/**
+//		 * The direction of this Scale.
+//		 */
+//		private boolean _isHorizontal;
+//		/**
+//		 * The start position.
+//		 */
+//		private int _start = 10;
+//		
+//		/**
+//		 * Sets the length of this Scale.
+//		 * @param length
+//		 * 					The lenght of this Scale
+//		 */
+//		public void setLength(final int length) {
+//			_length = length;
+//		}
+//		
+//		/**
+//		 * Sets the orientation of this Scale.
+//		 * @param isHorizontal
+//		 * 					The orientation of this Scale (true=horizontal;false=vertical)
+//		 */
+//		public void setHorizontalOrientation(final boolean isHorizontal) {
+//			_isHorizontal = isHorizontal;
+//		}
+//		
+//		/**
+//		 * Sets the count of setcion in this Scale.
+//		 * @param sectionCount
+//		 * 					The count of setcion in this Scale
+//		 */
+//		public void setSectionCount(final int sectionCount) {
+//			_sectionCount = sectionCount;
+//		}
+//		
+//		/**
+//		 * {@inheritDoc}
+//		 */
+//		@Override
+//		public void paintFigure(final Graphics graphics) {
+//			int sectionWidth = 0;
+//			int sectionHeight = 0;
+//			int height = 0;
+//			int width = 0;
+//			graphics.setForegroundColor(this.getForegroundColor());
+//			graphics.setBackgroundColor(this.getBackgroundColor());
+//			if (_isHorizontal) {
+//				height = _scaleWideness;
+//				sectionWidth = _length/_sectionCount;
+//				for (int i=0;i<_sectionCount+1;i++) {
+//					graphics.drawLine(this.getBounds().x+_start+i*sectionWidth, this.getBounds().y, this.getBounds().x+_start+i*sectionWidth+width , this.getBounds().y+height);
+//				}
+//			} else {
+//				width = _scaleWideness;
+//				sectionHeight = _length/_sectionCount;
+//				for (int i=0;i<_sectionCount+1;i++) {
+//					graphics.drawLine(this.getBounds().x, this.getBounds().y+_start+i*sectionHeight, this.getBounds().x+width , this.getBounds().y+_start+i*sectionHeight);
+//				}
+//			}
+//		}		
+//		
+//		/**
+//		 * Sets the reference values for this figure.
+//		 * @param start
+//		 * 				The start value
+//		 */
+//		public void setReferencePositions(final int start) {
+//			_start = start;
+//		}
+//	}
 
 }
