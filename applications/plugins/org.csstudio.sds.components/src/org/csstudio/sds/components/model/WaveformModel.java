@@ -81,7 +81,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, new double[] { 20.0, 15.0,
 						33.0, 44.0, 22.0, 3.0, 25.0, 4.0 }));
 		addProperty(PROP_SHOW_SCALE, new OptionProperty("Scale",WidgetPropertyCategory.Display, DISPLAY_OPTIONS,0));
-		addProperty(PROP_SHOW_LEDGER_LINES, new OptionProperty("Help lines", WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
+		addProperty(PROP_SHOW_LEDGER_LINES, new OptionProperty("Ledger lines", WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
 		addProperty(PROP_SHOW_CONNECTION_LINES, new BooleanProperty("Show connection lines", WidgetPropertyCategory.Display, false));
 		addProperty(PROP_GRAPH_COLOR, new ColorProperty("Color graph", WidgetPropertyCategory.Display, new RGB(255,0,0)));
 		addProperty(PROP_CONNECTION_LINE_COLOR, new ColorProperty("Color connection line", WidgetPropertyCategory.Display, new RGB(255,100,100)));

@@ -21,9 +21,13 @@
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
@@ -33,6 +37,7 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -58,6 +63,10 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * Show both.
 	 */
 	private static final int SHOW_BOTH = 3;
+	/**
+	 * Default constraint for all scales.
+	 */
+	private static final Rectangle DEFAULT_CONSTRAINT = new Rectangle(0,0,0,0);
 	
 	/**
 	 * The Color for the graph.
@@ -74,13 +83,26 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 */
 	private double[] _data;
 	/**
-	 * An int, representing the maximum value of the data.
+	 * A double, representing the maximum value of the data.
 	 */
-	private int _max = 0;
+	private double _max = 0;
 	/**
-	 * An int, representing the minimum value of the data.
+	 * A double, representing the minimum value of the data.
 	 */
-	private int _min = 0;
+	private double _min = 0;
+	/**
+	 * The zero level of the graph.
+	 */
+	private int _zeroLevel = 0;
+	/**
+	 * The PointList based on the real data.
+	 */
+	//private PointList _dataPoints = new PointList();
+	private List<PrecisionPoint> _dataPoints = new LinkedList<PrecisionPoint>();
+	/**
+	 * The bounds of the graph.
+	 */
+	private Rectangle _graphBounds = new Rectangle(10,10,10,10);
 	
 	/**
 	 * An int, representing in which way the scale should be drawn.
@@ -108,6 +130,19 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * The horizontal scale of this waveform.
 	 */
 	private Scale _horizontalScale;
+	/**
+	 * The vertical ledger scale.
+	 */
+	private Scale _verticalLedgerScale;
+	/**
+	 * The horizontal ledger scale.
+	 */
+	private Scale _horizontalLedgerScale;
+	
+	/**
+	 * True, if this figure has to be initiated, false otherwise.
+	 */
+	private boolean _init = true;
 
 	/**
 	 * Standard constructor.
@@ -115,6 +150,19 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	public WaveformFigure() {
 		_data = new double[0];
 		this.setLayoutManager(new XYLayout());
+		_verticalLedgerScale = new Scale();
+		_verticalLedgerScale.setHorizontalOrientation(false);
+		_verticalLedgerScale.setLength(20);
+		_verticalLedgerScale.setShowNegativeSections(true);
+		_verticalLedgerScale.setForegroundColor(ColorConstants.lightGray);
+		this.add(_verticalLedgerScale);
+		_horizontalLedgerScale = new Scale();
+		_horizontalLedgerScale.setHorizontalOrientation(true);
+		_horizontalLedgerScale.setLength(20);
+		_horizontalLedgerScale.setShowNegativeSections(false);
+		_horizontalLedgerScale.setReferencePositions(0);
+		_horizontalLedgerScale.setForegroundColor(ColorConstants.lightGray);
+		this.add(_horizontalLedgerScale);
 		_verticalScale = new Scale();
 		_verticalScale.setHorizontalOrientation(false);
 		_verticalScale.setLength(20);
@@ -128,6 +176,13 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		_horizontalScale.setReferencePositions(0);
 		_horizontalScale.setForegroundColor(this.getForegroundColor());
 		this.add(_horizontalScale);
+		
+//		 listen to figure movement events
+		addFigureListener(new FigureListener() {
+			public void figureMoved(final IFigure source) {
+				refreshConstraints();
+			}
+		});
 	}
 
 	/**
@@ -151,18 +206,86 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 *            The waveform data that is to be displayed
 	 */
 	public void setData(final double[] data) {
-		//_data = data;
+		_data = data;
 		
-		int count = 2000;
-		int amplitude = 100;
-		int verschiebung = 00;
-		double[] result = new double[count];
-		double value = (Math.PI*2)/count;
-		for (int i=0;i<count;i++) {
-			result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
-		}
-		_data = result;
+//		int count = 2000;
+//		int amplitude = 50;
+//		int verschiebung = 00;
+//		double[] result = new double[count];
+//		double value = (Math.PI*2)/count;
+//		for (int i=0;i<count;i++) {
+//			result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
+//		} 
+//		_data = result;
+		this.refreshConstraints();
 		repaint();
+	}
+	
+	/**
+	 * Refreshes the constraints for the scales.
+	 */
+	private void refreshConstraints() {
+		if (_init) {
+			return;
+		}
+		this.setGraphBounds();
+		_dataPoints = this.calculatePoints(_graphBounds);
+		this.setZeroLevel();
+		Rectangle figureBounds = this.getBounds();
+		int verticalScaleWidth = 0;
+		if (_showScale==SHOW_VERTICAL || _showScale==SHOW_BOTH) {
+			verticalScaleWidth = _scaleWideness;
+			this.setConstraint(_verticalScale, new Rectangle(0,0,_scaleWideness,figureBounds.height));
+			_verticalScale.setReferencePositions(_zeroLevel);
+		} else {
+			this.setConstraint(_verticalScale, DEFAULT_CONSTRAINT);
+		}
+		if (_showScale==SHOW_HORIZONTAL || _showScale==SHOW_BOTH) {
+			this.setConstraint(_horizontalScale, new Rectangle(verticalScaleWidth,_zeroLevel-(_scaleWideness/2)+1,figureBounds.width-verticalScaleWidth,_scaleWideness));
+		} else {
+			this.setConstraint(_horizontalScale, DEFAULT_CONSTRAINT);
+		}
+		
+		if (_showLedgerLines==SHOW_HORIZONTAL || _showLedgerLines==SHOW_BOTH) {
+			this.setConstraint(_verticalLedgerScale, new Rectangle(verticalScaleWidth,0,figureBounds.width-verticalScaleWidth,figureBounds.height));
+			_verticalLedgerScale.setReferencePositions(_zeroLevel);
+			_verticalLedgerScale.setWideness(figureBounds.width-verticalScaleWidth);
+		} else {
+			this.setConstraint(_verticalLedgerScale, DEFAULT_CONSTRAINT);
+		}
+		if (_showLedgerLines==SHOW_VERTICAL || _showLedgerLines==SHOW_BOTH) {
+			this.setConstraint(_horizontalLedgerScale, new Rectangle(verticalScaleWidth,0,figureBounds.width-verticalScaleWidth,figureBounds.height));
+			_horizontalLedgerScale.setWideness(figureBounds.height);
+		} else {
+			this.setConstraint(_horizontalLedgerScale, DEFAULT_CONSTRAINT);
+		}
+		
+		this.setToolTip(this.getToolTipFigure());
+	}
+	
+	/**
+	 * Sets the bounds of the graph.
+	 */
+	private void setGraphBounds() {
+		Rectangle figureBounds = this.getBounds();	
+		if (_showScale==SHOW_VERTICAL || _showScale==SHOW_BOTH) {
+			_graphBounds = new Rectangle(figureBounds.x+_scaleWideness,figureBounds.y,figureBounds.width-_scaleWideness,figureBounds.height);
+		} else {
+			_graphBounds = new Rectangle(figureBounds.x,figureBounds.y,figureBounds.width,figureBounds.height);
+		}
+	}
+	
+	/**
+	 * Sets the zero level.
+	 */
+	private void setZeroLevel() {
+		if (_min<0 && _max<0) {
+			_zeroLevel = 1;
+		} else if (_min>=0 && _max >=0) {
+			_zeroLevel = _graphBounds.height-1;
+		} else {
+			_zeroLevel = (int) (((double)_graphBounds.height/(_max-_min))*_max);
+		}
 	}
 
 	/**
@@ -170,58 +293,16 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 */
 	@Override
 	protected void paintFigure(final Graphics graphics) {
-//		super.paintFigure(graphics);
-//		
-//		Rectangle figureBounds = getBounds();
-//
-//		int x = 0;
-//		
-//		for (int i=0;i<_data.length;i+=5) {
-//			x++;
-//			double y =150+  _data[i]*100;
-//			
-//			Point p = new Point(x,y).translate(figureBounds.getTopLeft());
-//			
-//			graphics.drawPoint(p.x, p.y);
-//		}
 		super.paintFigure(graphics);
-		
-		Rectangle figureBounds = this.getBounds();	
-		Rectangle graphBounds;
-		if (_showScale==SHOW_VERTICAL || _showScale==SHOW_BOTH) {
-			graphBounds = new Rectangle(figureBounds.x+_scaleWideness,figureBounds.y,figureBounds.width-_scaleWideness,figureBounds.height);
-		} else {
-			graphBounds = new Rectangle(figureBounds.x,figureBounds.y,figureBounds.width,figureBounds.height);
-		}
-		
-		PointList pointList = this.calculatePoints(graphBounds);		
-		this.getMinMaxY(pointList);			
-		int x = graphBounds.x;
-		int y;
-		if (_min<0 && _max<0) {
-			y = graphBounds.y;
-		} else if (_min>=0 && _max >=0) {
-			y = graphBounds.y+graphBounds.height-1;
-		} else {
-			y = graphBounds.y + (int)(((double)graphBounds.height/(_max-_min))*_max);
-		}
+		if (_init) {
+			_init = false;
+			this.refreshConstraints();
+		}					
+		int x = _graphBounds.x;
 		graphics.setForegroundColor(this.getForegroundColor());
-		graphics.drawLine(x, graphBounds.y, x, graphBounds.y+graphBounds.height);
-		graphics.drawLine(x, y, x+graphBounds.width, y);
-		
-		if (_showScale==SHOW_VERTICAL || _showScale==SHOW_BOTH) {
-			this.setConstraint(_verticalScale, new Rectangle(0,0,_scaleWideness,figureBounds.height));
-			_verticalScale.setReferencePositions(y-figureBounds.y);
-		} else {
-			this.setConstraint(_verticalScale, new Rectangle(0,0,0,0));
-		}
-		if (_showScale==SHOW_HORIZONTAL || _showScale==SHOW_BOTH) {
-			this.setConstraint(_horizontalScale, new Rectangle(graphBounds.x-figureBounds.x,graphBounds.y+graphBounds.height-y-(_scaleWideness/2)+1,graphBounds.width,_scaleWideness));
-		} else {
-			this.setConstraint(_horizontalScale, new Rectangle(0,0,0,0));
-		}
-		
-		pointList = this.translatePointList(pointList, x, y, graphBounds);
+		graphics.drawLine(x, _graphBounds.y, x, _graphBounds.y+_graphBounds.height);
+		graphics.drawLine(x, _graphBounds.y+_zeroLevel, x+_graphBounds.width, _graphBounds.y+_zeroLevel);
+		PointList pointList = this.translatePointList(_dataPoints, x, _graphBounds);
 		if (_showConnectionLines) {
 			graphics.setForegroundColor(_connectionLineColor);
 			graphics.drawPolyline(pointList);
@@ -231,8 +312,6 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 			Point p = pointList.getPoint(i);
 			graphics.drawPoint(p.x,p.y);
 		}
-		
-		this.setToolTip(this.getToolTipFigure());
 	}
 	
 	/**
@@ -258,8 +337,12 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * @return PoinList
 	 * 			The PointList with all Points
 	 */
-	private PointList calculatePoints(final Rectangle bounds) {
-		PointList pointList = new PointList();
+	private List<PrecisionPoint> calculatePoints(final Rectangle bounds) {
+		//PointList pointList = new PointList();
+		List<PrecisionPoint> pointList = new LinkedList<PrecisionPoint>();
+		
+		double min = 0;
+		double max = 0;
 		
 		int stepSize = Math.max(1, (int)Math.ceil((double)_data.length/bounds.width));
 		int pointCount;
@@ -276,30 +359,21 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 				yValue = yValue + _data[index];
 			}
 			yValue = yValue / stepSize;
-			pointList.addPoint( new Point(  ((bounds.width-1)*i)/(pointCount-1), yValue ) );
+			if (yValue<min || i==0) {
+				min = yValue;
+			}
+			if (yValue>max || i==0) {
+				max = yValue;
+			}
+			pointList.add( new PrecisionPoint(  ((bounds.width-1)*i)/(pointCount-1), yValue ) );
+		}
+		if (min<_min-0.001 || min>_min+0.001) {
+			_min = min;
+		}
+		if (max<_max-0.001 || max>_max+0.001) {
+			_max = max;
 		}
 		return pointList;
-	}
-	
-	/**
-	 * Gets the minimal and the maximal value for y of all Points.
-	 * @param pointList
-	 * 				The PointList of the points
-	 */
-	private void getMinMaxY(final PointList pointList) {
-		int min = pointList.getPoint(0).y;
-		int max = pointList.getPoint(0).y;
-		for (int i=1;i<pointList.size();i++) {
-			Point p = pointList.getPoint(i); 
-			if (p.y<min) {
-				min = p.y;
-			}
-			if (p.y>max) {
-				max = p.y;
-			}
-		}
-		_min = min;
-		_max = max;
 	}
 	
 	/**
@@ -308,26 +382,24 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * 				The PointList
 	 * @param x
 	 * 				The reference x value
-	 * @param y
-	 * 				The reference y value
 	 * @param figureBounds
 	 * 				The bounds of the waveform
 	 * @return PointList
 	 * 				The new PointList
 	 */
-	private PointList translatePointList(final PointList pointList, final int x, final int y, final Rectangle figureBounds) {
+	private PointList translatePointList(final List<PrecisionPoint> pointList, final int x, final Rectangle figureBounds) {
 		PointList result = new PointList();
-		double posWeight = (double)(y-figureBounds.y)/_max;
-		double negWeight = (double)(figureBounds.y+figureBounds.height-y-1)/Math.abs(_min);
+		double posWeight = (double)(_zeroLevel)/_max;
+		double negWeight = (double)(figureBounds.height-_zeroLevel)/Math.abs(_min);
 		for (int i=0;i<pointList.size();i++) {
-			Point p = pointList.getPoint(i);
-			int newY; 
+			PrecisionPoint p = pointList.get(i);
+			double newY; 
 			if (p.y>=0) {
-				 newY = (int) (p.y * posWeight);
+				 newY = p.preciseY * posWeight;
 			} else {
-				newY = (int) (p.y * negWeight);
+				newY = p.preciseY * negWeight;
 			}
-			Point newPoint = new Point(p.x+x, y - newY);
+			Point newPoint = new Point(p.x+x, (double)(figureBounds.y+_zeroLevel) - newY);
 			result.addPoint(newPoint);
 		}
 		return result;
@@ -340,6 +412,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 */
 	public void setShowScale(final int showScale) {
 		_showScale = showScale;
+		this.refreshConstraints();
 	}
 	
 	/**
@@ -353,11 +426,12 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 
 	/**
 	 * Sets in which way the help lines should be drawn.
-	 * @param showHelpLines
+	 * @param showLedgerLines
 	 * 			0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
 	 */
-	public void setShowLedgerlLines(final int showHelpLines) {
-		_showLedgerLines = showHelpLines;
+	public void setShowLedgerlLines(final int showLedgerLines) {
+		_showLedgerLines = showLedgerLines;
+		this.refreshConstraints();
 	}
 	
 	/**
@@ -365,7 +439,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * @return int
 	 * 			0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
 	 */
-	public int getShowHelpLines() {
+	public int getShowLedgerLines() {
 		return _showLedgerLines;
 	}
 
@@ -450,6 +524,10 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		 * True, if the negativ sections should be draan, false otherwise.
 		 */
 		private boolean _showNegativSections = false;
+		/**
+		 * The lenght of the lines.
+		 */
+		private int _wideness = 10;
 		
 		/**
 		 * Sets the length of this Scale.
@@ -490,7 +568,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 			graphics.setForegroundColor(this.getForegroundColor());
 			graphics.setBackgroundColor(this.getBackgroundColor());
 			if (_isHorizontal) {
-				height = _scaleWideness;
+				height = _wideness;
 				if (_sectionCount>0) {
 					sectionWidth = _length/_sectionCount;
 					for (int i=0;i<_sectionCount+1;i++) {
@@ -511,7 +589,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 					}
 				}
 			} else {
-				width = _scaleWideness;
+				width = _wideness;
 				if (_sectionCount>0) {
 					sectionHeight = _length/_sectionCount;
 					for (int i=0;i<_sectionCount+1;i++) {
@@ -550,6 +628,15 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		 */
 		public void setShowNegativeSections(final boolean showNegativ) {
 			_showNegativSections = showNegativ;
+		}
+		
+		/**
+		 * Sets the wideness of this scale.
+		 * @param wideness
+		 * 				The wideness of this scale
+		 */
+		public void setWideness(final int wideness) {
+			_wideness = wideness;
 		}
 	}
 }
