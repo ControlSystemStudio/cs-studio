@@ -78,7 +78,7 @@ public class LogViewerPreferencePage
 		Group g1 = new Group(getFieldEditorParent(), SWT.NONE);
 		g1.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
 		addField(new StringFieldEditor(LogViewerPreferenceConstants.MAX, LogViewerPreferenceConstants.MAX + ": ", g1)); //$NON-NLS-1$
-		addField(new StringFieldEditor(LogViewerPreferenceConstants.REMOVE, LogViewerPreferenceConstants.REMOVE + ": ", g1)); //$NON-NLS-1$
+//		addField(new StringFieldEditor(LogViewerPreferenceConstants.REMOVE, LogViewerPreferenceConstants.REMOVE + ": ", g1)); //$NON-NLS-1$
 		// Server Settings
 		Group g2 = new Group(getFieldEditorParent(), SWT.NONE);
 		g2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));

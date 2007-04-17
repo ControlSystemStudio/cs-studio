@@ -52,39 +52,41 @@ public class JMSAlarmMessageList extends JMSMessageList {
 		List<JMSMessage> jmsMessagesToRemove = new ArrayList<JMSMessage>();
 		List<JMSMessage> jmsMessagesToRemoveAndAdd = new ArrayList<JMSMessage>();
 		try {
-		String newPVName = mm.getString("NAME");
-		String newSeverity = mm.getString("SEVERITY");
-		while(it.hasNext()) {
-			JMSMessage jmsm = it.next();
-			String pvNameFromList = jmsm.getProperty("NAME");
-			String severityFromList = jmsm.getProperty("SEVERITY");
-			if (newPVName.equalsIgnoreCase(pvNameFromList)) {
-				if (newSeverity.equalsIgnoreCase(severityFromList)) {
-					jmsMessagesToRemove.add(jmsm);
-				} else {
-					jmsMessagesToRemove.add(jmsm);
-					jmsMessagesToRemoveAndAdd.add(jmsm);
-					jmsm.setBackgroundColorGray(true);
+			String newPVName = mm.getString("NAME");
+			String newSeverity = mm.getString("SEVERITY");
+			if ((newPVName != null) && (newSeverity != null)) {
+				while (it.hasNext()) {
+					JMSMessage jmsm = it.next();
+					String pvNameFromList = jmsm.getProperty("NAME");
+					String severityFromList = jmsm.getProperty("SEVERITY");
+					if ((pvNameFromList != null) && (severityFromList != null)) {
+						if (newPVName.equalsIgnoreCase(pvNameFromList)) {
+							if (newSeverity.equalsIgnoreCase(severityFromList)) {
+								jmsMessagesToRemove.add(jmsm);
+							} else {
+								jmsMessagesToRemove.add(jmsm);
+								jmsMessagesToRemoveAndAdd.add(jmsm);
+								jmsm.setBackgroundColorGray(true);
+							}
+						}
+					}
 				}
 			}
-			
-		}
-		it = jmsMessagesToRemove.listIterator();
-		while(it.hasNext()) {
-			removeJMSMessage(it.next());
-		}
-		
-		it = jmsMessagesToRemoveAndAdd.listIterator();
-		while(it.hasNext()) {
-			addJMSMessage(it.next());
-		}
+			it = jmsMessagesToRemove.listIterator();
+			while (it.hasNext()) {
+				removeJMSMessage(it.next());
+			}
 
-		jmsMessagesToRemove.clear();
-		jmsMessagesToRemoveAndAdd.clear();
+			it = jmsMessagesToRemoveAndAdd.listIterator();
+			while (it.hasNext()) {
+				addJMSMessage(it.next());
+			}
+
+			jmsMessagesToRemove.clear();
+			jmsMessagesToRemoveAndAdd.clear();
 		} catch (JMSException e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
 	}
-	
 }

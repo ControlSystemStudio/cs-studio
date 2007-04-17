@@ -24,11 +24,13 @@ package org.csstudio.alarm.table;
 
 import java.util.Vector;
 
+import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
@@ -47,6 +49,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
+import org.exolab.jms.message.MapMessageImpl;
 
 /**
  * Simple view more like console, used to write log messages
@@ -72,7 +75,7 @@ public class LogView extends ViewPart implements MessageListener {
 	public void createPartControl(Composite parent) {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(LogViewerPreferenceConstants.P_STRING).split(";"); //$NON-NLS-1$
-		jmsml = new JMSMessageList(columnNames);
+		jmsml = new JMSLogMessageList(columnNames);
 
 		parentShell = parent.getShell();
 
@@ -93,6 +96,37 @@ public class LogView extends ViewPart implements MessageListener {
 		parent.pack();
 		JmsLogsPlugin.getDefault().getPluginPreferences()
 				.addPropertyChangeListener(propertyChangeListener);
+		
+		//TEstData
+		for (int i = 0; i < 10; i++) {
+			try {
+				MapMessage mm = new MapMessageImpl();
+				mm.setString("NAME", "pv name");
+				mm.setString("SEVERITY", "MINOR");
+				jmsml.addJMSMessage(mm);
+				mm.setString("NAME", "pv name X" + i);
+				mm.setString("SEVERITY", "MAJOR");
+				jmsml.addJMSMessage(mm);
+				mm.setString("NAME", "pv name X" + i);
+				mm.setString("SEVERITY", "MINOR");
+				jmsml.addJMSMessage(mm);
+				mm.setString("NAME", "pv name xx");
+				mm.setString("SEVERITY", "MINOR");
+				jmsml.addJMSMessage(mm);
+				mm.setString("NAME", "pv name Xx" + i);
+				mm.setString("SEVERITY", "NO_ALARM");
+				jmsml.addJMSMessage(mm);
+				mm.setString("NAME", "pv name Xy" + i);
+				mm.setString("SEVERITY", "MAJOR");
+				jmsml.addJMSMessage(mm);
+
+			} catch (JMSException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println(e.getMessage());
+			}
+		}
+		
 	}
 
 	private void initializeJMSReceiver(Shell ps) {
@@ -146,7 +180,6 @@ public class LogView extends ViewPart implements MessageListener {
 						// if(table.getItemCount() >= max)
 						// table.remove(table.getItemCount() - 1 - rows,
 						// table.getItemCount() - 1);
-						System.out.println("message received");
 						jmsml.addJMSMessage((MapMessage) message);
 					} else {
 						System.out
