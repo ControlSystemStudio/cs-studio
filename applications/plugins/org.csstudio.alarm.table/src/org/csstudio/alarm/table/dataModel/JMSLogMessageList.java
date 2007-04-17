@@ -1,21 +1,11 @@
 package org.csstudio.alarm.table.dataModel;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-import java.util.Vector;
 
-import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
-import org.exolab.jms.message.MapMessageImpl;
 
 public class JMSLogMessageList extends JMSMessageList {
 
