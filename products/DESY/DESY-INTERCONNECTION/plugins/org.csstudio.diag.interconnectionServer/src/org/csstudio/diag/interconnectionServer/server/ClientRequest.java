@@ -86,7 +86,7 @@ public class ClientRequest extends Thread
         statisticId	= hostName + ":" + port;
         GregorianCalendar actualTime = new GregorianCalendar();
         
-        System.out.println("Time: - start 		= " + dateToString(new GregorianCalendar()));
+        ///System.out.println("Time: - start 		= " + dateToString(new GregorianCalendar()));
         //
         // write out some statistics
         //
@@ -124,7 +124,7 @@ public class ClientRequest extends Thread
         
         if ( parseMessage(  tagValue, tagValuePairs, id, type, statisticId)) {
         	
-        	System.out.println("Time: - after parse 	= " + dateToString(new GregorianCalendar()));
+        	///System.out.println("Time: - after parse 	= " + dateToString(new GregorianCalendar()));
         	boolean status	= true;
         	
         	//
@@ -142,16 +142,16 @@ public class ClientRequest extends Thread
         		//
         		try {
             		//sender = alarmSession.createProducer(alarmDestination);
-            		System.out.println("Time-ALARM: - after sender= 	= " + dateToString(new GregorianCalendar()));
+            		///System.out.println("Time-ALARM: - after sender= 	= " + dateToString(new GregorianCalendar()));
                     //message = alarmSession.createMapMessage();
             		message = InterconnectionServer.getInstance().prepareTypedJmsMessage( alarmSession.createMapMessage(), tagValuePairs, type);
-            		System.out.println("Time-APARM: - after message= 	= " + dateToString(new GregorianCalendar()));
+            		///System.out.println("Time-APARM: - after message= 	= " + dateToString(new GregorianCalendar()));
             		
             		alarmSender.setPriority( 9);
-            		System.out.println("Time-ALARM: - before sender-send 	= " + dateToString(new GregorianCalendar()));
+            		///System.out.println("Time-ALARM: - before sender-send 	= " + dateToString(new GregorianCalendar()));
             		alarmSender.send(message);
             		message = null;
-            		System.out.println("Time-ALARM: - after sender-send 	= " + dateToString(new GregorianCalendar()));
+            		///System.out.println("Time-ALARM: - after sender-send 	= " + dateToString(new GregorianCalendar()));
         		}
         		catch(JMSException jmse)
                 {
@@ -160,7 +160,7 @@ public class ClientRequest extends Thread
                     System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
-        		System.out.println("Time-ALARM: - after send UDP reply	= " + dateToString(new GregorianCalendar()));
+        		///System.out.println("Time-ALARM: - after send UDP reply	= " + dateToString(new GregorianCalendar()));
         		//
         		// time to update the LDAP server entry
         		//
@@ -195,7 +195,7 @@ public class ClientRequest extends Thread
         		// just send a reply
         		//
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
-        		System.out.println("Time-Beacon: - after send UDP reply	=  " + dateToString(new GregorianCalendar()));
+        		///System.out.println("Time-Beacon: - after send UDP reply	=  " + dateToString(new GregorianCalendar()));
         		//
         		// set beacon time locally
         		//
@@ -307,7 +307,7 @@ public class ClientRequest extends Thread
 		StringTokenizer tok = new StringTokenizer(daten, PreferenceProperties.DATA_TOKENIZER);
         
 		// TODO: make it a logMessage
-        System.out.println("Anzahl der Token: " + tok.countTokens() + "\n");
+        ///System.out.println("Anzahl der Token: " + tok.countTokens() + "\n");
         
         if(tok.countTokens() > 0)
         {
@@ -334,7 +334,7 @@ public class ClientRequest extends Thread
 	                		attribute = localTok.split("=");
 	                		
 	                		// TODO: make this a debug message
-		                    System.out.println(statisticId + " : " + attribute[0] + " := "+ attribute[1]);
+		                    ///System.out.println(statisticId + " : " + attribute[0] + " := "+ attribute[1]);
 		                    //
 		                    // fill Hash table in any case
 		                    //
@@ -378,7 +378,7 @@ public class ClientRequest extends Thread
 		// find necessary entries and activate ldapUpdateMethod
 		//
 		String channel,status,severity,timeStamp = null;
-		System.out.println("tagValue : " + tagValue.toString());		
+		///System.out.println("tagValue : " + tagValue.toString());		
 		
 		if ( tagValue.containsKey("NAME") && tagValue.containsKey("STATUS") && tagValue.containsKey("SEVERITY") && tagValue.containsKey("EVENTTIME")) {
 			channel = tagValue.get("NAME");
@@ -388,10 +388,19 @@ public class ClientRequest extends Thread
 			//
 			// send values to LDAP engine
 			//
-			
 			Engine.getInstance().addLdapWriteRequest( "epicsAlarmSeverity", channel, severity);
 			Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channel, status);
 			Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channel, timeStamp);		
+			
+			//
+			// change time stamp written time (for now we use: epicsAlarmAcknTimeStamp)
+			//
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S");
+	        java.util.Date currentDate = new java.util.Date();
+	        String eventTime = sdf.format(currentDate);
+	        
+	        Engine.getInstance().addLdapWriteRequest( "epicsAlarmAcknTimeStamp", channel, eventTime);		
+
 				
 		}
 		
