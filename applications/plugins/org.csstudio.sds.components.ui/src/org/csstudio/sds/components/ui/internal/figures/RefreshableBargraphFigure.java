@@ -221,7 +221,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 	public synchronized void paintFigure(final Graphics graphics) {
 		graphics.setBackgroundColor(this.getBackgroundColor());
 		graphics.fillRectangle(this.getBounds());
-		this.refreshConstraints();
+		//this.refreshConstraints();
 		graphics.setBackgroundColor(this.getBackgroundColor());
 		graphics.setForegroundColor(this.getBorderColor());
 		this.setToolTip(this.getToolTipFigure());
@@ -301,7 +301,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 				return new Rectangle(0,_barRectangle.y,bounds.width,_scaleWideness);
 			}
 		} else {
-			_scale.setLength(_fillRectangleFigure.getBounds().height);
+			_scale.setLength(_barRectangle.height);
 			_scale.setReferencePositions(_barRectangle.y);
 			if (_showScale==BOTTOM_RIGHT) {
 				return new Rectangle(_barRectangle.x+_barRectangle.width-_scaleWideness,0,_scaleWideness,bounds.height);
@@ -1017,17 +1017,20 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 				this.add(marker);
 				_markerList.add(marker);
 			}
+//			 listen to figure movement events
+			addFigureListener(new FigureListener() {
+				public void figureMoved(final IFigure source) {
+					refreshConstraints();
+				}
+			});
+			
+			this.refreshConstraints();
 		}
 		
 		/**
-		 * {@inheritDoc}
+		 * Refreshes the constraints.
 		 */
-		@Override
-		public void paintFigure(final Graphics graphics) {
-			Rectangle bounds = this.getBounds();
-			graphics.setBackgroundColor(this.getBackgroundColor());
-			graphics.setForegroundColor(ColorConstants.black);
-			graphics.fillRectangle(bounds);
+		private void refreshConstraints() {
 			if (_isHorizontal) {
 				for (int i=0;i<_markerList.size();i++) {
 					double weight = getWeight(_levelMap.get(LABELS[i])); 
@@ -1052,6 +1055,17 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		}
 		
 		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void paintFigure(final Graphics graphics) {
+			Rectangle bounds = this.getBounds();
+			graphics.setBackgroundColor(this.getBackgroundColor());
+			graphics.setForegroundColor(ColorConstants.black);
+			graphics.fillRectangle(bounds);	
+		}
+		
+		/**
 		 * Sets the reference values for this figure.
 		 * @param start
 		 * 				The start value
@@ -1061,6 +1075,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		public void setReferencePositions(final int start, final int end) {
 			_start = start;
 			_end = end;
+			this.refreshConstraints();
 		}
 		
 		/**
@@ -1073,6 +1088,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			for (Marker marker : _markerList) {
 				marker.setHorizontalOrientation(isHorizontal);
 			}
+			this.refreshConstraints();
 		}
 		
 		/**
@@ -1085,6 +1101,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			for (Marker marker : _markerList) {
 				marker.setTopLeftAlignment(topLeft);
 			}
+			this.refreshConstraints();
 		}
 	}
 	
@@ -1219,6 +1236,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			 */
 			@Override
 			public void paintFigure(final Graphics graphics) {
+				//System.out.println("TipMark.paintFigure()");
 				Rectangle bounds = this.getBounds();
 				graphics.setForegroundColor(this.getForegroundColor());
 				graphics.setBackgroundColor(_colorMap.get(_key));
