@@ -4,10 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
@@ -15,6 +18,7 @@ import org.csstudio.utility.ldap.preference.PreferenceConstants;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 
 public class Engine extends Job {
 
@@ -65,7 +69,7 @@ public class Engine extends Job {
 			/*
         	 * sleep before we check for work again
         	 */
-			System.out.println("Engine.run - waiting...");
+//			System.out.println("Engine.run - waiting...");
         	try {
         		if(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.SECURITY_PROTOCOL).trim().length()>0) {
         			intSleepTimer = new Integer(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.SECURITY_PROTOCOL));
@@ -109,40 +113,101 @@ public class Engine extends Job {
     
     private void performLdapWrite() {
     	WriteRequest writeRequest;
-    	ModificationItem[] modItem = null;
+    	ModificationItem[] modItem = new ModificationItem[writeVector.size()];
     	int i = 0;
     	String channel;
     	String ldapChannelName;
-    	
     	channel = null;
     	i = 0;
-    	
-    	for ( Enumeration eWriteVector = writeVector.elements(); eWriteVector.hasMoreElements(); ){ 
-    		Object tempObject = eWriteVector.nextElement();
-    		writeRequest = (WriteRequest)tempObject;
-    		
+
+    	for (WriteRequest writeReq : writeVector) {
+
     		//
     		// prepare LDAP request for all entries matching the same channel
     		//
     		if ( channel == null) {
     			// first time setting
-    			channel = writeRequest.getChannel();
+    			channel = writeReq.getChannel();
     		} 
-    		
-    		if ( channel.equals(writeRequest.getChannel())){
+    		if ( !channel.equals(writeReq.getChannel())){
+    			changeValue("eren", channel, modItem);
+    			i = 0;
     			//
-    			// combine all items that are related to the same channel
+    			// define next channel name
     			//
-    			modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,	
-        				new BasicAttribute(	writeRequest.getAttribute(), writeRequest.getValue()));
-    		} else {
-    			//
-    			// channel name changed
-    			// first write all values
-    			//
-    			ldapChannelName = "eren=" + channel;
+    			channel = writeReq.getChannel();
+
+    		}
+			//
+			// combine all items that are related to the same channel
+			//
+			BasicAttribute ba = new BasicAttribute(	writeReq.getAttribute(), writeReq.getValue());
+			modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,ba);
+		}
+    	//
+    	// still something left to do?
+    	//
+    	if (i != 0 ) {
+    		//
+			ldapChannelName = "eren=" + channel;
+//			ldapChannelName = "eren=alarmTest:RAMPA_calc,ecom=Bernds_Test-IOC,efan=Test,ou=EpicsAlarmcfg";
+			try {
+				int j=0;
+				for(;j<modItem.length;j++){
+					if(modItem[j]==null)
+						break;
+				}
+				ModificationItem modItemTemp[] = new ModificationItem[j];
+				for(int n = 0;n<j;n++){
+					modItemTemp[n] = modItem[n];
+				}
+				changeValue("eren", channel, modItem);
+//				ctx.modifyAttributes(ldapChannelName, modItemTemp);
+//				ctx.modifyAttributes(ldapChannelName, modItem.toArray(new ModificationItem[0]));
+//			} catch (NamingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//				//
+//				// too bad it did not work
+//				doWrite = false;	// wait for next time
+//				return;
+			}
+			 catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					//
+					// too bad it did not work
+					doWrite = false;	// wait for next time
+					return;
+				}
+    	}
+    	
+    	doWrite = false;
+    }
+
+    /**
+	 * @param string
+	 * @param channel
+	 * @param modItem
+	 */
+	private void changeValue(String string, String channel, ModificationItem[] modItem) {
+		//
+		// channel name changed
+		// first write all values
+		//
+        SearchControls ctrl = new SearchControls();
+        ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		try {
+			NamingEnumeration<SearchResult> results = ctx.search("","eren=" + channel,ctrl);
+			while(results.hasMore()) {
+//    			ldapChannelName = "eren=" + channel;
+				String ldapChannelName = results.next().getNameInNamespace();
+				if(ldapChannelName.endsWith(",o=DESY,c=DE"))
+					ldapChannelName=ldapChannelName.substring(0,ldapChannelName.length()-12);
+				System.out.println("getNameInNamespace(): "+ldapChannelName);
     			try {
     				ctx.modifyAttributes(ldapChannelName, modItem);
+//    				ctx.modifyAttributes(ldapChannelName, modItem.toArray(new ModificationItem[0]));
     			} catch (NamingException e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
@@ -150,46 +215,30 @@ public class Engine extends Job {
     				// too bad it did not work
     				doWrite = false;	// wait for next time
     				return;
-    			}
+    			}catch (Exception e) {
+    				e.printStackTrace();
+    				//
+    				// too bad it did not work
+    				doWrite = false;	// wait for next time
+    				return;
+				}
+    			
     			//
     			// reset for to get ready for values of next channel
     			//
-    			modItem = null;
-    			i = 0;
-    			//
-    			// define next channel name
-    			//
-    			channel = writeRequest.getChannel();
-    			modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,	
-        				new BasicAttribute(	writeRequest.getAttribute(), writeRequest.getValue()));
-    		}
-    		
-    		
-    		//setLdapValue (writeRequest.getAttribute(), writeRequest.getChannel(), writeRequest.getValue(), writeRequest.getTimeStamp());
-    		writeVector.remove(tempObject);
-    	}
-    	//
-    	// still something left to do?
-    	//
-    	if (i != 0 ) {
-    		//
-			ldapChannelName = "eren=" + channel;
-			try {
-				ctx.modifyAttributes(ldapChannelName, modItem);
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				//
-				// too bad it did not work
-				doWrite = false;	// wait for next time
-				return;
+    			modItem = new ModificationItem[writeVector.size()];
 			}
-    	}
-    	
-    	doWrite = false;
-    }
 
-    public void setLdapValue ( String channel, String severity, String status, String timeStamp) {
+		} catch (NamingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		
+	}
+
+
+	public void setLdapValue ( String channel, String severity, String status, String timeStamp) {
 		ModificationItem epicsStatus, epicsSeverity, epicsTimeStamp, epicsAcknowledgeTimeStamp ;
 		ModificationItem[] modItem = null;
 		int i = 0;
