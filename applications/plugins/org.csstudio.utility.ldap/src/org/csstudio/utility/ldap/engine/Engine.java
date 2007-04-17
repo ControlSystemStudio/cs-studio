@@ -112,16 +112,14 @@ public class Engine extends Job {
 	}
     
     private void performLdapWrite() {
-    	WriteRequest writeRequest;
     	ModificationItem[] modItem = new ModificationItem[writeVector.size()];
     	int i = 0;
     	String channel;
-    	String ldapChannelName;
     	channel = null;
     	i = 0;
 
-    	for (WriteRequest writeReq : writeVector) {
-
+    	while(writeVector.size()>0){
+    			WriteRequest writeReq = writeVector.firstElement();
     		//
     		// prepare LDAP request for all entries matching the same channel
     		//
@@ -143,34 +141,16 @@ public class Engine extends Job {
 			//
 			BasicAttribute ba = new BasicAttribute(	writeReq.getAttribute(), writeReq.getValue());
 			modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,ba);
+			writeVector.remove(0);
 		}
     	//
     	// still something left to do?
     	//
     	if (i != 0 ) {
     		//
-			ldapChannelName = "eren=" + channel;
-//			ldapChannelName = "eren=alarmTest:RAMPA_calc,ecom=Bernds_Test-IOC,efan=Test,ou=EpicsAlarmcfg";
 			try {
-				int j=0;
-				for(;j<modItem.length;j++){
-					if(modItem[j]==null)
-						break;
-				}
-				ModificationItem modItemTemp[] = new ModificationItem[j];
-				for(int n = 0;n<j;n++){
-					modItemTemp[n] = modItem[n];
-				}
+
 				changeValue("eren", channel, modItem);
-//				ctx.modifyAttributes(ldapChannelName, modItemTemp);
-//				ctx.modifyAttributes(ldapChannelName, modItem.toArray(new ModificationItem[0]));
-//			} catch (NamingException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//				//
-//				// too bad it did not work
-//				doWrite = false;	// wait for next time
-//				return;
 			}
 			 catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -188,9 +168,19 @@ public class Engine extends Job {
     /**
 	 * @param string
 	 * @param channel
-	 * @param modItem
+	 * @param modItemTemp
 	 */
 	private void changeValue(String string, String channel, ModificationItem[] modItem) {
+		int j=0;
+		// Delete null values and make rigth size
+		for(;j<modItem.length;j++){
+			if(modItem[j]==null)
+				break;
+		}
+		ModificationItem modItemTemp[] = new ModificationItem[j];
+		for(int n = 0;n<j;n++){
+			modItemTemp[n] = modItem[n];
+		}
 		//
 		// channel name changed
 		// first write all values
@@ -200,16 +190,13 @@ public class Engine extends Job {
 		try {
 			NamingEnumeration<SearchResult> results = ctx.search("","eren=" + channel,ctrl);
 			while(results.hasMore()) {
-//    			ldapChannelName = "eren=" + channel;
 				String ldapChannelName = results.next().getNameInNamespace();
-				if(ldapChannelName.endsWith(",o=DESY,c=DE"))
+				if(ldapChannelName.endsWith(",o=DESY,c=DE")){
 					ldapChannelName=ldapChannelName.substring(0,ldapChannelName.length()-12);
-				System.out.println("getNameInNamespace(): "+ldapChannelName);
+				}
     			try {
-    				ctx.modifyAttributes(ldapChannelName, modItem);
-//    				ctx.modifyAttributes(ldapChannelName, modItem.toArray(new ModificationItem[0]));
+    				ctx.modifyAttributes(ldapChannelName, modItemTemp);
     			} catch (NamingException e) {
-    				// TODO Auto-generated catch block
     				e.printStackTrace();
     				//
     				// too bad it did not work
@@ -223,10 +210,10 @@ public class Engine extends Job {
     				return;
 				}
     			
-    			//
-    			// reset for to get ready for values of next channel
-    			//
-    			modItem = new ModificationItem[writeVector.size()];
+//    			//
+//    			// reset for to get ready for values of next channel
+//    			//
+//    			modItemTemp = new ModificationItem[writeVector.size()];
 			}
 
 		} catch (NamingException e1) {
