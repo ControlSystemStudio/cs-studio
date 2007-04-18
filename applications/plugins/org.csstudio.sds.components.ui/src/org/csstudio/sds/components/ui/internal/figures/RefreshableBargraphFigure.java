@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
-import org.csstudio.sds.uil.CustomMediaFactory;
+import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;

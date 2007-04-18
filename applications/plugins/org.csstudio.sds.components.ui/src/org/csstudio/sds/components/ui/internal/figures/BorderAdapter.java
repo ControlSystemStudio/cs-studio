@@ -22,7 +22,7 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.csstudio.sds.uil.CustomMediaFactory;
+import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.swt.graphics.Color;

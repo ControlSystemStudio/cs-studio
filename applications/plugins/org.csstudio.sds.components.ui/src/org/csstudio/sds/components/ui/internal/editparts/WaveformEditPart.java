@@ -26,7 +26,7 @@ import org.csstudio.sds.components.ui.internal.figures.WaveformFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
-import org.csstudio.sds.uil.CustomMediaFactory;
+import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.RGB;
 
 /**

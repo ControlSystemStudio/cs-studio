@@ -28,7 +28,7 @@ import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
-import org.csstudio.sds.uil.CustomMediaFactory;
+import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;

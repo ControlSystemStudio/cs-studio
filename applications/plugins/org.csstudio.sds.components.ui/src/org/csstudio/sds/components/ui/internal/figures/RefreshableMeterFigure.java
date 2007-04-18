@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
-import org.csstudio.sds.uil.AntialiasingUtil;
+import org.csstudio.sds.util.AntialiasingUtil;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;

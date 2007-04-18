@@ -23,7 +23,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
-import org.csstudio.sds.uil.CustomMediaFactory;
+import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
