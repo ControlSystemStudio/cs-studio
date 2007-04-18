@@ -100,7 +100,6 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 					final IRefreshableFigure refreshableFigure) {
 				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
 				slider.setValue((Integer) newValue);
-				CentralLogger.getInstance().info(this, "" + (Integer) newValue);
 				return true;
 			}
 		};
