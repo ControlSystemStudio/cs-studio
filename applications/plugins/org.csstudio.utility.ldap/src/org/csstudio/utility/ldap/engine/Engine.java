@@ -1,7 +1,27 @@
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
 package org.csstudio.utility.ldap.engine;
 
 import java.text.SimpleDateFormat;
-import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.naming.NamingEnumeration;
@@ -18,7 +38,6 @@ import org.csstudio.utility.ldap.preference.PreferenceConstants;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.DefaultScope;
 
 public class Engine extends Job {
 
@@ -125,6 +144,7 @@ public class Engine extends Job {
 	}
     
     private void performLdapWrite() {
+//    	int size= writeVector.size();
     	ModificationItem[] modItem = new ModificationItem[writeVector.size()];
     	int i = 0;
     	String channel;
@@ -141,13 +161,15 @@ public class Engine extends Job {
     			channel = writeReq.getChannel();
     		} 
     		if ( !channel.equals(writeReq.getChannel())){
+    			System.out.print("write: ");
     			changeValue("eren", channel, modItem);
+    			System.out.println(" finisch!!!");
+    			modItem = new ModificationItem[writeVector.size()];
     			i = 0;
     			//
     			// define next channel name
     			//
     			channel = writeReq.getChannel();
-
     		}
 			//
 			// combine all items that are related to the same channel
@@ -155,6 +177,8 @@ public class Engine extends Job {
 			BasicAttribute ba = new BasicAttribute(	writeReq.getAttribute(), writeReq.getValue());
 			modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,ba);
 			writeVector.remove(0);
+			if(writeVector.size()<20||(writeVector.size()%10)==0)
+				System.out.println("Engine.performLdapWrite buffer size: "+writeVector.size());
 		}
     	//
     	// still something left to do?
@@ -162,7 +186,7 @@ public class Engine extends Job {
     	if (i != 0 ) {
     		//
 			try {
-
+				System.out.println("Vector leer!!!!");
 				changeValue("eren", channel, modItem);
 			}
 			 catch (Exception e) {
@@ -190,7 +214,7 @@ public class Engine extends Job {
 			if(modItem[j]==null)
 				break;
 		}
-		System.out.println("Enter Engine.changeValue with: " + channel);
+//		System.out.println("Enter Engine.changeValue with: " + channel);
 		ModificationItem modItemTemp[] = new ModificationItem[j];
 		for(int n = 0;n<j;n++){
 			modItemTemp[n] = modItem[n];
@@ -202,10 +226,10 @@ public class Engine extends Job {
         SearchControls ctrl = new SearchControls();
         ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		try {
-			NamingEnumeration<SearchResult> results = ctx.search("","eren=" + channel,ctrl);
-			System.out.println("Enter Engine.changeValue results for channnel: " + channel );
+			NamingEnumeration<SearchResult> results = ctx.search("",string+"=" + channel,ctrl);
+//			System.out.println("Enter Engine.changeValue results for channnel: " + channel );
 			while(results.hasMore()) {
-				System.out.println("Enter Engine.changeValue in while channnel: " + channel );
+//				System.out.println("Enter Engine.changeValue in while channnel: " + channel );
 				String ldapChannelName = results.next().getNameInNamespace();
 				if(ldapChannelName.endsWith(",o=DESY,c=DE")){
 					ldapChannelName=ldapChannelName.substring(0,ldapChannelName.length()-12);
