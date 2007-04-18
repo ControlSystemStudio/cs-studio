@@ -55,7 +55,7 @@ public class AnswerData
     public  double   getLowWarning() {return (lowWarning);} 
     public  String   getEgu()        {return (egu);} 
     
-    public boolean debug=true;
+    public boolean debug=false;
     //
     // Analyzing of byteArray package coming from AAPI-server
     // and extracting all data from that
