@@ -24,7 +24,7 @@ public class EpicsMeterInitializer implements IWidgetModelInitializer {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void initialize(AbstractWidgetModel model, AbstractControlSystemSchema schema) {
+	public void initialize(final AbstractWidgetModel model, final AbstractControlSystemSchema schema) {
 		if (MeterModel.ID.equals(model.getTypeID())) {
 			model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND, schema.getColorProperty(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
 			

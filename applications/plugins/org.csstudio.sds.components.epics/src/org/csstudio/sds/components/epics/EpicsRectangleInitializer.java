@@ -21,8 +21,8 @@ public class EpicsRectangleInitializer implements IWidgetModelInitializer {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void initialize(AbstractWidgetModel model,
-			AbstractControlSystemSchema schema) {
+	public void initialize(final AbstractWidgetModel model,
+			final AbstractControlSystemSchema schema) {
 		
 		assert model instanceof RectangleModel : "Precondition violated: model instanceof RectangleModel"; //$NON-NLS-1$
 	
