@@ -1129,9 +1129,9 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		 */
 		private Label _textLabel;
 		/**
-		 * The Tipmark.
+		 * The Tigmark.
 		 */
-		private TipMark _tipMark; 
+		private TigMark _tigMark; 
 		
 		/**
 		 * Construktor.
@@ -1148,10 +1148,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			_key = key;
 			_textLabel = new Label(key.toString());
 			_textLabel.setForegroundColor(this.getForegroundColor());
-			_tipMark = new TipMark();
-			_tipMark.setForegroundColor(this.getForegroundColor());
-			_tipMark.setBackgroundColor(_colorMap.get(_key));
-			this.add(_tipMark, BorderLayout.CENTER);
+			_tigMark = new TigMark();
+			_tigMark.setForegroundColor(this.getForegroundColor());
+			_tigMark.setBackgroundColor(_colorMap.get(_key));
+			this.add(_tigMark, BorderLayout.CENTER);
 			this.refreshLabel();
 		}
 		
@@ -1170,7 +1170,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		 */
 		public void setHorizontalOrientation(final boolean isHorizontal) {
 			_isHorizontal = isHorizontal;
-			_tipMark.setHorizontalOrientation(isHorizontal);
+			_tigMark.setHorizontalOrientation(isHorizontal);
 			this.refreshLabel();
 		}
 		
@@ -1181,7 +1181,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		 */
 		public void setTopLeftAlignment(final boolean topLeft) {
 			_topLeft = topLeft;
-			_tipMark.setTopLeftAlignment(topLeft);
+			_tigMark.setTopLeftAlignment(topLeft);
 			this.refreshLabel();
 		}
 		
@@ -1210,10 +1210,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 		}
 		
 		/**
-		 * This class represents a tipmark.
+		 * This class represents a tigmark.
 		 * @author Kai Meyer
 		 */
-		private final class TipMark extends RectangleFigure {
+		private final class TigMark extends RectangleFigure {
 			/**
 			 * The width of this marker.
 			 */
@@ -1236,7 +1236,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			 */
 			@Override
 			public void paintFigure(final Graphics graphics) {
-				//System.out.println("TipMark.paintFigure()");
 				Rectangle bounds = this.getBounds();
 				graphics.setForegroundColor(this.getForegroundColor());
 				graphics.setBackgroundColor(_colorMap.get(_key));
@@ -1430,92 +1429,5 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements	
 			_showNegativSections = showNegativ;
 		}
 	}
-	
-//	/**
-//	 * This class represents a scale.
-//	 * 
-//	 * @author Kai Meyer
-//	 *
-//	 */
-//	private final class Scale extends RectangleFigure {	
-//		/**
-//		 * The length of this Scale.
-//		 */
-//		private int _length;
-//		/**
-//		 * The count of sections in this Scale.
-//		 */
-//		private int _sectionCount;
-//		/**
-//		 * The direction of this Scale.
-//		 */
-//		private boolean _isHorizontal;
-//		/**
-//		 * The start position.
-//		 */
-//		private int _start = 10;
-//		
-//		/**
-//		 * Sets the length of this Scale.
-//		 * @param length
-//		 * 					The lenght of this Scale
-//		 */
-//		public void setLength(final int length) {
-//			_length = length;
-//		}
-//		
-//		/**
-//		 * Sets the orientation of this Scale.
-//		 * @param isHorizontal
-//		 * 					The orientation of this Scale (true=horizontal;false=vertical)
-//		 */
-//		public void setHorizontalOrientation(final boolean isHorizontal) {
-//			_isHorizontal = isHorizontal;
-//		}
-//		
-//		/**
-//		 * Sets the count of setcion in this Scale.
-//		 * @param sectionCount
-//		 * 					The count of setcion in this Scale
-//		 */
-//		public void setSectionCount(final int sectionCount) {
-//			_sectionCount = sectionCount;
-//		}
-//		
-//		/**
-//		 * {@inheritDoc}
-//		 */
-//		@Override
-//		public void paintFigure(final Graphics graphics) {
-//			int sectionWidth = 0;
-//			int sectionHeight = 0;
-//			int height = 0;
-//			int width = 0;
-//			graphics.setForegroundColor(this.getForegroundColor());
-//			graphics.setBackgroundColor(this.getBackgroundColor());
-//			if (_isHorizontal) {
-//				height = _scaleWideness;
-//				sectionWidth = _length/_sectionCount;
-//				for (int i=0;i<_sectionCount+1;i++) {
-//					graphics.drawLine(this.getBounds().x+_start+i*sectionWidth, this.getBounds().y, this.getBounds().x+_start+i*sectionWidth+width , this.getBounds().y+height);
-//				}
-//			} else {
-//				width = _scaleWideness;
-//				sectionHeight = _length/_sectionCount;
-//				for (int i=0;i<_sectionCount+1;i++) {
-//					graphics.drawLine(this.getBounds().x, this.getBounds().y+_start+i*sectionHeight, this.getBounds().x+width , this.getBounds().y+_start+i*sectionHeight);
-//				}
-//			}
-//		}		
-//		
-//		/**
-//		 * Sets the reference values for this figure.
-//		 * @param start
-//		 * 				The start value
-//		 */
-//		public void setReferencePositions(final int start) {
-//			_start = start;
-//		}
-//	}
 
 }
