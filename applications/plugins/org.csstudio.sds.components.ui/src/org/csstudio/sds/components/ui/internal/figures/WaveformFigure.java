@@ -213,17 +213,17 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 *            The waveform data that is to be displayed
 	 */
 	public void setData(final double[] data) {
-		_data = data;
+		//_data = data;
 		
-//		int count = 2000;
-//		int amplitude = 50;
-//		int verschiebung = 00;
-//		double[] result = new double[count];
-//		double value = (Math.PI*2)/count;
-//		for (int i=0;i<count;i++) {
-//			result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
-//		} 
-//		_data = result;
+		int count = 2000;
+		int amplitude = 50;
+		int verschiebung = 0;
+		double[] result = new double[count];
+		double value = (Math.PI*2)/count;
+		for (int i=0;i<count;i++) {
+			result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
+		} 
+		_data = result;
 		this.refreshConstraints();
 		repaint();
 	}
@@ -332,9 +332,10 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * 			The PointList with all Points
 	 */
 	private List<PrecisionPoint> calculatePoints(final Rectangle bounds) {
-		//PointList pointList = new PointList();
 		List<PrecisionPoint> pointList = new LinkedList<PrecisionPoint>();
-		
+		if (bounds.width==0) {
+			return pointList;
+		}
 		double min = 0;
 		double max = 0;
 		
@@ -359,7 +360,11 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 			if (yValue>max || i==0) {
 				max = yValue;
 			}
-			pointList.add( new PrecisionPoint(  ((bounds.width-1)*i)/(pointCount-1), yValue ) );
+			double x=1;
+			if (pointCount!=0) {
+				x = 1+((bounds.width-1)*i)/(pointCount);
+			} 
+			pointList.add( new PrecisionPoint(  x, yValue ) );
 		}
 		if (min<_min-0.001 || min>_min+0.001) {
 			_min = min;
