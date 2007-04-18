@@ -213,17 +213,17 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 *            The waveform data that is to be displayed
 	 */
 	public void setData(final double[] data) {
-		//_data = data;
+		_data = data;
 		
-		int count = 2000;
-		int amplitude = 50;
-		int verschiebung = 0;
-		double[] result = new double[count];
-		double value = (Math.PI*2)/count;
-		for (int i=0;i<count;i++) {
-			result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
-		} 
-		_data = result;
+//		int count = 2000;
+//		int amplitude = 50;
+//		int verschiebung = 0;
+//		double[] result = new double[count];
+//		double value = (Math.PI*2)/count;
+//		for (int i=0;i<count;i++) {
+//			result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
+//		} 
+//		_data = result;
 		this.refreshConstraints();
 		repaint();
 	}
