@@ -207,7 +207,7 @@
             name="Container View"/>
      <view
            class="org.csstudio.platform.ui.views.WorkspaceExplorerView"
-           icon="icons/folder.png"
+           icon="icons/project_open.png"
            id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
            name="Workspace Explorer"/>            
    </extension>
@@ -308,6 +308,7 @@
            targetID="org.csstudio.platform.ui.views.WorkspaceExplorerView">
         <action
               class="org.csstudio.platform.ui.views.CreateProjectAction"
+              icon="icons/new_project.png"
               id="org.csstudio.platform.ui.views.CreateProjectAction"
               label="New Project"
               menubarPath="additions"/>
@@ -320,6 +321,7 @@
         </visibility>
         <action
               class="org.csstudio.platform.ui.views.CreateFolderAction"
+              icon="icons/new_folder.png"
               id="org.csstudio.platform.ui.views.CreateFolderAction"
               label="New Folder"
               menubarPath="additions"/>
@@ -332,6 +334,7 @@
         </visibility>
         <action
               class="org.csstudio.platform.ui.views.DeleteResourceAction"
+              icon="icons/fileDelete.png"
               id="org.csstudio.platform.ui.views.DeleteResourceAction"
               label="Delete Resource"
               menubarPath="additions"/>

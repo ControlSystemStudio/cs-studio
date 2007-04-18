@@ -97,7 +97,7 @@ public final class ContainerSelectionGroup extends Composite {
 			_shell = shell;
 			this.setText("Create new folder");
 			this.setToolTipText("Creates a new folder");
-			this.setImageDescriptor(ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/folder.gif")); //$NON-NLS-1$
+			this.setImageDescriptor(ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/new_folder.png")); //$NON-NLS-1$
 		}
 		
 		/**
@@ -150,7 +150,7 @@ public final class ContainerSelectionGroup extends Composite {
 			_shell = shell;
 			this.setText("Create new project");
 			this.setToolTipText("Creates a new project");
-			this.setImageDescriptor(ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/project_open.gif"));
+			this.setImageDescriptor(ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/new_project.png"));
 		}
 		
 		/**

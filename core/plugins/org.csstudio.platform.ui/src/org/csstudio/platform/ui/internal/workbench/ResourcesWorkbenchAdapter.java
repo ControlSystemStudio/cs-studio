@@ -85,9 +85,9 @@ public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter {
 			if (object instanceof IProject) {
 				IProject project = (IProject) object;
 				if (project.isOpen()) {
-					result = ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/project_open.gif");  //$NON-NLS-1$
+					result = ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/project_open.png");  //$NON-NLS-1$
 				} else {
-					result = ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/project_close.gif");  //$NON-NLS-1$
+					result = ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/project_close.png");  //$NON-NLS-1$
 				}
 			} else {
 				result = ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/folder.png");  //$NON-NLS-1$
