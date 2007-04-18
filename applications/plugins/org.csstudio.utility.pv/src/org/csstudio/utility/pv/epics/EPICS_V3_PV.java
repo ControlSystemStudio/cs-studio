@@ -636,6 +636,16 @@ public class EPICS_V3_PV
             listener.pvDisconnected(this);
     }
 
+    /** TODO Helge, how about comments?
+     *  TODO Remove, because this is wrong.
+     *       If a PV should have a precision (units, limits, ...),
+     *       that we would add that to the PV base class.
+     *       But instead, we add it to the Value's MetaData.
+     *       Because some value types have no precision,
+     *       and even if they do, different samples can have
+     *       different meta data, so asking the PV for the meta
+     *       data seems wrong.
+     */
     public int getPrecision(){
     	if (meta instanceof NumericMetaData) {
 			NumericMetaData numMeta = (NumericMetaData) meta;
