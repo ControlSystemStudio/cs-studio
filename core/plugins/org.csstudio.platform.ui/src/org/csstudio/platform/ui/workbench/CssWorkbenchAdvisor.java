@@ -21,6 +21,7 @@
  */
 package org.csstudio.platform.ui.workbench;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.console.Console;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective;
@@ -92,7 +93,8 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 		_workbenchWindowconfigurer = configurer;
 		_workbenchWindowconfigurer.setInitialSize(new Point(MAX_WINDOW_WIDTH,
 				MAX_WINDOW_HEIGHT));
-		_workbenchWindowconfigurer.setTitle(Messages.getString("CssWorkbenchAdvisor.WINDOW_TITLE")); //$NON-NLS-1$
+		_workbenchWindowconfigurer.setTitle(Messages
+				.getString("CssWorkbenchAdvisor.WINDOW_TITLE")); //$NON-NLS-1$
 		_workbenchWindowconfigurer.setShowPerspectiveBar(true);
 		_workbenchWindowconfigurer.setShowMenuBar(true);
 		_workbenchWindowconfigurer.setShowCoolBar(true);
@@ -114,6 +116,15 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 
 		_actionBuilder.makeAndPopulateActions(getWorkbenchConfigurer(),
 				configurer);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final boolean preShutdown() {
+		Console.getInstance().resetSystemOutputStream();
+		return super.preShutdown();
 	}
 
 	/**

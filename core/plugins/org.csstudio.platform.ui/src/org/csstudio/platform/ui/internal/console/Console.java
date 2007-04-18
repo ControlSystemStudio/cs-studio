@@ -50,31 +50,20 @@ public final class Console {
 	private MessageConsole _console = null;
 
 	/**
-	 * The console stream.
+	 * The console output stream.
 	 */
 	private MessageConsoleStream _stream = null;
+
+	/**
+	 * The cached system output stream.
+	 */
+	private PrintStream _cachedStream = null;
 
 	/**
 	 * Constructor is private due to singleton pattern.
 	 */
 	private Console() {
-		_console = new MessageConsole(Messages
-				.getString("Console.CONSOLE_TITLE"), null) { //$NON-NLS-1$
-			@Override
-			public String getHelpContextId() {
-				return CSSPlatformUiPlugin.ID + ".console"; //$NON-NLS-1$
-			}
-		};
-
-		_stream = _console.newMessageStream();
-		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
-		consolePlugin.getConsoleManager().addConsoles(
-				new IConsole[] { _console });
-		System.setOut(new PrintStream(_stream));
-
-		// the logging mechanism needs to be informed that the standard system
-		// out has changed!
-		CentralLogger.getInstance().configure();
+		initConsole();
 	}
 
 	/**
@@ -97,5 +86,39 @@ public final class Console {
 	 */
 	public void setColor(final Color color) {
 		_stream.setColor(color);
+	}
+
+	/**
+	 * Reset the system output stream to its cached state.
+	 */
+	public void resetSystemOutputStream() {
+		if (_cachedStream != null) {
+			System.setOut(_cachedStream);
+		}
+	}
+
+	/**
+	 * Initialize the console and redirect the standard System.out to it.
+	 */
+	private void initConsole() {
+		_console = new MessageConsole(Messages
+				.getString("Console.CONSOLE_TITLE"), null) { //$NON-NLS-1$
+			@Override
+			public String getHelpContextId() {
+				return CSSPlatformUiPlugin.ID + ".console"; //$NON-NLS-1$
+			}
+		};
+
+		_stream = _console.newMessageStream();
+		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
+		consolePlugin.getConsoleManager().addConsoles(
+				new IConsole[] { _console });
+
+		_cachedStream = System.out;
+		System.setOut(new PrintStream(_stream));
+
+		// the logging mechanism needs to be informed that the standard system
+		// out has changed!
+		CentralLogger.getInstance().configure();
 	}
 }
