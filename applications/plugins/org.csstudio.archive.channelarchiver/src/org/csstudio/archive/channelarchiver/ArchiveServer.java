@@ -6,7 +6,10 @@ import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.NameInfo;
 import org.csstudio.platform.util.ITimestamp;
 
-/** Main access point to the ChannelArchiver network data server. */
+/** Main access point to the ChannelArchiver network data server.
+ *  @author Kay Kasemir
+ *  @author Blaz Lipuscek
+ */
 public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 {
     private final String url;
@@ -71,7 +74,7 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
     
     public String getServerName() 
     {
-    	return "XNDSServer";
+    	return "XNDSServer"; //$NON-NLS-1$
     }
     
     /** @return Severity for an EPICS severity code. */

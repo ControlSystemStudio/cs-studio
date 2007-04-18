@@ -4,14 +4,7 @@ import org.csstudio.platform.util.ITimestamp;
 
 /** Main interface to an archive.
  *  <p>
- *  The implementation of this for a data source of type 'xyz' should
- *  be in org.csstudio.archive.xyz.Archive, and it should include a
- *  factory method
- *  <pre>
- *     public static Archive getInstance(String url) throws Exception
- *  </pre>
- *  so that we can locate and construct available implementations
- *  via Java introspection.
+ *  To get an actual implementation, use the ArchiveImplementationRegistry.
  *  <p>
  *  Some of the methods in this API naturally require a network request
  *  or a lenghty search for data, and they will be marked as possibly
@@ -25,7 +18,12 @@ import org.csstudio.platform.util.ITimestamp;
  *  data library, primarily written by Craig McChesney and Sergei Chevtsov,
  *  with contributions by Peregrine McGehee, all at LANL at the time.
  *  
+ *  @see ArchiveImplementationRegistry
+ *  
  *  @author Kay Kasemir
+ *  @author Jan Hatje
+ *  @author Albert Kagarmanov
+ *  @author Blaz Lipuscek
  *  @author Craig McChesney
  *  @author Sergei Chevtsov
  *  @author Peregrine McGehee
@@ -50,9 +48,10 @@ public abstract class ArchiveServer
     abstract public int getVersion();
     
     /** Server name information.
-     * <p>
-     * The unique name of this implementation of ArchiveServer
-     * @return A name of the server.
+     *  <p>
+     *   unique name of this implementation of ArchiveServer
+     *  TODO Reconsider. We already have URL, Description, Version.
+     *  @return A name of the server.
      */
     abstract public String getServerName();
     
@@ -254,8 +253,14 @@ public abstract class ArchiveServer
         throws Exception;
     
     /** Returns an id of last error which occured on request.
-     * 
-     * @return 0 if there was no error, otherwise error id.
+     *  TODO What's the meaning of the 'id'?
+     *       Does this call reset the last error?
+     *       Or will the next ArchiveServer method
+     *       reset to 0 and then maybe to another error?
+     *  TODO Remove this 'errno()' crap.
+     *       Methods return values or Null for error,
+     *       or throw exceptions.
+     *  @return 0 if there was no error, otherwise error id.
      */
     public int getLastRequestError() {
     	return 0;
