@@ -102,13 +102,26 @@ public class Engine extends Job {
 	}
     
     synchronized public void addLdapWriteRequest(String attribute, String channel, String value) {
-    	
+    	boolean addVectorOK = true;
 		WriteRequest writeRequest = new WriteRequest( attribute, channel, value);
 		//
 		// add request to vector
 		//
-		writeVector.add(writeRequest);
-		doWrite = true;
+		int bufferSize = writeVector.size();
+		System.out.println("Engine.addLdapWriteRequest actual buffer size: " + bufferSize);
+		if ( bufferSize > 10000) {
+			if (addVectorOK) {
+				System.out.println("Engine.addLdapWriteRequest writeVector > 500 - cannot store more!");
+				addVectorOK = false;
+			}
+		} else {
+			if ( ! addVectorOK) {
+				System.out.println("Engine.addLdapWriteRequest writeVector - continue writing");
+				addVectorOK = true;
+			}
+			writeVector.add(writeRequest);
+			doWrite = true;
+		}
 	}
     
     private void performLdapWrite() {
@@ -177,6 +190,7 @@ public class Engine extends Job {
 			if(modItem[j]==null)
 				break;
 		}
+		System.out.println("Enter Engine.changeValue with: " + channel);
 		ModificationItem modItemTemp[] = new ModificationItem[j];
 		for(int n = 0;n<j;n++){
 			modItemTemp[n] = modItem[n];
@@ -189,7 +203,9 @@ public class Engine extends Job {
         ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		try {
 			NamingEnumeration<SearchResult> results = ctx.search("","eren=" + channel,ctrl);
+			System.out.println("Enter Engine.changeValue results for channnel: " + channel );
 			while(results.hasMore()) {
+				System.out.println("Enter Engine.changeValue in while channnel: " + channel );
 				String ldapChannelName = results.next().getNameInNamespace();
 				if(ldapChannelName.endsWith(",o=DESY,c=DE")){
 					ldapChannelName=ldapChannelName.substring(0,ldapChannelName.length()-12);
