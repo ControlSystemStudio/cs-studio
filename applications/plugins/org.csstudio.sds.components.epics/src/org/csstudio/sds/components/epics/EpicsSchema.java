@@ -15,7 +15,7 @@ import org.eclipse.swt.graphics.RGB;
  * @version $Revision$
  * 
  */
-final public class EpicsSchema extends AbstractControlSystemSchema {
+public final class EpicsSchema extends AbstractControlSystemSchema {
 
 	/**
 	 * The schema ID.

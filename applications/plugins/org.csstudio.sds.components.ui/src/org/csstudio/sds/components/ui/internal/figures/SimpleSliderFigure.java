@@ -130,7 +130,6 @@ public final class SimpleSliderFigure extends Panel implements
 		_scrollBar = createScrollbarFigure();
 		add(_scrollBar, BorderLayout.CENTER);
 
-		
 	}
 
 	/**
@@ -189,7 +188,13 @@ public final class SimpleSliderFigure extends Panel implements
 		}
 	}
 
-	public void setPopulateEvents(boolean populateEvents) {
+	/**
+	 * Set the "populate events" flag.
+	 * 
+	 * @param populateEvents
+	 *            the "populate events" flag.
+	 */
+	public void setPopulateEvents(final boolean populateEvents) {
 		_populateEvents = populateEvents;
 	}
 
@@ -200,10 +205,10 @@ public final class SimpleSliderFigure extends Panel implements
 	 *            The minimum value.
 	 */
 	public void setMin(final double min) {
-		
+
 		_min = (int) (min * _scrollbarPrecision);
 		_scrollBar.setMinimum(_min);
-		
+
 	}
 
 	/**
@@ -213,11 +218,10 @@ public final class SimpleSliderFigure extends Panel implements
 	 *            The maximum value.
 	 */
 	public void setMax(final double max) {
-		
+
 		_max = (int) (max * _scrollbarPrecision);
 		// _scrollBar.setMaximum(_max);
 		this.setScrollbarMax(_max);
-		
 
 	}
 
@@ -228,9 +232,9 @@ public final class SimpleSliderFigure extends Panel implements
 	 *            The base for the real max value
 	 */
 	private void setScrollbarMax(final int max) {
-		
+
 		_scrollBar.setMaximum(max + _sliderWide);
-		
+
 	}
 
 	/**
@@ -272,7 +276,7 @@ public final class SimpleSliderFigure extends Panel implements
 		this.setSliderWide(minWide);
 		this.setValue(value);
 		this.setManualValue(manualValue);
-		
+
 	}
 
 	/**
@@ -282,11 +286,11 @@ public final class SimpleSliderFigure extends Panel implements
 	 *            The wide
 	 */
 	public void setSliderWide(final int wide) {
-		
+
 		_sliderWide = wide * _scrollbarPrecision;
 		this.setScrollbarMax(_max);
 		_scrollBar.setExtent(_sliderWide);
-		
+
 	}
 
 	/**
@@ -305,7 +309,7 @@ public final class SimpleSliderFigure extends Panel implements
 	 *            The increment value.
 	 */
 	public void setIncrement(final double increment) {
-		
+
 		this.setScrollbarPrecision((int) Math.pow(10, this
 				.getCountOfDecimals(increment)));
 		int inc = (int) (increment * _scrollbarPrecision);
@@ -315,7 +319,7 @@ public final class SimpleSliderFigure extends Panel implements
 
 		_scrollBar.setStepIncrement(inc);
 		_scrollBar.setPageIncrement(inc);
-		
+
 	}
 
 	/**

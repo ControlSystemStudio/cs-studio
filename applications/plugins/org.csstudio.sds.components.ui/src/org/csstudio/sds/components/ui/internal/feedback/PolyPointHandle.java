@@ -23,10 +23,7 @@ package org.csstudio.sds.components.ui.internal.feedback;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
-import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polyline;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.handles.SquareHandle;

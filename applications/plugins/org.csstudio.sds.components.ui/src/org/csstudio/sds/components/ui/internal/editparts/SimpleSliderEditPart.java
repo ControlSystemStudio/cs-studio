@@ -21,9 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.SimpleSliderModel;
-import org.csstudio.sds.components.ui.internal.figures.AdvancedSliderFigure;
 import org.csstudio.sds.components.ui.internal.figures.SimpleSliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
