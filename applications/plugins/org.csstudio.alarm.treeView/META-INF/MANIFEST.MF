@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Alarm Tree View
+Bundle-SymbolicName: org.csstudio.alarm.treeView; singleton:=true
+Bundle-Version: 0.1.0
+Bundle-Activator: org.csstudio.alarm.treeView.LdaptreePlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.views,
+ org.csstudio.platform,
+ org.csstudio.platform.ui,
+ org.csstudio.platform.libs.jms
+Eclipse-AutoStart: true
+Bundle-Vendor: DESY

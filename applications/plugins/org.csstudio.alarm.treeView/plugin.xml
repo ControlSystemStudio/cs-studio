@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="initialvalues" name="Initial Values" schema="schema/initialvalues.exsd"/>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Alarms"
+            id="org.csstudio.alarm.treeView">
+      </category>
+      <view
+            allowMultiple="false"
+            category="org.csstudio.alarm.treeView"
+            class="org.csstudio.alarm.treeView.views.AlarmTreeView"
+            icon="icons/Alarm.gif"
+            id="org.csstudio.alarm.treeView.views.LdapTView"
+            name="Alarm Treeview">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="org.csstudio.alarm.treeView.views.LdapTView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.csstudio.alarm.treeView.preferences.LdapTreePreferences"
+            id="org.csstudio.alarm.treeView.preferences.LdapTreePreferences"
+            name="Alarm Treeview preferences"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.alarm.treeView.preferences.PreferenceInitializer"/>
+   </extension>
+
+</plugin>
