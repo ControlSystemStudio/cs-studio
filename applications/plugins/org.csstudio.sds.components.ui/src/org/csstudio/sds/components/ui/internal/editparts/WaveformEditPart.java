@@ -26,6 +26,7 @@ import org.csstudio.sds.components.ui.internal.figures.WaveformFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -48,10 +49,11 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		waveform.setShowScale(model.getShowScale());
 		waveform.setShowLedgerlLines(model.getShowLedgerLines());
 		waveform.setShowConnectionLines(model.getShowConnectionLines());
-		waveform.setBackgroundColor(model.getBackgroundColor());
-		waveform.setForegroundColor(model.getForegroundColor());
+		waveform.setBackgroundColor(CustomMediaFactory.getInstance().getColor(model.getBackgroundColor()));
+		waveform.setForegroundColor(CustomMediaFactory.getInstance().getColor(model.getForegroundColor()));
 		waveform.setGraphColor(model.getGraphColor());
 		waveform.setConnectionLineColor(model.getConnectionLineColor());
+		waveform.setLedgerLineColor(model.getLedgerLineColor());
 		return waveform;
 	}
 
@@ -126,5 +128,16 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_CONNECTION_LINE_COLOR, connectionColorHandler);
+		// ledger line color
+		IWidgetPropertyChangeHandler ledgerColorHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setLedgerLineColor((RGB) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_LEDGER_LINE_COLOR, ledgerColorHandler);
 	}
 }

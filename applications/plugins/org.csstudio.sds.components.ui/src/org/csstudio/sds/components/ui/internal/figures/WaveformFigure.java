@@ -24,6 +24,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.uil.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
@@ -69,16 +70,6 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	private static final Rectangle DEFAULT_CONSTRAINT = new Rectangle(0,0,0,0);
 	
 	/**
-	 * The Color for the graph.
-	 */
-	private Color _graphColor = ColorConstants.red;
-	
-	/**
-	 * The Color for the connection lines.
-	 */
-	private Color _connectionLineColor = ColorConstants.red;
-	
-	/**
 	 * The displayed waveform data.
 	 */
 	private double[] _data;
@@ -97,7 +88,6 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	/**
 	 * The PointList based on the real data.
 	 */
-	//private PointList _dataPoints = new PointList();
 	private List<PrecisionPoint> _dataPoints = new LinkedList<PrecisionPoint>();
 	/**
 	 * The bounds of the graph.
@@ -138,11 +128,20 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * The horizontal ledger scale.
 	 */
 	private Scale _horizontalLedgerScale;
+	/**
+	 * The graph of this waveform.
+	 */
+	private GraphFigure _graphFigure;
 	
 	/**
 	 * True, if this figure has to be initiated, false otherwise.
 	 */
 	private boolean _init = true;
+	
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
 
 	/**
 	 * Standard constructor.
@@ -176,6 +175,8 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		_horizontalScale.setReferencePositions(0);
 		_horizontalScale.setForegroundColor(this.getForegroundColor());
 		this.add(_horizontalScale);
+		_graphFigure = new GraphFigure();
+		this.add(_graphFigure);
 		
 //		 listen to figure movement events
 		addFigureListener(new FigureListener() {
@@ -195,6 +196,12 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * {@inheritDoc}
 	 */
 	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if(_borderAdapter==null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
 		return null;
 	}
 
@@ -259,6 +266,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		} else {
 			this.setConstraint(_horizontalLedgerScale, DEFAULT_CONSTRAINT);
 		}
+		this.setConstraint(_graphFigure, _graphBounds);
 		
 		this.setToolTip(this.getToolTipFigure());
 	}
@@ -269,9 +277,9 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	private void setGraphBounds() {
 		Rectangle figureBounds = this.getBounds();	
 		if (_showScale==SHOW_VERTICAL || _showScale==SHOW_BOTH) {
-			_graphBounds = new Rectangle(figureBounds.x+_scaleWideness,figureBounds.y,figureBounds.width-_scaleWideness,figureBounds.height);
+			_graphBounds = new Rectangle(_scaleWideness,0,figureBounds.width-_scaleWideness,figureBounds.height);
 		} else {
-			_graphBounds = new Rectangle(figureBounds.x,figureBounds.y,figureBounds.width,figureBounds.height);
+			_graphBounds = new Rectangle(0,0,figureBounds.width,figureBounds.height);
 		}
 	}
 	
@@ -298,20 +306,6 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 			_init = false;
 			this.refreshConstraints();
 		}					
-		int x = _graphBounds.x;
-		graphics.setForegroundColor(this.getForegroundColor());
-		graphics.drawLine(x, _graphBounds.y, x, _graphBounds.y+_graphBounds.height);
-		graphics.drawLine(x, _graphBounds.y+_zeroLevel, x+_graphBounds.width, _graphBounds.y+_zeroLevel);
-		PointList pointList = this.translatePointList(_dataPoints, x, _graphBounds);
-		if (_showConnectionLines) {
-			graphics.setForegroundColor(_connectionLineColor);
-			graphics.drawPolyline(pointList);
-		}
-		graphics.setForegroundColor(_graphColor);
-		for (int i=0;i<pointList.size();i++) {
-			Point p = pointList.getPoint(i);
-			graphics.drawPoint(p.x,p.y);
-		}
 	}
 	
 	/**
@@ -375,35 +369,6 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		}
 		return pointList;
 	}
-	
-	/**
-	 * Translates all Points in PointList. 
-	 * @param pointList 
-	 * 				The PointList
-	 * @param x
-	 * 				The reference x value
-	 * @param figureBounds
-	 * 				The bounds of the waveform
-	 * @return PointList
-	 * 				The new PointList
-	 */
-	private PointList translatePointList(final List<PrecisionPoint> pointList, final int x, final Rectangle figureBounds) {
-		PointList result = new PointList();
-		double posWeight = (double)(_zeroLevel)/_max;
-		double negWeight = (double)(figureBounds.height-_zeroLevel)/Math.abs(_min);
-		for (int i=0;i<pointList.size();i++) {
-			PrecisionPoint p = pointList.get(i);
-			double newY; 
-			if (p.y>=0) {
-				 newY = p.preciseY * posWeight;
-			} else {
-				newY = p.preciseY * negWeight;
-			}
-			Point newPoint = new Point(p.x+x, (double)(figureBounds.y+_zeroLevel) - newY);
-			result.addPoint(newPoint);
-		}
-		return result;
-	}
 
 	/**
 	 * Sets in which way the scale should be drawn.
@@ -462,21 +427,20 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	}
 
 	/**
-	 * Sets the background color of this figure.
-	 * @param backgroundRGB 
-	 * 				The RGB-value for the color
+	 * {@inheritDoc}
 	 */
-	public void setBackgroundColor(final RGB backgroundRGB) {
-		this.setBackgroundColor(CustomMediaFactory.getInstance().getColor(backgroundRGB));
+	public void setBackgroundColor(final Color backgroundColor) {
+		super.setBackgroundColor(backgroundColor);
+		_graphFigure.setBackgroundColor(backgroundColor);
 	}
-
+	
 	/**
-	 * Sets the foreground color of this figure.
-	 * @param foregroundRGB 
-	 * 				The RGB-value for the color
+	 * {@inheritDoc}
 	 */
-	public void setForegroundColor(final RGB foregroundRGB) {
-		this.setForegroundColor(CustomMediaFactory.getInstance().getColor(foregroundRGB));
+	@Override
+	public void setForegroundColor(final Color foregroundcolor) {
+		super.setForegroundColor(foregroundcolor);
+		_graphFigure.setForegroundColor(foregroundcolor);
 	}
 	
 	/**
@@ -485,7 +449,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * 				The RGB-value for the color
 	 */
 	public void setGraphColor(final RGB graphRGB) {
-		_graphColor = CustomMediaFactory.getInstance().getColor(graphRGB);
+		_graphFigure.setGraphColor(CustomMediaFactory.getInstance().getColor(graphRGB));
 	}
 	
 	/**
@@ -494,7 +458,103 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * 				The RGB-value for the color
 	 */
 	public void setConnectionLineColor(final RGB lineRGB) {
-		_connectionLineColor = CustomMediaFactory.getInstance().getColor(lineRGB);
+		_graphFigure.setConnectionLineColor(CustomMediaFactory.getInstance().getColor(lineRGB));
+	}
+	
+	/**
+	 * Sets the color for the ledger lines.
+	 * @param lineRGB 
+	 * 				The RGB-value for the color
+	 */
+	public void setLedgerLineColor(final RGB lineRGB) {
+		_verticalLedgerScale.setForegroundColor(CustomMediaFactory.getInstance().getColor(lineRGB));
+		_horizontalLedgerScale.setForegroundColor(CustomMediaFactory.getInstance().getColor(lineRGB));
+	}
+	
+	/**
+	 * This class represents the graph of the waveform.
+	 */
+	private final class GraphFigure extends RectangleFigure {
+		
+		/**
+		 * The Color for the graph.
+		 */
+		private Color _graphColor = ColorConstants.red;
+		
+		/**
+		 * The Color for the connection lines.
+		 */
+		private Color _connectionLineColor = ColorConstants.red;
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void paintFigure(final Graphics graphics) {
+			//super.paintFigure(graphics);
+			Rectangle figureBounds = this.getBounds();					
+			graphics.setForegroundColor(this.getForegroundColor());
+			graphics.drawLine(figureBounds.x, figureBounds.y, figureBounds.x, figureBounds.y+figureBounds.height);
+			graphics.drawLine(figureBounds.x, figureBounds.y+_zeroLevel, figureBounds.x+figureBounds.width, figureBounds.y+_zeroLevel);
+			PointList pointList = this.translatePointList(_dataPoints, figureBounds.x, figureBounds);
+			if (_showConnectionLines) {
+				graphics.setForegroundColor(_connectionLineColor);
+				graphics.drawPolyline(pointList);
+			}
+			graphics.setForegroundColor(_graphColor);
+			for (int i=0;i<pointList.size();i++) {
+				Point p = pointList.getPoint(i);
+				graphics.drawPoint(p.x,p.y);
+			}
+		}
+		
+		/**
+		 * Translates all Points in PointList. 
+		 * @param pointList 
+		 * 				The PointList
+		 * @param x
+		 * 				The reference x value
+		 * @param figureBounds
+		 * 				The bounds of the waveform
+		 * @return PointList
+		 * 				The new PointList
+		 */
+		private PointList translatePointList(final List<PrecisionPoint> pointList, final int x, final Rectangle figureBounds) {
+			PointList result = new PointList();
+			double posWeight = (double)(_zeroLevel)/_max;
+			double negWeight = (double)(figureBounds.height-_zeroLevel)/Math.abs(_min);
+			for (int i=0;i<pointList.size();i++) {
+				PrecisionPoint p = pointList.get(i);
+				double newY; 
+				if (p.y>=0) {
+					 newY = p.preciseY * posWeight;
+				} else {
+					newY = p.preciseY * negWeight;
+				}
+				Point newPoint = new Point(p.x+x, (double)(figureBounds.y+_zeroLevel) - newY);
+				result.addPoint(newPoint);
+			}
+			return result;
+		}
+		
+		/**
+		 * Sets the color for the graph.
+		 * @param graphColor 
+		 * 				The color
+		 */
+		public void setGraphColor(final Color graphColor) {
+			_graphColor = graphColor;
+		}
+		
+		/**
+		 * Sets the color for the connection lines.
+		 * @param lineColor 
+		 * 				The color
+		 */
+		public void setConnectionLineColor(final Color lineColor) {
+			_connectionLineColor = lineColor;
+		}
+		
 	}
 	
 	/**

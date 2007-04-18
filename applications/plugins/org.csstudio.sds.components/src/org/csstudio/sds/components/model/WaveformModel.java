@@ -68,6 +68,11 @@ public final class WaveformModel extends AbstractWidgetModel {
 	public static final String PROP_CONNECTION_LINE_COLOR = "connection_lines_color"; //$NON-NLS-1$
 	
 	/**
+	 * Property ID for the color of the ledger lines.
+	 */
+	public static final String PROP_LEDGER_LINE_COLOR = "ledger_lines_color"; //$NON-NLS-1$
+	
+	/**
 	 * The diplay options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
 	 */
 	private static final String[] DISPLAY_OPTIONS = new String[] {"None", "Vertical", "Horizontal", "Both"};
@@ -85,6 +90,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 		addProperty(PROP_SHOW_CONNECTION_LINES, new BooleanProperty("Show connection lines", WidgetPropertyCategory.Display, false));
 		addProperty(PROP_GRAPH_COLOR, new ColorProperty("Color graph", WidgetPropertyCategory.Display, new RGB(255,0,0)));
 		addProperty(PROP_CONNECTION_LINE_COLOR, new ColorProperty("Color connection line", WidgetPropertyCategory.Display, new RGB(255,100,100)));
+		addProperty(PROP_LEDGER_LINE_COLOR, new ColorProperty("Color ledger lines", WidgetPropertyCategory.Display, new RGB(210,210,210)));
 	}
 
 	/**
@@ -112,6 +118,16 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 */
 	public RGB getGraphColor() {
 		return (RGB) getProperty(PROP_GRAPH_COLOR).getPropertyValue();
+	}
+	
+	/**
+	 * Return the RGB for the color of the ledger lines.
+	 * 
+	 * @return RGB 
+	 * 			The RGB for the color of the ledger lines
+	 */
+	public RGB getLedgerLineColor() {
+		return (RGB) getProperty(PROP_LEDGER_LINE_COLOR).getPropertyValue();
 	}
 	
 	/**
