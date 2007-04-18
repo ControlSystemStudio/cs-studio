@@ -21,6 +21,7 @@
  */
 package org.csstudio.platform.ui.internal.perspectives;
 
+import org.csstudio.platform.ui.views.WorkspaceExplorerView;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
@@ -32,7 +33,7 @@ import org.eclipse.ui.console.IConsoleConstants;
  */
 public class CssDefaultPerspective implements IPerspectiveFactory {
 	/**
-	 * The  ID of the css default perspective.
+	 * The ID of the css default perspective.
 	 */
 	public static final String ID = "org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective"; //$NON-NLS-1$
 
@@ -42,5 +43,7 @@ public class CssDefaultPerspective implements IPerspectiveFactory {
 	public final void createInitialLayout(final IPageLayout layout) {
 		layout.addView(IConsoleConstants.ID_CONSOLE_VIEW, IPageLayout.RIGHT,
 				0.66f, IPageLayout.ID_EDITOR_AREA);
+		layout.addView(WorkspaceExplorerView.VIEW_ID, IPageLayout.LEFT, 0.33f,
+				IPageLayout.ID_EDITOR_AREA);
 	}
 }

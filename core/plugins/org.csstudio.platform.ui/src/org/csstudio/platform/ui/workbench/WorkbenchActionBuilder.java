@@ -39,9 +39,10 @@ import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
+import org.eclipse.ui.part.CoolItemGroupMarker;
 
 /**
- * An  action builder for the menu bars of the control system studio.
+ * An action builder for the menu bars of the control system studio.
  * 
  * @author Alexander Will
  * 
@@ -166,6 +167,7 @@ public final class WorkbenchActionBuilder {
 		IToolBarManager fileToolBar = new ToolBarManager();
 		fileToolBar.add(_newWizardToolbarAction);
 		fileToolBar.add(_saveAction);
+		fileToolBar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
 		fileToolBar.add(new Separator());
 
 		// Add to the cool bar manager
