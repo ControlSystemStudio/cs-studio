@@ -2,13 +2,6 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            class="org.csstudio.alarm.dbaccess.archivedb.preferences.SamplePreferencePage"
-            id="org.csstudio.utility.alarm.archivedb.preferences.SamplePreferencePage"
-            name="Sample Preferences"/>
-   </extension>
-   <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.csstudio.alarm.dbaccess.archivedb.preferences.PreferenceInitializer"/>
    </extension>
