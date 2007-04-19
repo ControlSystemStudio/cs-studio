@@ -42,7 +42,7 @@ public class LogViewerPreferenceInitializer extends AbstractPreferenceInitialize
 		store.setDefault(LogViewerPreferenceConstants.PRIMARY_URL, "rmi://krykelog.desy.de:1099/"); //$NON-NLS-1$
 		store.setDefault(LogViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, "org.exolab.jms.jndi.InitialContextFactory"); //$NON-NLS-1$
 		store.setDefault(LogViewerPreferenceConstants.SECONDARY_URL, "rmi://krynfs.desy.de:1099/"); //$NON-NLS-1$
-		store.setDefault(LogViewerPreferenceConstants.QUEUE, "LOG,ALARM"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.QUEUE, "LOG,ALARM,PUT_LOG"); //$NON-NLS-1$
 }
 
 }
