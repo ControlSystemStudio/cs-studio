@@ -209,6 +209,11 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	private static final double[] DEFAULT_LEVELS = new double[]{0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.0};
 
+	public BargraphModel() {
+		setSize(100, 60);
+	}
+
+	
 	/**
 	 * {@inheritDoc}
 	 */
