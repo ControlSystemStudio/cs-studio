@@ -100,15 +100,6 @@
                label="%menuRestart"
                menubarPath="file/fileEnd"
                style="push"/>
-         <action
-               class="org.csstudio.platform.ui.internal.actions.OpenWorkspaceExplorerAction"
-               icon="icons/workspaceExplorer.png"
-               id="org.csstudio.platform.ui.internal.actions.OpenWorkspaceExplorerAction"
-               label="%menuOpenExplorer"
-               menubarPath="file/fileStart"
-               style="push"
-               toolbarPath="fileEnd"
-               tooltip="%menuOpenExplorer"/>               
       </actionSet>
       <actionSet
             id="org.eclipse.csstudio.ui.menuDefinition"
