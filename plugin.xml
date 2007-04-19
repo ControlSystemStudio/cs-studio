@@ -4,6 +4,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            category="org.csstudio.platform.ui.css.platform"
             class="org.csstudio.platform.libs.epics.preferences.EpicsPreferencePage"
             id="de.desy.css.libs.epics.preferences.EpicsPreferencePage"
             name="%prefPageTitle"/>
