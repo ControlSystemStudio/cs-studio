@@ -60,13 +60,13 @@ public class Engine extends Job {
 		// initialize LDAP connection (dir context
 		//
 //		ctx = LDAPReader.initial();
-		// TODO: 
+		// TODO:
 		/*
 		 *  create message ONCE
 		 *  retry forever if ctx == null
 		 *  BUT do NOT block caller (calling sigleton)
 		 *  submit ctx = new LDAPConnector().getDirContext(); to 'background process'
-		 *  
+		 *
 		 */
 		System.out.println("$$$$$$$$$$$$$$$$$$$$$ Engine.run - start");
 		ctx = new LDAPConnector().getDirContext();
@@ -119,7 +119,7 @@ public class Engine extends Job {
 		}
 		return thisEngine;
 	}
-    
+
     synchronized public void addLdapWriteRequest(String attribute, String channel, String value) {
     	boolean addVectorOK = true;
 		WriteRequest writeRequest = new WriteRequest( attribute, channel, value);
@@ -142,10 +142,10 @@ public class Engine extends Job {
 			doWrite = true;
 		}
 	}
-    
+
     private void performLdapWrite() {
 //    	int size= writeVector.size();
-    	ModificationItem[] modItem = new ModificationItem[writeVector.size()];
+    	ModificationItem[] modItem = new ModificationItem[100];
     	int i = 0;
     	String channel;
     	channel = null;
@@ -159,12 +159,12 @@ public class Engine extends Job {
     		if ( channel == null) {
     			// first time setting
     			channel = writeReq.getChannel();
-    		} 
+    		}
     		if ( !channel.equals(writeReq.getChannel())){
     			System.out.print("write: ");
     			changeValue("eren", channel, modItem);
     			System.out.println(" finisch!!!");
-    			modItem = new ModificationItem[writeVector.size()];
+    			modItem = new ModificationItem[1000];
     			i = 0;
     			//
     			// define next channel name
@@ -198,7 +198,7 @@ public class Engine extends Job {
 					return;
 				}
     	}
-    	
+
     	doWrite = false;
     }
 
@@ -249,7 +249,7 @@ public class Engine extends Job {
     				doWrite = false;	// wait for next time
     				return;
 				}
-    			
+
 //    			//
 //    			// reset for to get ready for values of next channel
 //    			//
@@ -261,7 +261,7 @@ public class Engine extends Job {
 			e1.printStackTrace();
 		}
 
-		
+
 	}
 
 
@@ -316,27 +316,27 @@ public class Engine extends Job {
     	private String 	attribute = null;
     	private String 	channel	= null;
     	private String	value = null;
-    	
+
     	public WriteRequest ( String attribute, String channel, String value) {
-    		
+
     		this.attribute = attribute;
     		this.channel = channel;
     		this.value = value;
     	}
-    	
+
     	public String getAttribute () {
     		return this.attribute;
     	}
-    	
+
     	public String getChannel () {
     		return this.channel;
     	}
-    	
+
     	public String getValue () {
     		return this.value;
     	}
 
     }
-	
+
 
 }

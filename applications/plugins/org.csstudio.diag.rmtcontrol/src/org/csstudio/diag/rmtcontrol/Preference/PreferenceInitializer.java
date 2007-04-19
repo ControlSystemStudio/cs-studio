@@ -19,12 +19,11 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.diag.rmtcontrol;
+package org.csstudio.diag.rmtcontrol.Preference;
 
 import java.io.File;
 
 import org.csstudio.diag.rmtcontrol.Activator;
-import org.csstudio.diag.rmtcontrol.Preference.SampleService;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 

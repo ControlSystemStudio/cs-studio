@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.diag.probe.feature"
       label="Probe"
-      version="1.0.1">
+      version="1.0.2">
 
    <description url="http://www.example.com/description">
       Probe shows the current value for a process variable.

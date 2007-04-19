@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Control;
  */
 public class ProcessVariableWithSampleDragSource implements DragSourceListener
 {
-    private static final boolean debug = true;
+    private static final boolean debug = false;
     public ISelectionProvider selection_provider;
 	private DragSource source;
     public ArrayList<IProcessVariableWithSample> data

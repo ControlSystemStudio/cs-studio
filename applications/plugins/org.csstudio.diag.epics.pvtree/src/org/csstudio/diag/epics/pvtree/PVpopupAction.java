@@ -9,7 +9,7 @@ import org.eclipse.ui.PlatformUI;
 
 /** Another application sent us a PV name via its popup menu. */
 public class PVpopupAction extends ProcessVariablePopupAction
-{    
+{
     public void handlePVs(IProcessVariable pv_names[])
     {
         if (pv_names.length < 1)

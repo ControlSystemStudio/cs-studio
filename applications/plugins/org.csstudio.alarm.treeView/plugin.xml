@@ -33,6 +33,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            category="org.csstudio.platform.ui.css.applications.alarm"
             class="org.csstudio.alarm.treeView.preferences.LdapTreePreferences"
             id="org.csstudio.alarm.treeView.preferences.LdapTreePreferences"
             name="Alarm Treeview preferences"/>

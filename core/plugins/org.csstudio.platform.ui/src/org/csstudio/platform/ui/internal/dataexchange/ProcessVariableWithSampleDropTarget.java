@@ -32,7 +32,7 @@ public abstract class ProcessVariableWithSampleDropTarget extends DropTargetAdap
             // Ideally, we receive PV-with-Sample:
             ProcessVariableWithSampleTransfer.getInstance(),
             // Less desirable alternatives follow:
-            ProcessVariableNameTransfer.getInstance(),
+            ProcessVariableNameTransfer.getInstance()
         });
 		this.target.addDropListener(this);
 	}
@@ -69,18 +69,25 @@ public abstract class ProcessVariableWithSampleDropTarget extends DropTargetAdap
      */
 	public void drop(DropTargetEvent event)
 	{
-		System.out.println("hallo");
+		System.out.println("ProcessVariableWithSampleDropTarget drop TargetEvent");
         if (event.data instanceof IProcessVariableWithSample[])
         {
+        	System.out.println("DropTargetEvent --> instanceof IProcessVariableWithSample[]");
             IProcessVariableWithSample names[] = (IProcessVariableWithSample [])event.data;
             for (int i = 0; i < names.length; i++)
                 handleDrop(names[i], event);
         }
         else if (event.data instanceof IProcessVariable[])
         {
+        	System.out.println("DropTargetEvent --> instanceof IProcessVariable[]");
             IProcessVariable names[] = (IProcessVariable [])event.data;
             for (int i = 0; i < names.length; i++)
                 handleDrop(names[i], event);
         }
+        else
+        {
+        	System.out.println("DropTargetEvent else");
+        }
+
 	}
 }
