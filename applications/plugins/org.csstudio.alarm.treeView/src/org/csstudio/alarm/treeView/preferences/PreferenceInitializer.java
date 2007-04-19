@@ -19,12 +19,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		IPreferenceStore store = LdaptreePlugin.getDefault()
 				.getPreferenceStore();
 		store.setDefault(PreferenceConstants.PROTOCOL, "epics");
-		store.setDefault(PreferenceConstants.URL, "ldap://reg1.desy.de:389/o=DESY,c=DE");
-		store.setDefault(PreferenceConstants.JMSURL, "rmi://krykelog.desy.de:1099/");
+		store.setDefault(PreferenceConstants.URL, "ldap://krynfs.desy.de:389/o=DESY,c=DE");
+		store.setDefault(PreferenceConstants.JMSURL, "rmi://krynfs.desy.de:1099/");
 		store.setDefault(PreferenceConstants.JMSTOPIC, "ALARM");
 		store.setDefault(PreferenceConstants.USER, "");
 		store.setDefault(PreferenceConstants.PASSWORD, "");
-		store.setDefault(PreferenceConstants.NODE, "Wasseranlagen");
+		store.setDefault(PreferenceConstants.NODE, "Test");
 	}
 
 }

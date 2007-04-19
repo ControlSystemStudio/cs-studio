@@ -231,7 +231,7 @@ public class CachingThread implements Runnable {
 		ctrl.setReturningAttributes(new String[]{"epicsAlarmSeverity","epicsAlarmStatus","epicsAlarmHighUnAckn"});
 		ctrl.setCountLimit(SIZE_LIMIT);		
 		//search definition
-		NamingEnumeration enumr = connection.search(alarmInitialRoot,"(&(!(epicsAlarmStatus=NORMAL))(epicsAlarmSeverity=*))",ctrl);
+		NamingEnumeration enumr = connection.search(alarmInitialRoot,"(&(!(epicsAlarmStatus=NO_ALARM))(epicsAlarmSeverity=*))",ctrl);
 		Attributes attbs;
 		long records=0;
 		try
@@ -257,7 +257,7 @@ public class CachingThread implements Runnable {
 					String unseverity;
 					if (highun==null){unseverity = "";}
 					else {unseverity = (String)highun.get();}
-					if (!(severity.equals("NORMAL")) && !(severity.equals(""))){
+					if (!(severity.equals("NO_ALARM")) && !(severity.equals(""))){
 						int sever = 0;
 						props = new Hashtable<String,String>();
 						if (severity.equals("MAJOR")){sever =7;}
@@ -277,7 +277,7 @@ public class CachingThread implements Runnable {
 							System.out.println("Structure doesn't contain "+sname+".");
 						}
 					}
-					if (!(unseverity.equals("NORMAL")) && !(unseverity.equals(""))){
+					if (!(unseverity.equals("NO_ALARM")) && !(unseverity.equals(""))){
 						int unsever=0;
 						if (unseverity.equals("MAJOR")){unsever =7;}
 						if (unseverity.equals("MINOR")){unsever =4;}

@@ -93,7 +93,7 @@ public class AlarmConnection extends AlarmTreeParent implements IMapMessageNotif
 			String severity = (String)msg.getObject("SEVERITY");
 			if (severity == null) {severity="";} 
 			int sever = 0;
-			if (!(severity.equals("NORMAL")) && !(severity.equals(""))){
+			if (!(severity.equals("NO_ALARM")) && !(severity.equals(""))){
 				if (severity.equals("MAJOR")){sever =7;}
 				if (severity.equals("MINOR")){sever =4;}
 				if (severity.equals("INVALID")) {sever=2;}
