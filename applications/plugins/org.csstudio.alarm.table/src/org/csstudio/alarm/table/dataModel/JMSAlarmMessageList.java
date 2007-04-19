@@ -17,14 +17,13 @@ import org.exolab.jms.message.MapMessageImpl;
 
 public class JMSAlarmMessageList extends JMSMessageList {
 
-	
 	public JMSAlarmMessageList(String[] propNames) {
 		super(propNames);
 	}
 
 	/**
 	 * Add a new JMSMessage to the collection of JMSMessages.
-	 *  
+	 * 
 	 */
 	synchronized public void addJMSMessage(MapMessage mm) {
 		if (mm == null) {
@@ -32,32 +31,35 @@ public class JMSAlarmMessageList extends JMSMessageList {
 		} else {
 			String severity = null;
 			try {
-				 severity = mm.getString("SEVERITY");
+				severity = mm.getString("SEVERITY");
 			} catch (JMSException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println(e.getMessage());
 			}
-			if ((deleteEqualMessages(mm)) || (severity.equalsIgnoreCase("NO_ALARM")) == false) {
-				JMSMessage jmsm = addMessageProperties(mm);
-				JMSMessages.add(JMSMessages.size(), jmsm);
-				Iterator iterator = changeListeners.iterator();
-				while (iterator.hasNext())
-					((IJMSMessageViewer) iterator.next()).addJMSMessage(jmsm);
+			if (severity != null) {
+				if ((deleteEqualMessages(mm))
+						|| (severity.equalsIgnoreCase("NO_ALARM")) == false) {
+					JMSMessage jmsm = addMessageProperties(mm);
+					JMSMessages.add(JMSMessages.size(), jmsm);
+					Iterator iterator = changeListeners.iterator();
+					while (iterator.hasNext())
+						((IJMSMessageViewer) iterator.next())
+								.addJMSMessage(jmsm);
+				}
 			}
 		}
 	}
 
-	
 	/**
-	 * Delete previous messages from the same pv and with the same severity
-	 * Mark messages from the same pv and with a different severety that the
-	 * label provider can set a brighter color. 
-	 * (It is important to use the <code>removeMessage</code> method from
-	 * <code>MessageList</code> that the changeListeners on the model were
-	 * actualised.
+	 * Delete previous messages from the same pv and with the same severity Mark
+	 * messages from the same pv and with a different severety that the label
+	 * provider can set a brighter color. (It is important to use the
+	 * <code>removeMessage</code> method from <code>MessageList</code> that
+	 * the changeListeners on the model were actualised.
 	 * 
-	 * @param mm The new MapMessage
+	 * @param mm
+	 *            The new MapMessage
 	 * @return Is there a previous message in the list with the same pv name
 	 */
 	private boolean deleteEqualMessages(MapMessage mm) {
@@ -68,21 +70,22 @@ public class JMSAlarmMessageList extends JMSMessageList {
 		try {
 			String newPVName = mm.getString("NAME");
 			String newSeverity = mm.getString("SEVERITY");
-			
+
 			if ((newPVName != null) && (newSeverity != null)) {
 				while (it.hasNext()) {
 					JMSMessage jmsm = it.next();
 					String pvNameFromList = jmsm.getProperty("NAME");
 					String severityFromList = jmsm.getProperty("SEVERITY");
 					if ((pvNameFromList != null) && (severityFromList != null)) {
-					
+
 						if (newPVName.equalsIgnoreCase(pvNameFromList)) {
 							equalPreviousMessage = true;
 							if (newSeverity.equalsIgnoreCase(severityFromList)) {
 								jmsMessagesToRemove.add(jmsm);
 							} else {
 								jmsMessagesToRemove.add(jmsm);
-								if (severityFromList.equalsIgnoreCase("NO_ALARM") == false) {
+								if (severityFromList
+										.equalsIgnoreCase("NO_ALARM") == false) {
 									jmsMessagesToRemoveAndAdd.add(jmsm);
 								}
 								jmsm.setBackgroundColorGray(true);
