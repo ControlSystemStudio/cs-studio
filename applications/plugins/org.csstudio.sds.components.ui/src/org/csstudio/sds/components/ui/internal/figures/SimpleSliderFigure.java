@@ -393,6 +393,9 @@ public final class SimpleSliderFigure extends Panel implements
 	 */
 	public void setManualValue(final double value) {
 		int tempValue = (int) (value * _scrollbarPrecision);
+
+		// TODO: Dieses Assert darf nicht fliegen! Toleranter implementieren.
+		// Der Wert kann auch von der IOC ausserhalb der Grenzen kommen.
 		assert tempValue >= _min && tempValue <= _max;
 
 		_manualValue = tempValue;
