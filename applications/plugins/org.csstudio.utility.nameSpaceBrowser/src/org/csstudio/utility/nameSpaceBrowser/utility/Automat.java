@@ -38,10 +38,8 @@ public class Automat {
 	private String select;
 	private CSSViewParameter para;
 
-	public Automat(){
-		System.out.println("new Automat");
-	}
-
+//	public Automat(){
+//	}
 	public CSSViewParameter event(Ereignis ereignis, String select){
 		this.ereignis=ereignis;
 		this.select=select;

@@ -55,7 +55,6 @@ public class MainView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		System.out.println("start new NsB");
 		automat = new Automat();
 		ScrolledComposite sc = new ScrolledComposite(parent,SWT.H_SCROLL);
 		Composite c = new Composite(sc,SWT.NONE);
