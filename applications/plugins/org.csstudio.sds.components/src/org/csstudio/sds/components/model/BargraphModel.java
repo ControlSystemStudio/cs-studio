@@ -218,7 +218,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0));
 		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
 		//Colors
-		addProperty(PROP_DEFAULT_FILL_COLOR, new ColorProperty("Default fill color",WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));
+		addProperty(PROP_DEFAULT_FILL_COLOR, new ColorProperty("Default Fill Color",WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));
 		addProperty(PROP_LOLO_COLOR, new ColorProperty("Color LOLO",WidgetPropertyCategory.Display,DEFAULT_LOLO_COLOR));
 		addProperty(PROP_LO_COLOR, new ColorProperty("Color LO",WidgetPropertyCategory.Display,DEFAULT_LO_COLOR));
 		addProperty(PROP_M_COLOR, new ColorProperty("Color M",WidgetPropertyCategory.Display,DEFAULT_M_COLOR));
