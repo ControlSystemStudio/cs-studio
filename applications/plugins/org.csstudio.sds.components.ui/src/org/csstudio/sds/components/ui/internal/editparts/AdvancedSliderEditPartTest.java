@@ -23,11 +23,9 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.BargraphModel;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableBargraphFigure;
+import org.csstudio.sds.components.model.AdvancedSliderModel;
+import org.csstudio.sds.components.ui.internal.figures.AdvancedSliderFigure;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,52 +33,30 @@ import org.junit.Test;
  * @author Kai Meyer
  * 
  */
-public final class BargraphEditPartTest {
+public final class AdvancedSliderEditPartTest {
 
 	/**
 	 * The instance to test.
 	 */
-	private BargraphEditPart _editPart;
+	private AdvancedSliderEditPart _editPart;
 
 	/**
 	 * Test set up.
 	 */
 	@Before
 	public void setUp() {
-		_editPart = new BargraphEditPart();
-		_editPart.setModel(new BargraphModel());
-		((RefreshableBargraphFigure)_editPart.getFigure()).setLoloColor(new RGB(100,100,100));
-		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_FILL, 50);
+		_editPart = new AdvancedSliderEditPart();
+		_editPart.setModel(new AdvancedSliderModel());
 	}
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.BargraphEditPart#doCreateFigure()}.
+	 * {@link org.csstudio.sds.components.ui.internal.editparts.AdvancedSliderEditPart#doCreateFigure()}.
 	 */
 	@Test
 	public void testCreateFigure() {
 		IFigure figure = _editPart.doCreateFigure();
-		assertTrue(figure instanceof RefreshableBargraphFigure);
-	}
-	
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.ui.internal.editparts.BargraphEditPart#registerPropertyChangeHandlers()}.
-	 */
-	@Test
-	public void testPropertyChangeHandler() {
-		Color oldLoloColor = ((RefreshableBargraphFigure)_editPart.getFigure()).getLoloColor();
-		RGB newRGB = new RGB(255,0,0);
-		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_LOLO_COLOR, newRGB);
-		Color newLoloColor = ((RefreshableBargraphFigure)_editPart.getFigure()).getLoloColor();
-		assertTrue("Colors: "+oldLoloColor+" | "+newLoloColor,!oldLoloColor.equals(newLoloColor));
-		assertTrue(newLoloColor.getRGB().equals(newRGB));
-		double oldFill = ((RefreshableBargraphFigure)_editPart.getFigure()).getFill();
-		double testFill = 99;
-		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_FILL, Double.valueOf(testFill));
-		double newFill = ((RefreshableBargraphFigure)_editPart.getFigure()).getFill();
-		assertTrue("Value: "+oldFill+" | "+newFill, oldFill!=newFill);
-		assertTrue(testFill==newFill);
+		assertTrue(figure instanceof AdvancedSliderFigure);
 	}
 
 }
