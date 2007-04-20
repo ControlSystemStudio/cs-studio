@@ -6,12 +6,12 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="Alarms"
-            id="org.csstudio.alarm.treeView">
+            name="CSS"
+            id="org.csstudio">
       </category>
       <view
             allowMultiple="false"
-            category="org.csstudio.alarm.treeView"
+            category="org.csstudio"
             class="org.csstudio.alarm.treeView.views.AlarmTreeView"
             icon="icons/Alarm.gif"
             id="org.csstudio.alarm.treeView.views.LdapTView"
@@ -41,6 +41,22 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.csstudio.alarm.treeView.preferences.PreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.alarm.treeView.actionSet"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.alarm.treeView.views.ShowTreeView"
+               icon="icons/Alarm.gif"
+               id="org.csstudio.alarm.treeView.action1"
+               label="Tree View"
+               menubarPath="css/alarm/"
+               style="push"/>
+      </actionSet>
    </extension>
 
 </plugin>
