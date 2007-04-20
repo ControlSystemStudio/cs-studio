@@ -34,7 +34,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          version="0.0.0"/>
 
    <requires>
-      <import feature="org.csstudio.platform.feature.product" version="0.9.2"/>
+      <import feature="org.csstudio.platform.feature.product" version="0.9.4"/>
    </requires>
 
    <plugin

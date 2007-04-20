@@ -164,7 +164,7 @@ public class Engine extends Job {
     			System.out.print("write: ");
     			changeValue("eren", channel, modItem);
     			System.out.println(" finisch!!!");
-    			modItem = new ModificationItem[1000];
+    			modItem = new ModificationItem[100];
     			i = 0;
     			//
     			// define next channel name
@@ -183,11 +183,13 @@ public class Engine extends Job {
     	//
     	// still something left to do?
     	//
+    	System.out.println("Vector leer!!!!");
     	if (i != 0 ) {
     		//
 			try {
-				System.out.println("Vector leer!!!!");
+				System.out.println("Engine.performLdapWrite write last modItem (: "+modItem+")" );
 				changeValue("eren", channel, modItem);
+				System.out.println("+++++++++++++++++++++++++++++++++++++++ d o n e +++++++++++++++++++++++++++++++++++++++");
 			}
 			 catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -200,6 +202,7 @@ public class Engine extends Job {
     	}
 
     	doWrite = false;
+    	System.out.println("Engine.performLdapWrite\r\n  -------------------------------------- E N D --------------------------------------");
     }
 
     /**

@@ -22,18 +22,15 @@
 
 package org.csstudio.alarm.table;
 
-import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 import org.csstudio.alarm.table.dataModel.JMSAlarmMessageList;
-import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
-import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
@@ -48,7 +45,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.csstudio.platform.libs.jms.*;
 
 import org.eclipse.ui.part.ViewPart;
-import org.exolab.jms.message.MapMessageImpl;
 
 
 /**

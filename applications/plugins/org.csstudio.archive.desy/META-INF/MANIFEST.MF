@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Desy Plug-in
 Bundle-SymbolicName: org.csstudio.archive.desy;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.2
 Bundle-Localization: plugin
 Require-Bundle: org.csstudio.archive;visibility:=reexport,
  org.csstudio.utility.pv;visibility:=reexport,
