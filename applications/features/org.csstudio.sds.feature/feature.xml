@@ -41,28 +41,35 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          id="org.csstudio.sds"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.ui"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.components"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.components.ui"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.sds.components.epics"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"
          unpack="false"/>
 
 </feature>
