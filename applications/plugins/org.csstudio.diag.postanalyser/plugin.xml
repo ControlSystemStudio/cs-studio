@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.csstudio"
+            class="org.csstudio.diag.postanalyser.View"
+            id="org.csstudio.diag.postanalyser.view"
+            name="Post Analyser">
+      </view>
+      <category
+            id="org.csstudio"
+            name="CSS"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.csstudio.diag.postanalyser.objectContribution1"
+            objectClass="org.csstudio.platform.model.IProcessVariableWithSample">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS"
+               path="additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <action
+               class="org.csstudio.diag.postanalyser.FFTPopupAction"
+               enablesFor="1"
+               id="org.csstudio.diag.postanalyser.action1"
+               label="Post Analayser"
+               menubarPath="org.csstudio.popmenu/content"/>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.diag.postanalyser.ShowAnalyserAction"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.diag.postanalyser.ShowAnalyserAction"
+               id="org.csstudio.diag.postanalyser.showAnalyser"
+               label="Post Analyser"
+               menubarPath="css/diag/"
+               style="push"/>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
+
+</plugin>

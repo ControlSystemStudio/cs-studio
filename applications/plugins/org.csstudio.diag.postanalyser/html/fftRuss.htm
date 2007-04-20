@@ -1,0 +1,411 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0040)http://alglib.sources.ru/fft/fourier.php -->
+<HTML><HEAD><TITLE>Преобразование Фурье и его свойства - Библиотека алгоритмов</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1251">
+<META 
+content="алгоритм c++ delphi visual basic FFT БПФ ДПФ Быстрое преобразование Фурье" 
+name=keywords>
+<STYLE type=text/css>H2 {
+	FONT-SIZE: larger; FONT-FAMILY: Tahoma,sans-serif
+}
+H3 {
+	FONT-SIZE: 12pt; FONT-FAMILY: Arial,sans-serif
+}
+INPUT {
+	FONT-SIZE: 9pt; FONT-FAMILY: Courier New,monospace
+}
+UL {
+	TEXT-ALIGN: justify
+}
+OL {
+	TEXT-ALIGN: justify
+}
+A.leftmenu {
+	FONT-SIZE: 8pt; COLOR: #cc0000; FONT-FAMILY: Tahoma,sans-serif; TEXT-DECORATION: none
+}
+A.leftmenu:hover {
+	TEXT-DECORATION: underline
+}
+A.artlist {
+	COLOR: #111177; TEXT-DECORATION: none
+}
+A.artlist:visited {
+	COLOR: #111177; TEXT-DECORATION: none
+}
+A.artlist:hover {
+	COLOR: #111177; TEXT-DECORATION: underline
+}
+A.special {
+	FONT-SIZE: 10pt; COLOR: #000066
+}
+A.special:visited {
+	FONT-SIZE: 10pt; COLOR: #000066
+}
+A.specialatt {
+	FONT-WEIGHT: bold; FONT-SIZE: 10pt; COLOR: #aa0000
+}
+A.specialatt:visited {
+	FONT-WEIGHT: bold; FONT-SIZE: 10pt; COLOR: #aa0000
+}
+.compact {
+	MARGIN-TOP: 0px; MARGIN-BOTTOM: 0px
+}
+.code {
+	FONT-SIZE: 9pt; COLOR: #006699; FONT-FAMILY: Courier New, monospace
+}
+.smalltext {
+	FONT-SIZE: 10pt
+}
+.halfsmalltext {
+	FONT-SIZE: 11pt
+}
+.attention {
+	FONT-WEIGHT: bold; COLOR: #aa0000
+}
+.leftmenusection {
+	FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #bb0000; FONT-FAMILY: Tahoma,sans-serif; TEXT-DECORATION: none
+}
+</STYLE>
+
+<META content="MSHTML 6.00.2900.3059" name=GENERATOR></HEAD>
+<BODY text=#333333 bottomMargin=0 vLink=#222255 aLink=#552255 link=#000099 
+bgColor=#f5f5f5 leftMargin=0 topMargin=0 rightMargin=0 marginheight="0" 
+marginwidth="0">
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0><!-- LOGO 
+<td bgcolor=#F5F5F5 background="/img/backf1.jpg"><img src="/img/topf1.jpg" width=600 height=119 border=0 alt="">
+-->
+  <TBODY>
+  <TR>
+    <TD background=fftRuss_files/nettopback.gif><IMG height=119 alt="" 
+      src="fftRuss_files/logoru1.png" width=500 border=0><BR></TD></TR><!-- LOGO BOTTOM LINE -->
+  <TR>
+    <TD bgColor=#0056a0 height=1></TD></TR><!-- NAV BOTTOM LINE --><!-- <tr>
+<td bgcolor=#0056A0 height=1>
+</td>
+</tr> --><!-- NAV, NAV2 AND CONTENT -->
+  <TR>
+    <TD align=middle bgColor=white>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR><!--
+<td bgcolor=white align=left valign=top width=10>
+<img src="/empty.gif" width=10 height=1 border=0 alt=""> 
+</td>
+-->
+          <TD vAlign=top align=left width=20 bgColor=#f0f0f8>
+            <TABLE cellSpacing=0 cellPadding=10 width="100%" border=0>
+              <TBODY>
+              <TR>
+                <TD noWrap bgColor=#f0f0f8><B><SPAN 
+                  class=leftmenusection>Содержание</SPAN></B> <BR><IMG height=1 
+                  alt="" src="fftRuss_files/empty.gif" width=10 border=0> <A 
+                  class=leftmenu href="http://alglib.sources.ru/">АЛГОРИТМЫ</A> 
+                  <BR><IMG height=1 alt="" src="fftRuss_files/empty.gif" 
+                  width=10 border=0> <A class=leftmenu 
+                  href="http://alglib.sources.ru/articles/">Статьи</A> <BR><IMG 
+                  height=1 alt="" src="fftRuss_files/empty.gif" width=10 
+                  border=0> <A class=leftmenu 
+                  href="http://forum.sources.ru/index.php?showforum=43">Форум</A> 
+                  <BR><IMG height=1 alt="" src="fftRuss_files/empty.gif" 
+                  width=10 border=0> <A class=leftmenu 
+                  href="http://alglib.sources.ru/links.php">Коллекция ссылок</A> 
+                  <BR><IMG height=1 alt="" src="fftRuss_files/empty.gif" 
+                  width=10 border=0> <A class=leftmenu 
+                  href="http://alglib.sources.ru/sitemap.php">Карта сайта</A> 
+                  <BR><IMG height=1 alt="" src="fftRuss_files/empty.gif" 
+                  width=10 border=0> <A class=leftmenu 
+                  href="http://www.alglib.net/">Английская версия</A> 
+                  <BR><B><SPAN class=leftmenusection>Сайт и автор</SPAN></B> 
+                  <BR><IMG height=1 alt="" src="fftRuss_files/empty.gif" 
+                  width=10 border=0> <A class=leftmenu 
+                  href="http://alglib.sources.ru/news.php">Новости</A> <BR><IMG 
+                  height=1 alt="" src="fftRuss_files/empty.gif" width=10 
+                  border=0> <A class=leftmenu 
+                  href="http://subscribe.ru/catalog/comp.prog.alglibnews">Рассылка 
+                  новостей</A> <BR><IMG height=1 alt="" 
+                  src="fftRuss_files/empty.gif" width=10 border=0> <A 
+                  class=leftmenu href="http://alglib.sources.ru/aboutsite.php">О 
+                  сайте</A> <BR><IMG height=1 alt="" 
+                  src="fftRuss_files/empty.gif" width=10 border=0> <A 
+                  class=leftmenu href="http://alglib.sources.ru/faq.php">FAQ</A> 
+                  <BR><IMG height=1 alt="" src="fftRuss_files/empty.gif" 
+                  width=10 border=0> <A class=leftmenu 
+                  href="http://alglib.sources.ru/contact.php">Контакты</A> 
+                  <BR><IMG height=1 alt="" src="fftRuss_files/empty.gif" 
+                  width=10 border=0> <A class=leftmenu 
+                  href="http://alglib.sources.ru/copyrules.php">TERMS OF USE</A> 
+                  <BR><B><SPAN class=leftmenusection>Друзья</SPAN></B> <BR><IMG 
+                  height=1 alt="" src="fftRuss_files/empty.gif" width=10 
+                  border=0> <A class=leftmenu 
+                  href="http://www.sources.ru/">SOURCES.RU</A> 
+            </TD></TR></TBODY></TABLE></TD>
+          <TD vAlign=top align=left width=1 bgColor=#b0b0c0><IMG height=1 
+            alt="" src="fftRuss_files/empty.gif" width=1 border=0> </TD>
+          <TD vAlign=top align=left width=10 bgColor=white><IMG height=1 
+            alt="" src="fftRuss_files/empty.gif" width=40 border=0> </TD>
+          <TD vAlign=top>
+            <DIV style="MARGIN-TOP: 10px; MARGIN-BOTTOM: 10px"><SPAN 
+            class=smalltext><A class=special 
+            href="http://alglib.sources.ru/">Алгоритмы</A> - <A class=special 
+            href="http://alglib.sources.ru/fft/">Быстрое преобразование Фурье и 
+            его приложения</A> - Преобразование Фурье и его свойства (только 
+            теория, без исходников)</SPAN></DIV>
+            <TABLE style="MARGIN-TOP: 10px; MARGIN-BOTTOM: 10px" cellSpacing=0 
+            cellPadding=6 width="100%" bgColor=#e8e8e8 border=0>
+              <TBODY>
+              <TR>
+                <TD>
+                  <H2 class=compact>Преобразование Фурье и его 
+              свойства</H2></TD></TR></TBODY></TABLE>
+            <P align=justify>О преобразовании Фурье, его смысле, свойствах и 
+            применении написано много книг, поэтому здесь будут описаны только 
+            самые важные его характеристики. Эта статья - своего рода 
+            теоретическая выжимка, и для её понимания следует уже обладать 
+            базовыми знаниями в этой области. Она не является учебником по 
+            преобразованию Фурье (уже существуют такие учебники, написанные 
+            профессионалами своего дела). Скорее, эта статья поможет освежить в 
+            памяти уже полученные знания в этой области, а также поможет 
+            вспомнить полезные формулы, которые у многих людей быстро 
+            улетучиваются из головы (к этой группе отношусь и я :) ). </P>
+            <P align=justify>Перед началом изложения хочу выразить благодарность 
+            Олегу Красноярову за присланное письмо, в котором были кратко 
+            рассмотрены альтернативные алгоритмы БПФ, менее известные, чем 
+            широко использующийся вариант. Практически полностью это письмо 
+            легло в основу подраздела <A 
+            href="http://alglib.sources.ru/fft/fourier.php#fft">Быстрое 
+            преобразование Фурье</A>. </P>
+            <H3><I>Преобразование Фурье </I></H3>
+            <P align=justify>Итак, преобразование Фурье бывает двух видов: 
+            дискретное и непрерывное. Непрерывное используется математиками в 
+            аналитических исследованиях, дискретное применяется во всех 
+            остальных случаях. </P>
+            <P align=justify>Непрерывное преобразование Фурье - преобразование, 
+            которое применяется к функции <I>h(t)</I>, заданной на интервале 
+            <IMG alt="" src="fftRuss_files/visualize.png" align=absMiddle 
+            border=0 (?-&infin;,+&infin;?)??>. В результате получается функция 
+            <I>H(f)</I>: </P>
+            <P><IMG alt="&#10;H(f) = integral(h(t)power(e,2&#960;ift)dt,-&#8734;,+&#8734;)&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(1).png" 
+            border=0></P>
+            <P align=justify>также существует обратное преобразование, которое 
+            позволяет по образу <I>H(f)</I> восстановить исходную функцию 
+            <I>h(t)</I>: </P>
+            <P><IMG alt="&#10;h(t) = integral(H(f)power(e,-2&#960;ift)df,-&#8734;,+&#8734;)&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(2).png" 
+            border=0></P>
+            <P align=justify>Очевидно, что образ <I>H(f)</I> является 
+            комплексной функцией вещественного аргумента, но также и <I>h(t)</I> 
+            может принимать не только вещественные, но и комплексные значения. 
+            </P>
+            <P align=justify>Применение преобразования Фурье является столь 
+            обширной темой, что этот вопрос не будет подниматься в этой статье. 
+            Можно только перечислить несколько областей: анализ сигналов, 
+            фильтрация, ускоренное вычисление корелляции и свертки, 
+            использование в алгоритмах быстрого умножения чисел, и во многих 
+            других случаях оно также находит свое применение. </P>
+            <H3><I>Свойства непрерывного преобразования Фурье </I></H3>
+            <P align=justify>В таблице ниже описана связь свойств прообраза 
+            <I>h</I> и образа <I>H</I>. </P>
+            <TABLE cellSpacing=1 cellPadding=5 bgColor=black border=0>
+              <TBODY>
+              <TR bgColor=silver>
+                <TH>Если</TH>
+                <TH>То</TH></TR>
+              <TR bgColor=white>
+                <TD>h(t) вещественная</TD>
+                <TD><I>H(-f) = H<SUP><SMALL>&nbsp;*</SMALL></SUP>(f)</I></TD></TR>
+              <TR bgColor=white>
+                <TD>h(t) чисто мнимая</TD>
+                <TD><I>H(-f) = 
+-H<SUP><SMALL>&nbsp;*</SMALL></SUP>(f)</I></TD></TR>
+              <TR bgColor=white>
+                <TD>h(t) четная</TD>
+                <TD>H(f) четная</TD></TR>
+              <TR bgColor=white>
+                <TD>h(t) нечетная</TD>
+                <TD>H(f) нечетная</TD></TR>
+              <TR bgColor=white>
+                <TD>h(t) вещественная и четная</TD>
+                <TD>H(f) вещественная и четная</TD></TR>
+              <TR bgColor=white>
+                <TD>h(t) вещественная и нечетная</TD>
+                <TD>H(f) чисто мнимая и нечетная</TD></TR>
+              <TR bgColor=white>
+                <TD>h(t) чисто мнимая и четная</TD>
+                <TD>H(f) чисто мнимая и четная</TD></TR>
+              <TR bgColor=white>
+                <TD>h(t) чисто мнимая и нечетная</TD>
+                <TD>H(f) вещественная и нечетная</TD></TR></TBODY></TABLE>
+            <P align=justify>Следующая таблица показывает, как меняется образ 
+            при изменении прообраза. Пусть запись <IMG 
+            alt=h(t)&amp;leftrightarrow;H(f) 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(3).png" 
+            align=absMiddle border=0> обозначает, что <I>H(f)</I> является 
+            образом <I>h(t)</I>. Тогда имеют место следующие отношения: </P>
+            <P><IMG 
+            alt="&#10;h(at) &amp;leftrightarrow; div(1,abs(a))H(div(f,a))&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(4).png" 
+            border=0></P>
+            <P><IMG 
+            alt="&#10;div(1,abs(b))h(div(t,b)) &amp;leftrightarrow; H(bf)&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(5).png" 
+            border=0></P>
+            <P><IMG 
+            alt="&#10;h(t-c) &amp;leftrightarrow; H(f)power(e,2&#960;ifc)&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(6).png" 
+            border=0></P>
+            <P><IMG 
+            alt="&#10;h(t)power(e,-2&#960;ict) &amp;leftrightarrow; H(f-c)&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(7).png" 
+            border=0></P>
+            <P align=justify>Следующий набор свойств относится к операциям 
+            свертки и корелляции. Свертка функций <I>g</I> и <I>h</I> 
+            определяется, как <IMG alt="g*h &#8801; integral(g(&#964;)h(t-&#964;)d&#964;,-&#8734;,+&#8734;)" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(8).png" 
+            align=absMiddle border=0>. Корелляция функций <I>g</I> и <I>h</I> 
+            определяется, как <IMG 
+            alt="Corr(g,h) &#8801; integral(g(&#964;+t)h(&#964;)d&#964;,-&#8734;,+&#8734;)" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(9).png" 
+            align=absMiddle border=0>. В таком случае имеют место следующие 
+            отношения: </P>
+            <P><IMG alt="&#10;g*h &amp;leftrightarrow; G(f)H(f)&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(10).png" 
+            border=0></P>
+            <P><IMG 
+            alt="&#10;Corr(g,h) &amp;leftrightarrow; G(f)power(H,*)(f)&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(11).png" 
+            border=0></P>
+            <P><IMG 
+            alt="&#10;Corr(g,g) &amp;leftrightarrow; power(abs(G(f)),2)&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(12).png" 
+            border=0></P>
+            <H3><I>Дискретное преобразование Фурье </I></H3>
+            <P align=justify>С непрерывным преобразованием Фурье удобно работать 
+            в теории, но на практике мы обычно имеем дело с дискретными данными. 
+            Очень часто у нас дано не аналитическое выражение преобразуемой 
+            функции, а лишь набор её значений на некоторой сетке (обычно на 
+            равномерной). В таком случае приходится делать допущение, что за 
+            пределами этой сетки функция равна нулю, и аппроксимировать интеграл 
+            интегральной суммой: </P>
+            <P><IMG 
+            alt="&#10;H(f_n_) = integral(h(t)power(e,2&#960;ift)dt,-&#8734;,+&#8734;) = sum(h_k_index(&#916;,k)exp(div(kn,N)2&#960;i),k=0,N-1)&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(13).png" 
+            border=0></P>
+            <P align=justify>В случае равномерной сетки эта формула упрощается. 
+            Также на равномерной сетке обычно избавляются от шага, чтобы 
+            получить безразмерную формулу: </P>
+            <P><IMG 
+            alt="&#10;H_n_ &#8801; sum(h_k_exp(div(kn,N)2&#960;i),k=0,N-1)   n&amp;in;[-div(N,2),div(N,2)]&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(14).png" 
+            border=0></P>
+            <P align=justify>Обратное преобразование в таком случае будет иметь 
+            вид </P>
+            <P><IMG 
+            alt="&#10;h_k_ &#8801; div(1,N)sum(H_n_exp(-div(kn,N)2&#960;i),n=0,N-1)   k&amp;in;[0, N-1]&#10;" 
+            src="C:\CSS_10\org.csstudio.diag.post-Analysis\html\fftRuss_files\visualize(15).png" 
+            border=0></P>
+            <P align=justify>При внимательном рассмотрении можно заметить, что 
+            индекс при <I>H<SUB><SMALL>n&nbsp;</SMALL></SUB></I> принимает 
+            <I>N+1</I> значение, в то время как при 
+            <I>h<SUB><SMALL>k&nbsp;</SMALL></SUB></I> - только <I>N</I> 
+            значений. Таким образом, как будто бы получается, что функция 
+            <I>H</I> содержит в себе больше информации, чем <I>h</I>. На самом 
+            деле это не так, поскольку значения 
+            <I>H<SUB><SMALL>-N/2&nbsp;</SMALL></SUB></I> и 
+            <I>H<SUB><SMALL>N/2&nbsp;</SMALL></SUB></I> совпадают. </P>
+            <P align=justify>Определенное таким образом, дискретное 
+            преобразование Фурье сохраняет практически все свойства непрерывного 
+            (разумеется, с учетом перехода к дискретному множеству). </P><A 
+            name=fft></A>
+            <H3><I>Быстрое преобразование Фурье </I></H3>
+            <P align=justify>Сколько операций требуется на проведение 
+            дискретного преобразования Фурье? Посчитав по определению (<I>N</I> 
+            раз суммировать <I>N</I> слагаемых), получаем величину порядка 
+            <I>N<SUP><SMALL>&nbsp;2</SMALL></SUP></I>. Тем не менее, можно 
+            обойтись существенно меньшим числом операций. </P>
+            <P align=justify>Наиболее популярным из алгоритмов ускоренного 
+            вычисления ДПФ является т.н. метод Cooley-Tukey, позволяющий 
+            вычислить ДПФ для числа отсчетов <I>N = 
+            2<SUP><SMALL>&nbsp;k</SMALL></SUP></I> за время порядка 
+            <I>Nlog<SUB><SMALL>2&nbsp;</SMALL></SUB>N</I> (отсюда и название - 
+            быстрое преобразование Фурье, БПФ). Этот способ чем-то неуловимо 
+            напоминает быструю сортировку. В ходе работы алгоритма также 
+            проводится рекурсивное разбиение массива чисел на два подмассива и 
+            сведение вычисления ДПФ от целого массива к вычислению ДПФ от 
+            подмассивов в отдельности. В деталях он рассмотрен в описании <A 
+            href="http://alglib.sources.ru/fft/fft.php">соответствующего 
+            исходника</A>. </P>
+            <P align=justify>Изобретение БПФ привело к потрясающему всплеску 
+            популярности преобразования Фурье. Целый ряд важных задач раньше 
+            решался за время порядка <I>N<SUP><SMALL>&nbsp;2</SMALL></SUP></I>, 
+            но после проведения преобразования Фурье над исходными данными (за 
+            время порядка <I>Nlog<SUB><SMALL>2&nbsp;</SMALL></SUB>N</I>) 
+            решается практически мгновенно. Преобразование Фурье лежит в основе 
+            цифровых корелляторов и методов свертки, активно используется при 
+            спектральном анализе (практически в чистом виде), применяется при 
+            работе с длинными числами. </P>
+            <P align=justify>Широко распространено ошибочное мнение о том, что 
+            метод Cooley-Tukey - единственный существующий метод выполнения БПФ, 
+            а само БПФ существует только для случая <I>N = 
+            2<SUP><SMALL>&nbsp;k</SMALL></SUP></I>. На самом деле это не так - 
+            существуют алгоритмы БПФ для любого числа отсчетов. В одномерном 
+            случае, рассмотренном в этой статье, метод Винограда позволяет 
+            решить задачу для простого числа отсчетов <I>N</I>. Этот же алгоритм 
+            может быть легко обобщен на случай, когда <I>N</I> является степенью 
+            произвольного простого числа (а не только двойки), а также на 
+            случай, когда число <I>N</I> является произведением степеней простых 
+            чисел - т.е. <I>N</I> является произвольным числом, чье разложение 
+            на простые множители нам известно. </P>
+            <P align=justify>В двумерном случае можно использовать метод 
+            Нуссбаумера. Существуют и другие алгоритмы, как для одномерного, так 
+            и для двумерного случаев, но рассмотрение этих вопросов выходит за 
+            рамки статьи (мне рекомендовали следующий источник - Блейхут, 
+            "Быстрые алгоритмы цифровой обработки сигналов"). </P>
+            <P align=justify>Как уже говорилось выше, существуют алгоритмы БПФ 
+            для произвольного числа отсчетов, но наиболее широкое 
+            распространение получил только алгоритм для случая <I>N = 
+            2<SUP><SMALL>&nbsp;k</SMALL></SUP></I>, что является существенным 
+            ограничением. Почему же это произошло? </P>
+            <P align=justify>Причина этого в том, что алгоритм, построенный по 
+            методу Cooley-Tukey, обладает рядом очень хороших технологических 
+            свойств. Структура алгоритма и его базовые операции не зависят от 
+            числа отсчетов (меняется только число прогонов базовой операции 
+            "бабочка"). Алгоритм легко распараллеливается с использованием 
+            базовой операции и конвееризуется, а также легко каскадируется 
+            (коэфициенты БПФ для 2N отсчетов могут быть легко получены 
+            преобразованием коэфициентов двух БПФ по N отсчетов, полученных 
+            "прореживанием" через один исходных 2N отсчетов). Алгоритм прост и 
+            компактен, не требует дополнительной оперативной памяти и допускает 
+            обработку данных "на месте". Существует целый ряд оптимизированных 
+            именно для этого алгоритма DSP-процессоров (это одновременно и 
+            причина, и следствие). </P>
+            <P align=justify>Всё это и обусловило популярность в 
+            инженерно/программистской среде именно этого алгоритма, и, 
+            соответственно, выбора именно 
+            <I>2<SUP><SMALL>&nbsp;k</SMALL></SUP></I> отсчетов при использовании 
+            БПФ. Правда, попутно это привело к незаслуженному забвению широкими 
+            массами альтернативных алгоритмов, некоторые из которых (что следует 
+            отметить) требуют меньше вещественных операций на один отсчет, чем 
+            алгоритм Cooley-Tukey. Например, мне доводилось читать описание 
+            алгоритма, который по этому показателю на 20-40% (в зависимости от 
+            числа отсчетов) превосходил алгоритм Cooley-Tukey. </P>
+            <P align=right><I>© Сергей Бочканов, Олег Краснояров </I></P>
+            <P align=right><A class=specialatt 
+            href="http://alglib.sources.ru/error.php?title=%CF%F0%E5%EE%E1%F0%E0%E7%EE%E2%E0%ED%E8%E5%20%D4%F3%F0%FC%E5%20%E8%20%E5%E3%EE%20%F1%E2%EE%E9%F1%F2%E2%E0">Если 
+            нашли ошибку в алгоритме - 
+            сообщите!</A></P><!-- END OF CONTENT --><BR></TD>
+          <TD width=40>&nbsp; </TD></TR></TBODY></TABLE><!-- FOOTER LINE 1 -->
+  <TR>
+    <TD bgColor=#0056a0 height=1></TD></TR><!-- FOOTER BAR -->
+  <TR>
+    <TD bgColor=#e2e2e2 height=30>&nbsp; </TD></TR><!-- FOOTER LINE 2 -->
+  <TR>
+    <TD bgColor=#0056a0 height=1></TD></TR><!-- FOOTER -->
+  <TR>
+    <TD vAlign=center noWrap align=right height=30>
+      <TABLE cellSpacing=0 cellPadding=10 border=0>
+        <TBODY>
+        <TR>
+          <TD align=right><FONT size=-1>Бочканов Сергей, Быстрицкий 
+            Владимир<BR>Copyright © 1999-2007<BR>При поддержке проекта MANUAL.RU 
+            </FONT></TD></TR></TBODY></TABLE></TD></TR><!-- END OF BODY --></TD></TR></TBODY></TABLE></BODY></HTML>

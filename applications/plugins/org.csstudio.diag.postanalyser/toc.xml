@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc link_to="../org.csstudio.platform.ui/tocApps.xml#diag" label="">
+	<topic label="FFT">
+		<topic label="English">
+			<topic label="FFT theory"  href="html/fft0.html"/>
+		</topic>
+		<topic label="German">
+			<topic label="FFT in German"  href="html/FFT-de.htm"/>
+		</topic>
+		<topic label="Russian">
+			<topic label="FFT in Russian"  href="html/fftRuss.htm"/>
+		</topic>
+	</topic>
+</toc>
