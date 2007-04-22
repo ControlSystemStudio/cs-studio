@@ -29,23 +29,25 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
-import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
-import org.eclipse.gef.editpolicies.SelectionEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
-import org.eclipse.gef.tools.CellEditorLocator;
-import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -59,11 +61,6 @@ import org.eclipse.swt.widgets.Text;
  * 
  */
 public final class TextInputEditPart extends AbstractWidgetEditPart {
-	/**
-	 * The direct edit manager.
-	 */
-	private LabelDirectEditManager _directManager;
-
 	/**
 	 * The actual figure will be surrounded with a small frame that can be used
 	 * to drag the figure around (even if the cell editor is activated).
@@ -90,6 +87,19 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 				.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont()));
 
+		label.addMouseListener(new MouseListener() {
+			public void mouseDoubleClicked(final MouseEvent me) {
+				performDirectEdit();
+			}
+
+			public void mousePressed(final MouseEvent me) {
+			}
+
+			public void mouseReleased(final MouseEvent me) {
+			}
+
+		});
+
 		return label;
 	}
 
@@ -100,18 +110,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 	protected void createEditPoliciesHook() {
 		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
 				new LabelDirectEditPolicy());
-
-		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE,
-				new SelectionEditPolicy() {
-					@Override
-					protected void hideSelection() {
-					}
-
-					@Override
-					protected void showSelection() {
-						performDirectEdit();
-					}
-				});
 	}
 
 	/**
@@ -130,113 +128,97 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 	 * Open the cell editor for direct editing.
 	 */
 	private void performDirectEdit() {
-		if (_directManager == null) {
-			_directManager = new LabelDirectEditManager(
-					new LabelCellEditorLocator(getFigure()));
-		}
-		_directManager.show();
+		CellEditor cellEditor = createCellEditor();
+		locateCellEditor(cellEditor);
+
+		cellEditor.activate();
+		cellEditor.setFocus();
 	}
 
 	/**
-	 * The direct edit manager.
+	 * Create the cell editor for direct editing.
+	 * 
+	 * @return The cell editor for direct editing.
 	 */
-	private class LabelDirectEditManager extends DirectEditManager {
-		/**
-		 * Standard constructor.
-		 * 
-		 * @param locator
-		 *            The cell editor locator.
-		 */
-		public LabelDirectEditManager(final CellEditorLocator locator) {
-			super(TextInputEditPart.this, TextCellEditor.class, locator);
+	private CellEditor createCellEditor() {
+		final CellEditor result = new TextCellEditor((Composite) getViewer()
+				.getControl());
+
+		// init cell editor...
+		String currentValue = "N/A"; //$NON-NLS-1$
+		WidgetProperty inputTextProperty = getCastedModel().getProperty(
+				TextInputModel.PROP_INPUT_TEXT);
+
+		if (inputTextProperty != null) {
+			currentValue = inputTextProperty.getPropertyValue().toString();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected void initCellEditor() {
-			String currentValue = "N/A"; //$NON-NLS-1$
-
-			WidgetProperty inputTextProperty = getCastedModel().getProperty(
-					TextInputModel.PROP_INPUT_TEXT);
-
-			if (inputTextProperty != null) {
-				currentValue = inputTextProperty.getPropertyValue().toString();
+		result.setValue(currentValue);
+		final Text text = (Text) result.getControl();
+		text.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(final KeyEvent e) {
+				if (e.keyCode == SWT.CR) {
+					DirectEditCommand cmd = new DirectEditCommand(text
+							.getText());
+					cmd.execute();
+				} else if (e.keyCode == SWT.ESC) {
+					result.deactivate();
+				}
 			}
 
-			getCellEditor().setValue(currentValue);
-			Text text = (Text) getCellEditor().getControl();
+		});
 
-			// get the chosen font
-			FontData fontData = (FontData) getCastedModel().getProperty(
-					TextInputModel.PROP_FONT).getPropertyValue();
-			Font font = CustomMediaFactory.getInstance().getFont(
-					new FontData[] { fontData });
+		// get the chosen font
+		FontData fontData = (FontData) getCastedModel().getProperty(
+				TextInputModel.PROP_FONT).getPropertyValue();
+		Font font = CustomMediaFactory.getInstance().getFont(
+				new FontData[] { fontData });
 
-			// get the chosen foreground color
-			RGB foregroundRgb = (RGB) getCastedModel().getProperty(
-					AbstractWidgetModel.PROP_COLOR_FOREGROUND)
-					.getPropertyValue();
-			Color foregroundColor = CustomMediaFactory.getInstance().getColor(
-					foregroundRgb);
+		// get the chosen foreground color
+		RGB foregroundRgb = (RGB) getCastedModel().getProperty(
+				AbstractWidgetModel.PROP_COLOR_FOREGROUND).getPropertyValue();
+		Color foregroundColor = CustomMediaFactory.getInstance().getColor(
+				foregroundRgb);
 
-			// get the chosen background color
-			RGB backgroundRgb = (RGB) getCastedModel().getProperty(
-					AbstractWidgetModel.PROP_COLOR_BACKGROUND)
-					.getPropertyValue();
+		// get the chosen background color
+		RGB backgroundRgb = (RGB) getCastedModel().getProperty(
+				AbstractWidgetModel.PROP_COLOR_BACKGROUND).getPropertyValue();
 
-			int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
-			int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS,
-					255);
-			int blue = Math.min(backgroundRgb.blue + INPUT_FIELD_BRIGHTNESS,
-					255);
+		int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
+		int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);
+		int blue = Math.min(backgroundRgb.blue + INPUT_FIELD_BRIGHTNESS, 255);
 
-			Color backgroundColor = CustomMediaFactory.getInstance().getColor(
-					new RGB(red, green, blue));
+		Color backgroundColor = CustomMediaFactory.getInstance().getColor(
+				new RGB(red, green, blue));
 
-			text.setForeground(foregroundColor);
-			text.setBackground(backgroundColor);
-			text.setFont(font);
-			text.selectAll();
-		}
+		text.setForeground(foregroundColor);
+		text.setBackground(backgroundColor);
+		text.setFont(font);
+		text.selectAll();
+
+		return result;
 	}
 
 	/**
-	 * The cell editor locator.
+	 * Locate the given cell editor .
+	 * 
+	 * @param cellEditor
+	 *            A cell editor.
 	 */
-	private class LabelCellEditorLocator implements CellEditorLocator {
-		/**
-		 * The underlying figure.
-		 */
-		private IFigure _figure;
+	private void locateCellEditor(final CellEditor cellEditor) {
+		Rectangle rect = TextInputEditPart.this.figure.getBounds().getCopy();
 
-		/**
-		 * Standard constructor.
-		 * 
-		 * @param f
-		 *            The underlying figure.
-		 */
-		public LabelCellEditorLocator(final IFigure f) {
-			_figure = f;
-		}
+		rect.x = rect.x + FRAME_WIDTH;
+		rect.y = rect.y + FRAME_WIDTH;
+		rect.height = rect.height - (FRAME_WIDTH * 2);
+		rect.width = rect.width - (FRAME_WIDTH * 2);
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void relocate(final CellEditor celleditor) {
-			Text text = (Text) celleditor.getControl();
-			Rectangle rect = TextInputEditPart.this.figure.getBounds()
-					.getCopy();
+		getFigure().translateToAbsolute(rect);
 
-			rect.x = rect.x + FRAME_WIDTH;
-			rect.y = rect.y + FRAME_WIDTH;
-			rect.height = rect.height - (FRAME_WIDTH * 2);
-			rect.width = rect.width - (FRAME_WIDTH * 2);
-
-			_figure.translateToAbsolute(rect);
-			text.setBounds(rect.x, rect.y, rect.width, rect.height);
-		}
+		cellEditor.getControl().setBounds(rect.x, rect.y, rect.width,
+				rect.height);
+		cellEditor.getControl().setVisible(true);
 	}
 
 	/**
