@@ -57,6 +57,18 @@ public final class PolylineEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		// line width
+		IWidgetPropertyChangeHandler lineWidthHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
+				polyline.setLineWidth((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(PolylineModel.PROP_LINE_WIDTH, lineWidthHandler);
+		
 		// fill
 		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

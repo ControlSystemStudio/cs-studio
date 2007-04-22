@@ -220,7 +220,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
-				WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0));
+				WidgetPropertyCategory.Behaviour, DEFAULT_FILL));
 		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
 		//Colors
 		addProperty(PROP_DEFAULT_FILL_COLOR, new ColorProperty("Default Fill Color",WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));
@@ -240,7 +240,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 		addProperty(PROP_MAX, new DoubleProperty("Maximum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[6]));
 		//Show_Value
 		addProperty(PROP_SHOW_VALUES, new BooleanProperty("Show values", WidgetPropertyCategory.Display, DEFAULT_SHOW_VALUES));
-		addProperty(PROP_SHOW_MARKS, new OptionProperty("Tigmarks",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_MARKS));
+		addProperty(PROP_SHOW_MARKS, new OptionProperty("Tickmarks",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_MARKS));
 		addProperty(PROP_SHOW_SCALE, new OptionProperty("Scale",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_SCALE));
 		addProperty(PROP_SCALE_SECTION_COUNT, new IntegerProperty("Section count", WidgetPropertyCategory.Display,DEFAULT_SECTION_COUNT,1,Integer.MAX_VALUE));
 	}

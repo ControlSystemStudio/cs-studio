@@ -67,7 +67,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected final void configureProperties() {
+	protected void configureProperties() {
 		addProperty(PROP_POINTS, new PointlistProperty(
 				Messages.PolyElement_POINTS, WidgetPropertyCategory.Position,
 				new PointList()));

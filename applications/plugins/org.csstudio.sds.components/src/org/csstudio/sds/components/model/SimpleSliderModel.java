@@ -38,6 +38,11 @@ import org.eclipse.swt.graphics.RGB;
 public final class SimpleSliderModel extends AbstractWidgetModel {
 
 	/**
+	 * The ID of the "show value as text" property.
+	 */
+	public static final String PROP_SHOW_VALUE_AS_TEXT = "showValueAsText"; //$NON-NLS-1$
+	
+	/**
 	 * The ID of the value property.
 	 */
 	public static final String PROP_VALUE = "value"; //$NON-NLS-1$
@@ -108,25 +113,16 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-//		addProperty(PROP_VALUE, new IntegerProperty("Slider Value",
-//				WidgetPropertyCategory.Behaviour, 50, 0, Integer.MAX_VALUE));
-//		addProperty(PROP_MIN, new IntegerProperty("Min",
-//				WidgetPropertyCategory.Behaviour, 0, 0, Integer.MAX_VALUE));
-//		addProperty(PROP_MAX, new IntegerProperty("Max",
-//				WidgetPropertyCategory.Behaviour, 100, 0, Integer.MAX_VALUE));
-//		addProperty(PROP_INCREMENT, new IntegerProperty("Increment",
-//				WidgetPropertyCategory.Behaviour, 1, 0, Integer.MAX_VALUE));
-//		addProperty(PROP_ORIENTATION, new OptionProperty("Orientation",
-//				WidgetPropertyCategory.Display, new String[] { "Horizontal",
-//						"Vertical" }, 0));
 		addProperty(PROP_VALUE, new DoubleProperty("Slider Value",
-				WidgetPropertyCategory.Behaviour, 50, 0, Double.MAX_VALUE));
+				WidgetPropertyCategory.Behaviour, 50.0));
+		addProperty(PROP_SHOW_VALUE_AS_TEXT, new BooleanProperty("Show Value As Text",
+				WidgetPropertyCategory.Display, false));
 		addProperty(PROP_MIN, new DoubleProperty("Min",
-				WidgetPropertyCategory.Behaviour, 0, 0, Double.MAX_VALUE));
+				WidgetPropertyCategory.Behaviour, 0.0));
 		addProperty(PROP_MAX, new DoubleProperty("Max",
-				WidgetPropertyCategory.Behaviour, 100, 0, Double.MAX_VALUE));
+				WidgetPropertyCategory.Behaviour, 100.0));
 		addProperty(PROP_INCREMENT, new DoubleProperty("Increment",
-				WidgetPropertyCategory.Behaviour, 1, 0, Double.MAX_VALUE));
+				WidgetPropertyCategory.Behaviour, 1.0));
 		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal orientation",
 				WidgetPropertyCategory.Display, true));
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places", WidgetPropertyCategory.Behaviour, 2, 0, 5));
@@ -204,5 +200,9 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 */
 	public boolean isHorizontal() {
 		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();
+	}
+
+	public boolean getShowValueAsText() {
+		return (Boolean) getProperty(PROP_SHOW_VALUE_AS_TEXT).getPropertyValue();
 	}
 }

@@ -83,6 +83,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		slider.setMin(model.getMin());
 		slider.setIncrement(model.getIncrement());
 		slider.setValue(model.getValue());
+		slider.setShowValueAsText(model.getShowValueAsText());
 		slider.setManualValue(model.getValue());
 		slider.setOrientation(model.isHorizontal());
 		slider.setDecimalPlaces(model.getPrecision());
@@ -103,7 +104,6 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final IRefreshableFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
-				//slider.setValue((Integer) newValue);
 				slider.setValue((Double) newValue);
 				slider.setManualValue((Double) newValue);
 				slider.setPopulateEvents(true);
@@ -170,6 +170,18 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(SimpleSliderModel.PROP_PRECISION, precisionHandler);
+		
+		// show value as text
+		IWidgetPropertyChangeHandler showValueAsTextHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+				slider.setShowValueAsText((Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(SimpleSliderModel.PROP_SHOW_VALUE_AS_TEXT, showValueAsTextHandler);
 		
 		// minSliderWide
 		IWidgetPropertyChangeHandler minSliderWideHandler = new IWidgetPropertyChangeHandler() {

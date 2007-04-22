@@ -27,6 +27,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
@@ -106,6 +107,19 @@ public final class SimpleSliderFigure extends Panel implements
 	private int _sliderWide = 5;
 
 	/**
+	 * The "show value as text" flag.
+	 */
+	private boolean _showValueAsText = false;
+
+	private double _originalMin;
+
+	private double _originalMax;
+
+	private double _originalManVal;
+
+	private double _originalVal;
+
+	/**
 	 * Flag which is used to disable slider events. When the current value is
 	 * set on the scrollbar, eventing must be turned off.
 	 */
@@ -126,7 +140,8 @@ public final class SimpleSliderFigure extends Panel implements
 
 		_valueLabel = new Label();
 		add(_valueLabel, BorderLayout.TOP);
-
+		_valueLabel.setVisible(_showValueAsText);
+		
 		_scrollBar = createScrollbarFigure();
 		add(_scrollBar, BorderLayout.CENTER);
 
@@ -183,7 +198,7 @@ public final class SimpleSliderFigure extends Panel implements
 
 		if (_populateEvents) {
 			for (ISliderListener l : _sliderListeners) {
-				l.sliderValueChanged(this.getDoubleFor(tmp));
+				l.sliderValueChanged(((double) tmp) / _scrollbarPrecision);
 			}
 		}
 	}
@@ -198,6 +213,11 @@ public final class SimpleSliderFigure extends Panel implements
 		_populateEvents = populateEvents;
 	}
 
+	public void setShowValueAsText(boolean showValueAsText) {
+		_showValueAsText = showValueAsText;
+		_valueLabel.setVisible(_showValueAsText);
+	}
+
 	/**
 	 * Set the minimum value.
 	 * 
@@ -205,10 +225,8 @@ public final class SimpleSliderFigure extends Panel implements
 	 *            The minimum value.
 	 */
 	public void setMin(final double min) {
-
-		_min = (int) (min * _scrollbarPrecision);
-		_scrollBar.setMinimum(_min);
-
+		_originalMin = min;
+		updateScrollbar();
 	}
 
 	/**
@@ -218,11 +236,31 @@ public final class SimpleSliderFigure extends Panel implements
 	 *            The maximum value.
 	 */
 	public void setMax(final double max) {
+		_originalMax = max;
+		updateScrollbar();
+	}
 
-		_max = (int) (max * _scrollbarPrecision);
-		// _scrollBar.setMaximum(_max);
-		this.setScrollbarMax(_max);
+	private void updateScrollbar() {
+		_min = (int) (_originalMin * _scrollbarPrecision);
+		_max = (int) (_originalMax * _scrollbarPrecision);
+		_manualValue = (int) (_originalManVal * _scrollbarPrecision);
+		_scrollBar.setMinimum(_min);
+		_scrollBar.setMaximum(_max + _sliderWide);
 
+		_currentValue = (int) (_originalVal * _scrollbarPrecision);
+
+		// update scrollbar
+		if (_currentValue < _min || _currentValue > _max) {
+			// current value is out of the sliders range -> disable the slider
+			_scrollBar.setEnabled(false);
+			_scrollBar.setValue(_currentValue);
+		} else {
+			_scrollBar.setEnabled(true);
+			_scrollBar.setValue(_currentValue);
+			_scrollBar.invalidate();
+		}
+
+		_scrollBar.setValue(_currentValue);
 	}
 
 	/**
@@ -265,18 +303,19 @@ public final class SimpleSliderFigure extends Panel implements
 	 */
 	private void setScrollbarPrecision(final int precision) {
 
-		double min = this.getDoubleFor(_min);
-		double max = this.getDoubleFor(_max);
+		// double min = this.getDoubleFor(_min);
+		// double max = this.getDoubleFor(_max);
 		int minWide = _sliderWide / _scrollbarPrecision;
-		double value = this.getDoubleFor(_currentValue);
-		double manualValue = this.getDoubleFor(_manualValue);
+		// double value = this.getDoubleFor(_currentValue);
+		// double manualValue = this.getDoubleFor(_manualValue);
 		_scrollbarPrecision = precision;
-		this.setMin(min);
-		this.setMax(max);
+		// this.setMin(min);
+		// this.setMax(max);
 		this.setSliderWide(minWide);
-		this.setValue(value);
-		this.setManualValue(manualValue);
+		// this.setValue(value);
+		// this.setManualValue(manualValue);
 
+		updateScrollbar();
 	}
 
 	/**
@@ -333,9 +372,9 @@ public final class SimpleSliderFigure extends Panel implements
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(30);
 		String text = format.format(value);
-		if (text.indexOf(",") >= 0) { //$NON-NLS-1$
-			String aftercomma = text.substring(text.indexOf(",")); //$NON-NLS-1$
-			if (aftercomma.equals(",0")) { //$NON-NLS-1$
+		if (text.indexOf(",") >= 0) {
+			String aftercomma = text.substring(text.indexOf(","));
+			if (aftercomma.equals(",0")) {
 				return 0;
 			}
 			return Math.min(5, aftercomma.length() - 1);
@@ -364,19 +403,24 @@ public final class SimpleSliderFigure extends Panel implements
 	 *            the current slider value
 	 */
 	public void setValue(final double value) {
+		_originalVal = value;
 
-		// store current value
-		_currentValue = (int) (value * _scrollbarPrecision);
+		// CentralLogger.getInstance().debug(this, "setValue("+value+")");
+		// // store current value
+		// _currentValue = (int) (value * _scrollbarPrecision);
+		//
+		// // update scrollbar
+		// if (_currentValue < _min || _currentValue > _max) {
+		// // current value is out of the sliders range -> disable the slider
+		// _scrollBar.setEnabled(false);
+		// _scrollBar.setValue(_currentValue);
+		// } else {
+		// _scrollBar.setEnabled(true);
+		// _scrollBar.setValue(_currentValue);
+		// _scrollBar.invalidate();
+		// }
 
-		// update scrollbar
-		if (_currentValue < _min || _currentValue > _max) {
-			// current value is out of the sliders range -> disable the slider
-			_scrollBar.setEnabled(false);
-		} else {
-			_scrollBar.setEnabled(true);
-			_scrollBar.setValue(_currentValue);
-			_scrollBar.invalidate();
-		}
+		updateScrollbar();
 
 		updateValueText();
 
@@ -392,15 +436,18 @@ public final class SimpleSliderFigure extends Panel implements
 	 *            the current slider value
 	 */
 	public void setManualValue(final double value) {
-		int tempValue = (int) (value * _scrollbarPrecision);
+		_originalManVal = value;
 
-		if (tempValue < _min) {
-			tempValue = _min;
-		} else if (tempValue > _max) {
-			tempValue = _max;
-		}
+		// CentralLogger.getInstance().debug(this, "setManualValue("+value+")");
+		// int tempValue = (int) (value * _scrollbarPrecision);
 
-		_manualValue = tempValue;
+		// TODO: Dieses Assert darf nicht fliegen! Toleranter implementieren.
+		// Der Wert kann auch von der IOC ausserhalb der Grenzen kommen.
+		// assert tempValue >= _min && tempValue <= _max;
+
+		// _manualValue = tempValue;
+
+		// updateScrollbar();
 
 		updateValueText();
 	}
@@ -413,7 +460,7 @@ public final class SimpleSliderFigure extends Panel implements
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(_decimalPlaces);
 		_valueLabel
-				.setText("" + format.format(this.getDoubleFor(_currentValue)) + " [MAN: " + format.format(this.getDoubleFor(_manualValue)) + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				.setText("" + format.format(_originalVal) + " [MAN: " + format.format(_originalManVal) + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	/**
@@ -423,8 +470,9 @@ public final class SimpleSliderFigure extends Panel implements
 	 * @param value
 	 *            The int value
 	 * @return The corresponding double
+	 * @deprecated
 	 */
-	private double getDoubleFor(final int value) {
+	private double getDoubleFor2(final int value) {
 		return ((double) value) / _scrollbarPrecision;
 	}
 

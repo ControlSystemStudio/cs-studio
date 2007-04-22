@@ -12,6 +12,12 @@
       <widgetModelInitializer
             class="org.csstudio.sds.components.epics.EpicsBargraphInitializer"
             typeId="schema.epics:element.bargraph"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.EpicsSimpleSliderInitializer"
+            typeId="schema.epics:element.slider.simple"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.EpicsWaveformInitializer"
+            typeId="schema.epics:element.waveform"/>
    </extension>
    <extension
          point="org.csstudio.sds.controlSystemSchema">

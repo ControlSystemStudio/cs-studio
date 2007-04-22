@@ -46,6 +46,10 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		WaveformModel model = (WaveformModel) getCastedModel();
 		WaveformFigure waveform = new WaveformFigure();
 		waveform.setData(model.getData());
+		waveform.setMin(model.getMin());
+		waveform.setMax(model.getMax());
+		waveform.setAutoScale(model.getAutoscale());
+		waveform.setShowScale(model.getShowScale());
 		waveform.setShowScale(model.getShowScale());
 		waveform.setShowLedgerlLines(model.getShowLedgerLines());
 		waveform.setShowConnectionLines(model.getShowConnectionLines());
@@ -62,8 +66,44 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		// data array
+		// max
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setMax((Double)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_MAX, handler);
+		
+		// min
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setMin((Double)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_MIN, handler);
+		
+		// autoscale
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setAutoScale((Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_AUTO_SCALE, handler);
+		
+		// data array
+		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {

@@ -21,7 +21,8 @@
  */
 package org.csstudio.sds.components.model;
 
-
+import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.properties.IntegerProperty;
 
 /**
  * A line widget model.
@@ -29,16 +30,26 @@ package org.csstudio.sds.components.model;
  * @author Sven Wende, Alexander Will
  */
 public final class PolylineModel extends AbstractPolyModel {
+
 	/**
 	 * The ID of this widget model.
 	 */
 	public static final String ID = "element.polyline"; //$NON-NLS-1$
-	
+
+	public static final String PROP_LINE_WIDTH = "linewidth";
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getTypeID() {
 		return ID;
+	}
+
+	@Override
+	protected void configureProperties() {
+		super.configureProperties();
+		addProperty(PROP_LINE_WIDTH, new IntegerProperty("Line Width",
+				WidgetPropertyCategory.Display, 1, 1, 100));
 	}
 }

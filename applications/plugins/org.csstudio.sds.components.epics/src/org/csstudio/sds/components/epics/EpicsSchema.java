@@ -1,9 +1,7 @@
 package org.csstudio.sds.components.epics;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.AliasDescriptor;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.eclipse.swt.graphics.RGB;
 
@@ -18,31 +16,60 @@ import org.eclipse.swt.graphics.RGB;
 public final class EpicsSchema extends AbstractControlSystemSchema {
 
 	/**
-	 * The schema ID.
+	 * Identifier the default foreground color property.
 	 */
-	private static final String ID = "schema.epics"; //$NON-NLS-1$
+	public static final String DEFAULT_FOREGROUND_COLOR = "DEFAULT_FOREGROUND_COLOR";
+
+	/**
+	 * Identifier the default background color property.
+	 */
+	public static final String DEFAULT_BACKGROUND_COLOR = "DEFAULT_BACKGROUND_COLOR";
+
+	/**
+	 * Identifier the default error color property.
+	 */
+	public static final String DEFAULT_ERROR_COLOR = "DEFAULT_ERROR_COLOR";
+
+	/**
+	 * Identifier the default timelag color property.
+	 */
+	public static final String DEFAULT_TIMELAG_COLOR = "DEFAULT_TIMELAG_COLOR";
+	
+	/**
+	 * Identifier the record alias property.
+	 */
+	public static final String RECORD_ALIAS_NAME = "RECORD_ALIAS_NAME";
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Map<String, Object> createPropertyMap() {
-		Map<String, Object> properties = new HashMap<String, Object>();
-
-		properties.put(AbstractWidgetModel.PROP_COLOR_BACKGROUND, new RGB(255,
-				0, 0));
-		properties.put(AbstractWidgetModel.PROP_COLOR_FOREGROUND, new RGB(0,
-				255, 0));
-		// TODO add more properties
-
-		return properties;
+	protected void initializeWidget(final AbstractWidgetModel widgetModel) {
+		widgetModel.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
+				getColorProperty(DEFAULT_BACKGROUND_COLOR));
+		widgetModel.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
+				getColorProperty(DEFAULT_FOREGROUND_COLOR));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getTypeId() {
-		return ID;
+	protected void initializeProperties() {
+		addGlobalProperty(DEFAULT_BACKGROUND_COLOR, new RGB(230, 230, 230));
+		addGlobalProperty(DEFAULT_FOREGROUND_COLOR, new RGB(0, 0, 192));
+		addGlobalProperty(DEFAULT_ERROR_COLOR, new RGB(255, 0, 0));
+		addGlobalProperty(DEFAULT_TIMELAG_COLOR, new RGB(255, 0, 255));
+		addGlobalProperty(RECORD_ALIAS_NAME, "record");
+
+		// and so on ..
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initializeAliases(final AbstractWidgetModel widgetModel) {
+		widgetModel.addAliasDescriptor(new AliasDescriptor("record", "", "EPICS Record"));
 	}
 }

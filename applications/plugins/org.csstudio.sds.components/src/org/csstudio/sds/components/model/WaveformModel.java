@@ -26,6 +26,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleArrayProperty;
+import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.eclipse.swt.graphics.RGB;
 
@@ -37,6 +38,21 @@ import org.eclipse.swt.graphics.RGB;
  * 
  */
 public final class WaveformModel extends AbstractWidgetModel {
+	/**
+	 * Property ID for the <i>autoscale</i> setting.
+	 */
+	public static final String PROP_AUTO_SCALE = "autoscale"; //$NON-NLS-1$
+	
+	/**
+	 * Property ID for the <i>minimum</i> scale value.
+	 */
+	public static final String PROP_MIN = "min"; //$NON-NLS-1$
+	
+	/**
+	 * Property ID for the <i>maximum</i> scale value.
+	 */
+	public static final String PROP_MAX = "max"; //$NON-NLS-1$
+	
 	/**
 	 * Property ID for the <i>wave</i>.
 	 */
@@ -115,6 +131,12 @@ public final class WaveformModel extends AbstractWidgetModel {
 		addProperty(PROP_LEDGER_LINE_COLOR, new ColorProperty(
 				"Color ledger lines", WidgetPropertyCategory.Display, new RGB(
 						210, 210, 210)));
+		addProperty(PROP_MIN, new DoubleProperty(
+				"Minimum", WidgetPropertyCategory.Display, -100.0));
+		addProperty(PROP_MAX, new DoubleProperty(
+				"Maximum", WidgetPropertyCategory.Display, 100.0));
+		addProperty(PROP_AUTO_SCALE, new BooleanProperty(
+				"Automatic Scaling", WidgetPropertyCategory.Display, false));
 	}
 
 	/**
@@ -133,6 +155,20 @@ public final class WaveformModel extends AbstractWidgetModel {
 	public double[] getData() {
 		return (double[]) getProperty(PROP_WAVE_FORM).getPropertyValue();
 	}
+
+	public double getMin() {
+		return (Double) getProperty(PROP_MIN).getPropertyValue();
+	}
+
+	
+	public double getMax() {
+		return (Double) getProperty(PROP_MAX).getPropertyValue();
+	}
+
+	public boolean getAutoscale() {
+		return (Boolean) getProperty(PROP_AUTO_SCALE).getPropertyValue();
+	}
+
 
 	/**
 	 * Return the RGB for the color of the graph.
