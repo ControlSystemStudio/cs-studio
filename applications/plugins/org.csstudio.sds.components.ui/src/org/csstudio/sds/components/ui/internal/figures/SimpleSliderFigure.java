@@ -333,9 +333,9 @@ public final class SimpleSliderFigure extends Panel implements
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(30);
 		String text = format.format(value);
-		if (text.indexOf(",") >= 0) {
-			String aftercomma = text.substring(text.indexOf(","));
-			if (aftercomma.equals(",0")) {
+		if (text.indexOf(",") >= 0) { //$NON-NLS-1$
+			String aftercomma = text.substring(text.indexOf(",")); //$NON-NLS-1$
+			if (aftercomma.equals(",0")) { //$NON-NLS-1$
 				return 0;
 			}
 			return Math.min(5, aftercomma.length() - 1);
@@ -394,9 +394,11 @@ public final class SimpleSliderFigure extends Panel implements
 	public void setManualValue(final double value) {
 		int tempValue = (int) (value * _scrollbarPrecision);
 
-		// TODO: Dieses Assert darf nicht fliegen! Toleranter implementieren.
-		// Der Wert kann auch von der IOC ausserhalb der Grenzen kommen.
-		assert tempValue >= _min && tempValue <= _max;
+		if (tempValue < _min) {
+			tempValue = _min;
+		} else if (tempValue > _max) {
+			tempValue = _max;
+		}
 
 		_manualValue = tempValue;
 
