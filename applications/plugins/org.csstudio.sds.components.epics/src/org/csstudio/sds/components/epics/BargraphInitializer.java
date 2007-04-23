@@ -10,8 +10,7 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @author Kai Meyer
  * 
  */
-public final class BargraphInitializer extends
-		AbstractWidgetModelInitializer {
+public final class BargraphInitializer extends AbstractWidgetModelInitializer {
 
 	/**
 	 * {@inheritDoc}

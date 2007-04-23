@@ -6,5 +6,8 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.sds.test.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.sds
+ org.csstudio.sds,
+ org.csstudio.sds.ui,
+ org.eclipse.draw2d,
+ org.eclipse.gef
 Eclipse-LazyStart: true
