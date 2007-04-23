@@ -10,7 +10,7 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @author Kai Meyer
  * 
  */
-public final class EpicsBargraphInitializer extends
+public final class BargraphInitializer extends
 		AbstractWidgetModelInitializer {
 
 	/**

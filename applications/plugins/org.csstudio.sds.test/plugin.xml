@@ -2,17 +2,15 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.csstudio.sds.controlSystemSchema">
+       point="org.csstudio.sds.widgetModelInitializers">
       <controlSystemSchema
             class="org.csstudio.sds.test.TestSchema"
             description="For unit tests only!"
-            typeId="schema.test"/>
-   </extension>
-   <extension
-         point="org.csstudio.sds.widgetModelInitializers">
+            schemaId="schema.test"/>
       <widgetModelInitializer
             class="org.csstudio.sds.test.TestInitializer"
-            typeId="schema.test:element.test"/>
+            schemaId="schema.test"
+            widgetTypeId="element.test"/>
    </extension>
 
 </plugin>

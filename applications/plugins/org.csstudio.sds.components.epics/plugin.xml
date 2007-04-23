@@ -4,27 +4,45 @@
    <extension
          point="org.csstudio.sds.widgetModelInitializers">
       <widgetModelInitializer
-            class="org.csstudio.sds.components.epics.EpicsMeterInitializer"
-            typeId="schema.epics:element.meter"/>
+            class="org.csstudio.sds.components.epics.MeterInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="element.meter"/>
       <widgetModelInitializer
-            class="org.csstudio.sds.components.epics.EpicsRectangleInitializer"
-            typeId="schema.epics:element.rectangle"/>
+            class="org.csstudio.sds.components.epics.RectangleInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="element.rectangle"/>
       <widgetModelInitializer
-            class="org.csstudio.sds.components.epics.EpicsBargraphInitializer"
-            typeId="schema.epics:element.bargraph"/>
+            class="org.csstudio.sds.components.epics.BargraphInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="element.bargraph"/>
       <widgetModelInitializer
-            class="org.csstudio.sds.components.epics.EpicsSimpleSliderInitializer"
-            typeId="schema.epics:element.slider.simple"/>
+            class="org.csstudio.sds.components.epics.SimpleSliderInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="element.slider.simple"/>
       <widgetModelInitializer
-            class="org.csstudio.sds.components.epics.EpicsWaveformInitializer"
-            typeId="schema.epics:element.waveform"/>
-   </extension>
-   <extension
-         point="org.csstudio.sds.controlSystemSchema">
+            class="org.csstudio.sds.components.epics.WaveformInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="element.waveform"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.TextInputInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="element.textinput"
+            />
       <controlSystemSchema
             class="org.csstudio.sds.components.epics.EpicsSchema"
             description="%epics"
-            typeId="schema.epics"/>
+            schemaId="schema.epics"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.EllipseInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="element.ellipse"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.LabelInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="element.label"/>
+      <widgetModelInitializer
+            class="org.csstudio.sds.components.epics.MeterInitializer"
+            schemaId="schema.epics"
+            widgetTypeId="element.meter"/>
    </extension>
-
 </plugin>

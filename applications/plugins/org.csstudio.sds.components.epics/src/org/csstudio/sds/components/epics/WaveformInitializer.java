@@ -10,7 +10,7 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @author Sven Wende
  * 
  */
-public final class EpicsWaveformInitializer extends AbstractWidgetModelInitializer {
+public final class WaveformInitializer extends AbstractWidgetModelInitializer {
 
 	/**
 	 * {@inheritDoc}

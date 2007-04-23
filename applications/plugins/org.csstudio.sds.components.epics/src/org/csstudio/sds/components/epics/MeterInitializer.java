@@ -14,7 +14,7 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @version $Revision$
 
  */
-public class EpicsMeterInitializer extends
+public final class MeterInitializer extends
 		AbstractWidgetModelInitializer {
 
 	/**

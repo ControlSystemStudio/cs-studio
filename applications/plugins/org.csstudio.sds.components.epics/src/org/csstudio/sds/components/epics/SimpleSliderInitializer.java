@@ -10,7 +10,7 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @author Sven Wende
  * 
  */
-public final class EpicsSimpleSliderInitializer extends AbstractWidgetModelInitializer {
+public final class SimpleSliderInitializer extends AbstractWidgetModelInitializer {
 
 	/**
 	 * {@inheritDoc}

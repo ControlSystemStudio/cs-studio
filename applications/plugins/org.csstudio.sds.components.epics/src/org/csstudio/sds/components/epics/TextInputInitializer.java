@@ -1,6 +1,6 @@
 package org.csstudio.sds.components.epics;
 
-import org.csstudio.sds.components.model.RectangleModel;
+import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 
@@ -11,7 +11,7 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @version $Revision$
  * 
  */
-public final class EpicsRectangleInitializer extends
+public final class TextInputInitializer extends
 		AbstractWidgetModelInitializer {
 
 	/**
@@ -19,8 +19,8 @@ public final class EpicsRectangleInitializer extends
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeStaticProperty(RectangleModel.PROP_FILL, 50.0);
-		initializeDynamicProperty(RectangleModel.PROP_FILL, "$record$.VAL");
+		initializeStaticProperty(TextInputModel.PROP_INPUT_TEXT, "Enter Text!");
+		initializeDynamicProperty(TextInputModel.PROP_INPUT_TEXT, "$record$.VAL", "$record$.VAL");
 	}
 
 }
