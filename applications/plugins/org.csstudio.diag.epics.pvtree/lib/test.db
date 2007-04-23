@@ -13,11 +13,21 @@ record(calc, "sum")
 record(calc, "one_input")
 {
     field(CALC, "A<20 ? A+2 : 0")
-    field(INPA, "another_input")
+    field(INPA, "some_input PP")
     field(LOLO, "2")
     field(HSV, "INVALID")
     field(LOW, "6")
     field(HHSV, "MINOR")
+}
+
+record(calc, "some_input")
+{
+    field(CALC, "A<10 ? A+1 : 0")
+    field(INPA, "some_input")
+    field(HIGH, "7")
+    field(HSV, "MINOR")
+    field(HIHI, "9")
+    field(HHSV, "MAJOR")
 }
 
 record(calc, "another_input")
@@ -40,12 +50,14 @@ record(calc, "ramp")
 record(calc, "sin")
 {
     field(INPA, "ramp CP")
+    field(PREC, "3")
     field(CALC, "sin(2*PI/100*A)")
 }
 
 record(calc, "cos")
 {
     field(INPA, "ramp CP")
+    field(PREC, "3")
     field(CALC, "cos(2*PI/100*A)")
 }
 
