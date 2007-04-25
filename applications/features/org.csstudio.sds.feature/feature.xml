@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sds.feature"
       label="Synoptic Display Studio"
-      version="1.0.0">
+      version="1.0.1">
 
    <description url="http://css.desy.de/sds">
       The Synoptic Display Studio (SDS) is a GEF based application which allows for modelling and displaying synoptic displays.
@@ -41,42 +41,42 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          id="org.csstudio.sds"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="1.0.1"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.ui"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="1.0.1"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.components"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="1.0.1"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.components.ui"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="1.0.1"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.components.epics"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="1.0.1"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.samples"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.1"
          unpack="false"/>
 
 </feature>
