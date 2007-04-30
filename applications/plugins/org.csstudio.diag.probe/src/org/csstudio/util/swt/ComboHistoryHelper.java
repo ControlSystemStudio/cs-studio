@@ -10,8 +10,8 @@ import org.eclipse.swt.widgets.Combo;
 
 /** Maintains a 'history' Combo box.
  *  <p>
- *  Newly entered items are added to the top of the combo list,
- *  dropping last items off the list when reaching a comfigurable maximum
+ *  Newly entered items are added to the end of the combo list,
+ *  dropping items off the list when reaching a comfigurable maximum
  *  list size.
  *  <p>
  *  @see #newSelection(String)
@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Combo;
  */
 public abstract class ComboHistoryHelper
 {
+    private static final boolean debug = true;
     private static final String TAG = "values"; //$NON-NLS-1$
     private static final int DEFAULT_MAX = 10;
     private final IDialogSettings settings;
@@ -68,26 +69,41 @@ public abstract class ComboHistoryHelper
     }
 
     /** Add entry to the list. */
-    private void addEntry(String new_entry)
+    @SuppressWarnings("nls")
+    public void addEntry(String new_entry)
     {
+        if (debug)
+            System.out.println("ComboHelper: Add "+new_entry);
     	IProcessVariable pv = CentralItemFactory.createProcessVariable(new_entry);
-        
+
         // Locate & remove the entry to avoid duplicates.
         // A simple remove() would throw exception in case the elem isn't found.
         final Combo ctrl = combo.getCombo();
+        boolean only_a_reorg = false;
         for (int i=0; i<ctrl.getItemCount(); ++i)
         {
             final Object obj = combo.getElementAt(i);
             IProcessVariable elem = (IProcessVariable) obj;
             if (elem.getName().equals(new_entry))
+            {
                 combo.remove(obj);
+                only_a_reorg = true;
+            }
         }
+        // Maybe remove oldest (first) entry to keep list size <= max
+        if (ctrl.getItemCount() >= max)
+        	combo.remove(combo.getElementAt(0));
+
         // Add new entry to the end
-    	combo.add(pv);
-        // Maybe remove oldest entry
-        if (ctrl.getItemCount() > max)
-        	combo.remove(combo.getElementAt(ctrl.getItemCount()-1));
-        ctrl.select(ctrl.getItemCount()-1);
+        combo.add(pv);
+        if (! only_a_reorg)
+            ctrl.select(ctrl.getItemCount()-1);
+
+        if (debug)
+            for (int i=0; i<ctrl.getItemCount(); ++i)
+                System.out.println(String.format("Item %2d: '%s'",
+                                                 i,
+                                                 combo.getElementAt(i)));
     }
 
     /** Notify about new selection. */
