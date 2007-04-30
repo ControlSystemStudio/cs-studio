@@ -1,7 +1,6 @@
 package org.csstudio.diag.probe;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
@@ -21,14 +20,11 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -54,8 +50,9 @@ import org.eclipse.ui.part.ViewPart;
  * Main Eclipse ViewPart of the Probe plug-in.
  *
  * @author Original by Ken Evans (APS)
- * @author Modifications by Kay Kasemir
- * @author Last modifications by Jan Hatje und Helge Rickens
+ * @author Kay Kasemir
+ * @author Jan Hatje
+ * @author Helge Rickens
  */
 public class Probe extends ViewPart implements PVListener
 {
@@ -67,7 +64,7 @@ public class Probe extends ViewPart implements PVListener
     private IMemento memento = null;
 
     // GUI
-    private ComboViewer txt_name;
+    private ComboViewer cbo_name;
     private ComboHistoryHelper name_helper;
     private Label lbl_value;
     private Label lbl_time;
@@ -85,44 +82,14 @@ public class Probe extends ViewPart implements PVListener
     private SmoothedDouble value_period = new SmoothedDouble();
     private NumberFormat period_format;
 
-//    /** Create or re-display a probe view with the given PV name.
-//     *  <p>
-//     *  Invoked by the PVpopupAction.
-//     *
-//     *  @param pv_name The PV to 'probe'
-//     *  @return Returns <code>true</code> when successful.
-//     */
-//    public static boolean activateWithPV(String pv_name)
-//    {
-//        try
-//        {
-//            IWorkbench workbench = PlatformUI.getWorkbench();
-//            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-//            IWorkbenchPage page = window.getActivePage();
-//            Probe probe = (Probe) page.showView(Probe.ID);
-//            probe.setPVName(pv_name);
-//            return true;
-//        }
-//        catch (Exception e)
-//        {
-//            Plugin.logException("activateWithPV", e); //$NON-NLS-1$
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
-    class UsedSorter extends ViewerSorter{
-    	// Sort a table at the last two selected tableheader
-    	public int compare(Object o1, Object o2) {
-    		System.out.println("compare");
-    		if (o1 instanceof IProcessVariable&&o2 instanceof IProcessVariable) {
-    			return 1;
-    		}else
-    			return 0;
-    	}
-
-    }
-
-    public static boolean activateWithPV(IProcessVariable iPV)
+    /** Create or re-display a probe view with the given PV name.
+     *  <p>
+     *  Invoked by the PVpopupAction.
+     *
+     *  @param pv_name The PV to 'probe'
+     *  @return Returns <code>true</code> when successful.
+     */
+    public static boolean activateWithPV(IProcessVariable pv_name)
     {
         try
         {
@@ -130,7 +97,7 @@ public class Probe extends ViewPart implements PVListener
             IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
             IWorkbenchPage page = window.getActivePage();
             Probe probe = (Probe) page.showView(Probe.ID);
-            probe.setPVName(iPV);
+            probe.setPVName(pv_name.getName());
             return true;
         }
         catch (Exception e)
@@ -140,7 +107,6 @@ public class Probe extends ViewPart implements PVListener
         }
         return false;
     }
-
 
     public Probe()
     {
@@ -162,7 +128,7 @@ public class Probe extends ViewPart implements PVListener
     public void saveState(IMemento memento)
     {
         super.saveState(memento);
-        memento.putString(PV_TAG, txt_name.getCombo().getText());
+        memento.putString(PV_TAG, cbo_name.getCombo().getText());
     }
 
     /** ViewPart interface, create UI. */
@@ -171,43 +137,23 @@ public class Probe extends ViewPart implements PVListener
         createGUI(parent);
 
         // Enable 'Drop'
-        new ProcessVariableDropTarget(txt_name.getControl())
+        new ProcessVariableDropTarget(cbo_name.getControl())
         {
             @Override
             public void handleDrop(IProcessVariable name,
                                    DropTargetEvent event)
             {
-                setPVName(name);
+                setPVName(name.getName());
             }
         };
 
-        // In principle, this could allow 'dragging' of PV names
-        // from the text box.
+        // In principle, this could allow 'dragging' of PV names.
         // In practice, however, any mouse click & drag only selects
         // portions of the text and moves the cursor. It won't
         // initiate a 'drag'.
         // Maybe it works on some OS? Maybe there's another magic
         // modifier key to force a 'drag'?
-        new ProcessVariableDragSource(txt_name.getControl(), txt_name);
-
-//        new ProcessVariableDragSource(txt_name.getControl(), new ISelectionProvider()
-//        {
-//            public void addSelectionChangedListener(ISelectionChangedListener listener)
-//            {}
-//
-//            public void removeSelectionChangedListener(ISelectionChangedListener listener)
-//            {}
-//
-//            public void setSelection(ISelection selection)
-//            {}
-//
-//            public ISelection getSelection()
-//            {
-//                Object pvs[] = new Object[1];
-//                pvs[0] = CentralItemFactory.createProcessVariable(txt_name.getText());
-//                return new StructuredSelection(pvs);
-//            }
-//        });
+        new ProcessVariableDragSource(cbo_name.getControl(), cbo_name);
 
         makeContextMenu();
     }
@@ -215,7 +161,7 @@ public class Probe extends ViewPart implements PVListener
     // ViewPart interface
     public void setFocus()
     {
-        txt_name.getCombo().setFocus();
+        cbo_name.getCombo().setFocus();
     }
 
     /** Construct GUI. */
@@ -237,22 +183,24 @@ public class Probe extends ViewPart implements PVListener
         gd = new GridData();
         label.setLayoutData(gd);
 
-        txt_name = new ComboViewer(parent, SWT.SINGLE | SWT.BORDER);
+        cbo_name = new ComboViewer(parent, SWT.SINGLE | SWT.BORDER);
 //        txt_name.setSorter(new UsedSorter());
 //        txt_name.setSorter(new ViewerSorter());
-        txt_name.getCombo().setToolTipText(Messages.S_EnterPVName);
+        cbo_name.getCombo().setToolTipText(Messages.S_EnterPVName);
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;
-        txt_name.getCombo().setLayoutData(gd);
+        cbo_name.getCombo().setLayoutData(gd);
         name_helper = new ComboHistoryHelper(
                         Plugin.getDefault().getDialogSettings(),
-                        PV_LIST_TAG, txt_name)
+                        PV_LIST_TAG, cbo_name)
         {
             public void newSelection(String pv_name)
-            {   setPVName(CentralItemFactory.createProcessVariable(pv_name));       }
+            { 
+                setPVName(pv_name);   
+            }
         };
-        txt_name.getCombo().addDisposeListener(new DisposeListener()
+        cbo_name.getCombo().addDisposeListener(new DisposeListener()
         {
             public void widgetDisposed(DisposeEvent e)
             {
@@ -338,103 +286,69 @@ public class Probe extends ViewPart implements PVListener
         name_helper.loadSettings();
 
         if (memento != null)
-        {
-            String pv_name = memento.getString(PV_TAG);
-            if (pv_name != null&&pv_name.length() > 0){
-            	setPVName(CentralItemFactory.createProcessVariable(pv_name));
-//                setPVName(pv_name);
-            }
-        }
+        	setPVName(memento.getString(PV_TAG));
     }
 
-//    /** Update the PV name that is probed.
-//     *  <p>
-//     *  Opens a new channel, closing any old one first
-//     *  @param name
-//     */
-//    public boolean setPVName(String name)
-//    {
-//    	System.out.println("setPVName mit String");
-//        if (Probe.debug)
-//            Plugin.logInfo("setPVName(" + name + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-//
-//        // Update displayed name, unless it's already current
-//        if (! txt_name.getCombo().getText().equals(name))
-//            txt_name.getCombo().setText(name);
-//        // Reset rest of GUI
-//        lbl_value.setText("");  //$NON-NLS-1$
-//        lbl_time.setText("");  //$NON-NLS-1$
-//        time = null;
-//
-//        // Close a previous channel
-//        disposeChannel();
-//
-//        // Check the name
-//        if (name == null || name.equals(""))  //$NON-NLS-1$
-//        {
-//            updateStatus(Messages.S_Waiting);
-//            return false;
-//        }
-//
-//        // Create a new channel
-//        try
-//        {
-//            updateStatus(Messages.S_Searching);
-//            pv = new EPICS_V3_PV(name);
-//            pv.addListener(this);
-//            pv.start();
-//        }
-//        catch (Exception ex)
-//        {
-//            Plugin.logException(Messages.S_CreateError, ex);
-//            updateStatus(Messages.S_CreateError + ex.getMessage());
-//            return false;
-//        }
-//        return true;
-//    }
+    /** Add context menu.
+     *  Basically empty, only contains MB_ADDITIONS to allow object contribs.
+     */
+    private void makeContextMenu()
+    {
+        MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        Control contr = cbo_name.getControl();
+        manager.addMenuListener(new IMenuListener()
+        {
+            public void menuAboutToShow(IMenuManager manager)
+            {
+                manager.add(new Separator(
+                                IWorkbenchActionConstants.MB_ADDITIONS));
+            }
+        });
+        Menu menu = manager.createContextMenu(contr);
+        contr.setMenu(menu);
+        getSite().registerContextMenu(manager, cbo_name);
+    }
 
     /** Update the PV name that is probed.
      *  <p>
      *  Opens a new channel, closing any old one first
      *  @param name
      */
-    public boolean setPVName(IProcessVariable iPV)
+    @SuppressWarnings("nls")
+    public boolean setPVName(String pv_name)
     {
         if (Probe.debug)
-            Plugin.logInfo("setPVName(" + iPV.getName()+ ")"); //$NON-NLS-1$ //$NON-NLS-2$
-
-        // Update displayed name, unless it's already current
-//        if (! (txt_name.getName().equals(pv.getName()))
-//            txt_name.add(pv);
+            Plugin.logInfo("setPVName(" + pv_name+ ")");
 
         // Reset rest of GUI
-        lbl_value.setText("");  //$NON-NLS-1$
-        lbl_time.setText("");  //$NON-NLS-1$
+        lbl_value.setText("");
+        lbl_time.setText("");
         time = null;
 
         // Close a previous channel
         disposeChannel();
 
         // Check the name
-        if (iPV == null || iPV.getName().equals(""))  //$NON-NLS-1$
+        if (pv_name == null || pv_name.equals(""))
         {
+            cbo_name.getCombo().setText("");
             updateStatus(Messages.S_Waiting);
             return false;
         }
-//        txt_name.add(iPV);
-        if(txt_name.getCombo().indexOf(iPV.getName())<0){
-        	if(txt_name.getCombo().getItemCount()>9){
-//        		txt_name.remove(txt_name.getElementAt(txt_name.getCombo().getItemCount()-1)); // remove last
-        		txt_name.remove(txt_name.getElementAt(0));	// remove first
-        	}
-        	txt_name.add(iPV);
-        }
-        txt_name.setSelection(new StructuredSelection(iPV));
+        
+        name_helper.addEntry(pv_name);
+        cbo_name.setSelection(
+            new StructuredSelection(
+                        CentralItemFactory.createProcessVariable(pv_name)));
+        // Update displayed name, unless it's already current
+        if (! (cbo_name.getCombo().getText().equals(pv_name)))
+            cbo_name.getCombo().setText(pv_name);
+
         // Create a new channel
         try
         {
             updateStatus(Messages.S_Searching);
-            pv = new EPICS_V3_PV(iPV.getName());
+            pv = new EPICS_V3_PV(pv_name);
             pv.addListener(this);
             pv.start();
         }
@@ -598,47 +512,4 @@ public class Probe extends ViewPart implements PVListener
             updateStatus(Messages.S_AdjustFailed + ex.getMessage());
         }
     }
-
-    /*****************************************************************************
-	 * Make the MB3-ContextMenu
-	 *
-	 */
-	private void makeContextMenu() {
-		MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-		Control contr = txt_name.getControl();
-		manager.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-			}
-		});
-//		final ComboViewer cv = new ComboViewer(txt_name);
-		contr.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				super.mouseDown(e);
-
-				if (e.button == 3) {
-			        Object pvs[] = new Object[1];
-//					pvs[0] = CentralItemFactory.createProcessVariable(txt_name.getText());
-//	                return new StructuredSelection(pvs);
-					StructuredSelection s =  new StructuredSelection(pvs);
-					Object o = s.getFirstElement();
-					if (o instanceof ArrayList) {
-						System.out.println("First is"+((ArrayList)o).get(0));
-
-					}
-
-//	                pvs[0] = CentralItemFactory.createProcessVariable(txt_name.getText());
-//	                cv.setSelection(new StructuredSelection(pvs));
-//	                return new StructuredSelection(pvs);
-
-//					System.out.println("S= "+s);
-//					list.getList().setSelection(e.y/list.getList().getItemHeight());
-				}
-			}
-		});
-		Menu menu = manager.createContextMenu(contr);
-		contr.setMenu(menu);
-		getSite().registerContextMenu(manager, txt_name);
-	}
 }

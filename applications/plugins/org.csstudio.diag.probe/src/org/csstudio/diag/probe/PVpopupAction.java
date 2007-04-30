@@ -3,9 +3,9 @@ package org.csstudio.diag.probe;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
 
-/** Handle activation of Probe from the objectr contrib. context menu.
+/** Handle activation of Probe from the object contrib. context menu.
  *  @author Kay Kasemir
- *  @author Last modifications by Helge Rickens
+ *  @author Helge Rickens
  */
 public class PVpopupAction extends ProcessVariablePopupAction
 {
@@ -15,7 +15,6 @@ public class PVpopupAction extends ProcessVariablePopupAction
     {
         if (pv_names.length < 1)
             return;
-//        Probe.activateWithPV(pv_names[0].getName());
         Probe.activateWithPV(pv_names[0]);
     }
 }
