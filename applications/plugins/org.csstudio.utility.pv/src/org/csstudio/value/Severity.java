@@ -15,7 +15,7 @@ package org.csstudio.value;
  *              is valid, but its value might be close to some trip threshold.
  *              Some applications might indicate this by displaying the value
  *              in yellow. 
- *  <li>Major - A severity that indicates a mayor warning. The process variable
+ *  <li>Major - A severity that indicates a major warning. The process variable
  *              is valid, but its value might have exceeded some trip threshold.
  *              Some applications might indicate this by displaying the value
  *              in red. 

@@ -49,7 +49,7 @@ public class SeverityUtil
         {   return Messages.SevMinor; }
     };
     
-    private static final Severity mayor = new Severity()
+    private static final Severity major = new Severity()
     {
         public boolean hasValue()
         {   return true;  }
@@ -101,7 +101,7 @@ public class SeverityUtil
         {
         case 0: return ok;
         case 1: return minor;
-        case 2: return mayor;
+        case 2: return major;
         default: return invalid;
         }
     }

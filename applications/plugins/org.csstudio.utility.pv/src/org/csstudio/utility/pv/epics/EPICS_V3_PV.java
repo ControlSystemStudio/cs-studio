@@ -332,8 +332,12 @@ public class EPICS_V3_PV
                 else throw new Exception("Cannot handle type "
                                 + new_value.getClass().getName());
             }
-            // TODO: Delay the flush for multiple 'setValue' calls?
-            // this applies to all the flushIO() calls in here...
+            // Delay the flush for multiple 'setValue' calls?
+            // Would improve performance, but is really hard to do,
+            // since this general-purpose PV doesn't "know" when
+            // the application is "done".
+            //
+            // This applies to all the flushIO() calls in here...
             jca_context.flushIO();
         }
         catch (Exception e)
