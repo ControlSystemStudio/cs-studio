@@ -4,14 +4,9 @@ import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
-
-import com.sun.org.apache.bcel.internal.generic.IfInstruction;
 
 /** Maintains a 'history' Combo box.
  *  <p>
@@ -21,7 +16,7 @@ import com.sun.org.apache.bcel.internal.generic.IfInstruction;
  *  <p>
  *  @see #newSelection(String)
  *  @author Kay Kasemir
- *  @author Last modifications by Helge Rickens
+ *  @author Helge Rickens
  */
 public abstract class ComboHistoryHelper
 {
@@ -72,24 +67,27 @@ public abstract class ComboHistoryHelper
 
     }
 
-    /** Add entry to top of list. */
+    /** Add entry to the list. */
     private void addEntry(String new_entry)
     {
-    	IProcessVariable iPV =CentralItemFactory.createProcessVariable(new_entry);
-    	combo.getCombo().remove(iPV.getName());
-    	combo.add(iPV);
-//        // Avoid duplicates
-//        for (int i=0; i<combo.getItemCount(); ++i)
-//            if (combo.getItem(i).equals(new_entry))
-//                return;
-//        // Add at top
-//        combo.add(new_entry, 0);
-//        // Maybe remove oldest entry
-        if (combo.getCombo().getItemCount() > max){
-//            combo.getCombo().remove(combo.getCombo().getItemCount() - 1);
-        	combo.getCombo().remove(0);
+    	IProcessVariable pv = CentralItemFactory.createProcessVariable(new_entry);
+        
+        // Locate & remove the entry to avoid duplicates.
+        // A simple remove() would throw exception in case the elem isn't found.
+        final Combo ctrl = combo.getCombo();
+        for (int i=0; i<ctrl.getItemCount(); ++i)
+        {
+            final Object obj = combo.getElementAt(i);
+            IProcessVariable elem = (IProcessVariable) obj;
+            if (elem.getName().equals(new_entry))
+                combo.remove(obj);
         }
-        combo.getCombo().select(combo.getCombo().getItemCount()-1);
+        // Add new entry to the end
+    	combo.add(pv);
+        // Maybe remove oldest entry
+        if (ctrl.getItemCount() > max)
+        	combo.remove(combo.getElementAt(ctrl.getItemCount()-1));
+        ctrl.select(ctrl.getItemCount()-1);
     }
 
     /** Notify about new selection. */
@@ -120,5 +118,4 @@ public abstract class ComboHistoryHelper
         IDialogSettings values = settings.addNewSection(tag);
         values.put(TAG, combo.getCombo().getItems());
     }
-
 }
