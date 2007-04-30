@@ -25,7 +25,7 @@ package org.csstudio.platform.util;
 /**
  * Describes a time stamp.
  * 
- * NOTE: The interface was extraced from Kay Kasemier´s Timestamp class, which
+ * NOTE: The interface was extraced from Kay Kasemir's Timestamp class, which
  * was originally located in plugin org.csstudio.data.
  * 
  * @author Sven Wende
