@@ -26,27 +26,39 @@ import org.eclipse.swt.widgets.Combo;
  */
 public abstract class ComboHistoryHelper
 {
-    private static final int DEFAULT_HISTORY_SIZE = 10;
     private static final String TAG = "values"; //$NON-NLS-1$
+    private static final int DEFAULT_HISTORY_SIZE = 10;
     private final IDialogSettings settings;
     private final String tag;
     private final Combo combo;
     private final int max;
-    
+   
     /** Attach helper to given combo box, using max list length.
      *  @param settings         Where to persist the combo box list
      *  @param tag              Tag used for persistence
      *  @param combo            The combo box
+     */
+    public ComboHistoryHelper(IDialogSettings settings, String tag,
+                    Combo combo)
+    {
+        this(settings, tag, combo, DEFAULT_HISTORY_SIZE, true);
+    }
+
+    /** Attach helper to given combo box, using max list length.
+     *  @param settings         Where to persist the combo box list
+     *  @param tag              Tag used for persistence
+     *  @param combo            The combo box
+     *  @param max              Number of elements to keep in history
      *  @param save_on_dispose  Set <code>true</code> if you want 
      *                          to save current values on widget disposal
      */
     public ComboHistoryHelper(IDialogSettings settings, String tag,
-                              Combo combo, boolean save_on_dispose)
+                              Combo combo, int max, boolean save_on_dispose)
     {
         this.settings = settings;
         this.tag = tag;
         this.combo = combo;
-        this.max = DEFAULT_HISTORY_SIZE;
+        this.max = max;
     
         // React whenever an existing entry is selected,
         // or a new name is entered.
@@ -63,7 +75,10 @@ public abstract class ComboHistoryHelper
     
             // Called after existing entry was picked from list
             public void widgetSelected(SelectionEvent e)
-            {   handleNewSelection();    }
+            {
+                String name = ComboHistoryHelper.this.combo.getText();
+                newSelection(name);
+            }
         });
         
         if (save_on_dispose)
@@ -74,27 +89,23 @@ public abstract class ComboHistoryHelper
         });
     }
 
-    /** Add entry to top of list. */
-    private void addEntry(String new_entry)
+    /** Add entry to list. */
+    public void addEntry(String new_entry)
     {
+        // Avoid empty entries
+        if (new_entry.length() < 1)
+            return;
         // Avoid duplicates
         for (int i=0; i<combo.getItemCount(); ++i)
             if (combo.getItem(i).equals(new_entry))
                 return;
-        // Add at top
-        combo.add(new_entry, 0);
-        // Maybe remove oldest entry
-        if (combo.getItemCount() > max)
-            combo.remove(combo.getItemCount() - 1);
+        // Maybe remove oldest, i.e. top-most, entry
+        if (combo.getItemCount() >= max)
+            combo.remove(0);
+        // Add at end
+        combo.add(new_entry);
     }
     
-    /** Notify about new selection. */
-    private void handleNewSelection()
-    {
-        String name = combo.getText();
-        newSelection(name);
-    }
-
     /** Invoked whenever a new entry was entered or selected. */
     public abstract void newSelection(String entry);
     

@@ -175,7 +175,7 @@ public class ArchiveView extends PlotAwareView
         url.setEnabled(false);
         ComboHistoryHelper url_helper =
             new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
-                               URL_LIST_TAG, url, true)
+                               URL_LIST_TAG, url)
         {
             public void newSelection(String new_pv_name)
             {   connectToURL(new_pv_name); }
@@ -254,7 +254,7 @@ public class ArchiveView extends PlotAwareView
         pattern.setEnabled(false);
         ComboHistoryHelper pattern_helper =
             new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
-                               PATTERN_LIST_TAG, pattern, true)
+                               PATTERN_LIST_TAG, pattern)
         {
             public void newSelection(String new_pattern)
             {   search(new_pattern); }

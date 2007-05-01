@@ -1,42 +1,59 @@
 package org.csstudio.util.swt;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
 /** Maintains a 'history' Combo box.
  *  <p>
- *  Newly entered items are added to the end of the combo list,
- *  dropping last items off the list when reaching a comfigurable maximum
+ *  Newly entered items are added to the top of the combo list,
+ *  dropping last items off the list when reaching a configurable maximum
  *  list size.
  *  <p>
+ *  You must
+ *  <ul>
+ *  <li>implement newSelection() to handle entered/selected values
+ *  <li>decide if you want to call loadSettings() to restore the saved
+ *      values
+ *  <li>save values via saveSettings, or use the save_on_dispose
+ *      option of the constructor.
+ *  </ul>
  *  @see #newSelection(String)
  *  @author Kay Kasemir
  */
 public abstract class ComboHistoryHelper
 {
     private static final String TAG = "values"; //$NON-NLS-1$
-    private static final int DEFAULT_MAX = 10;
+    private static final int DEFAULT_HISTORY_SIZE = 10;
     private final IDialogSettings settings;
     private final String tag;
     private final Combo combo;
     private final int max;
-    
-    /** Attach helper to given combo box, using default list length. */
-    public ComboHistoryHelper(IDialogSettings settings, String tag, Combo combo)
-    {
-        this(settings, tag, combo, DEFAULT_MAX);
-    }
-    
+   
     /** Attach helper to given combo box, using max list length.
-     *  @param settings Where to persist the combo box list
-     *  @param tag      Tag used for persistence
-     *  @param combo    The combo box
-     *  @param max      Max list length
+     *  @param settings         Where to persist the combo box list
+     *  @param tag              Tag used for persistence
+     *  @param combo            The combo box
      */
     public ComboHistoryHelper(IDialogSettings settings, String tag,
-                              Combo combo, int max)
+                    Combo combo)
+    {
+        this(settings, tag, combo, DEFAULT_HISTORY_SIZE, true);
+    }
+
+    /** Attach helper to given combo box, using max list length.
+     *  @param settings         Where to persist the combo box list
+     *  @param tag              Tag used for persistence
+     *  @param combo            The combo box
+     *  @param max              Number of elements to keep in history
+     *  @param save_on_dispose  Set <code>true</code> if you want 
+     *                          to save current values on widget disposal
+     */
+    public ComboHistoryHelper(IDialogSettings settings, String tag,
+                              Combo combo, int max, boolean save_on_dispose)
     {
         this.settings = settings;
         this.tag = tag;
@@ -63,9 +80,16 @@ public abstract class ComboHistoryHelper
                 newSelection(name);
             }
         });
+        
+        if (save_on_dispose)
+            combo.addDisposeListener(new DisposeListener()
+        {
+            public void widgetDisposed(DisposeEvent e)
+            {   saveSettings();  }
+        });
     }
 
-    /** Add entry to top of list. */
+    /** Add entry to list. */
     public void addEntry(String new_entry)
     {
         // Avoid empty entries
@@ -94,8 +118,8 @@ public abstract class ComboHistoryHelper
         String values[] = pvs.getArray(TAG);
         if (values != null)
             for (int i = 0; i < values.length; i++)
-                if (values[i].length() > 0)
-                    combo.add(values[i]);
+                // Load as if they were entered, i.e. skip duplicates
+                addEntry(values[i]);
     }
 
     /** Save list values to persistent storage. */
