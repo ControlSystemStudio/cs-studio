@@ -77,12 +77,12 @@ public class PVTreeView extends ViewPart
         GridData gd;
         
         Label l = new Label(parent, SWT.LEFT);
-        l.setText("PV:");
+        l.setText(Messages.PV_Label);
         gd = new GridData();
         l.setLayoutData(gd);
         
         pv_name = new Combo(parent, SWT.LEFT);
-        pv_name.setToolTipText("Enter PV name, press <RETURN>");
+        pv_name.setToolTipText(Messages.PV_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -164,7 +164,10 @@ public class PVTreeView extends ViewPart
     public void setPVName(String new_pv_name)
     {
         if (! pv_name.getText().equals(new_pv_name))
+        {
             pv_name.setText(new_pv_name);
+            pv_name_helper.addEntry(new_pv_name);
+        }
         model.setRootPV(new_pv_name);
     }
 
@@ -188,7 +191,7 @@ public class PVTreeView extends ViewPart
     {
         //manager.add(new Separator());        
         drillDownAdapter.addNavigationActions(manager);
-        // Other plug-ins can contribute there actions here
+        // Other plug-ins can contribute their actions here
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 }

@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Combo;
 
 /** Maintains a 'history' Combo box.
  *  <p>
- *  Newly entered items are added to the top of the combo list,
+ *  Newly entered items are added to the end of the combo list,
  *  dropping last items off the list when reaching a comfigurable maximum
  *  list size.
  *  <p>
@@ -58,31 +58,30 @@ public abstract class ComboHistoryHelper
     
             // Called after existing entry was picked from list
             public void widgetSelected(SelectionEvent e)
-            {   handleNewSelection();    }
+            {
+                String name = ComboHistoryHelper.this.combo.getText();
+                newSelection(name);
+            }
         });
     }
 
     /** Add entry to top of list. */
-    private void addEntry(String new_entry)
+    public void addEntry(String new_entry)
     {
+        // Avoid empty entries
+        if (new_entry.length() < 1)
+            return;
         // Avoid duplicates
         for (int i=0; i<combo.getItemCount(); ++i)
             if (combo.getItem(i).equals(new_entry))
                 return;
-        // Add at top
-        combo.add(new_entry, 0);
-        // Maybe remove oldest entry
-        if (combo.getItemCount() > max)
-            combo.remove(combo.getItemCount() - 1);
+        // Maybe remove oldest, i.e. top-most, entry
+        if (combo.getItemCount() >= max)
+            combo.remove(0);
+        // Add at end
+        combo.add(new_entry);
     }
     
-    /** Notify about new selection. */
-    private void handleNewSelection()
-    {
-        String name = combo.getText();
-        newSelection(name);
-    }
-
     /** Invoked whenever a new entry was entered or selected. */
     public abstract void newSelection(String entry);
     
@@ -95,7 +94,8 @@ public abstract class ComboHistoryHelper
         String values[] = pvs.getArray(TAG);
         if (values != null)
             for (int i = 0; i < values.length; i++)
-                combo.add(values[i]);
+                if (values[i].length() > 0)
+                    combo.add(values[i]);
     }
 
     /** Save list values to persistent storage. */
@@ -104,5 +104,4 @@ public abstract class ComboHistoryHelper
         IDialogSettings values = settings.addNewSection(tag);
         values.put(TAG, combo.getItems());
     }
-
 }
