@@ -13,7 +13,6 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
 /** A 'Y' or 'vertical' axis.
@@ -381,7 +380,7 @@ public class YAxis extends Axis
         if (!region.intersects(e.x, e.y, e.width, e.height))
             return;
         if (Chart.debug)
-            System.out.println("paint axis '" + label + "', "
+            System.out.println("paint axis '" + getLabel() + "', "
                           + region.height + " pixel heigh");
         GC gc = e.gc;
         Point char_size = gc.textExtent("X"); //$NON-NLS-1$
@@ -389,13 +388,12 @@ public class YAxis extends Axis
         Color pbgColor = gc.getBackground();
         
         // Axis and Tick marks
-        if (selected) {
-        	
+        if (selected)
+        {
         	// Let's fill the background to make selected axis more clear to distinguish.
         	Color bgColor = gc.getDevice().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
         	gc.setBackground(bgColor);
         	gc.fillRectangle(region.x + 1, region.y, region.width - 2, region.height);
-        	bgColor.dispose();
         	
         	// "thicken" line by drawing a parallel one
             gc.drawRectangle(
@@ -458,9 +456,9 @@ public class YAxis extends Axis
         // Label: At left edge of region, vertically apx. centered
         Color fg = gc.getForeground();
         gc.setForeground(getColor());
-        Point label_size = gc.textExtent(label);
+        Point label_size = gc.textExtent(getLabel());
     
-        GraphicsUtils.drawVerticalText(label,
+        GraphicsUtils.drawVerticalText(getLabel(),
                 region.x + 1,
                 region.y + (region.height-label_size.x)/2,
                 gc, SWT.UP);
