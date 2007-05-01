@@ -15,8 +15,6 @@ public class Messages extends NLS
     
     public static String AutoScale;
     
-    public static String Bins;
-    
     public static String BufferSize;
 
     public static String Color;
@@ -30,8 +28,6 @@ public class Messages extends NLS
     public static String DeleteSelectedEntry;
 
     public static String Down;
-    
-    public static String DataType;
     
     public static String DisplayType;
 

@@ -30,32 +30,21 @@ public class PVTableHelper
     final public static int LINEWIDTH = 5;
     /** Axis type column identifier */
     final public static int TYPE = 6;
-    /** Data type */
-    final public static int DATATYPE = 7;
     /** Trace display type */
-    final public static int DISPLAYTYPE = 8;
-    /** Bins */
-    final public static int BINS = 9;
+    final public static int DISPLAYTYPE = 7;
     /** Autoscale */
-    final public static int AUTOSCALE = 10;
+    final public static int AUTOSCALE = 8;
 	
 	/** Strings used for column headers. */
 	final public static String properties[] =
 	{
 		Messages.PV, Messages.ValueRangeMin, Messages.ValueRangeMax,
         Messages.AxisIndex, Messages.Color, Messages.LineWidth,
-        Messages.AxisType, Messages.DataType, Messages.DisplayType, Messages.Bins, Messages.AutoScale
+        Messages.AxisType, Messages.DisplayType, Messages.AutoScale
 	};
 
-    final public static int sizes[] =
-    {
-        80, 50, 50, 35, 35, 35, 35, 50, 45, 30, 35
-    };
-    
-    final public static int weights[] =
-    {
-        100, 10, 10, 5, 5, 5, 5, 30, 20, 10, 5
-    };
+    final public static int sizes[]   = {  80, 50, 50, 35, 35, 35, 35, 45, 35 };
+    final public static int weights[] = { 100, 10, 10,  5,  5,  5,  5, 20,  5 };
 
 	/** Get ID for a property.
 	 * 
@@ -108,28 +97,6 @@ public class PVTableHelper
             case TYPE:
                 return entry.getLogScale() ?
                         Messages.LogAxisType : Messages.LinearAxisType;
-            case DATATYPE:
-            	try {
-            		// Let's update the columns datatype options.
-            		IArchiveDataSource archives[] = entry.getArchiveDataSources();
-            		// Get server.
-            		ArchiveServer server = ArchiveCache.getInstance().getServer(archives[0].getUrl());
-            		// Get dataTypes.
-            		String[] dataTypes = server.getRequestTypes();
-                	// Find string.
-                	for(String dataType : dataTypes) 
-                	{
-                		if(server.getRequestType(dataType) == entry.getDataType())
-                			return dataType;
-                	}
-                	return dataTypes[0];
-            	}
-                catch(Exception e)  {
-                	// If we catch an exception than we allow only one option.
-                	return "N/A";//$NON-NLS-1$
-                }
-            case BINS:
-            	return Integer.toString(entry.getBins());
             case DISPLAYTYPE:
             	return entry.getDisplayType().toString();
             case AUTOSCALE:

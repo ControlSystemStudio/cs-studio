@@ -16,15 +16,14 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.ploteditor.BrowserUI;
 import org.csstudio.trends.databrowser.preferences.Preferences;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
 
 /** Data Browser Controller: Creates model, UI and handles everything between them.
  *  @author Kay Kasemir
+ *  
+ *  TODO: Handle auto-zoom in response to model changes
  */ 
-public class Controller implements ScannerAndScrollerListener, ArchiveFetchJobListener
+public class Controller implements ScannerAndScrollerListener
 {
     private Model model;
     private BrowserUI gui;
@@ -343,39 +342,10 @@ public class Controller implements ScannerAndScrollerListener, ArchiveFetchJobLi
     }
 
     /** Get data from archive for given model item and time range. */
-    @SuppressWarnings("nls") //$NON-NLS-1$
     private void getArchivedData(IModelItem item,
                     ITimestamp start, ITimestamp end)
     {
     	ArchiveFetchJob job = new ArchiveFetchJob(item, start, end);
-        job.addArchiveFetchJobListener(this);
         job.schedule();
-    }
-    
-    public void errorOccured(int errorId) 
-    {
-    	this.chart.getDisplay().asyncExec(
-         	    new Runnable () {
-         	      public void run () {
-         	    	  chart.showMessage(Messages.ErrorMessageTitle, Messages.ErrorMessage, SWT.ICON_ERROR | SWT.OK);
-         	      } }
-         	   );	
-    }
-    
-    public void updateDone(final boolean success) 
-    {
-    	// We'll auto zoom the updated data. This is the only way to do it.
-    	// Since this notification is from another thread, we should invoke autozoom method
-    	// to avoid invalid thread call exception.
-   	 	this.chart.getDisplay().asyncExec(
-     	   new Runnable () {
-     	      public void run () {
-     	    	  if(success)
-     	    		  try {
-     	    			  Plugin.logInfo("Auto scaling ..."); //$NON-NLS-1$
-     	    			  chart.autoZoomAll(true);
-     	    		  } catch(Exception e) {}
-     	      } }
-     	   );
-    }
+    }    
 }

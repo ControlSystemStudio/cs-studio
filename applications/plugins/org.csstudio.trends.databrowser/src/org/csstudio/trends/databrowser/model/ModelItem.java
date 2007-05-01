@@ -48,12 +48,6 @@ public class ModelItem
     /** The Y axis to use. */
     private int axis_index;
     
-    /** The type of data being passed to viewer */
-    private int data_type;
-    
-    /** The count of bins */
-    private int bins;
-    
     /** The default yaxis max */
     private double default_scale_max;
     
@@ -128,8 +122,6 @@ public class ModelItem
         this.color = new Color(null, red, green, blue);
         this.line_width = line_width;
         this.log_scale = log_scale;
-        this.data_type = 1;
-        this.bins = 400;
         this.display_type = DisplayType.Lines;
         this.isTraceAutoScalable = false;
         pv = new EPICS_V3_PV(pv_name);
@@ -254,37 +246,6 @@ public class ModelItem
     	color = new_color;
     	// Notify model of this change.
     	model.fireEntryConfigChanged(this);
-    }
-    
-    public final int getDataType() 
-    {	
-    	return data_type;
-    }
-    
-    public void setDataType(int new_data_type) 
-    {	
-    	if(data_type == new_data_type)
-    		return;
-    	
-    	data_type = new_data_type;
-    	// Notify model of this change.
-    	model.fireEntryConfigChanged(this);
-    }
-    
-    public final int getBins() {
-    	return bins;
-    }
-    
-    public void setBins(int new_bins) 
-    {	
-    	if(bins == new_bins)
-    		return;
-    	
-    	bins = new_bins;
-    	// Clear cache.
-    	clearSampleCache();
-    	// Notify model of this change.
-        model.fireEntryConfigChanged(this);
     }
     
     public void setIsTraceAutoScalable(boolean scalable) 

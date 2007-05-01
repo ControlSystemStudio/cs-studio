@@ -319,8 +319,6 @@ public class ConfigView extends PlotAwareView
         editors[PVTableHelper.COLOR] = new RGBCellEditor(table);
         editors[PVTableHelper.LINEWIDTH] = new TextCellEditor(table);
         editors[PVTableHelper.TYPE] = new CheckboxCellEditor(table);
-        editors[PVTableHelper.DATATYPE] = new ComboBoxCellEditor(table, new String[] {}, SWT.READ_ONLY);
-        editors[PVTableHelper.BINS] = new TextCellEditor(table);
         editors[PVTableHelper.DISPLAYTYPE] = new ComboBoxCellEditor(table, IModelItem.DisplayType.toStringArray(), SWT.READ_ONLY);
         editors[PVTableHelper.AUTOSCALE] = new CheckboxCellEditor(table);
         

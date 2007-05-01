@@ -28,7 +28,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tracker;
 
 /** Basic chart widget.
@@ -726,8 +725,6 @@ public class Chart extends Canvas
             yaxes.get(i).setSelected(selected);
             
             org.csstudio.swt.chart.Trace trace = yaxes.get(i).getTraceAt(x, y);
-            if(trace != null)
-            	Plugin.logInfo("Trace " + trace.getName() + " selected.");            	
             
             if (selected)
                 any_selected = true;
@@ -767,14 +764,5 @@ public class Chart extends Canvas
                 xaxis.getValue(zoom.x),
                 xaxis.getValue(zoom.x + zoom.width - 1));
         setRedraw(true); // now redraw all
-    }
-    
-    // TODO remove
-    public int showMessage(String title, String message, int style)
-    {
-    	MessageBox msgDialog = new MessageBox(this.getShell(), style);
-    	msgDialog.setMessage(message);
-    	msgDialog.setText(title);
-    	return msgDialog.open();
     }
 }

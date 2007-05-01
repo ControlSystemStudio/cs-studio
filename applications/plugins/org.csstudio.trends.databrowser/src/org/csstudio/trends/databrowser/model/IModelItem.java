@@ -88,19 +88,7 @@ public interface IModelItem
 	/** Set item to a new color. */
 	public abstract void setColor(Color new_color);
 	
-	/** @return The data type */
-	public abstract int getDataType();
-	
-	/** Set new data type to an item. */
-	public abstract void setDataType(int new_dataType);
-	
-	/** @return Count of bins */
-	public abstract int getBins();
-	
-	/** Set new count of bins */
-	public abstract void setBins(int new_bins);
-    
-    /** @return Returns the trace line width. */
+	/** @return Returns the trace line width. */
     public abstract int getLineWidth();
     
     /** Set the trace to a new line width. */
