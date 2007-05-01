@@ -21,12 +21,14 @@
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
+import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
@@ -43,8 +45,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
-import sun.net.NetworkClient;
-
 /**
  * A simple waveform figure.
  * 
@@ -53,6 +53,16 @@ import sun.net.NetworkClient;
  * 
  */
 public final class WaveformFigure extends Panel implements IRefreshableFigure {
+	
+	/**
+	 * Height of the text.
+	 */
+	private static final int TEXTHEIGHT = 14;
+
+	/**
+	 * Width of the text.
+	 */
+	private static final int TEXTWIDTH = 46;
 
 	/**
 	 * Show vertical.
@@ -82,13 +92,27 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 
 	/**
 	 * A double, representing the maximum value of the data.
+	 * This value can be calculated, if <code>_autoScale</code> is true
 	 */
 	private double _max = 0;
 
 	/**
 	 * A double, representing the minimum value of the data.
+	 * This value can be calculated, if <code>_autoScale</code> is true
 	 */
 	private double _min = 0;
+	
+	/**
+	 * A double, representing the maximum value of the data.
+	 * This value is only setted by the properties
+	 */
+	private double _settedMax = 0;
+
+	/**
+	 * A double, representing the minimum value of the data.
+	 * This value is only setted by the properties
+	 */
+	private double _settedMin = 0;
 
 	/**
 	 * The zero level of the graph.
@@ -126,7 +150,15 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * drawn.
 	 */
 	private boolean _showConnectionLines = false;
+	
+	/**
+	 * A boolean, which indicates, if the values should be shown.
+	 */
+	private boolean _showValues = true;
 
+	/**
+	 * A boolean, which indicates, if the graph should be automatically scaled.
+	 */
 	private boolean _autoScale = false;
 
 	/**
@@ -163,6 +195,14 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
+	/**
+	 * The count of sections on the y-axis.
+	 */
+	private int _ySectionCount = 4;
+	/**
+	 * The count of sections on the x-axis.
+	 */
+	private int _xSectionCount = 4;
 
 	/**
 	 * Standard constructor.
@@ -174,26 +214,33 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		_verticalLedgerScale.setHorizontalOrientation(false);
 		_verticalLedgerScale.setLength(20);
 		_verticalLedgerScale.setShowNegativeSections(true);
+		_verticalLedgerScale.setShowValues(false);
 		_verticalLedgerScale.setForegroundColor(ColorConstants.lightGray);
 		this.add(_verticalLedgerScale);
 		_horizontalLedgerScale = new Scale();
 		_horizontalLedgerScale.setHorizontalOrientation(true);
-		_horizontalLedgerScale.setLength(20);
+		_horizontalLedgerScale.setLength(50);
 		_horizontalLedgerScale.setShowNegativeSections(false);
 		_horizontalLedgerScale.setReferencePositions(0);
+		_horizontalLedgerScale.setShowValues(false);
 		_horizontalLedgerScale.setForegroundColor(ColorConstants.lightGray);
 		this.add(_horizontalLedgerScale);
 		_verticalScale = new Scale();
 		_verticalScale.setHorizontalOrientation(false);
 		_verticalScale.setLength(20);
 		_verticalScale.setShowNegativeSections(true);
+		_verticalScale.setShowValues(_showValues);
+		_verticalScale.setAlignment(true);
 		_verticalScale.setForegroundColor(this.getForegroundColor());
 		this.add(_verticalScale);
 		_horizontalScale = new Scale();
 		_horizontalScale.setHorizontalOrientation(true);
-		_horizontalScale.setLength(20);
+		_horizontalScale.setLength(50);
 		_horizontalScale.setShowNegativeSections(false);
 		_horizontalScale.setReferencePositions(0);
+		_horizontalScale.setShowFirstMarker(false);
+		_horizontalScale.setShowValues(_showValues);
+		_horizontalScale.setAlignment(false);
 		_horizontalScale.setForegroundColor(this.getForegroundColor());
 		this.add(_horizontalScale);
 		_graphFigure = new GraphFigure();
@@ -226,18 +273,6 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		return null;
 	}
 
-	public void setMax(double max) {
-		_max = max;
-	}
-
-	public void setMin(double min) {
-		_min = min;
-	}
-
-	public void setAutoScale(boolean autoScale) {
-		_autoScale = autoScale;
-	}
-
 	/**
 	 * Set the waveform data that is to be displayed. Perform a repaint
 	 * afterwards.
@@ -246,17 +281,17 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 *            The waveform data that is to be displayed
 	 */
 	public void setData(final double[] data) {
-		_data = data;
+		 _data = data;
 
-		// int count = 2000;
-		// int amplitude = 50;
-		// int verschiebung = 0;
-		// double[] result = new double[count];
-		// double value = (Math.PI*2)/count;
-		// for (int i=0;i<count;i++) {
-		// result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
-		// }
-		// _data = result;
+//		 int count = 2000;
+//		 int amplitude = 50;
+//		 int verschiebung = 0;
+//		 double[] result = new double[count];
+//		 double value = (Math.PI*2)/count;
+//		 for (int i=0;i<count;i++) {
+//		 result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
+//		 }
+//		 _data = result;
 		this.refreshConstraints();
 		repaint();
 	}
@@ -268,43 +303,56 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		if (_init) {
 			return;
 		}
-		this.setGraphBounds();
+		_graphBounds = this.getGraphBounds();
 		_dataPoints = this.calculatePoints(_graphBounds);
-		this.setZeroLevel();
-		Rectangle figureBounds = this.getBounds();
+		_zeroLevel = this.getZeroLevel();
 		int verticalScaleWidth = 0;
 		if (_showScale == SHOW_VERTICAL || _showScale == SHOW_BOTH) {
 			verticalScaleWidth = _scaleWideness;
+			if (_showValues) {
+				verticalScaleWidth = verticalScaleWidth + TEXTWIDTH;
+			}
 			this.setConstraint(_verticalScale, new Rectangle(0, 0,
-					_scaleWideness, figureBounds.height));
-			_verticalScale.setReferencePositions(_zeroLevel);
+					verticalScaleWidth, _graphBounds.height+TEXTHEIGHT));
+			_verticalScale.setReferencePositions(_zeroLevel+TEXTHEIGHT/2+1);
+			_verticalScale.setLength(_zeroLevel/Math.max(1, _ySectionCount));
+			_verticalScale.setRegion(0, _graphBounds.y+_graphBounds.height);
+			_verticalScale.setIncrement(_max/_ySectionCount);
 		} else {
 			this.setConstraint(_verticalScale, DEFAULT_CONSTRAINT);
 		}
 		if (_showScale == SHOW_HORIZONTAL || _showScale == SHOW_BOTH) {
 			this.setConstraint(_horizontalScale, new Rectangle(
-					verticalScaleWidth, _zeroLevel - (_scaleWideness / 2) + 1,
-					figureBounds.width - verticalScaleWidth, _scaleWideness));
+					verticalScaleWidth, _zeroLevel - (_scaleWideness/2)+1 + TEXTHEIGHT/2,
+					_graphBounds.width, _scaleWideness+TEXTHEIGHT));
+
+			double d = ((double)_data.length)/Math.max(1, _xSectionCount);
+			_horizontalScale.setIncrement(d);
+			_horizontalScale.setLength(_graphBounds.width/Math.max(1, _xSectionCount));
+			_horizontalScale.setRegion(0, _graphBounds.width-10);
 		} else {
 			this.setConstraint(_horizontalScale, DEFAULT_CONSTRAINT);
 		}
 
-		if (_showLedgerLines == SHOW_HORIZONTAL
-				|| _showLedgerLines == SHOW_BOTH) {
+		if (_showLedgerLines == SHOW_HORIZONTAL	|| _showLedgerLines == SHOW_BOTH) {
 			this.setConstraint(_verticalLedgerScale, new Rectangle(
-					verticalScaleWidth, 0, figureBounds.width
-							- verticalScaleWidth, figureBounds.height));
-			_verticalLedgerScale.setReferencePositions(_zeroLevel);
-			_verticalLedgerScale.setWideness(figureBounds.width
-					- verticalScaleWidth);
+					verticalScaleWidth, 0, _graphBounds.width, _graphBounds.height+TEXTHEIGHT));
+			_verticalLedgerScale.setReferencePositions(_zeroLevel+TEXTHEIGHT/2+1);
+			_verticalLedgerScale.setLength(_zeroLevel/Math.max(1, _ySectionCount));
+			_verticalLedgerScale.setRegion(0, _graphBounds.y+_graphBounds.height);
+			_verticalLedgerScale.setWideness(_graphBounds.width);
+			_verticalLedgerScale.setIncrement(_max/_ySectionCount);
 		} else {
 			this.setConstraint(_verticalLedgerScale, DEFAULT_CONSTRAINT);
 		}
 		if (_showLedgerLines == SHOW_VERTICAL || _showLedgerLines == SHOW_BOTH) {
 			this.setConstraint(_horizontalLedgerScale, new Rectangle(
-					verticalScaleWidth, 0, figureBounds.width
-							- verticalScaleWidth, figureBounds.height));
-			_horizontalLedgerScale.setWideness(figureBounds.height);
+					verticalScaleWidth, TEXTHEIGHT/2, _graphBounds.width, _graphBounds.height));
+			double d = ((double)_data.length)/_xSectionCount;
+			_horizontalLedgerScale.setIncrement(d);
+			_horizontalLedgerScale.setLength(_graphBounds.width/Math.max(1, _xSectionCount));
+			_horizontalLedgerScale.setWideness(_graphBounds.height);
+			_horizontalLedgerScale.setRegion(0, _graphBounds.width-10);
 		} else {
 			this.setConstraint(_horizontalLedgerScale, DEFAULT_CONSTRAINT);
 		}
@@ -314,30 +362,35 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	}
 
 	/**
-	 * Sets the bounds of the graph.
+	 * Gets the bounds of the graph.
+	 * @return Rectangle
+	 * 				The rectangle for the graph
 	 */
-	private void setGraphBounds() {
+	private Rectangle getGraphBounds() {
 		Rectangle figureBounds = this.getBounds();
 		if (_showScale == SHOW_VERTICAL || _showScale == SHOW_BOTH) {
-			_graphBounds = new Rectangle(_scaleWideness, 0, figureBounds.width
-					- _scaleWideness, figureBounds.height);
-		} else {
-			_graphBounds = new Rectangle(0, 0, figureBounds.width,
-					figureBounds.height);
+			int width = _scaleWideness;
+			if (_showValues) {
+				width = TEXTWIDTH + _scaleWideness;
+			}
+			return new Rectangle(width, TEXTHEIGHT/2, figureBounds.width
+					- width, figureBounds.height-TEXTHEIGHT);
 		}
+		return new Rectangle(0, 0, figureBounds.width, figureBounds.height);
 	}
 
 	/**
-	 * Sets the zero level.
+	 * Gets the zero level.
+	 * @return int
+	 * 				The zero-level
 	 */
-	private void setZeroLevel() {
+	private int getZeroLevel() {
 		if (_min < 0 && _max < 0) {
-			_zeroLevel = 1;
+			return 1 + TEXTHEIGHT/2;
 		} else if (_min >= 0 && _max >= 0) {
-			_zeroLevel = _graphBounds.height - 1;
-		} else {
-			_zeroLevel = (int) (((double) _graphBounds.height / (_max - _min)) * _max);
+			return _graphBounds.height - 1 + TEXTHEIGHT/2;
 		}
+		return TEXTHEIGHT/2 + (int) (((double) _graphBounds.height / (_max - _min)) * _max);
 	}
 
 	/**
@@ -397,14 +450,20 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 			for (int j = 0; j < stepSize; j++) {
 				int index = Math.min(_data.length - 1, j + i * stepSize);
 				yValue = yValue + _data[index];
+				if (_data[index] < min || i == 0) {
+					min = _data[index];
+				}
+				if (_data[index] > max || i == 0) {
+					max = _data[index];
+				}
 			}
 			yValue = yValue / stepSize;
-			if (yValue < min || i == 0) {
-				min = yValue;
-			}
-			if (yValue > max || i == 0) {
-				max = yValue;
-			}
+//			if (yValue < min || i == 0) {
+//				min = yValue;
+//			}
+//			if (yValue > max || i == 0) {
+//				max = yValue;
+//			}
 			double x = 1;
 			if (pointCount != 0) {
 				x = 1 + ((bounds.width - 1) * i) / (pointCount);
@@ -422,6 +481,42 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		}
 
 		return pointList;
+	}
+	
+	/**
+	 * Sets the max value for the graph.
+	 * @param max
+	 * 				The max value
+	 */
+	public void setMax(final double max) {
+		_max = max;
+		_settedMax = max;
+		this.refreshConstraints();
+	}
+
+	/**
+	 * Sets the min value for the graph.
+	 * @param min
+	 * 				The min value
+	 */
+	public void setMin(final double min) {
+		_min = min;
+		_settedMin = min;
+		this.refreshConstraints();
+	}
+
+	/**
+	 * Sets, if the graph should be automatically scaled.
+	 * @param autoScale
+	 * 				True if it should be automatically scaled, false otherwise
+	 */
+	public void setAutoScale(final boolean autoScale) {
+		_autoScale = autoScale;
+		if (!_autoScale) {
+			_min = _settedMin;
+			_max = _settedMax;
+		}
+		this.refreshConstraints();
 	}
 
 	/**
@@ -534,6 +629,48 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		_horizontalLedgerScale.setForegroundColor(CustomMediaFactory
 				.getInstance().getColor(lineRGB));
 	}
+	
+	/**
+	 * Sets, if the values should be shown.
+	 * 
+	 * @param showValues
+	 *            True, if the values should be shown, false otherwise
+	 */
+	public void setShowValues(final boolean showValues) {
+		_showValues = showValues;
+		_verticalScale.setShowValues(showValues);
+		_horizontalScale.setShowValues(showValues);
+		this.refreshConstraints();
+	}
+
+	/**
+	 * Gets, if the values should be shown.
+	 * 
+	 * @return boolean True, if the values should be shown, false otherwise
+	 */
+	public boolean getShowValues() {
+		return _showValues;
+	}
+	
+	/**
+	 * Sets the count of sections on the y-axis.
+	 * @param ySectionCount
+	 * 			The count of sections on the y-axis
+	 */
+	public void setYSectionCount(final int ySectionCount) {
+		_ySectionCount = ySectionCount;
+		this.refreshConstraints();
+	}
+	
+	/**
+	 * Sets the count of sections on the x-axis.
+	 * @param xSectionCount
+	 * 			The count of sections on the x-axis
+	 */
+	public void setXSectionCount(final int xSectionCount) {
+		_xSectionCount = xSectionCount;
+		this.refreshConstraints();
+	}
 
 	/**
 	 * This class represents the graph of the waveform.
@@ -555,7 +692,6 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		 */
 		@Override
 		public void paintFigure(final Graphics graphics) {
-			// super.paintFigure(graphics);
 			Rectangle figureBounds = this.getBounds();
 			graphics.setForegroundColor(this.getForegroundColor());
 			graphics.drawLine(figureBounds.x, figureBounds.y, figureBounds.x,
@@ -642,32 +778,218 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		 * The length of this Scale.
 		 */
 		private int _length;
-
-		/**
-		 * The count of sections in this Scale.
-		 */
-		private int _sectionCount = -1;
-
 		/**
 		 * The direction of this Scale.
 		 */
 		private boolean _isHorizontal;
-
+		/**
+		 * The Alignment for the Scalemarkers.
+		 */
+		private boolean _isTopLeft;
 		/**
 		 * The start position.
 		 */
-		private int _start = 10;
-
+		private int _refPos = 10;
+		/**
+		 * The begin of the region, which surrounds the Markers.
+		 */
+		private int _begin;
+		/**
+		 * The end of the region, which surrounds the Markers.
+		 */
+		private int _end;
 		/**
 		 * True, if the negativ sections should be draan, false otherwise.
 		 */
 		private boolean _showNegativSections = false;
-
 		/**
 		 * The lenght of the lines.
 		 */
 		private int _wideness = 10;
+		/**
+		 * True, if the first Marker should be shown, false otherwise.
+		 */
+		private boolean _showFirst = true;		
+		/**
+		 * True, if the values of the Markers should be shown, false otherwise.
+		 */
+		private boolean _showValues = false;
+		/**
+		 * The size of one step in a Scale.
+		 */
+		private double _increment = 1;
+	
+		/**
+		 * The List of positive ScaleMarkers.
+		 */
+		private List<ScaleMarker> _posScaleMarkers = new LinkedList<ScaleMarker>();
+		/**
+		 * The List of negative ScaleMarkers.
+		 */
+		private List<ScaleMarker> _negScaleMarkers = new LinkedList<ScaleMarker>();
+		
+		/**
+		 * Constructor.
+		 */
+		public Scale() {
+			this.setLayoutManager(new XYLayout());
+			this.refreshConstraints();
+			// listen to figure movement events
+			addFigureListener(new FigureListener() {
+				public void figureMoved(final IFigure source) {
+					refreshConstraints();
+				}
+			});
+		}
+		
+		/**
+		 * Refreshes the Constraints.
+		 */
+		private void refreshConstraints() {
+			if (_length==0 || this.getBounds().height==0 || this.getBounds().width==0) {
+				_posScaleMarkers.clear();
+				_negScaleMarkers.clear();
+				this.removeAll();
+				return;
+			}
+			int index = 0;
+			int pos = _refPos;
+			if (_isHorizontal) {
+				int height = _wideness;
+				if (_showValues) {
+					height = TEXTHEIGHT + _wideness;
+				}
+				double value = 0;
+				while (pos < this.getBounds().width && pos <= _end) {
+					if (pos>=_begin) {
+						if (index>=_posScaleMarkers.size()) {
+							this.addScaleMarker(index, _posScaleMarkers);
+						}
+						this.setConstraint(_posScaleMarkers.get(index), new Rectangle(pos-TEXTWIDTH/2,0,TEXTWIDTH,height));
+						this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues));
+						index++;
+					}
+					value = value + _increment;
+					pos = pos + _length;
+				}
+				this.removeScaleMarkers(index, _posScaleMarkers);
+				if (_showNegativSections) {
+					pos = _refPos - _length;
+					index = 0;
+					value = -_increment;
+					while (pos > 0 && pos >= _begin) {
+						if (pos<=_end) {
+							if (index>=_negScaleMarkers.size()) {
+								this.addScaleMarker(index, _negScaleMarkers);
+							}
+							this.setConstraint(_negScaleMarkers.get(index), new Rectangle(pos-TEXTWIDTH/2,0,TEXTWIDTH,height));
+							this.refreshScaleMarker(_negScaleMarkers.get(index), value, _showValues);
+							index++;	
+						}
+						value = value - _increment;
+						pos = pos - _length;
+					}	
+					this.removeScaleMarkers(index, _negScaleMarkers);
+				}
+			} else {
+				pos = pos - 1;
+				int width = _wideness;
+				if (_showValues) {
+					width = TEXTWIDTH + _wideness;
+				}
+				double value = 0;
+				while (pos > 0 && pos >= _begin) {
+					if (pos<=_end) {
+						if (index>=_posScaleMarkers.size()) {
+							this.addScaleMarker(index, _posScaleMarkers);
+						}
+						this.setConstraint(_posScaleMarkers.get(index), new Rectangle(0,pos-TEXTHEIGHT/2,width,TEXTHEIGHT));
+						this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues)); 
+						index++;
+					}
+					value = value + _increment;
+					pos = pos - _length;
+				}
+				this.removeScaleMarkers(index, _posScaleMarkers);
+				if (_showNegativSections) {
+					
+					pos = _refPos + _length - 1;
+					index = 0;
+					value = -_increment;
+					while (pos < this.getBounds().height && pos <= _end) {
+						if (pos>=_begin) {
+							if (index>=_negScaleMarkers.size()) {
+								this.addScaleMarker(index, _negScaleMarkers);
+							}
+							this.setConstraint(_negScaleMarkers.get(index), new Rectangle(0,pos-TEXTHEIGHT/2,width,TEXTHEIGHT));
+							this.refreshScaleMarker(_negScaleMarkers.get(index), value, _showValues);
+							index++;	
+						}
+						value = value - _increment;
+						pos = pos + _length;
+					}	
+					this.removeScaleMarkers(index, _negScaleMarkers);
+				}
+			}
+		}
 
+		/**
+		 * Refreshes the given ScaleMarker.
+		 * @param marker
+		 * 				The ScaleMarker, which should be refreshed
+		 * @param labelValue
+		 * 				The new value for the displayed text
+		 * @param showValue
+		 * 				True, if the value should be shown, false otherwise
+		 */
+		private void refreshScaleMarker(final ScaleMarker marker, final double labelValue, final boolean showValue) {
+			marker.setTopLeftAlignment(_isTopLeft);
+			marker.setHorizontalOrientation(!_isHorizontal);
+			NumberFormat format = NumberFormat.getInstance();
+			format.setMaximumFractionDigits(2);
+			marker.setText(format.format(labelValue));
+			marker.setShowValues(showValue);
+			marker.setWideness(_wideness);
+		}
+
+		/**
+		 * Adds a new ScaleMarker into the given List at the given index.
+		 * @param index
+		 * 				The index
+		 * @param scaleMarkers
+		 * 				The List of ScaleMarkers
+		 */
+		private void addScaleMarker(final int index, final List<ScaleMarker> scaleMarkers) {
+			ScaleMarker marker = new ScaleMarker();
+			scaleMarkers.add(index, marker);
+			this.add(marker);
+		}
+		
+		/**
+		 * Removes all ScaleMarkers in the given List, beginning by the given index.
+		 * @param index
+		 * 				The index
+		 * @param scaleMarkers
+		 * 				The List of ScaleMarkers
+		 */
+		private void removeScaleMarkers(final int index, final List<ScaleMarker> scaleMarkers) {
+			if (!scaleMarkers.isEmpty() && index<=scaleMarkers.size()) {
+				while (index<scaleMarkers.size()) {
+					this.remove(scaleMarkers.remove(index));
+				}
+			}
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void paintFigure(final Graphics graphics) {
+//			graphics.setForegroundColor(ColorConstants.blue);
+//			graphics.setBackgroundColor(ColorConstants.blue);
+//			graphics.fillRectangle(this.getBounds());
+		}
+		
 		/**
 		 * Sets the length of this Scale.
 		 * 
@@ -687,96 +1009,19 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		 */
 		public void setHorizontalOrientation(final boolean isHorizontal) {
 			_isHorizontal = isHorizontal;
+			this.refreshConstraints();
 		}
-
+		
 		/**
-		 * Sets the count of setcion in this Scale.
-		 * 
-		 * @param sectionCount
-		 *            The count of setcion in this Scale
+		 * Sets the alignment for the ScaleMarker.
+		 * @param isTopLeft
+		 * 			  The alignment for the ScaleMarker
+		 *            (true=top/left; false=bottom/right)
+		 * 				
 		 */
-		public void setSectionCount(final int sectionCount) {
-			_sectionCount = sectionCount;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void paintFigure(final Graphics graphics) {
-			int sectionWidth = 0;
-			int sectionHeight = 0;
-			int height = 0;
-			int width = 0;
-			graphics.setForegroundColor(this.getForegroundColor());
-			graphics.setBackgroundColor(this.getBackgroundColor());
-			if (_isHorizontal) {
-				height = _wideness;
-				if (_sectionCount > 0) {
-					sectionWidth = _length / _sectionCount;
-					for (int i = 0; i < _sectionCount + 1; i++) {
-						graphics.drawLine(this.getBounds().x + _start + i
-								* sectionWidth, this.getBounds().y, this
-								.getBounds().x
-								+ _start + i * sectionWidth + width, this
-								.getBounds().y
-								+ height);
-					}
-				} else {
-					int pos = _start;
-					while (pos < this.getBounds().width) {
-						graphics.drawLine(this.getBounds().x + pos, this
-								.getBounds().y, this.getBounds().x + pos, this
-								.getBounds().y
-								+ height);
-						pos = pos + _length;
-					}
-					if (_showNegativSections) {
-						pos = _start;
-						while (pos > 0) {
-							graphics.drawLine(this.getBounds().x, this
-									.getBounds().y
-									+ pos, this.getBounds().x + width, this
-									.getBounds().y
-									+ pos);
-							pos = pos - _length;
-						}
-					}
-				}
-			} else {
-				width = _wideness;
-				if (_sectionCount > 0) {
-					sectionHeight = _length / _sectionCount;
-					for (int i = 0; i < _sectionCount + 1; i++) {
-						graphics
-								.drawLine(this.getBounds().x,
-										this.getBounds().y + _start + i
-												* sectionHeight, this
-												.getBounds().x
-												+ width, this.getBounds().y
-												+ _start + i * sectionHeight);
-					}
-				} else {
-					int pos = _start;
-					while (pos < this.getBounds().height) {
-						graphics.drawLine(this.getBounds().x,
-								this.getBounds().y + pos, this.getBounds().x
-										+ width, this.getBounds().y + pos);
-						pos = pos + _length;
-					}
-					if (_showNegativSections) {
-						pos = _start;
-						while (pos > 0) {
-							graphics.drawLine(this.getBounds().x, this
-									.getBounds().y
-									+ pos, this.getBounds().x + width, this
-									.getBounds().y
-									+ pos);
-							pos = pos - _length;
-						}
-					}
-				}
-			}
+		public void setAlignment(final boolean isTopLeft) {
+			_isTopLeft = isTopLeft;
+			this.refreshConstraints();
 		}
 
 		/**
@@ -786,7 +1031,28 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		 *            The start value
 		 */
 		public void setReferencePositions(final int start) {
-			_start = start;
+			_refPos = start;
+			if (_refPos<0) {
+				if (_isHorizontal) {
+					_refPos = _refPos + 1;
+				} else {
+					_refPos = _refPos - 1;
+				}
+			}
+			this.refreshConstraints();
+		}
+		
+		/**
+		 * The begin and the end of the region, which surrounds the Markers.
+		 * @param begin 
+		 * 			 The begin
+		 * @param end
+		 * 			 The end
+		 */
+		public void setRegion(final int begin, final int end) {
+			_begin = begin;
+			_end = end;
+			this.refreshConstraints();
 		}
 
 		/**
@@ -808,6 +1074,287 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		 */
 		public void setWideness(final int wideness) {
 			_wideness = wideness;
+			this.refreshConstraints();
+		}
+		
+		/**
+		 * Sets, if the first Marker should be shown.
+		 * @param showFirst
+		 * 				True if the first Marker should be shown, false otherwise
+		 */
+		public void setShowFirstMarker(final boolean showFirst) {
+			_showFirst = showFirst;
+			this.refreshConstraints();
+		}
+		
+		/**
+		 * Sets, if the values of the Markers should be shown.
+		 * @param showValues
+		 * 				True if the values of the Markers should be shown, false otherwise
+		 */
+		public void setShowValues(final boolean showValues) {
+			_showValues = showValues;
+			this.refreshConstraints();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setForegroundColor(final Color fg) {
+			super.setForegroundColor(fg);
+			for (ScaleMarker marker : _posScaleMarkers) {
+				marker.setForegroundColor(fg);
+			}
+			for (ScaleMarker marker : _negScaleMarkers) {
+				marker.setForegroundColor(fg);
+			}
+		}
+		
+		/**
+		 * Sets the increment for the Scale.
+		 * @param value
+		 * 			The value for the increment
+		 */
+		public void setIncrement(final double value) {
+			_increment = value;
+			this.refreshConstraints();
+		}
+		
+		/**
+		 * This class represents a marker for the scale.
+		 * 
+		 * @author Kai Meyer
+		 */
+		private final class ScaleMarker extends RectangleFigure {
+			/**
+			 * The Label of this ScaleMarker.
+			 */
+			private Label _textLabel;
+			/**
+			 * The hyphen of this ScaleMarker.
+			 */
+			private ScaleHyphen _scaleHyphen;
+			
+			/**
+			 * The orientation of this Marker.
+			 */
+			private boolean _isHorizontal;
+
+			/**
+			 * The alignment of this Marker.
+			 */
+			private boolean _topLeft;
+			
+			/**
+			 * True, if the values of the Markers should be shown, false otherwise.
+			 */
+			private boolean _showValues = false;
+			
+			/**
+			 * Constructor.
+			 */
+			public ScaleMarker() {
+				this.setLayoutManager(new BorderLayout());
+				_textLabel = new Label("");
+				_textLabel.setForegroundColor(this.getForegroundColor());
+				_scaleHyphen = new ScaleHyphen();
+				_scaleHyphen.setForegroundColor(this.getForegroundColor());
+				this.add(_scaleHyphen, BorderLayout.CENTER);
+			}
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public void paintFigure(final Graphics graphics) {
+//				graphics.setForegroundColor(ColorConstants.green);
+//				graphics.setBackgroundColor(ColorConstants.green);
+//				graphics.fillRectangle(this.getBounds());
+			}
+			
+			/**
+			 * Sets the orientation of this figure.
+			 * 
+			 * @param isHorizontal
+			 *            The orientation of this figure
+			 *            (true=horizontal;false=vertical)
+			 */
+			public void setHorizontalOrientation(final boolean isHorizontal) {
+				_isHorizontal = !isHorizontal;
+				_scaleHyphen.setHorizontalOrientation(isHorizontal);
+				this.refreshLabel();
+			}
+
+			/**
+			 * Sets the alignment of this figure.
+			 * 
+			 * @param topLeft
+			 *            The alignment of this figure
+			 *            (true=top/left;false=bottom/right)
+			 */
+			public void setTopLeftAlignment(final boolean topLeft) {
+				_topLeft = topLeft;
+				_scaleHyphen.setAlignment(_topLeft);
+				this.refreshLabel();
+			}
+			
+			/**
+			 * Sets the displayed text.
+			 * @param text
+			 * 			The text to display
+			 */
+			public void setText(final String text) {
+				_textLabel.setText(text);
+				this.refreshLabel();
+			}
+			
+			/**
+			 * Sets, if the values of the Markers should be shown.
+			 * @param showValues
+			 * 				True if the values of the Markers should be shown, false otherwise
+			 */
+			public void setShowValues(final boolean showValues) {
+				_showValues = showValues;
+				this.refreshLabel();
+			}
+			
+			/**
+			 * Sets the wideness of the Hyphen.
+			 * @param wideness
+			 * 				The wideness
+			 */
+			public void setWideness(final int wideness) {
+				_scaleHyphen.setWideness(wideness);
+			}
+			
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public void setForegroundColor(final Color fg) {
+				super.setForegroundColor(fg);
+				_scaleHyphen.setForegroundColor(fg);
+				_textLabel.setForegroundColor(fg);
+			}
+			
+			/**
+			 * Refreshes the Label.
+			 */
+			private void refreshLabel() {
+				if (this.getChildren().contains(_textLabel)) {
+					this.remove(_textLabel);
+				}
+				if (_showValues) {
+					Integer place;
+					if (_isHorizontal) {
+						if (_topLeft) {
+							place = BorderLayout.TOP;
+						} else {
+							place = BorderLayout.BOTTOM;
+						}
+					} else {
+						if (_topLeft) {
+							place = BorderLayout.LEFT;
+						} else {
+							place = BorderLayout.RIGHT;
+						}
+					}
+					this.add(_textLabel, place);
+				}
+			}
+			
+			/**
+			 * This class represents a hyphen for the scale.
+			 * 
+			 * @author Kai Meyer
+			 */
+			private final class ScaleHyphen extends RectangleFigure {
+				/**
+				 * The height of the line. 
+				 */
+				private int _height = 0;
+				/**
+				 * The width of the line.
+				 */
+				private int _width = 10;
+				/**
+				 * The orientation of the line.
+				 */
+				private boolean _isHorizontal;
+				/**
+				 * The wideness of this Hyphen.
+				 */
+				private int _wideness = 10;
+				/**
+				 * The Alignment of this Hyphen.
+				 */
+				private boolean _isTopLeft;
+				
+				/**
+				 * {@inheritDoc}
+				 */
+				@Override
+				public void paintFigure(final Graphics graphics) {
+					graphics.setForegroundColor(this.getForegroundColor());
+					//vertical
+					int x = this.getBounds().x+this.getBounds().width/2;
+					int y = this.getBounds().y;
+					if (_isHorizontal) {
+						if (_isTopLeft) {
+							x = this.getBounds().x + this.getBounds().width-_width;
+							y = this.getBounds().y + this.getBounds().height/2;
+						} else {
+							x = this.getBounds().x;
+							y = this.getBounds().y + this.getBounds().height/2;
+						}
+					}
+					graphics.drawLine(x, y,	x + _width,	y + _height);
+				}
+				
+				/**
+				 * Sets the wight and height of this Hyphen.
+				 */
+				private void setHeightAndWidth() {
+					if (_isHorizontal) {
+						_height = 0;
+						_width = _wideness;
+					} else {
+						_height = _wideness;
+						_width = 0;
+					}
+				}
+				
+				/**
+				 * Sets the orientation of this Hyphen.
+				 * @param isHorizontal
+				 * 				The Orientation of this Hyphen
+				 * 				true=horizontal; false = vertical
+				 */
+				public void setHorizontalOrientation(final boolean isHorizontal) {
+					_isHorizontal = isHorizontal;
+					this.setHeightAndWidth();
+				}
+				
+				/**
+				 * Sets the wideness of the Hyphen.
+				 * @param wideness
+				 * 				The wideness
+				 */
+				public void setWideness(final int wideness) {
+					_wideness = wideness;
+					this.setHeightAndWidth();
+				}			
+				
+				/**
+				 * Sets the alignment of this Hyphen.
+				 * @param isTopLeft
+				 * 				The alignment (true=top/left; false = bottom/right)
+				 */
+				public void setAlignment(final boolean isTopLeft) {
+					_isTopLeft = isTopLeft;
+				}
+			}
 		}
 	}
 }

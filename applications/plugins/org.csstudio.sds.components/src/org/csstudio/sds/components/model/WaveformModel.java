@@ -27,6 +27,7 @@ import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleArrayProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
+import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.eclipse.swt.graphics.RGB;
 
@@ -61,6 +62,11 @@ public final class WaveformModel extends AbstractWidgetModel {
 	/**
 	 * Property ID for the scale.
 	 */
+	public static final String PROP_SHOW_VALUES = "show_values"; //$NON-NLS-1$
+	
+	/**
+	 * Property ID for the scale.
+	 */
 	public static final String PROP_SHOW_SCALE = "show_scale"; //$NON-NLS-1$
 
 	/**
@@ -87,6 +93,16 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * Property ID for the color of the ledger lines.
 	 */
 	public static final String PROP_LEDGER_LINE_COLOR = "ledger_lines_color"; //$NON-NLS-1$
+	
+	/**
+	 * Property ID for the color of the ledger lines.
+	 */
+	public static final String PROP_Y_SCALE_SECTION_COUNT = "y_scale_section_count"; //$NON-NLS-1$
+	
+	/**
+	 * Property ID for the color of the ledger lines.
+	 */
+	public static final String PROP_X_SCALE_SECTION_COUNT = "x_scale_section_count"; //$NON-NLS-1$
 
 	/**
 	 * The diplay options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
@@ -137,6 +153,12 @@ public final class WaveformModel extends AbstractWidgetModel {
 				"Maximum", WidgetPropertyCategory.Display, 100.0));
 		addProperty(PROP_AUTO_SCALE, new BooleanProperty(
 				"Automatic Scaling", WidgetPropertyCategory.Display, false));
+		addProperty(PROP_SHOW_VALUES, new BooleanProperty(
+				"Show values", WidgetPropertyCategory.Display,false));
+		addProperty(PROP_Y_SCALE_SECTION_COUNT, new IntegerProperty(
+				"Y-Section count",WidgetPropertyCategory.Display,4));
+		addProperty(PROP_X_SCALE_SECTION_COUNT, new IntegerProperty(
+				"X-Section count",WidgetPropertyCategory.Display,4));
 	}
 
 	/**
@@ -156,19 +178,32 @@ public final class WaveformModel extends AbstractWidgetModel {
 		return (double[]) getProperty(PROP_WAVE_FORM).getPropertyValue();
 	}
 
+	/**
+	 * Returns the minimum value.
+	 * @return	double
+	 * 				The minimum value
+	 */
 	public double getMin() {
 		return (Double) getProperty(PROP_MIN).getPropertyValue();
 	}
 
-	
+	/**
+	 * Returns the maximum value.
+	 * @return	double
+	 * 				The maximum value
+	 */
 	public double getMax() {
 		return (Double) getProperty(PROP_MAX).getPropertyValue();
 	}
 
+	/**
+	 * Returns, if the graph should be automatically scaled.
+	 * @return boolean
+	 * 				True, if the graph should be automatically scaled, false otherwise
+	 */
 	public boolean getAutoscale() {
 		return (Boolean) getProperty(PROP_AUTO_SCALE).getPropertyValue();
 	}
-
 
 	/**
 	 * Return the RGB for the color of the graph.
@@ -218,10 +253,40 @@ public final class WaveformModel extends AbstractWidgetModel {
 	/**
 	 * Returns, if the point lines should be shown or not.
 	 * 
-	 * @return boolean true, if they should be shown, false otherwise
+	 * @return boolean 
+	 * 				True, if they should be shown, false otherwise
 	 */
 	public boolean getShowConnectionLines() {
 		return (Boolean) getProperty(PROP_SHOW_CONNECTION_LINES)
+				.getPropertyValue();
+	}
+	
+	/**
+	 * Returns, if the values should be shown.
+	 * @return boolean 
+	 * 				True, if they should be shown, false otherwise
+	 */
+	public boolean getShowValues() {
+		return (Boolean) getProperty(PROP_SHOW_VALUES).getPropertyValue();
+	}
+	
+	/**
+	 * Returns the count of sections on the y-axis.
+	 * @return int 
+	 * 				The count of sections on the y-axis
+	 */
+	public int getYSectionCount() {
+		return (Integer) getProperty(PROP_Y_SCALE_SECTION_COUNT)
+				.getPropertyValue();
+	}
+	
+	/**
+	 * Returns the count of sections on the x-axis.
+	 * @return int 
+	 * 				The count of sections on the x-axis
+	 */
+	public int getXSectionCount() {
+		return (Integer) getProperty(PROP_X_SCALE_SECTION_COUNT)
 				.getPropertyValue();
 	}
 

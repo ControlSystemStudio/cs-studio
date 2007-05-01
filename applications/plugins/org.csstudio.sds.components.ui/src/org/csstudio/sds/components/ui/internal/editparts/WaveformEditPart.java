@@ -58,6 +58,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		waveform.setGraphColor(model.getGraphColor());
 		waveform.setConnectionLineColor(model.getConnectionLineColor());
 		waveform.setLedgerLineColor(model.getLedgerLineColor());
+		waveform.setShowValues(model.getShowValues());
 		return waveform;
 	}
 
@@ -113,6 +114,17 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_WAVE_FORM, handler);
+		// show values
+		IWidgetPropertyChangeHandler showValuesHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setShowValues((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_SHOW_VALUES, showValuesHandler);
 		// show ledger lines
 		IWidgetPropertyChangeHandler ledgerLinesHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -135,6 +147,28 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_SHOW_SCALE, scaleHandler);
+		// y-axis section count
+		IWidgetPropertyChangeHandler ySectionHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setYSectionCount((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_Y_SCALE_SECTION_COUNT, ySectionHandler);
+		// x-axis section count
+		IWidgetPropertyChangeHandler xSectionHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setXSectionCount((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_X_SCALE_SECTION_COUNT, xSectionHandler);
 		// show connection lines
 		IWidgetPropertyChangeHandler connectionLinesHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
