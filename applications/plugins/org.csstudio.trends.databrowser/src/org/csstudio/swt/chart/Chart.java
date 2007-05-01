@@ -67,8 +67,8 @@ public class Chart extends Canvas
     /** Background color. */
     private Color background;
     
-    /** Background color. */
-    private Color grid;
+    /** Grid line color. */
+    private Color grid_color;
     
     /** Foreground color. */
     private Color foreground;
@@ -93,7 +93,7 @@ public class Chart extends Canvas
         super(parent, style & STYLE_MASK);
 
         background = new Color(parent.getDisplay(), 255, 255, 255);
-        grid = new Color(parent.getDisplay(), 150, 150, 150);
+        grid_color = new Color(parent.getDisplay(), 150, 150, 150);
         foreground = new Color(parent.getDisplay(), 0, 0, 0);
         
         // Create axes
@@ -167,7 +167,7 @@ public class Chart extends Canvas
                 for (Trace si : traces)
                     si.dispose();
                 foreground.dispose();
-                grid.dispose();
+                grid_color.dispose();
                 background.dispose();
             }
         });
@@ -267,10 +267,6 @@ public class Chart extends Canvas
                 mouse_down = false;
             }
         });
-        
-        // We'll init an advanced cross hair selection tool
-        new CrossHairSelectionTool();
-        
     }
     
     /** Add a listener. */
@@ -408,7 +404,7 @@ public class Chart extends Canvas
     public Trace addTrace(String name, ChartSampleSequence series,
                     Color color, int line_width,
                     int yaxis_index, double defaultScaleMin, double defaultScaleMax,
-                    boolean autozoom, Trace.Type type)
+                    boolean autozoom, TraceType type)
     {
         YAxis yaxis = yaxes.get(yaxis_index);
         setRedraw(false);
@@ -451,9 +447,7 @@ public class Chart extends Canvas
         if (yaxis != null)
             yaxis.autozoom(xaxis, checkTraceAutoscale);
         else
-        {
             autoZoomAll(checkTraceAutoscale);
-        }
     }
     
     /** Auto scales all Y axis */
@@ -603,7 +597,7 @@ public class Chart extends Canvas
         // (which will decide to ignore the call based on the paint region)
         xaxis.paint(e);
         for (YAxis yaxis : yaxes)
-            yaxis.paint(e);
+            yaxis.paint(grid_color, e);
         
         // The width-1 is a hack to _not_ redraw the plot
         // when only the Y axes needed a redraw.
@@ -643,14 +637,14 @@ public class Chart extends Canvas
         YAxis yaxis = getSelectedYAxis();
         if (yaxis == null)
             return;
-        gc.setForeground(grid);
+        gc.setForeground(grid_color);
         // Vertical grid lines for each X-Axis tick.
         ITicks xticks = xaxis.getTicks();
         int y0 = plot_region.y;
         int y1 = y0 + plot_region.height;
         for (double val = xticks.getStart();
-            val <= xaxis.getHighValue();
-            val = xticks.getNext(val))
+             val <= xaxis.getHighValue();
+             val = xticks.getNext(val))
         {
             int x = xaxis.getScreenCoord(val);
             gc.drawLine(x, y0, x, y1);
@@ -661,8 +655,8 @@ public class Chart extends Canvas
         int x0 = plot_region.x;
         int x1 = x0 + plot_region.width;
         for (double val = yticks.getStart();
-            val <= yaxis.getHighValue();
-            val = yticks.getNext(val))
+             val <= yaxis.getHighValue();
+             val = yticks.getNext(val))
         {
             int y = yaxis.getScreenCoord(val);
             gc.drawLine(x0, y, x1, y);
@@ -723,9 +717,6 @@ public class Chart extends Canvas
             YAxis yaxis = yaxes.get(i);
             boolean selected = yaxis.getRegion().contains(x, y);
             yaxes.get(i).setSelected(selected);
-            
-            org.csstudio.swt.chart.Trace trace = yaxes.get(i).getTraceAt(x, y);
-            
             if (selected)
                 any_selected = true;
         }

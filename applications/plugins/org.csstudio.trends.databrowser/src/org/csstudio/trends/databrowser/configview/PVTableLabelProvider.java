@@ -52,7 +52,8 @@ public class PVTableLabelProvider extends LabelProvider implements
     /** @see org.eclipse.jface.viewers.ITableColorProvider */
     public Color getBackground(Object obj, int index)
     {
-        if (index == PVTableHelper.COLOR  &&  obj != PVTableHelper.empty_row)
+        if (index == PVTableHelper.Column.COLOR.ordinal()  &&
+            obj != PVTableHelper.empty_row)
         {
             IModelItem entry = (IModelItem) obj;
             return entry.getColor();

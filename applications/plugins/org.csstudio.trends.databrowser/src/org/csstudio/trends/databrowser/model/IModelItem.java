@@ -2,6 +2,7 @@ package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.model.IArchiveDataSource;
+import org.csstudio.swt.chart.TraceType;
 import org.eclipse.swt.graphics.Color;
 
 /** This is the user's interface to one item of the Model.
@@ -10,51 +11,6 @@ import org.eclipse.swt.graphics.Color;
  */
 public interface IModelItem
 {
-	/** Defines basic display types for this model */
-	public enum DisplayType 
-    {
-		Lines(0),
-    	Markers(1),
-    	Candlestick(2),
-    	//HighLowArea(3),
-		MinMaxAverage(3),
-		Bars(4);
-    	
-    	private final byte value;
-    	
-    	private static String[] strDisplayTypes;
-    	
-    	DisplayType(int value) {
-		   this.value = (byte) value;
-		}
-
-		public byte convert() {
-		   return value;
-		}
-		
-		public final static DisplayType fromInteger(int value) {
-			for(DisplayType type : DisplayType.values()) {
-				if(value == type.convert())
-					return type;
-			}
-			return DisplayType.Lines;
-		}
-		
-		public final static String[] toStringArray()
-		{
-			if(strDisplayTypes == null) 
-			{
-				DisplayType[] displayTypes = DisplayType.values();
-	        	strDisplayTypes = new String[displayTypes.length]; 
-	        	
-	        	for(int i = 0; i < displayTypes.length; i++)
-	        		strDisplayTypes[i] = displayTypes[i].toString();
-			}
-			
-			return strDisplayTypes;
-		}
-    }
-	
 	/** @return The name to use for this item in the legend or axis label. */
 	public abstract String getName();
 
@@ -94,11 +50,11 @@ public interface IModelItem
     /** Set the trace to a new line width. */
     public abstract void setLineWidth(int new_width);
     
-    /** @return Returns current display type */
-    public abstract DisplayType getDisplayType();
+    /** @return Returns current trace type */
+    public abstract TraceType getTraceType();
     
-    /** Set new display type for this model. */
-    public abstract void setDisplayType(DisplayType new_display_type);
+    /** Set new trace type for this model. */
+    public abstract void setTraceType(TraceType new_trace_type);
     
     /** @return Returns weather trace should be auto scaled. */
     public abstract boolean getIsTraceAutoScalable();

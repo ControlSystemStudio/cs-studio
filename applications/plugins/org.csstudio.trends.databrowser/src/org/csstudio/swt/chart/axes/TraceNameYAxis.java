@@ -74,7 +74,7 @@ public class TraceNameYAxis extends YAxis
         // See how much fits in each row.
         for (int i=0; i<getNumTraces(); ++i)
         {
-            int name_width = gc.textExtent(getTrace(i).getDisplayName()).x;
+            int name_width = gc.textExtent(getTrace(i).getName()).x;
             // Start new row when exceeding available space.
             // Except: If there's only one item
             // in this row.. tough. It'll be truncated.
@@ -137,7 +137,7 @@ public class TraceNameYAxis extends YAxis
     	
         for (int i=0; i<getNumTraces(); ++i)
         {
-            String name = getTrace(i).getDisplayName();
+            String name = getTrace(i).getName();
             gc.setForeground(getTrace(i).getColor());
             Point text_size = gc.textExtent(name);
             int name_width = text_size.x;

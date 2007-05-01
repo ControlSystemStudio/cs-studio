@@ -12,7 +12,7 @@ import org.csstudio.swt.chart.ChartListener;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequenceContainer;
 import org.csstudio.swt.chart.InteractiveChart;
-import org.csstudio.swt.chart.Trace;
+import org.csstudio.swt.chart.TraceType;
 import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.util.swt.DefaultColors;
@@ -226,7 +226,8 @@ public class ChartTest
                                 DefaultColors.getGreen(i),
                                 DefaultColors.getBlue(i));
         // Add to chart
-        chart.addTrace(name, seq, color, 0, chart.getYAxisIndex(yaxis), 0, 10, true, Trace.Type.Lines);
+        chart.addTrace(name, seq, color, 0, chart.getYAxisIndex(yaxis), 0, 10,
+                        true, TraceType.Bars);
         return yaxis;
     }
 

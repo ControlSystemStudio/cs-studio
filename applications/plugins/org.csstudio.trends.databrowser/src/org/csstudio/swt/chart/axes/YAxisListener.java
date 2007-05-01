@@ -6,6 +6,8 @@ package org.csstudio.swt.chart.axes;
  */
 public interface YAxisListener
 {
+    // TODO change into enum
+    
     /** The axis label changed.
      *  Requires redraw of the axis, but since the size of the axis
      *  might be affected when the label requires a different number

@@ -22,24 +22,15 @@ public class Trace
     private int line_width;
     private YAxis  yaxis;
     private Rectangle labelLayout;
-    private Type type;
+    private TraceType type;
     private boolean isAutoScalable;
     private double defaultScaleMax;
     private double defaultScaleMin;
     
-    public enum Type 
-    {
-    	Lines,
-    	Markers,
-    	Candlestick,
-    	MinMaxAverage,
-    	Bars
-    }
-    
     public Trace(String name, ChartSampleSequence series, Color color,
-            int line_width, YAxis yaxis) {
-    	
-    	this(name, series, color, line_width, yaxis, 0, 10, Type.Lines, true);
+            int line_width, YAxis yaxis)
+    {
+    	this(name, series, color, line_width, yaxis, 0, 10, TraceType.Lines, true);
     }
     
     /** Create a new trace.
@@ -51,7 +42,7 @@ public class Trace
      */
     public Trace(String name, ChartSampleSequence series, Color color,
                     int line_width, YAxis yaxis, double defaultScaleMin, double defaultScaleMax,
-                    Trace.Type type, boolean autoScale)
+                    TraceType type, boolean autoScale)
     {
         this.name = name;
         this.samples = series;
@@ -81,15 +72,6 @@ public class Trace
     	return name;
     }
     
-    /** @return Returns the name of this trace as it is displayed on the chart. */
-    public final String getDisplayName() 
-    {
-    	if(!this.getIsAutoScalable())
-    		return this.getName();
-    	
-    	return this.getName() + "*"; //$NON-NLS-1$
-    }
-
     /** @return Returns the SampleSequence interface for this trace. */
     public final ChartSampleSequence getSampleSequence()
     {
@@ -146,7 +128,7 @@ public class Trace
     }
     
     /** @return Returns trace type */
-    public final Trace.Type getType() 
+    public final TraceType getType() 
     {
     	return type;
     }

@@ -42,7 +42,7 @@ public class TimeAxis extends XAxis
         if (!region.intersects(e.x, e.y, e.width, e.height))
             return;
         if (Chart.debug)
-            System.out.println("paint axis '" + label + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+            System.out.println("paint axis '" + getLabel() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         GC gc = e.gc;
         // Axis and Tick marks
         computeTicks(gc);

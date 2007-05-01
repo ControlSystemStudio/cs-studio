@@ -2,13 +2,12 @@ package org.csstudio.trends.databrowser.model;
 
 import java.util.ArrayList;
 
-import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.ArchiveValues;
-import org.csstudio.archive.cache.ArchiveCache;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.xml.DOMHelper;
 import org.csstudio.util.xml.XMLHelper;
@@ -23,7 +22,6 @@ import org.csstudio.value.NumericMetaData;
 import org.csstudio.value.StringValue;
 import org.csstudio.value.Value;
 import org.eclipse.core.runtime.PlatformObject;
-import org.csstudio.archive.cache.CachingArchiveServer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.Element;
@@ -54,8 +52,8 @@ public class ModelItem
     /** The default xaxis max */
     private double default_scale_min;
     
-    /** The display type */
-    private IModelItem.DisplayType display_type;
+    /** The trace type (line, ...) */
+    private TraceType trace_type;
     
     /** Y-axis range. */
     private double axis_low, axis_high;
@@ -122,7 +120,7 @@ public class ModelItem
         this.color = new Color(null, red, green, blue);
         this.line_width = line_width;
         this.log_scale = log_scale;
-        this.display_type = DisplayType.Lines;
+        this.trace_type = TraceType.Lines;
         this.isTraceAutoScalable = false;
         pv = new EPICS_V3_PV(pv_name);
         samples = new ModelSamples(ring_size);
@@ -278,19 +276,17 @@ public class ModelItem
     }
     
     /** @return Returns current model display type */
-    public IModelItem.DisplayType getDisplayType() 
+    public TraceType getTraceType() 
     {
-    	return this.display_type;
+    	return trace_type;
     } 
     
     /** Set new display type */
-    public void setDisplayType(IModelItem.DisplayType new_display_type) 
+    public void setTraceType(TraceType new_trace_type) 
     {
-    	if(display_type == new_display_type)
+    	if(trace_type == new_trace_type)
     		return;
-    	
-    	clearSampleCache();
-    	display_type = new_display_type;
+    	trace_type = new_trace_type;
     	// Notify model of this change.
     	model.fireEntryConfigChanged(this);
     }
@@ -624,30 +620,7 @@ public class ModelItem
             }
         }
     }
-    
-    //TODO: Check if this does a job of clearing cache, otherwise change this function.
-    private void clearSampleCache()
-    {
-    	// If data is cached we should clear the cache.
-    	ArchiveCache cache = ArchiveCache.getInstance();
-    	
-		for (int i=0; i < archives.size(); ++i) 
-		{
-			try {
-				ArchiveServer server = cache.getServer(archives.get(i).getUrl());
-				if(server != null && server instanceof CachingArchiveServer)
-				{
-					// Clear server cache.
-					((CachingArchiveServer)server).clearCache();
-					// Clear samples archive.
-					this.samples.clearArchive();
-				}
-			}
-			catch(Exception e) { // Don't do anything. 
-			}
-		}
-    }
-    
+        
     @Override
     @SuppressWarnings("nls")
     public String toString()

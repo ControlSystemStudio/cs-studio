@@ -1,12 +1,12 @@
 package org.csstudio.trends.databrowser.configview;
 
-import org.csstudio.archive.ArchiveServer;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDropTarget;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDataSourceDropTarget;
+import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
@@ -304,23 +304,24 @@ public class ConfigView extends PlotAwareView
         
         // Allow editing
         CellEditor editors[] = new CellEditor[PVTableHelper.properties.length];
-        editors[PVTableHelper.NAME] = new TextCellEditor(table);
-        editors[PVTableHelper.MIN] = new TextCellEditor(table);
-        editors[PVTableHelper.MAX] = new TextCellEditor(table);
+        editors[PVTableHelper.Column.NAME.ordinal()] = new TextCellEditor(table);
+        editors[PVTableHelper.Column.MIN.ordinal()] = new TextCellEditor(table);
+        editors[PVTableHelper.Column.MAX.ordinal()] = new TextCellEditor(table);
         if (use_axis_combobox)
         {
             String axis_items[] = new String[4];
             for (int i=0; i<axis_items.length; ++i)
                 axis_items[i] = Integer.toString(i);
-            editors[PVTableHelper.AXIS] = new ComboBoxCellEditor(table, axis_items);
+            editors[PVTableHelper.Column.AXIS.ordinal()] = new ComboBoxCellEditor(table, axis_items);
         }
         else
-            editors[PVTableHelper.AXIS] = new TextCellEditor(table);
-        editors[PVTableHelper.COLOR] = new RGBCellEditor(table);
-        editors[PVTableHelper.LINEWIDTH] = new TextCellEditor(table);
-        editors[PVTableHelper.TYPE] = new CheckboxCellEditor(table);
-        editors[PVTableHelper.DISPLAYTYPE] = new ComboBoxCellEditor(table, IModelItem.DisplayType.toStringArray(), SWT.READ_ONLY);
-        editors[PVTableHelper.AUTOSCALE] = new CheckboxCellEditor(table);
+            editors[PVTableHelper.Column.AXIS.ordinal()] = new TextCellEditor(table);
+        editors[PVTableHelper.Column.COLOR.ordinal()] = new RGBCellEditor(table);
+        editors[PVTableHelper.Column.LINEWIDTH.ordinal()] = new TextCellEditor(table);
+        editors[PVTableHelper.Column.TYPE.ordinal()] = new CheckboxCellEditor(table);
+        editors[PVTableHelper.Column.DISPLAYTYPE.ordinal()] =
+            new ComboBoxCellEditor(table, TraceType.getTypeStrings(), SWT.READ_ONLY);
+        editors[PVTableHelper.Column.AUTOSCALE.ordinal()] = new CheckboxCellEditor(table);
         
         pv_table_viewer.setColumnProperties(PVTableHelper.properties);
         pv_table_viewer.setCellEditors(editors);

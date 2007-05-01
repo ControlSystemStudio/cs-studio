@@ -6,7 +6,7 @@ package org.csstudio.swt.chart;
  * to display selected region without flickering. However this implementation
  * won't work on MacOS, but it is a nice feature for Windows and Linux users.
  *  
- * @author blipusce
+ * @author Blaz Lipuscek 
  *
  * NOT USED for several reasons:
  * <ul>

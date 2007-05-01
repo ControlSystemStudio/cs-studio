@@ -19,22 +19,31 @@ public class Axis
 
     /** Is this a horizontal axis? Otherwise: Vertical. */
     private boolean horizontal;
+    
     /** The screen region of this axis. */
     protected Rectangle region = new Rectangle(0, 0, 1, 1);
+    
     /** Transformation from value into screen coordinates. */
     protected ITransform transform;
+    
     /** Low end of value range. */
     protected double low_value;
+    
     /** High end of value range. */
     protected double high_value;
+    
     /** Helper for computing the tick marks. */
     protected Ticks ticks;
+    
     /** Do we need to re-compute the ticks? */
     private boolean dirty_ticks;
+    
     /** Low end of screen range. */
-    protected int low_screen;
+    private int low_screen;
+    
     /** High end of screen range. */
-    protected int high_screen;
+    private int high_screen;
+    
     /** Axis label. */
     protected String label;
     

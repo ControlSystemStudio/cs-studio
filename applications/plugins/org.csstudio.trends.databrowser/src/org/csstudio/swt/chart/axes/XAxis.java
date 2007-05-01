@@ -70,7 +70,7 @@ public class XAxis extends Axis
         if (!region.intersects(e.x, e.y, e.width, e.height))
             return;
         if (Chart.debug)
-            System.out.println("paint axis '" + label + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+            System.out.println("paint axis '" + getLabel() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         GC gc = e.gc;
         // Axis and Tick marks
         computeTicks(gc);
@@ -88,8 +88,8 @@ public class XAxis extends Axis
         }
         
         // Label: centered at bottom of region
-        Point label_size = gc.textExtent(label);
-        gc.drawString(label,
+        Point label_size = gc.textExtent(getLabel());
+        gc.drawString(getLabel(),
                 region.x + (region.width - label_size.x)/2,
                 region.y + region.height - label_size.y - 1, false);
         if (Chart.debug)

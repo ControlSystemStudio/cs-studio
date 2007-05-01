@@ -375,7 +375,7 @@ public class YAxis extends Axis
      *  @param e Clipping information from the paint event is used for optimization)
      */
     @SuppressWarnings("nls")
-    public void paint(PaintEvent e)
+    public void paint(Color grid_color, PaintEvent e)
     {
         if (!region.intersects(e.x, e.y, e.width, e.height))
             return;
@@ -385,24 +385,21 @@ public class YAxis extends Axis
         GC gc = e.gc;
         Point char_size = gc.textExtent("X"); //$NON-NLS-1$
         
-        Color pbgColor = gc.getBackground();
+        Color old_bg = gc.getBackground();
         
         // Axis and Tick marks
         if (selected)
-        {
-        	// Let's fill the background to make selected axis more clear to distinguish.
-        	Color bgColor = gc.getDevice().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
-        	gc.setBackground(bgColor);
+        {	// Fill yaxis background with grid color.
+        	gc.setBackground(grid_color);
         	gc.fillRectangle(region.x + 1, region.y, region.width - 2, region.height);
-        	
-        	// "thicken" line by drawing a parallel one
+        	// "Thick" line
             gc.drawRectangle(
                 region.x + region.width-2,
                 region.y, 
                 1,
                 region.height-1);
         }
-        else
+        else // Simple line for the axis
             gc.drawLine(
                 region.x + region.width-1,
                 region.y, 
@@ -448,7 +445,7 @@ public class YAxis extends Axis
         if (Chart.debug)
             gc.drawRectangle(region.x, region.y, region.width-1, region.height-1);
         
-        gc.setBackground(pbgColor);
+        gc.setBackground(old_bg);
     }
 
     protected void paintLabel(GC gc)
