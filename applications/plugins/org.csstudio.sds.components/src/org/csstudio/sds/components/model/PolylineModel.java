@@ -36,6 +36,9 @@ public final class PolylineModel extends AbstractPolyModel {
 	 */
 	public static final String ID = "element.polyline"; //$NON-NLS-1$
 
+	/**
+	 * The ID of the width of the line.
+	 */
 	public static final String PROP_LINE_WIDTH = "linewidth";
 
 	/**
@@ -46,10 +49,22 @@ public final class PolylineModel extends AbstractPolyModel {
 		return ID;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();
 		addProperty(PROP_LINE_WIDTH, new IntegerProperty("Line Width",
 				WidgetPropertyCategory.Display, 1, 1, 100));
+	}
+	
+	/**
+	 * Gets the wodth of the line.
+	 * @return int
+	 * 				The width of the line
+	 */
+	public int getLinwWidth() {
+		return (Integer) getProperty(PROP_LINE_WIDTH).getPropertyValue();
 	}
 }

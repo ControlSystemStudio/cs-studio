@@ -48,6 +48,7 @@ public final class PolylineEditPart extends AbstractWidgetEditPart {
 
 		polyline.setPoints(model.getPoints());
 		polyline.setFill(model.getFill());
+		polyline.setLineWidth(model.getLinwWidth());
 
 		return polyline;
 	}
