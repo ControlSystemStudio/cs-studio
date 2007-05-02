@@ -227,9 +227,8 @@ public class ChartTest
                                 DefaultColors.getGreen(i),
                                 DefaultColors.getBlue(i));
         // Add to chart
-        final boolean autoscale = false;
         chart.addTrace(name, seq, color, 0, chart.getYAxisIndex(yaxis), 0, 10,
-                       autoscale, TraceType.Lines);
+                       TraceType.Lines);
         return yaxis;
     }
 

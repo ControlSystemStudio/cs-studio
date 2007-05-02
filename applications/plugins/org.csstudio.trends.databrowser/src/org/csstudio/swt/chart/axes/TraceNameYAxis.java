@@ -6,7 +6,6 @@ import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.Trace;
 import org.csstudio.util.swt.GraphicsUtils;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -149,10 +148,6 @@ public class TraceNameYAxis extends YAxis
                 items = 0;
             }
             y -= name_width;
-            
-            // We set current trace layout. It it not a best practice to do this while painting, 
-            // however implementation in that way would take too much time.
-            getTrace(i).setLabelLayout(new Rectangle(x, y, text_size.y, text_size.x));
             
             GraphicsUtils.drawVerticalText(name, x, y, gc, SWT.UP);
             gc.setForeground(fg); // restore original fg

@@ -193,25 +193,15 @@ public class YAxis extends Axis
     	this.setValueRange(min, max);
     }
     
-    public void autozoom(XAxis xaxis) 
-    {
-    	// Scale every trace.
-    	autozoom(xaxis, false);
-    }
-    
     /** Auto-Zoom the value range of this Y axis to include all traces. */
     @SuppressWarnings("nls")
-    public void autozoom(XAxis xaxis, boolean checkTraceAutoscale)
+    public void autozoom(XAxis xaxis)
     {
         AxisRangeLimiter limiter = new AxisRangeLimiter(xaxis);
         double low = Double.MAX_VALUE;
         double high = -Double.MAX_VALUE;
         for (Trace trace : traces)
         {
-        	// We'll check if autoscale should be done on this trace
-        	if(checkTraceAutoscale && !trace.getIsAutoScalable())
-        		continue;
-        	
             ChartSampleSequence samples = trace.getSampleSequence();
             // Lock samples so they don't change on us.
             synchronized (samples)
@@ -357,16 +347,6 @@ public class YAxis extends Axis
         Point char_size = gc.textExtent("X"); //$NON-NLS-1$
         // Room for label (vertical) + value text + tick markers.
         return 2*char_size.y + TICK_LENGTH;
-    }
-    
-    public Trace getTraceAt(int x, int y) 
-    {
-    	 for (Trace trace : traces)
-         {
-    		 if(trace.getLabelLayout() != null && trace.getLabelLayout().contains(x, y))
-    			 return trace;
-         }
-    	 return null;
     }
     
     /** Paint the axis.

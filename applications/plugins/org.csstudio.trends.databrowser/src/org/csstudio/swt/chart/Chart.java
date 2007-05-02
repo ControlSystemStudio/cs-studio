@@ -404,14 +404,13 @@ public class Chart extends Canvas
     public Trace addTrace(String name, ChartSampleSequence series,
                     Color color, int line_width,
                     int yaxis_index, double defaultScaleMin, double defaultScaleMax,
-                    boolean autozoom, TraceType type)
+                    TraceType type)
     {
         YAxis yaxis = yaxes.get(yaxis_index);
         setRedraw(false);
-        Trace trace = new Trace(name, series, color, line_width, yaxis, defaultScaleMin, defaultScaleMax, type, autozoom);
+        Trace trace = new Trace(name, series, color, line_width, yaxis,
+                                defaultScaleMin, defaultScaleMax, type);
         traces.add(trace);
-        if (autozoom)
-            yaxis.autozoom(xaxis);
         setRedraw(true);
         return trace;
     } 
@@ -441,23 +440,19 @@ public class Chart extends Canvas
     }
     
     /** Auto-Zoom the selected or all Y axes. */
-    public void autozoom(boolean checkTraceAutoscale)
+    public void autozoom()
     {
         YAxis yaxis = getSelectedYAxis();
         if (yaxis != null)
-            yaxis.autozoom(xaxis, checkTraceAutoscale);
+            yaxis.autozoom(xaxis);
         else
-            autoZoomAll(checkTraceAutoscale);
-    }
-    
-    /** Auto scales all Y axis */
-    public void autoZoomAll(boolean checkTraceAutoscale)
-    {
-    	// Defer redraw until all axes are adjusted...
-        setRedraw(false);
-        for (YAxis y : yaxes)
-            y.autozoom(xaxis, checkTraceAutoscale);
-        setRedraw(true);
+        {
+        	// Defer redraw until all axes are adjusted...
+            setRedraw(false);
+            for (YAxis y : yaxes)
+                y.autozoom(xaxis);
+            setRedraw(true);
+        }
     }
     
     /** Sets the default server specified range to the selected or all Y axes. */

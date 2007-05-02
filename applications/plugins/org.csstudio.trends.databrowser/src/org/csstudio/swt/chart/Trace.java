@@ -2,7 +2,6 @@ package org.csstudio.swt.chart;
 
 import org.csstudio.swt.chart.axes.YAxis;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Rectangle;
 
 /** A trace is sequence of samples with color, assiged Y Axis, ...
  *  <p>
@@ -18,20 +17,12 @@ public class Trace
 {
     private String name;
     private ChartSampleSequence samples;
-    private Color  color;
+    private Color color;
     private int line_width;
-    private YAxis  yaxis;
-    private Rectangle labelLayout;
+    private YAxis yaxis;
     private TraceType type;
-    private boolean isAutoScalable;
     private double defaultScaleMax;
     private double defaultScaleMin;
-    
-    public Trace(String name, ChartSampleSequence series, Color color,
-            int line_width, YAxis yaxis)
-    {
-    	this(name, series, color, line_width, yaxis, 0, 10, TraceType.Lines, true);
-    }
     
     /** Create a new trace.
      * 
@@ -41,8 +32,24 @@ public class Trace
      *  @param yaxis The axis to which the trace attaches.
      */
     public Trace(String name, ChartSampleSequence series, Color color,
-                    int line_width, YAxis yaxis, double defaultScaleMin, double defaultScaleMax,
-                    TraceType type, boolean autoScale)
+            int line_width, YAxis yaxis)
+    {
+    	this(name, series, color, line_width, yaxis, 0, 10,
+             TraceType.Lines);
+    }
+    
+    /** Create a new trace.
+     * 
+     *  @param series The SampleSeries interface.
+     *  @param color The color to use.
+     *               <b>Note:</b> The trace does not assume ownerwhip of the color!
+     *  @param yaxis The axis to which the trace attaches.
+     *  TODO doc for all parms
+     */
+    public Trace(String name, ChartSampleSequence series, Color color,
+                 int line_width, YAxis yaxis,
+                 double defaultScaleMin, double defaultScaleMax,
+                 TraceType type)
     {
         this.name = name;
         this.samples = series;
@@ -50,7 +57,6 @@ public class Trace
         this.line_width = line_width;
         this.yaxis = yaxis;
         this.type = type;
-        this.isAutoScalable = autoScale;
         this.defaultScaleMax = defaultScaleMax;
         this.defaultScaleMin = defaultScaleMin;
         yaxis.addTrace(this);
@@ -117,30 +123,10 @@ public class Trace
         this.yaxis = yaxis;
     }
     
-    public void setIsAutoScalable(boolean scalable) 
-    {
-    	isAutoScalable = scalable;
-    }
-    
-    public final boolean getIsAutoScalable()
-    {
-    	return isAutoScalable;
-    }
-    
     /** @return Returns trace type */
     public final TraceType getType() 
     {
     	return type;
-    }
-    
-    public final Rectangle getLabelLayout() 
-    {
-    	return labelLayout;
-    }
-    
-    public final void setLabelLayout(Rectangle layout) 
-    {
-    	this.labelLayout = layout;
     }
     
     public double getDefaultScaleMax() 

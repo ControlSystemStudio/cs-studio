@@ -145,7 +145,7 @@ public class InteractiveChart extends Composite
             {}
             public void widgetSelected(SelectionEvent e)
             {
-                chart.autozoom(false);
+                chart.autozoom();
             }
         });
         addButton(STAGGER, Messages.Chart_Stagger, new SelectionListener()
