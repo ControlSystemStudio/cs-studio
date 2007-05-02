@@ -771,7 +771,6 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * This class represents a scale.
 	 * 
 	 * @author Kai Meyer
-	 * 
 	 */
 	private final class Scale extends RectangleFigure {
 		/**
@@ -818,6 +817,10 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		 * The size of one step in a Scale.
 		 */
 		private double _increment = 1;
+		/**
+		 * The start-value for the markers.
+		 */
+		private double _startValue = 0;
 	
 		/**
 		 * The List of positive ScaleMarkers.
@@ -859,7 +862,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 				if (_showValues) {
 					height = TEXTHEIGHT + _wideness;
 				}
-				double value = 0;
+				double value = _startValue;
 				while (pos < this.getBounds().width && pos <= _end) {
 					if (pos>=_begin) {
 						if (index>=_posScaleMarkers.size()) {
@@ -876,7 +879,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 				if (_showNegativSections) {
 					pos = _refPos - _length;
 					index = 0;
-					value = -_increment;
+					value = _startValue - _increment;
 					while (pos > 0 && pos >= _begin) {
 						if (pos<=_end) {
 							if (index>=_negScaleMarkers.size()) {
@@ -897,7 +900,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 				if (_showValues) {
 					width = TEXTWIDTH + _wideness;
 				}
-				double value = 0;
+				double value = _startValue;
 				while (pos > 0 && pos >= _begin) {
 					if (pos<=_end) {
 						if (index>=_posScaleMarkers.size()) {
@@ -915,7 +918,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 					
 					pos = _refPos + _length - 1;
 					index = 0;
-					value = -_increment;
+					value = _startValue - _increment;
 					while (pos < this.getBounds().height && pos <= _end) {
 						if (pos>=_begin) {
 							if (index>=_negScaleMarkers.size()) {
@@ -1027,11 +1030,11 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		/**
 		 * Sets the reference values for this figure.
 		 * 
-		 * @param start
+		 * @param refPos
 		 *            The start value
 		 */
-		public void setReferencePositions(final int start) {
-			_refPos = start;
+		public void setReferencePositions(final int refPos) {
+			_refPos = refPos;
 			if (_refPos<0) {
 				if (_isHorizontal) {
 					_refPos = _refPos + 1;
@@ -1122,8 +1125,16 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		}
 		
 		/**
+		 * Sets the start value for the Markers.
+		 * @param startValue
+		 * 			The start value
+		 */
+		public void setStartValue(final double startValue) {
+			_startValue = startValue;
+		}
+		
+		/**
 		 * This class represents a marker for the scale.
-		 * 
 		 * @author Kai Meyer
 		 */
 		private final class ScaleMarker extends RectangleFigure {
@@ -1135,17 +1146,14 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 			 * The hyphen of this ScaleMarker.
 			 */
 			private ScaleHyphen _scaleHyphen;
-			
 			/**
 			 * The orientation of this Marker.
 			 */
 			private boolean _isHorizontal;
-
 			/**
 			 * The alignment of this Marker.
 			 */
 			private boolean _topLeft;
-			
 			/**
 			 * True, if the values of the Markers should be shown, false otherwise.
 			 */
@@ -1175,7 +1183,6 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 			
 			/**
 			 * Sets the orientation of this figure.
-			 * 
 			 * @param isHorizontal
 			 *            The orientation of this figure
 			 *            (true=horizontal;false=vertical)

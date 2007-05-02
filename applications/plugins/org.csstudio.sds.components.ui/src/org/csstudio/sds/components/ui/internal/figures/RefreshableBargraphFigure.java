@@ -284,10 +284,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	private Rectangle getScaleConstraint(final Rectangle bounds) {
 		_scale.setHorizontalOrientation(_orientationHorizontal);
 		_scale.setIncrement((_maximum-_minimum)/Math.max(1, _scaleSectionCount));
+		_scale.setStartValue(_minimum);
 		if (_orientationHorizontal) {
+			_scale.setReferencePositions(_barRectangle.x);
 			_scale.setLength(_barRectangle.width/Math.max(1, _scaleSectionCount));
-			int start = _barRectangle.x+(int)((_barRectangle.width*(-_minimum))/Math.max(1,_maximum-_minimum));
-			_scale.setReferencePositions(start);
 			_scale.setRegion(_barRectangle.x, _barRectangle.x+_barRectangle.width);
 			int height = _scaleWideness;
 			if (_showValues) {
@@ -306,8 +306,9 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			}
 		} else {
 			_scale.setLength(_barRectangle.height/Math.max(1, _scaleSectionCount));
-			int start = _barRectangle.y+_barRectangle.height-(int)((_barRectangle.height*(-_minimum))/Math.max(1,_maximum-_minimum));
-			_scale.setReferencePositions(start);
+//			int start = _barRectangle.y+_barRectangle.height-(int)((_barRectangle.height*(-_minimum))/Math.max(1,_maximum-_minimum));
+//			_scale.setReferencePositions(start);
+			_scale.setReferencePositions(_barRectangle.y+_barRectangle.height);
 			_scale.setRegion(_barRectangle.y, _barRectangle.y+_barRectangle.height);
 			int width = _scaleWideness;
 			if (_showValues) {
@@ -1402,7 +1403,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * This class represents a scale.
 	 * 
 	 * @author Kai Meyer
-	 * 
 	 */
 	private final class Scale extends RectangleFigure {
 		/**
@@ -1449,6 +1449,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 * The size of one step in a Scale.
 		 */
 		private double _increment = 1;
+		/**
+		 * The start-value for the markers.
+		 */
+		private double _startValue = 0;
 	
 		/**
 		 * The List of positive ScaleMarkers.
@@ -1490,7 +1494,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				if (_showValues) {
 					height = TEXTHEIGHT + _wideness;
 				}
-				double value = 0;
+				double value = _startValue;
 				while (pos < this.getBounds().width && pos <= _end) {
 					if (pos>=_begin) {
 						if (index>=_posScaleMarkers.size()) {
@@ -1507,7 +1511,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				if (_showNegativSections) {
 					pos = _refPos - _length;
 					index = 0;
-					value = -_increment;
+					value = _startValue - _increment;
 					while (pos > 0 && pos >= _begin) {
 						if (pos<=_end) {
 							if (index>=_negScaleMarkers.size()) {
@@ -1528,7 +1532,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				if (_showValues) {
 					width = TEXTWIDTH + _wideness;
 				}
-				double value = 0;
+				double value = _startValue;
 				while (pos > 0 && pos >= _begin) {
 					if (pos<=_end) {
 						if (index>=_posScaleMarkers.size()) {
@@ -1546,7 +1550,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 					
 					pos = _refPos + _length - 1;
 					index = 0;
-					value = -_increment;
+					value = _startValue - _increment;
 					while (pos < this.getBounds().height && pos <= _end) {
 						if (pos>=_begin) {
 							if (index>=_negScaleMarkers.size()) {
@@ -1658,11 +1662,11 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		/**
 		 * Sets the reference values for this figure.
 		 * 
-		 * @param start
+		 * @param refPos
 		 *            The start value
 		 */
-		public void setReferencePositions(final int start) {
-			_refPos = start;
+		public void setReferencePositions(final int refPos) {
+			_refPos = refPos;
 			if (_refPos<0) {
 				if (_isHorizontal) {
 					_refPos = _refPos + 1;
@@ -1753,8 +1757,16 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		}
 		
 		/**
+		 * Sets the start value for the Markers.
+		 * @param startValue
+		 * 			The start value
+		 */
+		public void setStartValue(final double startValue) {
+			_startValue = startValue;
+		}
+		
+		/**
 		 * This class represents a marker for the scale.
-		 * 
 		 * @author Kai Meyer
 		 */
 		private final class ScaleMarker extends RectangleFigure {
@@ -1766,17 +1778,14 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			 * The hyphen of this ScaleMarker.
 			 */
 			private ScaleHyphen _scaleHyphen;
-			
 			/**
 			 * The orientation of this Marker.
 			 */
 			private boolean _isHorizontal;
-
 			/**
 			 * The alignment of this Marker.
 			 */
 			private boolean _topLeft;
-			
 			/**
 			 * True, if the values of the Markers should be shown, false otherwise.
 			 */
@@ -1806,7 +1815,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			
 			/**
 			 * Sets the orientation of this figure.
-			 * 
 			 * @param isHorizontal
 			 *            The orientation of this figure
 			 *            (true=horizontal;false=vertical)
