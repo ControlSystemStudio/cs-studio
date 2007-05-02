@@ -61,7 +61,8 @@ public class ModelSampleArray extends ArrayList<ModelSample>
     
     // @see ChartSampleSequence
     public Range getDefaultRange()
-    {
+    {   // Not really a useful implementation,
+        // but what counts is the one in the ModelSamples class.
         return null;
     }
 
