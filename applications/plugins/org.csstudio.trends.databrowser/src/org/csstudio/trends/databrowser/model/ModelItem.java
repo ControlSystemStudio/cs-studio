@@ -87,6 +87,8 @@ public class ModelItem
     
     /** All the samples of this model item. */
     private ModelSamples samples;
+    
+    private boolean have_new_samples = false;
         
     /** Constructor
      *  @param pv_name Name of the PV
@@ -323,11 +325,23 @@ public class ModelItem
         return samples;
     }
     
+    /** @see IModelItem#newSampleTestAndClear() */
+    public boolean newSampleTestAndClear()
+    {
+        if (have_new_samples)
+        {
+            have_new_samples = false;
+            return true;
+        }
+        return false;
+    }
+    
     /** @see IModelItem#addSamples() */
     @SuppressWarnings("nls")
     public void addArchiveSamples(ArchiveValues archive_samples)
     {
         samples.add(archive_samples);
+        have_new_samples = true;
     }
     
     /** @see IModelItem#getArchiveDataSources() */
@@ -595,6 +609,7 @@ public class ModelItem
                     }
                 }
             }
+            have_new_samples = true;
         }
     }
         

@@ -2,7 +2,6 @@ package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.swt.chart.Range;
 import org.csstudio.swt.chart.TraceType;
 import org.eclipse.swt.graphics.Color;
 
@@ -75,6 +74,12 @@ public interface IModelItem
 
 	/** @return The samples. */
 	public abstract ModelSamples getSamples();
+    
+    /** Check if there are new samples.
+     *  Also resets the 'there are new samples' flag.
+     *  @return <code>true</code> if there were new samples.
+     */
+    public abstract boolean newSampleTestAndClear();
     
     /** Add samples obtained from the archive.
      *  <p>

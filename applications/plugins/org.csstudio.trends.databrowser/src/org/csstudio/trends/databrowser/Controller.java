@@ -20,8 +20,6 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 
 /** Data Browser Controller: Creates model, UI and handles everything between them.
  *  @author Kay Kasemir
- *  
- *  TODO: Handle auto-zoom in response to model changes
  */ 
 public class Controller implements ScannerAndScrollerListener
 {
@@ -210,6 +208,7 @@ public class Controller implements ScannerAndScrollerListener
         getArchivedData(null);
     }
     
+    /** Connect a model item to the display by adding it to the chart. */
     private void addToDisplay(IModelItem new_item)
     {
         // Avoid infinite loops if we are changing the model ourselves
@@ -224,16 +223,15 @@ public class Controller implements ScannerAndScrollerListener
         // Remember this when later trying to locate an item
         // by its trace name!
         Trace trace = chart.addTrace(getTraceName(new_item),
-                new_item.getSamples(),
-                new_item.getColor(),
-                new_item.getLineWidth(),
-                yaxis_index,
-                new_item.getTraceType());
+                                     new_item.getSamples(),
+                                     new_item.getColor(),
+                                     new_item.getLineWidth(),
+                                     yaxis_index,
+                                     new_item.getTraceType());
         // Set initial axis range from model
         controller_changes_yaxes = true;
         YAxis yaxis = trace.getYAxis();
-        yaxis.setValueRange(new_item.getAxisLow(),
-                        new_item.getAxisHigh());
+        yaxis.setValueRange(new_item.getAxisLow(), new_item.getAxisHigh());
         // Do we need to change the axis type?
         if (new_item.getLogScale() != yaxis.isLogarithmic())
             yaxis.setLogarithmic(new_item.getLogScale());
@@ -307,6 +305,15 @@ public class Controller implements ScannerAndScrollerListener
         // Scroll or simply redraw w/o scroll.
         if (with_redraw  &&  chart.isVisible())
         {
+            // TODO: Handle auto-zoom, see if any model item
+            // has new samples while auto-zoom is enabled.
+            // Who is the best to handle this?
+            // IModelItem knows if it has new data, but can't access the plot.
+            // Controller can check all model items,
+            // determine which axes need auto-zoom,
+            // and do that before the next redraw.
+            // Blaz put that inside the chart,
+            // but then how to update the model?
             if (gui.isScrollEnabled())
             {   // scroll
                 XAxis xaxis = chart.getXAxis();
@@ -323,7 +330,7 @@ public class Controller implements ScannerAndScrollerListener
                 chart.redrawTraces();
         }
     }
-
+    
     /** Get data from archive for given model item,
      *   or all if <code>item==null</code>. */
     private void getArchivedData(IModelItem item)

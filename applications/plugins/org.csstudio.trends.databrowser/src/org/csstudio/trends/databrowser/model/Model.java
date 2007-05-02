@@ -224,7 +224,7 @@ public class Model
     }
     
     /** Set axis type (log, linear) of all items on given axis. */
-    public void setLogScale(int axis_index, boolean use_log_scale)
+    void setLogScale(int axis_index, boolean use_log_scale)
     {
         for (ModelItem item : items)
         {
@@ -242,7 +242,7 @@ public class Model
      *  <p>
      *  Also updates the auto scaling of all other items on same axis.
      */
-    public void setAutoScale(int axis_index, boolean use_auto_scale)
+    void setAutoScale(int axis_index, boolean use_auto_scale)
     {
         for (ModelItem item : items)
         {
