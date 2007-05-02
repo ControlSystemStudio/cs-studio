@@ -235,13 +235,21 @@ public class ModelItem
     }
     
     /** @see IModelItem#setAutoScale(boolean) */
-    public void setAutoScale(boolean scalable) 
+    public void setAutoScale(boolean auto_scale) 
     {
-        if (scalable == auto_scale)
-            return;
-        auto_scale = scalable;
         // Notify model of this change.
-        model.fireEntryConfigChanged(this);
+        model.setAutoScale(axis_index, auto_scale);
+    }
+    
+    /** Configure to use auto scale or not.
+     *  <p>
+     *  For internal use by the model to avoid recursion
+     *  as would happen with setAutoScale.
+     *  @see #setLogScale(boolean)
+     */
+    void setAutoScaleSilently(boolean auto_scale) 
+    {
+        this.auto_scale = auto_scale;
     }
     
     /** @see IModelItem#getAutoScale() */

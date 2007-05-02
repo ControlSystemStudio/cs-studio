@@ -42,7 +42,7 @@ public interface IModelItem
     public abstract boolean getAutoScale();
     
     /** Set auto-scale mode. */
-    public abstract void setAutoScale(boolean scalable); 
+    public abstract void setAutoScale(boolean auto_scale); 
     
     /** Get the color of this item.
      *  Note that the item own the color.

@@ -210,10 +210,7 @@ public class Model
         return item;
     }
 
-    /** Set axis limits of an item.
-     *  <p>
-     *  Also updates the limits of all other items on same axis.
-     */
+    /** Set axis limits of all items on given axis. */
     public void setAxisLimits(int axis_index, double low, double high)
     {
         for (ModelItem item : items)
@@ -226,21 +223,39 @@ public class Model
         }
     }
     
-    /** Set axis type (log, linear) of an item.
-     *  <p>
-     *  Also updates the axis type of all other items on same axis.
-     */
+    /** Set axis type (log, linear) of all items on given axis. */
     public void setLogScale(int axis_index, boolean use_log_scale)
     {
         for (ModelItem item : items)
         {
             if (item.getAxisIndex() != axis_index)
                 continue;
-            // Don't call setAxisMin(), Max(), since that would recurse.
-            item.setLogScaleSilently(use_log_scale);
-            fireEntryConfigChanged(item);
+            if (item.getLogScale() != use_log_scale)
+            {
+                item.setLogScaleSilently(use_log_scale);
+                fireEntryConfigChanged(item);
+            }
         }
     }
+
+    /** Set auto scale option of all items on given axis.
+     *  <p>
+     *  Also updates the auto scaling of all other items on same axis.
+     */
+    public void setAutoScale(int axis_index, boolean use_auto_scale)
+    {
+        for (ModelItem item : items)
+        {
+            if (item.getAxisIndex() != axis_index)
+                continue;
+            if (item.getAutoScale() != use_auto_scale)
+            {
+                item.setAutoScaleSilently(use_auto_scale);
+                fireEntryConfigChanged(item);
+            }
+        }
+    }
+
     
     /** Add an archive data source to all items in the model.
      *  @see IModelItem#addArchiveDataSource(IArchiveDataSource)
