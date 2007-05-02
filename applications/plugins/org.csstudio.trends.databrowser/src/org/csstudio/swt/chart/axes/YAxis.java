@@ -6,6 +6,7 @@ import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSearch;
 import org.csstudio.swt.chart.ChartSampleSequence;
+import org.csstudio.swt.chart.Range;
 import org.csstudio.swt.chart.Trace;
 import org.csstudio.util.swt.GraphicsUtils;
 import org.eclipse.swt.SWT;
@@ -71,7 +72,7 @@ public class YAxis extends Axis
     public final void setLabel(String new_label)
     {
         label = new_label;
-        fireEvent(YAxisListener.LABEL);
+        fireEvent(YAxisListener.Aspect.LABEL);
     }
     
     /** Configure the Y-Axis to use a log. scale or not.
@@ -93,7 +94,7 @@ public class YAxis extends Axis
     }
 
     /** Fire given event. */
-    protected final void fireEvent(int what)
+    protected final void fireEvent(YAxisListener.Aspect what)
     {   // Silly, but maybe there'll once be a list of listeners?
         listener.changedYAxis(what, this);
     }
@@ -141,14 +142,14 @@ public class YAxis extends Axis
     public final void addMarker(double position, double value, String text)
     {
         markers.add(new Marker(position, value, text));
-        fireEvent(YAxisListener.MARKER);
+        fireEvent(YAxisListener.Aspect.MARKER);
     }
 
     /** Remove all markers from this axis. */
     public final void removeMarkers()
     {
         markers.clear();
-        fireEvent(YAxisListener.MARKER);
+        fireEvent(YAxisListener.Aspect.MARKER);
     }
 
     /** Set the 'selected' state of this axis.
@@ -162,7 +163,7 @@ public class YAxis extends Axis
         if (this.selected == selected)
             return;
         this.selected = selected;
-        fireEvent(YAxisListener.SELECTION);
+        fireEvent(YAxisListener.Aspect.SELECTION);
     }
 
     /** @return Returns <code>true</code> if this axis is selected. */
@@ -175,27 +176,12 @@ public class YAxis extends Axis
     public void setValueRange(double low, double high)
     {
         super.setValueRange(low, high);
-        fireEvent(YAxisListener.RANGE);
-    }
-    
-    public void setDefaultRange()
-    {
-    	double min = Double.MAX_VALUE;
-    	double max = Double.MIN_VALUE;
-    	
-    	for (Trace trace : traces)
-        {
-    		// 
-    		min = Math.min(trace.getDefaultScaleMin(), min);
-    		max = Math.max(trace.getDefaultScaleMax(), max);
-        }
-    	
-    	this.setValueRange(min, max);
+        fireEvent(YAxisListener.Aspect.RANGE);
     }
     
     /** Auto-Zoom the value range of this Y axis to include all traces. */
     @SuppressWarnings("nls")
-    public void autozoom(XAxis xaxis)
+    public final void autozoom(XAxis xaxis)
     {
         AxisRangeLimiter limiter = new AxisRangeLimiter(xaxis);
         double low = Double.MAX_VALUE;
@@ -262,6 +248,31 @@ public class YAxis extends Axis
         }
         // else: leave as is
     }
+    
+    /** Zoom axis to the default range of its traces.
+     *  If a traces have no default display range, auto-zoom.
+     */ 
+    public final void setDefaultZoom(XAxis xaxis)
+    {
+        double low = Double.MAX_VALUE;
+        double high = -Double.MAX_VALUE;
+        for (Trace trace : traces)
+        {
+            ChartSampleSequence samples = trace.getSampleSequence();
+            Range range = samples.getDefaultRange();
+            if (range != null)
+            {   // Expand low..high to include trace's default range.
+                if (low > range.getLow())
+                    low = range.getLow();
+                if (high < range.getHigh())
+                    high = range.getHigh();
+            }
+        }
+        if (low < high)
+            setValueRange(low, high);
+        else
+            autozoom(xaxis);
+    }
 
     /** The axis (label) color.
      *  <p>
@@ -281,7 +292,7 @@ public class YAxis extends Axis
     /** Seach all traces on this axis, return the sample that's closest
      *  to the given coordinates.
      */
-    public TraceSample getClosestSample(Axis xaxis, double xval, double yval)
+    public final TraceSample getClosestSample(Axis xaxis, double xval, double yval)
     {
         // N determines the pixel range that we'll search
         final int N = 10;
@@ -342,6 +353,7 @@ public class YAxis extends Axis
         return new TraceSample(best_trace, best_sample);
     }
     
+    /** @return Width (approximated) of this axis in pixels */
     public int getPixelWidth(GC gc)
     {
         Point char_size = gc.textExtent("X"); //$NON-NLS-1$

@@ -15,6 +15,7 @@ import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.swt.chart.axes.YAxis;
+import org.csstudio.swt.chart.axes.YAxisListener;
 import org.csstudio.util.swt.DefaultColors;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -64,7 +65,7 @@ public class ChartTest
                 System.out.println("XAxis changed");
             }
 
-            public void changedYAxis(int what, YAxis yaxis)
+            public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
             {
             }
 
@@ -227,7 +228,7 @@ public class ChartTest
                                 DefaultColors.getGreen(i),
                                 DefaultColors.getBlue(i));
         // Add to chart
-        chart.addTrace(name, seq, color, 0, chart.getYAxisIndex(yaxis), 0, 10,
+        chart.addTrace(name, seq, color, 0, chart.getYAxisIndex(yaxis),
                        TraceType.Lines);
         return yaxis;
     }

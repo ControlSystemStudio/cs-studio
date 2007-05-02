@@ -6,7 +6,10 @@ import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
+import org.csstudio.swt.chart.Range;
 import org.csstudio.value.DoubleValue;
+import org.csstudio.value.MetaData;
+import org.csstudio.value.NumericMetaData;
 import org.csstudio.value.Value;
 import org.eclipse.swt.widgets.Display;
 
@@ -103,7 +106,7 @@ public class ModelSamples implements ChartSampleSequence
         live_samples.add(value);
     }
     
-    /** @see ChartSampleSequence */
+    // @see ChartSampleSequence
     synchronized public ModelSample get(int i)
     {
         if (archive_samples != null)
@@ -129,7 +132,7 @@ public class ModelSamples implements ChartSampleSequence
         return live_samples.get(i);
     }
 
-    /** @see ChartSampleSequence */
+    // @see ChartSampleSequence
     synchronized public int size()
     {
         int size = live_samples.size();
@@ -138,7 +141,24 @@ public class ModelSamples implements ChartSampleSequence
         return size;
     }
     
-    synchronized public void clearArchive() {
-    	this.archive_samples = null;
+    // @see ChartSampleSequence
+    synchronized public Range getDefaultRange()
+    {
+        // Get the default display range as suggested by the sample's meta data.
+        // Simply checks the most recent sample.
+        // If nothing is available (no samples, or non-numeric samples),
+        // null is returned.
+        final int len = size();
+        if (len > 0)
+        {
+            MetaData meta = get(len-1).getSample().getMetaData();
+            if (meta instanceof NumericMetaData)
+            {
+                NumericMetaData numeric = (NumericMetaData)meta;
+                return new Range(numeric.getDisplayLow(),
+                                 numeric.getDisplayHigh());
+            }
+        }
+        return null;
     }
 }

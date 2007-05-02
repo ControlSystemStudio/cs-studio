@@ -40,7 +40,7 @@ public class TraceNameYAxis extends YAxis
     {
         traces_changed = true;
         super.addTrace(trace);
-        fireEvent(YAxisListener.LABEL);
+        fireEvent(YAxisListener.Aspect.LABEL);
     }
 
     // In addition to inherited bahavior, trigger a new layout
@@ -49,7 +49,7 @@ public class TraceNameYAxis extends YAxis
     {
         traces_changed = true;
         super.removeTrace(trace);
-        fireEvent(YAxisListener.LABEL);
+        fireEvent(YAxisListener.Aspect.LABEL);
     }
     
     // In addition to inherited bahavior, trigger a new layout

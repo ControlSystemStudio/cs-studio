@@ -2,6 +2,7 @@ package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.model.IArchiveDataSource;
+import org.csstudio.swt.chart.Range;
 import org.csstudio.swt.chart.TraceType;
 import org.eclipse.swt.graphics.Color;
 
@@ -65,12 +66,6 @@ public interface IModelItem
     
     /** Set new trace type for this model. */
     public abstract void setTraceType(TraceType new_trace_type);
-    
-    /** @return Returns server default top range value for y axis */ 
-    public abstract double getDefaultScaleMax(); 
-    
-    /** @return Returns server default bottom range value for y axis */
-    public abstract double getDefaultScaleMin();
     
     /** @return <code>true</code> if using log. scale */
     public abstract boolean getLogScale();

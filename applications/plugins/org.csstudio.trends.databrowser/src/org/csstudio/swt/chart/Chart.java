@@ -125,7 +125,7 @@ public class Chart extends Canvas
         {
             /** Schedule redraw of axis itself. */
             @SuppressWarnings("nls")
-            public void changedYAxis(int what, YAxis yaxis)
+            public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
             {
                 if (debug)
                     System.out.println("Chart changedYAxis redraw for "
@@ -403,13 +403,13 @@ public class Chart extends Canvas
      */
     public Trace addTrace(String name, ChartSampleSequence series,
                     Color color, int line_width,
-                    int yaxis_index, double defaultScaleMin, double defaultScaleMax,
+                    int yaxis_index,
                     TraceType type)
     {
         YAxis yaxis = yaxes.get(yaxis_index);
         setRedraw(false);
         Trace trace = new Trace(name, series, color, line_width, yaxis,
-                                defaultScaleMin, defaultScaleMax, type);
+                                type);
         traces.add(trace);
         setRedraw(true);
         return trace;
@@ -455,21 +455,24 @@ public class Chart extends Canvas
         }
     }
     
-    /** Sets the default server specified range to the selected or all Y axes. */
-    public void setDefaultRanges() 
+    /** Zoom the selected or all Y axes to their default.
+     *  If a trace has no default display range, auto-zoom.
+     */ 
+    public void setDefaultZoom()
     {
-    	YAxis yaxis = getSelectedYAxis();
+        YAxis yaxis = getSelectedYAxis();
         if (yaxis != null)
-            yaxis.setDefaultRange();
+            yaxis.setDefaultZoom(xaxis);
         else
         {
-        	setRedraw(false);
+            // Defer redraw until all axes are adjusted...
+            setRedraw(false);
             for (YAxis y : yaxes)
-                y.setDefaultRange();
+                y.setDefaultZoom(xaxis);
             setRedraw(true);
         }
     }
-
+    
     /** Auto-Zoom the selected or all Y axes. */
     public void stagger()
     {

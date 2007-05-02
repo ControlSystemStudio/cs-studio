@@ -26,4 +26,12 @@ public interface ChartSampleSequence
      *  &gt;= size().
      *  @return The Sample of given index. */
     public ChartSample get(int i);
+    
+    /** In case the sample sequence has a default display range,
+     *  return it, so that the plot can use it.
+     *  Otherwise, return <code>null</code>, in which case the plot
+     *  might auto-zoom.
+     *  @return Default display range or null.
+     */
+    public Range getDefaultRange();
 }

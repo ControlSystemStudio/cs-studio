@@ -2,7 +2,6 @@ package org.csstudio.trends.databrowser.ploteditor;
 
 import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.axes.XAxis;
@@ -13,9 +12,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 /** The user interface for the data browser.
  *  <p>

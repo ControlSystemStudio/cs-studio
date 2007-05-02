@@ -36,4 +36,8 @@ public class ChartSampleSequenceContainer implements ChartSampleSequence
     // @see ChartSampleSequence
     public ChartSample get(int i)
     {   return samples.get(i);    }
+    
+    // @see ChartSampleSequence
+    public Range getDefaultRange()
+    {   return null;  }
 }

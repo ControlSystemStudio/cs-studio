@@ -21,8 +21,6 @@ public class Trace
     private int line_width;
     private YAxis yaxis;
     private TraceType type;
-    private double defaultScaleMax;
-    private double defaultScaleMin;
     
     /** Create a new trace.
      * 
@@ -30,25 +28,10 @@ public class Trace
      *  @param color The color to use.
      *               <b>Note:</b> The trace does not assume ownerwhip of the color!
      *  @param yaxis The axis to which the trace attaches.
-     */
-    public Trace(String name, ChartSampleSequence series, Color color,
-            int line_width, YAxis yaxis)
-    {
-    	this(name, series, color, line_width, yaxis, 0, 10,
-             TraceType.Lines);
-    }
-    
-    /** Create a new trace.
-     * 
-     *  @param series The SampleSeries interface.
-     *  @param color The color to use.
-     *               <b>Note:</b> The trace does not assume ownerwhip of the color!
-     *  @param yaxis The axis to which the trace attaches.
-     *  TODO doc for all parms
+     *  @param type How to draw the trace (line, bars, ...)
      */
     public Trace(String name, ChartSampleSequence series, Color color,
                  int line_width, YAxis yaxis,
-                 double defaultScaleMin, double defaultScaleMax,
                  TraceType type)
     {
         this.name = name;
@@ -57,8 +40,6 @@ public class Trace
         this.line_width = line_width;
         this.yaxis = yaxis;
         this.type = type;
-        this.defaultScaleMax = defaultScaleMax;
-        this.defaultScaleMin = defaultScaleMin;
         yaxis.addTrace(this);
     }
 
@@ -127,15 +108,5 @@ public class Trace
     public final TraceType getType() 
     {
     	return type;
-    }
-    
-    public double getDefaultScaleMax() 
-    {
-    	return this.defaultScaleMax;
-    }
-    
-    public double getDefaultScaleMin() 
-    {
-    	return this.defaultScaleMin;
     }
 }

@@ -100,12 +100,12 @@ public class Controller implements ScannerAndScrollerListener
                 getArchivedData(null);
             }
 
-            public void changedYAxis(int what, YAxis yaxis)
+            public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
             {
                 // Avoid infinite loop: We are changing the axes, so ignore.
                 if (controller_changes_yaxes)
                     return;
-                if (what == YAxisListener.RANGE)
+                if (what == YAxisListener.Aspect.RANGE)
                 {   // Range was changed interactively, update the model
                     controller_changes_model = true;
                     int axis_index = chart.getYAxisIndex(yaxis);
@@ -228,7 +228,6 @@ public class Controller implements ScannerAndScrollerListener
                 new_item.getColor(),
                 new_item.getLineWidth(),
                 yaxis_index,
-                new_item.getDefaultScaleMin(), new_item.getDefaultScaleMax(),
                 new_item.getTraceType());
         // Set initial axis range from model
         controller_changes_yaxes = true;

@@ -46,12 +46,6 @@ public class ModelItem
     /** The Y axis to use. */
     private int axis_index;
     
-    /** The default yaxis max */
-    private double default_scale_max;
-    
-    /** The default xaxis max */
-    private double default_scale_min;
-    
     /** Y-axis range. */
     private double axis_low, axis_high;
     
@@ -118,8 +112,8 @@ public class ModelItem
     	this.model = model;
         name = pv_name;
         this.axis_index = axis_index;
-        this.axis_low = this.default_scale_min = min;
-        this.axis_high = this.default_scale_max = max;
+        this.axis_low = min;
+        this.axis_high = max;
         this.auto_scale = auto_scale;
         this.color = new Color(null, red, green, blue);
         this.line_width = line_width;
@@ -299,16 +293,6 @@ public class ModelItem
     	model.fireEntryConfigChanged(this);
     }
     
-    public double getDefaultScaleMax() 
-    {
-    	return this.default_scale_max;
-    }
-    
-    public double getDefaultScaleMin() 
-    {
-    	return this.default_scale_min;
-    }
-    
     /** @return <code>true</code> if using log. scale */
     public boolean getLogScale()
     {
@@ -344,35 +328,6 @@ public class ModelItem
     public void addArchiveSamples(ArchiveValues archive_samples)
     {
         samples.add(archive_samples);
-        
-        // Get sample.
-        if(archive_samples.getSamples().length > 0)
-        {
-        	// Get meta data from sample.
-        	MetaData metaData = archive_samples.getSamples()[0].getMetaData();
-        	
-        	if(metaData instanceof NumericMetaData) 
-        	{
-        		// Cast to NumericMetaData.
-        		NumericMetaData numericMetaData = (NumericMetaData)metaData;
-        		// Let's set default scale.
-        		setDefaultScale(numericMetaData.getDisplayLow(), numericMetaData.getDisplayHigh());
-        	}
-        }
-    }
-    
-    private void setDefaultScale(double yMin, double yMax) 
-    {
-    	// Set values.
-    	this.default_scale_max = yMax;
-    	this.default_scale_min = yMin;
-    	
-    	if(default_scale_max < default_scale_min) 
-    	{
-    		double d = default_scale_max;
-    		default_scale_max = default_scale_min;
-    		default_scale_min = d;
-    	}		
     }
     
     /** @see IModelItem#getArchiveDataSources() */

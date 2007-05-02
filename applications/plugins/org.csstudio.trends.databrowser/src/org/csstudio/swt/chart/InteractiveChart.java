@@ -5,9 +5,11 @@ import org.csstudio.swt.chart.axes.Log10;
 import org.csstudio.swt.chart.axes.TraceSample;
 import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.swt.chart.axes.YAxis;
+import org.csstudio.swt.chart.axes.YAxisListener;
 import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -21,6 +23,9 @@ import org.eclipse.swt.widgets.Composite;
  *  <p>
  *  To use, one would probably mostly deal with the embedded chart
  *  via getChart().
+ *  <p>
+ *  In addition, one might want to override setDefaultRanges()
+ *  to define what that means.
  *  
  *  @author Kay Kasemir
  */
@@ -53,7 +58,7 @@ public class InteractiveChart extends Composite
     private static final String RIGHT = "right"; //$NON-NLS-1$
     private static final String X_IN = "x_in"; //$NON-NLS-1$
     private static final String X_OUT = "x_out"; //$NON-NLS-1$
-    private static final String DEFAULT_SCALE = "defaultscale"; //$NON-NLS-1$
+    private static final String DEFAULT_ZOOM = "defaultscale"; //$NON-NLS-1$
     
     /** Was ZOOM_X_FROM_END set? */
     private boolean zoom_from_end;
@@ -82,7 +87,7 @@ public class InteractiveChart extends Composite
                 button_images.put(RIGHT, Plugin.getImageDescriptor("icons/right.gif"));
                 button_images.put(X_IN, Plugin.getImageDescriptor("icons/x_in.gif"));
                 button_images.put(X_OUT, Plugin.getImageDescriptor("icons/x_out.gif"));
-                button_images.put(DEFAULT_SCALE, Plugin.getImageDescriptor("icons/defaultscale.gif"));
+                button_images.put(DEFAULT_ZOOM, Plugin.getImageDescriptor("icons/defaultscale.gif"));
             }
             catch (Exception e)
             {
@@ -102,95 +107,75 @@ public class InteractiveChart extends Composite
         button_bar.setLayoutData(gd);
         button_bar.setLayout(new RowLayout());
         
-        // Buttons, info
-        addButton(UP, Messages.Chart_MoveUp, new SelectionListener()
+        // Buttons
+        addButton(UP, Messages.Chart_MoveUp, new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
             public void widgetSelected(SelectionEvent e)
             {
                 moveUpDown(SHIFT_FACTOR);
             }
         });
-        addButton(DOWN, Messages.Chart_MoveDown, new SelectionListener()
+        addButton(DOWN, Messages.Chart_MoveDown, new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
             public void widgetSelected(SelectionEvent e)
             {
                 moveUpDown(-SHIFT_FACTOR);
             }
         });
-        addButton(Y_IN, Messages.Chart_ZoomIn, new SelectionListener()
+        addButton(Y_IN, Messages.Chart_ZoomIn, new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
             public void widgetSelected(SelectionEvent e)
             {
                 zoomInOutY(ZOOM_FACTOR);
             }
         });
-        addButton(Y_OUT, Messages.Chart_ZoomOut, new SelectionListener()
+        addButton(Y_OUT, Messages.Chart_ZoomOut, new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
             public void widgetSelected(SelectionEvent e)
             {
                 zoomInOutY(1.0/ZOOM_FACTOR);
             }
         });
-        addButton(ZOOM, Messages.Chart_ZoomAuto, new SelectionListener()
+        addButton(ZOOM, Messages.Chart_ZoomAuto, new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
             public void widgetSelected(SelectionEvent e)
             {
                 chart.autozoom();
             }
         });
-        addButton(STAGGER, Messages.Chart_Stagger, new SelectionListener()
+        addButton(STAGGER, Messages.Chart_Stagger, new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
             public void widgetSelected(SelectionEvent e)
             {
                 chart.stagger();
             }
         });
-        addButton(DEFAULT_SCALE, Messages.Chart_Default_Scale, new SelectionListener()
+        addButton(DEFAULT_ZOOM, Messages.Chart_Default_Scale, new SelectionAdapter()
         {
-        	public void widgetDefaultSelected(SelectionEvent e)
-            {}
             public void widgetSelected(SelectionEvent e)
             {
-                chart.setDefaultRanges();
+                chart.setDefaultZoom();
             }
         });
         
         // Unclear: This right now pans the _graph_
         // left/right. Should it move the _curves_?
-        addButton(LEFT, Messages.Chart_MoveLeft, new SelectionListener()
+        addButton(LEFT, Messages.Chart_MoveLeft, new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
             public void widgetSelected(SelectionEvent e)
             {
                 moveLeftRight(PAN_FACTOR);
             }
         });
-        addButton(RIGHT, Messages.Chart_MoveRight, new SelectionListener()
+        addButton(RIGHT, Messages.Chart_MoveRight, new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
             public void widgetSelected(SelectionEvent e)
             {
                 moveLeftRight(-PAN_FACTOR);
             }
         });
-        addButton(X_IN, Messages.Chart_TimeIn, new SelectionListener()
+        addButton(X_IN, Messages.Chart_TimeIn, new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
             public void widgetSelected(SelectionEvent e)
             {
                 if (zoom_from_end)
@@ -199,10 +184,8 @@ public class InteractiveChart extends Composite
                     zoomInOut(chart.getXAxis(), ZOOM_FACTOR, false);
             }
         });
-        addButton(X_OUT, Messages.Chart_TimeOut, new SelectionListener()
+        addButton(X_OUT, Messages.Chart_TimeOut, new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
             public void widgetSelected(SelectionEvent e)
             {
                 if (zoom_from_end)
@@ -226,12 +209,11 @@ public class InteractiveChart extends Composite
             public void changedXAxis(XAxis xaxis)
             {}
             
-            public void changedYAxis(int what, YAxis yaxis)
-            {
-            }
+            public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
+            {}
 
             public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
-            {
+            {   // Adds a marker for the selected sample
                 if (yaxis == null)
                     return;
                 TraceSample best = yaxis.getClosestSample(xaxis, x, y);
@@ -261,8 +243,7 @@ public class InteractiveChart extends Composite
             }
 
             public void nothingSelected()
-            {
-            }
+            {}
         });
     }
     

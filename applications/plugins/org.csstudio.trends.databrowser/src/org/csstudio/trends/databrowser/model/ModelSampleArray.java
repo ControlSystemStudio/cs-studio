@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.swt.chart.ChartSampleSequence;
+import org.csstudio.swt.chart.Range;
 import org.csstudio.value.Value;
 
 /** An array of <code>ModelSample</code>.
@@ -57,4 +58,11 @@ public class ModelSampleArray extends ArrayList<ModelSample>
     
     // ChartSampleSequence.get(int i) and size() are 
     // implemented by ArrayList<ModelSample> ...
+    
+    // @see ChartSampleSequence
+    public Range getDefaultRange()
+    {
+        return null;
+    }
+
 }
