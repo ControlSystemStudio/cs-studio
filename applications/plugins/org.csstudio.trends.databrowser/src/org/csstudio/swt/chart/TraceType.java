@@ -28,7 +28,9 @@ public enum TraceType
         return type_strings;
     }
     
-    /** @return TraceType for the given ordinal. */
+    /** Obtain a trace type from its ordinal
+     *  @return TraceType for the given ordinal. 
+     */
     public static TraceType fromOrdinal(int ordinal)
     {   // This is expensive, but java.lang.Enum offers no easy way...
         for (TraceType id : TraceType.values())
@@ -36,4 +38,18 @@ public enum TraceType
                 return id;
         throw new Error("Invalid ordinal " + ordinal); //$NON-NLS-1$
     }
+
+    /** Obtain a trace type from its name.
+     *  That's the fixed name, not a localized title that the application
+     *  might use elsewhere!
+     *  @return TraceType for the given ordinal.
+     */
+    public static TraceType fromName(String name)
+    {   // This is expensive, but java.lang.Enum offers no easy way...
+        for (TraceType id : TraceType.values())
+            if (id.name().equals(name))
+                return id;
+        throw new Error("Invalid name " + name); //$NON-NLS-1$
+    }
+
 }

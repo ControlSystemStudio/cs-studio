@@ -9,6 +9,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.swt.chart.TraceType;
 import org.csstudio.util.swt.DefaultColors;
 import org.csstudio.util.xml.DOMHelper;
 import org.w3c.dom.Document;
@@ -186,18 +187,23 @@ public class Model
         // Default low..high range
         double low = 0.0;
         double high = 10.0;
+        boolean auto_scale = false;
         boolean log_scale = false;
+        TraceType trace_type = TraceType.Lines;
         // Use settings of existing item for that axis - if there is one
         for (ModelItem item : items)
             if (item.getAxisIndex() == axis_index)
             {
                 low = item.getAxisLow();
                 high = item.getAxisHigh();
+                auto_scale = item.getAutoScale();
                 log_scale = item.getLogScale();
+                trace_type = item.getTraceType();
                 break;
             }
         ModelItem item = new ModelItem(this, pv_name, ring_size,
-        		axis_index, low, high, red, green, blue, line_width,
+        		axis_index, low, high, auto_scale,
+                red, green, blue, line_width, trace_type,
                 log_scale);
         silentAdd(item);
         fireEntryAdded(item);

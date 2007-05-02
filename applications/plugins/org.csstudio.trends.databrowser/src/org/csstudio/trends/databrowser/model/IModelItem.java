@@ -38,7 +38,17 @@ public interface IModelItem
     /** Set upper Y-axis limit. */
     public abstract void setAxisHigh(double limit);
     
-	/** @return The color. */
+    /** @return Returns <code>true</code> if trace should be auto-scaled. */
+    public abstract boolean getAutoScale();
+    
+    /** Set auto-scale mode. */
+    public abstract void setAutoScale(boolean scalable); 
+    
+    /** Get the color of this item.
+     *  Note that the item own the color.
+     *  Do NOT dispose this color!
+     *  @return The color.
+     */
 	public abstract Color getColor();
 
 	/** Set item to a new color. */
@@ -56,17 +66,11 @@ public interface IModelItem
     /** Set new trace type for this model. */
     public abstract void setTraceType(TraceType new_trace_type);
     
-    /** @return Returns weather trace should be auto scaled. */
-    public abstract boolean getIsTraceAutoScalable();
-    
     /** @return Returns server default top range value for y axis */ 
     public abstract double getDefaultScaleMax(); 
     
     /** @return Returns server default bottom range value for y axis */
     public abstract double getDefaultScaleMin();
-    
-    /** Set weather trace should be auto scaled. */
-    public abstract void setIsTraceAutoScalable(boolean scalable); 
     
     /** @return <code>true</code> if using log. scale */
     public abstract boolean getLogScale();

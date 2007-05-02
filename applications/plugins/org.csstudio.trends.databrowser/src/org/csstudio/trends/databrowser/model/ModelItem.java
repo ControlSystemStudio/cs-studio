@@ -52,14 +52,11 @@ public class ModelItem
     /** The default xaxis max */
     private double default_scale_min;
     
-    /** The trace type (line, ...) */
-    private TraceType trace_type;
-    
     /** Y-axis range. */
     private double axis_low, axis_high;
     
     /** Auto scale trace */
-    private boolean isTraceAutoScalable;
+    private boolean auto_scale;
     
     /** The color for this item.
      *  <p>
@@ -74,6 +71,9 @@ public class ModelItem
     
     /** The line width for this item. */
     private int line_width;
+    
+    /** The trace type (line, ...) */
+    private TraceType trace_type;
     
     /** Use log scale? */
     private boolean log_scale;
@@ -109,19 +109,22 @@ public class ModelItem
      */
     public ModelItem(Model model, String pv_name, int ring_size,
     		int axis_index, double min, double max,
+            boolean auto_scale,
             int red, int green, int blue,
-            int line_width, boolean log_scale)
+            int line_width,
+            TraceType trace_type,
+            boolean log_scale)
     {
     	this.model = model;
         name = pv_name;
         this.axis_index = axis_index;
         this.axis_low = this.default_scale_min = min;
         this.axis_high = this.default_scale_max = max;
+        this.auto_scale = auto_scale;
         this.color = new Color(null, red, green, blue);
         this.line_width = line_width;
+        this.trace_type = trace_type;
         this.log_scale = log_scale;
-        this.trace_type = TraceType.Lines;
-        this.isTraceAutoScalable = false;
         pv = new EPICS_V3_PV(pv_name);
         samples = new ModelSamples(ring_size);
     }    
@@ -231,11 +234,23 @@ public class ModelItem
         axis_high = high;
     }
     
+    /** @see IModelItem#setAutoScale(boolean) */
+    public void setAutoScale(boolean scalable) 
+    {
+        if (scalable == auto_scale)
+            return;
+        auto_scale = scalable;
+        // Notify model of this change.
+        model.fireEntryConfigChanged(this);
+    }
+    
+    /** @see IModelItem#getAutoScale() */
+    public final boolean getAutoScale()
+    {   return auto_scale; }
+    
     /** @see IModelItem#getColor() */
     public final Color getColor()
-    {
-        return color;
-    }
+    {   return color; }
     
     /** @see IModelItem#setColor(Color) */
     public void setColor(Color new_color)
@@ -244,21 +259,6 @@ public class ModelItem
     	color = new_color;
     	// Notify model of this change.
     	model.fireEntryConfigChanged(this);
-    }
-    
-    public void setIsTraceAutoScalable(boolean scalable) 
-    {
-    	if(scalable != isTraceAutoScalable) 
-    	{
-    		isTraceAutoScalable = scalable;
-    		// Notify model of this change.
-    		model.fireEntryConfigChanged(this);
-    	}
-    }
-    
-    public final boolean getIsTraceAutoScalable()
-    {
-    	return isTraceAutoScalable;
     }
     
     /** @return Returns the trace line width. */
@@ -440,7 +440,9 @@ public class ModelItem
         }
     }
 
-    /** @return Returns an XML string for this item. */
+    /** @return Returns an XML string for this item.
+     *  @see #loadFromDOM(Model, Element, int)
+     */
     @SuppressWarnings("nls")
     public final String getXMLContent()
     {
@@ -451,12 +453,14 @@ public class ModelItem
         XMLHelper.XML(b, 3, "linewidth", Integer.toString(line_width));
         XMLHelper.XML(b, 3, "min", Double.toString(axis_low));
         XMLHelper.XML(b, 3, "max", Double.toString(axis_high));
+        XMLHelper.XML(b, 3, "autoscale", Boolean.toString(getAutoScale()));
         XMLHelper.indent(b, 3); b.append("<color>\n");
         XMLHelper.XML(b, 4, "red", Integer.toString(color.getRed()));
         XMLHelper.XML(b, 4, "green", Integer.toString(color.getGreen()));
         XMLHelper.XML(b, 4, "blue", Integer.toString(color.getBlue()));
         XMLHelper.indent(b, 3); b.append("</color>\n");
-        XMLHelper.XML(b, 4, "log_scale", Boolean.toString(getLogScale()));
+        XMLHelper.XML(b, 3, "log_scale", Boolean.toString(getLogScale()));
+        XMLHelper.XML(b, 3, "trace_type", getTraceType().name());
         if (archives.size() > 0)
         {
             for (IArchiveDataSource archive : archives)
@@ -472,7 +476,9 @@ public class ModelItem
         return b.toString();
     }
     
-    /** Decode XML DOM element for "pv ...". */
+    /** Decode XML DOM element for "pv ...".
+     *  @see #getXMLContent()
+     */
     @SuppressWarnings("nls")
     public static ModelItem loadFromDOM(Model model, Element pv, int ring_size) throws Exception
     {
@@ -482,6 +488,7 @@ public class ModelItem
         int line_width = DOMHelper.getSubelementInt(pv, "linewidth", 0);
         double min = DOMHelper.getSubelementDouble(pv, "min", 0.0);
         double max = DOMHelper.getSubelementDouble(pv, "max", 10.0);
+        boolean auto_scale = DOMHelper.getSubelementBoolean(pv, "autoscale");
         int red, green, blue;
         Element color =
             DOMHelper.findFirstElementNode(pv.getFirstChild(), "color");
@@ -498,9 +505,16 @@ public class ModelItem
             blue = 255;
         }
         boolean log_scale = DOMHelper.getSubelementBoolean(pv, "log_scale");
+        
+        TraceType trace_type = TraceType.Lines;
+        String trace_type_txt = DOMHelper.getSubelementString(pv, "trace_type");
+        if (trace_type_txt.length() > 0)
+            trace_type = TraceType.fromName(trace_type_txt);
+        
         ModelItem item =
-            new ModelItem(model, name, ring_size, axis_index, min, max,
-                          red, green, blue, line_width, log_scale);
+            new ModelItem(model, name, ring_size, axis_index,
+                          min, max, auto_scale,
+                          red, green, blue, line_width, trace_type, log_scale);
         
         // Get archives, if there are any
         Element arch = DOMHelper.findFirstElementNode(

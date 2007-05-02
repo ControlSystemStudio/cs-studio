@@ -7,6 +7,7 @@ import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDropTarge
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDataSourceDropTarget;
 import org.csstudio.swt.chart.TraceType;
+import org.csstudio.trends.databrowser.configview.PVTableHelper.Column;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
@@ -286,11 +287,10 @@ public class ConfigView extends PlotAwareView
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         table.setLayoutData(gd);
-        for (int i = 0; i < PVTableHelper.properties.length; i++)
-                AutoSizeColumn.make(table,
-                        PVTableHelper.properties[i],
-                        PVTableHelper.sizes[i],
-                        PVTableHelper.weights[i]);
+        final Column[] columns = PVTableHelper.Column.values();
+        for (PVTableHelper.Column col : columns)
+                AutoSizeColumn.make(table, col.getTitle(), col.getSize(),
+                                    col.getWeight(), col.isCentered());
         // Configure table to auto-size the columns
         new AutoSizeControlListener(box, table);
         
@@ -303,7 +303,7 @@ public class ConfigView extends PlotAwareView
         pv_table_viewer.setContentProvider(table_content);
         
         // Allow editing
-        CellEditor editors[] = new CellEditor[PVTableHelper.properties.length];
+        CellEditor editors[] = new CellEditor[columns.length];
         editors[PVTableHelper.Column.NAME.ordinal()] = new TextCellEditor(table);
         editors[PVTableHelper.Column.MIN.ordinal()] = new TextCellEditor(table);
         editors[PVTableHelper.Column.MAX.ordinal()] = new TextCellEditor(table);
@@ -318,12 +318,15 @@ public class ConfigView extends PlotAwareView
             editors[PVTableHelper.Column.AXIS.ordinal()] = new TextCellEditor(table);
         editors[PVTableHelper.Column.COLOR.ordinal()] = new RGBCellEditor(table);
         editors[PVTableHelper.Column.LINEWIDTH.ordinal()] = new TextCellEditor(table);
-        editors[PVTableHelper.Column.TYPE.ordinal()] = new CheckboxCellEditor(table);
+        editors[PVTableHelper.Column.AXISTYPE.ordinal()] = new CheckboxCellEditor(table);
         editors[PVTableHelper.Column.DISPLAYTYPE.ordinal()] =
             new ComboBoxCellEditor(table, TraceType.getTypeStrings(), SWT.READ_ONLY);
         editors[PVTableHelper.Column.AUTOSCALE.ordinal()] = new CheckboxCellEditor(table);
         
-        pv_table_viewer.setColumnProperties(PVTableHelper.properties);
+        String titles[] = new String[columns.length];
+        for (int i=0; i<columns.length; ++i)
+            titles[i] = columns[i].getTitle();
+        pv_table_viewer.setColumnProperties(titles);
         pv_table_viewer.setCellEditors(editors);
         pv_table_viewer.setCellModifier(new PVTableCellModifier(this));
 

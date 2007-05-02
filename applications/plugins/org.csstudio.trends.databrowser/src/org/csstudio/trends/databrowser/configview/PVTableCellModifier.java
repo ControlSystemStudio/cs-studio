@@ -24,43 +24,42 @@ public class PVTableCellModifier implements ICellModifier
 	/** All columns of the model can change.
      *  The last row only allows name entry.
      */
-	public boolean canModify(Object element, String property)
+	public boolean canModify(Object element, String col_title)
 	{
         if (element == PVTableHelper.empty_row)
-            return property.equals(
-                PVTableHelper.properties[PVTableHelper.Column.NAME.ordinal()]);
+            return col_title.equals(PVTableHelper.Column.NAME.getTitle());
         return true;
     }
 
 	/** @return Returns the original cell value. */
-    public Object getValue(Object element, String property)
+    public Object getValue(Object element, String col_title)
     {
         if (element == PVTableHelper.empty_row)
             return ""; //$NON-NLS-1$
         try
         {
             ModelItem entry = (ModelItem) element;
-            PVTableHelper.Column id = PVTableHelper.getPropertyID(property);
-            if (id == PVTableHelper.Column.COLOR)
+            PVTableHelper.Column col = PVTableHelper.findColumn(col_title);
+            if (col == PVTableHelper.Column.COLOR)
                 return entry.getColor().getRGB();
             else if (ConfigView.use_axis_combobox
-                     && id == PVTableHelper.Column.AXIS)
+                     && col == PVTableHelper.Column.AXIS)
             {   // If we edit Axis index in combo box.
                 // Otherwise: fall through to String for text editor
                 return new Integer(entry.getAxisIndex());
             }
-            else if (id == PVTableHelper.Column.TYPE)
+            else if (col == PVTableHelper.Column.AXISTYPE)
                 return new Boolean(entry.getLogScale());
-            else if (id == PVTableHelper.Column.AUTOSCALE)
-            	return new Boolean(entry.getIsTraceAutoScalable());
-            else if (id == PVTableHelper.Column.DISPLAYTYPE) 
+            else if (col == PVTableHelper.Column.AUTOSCALE)
+            	return new Boolean(entry.getAutoScale());
+            else if (col == PVTableHelper.Column.DISPLAYTYPE) 
             	return entry.getTraceType().ordinal();
             // Default: return item as String
-            return PVTableHelper.getText(entry, id);
+            return PVTableHelper.getText(entry, col);
         }
         catch (Exception e)
         {
-            Plugin.logException("Error", e); //$NON-NLS-1$
+            Plugin.logException("PVTableCellModifier: " + e.getMessage(), e); //$NON-NLS-1$
         }
         return null;
     }
@@ -81,7 +80,7 @@ public class PVTableCellModifier implements ICellModifier
             }
             // Edit existing item
             IModelItem entry = (IModelItem) element;
-            PVTableHelper.Column id = PVTableHelper.getPropertyID(property);
+            PVTableHelper.Column id = PVTableHelper.findColumn(property);
             
             if (id == PVTableHelper.Column.NAME && value != null)
             {
@@ -112,7 +111,7 @@ public class PVTableCellModifier implements ICellModifier
                 int new_width = Integer.valueOf(value.toString());
                 entry.setLineWidth(new_width);
             }
-            else if (id == PVTableHelper.Column.TYPE && value != null)
+            else if (id == PVTableHelper.Column.AXISTYPE && value != null)
             {
                 boolean use_log = ((Boolean)value).booleanValue();
                 entry.setLogScale(use_log);
@@ -120,7 +119,7 @@ public class PVTableCellModifier implements ICellModifier
             else if(id == PVTableHelper.Column.AUTOSCALE && value != null) 
             {
             	boolean auto_scale = ((Boolean)value).booleanValue();
-            	entry.setIsTraceAutoScalable(auto_scale);
+            	entry.setAutoScale(auto_scale);
             }
             else if(id == PVTableHelper.Column.DISPLAYTYPE && value != null)
             {

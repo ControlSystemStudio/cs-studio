@@ -15,32 +15,61 @@ public class PVTableHelper
     enum Column
     {
         /** Name column identifier */
-    	NAME,
+    	NAME(Messages.PV, 70, 90, false),
     
         /** Axis column identifier */
-        AXIS,
+        AXIS(Messages.AxisIndex, 30, 5, true),
         
         /** Axis minimum */
-        MIN,
+        MIN(Messages.ValueRangeMin, 50, 20, false),
         
         /** Axis maximum */
-        MAX,
+        MAX(Messages.ValueRangeMax, 50, 20, false),
         
         /** Autoscale */
-        AUTOSCALE,
+        AUTOSCALE(Messages.AutoScale, 35, 20, true),
         
         /** Color column identifier */
-        COLOR,
+        COLOR(Messages.Color, 30, 5, false),
         
         /** Line width column identifier */
-        LINEWIDTH,
+        LINEWIDTH(Messages.LineWidth, 30, 5, true),
         
-        /** Axis type column identifier */
-        TYPE,
+        /** Axis type (linear, log) column identifier */
+        AXISTYPE(Messages.AxisType, 45, 20, true),
         
         /** Trace display type */
-        DISPLAYTYPE;
+        DISPLAYTYPE(Messages.DisplayType, 35, 20, true);
         
+        private final String title;
+        private final int size;
+        private final int weight;
+        private final boolean center;
+        
+        private Column(String title, int size, int weight, boolean center)
+        {
+            this.title = title;
+            this.size = size;
+            this.weight = weight;
+            this.center = center;
+        }
+       
+        /** @return Column title */
+        public String getTitle()
+        {   return title; }
+        
+        /** @return Minimum column size. */
+        public int getSize()
+        {   return size;  }
+
+        /** @return Column weight. */
+        public int getWeight()
+        {   return weight; }
+
+        /** @return <code>true</code> if column is center-aligned. */
+        public boolean isCentered()
+        {   return center; }
+
         /** @return Column for the given ordinal. */
         public static Column fromOrdinal(int ordinal)
         {   // This is expensive, but java.lang.Enum offers no easy way...
@@ -50,48 +79,31 @@ public class PVTableHelper
             throw new Error("Invalid ordinal " + ordinal); //$NON-NLS-1$
         }
     };
-    
-	/** Strings used for column headers. */
-	final public static String properties[] =
-	{
-		Messages.PV,
-        Messages.AxisIndex,
-        Messages.ValueRangeMin,
-        Messages.ValueRangeMax,
-        Messages.AutoScale,
-        Messages.Color,
-        Messages.LineWidth,
-        Messages.AxisType,
-        Messages.DisplayType,
-	};
-
-    final public static int sizes[]   = {  70, 30, 50, 50, 40, 35, 35, 45, 35 };
-    final public static int weights[] = { 100, 10, 10, 10,  5,  5,  5, 20,  5 };
 
 	/** Get ID for a property.
 	 * 
-	 * @param property One of the properties[] strings.
-	 * @return Returns the requested property ID, e.g. NAME.
+	 * @param title One of the column titles.
+	 * @return Returns the requested Column.
 	 * @throws Exception on error.
 	 */
-	static public Column getPropertyID(String property) throws Exception
+	static public Column findColumn(String title) throws Exception
 	{
-		for (int id=0; id<properties.length; ++id)
-			if (properties[id].equals(property))
-                return Column.fromOrdinal(id);
-		throw new Exception("Unknown property '" + property + "'");  //$NON-NLS-1$//$NON-NLS-2$
+		for (Column col : Column.values())
+			if (col.getTitle().equals(title))
+                return col;
+		throw new Exception("Unknown column '" + title + "'");  //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	/** Get e.g. the "NAME" from a ChartItem.
 	 * 
 	 * @param qso
-	 * @param property One of the properties[] strings.
+	 * @param col_title One of the properties[] strings.
 	 * @return Returns the requested property.
 	 * @throws Exception on error.
 	 */
-	static public Object getProperty(ModelItem entry, String property) throws Exception
+	static public Object getProperty(ModelItem entry, String col_title) throws Exception
 	{
-        Column id = getPropertyID(property);
+        Column id = findColumn(col_title);
 	    return getText(entry, id);
 	}
 
@@ -100,9 +112,9 @@ public class PVTableHelper
      * @param item 0 for properties[0] etc.
      * @return Returns the String for the entry
      */
-    static public String getText(ModelItem entry, int index)
+    static public String getText(ModelItem entry, int col_index)
     {
-        return getText(entry, Column.fromOrdinal(index));
+        return getText(entry, Column.fromOrdinal(col_index));
     }
 
 	/** Get a data piece of the entry.
@@ -126,13 +138,11 @@ public class PVTableHelper
                 return Integer.toString(entry.getAxisIndex());
             case LINEWIDTH:
                 return Integer.toString(entry.getLineWidth());
-            case TYPE:
+            case AXISTYPE:
                 return entry.getLogScale() ?
                         Messages.LogAxisType : Messages.LinearAxisType;
             case DISPLAYTYPE:
             	return entry.getTraceType().toString();
-            case AUTOSCALE:
-            	return Boolean.toString(entry.getIsTraceAutoScalable());
             }
 		}
 		catch (Exception e)

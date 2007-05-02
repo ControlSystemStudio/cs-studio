@@ -229,7 +229,7 @@ public class Controller implements ScannerAndScrollerListener
                 new_item.getLineWidth(),
                 yaxis_index,
                 new_item.getDefaultScaleMin(), new_item.getDefaultScaleMax(),
-                new_item.getIsTraceAutoScalable(), new_item.getTraceType());
+                new_item.getAutoScale(), new_item.getTraceType());
         // Set initial axis range from model
         controller_changes_yaxes = true;
         YAxis yaxis = trace.getYAxis();
