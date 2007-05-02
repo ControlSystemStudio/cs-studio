@@ -429,13 +429,14 @@ public class YAxis extends Axis
                 {
                     final int MINOR_TICKS = 5;
                     double dist = (tick - last_tick) / MINOR_TICKS;
-                    for (int i=1; i<MINOR_TICKS; ++i)
-                    {
-                        double minor = last_tick + dist * i;
-                        int my = getScreenCoord(minor);
-                        gc.drawLine(region.x + region.width - (2*TICK_LENGTH)/3, my, 
-                                    region.x + region.width - 1, my);
-                    }
+                    if (dist > 0)
+                        for (int i=1; i<MINOR_TICKS; ++i)
+                        {
+                            double minor = last_tick + dist * i;
+                            int my = getScreenCoord(minor);
+                            gc.drawLine(region.x + region.width - (2*TICK_LENGTH)/3, my, 
+                                        region.x + region.width - 1, my);
+                        }
                 }
                 last_tick = tick;
             }

@@ -158,7 +158,8 @@ public class ChartTest
             double low = high - 120;
             chart.getXAxis().setValueRange(low, high);
         }
-        chart.getYAxis(0).setLogarithmic(true);
+        // LOG TEST?
+        chart.getYAxis(0).setLogarithmic(false);
         chart.getYAxis(0).setValueRange(1, 100);
         List list = new List(shell, SWT.SINGLE);
         list_viewer = new ListViewer(list);
@@ -226,8 +227,9 @@ public class ChartTest
                                 DefaultColors.getGreen(i),
                                 DefaultColors.getBlue(i));
         // Add to chart
+        final boolean autoscale = false;
         chart.addTrace(name, seq, color, 0, chart.getYAxisIndex(yaxis), 0, 10,
-                        true, TraceType.Bars);
+                       autoscale, TraceType.Lines);
         return yaxis;
     }
 

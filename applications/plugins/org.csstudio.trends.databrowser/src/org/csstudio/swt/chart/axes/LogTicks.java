@@ -29,7 +29,12 @@ public class LogTicks extends Ticks
     /** @return Returns the next tick, following a given tick mark. */
     public double getNext(double tick)
     {   // distance refers to the tick distance for log(value_space)!
-        return Log10.pow10(Log10.log10(tick) + distance);
+        double next = Log10.pow10(Log10.log10(tick) + distance);
+        // Rounding errors can result in a situation where
+        // we don't make any progress...
+        if (next <= tick)
+            return tick + 1;
+        return next;
     }
     
     /** @return Returns the number formated according to the tick precision. */
@@ -38,12 +43,28 @@ public class LogTicks extends Ticks
         int p = precision + precision_change;
         num_fmt.setMaximumFractionDigits(p);
         num_fmt.setMaximumFractionDigits(p);
+
         // Split into mantissa and exponent
-        int exponent = (int) Log10.log10(num);
-        double pwr_of_10 = Log10.pow10(exponent);
-        double mantissa = num / pwr_of_10;
-        
-        return num_fmt.format(mantissa) + "e" + exponent;
+        double mantissa;
+        int exponent;        
+        boolean negative = num < 0.0;
+        if (num == 0.0)
+        {
+            mantissa = 0.0;
+            exponent = 0;
+        }
+        else
+        {
+            if (negative)
+                num = - num;
+            exponent = (int) Log10.log10(num);
+            double pwr_of_10 = Log10.pow10(exponent);
+            mantissa = num / pwr_of_10;
+        }
+        String text = num_fmt.format(mantissa) + "e" + exponent;
+        if (negative)
+            return "-" + text;
+        return text;
         //return num_fmt.format(mantissa) + "x10^" + exponent;
     }
 }

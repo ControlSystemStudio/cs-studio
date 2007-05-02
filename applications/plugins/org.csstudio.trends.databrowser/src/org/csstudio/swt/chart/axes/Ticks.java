@@ -34,6 +34,13 @@ public class Ticks implements ITicks
         num_fmt.setGroupingUsed(false);
     }
     
+    @Override
+    public String toString()
+    {
+        return String.format("Ticks start=%g, distance=%g, precision=%d",
+                             start, distance, precision);
+    }
+    
     /** Compute tick information, trying to auto-fit the screen region.
      * 
      *  @param low Low limit of the axis range.
@@ -68,14 +75,17 @@ public class Ticks implements ITicks
   
         // Determine minimum label distance on the screen, using some
         // percentage of the available screen space.
-        // Guess the label width, using the two extrema
+        // Guess the label width, using the two extrema.
+        // For testing, allow gc == null.
         String label = format(low);
-        int label_width = gc.textExtent(label).x;
+        int label_width = (gc != null) ? gc.textExtent(label).x : 100;
         label = format(high);
-        int label_width2 = gc.textExtent(label).x;
+        int label_width2 = (gc != null) ? gc.textExtent(label).x : 100;
         if (label_width < label_width2)
             label_width = label_width2;
         int num_that_fits = screen_width/label_width*FILL_PERCENTAGE/100;
+        if (num_that_fits < 1)
+            num_that_fits = 1;
         double min_distance = range / num_that_fits;
         // Round up to the precision used to display values
         distance = Math.ceil(min_distance / prec_delta) * prec_delta;

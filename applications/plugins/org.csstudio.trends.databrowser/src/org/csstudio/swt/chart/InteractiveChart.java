@@ -16,8 +16,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 
 /** Basic chart with buttons for zoom/pan.
  *  <p>
@@ -44,7 +42,7 @@ public class InteractiveChart extends Composite
     private Composite button_bar;
     
     // make this one static?
-    private ImageRegistry button_images = null;
+    private static ImageRegistry button_images = null;
     private static final String UP = "up"; //$NON-NLS-1$
     private static final String DOWN = "down"; //$NON-NLS-1$
     private static final String Y_IN = "y_in"; //$NON-NLS-1$
