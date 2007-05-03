@@ -58,7 +58,7 @@ public class ProcessVariableNameTransfer extends ByteArrayTransfer
     @Override
     public void javaToNative(Object object, TransferData transferData)
     {
-    	System.out.println("javaToNative");
+    	// System.out.println("javaToNative");
         if (!isSupportedType(transferData))
             return;
 
