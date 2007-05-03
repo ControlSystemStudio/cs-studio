@@ -574,8 +574,17 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	 * 
 	 * @return boolean true, the point lines should be drawn, false otherwise
 	 */
-	public boolean getShowPointLines() {
+	public boolean getShowConnectionLines() {
 		return _showConnectionLines;
+	}
+	
+	/**
+	 * Sets the width of the lines of the graph.
+	 * @param lineWidth
+	 * 				The width of the lines of the graph.
+	 */
+	public void setGraphLineWidth(final int lineWidth) {
+		_graphFigure.setGraphLineWidth(lineWidth);
 	}
 
 	/**
@@ -686,6 +695,11 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		 * The Color for the connection lines.
 		 */
 		private Color _connectionLineColor = ColorConstants.red;
+		
+		/**
+		 * The width of the lines of the graph.
+		 */
+		private int _graphLineWidth = 1;
 
 		/**
 		 * {@inheritDoc}
@@ -701,6 +715,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 							+ _zeroLevel);
 			PointList pointList = this.translatePointList(_dataPoints,
 					figureBounds.x, figureBounds);
+			graphics.setLineWidth(_graphLineWidth);
 			if (_showConnectionLines) {
 				graphics.setForegroundColor(_connectionLineColor);
 				graphics.drawPolyline(pointList);
@@ -763,6 +778,15 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		 */
 		public void setConnectionLineColor(final Color lineColor) {
 			_connectionLineColor = lineColor;
+		}
+		
+		/**
+		 * Sets the width of the lines of the graph.
+		 * @param lineWidth
+		 * 				The width of the lines of the graph.
+		 */
+		public void setGraphLineWidth(final int lineWidth) {
+			_graphLineWidth = lineWidth;
 		}
 
 	}

@@ -50,8 +50,9 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		waveform.setMax(model.getMax());
 		waveform.setAutoScale(model.getAutoscale());
 		waveform.setShowScale(model.getShowScale());
-		waveform.setShowScale(model.getShowScale());
 		waveform.setShowLedgerlLines(model.getShowLedgerLines());
+		waveform.setXSectionCount(model.getXSectionCount());
+		waveform.setYSectionCount(model.getYSectionCount());
 		waveform.setShowConnectionLines(model.getShowConnectionLines());
 		waveform.setBackgroundColor(CustomMediaFactory.getInstance().getColor(model.getBackgroundColor()));
 		waveform.setForegroundColor(CustomMediaFactory.getInstance().getColor(model.getForegroundColor()));
@@ -77,8 +78,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_MAX, handler);
-		
+		setPropertyChangeHandler(WaveformModel.PROP_MAX, handler);		
 		// min
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -89,8 +89,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_MIN, handler);
-		
+		setPropertyChangeHandler(WaveformModel.PROP_MIN, handler);		
 		// autoscale
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -101,8 +100,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_AUTO_SCALE, handler);
-		
+		setPropertyChangeHandler(WaveformModel.PROP_AUTO_SCALE, handler);		
 		// data array
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -180,6 +178,24 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_SHOW_CONNECTION_LINES, connectionLinesHandler);
+		// graph line width
+		IWidgetPropertyChangeHandler lineWidthHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setGraphLineWidth((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_GRAPH_LINE_WIDTH, lineWidthHandler);
+		this.registerColorPropertyChangeHandlers();
+	}
+	
+	/**
+	 * Registers all Color-PropertyChangeHandler.
+	 */
+	protected void registerColorPropertyChangeHandlers() {
 		// graph color
 		IWidgetPropertyChangeHandler graphColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -212,6 +228,6 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_LEDGER_LINE_COLOR, ledgerColorHandler);
+		setPropertyChangeHandler(WaveformModel.PROP_LEDGER_LINE_COLOR, ledgerColorHandler);		
 	}
 }

@@ -78,6 +78,11 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * Property ID for the point-lines.
 	 */
 	public static final String PROP_SHOW_CONNECTION_LINES = "show_connection_lines"; //$NON-NLS-1$
+	
+	/**
+	 * Property ID for the width of the connection lines.
+	 */
+	public static final String PROP_GRAPH_LINE_WIDTH = "connection_line_width"; //$NON-NLS-1$
 
 	/**
 	 * Property ID for the color of the graph.
@@ -159,6 +164,8 @@ public final class WaveformModel extends AbstractWidgetModel {
 				"Y-Section count",WidgetPropertyCategory.Display,4));
 		addProperty(PROP_X_SCALE_SECTION_COUNT, new IntegerProperty(
 				"X-Section count",WidgetPropertyCategory.Display,4));
+		addProperty(PROP_GRAPH_LINE_WIDTH, new IntegerProperty(
+				"Graph line width",WidgetPropertyCategory.Display,1,1,100));
 	}
 
 	/**
@@ -259,6 +266,16 @@ public final class WaveformModel extends AbstractWidgetModel {
 	public boolean getShowConnectionLines() {
 		return (Boolean) getProperty(PROP_SHOW_CONNECTION_LINES)
 				.getPropertyValue();
+	}
+	
+	/**
+	 * Returns the width of the lines of the graph.
+	 * 
+	 * @return int 
+	 * 				The width of the lines
+	 */
+	public int getGraphLineWidth() {
+		return (Integer) getProperty(PROP_GRAPH_LINE_WIDTH).getPropertyValue();
 	}
 	
 	/**
