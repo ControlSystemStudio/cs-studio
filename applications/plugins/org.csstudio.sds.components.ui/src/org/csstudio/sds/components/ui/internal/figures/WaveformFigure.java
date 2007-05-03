@@ -289,7 +289,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 //		 double[] result = new double[count];
 //		 double value = (Math.PI*2)/count;
 //		 for (int i=0;i<count;i++) {
-//		 result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
+//			 result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
 //		 }
 //		 _data = result;
 		this.refreshConstraints();
@@ -390,7 +390,7 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 		} else if (_min >= 0 && _max >= 0) {
 			return _graphBounds.height - 1 + TEXTHEIGHT/2;
 		}
-		return TEXTHEIGHT/2 + (int) (((double) _graphBounds.height / (_max - _min)) * _max);
+		return (int) (((double) _graphBounds.height / (_max - _min)) * _max);
 	}
 
 	/**
