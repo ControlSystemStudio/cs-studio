@@ -28,6 +28,7 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.gef.EditPart;
 
 /**
  * EditPart controller for the Polygon widget. The controller mediates between
@@ -77,7 +78,15 @@ public final class PolygonEditPart extends AbstractWidgetEditPart {
 				PointList points = (PointList) newValue;
 				polygon.setPoints(points);
 				
+				// deselect the widget (this refreshes the polypoint drag handles)
+				int selectionState = getSelected();
+				setSelected(EditPart.SELECTED_NONE);
+
 				doRefreshVisuals(polygon);
+				
+				// restore the selection state
+				setSelected(selectionState);
+				
 				return true;
 			}
 		};

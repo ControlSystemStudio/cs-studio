@@ -28,6 +28,7 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.gef.EditPart;
 
 /**
  * EditPart controller for the Polyline widget. The controller mediates between
@@ -68,8 +69,9 @@ public final class PolylineEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(PolylineModel.PROP_LINE_WIDTH, lineWidthHandler);
-		
+		setPropertyChangeHandler(PolylineModel.PROP_LINE_WIDTH,
+				lineWidthHandler);
+
 		// fill
 		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -88,9 +90,20 @@ public final class PolylineEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IRefreshableFigure refreshableFigure) {
 				RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
+
 				PointList points = (PointList) newValue;
+
+				// deselect the widget (this refreshes the polypoint drag
+				// handles)
+				int selectionState = getSelected();
+				setSelected(EditPart.SELECTED_NONE);
+
 				polyline.setPoints(points);
 				doRefreshVisuals(polyline);
+
+				// restore the selection state
+				setSelected(selectionState);
+				
 				return true;
 			}
 		};
