@@ -8,6 +8,7 @@ import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequenceContainer;
 import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.Trace;
+import org.csstudio.swt.chart.TraceType;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -230,8 +231,7 @@ public final class View extends ViewPart {
 	         }
 	        	 
 	         
-	         chart.addTrace(name,seq,color,1,chart.getYAxisIndex(yaxis),
-	        		 0,maxFFT,true,Trace.Type.Bars);
+	         chart.addTrace(name,seq,color,1,chart.getYAxisIndex(yaxis),TraceType.Bars);
 	         return yaxis;
 	     }
 	private YAxis addGaussTrace(String name, YAxis yaxis,double[] data,double[] time,double Gauss[],double B,double A,double m,double d )	  {
@@ -307,9 +307,9 @@ public final class View extends ViewPart {
             e.printStackTrace();
         }
        	 
-        chart.addTrace(name   ,seq, color, 1,chart.getYAxisIndex(yaxis),minCurve,maxCurve,true,Trace.Type.Markers);
+        chart.addTrace(name   ,seq, color, 1,chart.getYAxisIndex(yaxis),TraceType.Markers);
         //YAxis  yaxisFit = chart.addYAxis(nameFit);
-        chart.addTrace(nameFit,seqG,colorG,1,chart.getYAxisIndex(yaxis),minCurve1,maxCurve1,true,Trace.Type.Lines);
+        chart.addTrace(nameFit,seqG,colorG,1,chart.getYAxisIndex(yaxis),TraceType.Lines);
         return yaxis;
     }
 	
@@ -367,8 +367,7 @@ public final class View extends ViewPart {
         }
        	 
         
-        chart.addTrace(name,seq,color,2,chart.getYAxisIndex(yaxis),
-       		 minY,maxY,true,Trace.Type.Markers);
+        chart.addTrace(name,seq,color,2,chart.getYAxisIndex(yaxis),TraceType.Markers);
         return yaxis;
     }
 	
