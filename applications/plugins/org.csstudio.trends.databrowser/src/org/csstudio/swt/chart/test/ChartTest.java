@@ -62,20 +62,24 @@ public class ChartTest
         {
             public void changedXAxis(XAxis xaxis)
             {
-                System.out.println("XAxis changed");
+                System.out.println("ChartTest ChartListener: XAxis changed");
             }
 
             public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
             {
+                System.out.println("ChartTest ChartListener: " + yaxis
+                                + " has new " + what);
             }
 
             public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
             {
+                System.out.println("ChartTest ChartListener: Point " +
+                                x + ", " + y + " Selected");
             }
             
             public void nothingSelected()
             {
-                System.out.println("Nothing Selected");
+                System.out.println("ChartTest ChartListener: Nothing Selected");
             }
         });
         
@@ -223,12 +227,15 @@ public class ChartTest
             yaxis = chart.addYAxis(name);
         else
             yaxis.setLabel(name);
+        final int axis_index = chart.getYAxisIndex(yaxis);
+        if ((axis_index % 2) == 1)
+            yaxis.setAutoZoom(true);
         i = chart.getNumTraces();
         Color color = new Color(null, DefaultColors.getRed(i),
                                 DefaultColors.getGreen(i),
                                 DefaultColors.getBlue(i));
         // Add to chart
-        chart.addTrace(name, seq, color, 0, chart.getYAxisIndex(yaxis),
+        chart.addTrace(name, seq, color, 0, axis_index,
                        TraceType.Lines);
         return yaxis;
     }

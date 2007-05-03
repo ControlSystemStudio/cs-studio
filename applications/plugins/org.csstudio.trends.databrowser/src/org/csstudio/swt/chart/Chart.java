@@ -36,11 +36,31 @@ import org.eclipse.swt.widgets.Tracker;
  */
 public class Chart extends Canvas
 {
-    public static final boolean debug = false;
+    /** Change the drawing routines to leave some extra space
+     *  and add extra lines around stuff to visually check
+     *  if the 'plot area' doesn't mess up the 'x axis' area etc.
+     *  <p>
+     *  Also useful in connection with the ChartTest to see if a
+     *  'pan' operation causes too many redraws.
+     *  <p>
+     *  The total amount of redraws especially with 'auto-scale' Y Axes
+     *  could still use some improvement...
+     */
+    public static final boolean debug = true;
     
-    // Note: InteractiveChart defines more style bits!
+    /** Instead of manually setting Y Axis labels,
+     *  the axes use their trace's names for a label,
+     *  including the trace color.
+     */
     public static final int USE_TRACE_NAMES = 1<<30;
+
+    /** Select a 'time' axis for the x axis. */ 
     public static final int TIME_CHART = 1<<31;
+    
+    /** Mask for style bits used by the chart.
+     *  <p>
+     *  Note: InteractiveChart defines more style bits!
+     */
     public static final int STYLE_MASK = ~(USE_TRACE_NAMES | TIME_CHART);
         
     /** The traces to plot. */
@@ -106,13 +126,10 @@ public class Chart extends Canvas
                 if (plot_region != null)
                 {
                     // Compute redraw region for X axis and plot, not y axes
-                    
-                    	Rectangle xreg = xaxis.getRegion();
-                    	redraw(plot_region.x+1, plot_region.y,
-                    			plot_region.width-1,
-                    			plot_region.height + xreg.height, true);
-                    
-                       
+                	Rectangle xreg = xaxis.getRegion();
+                	redraw(plot_region.x+1, plot_region.y,
+                	       plot_region.width-1,
+                		   plot_region.height + xreg.height, true);
                 }
                 // Forward to ChartListeners
                 for (ChartListener listener : listeners)
@@ -138,7 +155,6 @@ public class Chart extends Canvas
                     redraw(yreg.x+1, yreg.y,
                            plot_region.x - yreg.x + plot_region.width-1,
                            plot_region.height-1, true);
-                	
                 }
                 // Forward to chart listeners
                 for (YAxisListener l : listeners)
@@ -408,8 +424,7 @@ public class Chart extends Canvas
     {
         YAxis yaxis = yaxes.get(yaxis_index);
         setRedraw(false);
-        Trace trace = new Trace(name, series, color, line_width, yaxis,
-                                type);
+        Trace trace = new Trace(name, series, color, line_width, yaxis, type);
         traces.add(trace);
         setRedraw(true);
         return trace;
@@ -456,6 +471,8 @@ public class Chart extends Canvas
     }
     
     /** Zoom the selected or all Y axes to their default.
+     *  <p>
+     *  Each Trace determines its own default range.
      *  If a trace has no default display range, auto-zoom.
      */ 
     public void setDefaultZoom()
@@ -473,19 +490,32 @@ public class Chart extends Canvas
         }
     }
     
-    /** Auto-Zoom the selected or all Y axes. */
+    /** Adjust the selected or all Y axes such that they are staggered.
+     *  <p>
+     *  What this means: If there are N Y axes, each will use 1/Nth of
+     *  the available space, so that the data for one axis does not
+     *  draw on top of the data for another axis.
+     *  Within one axis, the traces can of course still use the same
+     *  screen space.
+     */
     public void stagger()
     {
         // Defer redraw until all axes are adjusted...
         setRedraw(false);
         // Determine range for each axis
         for (YAxis yaxis : yaxes)
+        {   // Skip axes that autozoom on their own
+            if (yaxis.getAutoZoom())
+                continue;
             yaxis.autozoom(xaxis);
+        }
         // Now arrange them all so they don't overlap
         int N = yaxes.size();
         for (int i=0; i<N; ++i)
         {
             YAxis yaxis = yaxes.get(i);
+            if (yaxis.getAutoZoom())
+                continue; // takes care of itself
             double low = yaxis.getLowValue();
             double high = yaxis.getHighValue();
             if (yaxis.isLogarithmic())
@@ -593,9 +623,16 @@ public class Chart extends Canvas
 
         // Paint axes
         // (which will decide to ignore the call based on the paint region)
+        // X Axis
         xaxis.paint(e);
+        
+        // Y Axis (which will auto-zoom at this point in case that's enabled)
         for (YAxis yaxis : yaxes)
+        {
+            if (yaxis.getAutoZoom())
+                yaxis.autozoom(xaxis);
             yaxis.paint(grid_color, e);
+        }
         
         // The width-1 is a hack to _not_ redraw the plot
         // when only the Y axes needed a redraw.

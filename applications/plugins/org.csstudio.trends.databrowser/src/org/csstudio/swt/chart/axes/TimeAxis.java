@@ -23,7 +23,7 @@ public class TimeAxis extends XAxis
     /* @see org.csstudio.swt.chart.axes.XAxis#setValueRange(double, double)
      */
     @Override
-    public void setValueRange(double low, double high)
+    public boolean setValueRange(double low, double high)
     {
         double range = Math.abs(high - low);
         // The Java time stamp has a resolution of milliseconds,
@@ -33,8 +33,9 @@ public class TimeAxis extends XAxis
         // So we don't allow any zoom finer than a few milliseconds.
         // There's also a problem with displaying huge ranges,
         // so we limit it to 50 years
-        if (range > A_FEW_MILLISECS  &&  range < FIFTY_YEARS)
-            super.setValueRange(low, high);
+        if (range <= A_FEW_MILLISECS  ||  range >= FIFTY_YEARS)
+            return false;
+        return super.setValueRange(low, high);
     }
 
     public void paint(PaintEvent e)

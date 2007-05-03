@@ -106,20 +106,22 @@ public class Axis
         return high_value;
     }
 
-    /** Set the new value range. */
+    /** Set the new value range.
+     *  @return <code>true</code> if this actually did something. */
     @SuppressWarnings("nls")
-    public void setValueRange(double low, double high)
+    public boolean setValueRange(double low, double high)
     {
         if (low >= high)
         {
             Plugin.logError("Axis " + getLabel() 
                       + ": Cannot set value range to " + low + " ... " + high);
-            return;
+            return false;
         }
         dirty_ticks = true;
         low_value = low;
         high_value = high;
         transform.config(low_value, high_value, low_screen, high_screen);
+        return true;
     }
 
     /** Tell the axis where it is on the screen.

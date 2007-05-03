@@ -54,6 +54,9 @@ public class YAxis extends Axis
     /** Set <code>true</code> to get minor tick marks. */
     private boolean show_minor_ticks = true;
     
+    /** <code>true</code> if this axis auto-zooms. */
+    private boolean auto_zoom = false;
+    
     /** Construct a new Y axis.
      *  <p>
      *  Note that end users will typically <b>not</b> create new Y axes,
@@ -66,6 +69,16 @@ public class YAxis extends Axis
     {
         super(false, label, new Ticks(), new LinearTransform());
         this.listener = listener;
+    }
+    
+    /** @return Something useful for debugging
+     *  @see java.lang.Object#toString()
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString()
+    {
+        return "YAxis '" + label + "'";
     }
 
     /** Set a new label. */
@@ -124,15 +137,11 @@ public class YAxis extends Axis
     
     /** @return Returns the number of traces. */
     public final int getNumTraces()
-    {
-        return traces.size();
-    }
+    {   return traces.size();  }
     
     /** @return Returns the trace of given index. */
     public final Trace getTrace(int index)
-    {
-        return traces.get(index);
-    }
+    {   return traces.get(index); }
 
     /** Add a marker.
      *  @param position The 'x' position.
@@ -168,21 +177,47 @@ public class YAxis extends Axis
 
     /** @return Returns <code>true</code> if this axis is selected. */
     public final boolean isSelected()
-    {
-        return selected;
-    }
+    {   return selected; }
+
+    /** @return <code>true</code> if auto-zoom enabled. */
+    public final boolean getAutoZoom()
+    {   return auto_zoom; }
+
+    /** @param auto_zoom <code>true</code> enables auto-zoom.
+     *  @see #autozoom(XAxis)
+     */
+    public final void setAutoZoom(boolean auto_zoom)
+    {   this.auto_zoom = auto_zoom; }
 
     @Override
-    public void setValueRange(double low, double high)
+    public boolean setValueRange(double low, double high)
     {
-        super.setValueRange(low, high);
+        // Does this change anything?
+        if (this.low_value == low  &&  this.high_value == high)
+            return false; // no change
+        if (! super.setValueRange(low, high))
+            return false; // no change
+        // Tell the world.
         fireEvent(YAxisListener.Aspect.RANGE);
+        return true;
     }
     
-    /** Auto-Zoom the value range of this Y axis to include all traces. */
+    /** Auto-Zoom the value range of this Y axis to include all traces.
+     *  <p>
+     *  This call forces an auto-zoom.
+     *  In addition, one can also set the auto-zoom flag of the axis,
+     *  which will cause the axis to auto-zoom automatically
+     *  whenever it's painted
+     *  (actually, the chart will auto-zoom via this very method
+     *   just before painting the axis).
+     *  @param xaxis The xaxis is required to obtain the visible sample range.
+     *  @see #setAutoZoom(boolean)
+     */
     @SuppressWarnings("nls")
     public final void autozoom(XAxis xaxis)
     {
+        if (Chart.debug)
+            System.out.println("Autozoom " + this + " ...");
         AxisRangeLimiter limiter = new AxisRangeLimiter(xaxis);
         double low = Double.MAX_VALUE;
         double high = -Double.MAX_VALUE;
@@ -211,42 +246,38 @@ public class YAxis extends Axis
                 }
             }
         }
-        
-        if (low == high) {
-        	//If low equals high we'll move the trace to the middle.
-            high += 1.0;
+        // Determined low..high.
+        if (low == high)
+        {	// If low equals high we'll move the trace to the middle.
             low -= 1.0;
+            high += 1.0;
         }
-        if (low < high)
+        if (low >= high)
+            return; // give up
+        if (isLogarithmic())
+        {   // Perform adjustment in log space.
+            // But first, refuse to deal with <= 0
+            if (low <= 0.0)
+                low = 1;
+            if (high <= low)
+                high = 100;
+            low = Log10.log10(low);
+            high = Log10.log10(high);
+        }
+        // Add a little room above & below the exact value range
+        double extra = (high - low) * 0.01;
+        low = low - extra;
+        high = high + extra;
+        if (isLogarithmic())
         {
-            if (isLogarithmic())
-            {   // Perform adjust ment in log space.
-                // But first, refuse to deal with <= 0
-                if (low <= 0.0)
-                    low = 1;
-                if (high <= low)
-                    high = 100;
-                low = Log10.log10(low);
-                high = Log10.log10(high);
-            }
-            // Add a little room above & below the exact value range
-            double extra = (high - low) * 0.01;
-            low = low - extra;
-            high = high + extra;
-            if (isLogarithmic())
-            {
-                low = Log10.pow10(low);
-                high = Log10.pow10(high);
-            }
-            if (Chart.debug)
-                System.out.println("Autozoom " + getLabel() + " to "
-                                   + low + " ... " + high);
-            
-            if(!(super.low_value == low && super.high_value == high))
-            	setValueRange(low, high);
-            
+            low = Log10.pow10(low);
+            high = Log10.pow10(high);
         }
-        // else: leave as is
+        if (!setValueRange(low, high))
+            return; // was a NOP for some reason
+        if (Chart.debug)
+            System.out.println("Autozoom " + this + " to "
+                               + low + " ... " + high);
     }
     
     /** Zoom axis to the default range of its traces.
@@ -280,7 +311,7 @@ public class YAxis extends Axis
      *  is used.
      *  Otherwise, a default color is used.
      *
-     *  @return Returns the color or null.
+     *  @return Returns the color or null. Do NOT dispose.
      */
     public final Color getColor()
     {

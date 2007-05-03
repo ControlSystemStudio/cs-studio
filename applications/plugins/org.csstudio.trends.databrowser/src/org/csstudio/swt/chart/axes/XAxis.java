@@ -36,10 +36,14 @@ public class XAxis extends Axis
     }
     
     @Override
-    public void setValueRange(double low, double high)
+    public boolean setValueRange(double low, double high)
     {
-        super.setValueRange(low, high);
-        listener.changedXAxis(this);
+        if (super.setValueRange(low, high))
+        {
+            listener.changedXAxis(this);
+            return true;
+        }
+        return false;
     }
     
     public final int getPixelHeight(GC gc)
