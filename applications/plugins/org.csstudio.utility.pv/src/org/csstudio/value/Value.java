@@ -42,6 +42,24 @@ abstract public class Value
 	/** @return The status string. */
 	final public String getStatus()
 	{	return status; 	 }
+    
+    public enum Type
+    {
+        /** This is a plain value */
+        Plain,
+        /** This value is the result of averging over plain values. */
+        Averaged,
+        /** This is the minimum over several plain values */
+        Minimum,
+        /** This is the maximum over several plain values */
+        Maximum,
+    };
+    // TODO Add a type
+    // When a sample is obtained for example from an archive data server,
+    // one might get reduced data.
+    // The 'type' tells us if we're looking at a plain or 'raw' sample,
+    // or such a pre-digested sample.
+    // public Type getType();
 
     /** Meta Data that helps with using the value, mostly for formatting.
      *  <p>
