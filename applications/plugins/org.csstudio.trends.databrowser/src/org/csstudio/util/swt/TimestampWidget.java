@@ -27,6 +27,7 @@ public class TimestampWidget extends Composite
     private SWTCalendar calendar;
     private Spinner hour, minute, second;
     private ITimestamp timestamp = TimestampFactory.createTimestamp();
+    
     /** Used to prevent recursion when the widget updates the GUI,
      *  which in turn fires listener notifications...
      */
@@ -56,10 +57,10 @@ public class TimestampWidget extends Composite
         setLayout(layout);
         GridData gd;
         
-        // current            [ now ]
-        // |                           |
-        // |          Calendar         |
-        // |                           |
+        // current                          [ now ]
+        // |                                      |
+        // |              Calendar                |
+        // |                                      |
         // Time: (hour)+- : (minute)+- : (second)+-
         //                       [Midnight] [Noon]
         current_label = new Label(this, SWT.BOLD);
