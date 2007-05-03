@@ -1,7 +1,10 @@
 package org.csstudio.trends.databrowser.sampleview;
 
+//import java.text.Format;
+
 import org.csstudio.trends.databrowser.model.ModelSample;
 import org.csstudio.value.Severity;
+import org.csstudio.value.Value.Format;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -10,8 +13,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-/** The JFace label provider for ModelSample data. 
+/** The JFace label provider for ModelSample data.
  *  @author Kay Kasemir
+ *  @author last change on Albert Kagarmanov
  */
 public class SampleTableLabelProvider extends LabelProvider implements
 		ITableLabelProvider, ITableColorProvider
@@ -27,7 +31,7 @@ public class SampleTableLabelProvider extends LabelProvider implements
         case 0:
             return sample.getSample().getTime().toString();
         case 1:
-            return sample.getSample().format();
+            return sample.getSample().format(Format.Decimal,4);
         default:
             String info = sample.getInfo();
             return info == null ? "" : info; //$NON-NLS-1$
@@ -47,7 +51,7 @@ public class SampleTableLabelProvider extends LabelProvider implements
         Severity severity = sample.getSample().getSeverity();
         if (severity.isOK())
             return null; // no special color
-        // Make entry stand out, 
+        // Make entry stand out,
         // using system color that we don't have to dispose
         if (severity.isMinor())
             return Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);

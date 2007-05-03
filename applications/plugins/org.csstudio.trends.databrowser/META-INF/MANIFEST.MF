@@ -15,3 +15,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform
 Eclipse-LazyStart: true
 Bundle-Vendor: Kay Kasemir
+Export-Package: org.csstudio.swt.chart,
+ org.csstudio.swt.chart.axes,
+ org.csstudio.swt.chart.test
