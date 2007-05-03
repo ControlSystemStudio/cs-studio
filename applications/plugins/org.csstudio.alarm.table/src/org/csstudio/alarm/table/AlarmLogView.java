@@ -145,7 +145,8 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 			MessageBox box = new MessageBox(ps, SWT.ICON_ERROR);
 			box.setText("Failed to initialise primary JMS Context"); //$NON-NLS-1$
 			box.setMessage(e.getMessage());
-			box.open();
+			// FIXME: This deadlocks the system if it happens during startup
+//			box.open();
 		}
 		try{
 			receiver2 = new MessageReceiver(
@@ -158,7 +159,8 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 			MessageBox box = new MessageBox(ps, SWT.ICON_ERROR);
 			box.setText("Failed to initialise secondary JMS Context"); //$NON-NLS-1$
 			box.setMessage(e.getMessage());
-			box.open();
+			// FIXME: This deadlocks the system if it happens during startup
+//			box.open();
 		}
 
 	}
