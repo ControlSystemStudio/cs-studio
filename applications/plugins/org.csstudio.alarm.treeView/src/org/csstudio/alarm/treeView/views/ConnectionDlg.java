@@ -47,13 +47,9 @@ public class ConnectionDlg extends Dialog {
 	    (new Label(composite, 0)).setText("Connection type:");
 	    protocol = new Combo(composite, 2048);
 	    protocol.add("LDAP");
-	    protocol.add("EDS");
-	    if (con.getProtocol()>0) {
-	    	protocol.select(con.getProtocol()-1);
-	    }
-	    else {
-	    	protocol.select(0);
-	    }
+	    // EDS (EPICS directory service) is not supported anyway
+	    // protocol.add("EDS");
+    	protocol.select(0);
 	    (new Label(composite, 0)).setText("URL:");
 	    url = new Text(composite, 2048);
 	    url.setText(con.getUrl().equals("") ? myPluginInstance.getPluginPreferences().getString(PreferenceConstants.URL) : con.getUrl());
@@ -128,7 +124,6 @@ public class ConnectionDlg extends Dialog {
 	    con.setCredentials(password.getText());
 	    con.setPrincipal(user.getText());
 	    con.setSavePassword(savePassword.getSelection());
-	    con.setProtocol(protocol.getSelectionIndex()+1);
 	}
 
 	protected void okPressed()

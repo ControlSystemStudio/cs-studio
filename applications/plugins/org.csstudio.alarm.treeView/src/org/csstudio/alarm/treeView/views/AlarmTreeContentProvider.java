@@ -29,6 +29,14 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	 * @param parent the input element.
 	 * @return the children of the input element.
 	 */
+	// Note: the parameter is called inputElement in the interface and this
+	// method should return the elements to display when the input is set to
+	// the given element. The element can be an array of items (see the DCF
+	// UI plug-in), which is probably how to do multiple top-level elements in
+	// the tree. This content provider should probably support the inputChanged
+	// method as well. Then we could create the connection to the LDAP server
+	// in the background and set the tree's input as soon as the connection is
+	// established and the items are fetched.
 	public Object[] getElements(Object parent) {
 		return getChildren(parent);
 	}
@@ -52,6 +60,8 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	 * @return the children of the input element.
 	 */
 	public Object[] getChildren(Object parent) {
+		// Note: viewer.setInput(getViewSite()) gets called in AlarmTreeView.
+		// This is probably not the best way to set the input.
 		if (parent instanceof IViewSite){
 			return LdaptreePlugin.getDefault().getConnections().toArray();}
 		else if (parent instanceof ISimpleTreeParent) {

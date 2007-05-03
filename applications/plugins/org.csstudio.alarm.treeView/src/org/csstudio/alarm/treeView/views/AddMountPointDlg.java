@@ -2,7 +2,6 @@ package org.csstudio.alarm.treeView.views;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -12,7 +11,6 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.alarm.treeView.cacher.LDAPTreeParser;
-import org.csstudio.alarm.treeView.views.models.LdapConnection;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -33,7 +31,6 @@ public class AddMountPointDlg extends Dialog {
 
 	Hashtable<String,String> env;
 	protected DirContext connection;
-	protected int protocol = LdapConnection.LDAP_PROTOCOL;
 	protected LDAPTreeParser tparser;
 	private List mountPoints;
 	public static final String alarmCfgRoot = "ou=EpicsAlarmCfg";
@@ -44,10 +41,8 @@ public class AddMountPointDlg extends Dialog {
 			throw new Exception("Parameters for connection not given.");
 		}
 		else {
-			if (protocol == LdapConnection.LDAP_PROTOCOL){
-		        env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
-		        tparser = new LDAPTreeParser();		    
-			}
+	        env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
+	        tparser = new LDAPTreeParser();		    
 			connection=new InitialDirContext(env);
 		}
 	}

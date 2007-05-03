@@ -5,16 +5,10 @@ import java.util.Hashtable;
 import org.csstudio.alarm.treeView.cacher.Attributer;
 import org.csstudio.alarm.treeView.cacher.CachingThread;
 
-import com.sun.org.apache.bcel.internal.classfile.Attribute;
-
 
 public class LdapConnection extends ContextTreeParent
 {
-	private static final int SIZE_LIMIT = 100000; //ne dela
-	public static final int EDS_PROTOCOL = 2;
-	public static final int LDAP_PROTOCOL = 1;
 	private boolean caching = false;
-	private int protocol; 
 	protected Hashtable<String,String> nameMap;
 	protected Hashtable<String,ContextTreeObject> tree;
 	protected Hashtable<String,String> env;
@@ -32,9 +26,8 @@ public class LdapConnection extends ContextTreeParent
 		tree = new Hashtable<String,ContextTreeObject>();
    }
 
-    public LdapConnection(int protocol, String url, String principal, String credential, String prefsNodes){
+    public LdapConnection(String url, String principal, String credential, String prefsNodes){
     	super();
-    	this.protocol = protocol;
     	this.url = url;
     	this.principal = principal;
     	this.credentials = credential;
@@ -55,11 +48,22 @@ public class LdapConnection extends ContextTreeParent
 //            env.put("java.naming.security.principal", principal);
 //            env.put("java.naming.security.credentials", credentials);		
     		CachingThread cthr = new CachingThread(env,this);
-    		cthr.setProtocol(protocol);
-    		cthr.setSizeLimit(SIZE_LIMIT);
     		cthr.setStructureRoots(structureRoot);
-    		cthr.run();
-    		//(new Thread(cthr)).start();
+    		// cthr is a system job (it won't show in the GUI) because it was
+    		// not initiated by the user and must necessarily run.
+    		cthr.setSystem(true);
+    		cthr.schedule();
+
+    		// Currently running cthr concurrently in the background does
+			// not work correctly, so we join immediately after scheduling
+			// the job. XXX: This try-catch-block should be removed as soon
+    		// as reading the directory in the background works.
+    		try {
+				cthr.join();
+			} catch (InterruptedException e) {
+				// should never happen
+			}
+			
     		atter = new Attributer(env,this);
     	}
     }
@@ -157,14 +161,6 @@ public class LdapConnection extends ContextTreeParent
     private String credentials;
     private boolean savePassword;
 
-	public int getProtocol() {
-		return protocol;
-	}
-
-	public void setProtocol(int protocol) {
-		this.protocol = protocol;
-	}
-	
 	public void triggerAlarmOnNode(Alarm alarm) throws NodeNotFoundException{
 //		try {
 		ContextTreeObject objc;

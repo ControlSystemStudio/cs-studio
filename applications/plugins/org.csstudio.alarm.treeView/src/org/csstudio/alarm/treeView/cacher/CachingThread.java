@@ -12,44 +12,46 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.csstudio.alarm.treeView.LdaptreePlugin;
 import org.csstudio.alarm.treeView.views.models.Alarm;
 import org.csstudio.alarm.treeView.views.models.ContextTreeObject;
 import org.csstudio.alarm.treeView.views.models.ContextTreeParent;
 import org.csstudio.alarm.treeView.views.models.LdapConnection;
 import org.csstudio.alarm.treeView.views.models.NodeNotFoundException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 
 /**
- * This is a thread we use to retrieve our directory structure from server.
+ * This job reads the directory structure from the server.
+ * <p>
  * Retrieving is optimized: 1. we make only one request on the server (there 
  * could be sizelimit or timelimit set on server - so we should do a workaround 
  * (sth. like BFS or DFS will do) 2. we request only nodes - and from their name we retrive tree structure
  * We don't store structure in this object, but in the provided mountPoint 
  * (LDAPConnection).
- * 
+ * <p> 
  * For other protocols than LDAP we need some corrections in the code which 
  * slightly assume that we deal with LDAP tree. It supports different name parsers for each protocols, 
  * but we also need support for different query search strings.  
- *  
+ * <p>
  * It now also retrieve initial alarm states, but it should be done either 
  * differently or the implementation must be slightly different - like to 
- * reset connection if needed and connect to other server in run() method.  
+ * reset connection if needed and connect to other server in run() method.
+ * 
  * @author Jurij Kodre
- *
  */
-public class CachingThread implements Runnable {
+public class CachingThread extends Job {
 
-	//client side provided sizelimit of result - don't set it
-	protected long SIZE_LIMIT=0;
-	//defines protocol
-	protected int protocol;
+	//client side provided sizelimit of result
+	protected long SIZE_LIMIT=100000;  // this value is from LdapConnection.java
 	//environment properties
 	protected Hashtable<String,String> env;
 	//DirContext used to perform search on all trees
 	protected transient DirContext connection;
 	//we use one of provided TreeParser - each of provided  
 	protected ITreeParser tparser;
-	//this boolean tells that the work of this thread is done and thread is terminated - it was primarily used for tests before
-	protected boolean done = false;
 	//mountPoint - root for the tree
 	protected LdapConnection mountPoint;
 	//subtrees chosen in preferences page - which needs to be retrieved
@@ -59,21 +61,6 @@ public class CachingThread implements Runnable {
 	public static final String alarmCfgRoot="ou=EpicsAlarmCfg";
 	public static final String alarmInitialRoot="ou=EpicsAlarmCfg";//"ou=EpicsControls";
 	
-	/**
-	 * Gets the directory structure protocol - constants are defined in LDAPConnection
-	 * @return int which describes used protocol 
-	 */
-	public int getProtocol() {
-		return protocol;
-	}
-	/**
-	 * Sets the directory structure protocol - constants are defined in LDAPConnection 
-	 * @param protocol int which describes used protocol
-	 */
-	public void setProtocol(int protocol) {
-		this.protocol = protocol;
-	}
-
 	/**
 	 * Sets which subroots of EpicsAlarmCfg we want to be retrieved
 	 * @param structureRoots String array with names (without tree structure! -e.g. Wasseranlagen)
@@ -87,6 +74,7 @@ public class CachingThread implements Runnable {
 	 * @param mountPoint LDAPConnection on which we connect the our roots
 	 */
 	public CachingThread(ContextTreeParent mountPoint){
+		super("Alarm Tree Directory Reader");
 		this.env = new Hashtable<String,String>();
 	}
 
@@ -97,19 +85,11 @@ public class CachingThread implements Runnable {
 	 * @param mountPoint LDAPConnection on which we connect the our roots
 	 */
 	public CachingThread(Hashtable<String,String> environment, LdapConnection mountPoint){
+		super("Alarm Tree Directory Reader");
 		this.env = environment;
 		this.mountPoint = mountPoint; 	
 	}
 	
-	/**
-	 * Sets the size limit on client side, don't do it unless you want to narrow the tree undefinetly. You really should not set this (it is on unlimited on default).
-	 * @param size_limit max number of nodes that can be retrieved from tree
-	 * @deprecated
-	 */
-	public void setSizeLimit(long size_limit) {
-		SIZE_LIMIT = size_limit;
-	}
-
 	/**
 	 * sets the JNDI connection parameter
 	 * @param name name od parameter (e.g. "java.naming.factory.initial")
@@ -117,16 +97,6 @@ public class CachingThread implements Runnable {
 	 */
 	public void setParameter(String name, String parameter){
 		env.put(name,parameter);
-	}
-	
-	/**
-	 * initializes the connection if needed and run the caching thread also catches the 
-	 * @throws Exception 
-	 *
-	 */
-	public void startCaching() throws Exception{
-		initializeConnection();
-		run();
 	}
 	
 	/**
@@ -138,48 +108,12 @@ public class CachingThread implements Runnable {
 			throw new Exception("Parameters for connection not given.");
 		}
 		else {
-			if (protocol == LdapConnection.LDAP_PROTOCOL){
-		        env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
-		        tparser = new LDAPTreeParser();		    
-			}
+	        env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
+	        tparser = new LDAPTreeParser();		    
 			connection=new InitialDirContext(env);
 		}
 	}
 	
-	//the method populateTree was previously used to retrieve whole tree for server. It is now substituted with method populateSubTree, because we need more independent subtrees.
-/*	private synchronized void populateTree() throws NamingException{
-		SearchControls ctrl = new SearchControls();
-		String name,rname;
-		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE); //set to search the whole tree
-		//remove when you solve the size limit problem or TODO: workaround
-		ctrl.setCountLimit(SIZE_LIMIT);
-		
-		NamingEnumeration enumr = connection.search(alarmCfgRoot,"eren=*",ctrl);
-		//long t1 = System.currentTimeMillis();
-		long records=0;
-		try
-		{
-			while (enumr.hasMore()){
-				records++;
-				SearchResult result = (SearchResult)enumr.next();
-				name = result.getNameInNamespace();
-				rname = result.getName();
-				//only getName gives you name without 'o=DESY, c=DE'
-				name = tparser.specialClean(name);
-				rname = tparser.specialClean(rname);
-				populateObject(name,rname);
-			}
-//			long t2 = System.currentTimeMillis();
-			//System.out.println("Retrieved "+String.valueOf(records)+" in "+String.valueOf(t2-t1)+ "miliseconds");
-		}
-		catch (SizeLimitExceededException exc)
-		{
-			System.out.println("Size limit set on server! Set on:"+records);
-		}
-		finally{
-			enumr.close();
-		}
-	}*/
 	/**
 	 * This method reads subTree of given subroot (given by parameter mPoint)
 	 */
@@ -353,23 +287,32 @@ public class CachingThread implements Runnable {
 	}
 	
 	
-	public synchronized void run(){
-		// TODO Auto-generated method stub
+	/**
+	 * Runs this job.
+	 * @param monitor the progress monitor to which progress is reported.
+	 * @return a status representing the outcome of this job.
+	 */
+	public IStatus run(IProgressMonitor monitor){
+		monitor.beginTask("Initializing Alarm Tree", IProgressMonitor.UNKNOWN);
 		try {
+			monitor.subTask("Connecting");
 			initializeConnection();
+			
+			monitor.subTask("Building tree");
 			int l = structureRoots.length;
 			for (int i=0; i<l; i++){
 				populateSubTree(structureRoots[i]);
 			}
-			//populateTree();
-			//populateAttribs();
+			
+			monitor.subTask("Initializing alarm states");
 			populateAlarms();
-			done = true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			done = true;
 		}
+		monitor.done();
+		return new Status(IStatus.OK, LdaptreePlugin.getDefault().getPluginId(),
+				IStatus.OK, "Finished initializing alarm tree", null);
 	}
 	
 	public void resetConnection(){
@@ -383,10 +326,5 @@ public class CachingThread implements Runnable {
 		connection = null;
 	}
 	
-	
-	public boolean getDone(){
-		return done; 
-	}
-
 }
  

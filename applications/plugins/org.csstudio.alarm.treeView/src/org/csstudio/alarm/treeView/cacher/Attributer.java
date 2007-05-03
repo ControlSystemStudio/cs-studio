@@ -23,8 +23,6 @@ import org.csstudio.alarm.treeView.views.models.LdapConnection;
  *
  */
 public class Attributer {
-	//protocol specifies which protocol to use - constants are defined in LdapConnection 
-	protected int protocol;
 	//environment hashtable for LDAP connection
 	protected Hashtable<String,String> env;
 	//that DirContext provides through the whole tree
@@ -36,15 +34,6 @@ public class Attributer {
 	//TODO: also here 
 	public static final String alarmCfgRoot="ou=EpicsAlarmCfg";
 	
-	public int getProtocol() {
-		return protocol;
-	}
-	
-	public void setProtocol(int protocol) {
-		this.protocol = protocol;
-	}
-
-
 	/**
 	 * First possibility to initalize - we initialize environment properties hashtable 
 	 * and waiting to be filled with connection parameters
@@ -85,9 +74,7 @@ public class Attributer {
 			throw new Exception("Parameters for connection not given.");
 		}
 		else {
-			if (protocol == LdapConnection.LDAP_PROTOCOL){
-		        env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
-			}
+	        env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
 			connection=new InitialDirContext(env);
 		}
 	}

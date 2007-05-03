@@ -66,7 +66,7 @@ public class LdaptreePlugin extends AbstractCssUiPlugin {
 		acc.setUrl(getPluginPreferences().getString(PreferenceConstants.JMSURL));
 		acc.setTopicName(getPluginPreferences().getString(PreferenceConstants.JMSTOPIC));
 		acc.startListening();
-		LdapConnection lcc = new LdapConnection(LdapConnection.LDAP_PROTOCOL,getPluginPreferences().getString(PreferenceConstants.URL),
+		LdapConnection lcc = new LdapConnection(getPluginPreferences().getString(PreferenceConstants.URL),
 				getPluginPreferences().getString(PreferenceConstants.USER),getPluginPreferences().getString(PreferenceConstants.PASSWORD),getPluginPreferences().getString(PreferenceConstants.NODE));
 		connections.add(lcc);
 		lcc.initializeCaching();
