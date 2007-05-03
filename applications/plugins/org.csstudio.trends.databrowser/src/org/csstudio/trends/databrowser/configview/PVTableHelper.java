@@ -27,29 +27,29 @@ public class PVTableHelper
         MAX(Messages.ValueRangeMax, 50, 20, false),
         
         /** Autoscale */
-        AUTOSCALE(Messages.AutoScale, 35, 20, true),
+        AUTO_SCALE(Messages.AutoScale, 35, 20, true),
         
         /** Color column identifier */
         COLOR(Messages.Color, 30, 5, false),
         
         /** Line width column identifier */
-        LINEWIDTH(Messages.LineWidth, 30, 5, true),
+        LINE_WIDTH(Messages.LineWidth, 30, 5, true),
         
         /** Axis type (linear, log) column identifier */
-        AXISTYPE(Messages.AxisType, 45, 20, true),
+        LOG_SCALE(Messages.AxisType, 45, 20, true),
         
         /** Trace display type */
-        DISPLAYTYPE(Messages.DisplayType, 35, 20, true);
+        TRACE_TYPE(Messages.DisplayType, 35, 20, true);
         
         private final String title;
-        private final int size;
+        private final int min_size;
         private final int weight;
         private final boolean center;
         
         private Column(String title, int size, int weight, boolean center)
         {
             this.title = title;
-            this.size = size;
+            this.min_size = size;
             this.weight = weight;
             this.center = center;
         }
@@ -59,8 +59,8 @@ public class PVTableHelper
         {   return title; }
         
         /** @return Minimum column size. */
-        public int getSize()
-        {   return size;  }
+        public int getMinSize()
+        {   return min_size;  }
 
         /** @return Column weight. */
         public int getWeight()
@@ -136,12 +136,12 @@ public class PVTableHelper
                 return Double.toString(entry.getAxisHigh());
             case AXIS:
                 return Integer.toString(entry.getAxisIndex());
-            case LINEWIDTH:
+            case LINE_WIDTH:
                 return Integer.toString(entry.getLineWidth());
-            case AXISTYPE:
+            case LOG_SCALE:
                 return entry.getLogScale() ?
                         Messages.LogAxisType : Messages.LinearAxisType;
-            case DISPLAYTYPE:
+            case TRACE_TYPE:
             	return entry.getTraceType().toString();
             }
 		}

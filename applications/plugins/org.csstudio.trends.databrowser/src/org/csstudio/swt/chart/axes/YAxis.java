@@ -55,7 +55,7 @@ public class YAxis extends Axis
     private boolean show_minor_ticks = true;
     
     /** <code>true</code> if this axis auto-zooms. */
-    private boolean auto_zoom = false;
+    private boolean auto_scale = false;
     
     /** Construct a new Y axis.
      *  <p>
@@ -179,15 +179,15 @@ public class YAxis extends Axis
     public final boolean isSelected()
     {   return selected; }
 
-    /** @return <code>true</code> if auto-zoom enabled. */
-    public final boolean getAutoZoom()
-    {   return auto_zoom; }
+    /** @return <code>true</code> if auto-scale is enabled. */
+    public final boolean getAutoScale()
+    {   return auto_scale; }
 
-    /** @param auto_zoom <code>true</code> enables auto-zoom.
+    /** @param auto_zoom <code>true</code> enables auto-scale.
      *  @see #autozoom(XAxis)
      */
-    public final void setAutoZoom(boolean auto_zoom)
-    {   this.auto_zoom = auto_zoom; }
+    public final void setAutoScale(boolean auto_scale)
+    {   this.auto_scale = auto_scale; }
 
     @Override
     public boolean setValueRange(double low, double high)
@@ -205,13 +205,13 @@ public class YAxis extends Axis
     /** Auto-Zoom the value range of this Y axis to include all traces.
      *  <p>
      *  This call forces an auto-zoom.
-     *  In addition, one can also set the auto-zoom flag of the axis,
+     *  In addition, one can also set the auto-scale flag of the axis,
      *  which will cause the axis to auto-zoom automatically
      *  whenever it's painted
      *  (actually, the chart will auto-zoom via this very method
      *   just before painting the axis).
      *  @param xaxis The xaxis is required to obtain the visible sample range.
-     *  @see #setAutoZoom(boolean)
+     *  @see #setAutoScale(boolean)
      */
     @SuppressWarnings("nls")
     public final void autozoom(XAxis xaxis)

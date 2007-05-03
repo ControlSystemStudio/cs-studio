@@ -48,11 +48,11 @@ public class PVTableCellModifier implements ICellModifier
                 // Otherwise: fall through to String for text editor
                 return new Integer(entry.getAxisIndex());
             }
-            else if (col == PVTableHelper.Column.AXISTYPE)
+            else if (col == PVTableHelper.Column.LOG_SCALE)
                 return new Boolean(entry.getLogScale());
-            else if (col == PVTableHelper.Column.AUTOSCALE)
+            else if (col == PVTableHelper.Column.AUTO_SCALE)
             	return new Boolean(entry.getAutoScale());
-            else if (col == PVTableHelper.Column.DISPLAYTYPE) 
+            else if (col == PVTableHelper.Column.TRACE_TYPE) 
             	return entry.getTraceType().ordinal();
             // Default: return item as String
             return PVTableHelper.getText(entry, col);
@@ -106,22 +106,22 @@ public class PVTableCellModifier implements ICellModifier
                 int new_axis = Integer.valueOf(value.toString());
                 entry.setAxisIndex(new_axis);
             }
-            else if (id == PVTableHelper.Column.LINEWIDTH && value != null)
+            else if (id == PVTableHelper.Column.LINE_WIDTH && value != null)
             {
                 int new_width = Integer.valueOf(value.toString());
                 entry.setLineWidth(new_width);
             }
-            else if (id == PVTableHelper.Column.AXISTYPE && value != null)
+            else if (id == PVTableHelper.Column.LOG_SCALE && value != null)
             {
                 boolean use_log = ((Boolean)value).booleanValue();
                 entry.setLogScale(use_log);
             }
-            else if(id == PVTableHelper.Column.AUTOSCALE && value != null) 
+            else if(id == PVTableHelper.Column.AUTO_SCALE && value != null) 
             {
             	boolean auto_scale = ((Boolean)value).booleanValue();
             	entry.setAutoScale(auto_scale);
             }
-            else if(id == PVTableHelper.Column.DISPLAYTYPE && value != null)
+            else if(id == PVTableHelper.Column.TRACE_TYPE && value != null)
             {
                 int ordinal = ((Integer) value).intValue();
             	entry.setTraceType(TraceType.fromOrdinal(ordinal));

@@ -255,7 +255,9 @@ public class InteractiveChart extends Composite
     
     /** The user can add buttons or other widgets to this button bar.
      *  <p>
-     *  The button bar uses a horizontal RowLayout.
+     *  The button bar uses a horizontal RowLayout, so newly added buttons
+     *  go to the _end_ of the bar.
+     *  TODO: Allow new buttons anywhere in the bar, not just the end?
      *  @return Returns the button bar. Use as the 'parent' for new buttons.
      */
     public Composite getButtonBar()
@@ -287,11 +289,18 @@ public class InteractiveChart extends Composite
     {
         YAxis yaxis = chart.getSelectedYAxis();
         if (yaxis != null)
+        {   // skip axis that takes care of itself
+            if (yaxis.getAutoScale())
+                return;
             move(yaxis, fraction, yaxis.isLogarithmic());
+        }
         else
             for (int i=0; i<chart.getNumYAxes(); ++i)
             {
                 yaxis = chart.getYAxis(i);
+                // skip axis that takes care of itself
+                if (yaxis.getAutoScale())
+                    continue;
                 move(yaxis, fraction, yaxis.isLogarithmic());
             }
     }

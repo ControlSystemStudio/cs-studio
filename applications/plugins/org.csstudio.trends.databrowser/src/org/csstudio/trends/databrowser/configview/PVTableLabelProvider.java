@@ -51,7 +51,7 @@ public class PVTableLabelProvider extends LabelProvider implements
         if (obj != PVTableHelper.empty_row)
         {
             IModelItem entry = (IModelItem) obj;
-            if (index == PVTableHelper.Column.AUTOSCALE.ordinal())
+            if (index == PVTableHelper.Column.AUTO_SCALE.ordinal())
                 return entry.getAutoScale() ?
                             images.get(SELECTED) : images.get(UNSELECTED);
         }

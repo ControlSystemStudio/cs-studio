@@ -229,7 +229,7 @@ public class ChartTest
             yaxis.setLabel(name);
         final int axis_index = chart.getYAxisIndex(yaxis);
         if ((axis_index % 2) == 1)
-            yaxis.setAutoZoom(true);
+            yaxis.setAutoScale(true);
         i = chart.getNumTraces();
         Color color = new Color(null, DefaultColors.getRed(i),
                                 DefaultColors.getGreen(i),

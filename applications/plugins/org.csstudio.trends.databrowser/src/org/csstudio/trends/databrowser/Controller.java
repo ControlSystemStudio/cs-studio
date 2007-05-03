@@ -235,6 +235,8 @@ public class Controller implements ScannerAndScrollerListener
         // Do we need to change the axis type?
         if (new_item.getLogScale() != yaxis.isLogarithmic())
             yaxis.setLogarithmic(new_item.getLogScale());
+        if (new_item.getAutoScale() != yaxis.getAutoScale())
+            yaxis.setAutoScale(new_item.getAutoScale());
         controller_changes_yaxes = false;
         
         // Model already running?

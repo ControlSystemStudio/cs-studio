@@ -46,7 +46,7 @@ public class Chart extends Canvas
      *  The total amount of redraws especially with 'auto-scale' Y Axes
      *  could still use some improvement...
      */
-    public static final boolean debug = true;
+    public static final boolean debug = false;
     
     /** Instead of manually setting Y Axis labels,
      *  the axes use their trace's names for a label,
@@ -505,7 +505,7 @@ public class Chart extends Canvas
         // Determine range for each axis
         for (YAxis yaxis : yaxes)
         {   // Skip axes that autozoom on their own
-            if (yaxis.getAutoZoom())
+            if (yaxis.getAutoScale())
                 continue;
             yaxis.autozoom(xaxis);
         }
@@ -514,7 +514,7 @@ public class Chart extends Canvas
         for (int i=0; i<N; ++i)
         {
             YAxis yaxis = yaxes.get(i);
-            if (yaxis.getAutoZoom())
+            if (yaxis.getAutoScale())
                 continue; // takes care of itself
             double low = yaxis.getLowValue();
             double high = yaxis.getHighValue();
@@ -629,7 +629,7 @@ public class Chart extends Canvas
         // Y Axis (which will auto-zoom at this point in case that's enabled)
         for (YAxis yaxis : yaxes)
         {
-            if (yaxis.getAutoZoom())
+            if (yaxis.getAutoScale())
                 yaxis.autozoom(xaxis);
             yaxis.paint(grid_color, e);
         }

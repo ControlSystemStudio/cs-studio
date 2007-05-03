@@ -289,7 +289,7 @@ public class ConfigView extends PlotAwareView
         table.setLayoutData(gd);
         final Column[] columns = PVTableHelper.Column.values();
         for (PVTableHelper.Column col : columns)
-                AutoSizeColumn.make(table, col.getTitle(), col.getSize(),
+                AutoSizeColumn.make(table, col.getTitle(), col.getMinSize(),
                                     col.getWeight(), col.isCentered());
         // Configure table to auto-size the columns
         new AutoSizeControlListener(box, table);
@@ -317,11 +317,11 @@ public class ConfigView extends PlotAwareView
         else
             editors[PVTableHelper.Column.AXIS.ordinal()] = new TextCellEditor(table);
         editors[PVTableHelper.Column.COLOR.ordinal()] = new RGBCellEditor(table);
-        editors[PVTableHelper.Column.LINEWIDTH.ordinal()] = new TextCellEditor(table);
-        editors[PVTableHelper.Column.AXISTYPE.ordinal()] = new CheckboxCellEditor(table);
-        editors[PVTableHelper.Column.DISPLAYTYPE.ordinal()] =
+        editors[PVTableHelper.Column.LINE_WIDTH.ordinal()] = new TextCellEditor(table);
+        editors[PVTableHelper.Column.LOG_SCALE.ordinal()] = new CheckboxCellEditor(table);
+        editors[PVTableHelper.Column.TRACE_TYPE.ordinal()] =
             new ComboBoxCellEditor(table, TraceType.getTypeStrings(), SWT.READ_ONLY);
-        editors[PVTableHelper.Column.AUTOSCALE.ordinal()] = new CheckboxCellEditor(table);
+        editors[PVTableHelper.Column.AUTO_SCALE.ordinal()] = new CheckboxCellEditor(table);
         
         String titles[] = new String[columns.length];
         for (int i=0; i<columns.length; ++i)
