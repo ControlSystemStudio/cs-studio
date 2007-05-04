@@ -4,10 +4,13 @@ import java.util.Calendar;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 @SuppressWarnings("nls")
-public class AbsoluteTimeParserTest extends TestCase
+public class TimeParserTests extends TestCase
 {
-    public void testParse() throws Exception
+    @Test
+    public void testAbsoluteTimeParser() throws Exception
     {
         Calendar cal;
         
@@ -66,5 +69,16 @@ public class AbsoluteTimeParserTest extends TestCase
         assertEquals(13, cal.get(Calendar.HOUR_OF_DAY));
         assertEquals(45, cal.get(Calendar.MINUTE));
         assertEquals(0, cal.get(Calendar.SECOND));
+    }
+    
+    @Test
+    public void testRelativeTimeParser() throws Exception
+    {
+        int pieces[] = RelativeTimeParser.parse("-2 Months");
+        assertEquals(-2, pieces[1]);
+        pieces = RelativeTimeParser.parse("-2 mon");
+        assertEquals(-2, pieces[1]);
+        pieces = RelativeTimeParser.parse("-2M");
+        assertEquals(-2, pieces[1]);
     }
 }
