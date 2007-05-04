@@ -81,32 +81,32 @@ public class TimeParserTests extends TestCase
     @Test
     public void testRelativeTimeParser() throws Exception
     {
-        int pieces[] = RelativeTimeParser.parse("-2 Months +5 years");
-        assertEquals(18, pieces[0]);
-        assertEquals(+5, pieces[RelativeTimeParser.YEARS]);
-        assertEquals(-2, pieces[RelativeTimeParser.MONTHS]);
-        assertEquals( 0, pieces[RelativeTimeParser.DAYS]);
-        assertEquals( 0, pieces[RelativeTimeParser.HOURS]);
-        assertEquals( 0, pieces[RelativeTimeParser.MINUTES]);
-        assertEquals( 0, pieces[RelativeTimeParser.SECONDS]);
+        RelativeTimeParserResult result = RelativeTimeParser.parse("-2 Months +5 years");
+        assertEquals(18, result.getOffsetOfNextChar());
+        assertEquals(+5, result.get(RelativeTime.YEARS));
+        assertEquals(-2, result.get(RelativeTime.MONTHS));
+        assertEquals( 0, result.get(RelativeTime.DAYS));
+        assertEquals( 0, result.get(RelativeTime.HOURS));
+        assertEquals( 0, result.get(RelativeTime.MINUTES));
+        assertEquals( 0, result.get(RelativeTime.SECONDS));
         
-        pieces = RelativeTimeParser.parse("   30 minutes -2 mon     ");
-        assertEquals(20, pieces[0]);
-        assertEquals( 0, pieces[RelativeTimeParser.YEARS]);
-        assertEquals(-2, pieces[RelativeTimeParser.MONTHS]);
-        assertEquals( 0, pieces[RelativeTimeParser.DAYS]);
-        assertEquals( 0, pieces[RelativeTimeParser.HOURS]);
-        assertEquals(30, pieces[RelativeTimeParser.MINUTES]);
-        assertEquals( 0, pieces[RelativeTimeParser.SECONDS]);
+        result = RelativeTimeParser.parse("   30 minutes -2 mon     ");
+        assertEquals(20, result.getOffsetOfNextChar());
+        assertEquals( 0, result.get(RelativeTime.YEARS));
+        assertEquals(-2, result.get(RelativeTime.MONTHS));
+        assertEquals( 0, result.get(RelativeTime.DAYS));
+        assertEquals( 0, result.get(RelativeTime.HOURS));
+        assertEquals(30, result.get(RelativeTime.MINUTES));
+        assertEquals( 0, result.get(RelativeTime.SECONDS));
 
-        pieces = RelativeTimeParser.parse("+2M 3m 08:00");
-        assertEquals( 6, pieces[0]);
-        assertEquals( 0, pieces[RelativeTimeParser.YEARS]);
-        assertEquals( 2, pieces[RelativeTimeParser.MONTHS]);
-        assertEquals( 0, pieces[RelativeTimeParser.DAYS]);
-        assertEquals( 0, pieces[RelativeTimeParser.HOURS]);
-        assertEquals( 3, pieces[RelativeTimeParser.MINUTES]);
-        assertEquals( 0, pieces[RelativeTimeParser.SECONDS]);
+        result = RelativeTimeParser.parse("+2M 3m 08:00");
+        assertEquals( 6, result.getOffsetOfNextChar());
+        assertEquals( 0, result.get(RelativeTime.YEARS));
+        assertEquals( 2, result.get(RelativeTime.MONTHS));
+        assertEquals( 0, result.get(RelativeTime.DAYS));
+        assertEquals( 0, result.get(RelativeTime.HOURS));
+        assertEquals( 3, result.get(RelativeTime.MINUTES));
+        assertEquals( 0, result.get(RelativeTime.SECONDS));
     }
     
     @Test
@@ -171,5 +171,35 @@ public class TimeParserTests extends TestCase
         double end_diff_sec = now - start_end[1].getTimeInMillis()/1000;
         assertEquals(8*60*60.0, start_diff_sec, 10.0);
         assertEquals(2*60*60.0, end_diff_sec, 10.0);
+
+        // rel, now
+        start = "-6H";
+        end = "now";
+        start_end = StartEndTimeParser.parse(start, end);
+        start_time = format.format(start_end[0].getTime());
+        end_time = format.format(start_end[1].getTime());
+        System.out.println("   " + start + " ... " + end + "\n-> " +
+                           start_time + " ... " + end_time);
+        now = Calendar.getInstance().getTimeInMillis() / 1000;
+        // Get seconds to 'now'
+        start_diff_sec = now - start_end[0].getTimeInMillis()/1000;
+        end_diff_sec = now - start_end[1].getTimeInMillis()/1000;
+        assertEquals(6*60*60.0, start_diff_sec, 10.0);
+        assertEquals(0.0, end_diff_sec, 10.0);
+    
+        // rel, now
+        start = "-6H";
+        end = "";
+        start_end = StartEndTimeParser.parse(start, end);
+        start_time = format.format(start_end[0].getTime());
+        end_time = format.format(start_end[1].getTime());
+        System.out.println("   " + start + " ... " + end + "\n-> " +
+                           start_time + " ... " + end_time);
+        now = Calendar.getInstance().getTimeInMillis() / 1000;
+        // Get seconds to 'now'
+        start_diff_sec = now - start_end[0].getTimeInMillis()/1000;
+        end_diff_sec = now - start_end[1].getTimeInMillis()/1000;
+        assertEquals(6*60*60.0, start_diff_sec, 10.0);
+        assertEquals(0.0, end_diff_sec, 10.0);
     }
 }

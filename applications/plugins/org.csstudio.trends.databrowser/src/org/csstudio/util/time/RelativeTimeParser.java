@@ -21,7 +21,7 @@ public class RelativeTimeParser
      *  it's case has to match Sergei's orignal specification.
      */
     static private final String tokens[] = new String[]
-    {
+    {   // Order of these must match the order of RelativeTime.YEARS etc.
         "years",
         "Months",
         "days",
@@ -30,21 +30,6 @@ public class RelativeTimeParser
         "seconds"
     };
 
-    /** Index of the location of remaining text in result of parse(). */
-    public static final int REMAINING_TEXT_OFFSET = 0;
-    /** Index of the relative years in result of parse(). */
-    public static final int YEARS = 1;
-    /** Index of the relative months in result of parse(). */
-    public static final int MONTHS = 2;
-    /** Index of the relative days in result of parse(). */
-    public static final int DAYS = 3;
-    /** Index of the relative hours in result of parse(). */
-    public static final int HOURS = 4;
-    /** Index of the relative minutes in result of parse(). */
-    public static final int MINUTES = 5;
-    /** Index of the relative seconds in result of parse(). */
-    public static final int SECONDS = 6;
-    
     /** Characters that are considered part of a number */
     static private final String NUMBER_CHARS = "+-0123456789";
     
@@ -63,33 +48,32 @@ public class RelativeTimeParser
      *  To distinguish for example minutes from month, the 'M' for month
      *  must be uppercase, while 'm' selects minutes.
      *  <p>
-     *  Returns an array that contains the location of the char after the
+     *  Returns info about the location of the char after the
      *  last item that was recognized,
-     *  followed by the relative year, month, day, hour, minute, second.
+     *  as well as the relative year, month, day, hour, minute, second.
      *  In case nothing was found, the last item position will be
      *  &lt;0, and the relative date/time pieces are all 0.
      * 
      *  @param text
      *  @return Array [ next char, year, month, day, hour, minute, second ]
      */
-    public static int[] parse(final String text)
+    public static RelativeTimeParserResult parse(final String text)
     {
-        int result[] = new int[1 + tokens.length];
-        int final_tag = -1;
+        RelativeTime rel_time = new RelativeTime();
+        int offset_of_next_char = -1;
         for (int i=0; i<tokens.length; ++i)
         {
             int found[] = getValueOfToken(tokens[i], text);
             if (found == null)
-                result[i+1] = 0;
+                rel_time.set(i, 0);
             else
             {   // Keep track of the right-most value in the string
-                if (found[0] > final_tag)
-                    final_tag = found[0];
-                result[i+1] = found[1];
+                if (found[0] > offset_of_next_char)
+                    offset_of_next_char = found[0];
+                rel_time.set(i, found[1]);
             }
         }
-        result[0] = final_tag;
-        return result;
+        return new RelativeTimeParserResult(rel_time, offset_of_next_char);
     }
     
     /** In case text contains "-24 token", return the number 24.

@@ -41,15 +41,25 @@ import java.util.Calendar;
  */
 public class StartEndTimeParser
 {
+    /** Parse the given start and end time strings,
+     *  and return the calendar date and time obtained from that.
+     *  <p>
+     *  Note that even if the start and end specifications were relative,
+     *  for example "-6hours" and "now", the result would of course be
+     *  the absolute values, determined "right now", for "6 hours ago"
+     *  resp. "now".
+     *  @return Array with start and end date/time.
+     *  @throws Exception On parse error.
+     */
     public static Calendar[] parse(String start_text, String end_text)
         throws Exception
     {
         // Extract the relative date/time information?
-        int rel_start[] = RelativeTimeParser.parse(start_text);
-        int rel_end[]   = RelativeTimeParser.parse(end_text);
+        RelativeTimeParserResult rel_start = RelativeTimeParser.parse(start_text);
+        RelativeTimeParserResult rel_end   = RelativeTimeParser.parse(end_text);
         // Which one is absolute?
-        boolean abs_start = rel_start[0] < 0;
-        boolean abs_end = rel_end[0] < 0;
+        boolean abs_start = rel_start.getOffsetOfNextChar() < 0;
+        boolean abs_end = rel_end.getOffsetOfNextChar() < 0;
         if (abs_start && abs_end)
         {
             Calendar start = AbsoluteTimeParser.parse(start_text);
@@ -85,24 +95,22 @@ public class StartEndTimeParser
      *  @return The adjusted time (a new instance, not 'date' as passed in).
      * @throws Exception 
      */
-    private static Calendar adjust(Calendar date, String text, int relative_time[]) throws Exception
+    private static Calendar adjust(Calendar date, String text,
+                    RelativeTimeParserResult relative_time) throws Exception
     {
         // Get copy of date, and patch that one
         Calendar result = Calendar.getInstance();
         result.setTimeInMillis(date.getTimeInMillis());
-        result.add(Calendar.YEAR, relative_time[RelativeTimeParser.YEARS]);
-        result.add(Calendar.MONTH, relative_time[RelativeTimeParser.MONTHS]);
-        result.add(Calendar.DAY_OF_MONTH, relative_time[RelativeTimeParser.DAYS]);
-        result.add(Calendar.HOUR_OF_DAY, relative_time[RelativeTimeParser.HOURS]);
-        result.add(Calendar.MINUTE, relative_time[RelativeTimeParser.MINUTES]);
-        result.add(Calendar.SECOND, relative_time[RelativeTimeParser.SECONDS]);
+        
+        relative_time.adjust(result);
         
         // In case there's more text after the end of the relative
         // date/time specification, for example because we got
         // "-2month 08:00", apply that absolute text to the result.
-        final int rest = relative_time[RelativeTimeParser.REMAINING_TEXT_OFFSET];
-        if (rest > 1  &&  rest < text.length())
-            return AbsoluteTimeParser.parse(result, text.substring(rest));
+        if (relative_time.getOffsetOfNextChar() > 1  &&
+            relative_time.getOffsetOfNextChar() < text.length())
+            return AbsoluteTimeParser.parse(result,
+                            text.substring(relative_time.getOffsetOfNextChar()));
         return result;
     }
 }
