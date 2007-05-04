@@ -14,6 +14,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
 /** Widget for displaying and selecting a relative date and time.
+ *  <p>
+ *  This widget uses Spinner controls to select the time pieces,
+ *  and unfortunately those don't allow negative values.
+ *  So instead, another checkbox is used to select negative times
+ *  'before' some date.
  *  @author Kay Kasemir
  */
 public class RelativeTimeWidget extends Composite
@@ -22,6 +27,8 @@ public class RelativeTimeWidget extends Composite
     private Spinner year, month, day;
     /** Widgets for time pieces. */
     private Spinner hour, minute, second;
+    /** Widget to select 'before' or 'after' */
+    private Button before;
     
     /** The relative time pieces for year, month, day, hour, minute, second. */
     private RelativeTime relative_time;
@@ -57,7 +64,7 @@ public class RelativeTimeWidget extends Composite
         
         // Date: (year)+- / (month)+-  / (day)+-
         // Time: (hour)+- : (minute)+- : (second)+-
-        //                                    [now]
+        // [ ] before?                        [now]
 
         // New row
         Label l = new Label(this, SWT.NONE);
@@ -153,14 +160,21 @@ public class RelativeTimeWidget extends Composite
         second.setMaximum(59);
         second.setIncrement(1);
         second.setPageIncrement(10);
+
+        before = new Button(this, SWT.CHECK);
+        before.setText(Messages.Time_Before);
+        before.setToolTipText(Messages.Time_Before_TT);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalSpan = layout.numColumns - 1;
+        gd.horizontalAlignment = SWT.FILL;
+        before.setLayoutData(gd);
         
-        // New row        
         Button now = new Button(this, SWT.PUSH);
         now.setText(Messages.Time_Now);
         now.setToolTipText(Messages.Time_Now_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
-        gd.horizontalSpan = layout.numColumns - 1;
         gd.horizontalAlignment = SWT.RIGHT;
         now.setLayoutData(gd);
         
@@ -231,12 +245,13 @@ public class RelativeTimeWidget extends Composite
     /** Update the data from the interactive GUI elements. */
     private void updateDataFromGUI()
     {
-        relative_time.set(RelativeTime.YEARS, year.getSelection());
-        relative_time.set(RelativeTime.MONTHS, month.getSelection());
-        relative_time.set(RelativeTime.DAYS, day.getSelection());
-        relative_time.set(RelativeTime.HOURS, hour.getSelection());
-        relative_time.set(RelativeTime.MINUTES, minute.getSelection());
-        relative_time.set(RelativeTime.SECONDS, second.getSelection());
+        int sign = before.getSelection() ? -1 : 1;
+        relative_time.set(RelativeTime.YEARS, sign*year.getSelection());
+        relative_time.set(RelativeTime.MONTHS, sign*month.getSelection());
+        relative_time.set(RelativeTime.DAYS, sign*day.getSelection());
+        relative_time.set(RelativeTime.HOURS, sign*hour.getSelection());
+        relative_time.set(RelativeTime.MINUTES, sign*minute.getSelection());
+        relative_time.set(RelativeTime.SECONDS, sign*second.getSelection());
         updateGUIfromData();
     }
 
@@ -244,12 +259,36 @@ public class RelativeTimeWidget extends Composite
     private void updateGUIfromData()
     {
         in_GUI_update = true;
-        year.setSelection(relative_time.get(RelativeTime.YEARS));
-        month.setSelection(relative_time.get(RelativeTime.MONTHS));
-        day.setSelection(relative_time.get(RelativeTime.DAYS));
-        hour.setSelection(relative_time.get(RelativeTime.HOURS));
-        minute.setSelection(relative_time.get(RelativeTime.MINUTES));
-        second.setSelection(relative_time.get(RelativeTime.SECONDS));
+        int vals[] = new int[]
+        {
+            relative_time.get(RelativeTime.YEARS),
+            relative_time.get(RelativeTime.MONTHS),
+            relative_time.get(RelativeTime.DAYS),
+            relative_time.get(RelativeTime.HOURS),
+            relative_time.get(RelativeTime.MINUTES),
+            relative_time.get(RelativeTime.SECONDS)
+        };
+        // In principle, the signs could differ "-1years +5days",
+        // but in reality that's most often a typo.
+        // So check if anything's negative, and use that for all.
+        boolean negative = false;
+        for (int i=0; i<vals.length; ++i)
+            if (vals[i] < 0)
+            {
+                negative = true;
+                break;
+            }
+        // Apply sign to all
+        before.setSelection(negative);
+        for (int i=0; i<vals.length; ++i)
+            if (vals[i] < 0)
+                vals[i] = -vals[i];
+        year.setSelection(vals[0]);
+        month.setSelection(vals[1]);
+        day.setSelection(vals[2]);
+        hour.setSelection(vals[3]);
+        minute.setSelection(vals[4]);
+        second.setSelection(vals[5]);
         in_GUI_update = false;
         // fireUpdatedTimestamp
         for (RelativeTimeWidgetListener l : listeners)

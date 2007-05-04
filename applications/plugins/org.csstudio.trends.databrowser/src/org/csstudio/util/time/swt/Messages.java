@@ -11,6 +11,8 @@ public class Messages extends NLS
     public static String StartEndTitle;
     public static String StartTime;
     public static String Time_Date;
+    public static String Time_Before;
+    public static String Time_Before_TT;
     public static String Time_Now;
     public static String Time_Now_TT;
     public static String Time_SelectYear;
