@@ -71,44 +71,41 @@ public class AbsoluteTimeParser
     public static Calendar parse(Calendar cal, String text) throws Exception
     {
         String cooked = text.trim().toLowerCase();
-        // Empty string? Pass cal as is back.
+        // Empty string? Pass cal as is back, since we didn't change it?
         if (cooked.length() < 1)
             return cal;
         // Handle NOW
+        final Calendar result = Calendar.getInstance();
         if (cooked.startsWith(NOW))
-            return Calendar.getInstance();
-        
+            return result;
         // Provide missing year from given cal
         int datesep = cooked.indexOf('/');
         if (datesep < 0) // No date at all provided? Use the one from cal.
             cooked = String.format("%04d/%02d/%02d %s",
-                            cal.get(Calendar.YEAR),
-                            cal.get(Calendar.MONTH) + 1,
-                            cal.get(Calendar.DAY_OF_MONTH),
-                            cooked);
+                                   cal.get(Calendar.YEAR),
+                                   cal.get(Calendar.MONTH) + 1,
+                                   cal.get(Calendar.DAY_OF_MONTH),
+                                   cooked);
         else
         {   // Are there two date separators?
             datesep = cooked.indexOf('/', datesep + 1);
             // If not, assume that we have MM/DD, and add the YYYY.
             if (datesep < 0)
                 cooked = String.format("%04d/%s",
-                                cal.get(Calendar.YEAR),
-                                cooked);
+                                       cal.get(Calendar.YEAR), cooked);
         }
-        
+        // Try the parsers
         for (DateFormat parser : parsers)
         {
-            // Try the parsers
             try
-            {
-                // DateFormat returns Date, but pretty much all of Date
-                // is deprecated, so we convert to Calendar right away.
-                cal.setTimeInMillis(parser.parse(cooked).getTime());
-                return cal;
+            {   // DateFormat returns Date, but pretty much all of Date
+                // is deprecated, which is why we use Calendar.
+                long millis = parser.parse(cooked).getTime();
+                result.setTimeInMillis(millis);
+                return result;
             }
             catch (Exception e)
-            {
-                // Ignore, try the next one
+            {   // Ignore, try the next one
             }
         }
         // No parser parsed the string?

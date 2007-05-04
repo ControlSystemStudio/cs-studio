@@ -1,10 +1,8 @@
 package org.csstudio.util.time;
 
-import java.util.Calendar;
-
 /** Extract relative date/time specifications from a string.
  *  
- *  @see #parse(Calendar, String)
+ *  @see #parse(String)
  *  
  *  @author Sergei Chevtsov developed the original code for the
  *          Java Archive Viewer, from which this code heavily borrows.
@@ -32,34 +30,83 @@ public class RelativeTimeParser
         "seconds"
     };
 
+    /** Index of the relative years in result of parse(). */
+    public static final int YEARS = 1;
+    /** Index of the relative months in result of parse(). */
+    public static final int MONTHS = 2;
+    /** Index of the relative days in result of parse(). */
+    public static final int DAYS = 3;
+    /** Index of the relative hours in result of parse(). */
+    public static final int HOURS = 4;
+    /** Index of the relative minutes in result of parse(). */
+    public static final int MINUTES = 5;
+    /** Index of the relative seconds in result of parse(). */
+    public static final int SECONDS = 6;
+    
     /** Characters that are considered part of a number */
     static private final String NUMBER_CHARS = "+-0123456789";
     
     /** Extract a relative year, month, day, hour, minute, second from string.
+     *  <p>
+     *  The text has to follow the format
+     *  <code>-3 years -3 Months 1 days 19Hours 45 minutes 0 seconds</code>.
+     *  <p>
+     *  Spaces between the number and the date/time identifier are allowed.
+     *  Date/time identifiers may be appreviated, so
+     *  <code>-3 years</code>, 
+     *  <code>-3 year</code>, 
+     *  <code>-3 ye</code>, and 
+     *  <code>-3y</code> are all equivalent.
+     *  <p>
+     *  To distinguish for example minutes from month, the 'M' for month
+     *  must be uppercase, while 'm' selects minutes.
+     *  <p>
+     *  Returns an array that contains the location of the char after the
+     *  last item that was recognized,
+     *  followed by the relative year, month, day, hour, minute, second.
+     *  In case nothing was found, the last item position will be
+     *  &lt;0, and the relative date/time pieces are all 0.
+     * 
      *  @param text
+     *  @return Array [ next char, year, month, day, hour, minute, second ]
      */
     public static int[] parse(final String text)
     {
-        int pieces[] = new int[tokens.length];
+        int result[] = new int[1 + tokens.length];
+        int final_tag = -1;
         for (int i=0; i<tokens.length; ++i)
-            pieces[i] = getValueOfToken(tokens[i], text);
-        return pieces;
+        {
+            int found[] = getValueOfToken(tokens[i], text);
+            if (found == null)
+                result[i+1] = 0;
+            else
+            {   // Keep track of the right-most value in the string
+                if (found[0] > final_tag)
+                    final_tag = found[0];
+                result[i+1] = found[1];
+            }
+        }
+        result[0] = final_tag;
+        return result;
     }
     
     /** In case text contains "-24 token", return the number 24.
      *  @param token The token to look for.
      *  @param text  The text to analyze.
-     *  @return The number or 0 if token wasn't found
+     *  @return <code>null</code> if nothing was found, otherwise an array with
+     *          the end position of the value-and-tag and its numeric value.
      *  @throws NumberFormatException In case token found but number won't parse.
      */
-    private static int getValueOfToken(final String token, final String text)
+    private static int[] getValueOfToken(final String token, final String text)
         throws NumberFormatException
     {
-        // Locate start of token, i.e. end of the number in "+-1234 token".
-        int end = locateTokenPiece(token, text);
+        // Locate token.
+        int token_pos[] = locateTokenPiece(token, text);
         // Nothing found?
-        if (end < 0)
-            return 0;
+        if (token_pos == null)
+            return null;
+        // Start of token is end of the number in "+-1234 token".
+        int end = token_pos[0];
         // Skip optional space between the token and the number
         while (end > 0  &&  text.charAt(end-1) == ' ')
             -- end;
@@ -68,15 +115,24 @@ public class RelativeTimeParser
         while (start > 0  &&
                NUMBER_CHARS.indexOf(text.charAt(start-1)) >= 0)
             -- start;
-        // Parse the number
-        final String number = text.substring(start, end);
-        return Integer.parseInt(number);
+        // Parse the number.
+        // For some reason Integer.parseInt doesn't like "+...",
+        // but I want to allow that, so chop it off
+        final String number = text.charAt(start) == '+' ? 
+                         text.substring(start + 1, end)
+                       : text.substring(start,     end);
+        return new int[] { token_pos[1], Integer.parseInt(number) };
     }        
     
-    /** Locate position of token in text, also recognizing abbreviated token.
-     *  @return Location or -1.
+    /** Locate position of token in text, also recognizing an abbreviated token.
+     *  <p>
+     *  Except when comparing only the first characters, the match is
+     *  case-insensitive.
+     *  @return Array with start and end of token in string,
+     *          or <code>null</code>.
+     *          End is actually the location of the char following the token.
      */
-    public static int locateTokenPiece(final String token, final String text)
+    public static int[] locateTokenPiece(final String token, final String text)
     {
         final String lc_text = text.toLowerCase();
         
@@ -115,9 +171,9 @@ public class RelativeTimeParser
             final String found = cooked_text.substring(start, end);
             if (! found.equals(token_piece))
                 continue;
-            return start;
+            return new int[] { start, end };
         }
         // nothing found.
-        return -1;
+        return null;
     }
 }
