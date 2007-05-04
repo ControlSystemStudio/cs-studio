@@ -24,6 +24,12 @@ import java.util.Calendar;
  *  <tr><td>Absolute</td><td>Relative</td><td>as given</td><td>rel. to start</td></tr>
  *  <tr><td>Relative</td><td>Relative</td><td>rel. to end</td><td>rel. to 'now'</td></tr>
  *  </table>
+ *  <p>
+ *  Finally, some absolute time specification might follow a relative
+ *  date/time, for example:
+ *  <p>
+ *  <code>-7 days 08:00</code> addresses a time 7 days relative to the reference
+ *  point, but at exactly 08:00.
  *
  *  @see AbsoluteTimeParser
  *  @see RelativeTimeParser
@@ -53,20 +59,20 @@ public class StartEndTimeParser
         else if (!abs_start && abs_end)
         {
             Calendar end = AbsoluteTimeParser.parse(end_text);
-            Calendar start = adjust(end, rel_start);
+            Calendar start = adjust(end, start_text, rel_start);
             return new Calendar[] { start, end };
         }
         else if (abs_start && !abs_end)
         {
             Calendar start = AbsoluteTimeParser.parse(start_text);
-            Calendar end = adjust(start, rel_end);
+            Calendar end = adjust(start, end_text, rel_end);
             return new Calendar[] { start, end };
         }
         else if (!abs_start && !abs_end)
         {
             Calendar now = Calendar.getInstance();
-            Calendar end = adjust(now, rel_end);
-            Calendar start = adjust(end, rel_start);
+            Calendar end = adjust(now, end_text, rel_end);
+            Calendar start = adjust(end, start_text, rel_start);
             return new Calendar[] { start, end };
         }
         
@@ -77,8 +83,9 @@ public class StartEndTimeParser
      *  @param date A date.
      *  @param relative_time Result of RelativeTimeParser.parse()
      *  @return The adjusted time (a new instance, not 'date' as passed in).
+     * @throws Exception 
      */
-    private static Calendar adjust(Calendar date, int relative_time[])
+    private static Calendar adjust(Calendar date, String text, int relative_time[]) throws Exception
     {
         // Get copy of date, and patch that one
         Calendar result = Calendar.getInstance();
@@ -90,6 +97,12 @@ public class StartEndTimeParser
         result.add(Calendar.MINUTE, relative_time[RelativeTimeParser.MINUTES]);
         result.add(Calendar.SECOND, relative_time[RelativeTimeParser.SECONDS]);
         
+        // In case there's more text after the end of the relative
+        // date/time specification, for example because we got
+        // "-2month 08:00", apply that absolute text to the result.
+        final int rest = relative_time[RelativeTimeParser.REMAINING_TEXT_OFFSET];
+        if (rest > 1  &&  rest < text.length())
+            return AbsoluteTimeParser.parse(result, text.substring(rest));
         return result;
     }
 }

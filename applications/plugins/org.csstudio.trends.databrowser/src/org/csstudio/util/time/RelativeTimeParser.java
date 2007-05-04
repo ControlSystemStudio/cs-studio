@@ -30,6 +30,8 @@ public class RelativeTimeParser
         "seconds"
     };
 
+    /** Index of the location of remaining text in result of parse(). */
+    public static final int REMAINING_TEXT_OFFSET = 0;
     /** Index of the relative years in result of parse(). */
     public static final int YEARS = 1;
     /** Index of the relative months in result of parse(). */

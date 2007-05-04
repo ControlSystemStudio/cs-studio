@@ -135,6 +135,17 @@ public class TimeParserTests extends TestCase
         assertEquals("2007/03/06 23:55:09", start_time);
         assertEquals("2007/05/06 23:45:09", end_time);
 
+        // rel, abs with an absolute time in the relative part
+        start = "-2 days 08:15";
+        end = "2007/05/06 23:45:09";
+        start_end = StartEndTimeParser.parse(start, end);
+        start_time = format.format(start_end[0].getTime());
+        end_time = format.format(start_end[1].getTime());
+        System.out.println("   " + start + " ... " + end + "\n-> " +
+                           start_time + " ... " + end_time);
+        assertEquals("2007/05/04 08:15:00", start_time);
+        assertEquals("2007/05/06 23:45:09", end_time);
+        
         // abs, rel. Also hours that roll over into next day.
         start = "2006/01/29 12:00:00";
         end = "6M 12H";
