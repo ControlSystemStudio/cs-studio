@@ -31,11 +31,41 @@ public class RelativeTime
     
     /** Identifier of the relative seconds in get() or set(). */
     public static final int SECONDS = 5;
+    
+    /** Tokens that mark a relative date/time piece.
+     *  <p>
+     *  The original implementation of the parser only allowed characters,
+     *  like 'M' to indicate a month.
+     *  This implementation allows both upper- and lowercase versions
+     *  of the full "month" or shortened versions like "mon",
+     *  but when only a single character is used,
+     *  it's case has to match Sergei's orignal specification,
+     *  which explains the specific choice of upper and lower case in here.
+     */
+    @SuppressWarnings("nls")
+    static final String tokens[] = new String[]
+    {
+        "years",
+        "Months",
+        "days",
+        "Hours",
+        "minutes",
+        "seconds"
+    };
 
     /** Construct new relative time information. */
     public RelativeTime()
     {
         rel_time = new int[6];
+    }
+    
+    /** @return The string token that's recognized by the
+     *          {@link RelativeTimeParser} and that's also used
+     *          by toString() for a piece.
+     */
+    public String getToken(int piece)
+    {
+        return tokens[piece];
     }
 
     /** Set the YEAR etc. to a new value.
@@ -71,5 +101,40 @@ public class RelativeTime
         calendar.add(Calendar.HOUR_OF_DAY, get(HOURS));
         calendar.add(Calendar.MINUTE, get(MINUTES));
         calendar.add(Calendar.SECOND, get(SECONDS));
-     }
+    }
+
+    @Override
+    public Object clone()
+    {
+        RelativeTime copy = new RelativeTime();
+        for (int i=0; i<rel_time.length; ++i)
+            copy.rel_time[i] = rel_time[i]; 
+        return copy;
+    }
+
+    /** Format the relative time as a string suitable for
+     *  {@link RelativeTimeParser}
+     *  @return Formatted relative time.
+     */
+    @Override
+    public String toString()
+    {
+        StringBuffer result = new StringBuffer();
+        for (int piece=0; piece<rel_time.length; ++piece)
+            addToStringBuffer(result, piece);
+        return result.toString();
+    }
+    
+    /** Add piece==YEAR etc. to buffer; value and token. */
+    private void addToStringBuffer(StringBuffer buf, int piece)
+    {
+        if (rel_time[piece] == 0)
+            return;
+        if (buf.length() > 0)
+            buf.append(' ');
+        buf.append(rel_time[piece]);
+        buf.append(' ');
+        // Use the full (long) token, but lowercase
+        buf.append(tokens[piece].toLowerCase());
+    }
 }

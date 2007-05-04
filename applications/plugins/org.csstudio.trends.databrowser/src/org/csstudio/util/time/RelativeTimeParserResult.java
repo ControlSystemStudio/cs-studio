@@ -43,4 +43,9 @@ class RelativeTimeParserResult
     {
         return offset_of_next_char;
     }
+    
+    public String toString()
+    {
+        return time.toString();
+    }
 };

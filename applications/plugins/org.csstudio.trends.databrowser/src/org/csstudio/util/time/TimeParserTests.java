@@ -82,6 +82,7 @@ public class TimeParserTests extends TestCase
     public void testRelativeTimeParser() throws Exception
     {
         RelativeTimeParserResult result = RelativeTimeParser.parse("-2 Months +5 years");
+        System.out.println(result);
         assertEquals(18, result.getOffsetOfNextChar());
         assertEquals(+5, result.get(RelativeTime.YEARS));
         assertEquals(-2, result.get(RelativeTime.MONTHS));
@@ -91,6 +92,7 @@ public class TimeParserTests extends TestCase
         assertEquals( 0, result.get(RelativeTime.SECONDS));
         
         result = RelativeTimeParser.parse("   30 minutes -2 mon     ");
+        System.out.println(result);
         assertEquals(20, result.getOffsetOfNextChar());
         assertEquals( 0, result.get(RelativeTime.YEARS));
         assertEquals(-2, result.get(RelativeTime.MONTHS));
@@ -100,6 +102,7 @@ public class TimeParserTests extends TestCase
         assertEquals( 0, result.get(RelativeTime.SECONDS));
 
         result = RelativeTimeParser.parse("+2M 3m 08:00");
+        System.out.println(result);
         assertEquals( 6, result.getOffsetOfNextChar());
         assertEquals( 0, result.get(RelativeTime.YEARS));
         assertEquals( 2, result.get(RelativeTime.MONTHS));

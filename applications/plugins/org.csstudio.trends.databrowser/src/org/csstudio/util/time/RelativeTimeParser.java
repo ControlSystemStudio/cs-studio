@@ -11,25 +11,6 @@ package org.csstudio.util.time;
 @SuppressWarnings("nls")
 public class RelativeTimeParser
 {
-    /** Tokens that mark a relative date/time piece.
-     *  <p>
-     *  Sergei's implementation only allowed characters,
-     *  like 'M' to indicate a month.
-     *  This implementation allows both upper- and lowercase versions
-     *  of the full "month" or shortened versions like "mon",
-     *  but when only a single character is used,
-     *  it's case has to match Sergei's orignal specification.
-     */
-    static private final String tokens[] = new String[]
-    {   // Order of these must match the order of RelativeTime.YEARS etc.
-        "years",
-        "Months",
-        "days",
-        "Hours",
-        "minutes",
-        "seconds"
-    };
-
     /** Characters that are considered part of a number */
     static private final String NUMBER_CHARS = "+-0123456789";
     
@@ -61,9 +42,9 @@ public class RelativeTimeParser
     {
         RelativeTime rel_time = new RelativeTime();
         int offset_of_next_char = -1;
-        for (int i=0; i<tokens.length; ++i)
+        for (int i=0; i<RelativeTime.tokens.length; ++i)
         {
-            int found[] = getValueOfToken(tokens[i], text);
+            int found[] = getValueOfToken(RelativeTime.tokens[i], text);
             if (found == null)
                 rel_time.set(i, 0);
             else
