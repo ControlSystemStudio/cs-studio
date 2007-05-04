@@ -113,20 +113,52 @@ public class TimeParserTests extends TestCase
     public void testTimeParser() throws Exception
     {
         Calendar start_end[];
-        start_end = StartEndTimeParser.parse("2006/01/02 03:04:05",
-                                             "2007/05/06 07:08:09");
-        String start = format.format(start_end[0].getTime());
-        String end = format.format(start_end[1].getTime());
-        System.out.println(start + " ... " + end);
-        assertEquals("2006/01/02 03:04:05", start);
-        assertEquals("2007/05/06 07:08:09", end);
+        // abs, abs
+        String start = "2006/01/02 03:04:05";
+        String end = "2007/05/06 07:08:09";
+        start_end = StartEndTimeParser.parse(start, end);
+        String start_time = format.format(start_end[0].getTime());
+        String end_time = format.format(start_end[1].getTime());
+        System.out.println("   " + start + " ... " + end + "\n-> " +
+                           start_time + " ... " + end_time);
+        assertEquals(start, start_time);
+        assertEquals(end, end_time);
 
-        start_end = StartEndTimeParser.parse("-2 month +10 min",
-                                             "2007/05/06 23:45:09");
-        start = format.format(start_end[0].getTime());
-        end = format.format(start_end[1].getTime());
-        System.out.println(start + " ... " + end);
-        assertEquals("2007/03/06 23:55:09", start);
-        assertEquals("2007/05/06 23:45:09", end);
+        // rel, abs
+        start = "-2 month +10 min";
+        end = "2007/05/06 23:45:09";
+        start_end = StartEndTimeParser.parse(start, end);
+        start_time = format.format(start_end[0].getTime());
+        end_time = format.format(start_end[1].getTime());
+        System.out.println("   " + start + " ... " + end + "\n-> " +
+                           start_time + " ... " + end_time);
+        assertEquals("2007/03/06 23:55:09", start_time);
+        assertEquals("2007/05/06 23:45:09", end_time);
+
+        // abs, rel. Also hours that roll over into next day.
+        start = "2006/01/29 12:00:00";
+        end = "6M 12H";
+        start_end = StartEndTimeParser.parse(start, end);
+        start_time = format.format(start_end[0].getTime());
+        end_time = format.format(start_end[1].getTime());
+        System.out.println("   " + start + " ... " + end + "\n-> " +
+                           start_time + " ... " + end_time);
+        assertEquals("2006/01/29 12:00:00", start_time);
+        assertEquals("2006/07/30 00:00:00", end_time);
+
+        // rel, rel
+        start = "-6H";
+        end = "-2H";
+        start_end = StartEndTimeParser.parse(start, end);
+        start_time = format.format(start_end[0].getTime());
+        end_time = format.format(start_end[1].getTime());
+        System.out.println("   " + start + " ... " + end + "\n-> " +
+                           start_time + " ... " + end_time);
+        long now = Calendar.getInstance().getTimeInMillis() / 1000;
+        // Get seconds to 'now'
+        double start_diff_sec = now - start_end[0].getTimeInMillis()/1000;
+        double end_diff_sec = now - start_end[1].getTimeInMillis()/1000;
+        assertEquals(8*60*60.0, start_diff_sec, 10.0);
+        assertEquals(2*60*60.0, end_diff_sec, 10.0);
     }
 }

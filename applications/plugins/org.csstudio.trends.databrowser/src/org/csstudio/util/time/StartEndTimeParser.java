@@ -21,6 +21,8 @@ import java.util.Calendar;
  *  <tr><th>Start Specification </th><th>End Spec.</th><th>Start Time</th><th>End Time</th></tr>
  *  <tr><td>Absolute</td><td>Absolute</td><td>As given</td><td>as given</td></tr>
  *  <tr><td>Relative</td><td>Absolute</td><td>rel. to end</td><td>as given</td></tr>
+ *  <tr><td>Absolute</td><td>Relative</td><td>as given</td><td>rel. to start</td></tr>
+ *  <tr><td>Relative</td><td>Relative</td><td>rel. to end</td><td>rel. to 'now'</td></tr>
  *  </table>
  *
  *  @see AbsoluteTimeParser
@@ -51,6 +53,19 @@ public class StartEndTimeParser
         else if (!abs_start && abs_end)
         {
             Calendar end = AbsoluteTimeParser.parse(end_text);
+            Calendar start = adjust(end, rel_start);
+            return new Calendar[] { start, end };
+        }
+        else if (abs_start && !abs_end)
+        {
+            Calendar start = AbsoluteTimeParser.parse(start_text);
+            Calendar end = adjust(start, rel_end);
+            return new Calendar[] { start, end };
+        }
+        else if (!abs_start && !abs_end)
+        {
+            Calendar now = Calendar.getInstance();
+            Calendar end = adjust(now, rel_end);
             Calendar start = adjust(end, rel_start);
             return new Calendar[] { start, end };
         }
