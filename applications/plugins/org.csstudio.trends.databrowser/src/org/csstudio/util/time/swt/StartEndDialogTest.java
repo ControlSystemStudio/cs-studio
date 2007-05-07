@@ -28,13 +28,10 @@ public class StartEndDialogTest
 
         StartEndDialog dlg = new StartEndDialog(shell);
         dlg.open();
-
         
-        while (!shell.isDisposed())
-        {
-            if (!display.readAndDispatch())
-                display.sleep();
-        }
+        System.out.println("Start: '" + dlg.getStart() + "'");
+        System.out.println("End: '" + dlg.getEnd() + "'");
+
         display.dispose();
     }
     

@@ -77,36 +77,36 @@ public class TimeParserTests extends TestCase
         RelativeTimeParserResult result = RelativeTimeParser.parse("-2 Months +5 years");
         System.out.println(result);
         assertEquals(18, result.getOffsetOfNextChar());
-        assertEquals(+5, result.get(RelativeTime.YEARS));
-        assertEquals(-2, result.get(RelativeTime.MONTHS));
-        assertEquals( 0, result.get(RelativeTime.DAYS));
-        assertEquals( 0, result.get(RelativeTime.HOURS));
-        assertEquals( 0, result.get(RelativeTime.MINUTES));
-        assertEquals( 0, result.get(RelativeTime.SECONDS));
+        assertEquals(+5, result.getRelativeTime().get(RelativeTime.YEARS));
+        assertEquals(-2, result.getRelativeTime().get(RelativeTime.MONTHS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.DAYS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.HOURS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.MINUTES));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.SECONDS));
         
         result = RelativeTimeParser.parse("   30 minutes -2 mon     ");
         System.out.println(result);
         assertEquals(20, result.getOffsetOfNextChar());
-        assertEquals( 0, result.get(RelativeTime.YEARS));
-        assertEquals(-2, result.get(RelativeTime.MONTHS));
-        assertEquals( 0, result.get(RelativeTime.DAYS));
-        assertEquals( 0, result.get(RelativeTime.HOURS));
-        assertEquals(30, result.get(RelativeTime.MINUTES));
-        assertEquals( 0, result.get(RelativeTime.SECONDS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.YEARS));
+        assertEquals(-2, result.getRelativeTime().get(RelativeTime.MONTHS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.DAYS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.HOURS));
+        assertEquals(30, result.getRelativeTime().get(RelativeTime.MINUTES));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.SECONDS));
 
         result = RelativeTimeParser.parse("+2M 3m 08:00");
         System.out.println(result);
         assertEquals( 6, result.getOffsetOfNextChar());
-        assertEquals( 0, result.get(RelativeTime.YEARS));
-        assertEquals( 2, result.get(RelativeTime.MONTHS));
-        assertEquals( 0, result.get(RelativeTime.DAYS));
-        assertEquals( 0, result.get(RelativeTime.HOURS));
-        assertEquals( 3, result.get(RelativeTime.MINUTES));
-        assertEquals( 0, result.get(RelativeTime.SECONDS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.YEARS));
+        assertEquals( 2, result.getRelativeTime().get(RelativeTime.MONTHS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.DAYS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.HOURS));
+        assertEquals( 3, result.getRelativeTime().get(RelativeTime.MINUTES));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.SECONDS));
         
         // now
         result = RelativeTimeParser.parse("   NoW ");
-        assertEquals(true, result.isNow());
+        assertEquals(true, result.getRelativeTime().isNow());
     }
     
     @Test

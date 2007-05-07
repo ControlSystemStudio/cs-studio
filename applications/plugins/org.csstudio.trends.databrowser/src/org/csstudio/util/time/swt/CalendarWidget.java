@@ -238,6 +238,6 @@ public class CalendarWidget extends Composite
         
         // fireUpdatedTimestamp
         for (CalendarWidgetListener l : listeners)
-            l.updatedTimestamp(this, calendar);
+            l.updatedCalendar(this, calendar);
     }
 }

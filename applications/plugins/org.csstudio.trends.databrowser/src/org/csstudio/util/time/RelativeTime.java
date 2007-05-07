@@ -58,6 +58,14 @@ public class RelativeTime
     {
         rel_time = new int[6];
     }
+
+    /** Construct relative time information from the given data.
+     *  @param ymdhms Array with years, months, days, hours, minutes, seconds
+     */
+    public RelativeTime(int ymdhms[])
+    {
+        rel_time = ymdhms;
+    }
     
     /** @return The string token that's recognized by the
      *          {@link RelativeTimeParser} and that's also used
@@ -68,15 +76,6 @@ public class RelativeTime
         return tokens[piece];
     }
 
-    /** Set the YEAR etc. to a new value.
-     *  @param piece One of the constants YEAR, ..., SECONDS.
-     *  @param new_value The new value.
-     */
-    public void set(int piece, int new_value)
-    {
-        rel_time[piece] = new_value;
-    }
-    
     /** Get one of the pieces of relative time.
      *  <p>
      *  For example, if get(YEAR) == -1, that stands for "one year ago".

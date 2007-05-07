@@ -28,6 +28,7 @@ public class AbsoluteTimeParser
 
     /** Like parse(), using a base calendar of 'now', 'current time zone'.
      *  @see #parse(Calendar, String)
+     *  @return Calendar initialized from parsed text.
      */
     public static Calendar parse(String text) throws Exception
     {
@@ -57,7 +58,7 @@ public class AbsoluteTimeParser
      *  @param cal Base calendar, defines the time zone as well as
      *             the year, in case the text doesn't include a year.
      *  @param text The text to parse.
-     *  @return Adjusted calendar.
+     *  @return Adjusted Calendar.
      *  @exception On error.
      */
     public static Calendar parse(Calendar cal, String text) throws Exception

@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 import org.csstudio.util.time.AbsoluteTimeParser;
 import org.csstudio.util.time.RelativeTime;
+import org.csstudio.util.time.RelativeTimeParser;
+import org.csstudio.util.time.RelativeTimeParserResult;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -23,24 +25,40 @@ import org.eclipse.swt.widgets.Text;
 public class StartEndDialog extends Dialog
     implements CalendarWidgetListener, RelativeTimeWidgetListener
 {
+    // GUI Elements
+    private TabFolder left_tab, right_tab;
+    private static final int ABS_TAB = 0;
+    private static final int REL_TAB = 1;
     private CalendarWidget abs_start, abs_end;
     private RelativeTimeWidget rel_start, rel_end;
     private Text start_text, end_text;
     private Label info;
     
+    // Start and end specification strings
+    private String start_specification, end_specification;
+    
+    /** Create dialog with some default start and end time. */
+    @SuppressWarnings("nls")
     public StartEndDialog(Shell shell)
     {
-        super(shell);
+        this(shell, "-1day", "now");
     }
     
-    /** @return the start time
-    public ITimestamp getStart()
-    {   return start;  }
+    /** Create dialog with given start and end time specification. */
+    public StartEndDialog(Shell shell, String start, String end)
+    {
+        super(shell);
+        start_specification = start;
+        end_specification = end;
+    }
+    
+    /** @return Start specification. */
+    public String getStart()
+    {   return start_specification;  }
 
-     @return the end time
-    public ITimestamp getEnd()
-    {   return end; }
-    */
+    /** @return End specification. */
+    public String getEnd()
+    {   return end_specification; }
 
     @Override
     protected void configureShell(Shell shell)
@@ -57,51 +75,46 @@ public class StartEndDialog extends Dialog
         layout.numColumns = 4;
         GridData gd;
 
-        // Abs Start/Relative  Start       Abs End/Relative End
-        //      ....                            ....
-        // Start: __________________       End: _______________
-        // Info
-        //                                      [OK] [Cancel]
-        TabFolder left = new TabFolder(box, SWT.BORDER);
+        // ---- Left -----
+        left_tab = new TabFolder(box, SWT.BORDER);
         gd = new GridData();
         gd.horizontalSpan = layout.numColumns/2;
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        left.setLayoutData(gd);
+        left_tab.setLayoutData(gd);
 
-        TabItem tab = new TabItem(left, 0);
+        TabItem tab = new TabItem(left_tab, 0);
         tab.setText(Messages.StartEnd_AbsStart);
         tab.setToolTipText(Messages.StartEnd_AbsStart_TT);
-        abs_start = new CalendarWidget(left, 0);
+        abs_start = new CalendarWidget(left_tab, 0);
         abs_start.addListener(this);
         tab.setControl(abs_start);
         
-        tab = new TabItem(left, 0);
+        tab = new TabItem(left_tab, 0);
         tab.setText(Messages.StartEnd_RelStart);
         tab.setToolTipText(Messages.StartEnd_RelStart_TT);
-        rel_start = new RelativeTimeWidget(left, 0);
+        rel_start = new RelativeTimeWidget(left_tab, 0);
         rel_start.addListener(this);
         tab.setControl(rel_start);
         
-        // ---- Right ------
-        TabFolder right = new TabFolder(box, SWT.BORDER);
+        right_tab = new TabFolder(box, SWT.BORDER);
         gd = new GridData();
         gd.horizontalSpan = layout.numColumns/2;
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        right.setLayoutData(gd);
+        right_tab.setLayoutData(gd);
 
-        tab = new TabItem(right, 0);
+        tab = new TabItem(right_tab, 0);
         tab.setText(Messages.StartEnd_AbsEnd);
         tab.setToolTipText(Messages.StartEnd_AbsEnd_TT);
-        abs_end = new CalendarWidget(right, 0);
+        abs_end = new CalendarWidget(right_tab, 0);
         abs_end.addListener(this);
         tab.setControl(abs_end);
         
-        tab = new TabItem(right, 0);
+        tab = new TabItem(right_tab, 0);
         tab.setText(Messages.StartEnd_RelEnd);
         tab.setToolTipText(Messages.StartEnd_RelEnd_TT);
-        rel_end = new RelativeTimeWidget(right, 0);
+        rel_end = new RelativeTimeWidget(right_tab, 0);
         rel_end.addListener(this);
         tab.setControl(rel_end);
         
@@ -139,15 +152,67 @@ public class StartEndDialog extends Dialog
         gd.horizontalAlignment = SWT.FILL;
         info.setLayoutData(gd);
         
-        // Select the 'relative' tabs
-        right.setSelection(1);
-        left.setSelection(1);
+        // Initialize GUI content
+        setFromSpecifications();
         
         return box;
     }
 
+    /** If the dialog is closed via OK,
+     *  update the start/end specs from the GUI.
+     */
+    @Override
+    protected void okPressed()
+    {
+        start_specification = start_text.getText();
+        end_specification = end_text.getText();
+        super.okPressed();
+    }
+
+    /** @see #setFromSpecifications */
+    private void setFromSpecification(TabFolder tab, CalendarWidget abs,
+                    RelativeTimeWidget rel, Text text, String specification)
+        throws Exception
+    {
+        text.setText(specification);
+        RelativeTimeParserResult result = RelativeTimeParser.parse(specification);
+        if (result.isAbsolute())
+        {
+            tab.setSelection(ABS_TAB);
+            abs.setCalendar(AbsoluteTimeParser.parse(specification));
+        }
+        else
+        {
+            tab.setSelection(REL_TAB);
+            rel.setRelativeTime(result.getRelativeTime());
+        }
+    }
+    
+    /** Set GUI from start/end strings. */
+    private void setFromSpecifications()
+    {
+        try
+        {
+            setFromSpecification(left_tab, abs_start, rel_start, start_text,
+                                 start_specification);
+        }
+        catch (Exception ex)
+        {
+            info.setText(Messages.StartEnd_StartError);
+        }
+        try
+        {
+            setFromSpecification(right_tab, abs_end, rel_end, end_text,
+                                 end_specification);
+        }
+        catch (Exception ex)
+        {
+            info.setText(Messages.StartEnd_EndError);
+        }
+    }
+    
     // CalendarWidgetWidgetListener
-    public void updatedTimestamp(CalendarWidget source, Calendar calendar)
+    public void updatedCalendar(CalendarWidget source, Calendar calendar)
     {
         if (source == abs_start)
             start_text.setText(AbsoluteTimeParser.format(calendar));

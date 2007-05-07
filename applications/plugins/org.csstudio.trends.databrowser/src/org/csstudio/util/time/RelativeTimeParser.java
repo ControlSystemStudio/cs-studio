@@ -32,6 +32,9 @@ public class RelativeTimeParser
      *  To distinguish for example minutes from month, the 'M' for month
      *  must be uppercase, while 'm' selects minutes.
      *  <p>
+     *  In addition, the special case of "now" is recognized,
+     *  resulting in a relative time where all pieces are 0.
+     *  <p>
      *  Returns info about the location of the char after the
      *  last item that was recognized,
      *  as well as the relative year, month, day, hour, minute, second.
@@ -43,23 +46,25 @@ public class RelativeTimeParser
      */
     public static RelativeTimeParserResult parse(final String text)
     {
-        RelativeTime rel_time = new RelativeTime();
         if (text.indexOf(NOW) >= 0)
-            return new RelativeTimeParserResult(rel_time, text.length());
-        int offset_of_next_char = -1;
+            return new RelativeTimeParserResult(new RelativeTime(),
+                                                text.length());
+        int offset_of_next_char = 0;
+        int ymdhms[] = new int[6];
         for (int i=0; i<RelativeTime.tokens.length; ++i)
         {
             int found[] = getValueOfToken(RelativeTime.tokens[i], text);
             if (found == null)
-                rel_time.set(i, 0);
+                ymdhms[i] = 0;
             else
             {   // Keep track of the right-most value in the string
                 if (found[0] > offset_of_next_char)
                     offset_of_next_char = found[0];
-                rel_time.set(i, found[1]);
+                ymdhms[i] = found[1];
             }
         }
-        return new RelativeTimeParserResult(rel_time, offset_of_next_char);
+        return new RelativeTimeParserResult(new RelativeTime(ymdhms),
+                                            offset_of_next_char);
     }
     
     /** In case text contains "-24 token", return the number 24.

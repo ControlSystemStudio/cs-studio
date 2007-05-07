@@ -58,8 +58,8 @@ public class StartEndTimeParser
         RelativeTimeParserResult rel_start = RelativeTimeParser.parse(start_text);
         RelativeTimeParserResult rel_end   = RelativeTimeParser.parse(end_text);
         // Which one is absolute?
-        boolean abs_start = rel_start.getOffsetOfNextChar() < 0;
-        boolean abs_end = rel_end.getOffsetOfNextChar() < 0;
+        boolean abs_start = rel_start.isAbsolute();
+        boolean abs_end = rel_end.isAbsolute();
         if (abs_start && abs_end)
         {
             Calendar start = AbsoluteTimeParser.parse(start_text);
@@ -102,7 +102,7 @@ public class StartEndTimeParser
         Calendar result = Calendar.getInstance();
         result.setTimeInMillis(date.getTimeInMillis());
         
-        relative_time.adjust(result);
+        relative_time.getRelativeTime().adjust(result);
         
         // In case there's more text after the end of the relative
         // date/time specification, for example because we got

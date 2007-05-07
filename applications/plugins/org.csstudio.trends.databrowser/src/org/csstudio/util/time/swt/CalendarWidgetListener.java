@@ -11,5 +11,5 @@ public interface CalendarWidgetListener
      *  @param source The affected widget.
      *  @param calendar The current date and time.
      */
-    public void updatedTimestamp(CalendarWidget source, Calendar calendar);
+    public void updatedCalendar(CalendarWidget source, Calendar calendar);
 }

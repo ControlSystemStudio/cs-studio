@@ -17,7 +17,7 @@ public class CalendarWidgetTest implements CalendarWidgetListener
     private static DateFormat format =
         new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-    public void updatedTimestamp(CalendarWidget source, Calendar calendar)
+    public void updatedCalendar(CalendarWidget source, Calendar calendar)
     {
         System.out.println("Time: " + format.format(calendar.getTime()));
     }

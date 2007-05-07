@@ -1,11 +1,9 @@
 package org.csstudio.util.time;
 
-import java.util.Calendar;
-
 /** Container for the read-only result of RelativeTimeParser.parse().
  *  @author Kay Kasemir
  */
-class RelativeTimeParserResult
+public class RelativeTimeParserResult
 {
     /** The relative time specification. */
     private final RelativeTime time;
@@ -22,26 +20,18 @@ class RelativeTimeParserResult
         this.offset_of_next_char = offset_of_next_char;
     }
     
-    /** @see RelativeTime#get(int)
-     *  @return One of the RelativeTime pieces.
-     */
-    public int get(int piece)
+    /** @return The RelativeTime. */
+    public RelativeTime getRelativeTime()
     {
-        return time.get(piece);
+        return time;
     }
     
-    /** @return <code>true</code> if all relative time pieces are zero,
-     *          i.e. indicate "now".
+    /** @return <code>true</code> if all parsed text was absolute,
+     *          i.e. no relative time pieces were found.
      */
-    public boolean isNow()
+    public boolean isAbsolute()
     {
-        return time.isNow();
-    }
-    
-    /** @see RelativeTime#adjust(Calendar) */
-    public void adjust(Calendar calendar)
-    {
-        time.adjust(calendar);
+        return offset_of_next_char <= 0;
     }
     
     /** @return Offset of the next character in the parsed string
