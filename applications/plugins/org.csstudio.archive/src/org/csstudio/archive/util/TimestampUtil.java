@@ -32,16 +32,14 @@ public class TimestampUtil
     {
         Calendar cal =
             new GregorianCalendar(year, month-1, day, hours, minutes, seconds);
-        final long millis = cal.getTimeInMillis();
-        final long secs = millis / 1000L;
-        return TimestampFactory.createTimestamp(secs, nano);
+        return fromCalendar(cal, nano);
     }
 
     /** Create a time stamp from pieces.
      *  <p>
      *  Order of array elements is the same as returned by 
      *  ITimestamp.toPieces().
- */
+     */
     public static ITimestamp fromPieces(final long pieces[])
     {
         return fromPieces((int)pieces[0], (int)pieces[1],
@@ -49,6 +47,22 @@ public class TimestampUtil
                         (int)pieces[4], (int)pieces[5], pieces[6]);
     }
     
+    /** Create a time stamp from a Calendar value and nanoseconds.
+     */
+    public static ITimestamp fromCalendar(Calendar cal, final long nano)
+    {
+        final long millis = cal.getTimeInMillis();
+        final long secs = millis / 1000L;
+        return TimestampFactory.createTimestamp(secs, nano);
+    }
+
+    /** Create a time stamp from a Calendar value.
+     */
+    public static ITimestamp fromCalendar(Calendar cal)
+    {
+        return fromCalendar(cal, 0);
+    }
+
     /** Parse time stamp from string "yyyy/MM/dd HH:mm:ss" */
     @SuppressWarnings("nls")
     public static ITimestamp fromString(final String text) throws Exception
