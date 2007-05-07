@@ -37,6 +37,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
@@ -165,6 +166,7 @@ public class ConfigView extends PlotAwareView
         TabFolder tabs = new TabFolder(scroll, SWT.BORDER);
         createPVTab(tabs);
         createLiveTab(tabs);
+        createTimeTab(tabs);
         
         // Update the archive table for the selected PVs
         pv_table_viewer.addPostSelectionChangedListener(
@@ -445,6 +447,74 @@ public class ConfigView extends PlotAwareView
         tab.setControl(parent);
     }
     
+    private void createTimeTab(TabFolder tabs)
+    {
+        TabItem tab = new TabItem(tabs, 0);
+        tab.setText(Messages.TimeAxisConfig);
+        tab.setToolTipText(Messages.TimeAxisConfig_TT);
+        Composite parent = new Composite(tabs, 0);
+        
+        GridLayout gl = new GridLayout();
+        gl.numColumns = 3;
+        parent.setLayout(gl);
+        GridData gd;
+        
+        // Start: __________________ [...]
+        // End:   __________________ [...]
+        // [Update Graph]    [Read from Graph]
+
+        // Row 1
+        Label l = new Label(parent, 0);
+        l.setText(Messages.StartTime);
+        gd = new GridData();
+        l.setLayoutData(gd);
+
+        Text start_time = new Text(parent, SWT.LEFT);
+        start_time.setToolTipText(Messages.StartTime_TT);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        start_time.setLayoutData(gd);
+        
+        Button b = new Button(parent, SWT.PUSH);
+        b.setText(Messages.StartEndDlg);
+        gd = new GridData();
+        b.setLayoutData(gd);
+        
+        // Row 2
+        l = new Label(parent, 0);
+        l.setText(Messages.EndTime);
+        gd = new GridData();
+        l.setLayoutData(gd);
+
+        Text end_time = new Text(parent, SWT.LEFT);
+        end_time.setToolTipText(Messages.EndTime_TT);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        end_time.setLayoutData(gd);
+        
+        b = new Button(parent, SWT.PUSH);
+        b.setText(Messages.StartEndDlg);
+        gd = new GridData();
+        b.setLayoutData(gd);
+
+        // Row 3
+        b = new Button(parent, SWT.PUSH);
+        b.setText(Messages.SetGraphTimes);
+        gd = new GridData();
+        b.setLayoutData(gd);
+
+        b = new Button(parent, SWT.PUSH);
+        b.setText(Messages.ReadGraphTimes);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.LEFT;
+        b.setLayoutData(gd);
+        
+        tab.setControl(parent);
+    }
+
     /** Set the initial focus. */
     @Override
     public void setFocus()

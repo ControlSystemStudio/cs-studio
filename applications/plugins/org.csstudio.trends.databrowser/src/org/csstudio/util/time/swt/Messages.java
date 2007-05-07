@@ -8,12 +8,12 @@ public class Messages extends NLS
 
     public static String Date_Sep;
     
-    
     public static String StartEnd_AbsEnd;
     public static String StartEnd_AbsEnd_TT;
     public static String StartEnd_EndError;
     public static String StartEnd_EndTime;
     public static String StartEnd_EndTime_TT;
+    public static String StartEnd_Error;
     public static String StartEnd_RelEnd;
     public static String StartEnd_RelEnd_TT;
     public static String StartEnd_AbsStart;
@@ -21,6 +21,7 @@ public class Messages extends NLS
     public static String StartEnd_RelStart;
     public static String StartEnd_RelStart_TT;
     public static String StartEnd_StartError;
+    public static String StartEnd_StartExceedsEnd;
     public static String StartEnd_StartTime;
     public static String StartEnd_StartTime_TT;
     public static String StartEnd_Title;

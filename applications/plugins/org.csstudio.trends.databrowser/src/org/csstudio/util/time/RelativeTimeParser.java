@@ -45,6 +45,7 @@ public class RelativeTimeParser
      *  @return Array [ next char, year, month, day, hour, minute, second ]
      */
     public static RelativeTimeParserResult parse(final String text)
+        throws Exception
     {
         if (text.indexOf(NOW) >= 0)
             return new RelativeTimeParserResult(new RelativeTime(),
@@ -75,7 +76,7 @@ public class RelativeTimeParser
      *  @throws NumberFormatException In case token found but number won't parse.
      */
     private static int[] getValueOfToken(final String token, final String text)
-        throws NumberFormatException
+        throws Exception
     {
         // Locate token.
         int token_pos[] = locateTokenPiece(token, text);
@@ -98,7 +99,14 @@ public class RelativeTimeParser
         final String number = text.charAt(start) == '+' ? 
                          text.substring(start + 1, end)
                        : text.substring(start,     end);
-        return new int[] { token_pos[1], Integer.parseInt(number) };
+        try
+        {
+            return new int[] { token_pos[1], Integer.parseInt(number) };
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Cannot parse number for '" + token + "'");
+        }
     }        
     
     /** Locate position of token in text, also recognizing an abbreviated token.

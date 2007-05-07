@@ -206,6 +206,7 @@ public class RelativeTimeWidget extends Composite
                     updateDataFromGUI();
             }
         };
+        before.addSelectionListener(update);
         year.addSelectionListener(update);
         month.addSelectionListener(update);
         day.addSelectionListener(update);

@@ -6,6 +6,7 @@ import org.csstudio.util.time.AbsoluteTimeParser;
 import org.csstudio.util.time.RelativeTime;
 import org.csstudio.util.time.RelativeTimeParser;
 import org.csstudio.util.time.RelativeTimeParserResult;
+import org.csstudio.util.time.StartEndTimeParser;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -36,6 +37,7 @@ public class StartEndDialog extends Dialog
     
     // Start and end specification strings
     private String start_specification, end_specification;
+    private StartEndTimeParser start_end;
     
     /** Create dialog with some default start and end time. */
     @SuppressWarnings("nls")
@@ -53,12 +55,23 @@ public class StartEndDialog extends Dialog
     }
     
     /** @return Start specification. */
-    public String getStart()
+    public String getStartSpecification()
     {   return start_specification;  }
 
     /** @return End specification. */
-    public String getEnd()
+    public String getEndSpecification()
     {   return end_specification; }
+
+    /** @return Calendar for start time. */
+    public final Calendar getStartCalendar()
+    {   return start_end.getStart();  }
+    
+    /** @return Calendar for end time. */
+    public final Calendar getEndCalendar()
+    {   return start_end.getEnd(); }
+    
+    public final boolean isEndNow()
+    {   return start_end.getRelativeEnd().isNow(); }
 
     @Override
     protected void configureShell(Shell shell)
@@ -166,6 +179,24 @@ public class StartEndDialog extends Dialog
     {
         start_specification = start_text.getText();
         end_specification = end_text.getText();
+        // If the specifications don't parse, don't allow 'OK'
+        try
+        {
+            start_end = 
+                new StartEndTimeParser(start_specification, end_specification);
+            if (start_end.getStart().compareTo(start_end.getEnd()) >= 0)
+            {
+                info.setText(Messages.StartEnd_StartExceedsEnd);
+                return;
+                
+            }
+        }
+        catch (Exception ex)
+        {
+            info.setText(Messages.StartEnd_Error + ex.getMessage());
+            return;
+        }
+        // Proceed...
         super.okPressed();
     }
 

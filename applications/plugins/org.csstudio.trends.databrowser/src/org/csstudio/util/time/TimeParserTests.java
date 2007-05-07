@@ -112,13 +112,12 @@ public class TimeParserTests extends TestCase
     @Test
     public void testTimeParser() throws Exception
     {
-        Calendar start_end[];
         // abs, abs
         String start = "2006/01/02 03:04:05";
         String end = "2007/05/06 07:08:09";
-        start_end = StartEndTimeParser.parse(start, end);
-        String start_time = format.format(start_end[0].getTime());
-        String end_time = format.format(start_end[1].getTime());
+        StartEndTimeParser start_end = new StartEndTimeParser(start, end);
+        String start_time = format.format(start_end.getStart().getTime());
+        String end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         assertEquals(start, start_time);
@@ -127,9 +126,9 @@ public class TimeParserTests extends TestCase
         // rel, abs
         start = "-2 month +10 min";
         end = "2007/05/06 23:45:09";
-        start_end = StartEndTimeParser.parse(start, end);
-        start_time = format.format(start_end[0].getTime());
-        end_time = format.format(start_end[1].getTime());
+        start_end = new StartEndTimeParser(start, end);
+        start_time = format.format(start_end.getStart().getTime());
+        end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         assertEquals("2007/03/06 23:55:09", start_time);
@@ -138,9 +137,9 @@ public class TimeParserTests extends TestCase
         // rel, abs with an absolute time in the relative part
         start = "-2 days 08:15";
         end = "2007/05/06 23:45:09";
-        start_end = StartEndTimeParser.parse(start, end);
-        start_time = format.format(start_end[0].getTime());
-        end_time = format.format(start_end[1].getTime());
+        start_end = new StartEndTimeParser(start, end);
+        start_time = format.format(start_end.getStart().getTime());
+        end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         assertEquals("2007/05/04 08:15:00", start_time);
@@ -149,9 +148,9 @@ public class TimeParserTests extends TestCase
         // abs, rel. Also hours that roll over into next day.
         start = "2006/01/29 12:00:00";
         end = "6M 12H";
-        start_end = StartEndTimeParser.parse(start, end);
-        start_time = format.format(start_end[0].getTime());
-        end_time = format.format(start_end[1].getTime());
+        start_end = new StartEndTimeParser(start, end);
+        start_time = format.format(start_end.getStart().getTime());
+        end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         assertEquals("2006/01/29 12:00:00", start_time);
@@ -160,45 +159,45 @@ public class TimeParserTests extends TestCase
         // rel, rel
         start = "-6H";
         end = "-2H";
-        start_end = StartEndTimeParser.parse(start, end);
-        start_time = format.format(start_end[0].getTime());
-        end_time = format.format(start_end[1].getTime());
+        start_end = new StartEndTimeParser(start, end);
+        start_time = format.format(start_end.getStart().getTime());
+        end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         long now = Calendar.getInstance().getTimeInMillis() / 1000;
         // Get seconds to 'now'
-        double start_diff_sec = now - start_end[0].getTimeInMillis()/1000;
-        double end_diff_sec = now - start_end[1].getTimeInMillis()/1000;
+        double start_diff_sec = now - start_end.getStart().getTimeInMillis()/1000;
+        double end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(8*60*60.0, start_diff_sec, 10.0);
         assertEquals(2*60*60.0, end_diff_sec, 10.0);
 
         // rel, now
         start = "-6H";
         end = "now";
-        start_end = StartEndTimeParser.parse(start, end);
-        start_time = format.format(start_end[0].getTime());
-        end_time = format.format(start_end[1].getTime());
+        start_end = new StartEndTimeParser(start, end);
+        start_time = format.format(start_end.getStart().getTime());
+        end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         now = Calendar.getInstance().getTimeInMillis() / 1000;
         // Get seconds to 'now'
-        start_diff_sec = now - start_end[0].getTimeInMillis()/1000;
-        end_diff_sec = now - start_end[1].getTimeInMillis()/1000;
+        start_diff_sec = now - start_end.getStart().getTimeInMillis()/1000;
+        end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(6*60*60.0, start_diff_sec, 10.0);
         assertEquals(0.0, end_diff_sec, 10.0);
     
         // rel, now
         start = "-6H";
         end = "";
-        start_end = StartEndTimeParser.parse(start, end);
-        start_time = format.format(start_end[0].getTime());
-        end_time = format.format(start_end[1].getTime());
+        start_end = new StartEndTimeParser(start, end);
+        start_time = format.format(start_end.getStart().getTime());
+        end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
         now = Calendar.getInstance().getTimeInMillis() / 1000;
         // Get seconds to 'now'
-        start_diff_sec = now - start_end[0].getTimeInMillis()/1000;
-        end_diff_sec = now - start_end[1].getTimeInMillis()/1000;
+        start_diff_sec = now - start_end.getStart().getTimeInMillis()/1000;
+        end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(6*60*60.0, start_diff_sec, 10.0);
         assertEquals(0.0, end_diff_sec, 10.0);
     }

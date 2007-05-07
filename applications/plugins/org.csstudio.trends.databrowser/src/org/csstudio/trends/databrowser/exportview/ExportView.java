@@ -6,7 +6,7 @@ import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
-import org.csstudio.trends.databrowser.ploteditor.StartEndDialog;
+import org.csstudio.util.time.swt.StartEndDialog;
 import org.csstudio.value.Value;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
@@ -126,12 +126,14 @@ public class ExportView extends PlotAwareView
         {
             public void widgetSelected(SelectionEvent e)
             {
+                /* TODO
                 StartEndDialog dlg = new StartEndDialog(shell, start, end);
                 if (dlg.open() != StartEndDialog.OK)
                     return;
-                start = dlg.getStart();
-                end = dlg.getEnd();
+                start = dlg.getStartSpecification();
+                end = dlg.getEndSpecification();
                 setStartEndFromTimestamps();
+                */
             }
         });
        

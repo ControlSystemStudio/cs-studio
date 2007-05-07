@@ -29,8 +29,8 @@ public class StartEndDialogTest
         StartEndDialog dlg = new StartEndDialog(shell);
         dlg.open();
         
-        System.out.println("Start: '" + dlg.getStart() + "'");
-        System.out.println("End: '" + dlg.getEnd() + "'");
+        System.out.println("Start: '" + dlg.getStartSpecification() + "'");
+        System.out.println("End: '" + dlg.getEndSpecification() + "'");
 
         display.dispose();
     }

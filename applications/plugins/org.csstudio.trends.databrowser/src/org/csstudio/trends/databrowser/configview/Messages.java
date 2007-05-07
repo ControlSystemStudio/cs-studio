@@ -33,6 +33,10 @@ public class Messages extends NLS
 
     public static String EmptyPVRowMarker;
 
+    public static String EndTime;
+
+    public static String EndTime_TT;
+
     public static String EnterCount;
 
     public static String EnterSecs;
@@ -59,6 +63,8 @@ public class Messages extends NLS
 
     public static String PV;
 
+    public static String ReadGraphTimes;
+
     public static String RingBuffer;
 
     public static String RingBufferMinSize;
@@ -68,6 +74,18 @@ public class Messages extends NLS
     public static String ScanPeriodSecs;
 
     public static String Secs;
+
+    public static String SetGraphTimes;
+
+    public static String StartEndDlg;
+
+    public static String StartTime;
+
+    public static String StartTime_TT;
+
+    public static String TimeAxisConfig;
+
+    public static String TimeAxisConfig_TT;
 
     public static String Up;
 

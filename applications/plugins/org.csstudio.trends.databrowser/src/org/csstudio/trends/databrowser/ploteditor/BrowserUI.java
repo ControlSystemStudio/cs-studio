@@ -1,20 +1,18 @@
 package org.csstudio.trends.databrowser.ploteditor;
 
-import org.csstudio.archive.util.TimestampUtil;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.trends.databrowser.Plugin;
+import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 
 /** The user interface for the data browser.
  *  <p>
@@ -80,8 +78,8 @@ public class BrowserUI extends Composite
                       | Chart.USE_TRACE_NAMES
                       | InteractiveChart.ZOOM_X_FROM_END);
         // Init the X (Time) axis range
-        //long now = TimestampFactory.now().seconds();
-        i_chart.getChart().getXAxis().setValueRange(3600);
+        long now = TimestampFactory.now().seconds();
+        i_chart.getChart().getXAxis().setValueRange(now-3600, now);
                 
         // Add scroll button
         scroll_pause = new Button(i_chart.getButtonBar(), SWT.CENTER);        
@@ -95,29 +93,6 @@ public class BrowserUI extends Composite
             }
         });
         
-        
-        Label l1 = new Label(i_chart.getButtonBar(), SWT.LEFT | SWT.CENTER);
-        l1.setText(" " + Messages.ShowLast); //$NON-NLS-1$
-
-        final Combo timeScale = new Combo(i_chart.getButtonBar(), SWT.READ_ONLY);
-        String item;
-        // Let's fill the combo with date range options.
-        for(int i = 1; i <= 10; i++) 
-        {
-        	item = String.valueOf(12 * i) + " h";
-        	if((i % 2) == 0) {
-        		item += " (" + String.valueOf(i / 2) + " d)";
-        	}
-        	timeScale.add(item);
-        }
-        timeScale.addSelectionListener(new SelectionAdapter() 
-        {
-        	public void widgetSelected(SelectionEvent e)
-            {
-        		updateChartRange((Integer.valueOf(timeScale.getSelectionIndex()) + 1) * 12);
-            }
-        });
-        
         Button time_config = new Button(i_chart.getButtonBar(), SWT.CENTER);
         time_config.setText(Messages.TimeConfig);
         time_config.setToolTipText(Messages.TimeConfig_TT);
@@ -126,15 +101,17 @@ public class BrowserUI extends Composite
             public void widgetSelected(SelectionEvent e)
             {
                 XAxis xaxis = i_chart.getChart().getXAxis();
+                /* TODO
                 ITimestamp start = TimestampUtil.fromDouble(xaxis.getLowValue());
                 ITimestamp end = TimestampUtil.fromDouble(xaxis.getHighValue());
-                StartEndDialog dlg = new StartEndDialog(getShell(), start, end);
+                */
+                StartEndDialog dlg = new StartEndDialog(getShell());
                 if (dlg.open() == StartEndDialog.OK)
                 {
                     scroll_enable = false;
                     updateScrollPauseButton();
-                    double low = dlg.getStart().toDouble();
-                    double high = dlg.getEnd().toDouble();
+                    double low = dlg.getStartCalendar().getTimeInMillis()/1000.0;
+                    double high = dlg.getEndCalendar().getTimeInMillis()/1000.0;
                     if (low < high)
                         xaxis.setValueRange(low, high);
                 }
@@ -142,15 +119,6 @@ public class BrowserUI extends Composite
         });
     }
    
-    private void updateChartRange(int hours)
-    {
-    	scroll_enable = false;
-        updateScrollPauseButton();
-        
-        i_chart.getChart().getXAxis().setValueRange(60 * 60 * hours);
-        //i_chart.getChart().autozoom();
-    }
-    
     /** Update the scroll button's image and tooltip. */
     private void updateScrollPauseButton()
     {

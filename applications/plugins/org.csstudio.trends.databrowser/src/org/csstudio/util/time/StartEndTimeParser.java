@@ -41,6 +41,10 @@ import java.util.Calendar;
  */
 public class StartEndTimeParser
 {
+    private Calendar start, end;
+    private RelativeTimeParserResult rel_start;
+    private RelativeTimeParserResult rel_end;
+    
     /** Parse the given start and end time strings,
      *  and return the calendar date and time obtained from that.
      *  <p>
@@ -51,44 +55,85 @@ public class StartEndTimeParser
      *  @return Array with start and end date/time.
      *  @throws Exception On parse error.
      */
-    public static Calendar[] parse(String start_text, String end_text)
+    public StartEndTimeParser(String start_text, String end_text)
         throws Exception
     {
-        // Extract the relative date/time information?
-        RelativeTimeParserResult rel_start = RelativeTimeParser.parse(start_text);
-        RelativeTimeParserResult rel_end   = RelativeTimeParser.parse(end_text);
-        // Which one is absolute?
-        boolean abs_start = rel_start.isAbsolute();
-        boolean abs_end = rel_end.isAbsolute();
-        if (abs_start && abs_end)
+        rel_start = RelativeTimeParser.parse(start_text);
+        rel_end = RelativeTimeParser.parse(end_text);
+        if (rel_start.isAbsolute() && rel_end.isAbsolute())
         {
-            Calendar start = AbsoluteTimeParser.parse(start_text);
-            Calendar end = AbsoluteTimeParser.parse(end_text);
-            return new Calendar[] { start, end };
+            start = AbsoluteTimeParser.parse(start_text);
+            end = AbsoluteTimeParser.parse(end_text);
+            return;
         }
-        else if (!abs_start && abs_end)
+        else if (!rel_start.isAbsolute() && rel_end.isAbsolute())
         {
-            Calendar end = AbsoluteTimeParser.parse(end_text);
-            Calendar start = adjust(end, start_text, rel_start);
-            return new Calendar[] { start, end };
+            end = AbsoluteTimeParser.parse(end_text);
+            start = adjust(end, start_text, rel_start);
+            return;
         }
-        else if (abs_start && !abs_end)
+        else if (rel_start.isAbsolute() && !rel_end.isAbsolute())
         {
-            Calendar start = AbsoluteTimeParser.parse(start_text);
-            Calendar end = adjust(start, end_text, rel_end);
-            return new Calendar[] { start, end };
+            start = AbsoluteTimeParser.parse(start_text);
+            end = adjust(start, end_text, rel_end);
+            return;
         }
-        else if (!abs_start && !abs_end)
-        {
-            Calendar now = Calendar.getInstance();
-            Calendar end = adjust(now, end_text, rel_end);
-            Calendar start = adjust(end, start_text, rel_start);
-            return new Calendar[] { start, end };
-        }
-        
-        return null;
+        // else !rel_start.isAbsolute() && !rel_end.isAbsolute()
+        Calendar now = Calendar.getInstance();
+        end = adjust(now, end_text, rel_end);
+        start = adjust(end, start_text, rel_start);
     }
+
+    /** Get the start time obtained from the given start and end strings.
+     *  <p>
+     *  In case relative times are involved, those were evalutaed at the
+     *  time of parsing.
+     *  @return Calendar value for the start time.
+     */
+    public final Calendar getStart()
+    {   return start; }
+
+    /** Get the end time obtained from the given start and end strings.
+     *  <p>
+     *  In case relative times are involved, those were evalutaed at the
+     *  time of parsing.
+     *  @return Calendar value for the end time.
+     */
+    public final Calendar getEnd()
+    {   return end;  }
+
+    /** @return <code>true</code> if the start time is absolute, i.e. there
+     *          were no 'relative' pieces found.
+     */
+    public final boolean isAbsoluteStart()
+    {   return rel_start.isAbsolute(); }
     
+    /** @return <code>true</code> if the end time is absolute, i.e. there
+     *          were no 'relative' pieces found.
+     */
+    public final boolean isAbsoluteEnd()
+    {   return rel_end.isAbsolute(); }
+
+    /** @see #isAbsoluteStart()
+     *  @return RelativeTime component of the start time.
+     */
+    public final RelativeTime getRelativeStart()
+    {   return rel_start.getRelativeTime();  }
+
+    /** @see #isAbsoluteEnd()
+     *  @return RelativeTime component of the end time.
+     */
+    public final RelativeTime getRelativeEnd()
+    {   return rel_end.getRelativeTime();  }
+    
+    /** @return <code>true</code> if the end time is 'now',
+     *          i.e. relative with zero offsets.
+     */
+    public final boolean isEndNow()
+    {
+        return !isAbsoluteEnd()  &&  getRelativeEnd().isNow();
+    }
+
     /** Adjust the given date with the relative date/time pieces.
      *  @param date A date.
      *  @param relative_time Result of RelativeTimeParser.parse()

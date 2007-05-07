@@ -46,6 +46,9 @@ public class XAxis extends Axis
         return false;
     }
     
+    /** Helper for layout of axis, used by Chart.
+     *  @return Aprx. height of axis in pixel.
+     */
     public final int getPixelHeight(GC gc)
     {
         Point char_size = gc.textExtent("X"); //$NON-NLS-1$
@@ -54,21 +57,6 @@ public class XAxis extends Axis
         return TICK_LENGTH + 2*char_size.y+2;
     }
     
-    public final void setValueRange(int secondsUntilNow) 
-    {
-		ITimestamp s1 = TimestampFactory.now();
-		ITimestamp s2 = TimestampFactory.now();
-		
-		s2.setSeconds(s2.seconds() - secondsUntilNow);
-		s1.setSeconds(s1.seconds() - 60);
-		
-        double low = s2.toDouble();
-        double high = s1.toDouble();
-        
-        if (low < high)
-            this.setValueRange(low, high);
-    }
-
     public void paint(PaintEvent e)
     {
         if (!region.intersects(e.x, e.y, e.width, e.height))
