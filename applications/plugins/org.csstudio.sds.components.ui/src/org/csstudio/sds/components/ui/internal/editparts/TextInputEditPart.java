@@ -83,8 +83,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
 
 		label.setText(model.getInputText());
-		label
-				.setFont(CustomMediaFactory.getInstance().getFont(
+		label.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont()));
 
 		label.addMouseListener(new MouseListener() {
@@ -99,7 +98,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 			}
 
 		});
-
 		return label;
 	}
 

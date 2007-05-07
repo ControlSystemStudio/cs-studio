@@ -20,6 +20,8 @@ public final class TextInputInitializer extends
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeStaticProperty(TextInputModel.PROP_INPUT_TEXT, "Enter Text!");
+		initializeStaticProperty(TextInputModel.PROP_WIDTH, 100);
+		initializeStaticProperty(TextInputModel.PROP_HEIGHT, 50);
 		initializeDynamicProperty(TextInputModel.PROP_INPUT_TEXT, "$record$.VAL", "$record$.VAL");
 	}
 
