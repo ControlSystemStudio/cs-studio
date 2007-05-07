@@ -68,15 +68,15 @@ public final class TextInputModel extends AbstractWidgetModel {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public synchronized void setSize(final int width, final int height) {
-		if (width>0 && height>0) {
-			super.setSize(width, height);
-		}
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 */
+//	@Override
+//	public synchronized void setSize(final int width, final int height) {
+//		if (width>0 && height>0) {
+//			super.setSize(width, height);
+//		}
+//	}
 
 	/**
 	 * {@inheritDoc}
