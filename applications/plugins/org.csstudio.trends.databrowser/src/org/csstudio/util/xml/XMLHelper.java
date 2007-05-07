@@ -45,11 +45,12 @@ public class XMLHelper
         return b.toString();
     }
 
-    public static final void XML(StringBuffer buf, int level, String tag, String value)
+    /** Add tag and value to buffer with given indentation level. */
+    public static final void XML(StringBuffer buffer, int level, String tag, String value)
     {
-        indent(buf, level);
-        buf.append("<").append(tag).append(">");
-        buf.append(escapeXMLstring(value));
-        buf.append("</").append(tag).append(">\n");
+        indent(buffer, level);
+        buffer.append("<").append(tag).append(">");
+        buffer.append(escapeXMLstring(value));
+        buffer.append("</").append(tag).append(">\n");
     }
 }

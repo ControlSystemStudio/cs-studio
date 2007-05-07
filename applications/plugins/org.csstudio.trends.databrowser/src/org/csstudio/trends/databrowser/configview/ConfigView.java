@@ -17,6 +17,7 @@ import org.csstudio.util.swt.AutoSizeColumn;
 import org.csstudio.util.swt.AutoSizeControlListener;
 import org.csstudio.util.swt.RGBCellEditor;
 import org.csstudio.util.swt.ScrolledContainerHelper;
+import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -32,6 +33,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -66,13 +68,7 @@ public class ConfigView extends PlotAwareView
      */
     public static final boolean use_axis_combobox = false;
     
-    // GUI Elements for the "Live Data" Tab
-    private Text scan_period_text;
-    private Text update_period_text;
-    private Text ring_size_text;
-    private Label help;
-
-    // Sash for the "PV" Tab
+    // GUI Elements for the "PV" Tab
     // TODO: on exit, persist the form's weight,
     // then initialize from the saved settings?
     private SashForm form;
@@ -87,11 +83,28 @@ public class ConfigView extends PlotAwareView
 
     // Sash Section for ArchiveDataSources
     private TableViewer archive_table_viewer;
+
+    // GUI Elements for the "Live Data" Tab
+    private Text scan_period_text;
+    private Text update_period_text;
+    private Text ring_size_text;
+    private Label help;
+
+    // GUI Elements for the "Time Config" Tab
+    private Text start_time;
+    private Text end_time;
+    private Label start_end_info;
     
     private ModelListener model_listener = new ModelListener()
     {
-        // All the same:
+        // Almost all the same:
         // Whatever changed, we need to display the current model info.
+        public void timeRangeChanged()
+        {   entriesChanged(); }
+
+        public void periodsChanged()
+        {   entriesChanged(); }
+
         public void entriesChanged()
         {
             Model model = getModel();
@@ -113,10 +126,7 @@ public class ConfigView extends PlotAwareView
         public void entryRemoved(IModelItem removed_item)
         {   entriesChanged(); }
 
-        public void periodsChanged()
-        {   entriesChanged(); }
     };
-    
     /** @return Returns the table viewer used to display the PV entries. */
     public TableViewer getPVTableViewer()
     {   return pv_table_viewer; }
@@ -424,13 +434,10 @@ public class ConfigView extends PlotAwareView
         gd.grabExcessHorizontalSpace = true;
         ring_size_text.setLayoutData(gd);
 
-        SelectionListener validator = new SelectionListener()
+        SelectionListener validator = new SelectionAdapter()
         {
             public void widgetDefaultSelected(SelectionEvent e)
-            {   checkInputs(); }
-
-            public void widgetSelected(SelectionEvent e)
-            {}
+            {   checkLivePVInputs(); }
         };
         scan_period_text.addSelectionListener(validator);
         update_period_text.addSelectionListener(validator);
@@ -447,6 +454,7 @@ public class ConfigView extends PlotAwareView
         tab.setControl(parent);
     }
     
+    /** Create one tab of the TabFolder GUI. */
     private void createTimeTab(TabFolder tabs)
     {
         TabItem tab = new TabItem(tabs, 0);
@@ -454,13 +462,14 @@ public class ConfigView extends PlotAwareView
         tab.setToolTipText(Messages.TimeAxisConfig_TT);
         Composite parent = new Composite(tabs, 0);
         
-        GridLayout gl = new GridLayout();
-        gl.numColumns = 3;
-        parent.setLayout(gl);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 3;
+        parent.setLayout(layout);
         GridData gd;
         
         // Start: __________________ [...]
         // End:   __________________ [...]
+        // Info
         // [Update Graph]    [Read from Graph]
 
         // Row 1
@@ -469,17 +478,17 @@ public class ConfigView extends PlotAwareView
         gd = new GridData();
         l.setLayoutData(gd);
 
-        Text start_time = new Text(parent, SWT.LEFT);
+        start_time = new Text(parent, SWT.LEFT);
         start_time.setToolTipText(Messages.StartTime_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         start_time.setLayoutData(gd);
         
-        Button b = new Button(parent, SWT.PUSH);
-        b.setText(Messages.StartEndDlg);
+        Button dlg1 = new Button(parent, SWT.PUSH);
+        dlg1.setText(Messages.StartEndDlg);
         gd = new GridData();
-        b.setLayoutData(gd);
+        dlg1.setLayoutData(gd);
         
         // Row 2
         l = new Label(parent, 0);
@@ -487,20 +496,28 @@ public class ConfigView extends PlotAwareView
         gd = new GridData();
         l.setLayoutData(gd);
 
-        Text end_time = new Text(parent, SWT.LEFT);
+        end_time = new Text(parent, SWT.LEFT);
         end_time.setToolTipText(Messages.EndTime_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         end_time.setLayoutData(gd);
         
-        b = new Button(parent, SWT.PUSH);
-        b.setText(Messages.StartEndDlg);
+        Button dlg2 = new Button(parent, SWT.PUSH);
+        dlg2.setText(Messages.StartEndDlg);
         gd = new GridData();
-        b.setLayoutData(gd);
+        dlg2.setLayoutData(gd);
 
         // Row 3
-        b = new Button(parent, SWT.PUSH);
+        start_end_info = new Label(parent, 0);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        gd.horizontalSpan =  layout.numColumns;
+        start_end_info.setLayoutData(gd);
+        
+        // Row 4
+        Button b = new Button(parent, SWT.PUSH);
         b.setText(Messages.SetGraphTimes);
         gd = new GridData();
         b.setLayoutData(gd);
@@ -511,6 +528,40 @@ public class ConfigView extends PlotAwareView
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.LEFT;
         b.setLayoutData(gd);
+        
+        // Update the model in response to newly entered start/end times
+        SelectionListener validator = new SelectionAdapter()
+        {
+            public void widgetDefaultSelected(SelectionEvent e)
+            {   checkTimeConfigInputs(); }
+        };
+        start_time.addSelectionListener(validator);
+        end_time.addSelectionListener(validator);
+                
+        // Connect the "..." buttons to a start/end dialog.
+        SelectionListener start_stop_dlg = new SelectionAdapter()
+        {
+            public void widgetSelected(SelectionEvent e)
+            {
+                StartEndDialog dlg =
+                    new StartEndDialog(ConfigView.this.getSite().getShell(),
+                                       start_time.getText(),
+                                       end_time.getText());
+                if (dlg.open() != StartEndDialog.OK)
+                    return;
+                // Update the text fields
+                start_time.setText(dlg.getStartSpecification());
+                end_time.setText(dlg.getEndSpecification());
+                // .. and proceed as if new values were entered there
+                checkTimeConfigInputs();
+            }
+        };
+        dlg1.addSelectionListener(start_stop_dlg);
+        dlg2.addSelectionListener(start_stop_dlg);
+        
+        // TODO: Update graph to config's start/end time
+        
+        // TODO: Read start/end time from graph
         
         tab.setControl(parent);
     }
@@ -549,8 +600,8 @@ public class ConfigView extends PlotAwareView
         site.registerContextMenu(manager, pv_table_viewer);
     }
     
-    /** Check the current input to the various text fields. */
-    private void checkInputs()
+    /** Check the current input to the various 'live PV' tab text fields. */
+    private void checkLivePVInputs()
     {
         String help_text = null;
         Model model = getModel();
@@ -613,6 +664,25 @@ public class ConfigView extends PlotAwareView
             model.setRingSize(ring_size);
     }
 
+    /** Validate inputs into the 'Time' tab. */
+    private void checkTimeConfigInputs()
+    {
+        Model model = getModel();
+        if (model == null)
+            return;
+        try
+        {
+            model.setTimeRange(start_time.getText(), end_time.getText());
+            start_end_info.setText(model.getStartTime()
+                                   + " ... " + //$NON-NLS-1$
+                                   model.getEndTime());
+        }
+        catch (Exception ex)
+        {
+            start_end_info.setText("Error: " + ex.getMessage());
+        }
+    }
+    
     /** We have a new model because the editor changed.
      *  <p>
      *  Note that we also call this ourself with old == new model
@@ -640,6 +710,8 @@ public class ConfigView extends PlotAwareView
             update_period_text.setText(""); //$NON-NLS-1$
             ring_size_text.setText(""); //$NON-NLS-1$
             pv_table_viewer.setItemCount(0);
+            start_time.setText(""); //$NON-NLS-1$
+            end_time.setText(""); //$NON-NLS-1$
         }
         else
         {
@@ -648,6 +720,8 @@ public class ConfigView extends PlotAwareView
             ring_size_text.setText(Integer.toString(model.getRingSize()));
             // The '+1' is the line that allows entry of new PVs!!
             pv_table_viewer.setItemCount(model.getNumItems() + 1);
+            start_time.setText(model.getStartSpecification());
+            end_time.setText(model.getEndSpecification());
         }
         help.setText(""); //$NON-NLS-1$
         pv_table_viewer.refresh();

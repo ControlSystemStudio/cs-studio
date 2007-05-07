@@ -38,8 +38,8 @@ public class RelativeTime
      *  like 'M' to indicate a month.
      *  This implementation allows both upper- and lowercase versions
      *  of the full "month" or shortened versions like "mon",
-     *  but when only a single character is used,
-     *  it's case has to match Sergei's orignal specification,
+     *  but when only a single character is used for month resp. minutes,
+     *  its case has to match Sergei's orignal specification,
      *  which explains the specific choice of upper and lower case in here.
      */
     @SuppressWarnings("nls")
@@ -48,7 +48,7 @@ public class RelativeTime
         "years",
         "Months",
         "days",
-        "Hours",
+        "hours",
         "minutes",
         "seconds"
     };

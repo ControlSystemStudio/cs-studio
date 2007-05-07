@@ -1,5 +1,7 @@
 package org.csstudio.util.time.swt;
 
+import org.csstudio.archive.util.TimestampUtil;
+import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.util.time.RelativeTime;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -31,6 +33,9 @@ public class StartEndDialogTest
         
         System.out.println("Start: '" + dlg.getStartSpecification() + "'");
         System.out.println("End: '" + dlg.getEndSpecification() + "'");
+        ITimestamp start = TimestampUtil.fromCalendar(dlg.getStartCalendar());
+        ITimestamp end = TimestampUtil.fromCalendar(dlg.getEndCalendar());
+        System.out.println(start + " ... " + end);
 
         display.dispose();
     }

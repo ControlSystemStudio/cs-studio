@@ -6,11 +6,14 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.TraceType;
+import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.swt.DefaultColors;
+import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.xml.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -35,7 +38,7 @@ import org.w3c.dom.Element;
  *  Nobody liked it.).
  *  <p>
  *  So this model behaves like StripTool: The network updates for a PV are cached,
- *  so we remember the "most recent" value as the "current" value.
+ *  i.e. we remember the "most recent" value as the "current" value.
  *  Periodically, the ChartItems are asked to add the current value to their
  *  sequence of samples, using the current host clock as a time stamp.
  *  
@@ -43,15 +46,57 @@ import org.w3c.dom.Element;
  */
 public class Model
 {
-    public static final double MIN_UPDATE_RATE = 0.5;
+    /** Start and end of the time range to display. */
+    private String start_specification, end_specification;
+
+    /** Default for start_specification */
+    private static final String DEFAULT_END_SPEC = "now"; //$NON-NLS-1$
+
+    /** Default for end_specification */
+    private static final String DEFAULT_START_SPEC = "-1 hour"; //$NON-NLS-1$
+    
+    /** Start and end of the time range as time stamps,
+     *   evaluated when start/end_specification were set.
+     */
+    ITimestamp start_time, end_time;
+    
+    /** Scan period for 'live' data in seconds. */
+    private double scan_period = 0.5;
+    
+    /** Minimum for scan_period. */
     public static final double MIN_SCAN_RATE = 0.1;
+    
+    /** Update period of the plot in seconds. */
+    private double update_period = 1.0;
+    
+    /** Minumum for update_period. */
+    public static final double MIN_UPDATE_RATE = 0.5;
+
+    /** Ring buffer size, number of elements, for 'live' data. */
+    private int ring_size = 1024;
+
+    private ArrayList<ModelItem> items = new ArrayList<ModelItem>();
+    
+    /** <code>true</code> if all model items were 'started'. */
+    private boolean is_running = false;
+
     private ArrayList<ModelListener> listeners = 
         new ArrayList<ModelListener>();
-    private ArrayList<ModelItem> items = new ArrayList<ModelItem>();
-    private boolean is_running = false;
-    private double scan_period = 0.5;
-    private double update_period = 1.0;
-    private int ring_size = 1024;
+    
+    /** Construct a new model. */
+    @SuppressWarnings("nls")
+    public Model()
+    {
+        try
+        {
+            // Set time defaults, since otherwise start/end would be null.
+            setTimeRange(DEFAULT_START_SPEC, DEFAULT_END_SPEC);
+        }
+        catch (Exception ex)
+        {
+            Plugin.logException("Cannot init. Model", ex);
+        }
+    }
     
     /** Must be called to dispose the model. */
     public void dispose()
@@ -83,6 +128,26 @@ public class Model
         listeners.remove(listener);
     }
 
+    /** @return Start specification. */
+    public String getStartSpecification()
+    {   return start_specification;  }
+
+    /** @return End specification. */
+    public String getEndSpecification()
+    {   return end_specification; }
+    
+    /** @see #getStartSpecification()
+     *  @return Start time, evaluated when start specification was set.
+     */
+    public ITimestamp getStartTime()
+    {   return start_time; }
+    
+    /** @see #getEndSpecification()
+     *  @return End time, evaluated when end specification was set.
+     */
+    public ITimestamp getEndTime()
+    {   return end_time; }
+
     /** @return Returns the scan period in seconds. */
     public double getScanPeriod()
     {   return scan_period; }
@@ -90,6 +155,25 @@ public class Model
     /** @return Returns the update period in seconds. */
     public double getUpdatePeriod()
     {   return update_period; }
+    
+    /** Set a new start and end time,
+     *  @see org.csstudio.util.time.StartEndTimeParser
+     */
+    public void setTimeRange(String start_specification,
+                             String end_specification) 
+        throws Exception
+    {
+        StartEndTimeParser start_end =
+            new StartEndTimeParser(start_specification, end_specification);
+        // In case of parse errors, we won't reach this point
+        start_time = TimestampUtil.fromCalendar(start_end.getStart());
+        end_time = TimestampUtil.fromCalendar(start_end.getEnd());
+        this.start_specification = start_specification;
+        this.end_specification = end_specification;
+        // firetimeRangeChanged
+        for (ModelListener l : listeners)
+            l.timeRangeChanged();
+    }
 
     /** Set new scan and update periods.
      *  <p>
@@ -345,6 +429,8 @@ public class Model
     {
         StringBuffer b = new StringBuffer(1024);
         b.append("<databrowser>\n");
+        b.append("    <start>" + start_specification + "</start>\n");
+        b.append("    <end>" + end_specification + "</end>\n");
         b.append("    <scan_period>" + scan_period + "</scan_period>\n");
         b.append("    <update_period>" + update_period + "</update_period>\n");
         b.append("    <ring_size>" + ring_size + "</ring_size>\n");
@@ -387,6 +473,14 @@ public class Model
                 throw new Exception("Expected <databrowser>, found <" + root_name
                         + ">");
             // Get the period entries
+            start_specification = DOMHelper.getSubelementString(root_node, "start");
+            end_specification = DOMHelper.getSubelementString(root_node, "end");
+            if (start_specification.length() < 1  ||
+                end_specification.length() < 1)
+            {
+                start_specification = DEFAULT_START_SPEC;
+                end_specification = DEFAULT_END_SPEC;
+            }
             scan = DOMHelper.getSubelementDouble(root_node, "scan_period");
             update = DOMHelper.getSubelementDouble(root_node, "update_period");
             ring_size = DOMHelper.getSubelementInt(root_node, "ring_size");

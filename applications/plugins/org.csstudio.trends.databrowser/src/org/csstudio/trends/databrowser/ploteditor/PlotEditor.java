@@ -126,6 +126,9 @@ public class PlotEditor extends EditorPart
         // Update 'dirty' state whenever anything changes
         listener = new ModelListener()
         {
+            public void timeRangeChanged()
+            {   entriesChanged();  }
+            
             public void periodsChanged()
             {   entriesChanged();  }
 

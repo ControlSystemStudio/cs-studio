@@ -45,6 +45,11 @@ public class Controller implements ScannerAndScrollerListener
         // React to model changes
         model_listener = new ModelListener()
         {
+            public void timeRangeChanged()
+            {
+                // TODO Auto-generated method stub
+            }
+
             public void periodsChanged()
             {
                 if (scanner_scroller != null)

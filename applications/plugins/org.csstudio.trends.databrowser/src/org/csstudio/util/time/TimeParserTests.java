@@ -147,7 +147,7 @@ public class TimeParserTests extends TestCase
         
         // abs, rel. Also hours that roll over into next day.
         start = "2006/01/29 12:00:00";
-        end = "6M 12H";
+        end = "6M 12h";
         start_end = new StartEndTimeParser(start, end);
         start_time = format.format(start_end.getStart().getTime());
         end_time = format.format(start_end.getEnd().getTime());
@@ -157,8 +157,8 @@ public class TimeParserTests extends TestCase
         assertEquals("2006/07/30 00:00:00", end_time);
 
         // rel, rel
-        start = "-6H";
-        end = "-2H";
+        start = "-6h";
+        end = "-2h";
         start_end = new StartEndTimeParser(start, end);
         start_time = format.format(start_end.getStart().getTime());
         end_time = format.format(start_end.getEnd().getTime());
@@ -172,7 +172,7 @@ public class TimeParserTests extends TestCase
         assertEquals(2*60*60.0, end_diff_sec, 10.0);
 
         // rel, now
-        start = "-6H";
+        start = "-6h";
         end = "now";
         start_end = new StartEndTimeParser(start, end);
         start_time = format.format(start_end.getStart().getTime());
@@ -187,7 +187,7 @@ public class TimeParserTests extends TestCase
         assertEquals(0.0, end_diff_sec, 10.0);
     
         // rel, now
-        start = "-6H";
+        start = "-6h";
         end = "";
         start_end = new StartEndTimeParser(start, end);
         start_time = format.format(start_end.getStart().getTime());

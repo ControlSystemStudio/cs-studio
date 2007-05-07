@@ -108,7 +108,9 @@ public class BrowserUI extends Composite
                 StartEndDialog dlg = new StartEndDialog(getShell());
                 if (dlg.open() == StartEndDialog.OK)
                 {
-                    scroll_enable = false;
+                    // If we request some_start ... 'now',
+                    // assume we want to scroll from then on.
+                    scroll_enable = dlg.isEndNow();
                     updateScrollPauseButton();
                     double low = dlg.getStartCalendar().getTimeInMillis()/1000.0;
                     double high = dlg.getEndCalendar().getTimeInMillis()/1000.0;
