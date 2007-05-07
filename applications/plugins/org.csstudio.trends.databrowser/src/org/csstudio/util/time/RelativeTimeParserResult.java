@@ -30,6 +30,14 @@ class RelativeTimeParserResult
         return time.get(piece);
     }
     
+    /** @return <code>true</code> if all relative time pieces are zero,
+     *          i.e. indicate "now".
+     */
+    public boolean isNow()
+    {
+        return time.isNow();
+    }
+    
     /** @see RelativeTime#adjust(Calendar) */
     public void adjust(Calendar calendar)
     {

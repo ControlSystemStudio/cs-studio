@@ -19,13 +19,6 @@ public class TimeParserTests extends TestCase
     {
         Calendar cal;
         
-        // now
-        cal = AbsoluteTimeParser.parse("   NoW ");
-        System.out.println(cal.getTime());
-        long diff = cal.getTimeInMillis()
-            - Calendar.getInstance().getTimeInMillis();
-        assertTrue("Got 'now' within a second", diff < 1000);
-
         // Full time, with extra spaces
         cal = AbsoluteTimeParser.parse("   2007/01/18    12:10:13.123     ");
         System.out.println(cal.getTime());
@@ -110,6 +103,10 @@ public class TimeParserTests extends TestCase
         assertEquals( 0, result.get(RelativeTime.HOURS));
         assertEquals( 3, result.get(RelativeTime.MINUTES));
         assertEquals( 0, result.get(RelativeTime.SECONDS));
+        
+        // now
+        result = RelativeTimeParser.parse("   NoW ");
+        assertEquals(true, result.isNow());
     }
     
     @Test

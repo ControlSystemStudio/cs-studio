@@ -11,6 +11,9 @@ package org.csstudio.util.time;
 @SuppressWarnings("nls")
 public class RelativeTimeParser
 {
+    /** Constant to define 'now', i.e. the current wallclock date and time. */
+    public static final String NOW = "now";
+    
     /** Characters that are considered part of a number */
     static private final String NUMBER_CHARS = "+-0123456789";
     
@@ -41,6 +44,8 @@ public class RelativeTimeParser
     public static RelativeTimeParserResult parse(final String text)
     {
         RelativeTime rel_time = new RelativeTime();
+        if (text.indexOf(NOW) >= 0)
+            return new RelativeTimeParserResult(rel_time, text.length());
         int offset_of_next_char = -1;
         for (int i=0; i<RelativeTime.tokens.length; ++i)
         {

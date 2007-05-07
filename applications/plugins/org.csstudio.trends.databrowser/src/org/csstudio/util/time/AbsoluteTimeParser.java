@@ -15,9 +15,6 @@ import java.util.Calendar;
 @SuppressWarnings("nls")
 public class AbsoluteTimeParser
 {
-    /** Constant to define 'now', i.e. the current wallclock date and time. */
-    public static final String NOW = "now";
-    
     /** The accepted date formats for absolute times. */
     @SuppressWarnings("nls")
     private static final DateFormat[] parsers = new SimpleDateFormat[]
@@ -55,11 +52,6 @@ public class AbsoluteTimeParser
      *  <p>
      *  An empty text leaves the provided calendar unchanged.
      *  <p>
-     *  In addition, the special text "NOW" results in the current wallclock
-     *  time.
-     *  Unclear, if that's not really a relative time specification, because
-     *  its value changes whenever evaluated...
-     *  <p>
      *  All other cases result in an exception.
      *  
      *  @param cal Base calendar, defines the time zone as well as
@@ -74,10 +66,7 @@ public class AbsoluteTimeParser
         // Empty string? Pass cal as is back, since we didn't change it?
         if (cooked.length() < 1)
             return cal;
-        // Handle NOW
         final Calendar result = Calendar.getInstance();
-        if (cooked.startsWith(NOW))
-            return result;
         // Provide missing year from given cal
         int datesep = cooked.indexOf('/');
         if (datesep < 0) // No date at all provided? Use the one from cal.
@@ -110,5 +99,13 @@ public class AbsoluteTimeParser
         }
         // No parser parsed the string?
         throw new Exception("Cannot parse date and time from '" + text + "'");
+    }
+    
+    /** Format given calendar value into something that this parser would handle.
+     *  @return Date and time string.
+     */
+    public static String format(Calendar cal)
+    {
+        return parsers[1].format(cal.getTime());
     }
 }

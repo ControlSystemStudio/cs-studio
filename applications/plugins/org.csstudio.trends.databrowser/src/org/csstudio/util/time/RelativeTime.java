@@ -111,6 +111,17 @@ public class RelativeTime
             copy.rel_time[i] = rel_time[i]; 
         return copy;
     }
+    
+    /** @return <code>true</code> if all relative time pieces are zero,
+     *          i.e. indicate "now".
+     */
+    public boolean isNow()
+    {
+        for (int i=0; i<rel_time.length; ++i)
+            if (rel_time[i] != 0)
+                return false;
+        return true;
+    }
 
     /** Format the relative time as a string suitable for
      *  {@link RelativeTimeParser}
@@ -119,6 +130,8 @@ public class RelativeTime
     @Override
     public String toString()
     {
+        if (isNow())
+            return RelativeTimeParser.NOW;
         StringBuffer result = new StringBuffer();
         for (int piece=0; piece<rel_time.length; ++piece)
             addToStringBuffer(result, piece);

@@ -62,13 +62,13 @@ public class RelativeTimeWidget extends Composite
         setLayout(layout);
         GridData gd;
         
-        // Date: (year)+- / (month)+-  / (day)+-
-        // Time: (hour)+- : (minute)+- : (second)+-
-        // [ ] before?                        [now]
+        // Years: (year)+- Month:  (month)+-  Days: (day)+-
+        // Hours: (hour)+- Minuts: (minute)+- Secs: (second)+-
+        // [ ] before?                              [now]
 
         // New row
         Label l = new Label(this, SWT.NONE);
-        l.setText(Messages.Time_Date);
+        l.setText(Messages.Time_Years);
         gd = new GridData();
         l.setLayoutData(gd);
 
@@ -82,11 +82,11 @@ public class RelativeTimeWidget extends Composite
         year.setMaximum(+10);
         year.setIncrement(1);
         year.setPageIncrement(5);
+        
         l = new Label(this, SWT.NONE);
-        l.setText(Messages.Date_Sep);
+        l.setText(Messages.Time_Months);
         gd = new GridData();
         l.setLayoutData(gd);
-
         month = new Spinner(this, SWT.BORDER | SWT.WRAP);
         month.setToolTipText(Messages.Time_SelectMonth);
         gd = new GridData();
@@ -97,8 +97,9 @@ public class RelativeTimeWidget extends Composite
         month.setMaximum(+12);
         month.setIncrement(1);
         month.setPageIncrement(3);
+        
         l = new Label(this, SWT.NONE);
-        l.setText(Messages.Date_Sep);
+        l.setText(Messages.Time_Days);
         gd = new GridData();
         l.setLayoutData(gd);
         
@@ -115,10 +116,9 @@ public class RelativeTimeWidget extends Composite
         
         // New row
         l = new Label(this, SWT.NONE);
-        l.setText(Messages.Time_Time);
+        l.setText(Messages.Time_Hours);
         gd = new GridData();
         l.setLayoutData(gd);
-
         hour = new Spinner(this, SWT.BORDER | SWT.WRAP);
         hour.setToolTipText(Messages.Time_SelectHour);
         gd = new GridData();
@@ -129,8 +129,9 @@ public class RelativeTimeWidget extends Composite
         hour.setMaximum(+23);
         hour.setIncrement(1);
         hour.setPageIncrement(6);
+
         l = new Label(this, SWT.NONE);
-        l.setText(Messages.Time_Sep);
+        l.setText(Messages.Time_Minutes);
         gd = new GridData();
         l.setLayoutData(gd);
 
@@ -146,10 +147,9 @@ public class RelativeTimeWidget extends Composite
         minute.setPageIncrement(10);
 
         l = new Label(this, SWT.NONE);
-        l.setText(Messages.Time_Sep);
+        l.setText(Messages.Time_Seconds);
         gd = new GridData();
         l.setLayoutData(gd);
-
         second = new Spinner(this, SWT.BORDER | SWT.WRAP);
         second.setToolTipText(Messages.Time_SelectSeconds);
         gd = new GridData();
@@ -161,6 +161,7 @@ public class RelativeTimeWidget extends Composite
         second.setIncrement(1);
         second.setPageIncrement(10);
 
+        // Next Row
         before = new Button(this, SWT.CHECK);
         before.setText(Messages.Time_Before);
         before.setToolTipText(Messages.Time_Before_TT);
@@ -193,7 +194,6 @@ public class RelativeTimeWidget extends Composite
                     hour.setSelection(0);
                     minute.setSelection(0);
                     second.setSelection(0);
-                    // TODO: Write 'now' to <whereever>
                     updateDataFromGUI();
                 }
             }
@@ -270,14 +270,20 @@ public class RelativeTimeWidget extends Composite
         };
         // In principle, the signs could differ "-1years +5days",
         // but in reality that's most often a typo.
-        // So check if anything's negative, and use that for all.
-        boolean negative = false;
+        // So check if anything's negative or all is null.
+        boolean anything_negative = false;
+        boolean all_null = true;
         for (int i=0; i<vals.length; ++i)
+        {
+            if (vals[i] > 0)
+                all_null = false;
             if (vals[i] < 0)
             {
-                negative = true;
-                break;
+                anything_negative = true;
+                all_null = false;
             }
+        }
+        boolean negative = all_null  ||  anything_negative;
         // Apply sign to all
         before.setSelection(negative);
         for (int i=0; i<vals.length; ++i)
