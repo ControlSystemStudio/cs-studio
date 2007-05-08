@@ -99,8 +99,12 @@ public class ConfigView extends PlotAwareView
     {
         // Almost all the same:
         // Whatever changed, we need to display the current model info.
-        public void timeRangeChanged()
+        public void timeSpecificationsChanged()
         {   entriesChanged(); }
+        
+        public void timeRangeChanged()
+        {   // Ignore changes to 'current' time range from pan/zoom/scroll
+        }
 
         public void periodsChanged()
         {   entriesChanged(); }
@@ -517,17 +521,17 @@ public class ConfigView extends PlotAwareView
         start_end_info.setLayoutData(gd);
         
         // Row 4
-        Button b = new Button(parent, SWT.PUSH);
-        b.setText(Messages.SetGraphTimes);
+        Button set_graph_times = new Button(parent, SWT.PUSH);
+        set_graph_times.setText(Messages.SetGraphTimes);
         gd = new GridData();
-        b.setLayoutData(gd);
+        set_graph_times.setLayoutData(gd);
 
-        b = new Button(parent, SWT.PUSH);
-        b.setText(Messages.ReadGraphTimes);
+        Button read_graph_times = new Button(parent, SWT.PUSH);
+        read_graph_times.setText(Messages.ReadGraphTimes);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.LEFT;
-        b.setLayoutData(gd);
+        read_graph_times.setLayoutData(gd);
         
         // Update the model in response to newly entered start/end times
         SelectionListener validator = new SelectionAdapter()
@@ -559,9 +563,38 @@ public class ConfigView extends PlotAwareView
         dlg1.addSelectionListener(start_stop_dlg);
         dlg2.addSelectionListener(start_stop_dlg);
         
-        // TODO: Update graph to config's start/end time
+        // Update graph to config's start/end time
+        set_graph_times.addSelectionListener(new SelectionAdapter()
+        {
+            public void widgetSelected(SelectionEvent e)
+            {
+                Model model = getModel();
+                if (model == null)
+                    return;
+                try
+                {
+                    model.setTimeSpecifications(start_time.getText(),
+                                                end_time.getText());
+                }
+                catch (Exception ex)
+                {
+                    start_end_info.setText(Messages.Error + ex.getMessage());
+                }
+            }
+        });
         
-        // TODO: Read start/end time from graph
+        // Read start/end time from graph
+        read_graph_times.addSelectionListener(new SelectionAdapter()
+        {
+            public void widgetSelected(SelectionEvent e)
+            {
+                Model model = getModel();
+                if (model == null)
+                    return;
+                start_time.setText(model.getStartTime().toString());
+                end_time.setText(model.getEndTime().toString());
+            }
+        });
         
         tab.setControl(parent);
     }
@@ -672,14 +705,14 @@ public class ConfigView extends PlotAwareView
             return;
         try
         {
-            model.setTimeRange(start_time.getText(), end_time.getText());
+            model.setTimeSpecifications(start_time.getText(), end_time.getText());
             start_end_info.setText(model.getStartTime()
                                    + " ... " + //$NON-NLS-1$
                                    model.getEndTime());
         }
         catch (Exception ex)
         {
-            start_end_info.setText("Error: " + ex.getMessage());
+            start_end_info.setText(Messages.Error + ex.getMessage());
         }
     }
     

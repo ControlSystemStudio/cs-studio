@@ -126,8 +126,15 @@ public class PlotEditor extends EditorPart
         // Update 'dirty' state whenever anything changes
         listener = new ModelListener()
         {
-            public void timeRangeChanged()
+            public void timeSpecificationsChanged()
             {   entriesChanged();  }
+            
+            public void timeRangeChanged()
+            {   // Adjust the x axis to the "current" model time range
+                final double low = model.getStartTime().toDouble();
+                final double high = model.getEndTime().toDouble();
+                gui.getChart().getXAxis().setValueRange(low, high);
+            }
             
             public void periodsChanged()
             {   entriesChanged();  }

@@ -5,6 +5,7 @@ import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDataSourceDropTarget;
 import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartListener;
 import org.csstudio.swt.chart.Trace;
@@ -45,6 +46,11 @@ public class Controller implements ScannerAndScrollerListener
         // React to model changes
         model_listener = new ModelListener()
         {
+            public void timeSpecificationsChanged()
+            {
+                // TODO Auto-generated method stub
+            }
+            
             public void timeRangeChanged()
             {
                 // TODO Auto-generated method stub
@@ -305,6 +311,7 @@ public class Controller implements ScannerAndScrollerListener
     /** Scan the PVs.
      *  @see ScannerAndScrollerListener
      */
+    @SuppressWarnings("nls")
     public void scan(boolean with_redraw)
     {
         // 'Scan' the PVs
@@ -312,24 +319,27 @@ public class Controller implements ScannerAndScrollerListener
         // Scroll or simply redraw w/o scroll.
         if (with_redraw  &&  chart.isVisible())
         {
-            // TODO: Handle auto-zoom, see if any model item
-            // has new samples while auto-zoom is enabled.
-            // Who is the best to handle this?
-            // IModelItem knows if it has new data, but can't access the plot.
-            // Controller can check all model items,
-            // determine which axes need auto-zoom,
-            // and do that before the next redraw.
-            // Blaz put that inside the chart,
-            // but then how to update the model?
             if (gui.isScrollEnabled())
-            {   // scroll
-                XAxis xaxis = chart.getXAxis();
-                double low = xaxis.getLowValue();
-                double high = xaxis.getHighValue();
-                double range = high - low;
+            {   // Scroll by updating the model's "current" time range.
+                // The plot should listen to the model and adjust its x axis.
+                double low = model.getStartTime().toDouble();
+                double high = model.getEndTime().toDouble();
+                final double range = high - low;
+                // Update model such that 'high' equals 'now',
+                // keeping the range.
                 high = now.toDouble();
+                low = high - range;
                 controller_changes_xaxis = true;
-                xaxis.setValueRange(high-range, high);
+                try
+                {
+                    model.setTimeRange(TimestampUtil.fromDouble(low),
+                                       TimestampUtil.fromDouble(high));
+                }
+                catch (Exception ex)
+                {   // Prevent follow-up errors by disabling the scroll
+                    gui.enableScrolling(false);
+                    Plugin.logException("Cannot scroll", ex);
+                }
                 // redraw is implied in the x axis update
                 controller_changes_xaxis = false;
             }

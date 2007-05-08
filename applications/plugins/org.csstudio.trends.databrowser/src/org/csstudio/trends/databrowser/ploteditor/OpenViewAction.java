@@ -31,6 +31,7 @@ public class OpenViewAction extends Action
     {
         try
         {
+            // TODO General question: How would one create a 'detached' view?
             page.showView(ID);
         }
         catch (Exception e)

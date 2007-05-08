@@ -46,7 +46,9 @@ import org.w3c.dom.Element;
  */
 public class Model
 {
-    /** Start and end of the time range to display. */
+    /** Start and end of the time range to display.
+     *  @see #getStartSpecification()
+     */
     private String start_specification, end_specification;
 
     /** Default for start_specification */
@@ -55,8 +57,8 @@ public class Model
     /** Default for end_specification */
     private static final String DEFAULT_START_SPEC = "-1 hour"; //$NON-NLS-1$
     
-    /** Start and end of the time range as time stamps,
-     *   evaluated when start/end_specification were set.
+    /** Start and end of the time range as time stamps.
+     *  @see #getStartSpecification()
      */
     ITimestamp start_time, end_time;
     
@@ -90,7 +92,7 @@ public class Model
         try
         {
             // Set time defaults, since otherwise start/end would be null.
-            setTimeRange(DEFAULT_START_SPEC, DEFAULT_END_SPEC);
+            setTimeSpecifications(DEFAULT_START_SPEC, DEFAULT_END_SPEC);
         }
         catch (Exception ex)
         {
@@ -128,21 +130,45 @@ public class Model
         listeners.remove(listener);
     }
 
-    /** @return Start specification. */
+    /** Get the start specification that is held 'permamently' when
+     *  the model is saved and re-loaded.
+     *  <p>
+     *  When the specifications are initially loaded or later changed,
+     *  the current start and end time is computed from the specs.
+     *  <p>
+     *  At runtime, scroll or pan operations will update the currently
+     *  displayed start and end time, but that won't affect this
+     *  permanent start/end specification.
+     *  <p>
+     *  This way, one can configure a model to show a default time range
+     *  of "-8 hours" ... "now", then zoom and pan a bit to look at details,
+     *  but what's saved will be the original "-8 hours" ... "now"
+     *  specification.
+     *  <p>
+     *  The config view has buttons to force an update of the specification
+     *  from the current start/end times and vice versa.
+     *
+     *  @see #getStartTime()
+     *  @return Start specification.
+     */
     public String getStartSpecification()
     {   return start_specification;  }
 
-    /** @return End specification. */
+    /** @see #getStartSpecification()
+     *  @return End specification.
+     */
     public String getEndSpecification()
     {   return end_specification; }
     
-    /** @see #getStartSpecification()
+    /** The current start time, which might be different from what you get
+     *  when you evluate the start specification 'right now'.
+     *  @see #getStartSpecification()
      *  @return Start time, evaluated when start specification was set.
      */
     public ITimestamp getStartTime()
     {   return start_time; }
     
-    /** @see #getEndSpecification()
+    /** @see #getStartTime()
      *  @return End time, evaluated when end specification was set.
      */
     public ITimestamp getEndTime()
@@ -156,11 +182,17 @@ public class Model
     public double getUpdatePeriod()
     {   return update_period; }
     
-    /** Set a new start and end time,
+    /** Set a new start and end time specification.
+     *  <p>
+     *  Also updates the current start and end time with
+     *  values computed from the specs "right now".
      *  @see org.csstudio.util.time.StartEndTimeParser
+     *  @see #getStartSpecification()
+     *  @see #setTimeRange(ITimestamp, ITimestamp)
+     *  @exception Exception on parse error of specs.
      */
-    public void setTimeRange(String start_specification,
-                             String end_specification) 
+    public void setTimeSpecifications(String start_specification,
+                                      String end_specification) 
         throws Exception
     {
         StartEndTimeParser start_end =
@@ -170,11 +202,33 @@ public class Model
         end_time = TimestampUtil.fromCalendar(start_end.getEnd());
         this.start_specification = start_specification;
         this.end_specification = end_specification;
-        // firetimeRangeChanged
+        // fireTimeSpecificationsChanged, fireTimeRangeChanged
+        for (ModelListener l : listeners)
+        {
+            l.timeSpecificationsChanged();
+            l.timeRangeChanged();
+        }
+    }
+ 
+    /** Update the current time range.
+     *  <p>
+     *  The time specifications stay as they are.
+     *  @see #setTimeSpecifications(String, String)
+     *  @exception Exception when start &gt; end.
+     */
+    @SuppressWarnings("nls")
+    public void setTimeRange(ITimestamp start, ITimestamp end) throws Exception
+    {
+        if (start_time.isGreaterThan(end))
+            throw new Exception("Time stamps out of order, start "
+                            + start + "  >  " + end);
+        start_time = start;
+        end_time = end;
+        // ,fireTimeRangeChanged
         for (ModelListener l : listeners)
             l.timeRangeChanged();
     }
-
+    
     /** Set new scan and update periods.
      *  <p>
      *  Actual periods might differ because of enforced minumum etc.

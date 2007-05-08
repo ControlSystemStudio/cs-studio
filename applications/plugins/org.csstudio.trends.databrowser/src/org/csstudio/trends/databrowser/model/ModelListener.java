@@ -6,7 +6,14 @@ package org.csstudio.trends.databrowser.model;
  */
 public interface ModelListener
 {
-    /** Invoked when the start or end time changed. */
+    /** Invoked when the start or end specifications changed.
+     *  @see Model#getStartSpecification()
+     */
+    public void timeSpecificationsChanged();
+
+    /** Invoked when the start or end times changed.
+     *  @see Model#getStartTime()
+     */
     public void timeRangeChanged();
 
     /** Invoked when the scan or update periods changed. */
