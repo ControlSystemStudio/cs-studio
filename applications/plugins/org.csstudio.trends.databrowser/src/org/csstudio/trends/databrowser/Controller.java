@@ -5,7 +5,6 @@ import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDataSourceDropTarget;
 import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartListener;
 import org.csstudio.swt.chart.Trace;
@@ -124,9 +123,6 @@ public class Controller implements ScannerAndScrollerListener
                     controller_changes_model = false;
                 }
             }
-
-            public void nothingSelected()
-            {}
 
             public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
             {}

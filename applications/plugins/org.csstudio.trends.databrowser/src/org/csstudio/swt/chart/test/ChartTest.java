@@ -76,11 +76,6 @@ public class ChartTest
                 System.out.println("ChartTest ChartListener: Point " +
                                 x + ", " + y + " Selected");
             }
-            
-            public void nothingSelected()
-            {
-                System.out.println("ChartTest ChartListener: Nothing Selected");
-            }
         });
         
         // Allow PV drops into the chart

@@ -5,8 +5,6 @@ import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
-import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
-import org.csstudio.util.time.swt.StartEndDialog;
 import org.csstudio.value.Value;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
@@ -468,12 +466,11 @@ public class ExportView extends PlotAwareView
     /** Start data export with current settings. */
     private void exportRequested()
     {
-        PlotEditor editor = getPlotEditor();
-        Model model = editor.getModel();
+        Model model = getPlotEditor().getModel();
         if (use_plot_time.getSelection())
         {   // Update start/end from plot
-            start = editor.getStart();
-            end = editor.getEnd();
+            start = model.getStartTime();
+            end = model.getEndTime();
             setStartEndFromTimestamps();
         }
         else

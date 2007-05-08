@@ -62,7 +62,6 @@ public class SampleView extends PlotAwareView
     private TableViewer table_viewer;
     private ModelSamples samples = null;
     protected int index =0;
-    PlotEditor pl;
     /** Create the GUI elements. */
     @Override
     public void createPartControl(Composite parent)
@@ -148,11 +147,13 @@ public class SampleView extends PlotAwareView
          
         
         table_viewer.addFilter(new ViewerFilter () {
-        	public boolean select(Viewer viewer, Object parentElement, Object element) {
-        		if (pl==null) return true;
+        	public boolean select(Viewer viewer, Object parentElement, Object element)
+            {
+        		if (model == null)
+                    return true;
         		ModelSample sample = (ModelSample) element;
-             	ITimestamp end = pl.getEnd();            
-            	ITimestamp start = pl.getStart();        
+            	ITimestamp start = model.getStartTime();        
+                ITimestamp end = model.getEndTime();            
             	ITimestamp ts=sample.getSample().getTime();
             	if((ts.isGreaterOrEqual(start))&&(ts.isLessOrEqual(end))) 
                 return true;
@@ -188,9 +189,8 @@ public class SampleView extends PlotAwareView
         }
         else
         {
-        	if ((pl=super.getPlotEditor()) == null) return;         	
-        	ITimestamp end = pl.getEnd();            //Albert start
-        	ITimestamp start = pl.getStart();        //Albert end   
+        	ITimestamp start = model.getStartTime();
+            ITimestamp end = model.getEndTime();
         	
             String pvs[] = new String[model.getNumItems()];
             for (int i=0; i<pvs.length; ++i){
@@ -305,7 +305,6 @@ public class SampleView extends PlotAwareView
             item = model.getItem(i);
             if (item.getName().equals(name))
             {
-            	pl=super.getPlotEditor(); 
                 samples = item.getSamples();
                 synchronized (samples)
                 {

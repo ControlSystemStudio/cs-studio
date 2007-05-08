@@ -241,9 +241,6 @@ public class InteractiveChart extends Composite
                     yaxis.addMarker(x, y, b.toString());
                 }
             }
-
-            public void nothingSelected()
-            {}
         });
     }
     

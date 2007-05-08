@@ -760,9 +760,6 @@ public class Chart extends Canvas
         
         if (any_selected)
             return;
-        // fireNothingSelected
-        for (ChartListener listener : listeners)
-            listener.nothingSelected();
     }
     
     /** Handle a rubber-band-zoom for the given region. */

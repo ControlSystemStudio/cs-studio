@@ -15,10 +15,4 @@ public interface ChartListener extends XAxisListener, YAxisListener
      *  Somebody clicked the mouse on the graph area.
      */
     public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y);
-
-    /** Nothing on the plot is selected.
-     *  Somebody clicked the mouse in the chart area,
-     *  but missed the graph.
-     */
-    public void nothingSelected();
 }

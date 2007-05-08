@@ -3,9 +3,7 @@ package org.csstudio.trends.databrowser.ploteditor;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.ui.workbench.FileEditorInput;
-import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.trends.databrowser.Controller;
 import org.csstudio.trends.databrowser.Perspective;
 import org.csstudio.trends.databrowser.Plugin;
@@ -82,20 +80,6 @@ public class PlotEditor extends EditorPart
     public Model getModel()
     {   return model; }
     
-    /** @reutrn The current 'start' time of the graph. */
-    public ITimestamp getStart()
-    { 
-        return TimestampUtil.fromDouble(
-                        gui.getChart().getXAxis().getLowValue()); 
-    }
-    
-    /** @reutrn The current 'start' time of the graph. */
-    public ITimestamp getEnd()
-    { 
-        return TimestampUtil.fromDouble(
-                        gui.getChart().getXAxis().getHighValue()); 
-    }
-
     /** @return Returns the controller. */
     public Controller getController()
     {   return controller;  }
@@ -129,12 +113,9 @@ public class PlotEditor extends EditorPart
             public void timeSpecificationsChanged()
             {   entriesChanged();  }
             
+            // "current" start/end time changes are ignored
             public void timeRangeChanged()
-            {   // Adjust the x axis to the "current" model time range
-                final double low = model.getStartTime().toDouble();
-                final double high = model.getEndTime().toDouble();
-                gui.getChart().getXAxis().setValueRange(low, high);
-            }
+            {}
             
             public void periodsChanged()
             {   entriesChanged();  }
@@ -268,7 +249,7 @@ public class PlotEditor extends EditorPart
     @Override
     public void createPartControl(Composite parent)
     {
-        gui = new BrowserUI(parent, 0);
+        gui = new BrowserUI(model, parent, 0);
         controller = new Controller(model, gui);
         createActions();
         createContextMenu();
@@ -279,8 +260,9 @@ public class PlotEditor extends EditorPart
     @Override
     public void dispose()
     {
-        controller.dispose();
         model.removeListener(listener);
+        gui.dispose();
+        controller.dispose();
         super.dispose();
     }
     

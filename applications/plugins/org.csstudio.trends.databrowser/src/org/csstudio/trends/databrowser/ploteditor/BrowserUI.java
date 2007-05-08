@@ -3,8 +3,10 @@ package org.csstudio.trends.databrowser.ploteditor;
 import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.InteractiveChart;
-import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.trends.databrowser.Plugin;
+import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.Model;
+import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
@@ -14,14 +16,18 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-/** The user interface for the data browser.
+/** The user interface of the data browser.
  *  <p>
  *  It contains an InteractiveChart with added 'scroll' button.
+ *  It scrolls the chart in response to model time range changes.
  * 
  *  @author Kay Kasemir
  */
 public class BrowserUI extends Composite
 {
+    private final Model model;
+    private ModelListener listener;
+
     private InteractiveChart i_chart;
     private boolean scroll_enable = true;
     private Button scroll_pause;
@@ -35,9 +41,10 @@ public class BrowserUI extends Composite
      *  @param parent Parent widget
      *  @param style SWT style
      */
-    public BrowserUI(Composite parent, int style)
+    public BrowserUI(Model model, Composite parent, int style)
     {
         super(parent, style);
+        this.model = model;
         // Initialize the singleton image registry
         if (images == null)
         {
@@ -46,6 +53,12 @@ public class BrowserUI extends Composite
             images.put(SCROLL_OFF, Plugin.getImageDescriptor("icons/scroll_off.gif")); //$NON-NLS-1$
         }
         makeGUI();
+    }
+    
+    @Override
+    public void dispose()
+    {
+        model.removeListener(listener);
     }
     
     /** @return Returns the chart widget. */
@@ -100,25 +113,63 @@ public class BrowserUI extends Composite
         {
             public void widgetSelected(SelectionEvent e)
             {
-                XAxis xaxis = i_chart.getChart().getXAxis();
-                /* TODO
-                ITimestamp start = TimestampUtil.fromDouble(xaxis.getLowValue());
-                ITimestamp end = TimestampUtil.fromDouble(xaxis.getHighValue());
-                */
-                StartEndDialog dlg = new StartEndDialog(getShell());
-                if (dlg.open() == StartEndDialog.OK)
+                StartEndDialog dlg =
+                    new StartEndDialog(getShell(),
+                                       model.getStartSpecification(),
+                                       model.getEndSpecification());
+                if (dlg.open() != StartEndDialog.OK)
+                    return;
+                try
                 {
                     // If we request some_start ... 'now',
                     // assume we want to scroll from then on.
                     scroll_enable = dlg.isEndNow();
                     updateScrollPauseButton();
-                    double low = dlg.getStartCalendar().getTimeInMillis()/1000.0;
-                    double high = dlg.getEndCalendar().getTimeInMillis()/1000.0;
-                    if (low < high)
-                        xaxis.setValueRange(low, high);
+                    model.setTimeSpecifications(dlg.getStartSpecification(),
+                                                 dlg.getEndSpecification());
+                }
+                catch (Exception ex)
+                {
+                    Plugin.logException("Error: ", ex);
                 }
             }
         });
+        
+        // Listen to model's time range
+        listener = new ModelListener()
+        {
+            public void timeSpecificationsChanged()
+            {}
+            
+            public void timeRangeChanged()
+            {   // Adjust the x axis to the "current" model time range
+                final double low = model.getStartTime().toDouble();
+                final double high = model.getEndTime().toDouble();
+                getChart().getXAxis().setValueRange(low, high);
+            }
+            
+            public void periodsChanged()
+            {}
+
+            public void entriesChanged()
+            {}
+            
+            public void entryAdded(IModelItem new_item) 
+            {}
+            
+            public void entryConfigChanged(IModelItem item) 
+            {}
+            
+            public void entryLookChanged(IModelItem item) 
+            {}
+            
+            public void entryArchivesChanged(IModelItem item)
+            {}
+
+            public void entryRemoved(IModelItem removed_item) 
+            {}
+        };
+        model.addListener(listener);
     }
    
     /** Update the scroll button's image and tooltip. */
