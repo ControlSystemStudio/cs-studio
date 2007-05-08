@@ -51,12 +51,12 @@ public class PlotEditor extends EditorPart
     private Action perspective_action;
     private BrowserUI gui;
     private boolean is_dirty = false;
-    private ModelListener listener;
+    private ModelListener model_listener;
 
     /** Create a new, empty editor, not attached to a file.
      *  @return Returns the new editor or <code>null</code>.
      */
-    public static PlotEditor createChartEditor()
+    public static PlotEditor createInstance()
     {
     	try
     	{
@@ -69,9 +69,9 @@ public class PlotEditor extends EditorPart
 		        (PlotEditor) page.openEditor(input, PlotEditor.ID);
 		    return editor;
     	}
-    	catch (Exception e)
+    	catch (Exception ex)
     	{
-            Plugin.logException("Cannot create Plot", e); //$NON-NLS-1$
+            Plugin.logException("Cannot create Plot", ex); //$NON-NLS-1$
     	}
     	return null;
     }
@@ -79,10 +79,6 @@ public class PlotEditor extends EditorPart
     /** @return Returns the model. */
     public Model getModel()
     {   return model; }
-    
-    /** @return Returns the controller. */
-    public Controller getController()
-    {   return controller;  }
     
     @Override
     public void init(IEditorSite site, IEditorInput input)
@@ -108,7 +104,7 @@ public class PlotEditor extends EditorPart
         }
 
         // Update 'dirty' state whenever anything changes
-        listener = new ModelListener()
+        model_listener = new ModelListener()
         {
             public void timeSpecificationsChanged()
             {   entriesChanged();  }
@@ -145,7 +141,7 @@ public class PlotEditor extends EditorPart
             public void entryRemoved(IModelItem removed_item) 
             {   entriesChanged();  }
         };
-        model.addListener(listener);
+        model.addListener(model_listener);
     }
     
     /** @return Returns the <code>IFile</code> for the current editor input.
@@ -233,7 +229,6 @@ public class PlotEditor extends EditorPart
         if (file == null  ||  !saveToFile(null, file))
             return;
         // Update input and title
-        // TODO IDE FileEditorInput
         setInput(new FileEditorInput(file));
         updateTitle();
     }
@@ -256,11 +251,11 @@ public class PlotEditor extends EditorPart
         updateTitle();
     }
 
-    /** @see org.eclipse.ui.part.WorkbenchPart#dispose() */
+    /** Must be called to clean up. */
     @Override
     public void dispose()
     {
-        model.removeListener(listener);
+        model.removeListener(model_listener);
         gui.dispose();
         controller.dispose();
         super.dispose();

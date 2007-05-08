@@ -91,8 +91,8 @@ public class ConfigView extends PlotAwareView
     private Label help;
 
     // GUI Elements for the "Time Config" Tab
-    private Text start_time;
-    private Text end_time;
+    private Text start_specification;
+    private Text end_specification;
     private Label start_end_info;
     
     private ModelListener model_listener = new ModelListener()
@@ -482,12 +482,12 @@ public class ConfigView extends PlotAwareView
         gd = new GridData();
         l.setLayoutData(gd);
 
-        start_time = new Text(parent, SWT.LEFT);
-        start_time.setToolTipText(Messages.StartTime_TT);
+        start_specification = new Text(parent, SWT.LEFT);
+        start_specification.setToolTipText(Messages.StartTime_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        start_time.setLayoutData(gd);
+        start_specification.setLayoutData(gd);
         
         Button dlg1 = new Button(parent, SWT.PUSH);
         dlg1.setText(Messages.StartEndDlg);
@@ -500,12 +500,12 @@ public class ConfigView extends PlotAwareView
         gd = new GridData();
         l.setLayoutData(gd);
 
-        end_time = new Text(parent, SWT.LEFT);
-        end_time.setToolTipText(Messages.EndTime_TT);
+        end_specification = new Text(parent, SWT.LEFT);
+        end_specification.setToolTipText(Messages.EndTime_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        end_time.setLayoutData(gd);
+        end_specification.setLayoutData(gd);
         
         Button dlg2 = new Button(parent, SWT.PUSH);
         dlg2.setText(Messages.StartEndDlg);
@@ -539,8 +539,8 @@ public class ConfigView extends PlotAwareView
             public void widgetDefaultSelected(SelectionEvent e)
             {   checkTimeConfigInputs(); }
         };
-        start_time.addSelectionListener(validator);
-        end_time.addSelectionListener(validator);
+        start_specification.addSelectionListener(validator);
+        end_specification.addSelectionListener(validator);
                 
         // Connect the "..." buttons to a start/end dialog.
         SelectionListener start_stop_dlg = new SelectionAdapter()
@@ -549,13 +549,13 @@ public class ConfigView extends PlotAwareView
             {
                 StartEndDialog dlg =
                     new StartEndDialog(ConfigView.this.getSite().getShell(),
-                                       start_time.getText(),
-                                       end_time.getText());
+                                       start_specification.getText(),
+                                       end_specification.getText());
                 if (dlg.open() != StartEndDialog.OK)
                     return;
                 // Update the text fields
-                start_time.setText(dlg.getStartSpecification());
-                end_time.setText(dlg.getEndSpecification());
+                start_specification.setText(dlg.getStartSpecification());
+                end_specification.setText(dlg.getEndSpecification());
                 // .. and proceed as if new values were entered there
                 checkTimeConfigInputs();
             }
@@ -573,8 +573,8 @@ public class ConfigView extends PlotAwareView
                     return;
                 try
                 {
-                    model.setTimeSpecifications(start_time.getText(),
-                                                end_time.getText());
+                    model.setTimeSpecifications(start_specification.getText(),
+                                                end_specification.getText());
                 }
                 catch (Exception ex)
                 {
@@ -591,8 +591,8 @@ public class ConfigView extends PlotAwareView
                 Model model = getModel();
                 if (model == null)
                     return;
-                start_time.setText(model.getStartTime().toString());
-                end_time.setText(model.getEndTime().toString());
+                start_specification.setText(model.getStartTime().toString());
+                end_specification.setText(model.getEndTime().toString());
             }
         });
         
@@ -705,7 +705,7 @@ public class ConfigView extends PlotAwareView
             return;
         try
         {
-            model.setTimeSpecifications(start_time.getText(), end_time.getText());
+            model.setTimeSpecifications(start_specification.getText(), end_specification.getText());
             start_end_info.setText(model.getStartTime()
                                    + " ... " + //$NON-NLS-1$
                                    model.getEndTime());
@@ -743,8 +743,8 @@ public class ConfigView extends PlotAwareView
             update_period_text.setText(""); //$NON-NLS-1$
             ring_size_text.setText(""); //$NON-NLS-1$
             pv_table_viewer.setItemCount(0);
-            start_time.setText(""); //$NON-NLS-1$
-            end_time.setText(""); //$NON-NLS-1$
+            start_specification.setText(""); //$NON-NLS-1$
+            end_specification.setText(""); //$NON-NLS-1$
         }
         else
         {
@@ -753,8 +753,8 @@ public class ConfigView extends PlotAwareView
             ring_size_text.setText(Integer.toString(model.getRingSize()));
             // The '+1' is the line that allows entry of new PVs!!
             pv_table_viewer.setItemCount(model.getNumItems() + 1);
-            start_time.setText(model.getStartSpecification());
-            end_time.setText(model.getEndSpecification());
+            start_specification.setText(model.getStartSpecification());
+            end_specification.setText(model.getEndSpecification());
         }
         help.setText(""); //$NON-NLS-1$
         pv_table_viewer.refresh();
@@ -768,6 +768,7 @@ public class ConfigView extends PlotAwareView
         if (model == null)
             return null;
         IModelItem item = model.add(name);
+        // Add default archive data sources from prefs
         IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
         for (int i = 0; i < archives.length; i++)
             item.addArchiveDataSource(archives[i]);

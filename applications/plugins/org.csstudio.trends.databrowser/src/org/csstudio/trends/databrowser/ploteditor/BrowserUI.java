@@ -1,6 +1,5 @@
 package org.csstudio.trends.databrowser.ploteditor;
 
-import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.trends.databrowser.Plugin;
@@ -55,6 +54,7 @@ public class BrowserUI extends Composite
         makeGUI();
     }
     
+    /** Must be called to clean up. */
     @Override
     public void dispose()
     {
@@ -90,9 +90,6 @@ public class BrowserUI extends Composite
                         Chart.TIME_CHART
                       | Chart.USE_TRACE_NAMES
                       | InteractiveChart.ZOOM_X_FROM_END);
-        // Init the X (Time) axis range
-        long now = TimestampFactory.now().seconds();
-        i_chart.getChart().getXAxis().setValueRange(now-3600, now);
                 
         // Add scroll button
         scroll_pause = new Button(i_chart.getButtonBar(), SWT.CENTER);        
@@ -170,6 +167,9 @@ public class BrowserUI extends Composite
             {}
         };
         model.addListener(listener);
+        
+        // Initialize the time axis
+        listener.timeRangeChanged();
     }
    
     /** Update the scroll button's image and tooltip. */

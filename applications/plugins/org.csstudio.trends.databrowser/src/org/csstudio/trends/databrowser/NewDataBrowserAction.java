@@ -19,7 +19,7 @@ public class NewDataBrowserAction implements IWorkbenchWindowActionDelegate
 
 	public void run(IAction action)
 	{
-		PlotEditor.createChartEditor();
+		PlotEditor.createInstance();
 	}
 
 	public void dispose()

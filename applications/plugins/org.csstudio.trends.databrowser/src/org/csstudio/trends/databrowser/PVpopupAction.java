@@ -5,6 +5,7 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.IProcessVariableWithArchive;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
 import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 
@@ -13,13 +14,13 @@ public class PVpopupAction extends ProcessVariablePopupAction
 {    
     public void handlePVs(IProcessVariable pv_names[])
     {
-    	PlotEditor editor = PlotEditor.createChartEditor();
+    	PlotEditor editor = PlotEditor.createInstance();
     	if (editor == null)
     		return;
-        Controller controller = editor.getController();
+        Model model = editor.getModel();
         for (IProcessVariable pv : pv_names)
         {   // Add every received PV to the model
-            IModelItem item = controller.add(pv.getName());
+            IModelItem item = model.add(pv.getName());
             // In case the PV includes an archive data source..
             if (pv instanceof IProcessVariableWithArchive)
             {   // use it

@@ -23,12 +23,12 @@ import org.eclipse.swt.dnd.DropTargetEvent;
  */ 
 public class Controller implements ScannerAndScrollerListener
 {
-    private Model model;
-    private BrowserUI gui;
-    private Chart chart;
-    private ChartListener chart_listener;
+    private final Model model;
+    private final ModelListener model_listener;
+    private final BrowserUI gui;
+    private final Chart chart;
+    private final ChartListener chart_listener;
     private ScannerAndScroller scanner_scroller;
-    private ModelListener model_listener;
     private boolean controller_changes_xaxis = false;
     private boolean controller_changes_yaxes = false;
     private boolean controller_changes_model = false;
@@ -47,12 +47,12 @@ public class Controller implements ScannerAndScrollerListener
         {
             public void timeSpecificationsChanged()
             {
-                // TODO Auto-generated method stub
+                // TODO use this instead of ChartListener?
             }
             
             public void timeRangeChanged()
             {
-                // TODO Auto-generated method stub
+                // TODO use this instead of ChartListener?
             }
 
             public void periodsChanged()
