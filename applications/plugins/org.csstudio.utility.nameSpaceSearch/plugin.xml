@@ -17,13 +17,13 @@
          point="org.eclipse.ui.actionSets">
       <actionSet
             description="Global CSS menu actions"
-            id="org.eclipse.csstudio.ui.nameSpaceSearchAction"
+            id="org.csstudio.utility.nameSpaceSearch.ui.ActionSet"
             label="CSS Action Set"
             visible="true">
          <action
                class="org.csstudio.utility.nameSpaceSearch.ui.ShowNamespaceSearch"
                icon="icons/LDAPLupe.gif"
-               id="org.csstudio.utility.nameSpaceSearch.action2"
+               id="org.csstudio.utility.nameSpaceSearch.ui.action2"
                label="Namespace Search"
                menubarPath="css/utility/"
                style="push"/>

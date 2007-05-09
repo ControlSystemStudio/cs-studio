@@ -41,16 +41,17 @@
          point="org.eclipse.ui.actionSets">
       <actionSet
       		description="Global CSS menu actions"
-            id="org.eclipse.csstudio.ui.nameSpaceBrowserAction"
+            id="org.csstudio.utility.ldap.namespacebrowser.ui.MainViewAction"
             label="CSS Action Set"
             visible="true">
          <action
                class="org.csstudio.utility.ldap.namespacebrowser.ui.ShowNamespaceBrowser"
-               id="org.csstudio.utility.ldap.namespacebrowser.action1"
-               label="Namespace Browser (LDAP)"
                icon="icons/LDAPBrowser.gif"
+               id="org.csstudio.utility.ldap.namespacebrowser.ui.ShowNamespaceBrowser"
+               label="Namespace Browser (LDAP)"
                menubarPath="css/utility/"
-               style="push"/>
+               style="push"
+               toolbarPath="Normal/additions"/>
       </actionSet>
    </extension>
 </plugin>

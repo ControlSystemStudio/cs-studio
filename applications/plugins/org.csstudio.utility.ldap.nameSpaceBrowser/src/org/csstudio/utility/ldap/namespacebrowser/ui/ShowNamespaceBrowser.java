@@ -32,9 +32,14 @@ import org.eclipse.ui.PlatformUI;
 
 public class ShowNamespaceBrowser implements IWorkbenchWindowActionDelegate {
 
+    /** A workbench window handle. */
+    private IWorkbenchWindow _window;
+    
 	public void dispose() {	}
 
-	public void init(IWorkbenchWindow window) {	}
+	public void init(IWorkbenchWindow window) {	
+        _window = window;   
+    }
 
 	public void run(IAction action) {
         IWorkbench workbench = PlatformUI.getWorkbench();
@@ -42,14 +47,15 @@ public class ShowNamespaceBrowser implements IWorkbenchWindowActionDelegate {
         IWorkbenchPage page = window.getActivePage();
 	    try {
 	        page.showView(MainView.class.getName());
-	    }
-	    catch (PartInitException e)
-	    {
+	    } catch (PartInitException e) {
 	        e.printStackTrace();
 	    }
-
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {	}
 
+    public IWorkbenchWindow getWorkbenchWindow()
+    {
+        return _window;
+    }
 }

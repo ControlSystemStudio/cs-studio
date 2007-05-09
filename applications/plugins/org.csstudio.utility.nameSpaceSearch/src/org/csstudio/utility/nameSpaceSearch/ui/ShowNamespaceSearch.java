@@ -21,7 +21,6 @@
  */
 package org.csstudio.utility.nameSpaceSearch.ui;
 
-//import org.csstudio.utility.nameSpaceSearch.ui.MainView;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;
@@ -38,15 +37,14 @@ public class ShowNamespaceSearch implements IWorkbenchWindowActionDelegate {
 	public void init(IWorkbenchWindow window) {	}
 
 	public void run(IAction action) {
-	        IWorkbench workbench = PlatformUI.getWorkbench();
-	        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-	        IWorkbenchPage page = window.getActivePage();
-	        try {
-				page.showView(MainView.class.getName());
-			} catch (PartInitException e) {
-				// TODO Error handling
-				e.printStackTrace();
-			}
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        IWorkbenchPage page = window.getActivePage();
+        try {
+			page.showView(MainView.class.getName());
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {	}
