@@ -12,5 +12,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/spice-jndikit-20050704.053804.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="libs/apache-activemq-4.1.1.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
