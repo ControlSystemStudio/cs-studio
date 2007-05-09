@@ -19,45 +19,50 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldap.ui.preference;
+/*
+ * $Id$
+ */
+package org.csstudio.utility.nameSpaceSearch.preference;
 
-import org.csstudio.utility.ldap.Activator;
-import org.csstudio.utility.ldap.Messages;
-import org.csstudio.utility.ldap.preference.PreferenceConstants;
-import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.csstudio.utility.nameSpaceSearch.Activator;
+import org.csstudio.utility.nameSpaceSearch.Messages;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-public class PreferencePage extends FieldEditorPreferencePage
+/**
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 23.04.2007
+ */
+
+public class PreferencePage extends FieldEditorPreferencePage 
 	implements IWorkbenchPreferencePage {
 
+	
 	public PreferencePage() {
-		super(GRID);
-		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
-				Activator.getDefault().getBundle().getSymbolicName()));
-		setDescription(Messages.getString("PreferencePage.LDAP")); //$NON-NLS-1$
+		super(FieldEditorPreferencePage.GRID);
+		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 	}
 
-	/**
-	 * Creates the field editors. Field editors are abstractions of
-	 * the common GUI blocks needed to manipulate various types
-	 * of preferences. Each field editor knows how to save and
-	 * restore itself.
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
-	public void createFieldEditors() {
-		addField(
-			new StringFieldEditor(PreferenceConstants.P_STRING_URL, Messages.getString("PreferencePage.URL"), getFieldEditorParent())); //$NON-NLS-1$
-		addField(
-			new StringFieldEditor(PreferenceConstants.P_STRING_USER_DN, Messages.getString("PreferencePage.DN"), getFieldEditorParent())); //$NON-NLS-1$
-		addField(
-				new StringFieldEditor(PreferenceConstants.P_STRING_USER_PASSWORD, Messages.getString("PreferencePage.PASS"), getFieldEditorParent())); //$NON-NLS-1$
-		addField(
-				new StringFieldEditor(PreferenceConstants.SECURITY_PROTOCOL, Messages.getString("PreferencePage.SECURITY_PROTOCOL"), getFieldEditorParent())); //$NON-NLS-1$
-		addField(
-				new StringFieldEditor(PreferenceConstants.SECURITY_AUTHENTICATION, Messages.getString("PreferencePage.SECURITY_AUTHENTICATION"), getFieldEditorParent())); //$NON-NLS-1$
+	@Override
+	protected void createFieldEditors() {
+		addField(new StringFieldEditor(
+						PreferenceConstants.P_STRING_RECORD_ATTRIEBUT,
+						Messages.getString(Messages.PreferencePage_RECORD_ATTRIEBUT),
+						getFieldEditorParent()
+		));
+		StringFieldEditor searchRoot = new StringFieldEditor(
+				PreferenceConstants.P_STRING_SEARCH_ROOT,
+				Messages.getString(Messages.PreferencePage_SEARCH_ROOT)
+				, getFieldEditorParent());
+		searchRoot.getTextControl(getFieldEditorParent()).setToolTipText(Messages.getString(Messages.PreferencePage_SEARCH_ROOT_TOOL_TIP));
+		addField(searchRoot); 
 
 	}
 
@@ -65,6 +70,8 @@ public class PreferencePage extends FieldEditorPreferencePage
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

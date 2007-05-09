@@ -19,48 +19,70 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.nameSpaceBrowser.ui;
+/*
+ * $Id$
+ */
+package org.csstudio.utility.nameSpaceBrowser.utility;
 
-import org.csstudio.platform.model.IProcessVariable;
-
-//public class ProcessVariable implements IProcessVariable {
-public class ProcessVariable extends ControlSystemItem implements IProcessVariable {
-
-	public ProcessVariable(String name, String path) {
-		super(name, path);
-		this.name = name;
-		this.path = path;
-		// TODO Auto-generated constructor stub
-	}
-
+/**
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 07.05.2007
+ */
+public abstract class NameSpace {
+	
 	private String name;
-	private String path;
+	private String filter;
+	private NameSpaceResultList ergebnisListe;
+	private String selection;
 
+	abstract public void start();
+	
 
-//	public ProcessVariable(String name, String path) {
-//		this.name = name;
-//		this.path = path;
-//	}
+	/**
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-	public String getName() {
-		// TODO Auto-generated method stub
+	/**
+	 * @param filter
+	 */
+	public void setFilter(String filter) {
+		this.filter = filter;
+	}
+
+	/**
+	 * @param ergebnisListe
+	 */
+	public void setErgebnisListe(NameSpaceResultList ergebnisListe) {
+		this.ergebnisListe = ergebnisListe;
+	}
+
+	/**
+	 * @param selection
+	 */
+	public void setSelection(String selection) {
+		 this.selection=selection;
+	}
+
+	protected NameSpaceResultList getNameSpaceResultList() {
+		return ergebnisListe;
+	}
+
+	protected String getFilter() {
+		return filter;
+	}
+
+	protected String getName() {
 		return name;
 	}
 
-	public String getPath() {
-		return path;
+	protected String getSelection() {
+		return selection;
 	}
+	
 
-	public String getTypeId() {
-		return TYPE_ID;
-	}
-
-	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String toString(){
-		return name;
-	}
 }

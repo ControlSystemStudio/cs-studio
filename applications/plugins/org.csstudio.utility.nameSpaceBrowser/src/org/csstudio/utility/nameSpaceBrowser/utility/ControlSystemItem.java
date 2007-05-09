@@ -21,23 +21,38 @@
  */
 package org.csstudio.utility.nameSpaceBrowser.utility;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import org.csstudio.platform.model.IControlSystemItem;
 
-public class Messages {
-	private static final String BUNDLE_NAME = "org.csstudio.utility.nameSpaceBrowser.utility.messages"; //$NON-NLS-1$
+public class ControlSystemItem implements IControlSystemItem {
 
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-			.getBundle(BUNDLE_NAME);
+	private String name;
+	private String TYPE_ID = "css:controlSystemItem"; //$NON-NLS-1$
+	private String path;
 
-	private Messages() {
+
+	public ControlSystemItem(String name, String path) {
+		this.name = name;
+		this.path = path;
 	}
 
-	public static String getString(String key) {
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
+	public String getName() {
+		return name;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public String getTypeId() {
+		return TYPE_ID;
+	}
+
+	public Object getAdapter(Class adapter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String toString(){
+		return name;
 	}
 }

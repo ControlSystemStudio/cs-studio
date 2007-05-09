@@ -48,7 +48,7 @@ public class LDAP_Reader_Test {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], org.csstudio.utility.ldap.reader.ErgebnisListe)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], org.csstudio.utility.ldap.namespacebrowser.utility.ErgebnisListe)}.
 	 */
 	@Test
 	public void testLDAPReaderStringArrayErgebnisListe() {
@@ -61,7 +61,7 @@ public class LDAP_Reader_Test {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], int, org.csstudio.utility.ldap.reader.ErgebnisListe)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String[], int, org.csstudio.utility.ldap.namespacebrowser.utility.ErgebnisListe)}.
 	 */
 	@Test
 	public void testLDAPReaderStringArrayIntErgebnisListe() {
@@ -69,7 +69,7 @@ public class LDAP_Reader_Test {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, org.csstudio.utility.ldap.reader.ErgebnisListe)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, org.csstudio.utility.ldap.namespacebrowser.utility.ErgebnisListe)}.
 	 */
 	@Test
 	public void testLDAPReaderStringStringErgebnisListe() {
@@ -77,7 +77,7 @@ public class LDAP_Reader_Test {
 	}
 
 	/**
-	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, int, org.csstudio.utility.ldap.reader.ErgebnisListe)}.
+	 * Test method for {@link org.csstudio.utility.ldap.reader.LDAPReader#LDAPReader(java.lang.String, java.lang.String, int, org.csstudio.utility.ldap.namespacebrowser.utility.ErgebnisListe)}.
 	 */
 	@Test
 	public void testLDAPReaderStringStringIntErgebnisListe() {

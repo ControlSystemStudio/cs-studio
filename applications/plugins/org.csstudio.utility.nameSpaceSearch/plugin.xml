@@ -58,4 +58,16 @@
             file="toc.xml"
             primary="true"/>
    </extension>
+      <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.utilities"
+            class="org.csstudio.utility.nameSpaceSearch.preference.PreferencePage"
+            id="org.csstudio.utility.nameSpaceBrowser.preferencePage"
+            name="Namespace Search"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.utility.nameSpaceSearch.preference.PreferenceInitializer"/>
+   </extension>
 </plugin>

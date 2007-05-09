@@ -7,7 +7,8 @@ Bundle-Activator: org.csstudio.utility.ldap.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.help,
- org.csstudio.platform
+ org.csstudio.platform,
+ org.csstudio.utility.nameSpaceBrowser
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.engine,

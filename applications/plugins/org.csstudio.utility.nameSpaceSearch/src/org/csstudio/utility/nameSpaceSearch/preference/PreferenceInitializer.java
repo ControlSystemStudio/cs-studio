@@ -19,46 +19,27 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldap.namespacebrowser.ui;
+package org.csstudio.utility.nameSpaceSearch.preference;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
+import org.csstudio.utility.nameSpaceSearch.Activator;
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.jface.preference.IPreferenceStore;
 
-public class ShowNamespaceBrowser implements IWorkbenchWindowActionDelegate {
+/**
+ * Class used to initialize default preference values.
+ */
+public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	public void dispose() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stube
-
-	}
-
-	public void run(IAction action) {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
-	    try {
-	        page.showView(MainView.class.getName());
-	    }
-	    catch (PartInitException e)
-	    {
-	        e.printStackTrace();
-	    }
-
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+	 */
+	public void initializeDefaultPreferences() {
+		IPreferenceStore prefs = Activator.getDefault().getPreferenceStore();
+//		System.out.println("Path init"+prefs.absolutePath());
+		prefs.setDefault(PreferenceConstants.P_STRING_RECORD_ATTRIEBUT, "eren"); //$NON-NLS-1$
+		prefs.setDefault(PreferenceConstants.P_STRING_SEARCH_ROOT, "ou=EpicsControls"); //$NON-NLS-1$
 	}
 
 }

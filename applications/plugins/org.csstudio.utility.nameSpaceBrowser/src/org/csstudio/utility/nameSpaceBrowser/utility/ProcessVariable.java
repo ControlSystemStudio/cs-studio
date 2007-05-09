@@ -19,46 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldap.namespacebrowser.ui;
+package org.csstudio.utility.nameSpaceBrowser.utility;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
+import org.csstudio.platform.model.IProcessVariable;
 
-public class ShowNamespaceBrowser implements IWorkbenchWindowActionDelegate {
+//public class ProcessVariable implements IProcessVariable {
+public class ProcessVariable extends ControlSystemItem implements IProcessVariable {
 
-	public void dispose() {
-		// TODO Auto-generated method stub
-
+	public ProcessVariable(String name, String path) {
+		super(name, path);
 	}
-
-	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stube
-
-	}
-
-	public void run(IAction action) {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
-	    try {
-	        page.showView(MainView.class.getName());
-	    }
-	    catch (PartInitException e)
-	    {
-	        e.printStackTrace();
-	    }
-
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

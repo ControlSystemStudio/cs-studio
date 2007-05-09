@@ -22,9 +22,14 @@
 package org.csstudio.utility.ldap.reader;
 
 import java.util.ArrayList;
-import java.util.Observable;
 
-public class ErgebnisListe extends Observable{
+import org.csstudio.utility.ldap.Activator;
+import org.csstudio.utility.ldap.Messages;
+import org.csstudio.utility.nameSpaceBrowser.utility.ControlSystemItem;
+import org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList;
+import org.csstudio.utility.nameSpaceBrowser.utility.ProcessVariable;
+
+public class ErgebnisListe extends NameSpaceResultList{
 
 	private ArrayList<String> ergbnis = new ArrayList<String>();
 
@@ -47,4 +52,67 @@ public class ErgebnisListe extends Observable{
 		setChanged();
 		notifyObservers();
 	}
+
+    /* (non-Javadoc)
+     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#getResultList()
+     */
+    @Override
+    public ArrayList<ControlSystemItem> getResultList() {
+        ArrayList<ControlSystemItem> tmp = new ArrayList<ControlSystemItem>();
+//        tmp.addAll(ergbnis);
+//        ergbnis.clear();
+//        setChanged();
+//        return tmp;
+        if(ergbnis==null) return null;
+        for (String row : ergbnis) {
+            String saubereListe = row;
+            // Delete "-Chars that add from LDAP-Reader when the result contains special character
+            if(saubereListe.startsWith("\"")){ //$NON-NLS-1$
+                if(saubereListe.endsWith("\"")) //$NON-NLS-1$
+                    saubereListe = saubereListe.substring(1,saubereListe.length()-1);
+                else
+                    saubereListe = saubereListe.substring(1);
+            }
+            String[] token = saubereListe.split("[,=]"); //$NON-NLS-1$
+            if(token.length<2) {Activator.logError(Messages.getString("CSSView.Error1")+row+"'");break;} //$NON-NLS-1$ //$NON-NLS-2$
+
+            if(token[0].compareTo("eren")==0){ //$NON-NLS-1$
+                tmp.add(new ProcessVariable(token[1], saubereListe));
+            }
+            else{
+                tmp.add(new ControlSystemItem(token[1], saubereListe));
+            }
+        }
+        return tmp;
+   }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#setResultList(java.util.ArrayList)
+     */
+    @Override
+    public void setResultList(ArrayList<String> resultList) {
+        this.ergbnis.addAll(ergbnis);
+        setChanged();
+        notifyObservers();
+
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#copy()
+     */
+    @Override
+    public NameSpaceResultList copy() {
+         ErgebnisListe e = new ErgebnisListe();
+         e.setAnswer(ergbnis);
+         return e;
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#getNew()
+     */
+    @Override
+    public NameSpaceResultList getNew() {
+        return new ErgebnisListe();
+    }
+
 }

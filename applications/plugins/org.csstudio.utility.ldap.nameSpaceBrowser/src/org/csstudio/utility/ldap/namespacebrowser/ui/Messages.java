@@ -19,41 +19,25 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.nameSpaceBrowser.ui;
+package org.csstudio.utility.ldap.namespacebrowser.ui;
 
-import org.csstudio.platform.model.IControlSystemItem;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
-public class ControlSystemItem implements IControlSystemItem {
+public class Messages {
+	private static final String BUNDLE_NAME = "org.csstudio.utility.ldap.namespacebrowser.ui.messages"; //$NON-NLS-1$
 
-	private String name;
-	private String TYPE_ID = "css:controlSystemItem"; //$NON-NLS-1$
-	private String path;
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
+			.getBundle(BUNDLE_NAME);
 
-
-	public ControlSystemItem(String name, String path) {
-		this.name = name;
-		this.path = path;
+	private Messages() {
 	}
 
-	public String getName() {
-		// TODO Auto-generated method stub
-		return name;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public String getTypeId() {
-		return TYPE_ID;
-	}
-
-	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String toString(){
-		return name;
+	public static String getString(String key) {
+		try {
+			return RESOURCE_BUNDLE.getString(key);
+		} catch (MissingResourceException e) {
+			return '!' + key + '!';
+		}
 	}
 }

@@ -42,7 +42,11 @@ public class Messages extends NLS {
 	public static String MainView_searchButton;
 
 	public static String MainView_SearchButtonFont;
+	
+	public static String MainView_ToolTip;
 
+	public static String MainView_ToolTip_Sort;
+	
 	public static String PreferencePage_DN;
 
 	public static String PreferencePage_LDAP;
@@ -50,6 +54,12 @@ public class Messages extends NLS {
 	public static String PreferencePage_PASS;
 
 	public static String PreferencePage_URL;
+	
+	public static String PreferencePage_RECORD_ATTRIEBUT;
+	
+	public static String PreferencePage_SEARCH_ROOT;
+	
+	public static String PreferencePage_SEARCH_ROOT_TOOL_TIP;
 
 	/**
 	 * The localzation messages ressource bundle.

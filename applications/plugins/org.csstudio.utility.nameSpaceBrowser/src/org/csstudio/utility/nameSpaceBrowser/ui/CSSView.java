@@ -22,24 +22,22 @@
 package org.csstudio.utility.nameSpaceBrowser.ui;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.naming.directory.SearchControls;
-
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.utility.nameSpaceBrowser.Activator;
 import org.csstudio.utility.nameSpaceBrowser.Messages;
-import org.csstudio.utility.ldap.reader.*;//reader.ErgebnisListe;
-import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
+import org.csstudio.utility.nameSpaceBrowser.utility.ControlSystemItem;
+import org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList;
+import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
+import org.csstudio.utility.nameSpaceBrowser.utility.ProcessVariable;
+import org.csstudio.utility.nameSpaceBrowser.utility.Automat.Ereignis;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat.Zustand;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -96,23 +94,31 @@ public class CSSView extends Composite implements Observer{
 	private static final int JAVA_REG_EXP = 1;
 	private static final int JAVA_REG_EXP_NO_CASE = 2;
 	private static final int SIMPLE_WIN = 3;
+
+	// UI elements	
 	private Display disp;
 	private Composite parent;
 	private Group group;
-	private final ListViewer listViewer;
+	private Text filter;
+	private NameSpaceResultList ergebnisListe;
+	
+	private ListViewer listViewer;
 	private boolean haveChildern = false;
 	private CSSView children;
 	private Automat automat;
+	private NameSpace nameSpace;
 	private LinkedHashMap<String, ControlSystemItem> itemList;
 	private int start =-1;
 
-	private final Hashtable<String, String> headline = new Hashtable<String, String>();
 	private IWorkbenchPartSite site;
 	private String defaultPVFilter;
 
 	private CSSViewParameter para;
-	private Text filter;
-	private ErgebnisListe ergebnisListe;
+	private String[] headlines;
+	private int level;
+	
+
+	
 
 	class myLabelProvider implements ILabelProvider{
 
@@ -137,32 +143,40 @@ public class CSSView extends Composite implements Observer{
 
 	}
 
-	public CSSView(final Composite parent, Automat automat, IWorkbenchPartSite site, String defaultFilter) {
-		this(parent, automat, site, defaultFilter, "ou=epicsControls"); //$NON-NLS-1$
-	}
-
-	public CSSView(final Composite parent, Automat automat, IWorkbenchPartSite site , String defaultFilter, String selection) {
+	public CSSView(final Composite parent, Automat automat,NameSpace nameSpace, IWorkbenchPartSite site , String defaultFilter, String selection, String[] headlines, int level, NameSpaceResultList resultList) {
 		super(parent, SWT.NONE);
-
-		this.parent = parent;
-		this.site = site;
-		defaultPVFilter = defaultFilter;
-
 		disp = parent.getDisplay();
-		ergebnisListe = new ErgebnisListe();
-		ergebnisListe.addObserver(this);
-
 
 		this.automat = automat;
+		this.nameSpace = nameSpace;
+		this.parent = parent;
+		this.site = site;
+		this.headlines = headlines;
+		this.level = level;
+		
+		defaultPVFilter = defaultFilter;
+//		ergebnisListe = new ErgebnisListe();
+//        ergebnisListe = resultList.copy();
+        ergebnisListe = resultList;
+		ergebnisListe.addObserver(this);
+
 		init();
 		// Make a Textfield to Filter the list. Can text drop
 		makeFilterField();
 		//
+		makeListField(selection);
+	}
+
+	/**
+	 * @param selection 
+	 * 
+	 */
+	private void makeListField(String selection) {
 		para = getParameter(selection);
 
 		Zustand zu = automat.getZustand();
 		if(zu==Zustand.RECORD){
-				listViewer = new ListViewer(group,SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+			listViewer = new ListViewer(group,SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 		}
 		else{
 			listViewer = new ListViewer(group,SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
@@ -177,22 +191,13 @@ public class CSSView extends Composite implements Observer{
 	 	listViewer.setLabelProvider(new myLabelProvider());
 	 	listViewer.setContentProvider(new ArrayContentProvider());
 	 	listViewer.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
-		try{
-			LDAPReader ldapr;
-			if(selection.endsWith("=*")) //$NON-NLS-1$
-				ldapr = new LDAPReader(para.name, para.filter,SearchControls.SUBTREE_SCOPE, ergebnisListe);
-			else
-				ldapr = new LDAPReader(para.name, para.filter,SearchControls.ONELEVEL_SCOPE, ergebnisListe);
-			ldapr.addJobChangeListener(new JobChangeAdapter() {
-		        public void done(IJobChangeEvent event) {
-		        if (event.getResult().isOK())
-		        	CSSView.this.ergebnisListe.notifyView();
-		        }
-		     });
-			ldapr.schedule();
-		}catch (IllegalArgumentException e) {
-			Activator.logException(Messages.getString("CSSView.exp.IAE.1"), e); //$NON-NLS-1$
-		}
+	 	
+	 	nameSpace.setName(para.name);
+	 	nameSpace.setFilter(para.filter);
+	 	nameSpace.setErgebnisListe(ergebnisListe);
+	 	nameSpace.setSelection(selection);
+	 	nameSpace.start();
+	 	
 		listViewer.getList().addKeyListener(new KeyListener() {
 			public void keyReleased(KeyEvent e) {
 				if(e.keyCode==SWT.F1){
@@ -204,21 +209,6 @@ public class CSSView extends Composite implements Observer{
 		});
 	}
 
-	/**
-	 * @param selection
-	 * @return CSSViewParameter
-	 */
-	private CSSViewParameter getParameter(String selection) {
- 		try{
- 		 	String tmp= selection.split("=")[0]; //$NON-NLS-1$
- 			return automat.event(Automat.Ereignis.valueOf(tmp),selection);
-		}catch (IllegalArgumentException e) {
-			return automat.event(Automat.Ereignis.UNKNOWN,selection);
-		}
-
-
-	}
-
 	private void init() {
 		// set Layout
 		this.setLayoutData(new GridData(SWT.LEFT,SWT.FILL,false,true,1,1));
@@ -226,11 +216,7 @@ public class CSSView extends Composite implements Observer{
 		group = new Group(this, SWT.LINE_SOLID);
 		group.setLayout(new GridLayout(1,false));
 
-		// Namend the Records
-		headline.put("efan", Messages.getString("CSSView_Facility")); //$NON-NLS-1$ //$NON-NLS-2$
-		headline.put("ecom", Messages.getString("CSSView_ecom")); //$NON-NLS-1$ //$NON-NLS-2$
-		headline.put("econ", Messages.getString("CSSView_Controller")); //$NON-NLS-1$ //$NON-NLS-2$
-		headline.put("eren", Messages.getString("CSSView_Record")); //$NON-NLS-1$ //$NON-NLS-2$
+
 	}
 
 	private void makeFilterField() {
@@ -290,13 +276,21 @@ public class CSSView extends Composite implements Observer{
 
 	}
 
+	/**
+	 * @param selection
+	 * @return CSSViewParameter
+	 */
+	private CSSViewParameter getParameter(String selection) {
+	 	return automat.goDown(Ereignis.DOWN,selection);
+	}
+
 	/*****************************
 	 *
 	 * @param list
 	 * Fill the list with ProcessVariable or ControlSystemItem
 	 *
 	 */
-	private void fillItemList(ArrayList<String> list) {
+	private void fillItemList(ArrayList<ControlSystemItem> list) {
 		if(list==null) return;
 		itemList = new LinkedHashMap<String, ControlSystemItem>();
 		if(para.newCSSView){
@@ -306,34 +300,17 @@ public class CSSView extends Composite implements Observer{
 		else
 			filter.setText(defaultPVFilter);
 		boolean first=true;
-		for (String row : list) {
-//		for(int i=0;i<list.length;i++){
-			String saubereListe = row;
-			// Delete "-Chars that add from LDAP-Reader when the result contains special character
-			if(saubereListe.startsWith("\"")){ //$NON-NLS-1$
-				if(saubereListe.endsWith("\"")) //$NON-NLS-1$
-					saubereListe = saubereListe.substring(1,saubereListe.length()-1);
-				else
-					saubereListe = saubereListe.substring(1);
-			}
-			String[] token = saubereListe.split("[,=]"); //$NON-NLS-1$
-
-			if(token.length<2) {Activator.logError(Messages.getString("CSSView.Error1")+row+"'");break;} //$NON-NLS-1$ //$NON-NLS-2$
-
-			if(token[0].compareTo("eren")==0){ //$NON-NLS-1$
-				itemList.put(token[1],new ProcessVariable(token[1], saubereListe));
-			}
+		for (ControlSystemItem row : list) {
+            if (row instanceof ProcessVariable) {
+                ProcessVariable pv = (ProcessVariable) row;
+                itemList.put(pv.getName(),pv);
+            }
 			else{
-				itemList.put(token[1],new ControlSystemItem(token[1], saubereListe));
+                itemList.put(row.getName(),row);
 			}
 			if(first){
 				first=false;
-				String temp;
-				if(	(temp = headline.get(token[0]))==null)
-					group.setText(saubereListe);
-				else {
-					group.setText(temp);
-				}
+				group.setText(headlines[level]);
 			}
 		}
 	}
@@ -437,16 +414,16 @@ public class CSSView extends Composite implements Observer{
 			// if instanceof ProcessVariable
 			if (itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1)) instanceof ProcessVariable) {
 				ProcessVariable pv = (ProcessVariable) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
-				children = new CSSView(parent, automat,site,defaultPVFilter,pv.getPath()+","); //$NON-NLS-1$
+				children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,pv.getPath()+",",headlines,level+1, ergebnisListe.getNew()); //$NON-NLS-1$
 			}
 			else{
 				ControlSystemItem csi = (ControlSystemItem) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
-				children = new CSSView(parent, automat,site,defaultPVFilter,csi.getPath()+","); //$NON-NLS-1$
+				children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew()); //$NON-NLS-1$
 			}
 		}
 		else{
 			String df = itemList.values().toArray(new ControlSystemItem[0])[1].getPath().split("=")[0]+"=*"; //$NON-NLS-1$ //$NON-NLS-2$
-			children = new CSSView(parent, automat, site,defaultPVFilter,df); //$NON-NLS-1$
+			children = new CSSView(parent, automat, nameSpace, site,defaultPVFilter,df,headlines,level+1,ergebnisListe.getNew()); //$NON-NLS-1$
 		}
 		haveChildern=true;
 
@@ -503,24 +480,21 @@ public class CSSView extends Composite implements Observer{
 		site.registerContextMenu(manager, listViewer);
 	}
 
-	// Setzt den Defaultfilter für IProzessVariablen
+	//	Setzt den Defaultfilter für IProzessVariablen
 	public void setDefaultFilter(String defaultPVFilter) {
 		this.defaultPVFilter = defaultPVFilter;
 		if(!para.newCSSView)
 			filter.setText(defaultPVFilter);
 		if(haveChildern)
 			children.setDefaultFilter(defaultPVFilter);
-
-
 	}
 
 	public void update(Observable arg0, Object arg1) {
 		disp.syncExec(new Runnable() {
 			public void run() {
-				fillItemList(ergebnisListe.getAnswer());
+				fillItemList(ergebnisListe.getResultList());
 				workItemList();
 			}
 		});
-
 	}
 }

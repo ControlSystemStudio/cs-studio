@@ -19,46 +19,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldap.namespacebrowser.ui;
+package org.csstudio.utility.nameSpaceSearch.preference;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
+/**
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 23.04.2007
+ */
 
-public class ShowNamespaceBrowser implements IWorkbenchWindowActionDelegate {
-
-	public void dispose() {
-		// TODO Auto-generated method stub
-
+public class PreferenceConstants {
+	public static final String P_STRING_RECORD_ATTRIEBUT = "P_STRING_RECORD_ATTRIEBUT";
+	public static final String P_STRING_SEARCH_ROOT = "P_STRING_SEARCH_ROOT";
 	}
-
-	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stube
-
-	}
-
-	public void run(IAction action) {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
-	    try {
-	        page.showView(MainView.class.getName());
-	    }
-	    catch (PartInitException e)
-	    {
-	        e.printStackTrace();
-	    }
-
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
-	}
-
-}

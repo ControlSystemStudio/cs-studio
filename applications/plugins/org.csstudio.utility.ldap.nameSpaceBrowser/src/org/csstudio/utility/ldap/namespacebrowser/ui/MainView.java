@@ -22,7 +22,9 @@
 package org.csstudio.utility.ldap.namespacebrowser.ui;
 
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
-import org.csstudio.utility.ldap.namespacebrowser.utility.LDAPAutomat;
+import org.csstudio.utility.ldap.namespacebrowser.utility.LDAP2Automat;
+import org.csstudio.utility.ldap.namespacebrowser.utility.NameSpaceLDAP;
+import org.csstudio.utility.ldap.reader.ErgebnisListe;
 import org.csstudio.utility.nameSpaceBrowser.ui.CSSView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -48,7 +50,7 @@ public class MainView extends ViewPart {
 	public static final String ID = MainView.class.getName();
 	private static String defaultPVFilter =""; //$NON-NLS-1$
 	CSSView cssview;
-	LDAPAutomat automat ;
+	private LDAP2Automat automat;
 
 	public MainView() {
 		// TODO Auto-generated constructor stub
@@ -56,7 +58,7 @@ public class MainView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		automat = new LDAPAutomat();
+		automat = new LDAP2Automat();
 		ScrolledComposite sc = new ScrolledComposite(parent,SWT.H_SCROLL);
 		Composite c = new Composite(sc,SWT.NONE);
 		sc.setContent(c);
@@ -77,27 +79,29 @@ public class MainView extends ViewPart {
 
 			public void keyPressed(KeyEvent e) {}
 		});
-
-		cssview = new CSSView(c, automat,getSite(),defaultPVFilter);
+		String[] headlines = {	Messages.getString("CSSView_Facility"),
+//								Messages.getString("CSSView_ecom"),
+								Messages.getString("CSSView_Controller"),
+								Messages.getString("CSSView_Record")
+		};
+		// Namend the Records
+		cssview = new CSSView(c, automat,new NameSpaceLDAP(), getSite(),defaultPVFilter,"ou=epicsControls", headlines, 0, new ErgebnisListe());
 	}
 
 	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
-
 	}
 
 	public void setDefaultPVFilter(String defaultFilter) {
 		defaultPVFilter = defaultFilter;
 		cssview.setDefaultFilter(defaultPVFilter);
-
 	}
 
 	@Override
 	public void dispose(){
 		automat = null;
 	}
-
 }
 
 

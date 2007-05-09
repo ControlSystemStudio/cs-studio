@@ -24,32 +24,24 @@ package org.csstudio.utility.ldap.reader;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
-import org.csstudio.utility.ldap.preference.PreferenceConstants;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 public class LDAPReader extends Job {
-	private boolean debug = false;
 	private String name;
 	private String filter;
 	private int defaultScope=SearchControls.SUBTREE_SCOPE;
 	private ArrayList<String> list;
 	private ErgebnisListe ergebnisListe;
-//	private Hashtable<Object,String> env = new Hashtable<Object,String>(11);
 
 	/**
 	 * Used the connection settings from org.csstudio.utility.ldap.ui

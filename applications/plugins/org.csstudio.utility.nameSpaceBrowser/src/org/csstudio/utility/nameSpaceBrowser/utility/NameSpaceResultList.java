@@ -19,36 +19,24 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.nameSpaceBrowser;
+/*
+ * $Id$
+ */
+package org.csstudio.utility.nameSpaceBrowser.utility;
 
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
-import org.csstudio.utility.nameSpaceBrowser.ui.MainView;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
+import java.util.ArrayList;
+import java.util.Observable;
 
-public class PVpopupAction extends ProcessVariablePopupAction{
-
-//	public PVpopupAction() {
-//		// TODO Auto-generated constructor stub
-//	}
-	public void handlePVs(IProcessVariable pv_names[])
-    {
-        if (pv_names.length < 1)
-            return;
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
-        try
-        {
-            MainView view = (MainView) page.showView(MainView.ID);
-            view.setDefaultPVFilter(pv_names[0].getName());
-        }
-        catch (Exception e)
-        {
-//            Plugin.logException("Cannot open PVTreeView" , e);
-        }
-    }
+/**
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 09.05.2007
+ */
+public abstract class NameSpaceResultList extends Observable {
+    abstract public ArrayList<ControlSystemItem> getResultList();
+    abstract public void setResultList(ArrayList<String> resultList);
+    abstract public void notifyView();
+    abstract public NameSpaceResultList copy();
+    abstract public NameSpaceResultList getNew();
 }

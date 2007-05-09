@@ -31,6 +31,7 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
+import org.csstudio.utility.nameSpaceSearch.preference.PreferenceConstants;
 import org.csstudio.utility.ldap.reader.ErgebnisListe;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 
@@ -93,6 +94,8 @@ public class MainView extends ViewPart implements Observer{
 	private Display disp;
 	private ErgebnisListe ergebnisListe;
 	private Button searchButton;
+	
+	private String WILDCARD  = "*"; //$NON-NLS-1$
 
 	class myTableLabelProvider implements ITableLabelProvider{
 		// No Image
@@ -101,7 +104,11 @@ public class MainView extends ViewPart implements Observer{
 		public String getColumnText(Object element, int columnIndex) {
 			if (element instanceof ProcessVariable) {
 				ProcessVariable pv = (ProcessVariable) element;
-				return pv.getPath()[columnIndex].split("=")[1]; //$NON-NLS-1$
+				try{
+					return pv.getPath()[columnIndex].split("=")[1]; //$NON-NLS-1$
+				}catch (ArrayIndexOutOfBoundsException e) {
+					return "";
+				}
 
 			}
 			if (element instanceof ArrayList) {
@@ -143,7 +150,6 @@ public class MainView extends ViewPart implements Observer{
 
 	}
 
-//	public MainView() {	}
 	/***************************************************************************
 	 *
 	 * Make the Plugin UI
@@ -168,10 +174,7 @@ public class MainView extends ViewPart implements Observer{
 		down = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down.gif").createImage(); //$NON-NLS-1$
 		up_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up_old.gif").createImage(); //$NON-NLS-1$
 		down_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down_old.gif").createImage(); //$NON-NLS-1$
-//		work_disable = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/work_disable2.gif").createImage();
-//		world = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/work_do.gif").createImage();
 		work_disable = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/LDAPLupe.gif").createImage(); //$NON-NLS-1$
-//		world = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/LDAPLupe.gif").createImage();
 
 		searchText = makeSearchField(parent);
 
@@ -179,7 +182,7 @@ public class MainView extends ViewPart implements Observer{
 		searchButton = new Button(parent,SWT.PUSH);
 		searchButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
 		searchButton.setFont(new Font(parent.getDisplay(),Messages.MainView_SearchButtonFont,10,SWT.NONE));
-		searchButton.setText(Messages.getString("MainView_searchButton")); //$NON-NLS-1$
+		searchButton.setText(Messages.MainView_searchButton); //$NON-NLS-1$
 
 		// make Serach Activity Icon
 		workIcon = new Label(parent,SWT.NONE);
@@ -261,19 +264,20 @@ public class MainView extends ViewPart implements Observer{
 		ergebnissTableView.getTable().clearAll();
 		ergebnissTableView.refresh();
 		// ersetzt mehrfach vorkommende '*' durch einen. Da die LDAP abfrage damit nicht zurecht kommt.
-		search = search.replaceAll("\\*\\**", "*"); //$NON-NLS-1$ //$NON-NLS-2$
-		String filter = "eren="+search; //$NON-NLS-1$
-		if(search.compareTo("*")!=0) //$NON-NLS-1$
-			filter = filter.concat("*"); //$NON-NLS-1$
+		search = search.replaceAll("\\*\\**", WILDCARD); //$NON-NLS-1$ //$NON-NLS-2$
+		String filter = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_RECORD_ATTRIEBUT)+
+		"="+search; //$NON-NLS-1$
+		if(search.compareTo(WILDCARD)!=0) //$NON-NLS-1$
+			filter = filter.concat(WILDCARD); //$NON-NLS-1$
 
 		if(headline.isEmpty()){
-			headline.put("efan", Messages.getString("MainView_facility")); //$NON-NLS-1$ //$NON-NLS-2$
-			headline.put("ecom", Messages.getString("MainView_ecom")); //$NON-NLS-1$ //$NON-NLS-2$
-			headline.put("econ", Messages.getString("MainView_Controller")); //$NON-NLS-1$ //$NON-NLS-2$
-			headline.put("eren", Messages.getString("MainView_Record")); //$NON-NLS-1$ //$NON-NLS-2$
+			headline.put("efan", Messages.MainView_facility); //$NON-NLS-1$ //$NON-NLS-2$
+			headline.put("ecom", Messages.MainView_ecom); //$NON-NLS-1$ //$NON-NLS-2$
+			headline.put("econ", Messages.MainView_Controller); //$NON-NLS-1$ //$NON-NLS-2$
+			headline.put("eren", Messages.MainView_Record); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-
-		ldapr = new LDAPReader("ou=EpicsControls",filter, ergebnisListe); //$NON-NLS-1$ //$NON-NLS-2$
+		ldapr = new LDAPReader(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
+				filter, ergebnisListe);
 		ldapr.addJobChangeListener(new JobChangeAdapter() {
 	        public void done(IJobChangeEvent event) {
 	        if (event.getResult().isOK())
@@ -299,8 +303,8 @@ public class MainView extends ViewPart implements Observer{
 //					lastSort = new int[elements.length-1];
 					final TableColumn tc = new TableColumn(ergebnissTableView.getTable(),SWT.NONE);
 					tc.setResizable(true);
-					tc.setWidth(ergebnissTableView.getTable().getSize().x/4-4);
-					tc.setToolTipText(Messages.getString("MainView_ToolTip_Sort"));
+					tc.setWidth(ergebnissTableView.getTable().getSize().x/4-4); // TODO: 4 replace whit true columsize
+					tc.setToolTipText(Messages.MainView_ToolTip_Sort);
 					tc.setMoveable(true);
 					final int spalte = j;
 					tc.addSelectionListener(new SelectionListener(){
@@ -340,9 +344,10 @@ public class MainView extends ViewPart implements Observer{
 					tmp = tmp.substring(0,tmp.lastIndexOf("(")+1)+list.size()+")"; //$NON-NLS-1$ //$NON-NLS-2$
 					ergebnissTableView.getTable().getColumn(j).setText(tmp);
 				}
-				path +=elements[j];
+				path +=","+elements[j];
 			}
-//			System.out.println(path);
+			// TODO: hier Stecken irgend wo die Infos um die Table head aus dem LDAP-Tree zu bekommen.
+			System.out.println("Path: "+path);
 			tableElements.add(new ProcessVariable(elements[0].split("=")[1],elements)); //$NON-NLS-1$
 			i++;
 		}
@@ -381,8 +386,6 @@ public class MainView extends ViewPart implements Observer{
 						System.out.println("First is"+((ArrayList)o).get(0));
 
 					}
-//					System.out.println("S= "+s);
-//					list.getList().setSelection(e.y/list.getList().getItemHeight());
 				}
 			}
 		});
@@ -401,8 +404,8 @@ public class MainView extends ViewPart implements Observer{
 	private Text makeSearchField(Composite parent) {
 			searchText = new Text(parent,SWT.BORDER|SWT.SINGLE);
 			searchText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
-			searchText.setText("*"); //$NON-NLS-1$
-			searchText.setToolTipText(Messages.getString("MainView_ToolTip"));
+			searchText.setText(WILDCARD); //$NON-NLS-1$
+			searchText.setToolTipText(Messages.MainView_ToolTip);
 
 			//	 Eclipse
 			int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;

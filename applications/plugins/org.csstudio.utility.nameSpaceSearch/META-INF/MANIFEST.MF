@@ -10,5 +10,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform,
  org.csstudio.platform.ui,
  org.eclipse.help,
- org.csstudio.utility.ldap
+ org.csstudio.utility.ldap,
+ org.csstudio.utility.nameSpaceBrowser
 Eclipse-LazyStart: true
