@@ -422,7 +422,7 @@ public class CSSView extends Composite implements Observer{
 			}
 		}
 		else{
-			String df = itemList.values().toArray(new ControlSystemItem[0])[1].getPath().split("=")[0]+"=*"; //$NON-NLS-1$ //$NON-NLS-2$
+			String df = itemList.values().toArray(new ControlSystemItem[0])[1].getPath().split("=")[0]+"=*,"; //$NON-NLS-1$ //$NON-NLS-2$
 			children = new CSSView(parent, automat, nameSpace, site,defaultPVFilter,df,headlines,level+1,ergebnisListe.getNew()); //$NON-NLS-1$
 		}
 		haveChildern=true;

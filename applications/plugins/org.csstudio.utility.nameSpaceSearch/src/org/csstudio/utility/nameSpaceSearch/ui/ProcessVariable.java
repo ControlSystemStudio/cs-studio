@@ -34,7 +34,6 @@ public class ProcessVariable implements IProcessVariable {
 	}
 
 	public String getName() {
-		// TODO Auto-generated method stub
 		return name;
 	}
 
@@ -47,7 +46,6 @@ public class ProcessVariable implements IProcessVariable {
 	}
 
 	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -44,7 +44,7 @@ public class PVpopupAction extends ProcessVariablePopupAction{
 			view = (MainView) page.showView(MainView.ID);
 			view.startSearch(pv_names[0].getName());
 		} catch (PartInitException e) {
-			// TODO Auto-generated catch block
+			// TODO Error handling
 			e.printStackTrace();
 		}
 

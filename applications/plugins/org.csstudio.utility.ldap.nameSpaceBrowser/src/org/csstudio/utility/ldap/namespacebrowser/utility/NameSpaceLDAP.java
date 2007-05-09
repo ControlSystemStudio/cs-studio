@@ -50,10 +50,9 @@ public class NameSpaceLDAP extends NameSpace {
 		try{
 			LDAPReader ldapr;
             if (getNameSpaceResultList() instanceof ErgebnisListe) {
-                System.out.println("Stimmmt :) : getNameSpaceResultList() instanceof ErgebnisListe");
                 ErgebnisListe eListe = (ErgebnisListe) getNameSpaceResultList();
-                
-        		if(getSelection().endsWith("=*")) //$NON-NLS-1$
+                String tmp = getSelection();
+        		if(tmp.endsWith("=*,")) //$NON-NLS-1$
         			ldapr = new LDAPReader(getName(), getFilter(),SearchControls.SUBTREE_SCOPE, eListe);
         		else
         			ldapr = new LDAPReader(getName(), getFilter(),SearchControls.ONELEVEL_SCOPE, eListe);
@@ -66,7 +65,7 @@ public class NameSpaceLDAP extends NameSpace {
         		ldapr.schedule();
             }else{
                 // TODO: Was soll gemacht werden wenn das 'getNameSpaceResultList() instanceof ErgebnisListe' nicht stimmt.
-                System.out.println("Fehler :( : getNameSpaceResultList() instanceof ErgebnisListe");
+                Activator.logError(Messages.getString("CSSView.exp.IAE.2")); //$NON-NLS-1$
             }
         }catch (IllegalArgumentException e) {
             Activator.logException(Messages.getString("CSSView.exp.IAE.1"), e); //$NON-NLS-1$

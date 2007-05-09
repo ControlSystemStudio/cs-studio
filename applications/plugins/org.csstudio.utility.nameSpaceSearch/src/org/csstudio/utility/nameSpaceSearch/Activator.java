@@ -68,7 +68,6 @@ public class Activator extends AbstractCssUiPlugin {
 
 	@Override
 	public String getPluginId() {
-		// TODO Auto-generated method stub
 		return PLUGIN_ID;
 	}
 

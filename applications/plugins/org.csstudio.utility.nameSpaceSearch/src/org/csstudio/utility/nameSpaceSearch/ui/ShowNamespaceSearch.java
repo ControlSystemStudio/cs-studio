@@ -33,15 +33,9 @@ import org.eclipse.ui.PlatformUI;
 
 public class ShowNamespaceSearch implements IWorkbenchWindowActionDelegate {
 
-	public void dispose() {
-		// TODO Auto-generated method stub
+	public void dispose() {	}
 
-	}
-
-	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stub
-
-	}
+	public void init(IWorkbenchWindow window) {	}
 
 	public void run(IAction action) {
 	        IWorkbench workbench = PlatformUI.getWorkbench();
@@ -50,16 +44,11 @@ public class ShowNamespaceSearch implements IWorkbenchWindowActionDelegate {
 	        try {
 				page.showView(MainView.class.getName());
 			} catch (PartInitException e) {
-				// TODO Auto-generated catch block
+				// TODO Error handling
 				e.printStackTrace();
 			}
-
 	}
 
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
-	}
+	public void selectionChanged(IAction action, ISelection selection) {	}
 
 }

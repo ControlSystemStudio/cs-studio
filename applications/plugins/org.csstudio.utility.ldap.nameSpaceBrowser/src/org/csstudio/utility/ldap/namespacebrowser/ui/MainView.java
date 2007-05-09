@@ -52,10 +52,6 @@ public class MainView extends ViewPart {
 	CSSView cssview;
 	private LDAP2Automat automat;
 
-	public MainView() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public void createPartControl(Composite parent) {
 		automat = new LDAP2Automat();
@@ -89,9 +85,7 @@ public class MainView extends ViewPart {
 	}
 
 	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-	}
+	public void setFocus() {}
 
 	public void setDefaultPVFilter(String defaultFilter) {
 		defaultPVFilter = defaultFilter;

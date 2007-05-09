@@ -39,6 +39,7 @@ public class LDAP2Automat extends Automat {
 	private Zustand aktuell = Zustand.START;
 	// LDAP parameter
 	private String storeName=""; 
+    private String root="";
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.Automat#event(org.csstudio.utility.nameSpaceBrowser.utility.Automat.Ereignis, java.lang.String)
@@ -50,30 +51,43 @@ public class LDAP2Automat extends Automat {
 		System.out.println("Selection: "+select);
 		int index = storeName.indexOf(aktuelleEbene);
 		if(aktuelleEbene.compareTo("ou=")==0){
-			parameter.name=select;
+            if(select.indexOf("*")<0){
+                parameter.name=select;
+                root=select;
+            }
 			parameter.filter = "efan=*";
 			parameter.newCSSView=true;
 			aktuell=Zustand.CONTROLLER;
 		}else if(aktuelleEbene.compareTo("efan=")==0){
-			if(index<0){
-				parameter.name = "ecom=EPICS-IOC,"+select+storeName;
-			}else{
-				// Replace the start of the String to the first ',' after aktuelleEbene
-				parameter.name = "ecom=EPICS-IOC,"+select+storeName.substring(storeName.indexOf(',',index)+1,storeName.length());
-			}
+		    // All selected?
+            if(select.indexOf("*")<0){
+                // new sub
+    			if(index<0){
+    				parameter.name = "ecom=EPICS-IOC,"+select+storeName;
+                // change sub
+    			}else{
+    				// Replace the start of the String to the first ',' after aktuelleEbene
+    				parameter.name = "ecom=EPICS-IOC,"+select+storeName.substring(storeName.indexOf(',',index)+1,storeName.length());
+    			}
+            }else parameter.name = root;
 
 			parameter.filter = "econ=*";
 			parameter.newCSSView=true;
 			aktuell=Zustand.CONTROLLER;
 		}else if(aktuelleEbene.compareTo("econ=")==0){
-			if(index<0){
-				System.out.println("1");
-				parameter.name = select+storeName;
-			}else{
-				System.out.println("2");
-				// Replace the start of the String to the first ',' after aktuelleEbene
-				parameter.name = select+storeName.substring(storeName.indexOf(',',index)+1,storeName.length());
-			}
+            // All selected?
+            if(select.indexOf("*")<0){
+                // new sub
+    			if(index<0){
+    				System.out.println("1");
+    				parameter.name = select+storeName;
+                // change sub                    
+    			}else{
+    				System.out.println("2");
+    				// Replace the start of the String to the first ',' after aktuelleEbene
+    				parameter.name = select+storeName.substring(storeName.indexOf(',',index)+1,storeName.length());
+    			}
+            }else parameter.name = storeName;
 			parameter.filter = "eren=*";
 			parameter.newCSSView=false;
 			aktuell=Zustand.RECORD;

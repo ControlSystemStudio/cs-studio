@@ -43,7 +43,6 @@ public class Engine extends Job {
 
 	public Engine(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 	private static 		Engine thisEngine = null;
 	private boolean 	doWrite = false;
@@ -60,7 +59,6 @@ public class Engine extends Job {
 		// initialize LDAP connection (dir context
 		//
 //		ctx = LDAPReader.initial();
-		// TODO:
 		/*
 		 *  create message ONCE
 		 *  retry forever if ctx == null
@@ -192,7 +190,6 @@ public class Engine extends Job {
 				System.out.println("+++++++++++++++++++++++++++++++++++++++ d o n e +++++++++++++++++++++++++++++++++++++++");
 			}
 			 catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					//
 					// too bad it did not work
@@ -260,7 +257,6 @@ public class Engine extends Job {
 			}
 
 		} catch (NamingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -309,7 +305,6 @@ public class Engine extends Job {
         try {
 			ctx.modifyAttributes(channelName, modItem);
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

@@ -69,10 +69,7 @@ public class PreferencePage extends FieldEditorPreferencePage
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
-	public void init(IWorkbench workbench) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void init(IWorkbench workbench) {	}
 
 
 }

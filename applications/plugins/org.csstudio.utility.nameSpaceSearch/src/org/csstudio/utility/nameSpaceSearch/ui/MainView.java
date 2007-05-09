@@ -127,7 +127,6 @@ public class MainView extends ViewPart implements Observer{
 		public void dispose() {}
 
 		public boolean isLabelProperty(Object element, String property) {
-			// TODO Auto-generated method stub
 			return false;
 		}
 

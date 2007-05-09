@@ -31,9 +31,6 @@ import org.eclipse.ui.PlatformUI;
 
 public class PVpopupAction extends ProcessVariablePopupAction{
 
-//	public PVpopupAction() {
-//		// TODO Auto-generated constructor stub
-//	}
 	public void handlePVs(IProcessVariable pv_names[])
     {
         if (pv_names.length < 1)

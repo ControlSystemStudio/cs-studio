@@ -32,15 +32,9 @@ import org.eclipse.ui.PlatformUI;
 
 public class ShowNamespaceBrowser implements IWorkbenchWindowActionDelegate {
 
-	public void dispose() {
-		// TODO Auto-generated method stub
+	public void dispose() {	}
 
-	}
-
-	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stube
-
-	}
+	public void init(IWorkbenchWindow window) {	}
 
 	public void run(IAction action) {
         IWorkbench workbench = PlatformUI.getWorkbench();
@@ -56,9 +50,6 @@ public class ShowNamespaceBrowser implements IWorkbenchWindowActionDelegate {
 
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
-	}
+	public void selectionChanged(IAction action, ISelection selection) {	}
 
 }
