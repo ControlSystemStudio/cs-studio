@@ -30,7 +30,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.csstudio.dal.DalPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
@@ -112,14 +111,14 @@ public final class PlugRegistry {
 
 			p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + d.getPlugId(), d
 					.getPropertyFactoryClass());
-			CentralLogger.getInstance().info(
-					this,
-					"Set " + Plugs.PLUG_PROPERTY_FACTORY_CLASS + d.getPlugId()
-							+ " to " + d.getPropertyFactoryClass());
+//			CentralLogger.getInstance().info(
+//					this,
+//					"Set " + Plugs.PLUG_PROPERTY_FACTORY_CLASS + d.getPlugId()
+//							+ " to " + d.getPropertyFactoryClass());
 		}
 
-		CentralLogger.getInstance().info(this,
-				"Set " + Plugs.PLUGS + " to " + p.getProperty(Plugs.PLUGS));
+//		CentralLogger.getInstance().info(this,
+//				"Set " + Plugs.PLUGS + " to " + p.getProperty(Plugs.PLUGS));
 	}
 
 	/**

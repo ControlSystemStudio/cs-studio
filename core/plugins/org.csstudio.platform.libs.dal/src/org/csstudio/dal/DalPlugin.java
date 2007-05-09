@@ -1,12 +1,11 @@
 package org.csstudio.dal;
 
-import org.csstudio.platform.AbstractCssPlugin;
-import org.osgi.framework.BundleContext;
+import org.eclipse.core.runtime.Plugin;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class DalPlugin extends AbstractCssPlugin {
+public class DalPlugin extends Plugin {
 	/**
 	 * The ID of this plugin.
 	 */
@@ -36,28 +35,6 @@ public class DalPlugin extends AbstractCssPlugin {
 	 */
 	public static DalPlugin getDefault() {
 		return plugin;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doStart(BundleContext context) throws Exception {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doStop(BundleContext context) throws Exception {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getPluginId() {
-		return ID;
 	}
 
 }

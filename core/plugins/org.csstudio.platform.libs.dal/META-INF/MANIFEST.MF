@@ -6,8 +6,6 @@ Bundle-Version: 0.9.4
 Bundle-Activator: org.csstudio.dal.DalPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform,
- org.csstudio.platform.libs.epics,
  org.junit
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered

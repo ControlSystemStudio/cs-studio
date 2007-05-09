@@ -24,13 +24,13 @@ package org.csstudio.platform.libs.epics;
 import gov.aps.jca.jni.JNITargetArch;
 
 import org.csstudio.platform.libs.epics.preferences.PreferenceConstants;
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -40,7 +40,7 @@ import org.osgi.framework.BundleContext;
  *  @author Kay Kasemir
   */
 @SuppressWarnings("nls")
-public class EpicsPlugin extends AbstractCssUiPlugin
+public class EpicsPlugin extends AbstractUIPlugin
 {
 	public static final String ID = "org.csstudio.platform.libs.epics"; //$NON-NLS-1$
     //The shared instance.
@@ -66,15 +66,13 @@ public class EpicsPlugin extends AbstractCssUiPlugin
     public static EpicsPlugin getDefault()
     {   return plugin;    }
     	
-	/** @see org.csstudio.platform.AbstractCssPlugin#getPluginId() */
-    @Override
-    public String getPluginId()
-    {   return ID;    }
 
-    /** @see org.csstudio.platform.AbstractCssPlugin#getPluginId() */
-    @Override
-	protected void doStart(BundleContext context) throws Exception 
-    {
+    /**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void start(final BundleContext context) throws Exception {
+		super.start(context);
     	/* Still broken:
     	Eclipse magically locates the JCA JNI library as long as it's
 		placed under <plugin>/os/<os>/<arch>,
@@ -129,11 +127,13 @@ public class EpicsPlugin extends AbstractCssUiPlugin
 		installPreferences();
 	}
 
-    /** @see org.csstudio.platform.AbstractCssPlugin#getPluginId() */
-    @Override
-    protected void doStop(BundleContext context) throws Exception
-    {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void stop(final BundleContext context) throws Exception {
 		plugin = null;
+		super.stop(context);
 	}
 
     private String getOSPath() throws Exception
