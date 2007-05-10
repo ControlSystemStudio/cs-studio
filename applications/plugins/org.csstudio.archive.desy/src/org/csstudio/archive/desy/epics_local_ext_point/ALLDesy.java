@@ -1,4 +1,4 @@
-package org.csstudio.archive.desy;
+package org.csstudio.archive.desy.epics_local_ext_point;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ public class ALLDesy implements IArchiveImplementation
 {
 
 	public ArchiveServer getServerInstance(String url) throws Exception {
-        return org.csstudio.archive.desy.aapi.ArchiveServer.getInstance(url);
+        return org.csstudio.archive.desy.epics_local.ArchiveServer.getInstance(url);
 	}
 
 	@SuppressWarnings("nls")
@@ -17,9 +17,9 @@ public class ALLDesy implements IArchiveImplementation
     {
         return new String[]
         {
-            "aapi://desy url 1",
-		    "aapi://desy url 2",
-		    "aapi://desy url 3"
+            "archiveRecord://",
+            "archiveRecord://",
+            "archiveRecord://"
         };
 	}
 }

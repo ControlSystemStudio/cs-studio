@@ -4,9 +4,9 @@
    <extension
          point="org.csstudio.archive.ArchiveImplementation">
       <ArchiveImplementation
-            class="org.csstudio.archive.desy.ALLDesy"
-            name="org.csstudio.archive.desy.ALLDesy"
-            prefix="aapi"/>
+            class="org.csstudio.archive.desy.epics_local_ext_point.ALLDesy"
+            name="org.csstudio.archive.desy.epics_local_ext_point.ALLDesy"
+            prefix="archiveRecord"/>
    </extension>
 
 </plugin>
