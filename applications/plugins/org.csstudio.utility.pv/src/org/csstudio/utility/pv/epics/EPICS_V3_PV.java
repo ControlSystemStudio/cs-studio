@@ -9,12 +9,14 @@ import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_CTRL_Short;
 import gov.aps.jca.dbr.DBR_Double;
+import gov.aps.jca.dbr.DBR_Float;
 import gov.aps.jca.dbr.DBR_Int;
 import gov.aps.jca.dbr.DBR_LABELS_Enum;
 import gov.aps.jca.dbr.DBR_Short;
 import gov.aps.jca.dbr.DBR_String;
 import gov.aps.jca.dbr.DBR_TIME_Double;
 import gov.aps.jca.dbr.DBR_TIME_Enum;
+import gov.aps.jca.dbr.DBR_TIME_Float;
 import gov.aps.jca.dbr.DBR_TIME_Int;
 import gov.aps.jca.dbr.DBR_TIME_Short;
 import gov.aps.jca.dbr.DBR_TIME_String;
@@ -466,6 +468,8 @@ public class EPICS_V3_PV
                 DBRType type = channel_ref.getChannel().getFieldType();
                 if (type.isDOUBLE())
                     type = plain ? DBRType.DOUBLE : DBRType.TIME_DOUBLE;
+                else if (type.isFLOAT())
+                    type = plain ? DBRType.FLOAT : DBRType.TIME_FLOAT;
                 else if (type.isINT())
                     type = plain ? DBRType.INT : DBRType.TIME_INT;
                 else if (type.isSHORT())
@@ -541,6 +545,26 @@ public class EPICS_V3_PV
                     }
                     value = new DoubleValue(time, severity, status,
                                     (NumericMetaData)meta, v);
+                    if (debug)
+                        System.out.println("Channel '" + name
+                                + "': double value " + value);
+                }
+                else if (dbr.isFLOAT())
+                {
+                    float v[];
+                    if (plain)
+                        v = ((DBR_Float)dbr).getFloatValue();
+                    else
+                    {
+                        DBR_TIME_Float dt = (DBR_TIME_Float) dbr;
+                        severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                        Status stat = dt.getStatus();
+                        status = stat.getValue() == 0 ? "" : stat.getName();
+                        time = createTimeFromEPICS(dt.getTimeStamp());
+                        v = dt.getFloatValue();
+                    }
+                    value = new DoubleValue(time, severity, status,
+                                    (NumericMetaData)meta, float2double(v));
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': double value " + value);
@@ -644,12 +668,21 @@ public class EPICS_V3_PV
     /** Convert short array to int array. */
     private int[] short2int(final short[] v)
     {
-        int ival[] = new int[v.length];
-        for (int i = 0; i < ival.length; i++)
-            ival[i] = v[i];
-        return ival;
+        int result[] = new int[v.length];
+        for (int i = 0; i < result.length; i++)
+            result[i] = v[i];
+        return result;
     }
 
+    /** Convert float array to a double array. */
+    private double[] float2double(final float[] v)
+    {
+        double result[] = new double[v.length];
+        for (int i = 0; i < result.length; i++)
+            result[i] = v[i];
+        return result;
+    }
+    
     /** Notify all listeners. */
     private void fireValueUpdate()
     {
