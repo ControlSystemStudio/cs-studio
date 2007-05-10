@@ -1,6 +1,6 @@
 package org.csstudio.alarm.treeView.views;
 
-import org.csstudio.alarm.treeView.LdaptreePlugin;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.images.LdapImageCache;
 import org.csstudio.alarm.treeView.views.models.AlarmConnection;
 import org.csstudio.alarm.treeView.views.models.ContextTreeObject;
@@ -68,7 +68,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 */
 	public Image getImage(Object element) {
 		try{
-			LdapImageCache lic = LdaptreePlugin.getDefaultImageCache();
+			LdapImageCache lic = AlarmTreePlugin.getDefaultImageCache();
 			ISimpleTreeParent obj = (ISimpleTreeParent)element;
 			String imageKey = ISharedImages.IMG_OBJ_FILE;
 			if (obj.hasChildren())
@@ -79,14 +79,14 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 					int maxUalarm = ((ContextTreeObject)obj).getMaxUnacknowledgedAlarm();
 					String iconn = new String(new char[]{getIconChar(maxUalarm),getIconChar(mxalarm)});
 					if ((iconn.equals("ww"))) {imageKey = ISharedImages.IMG_OBJ_ELEMENT;}
-					else return lic.getImage(LdaptreePlugin.getImageDescriptor("./icons/"+iconn+".gif"));
+					else return lic.getImage(AlarmTreePlugin.getImageDescriptor("./icons/"+iconn+".gif"));
 				}
 				else imageKey = ISharedImages.IMG_OBJ_ELEMENT;
 			}
 			if (obj instanceof LdapConnection)
 				imageKey = ISharedImages.IMG_DEF_VIEW;
 			if  (obj instanceof AlarmConnection)
-				return LdaptreePlugin.getDefaultImageCache().getImage(LdaptreePlugin.getImageDescriptor("./icons/alarm.gif"));
+				return AlarmTreePlugin.getDefaultImageCache().getImage(AlarmTreePlugin.getImageDescriptor("./icons/alarm.gif"));
 			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 		}
 		catch (Exception e){

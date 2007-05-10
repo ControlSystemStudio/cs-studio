@@ -21,7 +21,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 
-
+// used for preferences
+// TODO: move into preferences package?
 public class AddMountPointDlg extends Dialog {
 	public AddMountPointDlg(Shell parentShell, Hashtable<String,String> env) {
 		super(parentShell);

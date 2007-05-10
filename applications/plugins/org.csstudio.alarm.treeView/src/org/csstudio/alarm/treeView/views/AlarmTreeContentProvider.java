@@ -1,6 +1,6 @@
 package org.csstudio.alarm.treeView.views;
 
-import org.csstudio.alarm.treeView.LdaptreePlugin;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.views.models.ContextTreeObject;
 import org.csstudio.alarm.treeView.views.models.ContextTreeParent;
 import org.csstudio.alarm.treeView.views.models.ISimpleTreeObject;
@@ -63,7 +63,7 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 		// Note: viewer.setInput(getViewSite()) gets called in AlarmTreeView.
 		// This is probably not the best way to set the input.
 		if (parent instanceof IViewSite){
-			return LdaptreePlugin.getDefault().getConnections().toArray();}
+			return AlarmTreePlugin.getDefault().getConnections().toArray();}
 		else if (parent instanceof ISimpleTreeParent) {
 			return ((ISimpleTreeParent)parent).getChildren();
 		}

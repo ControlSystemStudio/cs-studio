@@ -7,7 +7,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
-import org.csstudio.alarm.treeView.LdaptreePlugin;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.views.models.Alarm;
 import org.csstudio.alarm.treeView.views.models.AlarmConnection;
 import org.csstudio.alarm.treeView.views.models.AlarmTreeObject;
@@ -85,7 +85,7 @@ public class AlarmTreeView extends ViewPart {
 		hookDoubleClickAction();
 		contributeToActionBars();
 
-        LdaptreePlugin myPluginInstance = LdaptreePlugin.getDefault();
+        AlarmTreePlugin myPluginInstance = AlarmTreePlugin.getDefault();
         myPluginInstance.initalizeConnections();
         viewer.refresh();
 	}
@@ -181,7 +181,7 @@ public class AlarmTreeView extends ViewPart {
 				ISelection selection = viewer.getSelection();
 				Object alarmSelection = ((IStructuredSelection)selection).getFirstElement();
 				if (alarmSelection instanceof AlarmConnection){
-					List lst = LdaptreePlugin.getDefault().getConnections();
+					List lst = AlarmTreePlugin.getDefault().getConnections();
 					Iterator iter = lst.iterator();
 					boolean found = true;
 					while ((iter.hasNext()) || found){
@@ -231,7 +231,7 @@ public class AlarmTreeView extends ViewPart {
 		};
 		disableAlarm.setText("Acknowledge Alarm");
 		disableAlarm.setToolTipText("Acknowledge alarm on node - or highest children's alarm is node hasn't got an alarm");
-		disableAlarm.setImageDescriptor(LdaptreePlugin.getImageDescriptor("./icons/Alarm.gif"));
+		disableAlarm.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/Alarm.gif"));
 		
 		refreshAction = new Action() {
 			public void run() {
@@ -240,7 +240,7 @@ public class AlarmTreeView extends ViewPart {
 		};
 		refreshAction.setText("Refresh");
 		refreshAction.setToolTipText("Refresh view");
-		refreshAction.setImageDescriptor(LdaptreePlugin.getImageDescriptor("./icons/refresh.gif"));
+		refreshAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/refresh.gif"));
 		
 		doubleClickAction = disableAlarm;
 	}

@@ -1,6 +1,6 @@
 package org.csstudio.alarm.treeView.preferences;
 
-import org.csstudio.alarm.treeView.LdaptreePlugin;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -16,7 +16,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = LdaptreePlugin.getDefault()
+		IPreferenceStore store = AlarmTreePlugin.getDefault()
 				.getPreferenceStore();
 		store.setDefault(PreferenceConstants.PROTOCOL, "epics");
 		store.setDefault(PreferenceConstants.URL, "ldap://krynfs.desy.de:389/o=DESY,c=DE");

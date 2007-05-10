@@ -19,17 +19,17 @@ import java.util.List;
  * The activator class of the LdapTree-Plug-In. This manages the plug-in's
  * lifecycle.
  */
-public class LdaptreePlugin extends AbstractCssUiPlugin {
+public class AlarmTreePlugin extends AbstractCssUiPlugin {
 
 	/**
 	 * The plug-in id.
 	 */
-	private static final String PLUGIN_ID = "org.csstudio.alarm.treeView";
+	public static final String PLUGIN_ID = "org.csstudio.alarm.treeView";
 	
 	/**
 	 * Shared instance of this class.
 	 */
-	private static LdaptreePlugin plugin;
+	private static AlarmTreePlugin plugin;
 	
 	//this remains from my previous philosophy that you can have many LDAP and JMS connections
 	private List<ISimpleTreeParent> connections;
@@ -39,7 +39,7 @@ public class LdaptreePlugin extends AbstractCssUiPlugin {
 	/**
 	 * Returns the shared instance.
 	 */
-	public static LdaptreePlugin getDefault() {
+	public static AlarmTreePlugin getDefault() {
 		return plugin;
 	}
 
@@ -53,7 +53,7 @@ public class LdaptreePlugin extends AbstractCssUiPlugin {
 	/**
 	 * The constructor.
 	 */
-	public LdaptreePlugin() {
+	public AlarmTreePlugin() {
 		connections = new ArrayList<ISimpleTreeParent>();
 		plugin = this;
 	}
@@ -66,8 +66,7 @@ public class LdaptreePlugin extends AbstractCssUiPlugin {
 		acc.setUrl(getPluginPreferences().getString(PreferenceConstants.JMSURL));
 		acc.setTopicName(getPluginPreferences().getString(PreferenceConstants.JMSTOPIC));
 		acc.startListening();
-		LdapConnection lcc = new LdapConnection(getPluginPreferences().getString(PreferenceConstants.URL),
-				getPluginPreferences().getString(PreferenceConstants.USER),getPluginPreferences().getString(PreferenceConstants.PASSWORD),getPluginPreferences().getString(PreferenceConstants.NODE));
+		LdapConnection lcc = new LdapConnection();
 		connections.add(lcc);
 		lcc.initializeCaching();
 		acc.mapHierarchy(lcc);

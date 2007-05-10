@@ -2,7 +2,7 @@ package org.csstudio.alarm.treeView.preferences;
 
 import java.util.Hashtable;
 
-import org.csstudio.alarm.treeView.LdaptreePlugin;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.views.AddMountPointDlg;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;
@@ -33,7 +33,7 @@ public class LdapTreePreferences
 
 	public LdapTreePreferences() {
 		super(GRID);
-		setPreferenceStore(LdaptreePlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(AlarmTreePlugin.getDefault().getPreferenceStore());
 		setDescription("Ldap preferences");
 	}
 	
@@ -66,7 +66,7 @@ public class LdapTreePreferences
 			}
 			
 			public String getNewInputObject(){
-				LdaptreePlugin myPluginInstance = LdaptreePlugin.getDefault();
+				AlarmTreePlugin myPluginInstance = AlarmTreePlugin.getDefault();
 				Hashtable<String,String> env = new Hashtable<String,String>();
 	            env.put("java.naming.provider.url", myPluginInstance.getPluginPreferences().getString(PreferenceConstants.URL));
 	            env.put("java.naming.security.principal", myPluginInstance.getPluginPreferences().getString(PreferenceConstants.USER));

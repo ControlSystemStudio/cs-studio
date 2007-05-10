@@ -12,7 +12,8 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.csstudio.alarm.treeView.LdaptreePlugin;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.alarm.treeView.views.models.Alarm;
 import org.csstudio.alarm.treeView.views.models.ContextTreeObject;
 import org.csstudio.alarm.treeView.views.models.ContextTreeParent;
@@ -20,8 +21,11 @@ import org.csstudio.alarm.treeView.views.models.LdapConnection;
 import org.csstudio.alarm.treeView.views.models.NodeNotFoundException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * This job reads the directory structure from the server.
@@ -42,12 +46,11 @@ import org.eclipse.core.runtime.jobs.Job;
  * 
  * @author Jurij Kodre
  */
+// this class is LDAP-specific
 public class CachingThread extends Job {
 
 	//client side provided sizelimit of result
 	protected long SIZE_LIMIT=100000;  // this value is from LdapConnection.java
-	//environment properties
-	protected Hashtable<String,String> env;
 	//DirContext used to perform search on all trees
 	protected transient DirContext connection;
 	//we use one of provided TreeParser - each of provided  
@@ -62,56 +65,54 @@ public class CachingThread extends Job {
 	public static final String alarmInitialRoot="ou=EpicsAlarmCfg";//"ou=EpicsControls";
 	
 	/**
-	 * Sets which subroots of EpicsAlarmCfg we want to be retrieved
-	 * @param structureRoots String array with names (without tree structure! -e.g. Wasseranlagen)
-	 */
-	public void setStructureRoots(String[] structureRoots) {
-		this.structureRoots = structureRoots;
-	}
-
-	/**
-	 * We construct the Caching thread, here protocol setting if set also overrides InitialContextFactory
-	 * @param mountPoint LDAPConnection on which we connect the our roots
-	 */
-	public CachingThread(ContextTreeParent mountPoint){
-		super("Alarm Tree Directory Reader");
-		this.env = new Hashtable<String,String>();
-	}
-
-	/**
 	 * We construct the Caching thread with connection parameters provided in enviroment parameter, here protocol setting if set also overrides InitialContextFactory
 	 * 
-	 * @param environment connection parameters needs to be set for JNDI connection in Hashtable of course
+	 * @param url LDAP URL.
 	 * @param mountPoint LDAPConnection on which we connect the our roots
 	 */
-	public CachingThread(Hashtable<String,String> environment, LdapConnection mountPoint){
+	public CachingThread(LdapConnection mountPoint) {
 		super("Alarm Tree Directory Reader");
-		this.env = environment;
-		this.mountPoint = mountPoint; 	
+		this.mountPoint = mountPoint;
+		
+		// TODO: for some reason, this does not work when using
+		// IEclipsePreferences instead. With IEclipsePreferences, the NODE
+		// preference contains only a single value.
+		Preferences prefs = AlarmTreePlugin.getDefault().getPluginPreferences();
+		structureRoots = prefs.getString(PreferenceConstants.NODE).split(";");
 	}
 	
 	/**
-	 * sets the JNDI connection parameter
-	 * @param name name od parameter (e.g. "java.naming.factory.initial")
-	 * @param parameter value (e.g. "com.sun.jndi.ldap.LdapCtxFactory");
+	 * Initializes Connection with connection parameters set up in the
+	 * preferences.
 	 */
-	public void setParameter(String name, String parameter){
-		env.put(name,parameter);
+	private void initializeConnection() {
+		Hashtable<String, String> env = environmentFromPreferences();
+        env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
+        tparser = new LDAPTreeParser();
+		try {
+			connection = new InitialDirContext(env);
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
-	 * Initializes Connection with given connection parameters
-	 * @throws Exception if parameters are not given
+	 * Initializes the LDAP environment (URL, username and password) from this
+	 * plug-in's preferences.
+	 * @return the LDAP environment.
 	 */
-	private void initializeConnection() throws Exception{
-		if (env==null) {
-			throw new Exception("Parameters for connection not given.");
-		}
-		else {
-	        env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
-	        tparser = new LDAPTreeParser();		    
-			connection=new InitialDirContext(env);
-		}
+	private Hashtable<String, String> environmentFromPreferences() {
+		IEclipsePreferences prefs = new DefaultScope().getNode(AlarmTreePlugin.PLUGIN_ID);
+		String url = prefs.get(PreferenceConstants.URL, "");
+		String user = prefs.get(PreferenceConstants.USER, "");
+		String password = prefs.get(PreferenceConstants.PASSWORD, "");
+		
+		Hashtable<String, String> env = new Hashtable<String, String>();
+		env.put("java.naming.provider.url", url);
+		env.put("java.naming.security.principal", user);
+		env.put("java.naming.security.credentials", password);
+		return env;
 	}
 	
 	/**
@@ -120,12 +121,16 @@ public class CachingThread extends Job {
 	private synchronized void populateSubTree(String mPoint) throws NamingException{
 //		we wants root of the tree also included so we do a little trick - we put root into the name so it will be 
 //		parsed and added as root rather than his children 
-		String name,rname,rootNode="efan="+mPoint+","+alarmCfgRoot;
+		String rootNode="efan="+mPoint+","+alarmCfgRoot;
+		String name;
+		String rname;
 		SearchControls ctrl = new SearchControls();
 		StringBuffer sbuf;
 		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE); //set to search the whole tree
+		
 //		remove when you solve the size limit problem or TODO: workaround
-		ctrl.setCountLimit(0);
+//		ctrl.setCountLimit(0);
+		
 //		we retrieve all leafes (nodes with no childern) and then populate them in tree 
 //		(the populateObject method provides provides parsing names and putting them into tree structure)
 		NamingEnumeration enumr = connection.search(rootNode,"eren=*",ctrl);
@@ -301,6 +306,7 @@ public class CachingThread extends Job {
 			monitor.subTask("Building tree");
 			int l = structureRoots.length;
 			for (int i=0; i<l; i++){
+				System.out.println(structureRoots[i]);
 				populateSubTree(structureRoots[i]);
 			}
 			
@@ -311,7 +317,7 @@ public class CachingThread extends Job {
 			e.printStackTrace();
 		}
 		monitor.done();
-		return new Status(IStatus.OK, LdaptreePlugin.getDefault().getPluginId(),
+		return new Status(IStatus.OK, AlarmTreePlugin.getDefault().getPluginId(),
 				IStatus.OK, "Finished initializing alarm tree", null);
 	}
 	

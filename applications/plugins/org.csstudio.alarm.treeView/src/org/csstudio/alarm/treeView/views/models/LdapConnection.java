@@ -12,43 +12,26 @@ public class LdapConnection extends ContextTreeParent
 	protected Hashtable<String,String> nameMap;
 	protected Hashtable<String,ContextTreeObject> tree;
 	protected Hashtable<String,String> env;
-	protected String[] structureRoot;
 	
-		
-    public LdapConnection()
-    {
-        super();
-        url = "";
-        principal = "";
-        credentials = "";
-        savePassword = false;
-		this.nameMap = new Hashtable<String,String>();
-		tree = new Hashtable<String,ContextTreeObject>();
-   }
-
-    public LdapConnection(String url, String principal, String credential, String prefsNodes){
+    /**
+     * Creates a new LDAP connection.
+     * 
+     * @param url the LDAP URL.
+     * @param principal the LDAP principal (user name).
+     * @param credential the LDAP credentials (password).
+     * @param rootNodes the root nodes that should be queried.
+     */
+	public LdapConnection() {
     	super();
-    	this.url = url;
-    	this.principal = principal;
-    	this.credentials = credential;
 		this.nameMap = new Hashtable<String,String>();
-		this.structureRoot = prefsNodes.split(";");
 		tree = new Hashtable<String,ContextTreeObject>();
-    }
-    
-    public void setStructureRoot(String prefsNodes){
-    	structureRoot = prefsNodes.split(";");
     }
     
     public void initializeCaching(){
     	if (!caching){
     		caching = true;
     		env = new Hashtable<String,String>();
-            env.put("java.naming.provider.url", url);
-//            env.put("java.naming.security.principal", principal);
-//            env.put("java.naming.security.credentials", credentials);		
-    		CachingThread cthr = new CachingThread(env,this);
-    		cthr.setStructureRoots(structureRoot);
+    		CachingThread cthr = new CachingThread(this);
     		// cthr is a system job (it won't show in the GUI) because it was
     		// not initiated by the user and must necessarily run.
     		cthr.setSystem(true);
@@ -76,29 +59,6 @@ public class LdapConnection extends ContextTreeParent
 		return tree;
 	}
 
-	public void reset()
-    {
-    	cthr.resetConnection();
-    }
-    
-/*    public synchronized DirContext getConnection()
-        throws NamingException
-    {
-        if(connection == null)
-        {
-            Hashtable<String,String> env = new Hashtable();
-            env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
-            env.put("java.naming.provider.url", url);
-            if(principal != null && principal.length() > 0)
-                env.put("java.naming.security.principal", principal);
-            if(credentials != null && credentials.length() > 0)
-                env.put("java.naming.security.credentials", credentials);
-            connection = new InitialDirContext(env);
-            cthr = new ConnectionThread(this);
-        }
-        return connection;
-    }*/
-
 	public Attributer getAttributeGetter(){
 		return atter;
 	}
@@ -107,59 +67,10 @@ public class LdapConnection extends ContextTreeParent
     	return env;
     }
 	
-    public String getCredentials()
-    {
-        return credentials;
-    }
-
-    public void setCredentials(String credentials)
-    {
-        this.credentials = credentials;
-    }
-
-    public String getPrincipal()
-    {
-        return principal;
-    }
-
-    public void setPrincipal(String principal)
-    {
-        this.principal = principal;
-    }
-
-    public String getUrl()
-    {
-        return url;
-    }
-
-    public void setUrl(String url)
-    {
-        this.url = url;
-    }
-
     public String getName()
     {
-        return url;
+        return "LdapConnection"; // TODO
     }
-
-    public boolean isSavePassword()
-    {
-        return savePassword;
-    }
-
-    public void setSavePassword(boolean savePassword)
-    {
-        this.savePassword = savePassword;
-    }
-
-   /* public boolean hasChildren(){
-    	return true;
-    }*/
-    
-    private String url;
-    private String principal;
-    private String credentials;
-    private boolean savePassword;
 
 	public void triggerAlarmOnNode(Alarm alarm) throws NodeNotFoundException{
 //		try {
@@ -189,7 +100,6 @@ public class LdapConnection extends ContextTreeParent
 			throw new NodeNotFoundException();
 		}
 	}
-
 	
 	public void disableAlarmOnNode(Alarm alarm){
 		String name = alarm.getName();
