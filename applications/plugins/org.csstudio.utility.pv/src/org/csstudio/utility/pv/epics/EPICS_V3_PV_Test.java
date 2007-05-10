@@ -2,22 +2,23 @@ package org.csstudio.utility.pv.epics;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
+import org.csstudio.value.DoubleValue;
 import org.csstudio.value.EnumValue;
+import org.csstudio.value.IntegerValue;
 import org.csstudio.value.NumericMetaData;
 import org.csstudio.value.Value;
+import org.junit.Test;
 
-/** These tests require the 'excas' server from EPICS base,
- *  or (better) the soft-IOC database from lib/test.db.
+/** These tests require the soft-IOC database from lib/test.db.
  * 
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PVTest extends TestCase
+public class EPICS_V3_PV_Test extends TestCase
 {
     private AtomicInteger updates = new AtomicInteger();
     
@@ -49,6 +50,7 @@ public class PVTest extends TestCase
         }
     }
 
+    @Test
     public void testSinglePV() throws Exception
     {
         PV pv = new EPICS_V3_PV("fred");
@@ -65,15 +67,16 @@ public class PVTest extends TestCase
             --wait;
         }
         // Did we get anything?
-        Assert.assertTrue(updates.get() > 2);
+        assertTrue(updates.get() > 2);
         // Meta info as expected?
         NumericMetaData meta = (NumericMetaData)pv.getValue().getMetaData();
-        Assert.assertEquals("furlong", meta.getUnits());
-        Assert.assertEquals(4, meta.getPrecision());
+        assertEquals("furlong", meta.getUnits());
+        assertEquals(4, meta.getPrecision());
         
         pv.stop();
     }
 
+    @Test
     public void testMultiplePVs() throws Exception
     {
         PV pva = new EPICS_V3_PV("fred");
@@ -93,11 +96,12 @@ public class PVTest extends TestCase
             Thread.sleep(1000);
             --wait;
         }
-        Assert.assertTrue(updates.get() > 4);
+        assertTrue(updates.get() > 4);
         pvb.stop();
         pva.stop();
     }
 
+    @Test
     public void testDuplicatePVs() throws Exception
     {
         PV pva = new EPICS_V3_PV("fred");
@@ -117,12 +121,13 @@ public class PVTest extends TestCase
             Thread.sleep(1000);
             --wait;
         }
-        Assert.assertTrue(updates.get() > 4);
+        assertTrue(updates.get() > 4);
         pvb.stop();
         Thread.sleep(4000);
         pva.stop();
     }
 
+    @Test
     public void testEnum() throws Exception
     {
         PV pva = new EPICS_V3_PV("fred.SCAN");
@@ -130,11 +135,48 @@ public class PVTest extends TestCase
         pva.start();
         while (!pva.isConnected())
             Thread.sleep(100);
-        Assert.assertTrue(pva.isConnected());
-        Assert.assertTrue(pva.getValue() instanceof EnumValue);
+        assertTrue(pva.isConnected());
+        assertTrue(pva.getValue() instanceof EnumValue);
         EnumValue e = (EnumValue) pva.getValue();
-        Assert.assertEquals(6, e.getValue());
-        Assert.assertEquals("1 second", e.format());
+        assertEquals(6, e.getValue());
+        assertEquals("1 second", e.format());
+        
+        pva.stop();
+    }
+
+
+    @Test
+    public void testDblWaveform() throws Exception
+    {
+        PV pva = new EPICS_V3_PV("hist");
+        
+        pva.start();
+        while (!pva.isConnected())
+            Thread.sleep(100);
+        assertTrue(pva.isConnected());
+        final Value value = pva.getValue();
+        assertTrue(value instanceof DoubleValue);
+        double dbl[] = ((DoubleValue) value).getValues();
+        assertEquals(50, dbl.length);
+        System.out.println(value);
+        
+        pva.stop();
+    }
+
+    @Test
+    public void testLongWaveform() throws Exception
+    {
+        PV pva = new EPICS_V3_PV("longs");
+        
+        pva.start();
+        while (!pva.isConnected())
+            Thread.sleep(100);
+        assertTrue(pva.isConnected());
+        final Value value = pva.getValue();
+        assertTrue(value instanceof IntegerValue);
+        int ints[] = ((IntegerValue) value).getValues();
+        assertEquals(50, ints.length);
+        System.out.println(value);
         
         pva.stop();
     }

@@ -9,11 +9,13 @@ import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_CTRL_Short;
 import gov.aps.jca.dbr.DBR_Double;
+import gov.aps.jca.dbr.DBR_Int;
 import gov.aps.jca.dbr.DBR_LABELS_Enum;
 import gov.aps.jca.dbr.DBR_Short;
 import gov.aps.jca.dbr.DBR_String;
 import gov.aps.jca.dbr.DBR_TIME_Double;
 import gov.aps.jca.dbr.DBR_TIME_Enum;
+import gov.aps.jca.dbr.DBR_TIME_Int;
 import gov.aps.jca.dbr.DBR_TIME_Short;
 import gov.aps.jca.dbr.DBR_TIME_String;
 import gov.aps.jca.dbr.Status;
@@ -464,6 +466,8 @@ public class EPICS_V3_PV
                 DBRType type = channel_ref.getChannel().getFieldType();
                 if (type.isDOUBLE())
                     type = plain ? DBRType.DOUBLE : DBRType.TIME_DOUBLE;
+                else if (type.isINT())
+                    type = plain ? DBRType.INT : DBRType.TIME_INT;
                 else if (type.isSHORT())
                     type = plain ? DBRType.SHORT : DBRType.TIME_SHORT;
                 else if (type.isENUM())
@@ -540,6 +544,26 @@ public class EPICS_V3_PV
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': double value " + value);
+                }
+                else if (dbr.isINT())
+                {
+                    int v[];
+                    if (plain)
+                        v = ((DBR_Int)dbr).getIntValue();
+                    else
+                    {
+                        DBR_TIME_Int dt = (DBR_TIME_Int) dbr;
+                        severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                        Status stat = dt.getStatus();
+                        status = stat.getValue() == 0 ? "" : stat.getName();
+                        time = createTimeFromEPICS(dt.getTimeStamp());
+                        v = dt.getIntValue();
+                    }
+                    value = new IntegerValue(time, severity, status,
+                                    (NumericMetaData)meta, v);
+                    if (debug)
+                        System.out.println("Channel '" + name
+                                + "': int value " + value);
                 }
                 else if (dbr.isSHORT())
                 {
