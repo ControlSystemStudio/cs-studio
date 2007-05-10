@@ -140,6 +140,7 @@ public class CachingThread extends Job {
 			while (enumr.hasMore()){
 				records++;
 				SearchResult result = (SearchResult)enumr.next();
+				// XXX: next line can throw UnsupportedOperationException!
 				name = result.getNameInNamespace();
 				rname = result.getName();
 				//only getName gives you name without 'o=DESY, c=DE'
@@ -161,6 +162,13 @@ public class CachingThread extends Job {
 		}
 	}
 	
+	// TODO: this method is very slow, maybe because for each element found
+	// in the search, the element is looked up again and than its attributes
+	// are queried with yet another call. Rewrite this, and check if we can
+	// get the attributes when we build the tree. As far as I can see, the
+	// search will return the attributes, if requested, so we could simply
+	// initialize the alarm state within populateSubTree instead of in another
+	// step.
 	private synchronized void populateAlarms() throws NamingException{
 		SearchControls ctrl = new SearchControls();
 		String name,rname,sname;
