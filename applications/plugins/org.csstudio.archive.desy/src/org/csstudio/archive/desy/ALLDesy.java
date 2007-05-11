@@ -1,7 +1,5 @@
 package org.csstudio.archive.desy;
 
-import java.util.ArrayList;
-
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.IArchiveImplementation;
 
