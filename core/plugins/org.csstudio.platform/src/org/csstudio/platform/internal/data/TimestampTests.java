@@ -26,7 +26,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Calendar;
 
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /** Tests of the {@link Timestamp} class.
  *  @author Kay Kasemir
@@ -70,11 +72,18 @@ public final class TimestampTests
         System.out.println(stamp.toString());
         assertEquals("2007/02/18 00:00:00.000000000", stamp.toString());
 
+        // Does factory give the same result?
+        ITimestamp stamp2 = TimestampFactory.fromCalendar(cal);
+        assertEquals(stamp, stamp2);
+        
         // Down to seconds
         cal.set(2007, 1, 18, 13, 45, 59);
         stamp = new Timestamp(cal.getTimeInMillis()/1000L, 0L);
         System.out.println(stamp.toString());
         assertEquals("2007/02/18 13:45:59.000000000", stamp.toString());
+ 
+        stamp2 = TimestampFactory.fromCalendar(cal);
+        assertEquals(stamp, stamp2);
 
         // Down to nanoseconds
         stamp = new Timestamp(cal.getTimeInMillis()/1000L, 123456789L);
@@ -82,15 +91,18 @@ public final class TimestampTests
         assertEquals("2007/02/18 13:45:59.123456789", stamp.toString());
     }
     
-    /**
-     * Test method for {@link Timestamp#equals(Object)}.
-     * 
+    /** Comparisons */
     @Test
-    public void testEquality()
+    public void compareStamps()
     {
         // Basic conversions from/to pieces and strings
-        ITimestamp a = Timestamp.fromPieces(1990, 1, 18, 13, 30, 20, 0);
-        ITimestamp b = Timestamp.fromPieces(1990, 1, 18, 13, 30, 20, 0);
+        Calendar cal = Calendar.getInstance();
+        cal.set(1990, 1, 18, 13, 30, 20);
+        ITimestamp a = TimestampFactory.fromCalendar(cal);
+        
+        cal.set(1990, 1, 18, 13, 30, 20);
+        ITimestamp b = TimestampFactory.fromCalendar(cal);
+        
         ITimestamp c = TimestampFactory.now();
 
         assertTrue(a.equals(a));
@@ -113,6 +125,5 @@ public final class TimestampTests
         assertFalse(b.equals(c));
         assertFalse(c.equals(a));
     }
-         */
 
 }

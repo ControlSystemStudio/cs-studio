@@ -32,13 +32,13 @@ import org.csstudio.platform.data.ITimestamp;
 public final class Timestamp implements ITimestamp
 {
     /** Milliseconds per second. */
-    private static final long millis_per_sec = 1000L;
+    public static final long millis_per_sec = 1000L;
     
     /** Nanoseconds per millisecond. */
-    private static final long nanos_per_milli = 1000000L;
+    public static final long nanos_per_milli = 1000000L;
 
     /** Nanoseconds per second. */
-    private static final long nanos_per_sec = 1000000000L;
+    public static final long nanos_per_sec = 1000000000L;
 
     /** Seconds since epoch. */
     private final long seconds;
@@ -49,13 +49,13 @@ public final class Timestamp implements ITimestamp
     private final long nanoseconds;
 
     /** Constructor with seconds and nanoseconds since epoch.
-     *  @param seconds seconds
-     *  @param nanoseconds nanoseconds
+     *  @param seconds Seconds since epoch
+     *  @param nanoseconds Nanoseconds within seconds
      */
     public Timestamp(long seconds, long nanoseconds)
     {
         if (nanoseconds < 0  ||  nanoseconds >= nanos_per_sec)
-        {   // TODO Test
+        {
             long fullsecs = nanoseconds / nanos_per_sec;
             seconds += fullsecs;
             nanoseconds -= fullsecs * nanos_per_sec;
@@ -64,9 +64,8 @@ public final class Timestamp implements ITimestamp
         this.nanoseconds = nanoseconds;
     }
 
-    /** Constructor fractional seconds since epoch.
-     *  @param seconds
-     *            seconds
+    /** Constructor with fractional seconds since epoch.
+     *  @param seconds Seconds since epoch
      */
     public Timestamp(final double seconds)
     {

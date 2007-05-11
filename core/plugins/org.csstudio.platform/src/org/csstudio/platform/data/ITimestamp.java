@@ -46,7 +46,7 @@ import java.util.Calendar;
  */
 public interface ITimestamp extends Comparable<ITimestamp>
 {
-    /** Get seconds since 1 January 1970 0:00 UTC.
+    /** Get seconds since epoch, i.e. 1 January 1970 0:00 UTC.
      *  <p>
      *  Note that we always return seconds relative to this UTC epoch,
      *  even if the original control system data source might use a different
