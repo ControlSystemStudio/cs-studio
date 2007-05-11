@@ -82,8 +82,11 @@ public final class TimestampFactory
         return fromMillisecs(calendar.getTimeInMillis());
     }
     
-    /** Helper for converting milliseconds into time stamp. */
-    private static ITimestamp fromMillisecs(long millisecs)
+    /** Create a time stamp for the given milliseconds since the epoch.
+     *  @param millisecs Milliseconds since 1970 epoch
+     *  @return Time stamp set to given milliseconds.
+     */
+    public static ITimestamp fromMillisecs(long millisecs)
     {
         final long secs = millisecs / Timestamp.millis_per_sec;
         millisecs -= secs *  Timestamp.millis_per_sec;
