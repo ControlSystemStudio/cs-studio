@@ -1,6 +1,6 @@
 package org.csstudio.trends.databrowser.archiveview;
 
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -33,9 +33,9 @@ public class NameTableItemLabelProvider extends LabelProvider
         case ARCHIVE:
             return item.getArchiveName();
         case START:
-            return item.getStart().format(ITimestamp.FMT_DATE_HH_MM_SS);
+            return item.getStart().format(ITimestamp.Format.DateTimeSeconds);
         case END:
-            return item.getEnd().format(ITimestamp.FMT_DATE_HH_MM_SS);
+            return item.getEnd().format(ITimestamp.Format.DateTimeSeconds);
         }
         return null;
     }

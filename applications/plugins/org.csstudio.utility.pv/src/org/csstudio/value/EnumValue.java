@@ -1,6 +1,6 @@
 package org.csstudio.value;
 
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 
 /** An enum-typed value.
  *  @see Value

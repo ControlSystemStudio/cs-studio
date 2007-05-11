@@ -2,6 +2,7 @@ package org.csstudio.trends.databrowser.sampleview;
 
 import java.util.ArrayList;
 
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSampleDragSource;
 import org.csstudio.trends.databrowser.model.IModelItem;
@@ -41,8 +42,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.csstudio.platform.util.ITimestamp;  // Albert
-import org.csstudio.trends.databrowser.ploteditor.PlotEditor; // Albert
 
 /** A View that shows all the current Model Samples in a list.
  *  <p>

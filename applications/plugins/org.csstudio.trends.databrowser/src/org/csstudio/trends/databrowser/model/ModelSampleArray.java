@@ -3,7 +3,7 @@ package org.csstudio.trends.databrowser.model;
 import java.util.ArrayList;
 
 import org.csstudio.archive.ArchiveValues;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.Range;
 import org.csstudio.value.Value;

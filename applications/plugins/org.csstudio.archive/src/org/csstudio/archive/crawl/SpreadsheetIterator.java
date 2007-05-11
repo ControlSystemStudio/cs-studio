@@ -1,7 +1,7 @@
 package org.csstudio.archive.crawl;
 
 import org.csstudio.archive.crawl.ValueIterator;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.value.Value;
 
 /** Iterates several <code>ValueIterator</code> instances 'in lockstep'

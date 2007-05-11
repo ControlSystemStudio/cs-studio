@@ -1,6 +1,6 @@
 package org.csstudio.archive;
 
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 
 /** Information for one Channel in archive.
  *  @see ArchiveServer#getNames(int, String)

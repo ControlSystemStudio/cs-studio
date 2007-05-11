@@ -7,8 +7,8 @@ import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 import org.csstudio.archive.Messages;
 import org.csstudio.archive.NameInfo;
-import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 
 /** Handles the "archiver.names" request and its results. */
 @SuppressWarnings("nls")

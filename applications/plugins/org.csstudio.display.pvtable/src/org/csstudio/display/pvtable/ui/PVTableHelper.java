@@ -2,10 +2,9 @@ package org.csstudio.display.pvtable.ui;
 
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVListEntry;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.value.Value;
-
 
 /** Helper for creating a table of PVListEntry rows.
  * 

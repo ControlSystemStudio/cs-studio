@@ -29,8 +29,9 @@ package org.csstudio.platform.util;
  * was originally located in plugin org.csstudio.data.
  * 
  * @author Sven Wende
- * 
+ * @deprecated Use org.csstudio.platform.data.ITimestamp
  */
+@Deprecated
 public interface ITimestamp extends Comparable<ITimestamp> {
 
 	/** Format to "YYYY/MM/DD". */

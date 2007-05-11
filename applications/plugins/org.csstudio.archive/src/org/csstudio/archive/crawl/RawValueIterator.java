@@ -3,7 +3,7 @@ package org.csstudio.archive.crawl;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.crawl.ValueIterator;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.value.Value;
 
 /** An archive sample crawler.

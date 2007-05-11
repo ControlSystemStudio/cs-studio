@@ -1,14 +1,15 @@
 package org.csstudio.archive.channelarchiver;
 
+import java.util.Calendar;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.NameInfo;
-import org.csstudio.archive.util.TimestampUtil;
-import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.value.Value;
 
 /** Tests of the ChannelArchiver interface.
@@ -113,8 +114,11 @@ public class UnitTest extends TestCase
 		String names[] = new String[] { "CCL_LLRF:FCM1:cavAmpAvg" };
 
 		// Includes some 'off' sample
-		ITimestamp start = TimestampUtil.fromPieces(2006, 1, 18, 10, 18, 0, 0);
-		ITimestamp end = TimestampUtil.fromPieces(2006, 1, 18, 12, 0, 0, 0);
+        Calendar cal = Calendar.getInstance();
+        cal.set(2006, 1, 18, 10, 18, 0);
+		ITimestamp start = TimestampFactory.fromCalendar(cal);
+        cal.set(2006, 1, 18, 12, 0, 0);
+		ITimestamp end = TimestampFactory.fromCalendar(cal);
         int request_type = server.getRequestType(ArchiveServer.GET_RAW);
 		int count = 10;
 		ArchiveValues[] ass = 
@@ -129,8 +133,10 @@ public class UnitTest extends TestCase
 		}		
 
 		// Includes some 'repeat' sample
-		start = TimestampUtil.fromPieces(2006, 1, 19, 5, 38, 0, 0);
-		end = TimestampUtil.fromPieces(2006, 1, 19, 6, 0, 0, 0);
+        cal.set(2006, 1, 19, 5, 38, 0);
+        start = TimestampFactory.fromCalendar(cal);
+        cal.set(2006, 1, 19, 6, 0, 0);
+		end = TimestampFactory.fromCalendar(cal);
 		count = 1000;
 		ass = server.getSamples(key, names, start, end, request_type,
                         new Object[] { new Integer(count) } );
@@ -143,7 +149,8 @@ public class UnitTest extends TestCase
 		}		
 
 		// Includes enum-type data
-		start = TimestampUtil.fromPieces(2006, 1, 1, 0, 0, 0, 0);
+        cal.set(2006, 1, 1, 0, 0, 0);
+		start = TimestampFactory.fromCalendar(cal);
 		end = TimestampFactory.now();
         names[0] = "SCL_LLRF:HPM01a:RF7_Ctl";
 		ass = server.getSamples(key, names, start, end, request_type,
@@ -163,7 +170,9 @@ public class UnitTest extends TestCase
 		int key = server.getArchiveKey("RF");
 		String names[] = new String[] { "CCL_HPRF:Mod1:FltLog0" };
 	
-		ITimestamp start = TimestampUtil.fromPieces(2006, 1, 18, 10, 18, 0, 0);
+        Calendar cal = Calendar.getInstance();
+        cal.set(2006, 1, 18, 10, 18, 0);
+		ITimestamp start = TimestampFactory.fromCalendar(cal);
 		ITimestamp end = TimestampFactory.now();
 		int how = 0;
         int count = 10;

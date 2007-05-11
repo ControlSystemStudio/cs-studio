@@ -1,6 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.swt.chart.ChartSampleSearch;
 
 /** Helper for merging archived samples.

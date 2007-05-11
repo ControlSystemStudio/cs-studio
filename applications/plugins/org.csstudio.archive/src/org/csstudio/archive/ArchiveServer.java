@@ -1,6 +1,6 @@
 package org.csstudio.archive;
 
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 
 /** Main interface to an archive.
  *  <p>

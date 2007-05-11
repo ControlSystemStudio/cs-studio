@@ -4,7 +4,7 @@ import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.cache.ArchiveCache;
 import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

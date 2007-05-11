@@ -4,7 +4,7 @@ import org.csstudio.archive.ArchiveServer;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariableWithArchive;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.core.runtime.PlatformObject;
 

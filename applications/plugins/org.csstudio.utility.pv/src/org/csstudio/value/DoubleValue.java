@@ -3,7 +3,7 @@ package org.csstudio.value;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 
 /** A double-typed value.
  *  @see Value

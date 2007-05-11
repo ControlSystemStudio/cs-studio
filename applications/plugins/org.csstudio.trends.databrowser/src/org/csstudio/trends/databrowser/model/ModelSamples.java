@@ -1,9 +1,8 @@
 package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.archive.ArchiveValues;
-import org.csstudio.archive.util.TimestampUtil;
-import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.Range;
@@ -62,7 +61,7 @@ public class ModelSamples implements ChartSampleSequence
         ITimestamp border;
         if (live_samples.size() > 0)
             border = 
-                TimestampUtil.fromDouble(live_samples.get(0).getX());
+                TimestampFactory.fromDouble(live_samples.get(0).getX());
         else
             border = TimestampFactory.now();
         // One could consider unlocking 'this' here,

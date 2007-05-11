@@ -3,7 +3,7 @@ package org.csstudio.trends.databrowser.model;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.csstudio.archive.util.TimestampUtil;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.value.DoubleValue;
 import org.csstudio.value.Value;
 
@@ -12,7 +12,7 @@ public class ModelSampleRingTest extends TestCase
 {
     private Value create(double tick)
     {
-        return new DoubleValue(TimestampUtil.fromDouble(tick),
+        return new DoubleValue(TimestampFactory.fromDouble(tick),
                         SeverityFactory.getInvalid(),
                         "",
                         MetaDataFactory.getNumeric(),

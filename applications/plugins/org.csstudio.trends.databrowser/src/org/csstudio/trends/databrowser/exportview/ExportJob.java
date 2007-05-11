@@ -12,7 +12,7 @@ import org.csstudio.archive.crawl.RawValueIterator;
 import org.csstudio.archive.crawl.SpreadsheetIterator;
 import org.csstudio.archive.crawl.ValueIterator;
 import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;

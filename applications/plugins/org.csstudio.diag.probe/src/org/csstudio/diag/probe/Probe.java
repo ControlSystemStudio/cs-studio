@@ -6,7 +6,7 @@ import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.util.swt.ComboHistoryHelper;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;

@@ -93,7 +93,22 @@ public interface ITimestamp extends Comparable<ITimestamp>
         DateTimeSeconds,
         
         /** Format to "YYYY/MM/DD HH:MM:SS.000000000". */
-        Full
+        Full;
+        
+        /** Obtain {@link Format} for given ordinal.
+         *  @param ordinal Should be one of the Format.XX.ordinal() codes.
+         *  @return Format for the given ordinal.
+         */
+        static public final Format fromOrdinal(int ordinal)
+        {   // bad implementation
+            switch (ordinal)
+            {
+            case 0: return Date;
+            case 1: return DateTime;
+            case 2: return DateTimeSeconds;
+            }
+            return Full;
+        }
     };
     
     /** Format time according to the FMT_... flag.

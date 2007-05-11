@@ -1,7 +1,9 @@
 package org.csstudio.swt.chart.axes;
 
-import org.csstudio.archive.util.TimestampUtil;
-import org.csstudio.platform.util.ITimestamp;
+import java.util.Calendar;
+
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 import org.eclipse.swt.graphics.GC;
 
 /** Helper for creating tick marks.
@@ -16,12 +18,6 @@ public class TimeTicks extends Ticks
     /** Seconds in a day. */
     private static final int DAY_SECS = 24*60*60;
     
-    private long [] toPieces(double seconds)
-    {
-        ITimestamp time = TimestampUtil.fromDouble(seconds);
-        return time.toPieces();
-    }
-
     /** Compute tick information.
      * 
      *  @param low Low limit of the axis range.
@@ -29,8 +25,7 @@ public class TimeTicks extends Ticks
      *  @param char_width Aproximate width of one character.
      *  @param screen_width Width of axis on screen.
      */
-    void compute(double low, double high,
-            GC gc, int screen_width)
+    void compute(double low, double high, GC gc, int screen_width)
     {
         if (low > high)
             throw new Error("Tick range is not ordered: " + low + " > " + high);
@@ -39,7 +34,7 @@ public class TimeTicks extends Ticks
         // Which of the available formats suits the visible time range?
         if (range < 1.0) // one second
         {   // Show nanoseconds, keep 'high', show whatever fits
-            precision = ITimestamp.FMT_DATE_HH_MM_SS_NANO;
+            precision = ITimestamp.Format.Full.ordinal();
             // Time axis should show the 'high' value,
             // then see how much more we can show going back from there.
             String label = format(high);
@@ -54,25 +49,22 @@ public class TimeTicks extends Ticks
         }
 
         // The rest involves some rounding of the local time
-        long local_pieces[]; // pieces of the local timestamp
+        Calendar local_high = TimestampFactory.fromDouble(high).toCalendar();
         int round_seconds;   // how to round
-        
         if (range < 5*60) // five minutes
         {   // Show seconds
-            precision = ITimestamp.FMT_DATE_HH_MM_SS;
+            precision = ITimestamp.Format.DateTimeSeconds.ordinal();
             round_seconds = 1;
-            // Round 'high' down to seconds.
-            local_pieces = toPieces(high);
-            local_pieces[ITimestamp.NANO] = 0;
+            // Round down to full seconds.
+            local_high.set(Calendar.MILLISECOND, 0);
         }
         else if (range < 2*DAY_SECS) // two days
         {   // Show time down to minutes
-            precision = ITimestamp.FMT_DATE_HH_MM;
+            precision = ITimestamp.Format.DateTime.ordinal();
             round_seconds = 60;
-            // Round 'high' down to minutes
-            local_pieces = toPieces(high);
-            local_pieces[ITimestamp.NANO] = 0;
-            local_pieces[ITimestamp.SECOND] = 0;
+            // Round down to minutes
+            local_high.set(Calendar.MILLISECOND, 0);
+            local_high.set(Calendar.SECOND, 0);
         }
         else
         {   // Show time down to days?
@@ -80,20 +72,20 @@ public class TimeTicks extends Ticks
             // where there are 23 or 25 hours in a day.
             // So still display the hours and minutes,
             // even when they'll mostly be "00:00".
-            precision = ITimestamp.FMT_DATE_HH_MM;
+            precision = ITimestamp.Format.DateTime.ordinal();
             round_seconds = DAY_SECS;
-            // Round 'high' down to days
-            local_pieces = toPieces(high);
-            local_pieces[ITimestamp.NANO] = 0;
-            local_pieces[ITimestamp.SECOND] = 0;
-            local_pieces[ITimestamp.MINUTE] = 0;
-            local_pieces[ITimestamp.HOUR] = 0;
+            // Round down to days
             // The rounding up to full days actually breaks around
             // daylight saving changes, but that's OK, since we'll display
-            //  the hours and minutes anyway.
+            // the hours and minutes anyway.
+            local_high.set(Calendar.MILLISECOND, 0);
+            local_high.set(Calendar.SECOND, 0);
+            local_high.set(Calendar.MINUTE, 0);
+            local_high.set(Calendar.HOUR_OF_DAY, 0);
         }
 
-        double last = TimestampUtil.fromPieces(local_pieces).toDouble();
+        // Get the timestamp for the rounded calendar, then back into double.
+        double last = TimestampFactory.fromCalendar(local_high).toDouble();
         // Determine minimum label distance on the screen.
         // Fit about 80% of the available space with labels
         String label = format(last);
@@ -112,16 +104,16 @@ public class TimeTicks extends Ticks
     {
         if (precision_change > 0)
             precision_change = 1;
-        ITimestamp stamp = TimestampUtil.fromDouble(num);
-        return stamp.format(precision + precision_change);
+        ITimestamp stamp = TimestampFactory.fromDouble(num);
+        return stamp.format(ITimestamp.Format.fromOrdinal(precision + precision_change));
     }
 
     /** @return Returns the time as a two-line string. */
     public String getMultiline(double num)
     {
-        ITimestamp stamp = TimestampUtil.fromDouble(num);
-        String s = stamp.format(precision);
-        if (precision > ITimestamp.FMT_DATE)
+        ITimestamp stamp = TimestampFactory.fromDouble(num);
+        String s = stamp.format(ITimestamp.Format.fromOrdinal(precision));
+        if (precision > ITimestamp.Format.Date.ordinal())
         {   // Split into date and time
             return s = s.substring(0, 10) + "\n" + s.substring(11); //$NON-NLS-1$
         }

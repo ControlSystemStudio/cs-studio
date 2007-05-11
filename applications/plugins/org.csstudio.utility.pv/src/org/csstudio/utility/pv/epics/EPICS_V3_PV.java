@@ -32,8 +32,8 @@ import gov.aps.jca.event.MonitorListener;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.csstudio.value.DoubleValue;

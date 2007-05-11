@@ -1,10 +1,12 @@
 package org.csstudio.trends.databrowser.exportview;
 
-import org.csstudio.archive.util.TimestampUtil;
-import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
+import java.util.Calendar;
+
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
+import org.csstudio.util.time.AbsoluteTimeParser;
 import org.csstudio.value.Value;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
@@ -459,8 +461,8 @@ public class ExportView extends PlotAwareView
     /** Update start/end text fields from timestamps. */
     private void setStartEndFromTimestamps()
     {
-        start_txt.setText(start.format(ITimestamp.FMT_DATE_HH_MM_SS));
-        end_txt.setText(end.format(ITimestamp.FMT_DATE_HH_MM_SS));
+        start_txt.setText(start.format(ITimestamp.Format.DateTimeSeconds));
+        end_txt.setText(end.format(ITimestamp.Format.DateTimeSeconds));
     }
 
     /** Start data export with current settings. */
@@ -477,7 +479,8 @@ public class ExportView extends PlotAwareView
         {   // Update start/end from text boxes
             try
             {
-                start = TimestampUtil.fromString(start_txt.getText());
+                Calendar cal = AbsoluteTimeParser.parse(start_txt.getText());
+                start = TimestampFactory.fromCalendar(cal);
             }
             catch (Exception e)
             {
@@ -489,7 +492,8 @@ public class ExportView extends PlotAwareView
             }
             try
             {
-                end = TimestampUtil.fromString(end_txt.getText());
+                Calendar cal = AbsoluteTimeParser.parse(end_txt.getText());
+                end = TimestampFactory.fromCalendar(cal);
             }
             catch (Exception e)
             {
@@ -503,7 +507,7 @@ public class ExportView extends PlotAwareView
         double seconds;
         try
         {
-            seconds = TimestampUtil.parseSeconds(avg_seconds.getText());
+            seconds = SecondsParser.parseSeconds(avg_seconds.getText());
         }
         catch (Exception e)
         {

@@ -6,7 +6,7 @@ import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.xml.DOMHelper;

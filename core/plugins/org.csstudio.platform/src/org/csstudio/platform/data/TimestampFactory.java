@@ -53,6 +53,14 @@ public final class TimestampFactory
         return new Timestamp(seconds, nanoseconds);
     }
 
+    /** Creates a time stamp for the current system time.
+     *  @return Time stamp set to the current system time
+     */
+    public static ITimestamp now()
+    {
+        return fromMillisecs(new Date().getTime());
+    }
+    
     /** Creates a time stamp based on the specified seconds.
      *  <p>
      *  Refer to {@link ITimestamp} for details on epoch etc.
@@ -60,17 +68,9 @@ public final class TimestampFactory
      *  @param seconds Seconds since 1970 epoch
      *  @return New time stamp
      */
-    public static ITimestamp createTimestamp(final double seconds)
+    public static ITimestamp fromDouble(final double seconds)
     {
         return new Timestamp(seconds);
-    }
-    
-    /** Creates a time stamp for the current system time.
-     *  @return Time stamp set to the current system time
-     */
-    public static ITimestamp now()
-    {
-        return fromMillisecs(new Date().getTime());
     }
     
     /** Create a time stamp for the given Calendar.

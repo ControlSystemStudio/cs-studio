@@ -1,8 +1,8 @@
 package org.csstudio.archive.desy.aapi;
 
 import org.csstudio.archive.ArchiveValues;
-import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.value.DoubleValue;
 import org.csstudio.value.MetaData;
 import org.csstudio.value.NumericMetaData;

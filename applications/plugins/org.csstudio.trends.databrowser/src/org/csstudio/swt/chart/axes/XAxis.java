@@ -1,7 +1,5 @@
 package org.csstudio.swt.chart.axes;
 
-import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
 import org.csstudio.swt.chart.Chart;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.graphics.GC;

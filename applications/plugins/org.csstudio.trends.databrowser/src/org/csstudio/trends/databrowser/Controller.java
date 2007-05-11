@@ -1,10 +1,10 @@
 package org.csstudio.trends.databrowser;
 
-import org.csstudio.archive.util.TimestampUtil;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDataSourceDropTarget;
-import org.csstudio.platform.util.ITimestamp;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartListener;
 import org.csstudio.swt.chart.Trace;
@@ -328,8 +328,8 @@ public class Controller implements ScannerAndScrollerListener
                 controller_changes_xaxis = true;
                 try
                 {
-                    model.setTimeRange(TimestampUtil.fromDouble(low),
-                                       TimestampUtil.fromDouble(high));
+                    model.setTimeRange(TimestampFactory.fromDouble(low),
+                                    TimestampFactory.fromDouble(high));
                 }
                 catch (Exception ex)
                 {   // Prevent follow-up errors by disabling the scroll
@@ -349,8 +349,8 @@ public class Controller implements ScannerAndScrollerListener
     private void getArchivedData(IModelItem item)
     {
         XAxis xaxis = chart.getXAxis();
-        ITimestamp start = TimestampUtil.fromDouble(xaxis.getLowValue());
-        ITimestamp end = TimestampUtil.fromDouble(xaxis.getHighValue());
+        ITimestamp start = TimestampFactory.fromDouble(xaxis.getLowValue());
+        ITimestamp end = TimestampFactory.fromDouble(xaxis.getHighValue());
         if (item == null)
         {
             for (int i=0; i<model.getNumItems(); ++i)

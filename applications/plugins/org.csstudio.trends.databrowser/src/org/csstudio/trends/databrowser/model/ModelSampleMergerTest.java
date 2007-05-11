@@ -3,7 +3,7 @@ package org.csstudio.trends.databrowser.model;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.csstudio.archive.util.TimestampUtil;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.value.DoubleValue;
 
 /** Tests for ModelSampleMerger.
@@ -18,7 +18,7 @@ public class ModelSampleMergerTest extends TestCase
     {
         return new ModelSample(
                      new DoubleValue(   
-                        TimestampUtil.fromDouble(l),
+                        TimestampFactory.fromDouble(l),
                         SeverityFactory.getInvalid(),
                         "",
                         MetaDataFactory.getNumeric(),

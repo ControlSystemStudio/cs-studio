@@ -6,7 +6,7 @@ import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.NameInfo;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.trends.databrowser.Plugin;
 
 /** ArchiveServer implementation that uses a cache whenever possible, 

@@ -1,6 +1,6 @@
 package org.csstudio.archive.cache;
 
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
 
 /** Used to identify cached sample requests.
  *  @author Kay Kasemir

@@ -3,8 +3,8 @@ package org.csstudio.value;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.value.Value.Format;
 
 /** Some very basic tests of the Sample implementation.

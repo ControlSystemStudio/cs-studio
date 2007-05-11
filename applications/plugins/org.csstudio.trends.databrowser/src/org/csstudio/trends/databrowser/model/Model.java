@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.csstudio.archive.util.TimestampUtil;
 import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.swt.DefaultColors;
@@ -198,8 +197,8 @@ public class Model
         StartEndTimeParser start_end =
             new StartEndTimeParser(start_specification, end_specification);
         // In case of parse errors, we won't reach this point
-        start_time = TimestampUtil.fromCalendar(start_end.getStart());
-        end_time = TimestampUtil.fromCalendar(start_end.getEnd());
+        start_time = TimestampFactory.fromCalendar(start_end.getStart());
+        end_time = TimestampFactory.fromCalendar(start_end.getEnd());
         this.start_specification = start_specification;
         this.end_specification = end_specification;
         // fireTimeSpecificationsChanged, fireTimeRangeChanged

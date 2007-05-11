@@ -1,7 +1,7 @@
 package org.csstudio.archive.desy.aapi;
 
 import org.csstudio.archive.NameInfo;
-import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.platform.data.TimestampFactory;
 
 import AAPI.AAPI;
 import AAPI.AnswerChannelInfo;

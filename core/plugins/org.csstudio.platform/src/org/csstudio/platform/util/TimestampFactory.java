@@ -30,7 +30,9 @@ import org.csstudio.platform.internal.util.Timestamp;
  * 
  * @author Sven Wende
  * 
+ * @deprecated Use org.csstudio.platform.data.TimestampFactory
  */
+@Deprecated
 public final class TimestampFactory {
 
 	/**
