@@ -30,17 +30,18 @@ public class Plugin extends AbstractCssUiPlugin
     public static Plugin getDefault()
     {   return plugin;   }
 
-    /** @see AbstractCssUiPlugin */
+    /** {@inheritDoc} */
     public String getPluginId()
     {   return ID;  }
     
-    /** @see AbstractCssUiPlugin */
+    /** {@inheritDoc} */
     protected void doStart(final BundleContext context) throws Exception
     {
-    	ResourceService.getInstance().createWorkspaceProject("CSS");
+        // Assert that there is an open "CSS" project
+    	ResourceService.getInstance().createWorkspaceProject("CSS"); //$NON-NLS-1$
     }
 
-    /** @see AbstractCssUiPlugin */
+    /** {@inheritDoc} */
     protected void doStop(final BundleContext context) throws Exception
     {
         plugin = null;
