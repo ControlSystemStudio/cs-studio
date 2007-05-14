@@ -20,6 +20,7 @@ public class ValueTest extends TestCase
 
         INumericMetaData meta =
             ValueFactory.createNumericMetaData(0, 10, 0, 0, 0, 0, 3, "socks");
+        System.out.println(meta.toString());
         
         double values[];
 		values = new double[1];
@@ -55,7 +56,8 @@ public class ValueTest extends TestCase
         
         IEnumeratedMetaData enum_meta = ValueFactory.createEnumeratedMetaData(
             new String[] { "One", "Two" } );
-        IValue en = ValueFactory.createEnumValue(now, ok, "OK", enum_meta,
+        System.out.println(enum_meta.toString());
+        IValue en = ValueFactory.createEnumeratedValue(now, ok, "OK", enum_meta,
                                                  quality, new int[] { 1 });
         assertEquals("Two", en.format());
     }

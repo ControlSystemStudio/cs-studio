@@ -1,20 +1,20 @@
 package org.csstudio.platform.internal.data;
 
-import org.csstudio.platform.data.IEnumValue;
+import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.ISeverity;
 
-/** Implementation of {@link IEnumValue}.
- *  @see IEnumValue
+/** Implementation of {@link IEnumeratedValue}.
+ *  @see IEnumeratedValue
  *  @author Kay Kasemir
  */
-public class EnumValue extends Value implements IEnumValue
+public class EnumeratedValue extends Value implements IEnumeratedValue
 {
 	private final int values[];
 	
     /** Constructor from pieces. */
-	public EnumValue(ITimestamp time, ISeverity severity, String status,
+	public EnumeratedValue(ITimestamp time, ISeverity severity, String status,
                     IEnumeratedMetaData meta_data, Quality quality,
                     int values[])
 	{
@@ -53,9 +53,9 @@ public class EnumValue extends Value implements IEnumValue
 	@Override
 	public final boolean equals(Object obj)
 	{
-		if (! (obj instanceof EnumValue))
+		if (! (obj instanceof EnumeratedValue))
 			return false;
-		EnumValue rhs = (EnumValue) obj;
+		EnumeratedValue rhs = (EnumeratedValue) obj;
 		if (rhs.values.length != values.length)
 			return false;
 		for (int i=0; i<values.length; ++i)

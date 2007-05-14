@@ -5,7 +5,7 @@ package org.csstudio.platform.data;
  *  Handles the mapping from enumeration integers to state strings.
  *  
  *  @see IMetaData
- *  @see IEnumValue
+ *  @see IEnumeratedValue
  *  @author Kay Kasemir 
  */
 public interface IEnumeratedMetaData extends IMetaData

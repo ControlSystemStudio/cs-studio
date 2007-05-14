@@ -33,6 +33,10 @@ public class EnumeratedMetaData implements IEnumeratedMetaData
     @Override
 	public String toString()
 	{
-		return "EnumeratedMetaData:\n" + states + "\n";		
+        StringBuffer buf = new StringBuffer();
+        buf.append("EnumeratedMetaData: " + states.length + " states:\n");
+        for (String state : states)
+            buf.append("    '" + state + "'\n");
+        return buf.toString();
 	}
 }

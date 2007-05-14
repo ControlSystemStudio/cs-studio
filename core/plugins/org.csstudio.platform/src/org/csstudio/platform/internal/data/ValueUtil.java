@@ -1,7 +1,7 @@
 package org.csstudio.platform.internal.data;
 
 import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumValue;
+import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.IIntegerValue;
 import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
@@ -18,8 +18,8 @@ public class ValueUtil
             return ((IDoubleValue) value).getValues().length;
         else if (value instanceof IntegerValue)
             return ((IIntegerValue) value).getValues().length;
-        else if (value instanceof EnumValue)
-            return ((IEnumValue) value).getValues().length;
+        else if (value instanceof EnumeratedValue)
+            return ((IEnumeratedValue) value).getValues().length;
         return 1;
     }
     
@@ -49,8 +49,8 @@ public class ValueUtil
                 return ((IDoubleValue) value).getValues()[index];
             else if (value instanceof IntegerValue)
                 return ((IIntegerValue) value).getValues()[index];
-            else if (value instanceof EnumValue)
-                return ((IEnumValue) value).getValues()[index];
+            else if (value instanceof EnumeratedValue)
+                return ((IEnumeratedValue) value).getValues()[index];
             // else:
             // Cannot decode that sample type as a number.
             return Double.NaN;
@@ -85,8 +85,8 @@ public class ValueUtil
         String stat = value.getStatus();
         if (sevr.length() > 0  ||  stat.length() > 0)
             info = sevr + Messages.SevrStatSeparator + stat;
-        if (value instanceof EnumValue)
-            val_txt = ((EnumValue) value).format();
+        if (value instanceof EnumeratedValue)
+            val_txt = ((EnumeratedValue) value).format();
         else if (value instanceof StringValue)
             val_txt = ((IStringValue) value).getValue();
         if (val_txt != null) // return value appended to info

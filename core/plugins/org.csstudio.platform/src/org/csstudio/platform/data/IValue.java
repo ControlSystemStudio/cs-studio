@@ -13,13 +13,18 @@ package org.csstudio.platform.data;
  *  </ul>
  *  
  *  It also offers convenience routines for displaying values.
+ *  <p>
+ *  In some cases, that's already all that there might be, because
+ *  a sample can have a severity that indicates that there was no value,
+ *  and the status describes why.
+ *  <p>
  *  In most cases, however, access to the actual data requires the specific
  *  subtypes <code>DoubleValue</code>, <code>StringValue</code> etc.
  *  
  *  @see IDoubleValue
  *  @see IIntegerValue
  *  @see IStringValue
- *  @see IEnumValue
+ *  @see IEnumeratedValue
  *  @author Kay Kasemir
  */
 public interface IValue

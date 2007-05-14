@@ -71,12 +71,12 @@ public class NumericMetaData implements INumericMetaData
     public String toString()
 	{
 		return "NumericMetaData:\n"
+        + "    disp_low   :" + disp_low + "\n"
 		+ "    disp_high  :" + disp_high + "\n"
-		+ "    disp_low   :" + disp_low + "\n"
-        + "    warn_high  :" + warn_high + "\n"
         + "    warn_low   :" + warn_low + "\n"
+        + "    warn_high  :" + warn_high + "\n"
+        + "    alarm_low  :" + alarm_low + "\n"
 		+ "    alarm_high :" + alarm_high + "\n"
-		+ "    alarm_low  :" + alarm_low + "\n"
 		+ "    prec       :" + prec + "\n"
 		+ "    units      :" + units + "\n";		
 	}

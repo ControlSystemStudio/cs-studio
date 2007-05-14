@@ -51,9 +51,9 @@ public interface ISeverity
      */
     public boolean isInvalid();
 
-    /** @return Returns true if the associated value is meaningful,
-     *  false if the value represents for example a 'disconnected' archive state
-     *  and thus has no numeric value.
+    /** @return Returns <code>true</code> if the associated value is meaningful,
+     *  <code>false</code> if the value represents for example a 'disconnected'
+     *  state and thus has no numeric value.
      */
     public boolean hasValue();
 }

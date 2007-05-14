@@ -2,7 +2,7 @@ package org.csstudio.platform.data;
 
 import org.csstudio.platform.data.IValue.Quality;
 import org.csstudio.platform.internal.data.DoubleValue;
-import org.csstudio.platform.internal.data.EnumValue;
+import org.csstudio.platform.internal.data.EnumeratedValue;
 import org.csstudio.platform.internal.data.EnumeratedMetaData;
 import org.csstudio.platform.internal.data.IntegerValue;
 import org.csstudio.platform.internal.data.NumericMetaData;
@@ -119,7 +119,7 @@ public class ValueFactory
                         quality, values);
     }
 
-    /** Create instance of {@link IEnumValue}.
+    /** Create instance of {@link IEnumeratedValue}.
      *  @param time Time stamp
      *  @param severity Severity descriptor
      *  @param status Status string.
@@ -128,13 +128,13 @@ public class ValueFactory
      *  @param values The actual values.
      *  @return Instance of IEnumValue.
      */
-    public static final IEnumValue
-        createEnumValue(final ITimestamp time, final ISeverity severity,
+    public static final IEnumeratedValue
+        createEnumeratedValue(final ITimestamp time, final ISeverity severity,
                     final String status, final IEnumeratedMetaData meta_data,
                     final Quality quality,
                     final int values[])
     {
-        return new EnumValue(time, severity, status, meta_data,
+        return new EnumeratedValue(time, severity, status, meta_data,
                              quality, values);
     }
 

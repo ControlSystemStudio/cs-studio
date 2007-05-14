@@ -7,12 +7,12 @@ import org.csstudio.platform.internal.data.EnumeratedMetaData;
  *  Enumerated types carry a limited number of integer values,
  *  where each possible value represents a state with a string representation.
  *  <p>
- *  {@link IEnumValue} values go with {@link EnumeratedMetaData}
+ *  {@link IEnumeratedValue} values go with {@link EnumeratedMetaData}
  *  @see IValue
  *  @see EnumeratedMetaData
  *  @author Kay Kasemir
  */
-public interface IEnumValue extends IValue
+public interface IEnumeratedValue extends IValue
 {
     /** @return Returns the whole array of values. */
     public int[] getValues();
