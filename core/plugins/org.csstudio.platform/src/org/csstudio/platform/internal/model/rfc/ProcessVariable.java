@@ -33,7 +33,7 @@ import org.epics.css.dal.context.RemoteInfo;
  * the various information combinations that are possible because of the
  * optional informations.
  * 
- * By now, the folloing URI-style is implemented:
+ * By now, the following URI-style is implemented:
  * 
  * <ul>
  * <li>//controlsystem/device/property[characteristic]</li>
