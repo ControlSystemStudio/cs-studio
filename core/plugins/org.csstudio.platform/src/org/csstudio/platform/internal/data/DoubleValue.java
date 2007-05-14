@@ -1,40 +1,41 @@
-package org.csstudio.platform.data;
+package org.csstudio.platform.internal.data;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.ISeverity;
 
-/** A double-typed value.
- *  @see Value
+/** Implementation of {@link IDoubleValue}.
  *  @author Kay Kasemir
  */
-public class DoubleValue extends Value
+public class DoubleValue extends Value implements IDoubleValue
 {
+    /** The values. */
 	final private double values[];
 	
-	public DoubleValue(final ITimestamp time, final Severity severity,
-                    final String status, final MetaData meta_data,
-                    final double values[])
+    /** Constructor from pieces. */
+	public DoubleValue(final ITimestamp time, final ISeverity severity,
+                       final String status, final INumericMetaData meta_data,
+                       final Quality quality,
+                       final double values[])
 	{
-		super(time, severity, status, meta_data);
-        assert meta_data instanceof NumericMetaData;
+		super(time, severity, status, meta_data, quality);
 		this.values = values;
 	}
 
-	/** @return Returns the whole array of values. */
-	public double[] getValues()
+    /** {@inheritDoc} */
+	public final double[] getValues()
 	{	return values;	}
 
-	/** @return Returns the first array element.
-	 *  <p>
-	 *  Since most values are probably scalars, this is a convenient
-	 *  way to get that one and only element.
-	 *  @see #getValues
-	 */ 
-	public double getValue()
+    /** {@inheritDoc} */
+	public final double getValue()
 	{	return values[0];	}
 	
-	public String format(Format how, int precision)
+    /** {@inheritDoc} */
+	public final String format(Format how, int precision)
 	{
 		StringBuffer buf = new StringBuffer();
 		if (getSeverity().hasValue())
@@ -54,7 +55,7 @@ public class DoubleValue extends Value
                 fmt = NumberFormat.getNumberInstance();
                 if (how == Format.Default)
                 {
-                    NumericMetaData num_meta = (NumericMetaData)getMetaData();
+                    INumericMetaData num_meta = (INumericMetaData)getMetaData();
                     precision = num_meta.getPrecision();
                 }
                 fmt.setMinimumFractionDigits(precision);
@@ -72,8 +73,9 @@ public class DoubleValue extends Value
 		return buf.toString();
 	}
 	
+    /** {@inheritDoc} */
 	@Override
-	public boolean equals(final Object obj)
+	public final boolean equals(final Object obj)
 	{
 		if (! (obj instanceof DoubleValue))
 			return false;
@@ -86,9 +88,9 @@ public class DoubleValue extends Value
 		return super.equals(obj);
 	}
 
-	// Who overrides equals() shall also provide hashCode...
+    /** {@inheritDoc} */
 	@Override
-	public int hashCode()
+	public final int hashCode()
 	{
 		int h = super.hashCode();
 		for (int i=0; i<values.length; ++i)

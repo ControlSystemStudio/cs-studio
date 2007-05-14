@@ -1,6 +1,6 @@
 package org.csstudio.platform.data;
 
-/** Base class for all control system values.
+/** Base interface for all control system values.
  *  <p>
  *  The <code>Value</code> handles all the other 'stuff' that comes with
  *  a control system value except for the actual value itself:
@@ -16,14 +16,32 @@ package org.csstudio.platform.data;
  *  In most cases, however, access to the actual data requires the specific
  *  subtypes <code>DoubleValue</code>, <code>StringValue</code> etc.
  *  
- *  @see DoubleValue
- *  @see IntegerValue
- *  @see StringValue
- *  @see EnumValue
+ *  @see IDoubleValue
+ *  @see IIntegerValue
+ *  @see IStringValue
+ *  @see IEnumValue
  *  @author Kay Kasemir
  */
-abstract public class Value
+public interface IValue
 {
+    /** Get the time stamp.
+     *  @return The time stamp.
+     */
+    public ITimestamp getTime();
+
+    /** Get the severity info.
+     *  @see ISeverity
+     *  @see #getStatus()
+     *  @return The severity info.
+     */
+    public ISeverity getSeverity();
+
+    /** Get the status text that might describe the severity.
+     *  @see #getSeverity()
+     *  @return The status string.
+     */
+    public String getStatus();
+
     /** Describe the data quality. 
      *  <p>
      *  Control system data can originate directly from a front-end controller,
@@ -52,79 +70,12 @@ abstract public class Value
         /** This is the maximum over several 'original' values */
         Maximum,
     };
-    
-    /** Time stamp of this value. */
-	private final ITimestamp time;
-    
-    /** Severity code of this value. */
-    private final Severity severity;
-    
-    /** Status text for this value's severity. */
-	private final String status;
-    
-    /** Meta data (may be null). */
-    private final MetaData meta_data;
-    
-    private final Quality quality;
 
-	/** Construct a new value.
-	 *  @param time
-	 *  @param status
-	 *  @param severity
-     *  @param meta_data
-	 */
-	public Value(ITimestamp time, Severity severity,
-                 String status, MetaData meta_data)
-	{
-        this(time, severity, status, meta_data, Quality.Original);
-	}
-	
-    /** Construct a new value.
-     *  @param time
-     *  @param status
-     *  @param severity
-     *  @param meta_data
-     *  @param quality
-     */
-    public Value(ITimestamp time, Severity severity,
-                 String status, MetaData meta_data,
-                 Quality quality)
-    {
-        this.time = time;
-        this.severity = severity;
-        this.status = status;
-        this.meta_data = meta_data;
-        this.quality = quality;
-    }
-
-    
-    /** Get the time stamp.
-     *  @return The time stamp.
-     */
-    final public ITimestamp getTime()
-    {   return time;   }   
-
-	/** Get the severity info.
-     *  @see Severity
-     *  @see #getStatus()
-     *  @return The severity info.
-     */
-	final public Severity getSeverity()
-	{	return severity;	}
-    
-	/** Get the status text that might describe the severity.
-     *  @see #getSeverity()
-     *  @return The status string.
-     */
-	final public String getStatus()
-	{	return status; 	 }
-    
     /** Get the quality of this value.
      *  @see Quality
      *  @return The quality.
      */
-    final public Quality getQuality()
-    {   return quality; }
+    public Quality getQuality();
 
     /** Meta Data that helps with using the value, mostly for formatting.
      *  <p>
@@ -133,8 +84,7 @@ abstract public class Value
      *  <code>NumericMetaData</code>.
      *  @return The Meta Data.
      */
-    final public MetaData getMetaData()
-    {   return meta_data;    }
+    public IMetaData getMetaData();
     
     /** @see #format(Format, int) */
     public enum Format
@@ -162,8 +112,8 @@ abstract public class Value
      *  @return This Value's value as a string.
      *  @see #toString() 
      */
-    abstract public String format(Format how, int precision);
-    
+    public String format(Format how, int precision);
+
     /** Format the value via the Default format.
      *  Typically this means: using the meta data.
      *  <p>
@@ -171,52 +121,5 @@ abstract public class Value
      *  @see #format(Format, int)
      *  @see #toString() 
      */
-	final public String format()
-    {   return format(Format.Default, -1); }
-    
-    /** Format the Value as a string.
-     *  <p>
-     *  This includes the time stamp, numeric or string value,
-     *  severity and status.
-     *  <p>
-     *  @return This Value as a string.
-     *  @see #format() 
-     */
-    final public String toString()
-    {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(getTime().toString());
-        buffer.append(Messages.ColumnSeperator);
-        buffer.append(format());
-        String sevr = getSeverity().toString();
-        String stat = getStatus();
-        if (sevr.length() > 0 || stat.length() > 0)
-        {
-            buffer.append(Messages.ColumnSeperator);
-            buffer.append(sevr);
-            buffer.append(Messages.SevrStatSeparator);
-            buffer.append(stat);
-        }
-        return buffer.toString();
-    }
-
-    /** {@inheritDoc} */
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (! (obj instanceof Value))
-			return false;
-		Value rhs = (Value) obj;
-		return rhs.time.equals(time) &&
-			rhs.status.equals(status) &&
-			rhs.severity == severity &&
-            rhs.meta_data.equals(meta_data);
-	}
-
-    /** {@inheritDoc} */
-	@Override
-	public int hashCode()
-	{
-		return time.hashCode() + status.hashCode() + severity.hashCode();
-	}
+    public String format();
 }

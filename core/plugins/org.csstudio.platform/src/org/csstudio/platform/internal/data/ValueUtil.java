@@ -1,4 +1,10 @@
-package org.csstudio.platform.data;
+package org.csstudio.platform.internal.data;
+
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.IEnumValue;
+import org.csstudio.platform.data.IIntegerValue;
+import org.csstudio.platform.data.IStringValue;
+import org.csstudio.platform.data.IValue;
 
 /** Helper for decoding the data in a Value for e.g. display purposes.
  *  @author Kay Kasemir
@@ -6,14 +12,14 @@ package org.csstudio.platform.data;
 public class ValueUtil
 {
     /** @return Array length of the value. <code>1</code> for scalars. */
-    public static int getSize(Value value)
+    public static int getSize(IValue value)
     {
         if (value instanceof DoubleValue)
-            return ((DoubleValue) value).getValues().length;
+            return ((IDoubleValue) value).getValues().length;
         else if (value instanceof IntegerValue)
-            return ((IntegerValue) value).getValues().length;
+            return ((IIntegerValue) value).getValues().length;
         else if (value instanceof EnumValue)
-            return ((EnumValue) value).getValues().length;
+            return ((IEnumValue) value).getValues().length;
         return 1;
     }
     
@@ -24,7 +30,7 @@ public class ValueUtil
      *          <code>Double.NEGATIVE_INFINITY</code> if the sample's severity
      *          indicates that there happens to be no useful value.
      */
-    public static double getDouble(Value value)
+    public static double getDouble(IValue value)
     {
         return getDouble(value, 0);
     }
@@ -35,16 +41,16 @@ public class ValueUtil
      *  @see #getSize(Value)
      *  @see #getDouble(Value)
      */
-    public static double getDouble(Value value, int index)
+    public static double getDouble(IValue value, int index)
     {
         if (value.getSeverity().hasValue())
         {
             if (value instanceof DoubleValue)
-                return ((DoubleValue) value).getValues()[index];
+                return ((IDoubleValue) value).getValues()[index];
             else if (value instanceof IntegerValue)
-                return ((IntegerValue) value).getValues()[index];
+                return ((IIntegerValue) value).getValues()[index];
             else if (value instanceof EnumValue)
-                return ((EnumValue) value).getValues()[index];
+                return ((IEnumValue) value).getValues()[index];
             // else:
             // Cannot decode that sample type as a number.
             return Double.NaN;
@@ -71,7 +77,7 @@ public class ValueUtil
      *  @param value The sample to decode.
      *  @return The info string. May be <code>null</code>!
      */
-    public static String getInfo(Value value)
+    public static String getInfo(IValue value)
     {
         String info = null;
         String val_txt = null;
@@ -82,7 +88,7 @@ public class ValueUtil
         if (value instanceof EnumValue)
             val_txt = ((EnumValue) value).format();
         else if (value instanceof StringValue)
-            val_txt = ((StringValue) value).getValue();
+            val_txt = ((IStringValue) value).getValue();
         if (val_txt != null) // return value appended to info
             if (info == null)
                 return val_txt;
@@ -96,7 +102,7 @@ public class ValueUtil
      *  @see Value#format()
      *  @see #getInfo(Value)
      */
-    public static String formatValueAndSeverity(Value value)
+    public static String formatValueAndSeverity(IValue value)
     {
         if (value == null)
             return ""; //$NON-NLS-1$

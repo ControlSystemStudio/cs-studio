@@ -1,9 +1,9 @@
 package org.csstudio.platform.data;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.csstudio.platform.data.Value.Format;
+import org.csstudio.platform.data.IValue.Quality;
+import org.junit.Test;
 
 /** Some very basic tests of the Sample implementation.
  *  @author Kay Kasemir
@@ -11,76 +11,52 @@ import org.csstudio.platform.data.Value.Format;
 @SuppressWarnings("nls")
 public class ValueTest extends TestCase
 {
+    @Test
 	public void testEquality() throws Exception
 	{
+        ISeverity ok = ValueFactory.createOKSeverity();
+        ISeverity bad = ValueFactory.createInvalidSeverity();
 		ITimestamp now = TimestampFactory.now();
-		Severity ok = new Severity()
-        {
-            public String toString()
-            {   return "OK";  }
 
-            public boolean hasValue()
-            {   return true; }
-
-            public boolean isInvalid()
-            {   return false;  }
-
-            public boolean isMajor()
-            {   return false;  }
-
-            public boolean isMinor()
-            {   return false;  }
-
-            public boolean isOK()
-            {   return true; }
-        };
-        Severity bad = new Severity()
-        {
-            public String toString()
-            {   return "Bad";  }
-
-            public boolean hasValue()
-            {   return true; }
-
-            public boolean isInvalid()
-            {   return false;  }
-
-            public boolean isMajor()
-            {   return true;  }
-
-            public boolean isMinor()
-            {   return false;  }
-
-            public boolean isOK()
-            {   return false; }
-        };
-
-        MetaData meta = new NumericMetaData(10, 0, 9, 1, 8, 2, 3, "socks");
+        INumericMetaData meta =
+            ValueFactory.createNumericMetaData(0, 10, 0, 0, 0, 0, 3, "socks");
         
         double values[];
 		values = new double[1];
 		values[0] = 3.14;
-		Value a = new DoubleValue(now, ok, "OK", meta, values);
-		values = new double[1];
-		values[0] = 3.14;
-		Value b = new DoubleValue(now, ok, "OK", meta, values);
-		values = new double[1];
-		values[0] = 42.0;
-		Value c = new DoubleValue(now, bad, "Error", meta, values);
-		
-		Assert.assertFalse(a == b);
-		Assert.assertTrue(a.equals(a));
-		Assert.assertTrue(a.equals(b));
-		Assert.assertTrue(b.equals(a));
-		Assert.assertFalse(a.equals(c));
-		Assert.assertFalse(b.equals(c));
-        
-        Assert.assertEquals("3.140", a.format());
-        Assert.assertEquals("42.000", c.format());
+		final Quality quality = IValue.Quality.Original;
+        IValue a = ValueFactory.createDoubleValue(now, ok, "OK", meta,
+                                                  quality, values);
 
-        Assert.assertEquals("3.1400", a.format(Format.Decimal, 4));
-        Assert.assertEquals("3", a.format(Format.Decimal, 0));
-        Assert.assertEquals("3.14E0", a.format(Format.Exponential, 2));
-        Assert.assertEquals("3.140E0", a.format(Format.Exponential, 3));
+        values = new double[1];
+		values[0] = 3.14;
+        IValue b = ValueFactory.createDoubleValue(now, ok, "OK", meta,
+                                                  quality, values);
+        
+        values = new double[1];
+		values[0] = 42.0;
+        IValue c = ValueFactory.createDoubleValue(now, bad, "Error", meta,
+                                                  quality, values);
+        
+		assertFalse(a == b);
+		assertTrue(a.equals(a));
+		assertTrue(a.equals(b));
+		assertTrue(b.equals(a));
+		assertFalse(a.equals(c));
+		assertFalse(b.equals(c));
+        
+        assertEquals("3.140", a.format());
+        assertEquals("42.000", c.format());
+
+        assertEquals("3.1400", a.format(IValue.Format.Decimal, 4));
+        assertEquals("3", a.format(IValue.Format.Decimal, 0));
+        assertEquals("3.14E0", a.format(IValue.Format.Exponential, 2));
+        assertEquals("3.140E0", a.format(IValue.Format.Exponential, 3));
+        
+        IEnumeratedMetaData enum_meta = ValueFactory.createEnumeratedMetaData(
+            new String[] { "One", "Two" } );
+        IValue en = ValueFactory.createEnumValue(now, ok, "OK", enum_meta,
+                                                 quality, new int[] { 1 });
+        assertEquals("Two", en.format());
     }
 }

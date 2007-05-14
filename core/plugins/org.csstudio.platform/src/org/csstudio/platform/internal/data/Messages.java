@@ -1,4 +1,4 @@
-package org.csstudio.platform.data;
+package org.csstudio.platform.internal.data;
 
 /** Localization.
  *  <p>
@@ -17,4 +17,9 @@ public class Messages
     public final static String SevrStatEnd = "]";
     public final static String ArrayElementSeparator = ", ";
     public final static String NoValue = "#N/A";
+    
+    public final static String SevOK = "";
+    public final static String SevMinor = "MINOR";
+    public final static String SevMajor = "MAJOR";
+    public final static String SevInvalid = "INVALID";
 }

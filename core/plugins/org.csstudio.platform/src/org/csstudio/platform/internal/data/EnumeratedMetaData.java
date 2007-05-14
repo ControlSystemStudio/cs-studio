@@ -1,10 +1,11 @@
-package org.csstudio.platform.data;
+package org.csstudio.platform.internal.data;
 
-/** The enumerated version of MetaData
- *  @see MetaData
+import org.csstudio.platform.data.IEnumeratedMetaData;
+
+/** Implementation of {@link IEnumeratedMetaData}.
  *  @author Kay Kasemir 
  */
-public class EnumeratedMetaData implements MetaData
+public class EnumeratedMetaData implements IEnumeratedMetaData
 {
     /** The enumeration strings for the possible values of an EnumSample. */
 	private final String states[];
@@ -15,16 +16,11 @@ public class EnumeratedMetaData implements MetaData
 		this.states = states;
 	}
 
-	/** @return The state strings. */
+    /** {@inheritDoc} */
 	public final String[] getStates()
 	{	return states;	}
 	
-	/** Convenience routine for getting a state string.
-	 *  <p>
-	 *  Also allows getting undefined states.
-	 *  @param state The state to get.
-	 *  @return A state string.
-	 */
+    /** {@inheritDoc} */
 	public String getState(int state)
 	{
 		if (state < 0  ||  state >= states.length)
@@ -32,6 +28,7 @@ public class EnumeratedMetaData implements MetaData
 		return states[state];
 	}
 	
+    /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override
 	public String toString()

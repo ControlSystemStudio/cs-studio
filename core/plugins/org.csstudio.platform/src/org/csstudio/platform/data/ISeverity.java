@@ -26,7 +26,7 @@ package org.csstudio.platform.data;
  *  </ul>
  *  @author Kay Kasemir
  */
-public interface Severity
+public interface ISeverity
 {
     /** @return Returns the textual representation for this severity. */
     public String toString();
