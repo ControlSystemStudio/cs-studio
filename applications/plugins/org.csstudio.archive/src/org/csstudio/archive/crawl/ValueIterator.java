@@ -2,7 +2,7 @@ package org.csstudio.archive.crawl;
 
 import java.util.Iterator;
 
-import org.csstudio.value.Value;
+import org.csstudio.platform.data.IValue;
 
 /** Type simplification:
  *  <code>new Iterator&lt;Value&gt;[N]</code> results in compiler error,
@@ -10,5 +10,5 @@ import org.csstudio.value.Value;
  *  even though they're really expressing the same thing.
  *  @author Kay Kasemir
  */
-public interface ValueIterator extends Iterator<Value>
+public interface ValueIterator extends Iterator<IValue>
 {}

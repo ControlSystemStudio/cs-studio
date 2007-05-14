@@ -32,19 +32,16 @@ import gov.aps.jca.event.MonitorListener;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.csstudio.platform.data.IEnumeratedMetaData;
+import org.csstudio.platform.data.IMetaData;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.value.DoubleValue;
-import org.csstudio.value.EnumValue;
-import org.csstudio.value.EnumeratedMetaData;
-import org.csstudio.value.IntegerValue;
-import org.csstudio.value.MetaData;
-import org.csstudio.value.NumericMetaData;
-import org.csstudio.value.Severity;
-import org.csstudio.value.StringValue;
-import org.csstudio.value.Value;
 
 /**
  * EPICS ChannelAccess implementation of the PV interface.
@@ -128,45 +125,6 @@ public class EPICS_V3_PV
         }
     }
 
-    /** A Channel with thread-safe reference count. */
-    class RefCountedChannel
-    {
-        private Channel channel;
-
-        private int refs;
-
-        public RefCountedChannel(Channel channel)
-        {
-            this.channel = channel;
-            refs = 1;
-        }
-
-        synchronized public void incRefs()
-        {   ++refs;  }
-
-        synchronized public int decRefs()
-        {
-            --refs;
-            return refs;
-        }
-
-        public Channel getChannel()
-        {   return channel;   }
-
-        public void dispose()
-        {
-            try
-            {
-                channel.destroy();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            channel = null;
-        }
-    }
-
     /** map of channels. */
     static private HashMap<String, RefCountedChannel> channels =
         new HashMap<String, RefCountedChannel>();
@@ -196,10 +154,15 @@ public class EPICS_V3_PV
     private volatile boolean was_connected;
 
     /** Meta data obtained during connection cycle. */
-    private MetaData meta = null;
+    private IMetaData meta = null;
 
+    /** Quality code used for all values,
+     *  since we always provide 'original', raw data.
+     */
+    private static final IValue.Quality quality = IValue.Quality.Original;
+        
     /** Most recent 'live' value. */
-    private volatile Value value = null;
+    private volatile IValue value = null;
 
     /** Generate an EPICS PV.
      *  @param name The PV name.
@@ -226,7 +189,7 @@ public class EPICS_V3_PV
     {   return name;  }
 
     /** @return Returns the value. */
-    public Value getValue()
+    public IValue getValue()
     {   return value;  }
 
     public void addListener(PVListener listener)
@@ -407,7 +370,7 @@ public class EPICS_V3_PV
             if (dbr.isLABELS())
             {
                 DBR_LABELS_Enum labels = (DBR_LABELS_Enum)dbr;
-                meta = new EnumeratedMetaData(labels.getLabels());
+                meta = ValueFactory.createEnumeratedMetaData(labels.getLabels());
                 if (debug)
                     System.out.println("Channel '" + name + "' got meta:"
                                     + meta);
@@ -415,13 +378,13 @@ public class EPICS_V3_PV
             else if (dbr instanceof DBR_CTRL_Double)
             {
                 DBR_CTRL_Double ctrl = (DBR_CTRL_Double)dbr;
-                meta = new NumericMetaData(
-                                ctrl.getUpperDispLimit().doubleValue(),
+                meta = ValueFactory.createNumericMetaData(
                                 ctrl.getLowerDispLimit().doubleValue(),
-                                ctrl.getUpperAlarmLimit().doubleValue(),
-                                ctrl.getLowerAlarmLimit().doubleValue(),
-                                ctrl.getUpperWarningLimit().doubleValue(),
+                                ctrl.getUpperDispLimit().doubleValue(),
                                 ctrl.getLowerWarningLimit().doubleValue(),
+                                ctrl.getUpperWarningLimit().doubleValue(),
+                                ctrl.getLowerAlarmLimit().doubleValue(),
+                                ctrl.getUpperAlarmLimit().doubleValue(),
                                 ctrl.getPrecision(),
                                 ctrl.getUnits());
                 if (debug)
@@ -431,13 +394,13 @@ public class EPICS_V3_PV
             else if (dbr instanceof DBR_CTRL_Short)
             {
                 DBR_CTRL_Short ctrl = (DBR_CTRL_Short)dbr;
-                meta = new NumericMetaData(
-                                ctrl.getUpperDispLimit().doubleValue(),
+                meta = ValueFactory.createNumericMetaData(
                                 ctrl.getLowerDispLimit().doubleValue(),
-                                ctrl.getUpperAlarmLimit().doubleValue(),
-                                ctrl.getLowerAlarmLimit().doubleValue(),
-                                ctrl.getUpperWarningLimit().doubleValue(),
+                                ctrl.getUpperDispLimit().doubleValue(),
                                 ctrl.getLowerWarningLimit().doubleValue(),
+                                ctrl.getUpperWarningLimit().doubleValue(),
+                                ctrl.getLowerAlarmLimit().doubleValue(),
+                                ctrl.getUpperAlarmLimit().doubleValue(),
                                 0, // no precision
                                 ctrl.getUnits());
                 if (debug)
@@ -522,7 +485,7 @@ public class EPICS_V3_PV
             try
             {
                 ITimestamp time = null;
-                Severity severity = null;
+                ISeverity severity = null;
                 String status = "";
                 if (plain)
                 {
@@ -543,8 +506,8 @@ public class EPICS_V3_PV
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getDoubleValue();
                     }
-                    value = new DoubleValue(time, severity, status,
-                                    (NumericMetaData)meta, v);
+                    value = ValueFactory.createDoubleValue(time, severity,
+                                    status, (INumericMetaData)meta, quality, v);
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': double value " + value);
@@ -563,8 +526,9 @@ public class EPICS_V3_PV
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getFloatValue();
                     }
-                    value = new DoubleValue(time, severity, status,
-                                    (NumericMetaData)meta, float2double(v));
+                    value = ValueFactory.createDoubleValue(time, severity,
+                                    status, (INumericMetaData)meta, quality,
+                                    float2double(v));
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': double value " + value);
@@ -583,8 +547,8 @@ public class EPICS_V3_PV
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getIntValue();
                     }
-                    value = new IntegerValue(time, severity, status,
-                                    (NumericMetaData)meta, v);
+                    value = ValueFactory.createIntegerValue(time, severity,
+                                    status, (INumericMetaData)meta, quality, v);
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': int value " + value);
@@ -603,8 +567,9 @@ public class EPICS_V3_PV
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getShortValue();
                     }
-                    value = new IntegerValue(time, severity, status,
-                                    (NumericMetaData)meta, short2int(v));
+                    value = ValueFactory.createIntegerValue(time, severity,
+                                    status, (INumericMetaData)meta, quality,
+                                    short2int(v));
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': short value " + value);
@@ -623,7 +588,8 @@ public class EPICS_V3_PV
                         time = createTimeFromEPICS(dt.getTimeStamp());
                         v = dt.getStringValue();
                     }
-                    value = new StringValue(time, severity, status, v[0]);
+                    value = ValueFactory.createStringValue(time, severity,
+                                    status, quality, v[0]);
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': string value " + value);
@@ -639,8 +605,10 @@ public class EPICS_V3_PV
                     status = stat.getValue() == 0 ? "" : stat.getName();
                     time = createTimeFromEPICS(dt.getTimeStamp());
                     v = dt.getEnumValue();
-                    value = new EnumValue(time, severity, status,
-                                    (EnumeratedMetaData)meta, short2int(v));
+                    
+                    value = ValueFactory.createEnumeratedValue(time, severity,
+                                    status, (IEnumeratedMetaData)meta, quality,
+                                    short2int(v));
                     if (debug)
                         System.out.println("Channel '" + name
                                 + "': enum value " + value);
@@ -695,22 +663,5 @@ public class EPICS_V3_PV
     {
         for (PVListener listener : listeners)
             listener.pvDisconnected(this);
-    }
-
-    /** TODO Remove, because this is wrong.
-     *       If a PV should have a precision (units, limits, ...),
-     *       that we would add that to the PV base class.
-     *       But instead, we add it to the Value's MetaData.
-     *       Because some value types have no precision,
-     *       and even if they do, different samples can have
-     *       different meta data, so asking the PV for the meta
-     *       data seems wrong.
-     */
-    public int getPrecision(){
-    	if (meta instanceof NumericMetaData) {
-			NumericMetaData numMeta = (NumericMetaData) meta;
-			return numMeta.getPrecision();
-
-		}else return 0;
     }
 }

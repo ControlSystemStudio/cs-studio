@@ -5,7 +5,7 @@ import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.NameInfo;
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.value.Severity;
+import org.csstudio.platform.data.ISeverity;
 
 import AAPI.AAPI;
 
@@ -97,7 +97,7 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
     }
     
     /* @see org.csstudio.archive.Archive#getSeverity(int) */
-    public Severity getSeverity(int severity)
+    public ISeverity getSeverity(int severity)
     { 
     	return server_info_request.getSeverity(severity);  	
     }

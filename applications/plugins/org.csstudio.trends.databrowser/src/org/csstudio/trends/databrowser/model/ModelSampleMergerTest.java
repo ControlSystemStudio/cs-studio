@@ -3,8 +3,11 @@ package org.csstudio.trends.databrowser.model;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.value.DoubleValue;
+import org.csstudio.platform.data.ValueFactory;
 
 /** Tests for ModelSampleMerger.
  *  @author Kay Kasemir
@@ -13,16 +16,19 @@ import org.csstudio.value.DoubleValue;
 public class ModelSampleMergerTest extends TestCase
 {
     private static final int N = 10;
+    private static final INumericMetaData meta =
+        ValueFactory.createNumericMetaData(0, 0, 0, 0, 0, 0, 0, "");
+    private static final ISeverity invalid = ValueFactory.createInvalidSeverity();
 
     private ModelSample makeSample(long l)
     {
         return new ModelSample(
-                     new DoubleValue(   
-                        TimestampFactory.fromDouble(l),
-                        SeverityFactory.getInvalid(),
-                        "",
-                        MetaDataFactory.getNumeric(),
-                        new double[] { l }));
+              ValueFactory.createDoubleValue(TimestampFactory.fromDouble(l),
+                                        invalid,
+                                        "",
+                                        meta,
+                                        IValue.Quality.Original,
+                                        new double[] { l }));
     }
 
     public void testPassOld()

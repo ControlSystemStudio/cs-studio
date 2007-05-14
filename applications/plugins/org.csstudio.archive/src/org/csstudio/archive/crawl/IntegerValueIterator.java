@@ -2,12 +2,13 @@ package org.csstudio.archive.crawl;
 
 import java.util.Iterator;
 
-import org.csstudio.archive.crawl.ValueIterator;
-import org.csstudio.value.DoubleValue;
-import org.csstudio.value.EnumValue;
-import org.csstudio.value.IntegerValue;
-import org.csstudio.value.Severity;
-import org.csstudio.value.Value;
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.IEnumeratedValue;
+import org.csstudio.platform.data.IIntegerValue;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueFactory;
 
 /** Turns an Iterator over raw <code>Value</code>s into one over
  *  <code>IntegetValue</code>s.
@@ -25,7 +26,7 @@ import org.csstudio.value.Value;
  *  @see org.csstudio.archive.crawl.DoubleValueIterator
  *  @author Kay Kasemir
  */
-public class IntegerValueIterator implements Iterator<IntegerValue>
+public class IntegerValueIterator implements Iterator<IIntegerValue>
 {
     /** Special value to indicate samples without numeric value.
      *  <p>
@@ -37,8 +38,8 @@ public class IntegerValueIterator implements Iterator<IntegerValue>
      */
     public static final int INVALID = Integer.MIN_VALUE;
     
-    static Severity invalid_type = null;
-    private final Iterator<Value> raw_values;
+    static ISeverity invalid_type = ValueFactory.createInvalidSeverity();
+    private final Iterator<IValue> raw_values;
     
     public IntegerValueIterator(ValueIterator raw_values)
     {
@@ -50,57 +51,37 @@ public class IntegerValueIterator implements Iterator<IntegerValue>
         return raw_values.hasNext();
     }
 
-    public IntegerValue next()
+    public IIntegerValue next()
     {
-        Value sample = raw_values.next();
+        IValue sample = raw_values.next();
+        // TODO check if meta data is INumericMetaData. Else, create one.
         int num;
         if (sample.getSeverity().hasValue())
         {
-            if (sample instanceof DoubleValue)
-                num = (int)((DoubleValue) sample).getValue();
-            else if (sample instanceof IntegerValue)
-                num = ((IntegerValue) sample).getValue();
-            else if (sample instanceof EnumValue)
-                num = ((EnumValue) sample).getValue();
+            if (sample instanceof IDoubleValue)
+                num = (int)((IDoubleValue) sample).getValue();
+            else if (sample instanceof IIntegerValue)
+                num = ((IIntegerValue) sample).getValue();
+            else if (sample instanceof IEnumeratedValue)
+                num = ((IEnumeratedValue) sample).getValue();
             else
             {   // Cannot decode that sample type as a number
-                if (invalid_type == null)
-                {   // Lazy init of invalid_type Severity
-                    invalid_type = new Severity()
-                    {
-                        public String toString()
-                        {   return "Invalid Type";  } //$NON-NLS-1$
-    
-                        public boolean hasValue()
-                        {   return false; }
-    
-                        public boolean isInvalid()
-                        {   return false; }
-    
-                        public boolean isMajor()
-                        {   return false; }
-    
-                        public boolean isMinor()
-                        {   return false; }
-    
-                        public boolean isOK()
-                        {   return false; }
-                    };
-                }
-                return new IntegerValue(sample.getTime(),
+                return ValueFactory.createIntegerValue(sample.getTime(),
                                     invalid_type,
                                     "<" + sample.getClass().getName() + ">",  //$NON-NLS-1$//$NON-NLS-2$
-                                    sample.getMetaData(),
+                                    (INumericMetaData)sample.getMetaData(),
+                                    IValue.Quality.Interpolated,
                                     new int[] { INVALID }
                                 );
             }
         }
         else // Value carries no value other than stat/sevr
             num = INVALID;
-        return new IntegerValue(sample.getTime(),
+        return ValueFactory.createIntegerValue(sample.getTime(),
                              sample.getSeverity(),
                              sample.getStatus(),
-                             sample.getMetaData(),
+                             (INumericMetaData)sample.getMetaData(),
+                             IValue.Quality.Interpolated,
                              new int[] { num });
     }
     

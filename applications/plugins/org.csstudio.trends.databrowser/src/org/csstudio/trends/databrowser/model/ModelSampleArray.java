@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.Range;
-import org.csstudio.value.Value;
 
 /** An array of <code>ModelSample</code>.
  *  @author Kay Kasemir
@@ -38,14 +38,14 @@ public class ModelSampleArray extends ArrayList<ModelSample>
         // Anything?
         if (arch_samples == null)
             return null;
-        Value as[] = arch_samples.getSamples();
+        IValue as[] = arch_samples.getSamples();
         // Any samples?
         if (as.length < 1)
             return null;
         ModelSampleArray model_samples = new ModelSampleArray(as.length);
         for (int i=0; i<as.length; ++i)
         {   
-            Value sample = as[i];
+            IValue sample = as[i];
             // Stop at border
             if (border != null  &&  sample.getTime().isGreaterThan(border))
                 break;

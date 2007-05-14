@@ -1,8 +1,8 @@
 package org.csstudio.display.pvtable.model;
 
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.value.Value;
-import org.csstudio.value.ValueUtil;
 
 /** A 'saved' snapshot value.
  *  
@@ -48,7 +48,7 @@ public class SavedValue
             saved = null;
             return;
         }
-        Value current = pv.getValue();
+        IValue current = pv.getValue();
         double num = ValueUtil.getDouble(current);
         if (Double.isInfinite(num) || Double.isNaN(num))
             saved = current.format();
@@ -80,7 +80,7 @@ public class SavedValue
             return false;
         if (! pv.isConnected())
             return false;
-        Value value = pv.getValue();
+        IValue value = pv.getValue();
         // Compare strings as strings
         if (saved instanceof String)
             return value.format().equals(saved) == false;

@@ -1,8 +1,8 @@
 package org.csstudio.display.pvtable.ui;
 
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.value.Value;
-import org.csstudio.value.ValueUtil;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
@@ -79,8 +79,8 @@ public class PVTableSorter extends ViewerSorter
 	// Example: v1 > v2 --> positive
 	private int compareValues(PV pv1, PV pv2)
 	{
-		Value v1 = pv1.getValue();
-        Value v2 = pv2.getValue();
+		IValue v1 = pv1.getValue();
+        IValue v2 = pv2.getValue();
 		// Handle null
 		if (v1 == null)
 			return (v2 == null) ? 0 : -1;

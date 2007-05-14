@@ -11,14 +11,14 @@ import org.csstudio.archive.cache.ArchiveCache;
 import org.csstudio.archive.crawl.RawValueIterator;
 import org.csstudio.archive.crawl.SpreadsheetIterator;
 import org.csstudio.archive.crawl.ValueIterator;
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelSamples;
-import org.csstudio.value.Value;
-import org.csstudio.value.ValueUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -41,7 +41,7 @@ class ExportJob extends Job
     private final double seconds;
     private final boolean format_spreadsheet;
     private final boolean format_severity;
-    private final Value.Format format;
+    private final IValue.Format format;
     private final int precision;
 
     private final String filename;
@@ -61,7 +61,7 @@ class ExportJob extends Job
                     double seconds,
                     boolean format_spreadsheet,
                     boolean format_severity,
-                    Value.Format format,
+                    IValue.Format format,
                     int precision,
                     String filename)
     {
@@ -174,7 +174,7 @@ class ExportJob extends Job
                 while (sheet.hasNext())
                 {
                     ITimestamp time = sheet.getTime();
-                    Value line[] = sheet.next();
+                    IValue line[] = sheet.next();
                     out.print(time);
                     for (int i=0; i<line.length; ++i)
                         out.print(Messages.ColSep + formatValue(line[i]));
@@ -232,11 +232,11 @@ class ExportJob extends Job
      */
     private int dumpOneItem(IProgressMonitor monitor,
                             int line_count, PrintWriter out,
-                            Iterator<Value> channel_iter)
+                            Iterator<IValue> channel_iter)
     {
         while (channel_iter.hasNext())
         {
-            Value sample = channel_iter.next();
+            IValue sample = channel_iter.next();
             out.println(sample.getTime() + Messages.ColSep + formatValue(sample));
             ++line_count;
             if ((line_count % PROGRESS_LINE_GRANULARITY) == 0)
@@ -254,7 +254,7 @@ class ExportJob extends Job
     /** Format one value, according to the format/precision settings,
      *  maybe with severity/status info.
      */
-    private String formatValue(Value value)
+    private String formatValue(IValue value)
     {
         String text;
         if (value == null)

@@ -1,12 +1,14 @@
-package org.csstudio.platform.internal.data;
+package org.csstudio.platform.data;
 
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.IIntegerValue;
-import org.csstudio.platform.data.IStringValue;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.internal.data.DoubleValue;
+import org.csstudio.platform.internal.data.EnumeratedValue;
+import org.csstudio.platform.internal.data.IntegerValue;
+import org.csstudio.platform.internal.data.Messages;
+import org.csstudio.platform.internal.data.StringValue;
+import org.csstudio.platform.internal.data.Value;
 
-/** Helper for decoding the data in a Value for e.g. display purposes.
+/** Helper for decoding the data in a {@link IValue},
+ *  mostly for display purposes.
  *  @author Kay Kasemir
  */
 public class ValueUtil
@@ -23,11 +25,15 @@ public class ValueUtil
         return 1;
     }
     
-    /** Try to get a double number from the Sample.
-     *  @param value The sample to decode.
-     *  @return A double, or <code>Double.NaN</code> in case the Sample type
+    /** Try to get a double number from the Value.
+     *  <p>
+     *  Some applications only deal with numeric data,
+     *  so they want to interprete integer, enum and double values
+     *  all the same.
+     *  @param value The value to decode.
+     *  @return A double, or <code>Double.NaN</code> in case the value type
      *          does not decode into a number, or
-     *          <code>Double.NEGATIVE_INFINITY</code> if the sample's severity
+     *          <code>Double.NEGATIVE_INFINITY</code> if the value's severity
      *          indicates that there happens to be no useful value.
      */
     public static double getDouble(IValue value)
@@ -35,11 +41,15 @@ public class ValueUtil
         return getDouble(value, 0);
     }
 
-    /** Try to get a double-typed array element from the Sample.
-     *  @param value The sample to decode.
+    /** Try to get a double-typed array element from the Value.
+     *  @param value The value to decode.
      *  @param index The array index, 0 ... getSize()-1.
      *  @see #getSize(Value)
      *  @see #getDouble(Value)
+     *  @return A double, or <code>Double.NaN</code> in case the value type
+     *          does not decode into a number, or
+     *          <code>Double.NEGATIVE_INFINITY</code> if the value's severity
+     *          indicates that there happens to be no useful value.
      */
     public static double getDouble(IValue value, int index)
     {
@@ -59,22 +69,22 @@ public class ValueUtil
         return Double.NEGATIVE_INFINITY;
     }
 
-    /** Try to get an info string from the Sample.
+    /** Try to get an info string from the Value.
      *  <p>
-     *  For numeric samples, which is probably the vast majority of
-     *  samples, this is the severity and status information.
+     *  For numeric values, which is probably the vast majority of
+     *  all values, this is the severity and status information.
      *  If they are 'OK', it's an empty string, otherwise its the 
      *  severity/status text.
      *  <p>
-     *  For 'enum' type samples, <code>getDouble()</code> will return
+     *  For 'enum' type values, <code>getDouble()</code> will return
      *  the numeric value, and <code>getInfo()</code> returns the associated
      *  enumeration string, appended to a possible severity/status text.
      *  <p>
-     *  For string type samples, this is the string value,
+     *  For string type values, this is the string value,
      *  appended to a possible severity/status text,
      *  while <code>getDouble()</code> will return <code>NaN</code>.
      *  
-     *  @param value The sample to decode.
+     *  @param value The value to decode.
      *  @return The info string. May be <code>null</code>!
      */
     public static String getInfo(IValue value)
@@ -98,7 +108,7 @@ public class ValueUtil
     }
     
     /** @return Non-<code>null</code> String for the value and its
-     *          severity/status.
+     *          severity/status. Does not include the time stamp.
      *  @see Value#format()
      *  @see #getInfo(Value)
      */

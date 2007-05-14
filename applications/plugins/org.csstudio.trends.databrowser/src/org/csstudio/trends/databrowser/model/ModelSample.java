@@ -1,8 +1,8 @@
 package org.csstudio.trends.databrowser.model;
 
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.chart.ChartSample;
-import org.csstudio.value.Value;
-import org.csstudio.value.ValueUtil;
 
 /** One sample of a ModelItem.
  *  <p>
@@ -21,16 +21,19 @@ import org.csstudio.value.ValueUtil;
 public class ModelSample implements ChartSample
 {
     /** This is the 'real' archive sample. */
-    private final Value sample;
+    private final IValue sample;
     
     /** Create ModelSample from Archive Sample. */
-    ModelSample(Value sample)
+    ModelSample(IValue sample)
     {
         this.sample = sample;
     }
     
+    // TODO Add 'source' info so that we can display the data source
+    // (live, archive XYZ, ...) in getInfo
+    
     /** @return The archive sample. */
-    public Value getSample()
+    final public IValue getSample()
     {   return sample;  }
     
     /** @see org.csstudio.swt.chart.ChartSample */
@@ -43,13 +46,13 @@ public class ModelSample implements ChartSample
     }
 
     /** @see org.csstudio.swt.chart.ChartSample */
-    public double getX()
+    final public double getX()
     {
         return sample.getTime().toDouble();
     }
 
     /** @see org.csstudio.swt.chart.ChartSample */
-    public double getY()
+    final public double getY()
     {
         return ValueUtil.getDouble(sample);
     }
@@ -61,7 +64,7 @@ public class ModelSample implements ChartSample
     }
 
     @Override
-    public boolean equals(Object obj)
+    final public boolean equals(Object obj)
     {
         if (! (obj instanceof ModelSample))
             return false;
@@ -70,6 +73,6 @@ public class ModelSample implements ChartSample
     }
     
     @Override
-    public String toString()
+    final public String toString()
     {   return "ModelSample: " + sample.toString();  } //$NON-NLS-1$
 }

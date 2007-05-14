@@ -1,6 +1,6 @@
 package org.csstudio.utility.pv;
 
-import org.csstudio.value.Value;
+import org.csstudio.platform.data.IValue;
 
 /** A control system PV.
  *  <p>
@@ -47,7 +47,7 @@ public interface PV
      *  @see #isConnected()
      *  @return Returns the most recent value. Might be <code>null</code>!
      */
-    public Value getValue();
+    public IValue getValue();
 
     /** Set PV to given value.
      *  Should accept Double, String, maybe more.

@@ -9,8 +9,8 @@ import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.NameInfo;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.value.Value;
 
 /** Tests of the ChannelArchiver interface.
  *  <p>
@@ -127,7 +127,7 @@ public class UnitTest extends TestCase
 		for (ArchiveValues as : ass)
 		{
 			System.out.println("Channel '" + as.getChannelName() + "':");
-			Value samples[] = as.getSamples();
+			IValue samples[] = as.getSamples();
 			for (int i=0; i<samples.length; ++i)
 				System.out.println(samples[i]);
 		}		
@@ -143,7 +143,7 @@ public class UnitTest extends TestCase
 		for (ArchiveValues as : ass)
 		{
 			System.out.println("Channel '" + as.getChannelName() + "':");
-			Value samples[] = as.getSamples();
+			IValue samples[] = as.getSamples();
 			for (int i=0; i<samples.length; ++i)
 				System.out.println(samples[i]);
 		}		
@@ -158,7 +158,7 @@ public class UnitTest extends TestCase
 		for (ArchiveValues as : ass)
 		{
 			System.out.println("Channel '" + as.getChannelName() + "':");
-			Value samples[] = as.getSamples();
+			IValue samples[] = as.getSamples();
 			for (int i=0; i<samples.length; ++i)
 				System.out.println(samples[i]);
 		}		
@@ -182,7 +182,7 @@ public class UnitTest extends TestCase
 		for (ArchiveValues as : ass)
 		{
 			System.out.println("Channel '" + as.getChannelName() + "':");
-			Value samples[] = as.getSamples();
+			IValue samples[] = as.getSamples();
 			for (int i=0; i<samples.length; ++i)
 				System.out.println(samples[i]);
 		}		

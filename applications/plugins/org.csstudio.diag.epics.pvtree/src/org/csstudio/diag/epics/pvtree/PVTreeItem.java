@@ -5,13 +5,13 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.ArrayList;
 
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
-import org.csstudio.value.Severity;
-import org.csstudio.value.Value;
-import org.csstudio.value.ValueUtil;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.widgets.Display;
 
@@ -68,7 +68,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     private volatile String value = null;
    
     /** Most recent severity. */
-    private volatile Severity severity = null;
+    private volatile ISeverity severity = null;
     
     private PVListener pv_listener = new PVListener()
     {
@@ -83,7 +83,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             try
             {
-                Value pv_value = pv.getValue();
+                IValue pv_value = pv.getValue();
                 value = ValueUtil.formatValueAndSeverity(pv_value);
                 severity = pv_value.getSeverity();
                 updateValue();
@@ -258,7 +258,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     {   return pv_name; }
     
     /** @return Severity of current value. May be <code>null</code>. */
-    public Severity getSeverity()
+    public ISeverity getSeverity()
     {   return severity; }
     
     // @see IProcessVariable

@@ -1,8 +1,7 @@
 package org.csstudio.archive.crawl;
 
-import org.csstudio.archive.crawl.ValueIterator;
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.value.Value;
+import org.csstudio.platform.data.IValue;
 
 /** Iterates several <code>ValueIterator</code> instances 'in lockstep'
  *  as required to generate spreadsheet-type output.
@@ -27,13 +26,13 @@ public class SpreadsheetIterator
      *  This is usually the 'next' value, stamped after <code>time</code>.
      *  @see #values
      */
-    private Value raw_data[];
+    private IValue raw_data[];
     
     /** The timestamp for the current spreadsheet 'line'. */
     private ITimestamp time;
     
     /** The values of the current spreadsheet 'line', or <code>null</code>. */
-    private Value values[];
+    private IValue values[];
 
     /** Constructor.
      *  @param iters The 'base' iterators.
@@ -45,8 +44,8 @@ public class SpreadsheetIterator
         this.iters = iters;
         
         // Get first sample from each base iterator
-        raw_data = new Value[iters.length];
-        values = new Value[iters.length];
+        raw_data = new IValue[iters.length];
+        values = new IValue[iters.length];
         for (int i=0; i<iters.length; ++i)
         {
             raw_data[i] = iters[i].hasNext()  ?  iters[i].next()  :  null;
@@ -98,11 +97,11 @@ public class SpreadsheetIterator
      *  @see #getTime()
      *  @see #hasNext()
      */
-    public Value[] next()
+    public IValue[] next()
     {
         assert hasNext();
         // Keep copy(!) of 'current' spreadsheet line
-        Value[] result = values.clone();
+        IValue[] result = values.clone();
         // Prepare next line
         getNextSpreadsheetLine();
         // return the copy

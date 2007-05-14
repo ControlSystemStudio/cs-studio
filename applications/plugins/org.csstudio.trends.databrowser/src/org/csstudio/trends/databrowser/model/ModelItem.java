@@ -3,10 +3,19 @@ package org.csstudio.trends.databrowser.model;
 import java.util.ArrayList;
 
 import org.csstudio.archive.ArchiveValues;
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.IEnumeratedMetaData;
+import org.csstudio.platform.data.IEnumeratedValue;
+import org.csstudio.platform.data.IIntegerValue;
+import org.csstudio.platform.data.IMetaData;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.IStringValue;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.xml.DOMHelper;
@@ -14,13 +23,6 @@ import org.csstudio.util.xml.XMLHelper;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
-import org.csstudio.value.DoubleValue;
-import org.csstudio.value.EnumValue;
-import org.csstudio.value.IntegerValue;
-import org.csstudio.value.MetaData;
-import org.csstudio.value.NumericMetaData;
-import org.csstudio.value.StringValue;
-import org.csstudio.value.Value;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
@@ -79,7 +81,7 @@ public class ModelItem
      *  <p>
      *  Read from the GUI thread, updated from a PV monitor thread.
      */
-    private volatile Value current_value;
+    private volatile IValue current_value;
     
     /** Where to get archived data for this item. */
     private ArrayList<IArchiveDataSource> archives
@@ -564,37 +566,42 @@ public class ModelItem
             else
             {   // Add the most recent value after tweaking its
                 // time stamp to be 'now'
-                if (current_value instanceof DoubleValue)
-                    current_value = new DoubleValue(now,
+                IValue.Quality quality = IValue.Quality.Original;
+                if (current_value instanceof IDoubleValue)
+                    current_value = ValueFactory.createDoubleValue(now,
                                     current_value.getSeverity(),
                                     current_value.getStatus(),
-                                    current_value.getMetaData(),
-                                    ((DoubleValue)current_value).getValues());
-                else if (current_value instanceof EnumValue)
-                    current_value = new EnumValue(now,
+                                    (INumericMetaData)current_value.getMetaData(),
+                                    quality,
+                                    ((IDoubleValue)current_value).getValues());
+                else if (current_value instanceof IEnumeratedValue)
+                    current_value = ValueFactory.createEnumeratedValue(now,
                                     current_value.getSeverity(),
                                     current_value.getStatus(),
-                                    current_value.getMetaData(),
-                                    ((EnumValue)current_value).getValues());
-                else if (current_value instanceof IntegerValue)
-                    current_value = new IntegerValue(now,
+                                    (IEnumeratedMetaData)current_value.getMetaData(),
+                                    quality,
+                                    ((IEnumeratedValue)current_value).getValues());
+                else if (current_value instanceof IIntegerValue)
+                    current_value = ValueFactory.createIntegerValue(now,
                                     current_value.getSeverity(),
                                     current_value.getStatus(),
-                                    current_value.getMetaData(),
-                                    ((IntegerValue)current_value).getValues());
-                else if (current_value instanceof StringValue)
-                    current_value = new StringValue(now,
+                                    (INumericMetaData)current_value.getMetaData(),
+                                    quality,
+                                    ((IIntegerValue)current_value).getValues());
+                else if (current_value instanceof IStringValue)
+                    current_value = ValueFactory.createStringValue(now,
                                     current_value.getSeverity(),
                                     current_value.getStatus(),
+                                    quality,
                                     current_value.format());
                 else
                     Plugin.logError("ModelItem cannot update timestamp of type " //$NON-NLS-1$
                                     + current_value.getClass().getName());
                 samples.addLiveSample(current_value);
-                MetaData meta = current_value.getMetaData();
-                if (meta instanceof NumericMetaData)
+                IMetaData meta = current_value.getMetaData();
+                if (meta instanceof INumericMetaData)
                 {
-                    String new_units =  ((NumericMetaData)meta).getUnits();
+                    String new_units =  ((INumericMetaData)meta).getUnits();
                     if (! units.equals(new_units))
                     {
                         units = new_units;

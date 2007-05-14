@@ -1,15 +1,16 @@
 package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.archive.ArchiveValues;
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.IMetaData;
+import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.Range;
-import org.csstudio.value.DoubleValue;
-import org.csstudio.value.MetaData;
-import org.csstudio.value.NumericMetaData;
-import org.csstudio.value.Value;
 import org.eclipse.swt.widgets.Display;
 
 /** Samples of a model item, combination of archived and live samples,
@@ -32,6 +33,9 @@ public class ModelSamples implements ChartSampleSequence
      *  but also archive reader when getting the 'border'.
      */
     private volatile ModelSampleRing live_samples;
+
+    private static final INumericMetaData dummy_numeric_meta =
+        ValueFactory.createNumericMetaData(0, 0, 0, 0, 0, 0, 0, ""); //$NON-NLS-1$
 
     /** Construct with given initial 'live' buffer size */
     ModelSamples(int ring_size)
@@ -86,18 +90,18 @@ public class ModelSamples implements ChartSampleSequence
             if (last != null && last.equals(Messages.LivePVDisconnected))
                 return;
         }
-        
-        DoubleValue disconnected = new DoubleValue(now,
-                        SeverityFactory.getInvalid(),
+        IDoubleValue disconnected = ValueFactory.createDoubleValue(now,
+                        ValueFactory.createInvalidSeverity(),
                         Messages.LivePVDisconnected,
-                        MetaDataFactory.getNumeric(),
+                        dummy_numeric_meta,
+                        IValue.Quality.Original,
                         new double[] { Double.NEGATIVE_INFINITY });
         
         live_samples.add(disconnected);
     }
     
     /** Add most recent timestamp/value */
-    synchronized void addLiveSample(Value value)
+    synchronized void addLiveSample(IValue value)
     {
         // We expect all access to this method from the UI thread.
         if (Display.getCurrent() == null)
@@ -150,10 +154,10 @@ public class ModelSamples implements ChartSampleSequence
         final int len = size();
         if (len > 0)
         {
-            MetaData meta = get(len-1).getSample().getMetaData();
-            if (meta instanceof NumericMetaData)
+            IMetaData meta = get(len-1).getSample().getMetaData();
+            if (meta instanceof INumericMetaData)
             {
-                NumericMetaData numeric = (NumericMetaData)meta;
+                INumericMetaData numeric = (INumericMetaData)meta;
                 return new Range(numeric.getDisplayLow(),
                                  numeric.getDisplayHigh());
             }

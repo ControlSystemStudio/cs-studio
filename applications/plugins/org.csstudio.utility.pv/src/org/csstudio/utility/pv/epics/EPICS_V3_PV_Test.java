@@ -4,13 +4,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
 
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.IEnumeratedValue;
+import org.csstudio.platform.data.IIntegerValue;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.value.DoubleValue;
-import org.csstudio.value.EnumValue;
-import org.csstudio.value.IntegerValue;
-import org.csstudio.value.NumericMetaData;
-import org.csstudio.value.Value;
 import org.junit.Test;
 
 /** These tests require the soft-IOC database from lib/test.db.
@@ -35,7 +35,7 @@ public class EPICS_V3_PV_Test extends TestCase
         public void pvValueUpdate(PV pv)
         {
             updates.addAndGet(1);
-            Value v = pv.getValue();
+            IValue v = pv.getValue();
             System.out.println(name + ": "
                     + pv.getName() + ", "
                     + v.getTime() + " "
@@ -69,7 +69,7 @@ public class EPICS_V3_PV_Test extends TestCase
         // Did we get anything?
         assertTrue(updates.get() > 2);
         // Meta info as expected?
-        NumericMetaData meta = (NumericMetaData)pv.getValue().getMetaData();
+        INumericMetaData meta = (INumericMetaData)pv.getValue().getMetaData();
         assertEquals("furlong", meta.getUnits());
         assertEquals(4, meta.getPrecision());
         
@@ -136,8 +136,8 @@ public class EPICS_V3_PV_Test extends TestCase
         while (!pva.isConnected())
             Thread.sleep(100);
         assertTrue(pva.isConnected());
-        assertTrue(pva.getValue() instanceof EnumValue);
-        EnumValue e = (EnumValue) pva.getValue();
+        assertTrue(pva.getValue() instanceof IEnumeratedValue);
+        IEnumeratedValue e = (IEnumeratedValue) pva.getValue();
         assertEquals(6, e.getValue());
         assertEquals("1 second", e.format());
         
@@ -154,9 +154,9 @@ public class EPICS_V3_PV_Test extends TestCase
         while (!pva.isConnected())
             Thread.sleep(100);
         assertTrue(pva.isConnected());
-        final Value value = pva.getValue();
-        assertTrue(value instanceof DoubleValue);
-        double dbl[] = ((DoubleValue) value).getValues();
+        final IValue value = pva.getValue();
+        assertTrue(value instanceof IDoubleValue);
+        double dbl[] = ((IDoubleValue) value).getValues();
         assertEquals(50, dbl.length);
         System.out.println(value);
         
@@ -172,9 +172,9 @@ public class EPICS_V3_PV_Test extends TestCase
         while (!pva.isConnected())
             Thread.sleep(100);
         assertTrue(pva.isConnected());
-        final Value value = pva.getValue();
-        assertTrue(value instanceof IntegerValue);
-        int ints[] = ((IntegerValue) value).getValues();
+        final IValue value = pva.getValue();
+        assertTrue(value instanceof IIntegerValue);
+        int ints[] = ((IIntegerValue) value).getValues();
         assertEquals(50, ints.length);
         System.out.println(value);
         

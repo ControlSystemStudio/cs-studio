@@ -1,6 +1,6 @@
 package org.csstudio.diag.epics.pvtree;
 
-import org.csstudio.value.Severity;
+import org.csstudio.platform.data.ISeverity;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
@@ -38,7 +38,7 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider
         if (! (element instanceof PVTreeItem))
             return null;
         
-        Severity severity = ((PVTreeItem)element).getSeverity();
+        ISeverity severity = ((PVTreeItem)element).getSeverity();
         if (severity == null)
             return null;
         if (severity.isInvalid())

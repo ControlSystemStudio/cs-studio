@@ -1,6 +1,6 @@
 package org.csstudio.archive;
 
-import org.csstudio.value.Value;
+import org.csstudio.platform.data.IValue;
 
 /** The samples returned by the archive for one channel.
  *  @author Kay Kasemir
@@ -9,14 +9,15 @@ public class ArchiveValues
 {
 	private final ArchiveServer server;
 	private final String channel_name;
-	private final Value samples[];
+	private final IValue samples[];
 	
 	/** Constructor
 	 * 
 	 *  @param channel_name The name of the channel
 	 *  @param samples The samples we retrieved for this channel.
 	 */
-	public ArchiveValues(ArchiveServer server, String channel_name, Value[] samples)
+	public ArchiveValues(ArchiveServer server, String channel_name,
+                         IValue[] samples)
 	{
 		this.server = server;
 		this.channel_name = channel_name;
@@ -32,6 +33,6 @@ public class ArchiveValues
 	{	return channel_name;	}
 
 	/** @return The samples. */
-	public Value[] getSamples()
+	public IValue[] getSamples()
 	{	return samples;	}
 }

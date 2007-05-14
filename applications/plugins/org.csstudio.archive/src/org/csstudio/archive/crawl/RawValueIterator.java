@@ -2,9 +2,8 @@ package org.csstudio.archive.crawl;
 
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.ArchiveValues;
-import org.csstudio.archive.crawl.ValueIterator;
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.value.Value;
+import org.csstudio.platform.data.IValue;
 
 /** An archive sample crawler.
  *  <p>
@@ -40,7 +39,7 @@ public class RawValueIterator implements ValueIterator
     private int arch_idx;
     
     // The current batch of retrieved samples
-    private Value samples[] = null;
+    private IValue samples[] = null;
     private int next_sample_index;
 
     /** Construct crawler for raw samples of a channel.
@@ -167,10 +166,10 @@ public class RawValueIterator implements ValueIterator
     /** @return Returns the next sample.
      *  @see #hasNext()
      */
-    public Value next()
+    public IValue next()
     {
         // Obtain current sample, the one to return
-        Value current_sample = samples[next_sample_index];
+        IValue current_sample = samples[next_sample_index];
         // Prepare what to return next
         ++next_sample_index;
         if (next_sample_index >= samples.length)
@@ -199,7 +198,7 @@ public class RawValueIterator implements ValueIterator
                         // So we have to skip forward, just past the 'current_sample'.
                         while (next_sample_index < samples.length)
                         {
-                            Value skip_sample = samples[next_sample_index];
+                            IValue skip_sample = samples[next_sample_index];
                             if (skip_sample.getTime().isGreaterThan(last_timestamp))
                                 break; // Found new data, so we're done
                             // Sample is timed at-or-before last_timestamps, so skip

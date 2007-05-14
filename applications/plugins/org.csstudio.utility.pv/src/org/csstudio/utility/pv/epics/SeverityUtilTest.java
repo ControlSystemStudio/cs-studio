@@ -1,34 +1,36 @@
 package org.csstudio.utility.pv.epics;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.csstudio.value.Severity;
+import org.csstudio.platform.data.ISeverity;
+import org.junit.Test;
 
+/** Test for the SeverityUtil class.
+ *  @author Kay Kasemir
+ */
 public class SeverityUtilTest extends TestCase
 {
+    @Test
     @SuppressWarnings("nls")
     public void testSeverityUtil() throws Exception
     {
-        Severity ok = SeverityUtil.forCode(0);
-        Assert.assertEquals("", ok.toString());
-        Assert.assertEquals(true, ok.isOK());
+        ISeverity ok = SeverityUtil.forCode(0);
+        assertEquals("", ok.toString());
+        assertEquals(true, ok.isOK());
         System.out.println(ok);
         
         // Get cached instance?
-        Severity ok2 = SeverityUtil.forCode(0);
-        Assert.assertTrue(ok == ok2);
+        ISeverity ok2 = SeverityUtil.forCode(0);
+        assertTrue(ok == ok2);
         
-
-        Severity inv = SeverityUtil.forCode(3);
-        Assert.assertEquals("INVALID", inv.toString());
-        Assert.assertEquals(false, inv.isOK());
-        Assert.assertEquals(true, inv.isInvalid());
+        ISeverity inv = SeverityUtil.forCode(3);
+        assertEquals("INVALID", inv.toString());
+        assertEquals(false, inv.isOK());
+        assertEquals(true, inv.isInvalid());
         System.out.println(inv);
         
         // Get cached instance?
-        Severity inv2 = SeverityUtil.forCode(3);
-        Assert.assertTrue(inv == inv2);
-
+        ISeverity inv2 = SeverityUtil.forCode(3);
+        assertTrue(inv == inv2);
     }
 }

@@ -2,9 +2,11 @@ package org.csstudio.archive.crawl;
 
 import java.util.Iterator;
 
-import org.csstudio.value.DoubleValue;
-import org.csstudio.value.Value;
-import org.csstudio.value.ValueUtil;
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.platform.data.ValueUtil;
 
 /** Turns an Iterator over raw <code>Value</code>s into one over
  *  <code>DoubleValue</code>s.
@@ -20,11 +22,11 @@ import org.csstudio.value.ValueUtil;
  *  @see org.csstudio.archive.crawl.RawValueIterator
  *  @author Kay Kasemir
  */
-public class DoubleValueIterator implements Iterator<DoubleValue>
+public class DoubleValueIterator implements Iterator<IDoubleValue>
 {
-    private final Iterator<Value> raw_samples;
+    private final Iterator<IValue> raw_samples;
     
-    public DoubleValueIterator(Iterator<Value> raw_samples)
+    public DoubleValueIterator(Iterator<IValue> raw_samples)
     {
         this.raw_samples = raw_samples;
     }
@@ -34,12 +36,15 @@ public class DoubleValueIterator implements Iterator<DoubleValue>
         return raw_samples.hasNext();
     }
 
-    public DoubleValue next()
+    public IDoubleValue next()
     {
-        Value sample = raw_samples.next();
+        IValue sample = raw_samples.next();
+        // TODO check if meta data is INumericMetaData. Else, create one.
         double value = ValueUtil.getDouble(sample);
-        return new DoubleValue(sample.getTime(), sample.getSeverity(),
-                        sample.getStatus(), sample.getMetaData(),
+        return ValueFactory.createDoubleValue(sample.getTime(), sample.getSeverity(),
+                        sample.getStatus(),
+                        (INumericMetaData)sample.getMetaData(),
+                        IValue.Quality.Interpolated,
                         new double[] { value });
     }
     

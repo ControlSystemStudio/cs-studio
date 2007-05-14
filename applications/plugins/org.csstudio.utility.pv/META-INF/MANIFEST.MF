@@ -8,7 +8,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.csstudio.platform.libs.epics;visibility:=reexport,
  org.csstudio.platform
 Export-Package: org.csstudio.utility.pv,
- org.csstudio.utility.pv.epics,
- org.csstudio.value
+ org.csstudio.utility.pv.epics
 Bundle-Activator: org.csstudio.utility.pv.Plugin
 Eclipse-LazyStart: true

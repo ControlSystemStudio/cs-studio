@@ -3,8 +3,8 @@ package org.csstudio.display.pvtable.ui;
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.PVListEntry;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.value.Value;
 
 /** Helper for creating a table of PVListEntry rows.
  * 
@@ -80,7 +80,7 @@ public class PVTableHelper
     {
         if (pv == null)
             return ""; //$NON-NLS-1$
-        Value value = pv.getValue();
+        IValue value = pv.getValue();
         if (value == null)
             return ""; //$NON-NLS-1$
     	return value.format();
@@ -102,7 +102,7 @@ public class PVTableHelper
                 return entry.getPV().getName();
             case TIME:
             {
-                Value value = entry.getPV().getValue();
+                IValue value = entry.getPV().getValue();
                 if (value == null)
                     return ""; //$NON-NLS-1$
                 ITimestamp time = value.getTime();            	

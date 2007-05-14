@@ -1,12 +1,12 @@
 package org.csstudio.archive.channelarchiver;
 
-import org.csstudio.value.Severity;
+import org.csstudio.platform.data.ISeverity;
 
 /** Implementation of the Severity interface for EPICS samples.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SeverityImpl implements Severity
+public class SeverityImpl implements ISeverity
 {
 	private final String text;
 	private final boolean has_value;

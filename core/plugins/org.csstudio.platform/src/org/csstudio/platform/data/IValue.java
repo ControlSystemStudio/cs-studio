@@ -58,21 +58,36 @@ public interface IValue
      *  processed data, which reduces several 'original' samples to for example
      *  an 'averaged' sample. For those processed values, the time stamp
      *  actually no longer matches one specific instance in time when the
-     *  front-end controller obtained a sample. A plotting tool might therefore
-     *  display those processed samples in a different way.
+     *  front-end controller obtained a sample.
+     *  <p>
+     *  While the quality code does not fully describe what happened to the
+     *  data, it provides a hint to for example a plotting tool, so that
+     *  processed samples can be shown in a different way from original
+     *  samples.
      */
     public enum Quality
     {
-        /** This is a raw, original value. */
+        /** This is a raw, original sample. */
         Original,
+
+        /** This value is the result of interpolating 'original' samples.
+         *  <p>
+         *  There are several possible examples:
+         *  <ul>
+         *  <li>The data type was changed from 'double' to 'integer',
+         *      with a possible loss off precision.
+         *  <li>This sample results from linear interpolation between two
+         *      original samples.
+         *  <li>This sample results from averaging over several original
+         *      values.
+         *  </ul>
+         */
+        Interpolated,
         
-        /** This value is the result of averaging over 'original' values. */
-        Averaged,
-        
-        /** This is the minimum over several 'original' values */
+        /** This is the minimum over several 'original' samples. */
         Minimum,
         
-        /** This is the maximum over several 'original' values */
+        /** This is the maximum over several 'original' samples. */
         Maximum,
     };
 

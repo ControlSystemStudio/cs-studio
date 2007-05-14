@@ -3,6 +3,8 @@ package org.csstudio.trends.databrowser.sampleview;
 import java.util.ArrayList;
 
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSampleDragSource;
 import org.csstudio.trends.databrowser.model.IModelItem;
@@ -13,10 +15,6 @@ import org.csstudio.trends.databrowser.model.ModelSamples;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.util.swt.AutoSizeColumn;
 import org.csstudio.util.swt.AutoSizeControlListener;
-import org.csstudio.value.DoubleValue;
-import org.csstudio.value.IntegerValue;
-import org.csstudio.value.StringValue;
-import org.csstudio.value.Value;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -51,7 +49,6 @@ import org.eclipse.ui.IWorkbenchActionConstants;
  *        at many samples, Eclipse freezes for a while.
  *  @author Kay Kasemir
  *  @author Last modifications by Helge Rickens
- *
  */
 public class SampleView extends PlotAwareView
 {
@@ -229,25 +226,8 @@ public class SampleView extends PlotAwareView
                         	continue; 
                         }
                 	
-                    Value sample = ms.get(j).getSample();
-                    if (sample instanceof DoubleValue) {
-                        DoubleValue tmp = (DoubleValue) sample;
-                        value[poroperCount]=tmp.getValue();
-                    }
-                    else if(sample instanceof IntegerValue)
-                    {
-                        IntegerValue tmp = (IntegerValue) sample;
-                        value[poroperCount]=tmp.getValue();
-
-                    }
-                    else if(sample instanceof StringValue)
-                    {
-                        StringValue tmp = (StringValue) sample;
-                        value[poroperCount]=new Double(tmp.getValue());
-                    }
-                    else
-                        value[poroperCount]=0;
-
+                    IValue sample = ms.get(j).getSample();
+                    value[poroperCount] = ValueUtil.getDouble(sample);
                     severity[poroperCount]=ms.get(j).getSample().getSeverity().toString();
                     status[poroperCount]=ms.get(j).getSample().getStatus();
                     timeStamp[poroperCount]=ms.get(j).getSample().getTime().toDouble();

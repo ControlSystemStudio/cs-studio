@@ -1,13 +1,12 @@
 package org.csstudio.archive.desy.aapi;
 
 import org.csstudio.archive.ArchiveValues;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.value.DoubleValue;
-import org.csstudio.value.MetaData;
-import org.csstudio.value.NumericMetaData;
-import org.csstudio.value.Severity;
-import org.csstudio.value.Value;
+import org.csstudio.platform.data.ValueFactory;
 
 import AAPI.AAPI;
 import AAPI.AnswerData;
@@ -104,12 +103,16 @@ public class ValuesRequest implements ClientRequest
 			int type = TYPE_DOUBLE; //  TODO answerClass.getType(); AAPI return only Double
 			int count = 1; // do not use WF answerClass.getCount();
 			int num_samples=answerClass.getCount();
-			Value samples[]= new Value[num_samples];
-			MetaData meta = new NumericMetaData(
-					answerClass.getDisplayHigh(),answerClass.getDisplayLow(),
-					answerClass.getHighAlarm(),answerClass.getLowAlarm(),
-					answerClass.getHighWarning(),answerClass.getLowWarning(),
-					answerClass.getPrecision(),answerClass.getEgu());	
+			IValue samples[]= new IValue[num_samples];
+			INumericMetaData meta = ValueFactory.createNumericMetaData(
+                                                answerClass.getDisplayLow(),
+                            					answerClass.getDisplayHigh(),
+                                                answerClass.getLowWarning(),
+                                                answerClass.getHighWarning(),
+                                                answerClass.getLowAlarm(),
+                            					answerClass.getHighAlarm(),
+                            					answerClass.getPrecision(),
+                                                answerClass.getEgu());	
 			for (int si=0; si<num_samples; si++) {
 				long secs = answerClass.getTime()[si];
 				long nano = answerClass.getUtime()[si];
@@ -120,12 +123,17 @@ public class ValuesRequest implements ClientRequest
 				if((sevr<0)||(sevr>AAPI.severityList.length -1))     sevr=AAPI.severityList.length -1;
 
 				//Changed 23.1.07
-				//				Severity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],false,false);
-				Severity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],true,true);
+				//	Severity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],false,false);
+				ISeverity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],true,true);
 			
 				double values[] = new double[count]; // count=1
 			    for (int vi=0; vi<count; ++vi) values[vi] = answerClass.getData()[si];
-				samples[si] = new DoubleValue(time, sevClass,AAPI.alarmStatusString[stat], meta, values);
+				samples[si] = ValueFactory.createDoubleValue(time,
+                                sevClass,
+                                AAPI.alarmStatusString[stat],
+                                meta,
+                                IValue.Quality.Original,
+                                values);
 			}
 			archived_samples[COUNT] =
 				new ArchiveValues(server, strArray[0], samples );

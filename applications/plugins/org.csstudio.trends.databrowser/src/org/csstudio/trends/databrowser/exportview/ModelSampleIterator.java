@@ -1,8 +1,8 @@
 package org.csstudio.trends.databrowser.exportview;
 
 import org.csstudio.archive.crawl.ValueIterator;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.trends.databrowser.model.ModelSamples;
-import org.csstudio.value.Value;
 
 /** Facade that turns ModelSamples into a Sample Iterator.
  *  <p>
@@ -42,9 +42,9 @@ public class ModelSampleIterator implements ValueIterator
      *  In the hopefully unlikely case that the ModelSample array
      *  got smaller, we will get <code>null</code>.
      */
-    public Value next()
+    public IValue next()
     {
-        Value sample;
+        IValue sample;
         synchronized (samples)
         {
             if (i < samples.size())

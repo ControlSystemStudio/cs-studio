@@ -1,11 +1,11 @@
 package org.csstudio.archive.desy.aapi;
 
-import org.csstudio.value.Severity;
+import org.csstudio.platform.data.ISeverity;
 
 /** Implementation of the Severity interface for EPICS samples.
  *  @author Albert Kagarmanov
  */
-public class SeverityImpl implements Severity
+public class SeverityImpl implements ISeverity
 {
 	private String text;
 	private boolean has_value;

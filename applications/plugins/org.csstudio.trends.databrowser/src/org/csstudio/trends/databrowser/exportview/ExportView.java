@@ -3,11 +3,11 @@ package org.csstudio.trends.databrowser.exportview;
 import java.util.Calendar;
 
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.util.time.AbsoluteTimeParser;
-import org.csstudio.value.Value;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -56,7 +56,7 @@ public class ExportView extends PlotAwareView
     private ITimestamp start;
     private ITimestamp end;
     private ExportJob.Source source;
-    private Value.Format format;
+    private IValue.Format format;
     
     public ExportView()
     {
@@ -264,7 +264,7 @@ public class ExportView extends PlotAwareView
         format_default.addSelectionListener(new SelectionAdapter()
         {
             @Override public void widgetSelected(SelectionEvent e)
-            {   format = Value.Format.Default; }
+            {   format = IValue.Format.Default; }
         });
         
         format_decimal = new Button(frame, SWT.RADIO);
@@ -273,7 +273,7 @@ public class ExportView extends PlotAwareView
         format_decimal.addSelectionListener(new SelectionAdapter()
         {
             @Override public void widgetSelected(SelectionEvent e)
-            {   format = Value.Format.Decimal; }
+            {   format = IValue.Format.Decimal; }
         });
 
         format_exponential = new Button(frame, SWT.RADIO);
@@ -282,7 +282,7 @@ public class ExportView extends PlotAwareView
         format_exponential.addSelectionListener(new SelectionAdapter()
         {
             @Override public void widgetSelected(SelectionEvent e)
-            {   format = Value.Format.Exponential; }
+            {   format = IValue.Format.Exponential; }
         });
         // ... end of radio buttons
         
@@ -380,7 +380,7 @@ public class ExportView extends PlotAwareView
             {   precision.setEnabled(! format_default.getSelection());   }
         });
         format_default.setSelection(true);
-        format = Value.Format.Default;
+        format = IValue.Format.Default;
         format_spreadsheet.setSelection(true);
         format_severity.setSelection(true);
         

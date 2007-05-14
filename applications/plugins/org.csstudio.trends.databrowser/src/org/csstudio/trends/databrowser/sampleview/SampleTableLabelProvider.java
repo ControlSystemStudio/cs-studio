@@ -2,9 +2,9 @@ package org.csstudio.trends.databrowser.sampleview;
 
 //import java.text.Format;
 
+import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.IValue.Format;
 import org.csstudio.trends.databrowser.model.ModelSample;
-import org.csstudio.value.Severity;
-import org.csstudio.value.Value.Format;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -48,7 +48,7 @@ public class SampleTableLabelProvider extends LabelProvider implements
     public Color getBackground(Object obj, int index)
     {
         ModelSample sample = (ModelSample) obj;
-        Severity severity = sample.getSample().getSeverity();
+        ISeverity severity = sample.getSample().getSeverity();
         if (severity.isOK())
             return null; // no special color
         // Make entry stand out,
