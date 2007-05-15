@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -63,9 +64,12 @@ public final class WorkspaceExplorerView extends ViewPart {
 		// update resources viewer, when there are filesystem changes
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(
 				new IResourceChangeListener() {
-
 					public void resourceChanged(final IResourceChangeEvent event) {
-						_treeViewer.refresh();
+						Display.getCurrent().asyncExec(new Runnable() {
+							public void run() {
+								_treeViewer.refresh();
+							}
+						});
 					}
 				});
 		// add drag support
@@ -111,9 +115,9 @@ public final class WorkspaceExplorerView extends ViewPart {
 			public void open(final OpenEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) event
 						.getSelection();
-				
+
 				Object element = selection.getFirstElement();
-				
+
 				if (element instanceof IFile) {
 					openEditor((IFile) element);
 
@@ -161,11 +165,15 @@ public final class WorkspaceExplorerView extends ViewPart {
 			try {
 				page.openEditor(editorInput, descriptor.getId());
 			} catch (PartInitException e) {
-				CentralLogger.getInstance().error(Messages.getString("WorkspaceExplorerView.CANNOT_OPEN_EDITOR"), e); //$NON-NLS-1$
+				CentralLogger
+						.getInstance()
+						.error(
+								Messages
+										.getString("WorkspaceExplorerView.CANNOT_OPEN_EDITOR"), e); //$NON-NLS-1$
 			}
 		} else {
-			MessageDialog.openInformation(getSite().getShell(),
-					Messages.getString("WorkspaceExplorerView.ERROR_TITLE"), //$NON-NLS-1$
+			MessageDialog.openInformation(getSite().getShell(), Messages
+					.getString("WorkspaceExplorerView.ERROR_TITLE"), //$NON-NLS-1$
 					Messages.getString("WorkspaceExplorerView.ERROR_MESSAGE")); //$NON-NLS-1$
 		}
 	}
