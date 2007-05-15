@@ -50,16 +50,17 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		waveform.setMax(model.getMax());
 		waveform.setAutoScale(model.getAutoscale());
 		waveform.setShowScale(model.getShowScale());
-		waveform.setShowLedgerlLines(model.getShowLedgerLines());
 		waveform.setXSectionCount(model.getXSectionCount());
 		waveform.setYSectionCount(model.getYSectionCount());
+		waveform.setShowValues(model.getShowValues());
+		waveform.setShowLedgerlLines(model.getShowLedgerLines());
+		waveform.setLedgerLineColor(model.getLedgerLineColor());
 		waveform.setShowConnectionLines(model.getShowConnectionLines());
+		waveform.setConnectionLineColor(model.getConnectionLineColor());
+		waveform.setGraphLineWidth(model.getGraphLineWidth());
 		waveform.setBackgroundColor(CustomMediaFactory.getInstance().getColor(model.getBackgroundColor()));
 		waveform.setForegroundColor(CustomMediaFactory.getInstance().getColor(model.getForegroundColor()));
 		waveform.setGraphColor(model.getGraphColor());
-		waveform.setConnectionLineColor(model.getConnectionLineColor());
-		waveform.setLedgerLineColor(model.getLedgerLineColor());
-		waveform.setShowValues(model.getShowValues());
 		return waveform;
 	}
 
