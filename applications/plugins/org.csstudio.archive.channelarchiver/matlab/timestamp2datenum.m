@@ -4,5 +4,4 @@ function d=timestamp2datenum(t)
 % Convert Java Timestamp as returned by archive API
 % into Matlab datenum
 
-vec = double(t.toPieces())';
-d = datenum(vec(1:6));
+d = datenum(char(t.toString()), 'yyyy/mm/dd HH:MM:SS');

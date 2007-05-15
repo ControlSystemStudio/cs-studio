@@ -18,8 +18,8 @@ server = org.csstudio.archive.channelarchiver.ArchiveServer(url);
 
 %% Get archive keys, start/end times
 keys = [ server.getArchiveKey('RF') server.getArchiveKey('RF llrf (last restart)') ]
-t0 = org.csstudio.archive.util.TimestampUtil.fromPieces(2006, 1, 18, 10, 18, 0, 0)
-t1 = org.csstudio.archive.util.TimestampUtil.fromPieces(2006, 1, 18, 14, 0, 0, 0)
+t0 = timestamp_from_pieces(2006, 1, 18, 10, 18, 0)
+t1 = timestamp_from_pieces(2006, 1, 18, 14, 0, 0)
 
 %% Get raw values
 % In here, we could actually also receive strings,
@@ -53,8 +53,8 @@ datetick('x', 'dd-mmm-yyyy HH:MM:SS');
 
 %% Get double values
 %  Uses the DoubleIterator filter to simplify the loop.
-raw = org.csstudio.archive.crawl.RawSampleIterator(servers, keys, 'CCL_LLRF:FCM1:cavAmpAvg', t0, t1);
-iter = org.csstudio.archive.crawl.DoubleSampleIterator(raw);
+raw = org.csstudio.archive.crawl.RawValueIterator(servers, keys, 'CCL_LLRF:FCM1:cavAmpAvg', t0, t1);
+iter = org.csstudio.archive.crawl.DoubleValueIterator(raw);
 
 tim = [];
 val = [];

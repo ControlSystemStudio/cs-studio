@@ -64,25 +64,28 @@ for i=1:names.length
     fprintf(1, '%s - %s: %s\n', t0, t1, name);
 end
 
-%% Timestamps
-%  The archive library uses a Java Timestamp class.
+%%  The archive library uses a Java Timestamp class.
 %  Above, the getStart()/getEnd() calls returned such Timestamps,
 %  which were converted to string by implicit toString() calls:
 %    names(i).getStart().toString() ...
 %  This is one way to create a Timestamp for a given date & time,
 %  using year, month, day, hour, minute, secs, nanosecs:
-t0 = org.csstudio.archive.util.TimestampUtil.fromPieces(2006, 1, 18, 10, 18, 0, 0)
-t1 = org.csstudio.archive.util.TimestampUtil.fromPieces(2006, 1, 18, 14, 0, 0, 0)
+cal = java.util.Calendar.getInstance();
+cal.clear();
+% Set calendar to year, month-1 (!), day, hour, minute, seconds:
+cal.set(2006, 1-1, 18, 10, 18, 0);
+% .. and convert to ITimestamp:
+t0 = org.csstudio.platform.data.TimestampFactory.fromCalendar(cal)
+
+cal.set(2006, 1-1, 18, 14, 0, 0);
+% .. and convert to ITimestamp:
+t1 = org.csstudio.platform.data.TimestampFactory.fromCalendar(cal)
 
 %% These are ways to convert back and forth.
 % Timestamp -> Matlab datenum
-% ..toPieces gives year, month, day, hour, minute, sec, nanosec
-% as in64.
-% datenum needs a 'double' row vector with only year ... sec:
-t0.toPieces()
-vec = double(t0.toPieces())';
-num = datenum(vec(1:6))
-datestr(num)
+fmt = 'yyyy/mm/dd HH:MM:SS';
+num = datenum(char(t0.toString()), fmt);
+datestr(num, fmt)
 
 %% Matlab datenum -> Timestamp
 num = datenum(2006, 1, 30, 13, 30, 10.0001)
@@ -90,10 +93,19 @@ num = datenum(2006, 1, 30, 13, 30, 10.0001)
 % use Timestamp.fromPieces(), but let's assume we only have the
 % datenum, and want to get a Timestamp:
 vec = datevec(num)
-t = org.csstudio.archive.util.TimestampUtil.fromPieces(vec(1), vec(2), vec(3), vec(4), vec(5), vec(6), 0)
+
+cal = java.util.Calendar.getInstance();
+cal.clear();
+% Set calendar to year, month-1 (!), day, hour, minute, seconds:
+cal.set(vec(1), vec(2)-1, vec(3), vec(4), vec(5), vec(6));
+t = org.csstudio.platform.data.TimestampFactory.fromCalendar(cal)
+
 % Note that there might be some rounding error:
 % With 10 seconds, I get 13:30:09 in the end,
 % but with 10.0001 it's OK.
+
+%% Or with helper
+t = timestamp_from_pieces(2006, 1, 30, 13, 30, 10.0001)
 
 %% Data request types
 % The data server supports several request types.
@@ -144,8 +156,8 @@ end
 %% Another data example, reading two channels
 key = server.getArchiveKey('RF');
 channels = { 'CCL_LLRF:FCM1:cavAmpAvg', 'CCL_LLRF:FCM2:cavAmpAvg' };
-t0 = org.csstudio.archive.util.TimestampUtil.fromPieces(2006, 1, 18, 10, 18, 0, 0);
-t1 = org.csstudio.archive.util.TimestampUtil.fromPieces(2006, 1, 18, 14, 0, 0, 0);
+t0 = timestamp_from_pieces(2006, 1, 18, 10, 18, 0);
+t1 = timestamp_from_pieces(2006, 1, 18, 14, 0, 0);
 request = server.getRequestType(server.GET_RAW);
 result = server.getSamples(key, channels, t0, t1, request, { java.lang.Integer(1000) });
 %% Extract time and values as matlab date and double vectors for plotting
@@ -164,7 +176,7 @@ for i=1:length(samples)
     ccl2_t = [ ccl2_t timestamp2datenum(samples(i).getTime()) ];
     ccl2_v = [ ccl2_v samples(i).getValue() ];
 end
-% Plot
+%% Plot
 plot(ccl1_t, ccl1_v, ccl2_t, ccl2_v);
 legend('CCL 1', 'CCL 2');
 ylabel(char(samples(1).getMetaData().getUnits()));
