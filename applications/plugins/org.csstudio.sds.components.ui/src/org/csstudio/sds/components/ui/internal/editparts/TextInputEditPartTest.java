@@ -23,9 +23,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.sds.components.model.AdvancedSliderModel;
 import org.csstudio.sds.components.model.TextInputModel;
-import org.csstudio.sds.components.ui.internal.figures.AdvancedSliderFigure;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.eclipse.draw2d.IFigure;
 import org.junit.Before;

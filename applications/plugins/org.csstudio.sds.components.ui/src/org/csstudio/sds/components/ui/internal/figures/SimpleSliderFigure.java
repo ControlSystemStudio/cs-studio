@@ -27,7 +27,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
@@ -213,7 +212,7 @@ public final class SimpleSliderFigure extends Panel implements
 		_populateEvents = populateEvents;
 	}
 
-	public void setShowValueAsText(boolean showValueAsText) {
+	public void setShowValueAsText(final boolean showValueAsText) {
 		_showValueAsText = showValueAsText;
 		_valueLabel.setVisible(_showValueAsText);
 	}
@@ -472,6 +471,7 @@ public final class SimpleSliderFigure extends Panel implements
 	 * @return The corresponding double
 	 * @deprecated
 	 */
+	@Deprecated
 	private double getDoubleFor2(final int value) {
 		return ((double) value) / _scrollbarPrecision;
 	}

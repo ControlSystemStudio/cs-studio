@@ -3,7 +3,7 @@
     <local-check-config name="Checkstyle Config" location="/Config/checkstyle.xml" type="project" description="">
         <additional-data name="protect-config-file" value="false"/>
     </local-check-config>
-    <fileset name="Alle" enabled="true" check-config-name="Sun Checks" local="false">
+    <fileset name="Alle" enabled="true" check-config-name="Checkstyle Config" local="true">
         <file-match-pattern match-pattern="." include-pattern="true"/>
     </fileset>
 </fileset-config>

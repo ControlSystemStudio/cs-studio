@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.AdvancedSliderModel;
 import org.csstudio.sds.components.ui.internal.figures.AdvancedSliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;

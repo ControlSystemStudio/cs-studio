@@ -8,7 +8,6 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  * 
  * @author Stefan Hofer, Sven Wende
  * @version $Revision$
- * 
  */
 public final class TestSchema extends AbstractControlSystemSchema {
 
