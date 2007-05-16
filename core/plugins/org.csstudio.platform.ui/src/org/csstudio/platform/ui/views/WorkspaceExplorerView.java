@@ -67,7 +67,9 @@ public final class WorkspaceExplorerView extends ViewPart {
 					public void resourceChanged(final IResourceChangeEvent event) {
 						Display.getCurrent().asyncExec(new Runnable() {
 							public void run() {
-								_treeViewer.refresh();
+								if (!_treeViewer.getTree().isDisposed()) {
+									_treeViewer.refresh();
+								}
 							}
 						});
 					}
