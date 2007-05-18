@@ -26,33 +26,25 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * This job reads the directory structure from the server.
- * <p>
- * Retrieving is optimized: 1. we make only one request on the server (there 
- * could be sizelimit or timelimit set on server - so we should do a workaround 
- * (sth. like BFS or DFS will do) 2. we request only nodes - and from their name we retrive tree structure
- * We don't store structure in this object, but in the provided mountPoint 
- * (LDAPConnection).
- * <p> 
- * For other protocols than LDAP we need some corrections in the code which 
- * slightly assume that we deal with LDAP tree. It supports different name parsers for each protocols, 
- * but we also need support for different query search strings.  
- * <p>
- * It now also retrieve initial alarm states, but it should be done either 
- * differently or the implementation must be slightly different - like to 
- * reset connection if needed and connect to other server in run() method.
  * 
- * @author Jurij Kodre
+ * @author Joerg Rathlev, Jurij Kodre
  */
-// this class is LDAP-specific
+// TODO: clean up propagagtion of NamingExceptions (an error that occurs while reading
+// a single object should not cause the complete job to fail, check that this is not
+// the case)
+// TODO: understand and document handling of names (i.e. what exactly are sname, rname, name?)
 public class CachingThread extends Job {
 
-	//client side provided sizelimit of result
-	protected long SIZE_LIMIT=100000;  // this value is from LdapConnection.java
-	//DirContext used to perform search on all trees
-	protected transient DirContext connection;
+	// maximum number of entries to return
+	private long COUNT_LIMIT = 0;  // 0 means unlimited
+	
+	// The LDAP directory that is searched
+	private DirContext directory;
+	
 	//we use one of provided TreeParser - each of provided  
 	protected ITreeParser tparser;
 	//mountPoint - root for the tree
@@ -65,18 +57,16 @@ public class CachingThread extends Job {
 	public static final String alarmInitialRoot="ou=EpicsAlarmCfg";//"ou=EpicsControls";
 	
 	/**
-	 * We construct the Caching thread with connection parameters provided in enviroment parameter, here protocol setting if set also overrides InitialContextFactory
+	 * Creates a new CachingThread instance.
 	 * 
-	 * @param url LDAP URL.
-	 * @param mountPoint LDAPConnection on which we connect the our roots
+	 * @param mountPoint the root node of the tree to which items are added.
 	 */
 	public CachingThread(LdapConnection mountPoint) {
 		super("Alarm Tree Directory Reader");
 		this.mountPoint = mountPoint;
 		
-		// TODO: for some reason, this does not work when using
-		// IEclipsePreferences instead. With IEclipsePreferences, the NODE
-		// preference contains only a single value.
+		// Note: the following doesn't work with IEclipsePreferences... see also
+		// #environmentFromPreferences for the same problem.
 		Preferences prefs = AlarmTreePlugin.getDefault().getPluginPreferences();
 		structureRoots = prefs.getString(PreferenceConstants.NODE).split(";");
 	}
@@ -90,7 +80,7 @@ public class CachingThread extends Job {
         env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
         tparser = new LDAPTreeParser();
 		try {
-			connection = new InitialDirContext(env);
+			directory = new InitialDirContext(env);
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -103,10 +93,16 @@ public class CachingThread extends Job {
 	 * @return the LDAP environment.
 	 */
 	private Hashtable<String, String> environmentFromPreferences() {
-		IEclipsePreferences prefs = new DefaultScope().getNode(AlarmTreePlugin.PLUGIN_ID);
-		String url = prefs.get(PreferenceConstants.URL, "");
-		String user = prefs.get(PreferenceConstants.USER, "");
-		String password = prefs.get(PreferenceConstants.PASSWORD, "");
+		// this doesn't work, for some reason...
+//		IEclipsePreferences prefs = new DefaultScope().getNode(AlarmTreePlugin.PLUGIN_ID);
+//		String url = prefs.get(PreferenceConstants.URL, "");
+//		String user = prefs.get(PreferenceConstants.USER, "");
+//		String password = prefs.get(PreferenceConstants.PASSWORD, "");
+		
+		IPreferenceStore prefs = AlarmTreePlugin.getDefault().getPreferenceStore();
+		String url = prefs.getString(PreferenceConstants.URL);
+		String user = prefs.getString(PreferenceConstants.USER);
+		String password = prefs.getString(PreferenceConstants.PASSWORD);
 		
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put("java.naming.provider.url", url);
@@ -116,155 +112,178 @@ public class CachingThread extends Job {
 	}
 	
 	/**
-	 * This method reads subTree of given subroot (given by parameter mPoint)
+	 * Reads all process variables below the given facility name into the tree.
+	 * @param efan the EPICS facility name.
 	 */
-	private synchronized void populateSubTree(String mPoint) throws NamingException{
-//		we wants root of the tree also included so we do a little trick - we put root into the name so it will be 
-//		parsed and added as root rather than his children 
-		String rootNode="efan="+mPoint+","+alarmCfgRoot;
-		String name;
-		String rname;
+	private void populateSubTree(String efan) throws NamingException {
+		// build dn of the efan object below which we want to search
+		String searchRootDN = "efan=" + efan + "," + alarmCfgRoot;
+
 		SearchControls ctrl = new SearchControls();
-		StringBuffer sbuf;
-		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE); //set to search the whole tree
-		
-//		remove when you solve the size limit problem or TODO: workaround
-//		ctrl.setCountLimit(0);
+		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		ctrl.setCountLimit(COUNT_LIMIT);
 		
 //		we retrieve all leafes (nodes with no childern) and then populate them in tree 
 //		(the populateObject method provides provides parsing names and putting them into tree structure)
-		NamingEnumeration enumr = connection.search(rootNode,"eren=*",ctrl);
-		long records=0;
+		// search all EPICS record names (eren) below the base object
+		NamingEnumeration<SearchResult> searchResults =
+			directory.search(searchRootDN, "eren=*", ctrl);
 		try
 		{
-			while (enumr.hasMore()){
-				records++;
-				SearchResult result = (SearchResult)enumr.next();
-				// XXX: next line can throw UnsupportedOperationException!
+			while (searchResults.hasMore()){
+				SearchResult result = searchResults.next();
+				String name;
+				String rname;
+				StringBuffer sbuf;
+				// XXX: next line can throw UnsupportedOperationException! (not for LDAP but anyway...)
 				name = result.getNameInNamespace();
 				rname = result.getName();
-				//only getName gives you name without 'o=DESY, c=DE'
+				
+//				System.out.println("result.isRelative():         " + result.isRelative());
+//				System.out.println("result.getName():            " + result.getName());
+//				System.out.println("result.getNameInNamespace(): " + result.getNameInNamespace());
+//				
+//				Attributes test = result.getAttributes();
+//				NamingEnumeration<? extends Attribute> attrs = test.getAll();
+//				while (attrs.hasMore()) {
+//					Attribute attr = attrs.next();
+//					System.out.println("  " + attr.getID() + ": " + attr.get().toString());
+//				}
+//				System.out.println("---");
+
 				name = tparser.specialClean(name);
 				rname = tparser.specialClean(rname);
 				sbuf= new StringBuffer(rname);
 				sbuf.append(",");
 				sbuf.append("efan=");
-				sbuf.append(mPoint);
+				sbuf.append(efan);
 				populateObject(name,sbuf.toString());
+				
+				// Read the object's alarm status, and trigger an alarm on the node
+				// that was just created if there is an alarm.
+				evaluateAlarmAttributes(result);
 			}
 		}
-		catch (SizeLimitExceededException exc)
+		catch (SizeLimitExceededException e)
 		{
-			System.err.println("Size limit set on server! Set on:"+records);
+			System.err.println("Size limit exceeded while reading tree: " + e.getExplanation());
 		}
-		finally{
-			enumr.close();
+		finally {
+			try {
+				searchResults.close();
+			}
+			catch (NamingException e) {
+				System.err.println("NamingException while closing search result enumeration:\n" + e);
+			}
 		}
 	}
 	
-	// TODO: this method is very slow, maybe because for each element found
-	// in the search, the element is looked up again and than its attributes
-	// are queried with yet another call. Rewrite this, and check if we can
-	// get the attributes when we build the tree. As far as I can see, the
-	// search will return the attributes, if requested, so we could simply
-	// initialize the alarm state within populateSubTree instead of in another
-	// step.
-	private synchronized void populateAlarms() throws NamingException{
-		SearchControls ctrl = new SearchControls();
-		String name,rname,sname;
-		Hashtable <String,String> props;
-		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE); //set to search the whole tree
-		//remove when you solve the size limit problem or TODO: workaround
-		ctrl.setReturningAttributes(new String[]{"epicsAlarmSeverity","epicsAlarmStatus","epicsAlarmHighUnAckn"});
-		ctrl.setCountLimit(SIZE_LIMIT);		
-		//search definition
-		NamingEnumeration enumr = connection.search(alarmInitialRoot,"(&(!(epicsAlarmStatus=NO_ALARM))(epicsAlarmSeverity=*))",ctrl);
-		Attributes attbs;
-		long records=0;
-		try
-		{
-			while (enumr.hasMore()){
-				records++;
-				SearchResult result = (SearchResult)enumr.next();
-				name = result.getNameInNamespace();
-				name = tparser.specialClean(name);
-				rname = result.getName();
-				rname = tparser.specialClean(rname);
-				sname = tparser.getMyName(rname);
-				StringBuffer pname=new StringBuffer(rname);
-				pname.append(",");
-				pname.append(alarmInitialRoot);
-				if (connection.lookup(pname.toString())!=null){
-					attbs = connection.getAttributes(pname.toString());
-					Attribute severityat = attbs.get("epicsAlarmSeverity");
-					Attribute statusat=attbs.get("epicsAlarmStatus");
-					Attribute highun = attbs.get("epicsAlarmHighUnAckn");
-					//only getName gives you name without 'o=DESY, c=DE'
-					String severity = (String) severityat.get();
-					String unseverity;
-					if (highun==null){unseverity = "";}
-					else {unseverity = (String)highun.get();}
-					if (!(severity.equals("NO_ALARM")) && !(severity.equals(""))){
-						int sever = 0;
-						props = new Hashtable<String,String>();
-						if (severity.equals("MAJOR")){sever =7;}
-						if (severity.equals("MINOR")){sever =4;}
-						if (severity.equals("INVALID")) {sever=2;}
-						props.put("NAME",sname);
-						props.put("SEVERITY",severity); //suppose there is only one variable
-						props.put("STATUS",(String) statusat.get()); // see above
-						Alarm alm = new Alarm(sever,name);
-						alm.setProperties(props);
-						alm.setName(sname);
-						alm.setUnAcknowledged(false);
-						try {
-							mountPoint.triggerAlarmOnNode(alm);
-						} catch (NodeNotFoundException e) {
-							// TODO Auto-generated catch block
-							System.out.println("Structure doesn't contain "+sname+".");
-						}
-					}
-					if (!(unseverity.equals("NO_ALARM")) && !(unseverity.equals(""))){
-						int unsever=0;
-						if (unseverity.equals("MAJOR")){unsever =7;}
-						if (unseverity.equals("MINOR")){unsever =4;}
-						if (unseverity.equals("INVALID")) {unsever=2;}
-						props = new Hashtable<String,String>();
-						props.put("NAME",sname);
-						props.put("SEVERITY",unseverity);
-						props.put("STATUS",(String) statusat.get()); // see above
-						Alarm alm = new Alarm(unsever,name);
-						alm.setProperties(props);
-						alm.setName(sname);
-						alm.setUnAcknowledged(true);
-						try {
-							mountPoint.triggerAlarmOnNode(alm);
-						} catch (NodeNotFoundException e) {
-							// TODO Auto-generated catch block
-							System.out.println("Structure doesn't contain "+sname+".");
-						}
-					}
-					//populateAlarm(name,rname,props);
-				}
-				else {
-					System.out.println(rname+" cannot be populated!");
-				}
-			}
+	/**
+	 * Evaluates the alarm attributes (if any) of an object found in the
+	 * directory. If there is an alarm, triggers the alarm for the node
+	 * in the alarm tree.
+	 * 
+	 * @param result the object found in the directory.
+	 * @throws NamingException if something bad happens...
+	 */
+	private void evaluateAlarmAttributes(SearchResult result) throws NamingException {
+		String name = result.getNameInNamespace();
+		name = tparser.specialClean(name);
+		
+		String sname = tparser.getMyName(tparser.specialClean(result.getName()));
+		Attributes attrs = result.getAttributes();
+		Attribute severityAttr = attrs.get("epicsAlarmSeverity");
+		Attribute statusAttr = attrs.get("epicsAlarmStatus");
+		Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
+		if (severityAttr != null) {
+			String severity = (String) severityAttr.get();
+			triggerAlarmIfNecessary(severity, name, sname, statusAttr, false);
 		}
-		catch (SizeLimitExceededException exc)
-		{
-			System.out.println("Size limit set on server! Set on:"+records);
-		}
-		finally{
-			enumr.close();
+		else if (highUnAcknAttr != null) {
+			String unseverity = (String) highUnAcknAttr.get();
+			triggerAlarmIfNecessary(unseverity, name, sname, statusAttr, true);
 		}
 	}
 	
-	private synchronized void populateObject(String name,String rname){
+	
+	/**
+	 * Triggers an alarm if the given severity is an alarm severity. The severity
+	 * is an alarm severity if it is not NO_ALARM or the empty string.
+	 * @param severity the severity.
+	 * @param name the name of the object.  // TODO: better documentation, what is it exactly?
+	 * @param sname the sname. // TODO documentation, what is it exactly?
+	 * @param status the status attribute from the directory.
+	 * @param unAcknowledged whether the alarm is unacknowledged.
+	 * @throws NamingException if something goes wrong.
+	 */
+	private void triggerAlarmIfNecessary(String severity, String name, String sname, Attribute status, boolean unAcknowledged) throws NamingException {
+		if (!(severity.equals("NO_ALARM")) && !(severity.equals(""))) {
+			int sever = severityIntValueFromString(severity);
+			Hashtable<String, String> props =
+				alarmProperties(sname, severity, (String) status.get());
+			Alarm alm = 
+				createAlarm(sever, name, sname, props, true);
+			try {
+				mountPoint.triggerAlarmOnNode(alm);
+			} catch (NodeNotFoundException e) {
+				// TODO Auto-generated catch block
+				System.out.println("Structure doesn't contain "+sname+".");
+			}
+		}
+	}
+	
+	
+	/**
+	 * Creates an alarm object.
+	 * @param severity the severity of the alarm.
+	 * @param name the name of the alarm.  // TODO what is it exactly?
+	 * @param sname the sname of the alarm.// TODO what is it exactly?
+	 * @param properties the properties for the alarm.
+	 * @param unAcknowledged whether the alarm is unacknowledged.
+	 * @return
+	 */
+	private Alarm createAlarm(int severity, String name, String sname, Hashtable<String, String> properties, boolean unAcknowledged) {
+		Alarm alarm = new Alarm(severity, name);
+		alarm.setProperties(properties);
+		alarm.setName(sname);
+		alarm.setUnAcknowledged(unAcknowledged);
+		return alarm;
+	}
+	
+	
+	/**
+	 * Returns an integer representation of the severity.
+	 * @param severityString the severity represented as a string value.
+	 * @return the severity represented as an integer value.
+	 */
+	private int severityIntValueFromString(String severityString) {
+		if (severityString.equals("MAJOR")) return 7;
+		if (severityString.equals("MINOR")) return 4;
+		if (severityString.equals("INVALID")) return 2;
+		return 0;
+	}
+	
+	
+	/**
+	 * Creates the properties table that will be attached to an alarm object.
+	 * @param sname the sname TODO: what is it?
+	 * @param severity the alarm severity.
+	 * @param status the alarm status.
+	 * @return the properties for the alarm object.
+	 */
+	private Hashtable<String, String> alarmProperties(String sname, String severity, String status) {
+		Hashtable<String, String> properties = new Hashtable<String, String>();
+		properties.put("NAME", sname);
+		properties.put("SEVERITY", severity);
+		properties.put("STATUS", status);
+		return properties;
+	}
+	
+	private void populateObject(String name,String rname){
 		populateObject(name,rname,mountPoint);
 	}
 	
-	private synchronized void populateObject(String name,String rname,ContextTreeParent subRoot){
+	private void populateObject(String name,String rname,ContextTreeParent subRoot){
 		Hashtable<String,String> nameMap = mountPoint.getNameMap();
 		Hashtable<String,ContextTreeObject> tree = mountPoint.getTree();
 		if (!tree.containsKey(rname)){
@@ -308,8 +327,11 @@ public class CachingThread extends Job {
 	public IStatus run(IProgressMonitor monitor){
 		monitor.beginTask("Initializing Alarm Tree", IProgressMonitor.UNKNOWN);
 		try {
+			long tStart = System.currentTimeMillis();
 			monitor.subTask("Connecting");
 			initializeConnection();
+			long tInitialized = System.currentTimeMillis();
+			System.out.printf("Connecting:     %5dms", (tInitialized - tStart));
 			
 			monitor.subTask("Building tree");
 			int l = structureRoots.length;
@@ -317,9 +339,13 @@ public class CachingThread extends Job {
 				System.out.println(structureRoots[i]);
 				populateSubTree(structureRoots[i]);
 			}
+			long tTreeBuilt = System.currentTimeMillis();
+			System.out.printf("Reading tree:   %5dms", (tTreeBuilt - tInitialized));
 			
 			monitor.subTask("Initializing alarm states");
-			populateAlarms();
+			//populateAlarms();
+			long tAlarmInitialized = System.currentTimeMillis();
+			System.out.printf("Reading alarms: %5dms", (tAlarmInitialized - tTreeBuilt));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -329,15 +355,17 @@ public class CachingThread extends Job {
 				IStatus.OK, "Finished initializing alarm tree", null);
 	}
 	
+	// TODO: this should probably be done after reading the tree... we don't need
+	// to keep the connection open all the time
 	public void resetConnection(){
-		if (connection != null)
+		if (directory != null)
 			try {
-				connection.close();
+				directory.close();
 			} catch (NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		connection = null;
+		directory = null;
 	}
 	
 }
