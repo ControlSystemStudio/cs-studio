@@ -138,7 +138,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	/**
 	 * The default value of the fill grade property.
 	 */
-	private static final double DEFAULT_FILL = 25;
+	private static final double DEFAULT_FILL = 0.25;
 	
 	/**
 	 * The default value of the orientation property.
