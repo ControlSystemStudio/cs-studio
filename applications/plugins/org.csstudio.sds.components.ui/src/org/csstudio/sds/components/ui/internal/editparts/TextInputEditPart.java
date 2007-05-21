@@ -21,6 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -85,6 +86,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		label.setText(model.getInputText());
 		label.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont()));
+		label.setTextAlignment(model.getTextAlignment());
 
 		label.addMouseListener(new MouseListener() {
 			public void mouseDoubleClicked(final MouseEvent me) {
@@ -313,5 +315,16 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(TextInputModel.PROP_FONT, fontHandler);
+		// text alignment
+		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+				label.setTextAlignment((Integer)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 	}
 }

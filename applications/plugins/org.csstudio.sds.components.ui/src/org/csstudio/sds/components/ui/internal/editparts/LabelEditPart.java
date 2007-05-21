@@ -46,10 +46,9 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
 		label.setText(model.getLabel());
-		label
-				.setFont(CustomMediaFactory.getInstance().getFont(
+		label.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont()));
-
+		label.setTextAlignment(model.getTextAlignment());
 		return label;
 	}
 
@@ -83,6 +82,16 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
-
+		// text alignment
+		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IRefreshableFigure refreshableFigure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+				label.setTextAlignment((Integer)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 	}
 }

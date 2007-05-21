@@ -25,6 +25,7 @@ import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 
@@ -46,6 +47,11 @@ public final class RefreshableLabelFigure extends Label implements
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
+
+	/**
+	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
+	 */
+	private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
 	
 	/**
 	 * Constructor.
@@ -75,6 +81,21 @@ public final class RefreshableLabelFigure extends Label implements
 	@Override
 	public void setText(final String s) {
 		super.setText(s);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setTextAlignment(final int alignment) {
+		if (alignment>=0 && alignment<_alignments.length) {
+			if (_alignments[alignment]==PositionConstants.LEFT || _alignments[alignment]==PositionConstants.RIGHT) {
+				super.setTextPlacement(PositionConstants.NORTH);
+			} else {
+				super.setTextPlacement(PositionConstants.EAST);
+			}
+			super.setTextAlignment(_alignments[alignment]);
+		}
 	}
 	
 	/**

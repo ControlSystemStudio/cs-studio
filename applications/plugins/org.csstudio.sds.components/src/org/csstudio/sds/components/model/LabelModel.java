@@ -25,6 +25,7 @@ import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.FontProperty;
+import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -46,6 +47,11 @@ public final class LabelModel extends AbstractWidgetModel {
 	 * The ID of the font property.
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the text alignment property.
+	 */
+	public static final String PROP_TEXT_ALIGNMENT = "text_alignment";
 
 	/**
 	 * The ID of this widget model.
@@ -61,6 +67,16 @@ public final class LabelModel extends AbstractWidgetModel {
 	 * The default value of the width property.
 	 */
 	private static final int DEFAULT_WIDTH = 80;
+	
+	/**
+	 * The default value of the text alignment property.
+	 */
+	private static final int DEFAULT_TEXT_ALIGNMENT = 0;
+	
+	/**
+	 * The labels for the text alignment property.
+	 */
+	private static final String[] SHOW_LABELS = new String[] {"Center", "Top", "Bottom", "Left", "Right"};
 
 	/**
 	 * Standard constructor.
@@ -86,6 +102,8 @@ public final class LabelModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
 		addProperty(PROP_FONT, new FontProperty("Font",
 				WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
+		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
+				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
 	}
 
 	/**
@@ -120,5 +138,14 @@ public final class LabelModel extends AbstractWidgetModel {
 	 */
 	public FontData getFont() {
 		return (FontData) getProperty(PROP_FONT).getPropertyValue();
+	}
+	
+	/**
+	 * Gets, if the marks should be shown or not.
+	 * @return int
+	 * 				0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
+	 */
+	public int getTextAlignment() {
+		return (Integer) getProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
 	}
 }
