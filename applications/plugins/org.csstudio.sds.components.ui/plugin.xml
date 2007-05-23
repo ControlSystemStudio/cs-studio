@@ -35,7 +35,10 @@
            typeId="element.waveform"/>
      <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.BargraphEditPart"
-           typeId="element.bargraph"/>           
+           typeId="element.bargraph"/>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.ActionButtonEditPart"
+           typeId="element.actionbutton"/>           
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">

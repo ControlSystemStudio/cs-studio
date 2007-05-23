@@ -68,7 +68,13 @@
             description="Bargraph"
             icon="icons/bargraph.gif"
             name="Bargraph"
-            typeId="element.bargraph"/>            
+            typeId="element.bargraph"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.ActionButtonModelFactory"
+            description="Action Button"
+            icon="icons/polygon.gif"
+            name="Action Button"
+            typeId="element.actionbutton"/>            
    </extension>
 
 </plugin>

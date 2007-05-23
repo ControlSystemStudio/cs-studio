@@ -26,6 +26,7 @@ import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigur
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.eclipse.draw2d.IFigure;
 
 /**
  * EditPart controller for the Rectangle widget. The controller mediates between
@@ -60,7 +61,7 @@ public final class RectangleEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) refreshableFigure;
 				rectangle.setFill((Double) newValue);
 				return true;
@@ -71,7 +72,7 @@ public final class RectangleEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) refreshableFigure;
 				rectangle.setOrientation((Boolean) newValue);
 				return true;

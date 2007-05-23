@@ -27,6 +27,7 @@ import org.csstudio.sds.components.ui.internal.figures.RefreshablePolygonFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.gef.EditPart;
 
@@ -61,7 +62,7 @@ public final class PolygonEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) refreshableFigure;
 				polygon.setFill((Double) newValue);
 				return true;
@@ -73,7 +74,7 @@ public final class PolygonEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler pointsHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshablePolygonFigure polygon = (RefreshablePolygonFigure) refreshableFigure;
 				PointList points = (PointList) newValue;
 				polygon.setPoints(points);

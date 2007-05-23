@@ -30,6 +30,7 @@ import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -102,7 +103,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler valHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				slider.setValue((Double) newValue);
@@ -117,7 +118,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				//slider.setMin((Integer) newValue);
@@ -132,7 +133,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				//slider.setMax((Integer) newValue);
@@ -147,7 +148,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				//slider.setIncrement((Integer) newValue);
@@ -162,7 +163,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				slider.setDecimalPlaces((Integer) newValue);
@@ -176,7 +177,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler showValueAsTextHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setShowValueAsText((Boolean)newValue);
 				return true;
@@ -188,7 +189,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler minSliderWideHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				slider.setSliderWide((Integer) newValue);
@@ -202,7 +203,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
 				

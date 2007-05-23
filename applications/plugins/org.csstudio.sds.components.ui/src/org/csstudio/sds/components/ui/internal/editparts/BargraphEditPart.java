@@ -26,6 +26,7 @@ import org.csstudio.sds.components.ui.internal.figures.RefreshableBargraphFigure
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -81,7 +82,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setFill((Double) newValue);
 				return true;
@@ -92,7 +93,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setOrientation((Boolean) newValue);
 				return true;
@@ -108,7 +109,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler showValuesHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setShowValues((Boolean) newValue);
 				return true;
@@ -120,7 +121,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler showMarksHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setShowMarks((Integer) newValue);
 				return true;
@@ -132,7 +133,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler showScaleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setShowScale((Integer) newValue);
 				return true;
@@ -144,7 +145,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler scaleCountHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setScaleSectionCount((Integer) newValue);
 				return true;
@@ -161,7 +162,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler loloColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setLoloColor((RGB) newValue);
 				return true;
@@ -172,7 +173,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler loColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setLoColor((RGB) newValue);
 				return true;
@@ -182,7 +183,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler mColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setMColor((RGB) newValue);
 				return true;
@@ -192,7 +193,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler hiColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setHiColor((RGB) newValue);
 				return true;
@@ -202,7 +203,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler hihiColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setHihiColor((RGB) newValue);
 				return true;
@@ -213,7 +214,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler defaultFillColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setDefaultFillColor((RGB) newValue);
 				return true;
@@ -230,7 +231,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler minimumHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setMinimum((Double) newValue);
 				return true;
@@ -241,7 +242,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler loloHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setLoloLevel((Double) newValue);
 
@@ -252,7 +253,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler loHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setLoLevel((Double) newValue);
 				return true;
@@ -262,7 +263,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler mHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setMLevel((Double) newValue);
 				return true;
@@ -272,7 +273,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler hiHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setHiLevel((Double) newValue);
 				return true;
@@ -282,7 +283,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler hihiHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setHihiLevel((Double) newValue);
 				return true;
@@ -292,7 +293,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler maximumHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
 				bargraph.setMaximum((Double) newValue);
 				return true;

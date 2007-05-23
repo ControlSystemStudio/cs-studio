@@ -26,6 +26,7 @@ import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.eclipse.draw2d.IFigure;
 
 /**
  * EditPart controller for the Ellipse widget. The controller mediates between
@@ -60,7 +61,7 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) refreshableFigure;
 				ellipse.setFill((Double) newValue);
 				return true;
@@ -71,7 +72,7 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) refreshableFigure;
 				ellipse.setOrientation((Boolean) newValue);
 				return true;

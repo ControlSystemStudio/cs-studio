@@ -23,8 +23,14 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.draw2d.AbstractBorder;
+import org.eclipse.draw2d.Border;
+import org.eclipse.draw2d.ButtonBorder;
+import org.eclipse.draw2d.FocusBorder;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.SchemeBorder;
+import org.eclipse.draw2d.SimpleEtchedBorder;
 import org.eclipse.swt.graphics.Color;
 
 /**
@@ -97,17 +103,10 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 	private void refreshBorder() {
 		if (_borderWidth > 0) {
 			LineBorder border = new LineBorder();
+
 			border.setWidth(_borderWidth);
 			border.setColor(_borderColor);
-			switch (_borderStyle) {
-
-			case 0:
-				// TODO: Vary Border Style !
-				break;
-			default:
-				// TODO: Vary Border Style !
-				break;
-			}
+			// TODO: Vary Border Style !
 			_figure.setBorder(border);
 		} else {
 			_figure.setBorder(null);

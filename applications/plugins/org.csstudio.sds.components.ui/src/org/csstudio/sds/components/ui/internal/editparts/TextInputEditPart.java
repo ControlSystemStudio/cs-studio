@@ -30,6 +30,7 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -293,7 +294,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
 				label.setText((String) newValue);
 				return true;
@@ -305,7 +306,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
 				FontData fontData = (FontData) newValue;
 				label.setFont(CustomMediaFactory.getInstance().getFont(
@@ -319,7 +320,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
 				label.setTextAlignment((Integer)newValue);
 				return true;

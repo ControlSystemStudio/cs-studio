@@ -21,36 +21,45 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.draw2d.ActionEvent;
+import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
 
 /**
- * EditPart controller for the Label widget. The controller mediates between
- * {@link LabelModel} and {@link RefreshableLabelFigure}.
+ * EditPart controller for the ActioButton widget. The controller mediates
+ * between {@link ActionButtonModel} and {@link RefreshableActionButtonFigure}.
  * 
- * @author Stefan Hofer & Sven Wende
+ * @author Sven Wende
  * 
  */
-public final class LabelEditPart extends AbstractWidgetEditPart {
+public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		LabelModel model = (LabelModel) getCastedModel();
+		ActionButtonModel model = (ActionButtonModel) getCastedModel();
 
-		RefreshableLabelFigure label = new RefreshableLabelFigure();
-		label.setText(model.getLabel());
-		label.setFont(CustomMediaFactory.getInstance().getFont(
-						model.getFont()));
-		label.setTextAlignment(model.getTextAlignment());
-		return label;
+		RefreshableActionButtonFigure button = new RefreshableActionButtonFigure();
+		button.setText(model.getLabel());
+		button.setFont(CustomMediaFactory.getInstance()
+				.getFont(model.getFont()));
+		return button;
+	}
+
+	protected RefreshableActionButtonFigure getCastedFigure() {
+		return (RefreshableActionButtonFigure) getFigure();
 	}
 
 	/**
@@ -58,13 +67,36 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		//
+		RefreshableActionButtonFigure figure = getCastedFigure();
+		figure.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				CentralLogger.getInstance().info(this, "KLICK");
+				ActionButtonModel model = (ActionButtonModel) getCastedModel();
+				
+				switch(model.getAction()) {
+				case 0:
+					RunModeService.getInstance().openDisplayShellInRunMode(new Path( model.getResource()));
+					break;
+				case 1:
+					RunModeService.getInstance().openDisplayViewInRunMode(new Path( model.getResource()));
+					break;
+				default:
+					// do nothing
+					CentralLogger.getInstance().info(this, "Clicked!");
+				}
+				
+				
+			}
+		});
+
 		// label
 		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setText(newValue.toString());
+				RefreshableActionButtonFigure figure = getCastedFigure();
+				figure.setText(newValue.toString());
 				return true;
 			}
 		};
@@ -74,25 +106,14 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+				RefreshableActionButtonFigure figure = getCastedFigure();
 				FontData fontData = (FontData) newValue;
-				label.setFont(CustomMediaFactory.getInstance().getFont(
+				figure.setFont(CustomMediaFactory.getInstance().getFont(
 						fontData.getName(), fontData.getHeight(),
 						fontData.getStyle()));
 				return true;
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
-		// text alignment
-		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setTextAlignment((Integer)newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 	}
 }

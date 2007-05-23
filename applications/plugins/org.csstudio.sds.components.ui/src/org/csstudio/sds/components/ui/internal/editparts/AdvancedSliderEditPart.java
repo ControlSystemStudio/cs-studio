@@ -29,6 +29,7 @@ import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -96,7 +97,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler valHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
 				slider.setValue((Integer) newValue);
 				return true;
@@ -108,7 +109,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
 				slider.setMin((Integer) newValue);
 				return true;
@@ -120,7 +121,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
 				slider.setMax((Integer) newValue);
 				return true;
@@ -132,7 +133,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
 				slider.setIncrement((Integer) newValue);
 				return true;
@@ -144,7 +145,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				AdvancedSliderFigure slider = (AdvancedSliderFigure) refreshableFigure;
 
 				int orientation = (Integer) newValue;

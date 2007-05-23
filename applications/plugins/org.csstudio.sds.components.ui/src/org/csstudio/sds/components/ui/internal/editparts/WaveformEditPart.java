@@ -27,6 +27,7 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -73,7 +74,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setMax((Double)newValue);
 				return true;
@@ -84,7 +85,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setMin((Double)newValue);
 				return true;
@@ -95,7 +96,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setAutoScale((Boolean)newValue);
 				return true;
@@ -106,7 +107,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setData((double[]) newValue);
 				return true;
@@ -117,7 +118,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler showValuesHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setShowValues((Boolean) newValue);
 				return true;
@@ -128,7 +129,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler ledgerLinesHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setShowLedgerlLines((Integer) newValue);
 				return true;
@@ -139,7 +140,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler scaleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setShowScale((Integer) newValue);
 				return true;
@@ -150,7 +151,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler ySectionHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setYSectionCount((Integer) newValue);
 				return true;
@@ -161,7 +162,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler xSectionHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setXSectionCount((Integer) newValue);
 				return true;
@@ -172,7 +173,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler connectionLinesHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setShowConnectionLines((Boolean) newValue);
 				return true;
@@ -183,7 +184,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler lineWidthHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setGraphLineWidth((Integer) newValue);
 				return true;
@@ -201,7 +202,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler graphColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setGraphColor((RGB) newValue);
 				return true;
@@ -212,7 +213,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler connectionColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setConnectionLineColor((RGB) newValue);
 				return true;
@@ -223,7 +224,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler ledgerColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
 				figure.setLedgerLineColor((RGB) newValue);
 				return true;

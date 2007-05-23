@@ -26,6 +26,7 @@ import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.eclipse.draw2d.IFigure;
 
 /**
  * EditPart controller for the Meter widget. The controller mediates between
@@ -65,7 +66,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
-					final IRefreshableFigure refreshableFigure) {
+					final IFigure refreshableFigure) {
 				RefreshableMeterFigure meter = (RefreshableMeterFigure) refreshableFigure;
 				meter.setValue((Double) newValue);
 				return true;
