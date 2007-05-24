@@ -52,9 +52,10 @@ public class CachingThread extends Job {
 	//subtrees chosen in preferences page - which needs to be retrieved
 	protected String[] structureRoots;
 	
-	//hard coded root for structure and alarm initialization - it will probably become a CSS convention - but this needs to be changed in case of different directory structure protocol
-	public static final String alarmCfgRoot="ou=EpicsAlarmCfg";
-	public static final String alarmInitialRoot="ou=EpicsAlarmCfg";//"ou=EpicsControls";
+	// hard coded root for structure and alarm initialization - it will
+	// probably become a CSS convention - but this needs to be changed
+	// in case of different directory structure protocol
+	private static final String ALARM_ROOT = "ou=EpicsAlarmCfg";
 	
 	/**
 	 * Creates a new CachingThread instance.
@@ -117,7 +118,7 @@ public class CachingThread extends Job {
 	 */
 	private void populateSubTree(String efan) throws NamingException {
 		// build dn of the efan object below which we want to search
-		String searchRootDN = "efan=" + efan + "," + alarmCfgRoot;
+		String searchRootDN = "efan=" + efan + "," + ALARM_ROOT;
 
 		SearchControls ctrl = new SearchControls();
 		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -327,11 +328,8 @@ public class CachingThread extends Job {
 	public IStatus run(IProgressMonitor monitor){
 		monitor.beginTask("Initializing Alarm Tree", IProgressMonitor.UNKNOWN);
 		try {
-			long tStart = System.currentTimeMillis();
 			monitor.subTask("Connecting");
 			initializeConnection();
-			long tInitialized = System.currentTimeMillis();
-			System.out.printf("Connecting:     %5dms", (tInitialized - tStart));
 			
 			monitor.subTask("Building tree");
 			int l = structureRoots.length;
@@ -339,13 +337,7 @@ public class CachingThread extends Job {
 				System.out.println(structureRoots[i]);
 				populateSubTree(structureRoots[i]);
 			}
-			long tTreeBuilt = System.currentTimeMillis();
-			System.out.printf("Reading tree:   %5dms", (tTreeBuilt - tInitialized));
-			
-			monitor.subTask("Initializing alarm states");
-			//populateAlarms();
-			long tAlarmInitialized = System.currentTimeMillis();
-			System.out.printf("Reading alarms: %5dms", (tAlarmInitialized - tTreeBuilt));
+			closeConnection();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -355,9 +347,10 @@ public class CachingThread extends Job {
 				IStatus.OK, "Finished initializing alarm tree", null);
 	}
 	
-	// TODO: this should probably be done after reading the tree... we don't need
-	// to keep the connection open all the time
-	public void resetConnection(){
+	/**
+	 * Closes the connection to the directory.
+	 */
+	private void closeConnection(){
 		if (directory != null)
 			try {
 				directory.close();
