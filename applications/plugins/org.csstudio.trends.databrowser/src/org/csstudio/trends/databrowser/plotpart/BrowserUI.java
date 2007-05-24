@@ -178,12 +178,12 @@ public class BrowserUI extends Composite
         if (scroll_enable)
         {
             scroll_pause.setImage(images.get(SCROLL_ON));
-            scroll_pause.setToolTipText(Messages.StopScroll);
+            scroll_pause.setToolTipText(Messages.StopScroll_TT);
         }
         else
         {
             scroll_pause.setImage(images.get(SCROLL_OFF));
-            scroll_pause.setToolTipText(Messages.StartScroll);
+            scroll_pause.setToolTipText(Messages.StartScroll_TT);
         }
     }
 }

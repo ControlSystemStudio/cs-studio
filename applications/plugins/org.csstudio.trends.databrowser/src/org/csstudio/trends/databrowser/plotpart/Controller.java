@@ -1,4 +1,4 @@
-package org.csstudio.trends.databrowser;
+package org.csstudio.trends.databrowser.plotpart;
 
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
@@ -11,10 +11,10 @@ import org.csstudio.swt.chart.Trace;
 import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisListener;
+import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
-import org.csstudio.trends.databrowser.plotpart.BrowserUI;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.eclipse.swt.dnd.DropTargetEvent;
 

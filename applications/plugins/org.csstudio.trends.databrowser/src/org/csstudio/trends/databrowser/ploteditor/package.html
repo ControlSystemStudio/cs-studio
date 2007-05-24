@@ -1,22 +1,5 @@
 <body>
-The 'Plot' is the main user interface of the data browser.
-<p>
-It displays the data in a plot, so it's probably what the user
-views most, while other 'views' allow configuration of colors
-etc.
-<p>
-So one would probably consider this plot a 'view', while the
-other windows actually 'edit' the data browser model.
-But in the Eclipse environment, an 'editor' is used for the plot,
-because that way we can associate a plot with a config file, and have more than
-one plot open. You can open and close the config windows, but when trying
-to close the plot window for a modified configuration, Eclipse prompts
-with a "Do you want to save?" dialog.
-<p>
-The windows used to change colors, remove channels,
-configure archive etc. could be considered 'editors',
-because they modify the configuration of the data browser.
-But since they don't actually hold the configuration,
-only provide a 'view with write access' to the configuration
-in the plot editor, they are eclipse 'views'.
+The 'Plot Editor' displays the plot in an Eclipse editor,
+so that one can save it in the original or a new resource
+(file), configure it via the config view etc.
 </body>

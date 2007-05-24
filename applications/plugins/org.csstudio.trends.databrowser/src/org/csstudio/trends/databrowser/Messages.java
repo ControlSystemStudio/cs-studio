@@ -8,12 +8,6 @@ public class Messages extends NLS
 
     public static String DataBrowser;
 
-    public static String Fetch_Archive;
-
-    public static String FetchDataForPV;
-
-    public static String FetchingSample;
-
     public static String AddPV;
 
     public static String AddPV_TT;
@@ -22,9 +16,6 @@ public class Messages extends NLS
 
     public static String EnterNewPVName;
 
-    public static String UnitMarkerEnd;
-
-    public static String UnitMarkerStart;
     
     public static String ErrorMessageTitle;
     

@@ -3,7 +3,6 @@ package org.csstudio.trends.databrowser.plotpart;
 import java.io.InputStream;
 
 import org.csstudio.swt.chart.Chart;
-import org.csstudio.trends.databrowser.Controller;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.widgets.Composite;

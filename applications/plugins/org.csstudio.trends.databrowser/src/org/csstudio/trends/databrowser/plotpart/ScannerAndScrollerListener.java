@@ -1,4 +1,4 @@
-package org.csstudio.trends.databrowser;
+package org.csstudio.trends.databrowser.plotpart;
 
 /** Notification interface of the ScannerAndScroller
  *  @author Kay Kasemir

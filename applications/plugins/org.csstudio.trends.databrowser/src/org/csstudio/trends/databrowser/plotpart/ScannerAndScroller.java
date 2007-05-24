@@ -1,8 +1,7 @@
-package org.csstudio.trends.databrowser;
+package org.csstudio.trends.databrowser.plotpart;
 
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.trends.databrowser.plotpart.BrowserUI;
 
 /** Perform periodic 'scans' of the model, and redraw the UI.
  *  <p>

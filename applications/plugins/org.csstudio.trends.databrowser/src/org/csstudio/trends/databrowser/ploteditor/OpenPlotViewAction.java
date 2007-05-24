@@ -16,7 +16,7 @@ public class OpenPlotViewAction extends Action
      */
     public OpenPlotViewAction(PlotEditor editor)
     {
-        super("View", // TODO externalize
+        super(Messages.OpenAsView,
               Plugin.getImageDescriptor("icons/chart.gif")); //$NON-NLS-1$
         this.editor = editor;
     }
