@@ -105,9 +105,9 @@ public final class PlatformPreferencesInitializer extends
 				"org.apache.log4j.PatternLayout"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_JMS_PATTERN,
 				"%d{ISO8601} %-5p [%t] %c: %m%n"); //$NON-NLS-1$
-		node.put(CentralLogger.PROP_LOG4J_JMS_URL, "rmi://localhost:1099"); //$NON-NLS-1$
+		node.put(CentralLogger.PROP_LOG4J_JMS_URL, "failover:(tcp://elogbook.desy.de:61616,tcp://krynfs.desy.de:61616)?maxReconnectDelay=2000"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_JMS_ICFN,
-				"org.exolab.jms.jndi.InitialContextFactory"); //$NON-NLS-1$
+				"org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_JMS_TCFBN, "ConnectionFactory"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_JMS_TOPIC, "LOG"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_JMS_USER, ""); //$NON-NLS-1$
