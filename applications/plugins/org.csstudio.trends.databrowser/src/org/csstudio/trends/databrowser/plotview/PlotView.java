@@ -15,19 +15,25 @@ import org.eclipse.ui.part.ViewPart;
  *  <p>
  *  Displays the plot.
  *  
- *  TODO multiple views
  *  TODO remove marker menu
  *  TODO handle 'drop'
- *  TODO consolidate messages
  *  
  *  @author Kay Kasemir
  */
 public class PlotView extends ViewPart
 {
+    /** View ID registered in plugin.xml as org.eclipse.views ID */
     public static final String ID = PlotView.class.getName();
     
+    /** The underlying plot part. */
     private final PlotPart plot = new PlotPart();
 
+    /** Instance counter used to create the "secondary ID"
+     *  that's required to support multiple views of the same type.
+     */
+    private static long instance = 0;
+    
+    /** Create another instance of the PlotView for the given file. */
     public static boolean activateWithFile(IFile file)
     {
         try
@@ -35,7 +41,10 @@ public class PlotView extends ViewPart
             IWorkbench workbench = PlatformUI.getWorkbench();
             IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
             IWorkbenchPage page = window.getActivePage();
-            PlotView view = (PlotView) page.showView(PlotView.ID);
+            ++instance;
+            PlotView view = (PlotView) page.showView(PlotView.ID,
+                            String.format("Plot%d", instance), //$NON-NLS-1$
+                            IWorkbenchPage.VIEW_ACTIVATE);
             view.init(file);
             return true;
         }
@@ -47,23 +56,27 @@ public class PlotView extends ViewPart
         return false;
     }
 
+    /** Load the given file into this view. */
     public void init(IFile file) throws PartInitException
     {
         plot.init(file);
     }
     
+    /** {@inheritDoc} */
     @Override
     public void createPartControl(Composite parent)
     {
         plot.createPartControl(parent);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setFocus()
     {
         plot.setFocus();
     }
 
+    /** Assert proper cleanup. */
     @Override
     public void dispose()
     {

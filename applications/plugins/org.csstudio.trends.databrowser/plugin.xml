@@ -71,10 +71,11 @@
             icon="icons/chart.gif"
             name="%DatabrowserExport"/>
       <view
+            allowMultiple="true"
             category="org.csstudio"
-            id="org.csstudio.trends.databrowser.plotview.PlotView"
             class="org.csstudio.trends.databrowser.plotview.PlotView"
             icon="icons/chart.gif"
+            id="org.csstudio.trends.databrowser.plotview.PlotView"
             name="%DatabrowserPlotView"/>
    </extension>
    <extension
