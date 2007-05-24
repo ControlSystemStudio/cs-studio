@@ -13,8 +13,6 @@ import java.util.Vector;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
-import org.exolab.jms.message.MapMessageImpl;
-
 public class JMSAlarmMessageList extends JMSMessageList {
 
 	public JMSAlarmMessageList(String[] propNames) {

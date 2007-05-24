@@ -24,7 +24,6 @@ package org.csstudio.alarm.table;
 
 import java.util.Vector;
 
-import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -34,7 +33,6 @@ import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
-import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.csstudio.platform.libs.jms.MessageReceiver;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
@@ -49,7 +47,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
-import org.exolab.jms.message.MapMessageImpl;
 
 /**
  * Simple view more like console, used to write log messages
@@ -146,8 +143,8 @@ public class LogView extends ViewPart implements MessageListener {
 		}
 		try{
 			receiver2 = new MessageReceiver(
-					JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY),
-					JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.SECONDARY_URL),
+					JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY),
+					JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.SECONDARY_URL),
 					queues);
 			receiver2.startListener(this);
 		} catch (Exception e) {

@@ -12,7 +12,7 @@ import java.util.Vector;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
-import org.exolab.jms.message.MapMessageImpl;
+import org.apache.activemq.command.ActiveMQMapMessage;
 
 public class JMSMessageList {
 
@@ -90,11 +90,8 @@ public class JMSMessageList {
 	
 	public MapMessage hashMap2mapMessage(HashMap<String, String> message) {
 		MapMessage mm = null;
-		try {
-			mm = new MapMessageImpl();
-		} catch (JMSException e1) {
-			e1.printStackTrace();
-		}
+		
+		mm = new ActiveMQMapMessage();
 		Set<String> lst = message.keySet();
 		Iterator<String> it = lst.iterator();
 		while(it.hasNext()) {

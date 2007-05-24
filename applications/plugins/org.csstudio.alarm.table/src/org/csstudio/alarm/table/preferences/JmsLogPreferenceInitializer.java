@@ -48,6 +48,19 @@ public class JmsLogPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(JmsLogPreferenceConstants.VALUE7,"NOT DEFINED");
 		store.setDefault(JmsLogPreferenceConstants.VALUE8,"NOT DEFINED");
 		store.setDefault(JmsLogPreferenceConstants.VALUE9,"NOT DEFINED");
+		/*
+		 * TODO
+		 * is this code used anywhere?
+		 *
+		 *then we should use this...
+		 *
+		store.setDefault(LogViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, "org.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.PRIMARY_URL, "tcp://elogbook.desy.de:61616"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, "org.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.SECONDARY_URL, "tcp://krynfs.desy.de:61616"); //$NON-NLS-1$
+		 *
+		 *instead of this...
+		 */
 		store.setDefault(JmsLogPreferenceConstants.INITIAL_CONTEXT_FACTORY, "org.exolab.jms.jndi.InitialContextFactory"); //$NON-NLS-1$
 		store.setDefault(JmsLogPreferenceConstants.URL, "rmi://krykelog.desy.de:1099/"); //$NON-NLS-1$
 		store.setDefault(JmsLogPreferenceConstants.QUEUE, "LOG"); //$NON-NLS-1$

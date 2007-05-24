@@ -37,12 +37,12 @@ public class AlarmViewerPreferenceInitializer extends AbstractPreferenceInitiali
 				"DESTINATION"
 		);
 
-		store.setDefault(AlarmViewerPreferenceConstants.MAX, 100);
+		store.setDefault(AlarmViewerPreferenceConstants.MAX, 200);
 		store.setDefault(AlarmViewerPreferenceConstants.REMOVE, 10);
-		store.setDefault(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, "org.exolab.jms.jndi.InitialContextFactory"); //$NON-NLS-1$
-		store.setDefault(AlarmViewerPreferenceConstants.PRIMARY_URL, "rmi://krykelog.desy.de:1099/"); //$NON-NLS-1$
-		store.setDefault(AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, "org.exolab.jms.jndi.InitialContextFactory"); //$NON-NLS-1$
-		store.setDefault(AlarmViewerPreferenceConstants.SECONDARY_URL, "rmi://krynfs.desy.de:1099/"); //$NON-NLS-1$
+		store.setDefault(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
+		store.setDefault(AlarmViewerPreferenceConstants.PRIMARY_URL, "tcp://elogbook.desy.de:61616"); //$NON-NLS-1$
+		store.setDefault(AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
+		store.setDefault(AlarmViewerPreferenceConstants.SECONDARY_URL, "tcp://krynfs.desy.de:61616"); //$NON-NLS-1$
 		store.setDefault(AlarmViewerPreferenceConstants.QUEUE, "ALARM");
 	}
 

@@ -1,6 +1,7 @@
 package org.csstudio.alarm.table.preferences;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.platform.libs.jms.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -36,12 +37,12 @@ public class LogViewerPreferenceInitializer extends AbstractPreferenceInitialize
 				"DESTINATION" //$NON-NLS-1$
 		);
 
-		store.setDefault(LogViewerPreferenceConstants.MAX, 100);
+		store.setDefault(LogViewerPreferenceConstants.MAX, 200);
 		store.setDefault(LogViewerPreferenceConstants.REMOVE, 10);
-		store.setDefault(LogViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, "org.exolab.jms.jndi.InitialContextFactory"); //$NON-NLS-1$
-		store.setDefault(LogViewerPreferenceConstants.PRIMARY_URL, "rmi://krykelog.desy.de:1099/"); //$NON-NLS-1$
-		store.setDefault(LogViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, "org.exolab.jms.jndi.InitialContextFactory"); //$NON-NLS-1$
-		store.setDefault(LogViewerPreferenceConstants.SECONDARY_URL, "rmi://krynfs.desy.de:1099/"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.PRIMARY_URL, "tcp://elogbook.desy.de:61616"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.SECONDARY_URL, "tcp://krynfs.desy.de:61616"); //$NON-NLS-1$
 		store.setDefault(LogViewerPreferenceConstants.QUEUE, "LOG,ALARM,PUT_LOG"); //$NON-NLS-1$
 }
 
