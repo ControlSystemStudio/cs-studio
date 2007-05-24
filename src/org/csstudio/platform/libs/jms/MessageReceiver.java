@@ -88,7 +88,12 @@ public class MessageReceiver {
         //
         receiver = new MessageConsumer[queues.length];
         for (int i=0;i<queues.length;i++){
-        	destination = (Topic)context.lookup(queues[i]);
+        	/*
+        	 * changed from OpenJMS to ActiveMQ
+        	 * MCL 2007-05-23
+        	 */
+        	//destination = (Topic)context.lookup(queues[i]);
+        	destination = session.createTopic(queues[i]);
         	receiver[i] = session.createConsumer(destination);
         	receiver[i].setMessageListener(listener);
         }
