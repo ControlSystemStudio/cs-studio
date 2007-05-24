@@ -514,49 +514,37 @@ public class Model
             stop();
         disposeItems();
 
-        Exception error = null;
-        double scan = 1.0, update = 0.1;
-        try
+        // Check if it's a <databrowser/>.
+        doc.getDocumentElement().normalize();
+        Element root_node = doc.getDocumentElement();
+        final String root_name = root_node.getNodeName();
+        if (!root_name.equals("databrowser")) 
+            throw new Exception("Expected <databrowser>, found <" + root_name
+                    + ">");
+        // Get the period entries
+        start_specification = DOMHelper.getSubelementString(root_node, "start");
+        end_specification = DOMHelper.getSubelementString(root_node, "end");
+        if (start_specification.length() < 1  ||
+            end_specification.length() < 1)
         {
-            // Check if it's a <databrowser/>.
-            doc.getDocumentElement().normalize();
-            Element root_node = doc.getDocumentElement();
-            String root_name = root_node.getNodeName();
-            if (!root_name.equals("databrowser")) 
-                throw new Exception("Expected <databrowser>, found <" + root_name
-                        + ">");
-            // Get the period entries
-            start_specification = DOMHelper.getSubelementString(root_node, "start");
-            end_specification = DOMHelper.getSubelementString(root_node, "end");
-            if (start_specification.length() < 1  ||
-                end_specification.length() < 1)
+            start_specification = DEFAULT_START_SPEC;
+            end_specification = DEFAULT_END_SPEC;
+        }
+        double scan = DOMHelper.getSubelementDouble(root_node, "scan_period");
+        double update = DOMHelper.getSubelementDouble(root_node, "update_period");
+        ring_size = DOMHelper.getSubelementInt(root_node, "ring_size");
+        Element pvlist = DOMHelper.findFirstElementNode(root_node
+                .getFirstChild(), "pvlist");
+        if (pvlist != null)
+        {
+            Element pv = DOMHelper.findFirstElementNode(
+            		pvlist.getFirstChild(), "pv");
+            while (pv != null)
             {
-                start_specification = DEFAULT_START_SPEC;
-                end_specification = DEFAULT_END_SPEC;
-            }
-            scan = DOMHelper.getSubelementDouble(root_node, "scan_period");
-            update = DOMHelper.getSubelementDouble(root_node, "update_period");
-            ring_size = DOMHelper.getSubelementInt(root_node, "ring_size");
-            Element pvlist = DOMHelper.findFirstElementNode(root_node
-                    .getFirstChild(), "pvlist");
-            if (pvlist != null)
-            {
-                Element pv = DOMHelper.findFirstElementNode(
-                		pvlist.getFirstChild(), "pv");
-                while (pv != null)
-                {
-                    silentAdd(ModelItem.loadFromDOM(this, pv, ring_size));
-                    pv = DOMHelper.findNextElementNode(pv, "pv");
-                }
+                silentAdd(ModelItem.loadFromDOM(this, pv, ring_size));
+                pv = DOMHelper.findNextElementNode(pv, "pv");
             }
         }
-        catch (Exception e)
-        {
-            error = e;
-        }
-        // If there was an error, pass back up
-        if (error != null)
-            throw error;
         // This also notifies listeners about the new periods:
         setPeriods(scan, update);
         fireEntriesChanged();

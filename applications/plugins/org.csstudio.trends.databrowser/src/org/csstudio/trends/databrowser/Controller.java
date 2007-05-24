@@ -14,7 +14,7 @@ import org.csstudio.swt.chart.axes.YAxisListener;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
-import org.csstudio.trends.databrowser.ploteditor.BrowserUI;
+import org.csstudio.trends.databrowser.plotpart.BrowserUI;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.eclipse.swt.dnd.DropTargetEvent;
 

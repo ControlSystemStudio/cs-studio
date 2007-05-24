@@ -1,7 +1,7 @@
 package org.csstudio.trends.databrowser;
 
 import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.trends.databrowser.ploteditor.BrowserUI;
+import org.csstudio.trends.databrowser.plotpart.BrowserUI;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;

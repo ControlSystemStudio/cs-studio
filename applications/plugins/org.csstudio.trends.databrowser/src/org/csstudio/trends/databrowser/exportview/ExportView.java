@@ -53,16 +53,10 @@ public class ExportView extends PlotAwareView
     
     // Stuff that's updated by the GUI
     // (rest directly read from the GUI elements)
-    private ITimestamp start;
-    private ITimestamp end;
+    private ITimestamp start = TimestampFactory.now();;
+    private ITimestamp end = TimestampFactory.now();;
     private ExportJob.Source source;
     private IValue.Format format;
-    
-    public ExportView()
-    {
-        start = TimestampFactory.now();
-        end = TimestampFactory.now();
-    }
     
     /** Create the GUI elements. */
     @Override

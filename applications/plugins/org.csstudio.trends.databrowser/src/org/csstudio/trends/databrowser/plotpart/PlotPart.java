@@ -5,7 +5,6 @@ import java.io.InputStream;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.trends.databrowser.Controller;
 import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.trends.databrowser.ploteditor.BrowserUI;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
@@ -15,13 +14,13 @@ import org.eclipse.ui.PartInitException;
  */
 public class PlotPart
 {
-    private Model model;
+    private Model model = new Model();
+
     private Controller controller;
     private BrowserUI gui;
 
     public void init(IFile file) throws PartInitException
     {
-        model = new Model();
         if (file == null)
             return;
         // Load model content from file

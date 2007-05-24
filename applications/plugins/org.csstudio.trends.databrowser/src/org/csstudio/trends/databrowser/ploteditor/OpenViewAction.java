@@ -5,7 +5,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 
-/** An action that opens a view.
+/** An action that opens a view of given name and ID.
  *  @author Kay Kasemir
  */
 public class OpenViewAction extends Action
@@ -20,12 +20,12 @@ public class OpenViewAction extends Action
      */
     public OpenViewAction(IWorkbenchPart part, String name, String ID)
     {
-        super(name);
-        setImageDescriptor(Plugin.getImageDescriptor("icons/chart.gif")); //$NON-NLS-1$
+        super(name, Plugin.getImageDescriptor("icons/chart.gif")); //$NON-NLS-1$
         page = part.getSite().getPage();
         this.ID = ID;
     }
     
+    /** Show the view. */
     @Override
     public void run()
     {

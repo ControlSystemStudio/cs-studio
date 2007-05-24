@@ -35,10 +35,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
-/** The eclipse 'editor' for the data browser.
- *  This is really more of a 'view' to the user, but since each data browser
- *  plot stands for its own configuration (model data), they're Eclipse
- *  'editors'.
+/** An Eclipse 'editor' for the data browser plot.
+ *  <p>
+ *  Displays the plot, and allows interaction with ConfigView, ExportView
+ *  etc.
  *  @author Kay Kasemir
  */
 public class PlotEditor extends EditorPart
@@ -48,7 +48,7 @@ public class PlotEditor extends EditorPart
     private final PlotPart plot = new PlotPart();
     private Action remove_markers_action, add_action;
     private Action config_action, archive_action, sample_action, export_action;
-    private Action perspective_action;
+    private Action view_action, perspective_action;
     private boolean is_dirty = false;
     // Update 'dirty' state whenever anything changes
     private final ModelListener model_listener = new ModelListener()
@@ -132,7 +132,7 @@ public class PlotEditor extends EditorPart
      *  file system. However, the file might be a linked resource to a
      *  file that physically resides outside of the workspace tree.
      */
-    private IFile getEditorInputFile()
+    IFile getEditorInputFile()
     {  
         IEditorInput input = getEditorInput();
         if (input instanceof EmptyEditorInput)
@@ -266,6 +266,7 @@ public class PlotEditor extends EditorPart
         archive_action = new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID);
         sample_action = new OpenViewAction(this, Messages.OpenSampleView, SampleView.ID);
         export_action = new OpenViewAction(this, Messages.OpenExportView, ExportView.ID);
+        view_action = new OpenPlotViewAction(this);
         perspective_action = new OpenPerspectiveAction(Messages.OpenPerspective, Perspective.ID);
     }
 
@@ -282,6 +283,7 @@ public class PlotEditor extends EditorPart
         manager.add(sample_action);
         manager.add(export_action);
         manager.add(new Separator());
+        manager.add(view_action);
         manager.add(perspective_action);
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
