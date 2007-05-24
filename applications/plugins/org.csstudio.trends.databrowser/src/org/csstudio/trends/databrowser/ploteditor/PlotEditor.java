@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.csstudio.platform.ui.workbench.FileEditorInput;
-import org.csstudio.trends.databrowser.Controller;
 import org.csstudio.trends.databrowser.Perspective;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.archiveview.ArchiveView;
@@ -13,6 +12,7 @@ import org.csstudio.trends.databrowser.exportview.ExportView;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
+import org.csstudio.trends.databrowser.plotpart.PlotPart;
 import org.csstudio.trends.databrowser.sampleview.SampleView;
 import org.csstudio.util.editor.EmptyEditorInput;
 import org.csstudio.util.editor.PromptForNewXMLFileDialog;
@@ -44,14 +44,50 @@ import org.eclipse.ui.part.EditorPart;
 public class PlotEditor extends EditorPart
 {
     public static final String ID = PlotEditor.class.getName();
-    private Model model;
-    private Controller controller;
+    
+    private final PlotPart plot = new PlotPart();
     private Action remove_markers_action, add_action;
     private Action config_action, archive_action, sample_action, export_action;
     private Action perspective_action;
-    private BrowserUI gui;
     private boolean is_dirty = false;
-    private ModelListener model_listener;
+    // Update 'dirty' state whenever anything changes
+    private final ModelListener model_listener = new ModelListener()
+    {
+        public void timeSpecificationsChanged()
+        {   entriesChanged();  }
+        
+        // "current" start/end time changes are ignored
+        public void timeRangeChanged()
+        {}
+        
+        public void periodsChanged()
+        {   entriesChanged();  }
+
+        public void entriesChanged()
+        {
+            if (!is_dirty)
+            {
+                is_dirty = true;
+                firePropertyChange(IEditorPart.PROP_DIRTY);
+            }
+            updateTitle();
+        }
+        
+        public void entryAdded(IModelItem new_item) 
+        {   entriesChanged();  }
+        
+        public void entryConfigChanged(IModelItem item) 
+        {   entriesChanged();  }
+        
+        public void entryLookChanged(IModelItem item) 
+        {   /* so what */ }
+        
+        public void entryArchivesChanged(IModelItem item)
+        {   entriesChanged();  }
+
+        public void entryRemoved(IModelItem removed_item) 
+        {   entriesChanged();  }
+    };
 
     /** Create a new, empty editor, not attached to a file.
      *  @return Returns the new editor or <code>null</code>.
@@ -78,7 +114,7 @@ public class PlotEditor extends EditorPart
     
     /** @return Returns the model. */
     public Model getModel()
-    {   return model; }
+    {   return plot.getModel(); }
     
     @Override
     public void init(IEditorSite site, IEditorInput input)
@@ -86,62 +122,9 @@ public class PlotEditor extends EditorPart
     {
         setSite(site);
         setInput(input);
-        // Load model content from file
-        model = new Model();
         IFile file = getEditorInputFile();
-        if (file != null)
-        {
-            try
-            {
-                InputStream stream = file.getContents();
-                model.load(stream);
-                stream.close();
-            }
-            catch (Exception e)
-            {
-                throw new PartInitException("Load error", e); //$NON-NLS-1$
-            }
-        }
-
-        // Update 'dirty' state whenever anything changes
-        model_listener = new ModelListener()
-        {
-            public void timeSpecificationsChanged()
-            {   entriesChanged();  }
-            
-            // "current" start/end time changes are ignored
-            public void timeRangeChanged()
-            {}
-            
-            public void periodsChanged()
-            {   entriesChanged();  }
-
-            public void entriesChanged()
-            {
-                if (!is_dirty)
-                {
-                    is_dirty = true;
-                    firePropertyChange(IEditorPart.PROP_DIRTY);
-                }
-                updateTitle();
-            }
-            
-            public void entryAdded(IModelItem new_item) 
-            {   entriesChanged();  }
-            
-            public void entryConfigChanged(IModelItem item) 
-            {   entriesChanged();  }
-            
-            public void entryLookChanged(IModelItem item) 
-            {   /* so what */ }
-            
-            public void entryArchivesChanged(IModelItem item)
-            {   entriesChanged();  }
-
-            public void entryRemoved(IModelItem removed_item) 
-            {   entriesChanged();  }
-        };
-        model.addListener(model_listener);
+        plot.init(file);
+        plot.getModel().addListener(model_listener);
     }
     
     /** @return Returns the <code>IFile</code> for the current editor input.
@@ -192,7 +175,7 @@ public class PlotEditor extends EditorPart
             monitor.beginTask(Messages.SaveBrowserConfig,
                             IProgressMonitor.UNKNOWN);
         InputStream stream =
-            new ByteArrayInputStream(model.getXMLContent().getBytes());
+            new ByteArrayInputStream(plot.getModel().getXMLContent().getBytes());
         try
         {
             if (file.exists())
@@ -244,20 +227,24 @@ public class PlotEditor extends EditorPart
     @Override
     public void createPartControl(Composite parent)
     {
-        gui = new BrowserUI(model, parent, 0);
-        controller = new Controller(model, gui);
+        plot.createPartControl(parent);
         createActions();
         createContextMenu();
         updateTitle();
+    }
+
+    @Override
+    public void setFocus()
+    {  
+        plot.setFocus();
     }
 
     /** Must be called to clean up. */
     @Override
     public void dispose()
     {
-        model.removeListener(model_listener);
-        gui.dispose();
-        controller.dispose();
+        plot.getModel().removeListener(model_listener);
+        plot.dispose();
         super.dispose();
     }
     
@@ -270,15 +257,11 @@ public class PlotEditor extends EditorPart
         setTitleToolTip(input.getToolTipText());
     }
 
-    @Override
-    public void setFocus()
-    {   gui.setFocus();  }
-
     /** Create all actions. */
     private void createActions()
     {
-        remove_markers_action = new RemoveMarkersAction(gui.getChart());
-        add_action = new AddPVAction(model);
+        remove_markers_action = new RemoveMarkersAction(plot.getChart());
+        add_action = new AddPVAction(plot.getModel());
         config_action = new OpenViewAction(this, Messages.OpenConfigView, ConfigView.ID);
         archive_action = new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID);
         sample_action = new OpenViewAction(this, Messages.OpenSampleView, SampleView.ID);
@@ -302,7 +285,7 @@ public class PlotEditor extends EditorPart
         manager.add(perspective_action);
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
-        Control ctl = controller.getBrowserUI().getChart();
+        Control ctl = plot.getChart();
         Menu menu = manager.createContextMenu(ctl);
         ctl.setMenu(menu);
         // TODO: publish the menu so others can extend it?
