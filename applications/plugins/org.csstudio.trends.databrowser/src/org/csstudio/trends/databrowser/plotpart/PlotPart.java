@@ -14,10 +14,10 @@ import org.eclipse.ui.PartInitException;
 public class PlotPart
 {
     private Model model = new Model();
-
     private Controller controller;
     private BrowserUI gui;
 
+    /** Initialize the model from given file. */
     public void init(IFile file) throws PartInitException
     {
         if (file == null)
@@ -35,32 +35,37 @@ public class PlotPart
         }
     }
     
-    /** @return Returns the model. */
+    /** @return The model. */
     public Model getModel()
     {  
         return model;
     }
     
+    /** @return The Chart within the GUI. */
     public Chart getChart()
     {
         return gui.getChart();
     }
-
+    
+    /** Creates the SWT controls for DataBrowser plot.
+     *  @see IWorkbenchPart#createPartControl
+     */
     public void createPartControl(Composite parent)
     {
         gui = new BrowserUI(model, parent, 0);
         controller = new Controller(model, gui);
     }
 
+    /** @see IWorkbenchPart#setFocus */
     public void setFocus()
     {   
         gui.setFocus(); 
     }
     
+    /** Must be called for cleanup. */
     public void dispose()
     {
         gui.dispose();
         controller.dispose();
     }
-
 }

@@ -13,8 +13,6 @@ public class Messages extends NLS
     public static String OpenPerspective;
     public static String OpenSampleView;
     public static String OpenExportView;
-    public static String RemoveMarkers;
-    public static String RemoveMarkers_TT;
     public static String SaveBrowserConfig;
     static
     {   // initialize resource bundle

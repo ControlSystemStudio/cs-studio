@@ -2,9 +2,16 @@ package org.csstudio.trends.databrowser.plotview;
 
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
+import org.csstudio.trends.databrowser.plotpart.RemoveMarkersAction;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -15,8 +22,8 @@ import org.eclipse.ui.part.ViewPart;
  *  <p>
  *  Displays the plot.
  *  
- *  TODO remove marker menu
  *  TODO handle 'drop'
+ *  TODO "Open in Editor"
  *  
  *  @author Kay Kasemir
  */
@@ -67,6 +74,17 @@ public class PlotView extends ViewPart
     public void createPartControl(Composite parent)
     {
         plot.createPartControl(parent);
+        // Create actions
+        Action remove_markers_action = new RemoveMarkersAction(plot.getChart());
+
+        // Create context menu
+        MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        manager.add(remove_markers_action);
+        manager.add(new Separator());
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        Control ctl = plot.getChart();
+        Menu menu = manager.createContextMenu(ctl);
+        ctl.setMenu(menu);
     }
 
     /** {@inheritDoc} */

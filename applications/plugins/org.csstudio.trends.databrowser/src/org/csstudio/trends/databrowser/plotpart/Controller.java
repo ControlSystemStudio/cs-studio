@@ -21,18 +21,147 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 /** Data Browser Controller: Creates model, UI and handles everything between them.
  *  @author Kay Kasemir
  */ 
-public class Controller implements ScannerAndScrollerListener
+public class Controller
 {
     private final Model model;
-    private final ModelListener model_listener;
     private final BrowserUI gui;
     private final Chart chart;
-    private final ChartListener chart_listener;
     private ScannerAndScroller scanner_scroller;
     private boolean controller_changes_xaxis = false;
     private boolean controller_changes_yaxes = false;
     private boolean controller_changes_model = false;
     
+    /** Scan the PVs, and possibly redraw. */
+    private ScannerAndScrollerListener scanner_scroller_listener =
+        new ScannerAndScrollerListener()
+    {
+        @SuppressWarnings("nls")
+        public void scan(boolean with_redraw)
+        {
+            // 'Scan' the PVs
+            ITimestamp now = model.addCurrentValuesToChartItems();
+            // Scroll or simply redraw w/o scroll.
+            if (with_redraw  &&  chart.isVisible())
+            {
+                if (gui.isScrollEnabled())
+                {   // Scroll by updating the model's "current" time range.
+                    // The plot should listen to the model and adjust its x axis.
+                    double low = model.getStartTime().toDouble();
+                    double high = model.getEndTime().toDouble();
+                    final double range = high - low;
+                    // Update model such that 'high' equals 'now',
+                    // keeping the range.
+                    high = now.toDouble();
+                    low = high - range;
+                    controller_changes_xaxis = true;
+                    try
+                    {
+                        model.setTimeRange(TimestampFactory.fromDouble(low),
+                                        TimestampFactory.fromDouble(high));
+                    }
+                    catch (Exception ex)
+                    {   // Prevent follow-up errors by disabling the scroll
+                        gui.enableScrolling(false);
+                        Plugin.logException("Cannot scroll", ex);
+                    }
+                    // redraw is implied in the x axis update
+                    controller_changes_xaxis = false;
+                }
+                else // redraw w/o scroll
+                    chart.redrawTraces();
+            }
+        }
+    };
+    
+    /** React to model changes by updating the chart,
+     *  and possibly getting new archive data.
+     */
+    private final ModelListener model_listener = new ModelListener()
+    {
+        public void timeSpecificationsChanged()
+        {
+            // TODO use this instead of ChartListener?
+        }
+        
+        public void timeRangeChanged()
+        {
+            // TODO use this instead of ChartListener?
+        }
+
+        public void periodsChanged()
+        {
+            if (scanner_scroller != null)
+                scanner_scroller.periodsChanged();
+        }
+
+        public void entriesChanged()
+        {   handleChangedModelEntries(); }
+
+        public void entryAdded(IModelItem new_item)
+        { 
+            addToDisplay(new_item);
+            getArchivedData(new_item);
+        }
+
+        public void entryConfigChanged(IModelItem item)
+        {   // Avoid infinite loops if we are changing the model ourselves
+            if (controller_changes_model)
+                return;
+            removeFromDisplay(item);
+            addToDisplay(item);
+            removeUnusedAxes();
+            getArchivedData(item);
+        }
+
+        public void entryLookChanged(IModelItem item)
+        {   entryConfigChanged(item);  }
+        
+        public void entryArchivesChanged(IModelItem item)
+        {   getArchivedData(item); }
+        
+        public void entryRemoved(IModelItem removed_item)
+        {   
+            removeFromDisplay(removed_item);
+            removeUnusedAxes();
+        }
+    };
+
+    /** React to chart changes by updating the model. */
+    private final ChartListener chart_listener = new ChartListener()
+    {
+        public void changedXAxis(XAxis xaxis)
+        {
+            if (controller_changes_xaxis)
+                return;
+            final BrowserUI gui = Controller.this.gui;
+            // This is a user-driven pan or zoom.
+            // If we scroll, that would change what the user just did,
+            // so don't
+            if (gui.isScrollEnabled())
+                gui.enableScrolling(false);
+            getArchivedData(null);
+        }
+
+        public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
+        {
+            // Avoid infinite loop: We are changing the axes, so ignore.
+            if (controller_changes_yaxes)
+                return;
+            if (what == YAxisListener.Aspect.RANGE)
+            {   // Range was changed interactively, update the model
+                controller_changes_model = true;
+                int axis_index = chart.getYAxisIndex(yaxis);
+                Controller.this.model.setAxisLimits(axis_index,
+                                yaxis.getLowValue(),
+                                yaxis.getHighValue());
+                controller_changes_model = false;
+            }
+        }
+
+        public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
+        {}
+    };
+
     /** Construct controller.
      *  @param parent Parent widget (shell) under which the UI is created.
      */
@@ -42,93 +171,8 @@ public class Controller implements ScannerAndScrollerListener
         this.gui = gui;
         chart = gui.getChart();
 
-        // React to model changes
-        model_listener = new ModelListener()
-        {
-            public void timeSpecificationsChanged()
-            {
-                // TODO use this instead of ChartListener?
-            }
-            
-            public void timeRangeChanged()
-            {
-                // TODO use this instead of ChartListener?
-            }
-
-            public void periodsChanged()
-            {
-                if (scanner_scroller != null)
-                    scanner_scroller.periodsChanged();
-            }
-    
-            public void entriesChanged()
-            {   handleChangedModelEntries(); }
-
-            public void entryAdded(IModelItem new_item)
-            { 
-                addToDisplay(new_item);
-                getArchivedData(new_item);
-            }
-
-            public void entryConfigChanged(IModelItem item)
-            {   // Avoid infinite loops if we are changing the model ourselves
-                if (controller_changes_model)
-                    return;
-                removeFromDisplay(item);
-                addToDisplay(item);
-                removeUnusedAxes();
-                getArchivedData(item);
-            }
-
-            public void entryLookChanged(IModelItem item)
-            {   entryConfigChanged(item);  }
-            
-            public void entryArchivesChanged(IModelItem item)
-            {   getArchivedData(item); }
-            
-            public void entryRemoved(IModelItem removed_item)
-            {   
-                removeFromDisplay(removed_item);
-                removeUnusedAxes();
-            }
-        };
-        
-        chart_listener = new ChartListener()
-        {
-            public void changedXAxis(XAxis xaxis)
-            {
-                if (controller_changes_xaxis)
-                    return;
-                final BrowserUI gui = Controller.this.gui;
-                // This is a user-driven pan or zoom.
-                // If we scroll, that would change what the user just did,
-                // so don't
-                if (gui.isScrollEnabled())
-                    gui.enableScrolling(false);
-                getArchivedData(null);
-            }
-
-            public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
-            {
-                // Avoid infinite loop: We are changing the axes, so ignore.
-                if (controller_changes_yaxes)
-                    return;
-                if (what == YAxisListener.Aspect.RANGE)
-                {   // Range was changed interactively, update the model
-                    controller_changes_model = true;
-                    int axis_index = chart.getYAxisIndex(yaxis);
-                    Controller.this.model.setAxisLimits(axis_index,
-                                    yaxis.getLowValue(),
-                                    yaxis.getHighValue());
-                    controller_changes_model = false;
-                }
-            }
-
-            public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
-            {}
-        };
-
         // Allow PV drops into the chart
+        // TODO move this into the PlotEditor, so that PlotView is read-only?
         new ProcessVariableOrArchiveDataSourceDropTarget(chart)
         {
             @Override
@@ -165,21 +209,11 @@ public class Controller implements ScannerAndScrollerListener
     /** Must be invoked for cleanup. */
     public void dispose()
     {
+        // scanner_scroller stops when the chart is disposed
+        chart.removeListener(chart_listener);
         model.removeListener(model_listener);
         model.stop();
      }
-
-    /** @return Returns the GUI. */
-    public BrowserUI getBrowserUI()
-    {
-        return gui;
-    }
-
-    /** Add a PV. */
-    public IModelItem add(String pv_name)
-    {
-        return nameDropped(pv_name, null);
-    }
 
     /** Private handler for ..DropTarget interface */
     private IModelItem nameDropped(String name, YAxis yaxis)
@@ -251,7 +285,8 @@ public class Controller implements ScannerAndScrollerListener
             return;
         // else: Start the model
         model.start();
-        scanner_scroller = new ScannerAndScroller(gui, model, this);
+        scanner_scroller = new ScannerAndScroller(gui, model,
+                                                  scanner_scroller_listener);
     }
 
     /** @return a trace name (item name plus units) for an item. */
@@ -302,46 +337,6 @@ public class Controller implements ScannerAndScrollerListener
                 chart.removeYAxis(y); // Drop empty axis
             else
                 return; // Done, found used axis
-    }
-    
-    /** Scan the PVs.
-     *  @see ScannerAndScrollerListener
-     */
-    @SuppressWarnings("nls")
-    public void scan(boolean with_redraw)
-    {
-        // 'Scan' the PVs
-        ITimestamp now = model.addCurrentValuesToChartItems();
-        // Scroll or simply redraw w/o scroll.
-        if (with_redraw  &&  chart.isVisible())
-        {
-            if (gui.isScrollEnabled())
-            {   // Scroll by updating the model's "current" time range.
-                // The plot should listen to the model and adjust its x axis.
-                double low = model.getStartTime().toDouble();
-                double high = model.getEndTime().toDouble();
-                final double range = high - low;
-                // Update model such that 'high' equals 'now',
-                // keeping the range.
-                high = now.toDouble();
-                low = high - range;
-                controller_changes_xaxis = true;
-                try
-                {
-                    model.setTimeRange(TimestampFactory.fromDouble(low),
-                                    TimestampFactory.fromDouble(high));
-                }
-                catch (Exception ex)
-                {   // Prevent follow-up errors by disabling the scroll
-                    gui.enableScrolling(false);
-                    Plugin.logException("Cannot scroll", ex);
-                }
-                // redraw is implied in the x axis update
-                controller_changes_xaxis = false;
-            }
-            else // redraw w/o scroll
-                chart.redrawTraces();
-        }
     }
     
     /** Get data from archive for given model item,

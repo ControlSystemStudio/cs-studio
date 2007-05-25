@@ -1,4 +1,4 @@
-package org.csstudio.trends.databrowser.ploteditor;
+package org.csstudio.trends.databrowser.plotpart;
 
 import org.csstudio.swt.chart.Chart;
 import org.eclipse.jface.action.Action;

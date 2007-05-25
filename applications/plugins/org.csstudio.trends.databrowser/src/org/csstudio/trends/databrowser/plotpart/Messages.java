@@ -10,6 +10,9 @@ public class Messages extends NLS
     public static String FetchDataForPV;
     public static String FetchingSample;
     
+    public static String RemoveMarkers;
+    public static String RemoveMarkers_TT;
+    
     public static String StartScroll_TT;
     public static String StopScroll_TT;
     public static String TimeConfig;

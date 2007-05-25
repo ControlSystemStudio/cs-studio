@@ -13,6 +13,7 @@ import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
+import org.csstudio.trends.databrowser.plotpart.RemoveMarkersAction;
 import org.csstudio.trends.databrowser.sampleview.SampleView;
 import org.csstudio.util.editor.EmptyEditorInput;
 import org.csstudio.util.editor.PromptForNewXMLFileDialog;
