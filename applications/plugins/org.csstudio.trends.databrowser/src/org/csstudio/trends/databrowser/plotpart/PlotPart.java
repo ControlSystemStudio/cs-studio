@@ -16,6 +16,7 @@ public class PlotPart
     private Model model = new Model();
     private Controller controller;
     private BrowserUI gui;
+    private IFile file;
 
     /** Initialize the model from given file. */
     public void init(IFile file) throws PartInitException
@@ -34,6 +35,22 @@ public class PlotPart
             throw new PartInitException("Load error for "  //$NON-NLS-1$
                             + file.getName(), ex);
         }
+        this.file = file;
+    }
+    
+    /** Get a name suitable for the part's title.
+     *  <p>
+     *  That's the plain file name, without path and suffix,
+     *  or "" which translates into the default title.
+     */
+    @SuppressWarnings("nls")
+    public String getPartName()
+    {
+        if (file == null)
+            return "";
+        final String name = file.getName();
+        final int dot = name.lastIndexOf(".");
+        return dot > 1  ?  name.substring(0, dot)  :  name;
     }
     
     /** @return The model. */

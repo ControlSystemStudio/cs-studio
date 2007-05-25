@@ -4,12 +4,18 @@ import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
 import org.csstudio.trends.databrowser.plotpart.RemoveMarkersAction;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
@@ -30,6 +36,8 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class PlotView extends ViewPart
 {
+    private static final String PLOTVIEW_FILE_PATH = "PLOTVIEW_FILE_PATH";
+
     /** View ID registered in plugin.xml as org.eclipse.views ID */
     public static final String ID = PlotView.class.getName();
     
@@ -40,6 +48,9 @@ public class PlotView extends ViewPart
      *  that's required to support multiple views of the same type.
      */
     private static long instance = 0;
+    
+    /** The file that contains the configuration of this plot. */
+    private IFile file = null;
     
     /** Create another instance of the PlotView for the given file. */
     public static boolean activateWithFile(IFile file)
@@ -64,10 +75,31 @@ public class PlotView extends ViewPart
         return false;
     }
 
+    /** Init the view, trying to read the model's file from the memento.
+     *  @see ViewPart#init(IViewSite, IMemento)
+     */
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException
+    {
+        super.init(site, memento);
+        if (memento == null)
+            return;
+        // Read path from the memento
+        String path_txt = memento.getString(PLOTVIEW_FILE_PATH);
+        if (path_txt == null  ||  path_txt.length() < 1)
+            return;
+        // Convert to path (relative to workspace root), then to file
+        IPath path = Path.fromPortableString(path_txt);
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        init(root.getFile(path));
+    }
+    
     /** Load the given file into this view. */
     public void init(IFile file) throws PartInitException
     {
         plot.init(file);
+        this.file = file;
+        setPartName(plot.getPartName());
     }
     
     /** {@inheritDoc} */
@@ -101,5 +133,16 @@ public class PlotView extends ViewPart
     {
         plot.dispose();
         super.dispose();
+    }
+
+    /** Save the model's file to the memento. */
+    @Override
+    public void saveState(IMemento memento)
+    {
+        if (file == null)
+            memento.putString(PLOTVIEW_FILE_PATH, ""); //$NON-NLS-1$
+        else
+            memento.putString(PLOTVIEW_FILE_PATH,
+                              file.getFullPath().toPortableString());
     }
 }
