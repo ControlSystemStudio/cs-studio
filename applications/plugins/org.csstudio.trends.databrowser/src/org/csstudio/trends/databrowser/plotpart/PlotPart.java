@@ -75,10 +75,10 @@ public class PlotPart
     /** Creates the SWT controls for DataBrowser plot.
      *  @see IWorkbenchPart#createPartControl
      */
-    public void createPartControl(Composite parent)
+    public void createPartControl(Composite parent, boolean allow_drop)
     {
         gui = new BrowserUI(model, parent, 0);
-        controller = new Controller(model, gui);
+        controller = new Controller(model, gui, allow_drop);
     }
 
     /** @see IWorkbenchPart#setFocus */

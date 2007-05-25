@@ -244,7 +244,7 @@ public class PlotEditor extends EditorPart
     @Override
     public void createPartControl(Composite parent)
     {
-        plot.createPartControl(parent);
+        plot.createPartControl(parent, true);
         createActions();
         createContextMenu();
         updateTitle();

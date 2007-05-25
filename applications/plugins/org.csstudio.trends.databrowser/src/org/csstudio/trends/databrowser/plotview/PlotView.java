@@ -23,9 +23,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /** An Eclipse 'view' for the data browser plot.
  *  <p>
- *  Displays the plot.
- *  
- *  TODO handle 'drop'
+ *  Displays the plot, no editing except for pan/zoom.
  *  
  *  @author Kay Kasemir
  */
@@ -95,7 +93,7 @@ public class PlotView extends ViewPart
     @Override
     public void createPartControl(Composite parent)
     {
-        plot_part.createPartControl(parent);
+        plot_part.createPartControl(parent, false);
         // Create actions
         Action remove_markers_action = new RemoveMarkersAction(plot_part.getChart());
         Action open_in_editor = new OpenAsPlotEditorAction(plot_part);

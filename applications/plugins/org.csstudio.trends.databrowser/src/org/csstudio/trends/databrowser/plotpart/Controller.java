@@ -165,45 +165,49 @@ public class Controller
     /** Construct controller.
      *  @param parent Parent widget (shell) under which the UI is created.
      */
-    public Controller(Model model, BrowserUI gui)
+    public Controller(Model model, BrowserUI gui, boolean allow_drop)
     {
         this.model = model;
         this.gui = gui;
         chart = gui.getChart();
 
-        // Allow PV drops into the chart
-        // TODO move this into the PlotEditor, so that PlotView is read-only?
-        new ProcessVariableOrArchiveDataSourceDropTarget(chart)
-        {
-            @Override
-            public void handleDrop(IProcessVariable name, DropTargetEvent event)
-            {
-                YAxis yaxis = chart.getYAxisAtScreenPoint(event.x, event.y);
-                IModelItem item = nameDropped(name.getName(), yaxis);
-                IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
-                for (int i = 0; i < archives.length; i++)
-                    item.addArchiveDataSource(archives[i]);
-            }
-
-            @Override
-            public void handleDrop(IArchiveDataSource archive, DropTargetEvent event)
-            {
-                Controller.this.model.addArchiveDataSource(archive);
-            }
-
-            @Override
-            public void handleDrop(IProcessVariable name, IArchiveDataSource archive, DropTargetEvent event)
-            {
-                YAxis yaxis = chart.getYAxisAtScreenPoint(event.x, event.y);
-                IModelItem item = nameDropped(name.getName(), yaxis);
-                item.addArchiveDataSource(archive);
-            }
-        };
         
         chart.addListener(chart_listener);
         model.addListener(model_listener);
         // Initialize GUI with the current model content.
         model_listener.entriesChanged();
+        
+        // Allow PV drops into the chart?
+        if (allow_drop)
+            new ProcessVariableOrArchiveDataSourceDropTarget(chart)
+            {
+                /** {@inheritDoc} */
+                @Override
+                public void handleDrop(IProcessVariable name, DropTargetEvent event)
+                {   // Add item to axis (or new axis) with default archives
+                    YAxis yaxis = chart.getYAxisAtScreenPoint(event.x, event.y);
+                    IModelItem item = nameDropped(name.getName(), yaxis);
+                    IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
+                    for (int i = 0; i < archives.length; i++)
+                        item.addArchiveDataSource(archives[i]);
+                }
+
+                /** {@inheritDoc} */
+                @Override
+                public void handleDrop(IArchiveDataSource archive, DropTargetEvent event)
+                {   // Add archive to model (all items)
+                    Controller.this.model.addArchiveDataSource(archive);
+                }
+
+                /** {@inheritDoc} */
+                @Override
+                public void handleDrop(IProcessVariable name, IArchiveDataSource archive, DropTargetEvent event)
+                {   // Add item with source
+                    YAxis yaxis = chart.getYAxisAtScreenPoint(event.x, event.y);
+                    IModelItem item = nameDropped(name.getName(), yaxis);
+                    item.addArchiveDataSource(archive);
+                }
+            };
     }
     
     /** Must be invoked for cleanup. */

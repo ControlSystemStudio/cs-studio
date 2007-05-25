@@ -20,7 +20,7 @@ public class SWTTest
 
         Model model = new Model();
         BrowserUI ui = new BrowserUI(model, shell, 0);
-        Controller controller = new Controller(model, ui);
+        Controller controller = new Controller(model, ui, true);
         
         // Display & Run
         shell.open();
