@@ -7,14 +7,14 @@ import org.eclipse.jface.action.Action;
 /** Open the active DataBrowser editor's file as a view.
  *  @author Kay Kasemir
  */
-public class OpenPlotViewAction extends Action
+public class OpenPlotEditorAsViewAction extends Action
 {
     private final PlotEditor editor;
     
     /** Constructor
      *  @param editor The editor who's file to open as a view
      */
-    public OpenPlotViewAction(PlotEditor editor)
+    public OpenPlotEditorAsViewAction(PlotEditor editor)
     {
         super(Messages.OpenAsView,
               Plugin.getImageDescriptor("icons/chart.gif")); //$NON-NLS-1$

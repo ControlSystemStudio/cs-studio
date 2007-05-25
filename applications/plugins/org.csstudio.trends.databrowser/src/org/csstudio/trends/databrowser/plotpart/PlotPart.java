@@ -6,6 +6,7 @@ import org.csstudio.swt.chart.Chart;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 
 /** Base for a ViewPart or EditorPart that displays a DataBrowser plot.
@@ -51,6 +52,12 @@ public class PlotPart
         final String name = file.getName();
         final int dot = name.lastIndexOf(".");
         return dot > 1  ?  name.substring(0, dot)  :  name;
+    }
+    
+    /** @return The model's file. */
+    public IFile getFile()
+    {
+        return file;
     }
     
     /** @return The model. */

@@ -100,22 +100,28 @@ public class PlotEditor extends EditorPart
      */
     public static PlotEditor createInstance()
     {
-    	try
-    	{
-		    IWorkbench workbench = PlatformUI.getWorkbench();
-		    IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		    IWorkbenchPage page = window.getActivePage();
-		    
-		    EmptyEditorInput input = new EmptyEditorInput();
-		    PlotEditor editor =
-		        (PlotEditor) page.openEditor(input, PlotEditor.ID);
-		    return editor;
-    	}
-    	catch (Exception ex)
-    	{
+        return createInstance(new EmptyEditorInput());
+    }
+    
+    /** Create a new editor for the given input.
+     *  @return Returns the new editor or <code>null</code>.
+     */
+    public static PlotEditor createInstance(IEditorInput input)
+    {
+        try
+        {
+            IWorkbench workbench = PlatformUI.getWorkbench();
+            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            IWorkbenchPage page = window.getActivePage();
+            PlotEditor editor =
+                (PlotEditor) page.openEditor(input, PlotEditor.ID);
+            return editor;
+        }
+        catch (Exception ex)
+        {
             Plugin.logException("Cannot create Plot", ex); //$NON-NLS-1$
-    	}
-    	return null;
+        }
+        return null;
     }
     
     /** @return Returns the model. */
@@ -281,7 +287,7 @@ public class PlotEditor extends EditorPart
         archive_action = new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID);
         sample_action = new OpenViewAction(this, Messages.OpenSampleView, SampleView.ID);
         export_action = new OpenViewAction(this, Messages.OpenExportView, ExportView.ID);
-        view_action = new OpenPlotViewAction(this);
+        view_action = new OpenPlotEditorAsViewAction(this);
         perspective_action = new OpenPerspectiveAction(Messages.OpenPerspective, Perspective.ID);
     }
 
