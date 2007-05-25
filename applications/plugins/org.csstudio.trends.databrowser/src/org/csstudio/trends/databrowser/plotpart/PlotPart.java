@@ -29,9 +29,10 @@ public class PlotPart
             model.load(stream);
             stream.close();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            throw new PartInitException("Load error", e); //$NON-NLS-1$
+            throw new PartInitException("Load error for "  //$NON-NLS-1$
+                            + file.getName(), ex);
         }
     }
     
