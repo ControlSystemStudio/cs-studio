@@ -46,7 +46,7 @@ public class PlotEditor extends EditorPart
 {
     public static final String ID = PlotEditor.class.getName();
     
-    private final PlotPart plot = new PlotPart();
+    private final PlotPart plot_part = new PlotPart();
     private Action remove_markers_action, add_action;
     private Action config_action, archive_action, sample_action, export_action;
     private Action view_action, perspective_action;
@@ -126,7 +126,7 @@ public class PlotEditor extends EditorPart
     
     /** @return Returns the model. */
     public Model getModel()
-    {   return plot.getModel(); }
+    {   return plot_part.getModel(); }
     
     @Override
     public void init(IEditorSite site, IEditorInput input)
@@ -135,10 +135,10 @@ public class PlotEditor extends EditorPart
         setSite(site);
         setInput(input);
         IFile file = getEditorInputFile();
-        plot.init(file);
+        plot_part.init(file);
         if (! added_model_listener)
         {
-            plot.getModel().addListener(model_listener);
+            plot_part.getModel().addListener(model_listener);
             added_model_listener = true;
         }
     }
@@ -191,7 +191,7 @@ public class PlotEditor extends EditorPart
             monitor.beginTask(Messages.SaveBrowserConfig,
                             IProgressMonitor.UNKNOWN);
         InputStream stream =
-            new ByteArrayInputStream(plot.getModel().getXMLContent().getBytes());
+            new ByteArrayInputStream(plot_part.getModel().getXMLContent().getBytes());
         try
         {
             if (file.exists())
@@ -244,7 +244,7 @@ public class PlotEditor extends EditorPart
     @Override
     public void createPartControl(Composite parent)
     {
-        plot.createPartControl(parent, true);
+        plot_part.createPartControl(parent, true);
         createActions();
         createContextMenu();
         updateTitle();
@@ -253,7 +253,7 @@ public class PlotEditor extends EditorPart
     @Override
     public void setFocus()
     {  
-        plot.setFocus();
+        plot_part.setFocus();
     }
 
     /** Must be called to clean up. */
@@ -262,10 +262,10 @@ public class PlotEditor extends EditorPart
     {
         if (added_model_listener)
         {
-            plot.getModel().removeListener(model_listener);
+            plot_part.getModel().removeListener(model_listener);
             added_model_listener = false;
         }
-        plot.dispose();
+        plot_part.dispose();
         super.dispose();
     }
     
@@ -281,8 +281,8 @@ public class PlotEditor extends EditorPart
     /** Create all actions. */
     private void createActions()
     {
-        remove_markers_action = new RemoveMarkersAction(plot.getChart());
-        add_action = new AddPVAction(plot.getModel());
+        remove_markers_action = new RemoveMarkersAction(plot_part.getChart());
+        add_action = new AddPVAction(plot_part.getModel());
         config_action = new OpenViewAction(this, Messages.OpenConfigView, ConfigView.ID);
         archive_action = new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID);
         sample_action = new OpenViewAction(this, Messages.OpenSampleView, SampleView.ID);
@@ -296,6 +296,7 @@ public class PlotEditor extends EditorPart
     {
         // Create context menu
         MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        manager.add(plot_part.createShowButtonBarAction());
         manager.add(remove_markers_action);
         manager.add(add_action);
         manager.add(new Separator());
@@ -308,7 +309,7 @@ public class PlotEditor extends EditorPart
         manager.add(perspective_action);
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
-        Control ctl = plot.getChart();
+        Control ctl = plot_part.getChart();
         Menu menu = manager.createContextMenu(ctl);
         ctl.setMenu(menu);
         // TODO: publish the menu so others can extend it?

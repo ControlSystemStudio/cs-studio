@@ -61,10 +61,10 @@ public class BrowserUI extends Composite
         model.removeListener(listener);
     }
     
-    /** @return Returns the chart widget. */
-    public Chart getChart()
+    /** @return Returns the InteractiveChart. */
+    public InteractiveChart getInteractiveChart()
     {
-        return i_chart.getChart();
+        return i_chart;
     }
     
     /** @return Returns <code>true</code> if scrolling is enabled (requested). */
@@ -142,7 +142,7 @@ public class BrowserUI extends Composite
             {   // Adjust the x axis to the "current" model time range
                 final double low = model.getStartTime().toDouble();
                 final double high = model.getEndTime().toDouble();
-                getChart().getXAxis().setValueRange(low, high);
+                i_chart.getChart().getXAxis().setValueRange(low, high);
             }
             
             public void periodsChanged()

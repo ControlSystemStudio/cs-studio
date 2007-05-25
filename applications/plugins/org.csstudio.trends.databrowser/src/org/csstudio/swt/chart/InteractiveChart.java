@@ -13,8 +13,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -145,6 +146,8 @@ public class InteractiveChart extends Composite
     /** Add all the button bar buttons. */
     private void addButtons()
     {
+        // The button bar uses Row Layout
+        button_bar.setLayout(new RowLayout());
         addButton(UP, Messages.Chart_MoveUp, new SelectionAdapter()
         {
             public void widgetSelected(SelectionEvent e)
@@ -237,35 +240,31 @@ public class InteractiveChart extends Composite
     {
         // Top:  Button Bar
         // Rest: Plot
-        GridLayout gl = new GridLayout();
-        gl.numColumns = 1;
-        setLayout(gl);
-        GridData gd;
+        FormLayout layout = new FormLayout();
+        setLayout(layout);
+        
+        
+        FormData fd;
         
         button_bar = new Composite(this, 0);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        button_bar.setLayoutData(gd);
-        button_bar.setLayout(new RowLayout());
+        fd = new FormData();
+        fd.top = new FormAttachment(0, 0);
+        fd.left = new FormAttachment(0, 0);
+        fd.right = new FormAttachment(100, 0);
+        button_bar.setLayoutData(fd);
+
         addButtons();
         
         // X/Y Axes
         chart = new Chart(this, style);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.grabExcessVerticalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.FILL;
-        chart.setLayoutData(gd);
+        fd = new FormData();
+        fd.top = new FormAttachment(button_bar);
+        fd.left = new FormAttachment(0, 0);
+        fd.right = new FormAttachment(100, 0);
+        fd.bottom = new FormAttachment(100, 0);
+        chart.setLayoutData(fd);
     }
 
-    /** @return Returns the axes. */
-    public Chart getChart()
-    {
-        return chart;
-    }
-    
     /** The user can add buttons or other widgets to this button bar.
      *  <p>
      *  The button bar uses a horizontal RowLayout, so newly added buttons
@@ -276,6 +275,43 @@ public class InteractiveChart extends Composite
     public Composite getButtonBar()
     {
         return button_bar;
+    }
+
+    /** Show (or hide) the button bar
+     *  @param show <code>true</code> to show the button bar.
+     */
+    public void showButtonBar(boolean show)
+    {
+        if (show)
+        {
+            if (button_bar.isVisible())
+                return; // NOP
+            // Hook plot's top to the button bar
+            FormData fd = (FormData)chart.getLayoutData();
+            fd.top = new FormAttachment(button_bar);
+            chart.setLayoutData(fd);
+            // Make button bar visible
+            button_bar.setVisible(true);
+        }
+        else
+        {   // hide button bar
+            if (button_bar.isVisible() == false)
+                return; // NOP
+            // Hook plot's top to the top of the window
+            FormData fd = (FormData)chart.getLayoutData();
+            fd.top = new FormAttachment(0, 0);
+            chart.setLayoutData(fd);
+            // Make button bar visible
+            button_bar.setVisible(false);
+        }
+        // Ask shell to re-evaluate the changed layout
+        chart.getShell().layout(true, true);
+    }
+    
+    /** @return Returns the axes. */
+    public Chart getChart()
+    {
+        return chart;
     }
     
     /** Add a button to the button bar.

@@ -169,7 +169,7 @@ public class Controller
     {
         this.model = model;
         this.gui = gui;
-        chart = gui.getChart();
+        chart = gui.getInteractiveChart().getChart();
 
         
         chart.addListener(chart_listener);

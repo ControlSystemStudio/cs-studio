@@ -3,8 +3,10 @@ package org.csstudio.trends.databrowser.plotpart;
 import java.io.InputStream;
 
 import org.csstudio.swt.chart.Chart;
+import org.csstudio.swt.chart.ShowButtonBarAction;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
@@ -69,7 +71,7 @@ public class PlotPart
     /** @return The Chart within the GUI. */
     public Chart getChart()
     {
-        return gui.getChart();
+        return gui.getInteractiveChart().getChart();
     }
     
     /** Creates the SWT controls for DataBrowser plot.
@@ -80,7 +82,13 @@ public class PlotPart
         gui = new BrowserUI(model, parent, 0);
         controller = new Controller(model, gui, allow_drop);
     }
-
+    
+    /** @return ShowButtonBarAction for the chart */
+    public Action createShowButtonBarAction()
+    {
+        return new ShowButtonBarAction(gui.getInteractiveChart());
+    }
+    
     /** @see IWorkbenchPart#setFocus */
     public void setFocus()
     {   

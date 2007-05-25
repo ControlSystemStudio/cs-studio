@@ -57,7 +57,7 @@ public class ScannerAndScroller
         browser_ui = ui;
         this.model = model;
         this.listener = listener;
-        chart = browser_ui.getChart();
+        chart = browser_ui.getInteractiveChart().getChart();
         scans = 0;
         // Trigger initial period-related calculations.
         periodsChanged();

@@ -5,32 +5,29 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
 
 public class ShowHideButton
 {
-    private final Composite bar;
+    private final InteractiveChart chart;
 
     public ShowHideButton(InteractiveChart chart)
     {
-        bar = chart.getButtonBar();
+        this.chart = chart;
         
-        Button b = new Button(bar, SWT.PUSH);
-        b.setText("X");
+        Button b = new Button(chart.getButtonBar(), SWT.PUSH);
+        b.setText("X"); //$NON-NLS-1$
         b.addSelectionListener(new SelectionAdapter()
         {
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                if (bar.isVisible())
-                {
-                    bar.setVisible(false);
-                }
-                else
-                {
-                    bar.setVisible(true);
-                }
+                toggle();
             }
         });
+    }
+    
+    private void toggle()
+    {
+        chart.showButtonBar(! chart.getButtonBar().isVisible());
     }
 }

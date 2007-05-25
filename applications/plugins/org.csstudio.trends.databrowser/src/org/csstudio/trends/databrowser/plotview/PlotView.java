@@ -5,7 +5,6 @@ import org.csstudio.trends.databrowser.plotpart.PlotPart;
 import org.csstudio.trends.databrowser.plotpart.RemoveMarkersAction;
 import org.csstudio.util.file.FileUtil;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Composite;
@@ -94,15 +93,13 @@ public class PlotView extends ViewPart
     public void createPartControl(Composite parent)
     {
         plot_part.createPartControl(parent, false);
-        // Create actions
-        Action remove_markers_action = new RemoveMarkersAction(plot_part.getChart());
-        Action open_in_editor = new OpenAsPlotEditorAction(plot_part);
 
         // Create context menu
         MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-        manager.add(remove_markers_action);
+        manager.add(plot_part.createShowButtonBarAction());
+        manager.add(new RemoveMarkersAction(plot_part.getChart()));
         manager.add(new Separator());
-        manager.add(open_in_editor);
+        manager.add(new OpenAsPlotEditorAction(plot_part));
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         Control ctl = plot_part.getChart();
         Menu menu = manager.createContextMenu(ctl);
