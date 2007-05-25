@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.csstudio.platform.ui.workbench.FileEditorInput;
+import org.csstudio.swt.chart.Chart;
 import org.csstudio.trends.databrowser.Perspective;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.archiveview.ArchiveView;
@@ -281,7 +282,8 @@ public class PlotEditor extends EditorPart
     /** Create all actions. */
     private void createActions()
     {
-        remove_markers_action = new RemoveMarkersAction(plot_part.getChart());
+        final Chart chart = plot_part.getInteractiveChart().getChart();
+        remove_markers_action = new RemoveMarkersAction(chart);
         add_action = new AddPVAction(plot_part.getModel());
         config_action = new OpenViewAction(this, Messages.OpenConfigView, ConfigView.ID);
         archive_action = new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID);
@@ -309,7 +311,7 @@ public class PlotEditor extends EditorPart
         manager.add(perspective_action);
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
-        Control ctl = plot_part.getChart();
+        Control ctl = plot_part.getInteractiveChart().getChart();
         Menu menu = manager.createContextMenu(ctl);
         ctl.setMenu(menu);
         // TODO: publish the menu so others can extend it?

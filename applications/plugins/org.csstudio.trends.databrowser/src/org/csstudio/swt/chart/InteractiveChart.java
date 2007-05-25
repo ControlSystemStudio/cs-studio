@@ -1,5 +1,7 @@
 package org.csstudio.swt.chart;
 
+import java.util.ArrayList;
+
 import org.csstudio.swt.chart.axes.Axis;
 import org.csstudio.swt.chart.axes.Log10;
 import org.csstudio.swt.chart.axes.TraceSample;
@@ -46,6 +48,13 @@ public class InteractiveChart extends Composite
     
     private Chart chart;
     private Composite button_bar;
+    /** In principle, the button_bar.isVisible() method tells us
+     *  if it's visible.
+     *  Except right at startup the button bar is in principle configured
+     *  to be visible, but it's not, yet, and that messes everything up,
+     *  so we keep track ourself.
+     */
+    private boolean button_bar_visible = true;
     
     private static ImageRegistry button_images = null;
     private static final String UP = "up"; //$NON-NLS-1$
@@ -62,6 +71,9 @@ public class InteractiveChart extends Composite
     
     /** Was ZOOM_X_FROM_END set? */
     private boolean zoom_from_end;
+    
+    private ArrayList<InteractiveChartListener> listeners =
+        new ArrayList<InteractiveChartListener>();
        
     /** Widget constructor.
      *  @param parent Parent widget.
@@ -114,6 +126,18 @@ public class InteractiveChart extends Composite
                 }
             }
         });
+    }
+    
+    /** Add a listener */
+    public void addListener(InteractiveChartListener listener)
+    {
+        listeners.add(listener);
+    }
+
+    /** Remove a listener */
+    public void removeListener(InteractiveChartListener listener)
+    {
+        listeners.remove(listener);
     }
 
     /** Initialize image registry for button images */
@@ -242,8 +266,6 @@ public class InteractiveChart extends Composite
         // Rest: Plot
         FormLayout layout = new FormLayout();
         setLayout(layout);
-        
-        
         FormData fd;
         
         button_bar = new Composite(this, 0);
@@ -276,6 +298,12 @@ public class InteractiveChart extends Composite
     {
         return button_bar;
     }
+    
+    /** @return <code>true</code> if the button bar is enabled to be visible */
+    public boolean isButtonBarVisible()
+    {
+        return button_bar_visible;
+    }
 
     /** Show (or hide) the button bar
      *  @param show <code>true</code> to show the button bar.
@@ -284,26 +312,30 @@ public class InteractiveChart extends Composite
     {
         if (show)
         {
-            if (button_bar.isVisible())
+            if (button_bar_visible)
                 return; // NOP
             // Hook plot's top to the button bar
             FormData fd = (FormData)chart.getLayoutData();
             fd.top = new FormAttachment(button_bar);
             chart.setLayoutData(fd);
             // Make button bar visible
-            button_bar.setVisible(true);
+            button_bar_visible = true;
         }
         else
         {   // hide button bar
-            if (button_bar.isVisible() == false)
+            if (button_bar_visible == false)
                 return; // NOP
             // Hook plot's top to the top of the window
             FormData fd = (FormData)chart.getLayoutData();
             fd.top = new FormAttachment(0, 0);
             chart.setLayoutData(fd);
-            // Make button bar visible
-            button_bar.setVisible(false);
+            // Hide button bar
+            button_bar_visible = false;
         }
+        button_bar.setVisible(button_bar_visible);
+        // Notify listeners
+        for (InteractiveChartListener listener : listeners)
+            listener.buttonBarChanged(button_bar_visible);
         // Ask shell to re-evaluate the changed layout
         chart.getShell().layout(true, true);
     }

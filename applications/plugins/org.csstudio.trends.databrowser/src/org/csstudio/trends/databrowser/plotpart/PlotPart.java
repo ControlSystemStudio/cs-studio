@@ -2,7 +2,7 @@ package org.csstudio.trends.databrowser.plotpart;
 
 import java.io.InputStream;
 
-import org.csstudio.swt.chart.Chart;
+import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.ShowButtonBarAction;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.core.resources.IFile;
@@ -68,10 +68,10 @@ public class PlotPart
         return model;
     }
     
-    /** @return The Chart within the GUI. */
-    public Chart getChart()
+    /** @return The InteractiveChart within the GUI. */
+    public InteractiveChart getInteractiveChart()
     {
-        return gui.getInteractiveChart().getChart();
+        return gui.getInteractiveChart();
     }
     
     /** Creates the SWT controls for DataBrowser plot.

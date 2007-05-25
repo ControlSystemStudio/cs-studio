@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.plotview;
 
+import org.csstudio.swt.chart.Chart;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
 import org.csstudio.trends.databrowser.plotpart.RemoveMarkersAction;
@@ -8,7 +9,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -28,9 +28,12 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class PlotView extends ViewPart
 {
-    /** Memento tag. */
+    /** Memento tag for config file. */
     private static final String PLOTVIEW_FILE_PATH = "PLOTVIEW_FILE_PATH"; //$NON-NLS-1$
 
+    /** Memento tag for button bar. */
+    private static final String BUTTON_BAR_VISIBLE = "BUTTON_BAR_VISIBLE"; //$NON-NLS-1$
+    
     /** View ID registered in plugin.xml as org.eclipse.views ID */
     public static final String ID = PlotView.class.getName();
     
@@ -41,6 +44,8 @@ public class PlotView extends ViewPart
      *  that's required to support multiple views of the same type.
      */
     private static long instance = 0;
+
+    private boolean initially_show_button_bar = false;
     
     /** Create another instance of the PlotView for the given file. */
     public static boolean activateWithFile(IFile file)
@@ -75,10 +80,15 @@ public class PlotView extends ViewPart
         if (memento == null)
             return;
         // Read path from the memento
-        String path_txt = memento.getString(PLOTVIEW_FILE_PATH);
+        final String path_txt = memento.getString(PLOTVIEW_FILE_PATH);
         if (path_txt == null  ||  path_txt.length() < 1)
             return;
         init(FileUtil.getWorkspaceFile(path_txt));
+        
+       final String show_bar_txt = memento.getString(BUTTON_BAR_VISIBLE);
+       if (show_bar_txt == null  ||  show_bar_txt.length() < 1)
+           return;
+       initially_show_button_bar = Boolean.parseBoolean(show_bar_txt);
     }
     
     /** Load the given file into this view. */
@@ -94,16 +104,19 @@ public class PlotView extends ViewPart
     {
         plot_part.createPartControl(parent, false);
 
+        // Initially hide the button bar?
+        plot_part.getInteractiveChart().showButtonBar(initially_show_button_bar);
+        
         // Create context menu
         MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         manager.add(plot_part.createShowButtonBarAction());
-        manager.add(new RemoveMarkersAction(plot_part.getChart()));
+        final Chart chart = plot_part.getInteractiveChart().getChart();
+        manager.add(new RemoveMarkersAction(chart));
         manager.add(new Separator());
         manager.add(new OpenAsPlotEditorAction(plot_part));
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-        Control ctl = plot_part.getChart();
-        Menu menu = manager.createContextMenu(ctl);
-        ctl.setMenu(menu);
+        Menu menu = manager.createContextMenu(chart);
+        chart.setMenu(menu);
     }
 
     /** {@inheritDoc} */
@@ -127,5 +140,8 @@ public class PlotView extends ViewPart
     {
         memento.putString(PLOTVIEW_FILE_PATH,
                           FileUtil.toPortablePath(plot_part.getFile()));
+        final boolean visible =
+            plot_part.getInteractiveChart().getButtonBar().isVisible();
+        memento.putString(BUTTON_BAR_VISIBLE, Boolean.toString(visible));
     }
 }
