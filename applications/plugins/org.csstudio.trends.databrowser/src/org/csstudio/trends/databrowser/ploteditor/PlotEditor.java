@@ -51,6 +51,11 @@ public class PlotEditor extends EditorPart
     private Action config_action, archive_action, sample_action, export_action;
     private Action view_action, perspective_action;
     private boolean is_dirty = false;
+    /** In case of a model init (load) problem, we won't get to register
+     *  the model listener, and hence we shouldn't remove it in dispose().
+     *  This helps us to keep track.
+     */
+    private boolean added_model_listener = false;
     // Update 'dirty' state whenever anything changes
     private final ModelListener model_listener = new ModelListener()
     {
@@ -125,7 +130,11 @@ public class PlotEditor extends EditorPart
         setInput(input);
         IFile file = getEditorInputFile();
         plot.init(file);
-        plot.getModel().addListener(model_listener);
+        if (! added_model_listener)
+        {
+            plot.getModel().addListener(model_listener);
+            added_model_listener = true;
+        }
     }
     
     /** @return Returns the <code>IFile</code> for the current editor input.
@@ -245,7 +254,11 @@ public class PlotEditor extends EditorPart
     @Override
     public void dispose()
     {
-        plot.getModel().removeListener(model_listener);
+        if (added_model_listener)
+        {
+            plot.getModel().removeListener(model_listener);
+            added_model_listener = false;
+        }
         plot.dispose();
         super.dispose();
     }
