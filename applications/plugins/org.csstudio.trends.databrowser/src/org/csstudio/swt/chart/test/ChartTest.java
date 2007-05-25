@@ -150,6 +150,8 @@ public class ChartTest
             InteractiveChart ichart = new InteractiveChart(shell, chart_flags);
             chart = ichart.getChart();
             ichart.setLayoutData(gd);
+            
+            new ShowHideButton(ichart);
         }
         chart.getXAxis().setLabel("The X Axis");
         if ((chart_flags & Chart.TIME_CHART) != 0)

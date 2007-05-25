@@ -46,7 +46,6 @@ public class InteractiveChart extends Composite
     private Chart chart;
     private Composite button_bar;
     
-    // make this one static?
     private static ImageRegistry button_images = null;
     private static final String UP = "up"; //$NON-NLS-1$
     private static final String DOWN = "down"; //$NON-NLS-1$
@@ -72,42 +71,80 @@ public class InteractiveChart extends Composite
     {
         super(parent, style & Chart.STYLE_MASK);
         zoom_from_end = (style & ZOOM_X_FROM_END) != 0;
-        if (button_images == null)
+        initButtonImages();
+        
+        makeGUI(style);
+        
+        chart.addListener(new ChartListener()
         {
-            button_images = new ImageRegistry();
-            try
-            {
-                button_images.put(UP, Plugin.getImageDescriptor("icons/up.gif"));
-                button_images.put(DOWN, Plugin.getImageDescriptor("icons/down.gif"));
-                button_images.put(Y_IN, Plugin.getImageDescriptor("icons/y_in.gif"));
-                button_images.put(Y_OUT, Plugin.getImageDescriptor("icons/y_out.gif"));
-                button_images.put(ZOOM, Plugin.getImageDescriptor("icons/autozoom.gif"));
-                button_images.put(STAGGER, Plugin.getImageDescriptor("icons/stagger.gif"));
-                button_images.put(LEFT, Plugin.getImageDescriptor("icons/left.gif"));
-                button_images.put(RIGHT, Plugin.getImageDescriptor("icons/right.gif"));
-                button_images.put(X_IN, Plugin.getImageDescriptor("icons/x_in.gif"));
-                button_images.put(X_OUT, Plugin.getImageDescriptor("icons/x_out.gif"));
-                button_images.put(DEFAULT_ZOOM, Plugin.getImageDescriptor("icons/defaultscale.gif"));
+            public void changedXAxis(XAxis xaxis)
+            {}
+            
+            public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
+            {}
+
+            public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
+            {   // Adds a marker for the selected sample
+                if (yaxis == null)
+                    return;
+                TraceSample best = yaxis.getClosestSample(xaxis, x, y);
+                if (best != null)
+                {
+                    ChartSample sample = best.getSample();
+                    x = sample.getX();
+                    y = sample.getY();
+                    StringBuffer b = new StringBuffer();
+                    b.append(best.getTrace().getName());
+                    b.append("\n"); //$NON-NLS-1$
+                    b.append(xaxis.getTicks().format(x, 2));
+                    // Show value, unless it's NaN or +- inf
+                    if (!Double.isInfinite(y) &&
+                        !Double.isNaN(y))
+                    {
+                    b.append("\n"); //$NON-NLS-1$
+                    b.append(yaxis.getTicks().format(y, 2));
+                    }
+                    if (sample.getInfo() != null)
+                    {
+                        b.append("\n"); //$NON-NLS-1$
+                        b.append(sample.getInfo());
+                    }
+                    yaxis.addMarker(x, y, b.toString());
+                }
             }
-            catch (Exception e)
-            {
-                Plugin.logException("InteractiveChart cannot init. images", e);
-            }
+        });
+    }
+
+    /** Initialize image registry for button images */
+    @SuppressWarnings("nls")
+    private void initButtonImages()
+    {
+        if (button_images != null)
+            return;
+        button_images = new ImageRegistry();
+        try
+        {
+            button_images.put(UP, Plugin.getImageDescriptor("icons/up.gif"));
+            button_images.put(DOWN, Plugin.getImageDescriptor("icons/down.gif"));
+            button_images.put(Y_IN, Plugin.getImageDescriptor("icons/y_in.gif"));
+            button_images.put(Y_OUT, Plugin.getImageDescriptor("icons/y_out.gif"));
+            button_images.put(ZOOM, Plugin.getImageDescriptor("icons/autozoom.gif"));
+            button_images.put(STAGGER, Plugin.getImageDescriptor("icons/stagger.gif"));
+            button_images.put(LEFT, Plugin.getImageDescriptor("icons/left.gif"));
+            button_images.put(RIGHT, Plugin.getImageDescriptor("icons/right.gif"));
+            button_images.put(X_IN, Plugin.getImageDescriptor("icons/x_in.gif"));
+            button_images.put(X_OUT, Plugin.getImageDescriptor("icons/x_out.gif"));
+            button_images.put(DEFAULT_ZOOM, Plugin.getImageDescriptor("icons/defaultscale.gif"));
         }
-        
-        GridLayout gl = new GridLayout();
-        gl.numColumns = 1;
-        setLayout(gl);
-        GridData gd;
-        
-        button_bar = new Composite(this, 0);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        button_bar.setLayoutData(gd);
-        button_bar.setLayout(new RowLayout());
-        
-        // Buttons
+        catch (Exception e)
+        {
+            Plugin.logException("InteractiveChart cannot init. images", e);
+        }
+    }
+
+    /** Add all the button bar buttons. */
+    private void addButtons()
+    {
         addButton(UP, Messages.Chart_MoveUp, new SelectionAdapter()
         {
             public void widgetSelected(SelectionEvent e)
@@ -194,6 +231,24 @@ public class InteractiveChart extends Composite
                     zoomInOut(chart.getXAxis(), 1.0/ZOOM_FACTOR, false);
             }
         });
+    }
+    
+    private void makeGUI(int style)
+    {
+        // Top:  Button Bar
+        // Rest: Plot
+        GridLayout gl = new GridLayout();
+        gl.numColumns = 1;
+        setLayout(gl);
+        GridData gd;
+        
+        button_bar = new Composite(this, 0);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        button_bar.setLayoutData(gd);
+        button_bar.setLayout(new RowLayout());
+        addButtons();
         
         // X/Y Axes
         chart = new Chart(this, style);
@@ -203,47 +258,8 @@ public class InteractiveChart extends Composite
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         chart.setLayoutData(gd);
-        
-        chart.addListener(new ChartListener()
-        {
-            public void changedXAxis(XAxis xaxis)
-            {}
-            
-            public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
-            {}
-
-            public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
-            {   // Adds a marker for the selected sample
-                if (yaxis == null)
-                    return;
-                TraceSample best = yaxis.getClosestSample(xaxis, x, y);
-                if (best != null)
-                {
-                    ChartSample sample = best.getSample();
-                    x = sample.getX();
-                    y = sample.getY();
-                    StringBuffer b = new StringBuffer();
-                    b.append(best.getTrace().getName());
-                    b.append("\n"); //$NON-NLS-1$
-                    b.append(xaxis.getTicks().format(x, 2));
-                    // Show value, unless it's NaN or +- inf
-                    if (!Double.isInfinite(y) &&
-                        !Double.isNaN(y))
-                    {
-                    b.append("\n"); //$NON-NLS-1$
-                    b.append(yaxis.getTicks().format(y, 2));
-                    }
-                    if (sample.getInfo() != null)
-                    {
-                        b.append("\n"); //$NON-NLS-1$
-                        b.append(sample.getInfo());
-                    }
-                    yaxis.addMarker(x, y, b.toString());
-                }
-            }
-        });
     }
-    
+
     /** @return Returns the axes. */
     public Chart getChart()
     {
