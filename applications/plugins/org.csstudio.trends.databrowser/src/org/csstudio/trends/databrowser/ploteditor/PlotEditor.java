@@ -208,8 +208,9 @@ public class PlotEditor extends EditorPart
     @Override
     public void doSaveAs()
     {
-        IFile file = PromptForNewXMLFileDialog.run(
-                getSite().getShell(), getEditorInputFile());
+        IFile file = PromptForNewXMLFileDialog.run(getSite().getShell(),
+                                                   Plugin.FileExtension,
+                                                   getEditorInputFile());
         if (file == null  ||  !saveToFile(null, file))
             return;
         // Update input and title

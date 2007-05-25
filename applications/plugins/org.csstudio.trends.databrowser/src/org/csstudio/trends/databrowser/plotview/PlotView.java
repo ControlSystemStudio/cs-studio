@@ -24,6 +24,7 @@ import org.eclipse.ui.part.ViewPart;
  *  
  *  TODO handle 'drop'
  *  TODO "Open in Editor"
+ *  TODO persist IFile over restart
  *  
  *  @author Kay Kasemir
  */

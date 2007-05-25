@@ -17,7 +17,11 @@ public class Plugin extends AbstractCssUiPlugin
 {
     public static final String ID = "org.csstudio.trends.databrowser"; //$NON-NLS-1$
     public static final String Version = "0.1"; //$NON-NLS-1$
-    // The shared instance.
+
+    /** The suggested file extension for DataBrowser config files. */
+    public static final String FileExtension = "css-plt"; //$NON-NLS-1$
+    
+    /** The shared instance. */
     private static Plugin plugin = null;
 
     /** The constructor. */

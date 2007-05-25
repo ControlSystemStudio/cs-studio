@@ -12,13 +12,18 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class PromptForNewXMLFileDialog
 {
+    /** Prevent instantiation. */
+    private PromptForNewXMLFileDialog()
+    {}
+    
     /** Run the dialog, and return the new IFile.
      * 
      * @param shell The shell to use
+     * @param extension File extension (without the '.')
      * @param old_file The original file or <code>null</code>.
      * @return Returns the new <code>IFile</code> or <code>null</code>.
      */
-    public static IFile run(Shell shell, IFile old_file)
+    public static IFile run(Shell shell, String extension, IFile old_file)
     {
         // Query for new name.
         // The path to the new resource relative to the workspace
@@ -34,12 +39,12 @@ public class PromptForNewXMLFileDialog
             return null;
         // Assert it's an '.xml' file
         String ext = new_resource_path.getFileExtension();
-        if (ext == null  ||  !ext.equals("xml")) //$NON-NLS-1$
+        if (ext == null  ||  !ext.equals(extension))
         {
             String filename = new_resource_path.lastSegment();
             new_resource_path =
                 new_resource_path.removeLastSegments(1)
-                .append(filename + ".xml"); //$NON-NLS-1$
+                .append(filename + "." + extension); //$NON-NLS-1$
         }
         // Get the file for the new resource's path.
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
