@@ -82,7 +82,7 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
-            id="org.csstudio.trends.databrowser.popupMenu"
+            id="org.csstudio.trends.databrowser.PVpopupAction"
             objectClass="org.csstudio.platform.model.IProcessVariable">
          <menu
                id="org.csstudio.popmenu"
@@ -99,38 +99,18 @@
                menubarPath="org.csstudio.popmenu/content"
                tooltip="%PopmenuTooltip"/>
       </objectContribution>
+      <objectContribution
+           adaptable="false"
+           id="org.csstudio.trends.databrowser.plotview.OpenAsPlotViewAction"
+           nameFilter="*.css-plt"
+           objectClass="org.eclipse.core.resources.IResource">
+        <action
+              id="org.csstudio.trends.databrowser.plotview.OpenAsPlotViewAction"
+              class="org.csstudio.trends.databrowser.plotview.OpenAsPlotViewAction"
+              icon="icons/chart.gif"
+              label="%RunAsView"/>
+      </objectContribution>
    </extension>
-   <!-- extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.trends.databrowser"
-            label="CSS Action Set"
-            visible="true">
-         <menu
-               id="org.csstudio"
-               label="%CSS"
-               path="additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <menu
-               id="org.csstudio.trends"
-               label="%CSSTrends"
-               path="org.csstudio/additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <action
-               id="org.csstudio.trends.databrowser.NewDataBrowserAction"
-               class="org.csstudio.trends.databrowser.NewDataBrowserAction"
-               icon="icons/chart.gif"
-               label="%Databrowser"
-               menubarPath="org.csstudio/org.csstudio.trends/content"
-               style="push"
-               tooltip="%MenuTooltip"/>
-      </actionSet>
-   </extension -->
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
