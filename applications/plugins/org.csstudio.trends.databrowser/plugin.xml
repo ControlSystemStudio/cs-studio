@@ -108,7 +108,7 @@
               id="org.csstudio.trends.databrowser.plotview.OpenAsPlotViewAction"
               class="org.csstudio.trends.databrowser.plotview.OpenAsPlotViewAction"
               icon="icons/chart.gif"
-              label="%RunAsView"/>
+              label="%OpenAsView"/>
       </objectContribution>
    </extension>
    <extension
