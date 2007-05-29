@@ -43,6 +43,7 @@ public class ClockWidgetTest
         ok.setText("Ok");
         ok.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 run = false;

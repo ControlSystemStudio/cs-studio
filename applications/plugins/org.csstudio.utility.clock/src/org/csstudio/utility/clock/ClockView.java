@@ -16,6 +16,7 @@ public class ClockView extends ViewPart
     private ClockWidget clock;
 
     /** Fill the view. */
+    @Override
     public void createPartControl(Composite parent)
     {
         GridLayout gl = new GridLayout();
@@ -33,6 +34,7 @@ public class ClockView extends ViewPart
     }
 
     /** Set focus on clock, though that's a NOP. */
+    @Override
     public void setFocus()
     {
         clock.setFocus();

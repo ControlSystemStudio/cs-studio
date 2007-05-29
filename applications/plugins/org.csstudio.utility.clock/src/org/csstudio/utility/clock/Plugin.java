@@ -26,7 +26,9 @@ public class Plugin extends AbstractCssUiPlugin
     /** @see org.csstudio.platform.ui.AbstractCssUiPlugin#getPluginId() */
     @Override
     protected void doStart(BundleContext context) throws Exception
-    {}
+    {
+        // NOP
+    }
 
     /** @see org.csstudio.platform.ui.AbstractCssUiPlugin#getPluginId() */
     @Override
