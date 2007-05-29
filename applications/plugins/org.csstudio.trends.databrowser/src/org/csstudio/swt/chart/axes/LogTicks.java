@@ -9,6 +9,7 @@ import org.eclipse.swt.graphics.GC;
 public class LogTicks extends Ticks
 {
     /** @see Ticks#compute(double, double, GC, int) */
+    @Override
     void compute(double low, double high, GC gc, int screen_width)
     {
         if (low > high)
@@ -27,6 +28,7 @@ public class LogTicks extends Ticks
     }
 
     /** @return Returns the next tick, following a given tick mark. */
+    @Override
     public double getNext(double tick)
     {   // distance refers to the tick distance for log(value_space)!
         double next = Log10.pow10(Log10.log10(tick) + distance);
@@ -38,6 +40,7 @@ public class LogTicks extends Ticks
     }
     
     /** @return Returns the number formated according to the tick precision. */
+    @Override
     public String format(double num, int precision_change)
     {
         int p = precision + precision_change;

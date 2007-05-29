@@ -28,7 +28,8 @@ public class ModelSampleMergerTest extends TestCase
                                         "",
                                         meta,
                                         IValue.Quality.Original,
-                                        new double[] { l }));
+                                        new double[] { l }),
+                                "test");
     }
 
     public void testPassOld()

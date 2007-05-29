@@ -96,6 +96,7 @@ public class ExportView extends PlotAwareView
         use_plot_time.setSelection(true);
         use_plot_time.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {   conditionallyEnableTimeConfig();  }
         });
@@ -118,6 +119,7 @@ public class ExportView extends PlotAwareView
         time_config.setLayoutData(gd);
         time_config.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 /* TODO
@@ -314,6 +316,7 @@ public class ExportView extends PlotAwareView
         
         browse.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 FileDialog dlg = new FileDialog(shell, SWT.SAVE);
@@ -354,6 +357,7 @@ public class ExportView extends PlotAwareView
         export.setLayoutData(gd);
         export.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {   exportRequested();  }
         });
@@ -370,6 +374,7 @@ public class ExportView extends PlotAwareView
         // precision 'enables' whenever non-default format selected
         format_default.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {   precision.setEnabled(! format_default.getSelection());   }
         });

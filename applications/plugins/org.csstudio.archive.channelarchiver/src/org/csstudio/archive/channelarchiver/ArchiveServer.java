@@ -44,37 +44,39 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
         archives_request.read(xmlrpc);
     }
     
-    /* @see org.csstudio.archive.Archive#getURL() */
+    /** {@inheritDoc} */
+    @Override
+    public String getServerName() 
+    {
+    	return "Channel Archiver"; //$NON-NLS-1$
+    }
+
+    /** {@inheritDoc} */
     @Override
     public String getURL()
     {
         return url;
     }
 
-    /* @see org.csstudio.archive.Archive#getDescription() */
+    /** {@inheritDoc} */
     @Override
     public String getDescription()
     {
         return server_info_request.getDescription();
     }
 
-    /* @see org.csstudio.archive.Archive#getVersion() */
+    /** {@inheritDoc} */
     @Override
     public int getVersion()
     {
         return server_info_request.getVersion();
     }
     
-    /* @see org.csstudio.archive.Archive#getRequestTypes() */
+    /** {@inheritDoc} */
     @Override
     public String[] getRequestTypes()
     {
         return server_info_request.getRequestTypes();
-    }
-    
-    public String getServerName() 
-    {
-    	return "XNDSServer"; //$NON-NLS-1$
     }
     
     /** @return Severity for an EPICS severity code. */
@@ -110,9 +112,7 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 		return archives_request.getArchiveInfos();
 	}
  	
-    /** @see #getArchiveInfos() 
-     *  @see org.csstudio.archiveArchiveServer#getNames() 
-     */
+    /** {@inheritDoc} */
     @Override
 	public final NameInfo[] getNames(int key, String pattern) throws Exception
 	{
@@ -121,7 +121,7 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 		return infos.getNameInfos();
 	}
 
-    /* @see org.csstudio.archiveArchiveServer#getNames() */
+    /** {@inheritDoc} */
     @Override
 	public ArchiveValues[] getSamples(int key, String[] names,
 			ITimestamp start, ITimestamp end,

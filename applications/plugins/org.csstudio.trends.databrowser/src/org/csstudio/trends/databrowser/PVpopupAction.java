@@ -12,6 +12,7 @@ import org.csstudio.trends.databrowser.preferences.Preferences;
 /** Another application sent us a PV name via its popup menu. */
 public class PVpopupAction extends ProcessVariablePopupAction
 {    
+    @Override
     public void handlePVs(IProcessVariable pv_names[])
     {
     	PlotEditor editor = PlotEditor.createInstance();

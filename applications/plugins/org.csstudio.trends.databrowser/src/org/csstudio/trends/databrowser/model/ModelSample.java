@@ -20,23 +20,30 @@ import org.csstudio.swt.chart.ChartSample;
  */
 public class ModelSample implements ChartSample
 {
-    /** This is the 'real' archive sample. */
+    /** The actual sample. */
     private final IValue sample;
     
+    /** The source that provided the sample (archive, live, ...) */
+    private final String source;
+    
     /** Create ModelSample from Archive Sample. */
-    ModelSample(IValue sample)
+    ModelSample(IValue sample, String source)
     {
         this.sample = sample;
+        this.source = source;
     }
-    
-    // TODO Add 'source' info so that we can display the data source
-    // (live, archive XYZ, ...) in getInfo
     
     /** @return The archive sample. */
     final public IValue getSample()
     {   return sample;  }
+
+    /** @return The source that provided this sample. */
+    final public String getSource()
+    {   return source;  }
     
-    /** @see org.csstudio.swt.chart.ChartSample */
+    /** Plot a point or part of line?
+     *  @see org.csstudio.swt.chart.ChartSample
+     */
     public ChartSample.Type getType()
     {
         double y = getY();
@@ -45,22 +52,31 @@ public class ModelSample implements ChartSample
         return ChartSample.Type.Normal;
     }
 
-    /** @see org.csstudio.swt.chart.ChartSample */
+    /** X coordinate.
+     *  @see org.csstudio.swt.chart.ChartSample
+     */
     final public double getX()
     {
         return sample.getTime().toDouble();
     }
 
-    /** @see org.csstudio.swt.chart.ChartSample */
+    /** Y coordinate
+     *  @see org.csstudio.swt.chart.ChartSample
+     */
     final public double getY()
     {
         return ValueUtil.getDouble(sample);
     }
 
-    /** @see org.csstudio.swt.chart.ChartSample */
+    /** Info text that the plot uses.
+     *  @see org.csstudio.swt.chart.ChartSample
+     */
     public String getInfo()
     {
-        return ValueUtil.getInfo(sample);
+        final String val_info = ValueUtil.getInfo(sample);
+        if (val_info == null)
+            return source;
+        return val_info + "\n" + source; //$NON-NLS-1$
     }
 
     @Override

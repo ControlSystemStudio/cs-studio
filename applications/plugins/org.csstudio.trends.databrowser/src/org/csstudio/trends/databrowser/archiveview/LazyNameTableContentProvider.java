@@ -29,8 +29,8 @@ public class LazyNameTableContentProvider implements ILazyContentProvider
     }
 
     public void dispose() 
-    {}
+    { /* NOP */ }
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-    {}
+    { /* NOP */ }
 }

@@ -41,6 +41,7 @@ public class Preferences extends AbstractPreferenceInitializer
     /** Get the default values for all preferences.
      *  @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
      */
+    @Override
     public void initializeDefaultPreferences()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
@@ -91,7 +92,7 @@ public class Preferences extends AbstractPreferenceInitializer
         ArrayList<String> urls = new ArrayList<String>();
         while (st.hasMoreElements())
             urls.add((String)st.nextElement());
-        return (String[]) urls.toArray(new String[urls.size()]);
+        return urls.toArray(new String[urls.size()]);
     }
     
     /** Concatenate the pieces of an archive data source into one String.

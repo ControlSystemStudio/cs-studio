@@ -9,6 +9,7 @@ public class ChartSampleSearchTest extends TestCase
 {
     private ChartSampleSequence samples;
 
+    @Override
     protected void setUp() throws Exception
     {
         ChartSampleSequenceContainer sc = new ChartSampleSequenceContainer();

@@ -23,11 +23,13 @@ public class NewFileWizardPage extends WizardNewFileCreationPage
         setDescription(Messages.CreateNew___ + title + Messages.___TypeFile);
     }
     
+    @Override
     protected InputStream getInitialContents()
     {
         return new StringInputStream(default_content);
     }
     
+    @Override
     public String getFileExtension()
     {
         return "xml"; //$NON-NLS-1$

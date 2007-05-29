@@ -30,7 +30,7 @@ public class ModelSampleRingTest extends TestCase
         
         double value = 0;
 
-        c.add(create(++value));
+        c.add(create(++value), "test");
         System.out.println("Initial element");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -40,7 +40,7 @@ public class ModelSampleRingTest extends TestCase
         
         // These should all fit
         for (int i=0; i<4; ++i)
-            c.add(create(++value));
+            c.add(create(++value), "test");
         System.out.println("5 elements");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -50,7 +50,7 @@ public class ModelSampleRingTest extends TestCase
         assertEquals(5.0, c.get(4).getX(), 0.1);
 
         // One more
-        c.add(create(++value));
+        c.add(create(++value), "test");
         System.out.println("sixt elements");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -61,7 +61,7 @@ public class ModelSampleRingTest extends TestCase
 
         // Up to 100
         for (int i=0; i<100-6; ++i)
-            c.add(create(++value));
+            c.add(create(++value), "test");
         System.out.println("Total of 100 added");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());

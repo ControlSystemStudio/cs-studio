@@ -143,6 +143,7 @@ public class CalendarWidget extends Composite
         
         midnight.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 if (!in_GUI_update)
@@ -156,6 +157,7 @@ public class CalendarWidget extends Composite
         });
         noon.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 if (!in_GUI_update)
@@ -177,6 +179,7 @@ public class CalendarWidget extends Composite
         });
         SelectionAdapter update = new SelectionAdapter() 
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 if (!in_GUI_update)

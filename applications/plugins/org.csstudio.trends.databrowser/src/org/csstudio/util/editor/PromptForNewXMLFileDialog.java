@@ -14,7 +14,7 @@ public class PromptForNewXMLFileDialog
 {
     /** Prevent instantiation. */
     private PromptForNewXMLFileDialog()
-    {}
+    { /* prevent instantiation */ }
     
     /** Run the dialog, and return the new IFile.
      * 

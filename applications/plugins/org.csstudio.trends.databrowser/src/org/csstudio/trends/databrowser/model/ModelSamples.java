@@ -97,7 +97,7 @@ public class ModelSamples implements ChartSampleSequence
                         IValue.Quality.Original,
                         new double[] { Double.NEGATIVE_INFINITY });
         
-        live_samples.add(disconnected);
+        live_samples.add(disconnected, Messages.LiveSample);
     }
     
     /** Add most recent timestamp/value */
@@ -106,7 +106,7 @@ public class ModelSamples implements ChartSampleSequence
         // We expect all access to this method from the UI thread.
         if (Display.getCurrent() == null)
             throw new Error("Accessed from non-UI thread"); //$NON-NLS-1$
-        live_samples.add(value);
+        live_samples.add(value, Messages.LiveSample);
     }
     
     // @see ChartSampleSequence

@@ -97,6 +97,7 @@ public class SWTMonthChooser extends Composite {    private Combo comboBox;
     /* (non-Javadoc)
      * @see org.eclipse.swt.widgets.Control#setFont(org.eclipse.swt.graphics.Font)
      */
+    @Override
     public void setFont(Font font) {
         super.setFont(font);
         comboBox.setFont(getFont());

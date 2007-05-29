@@ -216,7 +216,8 @@ public class PlotEditor extends EditorPart
         {
             try
             {   stream.close(); }
-            catch (Exception e) {}
+            catch (Exception e)
+            { /* NOP */ }
         }
         return ok;
     }

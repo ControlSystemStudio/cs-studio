@@ -25,7 +25,7 @@ public class ArchiveCache
      *  @see #getInstance()
      */
     private ArchiveCache()
-    {}
+    { /* prevent instantiation */ }
     
     /** @return The one and only instance of this cache. */
     synchronized public static ArchiveCache getInstance()

@@ -42,6 +42,8 @@ public class ModelSampleArray extends ArrayList<ModelSample>
         // Any samples?
         if (as.length < 1)
             return null;
+        // Use server's name as sample source info
+        final String source = arch_samples.getArchiveServer().getServerName();
         ModelSampleArray model_samples = new ModelSampleArray(as.length);
         for (int i=0; i<as.length; ++i)
         {   
@@ -49,7 +51,7 @@ public class ModelSampleArray extends ArrayList<ModelSample>
             // Stop at border
             if (border != null  &&  sample.getTime().isGreaterThan(border))
                 break;
-            model_samples.add(new ModelSample(sample)); 
+            model_samples.add(new ModelSample(sample, source)); 
         }
         if (model_samples.size() <= 0)
             return null;

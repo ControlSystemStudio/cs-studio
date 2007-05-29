@@ -84,12 +84,12 @@ public abstract class PlotAwareView extends ViewPart
                 }
             }
             // All ignored
-            public void partDeactivated(IWorkbenchPartReference ref) {}
-            public void partBroughtToTop(IWorkbenchPartReference ref) {}
-            public void partHidden(IWorkbenchPartReference ref) {}
-            public void partInputChanged(IWorkbenchPartReference ref) {}
-            public void partOpened(IWorkbenchPartReference ref) {}
-            public void partVisible(IWorkbenchPartReference ref) {}
+            public void partDeactivated(IWorkbenchPartReference ref) { /* NOP */ }
+            public void partBroughtToTop(IWorkbenchPartReference ref) { /* NOP */ }
+            public void partHidden(IWorkbenchPartReference ref) { /* NOP */ }
+            public void partInputChanged(IWorkbenchPartReference ref) { /* NOP */ }
+            public void partOpened(IWorkbenchPartReference ref) { /* NOP */ }
+            public void partVisible(IWorkbenchPartReference ref) { /* NOP */ }
         };
         getSite().getPage().addPartListener(part_listener);
 

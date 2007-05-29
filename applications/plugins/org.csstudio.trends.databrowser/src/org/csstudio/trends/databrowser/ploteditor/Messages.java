@@ -14,11 +14,12 @@ public class Messages extends NLS
     public static String OpenSampleView;
     public static String OpenExportView;
     public static String SaveBrowserConfig;
+    
     static
     {   // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
     private Messages()
-    {}
+    { /* prevent instantiation */ }
 }

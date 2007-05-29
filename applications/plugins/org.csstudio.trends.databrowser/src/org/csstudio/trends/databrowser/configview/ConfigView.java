@@ -440,6 +440,7 @@ public class ConfigView extends PlotAwareView
 
         SelectionListener validator = new SelectionAdapter()
         {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e)
             {   checkLivePVInputs(); }
         };
@@ -536,6 +537,7 @@ public class ConfigView extends PlotAwareView
         // Update the model in response to newly entered start/end times
         SelectionListener validator = new SelectionAdapter()
         {
+            @Override
             public void widgetDefaultSelected(SelectionEvent e)
             {   checkTimeConfigInputs(); }
         };
@@ -545,6 +547,7 @@ public class ConfigView extends PlotAwareView
         // Connect the "..." buttons to a start/end dialog.
         SelectionListener start_stop_dlg = new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 StartEndDialog dlg =
@@ -566,6 +569,7 @@ public class ConfigView extends PlotAwareView
         // Update graph to config's start/end time
         set_graph_times.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 Model model = getModel();
@@ -586,6 +590,7 @@ public class ConfigView extends PlotAwareView
         // Read start/end time from graph
         read_graph_times.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 Model model = getModel();

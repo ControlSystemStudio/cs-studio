@@ -12,10 +12,10 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 public class NewDataBrowserAction implements IWorkbenchWindowActionDelegate
 {
 	public void init(IWorkbenchWindow window)
-	{}
+	{ /* NOP */ }
 
 	public void selectionChanged(IAction action, ISelection selection)
-	{}
+    { /* NOP */ }
 
 	public void run(IAction action)
 	{
@@ -23,5 +23,5 @@ public class NewDataBrowserAction implements IWorkbenchWindowActionDelegate
 	}
 
 	public void dispose()
-	{}
+    { /* NOP */ }
 }

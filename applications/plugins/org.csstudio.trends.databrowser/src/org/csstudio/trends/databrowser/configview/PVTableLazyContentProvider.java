@@ -30,5 +30,5 @@ public class PVTableLazyContentProvider implements ILazyContentProvider
 	}
 
 	public void dispose() 
-    {}
+    { /* NOP */ }
 }

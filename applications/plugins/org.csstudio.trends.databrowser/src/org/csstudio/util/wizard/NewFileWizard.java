@@ -76,6 +76,7 @@ public class NewFileWizard extends Wizard implements INewWizard
     }
     
     /** Adding the page to the wizard. */
+    @Override
     public void addPages()
     {
         page = new NewFileWizardPage(title, default_filename, selection);
@@ -85,6 +86,7 @@ public class NewFileWizard extends Wizard implements INewWizard
     /** Called when 'Finish' button is pressed in the wizard. We
      *  will create an operation and run it using wizard as execution context.
      */
+    @Override
     public boolean performFinish()
     {
         final IPath container = page.getContainerFullPath();
@@ -155,6 +157,7 @@ public class NewFileWizard extends Wizard implements INewWizard
         }
         catch (IOException e)
         {
+            // ignore
         }
         monitor.worked(1);
         monitor.setTaskName(Messages.OpeningFile___);

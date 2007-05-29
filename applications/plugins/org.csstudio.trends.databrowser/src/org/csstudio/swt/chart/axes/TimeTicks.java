@@ -25,6 +25,7 @@ public class TimeTicks extends Ticks
      *  @param char_width Aproximate width of one character.
      *  @param screen_width Width of axis on screen.
      */
+    @Override
     void compute(double low, double high, GC gc, int screen_width)
     {
         if (low > high)
@@ -100,6 +101,7 @@ public class TimeTicks extends Ticks
     }
     
     /** @return Returns the number formated according to the tick precision. */
+    @Override
     public String format(double num, int precision_change)
     {
         if (precision_change > 0)

@@ -13,12 +13,12 @@ import org.csstudio.swt.chart.axes.YAxisFactory;
 import org.csstudio.swt.chart.axes.YAxisListener;
 import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -189,9 +189,9 @@ public class Chart extends Canvas
         });
         
         // Adapt layout to resizes
-        addControlListener(new ControlListener()
+        addControlListener(new ControlAdapter()
         {
-            public void controlMoved(ControlEvent e) {}
+            @Override
             public void controlResized(ControlEvent e)
             {   dirty_layout = true;  }
         });
@@ -218,10 +218,9 @@ public class Chart extends Canvas
         });
         
         // Mouse-down: Mark a point, maybe start rubberband-zoom
-        addMouseListener(new MouseListener()
+        addMouseListener(new MouseAdapter()
         {
-            public void mouseDoubleClick(MouseEvent event) {}
-
+            @Override
             public void mouseDown(MouseEvent event)
             {
                 if (event.button != 1)
@@ -233,6 +232,7 @@ public class Chart extends Canvas
                 mouse_down_y = event.y;
             }
 
+            @Override
             public void mouseUp(MouseEvent event)
             { 
                 mouse_down = false;

@@ -143,6 +143,10 @@ public class PVTableHelper
                         Messages.LogAxisType : Messages.LinearAxisType;
             case TRACE_TYPE:
             	return entry.getTraceType().toString();
+            case AUTO_SCALE:
+                // no text
+            case COLOR:
+                // no text
             }
 		}
 		catch (Exception e)

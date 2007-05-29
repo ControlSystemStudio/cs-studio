@@ -17,9 +17,6 @@ public class OpenAsPlotViewAction  extends Action implements IObjectActionDelega
     /** The current selection. */
     private IStructuredSelection selection;
 
-    public OpenAsPlotViewAction()
-    {}
-
     /** Open currently selected IFile as View. */
     public void run(final IAction action)
     {
@@ -42,5 +39,5 @@ public class OpenAsPlotViewAction  extends Action implements IObjectActionDelega
     /** @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart) */
     public void setActivePart(final IAction action,
                               final IWorkbenchPart targetPart)
-    {}
+    { /* NOP */ }
 }

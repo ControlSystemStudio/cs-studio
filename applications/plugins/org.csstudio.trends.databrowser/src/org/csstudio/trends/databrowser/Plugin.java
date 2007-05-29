@@ -35,10 +35,12 @@ public class Plugin extends AbstractCssUiPlugin
     {   return plugin;   }
 
     /** {@inheritDoc} */
+    @Override
     public String getPluginId()
     {   return ID;  }
     
     /** {@inheritDoc} */
+    @Override
     protected void doStart(final BundleContext context) throws Exception
     {
         // Assert that there is an open "CSS" project
@@ -46,6 +48,7 @@ public class Plugin extends AbstractCssUiPlugin
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void doStop(final BundleContext context) throws Exception
     {
         plugin = null;

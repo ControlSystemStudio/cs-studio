@@ -142,8 +142,10 @@ public class SampleView extends PlotAwareView
         });
          
         
-        table_viewer.addFilter(new ViewerFilter () {
-        	public boolean select(Viewer viewer, Object parentElement, Object element)
+        table_viewer.addFilter(new ViewerFilter ()
+        {
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element)
             {
         		if (model == null)
                     return true;
@@ -151,9 +153,8 @@ public class SampleView extends PlotAwareView
             	ITimestamp start = model.getStartTime();        
                 ITimestamp end = model.getEndTime();            
             	ITimestamp ts=sample.getSample().getTime();
-            	if((ts.isGreaterOrEqual(start))&&(ts.isLessOrEqual(end))) 
-                return true;
-              else
+            	if( (ts.isGreaterOrEqual(start))&&(ts.isLessOrEqual(end))) 
+            	    return true;
                 return false;
         }});	
         // Invoke PlotAwareView's createPartControl to enable updateModel()

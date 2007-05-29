@@ -16,7 +16,7 @@ public class OpenAsPlotEditorAction extends Action
     
     public OpenAsPlotEditorAction(PlotPart plot_part)
     {
-        super(Messages.getString("OpenInEditor"), //$NON-NLS-1$
+        super(Messages.OpenInEditor,
               Plugin.getImageDescriptor("icons/chart.gif")); //$NON-NLS-1$
         this.plot_part = plot_part;
     }
@@ -28,6 +28,7 @@ public class OpenAsPlotEditorAction extends Action
     }
 
     /** Open currently selected IFile as View. */
+    @Override
     public void run()
     {
         PlotEditor.createInstance(new FileEditorInput(plot_part.getFile()));

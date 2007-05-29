@@ -38,6 +38,7 @@ public class ArchiveListEditor extends ListEditor
     /** Method declared on ListEditor.
      *  Creates a new URL.
      */
+    @Override
     protected String getNewInputObject()
     {
         InputDialog dialog = new InputDialog(getShell(),
@@ -54,6 +55,7 @@ public class ArchiveListEditor extends ListEditor
      * Method declared on ListEditor.
      * Creates a single string from the given array.
      */
+    @Override
     protected String createList(String[] items)
     {
         return Preferences.concatListItems(items);
@@ -63,6 +65,7 @@ public class ArchiveListEditor extends ListEditor
      * Method declared on ListEditor.
      * Split URLs from string.
      */
+    @Override
     protected String[] parseString(String items)
     {
         return Preferences.splitListItems(items);

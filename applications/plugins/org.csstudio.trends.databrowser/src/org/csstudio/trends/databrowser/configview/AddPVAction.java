@@ -16,6 +16,7 @@ public class AddPVAction extends AbstractAddPVAction
         setEnabled(false);
 	}
 
+    @Override
     protected void addPV(String pv_name)
     {
         config.addPV(pv_name);

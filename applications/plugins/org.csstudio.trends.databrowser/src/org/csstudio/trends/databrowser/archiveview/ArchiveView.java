@@ -29,8 +29,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -177,6 +177,7 @@ public class ArchiveView extends PlotAwareView
             new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
                                URL_LIST_TAG, url)
         {
+            @Override
             public void newSelection(String new_pv_name)
             {   connectToURL(new_pv_name); }
         };
@@ -187,11 +188,9 @@ public class ArchiveView extends PlotAwareView
         gd = new GridData();
         info.setLayoutData(gd);
         info.setEnabled(false);
-        info.addSelectionListener(new SelectionListener()
+        info.addSelectionListener(new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
-
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 if (server == null)
@@ -256,6 +255,7 @@ public class ArchiveView extends PlotAwareView
             new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
                                PATTERN_LIST_TAG, pattern)
         {
+            @Override
             public void newSelection(String new_pattern)
             {   search(new_pattern); }
         };
@@ -266,10 +266,9 @@ public class ArchiveView extends PlotAwareView
         gd = new GridData();
         search.setLayoutData(gd);
         search.setEnabled(false);
-        search.addSelectionListener(new SelectionListener()
+        search.addSelectionListener(new SelectionAdapter()
         {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {}
+            @Override
             public void widgetSelected(SelectionEvent e)
             {   search(pattern.getText()); }
         });

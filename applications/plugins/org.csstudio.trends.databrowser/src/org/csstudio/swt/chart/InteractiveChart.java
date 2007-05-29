@@ -91,10 +91,10 @@ public class InteractiveChart extends Composite
         chart.addListener(new ChartListener()
         {
             public void changedXAxis(XAxis xaxis)
-            {}
+            { /* NOP */ }
             
             public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
-            {}
+            { /* NOP */ }
 
             public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
             {   // Adds a marker for the selected sample
@@ -174,6 +174,7 @@ public class InteractiveChart extends Composite
         button_bar.setLayout(new RowLayout());
         addButton(UP, Messages.Chart_MoveUp, new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 moveUpDown(SHIFT_FACTOR);
@@ -181,6 +182,7 @@ public class InteractiveChart extends Composite
         });
         addButton(DOWN, Messages.Chart_MoveDown, new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 moveUpDown(-SHIFT_FACTOR);
@@ -188,6 +190,7 @@ public class InteractiveChart extends Composite
         });
         addButton(Y_IN, Messages.Chart_ZoomIn, new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 zoomInOutY(ZOOM_FACTOR);
@@ -195,6 +198,7 @@ public class InteractiveChart extends Composite
         });
         addButton(Y_OUT, Messages.Chart_ZoomOut, new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 zoomInOutY(1.0/ZOOM_FACTOR);
@@ -202,6 +206,7 @@ public class InteractiveChart extends Composite
         });
         addButton(ZOOM, Messages.Chart_ZoomAuto, new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 chart.autozoom();
@@ -209,6 +214,7 @@ public class InteractiveChart extends Composite
         });
         addButton(STAGGER, Messages.Chart_Stagger, new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 chart.stagger();
@@ -216,6 +222,7 @@ public class InteractiveChart extends Composite
         });
         addButton(DEFAULT_ZOOM, Messages.Chart_Default_Scale, new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 chart.setDefaultZoom();
@@ -226,6 +233,7 @@ public class InteractiveChart extends Composite
         // left/right. Should it move the _curves_?
         addButton(LEFT, Messages.Chart_MoveLeft, new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 moveLeftRight(PAN_FACTOR);
@@ -233,6 +241,7 @@ public class InteractiveChart extends Composite
         });
         addButton(RIGHT, Messages.Chart_MoveRight, new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 moveLeftRight(-PAN_FACTOR);
@@ -240,6 +249,7 @@ public class InteractiveChart extends Composite
         });
         addButton(X_IN, Messages.Chart_TimeIn, new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 if (zoom_from_end)
@@ -250,6 +260,7 @@ public class InteractiveChart extends Composite
         });
         addButton(X_OUT, Messages.Chart_TimeOut, new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 if (zoom_from_end)

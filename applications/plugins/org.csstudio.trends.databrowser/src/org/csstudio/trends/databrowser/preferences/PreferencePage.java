@@ -34,11 +34,12 @@ public class PreferencePage extends FieldEditorPreferencePage implements
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     public void init(IWorkbench workbench)
-    {}
+    { /* NOP */ }
 
     /** Creates the field editors.
      *  Each one knows how to save and restore itself.
      */
+    @Override
     public void createFieldEditors()
     {
         final Composite parent = getFieldEditorParent();

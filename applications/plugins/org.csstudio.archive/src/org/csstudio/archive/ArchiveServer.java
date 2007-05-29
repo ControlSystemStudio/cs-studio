@@ -31,6 +31,18 @@ import org.csstudio.platform.data.ITimestamp;
 @SuppressWarnings("nls")
 public abstract class ArchiveServer
 {     	
+    /** Server name information.
+     *  <p>
+     *  Unique name of this ArchiveServer implementation.
+     *  <p>
+     *  The Description, Version and URL give more detail.
+     *  This string is meant for tools that need a short
+     *  description of the data source, for example
+     *  "Channel Archiver" or "Archive Record" etc.
+     *  @return A name of the server.
+     */
+    abstract public String getServerName();
+    
     /** URL for this ArchiveServer.
      *  @return URL as a string. */
     abstract public String getURL();
@@ -39,21 +51,13 @@ public abstract class ArchiveServer
      *  with details of the content left to the implementation.
      *  @return Description string. */
     abstract public String getDescription();
-
+    
     /** Version information.
      *  <p>
      *  The meaning of this version number is up to the implementation.
      *  @return A version number.
      */
     abstract public int getVersion();
-    
-    /** Server name information.
-     *  <p>
-     *   unique name of this implementation of ArchiveServer
-     *  TODO Reconsider. We already have URL, Description, Version.
-     *  @return A name of the server.
-     */
-    abstract public String getServerName();
     
     /** Request type for getting raw samples.
      *  <p>

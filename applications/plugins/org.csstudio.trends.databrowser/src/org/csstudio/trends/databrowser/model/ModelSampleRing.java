@@ -56,7 +56,7 @@ public class ModelSampleRing
     }
     
     /** Add a new sample. */
-    synchronized public void add(IValue sample)
+    synchronized public void add(IValue sample, String source)
     {
         // Obtain index of next element
         if (++head >= real_capacity)
@@ -68,7 +68,7 @@ public class ModelSampleRing
                 tail = 0;
         }
         // Update that element
-        samples[head] = new ModelSample(sample);
+        samples[head] = new ModelSample(sample, source);
     }
     
     /** @return Returns the number of valid entries.

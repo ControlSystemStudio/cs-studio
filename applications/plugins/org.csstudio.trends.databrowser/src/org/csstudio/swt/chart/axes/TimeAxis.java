@@ -38,6 +38,7 @@ public class TimeAxis extends XAxis
         return super.setValueRange(low, high);
     }
 
+    @Override
     public void paint(PaintEvent e)
     {
         if (!region.intersects(e.x, e.y, e.width, e.height))

@@ -104,8 +104,7 @@ public class DOMHelper
             Node text_node = n.getFirstChild();
             if (text_node == null)
                 return "";
-            else
-                return text_node.getNodeValue();
+            return text_node.getNodeValue();
         }
         return "";
     }    
@@ -131,7 +130,7 @@ public class DOMHelper
                 if (values == null)
                     values = new ArrayList<String>();
                 values.add(n.getFirstChild().getNodeValue());
-                n = findNextElementNode((Node)n, name);
+                n = findNextElementNode(n, name);
             }
         }
         if (values != null  &&  values.size() > 0)

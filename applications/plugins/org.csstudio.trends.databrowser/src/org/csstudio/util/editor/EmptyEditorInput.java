@@ -47,6 +47,7 @@ public class EmptyEditorInput implements IEditorInput
     }
 
     /** Don't adapt. */
+    @SuppressWarnings("unchecked")
     public Object getAdapter(Class adapter)
     {
         return null;

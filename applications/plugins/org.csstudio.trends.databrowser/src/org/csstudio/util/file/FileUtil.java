@@ -13,7 +13,7 @@ public class FileUtil
 {
     /** Prevent instantiation. */
     private FileUtil()
-    {}
+    { /* prevent instantiation */ }
     
     /** Convert {@link IFile} into string.
      *  @param file
