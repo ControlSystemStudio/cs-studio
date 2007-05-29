@@ -707,11 +707,17 @@ public class Chart extends Canvas
     {
         if (plot_region.contains(mouse_x, mouse_y))
         {
-            YAxis current = getSelectedOrFirstYAxis();
-            double xc = xaxis.getValue(mouse_x);
-            double yc = current.getValue(mouse_y);
-            String tip = Messages.Chart_PointColon
-                        + xaxis.getTicks().format(xc, 2)
+            // This shows only the x/y coord,
+            // based on info from the axes.
+            // It doesn't try to locate the 'nearest sample'
+            // and show its info, since that would be quite
+            // expensive.
+            // The InteractiveChart offers a "marker" related
+            // feature for that purpose.
+            final YAxis current = getSelectedOrFirstYAxis();
+            final double xc = xaxis.getValue(mouse_x);
+            final double yc = current.getValue(mouse_y);
+            final String tip = xaxis.getTicks().format(xc, 2)
                         + ", " //$NON-NLS-1$
                         + current.getTicks().format(yc, 2);
             setToolTipText(tip); 
@@ -736,6 +742,20 @@ public class Chart extends Canvas
         // Click in plot region -> get the value coordinates
         if (plot_region.contains(x, y))
         {
+            // See if this selects any existing Marker
+            boolean markers_selected = false;
+            for (YAxis yaxis : yaxes)
+            {
+                if (yaxis.selectMarkers(x, y))
+                    markers_selected = true;
+            }
+            if (markers_selected)
+            {
+                redraw();
+                return; // Handled the mouse click
+            }
+            // No marker selected.
+            // Pass click on to listeners.
             YAxis current = getSelectedOrFirstYAxis();
             double xval = xaxis.getValue(x);
             double yval = current.getValue(y);

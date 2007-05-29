@@ -14,6 +14,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 
 /** A 'Y' or 'vertical' axis.
@@ -154,6 +155,34 @@ public class YAxis extends Axis
         fireEvent(YAxisListener.Aspect.MARKER);
     }
 
+    /** @return <code>true</code> if any markers are currently selected */
+    public final boolean haveSelectedMarkers()
+    {
+        for (Marker marker : markers)
+            if (marker.isSelected())
+                return true;
+        return false;
+    }
+    
+    /** Toggle the selection of markers under given screen coordinates.
+     *  @return Removed <code>true</code> if any marker was touched
+     */
+    public final boolean selectMarkers(int x, int y)
+    {
+        boolean anything = false;
+        for (Marker marker : markers)
+        {
+            final Rectangle area = marker.getScreenCoords();
+            if (area.contains(x, y))
+            {
+                marker.select(! marker.isSelected());
+                anything = true;
+            }
+        }
+        fireEvent(YAxisListener.Aspect.MARKER);
+        return anything;
+    }
+    
     /** Remove all markers from this axis. */
     public final void removeMarkers()
     {
@@ -161,6 +190,21 @@ public class YAxis extends Axis
         fireEvent(YAxisListener.Aspect.MARKER);
     }
 
+    /** Remove all markers that are currently selected from this axis. */
+    public final void removeSelectedMarkers()
+    {
+        int i = 0;
+        while (i < markers.size())
+        {
+            Marker marker = markers.get(i);
+            if (marker.isSelected())
+                markers.remove(i);
+            else
+                ++i;
+        }        
+        fireEvent(YAxisListener.Aspect.MARKER);
+    }
+    
     /** Set the 'selected' state of this axis.
      *  <p>
      *  If this actually changes the selection, the axis will notify the listener
@@ -322,6 +366,9 @@ public class YAxis extends Axis
     
     /** Seach all traces on this axis, return the sample that's closest
      *  to the given coordinates.
+     *  @param xaxis The XAxis over which the YAxis is drawn
+     *  @param xval X value in value space
+     *  @param yval Y value in value space
      */
     public final TraceSample getClosestSample(Axis xaxis, double xval, double yval)
     {

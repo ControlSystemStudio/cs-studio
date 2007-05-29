@@ -15,12 +15,15 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
 import org.csstudio.trends.databrowser.plotpart.RemoveMarkersAction;
+import org.csstudio.trends.databrowser.plotpart.RemoveSelectedMarkersAction;
 import org.csstudio.trends.databrowser.sampleview.SampleView;
 import org.csstudio.util.editor.EmptyEditorInput;
 import org.csstudio.util.editor.PromptForNewXMLFileDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Composite;
@@ -48,7 +51,9 @@ public class PlotEditor extends EditorPart
     public static final String ID = PlotEditor.class.getName();
     
     private final PlotPart plot_part = new PlotPart();
-    private Action remove_markers_action, add_action;
+    private Action remove_markers_action;
+    private RemoveSelectedMarkersAction remove_marker_action;
+    private Action add_action;
     private Action config_action, archive_action, sample_action, export_action;
     private Action view_action, perspective_action;
     private boolean is_dirty = false;
@@ -95,6 +100,10 @@ public class PlotEditor extends EditorPart
         public void entryRemoved(IModelItem removed_item) 
         {   entriesChanged();  }
     };
+
+    private MenuManager context_menu;
+
+    private Action button_bar_action;
 
     /** Create a new, empty editor, not attached to a file.
      *  @return Returns the new editor or <code>null</code>.
@@ -284,7 +293,9 @@ public class PlotEditor extends EditorPart
     private void createActions()
     {
         final Chart chart = plot_part.getInteractiveChart().getChart();
+        button_bar_action = plot_part.createShowButtonBarAction();
         remove_markers_action = new RemoveMarkersAction(chart);
+        remove_marker_action = new RemoveSelectedMarkersAction(chart);
         add_action = new AddPVAction(plot_part.getModel());
         config_action = new OpenViewAction(this, Messages.OpenConfigView, ConfigView.ID);
         archive_action = new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID);
@@ -297,25 +308,31 @@ public class PlotEditor extends EditorPart
     /** Create and connect the context menu. */
     private void createContextMenu()
     {
-        // Create context menu
-        MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-        manager.add(plot_part.createShowButtonBarAction());
-        manager.add(remove_markers_action);
-        manager.add(add_action);
-        manager.add(new Separator());
-        manager.add(config_action);
-        manager.add(archive_action);
-        manager.add(sample_action);
-        manager.add(export_action);
-        manager.add(new Separator());
-        manager.add(view_action);
-        manager.add(perspective_action);
-        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        context_menu = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        context_menu.add(button_bar_action);
+        context_menu.add(remove_markers_action);
+        context_menu.add(remove_marker_action);
+        context_menu.add(add_action);
+        context_menu.add(new Separator());
+        context_menu.add(config_action);
+        context_menu.add(archive_action);
+        context_menu.add(sample_action);
+        context_menu.add(export_action);
+        context_menu.add(new Separator());
+        context_menu.add(view_action);
+        context_menu.add(perspective_action);
+        context_menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
+        context_menu.addMenuListener(new IMenuListener()
+        {
+            public void menuAboutToShow(IMenuManager manager)
+            {
+                remove_marker_action.updateEnablement();
+            }
+        });
+        
         Control ctl = plot_part.getInteractiveChart().getChart();
-        Menu menu = manager.createContextMenu(ctl);
+        Menu menu = context_menu.createContextMenu(ctl);
         ctl.setMenu(menu);
-        // TODO: publish the menu so others can extend it?
-        //getSite().registerContextMenu(manager, selectionProvider);
     }
 }

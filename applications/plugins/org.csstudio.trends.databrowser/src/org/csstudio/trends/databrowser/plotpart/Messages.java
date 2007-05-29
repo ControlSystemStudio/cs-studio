@@ -13,6 +13,9 @@ public class Messages extends NLS
     public static String RemoveMarkers;
     public static String RemoveMarkers_TT;
     
+    public static String RemoveClosestMarker;
+    public static String RemoveClosestMarker_TT;
+    
     public static String StartScroll_TT;
     public static String StopScroll_TT;
     public static String TimeConfig;

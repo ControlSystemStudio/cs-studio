@@ -78,15 +78,9 @@ public class Controller
      */
     private final ModelListener model_listener = new ModelListener()
     {
-        public void timeSpecificationsChanged()
-        {
-            // TODO use this instead of ChartListener?
-        }
+        public void timeSpecificationsChanged()     { /* NOP */ }
         
-        public void timeRangeChanged()
-        {
-            // TODO use this instead of ChartListener?
-        }
+        public void timeRangeChanged()              { /* NOP */ }
 
         public void periodsChanged()
         {
@@ -159,7 +153,7 @@ public class Controller
         }
 
         public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
-        {}
+        { /* NOP */ }
     };
 
     /** Construct controller.

@@ -4,8 +4,11 @@ import org.csstudio.swt.chart.Chart;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
 import org.csstudio.trends.databrowser.plotpart.RemoveMarkersAction;
+import org.csstudio.trends.databrowser.plotpart.RemoveSelectedMarkersAction;
 import org.csstudio.util.file.FileUtil;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Composite;
@@ -46,6 +49,8 @@ public class PlotView extends ViewPart
     private static long instance = 0;
 
     private boolean initially_show_button_bar = false;
+
+    private RemoveSelectedMarkersAction remove_marker_action;
     
     /** Create another instance of the PlotView for the given file. */
     public static boolean activateWithFile(IFile file)
@@ -108,14 +113,25 @@ public class PlotView extends ViewPart
         plot_part.getInteractiveChart().showButtonBar(initially_show_button_bar);
         
         // Create context menu
-        MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-        manager.add(plot_part.createShowButtonBarAction());
+        MenuManager context_menu = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        context_menu.add(plot_part.createShowButtonBarAction());
         final Chart chart = plot_part.getInteractiveChart().getChart();
-        manager.add(new RemoveMarkersAction(chart));
-        manager.add(new Separator());
-        manager.add(new OpenAsPlotEditorAction(plot_part));
-        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-        Menu menu = manager.createContextMenu(chart);
+        context_menu.add(new RemoveMarkersAction(chart));
+        remove_marker_action = new RemoveSelectedMarkersAction(chart);
+        context_menu.add(remove_marker_action);
+        context_menu.add(new Separator());
+        context_menu.add(new OpenAsPlotEditorAction(plot_part));
+        context_menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        
+        context_menu.addMenuListener(new IMenuListener()
+        {
+            public void menuAboutToShow(IMenuManager manager)
+            {
+                remove_marker_action.updateEnablement();
+            }
+        });
+        
+        Menu menu = context_menu.createContextMenu(chart);
         chart.setMenu(menu);
     }
 

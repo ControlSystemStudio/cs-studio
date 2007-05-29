@@ -5,18 +5,14 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-/** An action that opens a view.
+/** An action that removes all markers from a chart.
  *  @author Kay Kasemir
  */
 public class RemoveMarkersAction extends Action
 {
     private Chart chart;
     
-    /** Construct the action for opening a view.
-     *  @param part The parent part from which we get the 'page'.
-     *  @param name Name to use for the action.
-     *  @param ID The ID of the View to open.
-     */
+    /** Constructor */
     public RemoveMarkersAction(Chart chart)
     {
         this.chart = chart;

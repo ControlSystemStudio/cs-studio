@@ -26,9 +26,6 @@ import org.eclipse.swt.widgets.Composite;
  *  <p>
  *  To use, one would probably mostly deal with the embedded chart
  *  via getChart().
- *  <p>
- *  In addition, one might want to override setDefaultRanges()
- *  to define what that means.
  *  
  *  @author Kay Kasemir
  */
@@ -97,33 +94,10 @@ public class InteractiveChart extends Composite
             { /* NOP */ }
 
             public void pointSelected(XAxis xaxis, YAxis yaxis, double x, double y)
-            {   // Adds a marker for the selected sample
+            {
                 if (yaxis == null)
                     return;
-                TraceSample best = yaxis.getClosestSample(xaxis, x, y);
-                if (best != null)
-                {
-                    ChartSample sample = best.getSample();
-                    x = sample.getX();
-                    y = sample.getY();
-                    StringBuffer b = new StringBuffer();
-                    b.append(best.getTrace().getName());
-                    b.append("\n"); //$NON-NLS-1$
-                    b.append(xaxis.getTicks().format(x, 2));
-                    // Show value, unless it's NaN or +- inf
-                    if (!Double.isInfinite(y) &&
-                        !Double.isNaN(y))
-                    {
-                    b.append("\n"); //$NON-NLS-1$
-                    b.append(yaxis.getTicks().format(y, 2));
-                    }
-                    if (sample.getInfo() != null)
-                    {
-                        b.append("\n"); //$NON-NLS-1$
-                        b.append(sample.getInfo());
-                    }
-                    yaxis.addMarker(x, y, b.toString());
-                }
+                addMarker(xaxis, yaxis, x, y);
             }
         });
     }
@@ -495,4 +469,39 @@ public class InteractiveChart extends Composite
         double range = high - low;        
         axis.setValueRange(high - range/factor, high);
     }
+    
+    /** Add a marker for the current screen coord.
+     *  @param xaxis XAxis
+     *  @param yaxis YAxix
+     *  @param x X coord in value space
+     *  @param y Y coord in value space
+     */
+    private void addMarker(XAxis xaxis, YAxis yaxis, double x, double y)
+    {
+        // Adds a marker for the selected sample
+        TraceSample best = yaxis.getClosestSample(xaxis, x, y);
+        if (best == null)
+            return;
+        ChartSample sample = best.getSample();
+        x = sample.getX();
+        y = sample.getY();
+        StringBuffer b = new StringBuffer();
+        b.append(best.getTrace().getName());
+        b.append("\n"); //$NON-NLS-1$
+        b.append(xaxis.getTicks().format(x, 2));
+        // Show value, unless it's NaN or +- inf
+        if (!Double.isInfinite(y) &&
+            !Double.isNaN(y))
+        {
+        b.append("\n"); //$NON-NLS-1$
+        b.append(yaxis.getTicks().format(y, 2));
+        }
+        if (sample.getInfo() != null)
+        {
+            b.append("\n"); //$NON-NLS-1$
+            b.append(sample.getInfo());
+        }
+        yaxis.addMarker(x, y, b.toString());
+    }
+
 } 
