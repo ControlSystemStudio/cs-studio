@@ -35,12 +35,15 @@ public class JMSMessageList {
 	 * Add a new JMSMessage to the collection of JMSMessages 
 	 */
 	public void addJMSMessage(JMSMessage jmsm) {
-		JMSMessages.add(JMSMessages.size(), jmsm);
-		Iterator iterator = changeListeners.iterator();
-		while (iterator.hasNext())
-			((IJMSMessageViewer) iterator.next()).addJMSMessage(jmsm);
+		if (jmsm == null) {
+			return;
+		} else {
+			JMSMessages.add(JMSMessages.size(), jmsm);
+			Iterator iterator = changeListeners.iterator();
+			while (iterator.hasNext())
+				((IJMSMessageViewer) iterator.next()).addJMSMessage(jmsm);
+		}
 	}
-
 	
 	
 	/**

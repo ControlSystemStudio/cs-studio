@@ -61,6 +61,9 @@ public class JMSAlarmMessageList extends JMSMessageList {
 	 * @return Is there a previous message in the list with the same pv name
 	 */
 	private boolean deleteEqualMessages(MapMessage mm) {
+		if (mm == null) {
+			return false;
+		}
 		boolean equalPreviousMessage = false;
 		Iterator<JMSMessage> it = JMSMessages.listIterator();
 		List<JMSMessage> jmsMessagesToRemove = new ArrayList<JMSMessage>();
