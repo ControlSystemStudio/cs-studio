@@ -14,7 +14,8 @@ public class Plugin extends AbstractCssPlugin
 {
 	public final static String ID = "org.csstudio.utility.pv"; //$NON-NLS-1$
 	
-	public String getPluginId()
+	@Override
+    public String getPluginId()
 	{   return ID; }
 
     /** @see AbstractCssPlugin */
