@@ -24,6 +24,7 @@ package org.csstudio.alarm.table;
 
 import java.util.Vector;
 
+import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -33,6 +34,7 @@ import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
+import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.csstudio.platform.libs.jms.MessageReceiver;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
@@ -66,8 +68,7 @@ public class LogView extends ViewPart implements MessageListener {
 
 	private String[] columnNames;
 
-	//	int max;
-	//	int rows;
+	private ColumnPropertyChangeListener cl;
 
 	public void createPartControl(Composite parent) {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
@@ -85,44 +86,16 @@ public class LogView extends ViewPart implements MessageListener {
 		comp.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
 		comp.setLayout(new GridLayout(4, true));
 
-		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
-				.getString(LogViewerPreferenceConstants.P_STRING).split(";"); //$NON-NLS-1$
-
 		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 1);
 		jlv.setAlarmSorting(false);
 		parent.pack();
-		JmsLogsPlugin.getDefault().getPluginPreferences()
-				.addPropertyChangeListener(propertyChangeListener);
 		
-		//TEstData
-//		for (int i = 0; i < 10; i++) {
-//			try {
-//				MapMessage mm = new MapMessageImpl();
-//				mm.setString("NAME", "pv name");
-//				mm.setString("SEVERITY", "MINOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name X" + i);
-//				mm.setString("SEVERITY", "MAJOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name X" + i);
-//				mm.setString("SEVERITY", "MINOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name xx");
-//				mm.setString("SEVERITY", "MINOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name Xx" + i);
-//				mm.setString("SEVERITY", "NO_ALARM");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name Xy" + i);
-//				mm.setString("SEVERITY", "MAJOR");
-//				jmsml.addJMSMessage(mm);
-//
-//			} catch (JMSException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//				System.out.println(e.getMessage());
-//			}
-//		}
+		cl = new ColumnPropertyChangeListener(
+				LogViewerPreferenceConstants.P_STRING,
+				jlv);
+		
+		JmsLogsPlugin.getDefault().getPluginPreferences()
+				.addPropertyChangeListener(cl);//propertyChangeListener);
 		
 	}
 
@@ -164,29 +137,20 @@ public class LogView extends ViewPart implements MessageListener {
 	 */
 	public void onMessage(final Message message) {
 		if (message == null) {
-			System.out.println("message gleich null");
+			JmsLogsPlugin.logError("Message == null");
 		}
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				try {
 					if (message instanceof TextMessage) {
-						System.out
-								.println("received message is not a map message: "
-										+ ((TextMessage) message).getText());
+						JmsLogsPlugin.logError("received message is not a map message");
 					} else if (message instanceof MapMessage) {
-						// if(table.getItemCount() >= max)
-						// table.remove(table.getItemCount() - 1 - rows,
-						// table.getItemCount() - 1);
 						jmsml.addJMSMessage((MapMessage) message);
 					} else {
-						System.out
-								.println(Messages.getString("LogView.error.JMS.type") //$NON-NLS-1$
-										+ message.getJMSType());
+						JmsLogsPlugin.logError("received message is an unknown type");
 					}
 				} catch (Exception e) {
-					System.out.println(Messages.getString("LogView.error.error.1")); //$NON-NLS-1$
-					System.err.println(e);
-					e.printStackTrace();
+					JmsLogsPlugin.logException("", e);
 				}
 			}
 		});
@@ -204,49 +168,9 @@ public class LogView extends ViewPart implements MessageListener {
 			if (receiver2 != null)
 				receiver2.stopListening();
 		} catch (Exception e) {
-			System.err.println(e);
+			JmsLogsPlugin.logException("can not stop receiver", e);
 		}
+		JmsLogsPlugin.getDefault().getPluginPreferences()
+				.removePropertyChangeListener(cl);
 	}
-
-	private final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
-
-		public void propertyChange(PropertyChangeEvent event) {
-			System.out.println(Messages.getString("LogView.12")); //$NON-NLS-1$
-
-			columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
-					.getString(LogViewerPreferenceConstants.P_STRING)
-					.split(";"); //$NON-NLS-1$
-			jlv.setColumnNames(columnNames);
-
-			Table t = jlv.getTable();
-			TableColumn[] tc = t.getColumns();
-
-			int diff = columnNames.length - tc.length;
-
-			if (diff > 0) {
-				for (int i = 0; i < diff; i++) {
-					TableColumn tableColumn = new TableColumn(t, SWT.CENTER);
-					tableColumn.setText(new Integer(i).toString());
-					tableColumn.setWidth(100);
-				}
-			} else if (diff < 0) {
-				diff = (-1) * diff;
-				for (int i = 0; i < diff; i++) {
-					tc[i].dispose();
-				}
-			}
-			tc = t.getColumns();
-
-			for (int i = 0; i < tc.length; i++) {
-				tc[i].setText(columnNames[i]);
-			}
-			Vector<JMSMessage> jmsMessages = new Vector<JMSMessage>();
-			jmsMessages.addAll(jmsml.getJMSMessageList());
-			jmsml.clearList();
-			jlv.refresh();
-			jmsml.addJMSMessageList(jmsMessages);
-			jlv.refresh();
-		}
-	};
-
 }

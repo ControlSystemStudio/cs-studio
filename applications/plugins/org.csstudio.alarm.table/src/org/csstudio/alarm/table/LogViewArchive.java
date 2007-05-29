@@ -34,6 +34,7 @@ import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.expertSearch.ExpertSearchDialog;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
+import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.csstudio.alarm.table.timeSelection.StartEndDialog;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.platform.util.ITimestamp;
@@ -77,6 +78,8 @@ public class LogViewArchive extends ViewPart {
 
 	private Date fromTime;
 	private Date toTime;
+	
+	private ColumnPropertyChangeListener cl;
 
 	public void createPartControl(Composite parent) {
 
@@ -132,8 +135,14 @@ public class LogViewArchive extends ViewPart {
 		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 3);
 		jlv.setAlarmSorting(false);
 		parent.pack();
+		
+		cl = new ColumnPropertyChangeListener(
+				LogArchiveViewerPreferenceConstants.P_STRINGArch,
+				jlv);
+		
 		JmsLogsPlugin.getDefault().getPluginPreferences()
-				.addPropertyChangeListener(propertyChangeListener);
+				.addPropertyChangeListener(cl);
+		
 	}
 
 	private void create72hButton(Composite comp) {
@@ -325,44 +334,9 @@ public class LogViewArchive extends ViewPart {
 	public void dispose() {
 		super.dispose();
 		JmsLogsPlugin.getDefault().getPluginPreferences()
-				.removePropertyChangeListener(propertyChangeListener);
+				.removePropertyChangeListener(cl);
 	}
 
-	private final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
-
-		public void propertyChange(PropertyChangeEvent event) {
-			columnNames = JmsLogsPlugin
-					.getDefault()
-					.getPluginPreferences()
-					.getString(LogArchiveViewerPreferenceConstants.P_STRINGArch)
-					.split(";"); //$NON-NLS-1$
-			jlv.setColumnNames(columnNames);
-
-			Table t = jlv.getTable();
-			TableColumn[] tc = t.getColumns();
-
-			int diff = columnNames.length - tc.length;
-
-			if (diff > 0) {
-				for (int i = 0; i < diff; i++) {
-					TableColumn tableColumn = new TableColumn(t, SWT.CENTER);
-					tableColumn.setText(new Integer(i).toString());
-					tableColumn.setWidth(100);
-				}
-			} else if (diff < 0) {
-				diff = (-1) * diff;
-				for (int i = 0; i < diff; i++) {
-					tc[i].dispose();
-				}
-			}
-			tc = t.getColumns();
-
-			for (int i = 0; i < tc.length; i++) {
-				tc[i].setText(columnNames[i]);
-			}
-			jlv.refresh();
-		}
-	};
 
 	public Date getFromTime(){
 		return fromTime;

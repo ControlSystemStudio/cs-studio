@@ -13,6 +13,7 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 import org.apache.activemq.command.ActiveMQMapMessage;
+import org.csstudio.alarm.table.JmsLogsPlugin;
 
 public class JMSMessageList {
 
@@ -103,7 +104,7 @@ public class JMSMessageList {
 			try {
 				mm.setString(key, value);
 			} catch (JMSException e) {
-				e.printStackTrace();
+				JmsLogsPlugin.logException("can not create jms property", e);
 			}
 		}
 		return mm;
@@ -118,7 +119,7 @@ public class JMSMessageList {
 				jmsm.setProperty(key.toUpperCase(), mm.getString(key));
 			}
 		} catch (JMSException e) {
-			e.printStackTrace();
+			JmsLogsPlugin.logException("can not set jms property", e);
 		}
 		return jmsm;
 	}

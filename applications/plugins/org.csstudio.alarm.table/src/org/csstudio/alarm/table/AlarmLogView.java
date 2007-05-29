@@ -65,9 +65,8 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 
 	private String[] columnNames;
 
-	// int max;
-	// int rows;
-
+	private ColumnPropertyChangeListener cl;
+	
 	public void createPartControl(Composite parent) {
 
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
@@ -93,39 +92,13 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2);
 		jlv.setAlarmSorting(true);
 		parent.pack();
-		JmsLogsPlugin.getDefault().getPluginPreferences()
-		.addPropertyChangeListener(propertyChangeListener);
 
-		//TEstData
-//		for (int i = 0; i < 10; i++) {
-//			try {
-//				MapMessage mm = new MapMessageImpl();
-//				mm.setString("NAME", "pv name");
-//				mm.setString("SEVERITY", "MINOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name X" + i);
-//				mm.setString("SEVERITY", "MAJOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name X" + i);
-//				mm.setString("SEVERITY", "MINOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name xx");
-//				mm.setString("SEVERITY", "MINOR");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name Xx" + i);
-//				mm.setString("SEVERITY", "NO_ALARM");
-//				jmsml.addJMSMessage(mm);
-//				mm.setString("NAME", "pv name Xy" + i);
-//				mm.setString("SEVERITY", "MAJOR");
-//				jmsml.addJMSMessage(mm);
-//
-//			} catch (JMSException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//				System.out.println(e.getMessage());
-//			}
-//		}
-		
+		cl = new ColumnPropertyChangeListener(
+				AlarmViewerPreferenceConstants.P_STRINGAlarm,
+				jlv);
+
+		JmsLogsPlugin.getDefault().getPluginPreferences()
+		.addPropertyChangeListener(cl);
 		
 	}
 
@@ -215,46 +188,10 @@ public class AlarmLogView extends ViewPart implements MessageListener {
 			if (receiver2 != null)
 				receiver2.stopListening();
 		} catch (Exception e) {
-			System.err.println(e);
+			JmsLogsPlugin.logException("can not stop receiver", e);
 		}
+		JmsLogsPlugin.getDefault().getPluginPreferences()
+		.removePropertyChangeListener(cl);
 
 	}
-
-	private final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
-
-		public void propertyChange(PropertyChangeEvent event) {
-			System.out.println("AlarmLog  ChangeListener"); //$NON-NLS-1$
-
-			columnNames = JmsLogsPlugin
-					.getDefault()
-					.getPluginPreferences()
-					.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm)
-					.split(";"); //$NON-NLS-1$
-			jlv.setColumnNames(columnNames);
-
-			Table t = jlv.getTable();
-			TableColumn[] tc = t.getColumns();
-
-			int diff = columnNames.length - tc.length;
-
-			if (diff > 0) {
-				for (int i = 0; i < diff; i++) {
-					TableColumn tableColumn = new TableColumn(t, SWT.CENTER);
-					tableColumn.setText(new Integer(i).toString());
-					tableColumn.setWidth(100);
-				}
-			} else if (diff < 0) {
-				diff = (-1) * diff;
-				for (int i = 0; i < diff; i++) {
-					tc[i].dispose();
-				}
-			}
-			tc = t.getColumns();
-
-			for (int i = 0; i < tc.length; i++) {
-				tc[i].setText(columnNames[i]);
-			}
-			jlv.refresh();
-		}
-	};
 }

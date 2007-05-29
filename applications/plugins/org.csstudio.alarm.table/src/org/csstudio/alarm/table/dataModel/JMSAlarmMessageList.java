@@ -13,6 +13,8 @@ import java.util.Vector;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
+import org.csstudio.alarm.table.JmsLogsPlugin;
+
 public class JMSAlarmMessageList extends JMSMessageList {
 
 	public JMSAlarmMessageList(String[] propNames) {
@@ -31,9 +33,7 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			try {
 				severity = mm.getString("SEVERITY");
 			} catch (JMSException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.out.println(e.getMessage());
+				JmsLogsPlugin.logException("No SEVERITY in message", e);
 			}
 			if (severity != null) {
 				if ((deleteEqualMessages(mm))
@@ -108,8 +108,7 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			jmsMessagesToRemove.clear();
 			jmsMessagesToRemoveAndAdd.clear();
 		} catch (JMSException e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
+			JmsLogsPlugin.logException("No SEVERITY in message", e);
 		}
 		return equalPreviousMessage;
 	}
