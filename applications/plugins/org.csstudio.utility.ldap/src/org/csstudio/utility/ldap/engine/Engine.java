@@ -32,22 +32,29 @@ import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
+import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 
 public class Engine extends Job {
+	private LdapReferences ldapReferences = null;
 
 	public Engine(String name) {
 		super(name);
+		// TODO Auto-generated constructor stub
+		this.ldapReferences = new LdapReferences();
 	}
 	private static 		Engine thisEngine = null;
 	private boolean 	doWrite = false;
 	private DirContext 	ctx;
 	private Vector<WriteRequest>	writeVector = new Vector<WriteRequest>();
+	boolean addVectorOK = true;
+	
 	/**
 	 * @param args
 	 */
@@ -55,24 +62,23 @@ public class Engine extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		Integer intSleepTimer = null;
 
-		//
-		// initialize LDAP connection (dir context
-		//
-//		ctx = LDAPReader.initial();
+		CentralLogger.getInstance().info(this, "Ldap Engine started"); 
+		
+		// TODO: 
 		/*
 		 *  create message ONCE
 		 *  retry forever if ctx == null
 		 *  BUT do NOT block caller (calling sigleton)
 		 *  submit ctx = new LDAPConnector().getDirContext(); to 'background process'
-		 *
+		 *  
 		 */
-		System.out.println("$$$$$$$$$$$$$$$$$$$$$ Engine.run - start");
+		CentralLogger.getInstance().debug(this, "Engine.run - start");
 		ctx = new LDAPConnector().getDirContext();
-		System.out.println("##################### Engine.run - ctx: " + ctx.toString());
+		CentralLogger.getInstance().debug(this, "Engine.run - ctx: " + ctx.toString());
 		if ( ctx  != null) {
-			System.out.println("Engine.run - successfully connected to LDAP server");
+			CentralLogger.getInstance().info( this, "Engine.run - successfully connected to LDAP server");
 		} else {
-			System.out.println("Engine.run - connection to LDAP server failed");
+			CentralLogger.getInstance().fatal( this, "Engine.run - connection to LDAP server failed");
 		}
 
 		while (true) {
@@ -80,7 +86,6 @@ public class Engine extends Job {
 			// do the work actually prepared
 			//
 			if (doWrite) {
-				System.out.println("Engine.run - performLdapWrite");
 				performLdapWrite();
 			}
 			/*
@@ -91,7 +96,7 @@ public class Engine extends Job {
         		if(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.SECURITY_PROTOCOL).trim().length()>0) {
         			intSleepTimer = new Integer(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.SECURITY_PROTOCOL));
         		} else {
-        			intSleepTimer = 100; //default
+        			intSleepTimer = 10; //default
         		}
         		Thread.sleep( (long)intSleepTimer );
         	}
@@ -111,58 +116,70 @@ public class Engine extends Job {
 				if (thisEngine == null) {
 					thisEngine = new Engine("LdapEngine");
 					thisEngine.schedule();
-					System.out.println("Engine.getInstance - exit");
 				}
 			}
 		}
 		return thisEngine;
 	}
-
+    
     synchronized public void addLdapWriteRequest(String attribute, String channel, String value) {
-    	boolean addVectorOK = true;
+    	// boolean addVectorOK = true;
 		WriteRequest writeRequest = new WriteRequest( attribute, channel, value);
+		int maxBuffersize = 700;
 		//
 		// add request to vector
 		//
 		int bufferSize = writeVector.size();
-		System.out.println("Engine.addLdapWriteRequest actual buffer size: " + bufferSize);
-		if ( bufferSize > 10000) {
+		/// System.out.println("Engine.addLdapWriteRequest actual buffer size: " + bufferSize);
+		if ( bufferSize > maxBuffersize) {
 			if (addVectorOK) {
-				System.out.println("Engine.addLdapWriteRequest writeVector > 500 - cannot store more!");
+				System.out.println("Engine.addLdapWriteRequest writeVector > " + maxBuffersize + " - cannot store more!");
+				CentralLogger.getInstance().warn(this, "writeVector > " + maxBuffersize + " - cannot store more!"); 
 				addVectorOK = false;
 			}
 		} else {
 			if ( ! addVectorOK) {
 				System.out.println("Engine.addLdapWriteRequest writeVector - continue writing");
+				CentralLogger.getInstance().warn(this, "writeVector < " + maxBuffersize + " - resume writing"); 
 				addVectorOK = true;
 			}
 			writeVector.add(writeRequest);
-			doWrite = true;
 		}
+		//
+		// aleays trigger writing
+		//
+		doWrite = true;
 	}
-
+    
     private void performLdapWrite() {
 //    	int size= writeVector.size();
-    	ModificationItem[] modItem = new ModificationItem[100];
+    	int maxNumberOfWritesProcessed = 200;
+    	//ModificationItem[] modItem = new ModificationItem[writeVector.size()];
+    	ModificationItem[] modItem = new ModificationItem[maxNumberOfWritesProcessed];
     	int i = 0;
     	String channel;
     	channel = null;
     	i = 0;
 
-    	while(writeVector.size()>0){
-    			WriteRequest writeReq = writeVector.firstElement();
+    	while(writeVector.size()>0) {
+    		
+    		//WriteRequest writeReq = writeVector.firstElement();
+    		//
+    		// return first element and remove it from list
+    		//
+    		WriteRequest writeReq = writeVector.remove(0);
     		//
     		// prepare LDAP request for all entries matching the same channel
     		//
     		if ( channel == null) {
     			// first time setting
     			channel = writeReq.getChannel();
-    		}
+    		} 
     		if ( !channel.equals(writeReq.getChannel())){
     			System.out.print("write: ");
     			changeValue("eren", channel, modItem);
     			System.out.println(" finisch!!!");
-    			modItem = new ModificationItem[100];
+    			modItem = new ModificationItem[maxNumberOfWritesProcessed];
     			i = 0;
     			//
     			// define next channel name
@@ -174,32 +191,32 @@ public class Engine extends Job {
 			//
 			BasicAttribute ba = new BasicAttribute(	writeReq.getAttribute(), writeReq.getValue());
 			modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,ba);
-			writeVector.remove(0);
+			//writeVector.remove(0);
 			if(writeVector.size()<20||(writeVector.size()%10)==0)
 				System.out.println("Engine.performLdapWrite buffer size: "+writeVector.size());
 		}
     	//
     	// still something left to do?
     	//
-    	System.out.println("Vector leer!!!!");
     	if (i != 0 ) {
     		//
 			try {
-				System.out.println("Engine.performLdapWrite write last modItem (: "+modItem+")" );
+				System.out.println("Vector leer jetzt den Rest zum LDAP Server schreiben");
 				changeValue("eren", channel, modItem);
-				System.out.println("+++++++++++++++++++++++++++++++++++++++ d o n e +++++++++++++++++++++++++++++++++++++++");
 			}
 			 catch (Exception e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 					//
 					// too bad it did not work
-					doWrite = false;	// wait for next time
+					doWrite = true;	// retry!
 					return;
 				}
+    	} else {
+    		System.out.println("Vector leer - nothing left to do");
     	}
-
+    	
     	doWrite = false;
-    	System.out.println("Engine.performLdapWrite\r\n  -------------------------------------- E N D --------------------------------------");
     }
 
     /**
@@ -209,6 +226,7 @@ public class Engine extends Job {
 	 */
 	private void changeValue(String string, String channel, ModificationItem[] modItem) {
 		int j=0;
+		Vector <String>namesInNamespace = null;
 		// Delete null values and make rigth size
 		for(;j<modItem.length;j++){
 			if(modItem[j]==null)
@@ -223,14 +241,24 @@ public class Engine extends Job {
 		// channel name changed
 		// first write all values
 		//
-        SearchControls ctrl = new SearchControls();
-        ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		try {
-			NamingEnumeration<SearchResult> results = ctx.search("",string+"=" + channel,ctrl);
-//			System.out.println("Enter Engine.changeValue results for channnel: " + channel );
-			while(results.hasMore()) {
-//				System.out.println("Enter Engine.changeValue in while channnel: " + channel );
-				String ldapChannelName = results.next().getNameInNamespace();
+		
+		//
+		// is channel name already in ldearReference hash table?
+		//
+		if ( ldapReferences.hasEntry(channel)) {
+		//if ( false) { // test case with no hash table
+			//
+			// take what's already stored
+			//
+			CentralLogger.getInstance().debug(this, "Engine.changeValue : found entry for channel: " + channel);
+			System.out.println ("Engine.changeValue : found entry for channel: " + channel);
+			namesInNamespace = this.ldapReferences.getEntry( channel).getNamesInNamespace();
+			for( int index = 0; index < namesInNamespace.size(); index++) {
+
+				String ldapChannelName = (String) namesInNamespace.elementAt(index);
+				//
+				// TODO put 'endsWith' into preference page
+				//
 				if(ldapChannelName.endsWith(",o=DESY,c=DE")){
 					ldapChannelName=ldapChannelName.substring(0,ldapChannelName.length()-12);
 				}
@@ -241,30 +269,79 @@ public class Engine extends Job {
     				//
     				// too bad it did not work
     				doWrite = false;	// wait for next time
+    				CentralLogger.getInstance().debug(this, "Engine.changeValue : cannot write to LDAP server (naming exception)"); 
     				return;
     			}catch (Exception e) {
     				e.printStackTrace();
     				//
     				// too bad it did not work
     				doWrite = false;	// wait for next time
+    				CentralLogger.getInstance().debug(this, "Engine.changeValue : cannot write to LDAP server"); 
     				return;
 				}
-
-//    			//
-//    			// reset for to get ready for values of next channel
-//    			//
-//    			modItemTemp = new ModificationItem[writeVector.size()];
 			}
-
-		} catch (NamingException e1) {
-			e1.printStackTrace();
+	
+		} else {
+			//
+			// search for channel in ldap server
+			//
+	        SearchControls ctrl = new SearchControls();
+	        ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
+			try {
+				NamingEnumeration<SearchResult> results = ctx.search("",string+"=" + channel,ctrl);
+	//			System.out.println("Enter Engine.changeValue results for channnel: " + channel );
+				namesInNamespace = new Vector();
+				while(results.hasMore()) {
+	//				System.out.println("Enter Engine.changeValue in while channnel: " + channel );
+					String ldapChannelName = results.next().getNameInNamespace();
+					namesInNamespace.add( ldapChannelName);
+					//
+					// TODO put 'endsWith' into preference page
+					//
+					if(ldapChannelName.endsWith(",o=DESY,c=DE")){
+						ldapChannelName=ldapChannelName.substring(0,ldapChannelName.length()-12);
+					}
+	    			try {
+	    				ctx.modifyAttributes(ldapChannelName, modItemTemp);
+	    			} catch (NamingException e) {
+	    				e.printStackTrace();
+	    				//
+	    				// too bad it did not work
+	    				doWrite = false;	// wait for next time
+	    				return;
+	    			}catch (Exception e) {
+	    				e.printStackTrace();
+	    				//
+	    				// too bad it did not work
+	    				doWrite = false;	// wait for next time
+	    				return;
+					}
+	    			
+	//    			//
+	//    			// reset for to get ready for values of next channel
+	//    			//
+	//    			modItemTemp = new ModificationItem[writeVector.size()];
+				}
+	
+			} catch (NamingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			//
+			// save ldapEntries
+			//
+			if ( namesInNamespace.size()>0) {
+				//
+				// Write if really something found
+				//
+				ldapReferences.newLdapEntry( channel, namesInNamespace);
+			}
 		}
-
-
+		
 	}
 
 
-	public void setLdapValue ( String channel, String severity, String status, String timeStamp) {
+	public void setLdapValueOld ( String channel, String severity, String status, String timeStamp) {
 		ModificationItem epicsStatus, epicsSeverity, epicsTimeStamp, epicsAcknowledgeTimeStamp ;
 		ModificationItem[] modItem = null;
 		int i = 0;
@@ -305,6 +382,7 @@ public class Engine extends Job {
         try {
 			ctx.modifyAttributes(channelName, modItem);
 		} catch (NamingException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -314,27 +392,27 @@ public class Engine extends Job {
     	private String 	attribute = null;
     	private String 	channel	= null;
     	private String	value = null;
-
+    	
     	public WriteRequest ( String attribute, String channel, String value) {
-
+    		
     		this.attribute = attribute;
     		this.channel = channel;
     		this.value = value;
     	}
-
+    	
     	public String getAttribute () {
     		return this.attribute;
     	}
-
+    	
     	public String getChannel () {
     		return this.channel;
     	}
-
+    	
     	public String getValue () {
     		return this.value;
     	}
 
     }
-
+	
 
 }
