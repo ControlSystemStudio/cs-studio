@@ -22,23 +22,16 @@
 
 package org.csstudio.alarm.table;
 
-import java.util.Vector;
-
-import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
-import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
-import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.csstudio.platform.libs.jms.MessageReceiver;
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -46,29 +39,30 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * Simple view more like console, used to write log messages
+ * View with table for all log messages from JMS. Creates the TableViewer
+ * <code>JMSLogTableViewer</code>, hilds the model <code>JMSMessageList</code>
+ * @author jhatje
+ *
  */
 public class LogView extends ViewPart implements MessageListener {
 
 	public static final String ID = LogView.class.getName();
 
-	private Shell parentShell = null;
+	public Shell parentShell = null;
 
-	private JMSMessageList jmsml = null;
+	public JMSMessageList jmsml = null;
 
-	private JMSLogTableViewer jlv = null;
+	public JMSLogTableViewer jlv = null;
 
 	private MessageReceiver receiver1;
 	private MessageReceiver receiver2;
 
-	private String[] columnNames;
+	public String[] columnNames;
 
-	private ColumnPropertyChangeListener cl;
+	public ColumnPropertyChangeListener cl;
 
 	public void createPartControl(Composite parent) {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
@@ -77,7 +71,12 @@ public class LogView extends ViewPart implements MessageListener {
 
 		parentShell = parent.getShell();
 
-		initializeJMSReceiver(parentShell);
+		initializeJMSReceiver(parentShell,
+				LogViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY,
+				LogViewerPreferenceConstants.PRIMARY_URL,
+				LogViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY,
+				LogViewerPreferenceConstants.SECONDARY_URL,
+				LogViewerPreferenceConstants.QUEUE);
 
 		GridLayout grid = new GridLayout();
 		grid.numColumns = 1;
@@ -95,36 +94,42 @@ public class LogView extends ViewPart implements MessageListener {
 				jlv);
 		
 		JmsLogsPlugin.getDefault().getPluginPreferences()
-				.addPropertyChangeListener(cl);//propertyChangeListener);
+				.addPropertyChangeListener(cl);
 		
 	}
 
-	private void initializeJMSReceiver(Shell ps) {
-		String[] queues = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.QUEUE).split(","); //$NON-NLS-1$
+	public void initializeJMSReceiver(Shell ps, String primCtxFactory, String primURL,
+			String secCtxFactory, String secURL, String queue) {
+		
+		String[] queues = JmsLogsPlugin.getDefault().getPluginPreferences().getString(queue).split(","); //$NON-NLS-1$
 		try {
 			receiver1 = new MessageReceiver(
-					JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY),
-					JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.PRIMARY_URL),
+					JmsLogsPlugin.getDefault().getPluginPreferences().getString(primCtxFactory),
+					JmsLogsPlugin.getDefault().getPluginPreferences().getString(primURL),
 					queues
 					);
 			receiver1.startListener(this);
 		} catch (Exception e) {
+			JmsLogsPlugin.logException("can not create receiver", e);
 			MessageBox box = new MessageBox(ps, SWT.ICON_ERROR);
-			box.setText(Messages.getString("LogView.error.JMS.1")); //$NON-NLS-1$
+			box.setText("Failed to initialise primary JMS Context"); //$NON-NLS-1$
 			box.setMessage(e.getMessage());
-			box.open();
+			// FIXME: This deadlocks the system if it happens during startup
+//			box.open();
 		}
 		try{
 			receiver2 = new MessageReceiver(
-					JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY),
-					JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.SECONDARY_URL),
+					JmsLogsPlugin.getDefault().getPluginPreferences().getString(secCtxFactory),
+					JmsLogsPlugin.getDefault().getPluginPreferences().getString(secURL),
 					queues);
 			receiver2.startListener(this);
 		} catch (Exception e) {
+			JmsLogsPlugin.logException("can not create receiver", e);
 			MessageBox box = new MessageBox(ps, SWT.ICON_ERROR);
-			box.setText(Messages.getString("LogView.error.JMS.2")); //$NON-NLS-1$
+			box.setText("Failed to initialise secondary JMS Context"); //$NON-NLS-1$
 			box.setMessage(e.getMessage());
-			box.open();
+			// FIXME: This deadlocks the system if it happens during startup
+//			box.open();
 		}
 
 	}
@@ -162,7 +167,7 @@ public class LogView extends ViewPart implements MessageListener {
 			if (receiver1 != null)
 				receiver1.stopListening();
 		} catch (Exception e) {
-			System.err.println(e);
+			JmsLogsPlugin.logException("can not stop receiver", e);
 		}
 		try {
 			if (receiver2 != null)
