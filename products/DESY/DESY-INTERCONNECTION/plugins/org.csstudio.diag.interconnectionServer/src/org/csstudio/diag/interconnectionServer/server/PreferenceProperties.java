@@ -15,10 +15,13 @@ public class PreferenceProperties {
 	
 	//
 	// RMI message transfer takes about 300mS
-	//	
+	//	SECONDARY_JMS_URL
+	
+	public static String JMS_CONTEXT_FACTORY = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
 
-	public static String PRIMARY_JMS_URL = "rmi://krynfs.desy.de:1099/";	//RMI
-	public static String SECONDARY_JMS_URL = "rmi://krykelog.desy.de:1099/";
+	public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs:61616,tcp://elogbook.desy.de:61616)?maxReconnectDelay=2000";	//TCP
+	//public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";
+	public static String SECONDARY_JMS_URL = "failover:(tcp://krynfs:61616,tcp://elogbook.desy.de:61616)?maxReconnectDelay=2000";
 
 	
 //	public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";	//RMI

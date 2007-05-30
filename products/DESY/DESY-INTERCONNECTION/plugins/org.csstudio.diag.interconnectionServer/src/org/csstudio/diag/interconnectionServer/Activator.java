@@ -1,8 +1,11 @@
 package org.csstudio.diag.interconnectionServer;
 
 import org.csstudio.platform.AbstractCssPlugin;
+import org.csstudio.platform.internal.logging.CssLogListener;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.startup.IStartupServiceListener;
 import org.csstudio.startup.StartupServiceEnumerator;
+import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
@@ -36,16 +39,17 @@ public class Activator extends AbstractCssPlugin {
 
 	@Override
 	protected void doStart(BundleContext context) throws Exception {
+		
 		for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
 			s.run();
 		}
-		
+		CentralLogger.getInstance().info(this, "InterConnectionServer started"); 
 	}
 
 	@Override
 	protected void doStop(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
-		
+		CentralLogger.getInstance().info(this, "InterConnectionServer stopped"); 
 	}
 
 	@Override

@@ -85,7 +85,7 @@ public class ServerCommands extends Thread{
 
             	socket.send(newPacket);
             	//TODO: remove sysprint
-            	System.out.println(message);
+            	///System.out.println(message);
             	//
             	// write statistic
             	//

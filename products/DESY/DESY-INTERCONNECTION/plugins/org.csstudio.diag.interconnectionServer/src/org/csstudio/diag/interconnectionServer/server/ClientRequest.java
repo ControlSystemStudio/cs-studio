@@ -84,7 +84,10 @@ public class ClientRequest extends Thread
         port 		= packet.getPort();
         length 		= packet.getLength();
         statisticId	= hostName + ":" + port;
-        GregorianCalendar actualTime = new GregorianCalendar();
+        GregorianCalendar parseTime = new GregorianCalendar();
+        GregorianCalendar afterJmsSendTime = new GregorianCalendar();
+        GregorianCalendar afterUdpAcknowledgeTime = new GregorianCalendar();
+        GregorianCalendar afterLdapWriteTime = new GregorianCalendar();
         
         ///System.out.println("Time: - start 		= " + dateToString(new GregorianCalendar()));
         //
@@ -124,7 +127,8 @@ public class ClientRequest extends Thread
         
         if ( parseMessage(  tagValue, tagValuePairs, id, type, statisticId)) {
         	
-        	///System.out.println("Time: - after parse 	= " + dateToString(new GregorianCalendar()));
+        	parseTime = new GregorianCalendar();
+        	//System.out.println("Time: - after parse 	= " + dateToString(new GregorianCalendar()));
         	boolean status	= true;
         	
         	//
@@ -142,7 +146,7 @@ public class ClientRequest extends Thread
         		//
         		try {
             		//sender = alarmSession.createProducer(alarmDestination);
-            		///System.out.println("Time-ALARM: - after sender= 	= " + dateToString(new GregorianCalendar()));
+            		//System.out.println("Time-ALARM: - after sender= 	= " + dateToString(new GregorianCalendar()));
                     //message = alarmSession.createMapMessage();
             		message = InterconnectionServer.getInstance().prepareTypedJmsMessage( alarmSession.createMapMessage(), tagValuePairs, type);
             		///System.out.println("Time-APARM: - after message= 	= " + dateToString(new GregorianCalendar()));
@@ -151,7 +155,8 @@ public class ClientRequest extends Thread
             		///System.out.println("Time-ALARM: - before sender-send 	= " + dateToString(new GregorianCalendar()));
             		alarmSender.send(message);
             		message = null;
-            		///System.out.println("Time-ALARM: - after sender-send 	= " + dateToString(new GregorianCalendar()));
+            		afterJmsSendTime = new GregorianCalendar();
+            		//System.out.println("Time-ALARM: - after sender-send 	= " + dateToString(new GregorianCalendar()));
         		}
         		catch(JMSException jmse)
                 {
@@ -160,12 +165,15 @@ public class ClientRequest extends Thread
                     System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
+        		afterUdpAcknowledgeTime = new GregorianCalendar();
         		///System.out.println("Time-ALARM: - after send UDP reply	= " + dateToString(new GregorianCalendar()));
         		//
         		// time to update the LDAP server entry
         		//
         		updateLdapEntry( tagValue);
+        		afterLdapWriteTime = new GregorianCalendar();
         		
+        		checkPerformance( parseTime, afterJmsSendTime, afterUdpAcknowledgeTime, afterLdapWriteTime);
         		break;
         		
         	case TagList.STATUS_MESSAGE:
@@ -184,7 +192,7 @@ public class ClientRequest extends Thread
                 {
         			status = false;
         			InterconnectionServer.getInstance().checkSendMessageErrorCount();
-                    System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
+                    //System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
 
@@ -205,17 +213,28 @@ public class ClientRequest extends Thread
         		//
         		if ( !Statistic.getInstance().getContentObject(statisticId).connectState) {
         			//
-        			// connect state chaged!
+        			// connect state changed!
         			//
         			Statistic.getInstance().getContentObject(statisticId).setConnectState (true);
-        			try{
-        			InterconnectionServer.getInstance().sendLogMessage( InterconnectionServer.getInstance().prepareJmsMessage ( logSession.createMapMessage(), InterconnectionServer.getInstance().jmsLogMessageNewClientConnected( statisticId)));
+        			//
+        			// try to send message (if logSession already available 
+        			//
+        			if ( logSession != null) {
+        				try{
+                			InterconnectionServer.getInstance().sendLogMessage( InterconnectionServer.getInstance().prepareJmsMessage ( logSession.createMapMessage(), InterconnectionServer.getInstance().jmsLogMessageNewClientConnected( statisticId)));
+                			}
+                			catch(JMSException jmse)
+                            {
+                    			status = false;
+                                System.out.println("ClientRequest : send NewClientConnected-LOG message : *** EXCEPTION *** : " + jmse.getMessage());
+                            }
+        			} else {
+        				//
+        				// cannot send log message -> print locally
+        				//
+        				System.out.println("ClientRequest : NO logSession available => change connection state");
         			}
-        			catch(JMSException jmse)
-                    {
-            			status = false;
-                        System.out.println("ClientRequest : send NewClientConnected-LOG message : *** EXCEPTION *** : " + jmse.getMessage());
-                    }
+        			
         			/*
         			Statistic.getInstance().getContentObject(statisticId).setConnectState (true);
         			try{
@@ -289,6 +308,7 @@ public class ClientRequest extends Thread
         {
             System.out.println("ClientRequest : clean up : *** EXCEPTION *** : " + jmse.getMessage());
         }         
+        //System.out.println("ClientRequest : clean up : leave thread" + this.getId());
 	}
 	
 	private boolean parseMessage ( Hashtable<String,String> tagValue, Vector<TagValuePairs> tagValuePairs, TagValuePairs tag, TagValuePairs type, String statisticId) {
@@ -373,6 +393,34 @@ public class ClientRequest extends Thread
 	    //DateFormat df = DateFormat.getDateInstance();
 	    return df.format(d);
 	}
+	
+	public int gregorianTimeDifference ( GregorianCalendar fromTime, GregorianCalendar toTime) {
+		//
+		// calculate time difference
+		//
+		Date fromDate = fromTime.getTime();
+		Date toDate = toTime.getTime();
+		long fromLong = fromDate.getTime();
+		long toLong = toDate.getTime();
+		long timeDifference = toLong - fromLong;
+		int intDiff = (int)timeDifference;
+		return intDiff;
+	}
+	
+	public void checkPerformance( GregorianCalendar parseTime, GregorianCalendar afterJmsSendTime, GregorianCalendar afterUdpAcknowledgeTime, GregorianCalendar afterLdapWriteTime) {
+		
+		int timeDifference;
+		timeDifference = gregorianTimeDifference( parseTime, afterJmsSendTime);
+		System.out.println( "Time to send JMS message    : " + timeDifference);
+		
+		timeDifference = gregorianTimeDifference( afterJmsSendTime, afterUdpAcknowledgeTime);
+		System.out.println( "Time to acknowledge message : " + timeDifference);
+		
+		timeDifference = gregorianTimeDifference( afterUdpAcknowledgeTime, afterLdapWriteTime);
+		System.out.println( "Time to write to LDAP server: " + timeDifference);
+	}
+	
+	
 	private void updateLdapEntry ( Hashtable<String,String> tagValue) {
 		//
 		// find necessary entries and activate ldapUpdateMethod

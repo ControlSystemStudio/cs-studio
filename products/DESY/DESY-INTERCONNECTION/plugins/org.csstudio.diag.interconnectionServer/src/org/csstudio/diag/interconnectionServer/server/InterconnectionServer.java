@@ -13,6 +13,7 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.jms.DeliveryMode;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Connection;
@@ -24,6 +25,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.activemq.ActiveMQConnectionFactory; 
+
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -63,28 +67,33 @@ public class InterconnectionServer
     	PrintStream                 newout          = null;
         int							errorContNamingException = 0;
         
+        
         // Den Namen dieser Instanz setzen (wird für JMS benötigt)
         instanceName = PreferenceProperties.PROCESS_NAME;
 
         //
-        // remember how often we came ehre
+        // remember how often we came here
         //
         Statistic.getInstance().incrementNumberOfJmsServerFailover();
         
         properties = new Hashtable<String, String>();
         
-        properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.exolab.jms.jndi.InitialContextFactory");
-        //properties.put(Context.PROVIDER_URL, "rmi://krykelog.desy.de:1099/");
+        properties.put(Context.INITIAL_CONTEXT_FACTORY, PreferenceProperties.JMS_CONTEXT_FACTORY);
         //
         // choose to start the primary - or the secondary JMS server
         //
         if ( primaryServerUsed) {
         	properties.put(Context.PROVIDER_URL, PreferenceProperties.PRIMARY_JMS_URL);
+        	CentralLogger.getInstance().info(this, "Connect PRIMARY to Active-MQ-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
+        	System.out.println( "Connect PRIMARY to Active-MQ-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
         	this.primaryServerUsed = false;
         } else {
         	properties.put(Context.PROVIDER_URL, PreferenceProperties.SECONDARY_JMS_URL);
+        	CentralLogger.getInstance().info(this, "Connect SECONDARY to Active-MQ-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
+        	System.out.println( "Connect SECONDARY to Active-MQ-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
         	this.primaryServerUsed = true;
         }
+
         /*
          * not used in our environment
          * 
@@ -95,85 +104,119 @@ public class InterconnectionServer
         //
         // setup ALARM connection
         //
-        
         try
         {
-            alarmContext     = new InitialContext(properties);            
+        	
+        	// Create a Connection
+        	/*
+        	 * *
+        	 * * Using new activeMQ Server
+        	 * */
+        	alarmContext     = new InitialContext(properties);            
             alarmFactory     = (ConnectionFactory)alarmContext.lookup("ConnectionFactory");
             alarmConnection  = alarmFactory.createConnection();
-            this.alarmSession     = alarmConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            
-            // Ggf. die Queue ändern
-            this.alarmDestination = (Destination)alarmContext.lookup( PreferenceProperties.JMS_ALARM_CONTEXT);
-            
             alarmConnection.start();
+        	
+        	// Create a Session
+        	this.alarmSession = alarmConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            // Create the destination (Topic or Queue)
+        	this.alarmDestination = this.alarmSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+
+            // Create a MessageProducer from the Session to the Topic or Queue
+        	this.alarmSender = this.alarmSession.createProducer(this.alarmDestination);
+        	// this.alarmSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
+       
+        	
             
-            this.alarmSender = alarmSession.createProducer(alarmDestination);
         }
         catch(NamingException ne)
         {
-            System.out.println( NAME + " create JMS ALARM connection : *** NamingException *** : " + ne.getMessage());
+        	CentralLogger.getInstance().warn( this, NAME + " create JMS " + PreferenceProperties.JMS_ALARM_CONTEXT + " connection : *** NamingException *** : " + ne.getMessage());
+            //System.out.println( NAME + " create JMS " + PreferenceProperties.JMS_ALARM_CONTEXT + " connection : *** NamingException *** : " + ne.getMessage());
             errorContNamingException++;
         }
+        
         catch(JMSException jmse)
         {
-            System.out.println(NAME + " create JMS ALARM connection : *** JMSException *** : " + jmse.getMessage());
+        	CentralLogger.getInstance().warn( this, NAME + " create JMS " + PreferenceProperties.JMS_ALARM_CONTEXT + " connection : *** JMSException *** : " + jmse.getMessage());
+            //System.out.println( NAME + " create JMS " + PreferenceProperties.JMS_ALARM_CONTEXT + " connection : *** JMSException *** : " + jmse.getMessage());
         }
         
         //
-        // setup ALARM connection
+        // setup LOG connection
         //
-        
         try
         {
-            logContext     = new InitialContext(properties);            
+        	// Create a Connection
+        	/*
+        	 *
+        	 * Using new activeMQ Server
+        	 * 
+        	 */
+        	logContext     = new InitialContext(properties);            
             logFactory     = (ConnectionFactory)logContext.lookup("ConnectionFactory");
             logConnection  = logFactory.createConnection();
-            this.logSession     = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            
-            // Ggf. die Queue ändern
-            this.logDestination = (Destination)logContext.lookup( PreferenceProperties.JMS_LOG_CONTEXT);
-            
             logConnection.start();
-            
-            this.logSender = logSession.createProducer(logDestination);
+        	
+        	// Create a Session
+        	this.logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            // Create the destination (Topic or Queue)
+        	this.logDestination = this.logSession.createTopic( PreferenceProperties.JMS_LOG_CONTEXT);
+
+            // Create a MessageProducer from the Session to the Topic or Queue
+        	this.logSender = this.logSession.createProducer(this.logDestination);
+        	// this.logSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
         }
+        
         catch(NamingException ne)
         {
-            System.out.println( NAME + " create JMS LOG connection : *** NamingException *** : " + ne.getMessage());
+        	CentralLogger.getInstance().warn( this, NAME + " create JMS " + PreferenceProperties.JMS_LOG_CONTEXT + " connection : *** NamingException *** : " + ne.getMessage());
+        	// System.out.println( NAME + " create JMS " + PreferenceProperties.JMS_LOG_CONTEXT + " connection : *** NamingException *** : " + ne.getMessage());
             errorContNamingException++;
         }
+
         catch(JMSException jmse)
         {
-            System.out.println(NAME + " create JMS LOG connection : *** JMSException *** : " + jmse.getMessage());
+            System.out.println(NAME + " create JMS " + PreferenceProperties.JMS_LOG_CONTEXT + " connection : *** JMSException *** : " + jmse.getMessage());
         }
         
         //
-        // setup PU-LOG connection
+        // setup PUT-LOG connection
         //
-        
         try
         {
-            putLogContext     = new InitialContext(properties);            
+        	// Create a Connection
+        	/*
+        	 *
+        	 * Using new activeMQ Server
+        	 * 
+        	 */
+        	putLogContext     = new InitialContext(properties);            
             putLogFactory     = (ConnectionFactory)putLogContext.lookup("ConnectionFactory");
             putLogConnection  = putLogFactory.createConnection();
-            this.putLogSession     = putLogConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            
-            // Ggf. die Queue ändern
-            this.putLogDestination = (Destination)putLogContext.lookup( PreferenceProperties.JMS_PUT_LOG_CONTEXT);
-            
             putLogConnection.start();
-            
-            this.putLogSender = putLogSession.createProducer(putLogDestination);
+        	
+        	// Create a Session
+        	this.putLogSession = putLogConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            // Create the destination (Topic or Queue)
+        	this.putLogDestination = this.putLogSession.createTopic( PreferenceProperties.JMS_PUT_LOG_CONTEXT);
+
+            // Create a MessageProducer from the Session to the Topic or Queue
+        	this.putLogSender = this.putLogSession.createProducer(this.putLogDestination);
+        	// this.putLogSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
         }
+
         catch(NamingException ne)
         {
-            System.out.println( NAME + " create JMS PUT-LOG connection : *** NamingException *** : " + ne.getMessage());
+            System.out.println( NAME + " create JMS " + PreferenceProperties.JMS_PUT_LOG_CONTEXT + " connection : *** NamingException *** : " + ne.getMessage());
             errorContNamingException++;
         }
         catch(JMSException jmse)
         {
-            System.out.println(NAME + " create JMS PUT-LOG connection : *** JMSException *** : " + jmse.getMessage());
+            System.out.println(NAME + " create JMS " + PreferenceProperties.JMS_PUT_LOG_CONTEXT + " connection : *** JMSException *** : " + jmse.getMessage());
         }
         
         //
