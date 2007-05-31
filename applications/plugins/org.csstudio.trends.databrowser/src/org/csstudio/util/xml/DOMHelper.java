@@ -176,7 +176,7 @@ public class DOMHelper
         if (s.equalsIgnoreCase("true"))
             return true;
         if (s.equalsIgnoreCase("false"))
-            return true;
+            return false;
         return default_value;
     }
 

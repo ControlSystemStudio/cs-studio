@@ -320,11 +320,12 @@ public class ConfigView extends PlotAwareView
         
         // Allow editing
         CellEditor editors[] = new CellEditor[columns.length];
+        editors[PVTableHelper.Column.VISIBLE.ordinal()] = new CheckboxCellEditor(table);
         editors[PVTableHelper.Column.NAME.ordinal()] = new TextCellEditor(table);
         editors[PVTableHelper.Column.MIN.ordinal()] = new TextCellEditor(table);
         editors[PVTableHelper.Column.MAX.ordinal()] = new TextCellEditor(table);
         if (use_axis_combobox)
-        {
+        {   // Allow axes 0...3 ?
             String axis_items[] = new String[4];
             for (int i=0; i<axis_items.length; ++i)
                 axis_items[i] = Integer.toString(i);

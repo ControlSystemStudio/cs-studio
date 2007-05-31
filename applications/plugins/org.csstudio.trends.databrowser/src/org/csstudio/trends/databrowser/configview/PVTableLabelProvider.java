@@ -37,20 +37,30 @@ public class PVTableLabelProvider extends LabelProvider implements
         }
     }
     
-    /** Get text for all but the 'select' column. */
+    /** Get text for all but the 'select' column,
+     *  where some placeholder is returned.
+     */
 	public String getColumnText(Object obj, int index)
 	{
         if (obj == PVTableHelper.empty_row)
-            return index == 0 ? PVTableHelper.empty_row : ""; //$NON-NLS-1$
+        {
+            if (index == PVTableHelper.Column.NAME.ordinal())
+                return PVTableHelper.empty_row;
+            return ""; //$NON-NLS-1$
+        }
         return PVTableHelper.getText((ModelItem) obj, index);
 	}
 
-    /** Get column image (only for the 'select' column) */
+    /** {@inheritDoc} */
 	public Image getColumnImage(Object obj, int index)
 	{
         if (obj != PVTableHelper.empty_row)
         {
             IModelItem entry = (IModelItem) obj;
+            if (index == PVTableHelper.Column.VISIBLE.ordinal())
+                return entry.isVisible() ?
+                            images.get(SELECTED) : images.get(UNSELECTED);
+                            
             if (index == PVTableHelper.Column.AUTO_SCALE.ordinal())
                 return entry.getAutoScale() ?
                             images.get(SELECTED) : images.get(UNSELECTED);
@@ -58,7 +68,9 @@ public class PVTableLabelProvider extends LabelProvider implements
         return null;
 	}
 
-    /** @see org.eclipse.jface.viewers.ITableColorProvider */
+    /** Change the background of the 'color' cells to the item's color.
+     *  @see org.eclipse.jface.viewers.ITableColorProvider
+     */
     public Color getBackground(Object obj, int index)
     {
         if (index == PVTableHelper.Column.COLOR.ordinal()  &&

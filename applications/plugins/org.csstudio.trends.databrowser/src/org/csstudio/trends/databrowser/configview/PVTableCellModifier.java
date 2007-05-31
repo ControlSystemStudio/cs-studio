@@ -40,20 +40,33 @@ public class PVTableCellModifier implements ICellModifier
         {
             ModelItem entry = (ModelItem) element;
             PVTableHelper.Column col = PVTableHelper.findColumn(col_title);
-            if (col == PVTableHelper.Column.COLOR)
-                return entry.getColor().getRGB();
-            else if (ConfigView.use_axis_combobox
-                     && col == PVTableHelper.Column.AXIS)
-            {   // If we edit Axis index in combo box.
+            switch (col)
+            {
+            case VISIBLE:
+                return new Boolean(entry.isVisible());
+            case NAME:
+                break; // use string
+            case AXIS:
+                // If we edit Axis index in combo box.
+                if (ConfigView.use_axis_combobox)
+                    return new Integer(entry.getAxisIndex());
                 // Otherwise: fall through to String for text editor
-                return new Integer(entry.getAxisIndex());
-            }
-            else if (col == PVTableHelper.Column.LOG_SCALE)
+                break; // use string
+            case MIN:
+                break; // use string
+            case MAX:
+                break; // use string
+            case AUTO_SCALE:
+                return new Boolean(entry.getAutoScale());
+            case COLOR:
+                return entry.getColor().getRGB();
+            case LINE_WIDTH:
+                break; // use string
+            case LOG_SCALE:
                 return new Boolean(entry.getLogScale());
-            else if (col == PVTableHelper.Column.AUTO_SCALE)
-            	return new Boolean(entry.getAutoScale());
-            else if (col == PVTableHelper.Column.TRACE_TYPE) 
-            	return entry.getTraceType().ordinal();
+            case TRACE_TYPE:
+                return entry.getTraceType().ordinal();
+            }
             // Default: return item as String
             return PVTableHelper.getText(entry, col);
         }
@@ -67,6 +80,8 @@ public class PVTableCellModifier implements ICellModifier
 	/** Editor finished and tries to update element's property. */
 	public void modify(Object element, String property, Object value)
     {
+        if (value == null)
+            return;
         try
         {   // Note that it is possible for an SWT Item to be passed
             // instead of the model element.
@@ -80,51 +95,49 @@ public class PVTableCellModifier implements ICellModifier
             }
             // Edit existing item
             IModelItem entry = (IModelItem) element;
-            PVTableHelper.Column id = PVTableHelper.findColumn(property);
+            PVTableHelper.Column col = PVTableHelper.findColumn(property);
             
-            if (id == PVTableHelper.Column.NAME && value != null)
+            switch (col)
             {
+            case VISIBLE:
+                boolean visible = ((Boolean)value).booleanValue();
+                entry.setVisible(visible);
+                return;
+            case NAME:
                 entry.changeName(value.toString());
-            }
-            else if (id == PVTableHelper.Column.COLOR && value != null)
-            {
-                RGB rgb = (RGB) value;
-                entry.setColor(new Color(null, rgb));
-            }
-            else if (id == PVTableHelper.Column.MIN && value != null)
-            {
-                double new_limit = Double.valueOf(value.toString());
-                entry.setAxisLow(new_limit);
-            }
-            else if (id == PVTableHelper.Column.MAX && value != null)
-            {
-                double new_limit = Double.valueOf(value.toString());
-                entry.setAxisHigh(new_limit);
-            }
-            else if (id == PVTableHelper.Column.AXIS && value != null)
-            {
+                return;
+            case AXIS:
                 int new_axis = Integer.valueOf(value.toString());
                 entry.setAxisIndex(new_axis);
-            }
-            else if (id == PVTableHelper.Column.LINE_WIDTH && value != null)
-            {
+                return;
+            case MIN:
+                double new_min = Double.valueOf(value.toString());
+                entry.setAxisLow(new_min);
+                return;
+            case MAX:
+                double new_max = Double.valueOf(value.toString());
+                entry.setAxisHigh(new_max);
+                return;
+            case AUTO_SCALE:
+                boolean auto_scale = ((Boolean)value).booleanValue();
+                entry.setAutoScale(auto_scale);
+                return;
+            case COLOR:
+                RGB rgb = (RGB) value;
+                entry.setColor(new Color(null, rgb));
+                return;
+            case LINE_WIDTH:
                 int new_width = Integer.valueOf(value.toString());
                 entry.setLineWidth(new_width);
-            }
-            else if (id == PVTableHelper.Column.LOG_SCALE && value != null)
-            {
+                return;
+            case LOG_SCALE:
                 boolean use_log = ((Boolean)value).booleanValue();
                 entry.setLogScale(use_log);
-            }
-            else if(id == PVTableHelper.Column.AUTO_SCALE && value != null) 
-            {
-            	boolean auto_scale = ((Boolean)value).booleanValue();
-            	entry.setAutoScale(auto_scale);
-            }
-            else if(id == PVTableHelper.Column.TRACE_TYPE && value != null)
-            {
+                return;
+            case TRACE_TYPE:
                 int ordinal = ((Integer) value).intValue();
-            	entry.setTraceType(TraceType.fromOrdinal(ordinal));
+                entry.setTraceType(TraceType.fromOrdinal(ordinal));
+                return;
             }
         }
         catch (Exception e)

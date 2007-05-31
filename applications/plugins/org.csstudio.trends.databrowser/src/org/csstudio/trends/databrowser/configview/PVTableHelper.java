@@ -14,10 +14,13 @@ public class PVTableHelper
     
     enum Column
     {
-        /** Name column identifier */
+        /** Show/hide column identifier */
+        VISIBLE(Messages.Visible, 30, 20, true),
+
+        /** PV Name column identifier */
     	NAME(Messages.PV, 70, 90, false),
     
-        /** Axis column identifier */
+        /** Axis index column identifier */
         AXIS(Messages.AxisIndex, 30, 5, true),
         
         /** Axis minimum */
@@ -27,7 +30,7 @@ public class PVTableHelper
         MAX(Messages.ValueRangeMax, 50, 20, false),
         
         /** Autoscale */
-        AUTO_SCALE(Messages.AutoScale, 35, 20, true),
+        AUTO_SCALE(Messages.AutoScale, 30, 20, true),
         
         /** Color column identifier */
         COLOR(Messages.Color, 30, 5, false),
@@ -128,6 +131,8 @@ public class PVTableHelper
         {
             switch (item)
             {
+            case VISIBLE:
+                return null; // no text
             case NAME:
                 return entry.getName();
             case MIN:
@@ -144,9 +149,9 @@ public class PVTableHelper
             case TRACE_TYPE:
             	return entry.getTraceType().toString();
             case AUTO_SCALE:
-                // no text
+                return null; // no text
             case COLOR:
-                // no text
+                return null; // no text
             }
 		}
 		catch (Exception e)

@@ -253,31 +253,34 @@ public class Controller
         // Avoid infinite loops if we are changing the model ourselves
         if (controller_changes_model)
             return;
-        int yaxis_index = new_item.getAxisIndex();
-        // Assert that the chart has the requested Y Axis.
-        while (yaxis_index >= chart.getNumYAxes())
-            chart.addYAxis();
-        // Add new model entry to the chart.
-        // For the trace name, we use the item name plus its units.
-        // Remember this when later trying to locate an item
-        // by its trace name!
-        Trace trace = chart.addTrace(getTraceName(new_item),
-                                     new_item.getSamples(),
-                                     new_item.getColor(),
-                                     new_item.getLineWidth(),
-                                     yaxis_index,
-                                     new_item.getTraceType());
-        // Set initial axis range from model
-        controller_changes_yaxes = true;
-        YAxis yaxis = trace.getYAxis();
-        yaxis.setValueRange(new_item.getAxisLow(), new_item.getAxisHigh());
-        // Do we need to change the axis type?
-        if (new_item.getLogScale() != yaxis.isLogarithmic())
-            yaxis.setLogarithmic(new_item.getLogScale());
-        if (new_item.getAutoScale() != yaxis.getAutoScale())
-            yaxis.setAutoScale(new_item.getAutoScale());
-        controller_changes_yaxes = false;
-        
+        // In case the item is invisible, don't actually add it to the plot...
+        if (new_item.isVisible())
+        {
+            int yaxis_index = new_item.getAxisIndex();
+            // Assert that the chart has the requested Y Axis.
+            while (yaxis_index >= chart.getNumYAxes())
+                chart.addYAxis();
+            // Add new model entry to the chart.
+            // For the trace name, we use the item name plus its units.
+            // Remember this when later trying to locate an item
+            // by its trace name!
+            Trace trace = chart.addTrace(getTraceName(new_item),
+                                         new_item.getSamples(),
+                                         new_item.getColor(),
+                                         new_item.getLineWidth(),
+                                         yaxis_index,
+                                         new_item.getTraceType());
+            // Set initial axis range from model
+            controller_changes_yaxes = true;
+            YAxis yaxis = trace.getYAxis();
+            yaxis.setValueRange(new_item.getAxisLow(), new_item.getAxisHigh());
+            // Do we need to change the axis type?
+            if (new_item.getLogScale() != yaxis.isLogarithmic())
+                yaxis.setLogarithmic(new_item.getLogScale());
+            if (new_item.getAutoScale() != yaxis.getAutoScale())
+                yaxis.setAutoScale(new_item.getAutoScale());
+            controller_changes_yaxes = false;
+        }
         // Model already running?
         if (model.isRunning())
             return;

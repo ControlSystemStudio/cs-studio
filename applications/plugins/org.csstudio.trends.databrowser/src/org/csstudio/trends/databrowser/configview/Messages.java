@@ -55,6 +55,7 @@ public class Messages extends NLS
     public static String URL;
     public static String ValueRangeMax;
     public static String ValueRangeMin;
+    public static String Visible;
 
     static
     {
