@@ -30,12 +30,12 @@ public class StringValue extends Value implements IStringValue
 	}
 	
     /** {@inheritDoc} */
-	public final String format(Format how, int precision)
+	@Override
+    public final String format(Format how, int precision)
 	{
 		if (getSeverity().hasValue())
             return value;
-		else
-			return Messages.NoValue;
+		return Messages.NoValue;
 	}
 	
     /** {@inheritDoc} */

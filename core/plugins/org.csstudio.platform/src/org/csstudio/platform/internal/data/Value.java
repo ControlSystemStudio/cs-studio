@@ -65,6 +65,7 @@ abstract public class Value implements IValue
     {   return format(Format.Default, -1); }
     
     /** {@inheritDoc} */
+    @Override
     final public String toString()
     {
         StringBuffer buffer = new StringBuffer();

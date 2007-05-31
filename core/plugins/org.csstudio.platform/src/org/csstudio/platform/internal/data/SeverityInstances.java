@@ -8,7 +8,7 @@ import org.csstudio.platform.data.ISeverity;
 public class SeverityInstances
 {
     /** Don't instantiate. */
-    private SeverityInstances() {}
+    private SeverityInstances() { /* NOP */ }
 
     /** Implementation of an 'OK' ISeverity. */
     public static final ISeverity ok = new ISeverity()
@@ -28,6 +28,7 @@ public class SeverityInstances
         public boolean isOK()
         {   return true;  }
 
+        @Override
         public String toString()
         {   return Messages.SevOK; }
     };
@@ -50,6 +51,7 @@ public class SeverityInstances
         public boolean isOK()
         {   return false;  }
 
+        @Override
         public String toString()
         {   return Messages.SevMinor; }
     };
@@ -72,6 +74,7 @@ public class SeverityInstances
         public boolean isOK()
         {   return false;  }
 
+        @Override
         public String toString()
         {   return Messages.SevMajor; }
     };
@@ -94,6 +97,7 @@ public class SeverityInstances
         public boolean isOK()
         {   return false;  }
 
+        @Override
         public String toString()
         {   return Messages.SevInvalid; }
     };

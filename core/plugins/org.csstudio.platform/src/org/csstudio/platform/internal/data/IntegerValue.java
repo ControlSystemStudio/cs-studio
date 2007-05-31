@@ -31,6 +31,7 @@ public class IntegerValue extends Value implements IIntegerValue
 	{	return values[0];	}
 	
     /** {@inheritDoc} */
+    @Override
     public final String format(final Format how, int precision)
 	{
 	    StringBuffer buf = new StringBuffer();

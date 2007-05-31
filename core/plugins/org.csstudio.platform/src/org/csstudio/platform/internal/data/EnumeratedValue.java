@@ -31,7 +31,8 @@ public class EnumeratedValue extends Value implements IEnumeratedValue
 	{	return values[0];  }
 	
     /** {@inheritDoc} */
-	public final String format(Format how, int precision)
+	@Override
+    public final String format(Format how, int precision)
 	{
 		IEnumeratedMetaData enum_meta = (IEnumeratedMetaData)getMetaData();
 		StringBuffer buf = new StringBuffer();

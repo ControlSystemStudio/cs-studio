@@ -35,7 +35,8 @@ public class DoubleValue extends Value implements IDoubleValue
 	{	return values[0];	}
 	
     /** {@inheritDoc} */
-	public final String format(Format how, int precision)
+	@Override
+    public final String format(Format how, int precision)
 	{
 		StringBuffer buf = new StringBuffer();
 		if (getSeverity().hasValue())
