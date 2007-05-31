@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.Button;
