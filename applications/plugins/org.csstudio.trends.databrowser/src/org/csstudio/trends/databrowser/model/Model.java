@@ -575,14 +575,14 @@ public class Model
     }
 
     /** @see ModelListener#entryAdded(IModelItem) */
-    void fireEntryAdded(ModelItem item)
+    void fireEntryAdded(IModelItem item)
     {
         for (ModelListener l : listeners)
             l.entryAdded(item);
     }
         
     /** @see ModelListener#entryRemoved(IModelItem) */
-    void fireEntryRemoved(ModelItem item)
+    void fireEntryRemoved(IModelItem item)
     {
         for (ModelListener listener : listeners)
             listener.entryRemoved(item);

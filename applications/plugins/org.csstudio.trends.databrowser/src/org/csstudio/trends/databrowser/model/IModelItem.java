@@ -90,13 +90,16 @@ public interface IModelItem
     public abstract void setLogScale(boolean use_log_scale);
 
 	/** @return The samples. */
-	public abstract ModelSamples getSamples();
+	public abstract IModelSamples getSamples();
     
     /** Check if there are new samples.
      *  Also resets the 'there are new samples' flag.
      *  @return <code>true</code> if there were new samples.
      */
     public abstract boolean newSampleTestAndClear();
+    
+    // TODO rethink if IModelItem already knows about archive stuff,
+    // since FormulaModelItem doesn't need it.
     
     /** Add samples obtained from the archive.
      *  <p>

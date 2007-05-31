@@ -1,8 +1,7 @@
-package org.csstudio.trends.databrowser.exportview;
+package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.archive.crawl.ValueIterator;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.trends.databrowser.model.ModelSamples;
 
 /** Facade that turns ModelSamples into a Sample Iterator.
  *  <p>
@@ -21,10 +20,10 @@ import org.csstudio.trends.databrowser.model.ModelSamples;
  */
 public class ModelSampleIterator implements ValueIterator
 {
-    private final ModelSamples samples;
+    private final IModelSamples samples;
     private int i;
     
-    ModelSampleIterator(ModelSamples samples)
+    public ModelSampleIterator(IModelSamples samples)
     {
         this.samples = samples;
         i = 0;

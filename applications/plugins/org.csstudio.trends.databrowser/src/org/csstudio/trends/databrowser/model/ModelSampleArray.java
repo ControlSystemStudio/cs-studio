@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.Range;
 
-/** An array of <code>ModelSample</code>.
+/** An array-based implementation of <code>IModelSamples</code>.
  *  @author Kay Kasemir
  */
 public class ModelSampleArray extends ArrayList<ModelSample>
-      implements ChartSampleSequence
+      implements IModelSamples
 {
     /** Required ID for serialization... */
     private static final long serialVersionUID = 1L;
@@ -67,5 +66,4 @@ public class ModelSampleArray extends ArrayList<ModelSample>
         // but what counts is the one in the ModelSamples class.
         return null;
     }
-
 }

@@ -16,12 +16,12 @@ import org.eclipse.swt.widgets.Display;
 /** Samples of a model item, combination of archived and live samples,
  *  appears as one long ChartSampleSequence.
  *  <p>
- *  Note the synchronize comments of the ChartSampleSequence class.
- *  Users of ModelItemSamples must synchronize on it.
+ *  <B>Note the synchronize comments of the ChartSampleSequence class.
+ *  Users of ModelSamples must synchronize on it.</B>
  *  @author Kay Kasemir
  *  @see ChartSampleSequence
  */
-public class ModelSamples implements ChartSampleSequence
+public class ModelSamples implements IModelSamples
 {
     /** The 'archived' samples for this item.
      *  Read from the GUI thread, but updated from an archive reader thread.

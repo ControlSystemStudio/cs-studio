@@ -10,7 +10,7 @@ package org.csstudio.swt.chart;
  *  Since the plot library iterates over the sample sequence whenever
  *  a redraw is required, while the application might receive new or
  *  changed samples at the same time, all users of the the sample sequence
- *  need to <b>synchronize</b> on the SampleSequence instance they use.
+ *  need to <b>synchronize</b> on the ChartSampleSequence instance they use.
  *  @see ChartSample
  *  @see ChartSampleSequenceContainer
  *  @author Kay Kasemir

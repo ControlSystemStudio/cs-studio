@@ -17,8 +17,9 @@ import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.IModelSamples;
 import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.trends.databrowser.model.ModelSamples;
+import org.csstudio.trends.databrowser.model.ModelSampleIterator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -114,7 +115,7 @@ class ExportJob extends Job
                     // TODO: Rethink the synchronization?
                     // Use lock/unlock semaphore, so samples
                     // can stay locked for the duration of the export job?
-                    ModelSamples samples = item.getSamples();
+                    IModelSamples samples = item.getSamples();
                     iters[ch_idx] = new ModelSampleIterator(samples);
                 }
                 else

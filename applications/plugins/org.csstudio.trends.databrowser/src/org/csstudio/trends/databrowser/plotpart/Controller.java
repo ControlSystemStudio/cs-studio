@@ -360,6 +360,9 @@ public class Controller
     private void getArchivedData(IModelItem item,
                     ITimestamp start, ITimestamp end)
     {
+        // Anything to fetch at all?
+        if (item.getArchiveDataSources().length < 1)
+            return;
     	ArchiveFetchJob job = new ArchiveFetchJob(item, start, end);
         job.schedule();
     }    

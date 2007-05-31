@@ -18,7 +18,7 @@ import org.csstudio.swt.chart.TraceType;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ModelItemTest
+public class FormulaModelItemTest
 {
     public void testModelItemScan() throws Exception
     {
@@ -43,7 +43,7 @@ public class ModelItemTest
             throw new Exception("No samples at all?");
 
         IModelSamples samples = item.getSamples();
-        final int N = samples.size();
+        int N = samples.size();
         if (N < 5)
             throw new Exception("Only " + N + " values?");
             
@@ -52,11 +52,19 @@ public class ModelItemTest
             ModelSample sample = samples.get(i);
             System.out.println(sample.toString());
         }
+        
+        FormulaModelItem fitem = new FormulaModelItem(null, "calc",
+                        0, 0, 0, true, false, 0, 0, 0, 0,
+                        TraceType.Lines, false);
+        
+        fitem.addInput(item, item.getName());
+        fitem.setFormula("fred * 2");
+        samples = fitem.getSamples();
     }
     
     public static void main(String[] args) throws Exception
     {
-        ModelItemTest test = new ModelItemTest();
+        FormulaModelItemTest test = new FormulaModelItemTest();
         test.testModelItemScan();
     }
 }

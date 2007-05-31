@@ -7,7 +7,9 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSampleDragSource;
+import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.IModelSamples;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
 import org.csstudio.trends.databrowser.model.ModelSample;
@@ -56,7 +58,7 @@ public class SampleView extends PlotAwareView
     private Model model = null;
     private ComboViewer pv_name;
     private TableViewer table_viewer;
-    private ModelSamples samples = null;
+    private IModelSamples samples = null;
     protected int index =0;
     /** Create the GUI elements. */
     @Override
@@ -194,7 +196,7 @@ public class SampleView extends PlotAwareView
 //                pvs[i] = model.getItem(i).getName();
                 int size = model.getRingSize();
                 ModelItem m = (ModelItem)model.getItem(i);
-                ModelSamples ms = m.getSamples();
+                IModelSamples ms = m.getSamples();
                 size = ms.size();
                 int poroperCount=0;
                 for(int j=0;j<size;j++){
@@ -303,7 +305,7 @@ public class SampleView extends PlotAwareView
      *  Remember to synchronize on them!
      *  @return the samples or <code>null</code>.
      */
-    ModelSamples getSamples()
+    ChartSampleSequence getSamples()
     {
         return samples;
     }
