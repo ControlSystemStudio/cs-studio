@@ -13,7 +13,7 @@ public class ModelItemTest extends TestCase
     public void testChartItem() throws Exception
     {
         ModelItem item = new ModelItem(null, "fred",
-                        1024, 0, 0, 0, false, 0, 0, 0, 0,
+                        1024, 0, 0, 0, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
         item.start();
         Thread.sleep(2000);

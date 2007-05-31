@@ -149,15 +149,37 @@ public class DOMHelper
      *  @param element Element where to start looking. May be null.
      *  @param element_name Name of sub-element to locate.
      *  
-     *  @return Returns true if sub-element was "true".
+     *  @return Returns <code>true</code> if sub-element was "true".
+     *          If nothing was found, the default is <code>false</code>.
      */
     public static final boolean getSubelementBoolean(
             Element element, String element_name)
     {
-        String s = getSubelementString(element, element_name);
-        return s.equalsIgnoreCase("true");
+        return getSubelementBoolean(element, element_name, false);
     }
-    
+
+    /** Locate a sub-element tagged 'name', return its boolean value.
+     * 
+     *  Will only go one level down, not seach the whole tree.
+     *  
+     *  @param element Element where to start looking. May be null.
+     *  @param element_name Name of sub-element to locate.
+     *  @param default_value Default value is neither "true" nor "false".
+     *  
+     *  @return Returns <code>true</code> if sub-element was "true",
+     *          <code>false</code> if it was "false", otherwise the default.
+     */
+    public static final boolean getSubelementBoolean(
+                    Element element, String element_name, boolean default_value)
+    {
+        String s = getSubelementString(element, element_name);
+        if (s.equalsIgnoreCase("true"))
+            return true;
+        if (s.equalsIgnoreCase("false"))
+            return true;
+        return default_value;
+    }
+
     /** Locate attribute tagged 'name', return its boolean value.
      * 
      *  @param element Element where to start looking.

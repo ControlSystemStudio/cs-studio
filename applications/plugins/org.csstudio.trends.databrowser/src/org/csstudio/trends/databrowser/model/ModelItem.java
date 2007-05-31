@@ -36,8 +36,27 @@ public class ModelItem
        extends PlatformObject
        implements IModelItem, PVListener, IProcessVariable
 {	
-	/** The model to which this item belongs. */
-	private Model model;
+    // Tag names used to write/read XML
+    static final String TAG_PV = "pv"; //$NON-NLS-1$
+	private static final String TAG_ARCHIVE = "archive"; //$NON-NLS-1$
+    private static final String TAG_KEY = "key"; //$NON-NLS-1$
+    private static final String TAG_URL = "url"; //$NON-NLS-1$
+    private static final String TAG_COLOR = "color"; //$NON-NLS-1$
+    private static final String TAG_TRACE_TYPE = "trace_type"; //$NON-NLS-1$
+    private static final String TAG_LOG_SCALE = "log_scale"; //$NON-NLS-1$
+    private static final String TAG_BLUE = "blue"; //$NON-NLS-1$
+    private static final String TAG_GREEN = "green"; //$NON-NLS-1$
+    private static final String TAG_RED = "red"; //$NON-NLS-1$
+    private static final String TAG_AUTOSCALE = "autoscale"; //$NON-NLS-1$
+    private static final String TAG_VISIBLE = "visible"; //$NON-NLS-1$
+    private static final String TAG_MAX = "max"; //$NON-NLS-1$
+    private static final String TAG_MIN = "min"; //$NON-NLS-1$
+    private static final String TAG_LINEWIDTH = "linewidth"; //$NON-NLS-1$
+    private static final String TAG_AXIS = "axis"; //$NON-NLS-1$
+    private static final String TAG_NAME = "name"; //$NON-NLS-1$
+
+    /** The model to which this item belongs. */
+	final private Model model;
 	
     /** The name of this Chart Item. */
     private String name;
@@ -50,6 +69,9 @@ public class ModelItem
     
     /** Y-axis range. */
     private double axis_low, axis_high;
+    
+    /** Is the item visible? */
+    private boolean visible;
     
     /** Auto scale trace */
     private boolean auto_scale;
@@ -107,6 +129,7 @@ public class ModelItem
      */
     public ModelItem(Model model, String pv_name, int ring_size,
     		int axis_index, double min, double max,
+            boolean visible,
             boolean auto_scale,
             int red, int green, int blue,
             int line_width,
@@ -118,6 +141,7 @@ public class ModelItem
         this.axis_index = axis_index;
         this.axis_low = min;
         this.axis_high = max;
+        this.visible = visible;
         this.auto_scale = auto_scale;
         this.color = new Color(null, red, green, blue);
         this.line_width = line_width;
@@ -138,15 +162,14 @@ public class ModelItem
         samples.dispose();
     }
     
+    /** @see IProcessVariable */
+    public String getTypeId()
+    {   return IProcessVariable.TYPE_ID;   }
+
     /** @see IModelItem#getName() */
     public final String getName()
     {   return name;  }
     
-    
-    // @see IProcessVariable
-    public String getTypeId()
-    {   return IProcessVariable.TYPE_ID;   }
-
     /** @see IModelItem#getUnits() */
     public final String getUnits()
     {   return units;  }
@@ -158,9 +181,8 @@ public class ModelItem
         if (model.findEntry(new_name) >= 0)
             return;
         boolean was_running = pv.isRunning();
-        // TODO: I've seen null pointer errors in stop
-        // when called from here, but have not been able to
-        // reproduce them.
+        // TODO: I've seen null pointer errors in this stop() call,
+        // but have not been able to reproduce them.
         if (was_running)
             stop();
         // Name change looks like remove/add back in
@@ -230,6 +252,22 @@ public class ModelItem
     {
         axis_low = low;
         axis_high = high;
+    }
+    
+    /** @see IModelItem#isVisible() */
+    public boolean isVisible()
+    {
+        return visible;
+    }
+    
+    /** @see IModelItem#setVisible(boolean) */
+    public void setVisible(boolean yesno)
+    {
+        if (visible == yesno)
+            return; // no change
+        visible = yesno;
+        // Notify model of this change.
+        model.fireEntryConfigChanged(this);
     }
     
     /** @see IModelItem#setAutoScale(boolean) */
@@ -426,32 +464,33 @@ public class ModelItem
     public final String getXMLContent()
     {
         StringBuffer b = new StringBuffer();
-        b.append("        <pv>\n");
-        XMLHelper.XML(b, 3, "name", name);
-        XMLHelper.XML(b, 3, "axis", Integer.toString(axis_index));
-        XMLHelper.XML(b, 3, "linewidth", Integer.toString(line_width));
-        XMLHelper.XML(b, 3, "min", Double.toString(axis_low));
-        XMLHelper.XML(b, 3, "max", Double.toString(axis_high));
-        XMLHelper.XML(b, 3, "autoscale", Boolean.toString(getAutoScale()));
-        XMLHelper.indent(b, 3); b.append("<color>\n");
-        XMLHelper.XML(b, 4, "red", Integer.toString(color.getRed()));
-        XMLHelper.XML(b, 4, "green", Integer.toString(color.getGreen()));
-        XMLHelper.XML(b, 4, "blue", Integer.toString(color.getBlue()));
-        XMLHelper.indent(b, 3); b.append("</color>\n");
-        XMLHelper.XML(b, 3, "log_scale", Boolean.toString(getLogScale()));
-        XMLHelper.XML(b, 3, "trace_type", getTraceType().name());
+        b.append("        <" + TAG_PV + ">\n");
+        XMLHelper.XML(b, 3, TAG_NAME, name);
+        XMLHelper.XML(b, 3, TAG_AXIS, Integer.toString(axis_index));
+        XMLHelper.XML(b, 3, TAG_LINEWIDTH, Integer.toString(line_width));
+        XMLHelper.XML(b, 3, TAG_MIN, Double.toString(axis_low));
+        XMLHelper.XML(b, 3, TAG_MAX, Double.toString(axis_high));
+        XMLHelper.XML(b, 3, TAG_VISIBLE, Boolean.toString(isVisible()));
+        XMLHelper.XML(b, 3, TAG_AUTOSCALE, Boolean.toString(getAutoScale()));
+        XMLHelper.indent(b, 3); b.append("<" + TAG_COLOR + ">\n");
+        XMLHelper.XML(b, 4, TAG_RED, Integer.toString(color.getRed()));
+        XMLHelper.XML(b, 4, TAG_GREEN, Integer.toString(color.getGreen()));
+        XMLHelper.XML(b, 4, TAG_BLUE, Integer.toString(color.getBlue()));
+        XMLHelper.indent(b, 3); b.append("</" + TAG_COLOR + ">\n");
+        XMLHelper.XML(b, 3, TAG_LOG_SCALE, Boolean.toString(getLogScale()));
+        XMLHelper.XML(b, 3, TAG_TRACE_TYPE, getTraceType().name());
         if (archives.size() > 0)
         {
             for (IArchiveDataSource archive : archives)
             {
-                XMLHelper.indent(b, 3);b.append("<archive>\n");
-                XMLHelper.XML(b, 4, "name", archive.getName());
-                XMLHelper.XML(b, 4, "url", archive.getUrl());
-                XMLHelper.XML(b, 4, "key", Integer.toString(archive.getKey()));
-                XMLHelper.indent(b, 3);b.append("</archive>\n");
+                XMLHelper.indent(b, 3);b.append("<" + TAG_ARCHIVE + ">\n");
+                XMLHelper.XML(b, 4, TAG_NAME, archive.getName());
+                XMLHelper.XML(b, 4, TAG_URL, archive.getUrl());
+                XMLHelper.XML(b, 4, TAG_KEY, Integer.toString(archive.getKey()));
+                XMLHelper.indent(b, 3);b.append("</" + TAG_ARCHIVE + ">\n");
             }
         }
-        b.append("        </pv>\n");
+        b.append("        </" + TAG_PV + ">\n");
         return b.toString();
     }
     
@@ -462,20 +501,21 @@ public class ModelItem
     public static ModelItem loadFromDOM(Model model, Element pv, int ring_size) throws Exception
     {
         // Common PV stuff
-        String name = DOMHelper.getSubelementString(pv, "name");
-        int axis_index = DOMHelper.getSubelementInt(pv, "axis", 0);
-        int line_width = DOMHelper.getSubelementInt(pv, "linewidth", 0);
-        double min = DOMHelper.getSubelementDouble(pv, "min", 0.0);
-        double max = DOMHelper.getSubelementDouble(pv, "max", 10.0);
-        boolean auto_scale = DOMHelper.getSubelementBoolean(pv, "autoscale");
+        String name = DOMHelper.getSubelementString(pv, TAG_NAME);
+        int axis_index = DOMHelper.getSubelementInt(pv, TAG_AXIS, 0);
+        int line_width = DOMHelper.getSubelementInt(pv, TAG_LINEWIDTH, 0);
+        double min = DOMHelper.getSubelementDouble(pv, TAG_MIN, 0.0);
+        double max = DOMHelper.getSubelementDouble(pv, TAG_MAX, 10.0);
+        boolean visible = DOMHelper.getSubelementBoolean(pv, TAG_VISIBLE, true);
+        boolean auto_scale = DOMHelper.getSubelementBoolean(pv, TAG_AUTOSCALE);
         int red, green, blue;
         Element color =
-            DOMHelper.findFirstElementNode(pv.getFirstChild(), "color");
+            DOMHelper.findFirstElementNode(pv.getFirstChild(), TAG_COLOR);
         if (color != null)
         {
-            red = DOMHelper.getSubelementInt(color, "red", 0);
-            green = DOMHelper.getSubelementInt(color, "green", 0);
-            blue = DOMHelper.getSubelementInt(color, "blue", 255);
+            red = DOMHelper.getSubelementInt(color, TAG_RED, 0);
+            green = DOMHelper.getSubelementInt(color, TAG_GREEN, 0);
+            blue = DOMHelper.getSubelementInt(color, TAG_BLUE, 255);
         }
         else
         {
@@ -483,29 +523,29 @@ public class ModelItem
             green = 0;
             blue = 255;
         }
-        boolean log_scale = DOMHelper.getSubelementBoolean(pv, "log_scale");
+        boolean log_scale = DOMHelper.getSubelementBoolean(pv, TAG_LOG_SCALE);
         
         TraceType trace_type = TraceType.Lines;
-        String trace_type_txt = DOMHelper.getSubelementString(pv, "trace_type");
+        String trace_type_txt = DOMHelper.getSubelementString(pv, TAG_TRACE_TYPE);
         if (trace_type_txt.length() > 0)
             trace_type = TraceType.fromName(trace_type_txt);
         
         ModelItem item =
             new ModelItem(model, name, ring_size, axis_index,
-                          min, max, auto_scale,
+                          min, max, visible, auto_scale,
                           red, green, blue, line_width, trace_type, log_scale);
         
         // Get archives, if there are any
         Element arch = DOMHelper.findFirstElementNode(
-                        pv.getFirstChild(), "archive");
+                        pv.getFirstChild(), TAG_ARCHIVE);
         while (arch != null)
         {
-            name = DOMHelper.getSubelementString(arch, "name");
-            String  url = DOMHelper.getSubelementString(arch, "url");
-            int key = DOMHelper.getSubelementInt(arch, "key");
+            name = DOMHelper.getSubelementString(arch, TAG_NAME);
+            String  url = DOMHelper.getSubelementString(arch, TAG_URL);
+            int key = DOMHelper.getSubelementInt(arch, TAG_KEY);
             item.addArchiveDataSource(
                 CentralItemFactory.createArchiveDataSource(url, key, name));            
-            arch = DOMHelper.findNextElementNode(arch, "archive");
+            arch = DOMHelper.findNextElementNode(arch, TAG_ARCHIVE);
         }
         return item;
     }

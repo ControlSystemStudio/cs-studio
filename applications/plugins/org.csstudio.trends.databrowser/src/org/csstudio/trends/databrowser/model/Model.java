@@ -324,6 +324,7 @@ public class Model
         // Default low..high range
         double low = 0.0;
         double high = 10.0;
+        final boolean visible = true;
         boolean auto_scale = false;
         boolean log_scale = false;
         TraceType trace_type = TraceType.Lines;
@@ -339,7 +340,7 @@ public class Model
                 break;
             }
         ModelItem item = new ModelItem(this, pv_name, ring_size,
-        		axis_index, low, high, auto_scale,
+        		axis_index, low, high, visible, auto_scale,
                 red, green, blue, line_width, trace_type,
                 log_scale);
         silentAdd(item);
@@ -538,11 +539,11 @@ public class Model
         if (pvlist != null)
         {
             Element pv = DOMHelper.findFirstElementNode(
-            		pvlist.getFirstChild(), "pv");
+            		pvlist.getFirstChild(), ModelItem.TAG_PV);
             while (pv != null)
             {
                 silentAdd(ModelItem.loadFromDOM(this, pv, ring_size));
-                pv = DOMHelper.findNextElementNode(pv, "pv");
+                pv = DOMHelper.findNextElementNode(pv, ModelItem.TAG_PV);
             }
         }
         // This also notifies listeners about the new periods:

@@ -5,7 +5,12 @@ import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.chart.TraceType;
 import org.eclipse.swt.graphics.Color;
 
-/** This is the user's interface to one item of the Model.
+/** Interface to one item of the Model.
+ *  <p>
+ *  The ModelItem implements this, but also implements interfaces
+ *  to handling the PV and other stuff that's meant to remain inside
+ *  the model package,
+ *  so this interface is what's visible to the outside.
  *  @see Model
  *  @author Kay Kasemir
  */
@@ -38,6 +43,18 @@ public interface IModelItem
     /** Set upper Y-axis limit. */
     public abstract void setAxisHigh(double limit);
     
+    /** @return <code>true</code> if item is visible. */
+    public boolean isVisible();
+    
+    /** Make item visible or hide it.
+     *  <p>
+     *  Making an item invisible might be useful to temporarily
+     *  clear up the display, or for items that are used as
+     *  formula inputs yet aren't to be shown themselves.
+     *  @param yesno <code>true</code> means visible.
+     */
+    public void setVisible(boolean yesno);
+
     /** @return Returns <code>true</code> if trace should be auto-scaled. */
     public abstract boolean getAutoScale();
     
