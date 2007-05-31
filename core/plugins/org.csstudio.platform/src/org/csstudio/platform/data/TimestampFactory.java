@@ -34,7 +34,7 @@ public final class TimestampFactory
 {
     /** Private constructor to prevent instantiation. */
     private TimestampFactory()
-    {}
+    { /* NOP */ }
 
     /** Creates a time stamp based on the specified seconds and nanoseconds.
      *  <p>

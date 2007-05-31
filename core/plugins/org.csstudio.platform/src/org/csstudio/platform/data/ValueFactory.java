@@ -16,7 +16,7 @@ public class ValueFactory
 {
     /** Prohibit instance creation. */
     private ValueFactory()
-    {}
+    { /* NOP */ }
     
     /** Create an 'OK' ISeverity.
      *  @return ISeverity

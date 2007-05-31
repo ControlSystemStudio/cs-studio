@@ -8,4 +8,5 @@ package org.csstudio.platform.data;
  */
 public interface IMetaData
 {
+    // Left empty on purpose
 }

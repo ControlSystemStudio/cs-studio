@@ -100,10 +100,11 @@ public class ValueUtil
         else if (value instanceof StringValue)
             val_txt = ((IStringValue) value).getValue();
         if (val_txt != null) // return value appended to info
+        {
             if (info == null)
                 return val_txt;
-            else
-                return info + Messages.SevrStatSeparator + val_txt;
+            return info + Messages.SevrStatSeparator + val_txt;
+        }
         return info;
     }
     
