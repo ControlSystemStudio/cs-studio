@@ -22,6 +22,8 @@
 package org.csstudio.utility.ldap.engine;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Vector;
 
 import javax.naming.NamingEnumeration;
@@ -36,7 +38,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
-import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
@@ -176,9 +177,9 @@ public class Engine extends Job {
     			channel = writeReq.getChannel();
     		} 
     		if ( !channel.equals(writeReq.getChannel())){
-    			System.out.print("write: ");
+    			//System.out.print("write: ");
     			changeValue("eren", channel, modItem);
-    			System.out.println(" finisch!!!");
+    			//System.out.println(" finisch!!!");
     			modItem = new ModificationItem[maxNumberOfWritesProcessed];
     			i = 0;
     			//
@@ -192,7 +193,7 @@ public class Engine extends Job {
 			BasicAttribute ba = new BasicAttribute(	writeReq.getAttribute(), writeReq.getValue());
 			modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,ba);
 			//writeVector.remove(0);
-			if(writeVector.size()<20||(writeVector.size()%10)==0)
+			if( (writeVector.size()>100) &&(writeVector.size()%100)==0)
 				System.out.println("Engine.performLdapWrite buffer size: "+writeVector.size());
 		}
     	//
@@ -201,7 +202,7 @@ public class Engine extends Job {
     	if (i != 0 ) {
     		//
 			try {
-				System.out.println("Vector leer jetzt den Rest zum LDAP Server schreiben");
+				//System.out.println("Vector leer jetzt den Rest zum LDAP Server schreiben");
 				changeValue("eren", channel, modItem);
 			}
 			 catch (Exception e) {
@@ -213,7 +214,7 @@ public class Engine extends Job {
 					return;
 				}
     	} else {
-    		System.out.println("Vector leer - nothing left to do");
+    		//System.out.println("Vector leer - nothing left to do");
     	}
     	
     	doWrite = false;
@@ -226,27 +227,30 @@ public class Engine extends Job {
 	 */
 	private void changeValue(String string, String channel, ModificationItem[] modItem) {
 		int j=0;
+		int n;
 		Vector <String>namesInNamespace = null;
-		// Delete null values and make rigth size
+		GregorianCalendar startTime = null;
+
+		// Delete null values and make right size
 		for(;j<modItem.length;j++){
 			if(modItem[j]==null)
 				break;
 		}
 //		System.out.println("Enter Engine.changeValue with: " + channel);
 		ModificationItem modItemTemp[] = new ModificationItem[j];
-		for(int n = 0;n<j;n++){
+		for( n = 0; n<j; n++){
 			modItemTemp[n] = modItem[n];
 		}
 		//
-		// channel name changed
-		// first write all values
+		// set start time
 		//
+		startTime = new GregorianCalendar();
 		
 		//
 		// is channel name already in ldearReference hash table?
 		//
 		if ( ldapReferences.hasEntry(channel)) {
-		//if ( false) { // test case with no hash table
+		// if ( false) { // test case with no hash table
 			//
 			// take what's already stored
 			//
@@ -264,6 +268,7 @@ public class Engine extends Job {
 				}
     			try {
     				ctx.modifyAttributes(ldapChannelName, modItemTemp);
+    				System.out.println ("Engine.changeValue : Time to write to LDAP: (known channel: " + ldapChannelName + ") [" + n + "] " + gregorianTimeDifference ( startTime, new GregorianCalendar()));
     			} catch (NamingException e) {
     				e.printStackTrace();
     				//
@@ -288,11 +293,11 @@ public class Engine extends Job {
 	        SearchControls ctrl = new SearchControls();
 	        ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			try {
-				NamingEnumeration<SearchResult> results = ctx.search("",string+"=" + channel,ctrl);
+				NamingEnumeration<SearchResult> results = ctx.search("",string+"=" + channel, ctrl);
 	//			System.out.println("Enter Engine.changeValue results for channnel: " + channel );
-				namesInNamespace = new Vector();
+				namesInNamespace = new Vector<String>();
 				while(results.hasMore()) {
-	//				System.out.println("Enter Engine.changeValue in while channnel: " + channel );
+	//				System.out.println("Engine.changeValue in while channnel: " + channel );
 					String ldapChannelName = results.next().getNameInNamespace();
 					namesInNamespace.add( ldapChannelName);
 					//
@@ -303,6 +308,7 @@ public class Engine extends Job {
 					}
 	    			try {
 	    				ctx.modifyAttributes(ldapChannelName, modItemTemp);
+	    				System.out.println ("Engine.changeValue : Time to write to LDAP: (unknown channel)" + gregorianTimeDifference ( startTime, new GregorianCalendar()));
 	    			} catch (NamingException e) {
 	    				e.printStackTrace();
 	    				//
@@ -335,9 +341,26 @@ public class Engine extends Job {
 				// Write if really something found
 				//
 				ldapReferences.newLdapEntry( channel, namesInNamespace);
+				System.out.println ("Engine.changeValue : add entry for channel: " + channel);
 			}
 		}
-		
+		//
+		// calcualte time difference
+		//
+		//System.out.println ("Engine.changeValue : Time to write to LDAP-total: " + gregorianTimeDifference ( startTime, new GregorianCalendar()));
+	}
+	
+	public int gregorianTimeDifference ( GregorianCalendar fromTime, GregorianCalendar toTime) {
+		//
+		// calculate time difference
+		//
+		Date fromDate = fromTime.getTime();
+		Date toDate = toTime.getTime();
+		long fromLong = fromDate.getTime();
+		long toLong = toDate.getTime();
+		long timeDifference = toLong - fromLong;
+		int intDiff = (int)timeDifference;
+		return intDiff;
 	}
 
 
