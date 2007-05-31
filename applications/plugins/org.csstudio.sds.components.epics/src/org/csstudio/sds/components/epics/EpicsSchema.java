@@ -1,7 +1,6 @@
 package org.csstudio.sds.components.epics;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.AliasDescriptor;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.eclipse.swt.graphics.RGB;
 
@@ -70,6 +69,6 @@ public final class EpicsSchema extends AbstractControlSystemSchema {
 	 */
 	@Override
 	protected void initializeAliases(final AbstractWidgetModel widgetModel) {
-		widgetModel.addAliasDescriptor(new AliasDescriptor("record", "", "EPICS Record"));
+		widgetModel.addAlias("record", "");
 	}
 }
