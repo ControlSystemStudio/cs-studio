@@ -6,6 +6,10 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.ploteditor.messages"; //$NON-NLS-1$
 
+    public static String Error_Not_Saved_Message;
+
+    public static String Error_Not_Saved_Title;
+
     public static String OpenArchiveView;
 
     public static String OpenAsView;

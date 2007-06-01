@@ -2,7 +2,9 @@ package org.csstudio.trends.databrowser.ploteditor;
 
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.plotview.PlotView;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 /** Open the active DataBrowser editor's file as a view.
  *  @author Kay Kasemir
@@ -25,6 +27,14 @@ public class OpenPlotEditorAsViewAction extends Action
     @Override
     public void run()
     {
-        PlotView.activateWithFile(editor.getEditorInputFile());
+        final IFile file = editor.getEditorInputFile();
+        if (file == null)
+        {
+            MessageDialog.openError(editor.getSite().getShell(),
+                                    Messages.Error_Not_Saved_Title,
+                                    Messages.Error_Not_Saved_Message);
+            return;
+        }
+        PlotView.activateWithFile(file);
     }
 }
