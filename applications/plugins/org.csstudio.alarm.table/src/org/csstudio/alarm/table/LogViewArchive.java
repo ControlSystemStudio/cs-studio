@@ -132,7 +132,7 @@ public class LogViewArchive extends ViewPart {
 		timeTo.setEditable(false);
 //		timeTo.setText("                              ");
 
-		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 3);
+		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 3,SWT.SINGLE | SWT.FULL_SELECTION);
 		jlv.setAlarmSorting(false);
 		parent.pack();
 		

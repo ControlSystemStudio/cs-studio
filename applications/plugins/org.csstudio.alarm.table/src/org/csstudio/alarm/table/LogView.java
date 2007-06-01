@@ -22,12 +22,14 @@
 
 package org.csstudio.alarm.table;
 
+import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
+import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
@@ -39,6 +41,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -85,7 +88,7 @@ public class LogView extends ViewPart implements MessageListener {
 		comp.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
 		comp.setLayout(new GridLayout(4, true));
 
-		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 1);
+		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 1,SWT.SINGLE | SWT.FULL_SELECTION);
 		jlv.setAlarmSorting(false);
 		parent.pack();
 		
@@ -150,18 +153,46 @@ public class LogView extends ViewPart implements MessageListener {
 					if (message instanceof TextMessage) {
 						JmsLogsPlugin.logError("received message is not a map message");
 					} else if (message instanceof MapMessage) {
-						jmsml.addJMSMessage((MapMessage) message);
+                        MapMessage mm = (MapMessage) message;
+                        if(mm.getString("ACK")!=null&&mm.getString("ACK").toUpperCase().equals("TRUE")){
+                            setAck(message);
+                        }else{
+                            jmsml.addJMSMessage(mm);
+                        }
 					} else {
 						JmsLogsPlugin.logError("received message is an unknown type");
 					}
 				} catch (Exception e) {
+                    e.printStackTrace();
 					JmsLogsPlugin.logException("", e);
 				}
 			}
 		});
 	}
 
-	public void dispose() {
+	/**
+     * @param message
+     */
+    protected void setAck(Message message) {
+       TableItem[] items = jlv.getTable().getItems();
+       for (TableItem item : items) {
+           if (item.getData() instanceof JMSMessage) {
+            JMSMessage jmsMessage = (JMSMessage) item.getData();
+            try {
+                if(jmsMessage.getName().equals(message.getStringProperty("NAME"))&&jmsMessage.getProperty("EVENTTIME").equals(message.getStringProperty("EVENTTIME"))){
+                    jmsMessage.getHashMap().put("ACK","true");
+                }
+            } catch (JMSException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            
+        }
+       }
+        
+    }
+
+    public void dispose() {
 		super.dispose();
 		try {
 			if (receiver1 != null)

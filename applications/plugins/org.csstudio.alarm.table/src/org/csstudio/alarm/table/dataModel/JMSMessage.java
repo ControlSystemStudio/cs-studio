@@ -176,5 +176,7 @@ public class JMSMessage implements IProcessVariable {//,
 		this.backgroundColorGray = backgroundColorGray;
 	}
 
-	
+	public HashMap<String, String> getHashMap(){
+	    return messageProperties;
+    }
 }

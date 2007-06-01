@@ -65,7 +65,7 @@ public class AlarmLogView extends LogView {
 				.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(
 						";"); //$NON-NLS-1$
 
-		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2);
+		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2,SWT.SINGLE | SWT.FULL_SELECTION|SWT.CHECK);
 		jlv.setAlarmSorting(true);
 		parent.pack();
 

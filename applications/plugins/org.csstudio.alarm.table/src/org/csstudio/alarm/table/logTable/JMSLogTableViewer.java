@@ -1,23 +1,32 @@
 package org.csstudio.alarm.table.logTable;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.jms.MapMessage;
 
 import org.csstudio.alarm.table.dataModel.IJMSMessageViewer;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.dataModel.TextContainer;
 import org.csstudio.alarm.table.dataModel.TextContainerFactory;
+import org.csstudio.alarm.table.jms.SendMapMessage;
 
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IControlSystemItem;
-import org.csstudio.platform.ui.dnd.DnDUtil;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
+import org.csstudio.utility.ldap.engine.Engine;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IMenuListener;
@@ -46,13 +55,18 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
+
+import sun.java2d.loops.MaskBlit;
 
 public class JMSLogTableViewer extends TableViewer {
 
@@ -75,6 +89,8 @@ public class JMSLogTableViewer extends TableViewer {
 	private boolean sort = false;
 
 	private JMSMessageList jmsml;
+
+    private int tableType;
 	
 	/**
 	 * Setting Column names from preference pages, providers. 
@@ -88,8 +104,9 @@ public class JMSLogTableViewer extends TableViewer {
 	 * @param tableType (1: log table, 2: alarm table, 3: archive table)
 	 */
 	public JMSLogTableViewer(Composite parent, IWorkbenchPartSite site,
-			String[] colNames, JMSMessageList j, int tableType) {
-		super(parent, SWT.SINGLE | SWT.FULL_SELECTION);
+			String[] colNames, JMSMessageList j, int tableType, int style) {
+        super(parent, style);
+        this.tableType = tableType;
 		columnNames = colNames;
 		jmsml = j;
 		table = this.getTable();
@@ -97,11 +114,63 @@ public class JMSLogTableViewer extends TableViewer {
 		table.setLinesVisible(true);
 
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-
-		for (int i = 0; i < columnNames.length; i++) {
+        table.addListener (SWT.Selection, new Listener () {
+            @SuppressWarnings("deprecation")
+            public void handleEvent (Event event) {
+                JMSMessage message;
+                if (event.item instanceof TableItem) {
+                    TableItem ti = (TableItem) event.item;
+                    if(ti.getChecked()){
+                        SendMapMessage sender = new SendMapMessage();
+                        String time = TimestampFactory.now().toString();
+                        try{
+                            MapMessage mapMessage = sender.getSessionMessageObject();
+                            sender.startSender();
+                            if (ti.getData() instanceof JMSMessage) {
+                                message = (JMSMessage) event.item.getData();
+                                System.out.println("name: "+message.getName());
+                                
+                            }else return;
+                            HashMap<String, String> hm = message.getHashMap();
+                            Iterator<String> it = hm.keySet().iterator();
+                            
+                            while(it.hasNext()) {
+                                String key = it.next();
+                                String value = hm.get(key);
+                                mapMessage.setString(key, value);
+                            }
+                            message.setProperty("ACK", "1");
+                            mapMessage.setString("ACK", "TRUE");
+                            mapMessage.setString("ACK_TIME", time);
+                            Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack");
+                            Engine.getInstance().addLdapWriteRequest("epicsAlarmAcknTimeStamp", message.getName(), time);
+    
+                            sender.sendMessage();
+                        }catch(Exception e){
+                            MessageBox box = new MessageBox(JMSLogTableViewer.this.getTable().getShell(), SWT.ICON_ERROR);
+                            box.setText("Error");
+                            box.setMessage(e.getMessage());
+                            box.open();
+                        }
+                        String string = event.detail == SWT.CHECK ? "Checked" : "Selected";
+                        System.out.println (event.item + " " + string);
+                        System.out.println (event.text + " " + string);
+                        System.out.println(event.data);
+                    }else{
+                        ti.setChecked(true);
+                    }
+                }
+            }
+        });
+        for (int i = 0; i < columnNames.length; i++) {
 			TableColumn tableColumn = new TableColumn(table, SWT.CENTER);
 			tableColumn.setText(columnNames[i]);
-			tableColumn.setWidth(100);
+            if(i==0){
+                tableColumn.setWidth(25);
+                
+            }
+            else
+                tableColumn.setWidth(100);
 			colName = columnNames[i];
 			tableColumn.addSelectionListener(new SelectionAdapter() {
 
@@ -243,8 +312,9 @@ public class JMSLogTableViewer extends TableViewer {
 		 */
 		public String getColumnText(Object element, int index) {
 			try {
-				JMSMessage jmsm = (JMSMessage) element;
-				return jmsm.getProperty(columnNames[index].toUpperCase());
+                JMSMessage jmsm = (JMSMessage) element;
+                return jmsm.getProperty(columnNames[index].toUpperCase());
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
