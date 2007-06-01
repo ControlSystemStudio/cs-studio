@@ -5,6 +5,7 @@ import oracle.jdbc.OracleStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -116,7 +117,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 //   		  )
 //	order by mc.message_id;
 
-	private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to) {
+	private String buildSQLStatement(Calendar from, Calendar to) {
 /*	Alter SQL_String
  * 	Macht Probleme bei mehr als zwei AND abfragen
  * 	(Methode private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to, String filter))
@@ -168,7 +169,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		return sql;
 	}
 
-	private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to, String filter) {
+	private String buildSQLStatement(Calendar from, Calendar to, String filter) {
 		/*	Alter SQL_String
 		 * 	Macht Probleme bei mehr als zwei AND abfragen
 		 * 	(Methode private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to, String filter))
@@ -225,14 +226,14 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	}
 
 
-	public ArrayList<HashMap<String, String>> getLogMessages(GregorianCalendar from, GregorianCalendar to) {
+	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to) {
 		String sql = buildSQLStatement(from, to);
 		System.out.println(sql);
 		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql);
 		return ergebniss;
 	}
 
-	public ArrayList<HashMap<String, String>> getLogMessages(GregorianCalendar from, GregorianCalendar to, String filter) {
+	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, String filter) {
 		String sql = buildSQLStatement(from, to, filter);
 		System.out.println(sql);
 		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql);
