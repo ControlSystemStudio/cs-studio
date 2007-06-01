@@ -35,6 +35,7 @@ import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /**
  * @author hrickens
@@ -133,7 +134,7 @@ public class LDAPConnector {
 	 */
 	private Hashtable<Object, String> getUIenv() {
 
-		IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+		IEclipsePreferences prefs = new InstanceScope().getNode(Activator.PLUGIN_ID);
 		// Set up the environment for creating the initial context
 		if(debug){
 			System.out.println("Path: "+prefs.absolutePath());
