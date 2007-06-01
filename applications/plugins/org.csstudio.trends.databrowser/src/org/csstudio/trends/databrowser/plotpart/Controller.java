@@ -23,6 +23,9 @@ import org.eclipse.swt.dnd.DropTargetEvent;
  */ 
 public class Controller
 {
+    
+    // TODO model's time range not always updated.
+    // try zoom in, then re-enable scroll -> wrong plot duration
     private final Model model;
     private final BrowserUI gui;
     private final Chart chart;
