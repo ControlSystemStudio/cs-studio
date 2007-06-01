@@ -41,9 +41,11 @@ import java.util.Calendar;
  */
 public class StartEndTimeParser
 {
+    private final String start_specification;
+    private final String end_specification;
+    private final RelativeTimeParserResult rel_start;
+    private final RelativeTimeParserResult rel_end;
     private Calendar start, end;
-    private RelativeTimeParserResult rel_start;
-    private RelativeTimeParserResult rel_end;
     
     /** Parse the given start and end time strings,
      *  and return the calendar date and time obtained from that.
@@ -52,42 +54,67 @@ public class StartEndTimeParser
      *  for example "-6hours" and "now", the result would of course be
      *  the absolute values, determined "right now", for "6 hours ago"
      *  resp. "now".
-     *  @return Array with start and end date/time.
      *  @throws Exception On parse error.
      */
-    public StartEndTimeParser(String start_text, String end_text)
+    public StartEndTimeParser(String start_specification, String end_specification)
         throws Exception
     {
-        rel_start = RelativeTimeParser.parse(start_text);
-        rel_end = RelativeTimeParser.parse(end_text);
+        this.start_specification = start_specification;
+        this.end_specification = end_specification;
+        rel_start = RelativeTimeParser.parse(start_specification);
+        rel_end = RelativeTimeParser.parse(end_specification);
+        
+        if (rel_start.isAbsolute())
+            start = AbsoluteTimeParser.parse(start_specification);
+        if (rel_end.isAbsolute())
+            end = AbsoluteTimeParser.parse(end_specification);
+        
+        eval();
+    }
+    
+    /** @return Start time specification */
+    public final String getStartSpecification()
+    {
+        return start_specification;
+    }
+
+    /** @return End time specification */
+    public final String getEndSpecification()
+    {
+        return end_specification;
+    }
+
+    /** Re-evaluate the time specifications.
+     *  <p>
+     *  In case the start or end specification were relative,
+     *  this updates the start resp. end time.
+     *  @throws Exception
+     */
+    public void eval() throws Exception
+    {
         if (rel_start.isAbsolute() && rel_end.isAbsolute())
-        {
-            start = AbsoluteTimeParser.parse(start_text);
-            end = AbsoluteTimeParser.parse(end_text);
             return;
-        }
         else if (!rel_start.isAbsolute() && rel_end.isAbsolute())
         {
-            end = AbsoluteTimeParser.parse(end_text);
-            start = adjust(end, start_text, rel_start);
+            start = adjust(end, start_specification, rel_start);
             return;
         }
         else if (rel_start.isAbsolute() && !rel_end.isAbsolute())
         {
-            start = AbsoluteTimeParser.parse(start_text);
-            end = adjust(start, end_text, rel_end);
+            end = adjust(start, end_specification, rel_end);
             return;
         }
         // else !rel_start.isAbsolute() && !rel_end.isAbsolute()
         Calendar now = Calendar.getInstance();
-        end = adjust(now, end_text, rel_end);
-        start = adjust(end, start_text, rel_start);
+        end = adjust(now, end_specification, rel_end);
+        start = adjust(end, start_specification, rel_start);
     }
 
     /** Get the start time obtained from the given start and end strings.
      *  <p>
      *  In case relative times are involved, those were evalutaed at the
-     *  time of parsing.
+     *  time of the last eval().
+     *  @see #eval()
      *  @return Calendar value for the start time.
      */
     public final Calendar getStart()
@@ -96,7 +123,8 @@ public class StartEndTimeParser
     /** Get the end time obtained from the given start and end strings.
      *  <p>
      *  In case relative times are involved, those were evalutaed at the
-     *  time of parsing.
+     *  time of the last eval().
+     *  @see #eval()
      *  @return Calendar value for the end time.
      */
     public final Calendar getEnd()
@@ -140,7 +168,7 @@ public class StartEndTimeParser
      *  @return The adjusted time (a new instance, not 'date' as passed in).
      * @throws Exception 
      */
-    private static Calendar adjust(Calendar date, String text,
+    private static Calendar adjust(final Calendar date, final String text,
                     RelativeTimeParserResult relative_time) throws Exception
     {
         // Get copy of date, and patch that one

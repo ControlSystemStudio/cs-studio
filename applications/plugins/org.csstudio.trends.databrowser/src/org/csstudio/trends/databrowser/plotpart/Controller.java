@@ -16,6 +16,8 @@ import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.preferences.Preferences;
+import org.csstudio.util.time.RelativeTime;
+import org.csstudio.util.time.RelativeTimeParser;
 import org.eclipse.swt.dnd.DropTargetEvent;
 
 /** Data Browser Controller: Creates model, UI and handles everything between them.
@@ -23,7 +25,6 @@ import org.eclipse.swt.dnd.DropTargetEvent;
  */ 
 public class Controller
 {
-    
     // TODO model's time range not always updated.
     // try zoom in, then re-enable scroll -> wrong plot duration
     private final Model model;
@@ -42,7 +43,7 @@ public class Controller
         public void scan(boolean with_redraw)
         {
             // 'Scan' the PVs
-            ITimestamp now = model.addCurrentValuesToChartItems();
+            model.addCurrentValuesToChartItems();
             // Scroll or simply redraw w/o scroll.
             if (with_redraw  &&  chart.isVisible())
             {
@@ -52,15 +53,16 @@ public class Controller
                     double low = model.getStartTime().toDouble();
                     double high = model.getEndTime().toDouble();
                     final double range = high - low;
-                    // Update model such that 'high' equals 'now',
-                    // keeping the range.
-                    high = now.toDouble();
-                    low = high - range;
+                    
+                    // TODO pass fractional seconds once parser handles that
+                    final String start_specification =
+                        String.format("-%d %s", (int)range, RelativeTime.SECOND_TOKEN);
+                    
                     controller_changes_xaxis = true;
                     try
                     {
-                        model.setTimeRange(TimestampFactory.fromDouble(low),
-                                        TimestampFactory.fromDouble(high));
+                        model.setTimeSpecifications(start_specification,
+                                                    RelativeTime.NOW);
                     }
                     catch (Exception ex)
                     {   // Prevent follow-up errors by disabling the scroll
@@ -136,6 +138,17 @@ public class Controller
             // so don't
             if (gui.isScrollEnabled())
                 gui.enableScrolling(false);
+            // Update the time range of the model
+            try
+            {
+                final ITimestamp start = TimestampFactory.fromDouble(xaxis.getLowValue());
+                final ITimestamp end = TimestampFactory.fromDouble(xaxis.getHighValue());
+                model.setTimeSpecifications(start.toString(), end.toString());
+            }
+            catch (Exception ex)
+            {
+                Plugin.logException("Cannot update model time range", ex); //$NON-NLS-1$
+            }
             getArchivedData(null);
         }
 

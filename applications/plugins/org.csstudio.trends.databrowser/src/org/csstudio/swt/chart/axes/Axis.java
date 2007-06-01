@@ -107,10 +107,14 @@ public class Axis
     }
 
     /** Set the new value range.
-     *  @return <code>true</code> if this actually did something. */
+     *  @return <code>true</code> if this actually did something.
+     */
     @SuppressWarnings("nls")
     public boolean setValueRange(double low, double high)
     {
+        // Any change at all?
+        if (low == low_value  &&  high == high_value)
+            return false;
         if (low >= high)
         {
             Plugin.logError("Axis " + getLabel() 

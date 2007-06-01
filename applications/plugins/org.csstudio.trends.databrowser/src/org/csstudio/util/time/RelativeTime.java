@@ -7,10 +7,33 @@ import java.util.Calendar;
  *  No, this is not special relativity.
  *  This is simply about relative date and time offsets
  *  like "6 hours before".
+ *  
+ *  TODO include milliseconds
  *  @author Kay Kasemir
  */
 public class RelativeTime
 {
+    /** Constant to define 'now', i.e. the current wallclock date and time. */
+    public static final String NOW = "now"; //$NON-NLS-1$
+    
+    /** String identifier for seconds */
+    public static final String SECOND_TOKEN = "seconds"; //$NON-NLS-1$
+
+    /** String identifier for minutes */
+    public static final String MINUTE_TOKEN = "minutes"; //$NON-NLS-1$
+
+    /** String identifier for hours */
+    public static final String HOUR_TOKEN = "hours"; //$NON-NLS-1$
+
+    /** String identifier for days */
+    public static final String DAY_TOKEN = "days"; //$NON-NLS-1$
+
+    /** String identifier for months */
+    public static final String MONTH_TOKEN = "Months"; //$NON-NLS-1$
+
+    /** String identifier for years */
+    public static final String YEAR_TOKEN = "years"; //$NON-NLS-1$
+
     /** The pieces of relative time. */
     private int rel_time[];
     
@@ -45,12 +68,12 @@ public class RelativeTime
     @SuppressWarnings("nls")
     static final String tokens[] = new String[]
     {
-        "years",
-        "Months",
-        "days",
-        "hours",
-        "minutes",
-        "seconds"
+        YEAR_TOKEN,
+        MONTH_TOKEN,
+        DAY_TOKEN,
+        HOUR_TOKEN,
+        MINUTE_TOKEN,
+        SECOND_TOKEN
     };
 
     /** Construct new relative time information. */
@@ -130,7 +153,7 @@ public class RelativeTime
     public String toString()
     {
         if (isNow())
-            return RelativeTimeParser.NOW;
+            return NOW;
         StringBuffer result = new StringBuffer();
         for (int piece=0; piece<rel_time.length; ++piece)
             addToStringBuffer(result, piece);

@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.swt.DefaultColors;
@@ -45,21 +45,15 @@ import org.w3c.dom.Element;
  */
 public class Model
 {
-    /** Start and end of the time range to display.
-     *  @see #getStartSpecification()
+    /** Default for start_specification
+     *  TODO move to preferences
      */
-    private String start_specification, end_specification;
-
-    /** Default for start_specification */
     private static final String DEFAULT_END_SPEC = "now"; //$NON-NLS-1$
 
     /** Default for end_specification */
     private static final String DEFAULT_START_SPEC = "-1 hour"; //$NON-NLS-1$
     
-    /** Start and end of the time range as time stamps.
-     *  @see #getStartSpecification()
-     */
-    ITimestamp start_time, end_time;
+    private StartEndTimeParser start_end_times;
     
     /** Scan period for 'live' data in seconds. */
     private double scan_period = 0.5;
@@ -151,13 +145,13 @@ public class Model
      *  @return Start specification.
      */
     public String getStartSpecification()
-    {   return start_specification;  }
+    {   return start_end_times.getStartSpecification();  }
 
     /** @see #getStartSpecification()
      *  @return End specification.
      */
     public String getEndSpecification()
-    {   return end_specification; }
+    {   return start_end_times.getEndSpecification(); }
     
     /** The current start time, which might be different from what you get
      *  when you evaluate the start specification 'right now'.
@@ -165,13 +159,13 @@ public class Model
      *  @return Start time, evaluated when start specification was set.
      */
     public ITimestamp getStartTime()
-    {   return start_time; }
+    {   return TimestampFactory.fromCalendar(start_end_times.getStart()); }
     
     /** @see #getStartTime()
      *  @return End time, evaluated when end specification was set.
      */
     public ITimestamp getEndTime()
-    {   return end_time; }
+    {   return TimestampFactory.fromCalendar(start_end_times.getEnd()); }
 
     /** @return Returns the scan period in seconds. */
     public double getScanPeriod()
@@ -194,38 +188,20 @@ public class Model
                                       String end_specification) 
         throws Exception
     {
-        StartEndTimeParser start_end =
+        start_end_times =
             new StartEndTimeParser(start_specification, end_specification);
+        
+        
+        final ITimestamp start = TimestampFactory.fromCalendar(start_end_times.getStart());
+        final ITimestamp end = TimestampFactory.fromCalendar(start_end_times.getEnd());
+
         // In case of parse errors, we won't reach this point
-        start_time = TimestampFactory.fromCalendar(start_end.getStart());
-        end_time = TimestampFactory.fromCalendar(start_end.getEnd());
-        this.start_specification = start_specification;
-        this.end_specification = end_specification;
         // fireTimeSpecificationsChanged, fireTimeRangeChanged
         for (ModelListener l : listeners)
         {
             l.timeSpecificationsChanged();
             l.timeRangeChanged();
         }
-    }
- 
-    /** Update the current time range.
-     *  <p>
-     *  The time specifications stay as they are.
-     *  @see #setTimeSpecifications(String, String)
-     *  @exception Exception when start &gt; end.
-     */
-    @SuppressWarnings("nls")
-    public void setTimeRange(ITimestamp start, ITimestamp end) throws Exception
-    {
-        if (start_time.isGreaterThan(end))
-            throw new Exception("Time stamps out of order, start "
-                            + start + "  >  " + end);
-        start_time = start;
-        end_time = end;
-        // ,fireTimeRangeChanged
-        for (ModelListener l : listeners)
-            l.timeRangeChanged();
     }
     
     /** Set new scan and update periods.
@@ -483,8 +459,8 @@ public class Model
     {
         StringBuffer b = new StringBuffer(1024);
         b.append("<databrowser>\n");
-        b.append("    <start>" + start_specification + "</start>\n");
-        b.append("    <end>" + end_specification + "</end>\n");
+        b.append("    <start>" + start_end_times.getStartSpecification() + "</start>\n");
+        b.append("    <end>" + start_end_times.getEndSpecification() + "</end>\n");
         b.append("    <scan_period>" + scan_period + "</scan_period>\n");
         b.append("    <update_period>" + update_period + "</update_period>\n");
         b.append("    <ring_size>" + ring_size + "</ring_size>\n");
@@ -523,14 +499,16 @@ public class Model
             throw new Exception("Expected <databrowser>, found <" + root_name
                     + ">");
         // Get the period entries
-        start_specification = DOMHelper.getSubelementString(root_node, "start");
-        end_specification = DOMHelper.getSubelementString(root_node, "end");
+        String start_specification = DOMHelper.getSubelementString(root_node, "start");
+        String end_specification = DOMHelper.getSubelementString(root_node, "end");
         if (start_specification.length() < 1  ||
             end_specification.length() < 1)
         {
             start_specification = DEFAULT_START_SPEC;
             end_specification = DEFAULT_END_SPEC;
         }
+        start_end_times = new StartEndTimeParser(start_specification,
+                                                 end_specification);
         double scan = DOMHelper.getSubelementDouble(root_node, "scan_period");
         double update = DOMHelper.getSubelementDouble(root_node, "update_period");
         ring_size = DOMHelper.getSubelementInt(root_node, "ring_size");
