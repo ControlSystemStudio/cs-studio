@@ -327,6 +327,7 @@ public class PlotEditor extends EditorPart
         {
             public void menuAboutToShow(IMenuManager manager)
             {
+                view_action.setEnabled(getEditorInputFile() != null);
                 remove_marker_action.updateEnablement();
             }
         });
