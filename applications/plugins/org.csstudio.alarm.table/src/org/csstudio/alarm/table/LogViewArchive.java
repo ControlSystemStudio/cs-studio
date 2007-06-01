@@ -230,8 +230,7 @@ public class LogViewArchive extends ViewPart {
 //						to.setTimeInMillis((long) low * 1000);
 //					}
 					showNewTime(from, to);
-					ArrayList<HashMap<String, String>> am = adba
-							.getLogMessages(from, to);
+					ArrayList<HashMap<String, String>> am = adba.getLogMessages(from, to);
 					jmsml.clearList();
 					jlv.refresh();
 					jmsml.addJMSMessageList(am);

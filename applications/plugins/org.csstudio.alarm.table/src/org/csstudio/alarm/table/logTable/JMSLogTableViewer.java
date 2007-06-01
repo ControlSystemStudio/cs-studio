@@ -124,8 +124,10 @@ public class JMSLogTableViewer extends TableViewer {
                         SendMapMessage sender = new SendMapMessage();
                         String time = TimestampFactory.now().toString();
                         try{
-                            MapMessage mapMessage = sender.getSessionMessageObject();
                             sender.startSender();
+                            MapMessage mapMessage = sender.getSessionMessageObject();
+                            System.out.println("Start Sender");
+                            
                             if (ti.getData() instanceof JMSMessage) {
                                 message = (JMSMessage) event.item.getData();
                                 System.out.println("name: "+message.getName());
@@ -148,6 +150,7 @@ public class JMSLogTableViewer extends TableViewer {
                             sender.sendMessage();
                         }catch(Exception e){
                         	JmsLogsPlugin.logException("ACK not set", e);
+                            e.printStackTrace();
                         }
                         String string = event.detail == SWT.CHECK ? "Checked" : "Selected";
                         System.out.println (event.item + " " + string);
