@@ -24,6 +24,7 @@ package org.csstudio.alarm.table;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -35,10 +36,11 @@ import org.csstudio.alarm.table.expertSearch.ExpertSearchDialog;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
-import org.csstudio.alarm.table.timeSelection.StartEndDialog;
 import org.csstudio.alarm.table.internal.localization.Messages;
-import org.csstudio.platform.util.ITimestamp;
-import org.csstudio.platform.util.TimestampFactory;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.util.time.StartEndTimeParser;
+import org.csstudio.util.time.swt.StartEndDialog;
 
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
@@ -207,26 +209,39 @@ public class LogViewArchive extends ViewPart {
 
 				ITimestamp start = TimestampFactory.now(); //new Timestamp(fromDate.getTime()/1000);
 				ITimestamp end = TimestampFactory.now(); //new Timestamp((toDate.getTime()) / 1000);
-				StartEndDialog dlg = new StartEndDialog(parentShell, start, end);
+				StartEndDialog dlg = new StartEndDialog(parentShell);
 				if (dlg.open() == StartEndDialog.OK) {
-					double low = dlg.getStart().toDouble();
-					double high = dlg.getEnd().toDouble();
+					String lowString = dlg.getStartSpecification();
+					String highString = dlg.getEndSpecification();
+					try {
+						StartEndTimeParser parser = new StartEndTimeParser(lowString, highString);
+						Calendar from = parser.getStart();
+						Calendar to = parser.getEnd();
+//					double low = Double.parseDouble(lowString);
+//					double high = Double.parseDouble(highString);
 					ILogMessageArchiveAccess adba = new ArchiveDBAccess();
-					GregorianCalendar from = new GregorianCalendar();
-					GregorianCalendar to = new GregorianCalendar();
-					if (low < high) {
-						from.setTimeInMillis((long) low * 1000);
-						to.setTimeInMillis((long) high * 1000);
-					} else {
-						from.setTimeInMillis((long) high * 1000);
-						to.setTimeInMillis((long) low * 1000);
-					}
+//					GregorianCalendar from = new GregorianCalendar();
+//					GregorianCalendar to = new GregorianCalendar();
+//					if (low < high) {
+//						from.setTimeInMillis((long) low * 1000);
+//						to.setTimeInMillis((long) high * 1000);
+//					} else {
+//						from.setTimeInMillis((long) high * 1000);
+//						to.setTimeInMillis((long) low * 1000);
+//					}
 					showNewTime(from, to);
 					ArrayList<HashMap<String, String>> am = adba
 							.getLogMessages(from, to);
 					jmsml.clearList();
 					jlv.refresh();
 					jmsml.addJMSMessageList(am);
+
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						System.out.println(e1.getMessage());
+					}
+
 				}
 			}
 		});
@@ -312,7 +327,7 @@ public class LogViewArchive extends ViewPart {
 
 	}
 
-	private void showNewTime(GregorianCalendar from, GregorianCalendar to) {
+	private void showNewTime(Calendar from, Calendar to) {
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		try{
 			sdf.applyPattern(JmsLogsPlugin.getDefault().getPreferenceStore().getString(LogArchiveViewerPreferenceConstants.DATE_FORMAT));

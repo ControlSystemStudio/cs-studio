@@ -1,13 +1,15 @@
 package org.csstudio.alarm.table.expertSearch;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
-import org.csstudio.alarm.table.timeSelection.TimestampWidget;
-import org.csstudio.alarm.table.timeSelection.TimestampWidgetListener;
-import org.csstudio.platform.util.ITimestamp;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.util.time.swt.CalendarWidget;
+import org.csstudio.util.time.swt.CalendarWidgetListener;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,7 +27,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class ExpertSearchDialog extends Dialog implements TimestampWidgetListener{
+public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener {
 
 	private ITimestamp start;
 	private ITimestamp end;
@@ -33,8 +35,8 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
 	private HashMap<String, String> filterMap;
 	private Group down;
 	private String filterString;
-	private TimestampWidget start_widget;
-	private TimestampWidget end_widget;
+	private CalendarWidget start_widget;
+	private CalendarWidget end_widget;
 	private Label info;
 	private int windowXSize = 450;
 
@@ -71,7 +73,7 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
         gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1,1);
         left.setLayoutData(gd);
         left.setLayout(new FillLayout());
-        start_widget = new TimestampWidget(left, 0, start);
+        start_widget = new CalendarWidget(left, 0);
         start_widget.addListener(this);
 
         Group right = new Group(box, 0);
@@ -80,7 +82,7 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
         right.setLayoutData(gd);
         right.setLayout(new FillLayout());
 
-        end_widget = new TimestampWidget(right, 0, end);
+        end_widget = new CalendarWidget(right, 0);
         end_widget.addListener(this);
 
         info = new Label(box, SWT.NULL);
@@ -235,19 +237,16 @@ public class ExpertSearchDialog extends Dialog implements TimestampWidgetListene
     }
 
 	  // TimestampWidgetListener
-    public void updatedTimestamp(TimestampWidget source, ITimestamp stamp)
+    public void updatedCalendar(CalendarWidget source, Calendar stamp)
     {
         if (source == start_widget)
-            start = stamp;
+            start = TimestampFactory.fromCalendar(stamp);
         else
-            end = stamp;
-
-        System.out.println(Messages.ExpertSearchDialog_start + start.format(ITimestamp.FMT_DATE_HH_MM_SS));
-        System.out.println(Messages.ExpertSearchDialog_end + end.format(ITimestamp.FMT_DATE_HH_MM_SS));
-
+            end = TimestampFactory.fromCalendar(stamp);
         if (start.isGreaterOrEqual(end))
             info.setText(Messages.ExpertSearchDialog_startEndMessage);
         else
             info.setText(""); //$NON-NLS-1$
     }
+
 }

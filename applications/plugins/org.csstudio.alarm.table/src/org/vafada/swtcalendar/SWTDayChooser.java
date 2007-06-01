@@ -20,7 +20,7 @@
  *  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.csstudio.alarm.table.timeSelection;
+package org.vafada.swtcalendar;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -437,6 +437,7 @@ public class SWTDayChooser extends Composite
     /* (non-Javadoc)
      * @see org.eclipse.swt.widgets.Control#isFocusControl()
      */
+    @Override
     public boolean isFocusControl() {
         for (Control control = getDisplay().getFocusControl(); control != null; control = control.getParent()) {
             if (control == this) {
@@ -482,6 +483,7 @@ public class SWTDayChooser extends Composite
     /* (non-Javadoc)
      * @see org.eclipse.swt.widgets.Control#setFont(org.eclipse.swt.graphics.Font)
      */
+    @Override
     public void setFont(Font font) {
         super.setFont(font);
 
@@ -541,6 +543,7 @@ public class SWTDayChooser extends Composite
         /* (non-Javadoc)
          * @see org.eclipse.swt.widgets.Control#setFont(org.eclipse.swt.graphics.Font)
          */
+        @Override
         public void setFont(Font font) {
             super.setFont(font);
             filler.setFont(font);
@@ -550,6 +553,7 @@ public class SWTDayChooser extends Composite
         /* (non-Javadoc)
          * @see org.eclipse.swt.widgets.Control#setBackground(org.eclipse.swt.graphics.Color)
          */
+        @Override
         public void setBackground(Color color) {
             filler.setBackground(color);
             label.setBackground(color);
@@ -558,6 +562,7 @@ public class SWTDayChooser extends Composite
         /* (non-Javadoc)
          * @see org.eclipse.swt.widgets.Control#setForeground(org.eclipse.swt.graphics.Color)
          */
+        @Override
         public void setForeground(Color color) {
             label.setForeground(color);
         }
@@ -582,6 +587,7 @@ public class SWTDayChooser extends Composite
         /* (non-Javadoc)
          * @see org.eclipse.swt.widgets.Control#computeSize(int, int, boolean)
          */
+        @Override
         public Point computeSize(int wHint, int hHint, boolean changed) {
             if (wHint == SWT.DEFAULT) {
                 GC gc = new GC(this);
@@ -595,7 +601,10 @@ public class SWTDayChooser extends Composite
         /* (non-Javadoc)
          * @see org.eclipse.swt.widgets.Widget#checkSubclass()
          */
-        protected void checkSubclass() {
+        @Override
+        protected void checkSubclass()
+        {
+            /* NOP */
         }
     }
 }

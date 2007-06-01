@@ -19,7 +19,7 @@
  *  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.csstudio.alarm.table.timeSelection;
+package org.vafada.swtcalendar;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -48,6 +48,7 @@ public class RepeatingButton extends Button {
     public RepeatingButton(Composite parent, int style) {
         super(parent, style);
         addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseDown(MouseEvent event) {
                 cancelRepeater();
 
@@ -59,6 +60,7 @@ public class RepeatingButton extends Button {
                 }
             }
 
+            @Override
             public void mouseUp(MouseEvent event) {
                 if (event.button == 1) { // Left click
                     cancelRepeater();
@@ -67,16 +69,19 @@ public class RepeatingButton extends Button {
         });
 
         addMouseTrackListener(new MouseTrackAdapter() {
+            @Override
             public void mouseExit(MouseEvent e) {
                 cancelRepeater();
             }
         });
     }
 
+    @Override
     public void addSelectionListener(SelectionListener listener) {
         selectionListeners.add(listener);
     }
 
+    @Override
     public void removeSelectionListener(SelectionListener listener) {
         selectionListeners.remove(listener);
     }
@@ -134,7 +139,10 @@ public class RepeatingButton extends Button {
     /* (non-Javadoc)
      * @see org.eclipse.swt.widgets.Widget#checkSubclass()
      */
-    protected void checkSubclass() {
+    @Override
+    protected void checkSubclass()
+    {
+        /* NOP */
     }
 
 

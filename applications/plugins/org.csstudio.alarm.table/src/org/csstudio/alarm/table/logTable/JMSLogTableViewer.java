@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import javax.jms.MapMessage;
 
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.IJMSMessageViewer;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
@@ -115,7 +116,6 @@ public class JMSLogTableViewer extends TableViewer {
 
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         table.addListener (SWT.Selection, new Listener () {
-            @SuppressWarnings("deprecation")
             public void handleEvent (Event event) {
                 JMSMessage message;
                 if (event.item instanceof TableItem) {
@@ -147,10 +147,7 @@ public class JMSLogTableViewer extends TableViewer {
     
                             sender.sendMessage();
                         }catch(Exception e){
-                            MessageBox box = new MessageBox(JMSLogTableViewer.this.getTable().getShell(), SWT.ICON_ERROR);
-                            box.setText("Error");
-                            box.setMessage(e.getMessage());
-                            box.open();
+                        	JmsLogsPlugin.logException("ACK not set", e);
                         }
                         String string = event.detail == SWT.CHECK ? "Checked" : "Selected";
                         System.out.println (event.item + " " + string);

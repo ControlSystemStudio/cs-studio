@@ -154,7 +154,8 @@ public class LogView extends ViewPart implements MessageListener {
 						JmsLogsPlugin.logError("received message is not a map message");
 					} else if (message instanceof MapMessage) {
                         MapMessage mm = (MapMessage) message;
-                        if(mm.getString("ACK")!=null&&mm.getString("ACK").toUpperCase().equals("TRUE")){
+                        JmsLogsPlugin.logInfo("message received");
+                        if(mm.getString("ACK")!=null){//&&mm.getString("ACK").toUpperCase().equals("TRUE")){
                             setAck(message);
                         }else{
                             jmsml.addJMSMessage(mm);
