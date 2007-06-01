@@ -19,11 +19,22 @@ public class TimeParserTests extends TestCase
     {
         Calendar cal;
         
+        // Full time with nanoseconds
+        cal = AbsoluteTimeParser.parse("2007/06/01 14:00:24.156959772");
+        System.out.println(cal.getTime());
+        assertEquals(2007, cal.get(Calendar.YEAR));
+        assertEquals( 6, cal.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals( 1, cal.get(Calendar.DAY_OF_MONTH));
+        assertEquals(14, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals( 0, cal.get(Calendar.MINUTE));
+        assertEquals(24, cal.get(Calendar.SECOND));
+        assertEquals(156, cal.get(Calendar.MILLISECOND));
+        
         // Full time, with extra spaces
         cal = AbsoluteTimeParser.parse("   2007/01/18    12:10:13.123     ");
         System.out.println(cal.getTime());
         assertEquals(2007, cal.get(Calendar.YEAR));
-        assertEquals(1, cal.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals( 1, cal.get(Calendar.MONTH) + 1); // Jan == 0
         assertEquals(18, cal.get(Calendar.DAY_OF_MONTH));
         assertEquals(12, cal.get(Calendar.HOUR_OF_DAY));
         assertEquals(10, cal.get(Calendar.MINUTE));
@@ -42,11 +53,12 @@ public class TimeParserTests extends TestCase
         cal = AbsoluteTimeParser.parse("2007/01/18");
         System.out.println(cal.getTime());
         assertEquals(2007, cal.get(Calendar.YEAR));
-        assertEquals(1, cal.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals( 1, cal.get(Calendar.MONTH) + 1); // Jan == 0
         assertEquals(18, cal.get(Calendar.DAY_OF_MONTH));
-        assertEquals(0, cal.get(Calendar.HOUR_OF_DAY));
-        assertEquals(0, cal.get(Calendar.MINUTE));
-        assertEquals(0, cal.get(Calendar.SECOND));
+        assertEquals( 0, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals( 0, cal.get(Calendar.MINUTE));
+        assertEquals( 0, cal.get(Calendar.SECOND));
+        assertEquals( 0, cal.get(Calendar.MILLISECOND));
 
         // Only time, keep the date
         cal2 = AbsoluteTimeParser.parse(cal, "13:45");
@@ -54,21 +66,23 @@ public class TimeParserTests extends TestCase
         assertNotSame(cal, cal2);
         System.out.println(cal2.getTime());
         assertEquals(2007, cal2.get(Calendar.YEAR));
-        assertEquals(1, cal2.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals( 1, cal2.get(Calendar.MONTH) + 1); // Jan == 0
         assertEquals(18, cal2.get(Calendar.DAY_OF_MONTH));
         assertEquals(13, cal2.get(Calendar.HOUR_OF_DAY));
         assertEquals(45, cal2.get(Calendar.MINUTE));
-        assertEquals(0, cal2.get(Calendar.SECOND));
+        assertEquals( 0, cal2.get(Calendar.SECOND));
+        assertEquals( 0, cal.get(Calendar.MILLISECOND));
 
         // Only month and day, but no year
         cal = AbsoluteTimeParser.parse(cal, "02/15 13:45");
         System.out.println(cal.getTime());
         assertEquals(2007, cal.get(Calendar.YEAR));
-        assertEquals(2, cal.get(Calendar.MONTH) + 1); // Jan == 0
+        assertEquals( 2, cal.get(Calendar.MONTH) + 1); // Jan == 0
         assertEquals(15, cal.get(Calendar.DAY_OF_MONTH));
         assertEquals(13, cal.get(Calendar.HOUR_OF_DAY));
         assertEquals(45, cal.get(Calendar.MINUTE));
-        assertEquals(0, cal.get(Calendar.SECOND));
+        assertEquals( 0, cal.get(Calendar.SECOND));
+        assertEquals( 0, cal.get(Calendar.MILLISECOND));
     }
     
     @Test

@@ -68,21 +68,31 @@ public class AbsoluteTimeParser
         if (cooked.length() < 1)
             return cal;
         final Calendar result = Calendar.getInstance();
-        // Provide missing year from given cal
-        int datesep = cooked.indexOf('/');
-        if (datesep < 0) // No date at all provided? Use the one from cal.
-            cooked = String.format("%04d/%02d/%02d %s",
-                                   cal.get(Calendar.YEAR),
-                                   cal.get(Calendar.MONTH) + 1,
-                                   cal.get(Calendar.DAY_OF_MONTH),
-                                   cooked);
+        
+        // In case the text includes the ITimestamp up to nanoseconds:
+        // 2007/06/01 14:00:24.156959772
+        // Sorry, not handled by Calendar.
+        // Chop down to millisecs
+        if (cooked.length() == 29  &&  cooked.charAt(19) == '.')
+            cooked = cooked.substring(0, 23);
         else
-        {   // Are there two date separators?
-            datesep = cooked.indexOf('/', datesep + 1);
-            // If not, assume that we have MM/DD, and add the YYYY.
-            if (datesep < 0)
-                cooked = String.format("%04d/%s",
-                                       cal.get(Calendar.YEAR), cooked);
+        {
+            // Provide missing year from given cal
+            int datesep = cooked.indexOf('/');
+            if (datesep < 0) // No date at all provided? Use the one from cal.
+                cooked = String.format("%04d/%02d/%02d %s",
+                                       cal.get(Calendar.YEAR),
+                                       cal.get(Calendar.MONTH) + 1,
+                                       cal.get(Calendar.DAY_OF_MONTH),
+                                       cooked);
+            else
+            {   // Are there two date separators?
+                datesep = cooked.indexOf('/', datesep + 1);
+                // If not, assume that we have MM/DD, and add the YYYY.
+                if (datesep < 0)
+                    cooked = String.format("%04d/%s",
+                                           cal.get(Calendar.YEAR), cooked);
+            }
         }
         // Try the parsers
         for (DateFormat parser : parsers)
