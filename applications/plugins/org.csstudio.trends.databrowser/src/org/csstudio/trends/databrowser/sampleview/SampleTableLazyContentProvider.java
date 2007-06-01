@@ -1,11 +1,11 @@
 package org.csstudio.trends.databrowser.sampleview;
 
-import org.csstudio.swt.chart.ChartSampleSequence;
+import org.csstudio.trends.databrowser.model.ModelSample;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
-/** Provide Model data for table with stype SWT.VIRTUAL.
+/** Provide Model data for table with type SWT.VIRTUAL.
  *  @author Kay Kasemir
  */
 public class SampleTableLazyContentProvider implements ILazyContentProvider
@@ -21,25 +21,16 @@ public class SampleTableLazyContentProvider implements ILazyContentProvider
     }
     
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-    {
-    }
+    {   /* NOP */ }
 
     /** Called by 'lazy' table, needs to 'replace' entry of given row. */
 	public void updateElement(int row)
 	{
-        ChartSampleSequence samples = sample_view.getSamples();
-        synchronized (samples)
-        {
-            final int N = samples.size();
-            if (row >= N)
-            {
-                table_viewer.replace(null, row);
-                return;
-            }
-            table_viewer.replace(samples.get(row), row);
-        }
+        TableModel table_model = sample_view.getTableModel();
+        TableItem item = table_model.getTableItem(row);
+        table_viewer.replace(item, row);
 	}
 
 	public void dispose() 
-    {}
+    {   /* NOP */ }
 }

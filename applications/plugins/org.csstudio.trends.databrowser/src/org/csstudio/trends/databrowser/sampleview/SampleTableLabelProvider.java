@@ -3,7 +3,6 @@ package org.csstudio.trends.databrowser.sampleview;
 //import java.text.Format;
 
 import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IValue.Format;
 import org.csstudio.trends.databrowser.model.ModelSample;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -15,7 +14,7 @@ import org.eclipse.swt.widgets.Display;
 
 /** The JFace label provider for ModelSample data.
  *  @author Kay Kasemir
- *  @author last change on Albert Kagarmanov
+ *  @author Albert Kagarmanov
  */
 public class SampleTableLabelProvider extends LabelProvider implements
 		ITableLabelProvider, ITableColorProvider
@@ -23,31 +22,33 @@ public class SampleTableLabelProvider extends LabelProvider implements
     /** Get text for all but the columns.
      *  @param index: 0, 1, 2 for Time, Value, Info
      */
-	public String getColumnText(Object obj, int index)
+	public String getColumnText(final Object obj, final int index)
 	{
-        ModelSample sample = (ModelSample) obj;
+        final TableItem item = (TableItem) obj;
+        final ModelSample sample = item.getSample();
         switch (index)
         {
         case 0:
             return sample.getSample().getTime().toString();
         case 1:
-            return sample.getSample().format(Format.Decimal,4);
+            return sample.getSample().format();
         default:
             String info = sample.getInfo();
             return info == null ? "" : info; //$NON-NLS-1$
         }
 	}
 
-    /** Get column image (only for the 'select' column) */
+    /** Get column image */
 	public Image getColumnImage(Object obj, int index)
 	{
-        return null;
+        return null; // no column images
 	}
 
     /** @see org.eclipse.jface.viewers.ITableColorProvider */
-    public Color getBackground(Object obj, int index)
+    public Color getBackground(final Object obj, final int index)
     {
-        ModelSample sample = (ModelSample) obj;
+        final TableItem item = (TableItem) obj;
+        final ModelSample sample = item.getSample();
         ISeverity severity = sample.getSample().getSeverity();
         if (severity.isOK())
             return null; // no special color

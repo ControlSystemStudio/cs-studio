@@ -160,7 +160,7 @@ public class Model
     {   return end_specification; }
     
     /** The current start time, which might be different from what you get
-     *  when you evluate the start specification 'right now'.
+     *  when you evaluate the start specification 'right now'.
      *  @see #getStartSpecification()
      *  @return Start time, evaluated when start specification was set.
      */

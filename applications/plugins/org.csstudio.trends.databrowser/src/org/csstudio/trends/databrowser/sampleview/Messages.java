@@ -21,6 +21,7 @@ public class Messages extends NLS
     public static String TimeCol;
 
     public static String ValueCol;
+
     static
     {
         // initialize resource bundle
