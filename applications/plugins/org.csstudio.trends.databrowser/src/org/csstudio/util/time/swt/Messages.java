@@ -7,6 +7,18 @@ public class Messages extends NLS
     private static final String BUNDLE_NAME = "org.csstudio.util.time.swt.messages"; //$NON-NLS-1$
 
     public static String Date_Sep;
+
+    public static String half_day;
+
+    public static String half_day_TT;
+
+    public static String one_day;
+
+    public static String one_day_TT;
+
+    public static String seven_days;
+
+    public static String seven_days_TT;
     
     public static String StartEnd_AbsEnd;
     public static String StartEnd_AbsEnd_TT;
@@ -25,6 +37,10 @@ public class Messages extends NLS
     public static String StartEnd_StartTime;
     public static String StartEnd_StartTime_TT;
     public static String StartEnd_Title;
+
+    public static String three_days;
+
+    public static String three_days_TT;
 
     public static String Time_Years;
     public static String Time_Months;

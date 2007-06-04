@@ -8,6 +8,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -62,10 +63,10 @@ public class RelativeTimeWidget extends Composite
         setLayout(layout);
         GridData gd;
         
-        // Years: (year)+- Month:  (month)+-  Days: (day)+-
-        // Hours: (hour)+- Minuts: (minute)+- Secs: (second)+-
-        // [ ] before?                              [now]
-
+        // Years: (year)+- Month:   (month)+-  Days: (day)+-
+        // Hours: (hour)+- Minutes: (minute)+- Secs: (second)+-
+        // [ ] before? [12h] [1 Day] [3 Days] [7 Days]  [now]
+        
         // New row
         Label l = new Label(this, SWT.NONE);
         l.setText(Messages.Time_Years);
@@ -167,21 +168,118 @@ public class RelativeTimeWidget extends Composite
         before.setToolTipText(Messages.Time_Before_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
-        gd.horizontalSpan = layout.numColumns - 1;
+        gd.horizontalSpan = layout.numColumns;
         gd.horizontalAlignment = SWT.FILL;
         before.setLayoutData(gd);
+        
+        // Next Row
+        // box for all but the 'now' button
+        Composite box = new Composite(this, 0);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalSpan = layout.numColumns - 1;
+        gd.horizontalAlignment = SWT.FILL;
+        box.setLayoutData(gd);
+        box.setLayout(new RowLayout());
+        
+        Button halfday = new Button(box, SWT.PUSH);
+        halfday.setText(Messages.half_day);
+        halfday.setToolTipText(Messages.half_day_TT);
+        
+        Button oneday = new Button(box, SWT.PUSH);
+        oneday.setText(Messages.one_day);
+        oneday.setToolTipText(Messages.one_day_TT);
+        
+        Button threeday = new Button(box, SWT.PUSH);
+        threeday.setText(Messages.three_days);
+        threeday.setToolTipText(Messages.three_days_TT);
+
+        Button sevenday = new Button(box, SWT.PUSH);
+        sevenday.setText(Messages.seven_days);
+        sevenday.setToolTipText(Messages.seven_days_TT);
         
         Button now = new Button(this, SWT.PUSH);
         now.setText(Messages.Time_Now);
         now.setToolTipText(Messages.Time_Now_TT);
         gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.RIGHT;
         now.setLayoutData(gd);
         
         // Initialize to given relative time pieces
         setRelativeTime(relative_time);
+
+        halfday.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                if (!in_GUI_update)
+                {
+                    year.setSelection(0);
+                    month.setSelection(0);
+                    day.setSelection(0);
+                    hour.setSelection(12);
+                    minute.setSelection(0);
+                    second.setSelection(0);
+                    updateDataFromGUI();
+                }
+            }
+        });
         
+        oneday.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                if (!in_GUI_update)
+                {
+                    year.setSelection(0);
+                    month.setSelection(0);
+                    day.setSelection(1);
+                    hour.setSelection(0);
+                    minute.setSelection(0);
+                    second.setSelection(0);
+                    updateDataFromGUI();
+                }
+            }
+        });
+        
+        threeday.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                if (!in_GUI_update)
+                {
+                    year.setSelection(0);
+                    month.setSelection(0);
+                    day.setSelection(3);
+                    hour.setSelection(0);
+                    minute.setSelection(0);
+                    second.setSelection(0);
+                    updateDataFromGUI();
+                }
+            }
+        });
+        
+        sevenday.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                if (!in_GUI_update)
+                {
+                    year.setSelection(0);
+                    month.setSelection(0);
+                    day.setSelection(7);
+                    hour.setSelection(0);
+                    minute.setSelection(0);
+                    second.setSelection(0);
+                    updateDataFromGUI();
+                }
+            }
+        });
+
         now.addSelectionListener(new SelectionAdapter()
         {
             @Override

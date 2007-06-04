@@ -29,13 +29,14 @@ public class StartEndDialogTest
         shell.open();
 
         StartEndDialog dlg = new StartEndDialog(shell);
-        dlg.open();
-        
-        System.out.println("Start: '" + dlg.getStartSpecification() + "'");
-        System.out.println("End: '" + dlg.getEndSpecification() + "'");
-        ITimestamp start = TimestampFactory.fromCalendar(dlg.getStartCalendar());
-        ITimestamp end = TimestampFactory.fromCalendar(dlg.getEndCalendar());
-        System.out.println(start + " ... " + end);
+        if (dlg.open() == StartEndDialog.OK)
+        {
+            System.out.println("Start: '" + dlg.getStartSpecification() + "'");
+            System.out.println("End: '" + dlg.getEndSpecification() + "'");
+            ITimestamp start = TimestampFactory.fromCalendar(dlg.getStartCalendar());
+            ITimestamp end = TimestampFactory.fromCalendar(dlg.getEndCalendar());
+            System.out.println(start + " ... " + end);
+        }
 
         display.dispose();
     }
