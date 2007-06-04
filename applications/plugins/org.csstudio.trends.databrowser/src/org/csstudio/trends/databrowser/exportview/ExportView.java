@@ -1,13 +1,12 @@
 package org.csstudio.trends.databrowser.exportview;
 
-import java.util.Calendar;
-
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
-import org.csstudio.util.time.AbsoluteTimeParser;
+import org.csstudio.util.time.StartEndTimeParser;
+import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -53,8 +52,6 @@ public class ExportView extends PlotAwareView
     
     // Stuff that's updated by the GUI
     // (rest directly read from the GUI elements)
-    private ITimestamp start = TimestampFactory.now();;
-    private ITimestamp end = TimestampFactory.now();;
     private ExportJob.Source source;
     private IValue.Format format;
     
@@ -122,14 +119,13 @@ public class ExportView extends PlotAwareView
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                /* TODO
-                StartEndDialog dlg = new StartEndDialog(shell, start, end);
+                StartEndDialog dlg = new StartEndDialog(shell,
+                                start_txt.getText(), end_txt.getText());
                 if (dlg.open() != StartEndDialog.OK)
                     return;
-                start = dlg.getStartSpecification();
-                end = dlg.getEndSpecification();
-                setStartEndFromTimestamps();
-                */
+                // Update GUI with start/end from dialog
+                start_txt.setText(dlg.getStartSpecification());
+                end_txt.setText(dlg.getEndSpecification());
             }
         });
        
@@ -363,7 +359,7 @@ public class ExportView extends PlotAwareView
         });
         
         // Initial settings
-        setStartEndFromTimestamps();
+        setStartEndFromModel();
         // Plot/raw/averaged data?
         source_raw.setSelection(true);
         source = ExportJob.Source.Raw;
@@ -456,49 +452,45 @@ public class ExportView extends PlotAwareView
         if (old_model == new_model)
             return;
     }
-    
-    /** Update start/end text fields from timestamps. */
-    private void setStartEndFromTimestamps()
-    {
-        start_txt.setText(start.format(ITimestamp.Format.DateTimeSeconds));
-        end_txt.setText(end.format(ITimestamp.Format.DateTimeSeconds));
-    }
 
+    /** Update GUI with start/end time spec from Model. */
+    private void setStartEndFromModel()
+    {
+        Model model = getPlotEditor().getModel();
+        if (model == null)
+            return;
+        start_txt.setText(model.getStartSpecification());
+        end_txt.setText(model.getEndSpecification());
+    }
+    
     /** Start data export with current settings. */
     private void exportRequested()
     {
         Model model = getPlotEditor().getModel();
+        if (model == null)
+            return;
+        
+        ITimestamp start = null, end = null;
         if (use_plot_time.getSelection())
-        {   // Update start/end from plot
-            start = model.getStartTime();
-            end = model.getEndTime();
-            setStartEndFromTimestamps();
-        }
+            setStartEndFromModel();
         else
         {   // Update start/end from text boxes
             try
             {
-                Calendar cal = AbsoluteTimeParser.parse(start_txt.getText());
-                start = TimestampFactory.fromCalendar(cal);
+                StartEndTimeParser parser =
+                    new StartEndTimeParser(start_txt.getText(),
+                                           end_txt.getText());
+                start = TimestampFactory.fromCalendar(parser.getStart());
+                end = TimestampFactory.fromCalendar(parser.getEnd());
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 MessageBox msg = new MessageBox(shell, SWT.OK);
                 msg.setText(Messages.Error);
-                msg.setMessage(Messages.CannotDecodeStart);
-                msg.open();
-                return;
-            }
-            try
-            {
-                Calendar cal = AbsoluteTimeParser.parse(end_txt.getText());
-                end = TimestampFactory.fromCalendar(cal);
-            }
-            catch (Exception e)
-            {
-                MessageBox msg = new MessageBox(shell, SWT.OK);
-                msg.setText(Messages.Error);
-                msg.setMessage(Messages.CannotDecodeEnd);
+                msg.setMessage(String.format("%s\n%s %s", //$NON-NLS-1$
+                               Messages.CannotDecodeStartEnd,
+                               Messages.Error,
+                               ex.getMessage()));
                 msg.open();
                 return;
             }
@@ -516,7 +508,7 @@ public class ExportView extends PlotAwareView
                 msg.setText(Messages.Error);
                 msg.setMessage(Messages.CannotDecodeSeconds);
                 msg.open();
-            return;
+                return;
             }
             seconds = 0;
         }

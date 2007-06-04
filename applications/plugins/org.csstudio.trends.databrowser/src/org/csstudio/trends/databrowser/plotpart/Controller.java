@@ -17,7 +17,6 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.util.time.RelativeTime;
-import org.csstudio.util.time.RelativeTimeParser;
 import org.eclipse.swt.dnd.DropTargetEvent;
 
 /** Data Browser Controller: Creates model, UI and handles everything between them.
@@ -52,11 +51,11 @@ public class Controller
                     // The plot should listen to the model and adjust its x axis.
                     double low = model.getStartTime().toDouble();
                     double high = model.getEndTime().toDouble();
-                    final double range = high - low;
                     
-                    // TODO pass fractional seconds once parser handles that
+                    final double range = high - low;
+                    // TODO only update when really changed...
                     final String start_specification =
-                        String.format("-%d %s", (int)range, RelativeTime.SECOND_TOKEN);
+                        String.format("-%f %s", range, RelativeTime.SECOND_TOKEN);
                     
                     controller_changes_xaxis = true;
                     try

@@ -112,7 +112,7 @@ class ExportJob extends Job
 
                 if (source == Source.Plot)
                 {
-                    // TODO: Rethink the synchronization?
+                    // Rethink the synchronization?
                     // Use lock/unlock semaphore, so samples
                     // can stay locked for the duration of the export job?
                     IModelSamples samples = item.getSamples();

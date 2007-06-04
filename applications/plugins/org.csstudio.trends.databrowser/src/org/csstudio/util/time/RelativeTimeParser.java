@@ -12,7 +12,7 @@ package org.csstudio.util.time;
 public class RelativeTimeParser
 {
     /** Characters that are considered part of a number */
-    static private final String NUMBER_CHARS = "+-0123456789";
+    static private final String NUMBER_CHARS = "+-0123456789.";
     
     /** Extract a relative year, month, day, hour, minute, second from string.
      *  <p>

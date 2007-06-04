@@ -216,7 +216,7 @@ public class RelativeTime
         if (isNow())
             return NOW;
         StringBuffer result = new StringBuffer();
-        for (int piece=0; piece<rel_time.length; ++piece)
+        for (int piece=0; piece<=SECONDS; ++piece)
             addToStringBuffer(result, piece);
         return result.toString();
     }
@@ -228,7 +228,14 @@ public class RelativeTime
             return;
         if (buf.length() > 0)
             buf.append(' ');
-        buf.append(rel_time[piece]);
+        if (piece == SECONDS)
+        {   // Special handling: show seconds.milliseconds
+            double secs = rel_time[SECONDS] + rel_time[MILLISECONDS] / 1000.0;
+            buf.append(secs);
+            
+        }
+        else
+            buf.append(rel_time[piece]);
         buf.append(' ');
         // Use the full (long) token, but lowercase
         buf.append(tokens[piece].toLowerCase());

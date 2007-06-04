@@ -1,16 +1,15 @@
 package org.csstudio.util.time;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import junit.framework.TestCase;
+
 import org.junit.Test;
 
 @SuppressWarnings("nls")
-public class TimeParserTests
+public class TimeParserTests extends TestCase
 {
     private static final DateFormat format = 
                       new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -98,6 +97,7 @@ public class TimeParserTests
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.HOURS));
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.MINUTES));
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.SECONDS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.MILLISECONDS));
         
         result = RelativeTimeParser.parse("   30 minutes -2 mon     ");
         System.out.println(result);
@@ -108,6 +108,7 @@ public class TimeParserTests
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.HOURS));
         assertEquals(30, result.getRelativeTime().get(RelativeTime.MINUTES));
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.SECONDS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.MILLISECONDS));
 
         result = RelativeTimeParser.parse("+2M 3m 08:00");
         System.out.println(result);
@@ -118,6 +119,18 @@ public class TimeParserTests
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.HOURS));
         assertEquals( 3, result.getRelativeTime().get(RelativeTime.MINUTES));
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.SECONDS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.MILLISECONDS));
+
+        result = RelativeTimeParser.parse("-3600.123 seconds");
+        System.out.println(result);
+        assertEquals( 17, result.getOffsetOfNextChar());
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.YEARS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.MONTHS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.DAYS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.HOURS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.MINUTES));
+        assertEquals(-3600, result.getRelativeTime().get(RelativeTime.SECONDS));
+        assertEquals(-123, result.getRelativeTime().get(RelativeTime.MILLISECONDS));
         
         // now
         result = RelativeTimeParser.parse("   NoW ");

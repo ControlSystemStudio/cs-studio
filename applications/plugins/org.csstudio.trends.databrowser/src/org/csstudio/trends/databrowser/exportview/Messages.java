@@ -14,11 +14,9 @@ public class Messages extends NLS
 
     public static String Cancelled;
 
-    public static String CannotDecodeEnd;
-
     public static String CannotDecodeSeconds;
     
-    public static String CannotDecodeStart;
+    public static String CannotDecodeStartEnd;
 
     public static String Comment;
     
