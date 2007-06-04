@@ -229,4 +229,32 @@ public class TimeParserTests extends TestCase
         assertEquals(6*60*60.0, start_diff_sec, 10.0);
         assertEquals(0.0, end_diff_sec, 10.0);
     }
+    
+    @Test
+    public void testPerformance() throws Exception
+    {
+        // rel, now
+        final String start = "-6h";
+        final String end = "now";
+        final int N = 1000;
+        Benchmark bench = new Benchmark(N);
+        bench.start();
+        for (int i=0; i<N; ++i)
+        {
+            @SuppressWarnings("unused")
+            StartEndTimeParser start_end = new StartEndTimeParser(start, end);
+        }
+        bench.end();
+        System.out.println("Parse and eval: " + bench);
+
+        StartEndTimeParser start_end = new StartEndTimeParser(start, end);
+        bench.start();
+        for (int i=0; i<N; ++i)
+        {
+            start_end.eval();
+        }
+        bench.end();
+        System.out.println("Only eval: " + bench);
+
+    }
 }

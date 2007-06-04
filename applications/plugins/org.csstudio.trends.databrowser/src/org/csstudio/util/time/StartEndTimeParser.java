@@ -68,8 +68,16 @@ public class StartEndTimeParser
             start = AbsoluteTimeParser.parse(start_specification);
         if (rel_end.isAbsolute())
             end = AbsoluteTimeParser.parse(end_specification);
-        
-        eval();
+        if (rel_start.isAbsolute() && rel_end.isAbsolute())
+            return;
+        else if (!rel_start.isAbsolute() && rel_end.isAbsolute())
+            start = adjust(end, start_specification, rel_start);
+        else if (rel_start.isAbsolute() && !rel_end.isAbsolute())
+            end = adjust(start, end_specification, rel_end);
+        // else !rel_start.isAbsolute() && !rel_end.isAbsolute()
+        Calendar now = Calendar.getInstance();
+        end = adjust(now, end_specification, rel_end);
+        start = adjust(end, start_specification, rel_start);
     }
     
     /** @return Start time specification */
@@ -89,25 +97,33 @@ public class StartEndTimeParser
      *  In case the start or end specification were relative,
      *  this updates the start resp. end time.
      *  @throws Exception
+     *  @return <code>true</code> if the start/end times changed,
+     *          <code>false</code> if they stayed the same.
      */
-    public void eval() throws Exception
+    public boolean eval() throws Exception
     {
         if (rel_start.isAbsolute() && rel_end.isAbsolute())
-            return;
+            return false;
         else if (!rel_start.isAbsolute() && rel_end.isAbsolute())
         {
+            final long old_start = start.getTimeInMillis();
             start = adjust(end, start_specification, rel_start);
-            return;
+            return old_start != start.getTimeInMillis();
         }
         else if (rel_start.isAbsolute() && !rel_end.isAbsolute())
         {
+            final long old_end = end.getTimeInMillis();
             end = adjust(start, end_specification, rel_end);
-            return;
+            return old_end != end.getTimeInMillis();
         }
         // else !rel_start.isAbsolute() && !rel_end.isAbsolute()
         Calendar now = Calendar.getInstance();
+        final long old_start = start.getTimeInMillis();
+        final long old_end = end.getTimeInMillis();
         end = adjust(now, end_specification, rel_end);
         start = adjust(end, start_specification, rel_start);
+        return old_start != start.getTimeInMillis()
+            || old_end   != end.getTimeInMillis();
     }
 
     /** Get the start time obtained from the given start and end strings.

@@ -53,6 +53,7 @@ public class Model
     /** Default for end_specification */
     private static final String DEFAULT_START_SPEC = "-1 hour"; //$NON-NLS-1$
     
+    /** Start- and end time specifications. */
     private StartEndTimeParser start_end_times;
     
     /** Scan period for 'live' data in seconds. */
@@ -123,20 +124,40 @@ public class Model
         listeners.remove(listener);
     }
 
+    /** Set a new start and end time specification.
+     *  <p>
+     *  Also updates the current start and end time with
+     *  values computed from the specs "right now".
+     *  @see org.csstudio.util.time.StartEndTimeParser
+     *  @see #getStartSpecification()
+     *  @see #setTimeRange(ITimestamp, ITimestamp)
+     *  @exception Exception on parse error of specs.
+     */
+    public void setTimeSpecifications(String start_specification,
+                                      String end_specification) 
+        throws Exception
+    {
+        start_end_times =
+            new StartEndTimeParser(start_specification, end_specification);
+        // In case of parse errors, we won't reach this point
+        // fireTimeSpecificationsChanged, fireTimeRangeChanged
+        for (ModelListener l : listeners)
+        {
+            l.timeSpecificationsChanged();
+            l.timeRangeChanged();
+        }
+    }
+    
     /** Get the start specification that is held 'permamently' when
      *  the model is saved and re-loaded.
      *  <p>
      *  When the specifications are initially loaded or later changed,
      *  the current start and end time is computed from the specs.
      *  <p>
-     *  At runtime, scroll or pan operations will update the currently
-     *  displayed start and end time, but that won't affect this
-     *  permanent start/end specification.
-     *  <p>
-     *  This way, one can configure a model to show a default time range
-     *  of "-8 hours" ... "now", then zoom and pan a bit to look at details,
-     *  but what's saved will be the original "-8 hours" ... "now"
-     *  specification.
+     *  At runtime, scroll operations will update the currently
+     *  displayed start and end time by re-evaluating a
+     *  relative start specification of for example "-30 min",
+     *  but that won't affect the actual start/end specification.
      *  <p>
      *  The config view has buttons to force an update of the specification
      *  from the current start/end times and vice versa.
@@ -152,6 +173,29 @@ public class Model
      */
     public String getEndSpecification()
     {   return start_end_times.getEndSpecification(); }
+    
+    /** Re-evaluate the start/end specifications.
+     *  <p>
+     *  In case of absolute start/end time specs, nothing changes.
+     *  For relative start/end time specs, the 'current' start and
+     *  end times get updated.
+     */
+    public void updateStartEndTime()
+    {
+        try
+        {
+            if (start_end_times.eval())
+            {
+                // fireTimeRangeChanged
+                for (ModelListener l : listeners)
+                    l.timeRangeChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Plugin.logException("Model start/end time update error", ex); //$NON-NLS-1$
+        }
+    }
     
     /** The current start time, which might be different from what you get
      *  when you evaluate the start specification 'right now'.
@@ -174,35 +218,6 @@ public class Model
     /** @return Returns the update period in seconds. */
     public double getUpdatePeriod()
     {   return update_period; }
-    
-    /** Set a new start and end time specification.
-     *  <p>
-     *  Also updates the current start and end time with
-     *  values computed from the specs "right now".
-     *  @see org.csstudio.util.time.StartEndTimeParser
-     *  @see #getStartSpecification()
-     *  @see #setTimeRange(ITimestamp, ITimestamp)
-     *  @exception Exception on parse error of specs.
-     */
-    public void setTimeSpecifications(String start_specification,
-                                      String end_specification) 
-        throws Exception
-    {
-        start_end_times =
-            new StartEndTimeParser(start_specification, end_specification);
-        
-        
-        final ITimestamp start = TimestampFactory.fromCalendar(start_end_times.getStart());
-        final ITimestamp end = TimestampFactory.fromCalendar(start_end_times.getEnd());
-
-        // In case of parse errors, we won't reach this point
-        // fireTimeSpecificationsChanged, fireTimeRangeChanged
-        for (ModelListener l : listeners)
-        {
-            l.timeSpecificationsChanged();
-            l.timeRangeChanged();
-        }
-    }
     
     /** Set new scan and update periods.
      *  <p>

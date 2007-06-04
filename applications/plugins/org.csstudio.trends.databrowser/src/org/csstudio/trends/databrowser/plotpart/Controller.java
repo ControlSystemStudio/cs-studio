@@ -51,17 +51,20 @@ public class Controller
                     // The plot should listen to the model and adjust its x axis.
                     double low = model.getStartTime().toDouble();
                     double high = model.getEndTime().toDouble();
-                    
                     final double range = high - low;
-                    // TODO only update when really changed...
                     final String start_specification =
                         String.format("-%f %s", range, RelativeTime.SECOND_TOKEN);
                     
                     controller_changes_xaxis = true;
                     try
                     {
-                        model.setTimeSpecifications(start_specification,
-                                                    RelativeTime.NOW);
+                        // Only update when really changed...
+                        if (model.getEndSpecification().equals(RelativeTime.NOW)
+                           && model.getStartSpecification().equals(start_specification))
+                            model.updateStartEndTime();
+                        else
+                            model.setTimeSpecifications(start_specification,
+                                                        RelativeTime.NOW);
                     }
                     catch (Exception ex)
                     {   // Prevent follow-up errors by disabling the scroll

@@ -103,7 +103,7 @@ public class ConfigView extends PlotAwareView
         {   entriesChanged(); }
         
         public void timeRangeChanged()
-        {   // Ignore changes to 'current' time range from pan/zoom/scroll
+        {   // Ignore changes to 'current' time range from scroll
         }
 
         public void periodsChanged()
