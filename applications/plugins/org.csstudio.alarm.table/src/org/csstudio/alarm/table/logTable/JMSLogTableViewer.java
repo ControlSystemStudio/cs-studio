@@ -165,7 +165,7 @@ public class JMSLogTableViewer extends TableViewer {
         for (int i = 0; i < columnNames.length; i++) {
 			TableColumn tableColumn = new TableColumn(table, SWT.CENTER);
 			tableColumn.setText(columnNames[i]);
-            if(i==0){
+            if(i==0&&tableType==2){
                 tableColumn.setWidth(25);
                 
             }

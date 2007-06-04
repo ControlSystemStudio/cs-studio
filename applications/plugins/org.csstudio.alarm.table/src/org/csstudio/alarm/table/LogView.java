@@ -155,9 +155,9 @@ public class LogView extends ViewPart implements MessageListener {
 					} else if (message instanceof MapMessage) {
                         MapMessage mm = (MapMessage) message;
                         JmsLogsPlugin.logInfo("message received");
-                        if(mm.getString("ACK")!=null){//&&mm.getString("ACK").toUpperCase().equals("TRUE")){
+                        if(mm.getString("ACK")!=null &&  mm.getString("ACK").toUpperCase().equals("TRUE")){
                             System.out.println("Ist Ack");
-                            setAck(message);
+                            setAck(mm);
                         }else{
                             jmsml.addJMSMessage(mm);
                         }
@@ -175,15 +175,16 @@ public class LogView extends ViewPart implements MessageListener {
 	/**
      * @param message
      */
-    protected void setAck(Message message) {
+    protected void setAck(MapMessage message) {
        TableItem[] items = jlv.getTable().getItems();
        for (TableItem item : items) {
            if (item.getData() instanceof JMSMessage) {
             JMSMessage jmsMessage = (JMSMessage) item.getData();
             try {
-                if(jmsMessage.getName().equals(message.getStringProperty("NAME"))&&jmsMessage.getProperty("EVENTTIME").equals(message.getStringProperty("EVENTTIME"))){
-                    jmsMessage.getHashMap().put("ACK","true");
+                if(jmsMessage.getName().equals(message.getString("NAME"))&&jmsMessage.getProperty("EVENTTIME").equals(message.getString("EVENTTIME"))){
+                    setAckTrue(jmsMessage);
                 }
+                
             } catch (JMSException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -192,6 +193,14 @@ public class LogView extends ViewPart implements MessageListener {
         }
        }
         
+    }
+
+    /**
+     * @param jmsMessage
+     */
+    void setAckTrue(JMSMessage jmsMessage) {
+        jmsMessage.getHashMap().put("ACK","true");
+        jlv.refresh();
     }
 
     public void dispose() {
