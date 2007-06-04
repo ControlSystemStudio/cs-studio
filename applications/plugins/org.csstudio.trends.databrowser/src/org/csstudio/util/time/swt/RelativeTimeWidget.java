@@ -65,7 +65,8 @@ public class RelativeTimeWidget extends Composite
         
         // Years: (year)+- Month:   (month)+-  Days: (day)+-
         // Hours: (hour)+- Minutes: (minute)+- Secs: (second)+-
-        // [ ] before? [12h] [1 Day] [3 Days] [7 Days]  [now]
+        // [12h] [1 Day] [3 Days] [7 Days]  [now]
+        // [ ] before?
         
         // New row
         Label l = new Label(this, SWT.NONE);
@@ -163,16 +164,6 @@ public class RelativeTimeWidget extends Composite
         second.setPageIncrement(10);
 
         // Next Row
-        before = new Button(this, SWT.CHECK);
-        before.setText(Messages.Time_Before);
-        before.setToolTipText(Messages.Time_Before_TT);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalSpan = layout.numColumns;
-        gd.horizontalAlignment = SWT.FILL;
-        before.setLayoutData(gd);
-        
-        // Next Row
         // box for all but the 'now' button
         Composite box = new Composite(this, 0);
         gd = new GridData();
@@ -204,6 +195,16 @@ public class RelativeTimeWidget extends Composite
         gd = new GridData();
         gd.horizontalAlignment = SWT.RIGHT;
         now.setLayoutData(gd);
+        
+        // Next Row
+        before = new Button(this, SWT.CHECK);
+        before.setText(Messages.Time_Before);
+        before.setToolTipText(Messages.Time_Before_TT);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalSpan = layout.numColumns;
+        gd.horizontalAlignment = SWT.FILL;
+        before.setLayoutData(gd);
         
         // Initialize to given relative time pieces
         setRelativeTime(relative_time);
