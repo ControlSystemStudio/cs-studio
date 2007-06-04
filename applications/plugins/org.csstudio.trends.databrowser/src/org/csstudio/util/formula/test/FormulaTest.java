@@ -13,12 +13,6 @@ public class FormulaTest extends TestCase
 {
     private final static double epsilon = 0.001;
     
-    @Override
-    protected void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
     @Test
     @SuppressWarnings("nls")
     public void testBasics() throws Exception
@@ -121,6 +115,16 @@ public class FormulaTest extends TestCase
 
         f = new Formula("min(5, 4, 3, 2, 1)");
         assertEquals(1, f.eval(), epsilon);
+
+        f = new Formula("max(5, 4, 3, 2, 1)");
+        assertEquals(5, f.eval(), epsilon);
+        
+        f = new Formula("sin(30)");
+        assertEquals(-0.988, f.eval(), epsilon);
+       
+        f = new Formula("cos(30)");
+        assertEquals(0.1543, f.eval(), epsilon);
+       
     }
     
     @Test

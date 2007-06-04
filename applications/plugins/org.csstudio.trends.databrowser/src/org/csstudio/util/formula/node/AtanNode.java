@@ -2,11 +2,12 @@ package org.csstudio.util.formula.node;
 
 import org.csstudio.util.formula.Node;
 
-public class LnNode implements Node
+
+public class AtanNode implements Node
 {
     private Node n;
     
-    public LnNode(Node n)
+    public AtanNode(Node n)
     {
         this.n = n;
     }
@@ -14,13 +15,15 @@ public class LnNode implements Node
     public double eval()
     {
         double a = n.eval();
-        return Math.log(a);
+        if (a < 0)
+            return 0;
+        return Math.atan(a);
     }
-    
+   
     @SuppressWarnings("nls")
     @Override
     public String toString()
     {
-        return "ln(" + n + ")";
+        return "atan(" + n + ")";
     }
 }

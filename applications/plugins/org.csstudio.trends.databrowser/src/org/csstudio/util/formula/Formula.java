@@ -3,9 +3,14 @@ package org.csstudio.util.formula;
 import java.util.Vector;
 
 import org.csstudio.util.formula.node.AbsNode;
+import org.csstudio.util.formula.node.AcosNode;
 import org.csstudio.util.formula.node.AddNode;
 import org.csstudio.util.formula.node.AndNode;
+import org.csstudio.util.formula.node.AsinNode;
+import org.csstudio.util.formula.node.Atan2Node;
+import org.csstudio.util.formula.node.AtanNode;
 import org.csstudio.util.formula.node.ConstantNode;
+import org.csstudio.util.formula.node.CosNode;
 import org.csstudio.util.formula.node.DivNode;
 import org.csstudio.util.formula.node.EqualNode;
 import org.csstudio.util.formula.node.ExpNode;
@@ -14,7 +19,7 @@ import org.csstudio.util.formula.node.GreaterThanNode;
 import org.csstudio.util.formula.node.IfNode;
 import org.csstudio.util.formula.node.LessEqualNode;
 import org.csstudio.util.formula.node.LessThanNode;
-import org.csstudio.util.formula.node.LnNode;
+import org.csstudio.util.formula.node.MathFuncNode;
 import org.csstudio.util.formula.node.MaxNode;
 import org.csstudio.util.formula.node.MinNode;
 import org.csstudio.util.formula.node.MulNode;
@@ -24,6 +29,7 @@ import org.csstudio.util.formula.node.OrNode;
 import org.csstudio.util.formula.node.PwrNode;
 import org.csstudio.util.formula.node.SqrtNode;
 import org.csstudio.util.formula.node.SubNode;
+import org.csstudio.util.formula.node.TanNode;
 
 /** A formula interpreter.
  *  <p>
@@ -48,6 +54,7 @@ import org.csstudio.util.formula.node.SubNode;
  *  are reasonably fast.
  *  
  *  @author Kay Kasemir
+ *  @author 
  */
 @SuppressWarnings("nls")
 public class Formula implements Node
@@ -55,14 +62,21 @@ public class Formula implements Node
     private Node tree;
     private VariableNode variables[];
     
-    /** Create formula from string. */
+    /** Create formula from string.
+     *  @param formula The formula to parse
+     *  @throws Exception on parse error
+     */
     public Formula(String formula)  throws Exception
     {
         this.variables = null;
         parse(formula);
     }
 
-    /** Create formula from string with variables. */
+    /** Create formula from string with variables.
+     *  @param formula The formula to parse
+     *  @param variables Array of variables
+     *  @throws Exception on parse error
+     */
     public Formula(String formula, VariableNode[] variables)  throws Exception
     {
         this.variables = variables;
@@ -140,7 +154,7 @@ public class Formula implements Node
     private Node findFunction(Scanner s, String name) throws Exception
     {
         // TODO Add more functions.
-        // TODO add rnd, sin, cos, tan, asin, acos, atan, atan2
+        // TODO add rnd, cos, tan, asin, acos, atan, atan2
         // TODO add int, floor, ceil
         // TODO add a MathNode that uses introspection to pull
         //      all of java.lang.math.Math.* in?
@@ -161,7 +175,7 @@ public class Formula implements Node
         {
             if (args.length != 1)
                 throw new Exception("Expected 1 arg, got " + args.length);
-            return new LnNode(args[0]);
+            return new MathFuncNode("log", args[0]);
         }
         else if (name.equalsIgnoreCase("exp"))
         {
@@ -180,6 +194,43 @@ public class Formula implements Node
             if (args.length < 2)
                 throw new Exception("Expected >=2 arg, got " + args.length);
             return new MaxNode(args);
+        }
+        else if (name.equalsIgnoreCase("sin") 
+        	  || name.equalsIgnoreCase("cos"))
+        {
+            if (args.length != 1)
+                throw new Exception("Expected 1 arg, got " + args.length);
+            return new MathFuncNode(name, args[0]);
+        }
+        else if (name.equalsIgnoreCase("tan"))
+        {
+            if (args.length != 1)
+                throw new Exception("Expected 1 arg, got " + args.length);
+            return new TanNode(args[0]);
+        }
+        else if (name.equalsIgnoreCase("asin"))
+        {
+            if (args.length != 1)
+                throw new Exception("Expected 1 arg, got " + args.length);
+            return new AsinNode(args[0]);
+        }
+        else if (name.equalsIgnoreCase("acos"))
+        {
+            if (args.length != 1)
+                throw new Exception("Expected 1 arg, got " + args.length);
+            return new AcosNode(args[0]);
+        }
+        else if (name.equalsIgnoreCase("atan"))
+        {
+            if (args.length != 1)
+                throw new Exception("Expected 1 arg, got " + args.length);
+            return new AtanNode(args[0]);
+        }
+        else if (name.equalsIgnoreCase("atan2"))
+        {
+            if (args.length != 2)
+                throw new Exception("Expected 2 args, got " + args.length);
+            return new Atan2Node(args[0], args[1]);
         }
         else
             throw new Exception("Unknown function '" + name +"'");
