@@ -350,12 +350,12 @@ public class RelativeTimeWidget extends Composite
         int sign = before.getSelection() ? -1 : 1;
         int ymdhms[] = new int[]
         {
-            sign*year.getSelection(),
-            sign*month.getSelection(),
-            sign*day.getSelection(),
-            sign*hour.getSelection(),
-            sign*minute.getSelection(),
-            sign*second.getSelection()
+            sign * year.getSelection(),
+            sign * month.getSelection(),
+            sign * day.getSelection(),
+            sign * hour.getSelection(),
+            sign * minute.getSelection(),
+            sign * second.getSelection()
         };
         relative_time = new RelativeTime(ymdhms);
         updateGUIfromData();

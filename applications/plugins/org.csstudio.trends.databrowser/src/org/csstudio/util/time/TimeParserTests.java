@@ -1,15 +1,16 @@
 package org.csstudio.util.time;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
 @SuppressWarnings("nls")
-public class TimeParserTests extends TestCase
+public class TimeParserTests
 {
     private static final DateFormat format = 
                       new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

@@ -47,20 +47,18 @@ public class RelativeTimeParser
         if (text.indexOf(RelativeTime.NOW) >= 0)
             return new RelativeTimeParserResult(new RelativeTime(),
                                                 text.length());
-        // TODO handle milliseconds and/or fractional seconds
-        
         int offset_of_next_char = 0;
-        int ymdhms[] = new int[6];
+        double ymdhms[] = new double[6];
         for (int i=0; i<RelativeTime.tokens.length; ++i)
         {
-            int found[] = getValueOfToken(RelativeTime.tokens[i], text);
+            final TokenInfo found = getValueOfToken(RelativeTime.tokens[i], text);
             if (found == null)
                 ymdhms[i] = 0;
             else
             {   // Keep track of the right-most value in the string
-                if (found[0] > offset_of_next_char)
-                    offset_of_next_char = found[0];
-                ymdhms[i] = found[1];
+                if (found.getEnd() > offset_of_next_char)
+                    offset_of_next_char = found.getEnd();
+                ymdhms[i] = found.getValue();
             }
         }
         return new RelativeTimeParserResult(new RelativeTime(ymdhms),
@@ -74,7 +72,7 @@ public class RelativeTimeParser
      *          the end position of the value-and-tag and its numeric value.
      *  @throws NumberFormatException In case token found but number won't parse.
      */
-    private static int[] getValueOfToken(final String token, final String text)
+    private static TokenInfo getValueOfToken(final String token, final String text)
         throws Exception
     {
         // Locate token.
@@ -100,7 +98,7 @@ public class RelativeTimeParser
                        : text.substring(start,     end);
         try
         {
-            return new int[] { token_pos[1], Integer.parseInt(number) };
+            return new TokenInfo(token_pos[1], Double.parseDouble(number));
         }
         catch (Exception ex)
         {
