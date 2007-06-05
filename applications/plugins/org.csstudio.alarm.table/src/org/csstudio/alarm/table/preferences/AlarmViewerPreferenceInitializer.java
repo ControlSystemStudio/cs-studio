@@ -45,6 +45,7 @@ public class AlarmViewerPreferenceInitializer extends AbstractPreferenceInitiali
 		store.setDefault(AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
 		store.setDefault(AlarmViewerPreferenceConstants.SECONDARY_URL, "tcp://krynfs.desy.de:61616"); //$NON-NLS-1$
 		store.setDefault(AlarmViewerPreferenceConstants.QUEUE, "ALARM");
+        store.setDefault(AlarmViewerPreferenceConstants.SENDER_URL, "failover:(tcp://elogbook.desy.de:61616,tcp://krynfs.desy.de:61616)?maxReconnectDelay=2000"); //$NON-NLS-1$
 	}
 
 }

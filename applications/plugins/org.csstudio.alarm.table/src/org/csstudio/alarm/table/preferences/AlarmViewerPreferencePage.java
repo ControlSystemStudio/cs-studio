@@ -6,6 +6,8 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -88,18 +90,40 @@ public class AlarmViewerPreferencePage
 		l1.setText(Messages.JMSPreferencePage_ALARM_PRIMERY_SERVER);
 		l1.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
 		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, Messages.JMSPreferencePage_ALARM_CONTEXT_FACTORY, g2));
-		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.PRIMARY_URL, Messages.JMSPreferencePage_ALARM_PROVIDER_URL, g2));
+        final StringFieldEditor primary_url = new StringFieldEditor(AlarmViewerPreferenceConstants.PRIMARY_URL, Messages.JMSPreferencePage_ALARM_PROVIDER_URL, g2); 
+		addField(primary_url);
 		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
 		// -- Secondary Server
 		Label l2 = new Label(g2,SWT.NONE);
 		l2.setText(Messages.JMSPreferencePage_ALARM_SECONDARY_SERVER);
 		l2.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
 		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, Messages.JMSPreferencePage_ALARM_CONTEXT_FACTORY, g2));
-		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.SECONDARY_URL, Messages.JMSPreferencePage_ALARM_PROVIDER_URL, g2));
+        final StringFieldEditor secondary_url = new StringFieldEditor(AlarmViewerPreferenceConstants.SECONDARY_URL, Messages.JMSPreferencePage_ALARM_PROVIDER_URL, g2);
+		addField(secondary_url);
 		// --INITIAL_CONTEXT_FACTORY
 		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
 		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.QUEUE, Messages.JMSPreferencePage_ALARM_QUEUE_NAME, g2));
-	}
+        final StringFieldEditor sender_URL = new StringFieldEditor(AlarmViewerPreferenceConstants.SENDER_URL, "", g2);
+        sender_URL.getTextControl(g2).setVisible(false);
+        addField(sender_URL);
+        primary_url.setPropertyChangeListener(new IPropertyChangeListener(){
+
+            public void propertyChange(PropertyChangeEvent event) {
+                sender_URL.setStringValue("failover:("+primary_url.getStringValue()+secondary_url.getStringValue()+")?maxReconnectDelay=2000");
+            }
+            
+        });
+
+        secondary_url.setPropertyChangeListener(new IPropertyChangeListener(){
+
+            public void propertyChange(PropertyChangeEvent event) {
+                sender_URL.setStringValue("failover:("+primary_url.getStringValue()+secondary_url.getStringValue()+"");
+            }
+            
+        });
+        
+       }
+    
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
