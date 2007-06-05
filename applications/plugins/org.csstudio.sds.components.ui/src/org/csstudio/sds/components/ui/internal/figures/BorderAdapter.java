@@ -108,6 +108,7 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 			border.setColor(_borderColor);
 			// TODO: Vary Border Style !
 			_figure.setBorder(border);
+			_figure.repaint();
 		} else {
 			_figure.setBorder(null);
 		}
