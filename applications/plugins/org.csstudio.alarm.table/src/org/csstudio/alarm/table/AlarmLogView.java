@@ -218,7 +218,11 @@ public class AlarmLogView extends LogView {
      */
     @Override
     void setAckTrue(JMSMessage jmsMessage) {
-        jmsml.removeJMSMessage(jmsMessage);
-        jlv.refresh();
+	    if (jmsMessage.isBackgroundColorGray() == true) {
+	        jmsml.removeJMSMessage(jmsMessage);
+	        jlv.refresh();
+	    } else {
+	    	
+	    }
     }
 }

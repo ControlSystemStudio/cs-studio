@@ -156,7 +156,6 @@ public class LogView extends ViewPart implements MessageListener {
                         MapMessage mm = (MapMessage) message;
                         JmsLogsPlugin.logInfo("message received");
                         if(mm.getString("ACK")!=null &&  mm.getString("ACK").toUpperCase().equals("TRUE")){
-                            System.out.println("Ist Ack");
                             setAck(mm);
                         }else{
                             jmsml.addJMSMessage(mm);

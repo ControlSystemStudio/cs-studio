@@ -19,6 +19,7 @@ public class LogViewerPreferenceInitializer extends AbstractPreferenceInitialize
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
 		store.setDefault(LogViewerPreferenceConstants.P_STRING,
+				"ACK" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"TYPE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"EVENTTIME" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"TEXT" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
