@@ -71,9 +71,15 @@ public class StartEndTimeParser
         if (rel_start.isAbsolute() && rel_end.isAbsolute())
             return;
         else if (!rel_start.isAbsolute() && rel_end.isAbsolute())
+        {
             start = adjust(end, start_specification, rel_start);
+            return;
+        }
         else if (rel_start.isAbsolute() && !rel_end.isAbsolute())
+        {
             end = adjust(start, end_specification, rel_end);
+            return;
+        }
         // else !rel_start.isAbsolute() && !rel_end.isAbsolute()
         Calendar now = Calendar.getInstance();
         end = adjust(now, end_specification, rel_end);

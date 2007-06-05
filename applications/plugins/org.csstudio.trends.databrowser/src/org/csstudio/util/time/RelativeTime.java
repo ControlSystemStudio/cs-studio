@@ -11,9 +11,8 @@ import java.util.Calendar;
  *  The relative time can be applied to a given {@link Calendar} instance,
  *  and for example substract 6 from the calendar's hours.
  *  <p>
- *  Implementation detail:
- *  Since the Calendar already handles the roll-overs (30 hours turn into
- *  1 day and 6 hours), the RelativeTime is not normalized.
+ *  The time gets somewhat normalized: 60 seconds turn into one minute etc.
+ *  
  *  @author Kay Kasemir
  */
 public class RelativeTime
@@ -110,8 +109,9 @@ public class RelativeTime
             rel_time[i] = 0;
             ++i;
         }
+        normalize();
     }
-    
+
     /** Construct relative time information from the given data.
      *  <p>
      *  Some attempts are made to normalize fractional pieces.
@@ -148,8 +148,40 @@ public class RelativeTime
         rel_time[MINUTES] += frac_hours*60; // 60 minutes in an hour
         rel_time[SECONDS] += frac_minutes*60; // 60 minutes in an hour
         rel_time[MILLISECONDS] += frac_seconds * 1000; // 1000 millis per sec
+        normalize();
     }
     
+    /** (Try to) normalize the relative time by turning 70 seconds
+     *  into 1 minute, 10 seconds etc.
+     */ 
+    private void normalize()
+    {
+        rollover(MILLISECONDS, 1000);
+        rollover(SECONDS, 60);
+        rollover(MINUTES, 60);
+        rollover(HOURS, 24);
+        // How many DAYS in a MONTH? 30?
+        // leave as is
+        rollover(MONTHS, 12);
+    }
+    
+    /** Roll one relative time field into the next bigger one
+     *  when it exceeds the limit
+     *  @param field Field index like MILLISECONDS
+     *  @param limit The field's limit, like 1000 for millisecs
+     */
+    private void rollover(final int field, final int limit)
+    {
+        // Roll into the next bigger field
+        final int into = field - 1;
+        if (Math.abs(rel_time[field]) < limit)
+            return;
+        final int overrun = rel_time[field] / limit;
+        rel_time[field] -= overrun * limit;
+        rel_time[into] += overrun;
+    }
+    
+
     /** @return The string token that's recognized by the
      *          {@link RelativeTimeParser} and that's also used
      *          by toString() for a piece.

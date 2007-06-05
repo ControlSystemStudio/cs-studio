@@ -121,15 +121,17 @@ public class TimeParserTests extends TestCase
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.SECONDS));
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.MILLISECONDS));
 
+        // Parse the fractional seconds, and roll over from
+        // 3600sec to 60min to 1hour
         result = RelativeTimeParser.parse("-3600.123 seconds");
         System.out.println(result);
         assertEquals( 17, result.getOffsetOfNextChar());
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.YEARS));
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.MONTHS));
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.DAYS));
-        assertEquals( 0, result.getRelativeTime().get(RelativeTime.HOURS));
+        assertEquals(-1, result.getRelativeTime().get(RelativeTime.HOURS));
         assertEquals( 0, result.getRelativeTime().get(RelativeTime.MINUTES));
-        assertEquals(-3600, result.getRelativeTime().get(RelativeTime.SECONDS));
+        assertEquals( 0, result.getRelativeTime().get(RelativeTime.SECONDS));
         assertEquals(-123, result.getRelativeTime().get(RelativeTime.MILLISECONDS));
         
         // now
