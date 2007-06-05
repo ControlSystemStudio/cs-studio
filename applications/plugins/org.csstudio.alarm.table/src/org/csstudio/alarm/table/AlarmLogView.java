@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 import org.csstudio.alarm.table.dataModel.JMSAlarmMessageList;
@@ -212,7 +213,33 @@ public class AlarmLogView extends LogView {
 		.addPropertyChangeListener(cl);
 		
 	}
-
+	
+   
+	protected void setAck(MapMessage message) {
+	       TableItem[] items = jlv.getTable().getItems();
+	       for (TableItem item : items) {
+	           if (item.getData() instanceof JMSMessage) {
+	            JMSMessage jmsMessage = (JMSMessage) item.getData();
+	            try {
+	                if(jmsMessage.getName().equals(message.getString("NAME"))&&jmsMessage.getProperty("EVENTTIME").equals(message.getString("EVENTTIME"))){
+	            	    if ((jmsMessage.isBackgroundColorGray() == true) || 
+	            	    		(jmsMessage.getProperty("SEVERITY").equalsIgnoreCase("NO_ALARM"))) {
+	            	        jmsml.removeJMSMessage(jmsMessage);
+	            	        jlv.refresh();
+	            	    } else {
+	            	    	item.setChecked(true);
+	            	    }
+	            	    break;
+	            	}
+	                
+	            } catch (JMSException e) {
+	                JmsLogsPlugin.logException("can not set ACK", e);
+	            }
+	          }
+	       }
+	}
+	
+	
     /* (non-Javadoc)
      * @see org.csstudio.alarm.table.LogView#setAckTrue(org.csstudio.alarm.table.dataModel.JMSMessage)
      */
@@ -221,8 +248,6 @@ public class AlarmLogView extends LogView {
 	    if (jmsMessage.isBackgroundColorGray() == true) {
 	        jmsml.removeJMSMessage(jmsMessage);
 	        jlv.refresh();
-	    } else {
-	    	
 	    }
     }
 }

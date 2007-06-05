@@ -157,7 +157,7 @@ public class LogView extends ViewPart implements MessageListener {
                         JmsLogsPlugin.logInfo("message received");
                         if(mm.getString("ACK")!=null &&  mm.getString("ACK").toUpperCase().equals("TRUE")){
                             setAck(mm);
-                        }else{
+                        } else {
                             jmsml.addJMSMessage(mm);
                         }
 					} else {
@@ -181,12 +181,13 @@ public class LogView extends ViewPart implements MessageListener {
             JMSMessage jmsMessage = (JMSMessage) item.getData();
             try {
                 if(jmsMessage.getName().equals(message.getString("NAME"))&&jmsMessage.getProperty("EVENTTIME").equals(message.getString("EVENTTIME"))){
-                    setAckTrue(jmsMessage);
+                	jmsMessage.getHashMap().put("ACK","true");
+                    jlv.refresh();
+                    break;
                 }
                 
             } catch (JMSException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                JmsLogsPlugin.logException("can not set ACK", e);
             }
             
         }
