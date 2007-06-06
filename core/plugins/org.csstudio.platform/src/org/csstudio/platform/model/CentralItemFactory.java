@@ -21,11 +21,13 @@
  */
 package org.csstudio.platform.model;
 
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.internal.model.ArchiveDataSource;
 import org.csstudio.platform.internal.model.ControlSystemItemFactoriesRegistry;
 import org.csstudio.platform.internal.model.ProcessVariable;
 import org.csstudio.platform.internal.model.ProcessVariableWithArchive;
 import org.csstudio.platform.internal.model.ProcessVariableWithSample;
+import org.csstudio.platform.internal.model.ProcessVariableWithSamples;
 import org.csstudio.platform.util.ControlSystemItemPath;
 
 /**
@@ -95,11 +97,11 @@ public final class CentralItemFactory {
 
 	/**
 	 * Creates a process variable with an sample data.
-	 * @param pvName
-	 * @param dbrTyp
-	 * @param egu
-	 * @param low
-	 * @param high
+	 * @param pvName The PV Name
+	 * @param dbrTyp the dbrType
+	 * @param egu the EGU
+	 * @param low the Low Threshold
+	 * @param high the High Threshold
 	 * @param precision
 	 * @param sampleValues
 	 * @param timeStamp
@@ -108,7 +110,16 @@ public final class CentralItemFactory {
 	public static IProcessVariableWithSample createProcessVariableWithSample(String pvName, int dbrTyp, String egu, double low, double high, int precision, double[] sampleValues, double[] timeStamp, String[] status, String[] severity) {
 		return new ProcessVariableWithSample(pvName,sampleValues, timeStamp, dbrTyp, egu, precision, low, high, status, severity);
 	}
-
+    
+    /**
+     * 
+     * @param name of PV
+     * @param samples of PV
+     * @return PV with Samples
+     */
+    public static IProcessVariableWithSamples createProcessVariableWithSample(final String name,final IValue[] samples) {
+        return new ProcessVariableWithSamples(name, samples);
+    }
 	
 	/**
 	 * Create a control system item from the specified path.

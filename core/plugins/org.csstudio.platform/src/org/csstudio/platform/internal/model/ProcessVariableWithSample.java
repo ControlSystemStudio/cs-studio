@@ -13,6 +13,7 @@ import org.csstudio.platform.model.IProcessVariableWithSample;
  *
  * @author Jan Hatje und Helge Rickens
  */
+@Deprecated
 public class ProcessVariableWithSample extends AbstractControlSystemItem
 		implements IProcessVariableWithSample {
 

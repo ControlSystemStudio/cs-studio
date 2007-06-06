@@ -13,6 +13,8 @@ package org.csstudio.platform.model;
  * Use either DAL, or the intermediate Value from org.csstudio.utility.pv,
  * which supports more data types as well as their MetaData.
  */
+
+@Deprecated
 public interface IProcessVariableWithSample extends IProcessVariable {
 	/**
 	 * The global type id.
