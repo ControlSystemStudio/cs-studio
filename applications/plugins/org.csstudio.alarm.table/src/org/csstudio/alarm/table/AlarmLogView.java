@@ -110,8 +110,6 @@ public class AlarmLogView extends LogView {
         if(prefs.getString(JmsLogPreferenceConstants.VALUE9).trim().length()>0)
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE9));
         ackButton.addSelectionListener(new SelectionListener(){
-
-
             public void widgetSelected(SelectionEvent e) {
                 if(ackCombo.getSelectionIndex()==0){
                     TableItem[] items = jlv.getTable().getItems();
@@ -138,7 +136,6 @@ public class AlarmLogView extends LogView {
                                 String value = hm.get(key);
                                 mapMessage.setString(key, value);
                             }
-                            message.setProperty("ACK", "1");
                             mapMessage.setString("ACK", "TRUE");
                             mapMessage.setString("ACK_TIME", time);
                             Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack");

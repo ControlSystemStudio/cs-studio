@@ -89,7 +89,11 @@ public class JMSAlarmMessageList extends JMSMessageList {
 										.equalsIgnoreCase("NO_ALARM") == false) {
 									jmsMessagesToRemoveAndAdd.add(jmsm);
 								}
-								jmsm.setBackgroundColorGray(true);
+                                if(jmsm.getProperty("ACK").toUpperCase().equals("TRUE")){
+                                    jmsMessagesToRemove.add(jmsm);
+                                }else{
+                                    jmsm.setBackgroundColorGray(true);
+                                }
 							}
 						}
 					}
