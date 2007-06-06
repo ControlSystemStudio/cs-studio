@@ -118,7 +118,7 @@ public class JMSLogTableViewer extends TableViewer {
         table.addListener (SWT.Selection, new Listener () {
             public void handleEvent (Event event) {
                 JMSMessage message;
-                if (event.item instanceof TableItem) {
+                if (event.item instanceof TableItem && event.button==1) {
                     TableItem ti = (TableItem) event.item;
                     if(ti.getChecked()){
                         SendMapMessage sender = new SendMapMessage();
