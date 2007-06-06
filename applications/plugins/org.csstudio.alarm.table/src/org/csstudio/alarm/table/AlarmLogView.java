@@ -174,7 +174,6 @@ public class AlarmLogView extends LogView {
                                     String value = hm.get(key);
                                     mapMessage.setString(key, value);
                                 }
-                                message.setProperty("ACK", "1");
                                 mapMessage.setString("ACK", "TRUE");
                                 mapMessage.setString("ACK_TIME", time);
                                 Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack");
@@ -225,6 +224,7 @@ public class AlarmLogView extends LogView {
 	            	        jlv.refresh();
 	            	    } else {
 	            	    	item.setChecked(true);
+                            jmsMessage.getHashMap().put("ACK_HIDDEN","true");
 	            	    }
 	            	    break;
 	            	}
@@ -240,11 +240,11 @@ public class AlarmLogView extends LogView {
     /* (non-Javadoc)
      * @see org.csstudio.alarm.table.LogView#setAckTrue(org.csstudio.alarm.table.dataModel.JMSMessage)
      */
-    @Override
-    void setAckTrue(JMSMessage jmsMessage) {
-	    if (jmsMessage.isBackgroundColorGray() == true) {
-	        jmsml.removeJMSMessage(jmsMessage);
-	        jlv.refresh();
-	    }
-    }
+//    @Override
+//    void setAckTrue(JMSMessage jmsMessage) {
+//	    if (jmsMessage.isBackgroundColorGray() == true) {
+//	        jmsml.removeJMSMessage(jmsMessage);
+//	        jlv.refresh();
+//	    }
+//    }
 }

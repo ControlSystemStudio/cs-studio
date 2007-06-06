@@ -195,13 +195,13 @@ public class LogView extends ViewPart implements MessageListener {
         
     }
 
-    /**
-     * @param jmsMessage
-     */
-    void setAckTrue(JMSMessage jmsMessage) {
-        jmsMessage.getHashMap().put("ACK","true");
-        jlv.refresh();
-    }
+//    /**
+//     * @param jmsMessage
+//     */
+//    void setAckTrue(JMSMessage jmsMessage) {
+//        jmsMessage.getHashMap().put("ACK","true");
+//        jlv.refresh();
+//    }
 
     public void dispose() {
 		super.dispose();

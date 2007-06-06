@@ -141,7 +141,6 @@ public class JMSLogTableViewer extends TableViewer {
                                 String value = hm.get(key);
                                 mapMessage.setString(key, value);
                             }
-                            message.setProperty("ACK", "TRUE");
                             mapMessage.setString("ACK", "TRUE");
                             mapMessage.setString("ACK_TIME", time);
                             Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack");
