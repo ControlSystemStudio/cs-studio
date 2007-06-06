@@ -43,7 +43,7 @@ public class ClientRequest extends Thread
     public Statistic.StatisticContent  statisticContent = null;
     public TagList 				tagList			= null;
     
-	public ClientRequest(DatagramSocket d, DatagramPacket p, Session jmsAlarmSession, Destination jmsAlarmDestination, MessageProducer jmsAlarmSender, 
+	public ClientRequest( InterconnectionServer icServer, DatagramSocket d, DatagramPacket p, Session jmsAlarmSession, Destination jmsAlarmDestination, MessageProducer jmsAlarmSender, 
 			Session jmsLogSession, Destination jmsLogDestination, MessageProducer jmsLogSender, 
 			Session jmsPutLogSession, Destination jmsPutLogDestination, MessageProducer jmsPutLogSender)
 	{
@@ -104,6 +104,7 @@ public class ClientRequest extends Thread
         Hashtable<String,String> tagValue = new Hashtable<String,String>();	// could replace the Vector above
         TagValuePairs	id		= InterconnectionServer.getInstance().new TagValuePairs();
         TagValuePairs	type	= InterconnectionServer.getInstance().new TagValuePairs();
+
         
         //
         // you need debug information?
@@ -155,7 +156,7 @@ public class ClientRequest extends Thread
             		///System.out.println("Time-ALARM: - before sender-send 	= " + dateToString(new GregorianCalendar()));
             		alarmSender.send(message);
             		message = null;
-            		afterJmsSendTime = new GregorianCalendar();
+            		InterconnectionServer.getInstance().getJmsMessageWriteCollector().setValue(gregorianTimeDifference( parseTime, new GregorianCalendar()));
             		//System.out.println("Time-ALARM: - after sender-send 	= " + dateToString(new GregorianCalendar()));
         		}
         		catch(JMSException jmse)
@@ -173,7 +174,8 @@ public class ClientRequest extends Thread
         		updateLdapEntry( tagValue);
         		afterLdapWriteTime = new GregorianCalendar();
         		
-        		checkPerformance( parseTime, afterJmsSendTime, afterUdpAcknowledgeTime, afterLdapWriteTime);
+        		//checkPerformance( parseTime, afterJmsSendTime, afterUdpAcknowledgeTime, afterLdapWriteTime);
+        		System.out.print("A");
         		break;
         		
         	case TagList.STATUS_MESSAGE:
@@ -195,7 +197,7 @@ public class ClientRequest extends Thread
                     //System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
-
+        		System.out.print("S");
         		break;
         		
         	case TagList.BEACON_MESSAGE:
@@ -250,6 +252,7 @@ public class ClientRequest extends Thread
                     }
                     */
         		}
+        		System.out.print("B");
         		break;
         		
         	case TagList.PUT_LOG_MESSAGE:
@@ -269,7 +272,7 @@ public class ClientRequest extends Thread
                     System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
-        		
+        		System.out.print("P");
         		break;
         		
         	case 4711:
@@ -283,6 +286,7 @@ public class ClientRequest extends Thread
         		// execute command asynchronously
         		//
             	new ServerCommands (id.getTag(), id.getValue(), tagList.getTagProperties( id.getTag()), socket, packet);
+            	System.out.print("T");
             	break;
             	
         		
@@ -290,7 +294,7 @@ public class ClientRequest extends Thread
         		default:
         		status = false;
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
-
+        		System.out.print("U");
         	}
 
         }
@@ -411,13 +415,13 @@ public class ClientRequest extends Thread
 		
 		int timeDifference;
 		timeDifference = gregorianTimeDifference( parseTime, afterJmsSendTime);
-		System.out.println( "Time to send JMS message    : " + timeDifference);
+		System.out.println( "Time to send JMS message      : " + timeDifference);
 		
 		timeDifference = gregorianTimeDifference( afterJmsSendTime, afterUdpAcknowledgeTime);
-		System.out.println( "Time to acknowledge message : " + timeDifference);
+		System.out.println( "Time to acknowledge message   : " + timeDifference);
 		
 		timeDifference = gregorianTimeDifference( afterUdpAcknowledgeTime, afterLdapWriteTime);
-		System.out.println( "Time to write to LDAP server: " + timeDifference);
+		System.out.println( "Time to add LDAP write request: " + timeDifference);
 	}
 	
 	

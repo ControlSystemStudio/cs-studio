@@ -10,29 +10,21 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
-import javax.jms.DeliveryMode;
-import javax.jms.MapMessage;
-import javax.jms.MessageProducer;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.activemq.ActiveMQConnectionFactory; 
-
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.engine.Engine;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
+import org.csstudio.platform.statistic.Collector;
 
 /**
  * This version uses <code>DatagramSockets</code> instead of Sockets.
@@ -46,6 +38,7 @@ public class InterconnectionServer
     private static InterconnectionServer		thisServer = null;
     private String                      instanceName    = null;    
     private DatagramSocket              serverSocket    = null; 
+    private DatagramSocket              serverCommandSocket    = null; 
     private Session                     alarmSession, logSession, putLogSession	        	= null;
 	private Destination                 alarmDestination, logDestination, putLogDestination = null;
 	private MessageProducer				alarmSender, logSender, putLogSender		= null;
@@ -56,6 +49,8 @@ public class InterconnectionServer
     public final String NAME    = "IcServer";
     public final String VERSION = " 0.5";
     public final String BUILD   = " - BUILD 09.02.2007 17:00";
+    
+    private Collector	jmsMessageWriteCollector = null;
     
     
     synchronized public boolean setupConnections ( )
@@ -255,25 +250,28 @@ public class InterconnectionServer
         boolean         quit        = false;
         byte 			buffer[]	=  new byte[ PreferenceProperties.BUFFER_ZIZE];
 
-        
-        //
-        // start LdapEngine
-        //
-        //Engine.getInstance();
-        
-        // Ausgabe in eine Datei umlenken
         /*
-        try
-        {
-            newout = new PrintStream(".\\Me.log");
-            System.setOut(newout);
-        }
-        catch(Exception e) { }
-        */
+         * if not started from 'getInstance' ...
+         */
         
-        //
-        // set up JMS connections
-        //
+        if ( thisServer == null) {
+			synchronized (InterconnectionServer.class) {
+				if (thisServer == null) {
+					thisServer = this;
+				}
+			}
+		}
+        
+        /*
+         * set up collectors (statistic)
+         */
+        jmsMessageWriteCollector = new Collector();
+        jmsMessageWriteCollector.setApplication("IC-Server");
+        jmsMessageWriteCollector.setDescriptor("Time to write JMS message");
+        jmsMessageWriteCollector.setContinuousPrint(true);
+        jmsMessageWriteCollector.getAlarmHandler().setDeadband(5.0);
+        jmsMessageWriteCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);	// 500ms
+        jmsMessageWriteCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
         
         if ( ! setupConnections()){
         	//
@@ -309,7 +307,7 @@ public class InterconnectionServer
 
                 serverSocket.receive(packet);
                 
-                newClient = new ClientRequest(serverSocket, packet, alarmSession, alarmDestination, alarmSender, 
+                newClient = new ClientRequest( this, serverSocket, packet, alarmSession, alarmDestination, alarmSender, 
                 		logSession, logDestination, logSender, putLogSession, putLogDestination, putLogSender);
             }
             catch(IOException ioe)
@@ -468,5 +466,15 @@ public class InterconnectionServer
 		public String getValue () {
 			return this.value;
 		}
+	}
+
+
+
+	public Collector getJmsMessageWriteCollector() {
+		return jmsMessageWriteCollector;
+	}
+
+	public void setJmsMessageWriteCollector(Collector jmsMessageWriteCollector) {
+		this.jmsMessageWriteCollector = jmsMessageWriteCollector;
 	}
 }

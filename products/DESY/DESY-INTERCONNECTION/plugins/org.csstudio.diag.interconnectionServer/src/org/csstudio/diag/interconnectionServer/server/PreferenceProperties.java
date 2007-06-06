@@ -57,7 +57,7 @@ public class PreferenceProperties {
 	public static final int COMMAND_SEND_STATUS_I 		= 4;
 	
 	public static String[]	COMMAND_LIST = {COMMAND_TAKE_OVER, COMMAND_DISCONNECT, COMMAND_SEND_ALARM, 
-		COMMAND_SEND_ALARM, COMMAND_SEND_STATUS };
+		COMMAND_SEND_ALL_ALARMS, COMMAND_SEND_STATUS };
 	
 	public static final int 	TAG_TYPE_LOG_SERVER_REPLY = 1;
 	public static final String 	TAG_LOG_SERVER_REPLY = "TEST-KEY";
