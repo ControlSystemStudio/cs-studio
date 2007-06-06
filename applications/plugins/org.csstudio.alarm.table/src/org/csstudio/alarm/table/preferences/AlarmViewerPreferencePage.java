@@ -10,6 +10,10 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Group;
@@ -77,10 +81,6 @@ public class AlarmViewerPreferencePage
 
 		});
 		//
-//		Group g1 = new Group(getFieldEditorParent(), SWT.NONE);
-//		g1.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
-//		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.MAX, AlarmViewerPreferenceConstants.MAX + ": ", g1)); //$NON-NLS-1$
-//		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.REMOVE, AlarmViewerPreferenceConstants.REMOVE + ": ", g1)); //$NON-NLS-1$
 		// Server Settings
 		Group g2 = new Group(getFieldEditorParent(), SWT.NONE);
 		g2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
@@ -105,23 +105,29 @@ public class AlarmViewerPreferencePage
 		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.QUEUE, Messages.JMSPreferencePage_ALARM_QUEUE_NAME, g2));
         final StringFieldEditor sender_URL = new StringFieldEditor(AlarmViewerPreferenceConstants.SENDER_URL, "", g2);
         sender_URL.getTextControl(g2).setVisible(false);
+        sender_URL.getTextControl(g2).setEditable(false);
         addField(sender_URL);
-        primary_url.setPropertyChangeListener(new IPropertyChangeListener(){
+        primary_url.getTextControl(g2).addKeyListener(new KeyListener(){
 
-            public void propertyChange(PropertyChangeEvent event) {
-                sender_URL.setStringValue("failover:("+primary_url.getStringValue()+secondary_url.getStringValue()+")?maxReconnectDelay=2000");
+            public void keyPressed(KeyEvent e) {}
+
+            public void keyReleased(KeyEvent e) {
+                sender_URL.setStringValue("failover:("+primary_url.getStringValue()+","+secondary_url.getStringValue()+")?maxReconnectDelay=2000");
             }
             
         });
 
-        secondary_url.setPropertyChangeListener(new IPropertyChangeListener(){
+        secondary_url.getTextControl(g2).addKeyListener(new KeyListener(){
 
-            public void propertyChange(PropertyChangeEvent event) {
-                sender_URL.setStringValue("failover:("+primary_url.getStringValue()+secondary_url.getStringValue()+"");
+            public void keyReleased(KeyEvent e) {
+                sender_URL.setStringValue("failover:("+primary_url.getStringValue()+","+secondary_url.getStringValue()+"");
             }
+
+            public void keyPressed(KeyEvent e) {}
             
         });
-        
+
+
        }
     
 
