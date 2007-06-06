@@ -225,6 +225,7 @@ public class AlarmLogView extends LogView {
 	            	    } else {
 	            	    	item.setChecked(true);
                             jmsMessage.getHashMap().put("ACK_HIDDEN","true");
+                            System.out.println("ACK_HIDDEN: "+jmsMessage.getProperty("ACK_HIDDEN"));
 	            	    }
 	            	    break;
 	            	}

@@ -85,15 +85,12 @@ public class JMSAlarmMessageList extends JMSMessageList {
 								jmsMessagesToRemove.add(jmsm);
 							} else {
 								jmsMessagesToRemove.add(jmsm);
-								if (severityFromList
-										.equalsIgnoreCase("NO_ALARM") == false) {
-									jmsMessagesToRemoveAndAdd.add(jmsm);
-								}
-                                if(jmsm.getProperty("ACK_HIDDEN").toUpperCase().equals("TRUE")){
-                                    jmsMessagesToRemove.add(jmsm);
-                                }else{
-                                    jmsm.setBackgroundColorGray(true);
+                                System.out.println("ACK_HIDDEN check löschen: "+jmsm.getProperty("ACK_HIDDEN"));
+                                if(!jmsm.getProperty("ACK_HIDDEN").toUpperCase().equals("TRUE") && severityFromList
+                                        .equalsIgnoreCase("NO_ALARM") == false) {
+                                    jmsMessagesToRemoveAndAdd.add(jmsm);
                                 }
+                                jmsm.setBackgroundColorGray(true);
 							}
 						}
 					}
