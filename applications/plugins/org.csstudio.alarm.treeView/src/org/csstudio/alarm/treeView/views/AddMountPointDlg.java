@@ -10,7 +10,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.csstudio.alarm.treeView.cacher.LDAPTreeParser;
+import org.csstudio.alarm.treeView.ldap.LdapNameUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -32,7 +32,6 @@ public class AddMountPointDlg extends Dialog {
 
 	Hashtable<String,String> env;
 	protected DirContext connection;
-	protected LDAPTreeParser tparser;
 	private List mountPoints;
 	public static final String alarmCfgRoot = "ou=EpicsAlarmCfg";
 	public String[] result= new String[0];
@@ -43,7 +42,6 @@ public class AddMountPointDlg extends Dialog {
 		}
 		else {
 	        env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
-	        tparser = new LDAPTreeParser();		    
 			connection=new InitialDirContext(env);
 		}
 	}
@@ -74,8 +72,8 @@ public class AddMountPointDlg extends Dialog {
 				SearchResult result = (SearchResult)enumr.next();
 				rname = result.getName();
 				//only getName gives you name without 'o=DESY, c=DE'
-				rname = tparser.specialClean(rname);
-				name = tparser.getMyName(rname);
+				rname = LdapNameUtils.removeQuotes(rname);
+				name = LdapNameUtils.simpleName(rname);
 				strcoll.add(name);
 			}			
 		} catch (Exception e) {

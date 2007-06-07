@@ -1,18 +1,17 @@
 package org.csstudio.alarm.treeView.views;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.images.LdapImageCache;
-import org.csstudio.alarm.treeView.views.models.AlarmConnection;
-import org.csstudio.alarm.treeView.views.models.ContextTreeObject;
-import org.csstudio.alarm.treeView.views.models.ContextTreeParent;
-import org.csstudio.alarm.treeView.views.models.ISimpleTreeObject;
-import org.csstudio.alarm.treeView.views.models.ISimpleTreeParent;
-import org.csstudio.alarm.treeView.views.models.LdapConnection;
+import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.Severity;
+import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.PendingUpdateAdapter;
 
 
 /**
@@ -20,10 +19,13 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AlarmTreeLabelProvider extends LabelProvider {
 
+	private Map<String, Image> imageCache;
+	
 	/**
 	 * Creates a new alarm tree label provider.
 	 */
 	public AlarmTreeLabelProvider() {
+		imageCache = new HashMap<String, Image>();
 	}
 
 	/**
@@ -33,8 +35,11 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * have a name.
 	 */
 	public String getText(Object element) {
-		if (element instanceof ISimpleTreeObject){
-			return ((ISimpleTreeObject)element).getName();
+		if (element instanceof IAlarmTreeNode){
+			return ((IAlarmTreeNode)element).getName();
+		}
+		if (element instanceof PendingUpdateAdapter) {
+			return ((PendingUpdateAdapter) element).getLabel(element);
 		}
 		return "";
 	}
@@ -45,8 +50,11 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * @param alarmSeverity the severity.
 	 * @return the character that represents the given severity.
 	 */
-	private char getIconChar(int alarmSeverity) {
-		switch (alarmSeverity) {
+	private char getIconChar(Severity alarmSeverity) {
+		if (alarmSeverity == null)
+			return 'w';
+		
+		switch (alarmSeverity.toIntValue()) {
 		case 1:
 			return 'g';
 		case 2:
@@ -67,32 +75,61 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * for the element.
 	 */
 	public Image getImage(Object element) {
-		try{
-			LdapImageCache lic = AlarmTreePlugin.getDefaultImageCache();
-			ISimpleTreeParent obj = (ISimpleTreeParent)element;
-			String imageKey = ISharedImages.IMG_OBJ_FILE;
-			if (obj.hasChildren())
-			   imageKey = ISharedImages.IMG_OBJ_FOLDER;
-			if (obj instanceof ContextTreeObject){
-				if (((ContextTreeObject)obj).getTotalAlarmCount()>0){
-					int mxalarm = ((ContextTreeObject)obj).getMaxAlarm();
-					int maxUalarm = ((ContextTreeObject)obj).getMaxUnacknowledgedAlarm();
-					String iconn = new String(new char[]{getIconChar(maxUalarm),getIconChar(mxalarm)});
-					if ((iconn.equals("ww"))) {imageKey = ISharedImages.IMG_OBJ_ELEMENT;}
-					else return lic.getImage(AlarmTreePlugin.getImageDescriptor("./icons/"+iconn+".gif"));
-				}
-				else imageKey = ISharedImages.IMG_OBJ_ELEMENT;
+		if (element instanceof IAlarmTreeNode) {
+			IAlarmTreeNode node = (IAlarmTreeNode) element;
+			if (node.hasAlarm()) {
+				return alarmImageFor(node);
+			} else {
+				return defaultImageFor(node);
 			}
-			if (obj instanceof LdapConnection)
-				imageKey = ISharedImages.IMG_DEF_VIEW;
-			if  (obj instanceof AlarmConnection)
-				return AlarmTreePlugin.getDefaultImageCache().getImage(AlarmTreePlugin.getImageDescriptor("./icons/alarm.gif"));
-			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+		} else {
+			return null;
 		}
-		catch (Exception e){
-			e.printStackTrace();			
-			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);			
+	}
+	
+	/**
+	 * Returns the image for the given node if that node is in an alarm state.
+	 * @param node the node.
+	 */
+	private Image alarmImageFor(IAlarmTreeNode node) {
+		Severity severity = node.getAlarmSeverity();
+		char iconChar = getIconChar(severity);
+		String iconName = "./icons/" + iconChar + iconChar + ".gif";
+		return loadImage(iconName);
+	}
+	
+	/**
+	 * Returns the image for the given node if there is no alarm for that node.
+	 * @param node the node.
+	 */
+	private Image defaultImageFor(IAlarmTreeNode node) {
+		String image = (node instanceof SubtreeNode)
+			? ISharedImages.IMG_OBJ_FOLDER : ISharedImages.IMG_OBJ_ELEMENT;
+		return PlatformUI.getWorkbench().getSharedImages().getImage(image);
+	}
+	
+	/**
+	 * Loads an image. The image is added to a cache kept by this provider and
+	 * is disposed of when this provider is disposed of.
+	 * @param name the image file name.
+	 */
+	private Image loadImage(String name) {
+		if (imageCache.containsKey(name)) {
+			return imageCache.get(name);
+		} else {
+			Image image = AlarmTreePlugin.getImageDescriptor(name).createImage();
+			imageCache.put(name, image);
+			return image;
 		}
-	}	
+	}
+	
+	/**
+	 * Disposes of the images created by this label provider.
+	 */
+	@Override
+	public void dispose() {
+		for (Image image : imageCache.values()) {
+			image.dispose();
+		}
+	}
 }

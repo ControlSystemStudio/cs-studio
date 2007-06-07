@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="initialvalues" name="Initial Values" schema="schema/initialvalues.exsd"/>
 
    <extension
          point="org.eclipse.ui.views">
@@ -34,9 +33,9 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.applications.alarm"
-            class="org.csstudio.alarm.treeView.preferences.LdapTreePreferences"
-            id="org.csstudio.alarm.treeView.preferences.LdapTreePreferences"
-            name="Alarm Treeview preferences"/>
+            class="org.csstudio.alarm.treeView.preferences.AlarmTreePreferencePage"
+            id="org.csstudio.alarm.treeView.preferences.AlarmTreePreferencePage"
+            name="Alarm Tree"/>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
