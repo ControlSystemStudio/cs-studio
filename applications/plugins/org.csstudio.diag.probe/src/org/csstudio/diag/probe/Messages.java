@@ -65,6 +65,5 @@ public class Messages extends NLS
     }
 
     private Messages()
-    {
-    }
+    { /* prevent instantiation */ }
 }
