@@ -3,7 +3,7 @@
 <schema targetNamespace="org.csstudio.utility.pv">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.csstudio.utility.pv" id="pvfatory" name="PVFactory"/>
+         <meta.schema plugin="org.csstudio.utility.pv" id="pvfactory" name="PVFactory"/>
       </appInfo>
       <documentation>
          Provider of Process Variables
@@ -83,7 +83,14 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         See org.csstudio.utility.pv.epics plugin.
+         &lt;pre&gt;
+   &lt;extension point=&quot;org.csstudio.utility.pv.pvfactory&quot;&gt;
+      &lt;PVFactory
+            class=&quot;your.class.that.implements.IPVFactory&quot;
+            name=&quot;Your PV Factory&quot;
+       /&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
