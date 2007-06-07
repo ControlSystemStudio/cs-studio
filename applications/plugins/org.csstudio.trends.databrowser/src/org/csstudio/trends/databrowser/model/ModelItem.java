@@ -19,8 +19,8 @@ import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.xml.DOMHelper;
 import org.csstudio.util.xml.XMLHelper;
 import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.Element;
 
@@ -68,8 +68,22 @@ public class ModelItem
     {
         super(model, pv_name, axis_index, min, max, visible, auto_scale,
               red, green , blue, line_width, trace_type, log_scale);
-        pv = new EPICS_V3_PV(pv_name);
+        createPV(pv_name);
         samples = new ModelSamples(ring_size);
+    }
+
+    @SuppressWarnings("nls")
+    private void createPV(String pv_name)
+    {
+        try
+        {
+            pv = PVFactory.createPV(pv_name);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            Plugin.logException("Cannot create PV '" + pv_name + "'", ex);
+        }
     }    
     
     /** Must be called to dispose the color. */
@@ -98,7 +112,7 @@ public class ModelItem
         model.fireEntryRemoved(this);
         // Now change name
         name = new_name;
-        pv = new EPICS_V3_PV(name);
+        createPV(name);
         // and add
         model.fireEntryAdded(this);
         if (was_running)

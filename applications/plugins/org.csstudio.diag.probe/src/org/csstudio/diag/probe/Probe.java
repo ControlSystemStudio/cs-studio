@@ -2,17 +2,17 @@ package org.csstudio.diag.probe;
 
 import java.text.NumberFormat;
 
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.util.swt.ComboHistoryHelper;
 import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -132,6 +132,7 @@ public class Probe extends ViewPart implements PVListener
     }
 
     /** ViewPart interface, create UI. */
+    @Override
     public void createPartControl(Composite parent)
     {
         createGUI(parent);
@@ -159,6 +160,7 @@ public class Probe extends ViewPart implements PVListener
     }
 
     // ViewPart interface
+    @Override
     public void setFocus()
     {
         cbo_name.getCombo().setFocus();
@@ -195,6 +197,7 @@ public class Probe extends ViewPart implements PVListener
                         Plugin.getDefault().getDialogSettings(),
                         PV_LIST_TAG, cbo_name)
         {
+            @Override
             public void newSelection(String pv_name)
             { 
                 setPVName(pv_name);   
@@ -217,6 +220,7 @@ public class Probe extends ViewPart implements PVListener
         btn_info.setLayoutData(gd);
         btn_info.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent ev)
             {
                 showInfo();
@@ -243,6 +247,7 @@ public class Probe extends ViewPart implements PVListener
         btn_adjust.setLayoutData(gd);
         btn_adjust.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent ev)
             {   adjustValue();   }
         });
@@ -348,7 +353,7 @@ public class Probe extends ViewPart implements PVListener
         try
         {
             updateStatus(Messages.S_Searching);
-            pv = new EPICS_V3_PV(pv_name);
+            pv = PVFactory.createPV(pv_name);
             pv.addListener(this);
             pv.start();
         }

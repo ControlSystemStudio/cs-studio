@@ -24,8 +24,6 @@ import org.eclipse.swt.dnd.DropTargetEvent;
  */ 
 public class Controller
 {
-    // TODO model's time range not always updated.
-    // try zoom in, then re-enable scroll -> wrong plot duration
     private final Model model;
     private final BrowserUI gui;
     private final Chart chart;
@@ -33,6 +31,8 @@ public class Controller
     private boolean controller_changes_xaxis = false;
     private boolean controller_changes_yaxes = false;
     private boolean controller_changes_model = false;
+    
+    private String scroll_start_specification = null;
     
     /** Scan the PVs, and possibly redraw. */
     private ScannerAndScrollerListener scanner_scroller_listener =
@@ -47,24 +47,32 @@ public class Controller
             if (with_redraw  &&  chart.isVisible())
             {
                 if (gui.isScrollEnabled())
-                {   // Scroll by updating the model's "current" time range.
+                {
+                    // Scroll by updating the model's "current" time range.
                     // The plot should listen to the model and adjust its x axis.
-                    double low = model.getStartTime().toDouble();
-                    double high = model.getEndTime().toDouble();
-                    final double range = high - low;
-                    final String start_specification =
-                        String.format("-%f %s", range, RelativeTime.SECOND_TOKEN);
-                    
+                    // But we listen as well, so don't get infinite loop.
                     controller_changes_xaxis = true;
+                    if (scroll_start_specification == null)
+                    {
+                        double low = model.getStartTime().toDouble();
+                        double high = model.getEndTime().toDouble();
+                        final double range = high - low;
+                        scroll_start_specification =
+                            String.format("-%f %s", range, RelativeTime.SECOND_TOKEN);
+System.out.println("Scroll: New start " + scroll_start_specification);
+                    }
                     try
                     {
                         // Only update when really changed...
                         if (model.getEndSpecification().equals(RelativeTime.NOW)
-                           && model.getStartSpecification().equals(start_specification))
+                           && model.getStartSpecification().equals(scroll_start_specification))
                             model.updateStartEndTime();
                         else
-                            model.setTimeSpecifications(start_specification,
+                        {
+                            System.out.println("Scroll: Update start " + scroll_start_specification);
+                            model.setTimeSpecifications(scroll_start_specification,
                                                         RelativeTime.NOW);
+                        }
                     }
                     catch (Exception ex)
                     {   // Prevent follow-up errors by disabling the scroll
@@ -85,7 +93,11 @@ public class Controller
      */
     private final ModelListener model_listener = new ModelListener()
     {
-        public void timeSpecificationsChanged()     { /* NOP */ }
+        public void timeSpecificationsChanged()
+        {
+            // Invalidate any scroll start spec that we might have
+            scroll_start_specification = null;
+        }
         
         public void timeRangeChanged()              { /* NOP */ }
 

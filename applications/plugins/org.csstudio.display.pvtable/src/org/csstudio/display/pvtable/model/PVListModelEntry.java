@@ -1,9 +1,10 @@
 package org.csstudio.display.pvtable.model;
 
+import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.core.runtime.PlatformObject;
 
 /** Implementation of the PVListEntry as used by the PVListModel.
@@ -25,11 +26,11 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
             String readback_name, SavedValue readback_value)
     {
         this.selected = selected;
-        this.pv = new EPICS_V3_PV(pv_name);
+        this.pv = createPV(pv_name);
         this.saved_value = saved_value;
         
         if (readback_name != null  &&  readback_name.length() > 0)
-            this.readback_pv = new EPICS_V3_PV(readback_name);
+            this.readback_pv = createPV(readback_name);
         else
             this.readback_pv = null;
         this.saved_readback_value = readback_value;
@@ -44,6 +45,22 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
             {   addNewValue(); // handled the same way: mark for redraw
             }
         };
+    }
+    
+    /** @return PV for the given name */
+    @SuppressWarnings("nls")
+    private PV createPV(final String name)
+    {
+        try
+        {
+            return PVFactory.createPV(name);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            Plugin.logException("Cannot create PV '" + name + "'", ex);
+        }
+        return null;
     }
     
     /** @see org.csstudio.platform.model.IProcessVariable */
@@ -149,7 +166,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
         if (running)
             stop();
         if (readback_name != null  &&  readback_name.length() > 0)
-            readback_pv = new EPICS_V3_PV(readback_name);
+            readback_pv = createPV(readback_name);
         else
             readback_pv = null;
         if (running)

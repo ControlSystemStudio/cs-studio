@@ -26,7 +26,7 @@ public class Plugin extends AbstractCssUiPlugin
     /** @see AbstractCssUiPlugin */
     @Override
     protected void doStart(BundleContext context) throws Exception
-    {}
+    { /* NOP */ }
 
     /** @see AbstractCssUiPlugin */
     @Override

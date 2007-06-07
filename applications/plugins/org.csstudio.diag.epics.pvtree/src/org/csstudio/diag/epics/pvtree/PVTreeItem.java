@@ -5,13 +5,13 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.ArrayList;
 
-import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.widgets.Display;
 
@@ -191,7 +191,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             parent.links.add(this);
         try
         {
-            pv = new EPICS_V3_PV(pv_name);        
+            pv = createPV(pv_name);        
             pv.addListener(pv_listener);
             pv.start();
         }
@@ -210,7 +210,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         {
             try
             {
-                type_pv = new EPICS_V3_PV(record_name + ".RTYP", true); //$NON-NLS-1$
+                type_pv = createPV(record_name + ".RTYP"); //$NON-NLS-1$
                 type_pv.addListener(type_pv_listener);
                 type_pv.start();
             }
@@ -220,7 +220,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
         }
     }
-
+    
     /** Dispose this and all child entries. */
     public void dispose()
     {
@@ -233,6 +233,23 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         disposeTypePV();
     }
     
+    /** @return PV for the given name */
+    @SuppressWarnings("nls")
+    private PV createPV(final String name)
+    {
+        try
+        {
+            return PVFactory.createPV(name);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            Plugin.logException("Cannot create PV '" + name + "'", ex);
+        }
+        return null;
+    }
+    
+    /** Delete the type_pv */
     private void disposeTypePV()
     {
         if (type_pv != null)
@@ -243,6 +260,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
     }
 
+    /** Delete the link_pv */
     private void disposeLinkPV()
     {
         if (link_pv != null)
@@ -295,6 +313,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
 
     /** @return Returns a String. No really, it does! */
     @SuppressWarnings("nls")
+    @Override
     public String toString()
     {
         StringBuffer b = new StringBuffer();
@@ -387,7 +406,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         disposeLinkPV();
         try
         {
-            link_pv = new EPICS_V3_PV(link_name);
+            link_pv = createPV(link_name);
             link_pv.addListener(link_pv_listener);
             link_pv.start();
         }
