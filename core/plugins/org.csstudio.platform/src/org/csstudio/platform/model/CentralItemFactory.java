@@ -117,7 +117,7 @@ public final class CentralItemFactory {
      * @param samples of PV
      * @return PV with Samples
      */
-    public static IProcessVariableWithSamples createProcessVariableWithSample(final String name,final IValue[] samples) {
+    public static IProcessVariableWithSamples createProcessVariableWithSamples(final String name,final IValue[] samples) {
         return new ProcessVariableWithSamples(name, samples);
     }
 	
