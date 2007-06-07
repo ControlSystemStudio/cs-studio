@@ -1,0 +1,24 @@
+<body>
+Implementation of the PV interface for ChannelAccess.
+<p>
+Uses internal reference counting.
+When one requests the same PV more than once
+from the pure java CA client library, one
+always receives the same channel instance.
+<p>
+When several plug-ins use CA, it is on one hand
+desired that they use the same CA client library context,
+but the above feature means that they receive
+the same channel reference without knowing.
+<p>
+This makes it impossible to write proper cleanup code:
+If the channel is left open, resources are wasted,
+also on the IOC. If it is closed, one might accidentally
+close a channel that is still used by another plugin.
+<p>
+If all plugins go through this PV interface,
+the PV interface will perform the reference counting
+for the one and only channel that is obtained
+from the CA client libraries.
+
+</body>
