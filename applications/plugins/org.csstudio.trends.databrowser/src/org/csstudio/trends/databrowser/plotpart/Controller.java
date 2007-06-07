@@ -43,48 +43,44 @@ public class Controller
         {
             // 'Scan' the PVs
             model.addCurrentValuesToChartItems();
-            // Scroll or simply redraw w/o scroll.
-            if (with_redraw  &&  chart.isVisible())
-            {
-                if (gui.isScrollEnabled())
-                {
-                    // Scroll by updating the model's "current" time range.
-                    // The plot should listen to the model and adjust its x axis.
-                    // But we listen as well, so don't get infinite loop.
-                    controller_changes_xaxis = true;
-                    if (scroll_start_specification == null)
-                    {
-                        double low = model.getStartTime().toDouble();
-                        double high = model.getEndTime().toDouble();
-                        final double range = high - low;
-                        scroll_start_specification =
-                            String.format("-%f %s", range, RelativeTime.SECOND_TOKEN);
-System.out.println("Scroll: New start " + scroll_start_specification);
-                    }
-                    try
-                    {
-                        // Only update when really changed...
-                        if (model.getEndSpecification().equals(RelativeTime.NOW)
-                           && model.getStartSpecification().equals(scroll_start_specification))
-                            model.updateStartEndTime();
-                        else
-                        {
-                            System.out.println("Scroll: Update start " + scroll_start_specification);
-                            model.setTimeSpecifications(scroll_start_specification,
-                                                        RelativeTime.NOW);
-                        }
-                    }
-                    catch (Exception ex)
-                    {   // Prevent follow-up errors by disabling the scroll
-                        gui.enableScrolling(false);
-                        Plugin.logException("Cannot scroll", ex);
-                    }
-                    // redraw is implied in the x axis update
-                    controller_changes_xaxis = false;
-                }
-                else // redraw w/o scroll
-                    chart.redrawTraces();
+            // Scroll or redraw?
+            if (!with_redraw  ||  !chart.isVisible())
+                return;
+            if (!gui.isScrollEnabled())
+            {   // redraw w/o scroll
+                chart.redrawTraces();
+                return;
             }
+            // Scroll by updating the model's time range.
+            // The plot should listen to the model and adjust its x axis.
+            // But we listen as well, so avoid infinite loop.
+            controller_changes_xaxis = true;
+            if (scroll_start_specification == null)
+            {   // Compute (relative) start time spec
+                double low = model.getStartTime().toDouble();
+                double high = model.getEndTime().toDouble();
+                setScrollStart(high - low);
+            }
+            try
+            {
+                // Only update when really changed...
+                if (model.getEndSpecification().equals(RelativeTime.NOW)
+                   && model.getStartSpecification().equals(scroll_start_specification))
+                    model.updateStartEndTime();
+                else
+                {
+                    System.out.println("Scroll: Update start " + scroll_start_specification);
+                    model.setTimeSpecifications(scroll_start_specification,
+                                                RelativeTime.NOW);
+                }
+            }
+            catch (Exception ex)
+            {   // Prevent follow-up errors by disabling the scroll
+                gui.enableScrolling(false);
+                Plugin.logException("Cannot scroll", ex);
+            }
+            // redraw is implied in the x axis update
+            controller_changes_xaxis = false;
         }
     };
     
@@ -142,27 +138,49 @@ System.out.println("Scroll: New start " + scroll_start_specification);
     /** React to chart changes by updating the model. */
     private final ChartListener chart_listener = new ChartListener()
     {
+        @SuppressWarnings("nls")
         public void changedXAxis(XAxis xaxis)
         {
+            // Did the controller cause this?
             if (controller_changes_xaxis)
                 return;
-            final BrowserUI gui = Controller.this.gui;
             // This is a user-driven pan or zoom.
-            // If we scroll, that would change what the user just did,
-            // so don't
-            if (gui.isScrollEnabled())
+            final double x0 = xaxis.getLowValue();
+            final double x1 = xaxis.getHighValue();
+
+            // Is the end close enough to 'now' to use relative times?
+            final double range = x1 - x0;
+            final double now = TimestampFactory.now().toDouble();
+            // Criteria: End is within 10% of 'now' 
+            final boolean close_to_now = Math.abs(x1 - now) < 0.1*range;
+            
+            // When scrolling, and not close to 'now', disable scroll
+            // to prevent scrolling out of the selected range.
+            final BrowserUI gui = Controller.this.gui;
+            if (gui.isScrollEnabled()  &&  !close_to_now)
                 gui.enableScrolling(false);
+            
             // Update the time range of the model
             try
             {
-                final ITimestamp start = TimestampFactory.fromDouble(xaxis.getLowValue());
-                final ITimestamp end = TimestampFactory.fromDouble(xaxis.getHighValue());
-                model.setTimeSpecifications(start.toString(), end.toString());
+                if (close_to_now)
+                {   // Set relative start/end times
+                    setScrollStart(range);
+                    model.setTimeSpecifications(scroll_start_specification,
+                                                RelativeTime.NOW);
+                }
+                else
+                {   // Set absolute start/end times
+                    final ITimestamp start = TimestampFactory.fromDouble(x0);
+                    final ITimestamp end = TimestampFactory.fromDouble(x1);
+                    model.setTimeSpecifications(start.toString(), end.toString());
+                }
             }
             catch (Exception ex)
             {
                 Plugin.logException("Cannot update model time range", ex); //$NON-NLS-1$
             }
+            // Trigger archive retrieval for new time range
             getArchivedData(null);
         }
 
@@ -241,8 +259,17 @@ System.out.println("Scroll: New start " + scroll_start_specification);
         chart.removeListener(chart_listener);
         model.removeListener(model_listener);
         model.stop();
-     }
-
+    }
+    
+    /** Set the scroll_start_specification string for the given seconds */
+    @SuppressWarnings("nls")
+    private void setScrollStart(final double range_in_seconds)
+    {
+        scroll_start_specification =
+           String.format("-%f %s", range_in_seconds, RelativeTime.SECOND_TOKEN);
+        System.out.println("Scroll: New start " + scroll_start_specification);
+    }
+    
     /** Private handler for ..DropTarget interface */
     private IModelItem nameDropped(String name, YAxis yaxis)
     {
