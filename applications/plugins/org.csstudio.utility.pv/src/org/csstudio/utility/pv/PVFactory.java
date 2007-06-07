@@ -1,0 +1,63 @@
+package org.csstudio.utility.pv;
+
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
+
+/** PV Factory
+ *  <p>
+ *  Locates the one and only expected implementation of the IPVFactory
+ *  via an extension to the pvfactory extension point
+ *  and creates the PV through it.
+ *  
+ *  @author Kay Kasemir
+ */
+public class PVFactory
+{
+    /** Lazyly intialized PV factory found in extension registry */
+    private static IPVFactory pv_factory = null;
+
+    /** Create a PV for the given channel name.
+     *  @param name Channel name
+     *  @return PV
+     *  @exception Exception on error
+     */
+    public static final PV createPV(final String name) throws Exception
+    {
+        if (pv_factory == null)
+            locatePVFactory();
+        return pv_factory.createPV(name);
+    }
+
+    /** Locate the PV factory via the extension point registry */
+    @SuppressWarnings("nls")
+    private static final void locatePVFactory() throws Exception
+    {
+        final IExtensionRegistry registry = Platform.getExtensionRegistry();
+        final IExtensionPoint ext_point = registry.getExtensionPoint(org.csstudio.utility.pv.Plugin.ID, "pvfactory");
+        final IExtension[] extensions = ext_point.getExtensions ();
+        if (extensions.length != 1)
+            throw new Exception("Found " + extensions.length
+                            + " instead of one PVFactory extensions");
+        final IExtension extension = extensions[0];
+        if (!extension.isValid ())
+            throw new Exception("PVFactory" + extension.getContributor().getName()
+                            + " is invalid");
+        Plugin.logInfo("Found PVFactory implementation "
+                        + extension.getContributor().getName());
+        final IConfigurationElement[] configs = extension.getConfigurationElements();
+        if (extensions.length != 1)
+            throw new Exception("Found " + configs.length
+                            + " instead of one PVFactory extension configs");
+        for (IConfigurationElement config : configs)
+        {
+            Plugin.logInfo("Config: " + config.getName());
+            for (String attr : config.getAttributeNames())
+                Plugin.logInfo("Attribute '" + attr + "' = '" + config.getAttribute(attr) + "'");
+            pv_factory = (IPVFactory) config.createExecutableExtension("class");
+        }
+    }
+
+}

@@ -1,13 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PV Plug-in
-Bundle-SymbolicName: org.csstudio.utility.pv
+Bundle-SymbolicName: org.csstudio.utility.pv;singleton:=true
 Bundle-Version: 1.0.1
 Bundle-Vendor: Kay Kasemir
 Bundle-Localization: plugin
-Require-Bundle: org.csstudio.platform.libs.epics;visibility:=reexport,
- org.csstudio.platform
-Export-Package: org.csstudio.utility.pv,
- org.csstudio.utility.pv.epics
+Require-Bundle: org.csstudio.platform;visibility:=reexport
+Export-Package: org.csstudio.utility.pv
 Bundle-Activator: org.csstudio.utility.pv.Plugin
 Eclipse-LazyStart: true
