@@ -32,6 +32,15 @@ public class Preferences extends AbstractPreferenceInitializer
     /** Separator for the pieces of an archive data source. */
     private static final char ARCHIVE_SEPARATOR = '|';
 
+    /** Identifier for start time preference. */
+    public static final String P_START_TIME_SPEC = "start_time";
+    
+    /** Identifier for end time preference. */
+    public static final String P_END_TIME_SPEC = "end_time";
+
+    /** Identifier for the auto-scale preference. */
+    public static final String P_AUTOSCALE = "autoscale";
+
     /** Identifier for the Archive Server URLs preference. */
     public static final String P_URLS = "urls";
 
@@ -45,8 +54,32 @@ public class Preferences extends AbstractPreferenceInitializer
     public void initializeDefaultPreferences()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        store.setDefault(P_START_TIME_SPEC, Messages.Default_StartTime);
+        store.setDefault(P_END_TIME_SPEC, Messages.Default_EndTime);
+        store.setDefault(P_AUTOSCALE, false);
         store.setDefault(P_ARCHIVES, Messages.Default_Archives);
         store.setDefault(P_URLS, Messages.Default_URLS);
+    }
+    
+    /** @return Default start time specification. */
+    static public String getStartSpecification()
+    {
+        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        return store.getString(P_START_TIME_SPEC);
+    }
+
+    /** @return Default end time specification. */
+    static public String getEndSpecification()
+    {
+        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        return store.getString(P_END_TIME_SPEC);
+    }
+    
+    /** @return Default auto-scale setting */
+    static public boolean getAutoScale()
+    {
+        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        return store.getBoolean(P_AUTOSCALE);
     }
     
     /** @return Default archive server URLs. */

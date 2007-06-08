@@ -131,6 +131,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            category="org.csstudio.platform.ui.css.applications.trends"
             class="org.csstudio.trends.databrowser.preferences.PreferencePage"
             id="org.csstudio.trends.databrowser.preferences.PreferencePage"
             name="%PreferenceTitle"/>

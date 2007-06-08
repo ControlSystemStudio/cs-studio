@@ -43,6 +43,12 @@ public class PreferencePage extends FieldEditorPreferencePage implements
     public void createFieldEditors()
     {
         final Composite parent = getFieldEditorParent();
+        addField(new BooleanFieldEditor(Preferences.P_AUTOSCALE,
+                        Messages.Label_Autoscale, parent));
+        addField(new StringFieldEditor(Preferences.P_START_TIME_SPEC,
+                                        Messages.StartTime, parent));
+        addField(new StringFieldEditor(Preferences.P_END_TIME_SPEC,
+                        Messages.EndTime, parent));
         addField(new URLListEditor(Preferences.P_URLS, parent));
         addField(new ArchiveListEditor(Preferences.P_ARCHIVES, parent));
     }

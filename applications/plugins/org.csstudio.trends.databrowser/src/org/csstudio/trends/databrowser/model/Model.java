@@ -11,6 +11,7 @@ import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
+import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.util.swt.DefaultColors;
 import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.xml.DOMHelper;
@@ -45,14 +46,6 @@ import org.w3c.dom.Element;
  */
 public class Model
 {
-    /** Default for start_specification
-     *  TODO move to preferences
-     */
-    private static final String DEFAULT_END_SPEC = "now"; //$NON-NLS-1$
-
-    /** Default for end_specification */
-    private static final String DEFAULT_START_SPEC = "-1 hour"; //$NON-NLS-1$
-    
     /** Start- and end time specifications. */
     private StartEndTimeParser start_end_times;
     
@@ -86,7 +79,8 @@ public class Model
         try
         {
             // Set time defaults, since otherwise start/end would be null.
-            setTimeSpecifications(DEFAULT_START_SPEC, DEFAULT_END_SPEC);
+            setTimeSpecifications(Preferences.getStartSpecification(),
+                                  Preferences.getEndSpecification());
         }
         catch (Exception ex)
         {
@@ -316,7 +310,7 @@ public class Model
         double low = 0.0;
         double high = 10.0;
         final boolean visible = true;
-        boolean auto_scale = false;
+        boolean auto_scale = Preferences.getAutoScale();
         boolean log_scale = false;
         TraceType trace_type = TraceType.Lines;
         // Use settings of existing item for that axis - if there is one
@@ -519,8 +513,8 @@ public class Model
         if (start_specification.length() < 1  ||
             end_specification.length() < 1)
         {
-            start_specification = DEFAULT_START_SPEC;
-            end_specification = DEFAULT_END_SPEC;
+            start_specification = Preferences.getStartSpecification();
+            end_specification = Preferences.getEndSpecification();
         }
         start_end_times = new StartEndTimeParser(start_specification,
                                                  end_specification);
