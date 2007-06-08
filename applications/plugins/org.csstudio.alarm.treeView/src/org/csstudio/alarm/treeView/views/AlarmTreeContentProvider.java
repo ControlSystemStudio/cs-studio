@@ -58,8 +58,6 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	 * @return the children of the input element.
 	 */
 	public Object[] getChildren(Object parent) {
-		// Note: viewer.setInput(getViewSite()) gets called in AlarmTreeView.
-		// This is probably not the best way to set the input.
 		if (parent instanceof SubtreeNode) {
 			return ((SubtreeNode) parent).getChildren();
 		} else {
