@@ -22,10 +22,9 @@ import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /**
  * This job reads the directory structure from the server.
@@ -73,9 +72,8 @@ public class LdapDirectoryReader extends Job {
 		super("Alarm Tree Directory Reader");
 		this.treeRoot = treeRoot;
 		
-		IEclipsePreferences prefs =
-			new InstanceScope().getNode(AlarmTreePlugin.PLUGIN_ID);
-		facilityNames = prefs.get(PreferenceConstants.FACILITIES, "").split(";");
+		Preferences prefs = AlarmTreePlugin.getDefault().getPluginPreferences();
+		facilityNames = prefs.getString(PreferenceConstants.FACILITIES).split(";");
 	}
 	
 	
@@ -96,11 +94,10 @@ public class LdapDirectoryReader extends Job {
 	 * @return the LDAP environment.
 	 */
 	private Hashtable<String, String> environmentFromPreferences() {
-		IEclipsePreferences prefs =
-			new InstanceScope().getNode(AlarmTreePlugin.PLUGIN_ID);
-		String url = prefs.get(PreferenceConstants.LDAP_URL, "");
-		String user = prefs.get(PreferenceConstants.LDAP_USER, "");
-		String password = prefs.get(PreferenceConstants.LDAP_PASSWORD, "");
+		Preferences prefs = AlarmTreePlugin.getDefault().getPluginPreferences();
+		String url = prefs.getString(PreferenceConstants.LDAP_URL);
+		String user = prefs.getString(PreferenceConstants.LDAP_USER);
+		String password = prefs.getString(PreferenceConstants.LDAP_PASSWORD);
 		
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.PROVIDER_URL, url);
@@ -294,7 +291,7 @@ public class LdapDirectoryReader extends Job {
 			closeConnection();
 		} catch (NamingException e) {
 			return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID,
-					IStatus.ERROR, "Error reading from directory", e);
+					IStatus.ERROR, "Error reading from directory: " + e.getMessage(), e);
 		} finally {
 			monitor.done();
 		}
