@@ -24,10 +24,14 @@ public class FormulaModelItemTest
     {
         ModelItem.test_mode = true;
         
-        ModelItem item = new ModelItem(null, "fred",
+        ModelItem fred = new ModelItem(null, "fred",
                         1024, 0, 0, 0, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
-        item.start();
+        ModelItem janet = new ModelItem(null, "janet",
+                        1024, 0, 0, 0, true, false, 0, 0, 0, 0,
+                        TraceType.Lines, false);
+        fred.start();
+        janet.start();
         final int num = 20;
         // 'Scan' the item once per second
         for (int i = 0; i < num; ++i)
@@ -35,29 +39,34 @@ public class FormulaModelItemTest
             Thread.sleep(1000);
             System.out.format("scan %3d / %s\n", i+1, num);
             ITimestamp now = TimestampFactory.now();
-            item.addCurrentValueToSamples(now);
-            if (item.getSamples().size() >= 5)
+            fred.addCurrentValueToSamples(now);
+            janet.addCurrentValueToSamples(now);
+            if (fred.getSamples().size() >= 5)
                 break;
         }
-        item.stop();
+        janet.stop();
+        fred.stop();
 
-        if (! item.newSampleTestAndClear())
+        if (! fred.newSampleTestAndClear())
             throw new Exception("No samples at all?");
 
-        IModelSamples samples = item.getSamples();
+        IModelSamples samples = fred.getSamples();
         int N = samples.size();
         if (N < 5)
             throw new Exception("Only " + N + " values?");
             
-        System.out.println("Original Samples:");
+        System.out.println("Original Samples for fred:");
         dumpSamples(samples);
+        System.out.println("Original Samples for janet:");
+        dumpSamples(janet.getSamples());
         
         System.out.println("Formula:");
         FormulaModelItem formula = new FormulaModelItem(null, "calc",
                         0, 0, 0, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
-        formula.addInput(item, item.getName());
-        formula.setFormula("fred * 2");
+        formula.addInput(fred, fred.getName());
+        formula.addInput(janet, janet.getName());
+        formula.setFormula("1000*fred + janet");
         samples = formula.getSamples();
         dumpSamples(samples);
     }

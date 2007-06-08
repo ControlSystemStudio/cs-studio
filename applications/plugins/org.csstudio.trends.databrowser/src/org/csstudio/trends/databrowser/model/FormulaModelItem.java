@@ -1,19 +1,13 @@
 package org.csstudio.trends.databrowser.model;
 
-import java.util.ArrayList;
-
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
 import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.util.formula.Formula;
-import org.csstudio.util.formula.VariableNode;
 
 /** Model item based on a formula.
  *  <p>
@@ -75,23 +69,20 @@ public class FormulaModelItem extends AbstractModelItem
     public IModelSamples getSamples()
     {
         // Compute new samples from inputs and formula
-        final INumericMetaData meta_data =
-            ValueFactory.createNumericMetaData(0, 10, 0, 0, 0, 0, 1, "");
-        
         ModelSampleArray result = new ModelSampleArray();
         
         input_variables.startIteration();
+        final INumericMetaData meta_data = input_variables.getMetaData();
         try
         {
             ITimestamp time = input_variables.next();
             while (time != null)
             {        
                 final double number = formula.eval();
-                // TODO any way to pass bad severities through?
                 IValue value = ValueFactory.createDoubleValue(
                                 time,
                                 ValueFactory.createOKSeverity(),
-                                "",
+                                "", // $NON-NLS-1$
                                 meta_data,
                                 IValue.Quality.Interpolated,
                                 new double[] { number });

@@ -3,15 +3,18 @@ package org.csstudio.trends.databrowser.model;
 import java.util.ArrayList;
 
 import org.csstudio.archive.crawl.SpreadsheetIterator;
+import org.csstudio.platform.data.IMetaData;
+import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.util.formula.VariableNode;
 
-/** Handler for all the formula input.
+/** Handler for formula inputs.
  * 
- *  It maps them to variables, and allows spreadsheet-like
- *  iteration over their values.
+ *  It maps each input to a variable, and allows spreadsheet-like
+ *  iteration over the inputs.
  *  
  *  @author Kay Kasemir
  */
@@ -53,6 +56,42 @@ class FormulaInputs
             item_iters[i] = new ModelSampleIterator(items.get(i).getSamples());
         sheet = new SpreadsheetIterator(item_iters);
     }
+
+    /** @return Some best guess for the meta data. */
+    INumericMetaData getMetaData()
+    {
+        // Get the biggest range and precision from the
+        // first sample of each input item
+        double min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE;
+        int prec = 1;
+        for (int i=0; i<items.size(); ++i)
+        {
+            final IModelSamples samples = items.get(i).getSamples();
+            synchronized (samples)
+            {
+                if (samples.size() < 0)
+                    continue;
+                IMetaData meta = samples.get(0).getSample().getMetaData();
+                if (! (meta instanceof INumericMetaData))
+                    continue;
+                INumericMetaData num_meta = (INumericMetaData) meta;
+                if (min > num_meta.getDisplayLow())
+                    min = num_meta.getDisplayLow();
+                if (max < num_meta.getDisplayHigh())
+                    max = num_meta.getDisplayHigh();
+                if (prec < num_meta.getPrecision())
+                    prec = num_meta.getPrecision();
+            }
+        }
+        if (min >= max)
+        {
+            min = -10.0;
+            max = +10.0;
+        }
+        return ValueFactory.createNumericMetaData(min, max,
+                                        0, 0, 0, 0, prec, ""); //$NON-NLS-1$
+    }
     
     /** Set the variables to the next set of input values.
      *  @return Timestamp for that set of values, or
@@ -66,15 +105,18 @@ class FormulaInputs
         // SpreadsheetIterator requires getTime(), then next()
         ITimestamp time = sheet.getTime();
         IValue values[] = sheet.next();
-        // Check cosistency with number of variables
+        // Check consistency with number of variables
         if (values.length != variables.size())
             throw new Exception("Got " + values.length
                         + " values for " + variables.size() + " Variables?");
         // Update the variables to current input data
         for (int i=0; i<values.length; ++i)
         {
-            final double value = ValueUtil.getDouble(values[i]);
-            variables.get(i).setValue(value);
+            final IValue value = values[i];
+            if (value != null)
+                variables.get(i).setValue(ValueUtil.getDouble(value));
+            else
+                variables.get(i).setValue(Double.NaN);
         }
         return time;
     }
