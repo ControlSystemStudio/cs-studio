@@ -72,7 +72,7 @@ public class SpreadsheetIterator
      *    while (sheet.hasNext())
      *    {
      *        ITimestamp time = sheet.getTime();
-     *        Value[] line[] = sheet.next();
+     *        IValue line[] = sheet.next();
      *        // time, line[] now contains info
      *        // for the current spreadsheet line
      *        // ...
