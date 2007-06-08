@@ -17,7 +17,14 @@ public class VariableNode implements Node
     {
         this.name = name;
     }
-        
+
+    /** Create Variable with given name and value. */
+    public VariableNode(String name, double value)
+    {
+        this.name = name;
+        this.value = value;
+    }
+
     /** @return Returns the name. */
     public String getName()
     {

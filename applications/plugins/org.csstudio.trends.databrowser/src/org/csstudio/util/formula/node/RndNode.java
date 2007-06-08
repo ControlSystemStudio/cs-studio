@@ -3,27 +3,25 @@ package org.csstudio.util.formula.node;
 import org.csstudio.util.formula.Node;
 
 
-public class AtanNode implements Node
+public class RndNode implements Node
 {
-    private Node n;
-    
-    public AtanNode(Node n)
+	final private Node n;
+	
+    public RndNode(Node n)
     {
-        this.n = n;
+    	this.n = n;
     }
     
     public double eval()
     {
         double a = n.eval();
-        if (a < 0)
-            return 0;
-        return Math.atan(a);
+        return a*Math.random();
     }
-   
+    
     @SuppressWarnings("nls")
     @Override
     public String toString()
     {
-        return "atan(" + n + ")";
+        return "(rnd(" + n + ")";
     }
 }

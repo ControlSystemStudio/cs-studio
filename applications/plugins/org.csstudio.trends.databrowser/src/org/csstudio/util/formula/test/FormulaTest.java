@@ -78,7 +78,7 @@ public class FormulaTest extends TestCase
         f = new Formula("sqrt(2) ^ 2");
         assertEquals(2.0, f.eval(), epsilon);
 
-        f = new Formula("exp(ln(2))");
+        f = new Formula("exp(log(2))");
         assertEquals(2.0, f.eval(), epsilon);
 
         f = new Formula("2 ? 3 : 4");
@@ -119,12 +119,25 @@ public class FormulaTest extends TestCase
         f = new Formula("max(5, 4, 3, 2, 1)");
         assertEquals(5, f.eval(), epsilon);
         
-        f = new Formula("sin(30)");
-        assertEquals(-0.988, f.eval(), epsilon);
+        f = new Formula("sin(" + Math.toRadians(30) + ")");
+        assertEquals(0.5, f.eval(), epsilon);
        
         f = new Formula("cos(30)");
         assertEquals(0.1543, f.eval(), epsilon);
-       
+        
+        f = new Formula("atan2(10.0, 0.0)");
+        assertEquals(90.0, Math.toDegrees(f.eval()), epsilon);
+        
+        f = new Formula("rnd(10.0)");
+        for (int i=0; i<50; ++i)
+        {
+	        double rnd = f.eval();
+	        assertTrue(rnd >= 0.0);
+	        assertTrue(rnd < 10.0);
+	        double rnd2 = f.eval();
+	        // usually, should NOT get the same number twice...
+	        assertTrue(rnd != rnd2);
+        }
     }
     
     @Test
@@ -152,6 +165,13 @@ public class FormulaTest extends TestCase
         
         f = new Formula("max(volt, curr, -2)", v);
         assertEquals(3.0, f.eval(), epsilon);
+
+        f = new Formula("2*PI", v);
+        assertEquals(2.0*Math.PI, f.eval(), epsilon);
+
+        v[0] = new VariableNode("PI", 10.0);
+        f = new Formula("PI", v);
+        assertEquals(10.0, f.eval(), epsilon);
     }
     
     @Test

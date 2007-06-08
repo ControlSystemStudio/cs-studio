@@ -4,11 +4,13 @@ import java.lang.reflect.Method;
 
 import org.csstudio.util.formula.Node;
 
-
+/** Node for evaluating any of the java.lang.Math.* functions
+ *  @author Xiaosong Geng
+ */
 public class MathFuncNode implements Node
 {
 	final private String function;
-    final private Node n;
+    final private Node args[];
 	final private Method method;
     
 	/** Construct node for math function.
@@ -17,24 +19,31 @@ public class MathFuncNode implements Node
 	 *  @param n Argument node
 	 *  @throws Exception On error
 	 */
-    public MathFuncNode(final String function, Node n) throws Exception
+    public MathFuncNode(final String function, Node args[]) throws Exception
     {
     	this.function = function;
-        this.n = n;
-        Method methods[] = Math.class.getDeclaredMethods();
-        for (Method m : methods)
+        this.args = args;
+        Class argcls[] = new Class[args.length];
+        
+        for (int i = 0; i < args.length; i++)
         {
-        	System.out.println(m.getName());
-		}
-    	method = Math.class.getDeclaredMethod(function, double.class);
+            argcls[i] = double.class;
+        }
+        method = Math.class.getDeclaredMethod(function, argcls);
     }
     
     public double eval()
     {
-        double a = n.eval();
+        Object arglist[] = new Object[args.length];
+        for (int i = 0; i < args.length; i++)
+        {
+            arglist[i] = new Double(args[i].eval());
+        }
+        
         try
         {
-			Object result = method.invoke(null, new Object[] { new Double(a) } );
+        	//System.out.println("%s, %f, %f\n", method.toString(), a, b);
+        	Object result = method.invoke(null, arglist );
 			if (result instanceof Double)
 				return ((Double) result).doubleValue();
 		}
@@ -45,10 +54,18 @@ public class MathFuncNode implements Node
         return 0.0;
     }
     
-    @SuppressWarnings("nls")
     @Override
-    public String toString()
+	@SuppressWarnings("nls")
+	public String toString()
     {
-        return function + "(" + n + ")";
+        StringBuffer b = new StringBuffer(function);
+        for (int i = 0; i < args.length; i++)
+        {
+            if (i>0)
+                b.append(", ");
+            b.append(args[i].toString());
+        }
+        b.append(")");
+        return b.toString();
     }
 }
