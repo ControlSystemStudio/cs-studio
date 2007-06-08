@@ -22,6 +22,8 @@ public class FormulaModelItemTest
 {
     public void testModelItemScan() throws Exception
     {
+        ModelItem.test_mode = true;
+        
         ModelItem item = new ModelItem(null, "fred",
                         1024, 0, 0, 0, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
@@ -47,19 +49,26 @@ public class FormulaModelItemTest
         if (N < 5)
             throw new Exception("Only " + N + " values?");
             
-        for (int i=0; i<N; ++i)
+        System.out.println("Original Samples:");
+        dumpSamples(samples);
+        
+        System.out.println("Formula:");
+        FormulaModelItem formula = new FormulaModelItem(null, "calc",
+                        0, 0, 0, true, false, 0, 0, 0, 0,
+                        TraceType.Lines, false);
+        formula.addInput(item, item.getName());
+        formula.setFormula("fred * 2");
+        samples = formula.getSamples();
+        dumpSamples(samples);
+    }
+
+    private void dumpSamples(IModelSamples samples)
+    {
+        for (int i=0; i<samples.size(); ++i)
         {
             ModelSample sample = samples.get(i);
             System.out.println(sample.toString());
         }
-        
-        FormulaModelItem fitem = new FormulaModelItem(null, "calc",
-                        0, 0, 0, true, false, 0, 0, 0, 0,
-                        TraceType.Lines, false);
-        
-        fitem.addInput(item, item.getName());
-        fitem.setFormula("fred * 2");
-        samples = fitem.getSamples();
     }
     
     public static void main(String[] args) throws Exception

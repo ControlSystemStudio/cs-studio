@@ -24,27 +24,10 @@ import org.csstudio.util.formula.VariableNode;
  */
 public class FormulaModelItem extends AbstractModelItem
 {
-    class Input
-    {
-        private IModelItem item;
-        private VariableNode variable;
-        
-        Input(IModelItem item, String name)
-        {
-            this.item = item;
-            variable = new VariableNode(name);
-        }
-        
-        IModelItem getModelItem()
-        {   return item;  }
-        
-        VariableNode getVariableNode()
-        {   return variable;  }
-    }
-    private ArrayList<Input> inputs = new ArrayList<Input>();
-    private VariableNode variables[] = null;
+    private FormulaInputs input_variables = new FormulaInputs();
     private Formula formula;
     
+    /** Constructor */
     FormulaModelItem(Model model, String pv_name,
                      int axis_index, double min, double max,
                      boolean visible,
@@ -56,7 +39,6 @@ public class FormulaModelItem extends AbstractModelItem
     {
         super(model, pv_name, axis_index, min, max, visible, auto_scale,
               red, green, blue, line_width, trace_type, log_scale);
-        
     }
     
     /** Add an input item.
@@ -65,29 +47,20 @@ public class FormulaModelItem extends AbstractModelItem
      */
     public void addInput(IModelItem item, String name)
     {
-        inputs.add(new Input(item, name));
-        updateVariableArray();
+        input_variables.addInput(item, name);
+        have_new_samples = true;
     }
-    
+
     /** Define the formula.
      *  @param formula_text
      *  @throws Exception on parse error, including undefined variables.
      */
     public void setFormula(String formula_text) throws Exception
     {
-        formula = new Formula(formula_text, variables);
+        formula = new Formula(formula_text, input_variables.getVariables());
         have_new_samples = true;
     }
 
-    /** Update <code>variables</code> to reflect <code>inputs</code>. */
-    private void updateVariableArray()
-    {
-        variables = new VariableNode[inputs.size()];
-        for (int i=0; i<variables.length; ++i)
-            variables[i] = inputs.get(i).getVariableNode();
-        have_new_samples = true;
-    }
-    
     public void addArchiveSamples(ArchiveValues samples)
     {
         throw new Error("FormulaModelItem.addArchiveSamples?"); //$NON-NLS-1$
@@ -102,34 +75,34 @@ public class FormulaModelItem extends AbstractModelItem
     public IModelSamples getSamples()
     {
         // Compute new samples from inputs and formula
-
         final INumericMetaData meta_data =
             ValueFactory.createNumericMetaData(0, 10, 0, 0, 0, 0, 1, "");
         
-        // TODO handle more than one input (staircase-interpol.)
-        ModelSampleArray result;
-        IModelSamples samples = inputs.get(0).getModelItem().getSamples();
-        synchronized (samples)
+        ModelSampleArray result = new ModelSampleArray();
+        
+        input_variables.startIteration();
+        try
         {
-            result = new ModelSampleArray(samples.size());
-            for (int i=0; i<samples.size(); ++i)
-            {
-                final ModelSample sample = samples.get(i);
-                final ITimestamp time = sample.getSample().getTime();
-                variables[0].setValue(sample.getY());
-                double number = formula.eval();
-                
-                System.out.format("%g -> %g\n", sample.getY(), number);
-                
-                IValue value = ValueFactory.createDoubleValue(time,
+            ITimestamp time = input_variables.next();
+            while (time != null)
+            {        
+                final double number = formula.eval();
+                // TODO any way to pass bad severities through?
+                IValue value = ValueFactory.createDoubleValue(
+                                time,
                                 ValueFactory.createOKSeverity(),
                                 "",
                                 meta_data,
                                 IValue.Quality.Interpolated,
                                 new double[] { number });
-                // TODO add time/value to result
                 result.add(new ModelSample(value, getName()));
+                // Prepare next row of the spreadsheet iterator
+                time = input_variables.next();
             }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
         }
         return result;
     }

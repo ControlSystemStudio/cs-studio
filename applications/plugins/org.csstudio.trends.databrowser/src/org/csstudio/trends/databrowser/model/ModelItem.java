@@ -21,6 +21,7 @@ import org.csstudio.util.xml.XMLHelper;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
+import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.Element;
 
@@ -32,6 +33,13 @@ public class ModelItem
        extends AbstractModelItem
        implements IModelItem, PVListener, IProcessVariable
 {	
+    /** For unit tests within this package,
+     *  ModelItem can directly use EPICS_V3_PV,
+     *  because the extension mechanism used by the PVFactory
+     *  won't work in simple unit tests outside of an Eclipse runtime.
+     */
+    static boolean test_mode = false;
+    
     /** The control system PV from which to get new values. */
     private PV pv;
     
@@ -68,22 +76,25 @@ public class ModelItem
     {
         super(model, pv_name, axis_index, min, max, visible, auto_scale,
               red, green , blue, line_width, trace_type, log_scale);
-        createPV(pv_name);
+        pv = createPV(pv_name);
         samples = new ModelSamples(ring_size);
     }
 
     @SuppressWarnings("nls")
-    private void createPV(String pv_name)
+    private PV createPV(String pv_name)
     {
+        if (test_mode)
+            return new EPICS_V3_PV(pv_name);
         try
         {
-            pv = PVFactory.createPV(pv_name);
+            return PVFactory.createPV(pv_name);
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
             Plugin.logException("Cannot create PV '" + pv_name + "'", ex);
         }
+        return null;
     }    
     
     /** Must be called to dispose the color. */
@@ -112,7 +123,7 @@ public class ModelItem
         model.fireEntryRemoved(this);
         // Now change name
         name = new_name;
-        createPV(name);
+        pv = createPV(name);
         // and add
         model.fireEntryAdded(this);
         if (was_running)
