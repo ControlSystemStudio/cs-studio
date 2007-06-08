@@ -41,9 +41,6 @@ public class ModelItemTest
         }
         item.stop();
 
-        if (! item.newSampleTestAndClear())
-            throw new Exception("No samples at all?");
-
         IModelSamples samples = item.getSamples();
         final int N = samples.size();
         if (N < 5)

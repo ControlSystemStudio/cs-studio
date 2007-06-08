@@ -47,9 +47,6 @@ public class FormulaModelItemTest
         janet.stop();
         fred.stop();
 
-        if (! fred.newSampleTestAndClear())
-            throw new Exception("No samples at all?");
-
         IModelSamples samples = fred.getSamples();
         int N = samples.size();
         if (N < 5)

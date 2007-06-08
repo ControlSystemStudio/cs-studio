@@ -141,7 +141,6 @@ public class ModelItem
     public void addArchiveSamples(ArchiveValues archive_samples)
     {
         samples.add(archive_samples);
-        have_new_samples = true;
     }
     
     /** @return Returns an XML string for this item.
@@ -343,7 +342,6 @@ public class ModelItem
                     }
                 }
             }
-            have_new_samples = true;
         }
     }
         

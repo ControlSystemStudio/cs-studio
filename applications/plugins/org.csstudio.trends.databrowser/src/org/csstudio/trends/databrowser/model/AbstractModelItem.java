@@ -78,9 +78,6 @@ public abstract class AbstractModelItem
     /** Use log scale? */
     protected boolean log_scale;
     
-    /** Flag: New samples have been received. */
-    protected boolean have_new_samples = false;
-        
     /** Where to get archived data for this item. */
     protected ArrayList<IArchiveDataSource> archives
         = new ArrayList<IArchiveDataSource>();
@@ -303,17 +300,6 @@ public abstract class AbstractModelItem
     final void setLogScaleSilently(boolean use_log_scale)
     {
         log_scale = use_log_scale;
-    }
-    
-    /** @see IModelItem#newSampleTestAndClear() */
-    public final boolean newSampleTestAndClear()
-    {
-        if (have_new_samples)
-        {
-            have_new_samples = false;
-            return true;
-        }
-        return false;
     }
     
     /** @see IModelItem#getArchiveDataSources() */

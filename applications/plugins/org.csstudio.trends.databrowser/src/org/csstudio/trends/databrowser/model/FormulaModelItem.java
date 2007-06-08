@@ -7,6 +7,7 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.chart.TraceType;
+import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.formula.Formula;
 
 /** Model item based on a formula.
@@ -42,7 +43,6 @@ public class FormulaModelItem extends AbstractModelItem
     public void addInput(IModelItem item, String name)
     {
         input_variables.addInput(item, name);
-        have_new_samples = true;
     }
 
     /** Define the formula.
@@ -52,7 +52,6 @@ public class FormulaModelItem extends AbstractModelItem
     public void setFormula(String formula_text) throws Exception
     {
         formula = new Formula(formula_text, input_variables.getVariables());
-        have_new_samples = true;
     }
 
     public void addArchiveSamples(ArchiveValues samples)
@@ -66,10 +65,14 @@ public class FormulaModelItem extends AbstractModelItem
         // NOP, since we don't use archived data
     }
 
+    /** {@inheridDoc} */
     public IModelSamples getSamples()
     {
         // Compute new samples from inputs and formula
-        ModelSampleArray result = new ModelSampleArray();
+        // TODO this is expensive.
+        // Check if the input samples actually changed,
+        // only recompute when needed?
+        ModelSampleArray samples = new ModelSampleArray();
         
         input_variables.startIteration();
         final INumericMetaData meta_data = input_variables.getMetaData();
@@ -82,11 +85,11 @@ public class FormulaModelItem extends AbstractModelItem
                 IValue value = ValueFactory.createDoubleValue(
                                 time,
                                 ValueFactory.createOKSeverity(),
-                                "", // $NON-NLS-1$
+                                "",  //$NON-NLS-1$
                                 meta_data,
                                 IValue.Quality.Interpolated,
                                 new double[] { number });
-                result.add(new ModelSample(value, getName()));
+                samples.add(new ModelSample(value, getName()));
                 // Prepare next row of the spreadsheet iterator
                 time = input_variables.next();
             }
@@ -94,7 +97,8 @@ public class FormulaModelItem extends AbstractModelItem
         catch (Exception ex)
         {
             ex.printStackTrace();
+            Plugin.logException("Formula '" + getName() + "'", ex);  //$NON-NLS-1$//$NON-NLS-2$
         }
-        return result;
+        return samples;
     }
 }
