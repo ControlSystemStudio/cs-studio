@@ -47,6 +47,7 @@ public class Engine extends Job {
     private LdapReferences ldapReferences = null;
     private Collector   ldapWriteTimeCollector = null;
     private Collector   ldapReadTimeCollector = null;
+    private Collector   ldapWriteRequests = null;
 
     public Engine(String name) {
         super(name);
@@ -70,6 +71,14 @@ public class Engine extends Job {
         ldapReadTimeCollector.getAlarmHandler().setDeadband(5.0);
         ldapReadTimeCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);    // 500ms
         ldapReadTimeCollector.getAlarmHandler().setHighRelativeLimit(200.0);    // 200%
+        
+        ldapWriteRequests = new Collector();
+        ldapWriteRequests.setApplication(name);
+        ldapWriteRequests.setDescriptor("LDAP Write Request Buffer Size");
+        ldapWriteRequests.setContinuousPrint(true);
+        ldapWriteRequests.getAlarmHandler().setDeadband(5.0);
+        ldapWriteRequests.getAlarmHandler().setHighAbsoluteLimit(50.0);    // 500ms
+        ldapWriteRequests.getAlarmHandler().setHighRelativeLimit(200.0);    // 200%
     }
     private static      Engine thisEngine = null;
     private boolean     doWrite = false;
@@ -152,6 +161,11 @@ public class Engine extends Job {
         // add request to vector
         //
         int bufferSize = writeVector.size();
+        /*
+         * statistic information
+         */
+        ldapReadTimeCollector.setValue(bufferSize);
+        
         /// System.out.println("Engine.addLdapWriteRequest actual buffer size: " + bufferSize);
         if ( bufferSize > maxBuffersize) {
             if (addVectorOK) {
