@@ -1,7 +1,10 @@
 package org.csstudio.diag.postanalyser;
+import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.IProcessVariableWithSample;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSampleDropTarget;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesDropTarget;
 import org.eclipse.swt.widgets.Label;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartSample;
@@ -115,58 +118,120 @@ public final class View extends ViewPart {
 	        }
 	      });
 	    
-        new ProcessVariableWithSampleDropTarget(ichart){
-        	@Override
-        	public void handleDrop(IProcessVariable name, DropTargetEvent event){
-        		// Add a new PV, no archive info
-        		System.out.println("received only pv: name: " + name.getName());
-        	}
-        	@Override
-        	public void handleDrop(IProcessVariableWithSample pv_name, DropTargetEvent event) {
-        		System.out.println("Drop a pvws!");
+//        new ProcessVariableWithSampleDropTarget(ichart){
+//        	@Override
+//        	public void handleDrop(IProcessVariable name, DropTargetEvent event){
+//        		// Add a new PV, no archive info
+//        		System.out.println("received only pv: name: " + name.getName());
+//        	}
+//        	@Override
+//        	public void handleDrop(IProcessVariableWithSample pv_name, DropTargetEvent event) {
+//        		System.out.println("Drop a pvws!");
+//
+//    			try {
+//					String name=pv_name.getName();
+//					if(debug) System.out.println("handleDrop PV_name="+name);
+//					int len=pv_name.getSampleValue().length;
+//					if (len <= 4) {
+//						System.out.println(" Error: FFT ->  View -> activateWithPV array with unpredictable len="+len);
+//						return ;
+//					}
+//					double timeRange = pv_name.getTimeStamp()[len-1] - pv_name.getTimeStamp()[0];
+//					if(timeRange <= 0.0)  {
+//						System.out.println(" Error: FFT ->  View -> activateWithPV non-positive timeRange="+timeRange);
+//						return ;
+//					}
+//					samplesVector.add(0,pv_name);
+//					if (samplesVector.size() >= samplesArrayMax) samplesVector.setSize(samplesArrayMax);
+//					
+//					//if only 1 element in stack we have to disable CorelationPlot, otherwise enable it
+//					if(debug) System.out.println("samplesVector.size()="+samplesVector.size());
+//					if (samplesVector.size() > 1 )  {
+//						algoSelector.removeAll();
+//					    for (Algo p : Algo.values()) {
+//					    		String item = String.valueOf(p);
+//					    		algoSelector.add(item);
+//					    }
+//					}
+//						
+//					ySamplesSelector.add(getSampleLabel(pv_name),0);
+//					xSamplesSelector.add(getSampleLabel(pv_name),1);
+//					ySamplesSelector.select(0);
+//					xSamplesSelector.select(0);	
+//					calc(name,pv_name.getSampleValue(),pv_name.getTimeStamp());
+//				} catch (RuntimeException e) {
+//					// TODO Auto-generated catch block
+//					System.out.println(" Error: FFT ->  View -> DragAndDrop exception");
+//					e.printStackTrace();
+//				}
+//    		    
+//        	}
+//        };
 
-    			try {
-					String name=pv_name.getName();
-					if(debug) System.out.println("handleDrop PV_name="+name);
-					int len=pv_name.getSampleValue().length;
-					if (len <= 4) {
-						System.out.println(" Error: FFT ->  View -> activateWithPV array with unpredictable len="+len);
-						return ;
-					}
-					double timeRange = pv_name.getTimeStamp()[len-1] - pv_name.getTimeStamp()[0];
-					if(timeRange <= 0.0)  {
-						System.out.println(" Error: FFT ->  View -> activateWithPV non-positive timeRange="+timeRange);
-						return ;
-					}
-					samplesVector.add(0,pv_name);
-					if (samplesVector.size() >= samplesArrayMax) samplesVector.setSize(samplesArrayMax);
-					
-					//if only 1 element in stack we have to disable CorelationPlot, otherwise enable it
-					if(debug) System.out.println("samplesVector.size()="+samplesVector.size());
-					if (samplesVector.size() > 1 )  {
-						algoSelector.removeAll();
-					    for (Algo p : Algo.values()) {
-					    		String item = String.valueOf(p);
-					    		algoSelector.add(item);
-					    }
-					}
-						
-					ySamplesSelector.add(getSampleLabel(pv_name),0);
-					xSamplesSelector.add(getSampleLabel(pv_name),1);
-					ySamplesSelector.select(0);
-					xSamplesSelector.select(0);	
-					calc(name,pv_name.getSampleValue(),pv_name.getTimeStamp());
-				} catch (RuntimeException e) {
-					// TODO Auto-generated catch block
-					System.out.println(" Error: FFT ->  View -> DragAndDrop exception");
-					e.printStackTrace();
-				}
-    		    
-        	}
-        };
+     // TODO Helge und Jan!!!
+    new ProcessVariableWithSamplesDropTarget(ichart){
+        @Override
+        public void handleDrop(IProcessVariable name, DropTargetEvent event){
+            // Add a new PV, no archive info
+            System.out.println("received only pv: name: " + name.getName());
+        }
+        @Override
+        public void handleDrop(IProcessVariableWithSamples pv_name, DropTargetEvent event) {
+            System.out.println("Drop a pvws!");
 
-	 }
+            try {
+                String name=pv_name.getName();
+                if(debug) System.out.println("handleDrop PV_name="+name);
+                int len=pv_name.size();
+                if (len <= 4) {
+                    System.out.println(" Error: FFT ->  View -> activateWithPV array with unpredictable len="+len);
+                    return ;
+                }
+                double timeRange = pv_name.getSample(len-1).getTime().toDouble() - pv_name.getSample(0).getTime().toDouble();
+                if(timeRange <= 0.0)  {
+                    System.out.println(" Error: FFT ->  View -> activateWithPV non-positive timeRange="+timeRange);
+                    return ;
+                }
+                samplesVector.add(0,pv_name);
+                if (samplesVector.size() >= samplesArrayMax) samplesVector.setSize(samplesArrayMax);
+                
+                //if only 1 element in stack we have to disable CorelationPlot, otherwise enable it
+                if(debug) System.out.println("samplesVector.size()="+samplesVector.size());
+                if (samplesVector.size() > 1 )  {
+                    algoSelector.removeAll();
+                    for (Algo p : Algo.values()) {
+                            String item = String.valueOf(p);
+                            algoSelector.add(item);
+                    }
+                }
+                    
+                ySamplesSelector.add(getSampleLabel(pv_name),0);
+                xSamplesSelector.add(getSampleLabel(pv_name),1);
+                ySamplesSelector.select(0);
+                xSamplesSelector.select(0);
+                double value[] = new double[pv_name.size()];
+                double time[] = new double[pv_name.size()];
+                for(int i = 0;i<pv_name.size();i++){
+                    if (pv_name.getSamples() instanceof IDoubleValue[]) {
+                        IDoubleValue dv = (IDoubleValue) pv_name.getSample(i);
+                        value[i] = dv.getValue();
+                        time[i] = dv.getTime().toDouble();
+                    }
+                }
 
+                calc(name,value,time);
+            } catch (RuntimeException e) {
+                // TODO Auto-generated catch block
+                System.out.println(" Error: FFT ->  View -> DragAndDrop exception");
+                e.printStackTrace();
+            }
+            
+        }
+    };
+
+ }
+
+    
 	private YAxis addFFTTrace(String name, YAxis yaxis,double[] data,double[] time)	  {
 	         ChartSampleSequenceContainer seq = new ChartSampleSequenceContainer();
 	         int i;
@@ -371,7 +436,7 @@ public final class View extends ViewPart {
         return yaxis;
     }
 	
-	
+	@Deprecated
 	private boolean newData(IProcessVariableWithSample[] pv_name) {
 		try {
 			int size=pv_name.length;
@@ -425,7 +490,71 @@ public final class View extends ViewPart {
 	    }
 	    return false;
 	}
-	
+
+    private boolean newData(IProcessVariableWithSamples[] pv_name) {
+        try {
+            int size=pv_name.length;
+            if (size < 1) {
+                System.out.println(" Error: FFT ->  View -> activateWithPV array with  unpredictable size="+size);
+                return false;
+            }
+            String name=pv_name[0].getName();
+            int len=pv_name[0].size();
+            if (len <= 4) {
+                System.out.println(" Error: FFT ->  View -> activateWithPV array with unpredictable len="+len);
+                return false;
+            }
+            double timeRange = (pv_name[0].getSample(len-1).getTime().toDouble() - pv_name[0].getSample(0).getTime().toDouble());
+            if(timeRange <= 0.0)  {
+                System.out.println(" Error: FFT ->  View -> activateWithPV non-positive timeRange="+timeRange);
+                return false;
+            }
+            
+            //samplesVector.setSize(samplesArrayMax);   
+            samplesVector.add(0,pv_name[0]);
+            if (samplesVector.size() >= samplesArrayMax) samplesVector.setSize(samplesArrayMax);
+            
+            //if only 1 element in stack we have to disable CorelationPlot, otherwise enable it
+            if(debug) System.out.println("samplesVector.size()="+samplesVector.size());
+            if (samplesVector.size() > 1 )  {
+                algoSelector.removeAll();
+                for (Algo p : Algo.values()) {
+                        String item = String.valueOf(p);
+                        algoSelector.add(item);
+                }
+            }
+                
+            ySamplesSelector.add(getSampleLabel(pv_name[0]),0);
+            xSamplesSelector.add(getSampleLabel(pv_name[0]),1);
+            ySamplesSelector.select(0);
+            xSamplesSelector.select(0);         
+            if(debug) {
+                for (int i=0;i<len;i++)  {
+                    long timeL= (long) (pv_name[0].getSample(i).getTime().seconds()); // TODO Albert Check!
+                    Date a = new Date(timeL);
+                    System.out.println("time="+a);        
+                }
+            }
+            double value[] = new double[pv_name[0].size()];
+            double time[] = new double[pv_name[0].size()];
+            for(int i = 0;i<pv_name[0].size();i++){
+                if (pv_name[0].getSamples() instanceof IDoubleValue[]) {
+                    IDoubleValue dv = (IDoubleValue) pv_name[0].getSample(i);
+                    value[i] = dv.getValue();
+                    time[i] = dv.getTime().toDouble();
+                }
+            }
+            return calc(name, value, time);
+//            return calc(name,pv_name[0].getSampleValue(),pv_name[0].getTimeStamp());
+        }       catch (Exception e) {
+            System.out.println(" Error: FFT ->  View -> newData array exception");
+            //Plugin.logException("activateWithPV", e); //$NON-NLS-1$
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Deprecated
 	private String getSampleLabel(IProcessVariableWithSample pvAndSample) {
 		long timeL= (long) (pvAndSample.getTimeStamp()[0])*1000;
 		String name=pvAndSample.getName();
@@ -435,7 +564,17 @@ public final class View extends ViewPart {
 		String labelT = new String (name+" " +shortTime);
 		return labelT;
 	}
-	
+
+    private String getSampleLabel(IProcessVariableWithSamples pvAndSample) {
+        long timeL= (long) (pvAndSample.getSample(0).getTime().seconds()); //TODO Albert Check!
+        String name=pvAndSample.getName();
+        Date dateFrom = new Date(timeL);
+        DateFormat formatter=DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+        String shortTime=formatter.format(dateFrom);
+        String labelT = new String (name+" " +shortTime);
+        return labelT;
+    }
+
     //
     // FFT calculation here:
     //
@@ -569,7 +708,7 @@ public final class View extends ViewPart {
 		return index;
 	}
 	
-	public  static boolean activateWithPV(IProcessVariableWithSample[] pv_name)
+	public  static boolean activateWithPV(IProcessVariableWithSamples[] pv_name)
     {
         try
         {	

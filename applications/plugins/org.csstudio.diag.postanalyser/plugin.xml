@@ -19,7 +19,7 @@
       <objectContribution
             adaptable="true"
             id="org.csstudio.diag.postanalyser.objectContribution1"
-            objectClass="org.csstudio.platform.model.IProcessVariableWithSample">
+            objectClass="org.csstudio.platform.model.IProcessVariableWithSamples">
          <menu
                id="org.csstudio.popmenu"
                label="CSS"

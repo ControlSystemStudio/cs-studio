@@ -24,6 +24,7 @@ package org.csstudio.diag.postanalyser;
 
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.IProcessVariableWithSample;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesPopupAction;
 
 /**
@@ -44,7 +45,7 @@ public class FFTPopupAction extends ProcessVariableWithSamplesPopupAction{
 	 * @see org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesPopupAction#handlePVs(org.csstudio.platform.model.IProcessVariableWithSample[])
 	 */
 	@Override
-	public void handlePVs(IProcessVariableWithSample[] pv_names) {
+	public void handlePVs(IProcessVariableWithSamples[] pv_names) {
 		//System.out.println("handle PVs");
     	if (pv_names.length < 1)
     		return;  
