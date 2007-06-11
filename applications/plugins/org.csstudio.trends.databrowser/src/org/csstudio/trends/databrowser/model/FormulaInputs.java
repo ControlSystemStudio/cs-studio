@@ -21,39 +21,48 @@ import org.csstudio.util.formula.VariableNode;
 class FormulaInputs
 {
     /** The model items used as inputs. */
-    private ArrayList<IModelItem> items = new ArrayList<IModelItem>();
+    private ArrayList<FormulaInput> inputs = new ArrayList<FormulaInput>();
 
-    /** The variables assigned to the inputs */
-    private ArrayList<VariableNode> variables = new ArrayList<VariableNode>();
-    
     /** Lockstep iterator over all item's samples. */
     private SpreadsheetIterator sheet = null;
 
+    /** @return number of inputs
+     *  @see #getInput(int)
+     */
+    int getNumInputs()
+    {   return inputs.size();    }
+    
+    /** @return One of the input items
+      *  @see #getNumInputs()
+      */
+    FormulaInput getInput(int index)
+    {   return inputs.get(index);    }
+    
     /** Add model item as variable with given name.
      *  @param item The model item
      *  @param name Name for the variable
      */
     void addInput(IModelItem item, String name)
     {
-        items.add(item);
-        variables.add(new VariableNode(name));
+        inputs.add(new FormulaInput(item, new VariableNode(name)));
     }
     
     /** @return All variable nodes as used by formula */
     VariableNode [] getVariables()
     {
-        VariableNode var_array[] = new VariableNode[variables.size()];
+        VariableNode var_array[] = new VariableNode[inputs.size()];
         for (int i=0; i<var_array.length; ++i)
-            var_array[i] = variables.get(i);
+            var_array[i] = inputs.get(i).getVariable();
         return var_array;
     }
     
     /** Start the spreadsheet-type iteration over all the input's samples */
     void startIteration()
     {
-        ModelSampleIterator item_iters[] = new ModelSampleIterator[items.size()];
-        for (int i=0; i<items.size(); ++i)
-            item_iters[i] = new ModelSampleIterator(items.get(i).getSamples());
+        ModelSampleIterator item_iters[] = new ModelSampleIterator[inputs.size()];
+        for (int i=0; i<inputs.size(); ++i)
+            item_iters[i] =
+                new ModelSampleIterator(inputs.get(i).getModelItem().getSamples());
         sheet = new SpreadsheetIterator(item_iters);
     }
 
@@ -65,9 +74,10 @@ class FormulaInputs
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
         int prec = 1;
-        for (int i=0; i<items.size(); ++i)
+        for (int i=0; i<inputs.size(); ++i)
         {
-            final IModelSamples samples = items.get(i).getSamples();
+            final IModelSamples samples =
+                inputs.get(i).getModelItem().getSamples();
             synchronized (samples)
             {
                 if (samples.size() < 0)
@@ -106,17 +116,18 @@ class FormulaInputs
         ITimestamp time = sheet.getTime();
         IValue values[] = sheet.next();
         // Check consistency with number of variables
-        if (values.length != variables.size())
+        if (values.length != inputs.size())
             throw new Exception("Got " + values.length
-                        + " values for " + variables.size() + " Variables?");
+                        + " values for " + inputs.size() + " inpu?s");
         // Update the variables to current input data
         for (int i=0; i<values.length; ++i)
         {
+            final VariableNode variable = inputs.get(i).getVariable();
             final IValue value = values[i];
             if (value != null)
-                variables.get(i).setValue(ValueUtil.getDouble(value));
+                variable.setValue(ValueUtil.getDouble(value));
             else
-                variables.get(i).setValue(Double.NaN);
+                variable.setValue(Double.NaN);
         }
         return time;
     }

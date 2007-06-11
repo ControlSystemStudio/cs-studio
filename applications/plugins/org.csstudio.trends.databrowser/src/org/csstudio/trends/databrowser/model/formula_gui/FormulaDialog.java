@@ -1,13 +1,13 @@
 package org.csstudio.trends.databrowser.model.formula_gui;
 
-import org.csstudio.trends.databrowser.model.ModelItem;
+import org.csstudio.trends.databrowser.model.FormulaInput;
+import org.csstudio.trends.databrowser.model.FormulaModelItem;
 import org.csstudio.trends.databrowser.model.formula_gui.InputTableHelper.Column;
 import org.csstudio.util.swt.AutoSizeColumn;
 import org.csstudio.util.swt.AutoSizeControlListener;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -34,7 +34,9 @@ import org.eclipse.swt.widgets.Text;
 @SuppressWarnings("nls")
 public class FormulaDialog extends Dialog
 {
-    private Text formula;
+    private final FormulaModelItem formula_item;
+    private Text formula_txt;
+    private TableViewer input_table;
     
     /* For button: Add Text of pressed button to formula */
     final SelectionAdapter text_append_adapter = new SelectionAdapter()
@@ -43,16 +45,19 @@ public class FormulaDialog extends Dialog
         public void widgetSelected(SelectionEvent e)
         {
             Button b = (Button) e.getSource();
-            formula.insert(b.getText());
+            formula_txt.insert(b.getText());
         }
     };
 
-    private TableViewer input_table;
 
-
-    public FormulaDialog(Shell shell)
+    /** Construct a dialog
+     *  @param shell The parent shell
+     *  @param formula_item The formula item to edit
+     */
+    public FormulaDialog(Shell shell, FormulaModelItem formula_item)
     {
         super(shell);
+        this.formula_item = formula_item;
     }
     
     /** Set the dialog title. */
@@ -116,8 +121,8 @@ public class FormulaDialog extends Dialog
         box.setText("Formula");
         box.setLayout(new FillLayout());
         
-        formula = new Text(box, 0);
-        formula.setToolTipText("Enter formula");
+        formula_txt = new Text(box, 0);
+        formula_txt.setToolTipText("Enter formula");
         
         return box;
     }
@@ -153,15 +158,16 @@ public class FormulaDialog extends Dialog
         input_table.setLabelProvider(new InputTableLabelProvider());
         input_table.setContentProvider(new ArrayContentProvider());
         
-        // TODO remove this
-        ModelItem.test_mode = true;
-        InputTableItem data[] = new InputTableItem[]
+        // List all the input PVs and their current variable names
+        // TODO list all model PV names...
+        final int N = formula_item.getNumInputs();
+        InputTableItem data[] = new InputTableItem[N];
+        for (int i=0; i<N; ++i)
         {
-            new InputTableItem(new ModelItem(null, "fred", 0, 0, 0.0, 0.0, true, true, 0,
-                                             0, 0, 0, null, false)),
-            new InputTableItem(new ModelItem(null, "janet", 0, 0, 0.0, 0.0, true, true, 0,
-                                             0, 0, 0, null, false)),
-        };
+            FormulaInput input = formula_item.getInput(i);
+            data[i] = new InputTableItem(input.getModelItem().getName(),
+                                         input.getVariable().getName());
+        }
         input_table.setInput(data);
 
         // Allow editing
@@ -197,7 +203,7 @@ public class FormulaDialog extends Dialog
                 if (selection.size() != 1)
                     return;
                 InputTableItem item = (InputTableItem)selection.getFirstElement();
-                formula.insert(item.getVariableName());
+                formula_txt.insert(item.getVariableName());
             }
         });
         
@@ -262,7 +268,7 @@ public class FormulaDialog extends Dialog
         {
             @Override
             public void widgetSelected(SelectionEvent e)
-            {   formula.setText("");  }
+            {   formula_txt.setText("");  }
         });
         addTextAppendButton(calc, "(", "Opening brace");
         addTextAppendButton(calc, ")", "Closing brace");
@@ -272,12 +278,12 @@ public class FormulaDialog extends Dialog
             @Override
             public void widgetSelected(SelectionEvent e)
             { 
-                final String text = formula.getText();
+                final String text = formula_txt.getText();
                 final int length = text.length();
                 if (length >= 1)
                 {
-                    formula.setText(text.substring(0, length - 1));
-                    formula.setSelection(length);
+                    formula_txt.setText(text.substring(0, length - 1));
+                    formula_txt.setSelection(length);
                 }
             }
         });

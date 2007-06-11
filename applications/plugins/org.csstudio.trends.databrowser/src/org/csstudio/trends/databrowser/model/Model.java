@@ -13,6 +13,7 @@ import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.util.swt.DefaultColors;
+import org.csstudio.util.time.RelativeTime;
 import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.xml.DOMHelper;
 import org.w3c.dom.Document;
@@ -76,15 +77,25 @@ public class Model
     @SuppressWarnings("nls")
     public Model()
     {
+        String start, end;
+        try
+        {
+            start = Preferences.getStartSpecification();
+            end = Preferences.getEndSpecification();
+        }
+        catch (Exception ex)
+        {   // No prefs because running as unit test?
+            start = "-1 hour";
+            end = RelativeTime.NOW;
+        }
         try
         {
             // Set time defaults, since otherwise start/end would be null.
-            setTimeSpecifications(Preferences.getStartSpecification(),
-                                  Preferences.getEndSpecification());
+            setTimeSpecifications(start, end);
         }
         catch (Exception ex)
         {
-            Plugin.logException("Cannot init. Model", ex);
+            Plugin.logException("Cannot init. time range", ex);
         }
     }
     
@@ -310,7 +321,15 @@ public class Model
         double low = 0.0;
         double high = 10.0;
         final boolean visible = true;
-        boolean auto_scale = Preferences.getAutoScale();
+        boolean auto_scale;
+        try
+        {
+            auto_scale = Preferences.getAutoScale();
+        }
+        catch (Exception ex)
+        {   // No prefs because in unit test
+            auto_scale = false;
+        }
         boolean log_scale = false;
         TraceType trace_type = TraceType.Lines;
         // Use settings of existing item for that axis - if there is one

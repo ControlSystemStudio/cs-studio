@@ -1,23 +1,21 @@
 package org.csstudio.trends.databrowser.model.formula_gui;
 
-import org.csstudio.trends.databrowser.model.IModelItem;
-
 /** One item in the formula input table.
  *  @author Kay Kasemir
  */
 public class InputTableItem
 {
-    private IModelItem pv;
+    final private String pv;
     private String variable_name;
     
-    InputTableItem(IModelItem pv)
+    InputTableItem(String pv, String variable)
     {
         this.pv = pv;
-        this.variable_name = pv.getName();
+        this.variable_name = variable;
     }
     
     String getPVName()
-    {   return pv.getName(); }
+    {   return pv; }
     
     String getVariableName()
     {   return variable_name; }

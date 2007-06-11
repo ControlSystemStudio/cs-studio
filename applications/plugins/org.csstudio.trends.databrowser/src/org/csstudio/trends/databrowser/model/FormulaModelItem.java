@@ -23,14 +23,14 @@ public class FormulaModelItem extends AbstractModelItem
     private Formula formula;
     
     /** Constructor */
-    FormulaModelItem(Model model, String pv_name,
-                     int axis_index, double min, double max,
-                     boolean visible,
-                     boolean auto_scale,
-                     int red, int green, int blue,
-                     int line_width,
-                     TraceType trace_type,
-                     boolean log_scale)
+    public FormulaModelItem(Model model, String pv_name,
+                            int axis_index, double min, double max,
+                            boolean visible,
+                            boolean auto_scale,
+                            int red, int green, int blue,
+                            int line_width,
+                            TraceType trace_type,
+                            boolean log_scale)
     {
         super(model, pv_name, axis_index, min, max, visible, auto_scale,
               red, green, blue, line_width, trace_type, log_scale);
@@ -44,6 +44,18 @@ public class FormulaModelItem extends AbstractModelItem
     {
         input_variables.addInput(item, name);
     }
+
+    /** @return number of inputs
+     *  @see #getInput(int)
+     */
+    public int getNumInputs()
+    {   return input_variables.getNumInputs();    }
+    
+    /** @return One of the input items
+      *  @see #getNumInputs()
+      */
+    public FormulaInput getInput(int index)
+    {   return input_variables.getInput(index);    }
 
     /** Define the formula.
      *  @param formula_text
@@ -69,9 +81,8 @@ public class FormulaModelItem extends AbstractModelItem
     public IModelSamples getSamples()
     {
         // Compute new samples from inputs and formula
-        // TODO this is expensive.
-        // Check if the input samples actually changed,
-        // only recompute when needed?
+        // TODO this is expensive. Move into thread,
+        // trigger by input item listener.
         ModelSampleArray samples = new ModelSampleArray();
         
         input_variables.startIteration();
