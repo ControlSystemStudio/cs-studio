@@ -104,6 +104,10 @@ public abstract class AbstractModelItem
         this.log_scale = log_scale;
     }
     
+    /** @return Model to which this item belongs. */
+    public Model getModel()
+    {   return model;    }
+    
     /** Must be called to dispose the color. */
     public void dispose()
     {

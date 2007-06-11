@@ -55,7 +55,9 @@ import org.csstudio.util.formula.node.SubNode;
 @SuppressWarnings("nls")
 public class Formula implements Node
 {
-    private Node tree;
+    /** The original formula that we parsed */
+    private final String formula;
+    private final Node tree;
     private static VariableNode constants[] = new VariableNode[]
     {
     	new VariableNode("PI", Math.PI)
@@ -68,8 +70,7 @@ public class Formula implements Node
      */
     public Formula(String formula)  throws Exception
     {
-        this.variables = null;
-        parse(formula);
+        this(formula, null);
     }
 
     /** Create formula from string with variables.
@@ -79,15 +80,18 @@ public class Formula implements Node
      */
     public Formula(String formula, VariableNode[] variables)  throws Exception
     {
+        this.formula = formula;
         this.variables = variables;
-        parse(formula);
+        tree = parse(formula);
     }
     
+    /** @return Original formula that got parsed. */
+    public String getFormula()
+    {   return formula;    }
+
     /** @return Array of variables or <code>null</code> if none are used. */
     public VariableNode[] getVariables()
-    {
-        return variables;
-    }
+    {   return variables;    }
 
     /** {@inheritDoc} */
     public double eval()
@@ -428,12 +432,13 @@ public class Formula implements Node
     }
 
     /** Parse formula. */
-    private void parse(String formula) throws Exception
+    private Node parse(String formula) throws Exception
     {
-        Scanner scanner = new Scanner(formula);
-        tree = parseBool(scanner);
+        final Scanner scanner = new Scanner(formula);
+        final Node tree = parseBool(scanner);
         if (! scanner.isDone())
             throw new Exception("Parse error at '" + scanner.rest() + "'");
+        return tree;
     }
     
     @SuppressWarnings("nls")

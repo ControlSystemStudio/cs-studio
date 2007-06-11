@@ -2,6 +2,8 @@ package org.csstudio.trends.databrowser.model.formula_gui;
 
 import org.csstudio.trends.databrowser.model.FormulaInput;
 import org.csstudio.trends.databrowser.model.FormulaModelItem;
+import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.formula_gui.InputTableHelper.Column;
 import org.csstudio.util.swt.AutoSizeColumn;
 import org.csstudio.util.swt.AutoSizeControlListener;
@@ -12,6 +14,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -29,9 +33,7 @@ import org.eclipse.swt.widgets.Text;
 /** GUI for a formula item.
  * 
  *  @author Kay Kasemir
- *  TODO externalize strings
  */
-@SuppressWarnings("nls")
 public class FormulaDialog extends Dialog
 {
     private final FormulaModelItem formula_item;
@@ -65,7 +67,7 @@ public class FormulaDialog extends Dialog
     protected void configureShell(Shell shell)
     {
         super.configureShell(shell);
-        shell.setText("Formula Configuration");
+        shell.setText(Messages.getString("Formula_Title")); //$NON-NLS-1$
     }
     
     /** Create the GUI. */
@@ -111,18 +113,49 @@ public class FormulaDialog extends Dialog
         gd.verticalAlignment = SWT.FILL;
         calc.setLayoutData(gd);
         
+        initializeGUI();
+        
         return box;
+    }
+
+    /** Init. the GUI elements from the formula item. */
+    private void initializeGUI()
+    {
+        formula_txt.setText(formula_item.getFormula());
+        formula_txt.setSelection(formula_txt.getText().length());
+        
+        // List all the model's PVs as potential formula inputs
+        final Model model = formula_item.getModel();
+        final int model_N = model.getNumItems();
+        InputTableItem data[] = new InputTableItem[model_N];
+        for (int i=0; i<model_N; ++i)
+        {
+            final IModelItem item = model.getItem(i);
+            String var_name = item.getName();
+            // See if it's already associated with a variable in the formula
+            for (int j=0; j<formula_item.getNumInputs(); ++j)
+            {
+                final FormulaInput input = formula_item.getInput(j);
+                if (input.getModelItem() == item)
+                {
+                    var_name = input.getVariable().getName();
+                    break;
+                }
+            }
+            data[i] = new InputTableItem(item.getName(), var_name);
+        }
+        input_table.setInput(data);
     }
     
     /** @return Formula section of dialog. */
     private Composite createFormularBox(final Composite parent)
     {
         Group box = new Group(parent, SWT.SHADOW_IN);
-        box.setText("Formula");
+        box.setText(Messages.getString("Formula_Formula")); //$NON-NLS-1$
         box.setLayout(new FillLayout());
         
         formula_txt = new Text(box, 0);
-        formula_txt.setToolTipText("Enter formula");
+        formula_txt.setToolTipText(Messages.getString("Formula_Formula_TT")); //$NON-NLS-1$
         
         return box;
     }
@@ -131,7 +164,7 @@ public class FormulaDialog extends Dialog
     private Composite createInputTable(final Composite parent)
     {
         Group box = new Group(parent, SWT.SHADOW_IN);
-        box.setText("Inputs");
+        box.setText(Messages.getString("Formula_Inputs")); //$NON-NLS-1$
 
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
@@ -158,18 +191,6 @@ public class FormulaDialog extends Dialog
         input_table.setLabelProvider(new InputTableLabelProvider());
         input_table.setContentProvider(new ArrayContentProvider());
         
-        // List all the input PVs and their current variable names
-        // TODO list all model PV names...
-        final int N = formula_item.getNumInputs();
-        InputTableItem data[] = new InputTableItem[N];
-        for (int i=0; i<N; ++i)
-        {
-            FormulaInput input = formula_item.getInput(i);
-            data[i] = new InputTableItem(input.getModelItem().getName(),
-                                         input.getVariable().getName());
-        }
-        input_table.setInput(data);
-
         // Allow editing
         CellEditor editors[] = new CellEditor[columns.length];
         editors[Column.INPUT_PV.ordinal()] = null;
@@ -184,8 +205,8 @@ public class FormulaDialog extends Dialog
         
         // new row
         Button add = new Button(box, SWT.PUSH);
-        add.setText("Add Variable");
-        add.setToolTipText("Add selected variable to formula");
+        add.setText(Messages.getString("Formula_AddVar")); //$NON-NLS-1$
+        add.setToolTipText(Messages.getString("Formula_AddVar_TT")); //$NON-NLS-1$
         gd = new GridData();
         gd.horizontalAlignment = SWT.RIGHT;
         gd.grabExcessVerticalSpace = true;
@@ -197,24 +218,35 @@ public class FormulaDialog extends Dialog
         {
             @Override
             public void widgetSelected(SelectionEvent e)
-            {
-                final IStructuredSelection selection = 
-                    (IStructuredSelection) input_table.getSelection();
-                if (selection.size() != 1)
-                    return;
-                InputTableItem item = (InputTableItem)selection.getFirstElement();
-                formula_txt.insert(item.getVariableName());
-            }
+            {   addSelectedVariable();        }
+        });
+        
+        table.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseDoubleClick(MouseEvent e)
+            {   addSelectedVariable();        }
         });
         
         return box;
     }
     
+    /** Add the selected variable name in table to the formula */
+    private void addSelectedVariable()
+    {
+        final IStructuredSelection selection = 
+            (IStructuredSelection) input_table.getSelection();
+        if (selection.size() != 1)
+            return;
+        InputTableItem item = (InputTableItem)selection.getFirstElement();
+        formula_txt.insert(item.getVariableName());
+    }
+
     /** @return Extra keypad with functions. */
     private Composite createExtraKeypad(final Composite box)
     {
         Group extra = new Group(box, SWT.SHADOW_IN);
-        extra.setText("Functions");
+        extra.setText(Messages.getString("Formula_Functions")); //$NON-NLS-1$
         GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         extra.setLayout(layout);
@@ -225,25 +257,25 @@ public class FormulaDialog extends Dialog
          * [tan]  [atan] [? :]
          * [PI]   [min]  [max]
          */
-        addTextAppendButton(extra, "sqrt", "square root");
-        addTextAppendButton(extra, " ^ ", "power");
-        addTextAppendButton(extra, "exp", "exponential (base e)");
+        addTextAppendButton(extra, "sqrt", Messages.getString("Formula_sqrt_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(extra, " ^ ", Messages.getString("Formula_pwr_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(extra, "exp", Messages.getString("Formula_exp_TT")); //$NON-NLS-1$ //$NON-NLS-2$
         // --
-        addTextAppendButton(extra, "sin", "sine");
-        addTextAppendButton(extra, "asin", "inverse sine");
-        addTextAppendButton(extra, "log", "logarithm (base e)");
+        addTextAppendButton(extra, "sin", Messages.getString("Formula_sin_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(extra, "asin", Messages.getString("Formula_asin_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(extra, "log", Messages.getString("Formula_log_TT")); //$NON-NLS-1$ //$NON-NLS-2$
         // --
-        addTextAppendButton(extra, "cos", "cosine");
-        addTextAppendButton(extra, "acos", "inverse cosine");
-        addTextAppendButton(extra, "abs", "absolute value");
+        addTextAppendButton(extra, "cos", Messages.getString("Formula_cos_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(extra, "acos", Messages.getString("Formula_acos_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(extra, "abs", Messages.getString("Formula_abs_TT")); //$NON-NLS-1$ //$NON-NLS-2$
         // --
-        addTextAppendButton(extra, "tan", "tangent"); 
-        addTextAppendButton(extra, "atan", "inverse tangent");
-        addTextAppendButton(extra, " ? : ", "if-else");
+        addTextAppendButton(extra, "tan", Messages.getString("Formula_tan_TT"));  //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(extra, "atan", Messages.getString("Formula_atan_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(extra, " ? : ", Messages.getString("Formula_if_else_TT")); //$NON-NLS-1$ //$NON-NLS-2$
         // --
-        addTextAppendButton(extra, "PI", "number PI"); 
-        addTextAppendButton(extra, "min", "minimum");
-        addTextAppendButton(extra, "max", "maximum");
+        addTextAppendButton(extra, "PI", Messages.getString("Formula_PI_TT"));  //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(extra, "min", Messages.getString("Formula_min_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(extra, "max", Messages.getString("Formula_max_TT")); //$NON-NLS-1$ //$NON-NLS-2$
         return extra;
     }
 
@@ -251,7 +283,7 @@ public class FormulaDialog extends Dialog
     private Composite createBasicKeypad(final Composite box)
     {
         Group calc = new Group(box, SWT.SHADOW_IN);
-        calc.setText("Basic Calculations");
+        calc.setText(Messages.getString("Formula_BasicCalcs")); //$NON-NLS-1$
         GridLayout layout = new GridLayout();
         layout.numColumns = 4;
         calc.setLayout(layout);
@@ -263,16 +295,16 @@ public class FormulaDialog extends Dialog
          * [1] [2] [3] [+]
          * [   0 ] [.] [-]
          */
-        addButton(calc, "C", "Clear Formula", new GridData(),
+        addButton(calc, Messages.getString("Formula_Clear"), Messages.getString("Formula_Clear_TT"), new GridData(), //$NON-NLS-1$ //$NON-NLS-2$
                             new SelectionAdapter()
         {
             @Override
             public void widgetSelected(SelectionEvent e)
-            {   formula_txt.setText("");  }
+            {   formula_txt.setText("");  } //$NON-NLS-1$
         });
-        addTextAppendButton(calc, "(", "Opening brace");
-        addTextAppendButton(calc, ")", "Closing brace");
-        addButton(calc, "<-", "Backspace", new GridData(),
+        addTextAppendButton(calc, "(", Messages.getString("Formula_Open_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, ")", Messages.getString("Formula_Close_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addButton(calc, Messages.getString("Formula_Backspace"), Messages.getString("Formula_Backspace_TT"), new GridData(), //$NON-NLS-1$ //$NON-NLS-2$
                             new SelectionAdapter()
         {
             @Override
@@ -289,27 +321,27 @@ public class FormulaDialog extends Dialog
         });
         
         // --
-        addTextAppendButton(calc, "7", "Number 7");
-        addTextAppendButton(calc, "8", "Number 8");
-        addTextAppendButton(calc, "9", "Number 9");
-        addTextAppendButton(calc, "*", "Multiply");
+        addTextAppendButton(calc, "7", Messages.getString("Formula_7_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, "8", Messages.getString("Formula_8_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, "9", Messages.getString("Formula_9_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, "*", Messages.getString("Formula_Mult_TT")); //$NON-NLS-1$ //$NON-NLS-2$
         // --
-        addTextAppendButton(calc, "4", "Number 4");
-        addTextAppendButton(calc, "5", "Number 5");
-        addTextAppendButton(calc, "6", "Number 6");
-        addTextAppendButton(calc, "/", "Divide");
+        addTextAppendButton(calc, "4", Messages.getString("Formula_4_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, "5", Messages.getString("Formula_5_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, "6", Messages.getString("Formula_6_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, "/", Messages.getString("Formula_Div_TT")); //$NON-NLS-1$ //$NON-NLS-2$
         // --
-        addTextAppendButton(calc, "1", "Number 1");
-        addTextAppendButton(calc, "2", "Number 2");
-        addTextAppendButton(calc, "3", "Number 3");
-        addTextAppendButton(calc, "+", "Add");
+        addTextAppendButton(calc, "1", Messages.getString("Formula_1_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, "2", Messages.getString("Formula_2_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, "3", Messages.getString("Formula_3_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, "+", Messages.getString("Formula_Add_TT")); //$NON-NLS-1$ //$NON-NLS-2$
         // --
         gd = new GridData();
         gd.horizontalSpan = 2;
         gd.horizontalAlignment = SWT.FILL;
-        addButton(calc, "0", "Number 0", gd, text_append_adapter);
-        addTextAppendButton(calc, ".", "Decimal Point");
-        addTextAppendButton(calc, "-", "Substract");
+        addButton(calc, "0", Messages.getString("Formula_0_TT"), gd, text_append_adapter); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, ".", Messages.getString("Formula_Decimal_TT")); //$NON-NLS-1$ //$NON-NLS-2$
+        addTextAppendButton(calc, "-", Messages.getString("Formula_Sub_TT")); //$NON-NLS-1$ //$NON-NLS-2$
         
         return calc;
     }

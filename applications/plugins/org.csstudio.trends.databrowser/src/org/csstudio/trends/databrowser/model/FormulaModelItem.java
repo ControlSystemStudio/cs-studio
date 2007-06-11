@@ -65,6 +65,12 @@ public class FormulaModelItem extends AbstractModelItem
     {
         formula = new Formula(formula_text, input_variables.getVariables());
     }
+    
+    /** @return The formula. */
+    public String getFormula()
+    {
+        return formula == null ? "" : formula.getFormula(); //$NON-NLS-1$
+    }
 
     public void addArchiveSamples(ArchiveValues samples)
     {
