@@ -1,9 +1,10 @@
 package org.csstudio.platform.ui.internal.dataexchange;
 
-import org.csstudio.platform.model.IArchiveDataSource;
+//import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.model.IProcessVariableWithArchive;
-import org.csstudio.platform.model.IProcessVariableWithSample;
+//import org.csstudio.platform.model.IProcessVariableWithArchive;
+//import org.csstudio.platform.model.IProcessVariableWithSample;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
@@ -16,26 +17,27 @@ import org.eclipse.swt.widgets.Control;
  *  @see ProcessVariableDropTarget
  *  @author Jan Hatje und Helge Rickens
  */
-public abstract class ProcessVariableWithSampleDropTarget extends DropTargetAdapter
+public abstract class ProcessVariableWithSamplesDropTarget extends DropTargetAdapter
 {
-	private DropTarget target;
+    /**
+     * Drop target.
+     */
+    private DropTarget _target;
 	
-    /** Cause that 'target' GUI element to accept PV names with 
+    /** Cause that '_target' GUI element to accept PV names with 
      *  sample data sources via Drag-and-drop.
      *  @param target The SWT GUI element.
      */
-    @Deprecated
-	public ProcessVariableWithSampleDropTarget(Control target)
-	{
-		this.target = new DropTarget(target, DND.DROP_MOVE | DND.DROP_COPY);
-		this.target.setTransfer(new Transfer[]
+	public ProcessVariableWithSamplesDropTarget(final Control target){
+		this._target = new DropTarget(target, DND.DROP_MOVE | DND.DROP_COPY);
+		this._target.setTransfer(new Transfer[]
         {   // Order matters:
             // Ideally, we receive PV-with-Sample:
-            ProcessVariableWithSampleTransfer.getInstance(),
+            ProcessVariableWithSamplesTransfer.getInstance(),
             // Less desirable alternatives follow:
             ProcessVariableNameTransfer.getInstance()
         });
-		this.target.addDropListener(this);
+		this._target.addDropListener(this);
 	}
     
     /** Callback for each dropped PV.
@@ -51,42 +53,42 @@ public abstract class ProcessVariableWithSampleDropTarget extends DropTargetAdap
      *  @param name The dropped PV name
      *  @param event The original event in case you need details.
      */
-    public abstract void handleDrop(IProcessVariableWithSample name,
+    public abstract void handleDrop(IProcessVariableWithSamples name,
                                     DropTargetEvent event);
     
 	/** Used internally by the system when a DnD operation enters the control.
      *  @see org.eclipse.swt.dnd.DropTargetListener#dragEnter(org.eclipse.swt.dnd.DropTargetEvent)
+     *  @param event Drag enter event 
 	 */
-	public void dragEnter(DropTargetEvent event)
-	{
-		if ((event.operations & DND.DROP_COPY) != 0)
-			event.detail = DND.DROP_COPY;
-		else
-			event.detail = DND.DROP_NONE;
+    @Override
+	public final void dragEnter(final DropTargetEvent event){
+		if ((event.operations & DND.DROP_COPY) != 0) {
+            event.detail = DND.DROP_COPY;
+        } else {
+            event.detail = DND.DROP_NONE;
+        }
 	}
 
     /** Used internally by the system to drop the data.
      *  @see org.eclipse.swt.dnd.DropTargetListener#drop(org.eclipse.swt.dnd.DropTargetEvent)
+     *  @param event drop
      */
-	public void drop(DropTargetEvent event)
-	{
-		System.out.println("ProcessVariableWithSampleDropTarget drop TargetEvent");
-        if (event.data instanceof IProcessVariableWithSample[])
-        {
-        	System.out.println("DropTargetEvent --> instanceof IProcessVariableWithSample[]");
-            IProcessVariableWithSample names[] = (IProcessVariableWithSample [])event.data;
-            for (int i = 0; i < names.length; i++)
+    @Override
+	public final void drop(final DropTargetEvent event){
+		System.out.println("ProcessVariableWithSamplesDropTarget drop TargetEvent");
+        if (event.data instanceof IProcessVariableWithSamples[]){
+        	System.out.println("DropTargetEvent --> instanceof IProcessVariableWithSamples[]");
+            IProcessVariableWithSamples[] names = (IProcessVariableWithSamples [])event.data;
+            for (int i = 0; i < names.length; i++) {
                 handleDrop(names[i], event);
-        }
-        else if (event.data instanceof IProcessVariable[])
-        {
+            }
+        }else if (event.data instanceof IProcessVariable[]){
         	System.out.println("DropTargetEvent --> instanceof IProcessVariable[]");
-            IProcessVariable names[] = (IProcessVariable [])event.data;
-            for (int i = 0; i < names.length; i++)
+            IProcessVariable[] names = (IProcessVariable [])event.data;
+            for (int i = 0; i < names.length; i++) {
                 handleDrop(names[i], event);
-        }
-        else
-        {
+            }
+        }else{
         	System.out.println("DropTargetEvent else");
         }
 

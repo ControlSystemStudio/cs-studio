@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.print.attribute.standard.Severity;
@@ -121,15 +122,16 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
     /**
      * 
      */
-    private static ProcessVariableWithSamplesTransfer _singletonInstance = new ProcessVariableWithSamplesTransfer();
-    /**
-     * 
-     */
     private static final String TYPE_NAME = "pv_with_samples_data";
     /**
      *
      */
     private static final int TYPE_ID = registerType(TYPE_NAME);
+    /**
+     * 
+     */
+    private static ProcessVariableWithSamplesTransfer _singletonInstance = new ProcessVariableWithSamplesTransfer();
+
     /**
      * 
      * @author hrickens
@@ -189,6 +191,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
      * 
      */
     private ProcessVariableWithSamplesTransfer() {
+        System.out.println("PVWSTs"+TYPE_ID);
     }
 
     /** @return The singleton instance of the ArchiveDataSourceTransfer. */
@@ -235,8 +238,19 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
         }
         if (object instanceof IProcessVariableWithSamples[]){
             data = (IProcessVariableWithSamples[]) object;
+        } else if (object instanceof IProcessVariableWithSamples){
+            data = new IProcessVariableWithSamples[]{(IProcessVariableWithSamples) object};
         }else if(object instanceof IProcessVariableWithSamples){
             data = new IProcessVariableWithSamples[] {((IProcessVariableWithSamples) object)};
+        }else if(object instanceof ArrayList){
+            ArrayList al = (ArrayList) object;
+            data = new IProcessVariableWithSamples[al.size()];
+            for (int i=0;i<al.size();i++) {
+                if (al.get(i) instanceof IProcessVariableWithSamples) {
+                    IProcessVariableWithSamples pvws = (IProcessVariableWithSamples) al.get(i);
+                    data[i]=pvws;
+                }
+            }
         }else {
             return;
         }
@@ -285,6 +299,14 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
                     fillValue(value, valueTyp);
                 }
             }
+            byte[] buffer = _out.toByteArray();
+            try {
+                _writeOut.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            super.javaToNative(buffer, transferData);
         }
     }
     
@@ -370,7 +392,8 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
                 int size = readIn.readInt();
                 IValue[] values = new IValue[size];
                 for(int i = 0; i<size;i++){ 
-                    ValueTyp valueType = ValueTyp.valueOf(getString(readIn));
+                    String temp = getString(readIn);
+                    ValueTyp valueType = ValueTyp.valueOf(temp);
                     String format = getString(readIn);
                     MetaData metaData = MetaData.valueOf(getString(readIn));
                     INumericMetaData inmd = null;

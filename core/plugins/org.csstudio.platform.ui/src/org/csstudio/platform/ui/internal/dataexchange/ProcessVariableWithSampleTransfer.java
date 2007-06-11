@@ -42,6 +42,7 @@ public class ProcessVariableWithSampleTransfer extends ByteArrayTransfer {
 	 * @see #getInstance()
 	 */
 	private ProcessVariableWithSampleTransfer() {
+        System.out.println("PVWST"+TYPE_ID);
 	}
 
 	/** @return The singleton instance of the ArchiveDataSourceTransfer. */
