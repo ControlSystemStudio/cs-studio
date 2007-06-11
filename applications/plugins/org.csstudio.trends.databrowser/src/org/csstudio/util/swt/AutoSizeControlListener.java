@@ -25,6 +25,10 @@ public class AutoSizeControlListener
 	private Composite container;
 	private Table table;
 
+    /** Constructor.
+     *  @param container Typically the Parent of the table
+     *  @param table The table to resize automatically
+     */
 	public AutoSizeControlListener(Composite container, Table table)
 	{
 		this.container = container;

@@ -38,7 +38,7 @@ public class ModelItem
      *  because the extension mechanism used by the PVFactory
      *  won't work in simple unit tests outside of an Eclipse runtime.
      */
-    static boolean test_mode = false;
+    static public boolean test_mode = false;
     
     /** The control system PV from which to get new values. */
     private PV pv;

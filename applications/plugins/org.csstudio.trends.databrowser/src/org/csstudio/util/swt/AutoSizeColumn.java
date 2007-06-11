@@ -59,6 +59,7 @@ public class AutoSizeColumn
 		col.setText(header);
 		col.setData(new AutoSizeColumn(min_size, weight));
 		col.setMoveable(true);
+        col.setWidth(min_size);
         if (center)
             col.setAlignment(SWT.CENTER);
 		return col;

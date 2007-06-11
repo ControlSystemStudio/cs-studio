@@ -1,18 +1,29 @@
 package org.csstudio.trends.databrowser.model.formula_gui;
 
+import org.csstudio.trends.databrowser.model.ModelItem;
+import org.csstudio.trends.databrowser.model.formula_gui.InputTableHelper.Column;
+import org.csstudio.util.swt.AutoSizeColumn;
+import org.csstudio.util.swt.AutoSizeControlListener;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
 /** GUI for a formula item.
@@ -35,6 +46,8 @@ public class FormulaDialog extends Dialog
             formula.insert(b.getText());
         }
     };
+
+    private TableViewer input_table;
 
 
     public FormulaDialog(Shell shell)
@@ -61,11 +74,11 @@ public class FormulaDialog extends Dialog
         
         /* Formula: ____________________________
          * 
-         * PVs     Variable  Add  Extra keypad   Basic keypad
-         *                        [sin] [cos]   [7] [8] [9]
-         * fred                                 [4] [5] [6]
-         * freddy  x                            [1] [2] [3]
-         *                                      [   0 ] [.]
+         * PVs     Variable   Extra keypad   Basic keypad
+         * ------+---------    [sin] [cos]   [7] [8] [9]
+         * fred  |                           [4] [5] [6]
+         * freddy|  x                        [1] [2] [3]
+         *            [Add]                  [   0 ] [.]
          */
         Composite form_box = createFormularBox(box);
         gd = new GridData();
@@ -75,47 +88,127 @@ public class FormulaDialog extends Dialog
         form_box.setLayoutData(gd);
 
         // Next row
-        Composite variables = createBasicKeypad(box);
+        Composite variables = createInputTable(box);
         gd = new GridData();
+        gd.grabExcessVerticalSpace = true;
+        gd.verticalAlignment = SWT.FILL;
         variables.setLayoutData(gd);
         
         Composite extra = createExtraKeypad(box);
         gd = new GridData();
+        gd.grabExcessVerticalSpace = true;
+        gd.verticalAlignment = SWT.FILL;
         extra.setLayoutData(gd);
         
         Composite calc = createBasicKeypad(box);
         gd = new GridData();
+        gd.grabExcessVerticalSpace = true;
+        gd.verticalAlignment = SWT.FILL;
         calc.setLayoutData(gd);
         
         return box;
     }
     
+    /** @return Formula section of dialog. */
     private Composite createFormularBox(final Composite parent)
     {
-        Composite box = new Group(parent, SWT.SHADOW_IN);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
-        box.setLayout(layout);
-        
-        Label l = new Label(box, 0);
-        l.setText("Formula:");
-        GridData gd = new GridData();
-        l.setLayoutData(gd);
+        Group box = new Group(parent, SWT.SHADOW_IN);
+        box.setText("Formula");
+        box.setLayout(new FillLayout());
         
         formula = new Text(box, 0);
         formula.setToolTipText("Enter formula");
-        gd = new GridData();
+        
+        return box;
+    }
+
+    /** @return Table stuff for inputs. */
+    private Composite createInputTable(final Composite parent)
+    {
+        Group box = new Group(parent, SWT.SHADOW_IN);
+        box.setText("Inputs");
+
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 1;
+        box.setLayout(layout);
+                
+        Table table = new Table(box,
+                            SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+        table.setHeaderVisible(true);
+        table.setLinesVisible(true);
+        GridData gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
+        gd.grabExcessVerticalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        formula.setLayoutData(gd);
+        gd.verticalAlignment = SWT.FILL;
+        table.setLayoutData(gd);
+        final Column[] columns = InputTableHelper.Column.values();
+        for (Column col : columns)
+                AutoSizeColumn.make(table, col.getTitle(), col.getMinSize(),
+                                    col.getWeight());
+        // Configure table to auto-size the columns
+        new AutoSizeControlListener(box, table);
+        
+        input_table = new TableViewer(table);
+        input_table.setLabelProvider(new InputTableLabelProvider());
+        input_table.setContentProvider(new ArrayContentProvider());
+        
+        // TODO remove this
+        ModelItem.test_mode = true;
+        InputTableItem data[] = new InputTableItem[]
+        {
+            new InputTableItem(new ModelItem(null, "fred", 0, 0, 0.0, 0.0, true, true, 0,
+                                             0, 0, 0, null, false)),
+            new InputTableItem(new ModelItem(null, "janet", 0, 0, 0.0, 0.0, true, true, 0,
+                                             0, 0, 0, null, false)),
+        };
+        input_table.setInput(data);
+
+        // Allow editing
+        CellEditor editors[] = new CellEditor[columns.length];
+        editors[Column.INPUT_PV.ordinal()] = null;
+        editors[Column.VARIABLE.ordinal()] = new TextCellEditor(table);
+        
+        String titles[] = new String[columns.length];
+        for (int i=0; i<columns.length; ++i)
+            titles[i] = columns[i].getTitle();
+        input_table.setColumnProperties(titles);
+        input_table.setCellEditors(editors);
+        input_table.setCellModifier(new InputTableCellModifier(input_table));
+        
+        // new row
+        Button add = new Button(box, SWT.PUSH);
+        add.setText("Add Variable");
+        add.setToolTipText("Add selected variable to formula");
+        gd = new GridData();
+        gd.horizontalAlignment = SWT.RIGHT;
+        gd.grabExcessVerticalSpace = true;
+        gd.verticalAlignment = SWT.TOP;
+        add.setLayoutData(gd);
+        
+        // Add the variable name of the selected item to the formula
+        add.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final IStructuredSelection selection = 
+                    (IStructuredSelection) input_table.getSelection();
+                if (selection.size() != 1)
+                    return;
+                InputTableItem item = (InputTableItem)selection.getFirstElement();
+                formula.insert(item.getVariableName());
+            }
+        });
         
         return box;
     }
     
-    /** @return Extra keypad with formulas */
+    /** @return Extra keypad with functions. */
     private Composite createExtraKeypad(final Composite box)
     {
-        Composite extra = new Group(box, SWT.SHADOW_IN);
+        Group extra = new Group(box, SWT.SHADOW_IN);
+        extra.setText("Functions");
         GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         extra.setLayout(layout);
@@ -151,7 +244,8 @@ public class FormulaDialog extends Dialog
     /** @return Basic number and plus/minus keypad */
     private Composite createBasicKeypad(final Composite box)
     {
-        Composite calc = new Group(box, SWT.SHADOW_IN);
+        Group calc = new Group(box, SWT.SHADOW_IN);
+        calc.setText("Basic Calculations");
         GridLayout layout = new GridLayout();
         layout.numColumns = 4;
         calc.setLayout(layout);
