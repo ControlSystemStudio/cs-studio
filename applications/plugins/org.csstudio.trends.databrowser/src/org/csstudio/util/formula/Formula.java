@@ -157,12 +157,22 @@ public class Formula implements Node
         {   // Digits?
             if (digits.indexOf(s.get()) >= 0)
             {
+                boolean last_was_e = false;
                 do
                 {
                     buf.append(s.get());
+                    last_was_e = s.get()=='e' || s.get()=='E'; 
                     s.next();
                 }
-                while (!s.isDone()  &&  digits.indexOf(s.get()) >= 0);
+                while (!s.isDone()
+                       && (// Digits are OK
+                           digits.indexOf(s.get()) >= 0
+                           // So is e or E
+                           || s.get()=='e'
+                           || s.get()=='E'
+                           // which might be in the form of "e+-34"
+                           || (s.get()=='+' && last_was_e)
+                           || (s.get()=='-' && last_was_e)));
                 // Details of number format left to parseDouble()
                 double value = Double.parseDouble(buf.toString());        
                 return new ConstantNode(negative ? -value : value);

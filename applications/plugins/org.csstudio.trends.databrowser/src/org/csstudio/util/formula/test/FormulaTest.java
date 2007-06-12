@@ -21,6 +21,18 @@ public class FormulaTest extends TestCase
         assertEquals("0.0", f.toString());
         assertEquals(0.0, f.eval(), epsilon);
         
+        // floating point
+        f = new Formula("-3.14");
+        assertEquals(-3.14, f.eval(), epsilon);
+
+        // exponential
+        f = new Formula("-2.123e4");
+        assertEquals(-2.123e4, f.eval(), epsilon);
+
+        // exponential
+        f = new Formula("-2.123e-14");
+        assertEquals(-2.123e-14, f.eval(), epsilon);
+        
         f = new Formula("-3.14 + 2");
         assertEquals("(-3.14 + 2.0)", f.toString());
         assertEquals(-1.14, f.eval(), epsilon);
