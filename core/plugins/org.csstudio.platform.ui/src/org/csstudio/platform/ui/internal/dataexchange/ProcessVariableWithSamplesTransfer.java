@@ -257,8 +257,8 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
         _out = new ByteArrayOutputStream();
         _writeOut = new DataOutputStream(_out);
         for (IProcessVariableWithSamples samples : data) {
-            IValue[] values = samples.getSamples();
             fillHeader(samples);
+            IValue[] values = samples.getSamples();
             for (IValue value : values) {
                 ValueTyp valueTyp;
                 if (value instanceof IDoubleValue) {
@@ -361,6 +361,8 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
      */
     private void fillHeader(final IProcessVariableWithSamples samples){
         send(samples.getName());
+        System.out.println("Name out: "+samples.getName());
+        System.out.println("TypeId out: "+samples.getTypeId());
         send(samples.getTypeId());
         send(samples.size());
     }
@@ -385,16 +387,26 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
         try {
             ByteArrayInputStream in = new ByteArrayInputStream(buffer);
             DataInputStream readIn = new DataInputStream(in);
+//            System.out.println("testread1: '"+ readIn.readUTF()+"'");
+//            System.out.println("testread2: '"+ readIn.readUTF()+"'");
+//            readIn = new DataInputStream(in);
+            
             // URL length, key, name length = 12?
             while (readIn.available() > 1) {
-                String pvName = getString(readIn);
-                String typeId = getString(readIn);
+//                String pvName = getString(readIn);
+                String pvName =readIn.readUTF();
+                System.out.println("Name: '"+pvName+"'");
+//                String typeId = getString(readIn);
+                String typeId = readIn.readUTF();
+                System.out.println("Type ID: '"+typeId+"'");
                 int size = readIn.readInt();
+                System.out.println("size: "+size);
                 IValue[] values = new IValue[size];
                 for(int i = 0; i<size;i++){ 
                     String temp = getString(readIn);
                     ValueTyp valueType = ValueTyp.valueOf(temp);
                     String format = getString(readIn);
+                    System.out.println(format);
                     MetaData metaData = MetaData.valueOf(getString(readIn));
                     INumericMetaData inmd = null;
                     IEnumeratedMetaData iemd = null;
@@ -484,18 +496,25 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
      * @return String
      * @throws IOException Imputstream Exception
      */
-    private String getString(final DataInputStream readIn) throws IOException {
-        int size = readIn.read();
-        byte[] bytes = new byte[size];
-        readIn.read(bytes);
-        return new String(bytes);
+    private String getString(DataInputStream readIn) throws IOException {
+//        int size = readIn.read();
+//        byte[] bytes = new byte[size];
+//        readIn.read(bytes);
+//        return new String(bytes);
+        return readIn.readUTF();
     }
 
     /**
      * @param string write to sendStream 
      */
     private void send(final String string) {
-        send(string.getBytes());
+//        send(string.getBytes());
+        try {
+            _writeOut.writeUTF(string);
+        } catch (IOException e) {
+            // TODO Generate a Log Message
+            e.printStackTrace();
+        }
     }
     /**
      * @param integer write to sendStream 
@@ -549,7 +568,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
             _writeOut.writeInt(buffer.length);
             _writeOut.write(buffer);
         } catch (IOException e) {
-
+            
         }
     }
 
