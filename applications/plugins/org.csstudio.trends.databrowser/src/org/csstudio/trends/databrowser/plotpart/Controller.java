@@ -43,10 +43,15 @@ public class Controller
         public void scan(boolean with_redraw)
         {
             // 'Scan' the PVs
-            model.addCurrentValuesToChartItems();
-            // Scroll or redraw?
+            model.scan();
+
+            // Done, no scroll or redraw?
             if (!with_redraw  ||  !chart.isVisible())
                 return;
+            
+            // Need to redraw, so update formulas
+            model.updateFormulas();
+
             if (!gui.isScrollEnabled())
             {   // redraw w/o scroll
                 chart.redrawTraces();

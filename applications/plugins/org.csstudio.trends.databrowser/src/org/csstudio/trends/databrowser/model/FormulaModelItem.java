@@ -17,9 +17,20 @@ import org.csstudio.util.formula.Formula;
  */
 public class FormulaModelItem extends AbstractModelItem
 {
+    /** The (changing) samples of this item,
+     *  but keeping the same ModelSampleArray instance
+     *  to hold them, since that's what the plot has received.
+     */
+    private final ModelSampleArray samples = new ModelSampleArray();
+
+    /** The input items and their associated variables. */
     private FormulaInputs input_variables = new FormulaInputs(null);
-    private Formula formula;
     
+    /** The formula.
+     *  Its variables refer to (a subset) of the input_variables.
+     */
+    private Formula formula;
+
     /** Constructor */
     public FormulaModelItem(Model model, String pv_name,
                             int axis_index, double min, double max,
@@ -61,38 +72,45 @@ public class FormulaModelItem extends AbstractModelItem
     /** {@inheridDoc} */
     public IModelSamples getSamples()
     {
-        // Compute new samples from inputs and formula
-        // TODO this is expensive. Move into thread,
-        // trigger by input item listener.
-        ModelSampleArray samples = new ModelSampleArray();
-        
+        // TODO re-compute when inputs change.
+        // TODO throttle?
+        compute();
+        return samples;
+    }
+
+    /** Compute new samples from inputs and formula. */
+    void compute()
+    {
         input_variables.startIteration();
         final INumericMetaData meta_data = input_variables.getMetaData();
-        try
+        synchronized (samples)
         {
-            ITimestamp time = input_variables.next();
-            while (time != null)
-            {        
-                final double number = formula.eval();
-                IValue value = ValueFactory.createDoubleValue(
-                                time,
-                                ValueFactory.createOKSeverity(),
-                                "",  //$NON-NLS-1$
-                                meta_data,
-                                IValue.Quality.Interpolated,
-                                new double[] { number });
-                // Add a sample with that value and source = formula
-                samples.add(new ModelSample(value, formula.getFormula()));
-                // Prepare next row of the spreadsheet iterator
-                time = input_variables.next();
+            samples.clear();
+            try
+            {
+                ITimestamp time = input_variables.next();
+                while (time != null)
+                {        
+                    final double number = formula.eval();
+                    IValue value = ValueFactory.createDoubleValue(
+                                    time,
+                                    ValueFactory.createOKSeverity(),
+                                    "",  //$NON-NLS-1$
+                                    meta_data,
+                                    IValue.Quality.Interpolated,
+                                    new double[] { number });
+                    // Add a sample with that value and source = formula
+                    samples.add(new ModelSample(value, formula.getFormula()));
+                    // Prepare next row of the spreadsheet iterator
+                    time = input_variables.next();
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+                Plugin.logException("Formula '" + getName() + "'", ex);  //$NON-NLS-1$//$NON-NLS-2$
             }
         }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-            Plugin.logException("Formula '" + getName() + "'", ex);  //$NON-NLS-1$//$NON-NLS-2$
-        }
-        return samples;
     }
 
     /** {@inheritDoc} */

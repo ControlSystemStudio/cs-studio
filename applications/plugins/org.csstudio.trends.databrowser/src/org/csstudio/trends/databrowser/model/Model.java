@@ -533,17 +533,22 @@ public class Model
         }
     }
     
-    /** Add all the current values to the chart items.
-     *  <p>
-     *  See long discussion in the description of the ChartModel.
-     */
-    public final ITimestamp addCurrentValuesToChartItems()
+    /** Scan PVs. */
+    public final ITimestamp scan()
     {
         ITimestamp now = TimestampFactory.now();
         for (AbstractModelItem item : items)
             if (item instanceof PVModelItem)
                 ((PVModelItem)item).addCurrentValueToSamples(now);
         return now;
+    }
+
+    /** Update (re-compute) formulas. */
+    public final void updateFormulas()
+    {
+        for (AbstractModelItem item : items)
+            if (item instanceof FormulaModelItem)
+                ((FormulaModelItem)item).compute();
     }
     
     /** @return Returns the whole model as an XML string. */

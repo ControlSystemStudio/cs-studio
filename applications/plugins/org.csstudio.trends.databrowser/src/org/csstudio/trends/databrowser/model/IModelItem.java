@@ -82,6 +82,14 @@ public interface IModelItem
     /** Configure to use log. scale or not. */
     public abstract void setLogScale(boolean use_log_scale);
 
-	/** @return The samples. */
+	/** Get the samples of this model item.
+     *  <p>
+     *  <b>Note:</b> The returned sample interface is passed to
+     *  the chart. So when the data of this model item changes
+     *  (new samples added, ...), the actual reference to this item's
+     *  sample interface should stay the same, just the sample count
+     *  and sample instances provided by that interface will differ!
+     *  @return The samples.
+     */
 	public abstract IModelSamples getSamples();
 }
