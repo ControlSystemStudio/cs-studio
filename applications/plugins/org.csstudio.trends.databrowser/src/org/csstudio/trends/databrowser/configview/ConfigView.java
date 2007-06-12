@@ -8,10 +8,12 @@ import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDataSourceDropTarget;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.configview.PVTableHelper.Column;
+import org.csstudio.trends.databrowser.model.FormulaModelItem;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
+import org.csstudio.trends.databrowser.model.formula_gui.FormulaDialog;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.util.swt.AutoSizeColumn;
@@ -38,8 +40,12 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -137,6 +143,8 @@ public class ConfigView extends PlotAwareView
         {   entriesChanged(); }
 
     };
+    private Composite archive_box;
+    private Composite formula_box;
     
     /** Try to restore some things from memento */
     @Override
@@ -218,7 +226,7 @@ public class ConfigView extends PlotAwareView
                         new ISelectionChangedListener()
         {
             public void selectionChanged(SelectionChangedEvent event)
-            {   updateArchiveTable();  }
+            {   updateLowerSash();  }
         });
              
         // Create actions, hook them to menues
@@ -302,26 +310,26 @@ public class ConfigView extends PlotAwareView
         tab.setToolTipText(Messages.ConfigPV);
 
         // Tab contains single SashForm with these children:
-        // "PVs:"
+        // Upper sash, "PVs:"
         // Table with list of PVs
         //
-        // "Archives:"
-        // Table with list of archive servers for selected PV
+        // Lower Sashm "Archives:" or formula info
+        // Table with list of archive servers for selected PV,
+        // or stuff about the formula, depending on the type
+        // of selected item in the PVs list.
         pv_form = new SashForm(tabs, SWT.VERTICAL | SWT.BORDER);
         pv_form.setLayout(new FillLayout());
         tab.setControl(pv_form);
 
-        // SashForm item -------------------------------------
+        // SashForm item for PVs -------------------------------------
         Composite box = new Composite(pv_form, SWT.NULL);
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
         box.setLayout(layout);
-        GridData gd;
 
-        Label l;
-        l = new Label(box, 0);
+        Label l = new Label(box, 0);
         l.setText(Messages.PVs + colon);
-        gd = new GridData();
+        GridData gd = new GridData();
         l.setLayoutData(gd);
         
         Table table = new Table(box,
@@ -379,18 +387,28 @@ public class ConfigView extends PlotAwareView
         pv_table_viewer.setCellEditors(editors);
         pv_table_viewer.setCellModifier(new PVTableCellModifier(this));
 
-        // SashForm item -------------------------------------
-        box = new Composite(pv_form, SWT.NULL);
+        // SashForm item for archives or formulas of current PV ---------------
+        box = new Composite(pv_form, 0);
+        box.setLayout(new FormLayout());
+    
+        archive_box = new Composite(box, 0);
+        FormData fd = new FormData();
+        fd.left = new FormAttachment(0);
+        fd.top = new FormAttachment(0);
+        fd.right = new FormAttachment(100);
+        fd.bottom = new FormAttachment(100);
+        archive_box.setLayoutData(fd);
+        
         layout = new GridLayout();
         layout.numColumns = 1;
-        box.setLayout(layout);
+        archive_box.setLayout(layout);
         
-        l = new Label(box, 0);
+        l = new Label(archive_box, 0);
         l.setText(Messages.ArchsForPVs + colon);
         gd = new GridData();
         l.setLayoutData(gd);
         
-        table = new Table(box,
+        table = new Table(archive_box,
                         SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
@@ -405,13 +423,35 @@ public class ConfigView extends PlotAwareView
         AutoSizeColumn.make(table, Messages.URL,  200, 100);
         // Configure table to auto-size the columns
         new AutoSizeControlListener(box, table);
-        
-        // Initial sizes of PV list vs. archive detail
-        pv_form.setWeights(pv_form_weights);
-        
+        // Attach TableViewer
         archive_table_viewer = new TableViewer(table);
         archive_table_viewer.setLabelProvider(new ArchiveDataSourceLabelProvider());
         archive_table_viewer.setContentProvider(new ArrayContentProvider());
+
+        formula_box = new Composite(box, 0);
+        fd = new FormData();
+        fd.left = new FormAttachment(0);
+        fd.top = new FormAttachment(0);
+        fd.right = new FormAttachment(100);
+        fd.bottom = new FormAttachment(100);
+        formula_box.setLayoutData(fd);
+
+        formula_box.setLayout(new RowLayout());
+        Button config_formula = new Button(formula_box, 0);
+        config_formula.setText("Configure Formula");
+        config_formula.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                configureSelectedFormula();
+            }
+        });
+        
+        formula_box.setVisible(false);
+        
+        // Initial sizes of PV list vs. archive detail
+        pv_form.setWeights(pv_form_weights);
     }     
 
     /** Create one tab of the TabFolder GUI. */
@@ -797,7 +837,7 @@ public class ConfigView extends PlotAwareView
         }
         help.setText(""); //$NON-NLS-1$
         pv_table_viewer.refresh();
-        updateArchiveTable();
+        updateLowerSash();
     }
    
     /** Add a new PV to the model. */
@@ -840,23 +880,63 @@ public class ConfigView extends PlotAwareView
             model.addArchiveDataSource(archive);
     }
     
-    /** Re-populate the archive table after model or selection changes. */
-    private void updateArchiveTable()
+    /** Re-populate the archive table or show the formula stuff
+     *  after model or selection changes.
+     */
+    private void updateLowerSash()
     {
         IStructuredSelection sel = 
             (IStructuredSelection) pv_table_viewer.getSelection();
         if (sel.size() == 1)
         {
             Object item = sel.getFirstElement();
-            if (item != PVTableHelper.empty_row  &&
-                item instanceof IPVModelItem)
+            if (item == PVTableHelper.empty_row)
             {
+                // hide all
+                archive_box.setVisible(false);
+                formula_box.setVisible(false);
+            }
+            else if (item instanceof IPVModelItem)
+            {
+                formula_box.setVisible(false);
+                archive_box.setVisible(true);
                 archive_table_viewer.setInput(
                                 ((IPVModelItem)item).getArchiveDataSources());
-                return;
+            }
+            else
+            {
+                archive_box.setVisible(false);
+                formula_box.setVisible(true);
             }
         }
-        // else: clear archive table
-        archive_table_viewer.setInput(null);
+        else
+        {
+            // empty archive info
+            formula_box.setVisible(false);
+            archive_box.setVisible(true);
+            archive_table_viewer.setInput(null);
+        }        
+        // Ask shell to re-evaluate the changed layout
+        archive_box.getShell().layout(true, true);
     }  
+
+    /** Run dialog for selected formula.
+     *  NOP if none selected.
+     */
+    private void configureSelectedFormula()
+    {
+        IStructuredSelection sel = 
+            (IStructuredSelection) pv_table_viewer.getSelection();
+        if (sel.size() == 1)
+        {
+            Object item = sel.getFirstElement();
+            if (item instanceof FormulaModelItem)
+            {
+                FormulaDialog dlg =
+                    new FormulaDialog(pv_table_viewer.getControl().getShell(),
+                                    (FormulaModelItem) item);
+                dlg.open();
+            }
+        }
+    }
 }
