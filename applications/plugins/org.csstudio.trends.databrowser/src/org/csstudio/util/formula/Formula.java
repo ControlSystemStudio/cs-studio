@@ -47,17 +47,53 @@ import org.csstudio.util.formula.node.SubNode;
  *  are reasonably fast.
  *  
  *  @author Kay Kasemir
- *  @author 
+ *  @author Xiaosong Geng
  */
 @SuppressWarnings("nls")
 public class Formula implements Node
 {
     /** The original formula that we parsed */
     private final String formula;
+    
     private final Node tree;
+    
     private static VariableNode constants[] = new VariableNode[]
     {
+        new VariableNode("E", Math.E),
     	new VariableNode("PI", Math.PI)
+    };
+
+    /** Names of functions that take one argument. */
+    final static private String one_arg_funcs[] = new String[]
+    {
+        "abs",
+        "acos",
+        "asin",
+        "atan",
+        "ceil",
+        "cos",
+        "cosh",
+        "exp",
+        "expm1",
+        "floor",
+        "log",
+        "log10",
+        "round",
+        "sin", 
+        "sinh", 
+        "sqrt",
+        "tan",
+        "tanh",
+        "toDegrees",
+        "toRadians"
+    };
+
+    /** Names of functions that take two arguments, */
+    final static private String two_arg_funcs[] = new String[]
+    {
+        "atan2",
+        "hypot",
+        "pow"
     };
     private VariableNode variables[];
     
@@ -147,39 +183,6 @@ public class Formula implements Node
             return new SubNode(new ConstantNode(0), result);
         return result;
     }
-
-    /** Names of functions that take one argument. */
-    final static private String one_arg_funcs[] = new String[]
-    {
-        "abs",
-        "acos",
-        "asin",
-        "atan",
-        "ceil",
-        "cos",
-        "cosh",
-        "exp",
-        "expm1",
-        "floor",
-        "log",
-        "log10",
-        "round",
-        "sin", 
-        "sinh", 
-        "sqrt",
-        "tan",
-        "tanh",
-        "toDegrees",
-        "toRadians"
-    };
-
-    /** Names of functions that take two arguments, */
-    final static private String two_arg_funcs[] = new String[]
-    {
-        "atan2",
-        "hypot",
-        "pow"
-    };
 
     /** @param name Function name
      *  @return Returns Node that evaluates the function.
