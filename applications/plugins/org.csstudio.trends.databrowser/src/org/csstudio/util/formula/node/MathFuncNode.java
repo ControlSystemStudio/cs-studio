@@ -59,6 +59,7 @@ public class MathFuncNode implements Node
 	public String toString()
     {
         StringBuffer b = new StringBuffer(function);
+        b.append("(");
         for (int i = 0; i < args.length; i++)
         {
             if (i>0)
