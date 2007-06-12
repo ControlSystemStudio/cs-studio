@@ -7,9 +7,9 @@ import org.csstudio.trends.databrowser.AbstractAddPVAction;
  */
 public class AddPVAction extends AbstractAddPVAction
 {
-    private ConfigView config;
+    final private ConfigView config;
 	
-	public AddPVAction(ConfigView config)
+	AddPVAction(ConfigView config)
 	{
         super();
 		this.config = config;

@@ -22,12 +22,12 @@ public class FormulaModelItemTest
 {
     public void testModelItemScan() throws Exception
     {
-        ModelItem.test_mode = true;
+        PVModelItem.test_mode = true;
         
-        ModelItem fred = new ModelItem(null, "fred",
+        PVModelItem fred = new PVModelItem(null, "fred",
                         1024, 0, 0, 0, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
-        ModelItem janet = new ModelItem(null, "janet",
+        PVModelItem janet = new PVModelItem(null, "janet",
                         1024, 0, 0, 0, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
         fred.start();

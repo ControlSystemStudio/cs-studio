@@ -65,7 +65,7 @@ public class Model
     /** Ring buffer size, number of elements, for 'live' data. */
     private int ring_size = 1024;
 
-    private ArrayList<ModelItem> items = new ArrayList<ModelItem>();
+    private ArrayList<AbstractModelItem> items = new ArrayList<AbstractModelItem>();
     
     /** <code>true</code> if all model items were 'started'. */
     private boolean is_running = false;
@@ -108,7 +108,7 @@ public class Model
     /** Peoperly clear the item list. */
     private void disposeItems()
     {
-        for (ModelItem item : items)
+        for (AbstractModelItem item : items)
             item.dispose();
         items.clear();
     }
@@ -256,8 +256,11 @@ public class Model
     public void setRingSize(int ring_size)
     {
         this.ring_size = ring_size;
-        for (ModelItem item : items)
-            item.setRingSize(ring_size);
+        for (AbstractModelItem item : items)
+        {
+            if (item instanceof PVModelItem)
+                ((PVModelItem)item).setRingSize(ring_size);
+        }
     }
 
     /** @return Returns the number of chart items. */
@@ -268,14 +271,22 @@ public class Model
     public IModelItem getItem(int i)
     {   return items.get(i); }
 
+    public enum ItemType
+    {
+        /** A live or archived PV */
+        ProcessVariable,
+        /** A computed item */
+        Formula
+    };
+
     /** Add a new item to the model.
      * 
      *  @param pv_name The PV to add.
      *  @return Returns the newly added chart item.
      */
-    public IModelItem add(String pv_name)
+    public IModelItem addPV(String pv_name)
     {
-        return add(pv_name, -1);
+        return add(ItemType.ProcessVariable, pv_name, -1);
     }
     
     /** Add a new item to the model.
@@ -284,7 +295,30 @@ public class Model
      *  @param axis_index The Y axis to use [0, 1, ...] or -1 for new axis.
      *  @return Returns the newly added chart item.
      */
-    public IModelItem add(String pv_name, int axis_index)
+    public IModelItem addPV(String pv_name, int axis_index)
+    {
+        return add(ItemType.ProcessVariable, pv_name, axis_index);
+    }
+
+    /** Add a new item to the model.
+     * 
+     *  @param type Describes the type of PV to add
+     *  @param pv_name The PV to add.
+     *  @return Returns the newly added chart item.
+     */
+    public IModelItem add(ItemType type, String pv_name)
+    {
+        return add(type, pv_name, -1);
+    }
+
+    /** Add a new item to the model.
+     *
+     *  @param type Describes the type of PV to add
+     *  @param pv_name The PV to add.
+     *  @param axis_index The Y axis to use [0, 1, ...] or -1 for new axis.
+     *  @return Returns the newly added chart item.
+     */
+    public IModelItem add(ItemType type, String pv_name, int axis_index)
     {
         int c = items.size();
         if (axis_index < 0)
@@ -295,13 +329,14 @@ public class Model
                     axis_index = items.get(i).getAxisIndex() + 1;
         }
         int line_width = 0;
-        return add(pv_name, axis_index, DefaultColors.getRed(c),
+        return add(type, pv_name, axis_index, DefaultColors.getRed(c),
                 DefaultColors.getGreen(c), DefaultColors.getBlue(c),
                 line_width);
     }
     
     /** Add a new item to the model.
      * 
+     *  @param type Describes the type of PV to add
      *  @param pv_name The PV to add.
      *  @param axis_index The Y axis to use [0, 1, ...]
      *  @param red,
@@ -310,7 +345,7 @@ public class Model
      *  @param line_width The line width.
      *  @return Returns the newly added chart item, or <code>null</code>.
      */
-    private IModelItem add(String pv_name, int axis_index,
+    private IModelItem add(ItemType type, String pv_name, int axis_index,
             int red, int green, int blue, int line_width)
     {
         // Do not allow duplicate PV names.
@@ -333,7 +368,7 @@ public class Model
         boolean log_scale = false;
         TraceType trace_type = TraceType.Lines;
         // Use settings of existing item for that axis - if there is one
-        for (ModelItem item : items)
+        for (IModelItem item : items)
             if (item.getAxisIndex() == axis_index)
             {
                 low = item.getAxisLow();
@@ -343,10 +378,22 @@ public class Model
                 trace_type = item.getTraceType();
                 break;
             }
-        ModelItem item = new ModelItem(this, pv_name, ring_size,
-        		axis_index, low, high, visible, auto_scale,
-                red, green, blue, line_width, trace_type,
-                log_scale);
+        AbstractModelItem item = null;
+        switch (type)
+        {
+        case ProcessVariable:
+            item = new PVModelItem(this, pv_name, ring_size,
+                            		axis_index, low, high, visible, auto_scale,
+                                    red, green, blue, line_width, trace_type,
+                                    log_scale);
+            break;
+        case Formula:
+            item = new FormulaModelItem(this, pv_name, 
+                                    axis_index, low, high, visible, auto_scale,
+                                    red, green, blue, line_width, trace_type,
+                                    log_scale);
+            break;
+        }
         silentAdd(item);
         fireEntryAdded(item);
         return item;
@@ -355,7 +402,7 @@ public class Model
     /** Set axis limits of all items on given axis. */
     public void setAxisLimits(int axis_index, double low, double high)
     {
-        for (ModelItem item : items)
+        for (AbstractModelItem item : items)
         {
             if (item.getAxisIndex() != axis_index)
                 continue;
@@ -368,7 +415,7 @@ public class Model
     /** Set axis type (log, linear) of all items on given axis. */
     void setLogScale(int axis_index, boolean use_log_scale)
     {
-        for (ModelItem item : items)
+        for (AbstractModelItem item : items)
         {
             if (item.getAxisIndex() != axis_index)
                 continue;
@@ -386,7 +433,7 @@ public class Model
      */
     void setAutoScale(int axis_index, boolean use_auto_scale)
     {
-        for (ModelItem item : items)
+        for (AbstractModelItem item : items)
         {
             if (item.getAxisIndex() != axis_index)
                 continue;
@@ -411,11 +458,11 @@ public class Model
     /** As <code>add()</code>, but without listener notification.
      *  @see #add()
      */
-    private void silentAdd(ModelItem item)
+    private void silentAdd(AbstractModelItem item)
     {
         items.add(item);
-        if (is_running)
-            item.start();
+        if (is_running  &&  item instanceof PVModelItem)
+            ((PVModelItem)item).start();
     }
     
     /** Remove item with given PV name. */
@@ -424,7 +471,7 @@ public class Model
         int i = findEntry(pv_name);
         if (i < 0)
             return;
-        ModelItem item = items.remove(i);
+        AbstractModelItem item = items.remove(i);
         item.dispose();
         fireEntryRemoved(item);
     }
@@ -452,8 +499,9 @@ public class Model
     {
         if (!is_running)
         {
-            for (ModelItem item : items)
-                item.start();
+            for (AbstractModelItem item : items)
+                if (item instanceof PVModelItem)
+                    ((PVModelItem)item).start();
             is_running = true;
         }
     }
@@ -463,8 +511,9 @@ public class Model
     {
         if (is_running)
         {
-            for (ModelItem item : items)
-                item.stop();
+            for (AbstractModelItem item : items)
+                if (item instanceof PVModelItem)
+                    ((PVModelItem)item).stop();
             is_running = false;
         }
     }
@@ -476,8 +525,9 @@ public class Model
     public final ITimestamp addCurrentValuesToChartItems()
     {
         ITimestamp now = TimestampFactory.now();
-        for (ModelItem item : items)
-            item.addCurrentValueToSamples(now);
+        for (AbstractModelItem item : items)
+            if (item instanceof PVModelItem)
+                ((PVModelItem)item).addCurrentValueToSamples(now);
         return now;
     }
     
@@ -493,7 +543,7 @@ public class Model
         b.append("    <update_period>" + update_period + "</update_period>\n");
         b.append("    <ring_size>" + ring_size + "</ring_size>\n");
         b.append("    <pvlist>\n");
-        for (ModelItem item : items)
+        for (AbstractModelItem item : items)
             b.append(item.getXMLContent());
         b.append("    </pvlist>\n"); 
         b.append("</databrowser>");
@@ -545,11 +595,11 @@ public class Model
         if (pvlist != null)
         {
             Element pv = DOMHelper.findFirstElementNode(
-            		pvlist.getFirstChild(), ModelItem.TAG_PV);
+            		pvlist.getFirstChild(), PVModelItem.TAG_PV);
             while (pv != null)
             {
-                silentAdd(ModelItem.loadFromDOM(this, pv, ring_size));
-                pv = DOMHelper.findNextElementNode(pv, ModelItem.TAG_PV);
+                silentAdd(PVModelItem.loadFromDOM(this, pv, ring_size));
+                pv = DOMHelper.findNextElementNode(pv, PVModelItem.TAG_PV);
             }
         }
         // This also notifies listeners about the new periods:

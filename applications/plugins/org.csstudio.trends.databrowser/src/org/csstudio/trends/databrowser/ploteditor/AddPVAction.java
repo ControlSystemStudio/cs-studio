@@ -19,6 +19,6 @@ public class AddPVAction extends AbstractAddPVAction
     @Override
     protected void addPV(String pv_name)
     {
-        model.add(pv_name);
+        model.addPV(pv_name);
     }
 }

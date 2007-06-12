@@ -3,7 +3,6 @@ package org.csstudio.trends.databrowser.configview;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
-import org.csstudio.trends.databrowser.model.ModelItem;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -38,7 +37,7 @@ public class PVTableCellModifier implements ICellModifier
             return ""; //$NON-NLS-1$
         try
         {
-            ModelItem entry = (ModelItem) element;
+            IModelItem entry = (IModelItem) element;
             PVTableHelper.Column col = PVTableHelper.findColumn(col_title);
             switch (col)
             {

@@ -1,7 +1,7 @@
 package org.csstudio.trends.databrowser.configview;
 
 import org.csstudio.trends.databrowser.Plugin;
-import org.csstudio.trends.databrowser.model.ModelItem;
+import org.csstudio.trends.databrowser.model.IModelItem;
 
 /** Helper for creating a table of PV rows from the model.
  * 
@@ -104,7 +104,7 @@ public class PVTableHelper
 	 * @return Returns the requested property.
 	 * @throws Exception on error.
 	 */
-	static public Object getProperty(ModelItem entry, String col_title) throws Exception
+	static public Object getProperty(IModelItem entry, String col_title) throws Exception
 	{
         Column id = findColumn(col_title);
 	    return getText(entry, id);
@@ -115,7 +115,7 @@ public class PVTableHelper
      * @param item 0 for properties[0] etc.
      * @return Returns the String for the entry
      */
-    static public String getText(ModelItem entry, int col_index)
+    static public String getText(IModelItem entry, int col_index)
     {
         return getText(entry, Column.fromOrdinal(col_index));
     }
@@ -125,7 +125,7 @@ public class PVTableHelper
 	 * @param item The Column of interest.
 	 * @return Returns the String for the entry
 	 */
-	static public String getText(ModelItem entry, Column item)
+	static public String getText(IModelItem entry, Column item)
 	{
 		try
         {

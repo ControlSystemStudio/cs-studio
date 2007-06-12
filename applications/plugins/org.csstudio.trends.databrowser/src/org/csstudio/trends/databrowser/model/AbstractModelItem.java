@@ -378,4 +378,7 @@ public abstract class AbstractModelItem
             }
         }
     }
+    
+    /** @return Returns an XML string for this item. */
+    abstract public String getXMLContent();
 }

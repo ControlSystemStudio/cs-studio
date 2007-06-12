@@ -107,6 +107,14 @@ public class FormulaModelItem extends AbstractModelItem
         return samples;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String getXMLContent()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /** Format as string */
     @SuppressWarnings("nls")
     @Override

@@ -25,13 +25,13 @@ import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.Element;
 
-/** One item (channel, PV, line, ...) of the <code>ChartModel</code>
+/** A model item connected to a live and/or archived PV.
  *  @see Model
  *  @author Kay Kasemir
  */
-public class ModelItem 
+public class PVModelItem 
        extends AbstractModelItem
-       implements IModelItem, PVListener, IProcessVariable
+       implements PVListener, IProcessVariable
 {	
     /** For unit tests within this package,
      *  ModelItem can directly use EPICS_V3_PV,
@@ -65,7 +65,7 @@ public class ModelItem
      *  but the ChartItem must not be running when released.
      *  @see #stop
      */
-    public ModelItem(Model model, String pv_name, int ring_size,
+    public PVModelItem(Model model, String pv_name, int ring_size,
     		int axis_index, double min, double max,
             boolean visible,
             boolean auto_scale,
@@ -147,7 +147,8 @@ public class ModelItem
      *  @see #loadFromDOM(Model, Element, int)
      */
     @SuppressWarnings("nls")
-    public final String getXMLContent()
+    @Override
+    public String getXMLContent()
     {
         StringBuffer b = new StringBuffer();
         b.append("        <" + TAG_PV + ">\n");
@@ -184,7 +185,7 @@ public class ModelItem
      *  @see #getXMLContent()
      */
     @SuppressWarnings("nls")
-    public static ModelItem loadFromDOM(Model model, Element pv, int ring_size) throws Exception
+    public static PVModelItem loadFromDOM(Model model, Element pv, int ring_size) throws Exception
     {
         // Common PV stuff
         String name = DOMHelper.getSubelementString(pv, TAG_NAME);
@@ -216,8 +217,8 @@ public class ModelItem
         if (trace_type_txt.length() > 0)
             trace_type = TraceType.fromName(trace_type_txt);
         
-        ModelItem item =
-            new ModelItem(model, name, ring_size, axis_index,
+        PVModelItem item =
+            new PVModelItem(model, name, ring_size, axis_index,
                           min, max, visible, auto_scale,
                           red, green, blue, line_width, trace_type, log_scale);
         
@@ -336,7 +337,7 @@ public class ModelItem
                         {
                             public void run()
                             {
-                                model.fireEntryLookChanged(ModelItem.this);
+                                model.fireEntryLookChanged(PVModelItem.this);
                             }
                         });
                     }

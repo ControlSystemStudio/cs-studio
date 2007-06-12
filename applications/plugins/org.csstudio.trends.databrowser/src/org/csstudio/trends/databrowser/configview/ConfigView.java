@@ -77,7 +77,7 @@ public class ConfigView extends PlotAwareView
     private TableViewer pv_table_viewer;
     private PVTableLazyContentProvider table_content;
     private PVTableLabelProvider label_provider;
-    private Action add_pv_action, delete_pv_action;
+    private Action add_pv_action, add_formula_action, delete_pv_action;
     private Action archive_up_action, archive_down_action;
     private Action delete_archive_action;
 
@@ -192,6 +192,7 @@ public class ConfigView extends PlotAwareView
              
         // Create actions, hook them to menues
         add_pv_action = new AddPVAction(this);
+        add_formula_action = new AddFormulaAction(this);
         delete_pv_action = new DeletePVAction(this);
         archive_up_action = new ArchiveUpAction(this);
         archive_down_action = new ArchiveDownAction(this);
@@ -617,6 +618,7 @@ public class ConfigView extends PlotAwareView
         // See Plug-ins book p. 285
         MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         manager.add(add_pv_action);
+        manager.add(add_formula_action);
         manager.add(delete_pv_action);
         // Other plug-ins can contribute their actions here
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -732,6 +734,7 @@ public class ConfigView extends PlotAwareView
     {
         // Conditionally enable the 'add' action
         add_pv_action.setEnabled(model != null);
+        add_formula_action.setEnabled(model != null);
         delete_pv_action.setEnabled(model != null);
         // If the model switched, change our subscription
         if (old_model != model)
@@ -773,11 +776,21 @@ public class ConfigView extends PlotAwareView
         Model model = getModel();
         if (model == null)
             return null;
-        IModelItem item = model.add(name);
+        IModelItem item = model.addPV(name);
         // Add default archive data sources from prefs
         IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
         for (int i = 0; i < archives.length; i++)
             item.addArchiveDataSource(archives[i]);
+        return item;
+    }
+    
+    /** Add a new formula to the model. */
+    public IModelItem addFormula(String name)
+    {
+        Model model = getModel();
+        if (model == null)
+            return null;
+        IModelItem item = model.add(Model.ItemType.Formula, name);
         return item;
     }
     

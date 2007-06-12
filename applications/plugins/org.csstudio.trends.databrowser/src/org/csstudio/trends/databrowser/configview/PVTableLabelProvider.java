@@ -2,7 +2,6 @@ package org.csstudio.trends.databrowser.configview;
 
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
-import org.csstudio.trends.databrowser.model.ModelItem;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -48,7 +47,7 @@ public class PVTableLabelProvider extends LabelProvider implements
                 return PVTableHelper.empty_row;
             return ""; //$NON-NLS-1$
         }
-        return PVTableHelper.getText((ModelItem) obj, index);
+        return PVTableHelper.getText((IModelItem) obj, index);
 	}
 
     /** {@inheritDoc} */

@@ -4,7 +4,7 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.swt.chart.TraceType;
 
-/** Test for ModelItem
+/** Test for the PVModelItem
  *  <p>
  *  Requires test database or 'excas' to run.
  *  <p>
@@ -18,13 +18,13 @@ import org.csstudio.swt.chart.TraceType;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ModelItemTest
+public class PVModelItemTest
 {
     public void testModelItemScan() throws Exception
     {
-        ModelItem.test_mode = true;
+        PVModelItem.test_mode = true;
         
-        ModelItem item = new ModelItem(null, "fred",
+        PVModelItem item = new PVModelItem(null, "fred",
                         1024, 0, 0, 0, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
         item.start();
@@ -55,7 +55,7 @@ public class ModelItemTest
     
     public static void main(String[] args) throws Exception
     {
-        ModelItemTest test = new ModelItemTest();
+        PVModelItemTest test = new PVModelItemTest();
         test.testModelItemScan();
     }
 }

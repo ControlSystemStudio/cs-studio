@@ -282,7 +282,7 @@ public class Controller
                 // Create new axis
                 yaxis = chart.addYAxis(name);
         }
-        return model.add(name, chart.getYAxisIndex(yaxis));
+        return model.addPV(name, chart.getYAxisIndex(yaxis));
         // Model should now invoke entryAdded(), where we add it to the chart..
     }
 

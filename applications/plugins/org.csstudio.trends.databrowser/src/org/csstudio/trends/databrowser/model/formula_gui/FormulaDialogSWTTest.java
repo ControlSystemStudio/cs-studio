@@ -4,7 +4,7 @@ import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.model.FormulaInput;
 import org.csstudio.trends.databrowser.model.FormulaModelItem;
 import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.trends.databrowser.model.ModelItem;
+import org.csstudio.trends.databrowser.model.PVModelItem;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -24,13 +24,13 @@ public class FormulaDialogSWTTest
         shell.setLayout(new FillLayout());
 
  
-        ModelItem.test_mode = true;
+        PVModelItem.test_mode = true;
         
         Model model = new Model();
-        model.add("fred");
-        model.add("freddy");
-        model.add("jane");
-        model.add("janet");
+        model.addPV("fred");
+        model.addPV("freddy");
+        model.addPV("jane");
+        model.addPV("janet");
 
         FormulaModelItem formula = new FormulaModelItem(model, "calc",
                         0, 0, 0, true, false, 0, 0, 0, 0,

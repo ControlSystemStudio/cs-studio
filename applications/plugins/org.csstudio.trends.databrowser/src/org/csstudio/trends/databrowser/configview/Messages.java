@@ -7,6 +7,10 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.configview.messages"; //$NON-NLS-1$
 
+    public static String AddFormula;
+
+    public static String AddFormula_TT;
+
     public static String Archive;
     public static String ArchsForPVs;
     public static String AxisIndex;
