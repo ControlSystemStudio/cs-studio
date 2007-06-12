@@ -4,7 +4,7 @@ import org.csstudio.util.formula.Node;
 
 public class MinNode implements Node
 {
-    private Node args[];
+    private final Node args[];
     
     public MinNode(Node args[])
     {
@@ -27,7 +27,7 @@ public class MinNode implements Node
     public boolean hasSubnode(Node node)
     {
         for (Node arg : args)
-            if (arg == node)
+            if (arg == node  ||  arg.hasSubnode(node))
                 return true;
         return false;
     }
@@ -36,7 +36,7 @@ public class MinNode implements Node
     @Override
     public String toString()
     {
-        StringBuffer b = new StringBuffer("min(");
+        final StringBuffer b = new StringBuffer("min(");
         for (int i = 0; i < args.length; i++)
         {
             if (i>0)

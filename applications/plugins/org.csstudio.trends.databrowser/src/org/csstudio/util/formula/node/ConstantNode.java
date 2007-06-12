@@ -2,10 +2,9 @@ package org.csstudio.util.formula.node;
 
 import org.csstudio.util.formula.Node;
 
-
 public class ConstantNode implements Node
 {
-    double value;
+    final double value;
     
     public ConstantNode(double value)
     {

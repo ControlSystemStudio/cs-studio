@@ -4,9 +4,9 @@ import org.csstudio.util.formula.Node;
 
 public class IfNode implements Node
 {
-    private Node cond;
-    private Node yes;
-    private Node no;
+    private final Node cond;
+    private final Node yes;
+    private final Node no;
     
     public IfNode(Node cond, Node yes, Node no)
     {
@@ -23,7 +23,9 @@ public class IfNode implements Node
     /** {@inheritDoc} */
     public boolean hasSubnode(Node node)
     {
-        return cond == node  ||  yes == node  ||  no == node;
+        return cond == node  ||  yes == node  ||  no == node ||
+               cond.hasSubnode(node) || yes.hasSubnode(node) ||
+               no.hasSubnode(node);
     }
     
     @SuppressWarnings("nls")

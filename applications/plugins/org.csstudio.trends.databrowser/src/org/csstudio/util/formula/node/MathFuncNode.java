@@ -6,6 +6,7 @@ import org.csstudio.util.formula.Node;
 
 /** Node for evaluating any of the java.lang.Math.* functions
  *  @author Xiaosong Geng
+ *  @author Kay Kasemir
  */
 public class MathFuncNode implements Node
 {
@@ -24,17 +25,14 @@ public class MathFuncNode implements Node
     	this.function = function;
         this.args = args;
         Class argcls[] = new Class[args.length];
-        
         for (int i = 0; i < args.length; i++)
-        {
             argcls[i] = double.class;
-        }
         method = Math.class.getDeclaredMethod(function, argcls);
     }
     
     public double eval()
     {
-        Object arglist[] = new Object[args.length];
+        final Object arglist[] = new Object[args.length];
         for (int i = 0; i < args.length; i++)
         {
             arglist[i] = new Double(args[i].eval());
@@ -58,7 +56,7 @@ public class MathFuncNode implements Node
     public boolean hasSubnode(Node node)
     {
         for (Node arg : args)
-            if (arg == node)
+            if (arg == node  ||  arg.hasSubnode(node))
                 return true;
         return false;
     }
@@ -67,7 +65,7 @@ public class MathFuncNode implements Node
 	@SuppressWarnings("nls")
 	public String toString()
     {
-        StringBuffer b = new StringBuffer(function);
+        final StringBuffer b = new StringBuffer(function);
         b.append("(");
         for (int i = 0; i < args.length; i++)
         {

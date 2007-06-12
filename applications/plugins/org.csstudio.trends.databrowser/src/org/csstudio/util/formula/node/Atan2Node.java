@@ -2,30 +2,20 @@ package org.csstudio.util.formula.node;
 
 import org.csstudio.util.formula.Node;
 
-public class Atan2Node implements Node
+public class Atan2Node extends AbstractBinaryNode
 {
-    final private Node left;
-    final private Node right;
-    
     public Atan2Node(Node left, Node right)
     {
-        this.left = left;
-        this.right = right;
+        super(left, right);
     }
     
     public double eval()
     {
         final double a = left.eval();
-        double b = right.eval();
+        final double b = right.eval();
         return Math.atan2(a, b);
     }
     
-    /** {@inheritDoc} */
-    public boolean hasSubnode(Node node)
-    {
-        return left == node   ||   right == node;
-    }
-
     @SuppressWarnings("nls")
     @Override
     public String toString()

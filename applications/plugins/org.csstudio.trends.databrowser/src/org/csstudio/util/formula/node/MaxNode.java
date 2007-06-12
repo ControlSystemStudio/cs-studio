@@ -4,7 +4,7 @@ import org.csstudio.util.formula.Node;
 
 public class MaxNode implements Node
 {
-    private Node args[];
+    private final Node args[];
     
     public MaxNode(Node args[])
     {
@@ -27,7 +27,7 @@ public class MaxNode implements Node
     public boolean hasSubnode(Node node)
     {
         for (Node arg : args)
-            if (arg == node)
+            if (arg == node || arg.hasSubnode(node))
                 return true;
         return false;
     }
@@ -36,7 +36,7 @@ public class MaxNode implements Node
     @Override
     public String toString()
     {
-        StringBuffer b = new StringBuffer("max(");
+        final StringBuffer b = new StringBuffer("max(");
         for (int i = 0; i < args.length; i++)
         {
             if (i>0)

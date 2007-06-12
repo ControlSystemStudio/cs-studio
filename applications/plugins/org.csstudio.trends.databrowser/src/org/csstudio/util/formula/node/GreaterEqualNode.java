@@ -2,28 +2,18 @@ package org.csstudio.util.formula.node;
 
 import org.csstudio.util.formula.Node;
 
-public class GreaterEqualNode implements Node
+public class GreaterEqualNode extends AbstractBinaryNode
 {
-    private Node left;
-    private Node right;
-    
     public GreaterEqualNode(Node left, Node right)
     {
-        this.left = left;
-        this.right = right;
+        super(left, right);
     }
     
     public double eval()
     {
-        double a = left.eval();
-        double b = right.eval();
+        final double a = left.eval();
+        final double b = right.eval();
         return (a >= b) ? 1.0 : 0.0;
-    }
-
-    /** {@inheritDoc} */
-    public boolean hasSubnode(Node node)
-    {
-        return left == node   ||   right == node;
     }
 
     @SuppressWarnings("nls")
