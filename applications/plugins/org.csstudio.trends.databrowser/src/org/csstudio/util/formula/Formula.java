@@ -2,13 +2,11 @@ package org.csstudio.util.formula;
 
 import java.util.Vector;
 
-import org.csstudio.util.formula.node.AbsNode;
 import org.csstudio.util.formula.node.AddNode;
 import org.csstudio.util.formula.node.AndNode;
 import org.csstudio.util.formula.node.ConstantNode;
 import org.csstudio.util.formula.node.DivNode;
 import org.csstudio.util.formula.node.EqualNode;
-import org.csstudio.util.formula.node.ExpNode;
 import org.csstudio.util.formula.node.GreaterEqualNode;
 import org.csstudio.util.formula.node.GreaterThanNode;
 import org.csstudio.util.formula.node.IfNode;
@@ -23,7 +21,6 @@ import org.csstudio.util.formula.node.NotNode;
 import org.csstudio.util.formula.node.OrNode;
 import org.csstudio.util.formula.node.PwrNode;
 import org.csstudio.util.formula.node.RndNode;
-import org.csstudio.util.formula.node.SqrtNode;
 import org.csstudio.util.formula.node.SubNode;
 
 
@@ -92,7 +89,7 @@ public class Formula implements Node
     /** @return Array of variables or <code>null</code> if none are used. */
     public VariableNode[] getVariables()
     {   return variables;    }
-
+    
     /** {@inheritDoc} */
     public double eval()
     {
@@ -151,74 +148,82 @@ public class Formula implements Node
         return result;
     }
 
+    /** Names of functions that take one argument. */
+    final static private String one_arg_funcs[] = new String[]
+    {
+        "abs",
+        "acos",
+        "asin",
+        "atan",
+        "ceil",
+        "cos",
+        "cosh",
+        "exp",
+        "expm1",
+        "floor",
+        "log",
+        "log10",
+        "round",
+        "sin", 
+        "sinh", 
+        "sqrt",
+        "tan",
+        "tanh",
+        "toDegrees",
+        "toRadians"
+    };
+
+    /** Names of functions that take two arguments, */
+    final static private String two_arg_funcs[] = new String[]
+    {
+        "atan2",
+        "hypot",
+        "pow"
+    };
+
     /** @param name Function name
      *  @return Returns Node that evaluates the function.
      *  @throws Exception
      */
     private Node findFunction(Scanner s, String name) throws Exception
     {
-        Node [] args = parseArgExpressions(s);
-        if (name.equalsIgnoreCase("sqrt"))
+        final Node [] args = parseArgExpressions(s);
+        // Check functions with one arg
+        for (int i=0; i<one_arg_funcs.length; ++i)
+            if (name.equalsIgnoreCase(one_arg_funcs[i]))
+            {
+                if (args.length != 1)
+                    throw new Exception("Expected 1 arg, got " + args.length);
+                return new MathFuncNode(name, args);
+            }
+        // ... two args...
+        for (int i=0; i<two_arg_funcs.length; ++i)
+            if (name.equalsIgnoreCase(two_arg_funcs[i]))
+            {
+                if (args.length != 2)
+                    throw new Exception("Expected 2 arg, got " + args.length);
+                return new MathFuncNode(name, args);
+            }
+        // ... oddballs
+        if (name.equalsIgnoreCase("rnd"))
         {
-            if (args.length != 1)
+            if (args.length < 1)
                 throw new Exception("Expected 1 arg, got " + args.length);
-            return new SqrtNode(args[0]);
+            return new RndNode(args[0]);
         }
-        else if (name.equalsIgnoreCase("abs"))
-        {
-            if (args.length != 1)
-                throw new Exception("Expected 1 arg, got " + args.length);
-            return new AbsNode(args[0]);
-        }
-        else if (name.equalsIgnoreCase("exp"))
-        {
-            if (args.length != 1)
-                throw new Exception("Expected 1 arg, got " + args.length);
-            return new ExpNode(args[0]);
-        }
-        else if (name.equalsIgnoreCase("min"))
+        if (name.equalsIgnoreCase("min"))
         {
             if (args.length < 2)
                 throw new Exception("Expected >=2 arg, got " + args.length);
             return new MinNode(args);
         }
-        else if (name.equalsIgnoreCase("max"))
+        if (name.equalsIgnoreCase("max"))
         {
             if (args.length < 2)
                 throw new Exception("Expected >=2 arg, got " + args.length);
             return new MaxNode(args);
         }
-        else if (name.equalsIgnoreCase("sin") 
-        	  || name.equalsIgnoreCase("cos")
-        	  || name.equalsIgnoreCase("tan")
-        	  || name.equalsIgnoreCase("asin")
-        	  || name.equalsIgnoreCase("acos")
-        	  || name.equalsIgnoreCase("atan")
-        	  || name.equalsIgnoreCase("log")
-        	  || name.equalsIgnoreCase("ceil")
-        	  || name.equalsIgnoreCase("floor")
-        	  || name.equalsIgnoreCase("round")
-        	  )
-        {
-            if (args.length != 1)
-                throw new Exception("Expected 1 arg, got " + args.length);
-            return new MathFuncNode(name, args);
-        }
-        else if (name.equalsIgnoreCase("atan2"))
-        {
-            if (args.length != 2)
-                throw new Exception("Expected 2 args, got " + args.length);
-            //return new Atan2Node(args[0], args[1]);
-            return new MathFuncNode(name, args);
-        }
-        else if (name.equalsIgnoreCase("rnd"))
-        {
-            if (args.length != 1)
-                throw new Exception("Expected 1 arg, got " + args.length);
-            return new RndNode(args[0]);
-        }
-        else
-            throw new Exception("Unknown function '" + name +"'");
+        throw new Exception("Unknown function '" + name +"'");
     }
 
     /** @return node for sub-expression arguments in (a1, a2, .. ) braces.
