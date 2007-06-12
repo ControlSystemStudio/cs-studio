@@ -49,14 +49,18 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.PartInitException;
 
 /** An Eclipse ViewPart for configuring the DataBrowser.
  *  @author Kay Kasemir
  */
 public class ConfigView extends PlotAwareView
 {
+    private static final String FORM_WEIGHT_TAG = "pv_form_weights"; //$NON-NLS-1$
     public static final String ID = ConfigView.class.getName();
     private static final String colon = ":"; //$NON-NLS-1$
 
@@ -69,10 +73,11 @@ public class ConfigView extends PlotAwareView
      */
     public static final boolean use_axis_combobox = false;
     
-    // GUI Elements for the "PV" Tab
-    // TODO: on exit, persist the form's weight,
-    // then initialize from the saved settings?
-    private SashForm form;
+    /** Sash that holds the GUI Elements for the "PV" Tab */
+    private SashForm pv_form;
+    
+    /** Initial sizes, possibly updated in init() from memento */
+    private int pv_form_weights[] = new int[] { 60, 40 };
     
     // Sash Section for PV Table
     private TableViewer pv_table_viewer;
@@ -132,6 +137,31 @@ public class ConfigView extends PlotAwareView
         {   entriesChanged(); }
 
     };
+    
+    /** Try to restore some things from memento */
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException
+    {
+        super.init(site, memento);
+        
+        if (memento != null)
+            for (int i=0; i<pv_form_weights.length; ++i)
+            {
+                final Integer val = memento.getInteger(FORM_WEIGHT_TAG + i);
+                if (val != null)
+                    pv_form_weights[i] = val.intValue();
+            }
+    }
+
+    /** Save the display state. */
+    @Override
+    public void saveState(IMemento memento)
+    {
+        pv_form_weights = pv_form.getWeights();
+        for (int i=0; i<pv_form_weights.length; ++i)
+            memento.putInteger(FORM_WEIGHT_TAG + i, pv_form_weights[i]);
+    }
+        
     /** @return Returns the table viewer used to display the PV entries. */
     public TableViewer getPVTableViewer()
     {   return pv_table_viewer; }
@@ -277,12 +307,12 @@ public class ConfigView extends PlotAwareView
         //
         // "Archives:"
         // Table with list of archive servers for selected PV
-        form = new SashForm(tabs, SWT.VERTICAL | SWT.BORDER);
-        form.setLayout(new FillLayout());
-        tab.setControl(form);
+        pv_form = new SashForm(tabs, SWT.VERTICAL | SWT.BORDER);
+        pv_form.setLayout(new FillLayout());
+        tab.setControl(pv_form);
 
         // SashForm item -------------------------------------
-        Composite box = new Composite(form, SWT.NULL);
+        Composite box = new Composite(pv_form, SWT.NULL);
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
         box.setLayout(layout);
@@ -350,7 +380,7 @@ public class ConfigView extends PlotAwareView
         pv_table_viewer.setCellModifier(new PVTableCellModifier(this));
 
         // SashForm item -------------------------------------
-        box = new Composite(form, SWT.NULL);
+        box = new Composite(pv_form, SWT.NULL);
         layout = new GridLayout();
         layout.numColumns = 1;
         box.setLayout(layout);
@@ -377,8 +407,7 @@ public class ConfigView extends PlotAwareView
         new AutoSizeControlListener(box, table);
         
         // Initial sizes of PV list vs. archive detail
-        int weights[] = new int[] { 60, 40 };
-        form.setWeights(weights);
+        pv_form.setWeights(pv_form_weights);
         
         archive_table_viewer = new TableViewer(table);
         archive_table_viewer.setLabelProvider(new ArchiveDataSourceLabelProvider());
@@ -829,5 +858,5 @@ public class ConfigView extends PlotAwareView
         }
         // else: clear archive table
         archive_table_viewer.setInput(null);
-    }
+    }  
 }

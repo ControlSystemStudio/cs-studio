@@ -10,8 +10,6 @@ import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDragSourc
 import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDropTarget;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithArchiveDragSource;
 import org.csstudio.trends.databrowser.Plugin;
-import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.util.swt.AutoSizeColumn;
 import org.csstudio.util.swt.AutoSizeControlListener;
@@ -40,15 +38,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
 
-/** An Eclipse ViewPart for handling the DataBrowser archives.
+/** An Eclipse ViewPart for browsing archives.
  *  @author Kay Kasemir
  */
-public class ArchiveView extends PlotAwareView
+public class ArchiveView extends ViewPart
 {
     public static final String ID = ArchiveView.class.getName();
 
@@ -58,8 +60,9 @@ public class ArchiveView extends PlotAwareView
     private ArchiveServer server;
 
     // Sash for the two GUI sub-sections
-    // TODO: on exit, persist the form's weight, and init from saved settings?
     private SashForm form;
+    private int form_weights[] = new int[] {50,50};
+    private static final String FORM_WEIGHT_TAG = "form_weights"; //$NON-NLS-1$
 
     // Archive info GUI Elements
     private Combo url;
@@ -114,6 +117,31 @@ public class ArchiveView extends PlotAwareView
             name_table_viewer.setItemCount(name_table_items.size());
         }
     };
+    
+    /** Try to restore some things from memento */
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException
+    {
+        super.init(site, memento);
+        
+        if (memento != null)
+            for (int i=0; i<form_weights.length; ++i)
+            {
+                final Integer val = memento.getInteger(FORM_WEIGHT_TAG + i);
+                if (val != null)
+                    form_weights[i] = val.intValue();
+            }
+    }
+
+    /** Save the display state. */
+    @Override
+    public void saveState(IMemento memento)
+    {
+        form_weights = form.getWeights();
+        for (int i=0; i<form_weights.length; ++i)
+            memento.putInteger(FORM_WEIGHT_TAG + i, form_weights[i]);
+    }
+
 
     @Override
     public void createPartControl(Composite parent)
@@ -135,8 +163,6 @@ public class ArchiveView extends PlotAwareView
                 connectToURL(archive.getUrl());
             }
         };
-        // Hook to model updates
-        super.createPartControl(parent);
     }
 
     private void createGUI(Composite parent)
@@ -316,7 +342,7 @@ public class ArchiveView extends PlotAwareView
         name_table_viewer.setItemCount(name_table_items.size());
 
         // Set initial (relative) sizes
-        form.setWeights(new int[] {50,50});
+        form.setWeights(form_weights);
 
         // Add context menu to the name table.
         // One reason: Get object contribs for the NameTableItems.
@@ -350,28 +376,6 @@ public class ArchiveView extends PlotAwareView
     public void setFocus()
     {
         url.setFocus();
-    }
-    
-    /** We have a new model because the editor changed. */
-    @Override
-    protected void updateModel(Model old_model, Model model)
-    {
-        // TODO Get URL(s) from model?
-        /*
-        if (model == null)
-        {
-            connect.setEnabled(false);
-            url.setEnabled(false);
-            url.setText(Messages.NoCurrentPlot);
-        }
-        else
-        {
-            connect.setEnabled(true);
-            url.setEnabled(true);
-            //   "http://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi";
-            url.setText(Messages.DefaultURL);
-        }
-        */
     }
     
     /** Connect to archive server with given URL. */

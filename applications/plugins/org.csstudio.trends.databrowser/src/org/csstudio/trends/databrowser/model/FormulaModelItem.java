@@ -69,12 +69,9 @@ public class FormulaModelItem extends AbstractModelItem
         return input_variables.getInputs();
     }
 
-    /** {@inheridDoc} */
+    /** {@inheritDoc} */
     public IModelSamples getSamples()
     {
-        // TODO re-compute when inputs change.
-        // TODO throttle?
-        compute();
         return samples;
     }
 
