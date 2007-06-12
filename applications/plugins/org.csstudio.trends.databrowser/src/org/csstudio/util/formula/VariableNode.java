@@ -48,6 +48,12 @@ public class VariableNode implements Node
         return value;
     }
     
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        return false;
+    }
+    
     @SuppressWarnings("nls")
     @Override
     public String toString()

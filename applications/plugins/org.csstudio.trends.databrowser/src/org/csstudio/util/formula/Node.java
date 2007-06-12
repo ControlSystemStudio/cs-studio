@@ -8,5 +8,10 @@ public interface Node
     /** Evaluate the node, i.e. compute its value.
      *  @return The value of the node.
      */
-    public double eval();    
+    public double eval();
+    
+    /** Check if this node has given node as a subnode
+     *  @return <code>true</code> if given node was found unter this one.
+     */
+    public boolean hasSubnode(Node node);
 }

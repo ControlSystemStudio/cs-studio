@@ -18,6 +18,12 @@ public class ExpNode implements Node
         return Math.exp(a);
     }
     
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        return n == node;
+    }
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

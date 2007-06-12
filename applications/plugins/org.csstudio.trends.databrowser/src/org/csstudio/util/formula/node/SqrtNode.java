@@ -20,6 +20,12 @@ public class SqrtNode implements Node
         return Math.sqrt(a);
     }
     
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        return n == node;
+    }
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

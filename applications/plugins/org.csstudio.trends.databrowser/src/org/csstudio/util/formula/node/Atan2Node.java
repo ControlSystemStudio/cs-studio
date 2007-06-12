@@ -20,6 +20,12 @@ public class Atan2Node implements Node
         return Math.atan2(a, b);
     }
     
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        return left == node   ||   right == node;
+    }
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

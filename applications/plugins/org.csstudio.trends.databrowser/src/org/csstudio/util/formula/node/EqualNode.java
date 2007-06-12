@@ -21,6 +21,12 @@ public class EqualNode implements Node
         return (a == b) ? 1.0 : 0.0;
     }
 
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        return left == node   ||   right == node;
+    }
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

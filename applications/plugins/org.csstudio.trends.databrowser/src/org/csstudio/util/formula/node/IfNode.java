@@ -20,6 +20,12 @@ public class IfNode implements Node
         return (cond.eval() != 0) ? yes.eval() : no.eval();
     }
     
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        return cond == node  ||  yes == node  ||  no == node;
+    }
+    
     @SuppressWarnings("nls")
     @Override
     public String toString()

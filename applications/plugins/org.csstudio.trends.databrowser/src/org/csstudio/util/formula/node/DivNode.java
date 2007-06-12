@@ -23,6 +23,12 @@ public class DivNode implements Node
         return a / b;
     }
     
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        return left == node   ||   right == node;
+    }
+
     @SuppressWarnings("nls")
     @Override
    public String toString()

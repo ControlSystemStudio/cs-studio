@@ -17,6 +17,12 @@ public class NotNode implements Node
         return (a != 0) ? 0.0 : 1.0;
     }
     
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        return n == node;
+    }
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

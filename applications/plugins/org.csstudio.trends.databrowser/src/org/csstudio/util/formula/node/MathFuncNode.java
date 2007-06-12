@@ -54,6 +54,15 @@ public class MathFuncNode implements Node
         return 0.0;
     }
     
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        for (Node arg : args)
+            if (arg == node)
+                return true;
+        return false;
+    }
+    
     @Override
 	@SuppressWarnings("nls")
 	public String toString()

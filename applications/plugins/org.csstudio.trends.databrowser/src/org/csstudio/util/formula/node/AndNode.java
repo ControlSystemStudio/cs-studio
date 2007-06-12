@@ -16,12 +16,16 @@ public class AndNode implements Node
     
     public double eval()
     {
-        double a = left.eval();
-        double b = right.eval();
-        return (a != 0.0 && b != 0.0) ? 1.0 : 0.0;
+        return (left.eval() != 0.0   &&   right.eval() != 0.0) ? 1.0 : 0.0;
     }
     
-    @SuppressWarnings("nls")
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        return left == node   ||   right == node;
+    }
+
+   @SuppressWarnings("nls")
     @Override
     public String toString()
     {

@@ -23,6 +23,15 @@ public class MaxNode implements Node
         return result;
     }
     
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        for (Node arg : args)
+            if (arg == node)
+                return true;
+        return false;
+    }
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

@@ -18,6 +18,12 @@ public class RndNode implements Node
         return a*Math.random();
     }
     
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        return n == node;
+    }
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

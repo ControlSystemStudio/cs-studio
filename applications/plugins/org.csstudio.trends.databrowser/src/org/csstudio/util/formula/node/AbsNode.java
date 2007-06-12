@@ -18,6 +18,12 @@ public class AbsNode implements Node
         return Math.abs(a);
     }
 
+    /** {@inheritDoc} */
+    public boolean hasSubnode(Node node)
+    {
+        return n == node;
+    }
+
     @SuppressWarnings("nls")
     @Override
     public String toString()
