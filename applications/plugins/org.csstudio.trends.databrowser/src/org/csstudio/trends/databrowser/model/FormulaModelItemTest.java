@@ -61,9 +61,12 @@ public class FormulaModelItemTest
         FormulaModelItem formula = new FormulaModelItem(null, "calc",
                         0, 0, 0, true, false, 0, 0, 0, 0,
                         TraceType.Lines, false);
-        formula.addInput(fred, fred.getName());
-        formula.addInput(janet, janet.getName());
-        formula.setFormula("1000*fred + janet");
+        FormulaInput inputs[] = new FormulaInput[]
+        {
+            new FormulaInput(fred),
+            new FormulaInput(janet),
+        };
+        formula.setFormula("1000*fred + janet", inputs);
         samples = formula.getSamples();
         dumpSamples(samples);
     }

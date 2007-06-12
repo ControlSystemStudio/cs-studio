@@ -166,9 +166,9 @@ public class FormulaDialog extends Dialog
             final IModelItem item = model.getItem(i);
             VariableNode variable = null;
             // See if it's already associated with a variable in the formula
-            for (int j=0; j<formula_item.getNumInputs(); ++j)
+            final FormulaInput[] current_inputs = formula_item.getInputs();
+            for (FormulaInput input : current_inputs)
             {
-                final FormulaInput input = formula_item.getInput(j);
                 if (input.getModelItem() == item)
                 {
                     variable = input.getVariable();
@@ -484,27 +484,26 @@ public class FormulaDialog extends Dialog
         if (formula == null)
             throw new Error("No formula?"); //$NON-NLS-1$
         
-        
         // Get only the _used_ variables
         // Create array of all variables actually found inside the formula
         FormulaInput input_items[] = (FormulaInput []) input_table.getInput();
-        ArrayList<VariableNode> used_vars = new ArrayList<VariableNode>();
-        for (int i=0; i<input_items.length; ++i)
-            if (formula.hasSubnode(input_items[i].getVariable()))
-                used_vars.add(input_items[i].getVariable());
-        // Copy into array
-        VariableNode vars[] = new VariableNode[used_vars.size()];
-        used_vars.toArray(vars);
+        ArrayList<FormulaInput> used = new ArrayList<FormulaInput>();
+        for (FormulaInput input : input_items)
+            if (formula.hasSubnode(input.getVariable()))
+                used.add(input);
+        // Convert to array
+        FormulaInput used_array[] = new FormulaInput[used.size()];
+        used.toArray(used_array);
+
+        // Update the edited model item with the new formula and inputs
         try
-        {   // Create new formula with only the used variables
-            formula = new Formula(formula.getFormula(), vars);
+        {
+            formula_item.setFormula(formula.getFormula(), used_array);
         }
         catch (Exception ex)
         {
             Plugin.logException("Formula won't convert", ex); //$NON-NLS-1$
         }
-        
-        // TODO update formula_item with new stuff
         
         super.okPressed();
     }

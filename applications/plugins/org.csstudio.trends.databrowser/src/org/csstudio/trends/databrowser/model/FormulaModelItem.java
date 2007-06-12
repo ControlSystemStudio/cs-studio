@@ -19,7 +19,7 @@ import org.csstudio.util.formula.Formula;
  */
 public class FormulaModelItem extends AbstractModelItem
 {
-    private FormulaInputs input_variables = new FormulaInputs();
+    private FormulaInputs input_variables = new FormulaInputs(null);
     private Formula formula;
     
     /** Constructor */
@@ -36,33 +36,15 @@ public class FormulaModelItem extends AbstractModelItem
               red, green, blue, line_width, trace_type, log_scale);
     }
     
-    /** Add an input item.
-     *  @param item Model item that provides samples for formula.
-     *  @param name Name of the variable to use in the formula.
-     */
-    public void addInput(IModelItem item, String name)
-    {
-        input_variables.addInput(item, name);
-    }
-
-    /** @return number of inputs
-     *  @see #getInput(int)
-     */
-    public int getNumInputs()
-    {   return input_variables.getNumInputs();    }
-    
-    /** @return One of the input items
-      *  @see #getNumInputs()
-      */
-    public FormulaInput getInput(int index)
-    {   return input_variables.getInput(index);    }
-
     /** Define the formula.
-     *  @param formula_text
+     *  @param formula_text The formula
+     *  @param inputs The input variables or <code>null</code>.
      *  @throws Exception on parse error, including undefined variables.
      */
-    public void setFormula(String formula_text) throws Exception
+    public void setFormula(String formula_text, FormulaInput inputs[])
+        throws Exception
     {
+        input_variables = new FormulaInputs(inputs);
         formula = new Formula(formula_text, input_variables.getVariables());
     }
     
@@ -70,6 +52,12 @@ public class FormulaModelItem extends AbstractModelItem
     public String getFormula()
     {
         return formula == null ? "" : formula.getFormula(); //$NON-NLS-1$
+    }
+
+    /** @return The inputs */
+    public FormulaInput [] getInputs()
+    {
+        return input_variables.getInputs();
     }
 
     public void addArchiveSamples(ArchiveValues samples)
@@ -117,5 +105,21 @@ public class FormulaModelItem extends AbstractModelItem
             Plugin.logException("Formula '" + getName() + "'", ex);  //$NON-NLS-1$//$NON-NLS-2$
         }
         return samples;
+    }
+
+    /** Format as string */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString()
+    {
+        final StringBuffer b = new StringBuffer();
+        b.append("FormulaModelItem: " + formula.getFormula());
+        final FormulaInput[] inputs = input_variables.getInputs();
+        for (FormulaInput input : inputs)
+        {
+            b.append("\nInput '" + input.getModelItem().getName()
+                     + "' = Variable '" + input.getVariable().getName() + "'");
+        }
+        return b.toString();
     }
 }
