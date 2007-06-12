@@ -1,6 +1,7 @@
 package org.csstudio.trends.databrowser.model.formula_gui;
 
 import org.csstudio.trends.databrowser.Plugin;
+import org.csstudio.trends.databrowser.model.FormulaInput;
 
 /** Helper for creating the formula's input table.
  *  @author Kay Kasemir
@@ -10,10 +11,10 @@ public class InputTableHelper
     enum Column
     {
         /** Column Identifier. */
-        INPUT_PV("Input PV", 200, 100),
+        INPUT_PV(Messages.InputTable_PV, 200, 100),
 
         /** Column Identifier. */
-    	VARIABLE("Variable", 80, 100);
+    	VARIABLE(Messages.InputTable_Variable, 80, 100);
         
         private final String title;
         private final int min_size;
@@ -54,12 +55,13 @@ public class InputTableHelper
 	 * @return Returns the requested Column.
 	 * @throws Exception on error.
 	 */
-	static public Column findColumn(String title) throws Exception
+	@SuppressWarnings("nls")
+    static public Column findColumn(String title) throws Exception
 	{
 		for (Column col : Column.values())
 			if (col.getTitle().equals(title))
                 return col;
-		throw new Exception("Unknown column '" + title + "'");  //$NON-NLS-1$//$NON-NLS-2$
+		throw new Exception("Unknown column '" + title + "'");
 	}
 
 	/** Get e.g. the "NAME" from a ChartItem.
@@ -69,42 +71,42 @@ public class InputTableHelper
 	 * @return Returns the requested property.
 	 * @throws Exception on error.
 	 */
-	static public Object getProperty(InputTableItem entry, String col_title) throws Exception
+	static public Object getProperty(FormulaInput input, String col_title) throws Exception
 	{
         Column id = findColumn(col_title);
-	    return getText(entry, id);
+	    return getText(input, id);
 	}
 
     /** Get a data piece of the entry.
-     * @param entry The ChartItem.
+     * @param input The ChartItem.
      * @param item 0 for properties[0] etc.
      * @return Returns the String for the entry
      */
-    static public String getText(InputTableItem entry, int col_index)
+    static public String getText(FormulaInput input, int col_index)
     {
-        return getText(entry, Column.fromOrdinal(col_index));
+        return getText(input, Column.fromOrdinal(col_index));
     }
 
 	/** Get a data piece of the entry.
-	 * @param entry The ChartItem.
+	 * @param input The ChartItem.
 	 * @param item The Column of interest.
 	 * @return Returns the String for the entry
 	 */
-	static public String getText(InputTableItem entry, Column item)
+	static public String getText(FormulaInput input, Column item)
 	{
 		try
         {
             switch (item)
             {
             case INPUT_PV:
-                return entry.getPVName();
+                return input.getModelItem().getName();
             case VARIABLE:
-                return entry.getVariableName();
+                return input.getVariable().getName();
             }
 		}
 		catch (Exception e)
 		{
-            Plugin.logException("Error", e); //$NON-NLS-1$
+            Plugin.logException("InputTableHelper.getText:", e); //$NON-NLS-1$
 		}
 		return null;
 	}

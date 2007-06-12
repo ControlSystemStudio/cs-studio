@@ -1,10 +1,11 @@
 package org.csstudio.trends.databrowser.model.formula_gui;
 
+import org.csstudio.trends.databrowser.model.FormulaInput;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-/** The JFace label provider for a table with InputTableItem entries. 
+/** The JFace label provider for a table with FormulaInput entries. 
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -16,8 +17,8 @@ public class InputTableLabelProvider extends LabelProvider implements
      */
 	public String getColumnText(Object obj, int index)
 	{
-        InputTableItem item = (InputTableItem) obj;
-        return InputTableHelper.getText(item, index);
+        FormulaInput input = (FormulaInput) obj;
+        return InputTableHelper.getText(input, index);
 	}
 
     /** {@inheritDoc} */
