@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.csstudio.trends.databrowser.exportview;
 
 import java.io.PrintWriter;
@@ -18,6 +15,7 @@ import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IModelSamples;
+import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelSampleIterator;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -110,19 +108,21 @@ class ExportJob extends Job
                 out.println(Messages.Comment);
                 out.println(Messages.Comment + Messages.Archives);
 
-                if (source == Source.Plot)
+                // Is data from plot requested,
+                // or the item doesn't have an underlying PV as a data
+                // source, so we have to use the plot?
+                if (source == Source.Plot  ||
+                    !(item instanceof IPVModelItem))
                 {
-                    // Rethink the synchronization?
-                    // Use lock/unlock semaphore, so samples
-                    // can stay locked for the duration of the export job?
                     IModelSamples samples = item.getSamples();
                     iters[ch_idx] = new ModelSampleIterator(samples);
                 }
                 else
-                {
+                {   // Query PV item for its underlying data sources
+                    IPVModelItem pv_item = (IPVModelItem) item;
                     // RawSampleIterator handles reading from multiple archives.
                     // Build arrays of servers & keys
-                    IArchiveDataSource archives[] = item.getArchiveDataSources();
+                    IArchiveDataSource archives[] = pv_item.getArchiveDataSources();
                     ArchiveServer servers[] = new ArchiveServer[archives.length];
                     int keys[] = new int[archives.length];
                     for (int i=0; i < archives.length; ++i)

@@ -1,9 +1,8 @@
 package org.csstudio.trends.databrowser.configview;
 
-
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.model.IModelItem;
-import org.csstudio.trends.databrowser.model.Model;
+import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -47,15 +46,13 @@ public class DeleteArchiveAction extends Action
         IArchiveDataSource archives[] = config.getSelectedArchiveEntries();
 		if (items == null  ||  archives == null)
 			return;
-        Model model = config.getModel();
-        if (model == null)
-            return;
         for (IModelItem item : items)
+        {
+            if (! (item instanceof IPVModelItem))
+                continue;
+            IPVModelItem pv_item = (IPVModelItem) item;
             for (IArchiveDataSource archive : archives)
-            {
-                //System.out.println("remove from " + item.getName()
-                //                + " : " + archive.getName());
-                item.removeArchiveDataSource(archive);
-            }
+                pv_item.removeArchiveDataSource(archive);
+        }
 	}
 }

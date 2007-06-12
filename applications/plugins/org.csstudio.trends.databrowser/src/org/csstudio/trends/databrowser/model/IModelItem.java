@@ -1,16 +1,9 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.archive.ArchiveValues;
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.chart.TraceType;
 import org.eclipse.swt.graphics.Color;
 
-/** Interface to one item of the Model.
- *  <p>
- *  The ModelItem implements this, but also implements interfaces
- *  to handling the PV and other stuff that's meant to remain inside
- *  the model package,
- *  so this interface is what's visible to the outside.
+/** Public interface to one item of the Model.
  *  @see Model
  *  @author Kay Kasemir
  */
@@ -91,28 +84,4 @@ public interface IModelItem
 
 	/** @return The samples. */
 	public abstract IModelSamples getSamples();
-    
-    // TODO rethink if IModelItem already knows about archive stuff,
-    // since FormulaModelItem doesn't need it.
-    
-    /** Add samples obtained from the archive.
-     *  <p>
-     *  Called from a non-GUI thread!
-     */
-	public abstract void addArchiveSamples(ArchiveValues samples);
-
-    /** @return The archive data source descriptions. */
-    public abstract IArchiveDataSource[] getArchiveDataSources();
-    
-    /** Add another archive data source. */
-    public abstract void addArchiveDataSource(IArchiveDataSource archive);
-
-    /** Remove given archive data source. */
-    public abstract void removeArchiveDataSource(IArchiveDataSource archive);
-    
-    /** Move given archive data source 'up' in the list. */
-    public abstract void moveArchiveDataSourceUp(IArchiveDataSource archive);
-    
-    /** Move given archive data source 'down' in the list. */
-    public abstract void moveArchiveDataSourceDown(IArchiveDataSource archive);
 }

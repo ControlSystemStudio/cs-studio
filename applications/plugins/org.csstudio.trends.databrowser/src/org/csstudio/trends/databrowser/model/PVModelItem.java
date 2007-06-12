@@ -1,5 +1,7 @@
 package org.csstudio.trends.databrowser.model;
 
+import java.util.ArrayList;
+
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedMetaData;
@@ -31,7 +33,7 @@ import org.w3c.dom.Element;
  */
 public class PVModelItem 
        extends AbstractModelItem
-       implements PVListener, IProcessVariable
+       implements IPVModelItem, PVListener, IProcessVariable
 {	
     /** For unit tests within this package,
      *  ModelItem can directly use EPICS_V3_PV,
@@ -42,6 +44,10 @@ public class PVModelItem
     
     /** The control system PV from which to get new values. */
     private PV pv;
+    
+    /** Where to get archived data for this item. */
+    final private ArrayList<IArchiveDataSource> archives
+        = new ArrayList<IArchiveDataSource>();
     
     /** The most recent value we got from the pv.
      *  <p>
@@ -104,6 +110,7 @@ public class PVModelItem
         if (pv.isRunning())
             pv.stop();
         samples.dispose();
+        archives.clear();
         super.dispose();
     }
     
@@ -345,11 +352,90 @@ public class PVModelItem
             }
         }
     }
+    
+    
+    /** @see IModelItem#getArchiveDataSources() */
+    public final IArchiveDataSource[] getArchiveDataSources()
+    {
+        IArchiveDataSource result[] = new IArchiveDataSource[archives.size()];
+        return archives.toArray(result);
+    }
+    
+    /** Add another archive data source. */
+    public void addArchiveDataSource(IArchiveDataSource archive)
+    {
+        // Ignore duplicates
+        for (IArchiveDataSource arch : archives)
+            if (arch.getKey() == archive.getKey() &&
+                arch.getUrl().equals(archive.getUrl()))
+                return;
+        archives.add(archive);
+        // Notify model of this change.
+        model.fireEntryArchivesChanged(this);
+    }
+
+    /** Remove given archive data source. */
+    public final void removeArchiveDataSource(IArchiveDataSource archive)
+    {
+        // Remove all matching entries (should be at most one...)
+        for (int i = 0; i < archives.size(); ++i)
+        {
+            IArchiveDataSource entry = archives.get(i);
+            if (entry.getKey() == archive.getKey() &&
+                entry.getUrl().equals(archive.getUrl()))
+                archives.remove(i); // changes size(), but that's OK
+        }
+        // Notify model of this change.
+        model.fireEntryArchivesChanged(this);
+    }
+    
+    /** Move given archive data source 'up' in the list. */
+    public final void moveArchiveDataSourceUp(IArchiveDataSource archive)
+    {
+        // Move first matching entry, _skipping_ the top one!
+        for (int i = 1/*!*/; i < archives.size(); ++i)
+        {
+            IArchiveDataSource entry = archives.get(i);
+            if (entry.getKey() == archive.getKey() &&
+                entry.getUrl().equals(archive.getUrl()))
+            {
+                entry = archives.remove(i);
+                archives.add(i-1, entry);
+                // Notify model of this change.
+                model.fireEntryArchivesChanged(this);
+                return;
+            }
+        }
+    }
+    
+    /** Move given archive data source 'down' in the list. */
+    public final void moveArchiveDataSourceDown(IArchiveDataSource archive)
+    {
+        // Move first matching entry, _skipping_ the last entry!
+        for (int i = 0; i < archives.size()-1/*!*/; ++i)
+        {
+            IArchiveDataSource entry = archives.get(i);
+            if (entry.getKey() == archive.getKey() &&
+                entry.getUrl().equals(archive.getUrl()))
+            {
+                entry = archives.remove(i);
+                archives.add(i+1, entry);
+                // Notify model of this change.
+                model.fireEntryArchivesChanged(this);
+                return;
+            }
+        }
+    }
         
-    @Override
+    /** Format as string */
     @SuppressWarnings("nls")
+    @Override
     public String toString()
     {
-        return "ModelItem(" + name + ")";
+        final StringBuffer b = new StringBuffer();
+        b.append("PVModelItem: " + name);
+        for (IArchiveDataSource archive : archives)
+            b.append("\nArchive '" + archive.getName() + "'");
+        return b.toString();
     }
 }

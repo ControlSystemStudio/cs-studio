@@ -3,7 +3,7 @@ package org.csstudio.trends.databrowser.configview;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
-import org.csstudio.trends.databrowser.model.Model;
+import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -55,15 +55,17 @@ public class ArchiveUpAction extends Action
         IArchiveDataSource archives[] = config.getSelectedArchiveEntries();
 		if (items == null  ||  archives == null)
 			return;
-        Model model = config.getModel();
-        if (model == null)
-            return;
         for (IModelItem item : items)
+        {
+            if (! (item instanceof IPVModelItem))
+                continue;
+            IPVModelItem pv_item = (IPVModelItem) item;
             // The selection appears in reverse order?!
             // In any case, iterating this way looks better.
             // With entries A, B, selecting both,
             // we'll now get B, A.
             for (int i=archives.length-1; i>=0; --i)
-                item.moveArchiveDataSourceUp(archives[i]);
+                pv_item.moveArchiveDataSourceUp(archives[i]);
+        }
 	}
 }

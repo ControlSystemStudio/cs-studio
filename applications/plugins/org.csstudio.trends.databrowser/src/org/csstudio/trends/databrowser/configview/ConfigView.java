@@ -9,6 +9,7 @@ import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDa
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.configview.PVTableHelper.Column;
 import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
@@ -776,7 +777,7 @@ public class ConfigView extends PlotAwareView
         Model model = getModel();
         if (model == null)
             return null;
-        IModelItem item = model.addPV(name);
+        IPVModelItem item = model.addPV(name);
         // Add default archive data sources from prefs
         IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
         for (int i = 0; i < archives.length; i++)
@@ -802,7 +803,10 @@ public class ConfigView extends PlotAwareView
         if (model == null)
             return;
         if (item != null)
-            item.addArchiveDataSource(archive);
+        {
+            if (item instanceof IPVModelItem)
+                ((IPVModelItem)item).addArchiveDataSource(archive);
+        }
         else
             model.addArchiveDataSource(archive);
     }
@@ -815,10 +819,11 @@ public class ConfigView extends PlotAwareView
         if (sel.size() == 1)
         {
             Object item = sel.getFirstElement();
-            if (item != PVTableHelper.empty_row)
+            if (item != PVTableHelper.empty_row  &&
+                item instanceof IPVModelItem)
             {
                 archive_table_viewer.setInput(
-                                ((IModelItem)item).getArchiveDataSources());
+                                ((IPVModelItem)item).getArchiveDataSources());
                 return;
             }
         }

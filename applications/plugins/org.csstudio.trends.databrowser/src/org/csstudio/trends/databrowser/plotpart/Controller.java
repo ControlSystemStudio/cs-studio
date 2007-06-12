@@ -13,6 +13,7 @@ import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisListener;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.preferences.Preferences;
@@ -229,9 +230,13 @@ public class Controller
                 {   // Add item to axis (or new axis) with default archives
                     YAxis yaxis = chart.getYAxisAtScreenPoint(event.x, event.y);
                     IModelItem item = nameDropped(name.getName(), yaxis);
-                    IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
-                    for (int i = 0; i < archives.length; i++)
-                        item.addArchiveDataSource(archives[i]);
+                    if (item instanceof IPVModelItem)
+                    {
+                        IPVModelItem pv_item = (IPVModelItem) item;
+                        IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
+                        for (int i = 0; i < archives.length; i++)
+                            pv_item.addArchiveDataSource(archives[i]);
+                    }
                 }
 
                 /** {@inheritDoc} */
@@ -247,7 +252,8 @@ public class Controller
                 {   // Add item with source
                     YAxis yaxis = chart.getYAxisAtScreenPoint(event.x, event.y);
                     IModelItem item = nameDropped(name.getName(), yaxis);
-                    item.addArchiveDataSource(archive);
+                    if (item instanceof IPVModelItem)
+                        ((IPVModelItem) item).addArchiveDataSource(archive);
                 }
             };
     }
@@ -398,7 +404,9 @@ public class Controller
     }
     
     /** Get data from archive for given model item,
-     *   or all if <code>item==null</code>. */
+     *  if it's an <code>IPVModelItem</code>,
+     *  or all if <code>item==null</code>.
+     */
     private void getArchivedData(IModelItem item)
     {
         XAxis xaxis = chart.getXAxis();
@@ -407,15 +415,19 @@ public class Controller
         if (item == null)
         {
             for (int i=0; i<model.getNumItems(); ++i)
-                getArchivedData(model.getItem(i), start, end);
+            { 
+                final IModelItem model_item = model.getItem(i);
+                if (model_item instanceof IPVModelItem)
+                    getArchivedData((IPVModelItem)model_item, start, end);
+            }
         }
-        else
-            getArchivedData(item, start, end);
+        else if (item instanceof IPVModelItem)
+            getArchivedData((IPVModelItem) item, start, end);
     }
 
     /** Get data from archive for given model item and time range. */
-    private void getArchivedData(IModelItem item,
-                    ITimestamp start, ITimestamp end)
+    private void getArchivedData(IPVModelItem item,
+                                 ITimestamp start, ITimestamp end)
     {
         // Anything to fetch at all?
         if (item.getArchiveDataSources().length < 1)

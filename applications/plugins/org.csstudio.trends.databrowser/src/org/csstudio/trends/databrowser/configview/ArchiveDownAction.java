@@ -3,7 +3,7 @@ package org.csstudio.trends.databrowser.configview;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
-import org.csstudio.trends.databrowser.model.Model;
+import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -55,14 +55,15 @@ public class ArchiveDownAction extends Action
         IArchiveDataSource archives[] = config.getSelectedArchiveEntries();
 		if (items == null  ||  archives == null)
 			return;
-        Model model = config.getModel();
-        if (model == null)
-            return;
         for (IModelItem item : items)
-        {   // iterate in reverse order to avoid clobbering what you
+        {
+            if (! (item instanceof IPVModelItem))
+                continue;
+            IPVModelItem pv_item = (IPVModelItem) item;
+            // iterate in reverse order to avoid clobbering what you
             // just moved down with the next item...
-            for (int i = 0; i < archives.length; i++)
-                item.moveArchiveDataSourceDown(archives[i]);
+            for (IArchiveDataSource archive : archives)
+                pv_item.moveArchiveDataSourceDown(archive);
         }
 	}
 }

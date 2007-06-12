@@ -284,9 +284,9 @@ public class Model
      *  @param pv_name The PV to add.
      *  @return Returns the newly added chart item.
      */
-    public IModelItem addPV(String pv_name)
+    public IPVModelItem addPV(String pv_name)
     {
-        return add(ItemType.ProcessVariable, pv_name, -1);
+        return (IPVModelItem) add(ItemType.ProcessVariable, pv_name, -1);
     }
     
     /** Add a new item to the model.
@@ -295,9 +295,9 @@ public class Model
      *  @param axis_index The Y axis to use [0, 1, ...] or -1 for new axis.
      *  @return Returns the newly added chart item.
      */
-    public IModelItem addPV(String pv_name, int axis_index)
+    public IPVModelItem addPV(String pv_name, int axis_index)
     {
-        return add(ItemType.ProcessVariable, pv_name, axis_index);
+        return (IPVModelItem) add(ItemType.ProcessVariable, pv_name, axis_index);
     }
 
     /** Add a new item to the model.
@@ -392,6 +392,21 @@ public class Model
                                     axis_index, low, high, visible, auto_scale,
                                     red, green, blue, line_width, trace_type,
                                     log_scale);
+            if (items.size() > 0)
+            {   // TODO remove dummy formula
+                FormulaInput inputs[] = new FormulaInput[]
+                {
+                    new FormulaInput(items.get(0), "x")
+                };
+                try
+                {
+                    ((FormulaModelItem)item).setFormula("2*x", inputs);
+                }
+                catch (Exception ex)
+                {
+                    Plugin.logException("Setting formula", ex);
+                }
+            }
             break;
         }
         silentAdd(item);
@@ -444,7 +459,6 @@ public class Model
             }
         }
     }
-
     
     /** Add an archive data source to all items in the model.
      *  @see IModelItem#addArchiveDataSource(IArchiveDataSource)
@@ -452,7 +466,8 @@ public class Model
     public void addArchiveDataSource(IArchiveDataSource archive)
     {
         for (IModelItem item : items)
-            item.addArchiveDataSource(archive);
+            if (item instanceof IPVModelItem)
+                ((IPVModelItem) item).addArchiveDataSource(archive);
     }
     
     /** As <code>add()</code>, but without listener notification.

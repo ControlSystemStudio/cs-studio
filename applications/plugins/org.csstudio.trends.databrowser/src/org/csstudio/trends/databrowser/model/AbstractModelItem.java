@@ -3,9 +3,6 @@
  */
 package org.csstudio.trends.databrowser.model;
 
-import java.util.ArrayList;
-
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.swt.chart.TraceType;
 import org.eclipse.core.runtime.PlatformObject;
@@ -78,10 +75,6 @@ public abstract class AbstractModelItem
     /** Use log scale? */
     protected boolean log_scale;
     
-    /** Where to get archived data for this item. */
-    protected ArrayList<IArchiveDataSource> archives
-        = new ArrayList<IArchiveDataSource>();
-    
     AbstractModelItem(Model model, String pv_name,
             int axis_index, double min, double max,
             boolean visible,
@@ -112,8 +105,6 @@ public abstract class AbstractModelItem
     public void dispose()
     {
         color.dispose();
-        archives.clear();
-        archives = null;
     }
     
     /** @see IProcessVariable */
@@ -304,79 +295,6 @@ public abstract class AbstractModelItem
     final void setLogScaleSilently(boolean use_log_scale)
     {
         log_scale = use_log_scale;
-    }
-    
-    /** @see IModelItem#getArchiveDataSources() */
-    public final IArchiveDataSource[] getArchiveDataSources()
-    {
-        IArchiveDataSource result[] = new IArchiveDataSource[archives.size()];
-        return archives.toArray(result);
-    }
-    
-    /** Add another archive data source. */
-    public void addArchiveDataSource(IArchiveDataSource archive)
-    {
-        // Ignore duplicates
-        for (IArchiveDataSource arch : archives)
-            if (arch.getKey() == archive.getKey() &&
-                arch.getUrl().equals(archive.getUrl()))
-                return;
-        archives.add(archive);
-        // Notify model of this change.
-        model.fireEntryArchivesChanged(this);
-    }
-
-    /** Remove given archive data source. */
-    public final void removeArchiveDataSource(IArchiveDataSource archive)
-    {
-        // Remove all matching entries (should be at most one...)
-        for (int i = 0; i < archives.size(); ++i)
-        {
-            IArchiveDataSource entry = archives.get(i);
-            if (entry.getKey() == archive.getKey() &&
-                entry.getUrl().equals(archive.getUrl()))
-                archives.remove(i); // changes size(), but that's OK
-        }
-        // Notify model of this change.
-        model.fireEntryArchivesChanged(this);
-    }
-    
-    /** Move given archive data source 'up' in the list. */
-    public final void moveArchiveDataSourceUp(IArchiveDataSource archive)
-    {
-        // Move first matching entry, _skipping_ the top one!
-        for (int i = 1/*!*/; i < archives.size(); ++i)
-        {
-            IArchiveDataSource entry = archives.get(i);
-            if (entry.getKey() == archive.getKey() &&
-                entry.getUrl().equals(archive.getUrl()))
-            {
-                entry = archives.remove(i);
-                archives.add(i-1, entry);
-                // Notify model of this change.
-                model.fireEntryArchivesChanged(this);
-                return;
-            }
-        }
-    }
-    
-    /** Move given archive data source 'down' in the list. */
-    public final void moveArchiveDataSourceDown(IArchiveDataSource archive)
-    {
-        // Move first matching entry, _skipping_ the last entry!
-        for (int i = 0; i < archives.size()-1/*!*/; ++i)
-        {
-            IArchiveDataSource entry = archives.get(i);
-            if (entry.getKey() == archive.getKey() &&
-                entry.getUrl().equals(archive.getUrl()))
-            {
-                entry = archives.remove(i);
-                archives.add(i+1, entry);
-                // Notify model of this change.
-                model.fireEntryArchivesChanged(this);
-                return;
-            }
-        }
     }
     
     /** @return Returns an XML string for this item. */

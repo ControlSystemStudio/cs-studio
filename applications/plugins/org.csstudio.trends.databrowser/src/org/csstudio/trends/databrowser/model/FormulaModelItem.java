@@ -1,11 +1,9 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.formula.Formula;
@@ -60,17 +58,6 @@ public class FormulaModelItem extends AbstractModelItem
         return input_variables.getInputs();
     }
 
-    public void addArchiveSamples(ArchiveValues samples)
-    {
-        throw new Error("FormulaModelItem.addArchiveSamples?"); //$NON-NLS-1$
-    }
-    
-    @Override
-    public void addArchiveDataSource(IArchiveDataSource archive)
-    {
-        // NOP, since we don't use archived data
-    }
-
     /** {@inheridDoc} */
     public IModelSamples getSamples()
     {
@@ -94,7 +81,8 @@ public class FormulaModelItem extends AbstractModelItem
                                 meta_data,
                                 IValue.Quality.Interpolated,
                                 new double[] { number });
-                samples.add(new ModelSample(value, getName()));
+                // Add a sample with that value and source = formula
+                samples.add(new ModelSample(value, formula.getFormula()));
                 // Prepare next row of the spreadsheet iterator
                 time = input_variables.next();
             }

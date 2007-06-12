@@ -3,10 +3,10 @@ package org.csstudio.trends.databrowser.plotpart;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.cache.ArchiveCache;
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
-import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -17,13 +17,13 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 class ArchiveFetchJob extends Job
 {
-    private IModelItem item;
+    private IPVModelItem item;
     private ITimestamp start, end;
     
     /** Create job that searches given server's keys for pattern,
      *  then notifies view about received names.
      */
-    public ArchiveFetchJob(IModelItem item, ITimestamp start, ITimestamp end)
+    public ArchiveFetchJob(IPVModelItem item, ITimestamp start, ITimestamp end)
     {
         super(Messages.FetchDataForPV
                 + "'" + item.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
