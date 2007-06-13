@@ -1,5 +1,7 @@
 package org.csstudio.trends.databrowser.model;
 
+import java.util.ArrayList;
+
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -7,6 +9,9 @@ import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.formula.Formula;
+import org.csstudio.util.xml.DOMHelper;
+import org.csstudio.util.xml.XMLHelper;
+import org.w3c.dom.Element;
 
 /** Model item based on a formula.
  *  <p>
@@ -111,11 +116,71 @@ public class FormulaModelItem extends AbstractModelItem
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("nls")
     @Override
     public String getXMLContent()
     {
-        // TODO Auto-generated method stub
-        return null;
+        StringBuffer b = new StringBuffer();
+        b.append("        <" + TAG_FORMULA + ">\n");
+        addCommonXMLConfig(b);
+        
+        final FormulaInput[] inputs = input_variables.getInputs();
+        if (inputs != null)
+        {
+            for (FormulaInput input : inputs)
+            {
+                XMLHelper.indent(b, 3); b.append("<" + TAG_INPUT + ">\n");
+                XMLHelper.XML(b, 4, TAG_PV, input.getModelItem().getName());
+                XMLHelper.XML(b, 4, TAG_NAME, input.getVariable().getName());
+                XMLHelper.indent(b, 3); b.append("</" + TAG_INPUT + ">\n");
+            }
+        }
+        XMLHelper.XML(b, 3, TAG_FORMULA, formula.getFormula());
+        b.append("        </" + TAG_FORMULA + ">\n");
+        return b.toString();
+    }
+    
+    /** Decode XML DOM element for "formula ...".
+     *  @see #getXMLContent()
+     */
+    @SuppressWarnings("nls")
+    public static FormulaModelItem loadFromDOM(Model model, Element pv) throws Exception
+    {
+        // Common PV stuff
+        final String name = DOMHelper.getSubelementString(pv, TAG_NAME);
+        final int axis_index = DOMHelper.getSubelementInt(pv, TAG_AXIS, 0);
+        final int line_width = DOMHelper.getSubelementInt(pv, TAG_LINEWIDTH, 0);
+        final double min = DOMHelper.getSubelementDouble(pv, TAG_MIN, 0.0);
+        final double max = DOMHelper.getSubelementDouble(pv, TAG_MAX, 10.0);
+        final boolean visible = DOMHelper.getSubelementBoolean(pv, TAG_VISIBLE, true);
+        final boolean auto_scale = DOMHelper.getSubelementBoolean(pv, TAG_AUTOSCALE);
+        final int rgb[] = loadColorFromDOM(pv);
+        final boolean log_scale = DOMHelper.getSubelementBoolean(pv, TAG_LOG_SCALE);
+        final TraceType trace_type = loadTraceTypeFromDOM(pv);
+        final FormulaModelItem item =
+            new FormulaModelItem(model, name, axis_index,
+                      min, max, visible, auto_scale, rgb[0], rgb[1], rgb[2],
+                      line_width, trace_type, log_scale);
+        
+        // Get the actual formula
+        Element input = DOMHelper.findFirstElementNode(
+                                            pv.getFirstChild(), TAG_INPUT);
+        final ArrayList<FormulaInput> inputs = new ArrayList<FormulaInput>();
+        while (input != null)
+        {
+            final String pv_name = DOMHelper.getSubelementString(input, TAG_PV);
+            final String var_name = DOMHelper.getSubelementString(input, TAG_NAME);
+            final IModelItem pv_item = model.findItem(pv_name);
+            inputs.add(new FormulaInput(pv_item, var_name));
+            input = DOMHelper.findNextElementNode(input, TAG_INPUT);
+        }
+        // Convert to array        
+        final FormulaInput input_array[] = new FormulaInput[inputs.size()];
+        inputs.toArray(input_array);
+        final String formula = DOMHelper.getSubelementString(pv, TAG_FORMULA);
+        item.setFormula(formula, input_array);
+        
+        return item;
     }
 
     /** Format as string */

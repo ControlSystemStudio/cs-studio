@@ -119,7 +119,7 @@ public class PVModelItem
     public void changeName(String new_name)
     {
         // Avoid duplicates, do not allow if new name already in model.
-        if (model.findEntry(new_name) >= 0)
+        if (model.findItem(new_name) != null)
             return;
         boolean was_running = pv.isRunning();
         // TODO: I've seen null pointer errors in this stop() call,
@@ -159,20 +159,7 @@ public class PVModelItem
     {
         StringBuffer b = new StringBuffer();
         b.append("        <" + TAG_PV + ">\n");
-        XMLHelper.XML(b, 3, TAG_NAME, name);
-        XMLHelper.XML(b, 3, TAG_AXIS, Integer.toString(axis_index));
-        XMLHelper.XML(b, 3, TAG_LINEWIDTH, Integer.toString(line_width));
-        XMLHelper.XML(b, 3, TAG_MIN, Double.toString(axis_low));
-        XMLHelper.XML(b, 3, TAG_MAX, Double.toString(axis_high));
-        XMLHelper.XML(b, 3, TAG_VISIBLE, Boolean.toString(isVisible()));
-        XMLHelper.XML(b, 3, TAG_AUTOSCALE, Boolean.toString(getAutoScale()));
-        XMLHelper.indent(b, 3); b.append("<" + TAG_COLOR + ">\n");
-        XMLHelper.XML(b, 4, TAG_RED, Integer.toString(color.getRed()));
-        XMLHelper.XML(b, 4, TAG_GREEN, Integer.toString(color.getGreen()));
-        XMLHelper.XML(b, 4, TAG_BLUE, Integer.toString(color.getBlue()));
-        XMLHelper.indent(b, 3); b.append("</" + TAG_COLOR + ">\n");
-        XMLHelper.XML(b, 3, TAG_LOG_SCALE, Boolean.toString(getLogScale()));
-        XMLHelper.XML(b, 3, TAG_TRACE_TYPE, getTraceType().name());
+        addCommonXMLConfig(b);
         if (archives.size() > 0)
         {
             for (IArchiveDataSource archive : archives)
@@ -195,50 +182,32 @@ public class PVModelItem
     public static PVModelItem loadFromDOM(Model model, Element pv, int ring_size) throws Exception
     {
         // Common PV stuff
-        String name = DOMHelper.getSubelementString(pv, TAG_NAME);
-        int axis_index = DOMHelper.getSubelementInt(pv, TAG_AXIS, 0);
-        int line_width = DOMHelper.getSubelementInt(pv, TAG_LINEWIDTH, 0);
-        double min = DOMHelper.getSubelementDouble(pv, TAG_MIN, 0.0);
-        double max = DOMHelper.getSubelementDouble(pv, TAG_MAX, 10.0);
-        boolean visible = DOMHelper.getSubelementBoolean(pv, TAG_VISIBLE, true);
-        boolean auto_scale = DOMHelper.getSubelementBoolean(pv, TAG_AUTOSCALE);
-        int red, green, blue;
-        Element color =
-            DOMHelper.findFirstElementNode(pv.getFirstChild(), TAG_COLOR);
-        if (color != null)
-        {
-            red = DOMHelper.getSubelementInt(color, TAG_RED, 0);
-            green = DOMHelper.getSubelementInt(color, TAG_GREEN, 0);
-            blue = DOMHelper.getSubelementInt(color, TAG_BLUE, 255);
-        }
-        else
-        {
-            red = 0;
-            green = 0;
-            blue = 255;
-        }
-        boolean log_scale = DOMHelper.getSubelementBoolean(pv, TAG_LOG_SCALE);
-        
-        TraceType trace_type = TraceType.Lines;
-        String trace_type_txt = DOMHelper.getSubelementString(pv, TAG_TRACE_TYPE);
-        if (trace_type_txt.length() > 0)
-            trace_type = TraceType.fromName(trace_type_txt);
-        
-        PVModelItem item =
+        final String name = DOMHelper.getSubelementString(pv, TAG_NAME);
+        final int axis_index = DOMHelper.getSubelementInt(pv, TAG_AXIS, 0);
+        final int line_width = DOMHelper.getSubelementInt(pv, TAG_LINEWIDTH, 0);
+        final double min = DOMHelper.getSubelementDouble(pv, TAG_MIN, 0.0);
+        final double max = DOMHelper.getSubelementDouble(pv, TAG_MAX, 10.0);
+        final boolean visible = DOMHelper.getSubelementBoolean(pv, TAG_VISIBLE, true);
+        final boolean auto_scale = DOMHelper.getSubelementBoolean(pv, TAG_AUTOSCALE);
+        final int rgb[] = loadColorFromDOM(pv);
+        final boolean log_scale = DOMHelper.getSubelementBoolean(pv, TAG_LOG_SCALE);
+        final TraceType trace_type = loadTraceTypeFromDOM(pv);
+        final PVModelItem item =
             new PVModelItem(model, name, ring_size, axis_index,
                           min, max, visible, auto_scale,
-                          red, green, blue, line_width, trace_type, log_scale);
+                          rgb[0], rgb[1], rgb[2],
+                          line_width, trace_type, log_scale);
         
         // Get archives, if there are any
         Element arch = DOMHelper.findFirstElementNode(
-                        pv.getFirstChild(), TAG_ARCHIVE);
+                                    pv.getFirstChild(), TAG_ARCHIVE);
         while (arch != null)
         {
-            name = DOMHelper.getSubelementString(arch, TAG_NAME);
-            String  url = DOMHelper.getSubelementString(arch, TAG_URL);
-            int key = DOMHelper.getSubelementInt(arch, TAG_KEY);
+            final String arch_name = DOMHelper.getSubelementString(arch, TAG_NAME);
+            final String url = DOMHelper.getSubelementString(arch, TAG_URL);
+            final int key = DOMHelper.getSubelementInt(arch, TAG_KEY);
             item.addArchiveDataSource(
-                CentralItemFactory.createArchiveDataSource(url, key, name));            
+                CentralItemFactory.createArchiveDataSource(url, key, arch_name));            
             arch = DOMHelper.findNextElementNode(arch, TAG_ARCHIVE);
         }
         return item;

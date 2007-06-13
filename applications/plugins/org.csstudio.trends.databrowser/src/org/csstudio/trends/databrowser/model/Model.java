@@ -275,6 +275,18 @@ public class Model
     public IModelItem getItem(int i)
     {   return items.get(i); }
 
+    /** Locate a model item by name.
+     *  @param name The PV or formula name to locate.
+     *  @return The model item with given name or <code>null</code>.
+     */
+    public IModelItem findItem(final String name)
+    {
+        for (IModelItem item : items)
+            if (item.getName().equals(name))
+                return item;
+        return null;
+    }
+    
     public enum ItemType
     {
         /** A live or archived PV */
@@ -498,7 +510,7 @@ public class Model
     }
     
     /** @return Returns index of entry with given PV name or <code>-1</code>. */
-    int findEntry(String pv_name)
+    private int findEntry(String pv_name)
     {
         for (int i=0; i<items.size(); ++i)
             if (items.get(i).getName().equals(pv_name))
@@ -590,14 +602,14 @@ public class Model
     @SuppressWarnings("nls")
     private void loadFromDocument(Document doc) throws Exception
     {
-        boolean was_running = is_running;
+        final boolean was_running = is_running;
         if (was_running)
             stop();
         disposeItems();
 
         // Check if it's a <databrowser/>.
         doc.getDocumentElement().normalize();
-        Element root_node = doc.getDocumentElement();
+        final Element root_node = doc.getDocumentElement();
         final String root_name = root_node.getNodeName();
         if (!root_name.equals("databrowser")) 
             throw new Exception("Expected <databrowser>, found <" + root_name
@@ -613,19 +625,28 @@ public class Model
         }
         start_end_times = new StartEndTimeParser(start_specification,
                                                  end_specification);
-        double scan = DOMHelper.getSubelementDouble(root_node, "scan_period");
-        double update = DOMHelper.getSubelementDouble(root_node, "update_period");
+        final double scan = DOMHelper.getSubelementDouble(root_node, "scan_period");
+        final double update = DOMHelper.getSubelementDouble(root_node, "update_period");
         ring_size = DOMHelper.getSubelementInt(root_node, "ring_size");
         Element pvlist = DOMHelper.findFirstElementNode(root_node
                 .getFirstChild(), "pvlist");
         if (pvlist != null)
         {
+            // Load the PV items
             Element pv = DOMHelper.findFirstElementNode(
             		pvlist.getFirstChild(), PVModelItem.TAG_PV);
             while (pv != null)
             {
                 silentAdd(PVModelItem.loadFromDOM(this, pv, ring_size));
                 pv = DOMHelper.findNextElementNode(pv, PVModelItem.TAG_PV);
+            }
+            // Load the Formula items
+            pv = DOMHelper.findFirstElementNode(
+                    pvlist.getFirstChild(), PVModelItem.TAG_FORMULA);
+            while (pv != null)
+            {
+                silentAdd(FormulaModelItem.loadFromDOM(this, pv));
+                pv = DOMHelper.findNextElementNode(pv, PVModelItem.TAG_FORMULA);
             }
         }
         // This also notifies listeners about the new periods:

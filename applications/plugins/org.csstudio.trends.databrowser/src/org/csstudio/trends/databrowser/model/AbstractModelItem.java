@@ -5,8 +5,11 @@ package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.swt.chart.TraceType;
+import org.csstudio.util.xml.DOMHelper;
+import org.csstudio.util.xml.XMLHelper;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.graphics.Color;
+import org.w3c.dom.Element;
 
 /** Base class for IModelItem implementations
  *  @author Kay Kasemir
@@ -17,6 +20,7 @@ public abstract class AbstractModelItem
 {
     // Tag names used to write/read XML
     static final String TAG_PV = "pv"; //$NON-NLS-1$
+    static final String TAG_FORMULA = "formula"; //$NON-NLS-1$
     static final String TAG_ARCHIVE = "archive"; //$NON-NLS-1$
     static final String TAG_KEY = "key"; //$NON-NLS-1$
     static final String TAG_URL = "url"; //$NON-NLS-1$
@@ -33,6 +37,7 @@ public abstract class AbstractModelItem
     static final String TAG_LINEWIDTH = "linewidth"; //$NON-NLS-1$
     static final String TAG_AXIS = "axis"; //$NON-NLS-1$
     static final String TAG_NAME = "name"; //$NON-NLS-1$
+    static final String TAG_INPUT = "input"; //$NON-NLS-1$
     
     /** The model to which this item belongs. */
     final protected Model model;
@@ -122,7 +127,7 @@ public abstract class AbstractModelItem
     public void changeName(String new_name)
     {
         // Avoid duplicates, do not allow if new name already in model.
-        if (model.findEntry(new_name) >= 0)
+        if (model.findItem(new_name) != null)
             return;
         // Name change looks like remove/add back in
         model.fireEntryRemoved(this);
@@ -299,4 +304,56 @@ public abstract class AbstractModelItem
     
     /** @return Returns an XML string for this item. */
     abstract public String getXMLContent();
+    
+    /** Add the XML for the common config elements to the string buffer.
+     *  @see #getXMLContent()
+     */
+    @SuppressWarnings("nls")
+    protected void addCommonXMLConfig(final StringBuffer b)
+    {
+        XMLHelper.XML(b, 3, TAG_NAME, name);
+        XMLHelper.XML(b, 3, TAG_AXIS, Integer.toString(axis_index));
+        XMLHelper.XML(b, 3, TAG_LINEWIDTH, Integer.toString(line_width));
+        XMLHelper.XML(b, 3, TAG_MIN, Double.toString(axis_low));
+        XMLHelper.XML(b, 3, TAG_MAX, Double.toString(axis_high));
+        XMLHelper.XML(b, 3, TAG_VISIBLE, Boolean.toString(isVisible()));
+        XMLHelper.XML(b, 3, TAG_AUTOSCALE, Boolean.toString(getAutoScale()));
+        XMLHelper.indent(b, 3); b.append("<" + TAG_COLOR + ">\n");
+        XMLHelper.XML(b, 4, TAG_RED, Integer.toString(color.getRed()));
+        XMLHelper.XML(b, 4, TAG_GREEN, Integer.toString(color.getGreen()));
+        XMLHelper.XML(b, 4, TAG_BLUE, Integer.toString(color.getBlue()));
+        XMLHelper.indent(b, 3); b.append("</" + TAG_COLOR + ">\n");
+        XMLHelper.XML(b, 3, TAG_LOG_SCALE, Boolean.toString(getLogScale()));
+        XMLHelper.XML(b, 3, TAG_TRACE_TYPE, getTraceType().name());
+    }
+    
+    /** Helper for loading RGB colors from DOM. */
+    protected static int [] loadColorFromDOM(Element pv)
+    {
+        final int rgb[] = new int[3];
+        final Element color =
+            DOMHelper.findFirstElementNode(pv.getFirstChild(), TAG_COLOR);
+        if (color != null)
+        {
+            rgb[0] = DOMHelper.getSubelementInt(color, TAG_RED, 0);
+            rgb[1] = DOMHelper.getSubelementInt(color, TAG_GREEN, 0);
+            rgb[2] = DOMHelper.getSubelementInt(color, TAG_BLUE, 255);
+        }
+        else
+        {
+            rgb[0] = 0;
+            rgb[1] = 0;
+            rgb[2] = 255;
+        }
+        return rgb;
+    }
+    
+    /** Helper for loading trace type from DOM. */
+    protected static TraceType loadTraceTypeFromDOM(Element pv)
+    {
+        String trace_type_txt = DOMHelper.getSubelementString(pv, TAG_TRACE_TYPE);
+        if (trace_type_txt.length() > 0)
+            return TraceType.fromName(trace_type_txt);
+        return TraceType.Lines;
+    }
 }
