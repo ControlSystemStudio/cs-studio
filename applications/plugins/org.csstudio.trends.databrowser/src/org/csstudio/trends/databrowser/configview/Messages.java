@@ -29,6 +29,10 @@ public class Messages extends NLS
     public static String EnterCount;
     public static String EnterSecs;
     public static String Error;
+
+    public static String Formula_ConfigButton;
+
+    public static String Formula_Label;
     public static String Key;
     public static String LinearAxisType;
     public static String LineWidth;

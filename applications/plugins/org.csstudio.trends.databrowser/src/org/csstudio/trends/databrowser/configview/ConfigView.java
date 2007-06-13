@@ -45,7 +45,6 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -143,8 +142,12 @@ public class ConfigView extends PlotAwareView
         {   entriesChanged(); }
 
     };
+    /** The 'archive' list of the PV detail */
     private Composite archive_box;
+    /** The 'formula' info of the PV detail */
     private Composite formula_box;
+    /** Formula display in <code>formula_box</code> */
+    private Text formula_txt;
     
     /** Try to restore some things from memento */
     @Override
@@ -321,7 +324,17 @@ public class ConfigView extends PlotAwareView
         pv_form.setLayout(new FillLayout());
         tab.setControl(pv_form);
 
-        // SashForm item for PVs -------------------------------------
+        createPVTabListItem(pv_form);
+        createPVTabInfoItem(pv_form);
+        
+        // Initial sizes of PV list vs. archive detail
+        pv_form.setWeights(pv_form_weights);
+
+    }
+    
+    /** SashForm item for PVs */
+    private void createPVTabListItem(SashForm pv_form)
+    {
         Composite box = new Composite(pv_form, SWT.NULL);
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
@@ -386,11 +399,18 @@ public class ConfigView extends PlotAwareView
         pv_table_viewer.setColumnProperties(titles);
         pv_table_viewer.setCellEditors(editors);
         pv_table_viewer.setCellModifier(new PVTableCellModifier(this));
-
-        // SashForm item for archives or formulas of current PV ---------------
-        box = new Composite(pv_form, 0);
+    }
+    
+    /** SashForm item for archives or formulas of current PV */
+    private void createPVTabInfoItem(SashForm pv_form)
+    {
+        final Composite box = new Composite(pv_form, 0);
+        // Both the archive_box and the formula_box
+        // are configured to occupy the full space,
+        // with the idea that only one of them is visible at the same time.
         box.setLayout(new FormLayout());
     
+        // Archive Box
         archive_box = new Composite(box, 0);
         FormData fd = new FormData();
         fd.left = new FormAttachment(0);
@@ -399,16 +419,16 @@ public class ConfigView extends PlotAwareView
         fd.bottom = new FormAttachment(100);
         archive_box.setLayoutData(fd);
         
-        layout = new GridLayout();
+        GridLayout layout = new GridLayout();
         layout.numColumns = 1;
         archive_box.setLayout(layout);
         
-        l = new Label(archive_box, 0);
+        Label l = new Label(archive_box, 0);
         l.setText(Messages.ArchsForPVs + colon);
-        gd = new GridData();
+        GridData gd = new GridData();
         l.setLayoutData(gd);
         
-        table = new Table(archive_box,
+        Table table = new Table(archive_box,
                         SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
@@ -428,6 +448,7 @@ public class ConfigView extends PlotAwareView
         archive_table_viewer.setLabelProvider(new ArchiveDataSourceLabelProvider());
         archive_table_viewer.setContentProvider(new ArrayContentProvider());
 
+        // Formula Box
         formula_box = new Composite(box, 0);
         fd = new FormData();
         fd.left = new FormAttachment(0);
@@ -435,10 +456,29 @@ public class ConfigView extends PlotAwareView
         fd.right = new FormAttachment(100);
         fd.bottom = new FormAttachment(100);
         formula_box.setLayoutData(fd);
+        
+        layout = new GridLayout();
+        layout.numColumns = 2;
+        formula_box.setLayout(layout);
 
-        formula_box.setLayout(new RowLayout());
+        // Row:   "Formula: " ___________
+        l = new Label(formula_box, 0);
+        l.setText(Messages.Formula_Label);
+        l.setLayoutData(new GridData());
+        
+        formula_txt = new Text(formula_box, SWT.READ_ONLY);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        formula_txt.setLayoutData(gd);
+        
         Button config_formula = new Button(formula_box, 0);
-        config_formula.setText("Configure Formula");
+        config_formula.setText(Messages.Formula_ConfigButton);
+        gd = new GridData();
+        gd.horizontalSpan = layout.numColumns;
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.LEFT;
+        config_formula.setLayoutData(gd);
         config_formula.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -449,9 +489,6 @@ public class ConfigView extends PlotAwareView
         });
         
         formula_box.setVisible(false);
-        
-        // Initial sizes of PV list vs. archive detail
-        pv_form.setWeights(pv_form_weights);
     }     
 
     /** Create one tab of the TabFolder GUI. */
@@ -891,27 +928,26 @@ public class ConfigView extends PlotAwareView
         {
             Object item = sel.getFirstElement();
             if (item == PVTableHelper.empty_row)
-            {
-                // hide all
+            {   // hide all
                 archive_box.setVisible(false);
                 formula_box.setVisible(false);
             }
             else if (item instanceof IPVModelItem)
-            {
+            {   // Display the archive sources for the PV
                 formula_box.setVisible(false);
                 archive_box.setVisible(true);
                 archive_table_viewer.setInput(
                                 ((IPVModelItem)item).getArchiveDataSources());
             }
             else
-            {
+            {   // Display the formula
                 archive_box.setVisible(false);
                 formula_box.setVisible(true);
+                formula_txt.setText(((FormulaModelItem)item).getFormula());
             }
         }
         else
-        {
-            // empty archive info
+        {   // empty archive info
             formula_box.setVisible(false);
             archive_box.setVisible(true);
             archive_table_viewer.setInput(null);
