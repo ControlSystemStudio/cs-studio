@@ -1,6 +1,5 @@
 package org.csstudio.trends.databrowser.sampleview;
 
-import org.csstudio.trends.databrowser.model.ModelSample;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;

@@ -8,7 +8,6 @@ import org.csstudio.trends.databrowser.model.ModelSample;
 /** One item displayed in the table.
  *  @author Kay Kasemir
  *  @author Helge Rickens
- *  
  */
 public final class TableItem implements IProcessVariableWithSamples
 {
@@ -61,6 +60,7 @@ public final class TableItem implements IProcessVariableWithSamples
     }
 
     /** @see IProcessVariableWithSamples */
+    @SuppressWarnings("unchecked")
     public Object getAdapter(Class adapter) {
         return ipv_with_samples.getAdapter(adapter);
     }

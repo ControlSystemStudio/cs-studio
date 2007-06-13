@@ -1,11 +1,7 @@
 package org.csstudio.trends.databrowser.sampleview;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSampleDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesDragSource;
-import org.csstudio.swt.chart.ChartSampleSearch;
 import org.csstudio.trends.databrowser.model.IModelItem;
-import org.csstudio.trends.databrowser.model.IModelSamples;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.util.swt.AutoSizeColumn;
@@ -144,9 +140,9 @@ public class SampleView extends PlotAwareView
 
     // @see PlotAwareView
     @Override
-    protected void updateModel(Model old_model, Model new_model)
+    protected void updateModel(final Model old_model, final Model new_model)
     {
-        boolean change = old_model != new_model;
+        final boolean change = old_model != new_model;
         model = new_model;
         if (model == null)
         {   // Clear everyting
@@ -155,15 +151,16 @@ public class SampleView extends PlotAwareView
             selectPV(null);
             return;
         }
-        // Have a (new?) model
-        // Display its PV names
-        String pvs[] = new String[model.getNumItems()];
-        for (int i=0; i<pvs.length; ++i)
-            pvs[i] = model.getItem(i).getName();
-        pv_name.setItems(pvs);
-        pv_name.setEnabled(true);
-        if (change) // new model: clear the data table
+        if (change)
+        {
+            // Display PV names of new model
+            final String pvs[] = new String[model.getNumItems()];
+            for (int i=0; i<pvs.length; ++i)
+                pvs[i] = model.getItem(i).getName();
+            pv_name.setItems(pvs);
+            pv_name.setEnabled(true);
             selectPV(null);
+        }
     }
 
     /** A PV name was entered or selected.

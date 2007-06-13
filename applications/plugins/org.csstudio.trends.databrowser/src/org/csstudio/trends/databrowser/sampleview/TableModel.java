@@ -1,11 +1,8 @@
 package org.csstudio.trends.databrowser.sampleview;
 
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.model.CentralItemFactory;
-import org.csstudio.platform.model.IProcessVariableWithSample;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.swt.chart.ChartSampleSearch;
 import org.csstudio.trends.databrowser.model.IModelItem;
@@ -15,53 +12,61 @@ import org.csstudio.trends.databrowser.model.ModelSample;
 
 public class TableModel
 {
-    private IModelSamples samples;
+    /** All the model samples. */
+    final private IModelSamples samples;
 
-    private IProcessVariableWithSamples ipv_with_samples;
+    /** Start index of visible samples.
+     *  <p>
+     *  Don't use if <code>num</code> is zero!
+     */
+    final private int start_index;
+
+    /** Number of visible samples. */
+    final private int num;
     
+    /** IPV-with-samples interface to the visible samples. */
+    final private IProcessVariableWithSamples ipv_with_samples;
+
+    /** Constructor */
     TableModel(Model model, IModelItem item)
     {
-        System.out.println("SampleView TableModel");
         samples = item.getSamples();
         synchronized (samples)
         {
-//            final ITimestamp start = model.getStartTime();
-//            // Determine which samples are actually visible
-//            // TODO move this into Model.getFirstVisibleSample() ...
-//            int start_index = 0;
-//                ChartSampleSearch.findClosestSample(samples, start.toDouble());
-//            final ITimestamp end = model.getEndTime();
-//            int end_index = samples.size() - 1;
-//                ChartSampleSearch.findClosestSample(samples, end.toDouble());
-//            final int N = samples.size();
-//            
-//            System.out.format("Model: %d samples from %s to %s\n",
-//                              N, start, end);
-//            System.out.format("Visible: %d .. %d\n",
-//                              start_index, end_index);
-
-//The methods 'model.getStartTime' and 'model.getEndTime' return the same TimeStamp
-//-> I only use the sample size of the model independent of the chart        	
+            final ITimestamp start = model.getStartTime();
+            final ITimestamp end = model.getEndTime();
             
-            int start_index = 0;
-            int end_index = samples.size() - 1;
-            
-            ipv_with_samples = createIPVwithSamples(item, start_index, end_index);
+            start_index =
+                ChartSampleSearch.findClosestSample(samples, start.toDouble());
+            final int end_index =
+                ChartSampleSearch.findClosestSample(samples, end.toDouble());
+            if (start_index > 0  &&  end_index > 0)
+            {
+                num = end_index - start_index + 1;
+                ipv_with_samples = createIPVwithSamples(item.getName(), samples,
+                                                        start_index, num);
+            }
+            else
+            {
+                num = 0;
+                ipv_with_samples = null;
+            }
         }
     }
     
     /** @return The number of samples in the table. */
     int size()
-    {   return samples.size(); }
+    {   return num;   }
     
     TableItem getTableItem(int row)
     {
-        synchronized (samples)
+        if (row < num)
         {
-            if (row >= 0  &&  row < samples.size())
+            synchronized (samples)
             {
-                System.out.println("SampleView TableModel creating item " + row);
-                return new TableItem(samples.get(row), ipv_with_samples);
+                final int i = start_index + row;
+                if (i >= 0  &&  i < samples.size())
+                    return new TableItem(samples.get(i), ipv_with_samples);
             }
         }
         return null;
@@ -69,27 +74,28 @@ public class TableModel
     
     /** Create an IProcessVariableWithSample for the given item and
      *  sample range.
-     *  @param item Item that has all the samples
+     *  @param name Name of the PV
+     *  @param samples The samples
      *  @param start Index of first sample
-     *  @param end Index of last sample
-     *  @return IProcessVariableWithSample or <code>null</code>.
+     *  @param num Sample count
+     *  @return IProcessVariableWithSample.
      */
-    private IProcessVariableWithSamples createIPVwithSamples(
-                    final IModelItem item, final int start, final int end)
+    private static IProcessVariableWithSamples createIPVwithSamples(
+                                                    final String name,
+                                                    final IModelSamples samples,
+                                                    final int start,
+                                                    final int num)
     {
-        final int num = end - start + 1;
-        if (num <= 0)
-            return null;
-
-        IValue[] values = new IValue[num];
+        final IValue[] values = new IValue[num];
         synchronized (samples)
         {
             for (int i=0; i<num; ++i)
             {
-                final ModelSample sample = samples.get(start+i);
+                final ModelSample sample = samples.get(start + i);
                 values[i] = sample.getSample();
             }
         }
-        return CentralItemFactory.createProcessVariableWithSamples(item.getName(), values);
+        return CentralItemFactory.createProcessVariableWithSamples(name,
+                                                                   values);
     }
 }
