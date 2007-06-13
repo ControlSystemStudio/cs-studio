@@ -2,6 +2,9 @@ package org.csstudio.util.formula.node;
 
 import org.csstudio.util.formula.Node;
 
+/** One computational node.
+ *  @author Kay Kasemir
+ */
 public class OrNode extends AbstractBinaryNode
 {
     public OrNode(Node left, Node right)

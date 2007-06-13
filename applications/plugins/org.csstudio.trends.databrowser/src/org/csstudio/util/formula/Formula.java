@@ -23,7 +23,6 @@ import org.csstudio.util.formula.node.PwrNode;
 import org.csstudio.util.formula.node.RndNode;
 import org.csstudio.util.formula.node.SubNode;
 
-
 /** A formula interpreter.
  *  <p>
  *  While I found some on the internet,

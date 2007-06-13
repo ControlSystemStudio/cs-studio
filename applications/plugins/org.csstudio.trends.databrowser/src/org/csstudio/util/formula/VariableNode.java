@@ -1,6 +1,5 @@
 package org.csstudio.util.formula;
 
-
 /** Named Variable.
  *  @author Kay Kasemir
  */

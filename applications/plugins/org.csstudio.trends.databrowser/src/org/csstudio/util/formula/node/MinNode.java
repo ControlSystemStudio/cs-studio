@@ -2,6 +2,9 @@ package org.csstudio.util.formula.node;
 
 import org.csstudio.util.formula.Node;
 
+/** One computational node.
+ *  @author Kay Kasemir
+ */
 public class MinNode implements Node
 {
     private final Node args[];
@@ -16,7 +19,7 @@ public class MinNode implements Node
         double result = 0.0;
         for (int i = 0; i < args.length; i++)
         {
-            double v = args[i].eval();
+            final double v = args[i].eval();
             if (i==0  ||  v < result)
                 result = v;
         }
