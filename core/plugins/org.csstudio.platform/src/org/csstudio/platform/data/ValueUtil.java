@@ -1,8 +1,6 @@
 package org.csstudio.platform.data;
 
-import org.csstudio.platform.internal.data.DoubleValue;
 import org.csstudio.platform.internal.data.EnumeratedValue;
-import org.csstudio.platform.internal.data.IntegerValue;
 import org.csstudio.platform.internal.data.Messages;
 import org.csstudio.platform.internal.data.StringValue;
 import org.csstudio.platform.internal.data.Value;
@@ -16,11 +14,11 @@ public class ValueUtil
     /** @return Array length of the value. <code>1</code> for scalars. */
     public static int getSize(IValue value)
     {
-        if (value instanceof DoubleValue)
+        if (value instanceof IDoubleValue)
             return ((IDoubleValue) value).getValues().length;
-        else if (value instanceof IntegerValue)
+        else if (value instanceof IIntegerValue)
             return ((IIntegerValue) value).getValues().length;
-        else if (value instanceof EnumeratedValue)
+        else if (value instanceof IEnumeratedValue)
             return ((IEnumeratedValue) value).getValues().length;
         return 1;
     }
@@ -55,11 +53,11 @@ public class ValueUtil
     {
         if (value.getSeverity().hasValue())
         {
-            if (value instanceof DoubleValue)
+            if (value instanceof IDoubleValue)
                 return ((IDoubleValue) value).getValues()[index];
-            else if (value instanceof IntegerValue)
+            else if (value instanceof IIntegerValue)
                 return ((IIntegerValue) value).getValues()[index];
-            else if (value instanceof EnumeratedValue)
+            else if (value instanceof IEnumeratedValue)
                 return ((IEnumeratedValue) value).getValues()[index];
             // else:
             // Cannot decode that sample type as a number.
