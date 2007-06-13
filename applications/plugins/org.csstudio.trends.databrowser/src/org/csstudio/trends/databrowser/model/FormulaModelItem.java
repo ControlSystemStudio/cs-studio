@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.model;
 import java.util.ArrayList;
 
 import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
@@ -88,18 +89,26 @@ public class FormulaModelItem extends AbstractModelItem
         synchronized (samples)
         {
             samples.clear();
+            final ISeverity ok_severity = ValueFactory.createOKSeverity();
+            final ISeverity invalid_severity = ValueFactory.createInvalidSeverity();
+            final String ok_status = ""; //$NON-NLS-1$
+            final String invalid_status = Messages.NoNumericValue;
             try
             {
                 ITimestamp time = input_variables.next();
                 while (time != null)
                 {        
                     final double number = formula.eval();
-                    IValue value = ValueFactory.createDoubleValue(
-                                    time,
-                                    ValueFactory.createOKSeverity(),
-                                    "",  //$NON-NLS-1$
-                                    meta_data,
-                                    IValue.Quality.Interpolated,
+                    IValue value;
+                    if (Double.isNaN(number)  ||  Double.isInfinite(number))
+                        value = ValueFactory.createDoubleValue(
+                                    time, invalid_severity, invalid_status,
+                                    meta_data, IValue.Quality.Interpolated,
+                                    new double[] { number });
+                    else
+                        value = ValueFactory.createDoubleValue(
+                                    time, ok_severity, ok_status,
+                                    meta_data, IValue.Quality.Interpolated,
                                     new double[] { number });
                     // Add a sample with that value and source = formula
                     samples.add(new ModelSample(value, formula.getFormula()));

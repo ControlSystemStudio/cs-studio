@@ -65,7 +65,7 @@ class FormulaInputs
             sheet = null;
             return;
         }
-        ModelSampleIterator item_iters[] = new ModelSampleIterator[n];
+        final ModelSampleIterator item_iters[] = new ModelSampleIterator[n];
         for (int i=0; i<n; ++i)
             item_iters[i] =
                 new ModelSampleIterator(inputs[i].getModelItem().getSamples());
@@ -120,8 +120,8 @@ class FormulaInputs
         if (sheet == null  ||  !sheet.hasNext())
             return null;
         // SpreadsheetIterator requires getTime(), then next()
-        ITimestamp time = sheet.getTime();
-        IValue values[] = sheet.next();
+        final ITimestamp time = sheet.getTime();
+        final IValue values[] = sheet.next();
         // Check consistency with number of variables
         final int n = getNumInputs();
         if (values.length != n)
