@@ -1,7 +1,6 @@
 package org.csstudio.swt.chart;
 
 import junit.framework.TestCase;
-import junit.framework.Assert;
 
 
 @SuppressWarnings("nls")
@@ -18,6 +17,21 @@ public class ChartSampleSearchTest extends TestCase
         samples = sc;
     }
 
+    public void testEmpty() throws Exception
+    {
+        // Empty container
+        ChartSampleSequenceContainer sc = new ChartSampleSequenceContainer();
+        
+        // Should get -1 (nothing found) for empty container
+        int i = ChartSampleSearch.findClosestSample(sc, 10.0);
+        assertEquals(-1, i);
+        i = ChartSampleSearch.findSampleGreaterOrEqual(sc, 10.0);
+        assertEquals(-1, i);
+        i = ChartSampleSearch.findSampleLessOrEqual(sc, 10.0);
+        assertEquals(-1, i);
+    }
+
+    
     public void testFindClosest() throws Exception
     {
         double x;
@@ -27,40 +41,40 @@ public class ChartSampleSearchTest extends TestCase
         x = 4.0;
         i = ChartSampleSearch.findClosestSample(samples, x);
         System.out.println("Looking for " + x + ", found " + samples.get(i).getX());
-        Assert.assertTrue(i >= 0);
-        Assert.assertTrue(i < samples.size());
-        Assert.assertTrue(samples.get(i).getX() == x);        
-        Assert.assertEquals(1, i);
+        assertTrue(i >= 0);
+        assertTrue(i < samples.size());
+        assertTrue(samples.get(i).getX() == x);        
+        assertEquals(1, i);
 
         // Still '4'
         i = ChartSampleSearch.findClosestSample(samples, 4.1);
-        Assert.assertEquals(1, i);
+        assertEquals(1, i);
         i = ChartSampleSearch.findClosestSample(samples, 4.4);
-        Assert.assertEquals(1, i);
+        assertEquals(1, i);
 
         // '6'
         i = ChartSampleSearch.findClosestSample(samples, 5.2);
-        Assert.assertEquals(2, i);
+        assertEquals(2, i);
         i = ChartSampleSearch.findClosestSample(samples, 6.0);
-        Assert.assertEquals(2, i);
+        assertEquals(2, i);
         i = ChartSampleSearch.findClosestSample(samples, 6.9);
-        Assert.assertEquals(2, i);
+        assertEquals(2, i);
 
         // First
         i = ChartSampleSearch.findClosestSample(samples, 2.0);
-        Assert.assertEquals(0, i);
+        assertEquals(0, i);
         i = ChartSampleSearch.findClosestSample(samples, 1.0);
-        Assert.assertEquals(0, i);
+        assertEquals(0, i);
         i = ChartSampleSearch.findClosestSample(samples, -2.0);
-        Assert.assertEquals(0, i);
+        assertEquals(0, i);
 
         // Last
         i = ChartSampleSearch.findClosestSample(samples, 17.8);
-        Assert.assertEquals(8, i);
+        assertEquals(8, i);
         i = ChartSampleSearch.findClosestSample(samples, 18.0);
-        Assert.assertEquals(8, i);
+        assertEquals(8, i);
         i = ChartSampleSearch.findClosestSample(samples, 200.0);
-        Assert.assertEquals(8, i);
+        assertEquals(8, i);
     }
     
     public void testFindSampleLessOrEqual() throws Exception
@@ -72,47 +86,47 @@ public class ChartSampleSearchTest extends TestCase
         x = 4.0;
         i = ChartSampleSearch.findSampleLessOrEqual(samples, x);
         System.out.println("Looking for " + x + ", found " + samples.get(i).getX());
-        Assert.assertTrue(i >= 0);
-        Assert.assertTrue(i < samples.size());
-        Assert.assertTrue(samples.get(i).getX() == x);        
+        assertTrue(i >= 0);
+        assertTrue(i < samples.size());
+        assertTrue(samples.get(i).getX() == x);        
 
         // Samples contain 4 and 6, but not 5
         x = 5.0;
         i = ChartSampleSearch.findSampleLessOrEqual(samples, x);
         System.out.println("Looking for " + x + ", found " + samples.get(i).getX());
-        Assert.assertTrue(i >= 0);
-        Assert.assertTrue(i < samples.size());
-        Assert.assertTrue(samples.get(i).getX() < x);        
+        assertTrue(i >= 0);
+        assertTrue(i < samples.size());
+        assertTrue(samples.get(i).getX() < x);        
 
         // Lower end
         x = 2.0;
         i = ChartSampleSearch.findSampleLessOrEqual(samples, x);
         System.out.println("Looking for " + x + ", found " + samples.get(i).getX());
-        Assert.assertTrue(i >= 0);
-        Assert.assertTrue(i < samples.size());
-        Assert.assertTrue(samples.get(i).getX() == x);        
+        assertTrue(i >= 0);
+        assertTrue(i < samples.size());
+        assertTrue(samples.get(i).getX() == x);        
 
         // Upper end
         x = 18.0;
         i = ChartSampleSearch.findSampleLessOrEqual(samples, x);
         System.out.println("Looking for " + x + ", found " + samples.get(i).getX());
-        Assert.assertTrue(i >= 0);
-        Assert.assertTrue(i < samples.size());
-        Assert.assertTrue(samples.get(i).getX() == x);        
+        assertTrue(i >= 0);
+        assertTrue(i < samples.size());
+        assertTrue(samples.get(i).getX() == x);        
 
         // Below lower end
         x = 1.0;
         i = ChartSampleSearch.findSampleLessOrEqual(samples, x);
-        Assert.assertEquals(-1, i);        
+        assertEquals(-1, i);        
         System.out.println("Looking for " + x + ", found nothing");
 
         // Beyond upper end
         x = 20.0;
         i = ChartSampleSearch.findSampleLessOrEqual(samples, x);
         System.out.println("Looking for " + x + ", found " + samples.get(i).getX());
-        Assert.assertTrue(i >= 0);
-        Assert.assertTrue(i < samples.size());
-        Assert.assertTrue(samples.get(i).getX() < x);        
+        assertTrue(i >= 0);
+        assertTrue(i < samples.size());
+        assertTrue(samples.get(i).getX() < x);        
    }
 
     public void testFindSampleGreaterOrEqual() throws Exception
@@ -124,47 +138,47 @@ public class ChartSampleSearchTest extends TestCase
         x = 4.0;
         i = ChartSampleSearch.findSampleGreaterOrEqual(samples, x);
         System.out.println("Looking for " + x + ", found " + samples.get(i).getX());
-        Assert.assertTrue(i >= 0);
-        Assert.assertTrue(i < samples.size());
-        Assert.assertTrue(samples.get(i).getX() == x);        
+        assertTrue(i >= 0);
+        assertTrue(i < samples.size());
+        assertTrue(samples.get(i).getX() == x);        
 
         
         // Samples contain 4 and 6, but not 5
         x = 5.0;
         i = ChartSampleSearch.findSampleGreaterOrEqual(samples, x);
         System.out.println("Looking for " + x + ", found " + samples.get(i).getX());
-        Assert.assertTrue(i >= 0);
-        Assert.assertTrue(i < samples.size());
-        Assert.assertTrue(samples.get(i).getX() > x);        
+        assertTrue(i >= 0);
+        assertTrue(i < samples.size());
+        assertTrue(samples.get(i).getX() > x);        
 
         // Lower end
         x = 2.0;
         i = ChartSampleSearch.findSampleGreaterOrEqual(samples, x);
         System.out.println("Looking for " + x + ", found " + samples.get(i).getX());
-        Assert.assertTrue(i >= 0);
-        Assert.assertTrue(i < samples.size());
-        Assert.assertTrue(samples.get(i).getX() == x);        
+        assertTrue(i >= 0);
+        assertTrue(i < samples.size());
+        assertTrue(samples.get(i).getX() == x);        
 
         // Upper end
         x = 18.0;
         i = ChartSampleSearch.findSampleGreaterOrEqual(samples, x);
         System.out.println("Looking for " + x + ", found " + samples.get(i).getX());
-        Assert.assertTrue(i >= 0);
-        Assert.assertTrue(i < samples.size());
-        Assert.assertTrue(samples.get(i).getX() == x);        
+        assertTrue(i >= 0);
+        assertTrue(i < samples.size());
+        assertTrue(samples.get(i).getX() == x);        
 
         // Below lower end
         x = 1.0;
         i = ChartSampleSearch.findSampleGreaterOrEqual(samples, x);
         System.out.println("Looking for " + x + ", found " + samples.get(i).getX());
-        Assert.assertTrue(i >= 0);
-        Assert.assertTrue(i < samples.size());
-        Assert.assertTrue(samples.get(i).getX() > x);        
+        assertTrue(i >= 0);
+        assertTrue(i < samples.size());
+        assertTrue(samples.get(i).getX() > x);        
 
         // Beyond upper end
         x = 20.0;
         i = ChartSampleSearch.findSampleGreaterOrEqual(samples, x);
-        Assert.assertEquals(-1, i);        
+        assertEquals(-1, i);        
         System.out.println("Looking for " + x + ", found nothing");
    }
 }
