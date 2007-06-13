@@ -3,8 +3,10 @@ package org.csstudio.trends.databrowser.sampleview;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariableWithSample;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.swt.chart.ChartSampleSearch;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IModelSamples;
@@ -14,7 +16,8 @@ import org.csstudio.trends.databrowser.model.ModelSample;
 public class TableModel
 {
     private IModelSamples samples;
-    private IProcessVariableWithSample ipv_with_samples;
+
+    private IProcessVariableWithSamples ipv_with_samples;
     
     TableModel(Model model, IModelItem item)
     {
@@ -22,20 +25,26 @@ public class TableModel
         samples = item.getSamples();
         synchronized (samples)
         {
-            final ITimestamp start = model.getStartTime();
-            // Determine which samples are actually visible
-            // TODO move this into Model.getFirstVisibleSample() ...
-            int start_index =
-                ChartSampleSearch.findClosestSample(samples, start.toDouble());
-            final ITimestamp end = model.getEndTime();
-            int end_index =
-                ChartSampleSearch.findClosestSample(samples, end.toDouble());
-            final int N = samples.size();
+//            final ITimestamp start = model.getStartTime();
+//            // Determine which samples are actually visible
+//            // TODO move this into Model.getFirstVisibleSample() ...
+//            int start_index = 0;
+//                ChartSampleSearch.findClosestSample(samples, start.toDouble());
+//            final ITimestamp end = model.getEndTime();
+//            int end_index = samples.size() - 1;
+//                ChartSampleSearch.findClosestSample(samples, end.toDouble());
+//            final int N = samples.size();
+//            
+//            System.out.format("Model: %d samples from %s to %s\n",
+//                              N, start, end);
+//            System.out.format("Visible: %d .. %d\n",
+//                              start_index, end_index);
+
+//The methods 'model.getStartTime' and 'model.getEndTime' return the same TimeStamp
+//-> I only use the sample size of the model independent of the chart        	
             
-            System.out.format("Model: %d samples from %s to %s\n",
-                              N, start, end);
-            System.out.format("Visible: %d .. %d\n",
-                              start_index, end_index);
+            int start_index = 0;
+            int end_index = samples.size() - 1;
             
             ipv_with_samples = createIPVwithSamples(item, start_index, end_index);
         }
@@ -65,44 +74,22 @@ public class TableModel
      *  @param end Index of last sample
      *  @return IProcessVariableWithSample or <code>null</code>.
      */
-    private IProcessVariableWithSample createIPVwithSamples(
+    private IProcessVariableWithSamples createIPVwithSamples(
                     final IModelItem item, final int start, final int end)
     {
         final int num = end - start + 1;
         if (num <= 0)
             return null;
-    
-        // TODO Wait for IProcessVariableWithSample that doesn't need a copy
-        // of double scalars, but instead handles all IValue types via a get(i)
-        // interface.
-        final double times[] = new double[num];
-        final double values[] = new double[num];
-        final String severities[] = new String[num];
-        final String stati[] = new String[num];
-        // Each sample might have a different precision.
-        // We keep track of the last valid precision we find.
-        int precision = 0;
+
+        IValue[] values = new IValue[num];
         synchronized (samples)
         {
             for (int i=0; i<num; ++i)
             {
                 final ModelSample sample = samples.get(start+i);
-                times[i] = sample.getX();
-                values[i] = sample.getY();
-                severities[i] = sample.getSample().getSeverity().toString();
-                stati[i] = sample.getSample().getStatus();
-                final IMetaData meta = sample.getSample().getMetaData();
-                if (meta instanceof INumericMetaData)
-                    precision = ((INumericMetaData)meta).getPrecision();
+                values[i] = sample.getSample();
             }
         }
-        return CentralItemFactory.createProcessVariableWithSample(
-                item.getName(),
-                0, // nonsense dbrType
-                item.getUnits(),
-                item.getAxisLow(),
-                item.getAxisHigh(),
-                precision,
-                values, times, stati, severities);
+        return CentralItemFactory.createProcessVariableWithSamples(item.getName(), values);
     }
 }

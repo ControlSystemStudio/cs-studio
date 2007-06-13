@@ -2,6 +2,7 @@ package org.csstudio.trends.databrowser.sampleview;
 
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSampleDragSource;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesDragSource;
 import org.csstudio.swt.chart.ChartSampleSearch;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IModelSamples;
@@ -122,7 +123,7 @@ public class SampleView extends PlotAwareView
         // Context menu
         makeContextMenu();
         // Drag and Drop
-        new ProcessVariableWithSampleDragSource(table_viewer.getControl(), table_viewer);
+        new ProcessVariableWithSamplesDragSource(table_viewer.getControl(), table_viewer);
         
         // Invoke PlotAwareView's createPartControl to enable updateModel()
         super.createPartControl(parent);
