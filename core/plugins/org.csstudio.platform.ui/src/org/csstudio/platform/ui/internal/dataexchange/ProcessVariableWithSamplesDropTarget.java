@@ -13,6 +13,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Control;
 
 /** Support receiving Process Variable with sample Data.
+ *  (Using the design of the datatype implementations from Kay Kasemir)
  *  <p>
  *  @see ProcessVariableDropTarget
  *  @author Jan Hatje und Helge Rickens

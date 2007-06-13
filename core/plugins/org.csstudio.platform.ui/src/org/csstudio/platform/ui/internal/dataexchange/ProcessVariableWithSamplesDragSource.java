@@ -18,6 +18,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Control;
 
 /** Support dragging a PV Name and Sample Data Source info out of a GUI item.
+ *  (Using the design of the datatype implementations from Kay Kasemir)
  *  <p>
  *  @see IProcessVariableWithSamples
  *  @see ProcessVariableDragSource

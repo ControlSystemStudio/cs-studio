@@ -54,11 +54,13 @@ import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
 /**
- *  * Drag-and-Drop transfer type for <code>IProcessVariableWithSample</code>.
+ * Drag-and-Drop transfer type for <code>IProcessVariableWithSamples</code>.
+ * (Using the design of the datatype implementations from Kay Kasemir)
  * <p>
+ * (Using the design of the datatype implementations from Kay Kasemir)
  * This transfer type expects the data to transfer to implement the
- * <code>IProcessVariableWithSample</code> interface, and the resulting data
- * is provided as an array of <code>ProcessVariableWithSample</code>.
+ * <code>IProcessVariableWithSamples</code> interface, and the resulting data
+ * is provided as an array of <code>ProcessVariableWithSamples</code>.
  * <p>
  * Most of this implementation is from the javadoc for ByteArrayTransfer.
  *
@@ -191,7 +193,6 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
      * 
      */
     private ProcessVariableWithSamplesTransfer() {
-        System.out.println("PVWSTs"+TYPE_ID);
     }
 
     /** @return The singleton instance of the ArchiveDataSourceTransfer. */
@@ -303,7 +304,6 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
             try {
                 _writeOut.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             super.javaToNative(buffer, transferData);

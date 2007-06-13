@@ -27,6 +27,9 @@ package org.csstudio.platform.model;
 import org.csstudio.platform.data.IValue;
 
 /**
+ * Interface to a control system process variable with archive data source.
+ * @see IProcessVariable
+ * 
  * @author hrickens
  * @author $Author$
  * @version $Revision$

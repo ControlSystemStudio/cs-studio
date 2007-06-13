@@ -13,7 +13,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-/** Abstract IObjectActionDelegate for IProcessVariableName selections.
+/** Abstract IObjectActionDelegate for IProcessVariableWithSamples selections.
+ *  (Using the design of the datatype implementations from Kay Kasemir)
  *  <p>
  *  When defining a popupMenu objectContribution, one needs to implement
  *  IObjectActionDelegate.
@@ -69,13 +70,13 @@ public abstract class ProcessVariableWithSamplesPopupAction implements IObjectAc
         }
     }
     
-    /** Handle the received PV names.
+    /** Handle the received PVWithSamples.
      *  <p>
      *  This method will be invoked with all the received PV names.
      *  Typically, a derived class would open the view or create
      *  an editor, in which that received PVs are then displayed
      *  or analyzed or ...
-     *  @param pv_name Array of received PV names.
+     *  @param pv_name Array of received PVWithSamples.
      */
     abstract public void handlePVs(IProcessVariableWithSamples pv_names[]);
 }
