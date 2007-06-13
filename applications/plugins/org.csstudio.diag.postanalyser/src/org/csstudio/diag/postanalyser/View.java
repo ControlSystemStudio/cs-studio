@@ -1,34 +1,35 @@
 package org.csstudio.diag.postanalyser;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Vector;
+
 import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.IProcessVariableWithSample;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSampleDropTarget;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesDropTarget;
-import org.eclipse.swt.widgets.Label;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequenceContainer;
 import org.csstudio.swt.chart.InteractiveChart;
-import org.csstudio.swt.chart.Trace;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.graphics.Color;
-import java.util.Vector;
-import java.util.Date;
-import java.text.DateFormat;
 
 
 public final class View extends ViewPart {	
@@ -495,23 +496,28 @@ public final class View extends ViewPart {
         try {
             int size=pv_name.length;
             if (size < 1) {
+                // TODO Put error where user can see it.
+                // Maybe the GUI needs a status line
                 System.out.println(" Error: FFT ->  View -> activateWithPV array with  unpredictable size="+size);
                 return false;
             }
-            String name=pv_name[0].getName();
-            int len=pv_name[0].size();
+            final IProcessVariableWithSamples pv = pv_name[0];
+            String name=pv.getName();
+            int len=pv.size();
             if (len <= 4) {
+                // TODO display error
                 System.out.println(" Error: FFT ->  View -> activateWithPV array with unpredictable len="+len);
                 return false;
             }
-            double timeRange = (pv_name[0].getSample(len-1).getTime().toDouble() - pv_name[0].getSample(0).getTime().toDouble());
+            double timeRange = (pv.getSample(len-1).getTime().toDouble() - pv.getSample(0).getTime().toDouble());
             if(timeRange <= 0.0)  {
+                // TODO display error
                 System.out.println(" Error: FFT ->  View -> activateWithPV non-positive timeRange="+timeRange);
                 return false;
             }
             
             //samplesVector.setSize(samplesArrayMax);   
-            samplesVector.add(0,pv_name[0]);
+            samplesVector.add(0,pv);
             if (samplesVector.size() >= samplesArrayMax) samplesVector.setSize(samplesArrayMax);
             
             //if only 1 element in stack we have to disable CorelationPlot, otherwise enable it
@@ -524,29 +530,41 @@ public final class View extends ViewPart {
                 }
             }
                 
-            ySamplesSelector.add(getSampleLabel(pv_name[0]),0);
-            xSamplesSelector.add(getSampleLabel(pv_name[0]),1);
+            ySamplesSelector.add(getSampleLabel(pv),0);
+            xSamplesSelector.add(getSampleLabel(pv),1);
             ySamplesSelector.select(0);
             xSamplesSelector.select(0);         
             if(debug) {
                 for (int i=0;i<len;i++)  {
-                    long timeL= (long) (pv_name[0].getSample(i).getTime().seconds()); // TODO Albert Check!
+                    long timeL= (long) (pv.getSample(i).getTime().seconds()); // TODO Albert Check!
                     Date a = new Date(timeL);
                     System.out.println("time="+a);        
                 }
             }
-            double value[] = new double[pv_name[0].size()];
-            double time[] = new double[pv_name[0].size()];
-            for(int i = 0;i<pv_name[0].size();i++){
-                if (pv_name[0].getSamples() instanceof IDoubleValue[]) {
-                    IDoubleValue dv = (IDoubleValue) pv_name[0].getSample(i);
-                    value[i] = dv.getValue();
-                    time[i] = dv.getTime().toDouble();
-                }
+            
+            // Convert the sequence of IValue into simple doubles
+            // for the calc routines.
+            final double value[] = new double[pv.size()];
+            final double time[] = new double[pv.size()];
+            for (int i = 0; i<pv.size(); ++i)
+            {
+                final IValue v = pv.getSample(i);
+                final double dbl = ValueUtil.getDouble(v);
+                // TODO This patches all that won't map to a number as 0
+                //      Better would be for the calc to do whatever
+                //      is sees fit, for example skip those values.
+                if (Double.isNaN(dbl)  ||  Double.isInfinite(dbl))
+                    value[i] = 0;
+                else
+                    value[i] = dbl;
+                time[i] = v.getTime().toDouble();
             }
+            
+            
             return calc(name, value, time);
-//            return calc(name,pv_name[0].getSampleValue(),pv_name[0].getTimeStamp());
-        }       catch (Exception e) {
+        }     
+        catch (Exception e)
+        {
             System.out.println(" Error: FFT ->  View -> newData array exception");
             //Plugin.logException("activateWithPV", e); //$NON-NLS-1$
             e.printStackTrace();
