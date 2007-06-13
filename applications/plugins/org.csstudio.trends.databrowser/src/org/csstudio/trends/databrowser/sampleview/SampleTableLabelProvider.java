@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.sampleview;
 //import java.text.Format;
 
 import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.trends.databrowser.model.ModelSample;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -19,6 +20,14 @@ import org.eclipse.swt.widgets.Display;
 public class SampleTableLabelProvider extends LabelProvider implements
 		ITableLabelProvider, ITableColorProvider
 {
+    enum Column
+    {
+        Time,
+        Value,
+        Info,
+        Source
+    };
+    
     /** Get text for all but the columns.
      *  @param index: 0, 1, 2 for Time, Value, Info
      */
@@ -26,15 +35,20 @@ public class SampleTableLabelProvider extends LabelProvider implements
 	{
         final TableItem item = (TableItem) obj;
         final ModelSample sample = item.getSample();
-        switch (index)
+        switch (Column.values()[index])
         {
-        case 0:
+        case Time:
             return sample.getSample().getTime().toString();
-        case 1:
+        case Value:
             return sample.getSample().format();
-        default:
-            String info = sample.getInfo();
-            return info == null ? "" : info; //$NON-NLS-1$
+        case Info:
+            final IValue value = sample.getSample();
+            final String sevr = value.getSeverity().toString();
+            final String stat = value.getStatus();
+            return sevr + " " + stat; //$NON-NLS-1$
+        default: // case Source:
+            String source = sample.getSource();
+            return source == null ? "" : source; //$NON-NLS-1$
         }
 	}
 
@@ -49,7 +63,7 @@ public class SampleTableLabelProvider extends LabelProvider implements
     {
         final TableItem item = (TableItem) obj;
         final ModelSample sample = item.getSample();
-        ISeverity severity = sample.getSample().getSeverity();
+        final ISeverity severity = sample.getSample().getSeverity();
         if (severity.isOK())
             return null; // no special color
         // Make entry stand out,
