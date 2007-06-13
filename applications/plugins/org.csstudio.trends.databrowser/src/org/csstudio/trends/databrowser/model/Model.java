@@ -202,16 +202,20 @@ public class Model
         }
     }
     
-    /** The current start time, which might be different from what you get
-     *  when you evaluate the start specification 'right now'.
+    /** The start time according to the most recent evaluation
+     *  of the start specification.
+     *  This is the time where the plot should start.
      *  @see #getStartSpecification()
-     *  @return Start time, evaluated when start specification was set.
+     *  @return Start time.
      */
     public ITimestamp getStartTime()
     {   return TimestampFactory.fromCalendar(start_end_times.getStart()); }
     
-    /** @see #getStartTime()
-     *  @return End time, evaluated when end specification was set.
+    /** The end time according to the most recent evaluation
+     *  of the end specification.
+     *  This is the time where the plot should end.
+     *  @see #getStartTime()
+     *  @return End time.
      */
     public ITimestamp getEndTime()
     {   return TimestampFactory.fromCalendar(start_end_times.getEnd()); }
@@ -393,18 +397,20 @@ public class Model
                                     red, green, blue, line_width, trace_type,
                                     log_scale);
             if (items.size() > 0)
-            {   // TODO remove dummy formula
+            {  
+                // Create a dummy example formula
+                // that doubles the first PV
                 FormulaInput inputs[] = new FormulaInput[]
                 {
-                    new FormulaInput(items.get(0), "x")
+                    new FormulaInput(items.get(0), "x") //$NON-NLS-1$
                 };
                 try
                 {
-                    ((FormulaModelItem)item).setFormula("2*x", inputs);
+                    ((FormulaModelItem)item).setFormula("2*x", inputs); //$NON-NLS-1$
                 }
                 catch (Exception ex)
                 {
-                    Plugin.logException("Setting formula", ex);
+                    Plugin.logException("Setting formula", ex); //$NON-NLS-1$
                 }
             }
             break;
