@@ -20,7 +20,8 @@ public class MathFuncNode implements Node
 	 *  @param n Argument node
 	 *  @throws Exception On error
 	 */
-    public MathFuncNode(final String function, Node args[]) throws Exception
+    @SuppressWarnings("unchecked")
+	public MathFuncNode(final String function, Node args[]) throws Exception
     {
     	this.function = function;
         this.args = args;
@@ -40,7 +41,6 @@ public class MathFuncNode implements Node
         
         try
         {
-        	//System.out.println("%s, %f, %f\n", method.toString(), a, b);
         	Object result = method.invoke(null, arglist );
 			if (result instanceof Double)
 				return ((Double) result).doubleValue();
