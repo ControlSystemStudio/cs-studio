@@ -40,7 +40,7 @@ public class TableModel
                 ChartSampleSearch.findClosestSample(samples, start.toDouble());
             final int end_index =
                 ChartSampleSearch.findClosestSample(samples, end.toDouble());
-            if (start_index > 0  &&  end_index > 0)
+            if (start_index >= 0  &&  end_index >= 0)
             {
                 num = end_index - start_index + 1;
                 ipv_with_samples = createIPVwithSamples(item.getName(), samples,
