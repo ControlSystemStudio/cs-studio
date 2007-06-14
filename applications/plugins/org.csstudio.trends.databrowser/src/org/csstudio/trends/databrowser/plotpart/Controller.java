@@ -25,18 +25,23 @@ import org.eclipse.swt.dnd.DropTargetEvent;
  */ 
 public class Controller
 {
-    private final Model model;
-    private final BrowserUI gui;
-    private final Chart chart;
+    final private static boolean debug_scroll = false;
+    /** The model */
+    final private Model model;
+    /** GUI for the model. */
+    final private BrowserUI gui;
+    /** Shortcut to chart inside gui. */
+    final private Chart chart;
     private ScannerAndScroller scanner_scroller;
     private boolean controller_changes_xaxis = false;
     private boolean controller_changes_yaxes = false;
     private boolean controller_changes_model = false;
     
+    /** Start time of the plot used for scrolling, like "-10 minutes" */
     private String scroll_start_specification = null;
     
     /** Scan the PVs, and possibly redraw. */
-    private ScannerAndScrollerListener scanner_scroller_listener =
+    final private ScannerAndScrollerListener scanner_scroller_listener =
         new ScannerAndScrollerListener()
     {
         @SuppressWarnings("nls")
@@ -75,7 +80,9 @@ public class Controller
                     model.updateStartEndTime();
                 else
                 {
-                    System.out.println("Scroll: Update start " + scroll_start_specification);
+                    if (debug_scroll)
+                        System.out.println("Scroll: Update start "
+                                        + scroll_start_specification);
                     model.setTimeSpecifications(scroll_start_specification,
                                                 RelativeTime.NOW);
                 }
@@ -93,7 +100,7 @@ public class Controller
     /** React to model changes by updating the chart,
      *  and possibly getting new archive data.
      */
-    private final ModelListener model_listener = new ModelListener()
+    final private ModelListener model_listener = new ModelListener()
     {
         public void timeSpecificationsChanged()
         {
@@ -142,7 +149,7 @@ public class Controller
     };
 
     /** React to chart changes by updating the model. */
-    private final ChartListener chart_listener = new ChartListener()
+    final private ChartListener chart_listener = new ChartListener()
     {
         @SuppressWarnings("nls")
         public void changedXAxis(XAxis xaxis)
@@ -217,11 +224,10 @@ public class Controller
     {
         this.model = model;
         this.gui = gui;
-        chart = gui.getInteractiveChart().getChart();
-
-        
+        chart = gui.getInteractiveChart().getChart();        
         chart.addListener(chart_listener);
         model.addListener(model_listener);
+        
         // Initialize GUI with the current model content.
         model_listener.entriesChanged();
         
@@ -276,9 +282,11 @@ public class Controller
     @SuppressWarnings("nls")
     private void setScrollStart(final double range_in_seconds)
     {
-        scroll_start_specification =
-           String.format("-%f %s", range_in_seconds, RelativeTime.SECOND_TOKEN);
-        System.out.println("Scroll: New start " + scroll_start_specification);
+        // Use RelativeTime to normalize the seconds into hours, minutes, ...
+        RelativeTime start = new RelativeTime(-range_in_seconds);
+        scroll_start_specification = start.toString();
+        if (debug_scroll)
+            System.out.println("Scroll: New start " + scroll_start_specification);
     }
     
     /** Private handler for ..DropTarget interface */
@@ -302,7 +310,6 @@ public class Controller
         // Avoid infinite loops if we are changing the model ourselves
         if (controller_changes_model)
             return;
-        int i;
         // Clear chart by removing all the traces
         while (chart.getNumTraces() > 0)
             chart.removeTrace(0);
@@ -310,7 +317,7 @@ public class Controller
         while (chart.getNumYAxes() > 1)
             chart.removeYAxis(chart.getNumYAxes()-1); // del. last axis
         // Add model data.
-        for (i=0; i<model.getNumItems(); ++i)
+        for (int i=0; i<model.getNumItems(); ++i)
             addToDisplay(model.getItem(i));
         getArchivedData(null);
     }
@@ -372,7 +379,7 @@ public class Controller
     /** @return the item name for a trace. */
     private String getModelItemName(Trace trace)
     {
-        // If there are units, chop them back off
+        // If there are units, chop them off
         String trace_name = trace.getName();
         int i = trace_name.indexOf(Messages.UnitMarkerStart);
         if (i < 0)

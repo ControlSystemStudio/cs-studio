@@ -112,6 +112,17 @@ public class RelativeTime
         normalize();
     }
 
+    /** Construct relative time information from the given seconds.
+     *  @param seconds Relative seconds, might amount to minutes, days, etc.
+     */
+    public RelativeTime(double seconds)
+    {
+        rel_time = new int[] { 0, 0, 0, 0, 0, (int)seconds, 0};
+        double frac_seconds = seconds - rel_time[SECONDS];
+        rel_time[MILLISECONDS] += frac_seconds * 1000; // 1000 millis per sec
+        normalize();
+    }
+    
     /** Construct relative time information from the given data.
      *  <p>
      *  Some attempts are made to normalize fractional pieces.
