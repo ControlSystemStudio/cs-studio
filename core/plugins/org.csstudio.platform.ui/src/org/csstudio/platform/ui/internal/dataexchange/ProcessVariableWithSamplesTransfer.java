@@ -259,9 +259,9 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
         _writeOut = new DataOutputStream(_out);
         for (IProcessVariableWithSamples samples : data) {
             fillHeader(samples);
-            IValue[] values = samples.getSamples();
-            for (IValue value : values) {
-                ValueTyp valueTyp;
+            for (int j = 0; j < samples.size(); j++) {
+            	IValue value = samples.getSample(j);
+            	ValueTyp valueTyp;
                 if (value instanceof IDoubleValue) {
                     valueTyp = ValueTyp.Double;
                     fillValue(value, valueTyp);

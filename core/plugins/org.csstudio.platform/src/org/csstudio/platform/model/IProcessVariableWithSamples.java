@@ -27,7 +27,7 @@ package org.csstudio.platform.model;
 import org.csstudio.platform.data.IValue;
 
 /**
- * Interface to a control system process variable with archive data source.
+ * Interface to a control system process variable with samples.
  * @see IProcessVariable
  * 
  * @author hrickens
@@ -46,12 +46,6 @@ public interface IProcessVariableWithSamples extends IProcessVariable {
      * @return the Number of Samples
      */
     int size();
-    
-    /**
-     *
-     * @return an Array of all Samples
-     */
-    IValue[] getSamples();
     
     /**
     * @param index of Sample 
