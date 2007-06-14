@@ -880,6 +880,9 @@ public class ConfigView extends PlotAwareView
     /** Add a new PV to the model. */
     public IModelItem addPV(String name)
     {
+        name = name.trim();
+        if (name.length() < 1)
+            return null;
         Model model = getModel();
         if (model == null)
             return null;
@@ -894,6 +897,9 @@ public class ConfigView extends PlotAwareView
     /** Add a new formula to the model. */
     public IModelItem addFormula(String name)
     {
+        name = name.trim();
+        if (name.length() < 1)
+            return null;
         Model model = getModel();
         if (model == null)
             return null;
