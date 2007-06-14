@@ -61,16 +61,6 @@ public class ProcessVariableWithSamples extends AbstractControlSystemItem
     }
 
     /* (non-Javadoc)
-     * @see org.csstudio.platform.model.IProcessVariableWithSamples#getSamples()
-     */
-    /**
-     * @return Sampels.
-     */
-    public final IValue[] getSamples() {
-        return _samplesList;
-    }
-
-    /* (non-Javadoc)
      * @see org.csstudio.platform.model.IProcessVariableWithSamples#size()
      */
     /**

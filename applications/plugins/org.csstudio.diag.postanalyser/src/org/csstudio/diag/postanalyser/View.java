@@ -210,14 +210,23 @@ public final class View extends ViewPart {
                 xSamplesSelector.add(getSampleLabel(pv_name),1);
                 ySamplesSelector.select(0);
                 xSamplesSelector.select(0);
-                double value[] = new double[pv_name.size()];
-                double time[] = new double[pv_name.size()];
-                for(int i = 0;i<pv_name.size();i++){
-                    if (pv_name.getSamples() instanceof IDoubleValue[]) {
-                        IDoubleValue dv = (IDoubleValue) pv_name.getSample(i);
-                        value[i] = dv.getValue();
-                        time[i] = dv.getTime().toDouble();
-                    }
+
+                // Convert the sequence of IValue into simple doubles
+                // for the calc routines.
+                final double value[] = new double[pv_name.size()];
+                final double time[] = new double[pv_name.size()];
+                for (int i = 0; i<pv_name.size(); ++i)
+                {
+                    final IValue v = pv_name.getSample(i);
+                    final double dbl = ValueUtil.getDouble(v);
+                    // TODO This patches all that won't map to a number as 0
+                    //      Better would be for the calc to do whatever
+                    //      is sees fit, for example skip those values.
+                    if (Double.isNaN(dbl)  ||  Double.isInfinite(dbl))
+                        value[i] = 0;
+                    else
+                        value[i] = dbl;
+                    time[i] = v.getTime().toDouble();
                 }
 
                 calc(name,value,time);
