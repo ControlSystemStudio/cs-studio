@@ -5,6 +5,7 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
+import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
 import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.core.runtime.jobs.Job;
@@ -358,8 +359,6 @@ public class ExportView extends PlotAwareView
             {   exportRequested();  }
         });
         
-        // Initial settings
-        setStartEndFromModel();
         // Plot/raw/averaged data?
         source_raw.setSelection(true);
         source = ExportJob.Source.Raw;
@@ -395,10 +394,12 @@ public class ExportView extends PlotAwareView
      */
     private void conditionallyEnableTimeConfig()
     {
-        boolean allow_config = !use_plot_time.getSelection();
+        final boolean allow_config = !use_plot_time.getSelection();
         start_txt.setEnabled(allow_config);
         end_txt.setEnabled(allow_config);
         time_config.setEnabled(allow_config);
+        if (allow_config)
+            setStartEndFromModel();
     }
 
     // Another Model becomes current.
@@ -456,7 +457,10 @@ public class ExportView extends PlotAwareView
     /** Update GUI with start/end time spec from Model. */
     private void setStartEndFromModel()
     {
-        Model model = getPlotEditor().getModel();
+    	final PlotEditor editor = getPlotEditor();
+    	if (editor == null)
+    		return;
+		final Model model = editor.getModel();
         if (model == null)
             return;
         start_txt.setText(model.getStartSpecification());
@@ -466,7 +470,10 @@ public class ExportView extends PlotAwareView
     /** Start data export with current settings. */
     private void exportRequested()
     {
-        Model model = getPlotEditor().getModel();
+    	final PlotEditor editor = getPlotEditor();
+    	if (editor == null)
+    		return;
+		final Model model = editor.getModel();
         if (model == null)
             return;
         

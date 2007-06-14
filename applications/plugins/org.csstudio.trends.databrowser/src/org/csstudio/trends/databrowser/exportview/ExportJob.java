@@ -218,7 +218,7 @@ class ExportJob extends Job
                             + " (" + seconds + ")");  //$NON-NLS-1$//$NON-NLS-2$
         else
             out.println(Messages.Comment + Messages.SourceLabel + source);
-        out.println(Messages.Comment + Messages.Spreadsheet + format_spreadsheet);
+        out.println(Messages.Comment + Messages.Spreadsheet + ": "+ format_spreadsheet); //$NON-NLS-1$
         out.println(Messages.Comment + Messages.IncludeSeverity + format_severity);
         out.println(Messages.Comment + Messages.FormatLabel + format);
         out.println(Messages.Comment + Messages.IncludeSeverity + format_severity);
