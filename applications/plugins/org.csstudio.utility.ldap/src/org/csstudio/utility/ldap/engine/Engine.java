@@ -62,7 +62,7 @@ public class Engine extends Job {
         ldapWriteTimeCollector.setContinuousPrint(true);
         ldapWriteTimeCollector.getAlarmHandler().setDeadband(5.0);
         ldapWriteTimeCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);   // 500ms
-        ldapWriteTimeCollector.getAlarmHandler().setHighRelativeLimit(200.0);   // 200%
+        ldapWriteTimeCollector.getAlarmHandler().setHighRelativeLimit(400.0);   // 200%
         
         ldapReadTimeCollector = new Collector();
         ldapReadTimeCollector.setApplication(name);
@@ -70,7 +70,7 @@ public class Engine extends Job {
         ldapReadTimeCollector.setContinuousPrint(true);
         ldapReadTimeCollector.getAlarmHandler().setDeadband(5.0);
         ldapReadTimeCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);    // 500ms
-        ldapReadTimeCollector.getAlarmHandler().setHighRelativeLimit(200.0);    // 200%
+        ldapReadTimeCollector.getAlarmHandler().setHighRelativeLimit(500.0);    // 200%
         
         ldapWriteRequests = new Collector();
         ldapWriteRequests.setApplication(name);
@@ -156,7 +156,7 @@ public class Engine extends Job {
     synchronized public void addLdapWriteRequest(String attribute, String channel, String value) {
         // boolean addVectorOK = true;
         WriteRequest writeRequest = new WriteRequest( attribute, channel, value);
-        int maxBuffersize = 700;
+        int maxBuffersize = 1000;
         //
         // add request to vector
         //
@@ -164,7 +164,7 @@ public class Engine extends Job {
         /*
          * statistic information
          */
-        ldapReadTimeCollector.setValue(bufferSize);
+        ldapWriteRequests.setValue(bufferSize);
         
         /// System.out.println("Engine.addLdapWriteRequest actual buffer size: " + bufferSize);
         if ( bufferSize > maxBuffersize) {
@@ -305,8 +305,16 @@ public class Engine extends Job {
                 try {
                     ctx.modifyAttributes(ldapChannelName, modItemTemp);
                     //System.out.println ("Engine.changeValue : Time to write to LDAP: (known channel: " + ldapChannelName + ") [" + n + "] " + gregorianTimeDifference ( startTime, new GregorianCalendar()));
+                    ldapWriteTimeCollector.setInfo(channel);
                     ldapWriteTimeCollector.setValue( gregorianTimeDifference ( startTime, new GregorianCalendar())/n);
                 } catch (NamingException e) {
+                	CentralLogger.getInstance().warn( this, "Engine.changeValue: Naming Exception! Channel: " +  ldapChannelName);
+                    System.out.println("Engine.changeValue: Naming Exception! Channel: " +  ldapChannelName);
+                    String errorCode = e.getExplanation();
+                    if ( errorCode.contains("10")) {
+                    	System.out.println( "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
+                    	CentralLogger.getInstance().warn( this, "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
+                    }
                     e.printStackTrace();
                     //
                     // too bad it did not work
@@ -332,6 +340,7 @@ public class Engine extends Job {
             try {
                 NamingEnumeration<SearchResult> results = ctx.search("",string+"=" + channel, ctrl);
                 //System.out.println ("Engine.changeValue : Time to search channel: " + gregorianTimeDifference ( startTime, new GregorianCalendar()));
+                ldapReadTimeCollector.setInfo(channel);
                 ldapReadTimeCollector.setValue(gregorianTimeDifference ( startTime, new GregorianCalendar()));
     //          System.out.println("Enter Engine.changeValue results for channnel: " + channel );
                 namesInNamespace = new Vector<String>();
@@ -347,9 +356,18 @@ public class Engine extends Job {
                     }
                     try {
                         ctx.modifyAttributes(ldapChannelName, modItemTemp);
-                        System.out.println ("Engine.changeValue : Time to write to LDAP: (unknown channel)" + gregorianTimeDifference ( startTime, new GregorianCalendar()));
+                        ldapWriteTimeCollector.setInfo(channel);
+                        ldapWriteTimeCollector.setValue( gregorianTimeDifference ( startTime, new GregorianCalendar())/n);
+                        System.out.println ("Engine.changeValue : Time to write to LDAP: (" +  channel + ")" + gregorianTimeDifference ( startTime, new GregorianCalendar()));
                     } catch (NamingException e) {
-                        e.printStackTrace();
+                    	CentralLogger.getInstance().warn( this, "Engine.changeValue: Naming Exception! Channel: " +  ldapChannelName);
+                        System.out.println("Engine.changeValue: Naming Exception! Channel: " +  ldapChannelName);
+                        String errorCode = e.getExplanation();
+                        if ( errorCode.contains("10")) {
+                        	System.out.println( "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
+                        	CentralLogger.getInstance().warn( this, "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
+                        }
+                    	e.printStackTrace();
                         //
                         // too bad it did not work
                         doWrite = false;    // wait for next time
