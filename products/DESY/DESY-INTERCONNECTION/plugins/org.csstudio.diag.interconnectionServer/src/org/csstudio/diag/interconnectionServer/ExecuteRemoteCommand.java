@@ -11,9 +11,11 @@ public class ExecuteRemoteCommand implements IAction {
 		if(!(param instanceof Map))
 			return null;
 		
+		System.out.println("======ExecuteRemoteCommand======");
 		Map m = (Map)param;
 		String command 	= m.get("param1").toString();
 		String client 	= m.get("param2").toString();
+		System.out.println("received param: " + command + " " + client);
 		int commandId = -1;
 		
 		for ( int i=0; i < PreferenceProperties.COMMAND_LIST.length; i++) {
