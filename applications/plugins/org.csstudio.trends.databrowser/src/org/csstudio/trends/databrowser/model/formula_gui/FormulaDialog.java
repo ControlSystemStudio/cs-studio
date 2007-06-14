@@ -157,15 +157,19 @@ public class FormulaDialog extends Dialog
     /** Init. the GUI elements from the formula item. */
     private void initializeGUI()
     {
-        // List all the model's PVs as potential formula inputs
+        // List all the model's other PVs as potential formula inputs
         final Model model = formula_item.getModel();
         final int model_N = model.getNumItems();
-        FormulaInput input_items[] = new FormulaInput[model_N];
+        ArrayList<FormulaInput> input_items =
+            new ArrayList<FormulaInput>(model_N);
         for (int i=0; i<model_N; ++i)
         {
             final IModelItem item = model.getItem(i);
+            // Skip the formula item itself
+            if (item == formula_item)
+                continue;
+            // See if item already associated with a variable in the formula
             VariableNode variable = null;
-            // See if it's already associated with a variable in the formula
             final FormulaInput[] current_inputs = formula_item.getInputs();
             for (FormulaInput input : current_inputs)
             {
@@ -175,11 +179,15 @@ public class FormulaDialog extends Dialog
                     break;
                 }
             }
+            // Not assigned to variable, so use item name as variable name.
             if (variable == null)
                 variable = new VariableNode(item.getName());
-            input_items[i] = new FormulaInput(item, variable);
+            input_items.add(new FormulaInput(item, variable));
         }
-        input_table.setInput(input_items);
+        // Convert to plain array
+        FormulaInput inp_array[] = new FormulaInput[input_items.size()];
+        input_items.toArray(inp_array);
+        input_table.setInput(inp_array);
     }
     
     /** Create the buttons. */

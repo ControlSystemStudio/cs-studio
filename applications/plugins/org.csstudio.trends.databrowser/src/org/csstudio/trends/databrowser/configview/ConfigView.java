@@ -898,6 +898,7 @@ public class ConfigView extends PlotAwareView
         if (model == null)
             return null;
         IModelItem item = model.add(Model.ItemType.Formula, name);
+        configureFormula((FormulaModelItem) item);
         return item;
     }
     
@@ -967,12 +968,15 @@ public class ConfigView extends PlotAwareView
         {
             Object item = sel.getFirstElement();
             if (item instanceof FormulaModelItem)
-            {
-                FormulaDialog dlg =
-                    new FormulaDialog(pv_table_viewer.getControl().getShell(),
-                                    (FormulaModelItem) item);
-                dlg.open();
-            }
+                configureFormula((FormulaModelItem)item);
         }
+    }
+
+    /** Run dialog for given formula. */
+    private void configureFormula(FormulaModelItem item)
+    {
+        FormulaDialog dlg =
+            new FormulaDialog(pv_table_viewer.getControl().getShell(), item);
+        dlg.open();
     }
 }
