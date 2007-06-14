@@ -32,22 +32,26 @@ public class TableModel
         new ArrayList<ModelSample>();
 
     /** Constructor */
-    TableModel(Model model, IModelItem item)
+    TableModel(final Model model, final IModelItem item)
     {
         name = item.getName();
         final IModelSamples all_samples = item.getSamples();
         synchronized (all_samples)
         {
+        	// Determine visible start/end range
             final ITimestamp start = model.getStartTime();
             final ITimestamp end = model.getEndTime();
-            
             final int start_index =
                 ChartSampleSearch.findClosestSample(all_samples, start.toDouble());
             final int end_index =
                 ChartSampleSearch.findClosestSample(all_samples, end.toDouble());
+            // Get array of all those references
             if (start_index >= 0  &&  end_index >= 0)
-                for (int i=start_index; i<=end_index; ++i)
+            {
+            	samples.ensureCapacity(end_index - start_index + 1);
+            	for (int i=start_index; i<=end_index; ++i)
                     samples.add(all_samples.get(i));
+            }
         }
     }
     
