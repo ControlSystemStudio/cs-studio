@@ -32,8 +32,9 @@ import java.util.Date;
                     try {
                         Date d = formatter.parse(t.getText());
                         cal.setDate(d);
-                    } catch (ParseException pe) {
-
+                    } catch (ParseException pe)
+                    {
+                        pe.printStackTrace();
                     }
                 }
                 cal.open();

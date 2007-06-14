@@ -1,18 +1,22 @@
 package org.vafada.swtcalendar.demo;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.*;
-import org.vafada.swtcalendar.SWTCalendar;
-import org.vafada.swtcalendar.SWTCalendarEvent;
-import org.vafada.swtcalendar.SWTCalendarListener;
-
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.vafada.swtcalendar.SWTCalendar;
+import org.vafada.swtcalendar.SWTCalendarEvent;
+import org.vafada.swtcalendar.SWTCalendarListener;
 
 @SuppressWarnings("nls")
 public class EmbeddedDemo {
@@ -73,16 +77,14 @@ public class EmbeddedDemo {
             }
         });
 
-        localeCombo.addSelectionListener(new SelectionListener() {
+        localeCombo.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 Locale _locale = locales[localeCombo.getSelectionIndex()];
                 DateFormat df2 = DateFormat.getDateInstance(DateFormat.LONG, _locale);
                 l.setText(df2.format(c.getCalendar().getTime()));
                 c.setLocale(_locale);
-            }
-
-            public void widgetDefaultSelected(SelectionEvent event) {
-
             }
         });
 

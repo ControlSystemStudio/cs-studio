@@ -296,14 +296,14 @@ public class SWTDayChooser extends Composite
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.MouseListener#mouseDoubleClick(org.eclipse.swt.events.MouseEvent)
      */
-    public void mouseDoubleClick(MouseEvent event) {
-    }
+    public void mouseDoubleClick(MouseEvent event)
+    { /* NOP */  }
 
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.MouseListener#mouseUp(org.eclipse.swt.events.MouseEvent)
      */
-    public void mouseUp(MouseEvent event) {
-    }
+    public void mouseUp(MouseEvent event)
+    { /* NOP */  }
 
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.FocusListener#focusGained(org.eclipse.swt.events.FocusEvent)
@@ -375,8 +375,8 @@ public class SWTDayChooser extends Composite
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
      */
-    public void keyReleased(KeyEvent event) {
-    }
+    public void keyReleased(KeyEvent event)
+    { /* NOP */  }
 
     /**
      * Finds position of a control in <code>days</code> array.
