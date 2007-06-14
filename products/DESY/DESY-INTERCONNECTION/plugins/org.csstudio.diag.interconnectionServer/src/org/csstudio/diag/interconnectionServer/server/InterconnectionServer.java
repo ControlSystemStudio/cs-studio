@@ -50,7 +50,10 @@ public class InterconnectionServer
     public final String VERSION = " 0.5";
     public final String BUILD   = " - BUILD 09.02.2007 17:00";
     
+    private int sendCommandId = PreferenceProperties.SENT_START_ID;
+    
     private Collector	jmsMessageWriteCollector = null;
+    private Collector	clientRequestTheadCollector = null;
     
     
     synchronized public boolean setupConnections ( )
@@ -272,6 +275,16 @@ public class InterconnectionServer
         jmsMessageWriteCollector.getAlarmHandler().setDeadband(5.0);
         jmsMessageWriteCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);	// 500ms
         jmsMessageWriteCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
+        /*
+         * set up collectors (statistic)
+         */
+        clientRequestTheadCollector = new Collector();
+        clientRequestTheadCollector.setApplication("IC-Server");
+        clientRequestTheadCollector.setDescriptor("Number of Client request Threads");
+        clientRequestTheadCollector.setContinuousPrint(true);
+        clientRequestTheadCollector.getAlarmHandler().setDeadband(5.0);
+        clientRequestTheadCollector.getAlarmHandler().setHighAbsoluteLimit( PreferenceProperties.CLIENT_REQUEST_THREAD_MAX_NUMBER_ALARM_LIMIT);	// 500ms
+        clientRequestTheadCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
         
         if ( ! setupConnections()){
         	//
@@ -476,5 +489,21 @@ public class InterconnectionServer
 
 	public void setJmsMessageWriteCollector(Collector jmsMessageWriteCollector) {
 		this.jmsMessageWriteCollector = jmsMessageWriteCollector;
+	}
+
+	public Collector getClientRequestTheadCollector() {
+		return clientRequestTheadCollector;
+	}
+
+	public void setClientRequestTheadCollector(Collector clientRequestTheadCollector) {
+		this.clientRequestTheadCollector = clientRequestTheadCollector;
+	}
+
+	public int getSendCommandId() {
+		return sendCommandId++;
+	}
+
+	public void setSendCommandId(int sendCommandId) {
+		this.sendCommandId = sendCommandId;
 	}
 }

@@ -12,21 +12,24 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import javax.jms.MapMessage;
-import javax.jms.Session;
-import javax.jms.MessageProducer;
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import org.csstudio.utility.ldap.engine.*;
+import javax.jms.MapMessage;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
 
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer.TagValuePairs;
+import org.csstudio.utility.ldap.engine.Engine;
 
 //import de.desy.jms.server.InterconnectionServer.TagValuePairs;
 
@@ -89,6 +92,11 @@ public class ClientRequest extends Thread
         GregorianCalendar afterUdpAcknowledgeTime = new GregorianCalendar();
         GregorianCalendar afterLdapWriteTime = new GregorianCalendar();
         
+        /*
+         * increase stistic counter
+         */
+        InterconnectionServer.getInstance().getClientRequestTheadCollector().incrementValue();
+        
         ///System.out.println("Time: - start 		= " + dateToString(new GregorianCalendar()));
         //
         // write out some statistics
@@ -145,6 +153,7 @@ public class ClientRequest extends Thread
         		//
         		// ALARM jms server
         		//
+        		System.out.print("a");
         		try {
             		//sender = alarmSession.createProducer(alarmDestination);
             		//System.out.println("Time-ALARM: - after sender= 	= " + dateToString(new GregorianCalendar()));
@@ -156,7 +165,9 @@ public class ClientRequest extends Thread
             		///System.out.println("Time-ALARM: - before sender-send 	= " + dateToString(new GregorianCalendar()));
             		alarmSender.send(message);
             		message = null;
+            		System.out.print("aJs");
             		InterconnectionServer.getInstance().getJmsMessageWriteCollector().setValue(gregorianTimeDifference( parseTime, new GregorianCalendar()));
+            		System.out.print("aJe");
             		//System.out.println("Time-ALARM: - after sender-send 	= " + dateToString(new GregorianCalendar()));
         		}
         		catch(JMSException jmse)
@@ -171,7 +182,9 @@ public class ClientRequest extends Thread
         		//
         		// time to update the LDAP server entry
         		//
+        		System.out.print("aLs");
         		updateLdapEntry( tagValue);
+        		System.out.print("aLe");
         		afterLdapWriteTime = new GregorianCalendar();
         		
         		//checkPerformance( parseTime, afterJmsSendTime, afterUdpAcknowledgeTime, afterLdapWriteTime);
@@ -197,6 +210,12 @@ public class ClientRequest extends Thread
                     //System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
+        		//
+        		// time to update the LDAP server entry
+        		//
+        		System.out.print("sLs");
+        		updateLdapEntry( tagValue);
+        		System.out.print("sLe");
         		System.out.print("S");
         		break;
         		
@@ -313,6 +332,7 @@ public class ClientRequest extends Thread
             System.out.println("ClientRequest : clean up : *** EXCEPTION *** : " + jmse.getMessage());
         }         
         //System.out.println("ClientRequest : clean up : leave thread" + this.getId());
+        InterconnectionServer.getInstance().getClientRequestTheadCollector().decrementValue();
 	}
 	
 	private boolean parseMessage ( Hashtable<String,String> tagValue, Vector<TagValuePairs> tagValuePairs, TagValuePairs tag, TagValuePairs type, String statisticId) {

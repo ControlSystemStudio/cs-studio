@@ -19,9 +19,11 @@ public class PreferenceProperties {
 	
 	public static String JMS_CONTEXT_FACTORY = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
 
-	public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs:61616,tcp://elogbook.desy.de:61616)?maxReconnectDelay=2000";	//TCP
+	///public static String PRIMARY_JMS_URL = "tcp://krynfs.desy.de:61616";	//TCP
+	public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs.desy.de:62616,tcp://elogbook.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50";	//TCP
 	//public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";
-	public static String SECONDARY_JMS_URL = "failover:(tcp://krynfs:61616,tcp://elogbook.desy.de:61616)?maxReconnectDelay=2000";
+	///public static String SECONDARY_JMS_URL = "tcp://elogbook.desy.de:61616";
+	public static String SECONDARY_JMS_URL = "failover:(tcp://elogbook.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=2000,maxReconnectAttempts=100";
 
 	
 //	public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";	//RMI
@@ -73,5 +75,11 @@ public class PreferenceProperties {
 	public static final int BEACON_TIMEOUT = 10;
 	
 	public static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.S";
+	
+	/*
+	 * client request thread properties
+	 */
+	public static final int CLIENT_REQUEST_THREAD_MAX_NUMBER_DISCONNECT_FROM_IOC	= 500;
+	public static final int CLIENT_REQUEST_THREAD_MAX_NUMBER_ALARM_LIMIT			= 100;
 
 }
