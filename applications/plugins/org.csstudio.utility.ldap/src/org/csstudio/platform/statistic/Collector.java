@@ -22,7 +22,9 @@ public class Collector {
 	private String		application		= "applic. not set";
 	private boolean		continuousPrint	= true;
 	private Double		continuousPrintCount = 100.0;
-	
+	private String		info = "info not defined";
+
+
 	public Collector () {
 		/*
 		 * initialize
@@ -72,15 +74,18 @@ public class Collector {
 		actualValue.setValue(value);
 		actualValue.setTime( new GregorianCalendar());
 		actualValue.setCount(getCount());
+		actualValue.setInfo(info);
 		if ( lowestValue.getValue() > value) {
 			lowestValue.setValue(value);
 			lowestValue.setCount(getCount());
 			lowestValue.setActualTime();
+			lowestValue.setInfo(info);
 		}
 		if ( highestValue.getValue() < value) {
 			highestValue.setValue(value);
 			highestValue.setCount(getCount());
 			highestValue.setActualTime();
+			highestValue.setInfo(info);
 		}
 		setMeanValueAbsolute(getTotalSum()/getCount());
 		if ( getCount() > 1) {
@@ -98,7 +103,7 @@ public class Collector {
 		/*
 		 * performa alarm checking
 		 */
-		alarmHandler.process(value, getMeanValuerelative());
+		alarmHandler.process(value, this);
 		/*
 		 * continuous printing
 		 */
@@ -112,14 +117,26 @@ public class Collector {
 		setValue ( newValue);
 	}
 	
+	public void incrementValue () {
+		Double newValue = actualValue.getValue();
+		newValue++;
+		setValue ( newValue);
+	}
+	
+	public void decrementValue () {
+		Double newValue = actualValue.getValue();
+		newValue--;
+		setValue ( newValue);
+	}
+	
 	public void continuousPrinter () {
 		
 		System.out.println ("\nApplication: " + getApplication());
 		System.out.println ("Descriptor: " + getDescriptor());
 		System.out.println ("Counter: " + getCount());
-		System.out.println ("Actual value: " + getActualValue().getValue() + " \tDate: " + dateToString(getActualValue().getTime()) + " \tCount: " + getActualValue().getCount());
-		System.out.println ("Highest Value: " + getHighestValue().getValue() + " \tDate: " + dateToString(getHighestValue().getTime()) + " \tCount: " + getHighestValue().getCount());
-		System.out.println ("Lowest Value: " + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount());
+		System.out.println ("Actual value: " + getActualValue().getValue() + " \tDate: " + dateToString(getActualValue().getTime()) + " \tCount: " + getActualValue().getCount() + "Info: " + getActualValue().getInfo());
+		System.out.println ("Highest Value: " + getHighestValue().getValue() + " \tDate: " + dateToString(getHighestValue().getTime()) + " \tCount: " + getHighestValue().getCount()  + "Info: " + getHighestValue().getInfo());
+		System.out.println ("Lowest Value: " + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount()  + "Info: " + getLowestValue().getInfo());
 		System.out.println ("Mean Value abs: " + getMeanValueAbsolute());
 		System.out.println ("Mean Value rel.: " + getMeanValuerelative());
 	}
@@ -131,9 +148,9 @@ public class Collector {
 		result += ("\n\nApplication: " + getApplication());
 		result += ("\nDescriptor: " + getDescriptor());
 		result += ("\nCounter: " + getCount());
-		result += ("\nActual value: " + getActualValue().getValue() + " \tDate: " + dateToString(getActualValue().getTime()) + " \tCount: " + getActualValue().getCount());
-		result += ("\nHighest Value: " + getHighestValue().getValue() + " \tDate: " + dateToString(getHighestValue().getTime()) + " \tCount: " + getHighestValue().getCount());
-		result += ("\nLowest Value: " + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount());
+		result += ("\nActual value: " + getActualValue().getValue() + " \tDate: " + dateToString(getActualValue().getTime()) + " \tCount: " + getActualValue().getCount() + "Info: " + getActualValue().getInfo());
+		result += ("\nHighest Value: " + getHighestValue().getValue() + " \tDate: " + dateToString(getHighestValue().getTime()) + " \tCount: " + getHighestValue().getCount() + "Info: " + getHighestValue().getInfo());
+		result += ("\nLowest Value: " + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount() + "Info: " + getLowestValue().getInfo());
 		result += ("\nMean Value abs: " + getMeanValueAbsolute());
 		result += ("\nMean Value rel.: " + getMeanValuerelative());
 		return result;
@@ -149,9 +166,9 @@ public String getCollectorStatusAsXml () {
 		result += ("\n<Application>" + getApplication());
 		result += ("\n<Descriptor>" + getDescriptor());
 		result += ("\n<Counter>" + getCount());
-		result += ("\n<Actual value>" + getActualValue().getValue() + " \tDate: " + dateToString(getActualValue().getTime()) + " \tCount: " + getActualValue().getCount());
-		result += ("\n<Highest Value>" + getHighestValue().getValue() + " \tDate: " + dateToString(getHighestValue().getTime()) + " \tCount: " + getHighestValue().getCount());
-		result += ("\n<Lowest Value>" + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount());
+		result += ("\n<Actual value>" + getActualValue().getValue() + " \tDate: " + dateToString(getActualValue().getTime()) + " \tCount: " + getActualValue().getCount() + "Info: " + getActualValue().getInfo());
+		result += ("\n<Highest Value>" + getHighestValue().getValue() + " \tDate: " + dateToString(getHighestValue().getTime()) + " \tCount: " + getHighestValue().getCount() + "Info: " + getHighestValue().getInfo());
+		result += ("\n<Lowest Value>" + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount() + "Info: " + getLowestValue().getInfo());
 		result += ("\n<Mean Value abs>" + getMeanValueAbsolute());
 		result += ("\n<Mean Value rel>" + getMeanValuerelative());
 		return result;
@@ -269,6 +286,14 @@ public String getCollectorStatusAsXml () {
 
 	public void setAlarmHandler(AlarmHandler alarmHandler) {
 		this.alarmHandler = alarmHandler;
+	}
+	
+	public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
 	}
 	
 	public static String dateToString ( GregorianCalendar gregorsDate) {

@@ -39,6 +39,19 @@ public class CollectorSupervisor {
 			System.out.print(singleStatus);
 		}
 	}
+	
+	public String getCollectionAsString () {
+		/*
+		 * print all actuall collections
+		 */
+		String result = "======== Collection Supervisor - Printout overview  ================";
+		result += "Vector-Size: " + collectorVector.size();
+
+		for ( int i = 0; i< collectorVector.size(); i++) {
+			result += collectorVector.elementAt(i).getCollectorStatus();
+		}
+		return result;
+	}
 
 	public Vector<Collector> getCollectorVector() {
 		return collectorVector;

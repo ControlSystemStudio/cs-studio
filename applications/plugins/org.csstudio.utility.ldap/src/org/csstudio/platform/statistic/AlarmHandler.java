@@ -43,7 +43,7 @@ public class AlarmHandler {
 		setHighRelativeLimit(highRelativeLimit);
 	}
 	
-	public void process ( Double value, Double meanValueRelative) {
+	public void process ( Double value, Collector collector) {
 		/*
 		 * alarm chaecking
 		 */
@@ -51,20 +51,20 @@ public class AlarmHandler {
 			/*
 			 * set absolute limit on
 			 */
-			CentralLogger.getInstance().warn(this, getApplication() + " : " + getDescriptor() + "above absolute High limit! Value: " + value);
+			CentralLogger.getInstance().warn(this, getApplication() + " : " + getDescriptor() + "above absolute High limit! Value: " + value + "Info: " + collector.getInfo());
 		} else {
 			if ( value < ( highAbsoluteLimit * (100.0 - deadband))) {
 				setHighAbsoluteLimitIsActive(false);
 			}
 		}
 		
-		if ( (value > (meanValueRelative * getHighRelativeLimit()/ 100.0 ) && !highRelativeLimitIsActive)) {
+		if ( (value > ( collector.getMeanValuerelative() * getHighRelativeLimit()/ 100.0 ) && !highRelativeLimitIsActive)) {
 			/*
 			 * set absolute limit on
 			 */
-			CentralLogger.getInstance().warn(this, getApplication() + " : " + getDescriptor() + " : >" + getHighRelativeLimit() + "% "  + "above floating mean value (" + meanValueRelative + ")! Value: " + value);
+			CentralLogger.getInstance().warn(this, getApplication() + " : " + getDescriptor() + " : >" + getHighRelativeLimit() + "% "  + "above floating mean value (" + collector.getMeanValuerelative() + ")! Value: " + value + "Info: " + collector.getInfo());
 		} else {
-			if ( value < ( (meanValueRelative * getHighRelativeLimit()/ 100.0 ) * (100.0 - deadband))) {
+			if ( value < ( (collector.getMeanValuerelative() * getHighRelativeLimit()/ 100.0 ) * (100.0 - deadband))) {
 				setHighRelativeLimitIsActive(false);
 			}
 		}
@@ -79,11 +79,17 @@ public class AlarmHandler {
 	public void setDeadband(Double deadband) {
 		this.deadband = deadband;
 	}
+	public void setDeadband(int deadband) {
+		this.deadband = new Double(deadband);
+	}
 	public Double getHighAbsoluteLimit() {
 		return highAbsoluteLimit;
 	}
 	public void setHighAbsoluteLimit(Double highAbsoluteLimit) {
 		this.highAbsoluteLimit = highAbsoluteLimit;
+	}
+	public void setHighAbsoluteLimit(int highAbsoluteLimit) {
+		this.highAbsoluteLimit = new Double(highAbsoluteLimit);
 	}
 	public boolean isHighAbsoluteLimitIsActive() {
 		return highAbsoluteLimitIsActive;
@@ -102,6 +108,9 @@ public class AlarmHandler {
 	}
 	public void setHighRelativeLimit(Double highRelativeLimit) {
 		this.highRelativeLimit = highRelativeLimit;
+	}
+	public void setHighRelativeLimit(int highRelativeLimit) {
+		this.highRelativeLimit = new Double(highRelativeLimit);
 	}
 	public boolean isHighRelativeLimitIsActive() {
 		return highRelativeLimitIsActive;

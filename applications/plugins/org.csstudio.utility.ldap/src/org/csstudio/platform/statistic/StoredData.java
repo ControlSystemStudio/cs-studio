@@ -7,7 +7,16 @@ public class StoredData {
 	private GregorianCalendar	time = null;
 	private Double				value = null;
 	private Double				count = 0.0;
+	private String				info = "no info";
 	
+	public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
+
 	public StoredData ( Double value) {
 		/*
 		 * initialization
