@@ -74,6 +74,7 @@ public final class RightsManagementService {
 	 *         the given ID.
 	 */
 	public boolean hasRights(final User user, final String id) {
+		//TODO implement correctly
 		return user != null;
 	}
 

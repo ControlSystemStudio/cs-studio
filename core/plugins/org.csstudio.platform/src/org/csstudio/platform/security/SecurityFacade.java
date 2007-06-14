@@ -97,7 +97,7 @@ public final class SecurityFacade {
 	 * @param context The login context under which the right is needed.
 	 * @return Returns true if the user has permission and false otherwise.
 	 */
-	public boolean canExecute(final String id, LoginContext context) {
+	public boolean canExecute(final String id, final LoginContext context) {
 		return RightsManagementService.getInstance().hasRights(
 				context.getUser(), id);
 	}

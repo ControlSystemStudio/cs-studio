@@ -21,6 +21,8 @@
  */
 package org.csstudio.platform.security;
 
+import org.csstudio.platform.internal.usermanagement.LoginContext;
+
 /**
  * Abstract super class for executables. An executable encapsulates code that
  * should only be executed, if the currently logged in user has the right to do
@@ -63,6 +65,18 @@ public abstract class AbstractExecuteable {
 	 */
 	public final void execute() {
 		if (SecurityFacade.getInstance().canExecute(getRightId())) {
+			doWork();
+		}
+	}
+	
+	/**
+	 * Method to execute this AbstractExecutable. This method only performs an
+	 * action, if the currently logged in user is allowed to do so.
+	 * @param LoginContext
+	 * 			The LoginContext, which contains the User
+	 */
+	public final void executeAs(final LoginContext lc) {
+		if (SecurityFacade.getInstance().canExecute(getRightId(), lc)) {
 			doWork();
 		}
 	}
