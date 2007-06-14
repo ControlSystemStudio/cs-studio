@@ -183,7 +183,7 @@ public class Formula implements Node
                 return new ConstantNode(negative ? -value : value);
             }
             // Else: assume variable or function.
-            while (!s.isDone()  &&  Character.isLetterOrDigit(s.get()))
+            while (!s.isDone()  &&  isFunctionOrVariableChar(s.get()))
             {
                 buf.append(s.get());
                 s.next();
@@ -197,6 +197,16 @@ public class Formula implements Node
         if (negative)
             return new SubNode(new ConstantNode(0), result);
         return result;
+    }
+    
+    /** @return <code>true</code> if given char is allowed inside a
+     *          function or variable name.
+     */
+    private boolean isFunctionOrVariableChar(char c)
+    {
+        final String other_allowed_stuff = "_:";
+        return Character.isLetterOrDigit(c)
+               || other_allowed_stuff.indexOf(c) >= 0;
     }
 
     /** @param name Function name
