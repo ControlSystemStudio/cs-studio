@@ -40,11 +40,6 @@ public final class TableItem implements IProcessVariableWithSamples
     }
 
     /** @see IProcessVariableWithSamples */
-    public IValue[] getSamples() {
-        return ipv_with_samples.getSamples();
-    }
-
-    /** @see IProcessVariableWithSamples */
     public int size() {
         return ipv_with_samples.size();
     }
