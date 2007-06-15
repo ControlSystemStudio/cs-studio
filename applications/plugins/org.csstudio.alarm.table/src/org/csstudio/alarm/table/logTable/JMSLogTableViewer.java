@@ -22,6 +22,7 @@ import org.csstudio.alarm.table.jms.SendMapMessage;
 
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
+import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.CentralItemFactory;
@@ -66,6 +67,8 @@ import org.eclipse.swt.widgets.TableItem;
 
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
+
+import com.sun.jmx.mbeanserver.MetaData;
 
 import sun.java2d.loops.MaskBlit;
 
@@ -118,7 +121,7 @@ public class JMSLogTableViewer extends TableViewer {
         table.addListener (SWT.Selection, new Listener () {
             public void handleEvent (Event event) {
                 JMSMessage message;
-                if (event.item instanceof TableItem && event.button==1) {
+                if (event.item instanceof TableItem && event.button==0) {
                     TableItem ti = (TableItem) event.item;
                     if(ti.getChecked()){
                         SendMapMessage sender = new SendMapMessage();
@@ -213,6 +216,10 @@ public class JMSLogTableViewer extends TableViewer {
 	private void makeContextMenu(IWorkbenchPartSite site) {
 		MenuManager manager = new MenuManager("#PopupMenu");
 		Control contr = this.getControl();
+		if (tableType == 1) {
+			manager.add(new DeleteAction(this));
+			}
+		manager.add(new Separator());
 		manager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
 				JMSLogTableViewer.this.fillContextMenu(manager);
@@ -251,10 +258,45 @@ public class JMSLogTableViewer extends TableViewer {
 			System.out.println("list list"
 					+ jmsm.getProperty(columnSelection.toUpperCase()));
 		}
+		
 		m.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
 	}
 
+	 /** @return Returns the PVs which are currently selected in the table. */
+    public JMSMessage[] getSelectedEntries()
+    {
+        IStructuredSelection selection =
+            (IStructuredSelection) this.getSelection();
+        if (selection.isEmpty())
+            return null;
+        int num = selection.size();
+        JMSMessage entries[] = new JMSMessage[num];
+        int i = 0;
+        for (Iterator iter = selection.iterator(); iter.hasNext();)
+        {
+            JMSMessage entry = (JMSMessage) iter.next();
+            entries[i++] = entry;
+            if (i > num)
+            {
+                JmsLogsPlugin.logError("Selection grew beyond " + num); //$NON-NLS-1$
+                return null;
+            }
+        }
+        return entries;
+    }
+	
+    /** @return Returns the TableViewer. */
+    public TableViewer getTableViewer() { 
+    	return this;
+    }
+
+    /** @return Returns the TableViewer. */
+    public JMSMessageList getTableModel() { 
+    	return this.jmsml;
+    }
+
+    
 	public void setAlarmSorting(boolean b) {
 		sortAlarms = b;
 	}

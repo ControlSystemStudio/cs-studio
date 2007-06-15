@@ -13,8 +13,7 @@ import java.util.Calendar;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AbsoluteTimeParser
-{
+public class AbsoluteTimeParser {
     /** The accepted date formats for absolute times. */
     @SuppressWarnings("nls")
     private static final DateFormat[] parsers = new SimpleDateFormat[]
@@ -30,8 +29,7 @@ public class AbsoluteTimeParser
      *  @see #parse(Calendar, String)
      *  @return Calendar initialized from parsed text.
      */
-    public static Calendar parse(String text) throws Exception
-    {
+    public static Calendar parse(String text) throws Exception {
         Calendar cal = Calendar.getInstance();
         return parse(cal, text);
     }
@@ -59,7 +57,7 @@ public class AbsoluteTimeParser
      *             the year, in case the text doesn't include a year.
      *  @param text The text to parse.
      *  @return Adjusted Calendar.
-     *  @exception On error.
+     *  @exceptionx On error.
      */
     public static Calendar parse(Calendar cal, String text) throws Exception
     {

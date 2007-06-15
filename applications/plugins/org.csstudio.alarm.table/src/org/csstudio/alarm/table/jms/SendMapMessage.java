@@ -46,7 +46,7 @@ public class SendMapMessage {
         destination = (Destination)context.lookup(JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.QUEUE));
 		*/
         
-        destination = (Destination)session.createTopic(JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.QUEUE));
+        destination = (Destination)session.createTopic(JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.QUEUE));
 
         connection.start();
         sender = session.createProducer(destination);
