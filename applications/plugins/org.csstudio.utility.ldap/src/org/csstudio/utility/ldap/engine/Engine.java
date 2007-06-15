@@ -358,7 +358,7 @@ public class Engine extends Job {
                         ctx.modifyAttributes(ldapChannelName, modItemTemp);
                         ldapWriteTimeCollector.setInfo(channel);
                         ldapWriteTimeCollector.setValue( gregorianTimeDifference ( startTime, new GregorianCalendar())/n);
-                        System.out.println ("Engine.changeValue : Time to write to LDAP: (" +  channel + ")" + gregorianTimeDifference ( startTime, new GregorianCalendar()));
+                        //System.out.println ("Engine.changeValue : Time to write to LDAP: (" +  channel + ")" + gregorianTimeDifference ( startTime, new GregorianCalendar()));
                     } catch (NamingException e) {
                     	CentralLogger.getInstance().warn( this, "Engine.changeValue: Naming Exception! Channel: " +  ldapChannelName);
                         System.out.println("Engine.changeValue: Naming Exception! Channel: " +  ldapChannelName);
