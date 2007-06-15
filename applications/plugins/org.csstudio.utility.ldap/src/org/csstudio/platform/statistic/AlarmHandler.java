@@ -52,17 +52,19 @@ public class AlarmHandler {
 			 * set absolute limit on
 			 */
 			CentralLogger.getInstance().warn(this, getApplication() + " : " + getDescriptor() + "above absolute High limit! Value: " + value + "Info: " + collector.getInfo());
+			setHighAbsoluteLimitIsActive(true);
 		} else {
 			if ( value < ( highAbsoluteLimit * (100.0 - deadband))) {
 				setHighAbsoluteLimitIsActive(false);
 			}
 		}
 		
-		if ( (value > ( collector.getMeanValuerelative() * getHighRelativeLimit()/ 100.0 ) && !highRelativeLimitIsActive)) {
+		if ( (value > highAbsoluteLimit) && (value > ( collector.getMeanValuerelative() * getHighRelativeLimit()/ 100.0 ) && !highRelativeLimitIsActive)) {
 			/*
 			 * set absolute limit on
 			 */
 			CentralLogger.getInstance().warn(this, getApplication() + " : " + getDescriptor() + " : >" + getHighRelativeLimit() + "% "  + "above floating mean value (" + collector.getMeanValuerelative() + ")! Value: " + value + "Info: " + collector.getInfo());
+			setHighRelativeLimitIsActive(true);
 		} else {
 			if ( value < ( (collector.getMeanValuerelative() * getHighRelativeLimit()/ 100.0 ) * (100.0 - deadband))) {
 				setHighRelativeLimitIsActive(false);
