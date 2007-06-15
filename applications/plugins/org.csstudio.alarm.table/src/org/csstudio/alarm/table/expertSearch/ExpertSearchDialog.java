@@ -129,7 +129,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
 			    			else if (c2[1] instanceof Composite){
 			    				filterString += ")"; //$NON-NLS-1$
 			    			}
-			    			else System.out.println("\t\tERROR Ungültige Strucktur"); //$NON-NLS-1$
+			    			else JmsLogsPlugin.logInfo("\t\tERROR Ungültige Strucktur"); //$NON-NLS-1$
 						}
     				}
     			}

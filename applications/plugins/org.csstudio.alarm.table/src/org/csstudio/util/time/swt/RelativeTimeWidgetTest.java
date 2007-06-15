@@ -1,5 +1,6 @@
 package org.csstudio.util.time.swt;
 
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.util.time.RelativeTime;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -13,7 +14,7 @@ public class RelativeTimeWidgetTest implements RelativeTimeWidgetListener
 {
     public void updatedTime(RelativeTimeWidget source, RelativeTime time)
     {
-        System.out.println("Time: " + time);
+        JmsLogsPlugin.logInfo("Time: " + time);
     }
 
     public void run()

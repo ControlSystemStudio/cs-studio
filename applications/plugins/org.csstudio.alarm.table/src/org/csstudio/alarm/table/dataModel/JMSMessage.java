@@ -135,11 +135,10 @@ public class JMSMessage implements IProcessVariable {//,
 	}
 
 	public Object getAdapter(Class adapter) {
-		System.out.println("hallo get adapter: " + adapter);
+		JmsLogsPlugin.logInfo("get adapter: " + adapter);
 		
 		
 //	    if (adapter.equals(IProcessVariableName.class)) {
-//	    	System.out.println(adapter);
 //	    	IProcessVariableName pvn = new ProcessVariableName("hallo jan");
 //	    	return pvn;
 //	    } 

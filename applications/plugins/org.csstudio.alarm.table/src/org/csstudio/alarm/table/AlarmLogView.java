@@ -121,11 +121,9 @@ public class AlarmLogView extends LogView {
                         try{
                             sender.startSender();
                             MapMessage mapMessage = sender.getSessionMessageObject();
-                            System.out.println("Start Sender");
                             
                             if (ti.getData() instanceof JMSMessage) {
                                 message = (JMSMessage) ti.getData();
-                                System.out.println("name: "+message.getName());
                                 
                             }else return;
                             HashMap<String, String> hm = message.getHashMap();
@@ -155,11 +153,9 @@ public class AlarmLogView extends LogView {
                         SendMapMessage sender = new SendMapMessage();
                         String time = TimestampFactory.now().toString();
                         try{
-                            System.out.println("Start Sender");
                             
                             if (ti.getData() instanceof JMSMessage) {
                                 message = (JMSMessage) ti.getData();
-                                System.out.println("name: "+message.getName());
                                 
                             }else return;
                             if(ackCombo.getItem(ackCombo.getSelectionIndex()).equals(message.getProperty("SEVERITY"))){
@@ -225,7 +221,6 @@ public class AlarmLogView extends LogView {
 	            	    } else {
 	            	    	item.setChecked(true);
                             jmsMessage.getHashMap().put("ACK_HIDDEN","true");
-                            System.out.println("ACK_HIDDEN: "+jmsMessage.getProperty("ACK_HIDDEN"));
 	            	    }
 	            	    break;
 	            	}

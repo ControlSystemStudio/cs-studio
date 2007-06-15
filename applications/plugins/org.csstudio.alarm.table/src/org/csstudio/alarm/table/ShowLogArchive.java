@@ -50,7 +50,6 @@ public class ShowLogArchive implements IWorkbenchWindowActionDelegate {
 		        IWorkbench workbench = PlatformUI.getWorkbench();
 		        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		        IWorkbenchPage page = window.getActivePage();
-		        System.out.println(LogViewArchive.ID);
 		        page.showView(LogViewArchive.ID);
 		    }
 		    catch (Exception e)

@@ -1,5 +1,6 @@
 package org.csstudio.util.time.swt;
 
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.util.time.RelativeTime;
@@ -15,7 +16,7 @@ public class StartEndDialogTest
 {
     public void updatedTime(RelativeTimeWidget source, RelativeTime time)
     {
-        System.out.println("Time: " + time);
+        JmsLogsPlugin.logInfo("Time: " + time);
     }
 
     public void run()
@@ -31,11 +32,11 @@ public class StartEndDialogTest
         StartEndDialog dlg = new StartEndDialog(shell);
         dlg.open();
         
-        System.out.println("Start: '" + dlg.getStartSpecification() + "'");
-        System.out.println("End: '" + dlg.getEndSpecification() + "'");
+        JmsLogsPlugin.logInfo("Start: '" + dlg.getStartSpecification() + "'");
+        JmsLogsPlugin.logInfo("End: '" + dlg.getEndSpecification() + "'");
         ITimestamp start = TimestampFactory.fromCalendar(dlg.getStartCalendar());
         ITimestamp end = TimestampFactory.fromCalendar(dlg.getEndCalendar());
-        System.out.println(start + " ... " + end);
+        JmsLogsPlugin.logInfo(start + " ... " + end);
 
         display.dispose();
     }

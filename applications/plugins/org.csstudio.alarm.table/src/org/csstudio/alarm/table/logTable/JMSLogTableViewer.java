@@ -129,11 +129,9 @@ public class JMSLogTableViewer extends TableViewer {
                         try{
                             sender.startSender();
                             MapMessage mapMessage = sender.getSessionMessageObject();
-                            System.out.println("Start Sender");
                             
                             if (ti.getData() instanceof JMSMessage) {
                                 message = (JMSMessage) event.item.getData();
-                                System.out.println("name: "+message.getName());
                                 
                             }else return;
                             HashMap<String, String> hm = message.getHashMap();
@@ -155,9 +153,6 @@ public class JMSLogTableViewer extends TableViewer {
                             e.printStackTrace();
                         }
                         String string = event.detail == SWT.CHECK ? "Checked" : "Selected";
-                        System.out.println (event.item + " " + string);
-                        System.out.println (event.text + " " + string);
-                        System.out.println(event.data);
                     }else{
                         ti.setChecked(true);
                     }
@@ -255,8 +250,6 @@ public class JMSLogTableViewer extends TableViewer {
 		ListIterator<Object> it = l.listIterator();
 		while (it.hasNext()) {
 			JMSMessage jmsm = (JMSMessage) it.next();
-			System.out.println("list list"
-					+ jmsm.getProperty(columnSelection.toUpperCase()));
 		}
 		
 		m.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));

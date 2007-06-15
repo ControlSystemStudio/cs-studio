@@ -35,7 +35,6 @@ public class SendMapMessage {
         		JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY));
         properties.put(Context.PROVIDER_URL, 
         		JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.SENDER_URL));
-        System.out.println(JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.SENDER_URL));
         context = new InitialContext(properties);
         factory = (ConnectionFactory) context.lookup("ConnectionFactory");
         connection = factory.createConnection();

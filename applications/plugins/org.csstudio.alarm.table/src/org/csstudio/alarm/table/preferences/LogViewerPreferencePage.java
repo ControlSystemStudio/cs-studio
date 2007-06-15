@@ -47,12 +47,10 @@ public class LogViewerPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		System.out.println("LogPrefPage"); //$NON-NLS-1$
 
 		addField(new ListEditor(LogViewerPreferenceConstants.P_STRING, LogViewerPreferenceConstants.P_STRING + ": ", getFieldEditorParent()){ //$NON-NLS-1$
 
 			public String[] parseString(String stringList){
-				System.out.println("Log: " + stringList); //$NON-NLS-1$
 
 				return stringList.split(";"); //$NON-NLS-1$
 			}

@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -19,7 +20,7 @@ public class CalendarWidgetTest implements CalendarWidgetListener
 
     public void updatedCalendar(CalendarWidget source, Calendar calendar)
     {
-        System.out.println("Time: " + format.format(calendar.getTime()));
+        JmsLogsPlugin.logInfo("Time: " + format.format(calendar.getTime()));
     }
 
     public void run()

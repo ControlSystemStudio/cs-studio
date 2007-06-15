@@ -85,7 +85,6 @@ public class JMSAlarmMessageList extends JMSMessageList {
 								jmsMessagesToRemove.add(jmsm);
 							} else {
 								jmsMessagesToRemove.add(jmsm);
-                                System.out.println("ACK_HIDDEN check löschen: "+jmsm.getProperty("ACK_HIDDEN"));
                                 if(!jmsm.getProperty("ACK_HIDDEN").toUpperCase().equals("TRUE") && severityFromList
                                         .equalsIgnoreCase("NO_ALARM") == false) {
                                     jmsMessagesToRemoveAndAdd.add(jmsm);

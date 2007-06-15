@@ -237,8 +237,7 @@ public class LogViewArchive extends ViewPart {
 
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
-						e1.printStackTrace();
-						System.out.println(e1.getMessage());
+						JmsLogsPlugin.logInfo(e1.getMessage());
 					}
 
 				}

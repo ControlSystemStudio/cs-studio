@@ -54,11 +54,9 @@ public class AlarmViewerPreferencePage
 	 */
 	public void createFieldEditors() {
 		getFieldEditorParent().setSize(300, 400);
-		System.out.println("AlarmPrefPage"); //$NON-NLS-1$
 		addField(new ListEditor(AlarmViewerPreferenceConstants.P_STRINGAlarm, AlarmViewerPreferenceConstants.P_STRINGAlarm + ": ", getFieldEditorParent()){ //$NON-NLS-1$
 
 			public String[] parseString(String stringList){
-				System.out.println("Alarm: " + stringList); //$NON-NLS-1$
 				return stringList.split(";"); //$NON-NLS-1$
 			}
 
