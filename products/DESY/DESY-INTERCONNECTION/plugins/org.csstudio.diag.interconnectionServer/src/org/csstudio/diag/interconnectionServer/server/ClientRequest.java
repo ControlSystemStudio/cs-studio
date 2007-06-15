@@ -153,7 +153,7 @@ public class ClientRequest extends Thread
         		//
         		// ALARM jms server
         		//
-        		System.out.print("a");
+        		//System.out.print("a");
         		try {
             		//sender = alarmSession.createProducer(alarmDestination);
             		//System.out.println("Time-ALARM: - after sender= 	= " + dateToString(new GregorianCalendar()));
@@ -165,9 +165,9 @@ public class ClientRequest extends Thread
             		///System.out.println("Time-ALARM: - before sender-send 	= " + dateToString(new GregorianCalendar()));
             		alarmSender.send(message);
             		message = null;
-            		System.out.print("aJs");
+            		//System.out.print("aJs");
             		InterconnectionServer.getInstance().getJmsMessageWriteCollector().setValue(gregorianTimeDifference( parseTime, new GregorianCalendar()));
-            		System.out.print("aJe");
+            		//System.out.print("aJe");
             		//System.out.println("Time-ALARM: - after sender-send 	= " + dateToString(new GregorianCalendar()));
         		}
         		catch(JMSException jmse)
@@ -182,9 +182,9 @@ public class ClientRequest extends Thread
         		//
         		// time to update the LDAP server entry
         		//
-        		System.out.print("aLs");
+        		//System.out.print("aLs");
         		updateLdapEntry( tagValue);
-        		System.out.print("aLe");
+        		//System.out.print("aLe");
         		afterLdapWriteTime = new GregorianCalendar();
         		
         		//checkPerformance( parseTime, afterJmsSendTime, afterUdpAcknowledgeTime, afterLdapWriteTime);
@@ -213,9 +213,9 @@ public class ClientRequest extends Thread
         		//
         		// time to update the LDAP server entry
         		//
-        		System.out.print("sLs");
+        		//System.out.print("sLs");
         		updateLdapEntry( tagValue);
-        		System.out.print("sLe");
+        		//2System.out.print("sLe");
         		System.out.print("S");
         		break;
         		
@@ -342,7 +342,7 @@ public class ClientRequest extends Thread
     	boolean gotId 		= false;
 		
 		String daten = new String(this.packet.getData(), 0, this.packet.getLength());
-		
+		//System.out.println("Message: " + daten);
 		//
 		// just in case we should use another data format in the future
 		// here's the place to implement anoher parser
@@ -452,11 +452,19 @@ public class ClientRequest extends Thread
 		String channel,status,severity,timeStamp = null;
 		///System.out.println("tagValue : " + tagValue.toString());		
 		
-		if ( tagValue.containsKey("NAME") && tagValue.containsKey("STATUS") && tagValue.containsKey("SEVERITY") && tagValue.containsKey("EVENTTIME")) {
+		if ( tagValue.containsKey("NAME") && tagValue.containsKey("STATUS") && tagValue.containsKey("SEVERITY") && (tagValue.containsKey("EVENTTIME") || tagValue.containsKey("CREATETIME"))) {
+			
 			channel = tagValue.get("NAME");
 			status = tagValue.get("STATUS");
 			severity = tagValue.get("SEVERITY");
-			timeStamp = tagValue.get("EVENTTIME");
+			/*
+			 * TODO: if we decide to use separate fields for event and create-time zhis is he place to change it!
+			 */
+			if ( tagValue.containsKey("EVENTTIME")) {
+				timeStamp = tagValue.get("EVENTTIME");
+			} else {
+				timeStamp = tagValue.get("CREATETIME");
+			}
 			//
 			// send values to LDAP engine
 			//
@@ -464,16 +472,20 @@ public class ClientRequest extends Thread
 			Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channel, status);
 			Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channel, timeStamp);		
 			
+			//System.out.println("### - write to LDAP done for NAME= " + channel);
 			//
 			// change time stamp written time (for now we use: epicsAlarmAcknTimeStamp)
 			//
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S");
 	        java.util.Date currentDate = new java.util.Date();
 	        String eventTime = sdf.format(currentDate);
-	        
-	        Engine.getInstance().addLdapWriteRequest( "epicsAlarmAcknTimeStamp", channel, eventTime);		
-
-				
+	        /*
+	         * TODO: we need a new field in LDAP for the time when we actually wrote the message
+	         * for noew we leave it out
+	         */
+	        //Engine.getInstance().addLdapWriteRequest( "epicsAlarmAcknTimeStamp", channel, eventTime);		
+		} else {
+			//System.out.println("### - cannot write to LDAP done for NAME= " + tagValue.get("NAME"));
 		}
 		
 	}

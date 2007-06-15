@@ -30,9 +30,10 @@ public class SendCommandToIoc extends Thread {
 		 * 
 		 */
 		byte[] preparedMessage = null; 
-		byte 			buffer[]	=  new byte[1024];
+		byte[] buffer	=  new byte[1024];
 		DatagramSocket socket = null;
 		DatagramPacket packet = null;
+		String answer = null;
         
         preparedMessage = prepareMessage ( command, id);
 
@@ -48,9 +49,9 @@ public class SendCommandToIoc extends Thread {
             
 			try {
 				/*
-	        	 * set timeout period to 1000ms
+	        	 * set timeout period to 10 seconds
 	        	 */
-				socket.setSoTimeout(1000);
+				socket.setSoTimeout(10000);
 
 				packet = new DatagramPacket(buffer, buffer.length);
 				socket.receive(packet);
@@ -60,15 +61,17 @@ public class SendCommandToIoc extends Thread {
 			}            
 			/*
              * check answer
-             * for now we only check for the string 'OK'
+             * for now we only check for the string 'DONE'
              */
-            if ( packet.toString().toUpperCase().contains("OK")) {
+			answer = new String(packet.getData(), 0, packet.getLength());
+			
+            if ( answer.toUpperCase().contains("DONE")) {
             	/*
             	 * nothing to do
             	 */
             	CentralLogger.getInstance().info(this, "Command accepted by IOC: " + hostName + " command: " + command);
             } else {
-            	CentralLogger.getInstance().info(this, "Command not accepted by IOC: " + hostName + " command: " + command);
+            	CentralLogger.getInstance().info(this, "Command not accepted by IOC: " + hostName + " command: " + command + " answer: " + answer);
             }
 
         }
