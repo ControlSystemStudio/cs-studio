@@ -29,7 +29,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AlarmQueueSubscriber implements MessageListener {
 	
-	private static final String ALARM_TYPE = "ALARM";
+//	private static final String ALARM_TYPE = "ALARM";
 	
 	private static final CentralLogger log = CentralLogger.getInstance();
 
@@ -152,10 +152,12 @@ public class AlarmQueueSubscriber implements MessageListener {
 	 * @param msg the message.
 	 */
 	private boolean isAlarmMessage(MapMessage msg) {
-		try {
-			return ALARM_TYPE.equalsIgnoreCase(msg.getString("TYPE"));
-		} catch (JMSException e) {
-			return false;
-		}
+		// We currently assume that all received mesages are alarm messages
+		return true;
+//		try {
+//			return ALARM_TYPE.equalsIgnoreCase(msg.getString("TYPE"));
+//		} catch (JMSException e) {
+//			return false;
+//		}
 	}
 }
