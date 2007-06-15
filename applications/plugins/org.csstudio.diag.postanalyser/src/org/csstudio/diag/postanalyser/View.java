@@ -2,12 +2,9 @@ package org.csstudio.diag.postanalyser;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Vector;
-
-import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.model.IProcessVariableWithSample;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesDropTarget;
 import org.csstudio.swt.chart.Chart;
@@ -36,8 +33,9 @@ public final class View extends ViewPart {
 	final static String ID = "org.csstudio.diag.postanalyser.view"; 
 	final static int samplesArrayMax=10;
 	final static String linearScale = "Linear"; 
-	static Chart chart;		
+	static Chart chart;	
 	enum Algo {FFT,CorrelationPlot,GaussianFit,FFT_Hamming,FFT_Hanning,FFT_Blackman,FFT_Bartlett,FFT_Blackman_Harris};
+	enum FFTset {FFT,FFT_Hamming,FFT_Hanning,FFT_Blackman,FFT_Bartlett,FFT_Blackman_Harris};
 	Vector samplesVector;
 	Combo algoSelector;
 	Combo xSamplesSelector;
@@ -119,57 +117,7 @@ public final class View extends ViewPart {
 	        }
 	      });
 	    
-//        new ProcessVariableWithSampleDropTarget(ichart){
-//        	@Override
-//        	public void handleDrop(IProcessVariable name, DropTargetEvent event){
-//        		// Add a new PV, no archive info
-//        		System.out.println("received only pv: name: " + name.getName());
-//        	}
-//        	@Override
-//        	public void handleDrop(IProcessVariableWithSample pv_name, DropTargetEvent event) {
-//        		System.out.println("Drop a pvws!");
-//
-//    			try {
-//					String name=pv_name.getName();
-//					if(debug) System.out.println("handleDrop PV_name="+name);
-//					int len=pv_name.getSampleValue().length;
-//					if (len <= 4) {
-//						System.out.println(" Error: FFT ->  View -> activateWithPV array with unpredictable len="+len);
-//						return ;
-//					}
-//					double timeRange = pv_name.getTimeStamp()[len-1] - pv_name.getTimeStamp()[0];
-//					if(timeRange <= 0.0)  {
-//						System.out.println(" Error: FFT ->  View -> activateWithPV non-positive timeRange="+timeRange);
-//						return ;
-//					}
-//					samplesVector.add(0,pv_name);
-//					if (samplesVector.size() >= samplesArrayMax) samplesVector.setSize(samplesArrayMax);
-//					
-//					//if only 1 element in stack we have to disable CorelationPlot, otherwise enable it
-//					if(debug) System.out.println("samplesVector.size()="+samplesVector.size());
-//					if (samplesVector.size() > 1 )  {
-//						algoSelector.removeAll();
-//					    for (Algo p : Algo.values()) {
-//					    		String item = String.valueOf(p);
-//					    		algoSelector.add(item);
-//					    }
-//					}
-//						
-//					ySamplesSelector.add(getSampleLabel(pv_name),0);
-//					xSamplesSelector.add(getSampleLabel(pv_name),1);
-//					ySamplesSelector.select(0);
-//					xSamplesSelector.select(0);	
-//					calc(name,pv_name.getSampleValue(),pv_name.getTimeStamp());
-//				} catch (RuntimeException e) {
-//					// TODO Auto-generated catch block
-//					System.out.println(" Error: FFT ->  View -> DragAndDrop exception");
-//					e.printStackTrace();
-//				}
-//    		    
-//        	}
-//        };
-
-     // TODO Helge und Jan!!!
+  
     new ProcessVariableWithSamplesDropTarget(ichart){
         @Override
         public void handleDrop(IProcessVariable name, DropTargetEvent event){
@@ -183,53 +131,7 @@ public final class View extends ViewPart {
             try {
                 String name=pv_name.getName();
                 if(debug) System.out.println("handleDrop PV_name="+name);
-                int len=pv_name.size();
-                if (len <= 4) {
-                    System.out.println(" Error: FFT ->  View -> activateWithPV array with unpredictable len="+len);
-                    return ;
-                }
-                double timeRange = pv_name.getSample(len-1).getTime().toDouble() - pv_name.getSample(0).getTime().toDouble();
-                if(timeRange <= 0.0)  {
-                    System.out.println(" Error: FFT ->  View -> activateWithPV non-positive timeRange="+timeRange);
-                    return ;
-                }
-                samplesVector.add(0,pv_name);
-                if (samplesVector.size() >= samplesArrayMax) samplesVector.setSize(samplesArrayMax);
-                
-                //if only 1 element in stack we have to disable CorelationPlot, otherwise enable it
-                if(debug) System.out.println("samplesVector.size()="+samplesVector.size());
-                if (samplesVector.size() > 1 )  {
-                    algoSelector.removeAll();
-                    for (Algo p : Algo.values()) {
-                            String item = String.valueOf(p);
-                            algoSelector.add(item);
-                    }
-                }
-                    
-                ySamplesSelector.add(getSampleLabel(pv_name),0);
-                xSamplesSelector.add(getSampleLabel(pv_name),1);
-                ySamplesSelector.select(0);
-                xSamplesSelector.select(0);
-
-                // Convert the sequence of IValue into simple doubles
-                // for the calc routines.
-                final double value[] = new double[pv_name.size()];
-                final double time[] = new double[pv_name.size()];
-                for (int i = 0; i<pv_name.size(); ++i)
-                {
-                    final IValue v = pv_name.getSample(i);
-                    final double dbl = ValueUtil.getDouble(v);
-                    // TODO This patches all that won't map to a number as 0
-                    //      Better would be for the calc to do whatever
-                    //      is sees fit, for example skip those values.
-                    if (Double.isNaN(dbl)  ||  Double.isInfinite(dbl))
-                        value[i] = 0;
-                    else
-                        value[i] = dbl;
-                    time[i] = v.getTime().toDouble();
-                }
-
-                calc(name,value,time);
+                newData(pv_name);
             } catch (RuntimeException e) {
                 // TODO Auto-generated catch block
                 System.out.println(" Error: FFT ->  View -> DragAndDrop exception");
@@ -446,71 +348,10 @@ public final class View extends ViewPart {
         return yaxis;
     }
 	
-	@Deprecated
-	private boolean newData(IProcessVariableWithSample[] pv_name) {
-		try {
-			int size=pv_name.length;
-			if (size < 1) {
-				System.out.println(" Error: FFT ->  View -> activateWithPV array with  unpredictable size="+size);
-				return false;
-			}
-			String name=pv_name[0].getName();
-			int len=pv_name[0].getSampleValue().length;
-			if (len <= 4) {
-				System.out.println(" Error: FFT ->  View -> activateWithPV array with unpredictable len="+len);
-				return false;
-			}
-			double timeRange = pv_name[0].getTimeStamp()[len-1] - pv_name[0].getTimeStamp()[0];
-			if(timeRange <= 0.0)  {
-				System.out.println(" Error: FFT ->  View -> activateWithPV non-positive timeRange="+timeRange);
-				return false;
-			}
-			
-			//samplesVector.setSize(samplesArrayMax);	
-			samplesVector.add(0,pv_name[0]);
-			if (samplesVector.size() >= samplesArrayMax) samplesVector.setSize(samplesArrayMax);
-			
-			//if only 1 element in stack we have to disable CorelationPlot, otherwise enable it
-			if(debug) System.out.println("samplesVector.size()="+samplesVector.size());
-			if (samplesVector.size() > 1 )  {
-				algoSelector.removeAll();
-			    for (Algo p : Algo.values()) {
-			    		String item = String.valueOf(p);
-			    		algoSelector.add(item);
-			    }
-			}
-				
-			ySamplesSelector.add(getSampleLabel(pv_name[0]),0);
-			xSamplesSelector.add(getSampleLabel(pv_name[0]),1);
-		    ySamplesSelector.select(0);
-		    xSamplesSelector.select(0);		    
-			if(debug) {
-				for (int i=0;i<len;i++)  {
-					long timeL= (long) (pv_name[0].getTimeStamp()[i])*1000;
-					Date a = new Date(timeL);
-					System.out.println("time="+a);	      
-				}
-			}
-			
-			return calc(name,pv_name[0].getSampleValue(),pv_name[0].getTimeStamp());
-		}       catch (Exception e) {
-	    	System.out.println(" Error: FFT ->  View -> newData array exception");
-	        //Plugin.logException("activateWithPV", e); //$NON-NLS-1$
-	        e.printStackTrace();
-	    }
-	    return false;
-	}
 
-    private boolean newData(IProcessVariableWithSamples[] pv_name) {
+    private boolean newData(IProcessVariableWithSamples pv_name) {
         try {
-            int size=pv_name.length;
-            if (size < 1) {
-                // TODO Put error where user can see it.
-                // Maybe the GUI needs a status line
-                System.out.println(" Error: FFT ->  View -> activateWithPV array with  unpredictable size="+size);
-                return false;
-            }
-            final IProcessVariableWithSamples pv = pv_name[0];
+            final IProcessVariableWithSamples pv = pv_name;
             String name=pv.getName();
             int len=pv.size();
             if (len <= 4) {
@@ -539,8 +380,8 @@ public final class View extends ViewPart {
                 }
             }
                 
-            ySamplesSelector.add(getSampleLabel(pv),0);
-            xSamplesSelector.add(getSampleLabel(pv),1);
+            ySamplesSelector.add(getSampleLabel(pv),0); // we start count from number 0 
+            xSamplesSelector.add(getSampleLabel(pv),1); // "Linear" is first element, so we start count from number 1 
             ySamplesSelector.select(0);
             xSamplesSelector.select(0);         
             if(debug) {
@@ -581,17 +422,6 @@ public final class View extends ViewPart {
         return false;
     }
 
-    @Deprecated
-	private String getSampleLabel(IProcessVariableWithSample pvAndSample) {
-		long timeL= (long) (pvAndSample.getTimeStamp()[0])*1000;
-		String name=pvAndSample.getName();
-		Date dateFrom = new Date(timeL);
-		DateFormat formatter=DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
-		String shortTime=formatter.format(dateFrom);
-		String labelT = new String (name+" " +shortTime);
-		return labelT;
-	}
-
     private String getSampleLabel(IProcessVariableWithSamples pvAndSample) {
         long timeL= (long) (pvAndSample.getSample(0).getTime().seconds()); //TODO Albert Check!
         String name=pvAndSample.getName();
@@ -608,9 +438,7 @@ public final class View extends ViewPart {
 	private boolean calc(String name, double[] raw, double[] time ) {
 		int index=getAlgoFFT();
 		int len=raw.length;
-		if (index != 0) index -= 2;
-        double[] fft=   FFTcalculations.dftCalc(raw,len,index);
-        
+        double[] fft=   FFTcalculations.dftCalc(raw,len,index);     
         try {
         	if(chart.getNumYAxes() <1)  addFFTTrace(name, null,fft,time);
         	else addFFTTrace(name, chart.getYAxis(0),fft,time);
@@ -620,6 +448,7 @@ public final class View extends ViewPart {
         	return false;
         }
         chart.redrawTraces();
+        chart.autozoom();
         return true;
     
 }   
@@ -661,6 +490,7 @@ public final class View extends ViewPart {
         	return false;
         }
         chart.redrawTraces();
+        chart.autozoom();
         return true;
 	}
 	//
@@ -677,62 +507,115 @@ public final class View extends ViewPart {
         	return false;
         }
         chart.redrawTraces();
+        chart.autozoom();
         return true;
     
 }
+    /**
+     * Recalculate Action
+	 * @param empty 
+	 * @return OK-status
+	*/
 	private boolean RecalculateAction() {
-		IProcessVariableWithSample pvAndSample=(IProcessVariableWithSample) samplesVector.elementAt(ySamplesSelector.getSelectionIndex());
-		//int len = lenCalculator(pvAndSample);
-		int len = pvAndSample.getSampleValue().length;
-		if(len<=4) {
-			System.out.println("Error: FFT ->  View -> RecalculateAction arraySize is very small="+len );
-			return false;
-		}
-		double timeRange = pvAndSample.getTimeStamp()[len-1] - pvAndSample.getTimeStamp()[0];
-		if(timeRange <= 0.0)  {
-			System.out.println(" Error: FFT ->  View -> RecalculateActionnon-positive timeRange="+timeRange);
-			return false;
-		}
 		
-		String name=pvAndSample.getName();
-		String CorrelationPlotStr = Algo.CorrelationPlot.toString();
-		String GaussStr = Algo.GaussianFit.toString();
-		String CurrentLabel = algoSelector.getText();
-		if (CurrentLabel != null) {
-			
-			if(debug) System.out.println("CurrentLabel="+CurrentLabel +" CP="+CorrelationPlotStr+" G="+GaussStr);
-		} else  {
-			System.out.println("BAD CurrentLabel CP="+CorrelationPlotStr+" G="+GaussStr);	
-			return false;
-		}
-			
-
-		if( CurrentLabel.compareTo(GaussStr) == 0 ) {
-			if(debug) System.out.println("GAUSS!!!");
-			calcGauss(name, pvAndSample.getSampleValue(), pvAndSample.getTimeStamp());
-			return true;
-		} 
-		if( CurrentLabel.compareTo(CorrelationPlotStr) == 0 ) {
-			if(debug) System.out.println("CORR!!!");
-			int indX=xSamplesSelector.getSelectionIndex();
-			if(indX ==1) {
-				System.out.println("Correlation plot need 2 arguments! ");
+		try {
+			final int current_index=ySamplesSelector.getSelectionIndex();
+			IProcessVariableWithSamples pvAndSample=(IProcessVariableWithSamples) samplesVector.elementAt(current_index);
+			int len = pvAndSample.size();
+			if(len<=4) {
+				System.out.println("Error: FFT ->  View -> RecalculateAction arraySize is very small="+len );
 				return false;
 			}
-			IProcessVariableWithSample pvAndSampleX=(IProcessVariableWithSample) samplesVector.elementAt(indX-1);
-			String nameX=pvAndSampleX.getName();
-			if(debug) System.out.println("nameX= "+ nameX);
-			calc(name,nameX,pvAndSample.getSampleValue(),pvAndSampleX.getSampleValue(),pvAndSample.getTimeStamp(),pvAndSampleX.getTimeStamp());	
+			double timeRange = pvAndSample.getSample(len-1).getTime().toDouble() - pvAndSample.getSample(0).getTime().toDouble();
+			if(timeRange <= 0.0)  {
+				System.out.println(" Error: FFT ->  View -> RecalculateActionnon-positive timeRange="+timeRange);
+				return false;
+			}
+			
+			// Convert the sequence of IValue into simple doubles
+			// for the calc routines.
+			final double value[] = new double[len];
+			final double time[] = new double[len];
+			for (int i = 0; i<len; ++i)
+			{
+			    final IValue v = pvAndSample.getSample(i);
+			    final double dbl = ValueUtil.getDouble(v);
+			    // TODO This patches all that won't map to a number as 0
+			    //      Better would be for the calc to do whatever
+			    //      is sees fit, for example skip those values.
+			    if (Double.isNaN(dbl)  ||  Double.isInfinite(dbl))
+			        value[i] = 0;
+			    else
+			        value[i] = dbl;
+			    time[i] = v.getTime().toDouble();
+			}
+			
+			
+			String name=pvAndSample.getName();
+			String CorrelationPlotStr = Algo.CorrelationPlot.toString();
+			String GaussStr = Algo.GaussianFit.toString();
+			String CurrentLabel = algoSelector.getText();
+			if (CurrentLabel != null) {
+				
+				if(debug) System.out.println("CurrentLabel="+CurrentLabel +" CP="+CorrelationPlotStr+" G="+GaussStr);
+			} else  {
+				System.out.println("BAD CurrentLabel CP="+CorrelationPlotStr+" G="+GaussStr);	
+				return false;
+			}
+				
+
+			if( CurrentLabel.compareTo(GaussStr) == 0 ) {
+				if(debug) System.out.println("GAUSS!!!");
+				calcGauss(name, value, time);
+				return true;
+			} 
+			if( CurrentLabel.compareTo(CorrelationPlotStr) == 0 ) {
+				if(debug) System.out.println("CORR!!!");
+				int indX=xSamplesSelector.getSelectionIndex();
+				if(indX ==0) {
+					System.out.println("Correlation plot need 2 arguments! ");
+					return false;
+				}
+				IProcessVariableWithSamples pvAndSampleX=(IProcessVariableWithSamples) samplesVector.elementAt(indX-1);
+				String nameX=pvAndSampleX.getName();
+				if(debug) System.out.println("nameX= "+ nameX);
+				final int lenX = pvAndSampleX.size();
+			    final double valueX[] = new double[lenX];
+			    final double timeX[] = new double[lenX];
+			    for (int i = 0; i<lenX; ++i)
+			        {
+			            final IValue v = pvAndSampleX.getSample(i);
+			            final double dbl = ValueUtil.getDouble(v);
+			            // TODO This patches all that won't map to a number as 0
+			            //      Better would be for the calc to do whatever
+			            //      is sees fit, for example skip those values.
+			            if (Double.isNaN(dbl)  ||  Double.isInfinite(dbl))
+			                valueX[i] = 0;
+			            else
+			                valueX[i] = dbl;
+			            timeX[i] = v.getTime().toDouble();
+			        }
+				calc(name,nameX,value,valueX,time,timeX);	
+				return true;
+			}
+
+				calc(name, value,time);
+
 			return true;
+		} catch (RuntimeException e) {
+	       	System.out.println("FFT: RecalculateAction error");
+        	e.printStackTrace();
+        	return false;
 		}
-
-			calc(name, pvAndSample.getSampleValue(), pvAndSample.getTimeStamp());
-
-		return true;
+		
 	}
 	private int getAlgoFFT() {
-		int index =  Integer.valueOf(algoSelector.getSelectionIndex()) ;
-		return index;
+		final String CurrentLabel = algoSelector.getText();		
+		for (FFTset p : FFTset.values()) {
+			if(debug) System.out.println("FFTset="+p.toString());
+			if( CurrentLabel.compareTo(p.toString()) == 0 ) return p.ordinal();
+		}
+		return 0;
 	}
 	
 	public  static boolean activateWithPV(IProcessVariableWithSamples[] pv_name)
@@ -748,7 +631,14 @@ public final class View extends ViewPart {
             	System.out.println(" Error: activateWithPV NULL-class exception");
             	return false;
             }
-            return FFTView.newData(pv_name);
+            int size=pv_name.length;
+            if (size < 1) {
+                // TODO Put error where user can see it.
+                // Maybe the GUI needs a status line
+                System.out.println(" Error: FFT ->  View -> activateWithPV array with  unpredictable size="+size);
+                return false;
+            }
+            return FFTView.newData(pv_name[0]);
             
         }catch (Exception e)
         {
