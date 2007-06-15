@@ -41,11 +41,11 @@ public class AlarmViewerPreferenceInitializer extends AbstractPreferenceInitiali
 		store.setDefault(AlarmViewerPreferenceConstants.MAX, 200);
 		store.setDefault(AlarmViewerPreferenceConstants.REMOVE, 10);
 		store.setDefault(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
-		store.setDefault(AlarmViewerPreferenceConstants.PRIMARY_URL, "tcp://elogbook.desy.de:61616"); //$NON-NLS-1$
+		store.setDefault(AlarmViewerPreferenceConstants.PRIMARY_URL, "failover:(tcp://elogbook.desy.de:64616)?maxReconnectAttempts=2"); //$NON-NLS-1$
 		store.setDefault(AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
-		store.setDefault(AlarmViewerPreferenceConstants.SECONDARY_URL, "tcp://krynfs.desy.de:61616"); //$NON-NLS-1$
+		store.setDefault(AlarmViewerPreferenceConstants.SECONDARY_URL, "failover:(tcp://krynfs.desy.de:62616)?maxReconnectAttempts=2"); //$NON-NLS-1$
 		store.setDefault(AlarmViewerPreferenceConstants.QUEUE, "ALARM");
-        store.setDefault(AlarmViewerPreferenceConstants.SENDER_URL, "failover:(tcp://elogbook.desy.de:61616,tcp://krynfs.desy.de:61616)?maxReconnectDelay=2000"); //$NON-NLS-1$
+        store.setDefault(AlarmViewerPreferenceConstants.SENDER_URL, "failover:(tcp://elogbook.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=2000"); //$NON-NLS-1$
 	}
 
 }

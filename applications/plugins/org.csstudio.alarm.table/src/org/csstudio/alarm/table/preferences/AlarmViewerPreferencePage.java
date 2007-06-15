@@ -103,29 +103,29 @@ public class AlarmViewerPreferencePage
 		// --INITIAL_CONTEXT_FACTORY
 		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
 		addField(new StringFieldEditor(AlarmViewerPreferenceConstants.QUEUE, Messages.JMSPreferencePage_ALARM_QUEUE_NAME, g2));
-        final StringFieldEditor sender_URL = new StringFieldEditor(AlarmViewerPreferenceConstants.SENDER_URL, "", g2);
-        sender_URL.getTextControl(g2).setVisible(false);
-        sender_URL.getTextControl(g2).setEditable(false);
+        final StringFieldEditor sender_URL = new StringFieldEditor(AlarmViewerPreferenceConstants.SENDER_URL, Messages.JMSPreferencePage_ALARM_SENDER_URL, g2);
+        sender_URL.getTextControl(g2).setVisible(true);
+        sender_URL.getTextControl(g2).setEditable(true);
         addField(sender_URL);
-        primary_url.getTextControl(g2).addKeyListener(new KeyListener(){
-
-            public void keyPressed(KeyEvent e) {}
-
-            public void keyReleased(KeyEvent e) {
-                sender_URL.setStringValue("failover:("+primary_url.getStringValue()+","+secondary_url.getStringValue()+")?maxReconnectDelay=2000");
-            }
-            
-        });
-
-        secondary_url.getTextControl(g2).addKeyListener(new KeyListener(){
-
-            public void keyReleased(KeyEvent e) {
-                sender_URL.setStringValue("failover:("+primary_url.getStringValue()+","+secondary_url.getStringValue()+"");
-            }
-
-            public void keyPressed(KeyEvent e) {}
-            
-        });
+//        primary_url.getTextControl(g2).addKeyListener(new KeyListener(){
+//
+//            public void keyPressed(KeyEvent e) {}
+//
+//            public void keyReleased(KeyEvent e) {
+//                sender_URL.setStringValue("failover:("+primary_url.getStringValue()+","+secondary_url.getStringValue()+")?maxReconnectDelay=2000");
+//            }
+//            
+//        });
+//
+//        secondary_url.getTextControl(g2).addKeyListener(new KeyListener(){
+//
+//            public void keyReleased(KeyEvent e) {
+//                sender_URL.setStringValue("failover:("+primary_url.getStringValue()+","+secondary_url.getStringValue()+"");
+//            }
+//
+//            public void keyPressed(KeyEvent e) {}
+//            
+//        });
 
 
        }
