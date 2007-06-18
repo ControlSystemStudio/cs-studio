@@ -57,29 +57,42 @@ public class Plugin extends AbstractCssUiPlugin
     /** Add info message to the plugin log. */
     public static void logInfo(String message)
     {
-        getDefault().log(IStatus.INFO, message, null);
+        if (plugin == null)
+            System.out.println("INFO: " + message); //$NON-NLS-1$
+        else
+            plugin.log(IStatus.INFO, message, null);
     }
     
     /** Add error message to the plugin log. */
     public static void logError(String message)
     {
-        getDefault().log(IStatus.ERROR, message, null);
+        if (plugin == null)
+            System.out.println("ERROR: " + message); //$NON-NLS-1$
+        else
+            plugin.log(IStatus.ERROR, message, null);
     }
 
     /** Add an exception to the plugin log. */
     public static void logException(String message, Throwable e)
     {
-        try
+        if (plugin == null)
         {
-            getDefault().log(IStatus.ERROR, message, e);
+            System.out.println("ERROR: " + message); //$NON-NLS-1$
+            e.printStackTrace();
         }
-        catch (Throwable ex)
+        else
         {
-            // May not be running as plugin, just using
-            // the logException call from a unit test
-            System.out.println("Exception: " + e.getMessage()); //$NON-NLS-1$
+            try
+            {
+                getDefault().log(IStatus.ERROR, message, e);
+            }
+            catch (Throwable ex)
+            {
+                // May not be running as plugin, just using
+                // the logException call from a unit test
+                System.out.println("Exception: " + e.getMessage()); //$NON-NLS-1$
+            }
         }
-        e.printStackTrace();
     }
 
     /** Add a message to the log.
