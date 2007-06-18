@@ -125,7 +125,7 @@ public class MessageReceiver {
                 //
                 _receiver = new MessageConsumer[_queues.length];
                 for (int i=0;i<_queues.length;i++){
-                    if (monitor.isCanceled()){ return Status.CANCEL_STATUS;}
+                    if (monitor.isCanceled()){ System.out.println("monitor.isCanceled()");return Status.CANCEL_STATUS;}
                     /*
                      * changed from OpenJMS to ActiveMQ
                      * MCL 2007-05-23
@@ -143,9 +143,12 @@ public class MessageReceiver {
             } catch (NamingException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+                System.out.println("NamingException");
+                return Status.CANCEL_STATUS;
             } catch (JMSException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+                System.out.println("JMSException");
                 return Status.CANCEL_STATUS;
             }
 
@@ -220,8 +223,18 @@ public class MessageReceiver {
                     System.out.println("JMS Server ("+_properties.get(Context.PROVIDER_URL)+") is not available!!!");
                     ActiveMQURL aURL = new ActiveMQURL(_properties.get(Context.PROVIDER_URL));
                     aURL.setMaxReconnectAttempts("maxReconnectAttempts=0");
+                    if(aURL.getInitialReconnectDelay()==null){
+                    	aURL.setInitialReconnectDelay("InitialReconnectDelay=10000");
+                    }
                     _properties.put(Context.PROVIDER_URL,aURL.getURL());
                     System.out.println(" Retry with "+_properties.get(Context.PROVIDER_URL));
+                    try {
+						_context = new InitialContext(_properties);
+					} catch (NamingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						System.out.println(e.getMessage());
+					}
                     startListener(listener);
                 }
             }
