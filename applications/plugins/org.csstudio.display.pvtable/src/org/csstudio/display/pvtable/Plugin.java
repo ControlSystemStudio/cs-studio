@@ -13,7 +13,10 @@ import org.osgi.framework.BundleContext;
  */
 public class Plugin extends AbstractCssUiPlugin
 {
-    public static final String ID = "org.csstudio.display.pvtable"; //$NON-NLS-1$
+    final public static String ID = "org.csstudio.display.pvtable"; //$NON-NLS-1$
+    
+    final public static String FileExtension = "css-pvtable"; //$NON-NLS-1$
+    
     // The shared instance.
     private static Plugin plugin;
     

@@ -45,7 +45,7 @@ public class NewFileWizard extends Wizard implements INewWizard
 {
     private final String plugin_id;
     private final String editor_ID;
-    private final String title, default_filename, default_content;
+    private final String title, default_filename, extension, default_content;
     
     private NewFileWizardPage page;
 
@@ -56,13 +56,14 @@ public class NewFileWizard extends Wizard implements INewWizard
      *  @param default_contents Initial XML content for new files.
      */
     public NewFileWizard(Plugin plugin, String editor_ID, String title,
-            String default_filename, String default_content)
+            String default_filename, String extension, String default_content)
     {
         super();
         plugin_id = plugin.getBundle().getSymbolicName();
         this.editor_ID = editor_ID;
         this.title = title;
         this.default_filename = default_filename;
+        this.extension = extension;
         this.default_content = default_content;
         setNeedsProgressMonitor(true);
     }
@@ -76,15 +77,18 @@ public class NewFileWizard extends Wizard implements INewWizard
     }
     
     /** Adding the page to the wizard. */
+    @Override
     public void addPages()
     {
-        page = new NewFileWizardPage(title, default_filename, selection);
+        page = new NewFileWizardPage(title, default_filename,
+                                     extension, selection);
         addPage(page);
     }
 
     /** Called when 'Finish' button is pressed in the wizard. We
      *  will create an operation and run it using wizard as execution context.
      */
+    @Override
     public boolean performFinish()
     {
         final IPath container = page.getContainerFullPath();
@@ -155,6 +159,7 @@ public class NewFileWizard extends Wizard implements INewWizard
         }
         catch (IOException e)
         {
+            // ignore
         }
         monitor.worked(1);
         monitor.setTaskName(Messages.OpeningFile___);

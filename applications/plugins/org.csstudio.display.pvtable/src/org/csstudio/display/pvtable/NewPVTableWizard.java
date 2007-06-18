@@ -16,7 +16,8 @@ public class NewPVTableWizard extends NewFileWizard
         super(Plugin.getDefault(), 
                 PVTableEditor.ID,
                 Messages.PVTable,
-                "pv_table.xml", //$NON-NLS-1$
+                "pv_table." + Plugin.FileExtension, //$NON-NLS-1$
+                Plugin.FileExtension,
                 new PVListModel().getXMLContent());
     }
 }

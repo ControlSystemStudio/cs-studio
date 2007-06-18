@@ -6,7 +6,7 @@
          point="org.eclipse.core.runtime.contentTypes">
       <content-type
             base-type="org.eclipse.core.runtime.xml"
-            file-extensions="xml,pvtable"
+            file-extensions="css-pvtable,xml"
             id="PVTable"
             name="%PVTable"
             priority="normal">
@@ -20,11 +20,13 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            id="org.csstudio.display.pvtable.ui.editor.PVTableEditor"
             class="org.csstudio.display.pvtable.ui.editor.PVTableEditor"
             contributorClass="org.csstudio.display.pvtable.ui.editor.PVTableEditorActionBarContributor"
             default="false"
+            extensions="css-pvtable"
+            filenames="css-pvtable"
             icon="icons/table.gif"
+            id="org.csstudio.display.pvtable.ui.editor.PVTableEditor"
             name="%PVTable">
          <contentTypeBinding contentTypeId="org.csstudio.display.pvtable.PVTable"/>
       </editor>

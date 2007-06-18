@@ -7,17 +7,11 @@ public class Messages extends NLS
     private static final String BUNDLE_NAME = "org.csstudio.util.wizard.messages"; //$NON-NLS-1$
 
     public static String CannotOpenEditor;
-
     public static String ContainerNotFound;
-
     public static String CreateNew___;
-
     public static String Creating___;
-
     public static String ___TypeFile;
-
     public static String Error;
-
     public static String OpeningFile___;
 
     static
@@ -27,6 +21,5 @@ public class Messages extends NLS
     }
 
     private Messages()
-    {
-    }
+    { /* prevent instantiation */ }
 }

@@ -14,22 +14,27 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 public class NewFileWizardPage extends WizardNewFileCreationPage
 {
     private final String default_content;
+    private final String extension;
     
     public NewFileWizardPage(String title, String default_content,
+                    String extension,
                     IStructuredSelection selection)
     {
         super(title, selection);
         this.default_content = default_content;
+        this.extension = extension;
         setDescription(Messages.CreateNew___ + title + Messages.___TypeFile);
     }
     
+    @Override
     protected InputStream getInitialContents()
     {
         return new StringInputStream(default_content);
     }
     
+    @Override
     public String getFileExtension()
     {
-        return "xml"; //$NON-NLS-1$
+        return extension;
     }
 }
