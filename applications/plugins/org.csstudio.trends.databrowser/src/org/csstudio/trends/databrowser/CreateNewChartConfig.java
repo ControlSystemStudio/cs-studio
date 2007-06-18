@@ -5,50 +5,59 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 
+/** Run the NewChartEditorWizard.
+ *  @author Kay Kasemir
+ */
 @SuppressWarnings("nls")
 public class CreateNewChartConfig extends Action implements IObjectActionDelegate
 {
-    /** The currently selected container */
-    private IContainer container = null;
+    /** The currently active workbench part */
+    private IWorkbenchPart part = null;
 
-    public CreateNewChartConfig()
-    {
-    }
-
-    /* @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
+    /** Selection for the container */
+    private IStructuredSelection selection = null;
+    
+    /** Keep track of active workbench part.
+     *  @see IObjectActionDelegate
      */
     public void setActivePart(IAction action, IWorkbenchPart targetPart)
     {
-        // TODO Auto-generated method stub
-        
+        this.part = targetPart;
     }
 
-    /* @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-     */
+    /** Display the new chart editor wizard */
     public void run(IAction action)
     {
-        System.out.println("CreateNewChartConfig NEW CHART");
+        // Compare Plugin book p. 439 for how to run a wizard manually
+        final IWorkbenchWindow window =
+            part.getSite().getWorkbenchWindow();
+        NewChartEditorWizard wizard = new NewChartEditorWizard();
+        wizard.init(window.getWorkbench(), selection);
+        WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+        dialog.open();
     }
 
-    /* @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+    /** Keep track of active selection.
+     *  @see IObjectActionDelegate
      */
     public void selectionChanged(IAction action, ISelection selection)
     {
-        System.out.println("CreateNewChartConfig");
         if (selection instanceof IStructuredSelection)
         {
             IStructuredSelection sel = (IStructuredSelection) selection;
             Object item = sel.getFirstElement();
             if (item instanceof IContainer)
             {
-                container = (IContainer) item;
+                this.selection = sel;
                 return;
             }
         }
         // No container selected
-        container = null;
+        this.selection = null;
    }
 }
