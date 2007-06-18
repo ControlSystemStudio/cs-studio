@@ -112,9 +112,11 @@ public class ActiveMQURL {
         }
                 
         _host = _url.substring(ind,endInd);
+        ind=endInd;
         while(endInd<_url.length()){
             if(_url.startsWith(")",ind)){
                 ind++;
+                endInd++;
             }
             if(_url.startsWith("?",ind)||_url.startsWith("&",ind)){
                 ind++;
@@ -138,7 +140,7 @@ public class ActiveMQURL {
                 }
             }
             
-            ind = _url.indexOf('?');
+            ind = _url.indexOf('&',endInd);
         }
     }
     /**
@@ -194,12 +196,12 @@ public class ActiveMQURL {
     	/** Soll unentlich weiter versucht werden eine Verbindung auf zu bauen muss derEintarg entfernt werden.
     	 * In der Doku steht zwar das die zuweisung mit dem Wert 0 das gleich bewirkt doch das funktioniert nicht. 
     	 */
-    	int count = new Integer(maxReconnectAttempts.substring(maxReconnectAttempts.indexOf('=')+1,maxReconnectAttempts.length()));
-    	if(count>0){
+//    	int count = new Integer(maxReconnectAttempts.substring(maxReconnectAttempts.indexOf('=')+1,maxReconnectAttempts.length()));
+//    	if(count>0){
     		_maxReconnectAttempts = maxReconnectAttempts;
-    	}else{
-    		_maxReconnectAttempts=null;
-    	}
+//    	}else{
+//    		_maxReconnectAttempts=null;
+//    	}
     		
     }
     /**
