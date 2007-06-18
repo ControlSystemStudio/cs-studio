@@ -81,7 +81,7 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            adaptable="true"
+            adaptable="false"
             id="org.csstudio.trends.databrowser.PVpopupAction"
             objectClass="org.csstudio.platform.model.IProcessVariable">
          <menu
@@ -109,6 +109,17 @@
               class="org.csstudio.trends.databrowser.plotview.OpenAsPlotViewAction"
               icon="icons/chart.gif"
               label="%OpenAsView"/>
+      </objectContribution>
+      <objectContribution
+           adaptable="false"
+           id="org.csstudio.trends.databrowser.CreateNewChartConfig"
+           objectClass="org.eclipse.core.resources.IContainer">
+        <action
+              class="org.csstudio.trends.databrowser.CreateNewChartConfig"
+              icon="icons/chart.gif"
+              id="org.csstudio.trends.databrowser.CreateNewChartConfig"
+              label="%NewDatabrowserConfig"
+              menubarPath="new.ext"/>
       </objectContribution>
    </extension>
    <extension

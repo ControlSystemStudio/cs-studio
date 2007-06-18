@@ -12,7 +12,7 @@ import org.eclipse.ui.IWorkbenchPart;
  *  @author Kay Kasemir
  *  @author Sven Wende
  */
-public class OpenAsPlotViewAction  extends Action implements IObjectActionDelegate
+public class OpenAsPlotViewAction extends Action implements IObjectActionDelegate
 {
     /** The current selection. */
     private IStructuredSelection selection;
