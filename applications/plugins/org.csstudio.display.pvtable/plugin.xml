@@ -71,6 +71,17 @@
                menubarPath="org.csstudio.popmenu/content"
                tooltip="%PVTableObject_TT"/>
       </objectContribution>
+      <objectContribution
+           adaptable="false"
+           id="org.csstudio.display.pvtable.CreateNewPVTableConfig"
+           objectClass="org.eclipse.core.resources.IContainer">
+        <action
+              class="org.csstudio.display.pvtable.CreateNewPVTableConfig"
+              icon="icons/table.gif"
+              id="org.csstudio.display.pvtable.CreateNewPVTableConfig"
+              label="%NewPVTableConfig"
+              menubarPath="new.ext"/>
+      </objectContribution>
    </extension>
    <!-- extension
          point="org.eclipse.ui.actionSets">

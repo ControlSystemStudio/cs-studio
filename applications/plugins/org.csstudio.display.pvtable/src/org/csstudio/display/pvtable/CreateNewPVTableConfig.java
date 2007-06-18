@@ -1,4 +1,4 @@
-package org.csstudio.trends.databrowser;
+package org.csstudio.display.pvtable;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.jface.action.Action;
@@ -10,7 +10,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 
-/** Action to run the NewChartEditorWizard.
+/** Action to run the NewPVTableWizard.
  *  <p>
  *  Hooked into navigator or workspace explorer context menu
  *  via object contrib to IContainer.
@@ -18,7 +18,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class CreateNewChartConfig extends Action implements IObjectActionDelegate
+public class CreateNewPVTableConfig extends Action implements IObjectActionDelegate
 {
     /** The currently active workbench part */
     private IWorkbenchPart part = null;
@@ -40,7 +40,7 @@ public class CreateNewChartConfig extends Action implements IObjectActionDelegat
         // Compare Plugin book p. 439 for how to run a wizard manually
         final IWorkbenchWindow window =
             part.getSite().getWorkbenchWindow();
-        NewChartEditorWizard wizard = new NewChartEditorWizard();
+        NewPVTableWizard wizard = new NewPVTableWizard();
         wizard.init(window.getWorkbench(), selection);
         WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
         dialog.open();
