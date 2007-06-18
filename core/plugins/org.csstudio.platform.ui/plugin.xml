@@ -311,7 +311,7 @@
               icon="icons/new_project.png"
               id="org.csstudio.platform.ui.views.CreateProjectAction"
               label="New Project"
-              menubarPath="additions"/>
+              menubarPath="new.ext"/>
      </viewerContribution>
      <viewerContribution
            id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
@@ -324,7 +324,7 @@
               icon="icons/new_folder.png"
               id="org.csstudio.platform.ui.views.CreateFolderAction"
               label="New Folder"
-              menubarPath="additions"/>
+              menubarPath="new.ext"/>
      </viewerContribution>
      <viewerContribution
            id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
@@ -337,7 +337,7 @@
               icon="icons/fileDelete.png"
               id="org.csstudio.platform.ui.views.DeleteResourceAction"
               label="Delete Resource"
-              menubarPath="additions"/>
+              menubarPath="editEnd"/>
      </viewerContribution>
   </extension>
 

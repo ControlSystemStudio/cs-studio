@@ -156,8 +156,18 @@ public final class WorkspaceExplorerView extends ViewPart {
         {
             public void menuAboutToShow(IMenuManager manager)
             {
-                menuMgr.add(new GroupMarker(IWorkbenchIds.GROUP_CSS_MB3));
+                // Region for actions that create new stuff
+                menuMgr.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
                 menuMgr.add(new Separator());
+                // Region(s) for actions that open existing resources
+                menuMgr.add(new GroupMarker(IWorkbenchIds.GROUP_CSS_MB3));
+                menuMgr.add(new GroupMarker(IWorkbenchActionConstants.OPEN_EXT));
+                menuMgr.add(new Separator());
+                // Region(s) for actions that rename/delete existing resources
+                menuMgr.add(new GroupMarker(IWorkbenchActionConstants.EDIT_START));
+                menuMgr.add(new GroupMarker(IWorkbenchActionConstants.EDIT_END));
+                menuMgr.add(new Separator());
+                // Whatever's left
                 menuMgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
