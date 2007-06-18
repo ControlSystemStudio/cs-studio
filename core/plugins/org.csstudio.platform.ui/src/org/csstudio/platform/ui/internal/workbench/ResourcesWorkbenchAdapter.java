@@ -21,6 +21,8 @@
  */
 package org.csstudio.platform.ui.internal.workbench;
 
+import java.util.ArrayList;
+
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.util.ImageUtil;
@@ -30,44 +32,68 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchAdapter;
 
-/**
- * A workbench adapter implementation for workspace resources.
+/** A workbench adapter implementation for workspace resources.
+ *  <p>
+ *  Adapts IResource-based objects to the IWorkbenchAdapter interface.
  * 
- * @author Sven Wende
- * 
+ *  @author Sven Wende
+ *  @author Kay Kasemir: hide the .project file
  */
-public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter {
-	/**
-	 * {@inheritDoc}
+public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter
+{
+    /** Name of the project file that we skip */
+	private static final String PROJECT_FILENAME = ".project"; //$NON-NLS-1$
+
+    /** Get the sub-folders or files of a given IResource.
+     *  <p>
+     *  Applies some filtering.
+     *  @see IWorkbenchAdapter#getChildren(Object)
 	 */
 	@Override
-	public Object[] getChildren(final Object object) {
-		Object[] result = new Object[0];
-
-		if (object instanceof IWorkspaceRoot) {
-			result = ((IWorkspaceRoot) object).getProjects();
-		}
-		if (object instanceof IContainer) {
-			try {
-				if (object instanceof IProject) {
-					if (((IProject)object).isOpen()) {
-						 result = ((IContainer) object).members();
-					}
-				} else {
-					result = ((IContainer) object).members();	
-				}
-			} catch (CoreException e) {
-				CentralLogger.getInstance().error(this, e);
-			}
-		}
-
-		return result;
-	}
+	public Object[] getChildren(final Object object)
+    {
+        try
+        {
+            // Root?
+            if (object instanceof IWorkspaceRoot)
+                return ((IWorkspaceRoot) object).getProjects();
+            // Project?
+            if (object instanceof IProject)
+            {
+                if (((IProject) object).isOpen())
+                {
+                    // Filter the resouces inside the project
+                    final IResource[] members = ((IContainer) object).members();
+                    final ArrayList<IResource> keep =
+                        new ArrayList<IResource>(members.length);
+                    for (IResource resource : members)
+                    {   // Skip the ".project" file
+                        if (resource instanceof IFile  &&
+                            resource.getName().equals(PROJECT_FILENAME))
+                            continue;
+                        keep.add(resource);
+                    }
+                    final IResource[] result = new IResource[keep.size()];
+                    return keep.toArray(result);
+                }
+                // else: closed project has no known members
+                return new Object[0];
+            }
+            // Plain folder
+            if (object instanceof IContainer)
+                return ((IContainer) object).members();
+        }
+        catch (Exception ex)
+        {
+            CentralLogger.getInstance().error(this, ex);
+        }
+        return new Object[0];
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -97,16 +123,13 @@ public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter {
 		return result;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	/** Provide label for IResource object */
 	@Override
-	public String getLabel(final Object object) {
-		String label = "<unknown>"; //$NON-NLS-1$
-
-		if (object instanceof IResource) {
-			label = ((IResource) object).getName();
-		}
-		return label;
+	public String getLabel(final Object object)
+    {
+        if (object instanceof IResource)
+            return ((IResource) object).getName();
+        // else
+        return "<unknown object " + object + ">"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }
