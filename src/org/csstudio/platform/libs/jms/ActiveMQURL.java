@@ -123,8 +123,18 @@ public class ActiveMQURL {
                     endInd=url.length();
                 } 
                 String tmp= _url.substring(ind,endInd);
-                if(tmp.compareTo("maxReconnectAttempts")==0){
+                if(tmp.startsWith("maxReconnectAttempts")){
                     _maxReconnectAttempts = new String(tmp);
+                }else if(tmp.startsWith("backOffMultiplier")){
+                    _backOffMultiplier = new String(tmp);
+                }else if(tmp.startsWith("initialReconnectDelay")){
+                    _initialReconnectDelay = new String(tmp);
+                }else if(tmp.startsWith("maxReconnectDelay")){
+                    _maxReconnectDelay = new String(tmp);
+                }else if(tmp.startsWith("randomize")){
+                    _randomize = new String(tmp);
+                }else if(tmp.startsWith("useExponentialBackOff")){
+                    _useExponentialBackOff = new String(tmp);
                 }
             }
             
