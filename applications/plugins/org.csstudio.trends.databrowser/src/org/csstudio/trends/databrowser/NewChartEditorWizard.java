@@ -15,6 +15,7 @@ public class NewChartEditorWizard extends NewFileWizard
               PlotEditor.ID,
             Messages.DataBrowser,
             "data." + Plugin.FileExtension, //$NON-NLS-1$
+            Plugin.FileExtension,
             new Model().getXMLContent());
     }
 }
