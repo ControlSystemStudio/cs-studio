@@ -22,9 +22,6 @@
 
 package org.csstudio.platform.libs.jms;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Hashtable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -34,8 +31,6 @@ import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.jms.MessageConsumer;
-import javax.jms.TextMessage;
-import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Topic;
 
@@ -75,14 +70,6 @@ public class MessageReceiver {
      */
     private MessageConsumer[]           _receiver    = null;
     /**
-     * The Text Message.
-     */
-    private TextMessage                 _textMessage = null;
-    /**
-     * A Message.
-     */
-    private Message                     _message     = null;
-    /**
      * A JMS Topic.
      */
     private Topic		                _destination = null;  // if ! topic: Destination
@@ -95,15 +82,13 @@ public class MessageReceiver {
      */
     private MessageListener _listener;
     /**
-     * Used Failover.
+     * The Connection Job.
      */
-    private boolean _failover;
-    /**
-     * counts of Retrais.
-     */
-    private int _countsOfRetrais;
-	private ConnectionJob cj;
-	private IJobChangeListener jobChangeListener;
+	private ConnectionJob _connectionJob;
+	/**
+	 * the Job Change Listener.
+	 */
+	private IJobChangeListener _jobChangeListener;
     
     
 
@@ -181,35 +166,16 @@ public class MessageReceiver {
         _properties.put(Context.INITIAL_CONTEXT_FACTORY,
         		JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.INITIAL_CONTEXT_FACTORY));
         String url = JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.URL);
-//        if(url.contains("failover:")){
-//            _failover=true;
-//            int index = url.indexOf("maxReconnectAttempts=");
-//            if(index<0){
-//                url = url.concat("?maxReconnectAttempts=3");
-//            }else{
-//                int index2 = url.indexOf("&", index);
-//                if(index2<0){
-//                    url = url.substring(0,index-1)+"maxReconnectAttempts=3"; 
-//                }else{
-//                    url = url.substring(0,index-1)+"maxReconnectAttempts=3"+url.substring(index2);     
-//                }
-//            }
-//            
-//        }else{_failover=false;}
-        
         ActiveMQURL uri = new ActiveMQURL(url);
         
         if(uri.getPrefix()!=null){
-            _failover=true;
             if(uri.getMaxReconnectAttempts()==null){
                 uri.setMaxReconnectAttempts("maxReconnectAttempts=3");
             }
-        }else{_failover=false;}
+        }
         
-//        System.out.println("URL1: "+uri.getURL());
         _properties.put(Context.PROVIDER_URL,uri.getURL());
         _context = new InitialContext(_properties);
-//        destination = (Topic) context.lookup(JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.QUEUE).split(",")[0]);
         _queues = JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.QUEUE).split(",");
     }
 
@@ -227,11 +193,10 @@ public class MessageReceiver {
         ActiveMQURL uri = new ActiveMQURL(providerURL);
        
         if(uri.getPrefix()!=null){
-            _failover=true;
             if(uri.getMaxReconnectAttempts()==null){
                 uri.setMaxReconnectAttempts("maxReconnectAttempts=3");
             }
-        }else{_failover=false;}
+        }
 //        System.out.println("URL2: "+uri.getURL());
         _properties.put(Context.PROVIDER_URL,uri.getURL());
         _context = new InitialContext(_properties);
@@ -246,8 +211,8 @@ public class MessageReceiver {
      */
 	public final void startListener(final MessageListener listener) {
 	    _listener = listener;
-        cj = new ConnectionJob("JMS Connetion");
-        jobChangeListener = new IJobChangeListener(){
+        _connectionJob = new ConnectionJob("JMS Connetion");
+        _jobChangeListener = new IJobChangeListener(){
             public void done(final IJobChangeEvent event) {
                 if(event.getResult().isOK()){
                     System.out.println("JMS Connecting is done : \r\n"+_properties+"\r\n");
@@ -271,9 +236,9 @@ public class MessageReceiver {
             public void sleeping(final IJobChangeEvent event) {}
             
         };
-        cj.addJobChangeListener(jobChangeListener);
-        cj.setSystem(true);
-        cj.schedule();
+        _connectionJob.addJobChangeListener(_jobChangeListener);
+        _connectionJob.setSystem(true);
+        _connectionJob.schedule();
         
 	}
 
@@ -283,8 +248,8 @@ public class MessageReceiver {
      * 
 	 */
 	public final void stopListening() throws Exception{
-		cj.removeJobChangeListener(jobChangeListener);
-		cj.cancel();
+		_connectionJob.removeJobChangeListener(_jobChangeListener);
+		_connectionJob.cancel();
 		for (MessageConsumer r: _receiver) {
 			r.close();
 			r=null;
@@ -298,8 +263,6 @@ public class MessageReceiver {
         _connection  = null;
         _session     = null;
         _receiver    = null;
-        _textMessage = null;
-        _message     = null;
         _destination = null;
         
 	}
