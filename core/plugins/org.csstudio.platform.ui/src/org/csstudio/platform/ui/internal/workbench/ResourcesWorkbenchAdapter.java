@@ -21,8 +21,6 @@
  */
 package org.csstudio.platform.ui.internal.workbench;
 
-import java.util.ArrayList;
-
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.util.ImageUtil;
@@ -46,12 +44,7 @@ import org.eclipse.ui.model.WorkbenchAdapter;
  */
 public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter
 {
-    /** Name of the project file that we skip */
-	private static final String PROJECT_FILENAME = ".project"; //$NON-NLS-1$
-
     /** Get the sub-folders or files of a given IResource.
-     *  <p>
-     *  Applies some filtering.
      *  @see IWorkbenchAdapter#getChildren(Object)
 	 */
 	@Override
@@ -66,21 +59,7 @@ public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter
             if (object instanceof IProject)
             {
                 if (((IProject) object).isOpen())
-                {
-                    // Filter the resouces inside the project
-                    final IResource[] members = ((IContainer) object).members();
-                    final ArrayList<IResource> keep =
-                        new ArrayList<IResource>(members.length);
-                    for (IResource resource : members)
-                    {   // Skip the ".project" file
-                        if (resource instanceof IFile  &&
-                            resource.getName().equals(PROJECT_FILENAME))
-                            continue;
-                        keep.add(resource);
-                    }
-                    final IResource[] result = new IResource[keep.size()];
-                    return keep.toArray(result);
-                }
+                    return ((IContainer) object).members();
                 // else: closed project has no known members
                 return new Object[0];
             }

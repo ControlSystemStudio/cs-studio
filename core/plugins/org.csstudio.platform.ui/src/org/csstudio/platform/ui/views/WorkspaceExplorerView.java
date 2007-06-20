@@ -5,6 +5,7 @@ import org.csstudio.platform.ui.internal.localization.Messages;
 import org.csstudio.platform.ui.workbench.FileEditorInput;
 import org.csstudio.platform.ui.workbench.IWorkbenchIds;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -18,6 +19,8 @@ import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -35,11 +38,14 @@ import org.eclipse.ui.part.ViewPart;
 
 /** A view, which is used to display, navigate and open synoptic displays.
  *  @author Alexander Will
+ *  @author Kay Kasemir: hide .project file
  *  @version $Revision$
  */
 public final class WorkspaceExplorerView extends ViewPart {
+    /** Name of the ".project" file that we want to hide */
+	private static final String PROJECT_FILE_NAME = ".project"; //$NON-NLS-1$
 
-	/**
+    /**
 	 * The ID of this view as configured in the plugin manifest.
 	 */
 	public static final String VIEW_ID = "org.csstudio.platform.ui.views.WorkspaceExplorerView"; //$NON-NLS-1$
@@ -63,6 +69,20 @@ public final class WorkspaceExplorerView extends ViewPart {
 		_treeViewer.setContentProvider(new BaseWorkbenchContentProvider());
 		_treeViewer.setLabelProvider(new WorkbenchLabelProvider());
 		_treeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
+        _treeViewer.addFilter(new ViewerFilter()
+        {
+            /** Hide the .project file */
+            @Override
+            public boolean select(Viewer viewer, Object parent, Object element)
+            {
+                if (parent != null  &&  element != null
+                    && parent instanceof IProject
+                    && element instanceof IFile
+                    && ((IFile)element).getName().equals(PROJECT_FILE_NAME))
+                    return false;
+                return true;
+            }
+        });
 
 		getViewSite().setSelectionProvider(_treeViewer);
 
