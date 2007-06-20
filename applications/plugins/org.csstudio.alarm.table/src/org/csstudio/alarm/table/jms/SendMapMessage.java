@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
@@ -49,6 +50,7 @@ public class SendMapMessage {
 
         connection.start();
         sender = session.createProducer(destination);
+        sender.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 	}
 	
 	public void stopSender() throws Exception{
