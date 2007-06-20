@@ -73,7 +73,7 @@
       </objectContribution>
       <objectContribution
            adaptable="false"
-           id="org.csstudio.display.pvtable.CreateNewPVTableConfig"
+           id="org.csstudio.display.pvtable.createnewablepopup"
            objectClass="org.eclipse.core.resources.IContainer">
         <action
               class="org.csstudio.display.pvtable.CreateNewPVTableConfig"
@@ -129,6 +129,13 @@
                menubarPath="css/display/"
                style="push"
                tooltip="%PVTableMenu_TT"/>
+         <action
+               class="org.csstudio.display.pvtable.CreateNewPVTableConfig"
+               icon="icons/table.gif"
+               id="org.csstudio.display.pvtable.createnewablemenu"
+               label="%NewPVTableConfig"
+               menubarPath="file/new/additions"
+               style="push"/>
       </actionSet>
    </extension>
    
