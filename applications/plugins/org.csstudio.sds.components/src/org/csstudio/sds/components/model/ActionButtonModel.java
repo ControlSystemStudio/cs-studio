@@ -21,14 +21,10 @@
  */
 package org.csstudio.sds.components.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.FontProperty;
-import org.csstudio.sds.model.properties.MapProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
@@ -51,17 +47,17 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The ID of the resource property.
 	 */
 	public static final String PROP_RESOURCE = "resource"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the action property.
 	 */
-	public static final String PROP_ACTION =  "action"; //$NON-NLS-1$
-	
+	public static final String PROP_ACTION = "action"; //$NON-NLS-1$
+
 	/**
 	 * The ID of the font property.
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of this widget model.
 	 */
@@ -77,11 +73,6 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 */
 	private static final int DEFAULT_WIDTH = 80;
 
-	/**
-	 * The default value for alias property.
-	 */
-	private static final Map<String, String> DEFAULT_MAP = new HashMap<String, String>();
-	
 	/**
 	 * Standard constructor.
 	 */
@@ -106,12 +97,12 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
 		addProperty(PROP_RESOURCE, new StringProperty("Resource",
 				WidgetPropertyCategory.Behaviour, ""));
-//		addProperty(PROP_RESOURCE, new MapProperty("Resource",
-//				WidgetPropertyCategory.Behaviour, DEFAULT_MAP));
 		addProperty(PROP_ACTION, new OptionProperty("Action",
-				WidgetPropertyCategory.Behaviour, new String[]{"Open Display As Shell", "Open Display As View"}, 0));
+				WidgetPropertyCategory.Behaviour, new String[] {
+						"Open Display As Shell", "Open Display As View" }, 0));
 		addProperty(PROP_FONT, new FontProperty("Font",
-				WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
+				WidgetPropertyCategory.Display, new FontData(
+						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
 	}
 
 	/**
@@ -147,15 +138,21 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	public FontData getFont() {
 		return (FontData) getProperty(PROP_FONT).getPropertyValue();
 	}
-	
+
+	/**
+	 * Return the target resource.
+	 * 
+	 * @return The target resource.
+	 */
 	public String getResource() {
 		return (String) getProperty(PROP_RESOURCE).getPropertyValue();
 	}
-	
-//	public Map<String, String> getResource() {
-//		return (Map<String, String>) getProperty(PROP_RESOURCE).getPropertyValue();
-//	}
-	
+
+	/**
+	 * Return the index of the action that should be performed.
+	 * 
+	 * @return The index of the action that should be performed.
+	 */
 	public int getAction() {
 		return (Integer) getProperty(PROP_ACTION).getPropertyValue();
 	}

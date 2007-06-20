@@ -173,9 +173,9 @@ public final class MeterModel extends AbstractWidgetModel {
 				"Interval 3 upper border", WidgetPropertyCategory.Display,
 				INTERVAL3_UPPER_BORDER_DEFAULT, CIRCLE_DEGREES_FROM,
 				CIRCLE_DEGREES_TO));
-
 		addProperty(PROP_VALUE, new DoubleProperty("value",
-				WidgetPropertyCategory.Behaviour, VALUE_DEFAULT, 0.0, 360.0));
+				WidgetPropertyCategory.Behaviour, VALUE_DEFAULT,
+				CIRCLE_DEGREES_FROM, CIRCLE_DEGREES_TO));
 	}
 
 	/**

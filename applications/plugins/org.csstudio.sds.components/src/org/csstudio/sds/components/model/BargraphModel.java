@@ -52,42 +52,42 @@ public final class BargraphModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the default-fill-Color property.
 	 */
-	public static final String PROP_DEFAULT_FILL_COLOR = "default_fill_color";
+	public static final String PROP_DEFAULT_FILL_COLOR = "defaultFillColor";
 	
 	/**
 	 * The ID of the lolo-Color property.
 	 */
-	public static final String PROP_LOLO_COLOR = "lolo_color";
+	public static final String PROP_LOLO_COLOR = "loloColor";
 	
 	/**
 	 * The ID of the lo-Color property.
 	 */
-	public static final String PROP_LO_COLOR = "lo_color";
+	public static final String PROP_LO_COLOR = "loColor";
 	
 	/**
 	 * The ID of the m-Color property.
 	 */
-	public static final String PROP_M_COLOR = "m_color";
+	public static final String PROP_M_COLOR = "mColor";
 	
 	/**
 	 * The ID of the hi-Color property.
 	 */
-	public static final String PROP_HI_COLOR = "hi_color";
+	public static final String PROP_HI_COLOR = "hiColor";
 	
 	/**
 	 * The ID of the hihi-Color property.
 	 */
-	public static final String PROP_HIHI_COLOR = "hihi_color";
+	public static final String PROP_HIHI_COLOR = "hihiColor";
 	
 	/**
 	 * The ID of the fillbackground-Color property.
 	 */
-	public static final String PROP_FILLBACKGROUND_COLOR = "fillbackground_color";
+	public static final String PROP_FILLBACKGROUND_COLOR = "fillbackgroundColor";
 	
 	/**
 	 * The ID of the show_value property.
 	 */
-	public static final String PROP_SHOW_VALUES = "show_value";
+	public static final String PROP_SHOW_VALUES = "showValues";
 	
 	/**
 	 * The ID of the minimum property.
@@ -96,23 +96,23 @@ public final class BargraphModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the lolo level property.
 	 */
-	public static final String PROP_LOLO_LEVEL = "lolo_level";
+	public static final String PROP_LOLO_LEVEL = "loloLevel";
 	/**
 	 * The ID of the lo level property.
 	 */
-	public static final String PROP_LO_LEVEL = "lo_level";
+	public static final String PROP_LO_LEVEL = "loLevel";
 	/**
 	 * The ID of the m level property.
 	 */
-	public static final String PROP_M_LEVEL = "m_level";
+	public static final String PROP_M_LEVEL = "mLevel";
 	/**
 	 * The ID of the hi level property.
 	 */
-	public static final String PROP_HI_LEVEL = "hi_level";
+	public static final String PROP_HI_LEVEL = "hiLevel";
 	/**
 	 * The ID of the hihi level property.
 	 */
-	public static final String PROP_HIHI_LEVEL = "hihi_level";
+	public static final String PROP_HIHI_LEVEL = "hihiLevel";
 	/**
 	 * The ID of the maximum property.
 	 */
@@ -120,15 +120,15 @@ public final class BargraphModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the show status of the marks.
 	 */
-	public static final String PROP_SHOW_MARKS = "marks_show_status";
+	public static final String PROP_SHOW_MARKS = "marksShowStatus";
 	/**
 	 * The ID of the show status of the marks.
 	 */
-	public static final String PROP_SHOW_SCALE = "scale_show_status";
+	public static final String PROP_SHOW_SCALE = "scaleShowStatus";
 	/**
 	 * The ID of the show status of the marks.
 	 */
-	public static final String PROP_SCALE_SECTION_COUNT = "section_count";
+	public static final String PROP_SCALE_SECTION_COUNT = "sectionCount";
 
 	/**
 	 * The ID of this widget model.
@@ -399,7 +399,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * @return boolean
 	 * 				true, if the values should be shown, false otherwise
 	 */
-	public boolean getShowValues() {
+	public boolean isShowValues() {
 		return (Boolean) getProperty(PROP_SHOW_VALUES).getPropertyValue();
 	}
 	

@@ -106,9 +106,9 @@ public final class RectangleModel extends AbstractWidgetModel {
 	}
 	
 	/**
-	 * Gets the fill level.
+	 * Gets the orientation.
 	 * 
-	 * @return the fill level
+	 * @return the orientation.
 	 */
 	public boolean getOrientation() {
 		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();

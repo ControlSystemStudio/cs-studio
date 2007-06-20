@@ -85,11 +85,11 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		slider.setMin(model.getMin());
 		slider.setIncrement(model.getIncrement());
 		slider.setValue(model.getValue());
-		slider.setShowValueAsText(model.getShowValueAsText());
+		slider.setShowValueAsText(model.isShowValueAsText());
 		slider.setManualValue(model.getValue());
 		slider.setOrientation(model.isHorizontal());
 		slider.setDecimalPlaces(model.getPrecision());
-		slider.setSliderWide(model.getSliderWide());
+		slider.setSliderWide(model.getSliderWidth());
 		slider.setPopulateEvents(true);
 		return slider;
 	}
@@ -197,7 +197,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_SLIDER_WIDE, minSliderWideHandler);
+		setPropertyChangeHandler(SimpleSliderModel.PROP_SLIDER_WIDTH, minSliderWideHandler);
 
 		// orientation
 		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {

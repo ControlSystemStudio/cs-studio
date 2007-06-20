@@ -39,7 +39,7 @@ public final class EllipseModel extends AbstractWidgetModel {
 	 * The ID of the fill level property.
 	 */
 	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the orientation property.
 	 */
@@ -64,7 +64,7 @@ public final class EllipseModel extends AbstractWidgetModel {
 	 * The default value of the fill level property.
 	 */
 	private static final double DEFAULT_FILL = 100.0;
-	
+
 	/**
 	 * The default value of the orientation property.
 	 */
@@ -91,9 +91,11 @@ public final class EllipseModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty, WidgetPropertyCategory.Behaviour,
-				DEFAULT_FILL, 0.0, 100.0));
-		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal Orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
+		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
+				WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0));
+		addProperty(PROP_ORIENTATION, new BooleanProperty(
+				"Horizontal Orientation", WidgetPropertyCategory.Behaviour,
+				DEFAULT_ORIENTATION_HORIZONTAL));
 	}
 
 	/**
@@ -103,19 +105,20 @@ public final class EllipseModel extends AbstractWidgetModel {
 	public String getDoubleTestProperty() {
 		return PROP_FILL;
 	}
-	
-	/**
-	 * Gets the fill grade.
-	 * @return the fill grade
-	 */
-	public double getFillGrade() {
-		return (Double) getProperty(PROP_FILL).getPropertyValue();
-	}
-	
+
 	/**
 	 * Gets the fill level.
 	 * 
 	 * @return the fill level
+	 */
+	public double getFillLevel() {
+		return (Double) getProperty(PROP_FILL).getPropertyValue();
+	}
+
+	/**
+	 * Gets the orientation.
+	 * 
+	 * @return the orientation
 	 */
 	public boolean getOrientation() {
 		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();

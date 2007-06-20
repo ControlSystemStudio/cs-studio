@@ -46,7 +46,7 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 
 		RefreshableEllipseFigure ellipse = new RefreshableEllipseFigure();
 		ellipse.setOrientation(model.getOrientation());
-		ellipse.setFill(model.getFillGrade());
+		ellipse.setFill(model.getFillLevel());
 
 		return ellipse;
 

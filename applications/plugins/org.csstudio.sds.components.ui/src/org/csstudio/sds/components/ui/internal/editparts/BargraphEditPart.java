@@ -66,7 +66,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setHihiLevel(model.getHihiLevel());
 		bargraph.setMaximum(model.getMaximum());
 		// show_Value
-		bargraph.setShowValues(model.getShowValues());
+		bargraph.setShowValues(model.isShowValues());
 		bargraph.setShowMarks(model.getShowMarks());
 		bargraph.setShowScale(model.getShowScale());
 		bargraph.setScaleSectionCount(model.getScaleSectionCount());

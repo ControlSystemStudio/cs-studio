@@ -41,7 +41,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * The ID of the "show value as text" property.
 	 */
 	public static final String PROP_SHOW_VALUE_AS_TEXT = "showValueAsText"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the value property.
 	 */
@@ -66,11 +66,11 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * The ID of the precision property.
 	 */
 	public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
-	
+
 	/**
-	 * The ID of the minimum slider wide property.
+	 * The ID of the minimum slider width property.
 	 */
-	public static final String PROP_SLIDER_WIDE = "slider_wide"; //$NON-NLS-1$
+	public static final String PROP_SLIDER_WIDTH = "sliderWidth"; //$NON-NLS-1$
 
 	/**
 	 * The ID of the orientation property.
@@ -115,18 +115,20 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	protected void configureProperties() {
 		addProperty(PROP_VALUE, new DoubleProperty("Slider Value",
 				WidgetPropertyCategory.Behaviour, 50.0));
-		addProperty(PROP_SHOW_VALUE_AS_TEXT, new BooleanProperty("Show Value As Text",
-				WidgetPropertyCategory.Display, false));
+		addProperty(PROP_SHOW_VALUE_AS_TEXT, new BooleanProperty(
+				"Show Value As Text", WidgetPropertyCategory.Display, false));
 		addProperty(PROP_MIN, new DoubleProperty("Min",
 				WidgetPropertyCategory.Behaviour, 0.0));
 		addProperty(PROP_MAX, new DoubleProperty("Max",
 				WidgetPropertyCategory.Behaviour, 100.0));
 		addProperty(PROP_INCREMENT, new DoubleProperty("Increment",
 				WidgetPropertyCategory.Behaviour, 1.0));
-		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal orientation",
-				WidgetPropertyCategory.Display, true));
-		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places", WidgetPropertyCategory.Behaviour, 2, 0, 5));
-		addProperty(PROP_SLIDER_WIDE, new IntegerProperty("Slider wide", WidgetPropertyCategory.Display, 5, 0, Integer.MAX_VALUE));
+		addProperty(PROP_ORIENTATION, new BooleanProperty(
+				"Horizontal orientation", WidgetPropertyCategory.Display, true));
+		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
+				WidgetPropertyCategory.Behaviour, 2, 0, 5));
+		addProperty(PROP_SLIDER_WIDTH, new IntegerProperty("Slider wide",
+				WidgetPropertyCategory.Display, 5, 0, Integer.MAX_VALUE));
 
 		setBackgroundColor(new RGB(255, 255, 255));
 	}
@@ -174,7 +176,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	public double getValue() {
 		return (Double) getProperty(PROP_VALUE).getPropertyValue();
 	}
-	
+
 	/**
 	 * Return the precision.
 	 * 
@@ -183,14 +185,14 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	public int getPrecision() {
 		return (Integer) getProperty(PROP_PRECISION).getPropertyValue();
 	}
-	
+
 	/**
-	 * Return the slider wide.
+	 * Return the slider width.
 	 * 
-	 * @return The slider wide.
+	 * @return The slider width.
 	 */
-	public int getSliderWide() {
-		return (Integer) getProperty(PROP_SLIDER_WIDE).getPropertyValue();
+	public int getSliderWidth() {
+		return (Integer) getProperty(PROP_SLIDER_WIDTH).getPropertyValue();
 	}
 
 	/**
@@ -202,7 +204,13 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();
 	}
 
-	public boolean getShowValueAsText() {
-		return (Boolean) getProperty(PROP_SHOW_VALUE_AS_TEXT).getPropertyValue();
+	/**
+	 * Return whether the slider value should also be displayed as a text.
+	 * 
+	 * @return True if the slider value should also be displayed as a text.
+	 */
+	public boolean isShowValueAsText() {
+		return (Boolean) getProperty(PROP_SHOW_VALUE_AS_TEXT)
+				.getPropertyValue();
 	}
 }

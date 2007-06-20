@@ -40,7 +40,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the text input.
 	 */
-	public static final String PROP_INPUT_TEXT = "textinput"; //$NON-NLS-1$
+	public static final String PROP_INPUT_TEXT = "inputText"; //$NON-NLS-1$
 
 	/**
 	 * The ID of the font property.
@@ -50,7 +50,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the text alignment property.
 	 */
-	public static final String PROP_TEXT_ALIGNMENT = "text_alignment";
+	public static final String PROP_TEXT_ALIGNMENT = "textAlignment"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this widget model.
@@ -83,16 +83,6 @@ public final class TextInputModel extends AbstractWidgetModel {
 	public TextInputModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
-	
-//	/**
-//	 * {@inheritDoc}
-//	 */
-//	@Override
-//	public synchronized void setSize(final int width, final int height) {
-//		if (width>0 && height>0) {
-//			super.setSize(width, height);
-//		}
-//	}
 
 	/**
 	 * {@inheritDoc}
