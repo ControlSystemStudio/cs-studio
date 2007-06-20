@@ -117,7 +117,7 @@
         <action
               class="org.csstudio.trends.databrowser.CreateNewChartConfig"
               icon="icons/chart.gif"
-              id="org.csstudio.trends.databrowser.CreateNewChartConfig"
+              id="org.csstudio.trends.databrowser.newchartpopup"
               label="%NewDatabrowserConfig"
               menubarPath="new.ext"/>
       </objectContribution>
@@ -135,6 +135,14 @@
                id="org.csstudio.trends.databrowser.NewDataBrowserAction"
                label="%Databrowser"
                menubarPath="css/trends/"
+               style="push"
+               tooltip="%MenuTooltip"/>
+         <action
+               class="org.csstudio.trends.databrowser.CreateNewChartConfig"
+               icon="icons/chart.gif"
+               id="org.csstudio.trends.databrowser.newchartmenu"
+               label="%NewDatabrowserConfig"
+               menubarPath="file/new/additions"
                style="push"
                tooltip="%MenuTooltip"/>
       </actionSet>
