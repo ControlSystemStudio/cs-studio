@@ -100,6 +100,12 @@
                label="%menuRestart"
                menubarPath="file/fileEnd"
                style="push"/>
+         <action
+               class="org.csstudio.platform.ui.internal.workspace.OpenWorkspaceAction"
+               id="org.csstudio.platform.ui.internal.workspace.OpenWorkspaceAction"
+               label="%menuSwitchWorkspace"
+               menubarPath="file/fileEnd"
+               style="push"/>
       </actionSet>
       <actionSet
             id="org.eclipse.csstudio.ui.menuDefinition"

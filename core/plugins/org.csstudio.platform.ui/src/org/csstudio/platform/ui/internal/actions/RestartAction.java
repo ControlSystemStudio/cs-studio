@@ -24,118 +24,43 @@ package org.csstudio.platform.ui.internal.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-/**
- * Action that restarts the workbench.
+/** Action that restarts the workbench.
  * 
- * @author Alexander Will
- * 
+ *  @author Alexander Will
+ *  @author Kay Kasemir
  */
 public class RestartAction extends Action implements
-		IWorkbenchWindowActionDelegate {
+                IWorkbenchWindowActionDelegate
+{
+    /** Reference to the associated workbench. */
+    private IWorkbench _workbench;
 
-	/**
-	 * System property "eclipse.vm".
-	 */
-	private static final String PROP_VM = "eclipse.vm"; //$NON-NLS-1$
+    /** Memorize the window's workbench */
+    public final void init(final IWorkbenchWindow window)
+    {
+        _workbench = window.getWorkbench();
+    }
 
-	/**
-	 * System property "eclipse.vmargs".
-	 */
-	private static final String PROP_VMARGS = "eclipse.vmargs"; //$NON-NLS-1$
+    /** Release the workbench */
+    public void dispose()
+    {
+        _workbench = null;
+    }
 
-	/**
-	 * System property "eclipse.exitcode".
-	 */
-	private static final String PROP_EXIT_CODE = "eclipse.exitcode"; //$NON-NLS-1$
+    /** {@inheritDoc} */
+    public final void selectionChanged(final IAction action,
+                    final ISelection selection)
+    {
+        // do nothing
+    }
 
-	/**
-	 * System property "eclipse.exitdata".
-	 */
-	private static final String PROP_EXIT_DATA = "eclipse.exitdata"; //$NON-NLS-1$
-
-	/**
-	 * System property "-vmargs".
-	 */
-	private static final String CMD_VMARGS = "-vmargs"; //$NON-NLS-1$
-
-	/**
-	 * Reference to the associated workbench window.
-	 */
-	private IWorkbenchWindow _window;
-
-	/**
-	 * Standard constructor.
-	 */
-	public RestartAction() {
-		// do nothing
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void run(final IAction action) {
-		String commandLine = buildCommandLine();
-
-		System.out.println(commandLine);
-
-		if (commandLine == null) {
-			return;
-		}
-
-		System.setProperty(PROP_EXIT_CODE, Integer.toString(24));
-		System.setProperty(PROP_EXIT_DATA, commandLine);
-		_window.getWorkbench().restart();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void selectionChanged(final IAction action,
-			final ISelection selection) {
-		// do nothing
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void dispose() {
-		// do nothing
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void init(final IWorkbenchWindow window) {
-		_window = window;
-	}
-
-	/**
-	 * Create and return a string with command line options for eclipse.exe that
-	 * will launch a new workbench that is the same as the currently running
-	 * one, but using the argument directory as its workspace.
-	 * 
-	 * @return a string of command line options or null on error
-	 */
-	private String buildCommandLine() {
-		String property = System.getProperty(PROP_VM);
-
-		StringBuffer result = new StringBuffer(512);
-
-		result.append(property);
-		result.append("\n"); //$NON-NLS-1$
-
-		// append the vmargs and commands. Assume that these already end in \n
-		String vmargs = System.getProperty(PROP_VMARGS);
-		if (vmargs != null) {
-			result.append(vmargs);
-			result.append(CMD_VMARGS);
-			result.append("\n"); //$NON-NLS-1$
-			result.append(vmargs);
-		}
-
-		return result.toString();
-	}
+    /** Restart the workbench */
+    public final void run(final IAction action)
+    {
+        _workbench.restart();
+    }
 }
