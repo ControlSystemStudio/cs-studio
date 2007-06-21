@@ -55,8 +55,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 		assert rightId != null;
 		_rightId = rightId;
 
-		// TODO: this should be checked by Kai and Torsten
-		//UserManagementService.getInstance().addUserManagementListener(this);
+		SecurityFacade.getInstance().addUserManagementListener(this);
 		RightsManagementService.getInstance().addRightsManagementListener(this);
 		updateState();
 	}
