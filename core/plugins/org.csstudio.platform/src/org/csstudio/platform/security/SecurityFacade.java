@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
+import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.LoginContext;
+import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 
 /**
  * This Service executes instances of
@@ -54,6 +56,8 @@ public final class SecurityFacade {
 	 */
 	private List<ISecurityListener> _listeners;
 
+	private ArrayList<IUserManagementListener> _userListeners;
+
 	/**
 	 * Property for the appearence of the CSS login window at system startup.
 	 */
@@ -64,6 +68,7 @@ public final class SecurityFacade {
 	 */
 	private SecurityFacade() {
 		_listeners = new ArrayList<ISecurityListener>();
+		_userListeners = new ArrayList<IUserManagementListener>();
 		_context = new LoginContext("PrimaryLoginContext");
 	}
 
@@ -112,6 +117,9 @@ public final class SecurityFacade {
 	 */
 	public void login(ILoginCallbackHandler handler) {
 		this._context.login(handler);
+		for (IUserManagementListener uml : _userListeners) {
+			uml.handleUserManagementEvent(new UserManagementEvent());
+		}
 	}
 	
 	/**
@@ -145,6 +153,10 @@ public final class SecurityFacade {
 		for (ISecurityListener listener : _listeners) {
 			listener.handleSecurityEvent(event);
 		}
+	}
+
+	public void addUserManagementListener(IUserManagementListener listener) {
+		_userListeners.add(listener);
 	}
 
 }

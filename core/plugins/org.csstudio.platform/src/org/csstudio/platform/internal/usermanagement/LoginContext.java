@@ -1,5 +1,6 @@
 package org.csstudio.platform.internal.usermanagement;
 
+import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.security.ILoginModule;
@@ -29,7 +30,12 @@ public final class LoginContext {
 	public void login(ILoginCallbackHandler handler) {
 		ILoginModule loginModule = getLoginModule();
 		_user = loginModule.login(handler);
-		CentralLogger.getInstance().info(this, "User logged in: " + _user.getUsername());
+		if (_user != null) {
+			CentralLogger.getInstance().info(this, "User logged in: " + _user.getUsername());
+			RightsManagementService.getInstance().readRightsForUser(_user);
+		} else {
+			CentralLogger.getInstance().info(this, "Using anonymously");
+		}
 	}
 	
 	private ILoginModule getLoginModule() {

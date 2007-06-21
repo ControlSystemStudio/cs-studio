@@ -19,10 +19,13 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.internal.rightsmanagement;
+package org.csstudio.platform.security;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import com.sun.org.apache.bcel.internal.classfile.Code;
 
 /**
  * A <code>RightSet</code> consists of an amount of <code>Rights</code> and
@@ -30,7 +33,7 @@ import java.util.List;
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  */
-public class RightSet {
+public class RightSet implements Iterable<Right> {
 
 	/**
 	 * The name of this <code>RightSet</code>.
@@ -104,6 +107,14 @@ public class RightSet {
 	public final boolean hasRight(final Right right) {
 		return _rights.contains(right);
 	}
+	
+	/**
+	 * Returns true if this <code>RightSet</code> is empty <code>false</code>
+	 * otherwise.
+	 */
+	public boolean isEmpty() {
+		return _rights.isEmpty();
+	}
 
 	/**
 	 * @see java.lang.Object#toString()
@@ -117,5 +128,10 @@ public class RightSet {
 		}
 		return text;
 	}
+
+	public Iterator<Right> iterator() {
+		return _rights.iterator();
+	}
+
 
 }

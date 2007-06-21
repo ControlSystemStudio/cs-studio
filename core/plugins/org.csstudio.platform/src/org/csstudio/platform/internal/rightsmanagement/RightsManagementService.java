@@ -22,15 +22,25 @@
 package org.csstudio.platform.internal.rightsmanagement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.security.IAuthorizationProvider;
+import org.csstudio.platform.security.Right;
+import org.csstudio.platform.security.RightSet;
 import org.csstudio.platform.security.User;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * The <code>RightsManagementService</code> provides the central CSS core
  * functionalities for the management of <code>Rights</code>.
  * 
- * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
+ * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende & Joerg Rathlev
  */
 public final class RightsManagementService {
 
@@ -43,6 +53,16 @@ public final class RightsManagementService {
 	 * Receivers of rights management events.
 	 */
 	private List<IRightsManagementListener> _listener = new ArrayList<IRightsManagementListener>();
+	
+	/**
+	 * Stores the rights of the users.
+	 */
+	private Map<User, RightSet> _rights = new HashMap<User, RightSet>();
+	
+	/**
+	 * The authorization provider.
+	 */
+	private IAuthorizationProvider _authProvider = null;
 
 	/**
 	 * Private constructor due to singleton pattern.
@@ -74,8 +94,48 @@ public final class RightsManagementService {
 	 *         the given ID.
 	 */
 	public boolean hasRights(final User user, final String id) {
-		//TODO implement correctly
-		return user != null;
+		RightSet userRights = _rights.get(user);
+		RightSet actionRights = getRightsForAction(id);
+		if (actionRights.isEmpty()) {
+			// If no rights are configured for the action, executing it
+			// is permitted. This ensures that all actions can be executed
+			// if no authorization plug-in is installed.
+			return true;
+		} else {
+			if (userRights == null) {
+				// Rights are configured for the action, but the user doesn't
+				// have any rights. This happens for example when the CSS is
+				// used anonymously. Executing the action is not permitted in
+				// this case.
+				return false;
+			} else {
+				// Rights are configured for the action, and the user is
+				// authenticated. Check if the user has a right that permits
+				// executing the action. The rights configured for the action
+				// are interpreted as independently permitting its execution,
+				// i.e. the user needs at least one of those rights.
+				for (Right r : actionRights) {
+					if (userRights.hasRight(r)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns the rights for the action with the given id.
+	 * @param id the id of the action.
+	 */
+	private RightSet getRightsForAction(String id) {
+		IAuthorizationProvider provider = getAuthorizationProvider();
+		if (provider != null) {
+			return provider.getRights(id);
+		} else {
+			CentralLogger.getInstance().warn(this, "No authorization provider found.");
+			return new RightSet("EMPTY");
+		}
 	}
 
 	/**
@@ -99,6 +159,54 @@ public final class RightsManagementService {
 	 */
 	public void removeListener(final IRightsManagementListener listener) {
 		_listener.remove(listener);
+	}
+
+	/**
+	 * Reads the rights of the given user.
+	 * @param user the user.
+	 */
+	public void readRightsForUser(final User user) {
+		IAuthorizationProvider provider = getAuthorizationProvider();
+		if (provider != null) {
+			RightSet userRights = provider.getRights(user);
+			CentralLogger.getInstance().debug(this, "Rights for user: " + userRights);
+			_rights.put(user, userRights);
+		} else {
+			if (_rights.containsKey(user)) {
+				_rights.remove(user);
+			}
+			CentralLogger.getInstance().warn(this, "No Authorization Provider found.");
+		}
+	}
+
+	/**
+	 * Returns the authorization provider.
+	 */
+	public IAuthorizationProvider getAuthorizationProvider() {
+		if (_authProvider == null) {
+			_authProvider = loadAuthorizationProviderExtension(); 
+		}
+		return _authProvider;
+	}
+
+	/**
+	 * Loads the authorization provider extension.
+	 */
+	private IAuthorizationProvider loadAuthorizationProviderExtension() {
+		IExtension[] extensions = Platform.getExtensionRegistry()
+			.getExtensionPoint("org.csstudio.platform.authorizationProvider")
+			.getExtensions();
+		for (IExtension ext : extensions) {
+			IConfigurationElement[] elements = ext.getConfigurationElements();
+			for (IConfigurationElement element : elements) {
+				try {
+					return (IAuthorizationProvider) element.createExecutableExtension("class");
+				} catch (CoreException e) {
+					CentralLogger.getInstance().error(this, "Could not create extension", e);
+				}
+			}
+		}
+		return null;
 	}
 
 }
