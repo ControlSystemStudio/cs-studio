@@ -60,6 +60,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The ID of the font property.
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the text alignment property.
+	 */
+	public static final String PROP_TEXT_ALIGNMENT = "textAlignment"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this widget model.
@@ -75,6 +80,16 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The default value of the width property.
 	 */
 	private static final int DEFAULT_WIDTH = 80;
+	
+	/**
+	 * The default value of the text alignment property.
+	 */
+	private static final int DEFAULT_TEXT_ALIGNMENT = 0;
+	
+	/**
+	 * The labels for the text alignment property.
+	 */
+	private static final String[] SHOW_LABELS = new String[] {"Center", "Top", "Bottom", "Left", "Right"};
 
 	/**
 	 * Standard constructor.
@@ -106,6 +121,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		addProperty(PROP_FONT, new FontProperty("Font",
 				WidgetPropertyCategory.Display, new FontData(
 						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
+		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
+				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
 	}
 
 	/**

@@ -25,6 +25,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
@@ -119,5 +120,17 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
+		
+		// text alignment
+		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableActionButtonFigure figure = (RefreshableActionButtonFigure) refreshableFigure;
+				figure.setTextAlignment((Integer)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 	}
 }

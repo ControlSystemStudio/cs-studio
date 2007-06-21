@@ -25,6 +25,7 @@ import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.Button;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 
@@ -41,11 +42,23 @@ public final class RefreshableActionButtonFigure extends Button implements
 	 */
 	public static final Font FONT = CustomMediaFactory.getInstance().getFont(
 			"Arial", 8, SWT.NONE); //$NON-NLS-1$
+	
+	/**
+	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
+	 */
+	private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
+	
+	/**
+	 * The Label for the Button.
+	 */
+	private Label _label;
 
 	/**
 	 * Constructor.
 	 */
 	public RefreshableActionButtonFigure() {
+		_label = new Label("");
+		setContents(_label);
 		setFont(FONT);
 	}
 
@@ -56,11 +69,34 @@ public final class RefreshableActionButtonFigure extends Button implements
 		setText("" + Math.random()); //$NON-NLS-1$
 	}
 
+	/**
+	 * Sets the text for the Button.
+	 * @param s
+	 * 			The text for the button
+	 */
 	public void setText(final String s) {
-		setContents(new Label(s));
+		_label.setText(s);
+		//setContents(_label);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setTextAlignment(final int alignment) {
+		if (alignment>=0 && alignment<_alignments.length) {
+			if (_alignments[alignment]==PositionConstants.LEFT || _alignments[alignment]==PositionConstants.RIGHT) {
+				_label.setTextPlacement(PositionConstants.NORTH);
+			} else {
+				_label.setTextPlacement(PositionConstants.EAST);
+			}
+			_label.setTextAlignment(_alignments[alignment]);
+		}
 	}
 
-	public Object getAdapter(Class adapter) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object getAdapter(final Class adapter) {
 		return null;
 	}
 	
