@@ -39,6 +39,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  * The RCP application for the Control System Studio.
  * 
  * @author Alexander Will
+ * @author Kay Kasemir
  * @version $Revision$
  * 
  */
@@ -108,11 +109,20 @@ public class Application implements IPlatformRunnable {
 			returnCode = PlatformUI.createAndRunWorkbench(display,
 					new CssWorkbenchAdvisor());
 			
-			if (returnCode != PlatformUI.RETURN_RESTART) {
-				return EXIT_OK;
-			}
-					
-			return EXIT_RESTART;
+            if (returnCode == PlatformUI.RETURN_RESTART)
+            {   // Something called IWorkbench.restart().
+                // Is this supposed to be a RESTART or RELAUNCH?
+                final Integer exit_code =
+                    Integer.getInteger(RelaunchConstants.PROP_EXIT_CODE);
+                if (IPlatformRunnable.EXIT_RELAUNCH.equals(exit_code))
+                {   // RELAUCH with new command line
+                    return IPlatformRunnable.EXIT_RELAUNCH;
+                }
+                // RESTART without changes
+                return IPlatformRunnable.EXIT_RESTART;
+            }
+            // Plain exit from IWorkbench.close()
+            return IPlatformRunnable.EXIT_OK;
 		} finally {
 			if (display != null) {
 				display.dispose();
