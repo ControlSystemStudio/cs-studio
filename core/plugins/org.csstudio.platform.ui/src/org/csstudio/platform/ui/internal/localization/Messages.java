@@ -31,6 +31,10 @@ import org.eclipse.osgi.util.NLS;
  * Access to the localization message ressources within this
  * plugin.
  * 
+ * TODO replace with the newer <code> NLS.initializeMessages(...</code>
+ *      method so that one can access messages directly as
+ *      member variables.
+ *      
  * @author Alexander Will
  */
 public final class Messages extends NLS {
