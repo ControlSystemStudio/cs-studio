@@ -22,7 +22,6 @@
 package org.csstudio.platform.ui.workbench;
 
 import org.csstudio.platform.ui.internal.localization.Messages;
-import org.csstudio.platform.ui.internal.workspace.OpenWorkspaceAction;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -100,9 +99,9 @@ public final class WorkbenchActionBuilder {
 	private IWorkbenchAction _newWizardToolbarAction;
 
 	/**
-	 * "Switch workspace" action.
+	 * Action to pull up the import wizard.
 	 */
-	private IWorkbenchAction _openWorkspaceAction;
+	private IWorkbenchAction _importResourcesAction;
 
 	/**
 	 * Constructs a new action builder which contributes actions to the given
@@ -167,7 +166,8 @@ public final class WorkbenchActionBuilder {
 		IToolBarManager fileToolBar = new ToolBarManager();
 		fileToolBar.add(_newWizardToolbarAction);
 		fileToolBar.add(_saveAction);
-		fileToolBar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
+		fileToolBar.add(new CoolItemGroupMarker(
+				IWorkbenchActionConstants.FILE_END));
 		fileToolBar.add(new Separator());
 
 		// Add to the cool bar manager
@@ -239,6 +239,8 @@ public final class WorkbenchActionBuilder {
 		menu.add(new Separator());
 		menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
 		menu.add(new Separator());
+		menu.add(_importResourcesAction);
+		menu.add(new Separator());
 		menu.add(_exitAction);
 		return menu;
 	}
@@ -300,8 +302,8 @@ public final class WorkbenchActionBuilder {
 			_newWizardToolbarAction.dispose();
 		}
 
-		if (_openWorkspaceAction != null) {
-			_openWorkspaceAction.dispose();
+		if (_importResourcesAction != null) {
+			_importResourcesAction.dispose();
 		}
 	}
 
@@ -345,21 +347,8 @@ public final class WorkbenchActionBuilder {
 			registerGlobalAction(_introAction);
 		}
 
-		// switch workspace action
-		ActionFactory f = new ActionFactory("openWorkspace") { //$NON-NLS-1$
-			@Override
-			public IWorkbenchAction create(final IWorkbenchWindow window) {
-				if (window == null) {
-					throw new IllegalArgumentException();
-				}
-				IWorkbenchAction action = new OpenWorkspaceAction(window);
-				action.setId(getId());
-				return action;
-			}
-		};
-
-		_openWorkspaceAction = f.create(_window);
-		registerGlobalAction(_openWorkspaceAction);
+		_importResourcesAction = ActionFactory.IMPORT.create(_window);
+		registerGlobalAction(_importResourcesAction);
 	}
 
 	/**

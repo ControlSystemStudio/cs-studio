@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * A dialog that prompts for a directory to use as a workspace.
@@ -57,6 +58,7 @@ import org.eclipse.swt.widgets.Shell;
  * </p>
  * 
  * @author Alexander Will
+ * @author Kay Kasemir
  * @version $Revision$
  */
 public final class ChooseWorkspaceDialog extends TitleAreaDialog {
@@ -250,7 +252,19 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
 		panel.setLayoutData(new GridData(GridData.FILL_BOTH));
 		panel.setFont(parent.getFont());
 
-		Label label = new Label(panel, SWT.NONE);
+        
+        Label label = new Label(panel, SWT.NONE);
+        label.setText(Messages
+                        .getString("ChooseWorkspaceDialog.CURRENT_WORKSPACE_LABEL")); //$NON-NLS-1$
+        Text text = new Text(panel, SWT.READ_ONLY);
+        text.setText(Platform.getInstanceLocation().getURL().getPath());
+        final GridData gd = new GridData();
+        gd.horizontalSpan = 2;
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        text.setLayoutData(gd);
+        
+        label = new Label(panel, SWT.NONE);
 		label.setText(Messages
 				.getString("ChooseWorkspaceDialog.WORKSPACE_LABEL")); //$NON-NLS-1$
 
