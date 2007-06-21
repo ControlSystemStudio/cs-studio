@@ -72,7 +72,7 @@
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.ActionButtonModelFactory"
             description="Action Button"
-            icon="icons/polygon.gif"
+            icon="icons/actionbutton.gif"
             name="Action Button"
             typeId="element.actionbutton"/>            
    </extension>
