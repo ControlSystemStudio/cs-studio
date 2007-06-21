@@ -101,8 +101,8 @@
                menubarPath="file/fileEnd"
                style="push"/>
          <action
-               class="org.csstudio.platform.ui.internal.workspace.OpenWorkspaceAction"
-               id="org.csstudio.platform.ui.internal.workspace.OpenWorkspaceAction"
+               class="org.csstudio.platform.ui.workspace.OpenWorkspaceAction"
+               id="org.csstudio.platform.ui.workspace.OpenWorkspaceAction"
                label="%menuSwitchWorkspace"
                menubarPath="file/fileEnd"
                style="push"/>

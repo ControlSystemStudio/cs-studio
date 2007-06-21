@@ -19,20 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.internal.workspace;
+package org.csstudio.platform.ui.workspace;
 
 import org.csstudio.platform.ui.internal.localization.Messages;
+import org.csstudio.platform.ui.internal.workspace.ChooseWorkspaceData;
+import org.csstudio.platform.ui.internal.workspace.ChooseWorkspaceDialog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 /** Implements the open workspace action. Opens a dialog prompting for a
  *  directory and then restarts the IDE on that workspace.
+ *  <p>
+ *  Implements <code>IWorkbenchWindowActionDelegate</code> for hooking
+ *  into file menu via plugin.xml, but also offers a method
+ *  <code>runWorkbenchQuery</code> than can be invoked directly for example
+ *  by application startup code.
  *  <p>
  *  <b>Code is based upon
  *  <code>org.eclipse.ui.internal.ide.actions.OpenWorkspaceAction</code> in
@@ -90,6 +98,49 @@ public final class OpenWorkspaceAction extends Action implements
      * The workbench window.
      */
     private IWorkbenchWindow    _window;
+    
+    
+    /** Open dialog for entry of a new workspace.
+     *  <p>
+     *  In case a workbench restart is required,
+     *  the appropriate system properties for the relaunch are
+     *  prepared.
+     *  
+     *  @param shell parent shell or <code>null</code>
+     *  @param suppressAskAgain Show the 'use as default, don't ask again?' option?
+     *  
+     *  @return <code>false</code> if no change is needed because user canceled
+     *          or selected the current workspace. <code>true</code> if
+     *          a workbench restart is required.
+     */
+    public static boolean performWorkbenchQuery(final Shell shell,
+                                                final boolean suppressAskAgain)
+    {
+        // The 'current' workspace seems to end in '/',
+        // while the user input might or might not.
+        // Equalize by chopping trailing '/' off.
+        String new_ws = promptForWorkspace(shell, suppressAskAgain);
+        if (new_ws.endsWith("/")) //$NON-NLS-1$
+            new_ws = new_ws.substring(0, new_ws.length() -1);
+        // Aborted?
+        if (new_ws == null)
+            return false;
+        // No change?
+        String current_ws = Platform.getInstanceLocation().getURL().getPath();
+        if (current_ws.endsWith("/")) //$NON-NLS-1$
+            current_ws = current_ws.substring(0, current_ws.length() -1);
+        
+        if (new_ws.equals(current_ws))
+            return false;
+
+        String commandLine = buildCommandLine(shell, new_ws);
+        if (commandLine == null)
+            return false;
+
+        System.setProperty(PROP_EXIT_CODE, Integer.toString(24));
+        System.setProperty(PROP_EXIT_DATA, commandLine);
+        return true;
+    }
 
     /** Remember the window */
     public void init(IWorkbenchWindow window)
@@ -113,17 +164,9 @@ public final class OpenWorkspaceAction extends Action implements
      */
     public void run(IAction action)
     {
-        String path = promptForWorkspace();
-        if (path == null)
-            return;
-
-        String commandLine = buildCommandLine(path);
-        if (commandLine == null)
-            return;
-
-        System.setProperty(PROP_EXIT_CODE, Integer.toString(24));
-        System.setProperty(PROP_EXIT_DATA, commandLine);
-        _window.getWorkbench().restart();
+        final Shell shell = _window.getShell();
+        if (performWorkbenchQuery(shell, true))
+            _window.getWorkbench().restart();
     }
 
     /**
@@ -131,14 +174,14 @@ public final class OpenWorkspaceAction extends Action implements
      * 
      * @return a string naming the new workspace and null if cancel was selected
      */
-    private String promptForWorkspace()
+    private static String promptForWorkspace(final Shell shell,
+                    boolean suppressAskAgain)
     {
         // get the current workspace as the default
         ChooseWorkspaceData data = new ChooseWorkspaceData(Platform
                         .getInstanceLocation().getURL());
-        ChooseWorkspaceDialog dialog = new ChooseWorkspaceDialog(_window
-                        .getShell(), data, true, false);
-        dialog.prompt(true);
+        ChooseWorkspaceDialog dialog = new ChooseWorkspaceDialog(shell, data, suppressAskAgain, false);
+        dialog.prompt(suppressAskAgain);
 
         // return null if the user changed their mind
         String selection = data.getSelection();
@@ -159,21 +202,15 @@ public final class OpenWorkspaceAction extends Action implements
      *            the directory to use as the new workspace
      * @return a string of command line options or null on error
      */
-    private String buildCommandLine(final String workspace)
+    private static String buildCommandLine(final Shell shell, final String workspace)
     {
         String property = System.getProperty(PROP_VM);
         if (property == null)
         {
-            MessageDialog
-                            .openError(
-                                            _window.getShell(),
-                                            Messages
-                                                            .getString("OpenWorkspaceAction.PROBLEM_TITLE"), //$NON-NLS-1$
-                                            NLS
-                                                            .bind(
-                                                                            Messages
-                                                                                            .getString("OpenWorkspaceAction.PROBLEM_MESSAGE"), //$NON-NLS-1$
-                                                                            PROP_VM));
+            MessageDialog.openError(shell,
+                    Messages.getString("OpenWorkspaceAction.PROBLEM_TITLE"), //$NON-NLS-1$
+                    NLS.bind(Messages.getString("OpenWorkspaceAction.PROBLEM_MESSAGE"), //$NON-NLS-1$
+                             PROP_VM));
             return null;
         }
 
