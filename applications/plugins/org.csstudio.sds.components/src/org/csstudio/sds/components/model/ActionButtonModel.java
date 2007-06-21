@@ -26,7 +26,10 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
+import org.csstudio.sds.model.properties.PathProperty;
 import org.csstudio.sds.model.properties.StringProperty;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -95,8 +98,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	protected void configureProperties() {
 		addProperty(PROP_LABEL, new StringProperty(Messages.LabelElement_LABEL,
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
-		addProperty(PROP_RESOURCE, new StringProperty("Resource",
-				WidgetPropertyCategory.Behaviour, ""));
+		addProperty(PROP_RESOURCE, new PathProperty("Resource",
+				WidgetPropertyCategory.Behaviour, new Path("")));
 		addProperty(PROP_ACTION, new OptionProperty("Action",
 				WidgetPropertyCategory.Behaviour, new String[] {
 						"Open Display As Shell", "Open Display As View" }, 0));
@@ -144,8 +147,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * 
 	 * @return The target resource.
 	 */
-	public String getResource() {
-		return (String) getProperty(PROP_RESOURCE).getPropertyValue();
+	public IPath getResource() {
+		return (IPath) getProperty(PROP_RESOURCE).getPropertyValue();
 	}
 
 	/**

@@ -30,7 +30,6 @@ import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.sds.util.CustomMediaFactory;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.IFigure;
@@ -58,6 +57,11 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		return button;
 	}
 
+	/**
+	 * Returns the Figure of this Editpart.
+	 * @return RefreshableActionButtonFigure
+	 * 			The RefreshableActionButtonFigure of this EditPart
+	 */
 	protected RefreshableActionButtonFigure getCastedFigure() {
 		return (RefreshableActionButtonFigure) getFigure();
 	}
@@ -70,16 +74,16 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		//
 		RefreshableActionButtonFigure figure = getCastedFigure();
 		figure.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
+			public void actionPerformed(final ActionEvent event) {
 				CentralLogger.getInstance().info(this, "KLICK");
 				ActionButtonModel model = (ActionButtonModel) getCastedModel();
 				
 				switch(model.getAction()) {
 				case 0:
-					RunModeService.getInstance().openDisplayShellInRunMode(new Path( model.getResource()));
+					RunModeService.getInstance().openDisplayShellInRunMode(model.getResource());
 					break;
 				case 1:
-					RunModeService.getInstance().openDisplayViewInRunMode(new Path( model.getResource()));
+					RunModeService.getInstance().openDisplayViewInRunMode(model.getResource());
 					break;
 				default:
 					// do nothing
