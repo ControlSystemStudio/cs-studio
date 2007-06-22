@@ -118,25 +118,29 @@ public final class OpenWorkspaceAction extends Action implements
     {
         // The 'current' workspace seems to end in '/',
         // while the user input might or might not.
-        // Equalize by chopping trailing '/' off.
+        // Equalize by chopping trailing '/'.
         String new_ws = promptForWorkspace(shell, suppressAskAgain);
-        if (new_ws.endsWith("/")) //$NON-NLS-1$
-            new_ws = new_ws.substring(0, new_ws.length() -1);
         // Aborted?
         if (new_ws == null)
             return false;
-        // No change?
+        new_ws = new_ws.trim();
+        if (new_ws.endsWith("/")) //$NON-NLS-1$
+            new_ws = new_ws.substring(0, new_ws.length() -1);
+        // Empty?
+        if (new_ws.length() < 1)
+            return false;
+        // Equalize by chopping trailing '/'.
         String current_ws = Platform.getInstanceLocation().getURL().getPath();
         if (current_ws.endsWith("/")) //$NON-NLS-1$
             current_ws = current_ws.substring(0, current_ws.length() -1);
-        
+        // No change?
         if (new_ws.equals(current_ws))
             return false;
-
-        String commandLine = buildCommandLine(shell, new_ws);
+        // Create command line with new "-data ..." info
+        final String commandLine = buildCommandLine(shell, new_ws);
         if (commandLine == null)
             return false;
-
+        // Prepare for RELAUNCH
         System.setProperty(PROP_EXIT_CODE, Integer.toString(24));
         System.setProperty(PROP_EXIT_DATA, commandLine);
         return true;
@@ -184,7 +188,7 @@ public final class OpenWorkspaceAction extends Action implements
         dialog.prompt(suppressAskAgain);
 
         // return null if the user changed their mind
-        String selection = data.getSelection();
+        final String selection = data.getSelection();
         if (selection == null)
             return null;
 
