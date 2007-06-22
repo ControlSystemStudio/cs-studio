@@ -35,8 +35,8 @@ public final class CreateProjectAction implements IViewActionDelegate {
 	 */
 	public void run(final IAction action) {
 		InputDialog inputDialog = new InputDialog(_view.getSite().getShell(),
-				Messages.getString("CreateProjectAction.DIALOG_TITLE"), //$NON-NLS-1$
-				Messages.getString("CreateProjectAction.DIALOG_MESSAGE"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+				Messages.CreateProjectAction_DIALOG_TITLE,
+				Messages.CreateProjectAction_DIALOG_MESSAGE, "", null); //$NON-NLS-1$
 
 		int ret = inputDialog.open();
 
@@ -46,8 +46,8 @@ public final class CreateProjectAction implements IViewActionDelegate {
 			if (projectName != null) {
 				if (ResourceUtil.getInstance().createProject(projectName)==ResourceUtil.PROJECTEXISTS) {
 					MessageDialog.openInformation(_view.getSite().getShell(),
-							Messages.getString("CreateProjectAction.ERROR_TITLE"), //$NON-NLS-1$
-							Messages.getString("CreateProjectAction.ERROR_MESSAGE")); //$NON-NLS-1$
+							Messages.CreateProjectAction_ERROR_TITLE,
+							Messages.CreateProjectAction_ERROR_MESSAGE);
 				}
 			}
 		}
@@ -59,7 +59,9 @@ public final class CreateProjectAction implements IViewActionDelegate {
 	 * {@inheritDoc}
 	 */
 	public void selectionChanged(final IAction action,
-			final ISelection selection) {
+			final ISelection selection)
+    {
+        // NOP
 	}
 
 }

@@ -44,8 +44,7 @@ public class AuthenticationPreferencePage extends FieldEditorPreferencePage
 	 */
 	public AuthenticationPreferencePage() {
 		super(SWT.NULL);
-		setMessage(Messages
-				.getString("AuthenticationPreferencePage.PAGE_TITLE")); //$NON-NLS-1$
+		setMessage(Messages.AuthenticationPreferencePage_PAGE_TITLE);
 	}
 
 	/**
@@ -55,8 +54,8 @@ public class AuthenticationPreferencePage extends FieldEditorPreferencePage
 	protected final void createFieldEditors() {
 		addField(new BooleanFieldEditor(
 				SecurityFacade.PROP_AUTH_LOGIN,
-				Messages
-						.getString("AuthenticationPreferencePage.LOGIN_ON_STARTUP"), getFieldEditorParent())); //$NON-NLS-1$
+				Messages.AuthenticationPreferencePage_LOGIN_ON_STARTUP,
+                getFieldEditorParent()));
 	}
 
 	/**
@@ -70,6 +69,8 @@ public class AuthenticationPreferencePage extends FieldEditorPreferencePage
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(final IWorkbench workbench) {
+	public void init(final IWorkbench workbench)
+    {
+        // NOP
 	}
 }

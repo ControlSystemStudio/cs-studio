@@ -212,8 +212,8 @@ public final class OpenWorkspaceAction extends Action implements
         if (property == null)
         {
             MessageDialog.openError(shell,
-                    Messages.getString("OpenWorkspaceAction.PROBLEM_TITLE"), //$NON-NLS-1$
-                    NLS.bind(Messages.getString("OpenWorkspaceAction.PROBLEM_MESSAGE"), //$NON-NLS-1$
+                    Messages.OpenWorkspaceAction_PROBLEM_TITLE,
+                    NLS.bind(Messages.OpenWorkspaceAction_PROBLEM_MESSAGE,
                              PROP_VM));
             return null;
         }

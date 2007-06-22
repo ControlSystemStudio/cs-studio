@@ -39,38 +39,39 @@ public class JmsAppenderPreferencePage extends AbstractAppenderPreferencePage {
 	 */
 	public JmsAppenderPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
-		setMessage(Messages.getString("JmsAppenderPreferencePage.PAGE_TITLE")); //$NON-NLS-1$
+		setMessage(Messages.JmsAppenderPreferencePage_PAGE_TITLE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected final void createFieldEditors() {
+	@Override
+    protected final void createFieldEditors() {
 		addField(new RadioGroupFieldEditor(
 				CentralLogger.PROP_LOG4J_JMS_THRESHOLD, Messages
-						.getString("JmsAppenderPreferencePage.LOG_LEVEL"), 1, //$NON-NLS-1$
+						.JmsAppenderPreferencePage_LOG_LEVEL, 1,
 				new String[][] { { "DEBUG", "DEBUG" }, { "INFO", "INFO" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 						{ "WARN", "WARN" }, { "ERROR", "ERROR" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 						{ "FATAL", "FATAL" } }, getFieldEditorParent(), true)); //$NON-NLS-1$ //$NON-NLS-2$
 
 		addField(new StringFieldEditor(
 				CentralLogger.PROP_LOG4J_JMS_PATTERN,
-				Messages.getString("JmsAppenderPreferencePage.PATTERN"), getFieldEditorParent())); //$NON-NLS-1$
+				Messages.JmsAppenderPreferencePage_PATTERN, getFieldEditorParent()));
 
 		addField(new StringFieldEditor(CentralLogger.PROP_LOG4J_JMS_URL,
-				Messages.getString("JmsAppenderPreferencePage.URL"), //$NON-NLS-1$
+				Messages.JmsAppenderPreferencePage_URL,
 				getFieldEditorParent()));
 
 		addField(new StringFieldEditor(
 				CentralLogger.PROP_LOG4J_JMS_TOPIC,
-				Messages.getString("JmsAppenderPreferencePage.TOPIC"), getFieldEditorParent())); //$NON-NLS-1$
+				Messages.JmsAppenderPreferencePage_TOPIC, getFieldEditorParent()));
 
 		addField(new StringFieldEditor(
 				CentralLogger.PROP_LOG4J_JMS_USER,
-				Messages.getString("JmsAppenderPreferencePage.USER"), getFieldEditorParent())); //$NON-NLS-1$
+				Messages.JmsAppenderPreferencePage_USER, getFieldEditorParent()));
 
 		addField(new StringFieldEditor(
 				CentralLogger.PROP_LOG4J_JMS_PASSWORD,
-				Messages.getString("JmsAppenderPreferencePage.PASSWORD"), getFieldEditorParent())); //$NON-NLS-1$
+				Messages.JmsAppenderPreferencePage_PASSWORD, getFieldEditorParent()));
 	}
 }

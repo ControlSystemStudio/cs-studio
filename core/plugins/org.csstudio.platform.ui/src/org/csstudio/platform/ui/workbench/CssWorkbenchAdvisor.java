@@ -93,8 +93,7 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 		_workbenchWindowconfigurer = configurer;
 		_workbenchWindowconfigurer.setInitialSize(new Point(MAX_WINDOW_WIDTH,
 				MAX_WINDOW_HEIGHT));
-		_workbenchWindowconfigurer.setTitle(Messages
-				.getString("CssWorkbenchAdvisor.WINDOW_TITLE")); //$NON-NLS-1$
+		_workbenchWindowconfigurer.setTitle(Messages.CssWorkbenchAdvisor_WINDOW_TITLE);
 		_workbenchWindowconfigurer.setShowPerspectiveBar(true);
 		_workbenchWindowconfigurer.setShowMenuBar(true);
 		_workbenchWindowconfigurer.setShowCoolBar(true);

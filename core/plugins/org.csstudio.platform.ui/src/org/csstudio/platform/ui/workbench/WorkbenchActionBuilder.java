@@ -22,7 +22,6 @@
 package org.csstudio.platform.ui.workbench;
 
 import org.csstudio.platform.ui.internal.localization.Messages;
-import org.csstudio.platform.ui.internal.workspace.OpenWorkspaceAction;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -98,11 +97,6 @@ public final class WorkbenchActionBuilder {
 	 * A special "new" action for the tool bar.
 	 */
 	private IWorkbenchAction _newWizardToolbarAction;
-
-	/**
-	 * "Switch workspace" action.
-	 */
-	private IWorkbenchAction _openWorkspaceAction;
 
 	/**
 	 * Action to pull up the import wizard.
@@ -187,7 +181,7 @@ public final class WorkbenchActionBuilder {
 	 */
 	private MenuManager createWindowMenu() {
 		MenuManager menu = new MenuManager(Messages
-				.getString("WorkbenchActionBuilder.MENU_WINDOW"), //$NON-NLS-1$
+				.WorkbenchActionBuilder_MENU_WINDOW,
 				IWorkbenchActionConstants.M_WINDOW);
 		IWorkbenchAction action = ActionFactory.OPEN_NEW_WINDOW
 				.create(getWindow());
@@ -208,14 +202,14 @@ public final class WorkbenchActionBuilder {
 	 */
 	private void addPerspectiveActions(final MenuManager menu) {
 		MenuManager changePerspMenuMgr = new MenuManager(Messages
-				.getString("WorkbenchActionBuilder.OPEN_PERSPECTIVE"), //$NON-NLS-1$
+				.WorkbenchActionBuilder_OPEN_PERSPECTIVE,
 				"openPerspective"); //$NON-NLS-1$
 		IContributionItem changePerspMenuItem = ContributionItemFactory.PERSPECTIVES_SHORTLIST
 				.create(getWindow());
 		changePerspMenuMgr.add(changePerspMenuItem);
 		menu.add(changePerspMenuMgr);
 		MenuManager showViewMenuMgr = new MenuManager(Messages
-				.getString("WorkbenchActionBuilder.SHOW_VIEW"), //$NON-NLS-1$
+				.WorkbenchActionBuilder_SHOW_VIEW,
 				"showView"); //$NON-NLS-1$
 		IContributionItem showViewMenu = ContributionItemFactory.VIEWS_SHORTLIST
 				.create(getWindow());
@@ -231,10 +225,10 @@ public final class WorkbenchActionBuilder {
 	 */
 	private MenuManager createFileMenu() {
 		MenuManager menu = new MenuManager(Messages
-				.getString("WorkbenchActionBuilder.MENU_FILE"), //$NON-NLS-1$
+				.WorkbenchActionBuilder_MENU_FILE,
 				IWorkbenchActionConstants.M_FILE);
 		MenuManager newMenu = new MenuManager(Messages
-				.getString("WorkbenchActionBuilder.MENU_FILE_NEW"), //$NON-NLS-1$
+				.WorkbenchActionBuilder_MENU_FILE_NEW,
 				"file/new"); //$NON-NLS-1$
 		newMenu.add(_newWizardMenuAction);
 		menu.add(newMenu);
@@ -258,7 +252,7 @@ public final class WorkbenchActionBuilder {
 	 */
 	private MenuManager createHelpMenu() {
 		MenuManager menu = new MenuManager(Messages
-				.getString("WorkbenchActionBuilder.MENU_HELP"), //$NON-NLS-1$
+				.WorkbenchActionBuilder_MENU_HELP,
 				IWorkbenchActionConstants.M_HELP);
 
 		// See if a welcome or intro page is specified
@@ -308,10 +302,6 @@ public final class WorkbenchActionBuilder {
 			_newWizardToolbarAction.dispose();
 		}
 
-		if (_openWorkspaceAction != null) {
-			_openWorkspaceAction.dispose();
-		}
-
 		if (_importResourcesAction != null) {
 			_importResourcesAction.dispose();
 		}
@@ -356,22 +346,6 @@ public final class WorkbenchActionBuilder {
 			_introAction = ActionFactory.INTRO.create(_window);
 			registerGlobalAction(_introAction);
 		}
-
-		// switch workspace action
-		ActionFactory f = new ActionFactory("openWorkspace") { //$NON-NLS-1$
-			@Override
-			public IWorkbenchAction create(final IWorkbenchWindow window) {
-				if (window == null) {
-					throw new IllegalArgumentException();
-				}
-				IWorkbenchAction action = new OpenWorkspaceAction(window);
-				action.setId(getId());
-				return action;
-			}
-		};
-
-		_openWorkspaceAction = f.create(_window);
-		registerGlobalAction(_openWorkspaceAction);
 
 		_importResourcesAction = ActionFactory.IMPORT.create(_window);
 		registerGlobalAction(_importResourcesAction);

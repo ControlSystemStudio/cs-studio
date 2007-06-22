@@ -24,7 +24,7 @@ public class CSSPlatformPreferencePage extends PreferencePage implements
 	@Override
 	protected final Control createContents(final Composite parent) {
 		Label label = new Label(parent, SWT.NULL);
-		label.setText(Messages.getString("CSSPlatformPreferencePage.MESSAGE")); //$NON-NLS-1$
+		label.setText(Messages.CSSPlatformPreferencePage_MESSAGE);
 		return label;
 	}
 

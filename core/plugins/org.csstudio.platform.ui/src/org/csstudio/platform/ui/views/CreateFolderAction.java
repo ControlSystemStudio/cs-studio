@@ -47,8 +47,8 @@ public final class CreateFolderAction implements IViewActionDelegate {
 			IContainer parentContainer = (IContainer) _selectedResource;
 
 			InputDialog inputDialog = new InputDialog(_view.getSite()
-					.getShell(), Messages.getString("CreateFolderAction.DIALOG_TITLE"), //$NON-NLS-1$
-					Messages.getString("CreateFolderAction.DIALOG_MESSAGE"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+					.getShell(), Messages.CreateFolderAction_DIALOG_TITLE,
+					Messages.CreateFolderAction_DIALOG_MESSAGE, "", null); //$NON-NLS-1$
 
 			int ret = inputDialog.open();
 
@@ -57,8 +57,9 @@ public final class CreateFolderAction implements IViewActionDelegate {
 
 				if (folderName != null) {
 					if (ResourceUtil.getInstance().createFolder(parentContainer, folderName)==ResourceUtil.FOLDEREXISTS) {
-						MessageDialog.openInformation(_view.getSite().getShell(), Messages.getString("CreateFolderAction.ERROR_TITLE"), //$NON-NLS-1$
-								Messages.getString("CreateFolderAction.ERROR_MESSAGE")); //$NON-NLS-1$
+						MessageDialog.openInformation(_view.getSite().getShell(),
+                                        Messages.CreateFolderAction_ERROR_TITLE,
+								Messages.CreateFolderAction_ERROR_MESSAGE);
 					}
 				}
 			}

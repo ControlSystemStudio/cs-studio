@@ -21,21 +21,14 @@
  */
 package org.csstudio.platform.ui.internal.localization;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.osgi.util.NLS;
 
 /**
  * Access to the localization message ressources within this
  * plugin.
- * 
- * TODO replace with the newer <code> NLS.initializeMessages(...</code>
- *      method so that one can access messages directly as
- *      member variables.
  *      
  * @author Alexander Will
+ * @author Kay Kasemir
  */
 public final class Messages extends NLS {
 	/**
@@ -43,40 +36,133 @@ public final class Messages extends NLS {
 	 */
 	private static final String BUNDLE_NAME = "org.csstudio.platform.ui.internal.localization.messages"; //$NON-NLS-1$
 
-	/**
-	 * The localzation messages ressource bundle.
-	 */
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-			.getBundle(BUNDLE_NAME);
+    public static String WorkbenchActionBuilder_SHOW_VIEW;
+    public static String WorkbenchActionBuilder_MENU_FILE;
+    public static String WorkbenchActionBuilder_MENU_FILE_NEW;
+    public static String WorkbenchActionBuilder_EXIT;
+    public static String WorkbenchActionBuilder_MENU_HELP;
+    public static String WorkbenchActionBuilder_OPEN_PERSPECTIVE;
+    public static String WorkbenchActionBuilder_MENU_WINDOW;
 
+    public static String LoginDialog_WINDOW_TITLE;
+    public static String LoginDialog_DIALOG_TITLE;
+    public static String LoginDialog_DIALOG_DESCRIPTION;
+    public static String LoginDialog_USER_NAME;
+    public static String LoginDialog_PASSWORD;
+
+    public static String Console_CONSOLE_TITLE;
+
+    public static String JmsAppenderPreferencePage_PAGE_TITLE;
+    public static String JmsAppenderPreferencePage_LOG_LEVEL;
+    public static String JmsAppenderPreferencePage_PATTERN;
+    public static String JmsAppenderPreferencePage_URL;
+    public static String JmsAppenderPreferencePage_TOPIC;
+    public static String JmsAppenderPreferencePage_USER;
+    public static String JmsAppenderPreferencePage_PASSWORD;
+
+    public static String FileAppenderPreferencePage_PAGE_TITLE;
+    public static String FileAppenderPreferencePage_LOG_LEVEL;
+    public static String FileAppenderPreferencePage_PATTERN;
+    public static String FileAppenderPreferencePage_LOG_FILE;
+    public static String FileAppenderPreferencePage_BACKUP_INDEX;
+
+    public static String ConsoleAppenderPreferencePage_PAGE_TITLE;
+    public static String ConsoleAppenderPreferencePage_LOG_LEVEL;
+    public static String ConsoleAppenderPreferencePage_PATTERN;
+
+    public static String LoggingPreferencePage_PAGE_TITLE;
+    public static String LoggingPreferencePage_CONSOLE_APPENDER;
+    public static String LoggingPreferencePage_FILE_APPENDER;
+    public static String LoggingPreferencePage_JMS_APPENDER;
+
+    public static String AuthenticationPreferencePage_PAGE_TITLE;
+    public static String AuthenticationPreferencePage_LOGIN_ON_STARTUP;
+
+    public static String CssWorkbenchAdvisor_WINDOW_TITLE;
+
+    public static String LocalePreferencePage_PAGE_TITLE;
+    public static String LocalePreferencePage_LOCALE;
+    public static String LocalePreferencePage_CHANGE_MESSAGE;
+    public static String LocalePreferencePage_DEFAULT;
+    public static String LocalePreferencePage_DE;
+    public static String LocalePreferencePage_EN_US;
+    public static String LocalePreferencePage_EN_GB;
+
+    public static String CSSPlatformPreferencePage_MESSAGE;
+    public static String CSSApplicationsPreferencePage_MESSAGE;
+
+    public static String TimeStampWidget_Time_Now;
+    public static String TimeStampWidget_Time_Now_TT;
+    public static String TimeStampWidget_Time_SelectDate;
+    public static String TimeStampWidget_Time_Time;
+    public static String TimeStampWidget_Time_SelectHour;
+    public static String TimeStampWidget_Time_Sep;
+    public static String TimeStampWidget_Time_SelectMinute;
+    public static String TimeStampWidget_Time_SelectSeconds;
+
+    public static String SaveAsDialog_TITLE;
+    public static String SaveAsDialog_MESSAGE;
+    public static String SaveAsDialog_FILE_LABEL;
+    public static String SaveAsDialog_FILE;
+    public static String SaveAsDialog_OVERWRITE_QUESTION;
+    public static String SaveAsDialog_QUESTION;
+
+    public static String ContainerSelectionGroup_TITLE;
+
+    public static String ResourceAndContainerGroup_PROBLEM_EMPTY;
+    public static String ResourceAndContainerGroup_PROBLEM_DOES_NOT_EXIST;
+    public static String ResourceAndContainerGroup_PROBLEM_FILE_ALREADY_EXISTS_AT_LOCATION;
+    public static String ResourceAndContainerGroup_PROBLEM_FILE_ALREADY_EXISTS;
+    public static String ResourceAndContainerGroup_PROBLEM_EMPTY_NAME;
+    public static String ResourceAndContainerGroup_PROBLEM_INVALID_FILE_NAME;
+
+    public static String DeleteResourceAction_QUESTION_TITLE;
+    public static String DeleteResourceAction_QUESTION_MESSAGE;
+
+    public static String WorkspaceExplorerView_CANNOT_OPEN_EDITOR;
+    public static String WorkspaceExplorerView_ERROR_MESSAGE;
+    public static String WorkspaceExplorerView_ERROR_TITLE;
+
+    public static String WizardNewFileCreationPage_LABEL_FILE;
+    public static String WizardNewFileCreationPage_ERROR_TITLE;
+    public static String WizardNewFileCreationPage_LABEL_FILE_NAME;
+
+    public static String CreateFolderAction_ERROR_TITLE;
+    public static String CreateFolderAction_ERROR_MESSAGE;
+    public static String CreateFolderAction_DIALOG_TITLE;
+    public static String CreateFolderAction_DIALOG_MESSAGE;
+
+    public static String CreateProjectAction_ERROR_TITLE;
+    public static String CreateProjectAction_DIALOG_MESSAGE;
+    public static String CreateProjectAction_ERROR_MESSAGE;
+    public static String CreateProjectAction_DIALOG_TITLE;
+
+    public static String ChooseWorkspaceDialog_PRODUCT_NAME;
+    public static String ChooseWorkspaceDialog_TITLE;
+    public static String ChooseWorkspaceDialog_PROBLEM_MULTIPLE_PROJECTS;
+    public static String ChooseWorkspaceDialog_WINDOW_TITLE;
+    public static String ChooseWorkspaceDialog_CURRENT_WORKSPACE_LABEL;
+    public static String ChooseWorkspaceDialog_WORKSPACE_LABEL;
+    public static String ChooseWorkspaceDialog_BROWSE_LABEL;
+    public static String ChooseWorkspaceDialog_BROWSER_TITLE;
+    public static String ChooseWorkspaceDialog_BROWSER_MESSAGE;
+    public static String ChooseWorkspaceDialog_USE_AS_DEFAULT;
+
+    public static String OpenWorkspaceAction_TITLE;
+    public static String OpenWorkspaceAction_MESSAGE;
+    public static String OpenWorkspaceAction_PROBLEM_TITLE;
+    public static String OpenWorkspaceAction_PROBLEM_MESSAGE;
+
+    public static String WorkspacePreferencePage_REFRESH_ON_STARTUP;
+    public static String WorkspacePreferencePage_PROMPT_FOR_WORKSPACE;
+    public static String WorkspacePreferencePage_CONFIRM_EXIT;
+    
     static
     {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    
-	/**
-	 * This constructor is private since this class only provides static
-	 * methods.
-	 */
-	private Messages() {
-	}
-
-	/**
-	 * Return the localization message string for the given key.
-	 * 
-	 * @param key
-	 *            Message key.
-	 * @return The localization message string for the given key.
-	 */
-	public static String getString(final String key) {
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
-			CentralLogger.getInstance().error(Messages.class, e);
-			return '!' + key + '!';
-		}
-	}
-
+    private Messages()
+    { /* prevent instantiation */ }
 }

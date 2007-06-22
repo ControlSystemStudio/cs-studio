@@ -136,7 +136,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 				topLevel,
 				this,
 				getNewFileLabel(),
-				Messages.getString("WizardNewFileCreationPage.LABEL_FILE"), false, 250); //$NON-NLS-1$
+				Messages.WizardNewFileCreationPage_LABEL_FILE, false, 250);
 
 		if (getFileExtension() != null) {
 			_resourceGroup.setFileExtension(getFileExtension());
@@ -254,8 +254,8 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 			ErrorDialog
 					.openError(
 							getContainer().getShell(),
-							Messages
-									.getString("WizardNewFileCreationPage.ERROR_TITLE"), null, e.getStatus()); //$NON-NLS-1$
+							Messages.WizardNewFileCreationPage_ERROR_TITLE,
+                            null, e.getStatus());
 
 			newFileHandle = null;
 		}
@@ -313,7 +313,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 	 *         component group
 	 */
 	protected String getNewFileLabel() {
-		return Messages.getString("WizardNewFileCreationPage.LABEL_FILE_NAME"); //$NON-NLS-1$
+		return Messages.WizardNewFileCreationPage_LABEL_FILE_NAME;
 	}
 
 	/**

@@ -141,7 +141,7 @@ public final class WorkspacePreferencePage extends StartupPreferencePage
 	protected void createRefreshWorkspaceOnStartupPref(final Composite composite) {
 		_refreshButton = new Button(composite, SWT.CHECK);
 		_refreshButton.setText(Messages
-				.getString("WorkspacePreferencePage.REFRESH_ON_STARTUP")); //$NON-NLS-1$
+				.WorkspacePreferencePage_REFRESH_ON_STARTUP);
 		_refreshButton.setFont(composite.getFont());
 		_refreshButton.setSelection(getCorePreferenceStore().getBoolean(
 				ChooseWorkspaceData.REFRESH_WORKSPACE_ON_STARTUP));
@@ -156,7 +156,7 @@ public final class WorkspacePreferencePage extends StartupPreferencePage
 	protected void createLaunchPromptPref(final Composite composite) {
 		_launchPromptButton = new Button(composite, SWT.CHECK);
 		_launchPromptButton.setText(Messages
-				.getString("WorkspacePreferencePage.PROMPT_FOR_WORKSPACE")); //$NON-NLS-1$
+				.WorkspacePreferencePage_PROMPT_FOR_WORKSPACE);
 		_launchPromptButton.setFont(composite.getFont());
 
 		// TODO: This should get the value from the configuration preference
@@ -177,7 +177,7 @@ public final class WorkspacePreferencePage extends StartupPreferencePage
 	protected void createExitPromptPref(final Composite composite) {
 		_exitPromptButton = new Button(composite, SWT.CHECK);
 		_exitPromptButton.setText(Messages
-				.getString("WorkspacePreferencePage.CONFIRM_EXIT")); //$NON-NLS-1$
+				.WorkspacePreferencePage_CONFIRM_EXIT);
 		_exitPromptButton.setFont(composite.getFont());
 		_exitPromptButton.setSelection(getCorePreferenceStore().getBoolean(
 				ChooseWorkspaceData.EXIT_PROMPT_ON_CLOSE_LAST_WINDOW));

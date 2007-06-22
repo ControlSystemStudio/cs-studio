@@ -111,7 +111,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
 	 */
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
-		shell.setText(Messages.getString("SaveAsDialog.TITLE")); //$NON-NLS-1$
+		shell.setText(Messages.SaveAsDialog_TITLE);
 	}
 
 	/**
@@ -125,8 +125,8 @@ public final class SaveAsDialog extends TitleAreaDialog {
 		validatePage();
 		_resourceGroup.setFileExtension(_fileExtension);
 		_resourceGroup.setFocus();
-		setTitle(Messages.getString("SaveAsDialog.TITLE")); //$NON-NLS-1$
-		setMessage(Messages.getString("SaveAsDialog.MESSAGE")); //$NON-NLS-1$
+		setTitle(Messages.SaveAsDialog_TITLE);
+		setMessage(Messages.SaveAsDialog_MESSAGE);
 
 		return contents;
 	}
@@ -168,8 +168,8 @@ public final class SaveAsDialog extends TitleAreaDialog {
 		_resourceGroup = new ResourceAndContainerGroup(
 				composite,
 				listener,
-				Messages.getString("SaveAsDialog.FILE_LABEL"), Messages.getString("SaveAsDialog.FILE")); //$NON-NLS-1$ //$NON-NLS-2$
-		_resourceGroup.setAllowExistingResources(true);
+				Messages.SaveAsDialog_FILE_LABEL, Messages.SaveAsDialog_FILE);
+        _resourceGroup.setAllowExistingResources(true);
 
 		return parentComposite;
 	}
@@ -230,11 +230,10 @@ public final class SaveAsDialog extends TitleAreaDialog {
 		if (file.exists()) {
 			String[] buttons = new String[] { IDialogConstants.YES_LABEL,
 					IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL };
-			String question = NLS.bind(Messages
-					.getString("SaveAsDialog.OVERWRITE_QUESTION"), //$NON-NLS-1$
+			String question = NLS.bind(Messages.SaveAsDialog_OVERWRITE_QUESTION,
 					path.toOSString());
-			MessageDialog d = new MessageDialog(getShell(), Messages
-					.getString("SaveAsDialog.QUESTION"), null, //$NON-NLS-1$
+			MessageDialog d = new MessageDialog(getShell(),
+                    Messages.SaveAsDialog_QUESTION, null,
 					question, MessageDialog.QUESTION, buttons, 0);
 			int overwrite = d.open();
 			switch (overwrite) {

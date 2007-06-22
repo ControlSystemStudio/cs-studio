@@ -44,9 +44,9 @@ public final class DeleteResourceAction implements IViewActionDelegate {
 	public void run(final IAction action) {
 		if (_selectedResource != null) {
 			boolean reallyDelete = MessageDialog.openQuestion(_view.getSite()
-					.getShell(), Messages.getString("DeleteResourceAction.QUESTION_TITLE"), NLS.bind( //$NON-NLS-1$
-					Messages.getString("DeleteResourceAction.QUESTION_MESSAGE"), _selectedResource //$NON-NLS-1$
-							.getName()));
+					.getShell(), Messages.DeleteResourceAction_QUESTION_TITLE,
+                    NLS.bind(Messages.DeleteResourceAction_QUESTION_MESSAGE,
+                             _selectedResource.getName()));
 
 			if (reallyDelete) {
 				try {

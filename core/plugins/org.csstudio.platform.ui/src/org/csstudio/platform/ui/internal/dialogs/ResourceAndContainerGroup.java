@@ -422,8 +422,7 @@ public final class ResourceAndContainerGroup implements Listener {
 		IPath path = _containerGroup.getContainerFullPath();
 		if (path == null) {
 			_problemType = PROBLEM_CONTAINER_EMPTY;
-			_problemMessage = Messages
-					.getString("ResourceAndContainerGroup.PROBLEM_EMPTY"); //$NON-NLS-1$
+			_problemMessage = Messages.ResourceAndContainerGroup_PROBLEM_EMPTY;
 			return false;
 		}
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -431,8 +430,7 @@ public final class ResourceAndContainerGroup implements Listener {
 		if (projectName == null
 				|| !workspace.getRoot().getProject(projectName).exists()) {
 			_problemType = PROBLEM_PROJECT_DOES_NOT_EXIST;
-			_problemMessage = Messages
-					.getString("ResourceAndContainerGroup.PROBLEM_DOES_NOT_EXIST"); //$NON-NLS-1$
+			_problemMessage = Messages.ResourceAndContainerGroup_PROBLEM_DOES_NOT_EXIST;
 			return false;
 		}
 		// path is invalid if any prefix is occupied by a file
@@ -441,10 +439,8 @@ public final class ResourceAndContainerGroup implements Listener {
 			if (root.getFile(path).exists()) {
 				_problemType = PROBLEM_PATH_OCCUPIED;
 				_problemMessage = NLS
-						.bind(
-								Messages
-										.getString("ResourceAndContainerGroup.PROBLEM_FILE_ALREADY_EXISTS_AT_LOCATION"), path //$NON-NLS-1$
-										.makeRelative());
+						.bind(Messages.ResourceAndContainerGroup_PROBLEM_FILE_ALREADY_EXISTS_AT_LOCATION,
+                              path.makeRelative());
 				return false;
 			}
 			path = path.removeLastSegments(1);
@@ -502,8 +498,7 @@ public final class ResourceAndContainerGroup implements Listener {
 				&& (workspace.getRoot().getFolder(resourcePath).exists() || workspace
 						.getRoot().getFile(resourcePath).exists())) {
 			_problemType = PROBLEM_RESOURCE_EXIST;
-			_problemMessage = Messages
-					.getString("ResourceAndContainerGroup.PROBLEM_FILE_ALREADY_EXISTS"); //$NON-NLS-1$
+			_problemMessage = Messages.ResourceAndContainerGroup_PROBLEM_FILE_ALREADY_EXISTS;
 			return false;
 		}
 		return true;
@@ -522,8 +517,7 @@ public final class ResourceAndContainerGroup implements Listener {
 
 		if (resourceName.equals("")) {//$NON-NLS-1$
 			_problemType = PROBLEM_RESOURCE_EMPTY;
-			_problemMessage = NLS.bind(Messages
-					.getString("ResourceAndContainerGroup.PROBLEM_EMPTY_NAME"), //$NON-NLS-1$
+			_problemMessage = NLS.bind(Messages.ResourceAndContainerGroup_PROBLEM_EMPTY_NAME,
 					_resourceType);
 			return false;
 		}
@@ -531,9 +525,7 @@ public final class ResourceAndContainerGroup implements Listener {
 		if (!(new Path("")).isValidPath(resourceName)) { //$NON-NLS-1$
 			_problemType = PROBLEM_NAME_INVALID;
 			_problemMessage = NLS
-					.bind(
-							Messages
-									.getString("ResourceAndContainerGroup.PROBLEM_INVALID_FILE_NAME"), //$NON-NLS-1$
+					.bind(Messages.ResourceAndContainerGroup_PROBLEM_INVALID_FILE_NAME,
 							resourceName);
 			return false;
 		}

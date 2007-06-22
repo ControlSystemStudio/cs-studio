@@ -101,8 +101,8 @@ public final class Console {
 	 * Initialize the console and redirect the standard System.out to it.
 	 */
 	private void initConsole() {
-		_console = new MessageConsole(Messages
-				.getString("Console.CONSOLE_TITLE"), null) { //$NON-NLS-1$
+		_console = new MessageConsole(Messages.Console_CONSOLE_TITLE, null)
+        { 
 			@Override
 			public String getHelpContextId() {
 				return CSSPlatformUiPlugin.ID + ".console"; //$NON-NLS-1$

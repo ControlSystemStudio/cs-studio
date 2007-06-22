@@ -105,11 +105,11 @@ public final class ContainerSelectionGroup extends Composite {
 		 */
 		public void run() {
 			final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(getContainerFullPath());
-			final StringBuffer buffer = new StringBuffer(Messages.getString("CreateFolderAction.DIALOG_MESSAGE"));
+			final StringBuffer buffer = new StringBuffer(Messages.CreateFolderAction_DIALOG_MESSAGE);
 			buffer.append(" (");
 			buffer.append(resource.getFullPath());
 			buffer.append("/..)");
-			final InputDialog inputDialog = new InputDialog(_shell, Messages.getString("CreateFolderAction.DIALOG_TITLE"), //$NON-NLS-1$
+			final InputDialog inputDialog = new InputDialog(_shell, Messages.CreateFolderAction_DIALOG_TITLE,
 					buffer.toString(), "", null);
 			final int ret = inputDialog.open();
 
@@ -118,8 +118,8 @@ public final class ContainerSelectionGroup extends Composite {
 				if (folderName != null) {
 					if (resource instanceof IContainer) {
 						if (ResourceUtil.getInstance().createFolder((IContainer) resource, folderName)==ResourceUtil.FOLDEREXISTS) {
-							MessageDialog.openInformation(_shell, Messages.getString("CreateFolderAction.ERROR_TITLE"), //$NON-NLS-1$
-									Messages.getString("CreateFolderAction.ERROR_MESSAGE")); //$NON-NLS-1$
+							MessageDialog.openInformation(_shell, Messages.CreateFolderAction_ERROR_TITLE,
+									Messages.CreateFolderAction_ERROR_MESSAGE);
 						}
 						refreshTree();
 					}
@@ -157,16 +157,16 @@ public final class ContainerSelectionGroup extends Composite {
 		 * {@inheritDoc}
 		 */
 		public void run() {
-			InputDialog inputDialog = new InputDialog(_shell, Messages.getString("CreateProjectAction.DIALOG_TITLE"), //$NON-NLS-1$
-					Messages.getString("CreateProjectAction.DIALOG_MESSAGE"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+			InputDialog inputDialog = new InputDialog(_shell, Messages.CreateProjectAction_DIALOG_TITLE,
+					Messages.CreateProjectAction_DIALOG_MESSAGE, "", null); //$NON-NLS-1$ //$NON-NLS-2$
 			int ret = inputDialog.open();
 
 			if (ret == Window.OK) {
 				String projectName = inputDialog.getValue();
 				if (projectName != null) {
 					if (ResourceUtil.getInstance().createProject(projectName)==ResourceUtil.PROJECTEXISTS) {
-						MessageDialog.openInformation(_shell, Messages.getString("CreateProjectAction.ERROR_TITLE"), //$NON-NLS-1$
-								Messages.getString("CreateProjectAction.ERROR_MESSAGE")); //$NON-NLS-1$
+						MessageDialog.openInformation(_shell, Messages.CreateProjectAction_ERROR_TITLE,
+								Messages.CreateProjectAction_ERROR_MESSAGE);
 					}
 					refreshTree();
 				}
@@ -290,7 +290,7 @@ public final class ContainerSelectionGroup extends Composite {
 		if (message != null) {
 			createContents(message, heightHint, widthHint);
 		} else {
-			createContents(Messages.getString("ContainerSelectionGroup.TITLE"), heightHint, widthHint); //$NON-NLS-1$
+			createContents(Messages.ContainerSelectionGroup_TITLE, heightHint, widthHint); //$NON-NLS-1$
 		}
 	}
 

@@ -218,19 +218,19 @@ public final class WorkspaceExplorerView extends ViewPart {
 
 		if (descriptor != null && editorInput != null) {
 			IWorkbenchPage page = getSite().getPage();
-			try {
+			try
+            {
 				page.openEditor(editorInput, descriptor.getId());
-			} catch (PartInitException e) {
-				CentralLogger
-						.getInstance()
-						.error(
-								Messages
-										.getString("WorkspaceExplorerView.CANNOT_OPEN_EDITOR"), e); //$NON-NLS-1$
+			}
+            catch (PartInitException e)
+            {
+				CentralLogger.getInstance().error(
+                    Messages.WorkspaceExplorerView_CANNOT_OPEN_EDITOR, e);
 			}
 		} else {
-			MessageDialog.openInformation(getSite().getShell(), Messages
-					.getString("WorkspaceExplorerView.ERROR_TITLE"), //$NON-NLS-1$
-					Messages.getString("WorkspaceExplorerView.ERROR_MESSAGE")); //$NON-NLS-1$
+			MessageDialog.openInformation(getSite().getShell(),
+                            Messages.WorkspaceExplorerView_ERROR_TITLE,
+                            Messages.WorkspaceExplorerView_ERROR_MESSAGE);
 		}
 	}
 }

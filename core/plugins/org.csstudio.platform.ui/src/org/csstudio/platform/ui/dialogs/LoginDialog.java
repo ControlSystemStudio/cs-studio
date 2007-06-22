@@ -72,9 +72,9 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	protected Control createDialogArea(final Composite parent) {
 		Control control = super.createDialogArea(parent);
 
-		getShell().setText(Messages.getString("LoginDialog.WINDOW_TITLE")); //$NON-NLS-1$
-		setTitle(Messages.getString("LoginDialog.DIALOG_TITLE")); //$NON-NLS-1$
-		setMessage(Messages.getString("LoginDialog.DIALOG_DESCRIPTION")); //$NON-NLS-1$
+		getShell().setText(Messages.LoginDialog_WINDOW_TITLE);
+		setTitle(Messages.LoginDialog_DIALOG_TITLE);
+		setMessage(Messages.LoginDialog_DIALOG_DESCRIPTION);
 
 		Composite composite = new Composite(parent, SWT.NONE);
 
@@ -88,7 +88,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 
 		// user name
 		Label label = new Label(composite, SWT.NONE);
-		label.setText(Messages.getString("LoginDialog.USER_NAME")); //$NON-NLS-1$
+		label.setText(Messages.LoginDialog_USER_NAME);
 		_username = new Text(composite, SWT.BORDER | SWT.FLAT);
 		_username.setFocus();
 		_username.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
@@ -96,7 +96,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 
 		// password
 		label = new Label(composite, SWT.NONE);
-		label.setText(Messages.getString("LoginDialog.PASSWORD")); //$NON-NLS-1$
+		label.setText(Messages.LoginDialog_PASSWORD);
 		_password = new Text(composite, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
 		_password.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.FILL_HORIZONTAL));

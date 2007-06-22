@@ -42,8 +42,7 @@ public class ConsoleAppenderPreferencePage extends
 	 */
 	public ConsoleAppenderPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
-		setMessage(Messages
-				.getString("ConsoleAppenderPreferencePage.PAGE_TITLE")); //$NON-NLS-1$
+		setMessage(Messages.ConsoleAppenderPreferencePage_PAGE_TITLE);
 	}
 
 	/**
@@ -55,14 +54,14 @@ public class ConsoleAppenderPreferencePage extends
 
 		addField(new RadioGroupFieldEditor(
 				CentralLogger.PROP_LOG4J_CONSOLE_THRESHOLD,
-				Messages.getString("ConsoleAppenderPreferencePage.LOG_LEVEL"), 1, //$NON-NLS-1$
+				Messages.ConsoleAppenderPreferencePage_LOG_LEVEL, 1,
 				new String[][] { { "DEBUG", "DEBUG" }, { "INFO", "INFO" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 						{ "WARN", "WARN" }, { "ERROR", "ERROR" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 						{ "FATAL", "FATAL" } }, getFieldEditorParent(), true)); //$NON-NLS-1$ //$NON-NLS-2$
 
 		addField(new StringFieldEditor(
-				CentralLogger.PROP_LOG4J_CONSOLE_PATTERN, Messages
-						.getString("ConsoleAppenderPreferencePage.PATTERN"), //$NON-NLS-1$
+				CentralLogger.PROP_LOG4J_CONSOLE_PATTERN,
+                Messages.ConsoleAppenderPreferencePage_PATTERN,
 				getFieldEditorParent()));
 	}
 }

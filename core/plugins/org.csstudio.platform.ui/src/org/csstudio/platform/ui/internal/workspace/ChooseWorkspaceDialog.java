@@ -165,14 +165,12 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
 			productName = product.getName();
 		}
 		if (productName == null) {
-			productName = Messages
-					.getString("ChooseWorkspaceDialog.PRODUCT_NAME"); //$NON-NLS-1$
+			productName = Messages.ChooseWorkspaceDialog_PRODUCT_NAME;
 		}
 
 		Composite composite = (Composite) super.createDialogArea(parent);
-		setTitle(Messages.getString("ChooseWorkspaceDialog.TITLE")); //$NON-NLS-1$
-		setMessage(NLS.bind(Messages
-				.getString("ChooseWorkspaceDialog.PROBLEM_MULTIPLE_PROJECTS"), //$NON-NLS-1$
+		setTitle(Messages.ChooseWorkspaceDialog_TITLE);
+		setMessage(NLS.bind(Messages.ChooseWorkspaceDialog_PROBLEM_MULTIPLE_PROJECTS,
 				productName));
 
 		// bug 59934: load title image for sizing, but set it non-visible so the
@@ -202,7 +200,7 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
 	@Override
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
-		shell.setText(Messages.getString("ChooseWorkspaceDialog.WINDOW_TITLE")); //$NON-NLS-1$
+		shell.setText(Messages.ChooseWorkspaceDialog_WINDOW_TITLE);
 	}
 
 	/**
@@ -254,8 +252,7 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
 
         
         Label label = new Label(panel, SWT.NONE);
-        label.setText(Messages
-                        .getString("ChooseWorkspaceDialog.CURRENT_WORKSPACE_LABEL")); //$NON-NLS-1$
+        label.setText(Messages.ChooseWorkspaceDialog_CURRENT_WORKSPACE_LABEL);
         Text text = new Text(panel, SWT.READ_ONLY);
         text.setText(Platform.getInstanceLocation().getURL().getPath());
         final GridData gd = new GridData();
@@ -265,8 +262,7 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
         text.setLayoutData(gd);
         
         label = new Label(panel, SWT.NONE);
-		label.setText(Messages
-				.getString("ChooseWorkspaceDialog.WORKSPACE_LABEL")); //$NON-NLS-1$
+		label.setText(Messages.ChooseWorkspaceDialog_WORKSPACE_LABEL);
 
 		_text = new Combo(panel, SWT.BORDER | SWT.LEAD | SWT.DROP_DOWN);
 		_text.setFocus();
@@ -275,8 +271,7 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
 		setInitialTextValues(_text);
 
 		Button browseButton = new Button(panel, SWT.PUSH);
-		browseButton.setText(Messages
-				.getString("ChooseWorkspaceDialog.BROWSE_LABEL")); //$NON-NLS-1$
+		browseButton.setText(Messages.ChooseWorkspaceDialog_BROWSE_LABEL);
 		setButtonLayoutData(browseButton);
 		GridData data = (GridData) browseButton.getLayoutData();
 		data.horizontalAlignment = GridData.HORIZONTAL_ALIGN_END;
@@ -285,10 +280,8 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				DirectoryDialog dialog = new DirectoryDialog(getShell());
-				dialog.setText(Messages
-						.getString("ChooseWorkspaceDialog.BROWSER_TITLE")); //$NON-NLS-1$
-				dialog.setMessage(Messages
-						.getString("ChooseWorkspaceDialog.BROWSER_MESSAGE")); //$NON-NLS-1$
+				dialog.setText(Messages.ChooseWorkspaceDialog_BROWSER_TITLE);
+				dialog.setMessage(Messages.ChooseWorkspaceDialog_BROWSER_MESSAGE);
 				dialog.setFilterPath(getInitialBrowsePath());
 				String dir = dialog.open();
 				if (dir != null) {
@@ -358,8 +351,7 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
 		panel.setLayoutData(data);
 
 		Button button = new Button(panel, SWT.CHECK);
-		button.setText(Messages
-				.getString("ChooseWorkspaceDialog.USE_AS_DEFAULT")); //$NON-NLS-1$
+		button.setText(Messages.ChooseWorkspaceDialog_USE_AS_DEFAULT);
 		button.setSelection(!_launchData.getShowDialog());
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override

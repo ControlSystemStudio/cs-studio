@@ -37,19 +37,20 @@ public class LoggingPreferencePage extends AbstractAppenderPreferencePage {
 	 */
 	public LoggingPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
-		setMessage(Messages.getString("LoggingPreferencePage.PAGE_TITLE")); //$NON-NLS-1$
+		setMessage(Messages.LoggingPreferencePage_PAGE_TITLE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected final void createFieldEditors() {
+	@Override
+    protected final void createFieldEditors() {
 		addField(new BooleanFieldEditor(CentralLogger.PROP_LOG4J_CONSOLE,
-				Messages.getString("LoggingPreferencePage.CONSOLE_APPENDER"), getFieldEditorParent())); //$NON-NLS-1$
+				Messages.LoggingPreferencePage_CONSOLE_APPENDER, getFieldEditorParent()));
 		addField(new BooleanFieldEditor(CentralLogger.PROP_LOG4J_FILE,
-				Messages.getString("LoggingPreferencePage.FILE_APPENDER"), getFieldEditorParent())); //$NON-NLS-1$
+				Messages.LoggingPreferencePage_FILE_APPENDER, getFieldEditorParent()));
 		addField(new BooleanFieldEditor(CentralLogger.PROP_LOG4J_JMS,
-				Messages.getString("LoggingPreferencePage.JMS_APPENDER"), getFieldEditorParent()));		 //$NON-NLS-1$
+				Messages.LoggingPreferencePage_JMS_APPENDER, getFieldEditorParent()));
 	}
 
 }

@@ -24,7 +24,7 @@ public class CSSApplicationsPreferencePage extends PreferencePage implements
 	@Override
 	protected final Control createContents(final Composite parent) {
 		Label label = new Label(parent, SWT.NULL);
-		label.setText(Messages.getString("CSSApplicationsPreferencePage.MESSAGE")); //$NON-NLS-1$
+		label.setText(Messages.CSSApplicationsPreferencePage_MESSAGE);
 		return label;
 	}
 

@@ -40,32 +40,33 @@ public class FileAppenderPreferencePage extends AbstractAppenderPreferencePage {
 	 */
 	public FileAppenderPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
-		setMessage(Messages.getString("FileAppenderPreferencePage.PAGE_TITLE")); //$NON-NLS-1$
+		setMessage(Messages.FileAppenderPreferencePage_PAGE_TITLE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected final void createFieldEditors() {
+	@Override
+    protected final void createFieldEditors() {
 		addField(new RadioGroupFieldEditor(
-				CentralLogger.PROP_LOG4J_FILE_THRESHOLD, Messages
-						.getString("FileAppenderPreferencePage.LOG_LEVEL"), 1, //$NON-NLS-1$
+				CentralLogger.PROP_LOG4J_FILE_THRESHOLD,
+                Messages.FileAppenderPreferencePage_LOG_LEVEL, 1,
 				new String[][] { { "DEBUG", "DEBUG" }, { "INFO", "INFO" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 						{ "WARN", "WARN" }, { "ERROR", "ERROR" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 						{ "FATAL", "FATAL" } }, getFieldEditorParent(), true)); //$NON-NLS-1$ //$NON-NLS-2$
 
 		addField(new StringFieldEditor(
 				CentralLogger.PROP_LOG4J_FILE_PATTERN,
-				Messages.getString("FileAppenderPreferencePage.PATTERN"), getFieldEditorParent())); //$NON-NLS-1$
+				Messages.FileAppenderPreferencePage_PATTERN, getFieldEditorParent()));
 
 		addField(new StringFieldEditor(
-				CentralLogger.PROP_LOG4J_FILE_DESTINATION, Messages
-						.getString("FileAppenderPreferencePage.LOG_FILE"), //$NON-NLS-1$
+				CentralLogger.PROP_LOG4J_FILE_DESTINATION,
+                Messages.FileAppenderPreferencePage_LOG_FILE,
 				getFieldEditorParent()));
 
 		addField(new IntegerFieldEditor(
-				CentralLogger.PROP_LOG4J_FILE_MAX_INDEX, Messages
-						.getString("FileAppenderPreferencePage.BACKUP_INDEX"), //$NON-NLS-1$
+				CentralLogger.PROP_LOG4J_FILE_MAX_INDEX,
+                Messages.FileAppenderPreferencePage_BACKUP_INDEX,
 				getFieldEditorParent()));
 	}
 }

@@ -49,23 +49,23 @@ public class LocalePreferencePage extends FieldEditorPreferencePage implements
 	 */
 	public LocalePreferencePage() {
 		super(SWT.NULL);
-		setMessage(Messages.getString("LocalePreferencePage.PAGE_TITLE")); //$NON-NLS-1$
+		setMessage(Messages.LocalePreferencePage_PAGE_TITLE);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected final void createFieldEditors() {
-		addField(new RadioGroupFieldEditor(LocaleService.PROP_LOCALE, Messages
-				.getString("LocalePreferencePage.LOCALE"), //$NON-NLS-1$
+		addField(new RadioGroupFieldEditor(LocaleService.PROP_LOCALE,
+                  Messages.LocalePreferencePage_LOCALE,
 				1, new String[][] {
-						{ Messages.getString("LocalePreferencePage.DEFAULT"), //$NON-NLS-1$
+						{ Messages.LocalePreferencePage_DEFAULT,
 								"" }, //$NON-NLS-1$
-						{ Messages.getString("LocalePreferencePage.DE"), //$NON-NLS-1$
+						{ Messages.LocalePreferencePage_DE,
 								"de" }, //$NON-NLS-1$
-						{ Messages.getString("LocalePreferencePage.EN_US"), //$NON-NLS-1$
+						{ Messages.LocalePreferencePage_EN_US,
 								"en_US" }, //$NON-NLS-1$
-						{ Messages.getString("LocalePreferencePage.EN_GB"), //$NON-NLS-1$
+						{ Messages.LocalePreferencePage_EN_GB,
 								"en_GB" } }, getFieldEditorParent(), true)); //$NON-NLS-1$
 	}
 
@@ -99,8 +99,8 @@ public class LocalePreferencePage extends FieldEditorPreferencePage implements
 	 */
 	@Override
 	public final void propertyChange(final PropertyChangeEvent event) {
-		setMessage(
-				Messages.getString("LocalePreferencePage.CHANGE_MESSAGE"), IMessageProvider.INFORMATION); //$NON-NLS-1$			
+		setMessage(Messages.LocalePreferencePage_CHANGE_MESSAGE,
+                   IMessageProvider.INFORMATION);
 		super.propertyChange(event);
 	}
 
