@@ -130,51 +130,80 @@ public class LDAPConnector {
 
 
 	/**
+	 * Read first the preferences in instance scope and if there is no 
+	 * user defined setting, get them from default scope.
+	 * 
 	 * @return env with the setings from PreferencPage
 	 */
 	private Hashtable<Object, String> getUIenv() {
 
-		IEclipsePreferences prefs = new InstanceScope().getNode(Activator.PLUGIN_ID);
+		IEclipsePreferences prefsInstance = new InstanceScope().getNode(Activator.PLUGIN_ID);
+		IEclipsePreferences prefsDefault = new DefaultScope().getNode(Activator.PLUGIN_ID);
 		// Set up the environment for creating the initial context
+		
 		if(debug){
-			System.out.println("Path: "+prefs.absolutePath());
+			System.out.println("Path: "+prefsInstance.absolutePath());
 			System.out.println("PLUGIN_ID: "+Activator.PLUGIN_ID);
-			System.out.println("P_STRING_URL: "+prefs.get(PreferenceConstants.P_STRING_URL,"1"));
-			System.out.println("SECURITY_PROTOCOL: "+prefs.get(PreferenceConstants.SECURITY_PROTOCOL,"2"));
-			System.out.println("SECURITY_AUTHENTICATION: "+prefs.get(PreferenceConstants.SECURITY_AUTHENTICATION,"3"));
-			System.out.println("P_STRING_USER_DN: "+prefs.get(PreferenceConstants.P_STRING_USER_DN,"4"));
-			System.out.println("P_STRING_USER_PASSWORD: "+prefs.get(PreferenceConstants.P_STRING_USER_PASSWORD,"5"));
+			System.out.println("P_STRING_URL: "+prefsInstance.get(PreferenceConstants.P_STRING_URL,"1"));
+			System.out.println("SECURITY_PROTOCOL: "+prefsInstance.get(PreferenceConstants.SECURITY_PROTOCOL,"2"));
+			System.out.println("SECURITY_AUTHENTICATION: "+prefsInstance.get(PreferenceConstants.SECURITY_AUTHENTICATION,"3"));
+			System.out.println("P_STRING_USER_DN: "+prefsInstance.get(PreferenceConstants.P_STRING_USER_DN,"4"));
+			System.out.println("P_STRING_USER_PASSWORD: "+prefsInstance.get(PreferenceConstants.P_STRING_USER_PASSWORD,"5"));
 		}
 		String[] env = null;
 		// password
-		if(prefs.get(PreferenceConstants.P_STRING_USER_PASSWORD,"").trim().length()>0){
+		if(prefsDefault.get(PreferenceConstants.P_STRING_USER_PASSWORD,"").trim().length()>0){
 			env = new String[5];
-			env[4]=prefs.get(PreferenceConstants.P_STRING_USER_PASSWORD,"");
+			env[4]=prefsDefault.get(PreferenceConstants.P_STRING_USER_PASSWORD,"");
+		}
+		if(prefsInstance.get(PreferenceConstants.P_STRING_USER_PASSWORD,"").trim().length()>0){
+			env = new String[5];
+			env[4]=prefsInstance.get(PreferenceConstants.P_STRING_USER_PASSWORD,"");
 		}
 		// user
-		if(prefs.get(PreferenceConstants.P_STRING_USER_DN,"").trim().length()>0){
+		if(prefsDefault.get(PreferenceConstants.P_STRING_USER_DN,"").trim().length()>0){
 			if(env==null){
 				env = new String[4];
 			}
-			env[3]=prefs.get(PreferenceConstants.P_STRING_USER_DN,"");
+			env[3]=prefsDefault.get(PreferenceConstants.P_STRING_USER_DN,"");
 		}
-		if(prefs.get(PreferenceConstants.SECURITY_AUTHENTICATION,"").trim().length()>0){
+		if(prefsInstance.get(PreferenceConstants.P_STRING_USER_DN,"").trim().length()>0){
+			if(env==null){
+				env = new String[4];
+			}
+			env[3]=prefsInstance.get(PreferenceConstants.P_STRING_USER_DN,"");
+		}
+		if(prefsDefault.get(PreferenceConstants.SECURITY_AUTHENTICATION,"").trim().length()>0){
 			if(env==null){
 				env = new String[3];
 			}
-			env[2]=prefs.get(PreferenceConstants.SECURITY_AUTHENTICATION,"");
+			env[2]=prefsDefault.get(PreferenceConstants.SECURITY_AUTHENTICATION,"");
 		}
-		if(prefs.get(PreferenceConstants.SECURITY_PROTOCOL,"").trim().length()>0){
+		if(prefsInstance.get(PreferenceConstants.SECURITY_AUTHENTICATION,"").trim().length()>0){
+			if(env==null){
+				env = new String[3];
+			}
+			env[2]=prefsInstance.get(PreferenceConstants.SECURITY_AUTHENTICATION,"");
+		}
+		if(prefsDefault.get(PreferenceConstants.SECURITY_PROTOCOL,"").trim().length()>0){
 			if(env==null){
 				env = new String[2];
 			}
-			env[1]=prefs.get(PreferenceConstants.SECURITY_PROTOCOL,"");
+			env[1]=prefsDefault.get(PreferenceConstants.SECURITY_PROTOCOL,"");
+		}
+		if(prefsInstance.get(PreferenceConstants.SECURITY_PROTOCOL,"").trim().length()>0){
+			if(env==null){
+				env = new String[2];
+			}
+			env[1]=prefsInstance.get(PreferenceConstants.SECURITY_PROTOCOL,"");
 		}
 		if(env==null){
 			env = new String[1];
 		}
-		env[0]=prefs.get(PreferenceConstants.P_STRING_URL,"");
-
+		env[0]=prefsInstance.get(PreferenceConstants.P_STRING_URL,"");
+		if(env[0].equals("")) {
+			env[0] = prefsDefault.get(PreferenceConstants.P_STRING_URL,"");
+		}
 		return makeENV(env);
 	}
 
