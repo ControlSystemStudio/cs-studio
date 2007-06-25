@@ -78,10 +78,12 @@ public class ValuesRequest implements ClientRequest
         /*
          * This is temporary solution for SPLINE<->AVERAGE permutate
          *  Need discuss with Kay how to implement it in common way
-         *  Albert 13 April 2007
-         */
+         *  Albert 13 April 2007 
+         
         if(this.how ==4) input.setConversionTag(1 );
         if(this.how ==1) input.setConversionTag(4 );
+        change back to June 2007
+        */
         input.setConvers_param(AAPI.DEADBAND_PARAM); // DESY specific
     
         int num_returned_channels = this.channels.length;
