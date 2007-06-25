@@ -47,6 +47,9 @@ import org.w3c.dom.Element;
  */
 public class Model
 {
+    /** If the defaults from prefs aren't usable, this is the start spec. */
+    private static final String FALLBACK_START_TIME = "-10 min"; //$NON-NLS-1$
+
     /** Start- and end time specifications. */
     private StartEndTimeParser start_end_times;
     
@@ -85,7 +88,7 @@ public class Model
         }
         catch (Exception ex)
         {   // No prefs because running as unit test?
-            start = "-1 hour";
+            start = FALLBACK_START_TIME;
             end = RelativeTime.NOW;
         }
         try
@@ -144,6 +147,14 @@ public class Model
     {
         start_end_times =
             new StartEndTimeParser(start_specification, end_specification);
+        final ITimestamp start =
+            TimestampFactory.fromCalendar(start_end_times.getStart());
+        final ITimestamp end =
+            TimestampFactory.fromCalendar(start_end_times.getEnd());
+        if (start.isGreaterOrEqual(end))
+            start_end_times =
+                new StartEndTimeParser(FALLBACK_START_TIME,
+                                       RelativeTime.NOW);
         // In case of parse errors, we won't reach this point
         // fireTimeSpecificationsChanged, fireTimeRangeChanged
         for (ModelListener l : listeners)

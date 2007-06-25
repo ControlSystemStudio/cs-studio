@@ -3,12 +3,10 @@ package org.csstudio.trends.databrowser.preferences;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /** Data Browser preferences.
  *  <p>
@@ -21,7 +19,7 @@ import org.csstudio.trends.databrowser.Plugin;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Preferences extends AbstractPreferenceInitializer
+public class Preferences
 {
     /** Separator for the list of items.
      *  <p>
@@ -46,20 +44,6 @@ public class Preferences extends AbstractPreferenceInitializer
 
     /** Identifier for the Archives preference. */
     public static final String P_ARCHIVES = "archives";
-
-    /** Get the default values for all preferences.
-     *  @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-     */
-    @Override
-    public void initializeDefaultPreferences()
-    {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        store.setDefault(P_START_TIME_SPEC, Messages.Default_StartTime);
-        store.setDefault(P_END_TIME_SPEC, Messages.Default_EndTime);
-        store.setDefault(P_AUTOSCALE, false);
-        store.setDefault(P_ARCHIVES, Messages.Default_Archives);
-        store.setDefault(P_URLS, Messages.Default_URLS);
-    }
     
     /** @return Default start time specification. */
     static public String getStartSpecification()

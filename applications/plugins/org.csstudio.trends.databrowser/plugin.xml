@@ -156,10 +156,6 @@
             name="%PreferenceTitle"/>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer class="org.csstudio.trends.databrowser.preferences.Preferences"/>
-   </extension>
-      <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"

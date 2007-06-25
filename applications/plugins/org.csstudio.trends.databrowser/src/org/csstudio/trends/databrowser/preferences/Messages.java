@@ -9,10 +9,6 @@ public class Messages extends NLS
     public static String ArchiveFormatMessage;
     public static String ArchiveInputMessage;
     public static String ArchiveInputTitle;
-    public static String Default_StartTime;
-    public static String Default_EndTime;
-    public static String Default_Archives;
-    public static String Default_URLS;
     public static String EndTime;
     public static String Label_Archives;
     public static String Label_Autoscale;
