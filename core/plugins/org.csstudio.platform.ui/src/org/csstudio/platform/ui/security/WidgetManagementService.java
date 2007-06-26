@@ -22,6 +22,7 @@
 package org.csstudio.platform.ui.security;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener;
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementEvent;
@@ -29,8 +30,11 @@ import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.ui.internal.security.WidgetConfiguration;
-import org.eclipse.swt.widgets.Control;
+import org.csstudio.platform.ui.internal.security.WidgetList;
+import org.csstudio.platform.ui.security.adapter.EnableControlAdapter;
+import org.csstudio.platform.ui.security.adapter.IWidgetAdapter;
+import org.csstudio.platform.ui.security.exceptions.NoWidgetAdapterFoundException;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * This class (de-)activates the registered widgets if the current user has the
@@ -43,14 +47,14 @@ public final class WidgetManagementService implements IUserManagementListener,
 		IRightsManagementListener {
 
 	/**
-	 * Map of controls and the right IDs necessary to use them.
+	 * A Hashmap which contains a WidgetList under an ID.
 	 */
-	private HashMap<Control, String> _controls;
+	private final Map<String, WidgetList> _widgetsMap;
 
-	/**
-	 * Map of controls and their right-dependent behavior.
-	 */
-	private HashMap<Control, WidgetConfiguration> _configurations;
+//	/**
+//	 * Map of controls and their right-dependent behavior.
+//	 */
+//	private HashMap<Control, WidgetConfiguration> _configurations;
 
 	/**
 	 * The singleton instance of this class.
@@ -62,11 +66,8 @@ public final class WidgetManagementService implements IUserManagementListener,
 	 * UserManagementListener and RightsManagementListener
 	 */
 	private WidgetManagementService() {
-		_controls = new HashMap<Control, String>();
-		_configurations = new HashMap<Control, WidgetConfiguration>();
-
-		// TODO: to be checked by Kai and Torsten
-	//	UserManagementService.getInstance().addUserManagementListener(this);
+		_widgetsMap = new HashMap<String, WidgetList>();
+		SecurityFacade.getInstance().addUserManagementListener(this);
 		RightsManagementService.getInstance().addRightsManagementListener(this);
 	}
 
@@ -79,92 +80,119 @@ public final class WidgetManagementService implements IUserManagementListener,
 		}
 		return _instance;
 	}
-
+	
 	/**
-	 * Register the given control for widget management. Controls can only be
-	 * registered once.
-	 * 
-	 * @param control
-	 *            The control to register
-	 * @param rightID
-	 *            The right necessary to use the control
-	 * @param changeEnablement
-	 *            Enable or disable the control depending on user permission.
-	 * @param changeVisibility
-	 *            View or hide the control depending on user permission.
+	 * Registers the given widget with the given ID.
+	 * The registered standard IWidgetAdapter for the widgets class is used as the needed IWidgetAdapter. If no entry is found the registration is denied. 
+	 * @param id The ID for the widget
+	 * @param defaultRight An IRight as default value if the ID is unknown; can be null
+	 * @param widget The widget to manage
+	 * @throws NoWidgetAdapterFoundException If no standard WidgetAdapter is registered for the class of the widget 
 	 */
-	public void registerControl(final Control control, final String rightID,
-			final boolean changeEnablement, final boolean changeVisibility) {
-		if (_controls.containsKey(control)) {
-			throw new IllegalArgumentException("Control is already registered."); //$NON-NLS-1$
+	public void registerWidget(final String id, final String defaultRight, final Object widget) throws NoWidgetAdapterFoundException {
+		IWidgetAdapter standard = new EnableControlAdapter();  
+		standard = (IWidgetAdapter) Platform.getAdapterManager().getAdapter(widget, IWidgetAdapter.class);
+		if (standard==null) {
+			throw new NoWidgetAdapterFoundException(widget.getClass());
+		} else {
+			this.registerWidget(id, defaultRight, widget, standard);
 		}
-
-		_controls.put(control, rightID);
-		_configurations.put(control, new WidgetConfiguration(changeEnablement,
-				changeVisibility));
-		doRefreshControl(control, rightID);
+	}
+	
+	/**
+	 * Registers the given widget with the given ID and the given IWidgetAdapter.
+	 * @param id The ID for the widget
+	 * @param defaultRight An IRight as default value if the ID is unknown; can be null
+	 * @param widget The widget to manage
+	 * @param adapter The IWidgetAdapter for the given widget; must not be null
+	 */
+	public void registerWidget(final String id, final String defaultRight, final Object widget, final IWidgetAdapter adapter) {
+		if (adapter==null) {
+			throw new NullPointerException("IWidgetAdapter was null");
+		}
+		if (_widgetsMap.containsKey(id)) {
+			WidgetList liste = _widgetsMap.get(id);
+			if (!liste.contains(widget)) {
+				liste.addWidget(widget,adapter);
+				adapter.activate(widget, SecurityFacade.getInstance().canExecute(id));
+			}
+		} else {
+			WidgetList liste = new WidgetList(defaultRight);
+			liste.addWidget(widget,adapter);
+			_widgetsMap.put(id, liste);
+			adapter.activate(widget, SecurityFacade.getInstance().canExecute(id));
+		}
+	}
+	
+	/**
+	 * Unregisters the given widget.
+	 * @param id The ID, which was used to register the widget 
+	 * @param widget The widget, which should be unregistered
+	 * @return True if the widget could be unregistered; false otherwise
+	 */
+	public boolean unregisterWidget(final String id, final Object widget) {
+		if (_widgetsMap.containsKey(id)) {
+			boolean bool = _widgetsMap.get(id).removeWidget(widget);
+			if (_widgetsMap.get(id).isEmpty()) {
+				_widgetsMap.remove(id);
+			}
+			return bool;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Unregisters the given widget.
+	 * @param widget The widget, which should be unregistered
+	 * @return True if the widget could be unregistered; false otherwise
+	 */
+	public boolean unregisterWidget(final Object widget) {
+		boolean bool = false;
+		String[] keys = _widgetsMap.keySet().toArray(new String[0]);
+		for (int i=0;i<keys.length;i++) {
+			WidgetList liste = _widgetsMap.get(keys[i]);
+			if (liste.removeWidget(widget)) {
+				if (liste.isEmpty()) {
+					_widgetsMap.remove(keys[i]);
+				}
+				bool = true;
+			}
+		}
+		return bool;
 	}
 
 	/**
-	 * Unregister the given control from widget management.
-	 * 
-	 * @param control
-	 *            The control to unregister.
+	 * Disposes the current WidgetManagement.
+	 * All registered widgets and registered standard IWidgetApapter are removed and unregisters this WidgetManagement 
+	 * as UserManagementListener and RightsManagementListener
 	 */
-	public void unregisterControl(final Control control) {
-		if (_controls.containsKey(control)) {
-			_controls.remove(control);
-			_configurations.remove(control);
-		}
+	public void dispose() {
+		SecurityFacade.getInstance().removeUserManagementListener(this);
+		RightsManagementService.getInstance().removeListener(this);
+		_widgetsMap.clear();		
+		_instance = null;
 	}
-
+	
 	/**
-	 * Refreshes all registered widgets.
+	 * Checks all registered objects if they should be activated or deactivated.
 	 */
 	private void doRefreshState() {
-		for (Control control : _controls.keySet()) {
-			String rightId = _controls.get(control);
-			doRefreshControl(control, rightId);
+		String[] keys = _widgetsMap.keySet().toArray(new String[0]);
+		for (int i=0;i<keys.length;i++) {
+			for (int j=0;j<_widgetsMap.get(keys[i]).size();j++) {
+				WidgetList liste = _widgetsMap.get(keys[i]);
+				liste.activate(j, SecurityFacade.getInstance().canExecute(keys[i]));
+			}
 		}
 	}
 
-	/**
-	 * Performs refresh of controls.
-	 * 
-	 * @param control
-	 *            The control to refresh.
-	 * @param rightId
-	 *            The right associated with the control.
-	 */
-	private void doRefreshControl(final Control control, final String rightId) {
-		WidgetConfiguration configuration = _configurations.get(control);
-
-		boolean flag = SecurityFacade.getInstance().canExecute(rightId);
-
-		if (configuration.isChangeEnablement()) {
-			control.setEnabled(flag);
-		}
-		if (configuration.isChangeVisibility()) {
-			control.setVisible(flag);
-		}
+	public void handleUserManagementEvent(UserManagementEvent event) {
+		this.doRefreshState();
 	}
 
-	/**
-	 * @see org.csstudio.platform.internal.usermanagement.IUserManagementListener#handleUserManagementEvent(testrcp.usermanagement.listener.IUserManagementEvent)
-	 * @param event
-	 *            the UserManagementEvent to handle
-	 */
-	public void handleUserManagementEvent(final UserManagementEvent event) {
-		doRefreshState();
-	}
-
-	/**
-	 * @see org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener#handleRightsManagementEvent(org.csstudio.platform.internal.rightsmanagement.AbstractRightsManagementEvent)
-	 * @param event
-	 *            the RightsManagementEvent to handle
-	 */
-	public void handleRightsManagementEvent(final RightsManagementEvent event) {
-		doRefreshState();
+	public void handleRightsManagementEvent(RightsManagementEvent event) {
+		this.doRefreshState();
 	}
 
 }
