@@ -30,6 +30,7 @@ import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.IFigure;
@@ -80,21 +81,18 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 				
 				switch(model.getAction()) {
 				case 0:
-					RunModeService.getInstance().openDisplayShellInRunMode(model.getResource());
+					openDisplayShellInRunMode(model.getResource());
 					break;
 				case 1:
-					RunModeService.getInstance().openDisplayViewInRunMode(model.getResource());
+					openDisplayViewInRunMode(model.getResource());
 					break;
 				case 2:
-					CentralLogger.getInstance().info(this, "Set Value: "+model.getClickValue());
 					model.getProperty(ActionButtonModel.PROP_CLICK_VALUE).setManualValue(model.getClickValue());
 					break;
 				default:
 					// do nothing
 					CentralLogger.getInstance().info(this, "Clicked!");
-				}
-				
-				
+				}	
 			}
 		});
 
@@ -136,4 +134,29 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 	}
+	
+	/**
+	 * Opens a shell in RunMode.
+	 * @param path
+	 * 			The Ipath to the Display, which should be opened.
+	 * 			
+	 */
+	private void openDisplayShellInRunMode(final IPath path) {
+		if (path!=null && !path.isEmpty()) {
+			RunModeService.getInstance().openDisplayShellInRunMode(path);
+		}
+	}
+	
+	/**
+	 * Opens a view in RunMode.
+	 * @param path
+	 * 			The Ipath to the Display, which should be opened.
+	 * 			
+	 */
+	private void openDisplayViewInRunMode(final IPath path) {
+		if (path!=null && !path.isEmpty()) {
+			RunModeService.getInstance().openDisplayViewInRunMode(path);
+		}
+	}
+	
 }
