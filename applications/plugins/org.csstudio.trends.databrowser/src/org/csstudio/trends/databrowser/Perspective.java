@@ -16,7 +16,7 @@ public class Perspective implements IPerspectiveFactory
     public static final String ID = Perspective.class.getName();
     @SuppressWarnings("unused")
     private static final String ID_PROGRESS =
-        "org.csstudio.platform.ui.views.progress";
+        "org.csstudio.platform.ui.views.progress"; //$NON-NLS-1$
     
     @SuppressWarnings("nls")
     public void createInitialLayout(IPageLayout layout)
