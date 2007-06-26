@@ -21,23 +21,29 @@
  */
 package org.csstudio.platform.ui.internal.actions;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
+import org.csstudio.platform.ui.security.AbstractUserDependentActionDelegate;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-/** Action that restarts the workbench.
+/**
+ * Action that restarts the workbench.
  * 
  *  @author Alexander Will
  *  @author Kay Kasemir
  */
-public class RestartAction extends Action implements
-                IWorkbenchWindowActionDelegate
-{
+public class RestartAction extends AbstractUserDependentActionDelegate implements
+		IWorkbenchWindowActionDelegate {
+
     /** Reference to the associated workbench. */
     private IWorkbench _workbench;
+
+	/**
+	 * Standard constructor.
+	 */
+	public RestartAction() {
+		super("restart");
+	}
 
     /** Memorize the window's workbench */
     public final void init(final IWorkbenchWindow window)
@@ -51,16 +57,10 @@ public class RestartAction extends Action implements
         _workbench = null;
     }
 
-    /** {@inheritDoc} */
-    public final void selectionChanged(final IAction action,
-                    final ISelection selection)
-    {
-        // do nothing
-    }
-
-    /** Restart the workbench */
-    public final void run(final IAction action)
-    {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void doWork() {
         _workbench.restart();
-    }
+	}
 }
