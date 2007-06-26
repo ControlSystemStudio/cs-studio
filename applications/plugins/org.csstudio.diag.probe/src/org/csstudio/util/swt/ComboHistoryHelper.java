@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Combo;
  */
 public abstract class ComboHistoryHelper
 {
-    private static final boolean debug = true;
+    private static final boolean debug = false;
     private static final String TAG = "values"; //$NON-NLS-1$
     private static final int DEFAULT_MAX = 10;
     private final IDialogSettings settings;
