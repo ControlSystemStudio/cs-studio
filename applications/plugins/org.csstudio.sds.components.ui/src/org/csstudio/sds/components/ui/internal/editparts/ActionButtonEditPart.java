@@ -25,7 +25,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.figures.IRefreshableFigure;
@@ -85,6 +84,10 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 					break;
 				case 1:
 					RunModeService.getInstance().openDisplayViewInRunMode(model.getResource());
+					break;
+				case 2:
+					CentralLogger.getInstance().info(this, "Set Value: "+model.getClickValue());
+					model.getProperty(ActionButtonModel.PROP_CLICK_VALUE).setManualValue(model.getClickValue());
 					break;
 				default:
 					// do nothing

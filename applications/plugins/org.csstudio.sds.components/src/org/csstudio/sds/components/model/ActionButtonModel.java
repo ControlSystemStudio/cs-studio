@@ -24,6 +24,7 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.ResourceProperty;
@@ -50,6 +51,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The ID of the resource property.
 	 */
 	public static final String PROP_RESOURCE = "resource"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the click value property.
+	 */
+	public static final String PROP_CLICK_VALUE = "click_value"; //$NON-NLS-1$
 
 	/**
 	 * The ID of the action property.
@@ -121,12 +127,14 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, new Path(""), FILE_EXTENSIONS));
 		addProperty(PROP_ACTION, new OptionProperty("Action",
 				WidgetPropertyCategory.Behaviour, new String[] {
-						"Open Display As Shell", "Open Display As View" }, 0));
+						"Open Display As Shell", "Open Display As View", "Set Value" }, 0));
 		addProperty(PROP_FONT, new FontProperty("Font",
 				WidgetPropertyCategory.Display, new FontData(
 						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
 		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
 				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
+		addProperty(PROP_CLICK_VALUE, new DoubleProperty("Click Value",
+				WidgetPropertyCategory.Behaviour, 0));
 	}
 
 	/**
@@ -170,6 +178,15 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 */
 	public IPath getResource() {
 		return (IPath) getProperty(PROP_RESOURCE).getPropertyValue();
+	}
+	
+	/**
+	 * Return the click value.
+	 * 
+	 * @return The click value.
+	 */
+	public double getClickValue() {
+		return (Double) getProperty(PROP_CLICK_VALUE).getPropertyValue();
 	}
 
 	/**
