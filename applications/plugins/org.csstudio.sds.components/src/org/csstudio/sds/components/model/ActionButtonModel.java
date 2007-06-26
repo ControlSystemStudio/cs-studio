@@ -26,7 +26,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
-import org.csstudio.sds.model.properties.PathProperty;
+import org.csstudio.sds.model.properties.ResourceProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -90,6 +90,10 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The labels for the text alignment property.
 	 */
 	private static final String[] SHOW_LABELS = new String[] {"Center", "Top", "Bottom", "Left", "Right"};
+	/**
+	 * The default value for the file extensions.
+	 */
+	private static final String[] FILE_EXTENSIONS = new String[] {"css-sds"};
 
 	/**
 	 * Standard constructor.
@@ -113,8 +117,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	protected void configureProperties() {
 		addProperty(PROP_LABEL, new StringProperty(Messages.LabelElement_LABEL,
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
-		addProperty(PROP_RESOURCE, new PathProperty("Resource",
-				WidgetPropertyCategory.Behaviour, new Path("")));
+		addProperty(PROP_RESOURCE, new ResourceProperty("Resource",
+				WidgetPropertyCategory.Behaviour, new Path(""), FILE_EXTENSIONS));
 		addProperty(PROP_ACTION, new OptionProperty("Action",
 				WidgetPropertyCategory.Behaviour, new String[] {
 						"Open Display As Shell", "Open Display As View" }, 0));
