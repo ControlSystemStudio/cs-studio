@@ -14,6 +14,10 @@ import org.eclipse.ui.IPerspectiveFactory;
 public class Perspective implements IPerspectiveFactory
 {
     public static final String ID = Perspective.class.getName();
+    @SuppressWarnings("unused")
+    private static final String ID_PROGRESS =
+        "org.csstudio.platform.ui.views.progress";
+    
     @SuppressWarnings("nls")
     public void createInitialLayout(IPageLayout layout)
     {
@@ -34,6 +38,9 @@ public class Perspective implements IPerspectiveFactory
         bottom.addView(ConfigView.ID);
         bottom.addPlaceholder(SampleView.ID);
         bottom.addView(ExportView.ID);
-        bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
+        // IDE version of the progress view
+        // bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
+        // The one from CSS
+        bottom.addPlaceholder(ID_PROGRESS);
     }
 }
