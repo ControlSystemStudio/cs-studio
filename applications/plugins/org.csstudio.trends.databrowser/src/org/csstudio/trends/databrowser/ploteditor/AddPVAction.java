@@ -1,6 +1,7 @@
 package org.csstudio.trends.databrowser.ploteditor;
 
 import org.csstudio.trends.databrowser.AbstractAddPVAction;
+import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 
 /** Action that adds a new PV to the model.
@@ -19,6 +20,7 @@ public class AddPVAction extends AbstractAddPVAction
     @Override
     protected void addPV(String pv_name)
     {
-        model.addPV(pv_name);
+        IPVModelItem pv_item = model.addPV(pv_name);
+        model.addDefaultArchiveSources(pv_item);
     }
 }

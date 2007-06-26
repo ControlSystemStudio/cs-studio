@@ -16,7 +16,6 @@ import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
-import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.util.time.RelativeTime;
 import org.eclipse.swt.dnd.DropTargetEvent;
 
@@ -244,9 +243,7 @@ public class Controller
                     if (item instanceof IPVModelItem)
                     {
                         IPVModelItem pv_item = (IPVModelItem) item;
-                        IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
-                        for (int i = 0; i < archives.length; i++)
-                            pv_item.addArchiveDataSource(archives[i]);
+                        Controller.this.model.addDefaultArchiveSources(pv_item);
                     }
                 }
 

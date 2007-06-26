@@ -326,6 +326,14 @@ public class Model
     {
         return (IPVModelItem) add(ItemType.ProcessVariable, pv_name, axis_index);
     }
+    
+    /** Add the default archive data sources as per Preferences to item */
+    public void addDefaultArchiveSources(IPVModelItem pv_item)
+    {
+        IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
+        for (IArchiveDataSource arch : archives)
+            pv_item.addArchiveDataSource(arch);
+    }
 
     /** Add a new item to the model.
      * 

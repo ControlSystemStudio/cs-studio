@@ -15,7 +15,6 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.formula_gui.FormulaDialog;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
-import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.util.swt.AutoSizeColumn;
 import org.csstudio.util.swt.AutoSizeControlListener;
 import org.csstudio.util.swt.RGBCellEditor;
@@ -886,12 +885,9 @@ public class ConfigView extends PlotAwareView
         Model model = getModel();
         if (model == null)
             return null;
-        IPVModelItem item = model.addPV(name);
-        // Add default archive data sources from prefs
-        IArchiveDataSource archives[] = Preferences.getArchiveDataSources();
-        for (int i = 0; i < archives.length; i++)
-            item.addArchiveDataSource(archives[i]);
-        return item;
+        IPVModelItem pv_item = model.addPV(name);
+        model.addDefaultArchiveSources(pv_item);
+        return pv_item;
     }
     
     /** Add a new formula to the model. */
