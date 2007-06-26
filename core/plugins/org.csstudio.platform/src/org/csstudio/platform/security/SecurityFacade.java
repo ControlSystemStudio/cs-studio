@@ -158,5 +158,9 @@ public final class SecurityFacade {
 	public void addUserManagementListener(IUserManagementListener listener) {
 		_userListeners.add(listener);
 	}
+	
+	public void removeUserManagementListener(IUserManagementListener listener) {
+		_userListeners.remove(listener);
+	}
 
 }
