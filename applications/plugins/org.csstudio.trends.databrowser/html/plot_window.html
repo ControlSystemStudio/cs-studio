@@ -10,10 +10,13 @@ Its title bar displays the name of the associated configuration file,
 or "&lt;not saved&gt;" for a newly created Data Browser instance
 that is not (yet) saved to a configuration file.
 
-<img src=plot.png width=1004 height=589>
+<img src=plot.png width=842 height=591>
 
-<h3>Zoom/Pan Buttons</h3>
-The top row of buttons allows interactive pan and zoom operations.
+<h3>Zoom/Pan Button Bar</h3>
+The button bar on top of the plot window provides interactive pan and zoom
+operations.
+In case the button bar is not visible, use the plot's context menu to
+re-enable it.
 <ul>
 <li>"Up/Down", <img src=../icons/up.gif>/<img src=../icons/down.gif>:<br>
     Move the chart up respectively down.
@@ -31,6 +34,9 @@ The top row of buttons allows interactive pan and zoom operations.
     <br>
     For 2 Axes, one will auto-zoom to fill the upper half of the plot,
     and the other axis data will occupy the lower half of the plot.
+<li>"Default Zoom", <img src=../icons/defaultscale.gif>:<br>
+    Uses the axis limits suggested by the PV. In case none are available,
+    defaults to auto-zoom.
 <li>"Left/Right", <img src=../icons/left.gif>/<img src=../icons/right.gif>:<br> 
     Moves the chart left/right. 
 <li>"X-In/Out", <img src=../icons/x_in.gif> / <img src=../icons/x_out.gif>:<br>
@@ -81,12 +87,16 @@ When dropping onto an existing Y-Axis, the PV is added to that Y-Axis.
 <h3>Context Menu Options</h3>
 The context menu has the following options:
 <ul>
-<li>Remove Markers: Removes all sample markers.
+<li>Show/Hide Button Bar: Toggles the button bar on or off.
+<li>Remove all Markers: Removes all sample markers.
+<li>Remove selected Markers: Removes the selected sample markers. Select them by clicking on them.
 <li>Add PV: Opens dialog box for entering new PV name.
 <li>Config View: Opens the <a href=config_view.html>Config View</a>.
 <li>Archive View: Opens the <a href=archive_view.html>Archive View</a>.
 <li>Sample View: Opens the <a href=sample_view.html>Sample View</a>.
 <li>Export View: Opens the <a href=export_view.html>Export View</a>.
+<li>Open As View: Opens the currently saved data browser configuration file
+    as a read-only 'View'.
 <li>Data Browser Perspective: Selects the <a href=setup.html>Data Browser Perspective</a>.
 </ul>
 

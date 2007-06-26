@@ -10,7 +10,7 @@ You can open a new Data Browser via the menu item
 <p>
 This will result in an empty plot window
 to which one can then <a href=add_pvs.html>add PVs</a>.
-One can create more than one Data Browser instance.
+You can open more than one Data Browser instance.
 
 <h2>Data Browser Perspective</h2>
 Especially for first-time users it might be
@@ -27,10 +27,11 @@ and select the <pre>Data Browser Perspective</pre> menu item.
 If your screen differs significantly from the snapshow
 shown below, somebody has already customized the
 Data Browser Perspective.
-If you want to reset it, select the menu item
-<pre>Window/Reset Perspective</pre>
+If you want to reset it, select the context menu of the
+perspective (right click on the "Data Browser" tab)
+and select "Reset".
 <p>
-<img src=perspective.png width=785 height=715>
+<img src=perspective.png width=1015 height=650>
 
 <h2>Stopping a Data Browser Instance</h2>
 You can simply close a Data Browser Plot window via the usual
@@ -46,20 +47,16 @@ saving it.
 
 <h2>The Workspace, "Project" Folders</h2>
 All configuration files are saved in "Project" folders in the "Workspace".
-When starting for the very first time, you might have to create
-an initial "Project" folder.
-At later times, you might want to create additional "Project" folders
-to better organize your files.
-<p>
-To create a "Project" folder:
+The CSS Application will create an initial "CSS" project folder for you.
+To create additional ones to better organize your files:
 <ol>
-<li>Unless it is already open, obtain a "Navigator" view,
+<li>Unless it is already open, obtain a "Workspace Explorer" view,
     accessible via the Menu
-   <pre>Window/Show View.../Other/General,Navigator</pre>
+   <pre>Window/Show View.../Other.../Other/Workspace Explorer</pre>
 <li>Each top-level folder in that view is a "Project" in your
     "Workspace".
-    If there is no folder, create at least one via the Navigator context menu
-    <pre>New/Project.../General/Project</pre>
+    Create new projects via the Workspace Explorer context menu
+    <pre>New Project</pre>
     In the resulting "New Project" dialog, enter a project name.
 </ol>
 
@@ -74,8 +71,7 @@ and a "File/Save" menu allows saving changes to the current file name.
 
 <h2>Re-loading a Data Browser Configurations</h2>
 You open a saved Data Browser configuration by double-clicking on the
-configuration file in the "Navigator",
-or via the "Open..." item in the Navigator context menu.
+configuration file in the "Workspace Explorer".
 
 <h2>Creating a new, empty Data Browser Configurations</h2>
 You can of course open a new Data Browser Plot window and then
@@ -84,15 +80,10 @@ use "File/Save As" to save its configuration as shown above.
 Alternatively, you can directly create a new, empty Data Browser
 configuration file like this:
 <ul>
-<li>Opening the "Navigator" view.
-<li>Invoke its context menu
-    <pre>New, Other..., CSS, Data Browser</pre>
-    <br>
-    <img src="new_wizard.png" width=491 height=474/>
+<li>Open the "Workspace Explorer" view.
+<li>Invoke its "New Data Browser" context menu.
 <li>In the resulting dialog, select the Project folder
-    as well as the configuration file name:
-    <p>
-    <img src="new_databrowser.png" width=496 height=294/>
+    as well as the configuration file name.
 </ul>
 
 </body>

@@ -7,9 +7,9 @@
 Most of the configuration is adjusted in this view,
 accessible via the context menu of the plot window.
 <br>
-It has two sub-sections or "tabs".
+It has several sub-sections or "tabs".
 
-<img src=config.png width=750 height=321/>
+<img src=config.png width=798 height=369/>
 
 <h3>"Process Variables" Tab</h3>
 This subsection configures which PVs are shown in the plot and how.
@@ -27,9 +27,10 @@ The "Min" and "Max" settings determine the Y-Axis range. The "Type" selects
 a linear or log. axis. Since these settings modify the Y-Axis, they percolate
 to all PVs on that axis.
 
-<h4>Archive Table</h4>
-This table lists the archive data sources which are used to read samples
-for the selected PV.
+<h4>Archive Table, Formula</h4>
+The lower half of the PV tab changes depending on the PV type.
+For PVs, it displays a table for archive data sources which are used to
+read samples for the selected PV
 <p>
 To add archive data sources, Drag-and-Drop from the
 <a href=archive_view.html>Archive View</a>
@@ -39,6 +40,8 @@ or onto a selected PV in the config view.
 Then, you can rearrange the order of 
 archives for a PV via the context menu
 of the "Archives used for ..." table.
+<p>
+For formulas, the formula is shown.
 
 <h3>"Live Data Config" Tab</h3>
 This subsection configures how often 'live'
@@ -49,6 +52,14 @@ every 4 seconds.
 Note that redraws are quite costly in terms of CPU usage, so
 reducing the redraw rate by increasing the update period can
 help to reduce the CPU load.
+
+<h3>"Time Config" Tab</h3>
+Allows entry of the start and end time.
+<p>
+For a "scrolling" display, enter relative times that end in "now", for
+example a start specification of "-30 minutes" and an end of "now".
+Use the start/end time dialog, accessible via the "..." buttons,
+if the start/end time syntax is unclear.
 
 </body>
 </html>
