@@ -36,7 +36,10 @@ public class JMSAlarmMessageList extends JMSMessageList {
 				JmsLogsPlugin.logException("No SEVERITY in message", e);
 			}
 			if (severity != null) {
-				if ((deleteEqualMessages(mm))
+				//is there an old message from same pv (deleteOrGrayOutEqualMessages == true)
+				// -> display new message anyway
+				//is new message NOT from Type NO_ALARM -> display message
+				if ((deleteOrGrayOutEqualMessages(mm))
 						|| (severity.equalsIgnoreCase("NO_ALARM")) == false) {
 					JMSMessage jmsm = addMessageProperties(mm);
 					JMSMessages.add(JMSMessages.size(), jmsm);
@@ -51,20 +54,21 @@ public class JMSAlarmMessageList extends JMSMessageList {
 
 	/**
 	 * Delete previous messages from the same pv and with the same severity Mark
-	 * messages from the same pv and with a different severety that the label
-	 * provider can set a brighter color. (It is important to use the
+	 * messages from the same pv and with a different severity that the label
+	 * provider can set a brighter color. Test if the EVENTTIME of the new message
+	 * is really newer than an existing message. (It is important to use the
 	 * <code>removeMessage</code> method from <code>MessageList</code> that
-	 * the changeListeners on the model were actualised.
+	 * the changeListeners on the model were actualised.)
 	 * 
 	 * @param mm
 	 *            The new MapMessage
 	 * @return Is there a previous message in the list with the same pv name
 	 */
-	private boolean deleteEqualMessages(MapMessage mm) {
+	private boolean deleteOrGrayOutEqualMessages(MapMessage mm) {
 		if (mm == null) {
 			return false;
 		}
-		boolean equalPreviousMessage = false;
+	boolean equalPreviousMessage = false;
 		Iterator<JMSMessage> it = JMSMessages.listIterator();
 		List<JMSMessage> jmsMessagesToRemove = new ArrayList<JMSMessage>();
 		List<JMSMessage> jmsMessagesToRemoveAndAdd = new ArrayList<JMSMessage>();
@@ -78,18 +82,24 @@ public class JMSAlarmMessageList extends JMSMessageList {
 					String pvNameFromList = jmsm.getProperty("NAME");
 					String severityFromList = jmsm.getProperty("SEVERITY");
 					if ((pvNameFromList != null) && (severityFromList != null)) {
-
+						
+						//is there a previous alarm message from same pv?
 						if (newPVName.equalsIgnoreCase(pvNameFromList)) {
 							equalPreviousMessage = true;
-							if (newSeverity.equalsIgnoreCase(severityFromList)) {
+							
+							//is old message gray, are both severities equal -> remove
+							if ((jmsm.isBackgroundColorGray()) || (newSeverity.equalsIgnoreCase(severityFromList))) {
 								jmsMessagesToRemove.add(jmsm);
+								
 							} else {
 								jmsMessagesToRemove.add(jmsm);
-                                if(!jmsm.getProperty("ACK_HIDDEN").toUpperCase().equals("TRUE") && severityFromList
-                                        .equalsIgnoreCase("NO_ALARM") == false) {
-                                    jmsMessagesToRemoveAndAdd.add(jmsm);
+								//is old message not acknowledged or is severity from old message not NO_ALARM ->
+								//add message to list (not delete message)
+                                if(!jmsm.getProperty("ACK_HIDDEN").toUpperCase().equals("TRUE") && 
+                                		severityFromList.equalsIgnoreCase("NO_ALARM") == false) {
+                                    jmsm.setBackgroundColorGray(true);
+                                	jmsMessagesToRemoveAndAdd.add(jmsm);
                                 }
-                                jmsm.setBackgroundColorGray(true);
 							}
 						}
 					}

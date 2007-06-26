@@ -24,10 +24,11 @@ package org.csstudio.alarm.table;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Vector;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.TextMessage;
 
 import org.csstudio.alarm.table.dataModel.JMSAlarmMessageList;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
@@ -37,8 +38,6 @@ import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.utility.ldap.engine.Engine;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -48,21 +47,41 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
 
 
 /**
- * Simple view more like console, used to write log messages
+ * Add to the base class {@code LogView}:
+ * - the acknowledge button and combo box
+ * - the send method for jms acknowledge messages 
+ * - the rule for receiving a new acknowledge message
+ * 
+ * @see LogView
+ * @author jhatje
+ * @author $Author$
+ * @version $Revision$
+ * @since 06.06.2007
  */
 public class AlarmLogView extends LogView {
 
 	public static final String ID = AlarmLogView.class.getName();
 
-	public void createPartControl(Composite parent) {
 
+	/**
+	 * Creates the view for the alarm log table.
+	 * 
+	 * @param parent
+	 */
+	@Override
+	public void createPartControl(Composite parent) {
+		
+		//read the column names from the preference page
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(
-						";"); //$NON-NLS-1$
+						";");
+		
+		//create the table model 
 		jmsml = new JMSAlarmMessageList(columnNames);
 
 		parentShell = parent.getShell();
@@ -109,11 +128,23 @@ public class AlarmLogView extends LogView {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE8));
         if(prefs.getString(JmsLogPreferenceConstants.VALUE9).trim().length()>0)
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE9));
+        
         ackButton.addSelectionListener(new SelectionListener(){
-            public void widgetSelected(SelectionEvent e) {
-                if(ackCombo.getSelectionIndex()==0){
-                    TableItem[] items = jlv.getTable().getItems();
-                    JMSMessage message;
+            
+        	/**
+        	 * Acknowledge button is pressed to ack. all (selection 0) 
+        	 * messages or messages with a special severity (selection
+        	 * 1-3)
+        	 * 
+        	 */
+        	public void widgetSelected(SelectionEvent e) {
+                
+        	    TableItem[] items = jlv.getTable().getItems();
+                JMSMessage message;
+                
+                //TODO check selection in the loop to save the if else statement
+        		if(ackCombo.getSelectionIndex()==0){
+                
                     for (TableItem ti : items) {
                         
                         SendMapMessage sender = new SendMapMessage();
@@ -146,8 +177,6 @@ public class AlarmLogView extends LogView {
                         }
                     }
                 }else{
-                    TableItem[] items = jlv.getTable().getItems();
-                    JMSMessage message;
                     for (TableItem ti : items) {
 
                         SendMapMessage sender = new SendMapMessage();
@@ -187,15 +216,13 @@ public class AlarmLogView extends LogView {
             public void widgetDefaultSelected(SelectionEvent e) {}
             
         });
-        
-        
-		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
-				.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(
-						";"); //$NON-NLS-1$
-		
-		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2,SWT.SINGLE | SWT.FULL_SELECTION|SWT.CHECK);
-		jlv.setAlarmSorting(true);
-		parent.pack();
+
+        //create jface table viewer with paramter 2 for alarm table version
+        jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2,SWT.SINGLE | SWT.FULL_SELECTION|SWT.CHECK);
+
+        jlv.setAlarmSorting(true);
+
+        parent.pack();
 
 		cl = new ColumnPropertyChangeListener(
 				AlarmViewerPreferenceConstants.P_STRINGAlarm,
@@ -206,7 +233,13 @@ public class AlarmLogView extends LogView {
 		
 	}
 	
-   
+    /**
+     * Override the rule in the log table if a message
+     * will be acknowledged.
+     * 
+     * @param message
+     */
+	@Override
 	protected void setAck(MapMessage message) {
 	       TableItem[] items = jlv.getTable().getItems();
 	       for (TableItem item : items) {
@@ -232,15 +265,4 @@ public class AlarmLogView extends LogView {
 	       }
 	}
 	
-	
-    /* (non-Javadoc)
-     * @see org.csstudio.alarm.table.LogView#setAckTrue(org.csstudio.alarm.table.dataModel.JMSMessage)
-     */
-//    @Override
-//    void setAckTrue(JMSMessage jmsMessage) {
-//	    if (jmsMessage.isBackgroundColorGray() == true) {
-//	        jmsml.removeJMSMessage(jmsMessage);
-//	        jlv.refresh();
-//	    }
-//    }
 }

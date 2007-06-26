@@ -68,10 +68,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
-import com.sun.jmx.mbeanserver.MetaData;
-
-import sun.java2d.loops.MaskBlit;
-
 public class JMSLogTableViewer extends TableViewer {
 
 	private Table table;
@@ -114,6 +110,7 @@ public class JMSLogTableViewer extends TableViewer {
 		columnNames = colNames;
 		jmsml = j;
 		table = this.getTable();
+		
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
@@ -121,7 +118,7 @@ public class JMSLogTableViewer extends TableViewer {
         table.addListener (SWT.Selection, new Listener () {
             public void handleEvent (Event event) {
                 JMSMessage message;
-                if (event.item instanceof TableItem && event.button==0) {
+                if (event.item instanceof TableItem && event.button==0&&event.detail==32) {
                     TableItem ti = (TableItem) event.item;
                     if(ti.getChecked()){
                         SendMapMessage sender = new SendMapMessage();
@@ -152,10 +149,15 @@ public class JMSLogTableViewer extends TableViewer {
                         	JmsLogsPlugin.logException("ACK not set", e);
                             e.printStackTrace();
                         }
-                        String string = event.detail == SWT.CHECK ? "Checked" : "Selected";
                     }else{
                         ti.setChecked(true);
                     }
+                //Click on other columns but ack should not check or uncheck the ack box
+                }else if (event.item instanceof TableItem && event.button==0&&event.detail==0) {
+                	TableItem ti = (TableItem) event.item;
+                	if(ti.getChecked() == false) {
+                		ti.setChecked(false);
+                	}
                 }
             }
         });
@@ -213,6 +215,7 @@ public class JMSLogTableViewer extends TableViewer {
 		Control contr = this.getControl();
 		if (tableType == 1) {
 			manager.add(new DeleteAction(this));
+			manager.add(new DeleteAllAction(this));
 			}
 		manager.add(new Separator());
 		manager.addMenuListener(new IMenuListener() {

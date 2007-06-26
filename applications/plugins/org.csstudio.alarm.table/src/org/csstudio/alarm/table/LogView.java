@@ -88,7 +88,7 @@ public class LogView extends ViewPart implements MessageListener {
 		comp.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
 		comp.setLayout(new GridLayout(4, true));
 
-		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 1,SWT.SINGLE | SWT.FULL_SELECTION);
+		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 1,SWT.MULTI | SWT.FULL_SELECTION);
 		jlv.setAlarmSorting(false);
 		parent.pack();
 		
@@ -154,11 +154,10 @@ public class LogView extends ViewPart implements MessageListener {
 						JmsLogsPlugin.logError("received message is not a map message");
 					} else if (message instanceof MapMessage) {
                         MapMessage mm = (MapMessage) message;
-                        JmsLogsPlugin.logInfo("message received");
                         if(mm.getString("ACK")!=null &&  mm.getString("ACK").toUpperCase().equals("TRUE")){
                             setAck(mm);
                         } else {
-                            jmsml.addJMSMessage(mm);
+                        	jmsml.addJMSMessage(mm);
                         }
 					} else {
 						JmsLogsPlugin.logError("received message is an unknown type");
@@ -195,13 +194,6 @@ public class LogView extends ViewPart implements MessageListener {
         
     }
 
-//    /**
-//     * @param jmsMessage
-//     */
-//    void setAckTrue(JMSMessage jmsMessage) {
-//        jmsMessage.getHashMap().put("ACK","true");
-//        jlv.refresh();
-//    }
 
     public void dispose() {
 		super.dispose();
