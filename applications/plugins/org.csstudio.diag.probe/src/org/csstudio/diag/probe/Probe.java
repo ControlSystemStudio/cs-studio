@@ -56,11 +56,20 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class Probe extends ViewPart implements PVListener
 {
-    public static final String ID = Probe.class.getName();
+    /** Multiple Probe views are allowed.
+     *  Their ID has to be ID + ":<instance>"
+     */
+    public static final String ID = "org.csstudio.diag.probe.Probe"; //$NON-NLS-1$
     private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
     private static final String PV_TAG = "PVName"; //$NON-NLS-1$
     public static final boolean debug = false;
-
+    
+    /** Instance number, used to create a unique ID
+     *  @see #createNewInstance()
+     */
+    private static int instance = 0;
+    
+    /** Memento used to preserve the PV name. */
     private IMemento memento = null;
 
     // GUI
@@ -96,7 +105,8 @@ public class Probe extends ViewPart implements PVListener
             IWorkbench workbench = PlatformUI.getWorkbench();
             IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
             IWorkbenchPage page = window.getActivePage();
-            Probe probe = (Probe) page.showView(Probe.ID);
+            Probe probe = (Probe) page.showView(ID, createNewInstance(),
+                                                IWorkbenchPage.VIEW_ACTIVATE);
             probe.setPVName(pv_name.getName());
             return true;
         }
@@ -106,6 +116,13 @@ public class Probe extends ViewPart implements PVListener
             e.printStackTrace();
         }
         return false;
+    }
+    
+    /** @return a new view instance */
+    public static String createNewInstance()
+    {
+        ++instance;
+        return Integer.toString(instance);
     }
 
     public Probe()

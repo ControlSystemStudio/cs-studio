@@ -26,7 +26,8 @@ public class ShowProbeAction implements IWorkbenchWindowActionDelegate
 	        IWorkbench workbench = PlatformUI.getWorkbench();
 	        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 	        IWorkbenchPage page = window.getActivePage();
-	        page.showView(Probe.ID);
+	        page.showView(Probe.ID, Probe.createNewInstance(),
+                          IWorkbenchPage.VIEW_ACTIVATE);
 	    }
 	    catch (Exception e)
 	    {
