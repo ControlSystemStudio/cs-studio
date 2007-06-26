@@ -69,10 +69,10 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 			fillRectangle = new Rectangle(figureBounds.x, figureBounds.y+figureBounds.height-newH, figureBounds.width, newH);
 		}
 		graphics.setClip(backgroundRectangle);
-		graphics.setBackgroundColor(getForegroundColor());
+		graphics.setBackgroundColor(getBackgroundColor());
 		graphics.fillOval(figureBounds);
 		graphics.setClip(fillRectangle);
-		graphics.setBackgroundColor(getBackgroundColor());
+		graphics.setBackgroundColor(getForegroundColor());
 		graphics.fillOval(figureBounds);
 	}
 
