@@ -131,10 +131,17 @@ public final class WorkspaceSwitchHelper
     {
         if (workspace == null)
             return false;
+        workspace = workspace.trim();
+        // In case there's no intitial '/':
+        if (! workspace.startsWith("/"))
+        	workspace = "/" + workspace;
+        // In case we get windows '\' slashes, normalize them to the
+        // Unix/OS X slashes that the Platform provides for the current
+        // workspace.
+        workspace = workspace.replace('\\', '/');
         // The 'current' workspace seems to end in '/',
         // while the user input might or might not.
         // Equalize by chopping trailing '/'.
-        workspace = workspace.trim();
         if (workspace.endsWith("/")) //$NON-NLS-1$
             workspace = workspace.substring(0, workspace.length() -1);
         // Empty?
