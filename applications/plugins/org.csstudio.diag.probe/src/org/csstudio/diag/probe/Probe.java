@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
@@ -90,6 +91,7 @@ public class Probe extends ViewPart implements PVListener
     /** Smoothed period in seconds between received values. */
     private SmoothedDouble value_period = new SmoothedDouble();
     private NumberFormat period_format;
+	private Text pv_label;
 
     /** Create or re-display a probe view with the given PV name.
      *  <p>
@@ -196,11 +198,10 @@ public class Probe extends ViewPart implements PVListener
         //
         // ------- status --------
 
-        // Row 1
-        Label label = new Label(parent, SWT.NONE);
-        label.setText(Messages.S_PVName);
+        pv_label = new Text(parent, SWT.READ_ONLY);
+		pv_label.setText(Messages.S_PVName);
         gd = new GridData();
-        label.setLayoutData(gd);
+        pv_label.setLayoutData(gd);
 
         cbo_name = new ComboViewer(parent, SWT.SINGLE | SWT.BORDER);
 //        txt_name.setSorter(new UsedSorter());
@@ -245,7 +246,7 @@ public class Probe extends ViewPart implements PVListener
         });
 
         // Row 2
-        label = new Label(parent, SWT.NONE);
+        Label label = new Label(parent, SWT.NONE);
         label.setText(Messages.S_Value);
         gd = new GridData();
         label.setLayoutData(gd);
@@ -313,11 +314,16 @@ public class Probe extends ViewPart implements PVListener
 
     /** Add context menu.
      *  Basically empty, only contains MB_ADDITIONS to allow object contribs.
+     *  <p>
+     *  TODO: This doesn't work on all platforms.
+     *  On Windows, the combo box already comes with a default context menu
+     *  for cut/copy/paste/select all/...
+     *  Sometimes you see the CSS context menu on right-click,
+     *  and sometimes you don't.
      */
     private void makeContextMenu()
     {
         MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-        Control contr = cbo_name.getControl();
         manager.addMenuListener(new IMenuListener()
         {
             public void menuAboutToShow(IMenuManager manager)
@@ -326,8 +332,10 @@ public class Probe extends ViewPart implements PVListener
                                 IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
-        Menu menu = manager.createContextMenu(contr);
-        contr.setMenu(menu);
+        Control control = cbo_name.getControl();
+        //Control control = pv_label;
+        Menu menu = manager.createContextMenu(control);
+        control.setMenu(menu);
         getSite().registerContextMenu(manager, cbo_name);
     }
 
