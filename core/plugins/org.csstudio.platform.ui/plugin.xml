@@ -215,7 +215,12 @@
            class="org.csstudio.platform.ui.views.WorkspaceExplorerView"
            icon="icons/project_open.png"
            id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
-           name="Workspace Explorer"/>            
+           name="Workspace Explorer"/>    
+      <view
+            class="org.eclipse.ui.ExtensionFactory:progressView"
+            icon="icons/pview.gif"
+            id="org.csstudio.platform.ui.views.progress"
+            name="%progressView"/>
    </extension>
    <extension
          id="cssPreferenceCategories"
