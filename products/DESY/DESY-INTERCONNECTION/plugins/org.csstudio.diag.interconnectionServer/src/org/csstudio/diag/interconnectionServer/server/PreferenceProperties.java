@@ -17,13 +17,20 @@ public class PreferenceProperties {
 	// RMI message transfer takes about 300mS
 	//	SECONDARY_JMS_URL
 	
-	public static String JMS_CONTEXT_FACTORY = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
+	// public static String JMS_CONTEXT_FACTORY = "org.apache.activemq.jndi.ActiveMQInitialContextFactory"; // 
+	public static String JMS_CONTEXT_FACTORY = "ACTIVEMQ";
+	
+	public static long JMS_TIME_TO_LIVE_ALARMS 		= 3600000;  //	60min X 60 sec X 1000 ms	(1hour)
+	public static long JMS_TIME_TO_LIVE_LOGS 		=  600000;  //	10min X 60 sec X 1000 ms	(10min)
+	public static long JMS_TIME_TO_LIVE_PUT_LOGS 	= 3600000;  //	60min X 60 sec X 1000 ms	(1hour)
 
-	///public static String PRIMARY_JMS_URL = "tcp://krynfs.desy.de:61616";	//TCP
-	public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs.desy.de:62616,tcp://elogbook.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50";	//TCP
+	///public static String PRIMARY_JMS_URL = "tcp://elogbook.desy.de:64616";	//TCP
+	public static String PRIMARY_JMS_URL = "failover:(tcp://krynfsb.desy.de:63616,tcp://krynfsb.desy.de:63616)?maxReconnectDelay=500,maxReconnectAttempts=50";	//TCP
+	//public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs.desy.de:62616,tcp://elogbook.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50";	//TCP
 	//public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";
-	///public static String SECONDARY_JMS_URL = "tcp://elogbook.desy.de:61616";
+	///public static String SECONDARY_JMS_URL = "tcp://krynfs.desy.de:62616";
 	public static String SECONDARY_JMS_URL = "failover:(tcp://elogbook.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=2000,maxReconnectAttempts=100";
+	///public static String SECONDARY_JMS_URL = "tcp://elogbook.desy.de:64616";
 
 	
 //	public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";	//RMI
@@ -34,7 +41,8 @@ public class PreferenceProperties {
 	
 	//public static String JMS_URL = "tcp://krykelog.desy.de:3035/";	//TCP
 	public static String PROCESS_NAME = "MCL-Test";
-	public static int MAX_NUMBER_OF_CLIENTS = 100;
+	//public static int MAX_NUMBER_OF_CLIENTS = 100;
+	public static int MAX_NUMBER_OF_CLIENT_THREADS = 200;
 	public static int BUFFER_ZIZE = 65535;
 	public static int BEACON_TIMEOUT_PERIOD = 30; //seconds
 	public static String DATA_TOKENIZER = ";";
@@ -45,6 +53,7 @@ public class PreferenceProperties {
 	
 	public static String REPLY_IS_OK = "ok";
 	public static String REPLY_IS_ERROR = "error";
+	public static String REPLY_IS_DONE = "done";
 	
 	public static String COMMAND_TAKE_OVER 			= "takeOver";
 	public static String COMMAND_DISCONNECT 		= "disconnect";
@@ -60,6 +69,8 @@ public class PreferenceProperties {
 	
 	public static String[]	COMMAND_LIST = {COMMAND_TAKE_OVER, COMMAND_DISCONNECT, COMMAND_SEND_ALARM, 
 		COMMAND_SEND_ALL_ALARMS, COMMAND_SEND_STATUS };
+	
+	public static final int	TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND	= 10000;
 	
 	public static final int 	TAG_TYPE_LOG_SERVER_REPLY = 1;
 	public static final String 	TAG_LOG_SERVER_REPLY = "TEST-KEY";
@@ -80,6 +91,11 @@ public class PreferenceProperties {
 	 * client request thread properties
 	 */
 	public static final int CLIENT_REQUEST_THREAD_MAX_NUMBER_DISCONNECT_FROM_IOC	= 500;
-	public static final int CLIENT_REQUEST_THREAD_MAX_NUMBER_ALARM_LIMIT			= 100;
+	public static final int CLIENT_REQUEST_THREAD_MAX_NUMBER_ALARM_LIMIT			= 50;
+	public static final int CLIENT_REQUEST_THREAD_MAX_NUMBER_STOP_LIMIT				= 100;
+	public static final int CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN			= 25;
+	// 2 minutes timout
+	public static final int CLIENT_REQUEST_THREAD_TIMEOUT							= 120000; // 2 minutes timout
+	
 
 }
