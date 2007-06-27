@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Control System Studio (SNS)
+Bundle-SymbolicName: org.csstudio.sns.product; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: Kay Kasemir
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.csstudio.platform,
+ org.csstudio.platform.ui,
+ org.eclipse.ui.intro
+Eclipse-LazyStart: true
+Bundle-Activator: org.csstudio.sns.product.PluginActivator

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.csstudio.sns.product.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.sns.product.CSS_Perspective"
+            icon="icons/perspective.gif"
+            id="org.csstudio.sns.product.CSS_Perspective"
+            name="SNS Control System Studio">
+      </perspective>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.sns.product.application"
+            name="SNS CSS">
+         <property
+               name="windowImages"
+               value="icons/perspective.gif,icons/css32.gif,icons/css48.gif,icons/css64.gif,icons/css128.gif"/>
+         <property
+               name="aboutImage"
+               value="icons/about.gif"/>
+         <property
+               name="aboutText"
+               value="%aboutText"/>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            icon="icons/css16.gif"
+            id="org.csstudio.sns.product.intro"/>
+      <introProductBinding
+            introId="org.csstudio.sns.product.intro"
+            productId="org.csstudio.sns.product.product"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.config">
+      <config
+            content="/intro/intro.xml"
+            id="org.csstudio.sns.product.introConfigId"
+            introId="org.csstudio.sns.product.intro">
+         <presentation home-page-id="root">
+            <implementation
+                  kind="html"
+                  />
+         </presentation>
+      </config>
+   </extension>
+</plugin>
