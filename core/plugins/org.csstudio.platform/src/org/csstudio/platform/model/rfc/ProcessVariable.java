@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.platform.internal.model.rfc;
+package org.csstudio.platform.model.rfc;
 
 import java.io.PrintStream;
 import java.util.regex.Matcher;
@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
 
+import org.csstudio.platform.CSSPlatformPlugin;
 import org.epics.css.dal.NumericPropertyCharacteristics;
 import org.epics.css.dal.context.RemoteInfo;
 
@@ -63,7 +64,7 @@ import org.epics.css.dal.context.RemoteInfo;
  * @author Sven Wende
  * 
  */
-class ProcessVariable {
+public class ProcessVariable {
 	public static final String PART_SEPARATOR = "/";
 
 	private ControlSystemEnum _controlSystem;
@@ -131,10 +132,12 @@ class ProcessVariable {
 					_controlSystem = ControlSystemEnum.valueOf(m.group(2)
 							.toUpperCase());
 				} else {
-					_controlSystem = SomeWhere.DEFAULT_CONTROL_SYSTEM;
+					String controlSystem = CSSPlatformPlugin.getDefault().getPluginPreferences().getString(ControlSystemEnum.PROP_CONTROL_SYSTEM);
+					_controlSystem = ControlSystemEnum.valueOf(controlSystem);
 				}
 			} catch (IllegalArgumentException e) {
-				_controlSystem = SomeWhere.DEFAULT_CONTROL_SYSTEM;
+				String controlSystem = CSSPlatformPlugin.getDefault().getPluginPreferences().getString(ControlSystemEnum.PROP_CONTROL_SYSTEM);
+				_controlSystem = ControlSystemEnum.valueOf(controlSystem);
 			}
 
 			String device = m.group(4);
@@ -174,7 +177,9 @@ class ProcessVariable {
 		// control system is mandatory, but will be set to a default, when
 		// its not provided
 		if (controlSystem == null) {
-			_controlSystem = SomeWhere.DEFAULT_CONTROL_SYSTEM;
+			String controlSystemString = CSSPlatformPlugin.getDefault().getPluginPreferences().getString(ControlSystemEnum.PROP_CONTROL_SYSTEM);
+			_controlSystem = ControlSystemEnum.valueOf(controlSystemString);
+			//_controlSystem = SomeWhere.DEFAULT_CONTROL_SYSTEM;
 		} else {
 			_controlSystem = controlSystem;
 		}

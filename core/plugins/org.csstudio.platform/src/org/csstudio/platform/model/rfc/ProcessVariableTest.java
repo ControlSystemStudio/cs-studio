@@ -1,4 +1,4 @@
-package org.csstudio.platform.internal.model.rfc;
+package org.csstudio.platform.model.rfc;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.platform.internal.model.rfc;
+package org.csstudio.platform.model.rfc;
 
 /**
  * Dummy interface. Will be replaced later.

@@ -107,7 +107,7 @@ public final class ContainerView extends ViewPart {
 	private void addDragSupport() {
 		FilteredDragSourceAdapter dragSourceListener = new FilteredDragSourceAdapter(
 				new Class[] { IProcessVariable.class, IArchiveDataSource.class,
-						TextContainer.class }) {
+						TextContainer.class/*, ProcessVariable.class*/}) {
 			public List getCurrentSelection() {
 				return ((IStructuredSelection) _treeViewer.getSelection())
 						.toList();
