@@ -22,6 +22,8 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.jms.Connection;
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -37,21 +39,29 @@ public class ClientRequest extends Thread
 {
     private DatagramSocket      socket          = null;
     private DatagramPacket      packet          = null;
-    private Session             alarmSession, logSession, putLogSession         = null;
-    private Destination         alarmDestination, logDestination, putLogDestination     = null;
-    private MessageProducer		alarmSender, logSender, putLogSender	= null;
+    // private Session             alarmSession, logSession, putLogSession         = null;
+    // private Destination         alarmDestination, logDestination, putLogDestination     = null;
+    private Connection          alarmConnection, logConnection, putLogConnection    = null;
+    // private MessageProducer		alarmSender, logSender, putLogSender	= null;
     //private MessageProducer     sender          = null;
     //private MapMessage          message         = null;
     private Statistic			statistic		= null;
     public Statistic.StatisticContent  statisticContent = null;
     public TagList 				tagList			= null;
+    InterconnectionServer icServer = null;
     
-	public ClientRequest( InterconnectionServer icServer, DatagramSocket d, DatagramPacket p, Session jmsAlarmSession, Destination jmsAlarmDestination, MessageProducer jmsAlarmSender, 
+	/* 
+	 * 
+	 public ClientRequest( InterconnectionServer icServer, DatagramSocket d, DatagramPacket p, Session jmsAlarmSession, Destination jmsAlarmDestination, MessageProducer jmsAlarmSender, 
 			Session jmsLogSession, Destination jmsLogDestination, MessageProducer jmsLogSender, 
 			Session jmsPutLogSession, Destination jmsPutLogDestination, MessageProducer jmsPutLogSender)
+			*/
+	public ClientRequest( InterconnectionServer icServer, DatagramSocket d, DatagramPacket p, Connection alarmConnection, Connection logConnection,Connection puLogConnection)
 	{
-        this.socket       = d;
+        this.icServer = icServer;
+		this.socket       = d;
 		this.packet       = p;
+		/*
 		this.alarmSession      = jmsAlarmSession;
 		this.logSession      = jmsLogSession;
 		this.putLogSession      = jmsPutLogSession;
@@ -61,6 +71,11 @@ public class ClientRequest extends Thread
         this.alarmSender = jmsAlarmSender;
         this.logSender = jmsLogSender;
         this.putLogSender = jmsPutLogSender;
+        */
+		this.alarmConnection = alarmConnection;
+		this.logConnection = logConnection;
+		this.putLogConnection = puLogConnection;
+		
         this.statistic	  = Statistic.getInstance();
         this.tagList 	  = TagList.getInstance();
         
@@ -81,6 +96,9 @@ public class ClientRequest extends Thread
 	    boolean 		received		= true;
 	    MapMessage      message         = null;
 	    MessageProducer sender          = null;
+	    Session         alarmSession	= null;
+	    Session         logSession		= null;
+	    Session         putLogSession	= null;
         
         address 	= packet.getAddress();
         hostName 	= address.getHostName();
@@ -95,7 +113,7 @@ public class ClientRequest extends Thread
         /*
          * increase stistic counter
          */
-        InterconnectionServer.getInstance().getClientRequestTheadCollector().incrementValue();
+        icServer.getClientRequestTheadCollector().incrementValue();
         
         ///System.out.println("Time: - start 		= " + dateToString(new GregorianCalendar()));
         //
@@ -110,8 +128,8 @@ public class ClientRequest extends Thread
         
         Vector<TagValuePairs> tagValuePairs	= new Vector<TagValuePairs>();
         Hashtable<String,String> tagValue = new Hashtable<String,String>();	// could replace the Vector above
-        TagValuePairs	id		= InterconnectionServer.getInstance().new TagValuePairs();
-        TagValuePairs	type	= InterconnectionServer.getInstance().new TagValuePairs();
+        TagValuePairs	id		= icServer.new TagValuePairs();
+        TagValuePairs	type	= icServer.new TagValuePairs();
 
         
         //
@@ -155,25 +173,37 @@ public class ClientRequest extends Thread
         		//
         		//System.out.print("a");
         		try {
+        			alarmSession = alarmConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+                    // Create the destination (Topic or Queue)
+        			Destination alarmDestination = alarmSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+
+                    // Create a MessageProducer from the Session to the Topic or Queue
+                	MessageProducer alarmSender = alarmSession.createProducer( alarmDestination);
+                	alarmSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
+                	alarmSender.setTimeToLive( PreferenceProperties.JMS_TIME_TO_LIVE_ALARMS);
+                	
             		//sender = alarmSession.createProducer(alarmDestination);
             		//System.out.println("Time-ALARM: - after sender= 	= " + dateToString(new GregorianCalendar()));
                     //message = alarmSession.createMapMessage();
-            		message = InterconnectionServer.getInstance().prepareTypedJmsMessage( alarmSession.createMapMessage(), tagValuePairs, type);
+            		message = icServer.prepareTypedJmsMessage( alarmSession.createMapMessage(), tagValuePairs, type);
             		///System.out.println("Time-APARM: - after message= 	= " + dateToString(new GregorianCalendar()));
             		
-            		alarmSender.setPriority( 9);
+            		///alarmSender.setPriority( 9);
             		///System.out.println("Time-ALARM: - before sender-send 	= " + dateToString(new GregorianCalendar()));
             		alarmSender.send(message);
-            		message = null;
+            		
+            		alarmSender.close();
+            		
             		//System.out.print("aJs");
-            		InterconnectionServer.getInstance().getJmsMessageWriteCollector().setValue(gregorianTimeDifference( parseTime, new GregorianCalendar()));
+            		icServer.getJmsMessageWriteCollector().setValue(gregorianTimeDifference( parseTime, new GregorianCalendar()));
             		//System.out.print("aJe");
             		//System.out.println("Time-ALARM: - after sender-send 	= " + dateToString(new GregorianCalendar()));
         		}
         		catch(JMSException jmse)
                 {
         			status = false;
-        			InterconnectionServer.getInstance().checkSendMessageErrorCount();
+        			icServer.checkSendMessageErrorCount();
                     System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
@@ -188,7 +218,7 @@ public class ClientRequest extends Thread
         		afterLdapWriteTime = new GregorianCalendar();
         		
         		//checkPerformance( parseTime, afterJmsSendTime, afterUdpAcknowledgeTime, afterLdapWriteTime);
-        		System.out.print("A");
+        		///System.out.print("A");
         		break;
         		
         	case TagList.STATUS_MESSAGE:
@@ -198,15 +228,25 @@ public class ClientRequest extends Thread
         		// LOG jms server
         		//
         		try{
+        			logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+                    // Create the destination (Topic or Queue)
+        			Destination logDestination = logSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+
+                    // Create a MessageProducer from the Session to the Topic or Queue
+                	MessageProducer logSender = logSession.createProducer( logDestination);
+                	logSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
+                	logSender.setTimeToLive( PreferenceProperties.JMS_TIME_TO_LIVE_LOGS);
         			// sender = logSession.createProducer(logDestination);
                     //message = logSession.createMapMessage();
-                    message = InterconnectionServer.getInstance().prepareTypedJmsMessage( logSession.createMapMessage(), tagValuePairs, type);
+                    message = icServer.prepareTypedJmsMessage( logSession.createMapMessage(), tagValuePairs, type);
             		logSender.send(message);
+            		logSender.close();
         		}
         		catch(JMSException jmse)
                 {
         			status = false;
-        			InterconnectionServer.getInstance().checkSendMessageErrorCount();
+        			icServer.checkSendMessageErrorCount();
                     //System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
@@ -237,41 +277,31 @@ public class ClientRequest extends Thread
         			// connect state changed!
         			//
         			Statistic.getInstance().getContentObject(statisticId).setConnectState (true);
-        			//
-        			// try to send message (if logSession already available 
-        			//
-        			if ( logSession != null) {
-        				try{
-                			InterconnectionServer.getInstance().sendLogMessage( InterconnectionServer.getInstance().prepareJmsMessage ( logSession.createMapMessage(), InterconnectionServer.getInstance().jmsLogMessageNewClientConnected( statisticId)));
-                			}
-                			catch(JMSException jmse)
-                            {
-                    			status = false;
-                                System.out.println("ClientRequest : send NewClientConnected-LOG message : *** EXCEPTION *** : " + jmse.getMessage());
-                            }
-        			} else {
-        				//
-        				// cannot send log message -> print locally
-        				//
-        				System.out.println("ClientRequest : NO logSession available => change connection state");
-        			}
-        			
         			/*
-        			Statistic.getInstance().getContentObject(statisticId).setConnectState (true);
+        			 * create JMS sender
+        			 * 
+        			 */
         			try{
-            			sender = logSession.createProducer(logDestination);
-                        message = logSession.createMapMessage();
-                        message = jmsLogMessageNewClientConnected( statisticId);
-                		sender.send(message);
+            			logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+                        // Create the destination (Topic or Queue)
+            			Destination logDestination = logSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+
+                        // Create a MessageProducer from the Session to the Topic or Queue
+                    	MessageProducer logSender = logSession.createProducer( logDestination);
+                    	logSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
+                    	logSender.setTimeToLive( PreferenceProperties.JMS_TIME_TO_LIVE_LOGS);
+                    	icServer.sendLogMessage( icServer.prepareJmsMessage ( logSession.createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
+                    	logSender.close();
             		}
             		catch(JMSException jmse)
                     {
             			status = false;
-                        System.out.println("ClientRequest : send NewClientConnected-LOG message : *** EXCEPTION *** : " + jmse.getMessage());
+            			icServer.checkSendMessageErrorCount();
+                        //System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
                     }
-                    */
         		}
-        		System.out.print("B");
+        		//System.out.print("B");
         		break;
         		
         	case TagList.PUT_LOG_MESSAGE:
@@ -279,15 +309,25 @@ public class ClientRequest extends Thread
         		// PUT-LOG jms server
         		//
         		try {
+        			putLogSession = putLogConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+                    // Create the destination (Topic or Queue)
+        			Destination putLogDestination = putLogSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+
+                    // Create a MessageProducer from the Session to the Topic or Queue
+                	MessageProducer putLogSender = putLogSession.createProducer( putLogDestination);
+                	putLogSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
+                	putLogSender.setTimeToLive( PreferenceProperties.JMS_TIME_TO_LIVE_PUT_LOGS);
         			//sender = putLogSession.createProducer(putLogDestination);
                     //message = putLogSession.createMapMessage();
-                    message = InterconnectionServer.getInstance().prepareTypedJmsMessage( putLogSession.createMapMessage(), tagValuePairs, type);
+                    message = icServer.prepareTypedJmsMessage( putLogSession.createMapMessage(), tagValuePairs, type);
             		putLogSender.send(message);
+            		putLogSender.close();
         		}
         		catch(JMSException jmse)
                 {
         			status = false;
-        			InterconnectionServer.getInstance().checkSendMessageErrorCount();
+        			icServer.checkSendMessageErrorCount();
                     System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
@@ -317,22 +357,29 @@ public class ClientRequest extends Thread
         	}
 
         }
-
-        // clean up
-        try
-        {
-            if (sender != null) {
-            	sender.close();
-            	System.out.println("clean up");
-            }
-            message = null;
-        }
-        catch(JMSException jmse)
-        {
-            System.out.println("ClientRequest : clean up : *** EXCEPTION *** : " + jmse.getMessage());
-        }         
+     
         //System.out.println("ClientRequest : clean up : leave thread" + this.getId());
-        InterconnectionServer.getInstance().getClientRequestTheadCollector().decrementValue();
+        icServer.getClientRequestTheadCollector().decrementValue();
+        icServer.setSuccessfullJmsSentCountdown(true);
+        //System.out.print("Ex");
+        
+		try {
+			if (alarmSession != null) {
+				alarmSession.close();
+			}
+			if (logSession != null) {
+				logSession.close();
+			}
+			if (putLogSession != null) {
+				putLogSession.close();
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} 
+		finally {
+			// final clean up
+		}
 	}
 	
 	private boolean parseMessage ( Hashtable<String,String> tagValue, Vector<TagValuePairs> tagValuePairs, TagValuePairs tag, TagValuePairs type, String statisticId) {
@@ -393,7 +440,7 @@ public class ClientRequest extends Thread
 		                    	type.setValue(attribute[1].toString());
 		                    	gotTag = true;
 		                    } else {
-		                    	TagValuePairs newTagValuePair =  InterconnectionServer.getInstance().new TagValuePairs ( attribute[0].toString(), attribute[1].toString());
+		                    	TagValuePairs newTagValuePair =  icServer.new TagValuePairs ( attribute[0].toString(), attribute[1].toString());
 		                    	tagValuePairs.add(newTagValuePair);
 		                    }
 	                	} //if
