@@ -24,6 +24,7 @@ package org.csstudio.platform.internal;
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.LocaleService;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.rfc.ControlSystemEnum;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -50,6 +51,7 @@ public final class PlatformPreferencesInitializer extends
 		initializeLoggingPreferences(node);
 		initializeAuthenticationPreferences(node);
 		initializeLocalePreferences(node);
+		initializeControlSystemPreferences(node);
 	}
 
 	/**
@@ -151,6 +153,15 @@ public final class PlatformPreferencesInitializer extends
 	 */
 	private void initializeLocalePreferences(final IEclipsePreferences node) {
 		node.put(LocaleService.PROP_LOCALE, ""); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Initializes the control system settings.
+	 * @param node
+	 *            the preferences node to use
+	 */
+	private void initializeControlSystemPreferences(final IEclipsePreferences node) {
+		node.put(ControlSystemEnum.PROP_CONTROL_SYSTEM, ControlSystemEnum.EPICS.name());
 	}
 
 }
