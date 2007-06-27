@@ -51,7 +51,7 @@ public class SendCommandToIoc extends Thread {
 				/*
 	        	 * set timeout period to 10 seconds
 	        	 */
-				socket.setSoTimeout(10000);
+				socket.setSoTimeout( PreferenceProperties.TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND);
 
 				packet = new DatagramPacket(buffer, buffer.length);
 				socket.receive(packet);
@@ -65,7 +65,7 @@ public class SendCommandToIoc extends Thread {
              */
 			answer = new String(packet.getData(), 0, packet.getLength());
 			
-            if ( answer.toUpperCase().contains("DONE")) {
+            if ( answer.contains(PreferenceProperties.REPLY_IS_DONE)) {
             	/*
             	 * nothing to do
             	 */
