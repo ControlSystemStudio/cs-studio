@@ -23,7 +23,28 @@ public class Collector {
 	private boolean		continuousPrint	= true;
 	private Double		continuousPrintCount = 100.0;
 	private String		info = "info not defined";
+	private Double		hardLimit = -1.0;
 
+
+	public Double getHardLimit() {
+		return hardLimit;
+	}
+	
+	public String getHardLimitAsString() {
+		if ( hardLimit == -1.0) {
+			return "not set";
+		} else {
+			return hardLimit.toString();
+		}
+	}
+	
+	public void setHardLimit(int hardLimit) {
+		this.hardLimit = new Double(hardLimit);
+	}
+
+	public void setHardLimit(Double hardLimit) {
+		this.hardLimit = hardLimit;
+	}
 
 	public Collector () {
 		/*
@@ -118,15 +139,29 @@ public class Collector {
 	}
 	
 	public void incrementValue () {
-		Double newValue = actualValue.getValue();
-		newValue++;
-		setValue ( newValue);
+		/*
+		 * use synchronized method
+		 */
+		incDecValue ( true);
 	}
 	
 	public void decrementValue () {
-		Double newValue = actualValue.getValue();
-		newValue--;
-		setValue ( newValue);
+		/*
+		 * use synchronized method
+		 */
+		incDecValue ( false);
+	}
+	
+	private synchronized void incDecValue ( boolean increment) {
+		if ( increment) {
+			Double newValue = actualValue.getValue();
+			newValue++;
+			setValue ( newValue);
+		} else {
+			Double newValue = actualValue.getValue();
+			newValue--;
+			setValue ( newValue);
+		}
 	}
 	
 	public void continuousPrinter () {
@@ -139,6 +174,9 @@ public class Collector {
 		System.out.println ("Lowest Value: " + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount()  + "Info: " + getLowestValue().getInfo());
 		System.out.println ("Mean Value abs: " + getMeanValueAbsolute());
 		System.out.println ("Mean Value rel.: " + getMeanValuerelative());
+		System.out.println ("Alarm Limit (abs) : " + getAlarmHandler().getHighAbsoluteLimit());
+		System.out.println ("Alarm Limit (rel) : " + getAlarmHandler().getHighRelativeLimit());
+		System.out.println ("Hard Limit : " + getHardLimitAsString());
 	}
 	
 	public String getCollectorStatus () {
@@ -153,6 +191,9 @@ public class Collector {
 		result += ("\nLowest Value: " + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount() + "Info: " + getLowestValue().getInfo());
 		result += ("\nMean Value abs: " + getMeanValueAbsolute());
 		result += ("\nMean Value rel.: " + getMeanValuerelative());
+		result += ("Alarm Limit (abs) : " + getAlarmHandler().getHighAbsoluteLimit());
+		result += ("Alarm Limit (rel) : " + getAlarmHandler().getHighRelativeLimit());
+		result += ("Hard Limit : " + getHardLimitAsString());
 		return result;
 	}
 	
@@ -171,6 +212,8 @@ public String getCollectorStatusAsXml () {
 		result += ("\n<Lowest Value>" + getLowestValue().getValue() + " \tDate: " + dateToString(getLowestValue().getTime()) + " \tCount: " + getLowestValue().getCount() + "Info: " + getLowestValue().getInfo());
 		result += ("\n<Mean Value abs>" + getMeanValueAbsolute());
 		result += ("\n<Mean Value rel>" + getMeanValuerelative());
+		// more ..
+		result += ("\n<Hard Limit>" + getHardLimitAsString());
 		return result;
 	}
 
