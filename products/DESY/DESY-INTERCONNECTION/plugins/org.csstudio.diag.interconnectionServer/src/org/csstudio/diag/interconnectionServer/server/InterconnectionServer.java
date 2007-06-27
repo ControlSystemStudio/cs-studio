@@ -14,6 +14,7 @@ import java.util.Vector;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -23,8 +24,11 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQSession.DeliveryListener;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
+import org.csstudio.platform.statistic.CollectorSupervisor;
 
 /**
  * This version uses <code>DatagramSockets</code> instead of Sockets.
@@ -40,10 +44,12 @@ public class InterconnectionServer
     private DatagramSocket              serverSocket    = null; 
     private DatagramSocket              serverCommandSocket    = null; 
     private Session                     alarmSession, logSession, putLogSession	        	= null;
+    private Connection                  alarmConnection, logConnection, putLogConnection    = null;
 	private Destination                 alarmDestination, logDestination, putLogDestination = null;
 	private MessageProducer				alarmSender, logSender, putLogSender		= null;
 	private boolean 					primaryServerUsed = true;
 	private int							sendMessageErrorCount	= 0;
+	public int 							successfullJmsSentCountdown = PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN;
 	//private static int					errorContNamingException = 0;
     
     public final String NAME    = "IcServer";
@@ -61,9 +67,11 @@ public class InterconnectionServer
     	Hashtable<String, String>   properties      = null;
     	Context                     alarmContext, logContext, putLogContext      	   	= null;
     	ConnectionFactory           alarmFactory, logFactory, putLogFactory        		= null;
-    	Connection                  alarmConnection, logConnection, putLogConnection    = null;
+    	//Connection                  alarmConnection, logConnection, putLogConnection    = null;
     	PrintStream                 newout          = null;
         int							errorContNamingException = 0;
+        ActiveMQConnectionFactory connectionFactory = null;
+        boolean activeMqIsActive = false;
         
         
         // Den Namen dieser Instanz setzen (wird für JMS benötigt)
@@ -81,14 +89,29 @@ public class InterconnectionServer
         // choose to start the primary - or the secondary JMS server
         //
         if ( primaryServerUsed) {
-        	properties.put(Context.PROVIDER_URL, PreferenceProperties.PRIMARY_JMS_URL);
-        	CentralLogger.getInstance().info(this, "Connect PRIMARY to Active-MQ-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
-        	System.out.println( "Connect PRIMARY to Active-MQ-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
+        	if ( (PreferenceProperties.JMS_CONTEXT_FACTORY) != null && PreferenceProperties.JMS_CONTEXT_FACTORY.toUpperCase().equals("ACTIVEMQ")) {
+        		connectionFactory = new ActiveMQConnectionFactory(PreferenceProperties.PRIMARY_JMS_URL);
+        		activeMqIsActive = true;
+        		CentralLogger.getInstance().info(this, "Connect PRIMARY to Active-MQ-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
+        		System.out.println( "Connect PRIMARY to Active-MQ-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
+        	} else {
+        		properties.put(Context.PROVIDER_URL, PreferenceProperties.PRIMARY_JMS_URL);
+        		CentralLogger.getInstance().info(this, "Connect PRIMARY to JMS-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
+        		System.out.println( "Connect PRIMARY to JMS-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
+        	}
+
         	this.primaryServerUsed = false;
         } else {
-        	properties.put(Context.PROVIDER_URL, PreferenceProperties.SECONDARY_JMS_URL);
-        	CentralLogger.getInstance().info(this, "Connect SECONDARY to Active-MQ-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
-        	System.out.println( "Connect SECONDARY to Active-MQ-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
+        	if ( (PreferenceProperties.JMS_CONTEXT_FACTORY) != null && PreferenceProperties.JMS_CONTEXT_FACTORY.toUpperCase().equals("ACTIVEMQ")) {
+        		connectionFactory = new ActiveMQConnectionFactory(PreferenceProperties.PRIMARY_JMS_URL);
+        		activeMqIsActive = true;
+        		CentralLogger.getInstance().info(this, "Connect SECONDARY to Active-MQ-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
+        		System.out.println( "Connect SECONDARY to Active-MQ-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
+        	} else {
+        		properties.put(Context.PROVIDER_URL, PreferenceProperties.SECONDARY_JMS_URL);
+        		CentralLogger.getInstance().info(this, "Connect SECONDARY to JMS-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
+        		System.out.println( "Connect SECONDARY to JMS-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
+        	}
         	this.primaryServerUsed = true;
         }
 
@@ -104,28 +127,34 @@ public class InterconnectionServer
         //
         try
         {
-        	
         	// Create a Connection
+        	if ( activeMqIsActive) {
+        		/*
+        		 * using ActiveMQ
+        		 */
+                this.alarmConnection = connectionFactory.createConnection();
+                this.alarmConnection.start();
+        	} else {
+        		/*
+        		 * using standard JMS
+        		 */
+        		alarmContext     = new InitialContext(properties);            
+                alarmFactory     = (ConnectionFactory)alarmContext.lookup("ConnectionFactory");
+                this.alarmConnection  = alarmFactory.createConnection();
+                this.alarmConnection.start();
+        	}
         	/*
-        	 * *
-        	 * * Using new activeMQ Server
-        	 * */
-        	alarmContext     = new InitialContext(properties);            
-            alarmFactory     = (ConnectionFactory)alarmContext.lookup("ConnectionFactory");
-            alarmConnection  = alarmFactory.createConnection();
-            alarmConnection.start();
-        	
         	// Create a Session
-        	this.alarmSession = alarmConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        	this.alarmSession = this.alarmConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
             // Create the destination (Topic or Queue)
         	this.alarmDestination = this.alarmSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
 
             // Create a MessageProducer from the Session to the Topic or Queue
         	this.alarmSender = this.alarmSession.createProducer(this.alarmDestination);
-        	// this.alarmSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
+        	this.alarmSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
        
-        	
+        	*/
             
         }
         catch(NamingException ne)
@@ -147,16 +176,22 @@ public class InterconnectionServer
         try
         {
         	// Create a Connection
+        	if ( activeMqIsActive) {
+        		/*
+        		 * using ActiveMQ
+        		 */
+        		logConnection = connectionFactory.createConnection();
+        		logConnection.start();
+        	} else {
+        		/*
+        		 * using standard JMS
+        		 */
+        		logContext     = new InitialContext(properties);            
+                logFactory     = (ConnectionFactory)logContext.lookup("ConnectionFactory");
+                logConnection  = logFactory.createConnection();
+                logConnection.start();
+        	}
         	/*
-        	 *
-        	 * Using new activeMQ Server
-        	 * 
-        	 */
-        	logContext     = new InitialContext(properties);            
-            logFactory     = (ConnectionFactory)logContext.lookup("ConnectionFactory");
-            logConnection  = logFactory.createConnection();
-            logConnection.start();
-        	
         	// Create a Session
         	this.logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
@@ -165,7 +200,8 @@ public class InterconnectionServer
 
             // Create a MessageProducer from the Session to the Topic or Queue
         	this.logSender = this.logSession.createProducer(this.logDestination);
-        	// this.logSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
+        	this.logSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
+        	*/
         }
         
         catch(NamingException ne)
@@ -186,16 +222,22 @@ public class InterconnectionServer
         try
         {
         	// Create a Connection
+        	if ( activeMqIsActive) {
+        		/*
+        		 * using ActiveMQ
+        		 */
+        		putLogConnection = connectionFactory.createConnection();
+        		putLogConnection.start();
+        	} else {
+        		/*
+        		 * using standard JMS
+        		 */
+        		putLogContext     = new InitialContext(properties);            
+                putLogFactory     = (ConnectionFactory)putLogContext.lookup("ConnectionFactory");
+                putLogConnection  = putLogFactory.createConnection();
+                putLogConnection.start();
+        	}
         	/*
-        	 *
-        	 * Using new activeMQ Server
-        	 * 
-        	 */
-        	putLogContext     = new InitialContext(properties);            
-            putLogFactory     = (ConnectionFactory)putLogContext.lookup("ConnectionFactory");
-            putLogConnection  = putLogFactory.createConnection();
-            putLogConnection.start();
-        	
         	// Create a Session
         	this.putLogSession = putLogConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
@@ -204,7 +246,8 @@ public class InterconnectionServer
 
             // Create a MessageProducer from the Session to the Topic or Queue
         	this.putLogSender = this.putLogSession.createProducer(this.putLogDestination);
-        	// this.putLogSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
+        	this.putLogSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
+        	*/
         }
 
         catch(NamingException ne)
@@ -226,6 +269,36 @@ public class InterconnectionServer
         	return false;
         }
 	}
+    
+    public void cleanupJms () {
+		try {
+			/*
+			 * disconnect from JMS
+			 */
+			//this.alarmSession.close();
+			this.alarmConnection.close();
+			
+			//this.logSession.close();
+			this.logConnection.close();
+			
+			//this.putLogSession.close();
+			this.putLogConnection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}    	
+    	
+    }
+    
+    public void restartJms () {
+    	/*
+    	 * 
+    	 */
+    	CentralLogger.getInstance().warn(this, "InterconnectionServer: Restart JMS connections! ");
+    	disconnectFromIocs();
+    	cleanupJms();
+    	setupConnections();
+    }
     
     private InterconnectionServer() {
     	// absicherung
@@ -252,6 +325,7 @@ public class InterconnectionServer
         int             result      = 0;
         boolean         quit        = false;
         byte 			buffer[]	=  new byte[ PreferenceProperties.BUFFER_ZIZE];
+        boolean receiveEnabled = true;
 
         /*
          * if not started from 'getInstance' ...
@@ -272,6 +346,7 @@ public class InterconnectionServer
         jmsMessageWriteCollector.setApplication("IC-Server");
         jmsMessageWriteCollector.setDescriptor("Time to write JMS message");
         jmsMessageWriteCollector.setContinuousPrint(true);
+        jmsMessageWriteCollector.setContinuousPrintCount(1000.0);
         jmsMessageWriteCollector.getAlarmHandler().setDeadband(5.0);
         jmsMessageWriteCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);	// 500ms
         jmsMessageWriteCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
@@ -282,9 +357,11 @@ public class InterconnectionServer
         clientRequestTheadCollector.setApplication("IC-Server");
         clientRequestTheadCollector.setDescriptor("Number of Client request Threads");
         clientRequestTheadCollector.setContinuousPrint(true);
+        clientRequestTheadCollector.setContinuousPrintCount(1000.0);
         clientRequestTheadCollector.getAlarmHandler().setDeadband(5.0);
         clientRequestTheadCollector.getAlarmHandler().setHighAbsoluteLimit( PreferenceProperties.CLIENT_REQUEST_THREAD_MAX_NUMBER_ALARM_LIMIT);	// 500ms
         clientRequestTheadCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
+        clientRequestTheadCollector.setHardLimit( PreferenceProperties.MAX_NUMBER_OF_CLIENT_THREADS);
         
         if ( ! setupConnections()){
         	//
@@ -308,31 +385,85 @@ public class InterconnectionServer
             return -1;
         }
         
-        
+        /*
+         * create thread group for the thread which will be created here:
+         */
+        ThreadGroup somegroup = new ThreadGroup ("ClientRequests");
     
         // TODO: Abbruchbedingung einfügen
         //       z.B. Receiver für Queue COMMAND einfügen
         while(!quit)
         {
-            try
-            {
-                packet = new DatagramPacket( buffer, buffer.length);
+        	/*
+        	 * check for the number of existing threads
+        	 * do not create new threads
+        	 * - send disconnect message to all currently connected IOCs (once)
+        	 * - wait one second
+        	 * - try again
+        	 */
+        	if ( clientRequestTheadCollector.getActualValue().getValue() > clientRequestTheadCollector.getHardLimit()) {
+        		
+        		if ( receiveEnabled) {
+        			CentralLogger.getInstance().warn( this, "Maximum number of client threads (" + clientRequestTheadCollector.getHardLimit() + ") reached - STOP creating new threads");
+        			/*
+        			 * send command to IOC's: I want to disconnect!
+        			 */
+        			disconnectFromIocs();
+            		/*
+            		 * print out overview of current statistic information
+            		 */
+            		System.out.println(CollectorSupervisor.getInstance().getCollectionAsString());
+            		receiveEnabled = false;
+        		}
+        		/*
+        		 * wait - otherwise we runn in an undefinite loop
+        		 */
+            	try {
+               		Thread.sleep(100);
+               	}
+               	catch (InterruptedException  e) {
+               		e.printStackTrace();
+               	}
+        	} else {
+        		try
+                {
+                    packet = new DatagramPacket( buffer, buffer.length);
 
-                serverSocket.receive(packet);
-                
-                newClient = new ClientRequest( this, serverSocket, packet, alarmSession, alarmDestination, alarmSender, 
-                		logSession, logDestination, logSender, putLogSession, putLogDestination, putLogSender);
-            }
-            catch(IOException ioe)
-            {
-                System.out.println("\n" + NAME + VERSION + " *** IOException *** : " + ioe.getMessage());         
-            }
+                    serverSocket.receive(packet);
+                    
+                    /* 
+                     * 
+                    newClient = new ClientRequest( this, serverSocket, packet, alarmSession, alarmDestination, alarmSender, 
+                    		logSession, logDestination, logSender, putLogSession, putLogDestination, putLogSender);
+                    		*/
+                    newClient = new ClientRequest( this, serverSocket, packet, alarmConnection, logConnection, putLogConnection);
+                    /*
+                     * does this cause a memory leak?
+                     */
+                    
+                    new ClientWatchdog ( newClient, PreferenceProperties.CLIENT_REQUEST_THREAD_TIMEOUT);
+                }
+                catch(IOException ioe)
+                {
+                    System.out.println("\n" + NAME + VERSION + " *** IOException *** : " + ioe.getMessage());         
+                }
+        		receiveEnabled = true;
+        	}
         }
                 
         serverSocket.close();
         
         return result;
     }
+    
+    private void disconnectFromIocs() {
+    	String[] listOfNodes = Statistic.getInstance().getNodeNameArray();
+    	for ( int i=0; i<listOfNodes.length; i++ ) {
+    		System.out.println ("InterconnectionServer: disconnect from IOC: " + listOfNodes[i]);
+    		new SendCommandToIoc( listOfNodes[i], PreferenceProperties.COMMAND_PORT_NUMBER, PreferenceProperties.COMMAND_DISCONNECT);
+    	}
+    }
+	
     
     public void checkSendMessageErrorCount () {
     	//
@@ -348,6 +479,14 @@ public class InterconnectionServer
     		//
     		// increase waiting time proportional to the number of failovers ( getNumberOfJmsServerFailover())
     		//
+    		
+    		/*
+    		 * cleanup JMS connections
+    		 */
+    		cleanupJms();
+    		/*
+    		 * set up new connection
+    		 */
     		setupConnections();
     		
     	}
@@ -357,11 +496,18 @@ public class InterconnectionServer
     public boolean sendLogMessage ( MapMessage message) {
     	boolean status = true;
     	try{
-			MessageProducer sender = logSession.createProducer(logDestination);
+    		logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            // Create the destination (Topic or Queue)
+			Destination logDestination = logSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+
+            // Create a MessageProducer from the Session to the Topic or Queue
+        	MessageProducer logSender = logSession.createProducer( logDestination);
+        	logSender.setDeliveryMode( DeliveryMode.NON_PERSISTENT);
 	        //message = logSession.createMapMessage();
 	        //message = jmsLogMessageNewClientConnected( statisticId);
-			sender.send(message);
-			sender.close();
+        	logSender.send(message);
+        	logSender.close();
 			return status;
 		}
 		catch(JMSException jmse)
@@ -505,5 +651,35 @@ public class InterconnectionServer
 
 	public void setSendCommandId(int sendCommandId) {
 		this.sendCommandId = sendCommandId;
+	}
+
+	public int getSuccessfullJmsSentCountdown() {
+		return successfullJmsSentCountdown;
+	}
+
+	synchronized void setSuccessfullJmsSentCountdown(int successfullJmsSentCountdown) {
+		this.successfullJmsSentCountdown = successfullJmsSentCountdown;
+	}
+	
+	public void setSuccessfullJmsSentCountdown(boolean success) {
+		/*
+		 * countdown is set to i.e. 50 (PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN)
+		 * decrement for every unsuccessful transaction
+		 * increment back to 50 if successfull
+		 * 
+		 * if 0 is reached: restart JMS connections
+		 */
+		int countdown = 0;
+		if ( success) {
+			setSuccessfullJmsSentCountdown( PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN );
+		} else {
+			countdown = getSuccessfullJmsSentCountdown();
+			if ( countdown-- < 0) {
+				restartJms();
+				setSuccessfullJmsSentCountdown( PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN );
+			} else {
+				setSuccessfullJmsSentCountdown(countdown); 
+			}
+		}
 	}
 }
