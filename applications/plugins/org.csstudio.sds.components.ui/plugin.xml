@@ -38,7 +38,13 @@
            typeId="element.bargraph"/>
      <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.ActionButtonEditPart"
-           typeId="element.actionbutton"/>           
+           typeId="element.actionbutton"/>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.LinkingContainerEditPart"
+           typeId="widget.linking-container"/>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.GroupingContainerEditPart"
+           typeId="widget.grouping-container"/>           
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">

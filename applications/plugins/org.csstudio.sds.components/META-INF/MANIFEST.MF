@@ -8,6 +8,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.sds,
  org.eclipse.draw2d,
- org.junit4
+ org.junit4,
+ org.eclipse.core.resources
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.sds.components.model
