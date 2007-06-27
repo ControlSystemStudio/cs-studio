@@ -47,24 +47,39 @@ public class AlarmHandler {
 		/*
 		 * alarm chaecking
 		 */
-		if ( (value > highAbsoluteLimit) && !highAbsoluteLimitIsActive) {
-			/*
-			 * set absolute limit on
-			 */
-			CentralLogger.getInstance().warn(this, getApplication() + " : " + getDescriptor() + "above absolute High limit! Value: " + value + "Info: " + collector.getInfo());
-			setHighAbsoluteLimitIsActive(true);
+		if ( (value > highAbsoluteLimit) ) {
+			if ( !isHighAbsoluteLimitIsActive()) {
+				/*
+				 * set absolute limit on
+				 */
+				CentralLogger.getInstance().warn(
+						this,
+						getApplication() + " : " + getDescriptor()
+								+ "above absolute High limit! Value: " + value
+								+ "Info: " + collector.getInfo());
+				setHighAbsoluteLimitIsActive(true);
+			}			
 		} else {
 			if ( value < ( highAbsoluteLimit * (100.0 - deadband))) {
 				setHighAbsoluteLimitIsActive(false);
 			}
 		}
 		
-		if ( (value > highAbsoluteLimit) && (value > ( collector.getMeanValuerelative() * getHighRelativeLimit()/ 100.0 ) && !highRelativeLimitIsActive)) {
-			/*
-			 * set absolute limit on
-			 */
-			CentralLogger.getInstance().warn(this, getApplication() + " : " + getDescriptor() + " : >" + getHighRelativeLimit() + "% "  + "above floating mean value (" + collector.getMeanValuerelative() + ")! Value: " + value + "Info: " + collector.getInfo());
-			setHighRelativeLimitIsActive(true);
+		if ( (value > highAbsoluteLimit) && (value > ( collector.getMeanValuerelative() * getHighRelativeLimit()/ 100.0 ))) {
+			if ( !isHighRelativeLimitIsActive()) {
+				/*
+				 * set absolute limit on
+				 */
+				CentralLogger.getInstance().warn(
+						this,
+						getApplication() + " : " + getDescriptor() + " : >"
+								+ getHighRelativeLimit() + "% "
+								+ "above floating mean value ("
+								+ collector.getMeanValuerelative()
+								+ ")! Value: " + value + "Info: "
+								+ collector.getInfo());
+				setHighRelativeLimitIsActive(true);
+			}			
 		} else {
 			if ( value < ( (collector.getMeanValuerelative() * getHighRelativeLimit()/ 100.0 ) * (100.0 - deadband))) {
 				setHighRelativeLimitIsActive(false);
@@ -85,7 +100,7 @@ public class AlarmHandler {
 		this.deadband = new Double(deadband);
 	}
 	public Double getHighAbsoluteLimit() {
-		return highAbsoluteLimit;
+		return this.highAbsoluteLimit;
 	}
 	public void setHighAbsoluteLimit(Double highAbsoluteLimit) {
 		this.highAbsoluteLimit = highAbsoluteLimit;
@@ -94,19 +109,19 @@ public class AlarmHandler {
 		this.highAbsoluteLimit = new Double(highAbsoluteLimit);
 	}
 	public boolean isHighAbsoluteLimitIsActive() {
-		return highAbsoluteLimitIsActive;
+		return this.highAbsoluteLimitIsActive;
 	}
 	public void setHighAbsoluteLimitIsActive(boolean highAbsoluteLimitIsActive) {
 		this.highAbsoluteLimitIsActive = highAbsoluteLimitIsActive;
 	}
 	public StoredData getHighAbsoluteLimitLastAlarm() {
-		return highAbsoluteLimitLastAlarm;
+		return this.highAbsoluteLimitLastAlarm;
 	}
 	public void setHighAbsoluteLimitLastAlarm(StoredData highAbsoluteLimitLastAlarm) {
 		this.highAbsoluteLimitLastAlarm = highAbsoluteLimitLastAlarm;
 	}
 	public Double getHighRelativeLimit() {
-		return highRelativeLimit;
+		return this.highRelativeLimit;
 	}
 	public void setHighRelativeLimit(Double highRelativeLimit) {
 		this.highRelativeLimit = highRelativeLimit;
@@ -115,19 +130,19 @@ public class AlarmHandler {
 		this.highRelativeLimit = new Double(highRelativeLimit);
 	}
 	public boolean isHighRelativeLimitIsActive() {
-		return highRelativeLimitIsActive;
+		return this.highRelativeLimitIsActive;
 	}
 	public void setHighRelativeLimitIsActive(boolean highRelativeLimitIsActive) {
 		this.highRelativeLimitIsActive = highRelativeLimitIsActive;
 	}
 	public StoredData getHighRelativeLimitLastAlarm() {
-		return highRelativeLimitLastAlarm;
+		return this.highRelativeLimitLastAlarm;
 	}
 	public void setHighRelativeLimitLastAlarm(StoredData highRelativeLimitLastAlarm) {
 		this.highRelativeLimitLastAlarm = highRelativeLimitLastAlarm;
 	}
 	public String getLogLevel() {
-		return logLevel;
+		return this.logLevel;
 	}
 	public void setLogLevel(String logLevel) {
 		this.logLevel = logLevel;
