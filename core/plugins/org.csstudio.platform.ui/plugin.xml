@@ -33,6 +33,11 @@
             class="org.csstudio.platform.ui.internal.logging.JmsAppenderPreferencePage"
             id="org.csstudio.platform.log.logPreferences.jms"
             name="%logJmsAppenderPageName"/>
+      <page
+            category="org.csstudio.platform.ui.css.platform"
+            class="org.csstudio.platform.ui.internal.logging.ControlSystemPreferencePage"
+            id="org.csstudio.platform.log.controlsystemPreferences"
+            name="Control System"/>
    </extension>
    <extension
          point="org.eclipse.help.toc">
