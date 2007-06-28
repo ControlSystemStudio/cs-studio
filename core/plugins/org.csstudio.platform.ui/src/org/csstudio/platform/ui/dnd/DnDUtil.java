@@ -94,7 +94,38 @@ public final class DnDUtil {
 
 		Transfer[] types = new Transfer[] {
 				ControlSystemItemTransfer.getInstance(),
-				TextTransfer.getInstance() };
+				TextTransfer.getInstance()};
+
+		dragSource.setTransfer(types);
+
+		dragSource.addDragListener(dragSourceAdapter);
+	}
+	
+	/**
+	 * Prepares the specified control for drop operations.
+	 * 
+	 * @param control
+	 *            the <code>Control</code> that the user clicks on to initiate
+	 *            the drag
+	 * @param style
+	 *            the bitwise OR'ing of allowed operations; this may be a
+	 *            combination of any of DND.DROP_NONE, DND.DROP_COPY,
+	 *            DND.DROP_MOVE, DND.DROP_LINK (further details can be found in
+	 *            {@link DND})
+	 * 
+	 * @param dragSourceAdapter
+	 *            the listener who will be notified when a drag and drop
+	 *            operation is in progress, by sending it one of the messages
+	 *            defined in the <code>DragSourceListener</code> interface.
+	 */
+	public static void enableForDrag(final Control control, final int style,
+			final PVDragSourceAdapter dragSourceAdapter) {
+
+		DragSource dragSource = new DragSource(control, style);
+
+		Transfer[] types = new Transfer[] {
+				PVTransfer.getInstance(),
+				TextTransfer.getInstance()};
 
 		dragSource.setTransfer(types);
 

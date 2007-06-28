@@ -1,15 +1,15 @@
 package org.csstudio.platform.ui.internal.developmentsupport.util;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.csstudio.platform.internal.developmentsupport.util.DummyContentModelProvider;
-import org.csstudio.platform.internal.developmentsupport.util.TextContainer;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IControlSystemItem;
-import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.model.rfc.IPVAdressListProvider;
+import org.csstudio.platform.model.rfc.ProcessVariable;
 import org.csstudio.platform.ui.dnd.DnDUtil;
-import org.csstudio.platform.ui.dnd.FilteredDragSourceAdapter;
+import org.csstudio.platform.ui.dnd.PVDragSourceAdapter;
 import org.csstudio.platform.ui.workbench.ControlSystemItemEditorInput;
 import org.csstudio.platform.ui.workbench.IWorkbenchIds;
 import org.eclipse.core.runtime.IAdaptable;
@@ -42,7 +42,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author Sven Wende
  * @version $Revision$
  */
-public final class ContainerView extends ViewPart {
+public final class ContainerView extends ViewPart implements IPVAdressListProvider {
 
 	/**
 	 * The ID of this view as configured in the plugin manifest.
@@ -105,14 +105,16 @@ public final class ContainerView extends ViewPart {
 	 * Equip the tree viewer with drag&drop support.
 	 */
 	private void addDragSupport() {
-		FilteredDragSourceAdapter dragSourceListener = new FilteredDragSourceAdapter(
-				new Class[] { IProcessVariable.class, IArchiveDataSource.class,
-						TextContainer.class/*, ProcessVariable.class*/}) {
-			public List getCurrentSelection() {
-				return ((IStructuredSelection) _treeViewer.getSelection())
-						.toList();
-			}
-		};
+//		FilteredDragSourceAdapter dragSourceListener = new FilteredDragSourceAdapter(
+//				new Class[] { IProcessVariable.class, IArchiveDataSource.class,
+//						TextContainer.class}) {
+//			public List getCurrentSelection() {
+//				return ((IStructuredSelection) _treeViewer.getSelection())
+//						.toList();
+//			}
+//		};
+		
+		PVDragSourceAdapter dragSourceListener = new PVDragSourceAdapter(this);
 
 		DnDUtil.enableForDrag(_treeViewer.getTree(), DND.DROP_MOVE
 				| DND.DROP_COPY, dragSourceListener);
@@ -196,5 +198,20 @@ public final class ContainerView extends ViewPart {
 					"NoEditorInformationDialogTitle", //$NON-NLS-1$
 					"ResourceNavigationView.NoEditorInformationDialogText"); //$NON-NLS-1$
 		}
+	}
+
+	public List<ProcessVariable> getPVAdressList() {
+		List<ProcessVariable> list = new LinkedList<ProcessVariable>();
+		Object[] objects = ((IStructuredSelection) _treeViewer.getSelection()).toArray();
+		for (Object o : objects) {
+			if (o instanceof IControlSystemItem) {
+				list.add(new ProcessVariable( ((IControlSystemItem)o).getName() ));
+			} else if (o instanceof String) {
+				list.add(new ProcessVariable( (String)o ));
+			} else if (o instanceof ProcessVariable) {
+				list.add((ProcessVariable) o);
+			}
+		}
+		return list;
 	}
 }
