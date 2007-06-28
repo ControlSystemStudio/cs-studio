@@ -3,6 +3,8 @@ package org.csstudio.trends.databrowser.configview;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.IPVModelItem;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -20,13 +22,16 @@ public class PVTableCellModifier implements ICellModifier
         this.view = view;
     }
     
-	/** All columns of the model can change.
-     *  The last row only allows name entry.
-     */
+    /** @return <code>true</code> if this object's column can be edited */
 	public boolean canModify(Object element, String col_title)
 	{
+	    // The last row only allows name entry.
         if (element == PVTableHelper.empty_row)
             return col_title.equals(PVTableHelper.Column.NAME.getTitle());
+        // The request type only applies to PVs.
+        if (col_title.equals(PVTableHelper.Column.REQUEST_TYPE.getTitle()))
+            return element instanceof IPVModelItem;
+        // Otherwise, all columns of the model can change.
         return true;
     }
 
@@ -63,6 +68,8 @@ public class PVTableCellModifier implements ICellModifier
                 break; // use string
             case LOG_SCALE:
                 return new Boolean(entry.getLogScale());
+            case REQUEST_TYPE:
+                
             case TRACE_TYPE:
                 return entry.getTraceType().ordinal();
             }
@@ -132,6 +139,20 @@ public class PVTableCellModifier implements ICellModifier
             case LOG_SCALE:
                 boolean use_log = ((Boolean)value).booleanValue();
                 entry.setLogScale(use_log);
+                return;
+            case REQUEST_TYPE:
+                if (entry instanceof IPVModelItem)
+                {
+                    // TODO remove when done
+                    MessageDialog.openInformation(view.getSite().getShell(),
+                            "Being Developed", //$NON-NLS-1$
+                            "This feature doesn't do anything, yet\nIt's still under development"); //$NON-NLS-1$
+                    IPVModelItem pv = (IPVModelItem) entry;
+                    if (pv.getRequestType() == IPVModelItem.RequestType.RAW)
+                        pv.setRequestType(IPVModelItem.RequestType.OPTIMIZED);
+                    else
+                        pv.setRequestType(IPVModelItem.RequestType.RAW);
+                }
                 return;
             case TRACE_TYPE:
                 int ordinal = ((Integer) value).intValue();

@@ -2,6 +2,7 @@ package org.csstudio.trends.databrowser.configview;
 
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.IPVModelItem;
 
 /** Helper for creating a table of PV rows from the model.
  * 
@@ -24,13 +25,13 @@ public class PVTableHelper
         AXIS(Messages.AxisIndex, 30, 5, true),
         
         /** Axis minimum */
-        MIN(Messages.ValueRangeMin, 50, 20, false),
+        MIN(Messages.ValueRangeMin, 40, 20, false),
         
         /** Axis maximum */
-        MAX(Messages.ValueRangeMax, 50, 20, false),
+        MAX(Messages.ValueRangeMax, 40, 20, false),
         
         /** Autoscale */
-        AUTO_SCALE(Messages.AutoScale, 30, 20, true),
+        AUTO_SCALE(Messages.AutoScale, 40, 20, true),
         
         /** Color column identifier */
         COLOR(Messages.Color, 30, 5, false),
@@ -40,6 +41,9 @@ public class PVTableHelper
         
         /** Axis type (linear, log) column identifier */
         LOG_SCALE(Messages.AxisType, 45, 20, true),
+
+        /** Archive request type column identifier */
+        REQUEST_TYPE(Messages.Request, 40, 20, true),
         
         /** Trace display type */
         TRACE_TYPE(Messages.DisplayType, 35, 20, true);
@@ -146,6 +150,19 @@ public class PVTableHelper
             case LOG_SCALE:
                 return entry.getLogScale() ?
                         Messages.LogAxisType : Messages.LinearAxisType;
+            case REQUEST_TYPE:
+                if (entry instanceof IPVModelItem)
+                {
+                    IPVModelItem pv = (IPVModelItem) entry;
+                    switch (pv.getRequestType())
+                    {
+                    case RAW:
+                        return Messages.raw_request;
+                    case OPTIMIZED:
+                        return Messages.optimized_request;
+                    }
+                }
+                return null; // doesn't apply
             case TRACE_TYPE:
             	return entry.getTraceType().toString();
             case AUTO_SCALE:

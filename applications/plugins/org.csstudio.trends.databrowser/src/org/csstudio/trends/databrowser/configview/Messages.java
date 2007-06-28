@@ -42,9 +42,15 @@ public class Messages extends NLS
     public static String AxisType;
     public static String MoveArchsDown;
     public static String MoveArchsUp;
+
+    public static String optimized_request;
     public static String PVs;
     public static String PV;
+
+    public static String raw_request;
     public static String ReadGraphTimes;
+
+    public static String Request;
     public static String RingBuffer;
     public static String RingBufferMinSize;
     public static String ScanPeriodMustBeGt;

@@ -58,6 +58,9 @@ public class PVModelItem
     /** All the samples of this model item. */
     private ModelSamples samples;
     
+    /** How to request samples from the archive. */
+    private RequestType request_type = RequestType.OPTIMIZED;
+    
     /** Constructor
      *  @param pv_name Name of the PV
      *  @param axis_index The Y axis to use [0, 1, ...]
@@ -122,8 +125,6 @@ public class PVModelItem
         if (model.findItem(new_name) != null)
             return;
         boolean was_running = pv.isRunning();
-        // TODO: I've seen null pointer errors in this stop() call,
-        // but have not been able to reproduce them.
         if (was_running)
             stop();
         // Name change looks like remove/add back in
@@ -141,6 +142,23 @@ public class PVModelItem
     public final IModelSamples getSamples()
     {
         return samples;
+    }
+    
+    /** @see IPVModelItem#getRequestType() */
+    public RequestType getRequestType()
+    {
+        return request_type;
+    }
+    
+    /** @see IPVModelItem#setRequestType() */
+    public void setRequestType(RequestType new_request_type)
+    {
+        // Any change?
+        if (request_type == new_request_type)
+            return;
+        request_type = new_request_type;
+        // Need to get new data
+        model.fireEntryArchivesChanged(this);
     }
     
     /** @see IModelItem#addSamples() */
