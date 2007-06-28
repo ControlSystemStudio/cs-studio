@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dummy Authentication Provider
 Bundle-SymbolicName: org.csstudio.platform.login.dummy;singleton:=true
-Bundle-Version: 0.9.4
+Bundle-Version: 0.9.5
 Bundle-Activator: org.csstudio.platform.login.dummy.Activator
 Bundle-Vendor: DESY
 Bundle-Localization: plugin
