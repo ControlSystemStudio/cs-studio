@@ -19,52 +19,45 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.internal.security;
-
+package org.csstudio.platform.internal.security;
 
 /**
- * This class holds configuration information for widgets.
- * 
- * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende & Stefan Hofer
- * 
+ * This is a superclass for all Exceptions thrown by the WidgetManagement.
+ * @author Kai Meyer and Torsten Witte
  */
-public final class WidgetConfiguration {
-
-	/**
-	 * Should enablement property be changed?
-	 */
-	private boolean _changeEnablement;
-
-	/**
-	 * Should visibility property be changed?
-	 */
-	private boolean _changeVisibility;
-
+public abstract class WidgetManagementException extends Exception {
 	
+	/**
+	 * Generated serial version unifed ID.
+	 */
+	private static final long serialVersionUID = -3612185726964894035L;
+	/**
+	 * The class for this Exception.
+	 */
+	private final Class _clazz;
+
+
 	/**
 	 * Constructor.
-	 * 
-	 * @param changeEnablement Should enablement property be changed?
-	 * @param changeVisibility Should visibility property be changed?
+	 * @param clazz The class for this Exception
 	 */
-	public WidgetConfiguration(final boolean changeEnablement,
-			final boolean changeVisibility) {
-		_changeEnablement = changeEnablement;
-		_changeVisibility = changeVisibility;
+	public WidgetManagementException(final Class clazz) {
+		_clazz = clazz;
 	}
 	
 	/**
-	 * @return Should enablement property be changed?
+	 * @see java.lang.Throwable#getMessage()
+	 * @return The Message
 	 */
-	public boolean isChangeEnablement() {
-		return _changeEnablement;
+	public final String getMessage() {
+		return this.getMessage(_clazz);
 	}
 	
 	/**
-	 * @return Should visibility property be changed?
+	 * Returns the message depended by the class.
+	 * @param clazz The class
+	 * @return The message depended by the class
 	 */
-	public boolean isChangeVisibility() {
-		return _changeVisibility;
-	}
+	protected abstract String getMessage(final Class clazz);
 
 }

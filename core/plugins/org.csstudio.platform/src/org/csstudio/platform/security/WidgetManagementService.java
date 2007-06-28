@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.security;
+package org.csstudio.platform.security;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,13 +27,10 @@ import java.util.Map;
 import org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener;
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementEvent;
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
+import org.csstudio.platform.internal.security.NoWidgetAdapterFoundException;
+import org.csstudio.platform.internal.security.WidgetList;
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.ui.internal.security.WidgetList;
-import org.csstudio.platform.ui.security.adapter.EnableControlAdapter;
-import org.csstudio.platform.ui.security.adapter.IWidgetAdapter;
-import org.csstudio.platform.ui.security.exceptions.NoWidgetAdapterFoundException;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -51,10 +48,10 @@ public final class WidgetManagementService implements IUserManagementListener,
 	 */
 	private final Map<String, WidgetList> _widgetsMap;
 
-//	/**
-//	 * Map of controls and their right-dependent behavior.
-//	 */
-//	private HashMap<Control, WidgetConfiguration> _configurations;
+	// /**
+	// * Map of controls and their right-dependent behavior.
+	// */
+	// private HashMap<Control, WidgetConfiguration> _configurations;
 
 	/**
 	 * The singleton instance of this class.
@@ -80,54 +77,83 @@ public final class WidgetManagementService implements IUserManagementListener,
 		}
 		return _instance;
 	}
-	
+
 	/**
-	 * Registers the given widget with the given ID.
-	 * The registered standard IWidgetAdapter for the widgets class is used as the needed IWidgetAdapter. If no entry is found the registration is denied. 
-	 * @param id The ID for the widget
-	 * @param defaultRight An IRight as default value if the ID is unknown; can be null
-	 * @param widget The widget to manage
-	 * @throws NoWidgetAdapterFoundException If no standard WidgetAdapter is registered for the class of the widget 
+	 * Registers the given widget with the given ID. The registered standard
+	 * IWidgetAdapter for the widgets class is used as the needed
+	 * IWidgetAdapter. If no entry is found the registration is denied.
+	 * 
+	 * @param id
+	 *            The ID for the widget
+	 * @param defaultRight
+	 *            An IRight as default value if the ID is unknown; can be null
+	 * @param widget
+	 *            The widget to manage
+	 * @throws NoWidgetAdapterFoundException
+	 *             If no standard WidgetAdapter is registered for the class of
+	 *             the widget
 	 */
-	public void registerWidget(final String id, final String defaultRight, final Object widget) throws NoWidgetAdapterFoundException {
-		IWidgetAdapter standard = new EnableControlAdapter();  
-		standard = (IWidgetAdapter) Platform.getAdapterManager().getAdapter(widget, IWidgetAdapter.class);
-		if (standard==null) {
+	public void registerWidget(final String id, final String defaultRight,
+			final Object widget) throws NoWidgetAdapterFoundException {
+		IWidgetAdapter standard = (IWidgetAdapter) Platform.getAdapterManager()
+				.getAdapter(widget, IWidgetAdapter.class);
+		if (standard == null) {
 			throw new NoWidgetAdapterFoundException(widget.getClass());
 		} else {
 			this.registerWidget(id, defaultRight, widget, standard);
 		}
 	}
 	
+	public void registerWidget(final String id, 
+			final Object widget) {
+		try {
+			registerWidget(id, null, widget);
+		} catch (NoWidgetAdapterFoundException e) {
+			
+		}
+	}
+
 	/**
-	 * Registers the given widget with the given ID and the given IWidgetAdapter.
-	 * @param id The ID for the widget
-	 * @param defaultRight An IRight as default value if the ID is unknown; can be null
-	 * @param widget The widget to manage
-	 * @param adapter The IWidgetAdapter for the given widget; must not be null
+	 * Registers the given widget with the given ID and the given
+	 * IWidgetAdapter.
+	 * 
+	 * @param id
+	 *            The ID for the widget
+	 * @param defaultRight
+	 *            An IRight as default value if the ID is unknown; can be null
+	 * @param widget
+	 *            The widget to manage
+	 * @param adapter
+	 *            The IWidgetAdapter for the given widget; must not be null
 	 */
-	public void registerWidget(final String id, final String defaultRight, final Object widget, final IWidgetAdapter adapter) {
-		if (adapter==null) {
+	public void registerWidget(final String id, final String defaultRight,
+			final Object widget, final IWidgetAdapter adapter) {
+		if (adapter == null) {
 			throw new NullPointerException("IWidgetAdapter was null");
 		}
 		if (_widgetsMap.containsKey(id)) {
 			WidgetList liste = _widgetsMap.get(id);
 			if (!liste.contains(widget)) {
-				liste.addWidget(widget,adapter);
-				adapter.activate(widget, SecurityFacade.getInstance().canExecute(id));
+				liste.addWidget(widget, adapter);
+				adapter.activate(widget, SecurityFacade.getInstance()
+						.canExecute(id));
 			}
 		} else {
 			WidgetList liste = new WidgetList(defaultRight);
-			liste.addWidget(widget,adapter);
+			liste.addWidget(widget, adapter);
 			_widgetsMap.put(id, liste);
-			adapter.activate(widget, SecurityFacade.getInstance().canExecute(id));
+			adapter.activate(widget, SecurityFacade.getInstance()
+					.canExecute(id));
 		}
 	}
-	
+
 	/**
 	 * Unregisters the given widget.
-	 * @param id The ID, which was used to register the widget 
-	 * @param widget The widget, which should be unregistered
+	 * 
+	 * @param id
+	 *            The ID, which was used to register the widget
+	 * @param widget
+	 *            The widget, which should be unregistered
 	 * @return True if the widget could be unregistered; false otherwise
 	 */
 	public boolean unregisterWidget(final String id, final Object widget) {
@@ -141,16 +167,18 @@ public final class WidgetManagementService implements IUserManagementListener,
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Unregisters the given widget.
-	 * @param widget The widget, which should be unregistered
+	 * 
+	 * @param widget
+	 *            The widget, which should be unregistered
 	 * @return True if the widget could be unregistered; false otherwise
 	 */
 	public boolean unregisterWidget(final Object widget) {
 		boolean bool = false;
 		String[] keys = _widgetsMap.keySet().toArray(new String[0]);
-		for (int i=0;i<keys.length;i++) {
+		for (int i = 0; i < keys.length; i++) {
 			WidgetList liste = _widgetsMap.get(keys[i]);
 			if (liste.removeWidget(widget)) {
 				if (liste.isEmpty()) {
@@ -163,26 +191,27 @@ public final class WidgetManagementService implements IUserManagementListener,
 	}
 
 	/**
-	 * Disposes the current WidgetManagement.
-	 * All registered widgets and registered standard IWidgetApapter are removed and unregisters this WidgetManagement 
-	 * as UserManagementListener and RightsManagementListener
+	 * Disposes the current WidgetManagement. All registered widgets and
+	 * registered standard IWidgetApapter are removed and unregisters this
+	 * WidgetManagement as UserManagementListener and RightsManagementListener
 	 */
 	public void dispose() {
 		SecurityFacade.getInstance().removeUserManagementListener(this);
 		RightsManagementService.getInstance().removeListener(this);
-		_widgetsMap.clear();		
+		_widgetsMap.clear();
 		_instance = null;
 	}
-	
+
 	/**
 	 * Checks all registered objects if they should be activated or deactivated.
 	 */
 	private void doRefreshState() {
 		String[] keys = _widgetsMap.keySet().toArray(new String[0]);
-		for (int i=0;i<keys.length;i++) {
-			for (int j=0;j<_widgetsMap.get(keys[i]).size();j++) {
+		for (int i = 0; i < keys.length; i++) {
+			for (int j = 0; j < _widgetsMap.get(keys[i]).size(); j++) {
 				WidgetList liste = _widgetsMap.get(keys[i]);
-				liste.activate(j, SecurityFacade.getInstance().canExecute(keys[i]));
+				liste.activate(j, SecurityFacade.getInstance().canExecute(
+						keys[i]));
 			}
 		}
 	}
