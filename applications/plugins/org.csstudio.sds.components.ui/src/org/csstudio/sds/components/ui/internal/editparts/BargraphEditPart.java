@@ -43,7 +43,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		BargraphModel model = (BargraphModel) getCastedModel();
+		BargraphModel model = (BargraphModel) getWidgetModel();
 
 		RefreshableBargraphFigure bargraph = new RefreshableBargraphFigure();
 		bargraph.setFill(model.getFillLevel());

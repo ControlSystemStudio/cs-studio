@@ -49,7 +49,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		ActionButtonModel model = (ActionButtonModel) getCastedModel();
+		ActionButtonModel model = (ActionButtonModel) getWidgetModel();
 
 		RefreshableActionButtonFigure button = new RefreshableActionButtonFigure();
 		button.setText(model.getLabel());
@@ -77,7 +77,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		figure.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent event) {
 				CentralLogger.getInstance().info(this, "KLICK");
-				ActionButtonModel model = (ActionButtonModel) getCastedModel();
+				ActionButtonModel model = (ActionButtonModel) getWidgetModel();
 				
 				switch(model.getAction()) {
 				case 0:

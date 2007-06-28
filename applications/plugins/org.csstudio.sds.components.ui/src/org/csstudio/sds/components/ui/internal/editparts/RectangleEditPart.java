@@ -42,7 +42,7 @@ public final class RectangleEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		RectangleModel model = (RectangleModel) getCastedModel();
+		RectangleModel model = (RectangleModel) getWidgetModel();
 
 		RefreshableRectangleFigure rectangle = new RefreshableRectangleFigure();
 		rectangle.setOrientation(model.getOrientation());

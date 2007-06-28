@@ -43,7 +43,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		LabelModel model = (LabelModel) getCastedModel();
+		LabelModel model = (LabelModel) getWidgetModel();
 
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
 		label.setText(model.getLabel());

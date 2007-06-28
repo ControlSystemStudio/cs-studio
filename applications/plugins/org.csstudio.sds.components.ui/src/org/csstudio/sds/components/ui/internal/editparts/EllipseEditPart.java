@@ -42,7 +42,7 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		EllipseModel model = (EllipseModel) getCastedModel();
+		EllipseModel model = (EllipseModel) getWidgetModel();
 
 		RefreshableEllipseFigure ellipse = new RefreshableEllipseFigure();
 		ellipse.setOrientation(model.getOrientation());

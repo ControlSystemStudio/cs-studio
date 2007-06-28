@@ -44,7 +44,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		WaveformModel model = (WaveformModel) getCastedModel();
+		WaveformModel model = (WaveformModel) getWidgetModel();
 		WaveformFigure waveform = new WaveformFigure();
 		waveform.setData(model.getData());
 		waveform.setMin(model.getMin());

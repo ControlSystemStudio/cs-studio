@@ -46,7 +46,7 @@ public final class PolygonEditPart extends AbstractWidgetEditPart {
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
 		RefreshablePolygonFigure polygon = new RefreshablePolygonFigure();
-		PolygonModel model = (PolygonModel) getCastedModel();
+		PolygonModel model = (PolygonModel) getWidgetModel();
 		polygon.setPoints(model.getPoints());
 		polygon.setFill(model.getFill());
 

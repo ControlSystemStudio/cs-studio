@@ -46,7 +46,7 @@ public final class PolylineEditPart extends AbstractWidgetEditPart {
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
 		RefreshablePolylineFigure polyline = new RefreshablePolylineFigure();
-		PolylineModel model = (PolylineModel) getCastedModel();
+		PolylineModel model = (PolylineModel) getWidgetModel();
 
 		polyline.setPoints(model.getPoints());
 		polyline.setFill(model.getFill());

@@ -80,7 +80,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		TextInputModel model = (TextInputModel) getCastedModel();
+		TextInputModel model = (TextInputModel) getWidgetModel();
 
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
 
@@ -147,7 +147,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 
 		// init cell editor...
 		String currentValue = "N/A"; //$NON-NLS-1$
-		WidgetProperty inputTextProperty = getCastedModel().getProperty(
+		WidgetProperty inputTextProperty = getWidgetModel().getProperty(
 				TextInputModel.PROP_INPUT_TEXT);
 
 		if (inputTextProperty != null) {
@@ -171,19 +171,19 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		});
 
 		// get the chosen font
-		FontData fontData = (FontData) getCastedModel().getProperty(
+		FontData fontData = (FontData) getWidgetModel().getProperty(
 				TextInputModel.PROP_FONT).getPropertyValue();
 		Font font = CustomMediaFactory.getInstance().getFont(
 				new FontData[] { fontData });
 
 		// get the chosen foreground color
-		RGB foregroundRgb = (RGB) getCastedModel().getProperty(
+		RGB foregroundRgb = (RGB) getWidgetModel().getProperty(
 				AbstractWidgetModel.PROP_COLOR_FOREGROUND).getPropertyValue();
 		Color foregroundColor = CustomMediaFactory.getInstance().getColor(
 				foregroundRgb);
 
 		// get the chosen background color
-		RGB backgroundRgb = (RGB) getCastedModel().getProperty(
+		RGB backgroundRgb = (RGB) getWidgetModel().getProperty(
 				AbstractWidgetModel.PROP_COLOR_BACKGROUND).getPropertyValue();
 
 		int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
@@ -246,7 +246,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		 */
 		@Override
 		public void execute() {
-			WidgetProperty inputTextProperty = getCastedModel().getProperty(
+			WidgetProperty inputTextProperty = getWidgetModel().getProperty(
 					TextInputModel.PROP_INPUT_TEXT);
 
 			if (inputTextProperty != null) {

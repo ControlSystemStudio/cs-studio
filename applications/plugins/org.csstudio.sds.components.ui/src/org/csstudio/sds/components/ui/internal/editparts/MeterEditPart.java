@@ -42,7 +42,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		MeterModel model = (MeterModel) getCastedModel();
+		MeterModel model = (MeterModel) getWidgetModel();
 
 		RefreshableMeterFigure meter = new RefreshableMeterFigure();
 

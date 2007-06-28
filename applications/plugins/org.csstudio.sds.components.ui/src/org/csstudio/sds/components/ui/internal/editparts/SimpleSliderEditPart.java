@@ -53,7 +53,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected IRefreshableFigure doCreateFigure() {
-		final SimpleSliderModel model = (SimpleSliderModel) getCastedModel();
+		final SimpleSliderModel model = (SimpleSliderModel) getWidgetModel();
 
 		final SimpleSliderFigure slider = new SimpleSliderFigure();
 		slider.addSliderListener(new SimpleSliderFigure.ISliderListener() {
