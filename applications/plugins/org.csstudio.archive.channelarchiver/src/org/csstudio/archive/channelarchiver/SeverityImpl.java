@@ -19,7 +19,8 @@ public class SeverityImpl implements ISeverity
 		this.txt_stat = txt_stat;
 	}
 
-	public String toString()
+	@Override
+    public String toString()
 	{
 		return text;
 	}

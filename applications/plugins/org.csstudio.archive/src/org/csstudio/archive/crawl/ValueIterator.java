@@ -11,4 +11,6 @@ import org.csstudio.platform.data.IValue;
  *  @author Kay Kasemir
  */
 public interface ValueIterator extends Iterator<IValue>
-{}
+{
+    // empty since it's just a typedef
+}

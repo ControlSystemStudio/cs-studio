@@ -1,8 +1,10 @@
-package org.csstudio.archive.test;
+package org.csstudio.archive.crawl.test;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import junit.framework.TestCase;
 
 import org.csstudio.archive.channelarchiver.ArchiveServer;
 import org.csstudio.archive.crawl.RawValueIterator;
@@ -12,11 +14,11 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 
-/** Demo code for using the archiver API
+/** Demo/test code for using the 'crawl' API
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Demo
+public class CrawTests  extends TestCase
 {
     // The main SNS data server.
     final static String URL =
@@ -28,7 +30,7 @@ public class Demo
     private static DateFormat parser =
         new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     
-    private static void dump_raw()
+    public void testRawIterator()
     {
         try
         {
@@ -45,7 +47,7 @@ public class Demo
             
             cal.setTimeInMillis(parser.parse(end_stamp).getTime());
             ITimestamp end = TimestampFactory.fromCalendar(cal);
-            int count = 10000;
+            int count = 2;
             
             // Get raw samples
             RawValueIterator iter = new RawValueIterator(servers, keys,
@@ -76,7 +78,7 @@ public class Demo
                         value.getStatus());
     }
     
-    private static void dump_sheet()
+    public void testSpreadsheet()
     {
         try
         {
@@ -125,11 +127,5 @@ public class Demo
         {
             ex.printStackTrace();
         }
-    }
-
-    public static void main(String[] args)
-    {
-        dump_raw();
-        dump_sheet();
     }
 }

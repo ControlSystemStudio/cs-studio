@@ -24,7 +24,8 @@ public class UnitTest extends TestCase
 	private final String url =  
         "http://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi";
 
-	protected void setUp() throws Exception
+	@Override
+    protected void setUp() throws Exception
 	{
 		server = new ArchiveServer(url);
 	}
@@ -90,7 +91,10 @@ public class UnitTest extends TestCase
             int key = server.getArchiveKey("- All -");
             Assert.assertEquals(1, key);
         }
-        catch (Exception e) {}
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
 	}
 
 	/** Name lookup tests.
@@ -188,7 +192,8 @@ public class UnitTest extends TestCase
 		}		
 	}
 	
-	protected void tearDown() throws Exception
+	@Override
+    protected void tearDown() throws Exception
 	{
 		server = null;
 	}
