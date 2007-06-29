@@ -43,67 +43,67 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          id="org.junit4"
          download-size="0"
          install-size="0"
-         version="4.1.0.1"/>
+         version="0.0.0"/>
 
    <plugin
          id="com.jcraft.jsch"
          download-size="0"
          install-size="0"
-         version="0.1.28"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.ant"
          download-size="0"
          install-size="0"
-         version="1.6.5"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.apache.lucene"
          download-size="0"
          install-size="0"
-         version="1.4.103.v20060601"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.ant.core"
          download-size="0"
          install-size="0"
-         version="3.1.100.v20060531"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.boot"
          download-size="0"
          install-size="0"
-         version="3.1.100.v20060603"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.filebuffers"
          download-size="0"
          install-size="0"
-         version="3.2.1.r321_v20060721"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.filesystem"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20060603"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.resources"
          download-size="0"
          install-size="0"
-         version="3.2.2.R32x_v20061218"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.resources.compatibility"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20060603"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -111,171 +111,171 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          id="org.eclipse.core.runtime.compatibility"
          download-size="0"
          install-size="0"
-         version="3.1.100.v20060603"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.osgi.services"
          download-size="0"
          install-size="0"
-         version="3.1.100.v20060601"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.osgi.util"
          download-size="0"
          install-size="0"
-         version="3.1.100.v20060601"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.variables"
          download-size="0"
          install-size="0"
-         version="3.1.100.v20060605"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.help.webapp"
          download-size="0"
          install-size="0"
-         version="3.2.2.R322_v20061114"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.help.base"
          download-size="0"
          install-size="0"
-         version="3.2.2.R322_v20061207"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.help.appserver"
          download-size="0"
          install-size="0"
-         version="3.1.100.v20060602"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.platform"
          download-size="0"
          install-size="0"
-         version="3.2.2.r322_v20070117b"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.platform.doc.user"
          download-size="0"
          install-size="0"
-         version="3.2.1.R32x_v200608101155"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.tomcat"
          download-size="0"
          install-size="0"
-         version="4.1.130.v20060601"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.text"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20060605-1400"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jface.text"
          download-size="0"
          install-size="0"
-         version="3.2.2.r322_v20070104"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.console"
          download-size="0"
          install-size="0"
-         version="3.1.100.v20060605"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.presentations.r21"
          download-size="0"
          install-size="0"
-         version="3.2.0.I20060605-1400"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.intro"
          download-size="0"
          install-size="0"
-         version="3.2.2.R322_v20061214"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.intro.universal"
          download-size="0"
          install-size="0"
-         version="3.2.1.R321_v20060905"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.ui.cheatsheets"
          download-size="0"
          install-size="0"
-         version="3.2.1.R321_v20060720"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.browser"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20060602"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.workbench.texteditor"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20060605-1400"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.views"
          download-size="0"
          install-size="0"
-         version="3.2.1.M20060906-0800"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.forms"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20060602"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.update.core"
          download-size="0"
          install-size="0"
-         version="3.2.3.R32x_v20070118"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.update.scheduler"
          download-size="0"
          install-size="0"
-         version="3.2.2.R32x_v20061214"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.update.ui"
          download-size="0"
          install-size="0"
-         version="3.2.2.R32x_v20070111"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.workbench.compatibility"
          download-size="0"
          install-size="0"
-         version="3.2.0.I20060605-1400"
+         version="0.0.0"
          fragment="true"/>
 
    <plugin
@@ -344,7 +344,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          arch="x86"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20060603"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -353,7 +353,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          os="win32"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20060603"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -381,7 +381,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          os="win32"
          download-size="0"
          install-size="0"
-         version="3.2.2.R32x_v20061214"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -389,48 +389,48 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          id="org.eclipse.ui.views.properties.tabbed"
          download-size="0"
          install-size="0"
-         version="3.2.1.M20060830-0800"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.runtime.compatibility.registry"
          download-size="0"
          install-size="0"
-         version="3.2.1.R32x_v20060907"
+         version="0.0.0"
          fragment="true"/>
 
    <plugin
          id="org.eclipse.help.ui"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20060602"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.commands"
          download-size="0"
          install-size="0"
-         version="3.2.0.I20060605-1400"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.contenttype"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20060603"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.expressions"
          download-size="0"
          install-size="0"
-         version="3.2.2.r322_v20070109a"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.junit"
          download-size="0"
          install-size="0"
-         version="3.8.1"/>
+         version="0.0.0"/>
 
 </feature>
