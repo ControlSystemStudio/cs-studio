@@ -8,7 +8,7 @@
       <text>
          Control System Studio 0.9.5
 
-Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
+Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchroton,
 Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
 
 THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot; BASIS. 
@@ -99,7 +99,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    </plugins>
 
    <features>
-      <feature id="org.csstudio.platform.feature.product" version="0.9.4"/>
+      <feature id="org.csstudio.platform.feature.product" version="0.9.5"/>
    </features>
 
 </product>
