@@ -13,7 +13,8 @@ public interface IEnumeratedMetaData extends IMetaData
     /** Obtain the state strings.
      *  <p>
      *  The array element <code>i</code> represends state number <code>i</code>.
-     *  @return The state strings.
+     *  
+     *  @return The state string array, never <code>null</code>.
      */
     public String[] getStates();
 
