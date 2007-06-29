@@ -82,6 +82,14 @@ public class BatchIterator
                                 + "' instead of '" + channel_name + "'");
         // Remember the received samples
         samples = response.getSamples();
+        if (samples == null)
+            return;
+        // Empty samples?
+        if (samples.length < 1)
+        {
+            samples = null;
+            return;
+        }
     }
 
     /** @return Returns the current batch of samples or <code>null</code>
@@ -108,37 +116,53 @@ public class BatchIterator
         if (samples == null)
             return null;
         
-        // This fetch should return the last_sample again.
-        // Assume the following situation, where the last batch ended
+        // On many cases, this fetch should return the last_sample again:
+        //   some_timestamp value A
+        //   last_timestamp value B <-- last_sample of previous batch
+        //   new_timestamp  value C
+        // Since we ask from at-or-before last_timestamp on,
+        // we get the last_sample once more and need to skip it.
+        //
+        // But also consider the following situation, where the last batch ended
         // in a range of data that had the same time stamp:
         //   some_timestamp value A
         //   last_timestamp value B
         //   last_timestamp value C <-- last_sample of previous batch
-        //   last_timestamp value D (not yet retrieved)
+        //   last_timestamp value D
+        //   last_timestamp value E
+        //   new_timestamp  value F
+        // Reasons for same timestamps: Stuck IOC clock,
+        // or sequences like .. Repeat N, next value, Disconnected, Arch. Off
         //
-        // When we request new data from 'last_sample' on,
-        // we actually get value B, value C, ... again
-        // because of their time stamps.
-        // So we have to skip forward, just past the 'last_sample'.
+        // When we request new data from 'last_sample.getTime()' on,
+        // i.e. from last_timestamp on, we get value E, since that's
+        // stamped at-or-before last_timestamp.
+        // So we never see value D. Probably OK, since how many values
+        // can you show for the same time stamp?
+        //
+        // But also handle the case where a different data server might
+        // start at value B, i.e. the first value with last_timestamp.
+        
         int skip = 0;
-        while (skip < samples.length)
-        {
-            final IValue skip_sample = samples[skip];
-            // Did we reach new data?
-            if (skip_sample.getTime().isGreaterThan(last_sample.getTime()))
-                break; // Found new data, so we're done
-            // Sample is timed at-or-before last_sample, so skip
-            ++skip;
-            // Is that the last sample, so we're done?
-            // ** This is was should happen in 99% of the cases **
-            if (skip_sample.equals(last_sample))
-                break;
-            // The remaining problem with this code:
-            // If the batch size is N, and there are >=N identical samples
-            // (same time stamp, same value, ...) in the archive,
-            // we will indefinetely iterate over those same samples,
-            // because each batch will be identical.
-            // --> highly unlikely?
+        if (samples[0].equals(last_sample))
+        {   // Got a new batch that starts with the last known sample. Skip it.
+            skip = 1;
+        }
+        else
+        {   // See if we find the last_sample again.
+            for (int i=0;  i<samples.length;  ++i)
+            {
+                final IValue skip_sample = samples[i];
+                // If we reach new samples, we're done
+                if (skip_sample.getTime().isGreaterThan(last_sample.getTime()))
+                    break;
+                // If we find the previous batch's last sample...
+                if (skip_sample.equals(last_sample))
+                {   // Skip all the samples up to and including it
+                    skip = i + 1;
+                    break;
+                }
+            }
         }
         
         // Nothing to skip? Return as is.
