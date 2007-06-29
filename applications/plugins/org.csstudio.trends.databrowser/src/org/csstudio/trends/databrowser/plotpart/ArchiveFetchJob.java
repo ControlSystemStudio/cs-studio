@@ -36,9 +36,9 @@ class ArchiveFetchJob extends Job
     
     @SuppressWarnings("nls")
     @Override
-    protected IStatus run(IProgressMonitor monitor)
+    protected IStatus run(final IProgressMonitor monitor)
     {
-        IArchiveDataSource archives[] = item.getArchiveDataSources();
+        final IArchiveDataSource archives[] = item.getArchiveDataSources();
         monitor.beginTask(Messages.FetchingSample, archives.length);
         for (int i=0; i<archives.length; ++i)
         {
@@ -47,18 +47,23 @@ class ArchiveFetchJob extends Job
                 + "'" + archives[i].getName()
                 + "' ("
                 + (i+1) + "/" + archives.length + ")");
-            ArchiveCache cache = ArchiveCache.getInstance();
+            final ArchiveCache cache = ArchiveCache.getInstance();
             try
             {   // Invoke the possibly lengthy search.
-                ArchiveServer server = cache.getServer(archives[i].getUrl());
+                final ArchiveServer server =
+                    cache.getServer(archives[i].getUrl());
                 
-                // TODO: Support 'raw' and something optimized for plotting
-                // PLOTBINNED is not the best for that purpose
-                
-                int request_type = 
-                    server.getRequestType(ArchiveServer.GET_PLOTBINNED);
+                // TODO: Get something better than PLOTBINNED
+                final int request_type = 
+                    item.getRequestType() == IPVModelItem.RequestType.RAW
+                    ? server.getRequestType(ArchiveServer.GET_RAW)
+                    : server.getRequestType(ArchiveServer.GET_PLOTBINNED);
                 int bins = 800;
-                //int request_type = server.getRequestType(ArchiveServer.GET_PLOTBINNED);
+                
+                // TODO RawValueIterator must return the data bunches
+                // so that we can display them as they arrive.
+                // RawValueIterator iter = new RawValueIterator();
+                
                 ArchiveValues result[] = server.getSamples(
                         archives[i].getKey(), new String[] { item.getName() },
                         start, end, request_type,
@@ -70,14 +75,12 @@ class ArchiveFetchJob extends Job
                     // Yes, since we have the samples, might as well show them
                     // before bailing out.
                     item.addArchiveSamples(result[0]);
-                    //item.setAxisHigh(limit)
                 }
                 else
                 {
                     throw new Exception("Expected 1, but got "
                                     + result.length + " response.");
                 }
-                
             }
             catch (Exception e)
             {
