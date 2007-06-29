@@ -64,6 +64,25 @@ public class NumericMetaData implements INumericMetaData
     /** {@inheritDoc} */
 	public String getUnits()
 	{	return units;	}
+    
+    /** @return <code>true</code> if given meta data equals this */
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+            return true;
+        if (! (obj instanceof INumericMetaData))
+            return false;
+        final INumericMetaData other = (INumericMetaData) obj;
+        return other.getDisplayLow() == disp_low &&
+               other.getDisplayHigh() == disp_high &&
+               other.getWarnLow() == warn_low &&
+               other.getWarnHigh() == warn_high &&
+               other.getAlarmHigh() == alarm_high &&
+               other.getAlarmLow() == alarm_low &&
+               other.getPrecision() == prec &&
+               other.getUnits().equals(units);
+    }
 
     /** {@inheritDoc} */
     @Override
