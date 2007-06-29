@@ -64,7 +64,7 @@ public final class PolylineModel extends AbstractPolyModel {
 	 * @return int
 	 * 				The width of the line
 	 */
-	public int getLinwWidth() {
+	public int getLineWidth() {
 		return (Integer) getProperty(PROP_LINE_WIDTH).getPropertyValue();
 	}
 }

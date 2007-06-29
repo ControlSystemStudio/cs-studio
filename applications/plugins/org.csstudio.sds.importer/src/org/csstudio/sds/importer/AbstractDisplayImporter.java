@@ -23,6 +23,8 @@ package org.csstudio.sds.importer;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.sds.model.IWidgetModelFactory;
+import org.csstudio.sds.model.WidgetModelFactoryService;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.eclipse.core.runtime.IPath;
 
@@ -52,6 +54,26 @@ public abstract class AbstractDisplayImporter {
 	 */
 	public abstract boolean importDisplay(String sourceFile,
 			IPath targetProject, String targetFileName) throws Exception;
+
+	/**
+	 * Create a widget element with the given type ID.
+	 * 
+	 * @param typeId
+	 *            The type ID of the widget element.
+	 * @return A new widget element with the given type ID.
+	 */
+	protected final AbstractWidgetModel createWidgetModel(String typeId) {
+		AbstractWidgetModel result = null;
+
+		IWidgetModelFactory factory = WidgetModelFactoryService.getInstance()
+				.getWidgetModelFactory(typeId);
+
+		if (factory != null) {
+			result = factory.createWidgetModel();
+		}
+
+		return result;
+	}
 
 	/**
 	 * Connect a property of the given model element to one single input

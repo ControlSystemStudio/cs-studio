@@ -24,17 +24,6 @@ package org.csstudio.sds.importer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-import org.csstudio.sds.components.model.ActionButtonModel;
-import org.csstudio.sds.components.model.BargraphModel;
-import org.csstudio.sds.components.model.EllipseModel;
-import org.csstudio.sds.components.model.LabelModel;
-import org.csstudio.sds.components.model.MeterModel;
-import org.csstudio.sds.components.model.PolygonModel;
-import org.csstudio.sds.components.model.PolylineModel;
-import org.csstudio.sds.components.model.RectangleModel;
-import org.csstudio.sds.components.model.SimpleSliderModel;
-import org.csstudio.sds.components.model.TextInputModel;
-import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.persistence.DisplayModelInputStream;
@@ -105,24 +94,21 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * 
 	 * @return A sample action button model.
 	 */
-	private ActionButtonModel createActionButton() {
-		ActionButtonModel result = new ActionButtonModel();
+	private AbstractWidgetModel createActionButton() {
+		AbstractWidgetModel result = createWidgetModel("element.actionbutton");
 		result.setLocation(0, 0);
 		result.setSize(100, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
 
-		result.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR,
-				ColorConstants.black.getRGB());
-		result.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, 1);
+		result.setPropertyValue("border.color", ColorConstants.black.getRGB());
+		result.setPropertyValue("border.width", 1);
 
-		result.setPropertyValue(ActionButtonModel.PROP_ACTION, 1);
-		result.setPropertyValue(ActionButtonModel.PROP_LABEL, "Click me!");
-		result.setPropertyValue(ActionButtonModel.PROP_RESOURCE,
-				"/SDS/test.css-sds");
-		result.setPropertyValue(ActionButtonModel.PROP_FONT, new FontData(
-				"Arial", 12, SWT.BOLD));
+		result.setPropertyValue("action", 1);
+		result.setPropertyValue("label", "Click me!");
+		result.setPropertyValue("resource", "/SDS/test.css-sds");
+		result.setPropertyValue("font", new FontData("Arial", 12, SWT.BOLD));
 
 		return result;
 	}
@@ -132,8 +118,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * 
 	 * @return A sample bargraph model.
 	 */
-	private BargraphModel createBargraph() {
-		BargraphModel result = new BargraphModel();
+	private AbstractWidgetModel createBargraph() {
+		AbstractWidgetModel result = createWidgetModel("element.bargraph");
 		result.setLocation(150, 0);
 		result.setSize(150, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
@@ -144,37 +130,32 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 				ColorConstants.black.getRGB());
 		result.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, 1);
 
-		result.setPropertyValue(BargraphModel.PROP_DEFAULT_FILL_COLOR,
-				ColorConstants.darkGreen.getRGB());
-		result.setPropertyValue(BargraphModel.PROP_FILL, 50.0d);
-		result.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR,
-				ColorConstants.darkGray.getRGB());
-		result.setPropertyValue(BargraphModel.PROP_HIHI_COLOR,
-				ColorConstants.red.getRGB());
-		result.setPropertyValue(BargraphModel.PROP_HI_COLOR,
-				ColorConstants.yellow.getRGB());
-		result.setPropertyValue(BargraphModel.PROP_M_COLOR,
-				ColorConstants.green.getRGB());
-		result.setPropertyValue(BargraphModel.PROP_LO_COLOR,
-				ColorConstants.yellow.getRGB());
-		result.setPropertyValue(BargraphModel.PROP_LOLO_COLOR,
-				ColorConstants.red.getRGB());
-		result.setPropertyValue(BargraphModel.PROP_MIN, 0.0d);
-		result.setPropertyValue(BargraphModel.PROP_MAX, 100.0d);
-		result.setPropertyValue(BargraphModel.PROP_HIHI_LEVEL, 90.0d);
-		result.setPropertyValue(BargraphModel.PROP_HI_LEVEL, 75.0d);
-		result.setPropertyValue(BargraphModel.PROP_M_LEVEL, 50.0d);
-		result.setPropertyValue(BargraphModel.PROP_LO_LEVEL, 25.0d);
-		result.setPropertyValue(BargraphModel.PROP_LOLO_LEVEL, 10.0d);
-		result.setPropertyValue(BargraphModel.PROP_SHOW_VALUES, Boolean.TRUE);
-		result.setPropertyValue(BargraphModel.PROP_SHOW_MARKS, 1);
-		result.setPropertyValue(BargraphModel.PROP_SHOW_SCALE, 2);
-		result.setPropertyValue(BargraphModel.PROP_SCALE_SECTION_COUNT, 100);
+		result.setPropertyValue("defaultFillColor", ColorConstants.darkGreen
+				.getRGB());
+		result.setPropertyValue("fill", 50.0d);
+		result.setPropertyValue("fillbackgroundColor", ColorConstants.darkGray
+				.getRGB());
+		result.setPropertyValue("hihiColor", ColorConstants.red.getRGB());
+		result.setPropertyValue("hiColor", ColorConstants.yellow.getRGB());
+		result.setPropertyValue("mColor", ColorConstants.green.getRGB());
+		result.setPropertyValue("loColor", ColorConstants.yellow.getRGB());
+		result.setPropertyValue("loloColor", ColorConstants.red.getRGB());
+		result.setPropertyValue("minimum", 0.0d);
+		result.setPropertyValue("maximum", 100.0d);
+		result.setPropertyValue("hihiLevel", 90.0d);
+		result.setPropertyValue("hiLevel", 75.0d);
+		result.setPropertyValue("mLevel", 50.0d);
+		result.setPropertyValue("loLevel", 25.0d);
+		result.setPropertyValue("loloLevel", 10.0d);
+		result.setPropertyValue("showValues", Boolean.TRUE);
+		result.setPropertyValue("marksShowStatus", 1);
+		result.setPropertyValue("scaleShowStatus", 2);
+		result.setPropertyValue("sectionCount", 100);
 
 		result.addAlias("record", "recordName");
 
-		connectToSingleInputChannel(result, BargraphModel.PROP_FILL,
-				"$record$.VALUE", Double.class);
+		connectToSingleInputChannel(result, "fill", "$record$.VALUE",
+				Double.class);
 
 		return result;
 	}
@@ -184,16 +165,16 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * 
 	 * @return A sample ellipse model.
 	 */
-	private EllipseModel createEllipse() {
-		EllipseModel result = new EllipseModel();
+	private AbstractWidgetModel createEllipse() {
+		AbstractWidgetModel result = createWidgetModel("element.ellipse");
 		result.setLocation(400, 0);
 		result.setSize(100, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
 
-		result.setPropertyValue(EllipseModel.PROP_FILL, 75.0d);
-		result.setPropertyValue(EllipseModel.PROP_ORIENTATION, Boolean.FALSE);
+		result.setPropertyValue("fill", 75.0d);
+		result.setPropertyValue("orientation", Boolean.FALSE);
 
 		return result;
 	}
@@ -203,18 +184,17 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * 
 	 * @return A sample label model.
 	 */
-	private LabelModel createLabel() {
-		LabelModel result = new LabelModel();
+	private AbstractWidgetModel createLabel() {
+		AbstractWidgetModel result = createWidgetModel("element.label");
 		result.setLocation(0, 100);
 		result.setSize(100, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
 
-		result.setPropertyValue(LabelModel.PROP_LABEL, "Hello SDS");
-		result.setPropertyValue(LabelModel.PROP_FONT, new FontData("Arial", 12,
-				SWT.BOLD));
-		result.setPropertyValue(LabelModel.PROP_TEXT_ALIGNMENT, 4);
+		result.setPropertyValue("label", "Hello SDS");
+		result.setPropertyValue("font", new FontData("Arial", 12, SWT.BOLD));
+		result.setPropertyValue("textAlignment", 4);
 
 		return result;
 	}
@@ -224,21 +204,21 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * 
 	 * @return A sample meter model.
 	 */
-	private MeterModel createMeter() {
-		MeterModel result = new MeterModel();
+	private AbstractWidgetModel createMeter() {
+		AbstractWidgetModel result = createWidgetModel("element.meter");
 		result.setLocation(150, 100);
 		result.setSize(50, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
 
-		result.setPropertyValue(MeterModel.PROP_VALUE, 10.0d);
-		result.setPropertyValue(MeterModel.PROP_INTERVAL1_LOWER_BORDER, 0.0d);
-		result.setPropertyValue(MeterModel.PROP_INTERVAL1_UPPER_BORDER, 120.0d);
-		result.setPropertyValue(MeterModel.PROP_INTERVAL2_LOWER_BORDER, 120.0d);
-		result.setPropertyValue(MeterModel.PROP_INTERVAL2_UPPER_BORDER, 240.0d);
-		result.setPropertyValue(MeterModel.PROP_INTERVAL3_LOWER_BORDER, 240.0d);
-		result.setPropertyValue(MeterModel.PROP_INTERVAL3_UPPER_BORDER, 360.0d);
+		result.setPropertyValue("value", 10.0d);
+		result.setPropertyValue("interval1.lower", 0.0d);
+		result.setPropertyValue("interval1.upper", 120.0d);
+		result.setPropertyValue("interval2.lower", 120.0d);
+		result.setPropertyValue("interval2.upper", 240.0d);
+		result.setPropertyValue("interval3.lower", 240.0d);
+		result.setPropertyValue("interval3.uppper", 360.0d);
 
 		return result;
 	}
@@ -248,16 +228,16 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * 
 	 * @return A sample rectangle model.
 	 */
-	private RectangleModel createRectangle() {
-		RectangleModel result = new RectangleModel();
+	private AbstractWidgetModel createRectangle() {
+		AbstractWidgetModel result = createWidgetModel("element.rectangle");
 		result.setLocation(400, 100);
 		result.setSize(100, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
 
-		result.setPropertyValue(RectangleModel.PROP_FILL, 75.0d);
-		result.setPropertyValue(RectangleModel.PROP_ORIENTATION, Boolean.FALSE);
+		result.setPropertyValue("fill", 75.0d);
+		result.setPropertyValue("orientation", Boolean.FALSE);
 
 		return result;
 	}
@@ -267,8 +247,8 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * 
 	 * @return A sample simple slider model.
 	 */
-	private SimpleSliderModel createSimpleSlider() {
-		SimpleSliderModel result = new SimpleSliderModel();
+	private AbstractWidgetModel createSimpleSlider() {
+		AbstractWidgetModel result = createWidgetModel("element.slider.simple");
 
 		result.setLocation(0, 200);
 		result.setSize(100, 50);
@@ -276,16 +256,14 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
 
-		result.setPropertyValue(SimpleSliderModel.PROP_VALUE, 10.0d);
-		result.setPropertyValue(SimpleSliderModel.PROP_SHOW_VALUE_AS_TEXT,
-				Boolean.TRUE);
-		result.setPropertyValue(SimpleSliderModel.PROP_MIN, 0.0d);
-		result.setPropertyValue(SimpleSliderModel.PROP_MAX, 100.0d);
-		result.setPropertyValue(SimpleSliderModel.PROP_INCREMENT, 5.0d);
-		result.setPropertyValue(SimpleSliderModel.PROP_ORIENTATION,
-				Boolean.TRUE);
-		result.setPropertyValue(SimpleSliderModel.PROP_PRECISION, 1);
-		result.setPropertyValue(SimpleSliderModel.PROP_SLIDER_WIDTH, 10);
+		result.setPropertyValue("value", 10.0d);
+		result.setPropertyValue("showValueAsText", Boolean.TRUE);
+		result.setPropertyValue("min", 0.0d);
+		result.setPropertyValue("max", 100.0d);
+		result.setPropertyValue("increment", 5.0d);
+		result.setPropertyValue("orientation", Boolean.TRUE);
+		result.setPropertyValue("precision", 1);
+		result.setPropertyValue("sliderWidth", 10);
 
 		return result;
 	}
@@ -295,21 +273,20 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * 
 	 * @return A sample text input model.
 	 */
-	private TextInputModel createTextInput() {
-		TextInputModel result = new TextInputModel();
+	private AbstractWidgetModel createTextInput() {
+		AbstractWidgetModel result = createWidgetModel("element.textinput");
 		result.setLocation(150, 200);
 		result.setSize(100, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
 
-		result.setPropertyValue(TextInputModel.PROP_INPUT_TEXT, "120.0");
-		result.setPropertyValue(TextInputModel.PROP_FONT, new FontData("Arial",
-				12, SWT.BOLD));
-		result.setPropertyValue(LabelModel.PROP_TEXT_ALIGNMENT, 0);
+		result.setPropertyValue("inputText", "120.0");
+		result.setPropertyValue("font", new FontData("Arial", 12, SWT.BOLD));
+		result.setPropertyValue("textAlignment", 0);
 
-		connectToOutputChannel(result, TextInputModel.PROP_INPUT_TEXT,
-				"channelName.VALUE", Double.class);
+		connectToOutputChannel(result, "inputText", "channelName.VALUE",
+				Double.class);
 
 		return result;
 	}
@@ -319,35 +296,31 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * 
 	 * @return A sample waveform model.
 	 */
-	private WaveformModel createWaveform() {
-		WaveformModel result = new WaveformModel();
+	private AbstractWidgetModel createWaveform() {
+		AbstractWidgetModel result = createWidgetModel("element.waveform");
 		result.setLocation(0, 300);
 		result.setSize(200, 200);
 		result.setForegroundColor(ColorConstants.black.getRGB());
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
 
-		result.setPropertyValue(WaveformModel.PROP_AUTO_SCALE, Boolean.TRUE);
-		result.setPropertyValue(WaveformModel.PROP_CONNECTION_LINE_COLOR,
-				ColorConstants.black.getRGB());
-		result.setPropertyValue(WaveformModel.PROP_GRAPH_COLOR,
-				ColorConstants.black.getRGB());
-		result.setPropertyValue(WaveformModel.PROP_GRAPH_LINE_WIDTH, 3);
-		result.setPropertyValue(WaveformModel.PROP_LEDGER_LINE_COLOR,
-				ColorConstants.black.getRGB());
-		result.setPropertyValue(WaveformModel.PROP_MIN, 0.0d);
-		result.setPropertyValue(WaveformModel.PROP_MAX, 100.0d);
-		result.setPropertyValue(WaveformModel.PROP_SHOW_CONNECTION_LINES,
-				Boolean.TRUE);
-		result.setPropertyValue(WaveformModel.PROP_SHOW_LEDGER_LINES,
-				Boolean.TRUE);
-		result.setPropertyValue(WaveformModel.PROP_SHOW_SCALE, Boolean.TRUE);
-		result.setPropertyValue(WaveformModel.PROP_SHOW_VALUES, Boolean.TRUE);
-		result.setPropertyValue(WaveformModel.PROP_WAVE_FORM, new double[] {
-				0.0d, 10.0d, 20.0d, 30.0d, 40.0d, 50.0d, 60.0d, 70.0d, 80.0d,
-				90.0d });
-		result.setPropertyValue(WaveformModel.PROP_X_SCALE_SECTION_COUNT, 25);
-		result.setPropertyValue(WaveformModel.PROP_Y_SCALE_SECTION_COUNT, 25);
+		result.setPropertyValue("autoscale", Boolean.TRUE);
+		result.setPropertyValue("connection_lines_color", ColorConstants.black
+				.getRGB());
+		result.setPropertyValue("graph_color", ColorConstants.black.getRGB());
+		result.setPropertyValue("connection_line_width", 3);
+		result.setPropertyValue("ledger_lines_color", ColorConstants.black
+				.getRGB());
+		result.setPropertyValue("min", 0.0d);
+		result.setPropertyValue("max", 100.0d);
+		result.setPropertyValue("show_connection_lines", Boolean.TRUE);
+		result.setPropertyValue("show_ledger_lines", Boolean.TRUE);
+		result.setPropertyValue("show_scale", Boolean.TRUE);
+		result.setPropertyValue("show_values", Boolean.TRUE);
+		result.setPropertyValue("wave", new double[] { 0.0d, 10.0d, 20.0d,
+				30.0d, 40.0d, 50.0d, 60.0d, 70.0d, 80.0d, 90.0d });
+		result.setPropertyValue("x_scale_section_count", 25);
+		result.setPropertyValue("y_scale_section_count", 25);
 
 		return result;
 	}
@@ -357,15 +330,15 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * 
 	 * @return A sample polygon model.
 	 */
-	private PolygonModel createPolygon() {
-		PolygonModel result = new PolygonModel();
+	private AbstractWidgetModel createPolygon() {
+		AbstractWidgetModel result = createWidgetModel("element.polygon");
 		result.setForegroundColor(ColorConstants.black.getRGB());
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
 
-		result.setPropertyValue(PolygonModel.PROP_FILL, 50.0d);
-		result.setPropertyValue(PolygonModel.PROP_POINTS, new PointList(
-				new int[] { 1, 10, 40 }));
+		result.setPropertyValue("fill", 50.0d);
+		result.setPropertyValue("points",
+				new PointList(new int[] { 1, 10, 40 }));
 
 		result.setLocation(600, 300);
 		result.setSize(200, 200);
@@ -378,16 +351,16 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * 
 	 * @return A sample polyline model.
 	 */
-	private PolylineModel createPolyline() {
-		PolylineModel result = new PolylineModel();
+	private AbstractWidgetModel createPolyline() {
+		AbstractWidgetModel result = createWidgetModel("element.polyline");
 		result.setForegroundColor(ColorConstants.black.getRGB());
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
 
-		result.setPropertyValue(PolylineModel.PROP_FILL, 50.0d);
-		result.setPropertyValue(PolylineModel.PROP_LINE_WIDTH, 10);
-		result.setPropertyValue(PolylineModel.PROP_POINTS, new PointList(
-				new int[] { 1, 10, 2, 20, 3, 30, 4, 40, 5, 50 }));
+		result.setPropertyValue("fill", 50.0d);
+		result.setPropertyValue("linewidth", 10);
+		result.setPropertyValue("points", new PointList(new int[] { 1, 10, 2,
+				20, 3, 30, 4, 40, 5, 50 }));
 
 		result.setLocation(0, 600);
 		result.setSize(200, 200);
