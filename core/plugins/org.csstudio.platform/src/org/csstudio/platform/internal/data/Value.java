@@ -93,7 +93,7 @@ abstract public class Value implements IValue
 		Value rhs = (Value) obj;
 		return rhs.time.equals(time) &&
 			rhs.status.equals(status) &&
-			rhs.severity == severity &&
+			rhs.severity.toString().equals(severity.toString()) &&
             rhs.meta_data.equals(meta_data);
 	}
 
