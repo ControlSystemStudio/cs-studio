@@ -25,7 +25,6 @@ import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableRectangleFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -41,7 +40,7 @@ public final class RectangleEditPart extends AbstractWidgetEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IRefreshableFigure doCreateFigure() {
+	protected IFigure doCreateFigure() {
 		RectangleModel model = (RectangleModel) getWidgetModel();
 
 		RefreshableRectangleFigure rectangle = new RefreshableRectangleFigure();

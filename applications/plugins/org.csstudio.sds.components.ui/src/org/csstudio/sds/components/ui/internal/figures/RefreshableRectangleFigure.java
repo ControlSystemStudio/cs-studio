@@ -22,7 +22,7 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -33,8 +33,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * @author Sven Wende
  * 
  */
-public final class RefreshableRectangleFigure extends RectangleFigure implements
-		IRefreshableFigure {
+public final class RefreshableRectangleFigure extends RectangleFigure implements IAdaptable {
 
 	/**
 	 * The fill grade (0 - 100%).
@@ -76,7 +75,10 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * This method is a tribute to unit tests, which need a way to test the
+	 * performance of the figure implementation. Implementors should produce
+	 * some random changes and refresh the figure, when this method is called.
+	 * 
 	 */
 	public void randomNoiseRefresh() {
 		setFill(Math.random() * 100);
