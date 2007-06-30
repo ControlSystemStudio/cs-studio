@@ -78,13 +78,13 @@
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.LinkingContainerModelFactory"
             description="A container widget which can show up other displays."
-            icon="icons/waveform.gif"
+            icon="icons/linkingcontainer.gif"
             name="Linking Container"
             typeId="widget.linking-container"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.GroupingContainerModelFactory"
             description="A container widget that can group other widgets."
-            icon="icons/meter.gif"
+            icon="icons/groupcontainer.gif"
             name="Grouping container"
             typeId="widget.grouping-container"/>            
    </extension>
