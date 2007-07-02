@@ -15,7 +15,6 @@ import org.csstudio.archive.crawl.ValueIterator;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /** Demo/test code for using the 'crawl' API
@@ -80,7 +79,6 @@ public class CrawlTests
     }
 
     @Test
-    @Ignore
     public void testRawIterator()
     {
         try
@@ -115,7 +113,7 @@ public class CrawlTests
                 ++value_count;
             }
             System.out.println("Got " + value_count + " values");
-            assertEquals(78, value_count);
+            assertEquals(1440, value_count);
         }
         catch (Exception ex)
         {
@@ -135,7 +133,6 @@ public class CrawlTests
     }
     
     @Test
-    @Ignore
     public void testSpreadsheet()
     {
         try

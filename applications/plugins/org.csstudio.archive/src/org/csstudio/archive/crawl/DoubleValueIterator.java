@@ -3,6 +3,7 @@ package org.csstudio.archive.crawl;
 import java.util.Iterator;
 
 import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
@@ -24,7 +25,8 @@ import org.csstudio.platform.data.ValueUtil;
  */
 public class DoubleValueIterator implements Iterator<IDoubleValue>
 {
-    private final Iterator<IValue> raw_samples;
+    final private Iterator<IValue> raw_samples;
+    static private INumericMetaData numeric_meta = null;
     
     public DoubleValueIterator(Iterator<IValue> raw_samples)
     {
@@ -38,12 +40,21 @@ public class DoubleValueIterator implements Iterator<IDoubleValue>
 
     public IDoubleValue next()
     {
-        IValue sample = raw_samples.next();
-        // TODO check if meta data is INumericMetaData. Else, create one.
-        double value = ValueUtil.getDouble(sample);
-        return ValueFactory.createDoubleValue(sample.getTime(), sample.getSeverity(),
+        final IValue sample = raw_samples.next();
+        final double value = ValueUtil.getDouble(sample);
+        // Check if meta data is INumericMetaData. Else, create one.
+        IMetaData meta = sample.getMetaData();
+        if (! (meta instanceof INumericMetaData))
+        {
+            if (numeric_meta == null)
+                numeric_meta = ValueFactory.createNumericMetaData(0.0, 0.0,
+                                0.0, 0.0, 0.0, 0.0, 0, ""); //$NON-NLS-1$
+            meta = numeric_meta;
+        }
+        return ValueFactory.createDoubleValue(sample.getTime(),
+                        sample.getSeverity(),
                         sample.getStatus(),
-                        (INumericMetaData)sample.getMetaData(),
+                        (INumericMetaData)meta,
                         IValue.Quality.Interpolated,
                         new double[] { value });
     }

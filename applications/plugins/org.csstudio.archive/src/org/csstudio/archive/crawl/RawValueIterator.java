@@ -1,7 +1,6 @@
 package org.csstudio.archive.crawl;
 
 import org.csstudio.archive.ArchiveServer;
-import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 
@@ -11,6 +10,9 @@ import org.csstudio.platform.data.IValue;
  *  samples found in the archive. In case the requested data is
  *  too big to be returned by the data server in a single response,
  *  the crawler performs follow-up requests.
+ *  <p>
+ *  This crawler also merges multiple sources for the same channel
+ *  by time.
  *  <p>
  *  @see org.csstudio.archive.crawl.DoubleValueIterator
  *  @author Kay Kasemir
@@ -25,24 +27,41 @@ public class RawValueIterator implements ValueIterator
      *  allows receipient to digest a few samples sooner,
      *  before we need to wait again for new samples.
      */
-	private static final int BATCH_COUNT = 5000;
+    final private static int BATCH_COUNT = 5000;
 
-    // Information about the overall request
-    private final ArchiveServer servers[];
-    private final int keys[];
-    private final String channel_name;
-    private final ITimestamp end;
-    private final String request_type;
-    private final Object request_parms[];
+    /** End of the requested time range. */
+    final public ITimestamp end;
 
-    /** Index of the current servers/keys entry. */
-    private int arch_idx;
+    /** Batch iterators for the archive sources. */
+    final private BatchIterator batch[];
     
-    // The current batch of retrieved samples
-    private IValue samples[] = null;
-    private int next_sample_index;
+    /** Current indices within each batch, or -1 if batch is excausted. */
+    final private int sample_idx[];
+    
+    /** Index of the batch with the current value, or -1 if nothing. */
+    private int batch_idx;
 
-    /** Construct crawler for raw samples of a channel.
+    /** Constructor for single server and key.
+     *  @see #RawSampleIterator(ArchiveServer[], int[], String, ITimestamp, ITimestamp) */
+    public RawValueIterator(ArchiveServer server, int key, String channel,
+                    ITimestamp start, ITimestamp end) throws Exception
+    {
+        this(new ArchiveServer[] { server }, new int[] { key },
+             channel, start, end);
+    }    
+    
+    /** Constructor for 'raw' data.
+     *  @see #RawSampleIterator(ArchiveServer[], int[], String,
+     *                          ITimestamp, ITimestamp, String, int) */
+    public RawValueIterator(ArchiveServer servers[],
+                    int keys[], String channel,
+                    ITimestamp start, ITimestamp end) throws Exception
+    {
+        this(servers, keys, channel, start, end,
+            ArchiveServer.GET_RAW, new Object[] { new Integer(BATCH_COUNT) });
+    }
+
+    /** Construct crawler for a channel.
      *  <p>
      *  The crawler will iterate over all samples from start to end
      *  in { servers[0], keys[0] }, then continue with the next servers/keys
@@ -70,88 +89,61 @@ public class RawValueIterator implements ValueIterator
      *  @throws Exception on error.
      */
 	public RawValueIterator(ArchiveServer servers[],
-                             int keys[], String channel,
-                             ITimestamp start, ITimestamp end,
-                             String request_type,
-                             Object request_parms[]) throws Exception
+                            int keys[], String channel_name,
+                            ITimestamp start, ITimestamp end,
+                            String request_type,
+                            Object request_parms[]) throws Exception
     {
-        if (servers.length != keys.length)
-            throw new Exception("servers/keys must have equal length."); //$NON-NLS-1$
-        this.servers = servers;
-        this.keys = keys;
-        arch_idx = 0;
-        this.channel_name = channel;
+        final int N = servers.length;
+        if (N != keys.length)
+            throw new IllegalArgumentException("servers/keys must have equal length."); //$NON-NLS-1$
         this.end = end;
-        this.request_type = request_type;
-        this.request_parms = request_parms;
-
-        while (arch_idx < servers.length)
-        {        
-            if (fetch(start))
-            {
-                // If this arch_idx archive has no data at 'start',
-                // the result can be a single(!) last sample in the archive
-                // before(!) that start time.
-                //
-                // Subsequent calls could be the same, so we'd get a bunch
-                // of really old values before the actual start time.
-                if (samples.length > 1 || samples[0].getSeverity().hasValue())
-                    return; // OK, we found something useful.
-            }
-            // Nothing, or only a single useless 'off'/'disconnected' sample.
-            ++ arch_idx;
+        batch = new BatchIterator[N];
+        sample_idx = new int[N];
+        for (int i=0; i<N; ++i)
+        {
+            batch[i] = new BatchIterator(servers[i], keys[i],
+                                         channel_name, start, end,
+                                         request_type, request_parms);
+            sample_idx[i] = 0;
         }
-        // Found nothing
-        samples = null;
-    }
-    
-    /** Constructor for 'raw' data.
-     *  @see #RawSampleIterator(ArchiveServer[], int[], String,
-     *                          ITimestamp, ITimestamp, String, int) */
-    public RawValueIterator(ArchiveServer servers[],
-                    int keys[], String channel,
-                    ITimestamp start, ITimestamp end) throws Exception
-    {
-        this(servers, keys, channel, start, end,
-            ArchiveServer.GET_RAW, new Object[] { new Integer(BATCH_COUNT) });
+        determineNextSample();
     }
 
-    /** Constructor for single server and key.
-     *  @see #RawSampleIterator(ArchiveServer[], int[], String, ITimestamp, ITimestamp) */
-    public RawValueIterator(ArchiveServer server, int key, String channel,
-                    ITimestamp start, ITimestamp end) throws Exception
+    private void determineNextSample() throws Exception
     {
-        this(new ArchiveServer[] { server }, new int[] { key },
-             channel, start, end);
-    }
-    
-    /** Fetch another batch of samples from arch_idx index.
-     * 
-     *  @param fetch_start Start time for this batch
-     *         (greater or equal to overall start time)
-     *  @return Returns <code>true</code> if there were any more samples.
-     *  @throws Exception
-     */
-	@SuppressWarnings("nls")
-    private boolean fetch(ITimestamp fetch_start) throws Exception
-    {
-        // Issue the request
-        String names[] = new String[] { channel_name };
-        ArchiveServer server = servers[arch_idx];
-        ArchiveValues responses[] = server.getSamples(
-                keys[arch_idx], names, fetch_start, end,
-                server.getRequestType(request_type), request_parms);
-        if (responses.length != 1)
-            throw new Exception("Got " + responses.length
-                            + " responses instead of 1");
-        ArchiveValues response = responses[0];
-        if (! channel_name.equals(response.getChannelName()))
-            throw new Exception("Got channel '" + response.getChannelName()
-                    + "' instead of '" + channel_name + "'");
-        // Remember what's to remember from the response
-        samples = response.getSamples();
-        next_sample_index = 0;
-        return samples.length > 0;
+        // Determine batch with the next sample, i.e. the oldest time stamp
+        final int N = batch.length;
+        ITimestamp time = null;
+        for (int i=0; i<N; ++i)
+        {
+            // Batch exhausted?
+            if (sample_idx[i] < 0)
+                continue;
+            IValue[] curr_batch = batch[i].getBatch();
+            // Reached end of batch's current values?
+            if (sample_idx[i] >= curr_batch.length)
+            {
+                // Get another batch of samples
+                curr_batch = batch[i].next();
+                if (curr_batch == null  ||  curr_batch.length < 1)
+                {
+                    sample_idx[i] = -1;
+                    continue;
+                }
+                sample_idx[i] = 0;
+            }
+            // Check time stamp of bunch's current sample
+            final ITimestamp sample_time = curr_batch[sample_idx[i]].getTime();
+            if (time == null || sample_time.isLessThan(time))
+            {
+                time = sample_time;
+                batch_idx = i;
+            }            
+        }
+        // Found anything?
+        if (time == null)
+            batch_idx = -1;
     }
 
     /**
@@ -160,7 +152,7 @@ public class RawValueIterator implements ValueIterator
      */
     public boolean hasNext()
     {
-        return samples != null  &&  next_sample_index < samples.length;
+        return batch_idx >= 0;
     }
 
     /** @return Returns the next sample.
@@ -168,70 +160,27 @@ public class RawValueIterator implements ValueIterator
      */
     public IValue next()
     {
+        if (batch_idx < 0)
+            return null;
+        final IValue[] curr_batch = batch[batch_idx].getBatch();
         // Obtain current sample, the one to return
-        IValue current_sample = samples[next_sample_index];
+        final IValue sample = curr_batch[sample_idx[batch_idx]];        
         // Prepare what to return next
-        ++next_sample_index;
-        if (next_sample_index >= samples.length)
-        {   // Hit the last sample
-            try
-            {   // Get data from then on
-                ITimestamp last_timestamp = current_sample.getTime();
-                while (arch_idx < servers.length)
-                {
-                    // Query the current archive again from that time on:
-                    // Maybe the previous request ended at the BATCH_COUNT,
-                    // or new samples have been added to the archive since the
-                    // last request.
-                    if (fetch(last_timestamp))
-                    {
-                        // This fetch should return the current_sample again.
-                        // Assume the following situation, where the last batch ended
-                        // in a range of data that had the same time stamp:
-                        //   some_timestamp value A
-                        //   last_timestamp value B
-                        //   last_timestamp value C <-- current_sample
-                        //   last_timestamp value D (not yet retrieved)
-                        //
-                        // When we request new data from 'last_timestamp' on,
-                        // we actually get value B, value C, ... again.
-                        // So we have to skip forward, just past the 'current_sample'.
-                        while (next_sample_index < samples.length)
-                        {
-                            IValue skip_sample = samples[next_sample_index];
-                            if (skip_sample.getTime().isGreaterThan(last_timestamp))
-                                break; // Found new data, so we're done
-                            // Sample is timed at-or-before last_timestamps, so skip
-                            ++next_sample_index;
-                            if (skip_sample.equals(current_sample))
-                                break;
-                                // Recognized the last sample, so that was the
-                                // last sample to skip
-                                // ** This is was should happen in 99% of the cases **
-                                // The remaining problem with this code:
-                                // If the batch size is N, and there are >=N identical samples
-                                // (same time stamp, same value, ...) in the archive,
-                                // we will indefinetely iterate over those same samples,
-                                // because each batch will be identical.
-                                // --> highly unlikely?
-                        }
-                        // Did we break with something left to continue?
-                        if (next_sample_index < samples.length)
-                            return current_sample;
-                    }
-                    // Fetch failed, or nothing in the fetched block: try next key
-                    ++arch_idx;
-                }
-            }
-            catch (Exception e)
-            {   // Would like to pass exception up, but Iterator interface
-                // does not allow next() to throw Exception.
-                // Brute force: Elevate to Error.
-                throw new Error("Cannot get next batch of samples, " //$NON-NLS-1$
-                        + e.getMessage(), e);
-            }
+        ++sample_idx[batch_idx];
+        try
+        {
+            determineNextSample();
         }
-        return current_sample;
+        catch (Exception ex)
+        {
+            // Would like to pass exception up, but Iterator interface
+            // does not allow next() to throw Exception.
+            // Brute force: Elevate to Error.
+            throw new Error("Cannot get next batch of samples, " //$NON-NLS-1$
+                    + ex.getMessage(), ex);
+            
+        }
+        return sample;
     }
 
     /** Required by the <code>Iterator</code> interface, but not supported for

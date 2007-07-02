@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.IIntegerValue;
+import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
@@ -39,7 +40,10 @@ public class IntegerValueIterator implements Iterator<IIntegerValue>
     public static final int INVALID = Integer.MIN_VALUE;
     
     static ISeverity invalid_type = ValueFactory.createInvalidSeverity();
+    
     private final Iterator<IValue> raw_values;
+    
+    static private INumericMetaData numeric_meta = null;
     
     public IntegerValueIterator(ValueIterator raw_values)
     {
@@ -53,8 +57,16 @@ public class IntegerValueIterator implements Iterator<IIntegerValue>
 
     public IIntegerValue next()
     {
-        IValue sample = raw_values.next();
-        // TODO check if meta data is INumericMetaData. Else, create one.
+        final IValue sample = raw_values.next();
+        // Check if meta data is INumericMetaData. Else, create one.
+        IMetaData meta = sample.getMetaData();
+        if (! (meta instanceof INumericMetaData))
+        {
+            if (numeric_meta == null)
+                numeric_meta = ValueFactory.createNumericMetaData(0.0, 0.0,
+                                0.0, 0.0, 0.0, 0.0, 0, ""); //$NON-NLS-1$
+            meta = numeric_meta;
+        }
         int num;
         if (sample.getSeverity().hasValue())
         {
@@ -69,7 +81,7 @@ public class IntegerValueIterator implements Iterator<IIntegerValue>
                 return ValueFactory.createIntegerValue(sample.getTime(),
                                     invalid_type,
                                     "<" + sample.getClass().getName() + ">",  //$NON-NLS-1$//$NON-NLS-2$
-                                    (INumericMetaData)sample.getMetaData(),
+                                    (INumericMetaData)meta,
                                     IValue.Quality.Interpolated,
                                     new int[] { INVALID }
                                 );
@@ -80,7 +92,7 @@ public class IntegerValueIterator implements Iterator<IIntegerValue>
         return ValueFactory.createIntegerValue(sample.getTime(),
                              sample.getSeverity(),
                              sample.getStatus(),
-                             (INumericMetaData)sample.getMetaData(),
+                             (INumericMetaData)meta,
                              IValue.Quality.Interpolated,
                              new int[] { num });
     }
