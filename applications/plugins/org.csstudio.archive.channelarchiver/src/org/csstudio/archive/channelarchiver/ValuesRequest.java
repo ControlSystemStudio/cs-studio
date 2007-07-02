@@ -20,22 +20,24 @@ import org.csstudio.platform.data.ValueFactory;
 @SuppressWarnings("nls")
 public class ValuesRequest
 {
-	private final ArchiveServer server;
-	private final int key;
-	private final String channels[];
-	private final ITimestamp start, end;
-	private final int how;
-    private final Object parms[];
-	
+	final private ArchiveServer server;
+	final private int key;
+	final private String channels[];
+	final private ITimestamp start, end;
+	final private int how;
+    final private Object parms[];
+
+    final private IValue.Quality quality;
+
 	// Possible 'type' IDs for the received values.
-	private static final int TYPE_STRING = 0;
-	private static final int TYPE_ENUM = 1;
-	private static final int TYPE_INT = 2;
-	private static final int TYPE_DOUBLE = 3;
+	final private static int TYPE_STRING = 0;
+    final private static int TYPE_ENUM = 1;
+    final private static int TYPE_INT = 2;
+    final private static int TYPE_DOUBLE = 3;
 	
 	// The result of the query
 	private ArchiveValues archived_samples[];
-	
+
 	/** Constructor for new value request.
 	 *  <p>
 	 *  Details regarding the meaning of 'count' for the different 'how'
@@ -57,6 +59,7 @@ public class ValuesRequest
         // Check parms
         if (req_type.equals(ArchiveServer.GET_AVERAGE))
         {
+            quality = IValue.Quality.Interpolated;
             if (! (parms.length == 1  &&  parms[0] instanceof Double))
                 throw new Exception("Expected 'Double delta' for GET_AVERAGE");
             // We got the Double as per javadoc for the request type,
@@ -64,9 +67,18 @@ public class ValuesRequest
             double secs = ((Double)parms[0]).doubleValue();
             parms = new Object[] { new Integer((int)secs) };
         }
-        else // All others (for now) use 'Integer count'
+        else
+        {   // All others (for now) use 'Integer count'
             if (! (parms.length == 1  &&  parms[0] instanceof Integer))
                 throw new Exception("Expected 'Integer count' for " + req_type);
+
+            // Raw == Original, all else is somehow interpolated
+            if (req_type.equals(ArchiveServer.GET_RAW))
+                quality = IValue.Quality.Original;
+            else
+                quality = IValue.Quality.Interpolated;
+        }
+        
 		this.server = server;
 		this.key = key;
 		this.channels = channels;
@@ -179,10 +191,7 @@ public class ValuesRequest
 	private IValue [] decodeValues(int type, int count, IMetaData meta,
 			                      Vector value_vec) throws Exception
 	{
-        // TODO: Make server and protocol provide quality
-        IValue.Quality quality = IValue.Quality.Original;
-        
-		// values := { int32 stat,  int32 sevr,
+        // values := { int32 stat,  int32 sevr,
 	    //             int32 secs,  int32 nano,
 	    //             <type> value[] } []
 		// [{secs=1137596340, stat=0, nano=344419666, value=[0.79351], sevr=0},
