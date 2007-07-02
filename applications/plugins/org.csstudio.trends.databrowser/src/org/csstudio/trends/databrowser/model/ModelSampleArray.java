@@ -2,7 +2,6 @@ package org.csstudio.trends.databrowser.model;
 
 import java.util.ArrayList;
 
-import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.swt.chart.Range;
@@ -27,26 +26,27 @@ public class ModelSampleArray extends ArrayList<ModelSample>
     }
     
     /** Create ModelSampleArray from ArchiveSamples, stopping at the border.
-     *  @param arch_samples Samples obtained from ArchiveServer
+     *  @param source Name of the data source
+     *  @param samples Samples obtained from source
      *  @param border Timestamp where to end, may be <code>null</code>.
      *  @return New ModelSampleArray or <code>null</code> if there was no data.
      */
-    static ModelSampleArray fromArchivedSamples(ArchiveValues arch_samples,
+    @SuppressWarnings("nls")
+    static ModelSampleArray fromArchivedSamples(
+                    final String source,
+                    final IValue samples[],
                     ITimestamp border)
     {
         // Anything?
-        if (arch_samples == null)
-            return null;
-        IValue as[] = arch_samples.getSamples();
+        if (samples == null)
+            throw new IllegalArgumentException("null samples");
         // Any samples?
-        if (as.length < 1)
-            return null;
-        // Use server's name as sample source info
-        final String source = arch_samples.getArchiveServer().getServerName();
-        ModelSampleArray model_samples = new ModelSampleArray(as.length);
-        for (int i=0; i<as.length; ++i)
+        if (samples.length < 1)
+            throw new IllegalArgumentException("only " + samples.length + " samples");
+        final ModelSampleArray model_samples =
+            new ModelSampleArray(samples.length);
+        for (IValue sample : samples)
         {   
-            IValue sample = as[i];
             // Stop at border
             if (border != null  &&  sample.getTime().isGreaterThan(border))
                 break;

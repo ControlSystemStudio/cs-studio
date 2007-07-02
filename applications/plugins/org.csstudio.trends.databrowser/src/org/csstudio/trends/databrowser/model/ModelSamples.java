@@ -1,6 +1,5 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
@@ -58,7 +57,7 @@ public class ModelSamples implements IModelSamples
     
     /** Add samples from an archive. */
     @SuppressWarnings("nls") //$NON-NLS-1$
-    synchronized void add(ArchiveValues samples)
+    synchronized void add(final String source, final IValue samples[])
     {
         // To prevent archived samples from overlapping 'live' data,
         // use only archived samples only until reaching the 'border':
@@ -72,7 +71,7 @@ public class ModelSamples implements IModelSamples
         // because the copy takes some time, so we don't have
         // to synchonize...
         ModelSampleArray new_samples =
-            ModelSampleArray.fromArchivedSamples(samples, border);
+            ModelSampleArray.fromArchivedSamples(source, samples, border);
         // ... and then sync again when we update the archive_samples:
         archive_samples =
             ModelSampleMerger.merge(archive_samples, new_samples);

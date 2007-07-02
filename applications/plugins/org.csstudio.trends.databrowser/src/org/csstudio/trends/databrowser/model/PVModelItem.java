@@ -2,7 +2,6 @@ package org.csstudio.trends.databrowser.model;
 
 import java.util.ArrayList;
 
-import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IEnumeratedValue;
@@ -163,9 +162,9 @@ public class PVModelItem
     
     /** @see IModelItem#addSamples() */
     @SuppressWarnings("nls")
-    public void addArchiveSamples(ArchiveValues archive_samples)
+    public void addArchiveSamples(final String source, final IValue samples[])
     {
-        samples.add(archive_samples);
+        this.samples.add(source, samples);
     }
     
     /** @return Returns an XML string for this item.

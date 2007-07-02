@@ -1,9 +1,10 @@
 package org.csstudio.trends.databrowser.plotpart;
 
 import org.csstudio.archive.ArchiveServer;
-import org.csstudio.archive.ArchiveValues;
 import org.csstudio.archive.cache.ArchiveCache;
+import org.csstudio.archive.crawl.BatchIterator;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
@@ -30,7 +31,7 @@ class ArchiveFetchJob extends Job
         this.item = item;
         this.start = start;
         this.end = end;
-        // TODO: Do we need to assert that only one data fetch runs at a time?
+        // Do we need to assert that only one data fetch runs at a time?
         // setRule()...?
     }
     
@@ -54,37 +55,32 @@ class ArchiveFetchJob extends Job
                     cache.getServer(archives[i].getUrl());
                 
                 // TODO: Get something better than PLOTBINNED
-                final int request_type = 
+                final String request_type = 
                     item.getRequestType() == IPVModelItem.RequestType.RAW
-                    ? server.getRequestType(ArchiveServer.GET_RAW)
-                    : server.getRequestType(ArchiveServer.GET_PLOTBINNED);
+                    ? ArchiveServer.GET_RAW
+                    : ArchiveServer.GET_PLOTBINNED;
                 int bins = 800;
+                final Object[] request_parms = new Object[] { new Integer(bins) };
                 
-                // TODO RawValueIterator must return the data bunches
-                // so that we can display them as they arrive.
-                // RawValueIterator iter = new RawValueIterator();
-                
-                ArchiveValues result[] = server.getSamples(
-                        archives[i].getKey(), new String[] { item.getName() },
-                        start, end, request_type,
-                        new Object[] { new Integer(bins) });
-                
-                if (result.length == 1)
+                BatchIterator batch = new BatchIterator(server,
+                                archives[i].getKey(), item.getName(),
+                                start, end, request_type, request_parms);
+                IValue result[] = batch.getBatch();
+                while (result != null)
                 {   // Notify model of new samples.
                     // Even when monitor.isCanceled at this point?
                     // Yes, since we have the samples, might as well show them
                     // before bailing out.
-                    item.addArchiveSamples(result[0]);
-                }
-                else
-                {
-                    throw new Exception("Expected 1, but got "
-                                    + result.length + " response.");
+                    if (result.length > 0)
+                        item.addArchiveSamples(server.getServerName(), result);
+                    if (monitor.isCanceled())
+                        break;
+                    result = batch.next();
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Plugin.logException("ArchiveFetchJob", e);
+                Plugin.logException("ArchiveFetchJob", ex);
             }
             // Stop and ignore further results when canceled.
             if (monitor.isCanceled())

@@ -4,6 +4,7 @@ import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
+import org.csstudio.trends.databrowser.model.IPVModelItem.RequestType;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.graphics.Color;
@@ -143,21 +144,22 @@ public class PVTableCellModifier implements ICellModifier
             case REQUEST_TYPE:
                 if (entry instanceof IPVModelItem)
                 {
+                    IPVModelItem pv = (IPVModelItem) entry;
+                    int ordinal = ((Integer) value).intValue();
+                    final RequestType request_type = IPVModelItem.RequestType.fromOrdinal(ordinal);
                     // TODO remove when done
                     MessageDialog.openInformation(view.getSite().getShell(),
                             "Being Developed", //$NON-NLS-1$
-                            "This feature doesn't do anything, yet\nIt's still under development"); //$NON-NLS-1$
-                    IPVModelItem pv = (IPVModelItem) entry;
-                    if (pv.getRequestType() == IPVModelItem.RequestType.RAW)
-                        pv.setRequestType(IPVModelItem.RequestType.OPTIMIZED);
-                    else
-                        pv.setRequestType(IPVModelItem.RequestType.RAW);
+                            "This feature is still under development"); //$NON-NLS-1$
+                     pv.setRequestType(request_type);
                 }
                 return;
             case TRACE_TYPE:
-                int ordinal = ((Integer) value).intValue();
-                entry.setTraceType(TraceType.fromOrdinal(ordinal));
-                return;
+                {
+                    int ordinal = ((Integer) value).intValue();
+                    entry.setTraceType(TraceType.fromOrdinal(ordinal));
+                    return;
+                }
             }
         }
         catch (Exception e)

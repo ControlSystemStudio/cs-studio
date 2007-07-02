@@ -43,7 +43,7 @@ public class PVTableHelper
         LOG_SCALE(Messages.AxisType, 45, 20, true),
 
         /** Archive request type column identifier */
-        REQUEST_TYPE(Messages.Request, 40, 20, true),
+        REQUEST_TYPE(Messages.Request, 50, 20, true),
         
         /** Trace display type */
         TRACE_TYPE(Messages.DisplayType, 35, 20, true);
@@ -154,13 +154,7 @@ public class PVTableHelper
                 if (entry instanceof IPVModelItem)
                 {
                     IPVModelItem pv = (IPVModelItem) entry;
-                    switch (pv.getRequestType())
-                    {
-                    case RAW:
-                        return Messages.raw_request;
-                    case OPTIMIZED:
-                        return Messages.optimized_request;
-                    }
+                    return pv.getRequestType().getName();
                 }
                 return null; // doesn't apply
             case TRACE_TYPE:

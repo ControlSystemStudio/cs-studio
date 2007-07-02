@@ -1,6 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.archive.ArchiveValues;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.model.IArchiveDataSource;
 
 /** Interface to a model item with archive data sources.
@@ -13,10 +13,47 @@ public interface IPVModelItem extends IModelItem
     enum RequestType
     {
         /** If possible, get the raw data. */
-        RAW,
+        RAW(Messages.Request_raw),
         
         /** If possible, get data optimized for plotting. */
-        OPTIMIZED
+        OPTIMIZED(Messages.Request_optimized);
+        
+        final private String name;
+        
+        private static String [] type_strings = null;
+        
+        private RequestType(String name)
+        {
+            this.name = name;
+        }
+        
+        public String getName()
+        {
+            return name;
+        }
+        
+        public static String [] getTypeStrings()
+        {
+            if (type_strings == null)
+            {
+                RequestType[] types = RequestType.values();
+                type_strings = new String[types.length]; 
+                for (int i = 0; i < types.length; i++)
+                    type_strings[i] = types[i].getName();
+            }
+            return type_strings;
+        }
+        
+        /** Obtain a request type from its ordinal
+         *  @return RequestType for the given ordinal. 
+         */
+        public static RequestType fromOrdinal(int ordinal)
+        {   // This is expensive, but java.lang.Enum offers no easy way...
+            for (RequestType id : RequestType.values())
+                if (id.ordinal() == ordinal)
+                    return id;
+            throw new Error("Invalid ordinal " + ordinal); //$NON-NLS-1$
+        }
     };
     
     /** @return current request type */
@@ -28,8 +65,10 @@ public interface IPVModelItem extends IModelItem
     /** Add samples obtained from the archive.
      *  <p>
      *  Called from a non-GUI thread!
+     *  @param source The archive data source description
+     *  @param samples The samples (non-null, more than 0)
      */
-	public void addArchiveSamples(ArchiveValues samples);
+	public void addArchiveSamples(final String source, final IValue samples[]);
 
     /** @return The archive data source descriptions. */
     public IArchiveDataSource[] getArchiveDataSources();

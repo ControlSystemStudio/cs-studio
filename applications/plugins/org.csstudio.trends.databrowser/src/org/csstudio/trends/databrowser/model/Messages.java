@@ -10,6 +10,8 @@ public class Messages extends NLS
     public static String LiveSample;
     public static String LivePVDisconnected;
     public static String NoNumericValue;
+    public static String Request_optimized;
+    public static String Request_raw;
     public static String Sevr_INVALID;
     public static String Sevr_MAJOR;
     public static String Sevr_MINOR;
