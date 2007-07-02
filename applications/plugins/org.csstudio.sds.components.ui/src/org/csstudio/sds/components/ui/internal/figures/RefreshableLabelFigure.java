@@ -22,8 +22,8 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.swt.SWT;
@@ -36,7 +36,7 @@ import org.eclipse.swt.graphics.Font;
  * 
  */
 public final class RefreshableLabelFigure extends Label implements
-		IRefreshableFigure {
+		IAdaptable {
 	/**
 	 * Default label font.
 	 */
@@ -61,7 +61,10 @@ public final class RefreshableLabelFigure extends Label implements
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * This method is a tribute to unit tests, which need a way to test the
+	 * performance of the figure implementation. Implementors should produce
+	 * some random changes and refresh the figure, when this method is called.
+	 * 
 	 */
 	public void randomNoiseRefresh() {
 		setText("" + Math.random()); //$NON-NLS-1$

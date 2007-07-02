@@ -26,8 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;
@@ -52,7 +52,7 @@ import org.eclipse.swt.graphics.RGB;
  * @version $Revision$
  * 
  */
-public final class WaveformFigure extends Panel implements IRefreshableFigure {
+public final class WaveformFigure extends Panel implements IAdaptable {
 	
 	/**
 	 * Height of the text.
@@ -255,7 +255,10 @@ public final class WaveformFigure extends Panel implements IRefreshableFigure {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * This method is a tribute to unit tests, which need a way to test the
+	 * performance of the figure implementation. Implementors should produce
+	 * some random changes and refresh the figure, when this method is called.
+	 * 
 	 */
 	public void randomNoiseRefresh() {
 	}

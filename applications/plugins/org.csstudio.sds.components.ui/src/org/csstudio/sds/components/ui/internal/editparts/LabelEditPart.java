@@ -25,7 +25,6 @@ import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
@@ -42,7 +41,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IRefreshableFigure doCreateFigure() {
+	protected IFigure doCreateFigure() {
 		LabelModel model = (LabelModel) getWidgetModel();
 
 		RefreshableLabelFigure label = new RefreshableLabelFigure();

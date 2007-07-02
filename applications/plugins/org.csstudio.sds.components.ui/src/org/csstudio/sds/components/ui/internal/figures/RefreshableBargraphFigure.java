@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;
@@ -53,7 +53,7 @@ import org.eclipse.swt.graphics.RGB;
  * 
  */
 public final class RefreshableBargraphFigure extends RectangleFigure implements
-		IRefreshableFigure {
+		IAdaptable {
 	/**
 	 * Height of the text.
 	 */
@@ -161,10 +161,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		_markerPanel = new MarkerPanel(_showMarks == TOP_LEFT,
 				_orientationHorizontal);
 		_scale = new Scale();
-		//_scale.setLength(50);
 		_scale.setShowNegativeSections(true);
-		//_scale.setReferencePositions(0);
-		//_scale.setShowValues(false);
 		this.add(_fillRectangleFigure);
 		this.add(_markerPanel);
 		this.add(_scale);
@@ -306,8 +303,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			}
 		} else {
 			_scale.setLength(_barRectangle.height/Math.max(1, _scaleSectionCount));
-//			int start = _barRectangle.y+_barRectangle.height-(int)((_barRectangle.height*(-_minimum))/Math.max(1,_maximum-_minimum));
-//			_scale.setReferencePositions(start);
 			_scale.setReferencePositions(_barRectangle.y+_barRectangle.height);
 			_scale.setRegion(_barRectangle.y, _barRectangle.y+_barRectangle.height);
 			int width = _scaleWideness;
@@ -437,7 +432,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 
 	/**
-	 * {@inheritDoc}
+	 * This method is a tribute to unit tests, which need a way to test the
+	 * performance of the figure implementation. Implementors should produce
+	 * some random changes and refresh the figure, when this method is called.
+	 * 
 	 */
 	public void randomNoiseRefresh() {
 		this.setFill(Math.random() * 100);
@@ -482,7 +480,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 	/**
 	 * Sets the default fill Color.
-	 * 
 	 * @param defaultFillRGB
 	 *            The RGB-value of the default fill Color
 	 */
@@ -872,22 +869,19 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * @author Kai Meyer
 	 */
 	private final class FillRectangleFigure extends RectangleFigure {
-
 		/**
 		 * The fill grade (0 - 1).
 		 */
 		private double _fillGrade = 0.5;
-
 		/**
 		 * The default fill Color.
 		 */
 		private Color _defaultFillColor;
-
 		/**
 		 * The Color for the border.
 		 */
 		private Color _borderColor;
-
+		
 		/**
 		 * {@inheritDoc}
 		 */

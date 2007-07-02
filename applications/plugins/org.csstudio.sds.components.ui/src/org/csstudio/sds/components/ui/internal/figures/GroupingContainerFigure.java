@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.csstudio.sds.components.ui.internal.figures;
 
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
@@ -27,37 +26,59 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
 
-public class GroupingContainerFigure extends Figure implements HandleBounds, IRefreshableFigure {
+/**
+ * A Widget, which contains other widgets.
+ * @author Sven Wende
+ *
+ */
+public class GroupingContainerFigure extends Figure implements HandleBounds, IAdaptable {
 
-	private IFigure pane;
+	/**
+	 * The content pane of this widget.
+	 */
+	private IFigure _pane;
 
+	/**
+	 * Constructor.
+	 */
 	public GroupingContainerFigure() {
 		setBorder(new LineBorder(1));
 		ScrollPane scrollpane = new ScrollPane();
-		pane = new FreeformLayer();
-		pane.setLayoutManager(new FreeformLayout());
+		_pane = new FreeformLayer();
+		_pane.setLayoutManager(new FreeformLayout());
 		setLayoutManager(new StackLayout());
 		add(scrollpane);
 		scrollpane.setViewport(new FreeformViewport());
-		scrollpane.setContents(pane);
+		scrollpane.setContents(_pane);
 
 		setBackgroundColor(ColorConstants.blue);
 		setForegroundColor(ColorConstants.blue);
 		setOpaque(true);
 	}
 
+	/**
+	 * Returns the content pane.
+	 * @return IFigure
+	 * 			The content pane
+	 */
 	public IFigure getContentsPane() {
-		return pane;
+		return _pane;
 	}
 
 	/**
+	 * Returns the bounds of the handles.
 	 * @see org.eclipse.gef.handles.HandleBounds#getHandleBounds()
+	 * @return Rectangle
+	 * 			The bounds of the handles
 	 */
 	public Rectangle getHandleBounds() {
 		return getBounds().getCropped(new Insets(2, 0, 2, 0));
 	}
 
-	public Dimension getPreferredSize(int w, int h) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public Dimension getPreferredSize(final int w, final int h) {
 		Dimension prefSize = super.getPreferredSize(w, h);
 		Dimension defaultSize = new Dimension(100, 100);
 		prefSize.union(defaultSize);
@@ -73,20 +94,34 @@ public class GroupingContainerFigure extends Figure implements HandleBounds, IRe
 		graphics.fillRectangle(rect);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		return "CircuitBoardFigure"; //$NON-NLS-1$
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected boolean useLocalCoordinates() {
 		return false;
 	}
 
+	/**
+	 * This method is a tribute to unit tests, which need a way to test the
+	 * performance of the figure implementation. Implementors should produce
+	 * some random changes and refresh the figure, when this method is called.
+	 * 
+	 */
 	public void randomNoiseRefresh() {
-		// TODO Auto-generated method stub
-		
+		//nothing to do yet
 	}
 
-	public Object getAdapter(Class adapter) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object getAdapter(final Class adapter) {
 		// TODO Auto-generated method stub
 		return null;
 	}

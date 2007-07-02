@@ -27,7 +27,6 @@ import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
@@ -48,7 +47,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IRefreshableFigure doCreateFigure() {
+	protected IFigure doCreateFigure() {
 		ActionButtonModel model = (ActionButtonModel) getWidgetModel();
 
 		RefreshableActionButtonFigure button = new RefreshableActionButtonFigure();

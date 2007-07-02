@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.FigureListener;
@@ -58,7 +58,7 @@ import org.eclipse.swt.SWT;
  * @version $Revision$
  * 
  */
-public final class AdvancedSliderFigure extends Panel implements IRefreshableFigure {
+public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	/**
 	 * Insets for the whole figure.
 	 */
@@ -259,7 +259,7 @@ public final class AdvancedSliderFigure extends Panel implements IRefreshableFig
 	 */
 	private Rectangle calculateValuePanelConstraints() {
 		int usedHeight = VALUE_MARKER_HEIGHT + SCALE_HEIGHT + 5;
-		int availableHeight = bounds.height;
+		//int availableHeight = bounds.height;
 
 		Point topLeft = new Point(INSETS + (int) (calculateScaleWidth() * 0.6)
 				+ 5, usedHeight);
@@ -533,7 +533,10 @@ public final class AdvancedSliderFigure extends Panel implements IRefreshableFig
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * This method is a tribute to unit tests, which need a way to test the
+	 * performance of the figure implementation. Implementors should produce
+	 * some random changes and refresh the figure, when this method is called.
+	 * 
 	 */
 	public void randomNoiseRefresh() {
 	}

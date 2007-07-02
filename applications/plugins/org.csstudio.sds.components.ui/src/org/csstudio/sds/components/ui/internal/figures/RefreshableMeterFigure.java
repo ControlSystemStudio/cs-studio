@@ -22,8 +22,8 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.AntialiasingUtil;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
@@ -40,7 +40,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * 
  */
 public final class RefreshableMeterFigure extends ImageFigure implements
-		IRefreshableFigure {
+		IAdaptable {
 
 	/** The default border size. */
 	private static final float DEFAULT_BORDER_SIZE = 3f;
@@ -110,7 +110,10 @@ public final class RefreshableMeterFigure extends ImageFigure implements
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * This method is a tribute to unit tests, which need a way to test the
+	 * performance of the figure implementation. Implementors should produce
+	 * some random changes and refresh the figure, when this method is called.
+	 * 
 	 */
 	public void randomNoiseRefresh() {
 		setValue(Math.random() * 360);

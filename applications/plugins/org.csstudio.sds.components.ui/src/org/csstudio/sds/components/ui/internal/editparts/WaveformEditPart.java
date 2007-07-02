@@ -25,7 +25,6 @@ import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.sds.components.ui.internal.figures.WaveformFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
@@ -43,7 +42,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IRefreshableFigure doCreateFigure() {
+	protected IFigure doCreateFigure() {
 		WaveformModel model = (WaveformModel) getWidgetModel();
 		WaveformFigure waveform = new WaveformFigure();
 		waveform.setData(model.getData());

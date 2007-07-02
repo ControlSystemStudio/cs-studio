@@ -25,7 +25,6 @@ import org.csstudio.sds.components.model.AdvancedSliderModel;
 import org.csstudio.sds.components.ui.internal.figures.AdvancedSliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -51,7 +50,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IRefreshableFigure doCreateFigure() {
+	protected IFigure doCreateFigure() {
 		final AdvancedSliderModel model = (AdvancedSliderModel) getWidgetModel();
 
 		final AdvancedSliderFigure slider = new AdvancedSliderFigure();

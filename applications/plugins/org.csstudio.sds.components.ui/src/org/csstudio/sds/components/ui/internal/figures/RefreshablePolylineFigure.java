@@ -22,7 +22,7 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polyline;
@@ -36,7 +36,7 @@ import org.eclipse.gef.handles.HandleBounds;
  * 
  */
 public final class RefreshablePolylineFigure extends Polyline implements
-		IRefreshableFigure, HandleBounds {
+		IAdaptable, HandleBounds {
 	
 	/**
 	 * The fill grade (0 - 100%).
@@ -90,7 +90,10 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * This method is a tribute to unit tests, which need a way to test the
+	 * performance of the figure implementation. Implementors should produce
+	 * some random changes and refresh the figure, when this method is called.
+	 * 
 	 */
 	public void randomNoiseRefresh() {
 		// TODO: swende: make some noise

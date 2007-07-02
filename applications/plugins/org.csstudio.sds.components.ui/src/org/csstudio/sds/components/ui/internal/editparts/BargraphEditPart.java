@@ -25,7 +25,6 @@ import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableBargraphFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
 
@@ -42,7 +41,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IRefreshableFigure doCreateFigure() {
+	protected IFigure doCreateFigure() {
 		BargraphModel model = (BargraphModel) getWidgetModel();
 
 		RefreshableBargraphFigure bargraph = new RefreshableBargraphFigure();

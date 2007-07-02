@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Ellipse;
@@ -49,17 +49,17 @@ import org.eclipse.draw2d.geometry.Dimension;
  * 
  */
 public final class SimpleSliderFigure extends Panel implements
-		IRefreshableFigure {
+		IAdaptable {
 	/**
 	 * Listeners that react on slider events.
 	 */
 	private List<ISliderListener> _sliderListeners;
-
+	
 	/**
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
-
+	
 	/**
 	 * The scroll bar figure.
 	 */
@@ -86,11 +86,6 @@ public final class SimpleSliderFigure extends Panel implements
 	private int _currentValue = 30;
 
 	/**
-	 * The current manual value.
-	 */
-	private int _manualValue = 30;
-
-	/**
 	 * The precision of the scrollbar.
 	 */
 	private int _scrollbarPrecision = 100;
@@ -110,12 +105,24 @@ public final class SimpleSliderFigure extends Panel implements
 	 */
 	private boolean _showValueAsText = false;
 
+	/**
+	 * The original minimum value.
+	 */
 	private double _originalMin;
 
+	/**
+	 * The original maximum value.
+	 */
 	private double _originalMax;
 
+	/**
+	 * The original manual value.
+	 */
 	private double _originalManVal;
 
+	/**
+	 * The original value.
+	 */
 	private double _originalVal;
 
 	/**
@@ -212,6 +219,11 @@ public final class SimpleSliderFigure extends Panel implements
 		_populateEvents = populateEvents;
 	}
 
+	/**
+	 * Sets if the current value should also be shown as text.
+	 * @param showValueAsText
+	 * 		True if the value should be shown as text, false otherwise
+	 */
 	public void setShowValueAsText(final boolean showValueAsText) {
 		_showValueAsText = showValueAsText;
 		_valueLabel.setVisible(_showValueAsText);
@@ -239,10 +251,12 @@ public final class SimpleSliderFigure extends Panel implements
 		updateScrollbar();
 	}
 
+	/**
+	 * Refreshes the scroolbar.
+	 */
 	private void updateScrollbar() {
 		_min = (int) (_originalMin * _scrollbarPrecision);
 		_max = (int) (_originalMax * _scrollbarPrecision);
-		_manualValue = (int) (_originalManVal * _scrollbarPrecision);
 		_scrollBar.setMinimum(_min);
 		_scrollBar.setMaximum(_max + _sliderWide);
 
@@ -436,18 +450,6 @@ public final class SimpleSliderFigure extends Panel implements
 	 */
 	public void setManualValue(final double value) {
 		_originalManVal = value;
-
-		// CentralLogger.getInstance().debug(this, "setManualValue("+value+")");
-		// int tempValue = (int) (value * _scrollbarPrecision);
-
-		// TODO: Dieses Assert darf nicht fliegen! Toleranter implementieren.
-		// Der Wert kann auch von der IOC ausserhalb der Grenzen kommen.
-		// assert tempValue >= _min && tempValue <= _max;
-
-		// _manualValue = tempValue;
-
-		// updateScrollbar();
-
 		updateValueText();
 	}
 
@@ -460,20 +462,6 @@ public final class SimpleSliderFigure extends Panel implements
 		format.setMaximumFractionDigits(_decimalPlaces);
 		_valueLabel
 				.setText("" + format.format(_originalVal) + " [MAN: " + format.format(_originalManVal) + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
-
-	/**
-	 * Gets a double, which has the given int value divided by the
-	 * scrollbarPrecision.
-	 * 
-	 * @param value
-	 *            The int value
-	 * @return The corresponding double
-	 * @deprecated
-	 */
-	@Deprecated
-	private double getDoubleFor2(final int value) {
-		return ((double) value) / _scrollbarPrecision;
 	}
 
 	/**
@@ -497,7 +485,10 @@ public final class SimpleSliderFigure extends Panel implements
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * This method is a tribute to unit tests, which need a way to test the
+	 * performance of the figure implementation. Implementors should produce
+	 * some random changes and refresh the figure, when this method is called.
+	 * 
 	 */
 	public void randomNoiseRefresh() {
 	}

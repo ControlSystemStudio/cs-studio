@@ -25,7 +25,6 @@ import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.ui.figures.IRefreshableFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -41,7 +40,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IRefreshableFigure doCreateFigure() {
+	protected IFigure doCreateFigure() {
 		MeterModel model = (MeterModel) getWidgetModel();
 
 		RefreshableMeterFigure meter = new RefreshableMeterFigure();
