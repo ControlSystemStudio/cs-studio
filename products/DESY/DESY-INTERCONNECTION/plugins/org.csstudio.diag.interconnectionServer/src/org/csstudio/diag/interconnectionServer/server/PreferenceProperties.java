@@ -25,11 +25,11 @@ public class PreferenceProperties {
 	public static long JMS_TIME_TO_LIVE_PUT_LOGS 	= 3600000;  //	60min X 60 sec X 1000 ms	(1hour)
 
 	///public static String PRIMARY_JMS_URL = "tcp://elogbook.desy.de:64616";	//TCP
-	public static String PRIMARY_JMS_URL = "failover:(tcp://krynfsb.desy.de:63616,tcp://krynfsb.desy.de:63616)?maxReconnectDelay=500,maxReconnectAttempts=50";	//TCP
+	public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs.desy.de:62616,tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50";	//TCP
 	//public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs.desy.de:62616,tcp://elogbook.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50";	//TCP
 	//public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";
 	///public static String SECONDARY_JMS_URL = "tcp://krynfs.desy.de:62616";
-	public static String SECONDARY_JMS_URL = "failover:(tcp://elogbook.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=2000,maxReconnectAttempts=100";
+	public static String SECONDARY_JMS_URL = "failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50";
 	///public static String SECONDARY_JMS_URL = "tcp://elogbook.desy.de:64616";
 
 	
