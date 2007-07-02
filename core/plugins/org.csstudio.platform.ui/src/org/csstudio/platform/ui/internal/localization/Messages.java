@@ -36,7 +36,11 @@ public final class Messages extends NLS {
 	 */
 	private static final String BUNDLE_NAME = "org.csstudio.platform.ui.internal.localization.messages"; //$NON-NLS-1$
 
-    public static String WorkbenchActionBuilder_SHOW_VIEW;
+    public static String CssWorkbenchAdvisor_LoggedInAs;
+
+	public static String CssWorkbenchAdvisor_NotLoggedIn;
+
+	public static String WorkbenchActionBuilder_SHOW_VIEW;
     public static String WorkbenchActionBuilder_MENU_FILE;
     public static String WorkbenchActionBuilder_MENU_FILE_NEW;
     public static String WorkbenchActionBuilder_EXIT;

@@ -21,16 +21,22 @@
  */
 package org.csstudio.platform.ui.workbench;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
+import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
+import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.platform.security.User;
 import org.csstudio.platform.ui.internal.console.Console;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective;
+import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
+import org.eclipse.ui.internal.util.StatusLineContributionItem;
 
 /**
  * The workbench advisor for the control system studio. <br>
@@ -65,6 +71,11 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 	 * The window configurer.
 	 */
 	private IWorkbenchWindowConfigurer _workbenchWindowconfigurer;
+	
+	/**
+	 * Monitors user logins and updates the status bar accordingly.
+	 */
+	private IUserManagementListener _userListener;
 
 	/**
 	 * {@inheritDoc}
@@ -100,6 +111,65 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 		_workbenchWindowconfigurer.setShowFastViewBars(false);
 		_workbenchWindowconfigurer.setShowProgressIndicator(true);
 		_workbenchWindowconfigurer.setShowStatusLine(true);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void postWindowOpen(final IWorkbenchWindowConfigurer configurer) {
+		addUserNameToStatusLine();
+	}
+
+	/**
+	 * Adds a contribution item to the status line which shows the currently
+	 * logged in user.
+	 */
+	// Note: this implementation currently uses StatusLineContributionItem,
+	// which is a non-API class (i.e. in an "internal" package). When we switch
+	// to Eclipse 3.3, we should rewrite this to use Eclipse 3.3's new extension
+	// point for status line items and only use official APIs.
+	@SuppressWarnings("restriction") //$NON-NLS-1$
+	private void addUserNameToStatusLine() {
+		IStatusLineManager statusLine =
+			_workbenchWindowconfigurer.getActionBarConfigurer()
+			.getStatusLineManager();
+		final SecurityFacade sf = SecurityFacade.getInstance();
+		final StatusLineContributionItem ci =
+			new StatusLineContributionItem("User name"); //$NON-NLS-1$
+		
+		_userListener = new IUserManagementListener() {
+			public void handleUserManagementEvent(final UserManagementEvent event) {
+				updateUserNameInStatusLine(ci);
+			}
+		};
+		sf.addUserManagementListener(_userListener);
+		
+		updateUserNameInStatusLine(ci);
+		statusLine.add(ci);
+	}
+	
+	/**
+	 * Updates the user name displayed in the status line.
+	 * @param ci the status line item.
+	 */
+	@SuppressWarnings("restriction") //$NON-NLS-1$
+	private void updateUserNameInStatusLine(final StatusLineContributionItem ci) {
+		User user = SecurityFacade.getInstance().getCurrentUser();
+		if (user != null) {
+			ci.setText(NLS.bind(Messages.CssWorkbenchAdvisor_LoggedInAs,
+					user.getUsername()));
+		} else {
+			ci.setText(Messages.CssWorkbenchAdvisor_NotLoggedIn);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void postWindowClose(final IWorkbenchWindowConfigurer configurer) {
+		SecurityFacade.getInstance().removeUserManagementListener(_userListener);
 	}
 
 	/**
