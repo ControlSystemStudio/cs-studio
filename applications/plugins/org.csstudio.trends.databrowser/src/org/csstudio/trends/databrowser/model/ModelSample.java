@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.model;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.chart.ChartSample;
+import org.eclipse.osgi.util.NLS;
 
 /** One sample of a ModelItem.
  *  <p>
@@ -74,9 +75,31 @@ public class ModelSample implements ChartSample
     public String getInfo()
     {
         final String val_info = ValueUtil.getInfo(sample);
+
+        String quality;
+        switch (sample.getQuality())
+        {
+        case Original:
+            quality = Messages.ModelSample_QualityOriginal;
+            break;
+        case Interpolated:
+            quality = Messages.ModelSample_QualityInterpolated;
+            break;
+        case Minimum:
+            quality = Messages.ModelSample_QualityMinimum;
+            break;
+        case Maximum:
+            quality = Messages.ModelSample_QualityMaximum;
+            break;
+        default:
+            quality = sample.getQuality().name();
+        }
+        
+        final String src_qual =
+            NLS.bind(Messages.ModelSample_SourceQuality, source, quality);
         if (val_info == null)
-            return source;
-        return val_info + "\n" + source; //$NON-NLS-1$
+            return src_qual;
+        return val_info + "\n" + src_qual; //$NON-NLS-1$
     }
 
     @Override

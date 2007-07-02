@@ -9,6 +9,16 @@ public class Messages extends NLS
     public static String LastArchivedSample;
     public static String LiveSample;
     public static String LivePVDisconnected;
+
+    public static String ModelSample_QualityInterpolated;
+
+    public static String ModelSample_QualityMaximum;
+
+    public static String ModelSample_QualityMinimum;
+
+    public static String ModelSample_QualityOriginal;
+
+    public static String ModelSample_SourceQuality;
     public static String NoNumericValue;
     public static String Request_optimized;
     public static String Request_raw;
