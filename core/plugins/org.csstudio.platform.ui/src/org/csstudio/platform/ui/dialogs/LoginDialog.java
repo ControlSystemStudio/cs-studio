@@ -41,91 +41,93 @@ import org.eclipse.swt.widgets.Text;
  * 
  */
 public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandler  {
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param parentShell
-	 *            The parent shell.
-	 */
-	public LoginDialog(final Shell parentShell) {
-		super(parentShell);
-	}
 
-	/**
-	 * Text box that holds the user name.
-	 */
-	private Text _username;
+    /**
+     * Text box that holds the user name.
+     */
+    private Text _username;
 
-	/**
-	 * Text box that holds the password.
-	 */
-	private Text _password;
+    /**
+     * Text box that holds the password.
+     */
+    private Text _password;
 
-	/**
-	 * Stores the credentials object after OK has been pressed.
-	 */
-	private Credentials _credentials;
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createDialogArea(final Composite parent) {
-		Control control = super.createDialogArea(parent);
+    /**
+     * Stores the credentials object after OK has been pressed.
+     */
+    private Credentials _credentials;
 
-		getShell().setText(Messages.LoginDialog_WINDOW_TITLE);
-		setTitle(Messages.LoginDialog_DIALOG_TITLE);
-		setMessage(Messages.LoginDialog_DIALOG_DESCRIPTION);
+    /**
+     * Standard constructor.
+     * 
+     * @param parentShell
+     *            The parent shell.
+     */
+    public LoginDialog(final Shell parentShell) {
+        super(parentShell);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createDialogArea(final Composite parent) {
+        Control control = super.createDialogArea(parent);
 
-		Composite composite = new Composite(parent, SWT.NONE);
+        getShell().setText(Messages.LoginDialog_WINDOW_TITLE);
+        setTitle(Messages.LoginDialog_DIALOG_TITLE);
+        setMessage(Messages.LoginDialog_DIALOG_DESCRIPTION);
 
-		// Create the layout
-		GridLayout layout = new GridLayout(2, false);
+        Composite composite = new Composite(parent, SWT.NONE);
 
-		// assign the layout to the panel
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		composite.setFont(parent.getFont());
+        // Create the layout
+        GridLayout layout = new GridLayout(2, false);
 
-		// user name
-		Label label = new Label(composite, SWT.NONE);
-		label.setText(Messages.LoginDialog_USER_NAME);
-		_username = new Text(composite, SWT.BORDER | SWT.FLAT);
-		_username.setFocus();
-		_username.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.FILL_HORIZONTAL));
+        // assign the layout to the panel
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        composite.setFont(parent.getFont());
 
-		// password
-		label = new Label(composite, SWT.NONE);
-		label.setText(Messages.LoginDialog_PASSWORD);
-		_password = new Text(composite, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
-		_password.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.FILL_HORIZONTAL));
-		_password.setEchoChar('*');
+        // user name
+        Label label = new Label(composite, SWT.NONE);
+        label.setText(Messages.LoginDialog_USER_NAME);
+        _username = new Text(composite, SWT.BORDER | SWT.FLAT);
+        _username.setFocus();
+        _username.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.FILL_HORIZONTAL));
 
-		return control;
-	}
+        // password
+        label = new Label(composite, SWT.NONE);
+        label.setText(Messages.LoginDialog_PASSWORD);
+        _password = new Text(composite, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
+        _password.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.FILL_HORIZONTAL));
+        _password.setEchoChar('*');
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final void okPressed() {
-		_credentials = new Credentials(this._username.getText(), 
-										this._password.getText());
-		// reset the username & password field
-		_username = null;
-		_password = null;
-		super.okPressed();
-	}
+        return control;
+    }
 
-	/**
-	 * Opens the login window and queries the user
-	 * for credentials which it returns.
-	 */
-	public Credentials getCredentials() {
-		_credentials = null;
-		this.setBlockOnOpen(true);
-		this.open();
-		return _credentials;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final void okPressed() {
+        _credentials = new Credentials(this._username.getText(),
+                                        this._password.getText());
+        // reset the username & password field
+        _username = null;
+        _password = null;
+        super.okPressed();
+    }
+
+    /**
+     * Opens the login window and queries the user
+     * for credentials which it returns.
+     */
+    public Credentials getCredentials() {
+        _credentials = null;
+        this.setBlockOnOpen(true);
+        this.open();
+        return _credentials;
+    }
 }
