@@ -93,10 +93,11 @@ public class Application implements IPlatformRunnable {
 			
 			
 			for(ServiceProxy proxy : proxies) {
-				if(proxy.isHighPriority())
+				if(proxy.isHighPriority()) {
 					proxy.run();
-				else
+				} else {
 					lowPriorityProxy.add(proxy);
+				}
 			}
 			
 			// TODO: implement this so that each low priority proxy
@@ -109,13 +110,13 @@ public class Application implements IPlatformRunnable {
 			returnCode = PlatformUI.createAndRunWorkbench(display,
 					new CssWorkbenchAdvisor());
 			
-            if (returnCode == PlatformUI.RETURN_RESTART)
-            {   // Something called IWorkbench.restart().
+            if (returnCode == PlatformUI.RETURN_RESTART) {
+            	// Something called IWorkbench.restart().
                 // Is this supposed to be a RESTART or RELAUNCH?
-                final Integer exit_code =
+                final Integer exitCode =
                     Integer.getInteger(RelaunchConstants.PROP_EXIT_CODE);
-                if (IPlatformRunnable.EXIT_RELAUNCH.equals(exit_code))
-                {   // RELAUCH with new command line
+                if (IPlatformRunnable.EXIT_RELAUNCH.equals(exitCode)) {
+                	// RELAUCH with new command line
                     return IPlatformRunnable.EXIT_RELAUNCH;
                 }
                 // RESTART without changes
