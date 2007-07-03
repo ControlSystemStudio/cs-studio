@@ -85,12 +85,6 @@ public class ModelSample implements ChartSample
         case Interpolated:
             quality = Messages.ModelSample_QualityInterpolated;
             break;
-        case Minimum:
-            quality = Messages.ModelSample_QualityMinimum;
-            break;
-        case Maximum:
-            quality = Messages.ModelSample_QualityMaximum;
-            break;
         default:
             quality = sample.getQuality().name();
         }

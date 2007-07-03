@@ -57,42 +57,19 @@ public class Plugin extends AbstractCssUiPlugin
     /** Add info message to the plugin log. */
     public static void logInfo(String message)
     {
-        if (plugin == null)
-            System.out.println("INFO: " + message); //$NON-NLS-1$
-        else
-            plugin.log(IStatus.INFO, message, null);
+        log(IStatus.INFO, message, null);
     }
     
     /** Add error message to the plugin log. */
     public static void logError(String message)
     {
-        if (plugin == null)
-            System.out.println("ERROR: " + message); //$NON-NLS-1$
-        else
-            plugin.log(IStatus.ERROR, message, null);
+        log(IStatus.ERROR, message, null);
     }
 
     /** Add an exception to the plugin log. */
     public static void logException(String message, Throwable e)
     {
-        if (plugin == null)
-        {
-            System.out.println("ERROR: " + message); //$NON-NLS-1$
-            e.printStackTrace();
-        }
-        else
-        {
-            try
-            {
-                getDefault().log(IStatus.ERROR, message, e);
-            }
-            catch (Throwable ex)
-            {
-                // May not be running as plugin, just using
-                // the logException call from a unit test
-                System.out.println("Exception: " + e.getMessage()); //$NON-NLS-1$
-            }
-        }
+        log(IStatus.ERROR, message, e);
     }
 
     /** Add a message to the log.
@@ -100,9 +77,16 @@ public class Plugin extends AbstractCssUiPlugin
      *  @param message
      *  @param e Exception or <code>null</code>
      */
-    private void log(int type, String message, Throwable e)
+    private static void log(int type, String message, Throwable ex)
     {
-        getLog().log(new Status(type, ID, IStatus.OK, message, e));
+        if (plugin == null)
+        {
+            System.out.println(message);
+            if (ex != null)
+                ex.printStackTrace();
+            return;
+        }
+        plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
     }
     
     /** Returns an image descriptor for the image file.
