@@ -36,7 +36,7 @@ public class ClientWatchdog extends Thread{
 			 */
 			InterconnectionServer.getInstance().setSuccessfullJmsSentCountdown(false);
 			CentralLogger.getInstance().debug(this, "InterconnectionServer: Hard STOP for ClientRequest");
-			System.out.println("#");
+			System.out.print("#");
 		}
 		} catch (InterruptedException e) {
 			// TODO: handle exception
