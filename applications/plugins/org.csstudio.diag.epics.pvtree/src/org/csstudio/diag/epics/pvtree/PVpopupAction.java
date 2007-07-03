@@ -7,9 +7,12 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-/** Another application sent us a PV name via its popup menu. */
+/** Another application sent us a PV name via its popup menu.
+ *  @author Kay Kasemir
+ */
 public class PVpopupAction extends ProcessVariablePopupAction
 {
+    @Override
     public void handlePVs(IProcessVariable pv_names[])
     {
         if (pv_names.length < 1)

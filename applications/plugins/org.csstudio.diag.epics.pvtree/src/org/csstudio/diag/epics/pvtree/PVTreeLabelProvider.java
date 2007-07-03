@@ -13,11 +13,13 @@ import org.eclipse.swt.widgets.Display;
  */
 class PVTreeLabelProvider extends LabelProvider implements IColorProvider
 {
+    @Override
     public String getText(Object obj)
     {
         return obj.toString();
     }
 
+    @Override
     public Image getImage(Object obj)
     {
         // Indicate if this is a 'record' of known type...

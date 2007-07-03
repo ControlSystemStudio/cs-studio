@@ -69,6 +69,7 @@ public class PVTreeView extends ViewPart
     }
 
     /** Create the GUI. */
+    @Override
     public void createPartControl(Composite parent)
     {
         GridLayout gl = new GridLayout();
@@ -91,6 +92,7 @@ public class PVTreeView extends ViewPart
             new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
                                    PV_LIST_TAG, pv_name)
         {
+            @Override
             public void newSelection(String new_pv_name)
             {   setPVName(new_pv_name); }
         };
@@ -147,6 +149,7 @@ public class PVTreeView extends ViewPart
     }
 
     /** Set initial focus. */
+    @Override
     public void setFocus()
     {
         pv_name.setFocus();

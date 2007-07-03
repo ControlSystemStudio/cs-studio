@@ -39,7 +39,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
             root.dispose();
             root = null;
         }        
-        root = new PVTreeItem(this, null, "PV", name);
+        root = new PVTreeItem(this, null, Messages.PV, name);
         itemChanged(root);
     }
     
@@ -70,7 +70,9 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     
     // IStructuredContentProvider
     public void inputChanged(Viewer v, Object oldInput, Object newInput)
-    {}
+    {
+        // NOP
+    }
 
     public void dispose()
     {
