@@ -475,9 +475,9 @@ public class InterconnectionServer
         		receiveEnabled = true;
         	}
         }
-                
-        serverSocket.close();
         
+        CentralLogger.getInstance().warn( this, "InterconnectionServer: leaving main loop - to STOP");
+        serverSocket.close();
         return result;
     }
     
