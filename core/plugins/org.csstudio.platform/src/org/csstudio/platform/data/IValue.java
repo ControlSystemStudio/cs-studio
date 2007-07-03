@@ -82,13 +82,7 @@ public interface IValue
          *      values.
          *  </ul>
          */
-        Interpolated,
-        
-        /** This is the minimum over several 'original' samples. */
-        Minimum,
-        
-        /** This is the maximum over several 'original' samples. */
-        Maximum,
+        Interpolated
     };
 
     /** Get the quality of this value.

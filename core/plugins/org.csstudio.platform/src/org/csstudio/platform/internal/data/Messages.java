@@ -22,4 +22,6 @@ public class Messages
     public final static String SevMinor = "MINOR";
     public final static String SevMajor = "MAJOR";
     public final static String SevInvalid = "INVALID";
+
+    public final static String MiniMaxiFormat = " [ {0} ... {1} ]";
 }

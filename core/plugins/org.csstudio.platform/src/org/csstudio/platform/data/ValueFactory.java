@@ -2,9 +2,10 @@ package org.csstudio.platform.data;
 
 import org.csstudio.platform.data.IValue.Quality;
 import org.csstudio.platform.internal.data.DoubleValue;
-import org.csstudio.platform.internal.data.EnumeratedValue;
 import org.csstudio.platform.internal.data.EnumeratedMetaData;
+import org.csstudio.platform.internal.data.EnumeratedValue;
 import org.csstudio.platform.internal.data.IntegerValue;
+import org.csstudio.platform.internal.data.MinMaxDoubleValue;
 import org.csstudio.platform.internal.data.NumericMetaData;
 import org.csstudio.platform.internal.data.SeverityInstances;
 import org.csstudio.platform.internal.data.StringValue;
@@ -98,6 +99,29 @@ public class ValueFactory
     {
         return new DoubleValue(time, severity, status, meta_data,
                         quality, values);
+    }
+
+    /** Create instance of {@link IMinMaxDoubleValue}.
+     *  @param time Time stamp
+     *  @param severity Severity descriptor
+     *  @param status Status string.
+     *  @param meta_data Numeric meta data.
+     *  @param quality Data quality descriptor.
+     *  @param values The actual values.
+     *  @param minimum Minimum
+     *  @param maximum Maximum
+     *  @return Instance of IMinMaxDoubleValue.
+     */
+    public static final IMinMaxDoubleValue
+        createMinMaxDoubleValue(final ITimestamp time, final ISeverity severity,
+                    final String status, final INumericMetaData meta_data,
+                    final Quality quality,
+                    final double values[],
+                    final double minimum,
+                    final double maximum)
+    {
+        return new MinMaxDoubleValue(time, severity, status, meta_data,
+                        quality, values, minimum, maximum);
     }
 
     /** Create instance of {@link IIntegerValue}.

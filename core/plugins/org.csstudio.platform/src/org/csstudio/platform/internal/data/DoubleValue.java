@@ -27,16 +27,16 @@ public class DoubleValue extends Value implements IDoubleValue
 	}
 
     /** {@inheritDoc} */
-	public final double[] getValues()
+	final public double[] getValues()
 	{	return values;	}
 
     /** {@inheritDoc} */
-	public final double getValue()
+	final public double getValue()
 	{	return values[0];	}
 	
     /** {@inheritDoc} */
 	@Override
-    public final String format(Format how, int precision)
+    public String format(Format how, int precision)
 	{
 		StringBuffer buf = new StringBuffer();
 		if (getSeverity().hasValue())
@@ -76,7 +76,7 @@ public class DoubleValue extends Value implements IDoubleValue
 	
     /** {@inheritDoc} */
 	@Override
-	public final boolean equals(final Object obj)
+	public boolean equals(final Object obj)
 	{
 		if (! (obj instanceof DoubleValue))
 			return false;
@@ -91,7 +91,7 @@ public class DoubleValue extends Value implements IDoubleValue
 
     /** {@inheritDoc} */
 	@Override
-	public final int hashCode()
+	public int hashCode()
 	{
 		int h = super.hashCode();
 		for (int i=0; i<values.length; ++i)
