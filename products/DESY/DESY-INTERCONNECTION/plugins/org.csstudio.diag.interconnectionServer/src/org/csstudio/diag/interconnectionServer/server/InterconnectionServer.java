@@ -290,6 +290,27 @@ public class InterconnectionServer
     	
     }
     
+    private void disconnectFromIocs() {
+    	String[] listOfNodes = Statistic.getInstance().getNodeNameArray();
+    	for ( int i=0; i<listOfNodes.length; i++ ) {
+    		CentralLogger.getInstance().warn(this, "InterconnectionServer: disconnect from IOC: " + listOfNodes[i]);
+    		new SendCommandToIoc( listOfNodes[i], PreferenceProperties.COMMAND_PORT_NUMBER, PreferenceProperties.COMMAND_DISCONNECT);
+    	}
+    }
+    
+    public boolean stopIcServer () {
+    	boolean success = true;
+    	/*
+    	 * send message
+    	 * inform IOC's to disconnect
+    	 * stop JMS connections
+    	 */
+    	CentralLogger.getInstance().warn(this, "InterconnectionServer: Stopped by Management Command");
+    	disconnectFromIocs();
+    	cleanupJms();
+    	return success;
+    }
+    
     public void restartJms () {
     	/*
     	 * 
@@ -455,15 +476,6 @@ public class InterconnectionServer
         
         return result;
     }
-    
-    private void disconnectFromIocs() {
-    	String[] listOfNodes = Statistic.getInstance().getNodeNameArray();
-    	for ( int i=0; i<listOfNodes.length; i++ ) {
-    		System.out.println ("InterconnectionServer: disconnect from IOC: " + listOfNodes[i]);
-    		new SendCommandToIoc( listOfNodes[i], PreferenceProperties.COMMAND_PORT_NUMBER, PreferenceProperties.COMMAND_DISCONNECT);
-    	}
-    }
-	
     
     public void checkSendMessageErrorCount () {
     	//
