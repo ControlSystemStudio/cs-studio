@@ -9,7 +9,6 @@ public class StopIcServer implements IAction {
 	 * (non-Javadoc)
 	 * @see org.csstudio.platform.libs.dcf.actions.IAction#run(java.lang.Object)
 	 */
-	@SuppressWarnings("deprecation")
 	public Object run(Object param) {
 		/*
 		 * stop IC-Server
@@ -18,7 +17,7 @@ public class StopIcServer implements IAction {
 		/*
 		 * stop here - how??
 		 */
-		
+		System.exit(0);
 		return "" + result;
 	}
 
