@@ -53,6 +53,10 @@
             class="org.csstudio.diag.interconnectionServer.GetDynParameters"
             id="org.csstudio.diag.interconnectionServer.getDynParameters"
             name="GetDynParameters"/>
+      <simpleAction
+            class="org.csstudio.diag.interconnectionServer.StopIcServer"
+            id="org.csstudio.diag.interconnectionServer.StopIcServer"
+            name="Stop IC-Server"/>
    </extension>
 
 </plugin>
