@@ -50,6 +50,7 @@ public class InterconnectionServer
 	private boolean 					primaryServerUsed = true;
 	private int							sendMessageErrorCount	= 0;
 	public int 							successfullJmsSentCountdown = PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN;
+	private	boolean         			quit        = false;
 	//private static int					errorContNamingException = 0;
     
     public final String NAME    = "IcServer";
@@ -308,6 +309,10 @@ public class InterconnectionServer
     	CentralLogger.getInstance().warn(this, "InterconnectionServer: Stopped by Management Command");
     	disconnectFromIocs();
     	cleanupJms();
+    	/*
+    	 * exit main loop
+    	 */
+    	setQuit(true);
     	return success;
     }
     
@@ -344,7 +349,6 @@ public class InterconnectionServer
         DatagramPacket  packet      = null;
         ClientRequest   newClient   = null;
         int             result      = 0;
-        boolean         quit        = false;
         byte 			buffer[]	=  new byte[ PreferenceProperties.BUFFER_ZIZE];
         boolean receiveEnabled = true;
 
@@ -413,7 +417,7 @@ public class InterconnectionServer
     
         // TODO: Abbruchbedingung einfügen
         //       z.B. Receiver für Queue COMMAND einfügen
-        while(!quit)
+        while(!isQuit())
         {
         	/*
         	 * check for the number of existing threads
@@ -693,5 +697,13 @@ public class InterconnectionServer
 				setSuccessfullJmsSentCountdown(countdown); 
 			}
 		}
+	}
+
+	public boolean isQuit() {
+		return quit;
+	}
+
+	public void setQuit(boolean quit) {
+		this.quit = quit;
 	}
 }
