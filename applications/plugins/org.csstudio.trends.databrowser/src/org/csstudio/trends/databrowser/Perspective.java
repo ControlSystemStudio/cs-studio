@@ -14,9 +14,10 @@ import org.eclipse.ui.IPerspectiveFactory;
 public class Perspective implements IPerspectiveFactory
 {
     public static final String ID = Perspective.class.getName();
-    @SuppressWarnings("unused")
     private static final String ID_PROGRESS =
         "org.csstudio.platform.ui.views.progress"; //$NON-NLS-1$
+    private static final String ID_NAVIGATOR =
+    	"org.csstudio.platform.ui.views.WorkspaceExplorerView"; //$NON-NLS-1$
     
     @SuppressWarnings("nls")
     public void createInitialLayout(IPageLayout layout)
@@ -33,7 +34,7 @@ public class Perspective implements IPerspectiveFactory
                         IPageLayout.BOTTOM, 0.66f, editor);
         // Stuff for 'left'
         left.addView(ArchiveView.ID);
-        left.addView(IPageLayout.ID_RES_NAV);
+        left.addView(ID_NAVIGATOR);
         // Stuff for 'bottom'
         bottom.addView(ConfigView.ID);
         bottom.addPlaceholder(SampleView.ID);
