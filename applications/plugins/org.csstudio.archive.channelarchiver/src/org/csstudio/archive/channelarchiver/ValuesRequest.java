@@ -207,6 +207,8 @@ public class ValuesRequest
 			int stat_code = (Integer)sample_hash.get("stat");
 			int sevr_code = (Integer)sample_hash.get("sevr");
 			Vector vv = (Vector)sample_hash.get("value");
+            // TODO: check for "min", "max", and somehow package that
+            
             SeverityImpl sevr = server.getSeverity(sevr_code);
             String stat = server.getStatus(sevr, stat_code);
 			if (type == TYPE_DOUBLE)

@@ -6,7 +6,6 @@ import java.util.Vector;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
-
 /** Handles the "archiver.info" request and its results.
  *  @author Kay Kasemir
  */
@@ -46,7 +45,7 @@ final class ServerInfoRequest
 		//	} = archiver.info()
 		version = (Integer) result.get("ver");
         if (version < EXPECTED_VERSION)
-            System.err.println("Warning: "
+            Plugin.logInfo("Warning: "
                             + "Expected ChannelArchiver "
                             + "XML-RPC Network Data Server Version "
                             + EXPECTED_VERSION

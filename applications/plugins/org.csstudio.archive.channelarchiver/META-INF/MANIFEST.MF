@@ -11,3 +11,5 @@ Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.csstudio.platform;visibility:=reexport,
  org.csstudio.utility.pv;visibility:=reexport,
  org.csstudio.archive;visibility:=reexport
+Bundle-Activator: org.csstudio.archive.channelarchiver.Plugin
+Eclipse-LazyStart: true
