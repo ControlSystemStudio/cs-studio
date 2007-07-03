@@ -8,7 +8,8 @@ public class PreferenceProperties {
 	// in a headles Eclipse plugin
 	//
 	
-	public static String XMPP_USER_NAME = "icserver";				// PP
+	public static String XMPP_USER_NAME = "icserver-alarm";				// PP
+	public static String XMPP_PASSWORD = "icserver";
 	
 	public static int DATA_PORT_NUMBER = 18324;				// PP
 	public static int COMMAND_PORT_NUMBER = 18325;			// PP
