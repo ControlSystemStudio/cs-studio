@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csstudio>
+  <org.csstudio.diag.interconnectionServer.preferences>
+    <property name="xmppUserName" default="icserver-alarm" />
+    <property name="xmppPassword" default="icserver" />
+    <property name="dataPortNumber" default="18324" />
+    <property name="commandPortNumber" default="18325" />
+    <property name="sentStartID" default="5000000" />
+    <property name="jmsContextFactory" default="ACTIVEMQ" />
+    <property name="jmsTimeToLiveAlarms" default="3600000" />
+    <property name="jmsTimeToLiveLogs" default="600000" />
+    <property name="jmsTimeToLivePutLogs" default="3600000" />
+    <property name="primaryJmsUrl" default="failover:(tcp://krynfs.desy.de:62616,tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50" />
+    <property name="secondaryJmsUrl" default="failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50" />
+  </org.csstudio.diag.interconnectionServer.preferences>
+</csstudio>
+
