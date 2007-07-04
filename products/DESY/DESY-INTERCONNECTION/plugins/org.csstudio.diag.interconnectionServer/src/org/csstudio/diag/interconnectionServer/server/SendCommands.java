@@ -8,6 +8,8 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.csstudio.platform.store.XMLStore;
+
 public class SendCommands {
 	
 	private static SendCommands sendCommandsInstance = null;
@@ -25,19 +27,30 @@ public class SendCommands {
         int             result      = 0;
         byte 			buffer[]	=  new byte[ PreferenceProperties.BUFFER_ZIZE];
         commandList	= new Hashtable<String,CommandInstance>();
-        currentId = PreferenceProperties.SENT_START_ID;
+//        currentId = PreferenceProperties.SENT_START_ID;
 
+		//get properties from xml store.
+		XMLStore store = XMLStore.getInstance();
+		String commandPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"commandPortNumber", false);
+		int commandPortNum = Integer.parseInt(commandPortNumber);
+		String dataPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"dataPortNumber", false);
+		int dataPortNum = Integer.parseInt(dataPortNumber);
+		String sentStartID = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"sentStartID", false);
+		currentId = Integer.parseInt(sentStartID);
         
         System.out.println("Send Commands - start");
 
         try
         {
-        	sendSocket = new DatagramSocket( PreferenceProperties.COMMAND_PORT_NUMBER);
+        	sendSocket = new DatagramSocket( commandPortNum);
             //TODO: create message - successfully up and running
         }
         catch(IOException ioe)
         {
-        	System.out.println("Send Commands - start ** ERROR ** : Socket konnte nicht initialisiert werden. Port: " + PreferenceProperties.DATA_PORT_NUMBER);
+        	System.out.println("Send Commands - start ** ERROR ** : Socket konnte nicht initialisiert werden. Port: " + dataPortNum);
         	System.out.println("Send Commands - start *** EXCEPTION *** : " + ioe.getMessage());
             
             return;

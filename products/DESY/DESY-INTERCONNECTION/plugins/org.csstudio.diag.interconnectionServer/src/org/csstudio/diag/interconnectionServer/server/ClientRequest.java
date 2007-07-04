@@ -31,6 +31,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer.TagValuePairs;
+import org.csstudio.platform.store.XMLStore;
 import org.csstudio.utility.ldap.engine.Engine;
 
 //import de.desy.jms.server.InterconnectionServer.TagValuePairs;
@@ -109,6 +110,19 @@ public class ClientRequest extends Thread
         GregorianCalendar afterJmsSendTime = new GregorianCalendar();
         GregorianCalendar afterUdpAcknowledgeTime = new GregorianCalendar();
         GregorianCalendar afterLdapWriteTime = new GregorianCalendar();
+
+		//get properties from xml store.
+		XMLStore store = XMLStore.getInstance();
+		String jmsTimeToLiveAlarms = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"jmsTimeToLiveAlarms", false);
+		int jmsTimeToLiveAlarmsInt = Integer.parseInt(jmsTimeToLiveAlarms);
+		String jmsTimeToLiveLogs = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"jmsTimeToLiveLogs", false);
+		int jmsTimeToLiveLogsInt = Integer.parseInt(jmsTimeToLiveLogs);
+		String jmsTimeToLivePutLogs = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"jmsTimeToLivePutLogs", false);
+		int jmsTimeToLivePutLogsInt = Integer.parseInt(jmsTimeToLivePutLogs);
+
         
         /*
          * increase stistic counter
@@ -173,6 +187,8 @@ public class ClientRequest extends Thread
         		//
         		//System.out.print("a");
         		try {
+        			
+
         			alarmSession = alarmConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
                     // Create the destination (Topic or Queue)
@@ -181,7 +197,7 @@ public class ClientRequest extends Thread
                     // Create a MessageProducer from the Session to the Topic or Queue
                 	MessageProducer alarmSender = alarmSession.createProducer( alarmDestination);
                 	alarmSender.setDeliveryMode( DeliveryMode.PERSISTENT);
-                	alarmSender.setTimeToLive( PreferenceProperties.JMS_TIME_TO_LIVE_ALARMS);
+                	alarmSender.setTimeToLive( jmsTimeToLiveAlarmsInt);
                 	
             		//sender = alarmSession.createProducer(alarmDestination);
             		//System.out.println("Time-ALARM: - after sender= 	= " + dateToString(new GregorianCalendar()));
@@ -224,6 +240,8 @@ public class ClientRequest extends Thread
         	case TagList.STATUS_MESSAGE:
         	case TagList.SYSTEM_LOG_MESSAGE:
         	case TagList.APPLICATION_LOG_MESSAGE:
+        		
+
         		//
         		// LOG jms server
         		//
@@ -236,7 +254,7 @@ public class ClientRequest extends Thread
                     // Create a MessageProducer from the Session to the Topic or Queue
                 	MessageProducer logSender = logSession.createProducer( logDestination);
                 	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
-                	logSender.setTimeToLive( PreferenceProperties.JMS_TIME_TO_LIVE_LOGS);
+                	logSender.setTimeToLive( jmsTimeToLiveLogsInt);
         			// sender = logSession.createProducer(logDestination);
                     //message = logSession.createMapMessage();
                     message = icServer.prepareTypedJmsMessage( logSession.createMapMessage(), tagValuePairs, type);
@@ -290,7 +308,7 @@ public class ClientRequest extends Thread
                         // Create a MessageProducer from the Session to the Topic or Queue
                     	MessageProducer logSender = logSession.createProducer( logDestination);
                     	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
-                    	logSender.setTimeToLive( PreferenceProperties.JMS_TIME_TO_LIVE_LOGS);
+                    	logSender.setTimeToLive(jmsTimeToLiveLogsInt);
                     	icServer.sendLogMessage( icServer.prepareJmsMessage ( logSession.createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
                     	logSender.close();
             		}
@@ -317,7 +335,7 @@ public class ClientRequest extends Thread
                     // Create a MessageProducer from the Session to the Topic or Queue
                 	MessageProducer putLogSender = putLogSession.createProducer( putLogDestination);
                 	putLogSender.setDeliveryMode( DeliveryMode.PERSISTENT);
-                	putLogSender.setTimeToLive( PreferenceProperties.JMS_TIME_TO_LIVE_PUT_LOGS);
+                	putLogSender.setTimeToLive( jmsTimeToLivePutLogsInt);
         			//sender = putLogSession.createProducer(putLogDestination);
                     //message = putLogSession.createMapMessage();
                     message = icServer.prepareTypedJmsMessage( putLogSession.createMapMessage(), tagValuePairs, type);

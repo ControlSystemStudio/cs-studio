@@ -8,12 +8,17 @@ public class PreferenceProperties {
 	// in a headles Eclipse plugin
 	//
 	
+	//value is now read from the xml store
 	public static String XMPP_USER_NAME = "icserver-alarm";				// PP
+	//value is now read from the xml store
 	public static String XMPP_PASSWORD = "icserver";
 	
+	//value is now read from the xml store
 	public static int DATA_PORT_NUMBER = 18324;				// PP
+	//value is now read from the xml store
 	public static int COMMAND_PORT_NUMBER = 18325;			// PP
 
+	//value is now read from the xml store
 	public static int SENT_START_ID	= 5000000;				// PP
 	
 	//
@@ -21,17 +26,23 @@ public class PreferenceProperties {
 	//	SECONDARY_JMS_URL
 	
 	// public static String JMS_CONTEXT_FACTORY = "org.apache.activemq.jndi.ActiveMQInitialContextFactory"; // 
+	//value is now read from the xml store
 	public static String JMS_CONTEXT_FACTORY = "ACTIVEMQ";	// PP
 	
+	//value is now read from the xml store
 	public static long JMS_TIME_TO_LIVE_ALARMS 		= 3600000;  //	60min X 60 sec X 1000 ms	(1hour) PP
+	//value is now read from the xml store
 	public static long JMS_TIME_TO_LIVE_LOGS 		=  600000;  //	10min X 60 sec X 1000 ms	(10min) PP
+	//value is now read from the xml store
 	public static long JMS_TIME_TO_LIVE_PUT_LOGS 	= 3600000;  //	60min X 60 sec X 1000 ms	(1hour) PP
 
 	///public static String PRIMARY_JMS_URL = "tcp://elogbook.desy.de:64616";	//TCP
+	//value is now read from the xml store
 	public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs.desy.de:62616,tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50";	//TCP PP
 	//public static String PRIMARY_JMS_URL = "failover:(tcp://krynfs.desy.de:62616,tcp://elogbook.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50";	//TCP
 	//public static String SECONDARY_JMS_URL = "rmi://krynfs.desy.de:1099/";
 	///public static String SECONDARY_JMS_URL = "tcp://krynfs.desy.de:62616";
+	//value is now read from the xml store
 	public static String SECONDARY_JMS_URL = "failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50";	// PP
 	///public static String SECONDARY_JMS_URL = "tcp://elogbook.desy.de:64616";
 

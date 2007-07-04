@@ -11,5 +11,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.xmpp,
  org.csstudio.platform.libs.dcf,
  org.csstudio.utility.ldap,
- org.csstudio.startup
+ org.csstudio.startup,
+ org.csstudio.platform.preferences
 Eclipse-LazyStart: true

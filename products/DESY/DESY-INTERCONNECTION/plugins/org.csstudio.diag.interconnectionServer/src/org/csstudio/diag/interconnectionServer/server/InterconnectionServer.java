@@ -29,6 +29,7 @@ import org.apache.activemq.ActiveMQSession.DeliveryListener;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.platform.statistic.CollectorSupervisor;
+import org.csstudio.platform.store.XMLStore;
 
 /**
  * This version uses <code>DatagramSockets</code> instead of Sockets.
@@ -57,7 +58,8 @@ public class InterconnectionServer
     public final String VERSION = " 0.5";
     public final String BUILD   = " - BUILD 09.02.2007 17:00";
     
-    private int sendCommandId = PreferenceProperties.SENT_START_ID;
+    //set in constructor from xml preferences
+    private int sendCommandId;//PreferenceProperties.SENT_START_ID;
     
     private Collector	jmsMessageWriteCollector = null;
     private Collector	clientRequestTheadCollector = null;
@@ -74,7 +76,6 @@ public class InterconnectionServer
         ActiveMQConnectionFactory connectionFactory = null;
         boolean activeMqIsActive = false;
         
-        
         // Den Namen dieser Instanz setzen (wird für JMS benötigt)
         instanceName = PreferenceProperties.PROCESS_NAME;
 
@@ -83,35 +84,46 @@ public class InterconnectionServer
         //
         Statistic.getInstance().incrementNumberOfJmsServerFailover();
         
+		//get properties from xml store.
+		XMLStore store = XMLStore.getInstance();
+		String jmsContextFactory = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"jmsContextFactory", false);
+		String primaryJmsUrl = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"primaryJmsUrl", false);
+		String secondaryJmsUrl = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"secondaryJmsUrl", false);
+
+        
+        
         properties = new Hashtable<String, String>();
         
-        properties.put(Context.INITIAL_CONTEXT_FACTORY, PreferenceProperties.JMS_CONTEXT_FACTORY);
+        properties.put(Context.INITIAL_CONTEXT_FACTORY, jmsContextFactory);
         //
         // choose to start the primary - or the secondary JMS server
         //
         if ( primaryServerUsed) {
-        	if ( (PreferenceProperties.JMS_CONTEXT_FACTORY) != null && PreferenceProperties.JMS_CONTEXT_FACTORY.toUpperCase().equals("ACTIVEMQ")) {
-        		connectionFactory = new ActiveMQConnectionFactory(PreferenceProperties.PRIMARY_JMS_URL);
+        	if ( (jmsContextFactory) != null && jmsContextFactory.toUpperCase().equals("ACTIVEMQ")) {
+        		connectionFactory = new ActiveMQConnectionFactory(primaryJmsUrl);
         		activeMqIsActive = true;
-        		CentralLogger.getInstance().info(this, "Connect PRIMARY to Active-MQ-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
-        		System.out.println( "Connect PRIMARY to Active-MQ-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
+        		CentralLogger.getInstance().info(this, "Connect PRIMARY to Active-MQ-Server: " + primaryJmsUrl);
+        		System.out.println( "Connect PRIMARY to Active-MQ-Server: " + primaryJmsUrl);
         	} else {
-        		properties.put(Context.PROVIDER_URL, PreferenceProperties.PRIMARY_JMS_URL);
-        		CentralLogger.getInstance().info(this, "Connect PRIMARY to JMS-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
-        		System.out.println( "Connect PRIMARY to JMS-Server: " + PreferenceProperties.PRIMARY_JMS_URL);
+        		properties.put(Context.PROVIDER_URL, primaryJmsUrl);
+        		CentralLogger.getInstance().info(this, "Connect PRIMARY to JMS-Server: " + primaryJmsUrl);
+        		System.out.println( "Connect PRIMARY to JMS-Server: " + primaryJmsUrl);
         	}
 
         	this.primaryServerUsed = false;
         } else {
-        	if ( (PreferenceProperties.JMS_CONTEXT_FACTORY) != null && PreferenceProperties.JMS_CONTEXT_FACTORY.toUpperCase().equals("ACTIVEMQ")) {
-        		connectionFactory = new ActiveMQConnectionFactory(PreferenceProperties.PRIMARY_JMS_URL);
+        	if ( (jmsContextFactory) != null && jmsContextFactory.toUpperCase().equals("ACTIVEMQ")) {
+        		connectionFactory = new ActiveMQConnectionFactory(primaryJmsUrl);
         		activeMqIsActive = true;
-        		CentralLogger.getInstance().info(this, "Connect SECONDARY to Active-MQ-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
-        		System.out.println( "Connect SECONDARY to Active-MQ-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
+        		CentralLogger.getInstance().info(this, "Connect SECONDARY to Active-MQ-Server: " + secondaryJmsUrl);
+        		System.out.println( "Connect SECONDARY to Active-MQ-Server: " + secondaryJmsUrl);
         	} else {
-        		properties.put(Context.PROVIDER_URL, PreferenceProperties.SECONDARY_JMS_URL);
-        		CentralLogger.getInstance().info(this, "Connect SECONDARY to JMS-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
-        		System.out.println( "Connect SECONDARY to JMS-Server: " + PreferenceProperties.SECONDARY_JMS_URL);
+        		properties.put(Context.PROVIDER_URL, secondaryJmsUrl);
+        		CentralLogger.getInstance().info(this, "Connect SECONDARY to JMS-Server: " + secondaryJmsUrl);
+        		System.out.println( "Connect SECONDARY to JMS-Server: " + secondaryJmsUrl);
         	}
         	this.primaryServerUsed = true;
         }
@@ -293,9 +305,17 @@ public class InterconnectionServer
     
     private void disconnectFromIocs() {
     	String[] listOfNodes = Statistic.getInstance().getNodeNameArray();
+    	
+		//get properties from xml store.
+		XMLStore store = XMLStore.getInstance();
+		String commandPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"commandPortNumber", false);
+
+		int commandPortNum = Integer.parseInt(commandPortNumber);
+
     	for ( int i=0; i<listOfNodes.length; i++ ) {
     		CentralLogger.getInstance().warn(this, "InterconnectionServer: disconnect from IOC: " + listOfNodes[i]);
-    		new SendCommandToIoc( listOfNodes[i], PreferenceProperties.COMMAND_PORT_NUMBER, PreferenceProperties.COMMAND_DISCONNECT);
+    		new SendCommandToIoc( listOfNodes[i], commandPortNum, PreferenceProperties.COMMAND_DISCONNECT);
     	}
     }
     
@@ -328,6 +348,13 @@ public class InterconnectionServer
     
     private InterconnectionServer() {
     	// absicherung
+    	
+    	//get properties from xml preferences
+    	XMLStore store = XMLStore.getInstance();
+		String sentStartID = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"sentStartID", false);
+		sendCommandId = Integer.parseInt(sentStartID);
+
     }
     
     public static InterconnectionServer getInstance() {
@@ -397,14 +424,21 @@ public class InterconnectionServer
         
         System.out.println("\n" + NAME + VERSION + BUILD + "\nInternal Name: " + instanceName);
 
+		//get properties from xml store.
+		XMLStore store = XMLStore.getInstance();
+		String dataPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+				"dataPortNumber", false);
+		int dataPortNum = Integer.parseInt(dataPortNumber);
+
+        
         try
         {
-            serverSocket = new DatagramSocket( PreferenceProperties.DATA_PORT_NUMBER);
+            serverSocket = new DatagramSocket( dataPortNum );
             //TODO: create message - successfully up and running
         }
         catch(IOException ioe)
         {
-        	System.out.println(NAME + VERSION + " ** ERROR ** : Socket konnte nicht initialisiert werden. Port: " + PreferenceProperties.DATA_PORT_NUMBER);
+        	System.out.println(NAME + VERSION + " ** ERROR ** : Socket konnte nicht initialisiert werden. Port: " + dataPortNum);
         	System.out.println("\n" + NAME + VERSION + " *** EXCEPTION *** : " + ioe.getMessage());
             
             return -1;
