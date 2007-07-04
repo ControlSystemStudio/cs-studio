@@ -49,8 +49,9 @@ public class JMSMessageList {
 	
 	/**
 	 * Add a new JMSMessage to the collection of JMSMessages 
+	 * @throws JMSException 
 	 */
-	public void addJMSMessage(MapMessage mm) {
+	public void addJMSMessage(MapMessage mm) throws JMSException {
 		if (mm == null) {
 			return;
 		} else {

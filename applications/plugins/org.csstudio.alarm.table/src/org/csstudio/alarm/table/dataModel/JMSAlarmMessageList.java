@@ -25,16 +25,14 @@ public class JMSAlarmMessageList extends JMSMessageList {
 	 * Add a new JMSMessage to the collection of JMSMessages.
 	 * 
 	 */
-	synchronized public void addJMSMessage(MapMessage mm) {
-		if (mm == null) {
+	@Override
+	synchronized public void addJMSMessage(MapMessage mm) throws JMSException {
+		//do not insert messges with type: 'status'
+		if ((mm == null) || (mm.getString("TYPE").equalsIgnoreCase("status"))) {
 			return;
 		} else {
 			String severity = null;
-			try {
-				severity = mm.getString("SEVERITY");
-			} catch (JMSException e) {
-				JmsLogsPlugin.logException("No SEVERITY in message", e);
-			}
+			severity = mm.getString("SEVERITY");
 			if (severity != null) {
 				//is there an old message from same pv (deleteOrGrayOutEqualMessages == true)
 				// -> display new message anyway

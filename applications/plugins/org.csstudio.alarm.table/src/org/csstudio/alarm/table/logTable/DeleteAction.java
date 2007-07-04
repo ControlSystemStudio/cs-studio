@@ -15,7 +15,7 @@ public class DeleteAction extends Action
 	{
         this.table = table;
 		setText("Delete");
-		setToolTipText("Delete selected log messages");
+		setToolTipText("Delete selected messages");
 		setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
 				.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
 		setDisabledImageDescriptor(PlatformUI.getWorkbench().getSharedImages()

@@ -169,7 +169,8 @@ public class AlarmLogView extends LogView {
                             mapMessage.setString("ACK_TIME", time);
                             Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack");
                             Engine.getInstance().addLdapWriteRequest("epicsAlarmAcknTimeStamp", message.getName(), time);
-    
+                            JmsLogsPlugin.logInfo("AlarmLogView send Ack message, MsgName: " + 
+                            		message.getName() + " MsgTime: " + message.getProperty("EVENTTIME"));
                             sender.sendMessage();
                         }catch(Exception ex){
                             JmsLogsPlugin.logException("ACK not set", ex);
@@ -203,6 +204,8 @@ public class AlarmLogView extends LogView {
                                 mapMessage.setString("ACK_TIME", time);
                                 Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack");
                                 Engine.getInstance().addLdapWriteRequest("epicsAlarmAcknTimeStamp", message.getName(), time);
+                                JmsLogsPlugin.logInfo("AlarmLogView send Ack message, MsgName: " + 
+                                		message.getName() + " MsgTime: " + message.getProperty("EVENTTIME"));
         
                                 sender.sendMessage();
                             }
@@ -218,7 +221,7 @@ public class AlarmLogView extends LogView {
         });
 
         //create jface table viewer with paramter 2 for alarm table version
-        jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2,SWT.SINGLE | SWT.FULL_SELECTION|SWT.CHECK);
+        jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2,SWT.MULTI | SWT.FULL_SELECTION|SWT.CHECK);
 
         jlv.setAlarmSorting(true);
 
@@ -235,20 +238,25 @@ public class AlarmLogView extends LogView {
 	
     /**
      * Override the rule in the log table if a message
-     * will be acknowledged.
+     * is acknowledged.
      * 
      * @param message
+     * @throws JMSException 
      */
 	@Override
-	protected void setAck(MapMessage message) {
-	       TableItem[] items = jlv.getTable().getItems();
+	protected void setAck(MapMessage message) throws JMSException {
+	       JmsLogsPlugin.logInfo("AlarmLogView Ack message received, MsgName: " + 
+	          		message.getString("NAME") + " MsgTime: " + message.getString("EVENTTIME"));
+
+		TableItem[] items = jlv.getTable().getItems();
 	       for (TableItem item : items) {
 	           if (item.getData() instanceof JMSMessage) {
 	            JMSMessage jmsMessage = (JMSMessage) item.getData();
 	            try {
 	                if(jmsMessage.getName().equals(message.getString("NAME"))&&jmsMessage.getProperty("EVENTTIME").equals(message.getString("EVENTTIME"))){
 	            	    if ((jmsMessage.isBackgroundColorGray() == true) || 
-	            	    		(jmsMessage.getProperty("SEVERITY").equalsIgnoreCase("NO_ALARM"))) {
+	            	    		(jmsMessage.getProperty("SEVERITY").equalsIgnoreCase("NO_ALARM")) ||
+	            	    		(jmsMessage.getProperty("SEVERITY").equalsIgnoreCase("INVALID"))) {
 	            	        jmsml.removeJMSMessage(jmsMessage);
 	            	        jlv.refresh();
 	            	    } else {

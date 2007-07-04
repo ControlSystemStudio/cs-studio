@@ -143,7 +143,8 @@ public class JMSLogTableViewer extends TableViewer {
                             mapMessage.setString("ACK_TIME", time);
                             Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack");
                             Engine.getInstance().addLdapWriteRequest("epicsAlarmAcknTimeStamp", message.getName(), time);
-    
+                            JmsLogsPlugin.logInfo("LogTableViewer send Ack message, MsgName: " + 
+                            		message.getName() + " MsgTime: " + message.getProperty("EVENTTIME"));
                             sender.sendMessage();
                         }catch(Exception e){
                         	JmsLogsPlugin.logException("ACK not set", e);
@@ -213,7 +214,7 @@ public class JMSLogTableViewer extends TableViewer {
 	private void makeContextMenu(IWorkbenchPartSite site) {
 		MenuManager manager = new MenuManager("#PopupMenu");
 		Control contr = this.getControl();
-		if (tableType == 1) {
+		if ((tableType == 1) || (tableType == 2)) {
 			manager.add(new DeleteAction(this));
 			manager.add(new DeleteAllAction(this));
 			}
