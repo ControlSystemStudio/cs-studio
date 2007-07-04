@@ -170,6 +170,15 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	public FontData getFont() {
 		return (FontData) getProperty(PROP_FONT).getPropertyValue();
 	}
+	
+	/**
+	 * Returns the alignment for the text.
+	 * @return int 
+	 * 			0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
+	 */
+	public int getTextAlignment() {
+		return (Integer) getProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
+	}
 
 	/**
 	 * Return the target resource.

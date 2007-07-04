@@ -54,6 +54,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		button.setText(model.getLabel());
 		button.setFont(CustomMediaFactory.getInstance()
 				.getFont(model.getFont()));
+		button.setTextAlignment(model.getTextAlignment());
 		return button;
 	}
 
