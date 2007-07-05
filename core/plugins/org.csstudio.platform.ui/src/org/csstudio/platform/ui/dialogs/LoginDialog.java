@@ -4,6 +4,7 @@ package org.csstudio.platform.ui.dialogs;
 import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -93,7 +94,33 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		
 		return parentComposite;
 	}
-
+	
+	/**
+	 * Sets the window title of this login dialog window.
+	 * @param title the title.
+	 */
+	public final void setWindowTitle(final String title) {
+		getShell().setText(title);
+	}
+	
+	/**
+	 * Sets whether the remember password checkbox is visible (default is
+	 * <code>false</code>.
+	 * @param visible <code>true</code> to display the checkbox.
+	 */
+	public final void setRememberPasswordVisible(final boolean visible) {
+		_rememberLogin.setVisible(visible);
+	}
+	
+	/**
+	 * Returns whether the user checked the remember password option.
+	 * @return <code>true</code> if the user wants the password to be
+	 *         remembered, <code>false</code> otherwise.
+	 */
+	public final boolean isRememberPasswordChecked() {
+		return _rememberLogin.getSelection();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -106,7 +133,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		_password = null;
 		super.okPressed();
 	}
-
+	
 	/**
 	 * Opens the login window and queries the user
 	 * for credentials which it returns.
@@ -116,5 +143,9 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		this.setBlockOnOpen(true);
 		this.open();
 		return _credentials;
+	}
+
+	public void signalFailedLoginAttempt() {
+		MessageDialog.openError(null, "Login", "Login failed. Please try again.");
 	}
 }

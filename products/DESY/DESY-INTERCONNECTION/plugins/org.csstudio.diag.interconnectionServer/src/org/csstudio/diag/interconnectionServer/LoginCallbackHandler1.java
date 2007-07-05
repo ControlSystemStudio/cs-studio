@@ -1,5 +1,6 @@
 package org.csstudio.diag.interconnectionServer;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.store.XMLStore;
@@ -16,6 +17,10 @@ public class LoginCallbackHandler1 implements ILoginCallbackHandler {
 				"xmppPassword", false);
 		
 		return new Credentials(xmppUserName, xmppPassword);
+	}
+
+	public void signalFailedLoginAttempt() {
+		CentralLogger.getInstance().error(this, "XMPP login failed");
 	}
 
 }

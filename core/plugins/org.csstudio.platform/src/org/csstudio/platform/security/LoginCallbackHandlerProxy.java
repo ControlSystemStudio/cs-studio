@@ -83,4 +83,8 @@ public class LoginCallbackHandlerProxy implements ILoginCallbackHandler {
 		}
 	}
 
+	public void signalFailedLoginAttempt() {
+		_lch.signalFailedLoginAttempt();
+	}
+
 }

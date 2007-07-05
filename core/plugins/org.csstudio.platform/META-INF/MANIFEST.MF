@@ -20,6 +20,7 @@ Export-Package: org.csstudio.platform,
  org.csstudio.platform.logging,
  org.csstudio.platform.model,
  org.csstudio.platform.model.rfc,
+ org.csstudio.platform.securestore,
  org.csstudio.platform.security,
  org.csstudio.platform.statistic,
  org.csstudio.platform.util
