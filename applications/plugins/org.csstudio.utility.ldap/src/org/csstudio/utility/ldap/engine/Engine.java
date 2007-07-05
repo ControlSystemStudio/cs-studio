@@ -92,7 +92,6 @@ public class Engine extends Job {
     /**
      * @param args
      */
-
     protected IStatus run(IProgressMonitor monitor) {
         Integer intSleepTimer = null;
 
@@ -149,6 +148,7 @@ public class Engine extends Job {
             synchronized (Engine.class) {
                 if (thisEngine == null) {
                     thisEngine = new Engine("LdapEngine");
+                    thisEngine.setSystem(true);
                     thisEngine.schedule();
                 }
             }

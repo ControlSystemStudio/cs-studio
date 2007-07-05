@@ -174,6 +174,8 @@ public class LDAPReader extends Job {
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor ) {
+		  monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
+	      
 		DirContext ctx;
 		LDAPConnector ldpc = new LDAPConnector();
 		if((ctx = ldpc.getDirContext())!=null){
@@ -187,6 +189,9 @@ public class LDAPReader extends Job {
 					while(answer.hasMore()){
 						String name = ((SearchResult)answer.next()).getName();
 						list.add(name);
+						if(monitor.isCanceled()) {
+							return Status.CANCEL_STATUS;
+						}
 					}
 				} catch (NamingException e) {
 //					Activator.logException("LDAP Fehler", e);
@@ -196,13 +201,16 @@ public class LDAPReader extends Job {
 				answer.close();
 				ctx.close();
 				ergebnisListe.setAnswer(list);
-				return ASYNC_FINISH;
+				monitor.done();
+				return Status.OK_STATUS;
+//				return ASYNC_FINISH;
 			} catch (NamingException e) {
 //				Activator.logException("Falscher LDAP Suchpfad.", e);
 				System.out.println("Falscher LDAP Suchpfad.");
 				e.printStackTrace();
 			}
 		}
+		monitor.setCanceled(true);
 		return Status.CANCEL_STATUS;
 	}
 
