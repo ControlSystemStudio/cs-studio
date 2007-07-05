@@ -6,6 +6,8 @@ package org.csstudio.swt.chart;
  */
 public enum TraceType
 {
+    // TODO Localize the names
+    // TODO Autimatically use MinMaxAverage for MMA samples
     /** Connect samples with lines. */
     Lines,
     Markers,
