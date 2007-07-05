@@ -81,6 +81,9 @@ public final class WorkspaceSwitchHelper
      */
     private static final String NEW_LINE       = "\n";              //$NON-NLS-1$
 
+    /** Path separator '/' */
+    private static final String SLASH = "/";  //$NON-NLS-1$
+    
     /** Prompt user for workspace.
      *  <p>
      *  The resulting workspace name might be a new one, an existing workspace,
@@ -132,9 +135,9 @@ public final class WorkspaceSwitchHelper
         if (workspace == null)
             return false;
         workspace = workspace.trim();
-        // In case there's no intitial '/':
-        if (! workspace.startsWith("/"))
-        	workspace = "/" + workspace;
+        // In case there's no initial '/':
+        if (! workspace.startsWith(SLASH))
+        	workspace = SLASH + workspace;
         // In case we get windows '\' slashes, normalize them to the
         // Unix/OS X slashes that the Platform provides for the current
         // workspace.
@@ -142,14 +145,14 @@ public final class WorkspaceSwitchHelper
         // The 'current' workspace seems to end in '/',
         // while the user input might or might not.
         // Equalize by chopping trailing '/'.
-        if (workspace.endsWith("/")) //$NON-NLS-1$
+        if (workspace.endsWith(SLASH))
             workspace = workspace.substring(0, workspace.length() -1);
         // Empty?
         if (workspace.length() < 1)
             return false;
         // Equalize by chopping trailing '/'.
         String current_ws = Platform.getInstanceLocation().getURL().getPath();
-        if (current_ws.endsWith("/")) //$NON-NLS-1$
+        if (current_ws.endsWith(SLASH))
             current_ws = current_ws.substring(0, current_ws.length() -1);
         // No change?
         if (workspace.equals(current_ws))
