@@ -36,8 +36,10 @@ public class Application implements IPlatformRunnable
                         WorkspaceSwitchHelper.promptForWorkspace(null, true);
                     // Nothing selected
                     if (workspace == null)
+                    {
+                        PluginActivator.logInfo("CSS Application Canceled"); //$NON-NLS-1$
                         return IPlatformRunnable.EXIT_OK;
-    
+                    }
                     // Does this require a restart?
                     if (WorkspaceSwitchHelper.prepareWorkspaceSwitch(null,
                                                                     workspace))
@@ -46,11 +48,13 @@ public class Application implements IPlatformRunnable
                                 Messages.Application_RestartTitle,
                                 NLS.bind(Messages.Application_RestartMessage,
                                          workspace));
+                        PluginActivator.logInfo("CSS Application Relaunch"); //$NON-NLS-1$
                         return IPlatformRunnable.EXIT_RELAUNCH;
                     }
                     
                     // Lock the workspace
                     workspace_location = Platform.getInstanceLocation();
+                    PluginActivator.logInfo("CSS Workspace: " + workspace_location); //$NON-NLS-1$
                     if (workspace_location.lock())
                         need_workspace = false;
                     else
@@ -64,6 +68,7 @@ public class Application implements IPlatformRunnable
                                      workspace));
                     }
                 }
+                PluginActivator.logInfo("CSS Application Running"); //$NON-NLS-1$
                 returnCode = PlatformUI.createAndRunWorkbench(display,
                                 new ApplicationWorkbenchAdvisor());
             }
