@@ -42,11 +42,17 @@ public class PVTableHelper
         /** Axis type (linear, log) column identifier */
         LOG_SCALE(Messages.AxisType, 45, 20, true),
 
-        /** Archive request type column identifier */
-        REQUEST_TYPE(Messages.Request, 50, 20, true),
-        
         /** Trace display type */
-        TRACE_TYPE(Messages.DisplayType, 35, 20, true);
+        TRACE_TYPE(Messages.DisplayType, 35, 20, true),
+        
+        // NOTE: The Request type column is optional.
+        //       The ConfigView code that creates the table
+        //       for the PV config depends on the fact
+        //       that this is the _last_ column.
+        //       It cannot drop an intermediate column,
+        //       only the last column!
+        /** Archive request type column identifier */
+        REQUEST_TYPE(Messages.Request, 50, 20, true);
         
         private final String title;
         private final int min_size;

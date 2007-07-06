@@ -148,9 +148,10 @@ public class PVTableCellModifier implements ICellModifier
                     int ordinal = ((Integer) value).intValue();
                     final RequestType request_type = IPVModelItem.RequestType.fromOrdinal(ordinal);
                     // TODO remove when done
-                    MessageDialog.openInformation(view.getSite().getShell(),
-                            "Being Developed", //$NON-NLS-1$
-                            "This feature is still under development"); //$NON-NLS-1$
+                    if (request_type == RequestType.RAW)
+                        MessageDialog.openInformation(view.getSite().getShell(),
+                                "Being Developed", //$NON-NLS-1$
+                                "This feature is still under development"); //$NON-NLS-1$
                      pv.setRequestType(request_type);
                 }
                 return;

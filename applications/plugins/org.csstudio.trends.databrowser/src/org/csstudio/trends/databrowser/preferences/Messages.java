@@ -12,6 +12,7 @@ public class Messages extends NLS
     public static String EndTime;
     public static String Label_Archives;
     public static String Label_Autoscale;
+    public static String Label_Show_Request_Types;
     public static String PageTitle;
     public static String StartTime;
     public static String URLInput_Message;

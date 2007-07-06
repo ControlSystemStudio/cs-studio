@@ -45,6 +45,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements
         final Composite parent = getFieldEditorParent();
         addField(new BooleanFieldEditor(Preferences.P_AUTOSCALE,
                         Messages.Label_Autoscale, parent));
+        addField(new BooleanFieldEditor(Preferences.P_SHOW_REQUEST_TYPES,
+                        Messages.Label_Show_Request_Types, parent));
         addField(new StringFieldEditor(Preferences.P_START_TIME_SPEC,
                                         Messages.StartTime, parent));
         addField(new StringFieldEditor(Preferences.P_END_TIME_SPEC,

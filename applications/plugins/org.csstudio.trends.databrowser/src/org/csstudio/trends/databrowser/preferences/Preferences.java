@@ -39,6 +39,9 @@ public class Preferences
     /** Identifier for the auto-scale preference. */
     public static final String P_AUTOSCALE = "autoscale";
 
+    /** Identifier for the show-request-types preference. */
+    public static final String P_SHOW_REQUEST_TYPES = "show_request_types";
+
     /** Identifier for the Archive Server URLs preference. */
     public static final String P_URLS = "urls";
 
@@ -64,6 +67,13 @@ public class Preferences
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
         return store.getBoolean(P_AUTOSCALE);
+    }
+
+    /** @return Default auto-scale setting */
+    static public boolean getShowRequestTypes()
+    {
+        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        return store.getBoolean(P_SHOW_REQUEST_TYPES);
     }
     
     /** @return Default archive server URLs. */
