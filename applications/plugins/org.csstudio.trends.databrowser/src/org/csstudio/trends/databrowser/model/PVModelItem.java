@@ -131,6 +131,8 @@ public class PVModelItem
         // Now change name
         name = new_name;
         pv = createPV(name);
+        // Invalidate the samples we got because it's now a new PV
+        samples.clear();
         // and add
         model.fireEntryAdded(this);
         if (was_running)

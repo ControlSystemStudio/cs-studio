@@ -55,6 +55,13 @@ public class ModelSamples implements IModelSamples
         live_samples.setCapacity(size);
     }
     
+    /** Remove all samples */
+    synchronized void clear()
+    {
+        live_samples.clear();
+        archive_samples = null;
+    }
+    
     /** Add samples from an archive. */
     @SuppressWarnings("nls") //$NON-NLS-1$
     synchronized void add(final String source, final IValue samples[])

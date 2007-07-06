@@ -29,6 +29,12 @@ public class ModelSampleRing
     {
         setCapacity(initial_capacity);
     }
+    
+    /** Clear sample memory */
+    synchronized public void clear()
+    {
+        head = tail = 0;
+    }
 
     /** Remove memory associated with this object. */
     synchronized public void dispose()
