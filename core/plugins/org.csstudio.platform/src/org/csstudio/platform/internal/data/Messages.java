@@ -11,17 +11,19 @@ package org.csstudio.platform.internal.data;
 @SuppressWarnings("nls")
 public class Messages
 {
-    public final static String ColumnSeperator = "\t";
-    public final static String ValueSevrStatSeparator = " [";
-    public final static String SevrStatSeparator = " ";
-    public final static String SevrStatEnd = "]";
-    public final static String ArrayElementSeparator = ", ";
-    public final static String NoValue = "#N/A";
+    final public static String ColumnSeperator = "\t";
+    final public static String ValueSevrStatSeparator = " [";
+    final public static String SevrStatSeparator = " ";
+    final public static String SevrStatEnd = "]";
+    final public static String ArrayElementSeparator = ", ";
+    final public static String NoValue = "#N/A";
+    final public static String Infinite = "Inf";
+    final public static String NaN = "NaN";
     
-    public final static String SevOK = "";
-    public final static String SevMinor = "MINOR";
-    public final static String SevMajor = "MAJOR";
-    public final static String SevInvalid = "INVALID";
+    final public static String SevOK = "";
+    final public static String SevMinor = "MINOR";
+    final public static String SevMajor = "MAJOR";
+    final public static String SevInvalid = "INVALID";
 
-    public final static String MiniMaxiFormat = " [ {0} ... {1} ]";
+    final public static String MiniMaxiFormat = " [ {0} ... {1} ]";
 }

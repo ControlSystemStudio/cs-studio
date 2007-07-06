@@ -62,17 +62,26 @@ public class DoubleValue extends Value implements IDoubleValue
                 fmt.setMinimumFractionDigits(precision);
                 fmt.setMaximumFractionDigits(precision);
             }
-            buf.append(fmt.format(values[0]));
+            buf.append(formatDouble(fmt, values[0]));
             for (int i = 1; i < values.length; i++)
             {
                 buf.append(Messages.ArrayElementSeparator);
-                buf.append(fmt.format(values[i]));
+                buf.append(formatDouble(fmt, values[i]));
             }
         }
 		else
 			buf.append(Messages.NoValue);
 		return buf.toString();
 	}
+
+    private String formatDouble(final NumberFormat fmt, double d)
+    {
+        if (Double.isInfinite(d))
+            return Messages.Infinite;
+        if (Double.isNaN(d))
+            return Messages.NaN;
+        return fmt.format(d);
+    }
 	
     /** {@inheritDoc} */
 	@Override
