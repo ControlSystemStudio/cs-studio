@@ -29,7 +29,9 @@ public class Activator extends AbstractCssPlugin
      */
     @Override
     protected void doStart(BundleContext context) throws Exception
-    {}
+    {
+        // NOP
+    }
 
     /* @see org.csstudio.platform.AbstractCssPlugin#doStop(org.osgi.framework.BundleContext)
      */

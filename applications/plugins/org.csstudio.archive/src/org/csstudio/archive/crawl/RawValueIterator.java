@@ -29,6 +29,9 @@ public class RawValueIterator implements ValueIterator
      */
     final private static int BATCH_COUNT = 5000;
 
+    /** Marker for 'no more samples' */
+    private static final int NO_MORE = -1;
+
     /** End of the requested time range. */
     final public ITimestamp end;
 
@@ -121,14 +124,19 @@ public class RawValueIterator implements ValueIterator
             if (sample_idx[i] < 0)
                 continue;
             IValue[] curr_batch = batch[i].getBatch();
+            // Reached end of batch?
+            if (curr_batch == null)
+            {
+                sample_idx[i] = NO_MORE;
+                continue;
+            }
             // Reached end of batch's current values?
             if (sample_idx[i] >= curr_batch.length)
-            {
-                // Get another batch of samples
+            {   // Get another batch of samples
                 curr_batch = batch[i].next();
                 if (curr_batch == null  ||  curr_batch.length < 1)
                 {
-                    sample_idx[i] = -1;
+                    sample_idx[i] = NO_MORE;
                     continue;
                 }
                 sample_idx[i] = 0;
@@ -143,7 +151,7 @@ public class RawValueIterator implements ValueIterator
         }
         // Found anything?
         if (time == null)
-            batch_idx = -1;
+            batch_idx = NO_MORE;
     }
 
     /**
