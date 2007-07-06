@@ -37,11 +37,12 @@ public class Perspective implements IPerspectiveFactory
         left.addView(ID_NAVIGATOR);
         // Stuff for 'bottom'
         bottom.addView(ConfigView.ID);
-        bottom.addPlaceholder(SampleView.ID);
         bottom.addView(ExportView.ID);
-        // IDE version of the progress view
-        // bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
-        // The one from CSS
+        bottom.addPlaceholder(SampleView.ID);
         bottom.addPlaceholder(ID_PROGRESS);
+        
+        // Populate the "Window/Views..." menu with suggested views
+        layout.addShowViewShortcut(ID_NAVIGATOR);
+        layout.addShowViewShortcut(ID_PROGRESS);
     }
 }
