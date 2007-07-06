@@ -75,7 +75,7 @@ public final class SecurityFacade {
 	/**
 	 * @return The singleton instance of this class.
 	 */
-	public synchronized static SecurityFacade getInstance() {
+	public static synchronized SecurityFacade getInstance() {
 		if (_instance == null) {
 			_instance = new SecurityFacade();
 		}
