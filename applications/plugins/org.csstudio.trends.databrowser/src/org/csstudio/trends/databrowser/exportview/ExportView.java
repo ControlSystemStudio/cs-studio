@@ -402,56 +402,41 @@ public class ExportView extends PlotAwareView
             setStartEndFromModel();
     }
 
-    // Another Model becomes current.
-    // @see PlotAwareView
+    /** Another Model becomes current.
+     *  @see PlotAwareView
+     */
     @Override
     protected void updateModel(Model old_model, Model new_model)
     {
+        boolean enable;
         if (new_model == null)
         {
+            enable = false;
             start_txt.setEnabled(false);
             end_txt.setEnabled(false);
             time_config.setEnabled(false);
-            use_plot_time.setEnabled(false);
-            
-            source_plot.setEnabled(false);
-            source_raw.setEnabled(false);
-            source_avg.setEnabled(false);
-            
-            format_spreadsheet.setEnabled(false);
-            format_severity.setEnabled(false);
-            format_default.setEnabled(false);
-            format_decimal.setEnabled(false);
-            format_exponential.setEnabled(false);
             precision.setEnabled(false);
-            
-            filename_txt.setEnabled(false);
-            browse.setEnabled(false);
             export.setEnabled(false);
         }
         else
         {
+            enable = true;
             conditionallyEnableTimeConfig();
-            use_plot_time.setEnabled(true);
-
-            source_plot.setEnabled(true);
-            source_raw.setEnabled(true);
-            source_avg.setEnabled(true);
-            
-            format_spreadsheet.setEnabled(true);
-            format_severity.setEnabled(true);
-            
-            format_default.setEnabled(true);
-            format_decimal.setEnabled(true);
-            format_exponential.setEnabled(true);
             precision.setEnabled(! format_default.getSelection());
-            
-            filename_txt.setEnabled(true);
-            browse.setEnabled(true);
             export.setEnabled(filename_txt.getText().length() > 0);
         }
-        if (old_model == new_model)
-            return;
+        use_plot_time.setEnabled(enable);
+        source_plot.setEnabled(enable);
+        source_raw.setEnabled(enable);
+        source_avg.setEnabled(enable);
+        avg_seconds.setEnabled(enable);
+        format_spreadsheet.setEnabled(enable);
+        format_severity.setEnabled(enable);
+        format_default.setEnabled(enable);
+        format_decimal.setEnabled(enable);
+        format_exponential.setEnabled(enable);
+        filename_txt.setEnabled(enable);
+        browse.setEnabled(enable);
     }
 
     /** Update GUI with start/end time spec from Model. */
