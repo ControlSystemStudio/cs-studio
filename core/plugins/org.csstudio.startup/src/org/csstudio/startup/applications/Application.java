@@ -23,8 +23,11 @@ package org.csstudio.startup.applications;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.LocaleService;
+import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.platform.ui.dialogs.LoginDialog;
 import org.csstudio.platform.ui.workbench.CssWorkbenchAdvisor;
 import org.csstudio.startup.ServiceProxy;
 import org.csstudio.startup.StartupServiceEnumerator;
@@ -48,6 +51,7 @@ public class Application implements IPlatformRunnable {
 	 * {@inheritDoc}
 	 */
 	public final Object run(final Object args) throws Exception {
+		System.out.println("Test");
 		IPreferenceStore coreStore = new ScopedPreferenceStore(
 				new InstanceScope(), CSSPlatformPlugin.getDefault().getBundle()
 						.getSymbolicName());
@@ -57,33 +61,11 @@ public class Application implements IPlatformRunnable {
 		Display display = PlatformUI.createDisplay();
 		
 		try {
-//			boolean canLogin = handleLogin(display, coreStore);
-//
 			int returnCode = EXIT_OK;
-//
-//			if (canLogin) {
-//				// create the workbench with this advisor and run it until it
-//				// exits
-//				// N.B. createWorkbench remembers the advisor, and also
-//				// registers
-//				// the workbench globally so that all UI plug-ins can find it
-//				// using
-//				// PlatformUI.getWorkbench() or AbstractUIPlugin.getWorkbench()
-//				returnCode = PlatformUI.createAndRunWorkbench(display,
-//						new CssWorkbenchAdvisor());
-//
-//				// the workbench doesn't support relaunch yet (bug 61809) so
-//				// for now restart is used, and exit data properties are checked
-//				// here to substitute in the relaunch return code if needed
-//				if (returnCode != PlatformUI.RETURN_RESTART) {
-//					return EXIT_OK;
-//				}
-//
-//				// if the exit code property has been set to the relaunch code,
-//				// then
-//				// return that code now, otherwise this is a normal restart
-//				return EXIT_RESTART;
-//			}
+			
+			SecurityFacade sf = SecurityFacade.getInstance();
+			sf.setLoginCallbackHandler(new LoginDialog(null));
+			sf.authenticateApplicationUser();
 			
 			// we will run all the services
 			// TODO: implement checking if there is a service the user

@@ -59,6 +59,13 @@ public final class SecurityFacade {
 	private ArrayList<IUserManagementListener> _userListeners;
 
 	/**
+	 * The interactive callback handler to use for the application login.
+	 * <code>null</code> if no user-interactive handler was set up (e.g. if
+	 * the application is not used in UI mode). 
+	 */
+	private ILoginCallbackHandler _loginCallbackHandler;
+
+	/**
 	 * Property for the appearence of the CSS login window at system startup.
 	 */
 	public static final String PROP_AUTH_LOGIN = "auth_login"; //$NON-NLS-1$
@@ -81,6 +88,49 @@ public final class SecurityFacade {
 		}
 
 		return _instance;
+	}
+	
+	/**
+	 * Authenticates the user of the Control System Studio application. This
+	 * will use the first available login module. If no login modules are
+	 * available, no authentication takes place and the application will be
+	 * used anonymously.
+	 * 
+	 * <p>This method will usually be called during system startup.
+	 */
+	public void authenticateApplicationUser() {
+		ILoginCallbackHandler callbackHandler = getLoginCallbackHandler();
+		login(callbackHandler);
+	}
+
+	/**
+	 * Creates and returns a login callback handler for the primary
+	 * (application) login.
+	 * 
+	 * @return an <code>ILoginCallbackHandler</code> for the application login.
+	 */
+	private ILoginCallbackHandler getLoginCallbackHandler() {
+		// if a login handler was explicitly set up, return that handler,
+		// otherwise return a handler that returns null for anonymous login
+		if (_loginCallbackHandler != null) {
+			return _loginCallbackHandler;
+		} else {
+			return new ILoginCallbackHandler() {
+				public Credentials getCredentials() {
+					return null;
+				}
+				public void signalFailedLoginAttempt() {
+				}
+			};
+		}
+	}
+	
+	/**
+	 * Sets a callback handler to use during application login.
+	 * @param handler the handler.
+	 */
+	public void setLoginCallbackHandler(final ILoginCallbackHandler handler) {
+		_loginCallbackHandler = handler;
 	}
 
 	/**

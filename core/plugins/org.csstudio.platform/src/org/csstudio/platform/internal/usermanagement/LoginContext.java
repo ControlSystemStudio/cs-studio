@@ -29,30 +29,37 @@ public final class LoginContext {
 	
 	public void login(ILoginCallbackHandler handler) {
 		ILoginModule loginModule = getLoginModule();
-		_user = loginModule.login(handler);
-		if (_user != null) {
-			CentralLogger.getInstance().info(this, "User logged in: " + _user.getUsername());
-			RightsManagementService.getInstance().readRightsForUser(_user);
+		if (loginModule != null) {
+			_user = loginModule.login(handler);
+			if (_user != null) {
+				CentralLogger.getInstance().info(this,
+						"User logged in: " + _user.getUsername());
+				RightsManagementService.getInstance().readRightsForUser(_user);
+			} else {
+				CentralLogger.getInstance().info(this, "Using anonymously");
+			}
 		} else {
-			CentralLogger.getInstance().info(this, "Using anonymously");
+			_user = null;
 		}
 	}
 	
 	private ILoginModule getLoginModule() {
-		// TODO: add preference page lookup
-	//	return LoginCallbackHandlerEnumerator.getProxies("org.csstudio.platform.loginModule",
-			//	configElementName)[0];
 		IExtension[] extension = Platform.getExtensionRegistry()
 			.getExtensionPoint("org.csstudio.platform.loginModule")
 			.getExtensions();
-		// TODO: check there is at least one plugin
-		IExtension lmExtension = extension[0];
-		IConfigurationElement lmConfigElement = lmExtension.getConfigurationElements()[0];
-		try {
-			return (ILoginModule) lmConfigElement.createExecutableExtension("class");
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (extension.length > 0) {
+			IExtension lmExtension = extension[0];
+			IConfigurationElement lmConfigElement = lmExtension
+					.getConfigurationElements()[0];
+			try {
+				return (ILoginModule) lmConfigElement
+						.createExecutableExtension("class");
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		} else {
 			return null;
 		}
 	}
