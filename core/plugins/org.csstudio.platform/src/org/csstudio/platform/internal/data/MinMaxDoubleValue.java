@@ -49,7 +49,8 @@ public class MinMaxDoubleValue extends DoubleValue implements IMinMaxDoubleValue
 	{
 		if (getSeverity().hasValue())
             return super.format(how, precision)
-                   + NLS.bind(Messages.MiniMaxiFormat, minimum, maximum);
+                   + NLS.bind(Messages.MiniMaxiFormat,
+                              new Double(minimum), new Double(maximum));
 		// else
         return Messages.NoValue;
 	}
