@@ -65,6 +65,13 @@ class ExportJob extends Job
                     String filename)
     {
         super(Messages.ExportJobTitle);
+        if (model == null ||
+            start == null ||
+            end == null ||
+            source == null ||
+            format == null ||
+            filename == null)
+            throw new NullPointerException("Received null argument"); //$NON-NLS-1$
         this.model = model;
         this.start = start;
         this.end = end;
@@ -84,86 +91,42 @@ class ExportJob extends Job
     {
         Plugin.logInfo("ExportJob starts");
         monitor.beginTask(Messages.ExportJobTask, IProgressMonitor.UNKNOWN);
-        ArchiveCache cache = ArchiveCache.getInstance();
+        final ArchiveCache cache = ArchiveCache.getInstance();
+        PrintWriter out = null;
+        int line_count = 0;
         try
         {
-            int line_count = 0;
-            PrintWriter out = new PrintWriter(filename);
+            out = new PrintWriter(filename);
             printHeader(out);
 
             // Get sample iterator for each channel.
             // Either dump it ASAP, or keep it for spreadsheet-iteration.
-            int N = model.getNumItems();
-            ValueIterator iters[] = new ValueIterator[N];
-            for (int ch_idx=0;  ch_idx<N  &&  !monitor.isCanceled(); ++ch_idx)
+            final int N = model.getNumItems();
+            final ValueIterator iters[] = new ValueIterator[N];
+            for (int i=0;  i<N  &&  !monitor.isCanceled();  ++i)
             {
-                IModelItem item = model.getItem(ch_idx);
-                String item_name = item.getName();
-
-                monitor.subTask(Messages.Job_Fetching + item_name);
-                
-                out.println();
-                out.println(Messages.Comment);
-                out.println(Messages.Comment + Messages.PV + item_name);
-                out.println(Messages.Comment);
-                out.println(Messages.Comment + Messages.Archives);
-
-                // Is data from plot requested,
-                // or the item doesn't have an underlying PV as a data
-                // source, so we have to use the plot?
-                if (source == Source.Plot  ||
-                    !(item instanceof IPVModelItem))
-                {
-                    IModelSamples samples = item.getSamples();
-                    iters[ch_idx] = new ModelSampleIterator(samples);
-                }
-                else
-                {   // Query PV item for its underlying data sources
-                    IPVModelItem pv_item = (IPVModelItem) item;
-                    // RawSampleIterator handles reading from multiple archives.
-                    // Build arrays of servers & keys
-                    IArchiveDataSource archives[] = pv_item.getArchiveDataSources();
-                    ArchiveServer servers[] = new ArchiveServer[archives.length];
-                    int keys[] = new int[archives.length];
-                    for (int i=0; i < archives.length; ++i)
-                    {
-                        out.println(Messages.Comment + (i+1)
-                                        + Messages.EnumerationSep
-                                        + archives[i].getName());
-                        servers[i] = cache.getServer(archives[i].getUrl());
-                        keys[i] = archives[i].getKey();
-                    }
-                    if (archives.length <= 0)
-                        iters[ch_idx] = null;
-                    else if (source == Source.Average)
-                        iters[ch_idx] = new RawValueIterator(
-                            servers, keys, item_name, start, end,
-                            ArchiveServer.GET_AVERAGE,
-                            new Object[] { new Double(seconds) });
-                    else
-                        iters[ch_idx] = new RawValueIterator(
-                                        servers, keys, item_name, start, end);
-
-                }
+                final IModelItem item = model.getItem(i);
+                iters[i] = getValueIterator(item, monitor, out, cache);
                 if (format_spreadsheet == false)
                 {   // Plain list: dump this channel's samples...
                     line_count = dumpOneItem(monitor, line_count,
-                                             out, iters[ch_idx]);
+                                             out, iters[i]);
                     // ... then release iterator ASAP
-                    iters[ch_idx] = null;
+                    iters[i] = null;
                 }
             }
 
-            // No spreadsheet? Then we're done.
-            // Spreadsheed: Dump it
+            // No spreadsheet?
+            // Then we're done, since we already dumped each channel.
+            // Otherwise, dump the Spreadsheed:
             if (format_spreadsheet)
             {
                 // Spreadsheet Header
                 out.println();
                 out.print(Messages.Comment + Messages.TimeColHeader);
-                for (int item_idx=0;  item_idx<N;   ++item_idx)
+                for (int i=0;   i<N;   ++i)
                 {
-                    IModelItem item = model.getItem(item_idx);
+                    final IModelItem item = model.getItem(i);
                     out.print(Messages.ColSep + item.getName());
                     if (format_severity)
                         out.print(Messages.ColSep + Messages.InfoColHeader);
@@ -174,8 +137,8 @@ class ExportJob extends Job
                 SpreadsheetIterator sheet = new SpreadsheetIterator(iters);
                 while (sheet.hasNext())
                 {
-                    ITimestamp time = sheet.getTime();
-                    IValue line[] = sheet.next();
+                    final ITimestamp time = sheet.getTime();
+                    final IValue line[] = sheet.next();
                     out.print(time);
                     for (int i=0; i<line.length; ++i)
                         out.print(Messages.ColSep + formatValue(line[i]));
@@ -192,20 +155,81 @@ class ExportJob extends Job
                     }
                 }
             }
-            
-            out.close();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Plugin.logException("ExportJob error", e);
+            Plugin.logException("ExportJob error", ex);
+            if (out != null)
+                out.write("# Error: " + ex.getMessage());
             monitor.setCanceled(true);
             return Status.CANCEL_STATUS;
+        }
+        finally
+        {
+            if (out != null)
+                out.close();
         }
         monitor.done();
         Plugin.logInfo("ExportJob finishes");
         return Status.OK_STATUS;
     }
 
+    /** Create iterator for given model item.
+     *  @param item Item
+     *  @param monitor Monitor gets updated with name of item
+     *  @param out info about item gets written to output
+     *  @param cache Cache from which data is fetched
+     *  @return ValueIterator or null
+     *  @throws Exception on error.
+     */
+    private ValueIterator getValueIterator(final IModelItem item,
+                    final IProgressMonitor monitor,
+                    final PrintWriter out,
+                    final ArchiveCache cache) throws Exception
+    {
+        final String item_name = item.getName();
+
+        monitor.subTask(Messages.Job_Fetching + item_name);
+        
+        out.println();
+        out.println(Messages.Comment + Messages.PV + item_name);
+        out.println(Messages.Comment);
+
+        // Is data from plot requested?
+        // It is this no PV, i.e. the only data is in the plot?
+        if (source == Source.Plot  ||  !(item instanceof IPVModelItem))
+        {
+            out.println(Messages.Comment + Messages.SourceLabel
+                        + Messages.Source_Plot);
+            final IModelSamples samples = item.getSamples();
+            return new ModelSampleIterator(samples);
+        }
+        // else: Get iterator for archive samples
+        out.println(Messages.Comment + Messages.Archives);
+        // Query PV item for its underlying data sources
+        final IPVModelItem pv_item = (IPVModelItem) item;
+        // RawSampleIterator handles reading from multiple archives.
+        // Build arrays of servers & keys
+        final IArchiveDataSource archives[] = pv_item.getArchiveDataSources();
+        final ArchiveServer servers[] = new ArchiveServer[archives.length];
+        final int keys[] = new int[archives.length];
+        for (int i=0; i < archives.length; ++i)
+        {
+            out.println(Messages.Comment + (i+1)
+                            + Messages.EnumerationSep
+                            + archives[i].getName());
+            servers[i] = cache.getServer(archives[i].getUrl());
+            keys[i] = archives[i].getKey();
+        }
+        if (archives.length <= 0)
+            return null;
+        if (source == Source.Average)
+            return new RawValueIterator(servers, keys, item_name, start, end,
+                ArchiveServer.GET_AVERAGE, new Object[] { new Double(seconds) });
+        //else
+        return new RawValueIterator(servers, keys, item_name, start, end);
+    }
+    
     /** The very first entry in the export file, the overall header. */
     private void printHeader(PrintWriter out)
     {
@@ -221,7 +245,6 @@ class ExportJob extends Job
         out.println(Messages.Comment + Messages.Spreadsheet + ": "+ format_spreadsheet); //$NON-NLS-1$
         out.println(Messages.Comment + Messages.IncludeSeverity + format_severity);
         out.println(Messages.Comment + Messages.FormatLabel + format);
-        out.println(Messages.Comment + Messages.IncludeSeverity + format_severity);
     }
     
     /** Dump all the samples for one item.
@@ -231,13 +254,13 @@ class ExportJob extends Job
      *  @param channel_iter
      *  @return New line count
      */
-    private int dumpOneItem(IProgressMonitor monitor,
-                            int line_count, PrintWriter out,
-                            Iterator<IValue> channel_iter)
+    private int dumpOneItem(final IProgressMonitor monitor,
+                            int line_count, final PrintWriter out,
+                            final Iterator<IValue> channel_iter)
     {
         while (channel_iter.hasNext())
         {
-            IValue sample = channel_iter.next();
+            final IValue sample = channel_iter.next();
             out.println(sample.getTime() + Messages.ColSep + formatValue(sample));
             ++line_count;
             if ((line_count % PROGRESS_LINE_GRANULARITY) == 0)

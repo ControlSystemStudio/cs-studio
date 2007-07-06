@@ -37,6 +37,9 @@ public class FormulaModelItem extends AbstractModelItem
      */
     private Formula formula;
 
+    /** Severity used for samples that don't compute. */
+    private ISeverity invalid_severity = null;
+
     /** Constructor */
     public FormulaModelItem(Model model, String pv_name,
                             int axis_index, double min, double max,
@@ -84,15 +87,38 @@ public class FormulaModelItem extends AbstractModelItem
     /** Compute new samples from inputs and formula. */
     void compute()
     {
+        final ISeverity ok_severity = ValueFactory.createOKSeverity();
+        final String ok_status = ""; //$NON-NLS-1$
+        final String invalid_status = Messages.NoNumericValue;
+        // Lazy creation of invalid_severity
+        if (invalid_severity == null)
+            invalid_severity = new ISeverity()
+            {
+                public boolean hasValue()
+                {   return false;  }
+        
+                public boolean isInvalid()
+                {   return true;   }
+        
+                public boolean isMajor()
+                {   return false;  }
+        
+                public boolean isMinor()
+                {   return false;  }
+        
+                public boolean isOK()
+                {   return false;  }
+        
+                @Override
+                public String toString()
+                {   return Messages.INVALID; }
+            };
+            
         input_variables.startIteration();
         final INumericMetaData meta_data = input_variables.getMetaData();
         synchronized (samples)
         {
             samples.clear();
-            final ISeverity ok_severity = ValueFactory.createOKSeverity();
-            final ISeverity invalid_severity = ValueFactory.createInvalidSeverity();
-            final String ok_status = ""; //$NON-NLS-1$
-            final String invalid_status = Messages.NoNumericValue;
             try
             {
                 ITimestamp time = input_variables.next();

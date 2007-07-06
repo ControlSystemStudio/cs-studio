@@ -479,7 +479,11 @@ public class ExportView extends PlotAwareView
         
         ITimestamp start = null, end = null;
         if (use_plot_time.getSelection())
+        {
             setStartEndFromModel();
+            start = model.getStartTime();
+            end = model.getEndTime();
+        }
         else
         {   // Update start/end from text boxes
             try
