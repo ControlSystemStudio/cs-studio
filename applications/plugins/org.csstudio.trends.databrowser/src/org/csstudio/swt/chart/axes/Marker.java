@@ -67,7 +67,7 @@ public class Marker
     }
 
     /** 'X' marks the spot, and this is it's radius. */
-    final private static int X_RADIUS = 2;
+    final static int X_RADIUS = 2;
 
     /** Paint the marker on given gc and axes. */
     void paint(GC gc, Axis xaxis, Axis yaxis)
