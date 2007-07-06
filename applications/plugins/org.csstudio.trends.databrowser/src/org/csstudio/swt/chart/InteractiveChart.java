@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.csstudio.swt.chart.axes.Axis;
 import org.csstudio.swt.chart.axes.Log10;
+import org.csstudio.swt.chart.axes.Marker;
 import org.csstudio.swt.chart.axes.TraceSample;
 import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.swt.chart.axes.YAxis;
@@ -493,15 +494,14 @@ public class InteractiveChart extends Composite
         if (!Double.isInfinite(y) &&
             !Double.isNaN(y))
         {
-        b.append("\n"); //$NON-NLS-1$
-        b.append(yaxis.getTicks().format(y, 2));
+            b.append("\n"); //$NON-NLS-1$
+            b.append(yaxis.getTicks().format(y, 2));
         }
         if (sample.getInfo() != null)
         {
             b.append("\n"); //$NON-NLS-1$
             b.append(sample.getInfo());
         }
-        yaxis.addMarker(x, y, b.toString());
+        yaxis.addMarker(new Marker(x, y, b.toString()));
     }
-
 } 

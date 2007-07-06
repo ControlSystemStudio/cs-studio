@@ -149,10 +149,17 @@ public class YAxis extends Axis
      *  @param value The 'y' location or value.
      *  @param text The text to display
      */
-    public final void addMarker(double position, double value, String text)
+    public final void addMarker(final Marker marker)
     {
-        markers.add(new Marker(position, value, text));
+        markers.add(marker);
         fireEvent(YAxisListener.Aspect.MARKER);
+    }
+    
+    /** @return Array of current markers. */
+    public final Marker[] getMarkers()
+    {
+        Marker result[] = new Marker[markers.size()];
+        return markers.toArray(result);
     }
 
     /** @return <code>true</code> if any markers are currently selected */

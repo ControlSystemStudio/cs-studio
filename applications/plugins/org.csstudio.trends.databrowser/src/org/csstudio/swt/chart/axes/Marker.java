@@ -22,6 +22,7 @@ public class Marker
      */
     private Rectangle screen_pos = null;
     
+    /** Constructor */
     public Marker(double position, double value, String text)
     {
         this.position = position;
@@ -29,43 +30,70 @@ public class Marker
         this.text = text;
     }
 
-    public boolean isSelected()
+    /** @return Position (x-axis value, time) of this marker */
+    final public double getPosition()
+    {
+        return position;
+    }
+    
+    /** @return Value (on the Y axis) of this marker */
+    final public double getValue()
+    {
+        return value;
+    }
+    
+    /** @return Text (label) of this marker */
+    final public String getText()
+    {
+        return text;
+    }
+    
+    /** @return <code>true</code> if currently selected */
+    final boolean isSelected()
     {
         return selected;
     }
     
-    public void select(boolean selected)
+    /** Set the selection state */
+    final void select(boolean selected)
     {
         this.selected = selected;
     }
     
     /** @return On-screen coordinates or <code>null</code> if never displayed. */
-    public Rectangle getScreenCoords()
+    final Rectangle getScreenCoords()
     {
         return screen_pos;
     }
-    
+
+    /** 'X' marks the spot, and this is it's radius. */
+    final private static int X_RADIUS = 2;
+
     /** Paint the marker on given gc and axes. */
     void paint(GC gc, Axis xaxis, Axis yaxis)
     {
         // Somewhat like this:
         //
-        //    __Text__
+        //    Text
+        //    Blabla
+        //    Yaddi yaddi
+        //    ___________
         //   /
-        //  x
+        //  O
         final int x = xaxis.getScreenCoord(position);
         final int y = yaxis.getScreenCoord(value);
-        final Point size = gc.textExtent(text);
-        final int dist = gc.getAdvanceWidth('x');
-        final int tx = x+dist, ty = y-dist;
+        final Point text_size = gc.textExtent(text);
+        final int label_dist = gc.getAdvanceWidth('x');
+        final int tx = x+label_dist, ty = y-label_dist;
+        // Marker 'O' around the actual x/y point
+        gc.drawOval(x-X_RADIUS, y-X_RADIUS, 2*X_RADIUS, 2*X_RADIUS);
         // '/'
-        gc.drawLine(x, y, tx, ty);
-        // '___________'
-        gc.drawLine(tx, ty, tx+size.x, ty);
+        gc.drawLine(x+X_RADIUS, y-X_RADIUS, tx, ty);
         // Text
-        final int txt_top = ty-size.y;
+        final int txt_top = ty-text_size.y;
         gc.drawText(text, tx, txt_top, true);
-        screen_pos = new Rectangle(tx, txt_top, size.x, size.y);
+        // Update the screen position so that we can later 'select' this marker.
+        screen_pos = new Rectangle(tx, txt_top, text_size.x, text_size.y);
         if (selected)
         {
             final int olw = gc.getLineWidth();
@@ -73,5 +101,7 @@ public class Marker
             gc.drawRectangle(screen_pos);
             gc.setLineWidth(olw);
         }
+        else // '___________'
+            gc.drawLine(tx, ty, tx+text_size.x, ty);
     }
 }

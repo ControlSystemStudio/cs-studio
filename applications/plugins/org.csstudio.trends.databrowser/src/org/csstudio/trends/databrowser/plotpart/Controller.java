@@ -201,14 +201,23 @@ public class Controller
             // Avoid infinite loop: We are changing the axes, so ignore.
             if (controller_changes_yaxes)
                 return;
-            if (what == YAxisListener.Aspect.RANGE)
-            {   // Range was changed interactively, update the model
+            switch (what)
+            {
+            case RANGE:
+                // Range was changed interactively, update the model
                 controller_changes_model = true;
                 int axis_index = chart.getYAxisIndex(yaxis);
                 Controller.this.model.setAxisLimits(axis_index,
                                 yaxis.getLowValue(),
                                 yaxis.getHighValue());
                 controller_changes_model = false;
+                break;
+            case MARKER:
+                // TODO: Update model with marker info? Load/Save the markers?
+                break;
+            case LABEL:
+            case SELECTION:
+                // NOP
             }
         }
 

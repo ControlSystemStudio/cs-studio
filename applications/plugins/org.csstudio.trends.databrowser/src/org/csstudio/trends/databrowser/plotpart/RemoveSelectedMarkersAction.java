@@ -32,7 +32,7 @@ public class RemoveSelectedMarkersAction extends Action
      *  not called _every_ time the context menu is shown,
      *  only sometimes.
      *  <p>
-     *  So we need to call is from a popup menu's menuAboutToShow().
+     *  So we need to call this from a popup menu's menuAboutToShow().
      */
     public void updateEnablement()
     {
