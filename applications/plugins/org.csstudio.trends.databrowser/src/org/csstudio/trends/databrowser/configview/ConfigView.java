@@ -39,6 +39,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -47,6 +48,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TabFolder;
@@ -80,6 +83,13 @@ public class ConfigView extends PlotAwareView
     
     /** Sash that holds the GUI Elements for the "PV" Tab */
     private SashForm pv_form;
+
+    /** On Windows, the background of the tab items seems to be white,
+     *  on which the borders of text entries etc. vanish.
+     *  So we force this background color onto the container inside
+     *  the tab item...
+     */
+	private Color tab_bg;
     
     /** Initial sizes, possibly updated in init() from memento */
     private int pv_form_weights[] = new int[] { 60, 40 };
@@ -220,6 +230,7 @@ public class ConfigView extends PlotAwareView
         // Do set a layout on the Composite that's inside the TabItem,
         // which has the TabFolder as a parent.
         TabFolder tabs = new TabFolder(scroll, SWT.BORDER);
+        tab_bg = Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
         createPVTab(tabs);
         createLiveTab(tabs);
         createTimeTab(tabs);
@@ -336,6 +347,8 @@ public class ConfigView extends PlotAwareView
     private void createPVTabListItem(SashForm pv_form)
     {
         Composite box = new Composite(pv_form, SWT.NULL);
+		box.setBackground(tab_bg);
+
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
         box.setLayout(layout);
@@ -421,6 +434,8 @@ public class ConfigView extends PlotAwareView
     private void createPVTabInfoItem(SashForm pv_form)
     {
         final Composite box = new Composite(pv_form, 0);
+		box.setBackground(tab_bg);
+
         // Both the archive_box and the formula_box
         // are configured to occupy the full space,
         // with the idea that only one of them is visible at the same time.
@@ -514,6 +529,7 @@ public class ConfigView extends PlotAwareView
         tab.setText(Messages.LiveConfig);
         tab.setToolTipText(Messages.ConfigPVUpdates);
         Composite parent = new Composite(tabs, 0);
+		parent.setBackground(tab_bg);
         
         GridLayout gl = new GridLayout();
         gl.numColumns = 2;
@@ -590,7 +606,8 @@ public class ConfigView extends PlotAwareView
         TabItem tab = new TabItem(tabs, 0);
         tab.setText(Messages.TimeAxisConfig);
         tab.setToolTipText(Messages.TimeAxisConfig_TT);
-        Composite parent = new Composite(tabs, 0);
+        Composite parent = new Composite(tabs, SWT.SHADOW_ETCHED_IN);
+		parent.setBackground(tab_bg);
         
         GridLayout layout = new GridLayout();
         layout.numColumns = 3;
