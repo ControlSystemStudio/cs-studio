@@ -64,7 +64,7 @@ public class ValuesRequest
                 throw new Exception("Expected 'Double delta' for GET_AVERAGE");
             // We got the Double as per javadoc for the request type,
             // but the server actually only handles int...
-            double secs = ((Double)parms[0]).doubleValue();
+            final double secs = ((Double)parms[0]).doubleValue();
             parms = new Object[] { new Integer((int)secs) };
         }
         else
@@ -94,7 +94,7 @@ public class ValuesRequest
 		Vector result;
 		try
 		{
-			Vector<Object> params = new Vector<Object>(8);
+			final Vector<Object> params = new Vector<Object>(8);
 			params.add(new Integer(key));
 			params.add(channels);
 			params.add(new Integer((int)start.seconds()));
@@ -111,14 +111,14 @@ public class ValuesRequest
 		}
 		// result := { string name,  meta, int32 type,
         //              int32 count,  values }[]
-		int num_returned_channels = result.size();
+		final int num_returned_channels = result.size();
 		archived_samples = new ArchiveValues[num_returned_channels];
 		for (int channel_idx=0; channel_idx<num_returned_channels; ++channel_idx)
 		{
-			Hashtable channel_data = (Hashtable) result.get(channel_idx);
-			String name = (String)channel_data.get("name");
-			int type = (Integer)channel_data.get("type");
-			int count = (Integer)channel_data.get("count");
+			final Hashtable channel_data = (Hashtable) result.get(channel_idx);
+            final String name = (String)channel_data.get("name");
+            final int type = (Integer)channel_data.get("type");
+            final int count = (Integer)channel_data.get("count");
 			IMetaData meta;
 			IValue samples[];
 			try
@@ -151,7 +151,7 @@ public class ValuesRequest
 		//		              double warn_low,
 		//		              int prec,  string units
 		//         }
-		int meta_type = (Integer) meta_hash.get("type");
+		final int meta_type = (Integer) meta_hash.get("type");
 		if (meta_type < 0 || meta_type > 1)
 			throw new Exception("Invalid 'meta' type " + meta_type);
 		if (meta_type == 1)
@@ -178,9 +178,9 @@ public class ValuesRequest
 			throw new Exception(
 					"Received enumerated meta information for value type "
 					+ value_type);
-		Vector state_vec = (Vector) meta_hash.get("states");
-		int N = state_vec.size();
-		String states[] = new String[N];
+		final Vector state_vec = (Vector) meta_hash.get("states");
+		final int N = state_vec.size();
+		final String states[] = new String[N];
 		// Silly loop because of type warnings from state_vec.toArray(states)
 		for (int i=0; i<N; ++i)
 			states[i] = (String) state_vec.get(i);
@@ -196,32 +196,45 @@ public class ValuesRequest
 	    //             <type> value[] } []
 		// [{secs=1137596340, stat=0, nano=344419666, value=[0.79351], sevr=0},
 		//  {secs=1137596400, stat=0, nano=330619666, value=[0.79343], sevr=0},..]
-		int num_samples = value_vec.size();
-		IValue samples[] = new IValue[num_samples];
+		final int num_samples = value_vec.size();
+		final IValue samples[] = new IValue[num_samples];
 		for (int si=0; si<num_samples; ++si)
 		{
-			Hashtable sample_hash = (Hashtable) value_vec.get(si);
-			long secs = (Integer)sample_hash.get("secs");
-			long nano = (Integer)sample_hash.get("nano");
-			ITimestamp time = TimestampFactory.createTimestamp(secs, nano);
-			int stat_code = (Integer)sample_hash.get("stat");
-			int sevr_code = (Integer)sample_hash.get("sevr");
-			Vector vv = (Vector)sample_hash.get("value");
-            // TODO: check for "min", "max", and somehow package that
+			final Hashtable sample_hash = (Hashtable) value_vec.get(si);
+			final long secs = (Integer)sample_hash.get("secs");
+			final long nano = (Integer)sample_hash.get("nano");
+			final ITimestamp time = TimestampFactory.createTimestamp(secs, nano);
+			final int stat_code = (Integer)sample_hash.get("stat");
+			final int sevr_code = (Integer)sample_hash.get("sevr");
+            final SeverityImpl sevr = server.getSeverity(sevr_code);
+            final String stat = server.getStatus(sevr, stat_code);
+			final Vector vv = (Vector)sample_hash.get("value");
             
-            SeverityImpl sevr = server.getSeverity(sevr_code);
-            String stat = server.getStatus(sevr, stat_code);
 			if (type == TYPE_DOUBLE)
 			{
-				double values[] = new double[count];
+				final double values[] = new double[count];
 				for (int vi=0; vi<count; ++vi)
 					values[vi] = (Double)vv.get(vi);
-				samples[si] = ValueFactory.createDoubleValue(time, sevr, stat,
-                                (INumericMetaData)meta, quality, values);
+                // Check for "min", "max".
+                // Only handles min/max for double, but that's OK
+                // since for now that's all that the server does as well.
+                if (sample_hash.containsKey("min") &&
+                    sample_hash.containsKey("max"))
+                {
+                    final double min = (Integer)sample_hash.get("min");
+                    final double max = (Integer)sample_hash.get("max");
+                    samples[si] = ValueFactory.createMinMaxDoubleValue(
+                                    time, sevr, stat, (INumericMetaData)meta,
+                                    quality, values, min, max);
+                }
+                else
+                    samples[si] = ValueFactory.createDoubleValue(
+                                    time, sevr, stat, (INumericMetaData)meta,
+                                    quality, values);
 			}
 			else if (type == TYPE_ENUM)
 			{
-				int values[] = new int[count];
+			    final int values[] = new int[count];
 				for (int vi=0; vi<count; ++vi)
 					values[vi] = (Integer)vv.get(vi);
                 samples[si] = ValueFactory.createEnumeratedValue(time, sevr, stat,
@@ -229,13 +242,13 @@ public class ValuesRequest
 			}
 			else if (type == TYPE_STRING)
 			{
-				String value = (String)vv.get(0);
+				final String value = (String)vv.get(0);
                 samples[si] = ValueFactory.createStringValue(time, sevr, stat,
                                 quality, value);
 			}
 			else if (type == TYPE_INT)
 			{
-				int values[] = new int[count];
+				final int values[] = new int[count];
 				for (int vi=0; vi<count; ++vi)
 					values[vi] = (Integer)vv.get(vi);
                 samples[si] = ValueFactory.createIntegerValue(time, sevr, stat,
