@@ -21,6 +21,8 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import java.util.Map;
+
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
@@ -81,10 +83,10 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 				
 				switch(model.getAction()) {
 				case 0:
-					openDisplayShellInRunMode(model.getResource());
+					openDisplayShellInRunMode(model.getResource(), model.getClickAlias());
 					break;
 				case 1:
-					openDisplayViewInRunMode(model.getResource());
+					openDisplayViewInRunMode(model.getResource(), model.getClickAlias());
 					break;
 				case 2:
 					model.getProperty(ActionButtonModel.PROP_CLICK_VALUE).setManualValue(model.getClickValue());
@@ -139,23 +141,25 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	 * Opens a shell in RunMode.
 	 * @param path
 	 * 			The Ipath to the Display, which should be opened.
-	 * 			
+	 * @param newAlias
+	 * 			The Map of new Alias for the opened Display			
 	 */
-	private void openDisplayShellInRunMode(final IPath path) {
+	private void openDisplayShellInRunMode(final IPath path, final Map<String, String> newAlias) {
 		if (path!=null && !path.isEmpty()) {
-			RunModeService.getInstance().openDisplayShellInRunMode(path);
+			RunModeService.getInstance().openDisplayShellInRunMode(path, newAlias);
 		}
 	}
 	
 	/**
 	 * Opens a view in RunMode.
 	 * @param path
-	 * 			The Ipath to the Display, which should be opened.
-	 * 			
+	 * 			The IPath to the Display, which should be opened.
+	 * @param newAlias
+	 * 			The Map of new Alias for the opened Display			
 	 */
-	private void openDisplayViewInRunMode(final IPath path) {
+	private void openDisplayViewInRunMode(final IPath path, final Map<String, String> newAlias) {
 		if (path!=null && !path.isEmpty()) {
-			RunModeService.getInstance().openDisplayViewInRunMode(path);
+			RunModeService.getInstance().openDisplayViewInRunMode(path, newAlias);
 		}
 	}
 	

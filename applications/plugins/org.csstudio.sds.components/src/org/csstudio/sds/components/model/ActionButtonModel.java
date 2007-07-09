@@ -21,6 +21,9 @@
  */
 package org.csstudio.sds.components.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
@@ -28,6 +31,7 @@ import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.ResourceProperty;
+import org.csstudio.sds.model.properties.StringMapProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -56,6 +60,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The ID of the click value property.
 	 */
 	public static final String PROP_CLICK_VALUE = "click_value"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the click alias property.
+	 */
+	public static final String PROP_CLICK_ALIAS = "click_alias"; //$NON-NLS-1$
 
 	/**
 	 * The ID of the action property.
@@ -135,6 +144,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
 		addProperty(PROP_CLICK_VALUE, new DoubleProperty("Click Value",
 				WidgetPropertyCategory.Behaviour, 0));
+		addProperty(PROP_CLICK_ALIAS, new StringMapProperty("Click Alias", 
+				WidgetPropertyCategory.Behaviour, new HashMap<String, String>()));
 	}
 
 	/**
@@ -196,6 +207,16 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 */
 	public double getClickValue() {
 		return (Double) getProperty(PROP_CLICK_VALUE).getPropertyValue();
+	}
+	
+	/**
+	 * Return the click alias.
+	 * 
+	 * @return The click alias.
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, String> getClickAlias() {
+		return (Map<String, String>) getProperty(PROP_CLICK_ALIAS).getPropertyValue();
 	}
 
 	/**
