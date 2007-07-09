@@ -28,20 +28,57 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
 {
     static final boolean debug = false;
     
+    /** sub record type */
+    private static final String SUB = "sub"; //$NON-NLS-1$
+
+    /** genSub record type */
+    private static final String GENSUB = "genSub"; //$NON-NLS-1$
+
+    /** calc record type */
+    private static final String CALC = "calc"; //$NON-NLS-1$
+
+    /** seq record type */
+    private static final String SEQ = "seq"; //$NON-NLS-1$
+
+    // NOTE: Keep the type names in these arrays alphabetical,
+    //       just in case we later want to use binary search!
     @SuppressWarnings("nls")
     private static final String input_types[] =
     {
-        "ai", "aai", "bi","mbbiDirect", "mbbi",
-        "mbboDirect","longin", "waveform", "subArray", "stringin",
+        "aai",
+        "ai",
+        "bi",
+        "compress",
+        "longin",
+        "mbbi",
+        "mbbiDirect",
+        "mbboDirect",
+        "stringin",
+        "subArray",
+        "waveform",
     };
     @SuppressWarnings("nls")
     private static final String output_types[] =
     {
-        "ao", "aao", "bo", "mbbo",  "longout", "stringout", "fanout"
+        "aao",
+        "ao",
+        "bo",
+        "fanout",
+        "longout",
+        "mbbo",
+        "stringout",
     };    
-    // TODO: Handle "sub", "genSub", "compress",
-    // "event", "histogram", "permissive", "sel", "seq", "state",
+    // TODO: Handle "event", "histogram", "permissive", "sel", "state"?
    
+    /** INP field */
+    private static final String INP = "INP"; //$NON-NLS-1$
+
+    /** SELN field */
+    private static final String SELN = "SELN"; //$NON-NLS-1$
+
+    /** DOL field */
+    private static final String DOL = "DOL"; //$NON-NLS-1$
+
    /** The model to which this whole tree belongs. */
     private final PVTreeModel model;
 
@@ -365,29 +402,44 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
                 // Display the received type of this record.
                 model.itemChanged(PVTreeItem.this);
                 
-                if (type.startsWith("calc"))
-                    // Read the calc or calcout's first input
+                if (isCalcType(type))
+                    // Read the sub, calc or calcout's first input
                     getCalcInput(0);
                 else
                 {   // read INP?
                     for (String typ : input_types)
                         if (type.equals(typ))
                         {
-                            getLink(record_name + ".INP");
+                            getLink(record_name + "." + INP);
                             return;
                         }
                     // read DOL?
                     for (String typ : output_types)
                         if (type.equals(typ))
                         {
-                            getLink(record_name + ".DOL");
+                            getLink(record_name + "." + DOL);
                             return;
                         }
+                    if (type.equals(SEQ))
+                    {
+                        getLink(record_name + "." + SELN);
+                        return;
+                    }
                     // Give up
                     Plugin.logError("Unknown record type '" + type + "'");
                 }
             }
         });
+    }
+    
+    /** @return <code>true</code> if record type is like a calc record,
+     *          i.e. has INPA, INPB, ... INPL.
+     */
+    private boolean isCalcType(final String type)
+    {
+        return type.equals(SUB)
+            || type.equals(GENSUB)
+            || type.startsWith(CALC);
     }
     
     /** Helper for reading a calc record's input link. */
@@ -432,20 +484,25 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
                         System.out.println(pv_name + " already disposed");
                     return;
                 }
-                boolean is_output = link_pv.getName().endsWith("DOL");
+                final boolean is_output = link_pv.getName().endsWith(DOL);
                 disposeLinkPV();
-                boolean is_calc = type.startsWith("calc");
+                final boolean is_calc = isCalcType(type);
+                final boolean is_seq = type.equals(SEQ);
                 String info;
                 if (is_output)
-                    info = "DOL";
+                    info = DOL;
                 else if (is_calc)
-                    info = "INP" + Character.toString((char)('A' + input_index));
-                else info = "INP";
+                    info = INP + Character.toString((char)('A' + input_index));
+                else if (is_seq)
+                    info = SELN;
+                else
+                    info = INP;
                 if (link_value.length() > 0)
                 {
                     new PVTreeItem(model, PVTreeItem.this, info, link_value);
                     model.itemChanged(PVTreeItem.this);
                 }
+                // TODO Reads inputs up to INPL. How many are there really?
                 if (is_calc && input_index < 11) // get INPB...INPL
                     getCalcInput(input_index + 1);
             }
