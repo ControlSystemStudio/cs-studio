@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Tracker;
  */
 public class Chart extends Canvas
 {
-    /** Change the drawing routines to leave some extra space
+	/** Change the drawing routines to leave some extra space
      *  and add extra lines around stuff to visually check
      *  if the 'plot area' doesn't mess up the 'x axis' area etc.
      *  <p>
@@ -93,15 +93,22 @@ public class Chart extends Canvas
     /** Foreground color. */
     private Color foreground;
 
+	/** MouseEvent button code for the 'left' button */
+    private static final int LEFT_MOUSE_BUTTON = 1;
+
     /** Is mouse currently 'down'? */
     private boolean mouse_down = false;
+
     /** X coord for last mouse_down. */
     private int mouse_down_x;
+    
     /** Y coord for last mouse_down. */
     private int mouse_down_y;
+    
     /** Was mouse dragged while mouse_down? */
     private boolean mouse_dragged = false;
     
+    /** List of all ChartListeners */
     private ArrayList<ChartListener> listeners = new ArrayList<ChartListener>();
 
     /** Create a chart.
@@ -223,7 +230,7 @@ public class Chart extends Canvas
             @Override
             public void mouseDown(MouseEvent event)
             {
-                if (event.button != 1)
+                if (event.button != LEFT_MOUSE_BUTTON)
                     return;
                 // Remember where the mouse went down
                 mouse_down = true;
@@ -235,6 +242,8 @@ public class Chart extends Canvas
             @Override
             public void mouseUp(MouseEvent event)
             { 
+                if (event.button != LEFT_MOUSE_BUTTON)
+                    return;
                 mouse_down = false;
                 // If this was a 'drag', the rubberband zoom
                 // already handled it.
