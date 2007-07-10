@@ -37,6 +37,7 @@ public class ValuesRequest
 	
 	// The result of the query
 	private ArchiveValues archived_samples[];
+    private boolean min_max_avg_request;
 
 	/** Constructor for new value request.
 	 *  <p>
@@ -56,8 +57,9 @@ public class ValuesRequest
 	        throws Exception
 	{
         final String req_type = server.getRequestTypes()[how];
+        min_max_avg_request = req_type.equals(ArchiveServer.GET_AVERAGE);
         // Check parms
-        if (req_type.equals(ArchiveServer.GET_AVERAGE))
+        if (min_max_avg_request)
         {
             quality = IValue.Quality.Interpolated;
             if (! (parms.length == 1  &&  parms[0] instanceof Double))
@@ -220,17 +222,23 @@ public class ValuesRequest
                 // since for now that's all that the server does as well.
                 if (sample_hash.containsKey("min") &&
                     sample_hash.containsKey("max"))
-                {
+                {   // It's a min/max double, certainly interpolated
                     final double min = (Integer)sample_hash.get("min");
                     final double max = (Integer)sample_hash.get("max");
                     samples[si] = ValueFactory.createMinMaxDoubleValue(
                                     time, sevr, stat, (INumericMetaData)meta,
-                                    quality, values, min, max);
+                                    IValue.Quality.Interpolated, values, min, max);
                 }
                 else
+                {   // Was this from a min/max/avg request?
+                    // Yes: Then we ran into a raw value.
+                    // No: Then it's whatever quality we expected in general
+                    IValue.Quality q = min_max_avg_request ?
+                                        IValue.Quality.Original : quality;
                     samples[si] = ValueFactory.createDoubleValue(
                                     time, sevr, stat, (INumericMetaData)meta,
-                                    quality, values);
+                                    q, values);
+                }
 			}
 			else if (type == TYPE_ENUM)
 			{
