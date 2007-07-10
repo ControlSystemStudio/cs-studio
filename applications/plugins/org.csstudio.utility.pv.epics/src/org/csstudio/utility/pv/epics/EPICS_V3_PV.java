@@ -204,7 +204,6 @@ public class EPICS_V3_PV
             return;
         was_connected = false;
         initJCA();
-        running = true;
 
         synchronized (channels)
         {
@@ -215,10 +214,7 @@ public class EPICS_V3_PV
                     System.out.println("Creating CA channel " + name);
                 final Channel channel = jca_context.createChannel(name);
                 if (channel == null)
-                {   // No channel to clean up after all...
-                    running = false;
                     throw new Exception("Cannot create channel '" + name + "'");
-                }
                 channel_ref = new RefCountedChannel(channel);
                 channels.put(name, channel_ref);
                 jca_context.flushIO();
@@ -230,12 +226,12 @@ public class EPICS_V3_PV
                     System.out.println("Re-using CA channel " + name);
             }
         }
+        running = true;
         channel_ref.getChannel().addConnectionListener(this);
         if (channel_ref.getChannel().getConnectionState() == ConnectionState.CONNECTED)
         {
             if (debug)
                 System.out.println("Channel is immediately connected: " + name);
-
             handleConnected();
         }
     }
