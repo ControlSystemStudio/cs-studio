@@ -223,8 +223,8 @@ public class ValuesRequest
                 if (sample_hash.containsKey("min") &&
                     sample_hash.containsKey("max"))
                 {   // It's a min/max double, certainly interpolated
-                    final double min = (Integer)sample_hash.get("min");
-                    final double max = (Integer)sample_hash.get("max");
+                    final double min = (Double)sample_hash.get("min");
+                    final double max = (Double)sample_hash.get("max");
                     samples[si] = ValueFactory.createMinMaxDoubleValue(
                                     time, sevr, stat, (INumericMetaData)meta,
                                     IValue.Quality.Interpolated, values, min, max);
