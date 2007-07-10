@@ -55,12 +55,21 @@ class ArchiveFetchJob extends Job
                     cache.getServer(archives[i].getUrl());
                 
                 // TODO: Get something better than PLOTBINNED
-                final String request_type = 
-                    item.getRequestType() == IPVModelItem.RequestType.RAW
-                    ? ArchiveServer.GET_RAW
-                    : ArchiveServer.GET_PLOTBINNED;
-                int bins = 800;
-                final Object[] request_parms = new Object[] { new Integer(bins) };
+                String request_type;
+                Object[] request_parms;
+                final int bins = 800;
+                if (item.getRequestType() == IPVModelItem.RequestType.RAW)
+                {
+                    request_type = ArchiveServer.GET_RAW;
+                    request_parms = new Object[] { new Integer(bins) };
+                }
+                else
+                {
+                    request_type = ArchiveServer.GET_AVERAGE;
+                    final double interval =
+                        (end.toDouble() - start.toDouble()) / bins;
+                    request_parms = new Object[] { new Double(interval) };
+                }
                 
                 BatchIterator batch = new BatchIterator(server,
                                 archives[i].getKey(), item.getName(),
