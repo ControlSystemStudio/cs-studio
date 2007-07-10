@@ -54,7 +54,6 @@ class ArchiveFetchJob extends Job
                 final ArchiveServer server =
                     cache.getServer(archives[i].getUrl());
                 
-                // TODO: Get something better than PLOTBINNED
                 String request_type;
                 Object[] request_parms;
                 final int bins = 800;
@@ -65,10 +64,13 @@ class ArchiveFetchJob extends Job
                 }
                 else
                 {
-                    request_type = ArchiveServer.GET_AVERAGE;
-                    final double interval =
-                        (end.toDouble() - start.toDouble()) / bins;
-                    request_parms = new Object[] { new Double(interval) };
+                    // TODO Switch to the new average
+                    //request_type = ArchiveServer.GET_AVERAGE;
+                    //final double interval =
+                    //    (end.toDouble() - start.toDouble()) / bins;
+                    //request_parms = new Object[] { new Double(interval) };
+                    request_type = ArchiveServer.GET_PLOTBINNED;
+                    request_parms = new Object[] { new Integer(bins) };
                 }
                 
                 BatchIterator batch = new BatchIterator(server,
