@@ -12,8 +12,6 @@ public class Messages extends NLS
 
     public static String S_AdjustValue;
 
-    public static String S_CHANNEL;
-
     public static String S_ChannelInfo;
 
     public static String S_CreateError;

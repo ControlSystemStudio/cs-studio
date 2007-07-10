@@ -2,6 +2,7 @@ package org.csstudio.diag.probe;
 
 import java.text.NumberFormat;
 
+import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
@@ -491,19 +492,25 @@ public class Probe extends ViewPart implements PVListener
     {
         final String nl = "\n"; //$NON-NLS-1$
 
-        StringBuffer info = new StringBuffer();
+        final StringBuffer info = new StringBuffer();
         if (pv == null)
         {
             info.append(Messages.S_NotConnected + nl);
         }
         else
         {
-            info.append(nl + Messages.S_ChannelInfo + nl);
-            info.append(Messages.S_CHANNEL + pv.getName() + nl);
+            info.append(nl + Messages.S_ChannelInfo + "  " + pv.getName() + nl); //$NON-NLS-1$
             if (pv.isConnected())
                 info.append(Messages.S_STATEConn + nl);
             else
                 info.append(Messages.S_STATEDisconn + nl);
+            final IValue value = pv.getValue();
+            if (value != null)
+            {
+                final IMetaData meta = value.getMetaData();
+                if (meta != null)
+                    info.append(meta.toString());
+            }
         }
         if (info.length() == 0)
             info.append(Messages.S_NoInfo);
