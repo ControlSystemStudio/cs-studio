@@ -126,7 +126,7 @@
          point="org.eclipse.ui.actionSets">
       <actionSet
             description="Global CSS menu actions"
-            id="org.csstudio.trends.databrowser"
+            id="org.csstudio.trends.databrowser.cssmenu"
             label="CSS Action Set"
             visible="true">
          <action
