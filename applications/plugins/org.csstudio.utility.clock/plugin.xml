@@ -38,5 +38,14 @@
                style="push"
                tooltip="Show the Clock"/>
       </actionSet>
-      </extension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page category="org.csstudio.platform.ui.css.applications.utilities"
+            class="org.csstudio.utility.clock.preferences.PreferencePage"
+            id="org.csstudio.utility.clock.preferences.PreferencePage"
+            name="Clock"/>
+   </extension>
+      
+      
 </plugin>

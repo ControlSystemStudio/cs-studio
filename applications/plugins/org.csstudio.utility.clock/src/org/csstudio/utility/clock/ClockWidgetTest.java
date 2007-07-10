@@ -27,7 +27,7 @@ public class ClockWidgetTest
         shell.setLayout(gl);
         GridData gd;
 
-        ClockWidget clock = new ClockWidget(shell, 0);
+        ClockWidget clock = new ClockWidget(30, shell, 0);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.grabExcessVerticalSpace = true;

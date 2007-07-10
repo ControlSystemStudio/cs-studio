@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
-/** Displays time on a 25 hour face.
+/** Displays time on for example a 25 hour face.
  *  @author Kay Kasemir
  */
 public class ClockWidget extends Canvas implements DisposeListener,
@@ -24,11 +24,16 @@ public class ClockWidget extends Canvas implements DisposeListener,
 {
 	private static final int OVAL_WIDTH = 5;
 	private Color background, face, pointer;
+    /** The total hours in a day.
+     *  24 gives the usual clock, but one can also use 25.
+     */
+    private final int hours; 
 
 	/** Constructor */
-	public ClockWidget(Composite parent, int style)
+	public ClockWidget(int hours, Composite parent, int style)
 	{
 		super(parent, style);
+        this.hours = hours;
 		background = new Color(null, 255, 255, 255);
 		face = new Color(null, 20, 10, 10);
 		pointer = new Color(null, 200, 0, 0);
@@ -123,16 +128,16 @@ public class ClockWidget extends Canvas implements DisposeListener,
             pointer_radius = tick_radius - 2;
         }
         // Draw major tick marks.
-        for (int hour=0; hour<25; hour += skip)
+        for (int hour=0; hour<hours; hour += skip)
         {
-            if (skip > 1 && hour == 24)
+            if (skip > 1 && hour == (hours - 1))
                 break;
             // Angle for the hour in usual coords where
             // 0 deg == 'right, 90 deg == 'up', in radians:
-            double angle = Math.PI/2.0 - 2.0*Math.PI*hour/25.0;
+            final double angle = Math.PI/2.0 - 2.0*Math.PI*hour/hours;
             // Cosine and sine for that angle, noting that GC's y axis goes 'down'
-            double c = Math.cos(angle);
-            double s = -Math.sin(angle);
+            final double c = Math.cos(angle);
+            final double s = -Math.sin(angle);
             gc.drawLine(
                     cx + (int)(tick_radius*c),
                     cy + (int)(tick_radius*s),
@@ -140,7 +145,7 @@ public class ClockWidget extends Canvas implements DisposeListener,
                     cy + (int)(radius*s));
             if (radius > 45)
             {
-                String text = Integer.toString(hour);
+                final String text = Integer.toString(hour);
                 gc.drawText(text,
                     cx + (int)(text_radius*c)
                     - (fm.getAverageCharWidth() * text.length())/2,
@@ -156,14 +161,14 @@ public class ClockWidget extends Canvas implements DisposeListener,
         double hour = now.get(Calendar.HOUR_OF_DAY)
             + now.get(Calendar.MINUTE) / 60.0
             + now.get(Calendar.SECOND) / 60.0 / 60.0;
-        // Convert to 25hour day
-        hour = hour * 25.0 / 24.0;
+        // Convert to e.g. 25hour day
+        hour = hour * hours / 24.0;
         // Angle for the hour in usual coords where
         // 0 deg == 'right, 90 deg == 'up', in radians:
-        double angle = Math.PI/2.0 - 2.0*Math.PI*hour/25.0;
+        final double angle = Math.PI/2.0 - 2.0*Math.PI*hour/hours;
         // Cosine and sine for that angle, noting that GC's y axis goes 'down'
-        double c = Math.cos(angle);
-        double s = -Math.sin(angle);
+        final double c = Math.cos(angle);
+        final double s = -Math.sin(angle);
         gc.setLineWidth(5);
         gc.drawLine(cx, cy,
                 cx + (int)(pointer_radius*c),

@@ -1,5 +1,6 @@
 package org.csstudio.utility.clock;
 
+import org.csstudio.utility.clock.preferences.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -24,7 +25,7 @@ public class ClockView extends ViewPart
         parent.setLayout(gl);
         GridData gd;
 
-        clock = new ClockWidget(parent, 0);
+        clock = new ClockWidget(PreferencePage.getHours(), parent, 0);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.grabExcessVerticalSpace = true;
