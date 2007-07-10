@@ -31,6 +31,7 @@ import org.csstudio.platform.internal.security.NoWidgetAdapterFoundException;
 import org.csstudio.platform.internal.security.WidgetList;
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -95,13 +96,24 @@ public final class WidgetManagementService implements IUserManagementListener,
 	 */
 	public void registerWidget(final String id, final String defaultRight,
 			final Object widget) throws NoWidgetAdapterFoundException {
-		IWidgetAdapter standard = (IWidgetAdapter) Platform.getAdapterManager()
-				.getAdapter(widget, IWidgetAdapter.class);
+		IWidgetAdapter standard = this.getStandardAdapter(widget);
 		if (standard == null) {
 			throw new NoWidgetAdapterFoundException(widget.getClass());
 		} else {
 			this.registerWidget(id, defaultRight, widget, standard);
 		}
+	}
+	
+	private IWidgetAdapter getStandardAdapter(final Object widget) {
+		IWidgetAdapter standard = (IWidgetAdapter) Platform.getAdapterManager()
+			.getAdapter(widget, IWidgetAdapter.class);
+		if (standard != null) {
+			return standard;
+		}
+		if (widget instanceof IAdaptable) {
+			standard = (IWidgetAdapter) ((IAdaptable)widget).getAdapter(IWidgetAdapter.class);
+		}
+		return standard;
 	}
 	
 	public void registerWidget(final String id, 
@@ -131,19 +143,21 @@ public final class WidgetManagementService implements IUserManagementListener,
 		if (adapter == null) {
 			throw new NullPointerException("IWidgetAdapter was null");
 		}
-		if (_widgetsMap.containsKey(id)) {
-			WidgetList liste = _widgetsMap.get(id);
-			if (!liste.contains(widget)) {
+		if (id != null) {
+			if (_widgetsMap.containsKey(id)) {
+				WidgetList liste = _widgetsMap.get(id);
+				if (!liste.contains(widget)) {
+					liste.addWidget(widget, adapter);
+					adapter.activate(widget, SecurityFacade.getInstance()
+							.canExecute(id));
+				}
+			} else {
+				WidgetList liste = new WidgetList(defaultRight);
 				liste.addWidget(widget, adapter);
+				_widgetsMap.put(id, liste);
 				adapter.activate(widget, SecurityFacade.getInstance()
 						.canExecute(id));
-			}
-		} else {
-			WidgetList liste = new WidgetList(defaultRight);
-			liste.addWidget(widget, adapter);
-			_widgetsMap.put(id, liste);
-			adapter.activate(widget, SecurityFacade.getInstance()
-					.canExecute(id));
+			}	
 		}
 	}
 
