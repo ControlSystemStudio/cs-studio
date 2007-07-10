@@ -26,17 +26,17 @@
          point="org.eclipse.ui.actionSets">
       <actionSet
             description="Global CSS menu actions"
-            id="org.csstudio.utility.clock"
+            id="org.csstudio.utility.clock.cssmenu"
             label="CSS Action Set"
             visible="true">
          <action
                class="org.csstudio.utility.clock.ShowClockAction"
                icon="icons/clock.png"
-               id="org.csstudio.utility.clock.showclockaction"
-               label="Clock"
+               id="org.csstudio.utility.clock.ShowClockAction"
+               label="%Clock"
                menubarPath="css/utility/"
                style="push"
-               tooltip="Show the Clock"/>
+               tooltip="%ShowClock"/>
       </actionSet>
    </extension>
    <extension
