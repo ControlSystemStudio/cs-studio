@@ -27,6 +27,6 @@ public class HeadlessRunnable implements IPlatformRunnable {
         
         thisServer.executeMe();
 
-		return EXIT_OK;
+		return IPlatformRunnable.EXIT_RESTART;
 	}
 }
