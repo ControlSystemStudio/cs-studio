@@ -65,12 +65,19 @@ class ArchiveFetchJob extends Job
                 else
                 {
                     // TODO Switch to the new average
-                    //request_type = ArchiveServer.GET_AVERAGE;
-                    //final double interval =
-                    //    (end.toDouble() - start.toDouble()) / bins;
-                    //request_parms = new Object[] { new Double(interval) };
-                    request_type = ArchiveServer.GET_PLOTBINNED;
-                    request_parms = new Object[] { new Integer(bins) };
+                    final boolean use_new_average = false;
+                    if (use_new_average)
+                    {
+                        request_type = ArchiveServer.GET_AVERAGE;
+                        final double interval =
+                            (end.toDouble() - start.toDouble()) / bins;
+                        request_parms = new Object[] { new Double(interval) };
+                    }
+                    else
+                    {
+                        request_type = ArchiveServer.GET_PLOTBINNED;
+                        request_parms = new Object[] { new Integer(bins) };
+                    }
                 }
                 
                 BatchIterator batch = new BatchIterator(server,
