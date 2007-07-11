@@ -31,11 +31,14 @@
 
    <intro introId="org.csstudio.sns.product.intro"/>
 
+   <plugins>
+   </plugins>
+
    <features>
-      <feature id="org.csstudio.sns.feature.eclipse" version="1.0.0"/>
-      <feature id="org.csstudio.sns.feature.core" version="1.0.0"/>
-      <feature id="org.csstudio.sns.feature.applications" version="1.0.0"/>
-      <feature id="org.csstudio.sns.feature.prefs.sns" version="1.0.0"/>
+      <feature id="org.csstudio.sns.feature.applications" version="0.0.0"/>
+      <feature id="org.csstudio.sns.feature.core" version="0.0.0"/>
+      <feature id="org.csstudio.sns.feature.eclipse" version="0.0.0"/>
+      <feature id="org.csstudio.sns.feature.prefs.sns" version="0.0.0"/>
    </features>
 
 </product>
