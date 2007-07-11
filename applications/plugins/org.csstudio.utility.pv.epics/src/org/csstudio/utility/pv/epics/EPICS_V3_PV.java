@@ -42,20 +42,39 @@ import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
+import org.eclipse.swt.widgets.Display;
 
-/**
- * EPICS ChannelAccess implementation of the PV interface.
- * <p>
- * Also creates a shared pool of PVs:<br>
- * The underlying pure java CA client implementation actually returns the
- * same 'channel' when trying to access the same PV name multiple times.
- * That's good, but I don't know how to determine if the channel for this
- * EPICS_V3_PV is actually shared.
- * Calling destroy() on such a shared channel creates problems.<br>
- * This class therefore adds its own hash map of channels and keeps a reference
- * count.
- * @see PV
- * @author Kay Kasemir
+/** EPICS ChannelAccess implementation of the PV interface.
+ *  <p>
+ *  Also creates a shared pool of PVs:<br>
+ *  The underlying pure java CA client implementation actually returns the
+ *  same 'channel' when trying to access the same PV name multiple times.
+ *  That's good, but I don't know how to determine if the channel for this
+ *  EPICS_V3_PV is actually shared.
+ *  Calling destroy() on such a shared channel creates problems.<br>
+ *  This class therefore adds its own hash map of channels and keeps a reference
+ *  count.
+ *  <p>
+ *  Most callbacks (value, disconnect) are just passed through from 
+ *  the underlying CA library callback, so the user needs to be prepared
+ *  to receive events from a non-UI thread.
+ *  <p>
+ *  With event-intensive apps like the PV Tree that connects, reads,
+ *  then disconnects many PVs, there were deadlocks with the JNI CA
+ *  client lib:
+ *  <ul>
+ *  <li>The main thread might try to destroy a PV...
+ *  <li>.. while a CA connect callback tries to get
+ *      meta info or subscribe.
+ *  </ul>
+ *  With CAJ, that worked OK, but JNI deadlocked.
+ *  For that reason, this class might pass CA events up to the user code
+ *  within the CA thread, but if it needs to call CA back from within
+ *  a CA callback, it transfers to the UI thread.
+ *  That seems to work OK, but does add an SWT dependency to this plugin.
+ *  
+ *  @see PV
+ *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class EPICS_V3_PV
@@ -315,8 +334,37 @@ public class EPICS_V3_PV
     /** ConnectionListener interface. */
     public void connectionChanged(ConnectionEvent ev)
     {
+    	// This runs in a CA thread
         if (ev.isConnected())
-            handleConnected();
+        {	// handleConnected() performs CA calls,
+            // so prevent deadlocks under JNI by
+            // transferring to UI thread.
+            Display display;
+            try
+            {
+                display = Display.getDefault();
+            }
+            // If there is no display lib because for example
+            // we run in a non-SWT unit test, just call directly.
+            catch (UnsatisfiedLinkError ex)
+            {
+                handleConnected();
+                return;
+            }
+            catch (NoClassDefFoundError ex)
+            {
+                handleConnected();
+                return;
+            }
+            // The 'normal' case under SWT: Transfer to UI thread.
+            display.asyncExec(new Runnable()
+            {
+                public void run()
+                {
+                    handleConnected();
+                }
+            });
+        }
         else
             handleDisconnected();
     }

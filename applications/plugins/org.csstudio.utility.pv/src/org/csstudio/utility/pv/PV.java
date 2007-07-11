@@ -8,6 +8,12 @@ import org.csstudio.platform.data.IValue;
  *  do whatever is needed to obtain the meta information like
  *  units, precision, ... Then it will subscribe to updates
  *  of the current value.
+ *  <p>
+ *  While the {@link PVListener} might receive events on a
+ *  non-UI thread, all the calls to the PV should come from
+ *  the UI thread to prevent possible deadlocks.
+ *  (The JNI CA client has deadlocked when both UI and non-UI
+ *   threads called into it at the 'same' time).
  *  
  *  @author Kay Kasemir
  */
