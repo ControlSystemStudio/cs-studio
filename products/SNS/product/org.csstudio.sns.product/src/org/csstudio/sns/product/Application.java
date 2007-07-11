@@ -1,5 +1,6 @@
 package org.csstudio.sns.product;
 
+import org.csstudio.platform.ResourceService;
 import org.csstudio.platform.ui.workspace.WorkspaceSwitchHelper;
 import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.Platform;
@@ -69,6 +70,13 @@ public class Application implements IPlatformRunnable
                     }
                 }
                 PluginActivator.logInfo("CSS Application Running"); //$NON-NLS-1$
+                
+                // Assert that there is an open "CSS" project.
+                // Without that, an existing 'CSS' might show up,
+                // but a 'new Folder' action would run into
+                // 'project not open' error...
+                ResourceService.getInstance().createWorkspaceProject("CSS"); //$NON-NLS-1$
+
                 returnCode = PlatformUI.createAndRunWorkbench(display,
                                 new ApplicationWorkbenchAdvisor());
             }
