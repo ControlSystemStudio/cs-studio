@@ -26,7 +26,11 @@ public class HeadlessRunnable implements IPlatformRunnable {
 		System.out.println( "Head Commands : " + ServerCommands.getCommands());
         
         thisServer.executeMe();
-
-		return IPlatformRunnable.EXIT_RESTART;
+        
+        if ( SHUTDOWN) {
+        	return IPlatformRunnable.EXIT_OK;
+        } else {
+        	return IPlatformRunnable.EXIT_RESTART;
+        }
 	}
 }

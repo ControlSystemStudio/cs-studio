@@ -3,7 +3,7 @@ package org.csstudio.diag.interconnectionServer;
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
 import org.csstudio.platform.libs.dcf.actions.IAction;
 
-public class StopIcServer implements IAction {
+public class RestartIcServer implements IAction {
 
 	/*
 	 * (non-Javadoc)
@@ -27,7 +27,7 @@ public class StopIcServer implements IAction {
 		 * stop here - nicely
 		 */
 		// System.exit(0);
-		HeadlessRunnable.SHUTDOWN = true;
+		HeadlessRunnable.SHUTDOWN = false;
 		return "" + result;
 	}
 
