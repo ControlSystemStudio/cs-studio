@@ -331,33 +331,43 @@ public class EPICS_V3_PV
         }
     }
 
+    /** In case SWT (display) is available, run something in UI Thread.
+     *  If no SWT, just run it.
+     *  @param runnable What to run
+     */
+    private void runInUI(final Runnable runnable)
+    {
+        Display display;
+        try
+        {
+            display = Display.getDefault();
+        }
+        // If there is no display lib because for example
+        // we run in a non-SWT unit test, just call directly.
+        catch (UnsatisfiedLinkError ex)
+        {
+            runnable.run();
+            return;
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            runnable.run();
+            return;
+        }
+        // The 'normal' case under SWT: Transfer to UI thread.
+        display.asyncExec(runnable);
+    }
+    
     /** ConnectionListener interface. */
     public void connectionChanged(ConnectionEvent ev)
     {
     	// This runs in a CA thread
         if (ev.isConnected())
-        {	// handleConnected() performs CA calls,
+        {
+            // handleConnected() performs CA calls,
             // so prevent deadlocks under JNI by
             // transferring to UI thread.
-            Display display;
-            try
-            {
-                display = Display.getDefault();
-            }
-            // If there is no display lib because for example
-            // we run in a non-SWT unit test, just call directly.
-            catch (UnsatisfiedLinkError ex)
-            {
-                handleConnected();
-                return;
-            }
-            catch (NoClassDefFoundError ex)
-            {
-                handleConnected();
-                return;
-            }
-            // The 'normal' case under SWT: Transfer to UI thread.
-            display.asyncExec(new Runnable()
+            runInUI(new Runnable()
             {
                 public void run()
                 {
@@ -411,6 +421,7 @@ public class EPICS_V3_PV
     /** GetListener interface, handles result of getting DBR_CTRL... */
     public void getCompleted(GetEvent event)
     {
+        // This runs in a CA thread
         if (event.getStatus().isSuccessful())
         {
             DBR dbr = event.getDBR();
@@ -465,7 +476,16 @@ public class EPICS_V3_PV
             System.out.println("Channel '" + name + "' getCompleted error: "
                             + event.getStatus().getMessage());
         }
-        subscribe();
+        
+        // Prevent deadlock with other UI code that calls into CA
+        // by also subscribin in UI Thread
+        runInUI(new Runnable()
+        {
+            public void run()
+            {
+                subscribe();
+            }
+        });
     }
 
     private void subscribe()
@@ -523,160 +543,160 @@ public class EPICS_V3_PV
    /** MonitorListener interface. */
     public void monitorChanged(MonitorEvent ev)
     {
+        // This runs in a CA thread.
         // Ignore values that arrive after stop()
         if (!running)
             return;
-        if (ev.getStatus().isSuccessful())
+        if (! ev.getStatus().isSuccessful())
         {
-            DBR dbr = ev.getDBR();
-            try
+            System.out.println("Channel '" + name + "':"
+                    + ev.getStatus().getMessage());
+            return;
+        }
+    
+        final DBR dbr = ev.getDBR();
+        try
+        {
+            ITimestamp time = null;
+            ISeverity severity = null;
+            String status = "";
+            if (plain)
             {
-                ITimestamp time = null;
-                ISeverity severity = null;
-                String status = "";
+                time = TimestampFactory.now();
+                severity = SeverityUtil.forCode(0);
+            }
+            if (dbr.isDOUBLE())
+            {
+                double v[];
                 if (plain)
+                    v = ((DBR_Double)dbr).getDoubleValue();
+                else
                 {
-                    time = TimestampFactory.now();
-                    severity = SeverityUtil.forCode(0);
-                }
-                if (dbr.isDOUBLE())
-                {
-                    double v[];
-                    if (plain)
-                        v = ((DBR_Double)dbr).getDoubleValue();
-                    else
-                    {
-                        DBR_TIME_Double dt = (DBR_TIME_Double) dbr;
-                        severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                        Status stat = dt.getStatus();
-                        status = stat.getValue() == 0 ? "" : stat.getName();
-                        time = createTimeFromEPICS(dt.getTimeStamp());
-                        v = dt.getDoubleValue();
-                    }
-                    value = ValueFactory.createDoubleValue(time, severity,
-                                    status, (INumericMetaData)meta, quality, v);
-                    if (debug)
-                        System.out.println("Channel '" + name
-                                + "': double value " + value);
-                }
-                else if (dbr.isFLOAT())
-                {
-                    float v[];
-                    if (plain)
-                        v = ((DBR_Float)dbr).getFloatValue();
-                    else
-                    {
-                        DBR_TIME_Float dt = (DBR_TIME_Float) dbr;
-                        severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                        Status stat = dt.getStatus();
-                        status = stat.getValue() == 0 ? "" : stat.getName();
-                        time = createTimeFromEPICS(dt.getTimeStamp());
-                        v = dt.getFloatValue();
-                    }
-                    value = ValueFactory.createDoubleValue(time, severity,
-                                    status, (INumericMetaData)meta, quality,
-                                    float2double(v));
-                    if (debug)
-                        System.out.println("Channel '" + name
-                                + "': double value " + value);
-                }
-                else if (dbr.isINT())
-                {
-                    int v[];
-                    if (plain)
-                        v = ((DBR_Int)dbr).getIntValue();
-                    else
-                    {
-                        DBR_TIME_Int dt = (DBR_TIME_Int) dbr;
-                        severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                        Status stat = dt.getStatus();
-                        status = stat.getValue() == 0 ? "" : stat.getName();
-                        time = createTimeFromEPICS(dt.getTimeStamp());
-                        v = dt.getIntValue();
-                    }
-                    value = ValueFactory.createIntegerValue(time, severity,
-                                    status, (INumericMetaData)meta, quality, v);
-                    if (debug)
-                        System.out.println("Channel '" + name
-                                + "': int value " + value);
-                }
-                else if (dbr.isSHORT())
-                {
-                    short v[];
-                    if (plain)
-                        v = ((DBR_Short)dbr).getShortValue();
-                    else
-                    {
-                        DBR_TIME_Short dt = (DBR_TIME_Short) dbr;
-                        severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                        Status stat = dt.getStatus();
-                        status = stat.getValue() == 0 ? "" : stat.getName();
-                        time = createTimeFromEPICS(dt.getTimeStamp());
-                        v = dt.getShortValue();
-                    }
-                    value = ValueFactory.createIntegerValue(time, severity,
-                                    status, (INumericMetaData)meta, quality,
-                                    short2int(v));
-                    if (debug)
-                        System.out.println("Channel '" + name
-                                + "': short value " + value);
-                }
-                else if (dbr.isSTRING())
-                {
-                    String v[];
-                    if (plain)
-                        v = ((DBR_String)dbr).getStringValue();
-                    else
-                    {
-                        DBR_TIME_String dt = (DBR_TIME_String) dbr;
-                        severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                        Status stat = dt.getStatus();
-                        status = stat.getValue() == 0 ? "" : stat.getName();
-                        time = createTimeFromEPICS(dt.getTimeStamp());
-                        v = dt.getStringValue();
-                    }
-                    value = ValueFactory.createStringValue(time, severity,
-                                    status, quality, v[0]);
-                    if (debug)
-                        System.out.println("Channel '" + name
-                                + "': string value " + value);
-                }
-                else if (dbr.isENUM())
-                {
-                    short v[];
-                    // 'plain' mode would subscribe to SHORT,
-                    // so this must be a TIME_Enum:
-                    DBR_TIME_Enum dt = (DBR_TIME_Enum) dbr;
+                    DBR_TIME_Double dt = (DBR_TIME_Double) dbr;
                     severity = SeverityUtil.forCode(dt.getSeverity().getValue());
                     Status stat = dt.getStatus();
                     status = stat.getValue() == 0 ? "" : stat.getName();
                     time = createTimeFromEPICS(dt.getTimeStamp());
-                    v = dt.getEnumValue();
-                    
-                    value = ValueFactory.createEnumeratedValue(time, severity,
-                                    status, (IEnumeratedMetaData)meta, quality,
-                                    short2int(v));
-                    if (debug)
-                        System.out.println("Channel '" + name
-                                + "': enum value " + value);
+                    v = dt.getDoubleValue();
                 }
-                else
-                    // handle many more types!!
-                    throw new Exception("Cannot decode " + dbr);
-                if (!connected)
-                    connected = true;
-                fireValueUpdate();
+                value = ValueFactory.createDoubleValue(time, severity,
+                                status, (INumericMetaData)meta, quality, v);
+                if (debug)
+                    System.out.println("Channel '" + name
+                            + "': double value " + value);
             }
-            catch (Exception e)
+            else if (dbr.isFLOAT())
             {
-                System.out.println("Channel '" + name + "' value error:"
-                        + e.getMessage());
+                float v[];
+                if (plain)
+                    v = ((DBR_Float)dbr).getFloatValue();
+                else
+                {
+                    DBR_TIME_Float dt = (DBR_TIME_Float) dbr;
+                    severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                    Status stat = dt.getStatus();
+                    status = stat.getValue() == 0 ? "" : stat.getName();
+                    time = createTimeFromEPICS(dt.getTimeStamp());
+                    v = dt.getFloatValue();
+                }
+                value = ValueFactory.createDoubleValue(time, severity,
+                                status, (INumericMetaData)meta, quality,
+                                float2double(v));
+                if (debug)
+                    System.out.println("Channel '" + name
+                            + "': double value " + value);
             }
+            else if (dbr.isINT())
+            {
+                int v[];
+                if (plain)
+                    v = ((DBR_Int)dbr).getIntValue();
+                else
+                {
+                    DBR_TIME_Int dt = (DBR_TIME_Int) dbr;
+                    severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                    Status stat = dt.getStatus();
+                    status = stat.getValue() == 0 ? "" : stat.getName();
+                    time = createTimeFromEPICS(dt.getTimeStamp());
+                    v = dt.getIntValue();
+                }
+                value = ValueFactory.createIntegerValue(time, severity,
+                                status, (INumericMetaData)meta, quality, v);
+                if (debug)
+                    System.out.println("Channel '" + name
+                            + "': int value " + value);
+            }
+            else if (dbr.isSHORT())
+            {
+                short v[];
+                if (plain)
+                    v = ((DBR_Short)dbr).getShortValue();
+                else
+                {
+                    DBR_TIME_Short dt = (DBR_TIME_Short) dbr;
+                    severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                    Status stat = dt.getStatus();
+                    status = stat.getValue() == 0 ? "" : stat.getName();
+                    time = createTimeFromEPICS(dt.getTimeStamp());
+                    v = dt.getShortValue();
+                }
+                value = ValueFactory.createIntegerValue(time, severity,
+                                status, (INumericMetaData)meta, quality,
+                                short2int(v));
+                if (debug)
+                    System.out.println("Channel '" + name
+                            + "': short value " + value);
+            }
+            else if (dbr.isSTRING())
+            {
+                String v[];
+                if (plain)
+                    v = ((DBR_String)dbr).getStringValue();
+                else
+                {
+                    DBR_TIME_String dt = (DBR_TIME_String) dbr;
+                    severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                    Status stat = dt.getStatus();
+                    status = stat.getValue() == 0 ? "" : stat.getName();
+                    time = createTimeFromEPICS(dt.getTimeStamp());
+                    v = dt.getStringValue();
+                }
+                value = ValueFactory.createStringValue(time, severity,
+                                status, quality, v[0]);
+                if (debug)
+                    System.out.println("Channel '" + name
+                            + "': string value " + value);
+            }
+            else if (dbr.isENUM())
+            {
+                short v[];
+                // 'plain' mode would subscribe to SHORT,
+                // so this must be a TIME_Enum:
+                DBR_TIME_Enum dt = (DBR_TIME_Enum) dbr;
+                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                Status stat = dt.getStatus();
+                status = stat.getValue() == 0 ? "" : stat.getName();
+                time = createTimeFromEPICS(dt.getTimeStamp());
+                v = dt.getEnumValue();
+                
+                value = ValueFactory.createEnumeratedValue(time, severity,
+                                status, (IEnumeratedMetaData)meta, quality,
+                                short2int(v));
+                if (debug)
+                    System.out.println("Channel '" + name
+                            + "': enum value " + value);
+            }
+            else
+                // handle many more types!!
+                throw new Exception("Cannot decode " + dbr);
+            if (!connected)
+                connected = true;
+            fireValueUpdate();
         }
-        else
+        catch (Exception e)
         {
-            System.out.println("Channel '" + name + "':"
-                    + ev.getStatus().getMessage());
+            System.out.println("Channel '" + name + "' value error:"
+                    + e.getMessage());
         }
     }
 
