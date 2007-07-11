@@ -44,7 +44,7 @@ public class CSS_Perspective implements IPerspectiveFactory
         bottom.addPlaceholder(ID_PROBE);
         bottom.addPlaceholder(ID_PROBE + ":*");
         bottom.addPlaceholder(ID_DATABROWSER_CONFIG);
-        bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
+        // bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
         bottom.addPlaceholder(ID_PROGRESS);
         
         // Populate the "Window/Perspectives..." menu with suggested persp.
