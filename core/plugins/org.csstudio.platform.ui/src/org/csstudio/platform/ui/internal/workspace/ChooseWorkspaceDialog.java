@@ -22,12 +22,14 @@
 package org.csstudio.platform.ui.internal.workspace;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.osgi.util.NLS;
@@ -90,7 +92,9 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
 	 *            the parent shell for this dialog
 	 * @param launchData
 	 *            the launch data from past launches
-	 * 
+	 * @param root_directory
+     *            If non-<code>null</code>, workspace must be
+     *            directly below this root directory.
 	 * @param suppressAskAgain
 	 *            true means the dialog will not have a "don't ask again" button
 	 * @param centerOnMonitor
@@ -212,8 +216,45 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
 	 * </p>
 	 */
 	@Override
-	protected void okPressed() {
-		_launchData.workspaceSelected(_text.getText());
+	protected void okPressed()
+    {
+		final String workspace = _text.getText();
+        final File ws_file = new File(workspace);
+
+        // Check if this workspace is inside another workspace...
+        try
+        {
+            File parent = ws_file.getParentFile();
+            while (parent != null)
+            {   // Is there a .metadata file?
+                File meta = new File(parent.getCanonicalPath() + File.separator + ".metadata"); //$NON-NLS-1$
+                if (meta.exists())
+                {
+                   setErrorMessage(Messages.ChooseWorkspaceDialog_NestedError);
+                   return;
+                }
+                // OK, go one up
+                parent = parent.getParentFile();
+            }
+        }
+        catch (IOException ex)
+        {
+            setErrorMessage(NLS.bind(Messages.ChooseWorkspaceDialog_Error, ex.getMessage()));
+            return;
+        }
+
+        // Warn/prompt if this workspace is new
+        if (!ws_file.exists())
+        {
+            if (!MessageDialog.openQuestion(
+                        this.getShell(),
+                        Messages.ChooseWorkspaceDialog_NewWorkspaceTitle,
+                        Messages.ChooseWorkspaceDialog_NewWorkspaceWarning))
+                return;
+        }
+        
+        // Looks good so far, so report the selected workspace.
+        _launchData.workspaceSelected(workspace);
 		super.okPressed();
 	}
 
@@ -332,7 +373,7 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
 	}
 
 	/**
-	 * The show dialog button allows the user to choose to neven be nagged
+	 * The show dialog button allows the user to choose to never be nagged
 	 * again.
 	 * 
 	 * @param parent

@@ -37,10 +37,9 @@ public final class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.csstudio.platform.ui.internal.localization.messages"; //$NON-NLS-1$
 
     public static String CssWorkbenchAdvisor_LoggedInAs;
-
 	public static String CssWorkbenchAdvisor_NotLoggedIn;
 
-	public static String WorkbenchActionBuilder_SHOW_VIEW;
+    public static String WorkbenchActionBuilder_SHOW_VIEW;
     public static String WorkbenchActionBuilder_MENU_FILE;
     public static String WorkbenchActionBuilder_MENU_FILE_NEW;
     public static String WorkbenchActionBuilder_EXIT;
@@ -151,6 +150,10 @@ public final class Messages extends NLS {
     public static String ChooseWorkspaceDialog_BROWSER_TITLE;
     public static String ChooseWorkspaceDialog_BROWSER_MESSAGE;
     public static String ChooseWorkspaceDialog_USE_AS_DEFAULT;
+    public static String ChooseWorkspaceDialog_Error;
+    public static String ChooseWorkspaceDialog_NestedError;
+    public static String ChooseWorkspaceDialog_NewWorkspaceTitle;
+    public static String ChooseWorkspaceDialog_NewWorkspaceWarning;
 
     public static String OpenWorkspaceAction_TITLE;
     public static String OpenWorkspaceAction_MESSAGE;
