@@ -32,6 +32,11 @@ public class Application implements IPlatformRunnable
                 boolean need_workspace = true;
                 while (need_workspace)
                 {
+                    // See also: Eclipse help, Platform Plug-in Devel Guide,
+                    //           Reference, other ref info,
+                    //           - Runtime options
+                    //           - Multi-user install
+                    
                     // Query for workpace
                     final String workspace =
                         WorkspaceSwitchHelper.promptForWorkspace(null, true);
@@ -41,6 +46,7 @@ public class Application implements IPlatformRunnable
                         PluginActivator.logInfo("CSS Application Canceled"); //$NON-NLS-1$
                         return IPlatformRunnable.EXIT_OK;
                     }
+                    
                     // Does this require a restart?
                     if (WorkspaceSwitchHelper.prepareWorkspaceSwitch(null,
                                                                     workspace))
