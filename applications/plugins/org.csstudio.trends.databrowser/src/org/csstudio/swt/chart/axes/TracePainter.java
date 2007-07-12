@@ -20,7 +20,7 @@ public class TracePainter
     /** Paint a trace over given X axis. */
     static public void paint(GC gc, Trace trace, XAxis xaxis)
     {
-        AxisRangeLimiter limiter = new AxisRangeLimiter(xaxis);
+        final AxisRangeLimiter limiter = new AxisRangeLimiter(xaxis);
         int i, x0 = 0, y0 = 0, x1, y1;
         gc.setForeground(trace.getColor());
         gc.setBackground(trace.getColor());
@@ -38,6 +38,61 @@ public class TracePainter
     
             switch (trace.getType())
             {
+            case Lines:
+            {
+                boolean new_line = true;
+                for (i = i0; i <= i1; ++i)
+                {
+                    ChartSample sample = samples.get(i);
+                    double y = sample.getY();
+                    boolean plottable = !Double.isInfinite(y)
+                                    && !Double.isNaN(y);
+                    if (new_line)
+                    {   // Sample starts a new line. Don't have a previous
+                        // sample from which to draw a staircase connection.
+                        // Remember coordinates
+                        x0 = xaxis.getScreenCoord(sample.getX());
+                        y0 = yaxis.getScreenCoord(y);
+                        if (plottable)
+                            gc.drawPoint(x0, y0);
+                        // If we skip a line to/from this point,
+                        // we'll still need another x0/y0.
+                        // Otherwise, we are now ready to draw a line to the
+                        // next sample.
+                        new_line = !plottable;
+                    }
+                    else
+                    {   // line from last to current point
+                        x1 = xaxis.getScreenCoord(sample.getX());
+                        y1 = yaxis.getScreenCoord(y);
+                        // Staircase: Line from the last sample...
+                        gc.drawLine(x0, y0, x1, y0);
+                        if (plottable) // to this one
+                            gc.drawLine(x1, y0, x1, y1);
+                        else
+                            new_line = true; // or end current line, start new one
+                        x0 = x1;
+                        y0 = y1;
+                    }
+                    // TODO Move this into a 'SampleDecorator'?
+                    if (sample.getType() == ChartSample.Type.Point)
+                    {
+                        int half = marker_size / 2;
+                        if (true)
+                        {   // Square
+                            gc.fillRectangle(x0 - half, y0 - half,
+                                            marker_size, marker_size);
+                        }
+                        if (false)
+                        { // A ']' shape
+                            gc.drawLine(x0, y0 - half, x0 + half, y0 - half);
+                            gc.drawLine(x0 + half, y0 - half, x0 + half, y0 + half);
+                            gc.drawLine(x0 + half, y0 + half, x0, y0 + half);
+                        }
+                    }
+                }
+                break;
+            }
             case Bars:
                 int top_of_x_axis = xaxis.getRegion().y;
                 for (i = i0; i <= i1; ++i)
@@ -48,6 +103,7 @@ public class TracePainter
                     gc.drawLine(x0, y0, x0, top_of_x_axis);
                 }
                 break;
+                /*
             case MinMaxAverage:
                 x1 = Integer.MIN_VALUE;
                 y1 = Integer.MIN_VALUE;
@@ -104,7 +160,7 @@ public class TracePainter
                     realX1 = realX0;
                 }
                 break;
-
+*/
             // Paints each point.
             case Markers:
             {
@@ -124,6 +180,7 @@ public class TracePainter
                 break;
             }
             // Paints values on same x as candlesticks.
+            /*
             case Candlestick:
             {
                 x1 = Integer.MIN_VALUE;
@@ -148,61 +205,7 @@ public class TracePainter
                 }
                 break;
             }
-            case Lines:
-            {
-                boolean new_line = true;
-                for (i = i0; i <= i1; ++i)
-                {
-                    ChartSample sample = samples.get(i);
-                    double y = sample.getY();
-                    boolean plottable = !Double.isInfinite(y)
-                                    && !Double.isNaN(y);
-                    if (new_line)
-                    {   // Sample starts a new line. Don't have a previous
-                        // sample from which to draw a staircase connection.
-                        // Remember coordinates
-                        x0 = xaxis.getScreenCoord(sample.getX());
-                        y0 = yaxis.getScreenCoord(y);
-                        if (plottable)
-                            gc.drawPoint(x0, y0);
-                        // If we skip a line to/from this point,
-                        // we'll still need another x0/y0.
-                        // Otherwise, we are now ready to draw a line to the
-                        // next sample.
-                        new_line = !plottable;
-                    }
-                    else
-                    {   // line from last to current point
-                        x1 = xaxis.getScreenCoord(sample.getX());
-                        y1 = yaxis.getScreenCoord(y);
-                        // Staircase: Line from the last sample...
-                        gc.drawLine(x0, y0, x1, y0);
-                        if (plottable) // to this one
-                            gc.drawLine(x1, y0, x1, y1);
-                        else
-                            new_line = true; // or end current line, start new one
-                        x0 = x1;
-                        y0 = y1;
-                    }
-                    // TODO Move this into a 'SampleDecorator'?
-                    if (sample.getType() == ChartSample.Type.Point)
-                    {
-                        int half = marker_size / 2;
-                        if (true)
-                        {   // Square
-                            gc.fillRectangle(x0 - half, y0 - half,
-                                            marker_size, marker_size);
-                        }
-                        if (false)
-                        { // A ']' shape
-                            gc.drawLine(x0, y0 - half, x0 + half, y0 - half);
-                            gc.drawLine(x0 + half, y0 - half, x0 + half, y0 + half);
-                            gc.drawLine(x0 + half, y0 + half, x0, y0 + half);
-                        }
-                    }
-                }
-                break;
-            }
+            */
             }
         }
     }

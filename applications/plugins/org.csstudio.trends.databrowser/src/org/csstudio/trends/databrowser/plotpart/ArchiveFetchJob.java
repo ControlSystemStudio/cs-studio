@@ -65,7 +65,9 @@ class ArchiveFetchJob extends Job
                 else
                 {
                     // TODO Switch to the new average
-                    final boolean use_new_average = false;
+                    // For now it's a hack: The SNS demo setup with ...3.cgi
+                    // uses the new average.
+                    final boolean use_new_average = server.getURL().endsWith("3.cgi");
                     if (use_new_average)
                     {
                         request_type = ArchiveServer.GET_AVERAGE;

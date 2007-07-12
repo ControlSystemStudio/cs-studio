@@ -14,8 +14,9 @@ public interface ChartSample
     enum Type
     {
         /** A normal sample, plot it together with the rest. */
-        Normal, 
-        /** A gap, terminating a "line",displayed as a single point. */
+        Normal,
+        
+        /** A gap, terminating a "line", displayed as a single point. */
         Point
     };
     
@@ -27,6 +28,22 @@ public interface ChartSample
 
     /** @return The y value. */
     public double getY();
+
+    /** @return <code>true</code> if this sample has Y error (range) info.
+     *  @see #getMinY()
+     *  @see #getMaxY()
+     */
+    public boolean haveMinMax();
+    
+    /** @return Minimum y value in case there is an Y error (range).
+     *  @see #haveMinMax()
+     */
+    public double getMinY();
+
+    /** @return Maximum y value in case there is an Y error (range).
+     *  @see #haveMinMax()
+     */
+    public double getMaxY();
 
     /** @return Any informational string that might work as e.g. a Tooltip. */
     public String getInfo();

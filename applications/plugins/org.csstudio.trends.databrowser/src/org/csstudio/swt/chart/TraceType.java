@@ -7,12 +7,23 @@ package org.csstudio.swt.chart;
 public enum TraceType
 {
     // TODO Localize the names
-    // TODO Autimatically use MinMaxAverage for MMA samples
-    /** Connect samples with lines. */
+    // TODO Automatically use MinMaxAverage for MMA samples
+    /** Connect samples with lines.
+     *  Uses additional min/max lines for samples
+     *  that carry min/max info.
+     */
     Lines,
+    
+    /** Place a marker at each sample.
+     *  <p>
+     *  Uses candlesticks for samples that carry min/max info.
+     */
     Markers,
-    Candlestick,
-    MinMaxAverage,
+    
+    /** Bar from the x axis up to the y value.
+     *  <p>
+     *  Doesn't show min/max info.
+     */
     Bars;
     
     private static String[] type_strings;
@@ -53,5 +64,4 @@ public enum TraceType
                 return id;
         throw new Error("Invalid name " + name); //$NON-NLS-1$
     }
-
 }

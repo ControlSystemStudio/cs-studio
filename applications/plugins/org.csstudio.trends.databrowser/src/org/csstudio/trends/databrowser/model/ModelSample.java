@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
+import org.csstudio.platform.data.IMinMaxDoubleValue;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.chart.ChartSample;
@@ -67,6 +68,30 @@ public class ModelSample implements ChartSample
     final public double getY()
     {
         return ValueUtil.getDouble(sample);
+    }
+
+    /** Is there Y error/range info?
+     *  @see org.csstudio.swt.chart.ChartSample
+     */
+    final public boolean haveMinMax()
+    {
+        return sample instanceof IMinMaxDoubleValue;
+    }
+
+    /** Minimum Y error/range.
+     *  @see org.csstudio.swt.chart.ChartSample
+     */
+    public double getMinY()
+    {
+        return ((IMinMaxDoubleValue)sample).getMinimum();
+    }
+
+    /** Minimum Y error/range.
+     *  @see org.csstudio.swt.chart.ChartSample
+     */
+    public double getMaxY()
+    {
+        return ((IMinMaxDoubleValue)sample).getMaximum();
     }
 
     /** Info text that the plot uses.
