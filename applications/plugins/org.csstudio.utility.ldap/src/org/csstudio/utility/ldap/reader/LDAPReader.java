@@ -30,6 +30,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -177,7 +178,22 @@ public class LDAPReader extends Job {
 		  monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
 	      
 		DirContext ctx;
-		LDAPConnector ldpc = new LDAPConnector();
+		LDAPConnector ldpc;
+        try {
+            ldpc = new LDAPConnector();
+        } catch (NamingException e1) {
+            try {
+                Thread.sleep(100);
+                ldpc = new LDAPConnector();
+            } catch (InterruptedException e) {
+                CentralLogger.getInstance().error(this, e);
+                return Status.CANCEL_STATUS;
+            } catch (NamingException e) {
+                CentralLogger.getInstance().error(this, e);
+                return Status.CANCEL_STATUS;
+            }
+            
+        }
 		if((ctx = ldpc.getDirContext())!=null){
 	        SearchControls ctrl = new SearchControls();
 	        ctrl.setSearchScope(defaultScope);
@@ -194,9 +210,8 @@ public class LDAPReader extends Job {
 						}
 					}
 				} catch (NamingException e) {
-//					Activator.logException("LDAP Fehler", e);
-					System.out.println("LDAP Fehler");
-					e.printStackTrace();
+                    CentralLogger.getInstance().info(this,"LDAP Fehler");
+                    CentralLogger.getInstance().info(this,e);
 				}
 				answer.close();
 				ctx.close();
@@ -205,9 +220,8 @@ public class LDAPReader extends Job {
 				return Status.OK_STATUS;
 //				return ASYNC_FINISH;
 			} catch (NamingException e) {
-//				Activator.logException("Falscher LDAP Suchpfad.", e);
-				System.out.println("Falscher LDAP Suchpfad.");
-				e.printStackTrace();
+				CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
+                CentralLogger.getInstance().info(this,e);
 			}
 		}
 		monitor.setCanceled(true);
