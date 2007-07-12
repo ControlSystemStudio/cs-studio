@@ -98,6 +98,31 @@ public abstract class AbstractDisplayImporter {
 	}
 
 	/**
+	 * Connect a property of the given model element to one single input
+	 * channel.
+	 * 
+	 * @param model
+	 *            The model element.
+	 * @param propertyId
+	 *            The Id if the property that should be connected.
+	 * @param channelName
+	 *            The target channel name.
+	 * @param channelType
+	 *            The target channel type.
+	 * @param ruleId
+	 *            The ID of the used logic rule.
+	 */
+	protected final void connectToSingleInputChannel(
+			final AbstractWidgetModel model, final String propertyId,
+			final String channelName, final Class channelType,
+			final String ruleId) {
+		DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor(ruleId);
+		dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName,
+				channelType));
+		model.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
+	}
+
+	/**
 	 * Connect a property of the given model element to an output channel.
 	 * 
 	 * @param model
