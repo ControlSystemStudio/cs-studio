@@ -492,6 +492,15 @@ public final class SimpleSliderFigure extends Panel implements
 	 */
 	public void randomNoiseRefresh() {
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setEnabled(final boolean value) {
+		_scrollBar.setEnabled(value);
+		super.setEnabled(value);
+	}
 
 	/**
 	 * {@inheritDoc}
