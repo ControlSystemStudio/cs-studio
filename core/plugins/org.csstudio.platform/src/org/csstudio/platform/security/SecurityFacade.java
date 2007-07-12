@@ -71,12 +71,25 @@ public final class SecurityFacade {
 	public static final String PROP_AUTH_LOGIN = "auth_login"; //$NON-NLS-1$
 
 	/**
+	 * System property that stores whether login is available.
+	 */
+	private static final String LOGIN_AVAILABLE_PROPERTY =
+		"org.csstudio.platform.loginAvailable";
+
+	/**
 	 * Private constructor due to singleton pattern.
 	 */
 	private SecurityFacade() {
 		_listeners = new ArrayList<ISecurityListener>();
 		_userListeners = new ArrayList<IUserManagementListener>();
 		_context = new LoginContext("PrimaryLoginContext");
+		
+		// Set the "loginAvailable" system property. This is used by the UI to
+		// enable/disable the "Switch User" menu item. Currently (Eclipse 3.2)
+		// there isn't really a better way to enable/disable a menu item based
+		// on global application state.
+		System.setProperty(LOGIN_AVAILABLE_PROPERTY,
+				String.valueOf(_context.isLoginAvailable()));
 	}
 
 	/**
@@ -165,7 +178,7 @@ public final class SecurityFacade {
 	 * Performs the login procedure.
 	 *
 	 */
-	public void login(ILoginCallbackHandler handler) {
+	private void login(ILoginCallbackHandler handler) {
 		this._context.login(handler);
 		for (IUserManagementListener uml : _userListeners) {
 			uml.handleUserManagementEvent(new UserManagementEvent());

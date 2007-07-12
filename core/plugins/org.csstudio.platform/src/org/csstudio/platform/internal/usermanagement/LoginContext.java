@@ -71,4 +71,8 @@ public final class LoginContext {
 	public User getUser() {
 		return _user;
 	}
+	
+	public boolean isLoginAvailable() {
+		return (getLoginModule() != null);
+	}
 }
