@@ -21,7 +21,12 @@
  */
 package org.csstudio.platform;
 
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
 
 /**
  * The activator for the platform plugin.
@@ -58,7 +63,31 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 */
 	@Override
 	protected final void doStart(final BundleContext context) throws Exception {
-		// do nothing specific
+		applySystemPropertyDefaults();
+	}
+
+	/**
+	 * Applies the default values for system properties set up in the CSS
+	 * preferences.
+	 */
+	private void applySystemPropertyDefaults() {
+		// FIXME: fix code duplication (same code is in SystemPropertiesPreferencePage)
+		
+        IEclipsePreferences platformPrefs = new InstanceScope().getNode(
+                CSSPlatformPlugin.getDefault().getBundle().getSymbolicName());
+        Preferences systemPropertyPrefs =
+            platformPrefs.node("systemProperties");
+        try {
+            String[] keys = systemPropertyPrefs.keys();
+            for (String key : keys) {
+                String value = systemPropertyPrefs.get(key, "");
+                System.setProperty(key, value);
+                CentralLogger.getInstance().debug(this, 
+                		"Setting system property: " + key + "=" + value);
+            }
+        } catch (BackingStoreException e) {
+            // TODO: do something about it?
+        }
 	}
 
 	/**
