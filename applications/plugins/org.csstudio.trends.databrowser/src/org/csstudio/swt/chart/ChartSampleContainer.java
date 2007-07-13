@@ -74,7 +74,7 @@ public class ChartSampleContainer implements ChartSample
     /** {@inheritDoc} */
     public boolean haveMinMax()
     {
-        return y != y_min  ||  y != y_max;
+        return y_min != y_max;
     }
     
     /** {@inheritDoc} */

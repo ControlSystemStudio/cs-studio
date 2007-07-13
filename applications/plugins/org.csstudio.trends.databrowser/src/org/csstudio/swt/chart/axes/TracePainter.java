@@ -138,7 +138,20 @@ public class TracePainter
         }
     }
 
-    /** Draw given sample range with lines. */
+    /** Draw given sample range with lines.
+     *  <p>
+     *  For samples with min/max info,
+     *  draw separate min, average and max lines.
+     *  <br>
+     *  For 'original' samples without min/max info,
+     *  a staircase is drawn since we assume each
+     *  sample remains 'valid' until the next sample.
+     *  <br>
+     *  Mixed cases like min/max sample to/from original sample,
+     *  we still use 3 lines.
+     *  From min/max sample to a gap, we continue the last
+     *  min/max to the gap.
+     */
     private static void drawLines(final GC gc,
                                   final XAxis xaxis,
                                   final YAxis yaxis,
@@ -146,44 +159,102 @@ public class TracePainter
                                   final int i0,
                                   final int i1)
     {
-        boolean new_line = true;
-        int x0=0, y0=0, x1=0, y1=0;
+        int x0=0, y0=0, y0_min=0, y0_max=0; // x/y of the previous point if !new_line
+        boolean new_line = true;            // Start of new line, or is x0/y0 set?
+        boolean have_pre_min_max = false;   // Are y0_min/max set?
         for (int i = i0; i <= i1; ++i)
         {
             final ChartSample sample = samples.get(i);
             final double y = sample.getY();
             final boolean plottable = !Double.isInfinite(y)  &&  !Double.isNaN(y);
+            final boolean have_min_max = sample.haveMinMax();
+            // No previous sample from which to draw a connection?
             if (new_line)
-            {   // Sample starts a new line. Don't have a previous
-                // sample from which to draw a staircase connection.
-                // Remember coordinates
-                x0 = xaxis.getScreenCoord(sample.getX());
-                y0 = yaxis.getScreenCoord(y);
+            {
+                if (have_pre_min_max) throw new Error("Invalid state"); // TODO remove after test //$NON-NLS-1$
                 if (plottable)
-                    gc.drawPoint(x0, y0);
-                // If we skip a line to/from this point,
-                // we'll still need another x0/y0.
-                // Otherwise, we are now ready to draw a line to the
-                // next sample.
-                new_line = !plottable;
+                {
+                    // Immediately set x/y of the 'previous' point.
+                    x0 = xaxis.getScreenCoord(sample.getX());
+                    y0 = yaxis.getScreenCoord(y);
+                    new_line = false;
+                    if (have_min_max)
+                    {   // Show and remember min/max of this sample
+                        y0_min = yaxis.getScreenCoord(sample.getMinY());
+                        y0_max = yaxis.getScreenCoord(sample.getMaxY());
+                        gc.drawLine(x0, y0_min, x0, y0_max);
+                        have_pre_min_max = true;
+                    }
+                    else // Draw point. have_pre_min_max stays false
+                        gc.drawPoint(x0, y0);
+                }
+                // else new_line stays true
+                // No 'continue', since we might still draw a Point decorator
             }
             else
-            {   // line from last to current point
-                x1 = xaxis.getScreenCoord(sample.getX());
-                y1 = yaxis.getScreenCoord(y);
-                // Staircase: Line from the last sample...
-                gc.drawLine(x0, y0, x1, y0);
-                if (plottable) // to this one
-                    gc.drawLine(x1, y0, x1, y1);
+            {   // new_line=false; x0/y0 are set.
+                final int x1 = xaxis.getScreenCoord(sample.getX());
+                if (plottable)
+                {
+                    final int y1 = yaxis.getScreenCoord(y);
+                    if (have_min_max)
+                    {
+                        final int y1_min = yaxis.getScreenCoord(sample.getMinY());
+                        final int y1_max = yaxis.getScreenCoord(sample.getMaxY());
+                        if (have_pre_min_max)
+                        {   // Connect old and new min/max/average
+                            gc.drawLine(x0, y0_min, x1, y1_min);
+                            gc.drawLine(x0, y0_max, x1, y1_max);
+                            gc.drawLine(x0, y0,     x1, y1);
+                        }
+                        else
+                        {   // Connect old sample to new min/max/average
+                            gc.drawLine(x0, y0, x1, y1_min);
+                            gc.drawLine(x0, y0, x1, y1_max);
+                            gc.drawLine(x0, y0, x1, y1);
+                        }
+                        y0_min = y1_min;
+                        y0_max = y1_max;
+                        have_pre_min_max = true;
+                    }
+                    else
+                    {
+                        if (have_pre_min_max)
+                        {   // Connect old min/max/avg to new sample
+                            gc.drawLine(x0, y0_min, x1, y1);
+                            gc.drawLine(x0, y0_max, x1, y1);
+                            gc.drawLine(x0, y0,     x1, y1);
+                            have_pre_min_max = false;
+                        }
+                        else
+                        {   // Connect old and new sample with staircase(!)
+                            gc.drawLine(x0, y0, x1, y0);
+                            gc.drawLine(x1, y0, x1, y1);
+                        }
+                    }
+                    // Remember y value
+                    y0 = y1;
+                }
                 else
-                    new_line = true; // or end current line, start new one
+                {   // Current sample not plotable.
+                    // Extend last sample's value...
+                    gc.drawLine(x0, y0, x1, y0);
+                    if (have_pre_min_max)
+                    {   // ... and min/max
+                        gc.drawLine(x0, y0_min, x1, y0_min);
+                        gc.drawLine(x0, y0_max, x1, y0_max);
+                        have_pre_min_max = false;
+                    }
+                    new_line = true;
+                    y0 = xaxis.getRegion().y;
+                }
+                // Remember x value
                 x0 = x1;
-                y0 = y1;
             }
             // TODO Move this into a 'SampleDecorator'?
             if (sample.getType() == ChartSample.Type.Point)
             {
-                int half = marker_size / 2;
+                final int half = marker_size / 2;
                 if (true)
                 {   // Square
                     gc.fillRectangle(x0 - half, y0 - half,

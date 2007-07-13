@@ -36,11 +36,8 @@ import org.eclipse.swt.widgets.Shell;
 @SuppressWarnings("nls")
 public class ChartTest
 {
-    private static final int chart_flags =
-        Chart.USE_TRACE_NAMES
-   | Chart.TIME_CHART
-        ;
-    //private static final int chart_flags = 0;
+    private static final int chart_flags = Chart.USE_TRACE_NAMES
+                                            | Chart.TIME_CHART;
 
     private Chart chart;
     private ListViewer list_viewer;
@@ -198,27 +195,30 @@ public class ChartTest
         double x0 = TimestampFactory.now().toDouble();
         for (i=0; i<=N; ++i)
         {
-            ChartSample.Type type;
-            if (Math.random() > 0.95  ||  i==N)
-                type = ChartSample.Type.Point;
-            else
-                type = ChartSample.Type.Normal;
             double x;
             if ((chart_flags & Chart.TIME_CHART) != 0)
                 x = x0 + 10*i;
             else
                 x = 0.1*i;
-            
-            final double y = shift +
-                       50*(0.1*Math.random() + Math.sin(twopi*0.01*i + phase));
-            if (type == ChartSample.Type.Point)
-                seq.add(type, x, Double.NEGATIVE_INFINITY, "Comment");
+
+            // 5% annotation, rest actual samples
+            if (Math.random() > 0.95  ||  i==N)
+                seq.add(ChartSample.Type.Point, x, Double.NEGATIVE_INFINITY, "Comment");
             else
             {
-                final double y_min = y - y*0.1*Math.random();
-                final double y_max = y + y*0.1*Math.random();
+                final double y = shift +
+                    50*(0.1*Math.random() + Math.sin(twopi*0.01*i + phase));
                 final String info = null;
-                seq.add(type, x, y, y_min, y_max, info);
+                // Some raw samples, rest min/max/average
+                if (Math.random() > 0.5)
+                    seq.add(ChartSample.Type.Normal, x, y, info);
+                else
+                {   
+                    final double noise = 0.05;
+                    final double y_min = y - y*noise*Math.random();
+                    final double y_max = y + y*noise*Math.random();
+                    seq.add(ChartSample.Type.Normal, x, y, y_min, y_max, info);
+                }
             }
         }
         // Create new trace, using new or given Y axis
