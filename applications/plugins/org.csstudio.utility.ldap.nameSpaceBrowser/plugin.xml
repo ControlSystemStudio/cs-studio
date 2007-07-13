@@ -51,7 +51,7 @@
                label="Namespace Browser (LDAP)"
                menubarPath="css/utility/"
                style="push"
-               toolbarPath="Normal/additions"/>
+               />
       </actionSet>
    </extension>
 </plugin>
