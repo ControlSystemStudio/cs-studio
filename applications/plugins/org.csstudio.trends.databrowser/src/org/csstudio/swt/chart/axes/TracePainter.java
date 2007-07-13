@@ -48,92 +48,6 @@ public class TracePainter
             case Bars:
                 drawBars(gc, xaxis, yaxis, samples, i0, i1);
                 break;
-                /*
-            case MinMaxAverage:
-                x1 = Integer.MIN_VALUE;
-                y1 = Integer.MIN_VALUE;
-                i = i0;
-                int[] triplet = new int[]
-                { Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE };
-                int k = 0;
-                int x2 = 0;
-
-                double realX0,
-                realX1;
-                realX1 = samples.get(0).getX();
-                x1 = xaxis.getScreenCoord(realX1);
-
-                while (i <= i1)
-                {
-                    // Previous value was not a triplet so we ignore it.
-                    if (k != 3)
-                    {
-                        triplet = new int[]
-                        { Integer.MIN_VALUE, Integer.MIN_VALUE,
-                                Integer.MIN_VALUE };
-                    }
-
-                    k = 0;
-                    while (true)
-                    {
-                        ChartSample sample = samples.get(i);
-                        realX0 = sample.getX();
-
-                        x0 = xaxis.getScreenCoord(realX0);
-                        y0 = yaxis.getScreenCoord(sample.getY());
-
-                        // We'll check if we are on the same triplet here.
-                        if (realX0 != realX1 || k > 2)
-                            break;
-
-                        // Connect previous value of triplet with current one
-                        // using line.
-                        if (triplet[k] != Integer.MIN_VALUE)
-                            gc.drawLine(x2, triplet[k], x0, y0);
-
-                        // Let's set new value.
-                        triplet[k] = y0;
-
-                        // Move foward.
-                        k++;
-                        i++;
-                    }
-
-                    // Assign new values.
-                    x2 = x1;
-                    x1 = x0;
-                    realX1 = realX0;
-                }
-                break;
-*/
-            // Paints each point.
-            // Paints values on same x as candlesticks.
-            /*
-            case Candlestick:
-            {
-                x1 = Integer.MIN_VALUE;
-                y1 = Integer.MIN_VALUE;
-                for (i = i0; i <= i1; ++i)
-                {
-                    ChartSample sample = samples.get(i);
-                    x0 = xaxis.getScreenCoord(sample.getX());
-                    y0 = yaxis.getScreenCoord(sample.getY());
-                    if (x1 != x0)
-                    {
-                        x1 = x0;
-                        y1 = y0;
-                        gc.fillRectangle(x0 - 1, y0 - 1, 3, 3);
-                    }
-                    else
-                    {
-                        gc.drawLine(x0, y1, x0, y0);
-                        gc.fillRectangle(x0 - 1, y0 - 1, 3, 3);
-                        y1 = y0;
-                    }
-                }
-                break;
-            }
-            */
             }
         }
     }
@@ -151,6 +65,9 @@ public class TracePainter
      *  we still use 3 lines.
      *  From min/max sample to a gap, we continue the last
      *  min/max to the gap.
+     *  <p>
+     *  (Basically, this automatically switched between the old 'Lines'
+     *   and Blaz's 'MinMaxAverage' methods)
      */
     private static void drawLines(final GC gc,
                                   final XAxis xaxis,
@@ -251,25 +168,11 @@ public class TracePainter
                 // Remember x value
                 x0 = x1;
             }
-            // TODO Move this into a 'SampleDecorator'?
             if (sample.getType() == ChartSample.Type.Point)
-            {
-                final int half = marker_size / 2;
-                if (true)
-                {   // Square
-                    gc.fillRectangle(x0 - half, y0 - half,
-                                    marker_size, marker_size);
-                }
-                if (false)
-                { // A ']' shape
-                    gc.drawLine(x0, y0 - half, x0 + half, y0 - half);
-                    gc.drawLine(x0 + half, y0 - half, x0 + half, y0 + half);
-                    gc.drawLine(x0 + half, y0 + half, x0, y0 + half);
-                }
-            }
+                markPoint(gc, x0, y0);
         }
     }
-    
+
     /** Draw given sample range with markers. */
     private static void drawMarkers(final GC gc,
                                     final XAxis xaxis,
@@ -284,10 +187,26 @@ public class TracePainter
         {
             final ChartSample sample = samples.get(i);
             final int x0 = xaxis.getScreenCoord(sample.getX());
-            final int y0 = yaxis.getScreenCoord(sample.getY());
-            gc.drawRectangle(x0 - half,
-                             y0 - half,
-                             point_size, point_size);
+            final double y = sample.getY();
+            final boolean plottable = !Double.isInfinite(y)  &&  !Double.isNaN(y);
+            int y0;
+            if (plottable)
+            {            
+                y0 = yaxis.getScreenCoord(y);
+                gc.drawRectangle(x0 - half, y0 - half,
+                                point_size, point_size);
+                if (sample.haveMinMax())
+                {
+                    final int min = yaxis.getScreenCoord(sample.getMinY());
+                    final int max = yaxis.getScreenCoord(sample.getMaxY());
+                    gc.drawLine(x0, y0+half, x0, max);
+                    gc.drawLine(x0, y0-half, x0, min);
+                }
+            }
+            else
+                y0 = xaxis.getRegion().y;
+            if (sample.getType() == ChartSample.Type.Point)
+                markPoint(gc, x0, y0);
         }
     }
     
@@ -305,8 +224,34 @@ public class TracePainter
         {
             final ChartSample sample = samples.get(i);
             final int x0 = xaxis.getScreenCoord(sample.getX());
-            final int y0 = yaxis.getScreenCoord(sample.getY());
-            gc.drawLine(x0, base, x0, y0);
+            final double y = sample.getY();
+            final boolean plottable = !Double.isInfinite(y)  &&  !Double.isNaN(y);
+            int y0;
+            if (plottable)
+            {
+                y0 = yaxis.getScreenCoord(y);
+                gc.drawLine(x0, base, x0, y0);
+            }
+            else
+                y0 = xaxis.getRegion().y;
+            if (sample.getType() == ChartSample.Type.Point)
+                markPoint(gc, x0, y0);
+        }
+    }
+    
+    /** Mark goven point. */
+    private static void markPoint(final GC gc, final int x0, final int y0)
+    {
+        final int half = marker_size / 2;
+        if (true)
+        {   // Square
+            gc.fillRectangle(x0 - half, y0 - half, marker_size, marker_size);
+        }
+        if (false)
+        { // A ']' shape
+            gc.drawLine(x0, y0 - half, x0 + half, y0 - half);
+            gc.drawLine(x0 + half, y0 - half, x0 + half, y0 + half);
+            gc.drawLine(x0 + half, y0 + half, x0, y0 + half);
         }
     }
 }
