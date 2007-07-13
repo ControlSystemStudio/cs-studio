@@ -239,7 +239,7 @@ public class TracePainter
         }
     }
     
-    /** Mark goven point. */
+    /** Mark given point. */
     private static void markPoint(final GC gc, final int x0, final int y0)
     {
         final int half = marker_size / 2;
