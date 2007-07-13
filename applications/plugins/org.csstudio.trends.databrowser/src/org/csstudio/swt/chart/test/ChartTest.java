@@ -209,15 +209,17 @@ public class ChartTest
             else
                 x = 0.1*i;
             
-            double y = shift +
+            final double y = shift +
                        50*(0.1*Math.random() + Math.sin(twopi*0.01*i + phase));
-            String info = null;
             if (type == ChartSample.Type.Point)
+                seq.add(type, x, Double.NEGATIVE_INFINITY, "Comment");
+            else
             {
-                info = "Comment";
-                y = Double.NEGATIVE_INFINITY;
+                final double y_min = y - y*0.1*Math.random();
+                final double y_max = y + y*0.1*Math.random();
+                final String info = null;
+                seq.add(type, x, y, y_min, y_max, info);
             }
-            seq.add(type, x, y, info);
         }
         // Create new trace, using new or given Y axis
         if (yaxis == null)
