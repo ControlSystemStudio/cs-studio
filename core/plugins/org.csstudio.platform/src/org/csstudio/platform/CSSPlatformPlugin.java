@@ -81,9 +81,13 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
             String[] keys = systemPropertyPrefs.keys();
             for (String key : keys) {
                 String value = systemPropertyPrefs.get(key, "");
-                System.setProperty(key, value);
-                CentralLogger.getInstance().debug(this, 
-                		"Setting system property: " + key + "=" + value);
+                // the preferences are for defaults, so they are applied only
+                // if the property is not already set
+                if (System.getProperty(key) == null) {
+                    System.setProperty(key, value);
+                    CentralLogger.getInstance().debug(this, 
+                    		"Setting system property: " + key + "=" + value);
+                }
             }
         } catch (BackingStoreException e) {
             // TODO: do something about it?
