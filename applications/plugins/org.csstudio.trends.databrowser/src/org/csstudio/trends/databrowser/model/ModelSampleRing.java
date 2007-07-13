@@ -94,6 +94,10 @@ public class ModelSampleRing
     // @see Series
     synchronized public ModelSample get(int i)
     {
+    	// TODO Not a bottleneck, yet, but profiler shows
+    	// frequent invocations of 'size()' from here,
+    	// so maybe better compute size in add()
+    	// instead of calculating for each size() call?
         if (i<0 || i >= size())
             throw new ArrayIndexOutOfBoundsException(i);
         i = (tail + 1 + i) % real_capacity;
