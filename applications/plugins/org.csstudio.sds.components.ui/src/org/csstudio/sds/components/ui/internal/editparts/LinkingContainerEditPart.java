@@ -149,7 +149,10 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 				}
 
 				// add new widgets
-				for (AbstractWidgetModel w : tempModel.getWidgets()) {
+				it = tempModel.getWidgets().iterator();
+				while(it.hasNext()) {
+					AbstractWidgetModel w = it.next();
+					tempModel.removeWidget(w);
 					container.addWidget(w);
 				}
 				

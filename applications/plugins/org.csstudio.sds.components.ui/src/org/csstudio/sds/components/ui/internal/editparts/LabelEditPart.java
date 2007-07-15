@@ -46,7 +46,8 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
 		label.setText(model.getLabel());
-		label.setFont(CustomMediaFactory.getInstance().getFont(
+		label
+				.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont()));
 		label.setTextAlignment(model.getTextAlignment());
 		return label;
@@ -60,8 +61,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		// label
 		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
 				label.setText(newValue.toString());
 				return true;
@@ -71,8 +71,7 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		// font
 		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
 				FontData fontData = (FontData) newValue;
 				label.setFont(CustomMediaFactory.getInstance().getFont(
@@ -85,13 +84,13 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		// text alignment
 		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setTextAlignment((Integer)newValue);
+				label.setTextAlignment((Integer) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
+		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT,
+				alignmentHandler);
 	}
 }
