@@ -11,6 +11,8 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ModelSampleRingTest extends TestCase
 {
+    private static final String SOURCE = "test";
+
     private IValue create(double tick)
     {
         return ValueFactory.createDoubleValue(TimestampFactory.fromDouble(tick),
@@ -30,7 +32,7 @@ public class ModelSampleRingTest extends TestCase
         
         double value = 0;
 
-        c.add(create(++value), "test");
+        c.add(create(++value), SOURCE);
         System.out.println("Initial element");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -40,7 +42,7 @@ public class ModelSampleRingTest extends TestCase
         
         // These should all fit
         for (int i=0; i<4; ++i)
-            c.add(create(++value), "test");
+            c.add(create(++value), SOURCE);
         System.out.println("5 elements");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -50,7 +52,7 @@ public class ModelSampleRingTest extends TestCase
         assertEquals(5.0, c.get(4).getX(), 0.1);
 
         // One more
-        c.add(create(++value), "test");
+        c.add(create(++value), SOURCE);
         System.out.println("sixt elements");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -61,7 +63,7 @@ public class ModelSampleRingTest extends TestCase
 
         // Up to 100
         for (int i=0; i<100-6; ++i)
-            c.add(create(++value), "test");
+            c.add(create(++value), SOURCE);
         System.out.println("Total of 100 added");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
@@ -79,12 +81,22 @@ public class ModelSampleRingTest extends TestCase
             assertEquals("Array index out of range: 5", e.getMessage());
         }
         
-        // Clear
-        c.setCapacity(5);
-        System.out.println("Cleared");
+        // Grow
+        c.setCapacity(10);
+        c.add(create(++value), SOURCE);
+        System.out.println("Extended to 10");
         for (int i=0; i<c.size(); ++i)
             System.err.println(c.get(i).getX());
-        assertEquals(5, c.getCapacity());
-        assertEquals(0, c.size());
+        assertEquals(10, c.getCapacity());
+        assertEquals(6, c.size());
+
+        // Shrink
+        c.setCapacity(3);
+        c.add(create(++value), SOURCE);
+        System.out.println("Shrink to 3");
+        for (int i=0; i<c.size(); ++i)
+            System.err.println(c.get(i).getX());
+        assertEquals(3, c.getCapacity());
+        assertEquals(3, c.size());
     }
 }

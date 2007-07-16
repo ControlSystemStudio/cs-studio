@@ -12,45 +12,66 @@ public class ModelSampleRing
 {
     //  The Circular buffer implementation:
     //
-    //  Initial: tail = head = 0.
+    //  Initial: start = size = 0.
     //
     //  Indices of valid entries:
-    //  tail+1, tail+2 ... wrap around at samples.size() ... head
+    //  [start], [start+1], ..., [start+size-1]
+    //  with wrap-around at [capacity-1].
     //
-    // That means that we can actually only hold samples.size()-1 elements.
-    // The get/setCapacity calls compensate for that.
-    private int real_capacity;
-    private int head;
-    private int tail;
-    private ModelSample samples[];
+    // Previous implementation used start/end indices,
+    // and computed the size from that, but size() is called
+    // quite often when data is plotted etc., so this optimizes
+    // the get() and size() a little bit.
+    private int capacity;
+    private int start;
+    private int size;
+    private ModelSample samples[] = null;
    
     /** Construct SampleSequenceRing with given initial capacity) */
     public ModelSampleRing(int initial_capacity)
     {
-        setCapacity(initial_capacity);
+        capacity = initial_capacity;
+        samples = new ModelSample[capacity];
     }
     
     /** Clear sample memory */
     synchronized public void clear()
     {
-        head = tail = 0;
+        start = size = 0;
     }
 
     /** Remove memory associated with this object. */
     synchronized public void dispose()
     {
-        real_capacity = 0;
-        head = tail = 0;
+        clear();
+        capacity = 0;
         samples = null;
     }
     
-    /** Set new capacity, which also clears the container. */
+    /** Set new capacity.
+     *  <p>
+     *  Tries to preserve newest samples.
+     */
     synchronized public void setCapacity(int new_capacity)
     {
-        real_capacity = new_capacity + 1;
-        head = tail = 0;
-        if (samples == null  ||  samples.length < real_capacity)
-            samples = new ModelSample[real_capacity];
+        ModelSample new_samples[] = new ModelSample[new_capacity];
+        // Copy old samples over
+        if (samples != null)
+        {   // How many can be copied?
+            int copy_size = size;
+            if (copy_size > new_capacity)
+                copy_size = new_capacity;
+            // First 'old' sample
+            final int copy_start = size - copy_size;
+            for (int i=0; i<copy_size; ++i)
+                new_samples[i] = get(copy_start + i);
+            size = copy_size;
+        }
+        else
+            size = 0;
+        samples = new_samples;
+        start = 0;
+        capacity = new_capacity;
     }
 
     /** @return Returns the current capacity.
@@ -58,23 +79,7 @@ public class ModelSampleRing
      */
     synchronized public int getCapacity()
     {
-        return real_capacity-1;
-    }
-    
-    /** Add a new sample. */
-    synchronized public void add(IValue sample, String source)
-    {
-        // Obtain index of next element
-        if (++head >= real_capacity)
-            head = 0;
-        // here is the over write of the queue
-        if (head == tail)
-        {
-            if (++tail >= real_capacity)
-                tail = 0;
-        }
-        // Update that element
-        samples[head] = new ModelSample(sample, source);
+        return capacity;
     }
     
     /** @return Returns the number of valid entries.
@@ -83,24 +88,28 @@ public class ModelSampleRing
      */
     synchronized public int size()
     {
-        int count;
-        if (head >= tail)
-            count = head - tail;
-        else //     #(tail .. end) + #(start .. head)
-            count = (real_capacity - tail - 1) + (head + 1);
-        return count;
+        return size;
     }
 
     // @see Series
     synchronized public ModelSample get(int i)
     {
-    	// TODO Not a bottleneck, yet, but profiler shows
-    	// frequent invocations of 'size()' from here,
-    	// so maybe better compute size in add()
-    	// instead of calculating for each size() call?
         if (i<0 || i >= size())
             throw new ArrayIndexOutOfBoundsException(i);
-        i = (tail + 1 + i) % real_capacity;
+        i = (start + i) % capacity;
         return samples[i];
+    }
+
+    /** Add a new sample. */
+    synchronized public void add(IValue sample, String source)
+    {
+        // Obtain index of next element
+        if (size >= capacity)
+            ++start; // Overwrite oldest element
+        else
+            ++size; // Add to end of buffer
+        final int i = (start + size - 1) % capacity;
+        // Update that element
+        samples[i] = new ModelSample(sample, source);
     }
 }
