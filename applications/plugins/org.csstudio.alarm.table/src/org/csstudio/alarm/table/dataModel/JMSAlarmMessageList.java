@@ -78,7 +78,8 @@ public class JMSAlarmMessageList extends JMSMessageList {
 				while (it.hasNext()) {
 					JMSMessage jmsm = it.next();
 					String pvNameFromList = jmsm.getProperty("NAME");
-					String severityFromList = jmsm.getProperty("SEVERITY");
+					//the 'real' severity in map message we get from the JMSMessage via SEVERITY_KEY
+					String severityFromList = jmsm.getProperty("SEVERITY_KEY");
 					if ((pvNameFromList != null) && (severityFromList != null)) {
 						
 						//is there a previous alarm message from same pv?

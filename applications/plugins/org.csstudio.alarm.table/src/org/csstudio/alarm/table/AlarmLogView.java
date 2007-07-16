@@ -22,22 +22,17 @@
 
 package org.csstudio.alarm.table;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.TextMessage;
 
 import org.csstudio.alarm.table.dataModel.JMSAlarmMessageList;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
-import org.csstudio.alarm.table.jms.SendMapMessage;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -47,9 +42,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
-
 
 /**
  * Add to the base class {@code LogView}:
@@ -67,7 +60,6 @@ public class AlarmLogView extends LogView {
 
 	public static final String ID = AlarmLogView.class.getName();
 
-
 	/**
 	 * Creates the view for the alarm log table.
 	 * 
@@ -75,18 +67,19 @@ public class AlarmLogView extends LogView {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		
+
 		//read the column names from the preference page
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(
 						";");
-		
+
 		//create the table model 
 		jmsml = new JMSAlarmMessageList(columnNames);
 
 		parentShell = parent.getShell();
 
-		initializeJMSReceiver(parentShell,
+		initializeJMSReceiver(
+				parentShell,
 				AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY,
 				AlarmViewerPreferenceConstants.PRIMARY_URL,
 				AlarmViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY,
@@ -100,177 +93,133 @@ public class AlarmLogView extends LogView {
 		comp.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
 		comp.setLayout(new GridLayout(4, true));
 
-        Button ackButton = new Button(comp,SWT.PUSH);
-        ackButton.setText("Acknowledge");
-        ackButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL,true, false,1,1));
-        final Combo ackCombo = new Combo(comp,SWT.SINGLE);
-        ackCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL,true, false,2,1));
-        ackCombo.add("ALL");
-        ackCombo.select(0);
-        IPreferenceStore prefs = JmsLogsPlugin.getDefault().getPreferenceStore();
-        if(prefs.getString(JmsLogPreferenceConstants.VALUE0).trim().length()>0)
-            ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE0));
-        if(prefs.getString(JmsLogPreferenceConstants.VALUE1).trim().length()>0)
-            ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE1));
-        if(prefs.getString(JmsLogPreferenceConstants.VALUE2).trim().length()>0)
-            ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE2));
-        if(prefs.getString(JmsLogPreferenceConstants.VALUE3).trim().length()>0)
-            ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE3));
-        if(prefs.getString(JmsLogPreferenceConstants.VALUE4).trim().length()>0)
-            ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE4));
-        if(prefs.getString(JmsLogPreferenceConstants.VALUE5).trim().length()>0)
-            ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE5));
-        if(prefs.getString(JmsLogPreferenceConstants.VALUE6).trim().length()>0)
-            ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE6));
-        if(prefs.getString(JmsLogPreferenceConstants.VALUE7).trim().length()>0)
-            ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE7));
-        if(prefs.getString(JmsLogPreferenceConstants.VALUE8).trim().length()>0)
-            ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE8));
-        if(prefs.getString(JmsLogPreferenceConstants.VALUE9).trim().length()>0)
-            ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE9));
-        
-        ackButton.addSelectionListener(new SelectionListener(){
-            
-        	/**
-        	 * Acknowledge button is pressed to ack. all (selection 0) 
-        	 * messages or messages with a special severity (selection
-        	 * 1-3)
-        	 * 
-        	 */
-        	public void widgetSelected(SelectionEvent e) {
-                
-        	    TableItem[] items = jlv.getTable().getItems();
-                JMSMessage message;
-                
-                //TODO check selection in the loop to save the if else statement
-        		if(ackCombo.getSelectionIndex()==0){
-                
-                    for (TableItem ti : items) {
-                        
-                        SendMapMessage sender = new SendMapMessage();
-                        String time = TimestampFactory.now().toString();
-                        try{
-                            sender.startSender();
-                            MapMessage mapMessage = sender.getSessionMessageObject();
-                            
-                            if (ti.getData() instanceof JMSMessage) {
-                                message = (JMSMessage) ti.getData();
-                                
-                            }else return;
-                            HashMap<String, String> hm = message.getHashMap();
-                            Iterator<String> it = hm.keySet().iterator();
-                            
-                            while(it.hasNext()) {
-                                String key = it.next();
-                                String value = hm.get(key);
-                                mapMessage.setString(key, value);
-                            }
-                            mapMessage.setString("ACK", "TRUE");
-                            mapMessage.setString("ACK_TIME", time);
-                            Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack");
-                            Engine.getInstance().addLdapWriteRequest("epicsAlarmAcknTimeStamp", message.getName(), time);
-                            JmsLogsPlugin.logInfo("AlarmLogView send Ack message, MsgName: " + 
-                            		message.getName() + " MsgTime: " + message.getProperty("EVENTTIME"));
-                            sender.sendMessage();
-                        }catch(Exception ex){
-                            JmsLogsPlugin.logException("ACK not set", ex);
-                            ex.printStackTrace();
-                        }
-                    }
-                }else{
-                    for (TableItem ti : items) {
+		Button ackButton = new Button(comp, SWT.PUSH);
+		ackButton.setText("Acknowledge");
+		ackButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+				1, 1));
+		final Combo ackCombo = new Combo(comp, SWT.SINGLE);
+		ackCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2,
+				1));
+		ackCombo.add("ALL");
+		ackCombo.select(0);
+		IPreferenceStore prefs = JmsLogsPlugin.getDefault()
+				.getPreferenceStore();
+		if (prefs.getString(JmsLogPreferenceConstants.VALUE0).trim().length() > 0)
+			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE0));
+		if (prefs.getString(JmsLogPreferenceConstants.VALUE1).trim().length() > 0)
+			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE1));
+		if (prefs.getString(JmsLogPreferenceConstants.VALUE2).trim().length() > 0)
+			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE2));
+		if (prefs.getString(JmsLogPreferenceConstants.VALUE3).trim().length() > 0)
+			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE3));
+		if (prefs.getString(JmsLogPreferenceConstants.VALUE4).trim().length() > 0)
+			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE4));
+		if (prefs.getString(JmsLogPreferenceConstants.VALUE5).trim().length() > 0)
+			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE5));
+		if (prefs.getString(JmsLogPreferenceConstants.VALUE6).trim().length() > 0)
+			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE6));
+		if (prefs.getString(JmsLogPreferenceConstants.VALUE7).trim().length() > 0)
+			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE7));
+		if (prefs.getString(JmsLogPreferenceConstants.VALUE8).trim().length() > 0)
+			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE8));
+		if (prefs.getString(JmsLogPreferenceConstants.VALUE9).trim().length() > 0)
+			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE9));
 
-                        SendMapMessage sender = new SendMapMessage();
-                        String time = TimestampFactory.now().toString();
-                        try{
-                            
-                            if (ti.getData() instanceof JMSMessage) {
-                                message = (JMSMessage) ti.getData();
-                                
-                            }else return;
-                            if(ackCombo.getItem(ackCombo.getSelectionIndex()).equals(message.getProperty("SEVERITY"))){
-                                sender.startSender();
-                                MapMessage mapMessage = sender.getSessionMessageObject();
+		ackButton.addSelectionListener(new SelectionListener() {
 
-                                HashMap<String, String> hm = message.getHashMap();
-                                Iterator<String> it = hm.keySet().iterator();
-                                
-                                while(it.hasNext()) {
-                                    String key = it.next();
-                                    String value = hm.get(key);
-                                    mapMessage.setString(key, value);
-                                }
-                                mapMessage.setString("ACK", "TRUE");
-                                mapMessage.setString("ACK_TIME", time);
-                                Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack");
-                                Engine.getInstance().addLdapWriteRequest("epicsAlarmAcknTimeStamp", message.getName(), time);
-                                JmsLogsPlugin.logInfo("AlarmLogView send Ack message, MsgName: " + 
-                                		message.getName() + " MsgTime: " + message.getProperty("EVENTTIME"));
-        
-                                sender.sendMessage();
-                            }
-                        }catch(Exception ex){
-                            JmsLogsPlugin.logException("ACK not set", ex);
-                            ex.printStackTrace();
-                        }
-                    }                }
-            }
+			/**
+			 * Acknowledge button is pressed for all (selection 0) 
+			 * messages or messages with a special severity (selection
+			 * 1-3). 
+			 * 
+			 */
+			public void widgetSelected(SelectionEvent e) {
 
-            public void widgetDefaultSelected(SelectionEvent e) {}
-            
-        });
+				TableItem[] items = jlv.getTable().getItems();
+				JMSMessage message = null;
 
-        //create jface table viewer with paramter 2 for alarm table version
-        jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2,SWT.MULTI | SWT.FULL_SELECTION|SWT.CHECK);
+				List<JMSMessage> msgList = new ArrayList<JMSMessage>();
+				for (TableItem ti : items) {
 
-        jlv.setAlarmSorting(true);
+					if (ti.getData() instanceof JMSMessage) {
+						message = (JMSMessage) ti.getData();
+						if (ackCombo.getItem(ackCombo.getSelectionIndex())
+								.equals(message.getProperty("SEVERITY"))
+								|| (ackCombo.getSelectionIndex() == 0)) {
+							msgList.add(message);
+						}
 
-        parent.pack();
+					} else {
+						JmsLogsPlugin.logInfo("unknown item type in table");
+					}
+
+				}
+				SendAcknowledge sendAck = new SendAcknowledge(msgList);
+				sendAck.schedule();
+
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+
+		});
+
+		//create jface table viewer with paramter 2 for alarm table version
+		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 2,
+				SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
+
+		jlv.setAlarmSorting(true);
+
+		parent.pack();
 
 		cl = new ColumnPropertyChangeListener(
-				AlarmViewerPreferenceConstants.P_STRINGAlarm,
-				jlv);
+				AlarmViewerPreferenceConstants.P_STRINGAlarm, jlv);
 
 		JmsLogsPlugin.getDefault().getPluginPreferences()
-		.addPropertyChangeListener(cl);
-		
+				.addPropertyChangeListener(cl);
+
 	}
-	
-    /**
-     * Override the rule in the log table if a message
-     * is acknowledged.
-     * 
-     * @param message
-     * @throws JMSException 
-     */
+
+	/**
+	 * Override the rule in the log table if a message
+	 * is acknowledged.
+	 * 
+	 * @param message
+	 * @throws JMSException 
+	 */
 	@Override
 	protected void setAck(MapMessage message) throws JMSException {
-	       JmsLogsPlugin.logInfo("AlarmLogView Ack message received, MsgName: " + 
-	          		message.getString("NAME") + " MsgTime: " + message.getString("EVENTTIME"));
+		JmsLogsPlugin.logInfo("AlarmLogView Ack message received, MsgName: "
+				+ message.getString("NAME") + " MsgTime: "
+				+ message.getString("EVENTTIME"));
 
 		TableItem[] items = jlv.getTable().getItems();
-	       for (TableItem item : items) {
-	           if (item.getData() instanceof JMSMessage) {
-	            JMSMessage jmsMessage = (JMSMessage) item.getData();
-	            try {
-	                if(jmsMessage.getName().equals(message.getString("NAME"))&&jmsMessage.getProperty("EVENTTIME").equals(message.getString("EVENTTIME"))){
-	            	    if ((jmsMessage.isBackgroundColorGray() == true) || 
-	            	    		(jmsMessage.getProperty("SEVERITY").equalsIgnoreCase("NO_ALARM")) ||
-	            	    		(jmsMessage.getProperty("SEVERITY").equalsIgnoreCase("INVALID"))) {
-	            	        jmsml.removeJMSMessage(jmsMessage);
-	            	        jlv.refresh();
-	            	    } else {
-	            	    	item.setChecked(true);
-                            jmsMessage.getHashMap().put("ACK_HIDDEN","true");
-	            	    }
-	            	    break;
-	            	}
-	                
-	            } catch (JMSException e) {
-	                JmsLogsPlugin.logException("can not set ACK", e);
-	            }
-	          }
-	       }
+		for (TableItem item : items) {
+			if (item.getData() instanceof JMSMessage) {
+				JMSMessage jmsMessage = (JMSMessage) item.getData();
+				try {
+					if (jmsMessage.getName().equals(message.getString("NAME"))
+							&& jmsMessage.getProperty("EVENTTIME").equals(
+									message.getString("EVENTTIME"))) {
+						if ((jmsMessage.isBackgroundColorGray() == true)
+								|| (jmsMessage.getProperty("SEVERITY_KEY")
+										.equalsIgnoreCase("NO_ALARM"))
+								|| (jmsMessage.getProperty("SEVERITY_KEY")
+										.equalsIgnoreCase("INVALID"))) {
+							jmsml.removeJMSMessage(jmsMessage);
+							jlv.refresh();
+						} else {
+							item.setChecked(true);
+							jmsMessage.getHashMap().put("ACK_HIDDEN", "true");
+						}
+						break;
+					}
+
+				} catch (JMSException e) {
+					JmsLogsPlugin.logException("can not set ACK", e);
+				}
+			}
+		}
 	}
-	
+
 }

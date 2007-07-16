@@ -11,6 +11,7 @@ import org.csstudio.platform.model.IProcessVariable;
 //import org.csstudio.data.exchange.ProcessVariableName;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 
 public class JMSMessage implements IProcessVariable {//,
@@ -57,29 +58,38 @@ public class JMSMessage implements IProcessVariable {//,
 	 * @return
 	 */
 	public String getProperty(String property) {
+		
+		//if the table asks for the severity we return the severity value
+		//set in the preferences
 		if (property.equals("SEVERITY")) {
 			if(messageProperties.get("SEVERITY") != null) {
-				try {
-					// Matthias 05-04-2007
-					switch( severityToNumber(messageProperties.get("SEVERITY"))) {
-					case 0 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE0);
-					case 1 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE1);
-					case 2 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE2);
-					case 3 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE3);
-					case 4 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE4);
-					case 5 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE5);
-					default : return "INVALID_SEVERITY";
-					}
-				} catch (NumberFormatException e) {
-					return "INVALID_SEVERITY";
-				}
+				return findSeverityValue();
+//				try {
+//					// Matthias 05-04-2007
+//					switch( severityToNumber(messageProperties.get("SEVERITY"))) {
+//					case 0 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE0);
+//					case 1 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE1);
+//					case 2 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE2);
+//					case 3 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE3);
+//					case 4 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE4);
+//					case 5 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE5);
+//					default : return "INVALID_SEVERITY";
+//					}
+//				} catch (NumberFormatException e) {
+//					return "INVALID_SEVERITY";
+//				}
 			}
 		}
-		if (property.equals("SEVERITY_NUMBER")) {
+		
+		//to get the severity key (the 'real' severity get from the map message)
+		//we have to ask for 'SEVERITY_KEY'
+		if (property.equals("SEVERITY_KEY")) {
 			if(messageProperties.get("SEVERITY") != null) {
 				return messageProperties.get("SEVERITY");
 			}
 		}
+		
+		//all other properties
 		if (messageProperties.containsKey(property)) {
 			String s = messageProperties.get(property);
 			if (s != null) {
@@ -92,6 +102,96 @@ public class JMSMessage implements IProcessVariable {//,
 		}
 	}
 	
+	/**
+	 * returns the severity value for the severity key of this message.
+	 * 
+	 * @return
+	 */
+	private String findSeverityValue() {
+		
+		String severityKey = messageProperties.get("SEVERITY");
+		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault().getPreferenceStore();
+		
+		if (severityKey.equals(preferenceStore.getString("key 0"))) {
+			return preferenceStore.getString("value 0");
+		}
+		if (severityKey.equals(preferenceStore.getString("key 1"))) {
+			return preferenceStore.getString("value 1");
+		}
+		if (severityKey.equals(preferenceStore.getString("key 2"))) {
+			return preferenceStore.getString("value 2");
+		}
+		if (severityKey.equals(preferenceStore.getString("key 3"))) {
+			return preferenceStore.getString("value 3");
+		}
+		if (severityKey.equals(preferenceStore.getString("key 4"))) {
+			return preferenceStore.getString("value 4");
+		}
+		if (severityKey.equals(preferenceStore.getString("key 5"))) {
+			return preferenceStore.getString("value 5");
+		}
+		if (severityKey.equals(preferenceStore.getString("key 6"))) {
+			return preferenceStore.getString("value 6");
+		}
+		if (severityKey.equals(preferenceStore.getString("key 7"))) {
+			return preferenceStore.getString("value 7");
+		}
+		if (severityKey.equals(preferenceStore.getString("key 8"))) {
+			return preferenceStore.getString("value 8");
+		}
+		if (severityKey.equals(preferenceStore.getString("key 9"))) {
+			return preferenceStore.getString("value 9");
+		}
+		
+		return "invalid severity";
+	}
+	
+	
+	/**
+	 * Returns the number of the severity. The number represents the
+	 * level of the severity.
+	 * 
+	 * @return
+	 */
+	public int getSeverityNumber() {
+		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault().getPreferenceStore();
+		String severityKey = messageProperties.get("SEVERITY");
+		
+		if (severityKey.equals(preferenceStore.getString("key 0"))) {
+			return 0;
+		}
+		if (severityKey.equals(preferenceStore.getString("key 1"))) {
+			return 1;
+		}
+		if (severityKey.equals(preferenceStore.getString("key 2"))) {
+			return 2;
+		}
+		if (severityKey.equals(preferenceStore.getString("key 3"))) {
+			return 3;
+		}
+		if (severityKey.equals(preferenceStore.getString("key 4"))) {
+			return 4;
+		}
+		if (severityKey.equals(preferenceStore.getString("key 5"))) {
+			return 5;
+		}
+		if (severityKey.equals(preferenceStore.getString("key 6"))) {
+			return 6;
+		}
+		if (severityKey.equals(preferenceStore.getString("key 7"))) {
+			return 7;
+		}
+		if (severityKey.equals(preferenceStore.getString("key 8"))) {
+			return 8;
+		}
+		if (severityKey.equals(preferenceStore.getString("key 9"))) {
+			return 9;
+		}
+		
+		return -1;
+		
+	}
+
 	public static Integer severityToNumber ( String severity) {
 		Integer severityAsNumber = null;
 		//
