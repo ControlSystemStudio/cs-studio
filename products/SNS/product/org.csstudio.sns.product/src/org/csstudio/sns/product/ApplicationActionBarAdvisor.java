@@ -135,7 +135,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         final MenuManager menu_css = new MenuManager(Messages.Menu_CSS_CSS,
                         CssWorkbenchActionConstants.CSS_MENU);
         menu_css.add(new MenuManager(Messages.Menu_CSS_Display,
-                CssWorkbenchActionConstants.CSS_DISPLAY_MENU));
+                        CssWorkbenchActionConstants.CSS_DISPLAY_MENU));
         menu_css.add(new MenuManager(Messages.Menu_CSS_Editors,
                         CssWorkbenchActionConstants.CSS_EDITORS_MENU));
         menu_css.add(new MenuManager(Messages.Menu_CSS_Alarm,

@@ -14,6 +14,30 @@ public class Messages extends NLS
 
     public static String Application_WorkspaceInUseInfo;
 
+    public static String Menu_CSS_Alarm;
+
+    public static String Menu_CSS_Configuration;
+
+    public static String Menu_CSS_CSS;
+
+    public static String Menu_CSS_Debug;
+
+    public static String Menu_CSS_Diagnostics;
+
+    public static String Menu_CSS_Display;
+
+    public static String Menu_CSS_Editors;
+
+    public static String Menu_CSS_Management;
+
+    public static String Menu_CSS_Other;
+
+    public static String Menu_CSS_Test;
+
+    public static String Menu_CSS_Trends;
+
+    public static String Menu_CSS_Utilities;
+
     public static String Menu_File;
     public static String Menu_Help;
 
