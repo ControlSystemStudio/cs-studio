@@ -1,5 +1,6 @@
 package org.csstudio.sns.product;
 
+import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -94,8 +95,17 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     {
         // See org.eclipse.ui.internal.ide.WorkbenchActionBuilder
         // for IDE example.
-        
-        // ---- File menu
+        createFileMenu(menubar);
+        createCSSMenu(menubar);
+        // Placeholder for possible additions
+        menubar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+        createWindowMenu(menubar);
+        createHelpMenu(menubar);
+    }
+
+    /** Create the file menu. */
+    private void createFileMenu(IMenuManager menubar)
+    {
         final MenuManager menu_file =
             new MenuManager(Messages.Menu_File, IWorkbenchActionConstants.M_FILE);
         // Markers allow other code to use MenuManager.appendToGroup(...)...
@@ -117,11 +127,42 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menu_file.add(new Separator());
         menu_file.add(quit);
         menubar.add(menu_file);
+    }
 
-        // CSS platform.ui plugin hooks "CSS" menu into additions
-        menubar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+    /** Create the CSS menu. */
+    private void createCSSMenu(IMenuManager menubar)
+    {
+        final MenuManager menu_css = new MenuManager(Messages.Menu_CSS_CSS,
+                        CssWorkbenchActionConstants.CSS_MENU);
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Display,
+                CssWorkbenchActionConstants.CSS_DISPLAY_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Editors,
+                        CssWorkbenchActionConstants.CSS_EDITORS_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Alarm,
+                        CssWorkbenchActionConstants.CSS_ALARM_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Trends,
+                        CssWorkbenchActionConstants.CSS_TRENDS_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Diagnostics,
+                        CssWorkbenchActionConstants.CSS_DIAGNOSTICS_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Utilities,
+                        CssWorkbenchActionConstants.CSS_UTILITIES_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Configuration,
+                        CssWorkbenchActionConstants.CSS_CONFIGURATION_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Debug,
+                        CssWorkbenchActionConstants.CSS_DEBUGGING_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Management,
+                        CssWorkbenchActionConstants.CSS_MANAGEMENT_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Test,
+                        CssWorkbenchActionConstants.CSS_TEST_MENU));
+        menu_css.add(new MenuManager(Messages.Menu_CSS_Other,
+                        CssWorkbenchActionConstants.CSS_OTHER_MENU));
+        menu_css.add(new Separator(CssWorkbenchActionConstants.CSS_END));
+        menubar.add(menu_css);
+    }
 
-        // ---- Window menu
+    /** Create the window menu. */
+    private void createWindowMenu(IMenuManager menubar)
+    {
         final MenuManager menu_window =
             new MenuManager(Messages.Menu_Window, IWorkbenchActionConstants.M_WINDOW);
         menu_window.add(new_window);
@@ -130,14 +171,17 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         final MenuManager persp_sub = new MenuManager(Messages.Menu_Perspectives);
         persp_sub.add(menu_perspectives);
         menu_window.add(persp_sub);
-
+    
         final MenuManager view_sub = new MenuManager(Messages.Menu_Views);
         view_sub.add(menu_views);
         menu_window.add(view_sub);
         menu_window.add(open_windows);
         menubar.add(menu_window);
+    }
 
-        // ---- Help menu
+    /** Create the help menu. */
+    private void createHelpMenu(IMenuManager menubar)
+    {
         final MenuManager menu_help =
             new MenuManager(Messages.Menu_Help, IWorkbenchActionConstants.M_HELP);
         menu_help.add(intro);
