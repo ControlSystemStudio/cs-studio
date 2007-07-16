@@ -164,7 +164,7 @@ public class PVTableHelper
                 }
                 return null; // doesn't apply
             case TRACE_TYPE:
-            	return entry.getTraceType().toString();
+            	return entry.getTraceType().getLocalizedName();
             case AUTO_SCALE:
                 return null; // no text
             case COLOR:

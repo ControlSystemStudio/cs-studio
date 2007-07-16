@@ -1,44 +1,63 @@
 package org.csstudio.swt.chart;
 
-/** The various types for drawing a Trace.
+/** Select how a trace should be displayed.
  *  @author Blaz Lipuscek 
  *  @author Kay Kasemir
  */
 public enum TraceType
 {
-    // TODO Localize the names
-    // TODO Automatically use MinMaxAverage for MMA samples
     /** Connect samples with lines.
      *  Uses additional min/max lines for samples
      *  that carry min/max info.
      */
-    Lines,
+    Lines(Messages.TraceType_Lines),
     
     /** Place a marker at each sample.
      *  <p>
      *  Uses candlesticks for samples that carry min/max info.
      */
-    Markers,
+    Markers(Messages.TraceType_Markers),
     
     /** Bar from the x axis up to the y value.
      *  <p>
      *  Doesn't show min/max info.
      */
-    Bars;
+    Bars(Messages.TraceType_Bars);
+
+    /** User-readable name, localized. */
+    final private String localized_name;
     
-    private static String[] type_strings;
+    /** List of all localized names. */
+    private static String[] localized_names;
     
-    /** @return An array of Strings that describes the available TraceTypes. */ 
-    public final static String[] getTypeStrings()
+    /** Constructor. */
+    private TraceType(final String localized_name)
     {
-        if (type_strings == null) 
+        this.localized_name = localized_name;
+    }
+    
+    /** @return Localized name.
+     *  @see #name()
+     */
+    final public String getLocalizedName()
+    {
+        return localized_name;
+    }
+    
+    /** Get the available trace types as localized names.
+     *  @return An array of Strings that describes the available TraceTypes.
+     *  @see #fromOrdinal(int)
+     */ 
+    public final static String[] getLocalizedNames()
+    {
+        if (localized_names == null) 
         {
-            TraceType[] types = TraceType.values();
-            type_strings = new String[types.length]; 
+            final TraceType[] types = TraceType.values();
+            localized_names = new String[types.length]; 
             for (int i = 0; i < types.length; i++)
-                type_strings[i] = types[i].name();
+                localized_names[i] = types[i].localized_name;
         }
-        return type_strings;
+        return localized_names;
     }
     
     /** Obtain a trace type from its ordinal

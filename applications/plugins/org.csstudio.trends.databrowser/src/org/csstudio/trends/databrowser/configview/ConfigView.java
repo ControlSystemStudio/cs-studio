@@ -414,7 +414,7 @@ public class ConfigView extends PlotAwareView
         editors[PVTableHelper.Column.LINE_WIDTH.ordinal()] = new TextCellEditor(table);
         editors[PVTableHelper.Column.LOG_SCALE.ordinal()] = new CheckboxCellEditor(table);
         editors[PVTableHelper.Column.TRACE_TYPE.ordinal()] =
-            new ComboBoxCellEditor(table, TraceType.getTypeStrings(), SWT.READ_ONLY);
+            new ComboBoxCellEditor(table, TraceType.getLocalizedNames(), SWT.READ_ONLY);
         editors[PVTableHelper.Column.AUTO_SCALE.ordinal()] = new CheckboxCellEditor(table);
         if (show_request_types)
         {
