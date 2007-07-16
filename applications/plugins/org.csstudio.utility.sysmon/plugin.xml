@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            name="%SystemMonitor"
+            icon="icons/sysmon.gif"
+            category="org.csstudio"
+            class="org.csstudio.utility.sysmon.SysMonView"
+            id="org.csstudio.utility.sysmon.SysMonView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="org.csstudio.utility.sysmon.views.SysMon">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.utility.sysmon.menuactions"
+            label="Menu Actions"
+            visible="true">
+         <action
+               class="org.csstudio.utility.sysmon.ShowSysmon"
+               icon="icons/sysmon.gif"
+               id="org.csstudio.utility.sysmon.show_sysmon"
+               label="%SystemMonitor"
+               menubarPath="css/utility/"
+               style="push"/>
+      </actionSet>
+   </extension>
+</plugin>

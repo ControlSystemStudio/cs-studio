@@ -1,0 +1,31 @@
+package org.csstudio.utility.sysmon;
+
+/** System info, one snapshot of system data.
+ *  @author Kay Kasemir
+ */
+public class SysInfo
+{
+    final static double MB = 1024.0*1024.0;
+
+    final double freeMB;
+    final double totalMB;
+    
+    public SysInfo()
+    {
+        final Runtime runtime = Runtime.getRuntime();
+        freeMB = runtime.freeMemory()/MB;
+        totalMB = runtime.totalMemory()/MB;
+    }
+
+    /** @return free memory in megabytes */
+    public final double getFreeMB()
+    {
+        return freeMB;
+    }
+
+    /** @return total memory in megabytes */
+    public final double getTotalMB()
+    {
+        return totalMB;
+    }
+}
