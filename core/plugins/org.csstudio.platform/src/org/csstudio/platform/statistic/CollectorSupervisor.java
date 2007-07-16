@@ -59,7 +59,9 @@ public class CollectorSupervisor {
 		}
 		return result;
 	}
+    
     public File getCollectionAsXMLFile () {
+        /*
         final String[] _COLUMN_NAMES = new String[] {"Application","Descriptor","Counter","Actual value","Date","Count","Highest Value","Date","Count","Lowest Value","Date","Count","Mean Value abs","Mean Value rel.","Alarm Limit (abs)","Alarm Limit (rel)","Hard Limit"};
         File xmlFile = new File("XMLStatisticFile.xml");
         XMLOutputFactory factory = XMLOutputFactory.newInstance(); 
@@ -132,6 +134,8 @@ public class CollectorSupervisor {
             e.printStackTrace();
         } 
         return xmlFile;
+        */
+        return null;
     }
 	public Vector<Collector> getCollectorVector() {
 		return collectorVector;
