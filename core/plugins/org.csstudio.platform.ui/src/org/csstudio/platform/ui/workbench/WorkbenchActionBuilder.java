@@ -148,6 +148,7 @@ public final class WorkbenchActionBuilder {
 	public void populateMenuBar(final IActionBarConfigurer configurer) {
 		IMenuManager menubar = configurer.getMenuManager();
 		menubar.add(createFileMenu());
+		menubar.add(createCssMenu());
 		menubar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		menubar.add(createWindowMenu());
 		menubar.add(createHelpMenu());
@@ -173,6 +174,53 @@ public final class WorkbenchActionBuilder {
 		// Add to the cool bar manager
 		coolbar.add(fileToolBar);
 	}
+	
+	
+	/**
+	 * Creates and returns the CSS menu.
+	 * @return the CSS menu.
+	 */
+	private MenuManager createCssMenu() {
+		MenuManager cssMenu = new MenuManager(Messages.WorkbenchActionBuilder_CSS_MENU, CssWorkbenchActionConstants.CSS_MENU);
+		
+		cssMenu.add(new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_DISPLAY_MENU,
+				CssWorkbenchActionConstants.CSS_DISPLAY_MENU));
+		cssMenu.add(new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_ALARM_MENU,
+				CssWorkbenchActionConstants.CSS_ALARM_MENU));
+		cssMenu.add(new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_DIAGNOSTICS_MENU,
+				CssWorkbenchActionConstants.CSS_DIAGNOSTICS_MENU));
+		cssMenu.add(new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_DEBUGGING_MENU,
+				CssWorkbenchActionConstants.CSS_DEBUGGING_MENU));
+		cssMenu.add(new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_CONFIGURATION_MENU,
+				CssWorkbenchActionConstants.CSS_CONFIGURATION_MENU));
+		cssMenu.add(new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_MANAGEMENT_MENU,
+				CssWorkbenchActionConstants.CSS_MANAGEMENT_MENU));
+		cssMenu.add(new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_EDITORS_MENU,
+				CssWorkbenchActionConstants.CSS_EDITORS_MENU));
+		cssMenu.add(new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_UTILITIES_MENU,
+				CssWorkbenchActionConstants.CSS_UTILITIES_MENU));
+		cssMenu.add(new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_TRENDS_MENU,
+				CssWorkbenchActionConstants.CSS_TRENDS_MENU));
+		cssMenu.add(new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_TEST_MENU,
+				CssWorkbenchActionConstants.CSS_TRENDS_MENU));
+		cssMenu.add(new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_OTHER_MENU,
+				CssWorkbenchActionConstants.CSS_OTHER_MENU));
+		cssMenu.add(new Separator(CssWorkbenchActionConstants.CSS_END));
+		
+		return cssMenu;
+	}
+	
 
 	/**
 	 * Creates and returns the Window menu.

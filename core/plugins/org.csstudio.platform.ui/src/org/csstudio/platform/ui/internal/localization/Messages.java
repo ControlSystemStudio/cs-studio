@@ -39,6 +39,30 @@ public final class Messages extends NLS {
     public static String CssWorkbenchAdvisor_LoggedInAs;
 	public static String CssWorkbenchAdvisor_NotLoggedIn;
 
+	public static String WorkbenchActionBuilder_CSS_ALARM_MENU;
+
+	public static String WorkbenchActionBuilder_CSS_CONFIGURATION_MENU;
+
+	public static String WorkbenchActionBuilder_CSS_DEBUGGING_MENU;
+
+	public static String WorkbenchActionBuilder_CSS_DIAGNOSTICS_MENU;
+
+	public static String WorkbenchActionBuilder_CSS_DISPLAY_MENU;
+
+	public static String WorkbenchActionBuilder_CSS_EDITORS_MENU;
+
+	public static String WorkbenchActionBuilder_CSS_MANAGEMENT_MENU;
+
+	public static String WorkbenchActionBuilder_CSS_MENU;
+
+	public static String WorkbenchActionBuilder_CSS_OTHER_MENU;
+
+	public static String WorkbenchActionBuilder_CSS_TEST_MENU;
+
+	public static String WorkbenchActionBuilder_CSS_TRENDS_MENU;
+
+	public static String WorkbenchActionBuilder_CSS_UTILITIES_MENU;
+
     public static String WorkbenchActionBuilder_SHOW_VIEW;
     public static String WorkbenchActionBuilder_MENU_FILE;
     public static String WorkbenchActionBuilder_MENU_FILE_NEW;
