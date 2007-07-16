@@ -56,6 +56,7 @@ class ArchiveFetchJob extends Job
                 
                 String request_type;
                 Object[] request_parms;
+                // TODO bins from preferences
                 final int bins = 800;
                 if (item.getRequestType() == IPVModelItem.RequestType.RAW)
                 {
