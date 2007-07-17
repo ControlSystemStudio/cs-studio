@@ -6,6 +6,16 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.utility.sysmon.messages"; //$NON-NLS-1$
 
+    public static String PreferencePage_HistSize;
+
+    public static String PreferencePage_ScanDelay;
+
+    public static String PreferencePage_Title;
+
+    public static String PreferencePage_ValidHistSize;
+
+    public static String PreferencePage_ValidScanDelay;
+
     public static String        SysMon_Free_TT;
     public static String        SysMon_FreeLabel;
     public static String        SysMon_GC_TT;

@@ -42,4 +42,11 @@
                style="push"/>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page category="org.csstudio.platform.ui.css.applications.utilities"
+            class="org.csstudio.utility.sysmon.PreferencePage"
+            id="org.csstudio.utility.sysmon.PreferencePage"
+            name="%SystemMonitor"/>
+   </extension>
 </plugin>

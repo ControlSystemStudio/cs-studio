@@ -10,8 +10,13 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SysInfoBuffer implements PlotSamples
 {
-    private RingBuffer<SysInfo> buffer = new RingBuffer<SysInfo>(60);
-
+    final private RingBuffer<SysInfo> buffer;
+    
+    SysInfoBuffer(final int size)
+    {
+        buffer = new RingBuffer<SysInfo>(size);
+    }
+    
     public void add(SysInfo info)
     {
         buffer.add(info);

@@ -21,15 +21,12 @@ public class SysMonView extends ViewPart
     /** View ID (registered in plugin.xml) */
     final public static String ID = "org.csstudio.utility.sysmon.SysMonView"; //$NON-NLS-1$
 
-    private SysInfoBuffer sysinfos = new SysInfoBuffer();
+    private SysInfoBuffer sysinfos;
     
     // GUI Elements
     private Text free, total, max;
     private PlotWidget plot;
 
-    /** Millisecs between updates */
-    private int update_millisec = 1000;
-    
     /** Runnable that runs the update */
     private Runnable updater = new Runnable()
     {
@@ -43,6 +40,7 @@ public class SysMonView extends ViewPart
     @Override
     public void createPartControl(Composite parent)
     {
+        sysinfos = new SysInfoBuffer(PreferencePage.getHistorySize());
         GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         GridData gd;
@@ -139,6 +137,6 @@ public class SysMonView extends ViewPart
         total.setText(String.format(Messages.SysMon_MemFormat, info.getTotalMB()));
         max.setText(String.format(Messages.SysMon_MemFormat, info.getMaxMB()));
         plot.redraw();
-        Display.getDefault().timerExec(update_millisec, updater);
+        Display.getDefault().timerExec(PreferencePage.getScanDelayMillis(), updater);
     }
 }
