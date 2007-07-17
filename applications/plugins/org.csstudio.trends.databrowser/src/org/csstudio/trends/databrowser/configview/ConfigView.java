@@ -871,6 +871,9 @@ public class ConfigView extends PlotAwareView
     @Override
     protected void updateModel(Model old_model, Model model)
     {
+    	// TODO Is this avoidable? Add disposeListener?
+    	if (scan_period_text.isDisposed())
+    		return;
         // Conditionally enable the 'add' action
         add_pv_action.setEnabled(model != null);
         add_formula_action.setEnabled(model != null);
