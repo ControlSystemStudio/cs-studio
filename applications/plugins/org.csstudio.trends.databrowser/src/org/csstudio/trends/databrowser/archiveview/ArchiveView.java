@@ -79,6 +79,8 @@ public class ArchiveView extends ViewPart
     private ArrayList<NameTableItem> name_table_items =
         new ArrayList<NameTableItem>();
 
+    private Button reg_ex;
+
     /** Remove selected items from the name_table_viewer. */
     class RemoveAction extends Action
     {
@@ -252,7 +254,7 @@ public class ArchiveView extends ViewPart
         // Second box under sash form. --------------------------------
         //
         // Pattern: ______________________ [ Search ]
-        // Add ( )  Replace (*)
+        // Add ( )  Replace (*) [X] RegEx
         // name_table_viewer table .....
         // .............................
         // .............................
@@ -267,8 +269,6 @@ public class ArchiveView extends ViewPart
         label.setText(Messages.Pattern);
         gd = new GridData();
         label.setLayoutData(gd);
-        
-        // TODO: Add a regular expression helper dialog, xlate 'glob' patterns?
         
         pattern = new Combo(box, SWT.DROP_DOWN);
         pattern.setToolTipText(Messages.Pattern_TT);
@@ -299,6 +299,7 @@ public class ArchiveView extends ViewPart
             {   search(pattern.getText()); }
         });
 
+        // Add ( )  Replace (*) [X] RegEx
         Button add_results = new Button(box, SWT.RADIO);
         add_results.setText(Messages.AddResults);
         add_results.setToolTipText(Messages.AddResults_TT);
@@ -309,9 +310,16 @@ public class ArchiveView extends ViewPart
         replace_results.setText(Messages.ReplaceResults);
         replace_results.setToolTipText(Messages.ReplaceResults_TT);
         gd = new GridData();
-        gd.horizontalSpan = 2;
+        gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.LEFT;
         replace_results.setLayoutData(gd);
+
+        reg_ex = new Button(box, SWT.CHECK);
+        reg_ex.setText(Messages.RegEx);
+        reg_ex.setToolTipText(Messages.RegEx_TT);
+        gd = new GridData();
+        gd.horizontalAlignment = SWT.RIGHT;
+        reg_ex.setLayoutData(gd);
         
         // Table with list of names
         table = new Table(box,
@@ -439,6 +447,10 @@ public class ArchiveView extends ViewPart
         if (! this.pattern.getText().equals(pattern))
             this.pattern.setText(pattern);
         
+        if (reg_ex.getSelection() == false)
+            // Convert 'glob' pattern into regular expression
+            pattern = RegExHelper.regexFromGlob(pattern);
+        
         // Really search all?
         if (pattern.length() == 0)
         {
@@ -472,7 +484,7 @@ public class ArchiveView extends ViewPart
         Job job = new SearchJob(this, server, keys, pattern);
         job.schedule();
     }
-    
+
     /** Clear the list of names. */
     public void clearNames()
     {

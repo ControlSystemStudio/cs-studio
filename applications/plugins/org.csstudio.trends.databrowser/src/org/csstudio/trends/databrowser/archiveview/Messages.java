@@ -53,6 +53,10 @@ public class Messages extends NLS
     public static String Pattern;
 
     public static String Pattern_TT;
+
+    public static String RegEx;
+
+    public static String RegEx_TT;
     
     public static String Remove;
 
