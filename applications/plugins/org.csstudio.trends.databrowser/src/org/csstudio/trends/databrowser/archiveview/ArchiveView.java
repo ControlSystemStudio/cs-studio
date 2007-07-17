@@ -52,6 +52,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ArchiveView extends ViewPart
 {
+
     public static final String ID = ArchiveView.class.getName();
 
     private static final String URL_LIST_TAG = "url_list"; //$NON-NLS-1$
@@ -62,7 +63,13 @@ public class ArchiveView extends ViewPart
     // Sash for the two GUI sub-sections
     private SashForm form;
     private int form_weights[] = new int[] {50,50};
+    
+    private IMemento memento = null;
+    
+    /** Memento tag for form weights */
     private static final String FORM_WEIGHT_TAG = "form_weights"; //$NON-NLS-1$
+    /** Memento tag for regex checkbox */
+    private static final String REGEX_TAG = "regex"; //$NON-NLS-1$
 
     // Archive info GUI Elements
     private Combo url;
@@ -75,11 +82,11 @@ public class ArchiveView extends ViewPart
     private Combo pattern;
     private Button search;
     private Button replace_results;
+    private Button reg_ex;
     private TableViewer name_table_viewer;
     private ArrayList<NameTableItem> name_table_items =
         new ArrayList<NameTableItem>();
 
-    private Button reg_ex;
 
     /** Remove selected items from the name_table_viewer. */
     class RemoveAction extends Action
@@ -125,25 +132,39 @@ public class ArchiveView extends ViewPart
     public void init(IViewSite site, IMemento memento) throws PartInitException
     {
         super.init(site, memento);
-        
-        if (memento != null)
-            for (int i=0; i<form_weights.length; ++i)
-            {
-                final Integer val = memento.getInteger(FORM_WEIGHT_TAG + i);
-                if (val != null)
-                    form_weights[i] = val.intValue();
-            }
+        this.memento = memento;
     }
 
-    /** Save the display state. */
+    /** Save the display state.
+     *  @see #restoreState()
+     */
     @Override
     public void saveState(IMemento memento)
     {
         form_weights = form.getWeights();
         for (int i=0; i<form_weights.length; ++i)
             memento.putInteger(FORM_WEIGHT_TAG + i, form_weights[i]);
+        memento.putInteger(REGEX_TAG, reg_ex.getSelection() ? 1 : 0);
     }
 
+    /** Restore state from memento.
+     *  @see #saveState(IMemento)
+     */
+    private void restoreState()
+    {
+        if (memento == null)
+            return;
+        Integer val;
+        for (int i=0; i<form_weights.length; ++i)
+        {
+            val = memento.getInteger(FORM_WEIGHT_TAG + i);
+            if (val != null)
+                form_weights[i] = val.intValue();
+        }
+        val = memento.getInteger(REGEX_TAG);
+        if (val != null)
+            reg_ex.setSelection(val.intValue() > 0);
+    }
 
     @Override
     public void createPartControl(Composite parent)
@@ -254,7 +275,7 @@ public class ArchiveView extends ViewPart
         // Second box under sash form. --------------------------------
         //
         // Pattern: ______________________ [ Search ]
-        // Add ( )  Replace (*) [X] RegEx
+        // ( ) Add  (*) Replace            [X] RegEx    
         // name_table_viewer table .....
         // .............................
         // .............................
@@ -267,8 +288,7 @@ public class ArchiveView extends ViewPart
         // Pattern: ____ (pattern) ____  [Search !]
         label = new Label(box, SWT.NULL);
         label.setText(Messages.Pattern);
-        gd = new GridData();
-        label.setLayoutData(gd);
+        label.setLayoutData(new GridData());
         
         pattern = new Combo(box, SWT.DROP_DOWN);
         pattern.setToolTipText(Messages.Pattern_TT);
@@ -289,8 +309,7 @@ public class ArchiveView extends ViewPart
         search = new Button(box, SWT.PUSH);
         search.setText(Messages.Seach);
         search.setToolTipText(Messages.Seach_TT);
-        gd = new GridData();
-        search.setLayoutData(gd);
+        search.setLayoutData(new GridData());
         search.setEnabled(false);
         search.addSelectionListener(new SelectionAdapter()
         {
@@ -299,12 +318,11 @@ public class ArchiveView extends ViewPart
             {   search(pattern.getText()); }
         });
 
-        // Add ( )  Replace (*) [X] RegEx
+        // ( ) Add  (*) Replace            [X] RegEx    
         Button add_results = new Button(box, SWT.RADIO);
         add_results.setText(Messages.AddResults);
         add_results.setToolTipText(Messages.AddResults_TT);
-        gd = new GridData();
-        add_results.setLayoutData(gd);
+        add_results.setLayoutData(new GridData());
         
         replace_results = new Button(box, SWT.RADIO);
         replace_results.setText(Messages.ReplaceResults);
@@ -317,9 +335,7 @@ public class ArchiveView extends ViewPart
         reg_ex = new Button(box, SWT.CHECK);
         reg_ex.setText(Messages.RegEx);
         reg_ex.setToolTipText(Messages.RegEx_TT);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.RIGHT;
-        reg_ex.setLayoutData(gd);
+        reg_ex.setLayoutData(new GridData());
         
         // Table with list of names
         table = new Table(box,
@@ -349,6 +365,9 @@ public class ArchiveView extends ViewPart
                                              name_table_items));
         name_table_viewer.setItemCount(name_table_items.size());
 
+        // Initialize stuff from memento
+        restoreState();
+        
         // Set initial (relative) sizes
         form.setWeights(form_weights);
 
