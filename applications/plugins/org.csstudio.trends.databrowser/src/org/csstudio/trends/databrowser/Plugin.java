@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-/** The main plugin class to be used in the desktop.
+/** Bundle activator registered in manifest.mf.
  *  @author Kay Kasemir
  */
 public class Plugin extends AbstractCssUiPlugin
@@ -30,7 +30,7 @@ public class Plugin extends AbstractCssUiPlugin
         plugin = this;
     }
 
-    /** Returns the shared instance. */
+    /** @return The shared instance. */
     public static Plugin getDefault()
     {   return plugin;   }
 
@@ -67,10 +67,10 @@ public class Plugin extends AbstractCssUiPlugin
     }
 
     /** Add an exception to the plugin log. */
-    public static void logException(String message, Throwable e)
+    public static void logException(String message, Throwable ex)
     {
-        e.printStackTrace();
-        log(IStatus.ERROR, message, e);
+        ex.printStackTrace();
+        log(IStatus.ERROR, message, ex);
     }
 
     /** Add a message to the log.
