@@ -215,7 +215,7 @@ public class Chart extends Canvas
                 // and print debug info.
                 try
                 {
-                    paint(e);  
+                    Chart.this.paintControl(e);  
                 }
                 catch (Throwable error)
                 {
@@ -614,9 +614,9 @@ public class Chart extends Canvas
      *  to optimize a little bit.
      *  @see org.eclipse.swt.events.PaintListener
      */
-    private void paint(PaintEvent e)
+    private void paintControl(PaintEvent e)
     {
-        GC gc = e.gc;
+        final GC gc = e.gc;
         Rectangle r = getClientArea();
         if (dirty_layout)
             computeLayout(gc, r);
