@@ -205,7 +205,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 /*
  * Neue SQL-String unter hilfe nahme einer View
  */
-				String sql = "select * from alarm_archive_messages aam where aam.datum "+
+				String sql = "select * from alarm_archive_messages aam, message_content mc, msg_property_type mpt where aam.datum "+
 							"between to_date('"+from.get(GregorianCalendar.YEAR)+
 								"-"+(from.get(GregorianCalendar.MONTH)+1)+
 								"-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
