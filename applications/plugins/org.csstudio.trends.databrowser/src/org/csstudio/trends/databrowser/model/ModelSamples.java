@@ -10,26 +10,25 @@ import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.Range;
-import org.eclipse.swt.widgets.Display;
 
 /** Samples of a model item, combination of archived and live samples,
  *  appears as one long ChartSampleSequence.
  *  <p>
+ *  (IModelSamples includes ChartSampleSequence)
+ *  <p>
  *  <b>Note the synchronize comments of the ChartSampleSequence class.</b>
- *  The ModelSamples methods synchronize themselves, but user code
+ *  Most ModelSamples methods synchronize themselves, but user code
  *  that iterates over samples should still lock the ModelSamples
- *  over calls of size() and get(i).
+ *  to prevent changes to the data while calling size() and get(i).
  *  @author Kay Kasemir
  *  @see ChartSampleSequence
  */
-public class ModelSamples implements IModelSamples
+public class ModelSamples implements IModelSamples // , ChartSampleSequence
 {
     /** The 'archived' samples for this item.
      *  Read from the GUI thread, but updated from an archive reader thread.
      *  <p>
      *  Never null.
-     *  <p>
-     *  Synchronize on <code>this</code>.
      */
     private ModelSampleArray archive_samples;
 
@@ -38,8 +37,6 @@ public class ModelSamples implements IModelSamples
      *  but also archive reader when getting the 'border'.
      *  <p>
      *  Never null.
-     *  <p>
-     *  Synchronize on <code>this</code>.
      */
     private ModelSampleRing live_samples;
 
@@ -125,9 +122,6 @@ public class ModelSamples implements IModelSamples
     /** Add most recent timestamp/value */
     void addLiveSample(IValue value)
     {
-        // We expect all access to this method from the UI thread.
-        if (Display.getCurrent() == null)
-            throw new Error("Accessed from non-UI thread"); //$NON-NLS-1$
         synchronized (this)
         {
             live_samples.add(value, Messages.LiveSample);

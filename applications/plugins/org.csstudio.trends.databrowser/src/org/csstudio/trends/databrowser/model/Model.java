@@ -571,13 +571,12 @@ public class Model
     }
     
     /** Scan PVs. */
-    public final ITimestamp scan()
+    public final void scan()
     {
-        ITimestamp now = TimestampFactory.now();
+        final ITimestamp now = TimestampFactory.now();
         for (AbstractModelItem item : items)
             if (item instanceof PVModelItem)
                 ((PVModelItem)item).addCurrentValueToSamples(now);
-        return now;
     }
 
     /** Update (re-compute) formulas. */

@@ -1,5 +1,6 @@
 package org.csstudio.swt.chart.axes;
 
+import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.Trace;
@@ -27,6 +28,8 @@ public class TracePainter
         final YAxis yaxis = trace.getYAxis();
         final ChartSampleSequence samples = trace.getSampleSequence();
         // ** Lock the samples, so they don't change on us! **
+        if (Chart.debug)
+            System.out.println("Tracepainter ..."); //$NON-NLS-1$
         synchronized (samples)
         {
             // Instead of painting the whole trace, find the
@@ -50,6 +53,8 @@ public class TracePainter
                 break;
             }
         }
+        if (Chart.debug)
+            System.out.println("Tracepainter done."); //$NON-NLS-1$
     }
 
     /** Draw given sample range with lines.

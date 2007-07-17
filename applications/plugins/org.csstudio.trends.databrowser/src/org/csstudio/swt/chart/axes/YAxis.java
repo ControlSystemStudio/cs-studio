@@ -269,23 +269,23 @@ public class YAxis extends Axis
     {
         if (Chart.debug)
             System.out.println("Autozoom " + this + " ...");
-        AxisRangeLimiter limiter = new AxisRangeLimiter(xaxis);
+        final AxisRangeLimiter limiter = new AxisRangeLimiter(xaxis);
         double low = Double.MAX_VALUE;
         double high = -Double.MAX_VALUE;
         for (Trace trace : traces)
         {
-            ChartSampleSequence samples = trace.getSampleSequence();
+            final ChartSampleSequence samples = trace.getSampleSequence();
             // Lock samples so they don't change on us.
             synchronized (samples)
             {   // Any data at all?
                 if (samples.size() < 1)
                     continue;
                 // Autozoom only the visible part, i.e. xaxis low .. high
-                int i0 = limiter.getLowIndex(samples);
-                int i1 = limiter.getHighIndex(samples);
+                final int i0 = limiter.getLowIndex(samples);
+                final int i1 = limiter.getHighIndex(samples);
                 for (int i=i0; i<=i1; ++i)
                 {
-                    double y = samples.get(i).getY();
+                    final double y = samples.get(i).getY();
                     // Ignore infinite numbers
                     if (Double.isInfinite(y)  || Double.isNaN(y))
                         continue;
@@ -316,7 +316,7 @@ public class YAxis extends Axis
             high = Log10.log10(high);
         }
         // Add a little room above & below the exact value range
-        double extra = (high - low) * 0.01;
+        final double extra = (high - low) * 0.01;
         low = low - extra;
         high = high + extra;
         if (isLogarithmic())

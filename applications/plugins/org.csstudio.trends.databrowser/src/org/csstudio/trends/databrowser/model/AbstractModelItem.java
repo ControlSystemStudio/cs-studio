@@ -42,10 +42,10 @@ public abstract class AbstractModelItem
     /** The model to which this item belongs. */
     final protected Model model;
     
-    /** The name of this Chart Item. */
+    /** The name of this item. */
     protected String name;
     
-    /** The units of this Chart Item. */
+    /** The units of this item. */
     protected String units = ""; //$NON-NLS-1$
     
     /** The Y axis to use. */

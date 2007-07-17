@@ -50,7 +50,10 @@ public class PVModelItem
     
     /** The most recent value we got from the pv.
      *  <p>
+     *  Needs lock:
      *  Read from the GUI thread, updated from a PV monitor thread.
+     *  But can't use current_value as lock, since it may be null.
+     *  So lock on <code>this</code>.
      */
     private volatile IValue current_value;
     
@@ -282,67 +285,67 @@ public class PVModelItem
     /** Add the most recent life value of the PV to the sample sequence. */
     public final void addCurrentValueToSamples(ITimestamp now)
     {
+        // Should be called via Scanner/Scroller in UI thread...
+        if (Display.getCurrent() == null)
+            throw new Error("Called from non-UI thread " //$NON-NLS-1$
+                            + Thread.currentThread().getName());
+        IValue new_sample;
         synchronized (this)
-        {  
-            // When disconnected, add one(!) end sample.
-            if (current_value == null)
-                samples.markCurrentlyDisconnected(now);
-            else
-            {   // Add the most recent value after tweaking its
-                // time stamp to be 'now'
-                IValue.Quality quality = IValue.Quality.Original;
-                if (current_value instanceof IDoubleValue)
-                    current_value = ValueFactory.createDoubleValue(now,
-                                    current_value.getSeverity(),
-                                    current_value.getStatus(),
-                                    (INumericMetaData)current_value.getMetaData(),
-                                    quality,
-                                    ((IDoubleValue)current_value).getValues());
-                else if (current_value instanceof IEnumeratedValue)
-                    current_value = ValueFactory.createEnumeratedValue(now,
-                                    current_value.getSeverity(),
-                                    current_value.getStatus(),
-                                    (IEnumeratedMetaData)current_value.getMetaData(),
-                                    quality,
-                                    ((IEnumeratedValue)current_value).getValues());
-                else if (current_value instanceof IIntegerValue)
-                    current_value = ValueFactory.createIntegerValue(now,
-                                    current_value.getSeverity(),
-                                    current_value.getStatus(),
-                                    (INumericMetaData)current_value.getMetaData(),
-                                    quality,
-                                    ((IIntegerValue)current_value).getValues());
-                else if (current_value instanceof IStringValue)
-                    current_value = ValueFactory.createStringValue(now,
-                                    current_value.getSeverity(),
-                                    current_value.getStatus(),
-                                    quality,
-                                    current_value.format());
-                else
-                    Plugin.logError("ModelItem cannot update timestamp of type " //$NON-NLS-1$
-                                    + current_value.getClass().getName());
-                samples.addLiveSample(current_value);
-                IMetaData meta = current_value.getMetaData();
-                if (meta instanceof INumericMetaData)
-                {
-                    String new_units =  ((INumericMetaData)meta).getUnits();
-                    if (! units.equals(new_units))
-                    {
-                        units = new_units;
-                        // Notify model of change, but in the UI thread
-                        Display.getDefault().asyncExec(new Runnable()
-                        {
-                            public void run()
-                            {
-                                model.fireEntryLookChanged(PVModelItem.this);
-                            }
-                        });
-                    }
-                }
+        {   // pvValueUpdate might also change current_value, so lock.
+            new_sample = current_value;
+        }
+        // When disconnected, add one(!) end sample.
+        if (new_sample == null)
+        {
+            samples.markCurrentlyDisconnected(now);
+            return;
+        }
+        // Add the most recent value after tweaking its
+        // time stamp to be 'now'
+        final IValue.Quality quality = IValue.Quality.Original;
+        if (new_sample instanceof IDoubleValue)
+            new_sample = ValueFactory.createDoubleValue(now,
+                            new_sample.getSeverity(),
+                            new_sample.getStatus(),
+                            (INumericMetaData)new_sample.getMetaData(),
+                            quality,
+                            ((IDoubleValue)new_sample).getValues());
+        else if (new_sample instanceof IEnumeratedValue)
+            new_sample = ValueFactory.createEnumeratedValue(now,
+                            new_sample.getSeverity(),
+                            new_sample.getStatus(),
+                            (IEnumeratedMetaData)new_sample.getMetaData(),
+                            quality,
+                            ((IEnumeratedValue)new_sample).getValues());
+        else if (new_sample instanceof IIntegerValue)
+            new_sample = ValueFactory.createIntegerValue(now,
+                            new_sample.getSeverity(),
+                            new_sample.getStatus(),
+                            (INumericMetaData)new_sample.getMetaData(),
+                            quality,
+                            ((IIntegerValue)new_sample).getValues());
+        else if (new_sample instanceof IStringValue)
+            new_sample = ValueFactory.createStringValue(now,
+                            new_sample.getSeverity(),
+                            new_sample.getStatus(),
+                            quality,
+                            new_sample.format());
+        else
+            Plugin.logError("ModelItem cannot update timestamp of type " //$NON-NLS-1$
+                            + new_sample.getClass().getName());
+        samples.addLiveSample(new_sample);
+        // See if there are (new) units
+        IMetaData meta = new_sample.getMetaData();
+        if (meta instanceof INumericMetaData)
+        {
+            final String new_units =  ((INumericMetaData)meta).getUnits();
+            if (! units.equals(new_units))
+            {
+                units = new_units;
+                model.fireEntryLookChanged(this);
             }
         }
     }
-    
     
     /** @see IModelItem#getArchiveDataSources() */
     public final IArchiveDataSource[] getArchiveDataSources()
