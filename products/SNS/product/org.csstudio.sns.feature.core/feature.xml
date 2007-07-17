@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.core"
       label="CSS Core"
-      version="1.0.1"
+      version="1.0.2"
       provider-name="Kay Kasemir"
       plugin="org.csstudio.sns.product">
 
