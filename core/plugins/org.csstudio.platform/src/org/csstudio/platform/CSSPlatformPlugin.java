@@ -21,6 +21,8 @@
  */
 package org.csstudio.platform;
 
+import java.util.Collection;
+
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -71,27 +73,17 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 * preferences.
 	 */
 	private void applySystemPropertyDefaults() {
-		// FIXME: fix code duplication (same code is in SystemPropertiesPreferencePage)
-		
-        IEclipsePreferences platformPrefs = new InstanceScope().getNode(
-                CSSPlatformPlugin.getDefault().getBundle().getSymbolicName());
-        Preferences systemPropertyPrefs =
-            platformPrefs.node("systemProperties");
-        try {
-            String[] keys = systemPropertyPrefs.keys();
-            for (String key : keys) {
-                String value = systemPropertyPrefs.get(key, "");
-                // the preferences are for defaults, so they are applied only
-                // if the property is not already set
-                if (System.getProperty(key) == null) {
-                    System.setProperty(key, value);
-                    CentralLogger.getInstance().debug(this, 
-                    		"Setting system property: " + key + "=" + value);
-                }
-            }
-        } catch (BackingStoreException e) {
-            // TODO: do something about it?
-        }
+		Collection<SystemPropertyPreferenceEntry> properties =
+			SystemPropertyPreferenceEntry.loadFromPreferences();
+		for (SystemPropertyPreferenceEntry entry : properties) {
+			// the preferences are for defaults, so they are applied only if
+			// the system property is not already set to some other value
+			if (System.getProperty(entry.getKey()) == null) {
+				System.setProperty(entry.getKey(), entry.getValue());
+				CentralLogger.getInstance().debug(this,
+						"Setting system property: " + entry);
+			}
+		}
 	}
 
 	/**

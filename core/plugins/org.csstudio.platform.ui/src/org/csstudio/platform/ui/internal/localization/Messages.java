@@ -39,6 +39,22 @@ public final class Messages extends NLS {
     public static String CssWorkbenchAdvisor_LoggedInAs;
 	public static String CssWorkbenchAdvisor_NotLoggedIn;
 
+	public static String SystemPropertiesPreferencePage_ABOUT_TEXT;
+
+	public static String SystemPropertiesPreferencePage_ADD_BUTTON;
+
+	public static String SystemPropertiesPreferencePage_KEY_COLUMN_LABEL;
+
+	public static String SystemPropertiesPreferencePage_REMOVE_BUTTON;
+
+	public static String SystemPropertiesPreferencePage_VALUE_COLUMN_LABEL;
+
+	public static String SystemPropertyDialog_KEY_LABEL;
+
+	public static String SystemPropertyDialog_TITLE;
+
+	public static String SystemPropertyDialog_VALUE_LABEL;
+
 	public static String WorkbenchActionBuilder_CSS_ALARM_MENU;
 
 	public static String WorkbenchActionBuilder_CSS_CONFIGURATION_MENU;

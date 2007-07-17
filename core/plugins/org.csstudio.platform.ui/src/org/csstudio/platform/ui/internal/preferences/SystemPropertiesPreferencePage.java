@@ -1,11 +1,13 @@
 package org.csstudio.platform.ui.internal.preferences;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.SystemPropertyPreferenceEntry;
+import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.Dialog;
@@ -13,10 +15,12 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
@@ -51,6 +55,19 @@ import org.osgi.service.prefs.Preferences;
 public final class SystemPropertiesPreferencePage extends PreferencePage
         implements IWorkbenchPreferencePage {
     
+	/**
+	 * Column property name for the key column.
+	 */
+	private static final String KEY = "key"; //$NON-NLS-1$
+	
+	/**
+	 * Column property name for the value column.
+	 */
+	private static final String VALUE = "value"; //$NON-NLS-1$
+	
+	/**
+	 * Model representing the preference entries.
+	 */
     private PropertiesModel _properties;
 
     /**
@@ -70,6 +87,12 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         contents.setLayout(layout);
         contents.setFont(parent.getFont());
         
+        Label about = new Label(contents, SWT.WRAP);
+        about.setText(Messages.SystemPropertiesPreferencePage_ABOUT_TEXT);
+        GridData data = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1);
+        data.widthHint = 300;
+        about.setLayoutData(data);
+        
         final TableViewer viewer = new TableViewer(contents,
                 SWT.MULTI | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
@@ -78,25 +101,32 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         viewer.setLabelProvider(new PropertiesLabelProvider());
         
         Button addButton = new Button(contents, SWT.PUSH);
-        addButton.setText("Add ...");
+        addButton.setText(Messages.SystemPropertiesPreferencePage_ADD_BUTTON);
+        data = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
+        data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+        addButton.setLayoutData(data);
         addButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 Shell shell = e.widget.getDisplay().getActiveShell();
                 SystemPropertyDialog dlg = new SystemPropertyDialog(shell);
                 if (dlg.open() == Window.OK) {
                     SystemPropertyPreferenceEntry entry =
-                        new SystemPropertyPreferenceEntry(dlg._key, dlg._value);
+                        new SystemPropertyPreferenceEntry(dlg.getKey(), dlg.getValue());
                     _properties.add(entry);
                 }
             }
         });
         
-        Button removeButton = new Button(contents, SWT.PUSH);
-        removeButton.setText("Remove");
+        final Button removeButton = new Button(contents, SWT.PUSH);
+        removeButton.setText(Messages.SystemPropertiesPreferencePage_REMOVE_BUTTON);
+        data = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
+        data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+        removeButton.setLayoutData(data);
+        removeButton.setEnabled(false);
         removeButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 IStructuredSelection selection =
                     (IStructuredSelection) viewer.getSelection();
                 for (Iterator i = selection.iterator(); i.hasNext(); ) {
@@ -106,6 +136,14 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
                 }
             }
         });
+
+        // Add a selection listener to the viewer that will enable the
+        // "Remove" button when at least one item is selected in the table.
+        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(final SelectionChangedEvent event) {
+				removeButton.setEnabled(!event.getSelection().isEmpty());
+			}
+        });
         
         _properties = new PropertiesModel();
         _properties.loadFromPreferences();
@@ -114,6 +152,10 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         return contents;
     }
     
+    /**
+     * Stores the entries in the preferences.
+     * @return <code>true</code>.
+     */
     @Override
     public boolean performOk() {
         _properties.storeToPreferences();
@@ -129,40 +171,41 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         
-        viewer.setColumnProperties(new String[] {"key", "value"});
+        viewer.setColumnProperties(new String[] {KEY, VALUE});
         TableColumn col;
         // first column: key
         col = new TableColumn(table, SWT.LEFT);
         col.setWidth(200);
-        col.setText("Key");
+        col.setText(Messages.SystemPropertiesPreferencePage_KEY_COLUMN_LABEL);
         // second column: value
         col = new TableColumn(table, SWT.LEFT);
         col.setWidth(150);
-        col.setText("Value");
+        col.setText(Messages.SystemPropertiesPreferencePage_VALUE_COLUMN_LABEL);
         
         CellEditor[] editors = new CellEditor[2];
         editors[0] = new TextCellEditor(table);
         editors[1] = new TextCellEditor(table);
         viewer.setCellEditors(editors);
         
+        // Add a cell modifier so values can be edited inline in the table
         viewer.setCellModifier(new ICellModifier() {
-            public boolean canModify(Object element, String property) {
-                return (property.equals("key") || property.equals("value"));
+            public boolean canModify(final Object element, final String property) {
+                return property.equals(KEY) || property.equals(VALUE);
             }
 
-            public Object getValue(Object element, String property) {
+            public Object getValue(final Object element, final String property) {
                 SystemPropertyPreferenceEntry entry =
                     (SystemPropertyPreferenceEntry) element;
-                if ("key".equals(property)) {
+                if (KEY.equals(property)) {
                     return entry.getKey();
-                } else if ("value".equals(property)) {
+                } else if (VALUE.equals(property)) {
                     return entry.getValue();
                 } else {
                     return null;
                 }
             }
 
-            public void modify(Object element, String property, Object value) {
+            public void modify(Object element, final String property, final Object value) {
                 // this is to handle the case when we get an SWT item
                 if (element instanceof Item) {
                     element = ((Item) element).getData();
@@ -170,9 +213,9 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
                 
                 SystemPropertyPreferenceEntry entry =
                     (SystemPropertyPreferenceEntry) element;
-                if ("key".equals(property)) {
+                if (KEY.equals(property)) {
                     entry.setKey((String) value);
-                } else if ("value".equals(property)) {
+                } else if (VALUE.equals(property)) {
                     entry.setValue((String) value);
                 }
                 viewer.update(entry, null);
@@ -188,131 +231,63 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         // nothing to do
     }
     
-    private static class SystemPropertyDialog extends Dialog {
-    	
-    	private String _key = "";
-    	private String _value = "";
-
-        protected SystemPropertyDialog(Shell parentShell) {
-            super(parentShell);
-        }
-        
-        @Override
-        protected void configureShell(Shell newShell) {
-            super.configureShell(newShell);
-            newShell.setText("System Property");
-        }
-        
-        @Override
-        protected Control createDialogArea(Composite parent) {
-            Composite parentComposite = (Composite) super.createDialogArea(parent);
-            
-            Composite contents = new Composite(parentComposite, SWT.NULL);
-            GridLayout layout = new GridLayout();
-            layout.marginHeight = 0;
-            layout.marginWidth = 0;
-            layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-            layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-            layout.numColumns = 2;
-            contents.setLayout(layout);
-            contents.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true));
-            contents.setFont(parentComposite.getFont());
-            
-            Label keyLabel = new Label(contents, SWT.NULL);
-            keyLabel.setText("Key:");
-            final Text keyText = new Text(contents, SWT.SINGLE | SWT.BORDER);
-            GridData layoutData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
-            layoutData.widthHint = 250;
-            keyText.setLayoutData(layoutData);
-            keyText.setText(_key);
-            keyText.addModifyListener(new ModifyListener() {
-            	public void modifyText(ModifyEvent e) {
-            		if (e.widget == keyText) {
-            			_key = keyText.getText();
-            		}
-            	}
-            });
-            
-            Label valueLabel = new Label(contents, SWT.NULL);
-            valueLabel.setText("Value:");
-            final Text valueText = new Text(contents, SWT.SINGLE | SWT.BORDER);
-            valueText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-            valueText.setText(_value);
-            valueText.addModifyListener(new ModifyListener() {
-            	public void modifyText(ModifyEvent e) {
-            		if (e.widget == valueText) {
-            			_value = valueText.getText();
-            		}
-            	}
-            });
-
-            return contents;
-        }
-        
-        void setKey(String key) {
-        	_key = key;
-        }
-        
-        void setValue(String value) {
-        	_value = value;
-        }
-    }
     
+    /**
+     * Model representing the preference entries. An instance of this class is
+     * used as the input element for the content provider. It will notify the
+     * content provider when the entries in the model are changed.
+     */
     private static class PropertiesModel {
-        private List<SystemPropertyPreferenceEntry> _entries =
+    	/**
+    	 * The entries.
+    	 */
+        private Collection<SystemPropertyPreferenceEntry> _entries =
             new ArrayList<SystemPropertyPreferenceEntry>();
+        
+        /**
+         * Content provider that gets notified when the entries are updated.
+         */
         private PropertiesContentProvider _listener;
         
-        private void setListener(PropertiesContentProvider provider) {
+        /**
+         * Sets the content provider that will be notified when the entries
+         * are updated.
+         * @param provider the content provider.
+         */
+        private void setListener(final PropertiesContentProvider provider) {
             _listener = provider;
         }
         
+        /**
+         * Loads the entries from the preferences.
+         */
         private void loadFromPreferences() {
-            IEclipsePreferences platformPrefs = getPlatformPreferences();
-            Preferences systemPropertyPrefs =
-                platformPrefs.node("systemProperties");
-            try {
-                String[] keys = systemPropertyPrefs.keys();
-                for (String key : keys) {
-                    String value = systemPropertyPrefs.get(key, "");
-                    SystemPropertyPreferenceEntry entry =
-                        new SystemPropertyPreferenceEntry(key, value);
-                    add(entry);
-                }
-            } catch (BackingStoreException e) {
-                // TODO: do something about it?
-            }
+            _entries = SystemPropertyPreferenceEntry.loadFromPreferences();
         }
 
-        private IEclipsePreferences getPlatformPreferences() {
-            return new InstanceScope().getNode(
-                    CSSPlatformPlugin.getDefault().getBundle().getSymbolicName());
-        }
-        
+        /**
+         * Stores the entries in the preferences.
+         */
         private void storeToPreferences() {
-            IEclipsePreferences platformPrefs = getPlatformPreferences();
-            Preferences systemPropertyPrefs =
-                platformPrefs.node("systemProperties");
-            // first, remove all of the existing entries
-            try {
-                systemPropertyPrefs.clear();
-            } catch (BackingStoreException e) {
-                // TODO Auto-generated catch block
-            }
-            // now write the new values into the node
-            for (SystemPropertyPreferenceEntry entry : _entries) {
-                systemPropertyPrefs.put(entry.getKey(), entry.getValue());
-            }
+        	SystemPropertyPreferenceEntry.storeToPreferences(_entries);
         }
 
-        private void add(SystemPropertyPreferenceEntry entry) {
+        /**
+         * Adds an entry to this model.
+         * @param entry the entry.
+         */
+        private void add(final SystemPropertyPreferenceEntry entry) {
             _entries.add(entry);
             if (_listener != null) {
                 _listener.add(entry);
             }
         }
         
-        private void remove(SystemPropertyPreferenceEntry entry) {
+        /**
+         * Removes an entry from this model.
+         * @param entry the entry.
+         */
+        private void remove(final SystemPropertyPreferenceEntry entry) {
             _entries.remove(entry);
             if (_listener != null) {
                 _listener.remove(entry);
@@ -320,11 +295,20 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         }
     }
 
+    /**
+     * Content provider for the table.
+     */
     private static class PropertiesContentProvider implements IStructuredContentProvider {
 
-        private TableViewer _viewer;
+        /**
+         * The table viewer to which this provider provides content.
+         */
+    	private TableViewer _viewer;
         
-        public Object[] getElements(final Object inputElement) {
+        /**
+         * {@inheritDoc}
+         */
+    	public Object[] getElements(final Object inputElement) {
             if (inputElement instanceof PropertiesModel) {
                 return ((PropertiesModel) inputElement)._entries.toArray();
             } else {
@@ -332,23 +316,40 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
             }
         }
 
-        private void remove(SystemPropertyPreferenceEntry entry) {
+        /**
+         * Notifies this content provider that an entry was removed from the
+         * underlying model.
+         * @param entry the entry that was removed.
+         */
+    	private void remove(final SystemPropertyPreferenceEntry entry) {
             if (_viewer != null) {
                 _viewer.remove(entry);
             }
         }
 
-        private void add(SystemPropertyPreferenceEntry entry) {
+    	/**
+    	 * Notifies this content provider that an entry was added to the
+    	 * underlying model.
+    	 * @param entry the entry that was added.
+    	 */
+        private void add(final SystemPropertyPreferenceEntry entry) {
             if (_viewer != null) {
                 _viewer.add(entry);
             }
         }
 
+        /**
+         * Disposes of this content provider.
+         */
         public void dispose() {
             // nothing to do
         }
 
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        /**
+         * {@inheritDoc}
+         */
+        public void inputChanged(final Viewer viewer, final Object oldInput,
+        		final Object newInput) {
             if (viewer instanceof TableViewer) {
                 _viewer = (TableViewer) viewer;
             }
@@ -361,14 +362,23 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         }
     }
 
+    /**
+     * Label provider for the table.
+     */
     private static class PropertiesLabelProvider extends LabelProvider
             implements ITableLabelProvider {
 
-        public Image getColumnImage(Object element, int columnIndex) {
+        /**
+         * {@inheritDoc}
+         */
+    	public Image getColumnImage(final Object element, final int columnIndex) {
             return null;  // no images
         }
 
-        public String getColumnText(Object element, int columnIndex) {
+        /**
+         * {@inheritDoc}
+         */
+    	public String getColumnText(final Object element, final int columnIndex) {
             if (element instanceof SystemPropertyPreferenceEntry) {
                 SystemPropertyPreferenceEntry entry =
                     (SystemPropertyPreferenceEntry) element;
