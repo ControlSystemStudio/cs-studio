@@ -5,9 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Vector;
 
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 public class CollectorSupervisor {
 	
