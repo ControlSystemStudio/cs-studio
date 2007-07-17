@@ -14,6 +14,10 @@ public class Messages extends NLS
     public static String Label_Autoscale;
     public static String Label_Show_Request_Types;
     public static String PageTitle;
+
+    public static String PlotBins;
+
+    public static String PlotBinsError;
     public static String StartTime;
     public static String URLInput_Message;
     public static String URLInput_Title;

@@ -1,10 +1,14 @@
 package org.csstudio.trends.databrowser.preferences;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.IWorkbench;
 import org.csstudio.trends.databrowser.Plugin;
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /** Preference page for <code>Prederences</code>.
  *  <p>
@@ -23,6 +27,9 @@ import org.csstudio.trends.databrowser.Plugin;
 public class PreferencePage extends FieldEditorPreferencePage implements
                 IWorkbenchPreferencePage
 {
+    private static final int MAX_BINS = 10000;
+    private static final int MIN_BINS = 100;
+
     public PreferencePage()
     {
         super(GRID);
@@ -47,6 +54,14 @@ public class PreferencePage extends FieldEditorPreferencePage implements
                         Messages.Label_Autoscale, parent));
         addField(new BooleanFieldEditor(Preferences.P_SHOW_REQUEST_TYPES,
                         Messages.Label_Show_Request_Types, parent));
+        
+        final IntegerFieldEditor plot_bins = new IntegerFieldEditor(Preferences.P_PLOT_BINS,
+                                Messages.PlotBins, parent);
+        plot_bins.setValidRange(MIN_BINS, MAX_BINS);
+        plot_bins.setErrorMessage(NLS.bind(Messages.PlotBinsError,
+                                           MIN_BINS, MAX_BINS));
+        addField(plot_bins);
+        
         addField(new StringFieldEditor(Preferences.P_START_TIME_SPEC,
                                         Messages.StartTime, parent));
         addField(new StringFieldEditor(Preferences.P_END_TIME_SPEC,

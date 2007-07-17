@@ -8,6 +8,7 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
+import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -58,8 +59,7 @@ class ArchiveFetchJob extends Job
                 
                 String request_type;
                 Object[] request_parms;
-                // TODO bins from preferences
-                final int bins = 800;
+                final int bins = Preferences.getPlotBins();
                 if (item.getRequestType() == IPVModelItem.RequestType.RAW)
                 {
                     request_type = ArchiveServer.GET_RAW;

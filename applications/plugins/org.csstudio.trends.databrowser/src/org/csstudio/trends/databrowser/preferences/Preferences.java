@@ -27,6 +27,7 @@ public class Preferences
      *  Might have to change this one...
      */
     private static final String LIST_SEPARATOR = "*";
+    
     /** Separator for the pieces of an archive data source. */
     private static final char ARCHIVE_SEPARATOR = '|';
 
@@ -39,6 +40,9 @@ public class Preferences
     /** Identifier for the auto-scale preference. */
     public static final String P_AUTOSCALE = "autoscale";
 
+    /** Identifier for the plot bin preference. */
+    public static final String P_PLOT_BINS = "plot_bins";
+    
     /** Identifier for the show-request-types preference. */
     public static final String P_SHOW_REQUEST_TYPES = "show_request_types";
 
@@ -69,6 +73,12 @@ public class Preferences
         return store.getBoolean(P_AUTOSCALE);
     }
 
+    static public int getPlotBins()
+    {
+        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        return store.getInt(P_PLOT_BINS);
+    }
+    
     /** @return Default auto-scale setting */
     static public boolean getShowRequestTypes()
     {
