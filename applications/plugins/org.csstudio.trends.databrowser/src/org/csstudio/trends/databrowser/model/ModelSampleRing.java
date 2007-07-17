@@ -1,10 +1,11 @@
 package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.platform.data.IValue;
-import org.csstudio.swt.chart.ChartSampleSequence;
 
-/** Synchronized circular buffer implementation of a <code>ChartSampleSequence</code>.
- *  @see ChartSampleSequence
+/** Circular buffer, meant for 'live' samples.
+ *  <p>
+ *  Not synchronized, since all access is via {@link ModelSamples}.
+ *  which handles the locking.
  *  
  *  @author Kay Kasemir
  */
@@ -35,24 +36,16 @@ public class ModelSampleRing
     }
     
     /** Clear sample memory */
-    synchronized public void clear()
+    public void clear()
     {
         start = size = 0;
     }
 
-    /** Remove memory associated with this object. */
-    synchronized public void dispose()
-    {
-        clear();
-        capacity = 0;
-        samples = null;
-    }
-    
     /** Set new capacity.
      *  <p>
      *  Tries to preserve newest samples.
      */
-    synchronized public void setCapacity(int new_capacity)
+    public void setCapacity(int new_capacity)
     {
         ModelSample new_samples[] = new ModelSample[new_capacity];
         // Copy old samples over
@@ -75,33 +68,32 @@ public class ModelSampleRing
     }
 
     /** @return Returns the current capacity.
-     *  @see #size
+     *  @see #size()
      */
-    synchronized public int getCapacity()
+    public int getCapacity()
     {
         return capacity;
     }
     
     /** @return Returns the number of valid entries.
-     *  @see org.csstudio.swt.chart.ChartSampleSequence#size()
      *  @see #getCapacity()
      */
-    synchronized public int size()
+    public int size()
     {
         return size;
     }
 
-    // @see Series
-    synchronized public ModelSample get(int i)
+    /** @return Sample at given index. */
+    public ModelSample get(int i)
     {
-        if (i<0 || i >= size())
+        if (i<0 || i >= size)
             throw new ArrayIndexOutOfBoundsException(i);
         i = (start + i) % capacity;
         return samples[i];
     }
 
     /** Add a new sample. */
-    synchronized public void add(IValue sample, String source)
+    public void add(IValue sample, String source)
     {
         // Obtain index of next element
         if (size >= capacity)
