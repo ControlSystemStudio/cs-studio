@@ -68,10 +68,14 @@ public class AlarmLogView extends LogView {
 	@Override
 	public void createPartControl(Composite parent) {
 
+		//in alarm table the 'ack' column must be the first one!
+		String preferenceColumnString = JmsLogsPlugin.getDefault().getPluginPreferences()
+		.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm);
+		
+		preferenceColumnString = "Ack;" + preferenceColumnString;
+		
 		//read the column names from the preference page
-		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
-				.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(
-						";");
+		columnNames = preferenceColumnString.split(";");
 
 		//create the table model 
 		jmsml = new JMSAlarmMessageList(columnNames);

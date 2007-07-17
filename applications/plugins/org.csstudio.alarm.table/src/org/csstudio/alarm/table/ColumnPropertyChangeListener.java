@@ -57,38 +57,50 @@ public class ColumnPropertyChangeListener implements IPropertyChangeListener {
 	 */
 	public void propertyChange(PropertyChangeEvent event) {
 		
-		JmsLogsPlugin.logInfo("Column settings changed");
-
-		String [] columnNames = JmsLogsPlugin
-				.getDefault()
-				.getPluginPreferences()
-				.getString(p_string)
-				.split(";"); //$NON-NLS-1$
-		jlv.setColumnNames(columnNames);
-
-		Table t = jlv.getTable();
-		TableColumn[] tc = t.getColumns();
-
-		int diff = columnNames.length - tc.length;
-
-		if (diff > 0) {
-			for (int i = 0; i < diff; i++) {
-				TableColumn tableColumn = new TableColumn(t, SWT.CENTER);
-				tableColumn.setText(new Integer(i).toString());
-				tableColumn.setWidth(100);
-			}
-		} else if (diff < 0) {
-			diff = (-1) * diff;
-			for (int i = 0; i < diff; i++) {
-				tc[i].dispose();
-			}
-		}
-		tc = t.getColumns();
-
-		for (int i = 0; i < tc.length; i++) {
-			tc[i].setText(columnNames[i]);
-		}
-		jlv.refresh();
+//		JmsLogsPlugin.logInfo("Column settings changed");
+//
+//		String [] columnNames = JmsLogsPlugin
+//				.getDefault()
+//				.getPluginPreferences()
+//				.getString(p_string)
+//				.split(";"); //$NON-NLS-1$
+////		jlv.setColumnNames(columnNames);
+//
+//		Table t = jlv.getTable();
+//		TableColumn[] tc = t.getColumns();
+//
+//		for (TableColumn column : tc) {
+//			column.dispose();
+//		}
+//		
+//		for (String columnName : columnNames) {
+//			TableColumn tableColumn = new TableColumn(t, SWT.CENTER);
+//			tableColumn.setText(columnName);
+//			tableColumn.setWidth(100);
+//		}
+//		
+//	
+//		
+////		int diff = columnNames.length - tc.length;
+////
+////		if (diff > 0) {
+////			for (int i = 0; i < diff; i++) {
+////				TableColumn tableColumn = new TableColumn(t, SWT.CENTER);
+////				tableColumn.setText(new Integer(i).toString());
+////				tableColumn.setWidth(100);
+////			}
+////		} else if (diff < 0) {
+////			diff = (-1) * diff;
+////			for (int i = 0; i < diff; i++) {
+////				tc[i].dispose();
+////			}
+////		}
+////		tc = t.getColumns();
+////
+////		for (int i = 0; i < tc.length; i++) {
+////			tc[i].setText(columnNames[i]);
+////		}
+//		jlv.refresh(true);
 
 	}
 
