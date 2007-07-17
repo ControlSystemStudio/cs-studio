@@ -16,15 +16,15 @@ public class DefaultColors
         {  21,  21, 196 }, // blue
         { 242,  26,  26 }, // red
         {  33, 179,  33 }, // green
-        { 255, 190,   0 }, // yellow
-        { 214,   0, 255 }, // violett
+        { 255, 190,   0 }, // (darkish) yellow
+        { 128,   0, 255 }, // violett
         {   0,   0,   0 }, // black
         { 243, 132, 132 }, // peachy
         {   0, 255,  11 }, // neon green
         {   0, 214, 255 }, // neon blue
         { 114,  40,   3 }, // brown
-        { 255,   0, 240 }, // orange
-        { 131, 153,  36 }, // purple
+        { 255,   0, 240 }, // pink
+        { 219, 128,   4 }, // orange
     };
 
     /**
