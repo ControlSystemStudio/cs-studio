@@ -38,11 +38,13 @@ public class Messages extends NLS {
 	public static String ExpertSearchDialog_Button_And;
 
 	public static String ExpertSearchDialog_Button_Or;
+    
+    public static String ExpertSearchDialog_Button_Del;
 
 	public static String ExpertSearchDialog_Label_And;
 
 	public static String ExpertSearchDialog_Label_Or;
-
+    
 	public static String JMSPreferencePage_ALARM_PRIMERY_SERVER;
 
 	public static String JMSPreferencePage_ALARM_SECONDARY_SERVER;

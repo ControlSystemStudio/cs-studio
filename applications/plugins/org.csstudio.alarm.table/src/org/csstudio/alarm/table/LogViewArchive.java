@@ -81,7 +81,12 @@ public class LogViewArchive extends ViewPart {
 	private Date fromTime;
 	private Date toTime;
 	
+    private ITimestamp _startTime;
+    private ITimestamp _endTime;
+
 	private ColumnPropertyChangeListener cl;
+    
+    private String filter= ""; //$NON-NLS-1$
 
 	public void createPartControl(Composite parent) {
 
@@ -253,24 +258,30 @@ public class LogViewArchive extends ViewPart {
 		bSearch.setText(Messages.getString("LogViewArchive_expert")); //$NON-NLS-1$
 
 		bSearch.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+
+            public void widgetSelected(SelectionEvent e) {
 				Date fromDate, toDate;
 				if((fromDate = getFromTime())==null)
 					fromDate = (new Date(new Date().getTime()-24*60*60*1000));
 
 				if((toDate = getToTime())==null)
 					toDate = (new Date(new Date().getTime()));
+				if(_startTime==null){
+				    _startTime = TimestampFactory.now(); //new Timestamp(fromDate.getTime()/1000);
+                }
+                if(_endTime==null){
+                    _endTime = TimestampFactory.now(); //new Timestamp((toDate.getTime()) / 1000);
+                }
 
-				ITimestamp start = TimestampFactory.now(); //new Timestamp(fromDate.getTime()/1000);
-				ITimestamp end = TimestampFactory.now(); //new Timestamp((toDate.getTime()) / 1000);
+				ExpertSearchDialog dlg = new ExpertSearchDialog(parentShell, _startTime, _endTime, filter);
 
-				ExpertSearchDialog dlg = new ExpertSearchDialog(parentShell, start, end);
-				String filter= ""; //$NON-NLS-1$
 				GregorianCalendar to = new GregorianCalendar();
 				GregorianCalendar from = (GregorianCalendar) to.clone();
 				if (dlg.open() == ExpertSearchDialog.OK) {
-					double low = dlg.getStart().toDouble();
-					double high = dlg.getEnd().toDouble();
+                    _startTime = dlg.getStart();
+                    _endTime = dlg.getEnd();
+					double low = _startTime.toDouble();
+					double high = _endTime.toDouble();
 					if (low < high) {
 						from.setTimeInMillis((long) low * 1000);
 						to.setTimeInMillis((long) high * 1000);

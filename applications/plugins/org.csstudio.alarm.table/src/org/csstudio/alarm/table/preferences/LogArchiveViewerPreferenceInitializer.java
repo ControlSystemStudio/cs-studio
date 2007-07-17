@@ -1,5 +1,7 @@
 package org.csstudio.alarm.table.preferences;
 
+import java.text.SimpleDateFormat;
+
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -35,7 +37,8 @@ public class LogArchiveViewerPreferenceInitializer extends AbstractPreferenceIni
 				"VALUE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 				"DESTINATION" //$NON-NLS-1$
 		);
-		store.setDefault(LogArchiveViewerPreferenceConstants.DATE_FORMAT,"E d-MMMM-yyyy H:mm:ss"); //$NON-NLS-1$
+        store.setDefault(LogArchiveViewerPreferenceConstants.DATE_FORMAT,"yyyy-MM-dd HH:mm:ss.S"); //$NON-NLS-1$
+//		store.setDefault(LogArchiveViewerPreferenceConstants.DATE_FORMAT,"E d-MMMM-yyyy H:mm:ss"); //$NON-NLS-1$
 	}
 
 }
