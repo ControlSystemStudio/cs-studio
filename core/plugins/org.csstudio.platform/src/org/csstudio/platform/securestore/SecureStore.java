@@ -20,6 +20,12 @@ import org.csstudio.platform.logging.CentralLogger;
 /**
  * Service that provides an encrypted store for login and other information.
  * 
+ * <p>Note that the secure store cannot guarantee that information stored in
+ * the store can be retrieved later. The information will, for example, become
+ * inaccessible if the user changes his password. The store is reset in this
+ * case. For clients using the secure store, this means that they must not
+ * assume that the store will always return previously stored information.
+ * 
  * @author Anze Vodovnik, Joerg Rathlev
  */
 public final class SecureStore {
