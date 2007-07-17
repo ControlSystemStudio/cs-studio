@@ -24,8 +24,7 @@ public class SysMonView extends ViewPart
     private SysInfoBuffer sysinfos = new SysInfoBuffer();
     
     // GUI Elements
-    private Text free;
-    private Text total;
+    private Text free, total, max;
     private PlotWidget plot;
 
     /** Millisecs between updates */
@@ -51,7 +50,8 @@ public class SysMonView extends ViewPart
         
         // ........ Plot .......
         // Total: __total__
-        // Free:  __free___ [GC]
+        // Free:  __free___
+        // Max:   __max____ [GC]
         plot = new PlotWidget(parent, 0);
         plot.setSamples(sysinfos);
         gd = new GridData();
@@ -79,7 +79,7 @@ public class SysMonView extends ViewPart
         run_gc.setText(Messages.SysMon_GCLabel);
         run_gc.setToolTipText(Messages.SysMon_GC_TT);
         gd = new GridData();
-        gd.verticalSpan = 2;
+        gd.verticalSpan = 3;
         gd.verticalAlignment = SWT.BOTTOM;
         run_gc.setLayoutData(gd);
 
@@ -95,6 +95,18 @@ public class SysMonView extends ViewPart
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         free.setLayoutData(gd);
+        
+        // New Row
+        l = new Label(parent, 0);
+        l.setText(Messages.SysMon_MaxLabel);
+        l.setLayoutData(new GridData());
+        
+        max = new Text(parent, SWT.READ_ONLY);
+        max.setToolTipText(Messages.SysMon_Max_TT);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        max.setLayoutData(gd);
         
         run_gc.addSelectionListener(new SelectionAdapter()
         {
@@ -123,8 +135,9 @@ public class SysMonView extends ViewPart
         
         final SysInfo info = new SysInfo();
         sysinfos.add(info);
-        free.setText(String.format(Messages.SysMon_FreeFormat, info.getFreeMB()));
-        total.setText(String.format(Messages.SysMon_TotalFormat, info.getTotalMB()));
+        free.setText(String.format(Messages.SysMon_MemFormat, info.getFreeMB()));
+        total.setText(String.format(Messages.SysMon_MemFormat, info.getTotalMB()));
+        max.setText(String.format(Messages.SysMon_MemFormat, info.getMaxMB()));
         plot.redraw();
         Display.getDefault().timerExec(update_millisec, updater);
     }

@@ -9,12 +9,14 @@ public class SysInfo
 
     final double freeMB;
     final double totalMB;
+    final double maxMB;
     
     public SysInfo()
     {
         final Runtime runtime = Runtime.getRuntime();
         freeMB = runtime.freeMemory()/MB;
         totalMB = runtime.totalMemory()/MB;
+        maxMB = runtime.maxMemory()/MB;
     }
 
     /** @return free memory in megabytes */
@@ -23,9 +25,15 @@ public class SysInfo
         return freeMB;
     }
 
-    /** @return total memory in megabytes */
+    /** @return total application memory in megabytes */
     public final double getTotalMB()
     {
         return totalMB;
+    }
+
+    /** @return total Java memory in megabytes */
+    public final double getMaxMB()
+    {
+        return maxMB;
     }
 }
