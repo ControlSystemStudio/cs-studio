@@ -21,8 +21,10 @@ class ArchiveFetchJob extends Job
     private IPVModelItem item;
     private ITimestamp start, end;
     
-    /** Create job that searches given server's keys for pattern,
-     *  then notifies view about received names.
+    /** Construct job that fetches data.
+     *  @param item Item for which to fetch samples
+     *  @param start Start time
+     *  @param end End time
      */
     public ArchiveFetchJob(IPVModelItem item, ITimestamp start, ITimestamp end)
     {
