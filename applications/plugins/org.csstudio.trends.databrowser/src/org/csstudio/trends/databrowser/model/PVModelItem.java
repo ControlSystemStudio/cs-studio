@@ -111,7 +111,7 @@ public class PVModelItem
     {
         if (pv.isRunning())
             pv.stop();
-        samples.dispose();
+        samples.clear();
         archives.clear();
         super.dispose();
     }
@@ -166,7 +166,7 @@ public class PVModelItem
     @SuppressWarnings("nls")
     public void addArchiveSamples(final String source, final IValue samples[])
     {
-        this.samples.add(source, samples);
+        this.samples.addArchiveSamples(source, samples);
     }
     
     /** @return Returns an XML string for this item.
