@@ -69,6 +69,7 @@ public class Plugin extends AbstractCssUiPlugin
     /** Add an exception to the plugin log. */
     public static void logException(String message, Throwable e)
     {
+        e.printStackTrace();
         log(IStatus.ERROR, message, e);
     }
 
