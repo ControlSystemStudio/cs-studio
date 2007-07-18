@@ -17,8 +17,8 @@ public void run() {
 	
 	while (runForever) {
 		
-		//BackgroundCollector.getInstance().getMemoryAvailableApplication().setValue( new Double(Runtime.getRuntime().totalMemory()));
-		//BackgroundCollector.getInstance().getMemoryUsedApplication().setValue( new Double(Runtime.getRuntime().maxMemory()));
+		BackgroundCollector.getInstance().getMemoryAvailableApplication().setValue( new Double(Runtime.getRuntime().totalMemory()/1000.0));
+		BackgroundCollector.getInstance().getMemoryUsedApplication().setValue( new Double(Runtime.getRuntime().maxMemory()/1000.0));
 //		TODO: find out how to fill these!
 //		before uncommenting: enable instanciating in BackgroundCollector!!
 //		BackgroundCollector.getInstance().getCpuUsedApplication().setValue
