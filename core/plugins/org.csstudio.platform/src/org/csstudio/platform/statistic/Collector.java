@@ -21,7 +21,7 @@ public class Collector {
 	private Double		meanValueRelativeFactor = 20.0;
 	private String		descriptor		= "desc. not set";
 	private String		application		= "applic. not set";
-	private boolean		continuousPrint	= true;
+	private boolean		continuousPrint	= false;
 	private Double		continuousPrintCount = 100.0;
 	private String		info = "info not defined";
 	private Double		hardLimit = -1.0;
@@ -67,7 +67,7 @@ public class Collector {
 		 * if background collector has not been started yet - do so
 		 */
 		if ( dummyBackgroundCollector == null) {
-			//dummyBackgroundCollector = BackgroundCollector.getInstance();
+			dummyBackgroundCollector = BackgroundCollector.getInstance();
 		}
 	}
 	
