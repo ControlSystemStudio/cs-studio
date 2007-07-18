@@ -61,6 +61,11 @@ public class Collector {
 		 * add alarm handler
 		 */
 		alarmHandler = new AlarmHandler();
+		
+		/*
+		 * if background collector has not been started yet - do so
+		 */
+		BackgroundCollector.getInstance();
 	}
 	
 	/*
