@@ -53,6 +53,12 @@ public class BackgroundCollector {
         memoryAvailableApplication.getAlarmHandler().setDeadband(10.0);
         memoryAvailableApplication.getAlarmHandler().setHighAbsoluteLimit(100000.0);	// biig number -> no alarm
         memoryAvailableApplication.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
+        
+        /*
+         * start background thread
+         *  and run with 10 sec timeout
+         */
+        new BackgroundCollectorThread( 10000);	
 	}
 	
 	
