@@ -32,12 +32,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import javax.print.attribute.standard.Severity;
-
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.IIntegerValue;
+import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
@@ -48,7 +46,6 @@ import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.data.IValue.Quality;
 import org.csstudio.platform.model.CentralItemFactory;
-import org.csstudio.platform.model.IProcessVariableWithArchive;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -117,6 +114,7 @@ import org.eclipse.swt.dnd.TransferData;
  *  ----------------------------------------------------
  * @author hrickens
  * @author $Author$
+ * @author Kay Kasemir  ILongValue
  * @version $Revision$
  * @since 06.06.2007
  */
@@ -124,7 +122,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
     /**
      * 
      */
-    private static final String TYPE_NAME = "pv_with_samples_data";
+    private static final String TYPE_NAME = "pv_with_samples_data"; //$NON-NLS-1$
     /**
      *
      */
@@ -157,7 +155,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
          /**
           * Integer Value Typ.
           */
-         Integer,
+         Long,
          /**
           * Enumerated Value Typ.
           */
@@ -192,7 +190,9 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
     /**
      * 
      */
-    private ProcessVariableWithSamplesTransfer() {
+    private ProcessVariableWithSamplesTransfer()
+    {
+        // prevent instantiation
     }
 
     /** @return The singleton instance of the ArchiveDataSourceTransfer. */
@@ -277,13 +277,13 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
                     fillValue(value, valueTyp);
                     IStringValue stringValue = (IStringValue) value;
                     send(stringValue.getValue());
-                }else if (value instanceof IIntegerValue) {
-                    valueTyp = ValueTyp.Integer;
+                }else if (value instanceof ILongValue) {
+                    valueTyp = ValueTyp.Long;
                     fillValue(value, valueTyp);
-                    IIntegerValue integerValue = (IIntegerValue) value;
-                    int[] ints = integerValue.getValues();
+                    ILongValue longValue = (ILongValue) value;
+                    long[] ints = longValue.getValues();
                     send(ints.length);
-                    for (int i : ints) {
+                    for (long i : ints) {
                         send(i);
                     }
                 }else if (value instanceof IEnumeratedValue) {
@@ -361,8 +361,8 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
      */
     private void fillHeader(final IProcessVariableWithSamples samples){
         send(samples.getName());
-        System.out.println("Name out: "+samples.getName());
-        System.out.println("TypeId out: "+samples.getTypeId());
+        System.out.println("Name out: "+samples.getName()); //$NON-NLS-1$
+        System.out.println("TypeId out: "+samples.getTypeId()); //$NON-NLS-1$
         send(samples.getTypeId());
         send(samples.size());
     }
@@ -371,6 +371,7 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
      * @param transferData recived Data
      * @return an Array of IProcessVariableWithSamples
      */
+    @SuppressWarnings("nls")
     @Override
     public Object nativeToJava(final TransferData transferData) {
         if (!isSupportedType(transferData)) {
@@ -458,20 +459,20 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
                             }
                             values[i] = ValueFactory.createDoubleValue(time, severity, status, inmd, quality, dValues);
                             break;
-                        case Integer:
+                        case Long:
                             valueSize = readIn.readInt();
-                            int[] iValues = new int[valueSize];
+                            long[] lValues = new long[valueSize];
                             for(int j=0;j<valueSize;j++){
-                                iValues[j] = readIn.readInt();
+                                lValues[j] = readIn.readLong();
                             }
-                            values[i] = ValueFactory.createIntegerValue(time, severity, status, inmd, quality, iValues);
+                            values[i] = ValueFactory.createLongValue(time, severity, status, inmd, quality, lValues);
                             break;
                         case String:
                             values[i] = ValueFactory.createStringValue(time, severity, status, quality,getString(readIn));
                             break;
                         case Enumerated:
                             valueSize = readIn.readInt();
-                            iValues = new int[valueSize];
+                            int iValues[] = new int[valueSize];
                             for(int j=0;j<valueSize;j++){
                                 iValues[j] = readIn.readInt();
                             }
@@ -559,17 +560,4 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
             // TODO Generate a Log Message        
         }
     }
-    
-    /**
-     * @param buffer write to sendStream 
-     */
-    private void send(final byte[] buffer) {
-        try {
-            _writeOut.writeInt(buffer.length);
-            _writeOut.write(buffer);
-        } catch (IOException e) {
-            
-        }
-    }
-
 }

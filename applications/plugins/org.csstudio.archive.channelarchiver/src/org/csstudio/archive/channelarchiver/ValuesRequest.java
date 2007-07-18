@@ -256,10 +256,10 @@ public class ValuesRequest
 			}
 			else if (type == TYPE_INT)
 			{
-				final int values[] = new int[count];
+				final long values[] = new long[count];
 				for (int vi=0; vi<count; ++vi)
-					values[vi] = (Integer)vv.get(vi);
-                samples[si] = ValueFactory.createIntegerValue(time, sevr, stat,
+					values[vi] = (long) ((Integer)vv.get(vi));
+                samples[si] = ValueFactory.createLongValue(time, sevr, stat,
                                 (INumericMetaData)meta, quality, values);
 			}
 			else 

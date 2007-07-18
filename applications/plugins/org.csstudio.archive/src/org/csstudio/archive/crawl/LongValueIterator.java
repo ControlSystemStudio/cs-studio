@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.IIntegerValue;
+import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
@@ -12,7 +12,7 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 
 /** Turns an Iterator over raw <code>Value</code>s into one over
- *  <code>IntegetValue</code>s.
+ *  <code>ILongValue</code>s.
  *  <p>
  *  Since many applications probably only need scalar data,
  *  this iterator might be more convenient than the underlying
@@ -27,7 +27,7 @@ import org.csstudio.platform.data.ValueFactory;
  *  @see org.csstudio.archive.crawl.DoubleValueIterator
  *  @author Kay Kasemir
  */
-public class IntegerValueIterator implements Iterator<IIntegerValue>
+public class LongValueIterator implements Iterator<ILongValue>
 {
     /** Special value to indicate samples without numeric value.
      *  <p>
@@ -45,7 +45,7 @@ public class IntegerValueIterator implements Iterator<IIntegerValue>
     
     static private INumericMetaData numeric_meta = null;
     
-    public IntegerValueIterator(ValueIterator raw_values)
+    public LongValueIterator(ValueIterator raw_values)
     {
         this.raw_values = raw_values;
     }
@@ -55,7 +55,7 @@ public class IntegerValueIterator implements Iterator<IIntegerValue>
         return raw_values.hasNext();
     }
 
-    public IIntegerValue next()
+    public ILongValue next()
     {
         final IValue sample = raw_values.next();
         // Check if meta data is INumericMetaData. Else, create one.
@@ -67,34 +67,34 @@ public class IntegerValueIterator implements Iterator<IIntegerValue>
                                 0.0, 0.0, 0.0, 0.0, 0, ""); //$NON-NLS-1$
             meta = numeric_meta;
         }
-        int num;
+        long num;
         if (sample.getSeverity().hasValue())
         {
             if (sample instanceof IDoubleValue)
-                num = (int)((IDoubleValue) sample).getValue();
-            else if (sample instanceof IIntegerValue)
-                num = ((IIntegerValue) sample).getValue();
+                num = (long)((IDoubleValue) sample).getValue();
+            else if (sample instanceof ILongValue)
+                num = ((ILongValue) sample).getValue();
             else if (sample instanceof IEnumeratedValue)
                 num = ((IEnumeratedValue) sample).getValue();
             else
             {   // Cannot decode that sample type as a number
-                return ValueFactory.createIntegerValue(sample.getTime(),
+                return ValueFactory.createLongValue(sample.getTime(),
                                     invalid_type,
                                     "<" + sample.getClass().getName() + ">",  //$NON-NLS-1$//$NON-NLS-2$
                                     (INumericMetaData)meta,
                                     IValue.Quality.Interpolated,
-                                    new int[] { INVALID }
+                                    new long[] { INVALID }
                                 );
             }
         }
         else // Value carries no value other than stat/sevr
             num = INVALID;
-        return ValueFactory.createIntegerValue(sample.getTime(),
+        return ValueFactory.createLongValue(sample.getTime(),
                              sample.getSeverity(),
                              sample.getStatus(),
                              (INumericMetaData)meta,
                              IValue.Quality.Interpolated,
-                             new int[] { num });
+                             new long[] { num });
     }
     
     public void remove()
