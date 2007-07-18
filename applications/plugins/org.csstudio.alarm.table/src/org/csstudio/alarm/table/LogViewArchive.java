@@ -33,18 +33,13 @@ import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.expertSearch.ExpertSearchDialog;
+import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
-import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
-import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.time.swt.StartEndDialog;
-
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -54,48 +49,52 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
 
 /**
- * Simple view more like console, used to write log messages
+ * Simple view more like console, used to write log messages.
  */
 public class LogViewArchive extends ViewPart {
 
+    /**  The Id of this Object. */
 	public static final String ID = LogViewArchive.class.getName();
 
-	private Shell parentShell = null;
+    /** The Parent Shell. */
+	private Shell _parentShell = null;
 
 	private JMSMessageList jmsml = null;
 
 	private JMSLogTableViewer jlv = null;
 
-	private String[] columnNames;
+    /** An Array whit the name of the Columns. */
+	private String[] _columnNames;
 
-	private Text timeFrom;
-	private Text timeTo;
+    /** Textfield witch contain the "from time". */
+	private Text _timeFrom;
+    /** Textfield witch contain the "to time". */
+	private Text _timeTo;
 
-	private Date fromTime;
-	private Date toTime;
-	
-    private ITimestamp _startTime;
-    private ITimestamp _endTime;
+    /** The selectet "from time". */ 
+    private ITimestamp _fromTime;
+    /** The selectet "to time". */
+    private ITimestamp _toTime;
 
 	private ColumnPropertyChangeListener cl;
     
-    private String filter= ""; //$NON-NLS-1$
+    /** The default / last filter. */
+    private String _filter= ""; //$NON-NLS-1$
 
-	public void createPartControl(Composite parent) {
+    /** {@inheritDoc} */
+	public final void createPartControl(final Composite parent) {
 
-		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
+		_columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(LogArchiveViewerPreferenceConstants.P_STRINGArch)
 				.split(";"); //$NON-NLS-1$
-		jmsml = new JMSMessageList(columnNames);
+		jmsml = new JMSMessageList(_columnNames);
 
-		parentShell = parent.getShell();
+		_parentShell = parent.getShell();
 
 		GridLayout grid = new GridLayout();
 		grid.numColumns = 1;
@@ -124,22 +123,22 @@ public class LogViewArchive extends ViewPart {
 		from.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		from.setLayout(new GridLayout(1, true));
 
-		timeFrom = new Text(from, SWT.SINGLE);
-		timeFrom.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
+		_timeFrom = new Text(from, SWT.SINGLE);
+		_timeFrom.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
 
-		timeFrom.setEditable(false);
-		timeFrom.setText("                            "); //$NON-NLS-1$
+		_timeFrom.setEditable(false);
+		_timeFrom.setText("                            "); //$NON-NLS-1$
 		Group to = new Group(comp, SWT.LINE_SOLID);
 		to.setText(Messages.getString("LogViewArchive_to")); //$NON-NLS-1$
 		to.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		to.setLayout(new GridLayout(1, true));
 
-		timeTo = new Text(to, SWT.SINGLE);
-		timeTo.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
-		timeTo.setEditable(false);
+		_timeTo = new Text(to, SWT.SINGLE);
+		_timeTo.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
+		_timeTo.setEditable(false);
 //		timeTo.setText("                              ");
 
-		jlv = new JMSLogTableViewer(parent, getSite(), columnNames, jmsml, 3,SWT.SINGLE | SWT.FULL_SELECTION);
+		jlv = new JMSLogTableViewer(parent, getSite(), _columnNames, jmsml, 3,SWT.SINGLE | SWT.FULL_SELECTION);
 		jlv.setAlarmSorting(false);
 		parent.pack();
 		
@@ -152,14 +151,46 @@ public class LogViewArchive extends ViewPart {
 		
 	}
 
-	private void create72hButton(Composite comp) {
+    /** 
+     * Create a Button to selet the last 24 hour.
+     * @param comp the parent Composite for the Button. 
+     */
+    private void create24hButton(final Composite comp) {
+        Button b24hSearch = new Button(comp, SWT.PUSH);
+        b24hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+                1, 1));
+        b24hSearch.setText(Messages.getString("LogViewArchive_day")); //$NON-NLS-1$
+
+        b24hSearch.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(final SelectionEvent e) {
+                ILogMessageArchiveAccess adba = new ArchiveDBAccess();
+                GregorianCalendar to = new GregorianCalendar();
+                GregorianCalendar from = (GregorianCalendar) to.clone();
+                from.add(GregorianCalendar.HOUR, -24);
+                showNewTime(from, to);
+                ArrayList<HashMap<String, String>> am = adba.getLogMessages(
+                        from, to);
+                jmsml.clearList();
+                jlv.refresh();
+                jmsml.addJMSMessageList(am);
+
+            }
+        });
+
+    }
+
+    /** 
+     * Create the a Button to selet the last 72 hour.
+     * @param comp the parent {@link Composite} for the Button. 
+     */
+	private void create72hButton(final Composite comp) {
 		Button b72hSearch = new Button(comp, SWT.PUSH);
 		b72hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
 		b72hSearch.setText(Messages.getString("LogViewArchive_3days")); //$NON-NLS-1$
 
 		b72hSearch.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
 				GregorianCalendar to = new GregorianCalendar();
 				GregorianCalendar from = (GregorianCalendar) to.clone();
@@ -173,15 +204,19 @@ public class LogViewArchive extends ViewPart {
 			}
 		});
 	}
-
-	private void createWeekButton(Composite comp) {
+    
+    /** 
+     * Create a Button to selet the last week.
+     * @param comp the parent Composite for the Button. 
+     */
+	private void createWeekButton(final Composite comp) {
 		Button b168hSearch = new Button(comp, SWT.PUSH);
 		b168hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
 		b168hSearch.setText(Messages.getString("LogViewArchive_week")); //$NON-NLS-1$
 
 		b168hSearch.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
 				GregorianCalendar to = new GregorianCalendar();
 				GregorianCalendar from = (GregorianCalendar) to.clone();
@@ -197,7 +232,11 @@ public class LogViewArchive extends ViewPart {
 
 	}
 
-	private void createFlexButton(Composite comp) {
+    /** 
+     * Create a Button that open a dialog to select required period.
+     * @param comp the parent Composite for the Button. 
+     */
+	private void createFlexButton(final Composite comp) {
 		Button bFlexSearch = new Button(comp, SWT.PUSH);
 		bFlexSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
@@ -214,7 +253,7 @@ public class LogViewArchive extends ViewPart {
 
 				ITimestamp start = TimestampFactory.now(); //new Timestamp(fromDate.getTime()/1000);
 				ITimestamp end = TimestampFactory.now(); //new Timestamp((toDate.getTime()) / 1000);
-				StartEndDialog dlg = new StartEndDialog(parentShell);
+				StartEndDialog dlg = new StartEndDialog(_parentShell);
 				if (dlg.open() == StartEndDialog.OK) {
 					String lowString = dlg.getStartSpecification();
 					String highString = dlg.getEndSpecification();
@@ -251,7 +290,7 @@ public class LogViewArchive extends ViewPart {
 
 	}
 
-	private void createSearchButton(Composite comp) {
+	private void createSearchButton(final Composite comp) {
 		Button bSearch = new Button(comp, SWT.PUSH);
 		bSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
@@ -259,29 +298,24 @@ public class LogViewArchive extends ViewPart {
 
 		bSearch.addSelectionListener(new SelectionAdapter() {
 
-            public void widgetSelected(SelectionEvent e) {
-				Date fromDate, toDate;
-				if((fromDate = getFromTime())==null)
-					fromDate = (new Date(new Date().getTime()-24*60*60*1000));
-
-				if((toDate = getToTime())==null)
-					toDate = (new Date(new Date().getTime()));
-				if(_startTime==null){
-				    _startTime = TimestampFactory.now(); //new Timestamp(fromDate.getTime()/1000);
+            public void widgetSelected(final SelectionEvent e) {
+				if(_fromTime==null){
+                    ITimestamp now = TimestampFactory.now();
+				    _fromTime = TimestampFactory.createTimestamp(now.seconds()-(24*60*60), now.nanoseconds()); //new Timestamp(fromDate.getTime()/1000);
                 }
-                if(_endTime==null){
-                    _endTime = TimestampFactory.now(); //new Timestamp((toDate.getTime()) / 1000);
+                if(_toTime==null){
+                    _toTime = TimestampFactory.now();
                 }
 
-				ExpertSearchDialog dlg = new ExpertSearchDialog(parentShell, _startTime, _endTime, filter);
+				ExpertSearchDialog dlg = new ExpertSearchDialog(_parentShell, _fromTime, _toTime, _filter);
 
 				GregorianCalendar to = new GregorianCalendar();
 				GregorianCalendar from = (GregorianCalendar) to.clone();
 				if (dlg.open() == ExpertSearchDialog.OK) {
-                    _startTime = dlg.getStart();
-                    _endTime = dlg.getEnd();
-					double low = _startTime.toDouble();
-					double high = _endTime.toDouble();
+                    _fromTime = dlg.getStart();
+                    _toTime = dlg.getEnd();
+					double low = _fromTime.toDouble();
+					double high = _toTime.toDouble();
 					if (low < high) {
 						from.setTimeInMillis((long) low * 1000);
 						to.setTimeInMillis((long) high * 1000);
@@ -291,16 +325,15 @@ public class LogViewArchive extends ViewPart {
 					}
 					showNewTime(from, to);
 
-					filter = dlg.getFilterString();
+					_filter = dlg.getFilterString();
 				}
 				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
 //				from.add(GregorianCalendar.HOUR, -504);
 				showNewTime(from, to);
 				ArrayList<HashMap<String, String>> am;
-				if(filter.trim().length()>0){
-					am = adba.getLogMessages(from, to, filter);
-				}
-				else{
+				if(_filter.trim().length()>0){
+					am = adba.getLogMessages(from, to, _filter);
+				}else{
 					am = adba.getLogMessages(from, to);
 				}
 				jmsml.clearList();
@@ -312,30 +345,6 @@ public class LogViewArchive extends ViewPart {
 	}
 
 
-	private void create24hButton(Composite comp) {
-		Button b24hSearch = new Button(comp, SWT.PUSH);
-		b24hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
-				1, 1));
-		b24hSearch.setText(Messages.getString("LogViewArchive_day")); //$NON-NLS-1$
-
-		b24hSearch.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
-				GregorianCalendar to = new GregorianCalendar();
-				GregorianCalendar from = (GregorianCalendar) to.clone();
-				from.add(GregorianCalendar.HOUR, -24);
-				showNewTime(from, to);
-				ArrayList<HashMap<String, String>> am = adba.getLogMessages(
-						from, to);
-				jmsml.clearList();
-				jlv.refresh();
-				jmsml.addJMSMessageList(am);
-
-			}
-		});
-
-	}
-
 	private void showNewTime(Calendar from, Calendar to) {
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		try{
@@ -344,12 +353,11 @@ public class LogViewArchive extends ViewPart {
 			sdf.applyPattern(JmsLogsPlugin.getDefault().getPreferenceStore().getDefaultString(LogArchiveViewerPreferenceConstants.DATE_FORMAT));
 			JmsLogsPlugin.getDefault().getPreferenceStore().setToDefault(LogArchiveViewerPreferenceConstants.DATE_FORMAT);
 		}
-		timeFrom.setText(sdf.format(from.getTime()));
-		fromTime = from.getTime();
-		timeTo.setText(sdf.format(to.getTime()));
-		timeFrom.getParent().getParent().redraw();
-		toTime = to.getTime();
-
+		_timeFrom.setText(sdf.format(from.getTime()));
+        _fromTime = TimestampFactory.fromCalendar(from);
+		_timeTo.setText(sdf.format(to.getTime()));
+		_timeFrom.getParent().getParent().redraw();
+        _toTime = TimestampFactory.fromCalendar(to);
 	}
 
 	public void setFocus() {
@@ -363,11 +371,11 @@ public class LogViewArchive extends ViewPart {
 
 
 	public Date getFromTime(){
-		return fromTime;
+		return _fromTime.toCalendar().getTime();
 
 	}
 	public Date getToTime(){
-		return toTime;
+		return _toTime.toCalendar().getTime();
 
 	}
 }

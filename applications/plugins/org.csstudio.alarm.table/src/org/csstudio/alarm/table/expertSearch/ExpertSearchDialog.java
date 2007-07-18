@@ -8,8 +8,13 @@ import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.util.time.AbsoluteTimeParser;
+import org.csstudio.util.time.RelativeTime;
+import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.time.swt.CalendarWidget;
 import org.csstudio.util.time.swt.CalendarWidgetListener;
+import org.csstudio.util.time.swt.RelativeTimeWidget;
+import org.csstudio.util.time.swt.RelativeTimeWidgetListener;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,6 +30,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 /**
  * 
@@ -33,7 +40,7 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision$
  * @since 17.07.2007
  */
-public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener {
+public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener, RelativeTimeWidgetListener {
 
     /** The Shell to Display the Dialog. */
     private Shell _shell;
@@ -42,21 +49,29 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
     /** The end Time for the endWidget (rigth side). */
 	private ITimestamp _end;
     /** A Widget to selct the start time. */
-    private CalendarWidget _startWidget;
+    private CalendarWidget _fromAbsWidget;
     /** A Widget to selct the end time. */
-    private CalendarWidget _endWidget;
+    private CalendarWidget _toAbsWidget;
 	
 	private HashMap<String, String> filterMap;
 	private Group down;
 	private String filterString;
 	private Label info;
-	private int windowXSize = 450;
-    private int bTop = 0;
-    private int bBottom = 0;
-    private int bHeignt = 0;
-    private int bWidht = 0;
+    /** The widht of the Dialog. */
+	private final int _windowXSize = 650;
+    private final int bTop = 0;
+    private final int bBottom = 0;
+    private final int bHeignt = 0;
+    private final int bWidht = 0;
     /** The default filterstring. */
     private String _filter;
+    private RelativeTimeWidget _fromRelWidget;
+    private RelativeTimeWidget _toRelWidget;
+    private Text _fromText;
+    private Text _toText;
+    private String _startSpecification;
+    private String _endSpecification;
+    private StartEndTimeParser _startEnd;
     
     /**
      *   The Constructor.
@@ -80,7 +95,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         super.configureShell(shell);
         this._shell=shell;
         shell.setText(Messages.ExpertSearchDialog_expertButton);
-        shell.setSize(windowXSize,445);
+        shell.setSize(_windowXSize,445);
     }
     /** {@inheritDoc} */
     @Override
@@ -89,16 +104,49 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
     	filterString = "AND ("; //$NON-NLS-1$
         Composite box = (Composite) super.createDialogArea(parent);
         GridLayout layout = (GridLayout) box.getLayout();
-        layout.numColumns = 2;
+        layout.numColumns = 4;
         GridData gd;
 
-        _startWidget = new CalendarWidget(timeBox(box,Messages.ExpertSearchDialog_startTime),
-                                          0,_start.toCalendar());
-        _startWidget.addListener(this);
-        _endWidget = new CalendarWidget(timeBox(box,Messages.ExpertSearchDialog_endTime)
-                                        , 0,_end.toCalendar());
-        _endWidget.addListener(this);
+        Composite[] c2 = makeTimeSelect(box,Messages.ExpertSearchDialog_startTime,
+                org.csstudio.util.time.swt.Messages.StartEnd_AbsStart,
+                org.csstudio.util.time.swt.Messages.StartEnd_AbsStart_TT,
+                org.csstudio.util.time.swt.Messages.StartEnd_RelStart,
+                org.csstudio.util.time.swt.Messages.StartEnd_RelStart_TT);
+        _fromAbsWidget=(CalendarWidget) c2[0];
+        _fromRelWidget=(RelativeTimeWidget) c2[1];
+        c2 = makeTimeSelect(box,Messages.ExpertSearchDialog_startTime,
+                org.csstudio.util.time.swt.Messages.StartEnd_AbsEnd,
+                org.csstudio.util.time.swt.Messages.StartEnd_AbsEnd_TT,
+                org.csstudio.util.time.swt.Messages.StartEnd_RelEnd,
+                org.csstudio.util.time.swt.Messages.StartEnd_RelEnd_TT);
+        _toAbsWidget=(CalendarWidget) c2[0];
+        _toRelWidget=(RelativeTimeWidget) c2[1];
 
+        // New Row
+        Label l = new Label(box, SWT.NULL);
+        l.setText(org.csstudio.util.time.swt.Messages.StartEnd_StartTime);
+        gd = new GridData();
+        l.setLayoutData(gd);
+        
+        _fromText = new Text(box, SWT.LEFT);
+        _fromText.setToolTipText(org.csstudio.util.time.swt.Messages.StartEnd_StartTime_TT);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        _fromText.setLayoutData(gd);
+
+        l = new Label(box, SWT.NULL);
+        l.setText(org.csstudio.util.time.swt.Messages.StartEnd_EndTime);
+        gd = new GridData();
+        l.setLayoutData(gd);
+
+        _toText = new Text(box, SWT.LEFT);
+        _toText.setToolTipText(org.csstudio.util.time.swt.Messages.StartEnd_EndTime_TT);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        _toText.setLayoutData(gd);
+// __________________________________________________-
         info = new Label(box, SWT.NULL);
         info.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
         gd = new GridData();
@@ -109,7 +157,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
 
         down = new Group(box, 0);
         down.setText(Messages.ExpertSearchDialog_search);
-        gd = new GridData(SWT.FILL, SWT.FILL, true, false, 2,1);
+        gd = new GridData(SWT.FILL, SWT.FILL, true, false, 4,1);
         down.setLayoutData(gd);
         down.setLayout(new FillLayout(SWT.VERTICAL));
         String type="";
@@ -167,6 +215,35 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
 
         return box;
     }
+    /**
+     * @param box the parent Composite
+     * @param groupName The Text for the Group
+     * @param absStart the Text for the tab from abs 
+     * @param absStartTT the Tooltip text for the tab from abs 
+     * @param relStart the Text for the tab from rel
+     * @param relStartTT the Tooltip text for the tab from rel
+     * @return CalendarWidget absWidget and RelativeTimeWidget relWidget 
+     */
+    private Composite [] makeTimeSelect(final Composite box, final String groupName, final String absStart, final String absStartTT, final String relStart, final String relStartTT) {
+        TabFolder leftTab = new TabFolder(timeBox(box,groupName)
+                , SWT.BORDER);
+        TabItem tab = new TabItem(leftTab, 0);
+        tab.setText(absStart);
+        tab.setToolTipText(absStartTT);
+        CalendarWidget absWidget = new CalendarWidget(leftTab,
+        0,_start.toCalendar());
+        absWidget.addListener(this);
+        tab.setControl(absWidget);
+        
+        tab = new TabItem(leftTab, 0);
+        tab.setText(relStart);
+        tab.setToolTipText(relStart);
+        RelativeTimeWidget relWidget = new RelativeTimeWidget(leftTab, 0);
+        relWidget.addListener(this);
+        tab.setControl(relWidget);
+        return new Composite[] {absWidget,relWidget};
+    }
+
     /** @param parent the Parent Composite. 
      * @param text The Grouptext 
      * @return the Group
@@ -174,48 +251,12 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
     private Group timeBox(final Composite parent, final String text) {
         Group left = new Group(parent, 0);
         left.setText(text);
-        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1,1);
+        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false, 2,1);
         left.setLayoutData(gd);
         left.setLayout(new FillLayout());
         return left;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    protected final void okPressed(){
-    		Control[] rowsComposite = down.getChildren();
-            // Step all rows.
-    		for(int i=0;i<rowsComposite.length;i++){
-                // All rows a Composite. 
-    			if (rowsComposite[i] instanceof Composite){
-    				Control[] typeAndValueComposite = ((Composite)rowsComposite[i]).getChildren();
-                    // The Composite consists of two parts (Composite)
-    				if(typeAndValueComposite.length==2 && typeAndValueComposite[0] instanceof Composite && typeAndValueComposite[1] instanceof Composite){
-						Control[] typeComboAndValueText = ((Composite)typeAndValueComposite[0]).getChildren();
-                        // First part a Composite with a Combo for the Typ and a Text for the value.
-						if(typeComboAndValueText[0] instanceof Combo && typeComboAndValueText[1] instanceof Text){
-							filterString 	+= " (lower(mpt.name) like lower('" //$NON-NLS-1$
-											+((Combo)typeComboAndValueText[0]).getItem(((Combo)typeComboAndValueText[0]).getSelectionIndex())
-											+"')" //$NON-NLS-1$
-											+" AND lower(mc.value) like lower('" //$NON-NLS-1$
-											+((Text)typeComboAndValueText[1]).getText()+
-											"'))"; //$NON-NLS-1$
-						}
-                        Control[] logic = ((Composite)typeAndValueComposite[1]).getChildren();
-                        // Second part a Composite with two Button or a Lable and a Button.
-		    			if (logic[0] instanceof Label){
-		    				filterString += " "+((Label)logic[0]).getText()+" "; //$NON-NLS-1$ //$NON-NLS-2$
-
-		    			} else if (logic[0] instanceof Button){
-		    				filterString += ")"; //$NON-NLS-1$
-		    			} else{
-                            JmsLogsPlugin.logInfo("\t\tERROR Ungültige Strucktur"); //$NON-NLS-1$
-                        }
-    				}
-    			}
-    		}
-    		super.okPressed();
-    }
 
     /**
      * Add a new filter-row to the Group.
@@ -276,7 +317,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
     			public void widgetSelected(final SelectionEvent e) {
                     addRow(Messages.ExpertSearchDialog_Label_And,c,comButton,true);
                     _shell.pack();
-                    _shell.setSize(windowXSize,_shell.getSize().y);
+                    _shell.setSize(_windowXSize,_shell.getSize().y);
 
     			}
     
@@ -288,7 +329,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
     			public void widgetSelected(final SelectionEvent e) {
                     addRow(Messages.ExpertSearchDialog_Label_Or,c,comButton,true);
                     _shell.pack();
-                    _shell.setSize(windowXSize,_shell.getSize().y);
+                    _shell.setSize(_windowXSize,_shell.getSize().y);
 
     			}
     
@@ -304,9 +345,9 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
      * @param text The value text for the filter.
      * @param parent The parent Composit.
      * @param comButton The Composit to contain the Buttons.
-     * @param newRow 
+     * @param newRow if true add a new row.
      */
-    protected final void addRow(final String text, final Composite parent,final Composite comButton, final boolean newRow) {
+    private void addRow(final String text, final Composite parent,final Composite comButton, final boolean newRow) {
         down.setRedraw(false);
         comButton.dispose();
         final Composite c = new Composite(parent,SWT.NONE);
@@ -332,7 +373,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
                 parent.dispose();
                 _shell.pack();
                 down.setRedraw(true);
-                _shell.setSize(windowXSize,_shell.getSize().y);
+                _shell.setSize(_windowXSize,_shell.getSize().y);
                 System.out.println("Control[] childs size= "+parent.getChildren().length);
             }
             
@@ -343,6 +384,59 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         down.setRedraw(true);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    protected final void okPressed(){
+        
+            _startSpecification = _fromText.getText();
+            _endSpecification = _toText.getText();
+            // If the specifications don't parse, don't allow 'OK'
+            try{
+                _startEnd = new StartEndTimeParser(_startSpecification, _endSpecification);
+                if (_startEnd.getStart().compareTo(_startEnd.getEnd()) >= 0){
+                    info.setText(org.csstudio.util.time.swt.Messages.StartEnd_StartExceedsEnd);
+                    return;
+                }
+                _start = TimestampFactory.fromCalendar(_startEnd.getStart());
+                _end = TimestampFactory.fromCalendar(_startEnd.getEnd());
+                System.out.println("set time");
+
+            } catch (Exception ex){System.out.println("throw ex");}
+
+            Control[] rowsComposite = down.getChildren();
+            // Step all rows.
+            for(int i=0;i<rowsComposite.length;i++){
+                // All rows a Composite. 
+                if (rowsComposite[i] instanceof Composite){
+                    Control[] typeAndValueComposite = ((Composite)rowsComposite[i]).getChildren();
+                    // The Composite consists of two parts (Composite)
+                    if(typeAndValueComposite.length==2 && typeAndValueComposite[0] instanceof Composite && typeAndValueComposite[1] instanceof Composite){
+                        Control[] typeComboAndValueText = ((Composite)typeAndValueComposite[0]).getChildren();
+                        // First part a Composite with a Combo for the Typ and a Text for the value.
+                        if(typeComboAndValueText[0] instanceof Combo && typeComboAndValueText[1] instanceof Text){
+                            filterString    += " (lower(aam.PROPERTY) like lower('" //$NON-NLS-1$
+                                            +((Combo)typeComboAndValueText[0]).getItem(((Combo)typeComboAndValueText[0]).getSelectionIndex())
+                                            +"')" //$NON-NLS-1$
+                                            +" AND lower(aam.VALUE) like lower('" //$NON-NLS-1$
+                                            +((Text)typeComboAndValueText[1]).getText()+
+                                            "'))"; //$NON-NLS-1$
+                        }
+                        Control[] logic = ((Composite)typeAndValueComposite[1]).getChildren();
+                        // Second part a Composite with two Button or a Lable and a Button.
+                        if (logic[0] instanceof Label){
+                            filterString += " "+((Label)logic[0]).getText()+" "; //$NON-NLS-1$ //$NON-NLS-2$
+
+                        } else if (logic[0] instanceof Button){
+                            filterString += ")"; //$NON-NLS-1$
+                        } else{
+                            JmsLogsPlugin.logInfo("\t\tERROR Ungültige Strucktur"); //$NON-NLS-1$
+                        }
+                    }
+                }
+            }
+            super.okPressed();
+    }
+    
     /** @return the filter as an Hashmap. */
     public final HashMap<String, String> getFilterMap(){
 		return filterMap;
@@ -362,18 +456,29 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         return _end;
     }
 
-    /** {@Inherited}. */
-    public final void updatedCalendar(final CalendarWidget source, final Calendar stamp)
-    {
-        if (source == _startWidget){
-            _start = TimestampFactory.fromCalendar(stamp);
+    /** {@inheritDoc}*/
+    public final void updatedCalendar(final CalendarWidget source, final Calendar stamp){
+
+        if (source == _fromAbsWidget){
+            _fromText.setText(AbsoluteTimeParser.format(stamp));
+//            _start = TimestampFactory.fromCalendar(stamp);
         } else{
-            _end = TimestampFactory.fromCalendar(stamp);
+            _toText.setText(AbsoluteTimeParser.format(stamp));
+//            _end = TimestampFactory.fromCalendar(stamp);
         }
         if (_start.isGreaterOrEqual(_end)){
             info.setText(Messages.ExpertSearchDialog_startEndMessage);
         }else{
             info.setText(""); //$NON-NLS-1$
+        }
+    }
+
+    /** {@inheritDoc} */
+    public final void updatedTime(final RelativeTimeWidget source, final RelativeTime time) {
+        if (source == _fromRelWidget){
+            _fromText.setText(time.toString());
+        } else{
+            _toText.setText(time.toString());
         }
     }
 
