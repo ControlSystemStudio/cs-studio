@@ -22,7 +22,7 @@ package org.csstudio.platform.data;
  *  subtypes <code>DoubleValue</code>, <code>StringValue</code> etc.
  *  
  *  @see IDoubleValue
- *  @see IIntegerValue
+ *  @see ILongValue
  *  @see IStringValue
  *  @see IEnumeratedValue
  *  @author Kay Kasemir

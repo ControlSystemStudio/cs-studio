@@ -16,8 +16,8 @@ public class ValueUtil
     {
         if (value instanceof IDoubleValue)
             return ((IDoubleValue) value).getValues().length;
-        else if (value instanceof IIntegerValue)
-            return ((IIntegerValue) value).getValues().length;
+        else if (value instanceof ILongValue)
+            return ((ILongValue) value).getValues().length;
         else if (value instanceof IEnumeratedValue)
             return ((IEnumeratedValue) value).getValues().length;
         return 1;
@@ -55,8 +55,8 @@ public class ValueUtil
         {
             if (value instanceof IDoubleValue)
                 return ((IDoubleValue) value).getValues()[index];
-            else if (value instanceof IIntegerValue)
-                return ((IIntegerValue) value).getValues()[index];
+            else if (value instanceof ILongValue)
+                return ((ILongValue) value).getValues()[index];
             else if (value instanceof IEnumeratedValue)
                 return ((IEnumeratedValue) value).getValues()[index];
             // else:

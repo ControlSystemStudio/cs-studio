@@ -2,17 +2,17 @@ package org.csstudio.platform.data;
 
 import org.csstudio.platform.internal.data.NumericMetaData;
 
-/** An integer value.
+/** A (long) integer value.
  *  <p>
- *  {@link IIntegerValue} values go with {@link NumericMetaData}
+ *  {@link ILongValue} values go with {@link NumericMetaData}
  *  @see IValue
  *  @see NumericMetaData
  *  @author Kay Kasemir
  */
-public interface IIntegerValue extends IValue
+public interface ILongValue extends IValue
 {
     /** @return Returns the whole array of values. */
-    public int[] getValues();
+    public long[] getValues();
 
     /** @return Returns the first array element.
      *  <p>
@@ -20,5 +20,5 @@ public interface IIntegerValue extends IValue
      *  way to get that one and only element.
      *  @see #getValues
      */
-    public int getValue();
+    public long getValue();
 }

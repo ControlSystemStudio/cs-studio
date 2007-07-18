@@ -4,7 +4,7 @@ import org.csstudio.platform.data.IValue.Quality;
 import org.csstudio.platform.internal.data.DoubleValue;
 import org.csstudio.platform.internal.data.EnumeratedMetaData;
 import org.csstudio.platform.internal.data.EnumeratedValue;
-import org.csstudio.platform.internal.data.IntegerValue;
+import org.csstudio.platform.internal.data.LongValue;
 import org.csstudio.platform.internal.data.MinMaxDoubleValue;
 import org.csstudio.platform.internal.data.NumericMetaData;
 import org.csstudio.platform.internal.data.SeverityInstances;
@@ -124,7 +124,7 @@ public class ValueFactory
                         quality, values, minimum, maximum);
     }
 
-    /** Create instance of {@link IIntegerValue}.
+    /** Create instance of {@link ILongValue}.
      *  @param time Time stamp
      *  @param severity Severity descriptor
      *  @param status Status string.
@@ -133,13 +133,13 @@ public class ValueFactory
      *  @param values The actual values.
      *  @return Instance of IIntegerValue.
      */
-    public static final IIntegerValue
-        createIntegerValue(final ITimestamp time, final ISeverity severity,
+    public static final ILongValue
+        createLongValue(final ITimestamp time, final ISeverity severity,
                     final String status, final INumericMetaData meta_data,
                     final Quality quality,
-                    final int values[])
+                    final long values[])
     {
-        return new IntegerValue(time, severity, status, meta_data,
+        return new LongValue(time, severity, status, meta_data,
                         quality, values);
     }
 
