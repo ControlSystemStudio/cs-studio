@@ -9,6 +9,7 @@ public class Collector {
 	private static 	Collector 	thisCollector = null;
 	
 	private AlarmHandler alarmHandler = null;
+	private BackgroundCollector	dummyBackgroundCollector = null;
 	
 	private Double 		count 			= 0.0;
 	private StoredData	actualValue		= null;
@@ -65,7 +66,9 @@ public class Collector {
 		/*
 		 * if background collector has not been started yet - do so
 		 */
-		BackgroundCollector.getInstance();
+		if ( dummyBackgroundCollector == null) {
+			//dummyBackgroundCollector = BackgroundCollector.getInstance();
+		}
 	}
 	
 	/*
