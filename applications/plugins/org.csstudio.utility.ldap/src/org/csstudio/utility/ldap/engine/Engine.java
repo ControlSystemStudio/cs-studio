@@ -106,7 +106,12 @@ public class Engine extends Job {
          *  
          */
         CentralLogger.getInstance().debug(this, "Engine.run - start");
-        ctx = new LDAPConnector().getDirContext();
+        try {
+            ctx = new LDAPConnector().getDirContext();
+        } catch (NamingException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
         CentralLogger.getInstance().debug(this, "Engine.run - ctx: " + ctx.toString());
         if ( ctx  != null) {
             CentralLogger.getInstance().info( this, "Engine.run - successfully connected to LDAP server");

@@ -31,6 +31,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -46,6 +47,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 public class LDAPConnector {
 	private boolean debug = false;
 	InitialDirContext ctx = null;
+    private Hashtable<Object, String> _env;
 
 	/**
 	 * The connection settings come from
@@ -53,17 +55,17 @@ public class LDAPConnector {
 	 * @throws NamingException
 	 *
 	 */
-	public LDAPConnector (){// throws NamingException{
+	public LDAPConnector () throws NamingException{// throws NamingException{
 		try {
 			setEnv(getUIenv());
 		} catch (NamingException e) {
-			System.out.println("The follow setting(s) a invalid: \r\n"
-					+e.getRemainingName()+"\r\n"
-					+e.getResolvedObj()+"\r\n"
-					+e.getExplanation()
-					);
-			e.printStackTrace();
-//			throw e;
+            CentralLogger.getInstance().error(this,e);
+            CentralLogger.getInstance().error(this,"The follow setting(s) a invalid: \r\n"
+                    +"RemainingName: "+e.getRemainingName()+"\r\n"
+                    +"ResolvedObj: "+e.getResolvedObj()+"\r\n"
+                    +"Explanation: "+e.getExplanation()
+                    );
+			throw e;
 		}
 	}
 
@@ -86,6 +88,21 @@ public class LDAPConnector {
 		return ctx;
 	}
 
+    public DirContext reconect() throws NamingException{
+        try {
+            setEnv();
+        } catch (NamingException e) {
+            CentralLogger.getInstance().error(this,e);
+            CentralLogger.getInstance().error(this,"The follow setting(s) a invalid: \r\n"
+                    +e.getRemainingName()+"\r\n"
+                    +e.getResolvedObj()+"\r\n"
+                    +e.getExplanation()
+                    );
+            throw e;
+        }
+        return getDirContext();
+
+    }
 	/**
 	 * @param env
 	 * @return
@@ -209,20 +226,15 @@ public class LDAPConnector {
 
 
 	private void setEnv(Hashtable<Object, String> env) throws NamingException {
-		try{
-			ctx = new InitialDirContext(env);
-		} catch (NamingException e) {
-			System.out.println("The follow setting(s) a invalid: \r\n"
-					+e.getRemainingName()+"\r\n"
-					+e.getResolvedObj()+"\r\n"
-					+e.getExplanation()
-					);
-			System.out.println("env: "+env.toString());
-			e.printStackTrace();
-	//		throw e;
-		}
+        _env = new Hashtable<Object, String>();
+        _env.putAll(env);
+//        setEnv();
+        ctx = new InitialDirContext(_env);
 	}
 
+    private void setEnv() throws NamingException {
+        ctx = new InitialDirContext(_env);
+    }
 
 
 }
