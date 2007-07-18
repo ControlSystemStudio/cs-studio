@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.IIntegerValue;
+import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IStringValue;
@@ -317,13 +317,13 @@ public class PVModelItem
                             (IEnumeratedMetaData)new_sample.getMetaData(),
                             quality,
                             ((IEnumeratedValue)new_sample).getValues());
-        else if (new_sample instanceof IIntegerValue)
-            new_sample = ValueFactory.createIntegerValue(now,
+        else if (new_sample instanceof ILongValue)
+            new_sample = ValueFactory.createLongValue(now,
                             new_sample.getSeverity(),
                             new_sample.getStatus(),
                             (INumericMetaData)new_sample.getMetaData(),
                             quality,
-                            ((IIntegerValue)new_sample).getValues());
+                            ((ILongValue)new_sample).getValues());
         else if (new_sample instanceof IStringValue)
             new_sample = ValueFactory.createStringValue(now,
                             new_sample.getSeverity(),

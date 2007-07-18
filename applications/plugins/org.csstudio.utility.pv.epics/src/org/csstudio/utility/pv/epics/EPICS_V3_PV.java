@@ -620,8 +620,9 @@ public class EPICS_V3_PV
                     time = createTimeFromEPICS(dt.getTimeStamp());
                     v = dt.getIntValue();
                 }
-                value = ValueFactory.createIntegerValue(time, severity,
-                                status, (INumericMetaData)meta, quality, v);
+                value = ValueFactory.createLongValue(time, severity,
+                                status, (INumericMetaData)meta, quality,
+                                int2long(v));
                 if (debug)
                     System.out.println("Channel '" + name
                             + "': int value " + value);
@@ -640,9 +641,9 @@ public class EPICS_V3_PV
                     time = createTimeFromEPICS(dt.getTimeStamp());
                     v = dt.getShortValue();
                 }
-                value = ValueFactory.createIntegerValue(time, severity,
+                value = ValueFactory.createLongValue(time, severity,
                                 status, (INumericMetaData)meta, quality,
-                                short2int(v));
+                                short2long(v));
                 if (debug)
                     System.out.println("Channel '" + name
                             + "': short value " + value);
@@ -704,6 +705,24 @@ public class EPICS_V3_PV
     private int[] short2int(final short[] v)
     {
         int result[] = new int[v.length];
+        for (int i = 0; i < result.length; i++)
+            result[i] = v[i];
+        return result;
+    }
+
+    /** Convert short array to long array. */
+    private long[] short2long(final short[] v)
+    {
+        long result[] = new long[v.length];
+        for (int i = 0; i < result.length; i++)
+            result[i] = v[i];
+        return result;
+    }
+
+    /** Convert int array to long array. */
+    private long[] int2long(final int[] v)
+    {
+        long result[] = new long[v.length];
         for (int i = 0; i < result.length; i++)
             result[i] = v[i];
         return result;

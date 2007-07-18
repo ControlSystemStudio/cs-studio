@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.IIntegerValue;
+import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.utility.pv.PV;
@@ -173,9 +173,9 @@ public class EPICS_V3_PV_Test extends TestCase
             Thread.sleep(100);
         assertTrue(pva.isConnected());
         final IValue value = pva.getValue();
-        assertTrue(value instanceof IIntegerValue);
-        int ints[] = ((IIntegerValue) value).getValues();
-        assertEquals(50, ints.length);
+        assertTrue(value instanceof ILongValue);
+        long longs[] = ((ILongValue) value).getValues();
+        assertEquals(50, longs.length);
         System.out.println(value);
         
         pva.stop();
