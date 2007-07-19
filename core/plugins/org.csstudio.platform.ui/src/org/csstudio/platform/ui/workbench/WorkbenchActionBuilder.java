@@ -212,7 +212,7 @@ public final class WorkbenchActionBuilder {
 				CssWorkbenchActionConstants.CSS_TRENDS_MENU));
 		cssMenu.add(new MenuManager(
 				Messages.WorkbenchActionBuilder_CSS_TEST_MENU,
-				CssWorkbenchActionConstants.CSS_TRENDS_MENU));
+				CssWorkbenchActionConstants.CSS_TEST_MENU));
 		cssMenu.add(new MenuManager(
 				Messages.WorkbenchActionBuilder_CSS_OTHER_MENU,
 				CssWorkbenchActionConstants.CSS_OTHER_MENU));
