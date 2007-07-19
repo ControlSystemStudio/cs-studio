@@ -105,10 +105,11 @@ public class SampleView extends PlotAwareView
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         table.setLayoutData(gd);
-        AutoSizeColumn.make(table, Messages.TimeCol, 80, 100);
-        AutoSizeColumn.make(table, Messages.ValueCol, 70, 60);
-        AutoSizeColumn.make(table, Messages.InfoCol, 100, 90);
-        AutoSizeColumn.make(table, Messages.SourceCol, 100, 80);
+        AutoSizeColumn.make(table, Messages.TimeCol,      80, 100);
+        AutoSizeColumn.make(table, Messages.ValueCol,     70,  90);
+        AutoSizeColumn.make(table, Messages.StatSevrCol, 100,  50);
+        AutoSizeColumn.make(table, Messages.QualityCol,   85,  50);
+        AutoSizeColumn.make(table, Messages.SourceCol,    50,  90);
         // Configure table to auto-size the columns
         new AutoSizeControlListener(parent, table);
 

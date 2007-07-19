@@ -5,6 +5,7 @@ package org.csstudio.trends.databrowser.sampleview;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.trends.databrowser.model.ModelSample;
+import org.csstudio.trends.databrowser.model.QualityHelper;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -24,7 +25,8 @@ public class SampleTableLabelProvider extends LabelProvider implements
     {
         Time,
         Value,
-        Info,
+        StatSevr,
+        Quality,
         Source
     };
     
@@ -41,11 +43,13 @@ public class SampleTableLabelProvider extends LabelProvider implements
             return sample.getSample().getTime().toString();
         case Value:
             return sample.getSample().format();
-        case Info:
+        case StatSevr:
             final IValue value = sample.getSample();
             final String sevr = value.getSeverity().toString();
             final String stat = value.getStatus();
             return sevr + " " + stat; //$NON-NLS-1$
+        case Quality:
+            return QualityHelper.getString(sample.getSample().getQuality());
         default: // case Source:
             String source = sample.getSource();
             return source == null ? "" : source; //$NON-NLS-1$

@@ -100,20 +100,7 @@ public class ModelSample implements ChartSample
     public String getInfo()
     {
         final String val_info = ValueUtil.getInfo(sample);
-
-        String quality;
-        switch (sample.getQuality())
-        {
-        case Original:
-            quality = Messages.ModelSample_QualityOriginal;
-            break;
-        case Interpolated:
-            quality = Messages.ModelSample_QualityInterpolated;
-            break;
-        default:
-            quality = sample.getQuality().name();
-        }
-        
+        final String quality = QualityHelper.getString(sample.getQuality());
         final String src_qual =
             NLS.bind(Messages.ModelSample_SourceQuality, source, quality);
         if (val_info == null)

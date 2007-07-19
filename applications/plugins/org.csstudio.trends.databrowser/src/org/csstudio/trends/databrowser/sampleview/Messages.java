@@ -6,7 +6,8 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.sampleview.messages"; //$NON-NLS-1$
 
-    public static String InfoCol;
+    public static String StatSevrCol;
+    public static String QualityCol;
     public static String NoPlot;
     public static String PV_TT;
     public static String PVLabel;
