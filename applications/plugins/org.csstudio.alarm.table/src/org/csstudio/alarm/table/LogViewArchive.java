@@ -223,11 +223,11 @@ public class LogViewArchive extends ViewPart {
 
 		b168hSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(final SelectionEvent e) {
-				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
 				GregorianCalendar to = new GregorianCalendar();
 				GregorianCalendar from = (GregorianCalendar) to.clone();
 				from.add(GregorianCalendar.HOUR, -168);
 				showNewTime(from, to);
+                ILogMessageArchiveAccess adba = new ArchiveDBAccess();
 				ArrayList<HashMap<String, String>> am = adba.getLogMessages(
 						from, to);
 				_jmsMessageList.clearList();
