@@ -64,9 +64,11 @@ public class LogViewArchive extends ViewPart {
     /** The Parent Shell. */
 	private Shell _parentShell = null;
 
-	private JMSMessageList jmsml = null;
+    /** The JMS message list. */
+	private JMSMessageList _jmsMessageList = null;
 
-	private JMSLogTableViewer jlv = null;
+    /** The JMS Logtable Viewer. */
+	private JMSLogTableViewer _jmsLogTableViewer = null;
 
     /** An Array whit the name of the Columns. */
 	private String[] _columnNames;
@@ -81,7 +83,8 @@ public class LogViewArchive extends ViewPart {
     /** The selectet "to time". */
     private ITimestamp _toTime;
 
-	private ColumnPropertyChangeListener cl;
+    /** The column property change listener. */
+	private ColumnPropertyChangeListener _columnPropertyChangeListener;
     
     /** The default / last filter. */
     private String _filter= ""; //$NON-NLS-1$
@@ -92,7 +95,7 @@ public class LogViewArchive extends ViewPart {
 		_columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(LogArchiveViewerPreferenceConstants.P_STRINGArch)
 				.split(";"); //$NON-NLS-1$
-		jmsml = new JMSMessageList(_columnNames);
+		_jmsMessageList = new JMSMessageList(_columnNames);
 
 		_parentShell = parent.getShell();
 
@@ -138,16 +141,16 @@ public class LogViewArchive extends ViewPart {
 		_timeTo.setEditable(false);
 //		timeTo.setText("                              ");
 
-		jlv = new JMSLogTableViewer(parent, getSite(), _columnNames, jmsml, 3,SWT.SINGLE | SWT.FULL_SELECTION);
-		jlv.setAlarmSorting(false);
+		_jmsLogTableViewer = new JMSLogTableViewer(parent, getSite(), _columnNames, _jmsMessageList, 3,SWT.SINGLE | SWT.FULL_SELECTION);
+		_jmsLogTableViewer.setAlarmSorting(false);
 		parent.pack();
 		
-		cl = new ColumnPropertyChangeListener(
+		_columnPropertyChangeListener = new ColumnPropertyChangeListener(
 				LogArchiveViewerPreferenceConstants.P_STRINGArch,
-				jlv);
+				_jmsLogTableViewer);
 		
 		JmsLogsPlugin.getDefault().getPluginPreferences()
-				.addPropertyChangeListener(cl);
+				.addPropertyChangeListener(_columnPropertyChangeListener);
 		
 	}
 
@@ -170,9 +173,9 @@ public class LogViewArchive extends ViewPart {
                 showNewTime(from, to);
                 ArrayList<HashMap<String, String>> am = adba.getLogMessages(
                         from, to);
-                jmsml.clearList();
-                jlv.refresh();
-                jmsml.addJMSMessageList(am);
+                _jmsMessageList.clearList();
+                _jmsLogTableViewer.refresh();
+                _jmsMessageList.addJMSMessageList(am);
 
             }
         });
@@ -198,9 +201,9 @@ public class LogViewArchive extends ViewPart {
 				showNewTime(from, to);
 				ArrayList<HashMap<String, String>> am = adba.getLogMessages(
 						from, to);
-				jmsml.clearList();
-				jlv.refresh();
-				jmsml.addJMSMessageList(am);
+				_jmsMessageList.clearList();
+				_jmsLogTableViewer.refresh();
+				_jmsMessageList.addJMSMessageList(am);
 			}
 		});
 	}
@@ -211,8 +214,7 @@ public class LogViewArchive extends ViewPart {
      */
 	private void createWeekButton(final Composite comp) {
 		Button b168hSearch = new Button(comp, SWT.PUSH);
-		b168hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
-				1, 1));
+		b168hSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,1, 1));
 		b168hSearch.setText(Messages.getString("LogViewArchive_week")); //$NON-NLS-1$
 
 		b168hSearch.addSelectionListener(new SelectionAdapter() {
@@ -224,9 +226,9 @@ public class LogViewArchive extends ViewPart {
 				showNewTime(from, to);
 				ArrayList<HashMap<String, String>> am = adba.getLogMessages(
 						from, to);
-				jmsml.clearList();
-				jlv.refresh();
-				jmsml.addJMSMessageList(am);
+				_jmsMessageList.clearList();
+				_jmsLogTableViewer.refresh();
+				_jmsMessageList.addJMSMessageList(am);
 			}
 		});
 
@@ -243,16 +245,7 @@ public class LogViewArchive extends ViewPart {
 		bFlexSearch.setText(Messages.getString("LogViewArchive_user")); //$NON-NLS-1$
 
 		bFlexSearch.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				Date fromDate, toDate;
-				if((fromDate = getFromTime())==null)
-					fromDate = (new Date(new Date().getTime()-24*60*60*1000));
-
-				if((toDate = getToTime())==null)
-					toDate = (new Date(new Date().getTime()));
-
-				ITimestamp start = TimestampFactory.now(); //new Timestamp(fromDate.getTime()/1000);
-				ITimestamp end = TimestampFactory.now(); //new Timestamp((toDate.getTime()) / 1000);
+			public void widgetSelected(final SelectionEvent e) {
 				StartEndDialog dlg = new StartEndDialog(_parentShell);
 				if (dlg.open() == StartEndDialog.OK) {
 					String lowString = dlg.getStartSpecification();
@@ -261,24 +254,12 @@ public class LogViewArchive extends ViewPart {
 						StartEndTimeParser parser = new StartEndTimeParser(lowString, highString);
 						Calendar from = parser.getStart();
 						Calendar to = parser.getEnd();
-//					double low = Double.parseDouble(lowString);
-//					double high = Double.parseDouble(highString);
-					ILogMessageArchiveAccess adba = new ArchiveDBAccess();
-//					GregorianCalendar from = new GregorianCalendar();
-//					GregorianCalendar to = new GregorianCalendar();
-//					if (low < high) {
-//						from.setTimeInMillis((long) low * 1000);
-//						to.setTimeInMillis((long) high * 1000);
-//					} else {
-//						from.setTimeInMillis((long) high * 1000);
-//						to.setTimeInMillis((long) low * 1000);
-//					}
-					showNewTime(from, to);
-					ArrayList<HashMap<String, String>> am = adba.getLogMessages(from, to);
-					jmsml.clearList();
-					jlv.refresh();
-					jmsml.addJMSMessageList(am);
-
+    					ILogMessageArchiveAccess adba = new ArchiveDBAccess();
+    					showNewTime(from, to);
+    					ArrayList<HashMap<String, String>> am = adba.getLogMessages(from, to);
+    					_jmsMessageList.clearList();
+    					_jmsLogTableViewer.refresh();
+    					_jmsMessageList.addJMSMessageList(am);
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						JmsLogsPlugin.logInfo(e1.getMessage());
@@ -289,8 +270,11 @@ public class LogViewArchive extends ViewPart {
 		});
 
 	}
-
-	private void createSearchButton(final Composite comp) {
+    /** 
+     * Create a Button that open a dialog to select required period and define filters.
+     * @param comp the parent Composite for the Button. 
+     */
+    private void createSearchButton(final Composite comp) {
 		Button bSearch = new Button(comp, SWT.PUSH);
 		bSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
@@ -336,16 +320,20 @@ public class LogViewArchive extends ViewPart {
 				}else{
 					am = adba.getLogMessages(from, to);
 				}
-				jmsml.clearList();
-				jlv.refresh();
-				jmsml.addJMSMessageList(am);
+				_jmsMessageList.clearList();
+				_jmsLogTableViewer.refresh();
+				_jmsMessageList.addJMSMessageList(am);
 
 			}
 		});
 	}
 
-
-	private void showNewTime(Calendar from, Calendar to) {
+	/**
+     * Set the two times from, to .
+     * @param from the from a selectet.
+     * @param to the to a selectet.
+	 */
+	private void showNewTime(final Calendar from, final Calendar to) {
 		SimpleDateFormat sdf = new SimpleDateFormat();
 		try{
 			sdf.applyPattern(JmsLogsPlugin.getDefault().getPreferenceStore().getString(LogArchiveViewerPreferenceConstants.DATE_FORMAT));
@@ -360,21 +348,24 @@ public class LogViewArchive extends ViewPart {
         _toTime = TimestampFactory.fromCalendar(to);
 	}
 
-	public void setFocus() {
-	}
-
-	public void dispose() {
+	/** {@inheritDoc} */
+    @Override
+	public void setFocus() { }
+    /** {@inheritDoc} */
+    @Override
+    public final void dispose() {
 		super.dispose();
 		JmsLogsPlugin.getDefault().getPluginPreferences()
-				.removePropertyChangeListener(cl);
+				.removePropertyChangeListener(_columnPropertyChangeListener);
 	}
 
-
-	public Date getFromTime(){
+    /** @return get the from Time. */
+	public final Date getFromTime(){
 		return _fromTime.toCalendar().getTime();
 
 	}
-	public Date getToTime(){
+    /** @return get the to Time. */
+	public final Date getToTime(){
 		return _toTime.toCalendar().getTime();
 
 	}
