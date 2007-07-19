@@ -19,7 +19,7 @@ class Scanner
     private boolean done;
     
     /** Create, initialize with string, position on first character. */
-    public Scanner(String s)
+    public Scanner(String s) throws Exception
     {
         reader = new StringReader(s);
         done = false;
@@ -33,7 +33,7 @@ class Scanner
     }
 
     /** Move to the next character (skipping spaces). */
-    public void next()
+    public void next() throws Exception
     {
         try
         {
@@ -45,9 +45,9 @@ class Scanner
         }
         catch (Exception ex)
         {
-            // TODO: How to best handle errors?
             ex.printStackTrace();
             done = true;
+            throw new Exception("Internal parser error: " + ex.getMessage()); //$NON-NLS-1$
         }
     }
     
@@ -58,7 +58,7 @@ class Scanner
     }
     
     /** @return Returns the remaining string from the current char on. */
-    public String rest()
+    public String rest() throws Exception
     {
         StringBuffer buf = new StringBuffer();
         while (!isDone())

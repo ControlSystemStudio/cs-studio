@@ -209,8 +209,8 @@ public class FormulaTest extends TestCase
         }
         catch (Exception ex)
         {
-            // TODO Can the scanner be fixed to get 'max' instead of 'max2'
-            //      for the var. name?
+            // Can the scanner be fixed to get 'max' instead of 'max2'
+            // for the var. name?
             assertEquals("Unknown variable 'max2'", ex.getMessage());
         }
     }
