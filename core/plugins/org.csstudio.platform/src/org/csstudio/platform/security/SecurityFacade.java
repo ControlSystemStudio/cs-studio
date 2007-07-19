@@ -179,7 +179,7 @@ public final class SecurityFacade {
 	 * Performs the login procedure.
 	 *
 	 */
-	private void login(ILoginCallbackHandler handler) {
+	public void login(ILoginCallbackHandler handler) {
 		this._context.login(handler);
 		for (IUserManagementListener uml : _userListeners) {
 			try {
