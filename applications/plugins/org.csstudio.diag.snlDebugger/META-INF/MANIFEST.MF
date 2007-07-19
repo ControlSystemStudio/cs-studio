@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: snlDebugger Plug-in
+Bundle-SymbolicName: org.csstudio.diag.snlDebugger;singleton:=true
+Bundle-Version: 1.0.4
+Bundle-Activator: org.csstudio.diag.snlDebugger.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform,
+ org.csstudio.platform.ui,
+ org.csstudio.utility.IOC_Socket_Communication,
+ org.eclipse.help
+Eclipse-LazyStart: true
+Bundle-ClassPath: lib/jdom.jar,
+ .,
+ bin/
