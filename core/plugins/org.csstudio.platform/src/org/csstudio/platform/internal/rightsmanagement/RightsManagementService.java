@@ -131,7 +131,12 @@ public final class RightsManagementService {
 	private RightSet getRightsForAction(String id) {
 		IAuthorizationProvider provider = getAuthorizationProvider();
 		if (provider != null) {
-			return provider.getRights(id);
+			RightSet result = provider.getRights(id);
+			// protect against providers that return null
+			if (result == null) {
+				result = new RightSet("EMPTY");
+			}
+			return result;
 		} else {
 			CentralLogger.getInstance().warn(this, "No authorization provider found.");
 			return new RightSet("EMPTY");
