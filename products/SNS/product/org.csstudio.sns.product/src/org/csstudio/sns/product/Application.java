@@ -10,7 +10,9 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
-/** This class controls all aspects of the application's execution
+/** This class controls all aspects of the application's execution.
+ * 
+ *  TODO Adapt to Eclipse 3.3 IApplication
  *  @author Kay Kasemir
  */
 public class Application implements IPlatformRunnable
