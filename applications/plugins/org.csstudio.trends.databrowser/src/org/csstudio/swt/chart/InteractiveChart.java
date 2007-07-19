@@ -276,8 +276,7 @@ public class InteractiveChart extends Composite
     /** The user can add buttons or other widgets to this button bar.
      *  <p>
      *  The button bar uses a horizontal RowLayout, so newly added buttons
-     *  go to the _end_ of the bar.
-     *  TODO: Allow new buttons anywhere in the bar, not just the end?
+     *  go to the <u>end</u> of the bar.
      *  @return Returns the button bar. Use as the 'parent' for new buttons.
      */
     public Composite getButtonBar()
