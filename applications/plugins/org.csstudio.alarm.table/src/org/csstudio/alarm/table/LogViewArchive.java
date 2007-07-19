@@ -52,9 +52,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
-
 /**
  * Simple view more like console, used to write log messages.
+ * 
+ * @author jhatje
+ * @author $Author$
+ * @version $Revision$
+ * @since 19.07.2007
  */
 public class LogViewArchive extends ViewPart {
 
