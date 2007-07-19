@@ -28,6 +28,7 @@ import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.LoginContext;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * This Service executes instances of
@@ -181,7 +182,12 @@ public final class SecurityFacade {
 	private void login(ILoginCallbackHandler handler) {
 		this._context.login(handler);
 		for (IUserManagementListener uml : _userListeners) {
-			uml.handleUserManagementEvent(new UserManagementEvent());
+			try {
+				uml.handleUserManagementEvent(new UserManagementEvent());
+			} catch (RuntimeException e) {
+				CentralLogger.getInstance().warn(this,
+						"User management event listener threw unexpected RuntimeException", e);
+			}			
 		}
 	}
 	
