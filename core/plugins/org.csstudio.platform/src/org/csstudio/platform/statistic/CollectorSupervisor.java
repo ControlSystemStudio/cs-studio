@@ -3,6 +3,7 @@ package org.csstudio.platform.statistic;
 import java.io.StringWriter;
 import java.util.Vector;
 
+import org.jdom.Attribute;
 import org.jdom.DocType;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -60,13 +61,15 @@ public final class CollectorSupervisor {
     }
     
     public final String getCollectionAsXMLString () {
-        final String[] _COLUMN_NAMES = new String[] {"Application","Descriptor","Counter","Actual value","Date","Count","Highest Value","Date","Count","Lowest Value","Date","Count","Mean Value abs","Mean Value rel.","Alarm Limit abs","Alarm Limit rel","Hard Limit"};
+        final String[] _COLUMN_NAMES = "Application,Descriptor,Counter,Actual value,Date,Count,Highest Value,Date,Count,Lowest Value,Date,Count,Mean Value abs,Mean Value rel.,Alarm Limit (abs),Alarm Limit (rel),Hard Limit".split(",");
 //        File xmlFile = new File("c:\\tmp\\XMLStatisticFile.xml");
         System.out.println("Make new Doc");
         try{
             DocType dt = new DocType("CSS-StatisticProtocol");
             Element root = new Element("StatisticProtocol");
-            root.setAttribute("Version","0.1");
+            Attribute version = new Attribute("Version","0.1");
+            version.setAttributeType(Attribute.ID_TYPE);
+            root.setAttribute(version);
             Document d = new Document(root,dt);
             Element collectionSupervisor = new Element("CollectionSupervisor");
             collectionSupervisor.setAttribute("size",collectorVector.size()+"");
@@ -75,77 +78,88 @@ public final class CollectorSupervisor {
                 int i=0;
                 Element collectorElement = new Element("Collector");
                 collectionSupervisor.addContent(collectorElement);
-                Element coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
-                coulmn.setText(collector.getApplication());
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
-                coulmn.setText(collector.getDescriptor());
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
-                coulmn.setText(collector.getCount().toString());
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
-                coulmn.setText(collector.getActualValue().getValue().toString());
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
-                coulmn.setText(collector.getActualValue().getTime().toString());
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
-                coulmn.setText(collector.getActualValue().getCount().toString());
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
-                coulmn.setText(collector.getHighestValue().getValue().toString());
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
-                coulmn.setText(collector.getHighestValue().getTime().toString());
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
-                coulmn.setText(collector.getHighestValue().getCount().toString());
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
+                Element column = new Element("COLUMN");
+                column.setAttribute("Name", _COLUMN_NAMES[i++]);
+                column.setText(collector.getApplication());
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); 
+                column.setAttribute("Name", _COLUMN_NAMES[i++]);
+                column.setText(collector.getDescriptor());
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); 
+                column.setAttribute("Name", _COLUMN_NAMES[i++]);
+                column.setText(collector.getCount().toString());
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); 
+                column.setAttribute("Name", _COLUMN_NAMES[i++]);
+                column.setText(collector.getActualValue().getValue().toString());
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); 
+                column.setAttribute("Name", _COLUMN_NAMES[i++]);
+                column.setText(Collector.dateToString(collector.getActualValue().getTime()));
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); 
+                column.setAttribute("Name", _COLUMN_NAMES[i++]);
+                column.setText(collector.getActualValue().getCount().toString());
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); 
+                column.setAttribute("Name", _COLUMN_NAMES[i++]);
+                column.setText(collector.getHighestValue().getValue().toString());
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); 
+                column.setAttribute("Name", _COLUMN_NAMES[i++]);
+                column.setText(Collector.dateToString(collector.getHighestValue().getTime()));
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); 
+                column.setAttribute("Name", _COLUMN_NAMES[i++]);
+                column.setText(collector.getHighestValue().getCount().toString());
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); 
+                column.setAttribute("Name", _COLUMN_NAMES[i++]);
                 if(collector.getLowestValue().getValue()!=null){
-                    coulmn.setText(collector.getLowestValue().getValue().toString());
+                    column.setText(collector.getLowestValue().getValue().toString());
                 }
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
                 if(collector.getLowestValue().getTime()!=null){
-                    coulmn.setText(collector.getLowestValue().getTime().toString());
+                    column.setText(Collector.dateToString(collector.getLowestValue().getTime()));
                 }
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
                 if(collector.getLowestValue().getCount()!=null){
-                    coulmn.setText(collector.getLowestValue().getCount().toString());
+                    column.setText(collector.getLowestValue().getCount().toString());
                 }
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
                 if(collector.getMeanValueAbsolute()!=null){
-                    coulmn.setText(collector.getMeanValueAbsolute().toString());
+                    column.setText(collector.getMeanValueAbsolute().toString());
                 }
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
                 if(collector.getMeanValuerelative()!=null){
-                    coulmn.setText(collector.getMeanValuerelative().toString());
+                    column.setText(collector.getMeanValuerelative().toString());
                 }
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
                 if(collector.getAlarmHandler().getHighAbsoluteLimit()!=null){
-                    coulmn.setText(collector.getAlarmHandler().getHighAbsoluteLimit().toString());
+                    column.setText(collector.getAlarmHandler().getHighAbsoluteLimit().toString());
                 }
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
                 if(collector.getAlarmHandler().getHighRelativeLimit()!=null){
-                    coulmn.setText(collector.getAlarmHandler().getHighRelativeLimit().toString());
+                    column.setText(collector.getAlarmHandler().getHighRelativeLimit().toString());
                 }
-                collectorElement.addContent(coulmn);
-                coulmn = new Element(_COLUMN_NAMES[i++].replace(' ', '_'));
+                collectorElement.addContent(column);
+                column = new Element("COLUMN"); column.setAttribute("Name", _COLUMN_NAMES[i++]);
                 if(collector.getHardLimit()!=null){
-                    coulmn.setText(collector.getHardLimit().toString());
+                    column.setText(collector.getHardLimit().toString());
                 }
-                collectorElement.addContent(coulmn);
+                collectorElement.addContent(column);
             }
             StringWriter sw = new StringWriter();
             XMLOutputter xmlOutputter = new XMLOutputter();
             xmlOutputter.output(d, sw);
+            System.out.println(sw.toString());
             return sw.toString();
             
         }catch(Exception e){
