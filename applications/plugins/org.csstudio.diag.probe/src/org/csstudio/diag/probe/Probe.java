@@ -3,14 +3,14 @@ package org.csstudio.diag.probe;
 import java.text.NumberFormat;
 
 import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.csstudio.util.swt.ComboHistoryHelper;
+import org.csstudio.util.swt.meter.MeterWidget;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
@@ -79,20 +78,68 @@ public class Probe extends ViewPart implements PVListener
     private ComboHistoryHelper name_helper;
     private Label lbl_value;
     private Label lbl_time;
-    private Button btn_info;
-    private Button btn_adjust;
     private Label lbl_status;
+    private MeterWidget meter;
 
     /** The process variable that we monitor. */
     private PV pv = null;
-    /** The most recent value of the PV. */
-    private String value_txt = null;
-    /** The most recent time stamp of the PV. */
-    private ITimestamp time = null;
-    /** Smoothed period in seconds between received values. */
-    private SmoothedDouble value_period = new SmoothedDouble();
+    
+    /** Most recent value of the pv */
+    private ValueInfo value = new ValueInfo();
+    
     private NumberFormat period_format;
-	private Text pv_label;
+    
+    /** Is this a new channel where we never received a value? */
+    private boolean new_channel = true;
+    
+    final Runnable update_value = new Runnable()
+    {
+        public void run()
+        {   // Might run after the view is already disposed...
+            if (lbl_value.isDisposed())
+                return;
+            lbl_value.setText(value.getValueText());
+            lbl_time.setText(value.getTimeText());
+
+            INumericMetaData meta = value.getNumericMetaData();
+            if (meta == null)
+                meter.setEnabled(false);
+            else
+            {   // Configure on first value from new channel
+                if (new_channel)
+                {
+                    if (meta.getDisplayLow() < meta.getDisplayHigh())
+                    {
+                        meter.configure(meta.getDisplayLow(),
+                                        meta.getAlarmLow(),
+                                        meta.getWarnLow(),
+                                        meta.getWarnHigh(),
+                                        meta.getAlarmHigh(),
+                                        meta.getDisplayHigh(),
+                                        meta.getPrecision());
+                        meter.setEnabled(true);
+                    }
+                    else
+                        meter.setEnabled(false);
+                }
+                meter.setValue(value.getDouble());
+            }
+            if (Probe.debug)
+                System.out.println("Probe displays " //$NON-NLS-1$
+                                + lbl_time.getText()
+                                + " " + lbl_value.getText()); //$NON-NLS-1$
+
+            final double period = value.getUpdatePeriod();
+            if (period > 0)
+                lbl_status.setText(Messages.S_Period
+                            + period_format.format(period)
+                            + Messages.S_Seconds);
+            else
+                lbl_status.setText(Messages.S_OK);
+            new_channel = false;
+        }
+    };
+
 
     /** Create or re-display a probe view with the given PV name.
      *  <p>
@@ -195,18 +242,18 @@ public class Probe extends ViewPart implements PVListener
         GridData gd;
 
         // PV Name: ____ name ___________ [Info]
+        
+        // Meter
+        
         // Value  : ____ value ________ [Adjust]
         //
         // ------- status --------
 
-        pv_label = new Text(parent, SWT.READ_ONLY);
+        Label pv_label = new Label(parent, SWT.READ_ONLY);
 		pv_label.setText(Messages.S_PVName);
-        gd = new GridData();
-        pv_label.setLayoutData(gd);
+        pv_label.setLayoutData(new GridData());
 
         cbo_name = new ComboViewer(parent, SWT.SINGLE | SWT.BORDER);
-//        txt_name.setSorter(new UsedSorter());
-//        txt_name.setSorter(new ViewerSorter());
         cbo_name.getCombo().setToolTipText(Messages.S_EnterPVName);
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
@@ -231,7 +278,7 @@ public class Probe extends ViewPart implements PVListener
             }
         });
 
-        btn_info = new Button(parent, SWT.PUSH);
+        Button btn_info = new Button(parent, SWT.PUSH);
         btn_info.setText(Messages.S_Info);
         btn_info.setToolTipText(Messages.S_ObtainInfo);
         gd = new GridData();
@@ -246,19 +293,29 @@ public class Probe extends ViewPart implements PVListener
             }
         });
 
-        // Row 2
-        Label label = new Label(parent, SWT.NONE);
+        // New Row
+        meter = new MeterWidget(parent, 0);
+        gd = new GridData();
+        gd.horizontalSpan = layout.numColumns;
+        gd.grabExcessHorizontalSpace = true;
+        gd.grabExcessVerticalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        gd.verticalAlignment = SWT.FILL;
+        meter.setLayoutData(gd);
+
+        // New Row
+        Label label = new Label(parent, 0);
         label.setText(Messages.S_Value);
         gd = new GridData();
         label.setLayoutData(gd);
 
-        lbl_value = new Label(parent, SWT.NONE);
+        lbl_value = new Label(parent, 0);
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;
         lbl_value.setLayoutData(gd);
 
-        btn_adjust = new Button(parent, SWT.PUSH);
+        Button btn_adjust = new Button(parent, SWT.PUSH);
         btn_adjust.setText(Messages.S_Adjust);
         btn_adjust.setToolTipText(Messages.S_ModValue);
         gd = new GridData();
@@ -271,13 +328,13 @@ public class Probe extends ViewPart implements PVListener
             {   adjustValue();   }
         });
 
-        // Row 3
-        label = new Label(parent, SWT.NONE);
+        // New Row
+        label = new Label(parent, 0);
         label.setText(Messages.S_Timestamp);
         gd = new GridData();
         label.setLayoutData(gd);
 
-        lbl_time = new Label(parent, SWT.NONE);
+        lbl_time = new Label(parent, 0);
         gd = new GridData();
         gd.horizontalSpan = layout.numColumns-1;
         gd.horizontalAlignment = SWT.FILL;
@@ -294,7 +351,7 @@ public class Probe extends ViewPart implements PVListener
         gd.grabExcessVerticalSpace = true;
         label.setLayoutData(gd);
 
-        label = new Label(parent, SWT.NONE);
+        label = new Label(parent, 0);
         label.setText(Messages.S_Status);
         gd = new GridData();
         label.setLayoutData(gd);
@@ -351,14 +408,15 @@ public class Probe extends ViewPart implements PVListener
         if (Probe.debug)
             Plugin.logInfo("setPVName(" + pv_name+ ")");
 
-        // Reset rest of GUI
-        lbl_value.setText("");
-        lbl_time.setText("");
-        time = null;
-
         // Close a previous channel
         disposeChannel();
 
+        // Reset rest of GUI
+        lbl_value.setText("");
+        lbl_time.setText("");
+        value.reset();
+        new_channel = true;
+        
         // Check the name
         if (pv_name == null || pv_name.equals(""))
         {
@@ -408,43 +466,9 @@ public class Probe extends ViewPart implements PVListener
             return;
         try
         {
-            IValue value = pv.getValue();
-            value_txt = ValueUtil.formatValueAndSeverity(value);
-            ITimestamp new_time = value.getTime();
-            if (time != null)
-            {
-                double period = new_time.toDouble() - time.toDouble();
-                value_period.add(period);
-            }
-            else
-                value_period.reset();
-            time = new_time;
+            value.update(pv.getValue());
             // Perform update in GUI thread.
-            Display.getDefault().asyncExec(new Runnable()
-            {
-                public void run()
-                {   // Might run after the view is already disposed...
-                    if (lbl_value.isDisposed())
-                        return;
-                    lbl_value.setText(value_txt);
-                    if (time == null)
-                        lbl_time.setText(""); //$NON-NLS-1$
-                    else
-                        lbl_time.setText(time.toString());
-
-                    if (Probe.debug)
-                        System.out.println("Probe displays " //$NON-NLS-1$
-                                        + lbl_time.getText()
-                                        + " " + lbl_value.getText()); //$NON-NLS-1$
-
-                    if (value_period.get() > 0)
-                        lbl_status.setText(Messages.S_Period
-                                    + period_format.format(value_period.get())
-                                    + Messages.S_Seconds);
-                    else
-                        lbl_status.setText(Messages.S_OK);
-                }
-            });
+            Display.getDefault().asyncExec(update_value);
         }
         catch (Exception e)
         {
@@ -539,7 +563,7 @@ public class Probe extends ViewPart implements PVListener
             InputDialog inputDialog =
                     new InputDialog(lbl_value.getShell(),
                         Messages.S_AdjustValue, Messages.S_Value,
-                        value_txt, null);
+                        value.getValueText(), null);
                 if (inputDialog.open() == Window.OK)
                     pv.setValue(inputDialog.getValue());
         }

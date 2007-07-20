@@ -18,6 +18,8 @@ public class MeterWidgetTest
     
     private static void updateMeter(final MeterWidget meter)
     {
+        if (meter.isDisposed())
+            return;
         meter.setValue(-10.0 + 20.0 * Math.random());
         meter.getDisplay().timerExec(200, new Runnable()
         {

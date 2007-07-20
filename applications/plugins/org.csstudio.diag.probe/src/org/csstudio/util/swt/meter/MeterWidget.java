@@ -117,7 +117,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         else if (min == max)
         {   // Some fake default range
             this.min = min;
-            this.max = min + 1.0;
+            this.max = min + 10.0;
         }
         else
         {   // Set as given
@@ -128,6 +128,16 @@ public class MeterWidget extends Canvas implements DisposeListener,
         this.low_warning = low_warning;
         this.high_warning = high_warning;
         this.high_alarm = high_alarm;
+        // Correct limits that are outside the value range
+        if (this.low_alarm < this.min ||  this.low_alarm > this.max)
+            this.low_alarm = this.min;
+        if (this.low_warning < this.min || this.low_warning > this.max)
+            this.low_alarm = this.min;
+        if (this.high_warning < this.min || this.high_warning > this.max)
+            this.high_alarm = this.max;
+        if (this.high_alarm < this.min || this.high_alarm > this.max)
+            this.high_alarm = this.max;
+            
         this.precision = precision;
         resetScale();
         redraw();
@@ -207,17 +217,32 @@ public class MeterWidget extends Canvas implements DisposeListener,
         gc.setLineJoin(SWT.JOIN_ROUND);
         
         createScaleImage(gc, client_rect);
-        gc.drawImage(scale_image, 0, 0);
+        if (getEnabled())
+        {
+            gc.drawImage(scale_image, 0, 0);
 
-        // Needle
-        final double needle_angle = getAngle(value);
-        
-        final int needle_x_radius = (int)((1 - 0.5*scale_width)*x_radius);
-        final int needle_y_radius = (int)((1 - 0.5*scale_width)*y_radius);
-        gc.setForeground(needle_color);
-        gc.drawLine(pivot_x, pivot_y,
-                    (int)(pivot_x + needle_x_radius*Math.cos(Math.toRadians(needle_angle))),
-                    (int)(pivot_y - needle_y_radius*Math.sin(Math.toRadians(needle_angle))));
+            // Needle
+            final double needle_angle = getAngle(value);
+            
+            final int needle_x_radius = (int)((1 - 0.5*scale_width)*x_radius);
+            final int needle_y_radius = (int)((1 - 0.5*scale_width)*y_radius);
+            gc.setForeground(needle_color);
+            gc.drawLine(pivot_x, pivot_y,
+                        (int)(pivot_x + needle_x_radius*Math.cos(Math.toRadians(needle_angle))),
+                        (int)(pivot_y - needle_y_radius*Math.sin(Math.toRadians(needle_angle))));
+        }
+        else
+        {   // Not enabled
+            Image grayed = new Image(gc.getDevice(), scale_image, SWT.IMAGE_DISABLE);
+            gc.drawImage(grayed, 0, 0);
+            grayed.dispose();
+            
+            final String message = Messages.MeterWidget_NoNumericInfo;
+            final Point size = gc.textExtent(message);
+            gc.drawString(message,
+                        (client_rect.width-size.x)/2,
+                        (client_rect.height-size.y)/2, true);
+        }
     }
 
     /** Create image of the scale (labels etc.) _if_needed_ */
