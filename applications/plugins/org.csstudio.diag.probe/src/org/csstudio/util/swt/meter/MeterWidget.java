@@ -240,8 +240,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
             final String message = Messages.MeterWidget_NoNumericInfo;
             final Point size = gc.textExtent(message);
             gc.drawString(message,
-                        (client_rect.width-size.x)/2,
-                        (client_rect.height-size.y)/2, true);
+             (client_rect.width-size.x)/2, (client_rect.height-size.y)/2, true);
         }
     }
 

@@ -302,6 +302,7 @@ public class Probe extends ViewPart implements PVListener
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         meter.setLayoutData(gd);
+        meter.setEnabled(false);
 
         // New Row
         Label label = new Label(parent, 0);
@@ -415,6 +416,7 @@ public class Probe extends ViewPart implements PVListener
         lbl_value.setText("");
         lbl_time.setText("");
         value.reset();
+        meter.setEnabled(false);
         new_channel = true;
         
         // Check the name

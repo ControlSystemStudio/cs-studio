@@ -16,7 +16,7 @@ import org.csstudio.platform.data.ValueUtil;
 public class ValueInfo
 {
     /** The most recent value of the PV. */
-    private String value_txt = "";
+    private String value_txt = ""; //$NON-NLS-1$
     
     /** The most recent numeric meta data of the PV, or <code>null</code> */
     private INumericMetaData numeric_metadata = null;
