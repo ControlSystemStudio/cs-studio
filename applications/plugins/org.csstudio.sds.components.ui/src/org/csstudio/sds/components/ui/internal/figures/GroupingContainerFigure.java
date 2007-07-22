@@ -13,11 +13,11 @@ package org.csstudio.sds.components.ui.internal.figures;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.FreeformLayer;
+import org.eclipse.draw2d.FreeformLayeredPane;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.FreeformViewport;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LayeredPane;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.StackLayout;
@@ -31,12 +31,12 @@ import org.eclipse.gef.handles.HandleBounds;
  * @author Sven Wende
  *
  */
-public class GroupingContainerFigure extends Figure implements HandleBounds, IAdaptable {
+public final class GroupingContainerFigure extends Figure implements HandleBounds, IAdaptable {
 
 	/**
 	 * The content pane of this widget.
 	 */
-	private IFigure _pane;
+	private FreeformLayeredPane _pane;
 
 	/**
 	 * Constructor.
@@ -44,7 +44,7 @@ public class GroupingContainerFigure extends Figure implements HandleBounds, IAd
 	public GroupingContainerFigure() {
 		setBorder(new LineBorder(1));
 		ScrollPane scrollpane = new ScrollPane();
-		_pane = new FreeformLayer();
+		_pane = new FreeformLayeredPane();
 		_pane.setLayoutManager(new FreeformLayout());
 		setLayoutManager(new StackLayout());
 		add(scrollpane);
@@ -61,7 +61,7 @@ public class GroupingContainerFigure extends Figure implements HandleBounds, IAd
 	 * @return IFigure
 	 * 			The content pane
 	 */
-	public IFigure getContentsPane() {
+	public LayeredPane getContentsPane() {
 		return _pane;
 	}
 
@@ -86,9 +86,9 @@ public class GroupingContainerFigure extends Figure implements HandleBounds, IAd
 	}
 
 	/**
-	 * @see org.eclipse.draw2d.Figure#paintFigure(Graphics)
+	 * {@inheritDoc}
 	 */
-	protected void paintFigure(Graphics graphics) {
+	protected void paintFigure(final Graphics graphics) {
 		Rectangle rect = getBounds().getCopy();
 		rect.crop(new Insets(2, 0, 2, 0));
 		graphics.fillRectangle(rect);

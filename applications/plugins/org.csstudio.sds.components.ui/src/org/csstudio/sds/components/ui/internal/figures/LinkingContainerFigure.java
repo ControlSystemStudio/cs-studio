@@ -5,10 +5,10 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.FreeformLayout;
-import org.eclipse.draw2d.FreeformListener;
 import org.eclipse.draw2d.FreeformViewport;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LayeredPane;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.ScalableFreeformLayeredPane;
@@ -84,7 +84,7 @@ public final class LinkingContainerFigure extends Panel implements IAdaptable {
 	 * @return IFigure
 	 * 			The content pane.
 	 */
-	public IFigure getContentsPane() {
+	public LayeredPane getContentsPane() {
 		return _pane;
 	}
 
@@ -153,7 +153,7 @@ public final class LinkingContainerFigure extends Panel implements IAdaptable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object getAdapter(Class adapter) {
+	public Object getAdapter(final Class adapter) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -18,22 +18,30 @@ import org.eclipse.draw2d.IFigure;
  * Holds a circuit, which is a container capable of holding other
  * LogicEditParts.
  */
-public class GroupingContainerEditPart extends AbstractContainerEditPart {
-
-
-
+public final class GroupingContainerEditPart extends AbstractContainerEditPart {
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public IFigure getContentPane() {
 		return ((GroupingContainerFigure) getFigure()).getContentsPane();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		 return new GroupingContainerFigure();
+		GroupingContainerFigure groupingContainerFigure = new GroupingContainerFigure();
+		this.initLayers(groupingContainerFigure.getContentsPane());
+		return groupingContainerFigure;
 	}
 
 }

@@ -23,14 +23,9 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
-import java.util.List;
 
 import org.csstudio.sds.components.model.LinkingContainerModel;
 import org.csstudio.sds.components.ui.internal.figures.LinkingContainerFigure;
-import org.csstudio.sds.internal.connection.ConnectionService;
-import org.csstudio.sds.internal.connection.ConnectionServicesManager;
-import org.csstudio.sds.internal.connection.ConnectionUtil;
-import org.csstudio.sds.internal.connection.SdsException;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.DisplayModel;
@@ -42,9 +37,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.commands.Command;
@@ -60,24 +52,40 @@ import org.eclipse.swt.widgets.Display;
  * 
  */
 public final class LinkingContainerEditPart extends AbstractContainerEditPart {
+	
+	/**
+	 * Constructor.
+	 */
 	public LinkingContainerEditPart() {
 		setChildrenSelectable(false);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public IFigure getContentPane() {
 		return ((LinkingContainerFigure) getFigure()).getContentsPane();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		return new LinkingContainerFigure();
+		LinkingContainerFigure linkingContainerFigure = new LinkingContainerFigure();
+		this.initLayers(linkingContainerFigure.getContentsPane());
+		return linkingContainerFigure;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure refreshableFigure) {
+			public boolean handleChange(final Object oldValue, 
+					final Object newValue,
+					final IFigure refreshableFigure) {
 				initContainerFromResource((IPath) newValue);
 				return true;
 			}
@@ -90,6 +98,9 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 		initContainerFromResource(m.getResource());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
@@ -97,18 +108,18 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new XYLayoutEditPolicy() {
 
 			@Override
-			protected Command createChangeConstraintCommand(EditPart child,
-					Object constraint) {
+			protected Command createChangeConstraintCommand(final EditPart child,
+					final Object constraint) {
 				return null;
 			}
 
 			@Override
-			protected Command getCreateCommand(CreateRequest request) {
+			protected Command getCreateCommand(final CreateRequest request) {
 				return null;
 			}
 
 			@Override
-			protected void showSizeOnDropFeedback(CreateRequest request) {
+			protected void showSizeOnDropFeedback(final CreateRequest request) {
 
 			}
 
@@ -118,12 +129,20 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public synchronized void propertyChange(PropertyChangeEvent evt) {
+	public synchronized void propertyChange(final PropertyChangeEvent evt) {
 		super.propertyChange(evt);
 	}
 
-	protected void initContainerFromResource(IPath path) {
+	/**
+	 * Initializes the {@link ContainerModel} from the specified path.
+	 * @param path
+	 * 			The Path to the ContainerModel
+	 */
+	protected void initContainerFromResource(final IPath path) {
 		ContainerModel container = getContainerModel();
 
 		if (path != null && !path.isEmpty()) {
@@ -162,7 +181,14 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 		}
 	}
 
-	private IFile findFile(IPath location) {
+	/**
+	 * Return the {@link IFile} with the given path.
+	 * @param location
+	 * 			The {@link IPath} to the file
+	 * @return IFile
+	 * 			The corresponding file
+	 */
+	private IFile findFile(final IPath location) {
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(location);
 
 		if (file == null) {
