@@ -1,8 +1,5 @@
 package org.csstudio.utility.pv.epics;
 
-import gov.aps.jca.Channel;
-import gov.aps.jca.Context;
-import gov.aps.jca.JCALibrary;
 import gov.aps.jca.Channel.ConnectionState;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
@@ -29,7 +26,6 @@ import gov.aps.jca.event.GetListener;
 import gov.aps.jca.event.MonitorEvent;
 import gov.aps.jca.event.MonitorListener;
 
-import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.platform.data.IEnumeratedMetaData;
@@ -45,15 +41,6 @@ import org.csstudio.utility.pv.PVListener;
 import org.eclipse.swt.widgets.Display;
 
 /** EPICS ChannelAccess implementation of the PV interface.
- *  <p>
- *  Also creates a shared pool of PVs:<br>
- *  The underlying pure java CA client implementation actually returns the
- *  same 'channel' when trying to access the same PV name multiple times.
- *  That's good, but I don't know how to determine if the channel for this
- *  EPICS_V3_PV is actually shared.
- *  Calling destroy() on such a shared channel creates problems.<br>
- *  This class therefore adds its own hash map of channels and keeps a reference
- *  count.
  *  <p>
  *  Most callbacks (value, disconnect) are just passed through from 
  *  the underlying CA library callback, so the user needs to be prepared
@@ -78,111 +65,108 @@ import org.eclipse.swt.widgets.Display;
  */
 @SuppressWarnings("nls")
 public class EPICS_V3_PV
-          implements PV, ConnectionListener, GetListener, MonitorListener
+          implements PV, ConnectionListener, MonitorListener
 {
-    /** Compile-time option for debug messages. */
-    private static final boolean debug = false;
-
-    /** Set to <code>true</code> if the pure Java CA context should be used.
-     *  <p>
-     *  Changes only have an effect before the very first channel is created.
-     */
-    public static boolean use_pure_java = true;
-
-    /** The Java CA Library instance. */
-    static private JCALibrary jca = null;
-
-    /** The JCA context. */
-    static private Context jca_context = null;
-
-    /** The JCA context reference count. */
-    static private long jca_refs = 0;
-
-    /** Initialize the JA library. */
-    static private void initJCA() throws Exception
-    {
-        synchronized (Context.class)
-        {
-            if (jca_refs == 0)
-            {
-                if (debug)
-                    System.out.println("Initializing JCA "
-                                    + (use_pure_java ? "(pure Java)" : "(JNI)"));
-                jca = JCALibrary.getInstance();
-                final String type = use_pure_java ?
-                    JCALibrary.CHANNEL_ACCESS_JAVA : JCALibrary.JNI_THREAD_SAFE;
-                jca_context = jca.createContext(type);
-            }
-            ++jca_refs;
-        }
-    }
-
-    /** Disconnect from the JA library.
-     *  <p>
-     *  Without this step, JCA threads can stay around and prevent the
-     *  application from quitting.
-     */
-    static private void exitJCA() throws Throwable
-    {
-        synchronized (Context.class)
-        {
-            --jca_refs;
-            if (jca_refs == 0)
-            {
-                try
-                {
-                    jca_context.destroy();
-                    jca = null;
-                    if (debug)
-                        System.out.println("Finalized JCA");
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    /** map of channels. */
-    static private HashMap<String, RefCountedChannel> channels =
-        new HashMap<String, RefCountedChannel>();
-
-    /** PVListeners of this PV */
-    private CopyOnWriteArrayList<PVListener> listeners
-        = new CopyOnWriteArrayList<PVListener>();
-
     /** Use plain mode?
      *  @see #EPICS_V3_PV(String, boolean)
      */
-    private final boolean plain;
+    final private boolean plain;
 
     /** Channel name. */
-    private final String name;
-
-    /** isRunning? */
-    private volatile boolean running = false;
-
-    /** isConnected? */
-    private volatile boolean connected = false;
+    final private String name;
+    
+    /** PVListeners of this PV */
+    final private CopyOnWriteArrayList<PVListener> listeners
+                                    = new CopyOnWriteArrayList<PVListener>();
 
     /** JCA channel. */
-    private RefCountedChannel channel_ref;
+    RefCountedChannel channel_ref = null;
 
-    /** Assert that we only subscribe once. */
-    private volatile boolean was_connected;
-
-    /** Meta data obtained during connection cycle. */
-    private IMetaData meta = null;
-
-    /** Quality code used for all values,
-     *  since we always provide 'original', raw data.
+    /** The data of this PV in a thread-safe container */
+    final private PVData pv_data = new PVData();
+    
+    /** isRunning?
+     *  <code>true</code> if we want to receive value updates.
      */
-    private static final IValue.Quality quality = IValue.Quality.Original;
-        
-    /** Most recent 'live' value. */
-    private volatile IValue value = null;
+    boolean running = false;
 
+    
+    final IValue.Quality quality = IValue.Quality.Original;
+
+
+    /** Listener to the get... for meta data */
+    private final GetListener meta_get_listener = new GetListener()
+    {
+        public void getCompleted(GetEvent event)
+        {   // This runs in a CA thread
+            if (event.getStatus().isSuccessful())
+            {
+                final DBR dbr = event.getDBR();
+                synchronized (pv_data)
+                {
+                    pv_data.meta = decodeMetaData(dbr);
+                    if (PVContext.debug)
+                        System.out.println("Channel '" + name
+                                            + "' got Meta data: "
+                                            + pv_data.meta);
+                }
+            }
+            else
+                System.out.println("Channel '" + name + "' getCompleted error: "
+                                + event.getStatus().getMessage());
+            // Prevent deadlock with other UI code that calls into CA
+            // by also subscribing in UI Thread
+            runInUI(new Runnable()
+            {
+                public void run()
+                {
+                    subscribe();
+                }
+            });
+        }
+    };
+    
+    /** Listener to the get-callback for data.
+     *  Decodes the meta & data, and notifies
+     *  on <code>get_callback</code>
+     */
+    private final GetListener get_callback = new GetListener()
+    {
+        public void getCompleted(GetEvent event)
+        {   // This runs in a CA thread
+            synchronized (pv_data)
+            {
+                if (event.getStatus().isSuccessful())
+                {
+                    final DBR dbr = event.getDBR();
+                    pv_data.meta = decodeMetaData(dbr);
+                    try
+                    {
+                        pv_data.value = decodeValue(dbr);
+                    }
+                    catch (Exception ex)
+                    {
+                        Activator.logException("PV " + getName(), ex);
+                        pv_data.value = null;
+                    }
+                    if (PVContext.debug)
+                        System.out.println("Channel '" + name
+                                            + "' got Meta data: "
+                                            + pv_data.value);
+                }
+                else
+                {
+                        pv_data.meta = null;
+                        pv_data.value = null;
+                }
+            }
+            synchronized (this)
+            {
+                this.notifyAll();
+            }
+        }
+    };
+    
     /** Generate an EPICS PV.
      *  @param name The PV name.
      */
@@ -207,95 +191,189 @@ public class EPICS_V3_PV
     public String getName()
     {   return name;  }
 
-    /** @return Returns the value. */
+    public IValue getValue(double timeout_seconds) throws Exception
+    {
+        final long end_time = System.currentTimeMillis() +
+                                (long)(timeout_seconds * 1000);
+        // Wait for connection
+        connect();
+        synchronized (pv_data)
+        {
+            while (! pv_data.connected)
+            {   // Wait...
+                final long remain = end_time - System.currentTimeMillis();
+                if (remain < 0)
+                    throw new Exception("Connection timeout: PV " + name);
+                pv_data.wait(remain);
+            }
+        }
+        final DBRType type = getCtrlType();
+        if (PVContext.debug)
+            System.out.println("Channel '" + name + "': get as " + type.getName());
+        channel_ref.getChannel().get(
+                        type, channel_ref.getChannel().getElementCount(),
+                        get_callback);
+        PVContext.flush();
+        // Wait for value callback
+        synchronized (get_callback)
+        {
+            final long remain = end_time - System.currentTimeMillis();
+            if (remain < 0)
+                throw new Exception("Get timeout: PV " + name);
+            get_callback.wait(remain);
+        }
+        synchronized (pv_data)
+        {
+            return pv_data.value;
+        }
+    }
+    
+    /** {@inheritDoc} */
     public IValue getValue()
-    {   return value;  }
+    {
+        synchronized (pv_data)
+        {
+            return pv_data.value;
+        }
+    }
 
+    /** {@inheritDoc} */
     public void addListener(PVListener listener)
     {   listeners.add(listener);  }
 
+    /** {@inheritDoc} */
     public void removeListener(PVListener listener)
     {   listeners.remove(listener);   }
 
-    public void start() throws Exception
+    /** Try to connect to the PV.
+     *  OK to call more than once.
+     */
+    private void connect() throws Exception
     {
-        if (running)
-            return;
-        was_connected = false;
-        initJCA();
-
-        synchronized (channels)
+        // Already attempted a connection?
+        if (channel_ref == null)
         {
-            channel_ref = channels.get(name);
-            if (channel_ref == null)
-            {
-                if (debug)
-                    System.out.println("Creating CA channel " + name);
-                final Channel channel = jca_context.createChannel(name);
-                if (channel == null)
-                    throw new Exception("Cannot create channel '" + name + "'");
-                channel_ref = new RefCountedChannel(channel);
-                channels.put(name, channel_ref);
-                jca_context.flushIO();
-            }
-            else
-            {
-                channel_ref.incRefs();
-                if (debug)
-                    System.out.println("Re-using CA channel " + name);
-            }
+            channel_ref = PVContext.getChannel(name);
+            channel_ref.getChannel().addConnectionListener(this);
         }
-        running = true;
-        channel_ref.getChannel().addConnectionListener(this);
         if (channel_ref.getChannel().getConnectionState() == ConnectionState.CONNECTED)
         {
-            if (debug)
+            if (PVContext.debug)
                 System.out.println("Channel is immediately connected: " + name);
             handleConnected();
         }
     }
-
-    public boolean isRunning()
-    {   return running;  }
-
-    public boolean isConnected()
-    {   return connected;  }
-
-    public void stop()
+    
+    /** Disconnect from the PV.
+     *  OK to call more than once.
+     */
+    private void disconnect()
     {
-        if (!running)
+        // Never attempted a connection?
+        if (channel_ref == null)
             return;
-        running = false;
         try
         {
             channel_ref.getChannel().removeConnectionListener(this);
-            synchronized (channels)
-            {
-                if (channel_ref.decRefs() <= 0)
-                {
-                    if (debug)
-                        System.out.println("Deleting CA channel " + name);
-                    channels.remove(name);
-                    channel_ref.dispose();
-                }
-                else if (debug)
-                    System.out.println("CA channel " + name + " still ref'ed");
-            }
+            PVContext.releaseChannel(channel_ref);
             channel_ref = null;
-            exitJCA();
         }
         catch (Throwable e)
         {
             e.printStackTrace();
         }
-        connected = false;
+        synchronized (pv_data)
+        {
+            pv_data.connected = false;
+            pv_data.notifyAll();
+        }
         fireDisconnected();
+    }
+    
+    /** Subscribe for value updates. */
+    private void subscribe()
+    {
+        synchronized (pv_data)
+        {
+            // Prevent multiple subscriptions.
+            if (pv_data.subscription != null)
+                return;
+            
+        }
+        try
+        {
+            final DBRType type = getTimeType();
+            if (PVContext.debug)
+                System.out.println("Channel '" + name
+                                + "': subscribing as " + type.getName());
+            synchronized (pv_data)
+            {
+                pv_data.subscription = channel_ref.getChannel().addMonitor(type,
+                           channel_ref.getChannel().getElementCount(), 1, this);
+            }
+            PVContext.flush();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Channel '" + name + "' subscribe error:\n"
+                    + e.getMessage());
+        }
+    }
+    
+    /** Unsubscribe from value updates. */
+    private void unsubscribe()
+    {
+        synchronized (pv_data)
+        {
+            if (pv_data.subscription != null)
+            {
+                try
+                {
+                    pv_data.subscription.clear();
+                }
+                catch (Exception ex)
+                {
+                    Activator.logException("Unsubscribe from " + getName(), ex);
+                }
+                pv_data.subscription = null;
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    public void start() throws Exception
+    {
+        if (running)
+            return;
+        running = true;
+        connect();
+    }
+
+    /** {@inheritDoc} */
+    public boolean isRunning()
+    {   return running;  }
+
+    /** {@inheritDoc} */
+    public boolean isConnected()
+    {
+        synchronized (pv_data)
+        {
+            return pv_data.connected;
+        }
+    }
+
+    /** {@inheritDoc} */
+    public void stop()
+    {
+        running = false;
+        unsubscribe();
+        disconnect();
     }
 
     /** Set PV to given value. */
     public void setValue(Object new_value)
     {
-        if (!connected)
+        if (!isConnected())
             return;
         try
         {
@@ -323,11 +401,11 @@ public class EPICS_V3_PV
             // the application is "done".
             //
             // This applies to all the flushIO() calls in here...
-            jca_context.flushIO();
+            PVContext.flush();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            e.printStackTrace();
+            Activator.logException("Set PV " + getName() + " = " + new_value, ex);
         }
     }
 
@@ -376,7 +454,16 @@ public class EPICS_V3_PV
             });
         }
         else
-            handleDisconnected();
+        {
+            if (PVContext.debug)
+                System.out.println("Channel '" + name + "' disconnected");
+            synchronized (pv_data)
+            {
+                pv_data.connected = false;
+                pv_data.notifyAll();
+            }
+            fireDisconnected();
+        }
     }
 
     /** PV is connected.
@@ -384,14 +471,29 @@ public class EPICS_V3_PV
      */
     private void handleConnected()
     {
-        if (debug)
+        if (PVContext.debug)
             System.out.println("Channel '" + name + "' connected");
+        
+        // If we're "running", we need to get the meta data and
+        // then subscribe.
+        // Otherwise, we're done.
+        if (!running)
+        {
+            synchronized (pv_data)
+            {
+                pv_data.connected = true;
+                pv_data.meta = null;
+                pv_data.notifyAll();
+            }
+            return;
+        }
+        // else: running, get meta data, then subscribe
         try
         {
             DBRType type = channel_ref.getChannel().getFieldType();
             if (! (plain || type.isSTRING()))
             {
-                if (debug)
+                if (PVContext.debug)
                     System.out.println("Getting meta info for type "
                                     + type.getName());
                 if (type.isDOUBLE()  ||  type.isFLOAT())
@@ -400,137 +502,24 @@ public class EPICS_V3_PV
                     type = DBRType.LABELS_ENUM;
                 else
                     type = DBRType.CTRL_SHORT;
-                channel_ref.getChannel().get(type, 1, this);
-                jca_context.flushIO();
+                channel_ref.getChannel().get(type, 1, meta_get_listener);
+                PVContext.flush();
                 return;
             }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            System.out.println("Channel '" + name + "' handleConnected:\n"
-                            + e.getMessage());
+            Activator.logException("Channel '" + name + "' handleConnected", ex);
         }
 
         // Meta info is not requested, not available for this type,
         // or there was an error in the get call.
         // So reset it, then just move on to the subscription.
-        meta = null;
+        synchronized (pv_data)
+        {
+            pv_data.meta = null;
+        }
         subscribe();
-    }
-
-    /** GetListener interface, handles result of getting DBR_CTRL... */
-    public void getCompleted(GetEvent event)
-    {
-        // This runs in a CA thread
-        if (event.getStatus().isSuccessful())
-        {
-            DBR dbr = event.getDBR();
-            if (dbr.isLABELS())
-            {
-                DBR_LABELS_Enum labels = (DBR_LABELS_Enum)dbr;
-                meta = ValueFactory.createEnumeratedMetaData(labels.getLabels());
-                if (debug)
-                    System.out.println("Channel '" + name + "' got meta:"
-                                    + meta);
-            }
-            else if (dbr instanceof DBR_CTRL_Double)
-            {
-                DBR_CTRL_Double ctrl = (DBR_CTRL_Double)dbr;
-                meta = ValueFactory.createNumericMetaData(
-                                ctrl.getLowerDispLimit().doubleValue(),
-                                ctrl.getUpperDispLimit().doubleValue(),
-                                ctrl.getLowerWarningLimit().doubleValue(),
-                                ctrl.getUpperWarningLimit().doubleValue(),
-                                ctrl.getLowerAlarmLimit().doubleValue(),
-                                ctrl.getUpperAlarmLimit().doubleValue(),
-                                ctrl.getPrecision(),
-                                ctrl.getUnits());
-                if (debug)
-                    System.out.println("Channel '" + name + "' got meta:"
-                                    + meta);
-            }
-            else if (dbr instanceof DBR_CTRL_Short)
-            {
-                DBR_CTRL_Short ctrl = (DBR_CTRL_Short)dbr;
-                meta = ValueFactory.createNumericMetaData(
-                                ctrl.getLowerDispLimit().doubleValue(),
-                                ctrl.getUpperDispLimit().doubleValue(),
-                                ctrl.getLowerWarningLimit().doubleValue(),
-                                ctrl.getUpperWarningLimit().doubleValue(),
-                                ctrl.getLowerAlarmLimit().doubleValue(),
-                                ctrl.getUpperAlarmLimit().doubleValue(),
-                                0, // no precision
-                                ctrl.getUnits());
-                if (debug)
-                    System.out.println("Channel '" + name + "' got meta:"
-                                    + meta);
-            }
-            else
-            {
-                System.out.println("Channel '" + name + "' getCompleted: "
-                                + "got " + dbr.getClass().getName());
-            }
-        }
-        else
-        {
-            System.out.println("Channel '" + name + "' getCompleted error: "
-                            + event.getStatus().getMessage());
-        }
-        
-        // Prevent deadlock with other UI code that calls into CA
-        // by also subscribin in UI Thread
-        runInUI(new Runnable()
-        {
-            public void run()
-            {
-                subscribe();
-            }
-        });
-    }
-
-    private void subscribe()
-    {
-        if (was_connected == false)
-        {
-            was_connected = true;
-            try
-            {
-                DBRType type = channel_ref.getChannel().getFieldType();
-                if (type.isDOUBLE())
-                    type = plain ? DBRType.DOUBLE : DBRType.TIME_DOUBLE;
-                else if (type.isFLOAT())
-                    type = plain ? DBRType.FLOAT : DBRType.TIME_FLOAT;
-                else if (type.isINT())
-                    type = plain ? DBRType.INT : DBRType.TIME_INT;
-                else if (type.isSHORT())
-                    type = plain ? DBRType.SHORT : DBRType.TIME_SHORT;
-                else if (type.isENUM())
-                    type = plain ? DBRType.SHORT : DBRType.TIME_ENUM;
-                else
-                    // default: get as string
-                    type = plain ? DBRType.STRING : DBRType.TIME_STRING;
-                if (debug)
-                    System.out.println("Channel '" + name
-                                    + "': subscribing as " + type.getName());
-                channel_ref.getChannel().addMonitor(type,
-                        channel_ref.getChannel().getElementCount(), 1, this);
-                jca_context.flushIO();
-            }
-            catch (Exception e)
-            {
-                System.out.println("Channel '" + name + "' subscribe error:\n"
-                        + e.getMessage());
-            }
-        }
-    }
-
-    /** PV is disconnected */
-    private void handleDisconnected()
-    {
-        if (debug)
-            System.out.println("Channel '" + name + "' disconnected");
-        connected = false;
-        fireDisconnected();
     }
 
     /** Convert the EPICS time stamp (based on 1990) into the usual 1970 epoch. */
@@ -554,153 +543,111 @@ public class EPICS_V3_PV
             return;
         }
     
-        final DBR dbr = ev.getDBR();
         try
         {
-            ITimestamp time = null;
-            ISeverity severity = null;
-            String status = "";
-            if (plain)
+            synchronized (pv_data)
             {
-                time = TimestampFactory.now();
-                severity = SeverityUtil.forCode(0);
+                pv_data.value = decodeValue(ev.getDBR());
+                if (PVContext.debug)
+                    System.out.println("Monitor: " + name + " = " + pv_data.value);
+                if (!pv_data.connected)
+                    pv_data.connected = true;
             }
-            if (dbr.isDOUBLE())
-            {
-                double v[];
-                if (plain)
-                    v = ((DBR_Double)dbr).getDoubleValue();
-                else
-                {
-                    DBR_TIME_Double dt = (DBR_TIME_Double) dbr;
-                    severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                    Status stat = dt.getStatus();
-                    status = stat.getValue() == 0 ? "" : stat.getName();
-                    time = createTimeFromEPICS(dt.getTimeStamp());
-                    v = dt.getDoubleValue();
-                }
-                value = ValueFactory.createDoubleValue(time, severity,
-                                status, (INumericMetaData)meta, quality, v);
-                if (debug)
-                    System.out.println("Channel '" + name
-                            + "': double value " + value);
-            }
-            else if (dbr.isFLOAT())
-            {
-                float v[];
-                if (plain)
-                    v = ((DBR_Float)dbr).getFloatValue();
-                else
-                {
-                    DBR_TIME_Float dt = (DBR_TIME_Float) dbr;
-                    severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                    Status stat = dt.getStatus();
-                    status = stat.getValue() == 0 ? "" : stat.getName();
-                    time = createTimeFromEPICS(dt.getTimeStamp());
-                    v = dt.getFloatValue();
-                }
-                value = ValueFactory.createDoubleValue(time, severity,
-                                status, (INumericMetaData)meta, quality,
-                                float2double(v));
-                if (debug)
-                    System.out.println("Channel '" + name
-                            + "': double value " + value);
-            }
-            else if (dbr.isINT())
-            {
-                int v[];
-                if (plain)
-                    v = ((DBR_Int)dbr).getIntValue();
-                else
-                {
-                    DBR_TIME_Int dt = (DBR_TIME_Int) dbr;
-                    severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                    Status stat = dt.getStatus();
-                    status = stat.getValue() == 0 ? "" : stat.getName();
-                    time = createTimeFromEPICS(dt.getTimeStamp());
-                    v = dt.getIntValue();
-                }
-                value = ValueFactory.createLongValue(time, severity,
-                                status, (INumericMetaData)meta, quality,
-                                int2long(v));
-                if (debug)
-                    System.out.println("Channel '" + name
-                            + "': int value " + value);
-            }
-            else if (dbr.isSHORT())
-            {
-                short v[];
-                if (plain)
-                    v = ((DBR_Short)dbr).getShortValue();
-                else
-                {
-                    DBR_TIME_Short dt = (DBR_TIME_Short) dbr;
-                    severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                    Status stat = dt.getStatus();
-                    status = stat.getValue() == 0 ? "" : stat.getName();
-                    time = createTimeFromEPICS(dt.getTimeStamp());
-                    v = dt.getShortValue();
-                }
-                value = ValueFactory.createLongValue(time, severity,
-                                status, (INumericMetaData)meta, quality,
-                                short2long(v));
-                if (debug)
-                    System.out.println("Channel '" + name
-                            + "': short value " + value);
-            }
-            else if (dbr.isSTRING())
-            {
-                String v[];
-                if (plain)
-                    v = ((DBR_String)dbr).getStringValue();
-                else
-                {
-                    DBR_TIME_String dt = (DBR_TIME_String) dbr;
-                    severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                    Status stat = dt.getStatus();
-                    status = stat.getValue() == 0 ? "" : stat.getName();
-                    time = createTimeFromEPICS(dt.getTimeStamp());
-                    v = dt.getStringValue();
-                }
-                value = ValueFactory.createStringValue(time, severity,
-                                status, quality, v[0]);
-                if (debug)
-                    System.out.println("Channel '" + name
-                            + "': string value " + value);
-            }
-            else if (dbr.isENUM())
-            {
-                short v[];
-                // 'plain' mode would subscribe to SHORT,
-                // so this must be a TIME_Enum:
-                DBR_TIME_Enum dt = (DBR_TIME_Enum) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                Status stat = dt.getStatus();
-                status = stat.getValue() == 0 ? "" : stat.getName();
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getEnumValue();
-                
-                value = ValueFactory.createEnumeratedValue(time, severity,
-                                status, (IEnumeratedMetaData)meta, quality,
-                                short2int(v));
-                if (debug)
-                    System.out.println("Channel '" + name
-                            + "': enum value " + value);
-            }
-            else
-                // handle many more types!!
-                throw new Exception("Cannot decode " + dbr);
-            if (!connected)
-                connected = true;
             fireValueUpdate();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            System.out.println("Channel '" + name + "' value error:"
-                    + e.getMessage());
+            Activator.logException("Channel '" + name + "' value error", ex);
         }
     }
 
+    /** Notify all listeners. */
+    private void fireValueUpdate()
+    {
+        for (PVListener listener : listeners)
+            listener.pvValueUpdate(this);
+    }
+
+    /** Notify all listeners. */
+    private void fireDisconnected()
+    {
+        for (PVListener listener : listeners)
+            listener.pvDisconnected(this);
+    }
+    
+    /** @return Meta data extracted from dbr */
+    private IMetaData decodeMetaData(final DBR dbr)
+    {
+        if (dbr.isLABELS())
+        {
+            final DBR_LABELS_Enum labels = (DBR_LABELS_Enum)dbr;
+            return ValueFactory.createEnumeratedMetaData(labels.getLabels());
+        }
+        else if (dbr instanceof DBR_CTRL_Double)
+        {
+            final DBR_CTRL_Double ctrl = (DBR_CTRL_Double)dbr;
+            return ValueFactory.createNumericMetaData(
+                            ctrl.getLowerDispLimit().doubleValue(),
+                            ctrl.getUpperDispLimit().doubleValue(),
+                            ctrl.getLowerWarningLimit().doubleValue(),
+                            ctrl.getUpperWarningLimit().doubleValue(),
+                            ctrl.getLowerAlarmLimit().doubleValue(),
+                            ctrl.getUpperAlarmLimit().doubleValue(),
+                            ctrl.getPrecision(),
+                            ctrl.getUnits());
+        }
+        else if (dbr instanceof DBR_CTRL_Short)
+        {
+            final DBR_CTRL_Short ctrl = (DBR_CTRL_Short)dbr;
+            return ValueFactory.createNumericMetaData(
+                            ctrl.getLowerDispLimit().doubleValue(),
+                            ctrl.getUpperDispLimit().doubleValue(),
+                            ctrl.getLowerWarningLimit().doubleValue(),
+                            ctrl.getUpperWarningLimit().doubleValue(),
+                            ctrl.getLowerAlarmLimit().doubleValue(),
+                            ctrl.getUpperAlarmLimit().doubleValue(),
+                            0, // no precision
+                            ctrl.getUnits());
+        }
+        return null;
+    }
+
+    /** @return CTRL_... type for this channel. */
+    private DBRType getCtrlType()
+    {
+        final DBRType type = channel_ref.getChannel().getFieldType();
+        if (type.isDOUBLE())
+            return plain ? DBRType.DOUBLE : DBRType.CTRL_DOUBLE;
+        else if (type.isFLOAT())
+            return plain ? DBRType.FLOAT : DBRType.CTRL_FLOAT;
+        else if (type.isINT())
+            return plain ? DBRType.INT : DBRType.CTRL_INT;
+        else if (type.isSHORT())
+            return plain ? DBRType.SHORT : DBRType.CTRL_SHORT;
+        else if (type.isENUM())
+            return plain ? DBRType.SHORT : DBRType.CTRL_ENUM;
+        // default: get as string
+        return plain ? DBRType.STRING : DBRType.CTRL_STRING;
+    }
+    
+    /** @return TIME_... type for this channel. */
+    private DBRType getTimeType()
+    {
+        final DBRType type = channel_ref.getChannel().getFieldType();
+        if (type.isDOUBLE())
+            return plain ? DBRType.DOUBLE : DBRType.TIME_DOUBLE;
+        else if (type.isFLOAT())
+            return plain ? DBRType.FLOAT : DBRType.TIME_FLOAT;
+        else if (type.isINT())
+            return plain ? DBRType.INT : DBRType.TIME_INT;
+        else if (type.isSHORT())
+            return plain ? DBRType.SHORT : DBRType.TIME_SHORT;
+        else if (type.isENUM())
+            return plain ? DBRType.SHORT : DBRType.TIME_ENUM;
+        // default: get as string
+        return plain ? DBRType.STRING : DBRType.TIME_STRING;
+    }
+    
     /** Convert short array to int array. */
     private int[] short2int(final short[] v)
     {
@@ -735,19 +682,125 @@ public class EPICS_V3_PV
         for (int i = 0; i < result.length; i++)
             result[i] = v[i];
         return result;
-    }
-    
-    /** Notify all listeners. */
-    private void fireValueUpdate()
+    }    
+
+    /** @return Value extracted from dbr */
+    private IValue decodeValue(final DBR dbr) throws Exception
     {
-        for (PVListener listener : listeners)
-            listener.pvValueUpdate(this);
+        ITimestamp time = null;
+        ISeverity severity = null;
+        String status = "";
+        if (plain)
+        {
+            time = TimestampFactory.now();
+            severity = SeverityUtil.forCode(0);
+        }
+        if (dbr.isDOUBLE())
+        {
+            double v[];
+            if (plain)
+                v = ((DBR_Double)dbr).getDoubleValue();
+            else
+            {
+                DBR_TIME_Double dt = (DBR_TIME_Double) dbr;
+                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                Status stat = dt.getStatus();
+                status = stat.getValue() == 0 ? "" : stat.getName();
+                time = createTimeFromEPICS(dt.getTimeStamp());
+                v = dt.getDoubleValue();
+            }
+            return ValueFactory.createDoubleValue(time, severity,
+                        status, (INumericMetaData)pv_data.meta, quality, v);
+        }
+        else if (dbr.isFLOAT())
+        {
+            float v[];
+            if (plain)
+                v = ((DBR_Float)dbr).getFloatValue();
+            else
+            {
+                DBR_TIME_Float dt = (DBR_TIME_Float) dbr;
+                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                Status stat = dt.getStatus();
+                status = stat.getValue() == 0 ? "" : stat.getName();
+                time = createTimeFromEPICS(dt.getTimeStamp());
+                v = dt.getFloatValue();
+            }
+            return ValueFactory.createDoubleValue(time, severity,
+                            status, (INumericMetaData)pv_data.meta, quality,
+                            float2double(v));
+        }
+        else if (dbr.isINT())
+        {
+            int v[];
+            if (plain)
+                v = ((DBR_Int)dbr).getIntValue();
+            else
+            {
+                DBR_TIME_Int dt = (DBR_TIME_Int) dbr;
+                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                Status stat = dt.getStatus();
+                status = stat.getValue() == 0 ? "" : stat.getName();
+                time = createTimeFromEPICS(dt.getTimeStamp());
+                v = dt.getIntValue();
+            }
+            return ValueFactory.createLongValue(time, severity,
+                            status, (INumericMetaData)pv_data.meta, quality,
+                            int2long(v));
+        }
+        else if (dbr.isSHORT())
+        {
+            short v[];
+            if (plain)
+                v = ((DBR_Short)dbr).getShortValue();
+            else
+            {
+                DBR_TIME_Short dt = (DBR_TIME_Short) dbr;
+                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                Status stat = dt.getStatus();
+                status = stat.getValue() == 0 ? "" : stat.getName();
+                time = createTimeFromEPICS(dt.getTimeStamp());
+                v = dt.getShortValue();
+            }
+            return ValueFactory.createLongValue(time, severity,
+                                status, (INumericMetaData)pv_data.meta, quality,
+                                short2long(v));
+        }
+        else if (dbr.isSTRING())
+        {
+            String v[];
+            if (plain)
+                v = ((DBR_String)dbr).getStringValue();
+            else
+            {
+                DBR_TIME_String dt = (DBR_TIME_String) dbr;
+                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+                Status stat = dt.getStatus();
+                status = stat.getValue() == 0 ? "" : stat.getName();
+                time = createTimeFromEPICS(dt.getTimeStamp());
+                v = dt.getStringValue();
+            }
+            return ValueFactory.createStringValue(time, severity,
+                                status, quality, v[0]);
+        }
+        else if (dbr.isENUM())
+        {
+            short v[];
+            // 'plain' mode would subscribe to SHORT,
+            // so this must be a TIME_Enum:
+            DBR_TIME_Enum dt = (DBR_TIME_Enum) dbr;
+            severity = SeverityUtil.forCode(dt.getSeverity().getValue());
+            Status stat = dt.getStatus();
+            status = stat.getValue() == 0 ? "" : stat.getName();
+            time = createTimeFromEPICS(dt.getTimeStamp());
+            v = dt.getEnumValue();
+            return ValueFactory.createEnumeratedValue(time, severity,
+                                status, (IEnumeratedMetaData)pv_data.meta, quality,
+                                short2int(v));
+        }
+        else
+            // handle many more types!!
+            throw new Exception("Cannot decode " + dbr);
     }
 
-    /** Notify all listeners. */
-    private void fireDisconnected()
-    {
-        for (PVListener listener : listeners)
-            listener.pvDisconnected(this);
-    }
 }

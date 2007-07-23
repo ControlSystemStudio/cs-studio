@@ -32,16 +32,14 @@ public class Activator extends AbstractCssPlugin
     {
         try
         {
-            EPICS_V3_PV.use_pure_java = EpicsPlugin.getDefault().usePureJava();
-            final String message = EPICS_V3_PV.use_pure_java ?
-                                    "Using pure java CAJ" : "Using JCA with JNI";
+            PVContext.use_pure_java = EpicsPlugin.getDefault().usePureJava();
+            final String message = PVContext.use_pure_java ?
+                                "Using pure java CAJ" : "Using JCA with JNI";
             getLog().log(new Status(IStatus.INFO, ID, IStatus.OK, message, null));
         }
         catch (Throwable e)
         {
-            e.printStackTrace();
-            getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK,
-                            "Cannot load EPICS_V3_PV", e));
+            logException("Cannot load EPICS_V3_PV", e);
         }
     }
 
@@ -49,17 +47,21 @@ public class Activator extends AbstractCssPlugin
     @Override
     protected void doStop(BundleContext context) throws Exception
     {
-        EPICS_V3_PV.use_pure_java = EpicsPlugin.getDefault().usePureJava();
         plugin = null;
     }
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
+	/** @return the shared instance */
+	public static Activator getDefault()
+    {
 		return plugin;
 	}
 
+    /** Log an exception */
+    static void logException(final String message, final Throwable ex)
+    {
+        ex.printStackTrace();
+        if (plugin != null)
+            plugin.getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK,
+                                           message, ex));
+    }
 }
