@@ -522,9 +522,15 @@ public class EPICS_V3_PV
         subscribe();
     }
 
-    /** Convert the EPICS time stamp (based on 1990) into the usual 1970 epoch. */
+    /** Convert the EPICS time stamp (based on 1990) into the usual 1970 epoch.
+     *  <p>
+     *  In case this is called with data from a CTRL_... request,
+     *  the null timestamp is replaced with the current host time.
+     */
     private ITimestamp createTimeFromEPICS(TimeStamp t)
     {
+        if (t == null)
+            return TimestampFactory.now();
         return TimestampFactory.createTimestamp(
                         t.secPastEpoch() + 631152000L, t.nsec());
     }
