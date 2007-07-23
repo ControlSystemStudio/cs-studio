@@ -55,13 +55,13 @@ public class XAxis extends Axis
         return TICK_LENGTH + 2*char_size.y+2;
     }
     
-    public void paint(PaintEvent e)
+    public void paint(final PaintEvent event)
     {
-        if (!region.intersects(e.x, e.y, e.width, e.height))
+        if (!region.intersects(event.x, event.y, event.width, event.height))
             return;
         if (Chart.debug)
             System.out.println("paint axis '" + getLabel() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-        GC gc = e.gc;
+        final GC gc = event.gc;
         // Axis and Tick marks
         computeTicks(gc);
         gc.drawLine(region.x, region.y, region.x + region.width-1, region.y);

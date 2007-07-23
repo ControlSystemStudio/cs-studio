@@ -55,6 +55,8 @@ public class PlotEditor extends EditorPart
     private RemoveSelectedMarkersAction remove_marker_action;
     private Action add_action;
     private Action config_action, archive_action, sample_action, export_action;
+    private Action button_bar_action;
+    private Action save_current_image_action;
     private Action view_action, perspective_action;
     private boolean is_dirty = false;
     /** In case of a model init (load) problem, we won't get to register
@@ -102,8 +104,6 @@ public class PlotEditor extends EditorPart
     };
 
     private MenuManager context_menu;
-
-    private Action button_bar_action;
 
     /** Create a new, empty editor, not attached to a file.
      *  @return Returns the new editor or <code>null</code>.
@@ -294,6 +294,7 @@ public class PlotEditor extends EditorPart
     {
         final Chart chart = plot_part.getInteractiveChart().getChart();
         button_bar_action = plot_part.createShowButtonBarAction();
+        save_current_image_action = plot_part.createSaveCurrentImageAction();
         remove_markers_action = new RemoveMarkersAction(chart);
         remove_marker_action = new RemoveSelectedMarkersAction(chart);
         add_action = new AddPVAction(plot_part.getModel());
@@ -318,6 +319,8 @@ public class PlotEditor extends EditorPart
         context_menu.add(archive_action);
         context_menu.add(sample_action);
         context_menu.add(export_action);
+        context_menu.add(new Separator());
+        context_menu.add(save_current_image_action);
         context_menu.add(new Separator());
         context_menu.add(view_action);
         context_menu.add(perspective_action);

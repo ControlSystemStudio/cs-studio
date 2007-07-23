@@ -24,11 +24,13 @@ public class Messages extends NLS
     public static String Chart_ZoomAuto;
     public static String Chart_ZoomIn;
     public static String Chart_ZoomOut;
-
+    public static String SaveImage_ActionName;
+    public static String SaveImage_ActionName_TT;
+    public static String SaveImage_ActionTitle;
+    public static String SaveImage_ErrorMessage;
+    public static String SaveImage_ErrorTitle;
     public static String TraceType_Bars;
-
     public static String TraceType_Lines;
-
     public static String TraceType_Markers;
     static
     {

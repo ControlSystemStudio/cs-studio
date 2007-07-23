@@ -24,10 +24,12 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Tracker;
 
 /** Basic chart widget.
@@ -610,13 +612,48 @@ public class Chart extends Canvas
         dirty_layout = false;
     }
 
+    /** Obtain a snapshot of the current plot.
+     *  <p>
+     *  Creates a new Image with the current plot's content.
+     *  Receiver must dispose the image!
+     *  @return New image, receiver must dispose.
+     */
+    public Image createSnapshot()
+    {
+        final Rectangle area = getClientArea();
+        final Image snapshot = new Image(getDisplay(), area);
+        final Event event = new Event();
+        event.widget = this;
+        final PaintEvent fake = new PaintEvent(event);
+        fake.x = area.x;
+        fake.y = area.y;
+        fake.width = area.width;
+        fake.height = area.height;
+        fake.gc = new GC(snapshot);
+        try
+        {
+            paintControl(fake);
+        }
+        finally
+        {
+            fake.gc.dispose();
+        }
+        return snapshot;
+    }
+    
     /** Paint almost everything, using the paint event's region
      *  to optimize a little bit.
+     *  <p>
+     *  <b>Note:</b>
+     *  This is also called from <code>createSnapshot</code>
+     *  with a faked event that only contains the GC and the region,
+     *  so beware that many event fields will be garbage!
+     *  
      *  @see org.eclipse.swt.events.PaintListener
      */
-    private void paintControl(PaintEvent e)
+    private void paintControl(PaintEvent event)
     {
-        final GC gc = e.gc;
+        final GC gc = event.gc;
         Rectangle r = getClientArea();
         if (dirty_layout)
             computeLayout(gc, r);
@@ -633,19 +670,19 @@ public class Chart extends Canvas
         // Paint axes
         // (which will decide to ignore the call based on the paint region)
         // X Axis
-        xaxis.paint(e);
+        xaxis.paint(event);
         
         // Y Axis (which will auto-zoom at this point in case that's enabled)
         for (YAxis yaxis : yaxes)
         {
             if (yaxis.getAutoScale())
                 yaxis.autozoom(xaxis);
-            yaxis.paint(grid_color, e);
+            yaxis.paint(grid_color, event);
         }
         
         // The width-1 is a hack to _not_ redraw the plot
         // when only the Y axes needed a redraw.
-        if (plot_region.intersects(e.x, e.y, e.width-1, e.height))
+        if (plot_region.intersects(event.x, event.y, event.width-1, event.height))
         {
             if (debug)
                 System.out.println("paint the plot_region"); //$NON-NLS-1$

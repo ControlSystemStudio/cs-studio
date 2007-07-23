@@ -449,20 +449,20 @@ public class YAxis extends Axis
     /** Paint the axis.
      *  <p>
      *  Does not paint any series data, only the axis (labels, ticks, ...)
-     *  @param e Clipping information from the paint event is used for optimization)
+     *  @param event Clipping information from the paint event is used for optimization)
      */
     @SuppressWarnings("nls")
-    public void paint(Color grid_color, PaintEvent e)
+    public void paint(final Color grid_color, final PaintEvent event)
     {
-        if (!region.intersects(e.x, e.y, e.width, e.height))
+        if (!region.intersects(event.x, event.y, event.width, event.height))
             return;
         if (Chart.debug)
             System.out.println("paint axis '" + getLabel() + "', "
                           + region.height + " pixel heigh");
-        GC gc = e.gc;
-        Point char_size = gc.textExtent("X"); //$NON-NLS-1$
+        final GC gc = event.gc;
+        final Point char_size = gc.textExtent("X"); //$NON-NLS-1$
         
-        Color old_bg = gc.getBackground();
+        final Color old_bg = gc.getBackground();
         
         // Axis and Tick marks
         if (selected)

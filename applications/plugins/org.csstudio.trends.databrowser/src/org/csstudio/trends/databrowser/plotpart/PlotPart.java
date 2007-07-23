@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.plotpart;
 import java.io.InputStream;
 
 import org.csstudio.swt.chart.InteractiveChart;
+import org.csstudio.swt.chart.SaveCurrentImageAction;
 import org.csstudio.swt.chart.ShowButtonBarAction;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.core.resources.IFile;
@@ -87,6 +88,12 @@ public class PlotPart
     public Action createShowButtonBarAction()
     {
         return new ShowButtonBarAction(gui.getInteractiveChart());
+    }
+    
+    /** @return SaveCurrentImageAction for the chart */
+    public Action createSaveCurrentImageAction()
+    {
+        return new SaveCurrentImageAction(gui.getInteractiveChart());
     }
     
     /** @see IWorkbenchPart#setFocus */
