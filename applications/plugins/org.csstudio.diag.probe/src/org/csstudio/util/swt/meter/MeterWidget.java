@@ -247,6 +247,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
     /** Create image of the scale (labels etc.) _if_needed_ */
     private void createScaleImage(final GC gc, final Rectangle client_rect)
     {
+        // Is there already a matching image?
         if (scale_image != null  &&  old_client_rect.equals(client_rect))
             return;
         
@@ -260,6 +261,9 @@ public class MeterWidget extends Canvas implements DisposeListener,
                           client_rect.width-1, client_rect.height-1);
 
         // Create image buffer, prepate GC for it
+        // In case there's old one, delete it
+        if (scale_image != null)
+            scale_image.dispose();
         scale_image = new Image(gc.getDevice(), client_rect);
         GC scale_gc = new GC(scale_image);
         scale_gc.setForeground(face_color);
