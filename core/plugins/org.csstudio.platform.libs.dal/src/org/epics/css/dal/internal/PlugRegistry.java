@@ -111,14 +111,7 @@ public final class PlugRegistry {
 
 			p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + d.getPlugId(), d
 					.getPropertyFactoryClass());
-//			CentralLogger.getInstance().info(
-//					this,
-//					"Set " + Plugs.PLUG_PROPERTY_FACTORY_CLASS + d.getPlugId()
-//							+ " to " + d.getPropertyFactoryClass());
 		}
-
-//		CentralLogger.getInstance().info(this,
-//				"Set " + Plugs.PLUGS + " to " + p.getProperty(Plugs.PLUGS));
 	}
 
 	/**
@@ -186,7 +179,9 @@ public final class PlugRegistry {
 		 *            the plug.
 		 */
 		public PlugDescriptor(String plugId, String propertyFactoryClass) {
-			super();
+			assert plugId != null : "plugId != null"; //$NON-NLS-1$
+			assert propertyFactoryClass != null : "propertyFactoryClass != null"; //$NON-NLS-1$
+
 			_plugId = plugId;
 			_propertyFactoryClass = propertyFactoryClass;
 		}
