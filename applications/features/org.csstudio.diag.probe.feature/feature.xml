@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.diag.probe.feature"
       label="Probe"
-      version="1.0.3">
+      version="1.0.4">
 
    <description url="http://www.example.com/description">
       Probe shows the current value for a process variable.
@@ -42,8 +42,8 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
    </url>
 
    <requires>
-      <import feature="org.csstudio.utility.pv.feature" version="1.0.0"/>
-      <import feature="org.csstudio.platform.feature" version="0.9.0"/>
+      <import feature="org.csstudio.utility.pv.feature" version="1.0.3" match="greaterOrEqual"/>
+      <import feature="org.csstudio.platform.feature" version="0.9.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

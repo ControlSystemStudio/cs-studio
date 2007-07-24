@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.trends.databrowser.feature"
       label="Databrowser"
-      version="1.0.2">
+      version="1.0.3">
 
    <description url="http://www.example.com/description">
       Databrowser for process variables.
@@ -42,9 +42,9 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
    </url>
 
    <requires>
-      <import feature="org.csstudio.archive.channelarchiver.feature" version="1.0.0"/>
-      <import feature="org.csstudio.utility.pv.feature" version="1.0.0"/>
-      <import feature="org.csstudio.platform.feature" version="0.9.0"/>
+      <import feature="org.csstudio.utility.pv.feature" version="1.0.3" match="greaterOrEqual"/>
+      <import feature="org.csstudio.platform.feature" version="0.9.5" match="greaterOrEqual"/>
+      <import feature="org.csstudio.archive.feature" version="1.0.3" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -53,5 +53,12 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.csstudio.trends.databrowser.prefs.DESY"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
 
 </feature>
