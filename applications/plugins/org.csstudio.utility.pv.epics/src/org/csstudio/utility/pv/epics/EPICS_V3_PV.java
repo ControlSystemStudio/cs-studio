@@ -192,7 +192,7 @@ public class EPICS_V3_PV
             while (! pv_data.connected)
             {   // Wait...
                 final long remain = end_time - System.currentTimeMillis();
-                if (remain < 0)
+                if (remain <= 0)
                     throw new Exception("Connection timeout: PV " + name);
                 pv_data.wait(remain);
             }
@@ -214,7 +214,7 @@ public class EPICS_V3_PV
             while (! get_callback.got_response)
             {   // Wait...
                 final long remain = end_time - System.currentTimeMillis();
-                if (remain < 0)
+                if (remain <= 0)
                     throw new Exception("Get timeout: PV " + name);
                 get_callback.wait(remain);
             }
