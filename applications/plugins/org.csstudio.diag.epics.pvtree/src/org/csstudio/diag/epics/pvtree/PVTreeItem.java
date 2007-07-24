@@ -223,9 +223,21 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         // we simply display this new item, but we won't
         // follow its input links.
         PVTreeItem other = model.findPV(pv_name);
+        
         // Now add this one, otherwise the previous call would have found 'this'.
         if (parent != null)
             parent.links.add(this);
+
+        // Is this a link to follow, or just a constant to display?
+        // Hardware links "@vme..." or constant numbers "-12.3"
+        // cause us to stop here:
+        if (pv_name.startsWith("@") || pv_name.matches("^-?[0-9]"))  //$NON-NLS-1$//$NON-NLS-2$
+        {
+            pv = null;
+            return;
+        }
+
+        // Try to read the pv
         try
         {
             pv = createPV(pv_name);        
@@ -263,9 +275,12 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     {
         for (PVTreeItem item : links)
             item.dispose();
-        pv.removeListener(pv_listener);
-        pv.stop();
-        pv = null;
+        if (pv != null)
+        {
+            pv.removeListener(pv_listener);
+            pv.stop();
+            pv = null;
+        }
         disposeLinkPV();
         disposeTypePV();
     }
