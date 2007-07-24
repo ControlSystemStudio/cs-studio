@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tine Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.tine
-Bundle-Version: 1.0.0
+Bundle-Version: 0.9.4
 Bundle-Activator: org.csstudio.platform.libs.tine.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -33,4 +33,8 @@ Export-Package: de.desy.acop.chart,
  de.desy.tine.startup,
  de.desy.tine.stringUtils,
  de.desy.tine.structUtils,
- de.desy.tine.types
+ de.desy.tine.types,
+ org.csstudio.platform.libs.tine
+Bundle-ClassPath: libs/acop.jar,
+ libs/tine.jar,
+ .
