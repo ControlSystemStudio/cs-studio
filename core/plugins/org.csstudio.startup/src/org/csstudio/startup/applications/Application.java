@@ -51,7 +51,6 @@ public class Application implements IPlatformRunnable {
 	 * {@inheritDoc}
 	 */
 	public final Object run(final Object args) throws Exception {
-		System.out.println("Test");
 		IPreferenceStore coreStore = new ScopedPreferenceStore(
 				new InstanceScope(), CSSPlatformPlugin.getDefault().getBundle()
 						.getSymbolicName());
