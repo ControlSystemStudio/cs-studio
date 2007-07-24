@@ -22,6 +22,24 @@ public interface PV
     /** @return Returns the name. */
     public String getName();
     
+    /** Synchronous 'get'.
+     *  <p>
+     *  Attempts to get a value within the given timeout.
+     *  Either returns a value within the timeout,
+     *  or throws an exception at the timeout.
+     *  <p>
+     *  When called for a new channel, i.e. on a channel where neither
+     *  <code>get</code> nor <code>start</code> have been called,
+     *  it will also perform the connection attempt, and leave the channel
+     *  connected after getting a value.
+     *  To force a disconnect, call <code>stop</code>.
+     *  
+     *  @param timeout_seconds Timeout in seconds.
+     *  @return Value
+     *  @throws Exception on error
+     */
+    public IValue getValue(double timeout_seconds) throws Exception;
+    
     /** Add a new listener. */
     public void addListener(PVListener listener);
 
@@ -51,7 +69,8 @@ public interface PV
      *  
      *  @see PVListener
      *  @see #isConnected()
-     *  @return Returns the most recent value. Might be <code>null</code>!
+     *  @return Returns the most recent value,
+     *          or <code>null</code> if there is none.
      */
     public IValue getValue();
 

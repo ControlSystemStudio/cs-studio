@@ -179,23 +179,8 @@ public class EPICS_V3_PV
     public String getName()
     {   return name;  }
 
-    /** Synchronous 'get'.
-     *  <p>
-     *  Attempts to get a value for the given timeout.
-     *  Either returns a value within the timeout,
-     *  or throws an exception at the timeout.
-     *  <p>
-     *  When called for a new channel, i.e. on a channel where neither
-     *  <code>get</code> nor <code>start</code> have been called,
-     *  it will also perform the connection attempt, and leave the channel
-     *  connected after getting a value.
-     *  To force a disconnect, call <code>stop</code>.
-     *  
-     *  @param timeout_seconds Timeout in seconds.
-     *  @return Value
-     *  @throws Exception on error
-     */
-    public IValue get(double timeout_seconds) throws Exception
+    /** {@inheritDoc} */
+    public IValue getValue(double timeout_seconds) throws Exception
     {
         final long end_time = System.currentTimeMillis() +
                                 (long)(timeout_seconds * 1000);

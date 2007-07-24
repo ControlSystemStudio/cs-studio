@@ -21,7 +21,7 @@ import java.util.HashMap;
 @SuppressWarnings("nls")
 public class PVContext
 {
-    final public static boolean debug = true;
+    final public static boolean debug = false;
     
     /** Set to <code>true</code> if the pure Java CA context should be used.
      *  <p>
