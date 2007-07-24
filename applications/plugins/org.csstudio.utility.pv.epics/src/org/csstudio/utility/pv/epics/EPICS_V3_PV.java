@@ -80,13 +80,11 @@ public class EPICS_V3_PV
                 {
                     pv_data.meta = DBR_Helper.decodeMetaData(dbr);
                     if (PVContext.debug)
-                        System.out.println("Channel '" + name
-                                            + "' got Meta data: "
-                                            + pv_data.meta);
+                        System.out.println(name + " meta: " + pv_data.meta);
                 }
             }
             else
-                System.out.println("Channel '" + name + "' getCompleted error: "
+                System.out.println(name + " meta data get error: "
                                         + event.getStatus().getMessage());
             // Prevent deadlock with other UI code that calls into CA
             // by also subscribing in UI Thread
@@ -127,8 +125,7 @@ public class EPICS_V3_PV
                 final DBR dbr = event.getDBR();
                 meta = DBR_Helper.decodeMetaData(dbr);
                 if (PVContext.debug)
-                    System.out.println("Channel '" + name
-                                    + "' got Meta data: " + meta);
+                    System.out.println(name + " meta: " + meta);
                 try
                 {
                     value = DBR_Helper.decodeValue(plain, meta, dbr);
@@ -139,7 +136,7 @@ public class EPICS_V3_PV
                     value = null;
                 }
                 if (PVContext.debug)
-                    System.out.println(".. and value: " + value);
+                    System.out.println(name + " value: " + value);
             }
             else
             {
@@ -173,6 +170,29 @@ public class EPICS_V3_PV
     {
         this.name = name;
         this.plain = plain;
+        if (PVContext.debug)
+            System.out.println(name + " created as EPICS_V3_PV");
+    }
+    
+    /** Use finalize as last resort for cleanup, but give warnings. */
+    @Override
+    protected void finalize() throws Throwable
+    {
+        super.finalize();
+        if (channel_ref != null)
+        {
+            Activator.logError("EPICS_V3_PV " + name + " not properly stopped");
+            try
+            {
+                stop();
+            }
+            catch (Throwable ex)
+            {
+                Activator.logException(name + " finalize error", ex);
+            }
+        }
+        if (PVContext.debug)
+            System.out.println(name + " finalized.");
     }
 
     /** @return Returns the name. */
@@ -193,7 +213,7 @@ public class EPICS_V3_PV
             {   // Wait...
                 final long remain = end_time - System.currentTimeMillis();
                 if (remain <= 0)
-                    throw new Exception("Connection timeout: PV " + name);
+                    throw new Exception("PV " + name + " connection timeout");
                 pv_data.wait(remain);
             }
         }
@@ -203,7 +223,7 @@ public class EPICS_V3_PV
         final DBRType type = DBR_Helper.getCtrlType(plain,
                                       channel_ref.getChannel().getFieldType());
         if (PVContext.debug)
-            System.out.println("Channel '" + name + "': get as " + type.getName());
+            System.out.println(name + " get-callback as " + type.getName());
         channel_ref.getChannel().get(
                         type, channel_ref.getChannel().getElementCount(),
                         get_callback);
@@ -215,7 +235,7 @@ public class EPICS_V3_PV
             {   // Wait...
                 final long remain = end_time - System.currentTimeMillis();
                 if (remain <= 0)
-                    throw new Exception("Get timeout: PV " + name);
+                    throw new Exception("PV " + name + " value timeout");
                 get_callback.wait(remain);
             }
         }
@@ -257,7 +277,7 @@ public class EPICS_V3_PV
         if (channel_ref.getChannel().getConnectionState() == ConnectionState.CONNECTED)
         {
             if (PVContext.debug)
-                System.out.println("Channel is immediately connected: " + name);
+                System.out.println(name + " is immediately connected");
             handleConnected();
         }
     }
@@ -302,8 +322,7 @@ public class EPICS_V3_PV
             final DBRType type = DBR_Helper.getTimeType(plain,
                                     channel_ref.getChannel().getFieldType());
             if (PVContext.debug)
-                System.out.println("Channel '" + name
-                                + "': subscribing as " + type.getName());
+                System.out.println(name + " subscribed as " + type.getName());
             synchronized (pv_data)
             {
                 pv_data.subscription = channel_ref.getChannel().addMonitor(type,
@@ -311,10 +330,9 @@ public class EPICS_V3_PV
             }
             PVContext.flush();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            System.out.println("Channel '" + name + "' subscribe error:\n"
-                    + e.getMessage());
+            Activator.logException(name + " subscribe error", ex);
         }
     }
     
@@ -331,7 +349,7 @@ public class EPICS_V3_PV
                 }
                 catch (Exception ex)
                 {
-                    Activator.logException("Unsubscribe from " + getName(), ex);
+                    Activator.logException(name + " unsubscribe error", ex);
                 }
                 pv_data.subscription = null;
             }
@@ -403,7 +421,7 @@ public class EPICS_V3_PV
         }
         catch (Exception ex)
         {
-            Activator.logException("Set PV " + getName() + " = " + new_value, ex);
+            Activator.logException(name + " set error for new value " + new_value, ex);
         }
     }
 
@@ -454,7 +472,7 @@ public class EPICS_V3_PV
         else
         {
             if (PVContext.debug)
-                System.out.println("Channel '" + name + "' disconnected");
+                System.out.println(name + " disconnected");
             synchronized (pv_data)
             {
                 pv_data.connected = false;
@@ -470,7 +488,7 @@ public class EPICS_V3_PV
     private void handleConnected()
     {
         if (PVContext.debug)
-            System.out.println("Channel '" + name + "' connected");
+            System.out.println(name + " connected");
         
         // If we're "running", we need to get the meta data and
         // then subscribe.
@@ -507,7 +525,7 @@ public class EPICS_V3_PV
         }
         catch (Exception ex)
         {
-            Activator.logException("Channel '" + name + "' handleConnected", ex);
+            Activator.logException(name + " connection handling error", ex);
         }
 
         // Meta info is not requested, not available for this type,
@@ -529,8 +547,8 @@ public class EPICS_V3_PV
             return;
         if (! ev.getStatus().isSuccessful())
         {
-            System.out.println("Channel '" + name + "':"
-                    + ev.getStatus().getMessage());
+            Activator.logError(name + " monitor error :"
+                               + ev.getStatus().getMessage());
             return;
         }
     
@@ -541,7 +559,7 @@ public class EPICS_V3_PV
                 pv_data.value =
                     DBR_Helper.decodeValue(plain, pv_data.meta, ev.getDBR());
                 if (PVContext.debug)
-                    System.out.println("Monitor: " + name + " = " + pv_data.value);
+                    System.out.println(name + " monitor: " + pv_data.value);
                 if (!pv_data.connected)
                     pv_data.connected = true;
             }
@@ -549,7 +567,7 @@ public class EPICS_V3_PV
         }
         catch (Exception ex)
         {
-            Activator.logException("Channel '" + name + "' value error", ex);
+            Activator.logException(name + " monitor value error", ex);
         }
     }
 
@@ -566,5 +584,4 @@ public class EPICS_V3_PV
         for (PVListener listener : listeners)
             listener.pvDisconnected(this);
     }
-    
 }

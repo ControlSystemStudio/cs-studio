@@ -27,19 +27,24 @@ public class EPICS_V3_PV_SyncTest extends TestCase
     {
         PV none = new EPICS_V3_PV("does_not_exist");
         final long start = System.currentTimeMillis();
+        final int timeout_secs = 5;
         try
         {
-            IValue value = none.getValue(5.0);
+            IValue value = none.getValue(timeout_secs);
             fail("Expected a timeout, but got " + value);
         }
         catch (Exception ex)
         {
-            assertEquals("Connection timeout: PV does_not_exist",
+            assertEquals("PV does_not_exist connection timeout",
                          ex.getMessage());
         }
+        finally
+        {   // Even if we never suceeded, there are resources to clean up
+            none.stop();
+        }
         final long end = System.currentTimeMillis();
-        // Did we wait about 5 secs +- 1 sec?
-        assertTrue(Math.abs((end-start) - 5000) < 1000);
+        // Did we wait according to timeout +- 1 sec?
+        assertTrue(Math.abs((end-start) - timeout_secs * 1000) < 1000);
         none.stop();
     }
 

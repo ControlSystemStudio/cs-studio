@@ -59,9 +59,18 @@ public class Activator extends AbstractCssPlugin
     /** Log an exception */
     static void logException(final String message, final Throwable ex)
     {
-        ex.printStackTrace();
         if (plugin != null)
             plugin.getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK,
                                            message, ex));
+        else
+            System.err.println("Error: " + message); //$NON-NLS-1$
+        if (ex != null)
+            ex.printStackTrace();
+    }
+
+    /** Log an error */
+    public static void logError(final String message)
+    {
+        logException(message, null);
     }
 }
