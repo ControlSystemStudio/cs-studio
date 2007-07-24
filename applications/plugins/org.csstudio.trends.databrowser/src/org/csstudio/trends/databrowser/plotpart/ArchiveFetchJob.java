@@ -67,22 +67,10 @@ class ArchiveFetchJob extends Job
                 }
                 else
                 {
-                    // TODO Switch to the new average
-                    // For now it's a hack: The SNS demo setup with ...3.cgi
-                    // uses the new average.
-                    final boolean use_new_average = server.getURL().endsWith("3.cgi");
-                    if (use_new_average)
-                    {
-                        request_type = ArchiveServer.GET_AVERAGE;
-                        final double interval =
-                            (end.toDouble() - start.toDouble()) / bins;
-                        request_parms = new Object[] { new Double(interval) };
-                    }
-                    else
-                    {
-                        request_type = ArchiveServer.GET_PLOTBINNED;
-                        request_parms = new Object[] { new Integer(bins) };
-                    }
+                    request_type = ArchiveServer.GET_AVERAGE;
+                    final double interval =
+                        (end.toDouble() - start.toDouble()) / bins;
+                    request_parms = new Object[] { new Double(interval) };
                 }
                 
                 BatchIterator batch = new BatchIterator(server,

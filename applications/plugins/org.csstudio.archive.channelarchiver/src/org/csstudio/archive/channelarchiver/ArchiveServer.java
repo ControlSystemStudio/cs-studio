@@ -79,6 +79,23 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
         return server_info_request.getRequestTypes();
     }
     
+    /** Helper for locating a request code by name.
+     *  <p> 
+     * @param request_name For example: GET_RAW.
+     * @return The 'request_type' ID for a given request type string.
+     * @throws Exception when asking for unsupported request type.
+     * @see #getRequestTypes()
+     */
+    @SuppressWarnings("nls")
+    int getRequestCode(String request_name) throws Exception
+    {
+        final String request_types[] = getRequestTypes();
+        for (int i=0; i<request_types.length; ++i)
+            if (request_types[i].equalsIgnoreCase(request_name)) // add  IgnoreCase Albert
+                return i;
+        throw new Exception("Unsupported request type '" + request_name + "'");
+    }
+    
     /** @return Severity for an EPICS severity code. */
     SeverityImpl getSeverity(int severity)
     {
@@ -125,11 +142,12 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
     @Override
 	public ArchiveValues[] getSamples(int key, String[] names,
 			ITimestamp start, ITimestamp end,
-            int request_type, Object request_parms[]) 
+            String request_type, Object request_parms[]) 
         throws Exception
 	{
+        final int request_code = getRequestCode(request_type);
 		ValuesRequest values = new ValuesRequest(this,
-				key, names, start, end, request_type, request_parms);
+				key, names, start, end, request_code, request_parms);
 		values.read(xmlrpc);
 		return values.getArchivedSamples();
 	}

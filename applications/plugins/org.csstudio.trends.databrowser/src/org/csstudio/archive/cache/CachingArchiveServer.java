@@ -58,17 +58,11 @@ public class CachingArchiveServer extends ArchiveServer
     public String[] getRequestTypes()
     {   return server.getRequestTypes();  }
     
-    @Override
-    public int getRequestType(String request_name) throws Exception
-	{
-    	return server.getRequestType(request_name);
-	}
-
     @SuppressWarnings("nls")
     @Override
     synchronized public ArchiveValues[] getSamples(int key, String[] names,
                     ITimestamp start, ITimestamp end,
-                    int request_type,
+                    String request_type,
                     Object request_parms[]) throws Exception
     {
         if (names.length != 1)
@@ -118,13 +112,10 @@ public class CachingArchiveServer extends ArchiveServer
     @Override 
     public String getServerName() 
     {	return server.getServerName(); }
-    
-    @Override
-    public int getLastRequestError() {
-    	return server.getLastRequestError(); }
-    
+        
     @SuppressWarnings("nls")
-    synchronized public void clearCache() {
+    synchronized public void clearCache()
+    {
     	Plugin.logInfo("Cleared data on cache");
     	sample_cache.clear();
     }

@@ -132,17 +132,17 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 
     /* @see org.csstudio.archiveArchiveServer#getNames() */
 	public ArchiveValues[] getSamples(int key, String[] names,
-			ITimestamp start, ITimestamp end, int request_type,
+			ITimestamp start, ITimestamp end, String request_type,
             Object request_parms[]) 
         throws Exception
 	{  
+        final int request_code = getRequestCode(request_type);
 		ValuesRequest values = new ValuesRequest(this,
-				key, names, start, end, request_type, request_parms);
+				key, names, start, end, request_code, request_parms);
 		this.last_request_error = values.read(aapiClient);
 		return values.getArchivedSamples();
 	}
 
-	@Override
 	public int getLastRequestError() {
 		return last_request_error;
 	}
@@ -158,8 +158,7 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 		return "aapi://krynfs.desy.de:4053";
 	}
 	
-	 @Override
-	 public int getRequestType(String request_name) throws Exception
+     int getRequestCode(String request_name) throws Exception
 	 {
 		if (request_name == "AVERAGE") {
 			return AAPI.AVERAGE_M;

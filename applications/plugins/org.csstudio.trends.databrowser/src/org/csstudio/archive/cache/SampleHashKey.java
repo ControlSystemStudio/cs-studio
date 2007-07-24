@@ -7,17 +7,17 @@ import org.csstudio.platform.data.ITimestamp;
  */
 class SampleHashKey
 {
-    private int key;
-    private String name;
-    private ITimestamp start;
-    private ITimestamp end;
-    private int request_type;
-    private Object request_parms[];
+    final private int key;
+    final private String name;
+    final private ITimestamp start;
+    final private ITimestamp end;
+    final private String request_type;
+    final private Object request_parms[];
     
     /** Construct a key from pieces that identify a sample request on a server.
      */
     SampleHashKey(int key, String name,
-                  ITimestamp start, ITimestamp end, int request_type,
+                  ITimestamp start, ITimestamp end, String request_type,
                   Object request_parms[])
     {
         this.key = key;
@@ -60,7 +60,7 @@ class SampleHashKey
     public int hashCode()
     {
         return key + name.hashCode() + start.hashCode() + end.hashCode()
-            + request_type + request_parms.hashCode();
+            + request_type.hashCode() + request_parms.hashCode();
     }
 
     @SuppressWarnings("nls")

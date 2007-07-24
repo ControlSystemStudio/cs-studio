@@ -37,8 +37,8 @@ public class UnitTest extends TestCase
 		Assert.assertEquals(1, server.getVersion());
 		
 		// These 'how' numbers could actually change, but for now that's it:
-		Assert.assertEquals(0, server.getRequestType(ArchiveServer.GET_RAW));
-		Assert.assertEquals(3, server.getRequestType(ArchiveServer.GET_PLOTBINNED));
+		Assert.assertEquals(0, server.getRequestCode(ArchiveServer.GET_RAW));
+		Assert.assertEquals(3, server.getRequestCode("plot-binning"));
 
 		// Basic severities
         Assert.assertEquals("", server.getSeverity(0).toString());
@@ -123,7 +123,7 @@ public class UnitTest extends TestCase
 		ITimestamp start = TimestampFactory.fromCalendar(cal);
         cal.set(2006, 1, 18, 12, 0, 0);
 		ITimestamp end = TimestampFactory.fromCalendar(cal);
-        int request_type = server.getRequestType(ArchiveServer.GET_RAW);
+        final String request_type = ArchiveServer.GET_RAW;
 		int count = 10;
 		ArchiveValues[] ass = 
 			server.getSamples(key, names, start, end, request_type,
@@ -178,7 +178,7 @@ public class UnitTest extends TestCase
         cal.set(2006, 1, 18, 10, 18, 0);
 		ITimestamp start = TimestampFactory.fromCalendar(cal);
 		ITimestamp end = TimestampFactory.now();
-		int how = 0;
+		String how = ArchiveServer.GET_RAW;
         int count = 10;
 		ArchiveValues[] ass = 
 			server.getSamples(key, names, start, end, how,

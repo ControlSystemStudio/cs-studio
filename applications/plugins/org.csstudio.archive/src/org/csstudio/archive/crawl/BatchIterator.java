@@ -22,7 +22,7 @@ public class BatchIterator
     final public int key;
     final public String channel_name;
     final public ITimestamp end;
-    final public int request_type;
+    final public String request_type;
     final public Object request_parms[];
  
     /** Current batch of samples. */
@@ -52,7 +52,7 @@ public class BatchIterator
         this.key = key;
         this.channel_name = channel_name;
         this.end = end;
-        this.request_type = server.getRequestType(request_type);
+        this.request_type = request_type;
         this.request_parms = request_parms;
         fetch(start);
     }

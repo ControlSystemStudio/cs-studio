@@ -39,17 +39,19 @@ public abstract class ArchiveServer
      *  This string is meant for tools that need a short
      *  description of the data source, for example
      *  "Channel Archiver" or "Archive Record" etc.
-     *  @return A name of the server.
+     *  @return Name of the server.
      */
     abstract public String getServerName();
     
     /** URL for this ArchiveServer.
-     *  @return URL as a string. */
+     *  @return URL as a string.
+     */
     abstract public String getURL();
     
     /** Arbitrary description string, may span multiple lines,
-     *  with details of the content left to the implementation.
-     *  @return Description string. */
+     *  with details left to the implementation.
+     *  @return Description string.
+     */
     abstract public String getDescription();
     
     /** Version information.
@@ -61,21 +63,29 @@ public abstract class ArchiveServer
     
     /** Request type for getting raw samples.
      *  <p>
+     *  Every archive server should support this request type.
+     *  <p>
      *  Additional <code>request_parms</code>:
      *  <ol>
      *  <li><code>Integer count</code>: Maximum number of samples<br>
      *      The client can restrict the number of samples returned
      *      by this call to prevent unnecessary memory and network load.
-     *      The server might add addtional contraints,
+     *      The server might add additional contraints,
      *      so the result is not guaranteed to reach the requested 'end'
      *      time; follow-up requests might be required.
      *  </ol>
      *  @see #getRequestTypes()
-     *  @see #getSamples(int, String[], ITimestamp, ITimestamp, int, Object[])
+     *  @see #getSamples(int, String[], ITimestamp, ITimestamp, String, Object[])
      */
     public static final String GET_RAW = "raw";
 
-    /** Request type for getting averaged samples.
+    /** Request type for getting averaged samples with minimum and maximum
+     *  detail.
+     *  <p>
+     *  Every archive server should support this request type
+     *  as best as it can, meaning: It should provide samples.
+     *  If a server cannot perform true averaging, it may internally
+     *  revert to the <code>GET_RAW</code> request.
      *  <p>
      *  Additional <code>request_parms</code>:
      *  <ol>
@@ -85,7 +95,7 @@ public abstract class ArchiveServer
      *      time period in seconds. The resulting sample count should be
      *      close to <code>(end - start) / delta</code>.
      *      
-     *      The server might add addtional contraints, especially when it
+     *      The server might add additional contraints, especially when it
      *      comes to non-numeric values.
      *      It might return samples that indicate a network disconnect as such,
      *      suspending the averaging.
@@ -95,92 +105,27 @@ public abstract class ArchiveServer
      *      time; follow-up requests might be required.
      *  </ol>
      *  @see #getRequestTypes()
-     *  @see #getSamples(int, String[], ITimestamp, ITimestamp, int, Object[])
+     *  @see #getSamples(int, String[], ITimestamp, ITimestamp, String, Object[])
      */
     public static final String GET_AVERAGE = "average";
 
-    /** Request type for getting linearly interpolated samples.
-     *  <p>
-     *  Similar to GET_AVERAGE, but using linear interpolation onto
-     *  the transitions between segments.
-     *  @see #getRequestTypes()
-     *  @see #getSamples(int, String[], ITimestamp, ITimestamp, int, Object[])
-     */
-    public static final String GET_LINEAR = "linear";
-
-    /** Request type for getting data that is optimized for plotting.
-     *  Additional <code>request_parms</code>:
-     *  <ol>
-     *  <li><code>Integer count</code>: Number of 'bins'<br>
-     *      The server splits the <code>start...end</code> time range
-     *      into the given number of 'bins', and computes the initial,
-     *      minimum, maximum and final value within each bin.
-     *      If there are less than 4 samples within a bin,
-     *      those original samples might be returned.
-     *      The resulting sample count should typically be
-     *      close to <code>4 * (end - start) / bins</code>.
-     *      <p>
-     *      The idea is to request about one 'bin' per pixel row on the screen,
-     *      so that the 4 bin values all fall into the same pixel row,
-     *      resulting in a 'thick' line which visually provides the same
-     *      information as having received the full raw data.
-     *      The server might also return the minimum, maximum and average value
-     *      for each bin, since that provides basically the same visual
-     *      result.
-     *      <p>
-     *      The server might add addtional contraints, especially when it
-     *      comes to non-numeric values.
-     *      It might return samples that indicate a network disconnect as such,
-     *      suspending the averaging.
-     *      It might also return Strings or waveform samples as such.
-     *  </ol>
-     *  TODO replace with MIN_MAX_AVERAGE
-     *  @see #getRequestTypes()
-     *  @see #getSamples(int, String[], ITimestamp, ITimestamp, int, Object[])
-     */
-    public static final String GET_PLOTBINNED = "plot-binning";
-
-    /** Request type for getting data with staircase interpolation.
-     *  TODO describe
-     *  @see #getRequestTypes()
-     *  @see #getSamples(int, String[], ITimestamp, ITimestamp, int, Object[])
-     */
-    public static final String GET_SPREADSHEET = "spreadsheet";
-
     /** Get a list of the supported request types as strings.
      *  <p>
-     *  The returned list should at least include GET_RAW.
-     *  If the archive supports for example an averaged request,
-     *  the list should contain GET_AVERAGE, so that clients
+     *  The returned list should at least include GET_RAW
+     *  and GET_AVERAGE, so that clients
      *  can deal with known request methods. 
      *  <p>
      *  The implementation is free to support additional request
      *  types and return their names in here, but of course only
      *  certain clients will know how to handle those. 
      *  @return List of supported request types.
-     *  @see #getRequestType(String)
-     *  @see #getSamples(int, String[], ITimestamp, ITimestamp, int, Object[])
+     *  @see #getSamples(int, String[], ITimestamp, ITimestamp, String, Object[])
      */
     abstract public String [] getRequestTypes();
     
-    /** Helper for locating a request code by name.
-     *  <p> 
-     * @param request_name For example: GET_RAW.
-     * @return The 'request_type' ID for a given request type string.
-     * @throws Exception when asking for unsupported request type.
-     * @see #getRequestTypes()
-     */
-    public int getRequestType(String request_name) throws Exception
-    {
-        final String request_types[] = getRequestTypes();
-        for (int i=0; i<request_types.length; ++i)
-            if (request_types[i].equalsIgnoreCase(request_name)) // add  IgnoreCase Albert
-                return i;
-        throw new Exception("Unsupported request type '" + request_name + "'");
-    }
-
     /** Obtain a list of archives handled by this server.
-     *  @return The available archives. */
+     *  @return The available archives.
+     */
     abstract public ArchiveInfo[] getArchiveInfos();
 
     /** Helper for searching the ArchiveInfos for a given archive.
@@ -253,20 +198,6 @@ public abstract class ArchiveServer
 	 */
     abstract public ArchiveValues[] getSamples(int key, String names[],
 			ITimestamp start, ITimestamp end,
-            int request_type, Object request_parms[])
+            String request_type, Object request_parms[])
         throws Exception;
-    
-    /** Returns an id of last error which occured on request.
-     *  TODO What's the meaning of the 'id'?
-     *       Does this call reset the last error?
-     *       Or will the next ArchiveServer method
-     *       reset to 0 and then maybe to another error?
-     *  TODO Remove this 'errno()' crap.
-     *       Methods return values or Null for error,
-     *       or throw exceptions.
-     *  @return 0 if there was no error, otherwise error id.
-     */
-    public int getLastRequestError() {
-    	return 0;
-    }
 }
