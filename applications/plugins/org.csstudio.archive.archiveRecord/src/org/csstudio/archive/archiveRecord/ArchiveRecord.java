@@ -1,6 +1,6 @@
 package org.csstudio.archive.archiveRecord;
 import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IIntegerValue;
+import org.csstudio.platform.data.ILongValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 /** Handles the "archiveRecord" low-level staff 
@@ -193,7 +193,7 @@ public class ArchiveRecord {
 			        Thread.sleep(THREAD_DELAY);
 			}
 			
-			int[] dblTime = ((IIntegerValue) sevrname.getValue()).getValues();
+			long[] dblTime = ((ILongValue	) sevrname.getValue()).getValues();
 			if(dblTime.length != dim ) {
 				System.out.println(sevrName+
 						"warning: valArr-dimension ("+dblTime.length+") not equal NVAL-dim ("+dim+")");
