@@ -15,9 +15,29 @@ public class EPICS_V3_PV_SyncTest extends TestCase
     @Test
     public void testSyncGet() throws Exception
     {
-        EPICS_V3_PV pv = new EPICS_V3_PV("fred");
-        IValue value = pv.getValue(50000.0);
+        EPICS_V3_PV fred = new EPICS_V3_PV("fred");
+        IValue value = fred.get(50000.0);
         System.out.println(value);
-        pv.stop();
+        fred.stop();
+    }
+
+    @Test
+    public void testSyncGetMultiple() throws Exception
+    {
+        EPICS_V3_PV fred = new EPICS_V3_PV("fred");
+        EPICS_V3_PV janet = new EPICS_V3_PV("janet");
+        EPICS_V3_PV longs = new EPICS_V3_PV("longs");
+        
+        IValue f = fred.get(50000.0);
+        System.out.println(f);
+        IValue j = janet.get(50000.0);
+        System.out.println(j);
+        IValue l = longs.get(50000.0);
+        System.out.println(l);
+        
+        longs.stop();
+        fred.stop();
+        janet.stop();
+        assertTrue(PVContext.allReleased());
     }
 }

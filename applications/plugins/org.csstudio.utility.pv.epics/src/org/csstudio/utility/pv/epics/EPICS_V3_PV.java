@@ -3,22 +3,6 @@ package org.csstudio.utility.pv.epics;
 import gov.aps.jca.Channel.ConnectionState;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
-import gov.aps.jca.dbr.DBR_CTRL_Double;
-import gov.aps.jca.dbr.DBR_CTRL_Short;
-import gov.aps.jca.dbr.DBR_Double;
-import gov.aps.jca.dbr.DBR_Float;
-import gov.aps.jca.dbr.DBR_Int;
-import gov.aps.jca.dbr.DBR_LABELS_Enum;
-import gov.aps.jca.dbr.DBR_Short;
-import gov.aps.jca.dbr.DBR_String;
-import gov.aps.jca.dbr.DBR_TIME_Double;
-import gov.aps.jca.dbr.DBR_TIME_Enum;
-import gov.aps.jca.dbr.DBR_TIME_Float;
-import gov.aps.jca.dbr.DBR_TIME_Int;
-import gov.aps.jca.dbr.DBR_TIME_Short;
-import gov.aps.jca.dbr.DBR_TIME_String;
-import gov.aps.jca.dbr.Status;
-import gov.aps.jca.dbr.TimeStamp;
 import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
 import gov.aps.jca.event.GetEvent;
@@ -28,14 +12,8 @@ import gov.aps.jca.event.MonitorListener;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.swt.widgets.Display;
@@ -90,10 +68,6 @@ public class EPICS_V3_PV
      */
     boolean running = false;
 
-    
-    final IValue.Quality quality = IValue.Quality.Original;
-
-
     /** Listener to the get... for meta data */
     private final GetListener meta_get_listener = new GetListener()
     {
@@ -104,7 +78,7 @@ public class EPICS_V3_PV
                 final DBR dbr = event.getDBR();
                 synchronized (pv_data)
                 {
-                    pv_data.meta = decodeMetaData(dbr);
+                    pv_data.meta = DBR_Helper.decodeMetaData(dbr);
                     if (PVContext.debug)
                         System.out.println("Channel '" + name
                                             + "' got Meta data: "
@@ -113,7 +87,7 @@ public class EPICS_V3_PV
             }
             else
                 System.out.println("Channel '" + name + "' getCompleted error: "
-                                + event.getStatus().getMessage());
+                                        + event.getStatus().getMessage());
             // Prevent deadlock with other UI code that calls into CA
             // by also subscribing in UI Thread
             runInUI(new Runnable()
@@ -126,46 +100,60 @@ public class EPICS_V3_PV
         }
     };
     
-    /** Listener to the get-callback for data.
-     *  Decodes the meta & data, and notifies
-     *  on <code>get_callback</code>
-     */
-    private final GetListener get_callback = new GetListener()
+    /** Listener to a get-callback for data. */
+    private class GetCallbackListener implements GetListener
     {
+        /** The received meta data/ */
+        IMetaData meta = null;
+        
+        /** The received value. */
+        IValue value = null;
+        
+        /** After updating <code>meta</code> and <code>value</code>,
+         *  this flag is set, and then <code>notify</code> is invoked
+         *  on <code>this</code>.
+         */ 
+        boolean got_response = false;
+        
+        public void reset()
+        {
+            got_response = false;
+        }
+        
         public void getCompleted(GetEvent event)
         {   // This runs in a CA thread
-            synchronized (pv_data)
+            if (event.getStatus().isSuccessful())
             {
-                if (event.getStatus().isSuccessful())
+                final DBR dbr = event.getDBR();
+                meta = DBR_Helper.decodeMetaData(dbr);
+                if (PVContext.debug)
+                    System.out.println("Channel '" + name
+                                    + "' got Meta data: " + meta);
+                try
                 {
-                    final DBR dbr = event.getDBR();
-                    pv_data.meta = decodeMetaData(dbr);
-                    try
-                    {
-                        pv_data.value = decodeValue(dbr);
-                    }
-                    catch (Exception ex)
-                    {
-                        Activator.logException("PV " + getName(), ex);
-                        pv_data.value = null;
-                    }
-                    if (PVContext.debug)
-                        System.out.println("Channel '" + name
-                                            + "' got Meta data: "
-                                            + pv_data.value);
+                    value = DBR_Helper.decodeValue(plain, meta, dbr);
                 }
-                else
+                catch (Exception ex)
                 {
-                        pv_data.meta = null;
-                        pv_data.value = null;
+                    Activator.logException("PV " + name, ex);
+                    value = null;
                 }
+                if (PVContext.debug)
+                    System.out.println(".. and value: " + value);
+            }
+            else
+            {
+                meta = null;
+                value = null;
             }
             synchronized (this)
             {
+                got_response = true;
                 this.notifyAll();
             }
         }
-    };
+    }
+    private final GetCallbackListener get_callback = new GetCallbackListener();
     
     /** Generate an EPICS PV.
      *  @param name The PV name.
@@ -191,12 +179,29 @@ public class EPICS_V3_PV
     public String getName()
     {   return name;  }
 
-    public IValue getValue(double timeout_seconds) throws Exception
+    /** Synchronous 'get'.
+     *  <p>
+     *  Attempts to get a value for the given timeout.
+     *  Either returns a value within the timeout,
+     *  or throws an exception at the timeout.
+     *  <p>
+     *  When called for a new channel, i.e. on a channel where neither
+     *  <code>get</code> nor <code>start</code> have been called,
+     *  it will also perform the connection attempt, and leave the channel
+     *  connected after getting a value.
+     *  To force a disconnect, call <code>stop</code>.
+     *  
+     *  @param timeout_seconds Timeout in seconds.
+     *  @return Value
+     *  @throws Exception on error
+     */
+    public IValue get(double timeout_seconds) throws Exception
     {
         final long end_time = System.currentTimeMillis() +
                                 (long)(timeout_seconds * 1000);
-        // Wait for connection
+        // Try to connect (NOP if already connected)
         connect();
+        // Wait for connection
         synchronized (pv_data)
         {
             while (! pv_data.connected)
@@ -207,7 +212,11 @@ public class EPICS_V3_PV
                 pv_data.wait(remain);
             }
         }
-        final DBRType type = getCtrlType();
+        // Reset the callback data
+        get_callback.reset();
+        // Issue the 'get'
+        final DBRType type = DBR_Helper.getCtrlType(plain,
+                                      channel_ref.getChannel().getFieldType());
         if (PVContext.debug)
             System.out.println("Channel '" + name + "': get as " + type.getName());
         channel_ref.getChannel().get(
@@ -217,15 +226,19 @@ public class EPICS_V3_PV
         // Wait for value callback
         synchronized (get_callback)
         {
-            final long remain = end_time - System.currentTimeMillis();
-            if (remain < 0)
-                throw new Exception("Get timeout: PV " + name);
-            get_callback.wait(remain);
+            while (! get_callback.got_response)
+            {   // Wait...
+                final long remain = end_time - System.currentTimeMillis();
+                if (remain < 0)
+                    throw new Exception("Get timeout: PV " + name);
+                get_callback.wait(remain);
+            }
         }
         synchronized (pv_data)
         {
-            return pv_data.value;
+            pv_data.value = get_callback.value;
         }
+        return get_callback.value;
     }
     
     /** {@inheritDoc} */
@@ -298,11 +311,11 @@ public class EPICS_V3_PV
             // Prevent multiple subscriptions.
             if (pv_data.subscription != null)
                 return;
-            
         }
         try
         {
-            final DBRType type = getTimeType();
+            final DBRType type = DBR_Helper.getTimeType(plain,
+                                    channel_ref.getChannel().getFieldType());
             if (PVContext.debug)
                 System.out.println("Channel '" + name
                                 + "': subscribing as " + type.getName());
@@ -522,19 +535,6 @@ public class EPICS_V3_PV
         subscribe();
     }
 
-    /** Convert the EPICS time stamp (based on 1990) into the usual 1970 epoch.
-     *  <p>
-     *  In case this is called with data from a CTRL_... request,
-     *  the null timestamp is replaced with the current host time.
-     */
-    private ITimestamp createTimeFromEPICS(TimeStamp t)
-    {
-        if (t == null)
-            return TimestampFactory.now();
-        return TimestampFactory.createTimestamp(
-                        t.secPastEpoch() + 631152000L, t.nsec());
-    }
-
    /** MonitorListener interface. */
     public void monitorChanged(MonitorEvent ev)
     {
@@ -553,7 +553,8 @@ public class EPICS_V3_PV
         {
             synchronized (pv_data)
             {
-                pv_data.value = decodeValue(ev.getDBR());
+                pv_data.value =
+                    DBR_Helper.decodeValue(plain, pv_data.meta, ev.getDBR());
                 if (PVContext.debug)
                     System.out.println("Monitor: " + name + " = " + pv_data.value);
                 if (!pv_data.connected)
@@ -581,232 +582,4 @@ public class EPICS_V3_PV
             listener.pvDisconnected(this);
     }
     
-    /** @return Meta data extracted from dbr */
-    private IMetaData decodeMetaData(final DBR dbr)
-    {
-        if (dbr.isLABELS())
-        {
-            final DBR_LABELS_Enum labels = (DBR_LABELS_Enum)dbr;
-            return ValueFactory.createEnumeratedMetaData(labels.getLabels());
-        }
-        else if (dbr instanceof DBR_CTRL_Double)
-        {
-            final DBR_CTRL_Double ctrl = (DBR_CTRL_Double)dbr;
-            return ValueFactory.createNumericMetaData(
-                            ctrl.getLowerDispLimit().doubleValue(),
-                            ctrl.getUpperDispLimit().doubleValue(),
-                            ctrl.getLowerWarningLimit().doubleValue(),
-                            ctrl.getUpperWarningLimit().doubleValue(),
-                            ctrl.getLowerAlarmLimit().doubleValue(),
-                            ctrl.getUpperAlarmLimit().doubleValue(),
-                            ctrl.getPrecision(),
-                            ctrl.getUnits());
-        }
-        else if (dbr instanceof DBR_CTRL_Short)
-        {
-            final DBR_CTRL_Short ctrl = (DBR_CTRL_Short)dbr;
-            return ValueFactory.createNumericMetaData(
-                            ctrl.getLowerDispLimit().doubleValue(),
-                            ctrl.getUpperDispLimit().doubleValue(),
-                            ctrl.getLowerWarningLimit().doubleValue(),
-                            ctrl.getUpperWarningLimit().doubleValue(),
-                            ctrl.getLowerAlarmLimit().doubleValue(),
-                            ctrl.getUpperAlarmLimit().doubleValue(),
-                            0, // no precision
-                            ctrl.getUnits());
-        }
-        return null;
-    }
-
-    /** @return CTRL_... type for this channel. */
-    private DBRType getCtrlType()
-    {
-        final DBRType type = channel_ref.getChannel().getFieldType();
-        if (type.isDOUBLE())
-            return plain ? DBRType.DOUBLE : DBRType.CTRL_DOUBLE;
-        else if (type.isFLOAT())
-            return plain ? DBRType.FLOAT : DBRType.CTRL_FLOAT;
-        else if (type.isINT())
-            return plain ? DBRType.INT : DBRType.CTRL_INT;
-        else if (type.isSHORT())
-            return plain ? DBRType.SHORT : DBRType.CTRL_SHORT;
-        else if (type.isENUM())
-            return plain ? DBRType.SHORT : DBRType.CTRL_ENUM;
-        // default: get as string
-        return plain ? DBRType.STRING : DBRType.CTRL_STRING;
-    }
-    
-    /** @return TIME_... type for this channel. */
-    private DBRType getTimeType()
-    {
-        final DBRType type = channel_ref.getChannel().getFieldType();
-        if (type.isDOUBLE())
-            return plain ? DBRType.DOUBLE : DBRType.TIME_DOUBLE;
-        else if (type.isFLOAT())
-            return plain ? DBRType.FLOAT : DBRType.TIME_FLOAT;
-        else if (type.isINT())
-            return plain ? DBRType.INT : DBRType.TIME_INT;
-        else if (type.isSHORT())
-            return plain ? DBRType.SHORT : DBRType.TIME_SHORT;
-        else if (type.isENUM())
-            return plain ? DBRType.SHORT : DBRType.TIME_ENUM;
-        // default: get as string
-        return plain ? DBRType.STRING : DBRType.TIME_STRING;
-    }
-    
-    /** Convert short array to int array. */
-    private int[] short2int(final short[] v)
-    {
-        int result[] = new int[v.length];
-        for (int i = 0; i < result.length; i++)
-            result[i] = v[i];
-        return result;
-    }
-
-    /** Convert short array to long array. */
-    private long[] short2long(final short[] v)
-    {
-        long result[] = new long[v.length];
-        for (int i = 0; i < result.length; i++)
-            result[i] = v[i];
-        return result;
-    }
-
-    /** Convert int array to long array. */
-    private long[] int2long(final int[] v)
-    {
-        long result[] = new long[v.length];
-        for (int i = 0; i < result.length; i++)
-            result[i] = v[i];
-        return result;
-    }
-
-    /** Convert float array to a double array. */
-    private double[] float2double(final float[] v)
-    {
-        double result[] = new double[v.length];
-        for (int i = 0; i < result.length; i++)
-            result[i] = v[i];
-        return result;
-    }    
-
-    /** @return Value extracted from dbr */
-    private IValue decodeValue(final DBR dbr) throws Exception
-    {
-        ITimestamp time = null;
-        ISeverity severity = null;
-        String status = "";
-        if (plain)
-        {
-            time = TimestampFactory.now();
-            severity = SeverityUtil.forCode(0);
-        }
-        if (dbr.isDOUBLE())
-        {
-            double v[];
-            if (plain)
-                v = ((DBR_Double)dbr).getDoubleValue();
-            else
-            {
-                DBR_TIME_Double dt = (DBR_TIME_Double) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                Status stat = dt.getStatus();
-                status = stat.getValue() == 0 ? "" : stat.getName();
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getDoubleValue();
-            }
-            return ValueFactory.createDoubleValue(time, severity,
-                        status, (INumericMetaData)pv_data.meta, quality, v);
-        }
-        else if (dbr.isFLOAT())
-        {
-            float v[];
-            if (plain)
-                v = ((DBR_Float)dbr).getFloatValue();
-            else
-            {
-                DBR_TIME_Float dt = (DBR_TIME_Float) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                Status stat = dt.getStatus();
-                status = stat.getValue() == 0 ? "" : stat.getName();
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getFloatValue();
-            }
-            return ValueFactory.createDoubleValue(time, severity,
-                            status, (INumericMetaData)pv_data.meta, quality,
-                            float2double(v));
-        }
-        else if (dbr.isINT())
-        {
-            int v[];
-            if (plain)
-                v = ((DBR_Int)dbr).getIntValue();
-            else
-            {
-                DBR_TIME_Int dt = (DBR_TIME_Int) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                Status stat = dt.getStatus();
-                status = stat.getValue() == 0 ? "" : stat.getName();
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getIntValue();
-            }
-            return ValueFactory.createLongValue(time, severity,
-                            status, (INumericMetaData)pv_data.meta, quality,
-                            int2long(v));
-        }
-        else if (dbr.isSHORT())
-        {
-            short v[];
-            if (plain)
-                v = ((DBR_Short)dbr).getShortValue();
-            else
-            {
-                DBR_TIME_Short dt = (DBR_TIME_Short) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                Status stat = dt.getStatus();
-                status = stat.getValue() == 0 ? "" : stat.getName();
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getShortValue();
-            }
-            return ValueFactory.createLongValue(time, severity,
-                                status, (INumericMetaData)pv_data.meta, quality,
-                                short2long(v));
-        }
-        else if (dbr.isSTRING())
-        {
-            String v[];
-            if (plain)
-                v = ((DBR_String)dbr).getStringValue();
-            else
-            {
-                DBR_TIME_String dt = (DBR_TIME_String) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                Status stat = dt.getStatus();
-                status = stat.getValue() == 0 ? "" : stat.getName();
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getStringValue();
-            }
-            return ValueFactory.createStringValue(time, severity,
-                                status, quality, v[0]);
-        }
-        else if (dbr.isENUM())
-        {
-            short v[];
-            // 'plain' mode would subscribe to SHORT,
-            // so this must be a TIME_Enum:
-            DBR_TIME_Enum dt = (DBR_TIME_Enum) dbr;
-            severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-            Status stat = dt.getStatus();
-            status = stat.getValue() == 0 ? "" : stat.getName();
-            time = createTimeFromEPICS(dt.getTimeStamp());
-            v = dt.getEnumValue();
-            return ValueFactory.createEnumeratedValue(time, severity,
-                                status, (IEnumeratedMetaData)pv_data.meta, quality,
-                                short2int(v));
-        }
-        else
-            // handle many more types!!
-            throw new Exception("Cannot decode " + dbr);
-    }
-
 }
