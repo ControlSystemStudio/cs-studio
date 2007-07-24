@@ -1,4 +1,4 @@
-package org.csstudio.swt.chart;
+package org.csstudio.swt.chart.axes;
 
 
 /**

@@ -13,10 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.pv,
  org.csstudio.archive,
  org.csstudio.platform,
- org.csstudio.utility.pv.epics
+ org.csstudio.utility.pv.epics,
+ org.csstudio.swt.chart
 Eclipse-LazyStart: true
 Bundle-Vendor: Kay Kasemir
-Export-Package: org.csstudio.swt.chart,
- org.csstudio.swt.chart.axes,
- org.csstudio.swt.chart.test,
- org.csstudio.trends.databrowser
+Export-Package: org.csstudio.trends.databrowser

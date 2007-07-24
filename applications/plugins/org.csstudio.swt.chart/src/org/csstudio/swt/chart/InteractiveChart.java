@@ -9,7 +9,6 @@ import org.csstudio.swt.chart.axes.TraceSample;
 import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisListener;
-import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -124,21 +123,21 @@ public class InteractiveChart extends Composite
         button_images = new ImageRegistry();
         try
         {
-            button_images.put(UP, Plugin.getImageDescriptor("icons/up.gif"));
-            button_images.put(DOWN, Plugin.getImageDescriptor("icons/down.gif"));
-            button_images.put(Y_IN, Plugin.getImageDescriptor("icons/y_in.gif"));
-            button_images.put(Y_OUT, Plugin.getImageDescriptor("icons/y_out.gif"));
-            button_images.put(ZOOM, Plugin.getImageDescriptor("icons/autozoom.gif"));
-            button_images.put(STAGGER, Plugin.getImageDescriptor("icons/stagger.gif"));
-            button_images.put(LEFT, Plugin.getImageDescriptor("icons/left.gif"));
-            button_images.put(RIGHT, Plugin.getImageDescriptor("icons/right.gif"));
-            button_images.put(X_IN, Plugin.getImageDescriptor("icons/x_in.gif"));
-            button_images.put(X_OUT, Plugin.getImageDescriptor("icons/x_out.gif"));
-            button_images.put(DEFAULT_ZOOM, Plugin.getImageDescriptor("icons/defaultscale.gif"));
+            button_images.put(UP, Activator.getImageDescriptor("icons/up.gif"));
+            button_images.put(DOWN, Activator.getImageDescriptor("icons/down.gif"));
+            button_images.put(Y_IN, Activator.getImageDescriptor("icons/y_in.gif"));
+            button_images.put(Y_OUT, Activator.getImageDescriptor("icons/y_out.gif"));
+            button_images.put(ZOOM, Activator.getImageDescriptor("icons/autozoom.gif"));
+            button_images.put(STAGGER, Activator.getImageDescriptor("icons/stagger.gif"));
+            button_images.put(LEFT, Activator.getImageDescriptor("icons/left.gif"));
+            button_images.put(RIGHT, Activator.getImageDescriptor("icons/right.gif"));
+            button_images.put(X_IN, Activator.getImageDescriptor("icons/x_in.gif"));
+            button_images.put(X_OUT, Activator.getImageDescriptor("icons/x_out.gif"));
+            button_images.put(DEFAULT_ZOOM, Activator.getImageDescriptor("icons/defaultscale.gif"));
         }
         catch (Exception e)
         {
-            Plugin.logException("InteractiveChart cannot init. images", e);
+            Activator.logException("InteractiveChart cannot init. images", e);
         }
     }
 

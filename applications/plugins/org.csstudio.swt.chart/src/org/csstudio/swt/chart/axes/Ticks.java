@@ -2,7 +2,6 @@ package org.csstudio.swt.chart.axes;
 
 import java.text.NumberFormat;
 
-import org.csstudio.swt.chart.ITicks;
 import org.eclipse.swt.graphics.GC;
 
 /** Helper for creating tick marks.

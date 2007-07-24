@@ -1,6 +1,5 @@
 package org.csstudio.swt.chart;
 
-import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.jface.action.Action;
 
 /** An Action for showing or hiding the button bar of the InteractiveChart.
@@ -19,7 +18,7 @@ public class ShowButtonBarAction extends Action
     {
         super(chart.isButtonBarVisible() ?
               Messages.Chart_HideButtonBar : Messages.Chart_ShowButtonBar,
-              Plugin.getImageDescriptor("icons/toolbar.gif")); //$NON-NLS-1$
+              Activator.getImageDescriptor("icons/toolbar.gif")); //$NON-NLS-1$
         this.chart = chart;
         chart.addListener(this);
     }

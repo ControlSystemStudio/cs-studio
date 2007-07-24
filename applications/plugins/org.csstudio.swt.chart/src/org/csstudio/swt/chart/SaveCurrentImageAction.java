@@ -1,6 +1,5 @@
 package org.csstudio.swt.chart;
 
-import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
@@ -24,7 +23,7 @@ public class SaveCurrentImageAction extends Action
     public SaveCurrentImageAction(InteractiveChart chart)
     {
         super(Messages.SaveImage_ActionName,
-              Plugin.getImageDescriptor("icons/chart.gif")); //$NON-NLS-1$
+              Activator.getImageDescriptor("icons/chart.gif")); //$NON-NLS-1$
         this.chart = chart;
         setToolTipText(Messages.SaveImage_ActionName_TT);
     }

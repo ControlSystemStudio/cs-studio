@@ -1,4 +1,4 @@
-package org.csstudio.util.swt;
+package org.csstudio.swt.util;
 
 // Found this at 
 // http://www.java2s.com/Code/Java/SWT-JFace-Eclipse/Utilitymethodsfordrawinggraphics.htm

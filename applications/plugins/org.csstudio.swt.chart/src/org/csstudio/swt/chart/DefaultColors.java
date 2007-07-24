@@ -1,4 +1,4 @@
-package org.csstudio.util.swt;
+package org.csstudio.swt.chart;
 
 /** Helper for providing default colors.
  * 

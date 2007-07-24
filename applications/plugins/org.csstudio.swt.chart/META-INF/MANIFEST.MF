@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Chart Plug-in
+Bundle-SymbolicName: org.csstudio.swt.chart
+Bundle-Version: 1.0.0
+Bundle-Vendor: Kay Kasemir
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.jface,
+ org.eclipse.core.runtime,
+ org.csstudio.platform,
+ org.csstudio.platform.ui,
+ org.eclipse.ui
+Export-Package: org.csstudio.swt.chart,
+ org.csstudio.swt.chart.axes,
+ org.csstudio.swt.chart.test
+Eclipse-LazyStart: true
+Bundle-Activator: org.csstudio.swt.chart.Activator

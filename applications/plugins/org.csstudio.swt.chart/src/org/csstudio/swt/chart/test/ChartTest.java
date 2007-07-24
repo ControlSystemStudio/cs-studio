@@ -2,21 +2,21 @@ package org.csstudio.swt.chart.test;
 
 import java.util.Vector;
 
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
-import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartListener;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequenceContainer;
+import org.csstudio.swt.chart.DefaultColors;
 import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisListener;
-import org.csstudio.util.swt.DefaultColors;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;

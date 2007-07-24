@@ -8,7 +8,7 @@ import org.csstudio.swt.chart.ChartSampleSearch;
 import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.Range;
 import org.csstudio.swt.chart.Trace;
-import org.csstudio.util.swt.GraphicsUtils;
+import org.csstudio.swt.util.GraphicsUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.graphics.Color;

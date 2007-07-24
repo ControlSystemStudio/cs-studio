@@ -1,15 +1,16 @@
 package org.csstudio.swt.chart;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
+import org.junit.Before;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("nls")
-public class ChartSampleSearchTest extends TestCase
+public class ChartSampleSearchTest
 {
     private ChartSampleSequence samples;
 
-    @Override
-    protected void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
         ChartSampleSequenceContainer sc = new ChartSampleSequenceContainer();
         for (int i=1; i<10; ++i) // x = 2, 4, 6, ..., 18
@@ -17,6 +18,7 @@ public class ChartSampleSearchTest extends TestCase
         samples = sc;
     }
 
+    @Test
     public void testEmpty() throws Exception
     {
         // Empty container
@@ -31,7 +33,7 @@ public class ChartSampleSearchTest extends TestCase
         assertEquals(-1, i);
     }
 
-    
+    @Test
     public void testFindClosest() throws Exception
     {
         double x;
@@ -77,6 +79,7 @@ public class ChartSampleSearchTest extends TestCase
         assertEquals(8, i);
     }
     
+    @Test
     public void testFindSampleLessOrEqual() throws Exception
     {
         double x;
@@ -129,6 +132,7 @@ public class ChartSampleSearchTest extends TestCase
         assertTrue(samples.get(i).getX() < x);        
    }
 
+    @Test
     public void testFindSampleGreaterOrEqual() throws Exception
     {
         double x;

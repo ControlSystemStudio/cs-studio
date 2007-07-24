@@ -1,4 +1,4 @@
-package org.csstudio.swt.chart;
+package org.csstudio.swt.chart.axes;
 
 /** Tick marks of an X or Y Axis.
  *  @author Kay Kasemir

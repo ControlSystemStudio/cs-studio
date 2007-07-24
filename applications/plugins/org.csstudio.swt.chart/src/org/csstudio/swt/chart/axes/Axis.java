@@ -1,8 +1,7 @@
 package org.csstudio.swt.chart.axes;
 
+import org.csstudio.swt.chart.Activator;
 import org.csstudio.swt.chart.Chart;
-import org.csstudio.swt.chart.ITicks;
-import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -117,7 +116,7 @@ public class Axis
             return false;
         if (low >= high)
         {
-            Plugin.logError("Axis " + getLabel() 
+            Activator.logError("Axis " + getLabel() 
                       + ": Cannot set value range to " + low + " ... " + high);
             return false;
         }

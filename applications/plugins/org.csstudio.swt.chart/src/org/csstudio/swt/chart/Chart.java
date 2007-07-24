@@ -2,6 +2,7 @@ package org.csstudio.swt.chart;
 
 import java.util.ArrayList;
 
+import org.csstudio.swt.chart.axes.ITicks;
 import org.csstudio.swt.chart.axes.Log10;
 import org.csstudio.swt.chart.axes.TimeAxis;
 import org.csstudio.swt.chart.axes.TraceNameYAxisFactory;
@@ -11,7 +12,6 @@ import org.csstudio.swt.chart.axes.XAxisListener;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisFactory;
 import org.csstudio.swt.chart.axes.YAxisListener;
-import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -221,7 +221,7 @@ public class Chart extends Canvas
                 }
                 catch (Throwable error)
                 {
-                    Plugin.logException("Chart paint error", error);
+                    Activator.logException("Chart paint error", error);
                 }
             }
         });
