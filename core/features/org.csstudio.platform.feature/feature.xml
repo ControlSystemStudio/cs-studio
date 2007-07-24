@@ -294,7 +294,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          arch="PA_RISC"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v20060603"
          fragment="true"
          unpack="false"/>
 
@@ -304,7 +304,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          arch="x86"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v20060603"
          fragment="true"
          unpack="false"/>
 
@@ -314,7 +314,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          arch="x86_64"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v20060603"
          fragment="true"
          unpack="false"/>
 
@@ -323,7 +323,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          os="macosx"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.0.v20060603"
          fragment="true"
          unpack="false"/>
 
@@ -363,7 +363,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          ws="carbon"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.2.0.I20060605-1400"
          fragment="true"
          unpack="false"/>
 
@@ -372,7 +372,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          os="linux"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.2.0.v20060605"
          fragment="true"
          unpack="false"/>
 

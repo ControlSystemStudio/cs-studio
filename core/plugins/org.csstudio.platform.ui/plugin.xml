@@ -131,7 +131,19 @@
                style="push"
                tooltip="%menuCssPreferences_Tooltip"/>
       </actionSet>
-      
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.platform.ui.statisticviewer.actionSet"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.platform.ui.statisticviewer.ShowStatistcViewer"
+               icon="icons/StatisticViewer.png"
+               id="org.csstudio.platform.ui.statisticviewer.action"
+               label="Statistic Viewer"
+               menubarPath="css/diag/"
+               style="push"/>
+      </actionSet>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -150,6 +162,11 @@
             class="org.csstudio.platform.ui.internal.preferences.SystemPropertiesPreferencePage"
             id="org.csstudio.platform.ui.internal.preferences.SystemPropertiesPreferencePage"
             name="%systemPropertyPreferencesPageName"/>
+	  <page
+            category="org.csstudio.platform.ui.css.applications.configuration"
+            class="org.csstudio.platform.ui.statisticviewer.preference.PreferencePage"
+            id="org.csstudio.platform.ui.statisticviewer.PreferencePage"
+            name="StatisticViewer"/>
    </extension>
    <extension
          point="org.eclipse.help.contexts">
@@ -157,9 +174,18 @@
             file="contexts.xml"
             />
    </extension>
-
-   <extension
+	<extension
          point="org.eclipse.ui.views">
+      <view
+            allowMultiple="true"
+            category="org.csstudio"
+            class="org.csstudio.platform.ui.statisticviewer.ui.StatisticView"
+            icon="icons/StatisticViewer.png"
+            id="org.csstudio.platform.ui.statisticviewer.ui.StatisticView"
+            name="Statistic View"/>
+      <category
+            id="org.csstudio"
+            name="CSS"/>
       <view
             allowMultiple="false"
             class="org.csstudio.platform.ui.internal.developmentsupport.util.ContainerView"
@@ -306,5 +332,8 @@
               menubarPath="editEnd"/>
      </viewerContribution>
   </extension>
-
+  <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.platform.ui.statisticviewer.preference.PreferenceInitializer"/>
+   </extension>
 </plugin>
