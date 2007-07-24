@@ -34,6 +34,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.Topic;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.platform.libs.jms.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -116,8 +117,24 @@ public class MessageReceiver {
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
             try {
-                _factory = (ConnectionFactory) _context.lookup("ConnectionFactory");
-                _connection = _factory.createConnection();
+               
+                if ( (_properties.get(PreferenceConstants.INITIAL_CONTEXT_FACTORY) != null) && _properties.get(PreferenceConstants.INITIAL_CONTEXT_FACTORY).toUpperCase().equals("ACTIVEMQ")) {
+                    _factory = new ActiveMQConnectionFactory(_properties.get(PreferenceConstants.URL));
+
+                    /*
+                     * Ohne Cast's
+                     */
+                    // Create a Connection
+                    _connection = _factory.createConnection();
+                    
+                    /*
+                     * Mit Cast's
+                     */
+//                  _connection = ((ActiveMQConnectionFactory)_factory).createConnection();
+                } else {
+                    _factory = (ConnectionFactory) _context.lookup("ConnectionFactory");
+                    _connection = _factory.createConnection();
+                }
                 _session = _connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                 //
                 // here we can decide whether we will get any messages regardless whether we are connected or not
