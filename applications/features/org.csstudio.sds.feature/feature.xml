@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.sds.feature"
-      label="Synoptic Display Studio"
-      version="1.0.2">
+      label="Synoptic Display Studio Feature"
+      version="1.0.3">
 
    <description url="http://css.desy.de/sds">
       The Synoptic Display Studio (SDS) is a GEF based application which allows for modelling and displaying synoptic displays.
    </description>
 
    <copyright>
-      Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
+      Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
 Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
    </copyright>
 
@@ -29,54 +29,72 @@ DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,  
 THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM.
    </license>
 
+   <url>
+      <update url="http://eclipse.desy.de/update/"/>
+   </url>
+
    <includes
          id="org.eclipse.gef"
          version="0.0.0"/>
 
    <requires>
-      <import feature="org.csstudio.platform.feature.product" version="0.9.4"/>
+      <import feature="org.csstudio.platform.feature.product" version="0.9.5"/>
    </requires>
 
    <plugin
          id="org.csstudio.sds"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.ui"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.components"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.components.ui"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.components.epics"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          unpack="false"/>
 
    <plugin
          id="org.csstudio.sds.samples"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.sds.importer"
+         download-size="0"
+         install-size="0"
+         version="1.0.3"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.sds.importer.ui"
+         download-size="0"
+         install-size="0"
+         version="1.0.3"
          unpack="false"/>
 
 </feature>
