@@ -108,6 +108,19 @@ public abstract class ArchiveServer
      *  @see #getSamples(int, String[], ITimestamp, ITimestamp, String, Object[])
      */
     public static final String GET_AVERAGE = "average";
+    
+    /** Request type for getting linearly interpolated samples.
+     *  <p>
+     *  If supported, this request type uses linear interpolation onto
+     *  the transitions between segments.
+     *  <p>
+     *  Requires one 'Double' parameter that specifies the seconds
+     *  between interpolated samples.
+     *
+     *  @see #getRequestTypes()
+     *  @see #getSamples()
+     */
+    public static final String GET_LINEAR = "linear";
 
     /** Get a list of the supported request types as strings.
      *  <p>
