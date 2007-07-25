@@ -30,7 +30,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsPlugin.getDefault().getPreferenceStore();
 		store.setDefault(PreferenceConstants.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
-		store.setDefault(PreferenceConstants.URL, "failover:(tcp://elogbook.desy.de:61616,tcp://krynfs.desy.de:61616)?maxReconnectDelay=2000"); //$NON-NLS-1$
+		store.setDefault(PreferenceConstants.URL, "failover:(tcp://elogbook.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=2000"); //$NON-NLS-1$
 		store.setDefault(PreferenceConstants.QUEUE, "LOG"); //$NON-NLS-1$
 		
 	}
