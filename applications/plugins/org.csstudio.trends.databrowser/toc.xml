@@ -10,6 +10,8 @@
 	  <topic label="Archive View" href="html/archive_view.html"/>
 	  <topic label="Sample View" href="html/sample_view.html"/>
 	  <topic label="Export View" href="html/export_view.html"/>
+	  <topic label="Preferences" href="html/preferences.html"/>
+	  <topic label="View Mode" href="html/view_mode.html"/>
 	  <topic label="Internals" href="html/sampling.html"/>
 	</topic>
 </toc>
