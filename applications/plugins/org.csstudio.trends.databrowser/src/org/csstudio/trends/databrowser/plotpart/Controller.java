@@ -298,6 +298,10 @@ public class Controller
     /** Private handler for ..DropTarget interface */
     private IModelItem nameDropped(String name, YAxis yaxis)
     {
+        // Catch duplicate PVs before the following code
+        // creates new Y axis...
+        if (model.findItem(name) != null)
+            return null;
         if (yaxis == null)
         {   // If there is only one axis, and it's empty, use it:
             if (chart.getNumYAxes() == 1  &&
