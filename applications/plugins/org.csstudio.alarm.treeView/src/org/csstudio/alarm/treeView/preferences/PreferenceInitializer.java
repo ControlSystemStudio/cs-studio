@@ -22,8 +22,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.put(PreferenceConstants.LDAP_USER, "");
 		prefs.put(PreferenceConstants.LDAP_PASSWORD, "");
 		prefs.put(PreferenceConstants.FACILITIES, "");
-		prefs.put(PreferenceConstants.JMS_URL_PRIMARY, "tcp://elogbook.desy.de:61616");
-		prefs.put(PreferenceConstants.JMS_URL_SECONDARY, "tcp://krynfs.desy.de:61616");
+		prefs.put(PreferenceConstants.JMS_URL_PRIMARY, "tcp://elogbook.desy.de:64616");
+		prefs.put(PreferenceConstants.JMS_URL_SECONDARY, "tcp://krynfs.desy.de:62616");
 		prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY_PRIMARY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 		prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY_SECONDARY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 		prefs.put(PreferenceConstants.JMS_QUEUE, "ALARM");
