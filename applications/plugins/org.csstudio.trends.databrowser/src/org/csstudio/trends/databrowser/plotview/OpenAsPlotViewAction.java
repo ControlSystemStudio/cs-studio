@@ -24,7 +24,7 @@ public class OpenAsPlotViewAction extends Action implements IObjectActionDelegat
             return;
         Object element = selection.getFirstElement();
         if (element instanceof IFile)
-            PlotView.activateWithFile((IFile) element);
+            PlotView.createInstance((IFile) element);
     }
 
     /** @see org.eclipse.ui.IActionDelegate#selectionChanged */

@@ -82,7 +82,7 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="false"
-            id="org.csstudio.trends.databrowser.PVpopupAction"
+            id="org.csstudio.trends.databrowser.OpenViewWithPVsPopupAction"
             objectClass="org.csstudio.platform.model.IProcessVariable">
          <menu
                id="org.csstudio.popmenu"
@@ -92,8 +92,27 @@
             <separator name="additions"/>
          </menu>
          <action
-               id="org.csstudio.trends.databrowser.PVpopupAction"
-               class="org.csstudio.trends.databrowser.PVpopupAction"
+               id="org.csstudio.trends.databrowser.OpenViewWithPVsPopupAction"
+               class="org.csstudio.trends.databrowser.OpenViewWithPVsPopupAction"
+               icon="icons/chart.gif"
+               label="%DatabrowserView"
+               menubarPath="org.csstudio.popmenu/content"
+               tooltip="%PopmenuViewTooltip"/>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.trends.databrowser.OpenEditorWithPVsPopupAction"
+            objectClass="org.csstudio.platform.model.IProcessVariable">
+         <menu
+               id="org.csstudio.popmenu"
+               label="%CSS"
+               path="additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <action
+               id="org.csstudio.trends.databrowser.OpenEditorWithPVsPopupAction"
+               class="org.csstudio.trends.databrowser.OpenEditorWithPVsPopupAction"
                icon="icons/chart.gif"
                label="%Databrowser"
                menubarPath="org.csstudio.popmenu/content"

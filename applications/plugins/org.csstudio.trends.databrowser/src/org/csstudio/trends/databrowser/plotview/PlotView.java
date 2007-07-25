@@ -2,6 +2,7 @@ package org.csstudio.trends.databrowser.plotview;
 
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.trends.databrowser.Plugin;
+import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
 import org.csstudio.trends.databrowser.plotpart.RemoveMarkersAction;
 import org.csstudio.trends.databrowser.plotpart.RemoveSelectedMarkersAction;
@@ -51,30 +52,45 @@ public class PlotView extends ViewPart
     private boolean initially_show_button_bar = false;
 
     private RemoveSelectedMarkersAction remove_marker_action;
-    
+
     /** Create another instance of the PlotView for the given file. */
-    public static boolean activateWithFile(IFile file)
+    public static PlotView createInstance(IFile file)
     {
         try
         {
-            IWorkbench workbench = PlatformUI.getWorkbench();
-            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-            IWorkbenchPage page = window.getActivePage();
-            ++instance;
-            PlotView view = (PlotView) page.showView(PlotView.ID,
-                            String.format("Plot%d", instance), //$NON-NLS-1$
-                            IWorkbenchPage.VIEW_ACTIVATE);
+            final PlotView view = createInstance();
             view.init(file);
-            return true;
+            return view;
         }
         catch (Exception ex)
         {
-            Plugin.logException("activateWithFile", ex); //$NON-NLS-1$
+            Plugin.logException("createInstance with file " + file, ex); //$NON-NLS-1$
             ex.printStackTrace();
         }
-        return false;
+        return null;
     }
 
+    /** Create an empty instance of the PlotView. */
+    public static PlotView createInstance()
+    {
+        try
+        {
+            final IWorkbench workbench = PlatformUI.getWorkbench();
+            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            final IWorkbenchPage page = window.getActivePage();
+            ++instance;
+            return (PlotView) page.showView(PlotView.ID,
+                            String.format("Plot%d", instance), //$NON-NLS-1$
+                            IWorkbenchPage.VIEW_ACTIVATE);
+        }
+        catch (Exception ex)
+        {
+            Plugin.logException("createInstance", ex); //$NON-NLS-1$
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    
     /** Init the view, trying to read the model's file from the memento.
      *  @see ViewPart#init(IViewSite, IMemento)
      */
@@ -102,6 +118,10 @@ public class PlotView extends ViewPart
         plot_part.init(file);
         setPartName(plot_part.getPartName());
     }
+    
+    /** @return Returns the model. */
+    public Model getModel()
+    {   return plot_part.getModel(); }
     
     /** {@inheritDoc} */
     @Override

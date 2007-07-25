@@ -9,16 +9,25 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 
-/** Another application sent us a PV name via its popup menu. */
-public class PVpopupAction extends ProcessVariablePopupAction
+/** Another application sent us a PV name via its popup menu.
+ *  @author Kay Kasemir
+ */
+public class OpenEditorWithPVsPopupAction extends ProcessVariablePopupAction
 {    
     @Override
-    public void handlePVs(IProcessVariable pv_names[])
+    public void handlePVs(final IProcessVariable pv_names[])
     {
-    	PlotEditor editor = PlotEditor.createInstance();
+        final PlotEditor editor = PlotEditor.createInstance();
     	if (editor == null)
     		return;
-        Model model = editor.getModel();
+        final Model model = editor.getModel();
+        addPVsAndArchives(model, pv_names);
+    }
+
+    /** Add the given PVs to the model. */
+    protected void addPVsAndArchives(final Model model,
+                                     final IProcessVariable[] pv_names)
+    {
         for (IProcessVariable pv : pv_names)
         {   // Add every received PV to the model
             IPVModelItem item = model.addPV(pv.getName());

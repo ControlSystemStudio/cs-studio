@@ -27,6 +27,7 @@ public class OpenPlotEditorAsViewAction extends Action
     public void run()
     {
         final IFile file = editor.getEditorInputFile();
-        PlotView.activateWithFile(file);
+        if (file != null)
+            PlotView.createInstance(file);
     }
 }
