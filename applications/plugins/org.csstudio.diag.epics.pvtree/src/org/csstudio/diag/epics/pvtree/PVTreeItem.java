@@ -138,7 +138,9 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     private PVListener type_pv_listener = new PVListener()
     {
         public void pvDisconnected(PV pv)
-        {}
+        {
+            // NOP
+        }
         public void pvValueUpdate(PV pv)
         {
             try
@@ -160,7 +162,9 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     private PVListener link_pv_listener = new PVListener()
     {
         public void pvDisconnected(PV pv)
-        {}
+        {
+            // NOP
+        }
         public void pvValueUpdate(PV pv)
         {
             try
