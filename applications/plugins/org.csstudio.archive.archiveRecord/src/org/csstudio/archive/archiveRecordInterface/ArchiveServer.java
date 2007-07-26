@@ -7,6 +7,7 @@ import org.csstudio.archive.NameInfo;
 import org.csstudio.archive.archiveRecordInterface.ValuesRequest;
 import org.csstudio.platform.data.ITimestamp;
 
+
 /** Main access point to the EPICS CA local history cash 
  *  @author Albert Kagarmanov
  */
@@ -96,10 +97,10 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 		
 	}
 
-	@Override
-	public int getLastRequestError() {
-		return last_request_error;
-	}
+//	@Override
+//	public int getLastRequestError() {
+//		return last_request_error;
+//	}
 	
 	@Override
 	public String getServerName() {
@@ -111,23 +112,22 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 		// TODO Auto-generated method stub
 		return "archiveRecord://";
 	}
-	
-	public int getRequestType(String request_name) {return 0;}
-/*	 @Override
-	 public int getRequestType(String request_name) throws Exception
+    int getRequestCode(String request_name) throws Exception
 	 {
-		if (request_name == "AVERAGE") {
-			return AAPI.AVERAGE_M;
-		} else if (request_name == "RAW") {
-			return AAPI.NO_FILTERING_M;
-		} else if (request_name == "MIN_MAX_AVERAGE") {
-			return AAPI.MIN_MAX_AVERAGE_M;
-		} else if (request_name == "SHARP") {
-			return AAPI.SHARP_M;
-		} else if (request_name == "SPLINE") {
-			return AAPI.SPLINE_M;
-		}  
-		return 1;
+    	return 0;
+ 	}
+	
+
+    /* @see org.csstudio.archiveArchiveServer#getNames() */
+	public ArchiveValues[] getSamples(int key, String[] names,
+			ITimestamp start, ITimestamp end, String request_type,
+            Object request_parms[]) 
+        throws Exception
+	{  
+        final int request_code = getRequestCode(request_type);
+		ValuesRequest values = new ValuesRequest(this,
+				key, names, start, end, request_code, request_parms);
+		this.last_request_error = values.read();
+		return values.getArchivedSamples();
 	}
-	*/
 }
