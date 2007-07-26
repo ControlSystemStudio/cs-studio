@@ -301,6 +301,10 @@ public class AAPI {
 	public AnswerData getData(RequestData in) {
 		if(debugOut) System.out.println(AAPI_HOST + AAPI_PORT);
 		int cmd = DATA_REQUEST_CMD;
+		if (debug){
+		System.out.println("\n\nAAPI from="+ new java.util.Date ((long) ((long) (in.getFrom())) *1000 ) ) ; 
+		System.out.println("AAPI to="+ new java.util.Date ( (long) ( (long)  in.getTo())*1000 )) ; 
+		}
 		int len = in.lenCalculate(); //parameters length in bytes
 		byte[] header, answer;
 		if ((header = createConnectionAndHeader(cmd, len)) == null)
@@ -591,7 +595,10 @@ public class AAPI {
 			if(debug) {
 		        System.out.println("count="+answerClass.getCount());
 		        for(int j=0;j<answerClass.getCount();j++) {
-		            System.out.print(j+"T U S D="+answerClass.getTime()[j]); 
+		        	if(j != answerClass.getCount() -1  ) {
+		        		if (j >3)continue;
+		        	}
+ 		            System.out.print(j+" T U S D="+ new java.util.Date ((long)  1000*( (long)  answerClass.getTime()[j]))) ; 
 		            System.out.print("; "+answerClass.getUtime()[j]); 
 		            System.out.print("; "+answerClass.getStatus()[j]);
 		            System.out.print("; "+answerClass.getData()[j] + " \n"); 
