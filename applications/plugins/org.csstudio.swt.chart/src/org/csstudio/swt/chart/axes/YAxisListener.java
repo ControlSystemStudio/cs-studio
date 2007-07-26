@@ -30,7 +30,7 @@ public interface YAxisListener
          *  Requires redraw of the whole plot.
          */
         RANGE
-    };
+    }
     
     /** Something changed on the Y Axis
      *  @param what One of LABEL, SELECTION, ...

@@ -18,7 +18,7 @@ public interface ChartSample
         
         /** A gap, terminating a "line", displayed as a single point. */
         Point
-    };
+    }
     
     /** @return One of the Type values. */
     public Type getType();
