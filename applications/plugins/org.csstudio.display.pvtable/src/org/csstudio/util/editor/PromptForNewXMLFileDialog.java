@@ -1,5 +1,6 @@
 package org.csstudio.util.editor;
 
+import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.platform.ui.dialogs.SaveAsDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -33,21 +34,21 @@ public class PromptForNewXMLFileDialog
             // The path to the new resource relative to the workspace
             new_resource_path = dlg.getResult();
         }
-        catch (Exception e)
-        {   // If it fails, because we are in a crippled CSS RCP,
-            // run a plain version of a file Dialog.
-            
+        catch (Exception ex)
+        {
+            Plugin.logException("SaveAsDialog error", ex); //$NON-NLS-1$
+            return null;
         }
         if (new_resource_path == null)
             return null;
         // Assert it's an '.xml' file
         String ext = new_resource_path.getFileExtension();
-        if (ext == null  ||  !ext.equals("xml")) //$NON-NLS-1$
+        if (ext == null  ||  !ext.equals(Plugin.FileExtension))
         {
             String filename = new_resource_path.lastSegment();
             new_resource_path =
                 new_resource_path.removeLastSegments(1)
-                .append(filename + ".xml"); //$NON-NLS-1$
+                .append(filename + "." + Plugin.FileExtension); //$NON-NLS-1$
         }
         // Get the file for the new resource's path.
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
