@@ -7,18 +7,17 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public class Activator extends AbstractUIPlugin
 {
-    private static Activator instance;
+    private static Activator plugin;
     
     /** Constructor */
     public Activator()
     {
-        instance = this;
+        plugin = this;
     }
     
     /** @return The singleton instance. */
     static public Activator getDefault()
     {
-        return instance;
+        return plugin;
     }
-    
 }

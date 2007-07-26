@@ -65,14 +65,13 @@ public class Plugin extends AbstractCssUiPlugin
     {
         log(IStatus.ERROR, message, null);
     }
-
+  
     /** Add an exception to the plugin log. */
     public static void logException(String message, Throwable ex)
     {
-        ex.printStackTrace();
         log(IStatus.ERROR, message, ex);
     }
-
+  
     /** Add a message to the log.
      *  @param type
      *  @param message
@@ -81,13 +80,11 @@ public class Plugin extends AbstractCssUiPlugin
     private static void log(int type, String message, Throwable ex)
     {
         if (plugin == null)
-        {
             System.out.println(message);
-            if (ex != null)
-                ex.printStackTrace();
-            return;
-        }
-        plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
+        else
+            plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
+        if (ex != null)
+            ex.printStackTrace();
     }
     
     /** Returns an image descriptor for the image file.

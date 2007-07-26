@@ -38,10 +38,36 @@ public class Plugin extends AbstractCssPlugin
         plugin = null;
     }
     
-    /** Add informational message to the plugin log. */
+    /** Add info message to the plugin log. */
     public static void logInfo(String message)
     {
-        plugin.getLog().log(
-                     new Status(IStatus.INFO, ID, IStatus.OK, message, null));
+        log(IStatus.INFO, message, null);
+    }
+    
+    /** Add error message to the plugin log. */
+    public static void logError(String message)
+    {
+        log(IStatus.ERROR, message, null);
+    }
+  
+    /** Add an exception to the plugin log. */
+    public static void logException(String message, Throwable ex)
+    {
+        log(IStatus.ERROR, message, ex);
+    }
+  
+    /** Add a message to the log.
+     *  @param type
+     *  @param message
+     *  @param e Exception or <code>null</code>
+     */
+    private static void log(int type, String message, Throwable ex)
+    {
+        if (plugin == null)
+            System.out.println(message);
+        else
+            plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
+        if (ex != null)
+            ex.printStackTrace();
     }
 }

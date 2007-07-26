@@ -1,5 +1,4 @@
 package org.csstudio.sns.product;
-import org.csstudio.platform.ResourceService;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -11,11 +10,11 @@ import org.osgi.framework.BundleContext;
 public class PluginActivator extends AbstractUIPlugin
 {
     final public static String ID = "org.csstudio.sns.product"; //$NON-NLS-1$
-    private static PluginActivator instance;
+    private static PluginActivator plugin;
     
     public PluginActivator()
     {
-        instance = this;
+        plugin = this;
     }
 
     /** {@inheritDoc} */
@@ -23,24 +22,38 @@ public class PluginActivator extends AbstractUIPlugin
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
-        // Assert that there is an open "CSS" project
-        ResourceService.getInstance().createWorkspaceProject("CSS"); //$NON-NLS-1$
     }
     
-    /** Log an info message. */
-    public static void logInfo(String info)
+    /** Add info message to the plugin log. */
+    public static void logInfo(String message)
     {
-        log(IStatus.INFO, info, null);
+        log(IStatus.INFO, message, null);
     }
-
-    /** Log something. */
-    private static void log(final int severity,
-                            final String message, final Throwable exception)
+    
+    /** Add error message to the plugin log. */
+    public static void logError(String message)
     {
-        if (instance == null)
-            System.out.println("LOG MESSAGE:" + message); //$NON-NLS-1$
+        log(IStatus.ERROR, message, null);
+    }
+  
+    /** Add an exception to the plugin log. */
+    public static void logException(String message, Throwable ex)
+    {
+        log(IStatus.ERROR, message, ex);
+    }
+  
+    /** Add a message to the log.
+     *  @param type
+     *  @param message
+     *  @param e Exception or <code>null</code>
+     */
+    private static void log(int type, String message, Throwable ex)
+    {
+        if (plugin == null)
+            System.out.println(message);
         else
-            instance.getLog().log(
-                new Status(IStatus.INFO, ID, IStatus.OK, message, exception));
+            plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
+        if (ex != null)
+            ex.printStackTrace();
     }
 }

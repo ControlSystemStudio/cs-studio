@@ -2,8 +2,9 @@ package org.csstudio.sns.product;
 
 import org.csstudio.platform.ResourceService;
 import org.csstudio.platform.ui.workspace.WorkspaceSwitchHelper;
-import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.equinox.app.IApplication;
+import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.util.NLS;
@@ -11,15 +12,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 /** This class controls all aspects of the application's execution.
- * 
- *  TODO Adapt to Eclipse 3.3 IApplication
  *  @author Kay Kasemir
  */
-public class Application implements IPlatformRunnable
+public class Application implements IApplication
 {
     /** {@inheritDoc} */
-    @SuppressWarnings("nls") //$NON-NLS-1$
-    public Object run(Object args) throws Exception
+    public Object start(IApplicationContext context) throws Exception
     {
         Display display = PlatformUI.createDisplay();
         try
@@ -46,7 +44,7 @@ public class Application implements IPlatformRunnable
                     if (workspace == null)
                     {
                         PluginActivator.logInfo("CSS Application Canceled"); //$NON-NLS-1$
-                        return IPlatformRunnable.EXIT_OK;
+                        return IApplication.EXIT_OK;
                     }
                     
                     // Does this require a restart?
@@ -58,7 +56,7 @@ public class Application implements IPlatformRunnable
                                 NLS.bind(Messages.Application_RestartMessage,
                                          workspace));
                         PluginActivator.logInfo("CSS Application Relaunch"); //$NON-NLS-1$
-                        return IPlatformRunnable.EXIT_RELAUNCH;
+                        return IApplication.EXIT_RELAUNCH;
                     }
                     
                     // Lock the workspace
@@ -84,7 +82,7 @@ public class Application implements IPlatformRunnable
                 // but a 'new Folder' action would run into
                 // 'project not open' error...
                 ResourceService.getInstance().createWorkspaceProject("CSS"); //$NON-NLS-1$
-
+                
                 returnCode = PlatformUI.createAndRunWorkbench(display,
                                 new ApplicationWorkbenchAdvisor());
             }
@@ -100,22 +98,29 @@ public class Application implements IPlatformRunnable
                 // Is this supposed to be a RESTART or RELAUNCH?
                 final Integer exit_code =
                     Integer.getInteger(RelaunchConstants.PROP_EXIT_CODE);
-                if (IPlatformRunnable.EXIT_RELAUNCH.equals(exit_code))
+                if (IApplication.EXIT_RELAUNCH.equals(exit_code))
                 {   // RELAUCH with new command line
                     PluginActivator.logInfo("RELAUNCH, command line:"); //$NON-NLS-1$
                     PluginActivator.logInfo(
                          System.getProperty(RelaunchConstants.PROP_EXIT_DATA));
-                    return IPlatformRunnable.EXIT_RELAUNCH;
+                    return IApplication.EXIT_RELAUNCH;
                 }
                 // RESTART without changes
-                return IPlatformRunnable.EXIT_RESTART;
+                return IApplication.EXIT_RESTART;
             }
             // Plain exit from IWorkbench.close()
-            return IPlatformRunnable.EXIT_OK;
+            return IApplication.EXIT_OK;
         }
         finally
         {
             display.dispose();
         }
+    }
+
+    /** {@inheritDoc} */
+    public void stop()
+    {
+        // TODO Auto-generated method stub
+        
     }
 }

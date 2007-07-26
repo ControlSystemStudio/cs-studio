@@ -37,30 +37,37 @@ public class Plugin extends AbstractCssUiPlugin
 	public static Plugin getDefault()
     {	return plugin;	}
     
-    /** Add informational message to the plugin log. */
+    /** Add info message to the plugin log. */
     public static void logInfo(String message)
     {
-        getDefault().log(IStatus.INFO, message, null);
+        log(IStatus.INFO, message, null);
     }
-
+    
     /** Add error message to the plugin log. */
     public static void logError(String message)
     {
-        getDefault().log(IStatus.ERROR, message, null);
+        log(IStatus.ERROR, message, null);
     }
-
+  
     /** Add an exception to the plugin log. */
-    public static void logException(String message, Exception e)
+    public static void logException(String message, Throwable ex)
     {
-        getDefault().log(IStatus.ERROR, message, e);
+        ex.printStackTrace();
+        log(IStatus.ERROR, message, ex);
     }
-
+  
     /** Add a message to the log.
-     * @param type
-     * @param message
+     *  @param type
+     *  @param message
+     *  @param e Exception or <code>null</code>
      */
-    private void log(int type, String message, Exception e)
+    private static void log(int type, String message, Throwable ex)
     {
-        getLog().log(new Status(type, ID, IStatus.OK, message, e));
+        if (plugin == null)
+            System.out.println(message);
+        else
+            plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
+        if (ex != null)
+            ex.printStackTrace();
     }
 }

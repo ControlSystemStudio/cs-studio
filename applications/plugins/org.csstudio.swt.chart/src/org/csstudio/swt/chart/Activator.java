@@ -14,37 +14,51 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class Activator extends Plugin
 {
     final public static String ID = "org.csstudio.swt.chart"; //$NON-NLS-1$
-    private static Activator instance;
+    private static Activator plugin;
     
     /** Constructor */
     public Activator()
     {
-        instance = this;
+        plugin = this;
     }
     
     /** @return The singleton instance. */
     static public Activator getDefault()
     {
-        return instance;
+        return plugin;
     }
     
-    /** Log an error */
-    static public void logError(final String message)
+    /** Add info message to the plugin log. */
+    public static void logInfo(String message)
     {
-        if (instance != null)
-            instance.getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK,
-                                             message, null));
-        else
-            System.err.println(message);
+        log(IStatus.INFO, message, null);
     }
-
-    /** Log an exception */
-    static public void logException(final String message, final Throwable ex)
+    
+    /** Add error message to the plugin log. */
+    public static void logError(String message)
     {
-        ex.printStackTrace();
-        if (instance != null)
-            instance.getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK,
-                                             message, ex));
+        log(IStatus.ERROR, message, null);
+    }
+  
+    /** Add an exception to the plugin log. */
+    public static void logException(String message, Throwable ex)
+    {
+        log(IStatus.ERROR, message, ex);
+    }
+  
+    /** Add a message to the log.
+     *  @param type
+     *  @param message
+     *  @param e Exception or <code>null</code>
+     */
+    private static void log(int type, String message, Throwable ex)
+    {
+        if (plugin == null)
+            System.out.println(message);
+        else
+            plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
+        if (ex != null)
+            ex.printStackTrace();
     }
 
     /** Returns an image descriptor for the image file.
@@ -63,7 +77,7 @@ public class Activator extends Plugin
     public static ImageDescriptor getImageDescriptor(String path)
     {
         // If the plugin is running, get descriptor from the bundle
-        if (instance != null)
+        if (plugin != null)
             return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
         // ... otherwise, this is an SWT-only test without the plugin:
         try
