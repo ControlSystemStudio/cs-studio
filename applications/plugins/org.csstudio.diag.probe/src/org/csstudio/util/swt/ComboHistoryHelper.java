@@ -14,6 +14,10 @@ import org.eclipse.swt.widgets.Combo;
  *  dropping items off the list when reaching a comfigurable maximum
  *  list size.
  *  <p>
+ *  TODO Compare with the one in org.csstudio.apputil.
+ *       This one has IPV items for the context menu contrib,
+ *       but that doesn't work that well anyway...
+ *  <p>
  *  @see #newSelection(String)
  *  @author Kay Kasemir
  *  @author Helge Rickens

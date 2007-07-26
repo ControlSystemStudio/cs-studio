@@ -25,18 +25,15 @@ public class PVListModelTest extends TestCase implements
 
     /** @see org.csstudio.display.pvtable.model.PVListModelListener#entryAdded(org.csstudio.display.pvtable.model.PVListEntry) */
     public void entryAdded(PVListEntry entry)
-    {
-    }
+    { /* NOP */ }
 
     /** @see org.csstudio.display.pvtable.model.PVListModelListener#entryRemoved(org.csstudio.display.pvtable.model.PVListEntry) */
     public void entryRemoved(PVListEntry entry)
-    {
-    }
+    { /* NOP */ }
 
     /** @see org.csstudio.display.pvtable.model.PVListModelListener#entriesChanged() */
     public void entriesChanged()
-    {
-    }
+    { /* NOP */ }
 
     /** no longer used
     public void valueUpdate(PVListEntry entry)

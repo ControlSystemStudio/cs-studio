@@ -1,6 +1,7 @@
 package org.csstudio.display.pvtable.ui;
 
 import org.csstudio.display.pvtable.Messages;
+import org.csstudio.display.pvtable.Plugin;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -134,6 +135,7 @@ public class ConfigDialog extends Dialog
                 }
                 catch (Exception e)
                 {
+                    Plugin.logException("Parse " + txt, e); //$NON-NLS-1$
                 }
                 
                 boolean ok = (help == null);
@@ -154,6 +156,7 @@ public class ConfigDialog extends Dialog
                 }
                 catch (Exception e)
                 {
+                    Plugin.logException("Parse " + txt, e); //$NON-NLS-1$
                 }
                 
                 if (help != null)

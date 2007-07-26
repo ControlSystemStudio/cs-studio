@@ -10,6 +10,7 @@ import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction
  */
 public class PVpopupAction extends ProcessVariablePopupAction
 {    
+    @Override
     public void handlePVs(IProcessVariable pv_names[])
     {   
     	PVTableEditor editor = PVTableEditor.createPVTableEditor();

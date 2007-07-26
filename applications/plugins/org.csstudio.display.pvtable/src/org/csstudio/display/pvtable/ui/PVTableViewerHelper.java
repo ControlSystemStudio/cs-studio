@@ -154,7 +154,7 @@ public class PVTableViewerHelper
         listener = new PVListModelListener()
         {
             public void runstateChanged(boolean isRunning)
-            {}
+            { /* NOP */ }
 
             public void entriesChanged()
             {
@@ -251,14 +251,15 @@ public class PVTableViewerHelper
     }
 
     /** @return Returns the PVs which are currently selected in the table. */
+    @SuppressWarnings("unchecked")
     public PVListEntry[] getSelectedEntries()
     {
-        IStructuredSelection selection =
+        final IStructuredSelection selection =
             (IStructuredSelection) table_viewer.getSelection();
         if (selection.isEmpty())
             return null;
-        int num = selection.size();
-        PVListEntry entries[] = new PVListEntry[num];
+        final int num = selection.size();
+        final PVListEntry entries[] = new PVListEntry[num];
         int i = 0;
         for (Iterator iter = selection.iterator(); iter.hasNext();)
         {

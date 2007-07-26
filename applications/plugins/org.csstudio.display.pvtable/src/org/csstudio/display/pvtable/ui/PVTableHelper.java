@@ -118,7 +118,7 @@ public class PVTableHelper
                     return ""; //$NON-NLS-1$
                 return pv.getName();
             case READBACK_VALUE:
-                getPVValueString(entry.getReadbackPV());
+                return getPVValueString(entry.getReadbackPV());
             case SAVED_READBACK:
                 return entry.getSavedReadbackValue().toString();
             }

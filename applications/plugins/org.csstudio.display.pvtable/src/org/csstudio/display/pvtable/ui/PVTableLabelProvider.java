@@ -45,12 +45,14 @@ public class PVTableLabelProvider extends LabelProvider implements
         }
     }
     
-	public String getText(Object obj)
+	@Override
+    public String getText(Object obj)
 	{
 		return getColumnText(obj, 0);
 	}
 
-	public Image getImage(Object obj)
+	@Override
+    public Image getImage(Object obj)
 	{
 		return null;
 	}
@@ -73,8 +75,8 @@ public class PVTableLabelProvider extends LabelProvider implements
             PVListEntry entry = (PVListEntry) obj;
             if (entry.isSelected())
                 return images.get(SELECTED);
-            else
-                return images.get(UNSELECTED);
+            // else
+            return images.get(UNSELECTED);
         }
         return null;
 	}

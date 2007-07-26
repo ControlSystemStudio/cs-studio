@@ -6,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.util.xml.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -259,7 +260,10 @@ public class PVListModel
                         DOMHelper.getSubelementDouble(root_node, "update_period"));
             }
             catch (Exception e)
-            {}
+            {
+                Plugin.logException("Period update", e);
+            }
+            
             // Get the <pvlist> entry
             Element pvlist = DOMHelper.findFirstElementNode(root_node
                     .getFirstChild(), "pvlist");

@@ -99,6 +99,7 @@ public class PVTableEditor extends EditorPart
         // React to model changes via 'dirty' flag
         listener = new AbstractPVListModelListener()
         {
+            @Override
             public void entriesChanged()
             {
                 if (!is_dirty)
@@ -109,9 +110,11 @@ public class PVTableEditor extends EditorPart
                 updateTitle();
             }
 
+            @Override
             public void entryAdded(PVListEntry entry)
             {   entriesChanged(); }
 
+            @Override
             public void entryRemoved(PVListEntry entry)
             {   entriesChanged(); }
         };
@@ -189,7 +192,8 @@ public class PVTableEditor extends EditorPart
         {
             try
             {   stream.close(); }
-            catch (Exception e) {}
+            catch (Exception e)
+            { /* NOP */ }
         }
         return ok;
     }
