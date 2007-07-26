@@ -387,7 +387,7 @@ public class EPICS_V3_PV
     }
 
     /** Set PV to given value. */
-    public void setValue(Object new_value)
+    public void setValue(final Object new_value)
     {
         if (!isConnected())
             return;
@@ -400,12 +400,20 @@ public class EPICS_V3_PV
             {   // other types as double.
                 if (new_value instanceof Double)
                 {
-                    double val = ((Double)new_value).doubleValue();
+                    final double val = ((Double)new_value).doubleValue();
+                    channel_ref.getChannel().put(val);
+                }
+                else if (new_value instanceof Double [])
+                {
+                    final Double dbl[] = (Double [])new_value;
+                    final double val[] = new double[dbl.length];
+                    for (int i=0; i<val.length; ++i)
+                        val[i] = dbl[i].doubleValue();
                     channel_ref.getChannel().put(val);
                 }
                 else if (new_value instanceof Integer)
                 {
-                    double val = ((Integer)new_value).intValue();
+                    final double val = ((Integer)new_value).intValue();
                     channel_ref.getChannel().put(val);
                 }
                 else throw new Exception("Cannot handle type "

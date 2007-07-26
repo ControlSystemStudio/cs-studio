@@ -75,7 +75,9 @@ public interface PV
     public IValue getValue();
 
     /** Set PV to given value.
-     *  Should accept Double, String, maybe more.
+     *  Should accept <code>Double</code>, <code>Double[]</code>,
+     *  <code>Integer</code>,
+     *  <code>String</code>, maybe more.
      */
     public void setValue(Object new_value);
 }
