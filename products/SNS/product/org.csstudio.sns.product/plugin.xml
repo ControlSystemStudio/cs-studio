@@ -35,6 +35,10 @@
          <property
                name="aboutText"
                value="%aboutText"/>
+         <property
+               name="appName"
+               value="SNS CSS">
+         </property>
       </product>
    </extension>
    <extension

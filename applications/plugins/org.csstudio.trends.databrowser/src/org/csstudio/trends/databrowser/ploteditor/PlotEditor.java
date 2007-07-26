@@ -72,7 +72,7 @@ public class PlotEditor extends EditorPart
         
         // "current" start/end time changes are ignored
         public void timeRangeChanged()
-        {}
+        { /* NOP */ }
         
         public void periodsChanged()
         {   entriesChanged();  }

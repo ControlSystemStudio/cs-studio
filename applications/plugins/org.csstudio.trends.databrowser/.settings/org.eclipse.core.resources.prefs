@@ -1,4 +1,4 @@
-#Tue Jul 24 15:22:16 EDT 2007
+#Thu Jul 26 15:35:41 EDT 2007
 eclipse.preferences.version=1
 encoding//src/org/csstudio/trends/databrowser/archiveview/messages.properties=8859_1
 encoding//src/org/csstudio/trends/databrowser/configview/messages.properties=8859_1
@@ -11,5 +11,4 @@ encoding//src/org/csstudio/trends/databrowser/plotview/messages.properties=8859_
 encoding//src/org/csstudio/trends/databrowser/preferences/messages.properties=8859_1
 encoding//src/org/csstudio/trends/databrowser/sampleview/messages.properties=8859_1
 encoding//src/org/csstudio/util/editor/messages.properties=8859_1
-encoding//src/org/csstudio/util/swt/messages.properties=8859_1
 encoding//src/org/csstudio/util/wizard/messages.properties=8859_1

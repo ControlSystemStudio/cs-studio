@@ -25,14 +25,17 @@ public class AutoSizeControlListener
 	private Composite container;
 	private Table table;
 
-	@SuppressWarnings("nls")
-    public AutoSizeControlListener(Composite container, Table table)
+    /** Constructor.
+     *  @param container Typically the Parent of the table
+     *  @param table The table to resize automatically
+     */
+	public AutoSizeControlListener(Composite container, Table table)
 	{
 		this.container = container;
 		this.table = table;
 		for (int i = 0; i < table.getColumnCount(); ++i)
 			if (!(table.getColumn(i).getData() instanceof AutoSizeColumn))
-				throw new Error("Column " + i + " has invalid data type");
+				throw new Error("Column " + i + " has invalid data type");  //$NON-NLS-1$//$NON-NLS-2$
 		// Listen to container resize ...
 		container.addControlListener(this);
 		// .. until the table gets removed.

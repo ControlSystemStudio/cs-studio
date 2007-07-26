@@ -111,9 +111,9 @@ public class Plugin extends AbstractCssUiPlugin
         // ... otherwise, this is an SWT-only test without the plugin:
         try
         {
-            Display display = Display.getCurrent();
-            Image img = new Image(display, path);        
-            return ImageDescriptor.createFromImage(img, display);
+            final Display display = Display.getCurrent();
+            final Image img = new Image(display, path);        
+            return ImageDescriptor.createFromImage(img);
         }
         catch (Exception e)
         {
