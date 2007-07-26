@@ -91,9 +91,10 @@ public class ValuesRequest
 	}
 
 	/** @see org.csstudio.archive.channelarchiver.ClientRequest#read() */
+    @SuppressWarnings("unchecked")
     public void read(XmlRpcClient xmlrpc) throws Exception
 	{
-		Vector result;
+		Vector<Object> result;
 		try
 		{
 			final Vector<Object> params = new Vector<Object>(8);
@@ -105,7 +106,7 @@ public class ValuesRequest
 			params.add(new Integer((int)end.nanoseconds()));
             params.add(parms[0]);
 			params.add(new Integer(how));
-			result = (Vector)xmlrpc.execute("archiver.values", params);
+			result = (Vector<Object>) xmlrpc.execute("archiver.values", params);
 		}
 		catch (XmlRpcException e)
 		{
@@ -117,7 +118,8 @@ public class ValuesRequest
 		archived_samples = new ArchiveValues[num_returned_channels];
 		for (int channel_idx=0; channel_idx<num_returned_channels; ++channel_idx)
 		{
-			final Hashtable channel_data = (Hashtable) result.get(channel_idx);
+			final Hashtable<String, Object> channel_data =
+			    (Hashtable<String, Object>) result.get(channel_idx);
             final String name = (String)channel_data.get("name");
             final int type = (Integer)channel_data.get("type");
             final int count = (Integer)channel_data.get("count");
@@ -140,7 +142,8 @@ public class ValuesRequest
 	}
 
 	/** Parse the MetaData from the received XML-RPC response. */
-	private IMetaData decodeMetaData(int value_type, Hashtable meta_hash)
+	@SuppressWarnings("unchecked")
+    private IMetaData decodeMetaData(int value_type, Hashtable meta_hash)
 		throws Exception
 	{
 		// meta := { int32 type;  
@@ -190,7 +193,8 @@ public class ValuesRequest
 	}
 
 	/** Parse the values from the received XML-RPC response. */
-	private IValue [] decodeValues(int type, int count, IMetaData meta,
+	@SuppressWarnings("unchecked")
+    private IValue [] decodeValues(int type, int count, IMetaData meta,
 			                      Vector value_vec) throws Exception
 	{
         // values := { int32 stat,  int32 sevr,

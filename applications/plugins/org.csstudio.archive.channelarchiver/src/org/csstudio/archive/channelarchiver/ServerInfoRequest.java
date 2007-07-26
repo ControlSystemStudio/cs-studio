@@ -20,13 +20,15 @@ final class ServerInfoRequest
 	private Hashtable<Integer, SeverityImpl> severities;
 
 	/** Read info from data server */
+    @SuppressWarnings("unchecked")
     public void read(XmlRpcClient xmlrpc) throws Exception
 	{
-		Hashtable result;
+		Hashtable<String, Object> result;
 		try
 		{
-			Vector params = new Vector();
-			result = (Hashtable)xmlrpc.execute("archiver.info", params);
+			final Vector<Object> params = new Vector<Object>();
+			result = (Hashtable<String, Object>)
+			    xmlrpc.execute("archiver.info", params);
 		}
 		catch (XmlRpcException e)
 		{

@@ -14,8 +14,8 @@ import org.csstudio.platform.data.TimestampFactory;
 @SuppressWarnings("nls")
 public class NamesRequest
 {
-	private final int key;
-	private final String pattern;
+	final private int key;
+	final private String pattern;
 	private NameInfo names[];
 	
 	/** Create a name lookup.
@@ -28,15 +28,16 @@ public class NamesRequest
 	}
 
 	/** Read info from data server */
-	public void read(XmlRpcClient xmlrpc) throws Exception
+	@SuppressWarnings("unchecked")
+    public void read(XmlRpcClient xmlrpc) throws Exception
 	{
-		Vector result;
+		Vector<?> result;
 		try
 		{
-			Vector<Object> params = new Vector<Object>();
+			final Vector<Object> params = new Vector<Object>();
 			params.add(new Integer(key));
 			params.add(pattern);
-			result = (Vector) xmlrpc.execute("archiver.names", params);
+			result = (Vector<?>) xmlrpc.execute("archiver.names", params);
 		}
 		catch (XmlRpcException e)
 		{
@@ -50,7 +51,8 @@ public class NamesRequest
 		names = new NameInfo[result.size()];
 		for (int i=0; i<result.size(); ++i)
 		{
-			Hashtable entry = (Hashtable) result.get(i);
+			final Hashtable<String, Object> entry =
+			    (Hashtable<String, Object>) result.get(i);
             ITimestamp start = TimestampFactory.createTimestamp(
                             (Integer) entry.get("start_sec"),
                             (Integer) entry.get("start_nano"));

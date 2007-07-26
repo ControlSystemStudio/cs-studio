@@ -15,14 +15,14 @@ public class ArchivesRequest
 	private ArchiveInfo archive_infos[];
 
 	/** Read info from data server */
-	@SuppressWarnings("nls")
+	@SuppressWarnings({ "nls", "unchecked" })
     public void read(XmlRpcClient xmlrpc) throws Exception
 	{
-		Vector result;
+		Vector<?> result;
 		try
 		{
-			Vector params = new Vector();
-			result = (Vector) xmlrpc.execute("archiver.archives", params);
+			final Vector<Object> params = new Vector<Object>();
+			result = (Vector<?>) xmlrpc.execute("archiver.archives", params);
 		}
 		catch (XmlRpcException e)
 		{
@@ -35,7 +35,8 @@ public class ArchivesRequest
         archive_infos = new ArchiveInfo[result.size()];
 		for (int i=0; i<result.size(); ++i)
 		{
-			Hashtable info = (Hashtable) result.get(i);
+			final Hashtable<String,Object> info =
+			    (Hashtable<String,Object>) result.get(i);
             archive_infos[i] = 
                 new org.csstudio.archive.channelarchiver.ArchiveInfoImpl(
 				(Integer) info.get("key"),
