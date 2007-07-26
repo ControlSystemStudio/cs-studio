@@ -104,8 +104,7 @@ public class DOMHelper
             Node text_node = n.getFirstChild();
             if (text_node == null)
                 return "";
-            else
-                return text_node.getNodeValue();
+            return text_node.getNodeValue();
         }
         return "";
     }    
