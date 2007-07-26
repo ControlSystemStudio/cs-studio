@@ -24,13 +24,13 @@ package org.csstudio.sds.components.ui.internal.figures;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractBorder;
-import org.eclipse.draw2d.Border;
-import org.eclipse.draw2d.ButtonBorder;
-import org.eclipse.draw2d.FocusBorder;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.SchemeBorder;
-import org.eclipse.draw2d.SimpleEtchedBorder;
+import org.eclipse.draw2d.SchemeBorder.Scheme;
+import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 
 /**
@@ -102,16 +102,112 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 	 */
 	private void refreshBorder() {
 		if (_borderWidth > 0) {
-			LineBorder border = new LineBorder();
-
-			border.setWidth(_borderWidth);
-			border.setColor(_borderColor);
-			// TODO: Vary Border Style !
+			AbstractBorder border;
+			switch (_borderStyle) {
+				case 0 : border = this.createLineBorder(); break;
+				case 1 : border = this.createSchemeBorder(); break;
+				case 2 : border = this.createStriatedBorder(); break;
+				default : border = this.createLineBorder(); break;
+			}
 			_figure.setBorder(border);
 			_figure.repaint();
 		} else {
 			_figure.setBorder(null);
 		}
+	}
+	
+	/**
+	 * Creates a LineBorder.
+	 * @return AbstractBorder
+	 * 			The requested Border
+	 */
+	private AbstractBorder createLineBorder() {
+		LineBorder border = new LineBorder();
+		border.setWidth(_borderWidth);
+		border.setColor(_borderColor);
+		return border;
+	}
+	
+	/**
+	 * Creates a SchemeBorder.
+	 * @return AbstractBorder
+	 * 			The requested Border
+	 */
+	private AbstractBorder createSchemeBorder() {
+		SchemeBorder border = new SchemeBorder(new Scheme(new Color[] {_borderColor}));
+		return border;
+	}
+	
+	/**
+	 * Creates a StriatedBorder.
+	 * @return AbstractBorder
+	 * 			The requested Border
+	 */
+	private AbstractBorder createStriatedBorder() {
+		StriatedBorder border = new StriatedBorder(_borderWidth);
+		return border;
+	}
+	
+	/**
+	 * A striated Border.
+	 * @author Kai Meyer
+	 */
+	private final class StriatedBorder extends AbstractBorder {
+		
+		/**
+		 * The insets for this Border.
+		 */
+		private Insets _insets;
+		/**
+		 * The Width of the Border
+		 */
+		private int _borderWidth;
+		
+		/**
+		 * Constructor.
+		 * @param borderWidth
+		 * 		The width of the Border
+		 */
+		public StriatedBorder(final int borderWidth) {
+			_insets = new Insets(borderWidth);
+			_borderWidth = borderWidth;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Insets getInsets(IFigure figure) {
+			return _insets;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void paint(IFigure figure, Graphics graphics, Insets insets) {
+			Rectangle bounds = figure.getBounds();
+			graphics.setForegroundColor(CustomMediaFactory.getInstance().getColor(255, 0, 0));
+			graphics.setBackgroundColor(CustomMediaFactory.getInstance().getColor(255, 0, 0));
+			//System.out.println("StriatedBorder.paint() X: "+bounds.x+" Y:"+bounds.y+" Width: "+_borderWidth+" Height: "+_borderWidth);
+			int xPos = bounds.x;
+			while (xPos+_borderWidth<bounds.x+bounds.width) {
+				Rectangle rec = new Rectangle(xPos,bounds.y, _borderWidth, _borderWidth);
+				graphics.fillRectangle(rec);
+				rec = new Rectangle(xPos,bounds.y+bounds.height-_borderWidth, _borderWidth, _borderWidth);
+				graphics.fillRectangle(rec);
+				xPos = xPos + 2*_borderWidth;
+			}
+			int yPos = bounds.y;
+			while (yPos+_borderWidth<bounds.y+bounds.height) {
+				Rectangle rec = new Rectangle(bounds.x, yPos, _borderWidth, _borderWidth);
+				graphics.fillRectangle(rec);
+				rec = new Rectangle(bounds.x+bounds.width-_borderWidth, yPos, _borderWidth, _borderWidth);
+				graphics.fillRectangle(rec);
+				yPos = yPos + 2*_borderWidth;
+			}
+			Rectangle rec = new Rectangle(bounds.x+bounds.width-_borderWidth,bounds.y+bounds.height-_borderWidth, _borderWidth, _borderWidth);
+			graphics.fillRectangle(rec);
+		}
+		
 	}
 
 }
