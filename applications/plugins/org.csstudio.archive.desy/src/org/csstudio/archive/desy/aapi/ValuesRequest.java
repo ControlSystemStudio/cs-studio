@@ -73,7 +73,14 @@ public class ValuesRequest implements ClientRequest
         input.setU_to((int) this.end.nanoseconds());
         if (parms.length == 1  &&  parms[0] instanceof Integer)
             input.setNum(((Integer)parms[0]).intValue());
-    
+        else if (parms.length == 1  &&  parms[0] instanceof Double) {
+        	double binSize= ((Double) parms[0]).doubleValue();
+        	ITimestamp from = TimestampFactory.createTimestamp(this.start.seconds(),this.start.nanoseconds());
+        	ITimestamp to   = TimestampFactory.createTimestamp(this.end.seconds(),  this.end.nanoseconds());
+        	int numOfBeans=  (int) ( (to.toDouble() - from.toDouble())/ binSize   ); ;
+        	input.setNum(numOfBeans);
+        } else throw new Exception("read(AAPI aapi): bad parms");
+       
         input.setConversionTag(this.how );
         /*
          * This is temporary solution for SPLINE<->AVERAGE permutate
@@ -105,6 +112,7 @@ public class ValuesRequest implements ClientRequest
 			int type = TYPE_DOUBLE; //  TODO answerClass.getType(); AAPI return only Double
 			int count = 1; // do not use WF answerClass.getCount();
 			int num_samples=answerClass.getCount();
+			if (this.how == AAPI.MIN_MAX_AVERAGE_METHOD)  num_samples /= 3;  // Triplet min/max/average
 			IValue samples[]= new IValue[num_samples];
 			INumericMetaData meta = ValueFactory.createNumericMetaData(
                                                 answerClass.getDisplayLow(),
@@ -114,28 +122,59 @@ public class ValuesRequest implements ClientRequest
                                                 answerClass.getLowAlarm(),
                             					answerClass.getHighAlarm(),
                             					answerClass.getPrecision(),
-                                                answerClass.getEgu());	
-			for (int si=0; si<num_samples; si++) {
-				long secs = answerClass.getTime()[si];
-				long nano = answerClass.getUtime()[si];
-				ITimestamp time = TimestampFactory.createTimestamp(secs, nano);
-				int stat = answerClass.getStatus()[si];
-				int sevr = answerClass.getStatus()[si];
-				if((stat<0)||(stat>AAPI.alarmStatusString.length-1)) stat=AAPI.alarmStatusString.length-1;
-				if((sevr<0)||(sevr>AAPI.severityList.length -1))     sevr=AAPI.severityList.length -1;
-
-				//Changed 23.1.07
-				//	Severity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],false,false);
-				ISeverity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],true,true);
+                                                answerClass.getEgu());
 			
-				double values[] = new double[count]; // count=1
-			    for (int vi=0; vi<count; ++vi) values[vi] = answerClass.getData()[si];
-				samples[si] = ValueFactory.createDoubleValue(time,
-                                sevClass,
-                                AAPI.alarmStatusString[stat],
-                                meta,
-                                IValue.Quality.Original,
-                                values);
+			if (this.how == AAPI.MIN_MAX_AVERAGE_METHOD) {		//'MIN_MAX_AVERAGE'	
+				for (int si=0; si<num_samples; si++) {
+					long secs = answerClass.getTime()[3*si+2];
+					long nano = answerClass.getUtime()[3*si+2];
+					ITimestamp time = TimestampFactory.createTimestamp(secs, nano);
+					int stat = answerClass.getStatus()[3*si+2];
+					int sevr = answerClass.getStatus()[3*si+2];
+					if((stat<0)||(stat>AAPI.alarmStatusString.length-1)) stat=AAPI.alarmStatusString.length-1;
+					if((sevr<0)||(sevr>AAPI.severityList.length -1))     sevr=AAPI.severityList.length -1;
+					ISeverity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],true,true);
+				
+					double values[] = new double[count]; // count=1
+				    for (int vi=0; vi<count; ++vi) values[vi] = answerClass.getData()[3*si+2];
+				    final double min = answerClass.getData()[3*si];
+                    final double max = answerClass.getData()[3*si+1];
+                    if ( max > min) {
+                    	samples[si] = ValueFactory.createMinMaxDoubleValue(time,sevClass,
+                    			AAPI.alarmStatusString[stat],meta,IValue.Quality.Interpolated,
+                    			values, min, max);
+                    }else if ( max == min) {
+                    	samples[si] = ValueFactory.createDoubleValue(time, sevClass, 
+                    			AAPI.alarmStatusString[stat],meta,IValue.Quality.Original, 
+                    			values);
+					} else {
+						System.out.println("read(AAPI aapi): min >max ("+min+","+max+")");
+						throw new Exception("read(AAPI aapi): min >max ("+min+","+max+")"  );					
+					}
+				}
+			}else { // not 'MIN_MAX_AVERAGE'
+				for (int si=0; si<num_samples; si++) {
+					long secs = answerClass.getTime()[si];
+					long nano = answerClass.getUtime()[si];
+					ITimestamp time = TimestampFactory.createTimestamp(secs, nano);
+					int stat = answerClass.getStatus()[si];
+					int sevr = answerClass.getStatus()[si];
+					if((stat<0)||(stat>AAPI.alarmStatusString.length-1)) stat=AAPI.alarmStatusString.length-1;
+					if((sevr<0)||(sevr>AAPI.severityList.length -1))     sevr=AAPI.severityList.length -1;
+	
+					//Changed 23.1.07
+					//	Severity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],false,false);
+					ISeverity sevClass= new SeverityImpl(AAPI.alarmStatusString[sevr],true,true);
+				
+					double values[] = new double[count]; // count=1
+				    for (int vi=0; vi<count; ++vi) values[vi] = answerClass.getData()[si];
+					samples[si] = ValueFactory.createDoubleValue(time,
+	                                sevClass,
+	                                AAPI.alarmStatusString[stat],
+	                                meta,
+	                                IValue.Quality.Original,
+	                                values);	
+				}
 			}
 			archived_samples[COUNT] =
 				new ArchiveValues(server, strArray[0], samples );

@@ -155,22 +155,13 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 	@Override
 	public String getURL() {
 		// TODO Auto-generated method stub
-		return "aapi://krynfs.desy.de:4053";
+		return "aapi://" + AAPIhost + ":" + AAPIport;
 	}
 	
      int getRequestCode(String request_name) throws Exception
 	 {
-		if (request_name == "AVERAGE") {
-			return AAPI.AVERAGE_M;
-		} else if (request_name == "RAW") {
-			return AAPI.NO_FILTERING_M;
-		} else if (request_name == "MIN_MAX_AVERAGE") {
-			return AAPI.MIN_MAX_AVERAGE_M;
-		} else if (request_name == "SHARP") {
-			return AAPI.SHARP_M;
-		} else if (request_name == "SPLINE") {
-			return AAPI.SPLINE_M;
-		}  
-		return 1;
-	}
+    	 if( request_name.equalsIgnoreCase("AVERAGE") ) return AAPI.MIN_MAX_AVERAGE_M;
+    	 return AAPI.NO_FILTERING_M;
+  	}
+
 }
