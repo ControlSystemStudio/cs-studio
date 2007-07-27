@@ -122,9 +122,6 @@ public class SampleView extends PlotAwareView
         makeContextMenu();
         // Drag and Drop
         new ProcessVariableWithSamplesDragSource(table_viewer.getControl(), table_viewer);
-        
-        // Invoke PlotAwareView's createPartControl to enable updateModel()
-        super.createPartControl(parent);
     }
 
     /** Set the initial focus. */

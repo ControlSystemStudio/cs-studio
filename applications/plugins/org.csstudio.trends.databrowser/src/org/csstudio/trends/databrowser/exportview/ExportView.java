@@ -377,9 +377,6 @@ public class ExportView extends PlotAwareView
         format = IValue.Format.Default;
         format_spreadsheet.setSelection(true);
         format_severity.setSelection(true);
-        
-        // Enable updateModel() notification:
-        super.createPartControl(parent);
     }
     
     /** Set the initial focus. */

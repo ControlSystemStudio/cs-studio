@@ -311,8 +311,6 @@ public class ConfigView extends PlotAwareView
                         addArchive(item, archive);
             }
         };
-
-        super.createPartControl(parent);
      }
     
     /** Create one tab of the TabFolder GUI. */
