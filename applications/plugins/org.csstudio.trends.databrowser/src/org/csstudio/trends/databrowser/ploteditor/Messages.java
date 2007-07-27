@@ -12,6 +12,7 @@ public class Messages extends NLS
     public static String OpenPerspective;
     public static String OpenSampleView;
     public static String OpenExportView;
+    public static String OpenWaveformView;
     public static String SaveBrowserConfig;
     
     static

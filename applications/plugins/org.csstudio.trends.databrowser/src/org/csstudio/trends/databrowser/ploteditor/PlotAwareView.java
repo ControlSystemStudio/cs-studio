@@ -48,14 +48,15 @@ public abstract class PlotAwareView extends ViewPart
         return editor.getModel();
     }
     
-    /** Create the GUI elements.
-     *  <p>
-     *  <b>Derived classes must invoke this method</b> to hook into the
+    /** Derived classes use doCreatePartControl,
+     *  called by this method, which then hooks into the
      *  part listener which then tracks the current plot editor.
      */
     @Override
-    public void createPartControl(Composite parent)
+    final public void createPartControl(final Composite parent)
     {
+        doCreatePartControl(parent);
+        
         // Listen to the current 'part', react if it's a PlotEditor
         part_listener = new IPartListener2()
         {
@@ -103,6 +104,9 @@ public abstract class PlotAwareView extends ViewPart
         else
             updateEditor(null);
     }
+
+    /** Replaces createPartControl() for PlotAwareView */
+    abstract protected void doCreatePartControl(Composite parent);
 
     /** Remove this view from the list of part listeners.
      *  <p>

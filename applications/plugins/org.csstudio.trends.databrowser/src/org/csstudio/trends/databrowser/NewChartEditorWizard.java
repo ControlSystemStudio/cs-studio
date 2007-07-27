@@ -9,12 +9,13 @@ import org.csstudio.util.wizard.NewFileWizard;
  */
 public class NewChartEditorWizard extends NewFileWizard
 {
+    @SuppressWarnings("nls")
     public NewChartEditorWizard()
     {
         super(Plugin.getDefault(),
               PlotEditor.ID,
             Messages.DataBrowser,
-            "data." + Plugin.FileExtension, //$NON-NLS-1$
+            "data." + Plugin.FileExtension,
             Plugin.FileExtension,
             new Model().getXMLContent());
     }

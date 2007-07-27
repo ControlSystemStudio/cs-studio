@@ -10,17 +10,31 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class OpenViewAction extends Action
 {
-    private IWorkbenchPage page;
-    private String ID;
+    final private IWorkbenchPage page;
+    final private String ID;
     
     /** Construct the action for opening a view.
      *  @param part The parent part from which we get the 'page'.
      *  @param name Name to use for the action.
      *  @param ID The ID of the View to open.
      */
-    public OpenViewAction(IWorkbenchPart part, String name, String ID)
+    public OpenViewAction(final IWorkbenchPart part,
+                          final String name, final String ID)
     {
-        super(name, Plugin.getImageDescriptor("icons/chart.gif")); //$NON-NLS-1$
+        this(part, name, "icons/chart.gif", ID); //$NON-NLS-1$
+    }
+
+    /** Construct the action for opening a view.
+     *  @param part The parent part from which we get the 'page'.
+     *  @param name Name to use for the action.
+     *  @param ID The ID of the View to open.
+     */
+    public OpenViewAction(final IWorkbenchPart part,
+                          final String name,
+                          final String icon,
+                          final String ID)
+    {
+        super(name, Plugin.getImageDescriptor(icon));
         page = part.getSite().getPage();
         this.ID = ID;
     }

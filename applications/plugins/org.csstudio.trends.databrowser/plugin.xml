@@ -68,7 +68,7 @@
             category="org.csstudio"
             id="org.csstudio.trends.databrowser.exportview.ExportView"
             class="org.csstudio.trends.databrowser.exportview.ExportView"
-            icon="icons/chart.gif"
+            icon="icons/export.gif"
             name="%DatabrowserExport"/>
       <view
             allowMultiple="true"
@@ -77,6 +77,13 @@
             icon="icons/chart.gif"
             id="org.csstudio.trends.databrowser.plotview.PlotView"
             name="%DatabrowserPlotView"/>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.trends.databrowser.waveformview.WaveformView"
+            icon="icons/wavesample.gif"
+            id="org.csstudio.trends.databrowser.waveformview.WaveformView"
+            name="%DatabrowserWaveform">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">

@@ -56,9 +56,9 @@ public class ExportView extends PlotAwareView
     private ExportJob.Source source;
     private IValue.Format format;
     
-    /** Create the GUI elements. */
+    /** {@inheritDoc} */
     @Override
-    public void createPartControl(Composite parent)
+    protected void doCreatePartControl(Composite parent)
     {
         shell = parent.getShell();
         final GridLayout layout = new GridLayout();

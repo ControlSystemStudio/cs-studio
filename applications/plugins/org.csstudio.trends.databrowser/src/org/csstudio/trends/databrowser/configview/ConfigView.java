@@ -218,9 +218,9 @@ public class ConfigView extends PlotAwareView
         return archives;
     }
     
-    /** Create the GUI elements. */
+    /** {@inheritDoc} */
     @Override
-    public void createPartControl(Composite parent)
+    protected void doCreatePartControl(Composite parent)
     {
         // Create the GUI Elements
         Composite scroll = ScrolledContainerHelper.create(parent, 200, 200);

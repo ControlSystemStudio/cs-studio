@@ -45,9 +45,9 @@ public class SampleView extends PlotAwareView
     private TableViewer table_viewer;
     private TableModel table_model = null;
     
-    /** Create the GUI elements. */
+    /** {@inheritDoc} */
     @Override
-    public void createPartControl(Composite parent)
+    protected void doCreatePartControl(final Composite parent)
     {
         GridLayout layout = new GridLayout();
         layout.numColumns = 3;
@@ -140,29 +140,28 @@ public class SampleView extends PlotAwareView
         return table_model;
     }
 
-    // @see PlotAwareView
+    /** {@inheritDoc} */
     @Override
     protected void updateModel(final Model old_model, final Model new_model)
     {
-        final boolean change = old_model != new_model;
-        model = new_model;
         if (model == null)
         {   // Clear everyting
+            model = null;
             pv_name.setText(Messages.NoPlot);
             pv_name.setEnabled(false);
             selectPV(null);
             return;
         }
-        if (change)
-        {
-            // Display PV names of new model
-            final String pvs[] = new String[model.getNumItems()];
-            for (int i=0; i<pvs.length; ++i)
-                pvs[i] = model.getItem(i).getName();
-            pv_name.setItems(pvs);
-            pv_name.setEnabled(true);
-            selectPV(null);
-        }
+        if (new_model == model)
+            return; // No change
+        // Display PV names of new model
+        model = new_model;
+        final String pvs[] = new String[model.getNumItems()];
+        for (int i=0; i<pvs.length; ++i)
+            pvs[i] = model.getItem(i).getName();
+        pv_name.setItems(pvs);
+        pv_name.setEnabled(true);
+        selectPV(null);
     }
 
     /** A PV name was entered or selected.

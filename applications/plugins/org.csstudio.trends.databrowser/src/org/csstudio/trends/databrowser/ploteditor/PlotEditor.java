@@ -17,6 +17,7 @@ import org.csstudio.trends.databrowser.plotpart.PlotPart;
 import org.csstudio.trends.databrowser.plotpart.RemoveMarkersAction;
 import org.csstudio.trends.databrowser.plotpart.RemoveSelectedMarkersAction;
 import org.csstudio.trends.databrowser.sampleview.SampleView;
+import org.csstudio.trends.databrowser.waveformview.WaveformView;
 import org.csstudio.util.editor.EmptyEditorInput;
 import org.csstudio.util.editor.PromptForNewXMLFileDialog;
 import org.eclipse.core.resources.IFile;
@@ -54,7 +55,8 @@ public class PlotEditor extends EditorPart
     private Action remove_markers_action;
     private RemoveSelectedMarkersAction remove_marker_action;
     private Action add_action;
-    private Action config_action, archive_action, sample_action, export_action;
+    private Action config_action, archive_action, sample_action;
+    private Action waveform_action, export_action;
     private Action button_bar_action;
     private Action save_current_image_action;
     private Action view_action, perspective_action;
@@ -301,7 +303,10 @@ public class PlotEditor extends EditorPart
         config_action = new OpenViewAction(this, Messages.OpenConfigView, ConfigView.ID);
         archive_action = new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID);
         sample_action = new OpenViewAction(this, Messages.OpenSampleView, SampleView.ID);
-        export_action = new OpenViewAction(this, Messages.OpenExportView, ExportView.ID);
+        waveform_action = new OpenViewAction(this, Messages.OpenWaveformView,
+                                             WaveformView.ID);
+        export_action = new OpenViewAction(this, Messages.OpenExportView,
+                                           "icons/export.gif", ExportView.ID); //$NON-NLS-1$
         view_action = new OpenPlotEditorAsViewAction(this);
         perspective_action = new OpenPerspectiveAction(Messages.OpenPerspective, Perspective.ID);
     }
@@ -319,6 +324,7 @@ public class PlotEditor extends EditorPart
         context_menu.add(archive_action);
         context_menu.add(sample_action);
         context_menu.add(export_action);
+        // TODO context_menu.add(waveform_action);
         context_menu.add(new Separator());
         context_menu.add(save_current_image_action);
         context_menu.add(new Separator());
