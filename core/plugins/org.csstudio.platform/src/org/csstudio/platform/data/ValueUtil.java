@@ -83,7 +83,7 @@ public class ValueUtil
      *  while <code>getDouble()</code> will return <code>NaN</code>.
      *  
      *  @param value The value to decode.
-     *  @return The info string. May be <code>null</code>!
+     *  @return The info string, never <code>null</code>.
      */
     public static String getInfo(IValue value)
     {
@@ -103,6 +103,8 @@ public class ValueUtil
                 return val_txt;
             return info + Messages.SevrStatSeparator + val_txt;
         }
+        if (info == null)
+            return ""; //$NON-NLS-1$
         return info;
     }
     
