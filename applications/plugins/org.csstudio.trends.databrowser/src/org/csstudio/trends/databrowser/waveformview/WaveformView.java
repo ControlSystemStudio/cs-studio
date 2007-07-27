@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.waveformview;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequenceContainer;
@@ -13,6 +14,7 @@ import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IModelSamples;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelSample;
+import org.csstudio.trends.databrowser.model.QualityHelper;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.sampleview.Messages;
 import org.eclipse.jface.action.Action;
@@ -29,6 +31,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 
 /** View for inspecting Waveform (Array) Samples
@@ -51,6 +54,14 @@ public class WaveformView extends PlotAwareView
     /** Selected model item in model, or <code>null</code> */
     private IModelItem model_item = null;
 
+    private Text timestamp;
+
+    private Text status;
+
+    private Text quality;
+
+    private Text source;
+
     /** {@inheritDoc} */
     @Override
     protected void doCreatePartControl(final Composite parent)
@@ -63,7 +74,7 @@ public class WaveformView extends PlotAwareView
     private void createGUI(final Composite parent)
     {
         GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
+        layout.numColumns = 4;
         parent.setLayout(layout);
         GridData gd;
         
@@ -71,10 +82,10 @@ public class WaveformView extends PlotAwareView
         // =====================
         // ======= Plot ========
         // =====================
-        // Sample: 42  +-
-        // Timestamp: __________
-        // Status:    __________
-        // Source:    __________
+        // <<<<<< Slider >>>>>>
+        // Timestamp:    __________ Sample: 42  +-
+        // Sevr./Status: __________ Quality: _________
+        // Source :      __________
         
         Label l = new Label(parent, 0);
         l.setText("UNDER CONSTRUCTION...");
@@ -92,6 +103,7 @@ public class WaveformView extends PlotAwareView
         pv_name = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
         pv_name.setToolTipText("Select PV");
         gd = new GridData();
+        gd.horizontalSpan = layout.numColumns - 1;
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         pv_name.setLayoutData(gd);
@@ -110,7 +122,7 @@ public class WaveformView extends PlotAwareView
         // New Row
         plot = new InteractiveChart(parent, Chart.USE_TRACE_NAMES);
         gd = new GridData();
-        gd.horizontalSpan = 2;
+        gd.horizontalSpan = layout.numColumns;
         gd.grabExcessHorizontalSpace = true;
         gd.grabExcessVerticalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -119,6 +131,16 @@ public class WaveformView extends PlotAwareView
         plot.getChart().getXAxis().setLabel("Waveform Element");
 
         // New Row
+        l = new Label(parent, 0);
+        l.setText("Timestamp:");
+        l.setLayoutData(new GridData());
+
+        timestamp = new Text(parent, SWT.READ_ONLY);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        timestamp.setLayoutData(gd);
+        
         l = new Label(parent, 0);
         l.setText("Sample:");
         l.setLayoutData(new GridData());
@@ -138,7 +160,37 @@ public class WaveformView extends PlotAwareView
                 showSelectedSample();
             }
         });
+        
         // New Row
+        l = new Label(parent, 0);
+        l.setText("Sevr./Status:");
+        l.setLayoutData(new GridData());
+
+        status = new Text(parent, SWT.READ_ONLY);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        status.setLayoutData(gd);
+
+        l = new Label(parent, 0);
+        l.setText("Quality:");
+        l.setLayoutData(new GridData());
+
+        quality = new Text(parent, SWT.READ_ONLY);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        quality.setLayoutData(gd);
+
+        l = new Label(parent, 0);
+        l.setText("Source:");
+        l.setLayoutData(new GridData());
+
+        source = new Text(parent, SWT.READ_ONLY);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        source.setLayoutData(gd);
     }
 
     /** Add context menu to plot */
@@ -226,7 +278,10 @@ public class WaveformView extends PlotAwareView
         
         // Anything to show?
         if (model_item == null)
+        {
+            clearInfo();
             return;
+        }
         
         // Get selected sample (= one waveform)
         final IModelSamples samples = model_item.getSamples();
@@ -236,6 +291,11 @@ public class WaveformView extends PlotAwareView
             sample_index.setMaximum(samples.size());
             final int idx = sample_index.getSelection();
             sample = samples.get(idx);
+        }
+        if (sample == null)
+        {
+            clearInfo();
+            return;
         }
         // Convert the waveform into a series for the trace
         ChartSampleSequenceContainer series = new ChartSampleSequenceContainer();
@@ -253,10 +313,34 @@ public class WaveformView extends PlotAwareView
                 series.add(ChartSample.Type.Normal, i, val[i], sample.getInfo());
         }
         else
+        {
+            clearInfo();
             return;
+        }
         // Add to trace
         chart.addTrace(model_item.getName(),
                         series, model_item.getColor(), 1, 0, TraceType.Lines);
         chart.getXAxis().setValueRange(0, series.size());
+        updateInfo(sample);
+    }
+
+    /** Clear all the info fields. */
+    @SuppressWarnings("nls")
+    private void clearInfo()
+    {
+        timestamp.setText("");
+        status.setText("");
+        quality.setText("");
+        source.setText("");
+    }
+
+    /** Update info fields for given sample. */
+    private void updateInfo(final ModelSample sample)
+    {
+        final IValue value = sample.getSample();
+        timestamp.setText(value.getTime().toString());
+        status.setText(ValueUtil.getInfo(value));
+        quality.setText(QualityHelper.getString(value.getQuality()));
+        source.setText(sample.getSource());
     }
 }
