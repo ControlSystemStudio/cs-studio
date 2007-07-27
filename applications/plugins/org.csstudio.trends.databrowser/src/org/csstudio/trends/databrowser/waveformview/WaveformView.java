@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.IWorkbenchActionConstants;
 
 /** View for inspecting Waveform (Array) Samples
@@ -42,13 +43,13 @@ public class WaveformView extends PlotAwareView
     // GUI
     private Combo pv_name;
     private InteractiveChart plot;
+    private Spinner sample_index;
     
+    /** Model of the active editor, or <code>null</code> */
     private Model model = null;
     
-    public WaveformView()
-    {
-        // TODO Auto-generated constructor stub
-    }
+    /** Selected model item in model, or <code>null</code> */
+    private IModelItem model_item = null;
 
     /** {@inheritDoc} */
     @Override
@@ -71,6 +72,9 @@ public class WaveformView extends PlotAwareView
         // ======= Plot ========
         // =====================
         // Sample: 42  +-
+        // Timestamp: __________
+        // Status:    __________
+        // Source:    __________
         
         Label l = new Label(parent, 0);
         l.setText("UNDER CONSTRUCTION...");
@@ -113,6 +117,28 @@ public class WaveformView extends PlotAwareView
         gd.verticalAlignment = SWT.FILL;
         plot.setLayoutData(gd);
         plot.getChart().getXAxis().setLabel("Waveform Element");
+
+        // New Row
+        l = new Label(parent, 0);
+        l.setText("Sample:");
+        l.setLayoutData(new GridData());
+        
+        sample_index = new Spinner(parent, 0);
+        sample_index.setEnabled(false);
+        sample_index.setLayoutData(new GridData());
+        sample_index.addSelectionListener(new SelectionListener()
+        {
+            public void widgetDefaultSelected(SelectionEvent e)
+            {
+                showSelectedSample();
+            }
+
+            public void widgetSelected(SelectionEvent e)
+            {
+                showSelectedSample();
+            }
+        });
+        // New Row
     }
 
     /** Add context menu to plot */
@@ -159,52 +185,57 @@ public class WaveformView extends PlotAwareView
         selectPV(null);
     }
 
-    /** Display some sample of the given PV (or <code>null</code>). */
+    /** Select given PV name (or <code>null</code>). */
     private void selectPV(final String new_pv_name)
     {
-        if (new_pv_name == null)
+        if (new_pv_name != null)
         {
-            showValue(null, 0);
-            pv_name.setText(""); //$NON-NLS-1$
-            return;
-        }
-        for (int i=0; i<model.getNumItems(); ++i)
-        {
-            IModelItem item = model.getItem(i);
-            if (item.getName().equals(new_pv_name))
+            for (int i=0; i<model.getNumItems(); ++i)
             {
-                // TODO Get sample[i] of that pv
-                final int sample_index = 1;
-                showValue(item, sample_index);
-                return;
+                IModelItem item = model.getItem(i);
+                if (item.getName().equals(new_pv_name))
+                {
+                    setModelItem(item);
+                    return;
+                }
             }
         }
         // Invalid PV name, not in model
-        selectPV(null);
+        setModelItem(null);
+        pv_name.setText(""); //$NON-NLS-1$
     }
     
-    /** Display one sample
-     *  @param item Model item that has the sample
-     *  @param sample_index Index of the sample
+    /** Select model item; display one of its samples. */
+    private void setModelItem(IModelItem new_item)
+    {
+        model_item = new_item;
+        sample_index.setEnabled(model_item != null);
+        showSelectedSample();
+    }
+    
+    /** Show the current sample of the current model item.
+     *  <p>
+     *  Also handles the case where current model item is <code>null</code>.
      */
-    private void showValue(final IModelItem item, final int sample_index)
+    private void showSelectedSample()
     {
         // Delete all existing traces
         final Chart chart = plot.getChart();
         while (chart.getNumTraces() > 0)
             chart.removeTrace(0);
         
-        // Done?
-        if (item == null)
+        // Anything to show?
+        if (model_item == null)
             return;
-        // Get one sample (= one waveform)
-        final IModelSamples samples = item.getSamples();
+        
+        // Get selected sample (= one waveform)
+        final IModelSamples samples = model_item.getSamples();
         ModelSample sample;
         synchronized (samples)
         {
-            if (sample_index < 0  || sample_index >= samples.size())
-                return;
-            sample = samples.get(sample_index);
+            sample_index.setMaximum(samples.size());
+            final int idx = sample_index.getSelection();
+            sample = samples.get(idx);
         }
         // Convert the waveform into a series for the trace
         ChartSampleSequenceContainer series = new ChartSampleSequenceContainer();
@@ -224,8 +255,8 @@ public class WaveformView extends PlotAwareView
         else
             return;
         // Add to trace
-        chart.addTrace(item.getName(),
-                        series, item.getColor(), 1, 0, TraceType.Lines);
+        chart.addTrace(model_item.getName(),
+                        series, model_item.getColor(), 1, 0, TraceType.Lines);
         chart.getXAxis().setValueRange(0, series.size());
     }
 }
