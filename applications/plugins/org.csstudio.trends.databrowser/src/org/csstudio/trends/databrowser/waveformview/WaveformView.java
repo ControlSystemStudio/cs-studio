@@ -71,6 +71,8 @@ public class WaveformView extends PlotAwareView
         l.setText("UNDER CONSTRUCTION...");
         gd = new GridData();
         gd.horizontalSpan = layout.numColumns;
+        gd.horizontalAlignment = SWT.CENTER;
+        gd.grabExcessHorizontalSpace = true;
         l.setLayoutData(gd);
        
         // New Row
@@ -99,6 +101,7 @@ public class WaveformView extends PlotAwareView
         // New Row
         chart = new InteractiveChart(parent, Chart.USE_TRACE_NAMES);
         gd = new GridData();
+        gd.horizontalSpan = 2;
         gd.grabExcessHorizontalSpace = true;
         gd.grabExcessVerticalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -130,54 +133,54 @@ public class WaveformView extends PlotAwareView
     @Override
     protected void updateModel(final Model old_model, final Model new_model)
     {
-//        if (model == null)
-//        {   // Clear everyting
-//            model = null;
-//            pv_name.setText(Messages.NoPlot);
-//            pv_name.setEnabled(false);
-//            selectPV(null);
-//            return;
-//        }
-//        if (new_model == model)
-//            return; // No change
-//        // Display PV names of new model
-//        model = new_model;
-//        final String pvs[] = new String[model.getNumItems()];
-//        for (int i=0; i<pvs.length; ++i)
-//            pvs[i] = model.getItem(i).getName();
-//        pv_name.setItems(pvs);
-//        pv_name.setEnabled(true);
-//        selectPV(null);
+        if (new_model == null)
+        {   // Clear everyting
+            model = null;
+            pv_name.setText(Messages.NoPlot);
+            pv_name.setEnabled(false);
+            selectPV(null);
+            return;
+        }
+        if (new_model == model)
+            return; // No change
+        // Display PV names of new model
+        model = new_model;
+        final String pvs[] = new String[model.getNumItems()];
+        for (int i=0; i<pvs.length; ++i)
+            pvs[i] = model.getItem(i).getName();
+        pv_name.setItems(pvs);
+        pv_name.setEnabled(true);
+        selectPV(null);
     }
 
     private void selectPV(final String new_pv_name)
     {
-//        if (new_pv_name == null)
-//        {
-//            showValue(null);
-//            pv_name.setText(""); //$NON-NLS-1$
-//            return;
-//        }
-//        for (int i=0; i<model.getNumItems(); ++i)
-//        {
-//            IModelItem item = model.getItem(i);
-//            if (item.getName().equals(new_pv_name))
-//            {
-//                // TODO remove Fake Sample
-//                // TODO Get sample[i] of that pv
-//                final double val[] = new double[] { 1, 2, 4, 8, 12, 8, 4, 2, 1 };
-//                final IValue value = ValueFactory.createDoubleValue(
-//                                TimestampFactory.now(),
-//                                ValueFactory.createMinorSeverity(),
-//                                "Fake Sample",
-//                                null,
-//                                IValue.Quality.Interpolated, val);
-//                showValue(value);
-//                return;
-//            }
-//        }
-//        // Invalid PV name, not in model
-//        selectPV(null);
+        if (new_pv_name == null)
+        {
+            showValue(null);
+            pv_name.setText(""); //$NON-NLS-1$
+            return;
+        }
+        for (int i=0; i<model.getNumItems(); ++i)
+        {
+            IModelItem item = model.getItem(i);
+            if (item.getName().equals(new_pv_name))
+            {
+                // TODO remove Fake Sample
+                // TODO Get sample[i] of that pv
+                final double val[] = new double[] { 1, 2, 4, 8, 12, 8, 4, 2, 1 };
+                final IValue value = ValueFactory.createDoubleValue(
+                                TimestampFactory.now(),
+                                ValueFactory.createMinorSeverity(),
+                                "Fake Sample",
+                                null,
+                                IValue.Quality.Interpolated, val);
+                showValue(value);
+                return;
+            }
+        }
+        // Invalid PV name, not in model
+        selectPV(null);
     }
     
     private void showValue(final IValue value)

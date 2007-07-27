@@ -23,7 +23,7 @@ public class SaveCurrentImageAction extends Action
     public SaveCurrentImageAction(InteractiveChart chart)
     {
         super(Messages.SaveImage_ActionName,
-              Activator.getImageDescriptor("icons/chart.gif")); //$NON-NLS-1$
+              Activator.getImageDescriptor("icons/snapshot.gif")); //$NON-NLS-1$
         this.chart = chart;
         setToolTipText(Messages.SaveImage_ActionName_TT);
     }
