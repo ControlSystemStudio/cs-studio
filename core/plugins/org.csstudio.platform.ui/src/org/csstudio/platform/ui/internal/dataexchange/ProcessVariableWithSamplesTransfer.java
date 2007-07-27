@@ -468,7 +468,9 @@ public final class ProcessVariableWithSamplesTransfer extends ByteArrayTransfer 
                             values[i] = ValueFactory.createLongValue(time, severity, status, inmd, quality, lValues);
                             break;
                         case String:
-                            values[i] = ValueFactory.createStringValue(time, severity, status, quality,getString(readIn));
+                            // TODO doesn't handle array of Strings
+                            values[i] = ValueFactory.createStringValue(time, severity, status, quality,
+                                                                   new String[] { getString(readIn) });
                             break;
                         case Enumerated:
                             valueSize = readIn.readInt();

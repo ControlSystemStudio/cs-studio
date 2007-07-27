@@ -10,6 +10,14 @@ package org.csstudio.platform.data;
  */
 public interface IStringValue extends IValue
 {
-    /** @return Returns the String. */
+    /** @return Returns the whole array of values. */
+    public String[] getValues();
+
+    /** @return Returns the first array element.
+     *  <p>
+     *  Since most samples are probably scalars, this is a convenient
+     *  way to get that one and only element.
+     *  @see #getValues
+     */
     public String getValue();
 }

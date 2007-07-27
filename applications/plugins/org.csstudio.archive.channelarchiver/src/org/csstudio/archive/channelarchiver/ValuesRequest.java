@@ -254,9 +254,9 @@ public class ValuesRequest
 			}
 			else if (type == TYPE_STRING)
 			{
-				final String value = (String)vv.get(0);
+				final String values[] = new String[] { (String)vv.get(0) };
                 samples[si] = ValueFactory.createStringValue(time, sevr, stat,
-                                quality, value);
+                                quality, values);
 			}
 			else if (type == TYPE_INT)
 			{

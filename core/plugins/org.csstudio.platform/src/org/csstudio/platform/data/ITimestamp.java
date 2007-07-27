@@ -109,7 +109,7 @@ public interface ITimestamp extends Comparable<ITimestamp>
             }
             return Full;
         }
-    };
+    }
     
     /** Format time according to the FMT_... flag.
      *  @param how

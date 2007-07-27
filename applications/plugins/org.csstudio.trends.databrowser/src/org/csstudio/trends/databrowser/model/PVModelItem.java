@@ -329,7 +329,7 @@ public class PVModelItem
                             new_sample.getSeverity(),
                             new_sample.getStatus(),
                             quality,
-                            new_sample.format());
+                            ((IStringValue)new_sample).getValues());
         else
             Plugin.logError("ModelItem cannot update timestamp of type " //$NON-NLS-1$
                             + new_sample.getClass().getName());

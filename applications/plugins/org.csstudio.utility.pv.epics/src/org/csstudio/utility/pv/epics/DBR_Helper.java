@@ -254,7 +254,7 @@ public class DBR_Helper
                 v = dt.getStringValue();
             }
             return ValueFactory.createStringValue(time, severity,
-                                status, quality, v[0]);
+                                status, quality, v);
         }
         else if (dbr.isENUM())
         {

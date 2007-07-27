@@ -83,7 +83,7 @@ public interface IValue
          *  </ul>
          */
         Interpolated
-    };
+    }
 
     /** Get the quality of this value.
      *  @see Quality
@@ -111,7 +111,7 @@ public interface IValue
         
         /** If possible, use exponential notation. */
         Exponential
-    };
+    }
 
     /** Format the value as a string.
      *  <p>

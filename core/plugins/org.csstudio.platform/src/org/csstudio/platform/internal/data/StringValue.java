@@ -13,29 +13,46 @@ public class StringValue extends Value implements IStringValue
     // Slight inconsistency, because that's the way EPICS works right now:
     // There is no array of Strings as there would be arrays of
     // the other types, so we only handle a scalar string as well....
-	private final String value;
+	private final String values[];
 	
 	public StringValue(ITimestamp time, ISeverity severity, String status,
                        Quality quality,
-                        String value)
+                       String values[])
     {   // String has no meta data!
 		super(time, severity, status, null, quality);
-		this.value = value;
+		this.values = values;
+		if (values == null  ||  values.length < 1)
+		    throw new java.lang.IllegalArgumentException("Values"); //$NON-NLS-1$
 	}
+
+    /** {@inheritDoc} */
+    public final String[] getValues()
+    {
+        return values;
+    }
 
     /** {@inheritDoc} */
 	public final String getValue()
 	{
-		return value;
+		return values[0];
 	}
 	
     /** {@inheritDoc} */
 	@Override
     public final String format(Format how, int precision)
 	{
-		if (getSeverity().hasValue())
-            return value;
-		return Messages.NoValue;
+		if (getSeverity().hasValue() == false)
+	        return Messages.NoValue;
+		if (values.length == 1)
+            return values[0];
+		final StringBuffer result = new StringBuffer();
+        result.append(values[0]);
+        for (int i = 1; i < values.length; i++)
+        {
+            result.append(Messages.ArrayElementSeparator);
+            result.append(values[i]);
+        }
+        return result.toString();
 	}
 	
     /** {@inheritDoc} */
@@ -45,13 +62,13 @@ public class StringValue extends Value implements IStringValue
 		if (! (obj instanceof StringValue))
 			return false;
 		StringValue rhs = (StringValue) obj;
-		return rhs.value.equals(value) && super.equals(obj);
+		return rhs.values.equals(values) && super.equals(obj);
 	}
 
     /** {@inheritDoc} */
 	@Override
 	public final int hashCode()
 	{
-		return value.hashCode() + super.hashCode();
+		return values.hashCode() + super.hashCode();
 	}
 }

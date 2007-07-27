@@ -173,8 +173,8 @@ public class ValueFactory
     public static final IStringValue
         createStringValue(final ITimestamp time, final ISeverity severity,
                     final String status, final Quality quality,
-                    final String value)
+                    final String values[])
     {
-        return new StringValue(time, severity, status, quality, value);
+        return new StringValue(time, severity, status, quality, values);
     }
 }
