@@ -159,7 +159,7 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 		 */
 		private Insets _insets;
 		/**
-		 * The Width of the Border
+		 * The Width of the Border.
 		 */
 		private int _borderWidth;
 		
@@ -176,18 +176,17 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 		/**
 		 * {@inheritDoc}
 		 */
-		public Insets getInsets(IFigure figure) {
+		public Insets getInsets(final IFigure figure) {
 			return _insets;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public void paint(IFigure figure, Graphics graphics, Insets insets) {
+		public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
 			Rectangle bounds = figure.getBounds();
 			graphics.setForegroundColor(CustomMediaFactory.getInstance().getColor(255, 0, 0));
 			graphics.setBackgroundColor(CustomMediaFactory.getInstance().getColor(255, 0, 0));
-			//System.out.println("StriatedBorder.paint() X: "+bounds.x+" Y:"+bounds.y+" Width: "+_borderWidth+" Height: "+_borderWidth);
 			int xPos = bounds.x;
 			while (xPos+_borderWidth<bounds.x+bounds.width) {
 				Rectangle rec = new Rectangle(xPos,bounds.y, _borderWidth, _borderWidth);
