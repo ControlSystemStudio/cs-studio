@@ -141,7 +141,7 @@ public class SampleView extends PlotAwareView
     @Override
     protected void updateModel(final Model old_model, final Model new_model)
     {
-        if (model == null)
+        if (new_model == null)
         {   // Clear everyting
             model = null;
             pv_name.setText(Messages.NoPlot);
