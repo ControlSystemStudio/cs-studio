@@ -15,10 +15,11 @@ public class OpenPlotEditorAsViewAction extends Action
     /** Constructor
      *  @param editor The editor who's file to open as a view
      */
+    @SuppressWarnings("nls")
     public OpenPlotEditorAsViewAction(PlotEditor editor)
     {
         super(Messages.OpenAsView,
-              Plugin.getImageDescriptor("icons/chart.gif")); //$NON-NLS-1$
+              Plugin.getImageDescriptor("icons/chart.gif"));
         this.editor = editor;
     }
 

@@ -16,11 +16,11 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelSample;
 import org.csstudio.trends.databrowser.model.QualityHelper;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
-import org.csstudio.trends.databrowser.sampleview.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Slider;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 
@@ -43,24 +43,32 @@ public class WaveformView extends PlotAwareView
     final public static String ID = 
             "org.csstudio.trends.databrowser.waveformview.WaveformView"; //$NON-NLS-1$
     
-    // GUI
+    /** PV Name selector */
     private Combo pv_name;
+    
+    /** Plot */
     private InteractiveChart plot;
-    private Spinner sample_index;
+
+    /** Selector for current sample index. */
+    private Slider sample_index;
+    
+    /** Timestamp of current sample. */
+    private Text timestamp;
+
+    /** Status/severity of current sample. */
+    private Text status;
+
+    /** Quality of current sample. */
+    private Text quality;
+
+    /** Source of current sample. */
+    private Text source;
     
     /** Model of the active editor, or <code>null</code> */
     private Model model = null;
     
     /** Selected model item in model, or <code>null</code> */
     private IModelItem model_item = null;
-
-    private Text timestamp;
-
-    private Text status;
-
-    private Text quality;
-
-    private Text source;
 
     /** {@inheritDoc} */
     @Override
@@ -73,36 +81,25 @@ public class WaveformView extends PlotAwareView
     /** Create the GUI Elements */
     private void createGUI(final Composite parent)
     {
-        GridLayout layout = new GridLayout();
+        final GridLayout layout = new GridLayout();
         layout.numColumns = 4;
         parent.setLayout(layout);
-        GridData gd;
         
         // PV: .......
         // =====================
         // ======= Plot ========
         // =====================
         // <<<<<< Slider >>>>>>
-        // Timestamp:    __________ Sample: 42  +-
-        // Sevr./Status: __________ Quality: _________
-        // Source :      __________
+        // Timestamp: __________ Sevr./Status: __________
+        // Quality:   _________  Source :      __________
         
         Label l = new Label(parent, 0);
-        l.setText("UNDER CONSTRUCTION...");
-        gd = new GridData();
-        gd.horizontalSpan = layout.numColumns;
-        gd.horizontalAlignment = SWT.CENTER;
-        gd.grabExcessHorizontalSpace = true;
-        l.setLayoutData(gd);
-       
-        // New Row
-        l = new Label(parent, 0);
-        l.setText("PV:");
+        l.setText(Messages.WaveformView_PV);
         l.setLayoutData(new GridData());
 
         pv_name = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-        pv_name.setToolTipText("Select PV");
-        gd = new GridData();
+        pv_name.setToolTipText(Messages.WaveformView_PV_TT);
+        GridData gd = new GridData();
         gd.horizontalSpan = layout.numColumns - 1;
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -128,11 +125,35 @@ public class WaveformView extends PlotAwareView
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         plot.setLayoutData(gd);
-        plot.getChart().getXAxis().setLabel("Waveform Element");
+        plot.getChart().getXAxis().setLabel(Messages.WaveformView_XAxis);
 
         // New Row
+        sample_index = new Slider(parent, SWT.HORIZONTAL);
+        sample_index.setToolTipText(Messages.WaveformView_SampleIndex_TT);
+        gd = new GridData();
+        gd.horizontalSpan = layout.numColumns;
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        sample_index.setLayoutData(gd);
+        sample_index.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                try
+                {
+                    showSelectedSample();
+                }
+                catch (Throwable ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        
+        // New Row
         l = new Label(parent, 0);
-        l.setText("Timestamp:");
+        l.setText(Messages.WaveformView_Timestamp);
         l.setLayoutData(new GridData());
 
         timestamp = new Text(parent, SWT.READ_ONLY);
@@ -142,28 +163,7 @@ public class WaveformView extends PlotAwareView
         timestamp.setLayoutData(gd);
         
         l = new Label(parent, 0);
-        l.setText("Sample:");
-        l.setLayoutData(new GridData());
-        
-        sample_index = new Spinner(parent, 0);
-        sample_index.setEnabled(false);
-        sample_index.setLayoutData(new GridData());
-        sample_index.addSelectionListener(new SelectionListener()
-        {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-                showSelectedSample();
-            }
-
-            public void widgetSelected(SelectionEvent e)
-            {
-                showSelectedSample();
-            }
-        });
-        
-        // New Row
-        l = new Label(parent, 0);
-        l.setText("Sevr./Status:");
+        l.setText(Messages.WaveformView_SevrStat);
         l.setLayoutData(new GridData());
 
         status = new Text(parent, SWT.READ_ONLY);
@@ -172,8 +172,9 @@ public class WaveformView extends PlotAwareView
         gd.horizontalAlignment = SWT.FILL;
         status.setLayoutData(gd);
 
+        // New Row
         l = new Label(parent, 0);
-        l.setText("Quality:");
+        l.setText(Messages.WaveformView_Quality);
         l.setLayoutData(new GridData());
 
         quality = new Text(parent, SWT.READ_ONLY);
@@ -183,7 +184,7 @@ public class WaveformView extends PlotAwareView
         quality.setLayoutData(gd);
 
         l = new Label(parent, 0);
-        l.setText("Source:");
+        l.setText(Messages.WaveformView_Source);
         l.setLayoutData(new GridData());
 
         source = new Text(parent, SWT.READ_ONLY);
@@ -220,7 +221,7 @@ public class WaveformView extends PlotAwareView
         if (new_model == null)
         {   // Clear everyting
             model = null;
-            pv_name.setText(Messages.NoPlot);
+            pv_name.setText(Messages.WaveformView_NoPlot);
             pv_name.setEnabled(false);
             selectPV(null);
             return;
@@ -288,7 +289,8 @@ public class WaveformView extends PlotAwareView
         ModelSample sample;
         synchronized (samples)
         {
-            sample_index.setMaximum(samples.size());
+            final int max = samples.size();
+            sample_index.setMaximum(max);
             final int idx = sample_index.getSelection();
             sample = samples.get(idx);
         }

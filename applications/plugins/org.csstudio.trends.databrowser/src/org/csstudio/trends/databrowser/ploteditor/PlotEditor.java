@@ -304,6 +304,7 @@ public class PlotEditor extends EditorPart
         archive_action = new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID);
         sample_action = new OpenViewAction(this, Messages.OpenSampleView, SampleView.ID);
         waveform_action = new OpenViewAction(this, Messages.OpenWaveformView,
+                                            "icons/wavesample.gif", //$NON-NLS-1$
                                              WaveformView.ID);
         export_action = new OpenViewAction(this, Messages.OpenExportView,
                                            "icons/export.gif", ExportView.ID); //$NON-NLS-1$
@@ -324,7 +325,7 @@ public class PlotEditor extends EditorPart
         context_menu.add(archive_action);
         context_menu.add(sample_action);
         context_menu.add(export_action);
-        // TODO context_menu.add(waveform_action);
+        context_menu.add(waveform_action);
         context_menu.add(new Separator());
         context_menu.add(save_current_image_action);
         context_menu.add(new Separator());
