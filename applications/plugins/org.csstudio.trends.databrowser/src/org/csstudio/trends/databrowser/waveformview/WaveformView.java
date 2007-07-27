@@ -1,13 +1,18 @@
 package org.csstudio.trends.databrowser.waveformview;
 
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.swt.chart.Chart;
+import org.csstudio.swt.chart.ChartSample;
+import org.csstudio.swt.chart.ChartSampleSequenceContainer;
 import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.ShowButtonBarAction;
+import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.IModelSamples;
 import org.csstudio.trends.databrowser.model.Model;
+import org.csstudio.trends.databrowser.model.ModelSample;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.sampleview.Messages;
 import org.eclipse.jface.action.Action;
@@ -36,7 +41,7 @@ public class WaveformView extends PlotAwareView
     
     // GUI
     private Combo pv_name;
-    private InteractiveChart chart;
+    private InteractiveChart plot;
     
     private Model model = null;
     
@@ -99,25 +104,26 @@ public class WaveformView extends PlotAwareView
         });
 
         // New Row
-        chart = new InteractiveChart(parent, Chart.USE_TRACE_NAMES);
+        plot = new InteractiveChart(parent, Chart.USE_TRACE_NAMES);
         gd = new GridData();
         gd.horizontalSpan = 2;
         gd.grabExcessHorizontalSpace = true;
         gd.grabExcessVerticalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
-        chart.setLayoutData(gd);
+        plot.setLayoutData(gd);
+        plot.getChart().getXAxis().setLabel("Waveform Element");
     }
 
     /** Add context menu to plot */
     private void createContextMenu()
     {
-        Action button_bar_action = new ShowButtonBarAction(chart);
+        Action button_bar_action = new ShowButtonBarAction(plot);
 
         final MenuManager context_menu = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         context_menu.add(button_bar_action);
         context_menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-        final Control ctl = chart.getChart();
+        final Control ctl = plot.getChart();
         final Menu menu = context_menu.createContextMenu(ctl);
         ctl.setMenu(menu);
     }
@@ -153,11 +159,12 @@ public class WaveformView extends PlotAwareView
         selectPV(null);
     }
 
+    /** Display some sample of the given PV (or <code>null</code>). */
     private void selectPV(final String new_pv_name)
     {
         if (new_pv_name == null)
         {
-            showValue(null);
+            showValue(null, 0);
             pv_name.setText(""); //$NON-NLS-1$
             return;
         }
@@ -166,16 +173,9 @@ public class WaveformView extends PlotAwareView
             IModelItem item = model.getItem(i);
             if (item.getName().equals(new_pv_name))
             {
-                // TODO remove Fake Sample
                 // TODO Get sample[i] of that pv
-                final double val[] = new double[] { 1, 2, 4, 8, 12, 8, 4, 2, 1 };
-                final IValue value = ValueFactory.createDoubleValue(
-                                TimestampFactory.now(),
-                                ValueFactory.createMinorSeverity(),
-                                "Fake Sample",
-                                null,
-                                IValue.Quality.Interpolated, val);
-                showValue(value);
+                final int sample_index = 1;
+                showValue(item, sample_index);
                 return;
             }
         }
@@ -183,8 +183,49 @@ public class WaveformView extends PlotAwareView
         selectPV(null);
     }
     
-    private void showValue(final IValue value)
+    /** Display one sample
+     *  @param item Model item that has the sample
+     *  @param sample_index Index of the sample
+     */
+    private void showValue(final IModelItem item, final int sample_index)
     {
-        // chart.getChart().addTrace(name, series, color, line_width, yaxis_index, type)
+        // Delete all existing traces
+        final Chart chart = plot.getChart();
+        while (chart.getNumTraces() > 0)
+            chart.removeTrace(0);
+        
+        // Done?
+        if (item == null)
+            return;
+        // Get one sample (= one waveform)
+        final IModelSamples samples = item.getSamples();
+        ModelSample sample;
+        synchronized (samples)
+        {
+            if (sample_index < 0  || sample_index >= samples.size())
+                return;
+            sample = samples.get(sample_index);
+        }
+        // Convert the waveform into a series for the trace
+        ChartSampleSequenceContainer series = new ChartSampleSequenceContainer();
+        final IValue value = sample.getSample();
+        if (value instanceof IDoubleValue)
+        {
+            double val[] = ((IDoubleValue) value).getValues();
+            for (int i = 0; i < val.length; ++i)
+                series.add(ChartSample.Type.Normal, i, val[i], sample.getInfo());
+        }
+        else if (value instanceof ILongValue)
+        {
+            long val[] = ((ILongValue) value).getValues();
+            for (int i = 0; i < val.length; ++i)
+                series.add(ChartSample.Type.Normal, i, val[i], sample.getInfo());
+        }
+        else
+            return;
+        // Add to trace
+        chart.addTrace(item.getName(),
+                        series, item.getColor(), 1, 0, TraceType.Lines);
+        chart.getXAxis().setValueRange(0, series.size());
     }
 }

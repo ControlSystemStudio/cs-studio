@@ -378,7 +378,7 @@ public class Controller
     /** @return a trace name (item name plus units) for an item. */
     private String getTraceName(IModelItem item)
     {
-        String units = item.getUnits();
+        final String units = item.getUnits();
         if (units.length() > 0)
             return item.getName() + Messages.UnitMarkerStart
                                     + units + Messages.UnitMarkerEnd;
