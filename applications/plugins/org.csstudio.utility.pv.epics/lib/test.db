@@ -33,3 +33,138 @@ record(waveform, "longs")
    field(NELM, "50")
    field(FTVL, "LONG")
 }
+
+record(waveform, "strings")
+{
+   field(NELM, "5")
+   field(FTVL, "STRING")
+}
+
+record(calc, "rnd1")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd2")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd3")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd4")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd5")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd6")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd7")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd8")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd9")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd10")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd11")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd12")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd13")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd14")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd15")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+record(calc, "rnd16")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
