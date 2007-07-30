@@ -108,7 +108,11 @@ public class MainView extends ViewPart implements Observer{
             if (element instanceof ProcessVariable) {
                 ProcessVariable pv = (ProcessVariable) element;
                 try{
-                    return pv.getPath()[columnIndex].split("=")[1]; //$NON-NLS-1$
+                	if(pv.getPath()!=null){
+                		return pv.getPath()[columnIndex].split("=")[1]; //$NON-NLS-1$
+                	}else{
+                		return "";
+                	}
                 }catch (ArrayIndexOutOfBoundsException e) {
                     return "";
                 }
@@ -139,7 +143,8 @@ public class MainView extends ViewPart implements Observer{
 
     class myContentProvider implements IStructuredContentProvider{
 
-        public Object[] getElements(Object inputElement) {
+        @SuppressWarnings("unchecked")
+		public Object[] getElements(Object inputElement) {
             if (inputElement instanceof ArrayList) {
                 return ((ArrayList)inputElement).toArray();
             }
@@ -346,7 +351,6 @@ public class MainView extends ViewPart implements Observer{
         int i=0;
         boolean first = true;
         for (String row : list) {
-            System.out.println(list.size()+": "+row);
             String[] elements = row.split(","); //$NON-NLS-1$
             String path =""; //$NON-NLS-1$
             for(int j=0;j<elements.length;j++){
@@ -398,7 +402,13 @@ public class MainView extends ViewPart implements Observer{
                 path +=","+elements[j];
             }
             // TODO: hier Stecken irgend wo die Infos um die Table head aus dem LDAP-Tree zu bekommen.
-            System.out.println("Path: "+path);
+//            System.out.println("Path: "+path);
+            if(elements.length==1&&elements[0].split("=").length==1){
+            	elements[0] = "="+elements[0];
+            	for (int k = 1; k < elements.length; k++) {
+					elements[k] = elements[0];
+				}
+            }
             tableElements.add(new ProcessVariable(elements[0].split("=")[1],elements)); //$NON-NLS-1$
             i++;
         }
