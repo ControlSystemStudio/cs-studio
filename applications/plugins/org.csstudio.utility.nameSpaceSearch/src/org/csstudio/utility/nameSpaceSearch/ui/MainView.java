@@ -284,6 +284,7 @@ public class MainView extends ViewPart implements Observer{
 	        }
 	     });
 		ldapr.schedule();
+		ergebnissTableView.getTable().layout();
 	}
 
 	private void getText() {
@@ -292,6 +293,11 @@ public class MainView extends ViewPart implements Observer{
 		ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
 		ArrayList<String> list = new ArrayList<String>();
 		list.addAll(ergebnisListe.getAnswer());
+		if(list.size()<1){
+			searchButton.setEnabled(true);
+			workIcon.setEnabled(false);
+			return;
+		}
 		int i=0;
 		for (String row : list) {
 //			System.out.println(list.size()+": "+row);
