@@ -43,7 +43,6 @@ public class ErgebnisListe extends NameSpaceResultList{
 
 	public void setAnswer(ArrayList<String> ergbnis) {
 		this.ergbnis.addAll(ergbnis);
-		setChanged();
 		notifyObservers();
 
 	}
