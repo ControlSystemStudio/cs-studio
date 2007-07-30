@@ -23,7 +23,6 @@
 package org.csstudio.diag.postanalyser;
 
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.model.IProcessVariableWithSample;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesPopupAction;
 
