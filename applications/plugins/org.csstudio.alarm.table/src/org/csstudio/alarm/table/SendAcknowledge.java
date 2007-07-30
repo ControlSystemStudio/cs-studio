@@ -87,6 +87,8 @@ public class SendAcknowledge extends Job {
 	            JmsLogsPlugin.logInfo("LogTableViewer send Ack message, MsgName: " + 
 	            		message.getName() + " MsgTime: " + message.getProperty("EVENTTIME"));
 	            sender.sendMessage();
+	            sender.stopSender();
+	            sender = null;
 	            JmsLogsPlugin.logInfo("send acknowledge for msg: " + 
 	            		message.getName() + ", " + message.getProperty("EVENTTIME"));
 			} catch (Exception e) {

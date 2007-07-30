@@ -55,7 +55,6 @@ public class SendMapMessage {
 	
 	public void stopSender() throws Exception{
 		sender.close();
-		sender.close();
 		session.close();
 		connection.stop();
 		connection.close();

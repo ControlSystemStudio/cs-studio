@@ -178,6 +178,9 @@ public class TableLabelProvider extends LabelProvider implements
 			}
 		}                           
 		if (jmsm.isBackgroundColorGray()) {
+			if (backgroundColor == null) {
+				backgroundColor = new Color(null, 255, 255, 255);
+			}
 			int red = backgroundColor.getRed();
 			int green = backgroundColor.getGreen();
 			int blue = backgroundColor.getBlue();
