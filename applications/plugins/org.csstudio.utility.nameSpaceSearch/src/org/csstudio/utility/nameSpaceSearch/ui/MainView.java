@@ -29,26 +29,21 @@ import java.util.Observer;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
+import org.csstudio.utility.ldap.reader.ErgebnisListe;
+import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
 import org.csstudio.utility.nameSpaceSearch.preference.PreferenceConstants;
-import org.csstudio.utility.ldap.reader.ErgebnisListe;
-import org.csstudio.utility.ldap.reader.LDAPReader;
-
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -59,8 +54,6 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
@@ -104,7 +97,8 @@ public class MainView extends ViewPart implements Observer{
         // No Image
         public Image getColumnImage(Object element, int columnIndex) {return null;}
 
-        public String getColumnText(Object element, int columnIndex) {
+        
+		public String getColumnText(Object element, int columnIndex) {
             if (element instanceof ProcessVariable) {
                 ProcessVariable pv = (ProcessVariable) element;
                 try{
@@ -119,6 +113,7 @@ public class MainView extends ViewPart implements Observer{
 
             }
             if (element instanceof ArrayList) {
+            	@SuppressWarnings("unchecked")
                 Object o = ((ArrayList)element).get(columnIndex);
                 if (o instanceof IControlSystemItem) {
                     return ((IProcessVariable)o).getName();
@@ -434,20 +429,6 @@ public class MainView extends ViewPart implements Observer{
         manager.addMenuListener(new IMenuListener() {
             public void menuAboutToShow(IMenuManager manager) {
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-            }
-        });
-        contr.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseDown(MouseEvent e) {
-                super.mouseDown(e);
-                if (e.button == 3) {
-                    StructuredSelection s =  (StructuredSelection) ergebnissTableView.getSelection();
-                    Object o = s.getFirstElement();
-                    if (o instanceof ArrayList) {
-                        System.out.println("First is"+((ArrayList)o).get(0));
-
-                    }
-                }
             }
         });
         Menu menu = manager.createContextMenu(contr);
