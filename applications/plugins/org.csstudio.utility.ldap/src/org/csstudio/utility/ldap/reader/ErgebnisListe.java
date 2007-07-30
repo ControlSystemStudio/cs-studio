@@ -37,7 +37,7 @@ public class ErgebnisListe extends NameSpaceResultList{
 		ArrayList<String> tmp = new ArrayList<String>();
 		tmp.addAll(ergbnis);
 		ergbnis.clear();
-		setChanged();
+//		setChanged();
 		return tmp;
 	}
 
@@ -91,7 +91,6 @@ public class ErgebnisListe extends NameSpaceResultList{
     @Override
     public void setResultList(ArrayList<String> resultList) {
         this.ergbnis.addAll(ergbnis);
-        setChanged();
         notifyObservers();
 
     }
