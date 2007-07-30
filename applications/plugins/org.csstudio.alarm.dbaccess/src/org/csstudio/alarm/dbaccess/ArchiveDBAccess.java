@@ -33,10 +33,6 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		ArrayList<HashMap<String, String>> message = new ArrayList<HashMap<String, String>>();
 		Connection con = null;
 		try{
-//			String url = de.desy.css.record.properties.PropertiesPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.URL);
-//			String user = PropertiesPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.USER);
-//			String password = PropertiesPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.PASSWORD);
-//			String url = "jdbc:oracle:thin:@dbsrv:1527:DESY";
 			String url = "jdbc:oracle:thin:@(DESCRIPTION = " +
 		    "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521)) " +
 		    "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv02.desy.de)(PORT = 1521)) " +
@@ -88,140 +84,44 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		}
 		return message;
 	}
-//	#############################################################
-//	Beispiel einen SQL-Strings mit abfrage Filter
-//	#############################################################
-//	select mc.message_id, mt.name as Nutzer, m.datum, mpt.name as Property,  mc.value
-//	from  msg_type mt
-//    join msg_type_property_type mtpt on mtpt.msg_type_id = mt.id
-//    join msg_property_type mpt on mtpt.msg_property_type_id = mpt.id
-//    join message m on m.msg_type_id = mt.id
-//    join message_content mc on m.msg_type_id = mt.id
-//    where mpt.id = mc.msg_property_type_id
-//	and m.id = mc.message_id
-//	and m.datum
-//	between to_date('2006-10-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
-//	and to_date('2006-11-21 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
-//	#############################################################
-//	Hier fängt der Filter an
-//	#############################################################
-//    and mc.message_id = ANY (
-//        select mc.message_id
-//		  from  msg_type mt
-//          join msg_type_property_type mtpt on mtpt.msg_type_id = mt.id
-//          join msg_property_type mpt on mtpt.msg_property_type_id = mpt.id
-//          join message m on m.msg_type_id = mt.id
-//          join message_content mc on m.msg_type_id = mt.id
-//          where mpt.id = mc.msg_property_type_id
-//   		  and ((mpt.name like 'TYPE' AND mc.value like 'alarm') or mpt.name like 'TEXT' )
-//   		  )
-//	order by mc.message_id;
+    private String buildSQLStatement(Calendar from, Calendar to) {
+        String sql = "select * from alarm_archive_messages aam where aam.datum "+
+                     "between to_date('"+from.get(GregorianCalendar.YEAR)+
+                        "-"+(from.get(GregorianCalendar.MONTH)+1)+
+                        "-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
+                        " "+from.get(GregorianCalendar.HOUR)+
+                        ":"+from.get(GregorianCalendar.MINUTE)+
+                        ":"+from.get(GregorianCalendar.SECOND)+
+                        "', 'YYYY-MM-DD HH24:MI:SS') "+
+                    "and to_date('"+to.get(GregorianCalendar.YEAR)+
+                        "-"+(to.get(GregorianCalendar.MONTH)+1)+
+                        "-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
+                        " "+to.get(GregorianCalendar.HOUR)+
+                        ":"+to.get(GregorianCalendar.MINUTE)+
+                        ":"+to.get(GregorianCalendar.SECOND)+
+                        "', 'YYYY-MM-DD HH24:MI:SS') "+
+                    "order by aam.message_id";
+        return sql;
+    }
 
-	private String buildSQLStatement(Calendar from, Calendar to) {
-/*	Alter SQL_String
- * 	Macht Probleme bei mehr als zwei AND abfragen
- * 	(Methode private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to, String filter))
- *
-		String sql = "select mc.message_id, mt.name as Nutzer, m.datum, mpt.name as Property,  mc.value "+
-			"from  msg_type mt, msg_type_property_type mtpt, msg_property_type mpt, message m, message_content mc "+
-			"where mtpt.msg_type_id = mt.id "+
-			"and mtpt.msg_property_type_id = mpt.id "+
-			"and m.msg_type_id = mt.id "+
-			"and mpt.id = mc.msg_property_type_id "+
-			"and m.id = mc.message_id "+
-			"and m.datum "+
-			"between to_date('"+from.get(GregorianCalendar.YEAR)+
-							"-"+(from.get(GregorianCalendar.MONTH)+1)+
-							"-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
-							" "+from.get(GregorianCalendar.HOUR)+
-							":"+from.get(GregorianCalendar.MINUTE)+
-							":"+from.get(GregorianCalendar.SECOND)+
-							"', 'YYYY-MM-DD HH24:MI:SS') "+
-			"and to_date('"+to.get(GregorianCalendar.YEAR)+
-							"-"+(to.get(GregorianCalendar.MONTH)+1)+
-							"-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
-							" "+to.get(GregorianCalendar.HOUR)+
-							":"+to.get(GregorianCalendar.MINUTE)+
-							":"+to.get(GregorianCalendar.SECOND)+
-							"', 'YYYY-MM-DD HH24:MI:SS') "+
-			"order by mc.message_id";
-*/
-/*
- * Neue SQL-String unter hilfe nahme einer View
- */
-		String sql = "select * from alarm_archive_messages aam where aam.datum "+
-					"between to_date('"+from.get(GregorianCalendar.YEAR)+
+	private String buildSQLStatement(Calendar from, Calendar to, String filter) {
+	    String sql = "select aam2.* from alarm_archive_messages aam2 ,(select aam.MESSAGE_ID from alarm_archive_messages aam where aam.datum "+ 
+					 "between to_date('"+from.get(GregorianCalendar.YEAR)+
 						"-"+(from.get(GregorianCalendar.MONTH)+1)+
 						"-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
 						" "+from.get(GregorianCalendar.HOUR)+
 						":"+from.get(GregorianCalendar.MINUTE)+
 						":"+from.get(GregorianCalendar.SECOND)+
 						"', 'YYYY-MM-DD HH24:MI:SS') "+
-					"and to_date('"+to.get(GregorianCalendar.YEAR)+
-						"-"+(to.get(GregorianCalendar.MONTH)+1)+
-						"-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
-						" "+to.get(GregorianCalendar.HOUR)+
-						":"+to.get(GregorianCalendar.MINUTE)+
-						":"+to.get(GregorianCalendar.SECOND)+
-						"', 'YYYY-MM-DD HH24:MI:SS') "+
-					"order by aam.message_id";
-
-		return sql;
-	}
-
-	private String buildSQLStatement(Calendar from, Calendar to, String filter) {
-		/*	Alter SQL_String
-		 * 	Macht Probleme bei mehr als zwei AND abfragen
-		 * 	(Methode private String buildSQLStatement(GregorianCalendar from, GregorianCalendar to, String filter))
-		 *
-
-		String sql =
-			"select mc.message_id, mt.name as Nutzer, m.datum, mpt.name as Property,  mc.value "+
-			"from  msg_type mt "+
-		    "join msg_type_property_type mtpt on mtpt.msg_type_id = mt.id "+
-		    "join msg_property_type mpt on mtpt.msg_property_type_id = mpt.id "+
-		    "join message m on m.msg_type_id = mt.id "+
-		    "join message_content mc on m.msg_type_id = mt.id "+
-		    "where mpt.id = mc.msg_property_type_id "+
-			"and m.id = mc.message_id "+
-			"and m.datum "+
-			"between to_date('"+from.get(GregorianCalendar.YEAR)+
-			"-"+(from.get(GregorianCalendar.MONTH)+1)+
-			"-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
-			" "+from.get(GregorianCalendar.HOUR)+
-			":"+from.get(GregorianCalendar.MINUTE)+
-			":"+from.get(GregorianCalendar.SECOND)+
-			"', 'YYYY-MM-DD HH24:MI:SS') "+
-			"AND to_date('"+to.get(GregorianCalendar.YEAR)+
-			"-"+(to.get(GregorianCalendar.MONTH)+1)+
-			"-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
-			" "+to.get(GregorianCalendar.HOUR)+
-			":"+to.get(GregorianCalendar.MINUTE)+
-			":"+to.get(GregorianCalendar.SECOND)+
-			"', 'YYYY-MM-DD HH24:MI:SS') "+
-			filter+
-			"order by mc.message_id";
-*/
-/*
- * Neue SQL-String unter hilfe nahme einer View
- */
-				String sql = "select * from alarm_archive_messages aam, message_content mc, msg_property_type mpt where aam.datum "+
-							"between to_date('"+from.get(GregorianCalendar.YEAR)+
-								"-"+(from.get(GregorianCalendar.MONTH)+1)+
-								"-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
-								" "+from.get(GregorianCalendar.HOUR)+
-								":"+from.get(GregorianCalendar.MINUTE)+
-								":"+from.get(GregorianCalendar.SECOND)+
-								"', 'YYYY-MM-DD HH24:MI:SS') "+
-							"and to_date('"+to.get(GregorianCalendar.YEAR)+
-								"-"+(to.get(GregorianCalendar.MONTH)+1)+
-								"-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
-								" "+to.get(GregorianCalendar.HOUR)+
-								":"+to.get(GregorianCalendar.MINUTE)+
-								":"+to.get(GregorianCalendar.SECOND)+
-								"', 'YYYY-MM-DD HH24:MI:SS') "+
-							filter+
-							"order by aam.message_id";
+					 "and to_date('"+to.get(GregorianCalendar.YEAR)+
+							"-"+(to.get(GregorianCalendar.MONTH)+1)+
+							"-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
+							" "+to.get(GregorianCalendar.HOUR)+
+							":"+to.get(GregorianCalendar.MINUTE)+
+							":"+to.get(GregorianCalendar.SECOND)+
+							"', 'YYYY-MM-DD HH24:MI:SS') "+
+					 filter+
+					 "order by aam.message_id) typeid where aam2.message_id = typeid.MESSAGE_ID";
 		return sql;
 	}
 
