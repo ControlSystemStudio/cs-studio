@@ -200,7 +200,7 @@ public class LDAPReader extends Job {
 	        try{
 	        	list = new ArrayList<String>();
 	            NamingEnumeration answer = ctx.search(name, filter, ctrl);
-	            ctx.search(name, filter, ctrl);
+//	            ctx.search(name, filter, ctrl);
 				try {
 					while(answer.hasMore()){
 						String name = ((SearchResult)answer.next()).getName();
@@ -208,6 +208,9 @@ public class LDAPReader extends Job {
 						if(monitor.isCanceled()) {
 							return Status.CANCEL_STATUS;
 						}
+					}
+					if(list.size()<1){
+						list.add("no entry found");
 					}
 				} catch (NamingException e) {
                     CentralLogger.getInstance().info(this,"LDAP Fehler");
