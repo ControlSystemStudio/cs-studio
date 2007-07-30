@@ -26,7 +26,6 @@ import org.csstudio.platform.internal.model.ArchiveDataSource;
 import org.csstudio.platform.internal.model.ControlSystemItemFactoriesRegistry;
 import org.csstudio.platform.internal.model.ProcessVariable;
 import org.csstudio.platform.internal.model.ProcessVariableWithArchive;
-import org.csstudio.platform.internal.model.ProcessVariableWithSample;
 import org.csstudio.platform.internal.model.ProcessVariableWithSamples;
 import org.csstudio.platform.util.ControlSystemItemPath;
 
@@ -93,22 +92,6 @@ public final class CentralItemFactory {
 			final String pvName, final String url, final int key,
 			final String archiveName) {
 		return new ProcessVariableWithArchive(pvName, url, key, archiveName);
-	}
-
-	/**
-	 * Creates a process variable with an sample data.
-	 * @param pvName The PV Name
-	 * @param dbrTyp the dbrType
-	 * @param egu the EGU
-	 * @param low the Low Threshold
-	 * @param high the High Threshold
-	 * @param precision
-	 * @param sampleValues
-	 * @param timeStamp
-	 * @return A process variable with an sample data.
-	 */
-	public static IProcessVariableWithSample createProcessVariableWithSample(String pvName, int dbrTyp, String egu, double low, double high, int precision, double[] sampleValues, double[] timeStamp, String[] status, String[] severity) {
-		return new ProcessVariableWithSample(pvName,sampleValues, timeStamp, dbrTyp, egu, precision, low, high, status, severity);
 	}
     
     /**
