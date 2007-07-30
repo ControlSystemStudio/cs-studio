@@ -3,8 +3,6 @@ package org.csstudio.platform.ui.internal.dataexchange;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.model.IProcessVariableWithSample;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
