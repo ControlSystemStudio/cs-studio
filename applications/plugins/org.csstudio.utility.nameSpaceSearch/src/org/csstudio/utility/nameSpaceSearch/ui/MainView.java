@@ -291,7 +291,6 @@ public class MainView extends ViewPart implements Observer{
     }
 
     private void getText() {
-//      System.out.println("Thread test Start");
         ergebnissTableView.refresh(false);
         ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
         ArrayList<String> list = new ArrayList<String>();
@@ -344,11 +343,6 @@ public class MainView extends ViewPart implements Observer{
          * Vorbereitung für die Nutzung der ersten Zeile als Filter Feld.
          */
         
-        if(list.size()<1){
-            searchButton.setEnabled(true);
-            workIcon.setEnabled(false);
-            return;
-        }
         int i=0;
         boolean first = true;
         for (String row : list) {
