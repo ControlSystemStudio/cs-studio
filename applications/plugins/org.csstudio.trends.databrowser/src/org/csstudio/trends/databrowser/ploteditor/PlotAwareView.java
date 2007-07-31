@@ -24,7 +24,7 @@ import org.eclipse.ui.part.ViewPart;
 public abstract class PlotAwareView extends ViewPart
 {
     /** Compile time debug flag */
-    final protected static boolean debug = true;
+    final protected static boolean debug = false;
     
     /** Used to learn about the current 'editor'. */
     private IPartListener2 part_listener;    
