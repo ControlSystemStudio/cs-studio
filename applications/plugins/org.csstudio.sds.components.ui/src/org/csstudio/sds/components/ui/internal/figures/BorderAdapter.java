@@ -145,6 +145,7 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 	 */
 	private AbstractBorder createStriatedBorder() {
 		StriatedBorder border = new StriatedBorder(_borderWidth);
+		border.setBorderColor(_borderColor);
 		return border;
 	}
 	
@@ -159,9 +160,17 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 		 */
 		private Insets _insets;
 		/**
+		 * The Height of the Border.
+		 */
+		private int _borderHeight;
+		/**
 		 * The Width of the Border.
 		 */
-		private int _borderWidth;
+		private final int _fixBorderWide = 5;
+		/**
+		 * The Color of the border.
+		 */
+		private Color _borderColor;
 		
 		/**
 		 * Constructor.
@@ -170,7 +179,16 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 		 */
 		public StriatedBorder(final int borderWidth) {
 			_insets = new Insets(borderWidth);
-			_borderWidth = borderWidth;
+			_borderHeight = borderWidth;
+		}
+		
+		/**
+		 * Sets the Color of the border.
+		 * @param borderColor
+		 * 			The Color for the border
+		 */
+		public void setBorderColor(final Color borderColor) {
+			_borderColor = borderColor;
 		}
 
 		/**
@@ -185,26 +203,49 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 		 */
 		public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
 			Rectangle bounds = figure.getBounds();
-			graphics.setForegroundColor(CustomMediaFactory.getInstance().getColor(255, 0, 0));
-			graphics.setBackgroundColor(CustomMediaFactory.getInstance().getColor(255, 0, 0));
-			int xPos = bounds.x;
-			while (xPos+_borderWidth<bounds.x+bounds.width) {
-				Rectangle rec = new Rectangle(xPos,bounds.y, _borderWidth, _borderWidth);
-				graphics.fillRectangle(rec);
-				rec = new Rectangle(xPos,bounds.y+bounds.height-_borderWidth, _borderWidth, _borderWidth);
-				graphics.fillRectangle(rec);
-				xPos = xPos + 2*_borderWidth;
-			}
-			int yPos = bounds.y;
-			while (yPos+_borderWidth<bounds.y+bounds.height) {
-				Rectangle rec = new Rectangle(bounds.x, yPos, _borderWidth, _borderWidth);
-				graphics.fillRectangle(rec);
-				rec = new Rectangle(bounds.x+bounds.width-_borderWidth, yPos, _borderWidth, _borderWidth);
-				graphics.fillRectangle(rec);
-				yPos = yPos + 2*_borderWidth;
-			}
-			Rectangle rec = new Rectangle(bounds.x+bounds.width-_borderWidth,bounds.y+bounds.height-_borderWidth, _borderWidth, _borderWidth);
+			graphics.setForegroundColor(_borderColor);
+			graphics.setBackgroundColor(_borderColor);
+			//Corner
+			Rectangle rec = new Rectangle(bounds.x ,bounds.y, _borderHeight, _borderHeight);
 			graphics.fillRectangle(rec);
+			rec = new Rectangle(bounds.x+bounds.width-_borderHeight ,bounds.y, _borderHeight, _borderHeight);
+			graphics.fillRectangle(rec);
+			rec = new Rectangle(bounds.x+bounds.width-_borderHeight ,bounds.y+bounds.height-_borderHeight, _borderHeight, _borderHeight);
+			graphics.fillRectangle(rec);
+			rec = new Rectangle(bounds.x ,bounds.y+bounds.height-_borderHeight, _borderHeight, _borderHeight);
+			graphics.fillRectangle(rec);
+			int xLeftPos = bounds.x+_borderHeight+_fixBorderWide;
+			int xRightPos = bounds.x+bounds.width-((2*_fixBorderWide)+_borderHeight);
+			while (xLeftPos<bounds.x+(bounds.width/2)) {
+				//top
+				rec = new Rectangle(xLeftPos,bounds.y, _fixBorderWide, _borderHeight);
+				graphics.fillRectangle(rec);
+				rec = new Rectangle(xRightPos, bounds.y, _fixBorderWide, _borderHeight);
+				graphics.fillRectangle(rec);
+				//bottom
+				rec = new Rectangle(xLeftPos,bounds.y+bounds.height-_borderHeight, _fixBorderWide, _borderHeight);
+				graphics.fillRectangle(rec);
+				rec = new Rectangle(xRightPos, bounds.y+bounds.height-_borderHeight, _fixBorderWide, _borderHeight);
+				graphics.fillRectangle(rec);
+				xLeftPos = xLeftPos + 2*_fixBorderWide;
+				xRightPos = xRightPos - 2*_fixBorderWide;
+			}
+			int yTopPos = bounds.y+_borderHeight+_fixBorderWide;
+			int yBottomPos = bounds.y+bounds.height-((2*_fixBorderWide)+_borderHeight);
+			while (yTopPos<bounds.y+(bounds.height/2)) {
+				//Left
+				rec = new Rectangle(bounds.x, yTopPos, _borderHeight, _fixBorderWide);
+				graphics.fillRectangle(rec);
+				rec = new Rectangle(bounds.x, yBottomPos, _borderHeight, _fixBorderWide);
+				graphics.fillRectangle(rec);
+				//Right
+				rec = new Rectangle(bounds.x+bounds.width-_borderHeight, yTopPos, _borderHeight, _fixBorderWide);
+				graphics.fillRectangle(rec);
+				rec = new Rectangle(bounds.x+bounds.width-_borderHeight, yBottomPos, _borderHeight, _fixBorderWide);
+				graphics.fillRectangle(rec);
+				yTopPos = yTopPos + 2*_fixBorderWide;
+				yBottomPos = yBottomPos - 2*_fixBorderWide;
+			}
 		}
 		
 	}
