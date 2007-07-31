@@ -200,8 +200,6 @@ public class LogViewArchive extends ViewPart implements Observer {
                 showNewTime(from, to);
                 ReadDBJob readDB = new ReadDBJob("DB Reader", 
                 		LogViewArchive.this._dbAnswer, from, to);
-//                ArrayList<HashMap<String, String>> am = adba.getLogMessages(
-//                        from, to);
                 readDB.schedule();
                 
             }
@@ -226,11 +224,9 @@ public class LogViewArchive extends ViewPart implements Observer {
 				GregorianCalendar from = (GregorianCalendar) to.clone();
 				from.add(GregorianCalendar.HOUR, -72);
 				showNewTime(from, to);
-				ArrayList<HashMap<String, String>> am = adba.getLogMessages(
-						from, to);
-				_jmsMessageList.clearList();
-				_jmsLogTableViewer.refresh();
-				_jmsMessageList.addJMSMessageList(am);
+                ReadDBJob readDB = new ReadDBJob("DB Reader", 
+                		LogViewArchive.this._dbAnswer, from, to);
+                readDB.schedule();
 			}
 		});
 	}
@@ -250,12 +246,9 @@ public class LogViewArchive extends ViewPart implements Observer {
 				GregorianCalendar from = (GregorianCalendar) to.clone();
 				from.add(GregorianCalendar.HOUR, -168);
 				showNewTime(from, to);
-                ILogMessageArchiveAccess adba = new ArchiveDBAccess();
-				ArrayList<HashMap<String, String>> am = adba.getLogMessages(
-						from, to);
-				_jmsMessageList.clearList();
-				_jmsLogTableViewer.refresh();
-				_jmsMessageList.addJMSMessageList(am);
+                ReadDBJob readDB = new ReadDBJob("DB Reader", 
+                		LogViewArchive.this._dbAnswer, from, to);
+                readDB.schedule();
 			}
 		});
 
@@ -348,15 +341,18 @@ public class LogViewArchive extends ViewPart implements Observer {
 				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
 //				from.add(GregorianCalendar.HOUR, -504);
 				showNewTime(from, to);
-				ArrayList<HashMap<String, String>> am;
-				if(_filter.trim().length()>0){
-					am = adba.getLogMessages(from, to, _filter);
-				}else{
-					am = adba.getLogMessages(from, to);
-				}
-				_jmsMessageList.clearList();
-				_jmsLogTableViewer.refresh();
-				_jmsMessageList.addJMSMessageList(am);
+//				ArrayList<HashMap<String, String>> am;
+//				if(_filter.trim().length()>0){
+//					am = adba.getLogMessages(from, to, _filter);
+//				}else{
+//					am = adba.getLogMessages(from, to);
+//				}
+//				_jmsMessageList.clearList();
+//				_jmsLogTableViewer.refresh();
+//				_jmsMessageList.addJMSMessageList(am);
+                ReadDBJob readDB = new ReadDBJob("DB Reader", 
+                		LogViewArchive.this._dbAnswer, from, to, _filter);
+                readDB.schedule();
 
 			}
 		});

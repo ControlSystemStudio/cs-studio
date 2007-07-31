@@ -21,24 +21,40 @@ import org.eclipse.core.runtime.jobs.Job;
 
 public class ReadDBJob extends Job {
 
-	private final Calendar to;
+	private final Calendar _to;
 	private final Calendar from;
 	private final DBAnswer dbAnswer;
-
+	private final String _filter;
+	
 	public ReadDBJob(String name, DBAnswer dbAnswer,
 			Calendar from, Calendar to) {
 		super(name);
 		this.dbAnswer = dbAnswer;
 		this.from = from;
-		this.to = to;
+		this._to = to;
+		this._filter = null;
 	}
 
+	public ReadDBJob(String name, DBAnswer dbAnswer,
+			Calendar from, Calendar to, String filter) {
+		super(name);
+		this.dbAnswer = dbAnswer;
+		this.from = from;
+		this._to = to;
+		_filter = filter;
+	}
+
+	
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		
         ILogMessageArchiveAccess adba = new ArchiveDBAccess();
-        ArrayList<HashMap<String, String>> am = adba.getLogMessages(
-                from, to);
+        ArrayList<HashMap<String, String>> am = new ArrayList<HashMap<String,String>>();
+        if (_filter == null) {
+        	am = adba.getLogMessages(from, _to);
+        } else {
+        	am = adba.getLogMessages(from, _to, _filter);
+        }
         dbAnswer.setDBAnswer(am);
 		return Status.OK_STATUS;
 	}
