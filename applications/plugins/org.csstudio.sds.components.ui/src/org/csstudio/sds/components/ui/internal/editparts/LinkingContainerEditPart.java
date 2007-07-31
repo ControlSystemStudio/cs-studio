@@ -73,7 +73,6 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		LinkingContainerFigure linkingContainerFigure = new LinkingContainerFigure();
-		this.initLayers(linkingContainerFigure.getContentsPane());
 		return linkingContainerFigure;
 	}
 
@@ -127,14 +126,6 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, null);
 
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public synchronized void propertyChange(final PropertyChangeEvent evt) {
-		super.propertyChange(evt);
 	}
 
 	/**

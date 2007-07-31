@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.sds.ui.editparts.LayeredWidgetPane;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
@@ -36,7 +37,7 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
 	/**
 	 * The content pane of this widget.
 	 */
-	private FreeformLayeredPane _pane;
+	private LayeredWidgetPane _pane;
 
 	/**
 	 * Constructor.
@@ -44,7 +45,7 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
 	public GroupingContainerFigure() {
 		setBorder(new LineBorder(1));
 		ScrollPane scrollpane = new ScrollPane();
-		_pane = new FreeformLayeredPane();
+		_pane = new LayeredWidgetPane();
 		_pane.setLayoutManager(new FreeformLayout());
 		setLayoutManager(new StackLayout());
 		add(scrollpane);

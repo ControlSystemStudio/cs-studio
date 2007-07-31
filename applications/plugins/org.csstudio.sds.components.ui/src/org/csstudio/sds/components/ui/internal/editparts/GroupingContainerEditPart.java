@@ -40,7 +40,6 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		GroupingContainerFigure groupingContainerFigure = new GroupingContainerFigure();
-		this.initLayers(groupingContainerFigure.getContentsPane());
 		return groupingContainerFigure;
 	}
 
