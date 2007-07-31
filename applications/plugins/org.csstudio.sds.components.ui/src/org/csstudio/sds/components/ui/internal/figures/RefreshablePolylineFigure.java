@@ -71,10 +71,10 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		
 		int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
 		graphics.setClip(new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height));
-		graphics.setForegroundColor(getBackgroundColor());
+		graphics.setForegroundColor(getForegroundColor());
 		graphics.drawPolyline(getPoints());
 		graphics.setClip(new Rectangle(figureBounds.x+newW, figureBounds.y, figureBounds.width-newW, figureBounds.height));
-		graphics.setForegroundColor(getForegroundColor());
+		graphics.setForegroundColor(getBackgroundColor());
 		graphics.drawPolyline(getPoints());
 	}
 
