@@ -13,7 +13,8 @@ public class AlarmViewerPreferenceConstants {
 	public static final String INITIAL_SECONDARY_CONTEXT_FACTORY = "Alarm.context_factory.secondary"; //$NON-NLS-1$
 	public static final String SECONDARY_URL = "Alarm.provider_url.secondary"; //$NON-NLS-1$
 	public static final String QUEUE = "Alarm.message_queue"; //$NON-NLS-1$
-    public static final String SENDER_URL = "Alarm.sender_url";
+    public static final String SENDER_URL = "Alarm.sender_url"; //$NON-NLS-1$
+    
 
 
 }

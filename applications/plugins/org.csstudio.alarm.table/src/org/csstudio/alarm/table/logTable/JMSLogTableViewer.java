@@ -39,7 +39,7 @@ public class JMSLogTableViewer extends TableViewer {
 
 	private Table table;
 
-	String[] columnNames;
+	String[] columnHeader;
 
 	String colName = null;
 
@@ -76,7 +76,7 @@ public class JMSLogTableViewer extends TableViewer {
 			String[] colNames, JMSMessageList j, int tableType, int style) {
 		super(parent, style);
 		this.tableType = tableType;
-		columnNames = colNames;
+		columnHeader = colNames;
 		jmsml = j;
 		table = this.getTable();
 
@@ -112,15 +112,21 @@ public class JMSLogTableViewer extends TableViewer {
 				}
 			}
 		});
-		for (int i = 0; i < columnNames.length; i++) {
+		String[] columnName = new String[columnHeader.length];
+		for (int i = 0; i < columnHeader.length; i++) {
 			TableColumn tableColumn = new TableColumn(table, SWT.CENTER);
-			tableColumn.setText(columnNames[i]);
-			if (i == 0 && tableType == 2) {
+			String[] temp = columnHeader[i].split(",");
+			colName = temp[0];
+			columnName[i]=colName;
+			tableColumn.setText(temp[0]);
+			if(temp.length==2){
+				tableColumn.setWidth(Integer.parseInt(columnHeader[i].split(",")[1]));
+			}else if (i == 0 && tableType == 2) {
 				tableColumn.setWidth(25);
 
 			} else
 				tableColumn.setWidth(100);
-			colName = columnNames[i];
+//			colName = columnNames[i];
 			tableColumn.addSelectionListener(new SelectionAdapter() {
 
 				private String cName = colName;
@@ -143,7 +149,7 @@ public class JMSLogTableViewer extends TableViewer {
 		//		this.setContentProvider(new JMSMessageContentProvider());
 
 		this.setContentProvider(new TableContentProvider(this, jmsml));
-		TableLabelProvider labelProvider = new TableLabelProvider(colNames);
+		TableLabelProvider labelProvider = new TableLabelProvider(columnName);
 		this.setLabelProvider(labelProvider);
 		//		this.setLabelProvider(new JMSMessageLabelProvider());
 		if (tableType == 1) {
@@ -161,7 +167,7 @@ public class JMSLogTableViewer extends TableViewer {
 	}
 
 	public void setColumnNames(String[] colNames) {
-		columnNames = colNames;
+		columnHeader = colNames;
 	}
 
 	private void makeContextMenu(IWorkbenchPartSite site) {
@@ -189,7 +195,7 @@ public class JMSLogTableViewer extends TableViewer {
 
 					Table t = JMSLogTableViewer.this.getTable();
 					TableItem ti = t.getItem(new Point(e.x, e.y));
-					for (int i = 0; i < JMSLogTableViewer.this.columnNames.length; i++) {
+					for (int i = 0; i < JMSLogTableViewer.this.columnHeader.length; i++) {
 						Rectangle bounds = ti.getBounds(i);
 						if (bounds.contains(e.x, e.y)) {
 							columnSelection = lablProvider.getColumnName(i);

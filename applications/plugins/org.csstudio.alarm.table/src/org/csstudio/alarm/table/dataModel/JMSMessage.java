@@ -18,7 +18,7 @@ public class JMSMessage implements IProcessVariable {//,
 //		org.csstudio.data.exchange.IFrontEndControllerName{
 
 	private HashMap<String, String> messageProperties = new HashMap<String, String>();
-	private String[] propertyNames;
+//	private String[] propertyNames;
 	
 	//for alarm table: false->no other message with the same pv name and an other
 	//severity is in the table. true->another OLDER message with same pv an other
@@ -31,10 +31,10 @@ public class JMSMessage implements IProcessVariable {//,
 	 */
 	public JMSMessage(String[] propNames) {
 		super();
-		propertyNames = JmsLogsPlugin.getDefault().getPluginPreferences().
-			getString(LogViewerPreferenceConstants.P_STRING).split(";");
-		for(int i = 0; i < propertyNames.length; i++) {
-			messageProperties.put(propertyNames[i], "");
+//		propertyNames = JmsLogsPlugin.getDefault().getPluginPreferences().
+//			getString(LogViewerPreferenceConstants.P_STRING).split(";");
+		for(int i = 0; i < propNames.length; i++) {
+			messageProperties.put(propNames[i].split(",")[0], "");
 		}
 	}
 	

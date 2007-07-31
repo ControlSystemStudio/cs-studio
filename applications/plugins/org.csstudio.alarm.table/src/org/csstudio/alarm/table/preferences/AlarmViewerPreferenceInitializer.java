@@ -18,9 +18,9 @@ public class AlarmViewerPreferenceInitializer extends AbstractPreferenceInitiali
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
 		store.setDefault(AlarmViewerPreferenceConstants.P_STRINGAlarm,
-				"TYPE" + ";" +
-				"EVENTTIME" + ";" +
-				"NAME" + ";" +
+				"TYPE,10" + ";" +
+				"EVENTTIME,75" + ";" +
+				"NAME,75" + ";" +
 				"SEVERITY" + ";" +
 				"STATUS" + ";" +
 				"VALUE" + ";" +
@@ -36,7 +36,6 @@ public class AlarmViewerPreferenceInitializer extends AbstractPreferenceInitiali
 				"VALUE" + ";" +
 				"DESTINATION"
 		);
-
 		store.setDefault(AlarmViewerPreferenceConstants.MAX, 200);
 		store.setDefault(AlarmViewerPreferenceConstants.REMOVE, 10);
 		store.setDefault(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
