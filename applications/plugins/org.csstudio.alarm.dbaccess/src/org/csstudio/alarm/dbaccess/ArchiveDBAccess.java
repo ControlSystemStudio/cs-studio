@@ -62,18 +62,22 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			OracleResultSet rset = (OracleResultSet)stmt.getResultSet();
 			int id =-1;
 			HashMap<String, String> hm = null;
+			boolean haveMessage = false;
 			while(rset.next()){
 					if(id!=rset.getNUMBER(1).intValue()){
 						if(hm!=null){
 							message.add(hm);
 						}
+						haveMessage = true;
 						hm = new HashMap<String, String>();
 					}
 					hm.put(rset.getString(4), rset.getString(5));
 					id=rset.getNUMBER(1).intValue();
 			}
 			rset.close(); stmt.close();
-			message.add(hm);
+			if(haveMessage){
+				message.add(hm);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
