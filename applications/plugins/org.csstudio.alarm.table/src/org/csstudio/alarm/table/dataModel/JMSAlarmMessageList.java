@@ -27,8 +27,11 @@ public class JMSAlarmMessageList extends JMSMessageList {
 	 */
 	@Override
 	synchronized public void addJMSMessage(MapMessage mm) throws JMSException {
+		if (mm == null) {
+			return;
+		}
 		//do not insert messges with type: 'status'
-		if ((mm == null) || (mm.getString("TYPE").equalsIgnoreCase("status"))) {
+		if (mm.getString("TYPE").equalsIgnoreCase("status")) {
 			return;
 		} else {
 			String severity = null;
