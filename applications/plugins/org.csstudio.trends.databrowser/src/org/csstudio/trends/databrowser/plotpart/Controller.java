@@ -70,6 +70,9 @@ public class Controller
                 double low = model.getStartTime().toDouble();
                 double high = model.getEndTime().toDouble();
                 setScrollStart(high - low);
+                // Looks like scrolling was just turned on, and we might jump
+                // from some old time range to 'now', so we better get new data.
+                getArchivedData(null);
             }
             try
             {
