@@ -2,6 +2,8 @@ package org.csstudio.trends.databrowser.ploteditor;
 
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.Model;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
@@ -21,6 +23,9 @@ import org.eclipse.ui.part.ViewPart;
  */
 public abstract class PlotAwareView extends ViewPart
 {
+    /** Compile time debug flag */
+    final protected static boolean debug = true;
+    
     /** Used to learn about the current 'editor'. */
     private IPartListener2 part_listener;    
     
@@ -53,6 +58,7 @@ public abstract class PlotAwareView extends ViewPart
      *  part listener which then tracks the current plot editor.
      */
     @Override
+    @SuppressWarnings("nls")
     final public void createPartControl(final Composite parent)
     {
         doCreatePartControl(parent);
@@ -66,7 +72,8 @@ public abstract class PlotAwareView extends ViewPart
             {
                 if (ref.getId().equals(PlotEditor.ID))
                 {
-                    //System.out.println("Activate " + ref.getPartName());
+                    if (debug)
+                        System.out.println("PlotAwareView: Activate " + ref.getPartName());
                     final IWorkbenchPart part = ref.getPart(false);
                     if (part instanceof PlotEditor)
                         updateEditor((PlotEditor) part);
@@ -80,7 +87,8 @@ public abstract class PlotAwareView extends ViewPart
             {
                 if (ref.getPart(false) == editor)
                 {
-                    //System.out.println("Closed " + ref.getPartName());
+                    if (debug)
+                        System.out.println("PlotAwareView: Closed " + ref.getPartName());
                     updateEditor(null);
                 }
             }
@@ -103,29 +111,45 @@ public abstract class PlotAwareView extends ViewPart
             updateEditor((PlotEditor) current);
         else
             updateEditor(null);
+        
+        // When view is destroyed, we fake a null editor update.
+        // Since derived views already handle <code>updateModel</code>
+        // with a new <code>null</code> model, this will cause
+        // them to unsubscribe etc.
+        // Of course they can still add their own dispose listener.
+        //
+        // Note:
+        // Eclipse performs its own view lifecycle optimization.
+        // A view that's "closed" might actually just get hidden,
+        // and thus this dispose listener only takes effect when
+        // the application closes and really disposes the view.
+        //
+        // Unclear why the "Waveform" view gets disposed on close,
+        // while the "Config" view is kept around.
+        parent.addDisposeListener(new DisposeListener()
+        {
+            public void widgetDisposed(DisposeEvent e)
+            {
+                if (debug)
+                    System.out.println("PlotAwareView: disposed " + getPartName());
+                getSite().getPage().removePartListener(part_listener);
+                updateEditor(null);
+            }
+        });
     }
 
     /** Replaces createPartControl() for PlotAwareView */
     abstract protected void doCreatePartControl(Composite parent);
 
-    /** Remove this view from the list of part listeners.
-     *  <p>
-     *  <b>Derived classes must invoke this method</b> on disposal. 
-     *  @see org.eclipse.ui.part.WorkbenchPart#dispose()
-     */
-    @Override
-    public void dispose()
-    {
-        getSite().getPage().removePartListener(part_listener);
-        super.dispose();
-    }
-
     /** The editor has changed. */
+    @SuppressWarnings("nls")
     private void updateEditor(PlotEditor new_editor)
     {
         Model old_model = (editor == null) ? null : editor.getModel();
         editor = new_editor;
         Model new_model = (editor == null) ? null : editor.getModel();
+        if (debug)
+            System.out.println("PlotAwareView: switching " + old_model + " to " + new_model);
         updateModel(old_model, new_model);
     }
     

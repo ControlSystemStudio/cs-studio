@@ -7,6 +7,7 @@ import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDropTarge
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDataSourceDropTarget;
 import org.csstudio.swt.chart.TraceType;
+import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.configview.PVTableHelper.Column;
 import org.csstudio.trends.databrowser.model.FormulaModelItem;
 import org.csstudio.trends.databrowser.model.IModelItem;
@@ -222,6 +223,8 @@ public class ConfigView extends PlotAwareView
     @Override
     protected void doCreatePartControl(Composite parent)
     {
+        if (debug)
+            System.out.println("ConfigView doCreatePartControl"); //$NON-NLS-1$
         // Create the GUI Elements
         Composite scroll = ScrolledContainerHelper.create(parent, 200, 200);
         scroll.setLayout(new FillLayout());
@@ -869,9 +872,11 @@ public class ConfigView extends PlotAwareView
     @Override
     protected void updateModel(Model old_model, Model model)
     {
-    	// TODO Is this avoidable? Add disposeListener?
     	if (scan_period_text.isDisposed())
+    	{   // We should have removed the model listener on disposal...
+    	    Plugin.logError("ConfigView.updateModel called after disposal"); //$NON-NLS-1$
     		return;
+    	}
         // Conditionally enable the 'add' action
         add_pv_action.setEnabled(model != null);
         add_formula_action.setEnabled(model != null);
