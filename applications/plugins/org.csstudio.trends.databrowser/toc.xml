@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#trends" label="">
+<toc link_to="../org.csstudio.platform.ui/tocApps.xml#trends" label="Data Browser">
 	<topic label="Data Browser"  href="html/databrowser.html">
 	  <topic label="Starting, Setup, Load, Save" href="html/setup.html"/>
 	  <topic label="Adding PVs" href="html/add_pvs.html"/>
