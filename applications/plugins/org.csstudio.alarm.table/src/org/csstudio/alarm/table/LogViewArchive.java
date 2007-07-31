@@ -28,14 +28,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
+import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.expertSearch.ExpertSearchDialog;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
+import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
+import org.csstudio.alarm.table.readDB.DBAnswer;
+import org.csstudio.alarm.table.readDB.ReadDBJob;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.util.time.StartEndTimeParser;
@@ -47,6 +53,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -60,7 +67,7 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * @since 19.07.2007
  */
-public class LogViewArchive extends ViewPart {
+public class LogViewArchive extends ViewPart implements Observer {
 
     /**  The Id of this Object. */
 	public static final String ID = LogViewArchive.class.getName();
@@ -93,8 +100,23 @@ public class LogViewArchive extends ViewPart {
     /** The default / last filter. */
     private String _filter= ""; //$NON-NLS-1$
 
+    /** The Answer from the DB */
+    private DBAnswer _dbAnswer = null;
+
+    /** The Display */
+	private Display _disp;
+
+    
+    public LogViewArchive() {
+    	super();
+    	_dbAnswer = new DBAnswer();
+    	_dbAnswer.addObserver(this);
+    }
+    
     /** {@inheritDoc} */
 	public final void createPartControl(final Composite parent) {
+
+		_disp = parent.getDisplay();
 
 		_columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(LogArchiveViewerPreferenceConstants.P_STRINGArch)
@@ -169,18 +191,19 @@ public class LogViewArchive extends ViewPart {
         b24hSearch.setText(Messages.getString("LogViewArchive_day")); //$NON-NLS-1$
 
         b24hSearch.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(final SelectionEvent e) {
+ 
+			public void widgetSelected(final SelectionEvent e) {
                 ILogMessageArchiveAccess adba = new ArchiveDBAccess();
                 GregorianCalendar to = new GregorianCalendar();
                 GregorianCalendar from = (GregorianCalendar) to.clone();
                 from.add(GregorianCalendar.HOUR, -24);
                 showNewTime(from, to);
-                ArrayList<HashMap<String, String>> am = adba.getLogMessages(
-                        from, to);
-                _jmsMessageList.clearList();
-                _jmsLogTableViewer.refresh();
-                _jmsMessageList.addJMSMessageList(am);
-
+                ReadDBJob readDB = new ReadDBJob("DB Reader", 
+                		LogViewArchive.this._dbAnswer, from, to);
+//                ArrayList<HashMap<String, String>> am = adba.getLogMessages(
+//                        from, to);
+                readDB.schedule();
+                
             }
         });
 
@@ -258,12 +281,19 @@ public class LogViewArchive extends ViewPart {
 						StartEndTimeParser parser = new StartEndTimeParser(lowString, highString);
 						Calendar from = parser.getStart();
 						Calendar to = parser.getEnd();
-    					ILogMessageArchiveAccess adba = new ArchiveDBAccess();
+//    					ILogMessageArchiveAccess adba = new ArchiveDBAccess();
     					showNewTime(from, to);
-    					ArrayList<HashMap<String, String>> am = adba.getLogMessages(from, to);
-    					_jmsMessageList.clearList();
-    					_jmsLogTableViewer.refresh();
-    					_jmsMessageList.addJMSMessageList(am);
+//    					ArrayList<HashMap<String, String>> am = adba.getLogMessages(from, to);
+//    					_jmsMessageList.clearList();
+//    					_jmsLogTableViewer.refresh();
+//    					_jmsMessageList.addJMSMessageList(am);
+
+    	                ReadDBJob readDB = new ReadDBJob("DB Reader", 
+    	                		LogViewArchive.this._dbAnswer, from, to);
+//    	                ArrayList<HashMap<String, String>> am = adba.getLogMessages(
+//    	                        from, to);
+    	                readDB.schedule();
+
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						JmsLogsPlugin.logInfo(e1.getMessage());
@@ -372,5 +402,26 @@ public class LogViewArchive extends ViewPart {
 	public final Date getToTime(){
 		return _toTime.toCalendar().getTime();
 
+	}
+
+	public void update(Observable arg0, Object arg1) {
+		_disp.syncExec(new Runnable() {
+			public void run() {
+                _jmsMessageList.clearList();
+                _jmsLogTableViewer.refresh();
+                ArrayList<HashMap<String, String>> answer = _dbAnswer.getDBAnswer();
+                if (answer.size() > 0) {
+                	_jmsMessageList.addJMSMessageList(_dbAnswer.getDBAnswer());
+                } else {
+            		String[] propertyNames = JmsLogsPlugin.getDefault().getPluginPreferences().
+        			getString(LogViewerPreferenceConstants.P_STRING).split(";");
+
+            		JMSMessage jmsMessage = new JMSMessage(propertyNames);
+            		String firstColumnName = _columnNames[0];
+            		jmsMessage.setProperty(firstColumnName, "no messages in DB");
+                	_jmsMessageList.addJMSMessage(jmsMessage);
+                }
+               }
+		});
 	}
 }
