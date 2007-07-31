@@ -56,7 +56,7 @@ public class Controller
             // Need to redraw, so update formulas
             model.updateFormulas();
 
-            if (!gui.isScrollEnabled())
+            if (!model.isScrollEnabled())
             {   // redraw w/o scroll
                 chart.redrawTraces();
                 return;
@@ -81,14 +81,13 @@ public class Controller
                 {
                     if (debug_scroll)
                         System.out.println("Scroll: Update start "
-                                        + scroll_start_specification);
+                                           + scroll_start_specification);
                     model.setTimeSpecifications(scroll_start_specification,
                                                 RelativeTime.NOW);
                 }
             }
             catch (Exception ex)
-            {   // Prevent follow-up errors by disabling the scroll
-                gui.enableScrolling(false);
+            {
                 Plugin.logException("Cannot scroll", ex);
             }
             // redraw is implied in the x axis update
@@ -157,22 +156,16 @@ public class Controller
             if (controller_changes_xaxis)
                 return;
             // This is a user-driven pan or zoom.
+            // Update the time range of the model.
             final double x0 = xaxis.getLowValue();
             final double x1 = xaxis.getHighValue();
-
             // Is the end close enough to 'now' to use relative times?
             final double range = x1 - x0;
             final double now = TimestampFactory.now().toDouble();
-            // Criteria: End is within 10% of 'now' 
-            final boolean close_to_now = Math.abs(x1 - now) < 0.1*range;
-            
             // When scrolling, and not close to 'now', disable scroll
             // to prevent scrolling out of the selected range.
-            final BrowserUI gui = Controller.this.gui;
-            if (gui.isScrollEnabled()  &&  !close_to_now)
-                gui.enableScrolling(false);
-            
-            // Update the time range of the model
+            // Criteria: End is within 10% of 'now' 
+            final boolean close_to_now = Math.abs(x1 - now) < 0.1*range;
             try
             {
                 if (close_to_now)

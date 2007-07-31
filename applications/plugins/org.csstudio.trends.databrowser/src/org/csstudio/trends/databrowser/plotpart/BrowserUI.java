@@ -24,11 +24,10 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class BrowserUI extends Composite
 {
-    private final Model model;
+    final private Model model;
     private ModelListener listener;
 
     private InteractiveChart i_chart;
-    private boolean scroll_enable = true;
     private Button scroll_pause;
     
     static private ImageRegistry images = null;
@@ -36,7 +35,6 @@ public class BrowserUI extends Composite
     static private final String SCROLL_OFF = "scroll_off"; //$NON-NLS-1$
 
     /** Create browser UI
-     *  @param listener BrowserUIListener
      *  @param parent Parent widget
      *  @param style SWT style
      */
@@ -67,19 +65,6 @@ public class BrowserUI extends Composite
         return i_chart;
     }
     
-    /** @return Returns <code>true</code> if scrolling is enabled (requested). */
-    public boolean isScrollEnabled()
-    {
-        return scroll_enable;
-    }
-    
-    /** @return Returns <code>true</code> if scrolling is enabled (requested). */
-    public void enableScrolling(boolean enable)
-    {
-        scroll_enable = enable;
-        updateScrollPauseButton();
-    }
-    
     /** Create the GUI elements. */
     @SuppressWarnings("nls")
     private void makeGUI()
@@ -99,7 +84,8 @@ public class BrowserUI extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                scroll_enable = !scroll_enable;
+                // Toggle scroll mode
+                model.enableScroll(! model.isScrollEnabled());
                 updateScrollPauseButton();
             }
         });
@@ -122,10 +108,9 @@ public class BrowserUI extends Composite
                 {
                     // If we request some_start ... 'now',
                     // assume we want to scroll from then on.
-                    scroll_enable = dlg.isEndNow();
-                    updateScrollPauseButton();
                     model.setTimeSpecifications(dlg.getStartSpecification(),
                                                  dlg.getEndSpecification());
+                    updateScrollPauseButton();
                 }
                 catch (Exception ex)
                 {
@@ -168,7 +153,7 @@ public class BrowserUI extends Composite
     /** Update the scroll button's image and tooltip. */
     private void updateScrollPauseButton()
     {
-        if (scroll_enable)
+        if (model.isScrollEnabled())
         {
             scroll_pause.setImage(images.get(SCROLL_ON));
             scroll_pause.setToolTipText(Messages.StopScroll_TT);

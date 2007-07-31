@@ -16,6 +16,7 @@ import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.util.time.RelativeTime;
 import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.xml.DOMHelper;
+import org.csstudio.util.xml.XMLHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -52,6 +53,14 @@ public class Model
 
     /** Start- and end time specifications. */
     private StartEndTimeParser start_end_times;
+    
+    /** Should we scroll or not?
+     *  When the end time is absolute, we certainly don't scroll.
+     *  But if it's 'now', we can still see that as a one-time
+     *  request, or as a continually updated 'now', i.e.
+     *  a scrolling mode.
+     */
+    private boolean scroll;
     
     /** Scan period for 'live' data in seconds. */
     private double scan_period = 0.5;
@@ -100,6 +109,7 @@ public class Model
         {
             Plugin.logException("Cannot init. time range", ex);
         }
+        scroll = start_end_times.isEndNow();
     }
     
     /** Must be called to dispose the model. */
@@ -231,6 +241,22 @@ public class Model
     public ITimestamp getEndTime()
     {   return TimestampFactory.fromCalendar(start_end_times.getEnd()); }
 
+    /** @return <code>true</code> if the end time is 'now', i.e. we
+     *          should continually scroll.
+     */
+    public boolean isScrollEnabled()
+    {
+        return scroll;
+    }
+    
+    /** Enable or disable the scroll mode. */
+    public void enableScroll(final boolean scroll)
+    {
+        this.scroll = scroll;
+        for (ModelListener listener : listeners)
+            listener.timeSpecificationsChanged();
+    }
+    
     /** @return Returns the scan period in seconds. */
     public double getScanPeriod()
     {   return scan_period; }
@@ -593,11 +619,13 @@ public class Model
     {
         StringBuffer b = new StringBuffer(1024);
         b.append("<databrowser>\n");
-        b.append("    <start>" + start_end_times.getStartSpecification() + "</start>\n");
-        b.append("    <end>" + start_end_times.getEndSpecification() + "</end>\n");
-        b.append("    <scan_period>" + scan_period + "</scan_period>\n");
-        b.append("    <update_period>" + update_period + "</update_period>\n");
-        b.append("    <ring_size>" + ring_size + "</ring_size>\n");
+        XMLHelper.XML(b, 1, "start", start_end_times.getStartSpecification());
+        XMLHelper.XML(b, 1, "end", start_end_times.getEndSpecification());
+        XMLHelper.XML(b, 1, "scroll", Boolean.toString(scroll));
+        XMLHelper.XML(b, 1, "scan_period", Double.toString(scan_period));
+        XMLHelper.XML(b, 1, "update_period", Double.toString(update_period));
+        XMLHelper.XML(b, 1, "ring_size", Integer.toString(ring_size));
+        XMLHelper.XML(b, 1, "start", start_end_times.getStartSpecification());
         b.append("    <pvlist>\n");
         for (AbstractModelItem item : items)
             b.append(item.getXMLContent());
@@ -643,6 +671,8 @@ public class Model
         }
         start_end_times = new StartEndTimeParser(start_specification,
                                                  end_specification);
+        scroll = DOMHelper.getSubelementBoolean(root_node, "scroll",
+                                                start_end_times.isEndNow());
         final double scan = DOMHelper.getSubelementDouble(root_node, "scan_period");
         final double update = DOMHelper.getSubelementDouble(root_node, "update_period");
         ring_size = DOMHelper.getSubelementInt(root_node, "ring_size");
