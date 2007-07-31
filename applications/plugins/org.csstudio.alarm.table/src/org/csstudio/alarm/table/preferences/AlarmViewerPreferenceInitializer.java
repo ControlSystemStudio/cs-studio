@@ -18,9 +18,9 @@ public class AlarmViewerPreferenceInitializer extends AbstractPreferenceInitiali
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
 		store.setDefault(AlarmViewerPreferenceConstants.P_STRINGAlarm,
-				"TYPE,10" + ";" +
-				"EVENTTIME,75" + ";" +
-				"NAME,75" + ";" +
+				"TYPE,100" + ";" +
+				"EVENTTIME,100" + ";" +
+				"NAME,100" + ";" +
 				"SEVERITY" + ";" +
 				"STATUS" + ";" +
 				"VALUE" + ";" +

@@ -23,6 +23,7 @@
 package org.csstudio.alarm.table;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.jms.JMSException;
@@ -42,6 +43,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 /**
@@ -72,7 +74,7 @@ public class AlarmLogView extends LogView {
 		String preferenceColumnString = JmsLogsPlugin.getDefault().getPluginPreferences()
 		.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm);
 		
-		preferenceColumnString = "Ack;" + preferenceColumnString;
+		preferenceColumnString = "Ack,25;" + preferenceColumnString;
 		
 		//read the column names from the preference page
 		columnNames = preferenceColumnString.split(";");
@@ -226,4 +228,30 @@ public class AlarmLogView extends LogView {
 		}
 	}
 
+	public void saveColumn(){
+		/**
+		 * When dispose store the width for each column, excepting the first column (ACK).
+		 */
+		int[] width = jlv.getColumnWidth();
+		String newPreferenceColumnString="";
+		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(";");
+		/**The "+1" is need for the column Ack.
+		 * The column Ack is not at the preferences and the ackcolumn is ever the first column.
+		 */
+		if(width.length!=columns.length+1){
+			return;
+		}
+		for (int i = 0; i < columns.length; i++) {
+			/** +width[i+1]: see above */ 
+			newPreferenceColumnString = newPreferenceColumnString.concat(columns[i].split(",")[0]+","+width[i+1]+";");
+		}
+		newPreferenceColumnString = newPreferenceColumnString.substring(0,newPreferenceColumnString.length()-1);
+		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
+		store.setValue(AlarmViewerPreferenceConstants.P_STRINGAlarm, newPreferenceColumnString);
+		if(store.needsSaving()){
+			JmsLogsPlugin.getDefault().savePluginPreferences();
+		}
+
+		
+	}
 }

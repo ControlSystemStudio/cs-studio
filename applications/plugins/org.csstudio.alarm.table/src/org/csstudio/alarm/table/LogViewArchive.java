@@ -46,6 +46,7 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.time.swt.StartEndDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -400,6 +401,28 @@ public class LogViewArchive extends ViewPart implements Observer {
 
 	}
 
+	/**
+	 * When dispose store the width for each column.
+	 */
+	public void saveColumn(){
+		int[] width = _jmsLogTableViewer.getColumnWidth();
+		String newPreferenceColumnString="";
+		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogArchiveViewerPreferenceConstants.P_STRINGArch).split(";");
+		if(width.length!=columns.length){
+			return;
+		}
+		for (int i = 0; i < columns.length; i++) {
+			newPreferenceColumnString = newPreferenceColumnString.concat(columns[i].split(",")[0]+","+width[i]+";");
+		}
+		newPreferenceColumnString = newPreferenceColumnString.substring(0,newPreferenceColumnString.length()-1);
+		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
+		store.setValue(LogArchiveViewerPreferenceConstants.P_STRINGArch, newPreferenceColumnString);
+		if(store.needsSaving()){
+			JmsLogsPlugin.getDefault().savePluginPreferences();
+		}
+	}
+
+
 	public void update(Observable arg0, Object arg1) {
 		_disp.syncExec(new Runnable() {
 			public void run() {
@@ -420,4 +443,5 @@ public class LogViewArchive extends ViewPart implements Observer {
                }
 		});
 	}
+
 }

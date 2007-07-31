@@ -32,8 +32,10 @@ import org.csstudio.alarm.table.dataModel.JMSLogMessageList;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
 import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
+import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.csstudio.platform.libs.jms.MessageReceiver;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -202,6 +204,7 @@ public class LogView extends ViewPart implements MessageListener {
 
 
     public void dispose() {
+    	saveColumn();
 		super.dispose();
 		try {
 			if (receiver1 != null)
@@ -218,4 +221,26 @@ public class LogView extends ViewPart implements MessageListener {
 		JmsLogsPlugin.getDefault().getPluginPreferences()
 				.removePropertyChangeListener(cl);
 	}
+
+	/**
+	 * When dispose store the width for each column.
+	 */
+	public void saveColumn(){
+		int[] width = jlv.getColumnWidth();
+		String newPreferenceColumnString="";
+		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.P_STRING).split(";");
+		if(width.length!=columns.length){
+			return;
+		}
+		for (int i = 0; i < columns.length; i++) {
+			newPreferenceColumnString = newPreferenceColumnString.concat(columns[i].split(",")[0]+","+width[i]+";");
+		}
+		newPreferenceColumnString = newPreferenceColumnString.substring(0,newPreferenceColumnString.length()-1);
+		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
+		store.setValue(LogViewerPreferenceConstants.P_STRING, newPreferenceColumnString);
+		if(store.needsSaving()){
+			JmsLogsPlugin.getDefault().savePluginPreferences();
+		}
+	}
+
 }

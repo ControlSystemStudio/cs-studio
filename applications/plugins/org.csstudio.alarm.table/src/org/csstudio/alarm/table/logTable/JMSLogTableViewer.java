@@ -17,6 +17,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -60,6 +62,8 @@ public class JMSLogTableViewer extends TableViewer {
 	private JMSMessageList jmsml;
 
 	private int tableType;
+	
+	int[] columnWidth;
 
 	/**
 	 * Setting Column names from preference pages, providers. 
@@ -76,6 +80,7 @@ public class JMSLogTableViewer extends TableViewer {
 			String[] colNames, JMSMessageList j, int tableType, int style) {
 		super(parent, style);
 		this.tableType = tableType;
+		columnWidth = new int[colNames.length];
 		columnHeader = colNames;
 		jmsml = j;
 		table = this.getTable();
@@ -114,8 +119,16 @@ public class JMSLogTableViewer extends TableViewer {
 		});
 		String[] columnName = new String[columnHeader.length];
 		for (int i = 0; i < columnHeader.length; i++) {
-			TableColumn tableColumn = new TableColumn(table, SWT.CENTER);
+			final TableColumn tableColumn = new TableColumn(table, SWT.CENTER);
 			String[] temp = columnHeader[i].split(",");
+			tableColumn.addDisposeListener(new DisposeListener(){
+
+				@Override
+				public void widgetDisposed(DisposeEvent e) {
+					columnWidth[tableColumn.getParent().indexOf(tableColumn)]=tableColumn.getWidth();
+				}
+				
+			});
 			colName = temp[0];
 			columnName[i]=colName;
 			tableColumn.setText(temp[0]);
@@ -254,5 +267,12 @@ public class JMSLogTableViewer extends TableViewer {
 
 	public void setAlarmSorting(boolean b) {
 		sortAlarms = b;
+	}
+
+	/**
+	 * @return the columnWidth
+	 */
+	public int[] getColumnWidth() {
+		return columnWidth;
 	}
 }
