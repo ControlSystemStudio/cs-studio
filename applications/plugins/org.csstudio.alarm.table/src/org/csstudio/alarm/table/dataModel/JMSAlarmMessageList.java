@@ -31,7 +31,7 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			return;
 		}
 		//do not insert messges with type: 'status'
-		if (mm.getString("TYPE").equalsIgnoreCase("status")) {
+		if ((mm.getString("TYPE") != null) && (mm.getString("TYPE").equalsIgnoreCase("status"))) {
 			return;
 		} else {
 			String severity = null;
