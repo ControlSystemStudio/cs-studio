@@ -120,7 +120,6 @@ public class Application implements IApplication
     /** {@inheritDoc} */
     public void stop()
     {
-        // TODO Auto-generated method stub
-        
+        System.out.println("Application.stop..."); //$NON-NLS-1$
     }
 }
