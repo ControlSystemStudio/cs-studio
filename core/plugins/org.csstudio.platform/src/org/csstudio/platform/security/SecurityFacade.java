@@ -24,11 +24,15 @@ package org.csstudio.platform.security;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.platform.CSSPlatformInfo;
+import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.LoginContext;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /**
  * This Service executes instances of
@@ -67,9 +71,16 @@ public final class SecurityFacade {
 	private ILoginCallbackHandler _loginCallbackHandler;
 
 	/**
-	 * Property for the appearence of the CSS login window at system startup.
+	 * Preference key for the preference that stores whether the user should
+	 * be authenticated when starting in <em>onsite</em> mode.
 	 */
-	public static final String PROP_AUTH_LOGIN = "auth_login"; //$NON-NLS-1$
+	public static final String ONSITE_LOGIN_PREFERECE = "auth_login"; //$NON-NLS-1$
+	
+	/**
+	 * Preference key for the preference that stores whether the user should
+	 * be authenticated when starting in <em>offsite</em> mode.
+	 */
+	public static final String OFFSITE_LOGIN_PREFERENCE = "offsite_login"; //$NON-NLS-1$
 
 	/**
 	 * System property that stores whether login is available.
@@ -115,6 +126,20 @@ public final class SecurityFacade {
 	public void authenticateApplicationUser() {
 		ILoginCallbackHandler callbackHandler = getLoginCallbackHandler();
 		login(callbackHandler);
+	}
+	
+	/**
+	 * Returns whether automatic login on startup is enabled.
+	 * @return <code>true</code> if login on startup is enabled,
+	 *         <code>false</code> otherwise.
+	 */
+	public boolean isLoginOnStartupEnabled() {
+		IEclipsePreferences prefs = new InstanceScope().getNode(CSSPlatformPlugin.ID);
+		if (CSSPlatformInfo.getInstance().isOnsite()) {
+			return prefs.getBoolean(ONSITE_LOGIN_PREFERECE, false);
+		} else {
+			return prefs.getBoolean(OFFSITE_LOGIN_PREFERENCE, false);
+		}
 	}
 
 	/**
@@ -187,7 +212,7 @@ public final class SecurityFacade {
 			} catch (RuntimeException e) {
 				CentralLogger.getInstance().warn(this,
 						"User management event listener threw unexpected RuntimeException", e);
-			}			
+			}
 		}
 	}
 	

@@ -25,6 +25,8 @@ package org.csstudio.platform;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import org.csstudio.platform.logging.CentralLogger;
+
 /**
  * 
  * @author Markus Moeller
@@ -43,7 +45,17 @@ public final class CSSPlatformInfo {
 
 	/** Holds the only one instance of this class. */
 	private static CSSPlatformInfo _instance = null;
-
+	
+	/**
+	 * Stores whether CSS is running onsite.
+	 */
+	private boolean onsite = false;
+	
+	/**
+	 * Logger for this class. 
+	 */
+	private static final CentralLogger log = CentralLogger.getInstance();
+	
 	private CSSPlatformInfo() {
 		init();
 	}
@@ -58,6 +70,55 @@ public final class CSSPlatformInfo {
 		}
 
 		applicationID = "CSS";
+		
+		detectOnsiteOffsite();
+	}
+	
+	/**
+	 * Detects if CSS is running onsite or offsite.
+	 */
+	private void detectOnsiteOffsite() {
+		try {
+			// Currently hardcoded for DESY. TODO: retrieve from preferences
+			InetAddress subnet = InetAddress.getByName("131.169.0.0");
+			InetAddress netmask = InetAddress.getByName("255.255.0.0");
+			
+			InetAddress thishost = InetAddress.getLocalHost();
+			onsite = isInSubnet(thishost, subnet, netmask);
+		} catch (UnknownHostException e) {
+			throw new AssertionError("this cannot happen");
+		}
+	}
+	
+	/**
+	 * Returns whether the given IP address is located in the given subnet.
+	 * @param address the IP address.
+	 * @param subnet the subnet.
+	 * @param netmask the netmask for the subnet.
+	 * @return <code>true</code> if the address is in the subnet,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean isInSubnet(InetAddress address, InetAddress subnet, InetAddress netmask) {
+		byte[] addr = address.getAddress();
+		byte[] sub = subnet.getAddress();
+		byte[] mask = netmask.getAddress();
+		
+		// Address, subnet and mask should all have the same length (in bytes),
+		// otherwise they cannot be compared.
+		if (addr.length != sub.length || sub.length != mask.length) {
+			log.info(this, "Running in offsite mode");
+			return false;
+		}
+		
+		// Compare all bytes of the addresses, masked with mask
+		for (int i = 0; i < addr.length; i++) {
+			if ((addr[i] & mask[i]) != (sub[i] & mask[i])) {
+				log.info(this, "Running in offsite mode");
+				return false;
+			}
+		}
+		log.info(this, "Running in onsite mode");
+		return true;
 	}
 
 	/**
@@ -65,13 +126,22 @@ public final class CSSPlatformInfo {
 	 * 
 	 * @return The only one instance of this class.
 	 */
-
 	public static synchronized CSSPlatformInfo getInstance() {
 		if (_instance == null) {
 			_instance = new CSSPlatformInfo();
 		}
 
 		return _instance;
+	}
+	
+	/**
+	 * Returns whether CSS is running onsite.
+	 * @return <code>true</code> if CSS is running onsite, <code>false</code>
+	 *         otherwise.
+	 */
+	public boolean isOnsite() {
+		return true;  // for compatibility until subnet etc. can be configured
+//		return onsite;
 	}
 
 	public String getHostId() {
