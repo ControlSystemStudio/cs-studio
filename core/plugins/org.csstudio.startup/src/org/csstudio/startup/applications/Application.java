@@ -64,7 +64,9 @@ public class Application implements IPlatformRunnable {
 			
 			SecurityFacade sf = SecurityFacade.getInstance();
 			sf.setLoginCallbackHandler(new LoginDialog(null));
-			sf.authenticateApplicationUser();
+			if (sf.isLoginOnStartupEnabled()) {
+				sf.authenticateApplicationUser();
+			}
 			
 			// we will run all the services
 			// TODO: implement checking if there is a service the user
