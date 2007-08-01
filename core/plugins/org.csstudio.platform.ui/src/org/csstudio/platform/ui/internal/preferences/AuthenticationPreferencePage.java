@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.internal.security;
+package org.csstudio.platform.ui.internal.preferences;
 
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
@@ -53,9 +53,13 @@ public class AuthenticationPreferencePage extends FieldEditorPreferencePage
 	@Override
 	protected final void createFieldEditors() {
 		addField(new BooleanFieldEditor(
-				SecurityFacade.PROP_AUTH_LOGIN,
+				SecurityFacade.ONSITE_LOGIN_PREFERECE,
 				Messages.AuthenticationPreferencePage_LOGIN_ON_STARTUP,
                 getFieldEditorParent()));
+		addField(new BooleanFieldEditor(
+				SecurityFacade.OFFSITE_LOGIN_PREFERENCE,
+				Messages.AuthenticationPreferencePage_LOGIN_ON_STARTUP_OFFSITE,
+				getFieldEditorParent()));
 	}
 
 	/**

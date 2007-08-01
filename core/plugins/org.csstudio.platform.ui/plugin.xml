@@ -149,7 +149,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.platform"
-            class="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
+            class="org.csstudio.platform.ui.internal.preferences.AuthenticationPreferencePage"
             id="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
             name="%authenticationPageName"/>
       <page

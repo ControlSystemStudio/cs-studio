@@ -36,7 +36,9 @@ public final class Messages extends NLS {
 	 */
 	private static final String BUNDLE_NAME = "org.csstudio.platform.ui.internal.localization.messages"; //$NON-NLS-1$
 
-    public static String CssWorkbenchAdvisor_LoggedInAs;
+    public static String AuthenticationPreferencePage_LOGIN_ON_STARTUP_OFFSITE;
+
+	public static String CssWorkbenchAdvisor_LoggedInAs;
 	public static String CssWorkbenchAdvisor_NotLoggedIn;
 
 	public static String SystemPropertiesPreferencePage_ABOUT_TEXT;
