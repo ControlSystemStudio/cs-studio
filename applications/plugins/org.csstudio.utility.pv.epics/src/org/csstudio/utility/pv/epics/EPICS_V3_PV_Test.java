@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import junit.framework.TestCase;
 
 import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.INumericMetaData;
@@ -153,6 +154,10 @@ public class EPICS_V3_PV_Test extends TestCase
         e = (IEnumeratedValue) pva.getValue();
         assertEquals(1, e.getValue());
         assertEquals("one", e.format());
+        assertTrue(e.getMetaData() instanceof IEnumeratedMetaData);
+        IEnumeratedMetaData meta = (IEnumeratedMetaData) e.getMetaData();
+        assertEquals(4, meta.getStates().length);
+        assertEquals("zero", meta.getStates()[0]);
         
         pva.stop();
     }
