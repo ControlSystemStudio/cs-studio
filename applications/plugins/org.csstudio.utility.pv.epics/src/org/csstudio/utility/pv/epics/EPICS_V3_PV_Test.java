@@ -78,6 +78,20 @@ public class EPICS_V3_PV_Test extends TestCase
     }
 
     @Test
+    public void testLong() throws Exception
+    {
+        PV pva = new EPICS_V3_PV("long_fred");
+        
+        pva.start();
+        while (!pva.isConnected())
+            Thread.sleep(100);
+        assertTrue(pva.isConnected());
+        assertTrue(pva.getValue() instanceof ILongValue);
+        
+        pva.stop();
+    }
+
+    @Test
     public void testMultiplePVs() throws Exception
     {
         PV pva = new EPICS_V3_PV("fred");

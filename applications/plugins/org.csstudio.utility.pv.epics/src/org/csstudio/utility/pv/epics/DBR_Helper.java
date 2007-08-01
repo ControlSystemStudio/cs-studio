@@ -3,7 +3,7 @@ package org.csstudio.utility.pv.epics;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_CTRL_Double;
-import gov.aps.jca.dbr.DBR_CTRL_Short;
+import gov.aps.jca.dbr.DBR_CTRL_Int;
 import gov.aps.jca.dbr.DBR_Double;
 import gov.aps.jca.dbr.DBR_Float;
 import gov.aps.jca.dbr.DBR_Int;
@@ -29,6 +29,10 @@ import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
 
 /** Helper for dealing with DBR.. types.
+ *  <p>
+ *  JCA provides up to "...Int", returning an int/Integer.
+ *  IValue uses long for future protocol support.
+ *  
  *  @author Kay Kasemir
  */
 public class DBR_Helper
@@ -44,6 +48,23 @@ public class DBR_Helper
             return TimestampFactory.now();
         return TimestampFactory.createTimestamp(
                         t.secPastEpoch() + 631152000L, t.nsec());
+    }
+
+    /** @return CTRL_... type for this channel. */
+    public static DBRType getCtrlType(final boolean plain, final DBRType type)
+    {
+        if (type.isDOUBLE())
+            return plain ? DBRType.DOUBLE : DBRType.CTRL_DOUBLE;
+        else if (type.isFLOAT())
+            return plain ? DBRType.FLOAT : DBRType.CTRL_DOUBLE;
+        else if (type.isINT())
+            return plain ? DBRType.INT : DBRType.CTRL_INT;
+        else if (type.isSHORT())
+            return plain ? DBRType.SHORT : DBRType.CTRL_INT;
+        else if (type.isENUM())
+            return plain ? DBRType.SHORT : DBRType.CTRL_ENUM;
+        // default: get as string
+        return plain ? DBRType.STRING : DBRType.CTRL_STRING;
     }
 
     /** @return Meta data extracted from dbr */
@@ -67,9 +88,9 @@ public class DBR_Helper
                             ctrl.getPrecision(),
                             ctrl.getUnits());
         }
-        else if (dbr instanceof DBR_CTRL_Short)
+        else if (dbr instanceof DBR_CTRL_Int)
         {
-            final DBR_CTRL_Short ctrl = (DBR_CTRL_Short)dbr;
+            final DBR_CTRL_Int ctrl = (DBR_CTRL_Int)dbr;
             return ValueFactory.createNumericMetaData(
                             ctrl.getLowerDispLimit().doubleValue(),
                             ctrl.getUpperDispLimit().doubleValue(),
@@ -83,23 +104,6 @@ public class DBR_Helper
         return null;
     }
 
-    /** @return CTRL_... type for this channel. */
-    public static DBRType getCtrlType(final boolean plain, final DBRType type)
-    {
-        if (type.isDOUBLE())
-            return plain ? DBRType.DOUBLE : DBRType.CTRL_DOUBLE;
-        else if (type.isFLOAT())
-            return plain ? DBRType.FLOAT : DBRType.CTRL_FLOAT;
-        else if (type.isINT())
-            return plain ? DBRType.INT : DBRType.CTRL_INT;
-        else if (type.isSHORT())
-            return plain ? DBRType.SHORT : DBRType.CTRL_SHORT;
-        else if (type.isENUM())
-            return plain ? DBRType.SHORT : DBRType.CTRL_ENUM;
-        // default: get as string
-        return plain ? DBRType.STRING : DBRType.CTRL_STRING;
-    }
-    
     /** @return TIME_... type for this channel. */
     public static DBRType getTimeType(final boolean plain, final DBRType type)
     {

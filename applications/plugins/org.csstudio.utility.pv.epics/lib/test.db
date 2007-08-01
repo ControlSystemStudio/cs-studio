@@ -25,6 +25,12 @@ record(calc, "fred")
    field(PREC, "4")
 }
 
+record(longin, "long_fred")
+{
+   field(INP, "fred CP")
+   field(EGU,  "furlonger")
+}
+
 record(calc, "janet")
 {
    field(SCAN, ".1 second")
