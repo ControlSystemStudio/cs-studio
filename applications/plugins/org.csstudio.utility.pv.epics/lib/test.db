@@ -2,6 +2,21 @@
 #
 #   softIoc -s -d test.db
 
+record(mbbi, "enum")
+{
+   field(NOBT, "2")
+   field(ZRVL, "0")
+   field(ONVL, "1")
+   field(TWVL, "2")
+   field(THVL, "3")
+   field(ZRST, "zero")
+   field(ONST, "one")
+   field(TWST, "two")
+   field(THST, "three")
+   field(VAL, "1")
+   field(PINI, "YES")
+}
+
 record(calc, "fred")
 {
    field(SCAN, "1 second")
@@ -166,5 +181,32 @@ record(calc, "rnd16")
    field(CALC, "10+5*RNDM")
    field(EGU,  "furlong")
    field(PREC, "4")
+}
+
+record(calc, "ramp1")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "A<10?A+1:0")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+   field(INPA, "ramp1")
+}
+
+record(calc, "ramp2")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "A<10?A+1:0")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+   field(INPA, "ramp2")
+}
+
+record(calc, "ramp3")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "A<10?A+1:0")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+   field(INPA, "ramp3")
 }
 

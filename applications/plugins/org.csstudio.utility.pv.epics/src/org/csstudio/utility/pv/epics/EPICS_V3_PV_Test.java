@@ -142,6 +142,19 @@ public class EPICS_V3_PV_Test extends TestCase
         assertEquals("1 second", e.format());
         
         pva.stop();
+
+        pva = new EPICS_V3_PV("enum");
+        
+        pva.start();
+        while (!pva.isConnected())
+            Thread.sleep(100);
+        assertTrue(pva.isConnected());
+        assertTrue(pva.getValue() instanceof IEnumeratedValue);
+        e = (IEnumeratedValue) pva.getValue();
+        assertEquals(1, e.getValue());
+        assertEquals("one", e.format());
+        
+        pva.stop();
     }
 
 
