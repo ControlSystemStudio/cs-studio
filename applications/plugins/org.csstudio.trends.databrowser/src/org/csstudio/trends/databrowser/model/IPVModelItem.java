@@ -12,7 +12,14 @@ public interface IPVModelItem extends IModelItem
     /** How to request data from the archive server. */
     enum RequestType
     {
-        /** If possible, get the raw data. */
+        /** If possible, get the raw data.
+         *  <p>
+         *  This was added at the request of DESY.
+         *  Ordinarily, the OPTIMIZED request should
+         *  provide RAW data automatically once we zoom
+         *  in far enough, so all you get from this
+         *  request is a waste of memory.
+         */
         RAW(Messages.Request_raw),
         
         /** If possible, get data optimized for plotting. */

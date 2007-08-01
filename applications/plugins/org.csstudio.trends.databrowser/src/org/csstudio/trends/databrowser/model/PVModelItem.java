@@ -60,9 +60,7 @@ public class PVModelItem
     /** All the samples of this model item. */
     private ModelSamples samples;
     
-    /** How to request samples from the archive.
-     *  TODO remove when the server automatically provides 'raw'
-     */
+    /** How to request samples from the archive. */
     private RequestType request_type = RequestType.OPTIMIZED;
     
     /** Constructor

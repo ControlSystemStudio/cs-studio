@@ -5,7 +5,6 @@ import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem.RequestType;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -147,11 +146,6 @@ public class PVTableCellModifier implements ICellModifier
                     IPVModelItem pv = (IPVModelItem) entry;
                     int ordinal = ((Integer) value).intValue();
                     final RequestType request_type = IPVModelItem.RequestType.fromOrdinal(ordinal);
-                    // TODO remove when done
-                    if (request_type == RequestType.RAW)
-                        MessageDialog.openInformation(view.getSite().getShell(),
-                                "Being Developed", //$NON-NLS-1$
-                                "This feature is still under development"); //$NON-NLS-1$
                      pv.setRequestType(request_type);
                 }
                 return;
