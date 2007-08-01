@@ -273,6 +273,7 @@ public class EPICS_V3_PV
         {
             channel_ref = PVContext.getChannel(name);
             channel_ref.getChannel().addConnectionListener(this);
+            PVContext.flush();
         }
         if (channel_ref.getChannel().getConnectionState() == ConnectionState.CONNECTED)
         {
@@ -439,25 +440,32 @@ public class EPICS_V3_PV
      */
     private void runInUI(final Runnable runnable)
     {
-        Display display;
+        // Tried Display.getDefault() == null to determine
+        // if we're running with an SWT main loop,
+        // but in unit tests that suddenly returned a valid
+        // display, yet asyncExec never functioned for lack
+        // of a main loop.
+        // So now we check if the plugin was loaded.
+        // If not, we assume unit test
+        if (Activator.getDefault() == null)
+        {
+            if (PVContext.debug)
+                System.out.println("EPICS_V3_PV runInUI runs directly");
+            runnable.run();
+            return;
+        }
+            
         try
         {
-            display = Display.getDefault();
+            final Display display = Display.getDefault();
+            display.asyncExec(runnable);
         }
-        // If there is no display lib because for example
-        // we run in a non-SWT unit test, just call directly.
-        catch (UnsatisfiedLinkError ex)
+        catch (Throwable ex)
         {
+            Activator.logException("Cannot run in UI thread", ex);
             runnable.run();
             return;
         }
-        catch (NoClassDefFoundError ex)
-        {
-            runnable.run();
-            return;
-        }
-        // The 'normal' case under SWT: Transfer to UI thread.
-        display.asyncExec(runnable);
     }
     
     /** ConnectionListener interface. */
