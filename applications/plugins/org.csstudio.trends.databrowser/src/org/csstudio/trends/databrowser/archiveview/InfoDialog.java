@@ -8,10 +8,15 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
+/** Dialog for displaying archive server info.
+ *  @author Kay Kasemir
+ */
 public class InfoDialog extends Dialog
 {
     private final ArchiveServer server;
@@ -22,71 +27,79 @@ public class InfoDialog extends Dialog
         this.server = server;
     }
     
+    /** Create the UI elements */
     @Override
     protected Control createDialogArea(Composite parent)
     {
-        Composite composite = (Composite) super.createDialogArea(parent);
+        final Composite composite = (Composite) super.createDialogArea(parent);
+        
         // We happen to know that it's a GridLayout.
         // Not sure if that'll be guaranteed forever.
-        GridLayout layout = (GridLayout) composite.getLayout();
-        layout.numColumns = 2;
+        final GridLayout comp_layout = (GridLayout) composite.getLayout();
         
-        // Title
-        Label l = new Label(composite, SWT.SHADOW_IN);
-        l.setText(Messages.Info_Title);
+        // Group box for the rest.
+        final Group group = new Group(composite, SWT.SHADOW_IN);
+        group.setText(Messages.Info_Title);
         GridData gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
-        gd.horizontalSpan = layout.numColumns;
+        gd.horizontalSpan = comp_layout.numColumns;
         gd.horizontalAlignment = SWT.FILL;
-        l.setLayoutData(gd);
+        gd.grabExcessVerticalSpace = true;
+        gd.verticalAlignment = SWT.FILL;
+        group.setLayoutData(gd);
+        
+        final GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        group.setLayout(layout);
         
         // URL: ...
-        l = new Label(composite, 0);
+        Label l = new Label(group, 0);
         l.setText(Messages.URL);
         l.setLayoutData(new GridData());
         
-        l = new Label(composite, SWT.BORDER);
-        l.setText(server.getURL());
+        Text t = new Text(group, SWT.READ_ONLY);
+        t.setText(server.getURL());
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        l.setLayoutData(gd);
+        t.setLayoutData(gd);
 
         // Version: ...
-        l = new Label(composite, 0);
+        l = new Label(group, 0);
         l.setText(Messages.Info_Version);
         l.setLayoutData(new GridData());
         
-        l = new Label(composite, SWT.BORDER);
-        l.setText(Integer.toString(server.getVersion()));
+        t = new Text(group, SWT.READ_ONLY);
+        t.setText(Integer.toString(server.getVersion()));
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        l.setLayoutData(gd);
+        t.setLayoutData(gd);
                 
         // Description: ...
-        l = new Label(composite, 0);
+        l = new Label(group, 0);
         l.setText(Messages.Info_Description);
         gd = new GridData();
         gd.verticalAlignment = SWT.TOP;
         l.setLayoutData(gd);
         
-        l = new Label(composite, SWT.BORDER);
-        l.setText(server.getDescription());
+        t = new Text(group, SWT.READ_ONLY | SWT.WRAP);
+        t.setText(server.getDescription());
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.TOP;
-        l.setLayoutData(gd);
+        gd.grabExcessVerticalSpace = true;
+        gd.verticalAlignment = SWT.FILL;
+        t.setLayoutData(gd);
         
-        // Methods
-        l = new Label(composite, 0);
+        // Methods:
+        l = new Label(group, 0);
         l.setText(Messages.Info_Requests);
         gd = new GridData();
         gd.verticalAlignment = SWT.TOP;
         l.setLayoutData(gd);
         
-        List lst = new List(composite, SWT.BORDER);
+        List lst = new List(group, 0);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -99,11 +112,13 @@ public class InfoDialog extends Dialog
         return composite;
     }
     
+    /** Create an OK button.
+     *  (default would have been OK and cancel)
+     */
     @Override
-    protected void createButtonsForButtonBar(Composite parent) {
-        // create OK and Cancel buttons by default
+    protected void createButtonsForButtonBar(Composite parent)
+    {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
-                true);
+                     true);
     }
-
 }
