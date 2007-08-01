@@ -123,7 +123,6 @@ public class JMSLogTableViewer extends TableViewer {
 			String[] temp = columnHeader[i].split(",");
 			tableColumn.addDisposeListener(new DisposeListener(){
 
-				@Override
 				public void widgetDisposed(DisposeEvent e) {
 					columnWidth[tableColumn.getParent().indexOf(tableColumn)]=tableColumn.getWidth();
 				}
