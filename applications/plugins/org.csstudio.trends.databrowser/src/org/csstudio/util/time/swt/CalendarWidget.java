@@ -10,11 +10,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
-import org.vafada.swtcalendar.SWTCalendar;
-import org.vafada.swtcalendar.SWTCalendarEvent;
-import org.vafada.swtcalendar.SWTCalendarListener;
 
 /** Widget for displaying and selecting an absolute date and time.
  *  @author Kay Kasemir
@@ -22,9 +20,11 @@ import org.vafada.swtcalendar.SWTCalendarListener;
 public class CalendarWidget extends Composite
 {
     /** The SWTCalendar widget, actually only handles the date. */
-    private SWTCalendar date;
+    private DateTime date;
+    
     /** Widgets for time pieces. */
     private Spinner hour, minute, second;
+
     /** The currently configed calendar (date and time). */
     private Calendar calendar;
     
@@ -63,7 +63,7 @@ public class CalendarWidget extends Composite
         // Time: (hour)+- : (minute)+- : (second)+-
         //                        [Midnight] [Noon]
 
-        date = new SWTCalendar(this, SWTCalendar.RED_WEEKEND);
+        date = new DateTime(this, SWT.CALENDAR);
         date.setToolTipText(Messages.Time_SelectDate);
         gd = new GridData();
         gd.horizontalSpan = layout.numColumns;
@@ -169,9 +169,10 @@ public class CalendarWidget extends Composite
                 }
             }
         });
-        date.addSWTCalendarListener(new SWTCalendarListener()
+        date.addSelectionListener(new SelectionAdapter()
         {
-            public void dateChanged(SWTCalendarEvent calendarEvent)
+            @Override
+            public void widgetSelected(SelectionEvent e)
             {
                 if (!in_GUI_update)
                     updateDataFromGUI();
@@ -222,10 +223,14 @@ public class CalendarWidget extends Composite
     /** Update the data from the interactive GUI elements. */
     private void updateDataFromGUI()
     {
-        calendar = date.getCalendar();
+        calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, date.getYear());
+        calendar.set(Calendar.MONTH, date.getMonth());
+        calendar.set(Calendar.DAY_OF_MONTH, date.getDay());
         calendar.set(Calendar.HOUR_OF_DAY, hour.getSelection());
         calendar.set(Calendar.MINUTE, minute.getSelection());
         calendar.set(Calendar.SECOND, second.getSelection());
+        calendar.set(Calendar.MILLISECOND, 0);
         updateGUIfromData();
     }
 
@@ -233,7 +238,9 @@ public class CalendarWidget extends Composite
     private void updateGUIfromData()
     {
         in_GUI_update = true;
-        date.setCalendar(calendar);
+        date.setYear(calendar.get(Calendar.YEAR));
+        date.setMonth(calendar.get(Calendar.MONTH));
+        date.setDay(calendar.get(Calendar.DAY_OF_MONTH));
         hour.setSelection(calendar.get(Calendar.HOUR_OF_DAY));
         minute.setSelection(calendar.get(Calendar.MINUTE));
         second.setSelection(calendar.get(Calendar.SECOND));
