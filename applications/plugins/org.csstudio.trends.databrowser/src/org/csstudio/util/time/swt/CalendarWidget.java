@@ -8,22 +8,22 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Spinner;
 
 /** Widget for displaying and selecting an absolute date and time.
  *  @author Kay Kasemir
  */
 public class CalendarWidget extends Composite
 {
-    /** The SWTCalendar widget, actually only handles the date. */
+    /** Widget for date. */
     private DateTime date;
-    
-    /** Widgets for time pieces. */
-    private Spinner hour, minute, second;
+
+    /** Widget for time. */
+    private DateTime time;
 
     /** The currently configed calendar (date and time). */
     private Calendar calendar;
@@ -49,98 +49,77 @@ public class CalendarWidget extends Composite
      *  @param parent Widget parent.
      *  @param flags SWT widget flags.
      */
-    public CalendarWidget(Composite parent, int flags, Calendar calendar)
+    public CalendarWidget(final Composite parent, int flags, Calendar calendar)
     {
         super(parent, flags);
         GridLayout layout = new GridLayout();
-        layout.numColumns = 6;
         setLayout(layout);
         GridData gd;
         
-        // |                                      |
-        // |              Calendar                |
-        // |                                      |
-        // Time: (hour)+- : (minute)+- : (second)+-
-        //                        [Midnight] [Noon]
+        // |               |
+        // |    Calendar   |
+        // |               |
+        // Time: ---time--- 
+        // [Today] [Midnight] [Noon]
 
         date = new DateTime(this, SWT.CALENDAR);
         date.setToolTipText(Messages.Time_SelectDate);
         gd = new GridData();
-        gd.horizontalSpan = layout.numColumns;
         gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
+        gd.horizontalAlignment = SWT.CENTER;
         gd.grabExcessVerticalSpace = true;
         gd.verticalAlignment = SWT.FILL;
         date.setLayoutData(gd);
+ 
+        // New row
+        Composite box = new Composite(this, 0);
+        box.setLayout(new RowLayout());
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.CENTER;
+        box.setLayoutData(gd);
+        
+        Label l = new Label(box, SWT.NONE);
+        l.setText(Messages.Time_Time);
+
+        time = new DateTime(box, SWT.TIME | SWT.SHORT);
+        gd = new GridData();
         
         // New row
-        Label l = new Label(this, SWT.NONE);
-        l.setText(Messages.Time_Time);
-        gd = new GridData();
-        l.setLayoutData(gd);
-
-        hour = new Spinner(this, SWT.BORDER | SWT.WRAP);
-        hour.setToolTipText(Messages.Time_SelectHour);
+        box = new Composite(this, 0);
+        box.setLayout(new RowLayout());
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        hour.setLayoutData(gd);
-        hour.setMinimum(0);
-        hour.setMaximum(23);
-        hour.setIncrement(1);
-        hour.setPageIncrement(6);
-        l = new Label(this, SWT.NONE);
-        l.setText(Messages.Time_Sep);
-        gd = new GridData();
-        l.setLayoutData(gd);
+        gd.horizontalAlignment = SWT.CENTER;
+        box.setLayoutData(gd);
 
-        minute = new Spinner(this, SWT.BORDER | SWT.WRAP);
-        minute.setToolTipText(Messages.Time_SelectMinute);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        minute.setLayoutData(gd);
-        minute.setMinimum(0);
-        minute.setMaximum(59);
-        minute.setIncrement(1);
-        minute.setPageIncrement(10);
+        Button now = new Button(box, SWT.PUSH);
+        now.setText(Messages.Time_Now);
+        now.setToolTipText(Messages.Time_Now_TT);
 
-        l = new Label(this, SWT.NONE);
-        l.setText(Messages.Time_Sep);
-        gd = new GridData();
-        l.setLayoutData(gd);
-
-        second = new Spinner(this, SWT.BORDER | SWT.WRAP);
-        second.setToolTipText(Messages.Time_SelectSeconds);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        second.setLayoutData(gd);
-        second.setMinimum(0);
-        second.setMaximum(59);
-        second.setIncrement(1);
-        second.setPageIncrement(10);
-        
-        // New row        
-        Button midnight = new Button(this, SWT.PUSH);
+        Button midnight = new Button(box, SWT.PUSH);
         midnight.setText(Messages.Time_Midnight);
         midnight.setToolTipText(Messages.Time_Midnight_TT);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalSpan = layout.numColumns - 1;
-        gd.horizontalAlignment = SWT.RIGHT;
-        midnight.setLayoutData(gd);
 
-        Button noon = new Button(this, SWT.PUSH);
+        Button noon = new Button(box, SWT.PUSH);
         noon.setText(Messages.Time_Noon);
         noon.setToolTipText(Messages.Time_Noon_TT);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.RIGHT;
-        noon.setLayoutData(gd);
         
         // Initialize to 'now'
         setCalendar(calendar);
         
+        now.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                if (!in_GUI_update)
+                {
+                    setCalendar(Calendar.getInstance());
+                }
+            }
+        });
+
         midnight.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -148,9 +127,9 @@ public class CalendarWidget extends Composite
             {
                 if (!in_GUI_update)
                 {
-                    hour.setSelection(0);
-                    minute.setSelection(0);
-                    second.setSelection(0);
+                    time.setHours(0);
+                    time.setMinutes(0);
+                    time.setSeconds(0);
                     updateDataFromGUI();
                 }
             }
@@ -162,23 +141,14 @@ public class CalendarWidget extends Composite
             {
                 if (!in_GUI_update)
                 {
-                    hour.setSelection(12);
-                    minute.setSelection(0);
-                    second.setSelection(0);
+                    time.setHours(12);
+                    time.setMinutes(0);
+                    time.setSeconds(0);
                     updateDataFromGUI();
                 }
             }
         });
-        date.addSelectionListener(new SelectionAdapter()
-        {
-            @Override
-            public void widgetSelected(SelectionEvent e)
-            {
-                if (!in_GUI_update)
-                    updateDataFromGUI();
-            }
-        });
-        SelectionAdapter update = new SelectionAdapter() 
+        final SelectionAdapter update = new SelectionAdapter() 
         {
             @Override
             public void widgetSelected(SelectionEvent e)
@@ -187,9 +157,8 @@ public class CalendarWidget extends Composite
                     updateDataFromGUI();
             }
         };
-        hour.addSelectionListener(update);
-        minute.addSelectionListener(update);
-        second.addSelectionListener(update);
+        date.addSelectionListener(update);
+        time.addSelectionListener(update);
     }
     
     /** Add given listener. */
@@ -208,9 +177,11 @@ public class CalendarWidget extends Composite
     /** Set the widget to display the given time.
      *  @see #setNow()
      */
-    public void setCalendar(Calendar calendar)
+    public void setCalendar(final Calendar calendar)
     {
         this.calendar = calendar;
+        this.calendar.set(Calendar.SECOND, 0);
+        this.calendar.set(Calendar.MILLISECOND, 0);
         updateGUIfromData();
     }
 
@@ -227,9 +198,9 @@ public class CalendarWidget extends Composite
         calendar.set(Calendar.YEAR, date.getYear());
         calendar.set(Calendar.MONTH, date.getMonth());
         calendar.set(Calendar.DAY_OF_MONTH, date.getDay());
-        calendar.set(Calendar.HOUR_OF_DAY, hour.getSelection());
-        calendar.set(Calendar.MINUTE, minute.getSelection());
-        calendar.set(Calendar.SECOND, second.getSelection());
+        calendar.set(Calendar.HOUR_OF_DAY, time.getHours());
+        calendar.set(Calendar.MINUTE, time.getMinutes());
+        calendar.set(Calendar.SECOND, time.getSeconds());
         calendar.set(Calendar.MILLISECOND, 0);
         updateGUIfromData();
     }
@@ -241,9 +212,9 @@ public class CalendarWidget extends Composite
         date.setYear(calendar.get(Calendar.YEAR));
         date.setMonth(calendar.get(Calendar.MONTH));
         date.setDay(calendar.get(Calendar.DAY_OF_MONTH));
-        hour.setSelection(calendar.get(Calendar.HOUR_OF_DAY));
-        minute.setSelection(calendar.get(Calendar.MINUTE));
-        second.setSelection(calendar.get(Calendar.SECOND));
+        time.setHours(calendar.get(Calendar.HOUR_OF_DAY));
+        time.setMinutes(calendar.get(Calendar.MINUTE));
+        time.setSeconds(calendar.get(Calendar.SECOND));
         in_GUI_update = false;
         
         // fireUpdatedTimestamp
