@@ -223,7 +223,6 @@ public class ArchiveView extends ViewPart
         url.setLayoutData(gd);
         url.setEnabled(false);
         
-        // TODO This stopped working??
         ComboHistoryHelper url_helper =
             new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
                                URL_LIST_TAG, url)

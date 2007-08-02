@@ -3,8 +3,9 @@
 <plugin>
 
    <extension
+         point="org.eclipse.core.runtime.applications"
          id="application"
-         point="org.eclipse.core.runtime.applications">
+		 name="SNS CSS">
       <application>
          <run
                class="org.csstudio.sns.product.Application">
