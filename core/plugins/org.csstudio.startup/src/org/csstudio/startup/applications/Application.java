@@ -33,6 +33,8 @@ import org.csstudio.startup.ServiceProxy;
 import org.csstudio.startup.StartupServiceEnumerator;
 import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.equinox.app.IApplication;
+import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -46,12 +48,12 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  * @version $Revision$
  * 
  */
-public class Application implements IPlatformRunnable {
+public class Application implements IApplication {
 	/**
 	 * {@inheritDoc}
 	 */
-	public final Object run(final Object args) throws Exception {
-		IPreferenceStore coreStore = new ScopedPreferenceStore(
+	public Object start(IApplicationContext context) throws Exception {
+				IPreferenceStore coreStore = new ScopedPreferenceStore(
 				new InstanceScope(), CSSPlatformPlugin.getDefault().getBundle()
 						.getSymbolicName());
 
@@ -98,20 +100,27 @@ public class Application implements IPlatformRunnable {
                 // Is this supposed to be a RESTART or RELAUNCH?
                 final Integer exitCode =
                     Integer.getInteger(RelaunchConstants.PROP_EXIT_CODE);
-                if (IPlatformRunnable.EXIT_RELAUNCH.equals(exitCode)) {
+                if (IApplication.EXIT_RELAUNCH.equals(exitCode)) {
                 	// RELAUCH with new command line
-                    return IPlatformRunnable.EXIT_RELAUNCH;
+                    return IApplication.EXIT_RELAUNCH;
                 }
                 // RESTART without changes
-                return IPlatformRunnable.EXIT_RESTART;
+                return IApplication.EXIT_RESTART;
             }
             // Plain exit from IWorkbench.close()
-            return IPlatformRunnable.EXIT_OK;
+            return IApplication.EXIT_OK;
 		} finally {
 			if (display != null) {
 				display.dispose();
 			}
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void stop() {
+		// TODO: find out how to forcibly stop a running workbench
 	}
 
 	/**
