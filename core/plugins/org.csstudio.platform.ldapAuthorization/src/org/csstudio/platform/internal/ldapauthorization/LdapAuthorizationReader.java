@@ -1,5 +1,6 @@
 package org.csstudio.platform.internal.ldapauthorization;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Hashtable;
@@ -84,12 +85,12 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 					return set;
 				}
 			}
+		} catch (FileNotFoundException e) {
+			// Currently, ignore this error. Using a configuration file for
+			// the permissions is only a workaround until we have an LDAP-based
+			// implementation, so it is ok if there is no configuration file.
 		} catch (IOException e) {
-			// Note: currently, this is logged with "debug" level. It should
-			// be a warning or an error (and maybe also generate a security
-			// listener event), but right now this error happens quite often if
-			// the configuration file does not exist. The error handling should
-			// be changed when we read the permission from an LDAP directory.
+			// This should be logged as a warning, not debug, but see above.
 			CentralLogger.getInstance().debug(this,
 					"Error reading rights associated with action: " + actionId, e);
 		} finally {
