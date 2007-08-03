@@ -347,4 +347,11 @@ public class ProcessVariable {
 		out.println("DAL RemoteInfo		: " + toDalRemoteInfo());
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return true;
+	}
+	
+	
+
 }

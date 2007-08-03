@@ -21,7 +21,6 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
 
 import org.csstudio.sds.components.model.LinkingContainerModel;
@@ -29,7 +28,7 @@ import org.csstudio.sds.components.ui.internal.figures.LinkingContainerFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.DisplayModel;
-import org.csstudio.sds.model.persistence.DisplayModelReader;
+import org.csstudio.sds.model.persistence.PersistenceUtil;
 import org.csstudio.sds.ui.editparts.AbstractContainerEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.core.resources.IFile;
@@ -42,7 +41,6 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.CreateRequest;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart controller for the Snippet widget. The controller mediates between
@@ -52,7 +50,7 @@ import org.eclipse.swt.widgets.Display;
  * 
  */
 public final class LinkingContainerEditPart extends AbstractContainerEditPart {
-	
+
 	/**
 	 * Constructor.
 	 */
@@ -82,9 +80,8 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, 
-					final Object newValue,
-					final IFigure refreshableFigure) {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
 				initContainerFromResource((IPath) newValue);
 				return true;
 			}
@@ -107,8 +104,8 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new XYLayoutEditPolicy() {
 
 			@Override
-			protected Command createChangeConstraintCommand(final EditPart child,
-					final Object constraint) {
+			protected Command createChangeConstraintCommand(
+					final EditPart child, final Object constraint) {
 				return null;
 			}
 
@@ -130,8 +127,9 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 
 	/**
 	 * Initializes the {@link ContainerModel} from the specified path.
+	 * 
 	 * @param path
-	 * 			The Path to the ContainerModel
+	 *            The Path to the ContainerModel
 	 */
 	protected void initContainerFromResource(final IPath path) {
 		ContainerModel container = getContainerModel();
@@ -144,9 +142,7 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 				DisplayModel tempModel = new DisplayModel();
 
 				try {
-					DisplayModelReader.getInstance()
-							.readModelFromXml(file.getContents(), tempModel,
-									Display.getCurrent());
+					PersistenceUtil.fillModelAsynchroniously(tempModel, file.getContents(), null);
 				} catch (CoreException e) {
 					e.printStackTrace();
 				}
@@ -160,12 +156,12 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 
 				// add new widgets
 				it = tempModel.getWidgets().iterator();
-				while(it.hasNext()) {
+				while (it.hasNext()) {
 					AbstractWidgetModel w = it.next();
 					tempModel.removeWidget(w);
 					container.addWidget(w);
 				}
-				
+
 				((LinkingContainerFigure) getFigure()).updateZoom();
 			}
 
@@ -174,10 +170,10 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 
 	/**
 	 * Return the {@link IFile} with the given path.
+	 * 
 	 * @param location
-	 * 			The {@link IPath} to the file
-	 * @return IFile
-	 * 			The corresponding file
+	 *            The {@link IPath} to the file
+	 * @return IFile The corresponding file
 	 */
 	private IFile findFile(final IPath location) {
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(location);

@@ -23,10 +23,11 @@ package org.csstudio.sds.importer;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStream;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
-import org.csstudio.sds.model.persistence.DisplayModelInputStream;
+import org.csstudio.sds.model.persistence.PersistenceUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -75,8 +76,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		displayModel.addWidget(createPolygon());
 		displayModel.addWidget(createPolyline());
 
-		DisplayModelInputStream modelInputStream = new DisplayModelInputStream(
-				displayModel);
+		InputStream modelInputStream = PersistenceUtil.createStream(displayModel);
 
 		// create the target file in the workspace
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
