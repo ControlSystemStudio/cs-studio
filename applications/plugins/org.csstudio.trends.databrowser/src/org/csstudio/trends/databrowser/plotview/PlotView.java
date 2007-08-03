@@ -1,11 +1,13 @@
 package org.csstudio.trends.databrowser.plotview;
 
 import org.csstudio.swt.chart.Chart;
+import org.csstudio.swt.chart.actions.RemoveMarkersAction;
+import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
+import org.csstudio.swt.chart.actions.SaveCurrentImageAction;
+import org.csstudio.swt.chart.actions.ShowButtonBarAction;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
-import org.csstudio.trends.databrowser.plotpart.RemoveMarkersAction;
-import org.csstudio.trends.databrowser.plotpart.RemoveSelectedMarkersAction;
 import org.csstudio.util.file.FileUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IMenuListener;
@@ -50,8 +52,6 @@ public class PlotView extends ViewPart
     private static long instance = 0;
 
     private boolean initially_show_button_bar = false;
-
-    private RemoveSelectedMarkersAction remove_marker_action;
 
     /** Create another instance of the PlotView for the given file. */
     public static PlotView createInstance(IFile file)
@@ -134,11 +134,14 @@ public class PlotView extends ViewPart
         
         // Create context menu
         MenuManager context_menu = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-        context_menu.add(plot_part.createShowButtonBarAction());
+        context_menu.add(new ShowButtonBarAction(plot_part.getInteractiveChart()));
         final Chart chart = plot_part.getInteractiveChart().getChart();
         context_menu.add(new RemoveMarkersAction(chart));
-        remove_marker_action = new RemoveSelectedMarkersAction(chart);
+        final RemoveSelectedMarkersAction remove_marker_action =
+            new RemoveSelectedMarkersAction(chart);
         context_menu.add(remove_marker_action);
+        context_menu.add(new Separator());
+        context_menu.add(new SaveCurrentImageAction(chart));
         context_menu.add(new Separator());
         context_menu.add(new OpenAsPlotEditorAction(plot_part));
         context_menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));

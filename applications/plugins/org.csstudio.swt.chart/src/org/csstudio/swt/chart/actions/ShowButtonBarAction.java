@@ -1,5 +1,9 @@
-package org.csstudio.swt.chart;
+package org.csstudio.swt.chart.actions;
 
+import org.csstudio.swt.chart.Activator;
+import org.csstudio.swt.chart.InteractiveChart;
+import org.csstudio.swt.chart.InteractiveChartListener;
+import org.csstudio.swt.chart.Messages;
 import org.eclipse.jface.action.Action;
 
 /** An Action for showing or hiding the button bar of the InteractiveChart.

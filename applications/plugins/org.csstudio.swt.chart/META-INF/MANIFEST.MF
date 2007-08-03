@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.jface,
  org.csstudio.platform.ui,
  org.eclipse.ui
 Export-Package: org.csstudio.swt.chart,
+ org.csstudio.swt.chart.actions,
  org.csstudio.swt.chart.axes,
  org.csstudio.swt.chart.test
 Eclipse-LazyStart: true

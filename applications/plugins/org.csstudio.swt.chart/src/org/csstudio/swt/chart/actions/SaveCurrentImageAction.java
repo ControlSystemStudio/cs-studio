@@ -1,5 +1,8 @@
-package org.csstudio.swt.chart;
+package org.csstudio.swt.chart.actions;
 
+import org.csstudio.swt.chart.Activator;
+import org.csstudio.swt.chart.Chart;
+import org.csstudio.swt.chart.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
@@ -18,9 +21,10 @@ import org.eclipse.swt.widgets.FileDialog;
  */
 public class SaveCurrentImageAction extends Action
 {
-    private final InteractiveChart chart;
+    private final Chart chart;
 
-    public SaveCurrentImageAction(InteractiveChart chart)
+    /** Constructor */
+    public SaveCurrentImageAction(Chart chart)
     {
         super(Messages.SaveImage_ActionName,
               Activator.getImageDescriptor("icons/snapshot.gif")); //$NON-NLS-1$
@@ -28,10 +32,11 @@ public class SaveCurrentImageAction extends Action
         setToolTipText(Messages.SaveImage_ActionName_TT);
     }
     
+    /** {@inheritDoc} */
     @Override
     public void run()
     {
-        final Image snapshot = chart.getChart().createSnapshot();
+        final Image snapshot = chart.createSnapshot();
         if (snapshot == null)
             return;
         try

@@ -24,6 +24,10 @@ public class Messages extends NLS
     public static String Chart_ZoomAuto;
     public static String Chart_ZoomIn;
     public static String Chart_ZoomOut;
+    public static String RemoveMarkers;
+    public static String RemoveMarkers_TT;
+    public static String RemoveSelectedMarker;
+    public static String RemoveSelectedMarker_TT;
     public static String SaveImage_ActionName;
     public static String SaveImage_ActionName_TT;
     public static String SaveImage_ActionTitle;
@@ -32,6 +36,7 @@ public class Messages extends NLS
     public static String TraceType_Bars;
     public static String TraceType_Lines;
     public static String TraceType_Markers;
+    
     static
     {
         // initialize resource bundle

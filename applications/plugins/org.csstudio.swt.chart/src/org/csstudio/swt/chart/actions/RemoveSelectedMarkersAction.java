@@ -1,6 +1,7 @@
-package org.csstudio.trends.databrowser.plotpart;
+package org.csstudio.swt.chart.actions;
 
 import org.csstudio.swt.chart.Chart;
+import org.csstudio.swt.chart.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -16,8 +17,8 @@ public class RemoveSelectedMarkersAction extends Action
     public RemoveSelectedMarkersAction(Chart chart)
     {
         this.chart = chart;
-        setText(Messages.RemoveClosestMarker);
-        setToolTipText(Messages.RemoveClosestMarker_TT);
+        setText(Messages.RemoveSelectedMarker);
+        setToolTipText(Messages.RemoveSelectedMarker_TT);
         setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
     }
@@ -45,6 +46,7 @@ public class RemoveSelectedMarkersAction extends Action
         setEnabled(false);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void run()
     {

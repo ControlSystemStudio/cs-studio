@@ -5,6 +5,10 @@ import java.io.InputStream;
 
 import org.csstudio.platform.ui.workbench.FileEditorInput;
 import org.csstudio.swt.chart.Chart;
+import org.csstudio.swt.chart.actions.RemoveMarkersAction;
+import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
+import org.csstudio.swt.chart.actions.SaveCurrentImageAction;
+import org.csstudio.swt.chart.actions.ShowButtonBarAction;
 import org.csstudio.trends.databrowser.Perspective;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.archiveview.ArchiveView;
@@ -14,8 +18,6 @@ import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
-import org.csstudio.trends.databrowser.plotpart.RemoveMarkersAction;
-import org.csstudio.trends.databrowser.plotpart.RemoveSelectedMarkersAction;
 import org.csstudio.trends.databrowser.sampleview.SampleView;
 import org.csstudio.trends.databrowser.waveformview.WaveformView;
 import org.csstudio.util.editor.EmptyEditorInput;
@@ -295,8 +297,8 @@ public class PlotEditor extends EditorPart
     private void createActions()
     {
         final Chart chart = plot_part.getInteractiveChart().getChart();
-        button_bar_action = plot_part.createShowButtonBarAction();
-        save_current_image_action = plot_part.createSaveCurrentImageAction();
+        button_bar_action = new ShowButtonBarAction(plot_part.getInteractiveChart());
+        save_current_image_action = new SaveCurrentImageAction(chart);
         remove_markers_action = new RemoveMarkersAction(chart);
         remove_marker_action = new RemoveSelectedMarkersAction(chart);
         add_action = new AddPVAction(plot_part.getModel());

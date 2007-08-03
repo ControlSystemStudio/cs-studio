@@ -8,15 +8,19 @@ import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequenceContainer;
 import org.csstudio.swt.chart.InteractiveChart;
-import org.csstudio.swt.chart.ShowButtonBarAction;
 import org.csstudio.swt.chart.TraceType;
+import org.csstudio.swt.chart.actions.RemoveMarkersAction;
+import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
+import org.csstudio.swt.chart.actions.SaveCurrentImageAction;
+import org.csstudio.swt.chart.actions.ShowButtonBarAction;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IModelSamples;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelSample;
 import org.csstudio.trends.databrowser.model.QualityHelper;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
-import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
@@ -27,7 +31,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Slider;
@@ -197,14 +200,28 @@ public class WaveformView extends PlotAwareView
     /** Add context menu to plot */
     private void createContextMenu()
     {
-        Action button_bar_action = new ShowButtonBarAction(plot);
-
         final MenuManager context_menu = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-        context_menu.add(button_bar_action);
+        context_menu.add(new ShowButtonBarAction(plot));
+
+        final Chart chart = plot.getChart();
+        context_menu.add(new RemoveMarkersAction(chart));
+        final RemoveSelectedMarkersAction remove_marker_action
+            = new RemoveSelectedMarkersAction(chart);
+        context_menu.add(remove_marker_action);
+        context_menu.add(new Separator());
+        context_menu.add(new SaveCurrentImageAction(chart));
         context_menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-        final Control ctl = plot.getChart();
-        final Menu menu = context_menu.createContextMenu(ctl);
-        ctl.setMenu(menu);
+ 
+        final Menu menu = context_menu.createContextMenu(chart);
+        chart.setMenu(menu);
+
+        context_menu.addMenuListener(new IMenuListener()
+        {
+            public void menuAboutToShow(IMenuManager manager)
+            {
+                remove_marker_action.updateEnablement();
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -322,7 +339,11 @@ public class WaveformView extends PlotAwareView
         // Add to trace
         chart.addTrace(model_item.getName(),
                         series, model_item.getColor(), 1, 0, TraceType.Lines);
-        chart.getXAxis().setValueRange(0, series.size());
+        final int waveform_elements = series.size();
+        if (waveform_elements <= 1)
+            chart.getXAxis().setValueRange(-1, 1);
+        else
+            chart.getXAxis().setValueRange(0, waveform_elements);
         updateInfo(sample);
     }
 
