@@ -1,10 +1,38 @@
+/* 
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN '../AS IS' BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
 package org.csstudio.platform.statistic;
 
 import org.csstudio.platform.logging.CentralLogger;
 
+/**sdfgsdfgd.
+ * @author claus
+ *
+ */
 public class AlarmHandler {
 	
-	private String logLevel = "info";
+	/**fghjfd.
+	 * 
+	 */
+	private String _logLevel = "info";
 	private Double deadband = 5.0;
 	private Double highAbsoluteLimit = 1000.0;
 	private boolean highAbsoluteLimitIsActive = false;
@@ -15,19 +43,19 @@ public class AlarmHandler {
 	private String descriptor	= null;
 	private String application = null;
 	
-	public String getApplication() {
+	public final String getApplication() {
 		return application;
 	}
 
-	public void setApplication(String application) {
+	public final void setApplication(final String application) {
 		this.application = application;
 	}
 
-	public String getDescriptor() {
+	public final String getDescriptor() {
 		return descriptor;
 	}
 
-	public void setDescriptor(String descriptor) {
+	public final void setDescriptor(final String descriptor) {
 		this.descriptor = descriptor;
 	}
 
@@ -35,7 +63,7 @@ public class AlarmHandler {
 		
 	}
 	
-	public AlarmHandler ( Double highAbsoluteLimit, Double highRelativeLimit) {
+	public AlarmHandler ( final Double highAbsoluteLimit, final Double highRelativeLimit) {
 		/*
 		 * set limits
 		 */
@@ -43,7 +71,7 @@ public class AlarmHandler {
 		setHighRelativeLimit(highRelativeLimit);
 	}
 	
-	public void process ( Double value, Collector collector) {
+	public final void process ( final Double value, final Collector collector) {
 		/*
 		 * alarm chaecking
 		 */
@@ -90,62 +118,62 @@ public class AlarmHandler {
 	}
 	
 	
-	public Double getDeadband() {
+	public final Double getDeadband() {
 		return deadband;
 	}
-	public void setDeadband(Double deadband) {
+	public final void setDeadband(final Double deadband) {
 		this.deadband = deadband;
 	}
-	public void setDeadband(int deadband) {
+	public final void setDeadband(final int deadband) {
 		this.deadband = new Double(deadband);
 	}
-	public Double getHighAbsoluteLimit() {
+	public final Double getHighAbsoluteLimit() {
 		return this.highAbsoluteLimit;
 	}
-	public void setHighAbsoluteLimit(Double highAbsoluteLimit) {
+	public final void setHighAbsoluteLimit(final Double highAbsoluteLimit) {
 		this.highAbsoluteLimit = highAbsoluteLimit;
 	}
-	public void setHighAbsoluteLimit(int highAbsoluteLimit) {
+	public final void setHighAbsoluteLimit(final int highAbsoluteLimit) {
 		this.highAbsoluteLimit = new Double(highAbsoluteLimit);
 	}
-	public boolean isHighAbsoluteLimitIsActive() {
+	public final boolean isHighAbsoluteLimitIsActive() {
 		return this.highAbsoluteLimitIsActive;
 	}
-	public void setHighAbsoluteLimitIsActive(boolean highAbsoluteLimitIsActive) {
+	public final void setHighAbsoluteLimitIsActive(final boolean highAbsoluteLimitIsActive) {
 		this.highAbsoluteLimitIsActive = highAbsoluteLimitIsActive;
 	}
-	public StoredData getHighAbsoluteLimitLastAlarm() {
+	public final StoredData getHighAbsoluteLimitLastAlarm() {
 		return this.highAbsoluteLimitLastAlarm;
 	}
-	public void setHighAbsoluteLimitLastAlarm(StoredData highAbsoluteLimitLastAlarm) {
+	public final void setHighAbsoluteLimitLastAlarm(final StoredData highAbsoluteLimitLastAlarm) {
 		this.highAbsoluteLimitLastAlarm = highAbsoluteLimitLastAlarm;
 	}
-	public Double getHighRelativeLimit() {
+	public final Double getHighRelativeLimit() {
 		return this.highRelativeLimit;
 	}
-	public void setHighRelativeLimit(Double highRelativeLimit) {
+	public final void setHighRelativeLimit(final Double highRelativeLimit) {
 		this.highRelativeLimit = highRelativeLimit;
 	}
-	public void setHighRelativeLimit(int highRelativeLimit) {
+	public final void setHighRelativeLimit(final int highRelativeLimit) {
 		this.highRelativeLimit = new Double(highRelativeLimit);
 	}
-	public boolean isHighRelativeLimitIsActive() {
+	public final boolean isHighRelativeLimitIsActive() {
 		return this.highRelativeLimitIsActive;
 	}
-	public void setHighRelativeLimitIsActive(boolean highRelativeLimitIsActive) {
+	public final void setHighRelativeLimitIsActive(final boolean highRelativeLimitIsActive) {
 		this.highRelativeLimitIsActive = highRelativeLimitIsActive;
 	}
-	public StoredData getHighRelativeLimitLastAlarm() {
+	public final StoredData getHighRelativeLimitLastAlarm() {
 		return this.highRelativeLimitLastAlarm;
 	}
-	public void setHighRelativeLimitLastAlarm(StoredData highRelativeLimitLastAlarm) {
+	public final void setHighRelativeLimitLastAlarm(final StoredData highRelativeLimitLastAlarm) {
 		this.highRelativeLimitLastAlarm = highRelativeLimitLastAlarm;
 	}
-	public String getLogLevel() {
-		return this.logLevel;
+	public final String getLogLevel() {
+		return this._logLevel;
 	}
-	public void setLogLevel(String logLevel) {
-		this.logLevel = logLevel;
+	public final void setLogLevel(final String logLevel) {
+		this._logLevel = logLevel;
 	}
 	
 	

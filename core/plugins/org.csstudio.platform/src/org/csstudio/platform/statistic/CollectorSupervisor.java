@@ -60,7 +60,7 @@ public final class CollectorSupervisor {
         return result;
     }
     
-    public final String getCollectionAsXMLString () {
+    public String getCollectionAsXMLString () {
         final String[] _COLUMN_NAMES = "Application,Descriptor,Counter,Actual value,Date,Count,Highest Value,Date,Count,Lowest Value,Date,Count,Mean Value abs,Mean Value rel.,Alarm Limit (abs),Alarm Limit (rel),Hard Limit".split(",");
 //        File xmlFile = new File("c:\\tmp\\XMLStatisticFile.xml");
         System.out.println("Make new Doc");
@@ -171,11 +171,11 @@ public final class CollectorSupervisor {
         return collectorVector;
     }
 
-    public void setCollectorVector(Vector<Collector> collectorVector) {
+    public void setCollectorVector(final Vector<Collector> collectorVector) {
         this.collectorVector = collectorVector;
     }
     
-    public void addCollector( Collector collector) {
+    public void addCollector( final Collector collector) {
         collectorVector.add( collector);
     }
 

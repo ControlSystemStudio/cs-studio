@@ -6,15 +6,15 @@ public class BackgroundCollectorThread extends Thread{
 	
 	private int	timeout	= 0;
 	private boolean runForever	= true;
-	final static double MB = 1024.0*1024.0;
+	static final double MB = 1024.0*1024.0;
 	
-	BackgroundCollectorThread (  int timeout) {
+	BackgroundCollectorThread (  final int timeout) {
 		this.timeout = timeout;
 		CentralLogger.getInstance().info(this, "BackgroundCollectorThread started");
 		this.start();
 	}
 	
-public void run() {
+public final void run() {
 	
 	while (runForever) {
 		

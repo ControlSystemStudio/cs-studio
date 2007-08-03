@@ -1,9 +1,16 @@
 package org.csstudio.platform.statistic;
 
+/**resc.
+ * @author claus
+ *
+ */
 public class BackgroundCollector {
 	
-	private static 	BackgroundCollector 	thisBackgroundCollector = null;
-	private Collector	cpuUsedSystem	= null;
+	/**dfgdfg.
+	 * 
+	 */
+	private static 	BackgroundCollector 	_thisBackgroundCollector = null;
+	private Collector	_cpuUsedSystem	= null;
 	private Collector	cpuUsedApplication	= null;
 	private Collector	memoryUsedSystem	= null;
 	private Collector	memoryUsedApplication	= null;
@@ -22,18 +29,18 @@ public class BackgroundCollector {
 		//
 		// get an instance of our sigleton
 		//
-		if ( thisBackgroundCollector == null) {
+		if ( _thisBackgroundCollector == null) {
 			synchronized (BackgroundCollector.class) {
-				if (thisBackgroundCollector == null) {
-					thisBackgroundCollector = new BackgroundCollector();
+				if (_thisBackgroundCollector == null) {
+					_thisBackgroundCollector = new BackgroundCollector();
 				}
 			}
 		}
-		return thisBackgroundCollector;
+		return _thisBackgroundCollector;
 	}
 
 
-	public Collector getCpuUsedApplication() {
+	public final Collector getCpuUsedApplication() {
 		
 		if (cpuUsedApplication == null) {
 	        // CPU used by Application
@@ -48,38 +55,38 @@ public class BackgroundCollector {
 	}
 
 
-	public void setCpuUsedApplication(Collector cpuUsedApplication) {
+	public final void setCpuUsedApplication(final Collector cpuUsedApplication) {
 		this.cpuUsedApplication = cpuUsedApplication;
 	}
 
 
-	public Collector getCpuUsedSystem() {
+	public final Collector getCpuUsedSystem() {
 		
-		if (cpuUsedSystem == null) {
+		if (_cpuUsedSystem == null) {
 			// CPU used by System
-	        cpuUsedSystem = new Collector();
-	        cpuUsedSystem.setApplication("CSS-Core");
-	        cpuUsedSystem.setDescriptor("CPU used by System");
-	        cpuUsedSystem.getAlarmHandler().setDeadband(10.0);
-	        cpuUsedSystem.getAlarmHandler().setHighAbsoluteLimit(90.0);	// 90% CPU
-	        cpuUsedSystem.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
+	        _cpuUsedSystem = new Collector();
+	        _cpuUsedSystem.setApplication("CSS-Core");
+	        _cpuUsedSystem.setDescriptor("CPU used by System");
+	        _cpuUsedSystem.getAlarmHandler().setDeadband(10.0);
+	        _cpuUsedSystem.getAlarmHandler().setHighAbsoluteLimit(90.0);	// 90% CPU
+	        _cpuUsedSystem.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
 		}
-		return cpuUsedSystem;
+		return _cpuUsedSystem;
 	}
 
 
-	public void setCpuUsedSystem(Collector cpuUsedSystem) {
-		this.cpuUsedSystem = cpuUsedSystem;
+	public final void setCpuUsedSystem(final Collector cpuUsedSystem) {
+		this._cpuUsedSystem = cpuUsedSystem;
 	}
 
 
-	public Collector getMemoryUsedApplication() {
+	public final Collector getMemoryUsedApplication() {
 		
 		if ( memoryUsedApplication == null ) {
 	        // Memory used by Application
 	        memoryUsedApplication = new Collector();
 	        memoryUsedApplication.setApplication("CSS-Core");
-	        memoryUsedApplication.setDescriptor("Memory used by Application");
+	        memoryUsedApplication.setDescriptor("Memory allocated by Application");
 	        memoryUsedApplication.getAlarmHandler().setDeadband(10.0);
 	        memoryUsedApplication.getAlarmHandler().setHighAbsoluteLimit(200.0);	// 200 MB
 	        memoryUsedApplication.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
@@ -88,18 +95,18 @@ public class BackgroundCollector {
 	}
 
 
-	public void setMemoryUsedApplication(Collector memoryUsedApplication) {
+	public final void setMemoryUsedApplication(final Collector memoryUsedApplication) {
 		this.memoryUsedApplication = memoryUsedApplication;
 	}
 
 
-	public Collector getMemoryUsedSystem() {
+	public final Collector getMemoryUsedSystem() {
 		
 		if (memoryUsedSystem == null) {
 	        // Memory used by System
 	        memoryUsedSystem = new Collector();
 	        memoryUsedSystem.setApplication("CSS-Core");
-	        memoryUsedSystem.setDescriptor("Memory used by System");
+	        memoryUsedSystem.setDescriptor("max Memory available");
 	        memoryUsedSystem.getAlarmHandler().setDeadband(10.0);
 	        memoryUsedSystem.getAlarmHandler().setHighAbsoluteLimit(100000.0);	// biig number -> no alarm
 	        memoryUsedSystem.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
@@ -108,18 +115,18 @@ public class BackgroundCollector {
 	}
 
 
-	public void setMemoryUsedSystem(Collector memoryUsedSystem) {
+	public final void setMemoryUsedSystem(final Collector memoryUsedSystem) {
 		this.memoryUsedSystem = memoryUsedSystem;
 	}
 
 
-	public Collector getMemoryAvailableApplication() {
+	public final Collector getMemoryAvailableApplication() {
 		
 		if (memoryAvailableApplication == null) {
 			// Memory available for Application
 	        memoryAvailableApplication = new Collector();
 	        memoryAvailableApplication.setApplication("CSS-Core");
-	        memoryAvailableApplication.setDescriptor("Memory available for Application");
+	        memoryAvailableApplication.setDescriptor("Memory free for Application");
 	        memoryAvailableApplication.getAlarmHandler().setDeadband(10.0);
 	        memoryAvailableApplication.getAlarmHandler().setHighAbsoluteLimit(100000.0);	// biig number -> no alarm
 	        memoryAvailableApplication.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
@@ -128,7 +135,7 @@ public class BackgroundCollector {
 	}
 
 
-	public void setMemoryAvailableApplication(Collector memoryAvailableApplication) {
+	public final void setMemoryAvailableApplication(final Collector memoryAvailableApplication) {
 		this.memoryAvailableApplication = memoryAvailableApplication;
 	}
 
