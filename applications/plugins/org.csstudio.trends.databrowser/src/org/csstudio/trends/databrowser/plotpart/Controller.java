@@ -452,6 +452,8 @@ public class Controller
         // Anything to fetch at all?
         if (item.getArchiveDataSources().length < 1)
             return;
+        // TODO Analyze this. Zoom/pan results in too many calls.
+        // Cache saves us, but the code should still be smarter.
     	final ArchiveFetchJob job = new ArchiveFetchJob(item, start, end);
         job.schedule();
     }    
