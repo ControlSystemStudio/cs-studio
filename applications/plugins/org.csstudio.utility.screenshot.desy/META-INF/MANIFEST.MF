@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Destination Plug-in
+Bundle-SymbolicName: org.csstudio.utility.screenshot.desy;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.utility.screenshot.desy.DestinationPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.utility.screenshot,
+ org.csstudio.platform.ui
+Eclipse-LazyStart: true
+Bundle-ClassPath: lib/activation.jar,
+ lib/dsn.jar,
+ lib/imap.jar,
+ lib/mailapi.jar,
+ lib/smtp.jar,
+ .
+Export-Package: org.csstudio.utility.screenshot.desy
