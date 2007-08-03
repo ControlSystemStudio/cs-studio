@@ -711,11 +711,11 @@ public class Model
             l.entryConfigChanged(item);
     }
     
-    /** @see ModelListener#entryLookChanged(IModelItem) */
-    void fireEntryLookChanged(IModelItem item)
+    /** @see ModelListener#entryMetaDataChanged(IModelItem) */
+    void fireEntryMetadataChanged(IModelItem item)
     {
         for (ModelListener l : listeners)
-            l.entryLookChanged(item);
+            l.entryMetaDataChanged(item);
     }
     
     /** @see ModelListener#entryArchivesChanged(IModelItem) */

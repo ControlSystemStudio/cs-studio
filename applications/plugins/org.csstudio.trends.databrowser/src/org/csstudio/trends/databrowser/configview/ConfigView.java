@@ -142,7 +142,7 @@ public class ConfigView extends PlotAwareView
         public void entryConfigChanged(IModelItem item)
         {   entriesChanged(); }
 
-        public void entryLookChanged(IModelItem item)
+        public void entryMetaDataChanged(IModelItem item)
         {   /* not configurable */ }
         
         public void entryArchivesChanged(IModelItem item)

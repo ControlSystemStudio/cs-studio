@@ -132,12 +132,14 @@ public class Controller
                 return;
             removeFromDisplay(item);
             addToDisplay(item);
-            removeUnusedAxes();
             getArchivedData(item);
         }
 
-        public void entryLookChanged(IModelItem item)
-        {   entryConfigChanged(item);  }
+        public void entryMetaDataChanged(IModelItem item)
+        {   // Display the new units on the Y Axis
+            removeFromDisplay(item);
+            addToDisplay(item);
+        }
         
         public void entryArchivesChanged(IModelItem item)
         {   getArchivedData(item); }
@@ -425,7 +427,7 @@ public class Controller
      *  if it's an <code>IPVModelItem</code>,
      *  or all if <code>item==null</code>.
      */
-    private void getArchivedData(IModelItem item)
+    private void getArchivedData(final IModelItem item)
     {
         final ITimestamp start = model.getStartTime();
         final ITimestamp end = model.getEndTime();

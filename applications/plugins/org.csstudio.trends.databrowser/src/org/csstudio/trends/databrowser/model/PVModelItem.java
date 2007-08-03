@@ -340,7 +340,7 @@ public class PVModelItem
             if (! units.equals(new_units))
             {
                 units = new_units;
-                model.fireEntryLookChanged(this);
+                model.fireEntryMetadataChanged(this);
             }
         }
     }

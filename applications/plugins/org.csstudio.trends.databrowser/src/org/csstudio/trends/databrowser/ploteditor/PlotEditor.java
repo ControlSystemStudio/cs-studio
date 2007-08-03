@@ -97,7 +97,7 @@ public class PlotEditor extends EditorPart
         public void entryConfigChanged(IModelItem item) 
         {   entriesChanged();  }
         
-        public void entryLookChanged(IModelItem item) 
+        public void entryMetaDataChanged(IModelItem item) 
         {   /* so what */ }
         
         public void entryArchivesChanged(IModelItem item)

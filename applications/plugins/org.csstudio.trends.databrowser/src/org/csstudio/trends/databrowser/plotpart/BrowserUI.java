@@ -24,8 +24,29 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class BrowserUI extends Composite
 {
+    /** Model */
     final private Model model;
-    private ModelListener listener;
+
+    /** Listen to model's time range changes. */
+    final private ModelListener listener = new ModelListener()
+    {
+        // TODO: Can't the controller do this?
+        public void timeRangeChanged()
+        {   // Adjust the x axis to the "current" model time range
+            final double low = model.getStartTime().toDouble();
+            final double high = model.getEndTime().toDouble();
+            i_chart.getChart().getXAxis().setValueRange(low, high);
+        }
+        
+        public void timeSpecificationsChanged()           { /* NOP */ }
+        public void periodsChanged()                      { /* NOP */ }
+        public void entriesChanged()                      { /* NOP */ }
+        public void entryAdded(IModelItem new_item)       { /* NOP */ }
+        public void entryConfigChanged(IModelItem item)   { /* NOP */ }
+        public void entryMetaDataChanged(IModelItem item) { /* NOP */ }
+        public void entryArchivesChanged(IModelItem item) { /* NOP */ }
+        public void entryRemoved(IModelItem removed_item) { /* NOP */ }
+    };
 
     private InteractiveChart i_chart;
     private Button scroll_pause;
@@ -119,31 +140,6 @@ public class BrowserUI extends Composite
             }
         });
         
-        // Listen to model's time range
-        listener = new ModelListener()
-        {
-            public void timeRangeChanged()
-            {   // Adjust the x axis to the "current" model time range
-                final double low = model.getStartTime().toDouble();
-                final double high = model.getEndTime().toDouble();
-                i_chart.getChart().getXAxis().setValueRange(low, high);
-            }
-            public void timeSpecificationsChanged() { /* NOP */ }
-            
-            public void periodsChanged()  { /* NOP */ }
-
-            public void entriesChanged()  { /* NOP */ }
-            
-            public void entryAdded(IModelItem new_item)   { /* NOP */ }
-            
-            public void entryConfigChanged(IModelItem item)  { /* NOP */ }
-            
-            public void entryLookChanged(IModelItem item)  { /* NOP */ }
-            
-            public void entryArchivesChanged(IModelItem item) { /* NOP */ }
-
-            public void entryRemoved(IModelItem removed_item)  { /* NOP */ }
-        };
         model.addListener(listener);
         
         // Initialize the time axis

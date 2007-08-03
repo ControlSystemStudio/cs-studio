@@ -34,13 +34,14 @@ public interface ModelListener
      */
     public void entryConfigChanged(IModelItem item);
     
-    /** Invoked when an item's look was changed.
+    /** Invoked when an item's meta data was changed.
      *  <p>
      *  This includes the engineering units.
      *  The item needs to be redrawn,
-     *  but there is no new data, and nothing needs to be saved.
+     *  but there is no new data,
+     *  and nothing needs to be saved.
      */
-    public void entryLookChanged(IModelItem item);    
+    public void entryMetaDataChanged(IModelItem item);    
     
     /** Invoked when the archive config of an item was changed.
      *  <p>
