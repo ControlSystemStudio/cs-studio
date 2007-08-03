@@ -127,7 +127,7 @@
             class="org.csstudio.sds.components.internal.model.GroupingContainerModelFactory"
             description="A container widget that can group other widgets."
             icon="icons/groupcontainer.gif"
-            name="Grouping container"
+            name="Grouping Container"
             typeId="widget.grouping-container"/>            
    </extension>
 
