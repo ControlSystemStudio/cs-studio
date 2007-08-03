@@ -45,4 +45,13 @@
             schemaId="schema.epics"
             widgetTypeId="element.meter"/>
    </extension>
+   
+      <extension
+         point="org.csstudio.sds.widgetModelInitializers">
+      <widgetModelInitializer
+            class="org.csstudio.sds.cosywidgets.epics.MeterInitializer"
+            schemaId="cosyschema.epics"
+            widgetTypeId="cosywidgets.meter"/>
+   </extension>
+   
 </plugin>

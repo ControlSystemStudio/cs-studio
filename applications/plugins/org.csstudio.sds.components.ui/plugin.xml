@@ -55,4 +55,53 @@
            class="org.csstudio.sds.components.ui.internal.feedback.PolyLineFeedbackFactory"
            typeId="element.polyline"/>
   </extension>
+  
+   <extension
+         point="org.csstudio.sds.ui.widgetEditParts">
+      <widgetEditPart
+            class="org.csstudio.sds.cosywidgets.ui.internal.editparts.MeterEditPart"
+            typeId="cosywidgets.meter"/>
+      <widgetEditPart
+            class="org.csstudio.sds.cosywidgets.ui.internal.editparts.LabelEditPart"
+            typeId="cosywidgets.label"/>
+      <widgetEditPart
+            class="org.csstudio.sds.cosywidgets.ui.internal.editparts.ArcEditPart"
+            typeId="cosywidgets.arc"/>
+      <widgetEditPart
+            class="org.csstudio.sds.cosywidgets.ui.internal.editparts.ImageEditPart"
+            typeId="cosywidgets.image"/>
+      <widgetEditPart
+            class="org.csstudio.sds.cosywidgets.ui.internal.editparts.ModifiedMeterEditPart"
+            typeId="cosywidgets.modifiedmeter"/>
+      <widgetEditPart
+            class="org.csstudio.sds.cosywidgets.ui.internal.editparts.SwitchEditPart"
+            typeId="cosywidgets.switch"/>
+   </extension>
+   <extension
+         point="org.csstudio.sds.cosywidgets.switch">
+      <Switch
+            Class="org.csstudio.sds.cosywidgets.ui.internal.switchtypes.Lasttrennschalter"
+            Name="Lasttrennschalter"
+            SwitchID="cosywidgets.switch.lasttrennschalter"/>
+      <Switch
+            Class="org.csstudio.sds.cosywidgets.ui.internal.switchtypes.Erdtrenner"
+            Name="Erdtrenner"
+            SwitchID="cosywidgets.switch.erdtrenner"/>
+      <Switch
+            Class="org.csstudio.sds.cosywidgets.ui.internal.switchtypes.Leistungsschalter"
+            Name="Leistungsschalter"
+            SwitchID="cosywidgets.switch.leistungsschalter"/>
+      <Switch
+            Class="org.csstudio.sds.cosywidgets.ui.internal.switchtypes.Leistungstrennschalter"
+            Name="Leistungstrennschalter"
+            SwitchID="cosywidgets.switch.leistungstrennschalter"/>
+      <Switch
+            Class="org.csstudio.sds.cosywidgets.ui.internal.switchtypes.Schaltertrennstelle"
+            Name="Schaltertrennstelle"
+            SwitchID="cosywidgets.switch.schaltertrennstelle"/>
+      <Switch
+            Class="org.csstudio.sds.cosywidgets.ui.internal.switchtypes.Trennschalter"
+            Name="Trennschalter"
+            SwitchID="cosywidgets.switch.trennschalter"/>
+   </extension>
 </plugin>

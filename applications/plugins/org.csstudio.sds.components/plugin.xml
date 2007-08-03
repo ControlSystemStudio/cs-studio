@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+  <extension-point id="org.csstudio.sds.cosywidgets.switch" name="Switch" schema="schema/org.csstudio.sds.cosywidgets.switch.exsd"/>
+   <extension
+         point="org.csstudio.sds.widgetModelFactories">
+      <widgetModelFactory
+            class="org.csstudio.sds.cosywidgets.internal.factories.MeterModelFactory"
+            description="Creates a meter control."
+            icon="icons/meter.gif"
+            name="Meter"
+            typeId="cosywidgets.meter"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.cosywidgets.internal.factories.LabelModelFactory"
+            description="Creates a label."
+            icon="icons/label.gif"
+            name="Label"
+            typeId="cosywidgets.label"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.cosywidgets.internal.factories.ArcModelFactory"
+            description="Creates an arc."
+            icon="icons/arc.gif"
+            name="Arc"
+            typeId="cosywidgets.arc"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.cosywidgets.internal.factories.ImageModelFactory"
+            description="Creates an image."
+            icon="icons/image.gif"
+            name="Image"
+            typeId="cosywidgets.image"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.cosywidgets.internal.factories.ModifiedMeterModelFactory"
+            description="Modified Meter"
+            icon="icons/meter.gif"
+            name="Modified Meter"
+            typeId="cosywidgets.modifiedmeter"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.cosywidgets.internal.factories.SwitchModelFactory"
+            description="Creates a switch."
+            icon="icons/switch.gif"
+            name="Switch"
+            typeId="cosywidgets.switch"/>
+   </extension>
+
+
    <extension
          point="org.csstudio.sds.widgetModelFactories">
       <widgetModelFactory
