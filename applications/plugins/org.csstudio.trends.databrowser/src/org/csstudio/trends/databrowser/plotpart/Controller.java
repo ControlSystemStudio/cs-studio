@@ -427,9 +427,8 @@ public class Controller
      */
     private void getArchivedData(IModelItem item)
     {
-        XAxis xaxis = chart.getXAxis();
-        ITimestamp start = TimestampFactory.fromDouble(xaxis.getLowValue());
-        ITimestamp end = TimestampFactory.fromDouble(xaxis.getHighValue());
+        final ITimestamp start = model.getStartTime();
+        final ITimestamp end = model.getEndTime();
         if (item == null)
         {
             for (int i=0; i<model.getNumItems(); ++i)
@@ -444,13 +443,14 @@ public class Controller
     }
 
     /** Get data from archive for given model item and time range. */
-    private void getArchivedData(IPVModelItem item,
-                                 ITimestamp start, ITimestamp end)
+    private void getArchivedData(final IPVModelItem item,
+                                 final ITimestamp start,
+                                 final ITimestamp end)
     {
         // Anything to fetch at all?
         if (item.getArchiveDataSources().length < 1)
             return;
-    	ArchiveFetchJob job = new ArchiveFetchJob(item, start, end);
+    	final ArchiveFetchJob job = new ArchiveFetchJob(item, start, end);
         job.schedule();
     }    
 }

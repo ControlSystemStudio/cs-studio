@@ -67,9 +67,9 @@ class SampleHashKey
     @Override
     public String toString()
     {
-        return "SampleHashKey '" + name
+        return "'" + name
            + "', key " + key
            + ", " + start.toString() + " - " + end.toString()
-           + ", type " + request_type;
+           + ", as " + request_type;
     }
 }

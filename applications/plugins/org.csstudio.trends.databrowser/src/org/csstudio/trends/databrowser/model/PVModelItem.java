@@ -228,7 +228,7 @@ public class PVModelItem
             final String arch_name = DOMHelper.getSubelementString(arch, TAG_NAME);
             final String url = DOMHelper.getSubelementString(arch, TAG_URL);
             final int key = DOMHelper.getSubelementInt(arch, TAG_KEY);
-            item.addArchiveDataSource(
+            item.silentlyAddArchiveDataSource(
                 CentralItemFactory.createArchiveDataSource(url, key, arch_name));            
             arch = DOMHelper.findNextElementNode(arch, TAG_ARCHIVE);
         }
@@ -355,14 +355,22 @@ public class PVModelItem
     /** Add another archive data source. */
     public void addArchiveDataSource(IArchiveDataSource archive)
     {
+        if (silentlyAddArchiveDataSource(archive))
+        {   // Notify model of this change.
+            model.fireEntryArchivesChanged(this);
+        }
+    }
+
+    /** Add another archive data source without notifying listeners. */
+    private boolean silentlyAddArchiveDataSource(IArchiveDataSource archive)
+    {
         // Ignore duplicates
         for (IArchiveDataSource arch : archives)
             if (arch.getKey() == archive.getKey() &&
                 arch.getUrl().equals(archive.getUrl()))
-                return;
+                return false;
         archives.add(archive);
-        // Notify model of this change.
-        model.fireEntryArchivesChanged(this);
+        return true;
     }
 
     /** Remove given archive data source. */

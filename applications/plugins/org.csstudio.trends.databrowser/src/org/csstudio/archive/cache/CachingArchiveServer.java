@@ -16,7 +16,7 @@ import org.csstudio.trends.databrowser.Plugin;
 public class CachingArchiveServer extends ArchiveServer
 {
     /** The 'real' server. */
-    private ArchiveServer server;
+    final private ArchiveServer server;
     
     // The sample cache simply compares the exact request.
     // That works OK for panning back and forth, or zooming in and back out:
@@ -30,13 +30,13 @@ public class CachingArchiveServer extends ArchiveServer
     // to the front, and remove the (old) entries from the tail when
     // exceeding the SAMPLE_CACHE_LENGTH.
     private static int SAMPLE_CACHE_LENGTH = 40;
-    private LinkedList<SampleCacheEntry> sample_cache =
+    final private LinkedList<SampleCacheEntry> sample_cache =
                                 new LinkedList<SampleCacheEntry>();
 
     /** Constructor.
      *  @param server The 'real' server.
      */
-    CachingArchiveServer(ArchiveServer server)
+    CachingArchiveServer(final ArchiveServer server)
     {
         super();
         this.server = server;
@@ -60,23 +60,27 @@ public class CachingArchiveServer extends ArchiveServer
     
     @SuppressWarnings("nls")
     @Override
-    synchronized public ArchiveValues[] getSamples(int key, String[] names,
-                    ITimestamp start, ITimestamp end,
-                    String request_type,
-                    Object request_parms[]) throws Exception
+    synchronized public ArchiveValues[] getSamples(
+                    final int key,
+                    final String[] names,
+                    final ITimestamp start,
+                    final ITimestamp end,
+                    final String request_type,
+                    final Object request_parms[]) throws Exception
     {
         if (names.length != 1)
             throw new Exception("Only supporting single-name requests.");
         // See if we find the result for this request in the cache:
         SampleHashKey hash_key = new SampleHashKey(key, names[0],
                        start, end, request_type, request_parms);
-        Plugin.logInfo("CachingArchiveServer.getSamples: " + hash_key);
+        Plugin.logInfo("CachingArchiveServer: " + hash_key);
         for (SampleCacheEntry entry : sample_cache)
             if (entry.getKey().equals(hash_key))
             {
-                Plugin.logInfo("Found data on cache");
-                ArchiveValues result[] = new ArchiveValues[1];
-                result[0] = entry.getData();
+                ArchiveValues result[] = new ArchiveValues[]
+                { entry.getData() };
+                Plugin.logInfo("Found data on cache: " +
+                                result[0].getSamples().length + " samples");
                 return result;
             }
         
@@ -90,13 +94,15 @@ public class CachingArchiveServer extends ArchiveServer
         // Expect one result for single-name request.
         if (result.length != 1)
             throw new Exception("Received " + result.length + " responses");
-        ArchiveValues samples = result[0];
+        final ArchiveValues samples = result[0];
         // Remember the result
         if (samples != null)
         {
             if (sample_cache.size() >= SAMPLE_CACHE_LENGTH-1)
                 sample_cache.removeLast().getKey();
             sample_cache.addFirst(new SampleCacheEntry(hash_key, samples));
+            Plugin.logInfo("Got " +
+                            result[0].getSamples().length + " new samples");
         }
         return result;
     }
