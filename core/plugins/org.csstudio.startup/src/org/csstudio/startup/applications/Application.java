@@ -31,7 +31,6 @@ import org.csstudio.platform.ui.dialogs.LoginDialog;
 import org.csstudio.platform.ui.workbench.CssWorkbenchAdvisor;
 import org.csstudio.startup.ServiceProxy;
 import org.csstudio.startup.StartupServiceEnumerator;
-import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
