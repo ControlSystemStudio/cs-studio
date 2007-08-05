@@ -202,7 +202,8 @@ public final class SecurityFacade {
 	
 	/**
 	 * Performs the login procedure.
-	 *
+	 * @param handler
+	 * 			The {@link ILoginCallbackHandler} for the login
 	 */
 	public void login(ILoginCallbackHandler handler) {
 		this._context.login(handler);

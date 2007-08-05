@@ -21,7 +21,7 @@
  */
 package org.csstudio.platform.ui.security;
 
-import org.csstudio.platform.security.IWidgetAdapter;
+import org.csstudio.platform.security.IActivationAdapter;
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -29,10 +29,10 @@ import org.eclipse.swt.widgets.Control;
  * @author Kai Meyer & Torsten Witte
  *
  */
-public class VisibleControlAdapter implements IWidgetAdapter {
+public class VisibleControlAdapter implements IActivationAdapter {
 
 	/**
-	 * @see testrcp.widgetmanagement.adapter.IWidgetAdapter#activate(java.lang.Object, boolean)
+	 * @see testrcp.widgetmanagement.adapter.IActivationAdapter#activate(java.lang.Object, boolean)
 	 * @param o The Control-Object
 	 * @param activate The value for the activation
 	 */

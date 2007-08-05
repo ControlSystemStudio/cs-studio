@@ -22,10 +22,10 @@
 package org.csstudio.platform.internal.security;
 
 /**
- * This is a superclass for all Exceptions thrown by the WidgetManagement.
+ * This is a superclass for all Exceptions thrown by the ActivationService.
  * @author Kai Meyer and Torsten Witte
  */
-public abstract class WidgetManagementException extends Exception {
+public abstract class ActivationServiceException extends RuntimeException {
 	
 	/**
 	 * Generated serial version unifed ID.
@@ -41,7 +41,7 @@ public abstract class WidgetManagementException extends Exception {
 	 * Constructor.
 	 * @param clazz The class for this Exception
 	 */
-	public WidgetManagementException(final Class clazz) {
+	public ActivationServiceException(final Class clazz) {
 		_clazz = clazz;
 	}
 	

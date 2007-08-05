@@ -21,12 +21,12 @@
  */
 package org.csstudio.platform.internal.security;
 
-import org.csstudio.platform.security.IWidgetAdapter;
+import org.csstudio.platform.security.IActivationAdapter;
 
 
 
 /**
- * This class represents an object and its IWidgetAdapter.
+ * This class represents an object and its IActivationAdapter.
  * @author Kai Meyer & Torsten Witte
  *
  */
@@ -37,39 +37,39 @@ public class ObjectAdapterTupel {
 	 */
 	private final Object _object;
 	/**
-	 * The IWidgetAdapter.
+	 * The IActivationAdapter.
 	 */
-	private final IWidgetAdapter _adapter;
+	private final IActivationAdapter _adapter;
 	
 	/**
 	 * Constructor.
-	 * @param object The widget to manage
-	 * @param adapter The IWidgetAdapter to activate the widget
+	 * @param object The Object to manage
+	 * @param adapter The IActivationAdapter to activate the object
 	 */
-	public ObjectAdapterTupel(final Object object, final IWidgetAdapter adapter) {
+	public ObjectAdapterTupel(final Object object, final IActivationAdapter adapter) {
 		assert object!=null;
 		_object = object;
 		_adapter = adapter;
 	}
 	
 	/**
-	 * Delivers the widget.
-	 * @return  The widget
+	 * Delivers the object.
+	 * @return  The object
 	 */
 	public final Object getObject() {
 		return _object;
 	}
 	
 	/**
-	 * Delivers the IWidgetAdapter for the widget.
-	 * @return  The IWidgetAdapter for the widget
+	 * Delivers the IActivationAdapter for the object.
+	 * @return  The IActivationAdapter for the object
 	 */
-	public final IWidgetAdapter getAdapter() {
+	public final IActivationAdapter getAdapter() {
 		return _adapter;
 	}
 	
 	/**
-	 * Forces the IWidgetAdapter for the widget to activate the widget.
+	 * Forces the IActivationAdapter for the object to activate the object.
 	 * @param activate  The value for the activation
 	 */
 	public final void activate(final boolean activate) {

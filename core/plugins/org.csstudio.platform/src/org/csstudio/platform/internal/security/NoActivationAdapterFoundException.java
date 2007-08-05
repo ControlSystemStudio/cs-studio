@@ -19,24 +19,33 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.security;
+package org.csstudio.platform.internal.security;
 
 /**
- * The interface for all WidgetAdapter.
- * An implementation of this interface should "activate" or "deactivate" the given object depending on the type of that object.
- * P.e. on a org.eclipse.swt.widgets.Control can be called <code>setEnable(boolean enabled)</code>, and on another type can be called
- * <code>setActivate(boolean activate)</code>. 
- * The method <code>activate</code> is called by the ObjectAdapterTupel which holds the object. 
- * @author Kai Meyer & Torsten Witte
- *
+ * An Exception witch is thrown if no ActivationAdapter could be found. 
+ * 
+ * @author Kai Meyer and Torsten Witte
  */
-public interface IWidgetAdapter {
+public class NoActivationAdapterFoundException extends ActivationServiceException {
+
+	/**
+	 * Generated serial version unified ID.
+	 */
+	private static final long serialVersionUID = 6392656289158291547L;
+		
+	/**
+	 * Constructor.
+	 * @param clazz The class for which no IActivationAdapter could be found
+	 */
+	public NoActivationAdapterFoundException(final Class clazz) {
+		super(clazz);
+	}
 	
 	/**
-	 * Activates the given widget.
-	 * @param o The widget to activate
-	 * @param activate The value for the activation
+	 * {@inheritDoc}
 	 */
-	void activate(Object o, boolean activate);
-
+	protected final String getMessage(final Class clazz) {
+		return "No ActivationAdapter found for "+clazz;
+	}
+	
 }

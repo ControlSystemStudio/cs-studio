@@ -24,13 +24,13 @@ package org.csstudio.platform.internal.security;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.csstudio.platform.security.IWidgetAdapter;
+import org.csstudio.platform.security.IActivationAdapter;
 
 /**
  * This class contains a List of ObjectAdapterTupel and an IRight.
  * @author Kai Meyer & Torsten Witte
  */
-public class WidgetList {
+public class ActivateableList {
 	
 	/**
 	 * The List for the ObjectAdapterTupel.
@@ -43,31 +43,31 @@ public class WidgetList {
 	
 	/**
 	 * Constructor.
-	 * @param right An IRight as default value for all contained widgets 
+	 * @param right An IRight as default value for all contained objects 
 	 */
-	public WidgetList(final String right) {
+	public ActivateableList(final String right) {
 		_defaultRightID = right;
 	}
 	
 	/**
-	 * Adds the given widget to this WidgetList.
-	 * @param widget  The widget, which should be added 
-	 * @param adapter  The IWidgetAdapter for the given widget 
+	 * Adds the given object to this ActivateabletList.
+	 * @param object  The object, which should be added 
+	 * @param adapter  The IActivationAdapter for the given object 
 	 */
-	public final void addWidget(final Object widget, final IWidgetAdapter adapter) {
-		if (widget != null) {
-			_tupel.add(new ObjectAdapterTupel(widget, adapter));
+	public final void addObject(final Object object, final IActivationAdapter adapter) {
+		if (object != null) {
+			_tupel.add(new ObjectAdapterTupel(object, adapter));
 		}
 	}
 	
 	/**
-	 * Removes the given widget.
-	 * @param widget  The widget, which sould be removed
-	 * @return  True if the widget could be removed; false otherwise
+	 * Removes the given object.
+	 * @param object  The object, which should be removed
+	 * @return  True if the object could be removed; false otherwise
 	 */
-	public final boolean removeWidget(final Object widget) {
+	public final boolean removeObject(final Object object) {
 		for (int i = 0; i < _tupel.size(); i++) {
-			if (_tupel.get(i).getObject().equals(widget)) {
+			if (_tupel.get(i).getObject().equals(object)) {
 				return _tupel.remove(_tupel.get(i));
 			}
 		}
@@ -83,13 +83,13 @@ public class WidgetList {
 	}
 	
 	/**
-	 * Checks if this WidgetList contains the given widget. 
-	 * @param widget  The widget to look for 
-	 * @return  True if the widget is contained; false otherwise
+	 * Checks if this ActivateableList contains the given object. 
+	 * @param object  The object to look for 
+	 * @return  True if the object is contained; false otherwise
 	 */
-	public final boolean contains(final Object widget) {
+	public final boolean contains(final Object object) {
 		for (int i = 0; i < _tupel.size(); i++) {
-			if (_tupel.get(i).getObject().equals(widget)) {
+			if (_tupel.get(i).getObject().equals(object)) {
 				return true;
 			}
 		}
@@ -105,8 +105,8 @@ public class WidgetList {
 	}
 	
 	/**
-	 * Forces the IWidgetAdapter for the widget at an index to activate the widget.
-	 * @param i  The index of the widget
+	 * Forces the IActivationAdapter for the object at an index to activate the object.
+	 * @param i  The index of the object
 	 * @param activate  The value for the activation
 	 */
 	public final void activate(final int i, final boolean activate) {

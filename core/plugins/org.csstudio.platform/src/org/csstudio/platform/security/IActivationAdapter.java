@@ -19,35 +19,24 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.internal.security;
+package org.csstudio.platform.security;
 
 /**
- * 
- * 
- * @author Kai Meyer and Torsten Witte
+ * The interface for all ActivationAdapter.
+ * An implementation of this interface should "activate" or "deactivate" the given object depending on the type of that object.
+ * P.e. on a org.eclipse.swt.widgets.Control can be called <code>setEnable(boolean enabled)</code>, and on another type can be called
+ * <code>setActivate(boolean activate)</code>. 
+ * The method <code>activate</code> is called by the ObjectAdapterTupel which holds the object. 
+ * @author Kai Meyer & Torsten Witte
+ *
  */
-public class NoWidgetAdapterFoundException extends WidgetManagementException {
+public interface IActivationAdapter {
+	
+	/**
+	 * Activates the given object.
+	 * @param o The object to activate
+	 * @param activate The value for the activation
+	 */
+	void activate(Object o, boolean activate);
 
-	/**
-	 * Generated serial version unifed ID.
-	 */
-	private static final long serialVersionUID = 6392656289158291547L;
-		
-	/**
-	 * Constructor.
-	 * @param clazz The class for which no WidgetAdapter could be found
-	 */
-	public NoWidgetAdapterFoundException(final Class clazz) {
-		super(clazz);
-	}
-	
-	/**
-	 * @see testrcp.widgetmanagement.exceptions.WidgetManagementException#getMessage(java.lang.Class)
-	 * @param clazz The class
-	 * @return The message depended by the class
-	 */
-	protected final String getMessage(final Class clazz) {
-		return "No WidgetAdapter found for "+clazz;
-	}
-	
 }
