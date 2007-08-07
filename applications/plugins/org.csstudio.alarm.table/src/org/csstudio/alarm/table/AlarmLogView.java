@@ -149,10 +149,14 @@ public class AlarmLogView extends LogView {
 
 					if (ti.getData() instanceof JMSMessage) {
 						message = (JMSMessage) ti.getData();
+						//ComboBox selection for all messages or for a special severity
 						if (ackCombo.getItem(ackCombo.getSelectionIndex())
 								.equals(message.getProperty("SEVERITY"))
 								|| (ackCombo.getSelectionIndex() == 0)) {
-							msgList.add(message);
+							//add the message only if it is not yet acknowledged.
+							if (message.is_ackknowledgement() == false) {
+								msgList.add(message);
+							}
 						}
 
 					} else {
@@ -162,12 +166,10 @@ public class AlarmLogView extends LogView {
 				}
 				SendAcknowledge sendAck = new SendAcknowledge(msgList);
 				sendAck.schedule();
-
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
-
 		});
 
 		//create jface table viewer with paramter 2 for alarm table version
@@ -217,6 +219,7 @@ public class AlarmLogView extends LogView {
 						} else {
 							item.setChecked(true);
 							jmsMessage.getHashMap().put("ACK_HIDDEN", "true");
+							jmsMessage.set_ackknowledgement(true);
 						}
 						break;
 					}

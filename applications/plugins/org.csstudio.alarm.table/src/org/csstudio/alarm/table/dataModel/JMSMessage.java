@@ -20,11 +20,26 @@ public class JMSMessage implements IProcessVariable {//,
 	private HashMap<String, String> messageProperties = new HashMap<String, String>();
 //	private String[] propertyNames;
 	
-	//for alarm table: false->no other message with the same pv name and an other
-	//severity is in the table. true->another OLDER message with same pv an other
-	// severity is in the table and the label provider change the color to gray.
-	private boolean backgroundColorGray = false;
+	/** 
+	 * for alarm table: false->no other message with the same pv name and an other
+	 * severity is in the table. true->another OLDER message with same pv an other
+	 * severity is in the table and the label provider change the color to gray.
+	 */
+	private boolean _backgroundColorGray = false;
 	
+	/**
+	 * is this message already acknowledged?
+	 */
+	private boolean _ackknowledgement = false;
+	
+	public boolean is_ackknowledgement() {
+		return _ackknowledgement;
+	}
+
+	public void set_ackknowledgement(boolean _ackknowledgement) {
+		this._ackknowledgement = _ackknowledgement;
+	}
+
 	/**
 	 * Initialisation of HashMap with actual message properties.
 	 *
@@ -39,7 +54,7 @@ public class JMSMessage implements IProcessVariable {//,
 	}
 	
 	/**
-	 * Setting value of message a message property
+	 * Setting value of a message property
 	 * 
 	 * @param property 
 	 * @param value
@@ -64,20 +79,6 @@ public class JMSMessage implements IProcessVariable {//,
 		if (property.equals("SEVERITY")) {
 			if(messageProperties.get("SEVERITY") != null) {
 				return findSeverityValue();
-//				try {
-//					// Matthias 05-04-2007
-//					switch( severityToNumber(messageProperties.get("SEVERITY"))) {
-//					case 0 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE0);
-//					case 1 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE1);
-//					case 2 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE2);
-//					case 3 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE3);
-//					case 4 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE4);
-//					case 5 : return JmsLogsPlugin.getDefault().getPluginPreferences().getString(JmsLogPreferenceConstants.VALUE5);
-//					default : return "INVALID_SEVERITY";
-//					}
-//				} catch (NumberFormatException e) {
-//					return "INVALID_SEVERITY";
-//				}
 			}
 		}
 		
@@ -192,42 +193,6 @@ public class JMSMessage implements IProcessVariable {//,
 		
 	}
 
-	public static Integer severityToNumber ( String severity) {
-		Integer severityAsNumber = null;
-		//
-		// this is a really dumb implementation to convert severity strings into an Integer
-		// This only works for EPICS severity strings...
-		// TODO - make this more generic
-		// Matthias 05-04-2007
-		if ( severity == null) {
-			//no string compares with null string !
-			return -1;
-		}
-		if ( severity.toUpperCase().equals("NO_ALARM")){
-			severityAsNumber = 0;
-		} else if ( severity.toUpperCase().equals("MINOR")){
-			severityAsNumber = 1;
-		} else if ( severity.toUpperCase().equals("MAJOR")){
-			severityAsNumber = 2;
-		} else if ( severity.toUpperCase().equals("INVALID")){
-			severityAsNumber = 3;
-		} else if ( severity.toUpperCase().equals("das wars")){
-			severityAsNumber = 4;
-		} else {
-			//
-			// maybe it's already a number?
-			//
-			try {
-				severityAsNumber = new Integer( severity);
-				
-			} catch (NumberFormatException e) {
-				return -1;
-			}
-			
-		}
-		
-		return severityAsNumber;
-	}
 
 	public String getName() {
 		// TODO Auto-generated method stub
@@ -252,27 +217,17 @@ public class JMSMessage implements IProcessVariable {//,
 //		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
-	public int getKey() {
-		// TODO Auto-generated method stub
-		return 9;
-	}
-
-	public String getUrl() {
-		// TODO Auto-generated method stub
-		return "url";
-	}
-
 	public String getTypeId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public boolean isBackgroundColorGray() {
-		return backgroundColorGray;
+		return _backgroundColorGray;
 	}
 
 	public void setBackgroundColorGray(boolean backgroundColorGray) {
-		this.backgroundColorGray = backgroundColorGray;
+		this._backgroundColorGray = backgroundColorGray;
 	}
 
 	public HashMap<String, String> getHashMap(){

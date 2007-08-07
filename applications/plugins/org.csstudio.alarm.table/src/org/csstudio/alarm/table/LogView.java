@@ -144,6 +144,8 @@ public class LogView extends ViewPart implements MessageListener {
 
 	/**
 	 * MessageListener implementation
+	 * 
+	 * Receives the JMS message. If it is an ack 
 	 */
 	public void onMessage(final Message message) {
 		if (message == null) {
@@ -156,9 +158,10 @@ public class LogView extends ViewPart implements MessageListener {
 						JmsLogsPlugin.logError("received message is not a map message");
 					} else if (message instanceof MapMessage) {
 						MapMessage mm = (MapMessage) message;
-                        JmsLogsPlugin.logInfo("LogView message received, MsgName: " + 
-                        		mm.getString("NAME") + " Severity: " + mm.getString("SEVERITY") +
-                        		" MsgTime: " + mm.getString("EVENTTIME"));
+                        
+//	DEBUG					JmsLogsPlugin.logInfo("LogView message received, MsgName: " + 
+//                        		mm.getString("NAME") + " Severity: " + mm.getString("SEVERITY") +
+//                        		" MsgTime: " + mm.getString("EVENTTIME"));
 						if(mm.getString("ACK")!=null &&  mm.getString("ACK").toUpperCase().equals("TRUE")){
                             setAck(mm);
                         } else {
@@ -180,8 +183,8 @@ public class LogView extends ViewPart implements MessageListener {
 	 * @throws JMSException 
      */
     protected void setAck(MapMessage message) throws JMSException {
-       JmsLogsPlugin.logInfo("LogView Ack message received, MsgName: " + 
-       		message.getString("NAME") + " MsgTime: " + message.getString("EVENTTIME"));
+//DEBUG       JmsLogsPlugin.logInfo("LogView Ack message received, MsgName: " + 
+//       		message.getString("NAME") + " MsgTime: " + message.getString("EVENTTIME"));
        TableItem[] items = jlv.getTable().getItems();
        	   for (TableItem item : items) {
            if (item.getData() instanceof JMSMessage) {
