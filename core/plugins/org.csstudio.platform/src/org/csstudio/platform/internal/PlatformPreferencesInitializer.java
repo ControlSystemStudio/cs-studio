@@ -23,6 +23,7 @@ package org.csstudio.platform.internal;
 
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.LocaleService;
+import org.csstudio.platform.OnsiteSubnetPreferences;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.rfc.ControlSystemEnum;
 import org.csstudio.platform.security.SecurityFacade;
@@ -54,6 +55,15 @@ public final class PlatformPreferencesInitializer extends
 		initializeLocalePreferences(node);
 		initializeControlSystemPreferences(node);
 		initializeSystemPropertyPreferences(node);
+		initializeOnsitePreferences(node);
+	}
+
+	/**
+	 * Initializes the preferences for the onsite networks.
+	 * @param node the preferences node to use.
+	 */
+	private void initializeOnsitePreferences(IEclipsePreferences node) {
+		node.put(OnsiteSubnetPreferences.PREFERENCE_KEY, "131.169.0.0/255.255.0.0");
 	}
 
 	/**

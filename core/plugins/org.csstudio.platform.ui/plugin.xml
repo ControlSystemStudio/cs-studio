@@ -167,6 +167,12 @@
             class="org.csstudio.platform.ui.statisticviewer.preference.PreferencePage"
             id="org.csstudio.platform.ui.statisticviewer.PreferencePage"
             name="StatisticViewer"/>
+   <page
+         category="org.csstudio.platform.ui.css.platform"
+         class="org.csstudio.platform.ui.internal.preferences.OnsiteSubnetPreferencePage"
+         id="org.csstudio.platform.ui.page1"
+         name="Onsite Subnets">
+   </page>
    </extension>
    <extension
          point="org.eclipse.help.contexts">

@@ -24,6 +24,7 @@ package org.csstudio.platform;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Collection;
 
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -79,46 +80,15 @@ public final class CSSPlatformInfo {
 	 */
 	private void detectOnsiteOffsite() {
 		try {
-			// Currently hardcoded for DESY. TODO: retrieve from preferences
-			InetAddress subnet = InetAddress.getByName("131.169.0.0");
-			InetAddress netmask = InetAddress.getByName("255.255.0.0");
-			
+			Collection<Subnet> onsiteSubnets =
+				OnsiteSubnetPreferences.getOnsiteSubnets();
 			InetAddress thishost = InetAddress.getLocalHost();
-			onsite = isInSubnet(thishost, subnet, netmask);
+			for (Subnet subnet : onsiteSubnets) {
+				onsite |= subnet.contains(thishost);
+			}
 		} catch (UnknownHostException e) {
 			throw new AssertionError("this cannot happen");
 		}
-	}
-	
-	/**
-	 * Returns whether the given IP address is located in the given subnet.
-	 * @param address the IP address.
-	 * @param subnet the subnet.
-	 * @param netmask the netmask for the subnet.
-	 * @return <code>true</code> if the address is in the subnet,
-	 *         <code>false</code> otherwise.
-	 */
-	private boolean isInSubnet(InetAddress address, InetAddress subnet, InetAddress netmask) {
-		byte[] addr = address.getAddress();
-		byte[] sub = subnet.getAddress();
-		byte[] mask = netmask.getAddress();
-		
-		// Address, subnet and mask should all have the same length (in bytes),
-		// otherwise they cannot be compared.
-		if (addr.length != sub.length || sub.length != mask.length) {
-			log.info(this, "Running in offsite mode");
-			return false;
-		}
-		
-		// Compare all bytes of the addresses, masked with mask
-		for (int i = 0; i < addr.length; i++) {
-			if ((addr[i] & mask[i]) != (sub[i] & mask[i])) {
-				log.info(this, "Running in offsite mode");
-				return false;
-			}
-		}
-		log.info(this, "Running in onsite mode");
-		return true;
 	}
 
 	/**
