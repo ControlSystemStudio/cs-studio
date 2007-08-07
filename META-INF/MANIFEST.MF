@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jms Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.jms;singleton:=true
-Bundle-Version: 0.9.5
+Bundle-Version: 0.9.6
 Bundle-Activator: org.csstudio.platform.libs.jms.JmsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
