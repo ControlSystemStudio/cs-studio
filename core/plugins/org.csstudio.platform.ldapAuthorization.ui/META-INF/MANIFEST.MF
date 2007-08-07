@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: LDAP Authorization UI
 Bundle-SymbolicName: org.csstudio.platform.ldapauthorization.ui;singleton:=true
-Bundle-Version: 0.9.5
+Bundle-Version: 0.9.6
 Bundle-Activator: org.csstudio.platform.internal.ldapauthorization.ui.Activator
 Bundle-Vendor: DESY
 Bundle-Localization: plugin
