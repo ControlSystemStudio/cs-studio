@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jdbc Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.jdbc;singleton:=true
-Bundle-Version: 0.9.5
+Bundle-Version: 0.9.6
 Bundle-Activator: org.csstudio.platform.libs.jdbc.JdbcPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
