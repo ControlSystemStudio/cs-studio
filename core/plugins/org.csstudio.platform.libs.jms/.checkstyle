@@ -3,7 +3,7 @@
     <local-check-config name="DESY Checkstyle Configuration" location="Config/checkstyle.xml" type="project" description="">
         <additional-data name="protect-config-file" value="false"/>
     </local-check-config>
-    <fileset name="Alle" enabled="true" check-config-name="CSS Desy" local="false">
+    <fileset name="Alle" enabled="true" check-config-name="CSS" local="false">
         <file-match-pattern match-pattern="." include-pattern="true"/>
     </fileset>
 </fileset-config>

@@ -2,15 +2,6 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="toc.xml"
-            primary="true"/>
-      <toc
-            file="testToc.xml"
-            primary="true"/>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.applications.configuration"
