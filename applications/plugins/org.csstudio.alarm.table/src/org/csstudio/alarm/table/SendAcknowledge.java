@@ -22,6 +22,7 @@
 
 package org.csstudio.alarm.table;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -64,13 +65,15 @@ public class SendAcknowledge extends Job {
 	 */
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
+
+		SendMapMessage sender = new SendMapMessage();
+        try {
+		sender.startSender();
+
 		
 		for (JMSMessage message : messagesToSend) {
 			
-			SendMapMessage sender = new SendMapMessage();
 	        String time = TimestampFactory.now().toString();
-	        try {
-				sender.startSender();
 	            MapMessage mapMessage = sender.getSessionMessageObject();
 	            HashMap<String, String> hm = message.getHashMap();
 	            Iterator<String> it = hm.keySet().iterator();
@@ -87,15 +90,23 @@ public class SendAcknowledge extends Job {
 	            JmsLogsPlugin.logInfo("LogTableViewer send Ack message, MsgName: " + 
 	            		message.getName() + " MsgTime: " + message.getProperty("EVENTTIME"));
 	            sender.sendMessage();
-	            sender.stopSender();
-	            sender = null;
 	            JmsLogsPlugin.logInfo("send acknowledge for msg: " + 
 	            		message.getName() + ", " + message.getProperty("EVENTTIME"));
-			} catch (Exception e) {
-	          	JmsLogsPlugin.logException("ACK not set", e);
-	          	return Status.CANCEL_STATUS;
-	  		}
 		}
+		} catch (Exception e) {
+          	JmsLogsPlugin.logException("ACK not set", e);
+          	return Status.CANCEL_STATUS;
+  		} finally {
+            try {
+				sender.stopSender();
+				System.out.println("stop sender!!!");
+			} catch (Exception e) {
+	          	JmsLogsPlugin.logException("JMS Error", e);
+			}
+            sender = null;
+
+  		}
+
 		return Status.OK_STATUS;
 	}
 
