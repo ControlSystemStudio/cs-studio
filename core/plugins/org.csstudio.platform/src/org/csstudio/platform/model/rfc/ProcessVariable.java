@@ -349,9 +349,11 @@ public class ProcessVariable {
 
 	@Override
 	public boolean equals(Object obj) {
-		return true;
+		if (obj instanceof ProcessVariable) {
+			ProcessVariable that = (ProcessVariable) obj;
+			return this.toFullString().equals(that.toFullString());
+		}
+		return false;
 	}
-	
-	
 
 }
