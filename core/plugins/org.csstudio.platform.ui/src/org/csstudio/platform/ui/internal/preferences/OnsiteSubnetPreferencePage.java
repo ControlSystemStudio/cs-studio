@@ -5,6 +5,7 @@ import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.ListEditor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -39,7 +40,9 @@ public class OnsiteSubnetPreferencePage extends FieldEditorPreferencePage
 			
 			public String getNewInputObject(){
 				AddSubnetDialog dialog = new AddSubnetDialog(getShell());
-				dialog.open();
+				if (dialog.open() == Window.OK) {
+					return dialog.getSubnet().toString();
+				}
 				return null;
 			}
 			

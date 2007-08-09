@@ -110,8 +110,7 @@ public final class CSSPlatformInfo {
 	 *         otherwise.
 	 */
 	public boolean isOnsite() {
-		return true;  // for compatibility until subnet etc. can be configured
-//		return onsite;
+		return onsite;
 	}
 
 	public String getHostId() {

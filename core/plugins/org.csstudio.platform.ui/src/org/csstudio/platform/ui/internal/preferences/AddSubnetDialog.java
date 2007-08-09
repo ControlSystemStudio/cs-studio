@@ -35,17 +35,51 @@ class AddSubnetDialog extends TitleAreaDialog {
 	private Text _netmask;
 	
 	/**
-	 * Regular expression that matches IPv4 addresses.
+	 * The subnet that was entered by the user. This gets set when the user
+	 * presses the Ok button.
+	 */
+	private Subnet _result;
+	
+	/**
+	 * Regular expression that matches IPv4 addresses. (Note: this expression
+	 * allows numbers up to 299, so it is not guaranteed that a string is a
+	 * valid IP address if it matches the expression.)
 	 */
 	private static final String IPV4_ADDRESS_REGEX =
 		"([12]?[0-9]?[0-9]\\.){3}([12]?[0-9]?[0-9])";
-
+	
 	/**
 	 * Creates a new Add Subnet Dialog.
 	 * @param parentShell the parent shell.
 	 */
 	AddSubnetDialog(Shell parentShell) {
 		super(parentShell);
+	}
+	
+	/**
+	 * Returns the subnet the user entered in this dialog.
+	 * @return the subnet the user entered in this dialog, or <code>null</code>
+	 *         if the user did not enter a valid subnet.
+	 */
+	public Subnet getSubnet() {
+		return _result;
+	}
+	
+	/**
+	 * Sets the result of this dialog (the subnet that was entered by the user).
+	 */
+	@Override
+	protected void okPressed() {
+		try {
+			InetAddress address = InetAddress.getByName(_networkAddress.getText());
+			InetAddress netmask = InetAddress.getByName(_netmask.getText());
+			_result = new Subnet(address, netmask);
+		} catch (UnknownHostException e) {
+			_result = null;
+		} catch (IllegalArgumentException e) {
+			_result = null;
+		}
+		super.okPressed();
 	}
 	
 	/**
@@ -69,8 +103,8 @@ class AddSubnetDialog extends TitleAreaDialog {
 		
 		Composite contents = new Composite(parentComposite, SWT.NULL);
         GridLayout layout = new GridLayout();
-        layout.marginHeight = 0;
-        layout.marginWidth = 0;
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
         layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
         layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
         layout.numColumns = 2;
