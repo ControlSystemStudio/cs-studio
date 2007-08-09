@@ -15,7 +15,7 @@ public class ArchivesRequest implements ClientRequest
 	public void read() //throws Exception
 	{
 		archive_infos = new ArchiveInfo[1];
-		archive_infos[0] =  new ArchiveInfoImpl(0,"epicsLocal","epics FEC archive cashe");		
+		archive_infos[0] =  new ArchiveInfoImpl(0,"archiveRecord","epics FEC archive cashe");		
 	}
 
 	/** @return Returns all the archive infos obtained in the request. */
