@@ -33,7 +33,8 @@ public class DummyLoginAction implements IWorkbenchWindowActionDelegate {
 	public void run(IAction action) {
 		LoginDialog dialog = new LoginDialog(Display.getCurrent()
 				.getActiveShell());
-		SecurityFacade.getInstance().login(dialog);
+		SecurityFacade.getInstance().setLoginCallbackHandler(dialog);
+		SecurityFacade.getInstance().authenticateApplicationUser();
 	}
 
 	/**

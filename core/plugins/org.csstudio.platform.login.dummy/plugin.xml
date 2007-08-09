@@ -20,7 +20,7 @@
                class="org.csstudio.platform.login.dummy.DummyLoginAction"
                id="org.csstudio.platform.login.dummy.DummyLoginAction"
                label="&amp;Dummy Login"
-               menubarPath="css/other/"
+               menubarPath="css/utility/"
                style="push"/>
       </actionSet>
    </extension>
