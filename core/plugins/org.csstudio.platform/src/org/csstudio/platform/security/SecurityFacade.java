@@ -205,7 +205,7 @@ public final class SecurityFacade {
 	 * @param handler
 	 * 			The {@link ILoginCallbackHandler} for the login
 	 */
-	public void login(ILoginCallbackHandler handler) {
+	private void login(ILoginCallbackHandler handler) {
 		this._context.login(handler);
 		for (IUserManagementListener uml : _userListeners) {
 			try {
