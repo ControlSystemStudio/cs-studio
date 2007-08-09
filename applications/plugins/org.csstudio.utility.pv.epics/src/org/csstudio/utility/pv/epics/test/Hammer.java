@@ -9,10 +9,6 @@ import org.csstudio.utility.pv.PVListener;
 import org.csstudio.utility.pv.epics.EPICS_V3_PV;
 
 /** Test tool for hammering a CA server.
- *  <pre>
- *  USAGE: Invoke from command-line with <seconds> and <file>,
- *         where file contains list of PV names, one per line.
- *  </pre>
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -58,12 +54,23 @@ public class Hammer implements PVListener
     {
         System.out.println(pv.getName() + " = " + pv.getValue().toString());
     }
-
-    public static void main(String argv[]) throws Exception
+    
+    public static void main(final String argv[]) throws Exception
     {
-        int secs = Integer.parseInt(argv[0]);
-        BufferedReader r = new BufferedReader(new FileReader(argv[1]));
-        ArrayList<String> names = new ArrayList<String>();
+        // Compile-time config
+        final int runs = 2;
+        final int secs = 4;
+        final String filename = "lib/pv_list.txt";
+
+        System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", "127.0.0.1");
+        System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", "false");
+
+        // --------------------
+        
+        System.out.format("%d runs, %d seconds each, with %s\n",
+                          runs, secs, filename);
+        final BufferedReader r = new BufferedReader(new FileReader(filename));
+        final ArrayList<String> names = new ArrayList<String>();
         String line = r.readLine();
         while (line != null)
         {
@@ -71,8 +78,11 @@ public class Hammer implements PVListener
             line = r.readLine();
         }
     
-        Hammer h = new Hammer(names);
-        Thread.sleep(1000 * secs);
-        h.dispose();
+        for (int run=0; run<runs; ++run)
+        {
+            final Hammer h = new Hammer(names);
+            Thread.sleep(1000 * secs);
+            h.dispose();
+        }
     }
 }
