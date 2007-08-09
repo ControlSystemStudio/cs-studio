@@ -25,9 +25,9 @@ import java.util.ArrayList;
 
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.Messages;
-import org.csstudio.utility.nameSpaceBrowser.utility.ControlSystemItem;
-import org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList;
-import org.csstudio.utility.nameSpaceBrowser.utility.ProcessVariable;
+import org.csstudio.utility.namespace.utility.ControlSystemItem;
+import org.csstudio.utility.namespace.utility.NameSpaceResultList;
+import org.csstudio.utility.namespace.utility.ProcessVariable;
 
 public class ErgebnisListe extends NameSpaceResultList{
 
@@ -41,11 +41,11 @@ public class ErgebnisListe extends NameSpaceResultList{
 		return tmp;
 	}
 
-	public void setAnswer(ArrayList<String> ergbnis) {
-		this.ergbnis.addAll(ergbnis);
-		notifyObservers();
-
-	}
+//	public void setAnswer(ArrayList<String> ergbnis) {
+//		this.ergbnis.addAll(ergbnis);
+//		notifyObservers();
+//
+//	}
 
 	public void notifyView() {
 		setChanged();
@@ -58,10 +58,6 @@ public class ErgebnisListe extends NameSpaceResultList{
     @Override
     public ArrayList<ControlSystemItem> getResultList() {
         ArrayList<ControlSystemItem> tmp = new ArrayList<ControlSystemItem>();
-//        tmp.addAll(ergbnis);
-//        ergbnis.clear();
-//        setChanged();
-//        return tmp;
         if(ergbnis==null) return null;
         for (String row : ergbnis) {
             String saubereListe = row;
@@ -90,7 +86,8 @@ public class ErgebnisListe extends NameSpaceResultList{
      */
     @Override
     public void setResultList(ArrayList<String> resultList) {
-        this.ergbnis.addAll(ergbnis);
+//        this.ergbnis.addAll(ergbnis);
+    	ergbnis.addAll(resultList);
         notifyObservers();
 
     }
@@ -101,7 +98,7 @@ public class ErgebnisListe extends NameSpaceResultList{
     @Override
     public NameSpaceResultList copy() {
          ErgebnisListe e = new ErgebnisListe();
-         e.setAnswer(ergbnis);
+         e.setResultList(ergbnis);
          return e;
     }
 

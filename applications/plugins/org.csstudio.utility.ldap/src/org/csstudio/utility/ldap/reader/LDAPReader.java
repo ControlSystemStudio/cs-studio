@@ -218,7 +218,7 @@ public class LDAPReader extends Job {
 				}
 				answer.close();
 				ctx.close();
-				ergebnisListe.setAnswer(list);
+				ergebnisListe.setResultList(list);
 				monitor.done();
 				return Status.OK_STATUS;
 //				return ASYNC_FINISH;
@@ -230,9 +230,6 @@ public class LDAPReader extends Job {
 		monitor.setCanceled(true);
 		return Status.CANCEL_STATUS;
 	}
-
-
-
 
 	private void setDefaultScope(int defaultScope) {
 		this.defaultScope = defaultScope;
