@@ -31,12 +31,12 @@ import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.nameSpaceBrowser.Messages;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
-import org.csstudio.utility.nameSpaceBrowser.utility.ControlSystemItem;
-import org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
-import org.csstudio.utility.nameSpaceBrowser.utility.ProcessVariable;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat.Ereignis;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat.Zustand;
+import org.csstudio.utility.namespace.utility.ControlSystemItem;
+import org.csstudio.utility.namespace.utility.NameSpaceResultList;
+import org.csstudio.utility.namespace.utility.ProcessVariable;
 
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;

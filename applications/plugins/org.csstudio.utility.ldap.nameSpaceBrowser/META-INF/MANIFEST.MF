@@ -6,8 +6,8 @@ Bundle-Version: 1.0.8
 Bundle-Activator: org.csstudio.utility.ldap.namespacebrowser.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
  org.csstudio.platform.ui,
  org.csstudio.utility.nameSpaceBrowser,
- org.csstudio.utility.ldap
+ org.csstudio.utility.ldap,
+ org.csstudio.utility.namespace.utility
 Eclipse-LazyStart: true

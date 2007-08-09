@@ -24,6 +24,8 @@
  */
 package org.csstudio.utility.nameSpaceBrowser.utility;
 
+import org.csstudio.utility.namespace.utility.NameSpaceResultList;
+
 /**
  * @author hrickens
  * @author $Author$

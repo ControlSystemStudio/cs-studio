@@ -6,10 +6,7 @@ Bundle-Version: 1.0.8
 Bundle-Activator: org.csstudio.utility.nameSpaceSearch.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.csstudio.platform,
  org.csstudio.platform.ui,
- org.eclipse.help,
  org.csstudio.utility.ldap,
- org.csstudio.utility.nameSpaceBrowser
+ org.csstudio.utility.namespace.utility
 Eclipse-LazyStart: true
