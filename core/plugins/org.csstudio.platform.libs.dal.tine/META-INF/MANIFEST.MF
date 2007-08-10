@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tine Plug-in
+Bundle-SymbolicName: org.csstudio.platform.libs.dal.tine;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.platform.libs.dal.tine.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform.libs.dal,
+ org.junit4
+Eclipse-LazyStart: true
+Eclipse-RegisterBuddy: org.csstudio.platform.libs.dal
+Bundle-ClassPath: lib/tine.jar,
+ .
