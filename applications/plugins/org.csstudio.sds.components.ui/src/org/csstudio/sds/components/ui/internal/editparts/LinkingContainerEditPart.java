@@ -142,7 +142,7 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 				DisplayModel tempModel = new DisplayModel();
 
 				try {
-					PersistenceUtil.fillModelAsynchroniously(tempModel, file.getContents(), null);
+					PersistenceUtil.asyncFillModel(tempModel, file.getContents(), null);
 				} catch (CoreException e) {
 					e.printStackTrace();
 				}
