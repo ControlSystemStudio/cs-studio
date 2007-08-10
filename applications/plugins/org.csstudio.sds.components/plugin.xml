@@ -29,12 +29,6 @@
             name="Image"
             typeId="cosywidgets.image"/>
       <widgetModelFactory
-            class="org.csstudio.sds.cosywidgets.internal.factories.ModifiedMeterModelFactory"
-            description="Modified Meter"
-            icon="icons/meter.gif"
-            name="Modified Meter"
-            typeId="cosywidgets.modifiedmeter"/>
-      <widgetModelFactory
             class="org.csstudio.sds.cosywidgets.internal.factories.SwitchModelFactory"
             description="Creates a switch."
             icon="icons/switch.gif"
@@ -57,12 +51,6 @@
             icon="icons/ellipse.gif"
             name="Ellipse"
             typeId="element.ellipse"/>
-      <widgetModelFactory
-            class="org.csstudio.sds.components.internal.model.MeterModelFactory"
-            description="Meter"
-            icon="icons/meter.gif"
-            name="Meter"
-            typeId="element.meter"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.LabelModelFactory"
             description="Label"

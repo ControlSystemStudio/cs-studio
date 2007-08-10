@@ -1,7 +1,7 @@
 package org.csstudio.sds.components.epics;
 
 
-import org.csstudio.sds.components.model.MeterModel;
+import org.csstudio.sds.cosywidgets.models.MeterModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
 
