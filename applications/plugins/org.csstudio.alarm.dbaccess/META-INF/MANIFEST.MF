@@ -3,11 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ArchiveDB Plug-in
 Bundle-SymbolicName: org.csstudio.alarm.dbaccess;singleton:=true
 Bundle-Version: 1.0.3
-Bundle-Activator: org.csstudio.alarm.dbaccess.archivedb.ArchiveDB
+Bundle-Activator: org.csstudio.alarm.dbaccess.archivedb.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.platform.libs.jdbc
+ org.csstudio.platform.libs.jdbc,
+ org.csstudio.platform
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.alarm.dbaccess,
  org.csstudio.alarm.dbaccess.archivedb

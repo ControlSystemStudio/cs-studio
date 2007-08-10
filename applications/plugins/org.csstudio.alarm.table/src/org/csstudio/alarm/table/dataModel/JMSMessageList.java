@@ -70,6 +70,9 @@ public class JMSMessageList {
 		HashMap<String, String> message = null;
 		MapMessage mm = null;
 		JMSMessage jmsm = null;
+		JMSMessage[] jmsmArray = new JMSMessage[messageList.size()];
+		int i = 0;
+		ArrayList<JMSMessage> newMessages = new ArrayList<JMSMessage>();
 		ListIterator<HashMap<String, String>> it = messageList.listIterator();
 		while (it.hasNext()) {
 			message = it.next();
@@ -77,16 +80,15 @@ public class JMSMessageList {
 				mm = hashMap2mapMessage(message);
 				jmsm = addMessageProperties(mm);
 				JMSMessages.add(JMSMessages.size(), jmsm);
-				Iterator iterator = changeListeners.iterator();
-				while (iterator.hasNext())
-					((IJMSMessageViewer) iterator.next()).addJMSMessage(jmsm);
-
+				newMessages.add(jmsm);
+				jmsmArray[i] = jmsm;
+				i++;
 			}
 		}
-	}
-	
-	public void addJMSMessageList(Vector<JMSMessage> messageList) {
-		JMSMessages.addAll(messageList);
+		Iterator iterator = changeListeners.iterator();
+		while (iterator.hasNext()) {
+			((IJMSMessageViewer) iterator.next()).addJMSMessages(jmsmArray);
+		}
 	}
 	
 	public Vector<JMSMessage> getJMSMessageList() {

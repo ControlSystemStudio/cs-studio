@@ -7,6 +7,6 @@ import java.util.HashMap;
 
 public interface ILogMessageArchiveAccess {
 
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to);
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, String filter);
+	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, int maxAnswerSize);
+	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, String filter, int maxAnswerSize);
 }

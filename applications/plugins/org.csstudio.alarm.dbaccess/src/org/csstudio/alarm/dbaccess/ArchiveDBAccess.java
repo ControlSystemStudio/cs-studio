@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 
 
+import org.csstudio.alarm.dbaccess.archivedb.Activator;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 
 public class ArchiveDBAccess implements ILogMessageArchiveAccess {
@@ -28,7 +29,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		// TODO Auto-generated constructor stub
 	}
 
-	private ArrayList<HashMap<String, String>> sendSQLStatement( String sqlStatement) {
+	private ArrayList<HashMap<String, String>> sendSQLStatement( String sqlStatement, int maxAnserSize) {
 
 		ArrayList<HashMap<String, String>> message = new ArrayList<HashMap<String, String>>();
 		Connection con = null;
@@ -61,12 +62,14 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 
 			OracleResultSet rset = (OracleResultSet)stmt.getResultSet();
 			int id =-1;
+			int i = 0;
 			HashMap<String, String> hm = null;
 			boolean haveMessage = false;
 			while(rset.next()){
-					if(id!=rset.getNUMBER(1).intValue()){
+					if((id!=rset.getNUMBER(1).intValue()) && (i < maxAnserSize)){
 						if(hm!=null){
 							message.add(hm);
+							i++;
 						}
 						haveMessage = true;
 						hm = new HashMap<String, String>();
@@ -88,7 +91,7 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		}
 		return message;
 	}
-    private String buildSQLStatement(Calendar from, Calendar to) {
+    private String buildSQLStatement(Calendar from, Calendar to, int maxAnserSize) {
         String sql = "select * from alarm_archive_messages aam where aam.datum "+
                      "between to_date('"+from.get(GregorianCalendar.YEAR)+
                         "-"+(from.get(GregorianCalendar.MONTH)+1)+
@@ -104,11 +107,11 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
                         ":"+to.get(GregorianCalendar.MINUTE)+
                         ":"+to.get(GregorianCalendar.SECOND)+
                         "', 'YYYY-MM-DD HH24:MI:SS') "+
-                    "order by aam.message_id";
+                    " order by aam.message_id "; 
         return sql;
     }
 
-	private String buildSQLStatement(Calendar from, Calendar to, String filter) {
+	private String buildSQLStatement(Calendar from, Calendar to, String filter, int maxAnserSize) {
 	    String sql = "select aam2.* from alarm_archive_messages aam2 ,(select aam.MESSAGE_ID from alarm_archive_messages aam where aam.datum "+ 
 					 "between to_date('"+from.get(GregorianCalendar.YEAR)+
 						"-"+(from.get(GregorianCalendar.MONTH)+1)+
@@ -125,22 +128,22 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 							":"+to.get(GregorianCalendar.SECOND)+
 							"', 'YYYY-MM-DD HH24:MI:SS') "+
 					 filter+
-					 "order by aam.message_id) typeid where aam2.message_id = typeid.MESSAGE_ID";
-		return sql;
+					 " order by aam.message_id) typeid where aam2.message_id = typeid.MESSAGE_ID ";
+	    return sql;
 	}
 
 
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to) {
-		String sql = buildSQLStatement(from, to);
-		System.out.println(sql);
-		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql);
+	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, int maxAnserSize) {
+		String sql = buildSQLStatement(from, to, maxAnserSize);
+		Activator.logInfo(sql);
+		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql, maxAnserSize);
 		return ergebniss;
 	}
 
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, String filter) {
-		String sql = buildSQLStatement(from, to, filter);
-		System.out.println(sql);
-		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql);
+	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, String filter, int maxAnserSize) {
+		String sql = buildSQLStatement(from, to, filter, maxAnserSize);
+		Activator.logInfo(sql);
+		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql, maxAnserSize);
 		return ergebniss;
 	}
 

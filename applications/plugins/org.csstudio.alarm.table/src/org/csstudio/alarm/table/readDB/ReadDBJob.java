@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,6 +26,7 @@ public class ReadDBJob extends Job {
 	private final Calendar from;
 	private final DBAnswer dbAnswer;
 	private final String _filter;
+	private final int _maxAnswerSize;
 	
 	public ReadDBJob(String name, DBAnswer dbAnswer,
 			Calendar from, Calendar to) {
@@ -33,6 +35,8 @@ public class ReadDBJob extends Job {
 		this.from = from;
 		this._to = to;
 		this._filter = null;
+		String maxAnswerSize = JmsLogsPlugin.getDefault().getPluginPreferences().getString("maximum answer size");
+		_maxAnswerSize = Integer.parseInt(maxAnswerSize);
 	}
 
 	public ReadDBJob(String name, DBAnswer dbAnswer,
@@ -42,6 +46,8 @@ public class ReadDBJob extends Job {
 		this.from = from;
 		this._to = to;
 		_filter = filter;
+		String maxAnswerSize = JmsLogsPlugin.getDefault().getPluginPreferences().getString("maximum answer size");
+		_maxAnswerSize = Integer.parseInt(maxAnswerSize);
 	}
 
 	
@@ -51,9 +57,9 @@ public class ReadDBJob extends Job {
         ILogMessageArchiveAccess adba = new ArchiveDBAccess();
         ArrayList<HashMap<String, String>> am = new ArrayList<HashMap<String,String>>();
         if (_filter == null) {
-        	am = adba.getLogMessages(from, _to);
+        	am = adba.getLogMessages(from, _to, _maxAnswerSize);
         } else {
-        	am = adba.getLogMessages(from, _to, _filter);
+        	am = adba.getLogMessages(from, _to, _filter, _maxAnswerSize);
         }
         dbAnswer.setDBAnswer(am);
 		return Status.OK_STATUS;

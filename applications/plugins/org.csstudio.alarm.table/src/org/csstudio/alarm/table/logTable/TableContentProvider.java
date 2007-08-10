@@ -45,16 +45,14 @@ public class TableContentProvider implements IJMSMessageViewer,
 	}
 	
 	public void addJMSMessage(JMSMessage jmsm) {
-//		System.out.println("size: " + tableViewer.getTable().getItems().length);
 		tableViewer.add(jmsm);
 	}
 
-	public void addJMSMessage(JMSMessage[] jmsm) {
+	public void addJMSMessages(JMSMessage[] jmsm) {
 		tableViewer.add(jmsm);
 	}
 
 	public void removeJMSMessage(JMSMessage jmsm) {
-//		System.out.println("size: " + tableViewer.getTable().getItems().length);
 		tableViewer.remove(jmsm);
 	}
 

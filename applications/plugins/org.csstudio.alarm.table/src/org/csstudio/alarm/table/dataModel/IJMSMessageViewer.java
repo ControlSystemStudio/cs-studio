@@ -9,6 +9,14 @@ public interface IJMSMessageViewer {
 	 * @param jmsm
 	 */
 	public void addJMSMessage(JMSMessage jmsm);
+
+	/**
+	 * Update the view to reflect the fact that an array of JMSMessages was added 
+	 * to the JMSMessage list
+	 * 
+	 * @param jmsm
+	 */
+	public void addJMSMessages(JMSMessage[] jmsm);
 	
 	/**
 	 * Update the view to reflect the fact that a JMSMessage was removed 

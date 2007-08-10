@@ -71,6 +71,9 @@ public class LogArchiveViewerPreferencePage
 		StringFieldEditor date = new StringFieldEditor(LogArchiveViewerPreferenceConstants.DATE_FORMAT,Messages.LogArchiveViewerPreferencePage_dateFormat,getFieldEditorParent());
 		date.getLabelControl(getFieldEditorParent()).setToolTipText(Messages.LogArchiveViewerPreferencePage_javaDateFormat);
 		addField(date);
+		StringFieldEditor answerSize = new StringFieldEditor(LogArchiveViewerPreferenceConstants.MAX_ANSWER_SIZE,Messages.LogArchiveViewerPreferencePage_maxAnswerSize,getFieldEditorParent());
+		answerSize.getLabelControl(getFieldEditorParent()).setToolTipText(Messages.LogArchiveViewerPreferencePage_javaDateFormat);
+		addField(answerSize);
 		}
 
 

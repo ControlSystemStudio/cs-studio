@@ -110,6 +110,8 @@ public class Messages extends NLS {
 
 	public static String LogArchiveViewerPreferencePage_dateFormat;
 
+	public static String LogArchiveViewerPreferencePage_maxAnswerSize;
+
 	public static String LogArchiveViewerPreferencePage_javaDateFormat;
 
 	public static String LogArchiveViewerPreferencePage_newColumnName;
