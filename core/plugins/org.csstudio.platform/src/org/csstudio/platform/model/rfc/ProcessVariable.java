@@ -4,8 +4,6 @@
 package org.csstudio.platform.model.rfc;
 
 import java.io.PrintStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
 
@@ -64,7 +62,7 @@ import org.epics.css.dal.context.RemoteInfo;
  * @author Sven Wende
  * 
  */
-public class ProcessVariable {
+class ProcessVariable implements IProcessVariableAdress {
 	public static final String PART_SEPARATOR = "/";
 
 	private ControlSystemEnum _controlSystem;
@@ -75,86 +73,7 @@ public class ProcessVariable {
 
 	private String _characteristic;
 
-	/**
-	 * Constructs a process variable from a String representation.
-	 * 
-	 * The provided String has to follow the URI convention for CSS process
-	 * variable pointers.
-	 * 
-	 * By now, each of the following variants is supported:
-	 * 
-	 * <ul>
-	 * <li>//controlsystem/device/property[characteristic]</li>
-	 * <li>//controlsystem/device/property</li>
-	 * <li>//controlsystem/property[characteristic]</li>
-	 * <li>//controlsystem/property</li>
-	 * <li>/device/property[characteristic]</li>
-	 * <li>/device/property</li>
-	 * <li>property[characteristic]</li>
-	 * <li>property</li>
-	 * </ul>
-	 * 
-	 * 
-	 * @param pv
-	 *            the process variable String
-	 */
-	public ProcessVariable(final String pv) {
-		// We use a regular expression to parse the various String variants
-		// (A-E) that might occur.
-		// 
-		// To prepare the provided String as input for a regular expression, we
-		// have to ensure the following preconditions:
-		// - leading double-slashes must be replaced by §§§ (this is necessary
-		// to differ between // and /)
-		// - if there is no leading slash at all, one has to be added (this is
-		// necessary when only a property is entered)
-
-		// replace occurence of double slash with another String to prepare a
-		// String that can be used as input for a regular expression
-		String input = pv.replace("//", "§§§");
-
-		// check leading slash
-		if (!(input.startsWith("§§§") || input.startsWith("/"))) {
-			// add a leading slash
-			input = "/" + input;
-		}
-
-		// compile a regex pattern and parse the String
-		Pattern p = Pattern
-				.compile("^(§§§)?([^/]+)?(/([^/]+))?(/([^/\\[\\]]+))(\\[([^/\\[\\]]+)\\])?$");
-
-		Matcher m = p.matcher(input);
-
-		if (m.find()) {
-			try {
-				String s = m.group(2);
-				if (s != null && s.length() > 0) {
-					_controlSystem = ControlSystemEnum.valueOf(m.group(2)
-							.toUpperCase());
-				} else {
-					String controlSystem = CSSPlatformPlugin.getDefault().getPluginPreferences().getString(ControlSystemEnum.PROP_CONTROL_SYSTEM);
-					_controlSystem = ControlSystemEnum.valueOf(controlSystem);
-				}
-			} catch (IllegalArgumentException e) {
-				String controlSystem = CSSPlatformPlugin.getDefault().getPluginPreferences().getString(ControlSystemEnum.PROP_CONTROL_SYSTEM);
-				_controlSystem = ControlSystemEnum.valueOf(controlSystem);
-			}
-
-			String device = m.group(4);
-			String property = m.group(6);
-			String characteristic = m.group(8);
-
-			_device = device;
-
-			_property = property;
-
-			_characteristic = characteristic;
-
-		} else {
-			throw new IllegalArgumentException(
-					"The provided String does not match the required format: //controlsystem/device/property[characteristic]");
-		}
-	}
+	private String _rawName;
 
 	/**
 	 * Constructs a process variable pointer using the provided information
@@ -172,14 +91,18 @@ public class ProcessVariable {
 	 *            {@link NumericPropertyCharacteristics} (optional, provide null
 	 *            to leave it out)
 	 */
-	public ProcessVariable(final ControlSystemEnum controlSystem, final String device,
+	public ProcessVariable(final String rawName,
+			final ControlSystemEnum controlSystem, final String device,
 			final String property, final String characteristic) {
+		_rawName = rawName;
 		// control system is mandatory, but will be set to a default, when
 		// its not provided
 		if (controlSystem == null) {
-			String controlSystemString = CSSPlatformPlugin.getDefault().getPluginPreferences().getString(ControlSystemEnum.PROP_CONTROL_SYSTEM);
+			String controlSystemString = CSSPlatformPlugin.getDefault()
+					.getPluginPreferences().getString(
+							PvAdressFactory.PROP_CONTROL_SYSTEM);
 			_controlSystem = ControlSystemEnum.valueOf(controlSystemString);
-			//_controlSystem = SomeWhere.DEFAULT_CONTROL_SYSTEM;
+			// _controlSystem = SomeWhere.DEFAULT_CONTROL_SYSTEM;
 		} else {
 			_controlSystem = controlSystem;
 		}
@@ -188,7 +111,7 @@ public class ProcessVariable {
 		_device = device;
 
 		// property is mandatory
-		if (property == null || property.length() <= 0) {
+		if (property == null) {
 			throw new IllegalArgumentException("Property is mandatory.");
 		} else {
 			_property = property;
@@ -264,30 +187,30 @@ public class ProcessVariable {
 	 * 
 	 * @return the full String representation
 	 */
-	public String toFullString() {
+	public String getFullName() {
 		assert _controlSystem != null;
 		assert _property != null;
 		StringBuffer sb = new StringBuffer();
 
-		sb.append(PART_SEPARATOR);
-		sb.append(PART_SEPARATOR);
-		sb.append(_controlSystem.getProcessVariableUriRepresentation());
-
-		// device (is optional)
-		if (_device != null) {
-			if (sb.length() > 0) {
-				sb.append(PART_SEPARATOR);
-			}
-
-			sb.append(_device);
-		}
-
-		// property
-		if (sb.length() > 0) {
-			sb.append(PART_SEPARATOR);
-		}
-
+		sb.append(_controlSystem.getPrefix());
+		sb.append("://");
 		sb.append(_property);
+		
+//		// device (is optional)
+//		if (_device != null) {
+//			if (sb.length() > 0) {
+//				sb.append(PART_SEPARATOR);
+//			}
+//
+//			sb.append(_device);
+//		}
+//
+//		// property
+//		if (sb.length() > 0) {
+//			sb.append(PART_SEPARATOR);
+//		}
+//
+//		sb.append(_property);
 
 		// characteristic (is optional)
 		if (_characteristic != null) {
@@ -326,18 +249,31 @@ public class ProcessVariable {
 	 */
 	@Override
 	public String toString() {
-		return toReducedString();
+		StringBuffer sb = new StringBuffer();
+		sb.append("Raw Name: " + _rawName);
+		sb.append("\n");
+		sb.append("Control-System: " + _controlSystem);
+		sb.append("\n");
+		sb.append("Property-Part: " + _property);
+		sb.append("\n");
+		sb.append("Device-Part: " + _device);
+		sb.append("\n");
+		sb.append("Characteristic-Part: " + _characteristic);
+		sb.append("\n");
+		sb.append("RemoteInfo: " + toDalRemoteInfo());
+		sb.append("\n");
+		return sb.toString();
 	}
 
 	/**
 	 * Prints a String representation to the provided stream.
 	 * 
-	 * @param out the out stream
+	 * @param out
+	 *            the out stream
 	 */
 	public void print(final PrintStream out) {
-		out.println("Full String		: " + toFullString());
-		out.println("Control System		: "
-				+ getControlSystemEnum().getProcessVariableUriRepresentation());
+		out.println("Full String		: " + getFullName());
+		out.println("Control System		: " + getControlSystemEnum().getPrefix());
 		out.println("Device			: "
 				+ (getDevice() != null ? getDevice() : "<not provided>"));
 		out.println("Property		: " + getProperty());
@@ -351,9 +287,18 @@ public class ProcessVariable {
 	public boolean equals(Object obj) {
 		if (obj instanceof ProcessVariable) {
 			ProcessVariable that = (ProcessVariable) obj;
-			return this.toFullString().equals(that.toFullString());
+			return this.getFullName().equals(that.getFullName());
 		}
 		return false;
 	}
+
+	public ControlSystemEnum getControlSystem() {
+		return _controlSystem;
+	}
+
+	public String getRawName() {
+		return _rawName;
+	}
+
 
 }

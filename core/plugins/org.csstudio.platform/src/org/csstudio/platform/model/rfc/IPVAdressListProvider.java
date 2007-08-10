@@ -24,16 +24,16 @@ package org.csstudio.platform.model.rfc;
 import java.util.List;
 
 /**
- * An Interface to provide a List of {@link ProcessVariable}s.
+ * An Interface to provide a List of {@link IProcessVariableAdress}s.
  * @author Kai Meyer
  */
 public interface IPVAdressListProvider {
 	
 	/**
-	 * Returns a {@link ProcessVariable}
+	 * Returns a {@link IProcessVariableAdress}
 	 * @return ProcessVariable
 	 * 			A ProcessVariable
 	 */
-	public List<ProcessVariable> getPVAdressList();
+	public List<IProcessVariableAdress> getPVAdressList();
 
 }

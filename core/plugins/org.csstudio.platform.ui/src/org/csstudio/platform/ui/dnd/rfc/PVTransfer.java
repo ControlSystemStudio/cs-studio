@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.dnd;
+package org.csstudio.platform.ui.dnd.rfc;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,8 +29,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-//import org.csstudio.platform.model.rfc.ControlSystemEnum;
-import org.csstudio.platform.model.rfc.ProcessVariable;
+import org.csstudio.platform.model.rfc.IProcessVariableAdress;
+import org.csstudio.platform.model.rfc.PvAdressFactory;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
@@ -49,7 +49,7 @@ public class PVTransfer extends ByteArrayTransfer {
 	/**
 	 * The items that were selected during the latest DnD operation.
 	 */
-	private List<ProcessVariable> _selectedItems;
+	private List<IProcessVariableAdress> _selectedItems;
 
 	/**
 	 * The event time of the latest selection.
@@ -77,13 +77,13 @@ public class PVTransfer extends ByteArrayTransfer {
 	 */
 	@SuppressWarnings("unchecked")
 	public void javaToNative (Object object, TransferData transferData) {
-		if (object == null || !(object instanceof ProcessVariable[] || object instanceof List)) return;
+		if (object == null || !(object instanceof IProcessVariableAdress[] || object instanceof List)) return;
 		if (isSupportedType(transferData)) {
-			ProcessVariable[] pvs;
+			IProcessVariableAdress[] pvs;
 			if (object instanceof List) {
-				pvs = (ProcessVariable[]) ((List)object).toArray(new ProcessVariable[((List)object).size()]);
+				pvs = (IProcessVariableAdress[]) ((List)object).toArray(new IProcessVariableAdress[((List)object).size()]);
 			} else {
-				pvs = (ProcessVariable[]) object;	
+				pvs = (IProcessVariableAdress[]) object;	
 			}
 			try {
  			// write data to a byte array and then ask super to convert to pMedium
@@ -110,7 +110,7 @@ public class PVTransfer extends ByteArrayTransfer {
 //					buffer = characteristic.getBytes();
 //					writeOut.writeInt(buffer.length);
 //					writeOut.write(buffer);
-					byte[] buffer = pvs[i].toFullString().getBytes();
+					byte[] buffer = pvs[i].getRawName().getBytes();
 					writeOut.writeInt(buffer.length);
 					writeOut.write(buffer);
 				}
@@ -132,11 +132,11 @@ public class PVTransfer extends ByteArrayTransfer {
 			byte[] buffer = (byte[])super.nativeToJava(transferData);
 			if (buffer == null) return null;
 			
-			ProcessVariable[] processVariables = new ProcessVariable[0];
+			IProcessVariableAdress[] processVariables = new IProcessVariableAdress[0];
 			try {
 				ByteArrayInputStream in = new ByteArrayInputStream(buffer);
 				DataInputStream readIn = new DataInputStream(in);
-				while(readIn.available() > 20) {
+				while(readIn.available() > 0) {
 //					int size = readIn.readInt();
 //					byte[] propertyBytes = new byte[size];
 //					readIn.read(propertyBytes);
@@ -162,9 +162,9 @@ public class PVTransfer extends ByteArrayTransfer {
 					readIn.read(pathBytes);
 					String fullPath = new String(pathBytes);
 					
-					ProcessVariable pv = new ProcessVariable(fullPath);
+					IProcessVariableAdress pv = PvAdressFactory.getInstance().createProcessVariableAdress(fullPath);
 					//ProcessVariable pv = new ProcessVariable(controlSystem, device, property, characteristic);
-					ProcessVariable[] newProcessVariables = new ProcessVariable[processVariables.length + 1];
+					IProcessVariableAdress[] newProcessVariables = new IProcessVariableAdress[processVariables.length + 1];
 					System.arraycopy(processVariables, 0, newProcessVariables, 0, processVariables.length);
 					newProcessVariables[processVariables.length] = pv;
 					processVariables = newProcessVariables;
@@ -194,10 +194,10 @@ public class PVTransfer extends ByteArrayTransfer {
 	
 	/**
 	 * Gets the transfer data for local use.
-	 * @return List of {@link ProcessVariable}
+	 * @return List of {@link IProcessVariableAdress}
 	 * 			The transfer data for local use.
 	 */
-	public List<ProcessVariable> getSelectedItems() {
+	public List<IProcessVariableAdress> getSelectedItems() {
 		long dist = new Date().getTime() - _selectionSetTime;
 
 		if (dist > SELECTION_EXPIRATION_PERIOD) {
@@ -211,7 +211,7 @@ public class PVTransfer extends ByteArrayTransfer {
 	 * @param selectedItems
 	 *            the transfer data
 	 */
-	public void setSelectedItems(final List<ProcessVariable> selectedItems) {
+	public void setSelectedItems(final List<IProcessVariableAdress> selectedItems) {
 		_selectedItems = selectedItems;
 		_selectionSetTime = new Date().getTime();
 	}

@@ -26,6 +26,7 @@ import org.csstudio.platform.LocaleService;
 import org.csstudio.platform.OnsiteSubnetPreferences;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.rfc.ControlSystemEnum;
+import org.csstudio.platform.model.rfc.PvAdressFactory;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -185,7 +186,8 @@ public final class PlatformPreferencesInitializer extends
 	 *            the preferences node to use
 	 */
 	private void initializeControlSystemPreferences(final IEclipsePreferences node) {
-		node.put(ControlSystemEnum.PROP_CONTROL_SYSTEM, ControlSystemEnum.EPICS.name());
+		node.put(PvAdressFactory.PROP_CONTROL_SYSTEM, ControlSystemEnum.DAL_EPICS.getPrefix());
+		node.putBoolean(PvAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM, true);
 	}
 
 }

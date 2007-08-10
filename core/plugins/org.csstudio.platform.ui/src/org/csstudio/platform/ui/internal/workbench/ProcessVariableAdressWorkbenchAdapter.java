@@ -19,19 +19,41 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.model.rfc;
+package org.csstudio.platform.ui.internal.workbench;
+
+import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.model.rfc.IProcessVariableAdress;
+import org.csstudio.platform.ui.CSSPlatformUiPlugin;
+import org.csstudio.platform.ui.util.ImageUtil;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.model.WorkbenchAdapter;
 
 /**
- * An Interface to provide {@link ProcessVariable}s.
- * @author Kai Meyer
+ * A workbench adapter implementation for process variables.
+ * 
+ * @author Sven Wende
+ * 
  */
-public interface IPVAdressProvider {
-	
-	/**
-	 * Returns a {@link ProcessVariable}
-	 * @return ProcessVariable
-	 * 			A ProcessVariable
-	 */
-	public IProcessVariableAdress getPVAdress();
+public final class ProcessVariableAdressWorkbenchAdapter extends WorkbenchAdapter {
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ImageDescriptor getImageDescriptor(final Object object) {
+		return ImageUtil.getInstance().getImageDescriptor(CSSPlatformUiPlugin.ID, "icons/pv.gif"); //$NON-NLS-1$
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getLabel(final Object object) {
+		String label = "<unknown>"; //$NON-NLS-1$
+
+		if (object instanceof IProcessVariableAdress) {
+			label = ((IProcessVariableAdress) object).getFullName();
+		}
+		return label;
+	}
 }

@@ -65,6 +65,20 @@
             class="org.csstudio.platform.ui.internal.workbench.ControlSystemItemAdapterFactory">
          <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
       </factory>
+      <factory
+            adaptableType="org.csstudio.platform.model.rfc.ControlSystemEnum"
+            class="org.csstudio.platform.ui.internal.workbench.ControlSystemEnumAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.platform.model.rfc.IProcessVariableAdress"
+            class="org.csstudio.platform.ui.internal.workbench.ProcessVariableAdressAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
@@ -342,4 +356,16 @@
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.csstudio.platform.ui.statisticviewer.preference.PreferenceInitializer"/>
    </extension>
+  <extension
+        point="org.eclipse.ui.popupMenus">
+     <objectContribution
+           id="dummy"
+           objectClass="org.csstudio.platform.model.rfc.IPVAdressListProvider">
+        <action
+              class="org.csstudio.platform.ui.internal.developmentsupport.util.PrintPvsAction"
+              id="org.csstudio.platform.ui.action1"
+              label="Print selected Pvs">
+        </action>
+     </objectContribution>
+  </extension>
 </plugin>

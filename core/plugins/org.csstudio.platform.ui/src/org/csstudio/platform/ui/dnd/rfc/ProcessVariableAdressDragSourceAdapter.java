@@ -19,14 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.dnd;
+package org.csstudio.platform.ui.dnd.rfc;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.model.rfc.IPVAdressListProvider;
 import org.csstudio.platform.model.rfc.IPVAdressProvider;
-import org.csstudio.platform.model.rfc.ProcessVariable;
+import org.csstudio.platform.model.rfc.IProcessVariableAdress;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -36,7 +36,7 @@ import org.eclipse.swt.dnd.TextTransfer;
  * described by the <code>DragSourceListener</code> interface.
  * @author Kai Meyer
  */
-public class PVDragSourceAdapter extends DragSourceAdapter {
+public class ProcessVariableAdressDragSourceAdapter extends DragSourceAdapter {
 	
 	/**
 	 * A {@link IPVAdressProvider}
@@ -49,24 +49,24 @@ public class PVDragSourceAdapter extends DragSourceAdapter {
 	
 	/**
 	 * Constructs a drag source adapter, which only provides items during DnD,
-	 * that are {@link ProcessVariable}s.
+	 * that are {@link IProcessVariableAdress}s.
 	 * 
 	 * @param pvProvider
-	 * 			  The provider of the {@link ProcessVariable}
+	 * 			  The provider of the {@link IProcessVariableAdress}
 	 */
-	public PVDragSourceAdapter(IPVAdressProvider pvProvider) {
+	public ProcessVariableAdressDragSourceAdapter(IPVAdressProvider pvProvider) {
 		_pvProvider = pvProvider;
 		_pvListProvider = null;
 	}
 	
 	/**
 	 * Constructs a drag source adapter, which only provides items during DnD,
-	 * that are {@link ProcessVariable}s.
+	 * that are {@link IProcessVariableAdress}s.
 	 * 
 	 * @param pvProvider
-	 * 			  The provider of the {@link ProcessVariable}
+	 * 			  The provider of the {@link IProcessVariableAdress}
 	 */
-	public PVDragSourceAdapter(IPVAdressListProvider pvProvider) {
+	public ProcessVariableAdressDragSourceAdapter(IPVAdressListProvider pvProvider) {
 		_pvProvider = null;
 		_pvListProvider = pvProvider;
 	}
@@ -81,16 +81,16 @@ public class PVDragSourceAdapter extends DragSourceAdapter {
 	}
 	
 	/**
-	 * Returns a new List of all provided {@link ProcessVariable}
+	 * Returns a new List of all provided {@link IProcessVariableAdress}
 	 * @return List of ProcessVariables
-	 * 		A new List of all provided {@link ProcessVariable}
+	 * 		A new List of all provided {@link IProcessVariableAdress}
 	 */
-	private List<ProcessVariable> getProceesVariables() {
-		List<ProcessVariable> list = new ArrayList<ProcessVariable>();
+	private List<IProcessVariableAdress> getProceesVariables() {
+		List<IProcessVariableAdress> list = new ArrayList<IProcessVariableAdress>();
 		if (_pvProvider!=null) {
 			list.add(_pvProvider.getPVAdress());
 		} else if (_pvListProvider!=null) {
-			for (ProcessVariable pv : _pvListProvider.getPVAdressList()) {
+			for (IProcessVariableAdress pv : _pvListProvider.getPVAdressList()) {
 				list.add(pv);
 			}
 		}
@@ -102,7 +102,7 @@ public class PVDragSourceAdapter extends DragSourceAdapter {
 	 */
 	@Override
 	public void dragSetData(final DragSourceEvent event) {
-		List<ProcessVariable> items = null;
+		List<IProcessVariableAdress> items = null;
 		List currentSelection = this.getProceesVariables();
 		
 		if ((currentSelection != null) && (currentSelection.size() > 0)) {
@@ -116,8 +116,8 @@ public class PVDragSourceAdapter extends DragSourceAdapter {
 		} else if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 			StringBuffer sb = new StringBuffer();
 			// concatenate a String, which contains items line by line
-			for (ProcessVariable item : items) {
-				String path = item.toFullString();
+			for (IProcessVariableAdress item : items) {
+				String path = item.getRawName();
 				sb.append(path);
 				sb.append("\n"); //$NON-NLS-1$
 			}

@@ -3,6 +3,10 @@
  */
 package org.csstudio.platform.model.rfc;
 
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
+
+
 /**
  * An enumeration for all available control system prefixes.
  * 
@@ -12,34 +16,43 @@ package org.csstudio.platform.model.rfc;
  * @author Sven Wende
  * 
  */
-public enum ControlSystemEnum {
-	LOCAL("local", null, false),
+public enum ControlSystemEnum implements IAdaptable {
+	SDS_SIMULATOR("local", null, false),
 
-	SIMULATOR("simulator", "Simulator", true),
+	DAL_SIMULATOR("simulator", "Simulator", true),
 
-	EPICS("epics", "EPICS", true),
+	DAL_EPICS("dal-epics", "EPICS", true),
+
+	DAL_TINE("dal-tine", "TINE", true),
+
+	DAL_TANGO("dal-tango", "TANGO", true),
 
 	TINE("tine", "TINE", true),
 
-	TANGO("tango", "TANGO", false);
+	EPICS("epics", "EPICS", true),
 
-	private String _name;
+	TANGO("tango", "TANGO", false),
+	
+	GENERIC("generic", "EPICS", true), 
+	
+	UNKNOWN("unknown", null, false);
+
+
+	private String _prefix;
 
 	private String _dalName;
 
 	private boolean _supportedByDAL;
 
-	public static final String PROP_CONTROL_SYSTEM = "PROP_CONTROL_SYSTEM"; //$NON-NLS-1$
-
-	ControlSystemEnum(String name, String dalName, boolean supportedByDAL) {
-		assert name != null;
-		_name = name;
+	ControlSystemEnum(String prefix, String dalName, boolean supportedByDAL) {
+		assert prefix != null;
+		_prefix = prefix;
 		_dalName = dalName;
 		_supportedByDAL = supportedByDAL;
 	}
 
-	public String getProcessVariableUriRepresentation() {
-		return _name;
+	public String getPrefix() {
+		return _prefix;
 	}
 
 	public String getResponsibleDalPlugId() {
@@ -52,7 +65,21 @@ public enum ControlSystemEnum {
 
 	@Override
 	public String toString() {
-		return _name;
+		return _prefix;
+	}
+	
+	public static ControlSystemEnum findByPrefix(String prefix) {
+		ControlSystemEnum result=null;
+		for(ControlSystemEnum e : values()) {
+			if(e.getPrefix().equalsIgnoreCase(prefix)) {
+				result = e;
+			}
+		}
+		
+		return result;
 	}
 
+	public Object getAdapter(Class adapter) {
+		return Platform.getAdapterManager().getAdapter(this, adapter);
+	}
 }

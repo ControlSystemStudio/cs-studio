@@ -1,5 +1,6 @@
 package org.csstudio.platform.ui.internal.developmentsupport.util;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,9 +8,13 @@ import org.csstudio.platform.internal.developmentsupport.util.DummyContentModelP
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.rfc.IPVAdressListProvider;
-import org.csstudio.platform.model.rfc.ProcessVariable;
+import org.csstudio.platform.model.rfc.IProcessVariableAdress;
+import org.csstudio.platform.model.rfc.PvAdressFactory;
 import org.csstudio.platform.ui.dnd.DnDUtil;
-import org.csstudio.platform.ui.dnd.PVDragSourceAdapter;
+import org.csstudio.platform.ui.dnd.rfc.IProcessVariableAdressReceiver;
+import org.csstudio.platform.ui.dnd.rfc.PVTransfer;
+import org.csstudio.platform.ui.dnd.rfc.ProcessVariableAdressDragSourceAdapter;
+import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
 import org.csstudio.platform.ui.workbench.ControlSystemItemEditorInput;
 import org.csstudio.platform.ui.workbench.IWorkbenchIds;
 import org.eclipse.core.runtime.IAdaptable;
@@ -17,11 +22,18 @@ import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceAdapter;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorDescriptor;
@@ -36,38 +48,62 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * A view, which is used to display and navigate and open editors for workspace
- * resources.
+ * A view, which is used for DnD demos.
  * 
  * @author Sven Wende
  * @version $Revision$
  */
-public final class ContainerView extends ViewPart implements IPVAdressListProvider {
+public final class ContainerView extends ViewPart {
 
+	private static String[] _sampleStrings;
+	private static IProcessVariableAdress[] _samplePvAdresses;
+
+	static {
+		_sampleStrings = new String[] { "a", "b" };
+
+		PvAdressFactory f = PvAdressFactory.getInstance();
+
+		_samplePvAdresses = new IProcessVariableAdress[] {
+				f.createProcessVariableAdress("epics://cryo/pump1"),
+				f.createProcessVariableAdress("epics://cryo/pump2"),
+				f.createProcessVariableAdress("epics://cryo/pump3"),
+				f.createProcessVariableAdress("tine://cryo/pump1"),
+				f.createProcessVariableAdress("tine://cryo/pump2"),
+				f.createProcessVariableAdress("tine://cryo/pump3"),
+				f.createProcessVariableAdress("tango://cryo/pump1"),
+				f.createProcessVariableAdress("tango://cryo/pump2"),
+				f.createProcessVariableAdress("tango://cryo/pump3"),
+				f.createProcessVariableAdress("dal-epics://cryo/pump1"),
+				f.createProcessVariableAdress("dal-epics://cryo/pump2"),
+				f.createProcessVariableAdress("dal-epics://cryo/pump3"),
+				f.createProcessVariableAdress("dal-tine://cryo/pump1"),
+				f.createProcessVariableAdress("dal-tine://cryo/pump2"),
+				f.createProcessVariableAdress("dal-tine://cryo/pump3"),
+				f.createProcessVariableAdress("dal-tango://cryo/pump1"),
+				f.createProcessVariableAdress("dal-tango://cryo/pump2"),
+				f.createProcessVariableAdress("dal-tango://cryo/pump3") };
+	}
 	/**
 	 * The ID of this view as configured in the plugin manifest.
 	 */
 	public static final String ID = "org.csstudio.platform.developmentsupport.util.ui.ContainerView"; //$NON-NLS-1$
 
 	/**
-	 * The data model that is provided by the tree viewer.
-	 */
-	private List<IAdaptable> _treeModel = DummyContentModelProvider
-			.getInstance().getModel();
-
-	/**
-	 * A treeviewer, which is used to display the resources.
-	 */
-	private TreeViewer _treeViewer;
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void createPartControl(final Composite parent) {
-		_treeViewer = new TreeViewer(parent);
+		createPvProviderTree(parent);
+		createTextProviderTree(parent);
+		createPvConsumerTree(parent);
+	}
 
-		_treeViewer.setContentProvider(new BaseWorkbenchContentProvider() {
+	private List<IProcessVariableAdress> _modelForPvConsumer=new ArrayList<IProcessVariableAdress>();
+	
+	private void createPvConsumerTree(final Composite parent) {
+		final TreeViewer tv = new TreeViewer(parent);
+
+		tv.setContentProvider(new BaseWorkbenchContentProvider() {
 			/**
 			 * {@inheritDoc}
 			 */
@@ -75,49 +111,118 @@ public final class ContainerView extends ViewPart implements IPVAdressListProvid
 			public Object[] getElements(final Object element) {
 				return ((List) element).toArray();
 			}
+		});
 
+		tv.setLabelProvider(new WorkbenchLabelProvider());
+		tv.setInput(_modelForPvConsumer);
+
+		getViewSite().setSelectionProvider(tv);
+
+		// add drag support
+		ProcessVariableExchangeUtil.addProcessVariableDropSupport(tv.getControl(), DND.DROP_MOVE | DND.DROP_COPY, new IProcessVariableAdressReceiver(){
+			public void receive(IProcessVariableAdress[] pvs, DropTargetEvent event) {
+				for(IProcessVariableAdress pv : pvs) {
+					_modelForPvConsumer.add(pv);
+				}
+				
+				tv.refresh();
+			}
+		});
+
+		// create context menu
+		configureContextMenu(tv);
+	}
+
+	
+	private void createPvProviderTree(final Composite parent) {
+		final TreeViewer tv = new TreeViewer(parent);
+
+		tv.setContentProvider(new BaseWorkbenchContentProvider() {
 			/**
 			 * {@inheritDoc}
 			 */
 			@Override
-			public Object[] getChildren(final Object element) {
-				return super.getChildren(element);
+			public Object[] getElements(final Object element) {
+				return (Object[]) element;
 			}
 		});
 
-		_treeViewer.setLabelProvider(new WorkbenchLabelProvider());
+		tv.setLabelProvider(new WorkbenchLabelProvider());
+		tv.setInput(_samplePvAdresses);
 
-		_treeViewer.setInput(_treeModel);
-
-		getViewSite().setSelectionProvider(_treeViewer);
+		getViewSite().setSelectionProvider(tv);
 
 		// add drag support
-		addDragSupport();
-
-		// add listeners
-		configureListeners();
+		ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(
+				tv.getTree(), DND.DROP_MOVE | DND.DROP_COPY,
+				new IPVAdressListProvider() {
+					public List<IProcessVariableAdress> getPVAdressList() {
+						IStructuredSelection sel = (IStructuredSelection) tv
+								.getSelection();
+						List<IProcessVariableAdress> list = (List<IProcessVariableAdress>) sel
+								.toList();
+						return list;
+					}
+				});
 
 		// create context menu
-		configureContextMenu();
+		configureContextMenu(tv);
 	}
 
-	/**
-	 * Equip the tree viewer with drag&drop support.
-	 */
-	private void addDragSupport() {
-//		FilteredDragSourceAdapter dragSourceListener = new FilteredDragSourceAdapter(
-//				new Class[] { IProcessVariable.class, IArchiveDataSource.class,
-//						TextContainer.class}) {
-//			public List getCurrentSelection() {
-//				return ((IStructuredSelection) _treeViewer.getSelection())
-//						.toList();
-//			}
-//		};
-		
-		PVDragSourceAdapter dragSourceListener = new PVDragSourceAdapter(this);
+	private void createTextProviderTree(final Composite parent) {
+		final TreeViewer tv = new TreeViewer(parent);
 
-		DnDUtil.enableForDrag(_treeViewer.getTree(), DND.DROP_MOVE
-				| DND.DROP_COPY, dragSourceListener);
+		tv.setContentProvider(new BaseWorkbenchContentProvider() {
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public Object[] getElements(final Object element) {
+				return (Object[]) element;
+			}
+		});
+
+		tv.setLabelProvider(new WorkbenchLabelProvider());
+		tv.setInput(_sampleStrings);
+
+		getViewSite().setSelectionProvider(tv);
+
+		// add drag support
+		// FIXME: nur Text-Support anbieten
+		// ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(
+		// pvAdressesTv.getTree(), DND.DROP_MOVE | DND.DROP_COPY, this);
+
+		DragSource dragSource = new DragSource(tv.getControl(),
+				DND.DROP_MOVE | DND.DROP_COPY);
+
+		Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
+
+		dragSource.setTransfer(types);
+
+		dragSource.addDragListener(new DragSourceAdapter() {
+
+			@Override
+			public void dragSetData(DragSourceEvent event) {
+				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+					IStructuredSelection sel = (IStructuredSelection) tv
+							.getSelection();
+					List<String> list = (List<String>) sel
+							.toList();
+
+					StringBuffer sb = new StringBuffer();
+
+					for (String s : list) {
+						sb.append(s);
+						sb.append("\n"); //$NON-NLS-1$
+					}
+					event.data = sb.toString();
+				}
+			}
+
+		});
+
+		// create context menu
+		configureContextMenu(tv);
 	}
 
 	/**
@@ -125,31 +230,12 @@ public final class ContainerView extends ViewPart implements IPVAdressListProvid
 	 */
 	@Override
 	public void setFocus() {
-		if (_treeViewer != null) {
-			_treeViewer.setInput(DummyContentModelProvider.getInstance()
-					.getModel());
-		}
 	}
 
 	/**
 	 * Configures all listeners for the TreeViewer.
 	 */
-	private void configureListeners() {
-		_treeViewer.addOpenListener(new IOpenListener() {
-			public void open(final OpenEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event
-						.getSelection();
-
-				Object obj = selection.getFirstElement();
-				openEditor(obj);
-			}
-		});
-	}
-
-	/**
-	 * Configures all listeners for the TreeViewer.
-	 */
-	private void configureContextMenu() {
+	private void configureContextMenu(TreeViewer tv) {
 		MenuManager menuMgr = new MenuManager("", ID); //$NON-NLS-1$
 		menuMgr.add(new GroupMarker(IWorkbenchIds.GROUP_CSS_MB3));
 		menuMgr.add(new Separator());
@@ -157,61 +243,13 @@ public final class ContainerView extends ViewPart implements IPVAdressListProvid
 
 		menuMgr.setRemoveAllWhenShown(true);
 
-		Menu contextMenu = menuMgr.createContextMenu(_treeViewer.getTree());
-		_treeViewer.getTree().setMenu(contextMenu);
+		Menu contextMenu = menuMgr.createContextMenu(tv.getTree());
+		tv.getTree().setMenu(contextMenu);
 
 		// Register viewer with site. This has to be done before making the
 		// actions.
-		getViewSite().registerContextMenu(menuMgr, _treeViewer);
-		getViewSite().setSelectionProvider(_treeViewer);
+		getViewSite().registerContextMenu(menuMgr, tv);
+		getViewSite().setSelectionProvider(tv);
 	}
 
-	/**
-	 * Opens an appropriate editor for the specified object.
-	 * 
-	 * @param obj
-	 *            the object
-	 */
-	private void openEditor(final Object obj) {
-		String query = ""; //$NON-NLS-1$
-		IEditorInput editorInput = null;
-
-		if (obj instanceof IControlSystemItem) {
-			query = "x." + ((IControlSystemItem) obj).getTypeId(); //$NON-NLS-1$
-			editorInput = new ControlSystemItemEditorInput(
-					(IControlSystemItem) obj);
-		}
-
-		IEditorRegistry editorRegistry = PlatformUI.getWorkbench()
-				.getEditorRegistry();
-		IEditorDescriptor descriptor = editorRegistry.getDefaultEditor(query);
-
-		if (descriptor != null && editorInput != null) {
-			IWorkbenchPage page = getSite().getPage();
-			try {
-				page.openEditor(editorInput, descriptor.getId());
-			} catch (PartInitException e) {
-				CentralLogger.getInstance().error("Cannot open editor", e); //$NON-NLS-1$
-			}
-		} else {
-			MessageDialog.openInformation(getSite().getShell(),
-					"NoEditorInformationDialogTitle", //$NON-NLS-1$
-					"ResourceNavigationView.NoEditorInformationDialogText"); //$NON-NLS-1$
-		}
-	}
-
-	public List<ProcessVariable> getPVAdressList() {
-		List<ProcessVariable> list = new LinkedList<ProcessVariable>();
-		Object[] objects = ((IStructuredSelection) _treeViewer.getSelection()).toArray();
-		for (Object o : objects) {
-			if (o instanceof IControlSystemItem) {
-				list.add(new ProcessVariable( ((IControlSystemItem)o).getName() ));
-			} else if (o instanceof String) {
-				list.add(new ProcessVariable( (String)o ));
-			} else if (o instanceof ProcessVariable) {
-				list.add((ProcessVariable) o);
-			}
-		}
-		return list;
-	}
 }
