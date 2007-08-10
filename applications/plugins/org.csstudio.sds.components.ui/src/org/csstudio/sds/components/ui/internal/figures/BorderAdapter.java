@@ -24,10 +24,12 @@ package org.csstudio.sds.components.ui.internal.figures;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractBorder;
+import org.eclipse.draw2d.AbstractLabeledBorder;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.SchemeBorder;
+import org.eclipse.draw2d.TitleBarBorder;
 import org.eclipse.draw2d.SchemeBorder.Scheme;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -41,7 +43,7 @@ import org.eclipse.swt.graphics.Color;
  * @version $Revision$
  * 
  */
-public final class BorderAdapter implements IBorderEquippedWidget {
+public class BorderAdapter implements IBorderEquippedWidget {
 	/**
 	 * The enriched <code>IFigure</code> instance.
 	 */
@@ -64,6 +66,11 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 	private Integer _borderStyle = 1;
 
 	/**
+	 * The text for the border.
+	 */
+	private String _borderText;
+
+	/**
 	 * Standard constructor.
 	 * 
 	 * @param figure
@@ -76,7 +83,7 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setBorderWidth(final int width) {
+	public final void setBorderWidth(final int width) {
 		_borderWidth = width;
 		refreshBorder();
 	}
@@ -84,7 +91,7 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setBorderColor(final Color borderColor) {
+	public final void setBorderColor(final Color borderColor) {
 		_borderColor = borderColor;
 		refreshBorder();
 	}
@@ -92,8 +99,18 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setBorderStyle(final int style) {
+	public final void setBorderStyle(final int style) {
 		_borderStyle = style;
+		refreshBorder();
+	}
+	
+	/**
+	 * returns the text for the border.
+	 * @param borderText
+	 * 			The text for the border 
+	 */
+	public final void setBorderText(final String borderText) {
+		_borderText = borderText;
 		refreshBorder();
 	}
 
@@ -105,8 +122,10 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 			AbstractBorder border;
 			switch (_borderStyle) {
 				case 0 : border = this.createLineBorder(); break;
-				case 1 : border = this.createSchemeBorder(); break;
-				case 2 : border = this.createStriatedBorder(); break;
+				case 1 : border = this.createLabeledBorder(); break;
+				case 2 : border = this.createSchemeBorder(); break;
+				case 3 : border = this.createStriatedBorder(); break;
+				case 4 : border = this.createShapeBorder(_borderWidth, _borderColor); break;
 				default : border = this.createLineBorder(); break;
 			}
 			_figure.setBorder(border);
@@ -129,6 +148,16 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 	}
 	
 	/**
+	 * Creates a AbstractLabeledBorder.
+	 * @return AbstractBorder
+	 * 			The requested Border
+	 */
+	private AbstractBorder createLabeledBorder() {
+		AbstractLabeledBorder border = new TitleBarBorder(_borderText);
+		return border;
+	}
+	
+	/**
 	 * Creates a SchemeBorder.
 	 * @return AbstractBorder
 	 * 			The requested Border
@@ -146,6 +175,17 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 	private AbstractBorder createStriatedBorder() {
 		StriatedBorder border = new StriatedBorder(_borderWidth);
 		border.setBorderColor(_borderColor);
+		return border;
+	}
+	
+	/**
+	 * Creates a ShapedBorder.
+	 * @return AbstractBorder
+	 * 			The requested Border
+	 */
+	protected AbstractBorder createShapeBorder(final int borderWidth, final Color borderColor) {
+		ShapeBorder border = new ShapeBorder(borderWidth);
+		border.setBorderColor(borderColor);
 		return border;
 	}
 	
@@ -246,6 +286,65 @@ public final class BorderAdapter implements IBorderEquippedWidget {
 				yTopPos = yTopPos + 2*_fixBorderWide;
 				yBottomPos = yBottomPos - 2*_fixBorderWide;
 			}
+		}
+		
+	}
+	
+	/**
+	 * A standard shaped Border.
+	 * @author Kai Meyer
+	 *
+	 */
+	private final class ShapeBorder extends AbstractBorder {
+		
+		/**
+		 * The insets for this Border.
+		 */
+		private Insets _insets;
+		/**
+		 * The Height of the Border.
+		 */
+		private int _borderWidth;
+		/**
+		 * The Color of the border.
+		 */
+		private Color _borderColor;
+		
+		/**
+		 * Constructor.
+		 * @param borderWidth
+		 * 			The width for the border.
+		 */
+		public ShapeBorder(final int borderWidth) {
+			_insets = new Insets(borderWidth);
+			_borderWidth = borderWidth;
+		}
+
+		/**
+		 * Sets the Color of the border.
+		 * @param borderColor
+		 * 			The Color for the border
+		 */
+		public void setBorderColor(final Color borderColor) {
+			_borderColor = borderColor;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Insets getInsets(final IFigure figure) {
+			return _insets;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
+			graphics.setBackgroundColor(_borderColor);
+			graphics.setForegroundColor(_borderColor);
+			graphics.setLineWidth(_borderWidth);
+			graphics.drawRectangle(figure.getBounds().x+_borderWidth/2,figure.getBounds().y+_borderWidth/2,
+					figure.getBounds().width-_borderWidth,figure.getBounds().height-_borderWidth);
 		}
 		
 	}

@@ -23,9 +23,13 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * An ellipse figure.
@@ -129,13 +133,76 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
 			if(_borderAdapter==null) {
-				_borderAdapter = new BorderAdapter(this);
+				_borderAdapter = new BorderAdapter(this) {
+					@Override
+					protected AbstractBorder createShapeBorder(final int borderWidth, final Color borderColor) {
+						EllipseBorder border = new EllipseBorder(borderWidth);
+						border.setBorderColor(borderColor);
+						return border;
+					}
+				};
 			}
 			return _borderAdapter;
 		}
 		return null;
+	}
+	
+	
+	/**
+	 * The Border for this {@link RefreshableEllipseFigure}.
+	 * @author Kai Meyer
+	 *
+	 */
+	private final class EllipseBorder extends AbstractBorder {
+		
+		/**
+		 * The Color of the border.
+		 */
+		private Color _borderColor;
+		/**
+		 * The width of the border.
+		 */
+		private int _borderWidth = 1;
+		
+		/**
+		 * Constructor.
+		 * @param borderWidth
+		 * 				The width for the border
+		 */
+		public EllipseBorder(final int borderWidth) {
+			_borderWidth = borderWidth;
+		}
+		
+		/**
+		 * Sets the Color of the border.
+		 * @param borderColor
+		 * 			The Color for the border
+		 */
+		public void setBorderColor(final Color borderColor) {
+			_borderColor = borderColor;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Insets getInsets(final IFigure figure) {
+			return null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
+			graphics.setBackgroundColor(_borderColor);
+			graphics.setForegroundColor(_borderColor);
+			graphics.setLineWidth(_borderWidth);
+			graphics.drawOval(figure.getBounds().x+_borderWidth/2,figure.getBounds().y+_borderWidth/2,
+					figure.getBounds().width-_borderWidth,figure.getBounds().height-_borderWidth);
+		}
+		
 	}
 }

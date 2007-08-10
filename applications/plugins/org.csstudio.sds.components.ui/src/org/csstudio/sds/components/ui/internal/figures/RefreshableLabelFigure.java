@@ -104,6 +104,7 @@ public final class RefreshableLabelFigure extends Label implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
 			if(_borderAdapter==null) {

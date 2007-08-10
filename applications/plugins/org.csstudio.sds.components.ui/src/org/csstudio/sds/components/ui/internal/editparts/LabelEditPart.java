@@ -21,11 +21,16 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.platform.model.rfc.ProcessVariable;
 import org.csstudio.sds.components.model.LabelModel;
+import org.csstudio.sds.components.ui.internal.figures.BorderAdapter;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
 
@@ -50,6 +55,16 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 				.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont()));
 		label.setTextAlignment(model.getTextAlignment());
+		
+		IBorderEquippedWidget borderEquippedWidgetAdapter = (IBorderEquippedWidget) ((IAdaptable) label)
+		.getAdapter(IBorderEquippedWidget.class);
+		if (borderEquippedWidgetAdapter!=null && borderEquippedWidgetAdapter instanceof BorderAdapter) {
+			if (model.getPrimaryPV()==null) {
+				((BorderAdapter)borderEquippedWidgetAdapter).setBorderText("");
+			} else {
+				((BorderAdapter)borderEquippedWidgetAdapter).setBorderText(model.getPrimaryPV().toFullString());
+			}
+		}
 		return label;
 	}
 
@@ -92,5 +107,24 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT,
 				alignmentHandler);
+		IWidgetPropertyChangeHandler primaryPVHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, 
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				ProcessVariable pv = (ProcessVariable) newValue;
+				IBorderEquippedWidget borderEquippedWidgetAdapter = (IBorderEquippedWidget) ((IAdaptable) figure)
+					.getAdapter(IBorderEquippedWidget.class);
+				if (borderEquippedWidgetAdapter!=null && borderEquippedWidgetAdapter instanceof BorderAdapter) {
+					if (pv==null) {
+						((BorderAdapter)borderEquippedWidgetAdapter).setBorderText("");
+					} else {
+						((BorderAdapter)borderEquippedWidgetAdapter).setBorderText(pv.toFullString());
+					}
+				}
+				return true;
+			}
+			
+		};
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_PRIMARY_PV, primaryPVHandler);
 	}
 }

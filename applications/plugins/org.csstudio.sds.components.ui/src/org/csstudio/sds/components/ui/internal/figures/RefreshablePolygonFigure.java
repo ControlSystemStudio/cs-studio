@@ -23,11 +23,15 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polygon;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * A polygon figure.
@@ -127,13 +131,73 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
 			if(_borderAdapter==null) {
-				_borderAdapter = new BorderAdapter(this);
+				_borderAdapter = new BorderAdapter(this) {
+					@Override
+					protected AbstractBorder createShapeBorder(final int borderWidth,
+							final Color borderColor) {
+						PolygonBorder border = new PolygonBorder(borderWidth);
+						border.setBorderColor(borderColor);
+						return border;
+					}
+				};
 			}
 			return _borderAdapter;
 		}
 		return null;
+	}
+	
+	/**
+	 * The Border for this {@link RefreshablePolygonFigure}.
+	 * @author Kai MEyer
+	 *
+	 */
+	private final class PolygonBorder extends AbstractBorder {
+		/**
+		 * The Color of the border.
+		 */
+		private Color _borderColor;
+		/**
+		 * The width of the border.
+		 */
+		private int _borderWidth = 1;
+		
+		/**
+		 * Constructor.
+		 * @param borderWidth
+		 * 				The width for the border
+		 */
+		public PolygonBorder(final int borderWidth) {
+			_borderWidth = borderWidth;
+		}
+		
+		/**
+		 * Sets the Color of the border.
+		 * @param borderColor
+		 * 			The Color for the border
+		 */
+		public void setBorderColor(final Color borderColor) {
+			_borderColor = borderColor;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Insets getInsets(final IFigure figure) {
+			return null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
+			graphics.setBackgroundColor(_borderColor);
+			graphics.setForegroundColor(_borderColor);
+			graphics.setLineWidth(_borderWidth);
+			graphics.drawPolygon(getPoints());
+		}
 	}
 }

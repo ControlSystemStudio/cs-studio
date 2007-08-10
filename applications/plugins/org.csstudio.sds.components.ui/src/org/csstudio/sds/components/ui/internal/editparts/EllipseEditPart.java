@@ -21,10 +21,15 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.platform.model.rfc.ProcessVariable;
 import org.csstudio.sds.components.model.EllipseModel;
+import org.csstudio.sds.components.ui.internal.figures.BorderAdapter;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -46,6 +51,16 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 		RefreshableEllipseFigure ellipse = new RefreshableEllipseFigure();
 		ellipse.setOrientation(model.getOrientation());
 		ellipse.setFill(model.getFillLevel());
+		
+		IBorderEquippedWidget borderEquippedWidgetAdapter = (IBorderEquippedWidget) ((IAdaptable) ellipse)
+		.getAdapter(IBorderEquippedWidget.class);
+		if (borderEquippedWidgetAdapter!=null && borderEquippedWidgetAdapter instanceof BorderAdapter) {
+			if (model.getPrimaryPV()==null) {
+				((BorderAdapter)borderEquippedWidgetAdapter).setBorderText("");
+			} else {
+				((BorderAdapter)borderEquippedWidgetAdapter).setBorderText(model.getPrimaryPV().toFullString());
+			}
+		}
 
 		return ellipse;
 
@@ -78,6 +93,26 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(EllipseModel.PROP_ORIENTATION, orientationHandler);
+		
+		IWidgetPropertyChangeHandler primaryPVHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, 
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				ProcessVariable pv = (ProcessVariable) newValue;
+				IBorderEquippedWidget borderEquippedWidgetAdapter = (IBorderEquippedWidget) ((IAdaptable) figure)
+					.getAdapter(IBorderEquippedWidget.class);
+				if (borderEquippedWidgetAdapter!=null && borderEquippedWidgetAdapter instanceof BorderAdapter) {
+					if (pv==null) {
+						((BorderAdapter)borderEquippedWidgetAdapter).setBorderText("");
+					} else {
+						((BorderAdapter)borderEquippedWidgetAdapter).setBorderText(pv.toFullString());
+					}
+				}
+				return true;
+			}
+			
+		};
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_PRIMARY_PV, primaryPVHandler);
 	}
 
 }
