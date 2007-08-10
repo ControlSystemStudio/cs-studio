@@ -104,6 +104,7 @@ public class CSSView extends Composite implements Observer{
 	
 	private ListViewer listViewer;
 	private boolean haveChildern = false;
+	private boolean haveFixFirst = true;
 	private CSSView children;
 	private Automat automat;
 	private NameSpace nameSpace;
@@ -116,6 +117,7 @@ public class CSSView extends Composite implements Observer{
 	private CSSViewParameter para;
 	private String[] headlines;
 	private int level;
+	private String _fixFirst;
 	
 
 	
@@ -142,8 +144,7 @@ public class CSSView extends Composite implements Observer{
 		public void removeListener(ILabelProviderListener listener) {}
 
 	}
-
-	public CSSView(final Composite parent, Automat automat,NameSpace nameSpace, IWorkbenchPartSite site , String defaultFilter, String selection, String[] headlines, int level, NameSpaceResultList resultList) {
+	private CSSView(final Composite parent, Automat automat,NameSpace nameSpace, IWorkbenchPartSite site , String defaultFilter, String[] headlines, int level, NameSpaceResultList resultList){
 		super(parent, SWT.NONE);
 		disp = parent.getDisplay();
 
@@ -153,16 +154,27 @@ public class CSSView extends Composite implements Observer{
 		this.site = site;
 		this.headlines = headlines;
 		this.level = level;
-		
 		defaultPVFilter = defaultFilter;
-//		ergebnisListe = new ErgebnisListe();
-//        ergebnisListe = resultList.copy();
         ergebnisListe = resultList;
 		ergebnisListe.addObserver(this);
-
 		init();
+	}
+
+	public CSSView(final Composite parent, Automat automat,NameSpace nameSpace, IWorkbenchPartSite site , String defaultFilter, String selection, String[] headlines, int level, NameSpaceResultList resultList, String fixFrist) {
+		this(parent,automat,nameSpace,site,defaultFilter,headlines,level,resultList);
+		haveFixFirst = true;
+		_fixFirst = fixFrist;
 		// Make a Textfield to Filter the list. Can text drop
 		makeFilterField();
+		//
+		makeListField(selection);
+	}
+	
+	public CSSView(final Composite parent, Automat automat,NameSpace nameSpace, IWorkbenchPartSite site , String defaultFilter, String selection, String[] headlines, int level, NameSpaceResultList resultList) {
+		this(parent,automat,nameSpace,site,defaultFilter,headlines,level,resultList);
+		// Make a Textfield to Filter the list. Can text drop
+		makeFilterField();
+
 		//
 		makeListField(selection);
 	}
@@ -293,9 +305,14 @@ public class CSSView extends Composite implements Observer{
 	private void fillItemList(ArrayList<ControlSystemItem> list) {
 		if(list==null) return;
 		itemList = new LinkedHashMap<String, ControlSystemItem>();
-		if(para.newCSSView){
-			start = 0;
-			itemList.put(Messages.getString("CSSView.All"), new ControlSystemItem(Messages.getString("CSSView.All"),null)); //$NON-NLS-1$ //$NON-NLS-2$
+		if(para.newCSSView&&haveFixFirst){
+			if(_fixFirst==null){
+				start = 0;
+				itemList.put(Messages.getString("CSSView.All"), new ControlSystemItem(Messages.getString("CSSView.All"),null)); //$NON-NLS-1$ //$NON-NLS-2$
+			}else{
+				itemList.put(_fixFirst, new ControlSystemItem(_fixFirst,para.filter+_fixFirst)); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+				
 		}
 		else
 			filter.setText(defaultPVFilter);
@@ -410,7 +427,7 @@ public class CSSView extends Composite implements Observer{
 
 		((GridLayout) parent.getLayout()).numColumns++;
 //			The first element is the "All" element
-		if(listViewer.getList().getSelectionIndex()>start){
+		if(listViewer.getList().getSelectionIndex()>start||_fixFirst!=null){
 			// if instanceof ProcessVariable
 			if (itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1)) instanceof ProcessVariable) {
 				ProcessVariable pv = (ProcessVariable) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
