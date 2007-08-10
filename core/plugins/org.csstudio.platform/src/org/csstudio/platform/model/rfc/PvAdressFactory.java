@@ -100,7 +100,7 @@ public class PvAdressFactory {
 				CSSPlatformPlugin.ID, PROP_CONTROL_SYSTEM, ControlSystemEnum.GENERIC.getPrefix(), //$NON-NLS-1$
 				null);
 		
-		ControlSystemEnum controlSystem = ControlSystemEnum.valueOf(defaultCs);
+		ControlSystemEnum controlSystem = ControlSystemEnum.findByPrefix(defaultCs);
 
 		if (controlSystem == null) {
 			controlSystem = ControlSystemEnum.GENERIC;
