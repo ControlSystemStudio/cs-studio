@@ -92,11 +92,11 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 */
 	private boolean _showValues = false;
 	/**
-	 * The int, which indicates, how the marks should be shown.
+	 * The integer, which indicates, how the marks should be shown.
 	 */
 	private int _showMarks = BOTTOM_RIGHT;
 	/**
-	 * The int, which indicates, how the scale should be shown.
+	 * The integer, which indicates, how the scale should be shown.
 	 */
 	private int _showScale = BOTTOM_RIGHT;
 	/**

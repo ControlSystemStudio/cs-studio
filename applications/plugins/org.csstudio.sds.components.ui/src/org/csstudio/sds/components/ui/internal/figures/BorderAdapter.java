@@ -105,9 +105,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
 	}
 	
 	/**
-	 * returns the text for the border.
-	 * @param borderText
-	 * 			The text for the border 
+	 * {@inheritDoc}
 	 */
 	public final void setBorderText(final String borderText) {
 		_borderText = borderText;
@@ -184,8 +182,9 @@ public class BorderAdapter implements IBorderEquippedWidget {
 	 * 			The requested Border
 	 */
 	protected AbstractBorder createShapeBorder(final int borderWidth, final Color borderColor) {
-		ShapeBorder border = new ShapeBorder(borderWidth);
-		border.setBorderColor(borderColor);
+		LineBorder border = new LineBorder();
+		border.setWidth(borderWidth);
+		border.setColor(borderColor);
 		return border;
 	}
 	
@@ -286,65 +285,6 @@ public class BorderAdapter implements IBorderEquippedWidget {
 				yTopPos = yTopPos + 2*_fixBorderWide;
 				yBottomPos = yBottomPos - 2*_fixBorderWide;
 			}
-		}
-		
-	}
-	
-	/**
-	 * A standard shaped Border.
-	 * @author Kai Meyer
-	 *
-	 */
-	private final class ShapeBorder extends AbstractBorder {
-		
-		/**
-		 * The insets for this Border.
-		 */
-		private Insets _insets;
-		/**
-		 * The Height of the Border.
-		 */
-		private int _borderWidth;
-		/**
-		 * The Color of the border.
-		 */
-		private Color _borderColor;
-		
-		/**
-		 * Constructor.
-		 * @param borderWidth
-		 * 			The width for the border.
-		 */
-		public ShapeBorder(final int borderWidth) {
-			_insets = new Insets(borderWidth);
-			_borderWidth = borderWidth;
-		}
-
-		/**
-		 * Sets the Color of the border.
-		 * @param borderColor
-		 * 			The Color for the border
-		 */
-		public void setBorderColor(final Color borderColor) {
-			_borderColor = borderColor;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public Insets getInsets(final IFigure figure) {
-			return _insets;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
-			graphics.setBackgroundColor(_borderColor);
-			graphics.setForegroundColor(_borderColor);
-			graphics.setLineWidth(_borderWidth);
-			graphics.drawRectangle(figure.getBounds().x+_borderWidth/2,figure.getBounds().y+_borderWidth/2,
-					figure.getBounds().width-_borderWidth,figure.getBounds().height-_borderWidth);
 		}
 		
 	}
