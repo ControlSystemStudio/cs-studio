@@ -64,7 +64,7 @@ public final class PlatformPreferencesInitializer extends
 	 * @param node the preferences node to use.
 	 */
 	private void initializeOnsitePreferences(IEclipsePreferences node) {
-		node.put(OnsiteSubnetPreferences.PREFERENCE_KEY, "131.169.0.0/255.255.0.0");
+		node.put(OnsiteSubnetPreferences.PREFERENCE_KEY, "131.169.0.0/255.255.0.0,");
 	}
 
 	/**
