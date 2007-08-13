@@ -1,6 +1,7 @@
 package org.csstudio.platform.ui.internal.preferences;
 
 import org.csstudio.platform.OnsiteSubnetPreferences;
+import org.csstudio.platform.Subnet;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -41,7 +42,8 @@ public class OnsiteSubnetPreferencePage extends FieldEditorPreferencePage
 			public String getNewInputObject(){
 				AddSubnetDialog dialog = new AddSubnetDialog(getShell());
 				if (dialog.open() == Window.OK) {
-					return dialog.getSubnet().toString();
+					Subnet s = dialog.getSubnet();
+					return s != null ? s.toString() : null;
 				}
 				return null;
 			}
