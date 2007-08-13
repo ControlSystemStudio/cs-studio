@@ -206,6 +206,7 @@ public class CSSView extends Composite implements Observer{
 	 	
 	 	nameSpace.setName(para.name);
 	 	nameSpace.setFilter(para.filter);
+	 	_fixFirst = para.fixFirst;
 	 	nameSpace.setErgebnisListe(ergebnisListe);
 	 	nameSpace.setSelection(selection);
 	 	nameSpace.start();
@@ -308,8 +309,8 @@ public class CSSView extends Composite implements Observer{
 		if(para.newCSSView&&haveFixFirst){
 			if(_fixFirst==null){
 				start = 0;
-				itemList.put(Messages.getString("CSSView.All"), new ControlSystemItem(Messages.getString("CSSView.All"),null)); //$NON-NLS-1$ //$NON-NLS-2$
-			}else{
+				itemList.put(Messages.getString("CSSView.All"), new ControlSystemItem(Messages.getString("CSSView.All"),para.filter+"ALL,")); //$NON-NLS-1$ //$NON-NLS-2$
+			}else if(_fixFirst.trim().length()>0){
 				itemList.put(_fixFirst, new ControlSystemItem(_fixFirst,para.filter+_fixFirst)); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 				
@@ -330,6 +331,7 @@ public class CSSView extends Composite implements Observer{
 				group.setText(headlines[level]);
 			}
 		}
+		System.out.println("nothing");
 	}
 
 	private void workItemList(){
@@ -428,14 +430,19 @@ public class CSSView extends Composite implements Observer{
 		((GridLayout) parent.getLayout()).numColumns++;
 //			The first element is the "All" element
 		if(listViewer.getList().getSelectionIndex()>start||_fixFirst!=null){
-			// if instanceof ProcessVariable
 			if (itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1)) instanceof ProcessVariable) {
 				ProcessVariable pv = (ProcessVariable) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
 				children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,pv.getPath()+",",headlines,level+1, ergebnisListe.getNew()); //$NON-NLS-1$
 			}
 			else{
-				ControlSystemItem csi = (ControlSystemItem) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
-				children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew()); //$NON-NLS-1$
+				if(_fixFirst==null){
+					ControlSystemItem csi = (ControlSystemItem) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
+					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew()); //$NON-NLS-1$
+				}else {
+					ControlSystemItem csi = (ControlSystemItem) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
+					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew(),_fixFirst); //$NON-NLS-1$
+				}
+
 			}
 		}
 		else{
