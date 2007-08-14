@@ -128,7 +128,8 @@ public class CSSView extends Composite implements Observer{
 
 		public String getText(Object element) {
  	    	  if (element instanceof IControlSystemItem) {
- 	    		 return ((IControlSystemItem) element).getName();
+ 	    		 String[] name = ((IControlSystemItem) element).getName().split("[/ ]");
+ 	    		 return name[name.length-1];
  	    	  }else
  	    		  return element.toString();
 		}
