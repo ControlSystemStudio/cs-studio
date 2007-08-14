@@ -620,6 +620,8 @@ public class InterconnectionServer
 		result.add(newTagValuePair);
 		newTagValuePair =  new TagValuePairs ( "STATUS", "on");
 		result.add(newTagValuePair);
+		newTagValuePair =  new TagValuePairs ( "SEVERITY", "NO_ALARM");
+		result.add(newTagValuePair);
 		
 		return result;
 	}
