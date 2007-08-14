@@ -622,6 +622,9 @@ public class InterconnectionServer
 		result.add(newTagValuePair);
 		newTagValuePair =  new TagValuePairs ( "SEVERITY", "NO_ALARM");
 		result.add(newTagValuePair);
+		//TODO: add ioc-NAME
+		//newTagValuePair =  new TagValuePairs ( "NAME", getIocNameFromIpAddress(statisticId));
+		//result.add(newTagValuePair);
 		
 		return result;
 	}
