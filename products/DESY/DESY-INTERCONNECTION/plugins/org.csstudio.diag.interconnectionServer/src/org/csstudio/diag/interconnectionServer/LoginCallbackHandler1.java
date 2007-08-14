@@ -1,9 +1,9 @@
 package org.csstudio.diag.interconnectionServer;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.preferences.XMLStore;
 import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
-import org.csstudio.platform.store.XMLStore;
 
 public class LoginCallbackHandler1 implements ILoginCallbackHandler {
 

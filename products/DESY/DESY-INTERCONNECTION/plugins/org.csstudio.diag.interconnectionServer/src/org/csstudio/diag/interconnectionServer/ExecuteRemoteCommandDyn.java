@@ -5,7 +5,7 @@ import java.util.Map;
 import org.csstudio.diag.interconnectionServer.server.PreferenceProperties;
 import org.csstudio.diag.interconnectionServer.server.SendCommandToIoc;
 import org.csstudio.platform.libs.dcf.actions.IAction;
-import org.csstudio.platform.store.XMLStore;
+import org.csstudio.platform.preferences.XMLStore;
 
 public class ExecuteRemoteCommandDyn implements IAction {
 

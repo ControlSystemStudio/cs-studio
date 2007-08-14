@@ -31,7 +31,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer.TagValuePairs;
-import org.csstudio.platform.store.XMLStore;
+import org.csstudio.platform.preferences.XMLStore;
 import org.csstudio.utility.ldap.engine.Engine;
 
 //import de.desy.jms.server.InterconnectionServer.TagValuePairs;

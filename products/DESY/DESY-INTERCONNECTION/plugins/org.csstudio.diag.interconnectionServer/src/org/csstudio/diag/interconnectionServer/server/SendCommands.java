@@ -6,9 +6,8 @@ import java.net.DatagramSocket;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
-import org.csstudio.platform.store.XMLStore;
+import org.csstudio.platform.preferences.XMLStore;
 
 public class SendCommands {
 	

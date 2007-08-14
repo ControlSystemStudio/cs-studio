@@ -25,11 +25,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.ActiveMQSession.DeliveryListener;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.preferences.XMLStore;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.platform.statistic.CollectorSupervisor;
-import org.csstudio.platform.store.XMLStore;
 
 /**
  * This version uses <code>DatagramSockets</code> instead of Sockets.
