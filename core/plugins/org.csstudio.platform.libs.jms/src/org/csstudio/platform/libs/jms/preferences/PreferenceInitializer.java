@@ -23,15 +23,18 @@ package org.csstudio.platform.libs.jms.preferences;
 
 import org.csstudio.platform.libs.jms.JmsPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = JmsPlugin.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceConstants.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
-		store.setDefault(PreferenceConstants.URL, "failover:(tcp://elogbook.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=2000"); //$NON-NLS-1$
-		store.setDefault(PreferenceConstants.QUEUE, "LOG"); //$NON-NLS-1$
+		IEclipsePreferences prefs = new DefaultScope().getNode(JmsPlugin.PLUGIN_ID);
+
+//		IPreferenceStore store = JmsPlugin.getDefault().getPreferenceStore();
+		prefs.put(PreferenceConstants.INITIAL_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
+		prefs.put(PreferenceConstants.URL, "failover:(tcp://elogbook.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=2000"); //$NON-NLS-1$
+		prefs.put(PreferenceConstants.QUEUE, "LOG"); //$NON-NLS-1$
 		
 	}
 
