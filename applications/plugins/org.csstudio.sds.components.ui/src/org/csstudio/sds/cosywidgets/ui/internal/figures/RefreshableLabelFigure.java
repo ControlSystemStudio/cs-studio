@@ -1,19 +1,18 @@
 package org.csstudio.sds.cosywidgets.ui.internal.figures;
 
-import java.util.IllegalFormatException;
+import java.text.NumberFormat;
 
+import org.csstudio.sds.cosywidgets.ui.internal.utils.TextPainter;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
-import org.eclipse.draw2d.Shape;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
-
-import org.csstudio.sds.cosywidgets.ui.internal.utils.TextPainter;
 
 /**
  * A label figure.
@@ -34,6 +33,11 @@ public final class RefreshableLabelFigure extends Shape {
 	private int value_type=TYPE_DOUBLE;
 	
 	/**
+	 * The potenz for the precision.
+	 */
+	private int _decimalPlaces = 2;
+	
+	/**
 	 * Default label font.
 	 */
 	public Font font = CustomMediaFactory.getInstance().getFont("Arial", 8, SWT.NONE);
@@ -45,7 +49,7 @@ public final class RefreshableLabelFigure extends Shape {
 	
 	/**
 	 * Things to do with the displayed text:
-	 *   alignment, rotation angle, coordinate offsets (if rotation goes out of bounds)
+	 *   alignment, rotation angle, coordinate offsets (if rotation goes out of bounds).
 	 */
 	private int alignment=0;
 	private double rotation=90.0;
@@ -57,7 +61,7 @@ public final class RefreshableLabelFigure extends Shape {
 	private String text_value="";
 	
 	private double double_value=0.0;
-	private String double_value_format="%.3f";
+	//private String double_value_format="%.3f";
 	
 	/**
 	 * Is the background transparent or not?
@@ -89,7 +93,7 @@ public final class RefreshableLabelFigure extends Shape {
 		
 		if (transparent==false) {
 			gfx.setBackgroundColor(getBackgroundColor());
-			gfx.fillRectangle(bound);
+			gfx.fillRectangle(0,0,bound.width,bound.height);
 		}
 		gfx.setFont(font);
 		gfx.setForegroundColor(getForegroundColor());
@@ -102,10 +106,18 @@ public final class RefreshableLabelFigure extends Shape {
 			break;
 		case TYPE_DOUBLE:
 			try {
-				toprint=String.format(double_value_format,double_value);
-			} catch (IllegalFormatException e) {
-				toprint=Double.toString(double_value);
+				double d = Double.parseDouble(text_value);
+				NumberFormat format = NumberFormat.getInstance();
+				format.setMaximumFractionDigits(_decimalPlaces);
+				toprint = format.format(d);
+			} catch (Exception e) {
+				toprint = text_value;
 			}
+//			try {
+//				toprint=String.format(double_value_format,double_value);
+//			} catch (IllegalFormatException e) {
+//				toprint=Double.toString(double_value);
+//			}
 			break;
 		default:
 			toprint="unknown value type";
@@ -133,7 +145,7 @@ public final class RefreshableLabelFigure extends Shape {
 		case 2: //bottom
 			if (Math.round(rotation)==90) {
 				TextPainter.drawText(gfx,toprint,bound.width/2+x_off,bound.height+y_off,TextPainter.BOTTOM_CENTER);
-			}
+			} 
 			else {
 				TextPainter.drawRotatedText(gfx,toprint,90.0-rotation,
 						bound.width/2+x_off,bound.height+y_off,TextPainter.BOTTOM_CENTER);
@@ -165,6 +177,25 @@ public final class RefreshableLabelFigure extends Shape {
 	}
 	public Font getFont() {
 		return font;
+	}
+	
+	/**
+	 * Sets the count of decimal places for this Figure.
+	 * 
+	 * @param decimalPlaces
+	 *            The precision
+	 */
+	public void setDecimalPlaces(final int decimalPlaces) {
+		_decimalPlaces = decimalPlaces;
+	}
+
+	/**
+	 * Gets the precision of this Figure.
+	 * 
+	 * @return The precision
+	 */
+	public int getDecimalPlaces() {
+		return _decimalPlaces;
 	}
 	
 	public void setTextAlignment(final int newval) {
@@ -249,10 +280,10 @@ public final class RefreshableLabelFigure extends Shape {
 		return double_value;
 	}
 	
-	public void setDoubleValueFormat(final String newval) {
-		double_value_format=newval;
-	}
-	public String getDoubleValueFormat() {
-		return double_value_format;
-	}
+//	public void setDoubleValueFormat(final String newval) {
+//		double_value_format=newval;
+//	}
+//	public String getDoubleValueFormat() {
+//		return double_value_format;
+//	}
 }

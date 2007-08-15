@@ -22,7 +22,6 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.SimpleSliderModel;
-import org.csstudio.sds.components.ui.internal.figures.AdvancedSliderFigure;
 import org.csstudio.sds.components.ui.internal.figures.SimpleSliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
@@ -34,7 +33,7 @@ import org.eclipse.ui.progress.UIJob;
 
 /**
  * EditPart controller for the Slider widget. The controller mediates between
- * {@link SimpleSliderModel} and {@link AdvancedSliderFigure}.
+ * {@link SimpleSliderModel} and {@link SimpleSliderFigure}.
  * 
  * @author Sven Wende & Stefan Hofer
  * 

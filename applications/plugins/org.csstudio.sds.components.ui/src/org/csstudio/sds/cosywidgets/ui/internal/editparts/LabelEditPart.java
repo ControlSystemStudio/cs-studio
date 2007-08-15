@@ -48,7 +48,8 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		figure.setType(model.getType());
 		figure.setTextValue(model.getTextValue());
 		figure.setDoubleValue(model.getDoubleValue());
-		figure.setDoubleValueFormat(model.getDoubleValueFormat());
+		//figure.setDoubleValueFormat(model.getDoubleValueFormat());
+		figure.setDecimalPlaces(model.getPrecision());
 		
 		return figure;
 	}
@@ -89,16 +90,28 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(LabelModel.PROP_DOUBLEVALUE, handle);
 		
-		//double value format
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setDoubleValueFormat((String) newValue);
+//		//double value format
+//		handle = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue, final Object newValue,
+//					final IFigure figure) {
+//				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
+//				labelFigure.setDoubleValueFormat((String) newValue);
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(LabelModel.PROP_DOUBLEVALUEFORMAT, handle);
+		
+		// precision
+		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+				label.setDecimalPlaces((Integer) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelModel.PROP_DOUBLEVALUEFORMAT, handle);
+		setPropertyChangeHandler(LabelModel.PROP_PRECISION, precisionHandler);
 	}
 	
 	/**

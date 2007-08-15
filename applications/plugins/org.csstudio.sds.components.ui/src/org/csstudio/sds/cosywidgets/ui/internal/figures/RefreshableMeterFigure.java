@@ -1,5 +1,6 @@
 package org.csstudio.sds.cosywidgets.ui.internal.figures;
 
+import java.text.NumberFormat;
 import java.util.IllegalFormatException;
 
 import org.csstudio.sds.util.AntialiasingUtil;
@@ -125,8 +126,13 @@ public final class RefreshableMeterFigure extends Shape {
 	/**
 	 * Format string for the current value and the values at major tick marks.
 	 */
-	private String value_format="%.3f";
-	private String scale_format="%.1f";
+	//private String value_format="%.3f";
+	//private String scale_format="%.1f";
+	
+	/**
+	 * The potenz for the precision.
+	 */
+	private int _decimalPlaces = 2;
 	
 	/**
 	 * Subfigures for the background and the needle.
@@ -520,20 +526,40 @@ public final class RefreshableMeterFigure extends Shape {
 		return channel_font;
 	}
 	
-	public void setFormat(final String newval) {
-		value_format=new String(newval);
+//	public void setFormat(final String newval) {
+//		value_format=new String(newval);
+//		invalidateNeedle();
+//	}
+//	public String getFormat() {
+//		return value_format;
+//	}
+	
+	/**
+	 * Sets the count of decimal places for this Figure.
+	 * 
+	 * @param decimalPlaces
+	 *            The precision
+	 */
+	public void setDecimalPlaces(final int decimalPlaces) {
+		_decimalPlaces = decimalPlaces;
 		invalidateNeedle();
 	}
-	public String getFormat() {
-		return value_format;
+
+	/**
+	 * Gets the precision of this Figure.
+	 * 
+	 * @return The precision
+	 */
+	public int getDecimalPlaces() {
+		return _decimalPlaces;
 	}
 	
-	public void setScaleFormat(final String newval) {
-		scale_format=newval;
-	}
-	public String getScaleFormat() {
-		return scale_format;
-	}
+//	public void setScaleFormat(final String newval) {
+//		scale_format=newval;
+//	}
+//	public String getScaleFormat() {
+//		return scale_format;
+//	}
 	
 	/**
 	 * Subfigure that draws the arched frame and background of the meter.
@@ -670,10 +696,18 @@ public final class RefreshableMeterFigure extends Shape {
 				gfx.setForegroundColor(CustomMediaFactory.getInstance().getColor(scale_color));
 				ShadedDrawing.drawLineAtAngle(gfx,out_r,scale_maj_r,curr_angle,img_width/2,(int)R+top_delta);
 				//the value of the tick mark
+//				try {
+//					val=String.format(scale_format,curr);
+//				} catch (IllegalFormatException e) {
+//					val=Double.toString(curr);
+//				}
+				
 				try {
-					val=String.format(scale_format,curr);
-				} catch (IllegalFormatException e) {
-					val=Double.toString(curr);
+					NumberFormat format = NumberFormat.getInstance();
+					format.setMaximumFractionDigits(_decimalPlaces);
+					val = format.format(curr);
+				} catch (Exception e) {
+					val = Double.toString(curr);
 				}
 				gfx.setForegroundColor(getForegroundColor());
 				TextPainter.drawRotatedText(gfx,val,90.0-curr_angle,
@@ -744,10 +778,17 @@ public final class RefreshableMeterFigure extends Shape {
 			ShadedDrawing.drawLineAtAngle(gfx,inn_r,out_r,curr_angle,img_width/2,(int)R+top_delta);
 			
 			String val;
+//			try {
+//				val=String.format(value_format,value);
+//			} catch (IllegalFormatException e) {
+//				val=Double.toString(value);
+//			}
 			try {
-				val=String.format(value_format,value);
-			} catch (IllegalFormatException e) {
-				val=Double.toString(value);
+				NumberFormat format = NumberFormat.getInstance();
+				format.setMaximumFractionDigits(_decimalPlaces);
+				val = format.format(value);
+			} catch (Exception e) {
+				val = Double.toString(value);
 			}
 			gfx.setFont(channel_font);
 			gfx.setForegroundColor(getForegroundColor());

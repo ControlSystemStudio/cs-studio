@@ -8,7 +8,9 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
+import org.csstudio.sds.cosywidgets.models.LabelModel;
 import org.csstudio.sds.cosywidgets.models.MeterModel;
+import org.csstudio.sds.cosywidgets.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.cosywidgets.ui.internal.figures.RefreshableMeterFigure;
 
 /**
@@ -51,8 +53,8 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		figure.setScaleWidth(model.getScaleWidth());
 		figure.setTextRadius(model.getTextRadius());
 		figure.setTransparent(model.getTransparent());
-		figure.setFormat(model.getFormat());
-		figure.setScaleFormat(model.getScaleFormat());
+		//figure.setFormat(model.getFormat());
+		//figure.setScaleFormat(model.getScaleFormat());
 		
 		figure.setMColor(model.getMColor());
 		figure.setLOLOColor(model.getLOLOColor());
@@ -68,6 +70,8 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		
 		figure.setValuesFont(model.getValuesFont());
 		figure.setChannelFont(model.getChannelFont());
+		
+		figure.setDecimalPlaces(model.getPrecision());
 	
 		model.getProperty(MeterModel.PROP_VALUE).addPropertyChangeListener(new IPropertyChangeListener() {
 			public void propertyValueChanged(Object oldValue, Object newValue) {}
@@ -171,6 +175,18 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_HIHICOLOR, handle);
+		
+		// precision
+		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableMeterFigure meter = (RefreshableMeterFigure) refreshableFigure;
+				meter.setDecimalPlaces((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(MeterModel.PROP_PRECISION, precisionHandler);
 	}
 	
 	/**
@@ -413,27 +429,27 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(MeterModel.PROP_CHANFONT, handle);
 		
-		//format change handler
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setFormat((String) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_FORMAT, handle);
+//		//format change handler
+//		handle = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue, final Object newValue,
+//					final IFigure figure) {
+//				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
+//				meterFigure.setFormat((String) newValue);
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(MeterModel.PROP_FORMAT, handle);
 		
-		//scale format change handler
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setScaleFormat((String) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_SCALEFORMAT, handle);
+//		//scale format change handler
+//		handle = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue, final Object newValue,
+//					final IFigure figure) {
+//				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
+//				meterFigure.setScaleFormat((String) newValue);
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(MeterModel.PROP_SCALEFORMAT, handle);
 		
 		registerColorPropertyHandlers();
 		registerBoundaryPropertyHandlers();

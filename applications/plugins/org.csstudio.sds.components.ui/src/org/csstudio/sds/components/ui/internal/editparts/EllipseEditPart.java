@@ -21,15 +21,10 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.platform.model.rfc.IProcessVariableAdress;
 import org.csstudio.sds.components.model.EllipseModel;
-import org.csstudio.sds.components.ui.internal.figures.BorderAdapter;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableEllipseFigure;
-import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.IFigure;
 
 /**

@@ -34,6 +34,11 @@ public final class LabelModel extends AbstractWidgetModel {
 	public static final String PROP_YOFF = "offset.y";
 	
 	/**
+	 * The ID of the precision property.
+	 */
+	public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
+	
+	/**
 	 * Type of the displayed text.
 	 */
 	public static final String PROP_TYPE = "value_type";
@@ -47,7 +52,7 @@ public final class LabelModel extends AbstractWidgetModel {
 	 * Double value and its output formatting.
 	 */
 	public static final String PROP_DOUBLEVALUE = "value.double";
-	public static final String PROP_DOUBLEVALUEFORMAT = "value.double.format";
+	//public static final String PROP_DOUBLEVALUEFORMAT = "value.double.format";
 	
 	/**
 	 * Currently available value types.
@@ -91,11 +96,22 @@ public final class LabelModel extends AbstractWidgetModel {
 		addProperty(PROP_TYPE, new OptionProperty("Value Type",WidgetPropertyCategory.Behaviour,VALUE_TYPES,TYPE_DOUBLE));
 		addProperty(PROP_TEXTVALUE, new StringProperty("Text Value",WidgetPropertyCategory.Display,""));
 		addProperty(PROP_DOUBLEVALUE, new DoubleProperty("Double Value",WidgetPropertyCategory.Display,0.0));
-		addProperty(PROP_DOUBLEVALUEFORMAT, new StringProperty("Double Value Format",WidgetPropertyCategory.Display,"%.3f"));
+		//addProperty(PROP_DOUBLEVALUEFORMAT, new StringProperty("Double Value Format",WidgetPropertyCategory.Display,"%.3f"));
+		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
+				WidgetPropertyCategory.Behaviour, 2, 0, 5));
 	}
 
 	public FontData getFont() {
 		return (FontData) getProperty(PROP_FONT).getPropertyValue();
+	}
+	
+	/**
+	 * Return the precision.
+	 * 
+	 * @return The precision.
+	 */
+	public int getPrecision() {
+		return (Integer) getProperty(PROP_PRECISION).getPropertyValue();
 	}
 
 	public int getTextAlignment() {
@@ -130,7 +146,7 @@ public final class LabelModel extends AbstractWidgetModel {
 		return (Double) getProperty(PROP_DOUBLEVALUE).getPropertyValue();
 	}
 	
-	public String getDoubleValueFormat() {
-		return (String) getProperty(PROP_DOUBLEVALUEFORMAT).getPropertyValue();
-	}
+//	public String getDoubleValueFormat() {
+//		return (String) getProperty(PROP_DOUBLEVALUEFORMAT).getPropertyValue();
+//	}
 }

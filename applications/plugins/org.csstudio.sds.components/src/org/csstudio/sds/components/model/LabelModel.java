@@ -25,6 +25,7 @@ import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.FontProperty;
+import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
@@ -42,6 +43,11 @@ public final class LabelModel extends AbstractWidgetModel {
 	 * The ID of the label property.
 	 */
 	public static final String PROP_LABEL = "label"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the precision property.
+	 */
+	public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
 
 	/**
 	 * The ID of the font property.
@@ -107,6 +113,8 @@ public final class LabelModel extends AbstractWidgetModel {
 		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment",
 				WidgetPropertyCategory.Display, SHOW_LABELS,
 				DEFAULT_TEXT_ALIGNMENT));
+		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
+				WidgetPropertyCategory.Behaviour, 2, 0, 5));
 	}
 
 	/**
@@ -132,6 +140,15 @@ public final class LabelModel extends AbstractWidgetModel {
 	 */
 	public String getLabel() {
 		return (String) getProperty(PROP_LABEL).getPropertyValue();
+	}
+	
+	/**
+	 * Return the precision.
+	 * 
+	 * @return The precision.
+	 */
+	public int getPrecision() {
+		return (Integer) getProperty(PROP_PRECISION).getPropertyValue();
 	}
 
 	/**

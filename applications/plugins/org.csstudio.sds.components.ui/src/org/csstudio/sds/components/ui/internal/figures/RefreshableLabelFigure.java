@@ -21,6 +21,8 @@
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
+import java.text.NumberFormat;
+
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
@@ -47,6 +49,16 @@ public final class RefreshableLabelFigure extends Label implements
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
+	
+	/**
+	 * The potenz for the precision.
+	 */
+	private int _decimalPlaces = 2;
+	
+	/**
+	 * The text for the Label.
+	 */
+	private String _valueText;
 
 	/**
 	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
@@ -74,16 +86,45 @@ public final class RefreshableLabelFigure extends Label implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getText() {
-		return super.getText();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void setText(final String s) {
-		super.setText(s);
+		_valueText = s;
+		this.updateValueText();
+		//super.setText(s);
+	}
+	
+	/**
+	 * Sets the count of decimal places for this Figure.
+	 * 
+	 * @param decimalPlaces
+	 *            The precision
+	 */
+	public void setDecimalPlaces(final int decimalPlaces) {
+		_decimalPlaces = decimalPlaces;
+		this.updateValueText();
+	}
+	
+	/**
+	 * Gets the precision of this Figure.
+	 * 
+	 * @return The precision
+	 */
+	public int getDecimalPlaces() {
+		return _decimalPlaces;
+	}
+	
+	/**
+	 * Updates the value labels text.
+	 */
+	private void updateValueText() {
+		// update the value label text
+		try {
+			double d = Double.parseDouble(_valueText);
+			NumberFormat format = NumberFormat.getInstance();
+			format.setMaximumFractionDigits(_decimalPlaces);
+			super.setText(format.format(d)); //$NON-NLS-1$
+		} catch (Exception e) {
+			super.setText(_valueText);
+		}
 	}
 	
 	/**
