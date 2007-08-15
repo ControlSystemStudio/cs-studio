@@ -120,6 +120,15 @@
                menubarPath="file/fileEnd"
                style="push"/>
          <action
+               class="org.csstudio.platform.ui.internal.actions.OpenWorkspaceExplorerAction"
+               icon="icons/workspaceExplorer.png"
+               id="org.csstudio.platform.ui.internal.actions.OpenWorkspaceExplorerAction"
+               label="%menuOpenExplorer"
+               menubarPath="file/fileEnd"
+               style="push"
+               toolbarPath="fileEnd"
+               tooltip="%menuOpenExplorer"/>                 
+         <action
                class="org.csstudio.platform.ui.workspace.OpenWorkspaceAction"
                id="org.csstudio.platform.ui.workspace.OpenWorkspaceAction"
                label="%menuSwitchWorkspace"
