@@ -5,13 +5,7 @@ Bundle-SymbolicName: org.csstudio.platform.libs.jms;singleton:=true
 Bundle-Version: 0.9.6
 Bundle-Activator: org.csstudio.platform.libs.jms.JmsPlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.help,
- org.eclipse.help.appserver,
- org.eclipse.help.base,
- org.eclipse.help.ui,
- org.eclipse.help.webapp
+Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
 Bundle-ClassPath: libs/apache-activemq-4.1.1.jar,
  libs/spring-2.0.jar,
@@ -188,7 +182,6 @@ Export-Package: edu.emory.mathcs.backport.java.util,
  org.apache.derby.tools,
  org.apache.derby.vti,
  org.csstudio.platform.libs.jms,
- org.csstudio.platform.libs.jms.internal.localization,
  org.csstudio.platform.libs.jms.preferences,
  org.springframework.aop,
  org.springframework.aop.aspectj,

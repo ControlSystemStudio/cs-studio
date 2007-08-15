@@ -21,15 +21,17 @@
  */
 package org.csstudio.platform.libs.jms;
 
-import org.eclipse.ui.plugin.*;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class JmsPlugin extends AbstractUIPlugin {
+public class JmsPlugin extends Plugin {
 
+	// The plug-in ID
+	public static final String PLUGIN_ID = "org.csstudio.platform.libs.jms";
+	
 	//The shared instance.
 	private static JmsPlugin plugin;
 	
@@ -62,14 +64,8 @@ public class JmsPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path.
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.csstudio.platform.libs.jms", path); //$NON-NLS-1$
+	public String getPluginId() {
+		return PLUGIN_ID;
 	}
+
 }
