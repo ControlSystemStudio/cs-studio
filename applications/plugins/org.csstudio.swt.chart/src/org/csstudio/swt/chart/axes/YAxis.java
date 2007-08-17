@@ -285,15 +285,35 @@ public class YAxis extends Axis
                 final int i1 = limiter.getHighIndex(samples);
                 for (int i=i0; i<=i1; ++i)
                 {
-                    final double y = samples.get(i).getY();
-                    // Ignore infinite numbers
-                    if (Double.isInfinite(y)  || Double.isNaN(y))
-                        continue;
-                    // Otherwise update low, high.
-                    if (y < low)
-                        low = y;
-                    if (y > high)
-                        high = y;
+                    final ChartSample sample = samples.get(i);
+                    if (sample.haveMinMax())
+                    {
+                        final double min = sample.getMinY();
+                        // Ignore infinite numbers
+                        if (Double.isInfinite(min)  || Double.isNaN(min))
+                            continue;
+                        // Otherwise update low
+                        if (min < low)
+                            low = min;
+                        // Same for max
+                        final double max = sample.getMaxY();
+                        if (Double.isInfinite(max)  || Double.isNaN(max))
+                            continue;
+                        if (max > high)
+                            high = max;
+                    }
+                    else
+                    {
+                        final double y = sample.getY();
+                        // Ignore infinite numbers
+                        if (Double.isInfinite(y)  || Double.isNaN(y))
+                            continue;
+                        // Otherwise update low, high.
+                        if (y < low)
+                            low = y;
+                        if (y > high)
+                            high = y;
+                    }
                 }
             }
         }
