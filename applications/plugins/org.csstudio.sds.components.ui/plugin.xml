@@ -16,9 +16,6 @@
            class="org.csstudio.sds.components.ui.internal.editparts.LabelEditPart"
            typeId="element.label"/>
      <widgetEditPart
-           class="org.csstudio.sds.components.ui.internal.editparts.ClockEditPart"
-           typeId="element.clock"/>
-     <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.PolygonEditPart"
            typeId="element.polygon"/>
      <widgetEditPart
