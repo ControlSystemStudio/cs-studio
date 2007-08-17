@@ -153,6 +153,13 @@
                menubarPath="css/end"
                style="push"
                tooltip="%menuCssPreferences_Tooltip"/>
+         <action
+               class="org.csstudio.platform.ui.internal.actions.OpenLocalFileAction"
+               id="org.csstudio.platform.ui.OpenLocalFileAction"
+               label="Open File..."
+               menubarPath="file/fileEnd"
+               style="push">
+         </action>
       </actionSet>
       <actionSet
             description="Global CSS menu actions"
