@@ -10,4 +10,5 @@ public interface IProcessVariableAdress {
 	RemoteInfo toDalRemoteInfo();
 	String getRawName();
 	String getFullName();
+	boolean isCharacteristic();
 }

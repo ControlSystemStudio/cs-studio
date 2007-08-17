@@ -81,7 +81,7 @@ public class PvAdressFactory {
 		ControlSystemEnum controlSystem = null;
 
 		// compile a regex pattern and parse the String
-		Pattern p = Pattern.compile("^(.*)://");
+		Pattern p = Pattern.compile("^([^:]*)://");
 
 		Matcher m = p.matcher(rawName);
 

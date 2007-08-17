@@ -300,5 +300,9 @@ class ProcessVariable implements IProcessVariableAdress {
 		return _rawName;
 	}
 
+	public boolean isCharacteristic() {
+		return (_characteristic!=null && _characteristic.length()>0);
+	}
+
 
 }
