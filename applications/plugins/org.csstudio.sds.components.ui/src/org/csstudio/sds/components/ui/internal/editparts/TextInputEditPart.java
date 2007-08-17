@@ -21,9 +21,11 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import org.csstudio.sds.components.model.LabelModel;
+//import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.TextInputModel;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
+import org.csstudio.sds.cosywidgets.models.LabelModel;
+import org.csstudio.sds.cosywidgets.ui.internal.figures.RefreshableLabelFigure;
+//import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
@@ -83,11 +85,12 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
 
-		label.setText(model.getInputText());
+		//label.setText(model.getInputText());
+		label.setTextValue(model.getInputText());
 		label.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont()));
 		label.setTextAlignment(model.getTextAlignment());
-
+		label.setTransparent(model.getTransparent());
 		label.addMouseListener(new MouseListener() {
 			public void mouseDoubleClicked(final MouseEvent me) {
 				performDirectEdit();
@@ -295,7 +298,8 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setText((String) newValue);
+				//label.setText((String) newValue);
+				label.setTextValue((String) newValue);
 				return true;
 			}
 		};
@@ -325,6 +329,19 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
+		//setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
+		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGN, alignmentHandler);
+		
+		// transparent background
+		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+				label.setTransparent((Boolean)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(TextInputModel.PROP_TRANSPARENT, transparentHandler);
 	}
 }

@@ -23,6 +23,7 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.StringProperty;
@@ -73,6 +74,11 @@ public final class TextInputModel extends AbstractWidgetModel {
 	private static final int DEFAULT_TEXT_ALIGNMENT = 0;
 	
 	/**
+	 * The ID of the <i>transparent</i> property.
+	 */
+	public static final String PROP_TRANSPARENT = "transparent";
+	
+	/**
 	 * The labels for the text alignment property.
 	 */
 	private static final String[] SHOW_LABELS = new String[] {"Center", "Top", "Bottom", "Left", "Right"};
@@ -103,6 +109,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
 		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
 				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
+		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
 	}
 
 	/**
@@ -144,6 +151,15 @@ public final class TextInputModel extends AbstractWidgetModel {
 	 */
 	public int getTextAlignment() {
 		return (Integer) getProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
+	}
+	
+	/**
+	 * Returns, if this widget should have a transparent background.
+	 * @return boolean
+	 * 				True, if it should have a transparent background, false otherwise
+	 */
+	public boolean getTransparent() {
+		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 
 }

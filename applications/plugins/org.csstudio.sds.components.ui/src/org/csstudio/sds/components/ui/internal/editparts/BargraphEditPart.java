@@ -69,6 +69,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setShowMarks(model.getShowMarks());
 		bargraph.setShowScale(model.getShowScale());
 		bargraph.setScaleSectionCount(model.getScaleSectionCount());
+		bargraph.setTransparent(model.getTransparent());
 		return bargraph;
 	}
 
@@ -152,6 +153,18 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(BargraphModel.PROP_SCALE_SECTION_COUNT,
 				scaleCountHandler);
+		
+		// Transparent background
+		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setTransparent((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_TRANSPARENT, transparentHandler);
 	}
 
 	/**

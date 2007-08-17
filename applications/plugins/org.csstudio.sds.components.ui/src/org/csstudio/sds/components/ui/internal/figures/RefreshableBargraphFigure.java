@@ -147,6 +147,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * The wideness of the Tickmarks.
 	 */
 	private int _tickMarkWideness = 10;
+	/**
+	 * The boolean, which indicates, if the figure has a transparent background.
+	 */
+	private boolean _transparent = true;
 	
 	/**
 	 * Constructor.
@@ -205,10 +209,12 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * {@inheritDoc}
 	 */
 	public synchronized void paintFigure(final Graphics graphics) {
-		graphics.setBackgroundColor(this.getBackgroundColor());
-		graphics.fillRectangle(this.getBounds());
-		graphics.setBackgroundColor(this.getBackgroundColor());
-		graphics.setForegroundColor(this.getBorderColor());
+		if (!_transparent) {
+			graphics.setBackgroundColor(this.getBackgroundColor());
+			graphics.fillRectangle(this.getBounds());
+			graphics.setBackgroundColor(this.getBackgroundColor());
+			graphics.setForegroundColor(this.getBorderColor());	
+		}
 	}
 
 	/**
@@ -849,10 +855,20 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	public int getScaleSectionCount() {
 		return _scaleSectionCount;
 	}
+	
+	/**
+	 * Sets, if this widget should have a transparent background.
+	 * @param transparent
+	 * 				The new value for the transparent property
+	 */
+	public void setTransparent(final boolean transparent) {
+		_transparent = transparent;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
 			if (_borderAdapter == null) {
@@ -977,7 +993,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Sets the fill grade.
-		 * 
 		 * @param fill
 		 *            The fill grade.
 		 */
@@ -987,7 +1002,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Gets the fill grade.
-		 * 
 		 * @return double The fill grade
 		 */
 		public double getFill() {
@@ -996,7 +1010,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Sets the default fill Color.
-		 * 
 		 * @param defaultFillColor
 		 *            The default fill Color
 		 */
@@ -1006,7 +1019,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Gets the default fill Color.
-		 * 
 		 * @return Color The color default fill Color
 		 */
 		public Color getDefaultFillColor() {
@@ -1015,7 +1027,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Sets the color for the border.
-		 * 
 		 * @param borderColor
 		 *            The Color for the border
 		 */
@@ -1025,7 +1036,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Gets the color for the border.
-		 * 
 		 * @return Color The color for the border
 		 */
 		public Color getBorderColor() {
@@ -1035,7 +1045,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 	/**
 	 * This Figure contains the Markers.
-	 * 
 	 * @author Kai Meyer
 	 */
 	private final class MarkerPanel extends Panel {
@@ -1128,10 +1137,12 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 */
 		@Override
 		public void paintFigure(final Graphics graphics) {
-			Rectangle bounds = this.getBounds();
-			graphics.setBackgroundColor(this.getBackgroundColor());
-			graphics.setForegroundColor(ColorConstants.black);
-			graphics.fillRectangle(bounds);
+			if (!_transparent) {
+				Rectangle bounds = this.getBounds();
+				graphics.setBackgroundColor(this.getBackgroundColor());
+				graphics.setForegroundColor(ColorConstants.black);
+				graphics.fillRectangle(bounds);	
+			}
 		}
 
 		/**

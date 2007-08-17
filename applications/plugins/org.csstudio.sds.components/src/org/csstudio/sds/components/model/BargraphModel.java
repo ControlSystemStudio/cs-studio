@@ -129,6 +129,10 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * The ID of the show status of the marks.
 	 */
 	public static final String PROP_SCALE_SECTION_COUNT = "sectionCount";
+	/**
+	 * The ID of the <i>transparent</i> property.
+	 */
+	public static final String PROP_TRANSPARENT = "transparent";
 
 	/**
 	 * The ID of this widget model.
@@ -246,6 +250,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 		addProperty(PROP_SHOW_MARKS, new OptionProperty("Tickmarks",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_MARKS));
 		addProperty(PROP_SHOW_SCALE, new OptionProperty("Scale",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_SCALE));
 		addProperty(PROP_SCALE_SECTION_COUNT, new IntegerProperty("Section count", WidgetPropertyCategory.Display,DEFAULT_SECTION_COUNT,1,Integer.MAX_VALUE));
+		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
 	}
 
 	/**
@@ -489,6 +494,15 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	public String getHihiColorTestProperty() {
 		return PROP_HIHI_COLOR;
+	}
+	
+	/**
+	 * Returns, if this widget should have a transparent background.
+	 * @return boolean
+	 * 				True, if it should have a transparent background, false otherwise
+	 */
+	public boolean getTransparent() {
+		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 
 }
