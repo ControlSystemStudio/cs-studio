@@ -58,6 +58,12 @@
             name="Label"
             typeId="element.label"/>
       <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.ClockModelFactory"
+            description="Clock"
+            icon="icons/clock.gif"
+            name="Clock"
+            typeId="element.clock"/>
+      <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.PolygonModelFactory"
             description="Polygon"
             icon="icons/polygon.gif"
