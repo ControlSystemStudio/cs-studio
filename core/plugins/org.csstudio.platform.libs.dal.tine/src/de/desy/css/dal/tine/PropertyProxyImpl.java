@@ -132,36 +132,33 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	public Request getValueAsync(ResponseListener callback)
 			throws DataExchangeException {
 
-		return new TINERequestImpl(this, callback, null);
-
-		// TODO: These calls will stop the value updates AW August 10 2007
-
-		// if (getConnectionState() != ConnectionState.CONNECTED) return null;
-		// try {
-		// Object data = getDataObject();
-		// TDataType dout =
-		// PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),true);
-		// TDataType din = new TDataType();
-		// short access = TAccess.CA_READ;
-		// TLink tLink = new
-		// TLink(deviceName,dissector.getDeviceProperty(),dout,din,access);
-		// short mode = TMode.CM_SINGLE;
-		// int handle = 0;
-		// TINERequestImpl request = new TINERequestImpl(this, callback, tLink);
-		// handle = tLink.attach(mode, request, timeOut);
-		// if (handle < 0) {
-		// tLink.close();
-		// throw new ConnectionFailed(tLink.getError(-handle));
-		// }
-		// return request;
-		// } catch (Exception e) {
-		// DynamicValueCondition condition = new
-		// DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),System.currentTimeMillis(),"Error
-		// initializing proxy");
-		// setCondition(condition);
-		// throw new DataExchangeException(this,"Exception on async getting
-		// value '"+name+"'.",e);
-		// }
+		if (getConnectionState() != ConnectionState.CONNECTED)
+			return null;
+		try {
+			Object data = getDataObject();
+			TDataType dout = PropertyProxyUtilities.toTDataType(data,
+					PropertyProxyUtilities.getObjectSize(data), true);
+			// TDataType din = new TDataType();
+			short access = TAccess.CA_READ;
+			TLink tLink = new TLink(deviceName, dissector.getDeviceProperty(),
+					dout, dout, access); // fixed by C1 WPS on August 17 2007
+			short mode = TMode.CM_SINGLE;
+			int handle = 0;
+			TINERequestImpl request = new TINERequestImpl(this, callback, tLink);
+			handle = tLink.attach(mode, request, timeOut);
+			if (handle < 0) {
+				tLink.close();
+				throw new ConnectionFailed(tLink.getError(-handle));
+			}
+			return request;
+		} catch (Exception e) {
+			DynamicValueCondition condition = new DynamicValueCondition(EnumSet
+					.of(DynamicValueState.ERROR), System.currentTimeMillis(),
+					"Error initializing proxy");
+			setCondition(condition);
+			throw new DataExchangeException(this,
+					"Exception on async getting value '" + name + "'.", e);
+		}
 	}
 
 	/*
@@ -212,7 +209,7 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 		TDataType dout = PropertyProxyUtilities.toTDataType(getDataObject(),
 				PropertyProxyUtilities.getObjectSize(getDataObject()), true);
 		TLink tl = new TLink(deviceName, dissector.getDeviceProperty(), dout,
-				new TDataType(), TAccess.CA_READ);
+				dout, TAccess.CA_READ); // fixed by C1 WPS on August 17 2007
 		try {
 			int statusCode = tl.execute(timeOut);
 			if (statusCode > 0)
@@ -441,5 +438,33 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 
 	synchronized void removeMonitor(MonitorProxyImpl m) {
 		monitors.remove(m);
+	}
+
+	/**
+	 * Destroy all monitors.
+	 */
+	private void destroyMonitors() {
+		MonitorProxyImpl[] array;
+		synchronized (monitors) {
+			array = new MonitorProxyImpl[monitors.size()];
+			monitors.toArray(array);
+		}
+
+		// destroy all
+		for (int i = 0; i < array.length; i++)
+			array[i].destroy();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#destroy()
+	 */
+	@Override
+	public synchronized void destroy() {
+		super.destroy();
+
+		// destroy all monitors
+		destroyMonitors();
 	}
 }

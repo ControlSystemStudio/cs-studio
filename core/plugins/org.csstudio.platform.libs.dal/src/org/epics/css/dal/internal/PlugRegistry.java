@@ -106,9 +106,6 @@ public final class PlugRegistry {
 				p.put(Plugs.PLUGS, sb.toString());
 			}
 
-			// TODO: manage default plug with a preference page
-			// p.put(Plugs.PLUGS_DEFAULT, d.getPlugId());
-
 			p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + d.getPlugId(), d
 					.getPropertyFactoryClass());
 		}

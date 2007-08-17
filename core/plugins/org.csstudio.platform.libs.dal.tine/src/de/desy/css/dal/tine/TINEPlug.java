@@ -5,7 +5,6 @@ import java.util.Properties;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 
-import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.context.ConnectionException;
 import org.epics.css.dal.context.RemoteInfo;
@@ -160,8 +159,6 @@ public class TINEPlug extends AbstractPlug {
 	@Override
 	protected Class<? extends SimpleProperty> getPropertyImplementationClass(
 			String uniquePropertyName) {
-		// return
-		// PropertyProxyUtilities.getPropertyImplementationClass(uniquePropertyName);
 		// AW: HOTFIX!
 		return DoublePropertyImpl.class;
 	}
@@ -174,8 +171,6 @@ public class TINEPlug extends AbstractPlug {
 	@Override
 	protected Class<? extends PropertyProxy> getPropertyProxyImplementationClass(
 			String uniquePropertyName) {
-		// return
-		// PropertyProxyUtilities.getPropertyProxyImplementationClass(uniquePropertyName);
 		// AW: HOTFIX!
 		return DoublePropertyProxyImpl.class;
 	}
