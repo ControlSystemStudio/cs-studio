@@ -23,6 +23,13 @@ public class PVContext
 {
     final public static boolean debug = false;
     
+    /** In principle, we like to close the context when it is no longer needed.
+     *  But as long as JCA with R3.14.8.2 causes
+     *  "pthread_create error Invalid argument" errors,
+     *  we keep the context open.
+     */
+    final private static boolean cleanup = false;
+    
     /** Set to <code>true</code> if the pure Java CA context should be used.
      *  <p>
      *  Changes only have an effect before the very first channel is created.
@@ -45,7 +52,7 @@ public class PVContext
     /** Initialize the JA library. */
     static private void initJCA() throws Exception
     {
-        if (jca_refs == 0)
+        if (jca_refs == 0 && jca == null)
         {
             if (debug)
                 System.out.println("Initializing JCA "
@@ -67,6 +74,8 @@ public class PVContext
     {
         --jca_refs;
         if (jca_refs > 0)
+            return;
+        if (cleanup == false)
             return;
         try
         {

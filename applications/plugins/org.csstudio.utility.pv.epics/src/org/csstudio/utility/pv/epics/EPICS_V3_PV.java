@@ -49,7 +49,7 @@ public class EPICS_V3_PV
      *  @see #EPICS_V3_PV(String, boolean)
      */
     final private boolean plain;
-
+    
     /** Channel name. */
     final private String name;
     

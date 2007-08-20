@@ -18,6 +18,7 @@ import gov.aps.jca.event.MonitorListener;
 @SuppressWarnings("nls")
 public class JCATests
 {
+    private static final boolean CLEANUP = false;
     private static JCALibrary jca = null;
     private static Context jca_context = null;
     
@@ -25,8 +26,10 @@ public class JCATests
     static private void run(final String pv_name) throws Exception
     {
         // Lib init
-        jca = JCALibrary.getInstance();
-        jca_context= jca.createContext(JCALibrary.JNI_THREAD_SAFE);
+        if (jca == null)
+            jca = JCALibrary.getInstance();
+        if (jca_context == null)
+            jca_context= jca.createContext(JCALibrary.JNI_THREAD_SAFE);
                 
         // Connect
         final Channel channel = jca_context.createChannel(pv_name);
@@ -51,16 +54,25 @@ public class JCATests
 
         channel.destroy();
         
-        jca_context.destroy();
-        jca_context = null;
-        jca = null;
+        if (CLEANUP)
+        {
+            jca_context.destroy();
+            jca_context = null;
+            jca = null;
+        }
     }
     
     public static void main(String[] args) throws Exception
     {
         // First channel runs OK: Gets values, completes w/o errors
         JCATests.run("fred");
-        // But from then on, I get
+
+        // With jca-2.3.0, built against EPICS base R3.14.7,
+        // the second attempt works fine, too.
+        //
+        // But with jca-2.3.0 or jca-2.3.1, built against EPICS base R3.14.8.2,
+        // this results in errors in the jca_context.createChannel() call
+        // when I try to use 'CLEANUP':
         // "pthread_create error Invalid argument
         //  CAC: exception during virtual circuit creation:
         //  epicsThread class was unable to  create a new thread"
