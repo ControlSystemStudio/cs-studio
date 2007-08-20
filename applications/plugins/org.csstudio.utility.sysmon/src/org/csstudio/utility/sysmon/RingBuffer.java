@@ -24,10 +24,12 @@ public class RingBuffer<E>
     private Object samples[] = null;
    
     /** Construct SampleSequenceRing with given initial capacity) */
-    public RingBuffer(int initial_capacity)
+    public RingBuffer(final int initial_capacity)
     {
         capacity = initial_capacity;
         samples = new Object[capacity];
+        if (capacity <= 0)
+            throw new IllegalArgumentException("Illegal capacity " + capacity); //$NON-NLS-1$
     }
     
     /** Clear sample memory */
@@ -68,6 +70,8 @@ public class RingBuffer<E>
         samples = new_samples;
         start = 0;
         capacity = new_capacity;
+        if (capacity <= 0)
+            throw new IllegalArgumentException("Illegal capacity " + capacity); //$NON-NLS-1$
     }
 
     /** @return Returns the current capacity.

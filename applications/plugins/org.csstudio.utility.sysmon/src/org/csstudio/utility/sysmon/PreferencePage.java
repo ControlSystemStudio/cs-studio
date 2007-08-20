@@ -64,14 +64,24 @@ public class PreferencePage extends FieldEditorPreferencePage
     /** @return History size. */
     static public int getHistorySize()
     {
-        IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-        return store.getInt(P_HISTORY_SIZE);
+        final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+        final int result = store.getInt(P_HISTORY_SIZE);
+        if (result < MIN_SIZE)
+            return MIN_SIZE;
+        if (result > MAX_SIZE)
+            return MAX_SIZE;
+        return result;
     }
 
     /** @return History size. */
     static public int getScanDelayMillis()
     {
-        IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-        return store.getInt(P_SCAN_DELAY_MILLI);
+        final IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+        final int result = store.getInt(P_SCAN_DELAY_MILLI);
+        if (result < MIN_DELAY)
+            return MIN_DELAY;
+        if (result > MAX_DELAY)
+            return MAX_DELAY;
+        return result;
     }
 }
