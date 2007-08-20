@@ -27,6 +27,7 @@ public class PVContext
      *  But as long as JCA with R3.14.8.2 causes
      *  "pthread_create error Invalid argument" errors,
      *  we keep the context open.
+     *  TODO Remove when JCA/R3.14.8.2 have been fixed.
      */
     final private static boolean cleanup = false;
     

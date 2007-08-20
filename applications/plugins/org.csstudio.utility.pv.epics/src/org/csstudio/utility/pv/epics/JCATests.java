@@ -18,6 +18,7 @@ import gov.aps.jca.event.MonitorListener;
 @SuppressWarnings("nls")
 public class JCATests
 {
+    /** Set <code>true</code> to check for cleanup error. */
     private static final boolean CLEANUP = false;
     private static JCALibrary jca = null;
     private static Context jca_context = null;
@@ -50,10 +51,11 @@ public class JCATests
         channel.addMonitor(DBRType.TIME_DOUBLE, 1, 1, monitor);        
         jca_context.flushIO();
 
+        // Run
         Thread.sleep(5 * 1000);
 
+        // Cleanup. More or less
         channel.destroy();
-        
         if (CLEANUP)
         {
             jca_context.destroy();
