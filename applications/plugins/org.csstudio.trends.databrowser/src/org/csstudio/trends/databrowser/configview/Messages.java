@@ -53,7 +53,6 @@ public class Messages extends NLS
     public static String RingBufferMinSize;
     public static String ScanPeriodMustBeGt;
     public static String ScanPeriodSecs;
-    public static String Secs;
     public static String SetGraphTimes;
     public static String StartEndDlg;
     public static String StartTime;
