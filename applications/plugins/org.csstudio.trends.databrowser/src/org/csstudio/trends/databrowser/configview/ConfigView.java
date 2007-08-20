@@ -21,6 +21,7 @@ import org.csstudio.util.swt.AutoSizeColumn;
 import org.csstudio.util.swt.AutoSizeControlListener;
 import org.csstudio.util.swt.RGBCellEditor;
 import org.csstudio.util.swt.ScrolledContainerHelper;
+import org.csstudio.util.time.RelativeTime;
 import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -785,7 +786,7 @@ public class ConfigView extends PlotAwareView
     private void checkLivePVInputs()
     {
         String help_text = null;
-        Model model = getModel();
+        final Model model = getModel();
         if (model == null)
             return;
         double scan_period = model.getScanPeriod();
@@ -830,19 +831,22 @@ public class ConfigView extends PlotAwareView
             }
             break;
         }
+        // Was there any error?
         if (help_text != null)
         {
             help.setText(help_text);
             return;
         }
-        double seconds = ring_size * scan_period;
-        help.setText(Messages.RingBuffer + seconds + Messages.Secs);
         // Update model with anything that changed.
         if (scan_period != model.getScanPeriod()  ||
             update_period != model.getUpdatePeriod())
             model.setPeriods(scan_period, update_period);
         if (ring_size != model.getRingSize())
             model.setRingSize(ring_size);
+        // Display resulting buffer size in seconds
+        final double seconds = ring_size * scan_period;
+        final RelativeTime span = new RelativeTime(seconds);
+        help.setText(Messages.RingBuffer + span.toString());
     }
 
     /** Validate inputs into the 'Time' tab. */
