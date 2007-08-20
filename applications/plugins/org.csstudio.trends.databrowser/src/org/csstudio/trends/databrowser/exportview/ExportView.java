@@ -6,6 +6,7 @@ import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
+import org.csstudio.util.swt.ScrolledContainerHelper;
 import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.core.runtime.jobs.Job;
@@ -22,7 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /** View to configure and start "export" of samples to a file.
@@ -34,7 +34,6 @@ public class ExportView extends PlotAwareView
     public static final String ID = ExportView.class.getName();
 
     // GUI Elements
-    private Shell shell;
     private Text start_txt;
     private Text end_txt;
     private Button use_plot_time;
@@ -58,19 +57,21 @@ public class ExportView extends PlotAwareView
     
     /** {@inheritDoc} */
     @Override
-    protected void doCreatePartControl(Composite parent)
+    protected void doCreatePartControl(final Composite parent)
     {
-        shell = parent.getShell();
+        final Composite pane =
+            ScrolledContainerHelper.create(parent, 500, 250);
+        
         final GridLayout layout = new GridLayout();
         layout.numColumns = 3;
-        parent.setLayout(layout);
+        pane.setLayout(layout);
         GridData gd;
 
         /*           [x] from plot
          * Start:    ____________________________ [ ... ]
          * End  :    ____________________________ 
          *
-         * Source:   ( ) plot (*) raw ... ( ) averaged archive
+         * Source:   ( ) plot (*) raw ... ( ) averaged archive ____ time
          * 
          * Output:   [x] Spreadsheet  [x] .. with Severity/Status
          * Format:   (*) default ( ) decimal ( ) exponential __ fractional digits
@@ -78,13 +79,11 @@ public class ExportView extends PlotAwareView
          * Filename: ________________ [ Browse ]
          *                            [ Export ]
          */
-        Label l;
-        
         // 'use plot time' row
-        l = new Label(parent, 0); // placeholder
+        Label l = new Label(pane, 0); // placeholder
         l.setLayoutData(new GridData());
 
-        use_plot_time = new Button(parent, SWT.CHECK);
+        use_plot_time = new Button(pane, SWT.CHECK);
         use_plot_time.setText(Messages.UsePlotTime);
         use_plot_time.setToolTipText(Messages.UsePlotTime_TT);
         gd = new GridData();
@@ -100,17 +99,17 @@ public class ExportView extends PlotAwareView
         });
 
         // 'start' row
-        l = new Label(parent, 0);
+        l = new Label(pane, 0);
         l.setText(Messages.StartLabel);
         gd = new GridData();
         l.setLayoutData(gd);
         
-        start_txt = new Text(parent, SWT.BORDER);
+        start_txt = new Text(pane, SWT.BORDER);
         gd = new GridData();
         gd.horizontalAlignment = SWT.FILL;
         start_txt.setLayoutData(gd);
         
-        time_config = new Button(parent, SWT.CENTER);
+        time_config = new Button(pane, SWT.CENTER);
         time_config.setText(Messages.SelectTime);
         time_config.setToolTipText(Messages.SelectTime_TT);
         gd = new GridData();
@@ -120,7 +119,8 @@ public class ExportView extends PlotAwareView
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                StartEndDialog dlg = new StartEndDialog(shell,
+                StartEndDialog dlg = new StartEndDialog(
+                                start_txt.getShell(),
                                 start_txt.getText(), end_txt.getText());
                 if (dlg.open() != StartEndDialog.OK)
                     return;
@@ -131,29 +131,29 @@ public class ExportView extends PlotAwareView
         });
        
         // 'end' row        
-        l = new Label(parent, 0);
+        l = new Label(pane, 0);
         l.setText(Messages.EndLabel);
         gd = new GridData();
         l.setLayoutData(gd);
         
-        end_txt = new Text(parent, SWT.BORDER);
+        end_txt = new Text(pane, SWT.BORDER);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         end_txt.setLayoutData(gd);
         
-        l = new Label(parent, 0); // placeholder
+        l = new Label(pane, 0); // placeholder
         l.setLayoutData(new GridData());
         
         // 'Source' row
-        l = new Label(parent, 0);
+        l = new Label(pane, 0);
         l.setText(Messages.SourceLabel);
         gd = new GridData();
         gd.verticalAlignment = SWT.TOP;
         l.setLayoutData(gd);
 
         // ... 'source' radio button group
-        Composite frame = new Composite(parent, 0);
+        Composite frame = new Composite(pane, 0);
         RowLayout row_layout = new RowLayout();
         row_layout.marginLeft = 0;
         row_layout.marginTop = 0;
@@ -210,13 +210,13 @@ public class ExportView extends PlotAwareView
         // ... end of radio buttons
         
         // 'Output' row
-        l = new Label(parent, 0);
+        l = new Label(pane, 0);
         l.setText(Messages.OutputLabel);
         gd = new GridData();
         gd.verticalAlignment = SWT.TOP;
         l.setLayoutData(gd);
 
-        frame = new Composite(parent, 0);
+        frame = new Composite(pane, 0);
         row_layout = new RowLayout();
         row_layout.marginLeft = 0;
         row_layout.marginTop = 0;
@@ -235,11 +235,11 @@ public class ExportView extends PlotAwareView
         format_severity.setToolTipText(Messages.ShowSeverity_TT);
 
         // Number format row
-        l = new Label(parent, 0);
+        l = new Label(pane, 0);
         l.setText(Messages.FormatLabel);
         l.setLayoutData(new GridData());
         
-        frame = new Composite(parent, 0);
+        frame = new Composite(pane, 0);
         row_layout = new RowLayout();
         row_layout.pack = true;
         row_layout.marginLeft = 0;
@@ -287,12 +287,12 @@ public class ExportView extends PlotAwareView
         l.setText(Messages.FormatPrecisionLabel);
         
         // 'filename' row
-        l = new Label(parent, 0);
+        l = new Label(pane, 0);
         l.setText(Messages.FilenameLabel);
         gd = new GridData();
         l.setLayoutData(gd);
         
-        filename_txt = new Text(parent, SWT.BORDER);
+        filename_txt = new Text(pane, SWT.BORDER);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -305,7 +305,7 @@ public class ExportView extends PlotAwareView
             }
         });
                 
-        browse = new Button(parent, SWT.CENTER);
+        browse = new Button(pane, SWT.CENTER);
         browse.setText(Messages.Browse);
         browse.setToolTipText(Messages.Browse_TT);
         gd = new GridData();
@@ -316,7 +316,7 @@ public class ExportView extends PlotAwareView
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                FileDialog dlg = new FileDialog(shell, SWT.SAVE);
+                FileDialog dlg = new FileDialog(browse.getShell(), SWT.SAVE);
                 // Unclear, how well these two calls work across systems
                 dlg.setFilterExtensions(new String [] { "*.dat" }); //$NON-NLS-1$
                 
@@ -333,7 +333,7 @@ public class ExportView extends PlotAwareView
                 if (name != null)
                     filename_txt.setText(name);
                 /* Maybe better to use the workspace dialogs?
-                SaveAsDialog dlg = new SaveAsDialog(parent);
+                SaveAsDialog dlg = new SaveAsDialog(pane);
                 if (dlg.open() == SaveAsDialog.OK)
                 {
                     filename_txt.setText(dlg.getResult().toString());
@@ -343,7 +343,7 @@ public class ExportView extends PlotAwareView
         });
         
         // 'export' row        
-        export = new Button(parent, SWT.CENTER);
+        export = new Button(pane, SWT.CENTER);
         export.setText(Messages.Export);
         export.setToolTipText(Messages.Export_TT);
         gd = new GridData();
@@ -478,7 +478,7 @@ public class ExportView extends PlotAwareView
             }
             catch (Exception ex)
             {
-                MessageBox msg = new MessageBox(shell, SWT.OK);
+                MessageBox msg = new MessageBox(getSite().getShell(), SWT.OK);
                 msg.setText(Messages.Error);
                 msg.setMessage(String.format("%s\n%s %s", //$NON-NLS-1$
                                Messages.CannotDecodeStartEnd,
@@ -497,7 +497,7 @@ public class ExportView extends PlotAwareView
         {
             if (source == ExportJob.Source.Average)
             {
-                MessageBox msg = new MessageBox(shell, SWT.OK);
+                MessageBox msg = new MessageBox(getSite().getShell(), SWT.OK);
                 msg.setText(Messages.Error);
                 msg.setMessage(Messages.CannotDecodeSeconds);
                 msg.open();
