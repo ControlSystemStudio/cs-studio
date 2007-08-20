@@ -15,15 +15,18 @@ public class ScrolledContainerHelper
 {
     /** Create the 'automatic' scroll bars.
      * 
-     * @param parent The perent shell
+     * @param parent The parent shell
      * @param width Minimum width that triggers horizontal scroll bar.
      * @param height Minimum height that triggers vertical scroll bar.
-     * @return Returns a container into which to add widgets.
+     * @return Returns a container into which to place widgets.
      */
-    public static Composite create(Composite parent, int width, int height)
+    public static Composite create(final Composite parent,
+                                   final int width,
+                                   final int height)
     {
-        ScrolledComposite scroll = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
-        Composite scrolled_content = new Composite(scroll, 0);
+        final ScrolledComposite scroll = 
+            new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+        final Composite scrolled_content = new Composite(scroll, 0);
         scroll.setContent(scrolled_content);
         scroll.setExpandHorizontal(true);
         scroll.setExpandVertical(true);
