@@ -1,6 +1,5 @@
 package org.csstudio.display.pvtable.model;
 
-import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
@@ -37,7 +36,7 @@ public class SavedValue
         }
         catch (Exception e)
         {
-            Plugin.logException("Parse " + text, e); //$NON-NLS-1$
+            // Not fatal
         }
         // Fall back to String.
         return new SavedValue(text);

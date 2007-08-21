@@ -132,7 +132,7 @@ public class Controller
                 return;
             removeFromDisplay(item);
             addToDisplay(item);
-            getArchivedData(item);
+            // getArchivedData(item);
         }
 
         public void entryMetaDataChanged(IModelItem item)

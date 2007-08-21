@@ -118,7 +118,7 @@ public class PVTableViewerHelper
         table_viewer = new TableViewer(table);
         // Enable hashmap for resolving 'PVListEntry' to associated SWT widget.
         table_viewer.setUseHashlookup(true);
-        table_viewer.setLabelProvider(new PVTableLabelProvider(pv_list));
+        table_viewer.setLabelProvider(new PVTableLabelProvider(table, pv_list));
         table_viewer.setContentProvider(
                 new PVTableLazyContentProvider(table_viewer, pv_list));
         setTableViewerItemCount();

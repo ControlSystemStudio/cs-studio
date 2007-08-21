@@ -133,7 +133,7 @@ public class ConfigView extends PlotAwareView
 
         public void entriesChanged()
         {
-            Model model = getModel();
+            final Model model = getModel();
             updateModel(model, model);
         }
 
@@ -141,7 +141,10 @@ public class ConfigView extends PlotAwareView
         {   entriesChanged(); }
 
         public void entryConfigChanged(IModelItem item)
-        {   entriesChanged(); }
+        {
+            pv_table_viewer.refresh();
+            updateLowerSash();
+        }
 
         public void entryMetaDataChanged(IModelItem item)
         {   /* not configurable */ }
@@ -392,7 +395,7 @@ public class ConfigView extends PlotAwareView
         pv_table_viewer = new TableViewer(table);
         // Enable hashmap for resolving 'PVListEntry' to associated SWT widget.
         pv_table_viewer.setUseHashlookup(true);
-        label_provider = new PVTableLabelProvider();
+        label_provider = new PVTableLabelProvider(table);
         pv_table_viewer.setLabelProvider(label_provider);
         table_content = new PVTableLazyContentProvider();
         pv_table_viewer.setContentProvider(table_content);
