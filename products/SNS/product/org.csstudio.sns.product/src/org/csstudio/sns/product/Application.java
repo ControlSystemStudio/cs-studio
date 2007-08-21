@@ -1,7 +1,10 @@
 package org.csstudio.sns.product;
 
-import org.csstudio.platform.ResourceService;
 import org.csstudio.platform.ui.workspace.WorkspaceSwitchHelper;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -88,8 +91,44 @@ public class Application implements IApplication
                 // Without that, an existing 'CSS' might show up,
                 // but a 'new Folder' action would run into
                 // 'project not open' error...
-                ResourceService.getInstance().createWorkspaceProject("CSS"); //$NON-NLS-1$
-                
+                final IProject project = ResourcesPlugin.getWorkspace().
+                                                getRoot().getProject(Messages.Application_DefaultProject);
+                // Assert that it exists...
+                if (!project.exists())
+                {
+                    try
+                    {
+                        project.create(new NullProgressMonitor());
+                    }
+                    catch (CoreException ex)
+                    {
+                        PluginActivator.logException(
+                                        "Cannot create " + project.getName(), ex); //$NON-NLS-1$
+                        MessageDialog.openError(null,
+                                        Messages.Application_ProjectError,
+                                        NLS.bind(Messages.Application_ProjectErrorMessage,
+                                                  project.getName()));
+                        // Give up, quit.
+                        return IApplication.EXIT_OK;
+                    }
+                }
+                // .. and open it
+                try
+                {
+                    project.open(new NullProgressMonitor());
+                }
+                catch (CoreException ex)
+                {
+                    PluginActivator.logException(
+                                    "Cannot open " + project.getName(), ex); //$NON-NLS-1$
+                    MessageDialog.openError(null,
+                                    Messages.Application_ProjectError,
+                                    NLS.bind(Messages.Application_ProjectErrorMessage,
+                                              project.getName()));
+                    // Give up, quit.
+                    return IApplication.EXIT_OK;
+                }
+                // Run the workbench
                 returnCode = PlatformUI.createAndRunWorkbench(display,
                                 new ApplicationWorkbenchAdvisor());
             }

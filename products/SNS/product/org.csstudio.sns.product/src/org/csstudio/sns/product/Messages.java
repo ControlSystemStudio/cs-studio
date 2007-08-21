@@ -6,6 +6,12 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.sns.product.messages"; //$NON-NLS-1$
 
+    public static String Application_DefaultProject;
+
+    public static String Application_ProjectError;
+
+    public static String Application_ProjectErrorMessage;
+
     public static String Application_RestartMessage;
 
     public static String Application_RestartTitle;
