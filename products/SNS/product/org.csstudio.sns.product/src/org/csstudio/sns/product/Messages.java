@@ -10,7 +10,9 @@ public class Messages extends NLS
 
     public static String Application_ProjectError;
 
-    public static String Application_ProjectErrorMessage;
+    public static String Application_ProjectInitErrorMessage;
+    
+    public static String Application_ProjectExitErrorMessage;
 
     public static String Application_RestartMessage;
 

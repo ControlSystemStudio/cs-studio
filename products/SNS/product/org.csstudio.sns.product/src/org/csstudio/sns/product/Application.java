@@ -85,7 +85,6 @@ public class Application implements IApplication
                                      workspace));
                     }
                 }
-                PluginActivator.logInfo("CSS Application Running"); //$NON-NLS-1$
                 
                 // Assert that there is an open "CSS" project.
                 // Without that, an existing 'CSS' might show up,
@@ -106,7 +105,7 @@ public class Application implements IApplication
                                         "Cannot create " + project.getName(), ex); //$NON-NLS-1$
                         MessageDialog.openError(null,
                                         Messages.Application_ProjectError,
-                                        NLS.bind(Messages.Application_ProjectErrorMessage,
+                                        NLS.bind(Messages.Application_ProjectInitErrorMessage,
                                                   project.getName()));
                         // Give up, quit.
                         return IApplication.EXIT_OK;
@@ -123,14 +122,28 @@ public class Application implements IApplication
                                     "Cannot open " + project.getName(), ex); //$NON-NLS-1$
                     MessageDialog.openError(null,
                                     Messages.Application_ProjectError,
-                                    NLS.bind(Messages.Application_ProjectErrorMessage,
+                                    NLS.bind(Messages.Application_ProjectInitErrorMessage,
                                               project.getName()));
                     // Give up, quit.
                     return IApplication.EXIT_OK;
                 }
                 // Run the workbench
+                PluginActivator.logInfo("CSS Application Running"); //$NON-NLS-1$
                 returnCode = PlatformUI.createAndRunWorkbench(display,
                                 new ApplicationWorkbenchAdvisor());
+                try
+                {
+                    project.close(new NullProgressMonitor());
+                }
+                catch (CoreException ex)
+                {
+                    PluginActivator.logException(
+                                    "Error closing " + project.getName(), ex); //$NON-NLS-1$
+                    MessageDialog.openError(null,
+                                    Messages.Application_ProjectError,
+                                    NLS.bind(Messages.Application_ProjectExitErrorMessage,
+                                              project.getName()));
+                }
             }
             finally
             {
@@ -155,6 +168,7 @@ public class Application implements IApplication
                 return IApplication.EXIT_RESTART;
             }
             // Plain exit from IWorkbench.close()
+            PluginActivator.logInfo("CSS Application exiting"); //$NON-NLS-1$
             return IApplication.EXIT_OK;
         }
         finally
