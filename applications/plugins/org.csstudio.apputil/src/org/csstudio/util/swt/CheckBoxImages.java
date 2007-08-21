@@ -72,8 +72,9 @@ public class CheckBoxImages
         button.setBackground(backgroundColor);
         button.setSelection(selected);
     
-        // otherwise an image is located in a corner
-        button.setLocation(0, 0);
+        // Some tweaking that's a compromize between Win32, OSX, ...
+        // versions of the actual control.
+        button.setLocation(1, 1);
         final Point bsize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         // otherwise an image is stretched by width
         final int size = Math.max(bsize.x-1, bsize.y-1);
