@@ -192,25 +192,27 @@ class ProcessVariable implements IProcessVariableAdress {
 		assert _property != null;
 		StringBuffer sb = new StringBuffer();
 
-		sb.append(_controlSystem.getPrefix());
-		sb.append("://");
+		if (_controlSystem != ControlSystemEnum.UNKNOWN) {
+			sb.append(_controlSystem.getPrefix());
+			sb.append("://");
+		}
 		sb.append(_property);
-		
-//		// device (is optional)
-//		if (_device != null) {
-//			if (sb.length() > 0) {
-//				sb.append(PART_SEPARATOR);
-//			}
-//
-//			sb.append(_device);
-//		}
-//
-//		// property
-//		if (sb.length() > 0) {
-//			sb.append(PART_SEPARATOR);
-//		}
-//
-//		sb.append(_property);
+
+		// // device (is optional)
+		// if (_device != null) {
+		// if (sb.length() > 0) {
+		// sb.append(PART_SEPARATOR);
+		// }
+		//
+		// sb.append(_device);
+		// }
+		//
+		// // property
+		// if (sb.length() > 0) {
+		// sb.append(PART_SEPARATOR);
+		// }
+		//
+		// sb.append(_property);
 
 		// characteristic (is optional)
 		if (_characteristic != null) {
@@ -301,8 +303,7 @@ class ProcessVariable implements IProcessVariableAdress {
 	}
 
 	public boolean isCharacteristic() {
-		return (_characteristic!=null && _characteristic.length()>0);
+		return (_characteristic != null && _characteristic.length() > 0);
 	}
-
 
 }

@@ -25,8 +25,8 @@ public class PvAdressFactory {
 				ControlSystemEnum.DAL_TINE));
 		_parserMapping.put(ControlSystemEnum.DAL_TANGO, new DalNameParser(
 				ControlSystemEnum.DAL_TANGO));
-		_parserMapping.put(ControlSystemEnum.GENERIC, new DalNameParser(
-				ControlSystemEnum.GENERIC));
+		_parserMapping.put(ControlSystemEnum.UNKNOWN, new CommonNameParser(
+				ControlSystemEnum.UNKNOWN));
 		_parserMapping.put(ControlSystemEnum.EPICS, new CommonNameParser(
 				ControlSystemEnum.EPICS));
 		_parserMapping.put(ControlSystemEnum.TINE, new CommonNameParser(
@@ -78,7 +78,7 @@ public class PvAdressFactory {
 	}
 
 	private ControlSystemEnum getControlSystem(String rawName) {
-		ControlSystemEnum controlSystem = null;
+		ControlSystemEnum controlSystem = ControlSystemEnum.UNKNOWN;
 
 		// compile a regex pattern and parse the String
 		Pattern p = Pattern.compile("^([^:]*)://");
@@ -97,13 +97,13 @@ public class PvAdressFactory {
 
 	public ControlSystemEnum getDefaultControlSystem() {
 		String defaultCs = Platform.getPreferencesService().getString(
-				CSSPlatformPlugin.ID, PROP_CONTROL_SYSTEM, ControlSystemEnum.GENERIC.getPrefix(), //$NON-NLS-1$
+				CSSPlatformPlugin.ID, PROP_CONTROL_SYSTEM, "", //$NON-NLS-1$
 				null);
 		
 		ControlSystemEnum controlSystem = ControlSystemEnum.findByPrefix(defaultCs);
 
 		if (controlSystem == null) {
-			controlSystem = ControlSystemEnum.GENERIC;
+			controlSystem = ControlSystemEnum.UNKNOWN;
 		}
 		assert controlSystem != null;
 		return controlSystem;

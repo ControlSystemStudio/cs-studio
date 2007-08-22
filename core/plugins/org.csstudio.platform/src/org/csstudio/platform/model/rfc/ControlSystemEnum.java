@@ -33,9 +33,7 @@ public enum ControlSystemEnum implements IAdaptable {
 
 	TANGO("tango", "TANGO", false),
 	
-	GENERIC("generic", "EPICS", true), 
-	
-	UNKNOWN("unknown", null, false);
+	UNKNOWN("", null, false);
 
 
 	private String _prefix;
@@ -69,7 +67,7 @@ public enum ControlSystemEnum implements IAdaptable {
 	}
 	
 	public static ControlSystemEnum findByPrefix(String prefix) {
-		ControlSystemEnum result=null;
+		ControlSystemEnum result=UNKNOWN;
 		for(ControlSystemEnum e : values()) {
 			if(e.getPrefix().equalsIgnoreCase(prefix)) {
 				result = e;

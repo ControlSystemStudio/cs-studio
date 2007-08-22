@@ -8,13 +8,19 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.TransferData;
 
 public class ProcessVariableAdressDropTargetAdapter extends DropTargetAdapter {
 	private IProcessVariableAdressReceiver _receiver;
 
-	ProcessVariableAdressDropTargetAdapter(IProcessVariableAdressReceiver pvCallback) {
+	private IShowControlSystemDialogStrategy _showControlSystemDialogStrategy;
+
+	ProcessVariableAdressDropTargetAdapter(
+			IProcessVariableAdressReceiver pvCallback,
+			IShowControlSystemDialogStrategy showControlSystemDialogStrategy) {
+		assert pvCallback != null;
+		assert showControlSystemDialogStrategy != null;
 		_receiver = pvCallback;
+		_showControlSystemDialogStrategy = showControlSystemDialogStrategy;
 	}
 
 	@Override
@@ -22,16 +28,22 @@ public class ProcessVariableAdressDropTargetAdapter extends DropTargetAdapter {
 		IProcessVariableAdress[] pvs = new IProcessVariableAdress[0];
 
 		if (PVTransfer.getInstance().isSupportedType(event.currentDataType)) {
-			// get the layer that was moved
 			pvs = (IProcessVariableAdress[]) PVTransfer.getInstance()
 					.nativeToJava(event.currentDataType);
 		} else if (TextTransfer.getInstance().isSupportedType(
 				event.currentDataType)) {
-			String rawName = (String) TextTransfer.getInstance()
-					.nativeToJava(event.currentDataType);
+			String rawName = (String) TextTransfer.getInstance().nativeToJava(
+					event.currentDataType);
 
-			IProcessVariableAdress pv = ProcessVariableExchangeUtil.checkRawInput(rawName);
-			
+			// TODO: Strategy einbauen, an welcher sich entscheidet, ob nach dem
+			// Control-Systeme gefragt wird (z.B. sollte beim Drop von Strings
+			// mit Aliasen nicht
+			// auf Krampf versucht werden, eine PV aufzulösen)
+			IProcessVariableAdress pv = ProcessVariableExchangeUtil
+					.parseProcessVariableAdress(rawName,
+							_showControlSystemDialogStrategy
+									.showControlSystem(rawName));
+
 			pvs = new IProcessVariableAdress[] { pv };
 		}
 
@@ -71,7 +83,7 @@ public class ProcessVariableAdressDropTargetAdapter extends DropTargetAdapter {
 		boolean supported = (PVTransfer.getInstance().isSupportedType(
 				event.currentDataType) || TextTransfer.getInstance()
 				.isSupportedType(event.currentDataType));
-		
+
 		return supported;
 	}
 }
