@@ -117,6 +117,28 @@
             primary="true">
       </toc>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.csstudio.alarm.table.popupMenu"
+            objectClass="org.csstudio.platform.model.IProcessVariable">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS"
+               path="additions">
+            <groupMarker name="content"/>
+            <separator name="additions"/>
+         </menu>
+         <action
+               class="org.csstudio.alarm.table.ArchivePopupAction"
+               enablesFor="1"
+               icon="icons/LogArchive.gif"
+               id="org.csstudio.alarm.table.archivepopupAction"
+               label="Log Archive"
+               menubarPath="org.csstudio.popmenu/content"/>
+      </objectContribution>
+   </extension>
 
    
 

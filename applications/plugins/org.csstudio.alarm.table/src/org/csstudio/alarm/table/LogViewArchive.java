@@ -44,6 +44,7 @@ import org.csstudio.alarm.table.readDB.DBAnswer;
 import org.csstudio.alarm.table.readDB.ReadDBJob;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -359,6 +360,20 @@ public class LogViewArchive extends ViewPart implements Observer {
 		});
 	}
 
+    
+    public void readDBFromExternalCall(IProcessVariable pv) {
+    	GregorianCalendar from = new GregorianCalendar();
+    	GregorianCalendar to = new GregorianCalendar();
+    	from.setTimeInMillis(to.getTimeInMillis() - 1000*60*60*24);
+    	System.out.println("from: " + from.toString() + "   to: " + to.toString());
+    	_filter = "AND ( (lower(aam.PROPERTY) like lower('NAME') AND lower(aam.VALUE) like lower('" +
+    	pv.getName() + "')))";
+        ReadDBJob readDB = new ReadDBJob("DB Reader", 
+        		LogViewArchive.this._dbAnswer, from, to, _filter);
+        readDB.schedule();
+
+    }
+    
 	/**
      * Set the two times from, to .
      * @param from the from a selectet.
