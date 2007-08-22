@@ -1,10 +1,10 @@
 /**
  * 
  */
-package org.csstudio.platform.ui.dnd.rfc;
+package org.csstudio.platform.ui.internal.dnd;
 
-import org.csstudio.platform.model.rfc.ControlSystemEnum;
-import org.csstudio.platform.model.rfc.PvAdressFactory;
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -22,12 +22,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
-class ChooseControlSystemPrefixDialog extends MessageDialog {
+public class ChooseControlSystemPrefixDialog extends MessageDialog {
 	private ControlSystemEnum _selectedControlSystem;
 	private boolean _dontAskAgain;
 
 	public ChooseControlSystemPrefixDialog(Shell parentShell) {
-		 
 		super(parentShell, "Control System Prefix", null, "Please choose the appropriate control system.",
 				MessageDialog.QUESTION, new String[] { "Ok", "Cancel" }, 0);
 	}
@@ -59,11 +58,11 @@ class ChooseControlSystemPrefixDialog extends MessageDialog {
 
 		});
 		
-		tv.setSelection(new StructuredSelection(PvAdressFactory.getInstance().getDefaultControlSystem()));
+		tv.setSelection(new StructuredSelection(ProcessVariableAdressFactory.getInstance().getDefaultControlSystem()));
 
 		final Button dontAskAgainButton = new Button(parent, SWT.CHECK);
 		dontAskAgainButton.setText("Don´t ask again!");
-		dontAskAgainButton.setSelection(!PvAdressFactory.getInstance().askForControlSystem());
+		dontAskAgainButton.setSelection(!ProcessVariableAdressFactory.getInstance().askForControlSystem());
 		
 		dontAskAgainButton.addSelectionListener(new SelectionListener(){
 

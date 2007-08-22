@@ -1,6 +1,6 @@
 package org.csstudio.platform.ui.internal.workbench;
 
-import org.csstudio.platform.model.rfc.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 

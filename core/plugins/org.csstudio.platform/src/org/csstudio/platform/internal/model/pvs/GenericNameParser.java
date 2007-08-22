@@ -1,9 +1,11 @@
-package org.csstudio.platform.model.rfc;
+package org.csstudio.platform.internal.model.pvs;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.platform.CSSPlatformPlugin;
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.IProcessVariableAdress;
 
 public class GenericNameParser extends
 		AbstractProcessVariableNameParser {
@@ -42,7 +44,7 @@ public class GenericNameParser extends
 			String property = m.group(5);
 			String characteristic = m.group(7);
 
-			result = new ProcessVariable(rawName, ControlSystemEnum.EPICS,
+			result = new ProcessVariableAdress(rawName, ControlSystemEnum.EPICS,
 					device, property, characteristic);
 
 		} else {

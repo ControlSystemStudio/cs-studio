@@ -1,9 +1,12 @@
 /**
  * 
  */
-package org.csstudio.platform.ui.dnd.rfc;
+package org.csstudio.platform.ui.internal.dnd;
 
-import org.csstudio.platform.model.rfc.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.ui.dnd.rfc.IProcessVariableAdressReceiver;
+import org.csstudio.platform.ui.dnd.rfc.IShowControlSystemDialogStrategy;
+import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -14,7 +17,7 @@ public class ProcessVariableAdressDropTargetAdapter extends DropTargetAdapter {
 
 	private IShowControlSystemDialogStrategy _showControlSystemDialogStrategy;
 
-	ProcessVariableAdressDropTargetAdapter(
+	public ProcessVariableAdressDropTargetAdapter(
 			IProcessVariableAdressReceiver pvCallback,
 			IShowControlSystemDialogStrategy showControlSystemDialogStrategy) {
 		assert pvCallback != null;

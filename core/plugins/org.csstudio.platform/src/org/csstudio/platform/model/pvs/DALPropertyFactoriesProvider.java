@@ -1,4 +1,4 @@
-package org.csstudio.platform.model.rfc;
+package org.csstudio.platform.model.pvs;
 
 import java.util.HashMap;
 import java.util.Map;

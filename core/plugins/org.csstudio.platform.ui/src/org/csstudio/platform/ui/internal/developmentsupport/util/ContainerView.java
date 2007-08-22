@@ -7,14 +7,14 @@ import java.util.List;
 import org.csstudio.platform.internal.developmentsupport.util.DummyContentModelProvider;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IControlSystemItem;
-import org.csstudio.platform.model.rfc.IPVAdressListProvider;
-import org.csstudio.platform.model.rfc.IProcessVariableAdress;
-import org.csstudio.platform.model.rfc.PvAdressFactory;
+import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAdressListProvider;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.ui.dnd.DnDUtil;
 import org.csstudio.platform.ui.dnd.rfc.IProcessVariableAdressReceiver;
-import org.csstudio.platform.ui.dnd.rfc.PVTransfer;
-import org.csstudio.platform.ui.dnd.rfc.ProcessVariableAdressDragSourceAdapter;
 import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
+import org.csstudio.platform.ui.internal.dnd.PVTransfer;
+import org.csstudio.platform.ui.internal.dnd.ProcessVariableAdressDragSourceAdapter;
 import org.csstudio.platform.ui.workbench.ControlSystemItemEditorInput;
 import org.csstudio.platform.ui.workbench.IWorkbenchIds;
 import org.eclipse.core.runtime.IAdaptable;
@@ -61,7 +61,7 @@ public final class ContainerView extends ViewPart {
 	static {
 		_sampleStrings = new String[] { "a", "b" };
 
-		PvAdressFactory f = PvAdressFactory.getInstance();
+		ProcessVariableAdressFactory f = ProcessVariableAdressFactory.getInstance();
 
 		_samplePvAdresses = new IProcessVariableAdress[] {
 				f.createProcessVariableAdress("epics://cryo/pump1"),
@@ -155,7 +155,7 @@ public final class ContainerView extends ViewPart {
 		// add drag support
 		ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(
 				tv.getTree(), DND.DROP_MOVE | DND.DROP_COPY,
-				new IPVAdressListProvider() {
+				new IProcessVariableAdressListProvider() {
 					public List<IProcessVariableAdress> getPVAdressList() {
 						IStructuredSelection sel = (IStructuredSelection) tv
 								.getSelection();

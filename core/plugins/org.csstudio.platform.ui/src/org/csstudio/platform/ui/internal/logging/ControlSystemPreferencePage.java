@@ -1,7 +1,7 @@
 package org.csstudio.platform.ui.internal.logging;
 
-import org.csstudio.platform.model.rfc.ControlSystemEnum;
-import org.csstudio.platform.model.rfc.PvAdressFactory;
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -30,13 +30,13 @@ public class ControlSystemPreferencePage extends FieldEditorPreferencePage
 					ControlSystemEnum.values()[i].name() };
 		}
 		RadioGroupFieldEditor radioFields = new RadioGroupFieldEditor(
-				PvAdressFactory.PROP_CONTROL_SYSTEM, "Control Systems", 1,
+				ProcessVariableAdressFactory.PROP_CONTROL_SYSTEM, "Control Systems", 1,
 				labelsAndValues, getFieldEditorParent());
 
 		addField(radioFields);
 
 		BooleanFieldEditor bfe = new BooleanFieldEditor(
-				PvAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM,
+				ProcessVariableAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM,
 				"Ask for the right control system, each time a user drops a text String into CSS.",
 				getFieldEditorParent());
 		

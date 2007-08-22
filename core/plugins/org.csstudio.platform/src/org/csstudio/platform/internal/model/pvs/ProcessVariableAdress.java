@@ -1,13 +1,14 @@
 /**
  * 
  */
-package org.csstudio.platform.model.rfc;
-
-import java.io.PrintStream;
+package org.csstudio.platform.internal.model.pvs;
 
 import javax.naming.NamingException;
 
 import org.csstudio.platform.CSSPlatformPlugin;
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.epics.css.dal.NumericPropertyCharacteristics;
 import org.epics.css.dal.context.RemoteInfo;
 
@@ -62,17 +63,32 @@ import org.epics.css.dal.context.RemoteInfo;
  * @author Sven Wende
  * 
  */
-class ProcessVariable implements IProcessVariableAdress {
+final class ProcessVariableAdress implements IProcessVariableAdress {
 	public static final String PART_SEPARATOR = "/";
 
+	/**
+	 * The control system.
+	 */
 	private ControlSystemEnum _controlSystem;
 
+	/**
+	 * The device.
+	 */
 	private String _device;
 
+	/**
+	 * The property.
+	 */
 	private String _property;
 
+	/**
+	 * The property.
+	 */
 	private String _characteristic;
 
+	/**
+	 * The raw name.
+	 */
 	private String _rawName;
 
 	/**
@@ -91,7 +107,7 @@ class ProcessVariable implements IProcessVariableAdress {
 	 *            {@link NumericPropertyCharacteristics} (optional, provide null
 	 *            to leave it out)
 	 */
-	public ProcessVariable(final String rawName,
+	public ProcessVariableAdress(final String rawName,
 			final ControlSystemEnum controlSystem, final String device,
 			final String property, final String characteristic) {
 		_rawName = rawName;
@@ -100,7 +116,7 @@ class ProcessVariable implements IProcessVariableAdress {
 		if (controlSystem == null) {
 			String controlSystemString = CSSPlatformPlugin.getDefault()
 					.getPluginPreferences().getString(
-							PvAdressFactory.PROP_CONTROL_SYSTEM);
+							ProcessVariableAdressFactory.PROP_CONTROL_SYSTEM);
 			_controlSystem = ControlSystemEnum.valueOf(controlSystemString);
 			// _controlSystem = SomeWhere.DEFAULT_CONTROL_SYSTEM;
 		} else {
@@ -122,48 +138,28 @@ class ProcessVariable implements IProcessVariableAdress {
 	}
 
 	/**
-	 * Returns the "characteristic" part of the process variable pointer. May be
-	 * null.
-	 * 
-	 * @return the characteristic part
+	 * {@inheritDoc}
 	 */
 	public String getCharacteristic() {
 		return _characteristic;
 	}
 
 	/**
-	 * Returns the "control system" part of the process variable.
-	 * 
-	 * @return the control system part
-	 */
-	public ControlSystemEnum getControlSystemEnum() {
-		return _controlSystem;
-	}
-
-	/**
-	 * Returns the "device" part of the process variable.
-	 * 
-	 * @return the device
+	 * {@inheritDoc}
 	 */
 	public String getDevice() {
 		return _device;
 	}
 
 	/**
-	 * Returns the "property" part of the process variable.
-	 * 
-	 * @return the property
+	 * {@inheritDoc}
 	 */
 	public String getProperty() {
 		return _property;
 	}
 
 	/**
-	 * Convinience methods, which returns a DAL RemoteInfo {@link RemoteInfo}
-	 * object for this process variable pointer. May be null, if DAL does not
-	 * support this kind of PVs.
-	 * 
-	 * @return a DAL RemoteInfo or null
+	 * {@inheritDoc}
 	 */
 	public RemoteInfo toDalRemoteInfo() {
 		assert _controlSystem != null;
@@ -183,9 +179,7 @@ class ProcessVariable implements IProcessVariableAdress {
 	}
 
 	/**
-	 * Returns the full String representation of this process variable.
-	 * 
-	 * @return the full String representation
+	 * {@inheritDoc}
 	 */
 	public String getFullName() {
 		assert _controlSystem != null;
@@ -225,25 +219,36 @@ class ProcessVariable implements IProcessVariableAdress {
 	}
 
 	/**
-	 * Returns the reduced String representation (property + characteristic) of
-	 * this process variable.
-	 * 
-	 * @return the reduced String representation
+	 * {@inheritDoc}
 	 */
-	public String toReducedString() {
-		assert _property != null;
-		StringBuffer sb = new StringBuffer();
+	public ControlSystemEnum getControlSystem() {
+		return _controlSystem;
+	}
 
-		sb.append(_property);
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getRawName() {
+		return _rawName;
+	}
 
-		// characteristic (is optional)
-		if (_characteristic != null) {
-			sb.append("[");
-			sb.append(_characteristic);
-			sb.append("]");
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isCharacteristic() {
+		return (_characteristic != null && _characteristic.length() > 0);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj instanceof ProcessVariableAdress) {
+			ProcessVariableAdress that = (ProcessVariableAdress) obj;
+			return this.getFullName().equals(that.getFullName());
 		}
-
-		return sb.toString();
+		return false;
 	}
 
 	/**
@@ -266,44 +271,4 @@ class ProcessVariable implements IProcessVariableAdress {
 		sb.append("\n");
 		return sb.toString();
 	}
-
-	/**
-	 * Prints a String representation to the provided stream.
-	 * 
-	 * @param out
-	 *            the out stream
-	 */
-	public void print(final PrintStream out) {
-		out.println("Full String		: " + getFullName());
-		out.println("Control System		: " + getControlSystemEnum().getPrefix());
-		out.println("Device			: "
-				+ (getDevice() != null ? getDevice() : "<not provided>"));
-		out.println("Property		: " + getProperty());
-		out.println("Characteristic		: "
-				+ (getCharacteristic() != null ? getCharacteristic()
-						: "<not provided>"));
-		out.println("DAL RemoteInfo		: " + toDalRemoteInfo());
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof ProcessVariable) {
-			ProcessVariable that = (ProcessVariable) obj;
-			return this.getFullName().equals(that.getFullName());
-		}
-		return false;
-	}
-
-	public ControlSystemEnum getControlSystem() {
-		return _controlSystem;
-	}
-
-	public String getRawName() {
-		return _rawName;
-	}
-
-	public boolean isCharacteristic() {
-		return (_characteristic != null && _characteristic.length() > 0);
-	}
-
 }

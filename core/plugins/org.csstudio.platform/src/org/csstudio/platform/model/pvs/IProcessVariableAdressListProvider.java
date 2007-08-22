@@ -19,19 +19,21 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.model.rfc;
+package org.csstudio.platform.model.pvs;
+
+import java.util.List;
 
 /**
- * An Interface to provide {@link ProcessVariable}s.
+ * An Interface to provide a List of {@link IProcessVariableAdress}s.
  * @author Kai Meyer
  */
-public interface IPVAdressProvider {
+public interface IProcessVariableAdressListProvider {
 	
 	/**
-	 * Returns a {@link ProcessVariable}
+	 * Returns a {@link IProcessVariableAdress}
 	 * @return ProcessVariable
 	 * 			A ProcessVariable
 	 */
-	public IProcessVariableAdress getPVAdress();
+	public List<IProcessVariableAdress> getPVAdressList();
 
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.platform.model.rfc;
+package org.csstudio.platform.model.pvs;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;

@@ -21,9 +21,8 @@
  */
 package org.csstudio.platform.ui.dnd;
 
-import org.csstudio.platform.ui.dnd.rfc.ProcessVariableAdressDragSourceAdapter;
-import org.csstudio.platform.ui.dnd.rfc.PVTransfer;
 import org.csstudio.platform.ui.internal.dnd.ControlSystemItemTransfer;
+import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -35,7 +34,7 @@ import org.eclipse.swt.widgets.Control;
  * drop operation.
  * 
  * @author Sven Wende
- * 
+ * @deprecated
  */
 public final class DnDUtil {
 

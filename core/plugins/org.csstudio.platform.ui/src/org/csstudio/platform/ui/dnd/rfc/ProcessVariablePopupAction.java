@@ -3,8 +3,8 @@ package org.csstudio.platform.ui.dnd.rfc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.model.rfc.IPVAdressListProvider;
-import org.csstudio.platform.model.rfc.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAdressListProvider;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -13,17 +13,17 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Base class for popup menu actions used in Object contributions for
- * {@link IPVAdressListProvider}.
+ * {@link IProcessVariableAdressListProvider}.
  * 
  * @author Sven Wende
  * 
  */
 public abstract class ProcessVariablePopupAction implements IObjectActionDelegate {
 
-	private List<IPVAdressListProvider> _pvAdressListProviders;
+	private List<IProcessVariableAdressListProvider> _pvAdressListProviders;
 
 	public ProcessVariablePopupAction() {
-		_pvAdressListProviders = new ArrayList<IPVAdressListProvider>();
+		_pvAdressListProviders = new ArrayList<IProcessVariableAdressListProvider>();
 	}
 
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
@@ -31,7 +31,7 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
 	}
 
 	public void run(IAction action) {
-		for (IPVAdressListProvider provider : _pvAdressListProviders) {
+		for (IProcessVariableAdressListProvider provider : _pvAdressListProviders) {
 			handlePvs(provider.getPVAdressList());
 		}
 	}
@@ -43,8 +43,8 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
 			IStructuredSelection sel = (IStructuredSelection) selection;
 
 			for (Object o : sel.toList()) {
-				if (o instanceof IPVAdressListProvider) {
-					_pvAdressListProviders.add((IPVAdressListProvider) o);
+				if (o instanceof IProcessVariableAdressListProvider) {
+					_pvAdressListProviders.add((IProcessVariableAdressListProvider) o);
 				}
 			}
 		}

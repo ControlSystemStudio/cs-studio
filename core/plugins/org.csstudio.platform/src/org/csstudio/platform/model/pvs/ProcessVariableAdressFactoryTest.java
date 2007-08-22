@@ -1,4 +1,4 @@
-package org.csstudio.platform.model.rfc;
+package org.csstudio.platform.model.pvs;
 
 import static org.junit.Assert.*;
 
@@ -6,12 +6,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PvAdressFactoryTest {
-	private PvAdressFactory _factory;
+public class ProcessVariableAdressFactoryTest {
+	private ProcessVariableAdressFactory _factory;
 
 	@Before
 	public void setUp() throws Exception {
-		_factory = PvAdressFactory.getInstance();
+		_factory = ProcessVariableAdressFactory.getInstance();
 	}
 
 	@After

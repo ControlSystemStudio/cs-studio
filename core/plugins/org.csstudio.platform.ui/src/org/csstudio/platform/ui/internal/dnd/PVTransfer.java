@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.dnd.rfc;
+package org.csstudio.platform.ui.internal.dnd;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,8 +29,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import org.csstudio.platform.model.rfc.IProcessVariableAdress;
-import org.csstudio.platform.model.rfc.PvAdressFactory;
+import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
@@ -162,7 +162,7 @@ public class PVTransfer extends ByteArrayTransfer {
 					readIn.read(pathBytes);
 					String fullPath = new String(pathBytes);
 					
-					IProcessVariableAdress pv = PvAdressFactory.getInstance().createProcessVariableAdress(fullPath);
+					IProcessVariableAdress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(fullPath);
 					//ProcessVariable pv = new ProcessVariable(controlSystem, device, property, characteristic);
 					IProcessVariableAdress[] newProcessVariables = new IProcessVariableAdress[processVariables.length + 1];
 					System.arraycopy(processVariables, 0, newProcessVariables, 0, processVariables.length);

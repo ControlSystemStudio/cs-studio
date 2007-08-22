@@ -1,7 +1,7 @@
 package org.csstudio.platform.ui.internal.workbench;
 
 import org.csstudio.platform.model.IControlSystemItem;
-import org.csstudio.platform.model.rfc.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 

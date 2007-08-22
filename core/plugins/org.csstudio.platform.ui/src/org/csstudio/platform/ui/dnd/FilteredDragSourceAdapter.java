@@ -48,6 +48,8 @@ import org.eclipse.swt.dnd.TextTransfer;
  * @see DragSourceListener
  * @see DragSourceEvent
  * @author Sven Wende, Stefan Hofer
+ * 
+ * @deprecated
  */
 public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 

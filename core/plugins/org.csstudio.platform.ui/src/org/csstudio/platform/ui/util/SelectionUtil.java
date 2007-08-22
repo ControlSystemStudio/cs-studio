@@ -19,21 +19,59 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.model.rfc;
+package org.csstudio.platform.ui.util;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.csstudio.platform.data.IStringValue;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+
 /**
- * An Interface to provide a List of {@link IProcessVariableAdress}s.
- * @author Kai Meyer
+ * 
+ * @author swende
+ * 
  */
-public interface IPVAdressListProvider {
-	
+public final class SelectionUtil {
 	/**
-	 * Returns a {@link IProcessVariableAdress}
-	 * @return ProcessVariable
-	 * 			A ProcessVariable
+	 * The singleton instance.
 	 */
-	public List<IProcessVariableAdress> getPVAdressList();
+	private static SelectionUtil _instance;
+
+	/**
+	 * Hidden constructor.
+	 */
+	private SelectionUtil() {
+	}
+
+	/**
+	 * Gets the singleton instance.
+	 * 
+	 * @return the singleton instance
+	 */
+	public static SelectionUtil getInstance() {
+		if (_instance == null) {
+			_instance = new SelectionUtil();
+		}
+
+		return _instance;
+	}
+
+	public <E> List<E> getObjectsFromSelection(ISelection selection) {
+		List<E> result = new ArrayList<E>();
+
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection ssel = (IStructuredSelection) selection;
+			Iterator<E> it = ssel.iterator();
+			
+			while(it.hasNext()) {
+				result.add(it.next());
+			}
+		}
+		
+		return result;
+	}
 
 }
