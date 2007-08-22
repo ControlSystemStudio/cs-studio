@@ -74,16 +74,21 @@ public class CheckBoxImages
     
         // Some tweaking that's a compromize between Win32, OSX, ...
         // versions of the actual control.
-        button.setLocation(1, 1);
         final Point bsize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         // otherwise an image is stretched by width
-        final int size = Math.max(bsize.x-1, bsize.y-1);
+        final int size = Math.max(bsize.x, bsize.y);
+        button.setLocation(1, 1);
         button.setSize(size, size);
         shell.setSize(size, size);
         // Briefly display shell, take snapshot, close
         shell.open();
         final GC gc = new GC(shell);
-        final Image image = new Image(control.getDisplay(), bsize.x, bsize.y);
+        final Image image = new Image(shell.getDisplay(), size, size);
+        // If switching windows during application startup,
+        // the image would sometimes contain stuff from whatever
+        // happened to be on top of the screen.
+        // Maybe this helps to avoid that?
+        shell.forceActive();
         gc.copyArea(image, 0, 0);
         gc.dispose();
         shell.close();
