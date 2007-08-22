@@ -594,4 +594,10 @@ public class EPICS_V3_PV
         for (PVListener listener : listeners)
             listener.pvDisconnected(this);
     }
+
+    @Override
+    public String toString()
+    {
+        return "EPICS_V3_PV '" + name + "'";
+    }
 }
