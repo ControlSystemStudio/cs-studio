@@ -78,25 +78,25 @@ public class Chart extends Canvas
     private Rectangle plot_region;
 
     /** Horizontal axis. */
-    private XAxis xaxis;
-    private XAxisListener xaxis_listener;
+    final private XAxis xaxis;
+    final private XAxisListener xaxis_listener;
 
     /** One or more vertical axes. */
-    private YAxisFactory yaxis_factory;
-    private ArrayList<YAxis> yaxes;
-    private YAxisListener yaxis_listener;
+    final private YAxisFactory yaxis_factory;
+    final private ArrayList<YAxis> yaxes = new ArrayList<YAxis>();
+    final private YAxisListener yaxis_listener;
 
     /** Background color. */
-    private Color background;
+    final private Color background;
     
     /** Grid line color. */
-    private Color grid_color;
+    final private Color grid_color;
     
     /** Foreground color. */
-    private Color foreground;
+    final private Color foreground;
 
 	/** MouseEvent button code for the 'left' button */
-    private static final int LEFT_MOUSE_BUTTON = 1;
+    final private static int LEFT_MOUSE_BUTTON = 1;
 
     /** Is mouse currently 'down'? */
     private boolean mouse_down = false;
@@ -111,7 +111,8 @@ public class Chart extends Canvas
     private boolean mouse_dragged = false;
     
     /** List of all ChartListeners */
-    private ArrayList<ChartListener> listeners = new ArrayList<ChartListener>();
+    final private ArrayList<ChartListener> listeners =
+        new ArrayList<ChartListener>();
 
     /** Create a chart.
      *  @param parent SWT parent widget.
@@ -128,14 +129,14 @@ public class Chart extends Canvas
         // Create axes
         xaxis_listener = new XAxisListener()
         {
-            public void changedXAxis(XAxis xaxis)
+            public void changedXAxis(final XAxis xaxis)
             {
                 if (debug)
                     System.out.println("Chart changedXAxis redraw"); //$NON-NLS-1$
                 if (plot_region != null)
                 {
                     // Compute redraw region for X axis and plot, not y axes
-                	Rectangle xreg = xaxis.getRegion();
+                	final Rectangle xreg = xaxis.getRegion();
                 	redraw(plot_region.x+1, plot_region.y,
                 	       plot_region.width-1,
                 		   plot_region.height + xreg.height, true);
@@ -180,7 +181,6 @@ public class Chart extends Canvas
             yaxis_factory = new YAxisFactory();
         else
             yaxis_factory = new TraceNameYAxisFactory();
-        yaxes = new ArrayList<YAxis>();
         YAxis yaxis = yaxis_factory.createYAxis(Messages.Chart_y, yaxis_listener);
         yaxes.add(yaxis);
         
@@ -460,9 +460,10 @@ public class Chart extends Canvas
     {
         // The +-1 tweaks avoid the x and y axes, so only
         // the plot region gets redrawn.
-        redraw(plot_region.x+1, plot_region.y,
-               plot_region.width-1, plot_region.height-1,
-               false);
+        if (plot_region != null)
+            redraw(plot_region.x+1, plot_region.y,
+                   plot_region.width-1, plot_region.height-1,
+                   false);
     }
     
     /** Auto-Zoom the selected or all Y axes. */
@@ -579,8 +580,8 @@ public class Chart extends Canvas
         // for labels on top of y and at the right end of x axes.
         // The -1, +1 compensates for the overlap of the axes at the
         // origin, so we use 100% of the overall region.
-        int inset = 20;
-        int xaxis_height = xaxis.getPixelHeight(gc);
+        final int inset = 20;
+        final int xaxis_height = xaxis.getPixelHeight(gc);
         plot_region = new Rectangle(
                 region.x - 1,
                 region.y + inset,
@@ -588,7 +589,7 @@ public class Chart extends Canvas
                 region.height - inset - xaxis_height + 1);
         for (YAxis yaxis : yaxes)
         {
-            int wid = yaxis.getPixelWidth(gc);
+            final int wid = yaxis.getPixelWidth(gc);
             plot_region.x += wid; 
             plot_region.width -= wid; 
         }
@@ -604,7 +605,7 @@ public class Chart extends Canvas
         int x = plot_region.x + 1;
         for (YAxis yaxis : yaxes)
         {
-            int wid = yaxis.getPixelWidth(gc);
+            final int wid = yaxis.getPixelWidth(gc);
             x -= wid;
             yaxis.setRegion(x, plot_region.y,
                             wid, plot_region.height);
