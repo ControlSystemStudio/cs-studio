@@ -152,6 +152,6 @@ public class PVContext
      */
     synchronized static boolean allReleased()
     {
-        return jca == null  &&  channels.size() == 0;
+        return jca_refs == 0;
     }
 }

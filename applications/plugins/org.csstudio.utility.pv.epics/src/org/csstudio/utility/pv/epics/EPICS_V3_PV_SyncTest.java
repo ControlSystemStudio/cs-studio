@@ -1,18 +1,25 @@
 package org.csstudio.utility.pv.epics;
 
-import junit.framework.TestCase;
-
 import org.csstudio.platform.data.IValue;
 import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVFactory;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /** These tests require the soft-IOC database from lib/test.db.
  * 
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class EPICS_V3_PV_SyncTest extends TestCase
+public class EPICS_V3_PV_SyncTest
 {
+    @BeforeClass
+    static public void prepare()
+    {
+        PVFactory.use_ui_thread = false;
+    }
+
     @Test
     public void testSyncGet() throws Exception
     {

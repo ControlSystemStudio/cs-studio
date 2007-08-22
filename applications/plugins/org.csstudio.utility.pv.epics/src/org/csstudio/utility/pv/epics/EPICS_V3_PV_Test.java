@@ -2,8 +2,6 @@ package org.csstudio.utility.pv.epics;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.TestCase;
-
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IEnumeratedValue;
@@ -11,16 +9,25 @@ import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /** These tests require the soft-IOC database from lib/test.db.
  * 
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class EPICS_V3_PV_Test extends TestCase
+public class EPICS_V3_PV_Test
 {
+    @BeforeClass
+    static public void prepare()
+    {
+        PVFactory.use_ui_thread = false;
+    }
+    
     private AtomicInteger updates = new AtomicInteger();
     
     class TestListener implements PVListener

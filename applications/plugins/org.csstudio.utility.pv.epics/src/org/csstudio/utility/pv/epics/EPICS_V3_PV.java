@@ -15,6 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.swt.widgets.Display;
 
@@ -440,14 +441,7 @@ public class EPICS_V3_PV
      */
     private void runInUI(final Runnable runnable)
     {
-        // Tried Display.getDefault() == null to determine
-        // if we're running with an SWT main loop,
-        // but in unit tests that suddenly returned a valid
-        // display, yet asyncExec never functioned for lack
-        // of a main loop.
-        // So now we check if the plugin was loaded.
-        // If not, we assume unit test
-        if (Activator.getDefault() == null)
+        if (PVFactory.use_ui_thread == false)
         {
             if (PVContext.debug)
                 System.out.println("EPICS_V3_PV runInUI runs directly");
