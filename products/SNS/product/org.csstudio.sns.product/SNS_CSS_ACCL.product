@@ -10,7 +10,7 @@
       </text>
    </aboutInfo>
 
-   <configIni use="default"/>
+   <configIni use="custom" path="/org.csstudio.sns.product/SNS_CSS_ACCL/config.ini"/>
 
    <launcherArgs>
    </launcherArgs>
@@ -24,7 +24,7 @@
       <macosx icon="/org.csstudio.sns.product/icons/css.icns"/>
       <solaris/>
       <win useIco="true">
-         <ico path="/org.csstudio.sns.product/icons/alt_launcher.ico"/>
+         <ico path="/org.csstudio.sns.product/icons/css.ico"/>
          <bmp/>
       </win>
    </launcher>
