@@ -66,6 +66,10 @@ public final class CSSPlatformInfo {
 
 		try {
 			hostID = InetAddress.getLocalHost().getHostName();
+
+//To compare the name of the preference file with the host name it is maybe necessary
+//to get the complete host name.
+//			hostID = InetAddress.getLocalHost().getCanonicalHostName();
 		} catch (UnknownHostException uhe) {
 			hostID = "NA";
 		}
