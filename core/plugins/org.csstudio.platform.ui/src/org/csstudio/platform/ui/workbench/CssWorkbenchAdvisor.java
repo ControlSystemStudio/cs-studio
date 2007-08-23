@@ -108,7 +108,7 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 		_workbenchWindowconfigurer.setShowPerspectiveBar(true);
 		_workbenchWindowconfigurer.setShowMenuBar(true);
 		_workbenchWindowconfigurer.setShowCoolBar(true);
-		_workbenchWindowconfigurer.setShowFastViewBars(false);
+		_workbenchWindowconfigurer.setShowFastViewBars(true);
 		_workbenchWindowconfigurer.setShowProgressIndicator(true);
 		_workbenchWindowconfigurer.setShowStatusLine(true);
 	}

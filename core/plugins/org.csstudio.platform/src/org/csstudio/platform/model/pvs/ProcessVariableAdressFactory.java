@@ -81,7 +81,8 @@ public class ProcessVariableAdressFactory {
 	}
 
 	public boolean hasValidControlSystemPrefix(String rawName) {
-		return getControlSystem(rawName) != null;
+		ControlSystemEnum cs = getControlSystem(rawName);
+		return ( cs!= null && cs!=ControlSystemEnum.UNKNOWN);
 	}
 
 

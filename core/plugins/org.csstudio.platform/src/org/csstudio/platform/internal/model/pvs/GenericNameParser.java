@@ -7,6 +7,11 @@ import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAdress;
 
+/**
+ * @deprecated
+ * @author swende
+ *
+ */
 public class GenericNameParser extends
 		AbstractProcessVariableNameParser {
 

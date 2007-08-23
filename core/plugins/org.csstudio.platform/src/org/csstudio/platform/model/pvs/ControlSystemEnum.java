@@ -63,7 +63,7 @@ public enum ControlSystemEnum implements IAdaptable {
 
 	@Override
 	public String toString() {
-		return _prefix;
+		return name();
 	}
 	
 	public static ControlSystemEnum findByPrefix(String prefix) {

@@ -92,7 +92,6 @@ public final class LinkingContainerFigure extends Panel implements IAdaptable {
 	 * Refreshes the zoom.
 	 */
 	public void updateZoom() {
-		CentralLogger.getInstance().info(null, ""+_pane.getFreeformExtent());
 		_zoomManager.setZoom(1.0);
 		_zoomManager.setZoomAsText(ZoomManager.FIT_ALL);
 	}

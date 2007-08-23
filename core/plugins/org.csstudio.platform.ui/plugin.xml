@@ -66,14 +66,14 @@
          <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
       </factory>
       <factory
-            adaptableType="org.csstudio.platform.model.rfc.ControlSystemEnum"
+            adaptableType="org.csstudio.platform.model.pvs.ControlSystemEnum"
             class="org.csstudio.platform.ui.internal.workbench.ControlSystemEnumAdapterFactory">
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
       </factory>
       <factory
-            adaptableType="org.csstudio.platform.model.rfc.IProcessVariableAdress"
+            adaptableType="org.csstudio.platform.model.pvs.IProcessVariableAdress"
             class="org.csstudio.platform.ui.internal.workbench.ProcessVariableAdressAdapterFactory">
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">

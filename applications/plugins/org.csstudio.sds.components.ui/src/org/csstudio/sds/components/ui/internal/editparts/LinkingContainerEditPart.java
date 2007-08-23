@@ -22,13 +22,18 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import java.util.Iterator;
+import java.util.List;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.LinkingContainerModel;
 import org.csstudio.sds.components.ui.internal.figures.LinkingContainerFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.DisplayModel;
+import org.csstudio.sds.model.persistence.DisplayModelLoadAdapter;
+import org.csstudio.sds.model.persistence.IDisplayModelLoadListener;
 import org.csstudio.sds.model.persistence.PersistenceUtil;
+import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.editparts.AbstractContainerEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.core.resources.IFile;
@@ -132,37 +137,49 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 	 *            The Path to the ContainerModel
 	 */
 	protected void initContainerFromResource(final IPath path) {
-		ContainerModel container = getContainerModel();
+		final ContainerModel container = getContainerModel();
 
 		if (path != null && !path.isEmpty()) {
 
 			IFile file = findFile(path);
 
 			if (file != null) {
-				DisplayModel tempModel = new DisplayModel();
+				final DisplayModel tempModel = new DisplayModel();
 
 				try {
-					PersistenceUtil.asyncFillModel(tempModel, file.getContents(), null);
+					PersistenceUtil.asyncFillModel(tempModel, file
+							.getContents(), new DisplayModelLoadAdapter() {
+
+						public void onDisplayModelLoaded() {
+							// remove old widgets
+							Iterator<AbstractWidgetModel> it = container
+									.getWidgets().iterator();
+							while (it.hasNext()) {
+								container.removeWidget(it.next());
+							}
+
+							// add new widgets
+							it = tempModel.getWidgets().iterator();
+							while (it.hasNext()) {
+								AbstractWidgetModel w = it.next();
+								tempModel.removeWidget(w);
+								container.addWidget(w);
+							}
+
+							// update zoom
+							new CheckedUiRunnable(){
+								@Override
+								protected void doRunInUi() {
+									((LinkingContainerFigure) getFigure()).updateZoom();
+								}
+							};
+							
+						}
+					});
 				} catch (CoreException e) {
-					e.printStackTrace();
+					CentralLogger.getInstance().error(this, e);
 				}
 
-				// remove old widgets
-				Iterator<AbstractWidgetModel> it = container.getWidgets()
-						.iterator();
-				while (it.hasNext()) {
-					container.removeWidget(it.next());
-				}
-
-				// add new widgets
-				it = tempModel.getWidgets().iterator();
-				while (it.hasNext()) {
-					AbstractWidgetModel w = it.next();
-					tempModel.removeWidget(w);
-					container.addWidget(w);
-				}
-
-				((LinkingContainerFigure) getFigure()).updateZoom();
 			}
 
 		}

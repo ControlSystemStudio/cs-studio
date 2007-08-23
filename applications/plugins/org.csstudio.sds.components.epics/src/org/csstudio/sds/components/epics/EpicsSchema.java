@@ -44,10 +44,14 @@ public final class EpicsSchema extends AbstractControlSystemSchema {
 	 */
 	@Override
 	protected void initializeWidget(final AbstractWidgetModel widgetModel) {
+		widgetModel.setPrimarPv("$record$");
+		// default colors
 		widgetModel.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
 				getColorProperty(DEFAULT_BACKGROUND_COLOR));
 		widgetModel.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
 				getColorProperty(DEFAULT_FOREGROUND_COLOR));
+		
+		
 	}
 
 	/**
