@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.1"?>
 
-<product name="CSS" id="org.csstudio.startup.product" application="org.csstudio.startup.application" useFeatures="false">
+<product name="CSS" id="org.csstudio.startup.product" application="org.csstudio.startup.application" useFeatures="true">
 
    <aboutInfo>
       <image path="/org.csstudio.startup/resources/css64x64.gif"/>
@@ -46,7 +46,6 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
