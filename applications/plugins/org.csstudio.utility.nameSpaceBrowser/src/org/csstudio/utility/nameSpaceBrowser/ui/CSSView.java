@@ -352,9 +352,12 @@ public class CSSView extends Composite implements Observer{
 				ArrayList<Object> al = new ArrayList<Object>();
 				for (Object element : elements) {
 					String name=""; //$NON-NLS-1$
-					if (element instanceof IControlSystemItem)
-						name= ((IControlSystemItem) element).getName();
-					if(search.length()==0||searchString(name, search)){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
+					if (element instanceof IControlSystemItem){
+					    String[] names = ((IControlSystemItem) element).getName().split("[/ ]");
+		                name = names[names.length-1];
+//						name= ((IControlSystemItem) element).getName();
+					}
+					if(search.length()==0||searchString(name, search)){ 
 						al.add(element);
 					}
 				}
