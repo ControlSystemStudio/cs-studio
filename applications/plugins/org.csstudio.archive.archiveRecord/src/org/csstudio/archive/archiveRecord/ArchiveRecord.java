@@ -2,7 +2,7 @@ package org.csstudio.archive.archiveRecord;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.ILongValue;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.epics.EPICS_V3_PV;
+import org.csstudio.utility.pv.PVFactory;
 /** Handles the "archiveRecord" low-level staff 
  *  @author Albert Kagarmanov
  */
@@ -61,9 +61,9 @@ public class ArchiveRecord {
 		this.avarName      = addSuffix(this.archivePVname,avarStr);		
 	}
 	
-	public int getDimension() {
+	public int getDimension() throws Exception {
 		dim = -1;
-		PV pvdim = new EPICS_V3_PV(nvalName);
+		PV pvdim = PVFactory.createPV(nvalName);//new EPICS_V3_PV(nvalName);
 		
 		try {
 			pvdim.start();
@@ -87,14 +87,14 @@ public class ArchiveRecord {
  		return dim;
 	}
 	
-	public int getAllFromCA()  {
+	public int getAllFromCA() throws Exception  {
 		int len=dim;
 		if(len<=1) {
 			System.out.println("bad dimension for archiveRecord="+len);
 			return -1;
 		}
 		// get VALUE field:
-		PV pvval = new EPICS_V3_PV(valName);
+		PV pvval = PVFactory.createPV(nvalName);//new EPICS_V3_PV(valName);
 		
 		try {
 			pvval.start();
@@ -122,7 +122,7 @@ public class ArchiveRecord {
 		}	
 		
 		// get TIME field:
-		PV pvtime = new EPICS_V3_PV(timeName);
+		PV pvtime = PVFactory.createPV(nvalName);//new EPICS_V3_PV(timeName);
 		try {
 			pvtime.start();
 			for(int i=0;i<NUM_OF_ITER;i++) {
@@ -154,7 +154,7 @@ public class ArchiveRecord {
 		
 		// get Nsec field:
 		
-		PV pvntime = new EPICS_V3_PV(nsecName);
+		PV pvntime = PVFactory.createPV(nvalName);// new EPICS_V3_PV(nsecName);
 		try {
 			pvntime.start();
 			for(int i=0;i<NUM_OF_ITER;i++) {
@@ -185,7 +185,7 @@ public class ArchiveRecord {
 		}
 		
 		// get sevr field:
-		PV sevrname = new EPICS_V3_PV(sevrName);
+		PV sevrname = PVFactory.createPV(nvalName);//new EPICS_V3_PV(sevrName);
 		try {
 			sevrname.start();
 			for(int i=0;i<NUM_OF_ITER;i++) {
