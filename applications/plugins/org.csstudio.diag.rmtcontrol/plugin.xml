@@ -42,10 +42,10 @@
    <extension
          point="org.eclipse.help.toc">
       <toc
-            file="testToc.xml"
+            file="toc.xml"
             primary="true"/>
       <toc
-            file="toc.xml"
+            file="Defaulttoc.xml"
             primary="true"/>
    </extension>
    <!--extension
