@@ -63,7 +63,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "element.slider.advanced"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.sds.components.AdvancedSlider"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.

@@ -22,9 +22,9 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 //import org.csstudio.sds.components.model.LabelModel;
+import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.TextInputModel;
-import org.csstudio.sds.cosywidgets.models.LabelModel;
-import org.csstudio.sds.cosywidgets.ui.internal.figures.RefreshableLabelFigure;
+import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 //import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetProperty;

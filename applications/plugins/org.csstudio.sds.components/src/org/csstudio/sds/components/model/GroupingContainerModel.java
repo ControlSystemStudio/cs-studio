@@ -34,7 +34,7 @@ public final class GroupingContainerModel extends ContainerModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "widget.grouping-container"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.sds.components.GroupingContainer"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.

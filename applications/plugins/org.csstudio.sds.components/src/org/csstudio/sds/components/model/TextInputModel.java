@@ -56,7 +56,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "element.textinput"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.sds.components.Textinput"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.

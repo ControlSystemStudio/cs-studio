@@ -70,7 +70,7 @@ public final class LabelElementTest {
 	 */
 	@Test
 	public void testProperties () {
-		assertTrue(_labelElement.hasProperty(LabelModel.PROP_LABEL));
+		assertTrue(_labelElement.hasProperty(LabelModel.PROP_TEXTVALUE));
 		// Add further properties here
 	}
 

@@ -48,7 +48,7 @@ public final class RectangleModel extends AbstractWidgetModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "element.rectangle"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.sds.components.Rectangle"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.

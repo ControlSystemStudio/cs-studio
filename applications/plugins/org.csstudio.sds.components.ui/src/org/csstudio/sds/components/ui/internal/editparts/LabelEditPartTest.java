@@ -59,10 +59,10 @@ public final class LabelEditPartTest {
 	public void testDoRefreshFigure() {
 		RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) _editPart.getFigure();
 		
-		final String oldText = labelFigure.getText();
+		final String oldText = labelFigure.getTextValue();
 		final String newText = oldText+oldText;
 		
-		assertEquals(newText, labelFigure.getText());
+		assertEquals(newText, labelFigure.getTextValue());
 	}
 
 	/**

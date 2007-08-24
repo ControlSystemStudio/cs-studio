@@ -173,7 +173,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 */
 	@Override
 	public String getTypeID() {
-		return "element.waveform"; //$NON-NLS-1$
+		return "org.csstudio.sds.components.Waveform"; //$NON-NLS-1$
 	}
 
 	/**

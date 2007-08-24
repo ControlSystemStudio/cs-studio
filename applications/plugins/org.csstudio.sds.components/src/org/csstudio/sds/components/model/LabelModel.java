@@ -1,96 +1,76 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
- * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
- *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
- * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
- * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
- * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- */
 package org.csstudio.sds.components.model;
 
-import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.FontProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.StringProperty;
+import org.csstudio.sds.model.properties.BooleanProperty;
+import org.csstudio.sds.model.properties.DoubleProperty;
+import org.csstudio.sds.model.properties.IntegerProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
 /**
- * An label widget model.
+ * A label widget model.
  * 
- * @author Sven Wende & Alexander Will
- * @version $Revision$
+ * @author jbercic
  * 
  */
 public final class LabelModel extends AbstractWidgetModel {
 	/**
-	 * The ID of the label property.
+	 * Unique identifier.
 	 */
-	public static final String PROP_LABEL = "label"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.sds.components.Label";
+	
+	/**
+	 * The IDs of the properties.
+	 */
+	public static final String PROP_FONT = "font";
+	public static final String PROP_TEXT_ALIGN = "textAlignment";
+	public static final String PROP_TRANSPARENT = "transparent_background";
+	public static final String PROP_ROTATION = "text_rotation";
+	public static final String PROP_XOFF = "offset.x";
+	public static final String PROP_YOFF = "offset.y";
 	
 	/**
 	 * The ID of the precision property.
 	 */
 	public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
-
+	
 	/**
-	 * The ID of the font property.
+	 * Type of the displayed text.
 	 */
-	public static final String PROP_FONT = "font"; //$NON-NLS-1$
-
+	public static final String PROP_TYPE = "value_type";
+	
 	/**
-	 * The ID of the text alignment property.
+	 * Text value.
 	 */
-	public static final String PROP_TEXT_ALIGNMENT = "textAlignment"; //$NON-NLS-1$
-
+	public static final String PROP_TEXTVALUE = "value.text";
+	
 	/**
-	 * The ID of this widget model.
+	 * Double value and its output formatting.
 	 */
-	public static final String ID = "element.label"; //$NON-NLS-1$
-
+	public static final String PROP_DOUBLEVALUE = "value.double";
+	//public static final String PROP_DOUBLEVALUEFORMAT = "value.double.format";
+	
 	/**
-	 * The default value of the height property.
+	 * Currently available value types.
 	 */
-	private static final int DEFAULT_HEIGHT = 20;
+	public static final String [] VALUE_TYPES=new String [] {"Text","Double Value"};
+	public static final int TYPE_TEXT = 0;
+	public static final int TYPE_DOUBLE = 1;
 
+	public LabelModel() {
+		setWidth(100);
+		setHeight(30);
+	}
+	
 	/**
-	 * The default value of the width property.
-	 */
-	private static final int DEFAULT_WIDTH = 80;
-
-	/**
-	 * The default value of the text alignment property.
-	 */
-	private static final int DEFAULT_TEXT_ALIGNMENT = 0;
-
-	/**
-	 * The labels for the text alignment property.
+	 * Labels for the text alignment property.
 	 */
 	private static final String[] SHOW_LABELS = new String[] { "Center", "Top",
 			"Bottom", "Left", "Right" };
-
-	/**
-	 * Standard constructor.
-	 */
-	public LabelModel() {
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -105,41 +85,24 @@ public final class LabelModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_LABEL, new StringProperty(Messages.LabelElement_LABEL,
-				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
-		addProperty(PROP_FONT, new FontProperty("Font",
-				WidgetPropertyCategory.Display, new FontData(
-						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
-		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment",
-				WidgetPropertyCategory.Display, SHOW_LABELS,
-				DEFAULT_TEXT_ALIGNMENT));
+		addProperty(PROP_FONT, new FontProperty("Font",WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE)));
+		addProperty(PROP_TEXT_ALIGN, new OptionProperty("Text Alignment",WidgetPropertyCategory.Display, SHOW_LABELS,0));
+		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
+		addProperty(PROP_ROTATION, new DoubleProperty("Text Rotation Angle",WidgetPropertyCategory.Display,90.0,0.0,360.0));
+		addProperty(PROP_XOFF, new IntegerProperty("X Offset",WidgetPropertyCategory.Display,0));
+		addProperty(PROP_YOFF, new IntegerProperty("Y Offset",WidgetPropertyCategory.Display,0));
+		
+		//value properties
+		addProperty(PROP_TYPE, new OptionProperty("Value Type",WidgetPropertyCategory.Behaviour,VALUE_TYPES,TYPE_DOUBLE));
+		addProperty(PROP_TEXTVALUE, new StringProperty("Text Value",WidgetPropertyCategory.Display,""));
+		addProperty(PROP_DOUBLEVALUE, new DoubleProperty("Double Value",WidgetPropertyCategory.Display,0.0));
+		//addProperty(PROP_DOUBLEVALUEFORMAT, new StringProperty("Double Value Format",WidgetPropertyCategory.Display,"%.3f"));
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
 				WidgetPropertyCategory.Behaviour, 2, 0, 5));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDoubleTestProperty() {
-		return PROP_LABEL;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getColorTestProperty() {
-		return PROP_COLOR_BACKGROUND;
-	}
-
-	/**
-	 * Return the label text.
-	 * 
-	 * @return The label text.
-	 */
-	public String getLabel() {
-		return (String) getProperty(PROP_LABEL).getPropertyValue();
+	public FontData getFont() {
+		return (FontData) getProperty(PROP_FONT).getPropertyValue();
 	}
 	
 	/**
@@ -151,21 +114,39 @@ public final class LabelModel extends AbstractWidgetModel {
 		return (Integer) getProperty(PROP_PRECISION).getPropertyValue();
 	}
 
-	/**
-	 * Return the label font.
-	 * 
-	 * @return The label font.
-	 */
-	public FontData getFont() {
-		return (FontData) getProperty(PROP_FONT).getPropertyValue();
-	}
-
-	/**
-	 * Gets, if the marks should be shown or not.
-	 * 
-	 * @return int 0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
-	 */
 	public int getTextAlignment() {
-		return (Integer) getProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
+		return (Integer) getProperty(PROP_TEXT_ALIGN).getPropertyValue();
 	}
+	
+	public boolean getTransparent() {
+		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
+	}
+	
+	public double getRotation() {
+		return (Double) getProperty(PROP_ROTATION).getPropertyValue();
+	}
+	
+	public int getXOff() {
+		return (Integer) getProperty(PROP_XOFF).getPropertyValue();
+	}
+	
+	public int getYOff() {
+		return (Integer) getProperty(PROP_YOFF).getPropertyValue();
+	}
+	
+	public int getType() {
+		return (Integer) getProperty(PROP_TYPE).getPropertyValue();
+	}
+	
+	public String getTextValue() {
+		return (String) getProperty(PROP_TEXTVALUE).getPropertyValue();
+	}
+	
+	public double getDoubleValue() {
+		return (Double) getProperty(PROP_DOUBLEVALUE).getPropertyValue();
+	}
+	
+//	public String getDoubleValueFormat() {
+//		return (String) getProperty(PROP_DOUBLEVALUEFORMAT).getPropertyValue();
+//	}
 }

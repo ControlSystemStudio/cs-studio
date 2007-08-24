@@ -19,8 +19,8 @@ public final class LabelInitializer extends
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeStaticProperty(LabelModel.PROP_LABEL, "Label");
-		initializeDynamicProperty(LabelModel.PROP_LABEL, "$record$.VAL");
+		initializeStaticProperty(LabelModel.PROP_TEXTVALUE, "Label");
+		initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$record$.VAL");
 	}
 
 }

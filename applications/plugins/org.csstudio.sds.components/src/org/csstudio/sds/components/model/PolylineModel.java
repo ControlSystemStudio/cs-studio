@@ -34,7 +34,7 @@ public final class PolylineModel extends AbstractPolyModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "element.polyline"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.sds.components.Polyline"; //$NON-NLS-1$
 
 	/**
 	 * The ID of the width of the line.

@@ -84,7 +84,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "element.actionbutton"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.sds.components.ActionButton"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.

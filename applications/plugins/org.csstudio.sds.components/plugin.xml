@@ -5,35 +5,35 @@
    <extension
          point="org.csstudio.sds.widgetModelFactories">
       <widgetModelFactory
-            class="org.csstudio.sds.cosywidgets.internal.factories.MeterModelFactory"
+            class="org.csstudio.sds.components.internal.model.MeterModelFactory"
             description="Creates a meter control."
             icon="icons/meter.gif"
             name="Meter"
-            typeId="cosywidgets.meter"/>
+            typeId="org.csstudio.sds.components.Meter"/>
       <widgetModelFactory
-            class="org.csstudio.sds.cosywidgets.internal.factories.LabelModelFactory"
+            class="org.csstudio.sds.components.internal.model.LabelModelFactory"
             description="Creates a label."
             icon="icons/label.gif"
             name="Label"
-            typeId="cosywidgets.label"/>
+            typeId="org.csstudio.sds.components.Label"/>
       <widgetModelFactory
-            class="org.csstudio.sds.cosywidgets.internal.factories.ArcModelFactory"
+            class="org.csstudio.sds.components.internal.model.ArcModelFactory"
             description="Creates an arc."
             icon="icons/arc.gif"
             name="Arc"
-            typeId="cosywidgets.arc"/>
+            typeId="org.csstudio.sds.components.Arc"/>
       <widgetModelFactory
-            class="org.csstudio.sds.cosywidgets.internal.factories.ImageModelFactory"
+            class="org.csstudio.sds.components.internal.model.ImageModelFactory"
             description="Creates an image."
             icon="icons/image.gif"
             name="Image"
-            typeId="cosywidgets.image"/>
+            typeId="org.csstudio.sds.components.Image"/>
       <widgetModelFactory
-            class="org.csstudio.sds.cosywidgets.internal.factories.SwitchModelFactory"
+            class="org.csstudio.sds.components.internal.model.SwitchModelFactory"
             description="Creates a switch."
             icon="icons/switch.gif"
             name="Switch"
-            typeId="cosywidgets.switch"/>
+            typeId="org.csstudio.sds.components.Switch"/>
    </extension>
 
 
@@ -44,79 +44,73 @@
             description="Rectangle"
             icon="icons/rectangle.gif"
             name="Rectangle"
-            typeId="element.rectangle"/>
+            typeId="org.csstudio.sds.components.Rectangle"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.EllipseModelFactory"
             description="Ellipse"
             icon="icons/ellipse.gif"
             name="Ellipse"
-            typeId="element.ellipse"/>
-      <widgetModelFactory
-            class="org.csstudio.sds.components.internal.model.LabelModelFactory"
-            description="Label"
-            icon="icons/label.gif"
-            name="Label"
-            typeId="element.label"/>
+            typeId="org.csstudio.sds.components.Ellipse"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.PolygonModelFactory"
             description="Polygon"
             icon="icons/polygon.gif"
             name="Polygon"
-            typeId="element.polygon"/>
+            typeId="org.csstudio.sds.components.Polygon"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.PolylineModelFactory"
             description="Polyline"
             icon="icons/polyline.gif"
             name="Polyline"
-            typeId="element.polyline"/>
+            typeId="org.csstudio.sds.components.Polyline"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.TextInputModelFactory"
             description="Text Input"
             icon="icons/text.gif"
             name="Text Input"
-            typeId="element.textinput"/>
+            typeId="org.csstudio.sds.components.Textinput"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.SimpleSliderModelFactory"
             description="Simple Slider"
             icon="icons/slider.gif"
             name="Simple Slider"
-            typeId="element.slider.simple"/>
+            typeId="org.csstudio.sds.components.SimpleSlider"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.AdvancedSliderModelFactory"
             description="Advanced Slider"
             icon="icons/advancedslider.gif"
             name="Advanced Slider"
-            typeId="element.slider.advanced"/>
+            typeId="org.csstudio.sds.components.AdvancedSlider"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.WaveformModelFactory"
             description="Waveform"
             icon="icons/waveform.gif"
             name="Waveform"
-            typeId="element.waveform"/>
+            typeId="org.csstudio.sds.components.Waveform"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.BargraphModelFactory"
             description="Bargraph"
             icon="icons/bargraph.gif"
             name="Bargraph"
-            typeId="element.bargraph"/>
+            typeId="org.csstudio.sds.components.Bargraph"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.ActionButtonModelFactory"
             description="Action Button"
             icon="icons/actionbutton.gif"
             name="Action Button"
-            typeId="element.actionbutton"/>
+            typeId="org.csstudio.sds.components.ActionButton"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.LinkingContainerModelFactory"
             description="A container widget which can show up other displays."
             icon="icons/linkingcontainer.gif"
             name="Linking Container"
-            typeId="widget.linking-container"/>
+            typeId="org.csstudio.sds.components.LinkingContainer"/>
       <widgetModelFactory
             class="org.csstudio.sds.components.internal.model.GroupingContainerModelFactory"
             description="A container widget that can group other widgets."
             icon="icons/groupcontainer.gif"
             name="Grouping Container"
-            typeId="widget.grouping-container"/>            
+            typeId="org.csstudio.sds.components.GroupingContainer"/>            
    </extension>
 
 </plugin>

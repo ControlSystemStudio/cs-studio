@@ -110,7 +110,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelModel.PROP_LABEL, labelHandler);
+		setPropertyChangeHandler(ActionButtonModel.PROP_LABEL, labelHandler);
 		// font
 		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -136,7 +136,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
+		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 	}
 	
 	/**

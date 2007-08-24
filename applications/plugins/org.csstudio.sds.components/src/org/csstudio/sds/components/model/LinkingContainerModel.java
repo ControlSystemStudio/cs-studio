@@ -44,7 +44,7 @@ public final class LinkingContainerModel extends ContainerModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "widget.linking-container"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.sds.components.LinkingContainer"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.

@@ -21,9 +21,10 @@
  */
 package org.csstudio.sds.components.internal.model;
 
-import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.IWidgetModelFactory;
+
+import org.csstudio.sds.components.model.LabelModel;
 
 /**
  * A widget model factory for {@link LabelModel}. 

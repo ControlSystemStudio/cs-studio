@@ -48,7 +48,7 @@ public final class EllipseModel extends AbstractWidgetModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "element.ellipse"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.sds.components.Ellipse"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.

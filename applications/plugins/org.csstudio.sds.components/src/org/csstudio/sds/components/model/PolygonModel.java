@@ -34,7 +34,7 @@ public final class PolygonModel extends AbstractPolyModel {
 	/**
 	 * The ID of this widget model.
 	 */
-	public static final String ID = "element.polygon"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.sds.components.Polygon"; //$NON-NLS-1$
 	
 	/**
 	 * {@inheritDoc}
