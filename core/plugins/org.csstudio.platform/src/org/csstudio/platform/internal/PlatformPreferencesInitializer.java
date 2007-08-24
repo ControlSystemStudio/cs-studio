@@ -28,6 +28,8 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.security.SecurityFacade;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -57,6 +59,12 @@ public final class PlatformPreferencesInitializer extends
 		initializeControlSystemPreferences(node);
 		initializeSystemPropertyPreferences(node);
 		initializeOnsitePreferences(node);
+		initializeWorkspacePreferences();
+	}
+
+	private void initializeWorkspacePreferences() {
+		IEclipsePreferences node = new DefaultScope().getNode(ResourcesPlugin.PI_RESOURCES);
+		node.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
 	}
 
 	/**
