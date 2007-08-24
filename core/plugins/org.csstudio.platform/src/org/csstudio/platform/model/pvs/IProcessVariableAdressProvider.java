@@ -21,6 +21,8 @@
  */
 package org.csstudio.platform.model.pvs;
 
+import java.util.List;
+
 
 /**
  * An Interface to provide {@link ProcessVariableAdress}s.
@@ -33,6 +35,9 @@ public interface IProcessVariableAdressProvider {
 	 * @return ProcessVariable
 	 * 			A ProcessVariable
 	 */
-	public IProcessVariableAdress getPVAdress();
+	IProcessVariableAdress getPVAdress();
+	
+	List<IProcessVariableAdress> getProcessVariableAdresses();
+	
 
 }

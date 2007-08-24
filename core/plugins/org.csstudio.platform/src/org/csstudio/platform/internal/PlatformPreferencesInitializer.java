@@ -33,6 +33,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 /**
@@ -59,10 +60,11 @@ public final class PlatformPreferencesInitializer extends
 		initializeControlSystemPreferences(node);
 		initializeSystemPropertyPreferences(node);
 		initializeOnsitePreferences(node);
-		initializeWorkspacePreferences();
+//		initializeWorkspacePreferences();
 	}
 
 	private void initializeWorkspacePreferences() {
+		//FIXME: Funktioniert so noch nicht
 		IEclipsePreferences node = new DefaultScope().getNode(ResourcesPlugin.PI_RESOURCES);
 		node.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
 	}

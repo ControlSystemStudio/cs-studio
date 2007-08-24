@@ -79,6 +79,13 @@
                type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.csstudio.platform.model.pvs.IProcessVariableAdressProvider"
+            class="org.csstudio.platform.ui.internal.workbench.ProcessVariableAdressProviderAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.IActionFilter">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
@@ -202,6 +209,12 @@
          class="org.csstudio.platform.ui.internal.preferences.OnsiteSubnetPreferencePage"
          id="org.csstudio.platform.ui.page1"
          name="Onsite Subnets">
+   </page>
+   <page
+         category="org.csstudio.platform.ui.css.platform"
+         class="org.csstudio.platform.ui.internal.preferences.WorkspaceSettingsPreferencePage"
+         id="org.csstudio.platform.ui.internal.preferences.WorkspaceSettingsPreferencePage"
+         name="Workspace">
    </page>
    </extension>
    <extension
