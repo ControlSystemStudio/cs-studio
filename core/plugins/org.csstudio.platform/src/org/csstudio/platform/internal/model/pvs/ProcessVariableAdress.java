@@ -7,7 +7,7 @@ import javax.naming.NamingException;
 
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.epics.css.dal.NumericPropertyCharacteristics;
 import org.epics.css.dal.context.RemoteInfo;
@@ -63,7 +63,7 @@ import org.epics.css.dal.context.RemoteInfo;
  * @author Sven Wende
  * 
  */
-final class ProcessVariableAdress implements IProcessVariableAdress {
+final class ProcessVariableAdress implements IProcessVariableAddress {
 	public static final String PART_SEPARATOR = "/";
 
 	/**

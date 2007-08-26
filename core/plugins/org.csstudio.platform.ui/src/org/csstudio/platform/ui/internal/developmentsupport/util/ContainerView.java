@@ -3,7 +3,7 @@ package org.csstudio.platform.ui.internal.developmentsupport.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressListProvider;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.ui.dnd.rfc.IProcessVariableAdressReceiver;
@@ -37,14 +37,14 @@ import org.eclipse.ui.part.ViewPart;
 public final class ContainerView extends ViewPart {
 
 	private static String[] _sampleStrings;
-	private static IProcessVariableAdress[] _samplePvAdresses;
+	private static IProcessVariableAddress[] _samplePvAdresses;
 
 	static {
 		_sampleStrings = new String[] { "a", "b" };
 
 		ProcessVariableAdressFactory f = ProcessVariableAdressFactory.getInstance();
 
-		_samplePvAdresses = new IProcessVariableAdress[] {
+		_samplePvAdresses = new IProcessVariableAddress[] {
 				f.createProcessVariableAdress("epics://cryo/pump1"),
 				f.createProcessVariableAdress("epics://cryo/pump2"),
 				f.createProcessVariableAdress("epics://cryo/pump3"),
@@ -79,7 +79,7 @@ public final class ContainerView extends ViewPart {
 		createPvConsumerTree(parent);
 	}
 
-	private List<IProcessVariableAdress> _modelForPvConsumer=new ArrayList<IProcessVariableAdress>();
+	private List<IProcessVariableAddress> _modelForPvConsumer=new ArrayList<IProcessVariableAddress>();
 	
 	private void createPvConsumerTree(final Composite parent) {
 		final TreeViewer tv = new TreeViewer(parent);
@@ -100,9 +100,9 @@ public final class ContainerView extends ViewPart {
 		getViewSite().setSelectionProvider(tv);
 
 		// add drag support
-		ProcessVariableExchangeUtil.addProcessVariableDropSupport(tv.getControl(), DND.DROP_MOVE | DND.DROP_COPY, new IProcessVariableAdressReceiver(){
-			public void receive(IProcessVariableAdress[] pvs, DropTargetEvent event) {
-				for(IProcessVariableAdress pv : pvs) {
+		ProcessVariableExchangeUtil.addProcessVariableAddressDropSupport(tv.getControl(), DND.DROP_MOVE | DND.DROP_COPY, new IProcessVariableAdressReceiver(){
+			public void receive(IProcessVariableAddress[] pvs, DropTargetEvent event) {
+				for(IProcessVariableAddress pv : pvs) {
 					_modelForPvConsumer.add(pv);
 				}
 				
@@ -137,10 +137,10 @@ public final class ContainerView extends ViewPart {
 		ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(
 				tv.getTree(), DND.DROP_MOVE | DND.DROP_COPY,
 				new IProcessVariableAdressListProvider() {
-					public List<IProcessVariableAdress> getPVAdressList() {
+					public List<IProcessVariableAddress> getPVAdressList() {
 						IStructuredSelection sel = (IStructuredSelection) tv
 								.getSelection();
-						List<IProcessVariableAdress> list = (List<IProcessVariableAdress>) sel
+						List<IProcessVariableAddress> list = (List<IProcessVariableAddress>) sel
 								.toList();
 						return list;
 					}

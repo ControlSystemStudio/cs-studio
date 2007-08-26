@@ -22,7 +22,7 @@
 package org.csstudio.platform.ui.internal.workbench;
 
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.util.ImageUtil;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -51,8 +51,8 @@ public final class ProcessVariableAdressWorkbenchAdapter extends WorkbenchAdapte
 	public String getLabel(final Object object) {
 		String label = "<unknown>"; //$NON-NLS-1$
 
-		if (object instanceof IProcessVariableAdress) {
-			label = ((IProcessVariableAdress) object).getFullName();
+		if (object instanceof IProcessVariableAddress) {
+			label = ((IProcessVariableAddress) object).getFullName();
 		}
 		return label;
 	}

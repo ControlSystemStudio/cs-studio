@@ -35,9 +35,7 @@ public interface IProcessVariableAdressProvider {
 	 * @return ProcessVariable
 	 * 			A ProcessVariable
 	 */
-	IProcessVariableAdress getPVAdress();
+	IProcessVariableAddress getPVAdress();
 	
-	List<IProcessVariableAdress> getProcessVariableAdresses();
-	
-
+	List<IProcessVariableAddress> getProcessVariableAdresses();
 }

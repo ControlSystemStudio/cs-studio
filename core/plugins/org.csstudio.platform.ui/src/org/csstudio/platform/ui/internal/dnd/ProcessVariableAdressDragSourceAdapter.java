@@ -25,8 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressListProvider;
+import org.csstudio.platform.ui.dnd.rfc.ProcessVariableAddressTransfer;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -50,10 +51,10 @@ public  class ProcessVariableAdressDragSourceAdapter extends DragSourceAdapter {
 
 	/**
 	 * Constructs a drag source adapter, which only provides items during DnD,
-	 * that are {@link IProcessVariableAdress}s.
+	 * that are {@link IProcessVariableAddress}s.
 	 * 
 	 * @param pvProvider
-	 *            The provider of the {@link IProcessVariableAdress}
+	 *            The provider of the {@link IProcessVariableAddress}
 	 */
 	public ProcessVariableAdressDragSourceAdapter(
 			IProcessVariableAdressProvider pvProvider) {
@@ -63,10 +64,10 @@ public  class ProcessVariableAdressDragSourceAdapter extends DragSourceAdapter {
 
 	/**
 	 * Constructs a drag source adapter, which only provides items during DnD,
-	 * that are {@link IProcessVariableAdress}s.
+	 * that are {@link IProcessVariableAddress}s.
 	 * 
 	 * @param pvProvider
-	 *            The provider of the {@link IProcessVariableAdress}
+	 *            The provider of the {@link IProcessVariableAddress}
 	 */
 	public ProcessVariableAdressDragSourceAdapter(
 			IProcessVariableAdressListProvider pvProvider) {
@@ -80,21 +81,21 @@ public  class ProcessVariableAdressDragSourceAdapter extends DragSourceAdapter {
 	@Override
 	public void dragStart(final DragSourceEvent event) {
 		super.dragStart(event);
-		PVTransfer.getInstance().setSelectedItems(this.getProceesVariables());
+		ProcessVariableAddressTransfer.getInstance().setSelectedItems(this.getProceesVariables());
 	}
 
 	/**
-	 * Returns a new List of all provided {@link IProcessVariableAdress}
+	 * Returns a new List of all provided {@link IProcessVariableAddress}
 	 * 
 	 * @return List of ProcessVariables A new List of all provided
-	 *         {@link IProcessVariableAdress}
+	 *         {@link IProcessVariableAddress}
 	 */
-	private List<IProcessVariableAdress> getProceesVariables() {
-		List<IProcessVariableAdress> list = new ArrayList<IProcessVariableAdress>();
+	private List<IProcessVariableAddress> getProceesVariables() {
+		List<IProcessVariableAddress> list = new ArrayList<IProcessVariableAddress>();
 		if (_pvProvider != null) {
 			list.add(_pvProvider.getPVAdress());
 		} else if (_pvListProvider != null) {
-			for (IProcessVariableAdress pv : _pvListProvider.getPVAdressList()) {
+			for (IProcessVariableAddress pv : _pvListProvider.getPVAdressList()) {
 				list.add(pv);
 			}
 		}
@@ -106,20 +107,20 @@ public  class ProcessVariableAdressDragSourceAdapter extends DragSourceAdapter {
 	 */
 	@Override
 	public void dragSetData(final DragSourceEvent event) {
-		List<IProcessVariableAdress> items = null;
+		List<IProcessVariableAddress> items = null;
 		List currentSelection = this.getProceesVariables();
 
 		if ((currentSelection != null) && (currentSelection.size() > 0)) {
 			items = this.getProceesVariables();
 		} else {
-			items = PVTransfer.getInstance().getSelectedItems();
+			items = ProcessVariableAddressTransfer.getInstance().getSelectedItems();
 		}
-		if (PVTransfer.getInstance().isSupportedType(event.dataType)) {
+		if (ProcessVariableAddressTransfer.getInstance().isSupportedType(event.dataType)) {
 			event.data = items;
 		} else if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 			StringBuffer sb = new StringBuffer();
 			// concatenate a String, which contains items line by line
-			for (IProcessVariableAdress item : items) {
+			for (IProcessVariableAddress item : items) {
 				String path = item.getRawName();
 				sb.append(path);
 				sb.append("\n"); //$NON-NLS-1$

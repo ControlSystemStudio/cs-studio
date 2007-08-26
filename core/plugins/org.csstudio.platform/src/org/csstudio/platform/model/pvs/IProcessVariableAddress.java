@@ -21,7 +21,7 @@ import org.epics.css.dal.context.RemoteInfo;
  * @author Sven Wende
  * 
  */
-public interface IProcessVariableAdress {
+public interface IProcessVariableAddress {
 	/**
 	 * Returns the "control system" part of the process variable.
 	 * 

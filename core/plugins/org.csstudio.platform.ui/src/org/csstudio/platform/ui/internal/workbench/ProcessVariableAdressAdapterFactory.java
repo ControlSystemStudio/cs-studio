@@ -1,6 +1,6 @@
 package org.csstudio.platform.ui.internal.workbench;
 
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
@@ -14,7 +14,7 @@ public class ProcessVariableAdressAdapterFactory implements IAdapterFactory {
 			final Class adapterType) {
 		assert adaptableObject != null;
 		assert adapterType != null;
-		assert adaptableObject instanceof IProcessVariableAdress;
+		assert adaptableObject instanceof IProcessVariableAddress;
 
 		Object result = null;
 

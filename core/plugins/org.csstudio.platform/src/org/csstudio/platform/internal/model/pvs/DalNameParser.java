@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 
 /**
  * Name parser, which can be parameterized using a {@link ControlSystemEnum}.
@@ -38,9 +38,9 @@ public class DalNameParser extends AbstractProcessVariableNameParser {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IProcessVariableAdress doParse(final String nameWithoutPrefix,
+	protected IProcessVariableAddress doParse(final String nameWithoutPrefix,
 			final String rawName) {
-		IProcessVariableAdress result = null;
+		IProcessVariableAddress result = null;
 		// compile a regex pattern and parse the String
 		// the used regular expression checks for the following uri components:
 		// 1) line start

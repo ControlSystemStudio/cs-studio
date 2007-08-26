@@ -3,9 +3,10 @@
  */
 package org.csstudio.platform.ui.internal.dnd;
 
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.ui.dnd.rfc.IProcessVariableAdressReceiver;
 import org.csstudio.platform.ui.dnd.rfc.IShowControlSystemDialogStrategy;
+import org.csstudio.platform.ui.dnd.rfc.ProcessVariableAddressTransfer;
 import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetAdapter;
@@ -28,10 +29,10 @@ public class ProcessVariableAdressDropTargetAdapter extends DropTargetAdapter {
 
 	@Override
 	public void drop(final DropTargetEvent event) {
-		IProcessVariableAdress[] pvs = new IProcessVariableAdress[0];
+		IProcessVariableAddress[] pvs = new IProcessVariableAddress[0];
 
-		if (PVTransfer.getInstance().isSupportedType(event.currentDataType)) {
-			pvs = (IProcessVariableAdress[]) PVTransfer.getInstance()
+		if (ProcessVariableAddressTransfer.getInstance().isSupportedType(event.currentDataType)) {
+			pvs = (IProcessVariableAddress[]) ProcessVariableAddressTransfer.getInstance()
 					.nativeToJava(event.currentDataType);
 		} else if (TextTransfer.getInstance().isSupportedType(
 				event.currentDataType)) {
@@ -42,12 +43,12 @@ public class ProcessVariableAdressDropTargetAdapter extends DropTargetAdapter {
 			// Control-Systeme gefragt wird (z.B. sollte beim Drop von Strings
 			// mit Aliasen nicht
 			// auf Krampf versucht werden, eine PV aufzulösen)
-			IProcessVariableAdress pv = ProcessVariableExchangeUtil
+			IProcessVariableAddress pv = ProcessVariableExchangeUtil
 					.parseProcessVariableAdress(rawName,
 							_showControlSystemDialogStrategy
 									.showControlSystem(rawName));
 
-			pvs = new IProcessVariableAdress[] { pv };
+			pvs = new IProcessVariableAddress[] { pv };
 		}
 
 		if (pvs.length > 0) {
@@ -83,7 +84,7 @@ public class ProcessVariableAdressDropTargetAdapter extends DropTargetAdapter {
 	}
 
 	private boolean isSupportedType(DropTargetEvent event) {
-		boolean supported = (PVTransfer.getInstance().isSupportedType(
+		boolean supported = (ProcessVariableAddressTransfer.getInstance().isSupportedType(
 				event.currentDataType) || TextTransfer.getInstance()
 				.isSupportedType(event.currentDataType));
 

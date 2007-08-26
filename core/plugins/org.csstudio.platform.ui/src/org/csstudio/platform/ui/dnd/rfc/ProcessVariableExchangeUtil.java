@@ -2,13 +2,12 @@ package org.csstudio.platform.ui.dnd.rfc;
 
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressListProvider;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.internal.dnd.ChooseControlSystemPrefixDialog;
-import org.csstudio.platform.ui.internal.dnd.PVTransfer;
 import org.csstudio.platform.ui.internal.dnd.ProcessVariableAdressDragSourceAdapter;
 import org.csstudio.platform.ui.internal.dnd.ProcessVariableAdressDropTargetAdapter;
 import org.eclipse.jface.window.Window;
@@ -25,7 +24,8 @@ public class ProcessVariableExchangeUtil {
 			final int style, IProcessVariableAdressProvider provider) {
 		DragSource dragSource = new DragSource(control, style);
 
-		Transfer[] types = new Transfer[] { PVTransfer.getInstance(),
+		Transfer[] types = new Transfer[] {
+				ProcessVariableAddressTransfer.getInstance(),
 				TextTransfer.getInstance() };
 
 		dragSource.setTransfer(types);
@@ -38,7 +38,8 @@ public class ProcessVariableExchangeUtil {
 			final int style, IProcessVariableAdressListProvider provider) {
 		DragSource dragSource = new DragSource(control, style);
 
-		Transfer[] types = new Transfer[] { PVTransfer.getInstance(),
+		Transfer[] types = new Transfer[] {
+				ProcessVariableAddressTransfer.getInstance(),
 				TextTransfer.getInstance() };
 
 		dragSource.setTransfer(types);
@@ -47,9 +48,9 @@ public class ProcessVariableExchangeUtil {
 				provider));
 	}
 
-	public static void addProcessVariableDropSupport(Control control,
+	public static void addProcessVariableAddressDropSupport(Control control,
 			final int style, IProcessVariableAdressReceiver receiver) {
-		addProcessVariableDropSupport(control, style, receiver,
+		addProcessVariableAddressDropSupport(control, style, receiver,
 				new IShowControlSystemDialogStrategy() {
 					public boolean showControlSystem(String rawName) {
 						return true;
@@ -57,7 +58,7 @@ public class ProcessVariableExchangeUtil {
 				});
 	}
 
-	public static void addProcessVariableDropSupport(Control control,
+	public static void addProcessVariableAddressDropSupport(Control control,
 			final int style, IProcessVariableAdressReceiver receiver,
 			IShowControlSystemDialogStrategy showControlSystemDialogStrategy) {
 		assert control != null;
@@ -66,21 +67,23 @@ public class ProcessVariableExchangeUtil {
 
 		DropTarget dropTarget = new DropTarget(control, style);
 		Transfer[] transferTypes = new Transfer[] { TextTransfer.getInstance(),
-				PVTransfer.getInstance() };
+				ProcessVariableAddressTransfer.getInstance() };
 		dropTarget.setTransfer(transferTypes);
 		dropTarget.addDropListener(new ProcessVariableAdressDropTargetAdapter(
 				receiver, showControlSystemDialogStrategy));
 	}
 
-	public static IProcessVariableAdress parseProcessVariableAdress(
+	public static IProcessVariableAddress parseProcessVariableAdress(
 			String rawName, boolean showControlSystemDialog) {
-		IProcessVariableAdress pv = null;
-		if (ProcessVariableAdressFactory.getInstance().hasValidControlSystemPrefix(rawName)) {
-			pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(
-					rawName);
+		IProcessVariableAddress pv = null;
+		if (ProcessVariableAdressFactory.getInstance()
+				.hasValidControlSystemPrefix(rawName)) {
+			pv = ProcessVariableAdressFactory.getInstance()
+					.createProcessVariableAdress(rawName);
 		} else {
 			if (showControlSystemDialog
-					&& ProcessVariableAdressFactory.getInstance().askForControlSystem()) {
+					&& ProcessVariableAdressFactory.getInstance()
+							.askForControlSystem()) {
 				ChooseControlSystemPrefixDialog dialog = new ChooseControlSystemPrefixDialog(
 						PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 								.getShell());
@@ -90,9 +93,11 @@ public class ProcessVariableExchangeUtil {
 
 					boolean askAgain = !dialog.dontAskAgain();
 
-					CSSPlatformUiPlugin.getCorePreferenceStore().setValue(
-							ProcessVariableAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM,
-							askAgain);
+					CSSPlatformUiPlugin
+							.getCorePreferenceStore()
+							.setValue(
+									ProcessVariableAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM,
+									askAgain);
 					CSSPlatformPlugin.getDefault().savePluginPreferences();
 
 					ControlSystemEnum controlSystem = dialog
@@ -103,8 +108,8 @@ public class ProcessVariableExchangeUtil {
 							.createProcessVariableAdress(rawName, controlSystem);
 				}
 			} else {
-				pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(
-						rawName);
+				pv = ProcessVariableAdressFactory.getInstance()
+						.createProcessVariableAdress(rawName);
 			}
 		}
 

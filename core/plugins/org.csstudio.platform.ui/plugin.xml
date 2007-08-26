@@ -73,7 +73,7 @@
          </adapter>
       </factory>
       <factory
-            adaptableType="org.csstudio.platform.model.pvs.IProcessVariableAdress"
+            adaptableType="org.csstudio.platform.model.pvs.IProcessVariableAddress"
             class="org.csstudio.platform.ui.internal.workbench.ProcessVariableAdressAdapterFactory">
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">

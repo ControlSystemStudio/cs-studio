@@ -1,7 +1,7 @@
 package org.csstudio.platform.internal.model.pvs;
 
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 
 /**
  * Simple name parser, which can be parameterized using a
@@ -35,9 +35,9 @@ public class SimpleNameParser extends AbstractProcessVariableNameParser {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IProcessVariableAdress doParse(final String nameWithoutPrefix,
+	protected IProcessVariableAddress doParse(final String nameWithoutPrefix,
 			final String rawName) {
-		IProcessVariableAdress result = new ProcessVariableAdress(rawName,
+		IProcessVariableAddress result = new ProcessVariableAdress(rawName,
 				_controlSystem, null, nameWithoutPrefix, null);
 		return result;
 	}

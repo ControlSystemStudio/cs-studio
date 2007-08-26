@@ -3,7 +3,7 @@ package org.csstudio.platform.ui.dnd.rfc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressListProvider;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -51,6 +51,6 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
 
 	}
 
-	protected abstract void handlePvs(List<IProcessVariableAdress> pvs);
+	protected abstract void handlePvs(List<IProcessVariableAddress> pvs);
 
 }

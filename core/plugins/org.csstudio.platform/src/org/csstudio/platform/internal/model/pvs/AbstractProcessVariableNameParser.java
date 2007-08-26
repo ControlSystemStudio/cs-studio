@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 
 /**
  * Base class for name parsers which parse process variable addresses from
@@ -21,9 +21,9 @@ public abstract class AbstractProcessVariableNameParser {
 	 *            the raw name
 	 * @return the pv adress or null
 	 */
-	public final IProcessVariableAdress parseRawName(final String rawName) {
+	public final IProcessVariableAddress parseRawName(final String rawName) {
 		String nameWithoutPrefix = removeProtocol(rawName);
-		IProcessVariableAdress result = doParse(nameWithoutPrefix, rawName);
+		IProcessVariableAddress result = doParse(nameWithoutPrefix, rawName);
 
 		if (result == null) {
 			result = createFallbackProcessVariableAdress(nameWithoutPrefix);
@@ -43,7 +43,7 @@ public abstract class AbstractProcessVariableNameParser {
 	 * 
 	 * @return
 	 */
-	protected abstract IProcessVariableAdress doParse(String input,
+	protected abstract IProcessVariableAddress doParse(String input,
 			String rawName);
 
 	/**
@@ -79,7 +79,7 @@ public abstract class AbstractProcessVariableNameParser {
 	 * 
 	 * @return a fallback pv adress
 	 */
-	private IProcessVariableAdress createFallbackProcessVariableAdress(
+	private IProcessVariableAddress createFallbackProcessVariableAdress(
 			final String rawName) {
 		return new ProcessVariableAdress(rawName, ControlSystemEnum.UNKNOWN,
 				null, removeProtocol(rawName), null);

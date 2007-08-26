@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 
 /**
  * @deprecated
@@ -16,8 +16,8 @@ public class GenericNameParser extends
 		AbstractProcessVariableNameParser {
 
 	@Override
-	protected IProcessVariableAdress doParse(String nameWithoutPrefix, String rawName) {
-		IProcessVariableAdress result = null;
+	protected IProcessVariableAddress doParse(String nameWithoutPrefix, String rawName) {
+		IProcessVariableAddress result = null;
 		// We use a regular expression to parse the various String variants
 		// (A-E) that might occur.
 		// 

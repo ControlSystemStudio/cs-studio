@@ -59,6 +59,7 @@ import org.eclipse.swt.dnd.TransferData;
  * This class is not intended to be subclassed.
  * 
  * @author Sven Wende, Stefan Hofer
+ * 
  * @deprecated
  */
 public final class ControlSystemItemTransfer extends ByteArrayTransfer {

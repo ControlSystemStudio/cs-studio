@@ -64,7 +64,7 @@ public class ProcessVariableAdressFactoryTest {
 	private void testPv(String rawName,
 			ControlSystemEnum expectedControlSystem, String expectedProperty,
 			String expectedDevice, String expectedCharacteristic) {
-		IProcessVariableAdress pv = _factory
+		IProcessVariableAddress pv = _factory
 				.createProcessVariableAdress(rawName);
 
 		assertEquals(expectedControlSystem, pv.getControlSystem());

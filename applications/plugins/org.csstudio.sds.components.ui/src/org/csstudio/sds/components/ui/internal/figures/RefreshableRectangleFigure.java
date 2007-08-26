@@ -34,7 +34,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * 
  */
 public final class RefreshableRectangleFigure extends RectangleFigure implements IAdaptable {
-
 	/**
 	 * The fill grade (0 - 100%).
 	 */

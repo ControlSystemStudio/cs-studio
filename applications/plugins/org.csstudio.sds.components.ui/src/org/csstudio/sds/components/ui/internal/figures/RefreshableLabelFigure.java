@@ -11,6 +11,7 @@ import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 
@@ -21,6 +22,7 @@ import org.eclipse.swt.graphics.RGB;
  * 
  */
 public final class RefreshableLabelFigure extends Shape {
+	
 	/**
 	 * Types of values to be displayed.
 	 */
@@ -88,6 +90,7 @@ public final class RefreshableLabelFigure extends Shape {
 	 * The main drawing routine.
 	 */
 	public void paintFigure(Graphics gfx) {
+		
 		Rectangle bound=getBounds();
 		gfx.translate(bound.x,bound.y);
 		

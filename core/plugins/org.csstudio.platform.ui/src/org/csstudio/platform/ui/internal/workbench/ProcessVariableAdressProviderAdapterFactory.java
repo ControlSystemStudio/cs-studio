@@ -1,6 +1,6 @@
 package org.csstudio.platform.ui.internal.workbench;
 
-import org.csstudio.platform.model.pvs.IProcessVariableAdress;
+import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.IActionFilter;

@@ -57,21 +57,22 @@ public class ProcessVariableAdressFactory {
 		return _instance;
 	}
 
-	public IProcessVariableAdress createProcessVariableAdress(String rawName,
+	public IProcessVariableAddress createProcessVariableAdress(String rawName,
 			ControlSystemEnum controlSystem) {
 		// determine name parser
 		AbstractProcessVariableNameParser nameParser = _parserMapping
 				.get(controlSystem);
 
 		// parse raw name
-		IProcessVariableAdress result = nameParser.parseRawName(rawName);
+		IProcessVariableAddress result = nameParser.parseRawName(rawName);
 
 		return result;
 	}
 
-	public IProcessVariableAdress createProcessVariableAdress(String rawName) {
+	public IProcessVariableAddress createProcessVariableAdress(String rawName) {
 		// determine control system
-		ControlSystemEnum controlSystem = getControlSystem(rawName);
+		ControlSystemEnum controlSystem = getControlSystem(rawName,
+				getDefaultControlSystem());
 
 		if (controlSystem == null) {
 			controlSystem = getDefaultControlSystem();
@@ -81,18 +82,16 @@ public class ProcessVariableAdressFactory {
 	}
 
 	public boolean hasValidControlSystemPrefix(String rawName) {
-		ControlSystemEnum cs = getControlSystem(rawName);
-		return ( cs!= null && cs!=ControlSystemEnum.UNKNOWN);
+		ControlSystemEnum cs = getControlSystem(rawName, null);
+		return (cs != null && cs != ControlSystemEnum.UNKNOWN);
 	}
-
 
 	public ControlSystemEnum getDefaultControlSystem() {
 		String defaultCs = Platform.getPreferencesService().getString(
 				CSSPlatformPlugin.ID, PROP_CONTROL_SYSTEM, "", //$NON-NLS-1$
 				null);
 
-		ControlSystemEnum controlSystem = ControlSystemEnum
-				.findByPrefix(defaultCs);
+		ControlSystemEnum controlSystem = ControlSystemEnum.valueOf(defaultCs);
 
 		if (controlSystem == null) {
 			controlSystem = ControlSystemEnum.UNKNOWN;
@@ -109,15 +108,15 @@ public class ProcessVariableAdressFactory {
 		return result;
 	}
 
-	public IProcessVariableAdress createProcessVariableAdress(
+	public IProcessVariableAddress createProcessVariableAdress(
 			ControlSystemEnum controlSystemEnum, String device,
 			String property, String characteristics) {
 		throw new RuntimeException("not supported yet");
 	}
-	
-	private ControlSystemEnum getControlSystem(String rawName) {
-		ControlSystemEnum controlSystem = ControlSystemEnum.UNKNOWN;
 
+	private ControlSystemEnum getControlSystem(String rawName,
+			ControlSystemEnum defaultControlSystem) {
+		ControlSystemEnum controlSystem = null;
 		// compile a regex pattern and parse the String
 		Pattern p = Pattern.compile("^([^:]*)://");
 
