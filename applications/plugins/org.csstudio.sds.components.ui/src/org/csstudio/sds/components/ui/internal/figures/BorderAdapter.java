@@ -159,7 +159,6 @@ public class BorderAdapter implements IBorderEquippedWidget {
 	 * 			The requested Border
 	 */
 	private AbstractBorder createSchemeBorder() {
-		//SchemeBorder border = new SchemeBorder(new Scheme(new Color[] {_borderColor}));
 		SchemeBorder border = new SchemeBorder(SchemeBorder.SCHEMES.RAISED);
 		return border;
 	}

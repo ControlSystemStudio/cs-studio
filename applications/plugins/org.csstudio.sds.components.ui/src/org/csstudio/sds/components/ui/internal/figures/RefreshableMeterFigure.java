@@ -11,11 +11,9 @@ import org.csstudio.sds.util.AntialiasingUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.AbstractBorder;
-import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Insets;
@@ -876,32 +874,19 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		 * {@inheritDoc}
 		 */
 		public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
-			System.out.println("MeterBorder.paint() Width: "+_borderWidth);
 			graphics.setForegroundColor(_borderColor);
 			graphics.setLineWidth(_borderWidth);
-			Rectangle rectangle = figure.getBounds();
+			Rectangle bounds = figure.getBounds();
 			//outer arc
-			//this.drawArc(graphics, figure.getBounds(), out_r);
+			graphics.drawArc((int)(img_width/2-inn_r)+bounds.x, (int)(R-inn_r)+top_delta+bounds.y,
+					(int)inn_r*2, (int)inn_r*2,
+					(int)Math.round(90.0-angle/2), angle);
 			//inner arc
-			this.drawArc(graphics, figure.getBounds(), inn_r);
-			//left and right lines
-			graphics.drawArc(img_width/2-(int)R+rectangle.x,top_delta+rectangle.y,(int)(2.0*R),(int)(2.0*R),
+			graphics.drawArc(img_width/2-(int)R+bounds.x,top_delta+bounds.y,(int)(2.0*R),(int)(2.0*R),
 					(int)Math.round(90.0-angle/2),angle);
-			ShadedDrawing.drawLineAtAngle(graphics,inn_r,R,90+angle/2,img_width/2+rectangle.x,(int)R+top_delta+rectangle.y);
-			ShadedDrawing.drawLineAtAngle(graphics,inn_r,R,90-angle/2,img_width/2+rectangle.x,(int)R+top_delta+rectangle.y);
-		}
-		
-		/**
-		 * Draws an arc with the given radius. 
-		 * @param graphics The {@link Graphics}
-		 * @param bounds The bounds of the figure
-		 * @param radius The radius
-		 */
-		private void drawArc(final Graphics graphics, final Rectangle bounds, final double radius) {
-			int x = (int)(img_width/2-radius)+bounds.x;
-			int y = (int)(R-radius)+top_delta+bounds.y;
-			graphics.drawArc(x, y, (int)radius*2, (int)radius*2, (int)Math.round(90.0-angle/2), angle);
-		}
-		
+			//left and right lines
+			ShadedDrawing.drawLineAtAngle(graphics,inn_r,R,90+angle/2,img_width/2+bounds.x,(int)R+top_delta+bounds.y);
+			ShadedDrawing.drawLineAtAngle(graphics,inn_r,R,90-angle/2,img_width/2+bounds.x,(int)R+top_delta+bounds.y);
+		}		
 	}
 }
