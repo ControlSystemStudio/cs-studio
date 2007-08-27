@@ -29,10 +29,13 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		// TODO Auto-generated constructor stub
 	}
 
-	private ArrayList<HashMap<String, String>> sendSQLStatement( String sqlStatement, int maxAnserSize) {
+	private ArrayList<HashMap<String, String>> sendSQLStatement( String sqlStatement, int maxAnswerSize, Calendar from, Calendar to) {
 
 		ArrayList<HashMap<String, String>> message = new ArrayList<HashMap<String, String>>();
 		Connection con = null;
+		int messageCount = 0;
+		OracleResultSet rset;
+		
 		try{
 			String url = "jdbc:oracle:thin:@(DESCRIPTION = " +
 		    "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521)) " +
@@ -53,20 +56,21 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			String user = "KRYKLOGT";
 			String password = "KRYKLOGT";
 
-			con = DriverManager.getConnection(url, user, password);
+			con = Activator.getDefault().getDatabaseConnection(url, user, password);
+			
 			OracleStatement stmt = (OracleStatement)con.createStatement();
-
+			
 			stmt.execute(
-					sqlStatement
+					  sqlStatement
 			);
 
-			OracleResultSet rset = (OracleResultSet)stmt.getResultSet();
+			rset = (OracleResultSet)stmt.getResultSet();
 			int id =-1;
 			int i = 0;
 			HashMap<String, String> hm = null;
 			boolean haveMessage = false;
 			while(rset.next()){
-					if((id!=rset.getNUMBER(1).intValue()) && (i < maxAnserSize)){
+					if((id!=rset.getNUMBER(1).intValue()) /*&& (i < maxAnserSize)*/ ){
 						if(hm!=null){
 							message.add(hm);
 							i++;
@@ -85,34 +89,71 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 			e.printStackTrace();
 		}
 		finally{
-			try{
-				if(con != null) con.close();
-			}catch(Exception e){}
+//			try{
+//				if(con != null) con.close();
+//			}catch(Exception e){}
 		}
 		return message;
 	}
-    private String buildSQLStatement(Calendar from, Calendar to, int maxAnserSize) {
-        String sql = "select * from alarm_archive_messages aam where aam.datum "+
-                     "between to_date('"+from.get(GregorianCalendar.YEAR)+
-                        "-"+(from.get(GregorianCalendar.MONTH)+1)+
-                        "-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
-                        " "+from.get(GregorianCalendar.HOUR)+
-                        ":"+from.get(GregorianCalendar.MINUTE)+
-                        ":"+from.get(GregorianCalendar.SECOND)+
-                        "', 'YYYY-MM-DD HH24:MI:SS') "+
-                    "and to_date('"+to.get(GregorianCalendar.YEAR)+
-                        "-"+(to.get(GregorianCalendar.MONTH)+1)+
-                        "-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
-                        " "+to.get(GregorianCalendar.HOUR)+
-                        ":"+to.get(GregorianCalendar.MINUTE)+
-                        ":"+to.get(GregorianCalendar.SECOND)+
-                        "', 'YYYY-MM-DD HH24:MI:SS') "+
-                    " order by aam.message_id "; 
+    private String buildSQLStatement(Calendar from, Calendar to, int maxAnswerSize) {
+    	/*
+    	 * old style
+    	 * 
+    	"select * from (" +
+    		"select * from alarm_archive_messages aam where aam.datum "+
+                 "between to_date('"+from.get(GregorianCalendar.YEAR)+
+                    "-"+(from.get(GregorianCalendar.MONTH)+1)+
+                    "-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
+                    " "+from.get(GregorianCalendar.HOUR)+
+                    ":"+from.get(GregorianCalendar.MINUTE)+
+                    ":"+from.get(GregorianCalendar.SECOND)+
+                    "', 'YYYY-MM-DD HH24:MI:SS') "+
+                "and to_date('"+to.get(GregorianCalendar.YEAR)+
+                    "-"+(to.get(GregorianCalendar.MONTH)+1)+
+                    "-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
+                    " "+to.get(GregorianCalendar.HOUR)+
+                    ":"+to.get(GregorianCalendar.MINUTE)+
+                    ":"+to.get(GregorianCalendar.SECOND)+
+                    "', 'YYYY-MM-DD HH24:MI:SS') "+
+                " order by aam.message_id desc " +
+                ") where ROWNUM < " + maxAnswerSize*10; 
+                */
+    	
+        String sql = 
+        	"select myTable.* , rownum myRownum from (" +
+				"select mc.message_id, mc.id , m.datum, mpt.name,  mc.value " +
+		        "from msg_property_type mpt, message m, message_content mc " +
+		        "where " +
+		        "m.datum "+
+		        "between to_date('"+from.get(GregorianCalendar.YEAR)+
+		           "-"+(from.get(GregorianCalendar.MONTH)+1)+
+		           "-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
+		           " "+from.get(GregorianCalendar.HOUR)+
+		           ":"+from.get(GregorianCalendar.MINUTE)+
+		           ":"+from.get(GregorianCalendar.SECOND)+
+		           "', 'YYYY-MM-DD HH24:MI:SS') "+
+		       "and to_date('"+to.get(GregorianCalendar.YEAR)+
+		           "-"+(to.get(GregorianCalendar.MONTH)+1)+
+		           "-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
+		           " "+to.get(GregorianCalendar.HOUR)+
+		           ":"+to.get(GregorianCalendar.MINUTE)+
+		           ":"+to.get(GregorianCalendar.SECOND)+
+		           "', 'YYYY-MM-DD HH24:MI:SS') "+
+		       "and mc.message_id = m.id " +
+		       "and mpt.id = mc.msg_property_type_id " +
+		         " order by mc.message_id desc" +
+	         " ) myTable where rownum < " + maxAnswerSize*10   + 
+	         "  order by myRownum "  ;
         return sql;
     }
 
-	private String buildSQLStatement(Calendar from, Calendar to, String filter, int maxAnserSize) {
-	    String sql = "select aam2.* from alarm_archive_messages aam2 ,(select aam.MESSAGE_ID from alarm_archive_messages aam where aam.datum "+ 
+	private String buildSQLStatement(Calendar from, Calendar to, String filter, int maxAnswerSize) {
+	    /*
+	     * TODO change statement accordingly like the upper one
+	     * for now it's still the old one - so the FILTER will not break
+	     */
+		String sql = "select * from (" +
+	    		"select aam2.* from alarm_archive_messages aam2 ,(select aam.MESSAGE_ID from alarm_archive_messages aam where aam.datum "+ 
 					 "between to_date('"+from.get(GregorianCalendar.YEAR)+
 						"-"+(from.get(GregorianCalendar.MONTH)+1)+
 						"-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
@@ -128,7 +169,8 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 							":"+to.get(GregorianCalendar.SECOND)+
 							"', 'YYYY-MM-DD HH24:MI:SS') "+
 					 filter+
-					 " order by aam.message_id) typeid where aam2.message_id = typeid.MESSAGE_ID ";
+					 " order by aam.message_id desc) typeid where aam2.message_id = typeid.MESSAGE_ID " +
+					 ") where ROWNUM < " + maxAnswerSize*10; 
 	    return sql;
 	}
 
@@ -136,14 +178,14 @@ public class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, int maxAnserSize) {
 		String sql = buildSQLStatement(from, to, maxAnserSize);
 		Activator.logInfo(sql);
-		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql, maxAnserSize);
+		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql, maxAnserSize, from, to);
 		return ergebniss;
 	}
 
 	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, String filter, int maxAnserSize) {
 		String sql = buildSQLStatement(from, to, filter, maxAnserSize);
 		Activator.logInfo(sql);
-		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql, maxAnserSize);
+		ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql, maxAnserSize, from, to);
 		return ergebniss;
 	}
 
