@@ -1,7 +1,9 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.Graphics;
@@ -14,13 +16,18 @@ import org.eclipse.swt.graphics.RGB;
  * @author jbercic
  * 
  */
-public final class RefreshableArcFigure extends Shape {
+public final class RefreshableArcFigure extends Shape implements IAdaptable {
 	/**
 	 * start angle and length (in degrees) of the arc
 	 * should it be drawn filled? (using fill_color)
 	 */
 	private int start_angle=0,angle=90;
 	private RGB fill_color=new RGB(255,0,0);
+	
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
 	
 	/**
 	 * Is the background transparent or not?
@@ -122,5 +129,19 @@ public final class RefreshableArcFigure extends Shape {
 	}
 	public RGB getFillColor() {
 		return fill_color;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if (_borderAdapter == null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
+		return null;
 	}
 }

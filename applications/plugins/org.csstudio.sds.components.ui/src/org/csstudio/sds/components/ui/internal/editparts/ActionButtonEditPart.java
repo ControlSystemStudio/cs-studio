@@ -28,7 +28,6 @@ import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
-import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.sds.util.CustomMediaFactory;

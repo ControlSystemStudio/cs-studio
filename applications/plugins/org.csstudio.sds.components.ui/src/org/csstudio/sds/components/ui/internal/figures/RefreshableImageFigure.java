@@ -1,18 +1,19 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
+import org.csstudio.sds.components.ui.internal.utils.TextPainter;
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.CustomMediaFactory;
-import org.eclipse.draw2d.Shape;
-import org.eclipse.draw2d.LineBorder;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Insets;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-
-import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 
 /**
  * An image figure.
@@ -20,7 +21,12 @@ import org.csstudio.sds.components.ui.internal.utils.TextPainter;
  * @author jbercic
  * 
  */
-public final class RefreshableImageFigure extends Shape {
+public final class RefreshableImageFigure extends Shape implements IAdaptable {
+	
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
 	/**
 	 * filename of the image and the image itself
 	 * width and height of the image
@@ -39,7 +45,7 @@ public final class RefreshableImageFigure extends Shape {
 	 * Border properties.
 	 */
 	private int border_width;
-	private RGB border_color = new RGB(0,0,0);
+//	private RGB border_color = new RGB(0,0,0);
 	
 	/**
 	 * We want to have local coordinates here.
@@ -131,26 +137,9 @@ public final class RefreshableImageFigure extends Shape {
 	public void setBorderWidth(final int newval) {
 		border_width=newval;
 		resizeImage();
-		if (newval>0) {
-			setBorder(new LineBorder(CustomMediaFactory.getInstance().getColor(border_color),border_width));
-		} else {
-			setBorder(null);
-		}
 	}
 	public int getBorderWidth() {
 		return border_width;
-	}
-	
-	public void setBorderColor(final RGB newval) {
-		border_color=newval;
-		if (border_width>0) {
-			setBorder(new LineBorder(CustomMediaFactory.getInstance().getColor(border_color),border_width));
-		} else {
-			setBorder(null);
-		}
-	}
-	public RGB getBorderColor() {
-		return border_color;
 	}
 	
 	public void setFilename(final String newval) {
@@ -205,5 +194,19 @@ public final class RefreshableImageFigure extends Shape {
 	}
 	public boolean getStretch() {
 		return stretch;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if(_borderAdapter==null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
+		return null;
 	}
 }

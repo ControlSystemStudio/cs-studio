@@ -2,8 +2,10 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import java.util.HashMap;
 
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.swt.graphics.RGB;
@@ -20,7 +22,7 @@ import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
  * @author jbercic
  * 
  */
-public final class RefreshableSwitchFigure extends Shape {
+public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 	/**
 	 * Currently defined switch states.
 	 */
@@ -29,6 +31,11 @@ public final class RefreshableSwitchFigure extends Shape {
 	public static final int STATE_EIN = 1;
 	public static final int STATE_GESTOERT = 8;
 	public static final int STATE_SCHALTET = 6;
+	
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
 	
 	/**
 	 * Colors for the defined states.
@@ -178,5 +185,19 @@ public final class RefreshableSwitchFigure extends Shape {
 	}
 	public int getRotation() {
 		return rot_angle;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if (_borderAdapter == null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
+		return null;
 	}
 }

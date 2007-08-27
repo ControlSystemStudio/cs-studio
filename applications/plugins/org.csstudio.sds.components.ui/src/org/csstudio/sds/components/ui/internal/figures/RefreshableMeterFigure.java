@@ -1,25 +1,30 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import java.text.NumberFormat;
-import java.util.IllegalFormatException;
-
-import org.csstudio.sds.util.AntialiasingUtil;
-import org.csstudio.sds.util.CustomMediaFactory;
-import org.csstudio.sds.model.DynamicsDescriptor;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.XYLayout;
-import org.eclipse.draw2d.FigureListener;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Shape;
-import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 
 import org.csstudio.sds.components.ui.internal.utils.ShadedDrawing;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
+import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.csstudio.sds.util.AntialiasingUtil;
+import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.draw2d.AbstractBorder;
+import org.eclipse.draw2d.Border;
+import org.eclipse.draw2d.FigureListener;
+import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.Shape;
+import org.eclipse.draw2d.XYLayout;
+import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * The class that draws a meter on the screen.
@@ -27,7 +32,13 @@ import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
  * @author jbercic
  *
  */
-public final class RefreshableMeterFigure extends Shape {
+public final class RefreshableMeterFigure extends Shape implements IAdaptable {
+	
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
+	
 	/**
 	 * The meter is displayed as a circular sector.
 	 * This property defines the central angle of the sector, in degrees.
@@ -82,8 +93,8 @@ public final class RefreshableMeterFigure extends Shape {
 	 * border properties - the arced frame of the meter
 	 * color, line width
 	 */
-	private RGB border_color = new RGB(0,0,0);
-	private int border_width=1;
+//	private RGB border_color = new RGB(0,0,0);
+//	private int border_width=1;
 		
 	/**
 	 * scale line properties
@@ -377,13 +388,13 @@ public final class RefreshableMeterFigure extends Shape {
 		return value;
 	}
 	
-	public void setBorderColor(final RGB newval) {
-		border_color=newval;
-		invalidateBackground();
-	}
-	public RGB getBorderColor() {
-		return border_color;
-	}
+//	public void setBorderColor(final RGB newval) {
+//		border_color=newval;
+//		invalidateBackground();
+//	}
+//	public RGB getBorderColor() {
+//		return border_color;
+//	}
 	
 	public void setScaleColor(final RGB newval) {
 		scale_color=newval;
@@ -393,13 +404,13 @@ public final class RefreshableMeterFigure extends Shape {
 		return scale_color;
 	}
 	
-	public void setBorderWidth(final int newval) {
-		border_width=newval;
-		invalidateBackground();
-	}
-	public int getBorderWidth() {
-		return border_width;
-	}
+//	public void setBorderWidth(final int newval) {
+//		border_width=newval;
+//		invalidateBackground();
+//	}
+//	public int getBorderWidth() {
+//		return border_width;
+//	}
 	
 	public void setScaleWidth(final int newval) {
 		scale_width=newval;
@@ -696,11 +707,6 @@ public final class RefreshableMeterFigure extends Shape {
 				gfx.setForegroundColor(CustomMediaFactory.getInstance().getColor(scale_color));
 				ShadedDrawing.drawLineAtAngle(gfx,out_r,scale_maj_r,curr_angle,img_width/2,(int)R+top_delta);
 				//the value of the tick mark
-//				try {
-//					val=String.format(scale_format,curr);
-//				} catch (IllegalFormatException e) {
-//					val=Double.toString(curr);
-//				}
 				
 				try {
 					NumberFormat format = NumberFormat.getInstance();
@@ -729,8 +735,8 @@ public final class RefreshableMeterFigure extends Shape {
 		 * @param gfx The Graphics context.
 		 */
 		private void drawFrame(final Graphics gfx) {
-			gfx.setForegroundColor(CustomMediaFactory.getInstance().getColor(border_color));
-			gfx.setLineWidth(border_width);
+			gfx.setForegroundColor(CustomMediaFactory.getInstance().getColor(0, 0, 0));
+			gfx.setLineWidth(1);
 			//outer arc
 			gfx.drawArc((int)(img_width/2-out_r),(int)(R-out_r)+top_delta,
 					(int)out_r*2,(int)out_r*2,
@@ -778,11 +784,6 @@ public final class RefreshableMeterFigure extends Shape {
 			ShadedDrawing.drawLineAtAngle(gfx,inn_r,out_r,curr_angle,img_width/2,(int)R+top_delta);
 			
 			String val;
-//			try {
-//				val=String.format(value_format,value);
-//			} catch (IllegalFormatException e) {
-//				val=Double.toString(value);
-//			}
 			try {
 				NumberFormat format = NumberFormat.getInstance();
 				format.setMaximumFractionDigits(_decimalPlaces);
@@ -797,5 +798,110 @@ public final class RefreshableMeterFigure extends Shape {
 					val_y,
 					TextPainter.CENTER);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if (_borderAdapter == null) {
+				_borderAdapter = new BorderAdapter(this) {
+					@Override
+					protected AbstractBorder createShapeBorder(final int borderWidth,
+							final Color borderColor) {
+						MeterBorder border = new MeterBorder(borderWidth);
+						border.setBorderColor(borderColor);
+						return border;
+					}
+				};
+			}
+			return _borderAdapter;
+		}
+		return null;
+	}
+	
+	/**
+	 * The Border for this {@link RefreshableMeterFigure}.
+	 * @author Kai Meyer
+	 *
+	 */
+	private final class MeterBorder extends AbstractBorder {
+		
+		/**
+		 * The Color of the border.
+		 */
+		private Color _borderColor;
+		/**
+		 * The width of the border.
+		 */
+		private int _borderWidth = 1;
+		
+		/**
+		 * Constructor.
+		 * @param borderWidth
+		 * 				The width for the border
+		 */
+		public MeterBorder(final int borderWidth) {
+			_borderWidth = borderWidth;
+		}
+		
+		/**
+		 * Sets the Color of the border.
+		 * @param borderColor
+		 * 			The Color for the border
+		 */
+		public void setBorderColor(final Color borderColor) {
+			_borderColor = borderColor;
+		}
+		
+		/**
+		 * Returns <code>true</code> since this border is opaque. Being opaque it is responsible 
+		 * to fill in the area within its boundaries.
+		 * @return <code>true</code> since this border is opaque
+		 */
+		public boolean isOpaque() {
+			return true;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Insets getInsets(final IFigure figure) {
+			return new Insets(0);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
+			System.out.println("MeterBorder.paint() Width: "+_borderWidth);
+			graphics.setForegroundColor(_borderColor);
+			graphics.setLineWidth(_borderWidth);
+			Rectangle rectangle = figure.getBounds();
+			//outer arc
+			//this.drawArc(graphics, figure.getBounds(), out_r);
+			//inner arc
+			this.drawArc(graphics, figure.getBounds(), inn_r);
+			//left and right lines
+			graphics.drawArc(img_width/2-(int)R+rectangle.x,top_delta+rectangle.y,(int)(2.0*R),(int)(2.0*R),
+					(int)Math.round(90.0-angle/2),angle);
+			ShadedDrawing.drawLineAtAngle(graphics,inn_r,R,90+angle/2,img_width/2+rectangle.x,(int)R+top_delta+rectangle.y);
+			ShadedDrawing.drawLineAtAngle(graphics,inn_r,R,90-angle/2,img_width/2+rectangle.x,(int)R+top_delta+rectangle.y);
+		}
+		
+		/**
+		 * Draws an arc with the given radius. 
+		 * @param graphics The {@link Graphics}
+		 * @param bounds The bounds of the figure
+		 * @param radius The radius
+		 */
+		private void drawArc(final Graphics graphics, final Rectangle bounds, final double radius) {
+			int x = (int)(img_width/2-radius)+bounds.x;
+			int y = (int)(R-radius)+top_delta+bounds.y;
+			graphics.drawArc(x, y, (int)radius*2, (int)radius*2, (int)Math.round(90.0-angle/2), angle);
+		}
+		
 	}
 }

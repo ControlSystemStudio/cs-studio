@@ -44,9 +44,9 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		figure.setMinValue(model.getMinValue());
 		figure.setMaxValue(model.getMaxValue());
 		figure.setValue(model.getValue());
-		figure.setBorderColor(model.getBorderColor());
+		//figure.setBorderColor(model.getBorderColor());
 		figure.setScaleColor(model.getScaleColor());
-		figure.setBorderWidth(model.getBorderWidth());
+		//figure.setBorderWidth(model.getBorderWidth());
 		figure.setScaleWidth(model.getScaleWidth());
 		figure.setTextRadius(model.getTextRadius());
 		figure.setTransparent(model.getTransparent());
@@ -96,16 +96,16 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(MeterModel.PROP_NEEDLECOLOR, handle);
 		
-		// border
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setBorderColor((RGB) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_BORDER_COLOR, handle);
+//		// border
+//		handle = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue, final Object newValue,
+//					final IFigure figure) {
+//				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
+//				meterFigure.setBorderColor((RGB) newValue);
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(MeterModel.PROP_BORDER_COLOR, handle);
 		
 		// scale
 		handle = new IWidgetPropertyChangeHandler() {
@@ -363,16 +363,16 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(MeterModel.PROP_VALUE, handle);
 		
-		//border width change handler
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-				meterFigure.setBorderWidth((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_BORDER_WIDTH, handle);
+//		//border width change handler
+//		handle = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue, final Object newValue,
+//					final IFigure figure) {
+//				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
+//				meterFigure.setBorderWidth((Integer) newValue);
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(MeterModel.PROP_BORDER_WIDTH, handle);
 		//scale line width change handler
 		handle = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue, final Object newValue,

@@ -70,30 +70,36 @@
       </widgetEditPart>
    </extension>
    <extension
-         point="org.csstudio.sds.cosywidgets.switch">
+         point="org.csstudio.sds.components.Switch">
       <Switch
             Class="org.csstudio.sds.components.ui.internal.switchtypes.Lasttrennschalter"
             Name="Lasttrennschalter"
-            SwitchID="cosywidgets.switch.lasttrennschalter"/>
+            SwitchID="org.csstudio.sds.components.Switch.lasttrennschalter">
+      </Switch>
       <Switch
             Class="org.csstudio.sds.components.ui.internal.switchtypes.Erdtrenner"
             Name="Erdtrenner"
-            SwitchID="cosywidgets.switch.erdtrenner"/>
+            SwitchID="org.csstudio.sds.components.Switch.erdtrenner">
+      </Switch>
       <Switch
             Class="org.csstudio.sds.components.ui.internal.switchtypes.Leistungsschalter"
             Name="Leistungsschalter"
-            SwitchID="cosywidgets.switch.leistungsschalter"/>
+            SwitchID="org.csstudio.sds.components.Switch.leistungsschalter">
+      </Switch>
       <Switch
             Class="org.csstudio.sds.components.ui.internal.switchtypes.Leistungstrennschalter"
             Name="Leistungstrennschalter"
-            SwitchID="cosywidgets.switch.leistungstrennschalter"/>
+            SwitchID="org.csstudio.sds.components.Switch.leistungstrennschalter">
+      </Switch>
       <Switch
             Class="org.csstudio.sds.components.ui.internal.switchtypes.Schaltertrennstelle"
             Name="Schaltertrennstelle"
-            SwitchID="cosywidgets.switch.schaltertrennstelle"/>
+            SwitchID="org.csstudio.sds.components.Switch.schaltertrennstelle">
+      </Switch>
       <Switch
             Class="org.csstudio.sds.components.ui.internal.switchtypes.Trennschalter"
             Name="Trennschalter"
-            SwitchID="cosywidgets.switch.trennschalter"/>
+            SwitchID="org.csstudio.sds.components.Switch.trennschalter">
+      </Switch>
    </extension>
 </plugin>

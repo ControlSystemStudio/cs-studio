@@ -187,7 +187,7 @@ public final class RefreshablePolygonFigure extends Polygon implements
 		 * {@inheritDoc}
 		 */
 		public Insets getInsets(final IFigure figure) {
-			return null;
+			return new Insets(_borderWidth);
 		}
 
 		/**

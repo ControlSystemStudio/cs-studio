@@ -3,8 +3,10 @@ package org.csstudio.sds.components.ui.internal.figures;
 import java.text.NumberFormat;
 
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.PositionConstants;
@@ -21,7 +23,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author jbercic
  * 
  */
-public final class RefreshableLabelFigure extends Shape {
+public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	
 	/**
 	 * Types of values to be displayed.
@@ -33,6 +35,11 @@ public final class RefreshableLabelFigure extends Shape {
 	 * Type of the label.
 	 */
 	private int value_type=TYPE_DOUBLE;
+	
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
 	
 	/**
 	 * The potenz for the precision.
@@ -281,6 +288,20 @@ public final class RefreshableLabelFigure extends Shape {
 	}
 	public double getDoubleValue() {
 		return double_value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(final Class adapter) {
+		if (adapter == IBorderEquippedWidget.class) {
+			if (_borderAdapter == null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
+		return null;
 	}
 	
 //	public void setDoubleValueFormat(final String newval) {

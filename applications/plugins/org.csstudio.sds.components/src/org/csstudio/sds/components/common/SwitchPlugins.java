@@ -26,7 +26,7 @@ public class SwitchPlugins {
 	static {
 		HashMap<String,String> names_map=new HashMap<String,String>();
 		classes_map=new HashMap<String,IConfigurationElement>();
-		IExtension [] extensions=Platform.getExtensionRegistry().getExtensionPoint("org.csstudio.sds.org.csstudio.sds.components.Switch").getExtensions();
+		IExtension [] extensions=Platform.getExtensionRegistry().getExtensionPoint("org.csstudio.sds.components.Switch").getExtensions();
 		IConfigurationElement [] configs;
 		for (IExtension i:extensions) {
 			configs=i.getConfigurationElements();

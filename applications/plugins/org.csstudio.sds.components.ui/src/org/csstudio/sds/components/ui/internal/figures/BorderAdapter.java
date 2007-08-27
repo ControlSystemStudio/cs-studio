@@ -30,7 +30,6 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.TitleBarBorder;
-import org.eclipse.draw2d.SchemeBorder.Scheme;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
@@ -57,8 +56,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
 	/**
 	 * The border color.
 	 */
-	private Color _borderColor = CustomMediaFactory.getInstance().getColor(0,
-			0, 0);
+	private Color _borderColor = CustomMediaFactory.getInstance().getColor(0, 0, 0);
 
 	/**
 	 * The border style.
@@ -127,7 +125,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
 				default : border = this.createLineBorder(); break;
 			}
 			_figure.setBorder(border);
-			_figure.repaint();
+			//_figure.repaint();
 		} else {
 			_figure.setBorder(null);
 		}
@@ -161,7 +159,8 @@ public class BorderAdapter implements IBorderEquippedWidget {
 	 * 			The requested Border
 	 */
 	private AbstractBorder createSchemeBorder() {
-		SchemeBorder border = new SchemeBorder(new Scheme(new Color[] {_borderColor}));
+		//SchemeBorder border = new SchemeBorder(new Scheme(new Color[] {_borderColor}));
+		SchemeBorder border = new SchemeBorder(SchemeBorder.SCHEMES.RAISED);
 		return border;
 	}
 	
