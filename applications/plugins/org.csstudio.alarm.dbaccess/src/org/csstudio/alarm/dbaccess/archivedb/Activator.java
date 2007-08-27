@@ -1,5 +1,9 @@
 package org.csstudio.alarm.dbaccess.archivedb;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 import org.csstudio.platform.AbstractCssPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -10,6 +14,8 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractCssPlugin {
+	
+	private Connection databaseConnection = null;
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.diag.jmssender";
@@ -37,6 +43,9 @@ public class Activator extends AbstractCssPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void doStop(BundleContext context) throws Exception {
+		if ( databaseConnection != null) {
+			databaseConnection.close();
+		}
 		plugin = null;
 //		super.stop(context);
 	}
@@ -85,5 +94,19 @@ public class Activator extends AbstractCssPlugin {
     {
         getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
     }
+
+	public Connection getDatabaseConnection( String url, String user, String password) {
+		
+		if (databaseConnection== null) {
+			try {
+				this.databaseConnection = DriverManager.getConnection(url, user, password);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return databaseConnection;
+	}
+
 
 }
