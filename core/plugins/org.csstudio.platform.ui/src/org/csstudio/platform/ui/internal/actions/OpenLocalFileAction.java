@@ -9,7 +9,6 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
@@ -162,8 +161,6 @@ public class OpenLocalFileAction extends Action implements IWorkbenchWindowActio
 	/**
      * Get the id of the editor associated with the given <code>IFileStore</code>.
      * 
-	 * @param workbench
-	 * 	         the Workbench to use to determine the appropriate editor's id 
      * @param fileStore
      *           the <code>IFileStore</code> representing the file for which the editor id is desired
 	 * @return the id of the appropriate editor
