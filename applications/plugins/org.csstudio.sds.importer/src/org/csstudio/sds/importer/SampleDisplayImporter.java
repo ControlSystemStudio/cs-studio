@@ -95,7 +95,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * @return A sample action button model.
 	 */
 	private AbstractWidgetModel createActionButton() {
-		AbstractWidgetModel result = createWidgetModel("element.actionbutton");
+		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.ActionButton");
 		result.setLocation(0, 0);
 		result.setSize(100, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
@@ -119,7 +119,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * @return A sample bargraph model.
 	 */
 	private AbstractWidgetModel createBargraph() {
-		AbstractWidgetModel result = createWidgetModel("element.bargraph");
+		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Bargraph");
 		result.setLocation(150, 0);
 		result.setSize(150, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
@@ -166,7 +166,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * @return A sample ellipse model.
 	 */
 	private AbstractWidgetModel createEllipse() {
-		AbstractWidgetModel result = createWidgetModel("element.ellipse");
+		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Ellipse");
 		result.setLocation(400, 0);
 		result.setSize(100, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
@@ -185,7 +185,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * @return A sample label model.
 	 */
 	private AbstractWidgetModel createLabel() {
-		AbstractWidgetModel result = createWidgetModel("element.label");
+		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Label");
 		result.setLocation(0, 100);
 		result.setSize(100, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
@@ -205,7 +205,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * @return A sample meter model.
 	 */
 	private AbstractWidgetModel createMeter() {
-		AbstractWidgetModel result = createWidgetModel("element.meter");
+		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Meter");
 		result.setLocation(150, 100);
 		result.setSize(50, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
@@ -229,7 +229,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * @return A sample rectangle model.
 	 */
 	private AbstractWidgetModel createRectangle() {
-		AbstractWidgetModel result = createWidgetModel("element.rectangle");
+		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Rectangle");
 		result.setLocation(400, 100);
 		result.setSize(100, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
@@ -248,7 +248,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * @return A sample simple slider model.
 	 */
 	private AbstractWidgetModel createSimpleSlider() {
-		AbstractWidgetModel result = createWidgetModel("element.slider.simple");
+		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.SimpleSlider");
 
 		result.setLocation(0, 200);
 		result.setSize(100, 50);
@@ -274,7 +274,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * @return A sample text input model.
 	 */
 	private AbstractWidgetModel createTextInput() {
-		AbstractWidgetModel result = createWidgetModel("element.textinput");
+		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Textinput");
 		result.setLocation(150, 200);
 		result.setSize(100, 50);
 		result.setForegroundColor(ColorConstants.black.getRGB());
@@ -297,7 +297,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * @return A sample waveform model.
 	 */
 	private AbstractWidgetModel createWaveform() {
-		AbstractWidgetModel result = createWidgetModel("element.waveform");
+		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Waveform");
 		result.setLocation(0, 300);
 		result.setSize(200, 200);
 		result.setForegroundColor(ColorConstants.black.getRGB());
@@ -331,7 +331,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * @return A sample polygon model.
 	 */
 	private AbstractWidgetModel createPolygon() {
-		AbstractWidgetModel result = createWidgetModel("element.polygon");
+		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Polygon");
 		result.setForegroundColor(ColorConstants.black.getRGB());
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
@@ -352,7 +352,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 	 * @return A sample polyline model.
 	 */
 	private AbstractWidgetModel createPolyline() {
-		AbstractWidgetModel result = createWidgetModel("element.polyline");
+		AbstractWidgetModel result = createWidgetModel("org.csstudio.sds.components.Polyline");
 		result.setForegroundColor(ColorConstants.black.getRGB());
 		result.setBackgroundColor(ColorConstants.lightGreen.getRGB());
 		result.setVisible(true);
