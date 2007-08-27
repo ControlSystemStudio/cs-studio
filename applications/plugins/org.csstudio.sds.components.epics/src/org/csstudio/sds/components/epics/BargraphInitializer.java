@@ -26,6 +26,7 @@ public final class BargraphInitializer extends AbstractWidgetModelInitializer {
 				"$record$.LOLO");
 		initializeDynamicProperty(BargraphModel.PROP_LO_LEVEL, "$record$.LOW");
 		initializeDynamicProperty(BargraphModel.PROP_M_LEVEL, "$record$.M");
-		initializeDynamicProperty(BargraphModel.PROP_FILL, "$record$.VAL");
+		initializeDynamicProperty(BargraphModel.PROP_FILL, "$record$");
+		// initializeDynamicProperty(BargraphModel.PROP_FILL, "$record$.VAL");
 	}
 }

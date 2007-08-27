@@ -11,8 +11,7 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @version $Revision$
  * 
  */
-public final class TextInputInitializer extends
-		AbstractWidgetModelInitializer {
+public final class TextInputInitializer extends AbstractWidgetModelInitializer {
 
 	/**
 	 * {@inheritDoc}
@@ -22,7 +21,10 @@ public final class TextInputInitializer extends
 		initializeStaticProperty(TextInputModel.PROP_INPUT_TEXT, "Enter Text!");
 		initializeStaticProperty(TextInputModel.PROP_WIDTH, 100);
 		initializeStaticProperty(TextInputModel.PROP_HEIGHT, 50);
-		initializeDynamicProperty(TextInputModel.PROP_INPUT_TEXT, "$record$.VAL", "$record$.VAL");
+		initializeDynamicProperty(TextInputModel.PROP_INPUT_TEXT, "$record$",
+				"$record$");
+		// initializeDynamicProperty(TextInputModel.PROP_INPUT_TEXT,
+		// "$record$.VAL", "$record$.VAL");
 	}
 
 }

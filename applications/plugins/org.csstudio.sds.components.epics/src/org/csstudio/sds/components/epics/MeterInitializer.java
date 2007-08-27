@@ -1,6 +1,5 @@
 package org.csstudio.sds.components.epics;
 
-
 import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
@@ -12,16 +11,16 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * 
  * @author Stefan Hofer
  * @version $Revision$
-
+ * 
  */
-public final class MeterInitializer extends
-		AbstractWidgetModelInitializer {
+public final class MeterInitializer extends AbstractWidgetModelInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeDynamicProperty(MeterModel.PROP_VALUE, "$record$.VAL");
+		initializeDynamicProperty(MeterModel.PROP_VALUE, "$record$");
+		// initializeDynamicProperty(MeterModel.PROP_VALUE, "$record$.VAL");
 	}
 }

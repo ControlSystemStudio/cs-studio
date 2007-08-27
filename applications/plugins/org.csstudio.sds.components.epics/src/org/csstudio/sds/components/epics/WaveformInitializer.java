@@ -16,7 +16,9 @@ public final class WaveformInitializer extends AbstractWidgetModelInitializer {
 	 * {@inheritDoc}
 	 */
 	public void initialize(final AbstractControlSystemSchema schema) {
-		initializeDynamicProperty(WaveformModel.PROP_WAVE_FORM, "$record$.VAL");
+		initializeDynamicProperty(WaveformModel.PROP_WAVE_FORM, "$record$");
+		// initializeDynamicProperty(WaveformModel.PROP_WAVE_FORM,
+		// "$record$.VAL");
 		initializeDynamicProperty(WaveformModel.PROP_MIN, "$record$.LOPR");
 		initializeDynamicProperty(WaveformModel.PROP_MAX, "$record$.HOPR");
 		initializeStaticProperty(WaveformModel.PROP_AUTO_SCALE, false);

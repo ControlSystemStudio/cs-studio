@@ -11,8 +11,7 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @version $Revision$
  * 
  */
-public final class LabelInitializer extends
-		AbstractWidgetModelInitializer {
+public final class LabelInitializer extends AbstractWidgetModelInitializer {
 
 	/**
 	 * {@inheritDoc}
@@ -20,7 +19,8 @@ public final class LabelInitializer extends
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeStaticProperty(LabelModel.PROP_TEXTVALUE, "Label");
-		initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$record$.VAL");
+		initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$record$");
+		// initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$record$.VAL");
 	}
 
 }

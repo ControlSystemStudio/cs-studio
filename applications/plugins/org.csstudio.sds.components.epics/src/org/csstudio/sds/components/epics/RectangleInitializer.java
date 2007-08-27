@@ -11,8 +11,7 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @version $Revision$
  * 
  */
-public final class RectangleInitializer extends
-		AbstractWidgetModelInitializer {
+public final class RectangleInitializer extends AbstractWidgetModelInitializer {
 
 	/**
 	 * {@inheritDoc}
@@ -20,7 +19,8 @@ public final class RectangleInitializer extends
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeStaticProperty(RectangleModel.PROP_FILL, 50.0);
-		initializeDynamicProperty(RectangleModel.PROP_FILL, "$record$.VAL");
+		initializeDynamicProperty(RectangleModel.PROP_FILL, "$record$");
+		// initializeDynamicProperty(RectangleModel.PROP_FILL, "$record$.VAL");
 	}
 
 }

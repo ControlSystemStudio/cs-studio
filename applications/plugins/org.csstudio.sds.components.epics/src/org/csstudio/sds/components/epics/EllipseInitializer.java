@@ -11,8 +11,7 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @version $Revision$
  * 
  */
-public final class EllipseInitializer extends
-		AbstractWidgetModelInitializer {
+public final class EllipseInitializer extends AbstractWidgetModelInitializer {
 
 	/**
 	 * {@inheritDoc}
@@ -20,7 +19,8 @@ public final class EllipseInitializer extends
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeStaticProperty(EllipseModel.PROP_FILL, 50.0);
-		initializeDynamicProperty(EllipseModel.PROP_FILL, "$record$.VAL");
+		initializeDynamicProperty(EllipseModel.PROP_FILL, "$record$");
+		// initializeDynamicProperty(EllipseModel.PROP_FILL, "$record$.VAL");
 	}
 
 }

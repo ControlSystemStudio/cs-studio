@@ -10,7 +10,8 @@ import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
  * @author Sven Wende
  * 
  */
-public final class SimpleSliderInitializer extends AbstractWidgetModelInitializer {
+public final class SimpleSliderInitializer extends
+		AbstractWidgetModelInitializer {
 
 	/**
 	 * {@inheritDoc}
@@ -18,7 +19,9 @@ public final class SimpleSliderInitializer extends AbstractWidgetModelInitialize
 	public void initialize(final AbstractControlSystemSchema schema) {
 		initializeDynamicProperty(SimpleSliderModel.PROP_MAX, "$record$.HOPR");
 		initializeDynamicProperty(SimpleSliderModel.PROP_MIN, "$record$.LOPR");
-		initializeDynamicProperty(SimpleSliderModel.PROP_VALUE, "$record$.VAL", "$record$.VAL");
-		
+		initializeDynamicProperty(SimpleSliderModel.PROP_VALUE, "$record$",
+				"$record$");
+		// initializeDynamicProperty(SimpleSliderModel.PROP_VALUE,
+		// "$record$.VAL", "$record$.VAL");
 	}
 }
