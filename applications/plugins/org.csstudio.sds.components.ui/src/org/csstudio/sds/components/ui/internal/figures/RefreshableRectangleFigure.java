@@ -43,6 +43,11 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	 * The orientation (horizontal==true | vertical==false).
 	 */
 	private boolean _orientationHorizontal = true;
+	
+	/**
+	 * The transparent state of the background.
+	 */
+	private boolean _transparent = false;
 
 	/**
 	 * A border adapter, which covers all border handlings.
@@ -55,11 +60,10 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	@Override
 	protected synchronized void fillShape(final Graphics graphics) {
 		Rectangle figureBounds = getBounds();
-
-		//
-
-		graphics.setBackgroundColor(getBackgroundColor());
-		graphics.fillRectangle(getBounds());
+		if (!_transparent) {
+			graphics.setBackgroundColor(getBackgroundColor());
+			graphics.fillRectangle(getBounds());	
+		}
 		graphics.setBackgroundColor(getForegroundColor());
 		Rectangle fillRectangle;
 		if (_orientationHorizontal) {
@@ -104,6 +108,25 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	}
 	
 	/**
+	 * Sets the transparent state of the background.
+	 * 
+	 * @param transparent
+	 *            the transparent state.
+	 */
+	public void setTransparent(final boolean transparent) {
+		_transparent = transparent;
+	}
+
+	/**
+	 * Gets the transparent state of the background.
+	 * 
+	 * @return the transparent state of the background
+	 */
+	public boolean getTransparent() {
+		return _transparent;
+	}
+	
+	/**
 	 * Sets the orientation (horizontal==true | vertical==false).
 	 * 
 	 * @param horizontal
@@ -126,6 +149,7 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
 			if(_borderAdapter==null) {

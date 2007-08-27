@@ -132,7 +132,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the <i>transparent</i> property.
 	 */
-	public static final String PROP_TRANSPARENT = "transparent";
+	public static final String PROP_TRANSPARENT = "transparency";
 
 	/**
 	 * The ID of this widget model.

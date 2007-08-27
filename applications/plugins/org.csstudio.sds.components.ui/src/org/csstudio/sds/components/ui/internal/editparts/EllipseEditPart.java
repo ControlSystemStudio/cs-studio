@@ -46,6 +46,7 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 		RefreshableEllipseFigure ellipse = new RefreshableEllipseFigure();
 		ellipse.setOrientation(model.getOrientation());
 		ellipse.setFill(model.getFillLevel());
+		ellipse.setTransparent(model.getTransparent());
 		
 		return ellipse;
 
@@ -78,6 +79,17 @@ public final class EllipseEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(EllipseModel.PROP_ORIENTATION, orientationHandler);
+		// transparent
+		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableEllipseFigure ellipse = (RefreshableEllipseFigure) refreshableFigure;
+				ellipse.setTransparent((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(EllipseModel.PROP_TRANSPARENT, transparentHandler);
 		
 	}
 

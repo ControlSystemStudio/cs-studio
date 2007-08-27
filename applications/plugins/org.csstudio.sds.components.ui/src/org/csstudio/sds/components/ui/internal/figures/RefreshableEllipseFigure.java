@@ -51,6 +51,11 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 	private boolean _orientationHorizontal = true;
 	
 	/**
+	 * The transparent state of the background.
+	 */
+	private boolean _transparent = false;
+	
+	/**
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
@@ -72,9 +77,11 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 			backgroundRectangle = new Rectangle(figureBounds.x, figureBounds.y, figureBounds.width, figureBounds.height-newH);
 			fillRectangle = new Rectangle(figureBounds.x, figureBounds.y+figureBounds.height-newH, figureBounds.width, newH);
 		}
-		graphics.setClip(backgroundRectangle);
-		graphics.setBackgroundColor(getBackgroundColor());
-		graphics.fillOval(figureBounds);
+		if (!_transparent) {
+			graphics.setClip(backgroundRectangle);
+			graphics.setBackgroundColor(getBackgroundColor());
+			graphics.fillOval(figureBounds);	
+		}
 		graphics.setClip(fillRectangle);
 		graphics.setBackgroundColor(getForegroundColor());
 		graphics.fillOval(figureBounds);
@@ -108,6 +115,25 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 	 */
 	public double getFill() {
 		return _fill;
+	}
+	
+	/**
+	 * Sets the transparent state of the background.
+	 * 
+	 * @param transparent
+	 *            the transparent state.
+	 */
+	public void setTransparent(final boolean transparent) {
+		_transparent = transparent;
+	}
+
+	/**
+	 * Gets the transparent state of the background.
+	 * 
+	 * @return the transparent state of the background
+	 */
+	public boolean getTransparent() {
+		return _transparent;
 	}
 	
 	/**
@@ -150,8 +176,7 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 		}
 		return null;
 	}
-	
-	
+		
 	/**
 	 * The Border for this {@link RefreshableEllipseFigure}.
 	 * @author Kai Meyer
@@ -190,7 +215,7 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 		 * {@inheritDoc}
 		 */
 		public Insets getInsets(final IFigure figure) {
-			return null;
+			return new Insets(_borderWidth);
 		}
 
 		/**

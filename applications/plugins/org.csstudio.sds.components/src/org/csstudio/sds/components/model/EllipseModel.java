@@ -44,6 +44,11 @@ public final class EllipseModel extends AbstractWidgetModel {
 	 * The ID of the orientation property.
 	 */
 	public static final String PROP_ORIENTATION = "orientation"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the transparent property.
+	 */
+	public static final String PROP_TRANSPARENT = "transparency"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this widget model.
@@ -96,6 +101,8 @@ public final class EllipseModel extends AbstractWidgetModel {
 		addProperty(PROP_ORIENTATION, new BooleanProperty(
 				"Horizontal Orientation", WidgetPropertyCategory.Behaviour,
 				DEFAULT_ORIENTATION_HORIZONTAL));
+		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background", 
+				WidgetPropertyCategory.Display, false));
 	}
 
 	/**
@@ -122,5 +129,14 @@ public final class EllipseModel extends AbstractWidgetModel {
 	 */
 	public boolean getOrientation() {
 		return (Boolean) getProperty(PROP_ORIENTATION).getPropertyValue();
+	}
+	
+	/**
+	 * Returns if the background is transparent.
+	 * 
+	 * @return The state of the background.
+	 */
+	public boolean getTransparent() {
+		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 }

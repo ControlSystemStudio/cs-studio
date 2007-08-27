@@ -46,6 +46,7 @@ public final class RectangleEditPart extends AbstractWidgetEditPart {
 		RefreshableRectangleFigure rectangle = new RefreshableRectangleFigure();
 		rectangle.setOrientation(model.getOrientation());
 		rectangle.setFill(model.getFillLevel());
+		rectangle.setTransparent(model.getTransparent());
 
 		return rectangle;
 
@@ -78,6 +79,17 @@ public final class RectangleEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(RectangleModel.PROP_ORIENTATION, orientationHandler);
+		//transparent
+		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableRectangleFigure rectangle = (RefreshableRectangleFigure) refreshableFigure;
+				rectangle.setTransparent((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(RectangleModel.PROP_TRANSPARENT, transparentHandler);
 	}
 
 }
