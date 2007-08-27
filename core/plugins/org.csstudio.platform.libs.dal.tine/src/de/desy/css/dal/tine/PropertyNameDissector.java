@@ -26,17 +26,17 @@ public class PropertyNameDissector
     super();
     String[] s = remoteName.split("/");
     
-    this.accessProtocol = (s.length>0 && s[0]!=null) ? s[0] : "";
-    this.deviceContext = (s.length>1 && s[1]!=null) ? s[1] : "";
-    this.deviceGroup = (s.length>2 && s[2]!=null) ? s[2] : "";
-    this.deviceProperty = (s.length>4 && s[s.length-1]!=null) ? s[s.length-1] : "";
+    this.accessProtocol = "TINE"; //$NON-NLS-1$
+    this.deviceContext = (s.length>0 && s[0]!=null) ? s[0] : "";
+    this.deviceGroup = (s.length>1 && s[1]!=null) ? s[1] : "";
+    this.deviceProperty = (s.length>3 && s[s.length-1]!=null) ? s[s.length-1] : "";
     
     StringBuilder sb= new StringBuilder(128);
 
-    if (s.length>3 && s[3]!=null) {
-    	sb.append(s[3]);
+    if (s.length>2 && s[2]!=null) {
+    	sb.append(s[2]);
     }
-    for (int i = 4; i < s.length-1; i++) {
+    for (int i = 3; i < s.length-1; i++) {
 		sb.append('/');
 		if (s[i]!=null) sb.append(s[i]);
 	}

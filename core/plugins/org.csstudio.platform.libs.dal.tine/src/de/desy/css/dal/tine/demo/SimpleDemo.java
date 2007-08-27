@@ -24,7 +24,7 @@ public class SimpleDemo {
 			// name>/<property name>
 			// String name = "TINE/DEFAULT/JWKSINE/Device 3/Amplitude";
 			// String name = "TINE/TEST/WinSineServer/SineGen0/Amplitude";
-			String name = "TINE/DEFAULT/TIMESRV/device_0/SYSTIME";
+			String name = "DEFAULT/TIMESRV/device_0/SYSTIME";
 
 			// Create application context
 			DefaultApplicationContext ctx = new TINEApplicationContext(
@@ -44,7 +44,7 @@ public class SimpleDemo {
 			// final DynamicValueProperty property =
 			// propertyFactory.getProperty(remoteInfo);
 			final DynamicValueProperty property = propertyFactory.getProperty(
-					name, StringProperty.class, null);
+					name, DoubleProperty.class, null);
 
 			// We register listener, which will receive value updates
 

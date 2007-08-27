@@ -159,7 +159,7 @@ public class TINEPlug extends AbstractPlug {
 	@Override
 	protected Class<? extends SimpleProperty> getPropertyImplementationClass(
 			String uniquePropertyName) {
-		// AW: HOTFIX!
+		// AW: HOTFIX! Was null before.
 		return DoublePropertyImpl.class;
 	}
 
@@ -171,7 +171,7 @@ public class TINEPlug extends AbstractPlug {
 	@Override
 	protected Class<? extends PropertyProxy> getPropertyProxyImplementationClass(
 			String uniquePropertyName) {
-		// AW: HOTFIX!
+		// AW: HOTFIX! Was null before.
 		return DoublePropertyProxyImpl.class;
 	}
 

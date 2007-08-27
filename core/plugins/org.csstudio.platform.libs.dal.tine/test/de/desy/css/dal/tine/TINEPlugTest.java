@@ -1,8 +1,8 @@
 package de.desy.css.dal.tine;
 
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
@@ -36,7 +36,7 @@ public class TINEPlugTest {
 	/**
 	 * The TINE property we connect to.
 	 */
-	private static final String PROPERTY_NAME = "TINE/DEFAULT/TIMESRV/device_0/SYSTIME";
+	private static final String PROPERTY_NAME = "DEFAULT/TIMESRV/device_0/SYSTIME";
 
 	/**
 	 * Set up the test case.
