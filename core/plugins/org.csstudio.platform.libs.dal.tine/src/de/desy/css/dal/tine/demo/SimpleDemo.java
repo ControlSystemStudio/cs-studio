@@ -24,6 +24,8 @@ public class SimpleDemo {
 			// name>/<property name>
 			// String name = "TINE/DEFAULT/JWKSINE/Device 3/Amplitude";
 			// String name = "TINE/TEST/WinSineServer/SineGen0/Amplitude";
+			//String name = "TINE/DEFAULT/TIMESRV/device_0/SYSTIME";
+			//String name = "TINE/DORIS/DORISGLOBALS/#0/DoEnergy";
 			String name = "DEFAULT/TIMESRV/device_0/SYSTIME";
 
 			// Create application context
