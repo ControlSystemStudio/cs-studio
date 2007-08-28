@@ -90,8 +90,7 @@ public class Activator extends AbstractCssPlugin {
      * @param type
      * @param message
      */
-    private void log(int type, String message, Exception e)
-    {
+    private void log(int type, String message, Exception e){
         getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
     }
 

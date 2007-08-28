@@ -1,8 +1,11 @@
 package org.csstudio.alarm.table.expertSearch;
 
+import java.lang.annotation.Inherited;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
@@ -16,6 +19,7 @@ import org.csstudio.util.time.swt.CalendarWidgetListener;
 import org.csstudio.util.time.swt.RelativeTimeWidget;
 import org.csstudio.util.time.swt.RelativeTimeWidgetListener;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -41,7 +45,50 @@ import org.eclipse.swt.widgets.Text;
  * @since 17.07.2007
  */
 public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener, RelativeTimeWidgetListener {
-
+    /**
+     * 
+     * @author hrickens
+     * @author $Author$
+     * @version $Revision$
+     * @since 28.08.2007
+     */
+    private class MsgType {
+        /** The ID of the MSG Type. */
+        private int _id;
+        /** The name of the Msg Type.*/
+        private String _type;
+        /**
+         * 
+         * @param id set the Id of the MSg Type.
+         * @param type set the name of the MSg Type.
+         */
+        public MsgType(final int id, final String type){
+            _id = id;
+            _type = type;
+        }
+        /** @return the ID of the MSG Type. */
+        public int getId() {
+            return _id;
+        }
+        /** @param id set the ID of the MSG Type. */
+        public void setId(final int id) {
+            this._id = id;
+        }
+        /** @return the Name of the MSG Type. */
+        public String getType() {
+            return _type;
+        }
+        
+        /** @param type set the name of the MSG Type. */
+        public void setType(final String type) {
+            this._type = type;
+        }
+        
+        @Override
+        public String toString(){
+            return _type;
+        }
+    }
     /** The Shell to Display the Dialog. */
     private Shell _shell;
     /** The start Time for the startWidget (left side). */
@@ -53,16 +100,20 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
     /** A Widget to selct the end time. */
     private CalendarWidget _toAbsWidget;
 	
-	private HashMap<String, String> filterMap;
+	private HashMap<String, String> _filterMap;
 	private Group down;
 	private String filterString;
 	private Label info;
     /** The widht of the Dialog. */
 	private final int _windowXSize = 650;
-    private final int bTop = 0;
-    private final int bBottom = 0;
-    private final int bHeignt = 0;
-    private final int bWidht = 0;
+	/** margin Top. */
+    private final int _mTop = 0;
+    /** margin Bottom. */
+    private final int _mBottom = 0;
+    /** margin Top. */
+    private final int _mHeignt = 0;
+    /** margin Widht. */
+    private final int _mWidht = 0;
     /** The default filterstring. */
     private String _filter;
     private RelativeTimeWidget _fromRelWidget;
@@ -72,6 +123,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
     private String _startSpecification;
     private String _endSpecification;
     private StartEndTimeParser _startEnd;
+    private MsgType[] _msgTypes;
     
     /**
      *   The Constructor.
@@ -80,8 +132,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
      * @param end The default start time or null for now.
      * @param filter The default filtersor null for none.
      */
-	public ExpertSearchDialog(final Shell shell, final ITimestamp start, final ITimestamp end, final String filter)
-	    {
+	public ExpertSearchDialog(final Shell shell, final ITimestamp start, final ITimestamp end, final String filter){
 	        super(shell);
 	        this._shell=shell;
 	        this._start = start;
@@ -100,6 +151,12 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
     /** {@inheritDoc} */
     @Override
     protected final Control createDialogArea(final Composite parent){
+         String[][] answer = ArchiveDBAccess.getMsgTypes();
+        _msgTypes = new MsgType[answer.length];
+        for (int i = 0; i < answer.length; i++) {
+            _msgTypes[i]=new MsgType(Integer.parseInt(answer[i][0]),answer[i][1]);
+        }
+        
 //    	filter = new HashMap<String, String>();
     	filterString = "AND ("; //$NON-NLS-1$
         Composite box = (Composite) super.createDialogArea(parent);
@@ -269,25 +326,28 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
 	private void addNewFilter(final Group parent, final String type, final String value, final String logic) {
 		final Composite c = new Composite(parent, SWT.NONE);
 		GridLayout glMain = new GridLayout(2,false);
-		glMain.marginBottom=bBottom;
-		glMain.marginTop=bTop;
-		glMain.marginHeight=bHeignt;
+		glMain.marginBottom=_mBottom;
+		glMain.marginTop=_mTop;
+		glMain.marginHeight=_mHeignt;
 		c.setLayout(glMain);
 		Composite filter = new Composite(c,SWT.NONE);
 		filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,false,1,1));
 		GridLayout glLeft = new GridLayout(2,false);
-		glLeft.marginBottom=bBottom;
-		glLeft.marginTop=bTop;
-		glLeft.marginHeight=bHeignt;
+		glLeft.marginBottom=_mBottom;
+		glLeft.marginTop=_mTop;
+		glLeft.marginHeight=_mHeignt;
 		filter.setLayout(glLeft);
-		Combo title = new Combo(filter,SWT.SINGLE|SWT.READ_ONLY);
+		ComboViewer title = new ComboViewer(filter,SWT.SINGLE|SWT.READ_ONLY);
 		String[] test = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogArchiveViewerPreferenceConstants.P_STRINGArch).split(";"); //$NON-NLS-1$
-		title.setItems(test);
-        int index =0;
-        if(type!=null && title.indexOf(type)>=0){
-            index = title.indexOf(type);
-        }
-        title.select(index);
+		title.add(_msgTypes);
+		int index=0;
+		if(type!=null){
+		    index = title.getCombo().indexOf(type);
+		    if(index<0){
+	            index=0;
+	        }
+		}
+        title.getCombo().select(index);
 		Text search = new Text(filter,SWT.SINGLE|SWT.BORDER);
 		search.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,false,1,1));
         if(value!=null){
@@ -298,10 +358,10 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         // if logic empty no follow roles --> need Button
         if(logic==null||logic.trim().length()==0){
     		GridLayout glRight = new GridLayout(2,true);
-    		glRight.marginBottom=bBottom;
-    		glRight.marginTop=bTop;
-    		glRight.marginHeight=bHeignt;
-    		glRight.marginWidth=bWidht;
+    		glRight.marginBottom=_mBottom;
+    		glRight.marginTop=_mTop;
+    		glRight.marginHeight=_mHeignt;
+    		glRight.marginWidth=_mWidht;
     		comButton.setLayout(glRight);
     		Button and = new Button(comButton,SWT.UP);
     		and.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,1));
@@ -353,10 +413,10 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         final Composite c = new Composite(parent,SWT.NONE);
         c.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
         GridLayout glRight = new GridLayout(2,true);
-        glRight.marginBottom=bBottom;
-        glRight.marginTop=bTop;
-        glRight.marginHeight=bHeignt;
-        glRight.marginWidth=bWidht;
+        glRight.marginBottom=_mBottom;
+        glRight.marginTop=_mTop;
+        glRight.marginHeight=_mHeignt;
+        glRight.marginWidth=_mWidht;
         c.setLayout(glRight);
         Label logic = new Label(c, SWT.CENTER);
         logic.setText(text);
@@ -414,10 +474,10 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
                         Control[] typeComboAndValueText = ((Composite)typeAndValueComposite[0]).getChildren();
                         // First part a Composite with a Combo for the Typ and a Text for the value.
                         if(typeComboAndValueText[0] instanceof Combo && typeComboAndValueText[1] instanceof Text){
-                            filterString    += " (lower(aam.PROPERTY) like lower('" //$NON-NLS-1$
+                            filterString    += " (lower(mpt.NAME) like lower('" //$NON-NLS-1$
                                             +((Combo)typeComboAndValueText[0]).getItem(((Combo)typeComboAndValueText[0]).getSelectionIndex())
                                             +"')" //$NON-NLS-1$
-                                            +" AND lower(aam.VALUE) like lower('" //$NON-NLS-1$
+                                            +" AND lower(mc.VALUE) like lower('" //$NON-NLS-1$
                                             +((Text)typeComboAndValueText[1]).getText()+
                                             "'))"; //$NON-NLS-1$
                         }
@@ -439,7 +499,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
     
     /** @return the filter as an Hashmap. */
     public final HashMap<String, String> getFilterMap(){
-		return filterMap;
+		return _filterMap;
 	}
     
     /** @return the filarter as String. */
