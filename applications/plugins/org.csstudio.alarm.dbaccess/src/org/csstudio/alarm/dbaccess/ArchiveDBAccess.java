@@ -151,12 +151,12 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
         return sql;
     }
 
-	private String buildSQLStatement(Calendar from, Calendar to, String filter, int maxAnswerSize) {
+    private String buildSQLStatement(Calendar from, Calendar to, String filter, int maxAnswerSize) {
 	    /*
 	     * TODO change statement accordingly like the upper one
 	     * for now it's still the old one - so the FILTER will not break
 	     */
-		String sql = "select * from (" +
+		String sql = /* "select * from (" + */
 	    		"select aam2.* from alarm_archive_messages aam2 ,(select aam.MESSAGE_ID from alarm_archive_messages aam where aam.datum "+ 
 					 "between to_date('"+from.get(GregorianCalendar.YEAR)+
 						"-"+(from.get(GregorianCalendar.MONTH)+1)+
@@ -174,7 +174,7 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 							"', 'YYYY-MM-DD HH24:MI:SS') "+
 					 filter+
 					 " order by aam.message_id desc) typeid where aam2.message_id = typeid.MESSAGE_ID " +
-					 ") where ROWNUM < " + maxAnswerSize*10; 
+					 /* " ) where*/ " and ROWNUM < " + maxAnswerSize*10 + " order by aam2.message_id desc"; 
 	    return sql;
 //	    String sql = 
 //            "select myTable.* , rownum myRownum from (" +
