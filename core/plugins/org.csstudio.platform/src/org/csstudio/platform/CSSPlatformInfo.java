@@ -37,6 +37,9 @@ import org.csstudio.platform.logging.CentralLogger;
 public final class CSSPlatformInfo {
 	/** Holds the host name. */
 	private String hostID = null;
+	
+	/** Holds the qualified host name. */
+	private String qualifiedHostName = null;
 
 	/** Holds the user name. */
 	private String userID = null;
@@ -65,34 +68,35 @@ public final class CSSPlatformInfo {
 		userID = System.getProperty("user.name");
 
 		try {
-			hostID = InetAddress.getLocalHost().getHostName();
+			InetAddress localhost = InetAddress.getLocalHost();
 
-//To compare the name of the preference file with the host name it is maybe necessary
-//to get the complete host name.
-//			hostID = InetAddress.getLocalHost().getCanonicalHostName();
+			hostID = localhost.getHostName();
+			qualifiedHostName = localhost.getCanonicalHostName();
+			onsite = isOnsite(localhost);
 		} catch (UnknownHostException uhe) {
 			hostID = "NA";
+			qualifiedHostName = "";
+			onsite = false;
 		}
 
 		applicationID = "CSS";
-		
-		detectOnsiteOffsite();
 	}
 	
 	/**
-	 * Detects if CSS is running onsite or offsite.
+	 * Detects whether the given address is an onsite address.
+	 * @param address the address to check.
+	 * @return <code>true</code> if the address is onsite, <code>false</code>
+	 * otherwise.
 	 */
-	private void detectOnsiteOffsite() {
-		try {
-			Collection<Subnet> onsiteSubnets =
-				OnsiteSubnetPreferences.getOnsiteSubnets();
-			InetAddress thishost = InetAddress.getLocalHost();
-			for (Subnet subnet : onsiteSubnets) {
-				onsite |= subnet.contains(thishost);
+	private boolean isOnsite(InetAddress address) {
+		Collection<Subnet> onsiteSubnets =
+			OnsiteSubnetPreferences.getOnsiteSubnets();
+		for (Subnet subnet : onsiteSubnets) {
+			if (subnet.contains(address)) {
+				return true;
 			}
-		} catch (UnknownHostException e) {
-			throw new AssertionError("this cannot happen");
 		}
+		return false;
 	}
 
 	/**
@@ -115,6 +119,15 @@ public final class CSSPlatformInfo {
 	 */
 	public boolean isOnsite() {
 		return onsite;
+	}
+	
+	/**
+	 * Returns the qualified hostname of the host this CSS instance runs on.
+	 * If the hostname is unknown, returns the empty string.
+	 * @return the qualified hostname of the host this CSS instance runs on.
+	 */
+	public String getQualifiedHostname() {
+		return qualifiedHostName;
 	}
 
 	public String getHostId() {
