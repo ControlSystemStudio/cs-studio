@@ -118,6 +118,11 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * The zero level of the graph.
 	 */
 	private int _zeroLevel = 0;
+	
+	/**
+	 * The transparent state of the background.
+	 */
+	private boolean _transparent = false;
 
 	/**
 	 * The PointList based on the real data.
@@ -266,6 +271,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
 			if (_borderAdapter == null) {
@@ -401,7 +407,9 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 */
 	@Override
 	protected void paintFigure(final Graphics graphics) {
-		super.paintFigure(graphics);
+		if (!_transparent) {
+			super.paintFigure(graphics);
+		}
 		if (_init) {
 			_init = false;
 			this.refreshConstraints();
@@ -682,6 +690,25 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	public void setXSectionCount(final int xSectionCount) {
 		_xSectionCount = xSectionCount;
 		this.refreshConstraints();
+	}
+	
+	/**
+	 * Sets the transparent state of the background.
+	 * 
+	 * @param transparent
+	 *            the transparent state.
+	 */
+	public void setTransparent(final boolean transparent) {
+		_transparent = transparent;
+	}
+
+	/**
+	 * Gets the transparent state of the background.
+	 * 
+	 * @return the transparent state of the background
+	 */
+	public boolean getTransparent() {
+		return _transparent;
 	}
 
 	/**

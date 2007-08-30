@@ -108,9 +108,14 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * Property ID for the color of the ledger lines.
 	 */
 	public static final String PROP_X_SCALE_SECTION_COUNT = "x_scale_section_count"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the transparent property.
+	 */
+	public static final String PROP_TRANSPARENT = "transparency"; //$NON-NLS-1$
 
 	/**
-	 * The diplay options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
+	 * The display options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
 	 */
 	private static final String[] DISPLAY_OPTIONS = new String[] { "None",
 			"Vertical", "Horizontal", "Both" };
@@ -166,6 +171,8 @@ public final class WaveformModel extends AbstractWidgetModel {
 				"X-Section count",WidgetPropertyCategory.Display,4));
 		addProperty(PROP_GRAPH_LINE_WIDTH, new IntegerProperty(
 				"Graph line width",WidgetPropertyCategory.Display,1,1,100));
+		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background", 
+				WidgetPropertyCategory.Display, false));
 	}
 
 	/**
@@ -305,6 +312,15 @@ public final class WaveformModel extends AbstractWidgetModel {
 	public int getXSectionCount() {
 		return (Integer) getProperty(PROP_X_SCALE_SECTION_COUNT)
 				.getPropertyValue();
+	}
+	
+	/**
+	 * Returns if the background is transparent.
+	 * 
+	 * @return The state of the background.
+	 */
+	public boolean getTransparent() {
+		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 
 }

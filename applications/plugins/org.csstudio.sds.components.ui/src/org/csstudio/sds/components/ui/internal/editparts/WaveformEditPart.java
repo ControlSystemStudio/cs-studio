@@ -61,6 +61,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		waveform.setBackgroundColor(CustomMediaFactory.getInstance().getColor(model.getBackgroundColor()));
 		waveform.setForegroundColor(CustomMediaFactory.getInstance().getColor(model.getForegroundColor()));
 		waveform.setGraphColor(model.getGraphColor());
+		waveform.setTransparent(model.getTransparent());
 		return waveform;
 	}
 
@@ -190,6 +191,17 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(WaveformModel.PROP_GRAPH_LINE_WIDTH, lineWidthHandler);
+		// transparent
+		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				WaveformFigure figure = (WaveformFigure) refreshableFigure;
+				figure.setTransparent((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(WaveformModel.PROP_TRANSPARENT, transparentHandler);
 		this.registerColorPropertyChangeHandlers();
 	}
 	
