@@ -2,6 +2,7 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
 
@@ -103,7 +104,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
-				imageFigure.setFilename((String)newValue);
+				imageFigure.setFilename(((IPath)newValue).toString());
 				return true;
 			}
 		};
