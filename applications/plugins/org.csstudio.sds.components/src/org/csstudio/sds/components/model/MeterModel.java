@@ -53,14 +53,15 @@ public final class MeterModel extends AbstractWidgetModel {
 	public static final String PROP_HIHIBOUND = "bound.hihi";
 	public static final String PROP_VALFONT = "font.values";
 	public static final String PROP_CHANFONT = "font.channel";
-	//public static final String PROP_FORMAT = "format";
-	//public static final String PROP_SCALEFORMAT = "format.scale";
 	
 	/**
 	 * The ID of the precision property.
 	 */
 	public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
 	
+	/**
+	 * Constructor.
+	 */
 	public MeterModel() {
 		super();
 		setWidth(90);
@@ -88,9 +89,6 @@ public final class MeterModel extends AbstractWidgetModel {
 		addProperty(PROP_MINVAL,new DoubleProperty("Minimum Value",WidgetPropertyCategory.Behaviour,0.0));
 		addProperty(PROP_MAXVAL,new DoubleProperty("Maximum Value",WidgetPropertyCategory.Behaviour,10.0));
 		addProperty(PROP_VALUE,new DoubleProperty("Value",WidgetPropertyCategory.Behaviour,0.0));
-		
-		//addProperty(PROP_FORMAT,new StringProperty("Value Format",WidgetPropertyCategory.Behaviour,"%.3f"));
-		//addProperty(PROP_SCALEFORMAT,new StringProperty("Scale Value Format",WidgetPropertyCategory.Behaviour,"%.1f"));
 		
 		//background colors
 		addProperty(PROP_MCOLOR,new ColorProperty("Color M",WidgetPropertyCategory.Display,new RGB(0,255,0)));
@@ -217,14 +215,6 @@ public final class MeterModel extends AbstractWidgetModel {
 	public FontData getChannelFont() {
 		return (FontData) getProperty(PROP_CHANFONT).getPropertyValue();
 	}
-	
-//	public String getFormat() {
-//		return (String) getProperty(PROP_FORMAT).getPropertyValue();
-//	}
-	
-//	public String getScaleFormat() {
-//		return (String) getProperty(PROP_SCALEFORMAT).getPropertyValue();
-//	}
 
 	@Override
 	public String getDoubleTestProperty() {

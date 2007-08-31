@@ -2,17 +2,16 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -28,27 +27,51 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 	 */
 	private IBorderEquippedWidget _borderAdapter;
 	/**
-	 * filename of the image and the image itself
-	 * width and height of the image
+	 * The {@link IPath} to the image.
 	 */
-	private String filename="";
-	private Image image=null;
-	private int img_width=0,img_height=0;
+	private IPath _path = new Path("");
+	/**
+	 * The image itself.
+	 */
+	private Image _image=null;
+	/**
+	 * The width of the image.
+	 */
+	private int _imgWidth=0;
+	/**
+	 * The height of the image.
+	 */
+	private int _imgHeight=0;
 	
 	/**
-	 * how much to crop the image, stretch it?
+	 * The amount of pixels, which are cropped from the top.
 	 */
-	private int top_crop=0,bottom_crop=0,left_crop=0,right_crop=0;
-	private boolean stretch=true;
+	private int _topCrop=0;
+	/**
+	 * The amount of pixels, which are cropped from the bottom.
+	 */
+	private int _bottomCrop=0;
+	/**
+	 * The amount of pixels, which are cropped from the left.
+	 */
+	private int _leftCrop=0;
+	/**
+	 * The amount of pixels, which are cropped from the right.
+	 */
+	private int _rightCrop=0;
+	/**
+	 * The stretch state for the image.
+	 */
+	private boolean _stretch=true;
 	
 	/**
 	 * Border properties.
 	 */
-	private int border_width;
-//	private RGB border_color = new RGB(0,0,0);
+	private int _borderWidth;
 	
 	/**
 	 * We want to have local coordinates here.
+	 * @return True if here should used local coordinates
 	 */
 	protected boolean useLocalCoordinates() {
 		return true;
@@ -56,44 +79,46 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 	
 	/**
 	 * Fills the image. Nothing to do here.
+	 * @param gfx The {@link Graphics} to use
 	 */
-	protected void fillShape(Graphics gfx) {}
+	protected void fillShape(final Graphics gfx) {}
 	
 	/**
 	 * Draws the outline of the image. Nothing to do here.
+	 * @param gfx The {@link Graphics} to use
 	 */
-	protected void outlineShape(Graphics gfx) {}
+	protected void outlineShape(final Graphics gfx) {}
 	
 	/**
 	 * The main drawing routine.
+	 * @param gfx The {@link Graphics} to use
 	 */
-	public void paintFigure(Graphics gfx) {
+	public void paintFigure(final Graphics gfx) {
 		Rectangle bound=getBounds();
-		Rectangle border_bound=bound.getCropped(new Insets(border_width));
+		Rectangle borderBound = bound.getCropped(new Insets(_borderWidth));
 		Image temp;
 		
 		try {
-			if (image==null && filename!="") {
-				temp=new Image(Display.getDefault(),filename);
-				if (stretch==true) {
-					image=new Image(Display.getDefault(),
-							temp.getImageData().scaledTo(border_bound.width+left_crop+right_crop,
-									border_bound.height+top_crop+bottom_crop));
+			if (_image==null && !_path.isEmpty()) {
+				temp=new Image(Display.getDefault(),_path.toString());
+				if (_stretch) {
+					_image=new Image(Display.getDefault(),
+							temp.getImageData().scaledTo(borderBound.width+_leftCrop+_rightCrop,
+									borderBound.height+_topCrop+_bottomCrop));
 				} else {
-					image=new Image(Display.getDefault(),temp.getImageData());
+					_image=new Image(Display.getDefault(),temp.getImageData());
 				}
 				temp.dispose();
 				temp=null;
-				img_width=image.getBounds().width;
-				img_height=image.getBounds().height;
+				_imgWidth=_image.getBounds().width;
+				_imgHeight=_image.getBounds().height;
 			}
-		}
-		catch (Exception e) {
-			if (image!=null) {
-				image.dispose();
+		} catch (Exception e) {
+			if (_image!=null) {
+				_image.dispose();
 			}
-			image=null;
-			if (filename!="") {
+			_image=null;
+			if (!_path.isEmpty()) {
 				Font f=gfx.getFont();
 				FontData fd=f.getFontData()[0];
 				
@@ -112,88 +137,154 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 				gfx.setForegroundColor(getForegroundColor());
 				gfx.fillRectangle(bound);
 				gfx.translate(bound.getLocation());
-				TextPainter.drawText(gfx,"ERROR loading image\n"+filename,bound.width/2,bound.height/2,TextPainter.CENTER);
+				TextPainter.drawText(gfx,"ERROR loading image\n"+_path,bound.width/2,bound.height/2,TextPainter.CENTER);
 				f.dispose();
 			}
 		}
-		if (image!=null) {
-			gfx.drawImage(image,
-					left_crop,top_crop,
-					img_width-left_crop-right_crop,img_height-top_crop-bottom_crop,
-					border_width,border_width,
-					img_width-left_crop-right_crop,img_height-top_crop-bottom_crop);
+		if (_image!=null) {
+			gfx.drawImage(_image,  
+					_leftCrop,_topCrop,
+					_imgWidth-_leftCrop-_rightCrop,_imgHeight-_topCrop-_bottomCrop,
+					borderBound.x+_borderWidth,borderBound.y+_borderWidth,
+					_imgWidth-_leftCrop-_rightCrop,_imgHeight-_topCrop-_bottomCrop);
 		}
 	}
 	
+	/**
+	 * Resizes the image.
+	 */
 	public void resizeImage() {
-		if (stretch==true) {
-			if (image!=null) {
-				image.dispose();
+		if (_stretch) {
+			if (_image!=null) {
+				_image.dispose();
 			}
-			image=null;
+			_image=null;
 		}
 	}
 	
+	/**
+	 * Sets the width of the border.
+	 * @param newval The border width
+	 */
 	public void setBorderWidth(final int newval) {
-		border_width=newval;
+		_borderWidth=newval;
 		resizeImage();
 	}
+	
+	/**
+	 * Returns the width of the border.
+	 * @return The width of the border
+	 */
 	public int getBorderWidth() {
-		return border_width;
+		return _borderWidth;
 	}
 	
-	public void setFilename(final String newval) {
-		filename=newval;
-		if (image!=null) {
-			image.dispose();
+	/**
+	 * Sets the path to the image.
+	 * @param newval The path to the image
+	 */
+	public void setFilePath(final IPath newval) {
+		_path=newval;
+		if (_image!=null) {
+			_image.dispose();
 		}
-		image=null;
-	}
-	public String getFilename() {
-		return filename;
+		_image=null;
 	}
 	
+	/**
+	 * Returns the path to the image.
+	 * @return The path to the image
+	 */
+	public IPath getFilePath() {
+		return _path;
+	}
+	
+	/**
+	 * Sets the amount of pixels, which are cropped from the top. 
+	 * @param newval The amount of pixels
+	 */
 	public void setTopCrop(final int newval) {
-		top_crop=newval;
+		_topCrop=newval;
 		resizeImage();
 	}
+	
+	/**
+	 * Returns the amount of pixels, which are cropped from the top.
+	 * @return The amount of pixels
+	 */
 	public int getTopCrop() {
-		return top_crop;
+		return _topCrop;
 	}
 	
+	/**
+	 * Sets the amount of pixels, which are cropped from the bottom. 
+	 * @param newval The amount of pixels
+	 */
 	public void setBottomCrop(final int newval) {
-		bottom_crop=newval;
+		_bottomCrop=newval;
 		resizeImage();
 	}
+	
+	/**
+	 * Returns the amount of pixels, which are cropped from the top.
+	 * @return The amount of pixels
+	 */
 	public int getBottomCrop() {
-		return bottom_crop;
+		return _bottomCrop;
 	}
 	
+	/**
+	 * Sets the amount of pixels, which are cropped from the left. 
+	 * @param newval The amount of pixels
+	 */
 	public void setLeftCrop(final int newval) {
-		left_crop=newval;
+		_leftCrop=newval;
 		resizeImage();
 	}
+	
+	/**
+	 * Returns the amount of pixels, which are cropped from the top.
+	 * @return The amount of pixels
+	 */
 	public int getLeftCrop() {
-		return left_crop;
+		return _leftCrop;
 	}
 	
+	/**
+	 * Sets the amount of pixels, which are cropped from the right. 
+	 * @param newval The amount of pixels
+	 */
 	public void setRightCrop(final int newval) {
-		right_crop=newval;
+		_rightCrop=newval;
 		resizeImage();
 	}
+	
+	/**
+	 * Returns the amount of pixels, which are cropped from the top.
+	 * @return The amount of pixels
+	 */
 	public int getRightCrop() {
-		return right_crop;
+		return _rightCrop;
 	}
 	
+	/**
+	 * Sets the stretch state for the image.
+	 * @param newval The new state (true, if it should be stretched, false otherwise)
+	 */
 	public void setStretch(final boolean newval) {
-		stretch=newval;
-		if (image!=null) {
-			image.dispose();
+		_stretch=newval;
+		if (_image!=null) {
+			_image.dispose();
 		}
-		image=null;
+		_image=null;
 	}
+	
+	/**
+	 * Returns the stretch state for the image.
+	 * @return True, if it should be stretched, false otherwise
+	 */
 	public boolean getStretch() {
-		return stretch;
+		return _stretch;
 	}
 	
 	/**

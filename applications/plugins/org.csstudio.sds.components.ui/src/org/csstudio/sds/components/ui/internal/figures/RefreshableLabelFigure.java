@@ -8,14 +8,12 @@ import org.csstudio.sds.util.AntialiasingUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.Shape;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * A label figure.
@@ -26,15 +24,18 @@ import org.eclipse.swt.graphics.RGB;
 public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	
 	/**
-	 * Types of values to be displayed.
+	 * The ID for the <i>text</i> type.
 	 */
 	public static final int TYPE_TEXT = 0;
+	/**
+	 * The ID for the <i>double</i> type.
+	 */
 	public static final int TYPE_DOUBLE = 1;
 	
 	/**
 	 * Type of the label.
 	 */
-	private int value_type=TYPE_DOUBLE;
+	private int _valueType=TYPE_DOUBLE;
 	
 	/**
 	 * A border adapter, which covers all border handlings.
@@ -49,144 +50,140 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	/**
 	 * Default label font.
 	 */
-	public Font font = CustomMediaFactory.getInstance().getFont("Arial", 8, SWT.NONE);
+	private Font _font = CustomMediaFactory.getInstance().getFont("Arial", 8, SWT.NONE);
 	
 	/**
 	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
 	 */
-	private final int[] alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
+	private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
 	
 	/**
-	 * Things to do with the displayed text:
-	 *   alignment, rotation angle, coordinate offsets (if rotation goes out of bounds).
+	 * The alignment of the text.
 	 */
-	private int alignment=0;
-	private double rotation=90.0;
-	private int x_off=0,y_off=0;
+	private int _alignment=0;
+	/**
+	 * The rotation of the text.
+	 */
+	private double _rotation=90.0;
+	/**
+	 * The x offset of the text.
+	 */
+	private int _xOff=0;
+	/**
+	 * The x offset of the text.
+	 */
+	private int _yOff=0;
 	
 	/**
-	 * Value fields. Currently only text and double values;
+	 * Value fields.
 	 */
-	private String text_value="";
-	
-	private double double_value=0.0;
-	//private String double_value_format="%.3f";
+	private String _textValue="";
 	
 	/**
 	 * Is the background transparent or not?
 	 */
-	private boolean transparent=true;
+	private boolean _transparent=true;
 	
 	/**
-	 * Border properties.
+	 * The width of the border.
 	 */
-	private int border_width;
-	private RGB border_color = new RGB(0,0,0);
+	private int _borderWidth;
 	
 	/**
 	 * Fills the image. Nothing to do here.
+	 * @param gfx The {@link Graphics} to use.
 	 */
-	protected void fillShape(Graphics gfx) {}
+	protected void fillShape(final Graphics gfx) {}
 	
 	/**
 	 * Draws the outline of the image. Nothing to do here.
+	 * @param gfx The {@link Graphics} to use.
 	 */
-	protected void outlineShape(Graphics gfx) {}
+	protected void outlineShape(final Graphics gfx) {}
 	
 	/**
 	 * The main drawing routine.
+	 * @param gfx The {@link Graphics} to use.
 	 */
-	public void paintFigure(Graphics gfx) {
+	public void paintFigure(final Graphics gfx) {
 		
 		Rectangle bound=getBounds();
 		gfx.translate(bound.x,bound.y);
 		
-		if (transparent==false) {
+		if (_transparent) {
 			gfx.setBackgroundColor(getBackgroundColor());
 			gfx.fillRectangle(0,0,bound.width,bound.height);
 		}
-		gfx.setFont(font);
+		gfx.setFont(_font);
 		gfx.setForegroundColor(getForegroundColor());
 		AntialiasingUtil.getInstance().enableAntialiasing(gfx);
 		
 		String toprint="none";
-		switch (value_type) {
+		switch (_valueType) {
 		case TYPE_TEXT:
-			toprint=text_value;
+			toprint=_textValue;
 			break;
 		case TYPE_DOUBLE:
 			try {
-				double d = Double.parseDouble(text_value);
+				double d = Double.parseDouble(_textValue);
 				NumberFormat format = NumberFormat.getInstance();
 				format.setMaximumFractionDigits(_decimalPlaces);
 				toprint = format.format(d);
 			} catch (Exception e) {
-				toprint = text_value;
+				toprint = _textValue;
 			}
-//			try {
-//				toprint=String.format(double_value_format,double_value);
-//			} catch (IllegalFormatException e) {
-//				toprint=Double.toString(double_value);
-//			}
 			break;
 		default:
 			toprint="unknown value type";
 		}
 		
-		switch (alignment) {
+		Point textPoint;
+		int alignment;
+		switch (_alignment) {
 		case 0: //center
-			if (Math.round(rotation)==90) {
-				TextPainter.drawText(gfx,toprint,bound.width/2+x_off,bound.height/2+y_off,TextPainter.CENTER);
-			}
-			else {
-				TextPainter.drawRotatedText(gfx,toprint,90.0-rotation,
-						bound.width/2+x_off,bound.height/2+y_off,TextPainter.CENTER);
-			}
+			textPoint = new Point(bound.width/2+_xOff,bound.height/2+_yOff);
+			alignment = TextPainter.CENTER;
 			break;
 		case 1: //top
-			if (Math.round(rotation)==90) {
-				TextPainter.drawText(gfx,toprint,bound.width/2+x_off,y_off,TextPainter.TOP_CENTER);
-			}
-			else {
-				TextPainter.drawRotatedText(gfx,toprint,90.0-rotation,
-						bound.width/2+x_off,y_off,TextPainter.TOP_CENTER);
-			}
+			textPoint = new Point(bound.width/2+_xOff,_yOff);
+			alignment = TextPainter.TOP_CENTER;
 			break;
 		case 2: //bottom
-			if (Math.round(rotation)==90) {
-				TextPainter.drawText(gfx,toprint,bound.width/2+x_off,bound.height+y_off,TextPainter.BOTTOM_CENTER);
-			} 
-			else {
-				TextPainter.drawRotatedText(gfx,toprint,90.0-rotation,
-						bound.width/2+x_off,bound.height+y_off,TextPainter.BOTTOM_CENTER);
-			}
+			textPoint = new Point(bound.width/2+_xOff,bound.height+_yOff);
+			alignment = TextPainter.BOTTOM_CENTER;
 			break;
 		case 3: //left
-			if (Math.round(rotation)==90) {
-				TextPainter.drawText(gfx,toprint,x_off,bound.height/2+y_off,TextPainter.LEFT);
-			}
-			else {
-				TextPainter.drawRotatedText(gfx,toprint,90.0-rotation,
-						x_off,bound.height/2+y_off,TextPainter.LEFT);
-			}
+			textPoint = new Point(_xOff,bound.height/2+_yOff);
+			alignment = TextPainter.LEFT;
 			break;
 		case 4: //right
-			if (Math.round(rotation)==90) {
-				TextPainter.drawText(gfx,toprint,bound.width+x_off,bound.height/2+y_off,TextPainter.RIGHT);
-			}
-			else {
-				TextPainter.drawRotatedText(gfx,toprint,90.0-rotation,
-						bound.width+x_off,bound.height/2+y_off,TextPainter.RIGHT);
-			}
+			textPoint = new Point(bound.width+_xOff,bound.height/2+_yOff);
+			alignment = TextPainter.RIGHT;
 			break;
+		default : //default
+			textPoint = new Point(bound.width/2+_xOff,bound.height/2+_yOff);
+			alignment = TextPainter.CENTER;
+			break;
+		}
+		if (Math.round(_rotation)==90) {
+			TextPainter.drawText(gfx,toprint,textPoint.x,textPoint.y,alignment);
+		} else {
+			TextPainter.drawRotatedText(gfx,toprint,90.0-_rotation,textPoint.x,textPoint.y,alignment);
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setFont(final Font newval) {
-		font=newval;
+		_font=newval;
 	}
+	
+	/**
+	 * {@inheritDoc} 
+	 */
 	public Font getFont() {
-		return font;
+		return _font;
 	}
 	
 	/**
@@ -208,86 +205,134 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		return _decimalPlaces;
 	}
 	
+	/**
+	 * Sets the alignment for the text.
+	 * @param newval The alignment for the text
+	 */
 	public void setTextAlignment(final int newval) {
-		if (newval>=0 && newval<alignments.length) {
-			alignment=newval;
+		if (newval>=0 && newval<_alignments.length) {
+			_alignment=newval;
 		}
 	}
+	
+	/**
+	 * Returns the alignment of the text.
+	 * @return The alignment of the text
+	 */
 	public int getTextAlignment() {
-		return alignment;
+		return _alignment;
 	}
 	
+	/**
+	 * Sets the transparent state of the background.
+	 * @param newval The transparent state
+	 */
 	public void setTransparent(final boolean newval) {
-		transparent=newval;
+		_transparent=newval;
 	}
+	
+	/**
+	 * Returns the transparent state of the background.
+	 * @return True, if the background is transparent, false otherwise
+	 */
 	public boolean getTransparent() {
-		return transparent;
+		return _transparent;
 	}
 	
+	/**
+	 * Sets the width of the border.
+	 * @param newval The width of the border
+	 */
 	public void setBorderWidth(final int newval) {
-		border_width=newval;
-		if (newval>0) {
-			setBorder(new LineBorder(CustomMediaFactory.getInstance().getColor(border_color),border_width));
-		} else {
-			setBorder(null);
-		}
+		_borderWidth=newval;
 	}
+	
+	/**
+	 * returns the width of the border.
+	 * @return The width of the border
+	 */
 	public int getBorderWidth() {
-		return border_width;
+		return _borderWidth;
 	}
 	
-	public void setBorderColor(final RGB newval) {
-		border_color=newval;
-		if (border_width>0) {
-			setBorder(new LineBorder(CustomMediaFactory.getInstance().getColor(border_color),border_width));
-		} else {
-			setBorder(null);
-		}
-	}
-	public RGB getBorderColor() {
-		return border_color;
-	}
-	
+	/**
+	 * Sets the rotation for the text.
+	 * @param newval The rotation for the text
+	 */
 	public void setRotation(final double newval) {
-		rotation=newval;
+		_rotation=newval;
 	}
+	
+	/**
+	 * Returns the rotation of the text.
+	 * @return The rotation of the text
+	 */
 	public double getRotation() {
-		return rotation;
+		return _rotation;
 	}
 	
+	/**
+	 * Sets the x offset for the text. 
+	 * @param newval The x offset
+	 */
 	public void setXOff(final int newval) {
-		x_off=newval;
+		_xOff=newval;
 	}
+	
+	/**
+	 * Returns the x offset of the text.
+	 * @return The x offset of the text
+	 */
 	public int getXOff() {
-		return x_off;
+		return _xOff;
 	}
 	
+	/**
+	 * Sets the y offset for the text. 
+	 * @param newval The y offset
+	 */
 	public void setYOff(final int newval) {
-		y_off=newval;
+		_yOff=newval;
 	}
+	
+	/**
+	 * Returns the y offset of the text.
+	 * @return The y offset of the text
+	 */
 	public int getYOff() {
-		return y_off;
+		return _yOff;
 	}
 	
+	/**
+	 * Sets the type of the displayed text.
+	 * @param newval The type of the displayed text
+	 */
 	public void setType(final int newval) {
-		value_type=newval;
+		_valueType=newval;
 	}
+	
+	/**
+	 * returns the type of the displayed text.
+	 * @return The type of the displayed text
+	 */
 	public int getType() {
-		return value_type;
+		return _valueType;
 	}
 	
+	/**
+	 * Sets the value for the text.
+	 * @param newval The value for the text
+	 */
 	public void setTextValue(final String newval) {
-		text_value=newval;
-	}
-	public String getTextValue() {
-		return text_value;
+		_textValue=newval;
 	}
 	
-	public void setDoubleValue(final double newval) {
-		double_value=newval;
-	}
-	public double getDoubleValue() {
-		return double_value;
+	/**
+	 * Returns the value for the text.
+	 * @return The value for the text
+	 */
+	public String getTextValue() {
+		return _textValue;
 	}
 
 	/**
@@ -303,11 +348,5 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		}
 		return null;
 	}
-	
-//	public void setDoubleValueFormat(final String newval) {
-//		double_value_format=newval;
-//	}
-//	public String getDoubleValueFormat() {
-//		return double_value_format;
-//	}
+
 }

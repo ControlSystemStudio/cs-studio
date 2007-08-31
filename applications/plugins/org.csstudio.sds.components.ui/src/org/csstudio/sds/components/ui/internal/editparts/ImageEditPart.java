@@ -4,7 +4,6 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.RGB;
 
 import org.csstudio.sds.components.model.ImageModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableImageFigure;
@@ -35,7 +34,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 		// create AND initialize the view properly
 		final RefreshableImageFigure figure = new RefreshableImageFigure();
 		
-		figure.setFilename(model.getFilename());
+		figure.setFilePath(model.getFilename());
 		figure.setTopCrop(model.getTopCrop());
 		figure.setBottomCrop(model.getBottomCrop());
 		figure.setLeftCrop(model.getLeftCrop());
@@ -104,7 +103,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
-				imageFigure.setFilename(((IPath)newValue).toString());
+				imageFigure.setFilePath((IPath)newValue);
 				return true;
 			}
 		};

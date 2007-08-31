@@ -5,7 +5,6 @@ import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
@@ -40,15 +39,12 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		figure.setTextAlignment(model.getTextAlignment());
 		figure.setTransparent(model.getTransparent());
 		figure.setBorderWidth(model.getBorderWidth());
-		figure.setBorderColor(model.getBorderColor());
 		figure.setRotation(model.getRotation());
 		figure.setXOff(model.getXOff());
 		figure.setYOff(model.getYOff());
 		
 		figure.setType(model.getType());
 		figure.setTextValue(model.getTextValue());
-		figure.setDoubleValue(model.getDoubleValue());
-		//figure.setDoubleValueFormat(model.getDoubleValueFormat());
 		figure.setDecimalPlaces(model.getPrecision());
 		
 		return figure;
@@ -78,28 +74,6 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_TEXTVALUE, handle);
-		
-		//double value
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setDoubleValue((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_DOUBLEVALUE, handle);
-		
-//		//double value format
-//		handle = new IWidgetPropertyChangeHandler() {
-//			public boolean handleChange(final Object oldValue, final Object newValue,
-//					final IFigure figure) {
-//				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-//				labelFigure.setDoubleValueFormat((String) newValue);
-//				return true;
-//			}
-//		};
-//		setPropertyChangeHandler(LabelModel.PROP_DOUBLEVALUEFORMAT, handle);
 		
 		// precision
 		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
@@ -165,17 +139,6 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_BORDER_WIDTH, handle);
-		
-		// changes to the border color property
-		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
-				labelFigure.setBorderColor((RGB)newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(LabelModel.PROP_BORDER_COLOR, handle);
 		
 		// changes to the text rotation property
 		handle = new IWidgetPropertyChangeHandler() {

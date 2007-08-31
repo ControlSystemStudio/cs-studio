@@ -71,9 +71,9 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		figure.setDecimalPlaces(model.getPrecision());
 	
 		model.getProperty(MeterModel.PROP_VALUE).addPropertyChangeListener(new IPropertyChangeListener() {
-			public void propertyValueChanged(Object oldValue, Object newValue) {}
-			public void propertyManualValueChanged(Object manualValue) {}
-			public void dynamicsDescriptorChanged(DynamicsDescriptor dynamicsDescriptor) {
+			public void propertyValueChanged(final Object oldValue, final Object newValue) {}
+			public void propertyManualValueChanged(final Object manualValue) {}
+			public void dynamicsDescriptorChanged(final DynamicsDescriptor dynamicsDescriptor) {
 				figure.setDynamicValue(dynamicsDescriptor);
 			}
 		});
@@ -253,8 +253,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 	protected void registerPropertyChangeHandlers() {
 		// register handlers to deal with resizes
 		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.invalidateBackground();
 				meterFigure.invalidateNeedle();
@@ -263,120 +262,90 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(MeterModel.PROP_HEIGHT, handle);
 		setPropertyChangeHandler(MeterModel.PROP_WIDTH, handle);
-		
 		// register a handler that deals with updates of the "angle" property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setAngle((Integer) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_ANGLE, handle);
-		
 		// register a handler that deals with updates of the "inner angle" property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setInnerAngle((Integer) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_INNANGLE, handle);
-
 		// register a handler that deals with updates of the "visible radius" property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setVisibleRadius((Double) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_RADIUS, handle);
-		
 		// register a handler that deals with updates of the "scale radius" property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setScaleRadius((Double) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_SCALERADIUS, handle);
-		
 		// register a handler that deals with updates of the "minor step" property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setMinorStep((Double) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_MINSTEP, handle);
-		
 		// register a handler that deals with updates of the "major step" property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setMajorStep((Double) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_MAJSTEP, handle);
-		
 		// register a handler that deals with updates of the "minimum value" property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setMinValue((Double) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_MINVAL, handle);
-		
 		// register a handler that deals with updates of the "maximum value" property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setMaxValue((Double) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_MAXVAL, handle);
-		
 		// register a handler that deals with updates of the "value" property
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setValue((Double) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_VALUE, handle);
-		
-//		//border width change handler
-//		handle = new IWidgetPropertyChangeHandler() {
-//			public boolean handleChange(final Object oldValue, final Object newValue,
-//					final IFigure figure) {
-//				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-//				meterFigure.setBorderWidth((Integer) newValue);
-//				return true;
-//			}
-//		};
-//		setPropertyChangeHandler(MeterModel.PROP_BORDER_WIDTH, handle);
 		//scale line width change handler
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setScaleWidth((Integer) newValue);
 				return true;
@@ -385,8 +354,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(MeterModel.PROP_SCALEWIDTH, handle);
 		//scale text area radius change handler
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setTextRadius((Double) newValue);
 				return true;
@@ -395,59 +363,31 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(MeterModel.PROP_TEXTRADIUS, handle);
 		//transparency change handler
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setTransparent((Boolean) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_TRANSPARENT, handle);
-		
 		//values font change handler
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setValuesFont((FontData) newValue);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_VALFONT, handle);
-		
 		//channel font change handler
 		handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
 				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
 				meterFigure.setChannelFont((FontData) newValue); 
 				return true;
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_CHANFONT, handle);
-		
-//		//format change handler
-//		handle = new IWidgetPropertyChangeHandler() {
-//			public boolean handleChange(final Object oldValue, final Object newValue,
-//					final IFigure figure) {
-//				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-//				meterFigure.setFormat((String) newValue);
-//				return true;
-//			}
-//		};
-//		setPropertyChangeHandler(MeterModel.PROP_FORMAT, handle);
-		
-//		//scale format change handler
-//		handle = new IWidgetPropertyChangeHandler() {
-//			public boolean handleChange(final Object oldValue, final Object newValue,
-//					final IFigure figure) {
-//				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-//				meterFigure.setScaleFormat((String) newValue);
-//				return true;
-//			}
-//		};
-//		setPropertyChangeHandler(MeterModel.PROP_SCALEFORMAT, handle);
-		
 		registerColorPropertyHandlers();
 		registerBoundaryPropertyHandlers();
 	}

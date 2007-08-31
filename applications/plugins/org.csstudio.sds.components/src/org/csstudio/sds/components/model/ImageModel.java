@@ -2,10 +2,9 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.ResourceProperty;
-import org.csstudio.sds.model.properties.StringProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.BooleanProperty;
+import org.csstudio.sds.model.properties.IntegerProperty;
+import org.csstudio.sds.model.properties.ResourceProperty;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
@@ -82,8 +81,8 @@ public final class ImageModel extends AbstractWidgetModel {
 	 * Returns the path to the specified file.
 	 * @return The path to the specified file
 	 */
-	public String getFilename() {
-		return ((IPath)getProperty(PROP_FILENAME).getPropertyValue()).toString();
+	public IPath getFilename() {
+		return (IPath) getProperty(PROP_FILENAME).getPropertyValue();
 	}
 	
 	/**

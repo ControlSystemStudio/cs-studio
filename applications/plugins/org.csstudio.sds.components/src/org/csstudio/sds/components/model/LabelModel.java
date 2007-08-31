@@ -24,43 +24,58 @@ public final class LabelModel extends AbstractWidgetModel {
 	public static final String ID = "org.csstudio.sds.components.Label";
 	
 	/**
-	 * The IDs of the properties.
+	 * The ID of the <i>font</i> property.
 	 */
 	public static final String PROP_FONT = "font";
+	/**
+	 * The ID of the <i>text alignment</i> property.
+	 */
 	public static final String PROP_TEXT_ALIGN = "textAlignment";
+	/**
+	 * The ID of the <i>transparent</i> property.
+	 */
 	public static final String PROP_TRANSPARENT = "transparent_background";
+	/**
+	 * The ID of the <i>rotation</i> property.
+	 */
 	public static final String PROP_ROTATION = "text_rotation";
+	/**
+	 * The ID of the <i>x offset</i> property.
+	 */
 	public static final String PROP_XOFF = "offset.x";
+	/**
+	 * The ID of the <i>y offset</i> property.
+	 */
 	public static final String PROP_YOFF = "offset.y";
-	
 	/**
 	 * The ID of the precision property.
 	 */
 	public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
-	
 	/**
 	 * Type of the displayed text.
 	 */
 	public static final String PROP_TYPE = "value_type";
-	
 	/**
 	 * Text value.
 	 */
 	public static final String PROP_TEXTVALUE = "value.text";
 	
 	/**
-	 * Double value and its output formatting.
-	 */
-	public static final String PROP_DOUBLEVALUE = "value.double";
-	//public static final String PROP_DOUBLEVALUEFORMAT = "value.double.format";
-	
-	/**
 	 * Currently available value types.
 	 */
 	public static final String [] VALUE_TYPES=new String [] {"Text","Double Value"};
+	/**
+	 * The ID of the <i>text type</i> property.
+	 */
 	public static final int TYPE_TEXT = 0;
+	/**
+	 * The ID of the <i>double type</i> property.
+	 */
 	public static final int TYPE_DOUBLE = 1;
 
+	/**
+	 * Constructor.
+	 */
 	public LabelModel() {
 		setWidth(100);
 		setHeight(30);
@@ -95,12 +110,15 @@ public final class LabelModel extends AbstractWidgetModel {
 		//value properties
 		addProperty(PROP_TYPE, new OptionProperty("Value Type",WidgetPropertyCategory.Behaviour,VALUE_TYPES,TYPE_DOUBLE));
 		addProperty(PROP_TEXTVALUE, new StringProperty("Text Value",WidgetPropertyCategory.Display,""));
-		addProperty(PROP_DOUBLEVALUE, new DoubleProperty("Double Value",WidgetPropertyCategory.Display,0.0));
-		//addProperty(PROP_DOUBLEVALUEFORMAT, new StringProperty("Double Value Format",WidgetPropertyCategory.Display,"%.3f"));
+		//addProperty(PROP_DOUBLEVALUE, new DoubleProperty("Double Value",WidgetPropertyCategory.Display,0.0));
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
 				WidgetPropertyCategory.Behaviour, 2, 0, 5));
 	}
 
+	/**
+	 * Returns the font for the label.
+	 * @return The font
+	 */
 	public FontData getFont() {
 		return (FontData) getProperty(PROP_FONT).getPropertyValue();
 	}
@@ -114,39 +132,60 @@ public final class LabelModel extends AbstractWidgetModel {
 		return (Integer) getProperty(PROP_PRECISION).getPropertyValue();
 	}
 
+	/**
+	 * Returns the alignment of the text.
+	 * @return The alignment of the text
+	 */
 	public int getTextAlignment() {
 		return (Integer) getProperty(PROP_TEXT_ALIGN).getPropertyValue();
 	}
 	
+	/**
+	 * Returns the transparent state of the background.
+	 * @return True if the background is transparent, false otherwise
+	 */
 	public boolean getTransparent() {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 	
+	/**
+	 * Returns the value for the rotation of the text.
+	 * @return The value for the rotation of the text
+	 */
 	public double getRotation() {
 		return (Double) getProperty(PROP_ROTATION).getPropertyValue();
 	}
 	
+	/**
+	 * Returns the value for the x offset.
+	 * @return The value for the x offset
+	 */
 	public int getXOff() {
 		return (Integer) getProperty(PROP_XOFF).getPropertyValue();
 	}
 	
+	/**
+	 * Returns the value for the y offset.
+	 * @return The value for the y offset
+	 */
 	public int getYOff() {
 		return (Integer) getProperty(PROP_YOFF).getPropertyValue();
 	}
 	
+	/**
+	 * Returns the type of the text (Double or String).
+	 * @return The type of the text
+	 */
 	public int getType() {
 		return (Integer) getProperty(PROP_TYPE).getPropertyValue();
 	}
 	
+	/**
+	 * Returns the text.
+	 * @return The text
+	 */
 	public String getTextValue() {
 		return (String) getProperty(PROP_TEXTVALUE).getPropertyValue();
 	}
 	
-	public double getDoubleValue() {
-		return (Double) getProperty(PROP_DOUBLEVALUE).getPropertyValue();
-	}
-	
-//	public String getDoubleValueFormat() {
-//		return (String) getProperty(PROP_DOUBLEVALUEFORMAT).getPropertyValue();
-//	}
 }

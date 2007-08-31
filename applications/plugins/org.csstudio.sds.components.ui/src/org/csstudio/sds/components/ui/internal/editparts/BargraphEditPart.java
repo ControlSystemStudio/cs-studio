@@ -24,7 +24,6 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableBargraphFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
-import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
