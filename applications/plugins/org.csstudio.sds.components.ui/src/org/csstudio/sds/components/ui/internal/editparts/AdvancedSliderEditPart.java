@@ -21,6 +21,7 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.AdvancedSliderModel;
 import org.csstudio.sds.components.ui.internal.figures.AdvancedSliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
@@ -57,24 +58,27 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 		final AdvancedSliderFigure slider = new AdvancedSliderFigure();
 		slider.addSliderListener(new AdvancedSliderFigure.ISliderListener() {
 			public void sliderValueChanged(final int newValue) {
-				model.getProperty(AdvancedSliderModel.PROP_VALUE).setManualValue(
-						newValue);
+				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+					model.getProperty(AdvancedSliderModel.PROP_VALUE).setManualValue(
+							newValue);
 
-				slider.setManualValue((Integer) newValue);
+					slider.setManualValue((Integer) newValue);
 
-				if (_resetManualValueDisplayJob == null) {
-					_resetManualValueDisplayJob = new UIJob("reset") {
-						@Override
-						public IStatus runInUIThread(
-								final IProgressMonitor monitor) {
-							slider.setManualValue(model.getValue());
-							return Status.OK_STATUS;
-						}
-					};
+					if (_resetManualValueDisplayJob == null) {
+						_resetManualValueDisplayJob = new UIJob("reset") {
+							@Override
+							public IStatus runInUIThread(
+									final IProgressMonitor monitor) {
+								slider.setManualValue(model.getValue());
+								return Status.OK_STATUS;
+							}
+						};
 
+					}
+					_resetManualValueDisplayJob.schedule(5000);	
+				} else {
+					CentralLogger.getInstance().info(this, "Slider value changed");
 				}
-				_resetManualValueDisplayJob.schedule(5000);
-
 			}
 		});
 
@@ -84,7 +88,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 		slider.setValue(model.getValue());
 		slider.setManualValue(model.getValue());
 		slider.setOrientation(model.isHorizontal());
-
+		slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.getEnabled());
 		return slider;
 	}
 

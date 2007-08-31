@@ -23,16 +23,9 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.Button;
-import org.eclipse.draw2d.FigureListener;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.draw2d.RectangleFigure;
-import org.eclipse.draw2d.XYLayout;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 
@@ -42,7 +35,7 @@ import org.eclipse.swt.graphics.Font;
  * @author Sven Wende
  * 
  */
-public final class RefreshableActionButtonFigure extends RectangleFigure implements
+public final class RefreshableActionButtonFigure extends Button implements
 		IAdaptable {
 	/**
 	 * Default label font.
@@ -51,41 +44,23 @@ public final class RefreshableActionButtonFigure extends RectangleFigure impleme
 			"Arial", 8, SWT.NONE); //$NON-NLS-1$
 	
 	/**
+	 * The Label for the Button.
+	 */
+	private Label _label;
+	
+	/**
 	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
 	 */
 	private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
 	
-	private SdsButton _button;
 
 	/**
 	 * Constructor.
 	 */
 	public RefreshableActionButtonFigure() {
-//		_label = new Label("");
-//		setContents(_label);
-//		setFont(FONT);
-		this.setLayoutManager(new XYLayout());
-		_button = new SdsButton();
-		//Rectangle bounds = new Rectangle(this.getBounds().x+2,this.getBounds().y+2,this.getBounds().width-4, this.getBounds().height-4);
-		_button.setBounds(bounds);
-		this.add(_button);
-		// listen to figure movement events
-		addFigureListener(new FigureListener() {
-			public void figureMoved(final IFigure source) {
-				refreshConstraints();
-			}
-		});
-	}
-	
-	private void refreshConstraints() {
-		Rectangle bounds = new Rectangle(2,2,this.getBounds().width-4, this.getBounds().height-4);
-		this.setConstraint(_button, bounds);
-	}
-	
-	@Override
-	public void paintFigure(Graphics graphics) {
-		//super.paintFigure(graphics);
-		this.refreshConstraints();
+		_label = new Label("");
+		setContents(_label);
+		setFont(FONT);
 	}
 
 	/**
@@ -104,8 +79,7 @@ public final class RefreshableActionButtonFigure extends RectangleFigure impleme
 	 * 			The text for the button
 	 */
 	public void setText(final String s) {
-		//_label.setText(s);
-		_button.setText(s);
+		_label.setText(s);
 	}
 	
 	/**
@@ -115,53 +89,22 @@ public final class RefreshableActionButtonFigure extends RectangleFigure impleme
 	 * 			The alignment for the text 
 	 */
 	public void setTextAlignment(final int alignment) {
-		_button.setTextAlignment(alignment);
-	}
-	
-	public void addActionListener(final  ActionListener listener) {
-		_button.addActionListener(listener);
+		if (alignment>=0 && alignment<_alignments.length) {
+			if (_alignments[alignment]==PositionConstants.LEFT || _alignments[alignment]==PositionConstants.RIGHT) {
+				_label.setTextPlacement(PositionConstants.NORTH);
+			} else {
+				_label.setTextPlacement(PositionConstants.EAST);
+			}
+			_label.setTextAlignment(_alignments[alignment]);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		return null;
-	}
-	
-	private final class SdsButton extends Button {
-		
-		/**
-		 * The Label for the Button.
-		 */
-		private Label _label;
-		
-		public SdsButton() {
-			_label = new Label("");
-			setContents(_label);
-			setFont(FONT);	
-		}
-		
-		public void setText(final String text) {
-			_label.setText(text);
-		}
-		
-		/**
-		 * Sets the alignment of the buttons text.
-		 * The parameter is a {@link PositionConstants} (LEFT, RIGHT, TOP, CENTER, BOTTOM)
-		 * @param alignment
-		 * 			The alignment for the text 
-		 */
-		public void setTextAlignment(final int alignment) {
-			if (alignment>=0 && alignment<_alignments.length) {
-				if (_alignments[alignment]==PositionConstants.LEFT || _alignments[alignment]==PositionConstants.RIGHT) {
-					_label.setTextPlacement(PositionConstants.NORTH);
-				} else {
-					_label.setTextPlacement(PositionConstants.EAST);
-				}
-				_label.setTextAlignment(_alignments[alignment]);
-			}
-		}
 	}
 	
 }

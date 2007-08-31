@@ -28,6 +28,7 @@ import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
+import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.sds.util.CustomMediaFactory;
@@ -58,11 +59,12 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		button.setFont(CustomMediaFactory.getInstance()
 				.getFont(model.getFont()));
 		button.setTextAlignment(model.getTextAlignment());
+		button.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.getEnabled());
 		return button;
 	}
 
 	/**
-	 * Returns the Figure of this Editpart.
+	 * Returns the Figure of this EditPart.
 	 * @return RefreshableActionButtonFigure
 	 * 			The RefreshableActionButtonFigure of this EditPart
 	 */
@@ -79,25 +81,42 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		RefreshableActionButtonFigure figure = getCastedFigure();
 		figure.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent event) {
-				CentralLogger.getInstance().info(this, "KLICK");
-				ActionButtonModel model = (ActionButtonModel) getWidgetModel();
-				
-				switch(model.getAction()) {
-				case 0:
-					openDisplayShellInRunMode(model.getResource(), model.getClickAlias());
-					break;
-				case 1:
-					openDisplayViewInRunMode(model.getResource(), model.getClickAlias());
-					break;
-				case 2:
-					model.getProperty(ActionButtonModel.PROP_CLICK_VALUE).setManualValue(model.getClickValue());
-					break;
-				default:
-					// do nothing
-					CentralLogger.getInstance().info(this, "Clicked!");
-				}	
+				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+					CentralLogger.getInstance().info(this, "KLICK");
+					ActionButtonModel model = (ActionButtonModel) getWidgetModel();
+					
+					switch(model.getAction()) {
+					case 0:
+						openDisplayShellInRunMode(model.getResource(), model.getClickAlias());
+						break;
+					case 1:
+						openDisplayViewInRunMode(model.getResource(), model.getClickAlias());
+						break;
+					case 2:
+						model.getProperty(ActionButtonModel.PROP_CLICK_VALUE).setManualValue(model.getClickValue());
+						break;
+					default:
+						// do nothing
+						CentralLogger.getInstance().info(this, "Clicked!");
+					}	
+				} else {
+					CentralLogger.getInstance().info(this, "ActionButton activated!");
+				}
+					
 			}
 		});
+		
+//		// live
+//		IWidgetPropertyChangeHandler liveHandler = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue,
+//					final Object newValue,
+//					final IFigure refreshableFigure) {
+//				RefreshableActionButtonFigure figure = getCastedFigure();
+//				figure.setEnabled((Boolean)newValue);
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(ActionButtonModel.PROP_LIVE, liveHandler);
 
 		// label
 		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {

@@ -410,6 +410,15 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 			}
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setEnabled(final boolean value) {
+		super.setEnabled(value);
+		_scrollBar.setEnabled(value);
+	}
 
 	/**
 	 * Set the minimum value.

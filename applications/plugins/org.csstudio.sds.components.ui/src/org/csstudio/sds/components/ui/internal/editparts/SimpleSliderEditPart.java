@@ -21,9 +21,11 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.SimpleSliderModel;
 import org.csstudio.sds.components.ui.internal.figures.SimpleSliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
+import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -56,25 +58,28 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		final SimpleSliderFigure slider = new SimpleSliderFigure();
 		slider.addSliderListener(new SimpleSliderFigure.ISliderListener() {
 			public void sliderValueChanged(final double newValue) {
-				model.getProperty(SimpleSliderModel.PROP_VALUE).setManualValue(
-						newValue);
+				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+					model.getProperty(SimpleSliderModel.PROP_VALUE).setManualValue(
+							newValue);
 
-				slider.setManualValue((Double) newValue);
+					slider.setManualValue((Double) newValue);
 
-				if (_resetManualValueDisplayJob == null) {
-					_resetManualValueDisplayJob = new UIJob("reset") {
-						@Override
-						public IStatus runInUIThread(
-								final IProgressMonitor monitor) {
-							slider.setManualValue(model.getValue());
-							slider.setValue(model.getValue());
-							return Status.OK_STATUS;
-						}
-					};
+					if (_resetManualValueDisplayJob == null) {
+						_resetManualValueDisplayJob = new UIJob("reset") {
+							@Override
+							public IStatus runInUIThread(
+									final IProgressMonitor monitor) {
+								slider.setManualValue(model.getValue());
+								slider.setValue(model.getValue());
+								return Status.OK_STATUS;
+							}
+						};
 
+					}
+					_resetManualValueDisplayJob.schedule(5000);	
+				} else {
+					CentralLogger.getInstance().info(this, "Slider value changed");
 				}
-				_resetManualValueDisplayJob.schedule(5000);
-
 			}
 		});
 
@@ -89,6 +94,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		slider.setDecimalPlaces(model.getPrecision());
 		slider.setSliderWide(model.getSliderWidth());
 		slider.setPopulateEvents(true);
+		slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.getEnabled());
 		return slider;
 	}
 
@@ -134,7 +140,6 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
-				//slider.setMax((Integer) newValue);
 				slider.setMax((Double) newValue);
 				slider.setPopulateEvents(true);
 				return true;
@@ -149,7 +154,6 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 					final IFigure refreshableFigure) {
 				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
 				slider.setPopulateEvents(false);
-				//slider.setIncrement((Integer) newValue);
 				slider.setIncrement((Double) newValue);
 				slider.setPopulateEvents(true);
 				return true;
