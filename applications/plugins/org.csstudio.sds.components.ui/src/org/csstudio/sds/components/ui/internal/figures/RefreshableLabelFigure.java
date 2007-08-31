@@ -110,7 +110,7 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		Rectangle bound=getBounds();
 		gfx.translate(bound.x,bound.y);
 		
-		if (_transparent) {
+		if (!_transparent) {
 			gfx.setBackgroundColor(getBackgroundColor());
 			gfx.fillRectangle(0,0,bound.width,bound.height);
 		}
