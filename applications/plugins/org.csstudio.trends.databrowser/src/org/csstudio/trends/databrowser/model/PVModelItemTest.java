@@ -26,7 +26,8 @@ public class PVModelItemTest
         
         PVModelItem item = new PVModelItem(null, "fred",
                         1024, 0, 0, 0, true, false, 0, 0, 0, 0,
-                        TraceType.Lines, false);
+                        TraceType.Lines, false,
+                        IPVModelItem.RequestType.OPTIMIZED);
         item.start();
         final int num = 20;
         // 'Scan' the item once per second

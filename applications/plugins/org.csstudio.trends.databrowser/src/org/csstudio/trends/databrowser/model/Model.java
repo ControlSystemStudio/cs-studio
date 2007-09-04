@@ -446,7 +446,8 @@ public class Model
             item = new PVModelItem(this, pv_name, ring_size,
                             		axis_index, low, high, visible, auto_scale,
                                     red, green, blue, line_width, trace_type,
-                                    log_scale);
+                                    log_scale,
+                                    IPVModelItem.RequestType.OPTIMIZED);
             break;
         case Formula:
             item = new FormulaModelItem(this, pv_name, 

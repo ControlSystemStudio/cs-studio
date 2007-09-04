@@ -34,11 +34,13 @@ public interface IPVModelItem extends IModelItem
             this.name = name;
         }
         
+        /** @return Localized name of this request type */
         public String getName()
         {
             return name;
         }
         
+        /** @return Array of localized names for all available request types */
         public static String [] getTypeStrings()
         {
             if (type_strings == null)

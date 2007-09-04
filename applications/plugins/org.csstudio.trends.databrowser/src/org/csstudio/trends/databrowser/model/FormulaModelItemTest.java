@@ -26,10 +26,12 @@ public class FormulaModelItemTest
         
         PVModelItem fred = new PVModelItem(null, "fred",
                         1024, 0, 0, 0, true, false, 0, 0, 0, 0,
-                        TraceType.Lines, false);
+                        TraceType.Lines, false,
+                        IPVModelItem.RequestType.OPTIMIZED);
         PVModelItem janet = new PVModelItem(null, "janet",
                         1024, 0, 0, 0, true, false, 0, 0, 0, 0,
-                        TraceType.Lines, false);
+                        TraceType.Lines, false,
+                        IPVModelItem.RequestType.OPTIMIZED);
         fred.start();
         janet.start();
         final int num = 20;

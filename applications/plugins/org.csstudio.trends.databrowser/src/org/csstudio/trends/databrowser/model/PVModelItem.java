@@ -34,6 +34,9 @@ public class PVModelItem
        extends AbstractModelItem
        implements IPVModelItem, PVListener, IProcessVariable
 {	
+    /** <code>"request"</code> */
+    private static final String TAG_REQUEST = "request"; //$NON-NLS-1$
+
     /** For unit tests within this package,
      *  ModelItem can directly use EPICS_V3_PV,
      *  because the extension mechanism used by the PVFactory
@@ -61,7 +64,7 @@ public class PVModelItem
     private ModelSamples samples;
     
     /** How to request samples from the archive. */
-    private RequestType request_type = RequestType.OPTIMIZED;
+    private RequestType request_type;
     
     /** Constructor
      *  @param pv_name Name of the PV
@@ -83,12 +86,14 @@ public class PVModelItem
             int red, int green, int blue,
             int line_width,
             TraceType trace_type,
-            boolean log_scale)
+            boolean log_scale,
+            RequestType request_type)
     {
         super(model, pv_name, axis_index, min, max, visible, auto_scale,
               red, green , blue, line_width, trace_type, log_scale);
         pv = createPV(pv_name);
         samples = new ModelSamples(ring_size);
+        this.request_type = request_type;
     }
 
     @SuppressWarnings("nls")
@@ -182,6 +187,7 @@ public class PVModelItem
         StringBuffer b = new StringBuffer();
         b.append("        <" + TAG_PV + ">\n");
         addCommonXMLConfig(b);
+        XMLHelper.XML(b, 3, TAG_REQUEST, Integer.toString(getRequestType().ordinal()));
         if (archives.size() > 0)
         {
             for (IArchiveDataSource archive : archives)
@@ -214,11 +220,14 @@ public class PVModelItem
         final int rgb[] = loadColorFromDOM(pv);
         final boolean log_scale = DOMHelper.getSubelementBoolean(pv, TAG_LOG_SCALE);
         final TraceType trace_type = loadTraceTypeFromDOM(pv);
+        final RequestType request_type = loadRequestTypeFromDOM(pv);
+        
         final PVModelItem item =
             new PVModelItem(model, name, ring_size, axis_index,
                           min, max, visible, auto_scale,
                           rgb[0], rgb[1], rgb[2],
-                          line_width, trace_type, log_scale);
+                          line_width, trace_type, log_scale,
+                          request_type);
         
         // Get archives, if there are any
         Element arch = DOMHelper.findFirstElementNode(
@@ -235,6 +244,14 @@ public class PVModelItem
         return item;
     }
     
+    /** @return RequestType obtained from DOM */
+    private static RequestType loadRequestTypeFromDOM(Element pv)
+    {
+        final int ordinal = DOMHelper.getSubelementInt(pv, TAG_REQUEST,
+                        RequestType.OPTIMIZED.ordinal());
+        return RequestType.fromOrdinal(ordinal);
+    }
+
     /** @param ring_size The ring_size to set. */
     public final void setRingSize(int ring_size)
     {
