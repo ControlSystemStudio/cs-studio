@@ -2,8 +2,6 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import org.csstudio.sds.components.model.MeterModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableMeterFigure;
-import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.properties.IPropertyChangeListener;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
@@ -44,14 +42,10 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		figure.setMinValue(model.getMinValue());
 		figure.setMaxValue(model.getMaxValue());
 		figure.setValue(model.getValue());
-		//figure.setBorderColor(model.getBorderColor());
 		figure.setScaleColor(model.getScaleColor());
-		//figure.setBorderWidth(model.getBorderWidth());
 		figure.setScaleWidth(model.getScaleWidth());
 		figure.setTextRadius(model.getTextRadius());
 		figure.setTransparent(model.getTransparent());
-		//figure.setFormat(model.getFormat());
-		//figure.setScaleFormat(model.getScaleFormat());
 		
 		figure.setMColor(model.getMColor());
 		figure.setLOLOColor(model.getLOLOColor());
@@ -70,14 +64,15 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		
 		figure.setDecimalPlaces(model.getPrecision());
 	
-		model.getProperty(MeterModel.PROP_VALUE).addPropertyChangeListener(new IPropertyChangeListener() {
-			public void propertyValueChanged(final Object oldValue, final Object newValue) {}
-			public void propertyManualValueChanged(final Object manualValue) {}
-			public void dynamicsDescriptorChanged(final DynamicsDescriptor dynamicsDescriptor) {
-				figure.setDynamicValue(dynamicsDescriptor);
-			}
-		});
-		figure.setDynamicValue(model.getDynamicsDescriptor(MeterModel.PROP_VALUE));
+//		model.getProperty(MeterModel.PROP_VALUE).addPropertyChangeListener(new IPropertyChangeListener() {
+//			public void propertyValueChanged(final Object oldValue, final Object newValue) {}
+//			public void propertyManualValueChanged(final Object manualValue) {}
+//			public void dynamicsDescriptorChanged(final DynamicsDescriptor dynamicsDescriptor) {
+//				figure.setDynamicValue(dynamicsDescriptor);
+//			}
+//		});
+//		figure.setDynamicValue(model.getDynamicsDescriptor(MeterModel.PROP_VALUE));
+		figure.setChannelName(model.getPrimaryPV());
 		return figure;
 	}
 	
@@ -95,17 +90,6 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_NEEDLECOLOR, handle);
-		
-//		// border
-//		handle = new IWidgetPropertyChangeHandler() {
-//			public boolean handleChange(final Object oldValue, final Object newValue,
-//					final IFigure figure) {
-//				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
-//				meterFigure.setBorderColor((RGB) newValue);
-//				return true;
-//			}
-//		};
-//		setPropertyChangeHandler(MeterModel.PROP_BORDER_COLOR, handle);
 		
 		// scale
 		handle = new IWidgetPropertyChangeHandler() {
@@ -184,6 +168,18 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_PRECISION, precisionHandler);
+		
+		// precision
+		IWidgetPropertyChangeHandler channelHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableMeterFigure meter = (RefreshableMeterFigure) refreshableFigure;
+				meter.setChannelName((String) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(MeterModel.PROP_PRIMARY_PV, channelHandler);
 	}
 	
 	/**
