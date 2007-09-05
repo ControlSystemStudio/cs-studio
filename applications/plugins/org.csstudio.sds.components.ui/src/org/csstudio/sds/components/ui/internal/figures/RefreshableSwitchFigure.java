@@ -2,6 +2,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import java.util.HashMap;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
@@ -11,9 +12,8 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Color;
 
-import org.csstudio.sds.components.common.ICosySwitch;
+import org.csstudio.sds.components.common.CosySwitch;
 import org.csstudio.sds.components.common.SwitchPlugins;
-import org.csstudio.sds.components.ui.internal.switchtypes.UnknownSwitch;
 import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
 
 /**
@@ -23,14 +23,6 @@ import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
  * 
  */
 public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
-	/**
-	 * Currently defined switch states.
-	 */
-	public static final int STATE_UNKNOWN = -1;
-	public static final int STATE_AUS = 0;
-	public static final int STATE_EIN = 1;
-	public static final int STATE_GESTOERT = 8;
-	public static final int STATE_SCHALTET = 6;
 	
 	/**
 	 * A border adapter, which covers all border handlings.
@@ -40,151 +32,195 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 	/**
 	 * Colors for the defined states.
 	 */
-	public static final HashMap<Integer,Color> state_colors;
+	public static final HashMap<Integer,Color> STATECOLORS;
 	
 	/**
 	 * static initializer for the color array.
 	 */
 	static {
-		state_colors=new HashMap<Integer,Color>();
+		STATECOLORS=new HashMap<Integer,Color>();
 		/*these colors were taken from the switch adl files*/
-		state_colors.put(STATE_AUS,CustomMediaFactory.getInstance().getColor(new RGB(253,0,0)));
-		state_colors.put(STATE_EIN,CustomMediaFactory.getInstance().getColor(new RGB(0,216,0)));
-		state_colors.put(STATE_GESTOERT,CustomMediaFactory.getInstance().getColor(new RGB(251,243,74)));
-		state_colors.put(STATE_SCHALTET,CustomMediaFactory.getInstance().getColor(new RGB(158,158,158)));
+		STATECOLORS.put(CosySwitch.STATE_AUS,CustomMediaFactory.getInstance().getColor(new RGB(253,0,0)));
+		STATECOLORS.put(CosySwitch.STATE_EIN,CustomMediaFactory.getInstance().getColor(new RGB(0,216,0)));
+		STATECOLORS.put(CosySwitch.STATE_GESTOERT,CustomMediaFactory.getInstance().getColor(new RGB(251,243,74)));
+		STATECOLORS.put(CosySwitch.STATE_SCHALTET,CustomMediaFactory.getInstance().getColor(new RGB(158,158,158)));
 	}
 	
 	/**
 	 * Current state of the switch.
 	 */
-	private int switch_state=STATE_AUS;
+	private int _switchState=CosySwitch.STATE_AUS;
 	
 	/**
-	 * Current switch type - drawing class.
+	 * The current drawing class.
 	 */
-	private ICosySwitch switch_painter=new UnknownSwitch();
-	private int switch_type=0;
-	{
-		switch_painter.construct(this,10,10);
-	}
+	private CosySwitch _switchPainter = new CosySwitch();
+	/**
+	 * The current switch type. 
+	 */
+	private int _switchType=0;
 	
 	/**
-	 * Switch orientation:
-	 *   rotation (in degrees, use to change horizontal/vertical or any other angle)
-	 *   scaling koeficient (needed because only by rotating, the switch could go out of bounds)
+	 * The rotation (in degrees, use to change horizontal/vertical or any other angle).
 	 */
-	private int rot_angle=0;
-	private double k=1.0;
+	private int _rotAngle=0;
+	/**
+	 * The scaling coefficient (needed because only by rotating, the switch could go out of bounds).
+	 */
+	private double _coefficient=1.0;
 	
 	/**
-	 * Double versions of the current width and height.
-	 * wdth is the shorter side, hght is the longer side
+	 * Double versions of the current width.
+	 * wdth is the shorter side
 	 */
-	private double wdth=1.0,hght=1.0;
-	
+	private double _wdth=1.0;
+	/**
+	 * Double versions of the current height.
+	 * hght is the longer side
+	 */
+	private double _hght=1.0;
 	/**
 	 * True if the switch was resized after last paint event.
 	 */
-	private boolean resized=true;
+	private boolean _resized=true;
 	
 	/**
 	 * Fills the background.
+	 * @param gfx The {@link Graphics} to use
 	 */
-	protected void fillShape(Graphics gfx) {
+	protected void fillShape(final Graphics gfx) {
 		gfx.setBackgroundColor(getBackgroundColor());
 		gfx.fillRectangle(getBounds());
 	}
 	
 	/**
 	 * Draws the outline of the image, i.e. the switch itself.
+	 * @param gfx The {@link Graphics} to use
 	 */
 	protected void outlineShape(final Graphics gfx) {
 		AntialiasingUtil.getInstance().enableAntialiasing(gfx);
 		gfx.translate(getBounds().getLocation());
 		
-		if (resized==true) {
+		if (_resized) {
 			/*some trigonometry to determine the new scaling factor*/
-			wdth=(bounds.width<bounds.height)?(double)bounds.width:(double)bounds.height;
-			hght=(bounds.width<bounds.height)?(double)bounds.height:(double)bounds.width;
-			double angle=(double)rot_angle;
+			_wdth=(bounds.width<bounds.height)?(double)bounds.width:(double)bounds.height;
+			_hght=(bounds.width<bounds.height)?(double)bounds.height:(double)bounds.width;
+			double angle=(double)_rotAngle;
 			
-			if (rot_angle<=90 || (rot_angle>180 && rot_angle<=270)) {
-				k=wdth/(wdth*Trigonometry.sin(-angle+90.0)+hght*Trigonometry.cos(-angle+90.0));
-				k=Math.abs(k);
+			if (_rotAngle<=90 || (_rotAngle>180 && _rotAngle<=270)) {
+				_coefficient=_wdth/(_wdth*Trigonometry.sin(-angle+90.0)+_hght*Trigonometry.cos(-angle+90.0));
+				_coefficient=Math.abs(_coefficient);
 			}
-			if ((rot_angle>90 && rot_angle<=180) || (rot_angle>270 && rot_angle<=360)) {
-				k=wdth/(hght*Trigonometry.sin(angle)-wdth*Trigonometry.cos(angle));
-				k=Math.abs(k);
+			if ((_rotAngle>90 && _rotAngle<=180) || (_rotAngle>270 && _rotAngle<=360)) {
+				_coefficient=_wdth/(_hght*Trigonometry.sin(angle)-_wdth*Trigonometry.cos(angle));
+				_coefficient=Math.abs(_coefficient);
 			}
-			switch_painter.resize((int)(k*(double)bounds.width),(int)(k*(double)bounds.height));
-			resized=false;
+			//switch_painter.resize((int)(k*(double)bounds.width),(int)(k*(double)bounds.height));
+			_resized=false;
 		}
 		
-		if (rot_angle!=0) {
+		if (_rotAngle!=0) {
 			gfx.translate(bounds.width/2,bounds.height/2);
 			try {
-				gfx.rotate((float)rot_angle);
+				gfx.rotate((float)_rotAngle);
 			} catch (RuntimeException e) {
-				/*this Graphics does not support rotation*/
+				CentralLogger.getInstance().error(this, "Error occured during ratation");
 			}
-			gfx.translate(-(int)(k*(double)bounds.width*0.5),-(int)(k*(double)bounds.height*0.5));
+			gfx.translate(-(int)(_coefficient*(double)bounds.width*0.5),-(int)(_coefficient*(double)bounds.height*0.5));
 		}
 		
-		if (switch_state==STATE_UNKNOWN) {
+		if (_switchState==CosySwitch.STATE_UNKNOWN) {
 			gfx.setForegroundColor(getForegroundColor());
 		} else {
-			gfx.setForegroundColor(state_colors.get(switch_state));
+			gfx.setForegroundColor(STATECOLORS.get(_switchState));
 		}
 		gfx.setBackgroundColor(gfx.getForegroundColor());
 		gfx.setLineWidth(getLineWidth());
-		switch_painter.paintSwitch(gfx,switch_state);
+		_switchPainter.paintSwitch(gfx,_switchState, (int)(_coefficient*(double)bounds.width),(int)(_coefficient*(double)bounds.height));
 		
-		if (rot_angle!=0) {
-			gfx.translate((int)(k*(double)bounds.width*0.5),(int)(k*(double)bounds.height*0.5));
+		if (_rotAngle!=0) {
+			gfx.translate((int)(_coefficient*(double)bounds.width*0.5),(int)(_coefficient*(double)bounds.height*0.5));
 			try {
-				gfx.rotate(-(float)rot_angle);
+				gfx.rotate(-(float)_rotAngle);
 			} catch (RuntimeException e) {
-				/*this Graphics does not support rotation*/
+				CentralLogger.getInstance().error(this, "Error occured during ratation");
 			}
 			gfx.translate(-bounds.width/2,-bounds.height/2);
 		}
 	}
 	
+	/**
+	 * Resizes this switch.
+	 */
 	public void resize() {
-		resized=true;
+		_resized=true;
 	}
 	
+	/**
+	 * Sets the type of the switch.
+	 * @param newval The new type of the switch
+	 */
 	public void setType(final int newval) {
 		try {
-			switch_painter=(ICosySwitch)SwitchPlugins.classes_map.get(SwitchPlugins.ids[newval]).createExecutableExtension("Class");
-			switch_painter.construct(this,bounds.width,bounds.height);
+			_switchPainter=(CosySwitch)SwitchPlugins.classes_map.get(SwitchPlugins.ids[newval]).createExecutableExtension("Class");
 		} catch (Exception e) {
-			switch_painter=new UnknownSwitch();
-			switch_painter.construct(this,bounds.width,bounds.height);
+			_switchPainter=new CosySwitch();
 		}
-		switch_type=newval;
-	}
-	public int getType() {
-		return switch_type;
+		_switchType=newval;
 	}
 	
+	/**
+	 * Returns the current type of the switch.
+	 * @return the current type
+	 */
+	public int getType() {
+		return _switchType;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setLineWidth(final int w) {
+		super.setLineWidth(w);
+		_switchPainter.setLineWidth(w);
+	}
+	
+	/**
+	 * Sets the state of the switch.
+	 * @param newval The new state of the switch
+	 */
 	public void setState(final int newval) {
-		if (!state_colors.containsKey(newval)) {
-			switch_state=STATE_UNKNOWN;
+		if (!STATECOLORS.containsKey(newval)) {
+			_switchState=CosySwitch.STATE_UNKNOWN;
 			return;
 		}
-		switch_state=newval;
-	}
-	public int getState() {
-		return switch_state;
+		_switchState=newval;
 	}
 	
-	public void setRotation(final int newval) {
-		rot_angle=newval;
-		resized=true;
+	/**
+	 * Returns the current state of the switch.
+	 * @return the current state
+	 */
+	public int getState() {
+		return _switchState;
 	}
+	
+	/**
+	 * Sets the rotation angle of the switch.
+	 * @param newval the rotation angle
+	 */
+	public void setRotation(final int newval) {
+		_rotAngle=newval;
+		_resized=true;
+	}
+	
+	/**
+	 * Returns the current rotation angle.
+	 * @return the current rotation angle
+	 */
 	public int getRotation() {
-		return rot_angle;
+		return _rotAngle;
 	}
 	
 	/**

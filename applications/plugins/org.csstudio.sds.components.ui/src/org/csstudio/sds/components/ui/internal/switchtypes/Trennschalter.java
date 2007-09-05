@@ -1,12 +1,9 @@
 package org.csstudio.sds.components.ui.internal.switchtypes;
 
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.Figure;
-import org.eclipse.swt.SWT;
-
-import org.csstudio.sds.components.common.ICosySwitch;
-import org.csstudio.sds.components.ui.internal.figures.RefreshableSwitchFigure;
+import org.csstudio.sds.components.common.CosySwitch;
 import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
+import org.eclipse.draw2d.Graphics;
+import org.eclipse.swt.SWT;
 
 /**
  * The Trennschalter switch type.
@@ -14,33 +11,7 @@ import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
  * @author jbercic
  *
  */
-public final class Trennschalter implements ICosySwitch {
-	/**
-	 * The owning figure.
-	 */
-	private RefreshableSwitchFigure figure;
-	
-	/**
-	 * Current width and height of this switch.
-	 */
-	private int width,height;
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void construct(Figure fig, int w, int h) {
-		width=w;
-		height=h;
-		figure=(RefreshableSwitchFigure)fig;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void resize(int neww, int newh) {
-		width=neww;
-		height=newh;
-	}
+public final class Trennschalter extends CosySwitch {
 	
 	/**
 	 * The default constructor.
@@ -51,29 +22,7 @@ public final class Trennschalter implements ICosySwitch {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void paintSwitch(Graphics gfx, int state) {
-		paintBase(gfx);
-		switch (state) {
-			case RefreshableSwitchFigure.STATE_GESTOERT:
-			case RefreshableSwitchFigure.STATE_AUS:
-				paintOpen(gfx);
-				break;
-			case RefreshableSwitchFigure.STATE_EIN:
-				paintClosed(gfx);
-				break;
-			case RefreshableSwitchFigure.STATE_SCHALTET:
-				paintDashedOpen(gfx);
-				break;
-			default:
-				paintUnknown(gfx);
-				break;
-		}
-	}
-	
-	/**
-	 * Paints the base of the switch, which is always the same.
-	 */
-	private void paintBase(Graphics gfx) {
+	protected void paintBase(final Graphics gfx, final int width, final int height) {
 		gfx.drawLine(width/2,0,width/2,height/3);
 		gfx.drawLine(width/2,2*height/3,width/2,height);
 		gfx.drawLine(width/4+width/8,height/3,
@@ -81,18 +30,18 @@ public final class Trennschalter implements ICosySwitch {
 	}
 	
 	/**
-	 * wires not connected
+	 * {@inheritDoc}
 	 */
-	private void paintOpen(Graphics gfx) {
+	protected void paintOpenState(final Graphics gfx, final int width, final int height) {
 		gfx.drawLine(width/2,2*height/3,
 				width/2+(int)(height/3*Trigonometry.cos(120.0)),
 				2*height/3-(int)(height/3*Trigonometry.sin(120.0)));
 	}
 	
 	/**
-	 * wires not connected, dashed connecting wire
+	 * {@inheritDoc}
 	 */
-	private void paintDashedOpen(Graphics gfx) {
+	protected void paintDashedOpenState(final Graphics gfx, final int width, final int height) {
 		gfx.setLineStyle(SWT.LINE_DOT);
 		gfx.drawLine(width/2,2*height/3,
 				width/2+(int)(height/3*Trigonometry.cos(120.0)),
@@ -101,19 +50,12 @@ public final class Trennschalter implements ICosySwitch {
 	}
 	
 	/**
-	 * wires connected
-	 */
-	private void paintClosed(Graphics gfx) {
-		gfx.drawLine(width/2,2*height/3,width/2,height/3);
-		gfx.fillOval(width/2-figure.getLineWidth()*2,2*height/3-figure.getLineWidth()*2,
-				figure.getLineWidth()*4,figure.getLineWidth()*4);
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 */
-	public void paintUnknown(Graphics gfx) {
-		gfx.drawLine(0,0,width,height);
-		gfx.drawLine(0,height,width,0);
+	protected void paintClosedState(final Graphics gfx, final int width, final int height) {
+		gfx.drawLine(width/2,2*height/3,width/2,height/3);
+		gfx.fillOval(width/2-this.getLineWidth()*2,2*height/3-this.getLineWidth()*2,
+				this.getLineWidth()*4,this.getLineWidth()*4);
 	}
+	
 }
