@@ -31,7 +31,9 @@ import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.TitleBarBorder;
 import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 /**
@@ -242,47 +244,27 @@ public class BorderAdapter implements IBorderEquippedWidget {
 			Rectangle bounds = figure.getBounds();
 			graphics.setForegroundColor(_borderColor);
 			graphics.setBackgroundColor(_borderColor);
-			//Corner
-			Rectangle rec = new Rectangle(bounds.x ,bounds.y, _borderHeight, _borderHeight);
-			graphics.fillRectangle(rec);
-			rec = new Rectangle(bounds.x+bounds.width-_borderHeight ,bounds.y, _borderHeight, _borderHeight);
-			graphics.fillRectangle(rec);
-			rec = new Rectangle(bounds.x+bounds.width-_borderHeight ,bounds.y+bounds.height-_borderHeight, _borderHeight, _borderHeight);
-			graphics.fillRectangle(rec);
-			rec = new Rectangle(bounds.x ,bounds.y+bounds.height-_borderHeight, _borderHeight, _borderHeight);
-			graphics.fillRectangle(rec);
-			int xLeftPos = bounds.x+_borderHeight+_fixBorderWide;
-			int xRightPos = bounds.x+bounds.width-((2*_fixBorderWide)+_borderHeight);
-			while (xLeftPos<bounds.x+(bounds.width/2)) {
-				//top
-				rec = new Rectangle(xLeftPos,bounds.y, _fixBorderWide, _borderHeight);
-				graphics.fillRectangle(rec);
-				rec = new Rectangle(xRightPos, bounds.y, _fixBorderWide, _borderHeight);
-				graphics.fillRectangle(rec);
-				//bottom
-				rec = new Rectangle(xLeftPos,bounds.y+bounds.height-_borderHeight, _fixBorderWide, _borderHeight);
-				graphics.fillRectangle(rec);
-				rec = new Rectangle(xRightPos, bounds.y+bounds.height-_borderHeight, _fixBorderWide, _borderHeight);
-				graphics.fillRectangle(rec);
-				xLeftPos = xLeftPos + 2*_fixBorderWide;
-				xRightPos = xRightPos - 2*_fixBorderWide;
-			}
-			int yTopPos = bounds.y+_borderHeight+_fixBorderWide;
-			int yBottomPos = bounds.y+bounds.height-((2*_fixBorderWide)+_borderHeight);
-			while (yTopPos<bounds.y+(bounds.height/2)) {
-				//Left
-				rec = new Rectangle(bounds.x, yTopPos, _borderHeight, _fixBorderWide);
-				graphics.fillRectangle(rec);
-				rec = new Rectangle(bounds.x, yBottomPos, _borderHeight, _fixBorderWide);
-				graphics.fillRectangle(rec);
-				//Right
-				rec = new Rectangle(bounds.x+bounds.width-_borderHeight, yTopPos, _borderHeight, _fixBorderWide);
-				graphics.fillRectangle(rec);
-				rec = new Rectangle(bounds.x+bounds.width-_borderHeight, yBottomPos, _borderHeight, _fixBorderWide);
-				graphics.fillRectangle(rec);
-				yTopPos = yTopPos + 2*_fixBorderWide;
-				yBottomPos = yBottomPos - 2*_fixBorderWide;
-			}
+			graphics.setLineStyle(SWT.LINE_DOT);
+			graphics.setLineWidth(_borderHeight);
+			
+			graphics.drawLine(bounds.x, bounds.y+_borderHeight/2,
+					bounds.x+bounds.width/2 ,bounds.y+_borderHeight/2);
+			graphics.drawLine(bounds.x+bounds.width, bounds.y+_borderHeight/2,
+					bounds.x+bounds.width/2 ,bounds.y+_borderHeight/2);
+			graphics.drawLine(bounds.x+bounds.width-_borderHeight/2, bounds.y,
+					bounds.x+bounds.width-_borderHeight/2, bounds.y+bounds.height/2);
+			graphics.drawLine(bounds.x+bounds.width-_borderHeight/2, bounds.y+bounds.height,
+					bounds.x+bounds.width-_borderHeight/2, bounds.y+bounds.height/2);
+			graphics.drawLine(bounds.x, bounds.y+bounds.height-_borderHeight/2,
+					bounds.x+bounds.width/2, bounds.y+bounds.height-_borderHeight/2);
+			graphics.drawLine(bounds.x+bounds.width, bounds.y+bounds.height-_borderHeight/2,
+					bounds.x+bounds.width/2, bounds.y+bounds.height-_borderHeight/2);
+			graphics.drawLine(bounds.x+_borderHeight/2, bounds.y,
+					bounds.x+_borderHeight/2, bounds.y+bounds.height/2);
+			graphics.drawLine(bounds.x+_borderHeight/2, bounds.y+bounds.height,
+					bounds.x+_borderHeight/2, bounds.y+bounds.height/2);
+			
+			graphics.setLineStyle(SWT.LINE_SOLID);
 		}
 		
 	}
