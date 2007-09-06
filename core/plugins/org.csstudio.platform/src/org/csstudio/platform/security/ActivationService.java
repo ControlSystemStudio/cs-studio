@@ -109,15 +109,15 @@ public final class ActivationService implements IUserManagementListener,
 	 * 			The IActivationAdapter for the object or null
 	 */
 	private IActivationAdapter getActivationAdapter(final Object object) {
-		IActivationAdapter standard = (IActivationAdapter) Platform.getAdapterManager()
-			.getAdapter(object, IActivationAdapter.class);
-		if (standard != null) {
-			return standard;
-		}
+		IActivationAdapter adapter = null;
 		if (object instanceof IAdaptable) {
-			standard = (IActivationAdapter) ((IAdaptable)object).getAdapter(IActivationAdapter.class);
+			adapter = (IActivationAdapter) ((IAdaptable)object).getAdapter(IActivationAdapter.class);
 		}
-		return standard;
+		if (adapter==null) {
+			adapter = (IActivationAdapter) Platform.getAdapterManager()
+				.getAdapter(object, IActivationAdapter.class);
+		}
+		return adapter;
 	}
 	
 	/**
