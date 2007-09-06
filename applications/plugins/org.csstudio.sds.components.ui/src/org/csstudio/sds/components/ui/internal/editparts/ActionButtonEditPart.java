@@ -27,6 +27,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
+import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
@@ -85,15 +86,30 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 					CentralLogger.getInstance().info(this, "KLICK");
 					ActionButtonModel model = (ActionButtonModel) getWidgetModel();
 					
-					switch(model.getAction()) {
-					case 0:
-						openDisplayShellInRunMode(model.getResource(), model.getClickAlias());
+//					switch(model.getAction()) {
+//					case 0:
+//						openDisplayShellInRunMode(model.getResource(), model.getClickAlias());
+//						break;
+//					case 1:
+//						openDisplayViewInRunMode(model.getResource(), model.getClickAlias());
+//						break;
+//					case 2:
+//						model.getProperty(ActionButtonModel.PROP_CLICK_VALUE).setManualValue(model.getClickValue());
+//						break;
+//					default:
+//						// do nothing
+//						CentralLogger.getInstance().info(this, "Clicked!");
+//					}
+					ActionData data = model.getActionData();
+					switch(data.getType()) {
+					case ActionData.OPEN_SHELL :
+						openDisplayShellInRunMode(data.getDisplayPath(), data.getAliases());
 						break;
-					case 1:
-						openDisplayViewInRunMode(model.getResource(), model.getClickAlias());
+					case ActionData.OPEN_VIEW:
+						openDisplayViewInRunMode(data.getDisplayPath(), data.getAliases());
 						break;
-					case 2:
-						model.getProperty(ActionButtonModel.PROP_CLICK_VALUE).setManualValue(model.getClickValue());
+					case ActionData.COMMIT_VALUE:
+						model.getProperty(ActionButtonModel.PROP_ACTIONDATA).setManualValue(data.getCommitValue());
 						break;
 					default:
 						// do nothing

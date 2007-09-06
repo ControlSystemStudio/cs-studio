@@ -27,6 +27,8 @@ import java.util.Map;
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.properties.ActionData;
+import org.csstudio.sds.model.properties.ActionDataProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
@@ -80,6 +82,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The ID of the text alignment property.
 	 */
 	public static final String PROP_TEXT_ALIGNMENT = "textAlignment"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the {@link ActionData} property.
+	 */
+	public static final String PROP_ACTIONDATA = "actionData"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this widget model.
@@ -146,6 +153,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, 0));
 		addProperty(PROP_CLICK_ALIAS, new StringMapProperty("Click Alias", 
 				WidgetPropertyCategory.Behaviour, new HashMap<String, String>()));
+		addProperty(PROP_ACTIONDATA, new ActionDataProperty("Action Data",
+				WidgetPropertyCategory.Behaviour, new ActionData(ActionData.UNKNOWN)));
 	}
 
 	/**
@@ -162,6 +171,10 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	@Override
 	public String getColorTestProperty() {
 		return PROP_COLOR_BACKGROUND;
+	}
+	
+	public ActionData getActionData() {
+		return (ActionData) getProperty(PROP_ACTIONDATA).getPropertyValue();
 	}
 
 	/**
