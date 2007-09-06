@@ -28,6 +28,9 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -139,6 +142,8 @@ public class Probe extends ViewPart implements PVListener
             new_channel = false;
         }
     };
+    private Composite top_box;
+    private Composite bottom_box;
 
 
     /** Create or re-display a probe view with the given PV name.
@@ -234,31 +239,125 @@ public class Probe extends ViewPart implements PVListener
     }
 
     /** Construct GUI. */
-    private void createGUI(Composite parent)
+    private void createGUI(final Composite parent)
     {
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 3;
+        final FormLayout layout = new FormLayout();
         parent.setLayout(layout);
-        GridData gd;
 
-        // PV Name: ____ name ___________ [Info]
-        
-        // Meter
-        
-        // Value  : ____ value ________ [Adjust]
+        // 3 Boxes, connected via form layout: Top, meter, bottom
         //
-        // ------- status --------
+        // PV Name: ____ name ___________ [Info]
+        //              Meter
+        // Value     : ____ value ________ [Adjust]
+        // Timestamp : ____ time ________  [x] meter
+        // ---------------
+        // Status: ...
+        //
+        // Inside top & bottom, it's a grid layout
+        
+        top_box = new Composite(parent, 0);
+        GridLayout grid = new GridLayout();
+        grid.numColumns = 3;
+        top_box.setLayout(grid);
 
-        Label pv_label = new Label(parent, SWT.READ_ONLY);
-		pv_label.setText(Messages.S_PVName);
-        pv_label.setLayoutData(new GridData());
+        Label label = new Label(top_box, SWT.READ_ONLY);
+		label.setText(Messages.S_PVName);
+		label.setLayoutData(new GridData());
 
-        cbo_name = new ComboViewer(parent, SWT.SINGLE | SWT.BORDER);
+        cbo_name = new ComboViewer(top_box, SWT.SINGLE | SWT.BORDER);
         cbo_name.getCombo().setToolTipText(Messages.S_EnterPVName);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.FILL;
+        GridData gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
         cbo_name.getCombo().setLayoutData(gd);
+
+        final Button btn_info = new Button(top_box, SWT.PUSH);
+        btn_info.setText(Messages.S_Info);
+        btn_info.setToolTipText(Messages.S_ObtainInfo);
+        btn_info.setLayoutData(new GridData());
+
+        // New Box with only the meter
+        meter = new MeterWidget(parent, 0);
+        meter.setEnabled(false);
+
+        bottom_box = new Composite(parent, 0);
+        grid = new GridLayout();
+        grid.numColumns = 3;
+        bottom_box.setLayout(grid);
+        
+        label = new Label(bottom_box, 0);
+        label.setText(Messages.S_Value);
+        label.setLayoutData(new GridData());
+        
+        lbl_value = new Label(bottom_box, 0);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        lbl_value.setLayoutData(gd);
+
+        final Button btn_adjust = new Button(bottom_box, SWT.PUSH);
+        btn_adjust.setText(Messages.S_Adjust);
+        btn_adjust.setToolTipText(Messages.S_ModValue);
+        btn_adjust.setLayoutData(new GridData());
+
+        // New Row
+        label = new Label(bottom_box, 0);
+        label.setText(Messages.S_Timestamp);
+        label.setLayoutData(new GridData());
+
+        lbl_time = new Label(bottom_box, 0);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        lbl_time.setLayoutData(gd);
+
+        final Button show_meter = new Button(bottom_box, SWT.CHECK);
+        show_meter.setText(Messages.S_Meter);
+        show_meter.setToolTipText(Messages.S_Meter_TT);
+        show_meter.setSelection(true);
+        show_meter.setLayoutData(new GridData());
+        
+        // Status bar
+        label = new Label(bottom_box, SWT.SEPARATOR | SWT.HORIZONTAL);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        gd.horizontalSpan = grid.numColumns;
+        label.setLayoutData(gd);
+
+        label = new Label(bottom_box, 0);
+        label.setText(Messages.S_Status);
+        label.setLayoutData(new GridData());
+
+        lbl_status = new Label(bottom_box, SWT.BORDER);
+        lbl_status.setText(Messages.S_Waiting);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        gd.horizontalSpan = grid.numColumns - 1;
+        lbl_status.setLayoutData(gd);
+
+        // Connect the 3 boxes in form layout
+        FormData fd = new FormData();
+        fd.left = new FormAttachment(0, 0);
+        fd.top = new FormAttachment(0, 0);
+        fd.right = new FormAttachment(100, 0);
+        top_box.setLayoutData(fd);
+
+        fd = new FormData();
+        fd.left = new FormAttachment(0, 0);
+        fd.top = new FormAttachment(top_box);
+        fd.right = new FormAttachment(100, 0);
+        fd.bottom = new FormAttachment(bottom_box);
+        meter.setLayoutData(fd);
+
+        fd = new FormData();
+        fd.left = new FormAttachment(0, 0);
+        fd.right = new FormAttachment(100, 0);
+        fd.bottom = new FormAttachment(100, 0);
+        bottom_box.setLayoutData(fd);
+        
+        // Connect actions
         name_helper = new ComboHistoryHelper(
                         Plugin.getDefault().getDialogSettings(),
                         PV_LIST_TAG, cbo_name)
@@ -269,6 +368,7 @@ public class Probe extends ViewPart implements PVListener
                 setPVName(pv_name);   
             }
         };
+        
         cbo_name.getCombo().addDisposeListener(new DisposeListener()
         {
             public void widgetDisposed(DisposeEvent e)
@@ -278,12 +378,6 @@ public class Probe extends ViewPart implements PVListener
             }
         });
 
-        Button btn_info = new Button(parent, SWT.PUSH);
-        btn_info.setText(Messages.S_Info);
-        btn_info.setToolTipText(Messages.S_ObtainInfo);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.FILL; // but don't grab...
-        btn_info.setLayoutData(gd);
         btn_info.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -293,35 +387,6 @@ public class Probe extends ViewPart implements PVListener
             }
         });
 
-        // New Row
-        meter = new MeterWidget(parent, 0);
-        gd = new GridData();
-        gd.horizontalSpan = layout.numColumns;
-        gd.grabExcessHorizontalSpace = true;
-        gd.grabExcessVerticalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.FILL;
-        meter.setLayoutData(gd);
-        meter.setEnabled(false);
-
-        // New Row
-        Label label = new Label(parent, 0);
-        label.setText(Messages.S_Value);
-        gd = new GridData();
-        label.setLayoutData(gd);
-
-        lbl_value = new Label(parent, 0);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.FILL;
-        gd.grabExcessHorizontalSpace = true;
-        lbl_value.setLayoutData(gd);
-
-        Button btn_adjust = new Button(parent, SWT.PUSH);
-        btn_adjust.setText(Messages.S_Adjust);
-        btn_adjust.setToolTipText(Messages.S_ModValue);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.FILL; // but don't grab...
-        btn_adjust.setLayoutData(gd);
         btn_adjust.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -329,46 +394,43 @@ public class Probe extends ViewPart implements PVListener
             {   adjustValue();   }
         });
 
-        // New Row
-        label = new Label(parent, 0);
-        label.setText(Messages.S_Timestamp);
-        gd = new GridData();
-        label.setLayoutData(gd);
-
-        lbl_time = new Label(parent, 0);
-        gd = new GridData();
-        gd.horizontalSpan = layout.numColumns-1;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.grabExcessHorizontalSpace = true;
-        lbl_time.setLayoutData(gd);
-
-        // Status bar
-        label = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
-        gd = new GridData();
-        gd.horizontalSpan = layout.numColumns;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.grabExcessHorizontalSpace = true;
-        gd.verticalAlignment = SWT.BOTTOM;
-        gd.grabExcessVerticalSpace = true;
-        label.setLayoutData(gd);
-
-        label = new Label(parent, 0);
-        label.setText(Messages.S_Status);
-        gd = new GridData();
-        label.setLayoutData(gd);
-
-        lbl_status = new Label(parent, SWT.BORDER);
-        lbl_status.setText(Messages.S_Waiting);
-        gd = new GridData();
-        gd.horizontalSpan = layout.numColumns - 1;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.grabExcessHorizontalSpace = true;
-        lbl_status.setLayoutData(gd);
+        show_meter.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent ev)
+            {   showMeter(show_meter.getSelection());   }
+        });
 
         name_helper.loadSettings();
 
         if (memento != null)
         	setPVName(memento.getString(PV_TAG));
+    }
+
+    /** Show or hide the meter */
+    protected void showMeter(final boolean show)
+    {
+        if (show)
+        {   // Meter about to become visible
+            // Attach bottom box to bottom of screen,
+            // and meter stretches between top and bottom box.
+            FormData fd = new FormData();
+            fd.left = new FormAttachment(0, 0);
+            fd.right = new FormAttachment(100, 0);
+            fd.bottom = new FormAttachment(100, 0);
+            bottom_box.setLayoutData(fd);
+        }
+        else
+        {   // Meter about to be hidden.
+            // Attach bottom box to top box.
+            FormData fd = new FormData();
+            fd.left = new FormAttachment(0, 0);
+            fd.top = new FormAttachment(top_box);
+            fd.right = new FormAttachment(100, 0);
+            bottom_box.setLayoutData(fd);
+        }
+        meter.setVisible(show);
+        meter.getShell().layout(true, true);
     }
 
     /** Add context menu.
