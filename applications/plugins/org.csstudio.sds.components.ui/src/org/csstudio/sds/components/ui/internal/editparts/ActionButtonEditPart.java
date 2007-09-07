@@ -86,53 +86,28 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 					CentralLogger.getInstance().info(this, "KLICK");
 					ActionButtonModel model = (ActionButtonModel) getWidgetModel();
 					
-//					switch(model.getAction()) {
-//					case 0:
-//						openDisplayShellInRunMode(model.getResource(), model.getClickAlias());
+					ActionData data = model.getActionData();
+					data.getType().performAction();
+//					switch(data.getType()) {
+//					case ActionData.OPEN_SHELL :
+//						openDisplayShellInRunMode(data.getDisplayPath(), data.getAliases());
 //						break;
-//					case 1:
-//						openDisplayViewInRunMode(model.getResource(), model.getClickAlias());
+//					case ActionData.OPEN_VIEW:
+//						openDisplayViewInRunMode(data.getDisplayPath(), data.getAliases());
 //						break;
-//					case 2:
-//						model.getProperty(ActionButtonModel.PROP_CLICK_VALUE).setManualValue(model.getClickValue());
+//					case ActionData.COMMIT_VALUE:
+//						model.getProperty(ActionButtonModel.PROP_ACTIONDATA).setManualValue(data.getCommitValue());
 //						break;
 //					default:
 //						// do nothing
 //						CentralLogger.getInstance().info(this, "Clicked!");
-//					}
-					ActionData data = model.getActionData();
-					switch(data.getType()) {
-					case ActionData.OPEN_SHELL :
-						openDisplayShellInRunMode(data.getDisplayPath(), data.getAliases());
-						break;
-					case ActionData.OPEN_VIEW:
-						openDisplayViewInRunMode(data.getDisplayPath(), data.getAliases());
-						break;
-					case ActionData.COMMIT_VALUE:
-						model.getProperty(ActionButtonModel.PROP_ACTIONDATA).setManualValue(data.getCommitValue());
-						break;
-					default:
-						// do nothing
-						CentralLogger.getInstance().info(this, "Clicked!");
-					}	
+//					}	
 				} else {
 					CentralLogger.getInstance().info(this, "ActionButton activated!");
 				}
 					
 			}
 		});
-		
-//		// live
-//		IWidgetPropertyChangeHandler liveHandler = new IWidgetPropertyChangeHandler() {
-//			public boolean handleChange(final Object oldValue,
-//					final Object newValue,
-//					final IFigure refreshableFigure) {
-//				RefreshableActionButtonFigure figure = getCastedFigure();
-//				figure.setEnabled((Boolean)newValue);
-//				return true;
-//			}
-//		};
-//		setPropertyChangeHandler(ActionButtonModel.PROP_LIVE, liveHandler);
 
 		// label
 		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {

@@ -29,6 +29,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionDataProperty;
+import org.csstudio.sds.model.properties.ActionTypes;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
@@ -154,7 +155,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		addProperty(PROP_CLICK_ALIAS, new StringMapProperty("Click Alias", 
 				WidgetPropertyCategory.Behaviour, new HashMap<String, String>()));
 		addProperty(PROP_ACTIONDATA, new ActionDataProperty("Action Data",
-				WidgetPropertyCategory.Behaviour, new ActionData(ActionData.UNKNOWN)));
+				WidgetPropertyCategory.Behaviour, new ActionData(ActionTypes.UNKNOWN)));
 	}
 
 	/**
