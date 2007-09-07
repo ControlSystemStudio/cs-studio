@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.model.pvs.IProcessVariableAdressListProvider;
+import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.ui.dnd.rfc.IProcessVariableAdressReceiver;
 import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
@@ -42,7 +42,8 @@ public final class ContainerView extends ViewPart {
 	static {
 		_sampleStrings = new String[] { "a", "b" };
 
-		ProcessVariableAdressFactory f = ProcessVariableAdressFactory.getInstance();
+		ProcessVariableAdressFactory f = ProcessVariableAdressFactory
+				.getInstance();
 
 		_samplePvAdresses = new IProcessVariableAddress[] {
 				f.createProcessVariableAdress("epics://cryo/pump1"),
@@ -79,8 +80,8 @@ public final class ContainerView extends ViewPart {
 		createPvConsumerTree(parent);
 	}
 
-	private List<IProcessVariableAddress> _modelForPvConsumer=new ArrayList<IProcessVariableAddress>();
-	
+	private List<IProcessVariableAddress> _modelForPvConsumer = new ArrayList<IProcessVariableAddress>();
+
 	private void createPvConsumerTree(final Composite parent) {
 		final TreeViewer tv = new TreeViewer(parent);
 
@@ -100,21 +101,23 @@ public final class ContainerView extends ViewPart {
 		getViewSite().setSelectionProvider(tv);
 
 		// add drag support
-		ProcessVariableExchangeUtil.addProcessVariableAddressDropSupport(tv.getControl(), DND.DROP_MOVE | DND.DROP_COPY, new IProcessVariableAdressReceiver(){
-			public void receive(IProcessVariableAddress[] pvs, DropTargetEvent event) {
-				for(IProcessVariableAddress pv : pvs) {
-					_modelForPvConsumer.add(pv);
-				}
-				
-				tv.refresh();
-			}
-		});
+		ProcessVariableExchangeUtil.addProcessVariableAddressDropSupport(tv
+				.getControl(), DND.DROP_MOVE | DND.DROP_COPY,
+				new IProcessVariableAdressReceiver() {
+					public void receive(IProcessVariableAddress[] pvs,
+							DropTargetEvent event) {
+						for (IProcessVariableAddress pv : pvs) {
+							_modelForPvConsumer.add(pv);
+						}
+
+						tv.refresh();
+					}
+				});
 
 		// create context menu
 		configureContextMenu(tv);
 	}
 
-	
 	private void createPvProviderTree(final Composite parent) {
 		final TreeViewer tv = new TreeViewer(parent);
 
@@ -134,12 +137,21 @@ public final class ContainerView extends ViewPart {
 		getViewSite().setSelectionProvider(tv);
 
 		// add drag support
-		ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(
-				tv.getTree(), DND.DROP_MOVE | DND.DROP_COPY,
-				new IProcessVariableAdressListProvider() {
-					public List<IProcessVariableAddress> getPVAdressList() {
+		ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(tv
+				.getTree(), DND.DROP_MOVE | DND.DROP_COPY,
+				new IProcessVariableAdressProvider() {
+					public IProcessVariableAddress getPVAdress() {
+						List<IProcessVariableAddress> l = getProcessVariableAdresses();
+						if (l.size() > 0) {
+							return l.get(0);
+						}
+						return null;
+					}
+
+					public List<IProcessVariableAddress> getProcessVariableAdresses() {
 						IStructuredSelection sel = (IStructuredSelection) tv
 								.getSelection();
+
 						List<IProcessVariableAddress> list = (List<IProcessVariableAddress>) sel
 								.toList();
 						return list;
@@ -173,8 +185,8 @@ public final class ContainerView extends ViewPart {
 		// ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(
 		// pvAdressesTv.getTree(), DND.DROP_MOVE | DND.DROP_COPY, this);
 
-		DragSource dragSource = new DragSource(tv.getControl(),
-				DND.DROP_MOVE | DND.DROP_COPY);
+		DragSource dragSource = new DragSource(tv.getControl(), DND.DROP_MOVE
+				| DND.DROP_COPY);
 
 		Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
 
@@ -187,8 +199,7 @@ public final class ContainerView extends ViewPart {
 				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 					IStructuredSelection sel = (IStructuredSelection) tv
 							.getSelection();
-					List<String> list = (List<String>) sel
-							.toList();
+					List<String> list = (List<String>) sel.toList();
 
 					StringBuffer sb = new StringBuffer();
 

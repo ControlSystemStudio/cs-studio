@@ -12,20 +12,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test class for {@link DalNameParser}.
+ * Test class for {@link SimpleNameParser}.
  * 
  * @author Sven Wende
  * 
  */
-public class DalNameParserTest {
-	private DalNameParser _epicsParser;
+public class SimpleNameParserTest {
+	private SimpleNameParser _epicsParser;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		_epicsParser = new DalNameParser(ControlSystemEnum.DAL_EPICS);
+		_epicsParser = new SimpleNameParser(ControlSystemEnum.EPICS);
 	}
 
 	/**
@@ -41,10 +41,10 @@ public class DalNameParserTest {
 	 */
 	@Test
 	public void testParse() {
-		test("abc", ControlSystemEnum.DAL_EPICS, null, null, "abc");
-		test("dal-epics://abc", ControlSystemEnum.DAL_EPICS, null, null, "abc");
-		test("dal-epics://abc[cde]", ControlSystemEnum.DAL_EPICS, "cde", null,
-				"abc");
+		test("abc", ControlSystemEnum.EPICS, null, null, "abc");
+		test("epics://abc", ControlSystemEnum.EPICS, null, null, "abc");
+		test("epics://abc[cde]", ControlSystemEnum.EPICS, null, null,
+				"abc[cde]");
 		test("", ControlSystemEnum.UNKNOWN, null, null, "");
 	}
 

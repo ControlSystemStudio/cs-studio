@@ -3,7 +3,6 @@ package org.csstudio.platform.ui.dnd.rfc;
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.model.pvs.IProcessVariableAdressListProvider;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
@@ -22,20 +21,6 @@ public class ProcessVariableExchangeUtil {
 
 	public static void addProcessVariableAdressDragSupport(Control control,
 			final int style, IProcessVariableAdressProvider provider) {
-		DragSource dragSource = new DragSource(control, style);
-
-		Transfer[] types = new Transfer[] {
-				ProcessVariableAddressTransfer.getInstance(),
-				TextTransfer.getInstance() };
-
-		dragSource.setTransfer(types);
-
-		dragSource.addDragListener(new ProcessVariableAdressDragSourceAdapter(
-				provider));
-	}
-
-	public static void addProcessVariableAdressDragSupport(Control control,
-			final int style, IProcessVariableAdressListProvider provider) {
 		DragSource dragSource = new DragSource(control, style);
 
 		Transfer[] types = new Transfer[] {

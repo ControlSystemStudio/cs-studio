@@ -22,22 +22,13 @@ public final class DALPropertyFactoriesProvider {
 	private static DALPropertyFactoriesProvider _instance;
 
 	/**
-	 * A cached property factory, which is based on DAL´s EPICs plug.
+	 * Cached property factories for DAL.
 	 */
-	private PropertyFactory _epicsPropertyFactory;
-
-	/**
-	 * A cached property factory, which is based on DAL´s TINE plug.
-	 */
-	private PropertyFactory _tinePropertyFactory;
-
-	/**
-	 * A cached property factory, which is based on DAL´s simulator plug.
-	 */
-	private PropertyFactory _simulatorPropertyFactory;
-
 	private Map<ControlSystemEnum, PropertyFactory> _propertyFactories;
 
+	/**
+	 * A DAL application context.
+	 */
 	private AbstractApplicationContext _applicationContext;
 
 	/**
@@ -61,6 +52,13 @@ public final class DALPropertyFactoriesProvider {
 		return _instance;
 	}
 
+	/**
+	 * Returns a DAL {@link PropertyFactory} for the specified control system.
+	 * 
+	 * @param controlSystem the control system
+	 * 
+	 * @return a DAL property factory
+	 */
 	public PropertyFactory getPropertyFactory(ControlSystemEnum controlSystem) {
 		PropertyFactory result = _propertyFactories.get(controlSystem);
 

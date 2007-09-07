@@ -23,19 +23,29 @@ package org.csstudio.platform.model.pvs;
 
 import java.util.List;
 
-
 /**
- * An Interface to provide {@link ProcessVariableAdress}s.
- * @author Kai Meyer
+ * A provider for process variable addresses ({@link ProcessVariableAdress}).
+ * 
+ * In interaction scenarios where an arbitrary business object needs to provide
+ * access to its process variables this interface can be used to expose those
+ * process variables to the environment, e.g. to object contribution as they are
+ * used in popup menus.
+ * 
+ * @author Sven Wende, Kai Meyer
  */
 public interface IProcessVariableAdressProvider {
-	
+
 	/**
-	 * Returns a {@link ProcessVariableAdress}
-	 * @return ProcessVariable
-	 * 			A ProcessVariable
+	 * Returns a single process variable address.
+	 * 
+	 * @return ProcessVariable a single process variable address
 	 */
 	IProcessVariableAddress getPVAdress();
-	
+
+	/**
+	 * Returns a list of process variable addresses.
+	 * 
+	 * @return a list of process variable addresses
+	 */
 	List<IProcessVariableAddress> getProcessVariableAdresses();
 }

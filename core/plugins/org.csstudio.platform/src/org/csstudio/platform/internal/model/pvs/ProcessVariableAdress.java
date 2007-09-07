@@ -5,17 +5,14 @@ package org.csstudio.platform.internal.model.pvs;
 
 import javax.naming.NamingException;
 
-import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.epics.css.dal.NumericPropertyCharacteristics;
 import org.epics.css.dal.context.RemoteInfo;
 
 /**
  * {@link IProcessVariableAddress} implementation.
  * 
- * @author swende
+ * @author Sven Wende
  * 
  */
 final class ProcessVariableAdress implements IProcessVariableAddress {
@@ -118,7 +115,24 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 	 * {@inheritDoc}
 	 */
 	public String getFullName() {
-		return getRawName();
+		assert _controlSystem != null;
+		assert _property != null;
+		StringBuffer sb = new StringBuffer();
+
+		if (_controlSystem != ControlSystemEnum.UNKNOWN) {
+			sb.append(_controlSystem.getPrefix());
+			sb.append("://");
+		}
+		
+		sb.append(_property);
+
+		if (_characteristic != null) {
+			sb.append("[");
+			sb.append(_characteristic);
+			sb.append("]");
+		}
+
+		return sb.toString();
 	}
 
 	/**

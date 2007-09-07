@@ -6,12 +6,8 @@ package org.csstudio.platform.model.pvs;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 
-
 /**
  * An enumeration for all available control system prefixes.
- * 
- * Maybe this indirection is not needed, but it can help to match different
- * namespaces.
  * 
  * @author Sven Wende
  * 
@@ -25,16 +21,15 @@ public enum ControlSystemEnum implements IAdaptable {
 
 	DAL_TINE("dal-tine", "TINE", true),
 
-	DAL_TANGO("dal-tango", "TANGO", true),
+	DAL_TANGO("dal-tango", null, false),
 
 	TINE("tine", "TINE", true),
 
 	EPICS("epics", "EPICS", true),
 
-	TANGO("tango", "TANGO", false),
-	
-	UNKNOWN("", null, false);
+	TANGO("tango", null, false),
 
+	UNKNOWN("", null, false);
 
 	private String _prefix;
 
@@ -65,15 +60,15 @@ public enum ControlSystemEnum implements IAdaptable {
 	public String toString() {
 		return name();
 	}
-	
+
 	public static ControlSystemEnum findByPrefix(String prefix) {
-		ControlSystemEnum result=UNKNOWN;
-		for(ControlSystemEnum e : values()) {
-			if(e.getPrefix().equalsIgnoreCase(prefix)) {
+		ControlSystemEnum result = UNKNOWN;
+		for (ControlSystemEnum e : values()) {
+			if (e.getPrefix().equalsIgnoreCase(prefix)) {
 				result = e;
 			}
 		}
-		
+
 		return result;
 	}
 

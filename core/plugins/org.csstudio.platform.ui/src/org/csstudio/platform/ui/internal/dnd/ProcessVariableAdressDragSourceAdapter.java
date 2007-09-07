@@ -24,9 +24,8 @@ package org.csstudio.platform.ui.internal.dnd;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.model.pvs.IProcessVariableAdressListProvider;
+import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.ui.dnd.rfc.ProcessVariableAddressTransfer;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
@@ -44,10 +43,6 @@ public  class ProcessVariableAdressDragSourceAdapter extends DragSourceAdapter {
 	 * A {@link IProcessVariableAdressProvider}
 	 */
 	private IProcessVariableAdressProvider _pvProvider;
-	/**
-	 * A {@link IProcessVariableAdressListProvider}
-	 */
-	private IProcessVariableAdressListProvider _pvListProvider;
 
 	/**
 	 * Constructs a drag source adapter, which only provides items during DnD,
@@ -59,20 +54,6 @@ public  class ProcessVariableAdressDragSourceAdapter extends DragSourceAdapter {
 	public ProcessVariableAdressDragSourceAdapter(
 			IProcessVariableAdressProvider pvProvider) {
 		_pvProvider = pvProvider;
-		_pvListProvider = null;
-	}
-
-	/**
-	 * Constructs a drag source adapter, which only provides items during DnD,
-	 * that are {@link IProcessVariableAddress}s.
-	 * 
-	 * @param pvProvider
-	 *            The provider of the {@link IProcessVariableAddress}
-	 */
-	public ProcessVariableAdressDragSourceAdapter(
-			IProcessVariableAdressListProvider pvProvider) {
-		_pvProvider = null;
-		_pvListProvider = pvProvider;
 	}
 
 	/**
@@ -93,11 +74,7 @@ public  class ProcessVariableAdressDragSourceAdapter extends DragSourceAdapter {
 	private List<IProcessVariableAddress> getProceesVariables() {
 		List<IProcessVariableAddress> list = new ArrayList<IProcessVariableAddress>();
 		if (_pvProvider != null) {
-			list.add(_pvProvider.getPVAdress());
-		} else if (_pvListProvider != null) {
-			for (IProcessVariableAddress pv : _pvListProvider.getPVAdressList()) {
-				list.add(pv);
-			}
+			list.addAll(_pvProvider.getProcessVariableAdresses());
 		}
 		return list;
 	}
