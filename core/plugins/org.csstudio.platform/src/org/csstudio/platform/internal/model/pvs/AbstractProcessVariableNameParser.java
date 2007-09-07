@@ -22,11 +22,16 @@ public abstract class AbstractProcessVariableNameParser {
 	 * @return the pv adress or null
 	 */
 	public final IProcessVariableAddress parseRawName(final String rawName) {
-		String nameWithoutPrefix = removeProtocol(rawName);
-		IProcessVariableAddress result = doParse(nameWithoutPrefix, rawName);
+		IProcessVariableAddress result = null;
+		assert rawName != null;
+		
+		if (rawName.length() > 0) {
+			String nameWithoutPrefix = removeProtocol(rawName);
+			result = doParse(nameWithoutPrefix, rawName);
+		}
 
 		if (result == null) {
-			result = createFallbackProcessVariableAdress(nameWithoutPrefix);
+			result = createFallbackProcessVariableAdress(rawName);
 		}
 
 		return result;
@@ -43,8 +48,8 @@ public abstract class AbstractProcessVariableNameParser {
 	 * 
 	 * @return
 	 */
-	protected abstract IProcessVariableAddress doParse(String input,
-			String rawName);
+	protected abstract IProcessVariableAddress doParse(
+			String nameWithoutPrefix, String rawName);
 
 	/**
 	 * Helper method, which removes the control system prefix from the specified

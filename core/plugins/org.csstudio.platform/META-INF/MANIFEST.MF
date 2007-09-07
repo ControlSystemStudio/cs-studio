@@ -8,7 +8,8 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.junit4,
  org.csstudio.platform.libs.jms,
  org.eclipse.core.resources,
- org.csstudio.platform.libs.dal
+ org.csstudio.platform.libs.dal,
+ org.csstudio.platform.libs.jmock
 Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
 Bundle-Vendor: Desy
 Export-Package: org.apache.log4j,
@@ -34,6 +35,7 @@ Export-Package: org.apache.log4j,
  org.apache.log4j.xml,
  org.csstudio.platform,
  org.csstudio.platform.data,
+ org.csstudio.platform.internal.data;x-friends:="org.csstudio.utility.pv.dal",
  org.csstudio.platform.internal.developmentsupport.util,
  org.csstudio.platform.internal.logging;x-friends:="org.csstudio.platform.ui",
  org.csstudio.platform.internal.rightsmanagement,

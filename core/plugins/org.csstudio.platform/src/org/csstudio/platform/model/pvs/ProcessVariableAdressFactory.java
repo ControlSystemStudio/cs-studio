@@ -87,11 +87,11 @@ public class ProcessVariableAdressFactory {
 	}
 
 	public ControlSystemEnum getDefaultControlSystem() {
+		ControlSystemEnum controlSystem = null;
 		String defaultCs = Platform.getPreferencesService().getString(
 				CSSPlatformPlugin.ID, PROP_CONTROL_SYSTEM, "", //$NON-NLS-1$
 				null);
-
-		ControlSystemEnum controlSystem = ControlSystemEnum.valueOf(defaultCs);
+		controlSystem = ControlSystemEnum.valueOf(defaultCs);
 
 		if (controlSystem == null) {
 			controlSystem = ControlSystemEnum.UNKNOWN;

@@ -3,8 +3,8 @@ package org.csstudio.platform.model.pvs;
 import org.epics.css.dal.context.RemoteInfo;
 
 /**
- * A process variable pointer, which provides consistent access to the
- * information that consitute a full process variable adress.
+ * A process variable address provides consistent and convinient access to the
+ * information that constitute a full process variable name.
  * 
  * These information include:
  * 
@@ -15,8 +15,8 @@ import org.epics.css.dal.context.RemoteInfo;
  * <li>characteristic (optional)</li>
  * </ul>
  * 
- * At runtime, process variables might be created by tools (e.g. the data
- * browser) or can be entered manually by users.
+ * Process variable addresses should in most cases get created, using the
+ * {@link ProcessVariableAdressFactory} factory.
  * 
  * @author Sven Wende
  * 
@@ -58,9 +58,8 @@ public interface IProcessVariableAddress {
 	boolean isCharacteristic();
 
 	/**
-	 * Convinience methods, which returns a DAL RemoteInfo {@link RemoteInfo}
-	 * object for this process variable pointer. May be null, if DAL does not
-	 * support this kind of PVs.
+	 * Returns a DAL {@link RemoteInfo} object for this process variable
+	 * address. May be null, if DAL does not support this kind of PVs.
 	 * 
 	 * @return a DAL RemoteInfo or null
 	 */
