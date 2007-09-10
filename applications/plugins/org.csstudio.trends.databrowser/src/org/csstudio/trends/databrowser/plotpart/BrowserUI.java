@@ -1,11 +1,10 @@
 package org.csstudio.trends.databrowser.plotpart;
 
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.trends.databrowser.Plugin;
-import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
@@ -26,27 +25,6 @@ public class BrowserUI extends Composite
 {
     /** Model */
     final private Model model;
-
-    /** Listen to model's time range changes. */
-    final private ModelListener listener = new ModelListener()
-    {
-        // TODO: Can't the controller do this?
-        public void timeRangeChanged()
-        {   // Adjust the x axis to the "current" model time range
-            final double low = model.getStartTime().toDouble();
-            final double high = model.getEndTime().toDouble();
-            i_chart.getChart().getXAxis().setValueRange(low, high);
-        }
-        
-        public void timeSpecificationsChanged()           { /* NOP */ }
-        public void periodsChanged()                      { /* NOP */ }
-        public void entriesChanged()                      { /* NOP */ }
-        public void entryAdded(IModelItem new_item)       { /* NOP */ }
-        public void entryConfigChanged(IModelItem item)   { /* NOP */ }
-        public void entryMetaDataChanged(IModelItem item) { /* NOP */ }
-        public void entryArchivesChanged(IModelItem item) { /* NOP */ }
-        public void entryRemoved(IModelItem removed_item) { /* NOP */ }
-    };
 
     private InteractiveChart i_chart;
     private Button scroll_pause;
@@ -72,14 +50,7 @@ public class BrowserUI extends Composite
         }
         makeGUI();
     }
-    
-    /** Must be called to clean up. */
-    @Override
-    public void dispose()
-    {
-        model.removeListener(listener);
-    }
-    
+        
     /** @return Returns the InteractiveChart. */
     public InteractiveChart getInteractiveChart()
     {
@@ -99,7 +70,7 @@ public class BrowserUI extends Composite
                 
         // Add scroll button
         scroll_pause = new Button(i_chart.getButtonBar(), SWT.CENTER);        
-        updateScrollPauseButton();
+        updateScrollPauseButton(model.isScrollEnabled());
         scroll_pause.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -107,7 +78,6 @@ public class BrowserUI extends Composite
             {
                 // Toggle scroll mode
                 model.enableScroll(! model.isScrollEnabled());
-                updateScrollPauseButton();
             }
         });
         
@@ -130,8 +100,7 @@ public class BrowserUI extends Composite
                     // If we request some_start ... 'now',
                     // assume we want to scroll from then on.
                     model.setTimeSpecifications(dlg.getStartSpecification(),
-                                                 dlg.getEndSpecification());
-                    updateScrollPauseButton();
+                                                dlg.getEndSpecification());
                 }
                 catch (Exception ex)
                 {
@@ -139,17 +108,18 @@ public class BrowserUI extends Composite
                 }
             }
         });
-        
-        model.addListener(listener);
-        
-        // Initialize the time axis
-        listener.timeRangeChanged();
     }
    
-    /** Update the scroll button's image and tooltip. */
-    private void updateScrollPauseButton()
+    public void setTimeRange(final ITimestamp start, final ITimestamp end)
     {
-        if (model.isScrollEnabled())
+        i_chart.getChart().getXAxis().setValueRange(start.toDouble(),
+                                                    end.toDouble());
+    }
+
+    /** Update the scroll button's image and tooltip. */
+    public void updateScrollPauseButton(final boolean scroll)
+    {
+        if (scroll)
         {
             scroll_pause.setImage(images.get(SCROLL_ON));
             scroll_pause.setToolTipText(Messages.StopScroll_TT);

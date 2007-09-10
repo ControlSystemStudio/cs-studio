@@ -107,10 +107,14 @@ public class Controller
         {
             // Invalidate any scroll start spec that we might have
             scroll_start_specification = null;
+            gui.updateScrollPauseButton(model.isScrollEnabled());
         }
         
-        public void timeRangeChanged()              { /* NOP */ }
-
+        public void timeRangeChanged()
+        {   // Adjust the x axis to the "current" model time range
+            gui.setTimeRange(model.getStartTime(), model.getEndTime());
+        }
+        
         public void periodsChanged()
         {
             if (scanner_scroller != null)
@@ -178,12 +182,14 @@ public class Controller
                     setScrollStart(range);
                     model.setTimeSpecifications(scroll_start_specification,
                                                 RelativeTime.NOW);
+                    model.enableScroll(true);
                 }
                 else
                 {   // Set absolute start/end times
                     final ITimestamp start = TimestampFactory.fromDouble(x0);
                     final ITimestamp end = TimestampFactory.fromDouble(x1);
                     model.setTimeSpecifications(start.toString(), end.toString());
+                    model.enableScroll(false);
                 }
             }
             catch (Exception ex)
