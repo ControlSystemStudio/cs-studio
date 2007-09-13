@@ -22,8 +22,12 @@
 package org.csstudio.platform.ui;
 
 import org.csstudio.platform.internal.logging.CssLogListener;
+import org.csstudio.platform.internal.xmlprefs.CssPreferences;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.internal.xmlprefs.XMLPreferenceStore;
 import org.eclipse.core.runtime.ILogListener;
+import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -38,6 +42,16 @@ public abstract class AbstractCssUiPlugin extends AbstractUIPlugin {
 	 * log service.
 	 */
 	private ILogListener _logListener;
+	
+	/**
+	 * The preferences used by this plugin.
+	 */
+	private Preferences _preferences;
+	
+	/**
+	 * The preference store used by this plugin.
+	 */
+	private IPreferenceStore _preferenceStore;
 
 	/**
 	 * Standard constructor.
@@ -101,4 +115,48 @@ public abstract class AbstractCssUiPlugin extends AbstractUIPlugin {
 	 * @return The ID of this plugin.
 	 */
 	public abstract String getPluginId();
+	
+	/**
+	 * Returns the preference store for this plugin. For CSS plugins, this
+	 * method should be used instead of {@code getPluginPreferences()}.
+	 * 
+	 * @return the preferences for this plugin.
+	 */
+	public Preferences getCssPluginPreferences() {
+		if (_preferences == null) {
+			if (useXmlPreferences()) {
+				_preferences = new CssPreferences(getPluginId());
+			} else {
+				_preferences = getPluginPreferences();
+			}
+		}
+		return _preferences;
+	}
+	
+	/**
+	 * Returns the preference store for this UI-plugin.
+	 * 
+	 * @return the preference store for this plugin.
+	 */
+	@Override
+	public IPreferenceStore getPreferenceStore() {
+		if (_preferenceStore == null) {
+			if (useXmlPreferences()) {
+				_preferenceStore = new XMLPreferenceStore(getPluginId());
+			} else {
+				_preferenceStore = super.getPreferenceStore();
+			}
+		}
+		return _preferenceStore;
+	}
+
+	/**
+	 * Returns whether to use the XML-based preference store implementation.
+	 * 
+	 * @return <code>true</code> if the XML-based preference store should be
+	 *         used, <code>false</code> otherwise.
+	 */
+	private boolean useXmlPreferences() {
+		return false;
+	}
 }
