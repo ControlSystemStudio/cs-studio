@@ -21,19 +21,16 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import java.util.Map;
-
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
-import org.csstudio.sds.model.properties.ActionData;
+import org.csstudio.sds.components.ui.internal.utils.WidgetActionHandlerService;
+import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.sds.util.CustomMediaFactory;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.IFigure;
@@ -86,8 +83,8 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 					CentralLogger.getInstance().info(this, "KLICK");
 					ActionButtonModel model = (ActionButtonModel) getWidgetModel();
 					
-					ActionData data = model.getActionData();
-					data.getType().performAction();
+					ActionType type = model.getActionData().getType();
+					WidgetActionHandlerService.getInstance().performAction(model.getProperty(ActionButtonModel.PROP_ACTIONDATA), type);
 //					switch(data.getType()) {
 //					case ActionData.OPEN_SHELL :
 //						openDisplayShellInRunMode(data.getDisplayPath(), data.getAliases());
@@ -101,7 +98,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 //					default:
 //						// do nothing
 //						CentralLogger.getInstance().info(this, "Clicked!");
-//					}	
+//					}
 				} else {
 					CentralLogger.getInstance().info(this, "ActionButton activated!");
 				}
@@ -148,30 +145,30 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 	}
 	
-	/**
-	 * Opens a shell in RunMode.
-	 * @param path
-	 * 			The Ipath to the Display, which should be opened.
-	 * @param newAlias
-	 * 			The Map of new Alias for the opened Display			
-	 */
-	private void openDisplayShellInRunMode(final IPath path, final Map<String, String> newAlias) {
-		if (path!=null && !path.isEmpty()) {
-			RunModeService.getInstance().openDisplayShellInRunMode(path, newAlias);
-		}
-	}
-	
-	/**
-	 * Opens a view in RunMode.
-	 * @param path
-	 * 			The IPath to the Display, which should be opened.
-	 * @param newAlias
-	 * 			The Map of new Alias for the opened Display			
-	 */
-	private void openDisplayViewInRunMode(final IPath path, final Map<String, String> newAlias) {
-		if (path!=null && !path.isEmpty()) {
-			RunModeService.getInstance().openDisplayViewInRunMode(path, newAlias);
-		}
-	}
+//	/**
+//	 * Opens a shell in RunMode.
+//	 * @param path
+//	 * 			The Ipath to the Display, which should be opened.
+//	 * @param newAlias
+//	 * 			The Map of new Alias for the opened Display			
+//	 */
+//	private void openDisplayShellInRunMode(final IPath path, final Map<String, String> newAlias) {
+//		if (path!=null && !path.isEmpty()) {
+//			RunModeService.getInstance().openDisplayShellInRunMode(path, newAlias);
+//		}
+//	}
+//	
+//	/**
+//	 * Opens a view in RunMode.
+//	 * @param path
+//	 * 			The IPath to the Display, which should be opened.
+//	 * @param newAlias
+//	 * 			The Map of new Alias for the opened Display			
+//	 */
+//	private void openDisplayViewInRunMode(final IPath path, final Map<String, String> newAlias) {
+//		if (path!=null && !path.isEmpty()) {
+//			RunModeService.getInstance().openDisplayViewInRunMode(path, newAlias);
+//		}
+//	}
 	
 }
