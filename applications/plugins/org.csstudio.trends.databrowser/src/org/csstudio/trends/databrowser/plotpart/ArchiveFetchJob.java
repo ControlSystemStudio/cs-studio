@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 class ArchiveFetchJob extends Job
 {
-    private IPVModelItem item;
-    private ITimestamp start, end;
+    private final IPVModelItem item;
+    private final ITimestamp start, end;
     
     /** Construct job that fetches data.
      *  @param item Item for which to fetch samples

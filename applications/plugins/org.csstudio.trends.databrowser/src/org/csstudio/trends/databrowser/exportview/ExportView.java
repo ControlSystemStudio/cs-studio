@@ -515,7 +515,8 @@ public class ExportView extends PlotAwareView
             prec = 0;
         }
         // Launch the actual export
-        Job job = new ExportJob(model, start, end,
+        Job job = new ExportJob(getSite().getShell(),
+                        model, start, end,
                         source,
                         seconds,
                         format_spreadsheet.getSelection(),

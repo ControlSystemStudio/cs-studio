@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.cache.ArchiveCache;
+import org.csstudio.archive.cache.ArchiveExceptionDialog;
 import org.csstudio.archive.crawl.RawValueIterator;
 import org.csstudio.archive.crawl.SpreadsheetIterator;
 import org.csstudio.archive.crawl.ValueIterator;
@@ -22,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Shell;
 
 /** Eclipse background job for searching names on a data server.
  *  @author Kay Kasemir
@@ -29,6 +31,7 @@ import org.eclipse.core.runtime.jobs.Job;
 class ExportJob extends Job
 {
     private static final int PROGRESS_LINE_GRANULARITY = 100;
+    private final Shell shell;
     private final Model model;
     private final ITimestamp start, end;
 
@@ -46,6 +49,8 @@ class ExportJob extends Job
     private final String filename;
     
     /** Create job for exporting data.
+     *  @param shell Shell used to display error message
+     *  @param model The model from which to export
      *  @param start
      *  @param end Start and end time.
      *  @param source Where to get the data.
@@ -54,7 +59,8 @@ class ExportJob extends Job
      *  @param format_spreadsheet Spreadsheet, or plain list?
      *  @param format_severity Include severity/status/info, or omit?
      */     
-    public ExportJob(Model model,
+    public ExportJob(final Shell shell,
+                    final Model model,
                     ITimestamp start, ITimestamp end,
                     Source source,
                     double seconds,
@@ -65,13 +71,15 @@ class ExportJob extends Job
                     String filename)
     {
         super(Messages.ExportJobTitle);
-        if (model == null ||
+        if (shell == null ||
+            model == null ||
             start == null ||
             end == null ||
             source == null ||
             format == null ||
             filename == null)
             throw new NullPointerException("Received null argument"); //$NON-NLS-1$
+        this.shell = shell;
         this.model = model;
         this.start = start;
         this.end = end;
@@ -156,12 +164,15 @@ class ExportJob extends Job
                 }
             }
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Plugin.logException("ExportJob error", ex);
             if (out != null)
                 out.write("# Error: " + ex.getMessage());
             monitor.setCanceled(true);
+            ArchiveExceptionDialog.showArchiveException(
+                            shell, Messages.Error,
+                            Messages.ExportErrorMsg, ex);
             return Status.CANCEL_STATUS;
         }
         finally
