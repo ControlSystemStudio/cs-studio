@@ -34,6 +34,13 @@
             icon="icons/switch.gif"
             name="Switch"
             typeId="org.csstudio.sds.components.Switch"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.MenuButtonModelFactory"
+            description="MenuButton (like Combo Box)"
+            icon="icons/menubutton.gif"
+            name="MenuButton"
+            typeId="org.csstudio.sds.components.MenuButton">
+      </widgetModelFactory>
    </extension>
 
 

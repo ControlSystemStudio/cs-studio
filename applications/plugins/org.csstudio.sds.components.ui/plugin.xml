@@ -68,6 +68,10 @@
             class="org.csstudio.sds.components.ui.internal.editparts.MeterEditPart"
             typeId="org.csstudio.sds.components.Meter">
       </widgetEditPart>
+      <widgetEditPart
+            class="org.csstudio.sds.components.ui.internal.editparts.MenuButtonEditPart"
+            typeId="org.csstudio.sds.components.MenuButton">
+      </widgetEditPart>
    </extension>
    <extension
          point="org.csstudio.sds.components.Switch">
