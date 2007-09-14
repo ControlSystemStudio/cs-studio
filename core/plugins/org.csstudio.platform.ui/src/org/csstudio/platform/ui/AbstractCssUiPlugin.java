@@ -27,8 +27,10 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.xmlprefs.XMLPreferenceStore;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -150,6 +152,28 @@ public abstract class AbstractCssUiPlugin extends AbstractUIPlugin {
 		return _preferenceStore;
 	}
 
+	/**
+	 * Returns the preference store for the plugin with
+	 * <code>pluginID</code>.
+	 * 
+	 * @param pluginID of the plugin to get the preference store from
+	 * 
+	 * @return the preference store for this plugin with
+	 * <code>pluginID</code>.
+	 */
+	public IPreferenceStore getPreferenceStore(String pluginID) {
+		if (_preferenceStore == null) {
+			if (useXmlPreferences()) {
+				_preferenceStore = new XMLPreferenceStore(pluginID);
+			} else {
+				_preferenceStore = new ScopedPreferenceStore( new InstanceScope(),
+						pluginID);
+			}
+		}
+		return _preferenceStore;
+	}
+
+	
 	/**
 	 * Returns whether to use the XML-based preference store implementation.
 	 * 
