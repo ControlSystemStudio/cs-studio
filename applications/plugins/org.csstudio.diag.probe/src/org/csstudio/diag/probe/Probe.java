@@ -63,10 +63,17 @@ public class Probe extends ViewPart implements PVListener
     /** Multiple Probe views are allowed.
      *  Their ID has to be ID + ":<instance>"
      */
-    public static final String ID = "org.csstudio.diag.probe.Probe"; //$NON-NLS-1$
-    private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
-    private static final String PV_TAG = "PVName"; //$NON-NLS-1$
-    public static final boolean debug = false;
+    final public static String ID = "org.csstudio.diag.probe.Probe"; //$NON-NLS-1$
+
+    /** Compile-time debug flag */
+    final public static boolean debug = false;
+
+    /** Memento tag */
+    final private static String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
+    /** Memento tag */
+    final private static String PV_TAG = "PVName"; //$NON-NLS-1$
+    /** Memento tag */
+    final private static String METER_TAG = "meter"; //$NON-NLS-1$
     
     /** Instance number, used to create a unique ID
      *  @see #createNewInstance()
@@ -144,6 +151,7 @@ public class Probe extends ViewPart implements PVListener
     };
     private Composite top_box;
     private Composite bottom_box;
+    private Button show_meter;
 
 
     /** Create or re-display a probe view with the given PV name.
@@ -201,6 +209,8 @@ public class Probe extends ViewPart implements PVListener
     {
         super.saveState(memento);
         memento.putString(PV_TAG, cbo_name.getCombo().getText());
+        memento.putString(METER_TAG,
+                        Boolean.toString(show_meter.getSelection()));
     }
 
     /** ViewPart interface, create UI. */
@@ -311,7 +321,7 @@ public class Probe extends ViewPart implements PVListener
         gd.horizontalAlignment = SWT.FILL;
         lbl_time.setLayoutData(gd);
 
-        final Button show_meter = new Button(bottom_box, SWT.CHECK);
+        show_meter = new Button(bottom_box, SWT.CHECK);
         show_meter.setText(Messages.S_Meter);
         show_meter.setToolTipText(Messages.S_Meter_TT);
         show_meter.setSelection(true);
@@ -404,7 +414,17 @@ public class Probe extends ViewPart implements PVListener
         name_helper.loadSettings();
 
         if (memento != null)
+        {
         	setPVName(memento.getString(PV_TAG));
+        	// Per default, the meter is shown.
+        	// Hide according to memento.
+        	final String show = memento.getString(METER_TAG);
+        	if (show != null  &&  show.equals("false")) //$NON-NLS-1$
+        	{
+        	    show_meter.setSelection(false);
+        	    showMeter(false);
+        	}
+        }
     }
 
     /** Show or hide the meter */
