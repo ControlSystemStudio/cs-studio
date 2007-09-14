@@ -6,6 +6,9 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.PropertyTypesEnum;
+import org.csstudio.sds.model.properties.actions.CommitValueWidgetAction;
+import org.csstudio.sds.model.properties.actions.OpenDisplayWidgetAction;
+import org.csstudio.sds.model.properties.actions.WidgetAction;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.eclipse.core.runtime.IPath;
 
@@ -41,15 +44,15 @@ public final class WidgetActionHandlerService {
 	/**
 	 * Performs the action depending on the given {@link ActionType}.
 	 * @param property The {@link WidgetProperty} to use (when needed)
-	 * @param type The type of the action
+	 * @param action The type of the action
 	 */
-	public void performAction(final WidgetProperty property, final ActionType type) {
-		if (type.equals(ActionType.OPEN_SHELL)) {
-			this.openShell(type);
-		} else if (type.equals(ActionType.OPEN_VIEW)) {
-			this.openView(type);
-		} else if (type.equals(ActionType.COMMIT_VALUE)) {
-			this.commitValue(property, type);
+	public void performAction(final WidgetProperty property, final WidgetAction action) {
+		if (action.getType().equals(ActionType.OPEN_SHELL)) {
+			this.openShell(action);
+		} else if (action.getType().equals(ActionType.OPEN_VIEW)) {
+			this.openView(action);
+		} else if (action.getType().equals(ActionType.COMMIT_VALUE)) {
+			this.commitValue(property, action);
 		} else {
 			this.doUnknownAction();
 		}
@@ -64,14 +67,13 @@ public final class WidgetActionHandlerService {
 	
 	/**
 	 * Opens a display in a shell.
-	 * @param type The {@link ActionType} of the action
+	 * @param action The {@link ActionType} of the action
 	 */
 	@SuppressWarnings("unchecked")
-	private void openShell(final ActionType type) {
-		WidgetProperty prop = type.getProperty(PropertyTypesEnum.RESOURCE);
-		IPath path = (IPath) prop.getPropertyValue();
-		prop = (WidgetProperty)type.getProperty(PropertyTypesEnum.MAP);
-		Map<String, String> newAlias = (Map<String, String>) prop.getPropertyValue();
+	private void openShell(final WidgetAction action) {
+		OpenDisplayWidgetAction displayAction = (OpenDisplayWidgetAction) action;
+		IPath path = displayAction.getResource();
+		Map<String, String> newAlias = displayAction.getAliases();
 		RunModeService.getInstance().openDisplayShellInRunMode(path, newAlias);
 	}
 	
@@ -80,11 +82,10 @@ public final class WidgetActionHandlerService {
 	 * @param type The {@link ActionType} of the action
 	 */
 	@SuppressWarnings("unchecked")
-	private void openView(final ActionType type) {
-		WidgetProperty prop = type.getProperty(PropertyTypesEnum.RESOURCE);
-		IPath path = (IPath) prop.getPropertyValue();
-		prop = (WidgetProperty)type.getProperty(PropertyTypesEnum.MAP);
-		Map<String, String> newAlias = (Map<String, String>) prop.getPropertyValue();
+	private void openView(final WidgetAction action) {
+		OpenDisplayWidgetAction displayAction = (OpenDisplayWidgetAction) action;
+		IPath path = displayAction.getResource();
+		Map<String, String> newAlias = displayAction.getAliases();
 		RunModeService.getInstance().openDisplayViewInRunMode(path, newAlias);
 	}
 	
@@ -93,9 +94,9 @@ public final class WidgetActionHandlerService {
 	 * @param property The {@link WidgetProperty} where the value is set
 	 * @param type The {@link ActionType} of the action
 	 */
-	private void commitValue(final WidgetProperty property, final ActionType type) {
-		WidgetProperty prop = type.getProperty(PropertyTypesEnum.STRING);
-		property.setManualValue(prop.getPropertyValue());
+	private void commitValue(final WidgetProperty property, final WidgetAction action) {
+		CommitValueWidgetAction valueAction = (CommitValueWidgetAction) action;
+		property.setManualValue(valueAction.getValue());
 	}
 
 }
