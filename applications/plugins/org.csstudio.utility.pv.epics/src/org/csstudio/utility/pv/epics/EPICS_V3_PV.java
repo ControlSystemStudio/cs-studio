@@ -14,9 +14,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
+import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.widgets.Display;
 
 /** EPICS ChannelAccess implementation of the PV interface.
@@ -44,7 +46,8 @@ import org.eclipse.swt.widgets.Display;
  */
 @SuppressWarnings("nls")
 public class EPICS_V3_PV
-          implements PV, ConnectionListener, MonitorListener
+            extends PlatformObject
+            implements PV, ConnectionListener, MonitorListener
 {
     /** Use plain mode?
      *  @see #EPICS_V3_PV(String, boolean)
@@ -199,6 +202,12 @@ public class EPICS_V3_PV
     /** @return Returns the name. */
     public String getName()
     {   return name;  }
+    
+    /** @return CSS type ID for IProcessVariable */
+    public String getTypeId()
+    {
+        return IProcessVariable.TYPE_ID;
+    }
 
     /** {@inheritDoc} */
     public IValue getValue(double timeout_seconds) throws Exception
