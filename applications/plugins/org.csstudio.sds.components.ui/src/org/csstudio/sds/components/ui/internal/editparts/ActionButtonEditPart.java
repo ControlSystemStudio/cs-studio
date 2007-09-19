@@ -26,7 +26,6 @@ import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
 import org.csstudio.sds.components.ui.internal.utils.WidgetActionHandlerService;
-import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.actions.WidgetAction;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
@@ -83,9 +82,11 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 					CentralLogger.getInstance().info(this, "KLICK");
 					ActionButtonModel model = (ActionButtonModel) getWidgetModel();
-					
-					WidgetAction type = model.getActionData().getWidgetAction();
-					WidgetActionHandlerService.getInstance().performAction(model.getProperty(ActionButtonModel.PROP_ACTIONDATA), type);
+					int index = model.getChoosenActionIndex();
+					if (index>=0 && index<model.getActionData().getWidgetActions().size()) {
+						WidgetAction type = model.getActionData().getWidgetActions().get(index);
+						WidgetActionHandlerService.getInstance().performAction(model.getProperty(ActionButtonModel.PROP_ACTIONDATA), type);	
+					}
 //					switch(data.getType()) {
 //					case ActionData.OPEN_SHELL :
 //						openDisplayShellInRunMode(data.getDisplayPath(), data.getAliases());

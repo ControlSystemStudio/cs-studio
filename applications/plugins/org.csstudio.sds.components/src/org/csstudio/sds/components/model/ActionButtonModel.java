@@ -29,9 +29,9 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionDataProperty;
-import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.FontProperty;
+import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.ResourceProperty;
 import org.csstudio.sds.model.properties.StringMapProperty;
@@ -88,6 +88,10 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The ID of the {@link ActionData} property.
 	 */
 	public static final String PROP_ACTIONDATA = "actionData"; //$NON-NLS-1$
+	/**
+	 * The ID of the {@link ActionData} property.
+	 */
+	public static final String PROP_ACTION_INDEX = "action_index"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this widget model.
@@ -155,7 +159,9 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		addProperty(PROP_CLICK_ALIAS, new StringMapProperty("Click Alias", 
 				WidgetPropertyCategory.Behaviour, new HashMap<String, String>()));
 		addProperty(PROP_ACTIONDATA, new ActionDataProperty("Action Data",
-				WidgetPropertyCategory.Behaviour, new ActionData(ActionType.UNKNOWN)));
+				WidgetPropertyCategory.Behaviour, new ActionData()));
+		addProperty(PROP_ACTION_INDEX, new IntegerProperty("Action Index",
+				WidgetPropertyCategory.Behaviour, -1, -1, Integer.MAX_VALUE));
 	}
 
 	/**
@@ -176,6 +182,10 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	
 	public ActionData getActionData() {
 		return (ActionData) getProperty(PROP_ACTIONDATA).getPropertyValue();
+	}
+	
+	public int getChoosenActionIndex() {
+		return (Integer) getProperty(PROP_ACTION_INDEX).getPropertyValue();
 	}
 
 	/**

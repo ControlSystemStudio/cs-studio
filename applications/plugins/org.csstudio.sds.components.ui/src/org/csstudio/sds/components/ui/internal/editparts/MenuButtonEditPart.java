@@ -5,7 +5,7 @@ import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.components.ui.internal.utils.WidgetActionHandlerService;
-import org.csstudio.sds.model.properties.ActionData;
+import org.csstudio.sds.model.properties.actions.WidgetAction;
 import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
@@ -32,6 +32,10 @@ import org.eclipse.ui.PlatformUI;
  */
 public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 	
+	/**
+	 * The {@link Listener} for the {@link MenuItem}s.
+	 */
+	private Listener _listener = new MenuActionListener();
 
 	/**
 	 * {@inheritDoc}
@@ -73,40 +77,18 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 	/**
 	 * Open the cell editor for direct editing.
 	 * @param point the location of the mouse-event
+	 * @param absolutX The x coordinate of the mouse in the display
+	 * @param absolutY The y coordinate of the mouse in the display
 	 */
-	private void performDirectEdit(final Point point, int absolutX, int absolutY) {
+	private void performDirectEdit(final Point point, final int absolutX, final int absolutY) {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		Menu menu = new Menu(shell, SWT.POP_UP);
-		MenuItem item1 = new MenuItem(menu,SWT.PUSH);
-		item1.setData(((MenuButtonModel)this.getCastedModel()).getActionData1());
-		item1.setText(((MenuButtonModel)this.getCastedModel()).getActionData1().getWidgetAction().getActionLabel());
-		item1.addListener(SWT.Selection, new Listener(){
-
-			public void handleEvent(final Event event) {
-				ActionData data = (ActionData)event.widget.getData();
-				WidgetActionHandlerService.getInstance().performAction(getCastedModel().getProperty(MenuButtonModel.PROP_ACTIONDATA1), data.getWidgetAction());
-				System.out.println("actionData1 performt");
-			}
-			
-		});
-		MenuItem item2 = new MenuItem(menu,SWT.PUSH);
-		item2.setText(((MenuButtonModel)this.getCastedModel()).getActionData2().getWidgetAction().getActionLabel());
-		item2.addListener(SWT.Selection, new Listener(){
-
-			public void handleEvent(final Event event) {
-				System.out.println("actionData2 performt");
-			}
-			
-		});
-		MenuItem item3 = new MenuItem(menu,SWT.PUSH);
-		item3.setText(((MenuButtonModel)this.getCastedModel()).getActionData3().getWidgetAction().getActionLabel());
-		item3.addListener(SWT.Selection, new Listener(){
-
-			public void handleEvent(final Event event) {
-				System.out.println("actionData3 performt");
-			}
-			
-		});
+		for (WidgetAction action : ((MenuButtonModel)this.getCastedModel()).getActionData().getWidgetActions()) {
+			MenuItem item1 = new MenuItem(menu,SWT.PUSH);
+			item1.setData(action);
+			item1.setText(action.getActionLabel());
+			item1.addListener(SWT.Selection, _listener);
+		}
 		
 		int x = absolutX;
 		int y = absolutY;
@@ -132,6 +114,9 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		return (RefreshableLabelFigure) getFigure();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		// label
@@ -172,6 +157,24 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 
+	}
+	
+	/**
+	 * The {@link Listener} for the {@link MenuItem}s.
+	 * @author Kai Meyer
+	 *
+	 */
+	private final class MenuActionListener implements Listener {
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void handleEvent(final Event event) {
+			WidgetAction action = (WidgetAction)event.widget.getData();
+			WidgetActionHandlerService.getInstance().performAction(getCastedModel().getProperty(MenuButtonModel.PROP_ACTIONDATA), action);
+			System.out.println("actionData1 performt");
+		}
+		
 	}
 
 }
