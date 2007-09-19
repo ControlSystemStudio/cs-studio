@@ -73,10 +73,9 @@ public class EPICS_V3_PV_Test
     }
 
     @Test
-    public void testSinglePV() throws Exception
+    public void testSinglePVStartStop() throws Exception
     {
         PV pv = getPV("fred");
-        
         pv.addListener(new TestListener("A"));
 
         pv.start();
@@ -90,14 +89,47 @@ public class EPICS_V3_PV_Test
         }
         // Did we get anything?
         assertTrue(updates.get() > 2);
-        // Meta info as expected?
-        INumericMetaData meta = (INumericMetaData)pv.getValue().getMetaData();
-        assertEquals("furlong", meta.getUnits());
-        assertEquals(4, meta.getPrecision());
-        
         pv.stop();
+        int old = updates.get();
+        wait = 10;
+        while (wait > 0)
+        {
+            Thread.sleep(1000);
+            assertEquals("updates should stop", old, updates.get());
+            --wait;
+        }
     }
 
+    @Test
+    public void testMetaData() throws Exception
+    {
+        PV pv = getPV("fred");
+        pv.addListener(new TestListener("A"));
+        pv.start();
+        try
+        {
+            int wait = 10;
+            while (wait > 0)
+            {
+                if (updates.get() > 2)
+                    break;
+                Thread.sleep(1000);
+                --wait;
+            }
+            // Did we get anything?
+            assertTrue(updates.get() > 2);
+            // Meta info as expected?
+            INumericMetaData meta = (INumericMetaData)pv.getValue().getMetaData();
+            assertEquals("furlong", meta.getUnits());
+            assertEquals(4, meta.getPrecision());
+        }
+        finally
+        {
+            pv.stop();
+        }
+    }
+
+    
     @Test
     public void testLong() throws Exception
     {
@@ -107,7 +139,9 @@ public class EPICS_V3_PV_Test
         while (!pva.isConnected())
             Thread.sleep(100);
         assertTrue(pva.isConnected());
-        assertTrue(pva.getValue() instanceof ILongValue);
+        final IValue value = pva.getValue();
+        System.out.println("'long' PV value: " + value);
+        assertTrue(value instanceof ILongValue);
         
         pva.stop();
     }
