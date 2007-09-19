@@ -15,7 +15,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/** These tests require the soft-IOC database from lib/test.db.
+/** Test of the PV interface for a hardcoded implementation
+ *  so that it can run as a unit test without Eclipse plugin loader.
+ *  
+ *  These tests require the soft-IOC database from lib/test.db.
  * 
  *  @author Kay Kasemir
  */
@@ -28,8 +31,21 @@ public class EPICS_V3_PV_Test
         PVFactory.use_ui_thread = false;
     }
     
+    /** Get a PV.
+     *  
+     *  <b>This is where the implementation is hard-coded!</b>
+     *  
+     *  @return PV
+     */
+    static private PV getPV(final String name)
+    {
+        return new EPICS_V3_PV(name);
+    }
+    
+    /** Update counter for TestListener */
     private AtomicInteger updates = new AtomicInteger();
     
+    /** Listener that dumps info and counts updates */
     class TestListener implements PVListener
     {
         private String name;
@@ -39,7 +55,6 @@ public class EPICS_V3_PV_Test
             this.name = name;
         }
         
-        /** @see org.csstudio.pvtable.pv.PVListener#pvValueUpdate(org.csstudio.pvtable.pv.PV) */
         public void pvValueUpdate(PV pv)
         {
             updates.addAndGet(1);
@@ -50,7 +65,6 @@ public class EPICS_V3_PV_Test
                     + v);
         }
 
-        /** @see org.csstudio.pvtable.pv.PVListener#pvDisconnected(org.csstudio.pvtable.pv.PV) */
         public void pvDisconnected(PV pv)
         {
             System.out.println(name + ": "
@@ -61,7 +75,7 @@ public class EPICS_V3_PV_Test
     @Test
     public void testSinglePV() throws Exception
     {
-        PV pv = new EPICS_V3_PV("fred");
+        PV pv = getPV("fred");
         
         pv.addListener(new TestListener("A"));
 
@@ -87,7 +101,7 @@ public class EPICS_V3_PV_Test
     @Test
     public void testLong() throws Exception
     {
-        PV pva = new EPICS_V3_PV("long_fred");
+        PV pva = getPV("long_fred");
         
         pva.start();
         while (!pva.isConnected())
@@ -101,8 +115,8 @@ public class EPICS_V3_PV_Test
     @Test
     public void testMultiplePVs() throws Exception
     {
-        PV pva = new EPICS_V3_PV("fred");
-        PV pvb = new EPICS_V3_PV("janet");
+        PV pva = getPV("fred");
+        PV pvb = getPV("janet");
         
         pva.addListener(new TestListener("A"));
         pvb.addListener(new TestListener("B"));
@@ -126,8 +140,8 @@ public class EPICS_V3_PV_Test
     @Test
     public void testDuplicatePVs() throws Exception
     {
-        PV pva = new EPICS_V3_PV("fred");
-        PV pvb = new EPICS_V3_PV("fred");
+        PV pva = getPV("fred");
+        PV pvb = getPV("fred");
         
         pva.addListener(new TestListener("A"));
         pvb.addListener(new TestListener("B"));
@@ -152,7 +166,7 @@ public class EPICS_V3_PV_Test
     @Test
     public void testEnum() throws Exception
     {
-        PV pva = new EPICS_V3_PV("fred.SCAN");
+        PV pva = getPV("fred.SCAN");
         
         pva.start();
         while (!pva.isConnected())
@@ -165,7 +179,7 @@ public class EPICS_V3_PV_Test
         
         pva.stop();
 
-        pva = new EPICS_V3_PV("enum");
+        pva = getPV("enum");
         
         pva.start();
         while (!pva.isConnected())
@@ -187,7 +201,7 @@ public class EPICS_V3_PV_Test
     @Test
     public void testDblWaveform() throws Exception
     {
-        PV pva = new EPICS_V3_PV("hist");
+        PV pva = getPV("hist");
         
         pva.start();
         while (!pva.isConnected())
@@ -205,7 +219,7 @@ public class EPICS_V3_PV_Test
     @Test
     public void testLongWaveform() throws Exception
     {
-        PV pva = new EPICS_V3_PV("longs");
+        PV pva = getPV("longs");
         
         pva.start();
         while (!pva.isConnected())
