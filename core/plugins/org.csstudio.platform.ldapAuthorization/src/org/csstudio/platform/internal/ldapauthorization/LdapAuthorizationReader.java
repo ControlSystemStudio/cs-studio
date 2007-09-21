@@ -3,8 +3,13 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -23,13 +28,23 @@ import org.eclipse.core.runtime.Preferences;
 
 
 /**
- * Reads a user's roles and groups from an LDAP directory.
+ * Reads a user's roles and groups from an LDAP directory, and the rights
+ * associated with actions from a configuration file.
  * 
  * @author Joerg Rathlev
  */
 public class LdapAuthorizationReader implements IAuthorizationProvider {
 
+	/**
+	 * The name of the configuration file from which rights associated with
+	 * actions are read.
+	 */
 	private static final String CONFIG_FILE = "actionrights.conf";
+	
+	/**
+	 * Map of the rights associated with actions.
+	 */
+	private Map<String, RightSet> actionsrights;
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
@@ -61,38 +76,52 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 	
 
 	/**
-	 * Reads the rights associated with an action from a configuration file
-	 * and returns the set of rights.
+	 * <p>Reads the rights associated with an action from a configuration file
+	 * and returns the set of rights. The configuration file is expected to be
+	 * in Java properties file format, with the action IDs as keys and the
+	 * rights associated with each action as its respective value. Sets of
+	 * rights can be specified as whitespace-separated lists of rights. Each
+	 * right is written as <code>(role, group)</code>.</p>
+	 * 
+	 * <p>The following is an example of a configuration file that grants the
+	 * right to use action1 to developers and admins in group1, and the right
+	 * to use action2 to admins in group1 and in group2:</p>
+	 * 
+	 * <pre>
+	 * action1 = (developer, group1) (admin, group1)
+	 * action2 = (admin, group1) (admin, group2)
+	 * </pre>
+	 * 
+	 * <p>Syntax errors in configuration files are ignored.</p>
 	 */
 	public RightSet getRights(String actionId) {
+		if (actionsrights == null) {
+			loadActionRights();
+		}
+		return actionsrights.get(actionId);
+	}
+	
+	/**
+	 * Loads the configuration file with the actions' rights.
+	 */
+	private void loadActionRights() {
+		actionsrights = new HashMap<String, RightSet>();
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(CONFIG_FILE));
+			Properties p = new Properties();
+			p.load(reader);
 			
-			for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-				StringTokenizer tok = new StringTokenizer(line, " ");
-				String name = tok.nextToken();
-				if (name.equals(actionId)) {
-					RightSet set = new RightSet(name);
-					while (tok.hasMoreTokens()) {
-						String text = tok.nextToken();
-						text = text.substring(1, text.length()-1);
-						
-						String[] entries = text.split(",");
-						Right recht = new Right(entries[0],entries[1]);
-						set.addRight(recht);
-					}
-					return set;
-				}
+			for (String actionId : p.stringPropertyNames()) {
+				RightSet rights = RightsParser.parseRightSet(p.getProperty(actionId), actionId);
+				actionsrights.put(actionId, rights);
 			}
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			// Currently, ignore this error. Using a configuration file for
 			// the permissions is only a workaround until we have an LDAP-based
-			// implementation, so it is ok if there is no configuration file.
-		} catch (IOException e) {
-			// This should be logged as a warning, not debug, but see above.
+			// implementation, so it is ok if the file cannot be read.
 			CentralLogger.getInstance().debug(this,
-					"Error reading rights associated with action: " + actionId, e);
+					"Error reading rights associated with actions.", e);
 		} finally {
 			if (reader != null) {
 				try {
@@ -103,7 +132,6 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 				}
 			}
 		}
-		return null;
 	}
 
 	/**
