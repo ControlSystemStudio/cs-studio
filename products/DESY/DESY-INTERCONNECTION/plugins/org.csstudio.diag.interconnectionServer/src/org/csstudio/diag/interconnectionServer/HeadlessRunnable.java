@@ -5,6 +5,8 @@ import org.csstudio.diag.interconnectionServer.server.ServerCommands;
 import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 public class HeadlessRunnable implements IPlatformRunnable {
 

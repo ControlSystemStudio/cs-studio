@@ -7,7 +7,9 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
-import org.csstudio.platform.preferences.XMLStore;
+import org.csstudio.diag.interconnectionServer.Activator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 public class SendCommands {
 	
@@ -28,16 +30,26 @@ public class SendCommands {
         commandList	= new Hashtable<String,CommandInstance>();
 //        currentId = PreferenceProperties.SENT_START_ID;
 
-		//get properties from xml store.
-		XMLStore store = XMLStore.getInstance();
-		String commandPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"commandPortNumber", false);
+//		//get properties from xml store.
+//		XMLStore store = XMLStore.getInstance();
+//		String commandPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"commandPortNumber", false);
+//		String dataPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"dataPortNumber", false);
+//		String sentStartID = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"sentStartID", false);
+
+        IPreferencesService prefs = Platform.getPreferencesService();
+	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"commandPortNumber", "", null);  
+	    String dataPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"dataPortNumber", "", null);  
+	    String sentStartID = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"sentStartID", "", null);  
+
 		int commandPortNum = Integer.parseInt(commandPortNumber);
-		String dataPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"dataPortNumber", false);
 		int dataPortNum = Integer.parseInt(dataPortNumber);
-		String sentStartID = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"sentStartID", false);
+
 		currentId = Integer.parseInt(sentStartID);
         
         System.out.println("Send Commands - start");

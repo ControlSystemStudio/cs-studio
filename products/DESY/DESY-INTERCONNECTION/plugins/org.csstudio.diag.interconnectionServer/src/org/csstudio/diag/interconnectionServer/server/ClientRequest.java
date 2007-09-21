@@ -30,9 +30,11 @@ import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
+import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer.TagValuePairs;
-import org.csstudio.platform.preferences.XMLStore;
 import org.csstudio.utility.ldap.engine.Engine;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 //import de.desy.jms.server.InterconnectionServer.TagValuePairs;
 
@@ -111,16 +113,25 @@ public class ClientRequest extends Thread
         GregorianCalendar afterUdpAcknowledgeTime = new GregorianCalendar();
         GregorianCalendar afterLdapWriteTime = new GregorianCalendar();
 
-		//get properties from xml store.
-		XMLStore store = XMLStore.getInstance();
-		String jmsTimeToLiveAlarms = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"jmsTimeToLiveAlarms", false);
-		int jmsTimeToLiveAlarmsInt = Integer.parseInt(jmsTimeToLiveAlarms);
-		String jmsTimeToLiveLogs = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"jmsTimeToLiveLogs", false);
+//		//get properties from xml store.
+//		XMLStore store = XMLStore.getInstance();
+//		String jmsTimeToLiveAlarms = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"jmsTimeToLiveAlarms", false);
+//		String jmsTimeToLiveLogs = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"jmsTimeToLiveLogs", false);
+//		String jmsTimeToLivePutLogs = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"jmsTimeToLivePutLogs", false);
+
+        IPreferencesService prefs = Platform.getPreferencesService();
+	    String jmsTimeToLiveAlarms = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"jmsTimeToLiveAlarms", "", null);  
+	    String jmsTimeToLiveLogs = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"jmsTimeToLiveLogs", "", null);  
+	    String jmsTimeToLivePutLogs = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"jmsTimeToLivePutLogs", "", null);  
+	    
+        int jmsTimeToLiveAlarmsInt = Integer.parseInt(jmsTimeToLiveAlarms);
 		int jmsTimeToLiveLogsInt = Integer.parseInt(jmsTimeToLiveLogs);
-		String jmsTimeToLivePutLogs = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"jmsTimeToLivePutLogs", false);
 		int jmsTimeToLivePutLogsInt = Integer.parseInt(jmsTimeToLivePutLogs);
 
         

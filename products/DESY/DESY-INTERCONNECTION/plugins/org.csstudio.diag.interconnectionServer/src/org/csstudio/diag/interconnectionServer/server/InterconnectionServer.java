@@ -25,10 +25,14 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.preferences.XMLStore;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.platform.statistic.CollectorSupervisor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * This version uses <code>DatagramSockets</code> instead of Sockets.
@@ -83,15 +87,22 @@ public class InterconnectionServer
         //
         Statistic.getInstance().incrementNumberOfJmsServerFailover();
         
-		//get properties from xml store.
-		XMLStore store = XMLStore.getInstance();
-		String jmsContextFactory = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"jmsContextFactory", false);
-		String primaryJmsUrl = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"primaryJmsUrl", false);
-		String secondaryJmsUrl = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"secondaryJmsUrl", false);
+//		//get properties from xml store.
+//		XMLStore store = XMLStore.getInstance();
+//		String jmsContextFactory = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"jmsContextFactory", false);
+//		String primaryJmsUrl = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"primaryJmsUrl", false);
+//		String secondaryJmsUrl = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"secondaryJmsUrl", false);
 
+        IPreferencesService prefs = Platform.getPreferencesService();
+	    String jmsContextFactory = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"jmsContextFactory", "", null);  
+	    String primaryJmsUrl = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"primaryJmsUrl", "", null);  
+	    String secondaryJmsUrl = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"secondaryJmsUrl", "", null);  
         
         
         properties = new Hashtable<String, String>();
@@ -305,11 +316,17 @@ public class InterconnectionServer
     private void disconnectFromIocs() {
     	String[] listOfNodes = Statistic.getInstance().getNodeNameArray();
     	
-		//get properties from xml store.
-		XMLStore store = XMLStore.getInstance();
-		String commandPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"commandPortNumber", false);
+//		//get properties from xml store.
+//		XMLStore store = XMLStore.getInstance();
+//		String commandPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"commandPortNumber", false);
 
+        IPreferencesService prefs = Platform.getPreferencesService();
+	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"commandPortNumber", "", null);  
+        
+
+		
 		int commandPortNum = Integer.parseInt(commandPortNumber);
 
     	for ( int i=0; i<listOfNodes.length; i++ ) {
@@ -348,10 +365,20 @@ public class InterconnectionServer
     private InterconnectionServer() {
     	// absicherung
     	
-    	//get properties from xml preferences
-    	XMLStore store = XMLStore.getInstance();
-		String sentStartID = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"sentStartID", false);
+//    	//get properties from xml preferences
+//    	XMLStore store = XMLStore.getInstance();
+//		String sentStartID = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"sentStartID", false);
+
+		//create a defaultscope for the plugin. Otherwise the preference initialzier
+		//will be called AFTER StartupService and the LoginCallbackhandler
+		//has no preference values.
+		IEclipsePreferences prefsx = new DefaultScope().getNode(
+				Activator.getDefault().getPluginId());
+
+        IPreferencesService prefs = Platform.getPreferencesService();
+	    String sentStartID = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"sentStartID", "", null);  
 		sendCommandId = Integer.parseInt(sentStartID);
 
     }
@@ -423,10 +450,15 @@ public class InterconnectionServer
         
         System.out.println("\n" + NAME + VERSION + BUILD + "\nInternal Name: " + instanceName);
 
-		//get properties from xml store.
-		XMLStore store = XMLStore.getInstance();
-		String dataPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"dataPortNumber", false);
+//		//get properties from xml store.
+//		XMLStore store = XMLStore.getInstance();
+//		String dataPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"dataPortNumber", false);
+
+        IPreferencesService prefs = Platform.getPreferencesService();
+	    String dataPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"dataPortNumber", "", null);  
+		
 		int dataPortNum = Integer.parseInt(dataPortNumber);
 
         

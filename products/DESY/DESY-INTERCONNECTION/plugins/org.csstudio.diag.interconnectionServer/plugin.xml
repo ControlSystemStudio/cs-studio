@@ -14,7 +14,12 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.diag.interconnectionServer.application"
-            name="product"/>
+            name="product">
+         <property
+               name="appName"
+               value="product">
+         </property>
+      </product>
    </extension>
    <extension
          point="org.csstudio.platform.libs.xmpp.loginHandlers">
@@ -57,6 +62,10 @@
             class="org.csstudio.diag.interconnectionServer.StopIcServer"
             id="org.csstudio.diag.interconnectionServer.StopIcServer"
             name="Stop IC-Server"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.diag.interconnectionServer.preferences.PreferenceInitializer"/>
    </extension>
 
 </plugin>

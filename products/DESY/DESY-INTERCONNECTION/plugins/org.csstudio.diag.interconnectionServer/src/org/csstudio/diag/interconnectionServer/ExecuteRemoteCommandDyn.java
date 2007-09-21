@@ -5,17 +5,23 @@ import java.util.Map;
 import org.csstudio.diag.interconnectionServer.server.PreferenceProperties;
 import org.csstudio.diag.interconnectionServer.server.SendCommandToIoc;
 import org.csstudio.platform.libs.dcf.actions.IAction;
-import org.csstudio.platform.preferences.XMLStore;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 public class ExecuteRemoteCommandDyn implements IAction {
 
 	public Object run(Object param) {
 		
-		//get properties from xml store.
-		XMLStore store = XMLStore.getInstance();
-		String commandPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
-				"commandPortNumber", false);
+//		//get properties from xml store.
+//		XMLStore store = XMLStore.getInstance();
+//		String commandPortNumber = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
+//				"commandPortNumber", false);
 
+	    IPreferencesService prefs = Platform.getPreferencesService();
+	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"commandPortNumber", "", null);  
+
+		
 		int commandPortNum = Integer.parseInt(commandPortNumber);
 		SendCommandToIoc sendCommandToIoc = null;
 		
