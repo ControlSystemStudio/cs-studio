@@ -47,4 +47,4 @@ public class RelativeTimeParserResult
     {
         return time.toString();
     }
-};
+}

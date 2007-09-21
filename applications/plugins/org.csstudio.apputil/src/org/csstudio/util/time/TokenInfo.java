@@ -3,7 +3,7 @@ package org.csstudio.util.time;
 /** Result of getValueOfToken()
  *  @see RelativeTimeParser#getValueOfToken(String, String)
  */
-public class TokenInfo
+class TokenInfo
 {
     /** End of the token in parsed string. */
     private int end;

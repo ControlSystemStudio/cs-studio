@@ -239,15 +239,15 @@ public class TimeParserTests extends TestCase
         final String start = "-6h";
         final String end = "now";
         final int N = 1000;
-        Benchmark bench = new Benchmark(N);
-        bench.start();
+        BenchmarkTimer bench = new BenchmarkTimer();
         for (int i=0; i<N; ++i)
         {
             @SuppressWarnings("unused")
             StartEndTimeParser start_end = new StartEndTimeParser(start, end);
         }
-        bench.end();
-        System.out.println("Parse and eval: " + bench);
+        bench.stop();
+        System.out.println("Parse and eval: "
+                        + (double)bench.getMilliseconds()/N + " millisec/run");
 
         StartEndTimeParser start_end = new StartEndTimeParser(start, end);
         bench.start();
@@ -255,8 +255,9 @@ public class TimeParserTests extends TestCase
         {
             start_end.eval();
         }
-        bench.end();
-        System.out.println("Only eval: " + bench);
+        bench.stop();
+        System.out.println("Only eval: "
+                        + (double)bench.getMilliseconds()/N + " millisec/run");
 
     }
 }
