@@ -16,7 +16,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
-		IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+		IEclipsePreferences prefs = new DefaultScope().getNode(
+				Activator.getDefault().getPluginId());
 
 		prefs.put(PreferenceConstants.XMPP_USER_NAME, "icserver-alarm");
 		prefs.put(PreferenceConstants.XMPP_PASSWORD, "icserver");

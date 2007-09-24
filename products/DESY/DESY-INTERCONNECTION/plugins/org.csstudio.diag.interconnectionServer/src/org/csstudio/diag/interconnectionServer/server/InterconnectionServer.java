@@ -26,6 +26,7 @@ import javax.naming.NamingException;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.diag.interconnectionServer.Activator;
+import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.platform.statistic.CollectorSupervisor;
@@ -370,14 +371,29 @@ public class InterconnectionServer
 //		String sentStartID = store.getPropertyValue("org.csstudio.diag.interconnectionServer.preferences",
 //				"sentStartID", false);
 
-		//create a defaultscope for the plugin. Otherwise the preference initialzier
-		//will be called AFTER StartupService and the LoginCallbackhandler
-		//has no preference values.
-		IEclipsePreferences prefsx = new DefaultScope().getNode(
+//		//create a defaultscope for the plugin. Otherwise the preference initialzier
+//		//will be called AFTER StartupService and the LoginCallbackhandler
+//		//has no preference values.
+//		IEclipsePreferences prefsx = new DefaultScope().getNode(
+//				Activator.getDefault().getPluginId());
+		IEclipsePreferences prefs = new DefaultScope().getNode(
 				Activator.getDefault().getPluginId());
 
-        IPreferencesService prefs = Platform.getPreferencesService();
-	    String sentStartID = prefs.getString(Activator.getDefault().getPluginId(),
+//		prefs.put(PreferenceConstants.XMPP_USER_NAME, "icserver-alarm");
+//		prefs.put(PreferenceConstants.XMPP_PASSWORD, "icserver");
+//		prefs.put(PreferenceConstants.DATA_PORT_NUMBER, "18324");
+//		prefs.put(PreferenceConstants.COMMAND_PORT_NUMBER, "18325");
+//		prefs.put(PreferenceConstants.SENT_START_ID, "5000000");
+//		prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY, "ACTIVEMQ");
+//		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_ALARMS, "3600000");
+//		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_LOGS, "600000");
+//		prefs.put(PreferenceConstants.JMS_TIME_TO_LIVE_PUT_LOGS, "3600000");
+//		prefs.put(PreferenceConstants.PRIMARY_JMS_URL, "failover:(tcp://krynfs.desy.de:62616,tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=500,maxReconnectAttempts=50");
+//		prefs.put(PreferenceConstants.SECONDARY_JMS_URL	, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=500,maxReconnectAttempts=50");
+
+    	
+        IPreferencesService prefService = Platform.getPreferencesService();
+	    String sentStartID = prefService.getString(Activator.getDefault().getPluginId(),
 	    		"sentStartID", "", null);  
 		sendCommandId = Integer.parseInt(sentStartID);
 
