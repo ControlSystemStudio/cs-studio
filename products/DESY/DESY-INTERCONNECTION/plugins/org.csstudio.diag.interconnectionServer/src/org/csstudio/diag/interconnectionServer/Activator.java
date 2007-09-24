@@ -46,13 +46,9 @@ public class Activator extends AbstractCssPlugin {
 		//create a defaultscope for the plugin. Otherwise the preference initialzier
 		//will be called AFTER StartupService and the LoginCallbackhandler
 		//has no preference values.
-		IEclipsePreferences prefs = new DefaultScope().getNode(
-				Activator.getDefault().getPluginId());
+//		IEclipsePreferences prefs = new DefaultScope().getNode(
+//				Activator.getDefault().getPluginId());
 		
-		for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
-			s.run();
-		}
-		CentralLogger.getInstance().info(this, "InterConnectionServer started"); 
 	}
 
 	@Override

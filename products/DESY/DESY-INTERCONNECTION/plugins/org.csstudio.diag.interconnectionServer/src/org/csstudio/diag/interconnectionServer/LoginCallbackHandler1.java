@@ -1,12 +1,9 @@
 package org.csstudio.diag.interconnectionServer;
 
-import org.csstudio.platform.libs.xmpp.Activator;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 public class LoginCallbackHandler1 implements ILoginCallbackHandler {
@@ -22,8 +19,7 @@ public class LoginCallbackHandler1 implements ILoginCallbackHandler {
 
 	    IPreferencesService prefs = Platform.getPreferencesService();
 	    String xmppUserName = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"xmppUserName", "", null);  
-	    prefs = Platform.getPreferencesService();
+	    		"xmppUserName", "", null);
 	    String xmppPassword = prefs.getString(Activator.getDefault().getPluginId(),
 	    		"xmppPassword", "", null);  
 		

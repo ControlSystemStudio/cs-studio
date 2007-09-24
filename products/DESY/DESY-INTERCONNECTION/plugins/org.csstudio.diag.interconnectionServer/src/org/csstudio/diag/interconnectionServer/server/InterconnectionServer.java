@@ -393,9 +393,9 @@ public class InterconnectionServer
 
     	
         IPreferencesService prefService = Platform.getPreferencesService();
-	    String sentStartID = prefService.getString(Activator.getDefault().getPluginId(),
-	    		"sentStartID", "", null);  
-		sendCommandId = Integer.parseInt(sentStartID);
+	    sendCommandId = prefService.getInt(Activator.getDefault().getPluginId(),
+	    		"sentStartID", 0, null);  
+//		sendCommandId = Integer.parseInt(sentStartID);
 
     }
     

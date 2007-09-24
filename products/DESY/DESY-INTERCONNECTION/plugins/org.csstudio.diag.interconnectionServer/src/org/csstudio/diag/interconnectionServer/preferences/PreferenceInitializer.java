@@ -1,6 +1,6 @@
 package org.csstudio.diag.interconnectionServer.preferences;
 
-import org.csstudio.platform.libs.xmpp.Activator;
+import org.csstudio.diag.interconnectionServer.Activator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;

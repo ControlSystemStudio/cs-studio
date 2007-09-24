@@ -2,6 +2,8 @@ package org.csstudio.diag.interconnectionServer;
 
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer;
 import org.csstudio.diag.interconnectionServer.server.ServerCommands;
+import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -27,6 +29,9 @@ public class HeadlessRunnable implements IPlatformRunnable {
 		
 		System.out.println( "Head Commands : " + ServerCommands.getCommands());
         
+		for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
+			s.run();
+		}
         thisServer.executeMe();
         
         if ( SHUTDOWN) {
