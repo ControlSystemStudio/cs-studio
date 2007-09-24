@@ -1,15 +1,12 @@
 package org.csstudio.platform.internal.ldapauthorization;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -106,13 +103,14 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 	 */
 	private void loadActionRights() {
 		actionsrights = new HashMap<String, RightSet>();
-		BufferedReader reader = null;
+		InputStream input = null;
 		try {
-			reader = new BufferedReader(new FileReader(CONFIG_FILE));
+			input = new FileInputStream(CONFIG_FILE);
 			Properties p = new Properties();
-			p.load(reader);
+			p.load(input);
 			
-			for (String actionId : p.stringPropertyNames()) {
+			for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements(); ) {
+				String actionId = (String) e.nextElement();
 				RightSet rights = RightsParser.parseRightSet(p.getProperty(actionId), actionId);
 				actionsrights.put(actionId, rights);
 			}
@@ -123,9 +121,9 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 			CentralLogger.getInstance().debug(this,
 					"Error reading rights associated with actions.", e);
 		} finally {
-			if (reader != null) {
+			if (input != null) {
 				try {
-					reader.close();
+					input.close();
 				} catch (IOException e) {
 					CentralLogger.getInstance().warn(this,
 							"Could not close input file.", e);
