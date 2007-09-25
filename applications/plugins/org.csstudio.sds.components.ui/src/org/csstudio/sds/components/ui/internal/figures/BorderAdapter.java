@@ -124,6 +124,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
 				case 2 : border = this.createSchemeBorder(); break;
 				case 3 : border = this.createStriatedBorder(); break;
 				case 4 : border = this.createShapeBorder(_borderWidth, _borderColor); break;
+				case 5 : border = this.createSchemeBorderLowered(); break;
 				default : border = this.createLineBorder(); break;
 			}
 			_figure.setBorder(border);
@@ -165,6 +166,15 @@ public class BorderAdapter implements IBorderEquippedWidget {
 		return border;
 	}
 	
+	/**
+     * Creates a SchemeBorder.
+     * @return AbstractBorder
+     *          The requested Border
+     */
+    private AbstractBorder createSchemeBorderLowered() {
+        SchemeBorder border = new SchemeBorder(SchemeBorder.SCHEMES.LOWERED);
+        return border;
+    }
 	/**
 	 * Creates a StriatedBorder.
 	 * @return AbstractBorder
