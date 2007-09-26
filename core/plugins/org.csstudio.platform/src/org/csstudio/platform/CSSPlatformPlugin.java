@@ -21,14 +21,13 @@
  */
 package org.csstudio.platform;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 
+import org.csstudio.platform.internal.PluginCustomizationExporter;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.prefs.BackingStoreException;
-import org.osgi.service.prefs.Preferences;
 
 /**
  * The activator for the platform plugin.
@@ -109,6 +108,23 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	@Override
 	public final String getPluginId() {
 		return ID;
+	}
+	
+	/**
+	 * Exports the current preferences into a file that can be used as a plugin
+	 * customization file.  The exported file can for example be used as an
+	 * argument to Eclipse's -pluginCustomization command line switch.
+	 * 
+	 * @param file the filename.
+	 */
+	public final void exportPluginCustomization(String file) {
+		try {
+			OutputStream os = new FileOutputStream(file);
+			PluginCustomizationExporter.exportTo(os);
+			os.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 }
