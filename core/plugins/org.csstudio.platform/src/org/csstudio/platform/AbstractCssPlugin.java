@@ -116,7 +116,9 @@ public abstract class AbstractCssPlugin extends Plugin {
 	 * method should be used instead of {@code getPluginPreferences()}.
 	 * 
 	 * @return the preferences for this plugin.
+	 * @deprecated use the Eclipse Preferences Service instead.
 	 */
+	@Deprecated
 	public Preferences getCssPluginPreferences() {
 		if (_preferences == null) {
 			if (useXmlPreferences()) {
