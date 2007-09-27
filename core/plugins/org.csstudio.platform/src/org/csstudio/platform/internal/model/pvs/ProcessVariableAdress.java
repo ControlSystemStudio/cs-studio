@@ -167,6 +167,14 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 		}
 		return false;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode() {
+		return getFullName().hashCode();
+	}
 
 	/**
 	 * {@inheritDoc}
