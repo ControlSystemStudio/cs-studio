@@ -22,11 +22,15 @@
 package org.csstudio.platform;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 
 import org.csstudio.platform.internal.PluginCustomizationExporter;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -51,6 +55,11 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 */
 	public static final String EXTPOINT_CONTROL_SYSTEM_ITEM_FACTORIES = ID
 			+ ".controlSystemItemFactories"; //$NON-NLS-1$
+	
+	/**
+	 * The logger for this class.
+	 */
+	private static CentralLogger log = CentralLogger.getInstance();
 
 	/**
 	 * Standard constructor.
@@ -79,8 +88,7 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 			// the system property is not already set to some other value
 			if (System.getProperty(entry.getKey()) == null) {
 				System.setProperty(entry.getKey(), entry.getValue());
-				CentralLogger.getInstance().debug(this,
-						"Setting system property: " + entry);
+				log.debug(this, "Setting system property: " + entry);
 			}
 		}
 	}
@@ -112,18 +120,35 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	
 	/**
 	 * Exports the current preferences into a file that can be used as a plugin
-	 * customization file.  The exported file can for example be used as an
+	 * customization file. The exported file can for example be used as an
 	 * argument to Eclipse's -pluginCustomization command line switch.
 	 * 
-	 * @param file the filename.
+	 * @param file
+	 *            the filename.
+	 * @param includeDefaults
+	 *            set this to <code>true</code> if preferences set to their
+	 *            default values should be included in the export.
+	 * @throws CoreException
+	 *             if the export fails.
 	 */
-	public final void exportPluginCustomization(String file) {
+	public final void exportPluginCustomization(String file,
+			boolean includeDefaults) throws CoreException {
+		OutputStream os = null;
 		try {
-			OutputStream os = new FileOutputStream(file);
-			PluginCustomizationExporter.exportTo(os);
-			os.close();
-		} catch (Exception e) {
-			// TODO: handle exception
+			os = new FileOutputStream(file);
+			PluginCustomizationExporter.exportTo(os, includeDefaults);
+		} catch (IOException e) {
+			IStatus status = new Status(IStatus.ERROR, CSSPlatformPlugin.ID,
+					"Could not open output file: " + file, e);
+			throw new CoreException(status);
+		} finally {
+			if (os != null) {
+				try {
+					os.close();
+				} catch (IOException e) {
+					log.warn(this, "Error closing output file: " + file, e);
+				}
+			}
 		}
 	}
 

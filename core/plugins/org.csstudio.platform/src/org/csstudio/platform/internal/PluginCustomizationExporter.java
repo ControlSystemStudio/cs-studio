@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -51,6 +52,14 @@ public final class PluginCustomizationExporter {
 	 */
 	private static final String[] SCOPES = { InstanceScope.SCOPE,
 			ConfigurationScope.SCOPE };
+
+	/**
+	 * The scopes to include in the export, in the order of export and including
+	 * the default scope.
+	 */
+	private static final String[] SCOPES_WITH_DEFAULT =  { InstanceScope.SCOPE,
+		ConfigurationScope.SCOPE,
+		DefaultScope.SCOPE };
 	
 	/**
 	 * Stores the exported preferences.
@@ -58,27 +67,40 @@ public final class PluginCustomizationExporter {
 	private Properties result = new Properties();
 	
 	/**
-	 * <p>Exports the current preferences to the given output stream. Exports
-	 * the instance and configuration scope, in a format that is suitable for
-	 * use as a plugin customization file (i.e. the scope is not written into
-	 * the output).</p>
+	 * <p>
+	 * Exports the current preferences to the given output stream. Exports the
+	 * instance and configuration scope, in a format that is suitable for use as
+	 * a plugin customization file (i.e. the scope is not written into the
+	 * output).
+	 * </p>
 	 * 
-	 * <p>For example, if a plugin com.example.plugin is installed and has a
+	 * <p>
+	 * For example, if a plugin com.example.plugin is installed and has a
 	 * preference called &quot;foo&quot; currently set to the value
-	 * &quot;bar&quot; in the instance scope, the following line will be
-	 * written into the output:</p>
+	 * &quot;bar&quot; in the instance scope, the following line will be written
+	 * into the output:
+	 * </p>
 	 * 
-	 * <pre>com.example.plugin/foo=bar</pre>
+	 * <pre>
+	 * com.example.plugin/foo=bar
+	 * </pre>
 	 * 
-	 * <p>The output stream remains open after this method returns.</p>
+	 * <p>
+	 * The output stream remains open after this method returns.
+	 * </p>
 	 * 
-	 * @param output the output stream to write into.
-	 * @throws CoreException if the export fails.
+	 * @param output
+	 *            the output stream to write into.
+	 * @param includeDefaults
+	 *            set this to <code>true</code> if preferences set to their
+	 *            default values should be included in the export.
+	 * @throws CoreException
+	 *             if the export fails.
 	 */
-	public static void exportTo(OutputStream output) throws CoreException {
+	public static void exportTo(OutputStream output, boolean includeDefaults) throws CoreException {
 		PluginCustomizationExporter exporter = new PluginCustomizationExporter();
 		try {
-			exporter.export(output);
+			exporter.export(output, includeDefaults);
 		} catch (Exception e) {
 			IStatus status = new Status(IStatus.ERROR, CSSPlatformPlugin.ID,
 					"Export of preferences failed.", e);
@@ -88,7 +110,7 @@ public final class PluginCustomizationExporter {
 	
 	/**
 	 * Private constructor to prevent instanciation by other classes. Creating
-	 * exporter objects is encapsulated in the {@link #exportTo(OutputStream)}
+	 * exporter objects is encapsulated in the {@link #exportTo(OutputStream, boolean)}
 	 * method to prevent accidental reuse of exporter objects.
 	 */
 	private PluginCustomizationExporter() {
@@ -101,10 +123,11 @@ public final class PluginCustomizationExporter {
 	 * @throws BackingStoreException
 	 * @throws IOException 
 	 */
-	private void export(OutputStream out) throws BackingStoreException, IOException {
+	private void export(OutputStream out, boolean includeDefaults) throws BackingStoreException, IOException {
 		IPreferencesService prefsService = Platform.getPreferencesService();
 		IEclipsePreferences root = prefsService.getRootNode();
-		for (String scope : SCOPES) {
+		String[] scopes = includeDefaults ? SCOPES_WITH_DEFAULT : SCOPES;
+		for (String scope : scopes) {
 			Preferences scopeNode = root.node(scope);
 			for (String child : scopeNode.childrenNames()) {
 				exportNode(scopeNode.node(child), child);
