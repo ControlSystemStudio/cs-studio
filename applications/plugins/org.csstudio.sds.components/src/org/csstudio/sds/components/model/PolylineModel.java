@@ -23,6 +23,7 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.IntegerProperty;
+import org.csstudio.sds.model.properties.OptionProperty;
 
 /**
  * A line widget model.
@@ -40,6 +41,11 @@ public final class PolylineModel extends AbstractPolyModel {
 	 * The ID of the width of the line.
 	 */
 	public static final String PROP_LINE_WIDTH = "linewidth";
+	
+	/**
+	 * The ID of the width of the line.
+	 */
+	public static final String PROP_LINE_STYLE = "linestyle";
 
 	/**
 	 * {@inheritDoc}
@@ -57,14 +63,25 @@ public final class PolylineModel extends AbstractPolyModel {
 		super.configureProperties();
 		addProperty(PROP_LINE_WIDTH, new IntegerProperty("Line Width",
 				WidgetPropertyCategory.Display, 1, 1, 100));
+		addProperty(PROP_LINE_STYLE, new OptionProperty("Line Style",
+				WidgetPropertyCategory.Display, new String[] {"Solid", "Dash", "Dot", "DashDot", "DashDotDot"}, 0));
 	}
 	
 	/**
-	 * Gets the wodth of the line.
+	 * Gets the width of the line.
 	 * @return int
 	 * 				The width of the line
 	 */
 	public int getLineWidth() {
 		return (Integer) getProperty(PROP_LINE_WIDTH).getPropertyValue();
+	}
+	
+	/**
+	 * Gets the style of the line.
+	 * @return int
+	 * 				The style of the line
+	 */
+	public int getLineStyle() {
+		return (Integer) getProperty(PROP_LINE_STYLE).getPropertyValue();
 	}
 }

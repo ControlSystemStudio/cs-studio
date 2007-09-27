@@ -50,6 +50,7 @@ public final class PolylineEditPart extends AbstractWidgetEditPart {
 		polyline.setPoints(model.getPoints());
 		polyline.setFill(model.getFill());
 		polyline.setLineWidth(model.getLineWidth());
+		polyline.setLineStyle(model.getLineStyle());
 
 		return polyline;
 	}
@@ -71,6 +72,19 @@ public final class PolylineEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(PolylineModel.PROP_LINE_WIDTH,
 				lineWidthHandler);
+		
+		// line style
+		IWidgetPropertyChangeHandler lineStyleHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshablePolylineFigure polyline = (RefreshablePolylineFigure) refreshableFigure;
+				polyline.setLineStyle((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(PolylineModel.PROP_LINE_STYLE,
+				lineStyleHandler);
 
 		// fill
 		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {

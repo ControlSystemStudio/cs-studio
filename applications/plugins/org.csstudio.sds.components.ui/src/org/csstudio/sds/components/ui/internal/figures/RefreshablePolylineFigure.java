@@ -28,6 +28,7 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
+import org.eclipse.swt.SWT;
 
 /**
  * A line figure.
@@ -47,6 +48,11 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
+	
+	/**
+	 * The line styles.
+	 */
+	private final int[] _lineStyles = new int[] {SWT.LINE_SOLID, SWT.LINE_DASH, SWT.LINE_DOT, SWT.LINE_DASHDOT, SWT.LINE_DASHDOTDOT};
 	
 	/**
 	 * Constructor.
@@ -129,6 +135,16 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	/**
 	 * {@inheritDoc}
 	 */
+	public void setLineStyle(final int lineStyle) {
+		if (lineStyle>=0 && lineStyle<_lineStyles.length) {
+			super.setLineStyle(_lineStyles[lineStyle]);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IBorderEquippedWidget.class) {
 			if(_borderAdapter==null) {
