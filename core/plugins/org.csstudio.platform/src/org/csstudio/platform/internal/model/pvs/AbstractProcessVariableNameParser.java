@@ -61,7 +61,7 @@ public abstract class AbstractProcessVariableNameParser {
 	 * @return a name without control system prefix
 	 */
 	private String removeProtocol(final String rawName) {
-		String rawNameWithoutControlSystem = new String(rawName);
+		String rawNameWithoutControlSystem = rawName;
 
 		// compile a regex pattern and parse the String
 		Pattern p = Pattern.compile("^.*://(.*)");
