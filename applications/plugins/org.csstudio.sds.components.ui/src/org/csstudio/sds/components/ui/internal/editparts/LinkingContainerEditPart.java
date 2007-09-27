@@ -22,7 +22,6 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
 import java.util.Iterator;
-import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.LinkingContainerModel;
@@ -31,7 +30,6 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.persistence.DisplayModelLoadAdapter;
-import org.csstudio.sds.model.persistence.IDisplayModelLoadListener;
 import org.csstudio.sds.model.persistence.PersistenceUtil;
 import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.editparts.AbstractContainerEditPart;

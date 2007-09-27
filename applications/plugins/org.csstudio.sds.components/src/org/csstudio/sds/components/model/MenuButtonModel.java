@@ -78,6 +78,9 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 */
 	public static final String ID = "org.csstudio.sds.components.MenuButton";
 	
+	/**
+	 * Constructor.
+	 */
 	public MenuButtonModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
@@ -98,6 +101,9 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, new ActionData()));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getTypeID() {
 		return ID;
@@ -129,6 +135,10 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 		return (Integer) getProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
 	}
 	
+	/**
+	 * Returns the {@link ActionData}.
+	 * @return The {@link ActionData}
+	 */
 	public ActionData getActionData() {
 		return (ActionData) getProperty(PROP_ACTIONDATA).getPropertyValue();
 	}

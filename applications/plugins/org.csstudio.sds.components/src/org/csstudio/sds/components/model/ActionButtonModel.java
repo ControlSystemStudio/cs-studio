@@ -180,10 +180,18 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		return PROP_COLOR_BACKGROUND;
 	}
 	
+	/**
+	 * Returns the {@link ActionData}.
+	 * @return The {@link ActionData}
+	 */
 	public ActionData getActionData() {
 		return (ActionData) getProperty(PROP_ACTIONDATA).getPropertyValue();
 	}
 	
+	/**
+	 * Return the index of the selected WidgetAction from the {@link ActionData}.
+	 * @return The index
+	 */
 	public int getChoosenActionIndex() {
 		return (Integer) getProperty(PROP_ACTION_INDEX).getPropertyValue();
 	}
