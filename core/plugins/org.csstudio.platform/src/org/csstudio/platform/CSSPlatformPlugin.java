@@ -57,11 +57,6 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 			+ ".controlSystemItemFactories"; //$NON-NLS-1$
 	
 	/**
-	 * The logger for this class.
-	 */
-	private static CentralLogger log = CentralLogger.getInstance();
-
-	/**
 	 * Standard constructor.
 	 */
 	public CSSPlatformPlugin() {
@@ -88,7 +83,7 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 			// the system property is not already set to some other value
 			if (System.getProperty(entry.getKey()) == null) {
 				System.setProperty(entry.getKey(), entry.getValue());
-				log.debug(this, "Setting system property: " + entry);
+				CentralLogger.getInstance().debug(this, "Setting system property: " + entry);
 			}
 		}
 	}
@@ -146,7 +141,7 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 				try {
 					os.close();
 				} catch (IOException e) {
-					log.warn(this, "Error closing output file: " + file, e);
+					CentralLogger.getInstance().warn(this, "Error closing output file: " + file, e);
 				}
 			}
 		}
