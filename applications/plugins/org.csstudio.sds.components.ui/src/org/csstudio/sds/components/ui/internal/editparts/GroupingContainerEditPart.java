@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.sds.components.model.GroupingContainerModel;
 import org.csstudio.sds.components.ui.internal.figures.GroupingContainerFigure;
 import org.csstudio.sds.ui.editparts.AbstractContainerEditPart;
+import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -25,6 +27,17 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		// Transparent background
+		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				GroupingContainerFigure container = (GroupingContainerFigure) refreshableFigure;
+				container.setTransparent((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(GroupingContainerModel.PROP_TRANSPARENT, transparentHandler);
 	}
 	
 	/**
@@ -40,7 +53,8 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		GroupingContainerFigure groupingContainerFigure = new GroupingContainerFigure();
-		groupingContainerFigure.setTransparent(false);
+		GroupingContainerModel model = (GroupingContainerModel) this.getCastedModel();
+		groupingContainerFigure.setTransparent(model.getTransparent());
 		return groupingContainerFigure;
 	}
 

@@ -22,6 +22,8 @@
 package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.ContainerModel;
+import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.properties.BooleanProperty;
 
 /**
  * Model for a container widget that groups other widgets.
@@ -35,6 +37,11 @@ public final class GroupingContainerModel extends ContainerModel {
 	 * The ID of this widget model.
 	 */
 	public static final String ID = "org.csstudio.sds.components.GroupingContainer"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the <i>transparent</i> property.
+	 */
+	public static final String PROP_TRANSPARENT = "transparency";
 
 	/**
 	 * The default value of the height property.
@@ -64,6 +71,16 @@ public final class GroupingContainerModel extends ContainerModel {
 	 * {@inheritDoc}
 	 */
 	protected void configureProperties() {
+		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
+	}
+	
+	/**
+	 * Returns, if this widget should have a transparent background.
+	 * @return boolean
+	 * 				True, if it should have a transparent background, false otherwise
+	 */
+	public boolean getTransparent() {
+		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 
 }
