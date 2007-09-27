@@ -167,6 +167,13 @@
                menubarPath="file/fileEnd"
                style="push">
          </action>
+         <action
+               class="org.csstudio.platform.ui.internal.actions.ExportPreferencesAction"
+               id="org.csstudio.platform.ui.action1"
+               label="%exportPreferences"
+               menubarPath="file/fileEnd"
+               style="push">
+         </action>
       </actionSet>
    </extension>
    <extension
