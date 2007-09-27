@@ -11,8 +11,8 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.editparts.LayeredWidgetPane;
+import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.FreeformViewport;
@@ -37,22 +37,35 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
 	 * The content pane of this widget.
 	 */
 	private LayeredWidgetPane _pane;
+	
+	/**
+	 * The transparent state of the background.
+	 */
+	private boolean _transparent = false;
+	
+	/**
+	 * The internal {@link ScrollPane}.
+	 */
+	private InternalScrollPane _scrollPane;
+	
+	/**
+	 * A border adapter, which covers all border handlings.
+	 */
+	private IBorderEquippedWidget _borderAdapter;
 
 	/**
 	 * Constructor.
 	 */
 	public GroupingContainerFigure() {
 		setBorder(new LineBorder(1));
-		ScrollPane scrollpane = new ScrollPane();
+		_scrollPane = new InternalScrollPane();
 		_pane = new LayeredWidgetPane();
 		_pane.setLayoutManager(new FreeformLayout());
 		setLayoutManager(new StackLayout());
-		add(scrollpane);
-		scrollpane.setViewport(new FreeformViewport());
-		scrollpane.setContents(_pane);
+		add(_scrollPane);
+		_scrollPane.setViewport(new FreeformViewport());
+		_scrollPane.setContents(_pane);
 
-		setBackgroundColor(ColorConstants.blue);
-		setForegroundColor(ColorConstants.blue);
 		setOpaque(true);
 	}
 
@@ -89,9 +102,12 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
 	 * {@inheritDoc}
 	 */
 	protected void paintFigure(final Graphics graphics) {
-		Rectangle rect = getBounds().getCopy();
-		rect.crop(new Insets(2, 0, 2, 0));
-		graphics.fillRectangle(rect);
+		if (!_transparent) {
+			Rectangle rect = getBounds().getCopy();
+			rect.crop(new Insets(2, 0, 2, 0));
+			//graphics.fillRectangle(rect);
+			graphics.fillOval(rect);
+		}
 	}
 
 	/**
@@ -117,13 +133,55 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
 	public void randomNoiseRefresh() {
 		//nothing to do yet
 	}
+	
+	/**
+	 * Gets the transparent state of the background.
+	 * 
+	 * @return the transparent state of the background
+	 */
+	public boolean gettransparent() {
+		return _transparent;
+	}
+	
+	/**
+	 * Sets the transparent state of the background.
+	 * 
+	 * @param transparent
+	 *            the transparent state.
+	 */
+	public void setTransparent(final boolean transparent) {
+		_transparent = transparent;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
-		// TODO Auto-generated method stub
+		if (adapter == IBorderEquippedWidget.class) {
+			if(_borderAdapter==null) {
+				_borderAdapter = new BorderAdapter(this);
+			}
+			return _borderAdapter;
+		}
 		return null;
+	}
+	
+	/**
+	 * A {@link ScrollPane} for internal use.
+	 * @author Kai Meyer
+	 *
+	 */
+	private final class InternalScrollPane extends ScrollPane {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected void paintFigure(final Graphics graphics) {
+			if (!_transparent) {
+				super.paintFigure(graphics);
+			}
+		}
 	}
 
 }
