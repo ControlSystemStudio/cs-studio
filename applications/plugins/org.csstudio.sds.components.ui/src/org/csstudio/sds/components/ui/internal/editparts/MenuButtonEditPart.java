@@ -172,7 +172,6 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		public void handleEvent(final Event event) {
 			WidgetAction action = (WidgetAction)event.widget.getData();
 			WidgetActionHandlerService.getInstance().performAction(getCastedModel().getProperty(MenuButtonModel.PROP_ACTIONDATA), action);
-			System.out.println("actionData1 performt");
 		}
 		
 	}
