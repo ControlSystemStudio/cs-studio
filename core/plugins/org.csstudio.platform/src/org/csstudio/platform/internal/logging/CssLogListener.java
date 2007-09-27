@@ -54,44 +54,44 @@ public class CssLogListener implements ILogListener {
 		switch (status.getSeverity()) {
 		case IStatus.OK:
 			if (throwable != null) {
-				CentralLogger.getInstance().debug(null, message);
-			} else {
 				CentralLogger.getInstance().debug(null, message, throwable);
+			} else {
+				CentralLogger.getInstance().debug(null, message);
 			}
 			break;
 		case IStatus.INFO:
 			if (throwable != null) {
-				CentralLogger.getInstance().info(null, message);
-			} else {
 				CentralLogger.getInstance().info(null, message, throwable);
+			} else {
+				CentralLogger.getInstance().info(null, message);
 			}
 			break;
 		case IStatus.ERROR:
 			if (throwable != null) {
-				CentralLogger.getInstance().error(null, message);
-			} else {
 				CentralLogger.getInstance().error(null, message, throwable);
+			} else {
+				CentralLogger.getInstance().error(null, message);
 			}
 			break;
 		case IStatus.WARNING:
 			if (throwable != null) {
-				CentralLogger.getInstance().warn(null, message);
-			} else {
 				CentralLogger.getInstance().warn(null, message, throwable);
+			} else {
+				CentralLogger.getInstance().warn(null, message);
 			}
 			break;
 		case IStatus.CANCEL:
 			if (throwable != null) {
-				CentralLogger.getInstance().fatal(null, message);
-			} else {
 				CentralLogger.getInstance().fatal(null, message, throwable);
+			} else {
+				CentralLogger.getInstance().fatal(null, message);
 			}
 			break;
 		default:
 			if (throwable != null) {
-				CentralLogger.getInstance().fatal(null, message);
-			} else {
 				CentralLogger.getInstance().fatal(null, message, throwable);
+			} else {
+				CentralLogger.getInstance().fatal(null, message);
 			}
 			break;
 		}
