@@ -25,16 +25,12 @@ public class BackgroundCollector {
 	}
 	
 	
-	public static BackgroundCollector getInstance() {
+	public synchronized static BackgroundCollector getInstance() {
 		//
 		// get an instance of our sigleton
 		//
 		if ( _thisBackgroundCollector == null) {
-			synchronized (BackgroundCollector.class) {
-				if (_thisBackgroundCollector == null) {
-					_thisBackgroundCollector = new BackgroundCollector();
-				}
-			}
+			_thisBackgroundCollector = new BackgroundCollector();
 		}
 		return _thisBackgroundCollector;
 	}

@@ -20,16 +20,12 @@ public final class CollectorSupervisor {
         collectorVector= new Vector<Collector>();
     }
     
-    public static CollectorSupervisor getInstance() {
+    public synchronized static CollectorSupervisor getInstance() {
         //
         // get an instance of our sigleton
         //
         if ( thisCollectorSupervisor == null) {
-            synchronized (CollectorSupervisor.class) {
-                if (thisCollectorSupervisor == null) {
-                    thisCollectorSupervisor = new CollectorSupervisor();
-                }
-            }
+        	thisCollectorSupervisor = new CollectorSupervisor();
         }
         return thisCollectorSupervisor;
     }

@@ -76,16 +76,12 @@ public class Collector {
 	 * getInstance not necessary!
 	 * every collected entry needs it's own collector
 	 */
-	public static Collector getInstance() {
+	public synchronized static Collector getInstance() {
 		//
 		// get an instance of our sigleton
 		//
 		if ( thisCollector == null) {
-			synchronized (Collector.class) {
-				if (thisCollector == null) {
-					thisCollector = new Collector();
-				}
-			}
+			thisCollector = new Collector();
 		}
 		/*
 		 * add entry to CollectorSupervisor
