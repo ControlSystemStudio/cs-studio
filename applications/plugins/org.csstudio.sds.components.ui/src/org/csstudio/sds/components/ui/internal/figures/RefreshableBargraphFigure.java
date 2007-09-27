@@ -1106,14 +1106,14 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			if (_isHorizontal) {
 				for (int i = 0; i < _markerList.size(); i++) {
 					double weight = getWeight(_levelMap.get(LABELS[i]));
-					if (weight < 0 || weight > 1) {
-						this.setConstraint(_markerList.get(i), new Rectangle(0,
-								0, 0, 0));
+					if (Double.isNaN(weight) || weight < 0 || weight > 1) {
+						_markerList.get(i).setVisible(false);
 					} else {
+						_markerList.get(i).setVisible(true);
 						int x = _start + (int) ((_end - _start) * weight) - 1
 								- TEXTWIDTH / 2;
 						this.setConstraint(_markerList.get(i), new Rectangle(x,
-								0, TEXTWIDTH, bounds.height));
+									0, TEXTWIDTH, bounds.height));
 					}
 				}
 			} else {
@@ -1198,7 +1198,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 */
 	private final class Marker extends RectangleFigure {
 		/**
-		 * The key of this Marker, which is the drwaed text.
+		 * The key of this Marker, which is the drawed text.
 		 */
 		private String _key;
 
@@ -1254,6 +1254,15 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		public void paintFigure(final Graphics graphics) {
 			// nothing to do;
 		};
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setVisible(final boolean visible) {
+			_textLabel.setVisible(visible);
+			_tickMark.setVisible(visible);
+		}
 
 		/**
 		 * Sets the orientation of this figure.
@@ -1337,8 +1346,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			@Override
 			public void paintFigure(final Graphics graphics) {
 				Rectangle bounds = this.getBounds();
-//				graphics.setBackgroundColor(ColorConstants.cyan);
-//				graphics.fillRectangle(bounds);
 				graphics.setForegroundColor(this.getForegroundColor());
 				graphics.setBackgroundColor(_colorMap.get(_key));
 				PointList pointList = new PointList();
@@ -1625,16 +1632,14 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 */
 		@Override
 		public void paintFigure(final Graphics graphics) {
-//			graphics.setForegroundColor(ColorConstants.blue);
-//			graphics.setBackgroundColor(ColorConstants.blue);
-//			graphics.fillRectangle(this.getBounds());
+			//Do nothing
 		}
 		
 		/**
 		 * Sets the length of this Scale.
 		 * 
 		 * @param length
-		 *            The lenght of this Scale
+		 *            The length of this Scale
 		 */
 		public void setLength(final int length) {
 			_length = length;
