@@ -44,7 +44,7 @@ public abstract class SecurityEvent {
 	/**
 	 * The default-dateformat.
 	 */
-	private final String _dateFormat = "dd.MM.yyyy' - 'HH:mm:ss"; //$NON-NLS-1$
+	private static final String DATE_FORMAT = "dd.MM.yyyy' - 'HH:mm:ss"; //$NON-NLS-1$
 	
 	/**
 	 * Constructor.
@@ -93,7 +93,7 @@ public abstract class SecurityEvent {
 	 * @return A representation as a String of the timestamp
 	 */
 	public final String getTimeStampAsString() {
-		return getTimeStampAsString(_dateFormat);
+		return getTimeStampAsString(DATE_FORMAT);
 	}
 
 }
