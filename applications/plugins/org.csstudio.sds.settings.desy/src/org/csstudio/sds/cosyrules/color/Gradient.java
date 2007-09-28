@@ -27,11 +27,14 @@ public final class Gradient implements IRule {
 	 */
 	public Object evaluate(final Object[] arguments) {
 		if ((arguments != null) && (arguments.length > 0)) {
-			if (arguments[0] instanceof Double) {
-				double d = (Double) arguments[0];
-				double b=(d+1.0)/2.0;
-				return new RGB((int)(b*240.0),(int)(b*240.0),(int)(b*240.0));
-			}
+		    double d = 0.0;
+            if (arguments[0] instanceof Double) {
+                 d = (Double) arguments[0];
+            }else if (arguments[0] instanceof Long) {
+                d = ((Long)  arguments[0]).doubleValue();
+            }
+            double b=(d+1.0)/2.0;
+			return new RGB((int)(b*240.0),(int)(b*240.0),(int)(b*240.0));
 		}
 		return new RGB(0,0,0);
 	}

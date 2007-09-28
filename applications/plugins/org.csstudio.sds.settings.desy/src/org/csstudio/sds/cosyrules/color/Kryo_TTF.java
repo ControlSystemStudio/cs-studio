@@ -26,18 +26,21 @@ public final class Kryo_TTF implements IRule {
 	 */
 	public Object evaluate(final Object[] arguments) {
 		if ((arguments != null) && (arguments.length > 0)) {
-			if (arguments[0] instanceof Double) {
-				double d = (Double) arguments[0];
-				
-				if (d>=0.0 && d<=4.00) {
-					return new RGB(253,0,0);
-				}
-				if (d>=4.50 && d<=95.00) {
-					return new RGB(164,170,255);
-				}
-				if (d>=95.1 && d<=101.0) {
-					return new RGB(0,216,0);
-				}
+		    double d = 0.0;
+            if (arguments[0] instanceof Double) {
+                 d = (Double) arguments[0];
+            }else if (arguments[0] instanceof Long) {
+                d = ((Long)  arguments[0]).doubleValue();
+            }
+            
+			if (d>=0.0 && d<=4.00) {
+				return new RGB(253,0,0);
+			}
+			if (d>=4.50 && d<=95.00) {
+				return new RGB(164,170,255);
+			}
+			if (d>=95.1 && d<=101.0) {
+				return new RGB(0,216,0);
 			}
 		}
 

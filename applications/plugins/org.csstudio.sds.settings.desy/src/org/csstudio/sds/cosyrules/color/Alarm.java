@@ -26,21 +26,24 @@ public final class Alarm implements IRule {
 	 */
 	public Object evaluate(final Object[] arguments) {
 		if ((arguments != null) && (arguments.length > 0)) {
-			if (arguments[0] instanceof Double) {
-				double d = (Double) arguments[0];
-				
-				if (Math.abs(d-0.0)<0.00001) {
-					return new RGB(0,216,0);
-				}
-				if (Math.abs(d-1.0)<0.00001) {
-					return new RGB(251,243,74);
-				}
-				if (Math.abs(d-2.0)<0.00001) {
-					return new RGB(253,0,0);
-				}
-				if (d>=3.0 && d<=255.0) {
-					return new RGB(255,255,255);
-				}
+            double d = 0.0;
+            if (arguments[0] instanceof Double) {
+                 d = (Double) arguments[0];
+            }else if (arguments[0] instanceof Long) {
+                d = ((Long)  arguments[0]).doubleValue();
+            }
+			
+			if (Math.abs(d-0.0)<0.00001) {
+				return new RGB(0,216,0);
+			}
+			if (Math.abs(d-1.0)<0.00001) {
+				return new RGB(251,243,74);
+			}
+			if (Math.abs(d-2.0)<0.00001) {
+				return new RGB(253,0,0);
+			}
+			if (d>=3.0 && d<=255.0) {
+				return new RGB(255,255,255);
 			}
 		}
 

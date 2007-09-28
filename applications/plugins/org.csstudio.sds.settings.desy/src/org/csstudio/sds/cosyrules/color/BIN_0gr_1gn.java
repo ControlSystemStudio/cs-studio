@@ -26,15 +26,18 @@ public final class BIN_0gr_1gn implements IRule {
 	 */
 	public Object evaluate(final Object[] arguments) {
 		if ((arguments != null) && (arguments.length > 0)) {
-			if (arguments[0] instanceof Double) {
-				double d = (Double) arguments[0];
+		    double d = 0.0;
+            if (arguments[0] instanceof Double) {
+                 d = (Double) arguments[0];
+            }else if (arguments[0] instanceof Long) {
+                d = ((Long)  arguments[0]).doubleValue();
+            }
 				
-				if (Math.abs(d-0.00)<0.00001) {
-					return new RGB(90,90,90);
-				}
-				if (d>=1.00 && d<=65535.0) {
-					return new RGB(30,187,0);
-				}
+			if (Math.abs(d-0.00)<0.00001) {
+				return new RGB(90,90,90);
+			}
+			if (d>=1.00 && d<=65535.0) {
+				return new RGB(30,187,0);
 			}
 		}
 
