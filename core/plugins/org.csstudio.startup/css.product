@@ -73,7 +73,6 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.libs.xmpp"/>
       <plugin id="org.csstudio.platform.libs.xmpp.ui"/>
-      <plugin id="org.csstudio.platform.preferences"/>
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.startup"/>
       <plugin id="org.eclipse.ant.core"/>
