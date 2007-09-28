@@ -137,22 +137,22 @@ public abstract class AbstractCssUiPlugin extends AbstractUIPlugin {
 		return _preferences;
 	}
 	
-	/**
-	 * Returns the preference store for this UI-plugin.
-	 * 
-	 * @return the preference store for this plugin.
-	 */
-	@Override
-	public IPreferenceStore getPreferenceStore() {
-		if (_preferenceStore == null) {
-			if (useXmlPreferences()) {
-				_preferenceStore = new XMLPreferenceStore(getPluginId());
-			} else {
-				_preferenceStore = super.getPreferenceStore();
-			}
-		}
-		return _preferenceStore;
-	}
+//	/**
+//	 * Returns the preference store for this UI-plugin.
+//	 * 
+//	 * @return the preference store for this plugin.
+//	 */
+//	@Override
+//	public IPreferenceStore getPreferenceStore() {
+//		if (_preferenceStore == null) {
+//			if (useXmlPreferences()) {
+//				_preferenceStore = new XMLPreferenceStore(getPluginId());
+//			} else {
+//				_preferenceStore = super.getPreferenceStore();
+//			}
+//		}
+//		return _preferenceStore;
+//	}
 
 	/**
 	 * Returns the preference store for the plugin with
@@ -163,6 +163,7 @@ public abstract class AbstractCssUiPlugin extends AbstractUIPlugin {
 	 * @return the preference store for this plugin with
 	 * <code>pluginID</code>.
 	 */
+	@Deprecated
 	public IPreferenceStore getPreferenceStore(String pluginID) {
 		if (_preferenceStore == null) {
 			if (useXmlPreferences()) {
