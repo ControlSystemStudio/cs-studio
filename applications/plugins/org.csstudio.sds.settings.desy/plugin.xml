@@ -6,132 +6,154 @@
       <rule
             class="org.csstudio.sds.cosyrules.color.Set_1"
             name="Set#1 color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.set#1">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.Set_2"
             name="Set#2 color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.set#2">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.Set_3"
             name="Set#3 color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.set#3">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.Set_4"
             name="Set#4 color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.set#4">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.Set_5"
             name="Set#5 color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.set#5">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.MKK_Enteis"
             name="MKK-Enteis color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.mkk-enteis">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.MKK_10KV"
             name="MKK-10KV color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.mkk-10kv">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.Zeus_FB"
             name="Zeus-FB color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.zeus-fb">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.CRYO_Temp_1"
             name="CRYO_Temp#1 color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.cryo_temp#1">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.Sy_status"
             name="Sy-status color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.sy-status">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.Alarm"
             name="Alarm color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.alarm">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.Kryo_TTF"
             name="Kryo-TTF color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.kryo-ttf">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.Kryo_Dig"
             name="Kryo-Dig color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.kryo-dig">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.AEND_dlog"
             name="AEND_dlog color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.aend_dlog">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.BIN_0rt_1gn"
             name="BIN_0rt_1gn color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.bin_0rt_1gn">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.BIN_0gn_1rt"
             name="BIN_0gn_1rt color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.bin_0gn_1rt">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.BIN_0gr_1gn"
             name="BIN_0gr_1gn color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.bin_0gr_1gn">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.BIN_0gr_1rt"
             name="BIN_0gr_1rt color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.bin_0gr_1rt">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.BIN_trennstlg"
             name="BIN_trennstlg color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.bin_trennstlg">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.MKK_sv"
             name="MKK_sv color rule"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.mkk_sv">
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.Gradient"
             name="Gradient"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="cosyrules.color.gradient">
          <parameterDescription name="Double Value Between -1.0 and 1.0"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.DefaultEpicsAlarmBackground"
             name="Default Epics Alarm Color Rule Background"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="org.css.sds.color.default_epics_alarm_background">
          <parameterDescription
                name="Double Value Between 0 and 3">
@@ -140,15 +162,18 @@
       <rule
             class="org.csstudio.sds.cosyrules.color.DefaultEpicsAlarmForeground"
             name="Default Epics Alarm Color Rule Foreground"
+            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="org.css.sds.color.default_epics_alarm_foreground">
          <parameterDescription
                name="Double Value Between -1.0 and 2.0">
          </parameterDescription>
       </rule>
-      <rule
+            <rule
             class="org.csstudio.sds.cosyrules.color.IfNotZero"
             name="If not zero"
-            ruleId="org.css.sds.color.if_not_zero">
+            returnType="java.lang.Number"
+            ruleId="org.css.sds.color.if_not_zero"
+            >
          <parameterDescription
                name="Double Value">
          </parameterDescription>
@@ -156,17 +181,10 @@
       <rule
             class="org.csstudio.sds.cosyrules.color.IfZero"
             name="If zero"
+            returnType="java.lang.Number"
             ruleId="org.css.sds.color.if_zero">
          <parameterDescription
                name="Double Value">
-         </parameterDescription>
-      </rule>
-      <rule
-            class="org.csstudio.sds.cosyrules.color.MenuActionData"
-            name="Menu Action Data"
-            ruleId="org.css.sds.color.menu_action_data">
-         <parameterDescription
-               name="Comma seperatet String to ActionData">
          </parameterDescription>
       </rule>
    </extension>

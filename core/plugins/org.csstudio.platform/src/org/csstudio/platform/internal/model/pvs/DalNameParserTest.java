@@ -6,6 +6,7 @@ package org.csstudio.platform.internal.model.pvs;
 import static org.junit.Assert.*;
 
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.DalPropertyTypes;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.junit.After;
 import org.junit.Before;
@@ -41,11 +42,27 @@ public class DalNameParserTest {
 	 */
 	@Test
 	public void testParse() {
-		test("abc", ControlSystemEnum.DAL_EPICS, null, null, "abc");
-		test("dal-epics://abc", ControlSystemEnum.DAL_EPICS, null, null, "abc");
+		// without type hint
+		test("abc", ControlSystemEnum.DAL_EPICS, null, null, "abc", null);
+		test("dal-epics://abc", ControlSystemEnum.DAL_EPICS, null, null, "abc",
+				null);
 		test("dal-epics://abc[cde]", ControlSystemEnum.DAL_EPICS, "cde", null,
-				"abc");
-		test("", ControlSystemEnum.UNKNOWN, null, null, "");
+				"abc", null);
+		test("", ControlSystemEnum.UNKNOWN, null, null, "", null);
+
+		// with type hint
+		test("abc, " + DalPropertyTypes.DOUBLE_SEQUENCE.toPortableString(),
+				ControlSystemEnum.DAL_EPICS, null, null, "abc",
+				DalPropertyTypes.DOUBLE_SEQUENCE);
+		test("dal-epics://abc, "
+				+ DalPropertyTypes.DOUBLE_SEQUENCE.toPortableString(),
+				ControlSystemEnum.DAL_EPICS, null, null, "abc",
+				DalPropertyTypes.DOUBLE_SEQUENCE);
+		test("dal-epics://abc[cde], "
+				+ DalPropertyTypes.DOUBLE_SEQUENCE.toPortableString(),
+				ControlSystemEnum.DAL_EPICS, "cde", null, "abc",
+				DalPropertyTypes.DOUBLE_SEQUENCE);
+		test("", ControlSystemEnum.UNKNOWN, null, null, "", null);
 	}
 
 	/**
@@ -63,7 +80,7 @@ public class DalNameParserTest {
 	 */
 	private void test(String rawName, ControlSystemEnum expectedControlSystem,
 			String expectedCharacteristics, String expectedDevice,
-			String expectedProperty) {
+			String expectedProperty, DalPropertyTypes expectedTypeHint) {
 		IProcessVariableAddress pv = _epicsParser.parseRawName(rawName);
 
 		assertNotNull(pv);
@@ -71,6 +88,7 @@ public class DalNameParserTest {
 		assertEquals(expectedProperty, pv.getProperty());
 		assertEquals(expectedCharacteristics, pv.getCharacteristic());
 		assertEquals(expectedDevice, pv.getDevice());
+		assertEquals(expectedTypeHint, pv.getTypeHint());
 	}
 
 }

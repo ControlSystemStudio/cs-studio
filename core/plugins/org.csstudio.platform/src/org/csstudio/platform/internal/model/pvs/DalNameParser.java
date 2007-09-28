@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.DalPropertyTypes;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 
 /**
@@ -40,7 +41,7 @@ public class DalNameParser extends AbstractProcessVariableNameParser {
 	@Override
 	protected IProcessVariableAddress doParse(final String nameWithoutPrefix,
 			final String rawName) {
-		IProcessVariableAddress result = null;
+		ProcessVariableAdress result = null;
 		// compile a regex pattern and parse the String
 		// the used regular expression checks for the following uri components:
 		// 1) line start
@@ -48,16 +49,22 @@ public class DalNameParser extends AbstractProcessVariableNameParser {
 		// 3) [ followed by 1-n arbitrary chars, except [ and ], followed by ]
 		// (optional)
 		// 4) line end
-		Pattern p = Pattern.compile("^([^\\[\\]]+)(\\[([^\\[\\]]+)\\])?$");
+		Pattern p = Pattern.compile("^([^,\\[\\]]+)(\\[([^\\[\\]]+)\\])?(, ([a-z;A-Z]+))?$");
 
 		Matcher m = p.matcher(nameWithoutPrefix);
 
 		if (m.find()) {
 			String property = m.group(1);
 			String characteristic = m.group(3);
+			String typeHint = m.group(5);
 
 			result = new ProcessVariableAdress(rawName, _controlSystem, null,
 					property, characteristic);
+			
+			if(typeHint!=null) {
+				DalPropertyTypes type = DalPropertyTypes.createFromPortable(typeHint);
+				result.setTypeHint(type);
+			}
 
 		}
 

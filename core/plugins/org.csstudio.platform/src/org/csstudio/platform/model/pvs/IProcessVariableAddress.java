@@ -56,6 +56,8 @@ public interface IProcessVariableAddress {
 	String getFullName();
 
 	boolean isCharacteristic();
+	
+	DalPropertyTypes getTypeHint();
 
 	/**
 	 * Returns a DAL {@link RemoteInfo} object for this process variable

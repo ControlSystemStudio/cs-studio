@@ -6,6 +6,7 @@ package org.csstudio.platform.internal.model.pvs;
 import javax.naming.NamingException;
 
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.DalPropertyTypes;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.epics.css.dal.context.RemoteInfo;
 
@@ -42,6 +43,12 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 	private String _rawName;
 
 	/**
+	 * 
+	 */
+	private DalPropertyTypes _typeHint;
+	
+	
+	/**
 	 * Constructs a process variable address using the provided information
 	 * pieces.
 	 * 
@@ -68,6 +75,17 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 		_device = device;
 		_property = property;
 		_characteristic = characteristic;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public DalPropertyTypes getTypeHint() {
+		return _typeHint;
+	}
+
+	public void setTypeHint(DalPropertyTypes typeHint) {
+		_typeHint = typeHint;
 	}
 
 	/**
@@ -132,6 +150,11 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 			sb.append("]");
 		}
 
+		if(_typeHint!=null) {
+			sb.append(", ");
+			sb.append(_typeHint.toPortableString());
+		}
+		
 		return sb.toString();
 	}
 

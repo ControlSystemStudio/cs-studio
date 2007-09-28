@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IControlSystemItem;
+import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
 import org.csstudio.platform.ui.internal.dnd.ControlSystemItemTransfer;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
@@ -49,7 +50,7 @@ import org.eclipse.swt.dnd.TextTransfer;
  * @see DragSourceEvent
  * @author Sven Wende, Stefan Hofer
  * 
- * @deprecated
+ * @deprecated Please use {@link ProcessVariableExchangeUtil} instead
  */
 public abstract class FilteredDragSourceAdapter extends DragSourceAdapter {
 

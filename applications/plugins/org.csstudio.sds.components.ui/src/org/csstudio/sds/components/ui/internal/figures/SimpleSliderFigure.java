@@ -40,6 +40,7 @@ import org.eclipse.draw2d.RangeModel;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.ScrollBar;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.SWT;
 
 /**
  * A slider figure.
@@ -169,7 +170,7 @@ public final class SimpleSliderFigure extends Panel implements
 		bar.setBackgroundColor(ColorConstants.blue);
 		Ellipse thumb = new Ellipse();
 		thumb.setSize(new Dimension(40, 40));
-		thumb.setFont(CustomMediaFactory.getInstance().getDefaultFont(true));
+		thumb.setFont(CustomMediaFactory.getInstance().getDefaultFont(SWT.BOLD));
 		thumb.setBackgroundColor(ColorConstants.red);
 
 		thumb.setBorder(new SchemeBorder(SchemeBorder.SCHEMES.RIDGED));

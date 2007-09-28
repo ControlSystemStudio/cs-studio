@@ -34,18 +34,26 @@ import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
+/**
+ * Transfer class for {@link IProcessVariableAddress} objects.
+ * 
+ * @author Sven Wende
+ * 
+ */
 public class ProcessVariableAddressTransfer extends ByteArrayTransfer {
-	
+
 	/**
 	 * The time period in which a local selection expires. Needed to handle
 	 * cases, where data is dragged between different JVMs.
 	 */
 	private static final int SELECTION_EXPIRATION_PERIOD = 10000;
 
-	private static final String PVNAME = "dnd_process_variablev_name";
-	private static final int PV_ID = registerType(PVNAME);
-	private static ProcessVariableAddressTransfer _instance = new ProcessVariableAddressTransfer();
+	private static final String TYPE_NAME = "dnd_process_variablev_name";
 	
+	private static final int TYPE_ID = registerType(TYPE_NAME);
+	
+	private static ProcessVariableAddressTransfer _instance = new ProcessVariableAddressTransfer();
+
 	/**
 	 * The items that were selected during the latest DnD operation.
 	 */
@@ -55,77 +63,88 @@ public class ProcessVariableAddressTransfer extends ByteArrayTransfer {
 	 * The event time of the latest selection.
 	 */
 	private long _selectionSetTime;
- 
+
 	/**
 	 * Hidden constructor.
 	 */
 	private ProcessVariableAddressTransfer() {
 		_selectionSetTime = 0;
 	}
- 
+
 	/**
 	 * Returns the instance of this ProcessVariableAddressTransfer.
-	 * @return ProcessVariableAddressTransfer
-	 * 			The instance of this ProcessVariableAddressTransfer
+	 * 
+	 * @return ProcessVariableAddressTransfer The instance of this
+	 *         ProcessVariableAddressTransfer
 	 */
-	public static ProcessVariableAddressTransfer getInstance () {
+	public static ProcessVariableAddressTransfer getInstance() {
 		return _instance;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public void javaToNative (Object object, TransferData transferData) {
-		if (object == null || !(object instanceof IProcessVariableAddress[] || object instanceof List)) return;
+	public void javaToNative(Object object, TransferData transferData) {
+		if (object == null
+				|| !(object instanceof IProcessVariableAddress[] || object instanceof List))
+			return;
 		if (isSupportedType(transferData)) {
 			IProcessVariableAddress[] pvs;
 			if (object instanceof List) {
-				pvs = (IProcessVariableAddress[]) ((List)object).toArray(new IProcessVariableAddress[((List)object).size()]);
+				pvs = (IProcessVariableAddress[]) ((List) object)
+						.toArray(new IProcessVariableAddress[((List) object)
+								.size()]);
 			} else {
-				pvs = (IProcessVariableAddress[]) object;	
+				pvs = (IProcessVariableAddress[]) object;
 			}
 			try {
- 			// write data to a byte array and then ask super to convert to pMedium
+				// write data to a byte array and then ask super to convert to
+				// pMedium
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				DataOutputStream writeOut = new DataOutputStream(out);
-				for (int i = 0, length = pvs.length; i < length;  i++){
+				for (int i = 0, length = pvs.length; i < length; i++) {
 					byte[] buffer = pvs[i].getRawName().getBytes();
 					writeOut.writeInt(buffer.length);
 					writeOut.write(buffer);
 				}
 				byte[] buffer = out.toByteArray();
 				writeOut.close();
-	 
+
 				super.javaToNative(buffer, transferData);
-	 			
+
 			} catch (IOException e) {
 			}
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object nativeToJava(TransferData transferData) {	 
+	public Object nativeToJava(TransferData transferData) {
 		if (isSupportedType(transferData)) {
-			byte[] buffer = (byte[])super.nativeToJava(transferData);
-			if (buffer == null) return null;
-			
+			byte[] buffer = (byte[]) super.nativeToJava(transferData);
+			if (buffer == null)
+				return null;
+
 			IProcessVariableAddress[] processVariables = new IProcessVariableAddress[0];
 			try {
 				ByteArrayInputStream in = new ByteArrayInputStream(buffer);
 				DataInputStream readIn = new DataInputStream(in);
-				while(readIn.available() > 0) {
+				while (readIn.available() > 0) {
 					int size = readIn.readInt();
 					byte[] pathBytes = new byte[size];
 					readIn.read(pathBytes);
 					String fullPath = new String(pathBytes);
-					
-					IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(fullPath);
-					//ProcessVariable pv = new ProcessVariable(controlSystem, device, property, characteristic);
+
+					IProcessVariableAddress pv = ProcessVariableAdressFactory
+							.getInstance()
+							.createProcessVariableAdress(fullPath);
+					// ProcessVariable pv = new ProcessVariable(controlSystem,
+					// device, property, characteristic);
 					IProcessVariableAddress[] newProcessVariables = new IProcessVariableAddress[processVariables.length + 1];
-					System.arraycopy(processVariables, 0, newProcessVariables, 0, processVariables.length);
+					System.arraycopy(processVariables, 0, newProcessVariables,
+							0, processVariables.length);
 					newProcessVariables[processVariables.length] = pv;
 					processVariables = newProcessVariables;
 				}
@@ -137,25 +156,26 @@ public class ProcessVariableAddressTransfer extends ByteArrayTransfer {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	protected String[] getTypeNames(){
-		return new String[]{PVNAME};
+	protected String[] getTypeNames() {
+		return new String[] { TYPE_NAME };
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	protected int[] getTypeIds(){
-		return new int[] {PV_ID};
+	protected int[] getTypeIds() {
+		return new int[] { TYPE_ID };
 	}
-	
+
 	/**
 	 * Gets the transfer data for local use.
-	 * @return List of {@link IProcessVariableAddress}
-	 * 			The transfer data for local use.
+	 * 
+	 * @return List of {@link IProcessVariableAddress} The transfer data for
+	 *         local use.
 	 */
 	public List<IProcessVariableAddress> getSelectedItems() {
 		long dist = new Date().getTime() - _selectionSetTime;
@@ -168,10 +188,12 @@ public class ProcessVariableAddressTransfer extends ByteArrayTransfer {
 
 	/**
 	 * Sets the transfer data for local use.
+	 * 
 	 * @param selectedItems
 	 *            the transfer data
 	 */
-	public void setSelectedItems(final List<IProcessVariableAddress> selectedItems) {
+	public void setSelectedItems(
+			final List<IProcessVariableAddress> selectedItems) {
 		_selectedItems = selectedItems;
 		_selectionSetTime = new Date().getTime();
 	}

@@ -21,11 +21,10 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-//import org.csstudio.sds.components.model.LabelModel;
+// import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
-//import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
@@ -42,16 +41,21 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * EditPart controller for <code>TextInputModel</code> elements with support
@@ -85,18 +89,19 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
 
-		//label.setText(model.getInputText());
+		// label.setText(model.getInputText());
 		label.setTextValue(model.getInputText());
-		label.setFont(CustomMediaFactory.getInstance().getFont(
+		label
+				.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont()));
 		label.setTextAlignment(model.getTextAlignment());
 		label.setTransparent(model.getTransparent());
 		label.addMouseListener(new MouseListener() {
 			public void mouseDoubleClicked(final MouseEvent me) {
-				performDirectEdit();
 			}
-
+			
 			public void mousePressed(final MouseEvent me) {
+				performDirectEdit(me.x, me.y+100);
 			}
 
 			public void mouseReleased(final MouseEvent me) {
@@ -111,8 +116,8 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void createEditPoliciesHook() {
-		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-				new LabelDirectEditPolicy());
+//		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
+//				new LabelDirectEditPolicy());
 	}
 
 	/**
@@ -121,7 +126,6 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 	@Override
 	public void performRequest(final Request req) {
 		if (req.getType().equals(RequestConstants.REQ_DIRECT_EDIT)) {
-			performDirectEdit();
 			return;
 		}
 		super.performRequest(req);
@@ -130,12 +134,45 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 	/**
 	 * Open the cell editor for direct editing.
 	 */
-	private void performDirectEdit() {
-		CellEditor cellEditor = createCellEditor();
-		locateCellEditor(cellEditor);
-
-		cellEditor.activate();
-		cellEditor.setFocus();
+	private void performDirectEdit(int x, int y) {
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		Menu menu = new Menu(shell, SWT.POP_UP);
+		MenuItem item = new MenuItem(menu, SWT.PUSH);
+		item.setText("Menu Item1");
+		item.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				System.out.println("Item Selected");
+			}
+		});
+		 item = new MenuItem(menu, SWT.PUSH);
+		item.setText("Menu Item2");
+		item.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				System.out.println("Item Selected");
+			}
+		});
+		 item = new MenuItem(menu, SWT.PUSH);
+		item.setText("Menu Item3");
+		item.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				System.out.println("Item Selected");
+			}
+		});
+		
+		Rectangle rect = TextInputEditPart.this.figure.getBounds().getCopy();
+		menu.setLocation(x, y);
+		menu.setVisible(true);
+		while (!menu.isDisposed() && menu.isVisible()) {
+			if (!Display.getCurrent().readAndDispatch())
+				Display.getCurrent().sleep();
+		}
+		menu.dispose();
+		
+//		CellEditor cellEditor = createCellEditor();
+//		locateCellEditor(cellEditor);
+//
+//		cellEditor.activate();
+//		cellEditor.setFocus();
 	}
 
 	/**
@@ -144,33 +181,38 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 	 * @return The cell editor for direct editing.
 	 */
 	private CellEditor createCellEditor() {
-		final CellEditor result = new TextCellEditor((Composite) getViewer()
-				.getControl());
+		// final CellEditor result = new TextCellEditor((Composite) getViewer()
+		// .getControl());
+
+		ComboBoxCellEditor result = new ComboBoxCellEditor(
+				(Composite) getViewer().getControl(), new String[] { "DO THIS",
+						"DO THAT" });
+
+		CCombo combo = (CCombo) result.getControl();
 
 		// init cell editor...
-		String currentValue = "N/A"; //$NON-NLS-1$
-		WidgetProperty inputTextProperty = getWidgetModel().getProperty(
-				TextInputModel.PROP_INPUT_TEXT);
-
-		if (inputTextProperty != null) {
-			currentValue = inputTextProperty.getPropertyValue().toString();
-		}
-
-		result.setValue(currentValue);
-		final Text text = (Text) result.getControl();
-		text.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(final KeyEvent e) {
-				if (e.keyCode == SWT.CR) {
-					DirectEditCommand cmd = new DirectEditCommand(text
-							.getText());
-					cmd.execute();
-				} else if (e.keyCode == SWT.ESC) {
-					result.deactivate();
-				}
-			}
-
-		});
+		// String currentValue = "N/A"; //$NON-NLS-1$
+		// WidgetProperty inputTextProperty = getWidgetModel().getProperty(
+		// TextInputModel.PROP_INPUT_TEXT);
+		//
+		// if (inputTextProperty != null) {
+		// currentValue = inputTextProperty.getPropertyValue().toString();
+		// }
+		//
+		// result.setValue(currentValue);
+		// final Text text = (Text) result.getControl();
+		// text.addKeyListener(new KeyAdapter() {
+		// @Override
+		// public void keyPressed(final KeyEvent e) {
+		// if (e.keyCode == SWT.CR) {
+		// DirectEditCommand cmd = new DirectEditCommand(text
+		// .getText());
+		// cmd.execute();
+		// } else if (e.keyCode == SWT.ESC) {
+		// result.deactivate();
+		// }
+		// }
+		// });
 
 		// get the chosen font
 		FontData fontData = (FontData) getWidgetModel().getProperty(
@@ -195,10 +237,10 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		Color backgroundColor = CustomMediaFactory.getInstance().getColor(
 				new RGB(red, green, blue));
 
-		text.setForeground(foregroundColor);
-		text.setBackground(backgroundColor);
-		text.setFont(font);
-		text.selectAll();
+		// text.setForeground(foregroundColor);
+		// text.setBackground(backgroundColor);
+		// text.setFont(font);
+		// text.selectAll();
 
 		return result;
 	}
@@ -295,10 +337,9 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		// input text
 		IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				//label.setText((String) newValue);
+				// label.setText((String) newValue);
 				label.setTextValue((String) newValue);
 				return true;
 			}
@@ -308,8 +349,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		// font
 		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
 				FontData fontData = (FontData) newValue;
 				label.setFont(CustomMediaFactory.getInstance().getFont(
@@ -322,26 +362,26 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		// text alignment
 		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setTextAlignment((Integer)newValue);
+				label.setTextAlignment((Integer) newValue);
 				return true;
 			}
 		};
-		//setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
+		// setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT,
+		// alignmentHandler);
 		setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGN, alignmentHandler);
-		
+
 		// transparent background
 		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setTransparent((Boolean)newValue);
+				label.setTransparent((Boolean) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(TextInputModel.PROP_TRANSPARENT, transparentHandler);
+		setPropertyChangeHandler(TextInputModel.PROP_TRANSPARENT,
+				transparentHandler);
 	}
 }

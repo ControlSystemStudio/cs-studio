@@ -372,7 +372,7 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 		bar.setBackgroundColor(ColorConstants.blue);
 		Ellipse thumb = new Ellipse();
 		thumb.setSize(new Dimension(40, 40));
-		thumb.setFont(CustomMediaFactory.getInstance().getDefaultFont(true));
+		thumb.setFont(CustomMediaFactory.getInstance().getDefaultFont(SWT.BOLD));
 		thumb.setBackgroundColor(ColorConstants.red);
 
 		thumb.setBorder(new SchemeBorder(SchemeBorder.SCHEMES.RIDGED));

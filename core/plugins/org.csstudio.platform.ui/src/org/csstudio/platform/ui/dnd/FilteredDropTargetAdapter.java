@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IControlSystemItem;
+import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
 import org.csstudio.platform.ui.internal.dnd.ControlSystemItemTransfer;
 import org.csstudio.platform.util.ControlSystemItemPath;
 import org.eclipse.core.runtime.Platform;
@@ -52,7 +53,7 @@ import org.eclipse.swt.dnd.TextTransfer;
  * @see DragSourceEvent
  * @author Sven Wende, Stefan Hofer
  * 
- * @deprecated
+ * @deprecated Please use {@link ProcessVariableExchangeUtil} instead
  */
 public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 	/**
@@ -133,7 +134,7 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 		// handle transfers of control system items
 		if (ControlSystemItemTransfer.getInstance().isSupportedType(
 				event.currentDataType)) {
-			IControlSystemItem[] items = (IControlSystemItem[]) event.data; 
+			IControlSystemItem[] items = (IControlSystemItem[]) event.data;
 
 			for (IControlSystemItem item : items) {
 				if (item != null) {
@@ -144,7 +145,7 @@ public abstract class FilteredDropTargetAdapter extends DropTargetAdapter {
 
 		// handle text transfers
 		if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
-			String tmp = (String)event.data;
+			String tmp = (String) event.data;
 
 			String[] rows = tmp.split("\n"); //$NON-NLS-1$
 
