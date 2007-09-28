@@ -66,10 +66,6 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 */
 	private static final int DEFAULT_TEXT_ALIGNMENT = 0;
 	/**
-	 * The ID of the {@link ActionData} property.
-	 */
-	public static final String PROP_ACTIONDATA = "actionData"; //$NON-NLS-1$
-	/**
 	 * The labels for the text alignment property.
 	 */
 	private static final String[] SHOW_LABELS = new String[] {"Center", "Top", "Bottom", "Left", "Right"};
@@ -133,14 +129,6 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 */
 	public int getTextAlignment() {
 		return (Integer) getProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
-	}
-	
-	/**
-	 * Returns the {@link ActionData}.
-	 * @return The {@link ActionData}
-	 */
-	public ActionData getActionData() {
-		return (ActionData) getProperty(PROP_ACTIONDATA).getPropertyValue();
 	}
 
 }
