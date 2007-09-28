@@ -49,7 +49,7 @@ public final class BargraphEditPartTest {
 	public void setUp() {
 		_editPart = new BargraphEditPart();
 		_editPart.setModel(new BargraphModel());
-		((RefreshableBargraphFigure)_editPart.getFigure()).setLoloColor(new RGB(100,100,100));
+		((RefreshableBargraphFigure)_editPart.getFigure()).setDefaultFillColor(new RGB(100,100,100));
 		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_FILL, 50);
 	}
 
@@ -69,12 +69,12 @@ public final class BargraphEditPartTest {
 	 */
 	@Test
 	public void testPropertyChangeHandler() {
-		Color oldLoloColor = ((RefreshableBargraphFigure)_editPart.getFigure()).getLoloColor();
+		Color fillColor = ((RefreshableBargraphFigure)_editPart.getFigure()).getDefaultFillColor();
 		RGB newRGB = new RGB(255,0,0);
-		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_LOLO_COLOR, newRGB);
-		Color newLoloColor = ((RefreshableBargraphFigure)_editPart.getFigure()).getLoloColor();
-		assertTrue("Colors: "+oldLoloColor+" | "+newLoloColor,!oldLoloColor.equals(newLoloColor));
-		assertTrue(newLoloColor.getRGB().equals(newRGB));
+		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_DEFAULT_FILL_COLOR, newRGB);
+		Color newColor = ((RefreshableBargraphFigure)_editPart.getFigure()).getDefaultFillColor();
+		assertTrue("Colors: "+fillColor+" | "+newColor,!fillColor.equals(newColor));
+		assertTrue(newColor.getRGB().equals(newRGB));
 		double oldFill = ((RefreshableBargraphFigure)_editPart.getFigure()).getFill();
 		double testFill = 99;
 		((BargraphModel)_editPart.getModel()).setPropertyValue(BargraphModel.PROP_FILL, Double.valueOf(testFill));

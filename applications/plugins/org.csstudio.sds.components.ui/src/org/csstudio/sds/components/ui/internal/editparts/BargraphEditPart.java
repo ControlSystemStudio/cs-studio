@@ -49,18 +49,16 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setOrientation(model.getOrientation());
 		// Colors
 		bargraph.setDefaultFillColor(model.getDefaultFillColor());
-		bargraph.setLoloColor(model.getLoloColor());
-		bargraph.setLoColor(model.getLoColor());
-		bargraph.setMColor(model.getMColor());
-		bargraph.setHiColor(model.getHiColor());
-		bargraph.setHihiColor(model.getHihiColor());
+//		bargraph.setLoloColor(model.getLoloColor());
+//		bargraph.setLoColor(model.getLoColor());
+//		bargraph.setHiColor(model.getHiColor());
+//		bargraph.setHihiColor(model.getHihiColor());
 		bargraph.setBorderColor(model.getBorderColor());
 		bargraph.setFillBackgroundColor(model.getFillbackgroundColor());
 		// Levels
 		bargraph.setMinimum(model.getMinimum());
 		bargraph.setLoloLevel(model.getLoloLevel());
 		bargraph.setLoLevel(model.getLoLevel());
-		bargraph.setMLevel(model.getMLevel());
 		bargraph.setHiLevel(model.getHiLevel());
 		bargraph.setHihiLevel(model.getHihiLevel());
 		bargraph.setMaximum(model.getMaximum());
@@ -70,6 +68,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		bargraph.setShowScale(model.getShowScale());
 		bargraph.setScaleSectionCount(model.getScaleSectionCount());
 		bargraph.setTransparent(model.getTransparent());
+		bargraph.setShowOnlyValue(model.getShowOnlyValue());
 		return bargraph;
 	}
 
@@ -165,64 +164,66 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(BargraphModel.PROP_TRANSPARENT, transparentHandler);
+		
+		// Value Representation
+		IWidgetPropertyChangeHandler valueRepresentationHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+				bargraph.setShowOnlyValue((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(BargraphModel.PROP_SHOW_ONLY_VALUE, valueRepresentationHandler);
 	}
 
 	/**
 	 * Registers PropertyChangeHandler for the color properties.
 	 */
 	private void registerColorPropertyChangeHandler() {
-		IWidgetPropertyChangeHandler loloColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-				bargraph.setLoloColor((RGB) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(BargraphModel.PROP_LOLO_COLOR,
-				loloColorHandler);
-		IWidgetPropertyChangeHandler loColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-				bargraph.setLoColor((RGB) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(BargraphModel.PROP_LO_COLOR, loColorHandler);
-		IWidgetPropertyChangeHandler mColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-				bargraph.setMColor((RGB) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(BargraphModel.PROP_M_COLOR, mColorHandler);
-		IWidgetPropertyChangeHandler hiColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-				bargraph.setHiColor((RGB) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(BargraphModel.PROP_HI_COLOR, hiColorHandler);
-		IWidgetPropertyChangeHandler hihiColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-				bargraph.setHihiColor((RGB) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(BargraphModel.PROP_HIHI_COLOR,
-				hihiColorHandler);
+//		IWidgetPropertyChangeHandler loloColorHandler = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue,
+//					final Object newValue,
+//					final IFigure refreshableFigure) {
+//				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+//				bargraph.setLoloColor((RGB) newValue);
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(BargraphModel.PROP_LOLO_COLOR,
+//				loloColorHandler);
+//		IWidgetPropertyChangeHandler loColorHandler = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue,
+//					final Object newValue,
+//					final IFigure refreshableFigure) {
+//				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+//				bargraph.setLoColor((RGB) newValue);
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(BargraphModel.PROP_LO_COLOR, loColorHandler);
+//		IWidgetPropertyChangeHandler hiColorHandler = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue,
+//					final Object newValue,
+//					final IFigure refreshableFigure) {
+//				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+//				bargraph.setHiColor((RGB) newValue);
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(BargraphModel.PROP_HI_COLOR, hiColorHandler);
+//		IWidgetPropertyChangeHandler hihiColorHandler = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue,
+//					final Object newValue,
+//					final IFigure refreshableFigure) {
+//				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
+//				bargraph.setHihiColor((RGB) newValue);
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(BargraphModel.PROP_HIHI_COLOR,
+//				hihiColorHandler);
 		IWidgetPropertyChangeHandler defaultFillColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
@@ -272,16 +273,6 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(BargraphModel.PROP_LO_LEVEL, loHandler);
-		IWidgetPropertyChangeHandler mHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				RefreshableBargraphFigure bargraph = (RefreshableBargraphFigure) refreshableFigure;
-				bargraph.setMLevel((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(BargraphModel.PROP_M_LEVEL, mHandler);
 		IWidgetPropertyChangeHandler hiHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,

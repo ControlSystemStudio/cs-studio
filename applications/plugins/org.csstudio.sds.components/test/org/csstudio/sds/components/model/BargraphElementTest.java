@@ -58,55 +58,45 @@ public final class BargraphElementTest {
 		assertTrue(_bargraphElement.hasProperty(_bargraphElement.getDoubleTestProperty()));
 	}
 	
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.model.BargraphModel#getLoloColorTestProperty}.
-	 */
-	@Test
-	public void testGetLoloColorTestProperty() {
-		assertNotNull(_bargraphElement.getLoloColorTestProperty());
-		assertTrue(_bargraphElement.hasProperty(_bargraphElement.getLoloColorTestProperty()));
-	}
-	
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.model.BargraphModel#getLoColorTestProperty}.
-	 */
-	@Test
-	public void testGetLoColorTestProperty() {
-		assertNotNull(_bargraphElement.getLoColorTestProperty());
-		assertTrue(_bargraphElement.hasProperty(_bargraphElement.getLoColorTestProperty()));
-	}
-	
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.model.BargraphModel#getMColorTestProperty}.
-	 */
-	@Test
-	public void testGetMColorTestProperty() {
-		assertNotNull(_bargraphElement.getMColorTestProperty());
-		assertTrue(_bargraphElement.hasProperty(_bargraphElement.getMColorTestProperty()));
-	}
-	
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.model.BargraphModel#getHiColorTestProperty}.
-	 */
-	@Test
-	public void testGetHiColorTestProperty() {
-		assertNotNull(_bargraphElement.getHiColorTestProperty());
-		assertTrue(_bargraphElement.hasProperty(_bargraphElement.getHiColorTestProperty()));
-	}
-	
-	/**
-	 * Test method for
-	 * {@link org.csstudio.sds.components.model.BargraphModel#getHihiColorTestProperty}.
-	 */
-	@Test
-	public void testGetHihiColorTestProperty() {
-		assertNotNull(_bargraphElement.getHihiColorTestProperty());
-		assertTrue(_bargraphElement.hasProperty(_bargraphElement.getHihiColorTestProperty()));
-	}
+//	/**
+//	 * Test method for
+//	 * {@link org.csstudio.sds.components.model.BargraphModel#getLoloColorTestProperty}.
+//	 */
+//	@Test
+//	public void testGetLoloColorTestProperty() {
+//		assertNotNull(_bargraphElement.getLoloColorTestProperty());
+//		assertTrue(_bargraphElement.hasProperty(_bargraphElement.getLoloColorTestProperty()));
+//	}
+//	
+//	/**
+//	 * Test method for
+//	 * {@link org.csstudio.sds.components.model.BargraphModel#getLoColorTestProperty}.
+//	 */
+//	@Test
+//	public void testGetLoColorTestProperty() {
+//		assertNotNull(_bargraphElement.getLoColorTestProperty());
+//		assertTrue(_bargraphElement.hasProperty(_bargraphElement.getLoColorTestProperty()));
+//	}
+//	
+//	/**
+//	 * Test method for
+//	 * {@link org.csstudio.sds.components.model.BargraphModel#getHiColorTestProperty}.
+//	 */
+//	@Test
+//	public void testGetHiColorTestProperty() {
+//		assertNotNull(_bargraphElement.getHiColorTestProperty());
+//		assertTrue(_bargraphElement.hasProperty(_bargraphElement.getHiColorTestProperty()));
+//	}
+//	
+//	/**
+//	 * Test method for
+//	 * {@link org.csstudio.sds.components.model.BargraphModel#getHihiColorTestProperty}.
+//	 */
+//	@Test
+//	public void testGetHihiColorTestProperty() {
+//		assertNotNull(_bargraphElement.getHihiColorTestProperty());
+//		assertTrue(_bargraphElement.hasProperty(_bargraphElement.getHihiColorTestProperty()));
+//	}
 
 	/**
 	 * Test method for

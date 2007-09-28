@@ -65,8 +65,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * The Strings, which are displayed in this figure.
 	 */
-	private static final String[] LABELS = new String[] { "LOLO", "LO", "M",
-			"HI", "HIHI" };
+	private static final String[] LABELS = new String[] { "LOLO", "LO", "HI", "HIHI" };
 	/**
 	 * Show markers at bottom or right.
 	 */
@@ -111,10 +110,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * The Color for the border.
 	 */
 	private Color _borderColor;
-	/**
-	 * The Map for the Colors.
-	 */
-	private final Map<String, Color> _colorMap = new HashMap<String, Color>();
+//	/**
+//	 * The Map for the Colors.
+//	 */
+//	private final Map<String, Color> _colorMap = new HashMap<String, Color>();
 	/**
 	 * The Map for the levels.
 	 */
@@ -153,12 +152,17 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	private boolean _transparent = true;
 	
 	/**
+	 * The boolean, which indicates, if only the fill value should be shown.
+	 */
+	private boolean _showOnlyValue = false;
+	
+	/**
 	 * Constructor.
 	 */
 	public RefreshableBargraphFigure() {
 		super();
 		this.setSize(200, 30);
-		this.initColorMap();
+//		this.initColorMap();
 		this.initLevelMap();
 		this.setLayoutManager(new XYLayout());
 		_fillRectangleFigure = new FillRectangleFigure();
@@ -178,21 +182,19 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		});
 	}
 
-	/**
-	 * Initializes the Map of Colors.
-	 */
-	private void initColorMap() {
-		_colorMap.put(LABELS[0], CustomMediaFactory.getInstance().getColor(
-				new RGB(255, 0, 0)));
-		_colorMap.put(LABELS[1], CustomMediaFactory.getInstance().getColor(
-				new RGB(255, 100, 100)));
-		_colorMap.put(LABELS[2], CustomMediaFactory.getInstance().getColor(
-				new RGB(0, 255, 0)));
-		_colorMap.put(LABELS[3], CustomMediaFactory.getInstance().getColor(
-				new RGB(255, 255, 0)));
-		_colorMap.put(LABELS[4], CustomMediaFactory.getInstance().getColor(
-				new RGB(255, 255, 255)));
-	}
+//	/**
+//	 * Initializes the Map of Colors.
+//	 */
+//	private void initColorMap() {
+//		_colorMap.put(LABELS[0], CustomMediaFactory.getInstance().getColor(
+//				new RGB(255, 0, 0)));
+//		_colorMap.put(LABELS[1], CustomMediaFactory.getInstance().getColor(
+//				new RGB(255, 100, 100)));
+//		_colorMap.put(LABELS[2], CustomMediaFactory.getInstance().getColor(
+//				new RGB(255, 255, 0)));
+//		_colorMap.put(LABELS[3], CustomMediaFactory.getInstance().getColor(
+//				new RGB(255, 255, 255)));
+//	}
 
 	/**
 	 * Initializes the Map of levels.
@@ -200,9 +202,8 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	private void initLevelMap() {
 		_levelMap.put(LABELS[0], Double.valueOf(0.1));
 		_levelMap.put(LABELS[1], Double.valueOf(0.3));
-		_levelMap.put(LABELS[2], Double.valueOf(0.5));
-		_levelMap.put(LABELS[3], Double.valueOf(0.7));
-		_levelMap.put(LABELS[4], Double.valueOf(0.9));
+		_levelMap.put(LABELS[2], Double.valueOf(0.7));
+		_levelMap.put(LABELS[3], Double.valueOf(0.9));
 	}
 
 	/**
@@ -332,7 +333,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 	/**
 	 * Calculate the real length of this bargraph. The value is calculated, to
-	 * fit the scale completly into the bargraph
+	 * fit the scale completely into the bargraph
 	 * @param length
 	 *            The given length
 	 * @return int The new length
@@ -448,6 +449,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		repaint();
 	}
 	
+	public void setShowOnlyValue(final boolean showOnlyValue) {
+		_showOnlyValue = showOnlyValue;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -559,95 +564,77 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		return _orientationHorizontal;
 	}
 
-	/**
-	 * Sets the color for lolo fill level.
-	 * @param rgb
-	 *            The color for lolo fill level
-	 */
-	public void setLoloColor(final RGB rgb) {
-		_colorMap
-				.put(LABELS[0], CustomMediaFactory.getInstance().getColor(rgb));
-	}
-
-	/**
-	 * Gets the color for lolo fill level.
-	 * @return Color The color for lolo fill level
-	 */
-	public Color getLoloColor() {
-		return _colorMap.get(LABELS[0]);
-	}
-
-	/**
-	 * Sets the color for lo fill level.
-	 * @param rgb
-	 *            The color for lo fill level
-	 */
-	public void setLoColor(final RGB rgb) {
-		_colorMap
-				.put(LABELS[1], CustomMediaFactory.getInstance().getColor(rgb));
-	}
-
-	/**
-	 * Gets the color for lo fill level.
-	 * @return Color The color for lo fill level
-	 */
-	public Color getLoColor() {
-		return _colorMap.get(LABELS[1]);
-	}
-
-	/**
-	 * Sets the color for m fill level.
-	 * @param rgb
-	 *            The color for m fill level
-	 */
-	public void setMColor(final RGB rgb) {
-		_colorMap
-				.put(LABELS[2], CustomMediaFactory.getInstance().getColor(rgb));
-	}
-
-	/**
-	 * Gets the color for m fill level.
-	 * @return Color The color for m fill level
-	 */
-	public Color getMColor() {
-		return _colorMap.get(LABELS[2]);
-	}
-
-	/**
-	 * Sets the color for hi fill level.
-	 * @param rgb
-	 *            The color for hi fill level
-	 */
-	public void setHiColor(final RGB rgb) {
-		_colorMap
-				.put(LABELS[3], CustomMediaFactory.getInstance().getColor(rgb));
-	}
-
-	/**
-	 * Gets the color for hi fill level.
-	 * @return Color The color for hi fill level
-	 */
-	public Color getHiColor() {
-		return _colorMap.get(LABELS[3]);
-	}
-
-	/**
-	 * Sets the color for hihi fill level.
-	 * @param rgb
-	 *            The color for hihi fill level
-	 */
-	public void setHihiColor(final RGB rgb) {
-		_colorMap
-				.put(LABELS[4], CustomMediaFactory.getInstance().getColor(rgb));
-	}
-
-	/**
-	 * Gets the color for hihi fill level.
-	 * @return Color The color for hihi fill level
-	 */
-	public Color getHihiColor() {
-		return _colorMap.get(LABELS[4]);
-	}
+//	/**
+//	 * Sets the color for lolo fill level.
+//	 * @param rgb
+//	 *            The color for lolo fill level
+//	 */
+//	public void setLoloColor(final RGB rgb) {
+//		_colorMap
+//				.put(LABELS[0], CustomMediaFactory.getInstance().getColor(rgb));
+//	}
+//
+//	/**
+//	 * Gets the color for lolo fill level.
+//	 * @return Color The color for lolo fill level
+//	 */
+//	public Color getLoloColor() {
+//		return _colorMap.get(LABELS[0]);
+//	}
+//
+//	/**
+//	 * Sets the color for lo fill level.
+//	 * @param rgb
+//	 *            The color for lo fill level
+//	 */
+//	public void setLoColor(final RGB rgb) {
+//		_colorMap
+//				.put(LABELS[1], CustomMediaFactory.getInstance().getColor(rgb));
+//	}
+//
+//	/**
+//	 * Gets the color for lo fill level.
+//	 * @return Color The color for lo fill level
+//	 */
+//	public Color getLoColor() {
+//		return _colorMap.get(LABELS[1]);
+//	}
+//
+//	/**
+//	 * Sets the color for hi fill level.
+//	 * @param rgb
+//	 *            The color for hi fill level
+//	 */
+//	public void setHiColor(final RGB rgb) {
+//		_colorMap
+//				.put(LABELS[2], CustomMediaFactory.getInstance().getColor(rgb));
+//	}
+//
+//	/**
+//	 * Gets the color for hi fill level.
+//	 * @return Color The color for hi fill level
+//	 */
+//	public Color getHiColor() {
+//		return _colorMap.get(LABELS[2]);
+//	}
+//
+//	/**
+//	 * Sets the color for hihi fill level.
+//	 * @param rgb
+//	 *            The color for hihi fill level
+//	 */
+//	public void setHihiColor(final RGB rgb) {
+//		_colorMap
+//				.put(LABELS[3], CustomMediaFactory.getInstance().getColor(rgb));
+//	}
+//
+//	/**
+//	 * Gets the color for hihi fill level.
+//	 * @return Color The color for hihi fill level
+//	 */
+//	public Color getHihiColor() {
+//		return _colorMap.get(LABELS[3]);
+//	}
 
 	/**
 	 * Sets the minimum value.
@@ -703,32 +690,14 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	public double getLoLevel() {
 		return _levelMap.get(LABELS[1]);
 	}
-
-	/**
-	 * Sets the m level.
-	 * @param mLevel
-	 *            The m level
-	 */
-	public void setMLevel(final double mLevel) {
-		_levelMap.put(LABELS[2], mLevel);
-		this.refreshConstraints();
-	}
-
-	/**
-	 * Gets the m level.
-	 * @return double The m level
-	 */
-	public double getMLevel() {
-		return _levelMap.get(LABELS[2]);
-	}
-
+	
 	/**
 	 * Sets the hi level.
 	 * @param hiLevel
 	 *            The hi level
 	 */
 	public void setHiLevel(final double hiLevel) {
-		_levelMap.put(LABELS[3], hiLevel);
+		_levelMap.put(LABELS[2], hiLevel);
 		this.refreshConstraints();
 	}
 
@@ -737,7 +706,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * @return double The hi level
 	 */
 	public double getHiLevel() {
-		return _levelMap.get(LABELS[3]);
+		return _levelMap.get(LABELS[2]);
 	}
 
 	/**
@@ -746,7 +715,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 *            The hihi level
 	 */
 	public void setHihiLevel(final double hihiLevel) {
-		_levelMap.put(LABELS[4], hihiLevel);
+		_levelMap.put(LABELS[3], hihiLevel);
 		this.refreshConstraints();
 	}
 
@@ -755,7 +724,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * @return double The hihi level
 	 */
 	public double getHihiLevel() {
-		return _levelMap.get(LABELS[4]);
+		return _levelMap.get(LABELS[3]);
 	}
 
 	/**
@@ -907,71 +876,82 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			graphics.setForegroundColor(this.getForegroundColor());
 			graphics.setBackgroundColor(this.getBackgroundColor());
 			graphics.fillRectangle(bounds);
-			graphics.setBackgroundColor(this.getFillColor());
-			Rectangle fillRectangle = this.getFillLevelRectangle(bounds);
-			graphics.fillRectangle(fillRectangle);
-			graphics.setForegroundColor(this.getBorderColor());
-			graphics.drawRectangle(new Rectangle(bounds.x, bounds.y,
-					bounds.width - 1, bounds.height - 1));
-			graphics.drawRectangle(new Rectangle(fillRectangle.x,
-					fillRectangle.y, fillRectangle.width - 1,
-					fillRectangle.height - 1));
-		}
-
-		/**
-		 * Gets the fill Color.
-		 * 
-		 * @return Color The Color for the fill-area
-		 */
-		private Color getFillColor() {
-			List<String> labelList = new LinkedList<String>();
-			for (int i = 0; i < LABELS.length; i++) {
-				if (labelList.isEmpty()) {
-					labelList.add(LABELS[i]);
-				} else {
-					labelList.add(this.getLabelIndex(labelList, LABELS[i]),
-							LABELS[i]);
-				}
-			}
-			String[] tempLabels = labelList
-					.toArray(new String[labelList.size()]);
-			if (_minimum < _maximum) {
-				for (int i = 0; i < tempLabels.length; i++) {
-					if (this.getFill() <= getWeight(_levelMap
-							.get(tempLabels[i]))) {
-						return _colorMap.get(tempLabels[i]);
-					}
-				}
-				return this.getDefaultFillColor();
+			graphics.setBackgroundColor(this.getDefaultFillColor());
+			if (_showOnlyValue) {
+				PointList list = new PointList();
+				int valueX = (int) Math.round(bounds.width * (this.getFill())) + bounds.x;
+				list.addPoint(valueX, bounds.y);
+				list.addPoint(valueX-4, bounds.y+(bounds.height/2));
+				list.addPoint(valueX, bounds.y+bounds.height);
+				list.addPoint(valueX+4, bounds.y+(bounds.height/2));
+				graphics.fillPolygon(list);
+				graphics.drawPolygon(list);
 			} else {
-				for (int i = tempLabels.length - 1; i >= 0; i--) {
-					if (this.getFill() <= getWeight(_levelMap
-							.get(tempLabels[i]))) {
-						return _colorMap.get(tempLabels[i]);
-					}
-				}
-				return this.getDefaultFillColor();
+				Rectangle fillRectangle = this.getFillLevelRectangle(bounds);
+				graphics.fillRectangle(fillRectangle);
+				graphics.setForegroundColor(this.getBorderColor());
+				graphics.drawRectangle(new Rectangle(bounds.x, bounds.y,
+						bounds.width - 1, bounds.height - 1));
+				graphics.drawRectangle(new Rectangle(fillRectangle.x,
+						fillRectangle.y, fillRectangle.width - 1,
+						fillRectangle.height - 1));	
 			}
 		}
 
-		/**
-		 * Gets the index for the label.
-		 * 
-		 * @param labelList
-		 *            The list, where the label should be added
-		 * @param label
-		 *            The label, which should be added
-		 * @return int The index for the label
-		 */
-		private int getLabelIndex(final List<String> labelList,
-				final String label) {
-			for (int j = 0; j < labelList.size(); j++) {
-				if (_levelMap.get(label) < _levelMap.get(labelList.get(j))) {
-					return j;
-				}
-			}
-			return labelList.size();
-		}
+//		/**
+//		 * Gets the fill Color.
+//		 * 
+//		 * @return Color The Color for the fill-area
+//		 */
+//		private Color getFillColor() {
+//			List<String> labelList = new LinkedList<String>();
+//			for (int i = 0; i < LABELS.length; i++) {
+//				if (labelList.isEmpty()) {
+//					labelList.add(LABELS[i]);
+//				} else {
+//					labelList.add(this.getLabelIndex(labelList, LABELS[i]),
+//							LABELS[i]);
+//				}
+//			}
+//			String[] tempLabels = labelList
+//					.toArray(new String[labelList.size()]);
+//			if (_minimum < _maximum) {
+//				for (int i = 0; i < tempLabels.length; i++) {
+//					if (this.getFill() <= getWeight(_levelMap
+//							.get(tempLabels[i]))) {
+//						return _colorMap.get(tempLabels[i]);
+//					}
+//				}
+//				return this.getDefaultFillColor();
+//			} else {
+//				for (int i = tempLabels.length - 1; i >= 0; i--) {
+//					if (this.getFill() <= getWeight(_levelMap
+//							.get(tempLabels[i]))) {
+//						return _colorMap.get(tempLabels[i]);
+//					}
+//				}
+//				return this.getDefaultFillColor();
+//			}
+//		}
+
+//		/**
+//		 * Gets the index for the label.
+//		 * 
+//		 * @param labelList
+//		 *            The list, where the label should be added
+//		 * @param label
+//		 *            The label, which should be added
+//		 * @return int The index for the label
+//		 */
+//		private int getLabelIndex(final List<String> labelList,
+//				final String label) {
+//			for (int j = 0; j < labelList.size(); j++) {
+//				if (_levelMap.get(label) < _levelMap.get(labelList.get(j))) {
+//					return j;
+//				}
+//			}
+//			return labelList.size();
+//		}
 
 		/**
 		 * Gets the rectangle for the fill level.
@@ -1197,10 +1177,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * 
 	 */
 	private final class Marker extends RectangleFigure {
-		/**
-		 * The key of this Marker, which is the drawed text.
-		 */
-		private String _key;
+//		/**
+//		 * The key of this Marker, which is the drawed text.
+//		 */
+//		private String _key;
 
 		/**
 		 * The orientation of this Marker.
@@ -1237,12 +1217,13 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		public Marker(final String key, final boolean topLeft,
 				final boolean isHorizontal) {
 			this.setLayoutManager(new BorderLayout());
-			_key = key;
+//			_key = key;
 			_textLabel = new Label(key.toString());
 			_textLabel.setForegroundColor(this.getForegroundColor());
 			_tickMark = new TickMark();
 			_tickMark.setForegroundColor(this.getForegroundColor());
-			_tickMark.setBackgroundColor(_colorMap.get(_key));
+//			_tickMark.setBackgroundColor(_colorMap.get(_key));
+			_tickMark.setBackgroundColor(getDefaultFillColor());
 			this.add(_tickMark, BorderLayout.CENTER);
 			this.refreshLabel();
 		}
@@ -1347,7 +1328,8 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			public void paintFigure(final Graphics graphics) {
 				Rectangle bounds = this.getBounds();
 				graphics.setForegroundColor(this.getForegroundColor());
-				graphics.setBackgroundColor(_colorMap.get(_key));
+//				graphics.setBackgroundColor(_colorMap.get(_key));
+				graphics.setBackgroundColor(getDefaultFillColor());
 				PointList pointList = new PointList();
 				int x;
 				int y;

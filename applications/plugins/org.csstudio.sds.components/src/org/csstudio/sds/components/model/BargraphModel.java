@@ -54,30 +54,25 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	public static final String PROP_DEFAULT_FILL_COLOR = "defaultFillColor";
 	
-	/**
-	 * The ID of the lolo-Color property.
-	 */
-	public static final String PROP_LOLO_COLOR = "loloColor";
-	
-	/**
-	 * The ID of the lo-Color property.
-	 */
-	public static final String PROP_LO_COLOR = "loColor";
-	
-	/**
-	 * The ID of the m-Color property.
-	 */
-	public static final String PROP_M_COLOR = "mColor";
-	
-	/**
-	 * The ID of the hi-Color property.
-	 */
-	public static final String PROP_HI_COLOR = "hiColor";
-	
-	/**
-	 * The ID of the hihi-Color property.
-	 */
-	public static final String PROP_HIHI_COLOR = "hihiColor";
+//	/**
+//	 * The ID of the lolo-Color property.
+//	 */
+//	public static final String PROP_LOLO_COLOR = "loloColor";
+//	
+//	/**
+//	 * The ID of the lo-Color property.
+//	 */
+//	public static final String PROP_LO_COLOR = "loColor";
+//	
+//	/**
+//	 * The ID of the hi-Color property.
+//	 */
+//	public static final String PROP_HI_COLOR = "hiColor";
+//	
+//	/**
+//	 * The ID of the hihi-Color property.
+//	 */
+//	public static final String PROP_HIHI_COLOR = "hihiColor";
 	
 	/**
 	 * The ID of the fillbackground-Color property.
@@ -101,10 +96,6 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * The ID of the lo level property.
 	 */
 	public static final String PROP_LO_LEVEL = "loLevel";
-	/**
-	 * The ID of the m level property.
-	 */
-	public static final String PROP_M_LEVEL = "mLevel";
 	/**
 	 * The ID of the hi level property.
 	 */
@@ -133,6 +124,10 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 * The ID of the <i>transparent</i> property.
 	 */
 	public static final String PROP_TRANSPARENT = "transparency";
+	/**
+	 * The ID of the <i>transparent</i> property.
+	 */
+	public static final String PROP_SHOW_ONLY_VALUE = "value_representation";
 
 	/**
 	 * The ID of this widget model.
@@ -154,30 +149,25 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	private static final RGB DEFAULT_FILL_COLOR = new RGB(0,0,255);
 	
-	/**
-	 * The default value of the lolo color property. 
-	 */
-	private static final RGB DEFAULT_LOLO_COLOR = new RGB(255,0,0);
-	
-	/**
-	 * The default value of the lolo color property. 
-	 */
-	private static final RGB DEFAULT_LO_COLOR = new RGB(255,100,100);
-	
-	/**
-	 * The default value of the lolo color property. 
-	 */
-	private static final RGB DEFAULT_M_COLOR = new RGB(0,255,0);
-	
-	/**
-	 * The default value of the lolo color property. 
-	 */
-	private static final RGB DEFAULT_HI_COLOR = new RGB(0,255,255);
-	
-	/**
-	 * The default value of the lolo color property. 
-	 */
-	private static final RGB DEFAULT_HIHI_COLOR = new RGB(255,255,255);
+//	/**
+//	 * The default value of the lolo color property. 
+//	 */
+//	private static final RGB DEFAULT_LOLO_COLOR = new RGB(255,0,0);
+//	
+//	/**
+//	 * The default value of the lolo color property. 
+//	 */
+//	private static final RGB DEFAULT_LO_COLOR = new RGB(255,100,100);
+//	
+//	/**
+//	 * The default value of the lolo color property. 
+//	 */
+//	private static final RGB DEFAULT_HI_COLOR = new RGB(0,255,255);
+//	
+//	/**
+//	 * The default value of the lolo color property. 
+//	 */
+//	private static final RGB DEFAULT_HIHI_COLOR = new RGB(255,255,255);
 	/**
 	 * The default value of the fillbackground color property. 
 	 */
@@ -230,18 +220,16 @@ public final class BargraphModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, DEFAULT_FILL));
 		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
 		//Colors
-		addProperty(PROP_DEFAULT_FILL_COLOR, new ColorProperty("Default Fill Color",WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));
-		addProperty(PROP_LOLO_COLOR, new ColorProperty("Color LOLO",WidgetPropertyCategory.Display,DEFAULT_LOLO_COLOR));
-		addProperty(PROP_LO_COLOR, new ColorProperty("Color LO",WidgetPropertyCategory.Display,DEFAULT_LO_COLOR));
-		addProperty(PROP_M_COLOR, new ColorProperty("Color M",WidgetPropertyCategory.Display,DEFAULT_M_COLOR));
-		addProperty(PROP_HI_COLOR, new ColorProperty("Color HI",WidgetPropertyCategory.Display,DEFAULT_HI_COLOR));
-		addProperty(PROP_HIHI_COLOR, new ColorProperty("Color HIHI",WidgetPropertyCategory.Display,DEFAULT_HIHI_COLOR));
+		addProperty(PROP_DEFAULT_FILL_COLOR, new ColorProperty("Fill Color",WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));
+//		addProperty(PROP_LOLO_COLOR, new ColorProperty("Color LOLO",WidgetPropertyCategory.Display,DEFAULT_LOLO_COLOR));
+//		addProperty(PROP_LO_COLOR, new ColorProperty("Color LO",WidgetPropertyCategory.Display,DEFAULT_LO_COLOR));
+//		addProperty(PROP_HI_COLOR, new ColorProperty("Color HI",WidgetPropertyCategory.Display,DEFAULT_HI_COLOR));
+//		addProperty(PROP_HIHI_COLOR, new ColorProperty("Color HIHI",WidgetPropertyCategory.Display,DEFAULT_HIHI_COLOR));
 		addProperty(PROP_FILLBACKGROUND_COLOR, new ColorProperty("Color Fillbackground",WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR));
 		//Levels
 		addProperty(PROP_MIN, new DoubleProperty("Minimum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[0]));
 		addProperty(PROP_LOLO_LEVEL, new DoubleProperty("Level LOLO", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[1]));
 		addProperty(PROP_LO_LEVEL, new DoubleProperty("Level LO", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[2]));
-		addProperty(PROP_M_LEVEL, new DoubleProperty("Level M", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[3]));
 		addProperty(PROP_HI_LEVEL, new DoubleProperty("Level HI", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[4]));
 		addProperty(PROP_HIHI_LEVEL, new DoubleProperty("Level HIHI", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[5]));
 		addProperty(PROP_MAX, new DoubleProperty("Maximum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[6]));
@@ -251,6 +239,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 		addProperty(PROP_SHOW_SCALE, new OptionProperty("Scale",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_SCALE));
 		addProperty(PROP_SCALE_SECTION_COUNT, new IntegerProperty("Section count", WidgetPropertyCategory.Display,DEFAULT_SECTION_COUNT,1,Integer.MAX_VALUE));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
+		addProperty(PROP_SHOW_ONLY_VALUE, new BooleanProperty("Show only value", WidgetPropertyCategory.Display, false));
 	}
 
 	/**
@@ -288,45 +277,37 @@ public final class BargraphModel extends AbstractWidgetModel {
 		return (RGB) getProperty(PROP_DEFAULT_FILL_COLOR).getPropertyValue();
 	}
 	
-	/**
-	 * Gets the RGB for lolo fill level.
-	 * @return The lolo fill level color
-	 */
-	public RGB getLoloColor() {
-		return (RGB) getProperty(PROP_LOLO_COLOR).getPropertyValue();
-	}
-	
-	/**
-	 * Gets the RGB for lo fill level.
-	 * @return The lo fill level color
-	 */
-	public RGB getLoColor() {
-		return (RGB) getProperty(PROP_LO_COLOR).getPropertyValue();
-	}
-	
-	/**
-	 * Gets the RGB for m fill level.
-	 * @return The m fill level color
-	 */
-	public RGB getMColor() {
-		return (RGB) getProperty(PROP_M_COLOR).getPropertyValue();
-	}
-	
-	/**
-	 * Gets the RGB for hi fill level.
-	 * @return The hi fill level color
-	 */
-	public RGB getHiColor() {
-		return (RGB) getProperty(PROP_HI_COLOR).getPropertyValue();
-	}
-	
-	/**
-	 * Gets the RGB for hihi fill level.
-	 * @return The hihi fill level color
-	 */
-	public RGB getHihiColor() {
-		return (RGB) getProperty(PROP_HIHI_COLOR).getPropertyValue();
-	}
+//	/**
+//	 * Gets the RGB for lolo fill level.
+//	 * @return The lolo fill level color
+//	 */
+//	public RGB getLoloColor() {
+//		return (RGB) getProperty(PROP_LOLO_COLOR).getPropertyValue();
+//	}
+//	
+//	/**
+//	 * Gets the RGB for lo fill level.
+//	 * @return The lo fill level color
+//	 */
+//	public RGB getLoColor() {
+//		return (RGB) getProperty(PROP_LO_COLOR).getPropertyValue();
+//	}
+//	
+//	/**
+//	 * Gets the RGB for hi fill level.
+//	 * @return The hi fill level color
+//	 */
+//	public RGB getHiColor() {
+//		return (RGB) getProperty(PROP_HI_COLOR).getPropertyValue();
+//	}
+//	
+//	/**
+//	 * Gets the RGB for hihi fill level.
+//	 * @return The hihi fill level color
+//	 */
+//	public RGB getHihiColor() {
+//		return (RGB) getProperty(PROP_HIHI_COLOR).getPropertyValue();
+//	}
 	
 	/**
 	 * Gets the RGB for fillbackground.
@@ -361,15 +342,6 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	public double getLoLevel() {
 		return (Double) getProperty(PROP_LO_LEVEL).getPropertyValue();
-	}
-	
-	/**
-	 * Gets the m level for this model.
-	 * @return double
-	 * 				The m level
-	 */
-	public double getMLevel() {
-		return (Double) getProperty(PROP_M_LEVEL).getPropertyValue();
 	}
 	
 	/**
@@ -435,6 +407,10 @@ public final class BargraphModel extends AbstractWidgetModel {
 		return (Integer) getProperty(PROP_SCALE_SECTION_COUNT).getPropertyValue();
 	}
 	
+	public boolean getShowOnlyValue() {
+		return (Boolean) getProperty(PROP_SHOW_ONLY_VALUE).getPropertyValue();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -451,50 +427,41 @@ public final class BargraphModel extends AbstractWidgetModel {
 		return PROP_COLOR_FOREGROUND;
 	}
 	
-	/**
-	 * Return the Id of the widget model lolo color property.
-	 * @return String
-	 * 				The Id of the widget model lolo color property
-	 */
-	public String getLoloColorTestProperty() {
-		return PROP_LOLO_COLOR;
-	}
-	
-	/**
-	 * Return the Id of the widget model lo color property.
-	 * @return String
-	 * 				The Id of the widget model lo color property
-	 */
-	public String getLoColorTestProperty() {
-		return PROP_LO_COLOR;
-	}
-	
-	/**
-	 * Return the Id of the widget model m color property.
-	 * @return String
-	 * 				The Id of the widget model m color property
-	 */
-	public String getMColorTestProperty() {
-		return PROP_M_COLOR;
-	}
-	
-	/**
-	 * Return the Id of the widget model hi color property.
-	 * @return String
-	 * 				The Id of the widget model hi color property
-	 */
-	public String getHiColorTestProperty() {
-		return PROP_HI_COLOR;
-	}
-	
-	/**
-	 * Return the Id of the widget model hihi color property.
-	 * @return String
-	 * 				The Id of the widget model hihi color property
-	 */
-	public String getHihiColorTestProperty() {
-		return PROP_HIHI_COLOR;
-	}
+//	/**
+//	 * Return the Id of the widget model lolo color property.
+//	 * @return String
+//	 * 				The Id of the widget model lolo color property
+//	 */
+//	public String getLoloColorTestProperty() {
+//		return PROP_LOLO_COLOR;
+//	}
+//	
+//	/**
+//	 * Return the Id of the widget model lo color property.
+//	 * @return String
+//	 * 				The Id of the widget model lo color property
+//	 */
+//	public String getLoColorTestProperty() {
+//		return PROP_LO_COLOR;
+//	}
+//	
+//	/**
+//	 * Return the Id of the widget model hi color property.
+//	 * @return String
+//	 * 				The Id of the widget model hi color property
+//	 */
+//	public String getHiColorTestProperty() {
+//		return PROP_HI_COLOR;
+//	}
+//	
+//	/**
+//	 * Return the Id of the widget model hihi color property.
+//	 * @return String
+//	 * 				The Id of the widget model hihi color property
+//	 */
+//	public String getHihiColorTestProperty() {
+//		return PROP_HIHI_COLOR;
+//	}
 	
 	/**
 	 * Returns, if this widget should have a transparent background.
