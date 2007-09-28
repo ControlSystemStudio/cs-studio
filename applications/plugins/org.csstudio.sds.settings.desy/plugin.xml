@@ -129,6 +129,46 @@
             ruleId="cosyrules.color.gradient">
          <parameterDescription name="Double Value Between -1.0 and 1.0"/>
       </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.DefaultEpicsAlarmBackground"
+            name="Default Epics Alarm Color Rule Background"
+            ruleId="org.css.sds.color.default_epics_alarm_background">
+         <parameterDescription
+               name="Double Value Between 0 and 3">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.DefaultEpicsAlarmForeground"
+            name="Default Epics Alarm Color Rule Foreground"
+            ruleId="org.css.sds.color.default_epics_alarm_foreground">
+         <parameterDescription
+               name="Double Value Between -1.0 and 2.0">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.IfNotZero"
+            name="If not zero"
+            ruleId="org.css.sds.color.if_not_zero">
+         <parameterDescription
+               name="Double Value">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.IfZero"
+            name="If zero"
+            ruleId="org.css.sds.color.if_zero">
+         <parameterDescription
+               name="Double Value">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.MenuActionData"
+            name="Menu Action Data"
+            ruleId="org.css.sds.color.menu_action_data">
+         <parameterDescription
+               name="Comma seperatet String to ActionData">
+         </parameterDescription>
+      </rule>
    </extension>
 
 </plugin>
