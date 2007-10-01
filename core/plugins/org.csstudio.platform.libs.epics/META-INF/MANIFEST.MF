@@ -2,35 +2,26 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EPICS Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.epics;singleton:=true
-Bundle-Version: 0.9.6
+Bundle-Version: 0.9.4
 Bundle-Activator: org.csstudio.platform.libs.epics.EpicsPlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.help,
- org.eclipse.help.appserver,
- org.eclipse.help.base,
- org.eclipse.help.ui,
- org.eclipse.help.webapp
+Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
- caj-2.1.3.jar,
+ caj-1.1.3.jar,
  jca-2.3.1.jar
 Export-Package: 
- com.cosylab.epics.caj,
- com.cosylab.epics.caj.impl,
- com.cosylab.epics.caj.impl.handlers,
- com.cosylab.epics.caj.impl.reactor,
- com.cosylab.epics.caj.impl.reactor.lf,
- com.cosylab.epics.caj.impl.requests,
- com.cosylab.epics.caj.impl.sync,
- com.cosylab.epics.caj.util,
- com.cosylab.epics.caj.util.logging,
  gov.aps.jca,
  gov.aps.jca.cas,
  gov.aps.jca.configuration,
  gov.aps.jca.dbr,
  gov.aps.jca.event,
  gov.aps.jca.jni,
- org.csstudio.platform.libs.epics,
- org.csstudio.platform.libs.epics.preferences
+ org.csstudio.platform.libs.epics
+Bundle-NativeCode: 
+ lib/linux/x86/libjca.so;    osname=linux; processor=x86,
+ lib/linux/x86_64/libjca.so; osname=linux; processor=x86_64,
+ lib/win32/x86/ca.dll; lib/win32/x86/Com.dll; lib/win32/x86/jca.dll;
+ osname=win32; processor=x86,
+ lib/macosx/ppc/libjca.jnilib; osname="mac os x"; processor=ppc
+Bundle-Vendor: DESY/ORNL/SLAC

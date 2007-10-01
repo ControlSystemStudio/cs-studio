@@ -23,24 +23,18 @@ package org.csstudio.platform.libs.epics;
 
 import gov.aps.jca.jni.JNITargetArch;
 
-import org.csstudio.platform.libs.epics.preferences.PreferenceConstants;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-
 
 /** The main plugin class to be used in the desktop.
  *  @author Original author unknown
  *  @author Kay Kasemir
+ *  @author Sergei Chevtsov
   */
-@SuppressWarnings("nls")
-public class EpicsPlugin extends AbstractUIPlugin
+public class EpicsPlugin extends Plugin
 {
 	public static final String ID = "org.csstudio.platform.libs.epics"; //$NON-NLS-1$
     //The shared instance.
@@ -65,66 +59,54 @@ public class EpicsPlugin extends AbstractUIPlugin
     /** @return Returns the shared instance. */
     public static EpicsPlugin getDefault()
     {   return plugin;    }
-    	
 
     /**
 	 * {@inheritDoc}
 	 */
-	@Override
+	@SuppressWarnings("nls")
+    @Override
 	public final void start(final BundleContext context) throws Exception {
 		super.start(context);
-    	/* Still broken:
-    	Eclipse magically locates the JCA JNI library as long as it's
-		placed under <plugin>/os/<os>/<arch>,
-		where the correct values for <os> and <arch> aren't known,
-		except that "linux", "x86" and "macosx", "ppc" work.
-		No idea what to use for Windows, or OS X on Intel.
-		
-		Anyway, the (java portion of the) JCA code tries to load
-		shared libraries for EPICS base 'Com' and 'ca'.
-	    Their location is obtained from the compiled-in
-	    JCAProperties.properties file, which points to the EPICS base
-	    sources.
-	    But for deployment, I'd like to use shared libs that are
-	    in the plugin, so I copied them into the same
-	    <plugin>/os/<os>/<arch> that has the JNI lib.
-	    In here, I (successfully) bend the properties to point to the
-	    <plugin>/os/<os>/<arch> directory.
-	    With that, the 'Com' library loads OK, but the 'ca' library
-	    results in an java.lang.UnsatisfiedLinkError:
-	    
-	     /home/kasemir/Eclipse/Workbench/org.csstudio.platform.libs.epics/os/linux/x86/libca.so:
-	     libCom.so: cannot open shared object file: No such file or directory
-	     
-	    The only way around:
-	    Set environment variables LD_LIBRARY_PATH (Linux)
-	    or DYLD_LIBRARY_PATH (OS X) to <plugin>/os/<os>/<arch>.
-	     */
-    	
-        final String jni_target = JNITargetArch.getTargetArch();
-        logInfo("JCA JNI Target Arch: " + jni_target);
-        try
-        {
-            // Turn "os/..." path relative to the plugin...
-            Bundle bundle = Platform.getBundle(ID);
-            Path rel_path = new Path(getOSPath());
-            // into an absolute path in the file system ...
-            String path = FileLocator.resolve(FileLocator.find(bundle, rel_path, null)).getFile();
-            // Chop the final '/' off
-            if (path.charAt(path.length()-1) == '/')
-                path = path.substring(0, path.length()-1);
-            // ... and point the JCA JNI class loader there
-            String jni_lib_path_property = "gov.aps.jca.jni.epics."
-                                              + jni_target + ".library.path";
-            logInfo("Setting " + jni_lib_path_property + "=" + path);
-            System.setProperty(jni_lib_path_property, path);
-        }
-        catch (Exception e)
-        {
-            logException("Error while setting JNI properties", e);
-        }
 
 		installPreferences();
+		
+		if (!use_pure_java)
+		{
+			final String jni_target = JNITargetArch.getTargetArch();
+			// this property must be unset, because JCA might mistakenly use it
+			final String path = "gov.aps.jca.jni.epics."
+			                     .concat(jni_target).concat(".library.path");
+            System.setProperty(path, "");
+            // In case we have a dependency to Com and ca,
+            // try to load those.
+            // Stricly speaking, loadLibray() might only apply to
+            // real JNI libs, and not ordinary shared libs.
+            // So the preferred method is to build a JCA JNILIB
+            // without further dependencies, in which case it's
+            // OK for the following two calls to fail:
+			try
+			{
+				System.loadLibrary("Com");
+				System.loadLibrary("ca");
+            }
+            catch (Throwable e)
+            {
+                // Only info, not necessarily an error
+                log(Status.INFO,
+                    "Cannot load Com and ca libraries. "
+                     + "Could be a problem if JCA binary depends on them", e);
+            }
+            // Load the JCA library.
+            // This better works out OK.
+            try
+            {
+				System.loadLibrary("jca");
+			}
+			catch (Throwable e)
+			{
+				log(Status.ERROR, "Cannot load JCA binary",	e);
+			}
+		}
 	}
 
 	/**
@@ -135,23 +117,7 @@ public class EpicsPlugin extends AbstractUIPlugin
 		plugin = null;
 		super.stop(context);
 	}
-
-    private String getOSPath() throws Exception
-	{
-	    String osname=System.getProperty( "os.name", "" );
-	    String osarch=System.getProperty( "os.arch", "" );
-	    if (osname.equals("Mac OS X"))
-	        return "os/macosx/" + osarch;
-	    else if (osname.equals( "Linux" ))
-	        return "os/linux/x86";
-	    else if (osname.startsWith("Win" ))
-	    {
-	        // ??
-	    }
-	    throw new Exception("Cannot determine os/<os>/<arch> path from os.name="
-	                    + osname + " and os.arch=" + osarch);
-	}
-
+    
 	/** Update the CAJ settings with the data from the
 	 *  preference page.
 	 *  <p>
@@ -163,65 +129,64 @@ public class EpicsPlugin extends AbstractUIPlugin
 	{
 	    try
 	    {
+	        // TODO Avoid getPluginPreferences(), directly use IPreferencesService?
+	        // final IPreferencesService prefs = Platform.getPreferencesService();
+	        // ...
 	        final Preferences prefs = getDefault().getPluginPreferences();
-	        use_pure_java = prefs.getBoolean(PreferenceConstants.constants[0]);
+	        use_pure_java = prefs.getBoolean(PreferenceConstants.PURE_JAVA);
 	        // Set the 'CAJ' copy of the settings
 	        System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", 
-	                        prefs.getString(PreferenceConstants.constants[1]));
-	        boolean yes_no = prefs.getBoolean(PreferenceConstants.constants[2]);
+	                        prefs.getString(PreferenceConstants.ADDR_LIST));
+	        final boolean auto_addr = prefs.getBoolean(PreferenceConstants.AUTO_ADDR_LIST);
 	        System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
-	                        (yes_no ? "YES" : "NO")); 
+                            Boolean.toString(auto_addr)); 
 	        System.setProperty("com.cosylab.epics.caj.CAJContext.connection_timeout",
-	                        prefs.getString(PreferenceConstants.constants[3]));
+	                        prefs.getString(PreferenceConstants.TIMEOUT));
 	        System.setProperty("com.cosylab.epics.caj.CAJContext.beacon_period", 
-	                        prefs.getString(PreferenceConstants.constants[4])); 
+	                        prefs.getString(PreferenceConstants.BEACON_PERIOD)); 
 	        System.setProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
-	                        prefs.getString(PreferenceConstants.constants[5]));
+	                        prefs.getString(PreferenceConstants.REPEATER_PORT));
 	        System.setProperty("com.cosylab.epics.caj.CAJContext.server_port", 
-	                        prefs.getString(PreferenceConstants.constants[6]));
+	                        prefs.getString(PreferenceConstants.SERVER_PORT));
 	        System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", 
-	                        prefs.getString(PreferenceConstants.constants[7]));
+	                        prefs.getString(PreferenceConstants.MAX_ARRAY_BYTES));
 	
 	        // Set the 'JNI' copy of the settings
 	        System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", 
-	                        prefs.getString(PreferenceConstants.constants[1]));
+	                        prefs.getString(PreferenceConstants.ADDR_LIST));
 	        System.setProperty("gov.aps.jca.jni.JNIContext.auto_addr_list",
-	                        (yes_no ? "YES" : "NO")); 
+	                        Boolean.toString(auto_addr)); 
 	        System.setProperty("gov.aps.jca.jni.JNIContext.connection_timeout",
-	                        prefs.getString(PreferenceConstants.constants[3]));
+	                        prefs.getString(PreferenceConstants.TIMEOUT));
 	        System.setProperty("gov.aps.jca.jni.JNIContext.beacon_period", 
-	                        prefs.getString(PreferenceConstants.constants[4])); 
+	                        prefs.getString(PreferenceConstants.BEACON_PERIOD)); 
 	        System.setProperty("gov.aps.jca.jni.JNIContext.repeater_port",
-	                        prefs.getString(PreferenceConstants.constants[5]));
+	                        prefs.getString(PreferenceConstants.REPEATER_PORT));
 	        System.setProperty("gov.aps.jca.jni.JNIContext.server_port", 
-	                        prefs.getString(PreferenceConstants.constants[6]));
+	                        prefs.getString(PreferenceConstants.SERVER_PORT));
 	        System.setProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", 
-	                        prefs.getString(PreferenceConstants.constants[7]));
+	                        prefs.getString(PreferenceConstants.MAX_ARRAY_BYTES));
 	    }
 	    catch (Exception e)
 	    {
-	        logException("Cannot set preferences", e);
+	        log(IStatus.ERROR, "Cannot set preferences", e);
 	    }
 	}
-
-	/** Add info to the plugin log. */
-    public static void logInfo(String message)
-    {
-        getDefault().log(IStatus.INFO, message, null);
-    }
-    
-    /** Add an exception to the plugin log. */
-    public static void logException(String message, Exception e)
-    {
-        getDefault().log(IStatus.ERROR, message, e);
-    }
-
+  
     /** Add a message to the log.
      *  @param type
      *  @param message
+     *  @param e Exception or <code>null</code>
      */
-    private void log(int type, String message, Exception e)
+    private static void log(int type, String message, Throwable ex)
     {
-        getLog().log(new Status(type, ID, IStatus.OK, message, e));
+      if (plugin == null)
+      {
+            System.out.println(message);
+            if (ex != null)
+                ex.printStackTrace();
+      }
+      else
+          plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
     }
 }
