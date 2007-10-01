@@ -176,7 +176,7 @@ public final class PlatformPreferencesInitializer extends
 	 */
 	private void initializeAuthenticationPreferences(
 			final IEclipsePreferences node) {
-		node.put(SecurityFacade.ONSITE_LOGIN_PREFERECE, "false"); //$NON-NLS-1$
+		node.put(SecurityFacade.ONSITE_LOGIN_PREFERECE, "true"); //$NON-NLS-1$
 		node.put(SecurityFacade.OFFSITE_LOGIN_PREFERENCE, "false"); //$NON-NLS-1$
 	}
 
