@@ -22,7 +22,6 @@
 package org.csstudio.platform;
 
 import org.csstudio.platform.internal.logging.CssLogListener;
-import org.csstudio.platform.internal.xmlprefs.CssPreferences;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.Plugin;
@@ -42,11 +41,6 @@ public abstract class AbstractCssPlugin extends Plugin {
 	 * log service.
 	 */
 	private ILogListener _logListener;
-	
-	/**
-	 * The preferences used by this plugin.
-	 */
-	private Preferences _preferences;
 
 	/**
 	 * Standard constructor.
@@ -112,31 +106,13 @@ public abstract class AbstractCssPlugin extends Plugin {
 	public abstract String getPluginId();
 	
 	/**
-	 * Returns the preference store for this plugin. For CSS plugins, this
-	 * method should be used instead of {@code getPluginPreferences()}.
+	 * Returns the preference store for this plugin.
 	 * 
 	 * @return the preferences for this plugin.
 	 * @deprecated use the Eclipse Preferences Service instead.
 	 */
 	@Deprecated
 	public Preferences getCssPluginPreferences() {
-		if (_preferences == null) {
-			if (useXmlPreferences()) {
-				_preferences = new CssPreferences(getPluginId());
-			} else {
-				_preferences = getPluginPreferences();
-			}
-		}
-		return _preferences;
-	}
-
-	/**
-	 * Returns whether to use the XML-based preference store implementation.
-	 * 
-	 * @return <code>true</code> if the XML-based preference store should be
-	 *         used, <code>false</code> otherwise.
-	 */
-	private boolean useXmlPreferences() {
-		return false;
+		return getPluginPreferences();
 	}
 }

@@ -22,9 +22,7 @@
 package org.csstudio.platform.ui;
 
 import org.csstudio.platform.internal.logging.CssLogListener;
-import org.csstudio.platform.internal.xmlprefs.CssPreferences;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.internal.xmlprefs.XMLPreferenceStore;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -44,11 +42,6 @@ public abstract class AbstractCssUiPlugin extends AbstractUIPlugin {
 	 * log service.
 	 */
 	private ILogListener _logListener;
-	
-	/**
-	 * The preferences used by this plugin.
-	 */
-	private Preferences _preferences;
 	
 	/**
 	 * The preference store used by this plugin.
@@ -127,32 +120,8 @@ public abstract class AbstractCssUiPlugin extends AbstractUIPlugin {
 	 */
 	@Deprecated
 	public Preferences getCssPluginPreferences() {
-		if (_preferences == null) {
-			if (useXmlPreferences()) {
-				_preferences = new CssPreferences(getPluginId());
-			} else {
-				_preferences = getPluginPreferences();
-			}
-		}
-		return _preferences;
+		return getPluginPreferences();
 	}
-	
-//	/**
-//	 * Returns the preference store for this UI-plugin.
-//	 * 
-//	 * @return the preference store for this plugin.
-//	 */
-//	@Override
-//	public IPreferenceStore getPreferenceStore() {
-//		if (_preferenceStore == null) {
-//			if (useXmlPreferences()) {
-//				_preferenceStore = new XMLPreferenceStore(getPluginId());
-//			} else {
-//				_preferenceStore = super.getPreferenceStore();
-//			}
-//		}
-//		return _preferenceStore;
-//	}
 
 	/**
 	 * Returns the preference store for the plugin with
@@ -166,24 +135,9 @@ public abstract class AbstractCssUiPlugin extends AbstractUIPlugin {
 	@Deprecated
 	public IPreferenceStore getPreferenceStore(String pluginID) {
 		if (_preferenceStore == null) {
-			if (useXmlPreferences()) {
-				_preferenceStore = new XMLPreferenceStore(pluginID);
-			} else {
-				_preferenceStore = new ScopedPreferenceStore( new InstanceScope(),
+			_preferenceStore = new ScopedPreferenceStore( new InstanceScope(),
 						pluginID);
-			}
 		}
 		return _preferenceStore;
-	}
-
-	
-	/**
-	 * Returns whether to use the XML-based preference store implementation.
-	 * 
-	 * @return <code>true</code> if the XML-based preference store should be
-	 *         used, <code>false</code> otherwise.
-	 */
-	private boolean useXmlPreferences() {
-		return false;
 	}
 }
