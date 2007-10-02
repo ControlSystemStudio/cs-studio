@@ -25,28 +25,6 @@ public class PVFactory
     /** Lazyly intialized PV factory found in extension registry */
     private static IPVFactory pv_factory = null;
     
-    /** Does the application have a user interface?
-     *  <p>
-     *  Especially the EPICS PV Tree application which performs many
-     *  connects and disconnects ran into deadlocks with JNI JCA:
-     *  While the application tried to start or stop a channel from
-     *  the UI thread, another channel might receive meta data and
-     *  try to subscribe.
-     *  These concurrent calls into CA from different threads created
-     *  deadlocks. They were hard to debug beyond the borders of Java,
-     *  but channeling all the CA callbacks back into a UI thread
-     *  before performing further CA calls solved the problem.
-     *  <p>
-     *  Of course that only works if there is a UI thread.
-     *  For JUnit tests or non-UI applications, that option is
-     *  not available.
-     *  Trying to use Display.getDefault() would sometimes still
-     *  return a display, and the existence of a plugin mechanism
-     *  also didn't work out, so now it's a public flag that non-UI
-     *  environments (JUnit tests, non-UI apps) need to clear.
-     */
-    public static boolean use_ui_thread = true;
-
     /** Create a PV for the given channel name.
      *  @param name Channel name
      *  @return PV
