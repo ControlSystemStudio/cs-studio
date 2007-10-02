@@ -166,6 +166,11 @@ public class EpicsPlugin extends Plugin
 	                        prefs.getString(PreferenceConstants.SERVER_PORT));
 	        System.setProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", 
 	                        prefs.getString(PreferenceConstants.MAX_ARRAY_BYTES));
+
+	        // Select the QueuedEventDispatcher, because that avoids
+	        // deadlocks when calling JCA while receiving JCA callbacks
+	        System.setProperty("gov.aps.jca.jni.JNIContext.event_dispatcher", 
+                            "gov.aps.jca.event.QueuedEventDispatcher");
 	    }
 	    catch (Exception e)
 	    {
