@@ -1,5 +1,8 @@
 package org.csstudio.utility.pv.epics;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.csstudio.platform.data.IDoubleValue;
@@ -9,11 +12,8 @@ import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /** Test of the PV interface for a hardcoded implementation
  *  so that it can run as a unit test without Eclipse plugin loader.
@@ -25,12 +25,6 @@ import static org.junit.Assert.*;
 @SuppressWarnings("nls")
 public class EPICS_V3_PV_Test
 {
-    @BeforeClass
-    static public void prepare()
-    {
-        PVFactory.use_ui_thread = false;
-    }
-    
     /** Get a PV.
      *  
      *  <b>This is where the implementation is hard-coded!</b>

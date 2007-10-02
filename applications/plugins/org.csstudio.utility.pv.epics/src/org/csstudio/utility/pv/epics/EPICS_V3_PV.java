@@ -16,30 +16,10 @@ import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.PlatformObject;
-import org.eclipse.swt.widgets.Display;
 
 /** EPICS ChannelAccess implementation of the PV interface.
- *  <p>
- *  Most callbacks (value, disconnect) are just passed through from 
- *  the underlying CA library callback, so the user needs to be prepared
- *  to receive events from a non-UI thread.
- *  <p>
- *  With event-intensive apps like the PV Tree that connects, reads,
- *  then disconnects many PVs, there were deadlocks with the JNI CA
- *  client lib:
- *  <ul>
- *  <li>The main thread might try to destroy a PV...
- *  <li>.. while a CA connect callback tries to get
- *      meta info or subscribe.
- *  </ul>
- *  With CAJ, that worked OK, but JNI deadlocked.
- *  For that reason, this class might pass CA events up to the user code
- *  within the CA thread, but if it needs to call CA back from within
- *  a CA callback, it transfers to the UI thread.
- *  That seems to work OK, but does add an SWT dependency to this plugin.
  *  
  *  @see PV
  *  @author Kay Kasemir
@@ -90,15 +70,7 @@ public class EPICS_V3_PV
             else
                 System.out.println(name + " meta data get error: "
                                         + event.getStatus().getMessage());
-            // Prevent deadlock with other UI code that calls into CA
-            // by also subscribing in UI Thread
-            runInUI(new Runnable()
-            {
-                public void run()
-                {
-                    subscribe();
-                }
-            });
+            subscribe();
         }
     };
     
@@ -444,50 +416,12 @@ public class EPICS_V3_PV
         }
     }
 
-    /** In case SWT (display) is available, run something in UI Thread.
-     *  If no SWT, just run it.
-     *  @param runnable What to run
-     */
-    private void runInUI(final Runnable runnable)
-    {
-        if (PVFactory.use_ui_thread == false)
-        {
-            if (PVContext.debug)
-                System.out.println("EPICS_V3_PV runInUI runs directly");
-            runnable.run();
-            return;
-        }
-            
-        try
-        {
-            final Display display = Display.getDefault();
-            display.asyncExec(runnable);
-        }
-        catch (Throwable ex)
-        {
-            Activator.logException("Cannot run in UI thread", ex);
-            runnable.run();
-            return;
-        }
-    }
-    
     /** ConnectionListener interface. */
     public void connectionChanged(ConnectionEvent ev)
     {
     	// This runs in a CA thread
         if (ev.isConnected())
-        {
-            // handleConnected() performs CA calls,
-            // so prevent deadlocks under JNI by
-            // transferring to UI thread.
-            runInUI(new Runnable()
-            {
-                public void run()
-                {
-                    handleConnected();
-                }
-            });
-        }
+            handleConnected();
         else
         {
             if (PVContext.debug)
