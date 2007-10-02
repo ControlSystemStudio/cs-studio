@@ -55,6 +55,12 @@ import org.eclipse.swt.graphics.RGB;
 public final class WaveformFigure extends Panel implements IAdaptable {
 	
 	/**
+	 * Maximum difference to tolerate between actual and displayed
+	 * minimum/maximum when autoscaling is enabled.
+	 */
+	private static final double AUTOSCALE_TRESHOLD = 0.001;
+
+	/**
 	 * Height of the text.
 	 */
 	private static final int TEXTHEIGHT = 14;
@@ -130,7 +136,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private List<PrecisionPoint> _dataPoints = new LinkedList<PrecisionPoint>();
 
 	/**
-	 * The bounds of the graph.
+	 * The bounds of the actual graph area (where the data points are drawn).
+	 * The location of the rectangle is relative to the figure bounds.
 	 */
 	private Rectangle _graphBounds = new Rectangle(10, 10, 10, 10);
 
@@ -292,15 +299,16 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	public void setData(final double[] data) {
 		 _data = data;
 
-//		 int count = 2000;
-//		 int amplitude = 50;
-//		 int verschiebung = 0;
+//		 int count = 500;
+//		 int amplitude = 5;
+//		 int verschiebung = 10;
 //		 double[] result = new double[count];
 //		 double value = (Math.PI*2)/count;
 //		 for (int i=0;i<count;i++) {
 //			 result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
 //		 }
 //		 _data = result;
+		 
 		this.refreshConstraints();
 		repaint();
 	}
@@ -394,11 +402,11 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * 				The zero-level
 	 */
 	private int getZeroLevel() {
-		if (_min < 0 && _max < 0) {
-			return 1 + TEXTHEIGHT/2;
-		} else if (_min >= 0 && _max >= 0) {
-			return _graphBounds.height - 1 + TEXTHEIGHT/2;
-		}
+//		if (_min < 0 && _max < 0) {
+//			return 1 + TEXTHEIGHT/2;
+//		} else if (_min >= 0 && _max >= 0) {
+//			return _graphBounds.height - 1 + TEXTHEIGHT/2;
+//		}
 		return (int) (((double) _graphBounds.height / (_max - _min)) * _max);
 	}
 
@@ -447,10 +455,17 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		double min = 0;
 		double max = 0;
 
+		// stepSize: number of data points that will be averaged into
+		// a single pixel
 		int stepSize = Math.max(1, (int) Math.ceil((double) _data.length
 				/ bounds.width));
+		
+		// pointCount: number of data points that must be drawn
 		int pointCount;
 		if (_data.length > bounds.width) {
+			// XXX: this loses a huge amount of data points!
+			// for example if _data.length == 100 and bounds.width == 99,
+			// then stepSize will be 2 and pointCount will be only 50.
 			pointCount = (int) Math.ceil((double) _data.length / stepSize);
 		} else {
 			pointCount = _data.length;
@@ -458,6 +473,15 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 
 		for (int i = 0; i < pointCount; i++) {
 			double yValue = 0;
+			
+			// average the value of stepSize data points into a single y value
+			// FIXME: this is almost certainly wrong if the
+			// number of data points is not divisable without remainder by
+			// stepSize. For example, if stepSize == 5 and the number of data
+			// points is (n*5)+2 (for any n), with the last two values being
+			// 1.0 and 2.0, the average will not be 1.5 but
+			// (1.0 + 2.0 + 2.0 + 2.0 + 2.0) / 5 == 1.8 because the last value
+			// goes into the calculation four times.
 			for (int j = 0; j < stepSize; j++) {
 				int index = Math.min(_data.length - 1, j + i * stepSize);
 				yValue = yValue + _data[index];
@@ -469,12 +493,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				}
 			}
 			yValue = yValue / stepSize;
-//			if (yValue < min || i == 0) {
-//				min = yValue;
-//			}
-//			if (yValue > max || i == 0) {
-//				max = yValue;
-//			}
+
 			double x = 1;
 			if (pointCount != 0) {
 				x = 1 + ((bounds.width - 1) * i) / (pointCount);
@@ -483,10 +502,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		}
 
 		if (_autoScale) {
-			if (min < _min - 0.001 || min > _min + 0.001) {
+			if (min < _min - AUTOSCALE_TRESHOLD || min > _min + AUTOSCALE_TRESHOLD) {
 				_min = min;
 			}
-			if (max < _max - 0.001 || max > _max + 0.001) {
+			if (max < _max - AUTOSCALE_TRESHOLD || max > _max + AUTOSCALE_TRESHOLD) {
 				_max = max;
 			}
 		}
