@@ -4,13 +4,13 @@ import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
-import org.csstudio.sds.components.ui.internal.utils.WidgetActionHandlerService;
 import org.csstudio.sds.model.properties.actions.WidgetAction;
 import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.csstudio.sds.util.WidgetActionHandlerService;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -56,7 +56,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 			}
 
 			public void mousePressed(final MouseEvent me) {
-				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+				if (me.button == 1 && getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 					final org.eclipse.swt.graphics.Point cursorLocation = Display.getCurrent().getCursorLocation();
 					new CheckedUiRunnable() {
 						protected void doRunInUi() {
