@@ -11,6 +11,7 @@ import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.csstudio.sds.util.WidgetActionHandlerService;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -24,6 +25,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
  * 
@@ -88,6 +90,10 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 			item1.setData(action);
 			item1.setText(action.getActionLabel());
 			item1.addListener(SWT.Selection, _listener);
+			IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform.getAdapterManager().getAdapter(action, IWorkbenchAdapter.class);
+			if (adapter!=null) {
+				item1.setImage(adapter.getImageDescriptor(action).createImage());
+			}
 		}
 		
 		int x = absolutX;
