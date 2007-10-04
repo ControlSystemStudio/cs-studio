@@ -299,15 +299,15 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	public void setData(final double[] data) {
 		 _data = data;
 
-//		 int count = 500;
-//		 int amplitude = 5;
-//		 int verschiebung = 10;
-//		 double[] result = new double[count];
-//		 double value = (Math.PI*2)/count;
-//		 for (int i=0;i<count;i++) {
-//			 result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
-//		 }
-//		 _data = result;
+		 int count = 500;
+		 int amplitude = 50;
+		 int verschiebung = 0;
+		 double[] result = new double[count];
+		 double value = (Math.PI*2)/count;
+		 for (int i=0;i<count;i++) {
+			 result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
+		 }
+		 _data = result;
 		 
 		this.refreshConstraints();
 		repaint();
@@ -339,9 +339,15 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			this.setConstraint(_verticalScale, DEFAULT_CONSTRAINT);
 		}
 		if (_showScale == SHOW_HORIZONTAL || _showScale == SHOW_BOTH) {
-			this.setConstraint(_horizontalScale, new Rectangle(
-					verticalScaleWidth, _zeroLevel - (_scaleWideness/2)+1 + TEXTHEIGHT/2,
-					_graphBounds.width, _scaleWideness+TEXTHEIGHT));
+			if (_showScale == SHOW_HORIZONTAL) {
+				this.setConstraint(_horizontalScale, new Rectangle(
+						verticalScaleWidth, _zeroLevel - (_scaleWideness/2)+1,
+						_graphBounds.width, _scaleWideness+TEXTHEIGHT));	
+			} else {
+				this.setConstraint(_horizontalScale, new Rectangle(
+						verticalScaleWidth, _zeroLevel - (_scaleWideness/2)+1 + TEXTHEIGHT/2,
+						_graphBounds.width, _scaleWideness+TEXTHEIGHT));
+			}
 
 			double d = ((double)_data.length)/Math.max(1, _xSectionCount);
 			_horizontalScale.setIncrement(d);
@@ -473,26 +479,22 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 
 		for (int i = 0; i < pointCount; i++) {
 			double yValue = 0;
-			
-			// average the value of stepSize data points into a single y value
-			// FIXME: this is almost certainly wrong if the
-			// number of data points is not divisable without remainder by
-			// stepSize. For example, if stepSize == 5 and the number of data
-			// points is (n*5)+2 (for any n), with the last two values being
-			// 1.0 and 2.0, the average will not be 1.5 but
-			// (1.0 + 2.0 + 2.0 + 2.0 + 2.0) / 5 == 1.8 because the last value
-			// goes into the calculation four times.
+			int diff = 0;
 			for (int j = 0; j < stepSize; j++) {
-				int index = Math.min(_data.length - 1, j + i * stepSize);
-				yValue = yValue + _data[index];
-				if (_data[index] < min || i == 0) {
-					min = _data[index];
-				}
-				if (_data[index] > max || i == 0) {
-					max = _data[index];
+				int index = j + i * stepSize;
+				if (index < _data.length) {
+					yValue = yValue + _data[index];
+					diff++;
+					if (_data[index] < min || i == 0) {
+						min = _data[index];
+					}
+					if (_data[index] > max || i == 0) {
+						max = _data[index];
+					}
 				}
 			}
-			yValue = yValue / stepSize;
+			diff = Math.max(diff, 1);
+			yValue = yValue / diff;
 
 			double x = 1;
 			if (pointCount != 0) {
@@ -794,6 +796,9 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			double posWeight = (double) (_zeroLevel) / _max;
 			double negWeight = (double) (figureBounds.height - _zeroLevel)
 					/ Math.abs(_min);
+			if (Double.isNaN(negWeight)) {
+				negWeight = 1;
+			}
 			for (int i = 0; i < pointList.size(); i++) {
 				PrecisionPoint p = pointList.get(i);
 				double newY;
