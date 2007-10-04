@@ -13,6 +13,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.pv,
  org.csstudio.platform.ui,
  org.csstudio.platform,
- org.csstudio.apputil
+ org.csstudio.apputil,
+ org.csstudio.apputil.ui
 Eclipse-LazyStart: true
 Bundle-ClassPath: .

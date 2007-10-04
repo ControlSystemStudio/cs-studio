@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform,
  org.csstudio.utility.pv.epics,
  org.csstudio.swt.chart,
- org.csstudio.apputil
+ org.csstudio.apputil,
+ org.csstudio.apputil.ui
 Eclipse-LazyStart: true
 Bundle-Vendor: Kay Kasemir
 Export-Package: org.csstudio.trends.databrowser

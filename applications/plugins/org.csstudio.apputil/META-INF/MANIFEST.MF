@@ -4,8 +4,5 @@ Bundle-Name: Apputil Plug-in
 Bundle-SymbolicName: org.csstudio.apputil
 Bundle-Version: 1.0.2
 Bundle-Vendor: Kay Kasemir
-Require-Bundle: org.eclipse.swt,
- org.eclipse.jface
-Export-Package: org.csstudio.util.swt,
- org.csstudio.util.time,
+Export-Package: org.csstudio.util.time,
  org.csstudio.util.xml
