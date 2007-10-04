@@ -224,14 +224,14 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		this.setLayoutManager(new XYLayout());
 		_verticalLedgerScale = new Scale();
 		_verticalLedgerScale.setHorizontalOrientation(false);
-		_verticalLedgerScale.setLength(20);
+		_verticalLedgerScale.setSectionLength(20);
 		_verticalLedgerScale.setShowNegativeSections(true);
 		_verticalLedgerScale.setShowValues(false);
 		_verticalLedgerScale.setForegroundColor(ColorConstants.lightGray);
 		this.add(_verticalLedgerScale);
 		_horizontalLedgerScale = new Scale();
 		_horizontalLedgerScale.setHorizontalOrientation(true);
-		_horizontalLedgerScale.setLength(50);
+		_horizontalLedgerScale.setSectionLength(50);
 		_horizontalLedgerScale.setShowNegativeSections(false);
 		_horizontalLedgerScale.setReferencePositions(0);
 		_horizontalLedgerScale.setShowValues(false);
@@ -239,7 +239,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		this.add(_horizontalLedgerScale);
 		_verticalScale = new Scale();
 		_verticalScale.setHorizontalOrientation(false);
-		_verticalScale.setLength(20);
+		_verticalScale.setSectionLength(20);
 		_verticalScale.setShowNegativeSections(true);
 		_verticalScale.setShowValues(_showValues);
 		_verticalScale.setAlignment(true);
@@ -247,7 +247,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		this.add(_verticalScale);
 		_horizontalScale = new Scale();
 		_horizontalScale.setHorizontalOrientation(true);
-		_horizontalScale.setLength(50);
+		_horizontalScale.setSectionLength(50);
 		_horizontalScale.setShowNegativeSections(false);
 		_horizontalScale.setReferencePositions(0);
 		_horizontalScale.setShowFirstMarker(false);
@@ -332,7 +332,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			this.setConstraint(_verticalScale, new Rectangle(0, 0,
 					verticalScaleWidth, _graphBounds.height+TEXTHEIGHT));
 			_verticalScale.setReferencePositions(_zeroLevel+TEXTHEIGHT/2+1);
-			_verticalScale.setLength(_zeroLevel/Math.max(1, _ySectionCount));
+			_verticalScale.setSectionLength(_zeroLevel/Math.max(1, _ySectionCount));
 			_verticalScale.setRegion(0, _graphBounds.y+_graphBounds.height);
 			_verticalScale.setIncrement(_max/_ySectionCount);
 		} else {
@@ -345,7 +345,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 
 			double d = ((double)_data.length)/Math.max(1, _xSectionCount);
 			_horizontalScale.setIncrement(d);
-			_horizontalScale.setLength(_graphBounds.width/Math.max(1, _xSectionCount));
+			_horizontalScale.setSectionLength(_graphBounds.width/Math.max(1, _xSectionCount));
 			_horizontalScale.setRegion(0, _graphBounds.width-10);
 		} else {
 			this.setConstraint(_horizontalScale, DEFAULT_CONSTRAINT);
@@ -355,7 +355,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			this.setConstraint(_verticalLedgerScale, new Rectangle(
 					verticalScaleWidth, 0, _graphBounds.width, _graphBounds.height+TEXTHEIGHT));
 			_verticalLedgerScale.setReferencePositions(_zeroLevel+TEXTHEIGHT/2+1);
-			_verticalLedgerScale.setLength(_zeroLevel/Math.max(1, _ySectionCount));
+			_verticalLedgerScale.setSectionLength(_zeroLevel/Math.max(1, _ySectionCount));
 			_verticalLedgerScale.setRegion(0, _graphBounds.y+_graphBounds.height);
 			_verticalLedgerScale.setWideness(_graphBounds.width);
 			_verticalLedgerScale.setIncrement(_max/_ySectionCount);
@@ -367,7 +367,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 					verticalScaleWidth, TEXTHEIGHT/2, _graphBounds.width, _graphBounds.height));
 			double d = ((double)_data.length)/_xSectionCount;
 			_horizontalLedgerScale.setIncrement(d);
-			_horizontalLedgerScale.setLength(_graphBounds.width/Math.max(1, _xSectionCount));
+			_horizontalLedgerScale.setSectionLength(_graphBounds.width/Math.max(1, _xSectionCount));
 			_horizontalLedgerScale.setWideness(_graphBounds.height);
 			_horizontalLedgerScale.setRegion(0, _graphBounds.width-10);
 		} else {
@@ -849,7 +849,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		/**
 		 * The length of this Scale.
 		 */
-		private int _length;
+		private int _sectionLength;
 		/**
 		 * The direction of this Scale.
 		 */
@@ -922,7 +922,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		 * Refreshes the Constraints.
 		 */
 		private void refreshConstraints() {
-			if (_length==0 || this.getBounds().height==0 || this.getBounds().width==0) {
+			if (_sectionLength==0 || this.getBounds().height==0 || this.getBounds().width==0) {
 				_posScaleMarkers.clear();
 				_negScaleMarkers.clear();
 				this.removeAll();
@@ -946,11 +946,11 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 						index++;
 					}
 					value = value + _increment;
-					pos = pos + _length;
+					pos = pos + _sectionLength;
 				}
 				this.removeScaleMarkers(index, _posScaleMarkers);
 				if (_showNegativSections) {
-					pos = _refPos - _length;
+					pos = _refPos - _sectionLength;
 					index = 0;
 					value = _startValue - _increment;
 					while (pos > 0 && pos >= _begin) {
@@ -963,7 +963,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 							index++;	
 						}
 						value = value - _increment;
-						pos = pos - _length;
+						pos = pos - _sectionLength;
 					}	
 					this.removeScaleMarkers(index, _negScaleMarkers);
 				}
@@ -984,12 +984,12 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 						index++;
 					}
 					value = value + _increment;
-					pos = pos - _length;
+					pos = pos - _sectionLength;
 				}
 				this.removeScaleMarkers(index, _posScaleMarkers);
 				if (_showNegativSections) {
 					
-					pos = _refPos + _length - 1;
+					pos = _refPos + _sectionLength - 1;
 					index = 0;
 					value = _startValue - _increment;
 					while (pos < this.getBounds().height && pos <= _end) {
@@ -1002,7 +1002,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 							index++;	
 						}
 						value = value - _increment;
-						pos = pos + _length;
+						pos = pos + _sectionLength;
 					}	
 					this.removeScaleMarkers(index, _negScaleMarkers);
 				}
@@ -1067,13 +1067,13 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		}
 		
 		/**
-		 * Sets the length of this Scale.
+		 * Sets the length of one section of this Scale.
 		 * 
 		 * @param length
-		 *            The lenght of this Scale
+		 *            The lenght of one section of this Scale
 		 */
-		public void setLength(final int length) {
-			_length = length;
+		public void setSectionLength(final int length) {
+			_sectionLength = length;
 		}
 
 		/**
