@@ -37,6 +37,31 @@ public class EPICS_V3_PV
     /** Channel name. */
     final private String name;
     
+    private enum State
+    {
+        /** Nothing happened, yet */
+        Idle,
+        /** Trying to connect */
+        Connecting,
+        /** Got basic connection */
+        Connected,
+        /** Requested MetaData */
+        GettingMetadata,
+        /** Received MetaData */
+        GotMetaData,
+        /** Subscribing to receive value updates */
+        Subscribing,
+        /** Received Value Updates
+         *  <p>
+         *  This is the ultimate state!
+         */
+        GotMonitor,
+        /** Got disconnected */
+        Disconnected
+    }
+    
+    private State state = State.Idle;
+    
     /** PVListeners of this PV */
     final private CopyOnWriteArrayList<PVListener> listeners
                                     = new CopyOnWriteArrayList<PVListener>();
@@ -59,6 +84,7 @@ public class EPICS_V3_PV
         {   // This runs in a CA thread
             if (event.getStatus().isSuccessful())
             {
+                state = State.GotMetaData;
                 final DBR dbr = event.getDBR();
                 synchronized (pv_data)
                 {
@@ -250,6 +276,7 @@ public class EPICS_V3_PV
      */
     private void connect() throws Exception
     {
+        state = State.Connecting;
         // Already attempted a connection?
         if (channel_ref == null)
         {
@@ -306,6 +333,7 @@ public class EPICS_V3_PV
                                     channel_ref.getChannel().getFieldType());
             if (PVContext.debug)
                 System.out.println(name + " subscribed as " + type.getName());
+            state = State.Subscribing;
             synchronized (pv_data)
             {
                 pv_data.subscription = channel_ref.getChannel().addMonitor(type,
@@ -359,6 +387,12 @@ public class EPICS_V3_PV
         {
             return pv_data.connected;
         }
+    }
+
+    /** {@inheritDoc} */ 
+    public String getStateInfo()
+    {
+        return state.toString();
     }
 
     /** {@inheritDoc} */
@@ -426,6 +460,7 @@ public class EPICS_V3_PV
         {
             if (PVContext.debug)
                 System.out.println(name + " disconnected");
+            state = State.Disconnected;
             synchronized (pv_data)
             {
                 pv_data.connected = false;
@@ -440,6 +475,7 @@ public class EPICS_V3_PV
      */
     private void handleConnected()
     {
+        state = State.Connected;
         if (PVContext.debug)
             System.out.println(name + " connected");
         
@@ -462,6 +498,7 @@ public class EPICS_V3_PV
             DBRType type = channel_ref.getChannel().getFieldType();
             if (! (plain || type.isSTRING()))
             {
+                state = State.GettingMetadata;
                 if (PVContext.debug)
                     System.out.println("Getting meta info for type "
                                     + type.getName());
@@ -505,6 +542,7 @@ public class EPICS_V3_PV
             return;
         }
     
+        state = State.GotMonitor;
         try
         {
             synchronized (pv_data)
