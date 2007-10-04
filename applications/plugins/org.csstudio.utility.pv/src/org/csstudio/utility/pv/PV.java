@@ -61,6 +61,15 @@ public interface PV extends IProcessVariable
      */
     public boolean isConnected();
     
+    /** Internal state information on the PV.
+     *  <p>
+     *  Especially when <code>isConnected()</code> is <code>false</code>,
+     *  this information might help to diagnose the problem:
+     *  Did the PV never connect?
+     *  Was it once connected, but some error occured?
+     *  @return Some human readable state info */
+    public String getStateInfo();
+    
     /** Stop the PV: disconnect, ... */
     public void stop();
 
