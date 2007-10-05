@@ -350,20 +350,6 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		_channelName = channel;
 	}
 	
-//	public void setDynamicValue(DynamicsDescriptor dynaDesc) {
-//		if (dynaDesc==null) {
-//			_channelName="none";
-//			return;
-//		}
-//		if (dynaDesc.getInputChannels().length<1) {
-//			_channelName="none";
-//			return;
-//		}
-//		_channelName=new String(dynaDesc.getInputChannels()[0].getChannel());
-//		_channelName = "Hallo";
-//		invalidateBackground();
-//	}
-	
 	public void setAngle(final int angl) {
 		_angle=angl;
 		invalidateBackground();
