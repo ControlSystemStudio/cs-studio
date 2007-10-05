@@ -479,12 +479,12 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 
 		for (int i = 0; i < pointCount; i++) {
 			double yValue = 0;
-			int diff = 0;
+			int div = 0;
 			for (int j = 0; j < stepSize; j++) {
 				int index = j + i * stepSize;
 				if (index < _data.length) {
 					yValue = yValue + _data[index];
-					diff++;
+					div++;
 					if (_data[index] < min || i == 0) {
 						min = _data[index];
 					}
@@ -493,8 +493,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 					}
 				}
 			}
-			diff = Math.max(diff, 1);
-			yValue = yValue / diff;
+			div = Math.max(div, 1);
+			yValue = yValue / div;
 
 			double x = 1;
 			if (pointCount != 0) {
