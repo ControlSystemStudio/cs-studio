@@ -21,11 +21,8 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-//import org.csstudio.sds.components.model.LabelModel;
-import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
-//import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
@@ -353,5 +350,17 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(TextInputModel.PROP_TYPE, handle);
+
+		// precision
+		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+				label.setDecimalPlaces((Integer) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(TextInputModel.PROP_PRECISION, precisionHandler);
     }
 }

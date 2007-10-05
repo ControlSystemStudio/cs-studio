@@ -25,6 +25,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.FontProperty;
+import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
@@ -52,6 +53,11 @@ public final class TextInputModel extends AbstractWidgetModel {
 	 * The ID of the text alignment property.
 	 */
 	public static final String PROP_TEXT_ALIGNMENT = "textAlignment"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the precision property.
+	 */
+	public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
 
 	/**
 	 * The ID of this widget model.
@@ -89,7 +95,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	/**
      * Currently available value types.
      */
-    public static final String [] VALUE_TYPES=new String [] {"Text","Double Value"};
+    public static final String[] VALUE_TYPES=new String [] {"Text","Double Value"};
     /**
      * The ID of the <i>double type</i> property.
      */
@@ -115,14 +121,16 @@ public final class TextInputModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_INPUT_TEXT, new StringProperty(
-				"Input Text", WidgetPropertyCategory.Behaviour, "")); //$NON-NLS-1$
+		addProperty(PROP_INPUT_TEXT, new StringProperty("Input Text", 
+				WidgetPropertyCategory.Behaviour, "")); //$NON-NLS-1$
 		addProperty(PROP_FONT, new FontProperty("Font",
 				WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
 		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
 				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
 		addProperty(PROP_TYPE, new OptionProperty("Value Type",WidgetPropertyCategory.Behaviour,VALUE_TYPES,TYPE_DOUBLE));
+		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
+				WidgetPropertyCategory.Behaviour, 2, 0, 6));
 	}
 
 	/**
@@ -181,4 +189,13 @@ public final class TextInputModel extends AbstractWidgetModel {
     public int getType() {
         return (Integer) getProperty(PROP_TYPE).getPropertyValue();
     }
+    
+    /**
+	 * Return the precision.
+	 * 
+	 * @return The precision.
+	 */
+	public int getPrecision() {
+		return (Integer) getProperty(PROP_PRECISION).getPropertyValue();
+	}
 }

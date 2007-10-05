@@ -110,9 +110,8 @@ public final class LabelModel extends AbstractWidgetModel {
 		//value properties
 		addProperty(PROP_TYPE, new OptionProperty("Value Type",WidgetPropertyCategory.Behaviour,VALUE_TYPES,TYPE_DOUBLE));
 		addProperty(PROP_TEXTVALUE, new StringProperty("Text Value",WidgetPropertyCategory.Display,""));
-		//addProperty(PROP_DOUBLEVALUE, new DoubleProperty("Double Value",WidgetPropertyCategory.Display,0.0));
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
-				WidgetPropertyCategory.Behaviour, 2, 0, 5));
+				WidgetPropertyCategory.Behaviour, 2, 0, 6));
 	}
 
 	/**
