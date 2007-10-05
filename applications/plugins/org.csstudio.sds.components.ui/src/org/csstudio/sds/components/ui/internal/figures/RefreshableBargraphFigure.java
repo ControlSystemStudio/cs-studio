@@ -110,10 +110,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * The Color for the border.
 	 */
 	private Color _borderColor;
-//	/**
-//	 * The Map for the Colors.
-//	 */
-//	private final Map<String, Color> _colorMap = new HashMap<String, Color>();
 	/**
 	 * The Map for the levels.
 	 */
@@ -162,7 +158,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	public RefreshableBargraphFigure() {
 		super();
 		this.setSize(200, 30);
-//		this.initColorMap();
 		this.initLevelMap();
 		this.setLayoutManager(new XYLayout());
 		_fillRectangleFigure = new FillRectangleFigure();
@@ -181,20 +176,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			}
 		});
 	}
-
-//	/**
-//	 * Initializes the Map of Colors.
-//	 */
-//	private void initColorMap() {
-//		_colorMap.put(LABELS[0], CustomMediaFactory.getInstance().getColor(
-//				new RGB(255, 0, 0)));
-//		_colorMap.put(LABELS[1], CustomMediaFactory.getInstance().getColor(
-//				new RGB(255, 100, 100)));
-//		_colorMap.put(LABELS[2], CustomMediaFactory.getInstance().getColor(
-//				new RGB(255, 255, 0)));
-//		_colorMap.put(LABELS[3], CustomMediaFactory.getInstance().getColor(
-//				new RGB(255, 255, 255)));
-//	}
 
 	/**
 	 * Initializes the Map of levels.
@@ -339,8 +320,11 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * @return int The new length
 	 */
 	private int calculateRealLength(final int length) {
-		int neededScaleLines = _scaleSectionCount + 1;
-		return length - ((length - neededScaleLines) % _scaleSectionCount);
+		if (_showScale == BOTTOM_RIGHT || _showScale == TOP_LEFT) {
+			int neededScaleLines = _scaleSectionCount + 1;
+			return length - ((length - neededScaleLines) % _scaleSectionCount);	
+		}
+		return length;
 	}
 
 	/**
@@ -449,6 +433,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		repaint();
 	}
 	
+	/**
+	 * Sets if only the value should be shown instead of the area from minimum to fill level.
+	 * @param showOnlyValue True if only the value should be shown, false otherwise
+	 */
 	public void setShowOnlyValue(final boolean showOnlyValue) {
 		_showOnlyValue = showOnlyValue;
 	}
