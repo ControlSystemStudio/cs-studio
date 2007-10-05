@@ -299,8 +299,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	public void setData(final double[] data) {
 		 _data = data;
 
-//		 int count = 500;
-//		 int amplitude = 50;
+//		 int count = 100;
+//		 int amplitude = 75;
 //		 int verschiebung = 0;
 //		 double[] result = new double[count];
 //		 double value = (Math.PI*2)/count;
