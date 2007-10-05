@@ -47,7 +47,7 @@ public final class RectangleEditPart extends AbstractWidgetEditPart {
 		rectangle.setOrientation(model.getOrientation());
 		rectangle.setFill(model.getFillLevel());
 		rectangle.setTransparent(model.getTransparent());
-
+		
 		return rectangle;
 
 	}

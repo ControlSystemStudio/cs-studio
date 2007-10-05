@@ -29,9 +29,7 @@ import org.epics.css.dal.DoubleSeqProperty;
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.EnumProperty;
 import org.epics.css.dal.LongProperty;
-import org.epics.css.dal.LongSeqAccess;
 import org.epics.css.dal.LongSeqProperty;
-import org.epics.css.dal.ObjectSeqAccess;
 import org.epics.css.dal.ObjectSeqProperty;
 import org.epics.css.dal.StringProperty;
 import org.epics.css.dal.StringSeqProperty;
@@ -46,42 +44,42 @@ public enum DalPropertyTypes {
 	/**
 	 * An array of double values.
 	 */
-	ENUM("enum", EnumProperty.class), //$NON-NLS-1$
+	ENUM("enum", "Enumeration", EnumProperty.class), //$NON-NLS-1$
 	
 	/**
 	 * An array of double values.
 	 */
-	DOUBLE_SEQUENCE("doubleSeq", DoubleSeqProperty.class), //$NON-NLS-1$
+	DOUBLE_SEQUENCE("doubleSeq", "Sequence of Doubles", DoubleSeqProperty.class), //$NON-NLS-1$
 
 	/**
 	 * An array of string values.
 	 */
-	STRING_SEQUENCE("stringSeq", StringSeqProperty.class), //$NON-NLS-1$
+	STRING_SEQUENCE("stringSeq", "Sequence of Strings", StringSeqProperty.class), //$NON-NLS-1$
 
 	/**
 	 * An array of long values.
 	 */
-	LONG_SEQUENCE("longSeq", LongSeqProperty.class), //$NON-NLS-1$
+	LONG_SEQUENCE("longSeq", "Sequence of Longs", LongSeqProperty.class), //$NON-NLS-1$
 
 	/**
 	 * An array of object values.
 	 */
-	OBJECT_SEQUENCE("objectSeq", ObjectSeqProperty.class), //$NON-NLS-1$
+	OBJECT_SEQUENCE("objectSeq", "Sequence of Objects", ObjectSeqProperty.class), //$NON-NLS-1$
 
 	/**
 	 * An option.
 	 */
-	LONG("long", LongProperty.class), //$NON-NLS-1$
+	LONG("long", "Long", LongProperty.class), //$NON-NLS-1$
 
 	/**
 	 * A double value.
 	 */
-	DOUBLE("double", DoubleProperty.class), //$NON-NLS-1$
+	DOUBLE("double", "Double", DoubleProperty.class), //$NON-NLS-1$
 
 	/**
 	 * A string.
 	 */
-	STRING("string", StringProperty.class); //$NON-NLS-1$
+	STRING("string", "String", StringProperty.class); //$NON-NLS-1$
 
 	/**
 	 * The ID of the property type. Will be used as portable representation of
@@ -89,6 +87,8 @@ public enum DalPropertyTypes {
 	 */
 	private String _id;
 
+	private String _description;
+	
 	/**
 	 * A hint for the necessary DAL property type.
 	 */
@@ -107,11 +107,13 @@ public enum DalPropertyTypes {
 	 *            a hint for the necessary DAL property type
 	 */
 	@SuppressWarnings("unchecked")
-	private DalPropertyTypes(final String id,
+	private DalPropertyTypes(final String id, String description,
 			final Class<? extends DynamicValueProperty> dalType) {
 		assert id != null;
+		assert description !=null;
 		assert dalType != null;
 		_id = id;
+		_description = description;
 		_dalType = dalType;
 	}
 
@@ -128,7 +130,7 @@ public enum DalPropertyTypes {
 	 */
 	@Override
 	public String toString() {
-		return _id;
+		return _description;
 	}
 
 	/**
