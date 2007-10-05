@@ -11,13 +11,21 @@ Bundle-ClassPath: .,
  caj-1.1.3.jar,
  jca-2.3.1.jar
 Export-Package: 
+ com.cosylab.epics.caj,
+ com.cosylab.epics.caj.impl,
+ com.cosylab.epics.caj.impl.handlers,
+ com.cosylab.epics.caj.impl.reactor,
+ com.cosylab.epics.caj.impl.reactor.lf,
+ com.cosylab.epics.caj.impl.requests,
+ com.cosylab.epics.caj.impl.sync,
+ com.cosylab.epics.caj.util,
+ com.cosylab.epics.caj.util.logging,
  gov.aps.jca,
  gov.aps.jca.cas,
  gov.aps.jca.configuration,
  gov.aps.jca.dbr,
  gov.aps.jca.event,
- gov.aps.jca.jni,
- org.csstudio.platform.libs.epics
+ gov.aps.jca.jni
 Bundle-NativeCode: 
  lib/linux/x86/libjca.so;    osname=linux; processor=x86,
  lib/linux/x86_64/libjca.so; osname=linux; processor=x86_64,
