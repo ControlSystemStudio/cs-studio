@@ -17,11 +17,11 @@ public final class SimpleSliderInitializer extends
 	 * {@inheritDoc}
 	 */
 	public void initialize(final AbstractControlSystemSchema schema) {
-		initializeDynamicProperty(SimpleSliderModel.PROP_MAX, "$record$.HOPR");
-		initializeDynamicProperty(SimpleSliderModel.PROP_MIN, "$record$.LOPR");
-		initializeDynamicProperty(SimpleSliderModel.PROP_VALUE, "$record$",
-				"$record$");
+		initializeDynamicProperty(SimpleSliderModel.PROP_MAX, "$channel$.HOPR");
+		initializeDynamicProperty(SimpleSliderModel.PROP_MIN, "$channel$.LOPR");
+		initializeDynamicProperty(SimpleSliderModel.PROP_VALUE, "$channel$",
+				"$channel$");
 		// initializeDynamicProperty(SimpleSliderModel.PROP_VALUE,
-		// "$record$.VAL", "$record$.VAL");
+		// "$channel$.VAL", "$channel$.VAL");
 	}
 }

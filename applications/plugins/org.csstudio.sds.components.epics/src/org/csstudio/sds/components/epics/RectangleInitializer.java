@@ -19,8 +19,8 @@ public final class RectangleInitializer extends AbstractWidgetModelInitializer {
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeStaticProperty(RectangleModel.PROP_FILL, 50.0);
-		initializeDynamicProperty(RectangleModel.PROP_FILL, "$record$");
-		// initializeDynamicProperty(RectangleModel.PROP_FILL, "$record$.VAL");
+		initializeDynamicProperty(RectangleModel.PROP_FILL, "$channel$");
+		// initializeDynamicProperty(RectangleModel.PROP_FILL, "$channel$.VAL");
 	}
 
 }

@@ -19,8 +19,8 @@ public final class LabelInitializer extends AbstractWidgetModelInitializer {
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeStaticProperty(LabelModel.PROP_TEXTVALUE, "Label");
-		initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$record$");
-		// initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$record$.VAL");
+		initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$channel$");
+		// initializeDynamicProperty(LabelModel.PROP_TEXTVALUE, "$channel$.VAL");
 	}
 
 }

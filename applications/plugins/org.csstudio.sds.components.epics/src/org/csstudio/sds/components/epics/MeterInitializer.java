@@ -20,7 +20,7 @@ public final class MeterInitializer extends AbstractWidgetModelInitializer {
 	 */
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
-		initializeDynamicProperty(MeterModel.PROP_VALUE, "$record$");
-		// initializeDynamicProperty(MeterModel.PROP_VALUE, "$record$.VAL");
+		initializeDynamicProperty(MeterModel.PROP_VALUE, "$channel$");
+		// initializeDynamicProperty(MeterModel.PROP_VALUE, "$channel$.VAL");
 	}
 }

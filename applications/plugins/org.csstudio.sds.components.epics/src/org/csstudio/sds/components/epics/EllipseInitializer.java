@@ -19,8 +19,8 @@ public final class EllipseInitializer extends AbstractWidgetModelInitializer {
 	@Override
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeStaticProperty(EllipseModel.PROP_FILL, 50.0);
-		initializeDynamicProperty(EllipseModel.PROP_FILL, "$record$");
-		// initializeDynamicProperty(EllipseModel.PROP_FILL, "$record$.VAL");
+		initializeDynamicProperty(EllipseModel.PROP_FILL, "$channel$");
+		// initializeDynamicProperty(EllipseModel.PROP_FILL, "$channel$.VAL");
 	}
 
 }

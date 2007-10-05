@@ -44,7 +44,7 @@ public final class EpicsSchema extends AbstractControlSystemSchema {
 	 */
 	@Override
 	protected void initializeWidget(final AbstractWidgetModel widgetModel) {
-		widgetModel.setPrimarPv("$record$");
+		widgetModel.setPrimarPv("$channel$");
 		// default colors
 		widgetModel.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
 				getColorProperty(DEFAULT_BACKGROUND_COLOR));
@@ -63,7 +63,7 @@ public final class EpicsSchema extends AbstractControlSystemSchema {
 		addGlobalProperty(DEFAULT_FOREGROUND_COLOR, new RGB(0, 0, 192));
 		addGlobalProperty(DEFAULT_ERROR_COLOR, new RGB(255, 0, 0));
 		addGlobalProperty(DEFAULT_TIMELAG_COLOR, new RGB(255, 0, 255));
-		addGlobalProperty(RECORD_ALIAS_NAME, "record");
+		addGlobalProperty(RECORD_ALIAS_NAME, "channel");
 
 		// and so on ..
 	}
@@ -73,6 +73,6 @@ public final class EpicsSchema extends AbstractControlSystemSchema {
 	 */
 	@Override
 	protected void initializeAliases(final AbstractWidgetModel widgetModel) {
-		widgetModel.addAlias("record", "");
+		widgetModel.addAlias("channel", "");
 	}
 }

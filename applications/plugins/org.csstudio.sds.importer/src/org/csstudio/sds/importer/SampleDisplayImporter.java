@@ -154,7 +154,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 
 		result.addAlias("record", "recordName");
 
-		connectToSingleInputChannel(result, "fill", "$record$.VALUE",
+		connectToSingleInputChannel(result, "fill", "$channel$.VALUE",
 				Double.class);
 
 		return result;
