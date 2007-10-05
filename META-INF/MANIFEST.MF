@@ -25,7 +25,8 @@ Export-Package:
  gov.aps.jca.configuration,
  gov.aps.jca.dbr,
  gov.aps.jca.event,
- gov.aps.jca.jni
+ gov.aps.jca.jni,
+ org.csstudio.platform.libs.epics
 Bundle-NativeCode: 
  lib/linux/x86/libjca.so;    osname=linux; processor=x86,
  lib/linux/x86_64/libjca.so; osname=linux; processor=x86_64,
