@@ -90,13 +90,13 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		Menu menu = new Menu(shell, SWT.POP_UP);
 		for (WidgetAction action : ((MenuButtonModel)this.getCastedModel()).getActionData().getWidgetActions()) {
-			MenuItem item1 = new MenuItem(menu,SWT.PUSH);
-			item1.setData(action);
-			item1.setText(action.getActionLabel());
-			item1.addListener(SWT.Selection, _listener);
+			MenuItem item = new MenuItem(menu,SWT.PUSH);
+			item.setData(action);
+			item.setText(action.getActionLabel());
+			item.addListener(SWT.Selection, _listener);
 			IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform.getAdapterManager().getAdapter(action, IWorkbenchAdapter.class);
 			if (adapter!=null) {
-				item1.setImage(adapter.getImageDescriptor(action).createImage());
+				item.setImage(adapter.getImageDescriptor(action).createImage());
 			}
 		}
 		
@@ -182,9 +182,8 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		public void handleEvent(final Event event) {
 			WidgetAction action = (WidgetAction)event.widget.getData();
 			WidgetActionHandlerService.getInstance().performAction(getCastedModel().getProperty(MenuButtonModel.PROP_ACTIONDATA), action);
-//			System.out.println("MenuActionListener.handleEvent() Widget: "+event.widget);
-//			MenuItem item = (MenuItem) event.widget;
-//			item.getParent().dispose();
+			MenuItem item = (MenuItem) event.widget;
+			item.getParent().getShell().setActive();//setFocus();
 		}
 		
 	}
