@@ -55,11 +55,9 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		label.setTransparent(false);
 		label.addMouseListener(new MouseListener() {
 			public void mouseDoubleClicked(final MouseEvent me) {
-				System.out.println(".mouseDoubleClicked()");
 			}
 
 			public void mousePressed(final MouseEvent me) {
-				System.out.println(".mousePressed()");
 				if (me.button == 1 && getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 					final org.eclipse.swt.graphics.Point cursorLocation = Display.getCurrent().getCursorLocation();
 					new CheckedUiRunnable() {
@@ -71,7 +69,6 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 			}
 
 			public void mouseReleased(final MouseEvent me) {
-				System.out.println(".mouseReleased()");
 			}
 
 		});
@@ -86,7 +83,6 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 	 * @param absolutY The y coordinate of the mouse in the display
 	 */
 	private void performDirectEdit(final Point point, final int absolutX, final int absolutY) {
-		System.out.println("MenuButtonEditPart.performDirectEdit()");
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		Menu menu = new Menu(shell, SWT.POP_UP);
 		for (WidgetAction action : ((MenuButtonModel)this.getCastedModel()).getActionData().getWidgetActions()) {
@@ -182,8 +178,8 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		public void handleEvent(final Event event) {
 			WidgetAction action = (WidgetAction)event.widget.getData();
 			WidgetActionHandlerService.getInstance().performAction(getCastedModel().getProperty(MenuButtonModel.PROP_ACTIONDATA), action);
-			MenuItem item = (MenuItem) event.widget;
-			item.getParent().getShell().setActive();//setFocus();
+			//MenuItem item = (MenuItem) event.widget;
+			//item.getParent().getShell().setActive();//setFocus();
 		}
 		
 	}
