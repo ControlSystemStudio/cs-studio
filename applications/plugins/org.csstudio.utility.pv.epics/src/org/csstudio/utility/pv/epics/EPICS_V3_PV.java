@@ -1,5 +1,6 @@
 package org.csstudio.utility.pv.epics;
 
+import gov.aps.jca.Channel;
 import gov.aps.jca.Channel.ConnectionState;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
@@ -329,15 +330,16 @@ public class EPICS_V3_PV
         }
         try
         {
+            final Channel channel = channel_ref.getChannel();
             final DBRType type = DBR_Helper.getTimeType(plain,
-                                    channel_ref.getChannel().getFieldType());
+                                    channel.getFieldType());
             if (PVContext.debug)
                 System.out.println(name + " subscribed as " + type.getName());
             state = State.Subscribing;
             synchronized (pv_data)
             {
-                pv_data.subscription = channel_ref.getChannel().addMonitor(type,
-                           channel_ref.getChannel().getElementCount(), 1, this);
+                pv_data.subscription = channel.addMonitor(type,
+                           channel.getElementCount(), 1, this);
             }
             PVContext.flush();
         }

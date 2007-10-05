@@ -49,6 +49,8 @@ public class PVContext
     /** map of channels. */
     static private HashMap<String, RefCountedChannel> channels =
                                 new HashMap<String, RefCountedChannel>();
+    
+    final static private JCACommandThread command_thread = new JCACommandThread();
 
     /** Initialize the JA library. */
     static private void initJCA() throws Exception
@@ -62,6 +64,7 @@ public class PVContext
             final String type = use_pure_java ?
                 JCALibrary.CHANNEL_ACCESS_JAVA : JCALibrary.JNI_THREAD_SAFE;
             jca_context = jca.createContext(type);
+            command_thread.start();
         }
         ++jca_refs;
     }
@@ -76,6 +79,7 @@ public class PVContext
         --jca_refs;
         if (jca_refs > 0)
             return;
+        command_thread.shutdown();
         if (cleanup == false)
             return;
         try
@@ -142,9 +146,16 @@ public class PVContext
     }
     
     /** Flush the CA context. */
-    static void flush() throws Exception
+    static void flush()
     {
-        jca_context.flushIO();
+        try
+        {
+            jca_context.flushIO();
+        }
+        catch (Throwable ex)
+        {
+            Activator.logException("JCA Flush failed", ex);
+        }
     }
     
     /** Helper for unit test.

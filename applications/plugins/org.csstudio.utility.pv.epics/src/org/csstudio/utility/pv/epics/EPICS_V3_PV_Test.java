@@ -261,4 +261,43 @@ public class EPICS_V3_PV_Test
         
         pva.stop();
     }
+    
+    @Test
+    public void testManyConnections() throws Exception
+    {
+        final int N = 10000;
+        
+        PV pvs[] = new PV[N];
+        for (int i=0; i<N; ++i)
+            pvs[i] = getPV("ramp" + (i+1));
+
+        for (int i=0; i<N; ++i)
+            pvs[i].start();
+        
+        while (true)
+        {
+            int connected = 0;
+            int disconnected = 0;
+            for (int i=0; i<N; ++i)
+            {
+                if (pvs[i].isConnected())
+                    ++connected;
+                else
+                    ++disconnected;
+            }
+            if (disconnected > 0)
+            {
+                System.out.format("%d out of %d disconnected\n",
+                                  disconnected, N);
+                Thread.sleep(2000);
+            }
+            else
+                break;
+        }        
+        for (int i=0; i<N; ++i)
+        {
+            pvs[i].stop();
+            pvs[i] = null;
+        }
+    }
 }
