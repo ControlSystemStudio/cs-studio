@@ -299,15 +299,15 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	public void setData(final double[] data) {
 		 _data = data;
 
-		 int count = 500;
-		 int amplitude = 50;
-		 int verschiebung = 0;
-		 double[] result = new double[count];
-		 double value = (Math.PI*2)/count;
-		 for (int i=0;i<count;i++) {
-			 result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
-		 }
-		 _data = result;
+//		 int count = 500;
+//		 int amplitude = 50;
+//		 int verschiebung = 0;
+//		 double[] result = new double[count];
+//		 double value = (Math.PI*2)/count;
+//		 for (int i=0;i<count;i++) {
+//			 result[i] = (Math.sin(value*i)*amplitude)+verschiebung;
+//		 }
+//		 _data = result;
 		 
 		this.refreshConstraints();
 		repaint();
