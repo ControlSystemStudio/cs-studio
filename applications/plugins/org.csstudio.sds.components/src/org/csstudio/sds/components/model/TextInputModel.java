@@ -77,11 +77,23 @@ public final class TextInputModel extends AbstractWidgetModel {
 	 * The ID of the <i>transparent</i> property.
 	 */
 	public static final String PROP_TRANSPARENT = "transparent";
+	/**
+     * Type of the displayed text.
+     */
+    public static final String PROP_TYPE = "value_type";
 	
 	/**
 	 * The labels for the text alignment property.
 	 */
 	private static final String[] SHOW_LABELS = new String[] {"Center", "Top", "Bottom", "Left", "Right"};
+	/**
+     * Currently available value types.
+     */
+    public static final String [] VALUE_TYPES=new String [] {"Text","Double Value"};
+    /**
+     * The ID of the <i>double type</i> property.
+     */
+    public static final int TYPE_DOUBLE = 1;
 
 	/**
 	 * Standard constructor.
@@ -110,6 +122,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
 				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
+		addProperty(PROP_TYPE, new OptionProperty("Value Type",WidgetPropertyCategory.Behaviour,VALUE_TYPES,TYPE_DOUBLE));
 	}
 
 	/**
@@ -161,5 +174,11 @@ public final class TextInputModel extends AbstractWidgetModel {
 	public boolean getTransparent() {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
-
+	/**
+     * Returns the type of the text (Double or String).
+     * @return The type of the text
+     */
+    public int getType() {
+        return (Integer) getProperty(PROP_TYPE).getPropertyValue();
+    }
 }

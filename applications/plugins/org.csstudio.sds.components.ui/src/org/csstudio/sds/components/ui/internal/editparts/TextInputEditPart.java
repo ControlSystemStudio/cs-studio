@@ -330,7 +330,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
             }
         };
         //setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
-        setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGN, alignmentHandler);
+        setPropertyChangeHandler(TextInputModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
         
         // transparent background
         IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
@@ -343,5 +343,15 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(TextInputModel.PROP_TRANSPARENT, transparentHandler);
+        //
+        IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue, final Object newValue,
+                    final IFigure figure) {
+                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) figure;
+                labelFigure.setType((Integer) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(TextInputModel.PROP_TYPE, handle);
     }
 }
