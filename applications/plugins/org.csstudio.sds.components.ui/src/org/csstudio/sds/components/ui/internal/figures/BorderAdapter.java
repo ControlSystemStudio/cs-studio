@@ -30,8 +30,8 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.TitleBarBorder;
+import org.eclipse.draw2d.SchemeBorder.Scheme;
 import org.eclipse.draw2d.geometry.Insets;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -53,12 +53,13 @@ public class BorderAdapter implements IBorderEquippedWidget {
 	/**
 	 * The border width.
 	 */
-	private int _borderWidth = 1;
+	private int _borderWidth = 0;
 
 	/**
 	 * The border color.
 	 */
-	private Color _borderColor = CustomMediaFactory.getInstance().getColor(0, 0, 0);
+	private Color _borderColor = CustomMediaFactory.getInstance().getColor(0,
+			0, 0);
 
 	/**
 	 * The border style.
@@ -103,7 +104,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
 		_borderStyle = style;
 		refreshBorder();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -116,94 +117,104 @@ public class BorderAdapter implements IBorderEquippedWidget {
 	 * Refresh the border.
 	 */
 	private void refreshBorder() {
-		if (_borderWidth > 0) {
-			AbstractBorder border;
-			switch (_borderStyle) {
-				case 0 : border = this.createLineBorder(); break;
-				case 1 : border = this.createLabeledBorder(); break;
-				case 2 : border = this.createSchemeBorder(); break;
-				case 3 : border = this.createStriatedBorder(); break;
-				case 4 : border = this.createShapeBorder(_borderWidth, _borderColor); break;
-				case 5 : border = this.createSchemeBorderLowered(); break;
-				default : border = this.createLineBorder(); break;
-			}
-			_figure.setBorder(border);
-			//_figure.repaint();
-		} else {
-			_figure.setBorder(null);
+		AbstractBorder border;
+		switch (_borderStyle) {
+		case 0:
+			border = null; break;
+		case 1:
+			border = this.createLineBorder(); break;
+		case 2:
+			border = this.createLabeledBorder(); break;
+		case 3:
+			border = this.createSchemeBorder(SchemeBorder.SCHEMES.RAISED); break;
+		case 4:
+			border = this.createSchemeBorder(SchemeBorder.SCHEMES.LOWERED); break;
+		case 5:
+			border = this.createStriatedBorder(); break;
+		case 6:
+			border = this.createShapeBorder(_borderWidth, _borderColor); break;
+		default:
+			border = null; break;
 		}
+		_figure.setBorder(border);
 	}
-	
+
 	/**
 	 * Creates a LineBorder.
-	 * @return AbstractBorder
-	 * 			The requested Border
+	 * 
+	 * @return AbstractBorder The requested Border
 	 */
 	private AbstractBorder createLineBorder() {
-		LineBorder border = new LineBorder();
-		border.setWidth(_borderWidth);
-		border.setColor(_borderColor);
-		return border;
+		if (_borderWidth>0) {
+			LineBorder border = new LineBorder();
+			border.setWidth(_borderWidth);
+			border.setColor(_borderColor);
+			return border;	
+		}
+		return null;
 	}
-	
+
 	/**
 	 * Creates a AbstractLabeledBorder.
-	 * @return AbstractBorder
-	 * 			The requested Border
+	 * 
+	 * @return AbstractBorder The requested Border
 	 */
 	private AbstractBorder createLabeledBorder() {
 		AbstractLabeledBorder border = new TitleBarBorder(_borderText);
 		return border;
 	}
-	
+
 	/**
 	 * Creates a SchemeBorder.
-	 * @return AbstractBorder
-	 * 			The requested Border
+	 * @param scheme the scheme for the {@link SchemeBorder}
+	 * @return AbstractBorder The requested Border
 	 */
-	private AbstractBorder createSchemeBorder() {
-		SchemeBorder border = new SchemeBorder(SchemeBorder.SCHEMES.RAISED);
+	private AbstractBorder createSchemeBorder(final Scheme scheme) {
+		SchemeBorder border = new SchemeBorder(scheme);
 		return border;
 	}
-	
-	/**
-     * Creates a SchemeBorder.
-     * @return AbstractBorder
-     *          The requested Border
-     */
-    private AbstractBorder createSchemeBorderLowered() {
-        SchemeBorder border = new SchemeBorder(SchemeBorder.SCHEMES.LOWERED);
-        return border;
-    }
+
 	/**
 	 * Creates a StriatedBorder.
-	 * @return AbstractBorder
-	 * 			The requested Border
+	 * 
+	 * @return AbstractBorder The requested Border
 	 */
 	private AbstractBorder createStriatedBorder() {
-		StriatedBorder border = new StriatedBorder(_borderWidth);
-		border.setBorderColor(_borderColor);
-		return border;
+		if (_borderWidth>0) {
+			StriatedBorder border = new StriatedBorder(_borderWidth);
+			border.setBorderColor(_borderColor);
+			return border;	
+		}
+		return null;
 	}
-	
+
 	/**
 	 * Creates a ShapedBorder.
-	 * @return AbstractBorder
-	 * 			The requested Border
+	 * 
+	 * @param borderWidth
+	 *            the width of the border
+	 * @param borderColor
+	 *            the color of the border
+	 * @return AbstractBorder The requested Border
 	 */
-	protected AbstractBorder createShapeBorder(final int borderWidth, final Color borderColor) {
-		LineBorder border = new LineBorder();
-		border.setWidth(borderWidth);
-		border.setColor(borderColor);
-		return border;
+	protected AbstractBorder createShapeBorder(final int borderWidth,
+			final Color borderColor) {
+		if (_borderWidth>0) {
+			LineBorder border = new LineBorder();
+			border.setWidth(borderWidth);
+			border.setColor(borderColor);
+			return border;	
+		}
+		return null;
 	}
-	
+
 	/**
 	 * A striated Border.
+	 * 
 	 * @author Kai Meyer
 	 */
 	private final class StriatedBorder extends AbstractBorder {
-		
+
 		/**
 		 * The insets for this Border.
 		 */
@@ -211,30 +222,28 @@ public class BorderAdapter implements IBorderEquippedWidget {
 		/**
 		 * The Height of the Border.
 		 */
-		private int _borderHeight;
-		/**
-		 * The Width of the Border.
-		 */
-		private final int _fixBorderWide = 5;
+		private int _borderWidth;
 		/**
 		 * The Color of the border.
 		 */
 		private Color _borderColor;
-		
+
 		/**
 		 * Constructor.
+		 * 
 		 * @param borderWidth
-		 * 		The width of the Border
+		 *            The width of the Border
 		 */
 		public StriatedBorder(final int borderWidth) {
 			_insets = new Insets(borderWidth);
-			_borderHeight = borderWidth;
+			_borderWidth = borderWidth;
 		}
-		
+
 		/**
 		 * Sets the Color of the border.
+		 * 
 		 * @param borderColor
-		 * 			The Color for the border
+		 *            The Color for the border
 		 */
 		public void setBorderColor(final Color borderColor) {
 			_borderColor = borderColor;
@@ -250,33 +259,42 @@ public class BorderAdapter implements IBorderEquippedWidget {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
+		public void paint(final IFigure figure, final Graphics graphics,
+				final Insets insets) {
 			Rectangle bounds = figure.getBounds();
 			graphics.setForegroundColor(_borderColor);
 			graphics.setBackgroundColor(_borderColor);
 			graphics.setLineStyle(SWT.LINE_DOT);
-			graphics.setLineWidth(_borderHeight);
+			graphics.setLineWidth(_borderWidth);
+			graphics.drawLine(bounds.x, bounds.y + _borderWidth / 2, bounds.x
+					+ bounds.width / 2, bounds.y + _borderWidth / 2);
+			graphics.drawLine(bounds.x + bounds.width, bounds.y + _borderWidth
+					/ 2, bounds.x + bounds.width / 2, bounds.y + _borderWidth
+					/ 2);
 			
-			graphics.drawLine(bounds.x, bounds.y+_borderHeight/2,
-					bounds.x+bounds.width/2 ,bounds.y+_borderHeight/2);
-			graphics.drawLine(bounds.x+bounds.width, bounds.y+_borderHeight/2,
-					bounds.x+bounds.width/2 ,bounds.y+_borderHeight/2);
-			graphics.drawLine(bounds.x+bounds.width-_borderHeight/2, bounds.y,
-					bounds.x+bounds.width-_borderHeight/2, bounds.y+bounds.height/2);
-			graphics.drawLine(bounds.x+bounds.width-_borderHeight/2, bounds.y+bounds.height,
-					bounds.x+bounds.width-_borderHeight/2, bounds.y+bounds.height/2);
-			graphics.drawLine(bounds.x, bounds.y+bounds.height-_borderHeight/2,
-					bounds.x+bounds.width/2, bounds.y+bounds.height-_borderHeight/2);
-			graphics.drawLine(bounds.x+bounds.width, bounds.y+bounds.height-_borderHeight/2,
-					bounds.x+bounds.width/2, bounds.y+bounds.height-_borderHeight/2);
-			graphics.drawLine(bounds.x+_borderHeight/2, bounds.y,
-					bounds.x+_borderHeight/2, bounds.y+bounds.height/2);
-			graphics.drawLine(bounds.x+_borderHeight/2, bounds.y+bounds.height,
-					bounds.x+_borderHeight/2, bounds.y+bounds.height/2);
+			graphics.drawLine(bounds.x + bounds.width -1 - _borderWidth / 2,
+					bounds.y, bounds.x + bounds.width -1 - _borderWidth / 2,
+					bounds.y + bounds.height / 2);
+			graphics.drawLine(bounds.x + bounds.width -1 - _borderWidth / 2,
+					bounds.y + bounds.height, bounds.x + bounds.width -1
+							- _borderWidth / 2, bounds.y + bounds.height / 2);
 			
+			graphics.drawLine(bounds.x, bounds.y + bounds.height -1
+					- _borderWidth / 2, bounds.x + bounds.width / 2, bounds.y
+					+ bounds.height -1 - _borderWidth / 2);
+			graphics.drawLine(bounds.x + bounds.width, bounds.y + bounds.height -1
+					- _borderWidth / 2, bounds.x + bounds.width / 2, bounds.y
+					+ bounds.height -1 - _borderWidth / 2);
+			
+			graphics.drawLine(bounds.x + _borderWidth / 2, bounds.y, bounds.x
+					+ _borderWidth / 2, bounds.y + bounds.height / 2);
+			graphics.drawLine(bounds.x + _borderWidth / 2, bounds.y
+					+ bounds.height, bounds.x + _borderWidth / 2, bounds.y
+					+ bounds.height / 2);
+
 			graphics.setLineStyle(SWT.LINE_SOLID);
 		}
-		
+
 	}
 
 }
