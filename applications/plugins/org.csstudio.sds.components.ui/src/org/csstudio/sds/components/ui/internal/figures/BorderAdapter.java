@@ -266,32 +266,29 @@ public class BorderAdapter implements IBorderEquippedWidget {
 			graphics.setBackgroundColor(_borderColor);
 			graphics.setLineStyle(SWT.LINE_DOT);
 			graphics.setLineWidth(_borderWidth);
+			
+			int correction = (int)Math.ceil(((double)_borderWidth)/2);
+			//top
 			graphics.drawLine(bounds.x, bounds.y + _borderWidth / 2, bounds.x
 					+ bounds.width / 2, bounds.y + _borderWidth / 2);
-			graphics.drawLine(bounds.x + bounds.width, bounds.y + _borderWidth
-					/ 2, bounds.x + bounds.width / 2, bounds.y + _borderWidth
-					/ 2);
-			
-			graphics.drawLine(bounds.x + bounds.width -1 - _borderWidth / 2,
-					bounds.y, bounds.x + bounds.width -1 - _borderWidth / 2,
-					bounds.y + bounds.height / 2);
-			graphics.drawLine(bounds.x + bounds.width -1 - _borderWidth / 2,
-					bounds.y + bounds.height, bounds.x + bounds.width -1
-							- _borderWidth / 2, bounds.y + bounds.height / 2);
-			
-			graphics.drawLine(bounds.x, bounds.y + bounds.height -1
-					- _borderWidth / 2, bounds.x + bounds.width / 2, bounds.y
-					+ bounds.height -1 - _borderWidth / 2);
-			graphics.drawLine(bounds.x + bounds.width, bounds.y + bounds.height -1
-					- _borderWidth / 2, bounds.x + bounds.width / 2, bounds.y
-					+ bounds.height -1 - _borderWidth / 2);
-			
+			graphics.drawLine(bounds.x + bounds.width, bounds.y + _borderWidth / 2,
+					bounds.x + bounds.width / 2, bounds.y + _borderWidth / 2);
+			// right
+			graphics.drawLine(bounds.x + bounds.width - correction,	bounds.y,
+					bounds.x + bounds.width - correction, bounds.y + bounds.height / 2);
+			graphics.drawLine(bounds.x + bounds.width - correction, bounds.y + bounds.height,
+					bounds.x + bounds.width - correction, bounds.y + bounds.height / 2);
+			//bottom
+			graphics.drawLine(bounds.x, bounds.y + bounds.height - correction,
+					bounds.x + bounds.width / 2, bounds.y + bounds.height - correction);
+			graphics.drawLine(bounds.x + bounds.width, bounds.y + bounds.height - correction,
+					bounds.x + bounds.width / 2, bounds.y + bounds.height - correction);
+			//left
 			graphics.drawLine(bounds.x + _borderWidth / 2, bounds.y, bounds.x
 					+ _borderWidth / 2, bounds.y + bounds.height / 2);
-			graphics.drawLine(bounds.x + _borderWidth / 2, bounds.y
-					+ bounds.height, bounds.x + _borderWidth / 2, bounds.y
-					+ bounds.height / 2);
-
+			graphics.drawLine(bounds.x + _borderWidth / 2, bounds.y	+ bounds.height,
+					bounds.x + _borderWidth / 2, bounds.y + bounds.height / 2);
+			
 			graphics.setLineStyle(SWT.LINE_SOLID);
 		}
 
