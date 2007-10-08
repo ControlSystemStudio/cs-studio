@@ -281,9 +281,7 @@ public class EPICS_V3_PV
         // Already attempted a connection?
         if (channel_ref == null)
         {
-            channel_ref = PVContext.getChannel(name);
-            channel_ref.getChannel().addConnectionListener(this);
-            PVContext.flush();
+            channel_ref = PVContext.getChannel(name, this);
         }
         if (channel_ref.getChannel().getConnectionState() == ConnectionState.CONNECTED)
         {
@@ -303,8 +301,7 @@ public class EPICS_V3_PV
             return;
         try
         {
-            channel_ref.getChannel().removeConnectionListener(this);
-            PVContext.releaseChannel(channel_ref);
+            PVContext.releaseChannel(channel_ref, this);
             channel_ref = null;
         }
         catch (Throwable e)

@@ -3,6 +3,7 @@ package org.csstudio.utility.pv.epics;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
+import gov.aps.jca.event.ConnectionListener;
 
 import java.util.HashMap;
 
@@ -102,7 +103,8 @@ public class PVContext
      *  @throws Exception on error
      *  @see #releaseChannel(RefCountedChannel)
      */
-    synchronized static RefCountedChannel getChannel(final String name) throws Exception
+    synchronized static RefCountedChannel getChannel(final String name,
+                     final ConnectionListener conn_callback) throws Exception
     {
         initJCA();
         RefCountedChannel channel_ref = channels.get(name);
@@ -110,19 +112,20 @@ public class PVContext
         {
             if (debug)
                 System.out.println("Creating CA channel " + name);
-            final Channel channel = jca_context.createChannel(name);
+            final Channel channel = jca_context.createChannel(name, conn_callback);
             if (channel == null)
                 throw new Exception("Cannot create channel '" + name + "'");
             channel_ref = new RefCountedChannel(channel);
             channels.put(name, channel_ref);
-            jca_context.flushIO();
         }
         else
         {
             channel_ref.incRefs();
+            channel_ref.getChannel().addConnectionListener(conn_callback);
             if (debug)
                 System.out.println("Re-using CA channel " + name);
         }
+        jca_context.flushIO();
         return channel_ref;
     }
     
@@ -130,9 +133,18 @@ public class PVContext
      *  @param channel_ref Channel to release.
      *  @see #getChannel(String)
      */
-    synchronized static void releaseChannel(final RefCountedChannel channel_ref)
+    synchronized static void releaseChannel(final RefCountedChannel channel_ref,
+                    final ConnectionListener conn_callback)
     {
         final String name = channel_ref.getChannel().getName();
+        try
+        {
+            channel_ref.getChannel().removeConnectionListener(conn_callback);
+        }
+        catch (Exception ex)
+        {
+            Activator.logException("Remove connection listener", ex);
+        }
         if (channel_ref.decRefs() <= 0)
         {
             if (debug)
