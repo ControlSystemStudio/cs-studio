@@ -4,6 +4,7 @@ import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.actions.WidgetAction;
 import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
@@ -16,13 +17,11 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.swt.SWT;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.IWorkbenchAdapter;
@@ -33,11 +32,6 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  *
  */
 public final class MenuButtonEditPart extends AbstractWidgetEditPart {
-	
-	/**
-	 * The {@link Listener} for the {@link MenuItem}s.
-	 */
-	private Listener _listener = new MenuActionListener();
 
 	/**
 	 * {@inheritDoc}
@@ -58,6 +52,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 			}
 
 			public void mousePressed(final MouseEvent me) {
+				System.out.println(".mousePressed()");
 				if (me.button == 1 && getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 					final org.eclipse.swt.graphics.Point cursorLocation = Display.getCurrent().getCursorLocation();
 					new CheckedUiRunnable() {
@@ -74,7 +69,6 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		});
 		return label;
 	}
-	
 
 	/**
 	 * Open the cell editor for direct editing.
@@ -83,18 +77,12 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 	 * @param absolutY The y coordinate of the mouse in the display
 	 */
 	private void performDirectEdit(final Point point, final int absolutX, final int absolutY) {
-		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		Menu menu = new Menu(shell, SWT.POP_UP);
+		final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		MenuManager menuManager = new MenuManager();
 		for (WidgetAction action : ((MenuButtonModel)this.getCastedModel()).getActionData().getWidgetActions()) {
-			MenuItem item = new MenuItem(menu,SWT.PUSH);
-			item.setData(action);
-			item.setText(action.getActionLabel());
-			item.addListener(SWT.Selection, _listener);
-			IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform.getAdapterManager().getAdapter(action, IWorkbenchAdapter.class);
-			if (adapter!=null) {
-				item.setImage(adapter.getImageDescriptor(action).createImage());
-			}
+			menuManager.add(new MenuAction(action));
 		}
+		Menu menu = menuManager.createContextMenu(shell);
 		
 		int x = absolutX;
 		int y = absolutY;
@@ -164,24 +152,38 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 
 	}
-	
+		
 	/**
-	 * The {@link Listener} for the {@link MenuItem}s.
+	 * An Action, which encapsulates a {@link WidgetAction}.
 	 * @author Kai Meyer
 	 *
 	 */
-	private final class MenuActionListener implements Listener {
-
+	private final class MenuAction extends Action {
+		/**
+		 * The {@link WidgetAction}.
+		 */
+		private WidgetAction _widgetAction;
+		
+		/**
+		 * Constructor.
+		 * @param widgetAction The encapsulated {@link WidgetAction}
+		 */
+		public MenuAction(final WidgetAction widgetAction) {
+			_widgetAction = widgetAction;
+			this.setText(_widgetAction.getActionLabel());
+			IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform.getAdapterManager().getAdapter(widgetAction, IWorkbenchAdapter.class);
+			if (adapter!=null) {
+				this.setImageDescriptor(adapter.getImageDescriptor(widgetAction));
+			}
+		}
+		
 		/**
 		 * {@inheritDoc}
 		 */
-		public void handleEvent(final Event event) {
-			WidgetAction action = (WidgetAction)event.widget.getData();
-			WidgetActionHandlerService.getInstance().performAction(getCastedModel().getProperty(MenuButtonModel.PROP_ACTIONDATA), action);
-			//MenuItem item = (MenuItem) event.widget;
-			//item.getParent().getShell().setActive();//setFocus();
+		@Override
+		public void run() {
+			WidgetActionHandlerService.getInstance().performAction(getCastedModel().getProperty(AbstractWidgetModel.PROP_ACTIONDATA), _widgetAction);
 		}
-		
 	}
 
 }
