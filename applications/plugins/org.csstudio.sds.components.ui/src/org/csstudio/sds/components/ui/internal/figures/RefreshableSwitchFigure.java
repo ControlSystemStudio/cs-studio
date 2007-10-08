@@ -94,6 +94,15 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void paintFigure(final Graphics graphics) {
+		this.fillShape(graphics);
+		this.outlineShape(graphics);
+	}
+	
+	/**
 	 * Draws the outline of the image, i.e. the switch itself.
 	 * @param gfx The {@link Graphics} to use
 	 */
