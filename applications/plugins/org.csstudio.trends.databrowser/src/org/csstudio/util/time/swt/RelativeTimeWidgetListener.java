@@ -1,6 +1,6 @@
 package org.csstudio.util.time.swt;
 
-import org.csstudio.util.time.RelativeTime;
+import org.csstudio.apputil.time.RelativeTime;
 
 /** Listener interface for the RelativeTimeWidget.
  *  @author Kay Kasemir

@@ -1,4 +1,4 @@
-package org.csstudio.util.time;
+package org.csstudio.apputil.time;
 
 /** Container for the read-only result of RelativeTimeParser.parse().
  *  @author Kay Kasemir

@@ -2,6 +2,8 @@ package org.csstudio.display.pvtable.ui;
 
 import java.util.Iterator;
 
+import org.csstudio.apputil.ui.swt.AutoSizeColumn;
+import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVListEntry;
@@ -10,8 +12,6 @@ import org.csstudio.display.pvtable.model.PVListModelListener;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
-import org.csstudio.util.swt.AutoSizeColumn;
-import org.csstudio.util.swt.AutoSizeControlListener;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;

@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.csstudio.apputil.time.RelativeTime;
+import org.csstudio.apputil.time.StartEndTimeParser;
+import org.csstudio.apputil.xml.DOMHelper;
+import org.csstudio.apputil.xml.XMLHelper;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
@@ -13,10 +17,6 @@ import org.csstudio.swt.chart.DefaultColors;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.preferences.Preferences;
-import org.csstudio.util.time.RelativeTime;
-import org.csstudio.util.time.StartEndTimeParser;
-import org.csstudio.util.xml.DOMHelper;
-import org.csstudio.util.xml.XMLHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -146,7 +146,7 @@ public class Model
      *  <p>
      *  Also updates the current start and end time with
      *  values computed from the specs "right now".
-     *  @see org.csstudio.util.time.StartEndTimeParser
+     *  @see org.csstudio.apputil.time.StartEndTimeParser
      *  @see #getStartSpecification()
      *  @see #setTimeRange(ITimestamp, ITimestamp)
      *  @exception Exception on parse error of specs.

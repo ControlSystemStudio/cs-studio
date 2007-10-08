@@ -2,6 +2,8 @@ package org.csstudio.trends.databrowser.model;
 
 import java.util.ArrayList;
 
+import org.csstudio.apputil.xml.DOMHelper;
+import org.csstudio.apputil.xml.XMLHelper;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IEnumeratedValue;
@@ -17,8 +19,6 @@ import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
-import org.csstudio.util.xml.DOMHelper;
-import org.csstudio.util.xml.XMLHelper;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;

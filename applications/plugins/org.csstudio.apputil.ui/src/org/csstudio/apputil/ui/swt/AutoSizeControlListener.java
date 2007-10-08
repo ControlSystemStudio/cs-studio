@@ -1,4 +1,4 @@
-package org.csstudio.util.swt;
+package org.csstudio.apputil.ui.swt;
 
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;

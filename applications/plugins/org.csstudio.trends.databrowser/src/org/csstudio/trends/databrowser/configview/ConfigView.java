@@ -1,5 +1,9 @@
 package org.csstudio.trends.databrowser.configview;
 
+import org.csstudio.apputil.time.RelativeTime;
+import org.csstudio.apputil.ui.swt.AutoSizeColumn;
+import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.apputil.ui.swt.ScrolledContainerHelper;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDragSource;
@@ -17,11 +21,7 @@ import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.formula_gui.FormulaDialog;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.preferences.Preferences;
-import org.csstudio.util.swt.AutoSizeColumn;
-import org.csstudio.util.swt.AutoSizeControlListener;
 import org.csstudio.util.swt.RGBCellEditor;
-import org.csstudio.util.swt.ScrolledContainerHelper;
-import org.csstudio.util.time.RelativeTime;
 import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;

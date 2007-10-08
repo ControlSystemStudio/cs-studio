@@ -3,10 +3,10 @@
  */
 package org.csstudio.trends.databrowser.model;
 
+import org.csstudio.apputil.xml.DOMHelper;
+import org.csstudio.apputil.xml.XMLHelper;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.swt.chart.TraceType;
-import org.csstudio.util.xml.DOMHelper;
-import org.csstudio.util.xml.XMLHelper;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.graphics.Color;
 import org.w3c.dom.Element;

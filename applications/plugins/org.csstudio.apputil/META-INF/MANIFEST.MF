@@ -4,5 +4,5 @@ Bundle-Name: Apputil Plug-in
 Bundle-SymbolicName: org.csstudio.apputil
 Bundle-Version: 1.0.2
 Bundle-Vendor: Kay Kasemir
-Export-Package: org.csstudio.util.time,
- org.csstudio.util.xml
+Export-Package: org.csstudio.apputil.time,
+ org.csstudio.apputil.xml

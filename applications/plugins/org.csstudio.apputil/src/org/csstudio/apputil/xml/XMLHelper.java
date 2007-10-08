@@ -1,4 +1,4 @@
-package org.csstudio.util.xml;
+package org.csstudio.apputil.xml;
 
 /** Helper for XML output.
  *  

@@ -1,4 +1,4 @@
-package org.csstudio.util.swt;
+package org.csstudio.apputil.ui.swt;
 
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;

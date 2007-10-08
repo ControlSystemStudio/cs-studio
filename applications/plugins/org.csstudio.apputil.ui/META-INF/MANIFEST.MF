@@ -6,4 +6,4 @@ Bundle-Version: 1.0.0
 Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.eclipse.swt,
  org.eclipse.jface
-Export-Package: org.csstudio.util.swt
+Export-Package: org.csstudio.apputil.ui.swt

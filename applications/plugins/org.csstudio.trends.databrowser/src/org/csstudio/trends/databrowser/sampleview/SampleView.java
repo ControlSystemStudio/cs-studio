@@ -1,11 +1,11 @@
 package org.csstudio.trends.databrowser.sampleview;
 
+import org.csstudio.apputil.ui.swt.AutoSizeColumn;
+import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesDragSource;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
-import org.csstudio.util.swt.AutoSizeColumn;
-import org.csstudio.util.swt.AutoSizeControlListener;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.TableViewer;

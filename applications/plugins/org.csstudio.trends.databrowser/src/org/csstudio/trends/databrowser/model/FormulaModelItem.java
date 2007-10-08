@@ -2,6 +2,8 @@ package org.csstudio.trends.databrowser.model;
 
 import java.util.ArrayList;
 
+import org.csstudio.apputil.xml.DOMHelper;
+import org.csstudio.apputil.xml.XMLHelper;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -10,8 +12,6 @@ import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.util.formula.Formula;
-import org.csstudio.util.xml.DOMHelper;
-import org.csstudio.util.xml.XMLHelper;
 import org.w3c.dom.Element;
 
 /** Model item based on a formula.

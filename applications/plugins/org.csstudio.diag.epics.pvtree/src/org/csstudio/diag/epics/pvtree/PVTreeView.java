@@ -1,10 +1,10 @@
 package org.csstudio.diag.epics.pvtree;
 
 
+import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
-import org.csstudio.util.swt.ComboHistoryHelper;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;

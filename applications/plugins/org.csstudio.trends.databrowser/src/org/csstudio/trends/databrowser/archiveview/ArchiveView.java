@@ -2,6 +2,9 @@ package org.csstudio.trends.databrowser.archiveview;
 
 import java.util.ArrayList;
 
+import org.csstudio.apputil.ui.swt.AutoSizeColumn;
+import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.NameInfo;
@@ -11,9 +14,6 @@ import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDropTarge
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithArchiveDragSource;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.preferences.Preferences;
-import org.csstudio.util.swt.AutoSizeColumn;
-import org.csstudio.util.swt.AutoSizeControlListener;
-import org.csstudio.util.swt.ComboHistoryHelper;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;

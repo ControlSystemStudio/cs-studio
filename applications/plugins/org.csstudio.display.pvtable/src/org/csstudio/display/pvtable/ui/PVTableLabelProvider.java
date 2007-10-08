@@ -1,8 +1,8 @@
 package org.csstudio.display.pvtable.ui;
 
+import org.csstudio.apputil.ui.swt.CheckBoxImages;
 import org.csstudio.display.pvtable.model.PVListEntry;
 import org.csstudio.display.pvtable.model.PVListModel;
-import org.csstudio.util.swt.CheckBoxImages;
 import org.csstudio.utility.pv.PV;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;

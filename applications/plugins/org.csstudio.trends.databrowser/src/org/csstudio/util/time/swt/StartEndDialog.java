@@ -2,11 +2,11 @@ package org.csstudio.util.time.swt;
 
 import java.util.Calendar;
 
-import org.csstudio.util.time.AbsoluteTimeParser;
-import org.csstudio.util.time.RelativeTime;
-import org.csstudio.util.time.RelativeTimeParser;
-import org.csstudio.util.time.RelativeTimeParserResult;
-import org.csstudio.util.time.StartEndTimeParser;
+import org.csstudio.apputil.time.AbsoluteTimeParser;
+import org.csstudio.apputil.time.RelativeTime;
+import org.csstudio.apputil.time.RelativeTimeParser;
+import org.csstudio.apputil.time.RelativeTimeParserResult;
+import org.csstudio.apputil.time.StartEndTimeParser;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

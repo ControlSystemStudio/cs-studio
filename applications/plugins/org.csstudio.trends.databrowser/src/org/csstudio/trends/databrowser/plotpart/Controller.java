@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.plotpart;
 
+import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
@@ -16,7 +17,6 @@ import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
-import org.csstudio.util.time.RelativeTime;
 import org.eclipse.swt.dnd.DropTargetEvent;
 
 /** Data Browser Controller: Creates model, UI and handles everything between them.

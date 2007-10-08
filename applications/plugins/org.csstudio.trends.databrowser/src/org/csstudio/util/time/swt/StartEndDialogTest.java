@@ -2,7 +2,7 @@ package org.csstudio.util.time.swt;
 
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.util.time.RelativeTime;
+import org.csstudio.apputil.time.RelativeTime;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;

@@ -1,4 +1,4 @@
-package org.csstudio.util.xml;
+package org.csstudio.apputil.xml;
 
 import java.io.Reader;
 import java.io.StringReader;

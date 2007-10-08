@@ -1,4 +1,4 @@
-package org.csstudio.util.swt;
+package org.csstudio.apputil.ui.swt;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;

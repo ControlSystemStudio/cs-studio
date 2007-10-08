@@ -1,13 +1,13 @@
 package org.csstudio.trends.databrowser.exportview;
 
+import org.csstudio.apputil.time.StartEndTimeParser;
+import org.csstudio.apputil.ui.swt.ScrolledContainerHelper;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
-import org.csstudio.util.swt.ScrolledContainerHelper;
-import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;

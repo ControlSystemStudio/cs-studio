@@ -1,4 +1,4 @@
-package org.csstudio.util.time;
+package org.csstudio.apputil.time;
 
 import static org.junit.Assert.*;
 

@@ -1,4 +1,4 @@
-package org.csstudio.util.plugin;
+package org.csstudio.apputil.plugin;
 
 /** Copy/paste logging routines for the plugin class.
  *  <p>

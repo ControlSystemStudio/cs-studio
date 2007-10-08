@@ -1,7 +1,7 @@
 package org.csstudio.trends.databrowser.configview;
 
+import org.csstudio.apputil.ui.swt.CheckBoxImages;
 import org.csstudio.trends.databrowser.model.IModelItem;
-import org.csstudio.util.swt.CheckBoxImages;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;

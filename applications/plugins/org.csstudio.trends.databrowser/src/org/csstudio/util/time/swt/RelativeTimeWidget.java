@@ -2,7 +2,7 @@ package org.csstudio.util.time.swt;
 
 import java.util.ArrayList;
 
-import org.csstudio.util.time.RelativeTime;
+import org.csstudio.apputil.time.RelativeTime;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

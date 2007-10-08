@@ -6,8 +6,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.display.pvtable.Plugin;
-import org.csstudio.util.xml.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
