@@ -207,10 +207,12 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
+	
 	/**
 	 * The count of sections on the y-axis.
 	 */
 	private int _ySectionCount = 4;
+	
 	/**
 	 * The count of sections on the x-axis.
 	 */
@@ -332,9 +334,9 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			this.setConstraint(_verticalScale, new Rectangle(0, 0,
 					verticalScaleWidth, _graphBounds.height+TEXTHEIGHT));
 			_verticalScale.setReferencePositions(_zeroLevel+TEXTHEIGHT/2+1);
-			_verticalScale.setSectionLength(_zeroLevel/Math.max(1, _ySectionCount));
+			_verticalScale.setSectionLength(_graphBounds.height/Math.max(1, _ySectionCount));
 			_verticalScale.setRegion(0, _graphBounds.y+_graphBounds.height);
-			_verticalScale.setIncrement(_max/_ySectionCount);
+			_verticalScale.setIncrement((_max-_min)/_ySectionCount);
 		} else {
 			this.setConstraint(_verticalScale, DEFAULT_CONSTRAINT);
 		}
@@ -361,10 +363,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			this.setConstraint(_verticalLedgerScale, new Rectangle(
 					verticalScaleWidth, 0, _graphBounds.width, _graphBounds.height+TEXTHEIGHT));
 			_verticalLedgerScale.setReferencePositions(_zeroLevel+TEXTHEIGHT/2+1);
-			_verticalLedgerScale.setSectionLength(_zeroLevel/Math.max(1, _ySectionCount));
+			_verticalLedgerScale.setSectionLength(_graphBounds.height/Math.max(1, _ySectionCount));
 			_verticalLedgerScale.setRegion(0, _graphBounds.y+_graphBounds.height);
 			_verticalLedgerScale.setWideness(_graphBounds.width);
-			_verticalLedgerScale.setIncrement(_max/_ySectionCount);
+			_verticalLedgerScale.setIncrement((_max-_min)/_ySectionCount);
 		} else {
 			this.setConstraint(_verticalLedgerScale, DEFAULT_CONSTRAINT);
 		}
@@ -793,20 +795,13 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				final List<PrecisionPoint> pointList, final int x,
 				final Rectangle figureBounds) {
 			PointList result = new PointList();
-			double posWeight = (double) (_zeroLevel) / _max;
-			double negWeight = (double) (figureBounds.height - _zeroLevel)
-					/ Math.abs(_min);
-			if (Double.isNaN(negWeight)) {
-				negWeight = 1;
-			}
+			double dataRange = _max - _min;
+			// scaling: basically, pixels per value unit
+			double scaling = figureBounds.height / dataRange;
+
 			for (int i = 0; i < pointList.size(); i++) {
 				PrecisionPoint p = pointList.get(i);
-				double newY;
-				if (p.y >= 0) {
-					newY = p.preciseY * posWeight;
-				} else {
-					newY = p.preciseY * negWeight;
-				}
+				double newY = p.preciseY * scaling;
 				Point newPoint = new Point(p.x + x,
 						(double) (figureBounds.y + _zeroLevel) - newY);
 				result.addPoint(newPoint);
