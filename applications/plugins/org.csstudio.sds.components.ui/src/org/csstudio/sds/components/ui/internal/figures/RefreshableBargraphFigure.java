@@ -867,11 +867,19 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			graphics.setBackgroundColor(this.getDefaultFillColor());
 			if (_showOnlyValue) {
 				PointList list = new PointList();
-				int valueX = (int) Math.round(bounds.width * (this.getFill())) + bounds.x;
-				list.addPoint(valueX, bounds.y);
-				list.addPoint(valueX-4, bounds.y+(bounds.height/2));
-				list.addPoint(valueX, bounds.y+bounds.height);
-				list.addPoint(valueX+4, bounds.y+(bounds.height/2));
+				if (_orientationHorizontal) {
+					int valueX = (int) Math.round(bounds.width * (this.getFill())) + bounds.x;
+					list.addPoint(valueX, bounds.y);
+					list.addPoint(valueX-4, bounds.y+(bounds.height/2));
+					list.addPoint(valueX, bounds.y+bounds.height);
+					list.addPoint(valueX+4, bounds.y+(bounds.height/2));	
+				} else {
+					int valueY = (int) Math.round(bounds.y + bounds.height - (bounds.height * (this.getFill())));
+					list.addPoint(bounds.x, valueY);
+					list.addPoint(bounds.x+(bounds.width/2), valueY-4);
+					list.addPoint(bounds.x+bounds.width, valueY);
+					list.addPoint(bounds.x+(bounds.width/2), valueY+4);
+				}
 				graphics.fillPolygon(list);
 				graphics.drawPolygon(list);
 			} else {
@@ -885,61 +893,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 						fillRectangle.height - 1));	
 			}
 		}
-
-//		/**
-//		 * Gets the fill Color.
-//		 * 
-//		 * @return Color The Color for the fill-area
-//		 */
-//		private Color getFillColor() {
-//			List<String> labelList = new LinkedList<String>();
-//			for (int i = 0; i < LABELS.length; i++) {
-//				if (labelList.isEmpty()) {
-//					labelList.add(LABELS[i]);
-//				} else {
-//					labelList.add(this.getLabelIndex(labelList, LABELS[i]),
-//							LABELS[i]);
-//				}
-//			}
-//			String[] tempLabels = labelList
-//					.toArray(new String[labelList.size()]);
-//			if (_minimum < _maximum) {
-//				for (int i = 0; i < tempLabels.length; i++) {
-//					if (this.getFill() <= getWeight(_levelMap
-//							.get(tempLabels[i]))) {
-//						return _colorMap.get(tempLabels[i]);
-//					}
-//				}
-//				return this.getDefaultFillColor();
-//			} else {
-//				for (int i = tempLabels.length - 1; i >= 0; i--) {
-//					if (this.getFill() <= getWeight(_levelMap
-//							.get(tempLabels[i]))) {
-//						return _colorMap.get(tempLabels[i]);
-//					}
-//				}
-//				return this.getDefaultFillColor();
-//			}
-//		}
-
-//		/**
-//		 * Gets the index for the label.
-//		 * 
-//		 * @param labelList
-//		 *            The list, where the label should be added
-//		 * @param label
-//		 *            The label, which should be added
-//		 * @return int The index for the label
-//		 */
-//		private int getLabelIndex(final List<String> labelList,
-//				final String label) {
-//			for (int j = 0; j < labelList.size(); j++) {
-//				if (_levelMap.get(label) < _levelMap.get(labelList.get(j))) {
-//					return j;
-//				}
-//			}
-//			return labelList.size();
-//		}
 
 		/**
 		 * Gets the rectangle for the fill level.
