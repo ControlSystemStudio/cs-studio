@@ -65,7 +65,8 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 	 */
 	@Override
 	protected void fillShape(final Graphics graphics) {
-		Rectangle figureBounds = getBounds();
+		Rectangle figureBounds = getBounds().getCopy();
+		figureBounds.crop(this.getInsets());
 		Rectangle backgroundRectangle;
 		Rectangle fillRectangle;
 		if (_orientationHorizontal) {
@@ -85,6 +86,14 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 		graphics.setClip(fillRectangle);
 		graphics.setBackgroundColor(getForegroundColor());
 		graphics.fillOval(figureBounds);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void paintFigure(final Graphics graphics) {
+		this.fillShape(graphics);
 	}
 
 	/**
