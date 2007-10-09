@@ -9,6 +9,7 @@ import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Color;
 
@@ -90,7 +91,9 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 	 */
 	protected void fillShape(final Graphics gfx) {
 		gfx.setBackgroundColor(getBackgroundColor());
-		gfx.fillRectangle(getBounds());
+		Rectangle figureBounds = getBounds().getCopy();
+		figureBounds.crop(this.getInsets());
+		gfx.fillRectangle(figureBounds);
 	}
 	
 	/**
@@ -108,12 +111,13 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 	 */
 	protected void outlineShape(final Graphics gfx) {
 		AntialiasingUtil.getInstance().enableAntialiasing(gfx);
-		gfx.translate(getBounds().getLocation());
+		Rectangle figureBounds = getBounds().getCopy().crop(this.getInsets());
+		gfx.translate(figureBounds.getLocation());
 		
 		if (_resized) {
 			/*some trigonometry to determine the new scaling factor*/
-			_wdth=(bounds.width<bounds.height)?(double)bounds.width:(double)bounds.height;
-			_hght=(bounds.width<bounds.height)?(double)bounds.height:(double)bounds.width;
+			_wdth=(figureBounds.width<figureBounds.height)?(double)figureBounds.width:(double)figureBounds.height;
+			_hght=(figureBounds.width<figureBounds.height)?(double)figureBounds.height:(double)figureBounds.width;
 			double angle=(double)_rotAngle;
 			
 			if (_rotAngle<=90 || (_rotAngle>180 && _rotAngle<=270)) {
@@ -129,13 +133,13 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 		}
 		
 		if (_rotAngle!=0) {
-			gfx.translate(bounds.width/2,bounds.height/2);
+			gfx.translate(figureBounds.width/2,figureBounds.height/2);
 			try {
 				gfx.rotate((float)_rotAngle);
 			} catch (RuntimeException e) {
 				CentralLogger.getInstance().error(this, "Error occured during ratation");
 			}
-			gfx.translate(-(int)(_coefficient*(double)bounds.width*0.5),-(int)(_coefficient*(double)bounds.height*0.5));
+			gfx.translate(-(int)(_coefficient*(double)figureBounds.width*0.5),-(int)(_coefficient*(double)figureBounds.height*0.5));
 		}
 		
 		if (_switchState==CosySwitch.STATE_UNKNOWN) {
@@ -145,16 +149,16 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 		}
 		gfx.setBackgroundColor(gfx.getForegroundColor());
 		gfx.setLineWidth(getLineWidth());
-		_switchPainter.paintSwitch(gfx,_switchState, (int)(_coefficient*(double)bounds.width),(int)(_coefficient*(double)bounds.height));
+		_switchPainter.paintSwitch(gfx,_switchState, (int)(_coefficient*(double)figureBounds.width),(int)(_coefficient*(double)figureBounds.height));
 		
 		if (_rotAngle!=0) {
-			gfx.translate((int)(_coefficient*(double)bounds.width*0.5),(int)(_coefficient*(double)bounds.height*0.5));
+			gfx.translate((int)(_coefficient*(double)figureBounds.width*0.5),(int)(_coefficient*(double)figureBounds.height*0.5));
 			try {
 				gfx.rotate(-(float)_rotAngle);
 			} catch (RuntimeException e) {
-				CentralLogger.getInstance().error(this, "Error occured during ratation");
+				CentralLogger.getInstance().error(this, "Error occured during rotation");
 			}
-			gfx.translate(-bounds.width/2,-bounds.height/2);
+			gfx.translate(-figureBounds.width/2,-figureBounds.height/2);
 		}
 	}
 	

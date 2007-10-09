@@ -125,22 +125,12 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
-				imageFigure.setBorderWidth((Integer)newValue);
+				imageFigure.resizeImage();
 				return true;
 			}
 		};
 		setPropertyChangeHandler(ImageModel.PROP_BORDER_WIDTH, handle);
-		
-//		// changes to the border color property
-//		handle = new IWidgetPropertyChangeHandler() {
-//			public boolean handleChange(final Object oldValue, final Object newValue,
-//					final IFigure figure) {
-//				RefreshableImageFigure imageFigure = (RefreshableImageFigure) figure;
-//				imageFigure.setBorderColor((RGB)newValue);
-//				return true;
-//			}
-//		};
-//		setPropertyChangeHandler(ImageModel.PROP_BORDER_COLOR, handle);
+		setPropertyChangeHandler(ImageModel.PROP_BORDER_STYLE, handle);
 		
 		//size change handlers - so we can stretch accordingly
 		handle = new IWidgetPropertyChangeHandler() {

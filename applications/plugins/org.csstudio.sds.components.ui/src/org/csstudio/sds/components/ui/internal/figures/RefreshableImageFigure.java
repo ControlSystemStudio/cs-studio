@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Shape;
-import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -65,11 +64,6 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 	private boolean _stretch=true;
 	
 	/**
-	 * Border properties.
-	 */
-	private int _borderWidth;
-	
-	/**
 	 * We want to have local coordinates here.
 	 * @return True if here should used local coordinates
 	 */
@@ -94,8 +88,8 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 	 * @param gfx The {@link Graphics} to use
 	 */
 	public void paintFigure(final Graphics gfx) {
-		Rectangle bound=getBounds();
-		Rectangle borderBound = bound.getCropped(new Insets(_borderWidth));
+		Rectangle bound=getBounds().getCopy();
+		bound.crop(this.getInsets());
 		Image temp;
 		
 		try {
@@ -103,8 +97,8 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 				temp=new Image(Display.getDefault(),_path.toString());
 				if (_stretch) {
 					_image=new Image(Display.getDefault(),
-							temp.getImageData().scaledTo(borderBound.width+_leftCrop+_rightCrop,
-									borderBound.height+_topCrop+_bottomCrop));
+							temp.getImageData().scaledTo(bound.width+_leftCrop+_rightCrop,
+									bound.height+_topCrop+_bottomCrop));
 				} else {
 					_image=new Image(Display.getDefault(),temp.getImageData());
 				}
@@ -145,7 +139,7 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 			gfx.drawImage(_image,  
 					_leftCrop,_topCrop,
 					_imgWidth-_leftCrop-_rightCrop,_imgHeight-_topCrop-_bottomCrop,
-					borderBound.x+_borderWidth,borderBound.y+_borderWidth,
+					bound.x,bound.y,
 					_imgWidth-_leftCrop-_rightCrop,_imgHeight-_topCrop-_bottomCrop);
 		}
 	}
@@ -160,23 +154,6 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 			}
 			_image=null;
 		}
-	}
-	
-	/**
-	 * Sets the width of the border.
-	 * @param newval The border width
-	 */
-	public void setBorderWidth(final int newval) {
-		_borderWidth=newval;
-		resizeImage();
-	}
-	
-	/**
-	 * Returns the width of the border.
-	 * @return The width of the border
-	 */
-	public int getBorderWidth() {
-		return _borderWidth;
 	}
 	
 	/**

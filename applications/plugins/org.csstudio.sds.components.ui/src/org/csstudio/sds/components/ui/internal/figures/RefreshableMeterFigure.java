@@ -210,8 +210,7 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		
 		addFigureListener(new FigureListener() {
 			public void figureMoved(final IFigure figure) {
-				setConstraint(_background,new Rectangle(0,0,bounds.width,bounds.height));
-				setConstraint(_needle,new Rectangle(0,0,bounds.width,bounds.height));
+				refreshConstraints();
 				_background.invalidate();
 				_needle.invalidate();
 			}
@@ -256,18 +255,27 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		}
 		return Trigonometry.sin(angl);
 	}
+	
+	private void refreshConstraints() {
+		Rectangle figureBounds=getBounds().getCopy();
+		figureBounds.crop(this.getInsets());	
+		setConstraint(_background,new Rectangle(0,0,figureBounds.width,figureBounds.height));
+		setConstraint(_needle,new Rectangle(0,0,figureBounds.width,figureBounds.height));
+	}
+	
+	public void refresh() {
+		this.calculateRadii(values_font.getFontData()[0].getHeight()*2);
+	}
 
 	/**
 	 * Calculates all the needed radii and gets the current dimensions of the widget.
 	 */
 	private void calculateRadii(final int offset) {
-		Rectangle bound=getBounds();
-		
-		setConstraint(_background,new Rectangle(0,0,bounds.width,bounds.height));
-		setConstraint(_needle,new Rectangle(0,0,bounds.width,bounds.height));
-		
-		_imgWidth=bound.width;
-		_imgHeight=bound.height-2*_channelFont.getFontData()[0].getHeight()-offset;
+		refreshConstraints();
+		Rectangle figureBounds=getBounds().getCopy();
+		figureBounds.crop(this.getInsets());
+		_imgWidth=figureBounds.width;
+		_imgHeight=figureBounds.height-2*_channelFont.getFontData()[0].getHeight()-offset;
 		
 		R=((double)_imgHeight)/(_visibleRadius+_scaleRadius+_textRadius+ (1-_visibleRadius-_scaleRadius-_textRadius)*(1-cosine(_angle/2)) );
 		if ((double)_imgWidth/2<sine(_angle/2)*R) {
@@ -587,13 +595,6 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		return _decimalPlaces;
 	}
 	
-//	public void setScaleFormat(final String newval) {
-//		scale_format=newval;
-//	}
-//	public String getScaleFormat() {
-//		return scale_format;
-//	}
-	
 	/**
 	 * Subfigure that draws the arched frame and background of the meter.
 	 * 
@@ -607,7 +608,6 @@ public final class RefreshableMeterFigure extends Shape implements IAdaptable {
 		protected void fillShape(final Graphics gfx) {
 			double upp_angle=((double)_innerAngle/(_maxValue-_minValue))*(_loloBound-_minValue);
 			double lo_angle=90.0+(double)_innerAngle/2.0;
-			
 			if (_transparent==false) {
 				gfx.setBackgroundColor(getBackgroundColor());
 				gfx.fillRectangle(getBounds());

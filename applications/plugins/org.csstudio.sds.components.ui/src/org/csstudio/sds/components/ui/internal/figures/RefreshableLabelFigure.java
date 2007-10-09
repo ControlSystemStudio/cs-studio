@@ -107,7 +107,8 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	 */
 	public void paintFigure(final Graphics gfx) {
 		
-		Rectangle bound=getBounds();
+		Rectangle bound=getBounds().getCopy();
+		bound.crop(this.getInsets());
 		gfx.translate(bound.x,bound.y);
 		
 		if (!_transparent) {

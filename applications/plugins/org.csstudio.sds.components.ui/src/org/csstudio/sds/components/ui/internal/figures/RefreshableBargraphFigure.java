@@ -193,7 +193,9 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	public synchronized void paintFigure(final Graphics graphics) {
 		if (!_transparent) {
 			graphics.setBackgroundColor(this.getBackgroundColor());
-			graphics.fillRectangle(this.getBounds());
+			Rectangle bounds = this.getBounds().getCopy();
+			bounds.crop(this.getInsets());
+			graphics.fillRectangle(bounds);
 			graphics.setBackgroundColor(this.getBackgroundColor());
 			graphics.setForegroundColor(this.getBorderColor());	
 		}
@@ -220,12 +222,12 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * Refreshes the Constraints.
 	 */
-	private void refreshConstraints() {
+	public void refreshConstraints() {
 		_barRectangle = this.getBarRectangle();
 		this.setConstraint(_fillRectangleFigure, _barRectangle);
-		this.setConstraint(_markerPanel, this.getMarkerPanelConstraint(this
-				.getBounds()));
-		this.setConstraint(_scale, this.getScaleConstraint(this.getBounds()));
+		Rectangle bounds = this.getBounds().getCopy().crop(this.getInsets());
+		this.setConstraint(_markerPanel, this.getMarkerPanelConstraint(bounds));
+		this.setConstraint(_scale, this.getScaleConstraint(bounds));
 		this.setToolTip(this.getToolTipFigure());
 	}
 
@@ -332,7 +334,8 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * @return Rectangle The rectangle for the bargraph
 	 */
 	private Rectangle getBarRectangle() {
-		Rectangle bounds = this.getBounds();
+		Rectangle bounds = this.getBounds().getCopy();
+		bounds.crop(this.getInsets());
 		int yCorrection = 0;
 		int heightCorrection = 0;
 		int xCorrection = 0;

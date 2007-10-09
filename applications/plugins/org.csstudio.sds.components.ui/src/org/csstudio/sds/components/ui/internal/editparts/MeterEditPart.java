@@ -63,15 +63,7 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 		figure.setChannelFont(model.getChannelFont());
 		
 		figure.setDecimalPlaces(model.getPrecision());
-	
-//		model.getProperty(MeterModel.PROP_VALUE).addPropertyChangeListener(new IPropertyChangeListener() {
-//			public void propertyValueChanged(final Object oldValue, final Object newValue) {}
-//			public void propertyManualValueChanged(final Object manualValue) {}
-//			public void dynamicsDescriptorChanged(final DynamicsDescriptor dynamicsDescriptor) {
-//				figure.setDynamicValue(dynamicsDescriptor);
-//			}
-//		});
-//		figure.setDynamicValue(model.getDynamicsDescriptor(MeterModel.PROP_VALUE));
+
 		figure.setChannelName(model.getPrimaryPV());
 		return figure;
 	}
@@ -384,6 +376,16 @@ public final class MeterEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(MeterModel.PROP_CHANFONT, handle);
+		
+		IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
+				RefreshableMeterFigure meterFigure = (RefreshableMeterFigure) figure;
+				meterFigure.refresh();
+				return true;
+			}
+		};
+		setPropertyChangeHandler(MeterModel.PROP_BORDER_WIDTH, borderHandler);
+		setPropertyChangeHandler(MeterModel.PROP_BORDER_STYLE, borderHandler);
 		registerColorPropertyHandlers();
 		registerBoundaryPropertyHandlers();
 	}

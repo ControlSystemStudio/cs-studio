@@ -59,10 +59,11 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 	 */
 	@Override
 	protected synchronized void fillShape(final Graphics graphics) {
-		Rectangle figureBounds = getBounds();
+		Rectangle figureBounds = getBounds().getCopy();
+		figureBounds.crop(this.getInsets());
 		if (!_transparent) {
 			graphics.setBackgroundColor(getBackgroundColor());
-			graphics.fillRectangle(getBounds());	
+			graphics.fillRectangle(figureBounds);	
 		}
 		graphics.setBackgroundColor(getForegroundColor());
 		Rectangle fillRectangle;
