@@ -37,6 +37,7 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Panel;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.XYLayout;
@@ -1121,11 +1122,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * 
 	 */
 	private final class Marker extends RectangleFigure {
-//		/**
-//		 * The key of this Marker, which is the drawed text.
-//		 */
-//		private String _key;
-
 		/**
 		 * The orientation of this Marker.
 		 */
@@ -1161,12 +1157,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		public Marker(final String key, final boolean topLeft,
 				final boolean isHorizontal) {
 			this.setLayoutManager(new BorderLayout());
-//			_key = key;
 			_textLabel = new Label(key.toString());
 			_textLabel.setForegroundColor(this.getForegroundColor());
 			_tickMark = new TickMark();
 			_tickMark.setForegroundColor(this.getForegroundColor());
-//			_tickMark.setBackgroundColor(_colorMap.get(_key));
 			_tickMark.setBackgroundColor(getDefaultFillColor());
 			this.add(_tickMark, BorderLayout.CENTER);
 			this.refreshLabel();
@@ -1230,10 +1224,13 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 					place = BorderLayout.BOTTOM;
 				}
 			} else {
+				_textLabel.setTextPlacement(PositionConstants.NORTH);
 				if (_topLeft) {
 					place = BorderLayout.LEFT;
+					_textLabel.setTextAlignment(PositionConstants.LEFT);
 				} else {
 					place = BorderLayout.RIGHT;
+					_textLabel.setTextAlignment(PositionConstants.LEFT);
 				}
 			}
 			this.add(_textLabel, place);
@@ -1272,7 +1269,6 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			public void paintFigure(final Graphics graphics) {
 				Rectangle bounds = this.getBounds();
 				graphics.setForegroundColor(this.getForegroundColor());
-//				graphics.setBackgroundColor(_colorMap.get(_key));
 				graphics.setBackgroundColor(getDefaultFillColor());
 				PointList pointList = new PointList();
 				int x;
