@@ -152,7 +152,7 @@ public class SampleDisplayImporter extends AbstractDisplayImporter {
 		result.setPropertyValue("scaleShowStatus", 2);
 		result.setPropertyValue("sectionCount", 100);
 
-		result.addAlias("record", "recordName");
+		result.addAlias("channel", "channelName");
 
 		connectToSingleInputChannel(result, "fill", "$channel$.VALUE",
 				Double.class);
