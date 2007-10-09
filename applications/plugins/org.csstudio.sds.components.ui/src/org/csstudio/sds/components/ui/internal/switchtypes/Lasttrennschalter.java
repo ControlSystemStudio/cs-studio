@@ -23,9 +23,33 @@ public final class Lasttrennschalter extends CosySwitch {
 	 * {@inheritDoc}
 	 */
 	protected void paintBase(final Graphics gfx, final int width, final int height) {
-		int delta=gfx.getLineWidth()/2+gfx.getLineWidth()%2;
-		gfx.setLineStyle(SWT.LINE_DOT);
-		gfx.drawRectangle(delta,4*delta,width-2*delta,height-8*delta);
+		if (gfx.getLineWidth()>0) {
+			int delta=gfx.getLineWidth()/2+gfx.getLineWidth()%2;
+			gfx.setLineStyle(SWT.LINE_DOT);
+			
+			int correction = (int)Math.ceil(((double)gfx.getLineWidth())/2);
+			// top
+			gfx.drawLine(0, 4*delta + gfx.getLineWidth() / 2, 
+					width / 2, 4*delta + gfx.getLineWidth() / 2);
+			gfx.drawLine(width , 4*delta + gfx.getLineWidth() / 2,
+					width / 2, 4*delta + gfx.getLineWidth() / 2);
+			// right
+			gfx.drawLine(width - correction, 4*delta,
+					width - correction, height / 2);
+			gfx.drawLine(width - correction, height - 4*delta,
+					width - correction, height / 2);
+			// bottom
+			gfx.drawLine(0, height - correction - 4*delta,
+					width / 2, height - correction - 4*delta);
+			gfx.drawLine(width, height - correction - 4*delta,
+					width / 2, height - correction - 4*delta);
+			// left
+			gfx.drawLine(gfx.getLineWidth() / 2, 4*delta, 
+					gfx.getLineWidth() / 2, height / 2);
+			gfx.drawLine(gfx.getLineWidth() / 2, height - 4*delta,
+					gfx.getLineWidth() / 2, height / 2);	
+		}
+		
 		gfx.setLineStyle(SWT.LINE_SOLID);
 		gfx.drawLine(width/2,0,width/2,height/3);
 		gfx.drawLine(width/2,2*height/3,width/2,height);
