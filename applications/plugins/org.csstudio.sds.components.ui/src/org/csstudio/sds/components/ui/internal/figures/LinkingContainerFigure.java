@@ -31,7 +31,7 @@ public final class LinkingContainerFigure extends Panel implements IAdaptable {
 	 */
 	private ScalableFreeformLayeredPane _pane;
 	/**
-	 * The zoom manager for tis widget.
+	 * The zoom manager for this widget.
 	 */
 	private ZoomManager _zoomManager;
 
