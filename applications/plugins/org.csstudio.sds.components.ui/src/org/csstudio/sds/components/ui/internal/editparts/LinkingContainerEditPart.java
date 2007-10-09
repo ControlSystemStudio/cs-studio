@@ -21,9 +21,11 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Iterator;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.LinkingContainerModel;
 import org.csstudio.sds.components.ui.internal.figures.LinkingContainerFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -35,6 +37,7 @@ import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.editparts.AbstractContainerEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -139,69 +142,78 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 
 		if (path != null && !path.isEmpty()) {
 
-			IFile file = findFile(path);
-
-			if (file != null) {
+			// IFile file = findFile(path);
+			InputStream input = getInputStream(path);
+			// if (file != null) {
+			if (input != null) {
 				final DisplayModel tempModel = new DisplayModel();
 
-				try {
-					PersistenceUtil.asyncFillModel(tempModel, file
-							.getContents(), new DisplayModelLoadAdapter() {
-
-						public void onDisplayModelLoaded() {
-							// remove old widgets
-							Iterator<AbstractWidgetModel> it = container
-									.getWidgets().iterator();
-							while (it.hasNext()) {
-								container.removeWidget(it.next());
-							}
-
-							// add new widgets
-							it = tempModel.getWidgets().iterator();
-							while (it.hasNext()) {
-								AbstractWidgetModel w = it.next();
-								tempModel.removeWidget(w);
-								container.addWidget(w);
-							}
-
-							// update zoom
-							new CheckedUiRunnable(){
-								@Override
-								protected void doRunInUi() {
-									((LinkingContainerFigure) getFigure()).updateZoom();
+				PersistenceUtil.asyncFillModel(tempModel, input,
+						new DisplayModelLoadAdapter() {
+							public void onDisplayModelLoaded() {
+								// remove old widgets
+								Iterator<AbstractWidgetModel> it = container
+										.getWidgets().iterator();
+								while (it.hasNext()) {
+									container.removeWidget(it.next());
 								}
-							};
-							
-						}
-					});
-				} catch (CoreException e) {
-					CentralLogger.getInstance().error(this, e);
-				}
+
+								// add new widgets
+								it = tempModel.getWidgets().iterator();
+								while (it.hasNext()) {
+									AbstractWidgetModel w = it.next();
+									tempModel.removeWidget(w);
+									container.addWidget(w);
+								}
+
+								// update zoom
+								new CheckedUiRunnable() {
+									@Override
+									protected void doRunInUi() {
+										((LinkingContainerFigure) getFigure())
+												.updateZoom();
+									}
+								};
+
+							}
+						});
 
 			}
 
 		}
 	}
-
+	
 	/**
-	 * Return the {@link IFile} with the given path.
+	 * Return the {@link InputStream} from the given path.
 	 * 
-	 * @param location
+	 * @param path
 	 *            The {@link IPath} to the file
-	 * @return IFile The corresponding file
+	 * @return The corresponding {@link InputStream}
 	 */
-	private IFile findFile(final IPath location) {
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(location);
-
-		if (file == null) {
-			IFile[] files = ResourcesPlugin.getWorkspace().getRoot()
-					.findFilesForLocation(location);
-
-			if (files != null && files.length > 0) {
-				file = files[0];
+	private InputStream getInputStream(final IPath path) {
+		InputStream result = null;
+		
+		// try workspace
+		IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(path,
+				false);
+		if (r instanceof IFile) {
+			try {
+				result = ((IFile) r).getContents();
+			} catch (CoreException e) {
+				result = null;
 			}
 		}
 
-		return file;
+		if (result == null) {
+			// try from local file system
+			try {
+				result = new FileInputStream(path.toFile());
+			} catch (FileNotFoundException e) {
+				result = null;
+			}
+
+		}
+
+		return result;
 	}
 }
