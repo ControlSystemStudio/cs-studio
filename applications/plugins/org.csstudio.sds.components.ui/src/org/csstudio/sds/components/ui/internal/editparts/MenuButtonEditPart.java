@@ -51,8 +51,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 			public void mouseDoubleClicked(final MouseEvent me) {
 			}
 
-			public void mousePressed(final MouseEvent me) {
-				System.out.println(".mousePressed()");
+			public void mousePressed(final MouseEvent me) { 
 				if (me.button == 1 && getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 					final org.eclipse.swt.graphics.Point cursorLocation = Display.getCurrent().getCursorLocation();
 					new CheckedUiRunnable() {
