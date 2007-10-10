@@ -1044,10 +1044,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			} else {
 				for (int i = 0; i < _markerList.size(); i++) {
 					double weight = getWeight(_levelMap.get(LABELS[i]));
-					if (weight < 0 || weight > 1) {
-						this.setConstraint(_markerList.get(i), new Rectangle(0,
-								0, 0, 0));
+					if (Double.isNaN(weight) || weight < 0 || weight > 1) {
+						_markerList.get(i).setVisible(false);
 					} else {
+						_markerList.get(i).setVisible(true);
 						int y = _start -1 + (int) ((_end - _start) * (1 - weight))
 								- (TEXTHEIGHT+_tickMarkWideness)/2;
 						this.setConstraint(_markerList.get(i), new Rectangle(1,
@@ -1131,6 +1131,8 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 * The alignment of this Marker.
 		 */
 		private boolean _topLeft;
+		
+		private final int _tickMarkSpace = 10;
 
 		/**
 		 * The Label for the text.
@@ -1138,7 +1140,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		private Label _textLabel;
 
 		/**
-		 * The Tigmark.
+		 * The Tickmark.
 		 */
 		private TickMark _tickMark;
 
@@ -1156,14 +1158,20 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 */
 		public Marker(final String key, final boolean topLeft,
 				final boolean isHorizontal) {
-			this.setLayoutManager(new BorderLayout());
+			this.setLayoutManager(new XYLayout());
 			_textLabel = new Label(key.toString());
 			_textLabel.setForegroundColor(this.getForegroundColor());
 			_tickMark = new TickMark();
 			_tickMark.setForegroundColor(this.getForegroundColor());
 			_tickMark.setBackgroundColor(getDefaultFillColor());
-			this.add(_tickMark, BorderLayout.CENTER);
-			this.refreshLabel();
+			this.add(_tickMark);
+			this.add(_textLabel);
+			refreshConstraints();
+			addFigureListener(new FigureListener() {
+				public void figureMoved(final IFigure source) {
+					refreshConstraints();
+				}
+			});
 		}
 
 		/**
@@ -1208,32 +1216,49 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			_tickMark.setTopLeftAlignment(topLeft);
 			this.refreshLabel();
 		}
+		
+		private void refreshConstraints() {
+			Rectangle bounds = this.getBounds();
+			if (_isHorizontal) {
+				if (_topLeft) {
+					this.setConstraint(_tickMark, new Rectangle(0, bounds.height-_tickMarkSpace, bounds.width, _tickMarkSpace));
+					this.setConstraint(_textLabel, new Rectangle(0, 0, bounds.width, bounds.height-_tickMarkSpace));
+				} else {
+					this.setConstraint(_tickMark, new Rectangle(0, 0, bounds.width, _tickMarkSpace));
+					this.setConstraint(_textLabel, new Rectangle(0, _tickMarkSpace, bounds.width, bounds.height-_tickMarkSpace));
+				}
+			} else {
+				if (_topLeft) {
+					this.setConstraint(_tickMark, new Rectangle(bounds.width-_tickMarkSpace, 0, _tickMarkSpace, bounds.height));
+					this.setConstraint(_textLabel, new Rectangle(0, 0, bounds.width-_tickMarkSpace, bounds.height));
+				} else {
+					this.setConstraint(_tickMark, new Rectangle(0, 0, _tickMarkSpace, bounds.height));
+					this.setConstraint(_textLabel, new Rectangle(_tickMarkSpace, 0, bounds.width-_tickMarkSpace, bounds.height));
+				}
+			}
+			refreshLabel();
+		}
 
 		/**
 		 * Refreshes the Label.
 		 */
 		private void refreshLabel() {
-			if (this.getChildren().contains(_textLabel)) {
-				this.remove(_textLabel);
-			}
-			Integer place;
 			if (_isHorizontal) {
+				_textLabel.setTextPlacement(PositionConstants.WEST);
 				if (_topLeft) {
-					place = BorderLayout.TOP;
+					_textLabel.setTextAlignment(PositionConstants.BOTTOM);
 				} else {
-					place = BorderLayout.BOTTOM;
+					_textLabel.setTextAlignment(PositionConstants.TOP);
 				}
 			} else {
 				_textLabel.setTextPlacement(PositionConstants.NORTH);
 				if (_topLeft) {
-					place = BorderLayout.LEFT;
-					_textLabel.setTextAlignment(PositionConstants.LEFT);
+					_textLabel.setTextAlignment(PositionConstants.RIGHT);
 				} else {
-					place = BorderLayout.RIGHT;
 					_textLabel.setTextAlignment(PositionConstants.LEFT);
 				}
 			}
-			this.add(_textLabel, place);
+//			this.add(_textLabel, place);
 		}
 
 		/**
@@ -1270,12 +1295,14 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				Rectangle bounds = this.getBounds();
 				graphics.setForegroundColor(this.getForegroundColor());
 				graphics.setBackgroundColor(getDefaultFillColor());
+//				System.out.println("TickMark.paintFigure() "+bounds);
 				PointList pointList = new PointList();
 				int x;
 				int y;
 				if (_isHorizontal) {
 					x = bounds.x + bounds.width / 2;
 					y = bounds.y;
+//					System.out.println("TickMark.paintFigure() X: "+x+" Y: "+y);
 					if (_direction < 0) {
 						y = y + bounds.height;
 					}
