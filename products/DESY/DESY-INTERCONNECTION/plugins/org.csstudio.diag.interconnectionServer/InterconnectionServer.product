@@ -5,6 +5,20 @@
 
    <configIni use="default"/>
 
+   <launcherArgs>
+      <programArgs>-plugincustomization plugin_customization.ini</programArgs>
+   </launcherArgs>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
    <plugins>
       <plugin id="org.csstudio.diag.interconnectionServer"/>
       <plugin id="org.csstudio.platform"/>
