@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.platform.feature"
       label="CSS Platform Feature"
-      version="0.9.6">
+      version="0.9.9">
 
    <description url="http://css.desy.de">
       The Control System Studio defines a platform for control system
@@ -64,7 +64,6 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
 
    <plugin
          id="org.eclipse.ant.core"

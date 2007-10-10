@@ -6,7 +6,7 @@
    <aboutInfo>
       <image path="/org.csstudio.startup/resources/css64x64.gif"/>
       <text>
-         Control System Studio 0.9.6
+         Control System Studio 0.9.9
 
 Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
 Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -33,6 +33,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    <configIni use="default" path="/org.csstudio.startup/config.ini"/>
 
    <launcherArgs>
+      <programArgs>-plugincustomization plugin_customization.ini</programArgs>
       <vmArgs>-Xmx128m</vmArgs>
    </launcherArgs>
 
@@ -46,6 +47,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -144,7 +146,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    </plugins>
 
    <features>
-      <feature id="org.csstudio.platform.feature.product" version="0.9.6"/>
+      <feature id="org.csstudio.platform.feature.product" version="0.9.9"/>
    </features>
 
 </product>

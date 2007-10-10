@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JAAS Authentication Plug-in
 Bundle-SymbolicName: org.csstudio.platform.jaasAuthentication;singleton:=true
-Bundle-Version: 0.9.6
+Bundle-Version: 0.9.9
 Bundle-Activator: org.csstudio.platform.internal.jaasauthentication.Activator
 Bundle-Vendor: DESY
 Bundle-Localization: plugin
