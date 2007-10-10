@@ -21,6 +21,8 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import java.util.Map;
+
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -83,11 +85,15 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
         RefreshableLabelFigure label = new RefreshableLabelFigure();
 
         //label.setText(model.getInputText());
-        label.setTextValue(model.getInputText());
+        label.setType(model.getType());
+		label.setTextValue(model.getInputText());
+		label.setDecimalPlaces(model.getPrecision());
         label.setFont(CustomMediaFactory.getInstance().getFont(
                         model.getFont()));
         label.setTextAlignment(model.getTextAlignment());
         label.setTransparent(model.getTransparent());
+        label.setAliases(model.getAliases());
+		label.setPrimaryPV(model.getPrimaryPV());
         label.addMouseListener(new MouseListener() {
             public void mouseDoubleClicked(final MouseEvent me) {
                 performDirectEdit();
@@ -340,7 +346,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
             }
         };
         setPropertyChangeHandler(TextInputModel.PROP_TRANSPARENT, transparentHandler);
-        //
+        // type
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
@@ -362,5 +368,29 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(TextInputModel.PROP_PRECISION, precisionHandler);
+		// aliases
+		IWidgetPropertyChangeHandler aliasHandler = new IWidgetPropertyChangeHandler() {
+			@SuppressWarnings("unchecked")
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+				label.setAliases((Map<String, String>) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(TextInputModel.PROP_ALIASES, aliasHandler);
+		// primary pv
+		IWidgetPropertyChangeHandler pvHandler = new IWidgetPropertyChangeHandler() {
+			@SuppressWarnings("unchecked")
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+				label.setPrimaryPV((String) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(TextInputModel.PROP_PRIMARY_PV, pvHandler);
     }
 }

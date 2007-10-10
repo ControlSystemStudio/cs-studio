@@ -1,5 +1,7 @@
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import java.util.Map;
+
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.util.CustomMediaFactory;
@@ -46,6 +48,8 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 		figure.setType(model.getType());
 		figure.setTextValue(model.getTextValue());
 		figure.setDecimalPlaces(model.getPrecision());
+		figure.setAliases(model.getAliases());
+		figure.setPrimaryPV(model.getPrimaryPV());
 		
 		return figure;
 	}
@@ -86,6 +90,30 @@ public final class LabelEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_PRECISION, precisionHandler);
+		// aliases
+		IWidgetPropertyChangeHandler aliasHandler = new IWidgetPropertyChangeHandler() {
+			@SuppressWarnings("unchecked")
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+				label.setAliases((Map<String, String>) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_ALIASES, aliasHandler);
+		// primary pv
+		IWidgetPropertyChangeHandler pvHandler = new IWidgetPropertyChangeHandler() {
+			@SuppressWarnings("unchecked")
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+				label.setPrimaryPV((String) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_PRIMARY_PV, pvHandler);
 	}
 	
 	/**

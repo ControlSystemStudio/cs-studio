@@ -95,7 +95,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	/**
      * Currently available value types.
      */
-    public static final String[] VALUE_TYPES=new String [] {"Text","Double Value"};
+    public static final String[] VALUE_TYPES=new String [] {"Text","Double Value","Alias"};
     /**
      * The ID of the <i>double type</i> property.
      */

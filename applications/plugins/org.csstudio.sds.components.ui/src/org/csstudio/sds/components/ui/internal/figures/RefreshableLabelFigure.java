@@ -1,11 +1,14 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
+import org.csstudio.sds.util.AliasUtil;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PositionConstants;
@@ -31,6 +34,10 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	 * The ID for the <i>double</i> type.
 	 */
 	public static final int TYPE_DOUBLE = 1;
+	/**
+	 * The ID for the <i>alias</i> type.
+	 */
+	public static final int TYPE_ALIAS = 2;
 	
 	/**
 	 * Type of the label.
@@ -73,21 +80,21 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	 * The x offset of the text.
 	 */
 	private int _yOff=0;
-	
 	/**
 	 * Value fields.
 	 */
 	private String _textValue="";
-	
 	/**
 	 * Is the background transparent or not?
 	 */
 	private boolean _transparent=true;
-	
 	/**
 	 * The width of the border.
 	 */
 	private int _borderWidth;
+	
+	private Map<String, String> _aliases;
+	private String _mainPV;
 	
 	/**
 	 * Fills the image. Nothing to do here.
@@ -133,6 +140,9 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 			} catch (Exception e) {
 				toprint = _textValue;
 			}
+			break;
+		case TYPE_ALIAS:
+			toprint=AliasUtil.getAliasName(_mainPV, _aliases);
 			break;
 		default:
 			toprint="unknown value type";
@@ -204,6 +214,22 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	 */
 	public int getDecimalPlaces() {
 		return _decimalPlaces;
+	}
+	
+	public void setAliases(Map<String,String> aliases) {
+		if (aliases==null) {
+			_aliases = new HashMap<String, String>();
+		} else {
+			_aliases = aliases;
+		}
+	}
+	
+	public void setPrimaryPV(final String mainPV) {
+		if (mainPV==null) {
+			_mainPV = "";
+		} else {
+			_mainPV = mainPV;
+		}
 	}
 	
 	/**
