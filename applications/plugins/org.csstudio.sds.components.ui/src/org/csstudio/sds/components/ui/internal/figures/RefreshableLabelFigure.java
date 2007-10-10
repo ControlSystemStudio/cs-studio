@@ -150,10 +150,15 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 			break;
 		case TYPE_HEX:
 			try {
-				double d = Double.parseDouble(_textValue);
-				toprint = Double.toHexString(d);
-			} catch (Exception e) {
-				toprint = _textValue;
+				long l = Long.parseLong(_textValue);
+				toprint = Long.toHexString(l);
+			} catch (Exception e1) {
+				try {
+					double d = Double.parseDouble(_textValue);
+					toprint = Double.toHexString(d);
+				} catch (Exception e2) {
+					toprint = _textValue;
+				}
 			}
 			break;
 		default:
