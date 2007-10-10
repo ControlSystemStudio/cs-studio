@@ -74,8 +74,15 @@ public final class RefreshableRectangleFigure extends RectangleFigure implements
 			int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
 			fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
 		}
-		//new Rectangle(figureBounds.getLocation(),new Dimension(newW, figureBounds.height))
 		graphics.fillRectangle(fillRectangle);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void paintFigure(final Graphics graphics) {
+		fillShape(graphics);
 	}
 
 	/**

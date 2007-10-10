@@ -24,6 +24,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.AbstractBorder;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -192,7 +193,10 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 	 *
 	 */
 	private final class EllipseBorder extends AbstractBorder {
-		
+		/**
+		 * The insets for this Border.
+		 */
+		private Insets _insets;
 		/**
 		 * The Color of the border.
 		 */
@@ -200,7 +204,7 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 		/**
 		 * The width of the border.
 		 */
-		private int _borderWidth = 1;
+		private int _borderWidth = 0;
 		
 		/**
 		 * Constructor.
@@ -208,6 +212,7 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 		 * 				The width for the border
 		 */
 		public EllipseBorder(final int borderWidth) {
+			_insets = new Insets(Math.max(borderWidth-1,0));
 			_borderWidth = borderWidth;
 		}
 		
@@ -224,18 +229,22 @@ public final class RefreshableEllipseFigure extends Ellipse implements
 		 * {@inheritDoc}
 		 */
 		public Insets getInsets(final IFigure figure) {
-			return new Insets(_borderWidth);
+			return _insets;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		public void paint(final IFigure figure, final Graphics graphics, final Insets insets) {
-			graphics.setBackgroundColor(_borderColor);
-			graphics.setForegroundColor(_borderColor);
-			graphics.setLineWidth(_borderWidth);
-			graphics.drawOval(figure.getBounds().x+_borderWidth/2,figure.getBounds().y+_borderWidth/2,
-					figure.getBounds().width-_borderWidth,figure.getBounds().height-_borderWidth);
+			if (_borderWidth>0) {
+				Rectangle rectangle = figure.getBounds().getCopy();
+				graphics.setBackgroundColor(_borderColor);
+				graphics.setForegroundColor(_borderColor);
+				graphics.setLineWidth(_borderWidth);
+				int correction = (int)Math.ceil((double)(_borderWidth)/2);
+				rectangle.crop(new Insets(correction-1,correction-1,correction,correction));
+				graphics.drawOval(rectangle);	
+			}
 		}
 		
 	}
