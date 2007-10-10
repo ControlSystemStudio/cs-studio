@@ -38,6 +38,10 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	 * The ID for the <i>alias</i> type.
 	 */
 	public static final int TYPE_ALIAS = 2;
+	/**
+	 * The ID for the <i>alias</i> type.
+	 */
+	public static final int TYPE_HEX = 3;
 	
 	/**
 	 * Type of the label.
@@ -143,6 +147,14 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 			break;
 		case TYPE_ALIAS:
 			toprint=AliasUtil.getAliasName(_mainPV, _aliases);
+			break;
+		case TYPE_HEX:
+			try {
+				double d = Double.parseDouble(_textValue);
+				toprint = Double.toHexString(d);
+			} catch (Exception e) {
+				toprint = _textValue;
+			}
 			break;
 		default:
 			toprint="unknown value type";

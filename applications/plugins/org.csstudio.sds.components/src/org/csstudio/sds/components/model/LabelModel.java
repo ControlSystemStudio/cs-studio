@@ -63,7 +63,7 @@ public final class LabelModel extends AbstractWidgetModel {
 	/**
 	 * Currently available value types.
 	 */
-	public static final String [] VALUE_TYPES=new String [] {"Text","Double Value","Alias"};
+	public static final String [] VALUE_TYPES=new String [] {"Text","Double Value","Alias","Hex Value"};
 	/**
 	 * The ID of the <i>text type</i> property.
 	 */
