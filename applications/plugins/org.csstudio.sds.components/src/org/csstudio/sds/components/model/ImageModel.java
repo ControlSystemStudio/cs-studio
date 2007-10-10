@@ -47,7 +47,7 @@ public final class ImageModel extends AbstractWidgetModel {
 	/**
 	 * The default value for the file extensions.
 	 */
-	private static final String[] FILE_EXTENSIONS = new String[] {"jpg", "jepg", "gif", "bmp", "png", "*"};
+	private static final String[] FILE_EXTENSIONS = new String[] {"*", "jpg", "jepg", "gif", "bmp", "png"};
 	
 	/**
 	 * {@inheritDoc}

@@ -2,6 +2,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -94,7 +95,12 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 		
 		try {
 			if (_image==null && !_path.isEmpty()) {
-				temp=new Image(Display.getDefault(),_path.toString());
+				String currentPath = _path.toString();
+				IPath fullPath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+				if (!fullPath.isPrefixOf(_path)) {
+					currentPath  = fullPath.toString()+_path.toString();
+				}
+				temp=new Image(Display.getDefault(),currentPath);
 				if (_stretch) {
 					_image=new Image(Display.getDefault(),
 							temp.getImageData().scaledTo(bound.width+_leftCrop+_rightCrop,
