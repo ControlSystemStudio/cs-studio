@@ -54,26 +54,6 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	public static final String PROP_DEFAULT_FILL_COLOR = "defaultFillColor";
 	
-//	/**
-//	 * The ID of the lolo-Color property.
-//	 */
-//	public static final String PROP_LOLO_COLOR = "loloColor";
-//	
-//	/**
-//	 * The ID of the lo-Color property.
-//	 */
-//	public static final String PROP_LO_COLOR = "loColor";
-//	
-//	/**
-//	 * The ID of the hi-Color property.
-//	 */
-//	public static final String PROP_HI_COLOR = "hiColor";
-//	
-//	/**
-//	 * The ID of the hihi-Color property.
-//	 */
-//	public static final String PROP_HIHI_COLOR = "hihiColor";
-	
 	/**
 	 * The ID of the fillbackground-Color property.
 	 */
@@ -149,25 +129,6 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	private static final RGB DEFAULT_FILL_COLOR = new RGB(0,0,255);
 	
-//	/**
-//	 * The default value of the lolo color property. 
-//	 */
-//	private static final RGB DEFAULT_LOLO_COLOR = new RGB(255,0,0);
-//	
-//	/**
-//	 * The default value of the lolo color property. 
-//	 */
-//	private static final RGB DEFAULT_LO_COLOR = new RGB(255,100,100);
-//	
-//	/**
-//	 * The default value of the lolo color property. 
-//	 */
-//	private static final RGB DEFAULT_HI_COLOR = new RGB(0,255,255);
-//	
-//	/**
-//	 * The default value of the lolo color property. 
-//	 */
-//	private static final RGB DEFAULT_HIHI_COLOR = new RGB(255,255,255);
 	/**
 	 * The default value of the fillbackground color property. 
 	 */
@@ -218,13 +179,9 @@ public final class BargraphModel extends AbstractWidgetModel {
 	protected void configureProperties() {
 		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
 				WidgetPropertyCategory.Behaviour, DEFAULT_FILL));
-		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
+		addProperty(PROP_ORIENTATION, new BooleanProperty("Horizontal Orientation", WidgetPropertyCategory.Behaviour, DEFAULT_ORIENTATION_HORIZONTAL));
 		//Colors
 		addProperty(PROP_DEFAULT_FILL_COLOR, new ColorProperty("Fill Color",WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));
-//		addProperty(PROP_LOLO_COLOR, new ColorProperty("Color LOLO",WidgetPropertyCategory.Display,DEFAULT_LOLO_COLOR));
-//		addProperty(PROP_LO_COLOR, new ColorProperty("Color LO",WidgetPropertyCategory.Display,DEFAULT_LO_COLOR));
-//		addProperty(PROP_HI_COLOR, new ColorProperty("Color HI",WidgetPropertyCategory.Display,DEFAULT_HI_COLOR));
-//		addProperty(PROP_HIHI_COLOR, new ColorProperty("Color HIHI",WidgetPropertyCategory.Display,DEFAULT_HIHI_COLOR));
 		addProperty(PROP_FILLBACKGROUND_COLOR, new ColorProperty("Color Fillbackground",WidgetPropertyCategory.Display,DEFAULT_FILLBACKGROUND_COLOR));
 		//Levels
 		addProperty(PROP_MIN, new DoubleProperty("Minimum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[0]));
@@ -234,10 +191,10 @@ public final class BargraphModel extends AbstractWidgetModel {
 		addProperty(PROP_HIHI_LEVEL, new DoubleProperty("Level HIHI", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[5]));
 		addProperty(PROP_MAX, new DoubleProperty("Maximum", WidgetPropertyCategory.Behaviour,DEFAULT_LEVELS[6]));
 		//Show_Value
-		addProperty(PROP_SHOW_VALUES, new BooleanProperty("Show values", WidgetPropertyCategory.Display, DEFAULT_SHOW_VALUES));
+		addProperty(PROP_SHOW_VALUES, new BooleanProperty("Show Values", WidgetPropertyCategory.Display, DEFAULT_SHOW_VALUES));
 		addProperty(PROP_SHOW_MARKS, new OptionProperty("Tickmarks",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_MARKS));
 		addProperty(PROP_SHOW_SCALE, new OptionProperty("Scale",WidgetPropertyCategory.Display,SHOW_LABELS,DEFAULT_SHOW_SCALE));
-		addProperty(PROP_SCALE_SECTION_COUNT, new IntegerProperty("Section count", WidgetPropertyCategory.Display,DEFAULT_SECTION_COUNT,1,Integer.MAX_VALUE));
+		addProperty(PROP_SCALE_SECTION_COUNT, new IntegerProperty("SectionCcount", WidgetPropertyCategory.Display,DEFAULT_SECTION_COUNT,1,Integer.MAX_VALUE));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
 		addProperty(PROP_SHOW_ONLY_VALUE, new BooleanProperty("Show only value", WidgetPropertyCategory.Display, false));
 	}
