@@ -347,7 +347,10 @@ public class JmsRedundantReceiver
                 }
             }
             
-            factory[i] = null;
+            if(factory != null)
+            {
+                factory[i] = null;
+            }
             
             if(context != null)
             {
