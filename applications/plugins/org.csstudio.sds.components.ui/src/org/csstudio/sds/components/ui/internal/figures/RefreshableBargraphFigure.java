@@ -278,8 +278,12 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		_scale.setStartValue(_minimum);
 		if (_orientationHorizontal) {
 			_scale.setReferencePositions(_barRectangle.x);
-			_scale.setLength(_barRectangle.width/Math.max(1, _scaleSectionCount));
-			_scale.setRegion(_barRectangle.x, _barRectangle.x+_barRectangle.width);
+			int length = _barRectangle.width/Math.max(1, _scaleSectionCount);
+			if (_scaleSectionCount==1) {
+				length--;
+			}
+			_scale.setLength(length);
+			_scale.setRegion(_barRectangle.x, _barRectangle.x+_barRectangle.width+5);
 			int height = _scaleWideness;
 			if (_showValues) {
 				height = height + TEXTHEIGHT;
@@ -296,9 +300,13 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				return new Rectangle(0, y, bounds.width, height);
 			}
 		} else {
-			_scale.setLength(_barRectangle.height/Math.max(1, _scaleSectionCount));
+			int length = _barRectangle.height/Math.max(1, _scaleSectionCount);
+			if (_scaleSectionCount==1) {
+				length--;
+			}
+			_scale.setLength(length);
 			_scale.setReferencePositions(_barRectangle.y+_barRectangle.height);
-			_scale.setRegion(_barRectangle.y, _barRectangle.y+_barRectangle.height);
+			_scale.setRegion(_barRectangle.y-5, _barRectangle.y+_barRectangle.height);
 			int width = _scaleWideness;
 			if (_showValues) {
 				width = width + _textWidth;
@@ -1406,7 +1414,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 					height = TEXTHEIGHT + _wideness;
 				}
 				double value = _startValue;
-				while (pos < this.getBounds().width && pos <= _end) {
+				while (pos <= this.getBounds().width && pos <= _end) {
 					if (pos>=_begin) {
 						if (index>=_posScaleMarkers.size()) {
 							this.addScaleMarker(index, _posScaleMarkers);
