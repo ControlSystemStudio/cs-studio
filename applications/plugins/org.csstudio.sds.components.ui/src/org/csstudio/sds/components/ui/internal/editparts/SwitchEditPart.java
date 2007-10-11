@@ -33,7 +33,7 @@ public final class SwitchEditPart extends AbstractWidgetEditPart {
 		// create AND initialize the view properly
 		final RefreshableSwitchFigure figure = new RefreshableSwitchFigure();
 		
-		figure.setFill(!model.getTransparent());
+		figure.setTransparent(model.getTransparent());
 		figure.setLineWidth(model.getLineWidth());
 		figure.setType(model.getType());
 		figure.setState(model.getState());
@@ -52,7 +52,7 @@ public final class SwitchEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				RefreshableSwitchFigure switchFigure = (RefreshableSwitchFigure) figure;
-				switchFigure.setFill(!((Boolean) newValue));
+				switchFigure.setTransparent(((Boolean) newValue));
 				return true;
 			}
 		};

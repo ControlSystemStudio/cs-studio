@@ -85,15 +85,19 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 	 */
 	private boolean _resized=true;
 	
+	private boolean _transparent = true;
+	
 	/**
 	 * Fills the background.
 	 * @param gfx The {@link Graphics} to use
 	 */
 	protected void fillShape(final Graphics gfx) {
-		gfx.setBackgroundColor(getBackgroundColor());
-		Rectangle figureBounds = getBounds().getCopy();
-		figureBounds.crop(this.getInsets());
-		gfx.fillRectangle(figureBounds);
+		if (!_transparent) {
+			gfx.setBackgroundColor(getBackgroundColor());
+			Rectangle figureBounds = getBounds().getCopy();
+			figureBounds.crop(this.getInsets());
+			gfx.fillRectangle(figureBounds);	
+		}
 	}
 	
 	/**
@@ -188,6 +192,15 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 	 */
 	public int getType() {
 		return _switchType;
+	}
+	
+	/**
+	 * Sets, if this widget should have a transparent background.
+	 * @param transparent
+	 * 				The new value for the transparent property
+	 */
+	public void setTransparent(final boolean transparent) {
+		_transparent = transparent;
 	}
 	
 	/**
