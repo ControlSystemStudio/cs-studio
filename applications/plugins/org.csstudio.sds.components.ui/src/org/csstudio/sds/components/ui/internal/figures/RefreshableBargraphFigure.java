@@ -669,9 +669,17 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		float width = height;
 		NumberFormat format = NumberFormat.getInstance();
 		format.setMaximumFractionDigits(2); 
-		int maxLength = (int) (format.format(_maximum).length()*width);
 		int minLength = (int) (format.format(_minimum).length()*width);
-		_textWidth = Math.max(minLength, maxLength);
+		_textWidth = minLength;
+		if (_showScale==BOTTOM_RIGHT || _showScale==TOP_LEFT) {
+			double increment = (_maximum-_minimum)/Math.max(1, _scaleSectionCount);
+			for (int i=0;i<_scaleSectionCount;i++) {
+				int value = (int) (format.format(minLength + (i*increment)).length()*width);
+				_textWidth = Math.max(minLength, value);
+			}
+		}
+		int maxLength = (int) (format.format(_maximum).length()*width);
+		_textWidth = Math.max(_textWidth, maxLength);
 	}
 
 	/**
