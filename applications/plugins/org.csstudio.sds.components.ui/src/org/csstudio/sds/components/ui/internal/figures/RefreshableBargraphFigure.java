@@ -65,7 +65,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * Width of the text.
 	 */
-	private int _textWidth = 46;
+	private int _textWidth = 10;
 	/**
 	 * The Strings, which are displayed in this figure.
 	 */
@@ -225,7 +225,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * Refreshes the Constraints.
 	 */
-	public void refreshConstraints() {
+	public void refreshConstraints() { 
 		this.approximateTextWidth();
 		_barRectangle = this.getBarRectangle();
 		this.setConstraint(_fillRectangleFigure, _barRectangle);
@@ -666,12 +666,12 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		if (this.getFont()!=null && this.getFont().getFontData().length>0 && this.getFont().getFontData()[0]!=null) {
 			height = this.getFont().getFontData()[0].height;	
 		}
-		float width = 3*height/4;
+		float width = height;
 		NumberFormat format = NumberFormat.getInstance();
-		format.setMaximumFractionDigits(2);
-		int maxLength = (int) (format.format(_maximum).length()*width); 
+		format.setMaximumFractionDigits(2); 
+		int maxLength = (int) (format.format(_maximum).length()*width);
 		int minLength = (int) (format.format(_minimum).length()*width);
-		_textWidth = Math.max(maxLength, minLength);
+		_textWidth = Math.max(minLength, maxLength);
 	}
 
 	/**
@@ -1485,7 +1485,8 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			marker.setHorizontalOrientation(!_isHorizontal);
 			NumberFormat format = NumberFormat.getInstance();
 			format.setMaximumFractionDigits(2);
-			marker.setText(format.format(labelValue));
+			String text = format.format(labelValue);
+			marker.setText(text);
 			marker.setShowValues(showValue);
 			marker.setWideness(_wideness);
 		}
