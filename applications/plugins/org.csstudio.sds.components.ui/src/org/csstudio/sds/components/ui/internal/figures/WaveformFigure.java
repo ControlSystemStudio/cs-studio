@@ -392,7 +392,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * 				The rectangle for the graph
 	 */
 	private Rectangle getGraphBounds() {
-		Rectangle figureBounds = this.getBounds();
+		Rectangle figureBounds = this.getBounds().getCopy();
+		figureBounds.crop(this.getInsets());
 		if (_showScale == SHOW_VERTICAL || _showScale == SHOW_BOTH) {
 			int width = _scaleWideness;
 			if (_showValues) {
