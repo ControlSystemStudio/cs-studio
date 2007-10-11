@@ -229,10 +229,23 @@ public class Chart extends Canvas
         // Mouse-down: Mark a point, maybe start rubberband-zoom
         addMouseListener(new MouseAdapter()
         {
-            @Override
-            public void mouseDown(MouseEvent event)
+            /** @return <code>true</code> if only the left mouse button
+             *          is pressed, without monifiers that might
+             *          change that into a context menu invocation
+             */
+            private boolean isLeftButton(final MouseEvent event)
             {
-                if (event.button != LEFT_MOUSE_BUTTON)
+                // Don't react to context menu invocations, which means:
+                // Middle or right button (usually, it's the right button),
+                // or the 'control' key is held (as on OS X)
+                return event.button == LEFT_MOUSE_BUTTON &&
+                       (event.stateMask & SWT.CONTROL) == 0;
+            }
+
+            @Override
+            public void mouseDown(final MouseEvent event)
+            {
+                if (! isLeftButton(event))
                     return;
                 // Remember where the mouse went down
                 mouse_down = true;
@@ -242,9 +255,9 @@ public class Chart extends Canvas
             }
 
             @Override
-            public void mouseUp(MouseEvent event)
+            public void mouseUp(final MouseEvent event)
             { 
-                if (event.button != LEFT_MOUSE_BUTTON)
+                if (! isLeftButton(event))
                     return;
                 mouse_down = false;
                 // If this was a 'drag', the rubberband zoom
@@ -258,8 +271,10 @@ public class Chart extends Canvas
         // Mouse-move: rubber-band if button is down
         addMouseMoveListener(new MouseMoveListener()
         {
+            // Minimum rubberband size that we allow
             private static final int MINIMUM = 10;
-            public void mouseMove(MouseEvent e)
+            
+            public void mouseMove(final MouseEvent e)
             {
                 updateTooltip(e.x, e.y);
                 if (! mouse_down)
@@ -275,7 +290,7 @@ public class Chart extends Canvas
                 // the tracker can be 'invisible' when the
                 // program has been moved between screens
                 // since startup. Still 'works', but no rubberband...
-                Tracker tracker = new Tracker(Chart.this, SWT.RESIZE);
+                final Tracker tracker = new Tracker(Chart.this, SWT.RESIZE);
                 // Keep rectangle normalized
                 if (dx < 0)
                 {
@@ -297,13 +312,13 @@ public class Chart extends Canvas
     }
     
     /** Add a listener. */
-    public void addListener(ChartListener listener)
+    public void addListener(final ChartListener listener)
     {
         listeners.add(listener);
     }
 
     /** Remove a listener */
-    public void removeListener(ChartListener listener)
+    public void removeListener(final ChartListener listener)
     {
         listeners.remove(listener);
     }
@@ -322,13 +337,13 @@ public class Chart extends Canvas
 
     /** @return Returns required y axis.
      *  @see #getNumYAxes() */
-    public YAxis getYAxis(int i)
+    public YAxis getYAxis(final int i)
     {
         return yaxes.get(i);
     }
     
     /** @return Returns index of the given Y-Axis or -1 if not found. */
-    public int getYAxisIndex(YAxis yaxis)
+    public int getYAxisIndex(final YAxis yaxis)
     {
         return yaxes.indexOf(yaxis);
     }
@@ -340,9 +355,9 @@ public class Chart extends Canvas
     }
     
     /** Add a new y axis with given label. */
-    public YAxis addYAxis(String label)
+    public YAxis addYAxis(final String label)
     {
-        YAxis yaxis = yaxis_factory.createYAxis(label, yaxis_listener);
+        final YAxis yaxis = yaxis_factory.createYAxis(label, yaxis_listener);
         yaxes.add(yaxis);
         dirty_layout = true;
         redraw();
@@ -350,9 +365,9 @@ public class Chart extends Canvas
     }
     
     /** Remove the y axis of given index. */
-    public void removeYAxis(int i)
+    public void removeYAxis(final int i)
     {
-        YAxis yaxis = yaxes.remove(i);
+        final YAxis yaxis = yaxes.remove(i);
         if (yaxis.getNumTraces() > 0)
             throw new Error("YAxis '" + yaxis.getLabel() //$NON-NLS-1$
                     + "' removed while there are still traces assigned to it"); //$NON-NLS-1$
@@ -388,10 +403,10 @@ public class Chart extends Canvas
      *  @param y Screen(!) Y
      *  @return The YAxis at that point or <code>null</code>.
      */
-    public YAxis getYAxisAtScreenPoint(int x, int y)
+    public YAxis getYAxisAtScreenPoint(final int x, final int y)
     {
         // Transform event coordinates from display to widget
-        Point drop_point = getDisplay().map(null, Chart.this, x, y);
+        final Point drop_point = getDisplay().map(null, Chart.this, x, y);
         // Was a Y axis hit?
         for (YAxis yaxis : yaxes)
         {
@@ -410,7 +425,7 @@ public class Chart extends Canvas
     /** @return Returns the given trace.
      *  @see #getNumTraces()
      */
-    public Trace getTrace(int index)
+    public Trace getTrace(final int index)
     {
         return traces.get(index);
     }
@@ -428,14 +443,14 @@ public class Chart extends Canvas
      *  @return The newly added trace.
      *  @see #redrawTraces()
      */
-    public Trace addTrace(String name, ChartSampleSequence series,
-                    Color color, int line_width,
-                    int yaxis_index,
-                    TraceType type)
+    public Trace addTrace(final String name, final ChartSampleSequence series,
+                    final Color color, final int line_width,
+                    final int yaxis_index,
+                    final TraceType type)
     {
-        YAxis yaxis = yaxes.get(yaxis_index);
+        final YAxis yaxis = yaxes.get(yaxis_index);
         setRedraw(false);
-        Trace trace = new Trace(name, series, color, line_width, yaxis, type);
+        final Trace trace = new Trace(name, series, color, line_width, yaxis, type);
         traces.add(trace);
         setRedraw(true);
         return trace;
@@ -445,9 +460,9 @@ public class Chart extends Canvas
      * 
      *  @param trace The trace to remove.
      */
-    public void removeTrace(int index)
+    public void removeTrace(final int index)
     {
-        Trace trace = traces.remove(index);
+        final Trace trace = traces.remove(index);
         trace.dispose();
     }
     
@@ -469,7 +484,7 @@ public class Chart extends Canvas
     /** Auto-Zoom the selected or all Y axes. */
     public void autozoom()
     {
-        YAxis yaxis = getSelectedYAxis();
+        final YAxis yaxis = getSelectedYAxis();
         if (yaxis != null)
             yaxis.autozoom(xaxis);
         else
@@ -489,7 +504,7 @@ public class Chart extends Canvas
      */ 
     public void setDefaultZoom()
     {
-        YAxis yaxis = getSelectedYAxis();
+        final YAxis yaxis = getSelectedYAxis();
         if (yaxis != null)
             yaxis.setDefaultZoom(xaxis);
         else
@@ -522,10 +537,10 @@ public class Chart extends Canvas
             yaxis.autozoom(xaxis);
         }
         // Now arrange them all so they don't overlap
-        int N = yaxes.size();
+        final int N = yaxes.size();
         for (int i=0; i<N; ++i)
         {
-            YAxis yaxis = yaxes.get(i);
+            final YAxis yaxis = yaxes.get(i);
             if (yaxis.getAutoScale())
                 continue; // takes care of itself
             double low = yaxis.getLowValue();
