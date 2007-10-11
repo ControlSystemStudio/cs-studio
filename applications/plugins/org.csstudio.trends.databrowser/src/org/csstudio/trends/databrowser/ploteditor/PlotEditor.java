@@ -148,7 +148,7 @@ public class PlotEditor extends EditorPart
     {
         setSite(site);
         setInput(input);
-        IFile file = getEditorInputFile();
+        final IFile file = getEditorInputFile();
         plot_part.init(file);
         if (! added_model_listener)
         {

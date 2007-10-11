@@ -37,7 +37,7 @@ public class BrowserUI extends Composite
      *  @param parent Parent widget
      *  @param style SWT style
      */
-    public BrowserUI(Model model, Composite parent, int style)
+    public BrowserUI(final Model model, final Composite parent, final int style)
     {
         super(parent, style);
         this.model = model;
@@ -67,6 +67,7 @@ public class BrowserUI extends Composite
                         Chart.TIME_CHART
                       | Chart.USE_TRACE_NAMES
                       | InteractiveChart.ZOOM_X_FROM_END);
+        setTimeRange(model.getStartTime(), model.getEndTime());
                 
         // Add scroll button
         scroll_pause = new Button(i_chart.getButtonBar(), SWT.CENTER);        

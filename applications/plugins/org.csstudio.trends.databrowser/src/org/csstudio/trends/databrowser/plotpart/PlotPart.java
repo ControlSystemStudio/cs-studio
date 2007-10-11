@@ -20,14 +20,14 @@ public class PlotPart
     private IFile file;
 
     /** Initialize the model from given file. */
-    public void init(IFile file) throws PartInitException
+    public void init(final IFile file) throws PartInitException
     {
         if (file == null)
             return;
         // Load model content from file
         try
         {
-            InputStream stream = file.getContents();
+            final InputStream stream = file.getContents();
             model.load(stream);
             stream.close();
         }
@@ -75,7 +75,8 @@ public class PlotPart
     /** Creates the SWT controls for DataBrowser plot.
      *  @see IWorkbenchPart#createPartControl
      */
-    public void createPartControl(Composite parent, boolean allow_drop)
+    public void createPartControl(final Composite parent,
+                                  final boolean allow_drop)
     {
         gui = new BrowserUI(model, parent, 0);
         controller = new Controller(model, gui, allow_drop);
