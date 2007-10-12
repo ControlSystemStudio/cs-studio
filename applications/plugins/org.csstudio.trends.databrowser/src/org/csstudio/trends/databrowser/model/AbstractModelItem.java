@@ -113,11 +113,11 @@ public abstract class AbstractModelItem
     }
     
     /** @see IProcessVariable */
-    public final String getTypeId()
+    final public String getTypeId()
     {   return IProcessVariable.TYPE_ID;   }
 
     /** @see IModelItem#getName() */
-    public final String getName()
+    final public String getName()
     {   return name;  }
     
     /** Base implementation for changing the name.
@@ -138,23 +138,23 @@ public abstract class AbstractModelItem
     }
     
     /** @see IModelItem#getUnits() */
-    public final String getUnits()
+    final public String getUnits()
     {   return units;  }
 
     /** @see IModelItem#getAxisIndex() */
-    public final int getAxisIndex()
+    final public int getAxisIndex()
     {   return axis_index;  }
     
     /** @see IModelItem#setAxisIndex(int) */
-    public final void setAxisIndex(int axis)
+    final public void setAxisIndex(final int axis)
     {
         if (axis_index == axis)
             return;
         axis_index = axis;
-        // Adapt to axis limits and type of other model items on this axis
+        // Use axis limits and type of other model items on this axis
         for (int i=0; i<model.getNumItems(); ++i)
         {
-            IModelItem item = model.getItem(i);
+            final IModelItem item = model.getItem(i);
             if (item != this  &&  item.getAxisIndex() == axis_index)
             {
                 setAxisLimitsSilently(item.getAxisLow(), item.getAxisHigh());
@@ -166,22 +166,22 @@ public abstract class AbstractModelItem
     }
     
     /** @see IModelItem#getAxisLow() */
-    public final double getAxisLow()
+    final public double getAxisLow()
     {   return axis_low; }
 
     /** @see IModelItem#getAxisHigh() */
-    public final double getAxisHigh()
+    final public double getAxisHigh()
     {   return axis_high; }
 
     /** @see IModelItem#setAxisLow(double) */
-    public final void setAxisLow(double limit)
+    final public void setAxisLow(double limit)
     {   
         axis_low = limit;
         model.setAxisLimits(axis_index, axis_low, axis_high);
     }
 
     /** @see IModelItem#setAxisHigh(double) */
-    public final void setAxisHigh(double limit)
+    final public void setAxisHigh(double limit)
     {   
         axis_high = limit;
         model.setAxisLimits(axis_index, axis_low, axis_high);
@@ -191,20 +191,20 @@ public abstract class AbstractModelItem
      *  <p>
      *  Used by model to avoid recursion that would result from setAxisMin/Max.
      */
-    public final void setAxisLimitsSilently(double low, double high)
+    final public void setAxisLimitsSilently(double low, double high)
     {
         axis_low = low;
         axis_high = high;
     }
 
     /** @see IModelItem#isVisible() */
-    public final boolean isVisible()
+    final public boolean isVisible()
     {
         return visible;
     }
     
     /** @see IModelItem#setVisible(boolean) */
-    public final void setVisible(boolean yesno)
+    final public void setVisible(boolean yesno)
     {
         if (visible == yesno)
             return; // no change
@@ -214,7 +214,7 @@ public abstract class AbstractModelItem
     }
     
     /** @see IModelItem#setAutoScale(boolean) */
-    public final void setAutoScale(boolean auto_scale) 
+    final public void setAutoScale(boolean auto_scale) 
     {
         // Notify model of this change.
         model.setAutoScale(axis_index, auto_scale);
@@ -232,15 +232,15 @@ public abstract class AbstractModelItem
     }
     
     /** @see IModelItem#getAutoScale() */
-    public final boolean getAutoScale()
+    final public boolean getAutoScale()
     {   return auto_scale; }
     
     /** @see IModelItem#getColor() */
-    public final Color getColor()
+    final public Color getColor()
     {   return color; }
     
     /** @see IModelItem#setColor(Color) */
-    public final void setColor(Color new_color)
+    final public void setColor(Color new_color)
     {
         color.dispose();
         color = new_color;
@@ -249,13 +249,13 @@ public abstract class AbstractModelItem
     }
     
     /** @return Returns the trace line width. */
-    public final int getLineWidth()
+    final public int getLineWidth()
     {
         return line_width;
     }
     
     /** Set the trace to a new line width. */
-    public final void setLineWidth(int new_width)
+    final public void setLineWidth(int new_width)
     {
         line_width = new_width;
         // Notify model of this change.
@@ -263,13 +263,13 @@ public abstract class AbstractModelItem
     }
     
     /** @return Returns current model display type */
-    public final TraceType getTraceType() 
+    final public TraceType getTraceType() 
     {
         return trace_type;
     } 
     
     /** Set new display type */
-    public final void setTraceType(TraceType new_trace_type) 
+    final public void setTraceType(TraceType new_trace_type) 
     {
         if(trace_type == new_trace_type)
             return;
@@ -279,13 +279,13 @@ public abstract class AbstractModelItem
     }
     
     /** @return <code>true</code> if using log. scale */
-    public final boolean getLogScale()
+    final public boolean getLogScale()
     {
         return log_scale;
     }
 
     /** Configure to use log. scale or not. */
-    public final void setLogScale(boolean use_log_scale)
+    final public void setLogScale(boolean use_log_scale)
     {
         // Notify model of this change.
         model.setLogScale(axis_index, use_log_scale);

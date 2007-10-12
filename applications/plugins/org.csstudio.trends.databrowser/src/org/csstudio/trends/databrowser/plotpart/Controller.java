@@ -135,6 +135,7 @@ public class Controller
             if (controller_changes_model)
                 return;
             removeFromDisplay(item);
+            removeUnusedAxes();
             addToDisplay(item);
             // getArchivedData(item);
         }

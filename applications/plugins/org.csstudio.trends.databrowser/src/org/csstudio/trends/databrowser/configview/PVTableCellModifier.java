@@ -84,7 +84,8 @@ public class PVTableCellModifier implements ICellModifier
     }
 
 	/** Editor finished and tries to update element's property. */
-	public void modify(Object element, String property, Object value)
+	public void modify(Object element, final String property,
+	                   final Object value)
     {
         if (value == null)
             return;
@@ -100,58 +101,58 @@ public class PVTableCellModifier implements ICellModifier
                 return;
             }
             // Edit existing item
-            IModelItem entry = (IModelItem) element;
-            PVTableHelper.Column col = PVTableHelper.findColumn(property);
+            final IModelItem entry = (IModelItem) element;
+            final PVTableHelper.Column col = PVTableHelper.findColumn(property);
             
             switch (col)
             {
             case VISIBLE:
-                boolean visible = ((Boolean)value).booleanValue();
+                final boolean visible = ((Boolean)value).booleanValue();
                 entry.setVisible(visible);
                 return;
             case NAME:
                 entry.changeName(value.toString());
                 return;
             case AXIS:
-                int new_axis = Integer.valueOf(value.toString());
+                final int new_axis = Integer.valueOf(value.toString());
                 entry.setAxisIndex(new_axis);
                 return;
             case MIN:
-                double new_min = Double.valueOf(value.toString());
+                final double new_min = Double.valueOf(value.toString());
                 entry.setAxisLow(new_min);
                 return;
             case MAX:
-                double new_max = Double.valueOf(value.toString());
+                final double new_max = Double.valueOf(value.toString());
                 entry.setAxisHigh(new_max);
                 return;
             case AUTO_SCALE:
-                boolean auto_scale = ((Boolean)value).booleanValue();
+                final boolean auto_scale = ((Boolean)value).booleanValue();
                 entry.setAutoScale(auto_scale);
                 return;
             case COLOR:
-                RGB rgb = (RGB) value;
+                final RGB rgb = (RGB) value;
                 entry.setColor(new Color(null, rgb));
                 return;
             case LINE_WIDTH:
-                int new_width = Integer.valueOf(value.toString());
+                final int new_width = Integer.valueOf(value.toString());
                 entry.setLineWidth(new_width);
                 return;
             case LOG_SCALE:
-                boolean use_log = ((Boolean)value).booleanValue();
+                final boolean use_log = ((Boolean)value).booleanValue();
                 entry.setLogScale(use_log);
                 return;
             case REQUEST_TYPE:
                 if (entry instanceof IPVModelItem)
                 {
-                    IPVModelItem pv = (IPVModelItem) entry;
-                    int ordinal = ((Integer) value).intValue();
+                    final IPVModelItem pv = (IPVModelItem) entry;
+                    final int ordinal = ((Integer) value).intValue();
                     final RequestType request_type = IPVModelItem.RequestType.fromOrdinal(ordinal);
                      pv.setRequestType(request_type);
                 }
                 return;
             case TRACE_TYPE:
                 {
-                    int ordinal = ((Integer) value).intValue();
+                    final int ordinal = ((Integer) value).intValue();
                     entry.setTraceType(TraceType.fromOrdinal(ordinal));
                     return;
                 }
