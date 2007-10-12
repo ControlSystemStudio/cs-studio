@@ -3,10 +3,6 @@ package org.csstudio.trends.databrowser.model;
 /** Listener interface for the <code>ChartModel</code>.
  *  @author Kay Kasemir
  *  @see Model
- *  TODO Use a <code>ModelEvent : extends EventObject</code>,
- *       and skip the source (sender)
- *       of the event in notifications, to avoid the extra "did I sent this event?"
- *       code in the Controller?
  */
 public interface ModelListener
 {
