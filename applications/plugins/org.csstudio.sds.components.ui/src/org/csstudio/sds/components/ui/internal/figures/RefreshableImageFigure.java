@@ -97,10 +97,12 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 			if (_image==null && !_path.isEmpty()) {
 				String currentPath = _path.toString();
 				IPath fullPath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
-				if (!fullPath.isPrefixOf(_path)) {
+				try {
+					temp=new Image(Display.getDefault(),currentPath);
+				} catch (Exception e) {
 					currentPath  = fullPath.toString()+_path.toString();
+					temp=new Image(Display.getDefault(),currentPath);
 				}
-				temp=new Image(Display.getDefault(),currentPath);
 				if (_stretch) {
 					_image=new Image(Display.getDefault(),
 							temp.getImageData().scaledTo(bound.width+_leftCrop+_rightCrop,
@@ -137,6 +139,7 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 				gfx.setForegroundColor(getForegroundColor());
 				gfx.fillRectangle(bound);
 				gfx.translate(bound.getLocation());
+				System.out.println("RefreshableImageFigure.paintFigure() ERROR loading image\n"+_path);
 				TextPainter.drawText(gfx,"ERROR loading image\n"+_path,bound.width/2,bound.height/2,TextPainter.CENTER);
 				f.dispose();
 			}

@@ -61,7 +61,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * Width of the text.
 	 */
-	private static final int TEXTWIDTH = 40;
+	private static final int TEXTWIDTH = 46;
 	/**
 	 * Width of the text.
 	 */
@@ -1094,7 +1094,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		/**
 		 * The needed space of a {@link TickMark}.
 		 */
-		private final int _tickMarkSpace = 10;
+		private final int _tickMarkSpace = 9;
 		/**
 		 * The Label for the text.
 		 */
@@ -1708,8 +1708,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			 * True, if the values of the Markers should be shown, false otherwise.
 			 */
 			private boolean _showValues = false;
-			
-			private final int _hyphenSpace = 12;
+			/**
+			 * The needed space of the hyphen.
+			 */
+			private final int _hyphenSpace = 10;
 			
 			/**
 			 * Constructor.
