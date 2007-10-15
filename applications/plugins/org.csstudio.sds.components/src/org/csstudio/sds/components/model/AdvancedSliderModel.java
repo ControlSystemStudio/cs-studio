@@ -107,6 +107,14 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 		addProperty(PROP_ORIENTATION, new OptionProperty("Orientation",
 				WidgetPropertyCategory.Display, new String[] {"Horizontal", "Vertical"}, 0));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##Name##\nMaximum:\t##Max##\nMinimum:\t##Min##\nCurrent Value:\t##Slider Value##";
+	}
 
 	/**
 	 * {@inheritDoc}

@@ -71,6 +71,14 @@ public final class ArcModel extends AbstractWidgetModel {
 		addProperty(PROP_FILLED, new BooleanProperty("Filled",WidgetPropertyCategory.Display,false));
 		addProperty(PROP_FILLCOLOR, new ColorProperty("Fill Color",WidgetPropertyCategory.Display,new RGB(255,0,0)));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "#"+PROP_NAME+"##\nStart Angle:\t##"+PROP_STARTANGLE+"##\nAngle:\t\t##"+PROP_ANGLE+"##";
+	}
 
 	/**
 	 * Returns the transparent state of the background.

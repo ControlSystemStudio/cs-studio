@@ -132,6 +132,14 @@ public final class TextInputModel extends AbstractWidgetModel {
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
 				WidgetPropertyCategory.Behaviour, 2, 0, 6));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##"+PROP_NAME+"##\nText:\t##"+PROP_INPUT_TEXT+"##";
+	}
 
 	/**
 	 * {@inheritDoc}

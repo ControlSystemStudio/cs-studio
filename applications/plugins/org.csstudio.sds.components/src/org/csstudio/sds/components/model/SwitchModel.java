@@ -50,6 +50,14 @@ public final class SwitchModel extends AbstractWidgetModel {
 		addProperty(PROP_ROTATE, new IntegerProperty("Rotation",WidgetPropertyCategory.Display,0,0,360));
 		addProperty(PROP_LINEWIDTH, new IntegerProperty("Line Width",WidgetPropertyCategory.Display,4));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##Name##\nType:\t##Switch Type##\nState:\t##Switch State##";
+	}
 
 	public boolean getTransparent() {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();

@@ -103,6 +103,14 @@ public final class RectangleModel extends AbstractWidgetModel {
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background", 
 				WidgetPropertyCategory.Display, false));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##"+PROP_NAME+"##\nValue:\t##"+PROP_FILL+"##";
+	}
 
 	/**
 	 * Gets the fill level.

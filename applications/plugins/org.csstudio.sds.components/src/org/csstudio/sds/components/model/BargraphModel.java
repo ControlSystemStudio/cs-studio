@@ -198,6 +198,14 @@ public final class BargraphModel extends AbstractWidgetModel {
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
 		addProperty(PROP_SHOW_ONLY_VALUE, new BooleanProperty("Show only value", WidgetPropertyCategory.Display, false));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##"+PROP_NAME+"##\nMaximum:\t##"+PROP_MAX+"##\nMinimum:\t##"+PROP_MIN+"##\nValue:\t\t##"+PROP_FILL+"##\nLevel HIHI:\t##"+PROP_HIHI_LEVEL+"##\nLevel HI:\t##"+PROP_HI_LEVEL+"##\nLevel LO:\t##"+PROP_LO_LEVEL+"##\nLevel LOLO:\t##"+PROP_LOLO_LEVEL+"##";
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -364,6 +372,10 @@ public final class BargraphModel extends AbstractWidgetModel {
 		return (Integer) getProperty(PROP_SCALE_SECTION_COUNT).getPropertyValue();
 	}
 	
+	/**
+	 * Return if only the current value should be showed.
+	 * @return True if only the value should be shown, false otherwise
+	 */
 	public boolean getShowOnlyValue() {
 		return (Boolean) getProperty(PROP_SHOW_ONLY_VALUE).getPropertyValue();
 	}

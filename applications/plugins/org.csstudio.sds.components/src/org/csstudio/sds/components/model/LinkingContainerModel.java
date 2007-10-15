@@ -80,6 +80,14 @@ public final class LinkingContainerModel extends ContainerModel {
 				WidgetPropertyCategory.Behaviour, new Path(""),
 				new String[] { "css-sds" }));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##Name##\nDisplay:\t##Resource##";
+	}
 
 	/**
 	 * Return the target resource.

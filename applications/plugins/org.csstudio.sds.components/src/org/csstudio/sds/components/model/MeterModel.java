@@ -111,6 +111,14 @@ public final class MeterModel extends AbstractWidgetModel {
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
 				WidgetPropertyCategory.Behaviour, 2, 0, 5));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##"+PROP_NAME+"##\nMaximum:\t##"+PROP_MAXVAL+"##\nMinimum:\t##"+PROP_MINVAL+"##\nValue:\t\t##"+PROP_VALUE+"##\nLevel HIHI:\t##"+PROP_HIHIBOUND+"##\nLevel HI:\t##"+PROP_HIBOUND+"##\nLevel LO:\t##"+PROP_LOBOUND+"##\nLevel LOLO:\t##"+PROP_LOLOBOUND+"##";
+	}
 
 	public int getAngle() {
 		return (Integer) getProperty(PROP_ANGLE).getPropertyValue();

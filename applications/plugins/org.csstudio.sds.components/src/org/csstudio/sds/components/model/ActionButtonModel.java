@@ -52,7 +52,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 */
 	public static final String PROP_TEXT_ALIGNMENT = "textAlignment"; //$NON-NLS-1$
 	/**
-	 * The ID of the {@link ActionData} property.
+	 * The ID of the ActionData property.
 	 */
 	public static final String PROP_ACTION_INDEX = "action_index"; //$NON-NLS-1$
 
@@ -80,10 +80,6 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The labels for the text alignment property.
 	 */
 	private static final String[] SHOW_LABELS = new String[] {"Center", "Top", "Bottom", "Left", "Right"};
-//	/**
-//	 * The default value for the file extensions.
-//	 */
-//	private static final String[] FILE_EXTENSIONS = new String[] {"css-sds"};
 
 	/**
 	 * Standard constructor.
@@ -115,6 +111,14 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		addProperty(PROP_ACTION_INDEX, new IntegerProperty("Action Index",
 				WidgetPropertyCategory.Behaviour, -1, -1, Integer.MAX_VALUE));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##Name##\n##Action Data##\nPerformed Action: ##Action Index##";
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -133,7 +137,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	}
 	
 	/**
-	 * Return the index of the selected WidgetAction from the {@link ActionData}.
+	 * Return the index of the selected WidgetAction from the ActionData.
 	 * @return The index
 	 */
 	public int getChoosenActionIndex() {

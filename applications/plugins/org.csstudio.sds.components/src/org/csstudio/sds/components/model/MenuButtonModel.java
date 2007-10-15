@@ -96,6 +96,14 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 		addProperty(PROP_ACTIONDATA, new ActionDataProperty("Action Data",
 				WidgetPropertyCategory.Behaviour, new ActionData()));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##Name##\nAction Data:\t##Action Data##";
+	}
 
 	/**
 	 * {@inheritDoc}

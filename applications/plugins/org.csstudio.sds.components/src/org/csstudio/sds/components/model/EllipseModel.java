@@ -104,6 +104,14 @@ public final class EllipseModel extends AbstractWidgetModel {
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background", 
 				WidgetPropertyCategory.Display, false));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##Name##\nValue:\t##Value##";
+	}
 
 	/**
 	 * {@inheritDoc}

@@ -76,6 +76,14 @@ public final class ImageModel extends AbstractWidgetModel {
 		addProperty(PROP_STRETCH, new BooleanProperty("Stretch to Fit",
 				WidgetPropertyCategory.Image,true));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##Name##\nImage:\t##File##";
+	}
 
 	/**
 	 * Returns the path to the specified file.

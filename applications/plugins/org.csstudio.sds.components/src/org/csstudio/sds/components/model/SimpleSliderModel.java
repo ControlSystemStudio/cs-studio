@@ -137,6 +137,14 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 * {@inheritDoc}
 	 */
 	@Override
+	protected String getDefaultToolTip() {
+		return "##Name##\nMaximum:\t##Max##\nMinimum:\t##Min##\nCurrent Value:\t##Slider Value##";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String getDoubleTestProperty() {
 		return PROP_VALUE;
 	}

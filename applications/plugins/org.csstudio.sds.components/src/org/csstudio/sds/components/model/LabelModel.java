@@ -113,6 +113,14 @@ public final class LabelModel extends AbstractWidgetModel {
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
 				WidgetPropertyCategory.Behaviour, 2, 0, 6));
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String getDefaultToolTip() {
+		return "##Name##\nText:\t##Text Value##";
+	}
 
 	/**
 	 * Returns the font for the label.
