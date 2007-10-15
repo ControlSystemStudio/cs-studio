@@ -204,23 +204,23 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		}
 	}
 
-	/**
-	 * Gets the IFigure for the tooltip.
-	 * @return IFigure The IFigure for the tooltip
-	 */
-	private IFigure getToolTipFigure() {
-		Panel panel = new Panel();
-		panel.setLayoutManager(new ToolbarLayout(false));
-		panel.add(new Label("Value: " + _value));
-		panel.add(new Label("Minimum value: " + _minimum));
-		panel.add(new Label("Maximum value: " + _maximum));
-		for (int i = 0; i < LABELS.length; i++) {
-			panel.add(new Label(LABELS[i] + " level: "
-					+ _levelMap.get(LABELS[i])));
-		}
-		panel.setBackgroundColor(ColorConstants.tooltipBackground);
-		return panel;
-	}
+//	/**
+//	 * Gets the IFigure for the tooltip.
+//	 * @return IFigure The IFigure for the tooltip
+//	 */
+//	private IFigure getToolTipFigure() {
+//		Panel panel = new Panel();
+//		panel.setLayoutManager(new ToolbarLayout(false));
+//		panel.add(new Label("Value: " + _value));
+//		panel.add(new Label("Minimum value: " + _minimum));
+//		panel.add(new Label("Maximum value: " + _maximum));
+//		for (int i = 0; i < LABELS.length; i++) {
+//			panel.add(new Label(LABELS[i] + " level: "
+//					+ _levelMap.get(LABELS[i])));
+//		}
+//		panel.setBackgroundColor(ColorConstants.tooltipBackground);
+//		return panel;
+//	}
 
 	/**
 	 * Refreshes the Constraints.
@@ -232,7 +232,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		Rectangle bounds = this.getBounds().getCopy().crop(this.getInsets());
 		this.setConstraint(_markerPanel, this.getMarkerPanelConstraint(bounds));
 		this.setConstraint(_scale, this.getScaleConstraint(bounds));
-		this.setToolTip(this.getToolTipFigure());
+		//this.setToolTip(this.getToolTipFigure());
 	}
 
 	/**
