@@ -129,56 +129,72 @@ public class EpicsPlugin extends Plugin
 	{
 	    try
 	    {
-	        // TODO Avoid getPluginPreferences(), directly use IPreferencesService?
+
+		    // TODO Avoid getPluginPreferences(), directly use IPreferencesService?
 	        // final IPreferencesService prefs = Platform.getPreferencesService();
 	        // ...
 	        final Preferences prefs = getDefault().getPluginPreferences();
 	        use_pure_java = prefs.getBoolean(PreferenceConstants.PURE_JAVA);
 	        // Set the 'CAJ' copy of the settings
-	        System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", 
-	                        prefs.getString(PreferenceConstants.ADDR_LIST));
+	        setSystemProperty("com.cosylab.epics.caj.CAJContext.addr_list", 
+	                        PreferenceConstants.ADDR_LIST);
 	        final boolean auto_addr = prefs.getBoolean(PreferenceConstants.AUTO_ADDR_LIST);
-	        System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
+	        setSystemProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
                             Boolean.toString(auto_addr)); 
-	        System.setProperty("com.cosylab.epics.caj.CAJContext.connection_timeout",
-	                        prefs.getString(PreferenceConstants.TIMEOUT));
-	        System.setProperty("com.cosylab.epics.caj.CAJContext.beacon_period", 
-	                        prefs.getString(PreferenceConstants.BEACON_PERIOD)); 
-	        System.setProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
-	                        prefs.getString(PreferenceConstants.REPEATER_PORT));
-	        System.setProperty("com.cosylab.epics.caj.CAJContext.server_port", 
-	                        prefs.getString(PreferenceConstants.SERVER_PORT));
-	        System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", 
-	                        prefs.getString(PreferenceConstants.MAX_ARRAY_BYTES));
+	        setSystemProperty("com.cosylab.epics.caj.CAJContext.connection_timeout",
+	                        PreferenceConstants.TIMEOUT);
+	        setSystemProperty("com.cosylab.epics.caj.CAJContext.beacon_period", 
+	                        PreferenceConstants.BEACON_PERIOD); 
+	        setSystemProperty("com.cosylab.epics.caj.CAJContext.repeater_port",
+	                        PreferenceConstants.REPEATER_PORT);
+	        setSystemProperty("com.cosylab.epics.caj.CAJContext.server_port", 
+	                        PreferenceConstants.SERVER_PORT);
+	        setSystemProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", 
+	                        PreferenceConstants.MAX_ARRAY_BYTES);
 	
 	        // Set the 'JNI' copy of the settings
-	        System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", 
-	                        prefs.getString(PreferenceConstants.ADDR_LIST));
-	        System.setProperty("gov.aps.jca.jni.JNIContext.auto_addr_list",
+	        setSystemProperty("gov.aps.jca.jni.JNIContext.addr_list", 
+	                        PreferenceConstants.ADDR_LIST);
+	        setSystemProperty("gov.aps.jca.jni.JNIContext.auto_addr_list",
 	                        Boolean.toString(auto_addr)); 
-	        System.setProperty("gov.aps.jca.jni.JNIContext.connection_timeout",
-	                        prefs.getString(PreferenceConstants.TIMEOUT));
-	        System.setProperty("gov.aps.jca.jni.JNIContext.beacon_period", 
-	                        prefs.getString(PreferenceConstants.BEACON_PERIOD)); 
-	        System.setProperty("gov.aps.jca.jni.JNIContext.repeater_port",
-	                        prefs.getString(PreferenceConstants.REPEATER_PORT));
-	        System.setProperty("gov.aps.jca.jni.JNIContext.server_port", 
-	                        prefs.getString(PreferenceConstants.SERVER_PORT));
-	        System.setProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", 
-	                        prefs.getString(PreferenceConstants.MAX_ARRAY_BYTES));
+	        setSystemProperty("gov.aps.jca.jni.JNIContext.connection_timeout",
+	                        PreferenceConstants.TIMEOUT);
+	        setSystemProperty("gov.aps.jca.jni.JNIContext.beacon_period", 
+	                        PreferenceConstants.BEACON_PERIOD); 
+	        setSystemProperty("gov.aps.jca.jni.JNIContext.repeater_port",
+	                        PreferenceConstants.REPEATER_PORT);
+	        setSystemProperty("gov.aps.jca.jni.JNIContext.server_port", 
+	                        PreferenceConstants.SERVER_PORT);
+	        setSystemProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", 
+	                        PreferenceConstants.MAX_ARRAY_BYTES);
 
 	        // Select the QueuedEventDispatcher, because that avoids
 	        // deadlocks when calling JCA while receiving JCA callbacks
-	        System.setProperty("gov.aps.jca.jni.JNIContext.event_dispatcher", 
+	        setSystemProperty("gov.aps.jca.jni.JNIContext.event_dispatcher", 
                             "gov.aps.jca.event.QueuedEventDispatcher");
 	    }
 	    catch (Exception e)
 	    {
 	        log(IStatus.ERROR, "Cannot set preferences", e);
 	    }
+	    
 	}
   
-    /** Add a message to the log.
+	/*
+	 * Sets property from preferences to System properties only if property value is not null or empty string.
+	 * @param prop System property name
+	 * @param pref CSS preference name
+	 */
+    private void setSystemProperty(String prop, String pref) {
+        final Preferences prefs = getDefault().getPluginPreferences();
+    	String val = prefs.getString(pref);
+    	if (val!=null && val.length()>0) {
+    		System.setProperty(prop, val);
+    	}
+		
+	}
+
+	/** Add a message to the log.
      *  @param type
      *  @param message
      *  @param e Exception or <code>null</code>
