@@ -17,6 +17,8 @@ import org.csstudio.trends.databrowser.exportview.ExportView;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
+import org.csstudio.trends.databrowser.plotpart.AddFormulaAction;
+import org.csstudio.trends.databrowser.plotpart.AddPVAction;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
 import org.csstudio.trends.databrowser.sampleview.SampleView;
 import org.csstudio.trends.databrowser.waveformview.WaveformView;
@@ -56,7 +58,7 @@ public class PlotEditor extends EditorPart
     private final PlotPart plot_part = new PlotPart();
     private Action remove_markers_action;
     private RemoveSelectedMarkersAction remove_marker_action;
-    private Action add_action;
+    private Action add_pv_action, add_formula_action;
     private Action config_action, archive_action, sample_action;
     private Action waveform_action, export_action;
     private Action button_bar_action;
@@ -301,7 +303,8 @@ public class PlotEditor extends EditorPart
         save_current_image_action = new SaveCurrentImageAction(chart);
         remove_markers_action = new RemoveMarkersAction(chart);
         remove_marker_action = new RemoveSelectedMarkersAction(chart);
-        add_action = new AddPVAction(plot_part.getModel());
+        add_pv_action = new AddPVAction(plot_part.getModel());
+        add_formula_action = new AddFormulaAction(chart.getShell(), plot_part.getModel());
         config_action = new OpenViewAction(this, Messages.OpenConfigView, ConfigView.ID);
         archive_action = new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID);
         sample_action = new OpenViewAction(this, Messages.OpenSampleView, SampleView.ID);
@@ -321,7 +324,8 @@ public class PlotEditor extends EditorPart
         context_menu.add(button_bar_action);
         context_menu.add(remove_markers_action);
         context_menu.add(remove_marker_action);
-        context_menu.add(add_action);
+        context_menu.add(add_pv_action);
+        context_menu.add(add_formula_action);
         context_menu.add(new Separator());
         context_menu.add(config_action);
         context_menu.add(archive_action);

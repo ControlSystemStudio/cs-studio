@@ -20,6 +20,8 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.formula_gui.FormulaDialog;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
+import org.csstudio.trends.databrowser.plotpart.AddFormulaAction;
+import org.csstudio.trends.databrowser.plotpart.AddPVAction;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.util.swt.RGBCellEditor;
 import org.csstudio.util.time.swt.StartEndDialog;
@@ -99,7 +101,9 @@ public class ConfigView extends PlotAwareView
     private TableViewer pv_table_viewer;
     private PVTableLazyContentProvider table_content;
     private PVTableLabelProvider label_provider;
-    private Action add_pv_action, add_formula_action, delete_pv_action;
+    private AddPVAction add_pv_action;
+    private AddFormulaAction add_formula_action;
+    private Action delete_pv_action;
     private Action archive_up_action, archive_down_action;
     private Action delete_archive_action;
 
@@ -250,8 +254,8 @@ public class ConfigView extends PlotAwareView
         });
              
         // Create actions, hook them to menues
-        add_pv_action = new AddPVAction(this);
-        add_formula_action = new AddFormulaAction(this);
+        add_pv_action = new AddPVAction(getModel());
+        add_formula_action = new AddFormulaAction(parent.getShell(), getModel());
         delete_pv_action = new DeletePVAction(this);
         archive_up_action = new ArchiveUpAction(this);
         archive_down_action = new ArchiveDownAction(this);
@@ -885,8 +889,8 @@ public class ConfigView extends PlotAwareView
     		return;
     	}
         // Conditionally enable the 'add' action
-        add_pv_action.setEnabled(model != null);
-        add_formula_action.setEnabled(model != null);
+        add_pv_action.setModel(model);
+        add_formula_action.setModel(model);
         delete_pv_action.setEnabled(model != null);
         // If the model switched, change our subscription
         if (old_model != model)
@@ -934,20 +938,6 @@ public class ConfigView extends PlotAwareView
         IPVModelItem pv_item = model.addPV(name);
         model.addDefaultArchiveSources(pv_item);
         return pv_item;
-    }
-    
-    /** Add a new formula to the model. */
-    public IModelItem addFormula(String name)
-    {
-        name = name.trim();
-        if (name.length() < 1)
-            return null;
-        Model model = getModel();
-        if (model == null)
-            return null;
-        IModelItem item = model.add(Model.ItemType.Formula, name);
-        configureFormula((FormulaModelItem) item);
-        return item;
     }
     
     /** Add an archive source to a specific or all items.

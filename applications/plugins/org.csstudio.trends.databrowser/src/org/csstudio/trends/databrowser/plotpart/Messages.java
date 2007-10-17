@@ -6,6 +6,13 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.plotpart.messages"; //$NON-NLS-1$
 
+    public static String AddPV;
+    public static String AddPV_TT;
+    public static String EnterPVName;
+    public static String EnterNewPVName;
+    public static String AddFormula;
+    public static String AddFormula_TT;
+
     public static String Fetch_Archive;
     public static String FetchDataForPV;
     public static String FetchingSample;
