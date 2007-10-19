@@ -158,7 +158,7 @@ public final class PointListCreationTool extends TargetingTool {
 			_snap2Helper = (SnapToHelper) getTargetEditPart().getAdapter(
 					SnapToHelper.class);
 		}
-		
+
 		// only react on left clicks
 		if (button != 1) {
 			setState(STATE_INVALID);
@@ -202,8 +202,6 @@ public final class PointListCreationTool extends TargetingTool {
 			// axis in the graphical feedback
 			_points.addPoint(p);
 		}
-
-
 
 		updateTargetRequest();
 		return true;
@@ -268,26 +266,28 @@ public final class PointListCreationTool extends TargetingTool {
 	 */
 	@Override
 	protected boolean handleMove() {
+		if (getState() != STATE_TERMINAL && getState() != STATE_INVALID) {
+			if (_points.size() > 0) {
+				// snap
+				PrecisionPoint location = getSnapedLocation();
 
-		if (_points.size() > 0) {
-			// snap
-			PrecisionPoint location = getSnapedLocation();
+				// update the last point in the list to update the graphical
+				// feedback
+				_points.setPoint(location, _points.size() - 1);
+			}
 
-			// update the last point in the list to update the graphical
-			// feedback
-			_points.setPoint(location, _points.size() - 1);
+			updateTargetRequest();
+			updateTargetUnderMouse();
+			setCurrentCommand(getCommand());
+			showTargetFeedback();
+			return true;
 		}
-
-		updateTargetRequest();
-		updateTargetUnderMouse();
-		setCurrentCommand(getCommand());
-		showTargetFeedback();
-
-		return true;
+		return false;
 	}
 
 	/**
 	 * Gets the "snapped" location based on the current location of the mouse.
+	 * 
 	 * @return the point of the snapped location
 	 */
 	private PrecisionPoint getSnapedLocation() {
@@ -361,7 +361,8 @@ public final class PointListCreationTool extends TargetingTool {
 			Rectangle bounds = _points.getBounds();
 			req.setSize(bounds.getSize());
 			req.setLocation(bounds.getLocation());
-			req.getExtendedData().put(AbstractPolyFeedbackFactory.PROP_POINTS, _points);
+			req.getExtendedData().put(AbstractPolyFeedbackFactory.PROP_POINTS,
+					_points);
 			// req.getExtendedData().clear();
 			if (!getCurrentInput().isAltKeyDown() && _snap2Helper != null) {
 				PrecisionRectangle baseRect = new PrecisionRectangle(bounds);
