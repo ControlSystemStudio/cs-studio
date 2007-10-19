@@ -7,8 +7,9 @@ import java.util.Map;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
+import org.csstudio.sds.util.ChannelReferenceValidationException;
+import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
-import org.csstudio.sds.util.AliasUtil;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PositionConstants;
@@ -96,9 +97,14 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	 * The width of the border.
 	 */
 	private int _borderWidth;
-	
+	/**
+	 * The known aliases.
+	 */
 	private Map<String, String> _aliases;
-	private String _mainPV;
+	/**
+	 * The value for the primary process variable.
+	 */
+	private String _primaryPV;
 	
 	/**
 	 * Fills the image. Nothing to do here.
@@ -146,7 +152,12 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 			}
 			break;
 		case TYPE_ALIAS:
-			toprint=AliasUtil.getAliasName(_mainPV, _aliases);
+			try {
+				toprint = ChannelReferenceValidationUtil.createCanonicalName(_primaryPV, _aliases);
+			} catch (ChannelReferenceValidationException e) {
+				toprint = _primaryPV;
+				e.printStackTrace();
+			}
 			break;
 		case TYPE_HEX:
 			try {
@@ -233,7 +244,11 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		return _decimalPlaces;
 	}
 	
-	public void setAliases(Map<String,String> aliases) {
+	/**
+	 * Sets the known aliases.
+	 * @param aliases A {@link Map} with the aliases
+	 */
+	public void setAliases(final Map<String,String> aliases) {
 		if (aliases==null) {
 			_aliases = new HashMap<String, String>();
 		} else {
@@ -241,11 +256,15 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 		}
 	}
 	
+	/**
+	 * Sets the primary process variable.
+	 * @param mainPV the primary pv
+	 */
 	public void setPrimaryPV(final String mainPV) {
 		if (mainPV==null) {
-			_mainPV = "";
+			_primaryPV = "";
 		} else {
-			_mainPV = mainPV;
+			_primaryPV = mainPV;
 		}
 	}
 	
