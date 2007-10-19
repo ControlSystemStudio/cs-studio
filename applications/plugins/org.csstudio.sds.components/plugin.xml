@@ -117,7 +117,14 @@
             description="A container widget that can group other widgets."
             icon="icons/groupcontainer.gif"
             name="Grouping Container"
-            typeId="org.csstudio.sds.components.GroupingContainer"/>            
+            typeId="org.csstudio.sds.components.GroupingContainer"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.TriangleModelFactory"
+            description="A Triangle"
+            icon="icons/triangle.gif"
+            name="Triangle"
+            typeId="org.csstudio.sds.components.Triangle">
+      </widgetModelFactory>            
    </extension>
 
 </plugin>
