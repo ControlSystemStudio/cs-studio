@@ -90,13 +90,15 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 *            the polygon points
 	 */
 	public final void setPoints(final PointList points) {
-		PointList copy = points.getCopy();
-		setPropertyValue(PROP_POINTS, copy);
-		Rectangle bounds = copy.getBounds();
-		setPropertyValue(PROP_POS_X, bounds.x);
-		setPropertyValue(PROP_POS_Y, bounds.y);
-		setPropertyValue(PROP_WIDTH, bounds.width);
-		setPropertyValue(PROP_HEIGHT, bounds.height);
+		if (points.size()>0) {
+			PointList copy = points.getCopy();
+			setPropertyValue(PROP_POINTS, copy);
+			Rectangle bounds = copy.getBounds();
+			setPropertyValue(PROP_POS_X, bounds.x);
+			setPropertyValue(PROP_POS_Y, bounds.y);
+			setPropertyValue(PROP_WIDTH, bounds.width);
+			setPropertyValue(PROP_HEIGHT, bounds.height);	
+		}
 	}
 
 	/**
