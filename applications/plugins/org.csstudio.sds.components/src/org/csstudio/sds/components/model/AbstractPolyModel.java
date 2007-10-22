@@ -45,6 +45,11 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * The ID of the fill level property.
 	 */
 	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the rotation property.
+	 */
+	public static final String PROP_ROTATION = "rotation"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.
@@ -73,6 +78,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 				new PointList()));
 		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
 				WidgetPropertyCategory.Behaviour, 100.0, 0.0, 100.0));
+		addProperty(PROP_ROTATION, new DoubleProperty("Rotation Angle", WidgetPropertyCategory.Display, 0, 0, 360));
 	}
 
 	/**
@@ -116,6 +122,14 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 */
 	public final double getFill() {
 		return (Double) getProperty(PROP_FILL).getPropertyValue();
+	}
+	
+	/**
+	 * Returns the rotation angle.
+	 * @return the rotation angle
+	 */
+	public final double getRotationAngle() {
+		return (Double) getProperty(PROP_ROTATION).getPropertyValue();
 	}
 	
 	/**
@@ -171,6 +185,29 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		int newY = points.getBounds().y;
 		super.setLocation(newX, newY);
 	}
+	
+	public final void translatePoints(double angle) {
+		double trueAngle = Math.toRadians(angle - getRotationAngle());
+		double sin = Math.sin(trueAngle);
+		double cos = Math.cos(trueAngle);
+		
+		PointList newPoints = new PointList();
+		for (int i=0;i<this.getPoints().size();i++) {
+			Point p = this.getPoints().getPoint(i);
+			int trueX = p.x-this.getX();
+			int trueY = p.y-this.getY();
+			double temp = trueX * cos - trueY * sin;
+			long y = Math.round(trueX * sin + trueY * cos);
+			long x = Math.round(temp);
+			Point newPoint =new Point(x+this.getX(),y+this.getY());
+			newPoints.addPoint(newPoint);
+		}
+		
+		setPoints(newPoints);
+		setSize(this.getWidth(), this.getHeight());
+		
+		super.setPropertyValue(PROP_ROTATION, angle);
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -190,6 +227,9 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		} else if (propertyID.equals(AbstractWidgetModel.PROP_HEIGHT)
 				&& ((Integer) value != getPoints().getBounds().height)) {
 			setSize(getWidth(), (Integer) value);
+//		} else if (propertyID.equals(AbstractPolyModel.PROP_ROTATION)
+//				&& ((Double) value != getRotationAngle())) {
+//			translatePoints((Double) value);
 		} else {
 			super.setPropertyValue(propertyID, value);
 		}
