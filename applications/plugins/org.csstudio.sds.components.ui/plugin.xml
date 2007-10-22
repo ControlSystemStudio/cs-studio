@@ -39,10 +39,6 @@
      <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.GroupingContainerEditPart"
            typeId="org.csstudio.sds.components.GroupingContainer"/>
-     <widgetEditPart
-           class="org.csstudio.sds.components.ui.internal.editparts.TriangleEditPart"
-           typeId="org.csstudio.sds.components.Triangle">
-     </widgetEditPart>           
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">
