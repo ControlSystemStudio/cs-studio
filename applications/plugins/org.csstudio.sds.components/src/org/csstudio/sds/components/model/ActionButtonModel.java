@@ -110,7 +110,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
 				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
 		addProperty(PROP_ACTION_INDEX, new IntegerProperty("Action Index",
-				WidgetPropertyCategory.Behaviour, -1, -1, Integer.MAX_VALUE));
+				WidgetPropertyCategory.Behaviour, 0, 0, Integer.MAX_VALUE));
 	}
 	
 	/**

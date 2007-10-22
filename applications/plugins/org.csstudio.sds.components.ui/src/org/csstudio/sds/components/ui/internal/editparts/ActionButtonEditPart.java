@@ -83,24 +83,13 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 					CentralLogger.getInstance().info(this, "KLICK");
 					ActionButtonModel model = (ActionButtonModel) getWidgetModel();
 					int index = model.getChoosenActionIndex();
+					if (model.getActionData().getWidgetActions().size()==1) {
+						index = 0;
+					}
 					if (index>=0 && index<model.getActionData().getWidgetActions().size()) {
 						WidgetAction type = model.getActionData().getWidgetActions().get(index);
 						WidgetActionHandlerService.getInstance().performAction(model.getProperty(ActionButtonModel.PROP_ACTIONDATA), type);	
 					}
-//					switch(data.getType()) {
-//					case ActionData.OPEN_SHELL :
-//						openDisplayShellInRunMode(data.getDisplayPath(), data.getAliases());
-//						break;
-//					case ActionData.OPEN_VIEW:
-//						openDisplayViewInRunMode(data.getDisplayPath(), data.getAliases());
-//						break;
-//					case ActionData.COMMIT_VALUE:
-//						model.getProperty(ActionButtonModel.PROP_ACTIONDATA).setManualValue(data.getCommitValue());
-//						break;
-//					default:
-//						// do nothing
-//						CentralLogger.getInstance().info(this, "Clicked!");
-//					}
 				} else {
 					CentralLogger.getInstance().info(this, "ActionButton activated!");
 				}
