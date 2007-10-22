@@ -81,7 +81,7 @@ public final class ArcModel extends AbstractWidgetModel {
 		buffer.append(createParameter(PROP_NAME)+"\n");
 		buffer.append("Start Angle:\t");
 		buffer.append(createParameter(PROP_STARTANGLE)+"\n");
-		buffer.append("Angle:\t\t");
+		buffer.append("Angle:\t");
 		buffer.append(createParameter(PROP_ANGLE));
 		return buffer.toString();
 	}

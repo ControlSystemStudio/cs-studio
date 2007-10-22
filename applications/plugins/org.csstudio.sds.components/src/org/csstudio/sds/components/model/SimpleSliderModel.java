@@ -142,7 +142,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 		buffer.append(createParameter(PROP_NAME)+"\n");
 		buffer.append("Maximum:\t");
 		buffer.append(createParameter(PROP_MAX)+"\n");
-		buffer.append("Minimum:\t\t");
+		buffer.append("Minimum:\t");
 		buffer.append(createParameter(PROP_MIN)+"\n");
 		buffer.append("Value:\t\t");
 		buffer.append(createParameter(PROP_VALUE));
