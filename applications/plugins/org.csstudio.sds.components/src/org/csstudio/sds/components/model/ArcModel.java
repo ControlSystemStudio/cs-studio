@@ -77,7 +77,13 @@ public final class ArcModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		return "#"+PROP_NAME+"##\nStart Angle:\t##"+PROP_STARTANGLE+"##\nAngle:\t\t##"+PROP_ANGLE+"##";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append("Start Angle:\t");
+		buffer.append(createParameter(PROP_STARTANGLE)+"\n");
+		buffer.append("Angle:\t\t");
+		buffer.append(createParameter(PROP_ANGLE));
+		return buffer.toString();
 	}
 
 	/**

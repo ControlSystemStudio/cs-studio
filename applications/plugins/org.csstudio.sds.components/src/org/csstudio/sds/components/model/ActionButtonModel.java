@@ -28,6 +28,7 @@ import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.StringProperty;
+import org.csstudio.sds.util.AbstractToolTipConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -117,7 +118,12 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		return "##Name##\n##Action Data##\nPerformed Action: ##Action Index##";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append(createParameter(PROP_ACTIONDATA)+"\n");
+		buffer.append("Performed Action: ");
+		buffer.append(createParameter(PROP_ACTION_INDEX));
+		return buffer.toString();
 	}
 
 	/**

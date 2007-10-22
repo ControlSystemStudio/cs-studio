@@ -109,7 +109,11 @@ public final class RectangleModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		return "##"+PROP_NAME+"##\nValue:\t##"+PROP_FILL+"##";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append("Value:\t");
+		buffer.append(createParameter(PROP_FILL));
+		return buffer.toString();
 	}
 
 	/**

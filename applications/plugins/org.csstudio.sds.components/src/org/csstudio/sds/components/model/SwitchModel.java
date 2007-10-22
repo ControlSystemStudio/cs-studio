@@ -56,7 +56,13 @@ public final class SwitchModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		return "##Name##\nType:\t##Switch Type##\nState:\t##Switch State##";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append("Type:\t");
+		buffer.append(createParameter(PROP_TYPE)+"\n");
+		buffer.append("State:\t");
+		buffer.append(createParameter(PROP_STATE));
+		return buffer.toString();
 	}
 
 	public boolean getTransparent() {

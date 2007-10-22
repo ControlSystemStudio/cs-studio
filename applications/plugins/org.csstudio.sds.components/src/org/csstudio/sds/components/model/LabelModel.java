@@ -119,7 +119,11 @@ public final class LabelModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		return "##Name##\nText:\t##Text Value##";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append("Value:\t");
+		buffer.append(createParameter(PROP_TEXTVALUE));
+		return buffer.toString();
 	}
 
 	/**

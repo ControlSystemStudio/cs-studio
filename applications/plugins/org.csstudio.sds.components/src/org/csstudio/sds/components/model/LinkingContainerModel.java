@@ -86,7 +86,11 @@ public final class LinkingContainerModel extends ContainerModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		return "##Name##\nDisplay:\t##Resource##";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append("Resource:\t");
+		buffer.append(createParameter(PROP_RESOURCE));
+		return buffer.toString();
 	}
 
 	/**

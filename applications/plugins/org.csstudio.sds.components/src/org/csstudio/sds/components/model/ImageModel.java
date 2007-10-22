@@ -82,7 +82,11 @@ public final class ImageModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		return "##Name##\nImage:\t##File##";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append("Image:\t");
+		buffer.append(createParameter(PROP_FILENAME));
+		return buffer.toString();
 	}
 
 	/**

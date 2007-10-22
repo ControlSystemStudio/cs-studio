@@ -204,7 +204,23 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		return "##"+PROP_NAME+"##\nMaximum:\t##"+PROP_MAX+"##\nMinimum:\t##"+PROP_MIN+"##\nValue:\t\t##"+PROP_FILL+"##\nLevel HIHI:\t##"+PROP_HIHI_LEVEL+"##\nLevel HI:\t##"+PROP_HI_LEVEL+"##\nLevel LO:\t##"+PROP_LO_LEVEL+"##\nLevel LOLO:\t##"+PROP_LOLO_LEVEL+"##";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append("Maximum:\t");
+		buffer.append(createParameter(PROP_MAX)+"\n");
+		buffer.append("Minimum:\t\t");
+		buffer.append(createParameter(PROP_MIN)+"\n");
+		buffer.append("Value:\t\t");
+		buffer.append(createParameter(PROP_FILL)+"\n");
+		buffer.append("Level HIHI:\t");
+		buffer.append(createParameter(PROP_HIHI_LEVEL)+"\n");
+		buffer.append("Level HI:\t\t");
+		buffer.append(createParameter(PROP_HI_LEVEL)+"\n");
+		buffer.append("Level LO:\t\t");
+		buffer.append(createParameter(PROP_LO_LEVEL)+"\n");
+		buffer.append("Level LOLO:\t");
+		buffer.append(createParameter(PROP_LOLO_LEVEL));
+		return buffer.toString();
 	}
 
 	/**

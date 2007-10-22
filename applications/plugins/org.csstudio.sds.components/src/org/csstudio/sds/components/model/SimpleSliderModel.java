@@ -138,7 +138,15 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		return "##Name##\nMaximum:\t##Max##\nMinimum:\t##Min##\nCurrent Value:\t##Slider Value##";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append("Maximum:\t");
+		buffer.append(createParameter(PROP_MAX)+"\n");
+		buffer.append("Minimum:\t\t");
+		buffer.append(createParameter(PROP_MIN)+"\n");
+		buffer.append("Value:\t\t");
+		buffer.append(createParameter(PROP_VALUE));
+		return buffer.toString();
 	}
 	
 	/**

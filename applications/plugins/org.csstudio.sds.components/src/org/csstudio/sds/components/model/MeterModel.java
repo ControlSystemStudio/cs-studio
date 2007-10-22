@@ -117,7 +117,23 @@ public final class MeterModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		return "##"+PROP_NAME+"##\nMaximum:\t##"+PROP_MAXVAL+"##\nMinimum:\t##"+PROP_MINVAL+"##\nValue:\t\t##"+PROP_VALUE+"##\nLevel HIHI:\t##"+PROP_HIHIBOUND+"##\nLevel HI:\t##"+PROP_HIBOUND+"##\nLevel LO:\t##"+PROP_LOBOUND+"##\nLevel LOLO:\t##"+PROP_LOLOBOUND+"##";
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append("Maximum:\t");
+		buffer.append(createParameter(PROP_MAXVAL)+"\n");
+		buffer.append("Minimum:\t\t");
+		buffer.append(createParameter(PROP_MINVAL)+"\n");
+		buffer.append("Value:\t\t");
+		buffer.append(createParameter(PROP_VALUE)+"\n");
+		buffer.append("Level HIHI:\t");
+		buffer.append(createParameter(PROP_HIHIBOUND)+"\n");
+		buffer.append("Level HI:\t\t");
+		buffer.append(createParameter(PROP_HIBOUND)+"\n");
+		buffer.append("Level LO:\t\t");
+		buffer.append(createParameter(PROP_LOBOUND)+"\n");
+		buffer.append("Level LOLO:\t");
+		buffer.append(createParameter(PROP_LOLOBOUND));
+		return buffer.toString();
 	}
 
 	public int getAngle() {
