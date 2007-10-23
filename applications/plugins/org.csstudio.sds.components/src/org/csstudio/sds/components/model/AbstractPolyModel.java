@@ -186,25 +186,38 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		super.setLocation(newX, newY);
 	}
 	
-	public final void translatePoints(double angle) {
+	/**
+	 * Rotates all points.
+	 * @param angle The angle to rotate
+	 */
+	public final void rotatePoints(final double angle) {
+//		int currentX = this.getX();
+//		int currentY = this.getY();
+//		int currentWidth = this.getWidth();
+//		int currentHeight = this.getHeight();
 		double trueAngle = Math.toRadians(angle - getRotationAngle());
 		double sin = Math.sin(trueAngle);
 		double cos = Math.cos(trueAngle);
 		
+		Point rotationPoint = new Point(this.getX()+this.getWidth()/2, this.getY()+this.getHeight()/2);
+		
 		PointList newPoints = new PointList();
 		for (int i=0;i<this.getPoints().size();i++) {
-			Point p = this.getPoints().getPoint(i);
-			int trueX = p.x-this.getX();
-			int trueY = p.y-this.getY();
-			double temp = trueX * cos - trueY * sin;
-			long y = Math.round(trueX * sin + trueY * cos);
+			//Relativ coordinates to the rotation point
+			int relX = this.getPoints().getPoint(i).x-rotationPoint.x;
+			int relY = this.getPoints().getPoint(i).y-rotationPoint.y;
+			double temp = relX * cos - relY * sin;
+			long y = Math.round(relX * sin + relY * cos);
 			long x = Math.round(temp);
-			Point newPoint =new Point(x+this.getX(),y+this.getY());
-			newPoints.addPoint(newPoint);
+			
+			newPoints.addPoint(new Point(x+rotationPoint.x,y+rotationPoint.y));
 		}
 		
+		// sets the translated Points
 		setPoints(newPoints);
-		setSize(this.getWidth(), this.getHeight());
+		// fits the size  
+		//setSize(currentWidth, currentHeight);
+		//setLocation(currentX, currentY);
 		
 		super.setPropertyValue(PROP_ROTATION, angle);
 	}
@@ -227,9 +240,9 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		} else if (propertyID.equals(AbstractWidgetModel.PROP_HEIGHT)
 				&& ((Integer) value != getPoints().getBounds().height)) {
 			setSize(getWidth(), (Integer) value);
-//		} else if (propertyID.equals(AbstractPolyModel.PROP_ROTATION)
-//				&& ((Double) value != getRotationAngle())) {
-//			translatePoints((Double) value);
+		} else if (propertyID.equals(AbstractPolyModel.PROP_ROTATION)
+				&& ((Double) value != getRotationAngle())) {
+			rotatePoints((Double) value);
 		} else {
 			super.setPropertyValue(propertyID, value);
 		}
