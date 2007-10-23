@@ -2,7 +2,6 @@ package org.csstudio.platform.libs.jms;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -79,7 +78,8 @@ public class JmsRedundantProducer {
 			throws RuntimeException {
 		boolean atLeastOneConnected = false;
 
-		this.urls = Arrays.copyOf(urlsToConnect, urlsToConnect.length);
+		this.urls = urlsToConnect.clone();
+		
 		CONNECTION_COUNT = urls.length;
 
 		_contexts = new Context[CONNECTION_COUNT];
