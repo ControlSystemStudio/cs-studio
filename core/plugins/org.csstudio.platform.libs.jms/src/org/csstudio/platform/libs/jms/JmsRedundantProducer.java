@@ -1,5 +1,6 @@
 package org.csstudio.platform.libs.jms;
 
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -78,8 +79,7 @@ public class JmsRedundantProducer {
 			throws RuntimeException {
 		boolean atLeastOneConnected = false;
 
-		this.urls = urlsToConnect.clone();
-		
+		this.urls = JmsRedundantProducer.copyOf(urlsToConnect, urlsToConnect.length, URL[].class);
 		CONNECTION_COUNT = urls.length;
 
 		_contexts = new Context[CONNECTION_COUNT];
@@ -124,6 +124,19 @@ public class JmsRedundantProducer {
 			throw new RuntimeException("No connection possible!", lastException);
 		}
 	};
+	
+	/**
+	 * Copied from SUN Java 1.6 API, class java.util.Arrays.
+	 */
+	@SuppressWarnings("unchecked")
+	private static <T,U> T[] copyOf(U[] original, int newLength, Class<? extends T[]> newType) {
+        T[] copy = ((Object)newType == (Object)Object[].class)
+            ? (T[]) new Object[newLength]
+            : (T[]) Array.newInstance(newType.getComponentType(), newLength);
+        System.arraycopy(original, 0, copy, 0,
+                         Math.min(original.length, newLength));
+        return copy;
+    }
 
 	/**
 	 * Closes all sessions/connections. The producer can not be used afterwards.
