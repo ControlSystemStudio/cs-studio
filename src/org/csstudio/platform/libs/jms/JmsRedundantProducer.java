@@ -1,11 +1,11 @@
 package org.csstudio.platform.libs.jms;
 
 import java.lang.reflect.Array;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -66,21 +66,43 @@ public class JmsRedundantProducer {
 	 */
 	private Connection[] _connections;
 
-	/** Array of JMS sessions */
+	/**
+	 * Array of JMS sessions
+	 */
 	private Session[] _sessions = null;
 
-	/** Message Producers. Key -> ProducerId, Value -> Array of message producers */
-	private Hashtable<ProducerId, MessageProducer[]> producers = null;
+	/**
+	 * Message Producers. Key -> ProducerId, Value -> Array of message producers
+	 */
+	private Map<ProducerId, MessageProducer[]> _producers = null;
 
-	/** Array of URL */
-	private URL[] urls = null;
+	/**
+	 * Array of URL
+	 */
+	private String[] _urls = null;
 
-	public JmsRedundantProducer(String clientId, URL[] urlsToConnect)
+	/**
+	 * Creates a redundant producer to connect JMS-Server at specified URLs.
+	 * 
+	 * @param clientId
+	 *            The JMS client Id
+	 * @param urlsToConnect
+	 *            The Server URLs to connect
+	 * @throws RuntimeException
+	 *             If an error occurs, the JMS-Exception will be the nested
+	 *             exception.
+	 * @require clientId != null
+	 */
+	public JmsRedundantProducer(String clientId, String[] urlsToConnect)
 			throws RuntimeException {
 		boolean atLeastOneConnected = false;
+		assert clientId != null : "Precondition violated: clientId != null";
 
-		this.urls = JmsRedundantProducer.copyOf(urlsToConnect, urlsToConnect.length, URL[].class);
-		CONNECTION_COUNT = urls.length;
+		_producers = new HashMap<ProducerId, MessageProducer[]>();
+
+		_urls = JmsRedundantProducer.copyOf(urlsToConnect,
+				urlsToConnect.length, String[].class);
+		CONNECTION_COUNT = _urls.length;
 
 		_contexts = new Context[CONNECTION_COUNT];
 		_factories = new ConnectionFactory[CONNECTION_COUNT];
@@ -93,7 +115,7 @@ public class JmsRedundantProducer {
 			Hashtable<String, String> properties = new Hashtable<String, String>();
 			properties.put(Context.INITIAL_CONTEXT_FACTORY,
 					ACTIVEMQ_JNDI_ACTIVE_CONTEXT_FACTORY);
-			properties.put(Context.PROVIDER_URL, urls[index].toString());
+			properties.put(Context.PROVIDER_URL, _urls[index]);
 
 			try {
 				_contexts[index] = new InitialContext(properties);
@@ -112,31 +134,38 @@ public class JmsRedundantProducer {
 						"lookup or context failure!", ne);
 				lastException = ne;
 			} catch (JMSException jmse) {
-				Logger.getLogger(this.getClass().getName()).log(
-						Level.WARNING,
-						"jms connection to url " + urls[index].toString()
-								+ " failed!", jmse);
+				Logger.getLogger(this.getClass().getName()).log(Level.WARNING,
+						"jms connection to url " + _urls[index] + " failed!",
+						jmse);
 				lastException = jmse;
 			}
 		}
 
 		if (!atLeastOneConnected) {
+			closeAll();
 			throw new RuntimeException("No connection possible!", lastException);
 		}
-	};
-	
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		closeAll();
+	}
+
 	/**
 	 * Copied from SUN Java 1.6 API, class java.util.Arrays.
 	 */
 	@SuppressWarnings("unchecked")
-	private static <T,U> T[] copyOf(U[] original, int newLength, Class<? extends T[]> newType) {
-        T[] copy = ((Object)newType == (Object)Object[].class)
-            ? (T[]) new Object[newLength]
-            : (T[]) Array.newInstance(newType.getComponentType(), newLength);
-        System.arraycopy(original, 0, copy, 0,
-                         Math.min(original.length, newLength));
-        return copy;
-    }
+	private static <T, U> T[] copyOf(U[] original, int newLength,
+			Class<? extends T[]> newType) {
+		T[] copy = ((Object) newType == (Object) Object[].class) ? (T[]) new Object[newLength]
+				: (T[]) Array
+						.newInstance(newType.getComponentType(), newLength);
+		System.arraycopy(original, 0, copy, 0, Math.min(original.length,
+				newLength));
+		return copy;
+	}
 
 	/**
 	 * Closes all sessions/connections. The producer can not be used afterwards.
@@ -144,8 +173,7 @@ public class JmsRedundantProducer {
 	 * @require !isClosed()
 	 */
 	public void closeAll() {
-		assert !isClosed() : "Vorbedingung verletzt: !isClosed()";
-		MessageProducer[] producer = null;
+		assert !isClosed() : "Precondition violated: !isClosed()";
 
 		if (_connections != null) {
 			for (int i = 0; i < CONNECTION_COUNT; i++) {
@@ -158,21 +186,18 @@ public class JmsRedundantProducer {
 			}
 		}
 
-		if (producers != null) {
-			Enumeration<MessageProducer[]> list = producers.elements();
-
-			while (list.hasMoreElements()) {
-				producer = list.nextElement();
-
-				for (int i = 0; i < producer.length; i++) {
+		if (_producers != null) {
+			for (MessageProducer[] producerArray : _producers.values()) {
+				for (MessageProducer producer : producerArray) {
 					try {
-						producer[i].close();
+						producer.close();
 					} catch (JMSException jmse) {
+						Logger.getLogger(this.getClass().getName()).log(
+								Level.WARNING,
+								"could not close Producer " + producer, jmse);
 					}
 				}
 			}
-
-			producer = null;
 		}
 
 		for (int i = 0; i < CONNECTION_COUNT; i++) {
@@ -233,7 +258,7 @@ public class JmsRedundantProducer {
 	 * @require !isClosed()
 	 */
 	public ProducerId createProducer(String topicName) throws RuntimeException {
-		assert !isClosed() : "Vorbedingung verletzt: !isClosed()";
+		assert !isClosed() : "Precondition violated: !isClosed()";
 
 		MessageProducer[] producers = new MessageProducer[CONNECTION_COUNT];
 
@@ -242,13 +267,14 @@ public class JmsRedundantProducer {
 
 		for (int index = 0; index < CONNECTION_COUNT; index++) {
 			try {
-				Topic topic = _sessions[index].createTopic(topicName);
+				Topic topic = (topicName != null ? _sessions[index]
+						.createTopic(topicName) : null);
 				producers[index] = _sessions[index].createProducer(topic);
 			} catch (JMSException jmsex) {
 				Logger.getLogger(this.getClass().getName()).log(
 						Level.WARNING,
 						"MessageProducer for Topic " + topicName + " to url "
-								+ urls[index].toString() + " failed!", jmsex);
+								+ _urls[index].toString() + " failed!", jmsex);
 				numberOfFailures++;
 				lastException = jmsex;
 			}
@@ -262,7 +288,7 @@ public class JmsRedundantProducer {
 		ProducerId id = new ProducerId() {
 		};
 
-		this.producers.put(id, producers);
+		this._producers.put(id, producers);
 
 		return id;
 	}
@@ -278,12 +304,14 @@ public class JmsRedundantProducer {
 	 *             If destination couldn't be retrieved on at least one producer
 	 *             (the nested exception will be the JMSException)!
 	 * @require !isClosed()
+	 * @require knowsProducer(id)
 	 */
 	public boolean hasProducerDestiantion(ProducerId id)
 			throws RuntimeException {
-		assert !isClosed() : "Vorbedingung verletzt: !isClosed()";
+		assert !isClosed() : "Precondition violated: !isClosed()";
+		assert knowsProducer(id) : "Precondition violated: knowsProducer(id)";
 
-		MessageProducer[] messageProducers = producers.get(id);
+		MessageProducer[] messageProducers = _producers.get(id);
 
 		int numberOfFailures = 0;
 		Exception lastException = null;
@@ -297,7 +325,7 @@ public class JmsRedundantProducer {
 				Logger.getLogger(this.getClass().getName()).log(
 						Level.WARNING,
 						"Could not retrieve destination of producers on url "
-								+ urls[index].toString(), e);
+								+ _urls[index].toString(), e);
 				lastException = e;
 				numberOfFailures++;
 			}
@@ -309,6 +337,17 @@ public class JmsRedundantProducer {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Checks if this RedundantProducer knows the specified producer.
+	 * 
+	 * @param id
+	 *            Id of producer to check
+	 * @return {@code true} if producer is known, {@code false} otherwise.
+	 */
+	public boolean knowsProducer(final ProducerId id) {
+		return this._producers.containsKey(id);
 	}
 
 	/**
@@ -334,9 +373,12 @@ public class JmsRedundantProducer {
 	 *             If the message couldn't be send to at least one producer (the
 	 *             nested exception will be the JMSException)!
 	 * @require !isClosed()
+	 * @require knowsProducer(id)
 	 */
-	public URL[] send(ProducerId id, Message message) throws RuntimeException {
-		assert !isClosed() : "Vorbedingung verletzt: !isClosed()";
+	public String[] send(ProducerId id, Message message)
+			throws RuntimeException {
+		assert !isClosed() : "Precondition violated: !isClosed()";
+		assert knowsProducer(id) : "Precondition violated: knowsProducer(id)";
 
 		return this.send(id, null, message);
 	}
@@ -357,17 +399,19 @@ public class JmsRedundantProducer {
 	 *             If the message couldn't be send to at least one producer (the
 	 *             nested exception will be the JMSException)!
 	 * @require !isClosed()
+	 * @require knowsProducer(id)
 	 */
-	public URL[] send(ProducerId id, String topicName, Message message)
+	public String[] send(ProducerId id, String topicName, Message message)
 			throws RuntimeException {
-		assert !isClosed() : "Vorbedingung verletzt: !isClosed()";
+		assert !isClosed() : "Precondition violated: !isClosed()";
+		assert knowsProducer(id) : "Precondition violated: knowsProducer(id)";
 
-		MessageProducer[] messageProducers = producers.get(id);
+		MessageProducer[] messageProducers = _producers.get(id);
 
 		int numberOfFailures = 0;
 		Exception lastException = null;
 
-		List<URL> result = new ArrayList<URL>(CONNECTION_COUNT);
+		List<String> result = new ArrayList<String>(CONNECTION_COUNT);
 
 		for (int index = 0; index < CONNECTION_COUNT; index++) {
 			try {
@@ -377,12 +421,12 @@ public class JmsRedundantProducer {
 					Topic topic = _sessions[index].createTopic(topicName);
 					messageProducers[index].send(topic, message);
 				}
-				result.add(urls[index]);
+				result.add(_urls[index]);
 			} catch (JMSException e) {
 				Logger.getLogger(this.getClass().getName()).log(
 						Level.WARNING,
 						"Could not send Message for Topic " + topicName
-								+ " to url " + urls[index].toString(), e);
+								+ " to url " + _urls[index], e);
 				lastException = e;
 				numberOfFailures++;
 			}
@@ -393,6 +437,6 @@ public class JmsRedundantProducer {
 					lastException);
 		}
 
-		return result.toArray(new URL[result.size()]);
+		return result.toArray(new String[result.size()]);
 	}
 }

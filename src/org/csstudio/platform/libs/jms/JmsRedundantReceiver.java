@@ -26,6 +26,9 @@ package org.csstudio.platform.libs.jms;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -159,7 +162,7 @@ public class JmsRedundantReceiver
                 topic = session[i].createTopic(destination);
                 sub[i] = session[i].createConsumer(topic);
                 
-                System.out.println(name + " -> Topic: " + destination + " " + urls[i]);
+                Logger.getLogger(this.getClass().getName()).log(Level.INFO, name + " -> Topic: " + destination + " " + urls[i]);
             }
             
             subscriber.put(name, sub);
