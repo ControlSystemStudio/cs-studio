@@ -86,6 +86,13 @@ public class JmsRedundantReceiver
     /** Number of redundant connections */
     private boolean connected = false;
     
+    /**
+     * 
+     * @param id - The client Id used by the connection object.
+     * @param url1 - URL of the first JMS Server
+     * @param url2 - URL of the second JMS Server
+     */
+    
     public JmsRedundantReceiver(String id, String url1, String url2)
     {
         urls = new String[CONNECTION_COUNT];
@@ -188,6 +195,16 @@ public class JmsRedundantReceiver
         return result;
     }
     
+    /**
+     * Returns the current message. It takes the messages from the internal queue first. If the
+     * queue does not contain a message, the method calls the receive() method of the MessageConsumer
+     * object.
+     * If more then one server hold a message, the messages will be stored in the internal queue.
+     * 
+     * @param name
+     * @return
+     */
+    
     public Message receive(String name)
     {
         ConcurrentLinkedQueue<Message> queue = null;
@@ -195,6 +212,7 @@ public class JmsRedundantReceiver
         Message[] m = null;
         Message result = null;
         
+        // First check the internal message queue
         if(messages.containsKey(name))
         {
             queue = messages.get(name);
@@ -205,17 +223,22 @@ public class JmsRedundantReceiver
             }
         }
         
+        // Return when a message was found in the queue
         if(result != null)
         {
             return result;
         }
         
+        // Do we have a subscriber with the given name?
         if(subscriber.containsKey(name))
         {
+            // Get the MessageConsumer objects for all hosts
             c = subscriber.get(name);
             
+            // Create a new array of Message
             m = new Message[c.length];
             
+            // Receive the next message from all hosts
             for(int i = 0;i < c.length;i++)
             {
                 try
@@ -228,20 +251,24 @@ public class JmsRedundantReceiver
                 }
             }
             
+            // All servers sent a message
             if((m[0] != null) && (m[1] != null))
             {
                 try
                 {
+                    // Check the time stamp
                     if(m[0].getJMSTimestamp() <= m[1].getJMSTimestamp())
                     {
+                        // The oldest message first
                         result = m[0];
                         
+                        // The newest message will be stored in the queue
                         if(queue != null)
                         {
                             queue.add(m[1]);
                         }
                     }
-                    else
+                    else // and vice versa...
                     {
                         result = m[1];
                         
@@ -261,11 +288,11 @@ public class JmsRedundantReceiver
                     }
                 }            
             }
-            else if(m[0] == null && m[1] != null)
+            else if(m[0] == null && m[1] != null) // Only one message
             {
                 result = m[1];
             }
-            else if(m[0] != null && m[1] == null)
+            else if(m[0] != null && m[1] == null) // Only one message
             {
                 result = m[0];
             }
@@ -273,6 +300,11 @@ public class JmsRedundantReceiver
         
         return result;
     }
+    
+    /**
+     * 
+     * @return True, if the receiver is connected. False otherwise
+     */
     
     public boolean isConnected()
     {
