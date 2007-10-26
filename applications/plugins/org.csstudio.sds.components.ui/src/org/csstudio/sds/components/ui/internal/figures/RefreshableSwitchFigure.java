@@ -3,6 +3,7 @@ package org.csstudio.sds.components.ui.internal.figures;
 import java.util.HashMap;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.csstudio.sds.util.CustomMediaFactory;

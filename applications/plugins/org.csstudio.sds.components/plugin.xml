@@ -106,18 +106,6 @@
             icon="icons/actionbutton.gif"
             name="Action Button"
             typeId="org.csstudio.sds.components.ActionButton"/>
-      <widgetModelFactory
-            class="org.csstudio.sds.components.internal.model.LinkingContainerModelFactory"
-            description="A container widget which can show up other displays."
-            icon="icons/linkingcontainer.gif"
-            name="Linking Container"
-            typeId="org.csstudio.sds.components.LinkingContainer"/>
-      <widgetModelFactory
-            class="org.csstudio.sds.components.internal.model.GroupingContainerModelFactory"
-            description="A container widget that can group other widgets."
-            icon="icons/groupcontainer.gif"
-            name="Grouping Container"
-            typeId="org.csstudio.sds.components.GroupingContainer"/>
    </extension>
 
 </plugin>

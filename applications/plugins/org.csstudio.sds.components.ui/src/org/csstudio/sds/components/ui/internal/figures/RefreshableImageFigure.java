@@ -1,6 +1,7 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
+import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;

@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import org.csstudio.sds.components.ui.internal.utils.ShadedDrawing;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
+import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.csstudio.sds.util.CustomMediaFactory;

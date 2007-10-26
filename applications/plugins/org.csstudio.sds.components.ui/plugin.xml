@@ -33,12 +33,6 @@
      <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.ActionButtonEditPart"
            typeId="org.csstudio.sds.components.ActionButton"/>
-     <widgetEditPart
-           class="org.csstudio.sds.components.ui.internal.editparts.LinkingContainerEditPart"
-           typeId="org.csstudio.sds.components.LinkingContainer"/>
-     <widgetEditPart
-           class="org.csstudio.sds.components.ui.internal.editparts.GroupingContainerEditPart"
-           typeId="org.csstudio.sds.components.GroupingContainer"/>
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">
