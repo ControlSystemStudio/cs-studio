@@ -171,7 +171,7 @@
             <rule
             class="org.csstudio.sds.cosyrules.color.IfNotZero"
             name="If not zero"
-            returnType="java.lang.Number"
+            returnType="java.lang.Boolean"
             ruleId="org.css.sds.color.if_not_zero"
             >
          <parameterDescription
@@ -181,7 +181,7 @@
       <rule
             class="org.csstudio.sds.cosyrules.color.IfZero"
             name="If zero"
-            returnType="java.lang.Number"
+            returnType="java.lang.Boolean"
             ruleId="org.css.sds.color.if_zero">
          <parameterDescription
                name="Double Value">

@@ -58,6 +58,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 				.getFont(model.getFont()));
 		button.setTextAlignment(model.getTextAlignment());
 		button.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.getEnabled());
+		button.setStyle(model.getButtonStyle());
 		return button;
 	}
 
@@ -134,6 +135,18 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
+		
+		// button style
+        IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                RefreshableActionButtonFigure figure = (RefreshableActionButtonFigure) refreshableFigure;
+                figure.setStyle((Boolean)newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_BUTTON, buttonStyleHandler);
 	}
 	
 //	/**

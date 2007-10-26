@@ -24,6 +24,7 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
@@ -56,7 +57,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * The ID of the ActionData property.
 	 */
 	public static final String PROP_ACTION_INDEX = "action_index"; //$NON-NLS-1$
-
+	/**
+	 * The ID of the ToggelButton property.
+	 */
+	public static final String PROP_TOGGLE_BUTTON= "toggelButton"; //$NON-NLS-1$
+	
 	/**
 	 * The ID of this widget model.
 	 */
@@ -77,6 +82,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 */
 	private static final int DEFAULT_TEXT_ALIGNMENT = 0;
 	
+	/**
+	 * The default value of the Button style.  
+	 */
+    private static final boolean DEFAULT_TOGGLE_BUTTON = false;
+    
 	/**
 	 * The labels for the text alignment property.
 	 */
@@ -111,6 +121,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
 		addProperty(PROP_ACTION_INDEX, new IntegerProperty("Action Index",
 				WidgetPropertyCategory.Behaviour, 0, 0, Integer.MAX_VALUE));
+		addProperty(PROP_TOGGLE_BUTTON, new BooleanProperty("Toggel Button",
+		        WidgetPropertyCategory.Behaviour,DEFAULT_TOGGLE_BUTTON));
 	}
 	
 	/**
@@ -177,4 +189,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		return (Integer) getProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
 	}
 
+	/**
+	 * Return the button style.
+	 *  @return false = Push, true=Toggle
+	 */
+	public boolean getButtonStyle(){
+	    return (Boolean)getProperty(PROP_TOGGLE_BUTTON).getPropertyValue();
+	}
 }

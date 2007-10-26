@@ -49,6 +49,11 @@ public final class RefreshableActionButtonFigure extends Button implements
 	private Label _label;
 	
 	/**
+	 * The style for the Button.
+	 */
+	private int _style;
+	
+	/**
 	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
 	 */
 	private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
@@ -97,6 +102,19 @@ public final class RefreshableActionButtonFigure extends Button implements
 			}
 			_label.setTextAlignment(_alignments[alignment]);
 		}
+	}
+	
+	/**
+	 * Set the style of the Button.
+	 * @param style false = Push, true=Toggle.
+	 */
+	public void setStyle(final boolean style){
+	    if(style){
+	        setStyle(Button.STYLE_TOGGLE);
+	    }else{
+	        setStyle(Button.STYLE_BUTTON);
+	    }
+	        
 	}
 
 	/**

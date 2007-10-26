@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sds.feature"
       label="Synoptic Display Studio Feature"
-      version="1.0.3">
+      version="1.0.4">
 
    <description url="http://css.desy.de/sds">
       The Synoptic Display Studio (SDS) is a GEF based application which allows for modelling and displaying synoptic displays.
