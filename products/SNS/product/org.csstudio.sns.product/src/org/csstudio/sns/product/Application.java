@@ -47,9 +47,15 @@ public class Application implements IApplication
                     //           - Runtime options
                     //           - Multi-user install
                     
-                    // Query for workpace
+                    // Query for workpace.
+                    // This actually loads the CSS core plugin, which queries
+                    // preferences, ... and if the current workspace
+                    // doesn't exist, that can result in errors,
+                    // including "NoClassDefFoundError" for the
+                    // WorkspaceSwitchHelper.
+                    // Tried to catch that, but doesn't work?!
                     final String workspace =
-                        WorkspaceSwitchHelper.promptForWorkspace(null, true);
+                            WorkspaceSwitchHelper.promptForWorkspace(null, true);
                     // Nothing selected
                     if (workspace == null)
                     {
