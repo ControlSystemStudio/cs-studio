@@ -107,7 +107,6 @@ public class AlarmLogView extends LogView {
 		ackCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2,
 				1));
 		ackCombo.add("ALL");
-		ackCombo.select(0);
 		IPreferenceStore prefs = JmsLogsPlugin.getDefault()
 				.getPreferenceStore();
 		if (prefs.getString(JmsLogPreferenceConstants.VALUE0).trim().length() > 0)
@@ -130,7 +129,8 @@ public class AlarmLogView extends LogView {
 			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE8));
 		if (prefs.getString(JmsLogPreferenceConstants.VALUE9).trim().length() > 0)
 			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE9));
-
+		ackCombo.select(4);
+		
 		ackButton.addSelectionListener(new SelectionListener() {
 
 			/**
