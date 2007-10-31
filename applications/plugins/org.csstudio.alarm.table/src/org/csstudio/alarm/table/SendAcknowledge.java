@@ -68,7 +68,7 @@ public class SendAcknowledge extends Job {
 
 		SendMapMessage sender = new SendMapMessage();
         try {
-		sender.startSender();
+		sender.startSender(true);
 
 		
 		for (JMSMessage message : messagesToSend) {

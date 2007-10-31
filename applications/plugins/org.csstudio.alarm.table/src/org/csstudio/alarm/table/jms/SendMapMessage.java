@@ -30,7 +30,8 @@ public class SendMapMessage {
     Destination                 destination = null;
     MapMessage                  message     = null;
 
-	public void startSender() throws Exception{
+    
+    public void startSender(boolean acknowledge) throws Exception {
         properties = new Hashtable<String, String>();
         properties.put(Context.INITIAL_CONTEXT_FACTORY, 
         		JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.INITIAL_PRIMARY_CONTEXT_FACTORY));
@@ -46,8 +47,11 @@ public class SendMapMessage {
         destination = (Destination)context.lookup(JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.QUEUE));
 		*/
         
-        destination = (Destination)session.createTopic(JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.QUEUE));
-
+        if(acknowledge == false) {
+        	destination = (Destination) session.createTopic(JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.QUEUE));
+        } else {
+        	destination = (Destination) session.createTopic("ACK");
+        }
         connection.start();
         sender = session.createProducer(destination);
         sender.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
