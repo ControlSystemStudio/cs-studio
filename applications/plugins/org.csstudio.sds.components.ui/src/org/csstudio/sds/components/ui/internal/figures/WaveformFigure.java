@@ -41,7 +41,6 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
-import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -67,7 +66,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private static final int TEXTHEIGHT = 14;
 
 	/**
-	 * Width of the text.
+	 * The width of the area that is reserved for the axis labels to the left
+	 * of the Y axis.
 	 */
 	private static final int TEXTWIDTH = 46;
 
@@ -110,19 +110,17 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private double _min = 0;
 	
 	/**
-	 * A double, representing the maximum value of the data.
-	 * This value is only setted by the properties
+	 * The maximum data value set in this waveform's properties.
 	 */
-	private double _settedMax = 0;
+	private double _propertyMax = 0;
 
 	/**
-	 * A double, representing the minimum value of the data.
-	 * This value is only setted by the properties
+	 * The minimum data value set in this waveform's properties.
 	 */
-	private double _settedMin = 0;
+	private double _propertyMin = 0;
 
 	/**
-	 * The zero level of the graph.
+	 * The zero level (the Y position of the value zero).
 	 */
 	private int _zeroLevel = 0;
 	
@@ -132,15 +130,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private boolean _transparent = false;
 
 	/**
-	 * The PointList based on the real data.
-	 */
-	private List<PrecisionPoint> _dataPoints = new LinkedList<PrecisionPoint>();
-
-	/**
-	 * The bounds of the actual graph area (where the data points are drawn).
+	 * The bounds of the plotting area (where the data points are drawn).
 	 * The location of the rectangle is relative to the figure bounds.
 	 */
-	private Rectangle _graphBounds = new Rectangle(10, 10, 10, 10);
+	private Rectangle _plotBounds = new Rectangle(10, 10, 10, 10);
 
 	/**
 	 * An int, representing in which way the scale should be drawn. 0 = None; 1 =
@@ -197,7 +190,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	/**
 	 * The graph of this waveform.
 	 */
-	private GraphFigure _graphFigure;
+	private PlotFigure _plotFigure;
 
 	/**
 	 * True, if this figure has to be initiated, false otherwise.
@@ -258,8 +251,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		_horizontalScale.setAlignment(false);
 		_horizontalScale.setForegroundColor(this.getForegroundColor());
 		this.add(_horizontalScale);
-		_graphFigure = new GraphFigure();
-		this.add(_graphFigure);
+		_plotFigure = new PlotFigure();
+		this.add(_plotFigure);
 
 		// listen to figure movement events
 		addFigureListener(new FigureListener() {
@@ -267,15 +260,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				refreshConstraints();
 			}
 		});
-	}
-
-	/**
-	 * This method is a tribute to unit tests, which need a way to test the
-	 * performance of the figure implementation. Implementors should produce
-	 * some random changes and refresh the figure, when this method is called.
-	 * 
-	 */
-	public void randomNoiseRefresh() {
 	}
 
 	/**
@@ -323,8 +307,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		if (_init) {
 			return;
 		}
-		_graphBounds = this.getGraphBounds();
-		_dataPoints = this.calculatePoints(_graphBounds);
+		_plotBounds = this.calculatePlotBounds();
+		this.adjustAutoscale();
 		_zeroLevel = this.valueToYPos(0.0);
 		int verticalScaleWidth = 0;
 		if (_showScale == SHOW_VERTICAL || _showScale == SHOW_BOTH) {
@@ -333,10 +317,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				verticalScaleWidth = verticalScaleWidth + TEXTWIDTH;
 			}
 			this.setConstraint(_verticalScale, new Rectangle(0, 0,
-					verticalScaleWidth, _graphBounds.height+TEXTHEIGHT));
+					verticalScaleWidth, _plotBounds.height+TEXTHEIGHT));
 			_verticalScale.setReferencePositions(_zeroLevel+TEXTHEIGHT/2+1);
-			_verticalScale.setSectionLength(((double) _graphBounds.height) / Math.max(1, _ySectionCount));
-			_verticalScale.setRegion(0, _graphBounds.y+_graphBounds.height);
+			_verticalScale.setSectionLength(((double) _plotBounds.height) / Math.max(1, _ySectionCount));
+			_verticalScale.setRegion(0, _plotBounds.y+_plotBounds.height);
 			_verticalScale.setIncrement((_max-_min)/_ySectionCount);
 		} else {
 			this.setConstraint(_verticalScale, DEFAULT_CONSTRAINT);
@@ -345,60 +329,60 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			if (_showScale == SHOW_HORIZONTAL) {
 				this.setConstraint(_horizontalScale, new Rectangle(
 						verticalScaleWidth, _zeroLevel - (_scaleWideness/2)+1,
-						_graphBounds.width, _scaleWideness+TEXTHEIGHT));	
+						_plotBounds.width, _scaleWideness+TEXTHEIGHT));	
 			} else {
 				this.setConstraint(_horizontalScale, new Rectangle(
 						verticalScaleWidth, _zeroLevel - (_scaleWideness/2)+1 + TEXTHEIGHT/2,
-						_graphBounds.width, _scaleWideness+TEXTHEIGHT));
+						_plotBounds.width, _scaleWideness+TEXTHEIGHT));
 			}
 
 			double d = ((double)_data.length)/Math.max(1, _xSectionCount);
 			_horizontalScale.setIncrement(d);
-			_horizontalScale.setSectionLength(((double) _graphBounds.width) / Math.max(1, _xSectionCount));
-			_horizontalScale.setRegion(0, _graphBounds.width-10);
+			_horizontalScale.setSectionLength(((double) _plotBounds.width) / Math.max(1, _xSectionCount));
+			_horizontalScale.setRegion(0, _plotBounds.width-10);
 		} else {
 			this.setConstraint(_horizontalScale, DEFAULT_CONSTRAINT);
 		}
 
 		if (_showLedgerLines == SHOW_HORIZONTAL	|| _showLedgerLines == SHOW_BOTH) {
 			this.setConstraint(_verticalLedgerScale, new Rectangle(
-					verticalScaleWidth, 0, _graphBounds.width, _graphBounds.height+TEXTHEIGHT));
+					verticalScaleWidth, 0, _plotBounds.width, _plotBounds.height+TEXTHEIGHT));
 			_verticalLedgerScale.setReferencePositions(_zeroLevel+TEXTHEIGHT/2+1);
-			_verticalLedgerScale.setSectionLength(((double) _graphBounds.height) / Math.max(1, _ySectionCount));
-			_verticalLedgerScale.setRegion(0, _graphBounds.y+_graphBounds.height);
-			_verticalLedgerScale.setWideness(_graphBounds.width);
+			_verticalLedgerScale.setSectionLength(((double) _plotBounds.height) / Math.max(1, _ySectionCount));
+			_verticalLedgerScale.setRegion(0, _plotBounds.y+_plotBounds.height);
+			_verticalLedgerScale.setWideness(_plotBounds.width);
 			_verticalLedgerScale.setIncrement((_max-_min)/_ySectionCount);
 		} else {
 			this.setConstraint(_verticalLedgerScale, DEFAULT_CONSTRAINT);
 		}
 		if (_showLedgerLines == SHOW_VERTICAL || _showLedgerLines == SHOW_BOTH) {
 			this.setConstraint(_horizontalLedgerScale, new Rectangle(
-					verticalScaleWidth, TEXTHEIGHT/2, _graphBounds.width, _graphBounds.height));
+					verticalScaleWidth, TEXTHEIGHT/2, _plotBounds.width, _plotBounds.height));
 			double d = ((double)_data.length)/_xSectionCount;
 			_horizontalLedgerScale.setIncrement(d);
-			_horizontalLedgerScale.setSectionLength(((double) _graphBounds.width) / Math.max(1, _xSectionCount));
-			_horizontalLedgerScale.setWideness(_graphBounds.height);
-			_horizontalLedgerScale.setRegion(0, _graphBounds.width-10);
+			_horizontalLedgerScale.setSectionLength(((double) _plotBounds.width) / Math.max(1, _xSectionCount));
+			_horizontalLedgerScale.setWideness(_plotBounds.height);
+			_horizontalLedgerScale.setRegion(0, _plotBounds.width-10);
 		} else {
 			this.setConstraint(_horizontalLedgerScale, DEFAULT_CONSTRAINT);
 		}
-		this.setConstraint(_graphFigure, _graphBounds);
+		this.setConstraint(_plotFigure, _plotBounds);
 
 		this.setToolTip(this.getToolTipFigure());
 	}
 
 	/**
-	 * Gets the bounds of the graph.
+	 * Calculates and returns the bounds of the plot area.
 	 * @return Rectangle
-	 * 				The rectangle for the graph
+	 * 				The rectangle describing the bounds of the plot area.
 	 */
-	private Rectangle getGraphBounds() {
+	private Rectangle calculatePlotBounds() {
 		Rectangle figureBounds = this.getBounds().getCopy();
 		figureBounds.crop(this.getInsets());
 		if (_showScale == SHOW_VERTICAL || _showScale == SHOW_BOTH) {
 			int width = _scaleWideness;
 			if (_showValues) {
-				width = TEXTWIDTH + _scaleWideness;
+				width += TEXTWIDTH;
 			}
 			return new Rectangle(width, TEXTHEIGHT/2, figureBounds.width
 					- width, figureBounds.height-TEXTHEIGHT);
@@ -436,64 +420,23 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 
 	/**
-	 * Calculates all Points for the curve and add them into a PointList.
-	 * Caution! These points are zero-related.
-	 * 
-	 * @param bounds
-	 *            The bounds for the Rectangle of the curve
-	 * @return PoinList The PointList with all Points
+	 * Adjusts the plot to the maximum and minimum values in the dataset
+	 * if autoscaling is activated.
 	 */
-	private List<PrecisionPoint> calculatePoints(final Rectangle bounds) {
-		List<PrecisionPoint> pointList = new LinkedList<PrecisionPoint>();
-		if (bounds.width == 0) {
-			return pointList;
-		}
-		double min = 0;
-		double max = 0;
+	private void adjustAutoscale() {
+		if (_autoScale) {
+			double min = 0;
+			double max = 0;
 
-		// stepSize: number of data points that will be averaged into
-		// a single pixel
-		int stepSize = Math.max(1, (int) Math.ceil((double) _data.length
-				/ bounds.width));
-		
-		// pointCount: number of data points that must be drawn
-		int pointCount;
-		if (_data.length > bounds.width) {
-			// XXX: this loses a huge amount of data points!
-			// for example if _data.length == 100 and bounds.width == 99,
-			// then stepSize will be 2 and pointCount will be only 50.
-			pointCount = (int) Math.ceil((double) _data.length / stepSize);
-		} else {
-			pointCount = _data.length;
-		}
-
-		for (int i = 0; i < pointCount; i++) {
-			double yValue = 0;
-			int div = 0;
-			for (int j = 0; j < stepSize; j++) {
-				int index = j + i * stepSize;
-				if (index < _data.length) {
-					yValue = yValue + _data[index];
-					div++;
-					if (_data[index] < min || i == 0) {
-						min = _data[index];
-					}
-					if (_data[index] > max || i == 0) {
-						max = _data[index];
-					}
+			for (double value : _data) {
+				if (value < min) {
+					min = value;
+				}
+				else if (value > max) {
+					max = value;
 				}
 			}
-			div = Math.max(div, 1);
-			yValue = yValue / div;
 
-			double x = 1;
-			if (pointCount != 0) {
-				x = 1 + ((bounds.width - 1) * i) / (pointCount);
-			}
-			pointList.add(new PrecisionPoint(x, yValue));
-		}
-
-		if (_autoScale) {
 			if (min < _min - AUTOSCALE_TRESHOLD || min > _min + AUTOSCALE_TRESHOLD) {
 				_min = min;
 			}
@@ -501,8 +444,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				_max = max;
 			}
 		}
-
-		return pointList;
 	}
 	
 	/**
@@ -512,7 +453,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 */
 	public void setMax(final double max) {
 		_max = max;
-		_settedMax = max;
+		_propertyMax = max;
 		this.refreshConstraints();
 	}
 
@@ -523,7 +464,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 */
 	public void setMin(final double min) {
 		_min = min;
-		_settedMin = min;
+		_propertyMin = min;
 		this.refreshConstraints();
 	}
 
@@ -535,8 +476,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	public void setAutoScale(final boolean autoScale) {
 		_autoScale = autoScale;
 		if (!_autoScale) {
-			_min = _settedMin;
-			_max = _settedMax;
+			_min = _propertyMin;
+			_max = _propertyMax;
 		}
 		this.refreshConstraints();
 	}
@@ -553,15 +494,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 
 	/**
-	 * Gets in which way the scale should be drawn.
-	 * 
-	 * @return int 0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
-	 */
-	public int getShowScale() {
-		return _showScale;
-	}
-
-	/**
 	 * Sets in which way the help lines should be drawn.
 	 * 
 	 * @param showLedgerLines
@@ -573,15 +505,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 
 	/**
-	 * Gets in which way the help lines should be drawn.
-	 * 
-	 * @return int 0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
-	 */
-	public int getShowLedgerLines() {
-		return _showLedgerLines;
-	}
-
-	/**
 	 * Sets if the point lines should be drawn.
 	 * 
 	 * @param showPointLines
@@ -590,15 +513,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	public void setShowConnectionLines(final boolean showPointLines) {
 		_showConnectionLines = showPointLines;
 	}
-
-	/**
-	 * Gets if the point lines should be drawn.
-	 * 
-	 * @return boolean true, the point lines should be drawn, false otherwise
-	 */
-	public boolean getShowConnectionLines() {
-		return _showConnectionLines;
-	}
 	
 	/**
 	 * Sets the width of the lines of the graph.
@@ -606,7 +520,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * 				The width of the lines of the graph.
 	 */
 	public void setGraphLineWidth(final int lineWidth) {
-		_graphFigure.setGraphLineWidth(lineWidth);
+		_plotFigure.setPlotLineWidth(lineWidth);
 	}
 
 	/**
@@ -614,7 +528,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 */
 	public void setBackgroundColor(final Color backgroundColor) {
 		super.setBackgroundColor(backgroundColor);
-		_graphFigure.setBackgroundColor(backgroundColor);
+		_plotFigure.setBackgroundColor(backgroundColor);
 	}
 
 	/**
@@ -623,7 +537,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	@Override
 	public void setForegroundColor(final Color foregroundcolor) {
 		super.setForegroundColor(foregroundcolor);
-		_graphFigure.setForegroundColor(foregroundcolor);
+		_plotFigure.setForegroundColor(foregroundcolor);
 	}
 
 	/**
@@ -633,7 +547,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 *            The RGB-value for the color
 	 */
 	public void setGraphColor(final RGB graphRGB) {
-		_graphFigure.setGraphColor(CustomMediaFactory.getInstance().getColor(
+		_plotFigure.setDataPointColor(CustomMediaFactory.getInstance().getColor(
 				graphRGB));
 	}
 
@@ -644,7 +558,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 *            The RGB-value for the color
 	 */
 	public void setConnectionLineColor(final RGB lineRGB) {
-		_graphFigure.setConnectionLineColor(CustomMediaFactory.getInstance()
+		_plotFigure.setConnectionLineColor(CustomMediaFactory.getInstance()
 				.getColor(lineRGB));
 	}
 
@@ -672,15 +586,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		_verticalScale.setShowValues(showValues);
 		_horizontalScale.setShowValues(showValues);
 		this.refreshConstraints();
-	}
-
-	/**
-	 * Gets, if the values should be shown.
-	 * 
-	 * @return boolean True, if the values should be shown, false otherwise
-	 */
-	public boolean getShowValues() {
-		return _showValues;
 	}
 	
 	/**
@@ -712,15 +617,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	public void setTransparent(final boolean transparent) {
 		_transparent = transparent;
 	}
-
-	/**
-	 * Gets the transparent state of the background.
-	 * 
-	 * @return the transparent state of the background
-	 */
-	public boolean getTransparent() {
-		return _transparent;
-	}
 	
 	/**
 	 * Returns the y position relative to the top of the plot at which the
@@ -731,25 +627,25 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 */
 	private int valueToYPos(double value) {
 		double dataRange = _max - _min;
-		int plotHeight = _graphBounds.height - 1;
+		int plotHeight = _plotBounds.height - 1;
 		// the data values are mapped to [0, height-1]
 		double scaling = plotHeight / dataRange;
 		
-		// by subtracting the mapped value from height-1, we get the actual
-		// y position (subtracting because the y axis in Draw2D goes from top
-		// to bottom)
-		return (_graphBounds.height - 1) - ((int) Math.round((value - _min) * scaling));
+		// _max - value calculates the distance of the value to the plot's
+		// upper edge. Since the Y axis goes from top to bottom, this is
+		// exactly what we need.
+		return (int) Math.round((_max - value) * scaling);
 	}
 
 	/**
-	 * This class represents the graph of the waveform.
+	 * This class represents the plot of the waveform.
 	 */
-	private final class GraphFigure extends RectangleFigure {
+	private final class PlotFigure extends RectangleFigure {
 
 		/**
 		 * The Color for the graph.
 		 */
-		private Color _graphColor = ColorConstants.red;
+		private Color _dataPointColor = ColorConstants.red;
 
 		/**
 		 * The Color for the connection lines.
@@ -759,7 +655,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		/**
 		 * The width of the lines of the graph.
 		 */
-		private int _graphLineWidth = 1;
+		private int _plotLineWidth = 1;
 
 		/**
 		 * {@inheritDoc}
@@ -773,19 +669,14 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			graphics.drawLine(figureBounds.x, figureBounds.y + _zeroLevel,
 					figureBounds.x + figureBounds.width, figureBounds.y
 							+ _zeroLevel);
-			graphics.drawLine(figureBounds.x,
-					figureBounds.y + figureBounds.height,
-					figureBounds.x + figureBounds.width,
-					figureBounds.y + figureBounds.height);
 			
-			PointList pointList = this.translatePointList(_dataPoints,
-					figureBounds.x, figureBounds);
-			graphics.setLineWidth(_graphLineWidth);
+			PointList pointList = calculatePlotPoints();
+			graphics.setLineWidth(_plotLineWidth);
 			if (_showConnectionLines) {
 				graphics.setForegroundColor(_connectionLineColor);
 				graphics.drawPolyline(pointList);
 			}
-			graphics.setForegroundColor(_graphColor);
+			graphics.setForegroundColor(_dataPointColor);
 			for (int i = 0; i < pointList.size(); i++) {
 				Point p = pointList.getPoint(i);
 				graphics.drawPoint(p.x, p.y);
@@ -793,37 +684,35 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		}
 
 		/**
-		 * Translates all Points in PointList.
-		 * 
-		 * @param pointList
-		 *            The PointList
-		 * @param x
-		 *            The reference x value
-		 * @param figureBounds
-		 *            The bounds of the waveform
-		 * @return PointList The new PointList
+		 * Calculates the coordinates of the data points in the plot area.
+		 * @return a list of points to be plotted.
 		 */
-		private PointList translatePointList(
-				final List<PrecisionPoint> pointList, final int x,
-				final Rectangle figureBounds) {
-			int y = figureBounds.y;
+		private PointList calculatePlotPoints() {
+			Rectangle bounds = getBounds();
+			
+			// This algorithm always draws all data points, even if there are
+			// fewer pixels in width than data points. In that case, several
+			// data points will be displayed at the same X position.
+			double xDist = ((double) (bounds.width - 1)) / _data.length;
 			PointList result = new PointList();
-			for (int i = 0; i < pointList.size(); i++) {
-				PrecisionPoint p = pointList.get(i);
-				Point newPoint = new Point(p.x + x, valueToYPos(p.preciseY) + y);
-				result.addPoint(newPoint);
+			double xPos = 0;
+			for (double value : _data) {
+				int x = (int) Math.round(xPos);
+				int y = valueToYPos(value);
+				result.addPoint(new Point(bounds.x + x, bounds.y + y));
+				xPos += xDist;
 			}
 			return result;
 		}
 
 		/**
-		 * Sets the color for the graph.
+		 * Sets the color for the data points.
 		 * 
-		 * @param graphColor
+		 * @param color
 		 *            The color
 		 */
-		public void setGraphColor(final Color graphColor) {
-			_graphColor = graphColor;
+		private void setDataPointColor(final Color color) {
+			_dataPointColor = color;
 		}
 
 		/**
@@ -832,19 +721,18 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		 * @param lineColor
 		 *            The color
 		 */
-		public void setConnectionLineColor(final Color lineColor) {
+		private void setConnectionLineColor(final Color lineColor) {
 			_connectionLineColor = lineColor;
 		}
 		
 		/**
-		 * Sets the width of the lines of the graph.
+		 * Sets the width of the lines of the plot.
 		 * @param lineWidth
 		 * 				The width of the lines of the graph.
 		 */
-		public void setGraphLineWidth(final int lineWidth) {
-			_graphLineWidth = lineWidth;
+		private void setPlotLineWidth(final int lineWidth) {
+			_plotLineWidth = lineWidth;
 		}
-
 	}
 
 	/**
@@ -975,24 +863,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 					this.removeScaleMarkers(index, _negScaleMarkers);
 				}
 			} else {
-//				pos = pos - 1;
 				int width = _wideness;
 				if (_showValues) {
 					width = TEXTWIDTH + _wideness;
 				}
-//				double value = _startValue;
-//				while (pos > 0 && pos >= _begin) {
-//					if (pos<=_end) {
-//						if (index>=_posScaleMarkers.size()) {
-//							this.addScaleMarker(index, _posScaleMarkers);
-//						}
-//						this.setConstraint(_posScaleMarkers.get(index), new Rectangle(0,(int) Math.round(pos-TEXTHEIGHT/2),width,TEXTHEIGHT));
-//						this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues)); 
-//						index++;
-//					}
-//					value = value + _increment;
-//					pos = pos - _sectionLength;
-//				}
 				double value = 0;
 				while (value <= _max) {
 					if (index >= _posScaleMarkers.size()) {
@@ -1007,7 +881,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				this.removeScaleMarkers(index, _posScaleMarkers);
 				if (_showNegativSections) {
 					
-//					pos = _refPos + _sectionLength - 1;
 					index = 0;
 					value = 0 - _increment;
 					while (value >= _min) {
@@ -1020,18 +893,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 						value -= _increment;
 						index++;
 					}
-//					while (pos < this.getBounds().height && pos <= _end) {
-//						if (pos>=_begin) {
-//							if (index>=_negScaleMarkers.size()) {
-//								this.addScaleMarker(index, _negScaleMarkers);
-//							}
-//							this.setConstraint(_negScaleMarkers.get(index), new Rectangle(0,(int) Math.round(pos-TEXTHEIGHT/2),width,TEXTHEIGHT));
-//							this.refreshScaleMarker(_negScaleMarkers.get(index), value, _showValues);
-//							index++;	
-//						}
-//						value = value - _increment;
-//						pos = pos + _sectionLength;
-//					}	
 					this.removeScaleMarkers(index, _negScaleMarkers);
 				}
 			}
