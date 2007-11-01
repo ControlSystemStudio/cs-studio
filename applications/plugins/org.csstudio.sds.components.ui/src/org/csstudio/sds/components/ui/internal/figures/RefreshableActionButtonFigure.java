@@ -37,6 +37,7 @@ import org.eclipse.swt.graphics.Font;
  */
 public final class RefreshableActionButtonFigure extends Button implements
 		IAdaptable {
+	
 	/**
 	 * Default label font.
 	 */
@@ -47,11 +48,6 @@ public final class RefreshableActionButtonFigure extends Button implements
 	 * The Label for the Button.
 	 */
 	private Label _label;
-	
-	/**
-	 * The style for the Button.
-	 */
-	private int _style;
 	
 	/**
 	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.

@@ -21,6 +21,8 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.eclipse.draw2d.ButtonModel;
+
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
@@ -31,8 +33,8 @@ import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.csstudio.sds.util.WidgetActionHandlerService;
-import org.eclipse.draw2d.ActionEvent;
-import org.eclipse.draw2d.ActionListener;
+import org.eclipse.draw2d.ChangeEvent;
+import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
 
@@ -52,14 +54,14 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		ActionButtonModel model = (ActionButtonModel) getWidgetModel();
 
-		RefreshableActionButtonFigure button = new RefreshableActionButtonFigure();
-		button.setText(model.getLabel());
-		button.setFont(CustomMediaFactory.getInstance()
+		final RefreshableActionButtonFigure buttonFigure = new RefreshableActionButtonFigure();
+		buttonFigure.setText(model.getLabel());
+		buttonFigure.setFont(CustomMediaFactory.getInstance()
 				.getFont(model.getFont()));
-		button.setTextAlignment(model.getTextAlignment());
-		button.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.getEnabled());
-		button.setStyle(model.getButtonStyle());
-		return button;
+		buttonFigure.setTextAlignment(model.getTextAlignment());
+		buttonFigure.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.getEnabled());
+		buttonFigure.setStyle(model.getButtonStyle());
+		return buttonFigure;
 	}
 
 	/**
@@ -70,6 +72,34 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	protected RefreshableActionButtonFigure getCastedFigure() {
 		return (RefreshableActionButtonFigure) getFigure();
 	}
+	
+	private void configureButtonListener(final RefreshableActionButtonFigure figure) {		
+		figure.addChangeListener(new ChangeListener() {
+			public void handleStateChanged(ChangeEvent event) {
+				String propertyName = event.getPropertyName();
+				if (ButtonModel.PRESSED_PROPERTY.equals(propertyName) && getExecutionMode().equals(ExecutionMode.RUN_MODE) && figure.getModel().isArmed()) {
+					CentralLogger.getInstance().info(this, "KLICK");
+					ActionButtonModel model = (ActionButtonModel) getWidgetModel();
+					int index;
+					if (figure.getModel().isPressed()) {
+						index = model.getChoosenPressedActionIndex();
+					} else {
+						index = model.getChoosenReleasedActionIndex();
+					}
+					if (index>=0 && model.getActionData().getWidgetActions().size()==1) {
+						index = 0;
+					}
+					if (index>=0 && index<model.getActionData().getWidgetActions().size()) {
+						WidgetAction type = model.getActionData().getWidgetActions().get(index);
+						WidgetActionHandlerService.getInstance().performAction(model.getProperty(ActionButtonModel.PROP_ACTIONDATA), type);
+					}
+					if (!figure.getModel().isPressed()) {
+						figure.getModel().setArmed(false);
+					}
+				}
+			}
+		});
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -78,25 +108,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 	protected void registerPropertyChangeHandlers() {
 		//
 		RefreshableActionButtonFigure figure = getCastedFigure();
-		figure.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent event) {
-				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-					CentralLogger.getInstance().info(this, "KLICK");
-					ActionButtonModel model = (ActionButtonModel) getWidgetModel();
-					int index = model.getChoosenActionIndex();
-					if (model.getActionData().getWidgetActions().size()==1) {
-						index = 0;
-					}
-					if (index>=0 && index<model.getActionData().getWidgetActions().size()) {
-						WidgetAction type = model.getActionData().getWidgetActions().get(index);
-						WidgetActionHandlerService.getInstance().performAction(model.getProperty(ActionButtonModel.PROP_ACTIONDATA), type);	
-					}
-				} else {
-					CentralLogger.getInstance().info(this, "ActionButton activated!");
-				}
-					
-			}
-		});
+		this.configureButtonListener(figure);
 
 		// label
 		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {

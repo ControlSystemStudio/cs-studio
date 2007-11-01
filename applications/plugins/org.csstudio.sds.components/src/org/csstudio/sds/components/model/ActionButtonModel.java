@@ -29,7 +29,6 @@ import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.StringProperty;
-import org.csstudio.sds.util.AbstractToolTipConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -56,7 +55,11 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the ActionData property.
 	 */
-	public static final String PROP_ACTION_INDEX = "action_index"; //$NON-NLS-1$
+	public static final String PROP_ACTION_PRESSED_INDEX = "action_pressed_index"; //$NON-NLS-1$
+	/**
+	 * The ID of the ActionData property.
+	 */
+	public static final String PROP_ACTION_RELEASED_INDEX = "action_released_index"; //$NON-NLS-1$
 	/**
 	 * The ID of the ToggelButton property.
 	 */
@@ -119,8 +122,10 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
 		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
 				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
-		addProperty(PROP_ACTION_INDEX, new IntegerProperty("Action Index",
-				WidgetPropertyCategory.Behaviour, 0, 0, Integer.MAX_VALUE));
+		addProperty(PROP_ACTION_RELEASED_INDEX, new IntegerProperty("Action Index (released)",
+				WidgetPropertyCategory.Behaviour, 0, -1, Integer.MAX_VALUE));
+		addProperty(PROP_ACTION_PRESSED_INDEX, new IntegerProperty("Action Index (pressed)",
+				WidgetPropertyCategory.Behaviour, -1, -1, Integer.MAX_VALUE));
 		addProperty(PROP_TOGGLE_BUTTON, new BooleanProperty("Toggel Button",
 		        WidgetPropertyCategory.Behaviour,DEFAULT_TOGGLE_BUTTON));
 	}
@@ -134,7 +139,8 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 		buffer.append(createParameter(PROP_NAME)+"\n");
 		buffer.append(createParameter(PROP_ACTIONDATA)+"\n");
 		buffer.append("Performed Action: ");
-		buffer.append(createParameter(PROP_ACTION_INDEX));
+		buffer.append(createParameter(PROP_ACTION_PRESSED_INDEX));
+		buffer.append(createParameter(PROP_ACTION_RELEASED_INDEX));
 		return buffer.toString();
 	}
 
@@ -156,10 +162,20 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	
 	/**
 	 * Return the index of the selected WidgetAction from the ActionData.
+	 * The Action is running when the button is released.
 	 * @return The index
 	 */
-	public int getChoosenActionIndex() {
-		return (Integer) getProperty(PROP_ACTION_INDEX).getPropertyValue();
+	public int getChoosenReleasedActionIndex() {
+		return (Integer) getProperty(PROP_ACTION_RELEASED_INDEX).getPropertyValue();
+	}
+	
+	/**
+	 * Return the index of the selected WidgetAction from the ActionData.
+	 * The Action is running when the button is pressed.
+	 * @return The index
+	 */
+	public int getChoosenPressedActionIndex() {
+		return (Integer) getProperty(PROP_ACTION_PRESSED_INDEX).getPropertyValue();
 	}
 
 	/**
