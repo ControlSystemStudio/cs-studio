@@ -1,43 +1,68 @@
 package org.csstudio.utility.pv.epics;
 
-import java.util.LinkedList;
+import gov.aps.jca.Context;
 
+import java.util.LinkedList;
 
 /** JCA command pump, added for two reasons:
  *  <ol>
  *  <li>JCA callbacks can't directly send JCA commands
  *      without danger of a deadlock, at least not with JNI
- *      and the "DirectRequestDispatcher"
+ *      and the "DirectRequestDispatcher".
  *  <li>Instead of calling 'flushIO' after each command,
  *      this thread allows for a few requests to queue up,
  *      then periodically pumps them out with only a final
  *      'flush'
  *  </ol>
  *  @author Kay Kasemir
- *  TODO Use this!
  */
 @SuppressWarnings("nls")
 class JCACommandThread extends Thread
 {
+    /** Delay between queue inspection.
+     *  Longer delay results in bigger 'batches',
+     *  which is probably good, but also increases the
+     *  latency.
+     */
     final private static long DELAY_MILLIS = 100;
     
+    /** The JCA Context */
+    final Context jca_context;
+    
+    /** Command queue.
+     *  <p>
+     *  SYNC on access
+     */
     final private LinkedList<Runnable> command_queue =
-        new LinkedList<Runnable>();
+                                                new LinkedList<Runnable>();
+
+    /** Maximum size that command_queue reached at runtime */
+    private int max_size_reached = 0;
     
-    private boolean run;
+    /** Flag to tell thread to run or quit */
+    private boolean run = false;
     
-    public JCACommandThread()
+    /** Construct, but don't start the thread.
+     * @param jca_context
+     */
+    public JCACommandThread(final Context jca_context)
     {
         super("JCA Command Thread");
+        this.jca_context = jca_context;
     }
     
-    /** Start the thread */
+    /** Version of start that may be called multiple times.
+     *  NOP when already running
+     */
     @Override
-    public void start()
+    public synchronized void start()
     {
+        if (run)
+            return;
         run = true;
         super.start();
     }
+
 
     /** Stop the thread and wait for it to finish */
     void shutdown()
@@ -51,18 +76,20 @@ class JCACommandThread extends Thread
         {
             Activator.logException("JCACommandThread shutdown", ex);
         }
+        Activator.logInfo("JCACommandThread queue reached up to "
+                        + max_size_reached + " entries");
     }
     
     /** Add a command to the queue.
-     *  <p>
-     *  In case the caller wants to wait for the command:
-     *  After running the command, it will be notified.
      *  @param command
      */
     void addCommand(final Runnable command)
     {
         synchronized (command_queue)
         {
+            // New maximum queue length (+1 for the one about to get added)
+            if (command_queue.size() >= max_size_reached)
+                max_size_reached = command_queue.size() + 1;
             command_queue.addLast(command);
         }
     }
@@ -86,7 +113,7 @@ class JCACommandThread extends Thread
             // Execute all the commands currently queued...
             Runnable command = getCommand();
             while (command != null)
-            {
+            {   // Execute one command
                 try
                 {
                     command.run();
@@ -95,14 +122,21 @@ class JCACommandThread extends Thread
                 {
                     Activator.logException("JCACommandThread exception", ex);
                 }
-                synchronized (command)
-                {
-                    command.notifyAll();
-                }
+                // Get next command
                 command = getCommand();
             }
-            // Flush once
-            PVContext.flush();
+            // Flush.
+            // Once, after executing all the accumualted commands.
+            // But even when the command queue was empty,
+            // there may be stuff worth flushing.
+            try
+            {
+                jca_context.flushIO();
+            }
+            catch (Throwable ex)
+            {
+                Activator.logException("JCA Flush exception", ex);
+            }
             // Then wait.
             try
             {
@@ -112,5 +146,4 @@ class JCACommandThread extends Thread
             { /* don't even ignore */ }
         }
     }
-
 }

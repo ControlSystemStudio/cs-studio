@@ -51,21 +51,24 @@ public class PVContext
     static private HashMap<String, RefCountedChannel> channels =
                                 new HashMap<String, RefCountedChannel>();
     
-    final static private JCACommandThread command_thread = new JCACommandThread();
+    static private JCACommandThread command_thread = null;
 
-    /** Initialize the JA library. */
+    /** Initialize the JA library, start the command thread. */
     static private void initJCA() throws Exception
     {
-        if (jca_refs == 0 && jca == null)
+        if (jca_refs == 0)
         {
-            if (debug)
-                System.out.println("Initializing JCA "
-                                + (use_pure_java ? "(pure Java)" : "(JNI)"));
-            jca = JCALibrary.getInstance();
-            final String type = use_pure_java ?
-                JCALibrary.CHANNEL_ACCESS_JAVA : JCALibrary.JNI_THREAD_SAFE;
-            jca_context = jca.createContext(type);
-            command_thread.start();
+            if (jca == null)
+            {
+                if (debug)
+                    System.out.println("Initializing JCA "
+                                    + (use_pure_java ? "(pure Java)" : "(JNI)"));
+                jca = JCALibrary.getInstance();
+                final String type = use_pure_java ?
+                    JCALibrary.CHANNEL_ACCESS_JAVA : JCALibrary.JNI_THREAD_SAFE;
+                jca_context = jca.createContext(type);
+            }
+            command_thread = new JCACommandThread(jca_context);
         }
         ++jca_refs;
     }
@@ -81,6 +84,7 @@ public class PVContext
         if (jca_refs > 0)
             return;
         command_thread.shutdown();
+        command_thread = null;
         if (cleanup == false)
             return;
         try
@@ -117,6 +121,9 @@ public class PVContext
                 throw new Exception("Cannot create channel '" + name + "'");
             channel_ref = new RefCountedChannel(channel);
             channels.put(name, channel_ref);
+            // Start the command thread after the first channel is created.
+            // This starts it in any case, but follow-up calls are NOPs.
+            command_thread.start();
         }
         else
         {
@@ -157,23 +164,20 @@ public class PVContext
         exitJCA();
     }
     
-    /** Flush the CA context. */
-    static void flush()
+    /** Add a command to the JCACommandThread.
+     *  <p>
+     *  @param command Command to schedule.
+     *  @throws NullPointerException when JCA not active
+     */
+    static void scheduleCommand(final Runnable command)
     {
-        try
-        {
-            jca_context.flushIO();
-        }
-        catch (Throwable ex)
-        {
-            Activator.logException("JCA Flush failed", ex);
-        }
+        command_thread.addCommand(command);
     }
     
     /** Helper for unit test.
      *  @return <code>true</code> if all has been release.
      */
-    synchronized static boolean allReleased()
+    static boolean allReleased()
     {
         return jca_refs == 0;
     }

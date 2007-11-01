@@ -9,16 +9,30 @@ import org.csstudio.utility.pv.PV;
 import org.junit.Test;
 
 /** These tests require the soft-IOC database from lib/test.db.
- * 
+ *  <p>
+ *  When using the JNI CA libs, one also needs ((DY)LD_LIBRARY_)PATH.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class EPICS_V3_PV_SyncTest
 {
+    /** Get a PV.
+     *  
+     *  <b>This is where the implementation is hard-coded!</b>
+     *  
+     *  @return PV
+     */
+    static private PV getPV(final String name)
+    {
+        PVContext.use_pure_java = false;
+        return new EPICS_V3_PV(name);
+    }
+
     @Test
     public void testSyncGet() throws Exception
     {
-        PV fred = new EPICS_V3_PV("fred");
+        final PV fred = getPV("fred");
         IValue value = fred.getValue(50000.0);
         System.out.println(value);
         fred.stop();
@@ -27,7 +41,7 @@ public class EPICS_V3_PV_SyncTest
     @Test
     public void testTimeout() throws Exception
     {
-        PV none = new EPICS_V3_PV("does_not_exist");
+        final PV none = getPV("does_not_exist");
         final long start = System.currentTimeMillis();
         final int timeout_secs = 5;
         try
@@ -57,9 +71,9 @@ public class EPICS_V3_PV_SyncTest
         // implementation.
         // A 'real' program would use
         // PV fred = new PVFactory.createPV("fred");
-        PV fred = new EPICS_V3_PV("fred");
-        PV janet = new EPICS_V3_PV("janet");
-        PV longs = new EPICS_V3_PV("longs");
+        final PV fred = getPV("fred");
+        final PV janet = getPV("janet");
+        final PV longs = getPV("longs");
         
         final double timeout_secs = 5.0;
         System.out.println(fred.getValue(timeout_secs));

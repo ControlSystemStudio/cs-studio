@@ -68,7 +68,7 @@ public class EPICS_V3_PV
                                     = new CopyOnWriteArrayList<PVListener>();
 
     /** JCA channel. */
-    RefCountedChannel channel_ref = null;
+    private RefCountedChannel channel_ref = null;
 
     /** The data of this PV in a thread-safe container */
     final private PVData pv_data = new PVData();
@@ -236,7 +236,6 @@ public class EPICS_V3_PV
         channel_ref.getChannel().get(
                         type, channel_ref.getChannel().getElementCount(),
                         get_callback);
-        PVContext.flush();
         // Wait for value callback
         synchronized (get_callback)
         {
@@ -280,10 +279,9 @@ public class EPICS_V3_PV
         state = State.Connecting;
         // Already attempted a connection?
         if (channel_ref == null)
-        {
-            channel_ref = PVContext.getChannel(name, this);
-        }
-        if (channel_ref.getChannel().getConnectionState() == ConnectionState.CONNECTED)
+            channel_ref = PVContext.getChannel(name, EPICS_V3_PV.this);
+        if (channel_ref.getChannel().getConnectionState()
+            == ConnectionState.CONNECTED)
         {
             if (PVContext.debug)
                 System.out.println(name + " is immediately connected");
@@ -338,7 +336,6 @@ public class EPICS_V3_PV
                 pv_data.subscription = channel.addMonitor(type,
                            channel.getElementCount(), 1, this);
             }
-            PVContext.flush();
         }
         catch (Exception ex)
         {
@@ -349,21 +346,17 @@ public class EPICS_V3_PV
     /** Unsubscribe from value updates. */
     private void unsubscribe()
     {
-        synchronized (pv_data)
+        if (pv_data.subscription == null)
+            return;
+        try
         {
-            if (pv_data.subscription != null)
-            {
-                try
-                {
-                    pv_data.subscription.clear();
-                }
-                catch (Exception ex)
-                {
-                    Activator.logException(name + " unsubscribe error", ex);
-                }
-                pv_data.subscription = null;
-            }
+            pv_data.subscription.clear();
         }
+        catch (Exception ex)
+        {
+            Activator.logException(name + " unsubscribe error", ex);
+        }
+        pv_data.subscription = null;
     }
 
     /** {@inheritDoc} */
@@ -435,13 +428,6 @@ public class EPICS_V3_PV
                 else throw new Exception("Cannot handle type "
                                 + new_value.getClass().getName());
             }
-            // Delay the flush for multiple 'setValue' calls?
-            // Would improve performance, but is really hard to do,
-            // since this general-purpose PV doesn't "know" when
-            // the application is "done".
-            //
-            // This applies to all the flushIO() calls in here...
-            PVContext.flush();
         }
         catch (Exception ex)
         {
@@ -454,7 +440,15 @@ public class EPICS_V3_PV
     {
     	// This runs in a CA thread
         if (ev.isConnected())
-            handleConnected();
+        {   // Transfer to JCACommandThread to avoid deadlocks
+            PVContext.scheduleCommand(new Runnable()
+            {
+                public void run()
+                {
+                    handleConnected();
+                }
+            });
+        }
         else
         {
             if (PVContext.debug)
@@ -465,7 +459,13 @@ public class EPICS_V3_PV
                 pv_data.connected = false;
                 pv_data.notifyAll();
             }
-            fireDisconnected();
+            PVContext.scheduleCommand(new Runnable()
+            {
+                public void run()
+                {
+                    fireDisconnected();
+                }
+            });
         }
     }
 
@@ -474,6 +474,10 @@ public class EPICS_V3_PV
      */
     private void handleConnected()
     {
+    	// Connection after already disconnected?
+    	if (channel_ref == null)
+    		return;
+    	
         state = State.Connected;
         if (PVContext.debug)
             System.out.println(name + " connected");
@@ -508,13 +512,13 @@ public class EPICS_V3_PV
                 else
                     type = DBRType.CTRL_SHORT;
                 channel_ref.getChannel().get(type, 1, meta_get_listener);
-                PVContext.flush();
                 return;
             }
         }
         catch (Exception ex)
         {
             Activator.logException(name + " connection handling error", ex);
+            return;
         }
 
         // Meta info is not requested, not available for this type,
@@ -548,11 +552,11 @@ public class EPICS_V3_PV
             {
                 pv_data.value =
                     DBR_Helper.decodeValue(plain, pv_data.meta, ev.getDBR());
-                if (PVContext.debug)
-                    System.out.println(name + " monitor: " + pv_data.value);
                 if (!pv_data.connected)
                     pv_data.connected = true;
             }
+            if (PVContext.debug)
+                System.out.println(name + " monitor: " + pv_data.value);
             fireValueUpdate();
         }
         catch (Exception ex)

@@ -13,13 +13,23 @@ import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** Test of the PV interface for a hardcoded implementation
  *  so that it can run as a unit test without Eclipse plugin loader.
- *  
+ *  <p>
  *  These tests require the soft-IOC database from lib/test.db.
- * 
+ *  <p>
+ *  When using the JNI CA libs, one also needs ((DY)LD_LIBRARY_)PATH.
+ *  <p>
+ *  Results (Linux Laptop, local soft-IOC):
+ *  <pre>
+ *  Setup                        Tests   Connection Time     Free Memory
+ *  JNI, DirectEventDispatcher     OK        <20 sec         5.8 MB
+ *  JNI, QueuedEventDispatcher     OK        >32 sec         6.8 MB
+ *  CAJ                            OK        10..140 sec     11.7 MB
+ *  </pre>
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -33,6 +43,10 @@ public class EPICS_V3_PV_Test
      */
     static private PV getPV(final String name)
     {
+        PVContext.use_pure_java = false;
+        System.setProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
+                           "gov.aps.jca.event.DirectEventDispatcher");
+        //                   "gov.aps.jca.event.QueuedEventDispatcher");
         return new EPICS_V3_PV(name);
     }
     
@@ -72,6 +86,7 @@ public class EPICS_V3_PV_Test
         PV pv = getPV("fred");
         pv.addListener(new TestListener("A"));
 
+        System.out.println("Checking monitors from single PV...");
         pv.start();
         int wait = 10;
         while (wait > 0)
@@ -84,6 +99,7 @@ public class EPICS_V3_PV_Test
         // Did we get anything?
         assertTrue(updates.get() > 2);
         pv.stop();
+        System.out.println("Asserting that monitors stop...");
         int old = updates.get();
         wait = 10;
         while (wait > 0)
@@ -262,42 +278,69 @@ public class EPICS_V3_PV_Test
         pva.stop();
     }
     
+    @Ignore
     @Test
     public void testManyConnections() throws Exception
     {
-        final int N = 10000;
+        final int PV_Count = 10000;
         
-        PV pvs[] = new PV[N];
-        for (int i=0; i<N; ++i)
+        System.out.println("Creating " + PV_Count + " PVs...");
+        PV pvs[] = new PV[PV_Count];
+        for (int i=0; i<PV_Count; ++i)
             pvs[i] = getPV("ramp" + (i+1));
 
-        for (int i=0; i<N; ++i)
+        System.out.println("Starting " + PV_Count + " PVs...");
+        long start = System.currentTimeMillis();
+        for (int i=0; i<PV_Count; ++i)
             pvs[i].start();
-        
+        int test = 0;
         while (true)
         {
             int connected = 0;
             int disconnected = 0;
-            for (int i=0; i<N; ++i)
+            for (int i=0; i<PV_Count; ++i)
             {
                 if (pvs[i].isConnected())
                     ++connected;
                 else
                     ++disconnected;
             }
-            if (disconnected > 0)
+            ++test;
+            if (test >= 10)
             {
                 System.out.format("%d out of %d disconnected\n",
-                                  disconnected, N);
-                Thread.sleep(2000);
+                                disconnected, PV_Count);
+                test = 0;
             }
+            if (disconnected > 0)
+                Thread.sleep(100);
             else
                 break;
-        }        
-        for (int i=0; i<N; ++i)
+        }
+        // Time and ...
+        long time = System.currentTimeMillis() - start;
+        System.out.println("Time to connect " + PV_Count + " channels: "
+                        + time/1000.0 +  " sec");
+        // Memory Info
+        final double MB = 1024.0*1024.0;
+        final Runtime runtime = Runtime.getRuntime();
+        final double freeMB = runtime.freeMemory()/MB;
+        final double totalMB = runtime.totalMemory()/MB;
+        System.out.format("Memory: %.2f of %.2f MB = %.0f %% free\n",
+                          freeMB, totalMB, freeMB/totalMB*100.0);        
+        System.out.println("Stopping " + PV_Count + " PVs...");
+        for (int i=0; i<PV_Count; ++i)
         {
             pvs[i].stop();
             pvs[i] = null;
         }
+        System.out.println("Done.");
     }
+
+    @Test
+    public void testMultipleRuns() throws Exception
+    {
+    	for (int run=0; run<50; ++run)
+    		testManyConnections();
+	}
 }
