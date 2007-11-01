@@ -319,7 +319,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	/**
 	 * Refreshes the constraints for the scales.
 	 */
-	private void refreshConstraints() {
+	public void refreshConstraints() {
 		if (_init) {
 			return;
 		}
