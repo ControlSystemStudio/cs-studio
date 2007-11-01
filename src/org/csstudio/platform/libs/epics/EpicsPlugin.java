@@ -170,8 +170,13 @@ public class EpicsPlugin extends Plugin
 
 	        // Select the QueuedEventDispatcher, because that avoids
 	        // deadlocks when calling JCA while receiving JCA callbacks
-	        setSystemProperty("gov.aps.jca.jni.JNIContext.event_dispatcher", 
-                            "gov.aps.jca.event.QueuedEventDispatcher");
+	        //setSystemProperty("gov.aps.jca.jni.JNIContext.event_dispatcher", 
+            //                "gov.aps.jca.event.QueuedEventDispatcher");
+	        // Select the DirectEventDispatcher:
+	        // As long as the PV library that uses JCA avoids deadlocks,
+	        // this is faster than the QueuedEventDispatcher
+	        setSystemProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
+	        		"gov.aps.jca.event.DirectEventDispatcher");
 	    }
 	    catch (Exception e)
 	    {
