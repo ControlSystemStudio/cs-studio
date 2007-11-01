@@ -191,10 +191,6 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * @param angle The angle to rotate
 	 */
 	public final void rotatePoints(final double angle) {
-//		int currentX = this.getX();
-//		int currentY = this.getY();
-//		int currentWidth = this.getWidth();
-//		int currentHeight = this.getHeight();
 		double trueAngle = Math.toRadians(angle - getRotationAngle());
 		double sin = Math.sin(trueAngle);
 		double cos = Math.cos(trueAngle);
@@ -203,7 +199,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		
 		PointList newPoints = new PointList();
 		for (int i=0;i<this.getPoints().size();i++) {
-			//Relativ coordinates to the rotation point
+			//Relative coordinates to the rotation point
 			int relX = this.getPoints().getPoint(i).x-rotationPoint.x;
 			int relY = this.getPoints().getPoint(i).y-rotationPoint.y;
 			double temp = relX * cos - relY * sin;
@@ -215,9 +211,6 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		
 		// sets the translated Points
 		setPoints(newPoints);
-		// fits the size  
-		//setSize(currentWidth, currentHeight);
-		//setLocation(currentX, currentY);
 		
 		super.setPropertyValue(PROP_ROTATION, angle);
 	}
