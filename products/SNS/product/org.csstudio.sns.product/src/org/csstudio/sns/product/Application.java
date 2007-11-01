@@ -1,5 +1,7 @@
 package org.csstudio.sns.product;
 
+import java.io.IOException;
+
 import org.csstudio.platform.ui.workspace.WorkspaceSwitchHelper;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -24,119 +26,40 @@ import org.eclipse.ui.PlatformUI;
  *        
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Application implements IApplication
 {
+    /** The display, set in <code>start()</code> */
+    private Display display = null;
+    
+    /** The workspace location, set in <code>checkWorkspace()</code> */
+    private Location workspace_location = null;
+    
     /** {@inheritDoc} */
     public Object start(IApplicationContext context) throws Exception
     {
-        Display display = PlatformUI.createDisplay();
+        PluginActivator.logInfo("CSS Application started");
+        display = PlatformUI.createDisplay();
+        if (display == null)
+        {
+            PluginActivator.logError("No display");
+            return IApplication.EXIT_OK;
+        }
+        IProject project = null;
         try
         {
-            PluginActivator.logInfo("CSS Application started"); //$NON-NLS-1$
-            
-            int returnCode = 0;
-            // Select the workspace
-            Location workspace_location = null;
-            try
+            Object return_code = checkWorkspace();
+            if (return_code != null)
+                return return_code;
+            project = openProject();
+            if (project == null)
+                return IApplication.EXIT_OK;
+            return runApplication();
+        }
+        finally
+        {
+            if (project != null)
             {
-                boolean need_workspace = true;
-                while (need_workspace)
-                {
-                    // See also: Eclipse help, Platform Plug-in Devel Guide,
-                    //           Reference, other ref info,
-                    //           - Runtime options
-                    //           - Multi-user install
-                    
-                    // Query for workpace.
-                    // This actually loads the CSS core plugin, which queries
-                    // preferences, ... and if the current workspace
-                    // doesn't exist, that can result in errors,
-                    // including "NoClassDefFoundError" for the
-                    // WorkspaceSwitchHelper.
-                    // Tried to catch that, but doesn't work?!
-                    final String workspace =
-                            WorkspaceSwitchHelper.promptForWorkspace(null, true);
-                    // Nothing selected
-                    if (workspace == null)
-                    {
-                        PluginActivator.logInfo("CSS Application Canceled"); //$NON-NLS-1$
-                        return IApplication.EXIT_OK;
-                    }
-                    
-                    // Does this require a restart?
-                    if (WorkspaceSwitchHelper.prepareWorkspaceSwitch(null,
-                                                                    workspace))
-                    {
-                        MessageDialog.openInformation(null,
-                                Messages.Application_RestartTitle,
-                                NLS.bind(Messages.Application_RestartMessage,
-                                         workspace));
-                        PluginActivator.logInfo("CSS Application Relaunch"); //$NON-NLS-1$
-                        return IApplication.EXIT_RELAUNCH;
-                    }
-                    
-                    // Lock the workspace
-                    workspace_location = Platform.getInstanceLocation();
-                    PluginActivator.logInfo("CSS Workspace: " + workspace_location); //$NON-NLS-1$
-                    if (workspace_location.lock())
-                        need_workspace = false;
-                    else
-                    {
-                        workspace_location = null;
-                        // Cannot lock the workspace.
-                        // Give message, then query again
-                        MessageDialog.openError(null,
-                            Messages.Application_WorkspaceInUseError,
-                            NLS.bind(Messages.Application_WorkspaceInUseInfo,
-                                     workspace));
-                    }
-                }
-                
-                // Assert that there is an open "CSS" project.
-                // Without that, an existing 'CSS' might show up,
-                // but a 'new Folder' action would run into
-                // 'project not open' error...
-                final IProject project = ResourcesPlugin.getWorkspace().
-                                                getRoot().getProject(Messages.Application_DefaultProject);
-                // Assert that it exists...
-                if (!project.exists())
-                {
-                    try
-                    {
-                        project.create(new NullProgressMonitor());
-                    }
-                    catch (CoreException ex)
-                    {
-                        PluginActivator.logException(
-                                        "Cannot create " + project.getName(), ex); //$NON-NLS-1$
-                        MessageDialog.openError(null,
-                                        Messages.Application_ProjectError,
-                                        NLS.bind(Messages.Application_ProjectInitErrorMessage,
-                                                  project.getName()));
-                        // Give up, quit.
-                        return IApplication.EXIT_OK;
-                    }
-                }
-                // .. and open it
-                try
-                {
-                    project.open(new NullProgressMonitor());
-                }
-                catch (CoreException ex)
-                {
-                    PluginActivator.logException(
-                                    "Cannot open " + project.getName(), ex); //$NON-NLS-1$
-                    MessageDialog.openError(null,
-                                    Messages.Application_ProjectError,
-                                    NLS.bind(Messages.Application_ProjectInitErrorMessage,
-                                              project.getName()));
-                    // Give up, quit.
-                    return IApplication.EXIT_OK;
-                }
-                // Run the workbench
-                PluginActivator.logInfo("CSS Application Running"); //$NON-NLS-1$
-                returnCode = PlatformUI.createAndRunWorkbench(display,
-                                new ApplicationWorkbenchAdvisor());
                 try
                 {
                     project.close(new NullProgressMonitor());
@@ -151,42 +74,160 @@ public class Application implements IApplication
                                               project.getName()));
                 }
             }
-            finally
+            // Unlock workspace
+            if (workspace_location != null && workspace_location.isSet())
             {
-                if (workspace_location != null
-                    && workspace_location.isSet())
-                    workspace_location.release();
+                workspace_location.release();
+                workspace_location = null;
+            }
+            // Release display
+            display.dispose();
+            display = null;
+        }
+    }
+    
+    /** Check the workspace.
+     *  <p>
+     *  Cannot really change the current workspace for this application
+     *  instance, only query the user, and trigger a restart with another
+     *  workspace.
+     *  <p>
+     *  See also: Eclipse help, Platform Plug-in Devel Guide,
+     *            Reference, other ref info,
+     *            - Runtime options
+     *            - Multi-user install
+     * @return <code>null</code> if all OK, otherwise an IApplication exit code.
+     */
+    private Object checkWorkspace()
+    {
+        while (true)
+        {
+            // Query user.
+            final String workspace =
+                    WorkspaceSwitchHelper.promptForWorkspace(null, true);
+            if (workspace == null)
+            {
+                PluginActivator.logInfo("CSS Application Canceled");
+                return IApplication.EXIT_OK;
+            }
+            // Does this require a restart?
+            if (WorkspaceSwitchHelper.prepareWorkspaceSwitch(null, workspace))
+            {
+                MessageDialog.openInformation(null,
+                        Messages.Application_RestartTitle,
+                        NLS.bind(Messages.Application_RestartMessage,
+                                 workspace));
+                PluginActivator.logInfo("CSS Application Relaunch");
+                return IApplication.EXIT_RELAUNCH;
             }
             
-            if (returnCode == PlatformUI.RETURN_RESTART)
-            {   // Something called IWorkbench.restart().
-                // Is this supposed to be a RESTART or RELAUNCH?
-                final Integer exit_code =
-                    Integer.getInteger(RelaunchConstants.PROP_EXIT_CODE);
-                if (IApplication.EXIT_RELAUNCH.equals(exit_code))
-                {   // RELAUCH with new command line
-                    PluginActivator.logInfo("RELAUNCH, command line:"); //$NON-NLS-1$
-                    PluginActivator.logInfo(
-                         System.getProperty(RelaunchConstants.PROP_EXIT_DATA));
-                    return IApplication.EXIT_RELAUNCH;
-                }
-                // RESTART without changes
-                return IApplication.EXIT_RESTART;
+            // We are in the requested workspace.
+            PluginActivator.logInfo("CSS Workspace: " + workspace_location);
+            // Lock the workspace
+            workspace_location = Platform.getInstanceLocation();
+            try
+            {
+                if (workspace_location.lock())
+                    break;
             }
-            // Plain exit from IWorkbench.close()
-            PluginActivator.logInfo("CSS Application exiting"); //$NON-NLS-1$
-            return IApplication.EXIT_OK;
+            catch (IOException ex)
+            {
+                PluginActivator.logException("Cannot lock workspace", ex);
+            }
+            // Cannot lock the workspace
+            workspace_location = null;
+            // Give message, then query again
+            MessageDialog.openError(null,
+                Messages.Application_WorkspaceInUseError,
+                NLS.bind(Messages.Application_WorkspaceInUseInfo,
+                         workspace));
         }
-        finally
+        return null;
+    }
+
+    /** Open/Create the main project.
+     *  @return Project or <code>null</code>
+     */
+    private IProject openProject()
+    {
+        // Assert that there is an open "CSS" project.
+        // Without that, an existing 'CSS' might show up,
+        // but a 'new Folder' action would run into
+        // 'project not open' error...
+        final IProject project = ResourcesPlugin.getWorkspace().
+                                        getRoot().getProject(Messages.Application_DefaultProject);
+        // Assert that it exists...
+        if (!project.exists())
         {
-            display.dispose();
+            try
+            {
+                project.create(new NullProgressMonitor());
+            }
+            catch (CoreException ex)
+            {
+                PluginActivator.logException(
+                                "Cannot create " + project.getName(), ex); //$NON-NLS-1$
+                MessageDialog.openError(null,
+                                Messages.Application_ProjectError,
+                                NLS.bind(Messages.Application_ProjectInitErrorMessage,
+                                          project.getName()));
+                // Give up, quit.
+                return null;
+            }
         }
+        // .. and open it
+        try
+        {
+            project.open(new NullProgressMonitor());
+            return project;
+        }
+        catch (CoreException ex)
+        {
+            PluginActivator.logException(
+                            "Cannot open " + project.getName(), ex); //$NON-NLS-1$
+            MessageDialog.openError(null,
+                            Messages.Application_ProjectError,
+                            NLS.bind(Messages.Application_ProjectInitErrorMessage,
+                                      project.getName()));
+        }
+        return null;
+    }
+    
+    /** Run the application.
+     *  @return IApplication exit code.
+     */
+    private Object runApplication()
+    {
+        // Run the workbench
+        PluginActivator.logInfo("CSS Application Running"); //$NON-NLS-1$
+        final int returnCode = PlatformUI.createAndRunWorkbench(display,
+                        new ApplicationWorkbenchAdvisor());
+        
+        if (returnCode == PlatformUI.RETURN_RESTART)
+        {   // Something called IWorkbench.restart().
+            // Is this supposed to be a RESTART or RELAUNCH?
+            final Integer exit_code =
+                Integer.getInteger(RelaunchConstants.PROP_EXIT_CODE);
+            if (IApplication.EXIT_RELAUNCH.equals(exit_code))
+            {   // RELAUCH with new command line
+                PluginActivator.logInfo("RELAUNCH, command line:"); //$NON-NLS-1$
+                PluginActivator.logInfo(
+                     System.getProperty(RelaunchConstants.PROP_EXIT_DATA));
+                return IApplication.EXIT_RELAUNCH;
+            }
+            // RESTART without changes
+            return IApplication.EXIT_RESTART;
+        }
+        // Plain exit from IWorkbench.close()
+        PluginActivator.logInfo("CSS Application exiting"); //$NON-NLS-1$
+        return IApplication.EXIT_OK;
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("nls")
     public void stop()
     {
-        System.out.println("Application.stop..."); //$NON-NLS-1$
+        System.out.println("Application.stop...");
         final IWorkbench workbench = PlatformUI.getWorkbench();
         if (workbench == null)
             return;
