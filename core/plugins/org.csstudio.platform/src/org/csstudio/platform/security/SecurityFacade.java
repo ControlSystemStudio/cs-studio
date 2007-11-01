@@ -31,7 +31,9 @@ import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.LoginContext;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /**
@@ -134,12 +136,11 @@ public final class SecurityFacade {
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean isLoginOnStartupEnabled() {
-		IEclipsePreferences prefs = new InstanceScope().getNode(CSSPlatformPlugin.ID);
-		if (CSSPlatformInfo.getInstance().isOnsite()) {
-			return prefs.getBoolean(ONSITE_LOGIN_PREFERECE, false);
-		} else {
-			return prefs.getBoolean(OFFSITE_LOGIN_PREFERENCE, false);
-		}
+		IPreferencesService prefs = Platform.getPreferencesService();
+		String key = CSSPlatformInfo.getInstance().isOnsite()
+					? ONSITE_LOGIN_PREFERECE
+					: OFFSITE_LOGIN_PREFERENCE;
+		return prefs.getBoolean(CSSPlatformPlugin.ID, key, false, null);
 	}
 
 	/**
