@@ -103,8 +103,27 @@ public class Application implements IApplication
         while (true)
         {
             // Query user.
-            final String workspace =
-                    WorkspaceSwitchHelper.promptForWorkspace(null, true);
+            String workspace = null;
+            final Location current_workspace = Platform.getInstanceLocation();
+            try
+            {
+                workspace = WorkspaceSwitchHelper.promptForWorkspace(null, true);
+            }
+            catch (Throwable ex)
+            {
+                // WorkspaceSwitchHelper is inside the CSS platform plugin,
+                // which tries to get at preferences when opened,
+                // and that in turn tries to use the workspace.
+                // If the 'current' workspace cannot be accessed
+                // because of e.g. file permissions, the whole plugin won't load,
+                // and we get an "unknown class" error.
+                MessageDialog.openError(null,
+                        Messages.Application_FatalWorkspaceError,
+                        NLS.bind(Messages.Application_FatalWorkspaceMessage,
+                                 current_workspace.getURL().getFile()));
+                // Can't do anything but quit.
+                return IApplication.EXIT_OK;
+            }
             if (workspace == null)
             {
                 PluginActivator.logInfo("CSS Application Canceled");
