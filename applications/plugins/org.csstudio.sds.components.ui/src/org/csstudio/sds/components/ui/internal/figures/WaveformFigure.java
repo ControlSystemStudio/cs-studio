@@ -305,10 +305,12 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		if (_init) {
 			return;
 		}
+		
 		_plotBounds = this.calculatePlotBounds();
 		this.adjustAutoscale();
 		_zeroLevel = this.valueToYPos(0.0);
 		int verticalScaleWidth = 0;
+		
 		if (_showScale == SHOW_VERTICAL || _showScale == SHOW_BOTH) {
 			verticalScaleWidth = _scaleWideness;
 			if (_showValues) {
@@ -320,6 +322,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		} else {
 			this.setConstraint(_verticalScale, DEFAULT_CONSTRAINT);
 		}
+		
 		if (_showScale == SHOW_HORIZONTAL || _showScale == SHOW_BOTH) {
 			if (_showScale == SHOW_HORIZONTAL) {
 				this.setConstraint(_horizontalScale, new Rectangle(
@@ -345,6 +348,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		} else {
 			this.setConstraint(_verticalLedgerScale, DEFAULT_CONSTRAINT);
 		}
+		
 		if (_showLedgerLines == SHOW_VERTICAL || _showLedgerLines == SHOW_BOTH) {
 			this.setConstraint(_horizontalLedgerScale, new Rectangle(
 					verticalScaleWidth, TEXTHEIGHT/2, _plotBounds.width, _plotBounds.height));
@@ -354,6 +358,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		} else {
 			this.setConstraint(_horizontalLedgerScale, DEFAULT_CONSTRAINT);
 		}
+		
 		this.setConstraint(_plotFigure, _plotBounds);
 
 		this.setToolTip(this.getToolTipFigure());
