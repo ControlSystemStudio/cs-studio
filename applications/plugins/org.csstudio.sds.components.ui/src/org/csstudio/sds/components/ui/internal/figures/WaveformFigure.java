@@ -1070,7 +1070,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 //				}
 				this.refreshConstraints();
 				addFigureListener(new FigureListener() {
-					@Override
 					public void figureMoved(IFigure source) {
 						refreshConstraints();
 					}
