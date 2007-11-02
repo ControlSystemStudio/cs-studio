@@ -38,42 +38,31 @@ public class Application implements IApplication
     /** {@inheritDoc} */
     public Object start(IApplicationContext context) throws Exception
     {
-        PluginActivator.logInfo("CSS Application started");
         display = PlatformUI.createDisplay();
         if (display == null)
         {
             PluginActivator.logError("No display");
             return IApplication.EXIT_OK;
         }
-        IProject project = null;
+        final Object return_code = checkWorkspace();
+        if (return_code != null)
+            return return_code;
         try
         {
-            Object return_code = checkWorkspace();
-            if (return_code != null)
-                return return_code;
-            project = openProject();
+            final IProject project = openProject();
             if (project == null)
                 return IApplication.EXIT_OK;
-            return runApplication();
+            try
+            {
+                return runApplication();
+            }
+            finally
+            {
+                closeProject(project);
+            }
         }
         finally
         {
-            if (project != null)
-            {
-                try
-                {
-                    project.close(new NullProgressMonitor());
-                }
-                catch (CoreException ex)
-                {
-                    PluginActivator.logException(
-                                    "Error closing " + project.getName(), ex); //$NON-NLS-1$
-                    MessageDialog.openError(null,
-                                    Messages.Application_ProjectError,
-                                    NLS.bind(Messages.Application_ProjectExitErrorMessage,
-                                              project.getName()));
-                }
-            }
             // Unlock workspace
             if (workspace_location != null && workspace_location.isSet())
             {
@@ -85,7 +74,7 @@ public class Application implements IApplication
             display = null;
         }
     }
-    
+
     /** Check the workspace.
      *  <p>
      *  Cannot really change the current workspace for this application
@@ -141,9 +130,9 @@ public class Application implements IApplication
             }
             
             // We are in the requested workspace.
+            workspace_location = Platform.getInstanceLocation();
             PluginActivator.logInfo("CSS Workspace: " + workspace_location);
             // Lock the workspace
-            workspace_location = Platform.getInstanceLocation();
             try
             {
                 if (workspace_location.lock())
@@ -212,6 +201,26 @@ public class Application implements IApplication
         return null;
     }
     
+    /** Close the project, handling all exceptions */
+    private void closeProject(final IProject project)
+    {
+        if (project == null)
+            return;
+        try
+        {
+            project.close(new NullProgressMonitor());
+        }
+        catch (CoreException ex)
+        {
+            PluginActivator.logException(
+                            "Error closing " + project.getName(), ex); //$NON-NLS-1$
+            MessageDialog.openError(null,
+                            Messages.Application_ProjectError,
+                            NLS.bind(Messages.Application_ProjectExitErrorMessage,
+                                      project.getName()));
+        }
+    }
+
     /** Run the application.
      *  @return IApplication exit code.
      */
@@ -238,7 +247,6 @@ public class Application implements IApplication
             return IApplication.EXIT_RESTART;
         }
         // Plain exit from IWorkbench.close()
-        PluginActivator.logInfo("CSS Application exiting"); //$NON-NLS-1$
         return IApplication.EXIT_OK;
     }
 
@@ -246,11 +254,10 @@ public class Application implements IApplication
     @SuppressWarnings("nls")
     public void stop()
     {
-        System.out.println("Application.stop...");
+        PluginActivator.logInfo("CSS Application stopped"); //$NON-NLS-1$
         final IWorkbench workbench = PlatformUI.getWorkbench();
-        if (workbench == null)
+        if (workbench == null  ||  display == null)
             return;
-        final Display display = workbench.getDisplay();
         display.syncExec(new Runnable()
         {
             public void run()
