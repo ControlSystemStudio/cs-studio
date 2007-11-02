@@ -684,7 +684,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			// This algorithm always draws all data points, even if there are
 			// fewer pixels in width than data points. In that case, several
 			// data points will be displayed at the same X position.
-			double xDist = ((double) (bounds.width - 1)) / _data.length;
+			// Note: subtracting 1 from data.length because the distance is
+			// only needed between the points, not before the first or after
+			// the last one.
+			double xDist = ((double) (bounds.width - 1)) / (_data.length - 1);
 			PointList result = new PointList();
 			for (int i = 0; i < _data.length ; i++) {
 				int x = (int) Math.round(xDist * i);
@@ -804,7 +807,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 					height = TEXTHEIGHT + _wideness;
 				}
 				double value = 0;
-				double dataPointDistance = ((double) this.getBounds().width - 1) / _data.length;
+				// This calculation of dataPointDistance MUST match the
+				// calculation in PlotFigure#calculatePlotPoints, otherwise
+				// rounding errors may occur!
+				double dataPointDistance = ((double) this.getBounds().width - 1) / (_data.length - 1);
 				while (x < this.getBounds().width) {
 					if (index>=_posScaleMarkers.size()) {
 						this.addScaleMarker(index, _posScaleMarkers);
