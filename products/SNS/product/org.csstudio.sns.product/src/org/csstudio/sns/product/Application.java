@@ -131,7 +131,8 @@ public class Application implements IApplication
             
             // We are in the requested workspace.
             workspace_location = Platform.getInstanceLocation();
-            PluginActivator.logInfo("CSS Workspace: " + workspace_location);
+            PluginActivator.logInfo("CSS Workspace: "
+                            + workspace_location.getURL());
             // Lock the workspace
             try
             {
