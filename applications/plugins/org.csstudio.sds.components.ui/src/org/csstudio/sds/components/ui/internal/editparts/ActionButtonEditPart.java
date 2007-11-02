@@ -37,6 +37,7 @@ import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
@@ -56,46 +57,63 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 
 		final RefreshableActionButtonFigure buttonFigure = new RefreshableActionButtonFigure();
 		buttonFigure.setText(model.getLabel());
-		buttonFigure.setFont(CustomMediaFactory.getInstance()
-				.getFont(model.getFont()));
+		buttonFigure.setFont(CustomMediaFactory.getInstance().getFont(
+				model.getFont()));
 		buttonFigure.setTextAlignment(model.getTextAlignment());
-		buttonFigure.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.getEnabled());
+		buttonFigure.setEnabled(getExecutionMode().equals(
+				ExecutionMode.RUN_MODE)
+				&& model.getEnabled());
 		buttonFigure.setStyle(model.getButtonStyle());
 		return buttonFigure;
 	}
 
 	/**
 	 * Returns the Figure of this EditPart.
-	 * @return RefreshableActionButtonFigure
-	 * 			The RefreshableActionButtonFigure of this EditPart
+	 * 
+	 * @return RefreshableActionButtonFigure The RefreshableActionButtonFigure
+	 *         of this EditPart
 	 */
 	protected RefreshableActionButtonFigure getCastedFigure() {
 		return (RefreshableActionButtonFigure) getFigure();
 	}
-	
-	private void configureButtonListener(final RefreshableActionButtonFigure figure) {		
+
+	/**
+	 * Configures a listener for performing a {@link WidgetAction}.
+	 * 
+	 * @param figure
+	 *            The figure of the widget
+	 */
+	private void configureButtonListener(
+			final RefreshableActionButtonFigure figure) {
 		figure.addChangeListener(new ChangeListener() {
-			public void handleStateChanged(ChangeEvent event) {
-				String propertyName = event.getPropertyName();
-				if (ButtonModel.PRESSED_PROPERTY.equals(propertyName) && getExecutionMode().equals(ExecutionMode.RUN_MODE) && figure.getModel().isArmed()) {
-					CentralLogger.getInstance().info(this, "KLICK");
-					ActionButtonModel model = (ActionButtonModel) getWidgetModel();
-					int index;
-					if (figure.getModel().isPressed()) {
-						index = model.getChoosenPressedActionIndex();
-					} else {
-						index = model.getChoosenReleasedActionIndex();
-					}
-					if (index>=0 && model.getActionData().getWidgetActions().size()==1) {
-						index = 0;
-					}
-					if (index>=0 && index<model.getActionData().getWidgetActions().size()) {
-						WidgetAction type = model.getActionData().getWidgetActions().get(index);
-						WidgetActionHandlerService.getInstance().performAction(model.getProperty(ActionButtonModel.PROP_ACTIONDATA), type);
-					}
-					if (!figure.getModel().isPressed()) {
-						figure.getModel().setArmed(false);
-					}
+			public void handleStateChanged(final ChangeEvent event) {
+				final String propertyName = event.getPropertyName();
+				if (ButtonModel.PRESSED_PROPERTY.equals(propertyName)
+						&& getExecutionMode().equals(ExecutionMode.RUN_MODE)
+						&& figure.getModel().isArmed()) {
+					Display.getCurrent().asyncExec(new Runnable() {
+						public void run() {
+							CentralLogger.getInstance().info(this, "KLICK");
+							ActionButtonModel model = (ActionButtonModel) getWidgetModel();
+							int index;
+							if (figure.getModel().isPressed()) {
+								index = model.getChoosenPressedActionIndex();
+							} else {
+								index = model.getChoosenReleasedActionIndex();
+							}
+							int size = model.getActionData().getWidgetActions().size();
+							if (index >= 0 && size == 1) {
+								index = 0;
+							}
+							if (index >= 0 && index < size) {
+								WidgetAction type = model.getActionData()
+										.getWidgetActions().get(index);
+								WidgetActionHandlerService.getInstance()
+										.performAction(model.getProperty(ActionButtonModel.PROP_ACTIONDATA),type);
+							}
+							figure.getModel().setArmed(figure.getModel().isPressed());
+						}
+					});
 				}
 			}
 		});
@@ -113,8 +131,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		// label
 		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableActionButtonFigure figure = getCastedFigure();
 				figure.setText(newValue.toString());
 				return true;
@@ -124,8 +141,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		// font
 		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableActionButtonFigure figure = getCastedFigure();
 				FontData fontData = (FontData) newValue;
 				figure.setFont(CustomMediaFactory.getInstance().getFont(
@@ -135,56 +151,58 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
-		
+
 		// text alignment
 		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableActionButtonFigure figure = (RefreshableActionButtonFigure) refreshableFigure;
-				figure.setTextAlignment((Integer)newValue);
+				figure.setTextAlignment((Integer) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
-		
+		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT,
+				alignmentHandler);
+
 		// button style
-        IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue,
-                    final Object newValue,
-                    final IFigure refreshableFigure) {
-                RefreshableActionButtonFigure figure = (RefreshableActionButtonFigure) refreshableFigure;
-                figure.setStyle((Boolean)newValue);
-                return true;
-            }
-        };
-        setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_BUTTON, buttonStyleHandler);
+		IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				RefreshableActionButtonFigure figure = (RefreshableActionButtonFigure) refreshableFigure;
+				figure.setStyle((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_BUTTON,
+				buttonStyleHandler);
 	}
-	
-//	/**
-//	 * Opens a shell in RunMode.
-//	 * @param path
-//	 * 			The Ipath to the Display, which should be opened.
-//	 * @param newAlias
-//	 * 			The Map of new Alias for the opened Display			
-//	 */
-//	private void openDisplayShellInRunMode(final IPath path, final Map<String, String> newAlias) {
-//		if (path!=null && !path.isEmpty()) {
-//			RunModeService.getInstance().openDisplayShellInRunMode(path, newAlias);
-//		}
-//	}
-//	
-//	/**
-//	 * Opens a view in RunMode.
-//	 * @param path
-//	 * 			The IPath to the Display, which should be opened.
-//	 * @param newAlias
-//	 * 			The Map of new Alias for the opened Display			
-//	 */
-//	private void openDisplayViewInRunMode(final IPath path, final Map<String, String> newAlias) {
-//		if (path!=null && !path.isEmpty()) {
-//			RunModeService.getInstance().openDisplayViewInRunMode(path, newAlias);
-//		}
-//	}
-	
+
+	// /**
+	// * Opens a shell in RunMode.
+	// * @param path
+	// * The Ipath to the Display, which should be opened.
+	// * @param newAlias
+	// * The Map of new Alias for the opened Display
+	// */
+	// private void openDisplayShellInRunMode(final IPath path, final
+	// Map<String, String> newAlias) {
+	// if (path!=null && !path.isEmpty()) {
+	// RunModeService.getInstance().openDisplayShellInRunMode(path, newAlias);
+	// }
+	// }
+	//	
+	// /**
+	// * Opens a view in RunMode.
+	// * @param path
+	// * The IPath to the Display, which should be opened.
+	// * @param newAlias
+	// * The Map of new Alias for the opened Display
+	// */
+	// private void openDisplayViewInRunMode(final IPath path, final Map<String,
+	// String> newAlias) {
+	// if (path!=null && !path.isEmpty()) {
+	// RunModeService.getInstance().openDisplayViewInRunMode(path, newAlias);
+	// }
+	// }
+
 }
