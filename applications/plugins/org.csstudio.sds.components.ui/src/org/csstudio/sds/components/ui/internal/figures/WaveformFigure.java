@@ -29,13 +29,13 @@ import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.Panel;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.XYLayout;
@@ -316,8 +316,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			}
 			this.setConstraint(_verticalScale, new Rectangle(0, 0,
 					verticalScaleWidth, _plotBounds.height+TEXTHEIGHT));
-			_verticalScale.setSectionLength(((double) _plotBounds.height) / Math.max(1, _ySectionCount));
-			_verticalScale.setRegion(0, _plotBounds.y+_plotBounds.height);
 			_verticalScale.setIncrement((_max-_min)/_ySectionCount);
 		} else {
 			this.setConstraint(_verticalScale, DEFAULT_CONSTRAINT);
@@ -335,8 +333,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 
 			double d = ((double)_data.length)/Math.max(1, _xSectionCount);
 			_horizontalScale.setIncrement(d);
-			_horizontalScale.setSectionLength(((double) _plotBounds.width) / Math.max(1, _xSectionCount));
-			_horizontalScale.setRegion(0, _plotBounds.width-10);
 		} else {
 			this.setConstraint(_horizontalScale, DEFAULT_CONSTRAINT);
 		}
@@ -344,8 +340,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		if (_showLedgerLines == SHOW_HORIZONTAL	|| _showLedgerLines == SHOW_BOTH) {
 			this.setConstraint(_verticalLedgerScale, new Rectangle(
 					verticalScaleWidth, 0, _plotBounds.width, _plotBounds.height+TEXTHEIGHT));
-			_verticalLedgerScale.setSectionLength(((double) _plotBounds.height) / Math.max(1, _ySectionCount));
-			_verticalLedgerScale.setRegion(0, _plotBounds.y+_plotBounds.height);
 			_verticalLedgerScale.setWideness(_plotBounds.width);
 			_verticalLedgerScale.setIncrement((_max-_min)/_ySectionCount);
 		} else {
@@ -356,9 +350,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 					verticalScaleWidth, TEXTHEIGHT/2, _plotBounds.width, _plotBounds.height));
 			double d = ((double)_data.length)/_xSectionCount;
 			_horizontalLedgerScale.setIncrement(d);
-			_horizontalLedgerScale.setSectionLength(((double) _plotBounds.width) / Math.max(1, _xSectionCount));
 			_horizontalLedgerScale.setWideness(_plotBounds.height);
-			_horizontalLedgerScale.setRegion(0, _plotBounds.width-10);
 		} else {
 			this.setConstraint(_horizontalLedgerScale, DEFAULT_CONSTRAINT);
 		}
@@ -634,7 +626,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 
 	/**
-	 * This class represents the plot of the waveform.
+	 * Figure for the actual plot.
 	 */
 	private final class PlotFigure extends RectangleFigure {
 
@@ -666,6 +658,9 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 					figureBounds.x + figureBounds.width, figureBounds.y
 							+ _zeroLevel);
 			
+			// TODO: the points don't actually have to be recalculated everytime the plot
+			// is redrawn -- only if the data points have changed or if the size of the
+			// plot has changed.
 			PointList pointList = calculatePlotPoints();
 			graphics.setLineWidth(_plotLineWidth);
 			if (_showConnectionLines) {
@@ -691,12 +686,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			// data points will be displayed at the same X position.
 			double xDist = ((double) (bounds.width - 1)) / _data.length;
 			PointList result = new PointList();
-			double xPos = 0;
-			for (double value : _data) {
-				int x = (int) Math.round(xPos);
-				int y = valueToYPos(value);
+			for (int i = 0; i < _data.length ; i++) {
+				int x = (int) Math.round(xDist * i);
+				int y = valueToYPos(_data[i]);
 				result.addPoint(new Point(bounds.x + x, bounds.y + y));
-				xPos += xDist;
 			}
 			return result;
 		}
@@ -750,14 +743,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		 */
 		private boolean _isTopLeft;
 		/**
-		 * The begin of the region, which surrounds the Markers.
-		 */
-		private int _begin;
-		/**
-		 * The end of the region, which surrounds the Markers.
-		 */
-		private int _end;
-		/**
 		 * True, if the negativ sections should be draan, false otherwise.
 		 */
 		private boolean _showNegativSections = false;
@@ -777,10 +762,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		 * The size of one step in a Scale.
 		 */
 		private double _increment = 1;
-		/**
-		 * The start-value for the markers.
-		 */
-		private double _startValue = 0;
 	
 		/**
 		 * The List of positive ScaleMarkers.
@@ -817,43 +798,29 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			}
 			int index = 0;
 			if (_isHorizontal) {
-				double pos = 0;
+				int x = 0;
 				int height = _wideness;
 				if (_showValues) {
 					height = TEXTHEIGHT + _wideness;
 				}
-				double value = _startValue;
-				while (pos < this.getBounds().width && pos <= _end) {
-					if (pos>=_begin) {
-						if (index>=_posScaleMarkers.size()) {
-							this.addScaleMarker(index, _posScaleMarkers);
-						}
-						this.setConstraint(_posScaleMarkers.get(index), new Rectangle((int) Math.round(pos-TEXTWIDTH/2),0,TEXTWIDTH,height));
-						this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues));
-						index++;
+				double value = 0;
+				double dataPointDistance = ((double) this.getBounds().width - 1) / _data.length;
+				while (x < this.getBounds().width) {
+					if (index>=_posScaleMarkers.size()) {
+						this.addScaleMarker(index, _posScaleMarkers);
 					}
-					value = value + _increment;
-					pos = pos + _sectionLength;
+					this.setConstraint(_posScaleMarkers.get(index), new Rectangle((int) Math.round(x-TEXTWIDTH/2),0,TEXTWIDTH,height));
+					this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues));
+					index++;
+					value += _increment;
+					x = (int) Math.round(value * dataPointDistance);
 				}
 				this.removeScaleMarkers(index, _posScaleMarkers);
-				if (_showNegativSections) {
-					pos = -_sectionLength;
-					index = 0;
-					value = _startValue - _increment;
-					while (pos > 0 && pos >= _begin) {
-						if (pos<=_end) {
-							if (index>=_negScaleMarkers.size()) {
-								this.addScaleMarker(index, _negScaleMarkers);
-							}
-							this.setConstraint(_negScaleMarkers.get(index), new Rectangle((int) Math.round(pos-TEXTWIDTH/2),0,TEXTWIDTH,height));
-							this.refreshScaleMarker(_negScaleMarkers.get(index), value, _showValues);
-							index++;	
-						}
-						value = value - _increment;
-						pos = pos - _sectionLength;
-					}	
-					this.removeScaleMarkers(index, _negScaleMarkers);
-				}
+				
+				// Note: negative scale markers are not supported by this
+				// figure for the X axis because the axis always starts from
+				// zero.
+				
 			} else {
 				int width = _wideness;
 				if (_showValues) {
@@ -901,7 +868,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		 */
 		private void refreshScaleMarker(final ScaleMarker marker, final double labelValue, final boolean showValue) {
 			marker.setTopLeftAlignment(_isTopLeft);
-			marker.setHorizontalOrientation(!_isHorizontal);
+			marker.setHorizontalOrientation(_isHorizontal);
 			NumberFormat format = NumberFormat.getInstance();
 			format.setMaximumFractionDigits(2);
 			marker.setText(format.format(labelValue));
@@ -982,19 +949,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		}
 		
 		/**
-		 * The begin and the end of the region, which surrounds the Markers.
-		 * @param begin 
-		 * 			 The begin
-		 * @param end
-		 * 			 The end
-		 */
-		public void setRegion(final int begin, final int end) {
-			_begin = begin;
-			_end = end;
-			this.refreshConstraints();
-		}
-
-		/**
 		 * Sets if the negative sections should be drawn.
 		 * 
 		 * @param showNegativ
@@ -1061,15 +1015,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		}
 		
 		/**
-		 * Sets the start value for the Markers.
-		 * @param startValue
-		 * 			The start value
-		 */
-		public void setStartValue(final double startValue) {
-			_startValue = startValue;
-		}
-		
-		/**
 		 * This class represents a marker for the scale.
 		 * @author Kai Meyer
 		 */
@@ -1083,7 +1028,11 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			 */
 			private ScaleHyphen _scaleHyphen;
 			/**
-			 * The orientation of this Marker.
+			 * The needed space of a {@link ScaleHyphen}.
+			 */
+			private final int _tickMarkSpace = 9;
+			/**
+			 * The orientation of the scale to which this marker belongs.
 			 */
 			private boolean _isHorizontal;
 			/**
@@ -1099,12 +1048,49 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			 * Constructor.
 			 */
 			public ScaleMarker() {
-				this.setLayoutManager(new BorderLayout());
+				this.setLayoutManager(new XYLayout());
 				_textLabel = new Label("");
 				_textLabel.setForegroundColor(this.getForegroundColor());
 				_scaleHyphen = new ScaleHyphen();
 				_scaleHyphen.setForegroundColor(this.getForegroundColor());
-				this.add(_scaleHyphen, BorderLayout.CENTER);
+				this.add(_scaleHyphen);
+//				if (_showValues) {
+					this.add(_textLabel);
+//				}
+				this.refreshConstraints();
+				addFigureListener(new FigureListener() {
+					@Override
+					public void figureMoved(IFigure source) {
+						refreshConstraints();
+					}
+				});
+			}
+
+			private void refreshConstraints() {
+				Rectangle bounds = this.getBounds();
+				if (_isHorizontal) {
+					// The tickmark height is the full height of this marker
+					// figure if only the tickmark is shown, if the text label
+					// is also shown, the height is the _tickMarkSpace.
+					int tickmarkHeight = _showValues ? _tickMarkSpace : bounds.height;
+					
+					if (_topLeft) {
+						this.setConstraint(_scaleHyphen, new Rectangle(0, bounds.height - tickmarkHeight, bounds.width, tickmarkHeight));
+						this.setConstraint(_textLabel, new Rectangle(0, 0, bounds.width, bounds.height-_tickMarkSpace));
+					} else {
+						this.setConstraint(_scaleHyphen, new Rectangle(0, 0, bounds.width, tickmarkHeight));
+						this.setConstraint(_textLabel, new Rectangle(0, _tickMarkSpace, bounds.width, bounds.height-_tickMarkSpace));
+					}
+				} else {
+					int tickmarkWidth = _showValues ? _tickMarkSpace : bounds.width;
+					if (_topLeft) {
+						this.setConstraint(_scaleHyphen, new Rectangle(bounds.width - tickmarkWidth, 0, tickmarkWidth, bounds.height));
+						this.setConstraint(_textLabel, new Rectangle(0, 0, bounds.width-_tickMarkSpace, bounds.height));
+					} else {
+						this.setConstraint(_scaleHyphen, new Rectangle(0, 0, tickmarkWidth, bounds.height));
+						this.setConstraint(_textLabel, new Rectangle(_tickMarkSpace, 0, bounds.width-_tickMarkSpace, bounds.height));
+					}
+				}
 			}
 
 			/**
@@ -1118,14 +1104,16 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			}
 			
 			/**
-			 * Sets the orientation of this figure.
+			 * Sets the orientation of the scale to which this marker belongs.
+			 * 
 			 * @param isHorizontal
-			 *            The orientation of this figure
-			 *            (true=horizontal;false=vertical)
+			 *            <code>true</code> if the scale is a horizontal scale
+			 *            (i.e. along the x axis), <code>false</code> if it is
+			 *            a vertical scale.
 			 */
 			public void setHorizontalOrientation(final boolean isHorizontal) {
-				_isHorizontal = !isHorizontal;
-				_scaleHyphen.setHorizontalOrientation(isHorizontal);
+				_isHorizontal = isHorizontal;
+				_scaleHyphen.setHorizontalOrientation(!isHorizontal);
 				this.refreshLabel();
 			}
 
@@ -1185,25 +1173,25 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			 * Refreshes the Label.
 			 */
 			private void refreshLabel() {
-				if (this.getChildren().contains(_textLabel)) {
-					this.remove(_textLabel);
-				}
 				if (_showValues) {
-					Integer place;
+					_textLabel.setVisible(true);
 					if (_isHorizontal) {
+						_textLabel.setTextPlacement(PositionConstants.WEST);
 						if (_topLeft) {
-							place = BorderLayout.TOP;
+							_textLabel.setTextAlignment(PositionConstants.BOTTOM);
 						} else {
-							place = BorderLayout.BOTTOM;
+							_textLabel.setTextAlignment(PositionConstants.TOP);
 						}
 					} else {
+						_textLabel.setTextPlacement(PositionConstants.NORTH);
 						if (_topLeft) {
-							place = BorderLayout.LEFT;
+							_textLabel.setTextAlignment(PositionConstants.RIGHT);
 						} else {
-							place = BorderLayout.RIGHT;
+							_textLabel.setTextAlignment(PositionConstants.LEFT);
 						}
 					}
-					this.add(_textLabel, place);
+				} else {
+					_textLabel.setVisible(false);
 				}
 			}
 			
@@ -1222,7 +1210,9 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				 */
 				private int _width = 10;
 				/**
-				 * The orientation of the line.
+				 * The orientation of the line. Note that this will be
+				 * <code>true</code> for a <em>vertical</em> axis, which
+				 * gets horizontal lines as its tickmarks, and vice versa.
 				 */
 				private boolean _isHorizontal;
 				/**
@@ -1241,7 +1231,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				public void paintFigure(final Graphics graphics) {
 					graphics.setForegroundColor(this.getForegroundColor());
 					//vertical
-					int x = this.getBounds().x+this.getBounds().width/2;
+					int x = this.getBounds().x+((int)(Math.round(((double)this.getBounds().width)/2)));
 					int y = this.getBounds().y;
 					if (_isHorizontal) {
 						if (_isTopLeft) {
@@ -1269,7 +1259,13 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				}
 				
 				/**
-				 * Sets the orientation of this Hyphen.
+				 * Sets the orientation of this Hyphen. Note, this is the
+				 * orientation of the actual line that will be drawn,
+				 * <em>not</em> the orientation of the scale/axis! For a
+				 * vertical axis, which gets horizontal lines for its
+				 * tickmarks, this must be set to <code>true</code>, and
+				 * vice versa.
+				 * 
 				 * @param isHorizontal
 				 * 				The Orientation of this Hyphen
 				 * 				true=horizontal; false = vertical
