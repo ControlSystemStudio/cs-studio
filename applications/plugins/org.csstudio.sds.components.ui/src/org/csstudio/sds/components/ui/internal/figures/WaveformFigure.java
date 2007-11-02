@@ -412,9 +412,9 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * if autoscaling is activated.
 	 */
 	private void adjustAutoscale() {
-		if (_autoScale) {
-			double min = 0;
-			double max = 0;
+		if (_autoScale && _data.length > 0) {
+			double min = _data[0];
+			double max = _data[0];
 
 			for (double value : _data) {
 				if (value < min) {
@@ -826,7 +826,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				if (_showValues) {
 					width = TEXTWIDTH + _wideness;
 				}
-				double value = 0;
+				double value = (_min > 0) ? _min : 0;
 				while (value <= _max) {
 					if (index >= _posScaleMarkers.size()) {
 						this.addScaleMarker(index, _posScaleMarkers);
