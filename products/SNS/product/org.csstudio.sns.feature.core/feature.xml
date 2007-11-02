@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.core"
       label="CSS Core"
-      version="1.0.2"
+      version="1.0.3"
       provider-name="Kay Kasemir"
       plugin="org.csstudio.sns.product">
 
@@ -123,8 +123,7 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
          id="org.csstudio.sns.product"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.csstudio.utility.sysmon"
