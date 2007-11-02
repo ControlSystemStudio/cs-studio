@@ -10,7 +10,7 @@
       </text>
    </aboutInfo>
 
-   <configIni use="default"/>
+   <configIni use="custom" path="/org.csstudio.sns.product/SNS_CSS_configs/config.ini"/>
 
    <launcherArgs>
    </launcherArgs>
