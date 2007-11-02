@@ -24,8 +24,8 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.ActionData;
-import org.csstudio.sds.model.properties.ActionDataProperty;
+import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
+import org.csstudio.sds.model.optionEnums.TextAlignmentEnum;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
 import org.csstudio.sds.model.properties.StringProperty;
@@ -60,15 +60,6 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 * The default value of the width property.
 	 */
 	private static final int DEFAULT_WIDTH = 80;
-	
-	/**
-	 * The default value of the text alignment property.
-	 */
-	private static final int DEFAULT_TEXT_ALIGNMENT = 0;
-	/**
-	 * The labels for the text alignment property.
-	 */
-	private static final String[] SHOW_LABELS = new String[] {"Center", "Top", "Bottom", "Left", "Right"};
 	/**
 	 * The ID of this widget model.
 	 */
@@ -79,6 +70,7 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	 */
 	public MenuButtonModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		this.setPropertyValue(PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
 	}
 
 	/**
@@ -92,9 +84,9 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Display, new FontData(
 						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
 		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
-				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
-		addProperty(PROP_ACTIONDATA, new ActionDataProperty("Action Data",
-				WidgetPropertyCategory.Behaviour, new ActionData()));
+				WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
+//		addProperty(PROP_ACTIONDATA, new ActionDataProperty("Action Data",
+//				WidgetPropertyCategory.Behaviour, new ActionData()));
 	}
 	
 	/**

@@ -24,6 +24,7 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.components.internal.localization.Messages;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.optionEnums.TextAlignmentEnum;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
@@ -81,19 +82,9 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	private static final int DEFAULT_WIDTH = 80;
 	
 	/**
-	 * The default value of the text alignment property.
-	 */
-	private static final int DEFAULT_TEXT_ALIGNMENT = 0;
-	
-	/**
 	 * The default value of the Button style.  
 	 */
     private static final boolean DEFAULT_TOGGLE_BUTTON = false;
-    
-	/**
-	 * The labels for the text alignment property.
-	 */
-	private static final String[] SHOW_LABELS = new String[] {"Center", "Top", "Bottom", "Left", "Right"};
 
 	/**
 	 * Standard constructor.
@@ -121,7 +112,7 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Display, new FontData(
 						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
 		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
-				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
+				WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
 		addProperty(PROP_ACTION_RELEASED_INDEX, new IntegerProperty("Action Index (released)",
 				WidgetPropertyCategory.Behaviour, 0, -1, Integer.MAX_VALUE));
 		addProperty(PROP_ACTION_PRESSED_INDEX, new IntegerProperty("Action Index (pressed)",

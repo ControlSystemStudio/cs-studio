@@ -23,6 +23,8 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
+import org.csstudio.sds.model.optionEnums.TextAlignmentEnum;
+import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
@@ -34,7 +36,7 @@ import org.eclipse.swt.graphics.FontData;
 /**
  * A widget model for text inputs.
  * 
- * @author Alexander Will
+ * @author Alexander Will, Kai Meyer
  * @version $Revision$
  * 
  */
@@ -72,13 +74,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	/**
 	 * The default value of the width property.
 	 */
-	private static final int DEFAULT_WIDTH = 80;
-	
-	/**
-	 * The default value of the text alignment property.
-	 */
-	private static final int DEFAULT_TEXT_ALIGNMENT = 0;
-	
+	private static final int DEFAULT_WIDTH = 80;	
 	/**
 	 * The ID of the <i>transparent</i> property.
 	 */
@@ -87,15 +83,6 @@ public final class TextInputModel extends AbstractWidgetModel {
      * Type of the displayed text.
      */
     public static final String PROP_TYPE = "value_type";
-	
-	/**
-	 * The labels for the text alignment property.
-	 */
-	private static final String[] SHOW_LABELS = new String[] {"Center", "Top", "Bottom", "Left", "Right"};
-	/**
-     * Currently available value types.
-     */
-    public static final String[] VALUE_TYPES=new String [] {"Text","Double Value","Alias"};
     /**
      * The ID of the <i>double type</i> property.
      */
@@ -126,9 +113,9 @@ public final class TextInputModel extends AbstractWidgetModel {
 		addProperty(PROP_FONT, new FontProperty("Font",
 				WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
 		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
-				WidgetPropertyCategory.Display, SHOW_LABELS, DEFAULT_TEXT_ALIGNMENT));
+				WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
-		addProperty(PROP_TYPE, new OptionProperty("Value Type",WidgetPropertyCategory.Behaviour,VALUE_TYPES,TYPE_DOUBLE));
+		addProperty(PROP_TYPE, new OptionProperty("Value Type",WidgetPropertyCategory.Behaviour, TextTypeEnum.getDisplayNames(), TextTypeEnum.DOUBLE.getIndex()));
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
 				WidgetPropertyCategory.Behaviour, 2, 0, 6));
 	}

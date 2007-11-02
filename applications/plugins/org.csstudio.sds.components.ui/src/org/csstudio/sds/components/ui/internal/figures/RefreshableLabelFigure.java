@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
+import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.util.AntialiasingUtil;
@@ -48,7 +49,7 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 	/**
 	 * Type of the label.
 	 */
-	private int _valueType=TYPE_DOUBLE;
+	private int _valueType=TextTypeEnum.DOUBLE.getIndex();
 	
 	/**
 	 * A border adapter, which covers all border handlings.
