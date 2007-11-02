@@ -101,6 +101,11 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 	private IPath _initialContainerFullPath;
 
 	/**
+	 * Flag that signals whether the target project can be chosen or not.
+	 */
+	private boolean _canChooseProject;
+
+	/**
 	 * Creates a new file creation wizard page. If the initial resource
 	 * selection contains exactly one container resource then it will be used as
 	 * the default container resource.
@@ -112,9 +117,27 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 	 */
 	public WizardNewFileCreationPage(final String pageName,
 			final IStructuredSelection selection) {
+		this(pageName, selection, true);
+	}
+
+	/**
+	 * Creates a new file creation wizard page. If the initial resource
+	 * selection contains exactly one container resource then it will be used as
+	 * the default container resource.
+	 * 
+	 * @param pageName
+	 *            the name of the page
+	 * @param selection
+	 *            the current resource selection
+	 * @param canChooseProject
+	 *            flag to allow the selection of the target project
+	 */
+	public WizardNewFileCreationPage(final String pageName,
+			final IStructuredSelection selection, final boolean canChooseProject) {
 		super(pageName);
 		setPageComplete(false);
 		_currentSelection = selection;
+		_canChooseProject = canChooseProject;
 	}
 
 	/**
@@ -132,9 +155,7 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 		// IIDEHelpContextIds.NEW_FILE_WIZARD_PAGE);
 
 		// resource and container group
-		_resourceGroup = new ResourceAndContainerGroup(
-				topLevel,
-				this,
+		_resourceGroup = new ResourceAndContainerGroup(topLevel, this,
 				getNewFileLabel(),
 				Messages.WizardNewFileCreationPage_LABEL_FILE, false, 250);
 
@@ -147,6 +168,9 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 		if (_initialFileName != null) {
 			_resourceGroup.setResource(_initialFileName);
 		}
+
+		_resourceGroup.setContainerSelectionGroupEnabled(_canChooseProject);
+
 		validatePage();
 		// Show description on opening
 		setErrorMessage(null);
@@ -251,11 +275,9 @@ public class WizardNewFileCreationPage extends WizardPage implements Listener {
 		try {
 			createFile(newFileHandle, initialContents);
 		} catch (CoreException e) {
-			ErrorDialog
-					.openError(
-							getContainer().getShell(),
-							Messages.WizardNewFileCreationPage_ERROR_TITLE,
-                            null, e.getStatus());
+			ErrorDialog.openError(getContainer().getShell(),
+					Messages.WizardNewFileCreationPage_ERROR_TITLE, null, e
+							.getStatus());
 
 			newFileHandle = null;
 		}

@@ -21,10 +21,20 @@
  */
 package org.csstudio.platform;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.osgi.framework.Bundle;
 
 /**
  * This services provides some basic workspace operations.
@@ -40,6 +50,17 @@ public final class ResourceService {
 	private static ResourceService _instance;
 
 	/**
+	 * List that holds all listeners that will be informed about resource
+	 * changes.
+	 */
+	private ArrayList<IResourceChangeListener> _targetResourceChangeListeners;
+
+	/**
+	 * The change listener that is used to centrally collect workspace changes.
+	 */
+	private IResourceChangeListener _resourceChangeListener;
+
+	/**
 	 * Return the shared instance.
 	 * 
 	 * @return The shared instance.
@@ -53,23 +74,119 @@ public final class ResourceService {
 	}
 
 	/**
+	 * Private constructor due to singleton pattern.
+	 */
+	private ResourceService() {
+		_targetResourceChangeListeners = new ArrayList<IResourceChangeListener>();
+		_resourceChangeListener = new CssResourceChangeListener();
+	}
+
+	/**
 	 * Create a workspace project with the given name (if it does not exist
 	 * already).
 	 * 
 	 * @param projectName
 	 *            The name of the project.
+	 * @return a handle to the given project.
 	 */
-	public void createWorkspaceProject(final String projectName) {
-		IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(
+	public IProject createWorkspaceProject(final String projectName) {
+		IProject result = ResourcesPlugin.getWorkspace().getRoot().getProject(
 				projectName);
-		if (!p.exists()) {
+		if (!result.exists()) {
 			try {
-				p.create(null);
-				p.open(null);
+				result.create(null);
+				result.open(null);
 			} catch (CoreException e) {
 				CentralLogger.getInstance().error(this, e);
 			}
 		}
+
+		return result;
 	}
 
+	/**
+	 * Copy the resourcces from the given folder in the given bundle into the
+	 * given workspace project.
+	 * 
+	 * @param targetProject
+	 *            workspace project to copy the resources to.
+	 * @param sourceBundle
+	 *            source bundle.
+	 * @param sourceFolderName
+	 *            source folder in the source bundle.
+	 */
+	@SuppressWarnings("unchecked")
+	public void copyResources(final IProject targetProject,
+			final Bundle sourceBundle, final String sourceFolderName) {
+
+		Enumeration fileEntries = sourceBundle.findEntries(sourceFolderName,
+				"*.*", false); //$NON-NLS-1$
+
+		while (fileEntries.hasMoreElements()) {
+			URL url = (URL) fileEntries.nextElement();
+			String filePath = url.getFile();
+			String fileName = filePath
+					.substring(filePath.indexOf(sourceFolderName + "/") + sourceFolderName.length() + 1); //$NON-NLS-1$
+
+			IFile file = targetProject.getFile(fileName);
+			if (!file.exists()) {
+				try {
+					file.create(FileLocator.openStream(sourceBundle, new Path(
+							filePath), false), true, null);
+				} catch (Exception e) {
+					CentralLogger.getInstance().error(this, e);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Add a resource change listener.
+	 * 
+	 * @param listener
+	 *            the resource change listener to add.
+	 */
+	public void addResourceChangeListener(final IResourceChangeListener listener) {
+		if (!_targetResourceChangeListeners.contains(listener)) {
+			_targetResourceChangeListeners.add(listener);
+
+			if (_targetResourceChangeListeners.size() == 1) {
+				ResourcesPlugin.getWorkspace().addResourceChangeListener(
+						_resourceChangeListener);
+			}
+		}
+	}
+
+	/**
+	 * Remove a resource change listener.
+	 * 
+	 * @param listener
+	 *            the resource change listener to remove.
+	 */
+	public void removeResourceChangeListener(
+			final IResourceChangeListener listener) {
+		if (_targetResourceChangeListeners.contains(listener)) {
+			_targetResourceChangeListeners.remove(listener);
+
+			if (_targetResourceChangeListeners.size() == 0) {
+				ResourcesPlugin.getWorkspace().removeResourceChangeListener(
+						_resourceChangeListener);
+			}
+		}
+	}
+
+	/**
+	 * Central resource change listener that forwards workspace changes to the
+	 * registered listeners.
+	 * 
+	 * @author Alexander Will
+	 * @version $Revision$
+	 */
+	private class CssResourceChangeListener implements IResourceChangeListener {
+		public void resourceChanged(IResourceChangeEvent event) {
+			for (IResourceChangeListener listener : _targetResourceChangeListeners) {
+				listener.resourceChanged(event);
+			}
+		}
+	}
 }

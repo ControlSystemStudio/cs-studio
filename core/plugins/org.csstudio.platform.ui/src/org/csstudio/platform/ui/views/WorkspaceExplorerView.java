@@ -1,5 +1,6 @@
 package org.csstudio.platform.ui.views;
 
+import org.csstudio.platform.ResourceService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.csstudio.platform.ui.workbench.FileEditorInput;
@@ -36,16 +37,18 @@ import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ViewPart;
 
-/** A view, which is used to display, navigate and open synoptic displays.
- *  @author Alexander Will
- *  @author Kay Kasemir: hide .project file
- *  @version $Revision$
+/**
+ * A view, which is used to display, navigate and open synoptic displays.
+ * 
+ * @author Alexander Will
+ * @author Kay Kasemir: hide .project file
+ * @version $Revision$
  */
 public final class WorkspaceExplorerView extends ViewPart {
-    /** Name of the ".project" file that we want to hide */
+	/** Name of the ".project" file that we want to hide */
 	private static final String PROJECT_FILE_NAME = ".project"; //$NON-NLS-1$
 
-    /**
+	/**
 	 * The ID of this view as configured in the plugin manifest.
 	 */
 	public static final String VIEW_ID = "org.csstudio.platform.ui.views.WorkspaceExplorerView"; //$NON-NLS-1$
@@ -62,52 +65,46 @@ public final class WorkspaceExplorerView extends ViewPart {
 	public void createPartControl(final Composite parent) {
 		_treeViewer = new TreeViewer(parent);
 
-        // Use standard workbench support for displaying whatever
-        // adapts to IWorkbenchAdapter.
-        // plugin.xml registers an adapter factory that adapts
-        // IResource, which includes the workspace root, to IWorkbenchAdapter.
+		// Use standard workbench support for displaying whatever
+		// adapts to IWorkbenchAdapter.
+		// plugin.xml registers an adapter factory that adapts
+		// IResource, which includes the workspace root, to IWorkbenchAdapter.
 		_treeViewer.setContentProvider(new BaseWorkbenchContentProvider());
 		_treeViewer.setLabelProvider(new WorkbenchLabelProvider());
 		_treeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
-        _treeViewer.addFilter(new ViewerFilter()
-        {
-            /** Hide the .project file */
-            @Override
-            public boolean select(Viewer viewer, Object parent, Object element)
-            {
-                if (parent != null  &&  element != null
-                    && parent instanceof IProject
-                    && element instanceof IFile
-                    && ((IFile)element).getName().equals(PROJECT_FILE_NAME))
-                    return false;
-                return true;
-            }
-        });
+		_treeViewer.addFilter(new ViewerFilter() {
+			/** Hide the .project file */
+			@Override
+			public boolean select(Viewer viewer, Object parent, Object element) {
+				if (parent != null
+						&& element != null
+						&& parent instanceof IProject
+						&& element instanceof IFile
+						&& ((IFile) element).getName()
+								.equals(PROJECT_FILE_NAME))
+					return false;
+				return true;
+			}
+		});
 
 		getViewSite().setSelectionProvider(_treeViewer);
 
 		// update resources viewer, when there are filesystem changes
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(
-        new IResourceChangeListener()
-        {
-            public void resourceChanged(
-                            final IResourceChangeEvent event)
-            {
-                // Notification can originate from non-UI thread,
-                // for example from a "New..." Wizard thread,
-                // so use asyncExec.
-                Display.getDefault().asyncExec(new Runnable()
-                {
-                    public void run()
-                    {
-                        if (!_treeViewer.getTree().isDisposed())
-                        {
-                            _treeViewer.refresh();
-                        }
-                    }
-                });
-            }
-        });
+		ResourceService.getInstance().addResourceChangeListener(
+				new IResourceChangeListener() {
+					public void resourceChanged(final IResourceChangeEvent event) {
+						// Notification can originate from non-UI thread,
+						// for example from a "New..." Wizard thread,
+						// so use asyncExec.
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								if (!_treeViewer.getTree().isDisposed()) {
+									_treeViewer.refresh();
+								}
+							}
+						});
+					}
+				});
 		// add drag support
 		// addDragSupport();
 
@@ -140,9 +137,8 @@ public final class WorkspaceExplorerView extends ViewPart {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setFocus()
-    {
-        _treeViewer.getTree().setFocus();
+	public void setFocus() {
+		_treeViewer.getTree().setFocus();
 	}
 
 	/**
@@ -167,33 +163,34 @@ public final class WorkspaceExplorerView extends ViewPart {
 	/**
 	 * Configures all listeners for the TreeViewer.
 	 */
-	private void configureContextMenu()
-    {
+	private void configureContextMenu() {
 		final MenuManager menuMgr = new MenuManager("", VIEW_ID); //$NON-NLS-1$
-        // Re-popolate menu each time it's shown to get current object contribs
+		// Re-popolate menu each time it's shown to get current object contribs
 		menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(new IMenuListener()
-        {
-            public void menuAboutToShow(IMenuManager manager)
-            {
-                // Region for actions that create new stuff
-                menuMgr.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
-                menuMgr.add(new Separator());
-                // Region(s) for actions that open existing resources
-                menuMgr.add(new GroupMarker(IWorkbenchIds.GROUP_CSS_MB3));
-                menuMgr.add(new GroupMarker(IWorkbenchActionConstants.OPEN_EXT));
-                menuMgr.add(new Separator());
-                // Region(s) for actions that rename/delete existing resources
-                menuMgr.add(new GroupMarker(IWorkbenchActionConstants.EDIT_START));
-                menuMgr.add(new GroupMarker(IWorkbenchActionConstants.EDIT_END));
-                menuMgr.add(new Separator());
-                // Whatever's left
-                menuMgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-            }
-        });
+		menuMgr.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				// Region for actions that create new stuff
+				menuMgr.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
+				menuMgr.add(new Separator());
+				// Region(s) for actions that open existing resources
+				menuMgr.add(new GroupMarker(IWorkbenchIds.GROUP_CSS_MB3));
+				menuMgr
+						.add(new GroupMarker(IWorkbenchActionConstants.OPEN_EXT));
+				menuMgr.add(new Separator());
+				// Region(s) for actions that rename/delete existing resources
+				menuMgr.add(new GroupMarker(
+						IWorkbenchActionConstants.EDIT_START));
+				menuMgr
+						.add(new GroupMarker(IWorkbenchActionConstants.EDIT_END));
+				menuMgr.add(new Separator());
+				// Whatever's left
+				menuMgr.add(new GroupMarker(
+						IWorkbenchActionConstants.MB_ADDITIONS));
+			}
+		});
 
 		final Tree tree = _treeViewer.getTree();
-        Menu contextMenu = menuMgr.createContextMenu(tree);
+		Menu contextMenu = menuMgr.createContextMenu(tree);
 		tree.setMenu(contextMenu);
 
 		// Register viewer with site. This has to be done before making the
@@ -218,19 +215,16 @@ public final class WorkspaceExplorerView extends ViewPart {
 
 		if (descriptor != null && editorInput != null) {
 			IWorkbenchPage page = getSite().getPage();
-			try
-            {
+			try {
 				page.openEditor(editorInput, descriptor.getId());
-			}
-            catch (PartInitException e)
-            {
+			} catch (PartInitException e) {
 				CentralLogger.getInstance().error(
-                    Messages.WorkspaceExplorerView_CANNOT_OPEN_EDITOR, e);
+						Messages.WorkspaceExplorerView_CANNOT_OPEN_EDITOR, e);
 			}
 		} else {
 			MessageDialog.openInformation(getSite().getShell(),
-                            Messages.WorkspaceExplorerView_ERROR_TITLE,
-                            Messages.WorkspaceExplorerView_ERROR_MESSAGE);
+					Messages.WorkspaceExplorerView_ERROR_TITLE,
+					Messages.WorkspaceExplorerView_ERROR_MESSAGE);
 		}
 	}
 }

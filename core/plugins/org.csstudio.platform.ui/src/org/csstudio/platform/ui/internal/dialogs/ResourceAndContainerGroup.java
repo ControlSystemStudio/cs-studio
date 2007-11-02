@@ -56,7 +56,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Alexander Will
  * @version $Revision$
  */
-public final class ResourceAndContainerGroup implements Listener {	
+public final class ResourceAndContainerGroup implements Listener {
 	/**
 	 * Problem identifier: No problem.
 	 */
@@ -141,7 +141,7 @@ public final class ResourceAndContainerGroup implements Listener {
 	 * The name of the resource.
 	 */
 	private Text _resourceNameField;
-	
+
 	/**
 	 * The full path to the resource.
 	 */
@@ -294,11 +294,12 @@ public final class ResourceAndContainerGroup implements Listener {
 		_resourceNameField.setBackground(FieldAssistColors
 				.getRequiredFieldBackgroundColor(_resourceNameField));
 
-		//full path
+		// full path
 		label = new Label(nameGroup, SWT.NONE);
 		label.setText("Full path:");
 		_fullPathLabel = new Label(nameGroup, SWT.NONE | SWT.WRAP);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.GRAB_HORIZONTAL);
 		data.widthHint = SIZING_TEXT_FIELD_WIDTH;
 		_fullPathLabel.setLayoutData(data);
 		this.refreshFullPath();
@@ -439,8 +440,9 @@ public final class ResourceAndContainerGroup implements Listener {
 			if (root.getFile(path).exists()) {
 				_problemType = PROBLEM_PATH_OCCUPIED;
 				_problemMessage = NLS
-						.bind(Messages.ResourceAndContainerGroup_PROBLEM_FILE_ALREADY_EXISTS_AT_LOCATION,
-                              path.makeRelative());
+						.bind(
+								Messages.ResourceAndContainerGroup_PROBLEM_FILE_ALREADY_EXISTS_AT_LOCATION,
+								path.makeRelative());
 				return false;
 			}
 			path = path.removeLastSegments(1);
@@ -517,7 +519,8 @@ public final class ResourceAndContainerGroup implements Listener {
 
 		if (resourceName.equals("")) {//$NON-NLS-1$
 			_problemType = PROBLEM_RESOURCE_EMPTY;
-			_problemMessage = NLS.bind(Messages.ResourceAndContainerGroup_PROBLEM_EMPTY_NAME,
+			_problemMessage = NLS.bind(
+					Messages.ResourceAndContainerGroup_PROBLEM_EMPTY_NAME,
 					_resourceType);
 			return false;
 		}
@@ -525,29 +528,32 @@ public final class ResourceAndContainerGroup implements Listener {
 		if (!(new Path("")).isValidPath(resourceName)) { //$NON-NLS-1$
 			_problemType = PROBLEM_NAME_INVALID;
 			_problemMessage = NLS
-					.bind(Messages.ResourceAndContainerGroup_PROBLEM_INVALID_FILE_NAME,
+					.bind(
+							Messages.ResourceAndContainerGroup_PROBLEM_INVALID_FILE_NAME,
 							resourceName);
 			return false;
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Refreshes the displayed full path of the resource.
 	 */
 	private void refreshFullPath() {
 		StringBuffer buffer = new StringBuffer();
-		if (_containerGroup.getContainerFullPath()!=null) {
-			buffer.append(ResourcesPlugin.getWorkspace().getRoot().getLocation());
+		if (_containerGroup.getContainerFullPath() != null) {
+			buffer.append(ResourcesPlugin.getWorkspace().getRoot()
+					.getLocation());
 			buffer.append(_containerGroup.getContainerFullPath());
 			buffer.append("/");
-			if (_resourceNameField.getText()!=null && _resourceNameField.getText().trim().length()>0) {
+			if (_resourceNameField.getText() != null
+					&& _resourceNameField.getText().trim().length() > 0) {
 				buffer.append(this.getResourceNameWithExtension());
 			}
 		}
 		_fullPathLabel.setText(buffer.toString());
 		Composite comp = _fullPathLabel.getParent().getParent();
-		if (comp!=null) {
+		if (comp != null) {
 			comp.layout();
 		}
 	}
@@ -584,6 +590,18 @@ public final class ResourceAndContainerGroup implements Listener {
 	 */
 	public void setFileExtension(final String fileExtension) {
 		_fileExtension = fileExtension;
+	}
+
+	/**
+	 * Set the embedded container selection group to enabled/disabled.
+	 * 
+	 * @param enabled
+	 *            true for enabled, false for diabled.
+	 */
+	public void setContainerSelectionGroupEnabled(boolean enabled) {
+		if (_containerGroup != null) {
+			_containerGroup.setEnabled(enabled);
+		}
 	}
 
 }
