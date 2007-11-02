@@ -1,0 +1,25 @@
+package org.csstudio.sds.components.epics;
+
+import org.csstudio.sds.components.model.MenuButtonModel;
+import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
+import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
+import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
+
+/**
+ * Initializes a rectangle with EPICS specific property values.
+ * 
+ * @author Stefan Hofer + Sven Wende
+ * @version $Revision$
+ * 
+ */
+public final class MenuButtonInitializer extends AbstractWidgetModelInitializer {
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void initialize(final AbstractControlSystemSchema schema) {
+		initializeStaticProperty(MenuButtonModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
+	}
+
+}
