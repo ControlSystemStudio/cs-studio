@@ -13,6 +13,7 @@ import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.Shape;
@@ -205,6 +206,16 @@ public final class RefreshableLabelFigure extends Shape implements IAdaptable {
 			textPoint = new Point(bound.width/2+_xOff,bound.height/2+_yOff);
 			alignment = TextPainter.CENTER;
 			break;
+		}
+		if (!isEnabled()) {
+			gfx.setForegroundColor(ColorConstants.buttonLightest);
+			if (Math.round(_rotation)==90) {
+				TextPainter.drawText(gfx,toprint,textPoint.x,textPoint.y,alignment);
+			} else {
+				TextPainter.drawRotatedText(gfx,toprint,90.0-_rotation,textPoint.x+1,textPoint.y+1,alignment);
+			}
+			
+			gfx.setForegroundColor(ColorConstants.buttonDarker);
 		}
 		if (Math.round(_rotation)==90) {
 			TextPainter.drawText(gfx,toprint,textPoint.x,textPoint.y,alignment);

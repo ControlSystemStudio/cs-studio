@@ -47,6 +47,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 						model.getFont()));
 		label.setTextAlignment(model.getTextAlignment());
 		label.setTransparent(false);
+		label.setEnabled(model.getEnabled());
 		label.addMouseListener(new MouseListener() {
 			public void mouseDoubleClicked(final MouseEvent me) {
 			}
@@ -76,26 +77,28 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 	 * @param absolutY The y coordinate of the mouse in the display
 	 */
 	private void performDirectEdit(final Point point, final int absolutX, final int absolutY) {
-		final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		MenuManager menuManager = new MenuManager();
-		for (WidgetAction action : ((MenuButtonModel)this.getCastedModel()).getActionData().getWidgetActions()) {
-			menuManager.add(new MenuAction(action));
-		}
-		Menu menu = menuManager.createContextMenu(shell);
-		
-		int x = absolutX;
-		int y = absolutY;
-		x = x - point.x + this.getCastedModel().getX();
-		y = y - point.y + this.getCastedModel().getY() + this.getCastedModel().getHeight();
-		
-		menu.setLocation(x,y);
-		menu.setVisible(true);
-		while(!menu.isDisposed() && menu.isVisible()){
-			if(!Display.getCurrent().readAndDispatch()){
-				Display.getCurrent().sleep();
+		if (this.getCastedModel().getEnabled()) {
+			final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+			MenuManager menuManager = new MenuManager();
+			for (WidgetAction action : ((MenuButtonModel)this.getCastedModel()).getActionData().getWidgetActions()) {
+				menuManager.add(new MenuAction(action));
 			}
+			Menu menu = menuManager.createContextMenu(shell);
+			
+			int x = absolutX;
+			int y = absolutY;
+			x = x - point.x + this.getCastedModel().getX();
+			y = y - point.y + this.getCastedModel().getY() + this.getCastedModel().getHeight();
+			
+			menu.setLocation(x,y);
+			menu.setVisible(true);
+			while(!menu.isDisposed() && menu.isVisible()){
+				if(!Display.getCurrent().readAndDispatch()){
+					Display.getCurrent().sleep();
+				}
+			}
+			menu.dispose();	
 		}
-		menu.dispose();
 	}
 	
 	/**
