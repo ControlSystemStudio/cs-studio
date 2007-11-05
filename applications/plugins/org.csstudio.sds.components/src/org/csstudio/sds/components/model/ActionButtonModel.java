@@ -125,6 +125,16 @@ public final class ActionButtonModel extends AbstractWidgetModel {
 	 * {@inheritDoc}
 	 */
 	@Override
+	protected void markPropertiesAsInvisible() {
+		this.markPropertyAsInvisible(PROP_BORDER_COLOR);
+		this.markPropertyAsInvisible(PROP_BORDER_STYLE);
+		this.markPropertyAsInvisible(PROP_BORDER_WIDTH);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(createParameter(PROP_NAME)+"\n");
