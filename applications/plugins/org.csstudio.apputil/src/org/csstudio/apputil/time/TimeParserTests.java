@@ -230,6 +230,24 @@ public class TimeParserTests extends TestCase
         end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(6*60*60.0, start_diff_sec, 10.0);
         assertEquals(0.0, end_diff_sec, 10.0);
+
+        // rel - days back -, now
+        start = "-30 days";
+        end = "";
+        start_end = new StartEndTimeParser(start, end);
+        start_time = format.format(start_end.getStart().getTime());
+        end_time = format.format(start_end.getEnd().getTime());
+        System.out.println("   " + start + " ... " + end + "\n-> " +
+                           start_time + " ... " + end_time);
+        now = Calendar.getInstance().getTimeInMillis() / 1000;
+        // Get seconds to 'now'
+        start_diff_sec = now - start_end.getStart().getTimeInMillis()/1000;
+        end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
+        // In case that 1 month covers a daylight saving time change,
+        // the difference could be 1 hour off what we think it should be
+        // in this naive check.
+        assertEquals(30*24*60*60.0, start_diff_sec, 1.2*60*60.0);
+        assertEquals(0.0, end_diff_sec, 10.0);
     }
     
     @Test
@@ -258,6 +276,5 @@ public class TimeParserTests extends TestCase
         bench.stop();
         System.out.println("Only eval: "
                         + (double)bench.getMilliseconds()/N + " millisec/run");
-
     }
 }
