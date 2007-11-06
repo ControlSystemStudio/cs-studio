@@ -28,6 +28,11 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.DrillDownComposite;
 
+/**
+ * This class creates a tree, which shows the workspace entries.
+ * @author Kai Meyer
+ *
+ */
 public class WorkspaceTreeComposite {
 
 	/**
@@ -54,10 +59,24 @@ public class WorkspaceTreeComposite {
 	 */
 	private static final boolean SHOW_CLOSED_PROJECTS = true;
 
+	/**
+	 * Constructor.
+	 * @param parent The parent for the tree
+	 * @param style The style for the tree
+	 * @param fileExtensions The extensions of the files, which should be displayed. 
+	 */
 	public WorkspaceTreeComposite(Composite parent, int style, String[] fileExtensions) {
 		this(parent, style, SIZING_SELECTION_PANE_WIDTH, HEIGHTHINT, fileExtensions);
 	}
 
+	/**
+	 * Constructor.
+	 * @param parent The parent for the tree
+	 * @param style The style for the tree
+	 * @param width The width for the tree
+	 * @param height The height for the tree
+	 * @param fileExtensions The extensions of the files, which should be displayed. 
+	 */
 	public WorkspaceTreeComposite(Composite parent, int style, final int width,
 			final int height, String[] fileExtensions) {
 		_fileExtensions = fileExtensions;
@@ -68,7 +87,7 @@ public class WorkspaceTreeComposite {
 		drillDown.setLayoutData(spec);
 
 		// Create tree viewer inside drill down.
-		_treeViewer = new TreeViewer(drillDown, SWT.NONE);
+		_treeViewer = new TreeViewer(drillDown, style);
 		drillDown.setChildTree(_treeViewer);
 		ContainerContentProvider cp = new ContainerContentProvider();
 		cp.showClosedProjects(SHOW_CLOSED_PROJECTS);
@@ -99,6 +118,10 @@ public class WorkspaceTreeComposite {
 		_treeViewer.setInput(ResourcesPlugin.getWorkspace());
 	}
 
+	/**
+	 * Returns the {@link IPath} to the currently selected {@link IResource}.
+	 * @return The {@link IPath} to the currently selected {@link IResource}
+	 */
 	public IPath getSelectedPath() {
 		IStructuredSelection selection = (IStructuredSelection) _treeViewer
 				.getSelection();
@@ -143,6 +166,10 @@ public class WorkspaceTreeComposite {
 		}
 	}
 
+	/**
+	 * Returns the internally used {@link TreeViewer}.
+	 * @return The used {@link TreeViewer}
+	 */
 	public TreeViewer getTreeViewer() {
 		return _treeViewer;
 	}
