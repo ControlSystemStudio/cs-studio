@@ -65,14 +65,14 @@ public class Controller
             // The plot should listen to the model and adjust its x axis.
             // But we listen as well, so avoid infinite loop.
             controller_changes_xaxis = true;
-            if (scroll_start_specification == null)
-            {   // Compute (relative) start time spec
-                double low = model.getStartTime().toDouble();
-                double high = model.getEndTime().toDouble();
-                setScrollStart(high - low);
-            }
             try
             {
+                if (scroll_start_specification == null)
+                {   // Compute (relative) start time spec
+                    double low = model.getStartTime().toDouble();
+                    double high = model.getEndTime().toDouble();
+                    setScrollStart(high - low);
+                }
                 // Only update when really changed...
                 if (model.getEndSpecification().equals(RelativeTime.NOW)
                    && model.getStartSpecification().equals(scroll_start_specification))
@@ -93,8 +93,11 @@ public class Controller
             {
                 Plugin.logException("Cannot scroll", ex);
             }
+            finally
+            {
+                controller_changes_xaxis = false;
+            }
             // redraw is implied in the x axis update
-            controller_changes_xaxis = false;
         }
     };
     
@@ -112,7 +115,15 @@ public class Controller
         
         public void timeRangeChanged()
         {   // Adjust the x axis to the "current" model time range
-            gui.setTimeRange(model.getStartTime(), model.getEndTime());
+        	controller_changes_xaxis = true;
+        	try
+        	{
+        		gui.setTimeRange(model.getStartTime(), model.getEndTime());
+        	}
+        	finally
+        	{
+        		controller_changes_xaxis = false;
+        	}
         }
         
         public void periodsChanged()
@@ -211,11 +222,17 @@ public class Controller
             case RANGE:
                 // Range was changed interactively, update the model
                 controller_changes_model = true;
-                int axis_index = chart.getYAxisIndex(yaxis);
-                Controller.this.model.setAxisLimits(axis_index,
-                                yaxis.getLowValue(),
-                                yaxis.getHighValue());
-                controller_changes_model = false;
+                try
+                {
+	                int axis_index = chart.getYAxisIndex(yaxis);
+	                Controller.this.model.setAxisLimits(axis_index,
+	                                yaxis.getLowValue(),
+	                                yaxis.getHighValue());
+                }
+                finally
+                {
+                	controller_changes_model = false;
+                }
                 break;
             case MARKER:
                 // TODO: Update model with marker info? Load/Save the markers?
@@ -362,14 +379,20 @@ public class Controller
                                          new_item.getTraceType());
             // Set initial axis range from model
             controller_changes_yaxes = true;
-            YAxis yaxis = trace.getYAxis();
-            yaxis.setValueRange(new_item.getAxisLow(), new_item.getAxisHigh());
-            // Do we need to change the axis type?
-            if (new_item.getLogScale() != yaxis.isLogarithmic())
-                yaxis.setLogarithmic(new_item.getLogScale());
-            if (new_item.getAutoScale() != yaxis.getAutoScale())
-                yaxis.setAutoScale(new_item.getAutoScale());
-            controller_changes_yaxes = false;
+            try
+            {
+	            YAxis yaxis = trace.getYAxis();
+	            yaxis.setValueRange(new_item.getAxisLow(), new_item.getAxisHigh());
+	            // Do we need to change the axis type?
+	            if (new_item.getLogScale() != yaxis.isLogarithmic())
+	                yaxis.setLogarithmic(new_item.getLogScale());
+	            if (new_item.getAutoScale() != yaxis.getAutoScale())
+	                yaxis.setAutoScale(new_item.getAutoScale());
+            }
+            finally
+            {
+            	controller_changes_yaxes = false;
+            }
         }
         // Model already running?
         if (model.isRunning())
