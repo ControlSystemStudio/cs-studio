@@ -5,8 +5,10 @@ package org.csstudio.apputil.time;
  */
 public class SecondsParser
 {
+    /** Seconds in a minute */
 	final static int SECS_PER_MINUTE=60;
 	
+	/** Seconds in an hour */
 	final static int SECS_PER_HOUR=60*SECS_PER_MINUTE;
 	
     /** Parse time string, return seconds.
@@ -30,7 +32,7 @@ public class SecondsParser
         text = text.trim();
         if (text.length() <= 1)
             throw new Exception("Empty String");
-
+        // Negative time, "-...." ?
         double sign;
         if (text.charAt(0) == '-')
         {
@@ -66,11 +68,20 @@ public class SecondsParser
      */
     public static String formatSeconds(double seconds)
     {
+        // Handle sign
+        final boolean negative = seconds < 0;
+        if (negative)
+            seconds = -seconds;
+        // Convert to hours, minutes, seconds
     	final int hours = (int) (seconds / SECS_PER_HOUR);
     	seconds -= hours * SECS_PER_HOUR;
     	final int minutes = (int) (seconds / SECS_PER_MINUTE);
     	seconds -= minutes * SECS_PER_MINUTE;
-    	return String.format("%02d:%02d:%02d",
-    			             hours, minutes, (int) seconds);
+    	// Format as string
+    	final String result = String.format("%02d:%02d:%02d", //$NON-NLS-1$
+    			                           hours, minutes, (int) seconds);
+    	if (negative)
+    	    return "-" + result; //$NON-NLS-1$
+    	return result;
     }
 }
