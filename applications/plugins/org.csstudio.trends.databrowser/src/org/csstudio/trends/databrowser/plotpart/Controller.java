@@ -35,6 +35,7 @@ public class Controller
     private boolean controller_changes_xaxis = false;
     private boolean controller_changes_yaxes = false;
     private boolean controller_changes_model = false;
+    private boolean controller_changes_model_times = false;
     
     /** Start time of the plot used for scrolling, like "-10 minutes" */
     private String scroll_start_specification = null;
@@ -82,8 +83,16 @@ public class Controller
                     if (debug_scroll)
                         System.out.println("Scroll: Update start "
                                            + scroll_start_specification);
-                    model.setTimeSpecifications(scroll_start_specification,
-                                                RelativeTime.NOW);
+                    controller_changes_model_times = true;
+                    try
+                    {
+                    	model.setTimeSpecifications(scroll_start_specification,
+                    			RelativeTime.NOW);
+                    }
+                    finally
+                    {
+                    	controller_changes_model_times = false;
+                    }
                     // Looks like scrolling was just turned on, and we might jump
                     // from some old time range to 'now', so we better get new data.
                     getArchivedData(null);
@@ -108,6 +117,8 @@ public class Controller
     {
         public void timeSpecificationsChanged()
         {
+        	if (controller_changes_model_times)
+        		return;
             // Invalidate any scroll start spec that we might have
             scroll_start_specification = null;
             gui.updateScrollPauseButton(model.isScrollEnabled());
