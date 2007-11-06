@@ -56,23 +56,24 @@ public class StartEndTimeParser
      *  resp. "now".
      *  @throws Exception On parse error.
      */
-    public StartEndTimeParser(String start_specification, String end_specification)
+    public StartEndTimeParser(final String start_specification,
+    		                  final String end_specification)
         throws Exception
     {
-        this.start_specification = start_specification;
-        this.end_specification = end_specification;
-        rel_start = RelativeTimeParser.parse(start_specification);
-        rel_end = RelativeTimeParser.parse(end_specification);
+        this.start_specification = start_specification.replace(',', ' ');
+        this.end_specification = end_specification.replace(',', ' ');
+        rel_start = RelativeTimeParser.parse(this.start_specification);
+        rel_end = RelativeTimeParser.parse(this.end_specification);
         
         if (rel_start.isAbsolute())
-            start = AbsoluteTimeParser.parse(start_specification);
+            start = AbsoluteTimeParser.parse(this.start_specification);
         if (rel_end.isAbsolute())
-            end = AbsoluteTimeParser.parse(end_specification);
+            end = AbsoluteTimeParser.parse(this.end_specification);
         if (rel_start.isAbsolute() && rel_end.isAbsolute())
             return;
         else if (!rel_start.isAbsolute() && rel_end.isAbsolute())
         {
-            start = adjust(end, start_specification, rel_start);
+            start = adjust(end, this.start_specification, rel_start);
             return;
         }
         else if (rel_start.isAbsolute() && !rel_end.isAbsolute())
@@ -81,13 +82,13 @@ public class StartEndTimeParser
         	if (rel_end.getRelativeTime().isNow())
         		end = Calendar.getInstance();
         	else // Fixed date ... something relative to that date
-        		end = adjust(start, end_specification, rel_end);
+        		end = adjust(start, this.end_specification, rel_end);
             return;
         }
         // else !rel_start.isAbsolute() && !rel_end.isAbsolute()
         Calendar now = Calendar.getInstance();
-        end = adjust(now, end_specification, rel_end);
-        start = adjust(end, start_specification, rel_start);
+        end = adjust(now, this.end_specification, rel_end);
+        start = adjust(end, this.start_specification, rel_start);
     }
     
     /** @return Start time specification */

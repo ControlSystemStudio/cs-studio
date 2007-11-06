@@ -199,7 +199,7 @@ public class TimeParserTests extends TestCase
         double end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(0.0, end_diff_sec, 10.0);
         
-        // rel, rel
+        // rel (back), rel(back)
         start = "-6h";
         end = "-2h";
         start_end = new StartEndTimeParser(start, end);
@@ -213,7 +213,22 @@ public class TimeParserTests extends TestCase
         end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(8*60*60.0, start_diff_sec, 10.0);
         assertEquals(2*60*60.0, end_diff_sec, 10.0);
-
+        
+        // rel(back), rel(forward)
+        start = "-60 days";
+        end = "+60 days";
+        start_end = new StartEndTimeParser(start, end);
+        start_time = format.format(start_end.getStart().getTime());
+        end_time = format.format(start_end.getEnd().getTime());
+        System.out.println("   " + start + " ... " + end + "\n-> " +
+                           start_time + " ... " + end_time);
+        now = Calendar.getInstance().getTimeInMillis() / 1000;
+        // Get seconds to 'now'
+        start_diff_sec = now - start_end.getStart().getTimeInMillis()/1000;
+        end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
+        assertEquals(0.0, start_diff_sec, 10.0);
+        assertEquals(-60.0*24.0*60*60.0, end_diff_sec, 10.0);
+        
         // rel, now
         start = "-6h";
         end = "now";
