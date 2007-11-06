@@ -642,6 +642,7 @@ public class ConfigView extends PlotAwareView
         
         Button dlg1 = new Button(parent, SWT.PUSH);
         dlg1.setText(Messages.StartEndDlg);
+        dlg1.setToolTipText(Messages.StartEndDlg_TT);
         gd = new GridData();
         dlg1.setLayoutData(gd);
         
@@ -660,6 +661,7 @@ public class ConfigView extends PlotAwareView
         
         Button dlg2 = new Button(parent, SWT.PUSH);
         dlg2.setText(Messages.StartEndDlg);
+        dlg2.setToolTipText(Messages.StartEndDlg_TT);
         gd = new GridData();
         dlg2.setLayoutData(gd);
 
@@ -672,12 +674,12 @@ public class ConfigView extends PlotAwareView
         start_end_info.setLayoutData(gd);
         
         // Row 4
-        Button set_graph_times = new Button(parent, SWT.PUSH);
+        final Button set_graph_times = new Button(parent, SWT.PUSH);
         set_graph_times.setText(Messages.SetGraphTimes);
         gd = new GridData();
         set_graph_times.setLayoutData(gd);
 
-        Button read_graph_times = new Button(parent, SWT.PUSH);
+        final Button read_graph_times = new Button(parent, SWT.PUSH);
         read_graph_times.setText(Messages.ReadGraphTimes);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
