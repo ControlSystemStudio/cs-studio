@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.exportview;
 
+import org.csstudio.apputil.time.SecondsParser;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.ui.swt.ScrolledContainerHelper;
 import org.csstudio.platform.data.ITimestamp;

@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.exportview;
 import java.io.PrintWriter;
 import java.util.Iterator;
 
+import org.csstudio.apputil.time.SecondsParser;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.cache.ArchiveCache;
 import org.csstudio.archive.cache.ArchiveExceptionDialog;
@@ -259,7 +260,8 @@ class ExportJob extends Job
         out.println(Messages.Comment + Messages.StartLabel + start);
         out.println(Messages.Comment + Messages.EndLabel + end);
         if (source == Source.Average)
-            out.println(NLS.bind(Messages.Comment_Averaging, seconds));
+            out.println(NLS.bind(Messages.Comment_Averaging,
+            		             SecondsParser.formatSeconds(seconds)));
         else
             out.println(Messages.Comment + Messages.SourceLabel + source);
         out.println(Messages.Comment + Messages.Spreadsheet + ": "+ format_spreadsheet);
