@@ -367,7 +367,7 @@
         point="org.eclipse.ui.popupMenus">
      <objectContribution
            id="dummy"
-           objectClass="org.csstudio.platform.model.rfc.IPVAdressListProvider">
+           objectClass="org.csstudio.platform.model.pvs.IProcessVariableAdressProvider">
         <action
               class="org.csstudio.platform.ui.internal.developmentsupport.util.PrintPvsAction"
               id="org.csstudio.platform.ui.action1"
