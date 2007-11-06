@@ -130,6 +130,7 @@ public class Controller
         	try
         	{
         		gui.setTimeRange(model.getStartTime(), model.getEndTime());
+        		getArchivedData(null);
         	}
         	finally
         	{
