@@ -7,12 +7,16 @@ public class Messages extends NLS
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.exportview.messages"; //$NON-NLS-1$
 
     public static String Archives;
+    public static String Avg_Time;
+    public static String Avg_Time_TT;
     public static String Browse;
     public static String Browse_TT;
     public static String Cancelled;
     public static String CannotDecodeSeconds;
     public static String CannotDecodeStartEnd;
     public static String Comment;
+    public static String Comment_Averaging;
+    public static String Comment_Format;
     public static String ColSep;
     public static String DataBrowserExport;
     public static String EndLabel;
@@ -20,6 +24,7 @@ public class Messages extends NLS
     public static String Error;
     public static String Export;
     public static String ExportErrorMsg;
+    public static String ExportFileInfo;
     public static String Export_Info;
     public static String Export_TT;
     public static String ExportJobTask;
@@ -45,8 +50,6 @@ public class Messages extends NLS
     public static String SelectTime_TT;
     public static String ShowSeverity;
     public static String ShowSeverity_TT;
-    public static String Avg_Time;
-    public static String Avg_Time_TT;
     public static String SourceLabel;
     public static String Source_Average;
     public static String Source_Average_TT;

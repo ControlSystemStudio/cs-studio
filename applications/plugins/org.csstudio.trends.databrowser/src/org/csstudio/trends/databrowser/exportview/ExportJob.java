@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 
 /** Eclipse background job for searching names on a data server.
@@ -35,9 +36,15 @@ class ExportJob extends Job
     private final Model model;
     private final ITimestamp start, end;
 
+    /** From where to export the data */
     enum Source
     {
-        Plot, Raw, Average
+    	/** Use data from plot (i.e. current Model memory) */
+        Plot,
+        /** Request raw archive data */
+        Raw,
+        /** Request averaged archive data */
+        Average
     };
     private final Source source;
     private final double seconds;
@@ -60,15 +67,16 @@ class ExportJob extends Job
      *  @param format_severity Include severity/status/info, or omit?
      */     
     public ExportJob(final Shell shell,
-                    final Model model,
-                    ITimestamp start, ITimestamp end,
-                    Source source,
-                    double seconds,
-                    boolean format_spreadsheet,
-                    boolean format_severity,
-                    IValue.Format format,
-                    int precision,
-                    String filename)
+                     final Model model,
+                     final ITimestamp start,
+                     final ITimestamp end,
+                     final Source source,
+                     final double seconds,
+                     final boolean format_spreadsheet,
+                     final boolean format_severity,
+                     final IValue.Format format,
+                     final int precision,
+                     final String filename)
     {
         super(Messages.ExportJobTitle);
         if (shell == null ||
@@ -95,7 +103,7 @@ class ExportJob extends Job
     /* @see org.eclipse.core.runtime.jobs.Job#run() */
     @SuppressWarnings("nls") //$NON-NLS-1$
     @Override
-    protected IStatus run(IProgressMonitor monitor)
+    protected IStatus run(final IProgressMonitor monitor)
     {
         Plugin.logInfo("ExportJob starts");
         monitor.beginTask(Messages.ExportJobTask, IProgressMonitor.UNKNOWN);
@@ -242,20 +250,22 @@ class ExportJob extends Job
     }
     
     /** The very first entry in the export file, the overall header. */
-    private void printHeader(PrintWriter out)
+    @SuppressWarnings("nls")
+	private void printHeader(final PrintWriter out)
     {
+    	// A bit of a hack since we re-use messages from the GUI
         out.println(Messages.Comment + Messages.DataBrowserExport);
         out.println(Messages.Comment + Messages.Version + Plugin.Version);
         out.println(Messages.Comment + Messages.StartLabel + start);
         out.println(Messages.Comment + Messages.EndLabel + end);
         if (source == Source.Average)
-            out.println(Messages.Comment + Messages.SourceLabel + source
-                            + " (" + seconds + ")");  //$NON-NLS-1$//$NON-NLS-2$
+            out.println(NLS.bind(Messages.Comment_Averaging, seconds));
         else
             out.println(Messages.Comment + Messages.SourceLabel + source);
-        out.println(Messages.Comment + Messages.Spreadsheet + ": "+ format_spreadsheet); //$NON-NLS-1$
+        out.println(Messages.Comment + Messages.Spreadsheet + ": "+ format_spreadsheet);
         out.println(Messages.Comment + Messages.IncludeSeverity + format_severity);
-        out.println(Messages.Comment + Messages.FormatLabel + format);
+        out.println(NLS.bind(Messages.Comment_Format, format, precision));
+        out.println(Messages.ExportFileInfo);
     }
     
     /** Dump all the samples for one item.
