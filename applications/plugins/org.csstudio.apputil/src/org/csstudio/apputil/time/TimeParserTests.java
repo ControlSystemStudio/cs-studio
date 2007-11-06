@@ -186,6 +186,19 @@ public class TimeParserTests extends TestCase
         assertEquals("2006/01/29 12:00:00", start_time);
         assertEquals("2006/07/30 00:00:00", end_time);
 
+        // abs, rel==now
+        start = "2006/01/29 12:00:00";
+        end = "now";
+        start_end = new StartEndTimeParser(start, end);
+        start_time = format.format(start_end.getStart().getTime());
+        end_time = format.format(start_end.getEnd().getTime());
+        System.out.println("   " + start + " ... " + end + "\n-> " +
+                           start_time + " ... " + end_time);
+        assertEquals("2006/01/29 12:00:00", start_time);
+        long now = Calendar.getInstance().getTimeInMillis() / 1000;
+        double end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
+        assertEquals(0.0, end_diff_sec, 10.0);
+        
         // rel, rel
         start = "-6h";
         end = "-2h";
@@ -194,10 +207,10 @@ public class TimeParserTests extends TestCase
         end_time = format.format(start_end.getEnd().getTime());
         System.out.println("   " + start + " ... " + end + "\n-> " +
                            start_time + " ... " + end_time);
-        long now = Calendar.getInstance().getTimeInMillis() / 1000;
+        now = Calendar.getInstance().getTimeInMillis() / 1000;
         // Get seconds to 'now'
         double start_diff_sec = now - start_end.getStart().getTimeInMillis()/1000;
-        double end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
+        end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(8*60*60.0, start_diff_sec, 10.0);
         assertEquals(2*60*60.0, end_diff_sec, 10.0);
 

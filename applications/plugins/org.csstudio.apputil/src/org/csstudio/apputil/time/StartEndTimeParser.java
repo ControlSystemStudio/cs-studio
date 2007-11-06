@@ -77,7 +77,11 @@ public class StartEndTimeParser
         }
         else if (rel_start.isAbsolute() && !rel_end.isAbsolute())
         {
-            end = adjust(start, end_specification, rel_end);
+        	// Is it fixed date ... now?
+        	if (rel_end.getRelativeTime().isNow())
+        		end = Calendar.getInstance();
+        	else // Fixed date ... something relative to that date
+        		end = adjust(start, end_specification, rel_end);
             return;
         }
         // else !rel_start.isAbsolute() && !rel_end.isAbsolute()
