@@ -98,7 +98,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 				}
 			}
 			menu.dispose();	
-			shell.setFocus();
+			//shell.setFocus();
 		}
 	}
 	
