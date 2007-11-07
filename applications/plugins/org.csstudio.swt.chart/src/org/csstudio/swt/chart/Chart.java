@@ -30,6 +30,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tracker;
 
 /** Basic chart widget.
@@ -268,6 +269,18 @@ public class Chart extends Canvas
             }    
         });
         
+        // Update ToolTip on mouse hover.
+        // Used to do this in mouseMove, but that
+        // creates too many redraws on Linux, resulting
+        // in a 'tool tip trail' of garbage on the screen.
+        addListener(SWT.MouseHover, new Listener()
+        {
+			public void handleEvent(final Event event)
+			{
+                updateTooltip(event.x, event.y);
+			}
+        });
+
         // Mouse-move: rubber-band if button is down
         addMouseMoveListener(new MouseMoveListener()
         {
@@ -276,7 +289,6 @@ public class Chart extends Canvas
             
             public void mouseMove(final MouseEvent e)
             {
-                updateTooltip(e.x, e.y);
                 if (! mouse_down)
                     return;
                 int dx = e.x - mouse_down_x;
