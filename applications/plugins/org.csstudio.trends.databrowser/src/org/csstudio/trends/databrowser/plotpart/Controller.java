@@ -77,7 +77,10 @@ public class Controller
                 // Only update when really changed...
                 if (model.getEndSpecification().equals(RelativeTime.NOW)
                    && model.getStartSpecification().equals(scroll_start_specification))
+                {
                     model.updateStartEndTime();
+            		gui.setTimeRange(model.getStartTime(), model.getEndTime());
+                }
                 else
                 {
                     if (debug_scroll)
@@ -125,7 +128,10 @@ public class Controller
         }
         
         public void timeRangeChanged()
-        {   // Adjust the x axis to the "current" model time range
+        {
+        	if (controller_changes_xaxis)
+        		return;
+        	// Adjust the x axis to the "current" model time range
         	controller_changes_xaxis = true;
         	try
         	{
