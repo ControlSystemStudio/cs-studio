@@ -816,6 +816,10 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				// calculation in PlotFigure#calculatePlotPoints, otherwise
 				// rounding errors may occur!
 				double dataPointDistance = ((double) this.getBounds().width - 1) / (_data.length - 1);
+				// protect against _data.length < 2
+				if (dataPointDistance > this.getBounds().width - 1 || dataPointDistance < 0) {
+					dataPointDistance = this.getBounds().width - 1;
+				}
 				while (x < this.getBounds().width) {
 					if (index>=_posScaleMarkers.size()) {
 						this.addScaleMarker(index, _posScaleMarkers);
@@ -837,34 +841,26 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				if (_showValues) {
 					width = TEXTWIDTH + _wideness;
 				}
-				double value = (_min > 0) ? _min : 0;
+				
+				TickCalculator tc = new TickCalculator();
+				tc.setMinimumValue(_min);
+				tc.setMaximumValue(_max);
+				tc.setMaximumTickCount(_ySectionCount);
+				
+				double value = tc.getSmallestTick();
+				double distance = tc.getTickDistance();
+				
 				while (value <= _max) {
 					if (index >= _posScaleMarkers.size()) {
 						this.addScaleMarker(index, _posScaleMarkers);
 					}
 					int y = valueToYPos(value);
 					this.setConstraint(_posScaleMarkers.get(index), new Rectangle(0, y, width, TEXTHEIGHT));
-					this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues));
-					value += _increment;
+					this.refreshScaleMarker(_posScaleMarkers.get(index), value, _showValues);
+					value += distance;
 					index++;
 				}
 				this.removeScaleMarkers(index, _posScaleMarkers);
-				if (_showNegativSections) {
-					
-					index = 0;
-					value = 0 - _increment;
-					while (value >= _min) {
-						if (index >= _negScaleMarkers.size()) {
-							this.addScaleMarker(index, _negScaleMarkers);
-						}
-						int y = valueToYPos(value);
-						this.setConstraint(_negScaleMarkers.get(index), new Rectangle(0, y, width, TEXTHEIGHT));
-						this.refreshScaleMarker(_negScaleMarkers.get(index), value, _showValues);
-						value -= _increment;
-						index++;
-					}
-					this.removeScaleMarkers(index, _negScaleMarkers);
-				}
 			}
 		}
 
