@@ -21,6 +21,7 @@
  */
 package org.csstudio.sds.components.model;
 
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.OptionProperty;
@@ -65,6 +66,13 @@ public final class PolylineModel extends AbstractPolyModel {
 				WidgetPropertyCategory.Display, 1, 1, 100));
 		addProperty(PROP_LINE_STYLE, new OptionProperty("Line Style",
 				WidgetPropertyCategory.Display, new String[] {"Solid", "Dash", "Dot", "DashDot", "DashDotDot"}, 0));
+	}
+	
+	@Override
+	protected void markPropertiesAsInvisible() {
+		this.markPropertyAsInvisible(AbstractWidgetModel.PROP_BORDER_COLOR);
+		this.markPropertyAsInvisible(AbstractWidgetModel.PROP_BORDER_WIDTH);
+		this.markPropertyAsInvisible(AbstractWidgetModel.PROP_BORDER_STYLE);
 	}
 	
 	/**
