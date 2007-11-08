@@ -137,8 +137,8 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 */
 	@Override
 	public final void setSize(final int width, final int height) {
-		int targetW = Math.max(10, width);
-		int targetH = Math.max(10, height);
+		int targetW = Math.max(1, width);
+		int targetH = Math.max(1, height);
 		PointList pointList = getPoints();
 		double oldW = pointList.getBounds().width;
 		double oldH = pointList.getBounds().height;
@@ -158,7 +158,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 
 				double newX = topLeftX + (oldRelX * targetW);
 				double newY = topLeftY + (oldRelY * targetH);
-				newPoint = new Point((int) newX, (int) newY);
+				newPoint = new Point(Math.round(newX), Math.round(newY));
 			}
 
 			newPoints.addPoint(newPoint);
