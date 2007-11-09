@@ -55,8 +55,8 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 		waveform.setXSectionCount(model.getXSectionCount());
 		waveform.setYSectionCount(model.getYSectionCount());
 		waveform.setShowValues(model.getShowValues());
-		waveform.setShowLedgerlLines(model.getShowLedgerLines());
-		waveform.setLedgerLineColor(model.getLedgerLineColor());
+		waveform.setShowGridLines(model.getShowLedgerLines());
+		waveform.setGridLinesColor(model.getLedgerLineColor());
 		waveform.setShowConnectionLines(model.getShowConnectionLines());
 		waveform.setConnectionLineColor(model.getConnectionLineColor());
 		waveform.setGraphLineWidth(model.getGraphLineWidth());
@@ -133,11 +133,11 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
-				figure.setShowLedgerlLines((Integer) newValue);
+				figure.setShowGridLines((Integer) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_SHOW_LEDGER_LINES, ledgerLinesHandler);
+		setPropertyChangeHandler(WaveformModel.PROP_SHOW_GRID_LINES, ledgerLinesHandler);
 		// show scale
 		IWidgetPropertyChangeHandler scaleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -159,7 +159,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_Y_SCALE_SECTION_COUNT, ySectionHandler);
+		setPropertyChangeHandler(WaveformModel.PROP_Y_AXIS_MAX_TICKMARKS, ySectionHandler);
 		// x-axis section count
 		IWidgetPropertyChangeHandler xSectionHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -170,7 +170,7 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_X_SCALE_SECTION_COUNT, xSectionHandler);
+		setPropertyChangeHandler(WaveformModel.PROP_X_AXIS_MAX_TICKMARKS, xSectionHandler);
 		// show connection lines
 		IWidgetPropertyChangeHandler connectionLinesHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -251,10 +251,10 @@ public final class WaveformEditPart extends AbstractWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				WaveformFigure figure = (WaveformFigure) refreshableFigure;
-				figure.setLedgerLineColor((RGB) newValue);
+				figure.setGridLinesColor((RGB) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(WaveformModel.PROP_LEDGER_LINE_COLOR, ledgerColorHandler);		
+		setPropertyChangeHandler(WaveformModel.PROP_GRID_LINE_COLOR, ledgerColorHandler);		
 	}
 }

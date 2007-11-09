@@ -70,9 +70,9 @@ public final class WaveformModel extends AbstractWidgetModel {
 	public static final String PROP_SHOW_SCALE = "show_scale"; //$NON-NLS-1$
 
 	/**
-	 * Property ID for the help lines.
+	 * Property ID for the grid lines property.
 	 */
-	public static final String PROP_SHOW_LEDGER_LINES = "show_ledger_lines"; //$NON-NLS-1$
+	public static final String PROP_SHOW_GRID_LINES = "show_ledger_lines"; //$NON-NLS-1$
 
 	/**
 	 * Property ID for the point-lines.
@@ -95,19 +95,19 @@ public final class WaveformModel extends AbstractWidgetModel {
 	public static final String PROP_CONNECTION_LINE_COLOR = "connection_lines_color"; //$NON-NLS-1$
 
 	/**
-	 * Property ID for the color of the ledger lines.
+	 * Property ID for the color of the grid lines.
 	 */
-	public static final String PROP_LEDGER_LINE_COLOR = "ledger_lines_color"; //$NON-NLS-1$
+	public static final String PROP_GRID_LINE_COLOR = "ledger_lines_color"; //$NON-NLS-1$
 	
 	/**
-	 * Property ID for the color of the ledger lines.
+	 * Property ID for the maximum number of tickmarks to show on the y-axis.
 	 */
-	public static final String PROP_Y_SCALE_SECTION_COUNT = "y_scale_section_count"; //$NON-NLS-1$
+	public static final String PROP_Y_AXIS_MAX_TICKMARKS = "y_axis_max_tickmarks"; //$NON-NLS-1$
 	
 	/**
-	 * Property ID for the color of the ledger lines.
+	 * Property ID for the maximum number of tickmarks to show on the x-axis.
 	 */
-	public static final String PROP_X_SCALE_SECTION_COUNT = "x_scale_section_count"; //$NON-NLS-1$
+	public static final String PROP_X_AXIS_MAX_TICKMARKS = "x_axis_max_tickmarks"; //$NON-NLS-1$
 	
 	/**
 	 * The ID of the transparent property.
@@ -118,7 +118,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * The display options (0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both).
 	 */
 	private static final String[] DISPLAY_OPTIONS = new String[] { "None",
-			"Vertical", "Horizontal", "Both" };
+			"X-axis", "Y-axis", "Both" };
 
 	/**
 	 * Constructor.
@@ -145,7 +145,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 						33.0, 44.0, 22.0, 3.0, 25.0, 4.0 }));
 		addProperty(PROP_SHOW_SCALE, new OptionProperty("Scale",
 				WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
-		addProperty(PROP_SHOW_LEDGER_LINES, new OptionProperty("Ledger lines",
+		addProperty(PROP_SHOW_GRID_LINES, new OptionProperty("Grid lines",
 				WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
 		addProperty(PROP_SHOW_CONNECTION_LINES, new BooleanProperty(
 				"Show connection lines", WidgetPropertyCategory.Display, false));
@@ -154,7 +154,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 		addProperty(PROP_CONNECTION_LINE_COLOR, new ColorProperty(
 				"Color connection line", WidgetPropertyCategory.Display,
 				new RGB(255, 100, 100)));
-		addProperty(PROP_LEDGER_LINE_COLOR, new ColorProperty(
+		addProperty(PROP_GRID_LINE_COLOR, new ColorProperty(
 				"Color ledger lines", WidgetPropertyCategory.Display, new RGB(
 						210, 210, 210)));
 		addProperty(PROP_MIN, new DoubleProperty(
@@ -165,10 +165,10 @@ public final class WaveformModel extends AbstractWidgetModel {
 				"Automatic Scaling", WidgetPropertyCategory.Display, false));
 		addProperty(PROP_SHOW_VALUES, new BooleanProperty(
 				"Show values", WidgetPropertyCategory.Display,false));
-		addProperty(PROP_Y_SCALE_SECTION_COUNT, new IntegerProperty(
-				"Y-Section count",WidgetPropertyCategory.Display,4));
-		addProperty(PROP_X_SCALE_SECTION_COUNT, new IntegerProperty(
-				"X-Section count",WidgetPropertyCategory.Display,4));
+		addProperty(PROP_Y_AXIS_MAX_TICKMARKS, new IntegerProperty(
+				"Y-axis max. number of tickmarks",WidgetPropertyCategory.Display,10));
+		addProperty(PROP_X_AXIS_MAX_TICKMARKS, new IntegerProperty(
+				"X-axis max. number of tickmarks",WidgetPropertyCategory.Display,10));
 		addProperty(PROP_GRAPH_LINE_WIDTH, new IntegerProperty(
 				"Graph line width",WidgetPropertyCategory.Display,1,1,100));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background", 
@@ -234,7 +234,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * @return RGB The RGB for the color of the ledger lines
 	 */
 	public RGB getLedgerLineColor() {
-		return (RGB) getProperty(PROP_LEDGER_LINE_COLOR).getPropertyValue();
+		return (RGB) getProperty(PROP_GRID_LINE_COLOR).getPropertyValue();
 	}
 
 	/**
@@ -261,7 +261,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * @return int 0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
 	 */
 	public int getShowLedgerLines() {
-		return (Integer) getProperty(PROP_SHOW_LEDGER_LINES).getPropertyValue();
+		return (Integer) getProperty(PROP_SHOW_GRID_LINES).getPropertyValue();
 	}
 
 	/**
@@ -300,7 +300,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * 				The count of sections on the y-axis
 	 */
 	public int getYSectionCount() {
-		return (Integer) getProperty(PROP_Y_SCALE_SECTION_COUNT)
+		return (Integer) getProperty(PROP_Y_AXIS_MAX_TICKMARKS)
 				.getPropertyValue();
 	}
 	
@@ -310,7 +310,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 * 				The count of sections on the x-axis
 	 */
 	public int getXSectionCount() {
-		return (Integer) getProperty(PROP_X_SCALE_SECTION_COUNT)
+		return (Integer) getProperty(PROP_X_AXIS_MAX_TICKMARKS)
 				.getPropertyValue();
 	}
 	

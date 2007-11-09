@@ -48,7 +48,7 @@ import org.eclipse.swt.graphics.RGB;
 /**
  * A simple waveform figure.
  * 
- * @author Sven Wende, Kai Meyer
+ * @author Sven Wende, Kai Meyer, Joerg Rathlev
  * @version $Revision$
  * 
  */
@@ -67,22 +67,25 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 
 	/**
 	 * The width of the area that is reserved for the axis labels to the left
-	 * of the Y axis.
+	 * of the y-axis.
 	 */
 	private static final int TEXTWIDTH = 46;
 
 	/**
-	 * Show vertical.
+	 * Constant value which represents that a scale or grid lines should be
+	 * shown for the x-axis.
 	 */
-	private static final int SHOW_VERTICAL = 1;
+	private static final int SHOW_X_AXIS = 1;
 
 	/**
-	 * Show vertical.
+	 * Constant value which represents that a scale or grid lines should be
+	 * shown for the y-axis.
 	 */
-	private static final int SHOW_HORIZONTAL = 2;
+	private static final int SHOW_Y_AXIS = 2;
 
 	/**
-	 * Show both.
+	 * Constant value which represents that a scale or grid lines should be
+	 * shown for both axes.
 	 */
 	private static final int SHOW_BOTH = 3;
 
@@ -147,9 +150,12 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private int _scaleWideness = 10;
 
 	/**
-	 * An int, representing in which way the ledger lines should be drawn.
+	 * The axes for which grid lines are drawn.
+	 * @see #SHOW_X_AXIS
+	 * @see #SHOW_Y_AXIS
+	 * @see #SHOW_BOTH
 	 */
-	private int _showLedgerLines = 0;
+	private int _showGridLines = 0;
 
 	/**
 	 * A boolean, which indicates, if the lines from point to point should be
@@ -168,24 +174,24 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private boolean _autoScale = false;
 
 	/**
-	 * The vertical scale of this waveform.
+	 * The scale for the x-axis.
 	 */
-	private Scale _verticalScale;
+	private Scale _xAxisScale;
 
 	/**
-	 * The horizontal scale of this waveform.
+	 * The scale for the y-axis.
 	 */
-	private Scale _horizontalScale;
+	private Scale _yAxisScale;
 
 	/**
-	 * The vertical ledger scale.
+	 * The scale for x-axis grid lines.
 	 */
-	private Scale _verticalLedgerScale;
+	private Scale _xAxisGridLines;
 
 	/**
-	 * The horizontal ledger scale.
+	 * The scale for y-axis grid lines.
 	 */
-	private Scale _horizontalLedgerScale;
+	private Scale _yAxisGridLines;
 
 	/**
 	 * The graph of this waveform.
@@ -203,14 +209,14 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private IBorderEquippedWidget _borderAdapter;
 	
 	/**
-	 * The count of sections on the y-axis.
+	 * The maximum number of tickmarks to show on the y-axis.
 	 */
-	private int _ySectionCount = 4;
+	private int _yAxisMaxTickmarks = 10;
 	
 	/**
-	 * The count of sections on the x-axis.
+	 * The maximum number of tickmarks to show on the x-axis.
 	 */
-	private int _xSectionCount = 4;
+	private int _xAxisMaxTickmarks = 10;
 
 	/**
 	 * Standard constructor.
@@ -218,37 +224,34 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	public WaveformFigure() {
 		_data = new double[0];
 		this.setLayoutManager(new XYLayout());
-		_verticalLedgerScale = new Scale();
-		_verticalLedgerScale.setHorizontalOrientation(false);
-		_verticalLedgerScale.setSectionLength(20);
-		_verticalLedgerScale.setShowNegativeSections(true);
-		_verticalLedgerScale.setShowValues(false);
-		_verticalLedgerScale.setForegroundColor(ColorConstants.lightGray);
-		this.add(_verticalLedgerScale);
-		_horizontalLedgerScale = new Scale();
-		_horizontalLedgerScale.setHorizontalOrientation(true);
-		_horizontalLedgerScale.setSectionLength(50);
-		_horizontalLedgerScale.setShowNegativeSections(false);
-		_horizontalLedgerScale.setShowValues(false);
-		_horizontalLedgerScale.setForegroundColor(ColorConstants.lightGray);
-		this.add(_horizontalLedgerScale);
-		_verticalScale = new Scale();
-		_verticalScale.setHorizontalOrientation(false);
-		_verticalScale.setSectionLength(20);
-		_verticalScale.setShowNegativeSections(true);
-		_verticalScale.setShowValues(_showValues);
-		_verticalScale.setAlignment(true);
-		_verticalScale.setForegroundColor(this.getForegroundColor());
-		this.add(_verticalScale);
-		_horizontalScale = new Scale();
-		_horizontalScale.setHorizontalOrientation(true);
-		_horizontalScale.setSectionLength(50);
-		_horizontalScale.setShowNegativeSections(false);
-		_horizontalScale.setShowFirstMarker(false);
-		_horizontalScale.setShowValues(_showValues);
-		_horizontalScale.setAlignment(false);
-		_horizontalScale.setForegroundColor(this.getForegroundColor());
-		this.add(_horizontalScale);
+		
+		_yAxisGridLines = new Scale();
+		_yAxisGridLines.setHorizontalOrientation(false);
+		_yAxisGridLines.setShowValues(false);
+		_yAxisGridLines.setForegroundColor(ColorConstants.lightGray);
+		this.add(_yAxisGridLines);
+		
+		_xAxisGridLines = new Scale();
+		_xAxisGridLines.setHorizontalOrientation(true);
+		_xAxisGridLines.setShowValues(false);
+		_xAxisGridLines.setForegroundColor(ColorConstants.lightGray);
+		this.add(_xAxisGridLines);
+		
+		_yAxisScale = new Scale();
+		_yAxisScale.setHorizontalOrientation(false);
+		_yAxisScale.setShowValues(_showValues);
+		_yAxisScale.setAlignment(true);
+		_yAxisScale.setForegroundColor(this.getForegroundColor());
+		this.add(_yAxisScale);
+		
+		_xAxisScale = new Scale();
+		_xAxisScale.setHorizontalOrientation(true);
+		_xAxisScale.setShowFirstMarker(false);
+		_xAxisScale.setShowValues(_showValues);
+		_xAxisScale.setAlignment(false);
+		_xAxisScale.setForegroundColor(this.getForegroundColor());
+		this.add(_xAxisScale);
+		
 		_plotFigure = new PlotFigure();
 		this.add(_plotFigure);
 
@@ -311,52 +314,52 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		_zeroLevel = this.valueToYPos(0.0);
 		int verticalScaleWidth = 0;
 		
-		if (_showScale == SHOW_VERTICAL || _showScale == SHOW_BOTH) {
+		if (_showScale == SHOW_Y_AXIS || _showScale == SHOW_BOTH) {
 			verticalScaleWidth = _scaleWideness;
 			if (_showValues) {
 				verticalScaleWidth = verticalScaleWidth + TEXTWIDTH;
 			}
-			this.setConstraint(_verticalScale, new Rectangle(0, 0,
+			this.setConstraint(_yAxisScale, new Rectangle(0, 0,
 					verticalScaleWidth, _plotBounds.height+TEXTHEIGHT));
-			_verticalScale.setIncrement((_max-_min)/_ySectionCount);
+			_yAxisScale.setIncrement((_max-_min)/_yAxisMaxTickmarks);
 		} else {
-			this.setConstraint(_verticalScale, DEFAULT_CONSTRAINT);
+			this.setConstraint(_yAxisScale, DEFAULT_CONSTRAINT);
 		}
 		
-		if (_showScale == SHOW_HORIZONTAL || _showScale == SHOW_BOTH) {
-			if (_showScale == SHOW_HORIZONTAL) {
-				this.setConstraint(_horizontalScale, new Rectangle(
+		if (_showScale == SHOW_X_AXIS || _showScale == SHOW_BOTH) {
+			if (_showScale == SHOW_X_AXIS) {
+				this.setConstraint(_xAxisScale, new Rectangle(
 						verticalScaleWidth, _zeroLevel - (_scaleWideness/2)+1,
 						_plotBounds.width, _scaleWideness+TEXTHEIGHT));	
 			} else {
-				this.setConstraint(_horizontalScale, new Rectangle(
+				this.setConstraint(_xAxisScale, new Rectangle(
 						verticalScaleWidth, _zeroLevel - (_scaleWideness/2)+1 + TEXTHEIGHT/2,
 						_plotBounds.width, _scaleWideness+TEXTHEIGHT));
 			}
 
-			double d = ((double)_data.length)/Math.max(1, _xSectionCount);
-			_horizontalScale.setIncrement(d);
+			double d = ((double)_data.length)/Math.max(1, _xAxisMaxTickmarks);
+			_xAxisScale.setIncrement(d);
 		} else {
-			this.setConstraint(_horizontalScale, DEFAULT_CONSTRAINT);
+			this.setConstraint(_xAxisScale, DEFAULT_CONSTRAINT);
 		}
 
-		if (_showLedgerLines == SHOW_HORIZONTAL	|| _showLedgerLines == SHOW_BOTH) {
-			this.setConstraint(_verticalLedgerScale, new Rectangle(
+		if (_showGridLines == SHOW_Y_AXIS	|| _showGridLines == SHOW_BOTH) {
+			this.setConstraint(_yAxisGridLines, new Rectangle(
 					verticalScaleWidth, 0, _plotBounds.width, _plotBounds.height+TEXTHEIGHT));
-			_verticalLedgerScale.setWideness(_plotBounds.width);
-			_verticalLedgerScale.setIncrement((_max-_min)/_ySectionCount);
+			_yAxisGridLines.setWideness(_plotBounds.width);
+			_yAxisGridLines.setIncrement((_max-_min)/_yAxisMaxTickmarks);
 		} else {
-			this.setConstraint(_verticalLedgerScale, DEFAULT_CONSTRAINT);
+			this.setConstraint(_yAxisGridLines, DEFAULT_CONSTRAINT);
 		}
 		
-		if (_showLedgerLines == SHOW_VERTICAL || _showLedgerLines == SHOW_BOTH) {
-			this.setConstraint(_horizontalLedgerScale, new Rectangle(
+		if (_showGridLines == SHOW_X_AXIS || _showGridLines == SHOW_BOTH) {
+			this.setConstraint(_xAxisGridLines, new Rectangle(
 					verticalScaleWidth, TEXTHEIGHT/2, _plotBounds.width, _plotBounds.height));
-			double d = ((double)_data.length)/_xSectionCount;
-			_horizontalLedgerScale.setIncrement(d);
-			_horizontalLedgerScale.setWideness(_plotBounds.height);
+			double d = ((double)_data.length)/_xAxisMaxTickmarks;
+			_xAxisGridLines.setIncrement(d);
+			_xAxisGridLines.setWideness(_plotBounds.height);
 		} else {
-			this.setConstraint(_horizontalLedgerScale, DEFAULT_CONSTRAINT);
+			this.setConstraint(_xAxisGridLines, DEFAULT_CONSTRAINT);
 		}
 		
 		this.setConstraint(_plotFigure, _plotBounds);
@@ -372,7 +375,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	private Rectangle calculatePlotBounds() {
 		Rectangle figureBounds = this.getBounds().getCopy();
 		figureBounds.crop(this.getInsets());
-		if (_showScale == SHOW_VERTICAL || _showScale == SHOW_BOTH) {
+		if (_showScale == SHOW_Y_AXIS || _showScale == SHOW_BOTH) {
 			int width = _scaleWideness;
 			if (_showValues) {
 				width += TEXTWIDTH;
@@ -487,13 +490,16 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 
 	/**
-	 * Sets in which way the help lines should be drawn.
+	 * Sets the axes for which grid lines should be displayed.
 	 * 
-	 * @param showLedgerLines
-	 *            0 = None; 1 = Vertical; 2 = Horizontal; 3 = Both
+	 * @param showGridLines a value representing for which axes grid lines
+	 * should be displayed.
+	 * @see #SHOW_X_AXIS
+	 * @see #SHOW_Y_AXIS
+	 * @see #SHOW_BOTH
 	 */
-	public void setShowLedgerlLines(final int showLedgerLines) {
-		_showLedgerLines = showLedgerLines;
+	public void setShowGridLines(final int showGridLines) {
+		_showGridLines = showGridLines;
 		this.refreshConstraints();
 	}
 
@@ -556,15 +562,15 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	}
 
 	/**
-	 * Sets the color for the ledger lines.
+	 * Sets the color for the grid lines.
 	 * 
 	 * @param lineRGB
 	 *            The RGB-value for the color
 	 */
-	public void setLedgerLineColor(final RGB lineRGB) {
-		_verticalLedgerScale.setForegroundColor(CustomMediaFactory
+	public void setGridLinesColor(final RGB lineRGB) {
+		_yAxisGridLines.setForegroundColor(CustomMediaFactory
 				.getInstance().getColor(lineRGB));
-		_horizontalLedgerScale.setForegroundColor(CustomMediaFactory
+		_xAxisGridLines.setForegroundColor(CustomMediaFactory
 				.getInstance().getColor(lineRGB));
 	}
 	
@@ -576,8 +582,8 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 */
 	public void setShowValues(final boolean showValues) {
 		_showValues = showValues;
-		_verticalScale.setShowValues(showValues);
-		_horizontalScale.setShowValues(showValues);
+		_yAxisScale.setShowValues(showValues);
+		_xAxisScale.setShowValues(showValues);
 		this.refreshConstraints();
 	}
 	
@@ -587,7 +593,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * 			The count of sections on the y-axis
 	 */
 	public void setYSectionCount(final int ySectionCount) {
-		_ySectionCount = ySectionCount;
+		_yAxisMaxTickmarks = ySectionCount;
 		this.refreshConstraints();
 	}
 	
@@ -597,7 +603,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 * 			The count of sections on the x-axis
 	 */
 	public void setXSectionCount(final int xSectionCount) {
-		_xSectionCount = xSectionCount;
+		_xAxisMaxTickmarks = xSectionCount;
 		this.refreshConstraints();
 	}
 	
@@ -625,7 +631,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		double scaling = plotHeight / dataRange;
 		
 		// _max - value calculates the distance of the value to the plot's
-		// upper edge. Since the Y axis goes from top to bottom, this is
+		// upper edge. Since the y-axis goes from top to bottom, this is
 		// exactly what we need.
 		return (int) Math.round((_max - value) * scaling);
 	}
@@ -739,10 +745,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 	 */
 	private final class Scale extends RectangleFigure {
 		/**
-		 * The length of this Scale.
-		 */
-		private double _sectionLength;
-		/**
 		 * The direction of this Scale.
 		 */
 		private boolean _isHorizontal;
@@ -750,10 +752,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		 * The Alignment for the Scalemarkers.
 		 */
 		private boolean _isTopLeft;
-		/**
-		 * True, if the negativ sections should be draan, false otherwise.
-		 */
-		private boolean _showNegativSections = false;
 		/**
 		 * The lenght of the lines.
 		 */
@@ -798,7 +796,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		 * Refreshes the Constraints.
 		 */
 		private void refreshConstraints() {
-			if (_sectionLength==0 || this.getBounds().height==0 || this.getBounds().width==0) {
+			if (this.getBounds().height==0 || this.getBounds().width==0) {
 				_posScaleMarkers.clear();
 				_negScaleMarkers.clear();
 				this.removeAll();
@@ -833,7 +831,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				this.removeScaleMarkers(index, _posScaleMarkers);
 				
 				// Note: negative scale markers are not supported by this
-				// figure for the X axis because the axis always starts from
+				// figure for the x-axis because the axis always starts from
 				// zero.
 				
 			} else {
@@ -845,7 +843,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 				TickCalculator tc = new TickCalculator();
 				tc.setMinimumValue(_min);
 				tc.setMaximumValue(_max);
-				tc.setMaximumTickCount(_ySectionCount);
+				tc.setMaximumTickCount(_yAxisMaxTickmarks);
 				
 				double value = tc.getSmallestTick();
 				double distance = tc.getTickDistance();
@@ -922,16 +920,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 		}
 		
 		/**
-		 * Sets the length of one section of this Scale.
-		 * 
-		 * @param length
-		 *            The lenght of one section of this Scale
-		 */
-		public void setSectionLength(final double length) {
-			_sectionLength = Math.round(length);
-		}
-
-		/**
 		 * Sets the orientation of this Scale.
 		 * 
 		 * @param isHorizontal
@@ -955,17 +943,6 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			this.refreshConstraints();
 		}
 		
-		/**
-		 * Sets if the negative sections should be drawn.
-		 * 
-		 * @param showNegativ
-		 *            True, if the negativ sections should be drawn, false
-		 *            otherwise.
-		 */
-		public void setShowNegativeSections(final boolean showNegativ) {
-			_showNegativSections = showNegativ;
-		}
-
 		/**
 		 * Sets the wideness of this scale.
 		 * 
@@ -1114,7 +1091,7 @@ public final class WaveformFigure extends Panel implements IAdaptable {
 			 * 
 			 * @param isHorizontal
 			 *            <code>true</code> if the scale is a horizontal scale
-			 *            (i.e. along the x axis), <code>false</code> if it is
+			 *            (i.e. along the x-axis), <code>false</code> if it is
 			 *            a vertical scale.
 			 */
 			public void setHorizontalOrientation(final boolean isHorizontal) {
