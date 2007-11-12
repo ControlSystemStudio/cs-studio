@@ -132,7 +132,6 @@ public class PVContext
             if (debug)
                 System.out.println("Re-using CA channel " + name);
         }
-        jca_context.flushIO();
         return channel_ref;
     }
     
