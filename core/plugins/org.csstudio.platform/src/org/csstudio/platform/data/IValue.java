@@ -25,6 +25,7 @@ package org.csstudio.platform.data;
  *  @see ILongValue
  *  @see IStringValue
  *  @see IEnumeratedValue
+ *  @see IMinMaxDoubleValue
  *  @author Kay Kasemir
  */
 public interface IValue
