@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.internal.dialogs;
+package org.csstudio.platform.ui.composites;
 
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.core.resources.IContainer;
@@ -249,7 +249,7 @@ public final class ResourceAndContainerGroup implements Listener {
 	private void createContents(final Composite parent,
 			final String resourceLabelString, final int heightHint) {
 
-		Font font = parent.getFont();
+//		Font font = parent.getFont();
 		// server name group
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -257,7 +257,7 @@ public final class ResourceAndContainerGroup implements Listener {
 		layout.marginHeight = 0;
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		composite.setFont(font);
+//		composite.setFont(font);
 
 		// container group
 		if (heightHint == SWT.DEFAULT) {
@@ -277,11 +277,11 @@ public final class ResourceAndContainerGroup implements Listener {
 		nameGroup.setLayout(layout);
 		nameGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.GRAB_HORIZONTAL));
-		nameGroup.setFont(font);
+//		nameGroup.setFont(font);
 
 		Label label = new Label(nameGroup, SWT.NONE);
 		label.setText(resourceLabelString);
-		label.setFont(font);
+//		label.setFont(font);
 
 		// resource name entry field
 		_resourceNameField = new Text(nameGroup, SWT.BORDER);
@@ -290,7 +290,7 @@ public final class ResourceAndContainerGroup implements Listener {
 				| GridData.GRAB_HORIZONTAL);
 		data.widthHint = SIZING_TEXT_FIELD_WIDTH;
 		_resourceNameField.setLayoutData(data);
-		_resourceNameField.setFont(font);
+//		_resourceNameField.setFont(font);
 		_resourceNameField.setBackground(FieldAssistColors
 				.getRequiredFieldBackgroundColor(_resourceNameField));
 

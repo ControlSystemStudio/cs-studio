@@ -1,4 +1,4 @@
-package org.csstudio.platform.ui.views;
+package org.csstudio.platform.ui.composites;
 
 import java.util.ArrayList;
 import java.util.List;

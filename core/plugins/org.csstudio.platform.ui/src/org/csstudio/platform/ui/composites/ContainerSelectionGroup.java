@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.internal.dialogs;
+package org.csstudio.platform.ui.composites;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -343,10 +343,10 @@ public final class ContainerSelectionGroup extends Composite {
 
 		Label label = new Label(this, SWT.WRAP);
 		label.setText(message);
-		label.setFont(getFont());
+//		label.setFont(getFont());
 
 		createTreeViewer(heightHint);
-		Dialog.applyDialogFont(this);
+//		Dialog.applyDialogFont(this);
 	}
 	
 	/**

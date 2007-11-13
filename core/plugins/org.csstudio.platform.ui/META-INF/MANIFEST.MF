@@ -18,6 +18,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-Vendor: Desy
 Export-Package: org.csstudio.platform.ui,
+ org.csstudio.platform.ui.composites,
  org.csstudio.platform.ui.dialogs,
  org.csstudio.platform.ui.dnd,
  org.csstudio.platform.ui.dnd.rfc,

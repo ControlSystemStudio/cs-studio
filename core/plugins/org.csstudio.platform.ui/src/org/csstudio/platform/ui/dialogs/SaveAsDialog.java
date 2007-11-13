@@ -22,7 +22,7 @@
 package org.csstudio.platform.ui.dialogs;
 
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
-import org.csstudio.platform.ui.internal.dialogs.ResourceAndContainerGroup;
+import org.csstudio.platform.ui.composites.ResourceAndContainerGroup;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
