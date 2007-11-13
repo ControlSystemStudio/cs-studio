@@ -106,6 +106,13 @@
             icon="icons/actionbutton.gif"
             name="Action Button"
             typeId="org.csstudio.sds.components.ActionButton"/>
+      <widgetModelFactory
+            class="org.csstudio.sds.components.internal.model.TimerModelFactory"
+            description="A Timer widget"
+            icon="icons/timer.gif"
+            name="Timer"
+            typeId="org.csstudio.sds.components.Timer">
+      </widgetModelFactory>
    </extension>
 
 </plugin>

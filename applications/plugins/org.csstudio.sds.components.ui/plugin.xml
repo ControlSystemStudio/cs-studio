@@ -33,6 +33,10 @@
      <widgetEditPart
            class="org.csstudio.sds.components.ui.internal.editparts.ActionButtonEditPart"
            typeId="org.csstudio.sds.components.ActionButton"/>
+     <widgetEditPart
+           class="org.csstudio.sds.components.ui.internal.editparts.TimerEditPart"
+           typeId="org.csstudio.sds.components.Timer">
+     </widgetEditPart>
   </extension>
   <extension
         point="org.csstudio.sds.ui.graphicalFeedbackFactories">
