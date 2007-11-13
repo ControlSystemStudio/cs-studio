@@ -187,7 +187,7 @@ public final class ChooseWorkspaceDialog extends TitleAreaDialog {
 		if (!_suppressAskAgain) {
 			createShowDialogButton(composite);
 		}
-		Dialog.applyDialogFont(composite);
+//		Dialog.applyDialogFont(composite);
 		return composite;
 	}
 
