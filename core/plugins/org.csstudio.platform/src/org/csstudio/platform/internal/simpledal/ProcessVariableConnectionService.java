@@ -18,7 +18,6 @@ import org.epics.css.dal.LongProperty;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.context.ConnectionEvent;
 import org.epics.css.dal.context.LinkAdapter;
-import org.epics.css.dal.context.LinkListener;
 import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.spi.PropertyFactory;
 
@@ -27,7 +26,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 
 	private Thread _cleanupThread;
 
-	ProcessVariableConnectionService() {
+	public ProcessVariableConnectionService() {
 		_dalConnectors = new HashMap<IProcessVariableAddress, DalConnector>();
 
 		_cleanupThread = new CleanupThread();
@@ -65,16 +64,17 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 		doRegister(pv, DoubleProperty.class, listener);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void doRegister(IProcessVariableAddress pv,
-			Class<? extends DynamicValueProperty> propertyType,
-			IProcessVariableValueListener processVariableValueListener)
+			Class<? extends DynamicValueProperty<?>> propertyType,
+			IProcessVariableValueListener<?> processVariableValueListener)
 			throws Exception {
 		if (!_dalConnectors.containsKey(pv)) {
 			// create a new connector
 			final DalConnector connector = new DalConnector();
 
 			// get or create a real DAL property
-			final DynamicValueProperty dynamicValueProperty = createProperty(
+			final DynamicValueProperty<?> dynamicValueProperty = createProperty(
 					pv, propertyType);
 
 			// add the connector as dynamic value listener on the DAL property
@@ -102,7 +102,7 @@ public class ProcessVariableConnectionService implements IProcessVariableConnect
 
 		// connect the connector to the process variable listener
 		DalConnector connector = _dalConnectors.get(pv);
-		connector.addProcessVariableValueListener(processVariableValueListener);
+		connector.addProcessVariableValueListener((IProcessVariableValueListener<Double>) processVariableValueListener);
 
 		assert connector.getDalProperty() != null;
 		assert connector.getProcessVariableAddress() != null;
