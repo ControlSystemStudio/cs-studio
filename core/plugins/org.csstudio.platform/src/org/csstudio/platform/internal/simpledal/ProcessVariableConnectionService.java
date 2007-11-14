@@ -1,6 +1,7 @@
 package org.csstudio.platform.internal.simpledal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -168,8 +169,11 @@ public class ProcessVariableConnectionService implements
 
 	private CleanupThread _cleanupThread;
 
+	private final Object _lock = new Object();
+
 	public ProcessVariableConnectionService() {
-		_dalConnectors = new HashMap<IProcessVariableAddress, DalConnector>();
+		_dalConnectors = Collections
+				.synchronizedMap(new HashMap<IProcessVariableAddress, DalConnector>());
 
 		_cleanupThread = new CleanupThread();
 	}
@@ -246,9 +250,13 @@ public class ProcessVariableConnectionService implements
 			Class<? extends DynamicValueProperty<?>> propertyType,
 			IProcessVariableValueListener<?> processVariableValueListener)
 			throws Exception {
-		if (!_dalConnectors.containsKey(pv)) {
+		DalConnector connector;
+
+		connector = _dalConnectors.get(pv);
+
+		if (connector == null) {
 			// create a new connector
-			final DalConnector connector = new DalConnector();
+			connector = new DalConnector();
 
 			// get or create a real DAL property
 			final DynamicValueProperty<?> dynamicValueProperty = createProperty(
@@ -271,15 +279,21 @@ public class ProcessVariableConnectionService implements
 			synchronized (_dalConnectors) {
 				assert connector.getDalProperty() != null;
 				assert connector.getProcessVariableAddress() != null;
+				// connect the connector to the process variable listener
+				connector
+						.addProcessVariableValueListener((IProcessVariableValueListener<Double>) processVariableValueListener);
 				_dalConnectors.put(pv, connector);
+
+				// Attention: At the end of synchronized a Thread.yield(9 is
+				// called, by this you must add the listener to the connector
+				// before leaving the synchronized part else the connector will
+				// be disposeable and will be removed by the clean up thread!
 			}
+		} else {
+			// connect the connector to the process variable listener
+			connector
+					.addProcessVariableValueListener((IProcessVariableValueListener<Double>) processVariableValueListener);
 		}
-
-		// connect the connector to the process variable listener
-		DalConnector connector = _dalConnectors.get(pv);
-		connector
-				.addProcessVariableValueListener((IProcessVariableValueListener<Double>) processVariableValueListener);
-
 		assert connector.getDalProperty() != null;
 		assert connector.getProcessVariableAddress() != null;
 	}

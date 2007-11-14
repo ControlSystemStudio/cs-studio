@@ -22,12 +22,24 @@ class DalConnector implements DynamicValueListener, LinkListener {
 
 	private List<WeakReference<IProcessVariableValueListener>> _weakListenerReferences;
 
+	private Object _lastReceivedValue;
+
+	private ConnectionState _lastConnectionState;
+
 	public DalConnector() {
 		_weakListenerReferences = new ArrayList<WeakReference<IProcessVariableValueListener>>();
 	}
 
 	public void addProcessVariableValueListener(
 			IProcessVariableValueListener<Double> listener) {
+
+		if( _lastConnectionState != null ) {
+			listener.connectionStateChanged(_lastConnectionState);
+		}
+		if( _lastReceivedValue != null ) {
+			listener.valueChanged((Double)_lastReceivedValue);
+		}
+		
 		_weakListenerReferences
 				.add(new WeakReference<IProcessVariableValueListener>(listener));
 	}
@@ -81,6 +93,11 @@ class DalConnector implements DynamicValueListener, LinkListener {
 	}
 
 	public void valueChanged(final DynamicValueEvent event) {
+		forwardNewValue(event);
+	}
+
+	private synchronized void forwardNewValue(final DynamicValueEvent event) {
+		_lastReceivedValue = event.getValue();
 		execute(new IRunnable() {
 			public void doRun(IProcessVariableValueListener simpleDalListener) {
 				simpleDalListener.valueChanged(event.getValue());
@@ -89,11 +106,7 @@ class DalConnector implements DynamicValueListener, LinkListener {
 	}
 
 	public void valueUpdated(final DynamicValueEvent event) {
-		execute(new IRunnable() {
-			public void doRun(IProcessVariableValueListener simpleDalListener) {
-				simpleDalListener.valueChanged(event.getValue());
-			}
-		});
+		forwardNewValue(event);
 	}
 
 	public void connected(final ConnectionEvent e) {
@@ -124,7 +137,8 @@ class DalConnector implements DynamicValueListener, LinkListener {
 		forwardConnectionEvent(e);
 	}
 
-	private void forwardConnectionEvent(final ConnectionEvent event) {
+	private synchronized void forwardConnectionEvent(final ConnectionEvent event) {
+		_lastConnectionState = ConnectionState.translate(event.getState());
 		execute(new IRunnable() {
 			public void doRun(IProcessVariableValueListener simpleDalListener) {
 				org.epics.css.dal.context.ConnectionState state = event
