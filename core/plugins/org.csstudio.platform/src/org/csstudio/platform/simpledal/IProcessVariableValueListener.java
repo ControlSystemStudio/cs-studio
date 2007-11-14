@@ -7,6 +7,8 @@ package org.csstudio.platform.simpledal;
  * 
  * @param <E>
  *            The Java-type of received values.
+ *            
+ * TODO Introduce an use adapter-class!
  */
 public interface IProcessVariableValueListener<E> {
 	/**

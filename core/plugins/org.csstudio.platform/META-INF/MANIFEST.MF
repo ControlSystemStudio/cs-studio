@@ -45,6 +45,7 @@ Export-Package: org.apache.log4j,
  org.csstudio.platform.model.pvs,
  org.csstudio.platform.securestore,
  org.csstudio.platform.security,
+ org.csstudio.platform.simpledal,
  org.csstudio.platform.startupservice,
  org.csstudio.platform.statistic,
  org.csstudio.platform.util
