@@ -28,7 +28,7 @@ public class TimeAxis extends XAxis
         double range = Math.abs(high - low);
         // The Java time stamp has a resolution of milliseconds,
         // so anything finer than that doesn't show up on the screen.
-        // Furthermore, we have to prevent 'distance == 0' calulations
+        // Furthermore, we have to prevent 'distance == 0' calculations
         // in the TimeTick computation.
         // So we don't allow any zoom finer than a few milliseconds.
         // There's also a problem with displaying huge ranges,
@@ -39,13 +39,13 @@ public class TimeAxis extends XAxis
     }
 
     @Override
-    public void paint(PaintEvent e)
+    public void paint(final PaintEvent e)
     {
         if (!region.intersects(e.x, e.y, e.width, e.height))
             return;
         if (Chart.debug)
             System.out.println("paint axis '" + getLabel() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-        GC gc = e.gc;
+        final GC gc = e.gc;
         // Axis and Tick marks
         computeTicks(gc);
         gc.drawLine(region.x, region.y, region.x + region.width-1, region.y);

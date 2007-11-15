@@ -99,6 +99,7 @@ public class TracePainter
                     // Immediately set x/y of the 'previous' point.
                     x0 = xaxis.getScreenCoord(sample.getX());
                     y0 = yaxis.getScreenCoord(y);
+
                     new_line = false;
                     if (have_min_max)
                     {   // Show and remember min/max of this sample

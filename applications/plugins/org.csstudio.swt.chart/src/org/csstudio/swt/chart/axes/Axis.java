@@ -10,7 +10,6 @@ import org.eclipse.swt.graphics.Rectangle;
  *  Handles the basic screen-to-value transformation.
  *  <p>
  *  @author Kay Kasemir
- *
  */
 public class Axis
 {
@@ -47,13 +46,14 @@ public class Axis
     protected String label;
     
     /** Constructor. */
-    Axis(boolean horizontal, String label, Ticks ticks)
+    Axis(final boolean horizontal, final String label, final Ticks ticks)
     {
         this(horizontal, label, ticks, new LinearTransform());
     }
     
     /** Constructor. */
-    Axis(boolean horizontal, String label, Ticks ticks, ITransform transform)
+    Axis(final boolean horizontal, final String label, final Ticks ticks,
+         final ITransform transform)
     {
         this.horizontal = horizontal;
         this.transform = transform;
@@ -67,7 +67,7 @@ public class Axis
     }
     
     /** @return Returns the label. */
-    public final String getLabel()
+    final public String getLabel()
     {
         return label;
     }
@@ -80,15 +80,27 @@ public class Axis
      *  
      *  @return Returns the value transformed in screen coordinates.
      */
-    public final int getScreenCoord(double value)
+    final public int getScreenCoord(final double value)
     {
+        // Map undefined values to bottom of range
         if (Double.isInfinite(value))
             return low_screen;
+        // Catch values beyond screen range, because the SWT clipping
+        // doesn't work when we are way beyond the screen range.
+        // In principle, we should use the (x,y) coordinates of the line ends
+        // inside and outside the screen range and determine the intersection
+        // with the screen. 
+        // As long as we only perform staircase plots, this simple
+        // mapping of a single x or y coordinate onto the screen border works.
+        if (value <= low_value)
+            return low_screen;
+        if (value >= high_value)
+            return high_screen;
         return (int)(transform.transform(value)+0.5);
     }
     
     /** @return Returns screen coordinate transformed into a value. */
-    final public double getValue(int coord)
+    final public double getValue(final int coord)
     {
         return transform.inverse(coord);
     }
@@ -109,7 +121,7 @@ public class Axis
      *  @return <code>true</code> if this actually did something.
      */
     @SuppressWarnings("nls")
-    public boolean setValueRange(double low, double high)
+    public boolean setValueRange(final double low, final double high)
     {
         // Any change at all?
         if (low == low_value  &&  high == high_value)
@@ -131,7 +143,8 @@ public class Axis
      *  @param region The on-screen region to set.
      *  @see #setScreenRange(int, int)
      */
-    public void setRegion(int x, int y, int width, int height)
+    public void setRegion(final int x, final int y,
+                          final int width, final int height)
     {
         region.x = x;
         region.y = y;
@@ -145,7 +158,7 @@ public class Axis
     }
 
     /** Update the screen coordinate range of the axis. */
-    protected void setScreenRange(int low, int high)
+    protected void setScreenRange(final int low, final int high)
     {
         dirty_ticks = true;
         low_screen = low;
