@@ -35,7 +35,9 @@ class DalConnector implements DynamicValueListener, LinkListener {
 
 		if( _lastConnectionState != null ) {
 			listener.connectionStateChanged(_lastConnectionState);
-		}
+		} /*else {
+			listener.connectionStateChanged(ConnectionState.DISCONNECTED);
+		}*/
 		if( _lastReceivedValue != null ) {
 			listener.valueChanged((Double)_lastReceivedValue);
 		}
@@ -70,26 +72,27 @@ class DalConnector implements DynamicValueListener, LinkListener {
 	}
 
 	public void conditionChange(DynamicValueEvent event) {
+		// nothing to do!
 	}
 
 	public void errorResponse(DynamicValueEvent event) {
-
+		// nothing to do!
 	}
 
 	public void timelagStarts(DynamicValueEvent event) {
-
+		// nothing to do!
 	}
 
 	public void timelagStops(DynamicValueEvent event) {
-
+		// nothing to do!
 	}
 
 	public void timeoutStarts(DynamicValueEvent event) {
-
+		// nothing to do!
 	}
 
 	public void timeoutStops(DynamicValueEvent event) {
-
+		// nothing to do!
 	}
 
 	public void valueChanged(final DynamicValueEvent event) {
