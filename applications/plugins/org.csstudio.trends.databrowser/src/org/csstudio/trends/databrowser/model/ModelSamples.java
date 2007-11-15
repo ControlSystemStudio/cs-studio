@@ -72,8 +72,8 @@ public class ModelSamples implements IModelSamples // , ChartSampleSequence
     /** Add samples from an archive. */
     void addArchiveSamples(final String source, final IValue samples[])
     {
-        // To prevent archived samples from overlapping 'live' data,
-        // use only archived samples until reaching the 'border':
+        // Prevent archived samples from overlapping 'live' data;
+        // only archived samples only until reaching the 'border'.
         ITimestamp border;
         synchronized (this)
         {
@@ -94,7 +94,7 @@ public class ModelSamples implements IModelSamples // , ChartSampleSequence
     }
     
     /** Marks the end of the 'live' buffer as currently disconnected. */
-    void markCurrentlyDisconnected(ITimestamp now)
+    void markCurrentlyDisconnected(final ITimestamp now)
     {
         // Add one(!) last 'end' sample.
         synchronized (this)
@@ -108,22 +108,31 @@ public class ModelSamples implements IModelSamples // , ChartSampleSequence
                 if (last != null && last.equals(Messages.LivePVDisconnected))
                     return;
             }
-            IDoubleValue disconnected = ValueFactory.createDoubleValue(now,
+            final IDoubleValue disconnected = ValueFactory.createDoubleValue(
+                            now,
                             ValueFactory.createInvalidSeverity(),
                             Messages.LivePVDisconnected,
                             dummy_numeric_meta,
                             IValue.Quality.Original,
                             new double[] { Double.NEGATIVE_INFINITY });
-            
-            live_samples.add(disconnected, Messages.LiveSample);
+            addLiveSample(disconnected);
         }
     }
     
     /** Add most recent timestamp/value */
-    void addLiveSample(IValue value)
+    void addLiveSample(final IValue value)
     {
         synchronized (this)
         {
+            // Prevent live data with old time stamps from going back
+            // into archived data.
+            final int N = archive_samples.size();
+            if (N > 0)
+            {
+                final IValue last_arch = archive_samples.get(N-1).getSample();
+                if (last_arch.getTime().isGreaterThan(value.getTime()))
+                        return;
+            }
             live_samples.add(value, Messages.LiveSample);
         }
     }
