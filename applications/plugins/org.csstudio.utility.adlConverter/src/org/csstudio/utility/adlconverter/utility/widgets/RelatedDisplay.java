@@ -1,0 +1,173 @@
+/*
+ * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+/*
+ * $Id$
+ */
+package org.csstudio.utility.adlconverter.utility.widgets;
+
+import java.util.HashMap;
+
+import org.csstudio.sds.components.model.MenuButtonModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.sds.model.properties.ActionData;
+import org.csstudio.sds.model.properties.ActionType;
+import org.csstudio.sds.model.properties.actions.CommitValueWidgetAction;
+import org.csstudio.sds.model.properties.actions.WidgetAction;
+import org.csstudio.sds.model.properties.actions.WidgetActionFactory;
+import org.csstudio.utility.adlconverter.utility.ADLHelper;
+import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.csstudio.utility.adlconverter.utility.widgetparts.RelatedDisplayItem;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
+import org.epics.css.dal.context.ConnectionState;
+
+/**
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 20.09.2007
+ */
+public class RelatedDisplay extends Widget {
+
+    /**
+     * If MenuButton used as Menu, control contain the dynamics Descriptor for the actionData
+     * with the Rule=rule.actionData.
+     */
+    private DynamicsDescriptor _control;
+
+    /**
+     * @param relatedDisplay ADLWidget that describe the RelatedDisplay.
+     * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
+     */
+    public RelatedDisplay(final ADLWidget relatedDisplay) throws WrongADLFormatException {
+        super(relatedDisplay);
+        String clr=null;
+        String bclr=null;
+        String label = null;
+        int n =0;
+        for (ADLWidget obj : relatedDisplay.getObjects()) {
+            if(obj.isType("display["+n+"]")){
+                if(n==0){
+                    label=new RelatedDisplayItem(obj, _widget).getLabel();
+                }else{
+                    new RelatedDisplayItem(obj, _widget);
+                }
+                n++;
+            }else if(obj.isType("sensitive")){
+                //TODO: RelatedDisplay(Menu)-->sensitive
+            }
+        }
+        if(getControl()!=null){
+            
+//          <property type="sds.action" id="actionData">                                        
+//          <actionData />                                                                    
+//          <dynamicsDescriptor ruleId="rule.actionData">                                     
+//            <inputChannel name="$channel$[enumDescriptions], enum" type="java.lang.Object" />
+//            <outputChannel name="local://out" type="java.lang.Object" />                    
+//          </dynamicsDescriptor>                                                             
+//          </property>
+            _control = new DynamicsDescriptor("rule.actionData");
+            _control.addInputChannel(new ParameterDescriptor("$channel$[enumDescriptions], enum", Object.class));
+            _control.setOutputChannel(new ParameterDescriptor("local://out", Object.class));
+
+            // Der ConnectionState wird an die Acrtion Data gesetzt das macht nun überhaupt kein sinn!
+//            HashMap<ConnectionState, Object> values = new HashMap<ConnectionState, Object>();
+//            
+//            CommitValueWidgetAction action = (CommitValueWidgetAction) ActionType.COMMIT_VALUE
+//            .getActionFactory().createWidgetAction();
+//
+//            action.getProperty(CommitValueWidgetAction.PROP_VALUE)
+//            .setPropertyValue(ColorConstants.white.getRGB());
+//            ActionData actionData = new ActionData();
+//            actionData .addAction(action);
+//
+//           
+//            values.put(ConnectionState.INITIAL, actionData);//ColorConstants.white.getRGB());
+//            _control.setConnectionStateDependentPropertyValues(values);
+        }
+        
+        for (String obj : relatedDisplay.getBody()) {
+            String[] row = obj.trim().split("=");
+            if(row.length!=2){
+                throw new WrongADLFormatException("wrong parameter");
+            }
+
+            if(row[0].equals("clr")){
+                clr = row[1];
+            }else if(row[0].equals("bclr")){
+                bclr = row[1];
+            }else if(row[0].equals("label")){
+                label=row[1].replaceAll("\"", "");
+            }else if(row[0].equals("visual")){
+//                  TODO: RelatedDisplay-->visual  
+            }else if(row[0].equals("clrmod")){
+//                  TODO: RelatedDisplay-->clrmod  
+            }else{                
+                throw new WrongADLFormatException("wrong parameter: "+row[0]);
+            }
+        }
+        if(clr!=null){
+            _widget.setForegroundColor(ADLHelper.getRGB(clr));
+        }
+        if(bclr!=null){
+            _widget.setBackgroundColor(ADLHelper.getRGB(bclr));
+        }
+        _widget.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
+        
+        if(getControl()!=null){ // if Label text Dyn?
+            // <dynamicsDescriptor ruleId="directConnection">               
+            //   <inputChannel name="local://out" type="java.lang.Object" />
+            // </dynamicsDescriptor>
+            DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection");
+            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("local://out",Object.class));
+            _widget.setDynamicsDescriptor(MenuButtonModel.PROP_LABEL, dynamicsDescriptor);
+        }
+
+        if(_control!=null){
+            _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_ACTIONDATA, _control);
+//            elem.addContent(_control);
+        }
+        
+        // <property type="sds.integer" id="border.width" value="1" />
+        _widget.setPropertyValue(MenuButtonModel.PROP_BORDER_WIDTH, 1);
+        // <property type="sds.option" id="border.style">
+        //   <option id="2" />
+        // </property>
+        _widget.setPropertyValue(MenuButtonModel.PROP_BORDER_STYLE, 3);
+        int h = ADLHelper.getFontSize("Times New Roman",label, getObject().getHeight(), getObject().getWidth(),"0");
+        _widget.setPropertyValue(MenuButtonModel.PROP_FONT, new FontData("Times New Roman",h,SWT.NONE));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final void setWidgetType() {
+        _widget = createWidgetModel("org.csstudio.sds.components.MenuButton");
+    }
+
+}
