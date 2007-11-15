@@ -1,7 +1,5 @@
 package org.csstudio.alarm.table.expertSearch;
 
-import java.lang.annotation.Inherited;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -84,6 +82,9 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
             this._type = type;
         }
         
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public String toString(){
             return _type;

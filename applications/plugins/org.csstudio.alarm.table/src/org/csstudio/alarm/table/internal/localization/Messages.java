@@ -131,6 +131,8 @@ public class Messages extends NLS {
 	public static String LogViewArchive_user;
 
 	public static String LogViewArchive_week;
+	
+	public static String LogViewArchive_count;
 
 	public static String newColumnName;
 

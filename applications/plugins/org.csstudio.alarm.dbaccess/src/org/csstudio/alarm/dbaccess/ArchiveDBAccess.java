@@ -132,14 +132,14 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		        "between to_date('"+from.get(GregorianCalendar.YEAR)+
 		           "-"+(from.get(GregorianCalendar.MONTH)+1)+
 		           "-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
-		           " "+from.get(GregorianCalendar.HOUR)+
+		           " "+from.get(GregorianCalendar.HOUR_OF_DAY)+
 		           ":"+from.get(GregorianCalendar.MINUTE)+
 		           ":"+from.get(GregorianCalendar.SECOND)+
 		           "', 'YYYY-MM-DD HH24:MI:SS') "+
 		       "and to_date('"+to.get(GregorianCalendar.YEAR)+
 		           "-"+(to.get(GregorianCalendar.MONTH)+1)+
 		           "-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
-		           " "+to.get(GregorianCalendar.HOUR)+
+		           " "+to.get(GregorianCalendar.HOUR_OF_DAY)+
 		           ":"+to.get(GregorianCalendar.MINUTE)+
 		           ":"+to.get(GregorianCalendar.SECOND)+
 		           "', 'YYYY-MM-DD HH24:MI:SS') "+
@@ -161,14 +161,14 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 					 "between to_date('"+from.get(GregorianCalendar.YEAR)+
 						"-"+(from.get(GregorianCalendar.MONTH)+1)+
 						"-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
-						" "+from.get(GregorianCalendar.HOUR)+
+						" "+from.get(GregorianCalendar.HOUR_OF_DAY)+
 						":"+from.get(GregorianCalendar.MINUTE)+
 						":"+from.get(GregorianCalendar.SECOND)+
 						"', 'YYYY-MM-DD HH24:MI:SS') "+
 					 "and to_date('"+to.get(GregorianCalendar.YEAR)+
 							"-"+(to.get(GregorianCalendar.MONTH)+1)+
 							"-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
-							" "+to.get(GregorianCalendar.HOUR)+
+							" "+to.get(GregorianCalendar.HOUR_OF_DAY)+
 							":"+to.get(GregorianCalendar.MINUTE)+
 							":"+to.get(GregorianCalendar.SECOND)+
 							"', 'YYYY-MM-DD HH24:MI:SS') "+

@@ -51,12 +51,14 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
@@ -102,11 +104,16 @@ public class LogViewArchive extends ViewPart implements Observer {
     /** The default / last filter. */
     private String _filter= ""; //$NON-NLS-1$
 
-    /** The Answer from the DB */
+    /** 
+     * The Answer from the DB.
+     */
     private DBAnswer _dbAnswer = null;
 
-    /** The Display */
+    /** The Display. */
 	private Display _disp;
+
+	/** The count of results. */
+    private Label _countLabel;
 
     
     public LogViewArchive() {
@@ -169,6 +176,20 @@ public class LogViewArchive extends ViewPart implements Observer {
 		_timeTo.setEditable(false);
 //		timeTo.setText("                              ");
 
+        Group count = new Group(comp, SWT.LINE_SOLID);
+        count.setText(Messages.getString("LogViewArchive_count")); //$NON-NLS-1$
+        count.setLayout(new GridLayout(1, true));
+        gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+        gd.minimumHeight = 60;
+        gd.minimumWidth = 300;
+        count.setLayoutData(gd);
+
+        _countLabel = new Label(count,SWT.RIGHT);
+        gd = new GridData(SWT.FILL,SWT.CENTER,true, false,1,1);
+        _countLabel.setLayoutData(gd);
+        _countLabel.setText("0");
+        
+		
 		_jmsLogTableViewer = new JMSLogTableViewer(parent, getSite(), _columnNames, _jmsMessageList, 3,SWT.SINGLE | SWT.FULL_SELECTION);
 		_jmsLogTableViewer.setAlarmSorting(false);
 		parent.pack();
@@ -198,12 +219,11 @@ public class LogViewArchive extends ViewPart implements Observer {
                 ILogMessageArchiveAccess adba = new ArchiveDBAccess();
                 GregorianCalendar to = new GregorianCalendar();
                 GregorianCalendar from = (GregorianCalendar) to.clone();
-                from.add(GregorianCalendar.HOUR, -24);
+                from.add(GregorianCalendar.HOUR_OF_DAY, -24);
                 showNewTime(from, to);
                 ReadDBJob readDB = new ReadDBJob("DB Reader", 
                 		LogViewArchive.this._dbAnswer, from, to);
                 readDB.schedule();
-                
             }
         });
 
@@ -224,7 +244,7 @@ public class LogViewArchive extends ViewPart implements Observer {
 				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
 				GregorianCalendar to = new GregorianCalendar();
 				GregorianCalendar from = (GregorianCalendar) to.clone();
-				from.add(GregorianCalendar.HOUR, -72);
+				from.add(GregorianCalendar.HOUR_OF_DAY, -72);
 				showNewTime(from, to);
                 ReadDBJob readDB = new ReadDBJob("DB Reader", 
                 		LogViewArchive.this._dbAnswer, from, to);
@@ -246,7 +266,7 @@ public class LogViewArchive extends ViewPart implements Observer {
 			public void widgetSelected(final SelectionEvent e) {
 				GregorianCalendar to = new GregorianCalendar();
 				GregorianCalendar from = (GregorianCalendar) to.clone();
-				from.add(GregorianCalendar.HOUR, -168);
+				from.add(GregorianCalendar.HOUR_OF_DAY, -168);
 				showNewTime(from, to);
                 ReadDBJob readDB = new ReadDBJob("DB Reader", 
                 		LogViewArchive.this._dbAnswer, from, to);
@@ -389,9 +409,11 @@ public class LogViewArchive extends ViewPart implements Observer {
 		}
 		_timeFrom.setText(sdf.format(from.getTime()));
         _fromTime = TimestampFactory.fromCalendar(from);
-		_timeTo.setText(sdf.format(to.getTime()));
-		_timeFrom.getParent().getParent().redraw();
+
+        _timeTo.setText(sdf.format(to.getTime()));
         _toTime = TimestampFactory.fromCalendar(to);
+        // redraw
+        _timeFrom.getParent().getParent().redraw();
 	}
 
 	/** {@inheritDoc} */
@@ -444,8 +466,10 @@ public class LogViewArchive extends ViewPart implements Observer {
                 _jmsMessageList.clearList();
                 _jmsLogTableViewer.refresh();
                 ArrayList<HashMap<String, String>> answer = _dbAnswer.getDBAnswer();
-                if (answer.size() > 0) {
-                	_jmsMessageList.addJMSMessageList(_dbAnswer.getDBAnswer());
+                int size = answer.size();
+                if (size > 0) {
+                    _countLabel.setText(Integer.toString(size));
+                	_jmsMessageList.addJMSMessageList(answer);
                 } else {
             		String[] propertyNames = JmsLogsPlugin.getDefault().getPluginPreferences().
         			getString(LogViewerPreferenceConstants.P_STRING).split(";");
