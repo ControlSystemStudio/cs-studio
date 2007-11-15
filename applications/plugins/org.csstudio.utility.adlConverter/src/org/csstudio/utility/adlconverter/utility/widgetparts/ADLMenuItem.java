@@ -32,6 +32,7 @@ import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.actions.CommitValueWidgetAction;
 import org.csstudio.sds.model.properties.actions.OpenDisplayWidgetAction;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.eclipse.core.runtime.Path;
@@ -80,7 +81,7 @@ public class ADLMenuItem extends WidgetPart{
      * {@inheritDoc}
      */
     final void init(){
-        _path = "/SDS"; //"C:/Helge_Projekte/CSS 3.3 Workspace/SDS/";
+        _path = "/SDS"; //"C:/Helge_Projekte/CSS 3.3 Workspace/SDS/"; //$NON-NLS-1$
     }
 
     /**
@@ -88,26 +89,26 @@ public class ADLMenuItem extends WidgetPart{
      */
     @Override
     final void parseWidgetPart(final ADLWidget menuItem) throws WrongADLFormatException {
-        assert !menuItem.isType("menuItem") :  "This "+menuItem.getType()+" is not a ADL Menu Item";
+        assert !menuItem.isType("menuItem") :  Messages.ADLMenuItem_AssertError_Begin+menuItem.getType()+Messages.ADLMenuItem_AssertError_End; //$NON-NLS-1$
 
         for (String parameter : menuItem.getBody()) {
-            if(parameter.trim().startsWith("//")){
+            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String[] row = parameter.split("=");
+            String[] row = parameter.split("="); //$NON-NLS-1$
 //            if(row.length!=2){
 //                throw new Exception("This "+parameter+" is a wrong ADL Menu Item");
 //            }
-            if(row[0].trim().toLowerCase().equals("label")){
+            if(row[0].trim().toLowerCase().equals("label")){ //$NON-NLS-1$
                 _label=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("type")){
+            }else if(row[0].trim().toLowerCase().equals("type")){ //$NON-NLS-1$
                 _type=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("command")){
+            }else if(row[0].trim().toLowerCase().equals("command")){ //$NON-NLS-1$
                 _command=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("args")){
-                _args=parameter.substring(parameter.indexOf("=")+1).replaceAll("\"","").trim();
+            }else if(row[0].trim().toLowerCase().equals("args")){ //$NON-NLS-1$
+                _args=parameter.substring(parameter.indexOf("=")+1).replaceAll("\"","").trim(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }else {
-                throw new WrongADLFormatException("This "+parameter+" is a wrong ADL Menu Item");
+                throw new WrongADLFormatException(Messages.ADLMenuItem_WrongADLFormatException_Begin+parameter+Messages.ADLMenuItem_WrongADLFormatException_end);
             }
         }
     }
@@ -118,44 +119,44 @@ public class ADLMenuItem extends WidgetPart{
     @Override
     final void generateElements(){
         ActionData actionData = new ActionData();
-        if(_type.equals("\"New Display\"")){
+        if(_type.equals("\"New Display\"")){ //$NON-NLS-1$
             // new Open Shell Action
             OpenDisplayWidgetAction action = (OpenDisplayWidgetAction) ActionType.OPEN_SHELL
             .getActionFactory().createWidgetAction();
             
             //Set the Resource
             action.getProperty(OpenDisplayWidgetAction.PROP_RESOURCE)
-            .setPropertyValue(new Path(_path+_command.replaceAll("\"", "").replace(".adl", ".css-sds")));//TODO: set the correct Path
+            .setPropertyValue(new Path(_path+_command.replaceAll("\"", "").replace(".adl", ".css-sds")));//TODO: set the correct Path //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             actionData.addAction(action);
 
 //            _actionAttribut.addContent(propertyAttribut);
             
-            String[] maps = _args.split(","); // TODO: es werde teilweise mehrere Argumente über geben.  Momenatan wird aber nur das erste ausgewertet.
-            String[] map = maps[0].split("=");
+            String[] maps = _args.split(","); // TODO: es werde teilweise mehrere Argumente über geben.  Momenatan wird aber nur das erste ausgewertet. //$NON-NLS-1$
+            String[] map = maps[0].split("="); //$NON-NLS-1$
             if(map.length==2){
                 Map<String, String> test = new HashMap<String,String>();
-                test.put("param", map[1]);
+                test.put("param", map[1]); //$NON-NLS-1$
                 // Set the aliases
                 action.getProperty(OpenDisplayWidgetAction.PROP_ALIASES)
                 .setPropertyValue(test);
             } else if(map.length==1){
                 //TODO: was ist das für ein parameter? dateiendung = stc.
             } else{
-                System.out.println("Ungültige länge");
+                System.out.println("Ungültige länge"); //$NON-NLS-1$
             }
             action.getProperty(OpenDisplayWidgetAction.PROP_DESCRIPTION)
-            .setPropertyValue(_label.replaceAll("\"",""));
+            .setPropertyValue(_label.replaceAll("\"","")); //$NON-NLS-1$ //$NON-NLS-2$
 
-        }else if(_type.equals("\"System script\"")){
+        }else if(_type.equals("\"System script\"")){ //$NON-NLS-1$
             CommitValueWidgetAction action = (CommitValueWidgetAction) ActionType.COMMIT_VALUE
             .getActionFactory().createWidgetAction();
 
             action.getProperty(CommitValueWidgetAction.PROP_VALUE)
-            .setPropertyValue(new Path(_label.replaceAll("\"","")));
+            .setPropertyValue(new Path(_label.replaceAll("\"",""))); //$NON-NLS-1$ //$NON-NLS-2$
             actionData.addAction(action);
 
             action.getProperty(CommitValueWidgetAction.PROP_DESCRIPTION)
-            .setPropertyValue(new Path(_label.replaceAll("\"","")));
+            .setPropertyValue(new Path(_label.replaceAll("\"",""))); //$NON-NLS-1$ //$NON-NLS-2$
             actionData.addAction(action);
 
         }

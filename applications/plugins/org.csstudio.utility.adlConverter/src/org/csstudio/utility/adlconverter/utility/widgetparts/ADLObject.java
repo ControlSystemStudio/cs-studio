@@ -25,6 +25,7 @@
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
@@ -69,25 +70,25 @@ public class ADLObject extends WidgetPart{
      */
     @Override
     final void parseWidgetPart(final ADLWidget adlObject) throws WrongADLFormatException {
-        assert !adlObject.isType("object") : "This "+adlObject.getType()+" is not a ADLObject";
+        assert !adlObject.isType("object") : Messages.ADLObject_AssertError_Begin+adlObject.getType()+Messages.ADLObject_AssertError_End; //$NON-NLS-1$
         for (String parameter : adlObject.getBody()) {
-            if(parameter.trim().startsWith("//")){
+            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String[] row = parameter.split("=");
+            String[] row = parameter.split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException("This "+parameter+" is a wrong ADLObject");
+                throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Begin+parameter+Messages.ADLObject_WrongADLFormatException_End);
             }
-            if(row[0].trim().toLowerCase().equals("x")){
+            if(row[0].trim().toLowerCase().equals("x")){ //$NON-NLS-1$
                 _x=Integer.parseInt(row[1].trim());
-            }else if(row[0].trim().toLowerCase().equals("y")){
+            }else if(row[0].trim().toLowerCase().equals("y")){ //$NON-NLS-1$
                 _y=Integer.parseInt(row[1].trim());
-            }else if(row[0].trim().toLowerCase().equals("width")){
+            }else if(row[0].trim().toLowerCase().equals("width")){ //$NON-NLS-1$
                 _width=Integer.parseInt(row[1].trim());
-            }else if(row[0].trim().toLowerCase().equals("height")){
+            }else if(row[0].trim().toLowerCase().equals("height")){ //$NON-NLS-1$
                 _height=Integer.parseInt(row[1].trim());
             }else {
-                throw new WrongADLFormatException("This "+parameter+" is a wrong ADLObject parameter");
+                throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLObject_WrongADLFormatException_Parameter_End);
             }
         }
     }

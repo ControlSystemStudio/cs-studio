@@ -29,6 +29,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.actions.CommitValueWidgetAction;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
@@ -55,41 +56,41 @@ public class ActionButton extends Widget {
 //            release_msg="0"
 //            clrmod="discrete"
         for (String obj : actionButton.getBody()) {
-            String[] row = obj.trim().split("=");
+            String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException("wrong parameter");
+                throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+row[0]);
             }
-            if(row[0].equals("type")){
-                if(row[1].contains("toggle")){
+            if(row[0].equals("type")){ //$NON-NLS-1$
+                if(row[1].contains("toggle")){ //$NON-NLS-1$
                     _widget.setPropertyValue(ActionButtonModel.PROP_TOGGLE_BUTTON, true);
                 }else{
                     _widget.setPropertyValue(ActionButtonModel.PROP_TOGGLE_BUTTON, false);
                 }
-            }else if(row[0].equals("label")){
+            }else if(row[0].equals("label")){ //$NON-NLS-1$
 //                    <property type="sds.string" id="label" value="AButton" />
-                _widget.setPropertyValue(ActionButtonModel.PROP_LABEL, row[1].replaceAll("\"", ""));
-            }else if(row[0].equals("press_msg")){
+                _widget.setPropertyValue(ActionButtonModel.PROP_LABEL, row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
+            }else if(row[0].equals("press_msg")){ //$NON-NLS-1$
 ////            <property type="sds.double" id="click_value" value="0.0" /> 
-                _widget.setPropertyValue("click_value", row[1].replaceAll("\"", ""));
+                _widget.setPropertyValue("click_value", row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 CommitValueWidgetAction action = (CommitValueWidgetAction) ActionType.COMMIT_VALUE
                 .getActionFactory().createWidgetAction();
-                action.getProperty(CommitValueWidgetAction.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", ""));
+                action.getProperty(CommitValueWidgetAction.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
                 result.addAction(action);
                 pressIndex = actionIndex++;
-            }else if(row[0].equals("release_msg")){
-                _widget.setPropertyValue("click_value", row[1].replaceAll("\"", ""));
+            }else if(row[0].equals("release_msg")){ //$NON-NLS-1$
+                _widget.setPropertyValue("click_value", row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 CommitValueWidgetAction action = (CommitValueWidgetAction) ActionType.COMMIT_VALUE
                 .getActionFactory().createWidgetAction();
-                action.getProperty(CommitValueWidgetAction.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", ""));
+                action.getProperty(CommitValueWidgetAction.PROP_VALUE).setPropertyValue(row[1].replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
                 result.addAction(action);
                 releasIndex = actionIndex++;
-            }else if(row[0].equals("clrmod")){
+            }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
                 // TODO: ActionButton-->clrmod
-            }else if(row[0].equals("pressed_label")){
+            }else if(row[0].equals("pressed_label")){ //$NON-NLS-1$
                 // TODO: ActionButton-->pressed_label
             }else{                
 
-                throw new WrongADLFormatException("wrong parameter: "+row[0]);
+                throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+row[0]);
             } //polygon have no Parameter
         }
         _widget.setPropertyValue(ActionButtonModel.PROP_ACTION_PRESSED_INDEX, pressIndex);
@@ -103,7 +104,7 @@ public class ActionButton extends Widget {
      */
     @Override
     final void setWidgetType() {
-       _widget = createWidgetModel("org.csstudio.sds.components.ActionButton");
+       _widget = createWidgetModel("org.csstudio.sds.components.ActionButton"); //$NON-NLS-1$
     }
 
 

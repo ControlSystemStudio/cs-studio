@@ -28,6 +28,7 @@ import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -72,13 +73,13 @@ public class ADLSensitive extends WidgetPart {
     void generateElements() {
         if(_chan!=null&&_chan[0].length()>0){
             _postfix = ADLHelper.setChan(_widgetModel,_chan);
-            if(_sensitiveMode!=null && _sensitiveMode.equals("if not zero")){
-                DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero");
-                adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,Double.class));
+            if(_sensitiveMode!=null && _sensitiveMode.equals("if not zero")){ //$NON-NLS-1$
+                DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
+                adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,Double.class)); //$NON-NLS-1$
                 _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
-            }else if(_sensitiveMode!=null && _sensitiveMode.equals("if zero")){
-                DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero");
-                adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,Double.class));
+            }else if(_sensitiveMode!=null && _sensitiveMode.equals("if zero")){ //$NON-NLS-1$
+                DynamicsDescriptor adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
+                adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$"+_postfix,Double.class)); //$NON-NLS-1$
                 _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_ENABLED, adlBooleanDynamicAttribute);
             }
         }
@@ -99,26 +100,26 @@ public class ADLSensitive extends WidgetPart {
      */
     @Override
     final void parseWidgetPart(final ADLWidget sensitive) throws WrongADLFormatException {
-        assert !sensitive.isType("sensitive") :  "This "+sensitive.getType()+" is not a ADL Sensitive Item";
+        assert !sensitive.isType("sensitive") :  Messages.ADLSensitive_AssertError_Begin+sensitive.getType()+Messages.ADLSensitive_AssertError_End; //$NON-NLS-1$
 
         for (String parameter : sensitive.getBody()) {
-            if(parameter.trim().startsWith("//")){
+            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String[] row = parameter.split("=");
+            String[] row = parameter.split("="); //$NON-NLS-1$
 //            if(row.length!=2){
 //                throw new Exception("This "+parameter+" is a wrong ADL Menu Item");
 //            }
-            if(row[0].trim().toLowerCase().equals("chan")){
+            if(row[0].trim().toLowerCase().equals("chan")){ //$NON-NLS-1$
                 _chan=ADLHelper.cleanString(row[1]);
-            }else if(row[0].trim().toLowerCase().equals("sensitive_mode")){
+            }else if(row[0].trim().toLowerCase().equals("sensitive_mode")){ //$NON-NLS-1$
                 _sensitiveMode=ADLHelper.cleanString(row[1])[0];
             }else {
-                throw new WrongADLFormatException("This "+parameter+" is a wrong ADL Sensitive Item");
+                throw new WrongADLFormatException(Messages.ADLSensitive_WrongADLFormatException_Begin+parameter+Messages.ADLSensitive_WrongADLFormatException_End);
             }
         }
         if(_chan==null&&_sensitiveMode!=null){
-            System.out.println("no chan :" + sensitive);
+            System.out.println("no chan :" + sensitive); //$NON-NLS-1$
         }
     }
 

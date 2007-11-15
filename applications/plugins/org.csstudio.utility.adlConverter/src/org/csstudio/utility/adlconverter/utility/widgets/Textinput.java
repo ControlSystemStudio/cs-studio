@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -46,46 +47,46 @@ public class Textinput extends Widget {
     public Textinput(final ADLWidget textInput) throws WrongADLFormatException {
         super(textInput);
         for (String obj : textInput.getBody()) {
-            String[] row = obj.trim().split("=");
+            String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException("wrong parameter");
+                throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException_Parameter_Begin+row[0]);
             }
-            if(row[0].equals("clrmod")){
+            if(row[0].equals("clrmod")){ //$NON-NLS-1$
                 String[] clrmod = ADLHelper.cleanString(row[1]);
-                if(clrmod[0].equals("discrete")&&getControl()!=null){
+                if(clrmod[0].equals("discrete")&&getControl()!=null){ //$NON-NLS-1$
                     getControl().setConnectionState(true);
-                }else if(clrmod[0].equals("alarm")){
+                }else if(clrmod[0].equals("alarm")){ //$NON-NLS-1$
                     //TODO: Textinput-->clrmod(alarm)                    
-                }else if(clrmod[0].equals("static")){
+                }else if(clrmod[0].equals("static")){ //$NON-NLS-1$
                     //TODO: Textinput-->clrmod(static)                 
                 }else{
-                    throw new WrongADLFormatException("wrong or untreated Textinput-->clrmod parameter : "+clrmod[0]);
+                    throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException+clrmod[0]);
                 }
 
-            }else if(row[0].equals("alignment")){
+            }else if(row[0].equals("alignment")){ //$NON-NLS-1$
 //              <property type="sds.option" id="textAlignment">
 //                  <option id="0" />
 //              </property>
                 int id=0;
-                if(row[1].equals("\"North\"")){
+                if(row[1].equals("\"North\"")){ //$NON-NLS-1$
                     id = 1;
-                }else if(row[1].equals("\"East\"")){
+                }else if(row[1].equals("\"East\"")){ //$NON-NLS-1$
                     id = 4;
-                }else if(row[1].equals("\"South\"")){
+                }else if(row[1].equals("\"South\"")){ //$NON-NLS-1$
                     id = 2;
-                }else if(row[1].equals("\"West\"")){
+                }else if(row[1].equals("\"West\"")){ //$NON-NLS-1$
                     id = 3;
-                }else if(row[1].equals("\"NorthEast\"")){
+                }else if(row[1].equals("\"NorthEast\"")){ //$NON-NLS-1$
                     id = 4;
                 }
                 _widget.setPropertyValue(TextInputModel.PROP_TEXT_ALIGNMENT, id);
-            }else if(row[0].equals("format")){
+            }else if(row[0].equals("format")){ //$NON-NLS-1$
                 //TODO: Textinput --> format
-            }else if(row[0].equals("align")){
+            }else if(row[0].equals("align")){ //$NON-NLS-1$
                 //TODO: Textinput --> align
             }else{                
 
-                throw new WrongADLFormatException("wrong parameter: "+row[0]);
+                throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException_Parameter_Begin+row[0]);
             } //polygon have no Parameter
         }
 //        <property type="sds.boolean" id="transparent" value="false" />
@@ -95,14 +96,14 @@ public class Textinput extends Widget {
         //          <inputChannel name="$channel$" type="java.lang.Double" />
         //      </dynamicsDescriptor>
         //  </property>
-        _widget.setPropertyValue(TextInputModel.PROP_INPUT_TEXT, "");
-        String postfix = "";
+        _widget.setPropertyValue(TextInputModel.PROP_INPUT_TEXT, ""); //$NON-NLS-1$
+        String postfix = ""; //$NON-NLS-1$
         if(getMonitor()!=null&&getMonitor().getPostfix()!=null){
             postfix=getMonitor().getPostfix();
         }
 
-        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+postfix,Double.class));
+        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+postfix,Double.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(TextInputModel.PROP_INPUT_TEXT, dynamicsDescriptor);
 //        <property type="sds.option" id="border.style">
 //        <option id="5" />
@@ -115,6 +116,6 @@ public class Textinput extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Textinput");
+        _widget = createWidgetModel("org.csstudio.sds.components.Textinput"); //$NON-NLS-1$
     }
 }

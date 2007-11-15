@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -51,63 +52,63 @@ public class Label extends Widget {
         
         String labelText=null;
         if(getBasicAttribute()!=null){
-            getBasicAttribute().setWidth("0");
+            getBasicAttribute().setWidth("0"); //$NON-NLS-1$
         }
 
         for (String obj : label.getBody()) {
-            String[] row = obj.trim().split("=");
+            String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length<2){
-                throw new WrongADLFormatException("wrong parameter lenght ["+obj+"]");
+                throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+obj+Messages.Label_WrongADLFormatException_Parameter_End);
             }
-            if(row[0].equals("textix")){
+            if(row[0].equals("textix")){ //$NON-NLS-1$
 //              <property type="sds.string" id="value.text" value="CMTB" />
                 String[] textit = ADLHelper.cleanString(row[1]);
                 _widget.setPropertyValue(LabelModel.PROP_TEXTVALUE, textit[1]);
                 labelText = textit[1];
-                if(textit[1].startsWith("$")&&textit.length>2){
-                    _widget.setAliasValue("channel", textit[2]);
+                if(textit[1].startsWith("$")&&textit.length>2){ //$NON-NLS-1$
+                    _widget.setAliasValue("channel", textit[2]); //$NON-NLS-1$
                     _widget.setPrimarPv(textit[2]);
                 }
-            }else if(row[0].equals("alignment")||row[0].equals("align")){
+            }else if(row[0].equals("alignment")||row[0].equals("align")){ //$NON-NLS-1$ //$NON-NLS-2$
 //              <property type="sds.option" id="textAlignment">
 //                  <option id="0" />
 //              </property>
                 int id=0;
-                if(row[1].equals("\"North\"")){
+                if(row[1].equals("\"North\"")){ //$NON-NLS-1$
                     id = 1;
-                }else if(row[1].equals("\"East\"")){
+                }else if(row[1].equals("\"East\"")){ //$NON-NLS-1$
                     id = 4;
-                }else if(row[1].equals("\"South\"")){
+                }else if(row[1].equals("\"South\"")){ //$NON-NLS-1$
                     id = 2;
-                }else if(row[1].equals("\"West\"")||row[1].equals("\"horiz. left\"")){
+                }else if(row[1].equals("\"West\"")||row[1].equals("\"horiz. left\"")){ //$NON-NLS-1$ //$NON-NLS-2$
                     id = 3;
-                }else if(row[1].equals("\"NorthEast\"")||row[1].equals("\"horiz. right\"")){
+                }else if(row[1].equals("\"NorthEast\"")||row[1].equals("\"horiz. right\"")){ //$NON-NLS-1$ //$NON-NLS-2$
                     id = 4;
                 }
                 _widget.setPropertyValue(LabelModel.PROP_TEXT_ALIGN, id);
-            }else if(row[0].equals("clrmod")){
+            }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
                 //TODO: Label-->clrmod (CSS-SDS unterstüzung fehlt!)
-            }else if(row[0].equals("format")){
+            }else if(row[0].equals("format")){ //$NON-NLS-1$
                 //TODO: Label-->format (CSS-SDS unterstüzung fehlt!)
             }else{                
-                throw new WrongADLFormatException("wrong parameter:"+ obj);
+                throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ obj+Messages.Label_WrongADLFormatException_Parameter_End);
             } //polygon have no Parameter
         }
         if(getMonitor()!=null){
-            String postfix = "";
+            String postfix = ""; //$NON-NLS-1$
             if(getMonitor()!=null&&getMonitor().getPostfix()!=null){
                 postfix=getMonitor().getPostfix();
             }
-            DynamicsDescriptor dd = new DynamicsDescriptor("directConnection");
-            dd.addInputChannel(new ParameterDescriptor("$channel$"+postfix+", string",Double.class));
+            DynamicsDescriptor dd = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+            dd.addInputChannel(new ParameterDescriptor("$channel$"+postfix+", string",Double.class)); //$NON-NLS-1$ //$NON-NLS-2$
             _widget.setDynamicsDescriptor(LabelModel.PROP_TEXTVALUE, dd);
 
         }
-        int fontSize = ADLHelper.getFontSize("Times New Roman",labelText, getObject().getHeight(), getObject().getWidth(),"0");
-        _widget.setPropertyValue(LabelModel.PROP_FONT, new FontData("Times New Roman", fontSize, SWT.NONE));
+        int fontSize = ADLHelper.getFontSize("Times New Roman",labelText, getObject().getHeight(), getObject().getWidth(),"0"); //$NON-NLS-1$ //$NON-NLS-2$
+        _widget.setPropertyValue(LabelModel.PROP_FONT, new FontData("Times New Roman", fontSize, SWT.NONE)); //$NON-NLS-1$
         if(getBasicAttribute()==null){
             _widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
-        }else if(label.isType("Text")){
+        }else if(label.isType("Text")){ //$NON-NLS-1$
             _widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, true);
         }
     }
@@ -117,6 +118,6 @@ public class Label extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Label");
+        _widget = createWidgetModel("org.csstudio.sds.components.Label"); //$NON-NLS-1$
     }
 }

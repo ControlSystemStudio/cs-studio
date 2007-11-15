@@ -31,6 +31,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.actions.OpenDisplayWidgetAction;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -77,7 +78,7 @@ public class RelatedDisplayItem extends WidgetPart{
      */
     @Override
     final void init() {
-        _path = "/SDS";//"C:/Helge_Projekte/CSS 3.3 Workspace/SDS/";
+        _path = "/SDS";//"C:/Helge_Projekte/CSS 3.3 Workspace/SDS/"; //$NON-NLS-1$
     }
     /**
      * {@inheritDoc}
@@ -87,23 +88,23 @@ public class RelatedDisplayItem extends WidgetPart{
 //      assert !display.isType("display[n]") : "This "+display.getType()+" is not a ADL displayItem";
       
       for (String parameter : display.getBody()) {
-          if(parameter.trim().startsWith("//")){
+          if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
               continue;
           }
-          String head = parameter.split("=")[0];
+          String head = parameter.split("=")[0]; //$NON-NLS-1$
           String tmp = parameter.substring(head.length()+1);
           String[] row=ADLHelper.cleanString(tmp);
           head = head.trim().toLowerCase();
-          if(head.equals("label")){
+          if(head.equals("label")){ //$NON-NLS-1$
               _label=row[0];
-          }else if(head.equals("name")){
+          }else if(head.equals("name")){ //$NON-NLS-1$
               _name=row[0];
-          }else if(head.equals("args")){
+          }else if(head.equals("args")){ //$NON-NLS-1$
               _args=row;
-          }else if(head.equals("policy")){
+          }else if(head.equals("policy")){ //$NON-NLS-1$
               //TODO: RelatedDisplay --> policy="replace display"
           }else {
-              throw new WrongADLFormatException("This '"+head+"' is a wrong Related Display Item"+parameter);
+              throw new WrongADLFormatException(Messages.RelatedDisplayItem_WrongADLFormatException_Begin+head+Messages.RelatedDisplayItem_WrongADLFormatException_Middle+parameter);
           }
       }
     }
@@ -130,7 +131,7 @@ public class RelatedDisplayItem extends WidgetPart{
         }
         if(_args!=null){
             Map<String, String> map = new HashMap<String, String>();
-            map.put("param", _args[0]);
+            map.put("param", _args[0]); //$NON-NLS-1$
             action.getProperty(OpenDisplayWidgetAction.PROP_ALIASES)
             .setPropertyValue(map);
         }

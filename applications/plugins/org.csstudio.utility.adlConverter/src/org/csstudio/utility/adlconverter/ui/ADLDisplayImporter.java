@@ -31,6 +31,7 @@ import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.layers.Layer;
 import org.csstudio.sds.model.persistence.PersistenceUtil;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.ParserADL;
@@ -96,46 +97,46 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         _displaySave=false;
         _storDisplay = null;
         
-        displayModel.getLayerSupport().addLayer(new Layer("Bargraph","Bargraph"));
+        displayModel.getLayerSupport().addLayer(new Layer(Messages.ADLDisplayImporter_ADLBargraphLayerName,Messages.ADLDisplayImporter_ADLBargraphLayerDes));
         for (ADLWidget strings : root.getObjects()) {
             try {
                 display(strings, displayModel);
-                if(strings.getType().equals("arc")){
+                if(strings.getType().equals("arc")){ //$NON-NLS-1$
                     displayModel.addWidget(new Arc(strings).getElement());
-                }else if(strings.getType().equals("bar")){
+                }else if(strings.getType().equals("bar")){ //$NON-NLS-1$
                     displayModel.addWidget(new Bargraph(strings).getElement());
-                }else if(strings.getType().equals("\"color map\"")){
+                }else if(strings.getType().equals("\"color map\"")){ //$NON-NLS-1$
                         ADLHelper.setColorMap(strings);
                         _colormapSet=true;
-                }else if(strings.getType().equals("composite")){
+                }else if(strings.getType().equals("composite")){ //$NON-NLS-1$
                     displayModel.addWidget(new GroupingContainer(strings).getElement());
-                }else if(strings.getType().equals("indicator")){
+                }else if(strings.getType().equals("indicator")){ //$NON-NLS-1$
                     displayModel.addWidget(new Bargraph(strings).getElement());
-                }else if(strings.getType().equals("menu")){
+                }else if(strings.getType().equals("menu")){ //$NON-NLS-1$
                     displayModel.addWidget(new RelatedDisplay(strings).getElement());
-                }else if(strings.getType().equals("\"message button\"")){
+                }else if(strings.getType().equals("\"message button\"")){ //$NON-NLS-1$
                     displayModel.addWidget(new ActionButton(strings).getElement());
-                }else if(strings.getType().equals("meter")){
+                }else if(strings.getType().equals("meter")){ //$NON-NLS-1$
                     displayModel.addWidget(new Meter(strings).getElement());
-                }else if(strings.getType().equals("oval")){
+                }else if(strings.getType().equals("oval")){ //$NON-NLS-1$
                     displayModel.addWidget(new Ellipse(strings).getElement());
-                }else if(strings.getType().equals("polygon")){
+                }else if(strings.getType().equals("polygon")){ //$NON-NLS-1$
                     displayModel.addWidget(new Polygon(strings).getElement());
-                }else if(strings.getType().equals("polyline")){
+                }else if(strings.getType().equals("polyline")){ //$NON-NLS-1$
                     displayModel.addWidget(new Polyline(strings).getElement());
-                }else if(strings.getType().equals("rectangle")){
+                }else if(strings.getType().equals("rectangle")){ //$NON-NLS-1$
                     displayModel.addWidget(new Rectangle(strings).getElement());
-                }else if(strings.getType().equals("\"related display\"")){
+                }else if(strings.getType().equals("\"related display\"")){ //$NON-NLS-1$
                     displayModel.addWidget(new RelatedDisplay(strings).getElement());
-                }else if(strings.getType().equals("\"strip chart\"")){
+                }else if(strings.getType().equals("\"strip chart\"")){ //$NON-NLS-1$
                     displayModel.addWidget(new Waveform(strings).getElement());
-                }else if(strings.getType().equals("text")){
+                }else if(strings.getType().equals("text")){ //$NON-NLS-1$
                     displayModel.addWidget(new Label(strings).getElement());
-                }else if(strings.getType().equals("\"text update\"")){
+                }else if(strings.getType().equals("\"text update\"")){ //$NON-NLS-1$
                     displayModel.addWidget(new Label(strings).getElement());
-                }else if(strings.getType().equals("\"text entry\"")){
+                }else if(strings.getType().equals("\"text entry\"")){ //$NON-NLS-1$
                     displayModel.addWidget(new Textinput(strings).getElement());
-                }else if(strings.getType().equals("valuator")){
+                }else if(strings.getType().equals("valuator")){ //$NON-NLS-1$
                     displayModel.addWidget(new Valuator(strings).getElement());
                 }
             } catch (Exception e) {
@@ -166,16 +167,16 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
      */
     private void display(final ADLWidget adlWidget, final DisplayModel root) {
         
-        if(adlWidget.getType().startsWith("display")||_displaySave){
+        if(adlWidget.getType().startsWith("display")||_displaySave){ //$NON-NLS-1$
             
             try{
-                if(adlWidget.getType().startsWith("display")&&!_colormapSet&&!_displaySave){
+                if(adlWidget.getType().startsWith("display")&&!_colormapSet&&!_displaySave){ //$NON-NLS-1$
                     _storDisplay=adlWidget;
                     _displaySave=true;
-                }else if(!adlWidget.getType().startsWith("display")&&_colormapSet&&_displaySave){
+                }else if(!adlWidget.getType().startsWith("display")&&_colormapSet&&_displaySave){ //$NON-NLS-1$
                     new Display(_storDisplay, root);
                     _displaySave=false;
-                }else if(adlWidget.getType().startsWith("display")&&_colormapSet&&!_displaySave){
+                }else if(adlWidget.getType().startsWith("display")&&_colormapSet&&!_displaySave){ //$NON-NLS-1$
                     new Display(adlWidget, root);
                 }
             }catch(Exception e){

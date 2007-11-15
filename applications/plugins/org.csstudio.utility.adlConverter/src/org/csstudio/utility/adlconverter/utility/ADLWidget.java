@@ -62,7 +62,7 @@ public class ADLWidget {
      * @param type Widget  type
      */
     public final void setType(final String type){
-       _type = type.replaceAll("\\{", "").trim().toLowerCase(); 
+       _type = type.replaceAll("\\{", "").trim().toLowerCase();  //$NON-NLS-1$ //$NON-NLS-2$
     }
     /**
      * 
@@ -135,11 +135,11 @@ public class ADLWidget {
      */
     @Override
     public final String toString() {
-        String string = "";
+        String string = ""; //$NON-NLS-1$
         if(_parent!=null){
-            string=string.concat(_parent.toString()+"->");
+            string=string.concat(_parent.toString()+"->"); //$NON-NLS-1$
         }
-        string = string.concat(getType()+":"+_objectNr);
+        string = string.concat(getType()+":"+_objectNr); //$NON-NLS-1$
         
         return string;
     }

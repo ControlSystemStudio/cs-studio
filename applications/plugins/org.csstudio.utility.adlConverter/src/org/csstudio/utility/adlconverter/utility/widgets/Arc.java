@@ -25,6 +25,7 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.ArcModel;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
@@ -43,27 +44,27 @@ public class Arc extends Widget {
     public Arc(final ADLWidget arc) throws WrongADLFormatException {
         super(arc);
         for (String obj : arc.getBody()) {
-            String[] row = obj.trim().split("=");
+            String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException("wrong parameter");
+                throw new WrongADLFormatException(Messages.Arc_WrongADLFormatException);
             }
-            if(row[0].equals("begin")){
+            if(row[0].equals("begin")){ //$NON-NLS-1$
 //              <property type="sds.integer" id="start_angle" value="270" />
                 int angle = Integer.parseInt(row[1])/64;
                 _widget.setPropertyValue(ArcModel.PROP_STARTANGLE, Integer.toString(angle));
-            }else if(row[0].equals("path")){
+            }else if(row[0].equals("path")){ //$NON-NLS-1$
 //              <property type="sds.integer" id="angle" value="180" />
                 int angle = Integer.parseInt(row[1])/64;
                 _widget.setPropertyValue(ArcModel.PROP_ANGLE, Integer.toString(angle));
             }else{                
-                throw new WrongADLFormatException("wrong parameter");
+                throw new WrongADLFormatException(Messages.Arc_WrongADLFormatException);
             } 
         }
 
 //          <property type="sds.integer" id="linewidth" value="2" />
         if(getBasicAttribute()!=null&&getBasicAttribute().getWidth()!=null){
             _widget.setPropertyValue(ArcModel.PROP_LINEWIDTH, getBasicAttribute().getWidth());
-            getBasicAttribute().setWidth("0");
+            getBasicAttribute().setWidth("0"); //$NON-NLS-1$
         }
         
     }
@@ -74,6 +75,6 @@ public class Arc extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Arc");
+        _widget = createWidgetModel("org.csstudio.sds.components.Arc"); //$NON-NLS-1$
     }
 }

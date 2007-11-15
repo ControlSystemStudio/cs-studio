@@ -32,6 +32,7 @@ import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.actions.CommitValueWidgetAction;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -104,28 +105,28 @@ public class ADLDynamicAttribute extends WidgetPart{
     @Override
     final void parseWidgetPart(final ADLWidget adlDynamicAttribute) throws WrongADLFormatException {
 
-        assert !adlDynamicAttribute.isType("\"dynamic attribute\"") : "This "+adlDynamicAttribute.getType()+" is not a ADL dynamic Attribute";
+        assert !adlDynamicAttribute.isType("\"dynamic attribute\"") : Messages.ADLDynamicAttribute_AssertError_Begin+adlDynamicAttribute.getType()+Messages.ADLDynamicAttribute_AssertError_End; //$NON-NLS-1$
         
         _bool=false;
         _color=false;
 
         for (String parameter : adlDynamicAttribute.getBody()) {
-            if(parameter.trim().startsWith("//")){
+            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String head = parameter.split("=")[0];
+            String head = parameter.split("=")[0]; //$NON-NLS-1$
             String[] row=ADLHelper.cleanString(parameter.substring(head.length()+1));
             head=head.trim().toLowerCase();
-            if(head.equals("clr")){
+            if(head.equals("clr")){ //$NON-NLS-1$
                 _clr=row[0];
-            }else if(head.equals("vis")){
+            }else if(head.equals("vis")){ //$NON-NLS-1$
                 _vis=row[0];
-            }else if(head.equals("chan")){
+            }else if(head.equals("chan")){ //$NON-NLS-1$
                 _chan=row;
-            }else if(head.equals("colorrule")){
+            }else if(head.equals("colorrule")){ //$NON-NLS-1$
                 _colorRule=row[0];
             }else {
-                throw new WrongADLFormatException("This "+parameter+" is a wrong ADL dynamic Attribute parameter");
+                throw new WrongADLFormatException(Messages.ADLDynamicAttribute_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLDynamicAttribute_WrongADLFormatException_Parameter_End);
             }
         }
     }
@@ -136,27 +137,27 @@ public class ADLDynamicAttribute extends WidgetPart{
     final void generateElements() {
 //        _adlDynamicAttribute= new Element[1];
         if(_chan!=null){
-            if(_vis!=null && _vis.equals("if not zero")){
+            if(_vis!=null && _vis.equals("if not zero")){ //$NON-NLS-1$
                 _bool=true;
-                _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero");
-                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("dal-epics://"+_chan[0],Double.class));
-            }else if(_vis!=null && _vis.equals("if zero")){
+                _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
+                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("dal-epics://"+_chan[0],Double.class)); //$NON-NLS-1$
+            }else if(_vis!=null && _vis.equals("if zero")){ //$NON-NLS-1$
                 _bool=true;
-                _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero");
-                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("dal-epics://"+_chan[0],Double.class));
+                _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
+                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("dal-epics://"+_chan[0],Double.class)); //$NON-NLS-1$
             }else if( _colorRule!=null){
                 _color = true;
             //            <dynamicsDescriptor ruleId="cosyrules.color.aend_dlog">
             //                <inputChannel name="$channel$" type="java.lang.Double" />
             //            </dynamicsDescriptor>
-                _adlColorDynamicAttribute = new DynamicsDescriptor("cosyrules.color."+_colorRule.toLowerCase());
+                _adlColorDynamicAttribute = new DynamicsDescriptor("cosyrules.color."+_colorRule.toLowerCase()); //$NON-NLS-1$
 //                _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$",Double.class));
 //                _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(""));
 
-                if(_chan.length>2&&_chan[2].startsWith("$")){
+                if(_chan.length>2&&_chan[2].startsWith("$")){ //$NON-NLS-1$
                     _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(_chan[2],Double.class));
                 }else{
-                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor("dal-epics://"+_chan[0],Double.class));
+                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor("dal-epics://"+_chan[0],Double.class)); //$NON-NLS-1$
                 }
                 
                 ADLHelper.setConnectionState(_adlColorDynamicAttribute);
@@ -172,10 +173,10 @@ public class ADLDynamicAttribute extends WidgetPart{
 //                _adlColorDynamicAttribute.addContent(inputChannel);
 //            }
             if(_clr!=null){
-                if(_clr.equals("alarm")){
+                if(_clr.equals("alarm")){ //$NON-NLS-1$
                     _color = true;
-                    _adlColorDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_background");
-                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(_chan[0]+".SEVR",Double.class));
+                    _adlColorDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_background"); //$NON-NLS-1$
+                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(_chan[0]+".SEVR",Double.class)); //$NON-NLS-1$
                 }
             }
         }

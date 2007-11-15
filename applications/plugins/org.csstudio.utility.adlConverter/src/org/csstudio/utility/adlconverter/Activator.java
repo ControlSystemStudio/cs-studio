@@ -12,7 +12,7 @@ public class Activator extends AbstractCssUiPlugin{
 	/**
 	 *  The plug-in ID.
 	 */
-	public static final String PLUGIN_ID = "org.csstudio.utility.adlConverter";
+	public static final String PLUGIN_ID = "org.csstudio.utility.adlConverter"; //$NON-NLS-1$
 
 	/** 
      *  The shared instance.

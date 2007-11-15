@@ -53,13 +53,13 @@ public class Valuator extends Widget {
 //          </dynamicsDescriptor>
 //        </property>
         _widget.setPropertyValue(SimpleSliderModel.PROP_MAX, 100);
-        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HOPR", Object.class));
+        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HOPR", Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(SimpleSliderModel.PROP_MAX, dynamicsDescriptor );
 
         _widget.setPropertyValue(SimpleSliderModel.PROP_MIN, 0);
-        dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LOPR", Object.class));
+        dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LOPR", Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(SimpleSliderModel.PROP_MIN, dynamicsDescriptor );
 //        <property type="sds.double" id="increment" value="1.0" />
         _widget.setPropertyValue(SimpleSliderModel.PROP_INCREMENT, 1.0); //TODO: Prüfen ob man den Wert aus dem ADLfile bekommt
@@ -69,14 +69,14 @@ public class Valuator extends Widget {
 //                <outputChannel name="$channel$" type="java.lang.Object" />
 //            </dynamicsDescriptor>
 //        </property>
-        String postfix ="";
+        String postfix =""; //$NON-NLS-1$
         if(getControl()!=null&&getControl().getPostfix()!=null){
             postfix=getControl().getPostfix();
         }
 
         _widget.setPropertyValue(SimpleSliderModel.PROP_VALUE, 50);
-        dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+postfix, Object.class));
+        dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+postfix, Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(SimpleSliderModel.PROP_VALUE, dynamicsDescriptor );
 
     }
@@ -86,6 +86,6 @@ public class Valuator extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.SimpleSlider");
+        _widget = createWidgetModel("org.csstudio.sds.components.SimpleSlider"); //$NON-NLS-1$
     }
 }

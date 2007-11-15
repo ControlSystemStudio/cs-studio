@@ -26,6 +26,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 
 import java.util.ArrayList;
 
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.widgets.ActionButton;
 import org.csstudio.utility.adlconverter.utility.widgets.Arc;
@@ -60,29 +61,29 @@ public class ADLChildren {
     public ADLChildren(final ADLWidget adlChildren) {
         for (ADLWidget strings : adlChildren.getObjects()) {
             try {
-                if(strings.getType().equals("arc")){
+                if(strings.getType().equals("arc")){ //$NON-NLS-1$
                     _childrens.add(new Arc(strings));
-                }else if(strings.getType().equals("bar")){
+                }else if(strings.getType().equals("bar")){ //$NON-NLS-1$
                     _childrens.add(new Bargraph(strings));
-                }else if(strings.getType().equals("composite")){
+                }else if(strings.getType().equals("composite")){ //$NON-NLS-1$
                     _childrens.add(new GroupingContainer(strings));
-                }else if(strings.getType().equals("oval")){
+                }else if(strings.getType().equals("oval")){ //$NON-NLS-1$
                     _childrens.add(new Ellipse(strings));
-                }else if(strings.getType().equals("\"message button\"")){
+                }else if(strings.getType().equals("\"message button\"")){ //$NON-NLS-1$
                     _childrens.add(new ActionButton(strings));
-                }else if(strings.getType().equals("polygon")){
+                }else if(strings.getType().equals("polygon")){ //$NON-NLS-1$
                     _childrens.add(new Polygon(strings));
-                }else if(strings.getType().equals("polyline")){
+                }else if(strings.getType().equals("polyline")){ //$NON-NLS-1$
                     _childrens.add(new Polyline(strings));
-                }else if(strings.getType().equals("rectangle")){
+                }else if(strings.getType().equals("rectangle")){ //$NON-NLS-1$
                     _childrens.add(new Rectangle(strings));
-                }else if(strings.getType().equals("\"related display\"")){
+                }else if(strings.getType().equals("\"related display\"")){ //$NON-NLS-1$
                     _childrens.add(new RelatedDisplay(strings));
-                }else if(strings.getType().equals("\"strip chart\"")){
+                }else if(strings.getType().equals("\"strip chart\"")){ //$NON-NLS-1$
                     _childrens.add(new Waveform(strings));
-                }else if(strings.getType().equals("text")){
+                }else if(strings.getType().equals("text")){ //$NON-NLS-1$
                     _childrens.add(new Label(strings));
-                }else if(strings.getType().equals("\"text update\"")){
+                }else if(strings.getType().equals("\"text update\"")){ //$NON-NLS-1$
                     _childrens.add(new Textinput(strings));
                 }
             } catch (Exception e) {

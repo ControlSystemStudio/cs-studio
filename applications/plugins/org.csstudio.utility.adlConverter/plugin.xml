@@ -5,13 +5,13 @@
          point="org.eclipse.ui.views">
       <category
             id="org.csstudio"
-            name="CSS">
+            name="%category.name.0">
       </category>
       <view
             category="org.csstudio"
             class="org.csstudio.utility.adlconverter.ui.ADLConverterMainView"
             id="org.csstudio.utility.adlconverter.ui.ADLConverterMainView"
-            name="ADL Converter">
+            name="%view.name.0">
       </view>
    </extension>
 

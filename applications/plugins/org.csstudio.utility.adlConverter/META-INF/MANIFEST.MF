@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: AdlConverter Plug-in
+Bundle-Name: %Bundle-Name.0
 Bundle-SymbolicName: org.csstudio.utility.adlConverter;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.utility.adlconverter.Activator
@@ -21,3 +21,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Eclipse-LazyStart: true
 Bundle-ClassPath: bin/,
  .
+Bundle-Localization: plugin

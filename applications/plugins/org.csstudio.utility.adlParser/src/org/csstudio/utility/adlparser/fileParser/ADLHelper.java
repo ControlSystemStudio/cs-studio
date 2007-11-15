@@ -28,6 +28,7 @@ import java.util.HashMap;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
@@ -71,27 +72,27 @@ public final class ADLHelper {
      */
     public static void setColorMap(final ADLWidget colorMap) throws WrongADLFormatException{
         
-        assert !colorMap.isType("\"color map\"") : "This "+colorMap.getType()+" is not a ADL Color Map";
+        assert !colorMap.isType("\"color map\"") : Messages.ADLHelper_AssertError_Begin+colorMap.getType()+Messages.ADLHelper_AssertError_End; //$NON-NLS-1$
 
-        String[] anz = colorMap.getBody().get(0).replaceAll("\\{", "").trim().toLowerCase().split("=");
-        if(!anz[0].equals("ncolors")||anz.length!=2){
-            throw new WrongADLFormatException("This "+colorMap.getBody().get(0)+" is a invalid ADL Color Map string");
+        String[] anz = colorMap.getBody().get(0).replaceAll("\\{", "").trim().toLowerCase().split("="); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if(!anz[0].equals("ncolors")||anz.length!=2){ //$NON-NLS-1$
+            throw new WrongADLFormatException(Messages.ADLHelper_WrongADLFormatException_Begin+colorMap.getBody().get(0)+Messages.ADLHelper_WrongADLFormatException_End);
         }
 
         ADLWidget colors = colorMap.getObjects().get(0); 
-        if(colors.isType("dl_color")){
+        if(colors.isType("dl_color")){ //$NON-NLS-1$
             int i=0;
-            while(colors.isType("dl_color")&&i>=colorMap.getObjects().size()){ 
+            while(colors.isType("dl_color")&&i>=colorMap.getObjects().size()){  //$NON-NLS-1$
                 //TODO: ColorMap --> dl_color
                 colors = colorMap.getObjects().get(i++); 
             }
-        }else if(colors.isType("colors")){
+        }else if(colors.isType("colors")){ //$NON-NLS-1$
             _rgbColor = new RGBColor[Integer.parseInt(anz[1])];
             for(int j=0; j<colors.getBody().size()&&j<_rgbColor.length;j++){
-                _rgbColor[j]=new RGBColor(colors.getBody().get(j).replaceAll(",", "").trim());
+                _rgbColor[j]=new RGBColor(colors.getBody().get(j).replaceAll(",", "").trim()); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }else{
-            throw new WrongADLFormatException("This "+colors.getType()+" is a invalid ADL Color Map string");
+            throw new WrongADLFormatException(Messages.ADLHelper_WrongADLFormatException_Begin+colors.getType()+Messages.ADLHelper_WrongADLFormatException_End);
         }
     }
     
@@ -101,44 +102,44 @@ public final class ADLHelper {
      * @return the cleaned string.
      */
     public static String[] cleanString(final String dirtyString){
-        String delimiter ="";
+        String delimiter =""; //$NON-NLS-1$
         String[] tempString; //0=record, 1=_pid, 2=.LOLO
         String[] cleanString;
         String param=null;
-        delimiter = dirtyString.replaceAll("\"", "").trim(); // use variable delimiter in wrong context.
-        tempString = delimiter.split("[\\._]");
-        delimiter ="";
+        delimiter = dirtyString.replaceAll("\"", "").trim(); // use variable delimiter in wrong context. //$NON-NLS-1$ //$NON-NLS-2$
+        tempString = delimiter.split("[\\._]"); //$NON-NLS-1$
+        delimiter =""; //$NON-NLS-1$
         if(tempString.length<1){
-            cleanString = new String[]{dirtyString,""};
+            cleanString = new String[]{dirtyString,""}; //$NON-NLS-1$
         }else {
             cleanString = new String[tempString.length+1];
-            cleanString[0]="";
-            if(tempString[0].contains("=")){
-                tempString[0]=tempString[0].split("=")[1];
+            cleanString[0]=""; //$NON-NLS-1$
+            if(tempString[0].contains("=")){ //$NON-NLS-1$
+                tempString[0]=tempString[0].split("=")[1]; //$NON-NLS-1$
             }
         }
         for (int i = 0; i < tempString.length; i++) {
-            if(i>tempString.length-2&&dirtyString.contains(".")){
-                 delimiter=".";
+            if(i>tempString.length-2&&dirtyString.contains(".")){ //$NON-NLS-1$
+                 delimiter="."; //$NON-NLS-1$
             }
             String string = tempString[i];
             cleanString[0] = cleanString[0]+ delimiter+string;
             cleanString[i+1]=string;
             if(i==0){
-                 delimiter="_";
+                 delimiter="_"; //$NON-NLS-1$
             }
         }
-        if(cleanString[0].endsWith(".adl")){
-            cleanString[0] = cleanString[0].replaceAll("\\.adl", ".css-sds");
+        if(cleanString[0].endsWith(".adl")){ //$NON-NLS-1$
+            cleanString[0] = cleanString[0].replaceAll("\\.adl", ".css-sds"); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        if(cleanString[1].startsWith("$")){
-            cleanString[1] ="$channel$";
-            param ="$param$";
+        if(cleanString[1].startsWith("$")){ //$NON-NLS-1$
+            cleanString[1] ="$channel$"; //$NON-NLS-1$
+            param ="$param$"; //$NON-NLS-1$
         }
         if(cleanString.length>2){
-            cleanString[1]=cleanString[1]+"_"+cleanString[2];
+            cleanString[1]=cleanString[1]+"_"+cleanString[2]; //$NON-NLS-1$
             if(param!=null){
-                cleanString[2]=param+"_"+cleanString[2];
+                cleanString[2]=param+"_"+cleanString[2]; //$NON-NLS-1$
             }
         }
         if(cleanString.length>3){
@@ -197,17 +198,17 @@ public final class ADLHelper {
      * @return
      */
     public static String setChan(AbstractWidgetModel widgetModel, String[] chan) {
-        String postfix = "";
+        String postfix = ""; //$NON-NLS-1$
         if(chan[0].length()==0){
-            return "";
-        }else if(chan.length>2&&chan[2].startsWith("$")){
-            widgetModel.setAliasValue("channel",chan[2]);
-            widgetModel.setPrimarPv("$param$");
+            return ""; //$NON-NLS-1$
+        }else if(chan.length>2&&chan[2].startsWith("$")){ //$NON-NLS-1$
+            widgetModel.setAliasValue("channel",chan[2]); //$NON-NLS-1$
+            widgetModel.setPrimarPv("$param$"); //$NON-NLS-1$
         }else{
-            widgetModel.setAliasValue("channel", chan[1]);
+            widgetModel.setAliasValue("channel", chan[1]); //$NON-NLS-1$
             widgetModel.setPrimarPv(chan[0]);
         }
-        if(chan.length>3&&chan[chan.length-1].startsWith(".")){
+        if(chan.length>3&&chan[chan.length-1].startsWith(".")){ //$NON-NLS-1$
             postfix = chan[chan.length-1];
         }
 

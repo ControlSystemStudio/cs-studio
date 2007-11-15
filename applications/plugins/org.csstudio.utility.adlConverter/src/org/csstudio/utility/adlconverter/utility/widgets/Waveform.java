@@ -47,6 +47,6 @@ public class Waveform extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Waveform");
+        _widget = createWidgetModel("org.csstudio.sds.components.Waveform"); //$NON-NLS-1$
     }
 }

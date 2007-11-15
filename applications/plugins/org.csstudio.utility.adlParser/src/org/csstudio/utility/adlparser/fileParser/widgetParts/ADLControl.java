@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -87,26 +88,26 @@ public class ADLControl extends WidgetPart{
     @Override
     final void parseWidgetPart(final ADLWidget adlControl) throws WrongADLFormatException {
 
-        assert !adlControl.isType("control") : "This "+adlControl.getType()+" is not a ADL Control";
+        assert !adlControl.isType("control") : Messages.ADLControl_AssertError_Begin+adlControl.getType()+Messages.ADLControl_AssertError_End; //$NON-NLS-1$
 
         for (String parameter : adlControl.getBody()) {
-            if(parameter.trim().startsWith("//")){
+            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String[] row = parameter.split("=");
+            String[] row = parameter.split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException("This "+parameter+" is a wrong ADL Control Attribute");
+                throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Begin+parameter+Messages.ADLControl_WrongADLFormatException_End);
             }
-            if(row[0].trim().toLowerCase().equals("clr")){
+            if(row[0].trim().toLowerCase().equals("clr")){ //$NON-NLS-1$
                 _clr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("bclr")){
+            }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
                 _bclr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("chan")){ // chan and ctrl means both the same. 
+            }else if(row[0].trim().toLowerCase().equals("chan")){ // chan and ctrl means both the same.  //$NON-NLS-1$
                 _chan=ADLHelper.cleanString(row[1]);
-            }else if(row[0].trim().toLowerCase().equals("ctrl")){
+            }else if(row[0].trim().toLowerCase().equals("ctrl")){ //$NON-NLS-1$
                 _chan=ADLHelper.cleanString(row[1]);
             }else {
-                throw new WrongADLFormatException("This "+parameter+" is a wrong ADL Control Attribute parameter");
+                throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLControl_WrongADLFormatException_Parameter_End);
             }
         }
     }
@@ -122,9 +123,9 @@ public class ADLControl extends WidgetPart{
         if(_bclr!=null){
             _widgetModel.setBackgroundColor(ADLHelper.getRGB(_bclr));
             if(_connectionState){
-                DynamicsDescriptor dynDis = new DynamicsDescriptor("rule.null");
-                dynDis.addInputChannel(new ParameterDescriptor("$channel$",Double.class));
-                _widgetModel.setDynamicsDescriptor("color.background", dynDis);
+                DynamicsDescriptor dynDis = new DynamicsDescriptor("rule.null"); //$NON-NLS-1$
+                dynDis.addInputChannel(new ParameterDescriptor("$channel$",Double.class)); //$NON-NLS-1$
+                _widgetModel.setDynamicsDescriptor("color.background", dynDis); //$NON-NLS-1$
             }
         }
         if(_chan!=null){

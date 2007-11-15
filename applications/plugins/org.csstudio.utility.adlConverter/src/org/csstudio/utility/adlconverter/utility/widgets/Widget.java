@@ -97,7 +97,7 @@ public abstract class Widget extends AbstractDisplayImporter{
      */
     private void setDefaults() {
         setWidgetType();
-        _widget.setLayer("");
+        _widget.setLayer(""); //$NON-NLS-1$
         _widget.setEnabled(true);
     }
 
@@ -122,8 +122,8 @@ public abstract class Widget extends AbstractDisplayImporter{
             if(_dynamicAttribute.isColor()){
                 _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, _dynamicAttribute.getColorAdlDynamicAttributes());
                 if(getControl()==null&&getMonitor()==null){
-                    _widget.setAliasValue("channel", "$param$");
-                    _widget.setPrimarPv("$param$");
+                    _widget.setAliasValue("channel", "$param$"); //$NON-NLS-1$ //$NON-NLS-2$
+                    _widget.setPrimarPv("$param$"); //$NON-NLS-1$
                 }
             }
         }
@@ -137,19 +137,19 @@ public abstract class Widget extends AbstractDisplayImporter{
      */
     private void makeObject(final ADLWidget widget) throws WrongADLFormatException {
         for (ADLWidget obj : widget.getObjects()) {
-            if(obj.isType("object")){
+            if(obj.isType("object")){ //$NON-NLS-1$
                 _object = new ADLObject(obj, _widget);
-            }else if(obj.isType("\"basic attribute\"")){
+            }else if(obj.isType("\"basic attribute\"")){ //$NON-NLS-1$
                 _basicAttribute = new ADLBasicAttribute(obj,_widget);
-            }else if(obj.isType("\"dynamic attribute\"")){
+            }else if(obj.isType("\"dynamic attribute\"")){ //$NON-NLS-1$
                 _dynamicAttribute = new ADLDynamicAttribute(obj,_widget);
-            }else if(obj.isType("points")){
+            }else if(obj.isType("points")){ //$NON-NLS-1$
                 _points = new ADLPoints(obj,_widget);
-            }else if(obj.isType("monitor")){
+            }else if(obj.isType("monitor")){ //$NON-NLS-1$
                 _monitor = new ADLMonitor(obj,_widget);
-            }else if(obj.isType("control")){
+            }else if(obj.isType("control")){ //$NON-NLS-1$
                 _control = new ADLControl(obj, _widget);
-            }else if(obj.isType("sensitive")){
+            }else if(obj.isType("sensitive")){ //$NON-NLS-1$
                 _sensitive = new ADLSensitive(obj, _widget);
             } // else{} polygon have no Parameter
         }

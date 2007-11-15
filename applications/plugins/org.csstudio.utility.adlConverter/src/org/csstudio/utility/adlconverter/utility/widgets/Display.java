@@ -25,6 +25,7 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.model.DisplayModel;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -51,29 +52,29 @@ public class Display extends Widget{
     public Display(final ADLWidget display, final DisplayModel root) throws WrongADLFormatException {
         super(display, root);
         for (ADLWidget widget : display.getObjects()) {
-            if(widget.isType("object")){
+            if(widget.isType("object")){ //$NON-NLS-1$
                     _object = new ADLObject(widget,_widget);
                     _object.setHeight(_object.getHeight()+20);
             }else {
-                throw new WrongADLFormatException("This "+widget.getType()+" is a wrong ADL Display parameter");
+                throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+widget.getType()+Messages.Display_WrongADLFormatException_Parameter_End);
             } 
         }
         for (String parameter : display.getBody()) {
-            String[] row = parameter.split("=");
+            String[] row = parameter.split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException("This "+parameter+" is a wrong Display Attribute");
+                throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Begin+parameter+Messages.Display_WrongADLFormatException_End);
             }
-            if(row[0].trim().toLowerCase().equals("clr")){
+            if(row[0].trim().toLowerCase().equals("clr")){ //$NON-NLS-1$
                 _clr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("bclr")){
+            }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
                 _bclr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("cmap")){
+            }else if(row[0].trim().toLowerCase().equals("cmap")){ //$NON-NLS-1$
                 _cmap=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("type")){
+            }else if(row[0].trim().toLowerCase().equals("type")){ //$NON-NLS-1$
                 System.out.println(display.toString());
                 // TODO: Display --> type
             }else {
-                throw new WrongADLFormatException("This "+parameter+" is a wrong ADL Display parameter");
+                throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+parameter+Messages.Display_WrongADLFormatException_Parameter_End);
             }
 
         }
@@ -117,8 +118,8 @@ public class Display extends Widget{
                                   DisplayModel.PROP_LAYER,
                                   DisplayModel.PROP_ENABLED,
                                   DisplayModel.PROP_NAME};
-        String[] value= new String[]{"","true","","","true","PolygonModel"};
-        assert (id.length==value.length) :"Anzahl der Parameter stimmen nicht überein";
+        String[] value= new String[]{"","true","","","true","PolygonModel"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        assert (id.length==value.length) :Messages.Display_AssertError;
         for (int i = 0; i < value.length; i++) {
             _widget.setPropertyValue(id[i], value[i]);
         }
@@ -130,6 +131,6 @@ public class Display extends Widget{
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.ActionButton");    }
+        _widget = createWidgetModel("org.csstudio.sds.components.ActionButton");    } //$NON-NLS-1$
 
 }

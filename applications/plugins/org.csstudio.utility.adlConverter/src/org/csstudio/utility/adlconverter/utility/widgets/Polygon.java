@@ -25,6 +25,7 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.PolygonModel;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLPoints;
 import org.eclipse.draw2d.geometry.PointList;
@@ -46,7 +47,7 @@ public class Polygon extends Widget{
     public Polygon(final ADLWidget polygon){
         super(polygon);
         if(getBasicAttribute()!=null){
-            getBasicAttribute().setStyle("0");
+            getBasicAttribute().setStyle("0"); //$NON-NLS-1$
         }
         _widget.setPropertyValue(PolygonModel.PROP_FILL, 100.0);
         _widget.setPropertyValue(PolygonModel.PROP_BORDER_STYLE, 0);
@@ -59,7 +60,7 @@ public class Polygon extends Widget{
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Polygon");
+        _widget = createWidgetModel("org.csstudio.sds.components.Polygon"); //$NON-NLS-1$
     }
     
     /**
@@ -77,7 +78,7 @@ public class Polygon extends Widget{
             point.y=(point.y-y);
             pl.setPoint(point, i);
         }
-        assert oldSize == pl.size() : "convertCoordinate fehlgeschlagen";
+        assert oldSize == pl.size() : Messages.Polygon_AssertError; //$NON-NLS-1$
     }
  }
 

@@ -40,7 +40,7 @@ public class AllADLTests extends TestSuite{
 
     public static Test suite() {
         TestSuite suite = new TestSuite(
-                "Test for org.csstudio.utility.adlconverter");
+                "Test for org.csstudio.utility.adlconverter"); //$NON-NLS-1$
         //$JUnit-BEGIN$
         suite.addTest(new RGBColorTest());
         

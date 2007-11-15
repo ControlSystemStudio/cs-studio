@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 import java.util.ArrayList;
 
 import org.csstudio.sds.model.GroupingContainerModel;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLChildren;
@@ -69,13 +70,13 @@ public class GroupingContainer extends Widget {
      */
     private void handleObject(final ArrayList<ADLWidget> objects) throws WrongADLFormatException {
         for (ADLWidget obj : objects) {
-            if(obj.isType("children")){
+            if(obj.isType("children")){ //$NON-NLS-1$
                 _children = new ADLChildren(obj);
                 for (Widget elem : _children.getAdlChildrens()) {
                     elem.convertCoordinate(getObject().getX(), getObject().getY());
                     ((GroupingContainerModel) _widget).addWidget(elem.getElement());
                 }
-            }else if(obj.isType("menuItem")){
+            }else if(obj.isType("menuItem")){ //$NON-NLS-1$
                 new ADLMenuItem(obj, _widget);
             }
         }
@@ -87,18 +88,18 @@ public class GroupingContainer extends Widget {
      */
     private void handleBody(final ArrayList<String> body) throws WrongADLFormatException {
         for (String obj : body) {
-            String[] row = obj.trim().split("=");
+            String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException("wrong parameter");
+                throw new WrongADLFormatException(Messages.GroupingContainer_WrongADLFormatException+row[0]); //$NON-NLS-1$
             }
-            if(row[0].equals("vis")){
+            if(row[0].equals("vis")){ //$NON-NLS-1$
                 //TODO: GroupingContainer-->vis
-            }else if(row[0].equals("\"composite name\"")){
+            }else if(row[0].equals("\"composite name\"")){ //$NON-NLS-1$
                 //TODO: GroupingContainer-->composite name 
-            }else if(row[0].equals("chan")){
+            }else if(row[0].equals("chan")){ //$NON-NLS-1$
                 //TODO: GroupingContainer-->chan 
             }else{                
-                throw new WrongADLFormatException("wrong parameter: "+row[0]);
+                throw new WrongADLFormatException(Messages.GroupingContainer_WrongADLFormatException+row[0]); //$NON-NLS-1$
             } 
         }
         
@@ -109,6 +110,6 @@ public class GroupingContainer extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.GroupingContainer");
+        _widget = createWidgetModel("org.csstudio.sds.components.GroupingContainer"); //$NON-NLS-1$
     }
 }

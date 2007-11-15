@@ -25,6 +25,7 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.PolylineModel;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.eclipse.draw2d.geometry.PointList;
 
@@ -48,7 +49,7 @@ public class Polyline extends Widget{
             if(getBasicAttribute().getStyle()!=null){
                 setLineStyle(getBasicAttribute().getStyle());
             }
-            getBasicAttribute().setStyle("0");
+            getBasicAttribute().setStyle("0"); //$NON-NLS-1$
         }
         _widget.setWidth(getObject().getWidth());
         _widget.setPropertyValue(PolylineModel.PROP_FILL, 100.0);
@@ -63,7 +64,7 @@ public class Polyline extends Widget{
         //  <property type="sds.option" id="linestyle">
         //      <option id="1" />
         //  </property>
-        if(style!=null&&style.equals("5")){
+        if(style!=null&&style.equals("5")){ //$NON-NLS-1$
             _widget.setPropertyValue(PolylineModel.PROP_LINE_STYLE, 1);
         }else{
             _widget.setPropertyValue(PolylineModel.PROP_LINE_STYLE, 0);
@@ -74,7 +75,7 @@ public class Polyline extends Widget{
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Polyline");
+        _widget = createWidgetModel("org.csstudio.sds.components.Polyline"); //$NON-NLS-1$
     }
     
     /**
@@ -92,6 +93,6 @@ public class Polyline extends Widget{
             point.y=(point.y-y);
             pl.setPoint(point, i);
         }
-        assert oldSize == pl.size() : "convertCoordinate fehlgeschlagen";
+        assert oldSize == pl.size() : Messages.Polyline_AssertError;
     }
 }

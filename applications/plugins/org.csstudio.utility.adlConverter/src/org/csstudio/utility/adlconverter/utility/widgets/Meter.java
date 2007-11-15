@@ -48,38 +48,38 @@ public class Meter extends Widget {
 //          </dynamicsDescriptor>
 //      </property>
         _widget.setPropertyValue(MeterModel.PROP_MAXVAL, 10.0);
-        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HOPR",Object.class));
+        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HOPR",Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_MAXVAL, dynamicsDescriptor);
         
         _widget.setPropertyValue(MeterModel.PROP_MINVAL, 0.0);
-        dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LOPR",Object.class));
+        dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LOPR",Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_MINVAL, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_HIHIBOUND, 8.0);
-        dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HIHI",Object.class));
+        dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HIHI",Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_HIHIBOUND, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_HIBOUND, 6.0);
-        dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HI",Object.class));
+        dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HI",Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_HIBOUND, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_LOBOUND, 4.0);
-        dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LO",Object.class));
+        dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LO",Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_LOBOUND, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_LOLOBOUND, 2.0);
-        dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LOLO",Object.class));
+        dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LOLO",Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_LOLOBOUND, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_VALUE, 5.0);
-        dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$",Object.class));
+        dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$",Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_VALUE, dynamicsDescriptor);
     }
 
@@ -88,6 +88,6 @@ public class Meter extends Widget {
      */    
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Meter");
+        _widget = createWidgetModel("org.csstudio.sds.components.Meter"); //$NON-NLS-1$
     }
 }

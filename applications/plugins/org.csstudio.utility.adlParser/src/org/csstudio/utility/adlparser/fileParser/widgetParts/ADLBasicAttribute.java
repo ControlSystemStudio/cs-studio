@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -74,25 +75,25 @@ public class ADLBasicAttribute extends WidgetPart{
      */
     @Override
     final void parseWidgetPart(final ADLWidget adlBasicAttribute) throws WrongADLFormatException {
-        assert !adlBasicAttribute.isType("\"basic attribute\"") : "This "+adlBasicAttribute.getType()+" is not a ADL Basic Attribute";
+        assert !adlBasicAttribute.isType("\"basic attribute\"") : Messages.ADLBasicAttribute_AssertError_Begin+adlBasicAttribute.getType()+Messages.ADLBasicAttribute_AssertError_End; //$NON-NLS-1$
         for (String parameter : adlBasicAttribute.getBody()) {
-            if(parameter.trim().startsWith("//")){
+            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String[] row = parameter.split("=");
+            String[] row = parameter.split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException("This "+parameter+" is a wrong ADL Basic Attribute");
+                throw new WrongADLFormatException(Messages.ADLBasicAttribute_WrongADLFormatException_Begin+parameter+Messages.ADLBasicAttribute_WrongADLFormatException_End);
             }
-            if(row[0].trim().toLowerCase().equals("clr")){
+            if(row[0].trim().toLowerCase().equals("clr")){ //$NON-NLS-1$
                 _clr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("width")){
+            }else if(row[0].trim().toLowerCase().equals("width")){ //$NON-NLS-1$
                 _width=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("style")){
+            }else if(row[0].trim().toLowerCase().equals("style")){ //$NON-NLS-1$
                 _style=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("fill")){
+            }else if(row[0].trim().toLowerCase().equals("fill")){ //$NON-NLS-1$
                 _fill=row[1].trim();
             }else {
-                throw new WrongADLFormatException("This "+parameter+" is a wrong ADL Basic Attribute parameter");
+                throw new WrongADLFormatException(Messages.ADLBasicAttribute_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLBasicAttribute_WrongADLFormatException_Parameter_End);
             }
         }
     }
@@ -107,29 +108,29 @@ public class ADLBasicAttribute extends WidgetPart{
         }
         boolean transperncy=false;
         if(_fill!=null){
-            if(_fill.equals("\"outline\"")){
+            if(_fill.equals("\"outline\"")){ //$NON-NLS-1$
                 transperncy =true;
-                _fill="0.0";
+                _fill="0.0"; //$NON-NLS-1$
             }
             if(_width==null){
-                _width="1";
+                _width="1"; //$NON-NLS-1$
             }
         }else if(_fill==null){
-            _fill="100.0";
+            _fill="100.0"; //$NON-NLS-1$
         }
         _widgetModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, transperncy);
         
-        String style = "1"; // Line
+        String style = "1"; // Line //$NON-NLS-1$
         if (_style==null){
-            style = "1";  // Line
-        }else if (_style.equals("none")){
-            style = "0";  // none
-        }else if (_style.equals("shape")){
-            style = "6";  // none
-        }else if(_style.equals("\"dash\"")){
-            style = "5";  // Striated
-            if(_width!=null&&_width.equals("1")){
-                _width="2";
+            style = "1";  // Line //$NON-NLS-1$
+        }else if (_style.equals("none")){ //$NON-NLS-1$
+            style = "0";  // none //$NON-NLS-1$
+        }else if (_style.equals("shape")){ //$NON-NLS-1$
+            style = "6";  // none //$NON-NLS-1$
+        }else if(_style.equals("\"dash\"")){ //$NON-NLS-1$
+            style = "5";  // Striated //$NON-NLS-1$
+            if(_width!=null&&_width.equals("1")){ //$NON-NLS-1$
+                _width="2"; //$NON-NLS-1$
             }
         }
         if(_width!=null){

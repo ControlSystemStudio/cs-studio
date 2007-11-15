@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -80,26 +81,26 @@ public class ADLMonitor extends WidgetPart{
      */
     @Override
     final void parseWidgetPart(final ADLWidget monitor) throws WrongADLFormatException {
-        assert !monitor.isType("monitor") : "This "+monitor.getType()+" is not a ADL monitor";
+        assert !monitor.isType("monitor") : Messages.ADLMonitor_assertError_Begin+monitor.getType()+Messages.ADLMonitor_assertError_End; //$NON-NLS-1$
 
         for (String parameter : monitor.getBody()) {
-            if(parameter.trim().startsWith("//")){
+            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String[] row = parameter.split("=");
+            String[] row = parameter.split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException("This "+parameter+" is a wrong ADL monitor");
+                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Begin+parameter+Messages.ADLMonitor_WrongADLFormatException_End);
             }
-            if(row[0].trim().toLowerCase().equals("clr")){
+            if(row[0].trim().toLowerCase().equals("clr")){ //$NON-NLS-1$
                 _clr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("bclr")){
+            }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
                 _bclr=row[1].trim();
-            }else if(row[0].trim().toLowerCase().equals("chan")){   // chan and rdbk means both the same. Readback channel.
+            }else if(row[0].trim().toLowerCase().equals("chan")){   // chan and rdbk means both the same. Readback channel. //$NON-NLS-1$
                 _chan=ADLHelper.cleanString(row[1]);
-            }else if(row[0].trim().toLowerCase().equals("rdbk")){
+            }else if(row[0].trim().toLowerCase().equals("rdbk")){ //$NON-NLS-1$
                 _chan=ADLHelper.cleanString(row[1]);
             }else {
-                throw new WrongADLFormatException("This "+row[0]+" is a wrong ADL monitor parameter. "+parameter);
+                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+row[0]+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+parameter);
             }
         }
     }
@@ -113,8 +114,8 @@ public class ADLMonitor extends WidgetPart{
         if(_clr!=null){
             _widgetModel.setForegroundColor(ADLHelper.getRGB(_clr));
 //          /* alarm displayed as foreground color */
-            DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_foreground");
-            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.SEVR",Double.class));
+            DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_foreground"); //$NON-NLS-1$
+            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.SEVR",Double.class)); //$NON-NLS-1$
             _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, dynamicsDescriptor);
         }
         if(_bclr!=null){

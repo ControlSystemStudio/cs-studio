@@ -31,6 +31,7 @@ import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -63,106 +64,106 @@ public class Bargraph extends Widget {
             showBar="normal"
          */
         for (String obj : bargraph.getBody()) {
-            String[] row = obj.trim().split("=");
+            String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException("wrong parameter");
+                throw new WrongADLFormatException(Messages.Bargraph_1);
             }
 
-            if(row[0].equals("direction")){
+            if(row[0].equals("direction")){ //$NON-NLS-1$
 //              <property type="sds.boolean" id="orientation" value="false" />
-                bool = Boolean.toString(row[1].toLowerCase().equals("up"));
+                bool = Boolean.toString(row[1].toLowerCase().equals("up")); //$NON-NLS-1$
                 _widget.setPropertyValue(BargraphModel.PROP_ORIENTATION, bool);
-            }else if(row[0].equals("scaleType")){
+            }else if(row[0].equals("scaleType")){ //$NON-NLS-1$
                 //TODO: Barghraph-->scaleType (Not Supported from SDS) 
-            }else if(row[0].equals("showAlarmLimits")&&!barOnly){
-                if(!row[1].toLowerCase().equals("\"off\"")){
+            }else if(row[0].equals("showAlarmLimits")&&!barOnly){ //$NON-NLS-1$
+                if(!row[1].toLowerCase().equals("\"off\"")){ //$NON-NLS-1$
                     marksShowStatus=1; // Bottom / Right
                 }
-            }else if(row[0].equals("showScale")&&!barOnly){
+            }else if(row[0].equals("showScale")&&!barOnly){ //$NON-NLS-1$
 //              <property type="sds.boolean" id="showValues" value="false" />
-                bool = Boolean.toString(row[1].toLowerCase().equals("off"));
+                bool = Boolean.toString(row[1].toLowerCase().equals("off")); //$NON-NLS-1$
                 _widget.setPropertyValue(BargraphModel.PROP_SHOW_VALUES, bool);
 //              <property type="sds.option" id="marksShowStatus">
 //                  <option id="0" />
 //              </property>
-                if(!row[1].toLowerCase().equals("off")){
+                if(!row[1].toLowerCase().equals("off")){ //$NON-NLS-1$
                     scaleShowStatus=1; // Bottom / Right
                 }
-            }else if(row[0].equals("showBar")){
+            }else if(row[0].equals("showBar")){ //$NON-NLS-1$
                 barOnly=true;
                 marksShowStatus=0; // No scale
                 _widget.setPropertyValue(BargraphModel.PROP_SHOW_VALUES, false); 
                 scaleShowStatus=0; // No scale
 //              <property type="sds.integer" id="border.width" value="0" />
                 _widget.setPropertyValue(BargraphModel.PROP_BORDER_WIDTH, 0); 
-            }else if(row[0].equals("format")){
+            }else if(row[0].equals("format")){ //$NON-NLS-1$
                 //TODO: Bargraph --> format
-            }else if(row[0].equals("limitType")){
+            }else if(row[0].equals("limitType")){ //$NON-NLS-1$
                 //TODO: Bargraph --> limitType
-            }else if(row[0].equals("highLimit")){
+            }else if(row[0].equals("highLimit")){ //$NON-NLS-1$
                 //TODO: Bargraph --> highLimit
-            }else if(row[0].equals("lowLimit")){
+            }else if(row[0].equals("lowLimit")){ //$NON-NLS-1$
                 //TODO: Bargraph --> lowLimit
-            }else if(row[0].equals("clrmod")){
+            }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
                 //TODO: Bargraph --> clrmod
             }else{ //Bargraph have no Parameter                
-                throw new WrongADLFormatException("wrong parameter: "+row[0]);
+                throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Parameter_Begin+row[0]);
             } 
         }
         _widget.setPropertyValue(BargraphModel.PROP_SHOW_MARKS, marksShowStatus); 
         _widget.setPropertyValue(BargraphModel.PROP_SHOW_SCALE,scaleShowStatus);
 
-        final String[] typ = new String[]{"lolo","lo","hi","hihi"};
-        final String[] val = new String[]{"0","25","75","100"};
-        final String[] color= new String[]{"0","1","2","3"};
+        final String[] typ = new String[]{"lolo","lo","hi","hihi"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        final String[] val = new String[]{"0","25","75","100"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        final String[] color= new String[]{"0","1","2","3"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         assert( typ.length==val.length&&val.length==color.length);
         for (int i = 0; i < color.length; i++) {
             makeLevel(typ[i],val[i],color[i]);    
         }
         _widget.setPropertyValue(BargraphModel.PROP_MIN, 0.0);
-        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LOPR",Double.class));
+        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LOPR",Double.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(BargraphModel.PROP_MIN, dynamicsDescriptor );
 
         _widget.setPropertyValue(BargraphModel.PROP_MAX, 10.0);
-        dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HOPR",Double.class));
+        dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HOPR",Double.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(BargraphModel.PROP_MAX, dynamicsDescriptor );
 
-        String postfix = "";
+        String postfix = ""; //$NON-NLS-1$
         if(getMonitor()!=null&&getMonitor().getPostfix()!=null){
             postfix=getMonitor().getPostfix();
         }
         _widget.setPropertyValue(BargraphModel.PROP_FILL, 5.0);
-        dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+postfix,Double.class));
+        dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$"+postfix,Double.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(BargraphModel.PROP_FILL, dynamicsDescriptor );
 
 //        <property type="sds.boolean" id="value_representation" value="true" />
-        if(bargraph.isType("bar")){
+        if(bargraph.isType("bar")){ //$NON-NLS-1$
             _widget.setPropertyValue(BargraphModel.PROP_SHOW_ONLY_VALUE, false);
-        }else if(bargraph.isType("indicator")){
+        }else if(bargraph.isType("indicator")){ //$NON-NLS-1$
             _widget.setPropertyValue(BargraphModel.PROP_SHOW_ONLY_VALUE, true);
         }else {
-            throw new WrongADLFormatException("wrong bargraph type");
+            throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Type);
         }
         
         _widget.setPropertyValue(BargraphModel.PROP_DEFAULT_FILL_COLOR, ADLHelper.getRGB(getMonitor().getClr()));
-        dynamicsDescriptor = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_foreground");
+        dynamicsDescriptor = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_foreground"); //$NON-NLS-1$
         ADLHelper.setConnectionState(dynamicsDescriptor);
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.SEVR",Double.class));
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.SEVR",Double.class)); //$NON-NLS-1$
         
         _widget.setDynamicsDescriptor(BargraphModel.PROP_DEFAULT_FILL_COLOR, dynamicsDescriptor);
 
         _widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR, ADLHelper.getRGB(getMonitor().getBclr()));
-        dynamicsDescriptor = new DynamicsDescriptor("rule.null");
+        dynamicsDescriptor = new DynamicsDescriptor("rule.null"); //$NON-NLS-1$
         ADLHelper.setConnectionState(dynamicsDescriptor);
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.SEVR",Double.class));
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.SEVR",Double.class)); //$NON-NLS-1$
         
         _widget.setDynamicsDescriptor(BargraphModel.PROP_FILLBACKGROUND_COLOR, dynamicsDescriptor);
 
         _widget.setDynamicsDescriptor(BargraphModel.PROP_COLOR_FOREGROUND, null);
-        _widget.setLayer("Bargraph");
+        _widget.setLayer("Bargraph"); //$NON-NLS-1$
 
         
     }
@@ -175,17 +176,17 @@ public class Bargraph extends Widget {
     private void makeLevel(final String id, final String value, final String color) {
 
 //      <property type="sds.double" id="loloLevel" value="0.2" />
-        _widget.setPropertyValue(id+"Level", value);
+        _widget.setPropertyValue(id+"Level", value); //$NON-NLS-1$
 //      <dynamicsDescriptor ruleId="directConnection">
 //          <inputChannel name="dal-epics://&lt;&lt;Channel&gt;&gt;" type="java.lang.Double" />
 //      </dynamicsDescriptor>
-        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$."+id.toUpperCase(),Double.class));
-        _widget.setDynamicsDescriptor(id+"Level", dynamicsDescriptor );
+        DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$."+id.toUpperCase(),Double.class)); //$NON-NLS-1$
+        _widget.setDynamicsDescriptor(id+"Level", dynamicsDescriptor ); //$NON-NLS-1$
 //      <property type="sds.color" id="loColor">
 //          <color red="255" green="100" blue="100" />
 //      </property>
-        _widget.setPropertyValue(id+"Color", ADLHelper.getRGB(color));
+        _widget.setPropertyValue(id+"Color", ADLHelper.getRGB(color)); //$NON-NLS-1$
     }
 
     /**
@@ -193,7 +194,7 @@ public class Bargraph extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Bargraph");
+        _widget = createWidgetModel("org.csstudio.sds.components.Bargraph"); //$NON-NLS-1$
     }
 
 }

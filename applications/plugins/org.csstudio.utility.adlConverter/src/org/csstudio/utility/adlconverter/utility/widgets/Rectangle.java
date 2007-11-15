@@ -51,6 +51,6 @@ public class Rectangle extends Widget{
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Rectangle");
+        _widget = createWidgetModel("org.csstudio.sds.components.Rectangle"); //$NON-NLS-1$
     }
 }

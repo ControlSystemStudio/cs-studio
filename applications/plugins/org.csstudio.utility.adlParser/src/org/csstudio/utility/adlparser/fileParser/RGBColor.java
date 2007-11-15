@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility;
 
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -50,7 +51,7 @@ public class RGBColor {
             setGreen(color);
             setBlue(color);
         }else{
-            throw new WrongADLFormatException("Color String a invalid format");
+            throw new WrongADLFormatException(Messages.RGBColor_WrongADLFormatException);
         }
             
 
@@ -76,21 +77,21 @@ public class RGBColor {
      * @param clr The ADL Color was set and transform to RGB red. 
      */
     private void setRed(final String clr) {
-        String temp = "#".concat(clr.substring(0,2));
+        String temp = "#".concat(clr.substring(0,2)); //$NON-NLS-1$
         _red = Integer.decode(temp);
     }
     /**
      * @param clr The ADL Color was set and transform to RGB green. 
      */
     private void setGreen(final String clr) {
-        String temp = "#".concat(clr.substring(2,4));
+        String temp = "#".concat(clr.substring(2,4)); //$NON-NLS-1$
         _green = Integer.decode(temp);
     }
     /**
      * @param clr The ADL Color was set and transform to RGB blue. 
      */
     private void setBlue(final String clr) {
-        String temp = "#".concat(clr.substring(4,6));
+        String temp = "#".concat(clr.substring(4,6)); //$NON-NLS-1$
         _blue = Integer.decode(temp);
     }
     

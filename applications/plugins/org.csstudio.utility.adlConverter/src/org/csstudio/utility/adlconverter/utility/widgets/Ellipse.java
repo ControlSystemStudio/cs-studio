@@ -43,10 +43,10 @@ public class Ellipse extends Widget {
     public Ellipse(final ADLWidget ellipse) {
         super(ellipse);
         if(getBasicAttribute()!=null){
-            if((getBasicAttribute()!=null&&(getBasicAttribute().getWidth()==null||getBasicAttribute().getWidth().equals("0")))){
-                getBasicAttribute().setStyle("0");
+            if((getBasicAttribute()!=null&&(getBasicAttribute().getWidth()==null||getBasicAttribute().getWidth().equals("0")))){ //$NON-NLS-1$
+                getBasicAttribute().setStyle("0"); //$NON-NLS-1$
             }else{
-                getBasicAttribute().setStyle("6");
+                getBasicAttribute().setStyle("6"); //$NON-NLS-1$
             }
         }
         if(getBasicAttribute()!=null&&getBasicAttribute().getFill()!=null){
@@ -61,7 +61,7 @@ public class Ellipse extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Ellipse");
+        _widget = createWidgetModel("org.csstudio.sds.components.Ellipse"); //$NON-NLS-1$
     }
 
 }

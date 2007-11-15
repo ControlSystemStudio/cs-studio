@@ -35,6 +35,7 @@ import org.csstudio.sds.model.properties.ActionType;
 import org.csstudio.sds.model.properties.actions.CommitValueWidgetAction;
 import org.csstudio.sds.model.properties.actions.WidgetAction;
 import org.csstudio.sds.model.properties.actions.WidgetActionFactory;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
@@ -70,14 +71,14 @@ public class RelatedDisplay extends Widget {
         String label = null;
         int n =0;
         for (ADLWidget obj : relatedDisplay.getObjects()) {
-            if(obj.isType("display["+n+"]")){
+            if(obj.isType("display["+n+"]")){ //$NON-NLS-1$ //$NON-NLS-2$
                 if(n==0){
                     label=new RelatedDisplayItem(obj, _widget).getLabel();
                 }else{
                     new RelatedDisplayItem(obj, _widget);
                 }
                 n++;
-            }else if(obj.isType("sensitive")){
+            }else if(obj.isType("sensitive")){ //$NON-NLS-1$
                 //TODO: RelatedDisplay(Menu)-->sensitive
             }
         }
@@ -90,9 +91,9 @@ public class RelatedDisplay extends Widget {
 //            <outputChannel name="local://out" type="java.lang.Object" />                    
 //          </dynamicsDescriptor>                                                             
 //          </property>
-            _control = new DynamicsDescriptor("rule.actionData");
-            _control.addInputChannel(new ParameterDescriptor("$channel$[enumDescriptions], enum", Object.class));
-            _control.setOutputChannel(new ParameterDescriptor("local://out", Object.class));
+            _control = new DynamicsDescriptor("rule.actionData"); //$NON-NLS-1$
+            _control.addInputChannel(new ParameterDescriptor("$channel$[enumDescriptions], enum", Object.class)); //$NON-NLS-1$
+            _control.setOutputChannel(new ParameterDescriptor("local://out", Object.class)); //$NON-NLS-1$
 
             // Der ConnectionState wird an die Acrtion Data gesetzt das macht nun überhaupt kein sinn!
 //            HashMap<ConnectionState, Object> values = new HashMap<ConnectionState, Object>();
@@ -111,23 +112,23 @@ public class RelatedDisplay extends Widget {
         }
         
         for (String obj : relatedDisplay.getBody()) {
-            String[] row = obj.trim().split("=");
+            String[] row = obj.trim().split("="); //$NON-NLS-1$
             if(row.length!=2){
-                throw new WrongADLFormatException("wrong parameter");
+                throw new WrongADLFormatException(Messages.RelatedDisplay_WrongADLFormatException_Parameter_Begin+row[0]);
             }
 
-            if(row[0].equals("clr")){
+            if(row[0].equals("clr")){ //$NON-NLS-1$
                 clr = row[1];
-            }else if(row[0].equals("bclr")){
+            }else if(row[0].equals("bclr")){ //$NON-NLS-1$
                 bclr = row[1];
-            }else if(row[0].equals("label")){
-                label=row[1].replaceAll("\"", "");
-            }else if(row[0].equals("visual")){
+            }else if(row[0].equals("label")){ //$NON-NLS-1$
+                label=row[1].replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            }else if(row[0].equals("visual")){ //$NON-NLS-1$
 //                  TODO: RelatedDisplay-->visual  
-            }else if(row[0].equals("clrmod")){
+            }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
 //                  TODO: RelatedDisplay-->clrmod  
             }else{                
-                throw new WrongADLFormatException("wrong parameter: "+row[0]);
+                throw new WrongADLFormatException(Messages.RelatedDisplay_WrongADLFormatException_Parameter_Begin+row[0]);
             }
         }
         if(clr!=null){
@@ -142,8 +143,8 @@ public class RelatedDisplay extends Widget {
             // <dynamicsDescriptor ruleId="directConnection">               
             //   <inputChannel name="local://out" type="java.lang.Object" />
             // </dynamicsDescriptor>
-            DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection");
-            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("local://out",Object.class));
+            DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
+            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("local://out",Object.class)); //$NON-NLS-1$
             _widget.setDynamicsDescriptor(MenuButtonModel.PROP_LABEL, dynamicsDescriptor);
         }
 
@@ -158,8 +159,8 @@ public class RelatedDisplay extends Widget {
         //   <option id="2" />
         // </property>
         _widget.setPropertyValue(MenuButtonModel.PROP_BORDER_STYLE, 3);
-        int h = ADLHelper.getFontSize("Times New Roman",label, getObject().getHeight(), getObject().getWidth(),"0");
-        _widget.setPropertyValue(MenuButtonModel.PROP_FONT, new FontData("Times New Roman",h,SWT.NONE));
+        int h = ADLHelper.getFontSize("Times New Roman",label, getObject().getHeight(), getObject().getWidth(),"0"); //$NON-NLS-1$ //$NON-NLS-2$
+        _widget.setPropertyValue(MenuButtonModel.PROP_FONT, new FontData("Times New Roman",h,SWT.NONE)); //$NON-NLS-1$
     }
 
     /**
@@ -167,7 +168,7 @@ public class RelatedDisplay extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.MenuButton");
+        _widget = createWidgetModel("org.csstudio.sds.components.MenuButton"); //$NON-NLS-1$
     }
 
 }

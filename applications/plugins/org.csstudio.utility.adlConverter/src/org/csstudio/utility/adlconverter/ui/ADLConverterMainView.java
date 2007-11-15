@@ -28,6 +28,7 @@ import java.io.File;
 
 import org.csstudio.platform.ui.composites.ResourceAndContainerGroup;
 import org.csstudio.platform.ui.util.ImageUtil;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -69,14 +70,16 @@ public class ADLConverterMainView extends ViewPart {
     @Override
     public void createPartControl(final Composite parent) {
         parent.setLayout(new GridLayout(3,true));
-        final Text pathText = new Text(parent,SWT.BORDER);
-        pathText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,3,1));
-        pathText.setText("C:/Helge_Projekte/CSS 3.3 Workspace/SDS/ttf/kryo");
-        Button targetOpenButton = new Button(parent, SWT.PUSH);
-        targetOpenButton.setText("Select Path");
-        targetOpenButton.setLayoutData(new GridData(SWT.CENTER,SWT.CENTER,false,false,3,1));
         
         final IResource initial = ResourcesPlugin.getWorkspace().getRoot();
+        final Text pathText = new Text(parent,SWT.BORDER);
+        pathText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,3,1));
+        pathText.setText(initial.getProjectRelativePath().toOSString());
+        Button targetOpenButton = new Button(parent, SWT.PUSH);
+        targetOpenButton.setText(Messages.ADLConverterMainView_TargetOpernButton);
+        targetOpenButton.setLayoutData(new GridData(SWT.CENTER,SWT.CENTER,false,false,3,1));
+        
+        
 
         targetOpenButton.addSelectionListener(new SelectionListener(){
 
@@ -86,12 +89,12 @@ public class ADLConverterMainView extends ViewPart {
             public void widgetSelected(final SelectionEvent e) {
                 final Shell shell = new Shell(parent.getShell());
                 shell.setLayout(new GridLayout(1,false));
-                shell.setText("ADL File Chooser");
-                Image image = ImageUtil.getInstance().getImageDescriptor("org.csstudio.sds.importer.ui", "icons/sds.gif").createImage();
+                shell.setText(Messages.ADLConverterMainView_DialogText);
+                Image image = ImageUtil.getInstance().getImageDescriptor("org.csstudio.sds.importer.ui", "icons/sds.gif").createImage(); //$NON-NLS-1$ //$NON-NLS-2$
                 shell.setImage(image);
                 
-                _resourceGroup = new ResourceAndContainerGroup(shell,null,"Test1","folder");
-                _resourceGroup.setContainerFullPath(new Path("SDS"));
+                _resourceGroup = new ResourceAndContainerGroup(shell,null,Messages.ADLConverterMainView_DateiName,Messages.ADLConverterMainView_ADLFileChooserDes);
+                _resourceGroup.setContainerFullPath(new Path("SDS")); //$NON-NLS-1$
                 _resourceGroup.setFocus();
                 
                 Composite c = new Composite(shell,SWT.NONE);
@@ -99,14 +102,14 @@ public class ADLConverterMainView extends ViewPart {
                 c.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
                 
                 Button ok = new Button(c,SWT.PUSH);
-                ok.setText("&Ok");
+                ok.setText(Messages.ADLConverterMainView_ADLFileChooserOkButton);
                 GridData gd = new GridData(SWT.CENTER,SWT.LEFT,true,false,1,1);
                 gd.widthHint=80;
                 gd.heightHint=25;
                 ok.setLayoutData(gd);
                 
                 Button cancel = new Button(c,SWT.PUSH);
-                cancel.setText("&Cancel");
+                cancel.setText(Messages.ADLConverterMainView_ADLFileChooserCancelButton);
                 gd = new GridData(SWT.CENTER,SWT.RIGHT,true,false,1,1);
                 gd.widthHint=80;
                 gd.heightHint=25;
@@ -144,7 +147,7 @@ public class ADLConverterMainView extends ViewPart {
         avaibleFiles.getList().setLayoutData(gridData);
         Button open = new Button(parent, SWT.PUSH);
         open.setLayoutData(new GridData(80,25));
-        open.setText("Open");
+        open.setText(Messages.ADLConverterMainView_ADLSourceFileDialogButton);
 
         open.addSelectionListener(new SelectionListener(){
 
@@ -152,8 +155,8 @@ public class ADLConverterMainView extends ViewPart {
 
             public void widgetSelected(final SelectionEvent e) {
                 FileDialog dialog = new FileDialog(parent.getShell(),SWT.MULTI);
-                dialog.setFilterNames (new String [] {"ADL Files", "All Files (*.*)"});
-                dialog.setFilterExtensions (new String [] {"*.adl", "*.*"}); //Windows wild cards
+                dialog.setFilterNames (new String [] {Messages.ADLConverterMainView_ADLFileSourceDialogFileDes, Messages.ADLConverterMainView_AllFileSourceDialogFileDes});
+                dialog.setFilterExtensions (new String [] {"*.adl", "*.*"}); //Windows wild cards //$NON-NLS-1$ //$NON-NLS-2$
                 dialog.setFilterPath (initial.getProjectRelativePath().toOSString()); 
                 dialog.open();
                 String path = dialog.getFilterPath();
@@ -166,7 +169,7 @@ public class ADLConverterMainView extends ViewPart {
             
         });
         Button clear = new Button(parent,SWT.PUSH);
-        clear.setText("Clear");
+        clear.setText(Messages.ADLConverterMainView_ClearButtonText);
         GridData gd = new GridData(80,25);
         gd.horizontalAlignment=SWT.CENTER;
         clear.setLayoutData(gd);
@@ -182,7 +185,7 @@ public class ADLConverterMainView extends ViewPart {
 
         
         Button convert = new Button(parent,SWT.PUSH);
-        convert.setText("Convert");
+        convert.setText(Messages.ADLConverterMainView_ConvcertButtonText);
         gd = new GridData(80,25);
         gd.horizontalAlignment=SWT.RIGHT;
         convert.setLayoutData(gd);
@@ -200,7 +203,7 @@ public class ADLConverterMainView extends ViewPart {
                         di.importDisplay(
                                 ((File)avaibleFiles.getElementAt(i)).getAbsolutePath(),
                                 initial.getProjectRelativePath().append(_resourceGroup.getContainerFullPath()),
-                                ((File)avaibleFiles.getElementAt(i)).getName().replace(".adl", ".css-sds")
+                                ((File)avaibleFiles.getElementAt(i)).getName().replace(".adl", ".css-sds") //$NON-NLS-1$ //$NON-NLS-2$
                         );
                     } catch (Exception e1) {
                         // TODO Auto-generated catch block

@@ -25,6 +25,7 @@
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.eclipse.draw2d.geometry.PointList;
@@ -66,13 +67,13 @@ public class ADLPoints extends WidgetPart{
     @Override
     final void parseWidgetPart(final ADLWidget adlPoints) throws WrongADLFormatException {
 
-        assert !adlPoints.isType("points") : "This "+adlPoints.getType()+" is not a ADL Points";
+        assert !adlPoints.isType("points") : Messages.ADLPoints_AssertError_Begin+adlPoints.getType()+Messages.ADLPoints_AssertError_End; //$NON-NLS-1$
         
         _pointsList = new PointList(adlPoints.getBody().size());
         for (String  points : adlPoints.getBody()) {
-            String[] row = points.replaceAll("[()]", "").trim().split(",");
+            String[] row = points.replaceAll("[()]", "").trim().split(","); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             if(row.length!=2){
-                throw new WrongADLFormatException("This "+points+" is a wrong ADL Point");
+                throw new WrongADLFormatException(Messages.ADLPoints_WrongADLFormatException_Begin+points+Messages.ADLPoints_WrongADLFormatException_End);
             }
             
             _pointsList.addPoint(Integer.parseInt(row[0]),Integer.parseInt(row[1]));
@@ -84,7 +85,7 @@ public class ADLPoints extends WidgetPart{
      */ 
     @Override
     final void generateElements() {
-        _widgetModel.setPropertyValue("points", _pointsList);
+        _widgetModel.setPropertyValue("points", _pointsList); //$NON-NLS-1$
     }
 
     /**
@@ -101,7 +102,7 @@ public class ADLPoints extends WidgetPart{
      */
     public final void setPointsList(final PointList pointsList) {
         _pointsList = pointsList;
-        _widgetModel.setPropertyValue("points", _pointsList);
+        _widgetModel.setPropertyValue("points", _pointsList); //$NON-NLS-1$
     }
 
 }
