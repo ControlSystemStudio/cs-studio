@@ -50,11 +50,6 @@ public class WorkspaceTreeComposite {
 	private static final int HEIGHTHINT = 200;
 
 	/**
-	 * The accepted file extensions.
-	 */
-	private String[] _fileExtensions;
-
-	/**
 	 * Constant for the show closed projects option.
 	 */
 	private static final boolean SHOW_CLOSED_PROJECTS = true;
@@ -79,7 +74,6 @@ public class WorkspaceTreeComposite {
 	 */
 	public WorkspaceTreeComposite(Composite parent, int style, final int width,
 			final int height, String[] fileExtensions) {
-		_fileExtensions = fileExtensions;
 		DrillDownComposite drillDown = new DrillDownComposite(parent, SWT.BORDER);
 		GridData spec = new GridData(SWT.FILL, SWT.FILL, true, true);
 		spec.widthHint = width;
@@ -89,7 +83,7 @@ public class WorkspaceTreeComposite {
 		// Create tree viewer inside drill down.
 		_treeViewer = new TreeViewer(drillDown, style);
 		drillDown.setChildTree(_treeViewer);
-		ContainerContentProvider cp = new ContainerContentProvider();
+		WorkspaceResourceContentProvider cp = new WorkspaceResourceContentProvider(fileExtensions);
 		cp.showClosedProjects(SHOW_CLOSED_PROJECTS);
 		_treeViewer.setContentProvider(cp);
 		_treeViewer.setLabelProvider(WorkbenchLabelProvider
@@ -175,28 +169,43 @@ public class WorkspaceTreeComposite {
 	}
 
 	/**
-	 * Provides content for a tree viewer that shows only containers.
+	 * Provides workspace resources as content for a tree viewer.
 	 * 
-	 * <p>
-	 * <b>Code is based upon
+	 * <p>Code is based upon
 	 * <code>org.eclipse.ui.internal.ide.misc.ContainerContentProvider</code>
-	 * in plugin <code>org.eclipse.ui.ide</code>.</b>
-	 * </p>
+	 * in plugin <code>org.eclipse.ui.ide</code></p>
 	 * 
-	 * @author Alexander Will
-	 * @version $Revision$
+	 * @author Alexander Will, Joerg Rathlev
 	 */
-	private final class ContainerContentProvider implements
+	private static final class WorkspaceResourceContentProvider implements
 			ITreeContentProvider {
 		/**
 		 * Flag that signals if closed projects should be included as well.
 		 */
 		private boolean _showClosedProjects = true;
+		
+		/**
+		 * File extensions of files to include in the result lists.
+		 */
+		private String[] _fileExtensions;
 
 		/**
-		 * Creates a new ContainerContentProvider.
+		 * Creates a new <code>WorkspaceResourcesContentProvider</code>.
+		 * 
+		 * @param fileExtensions
+		 *            The file extensions of file resources to include in the
+		 *            contents provided by the content provider. Use
+		 *            <code>null</code> or an empty array to create a content
+		 *            provider that provides only container resources (projects
+		 *            and folders).
 		 */
-		public ContainerContentProvider() {
+		public WorkspaceResourceContentProvider(String[] fileExtensions) {
+			if (fileExtensions != null) {
+				_fileExtensions = new String[fileExtensions.length];
+				System.arraycopy(fileExtensions, 0, _fileExtensions, 0, fileExtensions.length);
+			} else {
+				_fileExtensions = new String[0];
+			}
 		}
 
 		/**
@@ -233,18 +242,7 @@ public class WorkspaceTreeComposite {
 						List<IResource> children = new ArrayList<IResource>();
 						IResource[] members = container.members();
 						for (IResource member : members) {
-							if (member.getType() == IResource.FILE
-									&& _fileExtensions != null
-									&& _fileExtensions.length > 0) {
-								for (String extension : _fileExtensions) {
-									if (extension != null
-											&& extension.equals(member
-													.getFileExtension())) {
-										children.add(member);
-										break;
-									}
-								}
-							} else {
+							if (includeResource(member)) {
 								children.add(member);
 							}
 						}
@@ -255,6 +253,32 @@ public class WorkspaceTreeComposite {
 				}
 			}
 			return new Object[0];
+		}
+		
+		/**
+		 * Returns whether the given resource should be included in the contents
+		 * this content provider returns.
+		 * 
+		 * @param resource
+		 *            the resource.
+		 * @return <code>true</code> if the resource should be included,
+		 *         <code>false</code> otherwise.
+		 */
+		private boolean includeResource(IResource resource) {
+			if (resource.getType() != IResource.FILE) {
+				// non-files are always included
+				return true;
+			} else {
+				// files are included if their extension is in the list
+				// of accepted extensions
+				for (String ext : _fileExtensions) {
+					if (ext != null
+							&& ext.equals(resource.getFileExtension())) {
+						return true;
+					}
+				}
+				return false;
+			}
 		}
 
 		/**
