@@ -57,12 +57,20 @@ public class StringValue extends Value implements IStringValue
 	
     /** {@inheritDoc} */
 	@Override
-	public final boolean equals(Object obj)
+	public final boolean equals(final Object obj)
 	{
 		if (! (obj instanceof StringValue))
 			return false;
-		StringValue rhs = (StringValue) obj;
-		return rhs.values.equals(values) && super.equals(obj);
+		final StringValue rhs = (StringValue) obj;
+		// compare strings
+		if (values.length != rhs.values.length)
+		    return false;
+		for (int i = 0; i < values.length; ++i)
+        {
+            if (! values[i].equals( rhs.values[i]))
+                return false;
+        }
+		return super.equals(obj);
 	}
 
     /** {@inheritDoc} */

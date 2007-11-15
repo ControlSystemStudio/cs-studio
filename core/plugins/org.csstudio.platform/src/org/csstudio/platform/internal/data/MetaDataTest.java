@@ -1,11 +1,13 @@
 package org.csstudio.platform.internal.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
 import org.junit.Test;
 
@@ -44,5 +46,30 @@ public class MetaDataTest
         assertEquals(m2, m1);
         assertNotSame(m1, m2);
         assertTrue(! m1.equals(m3));
+    }
+    
+    /** Check the metadata comparison inside the value comparison. */
+    @Test
+    public void compareInValues()
+    {
+        final ITimestamp stamp = TimestampFactory.now();
+        final ISeverity severity = ValueFactory.createMajorSeverity();
+        final String status = "Test";
+        final INumericMetaData meta_a = ValueFactory.createNumericMetaData(0, 1, 0, 1, 0, 1, 2, "stuff");
+        IValue a = new DoubleValue(stamp, severity, status, meta_a,
+                IValue.Quality.Original, new double [] { 1.0, 2.0 });
+        
+        final INumericMetaData meta_b = ValueFactory.createNumericMetaData(0, 1, 0, 1, 0, 1, 2, "stuff");
+        IValue b = new DoubleValue(stamp, severity, status, meta_b,
+                IValue.Quality.Original, new double [] { 1.0, 2.0 });
+        assertEquals(a, b);
+
+        a = new StringValue(stamp, severity, status,
+                IValue.Quality.Original, new String [] { "Fred" });
+
+        assertTrue(!a.equals(b));
+        b = new StringValue(stamp, severity, status,
+                IValue.Quality.Original, new String [] { "Fred" });
+        assertEquals(a, b);
     }
 }

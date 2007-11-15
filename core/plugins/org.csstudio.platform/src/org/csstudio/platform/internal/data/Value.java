@@ -86,15 +86,22 @@ abstract public class Value implements IValue
 
     /** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		if (! (obj instanceof Value))
 			return false;
-		Value rhs = (Value) obj;
-		return rhs.time.equals(time) &&
-			rhs.status.equals(status) &&
-			rhs.severity.toString().equals(severity.toString()) &&
-            rhs.meta_data.equals(meta_data);
+		final Value rhs = (Value) obj;
+		if (! (rhs.time.equals(time) &&
+			   rhs.status.equals(status) &&
+			   rhs.severity.toString().equals(severity.toString())))
+			   return false;
+        // Meta_data might be null
+        final IMetaData rhs_meta = rhs.getMetaData();
+		if (meta_data == null)
+		{   // OK if both are null
+		    return rhs_meta == null;
+		}
+		return rhs.meta_data.equals(meta_data);
 	}
 
     /** {@inheritDoc} */
