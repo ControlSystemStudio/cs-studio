@@ -18,14 +18,15 @@ public class NameTableItem
     extends PlatformObject
     implements IProcessVariableWithArchive
 {
-    private String pv;
-    private IArchiveDataSource archive;
-    private ArchiveServer server;
-    private ITimestamp start, end;
+    final private String pv;
+    final private IArchiveDataSource archive;
+    final private ArchiveServer server;
+    final private ITimestamp start, end;
     
     /** Constructor from pieces. */
-    public NameTableItem(ArchiveServer server, int key, String pv,
-                    ITimestamp start, ITimestamp end) throws Exception
+    public NameTableItem(final ArchiveServer server, final int key,
+            final String pv,
+            final ITimestamp start, final ITimestamp end) throws Exception
     {
         super();
         this.pv = pv;

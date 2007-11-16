@@ -23,9 +23,9 @@ public class NameTableItemLabelProvider extends LabelProvider
     }
 
     /** @return Returns the name, key, .... */
-    public String getColumnText(Object element, int column)
+    public String getColumnText(final Object element, final int column)
     {
-        NameTableItem item = (NameTableItem) element;
+        final NameTableItem item = (NameTableItem) element;
         switch (column)
         {
         case NAME:
@@ -33,10 +33,18 @@ public class NameTableItemLabelProvider extends LabelProvider
         case ARCHIVE:
             return item.getArchiveName();
         case START:
-            return item.getStart().format(ITimestamp.Format.DateTimeSeconds);
+            return getTimeInfo(item.getStart());
         case END:
-            return item.getEnd().format(ITimestamp.Format.DateTimeSeconds);
+            return getTimeInfo(item.getEnd());
         }
         return null;
+    }
+
+    /** @return String for time, also handling <code>null</code> time */
+    private String getTimeInfo(final ITimestamp time)
+    {
+        if (time == null)
+            return ""; //$NON-NLS-1$
+        return time.format(ITimestamp.Format.DateTimeSeconds);
     }
 }
