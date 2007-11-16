@@ -27,8 +27,10 @@ import java.util.TimerTask;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.TimerModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableTimerFigure;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
+import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -40,7 +42,13 @@ import org.eclipse.draw2d.IFigure;
  */
 public final class TimerEditPart extends AbstractWidgetEditPart {
 
+	/**
+	 * The internal {@link TimerTask}, which runs the configured script.
+	 */
 	private TimerTask _task;
+	/**
+	 * The internal {@link Timer}.
+	 */
 	private Timer _timer;
 
 	/**
@@ -59,16 +67,26 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	 */
 	private void configureTimer() {
 		if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-			_timer = new Timer();
 			TimerModel model = (TimerModel) getCastedModel();
-			_task = new TimerTask() {
-				@Override
-				public void run() {
-					CentralLogger.getInstance().info(TimerEditPart.this, "Timer executed");
-				}
-			};
-			_timer.schedule(_task, model.getDelay(), model.getDelay());
+			if (model.getEnabled()) {
+				_timer = new Timer();
+				_task = createTimerTask();
+				_timer.schedule(_task, model.getDelay(), model.getDelay());	
+			}
 		}		
+	}
+	
+	/**
+	 * Creates a {@link TimerTask}. 
+	 * @return The created {@link TimerTask}
+	 */
+	private TimerTask createTimerTask() {
+		return new TimerTask() {
+			@Override
+			public void run() {
+				CentralLogger.getInstance().info(TimerEditPart.this, "Timer executed");
+			}
+		};
 	}
 
 	/**
@@ -76,6 +94,24 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		IWidgetPropertyChangeHandler layerHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				if (getExecutionMode().equals(ExecutionMode.RUN_MODE) && _timer!=null) {
+					boolean execute = (Boolean) newValue;
+					if (execute && _task==null) {
+						_task = createTimerTask();
+						TimerModel model = (TimerModel) getCastedModel();
+						_timer.schedule(_task, model.getDelay(), model.getDelay());
+					} else if (!execute && _task!=null) {
+						_task.cancel();
+						_task = null;
+					}	
+				}
+				return true;
+			}
+		};
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, layerHandler);
 	}
 	
 	/**

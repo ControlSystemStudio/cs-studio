@@ -36,12 +36,12 @@ import org.eclipse.core.runtime.Path;
  */
 public final class TimerModel extends AbstractWidgetModel {
 	/**
-	 * The ID of the fill grade property.
+	 * The ID of the script property.
 	 */
 	public static final String PROP_SCRIPT = "script"; //$NON-NLS-1$
 	
 	/**
-	 * The ID of the orientation property.
+	 * The ID of the delay property.
 	 */
 	public static final String PROP_DELAY = "delay"; //$NON-NLS-1$
 
@@ -108,6 +108,7 @@ public final class TimerModel extends AbstractWidgetModel {
 		this.markPropertyAsInvisible(PROP_POS_Y);
 		this.markPropertyAsInvisible(PROP_VISIBILITY);
 		this.markPropertyAsInvisible(PROP_WIDTH);
+		this.markPropertyAsInvisible(PROP_CURSOR);
 	}
 	
 	/**
@@ -141,4 +142,5 @@ public final class TimerModel extends AbstractWidgetModel {
 	public int getDelay() {
 		return (Integer) getProperty(PROP_DELAY).getPropertyValue();
 	}
+
 }
