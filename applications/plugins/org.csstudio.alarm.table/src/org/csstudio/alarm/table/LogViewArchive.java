@@ -139,7 +139,7 @@ public class LogViewArchive extends ViewPart implements Observer {
 		parent.setLayout(grid);
 		Composite comp = new Composite(parent, SWT.NONE);
 		comp.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
-		comp.setLayout(new GridLayout(4, true));
+		comp.setLayout(new GridLayout(4, false));
 
 		Group buttons = new Group(comp, SWT.LINE_SOLID);
 		buttons.setText(Messages.getString("LogViewArchive_period")); //$NON-NLS-1$
@@ -158,7 +158,10 @@ public class LogViewArchive extends ViewPart implements Observer {
 
 		Group from = new Group(comp, SWT.LINE_SOLID);
 		from.setText(Messages.getString("LogViewArchive_from")); //$NON-NLS-1$
-		from.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+	    gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
+        gd.minimumHeight = 60;
+        gd.minimumWidth = 150;
+		from.setLayoutData(gd);
 		from.setLayout(new GridLayout(1, true));
 
 		_timeFrom = new Text(from, SWT.SINGLE);
@@ -168,7 +171,10 @@ public class LogViewArchive extends ViewPart implements Observer {
 		_timeFrom.setText("                            "); //$NON-NLS-1$
 		Group to = new Group(comp, SWT.LINE_SOLID);
 		to.setText(Messages.getString("LogViewArchive_to")); //$NON-NLS-1$
-		to.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
+        gd.minimumHeight = 60;
+        gd.minimumWidth = 150;
+		to.setLayoutData(gd);
 		to.setLayout(new GridLayout(1, true));
 
 		_timeTo = new Text(to, SWT.SINGLE);
@@ -181,7 +187,7 @@ public class LogViewArchive extends ViewPart implements Observer {
         count.setLayout(new GridLayout(1, true));
         gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gd.minimumHeight = 60;
-        gd.minimumWidth = 300;
+        gd.minimumWidth = 75;
         count.setLayoutData(gd);
 
         _countLabel = new Label(count,SWT.RIGHT);
