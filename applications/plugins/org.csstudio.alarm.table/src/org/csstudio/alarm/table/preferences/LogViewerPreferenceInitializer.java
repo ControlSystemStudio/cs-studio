@@ -44,7 +44,7 @@ public class LogViewerPreferenceInitializer extends AbstractPreferenceInitialize
 		store.setDefault(LogViewerPreferenceConstants.PRIMARY_URL, "failover:(tcp://elogbook.desy.de:64616)?maxReconnectAttempts=2"); //$NON-NLS-1$
 		store.setDefault(LogViewerPreferenceConstants.INITIAL_SECONDARY_CONTEXT_FACTORY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
 		store.setDefault(LogViewerPreferenceConstants.SECONDARY_URL, "failover:(tcp://krynfs.desy.de:62616)?maxReconnectAttempts=2"); //$NON-NLS-1$
-		store.setDefault(LogViewerPreferenceConstants.QUEUE, "LOG,ALARM,PUT_LOG"); //$NON-NLS-1$
+		store.setDefault(LogViewerPreferenceConstants.QUEUE, "LOG,ALARM,PUT_LOG,ACK"); //$NON-NLS-1$
 }
 
 }
