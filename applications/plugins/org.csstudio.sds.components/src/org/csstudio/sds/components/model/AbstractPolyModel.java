@@ -60,6 +60,8 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * The default value of the width property.
 	 */
 	private static final int DEFAULT_WIDTH = 20;
+	
+	private boolean _isRotationInitialized = false;
 
 	/**
 	 * Constructor.
@@ -191,28 +193,32 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * @param angle The angle to rotate
 	 */
 	public final void rotatePoints(final double angle) {
-		double trueAngle = Math.toRadians(angle - getRotationAngle());
-		double sin = Math.sin(trueAngle);
-		double cos = Math.cos(trueAngle);
-		
-		Point rotationPoint = new Point(this.getX()+this.getWidth()/2, this.getY()+this.getHeight()/2);
-		
-		PointList newPoints = new PointList();
-		for (int i=0;i<this.getPoints().size();i++) {
-			//Relative coordinates to the rotation point
-			int relX = this.getPoints().getPoint(i).x-rotationPoint.x;
-			int relY = this.getPoints().getPoint(i).y-rotationPoint.y;
-			double temp = relX * cos - relY * sin;
-			long y = Math.round(relX * sin + relY * cos);
-			long x = Math.round(temp);
+		if (_isRotationInitialized) {
+			double rotationAngle = getRotationAngle();
+			double trueAngle = Math.toRadians(angle - rotationAngle);
+			double sin = Math.sin(trueAngle);
+			double cos = Math.cos(trueAngle);
 			
-			newPoints.addPoint(new Point(x+rotationPoint.x,y+rotationPoint.y));
+			Point rotationPoint = new Point(this.getX()+this.getWidth()/2, this.getY()+this.getHeight()/2);
+			
+			PointList newPoints = new PointList();
+			for (int i=0;i<this.getPoints().size();i++) {
+				//Relative coordinates to the rotation point
+				int relX = this.getPoints().getPoint(i).x-rotationPoint.x;
+				int relY = this.getPoints().getPoint(i).y-rotationPoint.y;
+				double temp = relX * cos - relY * sin;
+				long y = Math.round(relX * sin + relY * cos);
+				long x = Math.round(temp);
+				
+				newPoints.addPoint(new Point(x+rotationPoint.x,y+rotationPoint.y));
+			}
+			
+			// sets the translated Points
+			setPoints(newPoints);	
 		}
 		
-		// sets the translated Points
-		setPoints(newPoints);
-		
 		super.setPropertyValue(PROP_ROTATION, angle);
+		_isRotationInitialized = true;
 	}
 
 	/**
