@@ -39,7 +39,7 @@ import org.osgi.framework.BundleContext;
 public class JmsLogsPlugin extends AbstractCssUiPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.alarm.table";
+	public static final String PLUGIN_ID = "org.csstudio.alarm.table"; //$NON-NLS-1$
 
 	
 	//The shared instance.

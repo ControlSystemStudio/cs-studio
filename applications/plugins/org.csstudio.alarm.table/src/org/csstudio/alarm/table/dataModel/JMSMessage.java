@@ -49,7 +49,7 @@ public class JMSMessage implements IProcessVariable {//,
 //		propertyNames = JmsLogsPlugin.getDefault().getPluginPreferences().
 //			getString(LogViewerPreferenceConstants.P_STRING).split(";");
 		for(int i = 0; i < propNames.length; i++) {
-			messageProperties.put(propNames[i].split(",")[0], "");
+			messageProperties.put(propNames[i].split(",")[0], ""); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
@@ -76,17 +76,17 @@ public class JMSMessage implements IProcessVariable {//,
 		
 		//if the table asks for the severity we return the severity value
 		//set in the preferences
-		if (property.equals("SEVERITY")) {
-			if(messageProperties.get("SEVERITY") != null) {
+		if (property.equals("SEVERITY")) { //$NON-NLS-1$
+			if(messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
 				return findSeverityValue();
 			}
 		}
 		
 		//to get the severity key (the 'real' severity get from the map message)
 		//we have to ask for 'SEVERITY_KEY'
-		if (property.equals("SEVERITY_KEY")) {
-			if(messageProperties.get("SEVERITY") != null) {
-				return messageProperties.get("SEVERITY");
+		if (property.equals("SEVERITY_KEY")) { //$NON-NLS-1$
+			if(messageProperties.get("SEVERITY") != null) { //$NON-NLS-1$
+				return messageProperties.get("SEVERITY"); //$NON-NLS-1$
 			}
 		}
 		
@@ -96,10 +96,10 @@ public class JMSMessage implements IProcessVariable {//,
 			if (s != null) {
 				return s;
 			} else {
-				return "";
+				return ""; //$NON-NLS-1$
 			}
 		} else {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	}
 	
@@ -110,38 +110,38 @@ public class JMSMessage implements IProcessVariable {//,
 	 */
 	private String findSeverityValue() {
 		
-		String severityKey = messageProperties.get("SEVERITY");
+		String severityKey = messageProperties.get("SEVERITY"); //$NON-NLS-1$
 		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault().getPreferenceStore();
 		
-		if (severityKey.equals(preferenceStore.getString("key 0"))) {
-			return preferenceStore.getString("value 0");
+		if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
+			return preferenceStore.getString("value 0"); //$NON-NLS-1$
 		}
-		if (severityKey.equals(preferenceStore.getString("key 1"))) {
-			return preferenceStore.getString("value 1");
+		if (severityKey.equals(preferenceStore.getString("key 1"))) { //$NON-NLS-1$
+			return preferenceStore.getString("value 1"); //$NON-NLS-1$
 		}
-		if (severityKey.equals(preferenceStore.getString("key 2"))) {
-			return preferenceStore.getString("value 2");
+		if (severityKey.equals(preferenceStore.getString("key 2"))) { //$NON-NLS-1$
+			return preferenceStore.getString("value 2"); //$NON-NLS-1$
 		}
-		if (severityKey.equals(preferenceStore.getString("key 3"))) {
-			return preferenceStore.getString("value 3");
+		if (severityKey.equals(preferenceStore.getString("key 3"))) { //$NON-NLS-1$
+			return preferenceStore.getString("value 3"); //$NON-NLS-1$
 		}
-		if (severityKey.equals(preferenceStore.getString("key 4"))) {
-			return preferenceStore.getString("value 4");
+		if (severityKey.equals(preferenceStore.getString("key 4"))) { //$NON-NLS-1$
+			return preferenceStore.getString("value 4"); //$NON-NLS-1$
 		}
-		if (severityKey.equals(preferenceStore.getString("key 5"))) {
-			return preferenceStore.getString("value 5");
+		if (severityKey.equals(preferenceStore.getString("key 5"))) { //$NON-NLS-1$
+			return preferenceStore.getString("value 5"); //$NON-NLS-1$
 		}
-		if (severityKey.equals(preferenceStore.getString("key 6"))) {
-			return preferenceStore.getString("value 6");
+		if (severityKey.equals(preferenceStore.getString("key 6"))) { //$NON-NLS-1$
+			return preferenceStore.getString("value 6"); //$NON-NLS-1$
 		}
-		if (severityKey.equals(preferenceStore.getString("key 7"))) {
-			return preferenceStore.getString("value 7");
+		if (severityKey.equals(preferenceStore.getString("key 7"))) { //$NON-NLS-1$
+			return preferenceStore.getString("value 7"); //$NON-NLS-1$
 		}
-		if (severityKey.equals(preferenceStore.getString("key 8"))) {
-			return preferenceStore.getString("value 8");
+		if (severityKey.equals(preferenceStore.getString("key 8"))) { //$NON-NLS-1$
+			return preferenceStore.getString("value 8"); //$NON-NLS-1$
 		}
-		if (severityKey.equals(preferenceStore.getString("key 9"))) {
-			return preferenceStore.getString("value 9");
+		if (severityKey.equals(preferenceStore.getString("key 9"))) { //$NON-NLS-1$
+			return preferenceStore.getString("value 9"); //$NON-NLS-1$
 		}
 		
 		return "invalid severity";
@@ -156,36 +156,36 @@ public class JMSMessage implements IProcessVariable {//,
 	 */
 	public int getSeverityNumber() {
 		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault().getPreferenceStore();
-		String severityKey = messageProperties.get("SEVERITY");
+		String severityKey = messageProperties.get("SEVERITY"); //$NON-NLS-1$
 		
-		if (severityKey.equals(preferenceStore.getString("key 0"))) {
+		if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
 			return 0;
 		}
-		if (severityKey.equals(preferenceStore.getString("key 1"))) {
+		if (severityKey.equals(preferenceStore.getString("key 1"))) { //$NON-NLS-1$
 			return 1;
 		}
-		if (severityKey.equals(preferenceStore.getString("key 2"))) {
+		if (severityKey.equals(preferenceStore.getString("key 2"))) { //$NON-NLS-1$
 			return 2;
 		}
-		if (severityKey.equals(preferenceStore.getString("key 3"))) {
+		if (severityKey.equals(preferenceStore.getString("key 3"))) { //$NON-NLS-1$
 			return 3;
 		}
-		if (severityKey.equals(preferenceStore.getString("key 4"))) {
+		if (severityKey.equals(preferenceStore.getString("key 4"))) { //$NON-NLS-1$
 			return 4;
 		}
-		if (severityKey.equals(preferenceStore.getString("key 5"))) {
+		if (severityKey.equals(preferenceStore.getString("key 5"))) { //$NON-NLS-1$
 			return 5;
 		}
-		if (severityKey.equals(preferenceStore.getString("key 6"))) {
+		if (severityKey.equals(preferenceStore.getString("key 6"))) { //$NON-NLS-1$
 			return 6;
 		}
-		if (severityKey.equals(preferenceStore.getString("key 7"))) {
+		if (severityKey.equals(preferenceStore.getString("key 7"))) { //$NON-NLS-1$
 			return 7;
 		}
-		if (severityKey.equals(preferenceStore.getString("key 8"))) {
+		if (severityKey.equals(preferenceStore.getString("key 8"))) { //$NON-NLS-1$
 			return 8;
 		}
-		if (severityKey.equals(preferenceStore.getString("key 9"))) {
+		if (severityKey.equals(preferenceStore.getString("key 9"))) { //$NON-NLS-1$
 			return 9;
 		}
 		
@@ -196,7 +196,7 @@ public class JMSMessage implements IProcessVariable {//,
 
 	public String getName() {
 		// TODO Auto-generated method stub
-		return messageProperties.get("NAME");
+		return messageProperties.get("NAME"); //$NON-NLS-1$
 	}
 
 	public Object getAdapter(Class adapter) {

@@ -54,7 +54,7 @@ public class SendAcknowledge extends Job {
 	 * @param msg JMSMessage to acknowledge
 	 */
 	public SendAcknowledge(List<JMSMessage> msg) {
-		super("Send Ack");
+		super("Send Ack"); //$NON-NLS-1$
 		messagesToSend = msg;
 	}
 
@@ -83,15 +83,15 @@ public class SendAcknowledge extends Job {
 	                String value = hm.get(key);
 	                mapMessage.setString(key, value);
 	            }
-	            mapMessage.setString("ACK", "TRUE");
-	            mapMessage.setString("ACK_TIME", time);
+	            mapMessage.setString("ACK", "TRUE"); //$NON-NLS-1$ //$NON-NLS-2$
+	            mapMessage.setString("ACK_TIME", time); //$NON-NLS-1$
 	            Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack");
 	            Engine.getInstance().addLdapWriteRequest("epicsAlarmAcknTimeStamp", message.getName(), time);
 	            JmsLogsPlugin.logInfo("LogTableViewer send Ack message, MsgName: " + 
-	            		message.getName() + " MsgTime: " + message.getProperty("EVENTTIME"));
+	            		message.getName() + " MsgTime: " + message.getProperty("EVENTTIME")); //$NON-NLS-2$
 	            sender.sendMessage();
 	            JmsLogsPlugin.logInfo("send acknowledge for msg: " + 
-	            		message.getName() + ", " + message.getProperty("EVENTTIME"));
+	            		message.getName() + ", " + message.getProperty("EVENTTIME")); //$NON-NLS-2$
 		}
 		} catch (Exception e) {
           	JmsLogsPlugin.logException("ACK not set", e);
@@ -99,7 +99,7 @@ public class SendAcknowledge extends Job {
   		} finally {
             try {
 				sender.stopSender();
-				System.out.println("stop sender!!!");
+				System.out.println("stop sender!!!"); //$NON-NLS-1$
 			} catch (Exception e) {
 	          	JmsLogsPlugin.logException("JMS Error", e);
 			}

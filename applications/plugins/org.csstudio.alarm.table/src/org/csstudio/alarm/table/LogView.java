@@ -162,7 +162,7 @@ public class LogView extends ViewPart implements MessageListener {
 //	DEBUG					JmsLogsPlugin.logInfo("LogView message received, MsgName: " + 
 //                        		mm.getString("NAME") + " Severity: " + mm.getString("SEVERITY") +
 //                        		" MsgTime: " + mm.getString("EVENTTIME"));
-						if(mm.getString("ACK")!=null &&  mm.getString("ACK").toUpperCase().equals("TRUE")){
+						if(mm.getString("ACK")!=null &&  mm.getString("ACK").toUpperCase().equals("TRUE")){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             setAck(mm);
                         } else {
                         	jmsml.addJMSMessage(mm);
@@ -172,7 +172,7 @@ public class LogView extends ViewPart implements MessageListener {
 					}
 				} catch (Exception e) {
                     e.printStackTrace();
-					JmsLogsPlugin.logException("", e);
+					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
 				}
 			}
 		});
@@ -190,8 +190,8 @@ public class LogView extends ViewPart implements MessageListener {
            if (item.getData() instanceof JMSMessage) {
             JMSMessage jmsMessage = (JMSMessage) item.getData();
             try {
-                if(jmsMessage.getName().equals(message.getString("NAME"))&&jmsMessage.getProperty("EVENTTIME").equals(message.getString("EVENTTIME"))){
-                	jmsMessage.getHashMap().put("ACK","true");
+                if(jmsMessage.getName().equals(message.getString("NAME"))&&jmsMessage.getProperty("EVENTTIME").equals(message.getString("EVENTTIME"))){ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                	jmsMessage.getHashMap().put("ACK","true"); //$NON-NLS-1$ //$NON-NLS-2$
                     jlv.refresh();
                     break;
                 }
@@ -230,13 +230,13 @@ public class LogView extends ViewPart implements MessageListener {
 	 */
 	public void saveColumn(){
 		int[] width = jlv.getColumnWidth();
-		String newPreferenceColumnString="";
-		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.P_STRING).split(";");
+		String newPreferenceColumnString=""; //$NON-NLS-1$
+		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences().getString(LogViewerPreferenceConstants.P_STRING).split(";"); //$NON-NLS-1$
 		if(width.length!=columns.length){
 			return;
 		}
 		for (int i = 0; i < columns.length; i++) {
-			newPreferenceColumnString = newPreferenceColumnString.concat(columns[i].split(",")[0]+","+width[i]+";");
+			newPreferenceColumnString = newPreferenceColumnString.concat(columns[i].split(",")[0]+","+width[i]+";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		newPreferenceColumnString = newPreferenceColumnString.substring(0,newPreferenceColumnString.length()-1);
 		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();

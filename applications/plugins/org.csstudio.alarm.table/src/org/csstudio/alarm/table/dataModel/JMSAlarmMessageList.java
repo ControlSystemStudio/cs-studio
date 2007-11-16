@@ -31,17 +31,17 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			return;
 		}
 		//do not insert messges with type: 'status'
-		if ((mm.getString("TYPE") != null) && (mm.getString("TYPE").equalsIgnoreCase("status"))) {
+		if ((mm.getString("TYPE") != null) && (mm.getString("TYPE").equalsIgnoreCase("status"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return;
 		} else {
 			String severity = null;
-			severity = mm.getString("SEVERITY");
+			severity = mm.getString("SEVERITY"); //$NON-NLS-1$
 			if (severity != null) {
 				//is there an old message from same pv (deleteOrGrayOutEqualMessages == true)
 				// -> display new message anyway
 				//is new message NOT from Type NO_ALARM -> display message
 				if ((deleteOrGrayOutEqualMessages(mm))
-						|| (severity.equalsIgnoreCase("NO_ALARM")) == false) {
+						|| (severity.equalsIgnoreCase("NO_ALARM")) == false) { //$NON-NLS-1$
 					JMSMessage jmsm = addMessageProperties(mm);
 					JMSMessages.add(JMSMessages.size(), jmsm);
 					Iterator iterator = changeListeners.iterator();
@@ -74,15 +74,15 @@ public class JMSAlarmMessageList extends JMSMessageList {
 		List<JMSMessage> jmsMessagesToRemove = new ArrayList<JMSMessage>();
 		List<JMSMessage> jmsMessagesToRemoveAndAdd = new ArrayList<JMSMessage>();
 		try {
-			String newPVName = mm.getString("NAME");
-			String newSeverity = mm.getString("SEVERITY");
+			String newPVName = mm.getString("NAME"); //$NON-NLS-1$
+			String newSeverity = mm.getString("SEVERITY"); //$NON-NLS-1$
 
 			if ((newPVName != null) && (newSeverity != null)) {
 				while (it.hasNext()) {
 					JMSMessage jmsm = it.next();
-					String pvNameFromList = jmsm.getProperty("NAME");
+					String pvNameFromList = jmsm.getProperty("NAME"); //$NON-NLS-1$
 					//the 'real' severity in map message we get from the JMSMessage via SEVERITY_KEY
-					String severityFromList = jmsm.getProperty("SEVERITY_KEY");
+					String severityFromList = jmsm.getProperty("SEVERITY_KEY"); //$NON-NLS-1$
 					if ((pvNameFromList != null) && (severityFromList != null)) {
 						
 						//is there a previous alarm message from same pv?
@@ -97,8 +97,8 @@ public class JMSAlarmMessageList extends JMSMessageList {
 								jmsMessagesToRemove.add(jmsm);
 								//is old message not acknowledged or is severity from old message not NO_ALARM ->
 								//add message to list (not delete message)
-                                if(!jmsm.getProperty("ACK_HIDDEN").toUpperCase().equals("TRUE") && 
-                                		severityFromList.equalsIgnoreCase("NO_ALARM") == false) {
+                                if(!jmsm.getProperty("ACK_HIDDEN").toUpperCase().equals("TRUE") &&  //$NON-NLS-1$ //$NON-NLS-2$
+                                		severityFromList.equalsIgnoreCase("NO_ALARM") == false) { //$NON-NLS-1$
                                     jmsm.setBackgroundColorGray(true);
                                 	jmsMessagesToRemoveAndAdd.add(jmsm);
                                 }

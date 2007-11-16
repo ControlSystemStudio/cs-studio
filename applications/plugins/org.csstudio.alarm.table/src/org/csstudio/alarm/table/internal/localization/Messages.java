@@ -124,6 +124,8 @@ public class Messages extends NLS {
 
 	public static String LogViewArchive_from;
 
+    public static String LogViewArchive_NoMessageInDB;
+
 	public static String LogViewArchive_period;
 
 	public static String LogViewArchive_to;
@@ -135,6 +137,32 @@ public class Messages extends NLS {
 	public static String LogViewArchive_count;
 
 	public static String newColumnName;
+
+    public static String StartEnd_AbsEnd;
+
+    public static String StartEnd_AbsEnd_TT;
+
+    public static String StartEnd_AbsStart;
+
+    public static String StartEnd_AbsStart_TT;
+
+    public static String StartEnd_EndTime;
+
+    public static String StartEnd_EndTime_TT;
+
+    public static String StartEnd_RelEnd;
+
+    public static String StartEnd_RelEnd_TT;
+
+    public static String StartEnd_RelStart;
+
+    public static String StartEnd_RelStart_TT;
+
+    public static String StartEnd_StartExceedsEnd;
+
+    public static String StartEnd_StartTime;
+
+    public static String StartEnd_StartTime_TT;
 
 	/**
 	 * The localzation messages ressource bundle.

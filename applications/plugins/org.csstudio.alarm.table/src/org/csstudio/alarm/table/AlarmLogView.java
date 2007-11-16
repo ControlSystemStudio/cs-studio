@@ -74,10 +74,10 @@ public class AlarmLogView extends LogView {
 		String preferenceColumnString = JmsLogsPlugin.getDefault().getPluginPreferences()
 		.getString(AlarmViewerPreferenceConstants.P_STRINGAlarm);
 		
-		preferenceColumnString = "Ack,25;" + preferenceColumnString;
+		preferenceColumnString = "Ack,25;" + preferenceColumnString; //$NON-NLS-1$
 		
 		//read the column names from the preference page
-		columnNames = preferenceColumnString.split(";");
+		columnNames = preferenceColumnString.split(";"); //$NON-NLS-1$
 
 		//create the table model 
 		jmsml = new JMSAlarmMessageList(columnNames);
@@ -236,8 +236,8 @@ public class AlarmLogView extends LogView {
 		 * When dispose store the width for each column, excepting the first column (ACK).
 		 */
 		int[] width = jlv.getColumnWidth();
-		String newPreferenceColumnString="";
-		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(";");
+		String newPreferenceColumnString=""; //$NON-NLS-1$
+		String[] columns = JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.P_STRINGAlarm).split(";"); //$NON-NLS-1$
 		/**The "+1" is need for the column Ack.
 		 * The column Ack is not at the preferences and the ackcolumn is ever the first column.
 		 */
@@ -246,7 +246,7 @@ public class AlarmLogView extends LogView {
 		}
 		for (int i = 0; i < columns.length; i++) {
 			/** +width[i+1]: see above */ 
-			newPreferenceColumnString = newPreferenceColumnString.concat(columns[i].split(",")[0]+","+width[i+1]+";");
+			newPreferenceColumnString = newPreferenceColumnString.concat(columns[i].split(",")[0]+","+width[i+1]+";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		newPreferenceColumnString = newPreferenceColumnString.substring(0,newPreferenceColumnString.length()-1);
 		IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();

@@ -218,10 +218,10 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         gd = new GridData(SWT.FILL, SWT.FILL, true, false, 4,1);
         down.setLayoutData(gd);
         down.setLayout(new FillLayout(SWT.VERTICAL));
-        String type="";
-        String value="";
-        String logic="";
-        final String key = "like lower('";
+        String type=""; //$NON-NLS-1$
+        String value=""; //$NON-NLS-1$
+        String logic=""; //$NON-NLS-1$
+        final String key = "like lower('"; //$NON-NLS-1$
         down.setRedraw(false);
         if(_filter!= null){
             int k=0;
@@ -242,8 +242,8 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
                     if(pointer>=0){
                         value = _filter.substring(k,_filter.indexOf('\'', k));
                         System.out.println("Type= "+value);
-                        int p1 = _filter.indexOf("AND", k);
-                        int p2 = _filter.indexOf("OR", k);
+                        int p1 = _filter.indexOf("AND", k); //$NON-NLS-1$
+                        int p2 = _filter.indexOf("OR", k); //$NON-NLS-1$
                         if(p1>=0&&(p1<p2||p2<0)){
                             logic = _filter.substring(p1,p1+3);
                             pointer=p1;
