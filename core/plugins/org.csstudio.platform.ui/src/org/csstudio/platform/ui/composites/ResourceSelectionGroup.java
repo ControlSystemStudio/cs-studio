@@ -36,7 +36,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -62,7 +61,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
- * Workbench-level composite for choosing a container.
+ * Workbench-level composite for choosing a resource.
  * 
  * <p>
  * <b>Code is based upon
@@ -70,10 +69,10 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  * plugin <code>org.eclipse.ui.ide</code>.</b>
  * </p>
  * 
- * @author Alexander Will
+ * @author Alexander Will, Joerg Rathlev
  * @version $Revision$
  */
-public final class ContainerSelectionGroup extends Composite {
+public final class ResourceSelectionGroup extends Composite {
 	
 	/**
 	 * This action is for creating a new folder.
@@ -104,7 +103,7 @@ public final class ContainerSelectionGroup extends Composite {
 		 * {@inheritDoc}
 		 */
 		public void run() {
-			final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(getContainerFullPath());
+			final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(getFullPath());
 			final StringBuffer buffer = new StringBuffer(Messages.CreateFolderAction_DIALOG_MESSAGE);
 			buffer.append(" (");
 			buffer.append(resource.getFullPath());
@@ -188,16 +187,18 @@ public final class ContainerSelectionGroup extends Composite {
 	/**
 	 * Last selection made by user.
 	 */
-	private IContainer _selectedContainer;
+	private IResource _selectedResource;
 
 	/**
 	 * The tree widget.
 	 */
 	private TreeViewer _treeViewer;
+	
 	/**
 	 * The NewFolderAction.
 	 */
 	private Action _newFolderAction;
+	
 	/**
 	 * The NewProjectAction.
 	 */
@@ -221,10 +222,14 @@ public final class ContainerSelectionGroup extends Composite {
 	 * @param listener
 	 *            A listener to forward events to. Can be null if no listener is
 	 *            required.
+	 * @param fileExtensions
+	 *            File extensions of files to include in the tree view. Pass
+	 *            an empty array or <code>null</code> to show only container
+	 *            resources.
 	 */
-	public ContainerSelectionGroup(final Composite parent,
-			final Listener listener) {
-		this(parent, listener, null);
+	public ResourceSelectionGroup(final Composite parent,
+			final Listener listener, final String[] fileExtensions) {
+		this(parent, listener, fileExtensions, null);
 	}
 
 	/**
@@ -235,12 +240,17 @@ public final class ContainerSelectionGroup extends Composite {
 	 * @param listener
 	 *            A listener to forward events to. Can be null if no listener is
 	 *            required.
+	 * @param fileExtensions
+	 *            File extensions of files to include in the tree view. Pass
+	 *            an empty array or <code>null</code> to show only container
+	 *            resources.
 	 * @param message
 	 *            The text to present to the user.
 	 */
-	public ContainerSelectionGroup(final Composite parent,
-			final Listener listener, final String message) {
-		this(parent, listener, message, true);
+	public ResourceSelectionGroup(final Composite parent,
+			final Listener listener, final String[] fileExtensions,
+			final String message) {
+		this(parent, listener, fileExtensions, message, true);
 	}
 
 	/**
@@ -251,15 +261,20 @@ public final class ContainerSelectionGroup extends Composite {
 	 * @param listener
 	 *            A listener to forward events to. Can be null if no listener is
 	 *            required.
+	 * @param fileExtensions
+	 *            File extensions of files to include in the tree view. Pass
+	 *            an empty array or <code>null</code> to show only container
+	 *            resources.
 	 * @param message
 	 *            The text to present to the user.
 	 * @param showClosedProjects
 	 *            Whether or not to show closed projects.
 	 */
-	public ContainerSelectionGroup(final Composite parent,
-			final Listener listener, final String message,
+	public ResourceSelectionGroup(final Composite parent,
+			final Listener listener, final String[] fileExtensions,
+			final String message,
 			final boolean showClosedProjects) {
-		this(parent, listener, message, showClosedProjects,
+		this(parent, listener, fileExtensions, message, showClosedProjects,
 				SIZING_SELECTION_PANE_HEIGHT, SIZING_SELECTION_PANE_WIDTH);
 	}
 
@@ -271,6 +286,10 @@ public final class ContainerSelectionGroup extends Composite {
 	 * @param listener
 	 *            A listener to forward events to. Can be null if no listener is
 	 *            required.
+	 * @param fileExtensions
+	 *            File extensions of files to include in the tree view. Pass
+	 *            an empty array or <code>null</code> to show only container
+	 *            resources.
 	 * @param message
 	 *            The text to present to the user.
 	 * @param showClosedProjects
@@ -280,17 +299,18 @@ public final class ContainerSelectionGroup extends Composite {
 	 * @param widthHint
 	 *            width hint for the drill down composite
 	 */
-	public ContainerSelectionGroup(final Composite parent,
-			final Listener listener, final String message,
-			final boolean showClosedProjects, final int heightHint,
-			final int widthHint) {
+	public ResourceSelectionGroup(final Composite parent,
+			final Listener listener, final String[] fileExtensions,
+			final String message, final boolean showClosedProjects,
+			final int heightHint, final int widthHint) {
 		super(parent, SWT.NONE);
 		_listener = listener;
 		_showClosedProjects = showClosedProjects;
 		if (message != null) {
-			createContents(message, heightHint, widthHint);
+			createContents(message, fileExtensions, heightHint, widthHint);
 		} else {
-			createContents(Messages.ContainerSelectionGroup_TITLE, heightHint, widthHint); //$NON-NLS-1$
+			createContents(Messages.ContainerSelectionGroup_TITLE,
+					fileExtensions, heightHint, widthHint);
 		}
 	}
 
@@ -298,11 +318,11 @@ public final class ContainerSelectionGroup extends Composite {
 	 * The container selection has changed in the tree view. Update the
 	 * container name field value and notify all listeners.
 	 * 
-	 * @param container
+	 * @param resource
 	 *            The container that changed
 	 */
-	public void containerSelectionChanged(final IContainer container) {
-		_selectedContainer = container;
+	public void containerSelectionChanged(final IResource resource) {
+		_selectedResource = resource;
 
 		// fire an event so the parent can update its controls
 		if (_listener != null) {
@@ -318,23 +338,15 @@ public final class ContainerSelectionGroup extends Composite {
 	 * 
 	 * @param message
 	 *            The text to present to the user.
-	 */
-	public void createContents(final String message) {
-		createContents(message, SIZING_SELECTION_PANE_HEIGHT,
-				SIZING_SELECTION_PANE_WIDTH);
-	}
-
-	/**
-	 * Creates the contents of the composite.
-	 * 
-	 * @param message
-	 *            The text to present to the user.
+	 * @param fileExtensions
+	 *            The file extensions of files to include in the tree.
 	 * @param heightHint
 	 *            The height of the tree widget.
 	 * @param widthHint
 	 *            The width of the tree widget.
 	 */
-	public void createContents(final String message, final int heightHint,
+	public void createContents(final String message,
+			final String[] fileExtensions, final int heightHint,
 			final int widthHint) {
 		GridLayout layout = new GridLayout();
 		layout.marginWidth = 0;
@@ -345,7 +357,7 @@ public final class ContainerSelectionGroup extends Composite {
 		label.setText(message);
 //		label.setFont(getFont());
 
-		createTreeViewer(heightHint);
+		createTreeViewer(fileExtensions, heightHint);
 //		Dialog.applyDialogFont(this);
 	}
 	
@@ -361,10 +373,13 @@ public final class ContainerSelectionGroup extends Composite {
 	/**
 	 * Returns a new drill down viewer for this dialog.
 	 * 
+	 * @param fileExtensions
+	 *            The file extensions of files to include in the tree.
 	 * @param heightHint
 	 *            height hint for the drill down composite
 	 */
-	protected void createTreeViewer(final int heightHint) {
+	protected void createTreeViewer(final String[] fileExtensions,
+			final int heightHint) {
 		// Create drill down.
 		DrillDownComposite drillDown = new DrillDownComposite(this, SWT.BORDER);
 		GridData spec = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -375,7 +390,8 @@ public final class ContainerSelectionGroup extends Composite {
 		// Create tree viewer inside drill down.
 		_treeViewer = new TreeViewer(drillDown, SWT.NONE);
 		drillDown.setChildTree(_treeViewer);
-		ContainerContentProvider cp = new ContainerContentProvider();
+		WorkspaceResourceContentProvider cp =
+			new WorkspaceResourceContentProvider(fileExtensions);
 		cp.showClosedProjects(_showClosedProjects);
 		_treeViewer.setContentProvider(cp);
 		_treeViewer.setLabelProvider(WorkbenchLabelProvider
@@ -388,7 +404,7 @@ public final class ContainerSelectionGroup extends Composite {
 							final SelectionChangedEvent event) {
 						IStructuredSelection selection = (IStructuredSelection) event
 								.getSelection();
-						containerSelectionChanged((IContainer) selection
+						containerSelectionChanged((IResource) selection
 								.getFirstElement()); // allow null
 						if (_newFolderAction!=null) {
 							_newFolderAction.setEnabled(selection!=null);
@@ -477,12 +493,11 @@ public final class ContainerSelectionGroup extends Composite {
 	 * 
 	 * @return IPath
 	 */
-	public IPath getContainerFullPath() {
-		if (_selectedContainer == null) {
+	public IPath getFullPath() {
+		if (_selectedResource == null) {
 			return null;
 		}
-		return _selectedContainer.getFullPath();
-
+		return _selectedResource.getFullPath();
 	}
 
 	/**
@@ -492,25 +507,36 @@ public final class ContainerSelectionGroup extends Composite {
 	public void setInitialFocus() {
 		_treeViewer.getTree().setFocus();
 	}
-
+	
 	/**
-	 * Sets the selected existing container.
+	 * Selects the given resource.
 	 * 
-	 * @param container
-	 *            The selected existing container.
+	 * @param resource the resource to select.
 	 */
-	@SuppressWarnings("unchecked")
-	public void setSelectedContainer(final IContainer container) {
-		_selectedContainer = container;
-
-		// expand to and select the specified container
-		List itemsToExpand = new ArrayList();
-		IContainer parent = container.getParent();
+	public void setSelectedResource(final IResource resource) {
+		_selectedResource = resource;
+		
+		List<IResource> itemsToExpand = new ArrayList<IResource>();
+		IContainer parent = resource.getParent();
 		while (parent != null) {
 			itemsToExpand.add(0, parent);
 			parent = parent.getParent();
 		}
 		_treeViewer.setExpandedElements(itemsToExpand.toArray());
-		_treeViewer.setSelection(new StructuredSelection(container), true);
+		_treeViewer.setSelection(new StructuredSelection(resource), true);
+	}
+	
+	/**
+	 * Selects the resource with the given path.
+	 * 
+	 * @param path
+	 *            The path to a specific resource.
+	 */
+	public void setSelectedResource(final IPath path) {
+		IContainer workspace = ResourcesPlugin.getWorkspace().getRoot();
+		IResource res = workspace.findMember(path);
+		if (res != null) {
+			setSelectedResource(res);
+		}
 	}
 }

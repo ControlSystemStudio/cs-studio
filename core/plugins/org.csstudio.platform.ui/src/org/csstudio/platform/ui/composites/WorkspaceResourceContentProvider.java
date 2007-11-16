@@ -1,24 +1,3 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
- * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
- *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
- * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
- * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
- * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- */
 package org.csstudio.platform.ui.composites;
 
 import java.util.ArrayList;
@@ -34,27 +13,43 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Provides content for a tree viewer that shows only containers.
+ * Provides workspace resources as content for a tree viewer.
  * 
- * <p>
- * <b>Code is based upon
- * <code>org.eclipse.ui.internal.ide.misc.ContainerContentProvider</code> in
- * plugin <code>org.eclipse.ui.ide</code>.</b>
- * </p>
+ * <p>Code is based upon
+ * <code>org.eclipse.ui.internal.ide.misc.ContainerContentProvider</code>
+ * in plugin <code>org.eclipse.ui.ide</code></p>
  * 
- * @author Alexander Will
- * @version $Revision$
+ * @author Alexander Will, Joerg Rathlev
  */
-public final class ContainerContentProvider implements ITreeContentProvider {
+final class WorkspaceResourceContentProvider implements
+		ITreeContentProvider {
 	/**
 	 * Flag that signals if closed projects should be included as well.
 	 */
 	private boolean _showClosedProjects = true;
+	
+	/**
+	 * File extensions of files to include in the result lists.
+	 */
+	private String[] _fileExtensions;
 
 	/**
-	 * Creates a new ContainerContentProvider.
+	 * Creates a new <code>WorkspaceResourcesContentProvider</code>.
+	 * 
+	 * @param fileExtensions
+	 *            The file extensions of file resources to include in the
+	 *            contents provided by the content provider. Use
+	 *            <code>null</code> or an empty array to create a content
+	 *            provider that provides only container resources (projects
+	 *            and folders).
 	 */
-	public ContainerContentProvider() {
+	public WorkspaceResourceContentProvider(String[] fileExtensions) {
+		if (fileExtensions != null) {
+			_fileExtensions = new String[fileExtensions.length];
+			System.arraycopy(fileExtensions, 0, _fileExtensions, 0, fileExtensions.length);
+		} else {
+			_fileExtensions = new String[0];
+		}
 	}
 
 	/**
@@ -88,11 +83,11 @@ public final class ContainerContentProvider implements ITreeContentProvider {
 			IContainer container = (IContainer) element;
 			if (container.isAccessible()) {
 				try {
-					List children = new ArrayList();
+					List<IResource> children = new ArrayList<IResource>();
 					IResource[] members = container.members();
-					for (int i = 0; i < members.length; i++) {
-						if (members[i].getType() != IResource.FILE) {
-							children.add(members[i]);
+					for (IResource member : members) {
+						if (includeResource(member)) {
+							children.add(member);
 						}
 					}
 					return children.toArray();
@@ -102,6 +97,32 @@ public final class ContainerContentProvider implements ITreeContentProvider {
 			}
 		}
 		return new Object[0];
+	}
+	
+	/**
+	 * Returns whether the given resource should be included in the contents
+	 * this content provider returns.
+	 * 
+	 * @param resource
+	 *            the resource.
+	 * @return <code>true</code> if the resource should be included,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean includeResource(IResource resource) {
+		if (resource.getType() != IResource.FILE) {
+			// non-files are always included
+			return true;
+		} else {
+			// files are included if their extension is in the list
+			// of accepted extensions
+			for (String ext : _fileExtensions) {
+				if (ext != null
+						&& ext.equals(resource.getFileExtension())) {
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 
 	/**

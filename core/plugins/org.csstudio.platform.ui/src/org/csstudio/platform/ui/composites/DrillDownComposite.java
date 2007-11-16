@@ -44,7 +44,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
  * @author Kai Meyer
  *
  */
-public class DrillDownComposite extends Composite {
+class DrillDownComposite extends Composite {
 	
 	/**
 	 * The ToolBarManager of this DrillDownComposite.

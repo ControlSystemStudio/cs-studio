@@ -33,7 +33,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.fieldassist.FieldAssistColors;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -135,7 +134,7 @@ public final class ResourceAndContainerGroup implements Listener {
 	/**
 	 * The container selection group.
 	 */
-	private ContainerSelectionGroup _containerGroup;
+	private ResourceSelectionGroup _containerGroup;
 
 	/**
 	 * The name of the resource.
@@ -261,11 +260,11 @@ public final class ResourceAndContainerGroup implements Listener {
 
 		// container group
 		if (heightHint == SWT.DEFAULT) {
-			_containerGroup = new ContainerSelectionGroup(composite, this,
-					null, _showClosedProjects);
+			_containerGroup = new ResourceSelectionGroup(composite, this,
+					null, null, _showClosedProjects);
 		} else {
-			_containerGroup = new ContainerSelectionGroup(composite, this,
-					null, _showClosedProjects, heightHint,
+			_containerGroup = new ResourceSelectionGroup(composite, this,
+					null, null, _showClosedProjects, heightHint,
 					SIZING_TEXT_FIELD_WIDTH);
 		}
 
@@ -314,7 +313,7 @@ public final class ResourceAndContainerGroup implements Listener {
 	 * @return The full path of the selected container.
 	 */
 	public IPath getContainerFullPath() {
-		return _containerGroup.getContainerFullPath();
+		return _containerGroup.getFullPath();
 	}
 
 	/**
@@ -385,7 +384,7 @@ public final class ResourceAndContainerGroup implements Listener {
 			if (!(initial instanceof IContainer)) {
 				initial = initial.getParent();
 			}
-			_containerGroup.setSelectedContainer((IContainer) initial);
+			_containerGroup.setSelectedResource(initial);
 		}
 		validateControls();
 	}
@@ -420,7 +419,7 @@ public final class ResourceAndContainerGroup implements Listener {
 	 * @return <code>boolean</code> indicating validity of the container name
 	 */
 	private boolean validateContainer() {
-		IPath path = _containerGroup.getContainerFullPath();
+		IPath path = _containerGroup.getFullPath();
 		if (path == null) {
 			_problemType = PROBLEM_CONTAINER_EMPTY;
 			_problemMessage = Messages.ResourceAndContainerGroup_PROBLEM_EMPTY;
@@ -470,7 +469,7 @@ public final class ResourceAndContainerGroup implements Listener {
 			return false;
 		}
 
-		IPath path = _containerGroup.getContainerFullPath().append(
+		IPath path = _containerGroup.getFullPath().append(
 				getResourceNameWithExtension());
 		return validateFullResourcePath(path);
 	}
@@ -541,10 +540,10 @@ public final class ResourceAndContainerGroup implements Listener {
 	 */
 	private void refreshFullPath() {
 		StringBuffer buffer = new StringBuffer();
-		if (_containerGroup.getContainerFullPath() != null) {
+		if (_containerGroup.getFullPath() != null) {
 			buffer.append(ResourcesPlugin.getWorkspace().getRoot()
 					.getLocation());
-			buffer.append(_containerGroup.getContainerFullPath());
+			buffer.append(_containerGroup.getFullPath());
 			buffer.append("/");
 			if (_resourceNameField.getText() != null
 					&& _resourceNameField.getText().trim().length() > 0) {
