@@ -1,31 +1,28 @@
 package org.csstudio.platform.simpledal;
 
 /**
- * A listener to be informed on changes on PVs or the connection state to a PV.
+ * Listener, which can be connected to control system channels using an
+ * {@link IProcessVariableConnectionService}.
  * 
- * @author C1 WPS / SW, MZ
+ * @author Sven Wende
  * 
  * @param <E>
- *            The Java-type of received values.
- *            
- * TODO Introduce an use adapter-class!
+ *            the type of channel values expected (String, Double, etc.)
  */
 public interface IProcessVariableValueListener<E> {
 	/**
-	 * This method will be informed on a change of a PV value. Change also means
-	 * the first received value.
+	 * Announces a value change on the channel.
 	 * 
 	 * @param value
-	 *            The new value, not null.
+	 *            the latest value
 	 */
 	void valueChanged(E value);
 
 	/**
-	 * This method will be informed on changes of the state of the connection to
-	 * a PV.
+	 * Announces a connection state change.
 	 * 
 	 * @param connectionState
-	 *            The new connection state.
+	 *            the current connection state
 	 */
 	void connectionStateChanged(ConnectionState connectionState);
 }

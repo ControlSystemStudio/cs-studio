@@ -12,7 +12,7 @@ public class ProcessVariableConnectionServiceFactory {
 	/**
 	 * Creates a new, empty {@link IProcessVariableConnectionService}.
 	 */
-	public static IProcessVariableConnectionService createNewServiceInstance() {
-		return new ProcessVariableConnectionService();
+	public static IProcessVariableConnectionService getProcessVariableConnectionService() {
+		return ProcessVariableConnectionService.getInstance();
 	}
 }

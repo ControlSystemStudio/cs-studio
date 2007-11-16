@@ -14,38 +14,103 @@ import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.context.ConnectionEvent;
 import org.epics.css.dal.context.LinkListener;
 
+/**
+ * DAL Connectors are connected to the control system via the DAL API.
+ * 
+ * All events received from DAL are forwarded to
+ * {@link IProcessVariableValueListener}큦 which abstract from DAL.
+ * 
+ * For convinience the {@link IProcessVariableValueListener}큦 are only weakly
+ * referenced. The connector tracks for {@link IProcessVariableValueListener}큦
+ * that have been garbage collected and removes those references from its
+ * internal list. This way {@link IProcessVariableValueListener}큦 must not be
+ * disposed explicitly.
+ * 
+ * @author Sven Wende
+ * 
+ */
 @SuppressWarnings("unchecked")
 class DalConnector implements DynamicValueListener, LinkListener {
+	/**
+	 * The process variable pointer for the channel, this connector is connected
+	 * to.
+	 */
 	private IProcessVariableAddress _processVariableAddress;
 
+	/**
+	 * The DAL property, this connector is connected to.
+	 */
 	private DynamicValueProperty _dalProperty;
 
+	/**
+	 * A list of value listeners to which control system events are forwarded.
+	 */
 	private List<WeakReference<IProcessVariableValueListener>> _weakListenerReferences;
 
-	private Object _lastReceivedValue;
-
-	private ConnectionState _lastConnectionState;
-
-	public DalConnector() {
+	/**
+	 * Constructor.
+	 */
+	public DalConnector(IProcessVariableAddress pvAddress) {
+		assert pvAddress != null;
+		_processVariableAddress = pvAddress;
 		_weakListenerReferences = new ArrayList<WeakReference<IProcessVariableValueListener>>();
 	}
 
+	/**
+	 * Adds a value listener.
+	 * 
+	 * @param listener
+	 *            a value listener
+	 */
 	public void addProcessVariableValueListener(
-			IProcessVariableValueListener<Double> listener) {
+			IProcessVariableValueListener listener) {
 
-		if( _lastConnectionState != null ) {
-			listener.connectionStateChanged(_lastConnectionState);
-		} /*else {
-			listener.connectionStateChanged(ConnectionState.DISCONNECTED);
-		}*/
-		if( _lastReceivedValue != null ) {
-			listener.valueChanged((Double)_lastReceivedValue);
-		}
-		
 		_weakListenerReferences
 				.add(new WeakReference<IProcessVariableValueListener>(listener));
+
+		// send initial connection state
+		org.epics.css.dal.context.ConnectionState connectionState = _dalProperty
+				.getConnectionState();
+		if (connectionState != null) {
+			listener.connectionStateChanged(ConnectionState
+					.translate(connectionState));
+		}
+
+		// send initial value
+		Object latestReceivedValue = _dalProperty.getLatestReceivedValue();
+		if (latestReceivedValue != null) {
+			listener.valueChanged(latestReceivedValue);
+		}
 	}
 
+	/**
+	 * Removes a value listener
+	 * 
+	 * @param listener
+	 *            the value listener
+	 */
+	public void removeProcessVariableValueListener(
+			IProcessVariableValueListener listener) {
+		synchronized (_weakListenerReferences) {
+			WeakReference<IProcessVariableValueListener> toRemove = null;
+			for (WeakReference<IProcessVariableValueListener> ref : _weakListenerReferences) {
+				if (ref.get() == listener) {
+					toRemove = ref;
+				}
+			}
+
+			if (toRemove != null) {
+				_weakListenerReferences.remove(toRemove);
+			}
+		}
+	}
+
+	/**
+	 * Determines, whether this connector can get disposed. This is, when no
+	 * value listeners for the connector live in the JVM anymore.
+	 * 
+	 * @return true, if this connector can be disposed, false otherwise
+	 */
 	public boolean isDisposable() {
 		// perform a cleanup first
 		cleanupWeakReferences();
@@ -54,53 +119,79 @@ class DalConnector implements DynamicValueListener, LinkListener {
 		return _weakListenerReferences.isEmpty();
 	}
 
-	public void setProcessVariableAddress(
-			IProcessVariableAddress processVariableAddress) {
-		_processVariableAddress = processVariableAddress;
-	}
-
+	/**
+	 * Returns the process variable address.
+	 * 
+	 * @return the process variable address
+	 */
 	public IProcessVariableAddress getProcessVariableAddress() {
 		return _processVariableAddress;
 	}
 
+	/**
+	 * Sets the DAL property, this connector is connected to.
+	 * 
+	 * @param dalProperty
+	 *            the DAL property
+	 */
 	public void setDalProperty(DynamicValueProperty dalProperty) {
 		_dalProperty = dalProperty;
 	}
 
+	/**
+	 * Returns the DAL property, this connector is connected to.
+	 * 
+	 * @return
+	 */
 	public DynamicValueProperty getDalProperty() {
 		return _dalProperty;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void conditionChange(DynamicValueEvent event) {
-		// nothing to do!
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void errorResponse(DynamicValueEvent event) {
-		// nothing to do!
+
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void timelagStarts(DynamicValueEvent event) {
-		// nothing to do!
+
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void timelagStops(DynamicValueEvent event) {
-		// nothing to do!
+
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void timeoutStarts(DynamicValueEvent event) {
-		// nothing to do!
+
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void timeoutStops(DynamicValueEvent event) {
-		// nothing to do!
+
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void valueChanged(final DynamicValueEvent event) {
-		forwardNewValue(event);
-	}
-
-	private synchronized void forwardNewValue(final DynamicValueEvent event) {
-		_lastReceivedValue = event.getValue();
 		execute(new IRunnable() {
 			public void doRun(IProcessVariableValueListener simpleDalListener) {
 				simpleDalListener.valueChanged(event.getValue());
@@ -108,40 +199,73 @@ class DalConnector implements DynamicValueListener, LinkListener {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void valueUpdated(final DynamicValueEvent event) {
-		forwardNewValue(event);
+		execute(new IRunnable() {
+			public void doRun(IProcessVariableValueListener simpleDalListener) {
+				simpleDalListener.valueChanged(event.getValue());
+			}
+		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void connected(final ConnectionEvent e) {
 		forwardConnectionEvent(e);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void connectionFailed(ConnectionEvent e) {
 		forwardConnectionEvent(e);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void connectionLost(ConnectionEvent e) {
 		forwardConnectionEvent(e);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void destroyed(ConnectionEvent e) {
 		forwardConnectionEvent(e);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void disconnected(ConnectionEvent e) {
 		forwardConnectionEvent(e);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void resumed(ConnectionEvent e) {
 		forwardConnectionEvent(e);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void suspended(ConnectionEvent e) {
 		forwardConnectionEvent(e);
 	}
 
-	private synchronized void forwardConnectionEvent(final ConnectionEvent event) {
-		_lastConnectionState = ConnectionState.translate(event.getState());
+	/**
+	 * Forward the specified connection event to the value listeners.
+	 * 
+	 * @param event
+	 *            the DAL connection event
+	 */
+	private void forwardConnectionEvent(final ConnectionEvent event) {
 		execute(new IRunnable() {
 			public void doRun(IProcessVariableValueListener simpleDalListener) {
 				org.epics.css.dal.context.ConnectionState state = event
@@ -155,10 +279,15 @@ class DalConnector implements DynamicValueListener, LinkListener {
 		});
 	}
 
-	interface IRunnable {
-		void doRun(IProcessVariableValueListener simpleDalListener);
-	}
-
+	/**
+	 * Executes the specified runnable for all existing value listeners.
+	 * 
+	 * Only for valid listeners that still live in the JVM, the hook method
+	 * {@link IRunnable#doRun(IProcessVariableValueListener)} is called.
+	 * 
+	 * @param runnable
+	 *            the runnable
+	 */
 	private void execute(IRunnable runnable) {
 		Iterator<WeakReference<IProcessVariableValueListener>> it = _weakListenerReferences
 				.iterator();
@@ -177,6 +306,10 @@ class DalConnector implements DynamicValueListener, LinkListener {
 		}
 	}
 
+	/**
+	 * Removes weak references for value listeners that have been garbage
+	 * collected.
+	 */
 	private void cleanupWeakReferences() {
 		synchronized (_weakListenerReferences) {
 			List<WeakReference> deletionCandidates = new ArrayList<WeakReference>();
@@ -197,4 +330,22 @@ class DalConnector implements DynamicValueListener, LinkListener {
 		}
 	}
 
+	/**
+	 * Runnable which is used to forward events to process variable value
+	 * listeners.
+	 * 
+	 * @author Sven Wende
+	 * 
+	 */
+	interface IRunnable {
+		/**
+		 * Hook which is called only for valid value listeners, which still live
+		 * in the JVM and have not already been garbage collected.
+		 * 
+		 * @param valueListeners
+		 *            a value listener instance (we ensure, that this is not
+		 *            null)
+		 */
+		void doRun(IProcessVariableValueListener valueListeners);
+	}
 }

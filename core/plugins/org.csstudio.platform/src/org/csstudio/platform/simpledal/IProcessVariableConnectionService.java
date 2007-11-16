@@ -11,7 +11,6 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
  * @author C1 WPS / SW, MZ
  */
 public interface IProcessVariableConnectionService {
-
 	/**
 	 * Register a listener to be informed on value-changes of Intger-PVs.
 	 * 
@@ -38,4 +37,5 @@ public interface IProcessVariableConnectionService {
 	void registerForDoubleValues(
 			IProcessVariableValueListener<Double> listener,
 			IProcessVariableAddress pv) throws Exception;
+
 }
