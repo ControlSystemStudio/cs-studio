@@ -21,6 +21,10 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.TimerModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableTimerFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
@@ -36,6 +40,9 @@ import org.eclipse.draw2d.IFigure;
  */
 public final class TimerEditPart extends AbstractWidgetEditPart {
 
+	private TimerTask _task;
+	private Timer _timer;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -43,7 +50,25 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		RefreshableTimerFigure timerFigure = new RefreshableTimerFigure();
 		timerFigure.setVisible(getExecutionMode().equals(ExecutionMode.EDIT_MODE));
+		this.configureTimer();
 		return timerFigure;
+	}
+
+	/**
+	 * Configures the internal timer.
+	 */
+	private void configureTimer() {
+		if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+			_timer = new Timer();
+			TimerModel model = (TimerModel) getCastedModel();
+			_task = new TimerTask() {
+				@Override
+				public void run() {
+					CentralLogger.getInstance().info(TimerEditPart.this, "Timer executed");
+				}
+			};
+			_timer.schedule(_task, model.getDelay(), model.getDelay());
+		}		
 	}
 
 	/**
@@ -51,7 +76,16 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void deactivate() {
+		_task.cancel();
+		_timer.cancel();
+		super.deactivate();
 	}
 
 }

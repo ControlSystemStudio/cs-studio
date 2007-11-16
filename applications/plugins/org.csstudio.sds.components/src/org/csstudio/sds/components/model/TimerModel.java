@@ -24,7 +24,8 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.StringProperty;
+import org.csstudio.sds.model.properties.ResourceProperty;
+import org.eclipse.core.runtime.Path;
 
 /**
  * This class defines a timer widget model.
@@ -85,8 +86,8 @@ public final class TimerModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_SCRIPT, new StringProperty("Script",
-				WidgetPropertyCategory.Behaviour, ""));
+		addProperty(PROP_SCRIPT, new ResourceProperty("Script",
+				WidgetPropertyCategory.Behaviour, new Path(""), new String[] {"css-sdss"}));
 		addProperty(PROP_DELAY, new IntegerProperty("Delay (in ms)", 
 				WidgetPropertyCategory.Behaviour, DEFAULT_DELAY, 0, Integer.MAX_VALUE));
 	}
