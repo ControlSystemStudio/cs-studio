@@ -26,6 +26,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.PointlistProperty;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -102,10 +103,10 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 			PointList copy = points.getCopy();
 			setPropertyValue(PROP_POINTS, copy);
 			Rectangle bounds = copy.getBounds();
-			setPropertyValue(PROP_POS_X, bounds.x);
-			setPropertyValue(PROP_POS_Y, bounds.y);
-			setPropertyValue(PROP_WIDTH, bounds.width);
-			setPropertyValue(PROP_HEIGHT, bounds.height);	
+			super.setPropertyValue(PROP_POS_X, bounds.x);
+			super.setPropertyValue(PROP_POS_Y, bounds.y);
+			super.setPropertyValue(PROP_WIDTH, bounds.width);
+			super.setPropertyValue(PROP_HEIGHT, bounds.height);	
 		}
 	}
 
@@ -147,29 +148,29 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		double topLeftX = pointList.getBounds().x;
 		double topLeftY = pointList.getBounds().y;
 
-		PointList newPoints = new PointList();
+		if (oldW!=targetW || oldH!=targetH) {
+			PointList newPoints = new PointList();
+			for (int i = 0; i < pointList.size(); i++) {
+				int x = pointList.getPoint(i).x;
+				int y = pointList.getPoint(i).y;
 
-		for (int i = 0; i < pointList.size(); i++) {
-			int x = pointList.getPoint(i).x;
-			int y = pointList.getPoint(i).y;
+				Point newPoint = new Point(x, y);
+				if (oldW > 0 && oldH > 0) {
+					double oldRelX = (x - topLeftX) / oldW;
+					double oldRelY = (y - topLeftY) / oldH;
 
-			Point newPoint = new Point(x, y);
-			if (oldW > 0 && oldH > 0) {
-				double oldRelX = (x - topLeftX) / oldW;
-				double oldRelY = (y - topLeftY) / oldH;
+					double newX = topLeftX + (oldRelX * targetW);
+					double newY = topLeftY + (oldRelY * targetH);
+					newPoint = new Point(Math.round(newX), Math.round(newY));
+				}
 
-				double newX = topLeftX + (oldRelX * targetW);
-				double newY = topLeftY + (oldRelY * targetH);
-				newPoint = new Point(Math.round(newX), Math.round(newY));
+				newPoints.addPoint(newPoint);
 			}
-
-			newPoints.addPoint(newPoint);
+			setPoints(newPoints);
 		}
 
-		setPoints(newPoints);
-
-		Rectangle newBounds = newPoints.getBounds();
-		super.setSize(newBounds.width, newBounds.height);
+//		Rectangle newBounds = newPoints.getBounds();
+//		super.setSize(newBounds.width, newBounds.height);
 	}
 
 	/**
@@ -193,13 +194,18 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * @param angle The angle to rotate
 	 */
 	public final void rotatePoints(final double angle) {
-		if (_isRotationInitialized) {
+		System.out.println("AbstractPolyModel.rotatePoints()");
+		if (_isRotationInitialized || (this.getRotationAngle()==0 && angle!=0)) {
 			double rotationAngle = getRotationAngle();
 			double trueAngle = Math.toRadians(angle - rotationAngle);
 			double sin = Math.sin(trueAngle);
 			double cos = Math.cos(trueAngle);
 			
-			Point rotationPoint = new Point(this.getX()+this.getWidth()/2, this.getY()+this.getHeight()/2);
+			System.out.println("AbstractPolyModel.rotatePoints()");
+			Rectangle pointBounds = this.getPoints().getBounds();
+			System.out.println("   Bounds: "+pointBounds);
+			Point rotationPoint = pointBounds.getCenter();
+			System.out.println("   Rotation Point: "+rotationPoint);
 			
 			PointList newPoints = new PointList();
 			for (int i=0;i<this.getPoints().size();i++) {
@@ -211,6 +217,12 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 				long x = Math.round(temp);
 				
 				newPoints.addPoint(new Point(x+rotationPoint.x,y+rotationPoint.y));
+			}
+			
+			Rectangle newPointBounds = newPoints.getBounds();
+			if (!rotationPoint.equals(newPointBounds.getCenter())) {
+				Dimension difference = rotationPoint.getCopy().getDifference(newPointBounds.getCenter());
+				newPoints.translate(difference.width, difference.height);
 			}
 			
 			// sets the translated Points
