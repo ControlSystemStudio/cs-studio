@@ -41,6 +41,7 @@ import org.csstudio.utility.adlconverter.utility.widgets.Bargraph;
 import org.csstudio.utility.adlconverter.utility.widgets.Display;
 import org.csstudio.utility.adlconverter.utility.widgets.Ellipse;
 import org.csstudio.utility.adlconverter.utility.widgets.GroupingContainer;
+import org.csstudio.utility.adlconverter.utility.widgets.Image;
 import org.csstudio.utility.adlconverter.utility.widgets.Label;
 import org.csstudio.utility.adlconverter.utility.widgets.Meter;
 import org.csstudio.utility.adlconverter.utility.widgets.Polygon;
@@ -110,6 +111,8 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                         _colormapSet=true;
                 }else if(strings.getType().equals("composite")){ //$NON-NLS-1$
                     displayModel.addWidget(new GroupingContainer(strings).getElement());
+                }else if(strings.getType().equals("image")){ //$NON-NLS-1$
+                    displayModel.addWidget(new Image(strings).getElement());
                 }else if(strings.getType().equals("indicator")){ //$NON-NLS-1$
                     displayModel.addWidget(new Bargraph(strings).getElement());
                 }else if(strings.getType().equals("menu")){ //$NON-NLS-1$
