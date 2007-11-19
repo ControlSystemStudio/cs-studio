@@ -26,6 +26,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.PointlistProperty;
+import org.csstudio.sds.util.RotationUtil;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -46,11 +47,6 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * The ID of the fill level property.
 	 */
 	public static final String PROP_FILL = "fill"; //$NON-NLS-1$
-	
-	/**
-	 * The ID of the rotation property.
-	 */
-	public static final String PROP_ROTATION = "rotation"; //$NON-NLS-1$
 
 	/**
 	 * The default value of the height property.
@@ -62,12 +58,16 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 */
 	private static final int DEFAULT_WIDTH = 20;
 	
+	/**
+	 * Determines if the rotation values are initialized.
+	 */
 	private boolean _isRotationInitialized = false;
 
 	/**
 	 * Constructor.
 	 */
 	public AbstractPolyModel() {
+		super(true);
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 
@@ -81,7 +81,6 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 				new PointList()));
 		addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
 				WidgetPropertyCategory.Behaviour, 100.0, 0.0, 100.0));
-		addProperty(PROP_ROTATION, new DoubleProperty("Rotation Angle", WidgetPropertyCategory.Display, 0, 0, 360));
 	}
 
 	/**
@@ -127,13 +126,13 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		return (Double) getProperty(PROP_FILL).getPropertyValue();
 	}
 	
-	/**
-	 * Returns the rotation angle.
-	 * @return the rotation angle
-	 */
-	public final double getRotationAngle() {
-		return (Double) getProperty(PROP_ROTATION).getPropertyValue();
-	}
+//	/**
+//	 * Returns the rotation angle.
+//	 * @return the rotation angle
+//	 */
+//	public final double getRotationAngle() {
+//		return (Double) getProperty(PROP_ROTATION).getPropertyValue();
+//	}
 	
 	/**
 	 * {@inheritDoc}
@@ -197,26 +196,33 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		System.out.println("AbstractPolyModel.rotatePoints()");
 		if (_isRotationInitialized || (this.getRotationAngle()==0 && angle!=0)) {
 			double rotationAngle = getRotationAngle();
-			double trueAngle = Math.toRadians(angle - rotationAngle);
-			double sin = Math.sin(trueAngle);
-			double cos = Math.cos(trueAngle);
-			
-			System.out.println("AbstractPolyModel.rotatePoints()");
+			double trueAngle = angle - rotationAngle;
+//			double trueAngle = Math.toRadians(angle - rotationAngle);
+//			double sin = Math.sin(trueAngle);
+//			double cos = Math.cos(trueAngle);
+//			
+//			System.out.println("AbstractPolyModel.rotatePoints()");
+//			Rectangle pointBounds = this.getPoints().getBounds();
+//			System.out.println("   Bounds: "+pointBounds);
+//			Point rotationPoint = pointBounds.getCenter();
+//			System.out.println("   Rotation Point: "+rotationPoint);
+//			
+//			PointList newPoints = new PointList();
+//			for (int i=0;i<this.getPoints().size();i++) {
+//				//Relative coordinates to the rotation point
+//				int relX = this.getPoints().getPoint(i).x-rotationPoint.x;
+//				int relY = this.getPoints().getPoint(i).y-rotationPoint.y;
+//				double temp = relX * cos - relY * sin;
+//				long y = Math.round(relX * sin + relY * cos);
+//				long x = Math.round(temp);
+//				
+//				newPoints.addPoint(new Point(x+rotationPoint.x,y+rotationPoint.y));
+//			}
 			Rectangle pointBounds = this.getPoints().getBounds();
-			System.out.println("   Bounds: "+pointBounds);
 			Point rotationPoint = pointBounds.getCenter();
-			System.out.println("   Rotation Point: "+rotationPoint);
-			
 			PointList newPoints = new PointList();
 			for (int i=0;i<this.getPoints().size();i++) {
-				//Relative coordinates to the rotation point
-				int relX = this.getPoints().getPoint(i).x-rotationPoint.x;
-				int relY = this.getPoints().getPoint(i).y-rotationPoint.y;
-				double temp = relX * cos - relY * sin;
-				long y = Math.round(relX * sin + relY * cos);
-				long x = Math.round(temp);
-				
-				newPoints.addPoint(new Point(x+rotationPoint.x,y+rotationPoint.y));
+				newPoints.addPoint(RotationUtil.rotate(this.getPoints().getPoint(i), trueAngle, rotationPoint));
 			}
 			
 			Rectangle newPointBounds = newPoints.getBounds();

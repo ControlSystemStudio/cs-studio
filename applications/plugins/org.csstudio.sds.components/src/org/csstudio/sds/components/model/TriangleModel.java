@@ -124,13 +124,13 @@ public final class TriangleModel extends AbstractWidgetModel {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 	
-	/**
-	 * Gets the rotation angle.
-	 * 
-	 * @return the rotation angle
-	 */
-	public double getRotationAngle() {
-		return (Double) getProperty(PROP_ROTATION).getPropertyValue();
-	}
+//	/**
+//	 * Gets the rotation angle.
+//	 * 
+//	 * @return the rotation angle
+//	 */
+//	public double getRotationAngle() {
+//		return (Double) getProperty(PROP_ROTATION).getPropertyValue();
+//	}
 
 }
