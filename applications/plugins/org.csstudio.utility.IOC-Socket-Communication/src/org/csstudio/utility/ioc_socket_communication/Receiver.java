@@ -25,6 +25,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -34,17 +36,41 @@ import org.eclipse.core.runtime.jobs.Job;
 
 public class Receiver extends Job {
 
+	private Socket sock = null;
 	private InputStream in;
 	private IOCAnswer iocAnswer;
+	private String address;
+	private int port;
 
-	public Receiver(InputStream in, IOCAnswer iocAnswer) {
+	//	public Receiver(InputStream in, IOCAnswer iocAnswer) {
+//		super("IOCReader");
+//		this.iocAnswer = iocAnswer;
+//		this.in = in;
+//	}
+
+	public Receiver(String address, int port, IOCAnswer iocanswer) {
 		super("IOCReader");
 		this.iocAnswer = iocAnswer;
-		this.in = in;
+		this.address = address;
+		this.port = port;
 	}
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
+		try {
+			sock = new Socket(address, port);
+		InputStream in = sock.getInputStream();
+//		OutputStream out = sock.getOutputStream();
+		//set timeout
+		sock.setSoTimeout(3000);
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		boolean finished = false;
 		StringBuffer answer = new StringBuffer();
 		BufferedReader bufferedReader = new BufferedReader(	new InputStreamReader(in));

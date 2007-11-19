@@ -57,12 +57,12 @@ public class RMTControl {
 	  public void send(String address, String message, IOCAnswer ioca) {
 		  try {
 			  this.iocanswer = ioca;
-			sock = new Socket(address, port);
-			InputStream in = sock.getInputStream();
-//			OutputStream out = sock.getOutputStream();
-			//set timeout
-			sock.setSoTimeout(3000);
-			Receiver rec = new Receiver(in, iocanswer);
+//			sock = new Socket(address, port);
+//			InputStream in = sock.getInputStream();
+////			OutputStream out = sock.getOutputStream();
+//			//set timeout
+//			sock.setSoTimeout(3000);
+			Receiver rec = new Receiver(address, port, iocanswer);
 //			rec.addJobChangeListener(new JobChangeAdapter() {
 //		        public void done(IJobChangeEvent event) {
 //		        if (event.getResult().isOK()) 
