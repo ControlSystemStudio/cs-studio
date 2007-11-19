@@ -22,7 +22,6 @@
 package org.csstudio.platform.ui.internal.actions;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.views.WorkspaceExplorerView;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -56,7 +55,8 @@ public final class OpenWorkspaceExplorerAction extends Action implements
 	 */
 	public void run(final IAction action) {
 		try {
-			_window.getActivePage().showView(WorkspaceExplorerView.VIEW_ID);
+			_window.getActivePage().showView(
+					"org.eclipse.ui.views.ResourceNavigator"); //$NON-NLS-1$
 		} catch (PartInitException e) {
 			CentralLogger.getInstance().error(this,
 					"Error while opening the CSS workspace explorer!"); //$NON-NLS-1$

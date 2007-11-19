@@ -174,15 +174,17 @@ public final class WorkbenchActionBuilder {
 		// Add to the cool bar manager
 		coolbar.add(fileToolBar);
 	}
-	
-	
+
 	/**
 	 * Creates and returns the CSS menu.
+	 * 
 	 * @return the CSS menu.
 	 */
 	private MenuManager createCssMenu() {
-		MenuManager cssMenu = new MenuManager(Messages.WorkbenchActionBuilder_CSS_MENU, CssWorkbenchActionConstants.CSS_MENU);
-		
+		MenuManager cssMenu = new MenuManager(
+				Messages.WorkbenchActionBuilder_CSS_MENU,
+				CssWorkbenchActionConstants.CSS_MENU);
+
 		cssMenu.add(new MenuManager(
 				Messages.WorkbenchActionBuilder_CSS_DISPLAY_MENU,
 				CssWorkbenchActionConstants.CSS_DISPLAY_MENU));
@@ -217,10 +219,9 @@ public final class WorkbenchActionBuilder {
 				Messages.WorkbenchActionBuilder_CSS_OTHER_MENU,
 				CssWorkbenchActionConstants.CSS_OTHER_MENU));
 		cssMenu.add(new Separator(CssWorkbenchActionConstants.CSS_END));
-		
+
 		return cssMenu;
 	}
-	
 
 	/**
 	 * Creates and returns the Window menu.
@@ -228,8 +229,8 @@ public final class WorkbenchActionBuilder {
 	 * @return The Window menu.
 	 */
 	private MenuManager createWindowMenu() {
-		MenuManager menu = new MenuManager(Messages
-				.WorkbenchActionBuilder_MENU_WINDOW,
+		MenuManager menu = new MenuManager(
+				Messages.WorkbenchActionBuilder_MENU_WINDOW,
 				IWorkbenchActionConstants.M_WINDOW);
 		IWorkbenchAction action = ActionFactory.OPEN_NEW_WINDOW
 				.create(getWindow());
@@ -249,16 +250,15 @@ public final class WorkbenchActionBuilder {
 	 *            The menu to which the perspective actions have to be added.
 	 */
 	private void addPerspectiveActions(final MenuManager menu) {
-		MenuManager changePerspMenuMgr = new MenuManager(Messages
-				.WorkbenchActionBuilder_OPEN_PERSPECTIVE,
+		MenuManager changePerspMenuMgr = new MenuManager(
+				Messages.WorkbenchActionBuilder_OPEN_PERSPECTIVE,
 				"openPerspective"); //$NON-NLS-1$
 		IContributionItem changePerspMenuItem = ContributionItemFactory.PERSPECTIVES_SHORTLIST
 				.create(getWindow());
 		changePerspMenuMgr.add(changePerspMenuItem);
 		menu.add(changePerspMenuMgr);
-		MenuManager showViewMenuMgr = new MenuManager(Messages
-				.WorkbenchActionBuilder_SHOW_VIEW,
-				"showView"); //$NON-NLS-1$
+		MenuManager showViewMenuMgr = new MenuManager(
+				Messages.WorkbenchActionBuilder_SHOW_VIEW, "showView"); //$NON-NLS-1$
 		IContributionItem showViewMenu = ContributionItemFactory.VIEWS_SHORTLIST
 				.create(getWindow());
 		showViewMenuMgr.add(showViewMenu);
@@ -272,18 +272,19 @@ public final class WorkbenchActionBuilder {
 	 * @return The File menu.
 	 */
 	private MenuManager createFileMenu() {
-		MenuManager menu = new MenuManager(Messages
-				.WorkbenchActionBuilder_MENU_FILE,
+		MenuManager menu = new MenuManager(
+				Messages.WorkbenchActionBuilder_MENU_FILE,
 				IWorkbenchActionConstants.M_FILE);
-		MenuManager newMenu = new MenuManager(Messages
-				.WorkbenchActionBuilder_MENU_FILE_NEW,
-				"file/new"); //$NON-NLS-1$
+		MenuManager newMenu = new MenuManager(
+				Messages.WorkbenchActionBuilder_MENU_FILE_NEW, "file/new"); //$NON-NLS-1$
 		newMenu.add(_newWizardMenuAction);
 		menu.add(newMenu);
 		menu.add(new Separator());
 		menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
 		menu.add(_saveAction);
 		menu.add(_saveAsAction);
+		menu.add(new Separator());
+		menu.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
 		menu.add(new Separator());
 		menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
 		menu.add(new Separator());
@@ -299,8 +300,8 @@ public final class WorkbenchActionBuilder {
 	 * @return The Help menu.
 	 */
 	private MenuManager createHelpMenu() {
-		MenuManager menu = new MenuManager(Messages
-				.WorkbenchActionBuilder_MENU_HELP,
+		MenuManager menu = new MenuManager(
+				Messages.WorkbenchActionBuilder_MENU_HELP,
 				IWorkbenchActionConstants.M_HELP);
 
 		// See if a welcome or intro page is specified

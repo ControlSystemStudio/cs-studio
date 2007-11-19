@@ -10,7 +10,6 @@ import org.csstudio.display.pvtable.model.PVListEntry;
 import org.csstudio.display.pvtable.model.PVListModel;
 import org.csstudio.display.pvtable.model.PVListModelListener;
 import org.csstudio.display.pvtable.ui.PVTableViewerHelper;
-import org.csstudio.platform.ui.workbench.FileEditorInput;
 import org.csstudio.util.editor.EmptyEditorInput;
 import org.csstudio.util.editor.PromptForNewXMLFileDialog;
 import org.eclipse.core.resources.IFile;
@@ -25,6 +24,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.part.FileEditorInput;
 
 /** EditorPart for the PV Table
  * 

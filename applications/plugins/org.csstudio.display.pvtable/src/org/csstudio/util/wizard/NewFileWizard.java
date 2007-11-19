@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.workbench.FileEditorInput;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -29,6 +28,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
 // Originally created with the PDE wizard
 

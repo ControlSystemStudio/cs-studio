@@ -90,33 +90,6 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            label="Update Actions"
-            visible="true"
-            id="org.eclipse.csstudio.ui.softwareUpdates">
-         <menu
-               label="%menuSoftwareUpdates"
-               path="help/group.updates"
-               id="org.csstudio.update.ui.updateMenu">
-            <groupMarker name="group0"/>
-         </menu>
-         <action
-               class="org.csstudio.platform.ui.internal.actions.ConfigurationManagerAction"
-               definitionId="org.csstudio.ui.update.manageConfiguration"
-               icon="icons/configs.gif"
-               id="org.csstudio.platform.ui.internal.actions.ConfigurationManagerAction"
-               label="%menuManageConfigurations"
-               menubarPath="help/org.csstudio.update.ui.updateMenu/group0">
-         </action>
-         <action
-               class="org.csstudio.platform.ui.internal.actions.InstallWizardAction"
-               definitionId="org.csstudio.ui.update.findAndInstallUpdates"
-               icon="icons/usearch_obj.gif"
-               id="org.csstudio.platform.ui.internal.actions.InstallWizardAction"
-               label="%menuFindAndInstall"
-               menubarPath="help/org.csstudio.update.ui.updateMenu/group0">
-         </action>
-      </actionSet>         
-      <actionSet
             id="org.eclipse.csstudio.ui.systemActions"
             label="System Actions"
             visible="true">
@@ -160,13 +133,6 @@
                menubarPath="css/end"
                style="push"
                tooltip="%menuCssPreferences_Tooltip"/>
-         <action
-               class="org.csstudio.platform.ui.internal.actions.OpenLocalFileAction"
-               id="org.csstudio.platform.ui.OpenLocalFileAction"
-               label="Open File..."
-               menubarPath="file/fileEnd"
-               style="push">
-         </action>
          <action
                class="org.csstudio.platform.ui.internal.actions.ExportPreferencesAction"
                id="org.csstudio.platform.ui.action1"
@@ -223,11 +189,6 @@
             icon="icons/containerView.gif"
             id="org.csstudio.platform.ui.internal.developmentsupport.util.ContainerView"
             name="Container View"/>
-     <view
-           class="org.csstudio.platform.ui.views.WorkspaceExplorerView"
-           icon="icons/project_open.png"
-           id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
-           name="Workspace Explorer"/>    
       <view
             class="org.eclipse.ui.ExtensionFactory:progressView"
             icon="icons/pview.gif"
@@ -302,67 +263,7 @@
             id="org.csstudio.platform.ui.css.applications.others"
             name="%othersPreferencesName"/>                         
    </extension>
-   <extension
-         point="org.eclipse.ui.elementFactories">
-      <factory
-            class="org.csstudio.platform.ui.internal.workbench.FileEditorInputFactory"
-            id="org.csstudio.platform.ui.internal.workbench.FileEditorInputFactory"/>
-   </extension>
 
-  <extension
-        point="org.eclipse.ui.viewActions">
-     <viewContribution
-           id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
-           targetID="org.csstudio.platform.ui.views.WorkspaceExplorerView">
-        <action
-              class="org.csstudio.platform.ui.views.DeleteResourceAction"
-              icon="icons/fileDelete.png"
-              id="org.csstudio.platform.ui.views.DeleteResourceAction"
-              label="Delete Resource"
-              menubarPath="additions"
-              style="push"
-              toolbarPath="additions"/>
-     </viewContribution>
-  </extension>
-  <extension
-        point="org.eclipse.ui.popupMenus">
-     <viewerContribution
-           id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
-           targetID="org.csstudio.platform.ui.views.WorkspaceExplorerView">
-        <action
-              class="org.csstudio.platform.ui.views.CreateProjectAction"
-              icon="icons/new_project.png"
-              id="org.csstudio.platform.ui.views.CreateProjectAction"
-              label="New Project"
-              menubarPath="new.ext"/>
-     </viewerContribution>
-     <viewerContribution
-           id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
-           targetID="org.csstudio.platform.ui.views.WorkspaceExplorerView">
-        <visibility>
-           <objectClass name="org.eclipse.core.resources.IContainer"/>
-        </visibility>
-        <action
-              class="org.csstudio.platform.ui.views.CreateFolderAction"
-              icon="icons/new_folder.png"
-              id="org.csstudio.platform.ui.views.CreateFolderAction"
-              label="New Folder"
-              menubarPath="new.ext"/>
-     </viewerContribution>
-     <viewerContribution
-           id="org.csstudio.platform.ui.views.WorkspaceExplorerView"
-           targetID="org.csstudio.platform.ui.views.WorkspaceExplorerView">
-        <visibility>
-           <objectClass name="org.eclipse.core.resources.IResource"/>
-        </visibility>
-        <action
-              class="org.csstudio.platform.ui.views.DeleteResourceAction"
-              icon="icons/fileDelete.png"
-              id="org.csstudio.platform.ui.views.DeleteResourceAction"
-              label="Delete Resource"
-              menubarPath="editEnd"/>
-     </viewerContribution>
-  </extension>
   <extension
         point="org.eclipse.ui.popupMenus">
      <objectContribution
