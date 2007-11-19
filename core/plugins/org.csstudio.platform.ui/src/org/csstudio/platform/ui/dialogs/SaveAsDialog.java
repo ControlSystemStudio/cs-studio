@@ -157,7 +157,7 @@ public final class SaveAsDialog extends TitleAreaDialog {
 		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		composite.setFont(parentComposite.getFont());
+//		composite.setFont(parentComposite.getFont());
 
 		Listener listener = new Listener() {
 			public void handleEvent(final Event event) {
