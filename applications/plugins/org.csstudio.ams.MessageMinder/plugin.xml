@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="MassageMinder"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.csstudio.ams.messageminder.MassageMinderStart">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.ams.messageminder.preference.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <simpleAction
+            class="org.csstudio.ams.messageminder.GetStatisticInformation"
+            id="org.csstudio.ams.messageminder.GetStatisticInformation"
+            name="GetStatisticInformation">
+      </simpleAction>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.ams.messageminder.LoginCallbackHandler"
+            id="org.csstudio.ams.messageminder.LoginCallbackHandler"
+            name="AMSMassageMinderLogin">
+      </loginHandler>
+   </extension>
+
+</plugin>
