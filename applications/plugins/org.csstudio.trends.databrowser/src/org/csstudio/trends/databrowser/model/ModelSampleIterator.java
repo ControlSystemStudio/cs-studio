@@ -20,21 +20,40 @@ import org.csstudio.platform.data.IValue;
  */
 public class ModelSampleIterator implements ValueIterator
 {
-    private final IModelSamples samples;
+    final private IModelSamples samples;
+    final private int end_index;
     private int i;
     
-    public ModelSampleIterator(IModelSamples samples)
+    /** Construct iterator over all the given samples.
+     *  @param samples
+     */
+    public ModelSampleIterator(final IModelSamples samples)
     {
         this.samples = samples;
         i = 0;
-    }
-    
-    public boolean hasNext()
-    {
         synchronized (samples)
         {
-            return i < samples.size();
+            this.end_index = samples.size();
         }
+    }
+    
+    /** Construct iterator for subrange of samples.
+     *  @param samples
+     *  @param start_index
+     *  @param end_index
+     */
+    public ModelSampleIterator(final IModelSamples samples,
+                    final int start_index, final int end_index)
+    {
+        this.samples = samples;
+        i = start_index;
+        this.end_index = end_index;
+    }
+
+    /** {@inheritDoc} */
+    public boolean hasNext()
+    {
+        return i < end_index;
     }
 
     /** @return Next sample.
