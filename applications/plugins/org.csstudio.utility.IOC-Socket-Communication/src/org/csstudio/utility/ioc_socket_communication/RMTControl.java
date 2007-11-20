@@ -21,15 +21,7 @@
  */
 package org.csstudio.utility.ioc_socket_communication;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
-
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-
 
 public class RMTControl {
 
@@ -39,44 +31,24 @@ public class RMTControl {
 	private int port = 9003;
 	private IOCAnswer iocanswer;
 
-
 	private RMTControl() {
 	}
 
 	public static RMTControl getInstance() {
-	        if (_instance == null)
-	            _instance = new RMTControl();
-	        return _instance;
-	    }
+		if (_instance == null)
+			_instance = new RMTControl();
+		return _instance;
+	}
 
-	  public void send(String address, String message, int port, IOCAnswer iocanswer) {
-		  this.port = port;
-		  send(address, message, iocanswer);
-	  }
+	public void send(String address, String message, int port,
+			IOCAnswer iocanswer) {
+		this.port = port;
+		send(address, message, iocanswer);
+	}
 
-	  public void send(String address, String message, IOCAnswer ioca) {
-		  try {
-			  this.iocanswer = ioca;
-//			sock = new Socket(address, port);
-//			InputStream in = sock.getInputStream();
-////			OutputStream out = sock.getOutputStream();
-//			//set timeout
-//			sock.setSoTimeout(3000);
-			Receiver rec = new Receiver(address, port, iocanswer);
-//			rec.addJobChangeListener(new JobChangeAdapter() {
-//		        public void done(IJobChangeEvent event) {
-//		        if (event.getResult().isOK()) 
-//		        	RMTControl.this.iocanswer.notifyView();
-//		        }
-//		     });
-			rec.schedule();
-			PrintStream os = new PrintStream(sock.getOutputStream());
-			os.println(message);
-
-		}  catch (UnknownHostException e) {
-			Activator.logException("UnknownHostException", e);
-		} catch (IOException e) {
-			Activator.logException("IOException", e);
-		}
-	  }
+	public void send(String address, String message, IOCAnswer ioca) {
+		this.iocanswer = ioca;
+		Receiver rec = new Receiver(message, address, port, iocanswer);
+		rec.schedule();
+	}
 }

@@ -25,10 +25,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -37,62 +39,79 @@ import org.eclipse.core.runtime.jobs.Job;
 public class Receiver extends Job {
 
 	private Socket sock = null;
-	private InputStream in;
+	private InputStream in = null;
 	private IOCAnswer iocAnswer;
 	private String address;
 	private int port;
+	private boolean transmitted = false;
+	private String message = null;
 
-	//	public Receiver(InputStream in, IOCAnswer iocAnswer) {
-//		super("IOCReader");
-//		this.iocAnswer = iocAnswer;
-//		this.in = in;
-//	}
-
-	public Receiver(String address, int port, IOCAnswer iocanswer) {
+	public Receiver(String message, String address, int port,
+			IOCAnswer iocAnswer) {
 		super("IOCReader");
+		this.message = message;
 		this.iocAnswer = iocAnswer;
 		this.address = address;
 		this.port = port;
 	}
 
+/**
+ * 
+ */
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
-			sock = new Socket(address, port);
-		InputStream in = sock.getInputStream();
-//		OutputStream out = sock.getOutputStream();
-		//set timeout
-		sock.setSoTimeout(3000);
+			if (in == null) {
+				SocketAddress sockaddr = new InetSocketAddress(address, port);
+				sock = new Socket();
+				int timeoutMs = 3000;
+				sock.connect(sockaddr, timeoutMs);
+				in = sock.getInputStream();
+				sock.setSoTimeout(3000);
+			}
 		} catch (UnknownHostException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			return Status.CANCEL_STATUS;
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			return Status.CANCEL_STATUS;
+		}
+
+		if (transmitted == false) {
+			PrintStream os;
+			try {
+				os = new PrintStream(sock.getOutputStream());
+				os.println(message);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return Status.CANCEL_STATUS;
+			}
+			transmitted = true;
 		}
 
 		boolean finished = false;
 		StringBuffer answer = new StringBuffer();
-		BufferedReader bufferedReader = new BufferedReader(	new InputStreamReader(in));
-		try {
-			if(bufferedReader.ready()) {
-				finished = true;
-				while(bufferedReader.ready()){
-					answer.append(bufferedReader.readLine());
+		if (in != null) {
+
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(in));
+			try {
+				if (bufferedReader.ready()) {
+					finished = true;
+					while (bufferedReader.ready()) {
+						answer.append(bufferedReader.readLine());
+					}
 				}
+			} catch (IOException e) {
+				Activator.logException("IOException", e);
+				return Status.CANCEL_STATUS;
 			}
-		} catch (IOException e) {
-			Activator.logException("IOException", e);
-			return Status.CANCEL_STATUS;
 		}
-		if(finished == false) {
+		if (finished == false) {
 			schedule(1000);
 		} else {
 			iocAnswer.setAnswer(answer.toString());
 		}
 		return Status.OK_STATUS;
 	}
-
-
-
 }
