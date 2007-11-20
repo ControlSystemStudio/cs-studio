@@ -38,7 +38,7 @@ public class FormulaModelItem extends AbstractModelItem
     private Formula formula;
 
     /** Severity used for samples that don't compute. */
-    private ISeverity invalid_severity = null;
+    private static ISeverity invalid_severity;
 
     /** Constructor */
     public FormulaModelItem(Model model, String pv_name,
@@ -52,6 +52,29 @@ public class FormulaModelItem extends AbstractModelItem
     {
         super(model, pv_name, axis_index, min, max, visible, auto_scale,
               red, green, blue, line_width, trace_type, log_scale);
+        if (invalid_severity == null)
+            invalid_severity = new ISeverity()
+        {
+            // This distinguishes it from ValueFactory.createInvalid...
+            public boolean hasValue()
+            {   return false;  }
+
+            public boolean isInvalid()
+            {   return true;   }
+
+            public boolean isMajor()
+            {   return false;  }
+
+            public boolean isMinor()
+            {   return false;  }
+
+            public boolean isOK()
+            {   return false;  }
+
+            @Override
+            public String toString()
+            {   return Messages.INVALID; }
+        };
     }
     
     /** Define the formula.
@@ -59,7 +82,8 @@ public class FormulaModelItem extends AbstractModelItem
      *  @param inputs The input variables or <code>null</code>.
      *  @throws Exception on parse error, including undefined variables.
      */
-    public void setFormula(String formula_text, FormulaInput inputs[])
+    public void setFormula(final String formula_text,
+                           final FormulaInput inputs[])
         throws Exception
     {
         input_variables = new FormulaInputs(inputs);
@@ -78,6 +102,22 @@ public class FormulaModelItem extends AbstractModelItem
         return input_variables.getInputs();
     }
 
+    /** Check if this formula uses given PV as an input.
+     *  @param pv_name Name of the PV (not the variable alias!) to check.
+     *  @return <code>true</code> if used in at least one input.
+     */
+    public boolean usesInputPV(final String pv_name)
+    {
+        final FormulaInput[] inputs = input_variables.getInputs();
+        for (FormulaInput input : inputs)
+        {   // Is this input reading the pv, AND is it used in the formula?
+            if (input.getModelItem().getName().equals(pv_name) &&
+                formula.hasSubnode(input.getVariable()))
+                    return true;
+        }
+        return false;
+    }
+
     /** {@inheritDoc} */
     public IModelSamples getSamples()
     {
@@ -90,30 +130,6 @@ public class FormulaModelItem extends AbstractModelItem
         final ISeverity ok_severity = ValueFactory.createOKSeverity();
         final String ok_status = ""; //$NON-NLS-1$
         final String invalid_status = Messages.NoNumericValue;
-        // Lazy creation of invalid_severity
-        if (invalid_severity == null)
-            invalid_severity = new ISeverity()
-            {
-                public boolean hasValue()
-                {   return false;  }
-        
-                public boolean isInvalid()
-                {   return true;   }
-        
-                public boolean isMajor()
-                {   return false;  }
-        
-                public boolean isMinor()
-                {   return false;  }
-        
-                public boolean isOK()
-                {   return false;  }
-        
-                @Override
-                public String toString()
-                {   return Messages.INVALID; }
-            };
-            
         input_variables.startIteration();
         final INumericMetaData meta_data = input_variables.getMetaData();
         synchronized (samples)
@@ -179,7 +195,8 @@ public class FormulaModelItem extends AbstractModelItem
      *  @see #getXMLContent()
      */
     @SuppressWarnings("nls")
-    public static FormulaModelItem loadFromDOM(Model model, Element pv) throws Exception
+    public static FormulaModelItem loadFromDOM(final Model model,
+                    final Element pv) throws Exception
     {
         // Common PV stuff
         final String name = DOMHelper.getSubelementString(pv, TAG_NAME);

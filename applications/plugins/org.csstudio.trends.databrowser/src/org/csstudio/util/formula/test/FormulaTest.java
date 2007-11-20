@@ -184,6 +184,8 @@ public class FormulaTest extends TestCase
         v[0] = new VariableNode("PI", 10.0);
         f = new Formula("PI", v);
         assertEquals(10.0, f.eval(), epsilon);
+        assertTrue(f.hasSubnode(v[0]));
+        assertTrue(! f.hasSubnode(v[1]));
     }
     
     @Test

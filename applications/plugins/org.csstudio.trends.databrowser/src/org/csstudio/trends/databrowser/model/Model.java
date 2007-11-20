@@ -537,7 +537,7 @@ public class Model
     /** As <code>add()</code>, but without listener notification.
      *  @see #add()
      */
-    private void silentAdd(AbstractModelItem item)
+    private void silentAdd(final AbstractModelItem item)
     {
         items.add(item);
         if (is_running  &&  item instanceof PVModelItem)
@@ -545,23 +545,42 @@ public class Model
     }
     
     /** Remove item with given PV name. */
-    public void remove(String pv_name)
+    public void remove(final String pv_name)
     {
         int i = findEntry(pv_name);
         if (i < 0)
             return;
-        AbstractModelItem item = items.remove(i);
+        final AbstractModelItem item = items.remove(i);
         item.dispose();
         fireEntryRemoved(item);
     }
     
     /** @return Returns index of entry with given PV name or <code>-1</code>. */
-    private int findEntry(String pv_name)
+    private int findEntry(final String pv_name)
     {
         for (int i=0; i<items.size(); ++i)
             if (items.get(i).getName().equals(pv_name))
                 return i;
         return -1;
+    }
+    
+    /** Check if a PV is used in a formula.
+     *  @param pv_name PV to check
+     *  @return Name of the formula that uses the PV, or <code>null</code>.
+     */
+    public String isUsedInFormula(final String pv_name)
+    {
+        for (int i=0; i<items.size(); ++i)
+        {
+            final AbstractModelItem item = items.get(i);
+            if (item instanceof FormulaModelItem)
+            {
+                final FormulaModelItem formula = (FormulaModelItem) item;
+                if (formula.usesInputPV(pv_name))
+                    return formula.getName();
+            }
+        }
+        return null;
     }
     
     /** @return Returns <code>true</code> if running.

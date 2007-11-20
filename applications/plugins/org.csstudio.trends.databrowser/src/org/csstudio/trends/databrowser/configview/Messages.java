@@ -43,6 +43,8 @@ public class Messages extends NLS
     public static String PV;
 
     public static String ReadGraphTimes;
+    public static String RemoveTitle;
+    public static String RemoveFormulaInputError;
 
     public static String Request;
     public static String RingBuffer;

@@ -4,8 +4,10 @@ package org.csstudio.trends.databrowser.configview;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -63,6 +65,17 @@ public class DeletePVAction extends Action
         // since that seems to help in all cases.
         config.getPVTableViewer().cancelEditing();
 		for (int i = 0; i < items.length; i++)
-            model.remove(items[i].getName());
+		{
+            final String name = items[i].getName();
+            final String formula = model.isUsedInFormula(name);
+            if (formula != null)
+            {
+                MessageDialog.openWarning(config.getSite().getShell(),
+                    Messages.RemoveTitle,
+                    NLS.bind(Messages.RemoveFormulaInputError, name, formula));
+                return;
+            }
+            model.remove(name);
+		}
 	}
 }
