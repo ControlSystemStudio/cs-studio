@@ -116,7 +116,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         new_sub.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         new_sub.add(create_new);
         menu_file.add(new_sub);
-        
+        menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
+        menu_file.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
         menu_file.add(close);
         menu_file.add(close_all);
         menu_file.add(new Separator());
