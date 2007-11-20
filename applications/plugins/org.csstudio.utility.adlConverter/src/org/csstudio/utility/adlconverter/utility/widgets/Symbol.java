@@ -24,34 +24,23 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import org.csstudio.sds.components.model.PolygonModel;
-import org.csstudio.utility.adlconverter.internationalization.Messages;
+import org.csstudio.sds.components.model.SwitchModel;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLPoints;
-import org.eclipse.draw2d.geometry.PointList;
 
 /**
  * @author hrickens
  * @author $Author$
  * @version $Revision$
- * @since 03.09.2007
+ * @since 20.11.2007
  */
-
-
-
-public class Polygon extends Widget{
+public class Symbol extends Widget {
 
     /**
-     * @param polygon The ADL String for a Polygon
+     * @param widget
      */
-    public Polygon(final ADLWidget polygon){
-        super(polygon);
-        if(getBasicAttribute()!=null){
-            getBasicAttribute().setStyle("0"); //$NON-NLS-1$
-        }
-        _widget.setPropertyValue(PolygonModel.PROP_FILL, 100.0);
-        _widget.setPropertyValue(PolygonModel.PROP_BORDER_STYLE, 0);
-        _widget.setPropertyValue(PolygonModel.PROP_BORDER_COLOR, _widget.getForegroundColor());
+    public Symbol(final ADLWidget symbol) {
+        super(symbol);
+        // TODO Auto-generated constructor stub
     }
 
 
@@ -59,26 +48,8 @@ public class Polygon extends Widget{
      * {@inheritDoc}
      */
     @Override
-    final void setWidgetType() {
-        _widget = createWidgetModel(PolygonModel.ID); 
+    void setWidgetType() {
+        _widget = createWidgetModel(SwitchModel.ID);
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected final void convertCoordinate(final int x, final int y) {
-        super.convertCoordinate(x, y);
-        PointList pl = getPoints().getPointsList();
-        org.eclipse.draw2d.geometry.Point point;
-        int oldSize = pl.size();
-        for (int i = 0; i < pl.size(); i++) {
-            point = pl.getPoint(i);
-            point.x=(point.x-x);
-            point.y=(point.y-y);
-            pl.setPoint(point, i);
-        }
-        assert oldSize == pl.size() : Messages.Polygon_AssertError; //$NON-NLS-1$
-    }
- }
 
+}

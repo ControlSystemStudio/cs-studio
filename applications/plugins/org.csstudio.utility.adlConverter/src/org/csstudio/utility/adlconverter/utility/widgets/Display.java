@@ -131,6 +131,7 @@ public class Display extends Widget{
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.ActionButton");    } //$NON-NLS-1$
+//        _widget = createWidgetModel(DisplayModel.ID);    
+    } 
 
 }

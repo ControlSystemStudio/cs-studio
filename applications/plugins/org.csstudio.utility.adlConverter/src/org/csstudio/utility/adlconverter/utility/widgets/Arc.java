@@ -75,6 +75,6 @@ public class Arc extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Arc"); //$NON-NLS-1$
+        _widget = createWidgetModel(ArcModel.ID);
     }
 }

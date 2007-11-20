@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
@@ -68,6 +69,7 @@ public class Label extends Widget {
                 if(textit[1].startsWith("$")&&textit.length>2){ //$NON-NLS-1$
                     _widget.setAliasValue("channel", textit[2]); //$NON-NLS-1$
                     _widget.setPrimarPv(textit[2]);
+                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_ALIAS);
                 }
             }else if(row[0].equals("alignment")||row[0].equals("align")){ //$NON-NLS-1$ //$NON-NLS-2$
 //              <property type="sds.option" id="textAlignment">
@@ -89,10 +91,28 @@ public class Label extends Widget {
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
                 //TODO: Label-->clrmod (CSS-SDS unterstüzung fehlt!)
             }else if(row[0].equals("format")){ //$NON-NLS-1$
-                //TODO: Label-->format (CSS-SDS unterstüzung fehlt!)
+                String test = row[1];
+                System.out.println("Format = " + test);
+                if(test.equals("\"exponential\"")){
+                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->exponential wird noch nicht vom ASDS unterstützt.
+                }else if(test.equals("\"decimal\"")){
+                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_DOUBLE); 
+                }else if(test.equals("\"engr.notation\"")){
+                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->engr.notation wird noch nicht vom ASDS unterstützt.
+                }else if(test.equals("\"compact\"")){
+                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->compact wird noch nicht vom ASDS unterstützt.
+                }else if(test.equals("\"octal\"")){
+                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->octal wird noch nicht vom ASDS unterstützt.
+                }else if(test.equals("\"hexadecimal\"")){
+                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_HEX); 
+                }else if(test.equals("\"truncated\"")){
+                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->truncated wird noch nicht vom ASDS unterstützt.
+                }else{// Unknown or String
+                    _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);
+                }
             }else{                
                 throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ obj+Messages.Label_WrongADLFormatException_Parameter_End);
-            } //polygon have no Parameter
+            } //Label have no Parameter
         }
         if(getMonitor()!=null){
             String postfix = ""; //$NON-NLS-1$
@@ -118,6 +138,6 @@ public class Label extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Label"); //$NON-NLS-1$
+        _widget = createWidgetModel(LabelModel.ID);
     }
 }

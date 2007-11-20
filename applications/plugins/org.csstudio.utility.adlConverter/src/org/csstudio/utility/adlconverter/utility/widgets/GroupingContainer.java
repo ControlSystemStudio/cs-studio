@@ -110,6 +110,6 @@ public class GroupingContainer extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.GroupingContainer"); //$NON-NLS-1$
+        _widget = createWidgetModel(GroupingContainerModel.ID);
     }
 }

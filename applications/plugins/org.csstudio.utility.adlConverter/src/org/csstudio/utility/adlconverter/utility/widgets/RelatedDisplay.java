@@ -24,27 +24,17 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import java.util.HashMap;
-
 import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
-import org.csstudio.sds.model.properties.ActionData;
-import org.csstudio.sds.model.properties.ActionType;
-import org.csstudio.sds.model.properties.actions.CommitValueWidgetAction;
-import org.csstudio.sds.model.properties.actions.WidgetAction;
-import org.csstudio.sds.model.properties.actions.WidgetActionFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgetparts.RelatedDisplayItem;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
-import org.epics.css.dal.context.ConnectionState;
 
 /**
  * @author hrickens
@@ -168,7 +158,7 @@ public class RelatedDisplay extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.MenuButton"); //$NON-NLS-1$
+        _widget = createWidgetModel(MenuButtonModel.ID);
     }
 
 }

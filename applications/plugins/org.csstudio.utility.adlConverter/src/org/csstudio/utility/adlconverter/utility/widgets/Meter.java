@@ -88,6 +88,6 @@ public class Meter extends Widget {
      */    
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Meter"); //$NON-NLS-1$
+        _widget = createWidgetModel(MeterModel.ID);
     }
 }

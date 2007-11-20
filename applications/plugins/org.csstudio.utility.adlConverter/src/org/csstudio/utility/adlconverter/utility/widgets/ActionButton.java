@@ -104,7 +104,7 @@ public class ActionButton extends Widget {
      */
     @Override
     final void setWidgetType() {
-       _widget = createWidgetModel("org.csstudio.sds.components.ActionButton"); //$NON-NLS-1$
+       _widget = createWidgetModel(ActionButtonModel.ID);
     }
 
 

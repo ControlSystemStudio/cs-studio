@@ -116,6 +116,6 @@ public class Textinput extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Textinput"); //$NON-NLS-1$
+        _widget = createWidgetModel(TextInputModel.ID);
     }
 }

@@ -52,6 +52,7 @@ public class Polyline extends Widget{
             getBasicAttribute().setStyle("0"); //$NON-NLS-1$
         }
         _widget.setWidth(getObject().getWidth());
+        _widget.setHeight(getObject().getHeight());
         _widget.setPropertyValue(PolylineModel.PROP_FILL, 100.0);
     }
 
@@ -75,7 +76,7 @@ public class Polyline extends Widget{
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Polyline"); //$NON-NLS-1$
+        _widget = createWidgetModel(PolylineModel.ID);
     }
     
     /**

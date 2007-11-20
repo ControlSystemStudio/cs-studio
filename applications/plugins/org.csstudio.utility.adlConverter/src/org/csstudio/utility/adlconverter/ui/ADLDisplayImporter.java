@@ -48,6 +48,7 @@ import org.csstudio.utility.adlconverter.utility.widgets.Polygon;
 import org.csstudio.utility.adlconverter.utility.widgets.Polyline;
 import org.csstudio.utility.adlconverter.utility.widgets.Rectangle;
 import org.csstudio.utility.adlconverter.utility.widgets.RelatedDisplay;
+import org.csstudio.utility.adlconverter.utility.widgets.Symbol;
 import org.csstudio.utility.adlconverter.utility.widgets.Textinput;
 import org.csstudio.utility.adlconverter.utility.widgets.Valuator;
 import org.csstudio.utility.adlconverter.utility.widgets.Waveform;
@@ -111,6 +112,8 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                         _colormapSet=true;
                 }else if(strings.getType().equals("composite")){ //$NON-NLS-1$
                     displayModel.addWidget(new GroupingContainer(strings).getElement());
+                }else if(strings.getType().equals("\"dynamic symbol\"")){ //$NON-NLS-1$
+                    displayModel.addWidget(new Symbol(strings).getElement());
                 }else if(strings.getType().equals("image")){ //$NON-NLS-1$
                     displayModel.addWidget(new Image(strings).getElement());
                 }else if(strings.getType().equals("indicator")){ //$NON-NLS-1$

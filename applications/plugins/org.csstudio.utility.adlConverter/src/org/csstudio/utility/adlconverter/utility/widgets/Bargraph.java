@@ -24,20 +24,13 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.csstudio.sds.components.model.BargraphModel;
-import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLDynamicAttribute;
-import org.epics.css.dal.context.ConnectionState;
 
 /**
  * @author hrickens
@@ -194,7 +187,7 @@ public class Bargraph extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Bargraph"); //$NON-NLS-1$
+        _widget = createWidgetModel(BargraphModel.ID);
     }
 
 }

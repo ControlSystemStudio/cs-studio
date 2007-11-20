@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.sds.components.model.WaveformModel;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 
 /**
@@ -47,6 +48,7 @@ public class Waveform extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Waveform"); //$NON-NLS-1$
+        _widget = createWidgetModel("org.csstudio.sds.components.Waveform");
+//        _widget = createWidgetModel(WaveformModel.ID); //TODO:WaveformModel.ID fehlt 
     }
 }

@@ -61,7 +61,7 @@ public class Ellipse extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Ellipse"); //$NON-NLS-1$
+        _widget = createWidgetModel(EllipseModel.ID);
     }
 
 }

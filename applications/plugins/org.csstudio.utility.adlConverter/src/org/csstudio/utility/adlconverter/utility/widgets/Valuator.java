@@ -86,6 +86,6 @@ public class Valuator extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.SimpleSlider"); //$NON-NLS-1$
+        _widget = createWidgetModel(SimpleSliderModel.ID);
     }
 }

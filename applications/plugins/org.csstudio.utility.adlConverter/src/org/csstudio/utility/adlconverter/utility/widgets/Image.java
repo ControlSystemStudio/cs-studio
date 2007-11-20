@@ -71,7 +71,7 @@ public class Image extends Widget {
      */
     @Override
     void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Image"); //$NON-NLS-1$
+        _widget = createWidgetModel(ImageModel.ID);
     }
 
 }
