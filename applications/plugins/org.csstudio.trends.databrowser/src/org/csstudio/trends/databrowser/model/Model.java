@@ -626,7 +626,6 @@ public class Model
         XMLHelper.XML(b, 1, "scan_period", Double.toString(scan_period));
         XMLHelper.XML(b, 1, "update_period", Double.toString(update_period));
         XMLHelper.XML(b, 1, "ring_size", Integer.toString(ring_size));
-        XMLHelper.XML(b, 1, "start", start_end_times.getStartSpecification());
         b.append("    <pvlist>\n");
         for (AbstractModelItem item : items)
             b.append(item.getXMLContent());
