@@ -119,8 +119,12 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	public void deactivate() {
-		_task.cancel();
-		_timer.cancel();
+		if (_task!=null) {
+			_task.cancel();
+		}
+		if (_timer!=null) {
+			_timer.cancel();
+		}
 		super.deactivate();
 	}
 
