@@ -17,10 +17,10 @@ import org.csstudio.platform.data.IValue;
  */ 
 public class SpreadsheetIterator
 {
-    private static final boolean debug = false;
+    final private static boolean debug = false;
     
     /** The iterators for the individual channels. */
-    private final ValueIterator iters[];
+    final private ValueIterator iters[];
     
     /** The 'current' values of each <code>iter</code>.
      *  This is usually the 'next' value, stamped after <code>time</code>.
@@ -40,7 +40,6 @@ public class SpreadsheetIterator
     @SuppressWarnings("nls")
     public SpreadsheetIterator(ValueIterator iters[])
     {
-        super();
         this.iters = iters;
         
         // Get first sample from each base iterator
@@ -101,7 +100,7 @@ public class SpreadsheetIterator
     {
         assert hasNext();
         // Keep copy(!) of 'current' spreadsheet line
-        IValue[] result = values.clone();
+        final IValue[] result = values.clone();
         // Prepare next line
         getNextSpreadsheetLine();
         // return the copy
@@ -119,7 +118,7 @@ public class SpreadsheetIterator
         {
             if (raw_data[i] == null)
                 continue;
-            ITimestamp sample_time = raw_data[i].getTime();
+            final ITimestamp sample_time = raw_data[i].getTime();
             if (time == null  ||  sample_time.isLessThan(time))
                 time = sample_time;
         }
