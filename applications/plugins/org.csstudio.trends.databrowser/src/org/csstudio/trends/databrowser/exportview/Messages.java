@@ -39,6 +39,8 @@ public class Messages extends NLS
     public static String FormatExponentialLabel;
     public static String FormatPrecision_TT;
     public static String FormatPrecisionLabel;
+    public static String FormulaWarningMessage;
+    public static String FormulaWarningTitle;
     public static String IncludeSeverity;
     public static String InfoColHeader;
     public static String Job_Fetching;

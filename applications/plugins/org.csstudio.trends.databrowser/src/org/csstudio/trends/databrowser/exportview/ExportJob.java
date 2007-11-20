@@ -112,6 +112,7 @@ class ExportJob extends Job
         final ArchiveCache cache = ArchiveCache.getInstance();
         PrintWriter out = null;
         int line_count = 0;
+        final int N = model.getNumItems();
         try
         {
             out = new PrintWriter(filename);
@@ -119,7 +120,6 @@ class ExportJob extends Job
 
             // Get sample iterator for each channel.
             // Either dump it ASAP, or keep it for spreadsheet-iteration.
-            final int N = model.getNumItems();
             final ValueIterator iters[] = new ValueIterator[N];
             for (int i=0;  i<N  &&  !monitor.isCanceled();  ++i)
             {

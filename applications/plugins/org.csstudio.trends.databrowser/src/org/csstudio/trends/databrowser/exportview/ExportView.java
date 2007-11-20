@@ -6,11 +6,15 @@ import org.csstudio.apputil.ui.swt.ScrolledContainerHelper;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.trends.databrowser.model.IModelItem;
+import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
 import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -514,6 +518,25 @@ public class ExportView extends PlotAwareView
         {
             prec = 0;
         }
+        
+        // Check for use of formulas
+        if (source != ExportJob.Source.Plot)
+        {
+            for (int i=0; i<model.getNumItems(); ++i)
+            {
+                final IModelItem item = model.getItem(i);
+                if (! (item instanceof IPVModelItem))
+                {
+                    if (! MessageDialog.openQuestion(getSite().getShell(),
+                        Messages.FormulaWarningTitle,
+                        NLS.bind(Messages.FormulaWarningMessage,
+                                 item.getName())))
+                             return;
+                    break;
+                }
+            }
+        }
+        
         // Launch the actual export
         Job job = new ExportJob(getSite().getShell(),
                         model, start, end,
