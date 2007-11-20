@@ -61,7 +61,7 @@ public class ExportView extends PlotAwareView
     protected void doCreatePartControl(final Composite parent)
     {
         final Composite pane =
-            ScrolledContainerHelper.create(parent, 500, 250);
+            ScrolledContainerHelper.create(parent, 500, 260);
         
         final GridLayout layout = new GridLayout();
         layout.numColumns = 3;
@@ -387,8 +387,7 @@ public class ExportView extends PlotAwareView
         filename_txt.setFocus();
     }
     
-    /** Enable the time start/end/select GUI
-     *  unless we get that info from plot,
+    /** Enable the time start/end/select GUI unless we get that info from plot.
      */
     private void conditionallyEnableTimeConfig()
     {

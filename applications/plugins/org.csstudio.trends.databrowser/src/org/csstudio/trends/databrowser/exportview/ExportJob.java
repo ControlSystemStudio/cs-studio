@@ -14,6 +14,7 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.IArchiveDataSource;
+import org.csstudio.swt.chart.ChartSampleSearch;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IModelSamples;
@@ -222,7 +223,12 @@ class ExportJob extends Job
             out.println(Messages.Comment + Messages.SourceLabel
                         + Messages.Source_Plot);
             final IModelSamples samples = item.getSamples();
-            return new ModelSampleIterator(samples);
+            // Limit samples to the start...end range
+            final int start_index =
+                ChartSampleSearch.findClosestSample(samples, start.toDouble());
+            final int end_index =
+                ChartSampleSearch.findClosestSample(samples, end.toDouble());
+            return new ModelSampleIterator(samples, start_index, end_index);
         }
         // else: Get iterator for archive samples
         out.println(Messages.Comment + Messages.Archives);
