@@ -17,7 +17,7 @@ public class Perspective implements IPerspectiveFactory
     private static final String ID_PROGRESS =
         "org.csstudio.platform.ui.views.progress"; //$NON-NLS-1$
     private static final String ID_NAVIGATOR =
-    	"org.csstudio.platform.ui.views.WorkspaceExplorerView"; //$NON-NLS-1$
+    	"org.eclipse.ui.views.ResourceNavigator"; //$NON-NLS-1$
     
     @SuppressWarnings("nls")
     public void createInitialLayout(IPageLayout layout)
