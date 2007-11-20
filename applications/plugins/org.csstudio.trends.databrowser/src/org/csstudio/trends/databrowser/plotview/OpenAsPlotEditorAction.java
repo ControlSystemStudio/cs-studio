@@ -1,10 +1,10 @@
 package org.csstudio.trends.databrowser.plotview;
 
-import org.csstudio.platform.ui.workbench.FileEditorInput;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
 import org.eclipse.jface.action.Action;
+import org.eclipse.ui.part.FileEditorInput;
 
 /** Opens editor for the current DataBrowser view.
  *  @author Kay Kasemir

@@ -17,7 +17,7 @@ public class CSS_Perspective implements IPerspectiveFactory
     // Copied them here instead of using their ...View.ID member so that
     // this plugin doesn't depend on other app plugins.
     private static final String ID_PROBE = "org.csstudio.diag.probe.Probe";
-    private static final String ID_NAVIGATOR = "org.csstudio.platform.ui.views.WorkspaceExplorerView";
+    private static final String ID_NAVIGATOR = "org.eclipse.ui.views.ResourceNavigator";
     private static final String ID_CLOCK = "org.csstudio.utility.clock.ClockView";
     private static final String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
     private static final String ID_DATABROWSER_CONFIG = "org.csstudio.trends.databrowser.configview.ConfigView";
@@ -37,7 +37,6 @@ public class CSS_Perspective implements IPerspectiveFactory
                         IPageLayout.BOTTOM, 0.66f, editor);
         
         // Stuff for 'left'
-        // Workspace explorer
         left.addView(ID_NAVIGATOR);
         
         // Stuff for 'bottom'
@@ -52,7 +51,6 @@ public class CSS_Perspective implements IPerspectiveFactory
         layout.addPerspectiveShortcut(ID_DATABROWSER_PERSP);
 
         // Populate the "Window/Views..." menu with suggested views
-        layout.addShowViewShortcut(ID_NAVIGATOR);
         layout.addShowViewShortcut(ID_CLOCK);
         layout.addShowViewShortcut(ID_PROGRESS);
 	}

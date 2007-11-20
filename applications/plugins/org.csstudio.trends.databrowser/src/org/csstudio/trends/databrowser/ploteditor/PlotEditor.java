@@ -3,7 +3,6 @@ package org.csstudio.trends.databrowser.ploteditor;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.csstudio.platform.ui.workbench.FileEditorInput;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.actions.RemoveMarkersAction;
 import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
@@ -44,6 +43,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.part.FileEditorInput;
 
 /** An Eclipse 'editor' for the data browser plot.
  *  <p>
