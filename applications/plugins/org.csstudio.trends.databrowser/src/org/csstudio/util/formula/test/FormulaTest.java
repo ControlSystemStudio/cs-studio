@@ -133,7 +133,10 @@ public class FormulaTest extends TestCase
         
         f = new Formula("sin(" + Math.toRadians(30) + ")");
         assertEquals(0.5, f.eval(), epsilon);
-       
+        
+        f = new Formula("sin(toRadians(30))");
+        assertEquals(0.5, f.eval(), epsilon);
+        
         f = new Formula("cos(30)");
         assertEquals(0.1543, f.eval(), epsilon);
         
