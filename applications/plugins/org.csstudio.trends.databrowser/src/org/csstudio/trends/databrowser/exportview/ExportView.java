@@ -29,6 +29,9 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 
 /** View to configure and start "export" of samples to a file.
  *  @see ExportJob
@@ -36,7 +39,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class ExportView extends PlotAwareView
 {
-    public static final String ID = ExportView.class.getName();
+    public static final String ID = "org.csstudio.trends.databrowser.exportview.ExportView"; //$NON-NLS-1$
 
     // GUI Elements
     private Text start_txt;
@@ -59,7 +62,44 @@ public class ExportView extends PlotAwareView
     // (rest directly read from the GUI elements)
     private ExportJob.Source source;
     private IValue.Format format;
+
+    /** Saved settings */
+    private IMemento memento = null;
+    // Memento tags
+    private static final String TAG_FILENAME = "FILENAME"; //$NON-NLS-1$
+    private static final String TAG_AVG_SECS = "AVG_SECS"; //$NON-NLS-1$
     
+    /** Get the memento for GUI initialization */
+    @Override
+    public void init(final IViewSite site, final IMemento memento)
+         throws PartInitException
+    {
+        this.memento = memento;
+        super.init(site, memento);
+    }
+
+    /** Save state of selected GUI elements */
+    @Override
+    public void saveState(final IMemento memento)
+    {
+        memento.putString(TAG_FILENAME, filename_txt.getText());
+        memento.putString(TAG_AVG_SECS, avg_seconds.getText());
+    }
+
+    /** Restore saved settings */
+    private void restoreSavedSettings()
+    {
+        if (memento != null)
+        {
+            String txt = memento.getString(TAG_FILENAME);
+            if (txt != null)
+                filename_txt.setText(txt);
+            txt = memento.getString(TAG_AVG_SECS);
+            if (txt != null)
+                avg_seconds.setText(txt);
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     protected void doCreatePartControl(final Composite parent)
@@ -382,8 +422,10 @@ public class ExportView extends PlotAwareView
         format = IValue.Format.Default;
         format_spreadsheet.setSelection(true);
         format_severity.setSelection(true);
+        
+        restoreSavedSettings();
     }
-    
+
     /** Set the initial focus. */
     @Override
     public void setFocus()
@@ -545,7 +587,7 @@ public class ExportView extends PlotAwareView
                         format_spreadsheet.getSelection(),
                         format_severity.getSelection(),
                         format, prec,
-                        filename_txt.getText());
+                        filename_txt.getText().trim());
         job.schedule();
     }
 }
