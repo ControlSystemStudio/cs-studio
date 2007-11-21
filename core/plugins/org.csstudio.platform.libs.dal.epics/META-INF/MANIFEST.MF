@@ -13,3 +13,4 @@ Eclipse-LazyStart: true
 Eclipse-RegisterBuddy: org.csstudio.platform.libs.dal
 Bundle-ClassPath: .,
  lib/css-dal-epics.jar
+Export-Package: org.csstudio.platform.libs.dal.epics

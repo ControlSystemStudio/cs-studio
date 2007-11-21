@@ -406,8 +406,9 @@ public class JmsRedundantReceiver
         connection = null;
         session = null;
         context = null;
-        
-        properties.clear();
+        if (properties!=null) {
+        	properties.clear();
+        }
         properties = null;
     }   
 }

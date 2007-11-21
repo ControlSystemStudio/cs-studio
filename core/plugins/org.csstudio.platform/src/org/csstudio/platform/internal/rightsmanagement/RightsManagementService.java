@@ -138,7 +138,7 @@ public final class RightsManagementService {
 			}
 			return result;
 		} else {
-			CentralLogger.getInstance().warn(this, "No authorization provider found.");
+			//CentralLogger.getInstance().warn(this, "No authorization provider found.");
 			return new RightSet("EMPTY");
 		}
 	}
@@ -180,7 +180,7 @@ public final class RightsManagementService {
 			if (_rights.containsKey(user)) {
 				_rights.remove(user);
 			}
-			CentralLogger.getInstance().warn(this, "No Authorization Provider found.");
+			//CentralLogger.getInstance().warn(this, "No Authorization Provider found.");
 		}
 	}
 
