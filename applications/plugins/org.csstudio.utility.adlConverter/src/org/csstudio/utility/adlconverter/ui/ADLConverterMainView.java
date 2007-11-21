@@ -94,7 +94,7 @@ public class ADLConverterMainView extends ViewPart {
                 shell.setImage(image);
                 
                 _resourceGroup = new ResourceAndContainerGroup(shell,null,Messages.ADLConverterMainView_DateiName,Messages.ADLConverterMainView_ADLFileChooserDes);
-                _resourceGroup.setContainerFullPath(new Path("SDS")); //$NON-NLS-1$
+                _resourceGroup.setContainerFullPath(new Path("CSS/SDS")); //$NON-NLS-1$
                 _resourceGroup.setFocus();
                 
                 Composite c = new Composite(shell,SWT.NONE);

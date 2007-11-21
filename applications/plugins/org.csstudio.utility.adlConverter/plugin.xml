@@ -10,9 +10,26 @@
       <view
             category="org.csstudio"
             class="org.csstudio.utility.adlconverter.ui.ADLConverterMainView"
+            icon="image/ADL2SDS.png"
             id="org.csstudio.utility.adlconverter.ui.ADLConverterMainView"
             name="%view.name.0">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.utility.adlConverter.ADLConverterMainViewActionSet"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="ShowADLConverterMainView"
+               icon="image/ADL2SDS.png"
+               id="org.csstudio.utility.adlConverter.action1"
+               label="ADL Converter"
+               menubarPath="css/display/"
+               style="push">
+         </action>
+      </actionSet>
    </extension>
 
 </plugin>

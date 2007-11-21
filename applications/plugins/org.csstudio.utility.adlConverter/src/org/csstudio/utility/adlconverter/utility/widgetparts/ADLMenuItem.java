@@ -81,7 +81,7 @@ public class ADLMenuItem extends WidgetPart{
      * {@inheritDoc}
      */
     final void init(){
-        _path = "/SDS"; //"C:/Helge_Projekte/CSS 3.3 Workspace/SDS/"; //$NON-NLS-1$
+        _path = "/CSS/SDS"; //"C:/Helge_Projekte/CSS 3.3 Workspace/SDS/"; //$NON-NLS-1$
     }
 
     /**
