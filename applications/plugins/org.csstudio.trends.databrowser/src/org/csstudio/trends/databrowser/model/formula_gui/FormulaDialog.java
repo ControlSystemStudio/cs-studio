@@ -65,7 +65,7 @@ public class FormulaDialog extends Dialog
     private Color status_color_OK;
 
     /** For button: Add Text of pressed button to formula. */
-    final SelectionAdapter text_append_adapter = new SelectionAdapter()
+    final private SelectionAdapter text_append_adapter = new SelectionAdapter()
     {
         @Override
         public void widgetSelected(SelectionEvent e)
@@ -192,7 +192,7 @@ public class FormulaDialog extends Dialog
     
     /** Create the buttons. */
     @Override
-    protected void createButtonsForButtonBar(Composite parent)
+    protected void createButtonsForButtonBar(final Composite parent)
     {
         super.createButtonsForButtonBar(parent);
 
