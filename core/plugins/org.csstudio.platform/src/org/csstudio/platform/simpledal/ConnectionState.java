@@ -8,6 +8,7 @@ package org.csstudio.platform.simpledal;
 public enum ConnectionState {
 	/**
 	 * If state is not a valid DAL-state.
+	 * Used as initial connection state.
 	 */
 	UNKNOWN(null),
 

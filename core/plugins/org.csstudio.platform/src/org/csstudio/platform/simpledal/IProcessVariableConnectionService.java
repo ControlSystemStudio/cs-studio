@@ -21,7 +21,7 @@ public interface IProcessVariableConnectionService {
 	 * @throws Exception
 	 *             In case of a connection error.
 	 */
-	void registerForIntValues(IProcessVariableValueListener<Integer> listener,
+	void registerForLongValues(IProcessVariableValueListener<Integer> listener,
 			IProcessVariableAddress pv) throws Exception;
 
 	/**

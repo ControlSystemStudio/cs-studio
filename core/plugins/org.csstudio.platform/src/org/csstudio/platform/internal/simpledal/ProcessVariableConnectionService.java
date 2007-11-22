@@ -80,7 +80,7 @@ public class ProcessVariableConnectionService implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void registerForIntValues(
+	public void registerForLongValues(
 			IProcessVariableValueListener<Integer> listener,
 			IProcessVariableAddress pv) throws Exception {
 		doRegister(pv, LongProperty.class, listener);
