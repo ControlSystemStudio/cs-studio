@@ -264,7 +264,7 @@ public final class ResourceAndContainerGroup implements Listener {
 					null, null, _showClosedProjects);
 		} else {
 			_containerGroup = new ResourceSelectionGroup(composite, this,
-					null, null, _showClosedProjects, heightHint,
+					null, null, _showClosedProjects, true, heightHint,
 					SIZING_TEXT_FIELD_WIDTH);
 		}
 

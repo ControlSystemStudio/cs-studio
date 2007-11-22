@@ -57,6 +57,7 @@ public class Messages extends NLS {
     public static String ADLConverterMainView_ConvcertButtonText;
     public static String ADLConverterMainView_DateiName;
     public static String ADLConverterMainView_DialogText;
+	public static String ADLConverterMainView_TargetFolderSelectionMessage;
     public static String ADLConverterMainView_TargetOpernButton;
     public static String ADLDisplayImporter_ADLBargraphLayerDes;
     public static String ADLDisplayImporter_ADLBargraphLayerName;

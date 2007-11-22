@@ -26,23 +26,22 @@ package org.csstudio.utility.adlconverter.ui;
 
 import java.io.File;
 
-import org.csstudio.platform.ui.composites.ResourceAndContainerGroup;
-import org.csstudio.platform.ui.util.ImageUtil;
+import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
@@ -60,9 +59,9 @@ public class ADLConverterMainView extends ViewPart {
     public ADLConverterMainView() {}
 
     /**
-     * The Workspace Chooser.
+     * The target path selected by the user.
      */
-    private ResourceAndContainerGroup _resourceGroup;
+    private IPath _targetPath;
     
     /**
      * {@inheritDoc}
@@ -87,57 +86,19 @@ public class ADLConverterMainView extends ViewPart {
             public void widgetDefaultSelected(final SelectionEvent e) {}
 
             public void widgetSelected(final SelectionEvent e) {
-                final Shell shell = new Shell(parent.getShell());
-                shell.setLayout(new GridLayout(1,false));
-                shell.setText(Messages.ADLConverterMainView_DialogText);
-                Image image = ImageUtil.getInstance().getImageDescriptor("org.csstudio.sds.importer.ui", "icons/sds.gif").createImage(); //$NON-NLS-1$ //$NON-NLS-2$
-                shell.setImage(image);
-                
-                _resourceGroup = new ResourceAndContainerGroup(shell,null,Messages.ADLConverterMainView_DateiName,Messages.ADLConverterMainView_ADLFileChooserDes);
-                _resourceGroup.setContainerFullPath(new Path("CSS/SDS")); //$NON-NLS-1$
-                _resourceGroup.setFocus();
-                
-                Composite c = new Composite(shell,SWT.NONE);
-                c.setLayout(new GridLayout(2,true));
-                c.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
-                
-                Button ok = new Button(c,SWT.PUSH);
-                ok.setText(Messages.ADLConverterMainView_ADLFileChooserOkButton);
-                GridData gd = new GridData(SWT.CENTER,SWT.LEFT,true,false,1,1);
-                gd.widthHint=80;
-                gd.heightHint=25;
-                ok.setLayoutData(gd);
-                
-                Button cancel = new Button(c,SWT.PUSH);
-                cancel.setText(Messages.ADLConverterMainView_ADLFileChooserCancelButton);
-                gd = new GridData(SWT.CENTER,SWT.RIGHT,true,false,1,1);
-                gd.widthHint=80;
-                gd.heightHint=25;
-                cancel.setLayoutData(gd);
-                
-                shell.pack();
-                shell.open();
-                
-                ok.addSelectionListener(new SelectionListener(){
-
-                    public void widgetDefaultSelected(final SelectionEvent e) {}
-
-                    public void widgetSelected(final SelectionEvent e) {
-                        pathText.setText(_resourceGroup.getContainerFullPath().toString());
-                        shell.close();
-                    }
-                    
-                });
-                
-                cancel.addSelectionListener(new SelectionListener(){
-
-                    public void widgetDefaultSelected(final SelectionEvent e) {}
-
-                    public void widgetSelected(final SelectionEvent e) {
-                        shell.close();
-                    }
-                    
-                });
+            	ResourceSelectionDialog dialog = new ResourceSelectionDialog(
+						parent.getShell(),
+						Messages.ADLConverterMainView_TargetFolderSelectionMessage,
+						null);
+            	IPath path = new Path(pathText.getText());
+            	dialog.setSelectedResource(path);
+            	if (dialog.open() == Window.OK) {
+            		path = dialog.getSelectedResource();
+            		if (path != null) {
+            			_targetPath = path;
+            			pathText.setText(path.toString());
+            		}
+            	}
             }
         });
 
@@ -202,7 +163,7 @@ public class ADLConverterMainView extends ViewPart {
                         
                         di.importDisplay(
                                 ((File)avaibleFiles.getElementAt(i)).getAbsolutePath(),
-                                initial.getProjectRelativePath().append(_resourceGroup.getContainerFullPath()),
+                                initial.getProjectRelativePath().append(_targetPath),
                                 ((File)avaibleFiles.getElementAt(i)).getName().replace(".adl", ".css-sds") //$NON-NLS-1$ //$NON-NLS-2$
                         );
                     } catch (Exception e1) {

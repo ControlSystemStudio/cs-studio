@@ -205,6 +205,11 @@ public final class ResourceSelectionGroup extends Composite {
 	private Action _newProjectAction;
 
 	/**
+	 * Whether to show the New Folder and New Project actions.
+	 */
+	private boolean _showNewContainerActions;
+
+	/**
 	 * Sizing constant for the width of the tree.
 	 */
 	private static final int SIZING_SELECTION_PANE_WIDTH = 320;
@@ -226,10 +231,13 @@ public final class ResourceSelectionGroup extends Composite {
 	 *            File extensions of files to include in the tree view. Pass
 	 *            an empty array or <code>null</code> to show only container
 	 *            resources.
+	 * @param showNewContainerActions
+	 *            Whether to show the New Folder and New Project actions.
 	 */
 	public ResourceSelectionGroup(final Composite parent,
-			final Listener listener, final String[] fileExtensions) {
-		this(parent, listener, fileExtensions, null);
+			final Listener listener, final String[] fileExtensions,
+			final boolean showNewContainerActions) {
+		this(parent, listener, fileExtensions, null, showNewContainerActions);
 	}
 
 	/**
@@ -246,11 +254,13 @@ public final class ResourceSelectionGroup extends Composite {
 	 *            resources.
 	 * @param message
 	 *            The text to present to the user.
+	 * @param showNewContainerActions
+	 *            Whether to show the New Folder and New Project actions.
 	 */
 	public ResourceSelectionGroup(final Composite parent,
 			final Listener listener, final String[] fileExtensions,
-			final String message) {
-		this(parent, listener, fileExtensions, message, true);
+			final String message, final boolean showNewContainerActions) {
+		this(parent, listener, fileExtensions, message, true, showNewContainerActions);
 	}
 
 	/**
@@ -269,12 +279,16 @@ public final class ResourceSelectionGroup extends Composite {
 	 *            The text to present to the user.
 	 * @param showClosedProjects
 	 *            Whether or not to show closed projects.
+	 * @param showNewContainerActions
+	 *            Whether to show the New Folder and New Project actions.
 	 */
 	public ResourceSelectionGroup(final Composite parent,
 			final Listener listener, final String[] fileExtensions,
 			final String message,
-			final boolean showClosedProjects) {
+			final boolean showClosedProjects,
+			final boolean showNewContainerActions) {
 		this(parent, listener, fileExtensions, message, showClosedProjects,
+				showNewContainerActions,
 				SIZING_SELECTION_PANE_HEIGHT, SIZING_SELECTION_PANE_WIDTH);
 	}
 
@@ -294,6 +308,8 @@ public final class ResourceSelectionGroup extends Composite {
 	 *            The text to present to the user.
 	 * @param showClosedProjects
 	 *            Whether or not to show closed projects.
+	 * @param showNewContainerActions
+	 *            Whether to show the New Folder and New Project actions.
 	 * @param heightHint
 	 *            height hint for the drill down composite
 	 * @param widthHint
@@ -302,10 +318,12 @@ public final class ResourceSelectionGroup extends Composite {
 	public ResourceSelectionGroup(final Composite parent,
 			final Listener listener, final String[] fileExtensions,
 			final String message, final boolean showClosedProjects,
+			final boolean showNewContainerActions,
 			final int heightHint, final int widthHint) {
 		super(parent, SWT.NONE);
 		_listener = listener;
 		_showClosedProjects = showClosedProjects;
+		_showNewContainerActions = showNewContainerActions;
 		if (message != null) {
 			createContents(message, fileExtensions, heightHint, widthHint);
 		} else {
@@ -359,15 +377,6 @@ public final class ResourceSelectionGroup extends Composite {
 
 		createTreeViewer(fileExtensions, heightHint);
 //		Dialog.applyDialogFont(this);
-	}
-	
-	/**
-	 * Makes all Actions for this Component.
-	 */
-	private void makeActions() {
-		_newFolderAction = new NewFolderAction(this.getShell());
-		_newFolderAction.setEnabled(false);
-		_newProjectAction = new NewProjectAction(this.getShell());
 	}
 
 	/**
@@ -431,8 +440,7 @@ public final class ResourceSelectionGroup extends Composite {
 
 		// This has to be done after the viewer has been laid out
 		_treeViewer.setInput(ResourcesPlugin.getWorkspace());
-		this.makeActions();
-		this.addAdditionalActions(drillDown.getToolBarManager());
+		this.addNewContainerActions(drillDown.getToolBarManager());
 		this.addPopupMenu(_treeViewer);
 		
 		this.setDefaultSelection(_treeViewer);
@@ -451,15 +459,22 @@ public final class ResourceSelectionGroup extends Composite {
 	}
 	
 	/**
-	 * Adds a NewFolder- and a NewProjectAction to the given ToolbarManager.
+	 * Creates the New Folder and New Project actions and adds them to
+	 * the given toolbar manager.
+	 * 
 	 * @param manager 
 	 * 			The ToolBarManager, where the Actions are added
 	 */
-	private void addAdditionalActions(final ToolBarManager manager) {
-		manager.add(new Separator());
-		manager.add(_newFolderAction);
-		manager.add(_newProjectAction);
-		manager.update(true);
+	private void addNewContainerActions(final ToolBarManager manager) {
+		if (_showNewContainerActions) {
+			_newFolderAction = new NewFolderAction(this.getShell());
+			_newFolderAction.setEnabled(false);
+			_newProjectAction = new NewProjectAction(this.getShell());
+			manager.add(new Separator());
+			manager.add(_newFolderAction);
+			manager.add(_newProjectAction);
+			manager.update(true);
+		}
 	}
 	
 	/**
@@ -469,8 +484,10 @@ public final class ResourceSelectionGroup extends Composite {
 	 */
 	private void addPopupMenu(final TreeViewer viewer) {
 		MenuManager popupMenu = new MenuManager();
-		popupMenu.add(_newFolderAction);
-		popupMenu.add(_newProjectAction);
+		if (_showNewContainerActions) {
+			popupMenu.add(_newFolderAction);
+			popupMenu.add(_newProjectAction);
+		}
 		Menu menu = popupMenu.createContextMenu(viewer.getTree());
 		viewer.getTree().setMenu(menu);
 	}
