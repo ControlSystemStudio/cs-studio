@@ -123,7 +123,14 @@ public final class ResourceSelectionDialog extends Dialog {
 			data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 			label.setLayoutData(data);
 		}
-		_resourceSelectionGroup = new ResourceSelectionGroup(composite, null, _fileExtensions, false);
+		
+		// The New Project and New Folder actions will be shown if there are
+		// no file extensions, i.e. if the dialog is opened to select a folder.
+		boolean showNewContainerActions = (_fileExtensions == null 
+				|| _fileExtensions.length == 0);
+		
+		_resourceSelectionGroup = new ResourceSelectionGroup(composite, null,
+				_fileExtensions, showNewContainerActions);
 		if (_path != null) {
 			_resourceSelectionGroup.setSelectedResource(_path);
 		}
