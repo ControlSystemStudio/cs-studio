@@ -165,12 +165,6 @@
          id="org.csstudio.platform.ui.page1"
          name="Onsite Subnets">
    </page>
-   <page
-         category="org.csstudio.platform.ui.css.platform"
-         class="org.csstudio.platform.ui.internal.preferences.WorkspaceSettingsPreferencePage"
-         id="org.csstudio.platform.ui.internal.preferences.WorkspaceSettingsPreferencePage"
-         name="Workspace">
-   </page>
    </extension>
    <extension
          point="org.eclipse.help.contexts">
