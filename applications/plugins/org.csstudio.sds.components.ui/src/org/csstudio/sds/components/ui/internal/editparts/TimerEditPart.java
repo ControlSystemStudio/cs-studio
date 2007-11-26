@@ -24,13 +24,20 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.TimerModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableTimerFigure;
+import org.csstudio.sds.internal.model.logic.RunnableScript;
+import org.csstudio.sds.internal.model.logic.ScriptEngine;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.logic.IScript;
+import org.csstudio.sds.model.logic.LogicException;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -50,6 +57,10 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	 * The internal {@link Timer}.
 	 */
 	private Timer _timer;
+	/**
+	 * The used {@link ScriptEngine}.
+	 */
+	private ScriptEngine _scriptEngine;
 
 	/**
 	 * {@inheritDoc}
@@ -59,7 +70,34 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 		RefreshableTimerFigure timerFigure = new RefreshableTimerFigure();
 		timerFigure.setVisible(getExecutionMode().equals(ExecutionMode.EDIT_MODE));
 		this.configureTimer();
+		this.createScriptEngine();
 		return timerFigure;
+	}
+
+	/**
+	 * Creates the used {@link ScriptEngine}.
+	 */
+	private void createScriptEngine() {
+		IPath path = getTimerModel().getScriptPath();
+		if (!path.isEmpty()) {
+			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path); 
+			try {
+				IScript script = new RunnableScript(file.getName(), file.getContents());
+				_scriptEngine = new ScriptEngine(script);
+			} catch (LogicException e) {
+				e.printStackTrace();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}	
+		}
+	}
+	
+	/**
+	 * Return the associated {@link TimerModel}.
+	 * @return The TimerModel
+	 */
+	private TimerModel getTimerModel() {
+		return (TimerModel)this.getCastedModel();
 	}
 
 	/**
@@ -67,7 +105,7 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	 */
 	private void configureTimer() {
 		if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-			TimerModel model = (TimerModel) getCastedModel();
+			TimerModel model = this.getTimerModel();
 			if (model.getEnabled()) {
 				_timer = new Timer();
 				_task = createTimerTask();
@@ -84,7 +122,7 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 		return new TimerTask() {
 			@Override
 			public void run() {
-				CentralLogger.getInstance().info(TimerEditPart.this, "Timer executed");
+				_scriptEngine.processScript();
 			}
 		};
 	}
@@ -101,7 +139,7 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 					boolean execute = (Boolean) newValue;
 					if (execute && _task==null) {
 						_task = createTimerTask();
-						TimerModel model = (TimerModel) getCastedModel();
+						TimerModel model = getTimerModel();
 						_timer.schedule(_task, model.getDelay(), model.getDelay());
 					} else if (!execute && _task!=null) {
 						_task.cancel();

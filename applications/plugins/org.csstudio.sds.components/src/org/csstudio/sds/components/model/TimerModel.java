@@ -25,6 +25,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.IntegerProperty;
 import org.csstudio.sds.model.properties.ResourceProperty;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 /**
@@ -130,8 +131,8 @@ public final class TimerModel extends AbstractWidgetModel {
 	 * 
 	 * @return the script
 	 */
-	public String getScript() {
-		return (String) getProperty(PROP_SCRIPT).getPropertyValue();
+	public IPath getScriptPath() {
+		return (IPath) getProperty(PROP_SCRIPT).getPropertyValue();
 	}
 	
 	/**
