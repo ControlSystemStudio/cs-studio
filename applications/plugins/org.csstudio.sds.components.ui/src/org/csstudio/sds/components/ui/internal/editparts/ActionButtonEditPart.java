@@ -62,7 +62,7 @@ public final class ActionButtonEditPart extends AbstractWidgetEditPart {
 		buttonFigure.setTextAlignment(model.getTextAlignment());
 		buttonFigure.setEnabled(getExecutionMode().equals(
 				ExecutionMode.RUN_MODE)
-				&& model.getEnabled());
+				&& model.isEnabled());
 		buttonFigure.setStyle(model.getButtonStyle());
 		return buttonFigure;
 	}

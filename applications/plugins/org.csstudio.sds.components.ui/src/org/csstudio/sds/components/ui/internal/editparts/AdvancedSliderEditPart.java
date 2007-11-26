@@ -88,7 +88,7 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 		slider.setValue(model.getValue());
 		slider.setManualValue(model.getValue());
 		slider.setOrientation(model.isHorizontal());
-		slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.getEnabled());
+		slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.isEnabled());
 		return slider;
 	}
 

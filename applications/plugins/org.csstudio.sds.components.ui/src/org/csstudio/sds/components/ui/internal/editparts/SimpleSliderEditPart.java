@@ -94,7 +94,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		slider.setDecimalPlaces(model.getPrecision());
 		slider.setSliderWide(model.getSliderWidth());
 		slider.setPopulateEvents(true);
-		slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.getEnabled());
+		slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE) && model.isEnabled());
 		return slider;
 	}
 

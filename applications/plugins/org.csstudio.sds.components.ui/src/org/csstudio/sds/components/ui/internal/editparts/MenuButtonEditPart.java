@@ -47,7 +47,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 						model.getFont()));
 		label.setTextAlignment(model.getTextAlignment());
 		label.setTransparent(false);
-		label.setEnabled(model.getEnabled() && getExecutionMode().equals(ExecutionMode.RUN_MODE));
+		label.setEnabled(model.isEnabled() && getExecutionMode().equals(ExecutionMode.RUN_MODE));
 		label.addMouseListener(new MouseListener() {
 			public void mouseDoubleClicked(final MouseEvent me) {
 			}
@@ -77,7 +77,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 	 * @param absolutY The y coordinate of the mouse in the display
 	 */
 	private void performDirectEdit(final Point point, final int absolutX, final int absolutY) {
-		if (this.getCastedModel().getEnabled() && getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+		if (this.getCastedModel().isEnabled() && getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 			final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 			MenuManager menuManager = new MenuManager();
 			for (WidgetAction action : ((MenuButtonModel)this.getCastedModel()).getActionData().getWidgetActions()) {

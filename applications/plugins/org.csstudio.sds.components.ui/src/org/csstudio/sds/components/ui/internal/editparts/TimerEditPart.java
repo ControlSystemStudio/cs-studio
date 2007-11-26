@@ -39,6 +39,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Point;
 
 /**
  * EditPart controller for the Rectangle widget. The controller mediates between
@@ -61,6 +62,9 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	 * The used {@link ScriptEngine}.
 	 */
 	private ScriptEngine _scriptEngine;
+	
+	private int _realX = 0;
+	private int _realY = 0;
 
 	/**
 	 * {@inheritDoc}
@@ -70,7 +74,14 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 		RefreshableTimerFigure timerFigure = new RefreshableTimerFigure();
 		timerFigure.setVisible(getExecutionMode().equals(ExecutionMode.EDIT_MODE));
 		this.configureTimer();
-		this.createScriptEngine();
+		if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+			_realX = this.getTimerModel().getX();
+			_realY = this.getTimerModel().getY();
+			this.getTimerModel().setX(1);
+			this.getTimerModel().setY(1);
+			timerFigure.setLocation(new Point(1,1));
+			this.createScriptEngine();
+		}
 		return timerFigure;
 	}
 
@@ -106,7 +117,7 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	private void configureTimer() {
 		if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
 			TimerModel model = this.getTimerModel();
-			if (model.getEnabled()) {
+			if (model.isEnabled()) {
 				_timer = new Timer();
 				_task = createTimerTask();
 				_timer.schedule(_task, model.getDelay(), model.getDelay());	
@@ -157,6 +168,10 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 	 */
 	@Override
 	public void deactivate() {
+		if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+			this.getTimerModel().setX(_realX);
+			this.getTimerModel().setY(_realY);
+		}
 		if (_task!=null) {
 			_task.cancel();
 		}
