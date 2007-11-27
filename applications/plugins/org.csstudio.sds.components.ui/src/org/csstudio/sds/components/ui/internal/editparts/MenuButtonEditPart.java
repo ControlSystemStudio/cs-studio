@@ -178,6 +178,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 			if (adapter!=null) {
 				this.setImageDescriptor(adapter.getImageDescriptor(widgetAction));
 			}
+			this.setEnabled(_widgetAction.isEnabled());
 		}
 		
 		/**
