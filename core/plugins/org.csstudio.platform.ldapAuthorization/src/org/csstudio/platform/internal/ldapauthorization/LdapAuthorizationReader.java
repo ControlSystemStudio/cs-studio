@@ -1,5 +1,6 @@
 package org.csstudio.platform.internal.ldapauthorization;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -114,6 +115,9 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 				RightSet rights = RightsParser.parseRightSet(p.getProperty(actionId), actionId);
 				actionsrights.put(actionId, rights);
 			}
+		} catch (FileNotFoundException fnfe) {
+			CentralLogger.getInstance().warn(this,
+					"File could not be found. Known rights are empty", fnfe);
 		} catch (IOException e) {
 			// Currently, ignore this error. Using a configuration file for
 			// the permissions is only a workaround until we have an LDAP-based
