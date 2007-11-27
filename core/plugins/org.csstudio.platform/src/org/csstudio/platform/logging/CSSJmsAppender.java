@@ -286,7 +286,9 @@ public class CSSJmsAppender extends AppenderSkeleton
             topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 
             LogLog.debug("Looking up topic name ["+topicBindingName+"].");
-            Topic topic = (Topic) lookup(jndi, topicBindingName);
+            // CHANGED BY Markus Moeller, 2007-11-27
+            // Topic topic = (Topic) lookup(jndi, topicBindingName);
+            Topic topic = topicSession.createTopic(topicBindingName);
 
             LogLog.debug("Creating TopicPublisher.");
             topicPublisher = topicSession.createPublisher(topic);
