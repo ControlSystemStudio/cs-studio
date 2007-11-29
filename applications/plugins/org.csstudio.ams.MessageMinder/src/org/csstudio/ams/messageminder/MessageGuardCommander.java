@@ -185,7 +185,7 @@ public class MessageGuardCommander extends Job {
     private void patrol() {
         Message message = null;
         ITimestamp now;
-        System.out.println("SartTime: "+TimestampFactory.now());
+        System.out.println("StartTime: "+TimestampFactory.now());
         // int counter =0;
         while(true){
             now = TimestampFactory.now();
