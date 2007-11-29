@@ -47,7 +47,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.osgi.service.prefs.BackingStoreException;
+import org.eclipse.jface.preference.IPreferenceStore;
+//import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * @author hrickens
@@ -125,42 +126,47 @@ public class MessageGuardCommander extends Job {
      * 
      */
     private void connect() {
-        IEclipsePreferences storeAct = new DefaultScope().getNode(Activator.PLUGIN_ID);
+        // IEclipsePreferences storeAct = new DefaultScope().getNode(Activator.PLUGIN_ID);
+        IPreferenceStore storeAct = Activator.getDefault().getPreferenceStore();
+
         /**
          * Nur für debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 geändert.
          * Der Code kann später wieder entfernt werden.
          * TODO: delete debug code.
-         */
-        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1, "failover:(tcp://localhost:50000)");
-        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2, "failover:(tcp://localhost:50001)");
-        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL,"failover:(tcp://localhost:50000,tcp://localhost:50001)");
 
+        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1, "failover:(tcp://kryksrvjmsa.desy.de:50000)");
+        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2, "failover:(tcp://kryksrvjmsa.desy.de:50001)");
+        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL,"failover:(tcp://kryksrvjmsa.desy.de:50000,tcp://kryksrvjmsa.desy.de:50001)");
+        
         try {
             storeAct.flush();
         } catch (BackingStoreException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
         /** bis hier */
         
         // --- JMS Receiver Connect---
-        _amsReceiver = new JmsRedundantReceiver("AmsMassageMinderWorkReceiverInternal", storeAct.get(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1,""),
-                storeAct.get(SampleService.P_JMS_AMS_PROVIDER_URL_2,""));
+//        _amsReceiver = new JmsRedundantReceiver("AmsMassageMinderWorkReceiverInternal", storeAct.get(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1,""),
+//                storeAct.get(SampleService.P_JMS_AMS_PROVIDER_URL_2,""));
+        _amsReceiver = new JmsRedundantReceiver("AmsMassageMinderWorkReceiverInternal", storeAct.getString(SampleService.P_JMS_AMS_PROVIDER_URL_1),
+                storeAct.getString(SampleService.P_JMS_AMS_PROVIDER_URL_2));
         if(!_amsReceiver.isConnected()) {
             Log.log(this, Log.FATAL, "could not create amsReceiver");
         }
         
-        boolean result = _amsReceiver.createRedundantSubscriber("amsSubscriberMessageMinder", storeAct.get(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_MESSAGEMINDER,""));
+        boolean result = _amsReceiver.createRedundantSubscriber("amsSubscriberMessageMinder", storeAct.getString(SampleService.P_JMS_AMS_TOPIC_MESSAGEMINDER));
 
         if(!result){
             Log.log(this, Log.FATAL, "could not create amsSubscriberMessageMinder");
         }
         
         // --- JMS Producer Connect ---
-        String[] urls = new String[] {storeAct.get(SampleService.P_JMS_AMS_SENDER_PROVIDER_URL,"")};
+        String[] urls = new String[] {storeAct.getString(SampleService.P_JMS_AMS_SENDER_PROVIDER_URL)};
         _amsProducer = new JmsRedundantProducer("AmsMassageMinderWorkProducerInternal",urls);
         //TODO: remove debug settings
-        _producerID = _amsProducer.createProducer(storeAct.get(SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR,""));
+        _producerID = _amsProducer.createProducer(storeAct.getString(SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR));
         // _producerID = _amsProducer.createProducer("T_HELGE_TEST_OUT");
         
         //--- Derby DB Connect ---
