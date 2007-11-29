@@ -110,7 +110,10 @@ public class JMSMessage implements IProcessVariable {//,
 	 */
 	private String findSeverityValue() {
 		
-		String severityKey = messageProperties.get("SEVERITY"); //$NON-NLS-1$
+		String severityKey = messageProperties.get("SEVERITY");//$NON-NLS-1$
+		if(severityKey.equals("")) {
+			return "";
+		}
 		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault().getPreferenceStore();
 		
 		if (severityKey.equals(preferenceStore.getString("key 0"))) { //$NON-NLS-1$
