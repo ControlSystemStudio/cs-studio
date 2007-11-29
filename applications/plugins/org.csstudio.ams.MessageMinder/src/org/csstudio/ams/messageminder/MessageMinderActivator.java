@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class MassageMinderActivator extends AbstractCssPlugin {
+public class MessageMinderActivator extends AbstractCssPlugin {
 
 	/**
 	 *  The plug-in ID.
@@ -19,12 +19,12 @@ public class MassageMinderActivator extends AbstractCssPlugin {
 	/**
 	 *  The shared instance.
 	 */
-	private static MassageMinderActivator _plugin;
+	private static MessageMinderActivator _plugin;
 	
 	/**
 	 * The constructor.
 	 */
-	public MassageMinderActivator() {
+	public MessageMinderActivator() {
 	    System.out.println("Message Minder Activator.Activator()");
 	}
 
@@ -52,7 +52,7 @@ public class MassageMinderActivator extends AbstractCssPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static MassageMinderActivator getDefault() {
+	public static MessageMinderActivator getDefault() {
 		return _plugin;
 	}
 

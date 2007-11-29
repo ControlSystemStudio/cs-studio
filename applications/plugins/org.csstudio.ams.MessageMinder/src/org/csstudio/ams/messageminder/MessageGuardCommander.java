@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -22,24 +23,20 @@
 /*
  * $Id$
  */
+
 package org.csstudio.ams.messageminder;
 
-import java.util.Enumeration;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-
 import org.csstudio.ams.Activator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.internal.SampleService;
 import org.csstudio.ams.messageminder.preference.PreferenceConstants;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.internal.data.Timestamp;
 import org.csstudio.platform.libs.jms.JmsRedundantProducer;
 import org.csstudio.platform.libs.jms.JmsRedundantReceiver;
 import org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId;
@@ -71,7 +68,7 @@ public class MessageGuardCommander extends Job {
     /**
      * A Map with the the Messages time stamp that no older then _toOldTime.
      */
-    private HashMap<MessageKey, MassageTimeList> _massageMap;
+    private HashMap<MessageKey, MessageTimeList> _massageMap;
     /**
      * The id of the Producer.
      */
@@ -100,14 +97,14 @@ public class MessageGuardCommander extends Job {
      */
     public MessageGuardCommander(final String name) {
         super(name);
-        IEclipsePreferences storeAct = new DefaultScope().getNode(MassageMinderActivator.PLUGIN_ID);
+        IEclipsePreferences storeAct = new DefaultScope().getNode(MessageMinderActivator.PLUGIN_ID);
         
-        connet();
+        connect();
         _time2Clean = storeAct.getLong(PreferenceConstants.P_LONG_TIME2CLEAN,20); // sec
         _toOldTime = storeAct.getLong(PreferenceConstants.P_LONG_TO_OLD_TIME,60);
         _keyWords = storeAct.get(PreferenceConstants.P_STRING_KEY_WORDS,"HOST,FACILITY,AMS-FILTERID").split(",");
         _lastClean = TimestampFactory.now();
-        _massageMap = new HashMap<MessageKey, MassageTimeList>();
+        _massageMap = new HashMap<MessageKey, MessageTimeList>();
         
         /*
          * initialize statistic
@@ -121,24 +118,22 @@ public class MessageGuardCommander extends Job {
         _messageControlTimeCollector = new Collector();
         _messageControlTimeCollector.setApplication(name);
         _messageControlTimeCollector.setDescriptor("Time to Control a Message [ns]");
-        _messageControlTimeCollector.setContinuousPrint(true);
-        
-         
+        _messageControlTimeCollector.setContinuousPrint(true);         
     }
 
     /**
      * 
      */
-    private void connet() {
+    private void connect() {
         IEclipsePreferences storeAct = new DefaultScope().getNode(Activator.PLUGIN_ID);
         /**
          * Nur für debug zwecke wird die P_JMS_AMS_PROVIDER_URL_2 geändert.
          * Der Code kann später wieder entfernt werden.
          * TODO: delete debug code.
          */
-        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1, "failover:(tcp://kryksrvjmsa.desy.de:50000)");
-        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2, "failover:(tcp://kryksrvjmsa.desy.de:50001)");
-        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL,"failover:(tcp://kryksrvjmsa.desy.de:50000)");
+        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1, "failover:(tcp://localhost:50000)");
+        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_2, "failover:(tcp://localhost:50001)");
+        storeAct.put(org.csstudio.ams.internal.SampleService.P_JMS_AMS_SENDER_PROVIDER_URL,"failover:(tcp://localhost:50000,tcp://localhost:50001)");
 
         try {
             storeAct.flush();
@@ -165,8 +160,8 @@ public class MessageGuardCommander extends Job {
         String[] urls = new String[] {storeAct.get(SampleService.P_JMS_AMS_SENDER_PROVIDER_URL,"")};
         _amsProducer = new JmsRedundantProducer("AmsMassageMinderWorkProducerInternal",urls);
         //TODO: remove debug settings
-//        _producerID = _amsProducer.createProducer(storeAct.get(SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR,""));
-        _producerID = _amsProducer.createProducer("T_HELGE_TEST_OUT");
+        _producerID = _amsProducer.createProducer(storeAct.get(SampleService.P_JMS_AMS_TOPIC_DISTRIBUTOR,""));
+        // _producerID = _amsProducer.createProducer("T_HELGE_TEST_OUT");
         
         //--- Derby DB Connect ---
 //      initApplicationDb();
@@ -191,7 +186,7 @@ public class MessageGuardCommander extends Job {
         Message message = null;
         ITimestamp now;
         System.out.println("SartTime: "+TimestampFactory.now());
-        int counter =0;
+        // int counter =0;
         while(true){
             now = TimestampFactory.now();
             
@@ -237,9 +232,9 @@ public class MessageGuardCommander extends Job {
                     }
                 }
                 MessageKey key = new MessageKey(keys);
-                MassageTimeList value = _massageMap.get(key);
+                MessageTimeList value = _massageMap.get(key);
                 if(value==null){
-                    value=new MassageTimeList();
+                    value=new MessageTimeList();
                     _massageMap.put(key, value);
                 }
                 if(value.add(now)){
@@ -261,7 +256,7 @@ public class MessageGuardCommander extends Job {
     private void cleanUp(final ITimestamp now) {
         for(Iterator<MessageKey> ite = _massageMap.keySet().iterator();ite.hasNext();){
             MessageKey key = ite.next();
-            MassageTimeList value = _massageMap.get(key); 
+            MessageTimeList value = _massageMap.get(key); 
             if(now.seconds()-value.getLastDate().seconds()>_toOldTime){
                 sendCleanUpMessage(key,value.getLastDate(),value.getUnsentsgCount());    
                 value.resetUnsentMsgCount();

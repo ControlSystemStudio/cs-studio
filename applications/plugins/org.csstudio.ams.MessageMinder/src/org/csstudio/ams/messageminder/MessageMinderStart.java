@@ -24,8 +24,6 @@
  */
 package org.csstudio.ams.messageminder;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -35,7 +33,7 @@ import org.eclipse.equinox.app.IApplicationContext;
  * @version $Revision$
  * @since 01.11.2007
  */
-public class MassageMinderStart implements IApplication {
+public class MessageMinderStart implements IApplication {
 
     /* (non-Javadoc)
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)

@@ -21,7 +21,7 @@
  */
 package org.csstudio.ams.messageminder.preference;
 
-import org.csstudio.ams.messageminder.MassageMinderActivator;
+import org.csstudio.ams.messageminder.MessageMinderActivator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -37,7 +37,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
      * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
      */
     public void initializeDefaultPreferences() {
-        IEclipsePreferences prefs = new DefaultScope().getNode(MassageMinderActivator.PLUGIN_ID);
+        IEclipsePreferences prefs = new DefaultScope().getNode(MessageMinderActivator.PLUGIN_ID);
         prefs.putInt(PreferenceConstants.P_INT_MAX_YOUNG_MASSAGES,4); //$NON-NLS-1$
         prefs.putLong(PreferenceConstants.P_LONG_PERIOD,20); //$NON-NLS-1$
         prefs.putLong(PreferenceConstants.P_LONG_TIME2CLEAN,60); //$NON-NLS-1$

@@ -34,7 +34,7 @@ import org.csstudio.platform.data.ITimestamp;
  * @version $Revision$
  * @since 30.10.2007
  */
-public class MassageTimeList extends LinkedList<ITimestamp> {
+public class MessageTimeList extends LinkedList<ITimestamp> {
 
     /**
      * 
@@ -56,7 +56,7 @@ public class MassageTimeList extends LinkedList<ITimestamp> {
     /**
      * The default constructor.
      */
-    public MassageTimeList() {
+    public MessageTimeList() {
         _maxYoungMessages=4;    //TODO: set from preferncePage
         _period = 60;           //TODO: set from preferncePage
     }
