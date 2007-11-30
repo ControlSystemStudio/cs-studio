@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -22,8 +23,12 @@
 /*
  * $Id$
  */
+
 package org.csstudio.ams.messageminder;
 
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -39,11 +44,18 @@ public class MessageMinderStart implements IApplication {
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
     public Object start(IApplicationContext context) throws Exception {
+        for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
+            s.run();
+        }
+        CentralLogger.getInstance().info(this, "MessageMinder started...");
+
         MessageGuardCommander commander = new MessageGuardCommander("MassageMinder");
         commander.schedule();
+        
         while(commander.getState()!=Thread.State.TERMINATED.ordinal()){
             Thread.sleep(10000);
         }
+        
         return null;
     }
 

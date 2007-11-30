@@ -1,9 +1,6 @@
 package org.csstudio.ams.messageminder;
 
 import org.csstudio.platform.AbstractCssPlugin;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.startupservice.IStartupServiceListener;
-import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -34,10 +31,13 @@ public class MessageMinderActivator extends AbstractCssPlugin {
 	@Override
 	public void doStart(BundleContext context) throws Exception {
 		_plugin = this;
-         for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
+        
+		/*
+		for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
              s.run();
-         }
-         CentralLogger.getInstance().info(this, "MessageMinder started...");
+        }
+        CentralLogger.getInstance().info(this, "MessageMinder started...");
+        */
 	}
 
     /**
