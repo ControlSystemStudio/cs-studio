@@ -44,6 +44,7 @@
          <action
                class="org.csstudio.diag.postanalyser.ShowAnalyserAction"
                id="org.csstudio.diag.postanalyser.showAnalyser"
+               icon="icons/mainLabel.png"
                label="Post Analyser"
                menubarPath="css/diag/"
                style="push"/>
