@@ -83,7 +83,8 @@ public class RelatedDisplay extends Widget {
 //          </property>
             _control = new DynamicsDescriptor("rule.actionData"); //$NON-NLS-1$
             _control.addInputChannel(new ParameterDescriptor("$channel$[enumDescriptions], enum", Object.class)); //$NON-NLS-1$
-            _control.setOutputChannel(new ParameterDescriptor("local://out", Object.class)); //$NON-NLS-1$
+//            _control.setOutputChannel(new ParameterDescriptor("local://out", Object.class)); //$NON-NLS-1$
+            _control.setOutputChannel(new ParameterDescriptor("$channel$", Object.class)); //$NON-NLS-1$
 
             // Der ConnectionState wird an die Acrtion Data gesetzt das macht nun überhaupt kein sinn!
 //            HashMap<ConnectionState, Object> values = new HashMap<ConnectionState, Object>();
@@ -134,7 +135,8 @@ public class RelatedDisplay extends Widget {
             //   <inputChannel name="local://out" type="java.lang.Object" />
             // </dynamicsDescriptor>
             DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("local://out",Object.class)); //$NON-NLS-1$
+//            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("local://out",Object.class)); //$NON-NLS-1$
+            dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$",Object.class)); //$NON-NLS-1$
             _widget.setDynamicsDescriptor(MenuButtonModel.PROP_LABEL, dynamicsDescriptor);
         }
 
