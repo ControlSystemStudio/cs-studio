@@ -184,7 +184,7 @@ public final class ADLHelper {
             tl.setText(text);
             Device d = null;
             tl.setFont(new Font(d,font,fontSize,0));
-            while(maxWidth<tl.getBounds().width&&fontSize>0){
+            while(maxWidth<tl.getBounds().width&&fontSize>1){
                 fontSize--;
                 tl.getFont().dispose();
                 tl.setFont(new Font(d,font,fontSize,0));
