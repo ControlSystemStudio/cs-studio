@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
@@ -90,10 +91,7 @@ public class ADLSensitive extends WidgetPart {
      * {@inheritDoc}
      */
     @Override
-    void init() {
-        // TODO Auto-generated method stub
-
-    }
+    void init() {}
 
     /**
      * {@inheritDoc}
@@ -119,7 +117,7 @@ public class ADLSensitive extends WidgetPart {
             }
         }
         if(_chan==null&&_sensitiveMode!=null){
-            System.out.println("no chan :" + sensitive); //$NON-NLS-1$
+            CentralLogger.getInstance().warn(this,"no channel :" + sensitive);
         }
     }
 

@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionType;
@@ -135,14 +136,14 @@ public class ADLMenuItem extends WidgetPart{
             String[] map = maps[0].split("="); //$NON-NLS-1$
             if(map.length==2){
                 Map<String, String> test = new HashMap<String,String>();
-                test.put("param", map[1]); //$NON-NLS-1$
+                test.put("param", map[1]); //$NON-NLS-1$ //TODO:param
                 // Set the aliases
                 action.getProperty(OpenDisplayWidgetAction.PROP_ALIASES)
                 .setPropertyValue(test);
             } else if(map.length==1){
                 //TODO: was ist das für ein parameter? dateiendung = stc.
             } else{
-                System.out.println("Ungültige länge"); //$NON-NLS-1$
+                CentralLogger.getInstance().warn(this,"Ungültige länge"); //$NON-NLS-1$
             }
             action.getProperty(OpenDisplayWidgetAction.PROP_DESCRIPTION)
             .setPropertyValue(_label.replaceAll("\"","")); //$NON-NLS-1$ //$NON-NLS-2$

@@ -1,3 +1,4 @@
+package org.csstudio.utility.adlconverter;
 import org.csstudio.utility.adlconverter.ui.ADLConverterMainView;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;

@@ -35,8 +35,6 @@ import org.csstudio.utility.adlconverter.utility.widgetparts.ADLMenuItem;
 
 /**
  * 
- * TODO: The GroupingContainer must the Action Data hands on his children. 
- * 
  * @author hrickens
  * @author $Author$
  * @version $Revision$

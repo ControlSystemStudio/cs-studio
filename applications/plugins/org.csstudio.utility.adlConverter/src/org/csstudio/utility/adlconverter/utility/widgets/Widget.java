@@ -24,9 +24,11 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
+import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
@@ -72,8 +74,7 @@ public abstract class Widget extends AbstractDisplayImporter{
         try {
             makeObject(widget);
         } catch (WrongADLFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CentralLogger.getInstance().error(this, e);
         }
     }
     
@@ -87,8 +88,7 @@ public abstract class Widget extends AbstractDisplayImporter{
         try {
             makeObject(widget);
         } catch (WrongADLFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CentralLogger.getInstance().error(this, e);
         }
     }
 
@@ -122,8 +122,9 @@ public abstract class Widget extends AbstractDisplayImporter{
             if(_dynamicAttribute.isColor()){
                 _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, _dynamicAttribute.getColorAdlDynamicAttributes());
                 if(getControl()==null&&getMonitor()==null){
-                    _widget.setAliasValue("channel", "$param$"); //$NON-NLS-1$ //$NON-NLS-2$
-                    _widget.setPrimarPv("$param$"); //$NON-NLS-1$
+//                    ADLHelper.setChan(_widget, chan);
+//                    _widget.setAliasValue("channel", "$param$"); //$NON-NLS-1$ //$NON-NLS-2$//TODO: param
+//                    _widget.setPrimarPv("$param$"); //$NON-NLS-1$
                 }
             }
         }

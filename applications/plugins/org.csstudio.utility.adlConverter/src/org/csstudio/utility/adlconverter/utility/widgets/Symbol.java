@@ -36,11 +36,10 @@ import org.csstudio.utility.adlconverter.utility.ADLWidget;
 public class Symbol extends Widget {
 
     /**
-     * @param widget
+     * @param symbol
      */
     public Symbol(final ADLWidget symbol) {
         super(symbol);
-        // TODO Auto-generated constructor stub
     }
 
 

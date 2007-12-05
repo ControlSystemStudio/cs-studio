@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
@@ -63,7 +64,7 @@ public class Textinput extends Widget {
                     throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException+clrmod[0]);
                 }
 
-            }else if(row[0].equals("alignment")){ //$NON-NLS-1$
+            }else if(row[0].startsWith("align")){ //$NON-NLS-1$
 //              <property type="sds.option" id="textAlignment">
 //                  <option id="0" />
 //              </property>
@@ -78,12 +79,14 @@ public class Textinput extends Widget {
                     id = 3;
                 }else if(row[1].equals("\"NorthEast\"")){ //$NON-NLS-1$
                     id = 4;
+                }else{
+                    //TODO: Textinput --> align formats
+                    CentralLogger.getInstance().debug(this, "Align is "+row[0]);
                 }
                 _widget.setPropertyValue(TextInputModel.PROP_TEXT_ALIGNMENT, id);
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 //TODO: Textinput --> format
-            }else if(row[0].equals("align")){ //$NON-NLS-1$
-                //TODO: Textinput --> align
+                CentralLogger.getInstance().debug(this, "Format is "+row[0]);
             }else{                
 
                 throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException_Parameter_Begin+row[0]);

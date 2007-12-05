@@ -25,14 +25,19 @@
 package org.csstudio.utility.adlconverter.ui;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -155,22 +160,45 @@ public class ADLConverterMainView extends ViewPart {
 
             public void widgetDefaultSelected(final SelectionEvent e) {}
 
+            @SuppressWarnings("unchecked")
             public void widgetSelected(final SelectionEvent e) {
-                int[] index = avaibleFiles.getList().getSelectionIndices();
-                for (int i : index) {
+                StructuredSelection sel = (StructuredSelection) avaibleFiles.getSelection();
+                ArrayList<Object> list = new ArrayList<Object>(sel.toList());
+                while(list.size()>0){
                     ADLDisplayImporter di= new ADLDisplayImporter();
+                    Object o = list.remove(0);
+                    File file = (File) o;
                     try {
-                        
                         di.importDisplay(
-                                ((File)avaibleFiles.getElementAt(i)).getAbsolutePath(),
+                                file.getAbsolutePath(),
                                 initial.getProjectRelativePath().append(_targetPath),
-                                ((File)avaibleFiles.getElementAt(i)).getName().replace(".adl", ".css-sds") //$NON-NLS-1$ //$NON-NLS-2$
+                                file.getName().replace(".adl", ".css-sds") //$NON-NLS-1$ //$NON-NLS-2$
+
                         );
+                        
                     } catch (Exception e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
+                        CentralLogger.getInstance().error(this, e1);
                     }
+
+                    avaibleFiles.setSelection(new StructuredSelection(list), true);
                 }
+//                int[] index = avaibleFiles.getList().getSelectionIndices();
+//                
+//                for (int i : index) {
+//                    ADLDisplayImporter di= new ADLDisplayImporter();
+//                    try {
+//                        
+//                        di.importDisplay(
+//                                ((File)avaibleFiles.getElementAt(i)).getAbsolutePath(),
+//                                initial.getProjectRelativePath().append(_targetPath),
+//                                ((File)avaibleFiles.getElementAt(i)).getName().replace(".adl", ".css-sds") //$NON-NLS-1$ //$NON-NLS-2$
+//
+//                        );
+//                        
+//                    } catch (Exception e1) {
+//                        CentralLogger.getInstance().error(this, e1);
+//                    }
+//                }
             }
            
         });
@@ -181,9 +209,6 @@ public class ADLConverterMainView extends ViewPart {
      * {@inheritDoc}
      */
     @Override
-    public void setFocus() {
-        // TODO Auto-generated method stub
-
-    }
+    public void setFocus() {    }
 
 }

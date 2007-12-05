@@ -87,7 +87,7 @@ public class ActionButton extends Widget {
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
                 // TODO: ActionButton-->clrmod
             }else if(row[0].equals("pressed_label")){ //$NON-NLS-1$
-                // TODO: ActionButton-->pressed_label
+                // TODO: ActionButton-->pressed_label (Not Supported from SDS)
             }else{                
 
                 throw new WrongADLFormatException(Messages.ActionButton_WrongADLFormatException+row[0]);

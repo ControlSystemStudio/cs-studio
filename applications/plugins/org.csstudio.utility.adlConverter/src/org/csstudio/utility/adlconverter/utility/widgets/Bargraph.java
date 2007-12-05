@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
@@ -91,14 +92,21 @@ public class Bargraph extends Widget {
                 _widget.setPropertyValue(BargraphModel.PROP_BORDER_WIDTH, 0); 
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 //TODO: Bargraph --> format
+                CentralLogger.getInstance().debug(this, "Bargraph --> format -->"+row[0]);
             }else if(row[0].equals("limitType")){ //$NON-NLS-1$
                 //TODO: Bargraph --> limitType
+                CentralLogger.getInstance().debug(this, "Bargraph --> limitType -->"+row[0]);
             }else if(row[0].equals("highLimit")){ //$NON-NLS-1$
-                //TODO: Bargraph --> highLimit
+                String temp = row[1].replaceAll("\"","");
+                _widget.setPropertyValue(BargraphModel.PROP_MAX, new Double(temp).toString()); //$NON-NLS-1$ //$NON-NLS-2$
+                System.out.println("max = "+temp);
             }else if(row[0].equals("lowLimit")){ //$NON-NLS-1$
-                //TODO: Bargraph --> lowLimit
+                String temp = row[1].replaceAll("\"","");
+                _widget.setPropertyValue(BargraphModel.PROP_MIN, new Double(temp).toString()); //$NON-NLS-1$ //$NON-NLS-2$
+                System.out.println("min = "+temp);
             }else if(row[0].equals("clrmod")){ //$NON-NLS-1$
                 //TODO: Bargraph --> clrmod
+                CentralLogger.getInstance().debug(this, "Bargraph --> clrmod -->"+row[0]);
             }else{ //Bargraph have no Parameter                
                 throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Parameter_Begin+row[0]);
             } 

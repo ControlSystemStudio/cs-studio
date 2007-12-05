@@ -27,6 +27,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.ActionData;
 import org.csstudio.sds.model.properties.ActionType;
@@ -131,7 +132,19 @@ public class RelatedDisplayItem extends WidgetPart{
         }
         if(_args!=null){
             Map<String, String> map = new HashMap<String, String>();
-            map.put("param", _args[0]); //$NON-NLS-1$
+            String[] params = _args[0].split(",");//$NON-NLS-1$
+            String[] param = params[0].split("=");//$NON-NLS-1$
+            for(int i=0;i<params.length;i++){
+                param = params[i].split("=");//$NON-NLS-1$
+                if(param.length==2){
+                    map.put(param[0], param[1]);
+                }else{
+                    if(params[i].trim().length()>0){
+                        CentralLogger.getInstance().warn(this, "no empty Parametres :"+params[i]);
+                    }
+                }
+            }
+            
             action.getProperty(OpenDisplayWidgetAction.PROP_ALIASES)
             .setPropertyValue(map);
         }

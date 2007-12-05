@@ -156,6 +156,7 @@ public class ADLDynamicAttribute extends WidgetPart{
 
                 if(_chan.length>2&&_chan[2].startsWith("$")){ //$NON-NLS-1$
                     _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(_chan[2],Double.class));
+                    ADLHelper.setChan(_parentWidgetModel, _chan);
                 }else{
                     _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor("dal-epics://"+_chan[0],Double.class)); //$NON-NLS-1$
                 }

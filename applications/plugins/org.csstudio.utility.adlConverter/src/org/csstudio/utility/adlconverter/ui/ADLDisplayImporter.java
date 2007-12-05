@@ -25,11 +25,11 @@
 package org.csstudio.utility.adlconverter.ui;
 
 import java.io.File;
-import java.io.InputStream;
 
 import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.layers.Layer;
+import org.csstudio.sds.model.persistence.DisplayModelInputStream;
 import org.csstudio.sds.model.persistence.PersistenceUtil;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
@@ -149,7 +149,8 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                 e.printStackTrace();
             }
         }
-        InputStream modelInputStream = PersistenceUtil.createStream(displayModel);
+        DisplayModelInputStream modelInputStream = (DisplayModelInputStream) PersistenceUtil.createStream(displayModel);
+        modelInputStream.setXMLHeader("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
 
         // create the target file in the workspace
         IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();

@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
@@ -92,7 +93,7 @@ public class Label extends Widget {
                 //TODO: Label-->clrmod (CSS-SDS unterstüzung fehlt!)
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 String test = row[1];
-                System.out.println("Format = " + test);
+                CentralLogger.getInstance().debug(this,"Format = " + test);
                 if(test.equals("\"exponential\"")){
                     _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->exponential wird noch nicht vom ASDS unterstützt.
                 }else if(test.equals("\"decimal\"")){

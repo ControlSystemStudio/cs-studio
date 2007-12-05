@@ -22,7 +22,7 @@
             label="CSS Action Set"
             visible="true">
          <action
-               class="ShowADLConverterMainView"
+               class="org.csstudio.utility.adlconverter.ShowADLConverterMainView"
                icon="image/ADL2SDS.png"
                id="org.csstudio.utility.adlConverter.action1"
                label="ADL Converter"

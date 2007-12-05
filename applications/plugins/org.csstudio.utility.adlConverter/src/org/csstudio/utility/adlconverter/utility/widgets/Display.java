@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
@@ -71,7 +72,7 @@ public class Display extends Widget{
             }else if(row[0].trim().toLowerCase().equals("cmap")){ //$NON-NLS-1$
                 _cmap=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("type")){ //$NON-NLS-1$
-                System.out.println(display.toString());
+                CentralLogger.getInstance().debug(this, display.toString());
                 // TODO: Display --> type
             }else {
                 throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+parameter+Messages.Display_WrongADLFormatException_Parameter_End);

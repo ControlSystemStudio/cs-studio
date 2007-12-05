@@ -114,9 +114,9 @@ public final class ADLHelper {
         }else {
             cleanString = new String[tempString.length+1];
             cleanString[0]=""; //$NON-NLS-1$
-            if(tempString[0].contains("=")){ //$NON-NLS-1$
-                tempString[0]=tempString[0].split("=")[1]; //$NON-NLS-1$
-            }
+//            if(tempString[0].contains("=")){ //$NON-NLS-1$
+//                tempString[0]=tempString[0].split("=")[1]; //$NON-NLS-1$
+//            }
         }
         for (int i = 0; i < tempString.length; i++) {
             if(i>tempString.length-2&&dirtyString.contains(".")){ //$NON-NLS-1$
@@ -133,8 +133,9 @@ public final class ADLHelper {
             cleanString[0] = cleanString[0].replaceAll("\\.adl", ".css-sds"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if(cleanString[1].startsWith("$")){ //$NON-NLS-1$
-            cleanString[1] ="$channel$"; //$NON-NLS-1$
-            param ="$param$"; //$NON-NLS-1$
+            String temp = cleanString[1].substring(cleanString[1].indexOf(')')+1);
+            param=cleanString[1].replace("(", "").replace(')', '$');
+            cleanString[1] ="$channel$"+temp; //$NON-NLS-1$
         }
         if(cleanString.length>2){
             cleanString[1]=cleanString[1]+"_"+cleanString[2]; //$NON-NLS-1$
@@ -203,7 +204,7 @@ public final class ADLHelper {
             return ""; //$NON-NLS-1$
         }else if(chan.length>2&&chan[2].startsWith("$")){ //$NON-NLS-1$
             widgetModel.setAliasValue("channel",chan[2]); //$NON-NLS-1$
-            widgetModel.setPrimarPv("$param$"); //$NON-NLS-1$
+            widgetModel.setPrimarPv(chan[2]);   
         }else{
             widgetModel.setAliasValue("channel", chan[1]); //$NON-NLS-1$
             widgetModel.setPrimarPv(chan[0]);

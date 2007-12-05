@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.csstudio.platform.logging.CentralLogger;
+
 /**
  * 
  * Class which provides methods for parsing ADL files into a nested Map
@@ -68,11 +70,9 @@ public class ParserADL {
                 }
                 return _root;
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                CentralLogger.getInstance().error(this, e);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                CentralLogger.getInstance().error(this, e);
             }
             return null;
         }
