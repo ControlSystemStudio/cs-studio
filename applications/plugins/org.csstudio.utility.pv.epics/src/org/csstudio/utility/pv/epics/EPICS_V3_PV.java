@@ -68,9 +68,13 @@ public class EPICS_V3_PV
     final private CopyOnWriteArrayList<PVListener> listeners
                                     = new CopyOnWriteArrayList<PVListener>();
 
-    /** JCA channel. */
+    /** JCA channel. LOCK <code>this</code> on change. */
     private RefCountedChannel channel_ref = null;
 
+    /** Either <code>null</code>, or the subscription identifier.
+     *  LOCK <code>this</code> on change */
+    private Monitor subscription = null;
+    
     /** isConnected?
      *  <code>true</code> if we are currently connected
      *  (based on the most recent connection callback).
@@ -80,9 +84,6 @@ public class EPICS_V3_PV
      */
     private boolean connected = false;
 
-    /** Either <code>null</code>, or the subscription identifier. */
-    private Monitor subscription = null;
-    
     /** Meta data obtained during connection cycle. */
     private IMetaData meta = null;
 
@@ -292,8 +293,11 @@ public class EPICS_V3_PV
     {
         state = State.Connecting;
         // Already attempted a connection?
-        if (channel_ref == null)
-            channel_ref = PVContext.getChannel(name, EPICS_V3_PV.this);
+        synchronized (this)
+        {
+            if (channel_ref == null)
+                channel_ref = PVContext.getChannel(name, EPICS_V3_PV.this);
+		}
         if (channel_ref.getChannel().getConnectionState()
             == ConnectionState.CONNECTED)
         {
@@ -308,63 +312,74 @@ public class EPICS_V3_PV
      */
     private void disconnect()
     {
-        // Never attempted a connection?
-        if (channel_ref == null)
-            return;
-        try
-        {
-            PVContext.releaseChannel(channel_ref, this);
-            channel_ref = null;
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
-        connected = false;
+    	synchronized (this)
+    	{
+	        // Never attempted a connection?
+	 		if (channel_ref == null)
+	            return;
+	        try
+	        {
+	            PVContext.releaseChannel(channel_ref, this);
+	        }
+	        catch (Throwable e)
+	        {
+	            e.printStackTrace();
+	        }
+	        channel_ref = null;
+		}
         fireDisconnected();
     }
     
     /** Subscribe for value updates. */
     private void subscribe()
     {
-        // Prevent multiple subscriptions.
-        if (subscription != null)
-            return;
-        // Late callback, channel already closed?
-        final RefCountedChannel ch_ref = channel_ref;
-        if (ch_ref == null)
-        	return;
-		final Channel channel = ch_ref.getChannel();
-        try
-        {
-            final DBRType type = DBR_Helper.getTimeType(plain,
-                                    channel.getFieldType());
-            if (PVContext.debug)
-                System.out.println(name + " subscribed as " + type.getName());
-            state = State.Subscribing;
-            subscription = channel.addMonitor(type,
-                       channel.getElementCount(), 1, this);
-        }
-        catch (Exception ex)
-        {
-            Activator.logException(name + " subscribe error", ex);
-        }
+    	synchronized (this)
+    	{
+            // Prevent multiple subscriptions.
+            if (subscription != null)
+                return;
+            // Late callback, channel already closed?
+            final RefCountedChannel ch_ref = channel_ref;
+            if (ch_ref == null)
+            	return;
+    		final Channel channel = ch_ref.getChannel();
+            try
+            {
+                final DBRType type = DBR_Helper.getTimeType(plain,
+                                        channel.getFieldType());
+                if (PVContext.debug)
+                    System.out.println(name + " subscribed as " + type.getName());
+                state = State.Subscribing;
+                subscription = channel.addMonitor(type,
+                           channel.getElementCount(), 1, this);
+            }
+            catch (Exception ex)
+            {
+                Activator.logException(name + " subscribe error", ex);
+            }
+		}
     }
     
     /** Unsubscribe from value updates. */
     private void unsubscribe()
     {
-        if (subscription == null)
+    	Monitor sub_copy;
+    	// Atomic access
+    	synchronized (this)
+    	{
+    		sub_copy = subscription;
+    		subscription = null;
+		}
+		if (sub_copy == null)
             return;
         try
         {
-            subscription.clear();
+        	sub_copy.clear();
         }
         catch (Exception ex)
         {
             Activator.logException(name + " unsubscribe error", ex);
         }
-        subscription = null;
     }
 
     /** {@inheritDoc} */
