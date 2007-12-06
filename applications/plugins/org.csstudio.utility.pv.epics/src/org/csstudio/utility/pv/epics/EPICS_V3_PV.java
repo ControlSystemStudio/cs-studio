@@ -1,6 +1,7 @@
 package org.csstudio.utility.pv.epics;
 
 import gov.aps.jca.Channel;
+import gov.aps.jca.Monitor;
 import gov.aps.jca.Channel.ConnectionState;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
@@ -70,13 +71,28 @@ public class EPICS_V3_PV
     /** JCA channel. */
     private RefCountedChannel channel_ref = null;
 
-    /** The data of this PV in a thread-safe container */
-    final private PVData pv_data = new PVData();
+    /** isConnected?
+     *  <code>true</code> if we are currently connected
+     *  (based on the most recent connection callback).
+     *  <p>
+     *  EPICS_V3_PV also runs notifyAll() on <code>this</code>
+     *  whenever the connected flag changes to <code>true</code>.
+     */
+    private boolean connected = false;
+
+    /** Either <code>null</code>, or the subscription identifier. */
+    private Monitor subscription = null;
+    
+    /** Meta data obtained during connection cycle. */
+    private IMetaData meta = null;
+
+    /** Most recent 'live' value. */
+    private IValue value = null;
     
     /** isRunning?
      *  <code>true</code> if we want to receive value updates.
      */
-    boolean running = false;
+    private boolean running = false;
 
     /** Listener to the get... for meta data */
     private final GetListener meta_get_listener = new GetListener()
@@ -87,17 +103,21 @@ public class EPICS_V3_PV
             {
                 state = State.GotMetaData;
                 final DBR dbr = event.getDBR();
-                synchronized (pv_data)
-                {
-                    pv_data.meta = DBR_Helper.decodeMetaData(dbr);
-                    if (PVContext.debug)
-                        System.out.println(name + " meta: " + pv_data.meta);
-                }
+                meta = DBR_Helper.decodeMetaData(dbr);
+                if (PVContext.debug)
+                    System.out.println(name + " meta: " + meta);
             }
             else
                 System.out.println(name + " meta data get error: "
                                         + event.getStatus().getMessage());
-            subscribe();
+            // Subscribe, but outside of callback (JCA deadlocks)
+            PVContext.scheduleCommand(new Runnable()
+            {
+            	public void run()
+            	{
+                    subscribe();
+            	}
+            });
         }
     };
     
@@ -158,7 +178,7 @@ public class EPICS_V3_PV
     /** Generate an EPICS PV.
      *  @param name The PV name.
      */
-    public EPICS_V3_PV(String name)
+    public EPICS_V3_PV(final String name)
     {
         this(name, false);
     }
@@ -169,7 +189,7 @@ public class EPICS_V3_PV
      *               No time etc.
      *               Some PVs only work in plain mode, example: "record.RTYP".
      */
-    public EPICS_V3_PV(String name, boolean plain)
+    public EPICS_V3_PV(final String name, final boolean plain)
     {
         this.name = name;
         this.plain = plain;
@@ -209,22 +229,22 @@ public class EPICS_V3_PV
     }
 
     /** {@inheritDoc} */
-    public IValue getValue(double timeout_seconds) throws Exception
+    public IValue getValue(final double timeout_seconds) throws Exception
     {
         final long end_time = System.currentTimeMillis() +
                                 (long)(timeout_seconds * 1000);
         // Try to connect (NOP if already connected)
         connect();
         // Wait for connection
-        synchronized (pv_data)
-        {
-            while (! pv_data.connected)
-            {   // Wait...
-                final long remain = end_time - System.currentTimeMillis();
-                if (remain <= 0)
-                    throw new Exception("PV " + name + " connection timeout");
-                pv_data.wait(remain);
-            }
+        while (! connected)
+        {   // Wait...
+            final long remain = end_time - System.currentTimeMillis();
+            if (remain <= 0)
+                throw new Exception("PV " + name + " connection timeout");
+            synchronized (this)
+            {
+            	this.wait(remain);
+			}
         }
         // Reset the callback data
         get_callback.reset();
@@ -247,20 +267,14 @@ public class EPICS_V3_PV
                 get_callback.wait(remain);
             }
         }
-        synchronized (pv_data)
-        {
-            pv_data.value = get_callback.value;
-        }
+        value = get_callback.value;
         return get_callback.value;
     }
     
     /** {@inheritDoc} */
     public IValue getValue()
     {
-        synchronized (pv_data)
-        {
-            return pv_data.value;
-        }
+        return value;
     }
 
     /** {@inheritDoc} */
@@ -285,7 +299,7 @@ public class EPICS_V3_PV
         {
             if (PVContext.debug)
                 System.out.println(name + " is immediately connected");
-            handleConnected();
+            handleConnected(channel_ref.getChannel());
         }
     }
     
@@ -306,23 +320,16 @@ public class EPICS_V3_PV
         {
             e.printStackTrace();
         }
-        synchronized (pv_data)
-        {
-            pv_data.connected = false;
-            pv_data.notifyAll();
-        }
+        connected = false;
         fireDisconnected();
     }
     
     /** Subscribe for value updates. */
     private void subscribe()
     {
-        synchronized (pv_data)
-        {
-            // Prevent multiple subscriptions.
-            if (pv_data.subscription != null)
-                return;
-        }
+        // Prevent multiple subscriptions.
+        if (subscription != null)
+            return;
         try
         {
             final Channel channel = channel_ref.getChannel();
@@ -331,11 +338,8 @@ public class EPICS_V3_PV
             if (PVContext.debug)
                 System.out.println(name + " subscribed as " + type.getName());
             state = State.Subscribing;
-            synchronized (pv_data)
-            {
-                pv_data.subscription = channel.addMonitor(type,
-                           channel.getElementCount(), 1, this);
-            }
+            subscription = channel.addMonitor(type,
+                       channel.getElementCount(), 1, this);
         }
         catch (Exception ex)
         {
@@ -346,17 +350,17 @@ public class EPICS_V3_PV
     /** Unsubscribe from value updates. */
     private void unsubscribe()
     {
-        if (pv_data.subscription == null)
+        if (subscription == null)
             return;
         try
         {
-            pv_data.subscription.clear();
+            subscription.clear();
         }
         catch (Exception ex)
         {
             Activator.logException(name + " unsubscribe error", ex);
         }
-        pv_data.subscription = null;
+        subscription = null;
     }
 
     /** {@inheritDoc} */
@@ -375,10 +379,7 @@ public class EPICS_V3_PV
     /** {@inheritDoc} */
     public boolean isConnected()
     {
-        synchronized (pv_data)
-        {
-            return pv_data.connected;
-        }
+        return connected;
     }
 
     /** {@inheritDoc} */ 
@@ -436,16 +437,20 @@ public class EPICS_V3_PV
     }
 
     /** ConnectionListener interface. */
-    public void connectionChanged(ConnectionEvent ev)
+    public void connectionChanged(final ConnectionEvent ev)
     {
     	// This runs in a CA thread
         if (ev.isConnected())
         {   // Transfer to JCACommandThread to avoid deadlocks
+        	// The connect event can actually happen 'right away'
+        	// when the channel is created, before we even get to assign
+        	// the channel_ref. So use the channel from the event, not
+        	// the channel_ref which might still be null.
             PVContext.scheduleCommand(new Runnable()
             {
                 public void run()
                 {
-                    handleConnected();
+                    handleConnected((Channel) ev.getSource());
                 }
             });
         }
@@ -454,11 +459,7 @@ public class EPICS_V3_PV
             if (PVContext.debug)
                 System.out.println(name + " disconnected");
             state = State.Disconnected;
-            synchronized (pv_data)
-            {
-                pv_data.connected = false;
-                pv_data.notifyAll();
-            }
+            connected = false;
             PVContext.scheduleCommand(new Runnable()
             {
                 public void run()
@@ -472,12 +473,10 @@ public class EPICS_V3_PV
     /** PV is connected.
      *  Get meta info, or subscribe right away.
      */
-    private void handleConnected()
+    private void handleConnected(final Channel channel)
     {
-    	// Connection after already disconnected?
-    	if (channel_ref == null)
+    	if (state == State.Connected)
     		return;
-    	
         state = State.Connected;
         if (PVContext.debug)
             System.out.println(name + " connected");
@@ -487,18 +486,18 @@ public class EPICS_V3_PV
         // Otherwise, we're done.
         if (!running)
         {
-            synchronized (pv_data)
+            connected = true;
+            meta = null;
+            synchronized (this)
             {
-                pv_data.connected = true;
-                pv_data.meta = null;
-                pv_data.notifyAll();
+                this.notifyAll();
             }
             return;
         }
         // else: running, get meta data, then subscribe
         try
         {
-            DBRType type = channel_ref.getChannel().getFieldType();
+            DBRType type = channel.getFieldType();
             if (! (plain || type.isSTRING()))
             {
                 state = State.GettingMetadata;
@@ -511,7 +510,7 @@ public class EPICS_V3_PV
                     type = DBRType.LABELS_ENUM;
                 else
                     type = DBRType.CTRL_SHORT;
-                channel_ref.getChannel().get(type, 1, meta_get_listener);
+                channel.get(type, 1, meta_get_listener);
                 return;
             }
         }
@@ -524,10 +523,7 @@ public class EPICS_V3_PV
         // Meta info is not requested, not available for this type,
         // or there was an error in the get call.
         // So reset it, then just move on to the subscription.
-        synchronized (pv_data)
-        {
-            pv_data.meta = null;
-        }
+        meta = null;
         subscribe();
     }
 
@@ -548,15 +544,12 @@ public class EPICS_V3_PV
         state = State.GotMonitor;
         try
         {
-            synchronized (pv_data)
-            {
-                pv_data.value =
-                    DBR_Helper.decodeValue(plain, pv_data.meta, ev.getDBR());
-                if (!pv_data.connected)
-                    pv_data.connected = true;
-            }
+            value =
+                DBR_Helper.decodeValue(plain, meta, ev.getDBR());
+            if (!connected)
+                connected = true;
             if (PVContext.debug)
-                System.out.println(name + " monitor: " + pv_data.value);
+                System.out.println(name + " monitor: " + value);
             fireValueUpdate();
         }
         catch (Exception ex)

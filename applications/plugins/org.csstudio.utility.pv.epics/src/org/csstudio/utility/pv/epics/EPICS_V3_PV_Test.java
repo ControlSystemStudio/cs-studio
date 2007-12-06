@@ -340,7 +340,7 @@ public class EPICS_V3_PV_Test
     @Test
     public void testMultipleRuns() throws Exception
     {
-    	for (int run=0; run<50; ++run)
+    	for (int run=0; run<10; ++run)
     		testManyConnections();
 	}
 }

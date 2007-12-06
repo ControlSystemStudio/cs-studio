@@ -170,6 +170,8 @@ public class PVContext
      */
     static void scheduleCommand(final Runnable command)
     {
+    	// Debug: Run immediately
+    	// command.run();
         command_thread.addCommand(command);
     }
     

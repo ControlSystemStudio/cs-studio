@@ -76,11 +76,12 @@ class JCACommandThread extends Thread
         {
             Activator.logException("JCACommandThread shutdown", ex);
         }
-        Activator.logInfo("JCACommandThread queue reached up to "
-                        + max_size_reached + " entries");
+        // Activator.logInfo("JCACommandThread queue reached up to "
+        //                + max_size_reached + " entries");
     }
     
     /** Add a command to the queue.
+     *  TODO add some cap on the command queue? At least for value updates?
      *  @param command
      */
     void addCommand(final Runnable command)
@@ -126,8 +127,8 @@ class JCACommandThread extends Thread
                 command = getCommand();
             }
             // Flush.
-            // Once, after executing all the accumualted commands.
-            // But even when the command queue was empty,
+            // Once, after executing all the accumulated commands.
+            // Even when the command queue was empty,
             // there may be stuff worth flushing.
             try
             {

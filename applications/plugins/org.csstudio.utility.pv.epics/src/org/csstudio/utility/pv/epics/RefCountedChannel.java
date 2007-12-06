@@ -11,7 +11,7 @@ class RefCountedChannel
 
     private int refs;
 
-    public RefCountedChannel(Channel channel)
+    public RefCountedChannel(final Channel channel)
     {
         this.channel = channel;
         refs = 1;
@@ -20,6 +20,9 @@ class RefCountedChannel
     synchronized public void incRefs()
     {   ++refs;  }
 
+    /** Decrement reference count.
+     *  @return Remaining references.
+     */
     synchronized public int decRefs()
     {
         --refs;
@@ -35,9 +38,9 @@ class RefCountedChannel
         {
             channel.destroy();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            e.printStackTrace();
+        	Activator.logException("Channel.destroy failed", ex);
         }
         channel = null;
     }

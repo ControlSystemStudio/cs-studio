@@ -37,12 +37,15 @@ import org.csstudio.platform.data.ValueFactory;
  */
 public class DBR_Helper
 {
-    /** Convert the EPICS time stamp (based on 1990) into the usual 1970 epoch.
+	/** All live samples are 'original' */
+	final private static IValue.Quality quality = IValue.Quality.Original;
+
+	/** Convert the EPICS time stamp (based on 1990) into the usual 1970 epoch.
      *  <p>
      *  In case this is called with data from a CTRL_... request,
      *  the null timestamp is replaced with the current host time.
      */
-    private static ITimestamp createTimeFromEPICS(TimeStamp t)
+    private static ITimestamp createTimeFromEPICS(final TimeStamp t)
     {
         if (t == null)
             return TimestampFactory.now();
@@ -157,8 +160,6 @@ public class DBR_Helper
         return result;
     }    
 
-    final private static IValue.Quality quality = IValue.Quality.Original;
-    
     /** @return Value extracted from dbr */
     @SuppressWarnings("nls")
     public static IValue decodeValue(final boolean plain,
