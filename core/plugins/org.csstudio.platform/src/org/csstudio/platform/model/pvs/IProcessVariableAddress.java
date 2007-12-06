@@ -1,5 +1,6 @@
 package org.csstudio.platform.model.pvs;
 
+import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.context.RemoteInfo;
 
 /**
@@ -57,7 +58,7 @@ public interface IProcessVariableAddress {
 
 	boolean isCharacteristic();
 	
-	DalPropertyTypes getTypeHint();
+	ValueType getValueTypeHint();
 
 	/**
 	 * Returns a DAL {@link RemoteInfo} object for this process variable

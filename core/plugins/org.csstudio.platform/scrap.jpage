@@ -1,0 +1,3 @@
+boolean result = Number.class.isAssignableFrom(Double.class);
+
+System.out.println(result);

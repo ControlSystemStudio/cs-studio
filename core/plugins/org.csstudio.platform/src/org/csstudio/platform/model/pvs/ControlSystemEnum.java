@@ -29,6 +29,8 @@ public enum ControlSystemEnum implements IAdaptable {
 
 	TANGO("tango", null, false),
 
+	LOCAL("local", null, false),
+	
 	UNKNOWN("", null, false);
 
 	private String _prefix;

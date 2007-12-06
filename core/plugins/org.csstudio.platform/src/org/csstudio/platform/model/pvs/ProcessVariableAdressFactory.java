@@ -12,6 +12,8 @@ import org.eclipse.core.runtime.Platform;
 /**
  * Factory for process variable adresses.
  * 
+ * TODO: Extract an interface!!!!
+ * 
  * @author Sven Wende
  * 
  */
@@ -26,6 +28,10 @@ public class ProcessVariableAdressFactory {
 
 	static {
 		_parserMapping = new HashMap<ControlSystemEnum, AbstractProcessVariableNameParser>();
+		
+		_parserMapping.put(ControlSystemEnum.LOCAL, new DalNameParser(
+				ControlSystemEnum.LOCAL));
+		
 		_parserMapping.put(ControlSystemEnum.DAL_EPICS, new DalNameParser(
 				ControlSystemEnum.DAL_EPICS));
 		_parserMapping.put(ControlSystemEnum.DAL_TINE, new DalNameParser(
@@ -44,6 +50,11 @@ public class ProcessVariableAdressFactory {
 				new SimpleNameParser(ControlSystemEnum.SDS_SIMULATOR));
 		_parserMapping.put(ControlSystemEnum.DAL_SIMULATOR,
 				new SimpleNameParser(ControlSystemEnum.DAL_SIMULATOR));
+		
+		// check, that there is a parser for each control system
+		for(ControlSystemEnum controlSystem : ControlSystemEnum.values()) {
+			assert _parserMapping.containsKey(controlSystem);
+		}
 	}
 
 	private ProcessVariableAdressFactory() {

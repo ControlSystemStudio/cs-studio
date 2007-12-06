@@ -8,6 +8,7 @@ import javax.naming.NamingException;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.DalPropertyTypes;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.context.RemoteInfo;
 
 /**
@@ -42,12 +43,8 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 	 */
 	private String _rawName;
 
-	/**
-	 * 
-	 */
-	private DalPropertyTypes _typeHint;
-	
-	
+	private ValueType _valueTypeHint;
+
 	/**
 	 * Constructs a process variable address using the provided information
 	 * pieces.
@@ -80,12 +77,12 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 	/**
 	 * {@inheritDoc}
 	 */
-	public DalPropertyTypes getTypeHint() {
-		return _typeHint;
+	public ValueType getValueTypeHint() {
+		return _valueTypeHint;
 	}
 
-	public void setTypeHint(DalPropertyTypes typeHint) {
-		_typeHint = typeHint;
+	public void setValueTypeHint(ValueType valueTypeHint) {
+		_valueTypeHint = valueTypeHint;
 	}
 
 	/**
@@ -141,7 +138,7 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 			sb.append(_controlSystem.getPrefix());
 			sb.append("://");
 		}
-		
+
 		sb.append(_property);
 
 		if (_characteristic != null) {
@@ -150,11 +147,11 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 			sb.append("]");
 		}
 
-		if(_typeHint!=null) {
+		if (_valueTypeHint != null) {
 			sb.append(", ");
-			sb.append(_typeHint.toPortableString());
+			sb.append(_valueTypeHint.toPortableString());
 		}
-		
+
 		return sb.toString();
 	}
 
@@ -190,7 +187,7 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -204,6 +201,13 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 	 */
 	@Override
 	public String toString() {
+		return getFullName();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString2() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Raw Name: " + _rawName);
 		sb.append("\n");

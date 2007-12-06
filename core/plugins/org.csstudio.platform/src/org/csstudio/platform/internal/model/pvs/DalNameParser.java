@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.DalPropertyTypes;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.simpledal.ValueType;
 
 /**
  * Name parser, which can be parameterized using a {@link ControlSystemEnum}.
@@ -62,8 +63,8 @@ public class DalNameParser extends AbstractProcessVariableNameParser {
 					property, characteristic);
 			
 			if(typeHint!=null) {
-				DalPropertyTypes type = DalPropertyTypes.createFromPortable(typeHint);
-				result.setTypeHint(type);
+				ValueType valueType = ValueType.createFromPortable(typeHint);
+				result.setValueTypeHint(valueType);
 			}
 
 		}

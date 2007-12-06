@@ -25,4 +25,11 @@ public interface IProcessVariableValueListener<E> {
 	 *            the current connection state
 	 */
 	void connectionStateChanged(ConnectionState connectionState);
+
+	/**
+	 * Announces an error.
+	 * 
+	 * @param error an error
+	 */
+	void errorOccured(String error);
 }

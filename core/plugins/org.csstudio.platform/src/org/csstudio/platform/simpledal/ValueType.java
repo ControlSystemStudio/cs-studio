@@ -19,68 +19,78 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.model.pvs;
+package org.csstudio.platform.simpledal;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DoubleSeqProperty;
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.EnumProperty;
 import org.epics.css.dal.LongProperty;
 import org.epics.css.dal.LongSeqProperty;
+import org.epics.css.dal.ObjectProperty;
 import org.epics.css.dal.ObjectSeqProperty;
 import org.epics.css.dal.StringProperty;
 import org.epics.css.dal.StringSeqProperty;
 
 /**
+ * Enumeration of all value types that can be queried via control system
+ * channels
  * 
  * @author Sven Wende
+ * 
  * @version $Revision$
- * @deprecated Use {@link ValueType} instead!
+ * 
  */
-public enum DalPropertyTypes {
+public enum ValueType {
+
 	/**
-	 * An array of double values.
+	 * An object value.
 	 */
-	ENUM("enum", "Enumeration", EnumProperty.class), //$NON-NLS-1$
+	OBJECT("object", "Object", ObjectProperty.class, Object.class),
 	
 	/**
 	 * An array of double values.
 	 */
-	DOUBLE_SEQUENCE("doubleSeq", "Sequence of Doubles", DoubleSeqProperty.class), //$NON-NLS-1$
+	ENUM("enum", "Enumeration", EnumProperty.class, Object.class), //$NON-NLS-1$
+
+	/**
+	 * An array of double values.
+	 */
+	DOUBLE_SEQUENCE("doubleSeq", "Sequence of Doubles", DoubleSeqProperty.class, double[].class), //$NON-NLS-1$
 
 	/**
 	 * An array of string values.
 	 */
-	STRING_SEQUENCE("stringSeq", "Sequence of Strings", StringSeqProperty.class), //$NON-NLS-1$
+	STRING_SEQUENCE("stringSeq", "Sequence of Strings", StringSeqProperty.class, String[].class), //$NON-NLS-1$
 
 	/**
 	 * An array of long values.
 	 */
-	LONG_SEQUENCE("longSeq", "Sequence of Longs", LongSeqProperty.class), //$NON-NLS-1$
+	LONG_SEQUENCE("longSeq", "Sequence of Longs", LongSeqProperty.class, long[].class), //$NON-NLS-1$
 
 	/**
 	 * An array of object values.
 	 */
-	OBJECT_SEQUENCE("objectSeq", "Sequence of Objects", ObjectSeqProperty.class), //$NON-NLS-1$
+	OBJECT_SEQUENCE("objectSeq", "Sequence of Objects", ObjectSeqProperty.class, Object[].class), //$NON-NLS-1$
 
 	/**
-	 * An option.
+	 * A long value.
 	 */
-	LONG("long", "Long", LongProperty.class), //$NON-NLS-1$
+	LONG("long", "Long", LongProperty.class, Long.class), //$NON-NLS-1$
 
 	/**
 	 * A double value.
 	 */
-	DOUBLE("double", "Double", DoubleProperty.class), //$NON-NLS-1$
+	DOUBLE("double", "Double", DoubleProperty.class, Double.class), //$NON-NLS-1$
 
 	/**
 	 * A string.
 	 */
-	STRING("string", "String", StringProperty.class); //$NON-NLS-1$
+	STRING("string", "String", StringProperty.class, String.class); //$NON-NLS-1$
 
 	/**
 	 * The ID of the property type. Will be used as portable representation of
@@ -90,6 +100,8 @@ public enum DalPropertyTypes {
 
 	private String _description;
 	
+	private Class _javaType;
+
 	/**
 	 * A hint for the necessary DAL property type.
 	 */
@@ -108,14 +120,16 @@ public enum DalPropertyTypes {
 	 *            a hint for the necessary DAL property type
 	 */
 	@SuppressWarnings("unchecked")
-	private DalPropertyTypes(final String id, String description,
-			final Class<? extends DynamicValueProperty> dalType) {
+	private ValueType(final String id, String description,
+			final Class<? extends DynamicValueProperty> dalType, Class javaType) {
 		assert id != null;
-		assert description !=null;
+		assert description != null;
 		assert dalType != null;
+		assert javaType != null;
 		_id = id;
 		_description = description;
 		_dalType = dalType;
+		_javaType = javaType;
 	}
 
 	/**
@@ -135,21 +149,30 @@ public enum DalPropertyTypes {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns the corresponding DAL property type. Note: This is package
+	 * private because we want to abstract from DAL totally.
 	 */
 	public Class<? extends DynamicValueProperty> getDalType() {
 		return _dalType;
 	}
 
 	/**
+	 * Returns the expected Java type for values of this type.
+	 * @return the expected Java type for values of this type
+	 */
+	public Class getJavaType() {
+		return _javaType;
+	}
+	
+	/**
 	 * A map that contains all instances of this class.
 	 */
-	private static Map<String, DalPropertyTypes> _mapping;
+	private static Map<String, ValueType> _mapping;
 
 	static {
-		_mapping = new HashMap<String, DalPropertyTypes>();
+		_mapping = new HashMap<String, ValueType>();
 
-		for (DalPropertyTypes type : DalPropertyTypes.values()) {
+		for (ValueType type : ValueType.values()) {
 			_mapping.put(type.toPortableString(), type);
 		}
 	}
@@ -161,10 +184,9 @@ public enum DalPropertyTypes {
 	 *            Required.
 	 * @return The instance that is represented by the string or null
 	 */
-	public static DalPropertyTypes createFromPortable(
-			final String portableString) {
+	public static ValueType createFromPortable(final String portableString) {
 		assert portableString != null;
-		DalPropertyTypes result = null;
+		ValueType result = null;
 		if (_mapping.containsKey(portableString)) {
 			result = _mapping.get(portableString);
 		}

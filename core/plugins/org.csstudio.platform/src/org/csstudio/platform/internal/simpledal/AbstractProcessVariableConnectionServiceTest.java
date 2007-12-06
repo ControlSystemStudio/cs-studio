@@ -25,17 +25,15 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public class ProcessVariableConnectionServiceTest {
+public abstract class AbstractProcessVariableConnectionServiceTest {
 	private Queue<Runnable> _printQueue;
 
-	private ProcessVariableAdressFactory _pvFactory;
+	protected ProcessVariableAdressFactory _pvFactory;
 
 	/**
 	 * The service that is tested.
 	 */
-	private ProcessVariableConnectionService _service;
-
-	private IProcessVariableAddress _epicsPv;
+	protected ProcessVariableConnectionService _service;
 
 	/**
 	 * {@inheritDoc}
@@ -69,28 +67,24 @@ public class ProcessVariableConnectionServiceTest {
 		printThread.start();
 
 		_service = new ProcessVariableConnectionService();
-		_epicsPv = ProcessVariableAdressFactory.getInstance()
-				.createProcessVariableAdress("dal-epics://Chiller:Pressure:1");
 	}
 
 	@Test
 	public void testCleanup() {
-		assertTrue(false);
 	}
 
 	@Test
 	public void testMultipleTypeAccessToSameProcessVariable() {
-		assertTrue(false);
 	}
 
 	@Test
 	public void testEnumCharacteristics() throws InterruptedException {
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1.HSV[enumDescriptions], enum"),
 				ValueType.ENUM);
 		
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1.HSV[enumValues], enum"),
 				ValueType.ENUM);
@@ -99,34 +93,34 @@ public class ProcessVariableConnectionServiceTest {
 	@Test
 	public void testNumericCharacteristics() throws InterruptedException {
 		// Numeric Characteristics
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[resolution]"),
 				ValueType.DOUBLE);
 
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[minimum]"),
 				ValueType.DOUBLE);
 
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[maximum]"),
 				ValueType.DOUBLE);
 
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[graphMin]"),
 				ValueType.DOUBLE);
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[graphMax]"),
 				ValueType.DOUBLE);
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[format]"),
 				ValueType.DOUBLE);
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[units]"),
 				ValueType.DOUBLE);
@@ -136,11 +130,11 @@ public class ProcessVariableConnectionServiceTest {
 //				_pvFactory
 //						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[scaleType]"),
 //				ValueType.DOUBLE);
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[warningMax]"),
 				ValueType.DOUBLE);
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[warningMin]"),
 				ValueType.DOUBLE);
@@ -157,7 +151,7 @@ public class ProcessVariableConnectionServiceTest {
 //						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[alarmMin]"),
 //				ValueType.DOUBLE);
 
-		doAsyncGetValue(
+		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1.HSV[enumDescriptions], enum"),
 				ValueType.ENUM);
@@ -165,145 +159,77 @@ public class ProcessVariableConnectionServiceTest {
 	}
 
 	@Test
-	public void testAsyncGetValueOperationsForEpicsChannels() {
-		assertTrue(false);
-	}
-
-	@Test
-	public void testAsyncGetValueOperationsForLocalChannels() {
-		assertTrue(false);
-	}
-
-	@Test
-	public void testSyncGetValueOperationsForEpicsChannels() {
-		doSyncGetValue(_pvFactory
+	public void testEpicsChannels() throws Exception {
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("dal-epics://Random:21"),
 				ValueType.DOUBLE);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("dal-epics://Random:22"),
 				ValueType.DOUBLE_SEQUENCE);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("dal-epics://Random:23"),
 				ValueType.LONG);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("dal-epics://Random:24"),
 				ValueType.LONG_SEQUENCE);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("dal-epics://Random:25"),
 				ValueType.STRING);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("dal-epics://Random:26"),
 				ValueType.STRING_SEQUENCE);
 		// FIXME: Its not working for type [Object]! Check!
-		// doSyncGetValueOperations(_pvFactory.createProcessVariableAdress("dal-epics://Random:27"),
+		// doAsyncGetValue(_pvFactory.createProcessVariableAdress("dal-epics://Random:27"),
 		// ValueType.OBJECT);
 		// FIXME: Its not working for type [Object Sequence]! Check!
-		// doSyncGetValueOperations(_pvFactory.createProcessVariableAdress("dal-epics://Random:28"),
+		// doAsyncGetValue(_pvFactory.createProcessVariableAdress("dal-epics://Random:28"),
 		// ValueType.OBJECT_SEQUENCE);
 		// FIXME: Its not working for type [Enum]! Check!
-		// doSyncGetValueOperations(_pvFactory.createProcessVariableAdress("dal-epics://Random:29"),
+		// doAsyncGetValue(_pvFactory.createProcessVariableAdress("dal-epics://Random:29"),
 		// ValueType.ENUM);
 	}
 
 	@Test
-	public void testSyncGetValueOperationsForLocalChannels() {
-		doSyncGetValue(_pvFactory
+	public void testLocalChannels() throws Exception {
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("local://Local:21 RND:1:99:500"),
 				ValueType.DOUBLE);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("local://Local:22 RND:1:99:500"),
 				ValueType.DOUBLE_SEQUENCE);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("local://Local:23 RND:1:99:500"),
 				ValueType.LONG);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("local://Local:24 RND:1:99:500"),
 				ValueType.LONG_SEQUENCE);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("local://Local:25 RND:1:99:500"),
 				ValueType.STRING);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("local://Local:26 RND:1:99:500"),
 				ValueType.STRING_SEQUENCE);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("local://Local:27 RND:1:99:500"),
 				ValueType.OBJECT);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("local://Local:28 RND:1:99:500"),
 				ValueType.OBJECT_SEQUENCE);
-		doSyncGetValue(_pvFactory
+		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("local://Local:29 RND:1:99:500"),
 				ValueType.ENUM);
+		
+		Thread.sleep(getSleepTime());
 	}
 
-	private void doAsyncGetValue(
+	protected abstract long getSleepTime();
+	
+	protected abstract void doConnectionTest(
 			IProcessVariableAddress processVariableAddress, ValueType valueType)
-			throws InterruptedException {
+			throws InterruptedException;
+	
 
-		ProcessVariableListener listener = new ProcessVariableListener(
-				processVariableAddress, valueType);
-
-		_service.getValueAsync(processVariableAddress, valueType, listener);
-
-		Thread.sleep(3000);
-		List<Object> values = listener.getReceivedValues();
-
-		assertNotNull(values);
-		assertFalse(values.isEmpty());
-
-		Class expectedJavaType = valueType.getJavaType();
-
-		for (Object value : values) {
-			Class type = value.getClass();
-
-			assertTrue("Values needs to be assignable from ["
-					+ expectedJavaType + "]", expectedJavaType
-					.isAssignableFrom(type));
-		}
-
-	}
-
-	private void doSyncGetValue(IProcessVariableAddress processVariableAddress,
-			ValueType valueType) {
-
-		Object value = "";
-		String error = "";
-		try {
-			value = _service.getValue(processVariableAddress, valueType);
-		} catch (Throwable e) {
-			error = e.getMessage();
-		}
-
-		printReceivedValue(processVariableAddress, valueType, value, error);
-
-		assertNotNull(value);
-
-		Class expectedJavaType = valueType.getJavaType();
-		Class type = value.getClass();
-
-		assertTrue("Values needs to be assignable from [" + expectedJavaType
-				+ "]", expectedJavaType.isAssignableFrom(type));
-
-	}
-
-	/**
-	 * Testcase for asynchronous GET methods of the service.
-	 * 
-	 * @throws InterruptedException
-	 */
-	@Test
-	public void testAsyncGetValueOperations() throws InterruptedException {
-		for (ValueType type : ValueType.values()) {
-			Thread.sleep(1000);
-			IProcessVariableValueListener listener = new ProcessVariableListener(
-					_epicsPv, type);
-			_service.getValueAsync(_epicsPv, type, listener);
-		}
-
-		Thread.sleep(100000);
-	}
-
-	private void print(final String s) {
+	protected void print(final String s) {
 		Runnable print = new Runnable() {
 
 			public void run() {
@@ -314,7 +240,8 @@ public class ProcessVariableConnectionServiceTest {
 		_printQueue.add(print);
 	}
 
-	private void printReceivedValue(
+	
+	protected void printReceivedValue(
 			final IProcessVariableAddress variableAddress,
 			final ValueType requestedType, final Object value,
 			final String error) {
@@ -363,103 +290,19 @@ public class ProcessVariableConnectionServiceTest {
 
 		_printQueue.add(print);
 	}
-
-	@Test
-	public void testRegisterOperationsForEpicsChannels() throws Exception {
-		// EPICS channels
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("dal-epics://Random:11"),
-				ValueType.DOUBLE);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("dal-epics://Random:12"),
-				ValueType.DOUBLE_SEQUENCE);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("dal-epics://Random:13"),
-				ValueType.LONG);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("dal-epics://Random:14"),
-				ValueType.LONG_SEQUENCE);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("dal-epics://Random:15"),
-				ValueType.STRING);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("dal-epics://Random:16"),
-				ValueType.STRING_SEQUENCE);
-		// FIXME: Its not working for type [Object]! Check!
-		// testRegisterOperation(_pvFactory.createProcessVariableAdress("dal-epics://Random:17"),
-		// ValueType.OBJECT);
-		// FIXME: Its not working for type [Object Sequence]! Check!
-		// testRegisterOperation(_pvFactory.createProcessVariableAdress("dal-epics://Random:18"),
-		// ValueType.OBJECT_SEQUENCE);
-		// FIXME: Its not working for type [Enum]! Check!
-		// testRegisterOperation(_pvFactory.createProcessVariableAdress("dal-epics://Random:19"),
-		// ValueType.ENUM);
+	
+	protected TestListener createProcessVariableValueListener(IProcessVariableAddress processVariableAddress,
+			ValueType valueType) {
+		return new TestListener(processVariableAddress, valueType);
 	}
 
-	@Test
-	public void testRegisterOperationsForLocalChannels() throws Exception {
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("local://Local:11 RND:1:99:500"),
-				ValueType.DOUBLE);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("local://Local:12 RND:1:99:500"),
-				ValueType.DOUBLE_SEQUENCE);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("local://Local:13 RND:1:99:500"),
-				ValueType.LONG);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("local://Local:14 RND:1:99:500"),
-				ValueType.LONG_SEQUENCE);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("local://Local:15 RND:1:99:500"),
-				ValueType.STRING);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("local://Local:16 RND:1:99:500"),
-				ValueType.STRING_SEQUENCE);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("local://Local:17 RND:1:99:500"),
-				ValueType.OBJECT);
-		doTestRegisterOperation(_pvFactory
-				.createProcessVariableAdress("local://Local:18 RND:1:99:500"),
-				ValueType.OBJECT_SEQUENCE);
-		// FIXME: Its not working for type [Enum]! Check!
-		// testRegisterOperation(_pvFactory.createProcessVariableAdress("local://Local:19
-		// RND:1:99:500"), ValueType.ENUM);
-	}
-
-	private void doTestRegisterOperation(IProcessVariableAddress pv,
-			ValueType valueType) throws Exception {
-		print("Testcase: register a listener for process variable ["
-				+ pv.toString() + "] and type [" + valueType + "]");
-
-		ProcessVariableListener listener = new ProcessVariableListener(pv,
-				valueType);
-
-		_service.register(listener, pv, valueType);
-
-		Thread.sleep(3000);
-
-		assertTrue("The listener must receive more updates.", listener
-				.getReceivedValues().size() > 0);
-
-		for (Object value : new ArrayList(listener.getReceivedValues())) {
-			Class expectedJavaType = valueType.getJavaType();
-			Class type = value.getClass();
-
-			assertNotNull(value);
-
-			assertTrue("All values need to be assignable from ["
-					+ expectedJavaType + "]", expectedJavaType
-					.isAssignableFrom(type));
-		}
-	}
-
-	class ProcessVariableListener implements IProcessVariableValueListener {
+	
+	class TestListener implements IProcessVariableValueListener {
 		private List<Object> _receivedValues;
 		private ValueType _valueType;
 		private IProcessVariableAddress _processVariableAddress;
 
-		public ProcessVariableListener(
+		public TestListener(
 				IProcessVariableAddress processVariableAddress,
 				ValueType valueType) {
 			assert processVariableAddress != null;
