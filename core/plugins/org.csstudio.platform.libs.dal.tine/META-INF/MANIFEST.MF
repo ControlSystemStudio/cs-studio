@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tine Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.dal.tine;singleton:=true
-Bundle-Version: 0.9.9
+Bundle-Version: 0.9.10
 Bundle-Activator: org.csstudio.platform.libs.dal.tine.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
