@@ -121,6 +121,11 @@ public final class WaveformModel extends AbstractWidgetModel {
 			"X-axis", "Y-axis", "Both" };
 
 	/**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.sds.components.Waveform"; //$NON-NLS-1$
+
+	/**
 	 * Constructor.
 	 */
 	public WaveformModel() {
@@ -180,7 +185,7 @@ public final class WaveformModel extends AbstractWidgetModel {
 	 */
 	@Override
 	public String getTypeID() {
-		return "org.csstudio.sds.components.Waveform"; //$NON-NLS-1$
+		return ID;
 	}
 
 	/**
