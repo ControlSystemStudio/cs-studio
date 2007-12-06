@@ -48,7 +48,6 @@ public class Waveform extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel("org.csstudio.sds.components.Waveform");
-//        _widget = createWidgetModel(WaveformModel.ID); //TODO:WaveformModel.ID fehlt 
+        _widget = createWidgetModel(WaveformModel.ID);  
     }
 }
