@@ -330,9 +330,13 @@ public class EPICS_V3_PV
         // Prevent multiple subscriptions.
         if (subscription != null)
             return;
+        // Late callback, channel already closed?
+        final RefCountedChannel ch_ref = channel_ref;
+        if (ch_ref == null)
+        	return;
+		final Channel channel = ch_ref.getChannel();
         try
         {
-            final Channel channel = channel_ref.getChannel();
             final DBRType type = DBR_Helper.getTimeType(plain,
                                     channel.getFieldType());
             if (PVContext.debug)
@@ -528,7 +532,7 @@ public class EPICS_V3_PV
     }
 
    /** MonitorListener interface. */
-    public void monitorChanged(MonitorEvent ev)
+    public void monitorChanged(final MonitorEvent ev)
     {
         // This runs in a CA thread.
         // Ignore values that arrive after stop()
