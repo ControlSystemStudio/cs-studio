@@ -26,17 +26,22 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.PointlistProperty;
+import org.csstudio.sds.model.properties.PropertyChangeAdapter;
 import org.csstudio.sds.util.RotationUtil;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 
+
 /**
  * 
  * @author Sven Wende
  */
 public abstract class AbstractPolyModel extends AbstractWidgetModel {
+	
+	private PointList _originalPoints;
+	
 
 	/**
 	 * The ID of the points property.
@@ -69,6 +74,16 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	public AbstractPolyModel() {
 		super(true);
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		
+		getProperty(PROP_ROTATION).addPropertyChangeListener(new PropertyChangeAdapter(){
+			public void propertyValueChanged(Object oldValue, Object newValue) {
+				if(!_isRotationInitialized) {
+					_originalPoints = getPoints().getCopy();
+				}
+				double angle = (Double) newValue - (Double) oldValue;
+				rotatePoints((Double) newValue);
+			}
+		});
 	}
 
 	/**
@@ -185,14 +200,17 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 */
 	public final void rotatePoints(final double angle) {
 		if (_isRotationInitialized || (this.getRotationAngle()==0 && angle!=0)) {
-			double rotationAngle = getRotationAngle();
-			double trueAngle = angle - rotationAngle;
+			PointList points = _originalPoints.getCopy();
 			
-			Rectangle pointBounds = this.getPoints().getBounds();
+			double rotationAngle = getRotationAngle();
+			double trueAngle = angle;
+			
+			Rectangle pointBounds = points.getBounds();
 			Point rotationPoint = pointBounds.getCenter();
 			PointList newPoints = new PointList();
-			for (int i=0;i<this.getPoints().size();i++) {
-				newPoints.addPoint(RotationUtil.rotate(this.getPoints().getPoint(i), trueAngle, rotationPoint));
+			
+			for (int i=0;i<points.size();i++) {
+				newPoints.addPoint(RotationUtil.rotate(points.getPoint(i), trueAngle, rotationPoint));
 			}
 			
 			Rectangle newPointBounds = newPoints.getBounds();
@@ -205,7 +223,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 			setPoints(newPoints);	
 		}
 		
-		super.setPropertyValue(PROP_ROTATION, angle);
+//		super.setPropertyValue(PROP_ROTATION, angle);
 		_isRotationInitialized = true;
 	}
 
@@ -231,10 +249,12 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		} else if (propertyID.equals(AbstractWidgetModel.PROP_HEIGHT)
 				&& ((Integer) value != getPoints().getBounds().height)) {
 			setSize(getWidth(), (Integer) value);
-		} else if (propertyID.equals(AbstractPolyModel.PROP_ROTATION)
-				&& ((Double) value != getRotationAngle())) {
-			rotatePoints((Double) value);
-		} else {
+		}
+//		else if (propertyID.equals(AbstractPolyModel.PROP_ROTATION)
+//				&& ((Double) value != getRotationAngle())) {
+//			rotatePoints((Double) value);
+//		}
+		else {
 			super.setPropertyValue(propertyID, value);
 		}
 	}
