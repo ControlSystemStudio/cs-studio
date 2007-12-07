@@ -243,7 +243,8 @@ public class JmsRedundantReceiver
             {
                 try
                 {
-                    m[i] = c[i].receive(1);
+                    // m[i] = c[i].receive(1);
+                    m[i] = c[i].receiveNoWait();
                 }
                 catch(JMSException jmse)
                 {
