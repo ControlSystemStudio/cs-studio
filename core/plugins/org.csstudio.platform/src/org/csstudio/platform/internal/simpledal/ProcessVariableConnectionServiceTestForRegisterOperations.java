@@ -38,7 +38,7 @@ public class ProcessVariableConnectionServiceTestForRegisterOperations extends
 
 		// the unit test needs to sleep for a while to let the asynchronous
 		// processes do their job
-		Thread.sleep(3000);
+		Thread.sleep(30000);
 
 		// now we can check the results
 		assertTrue("The listener must receive more updates.", listener

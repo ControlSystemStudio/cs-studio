@@ -574,7 +574,6 @@ public class ProcessVariableConnectionService implements
 					if (pv.isCharacteristic()) {
 						result = (E) property.getCharacteristic(pv
 								.getCharacteristic());
-						System.out.println("-->" + pv.getCharacteristic());
 					} else {
 						result = (E) property.getValue();
 					}

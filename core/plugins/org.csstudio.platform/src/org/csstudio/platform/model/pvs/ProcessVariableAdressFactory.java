@@ -8,6 +8,7 @@ import org.csstudio.platform.internal.model.pvs.AbstractProcessVariableNameParse
 import org.csstudio.platform.internal.model.pvs.DalNameParser;
 import org.csstudio.platform.internal.model.pvs.SimpleNameParser;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * Factory for process variable adresses.
@@ -28,10 +29,10 @@ public class ProcessVariableAdressFactory {
 
 	static {
 		_parserMapping = new HashMap<ControlSystemEnum, AbstractProcessVariableNameParser>();
-		
+
 		_parserMapping.put(ControlSystemEnum.LOCAL, new DalNameParser(
 				ControlSystemEnum.LOCAL));
-		
+
 		_parserMapping.put(ControlSystemEnum.DAL_EPICS, new DalNameParser(
 				ControlSystemEnum.DAL_EPICS));
 		_parserMapping.put(ControlSystemEnum.DAL_TINE, new DalNameParser(
@@ -50,9 +51,9 @@ public class ProcessVariableAdressFactory {
 				new SimpleNameParser(ControlSystemEnum.SDS_SIMULATOR));
 		_parserMapping.put(ControlSystemEnum.DAL_SIMULATOR,
 				new SimpleNameParser(ControlSystemEnum.DAL_SIMULATOR));
-		
+
 		// check, that there is a parser for each control system
-		for(ControlSystemEnum controlSystem : ControlSystemEnum.values()) {
+		for (ControlSystemEnum controlSystem : ControlSystemEnum.values()) {
 			assert _parserMapping.containsKey(controlSystem);
 		}
 	}
@@ -98,15 +99,16 @@ public class ProcessVariableAdressFactory {
 	}
 
 	public ControlSystemEnum getDefaultControlSystem() {
-		ControlSystemEnum controlSystem = null;
-		String defaultCs = Platform.getPreferencesService().getString(
-				CSSPlatformPlugin.ID, PROP_CONTROL_SYSTEM, "", //$NON-NLS-1$
-				null);
-		controlSystem = ControlSystemEnum.valueOf(defaultCs);
+		ControlSystemEnum controlSystem = ControlSystemEnum.LOCAL;
+		IPreferencesService prefService = Platform.getPreferencesService();
 
-		if (controlSystem == null) {
-			controlSystem = ControlSystemEnum.UNKNOWN;
+		if (prefService != null) {
+			String defaultCs = Platform.getPreferencesService().getString(
+					CSSPlatformPlugin.ID, PROP_CONTROL_SYSTEM, "", //$NON-NLS-1$
+					null);
+			controlSystem = ControlSystemEnum.valueOf(defaultCs);
 		}
+
 		assert controlSystem != null;
 		return controlSystem;
 	}

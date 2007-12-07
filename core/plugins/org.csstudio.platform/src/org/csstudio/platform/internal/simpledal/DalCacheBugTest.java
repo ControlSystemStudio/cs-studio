@@ -56,12 +56,17 @@ public class DalCacheBugTest {
 	public void testCacheBug() throws Exception {
 		String pv = "Random:1";
 		
+		// get the pv as DoubleProperty
 		DoubleProperty doubleProperty = _propertyFactory.getProperty(pv, DoubleProperty.class, null);
 		assertNotNull(doubleProperty);
 		assertTrue(doubleProperty instanceof DoubleProperty);
+
+		// get the same pv as StringProperty
 		StringProperty stringProperty = _propertyFactory.getProperty(pv, StringProperty.class, null);
 		assertNotNull(stringProperty);
 		assertTrue(stringProperty instanceof StringProperty);
 		
+		
+		// ergo -> ClassCastException
 	}
 }

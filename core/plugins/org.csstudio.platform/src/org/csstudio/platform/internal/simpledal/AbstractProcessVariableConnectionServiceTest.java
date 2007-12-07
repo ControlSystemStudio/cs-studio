@@ -83,13 +83,13 @@ public abstract class AbstractProcessVariableConnectionServiceTest {
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1.HSV[enumDescriptions], enum"),
 				ValueType.ENUM);
-		
+
 		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1.HSV[enumValues], enum"),
 				ValueType.ENUM);
 	}
-	
+
 	@Test
 	public void testNumericCharacteristics() throws InterruptedException {
 		// Numeric Characteristics
@@ -124,12 +124,13 @@ public abstract class AbstractProcessVariableConnectionServiceTest {
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[units]"),
 				ValueType.DOUBLE);
-		
-		// FIXME: Numeric Characteristic [scaleType] is not working. Maybe its an IOC configuration problem.
-//		doAsyncGetValue(
-//				_pvFactory
-//						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[scaleType]"),
-//				ValueType.DOUBLE);
+
+		// FIXME: Numeric Characteristic [scaleType] is not working. Maybe its
+		// an IOC configuration problem.
+		// doAsyncGetValue(
+		// _pvFactory
+		// .createProcessVariableAdress("dal-epics://Chiller:Pressure:1[scaleType]"),
+		// ValueType.DOUBLE);
 		doConnectionTest(
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[warningMax]"),
@@ -138,18 +139,18 @@ public abstract class AbstractProcessVariableConnectionServiceTest {
 				_pvFactory
 						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[warningMin]"),
 				ValueType.DOUBLE);
-		
-		
-//		doAsyncGetValue(
-//				_pvFactory
-//						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[alarmMax]"),
-//				ValueType.DOUBLE);
-		
-		// FIXME: Numeric Characteristic [alarmMin] is not working. Maybe its an IOC configuration problem.
-//		doAsyncGetValue(
-//				_pvFactory
-//						.createProcessVariableAdress("dal-epics://Chiller:Pressure:1[alarmMin]"),
-//				ValueType.DOUBLE);
+
+		// doAsyncGetValue(
+		// _pvFactory
+		// .createProcessVariableAdress("dal-epics://Chiller:Pressure:1[alarmMax]"),
+		// ValueType.DOUBLE);
+
+		// FIXME: Numeric Characteristic [alarmMin] is not working. Maybe its an
+		// IOC configuration problem.
+		// doAsyncGetValue(
+		// _pvFactory
+		// .createProcessVariableAdress("dal-epics://Chiller:Pressure:1[alarmMin]"),
+		// ValueType.DOUBLE);
 
 		doConnectionTest(
 				_pvFactory
@@ -218,16 +219,15 @@ public abstract class AbstractProcessVariableConnectionServiceTest {
 		doConnectionTest(_pvFactory
 				.createProcessVariableAdress("local://Local:29 RND:1:99:500"),
 				ValueType.ENUM);
-		
+
 		Thread.sleep(getSleepTime());
 	}
 
 	protected abstract long getSleepTime();
-	
+
 	protected abstract void doConnectionTest(
 			IProcessVariableAddress processVariableAddress, ValueType valueType)
 			throws InterruptedException;
-	
 
 	protected void print(final String s) {
 		Runnable print = new Runnable() {
@@ -240,7 +240,6 @@ public abstract class AbstractProcessVariableConnectionServiceTest {
 		_printQueue.add(print);
 	}
 
-	
 	protected void printReceivedValue(
 			final IProcessVariableAddress variableAddress,
 			final ValueType requestedType, final Object value,
@@ -290,41 +289,91 @@ public abstract class AbstractProcessVariableConnectionServiceTest {
 
 		_printQueue.add(print);
 	}
-	
-	protected TestListener createProcessVariableValueListener(IProcessVariableAddress processVariableAddress,
-			ValueType valueType) {
+
+	protected TestListener createProcessVariableValueListener(
+			IProcessVariableAddress processVariableAddress, ValueType valueType) {
 		return new TestListener(processVariableAddress, valueType);
 	}
 
-	
+	/**
+	 * Test listener, which stores the received information for later evaluation
+	 * and does some console logging.
+	 * 
+	 * @author swende
+	 * 
+	 */
 	class TestListener implements IProcessVariableValueListener {
-		private List<Object> _receivedValues;
+		/**
+		 * The value type for which the listener was registered.
+		 */
 		private ValueType _valueType;
+
+		/**
+		 * The pv for which the listener was registered.
+		 */
 		private IProcessVariableAddress _processVariableAddress;
 
-		public TestListener(
-				IProcessVariableAddress processVariableAddress,
+		/**
+		 * All received values.
+		 */
+		private List<Object> _receivedValues;
+		
+		/**
+		 * All received errors.
+		 */
+		private List<String> _receivedErrors;
+
+		/**
+		 * The latest received connection state.
+		 */
+		private ConnectionState _receivedConnectionState;
+		
+		/**
+		 * Constructor.
+		 * 
+		 * @param processVariableAddress
+		 *            the pv for which the listener is registered
+		 * @param valueType
+		 *            the expected value type
+		 */
+		public TestListener(IProcessVariableAddress processVariableAddress,
 				ValueType valueType) {
 			assert processVariableAddress != null;
 			assert valueType != null;
 			_processVariableAddress = processVariableAddress;
 			_valueType = valueType;
 			_receivedValues = new ArrayList<Object>();
+			_receivedErrors = new ArrayList<String>();
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		public void connectionStateChanged(ConnectionState connectionState) {
-
+			_receivedConnectionState = connectionState;
+			print("-> received new connection state for ["+ _processVariableAddress.toString() + "]  --> " +connectionState);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		public void errorOccured(String error) {
-			printReceivedValue(_processVariableAddress, _valueType, null, error);
+			_receivedErrors.add(error);
+			print("-> received error for ["+ _processVariableAddress.toString() + "]  --> " +error);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		public void valueChanged(Object value) {
 			_receivedValues.add(value);
 			printReceivedValue(_processVariableAddress, _valueType, value, null);
 		}
 
+		/**
+		 * Returns all received values.
+		 * @return
+		 */
 		public List<Object> getReceivedValues() {
 			return _receivedValues;
 		}

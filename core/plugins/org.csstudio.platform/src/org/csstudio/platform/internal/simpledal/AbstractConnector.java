@@ -112,8 +112,11 @@ abstract class AbstractConnector {
 			listener.valueChanged(_latestValue);
 		}
 
-		// send latest error
-		listener.errorOccured(_latestError);
+		// FIXME: Was machen wir mit dem "latestError" ?? Ebenfalls initial
+		// weiterleiten?
+		if (_latestError != null) {
+			listener.errorOccured(_latestError);
+		}
 	}
 
 	/**
