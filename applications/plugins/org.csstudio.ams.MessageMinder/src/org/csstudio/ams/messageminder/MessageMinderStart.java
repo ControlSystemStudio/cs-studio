@@ -44,12 +44,14 @@ public class MessageMinderStart implements IApplication {
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
     public Object start(IApplicationContext context) throws Exception {
+        
         for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
+            System.out.println("Service: " + s.toString());
             s.run();
         }
         CentralLogger.getInstance().info(this, "MessageMinder started...");
 
-        MessageGuardCommander commander = new MessageGuardCommander("MassageMinder");
+        MessageGuardCommander commander = new MessageGuardCommander("MessageMinder");
         commander.schedule();
         
         while(commander.getState()!=Thread.State.TERMINATED.ordinal()){
