@@ -18,7 +18,10 @@
    <windowImages i16="/org.csstudio.sns.product/icons/perspective.gif" i32="/org.csstudio.sns.product/icons/css32.gif" i48="/org.csstudio.sns.product/icons/css48.gif" i64="/org.csstudio.sns.product/icons/css64.gif" i128="/org.csstudio.sns.product/icons/css128.gif"/>
 
    <splash
-      location="org.csstudio.sns.product" />
+      location="org.csstudio.sns.product"
+      startupProgressRect="5,200,445,15"
+      startupMessageRect="7,180,445,20"
+      startupForegroundColor="0000FF" />
    <launcher name="css">
       <linux icon="/org.csstudio.sns.product/icons/css48.xpm"/>
       <macosx icon="/org.csstudio.sns.product/icons/css.icns"/>

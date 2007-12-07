@@ -40,6 +40,22 @@
                name="appName"
                value="SNS CSS">
          </property>
+         <property
+               name="startupForegroundColor"
+               value="0000FF">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,180,445,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,200,445,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
       </product>
    </extension>
    <extension
