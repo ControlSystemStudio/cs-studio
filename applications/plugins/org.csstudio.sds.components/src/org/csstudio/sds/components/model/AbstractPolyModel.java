@@ -33,15 +33,11 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-
 /**
  * 
  * @author Sven Wende
  */
 public abstract class AbstractPolyModel extends AbstractWidgetModel {
-	
-	private PointList _originalPoints;
-	
 
 	/**
 	 * The ID of the points property.
@@ -62,11 +58,11 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * The default value of the width property.
 	 */
 	private static final int DEFAULT_WIDTH = 20;
-	
+
 	/**
-	 * Determines if the rotation values are initialized.
+	 * The original Points without rotation.
 	 */
-	private boolean _isRotationInitialized = false;
+	private PointList _originalPoints;
 
 	/**
 	 * Constructor.
@@ -74,16 +70,14 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	public AbstractPolyModel() {
 		super(true);
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		
-		getProperty(PROP_ROTATION).addPropertyChangeListener(new PropertyChangeAdapter(){
-			public void propertyValueChanged(Object oldValue, Object newValue) {
-				if(!_isRotationInitialized) {
-					_originalPoints = getPoints().getCopy();
-				}
-				double angle = (Double) newValue - (Double) oldValue;
-				rotatePoints((Double) newValue);
-			}
-		});
+
+		getProperty(PROP_ROTATION).addPropertyChangeListener(
+				new PropertyChangeAdapter() {
+					public void propertyValueChanged(final Object oldValue,
+							final Object newValue) {
+						setPoints(rotatePoints(_originalPoints.getCopy(), (Double) newValue), false);
+					}
+				});
 	}
 
 	/**
@@ -111,16 +105,21 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * 
 	 * @param points
 	 *            the polygon points
+	 * @param rememberPoints true if the zero relative points should be remembered, false otherwise.
 	 */
-	public final void setPoints(final PointList points) {
-		if (points.size()>0) {
+	public final void setPoints(final PointList points,
+			final boolean rememberPoints) {
+		if (points.size() > 0) {
 			PointList copy = points.getCopy();
+			if (rememberPoints) {
+				this.rememberZeroDegreePoints(copy);
+			}
 			super.setPropertyValue(PROP_POINTS, copy);
 			Rectangle bounds = copy.getBounds();
 			super.setPropertyValue(PROP_POS_X, bounds.x);
 			super.setPropertyValue(PROP_POS_Y, bounds.y);
 			super.setPropertyValue(PROP_WIDTH, bounds.width);
-			super.setPropertyValue(PROP_HEIGHT, bounds.height);	
+			super.setPropertyValue(PROP_HEIGHT, bounds.height);
 		}
 	}
 
@@ -135,12 +134,13 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the fill grade.
+	 * 
 	 * @return the fill grade
 	 */
 	public final double getFill() {
 		return (Double) getProperty(PROP_FILL).getPropertyValue();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -154,7 +154,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		double topLeftX = pointList.getBounds().x;
 		double topLeftY = pointList.getBounds().y;
 
-		if (oldW!=targetW || oldH!=targetH) {
+		if (oldW != targetW || oldH != targetH) {
 			PointList newPoints = new PointList();
 			for (int i = 0; i < pointList.size(); i++) {
 				int x = pointList.getPoint(i).x;
@@ -174,7 +174,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 
 				newPoints.addPoint(newPoint);
 			}
-			setPoints(newPoints);
+			setPoints(newPoints, true);
 		}
 	}
 
@@ -188,43 +188,50 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		int oldY = points.getBounds().y;
 		points.translate(x - oldX, y - oldY);
 
-		setPoints(points);
+		setPoints(points, true);
 		int newX = points.getBounds().x;
 		int newY = points.getBounds().y;
 		super.setLocation(newX, newY);
 	}
-	
+
 	/**
 	 * Rotates all points.
-	 * @param angle The angle to rotate
+	 * 
+	 * @param points The PoinList, which points should be rotated
+	 * @param angle
+	 *            The angle to rotate
+	 * @return The rotated PointList
 	 */
-	public final void rotatePoints(final double angle) {
-		if (_isRotationInitialized || (this.getRotationAngle()==0 && angle!=0)) {
-			PointList points = _originalPoints.getCopy();
-			
-			double rotationAngle = getRotationAngle();
-			double trueAngle = angle;
-			
-			Rectangle pointBounds = points.getBounds();
-			Point rotationPoint = pointBounds.getCenter();
-			PointList newPoints = new PointList();
-			
-			for (int i=0;i<points.size();i++) {
-				newPoints.addPoint(RotationUtil.rotate(points.getPoint(i), trueAngle, rotationPoint));
-			}
-			
-			Rectangle newPointBounds = newPoints.getBounds();
-			if (!rotationPoint.equals(newPointBounds.getCenter())) {
-				Dimension difference = rotationPoint.getCopy().getDifference(newPointBounds.getCenter());
-				newPoints.translate(difference.width, difference.height);
-			}
-			
-			// sets the translated Points
-			setPoints(newPoints);	
+	public final PointList rotatePoints(final PointList points, final double angle) {		
+		Rectangle pointBounds = points.getBounds();
+		Point rotationPoint = pointBounds.getCenter();
+		PointList newPoints = new PointList();
+
+		for (int i = 0; i < points.size(); i++) {
+			newPoints.addPoint(RotationUtil.rotate(points.getPoint(i), angle,
+					rotationPoint));
 		}
-		
-//		super.setPropertyValue(PROP_ROTATION, angle);
-		_isRotationInitialized = true;
+
+		Rectangle newPointBounds = newPoints.getBounds();
+		if (!rotationPoint.equals(newPointBounds.getCenter())) {
+			Dimension difference = rotationPoint.getCopy().getDifference(
+					newPointBounds.getCenter());
+			newPoints.translate(difference.width, difference.height);
+		}
+
+		return newPoints;
+	}
+	
+	/**
+	 * Rotates the given points to 0 degrees and sets them as <code>_originalPoints</code>.
+	 * @param points The current {@link PointList}
+	 */
+	private void rememberZeroDegreePoints(final PointList points) {
+		if (this.getRotationAngle()==0) {
+			_originalPoints = points.getCopy();
+		} else {
+			_originalPoints = this.rotatePoints(points, -this.getRotationAngle());
+		}
 	}
 
 	/**
@@ -235,7 +242,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 			final Object value) {
 		if (propertyID.equals(AbstractPolyModel.PROP_POINTS)) {
 			if (value instanceof PointList) {
-				this.setPoints((PointList) value);
+				this.setPoints((PointList) value, true);
 			}
 		} else if (propertyID.equals(AbstractWidgetModel.PROP_POS_X)
 				&& ((Integer) value != getPoints().getBounds().x)) {
@@ -249,12 +256,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		} else if (propertyID.equals(AbstractWidgetModel.PROP_HEIGHT)
 				&& ((Integer) value != getPoints().getBounds().height)) {
 			setSize(getWidth(), (Integer) value);
-		}
-//		else if (propertyID.equals(AbstractPolyModel.PROP_ROTATION)
-//				&& ((Double) value != getRotationAngle())) {
-//			rotatePoints((Double) value);
-//		}
-		else {
+		} else {
 			super.setPropertyValue(propertyID, value);
 		}
 	}

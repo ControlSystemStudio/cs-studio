@@ -45,7 +45,7 @@ public final class PolylineModelFactory implements IWidgetModelFactory {
 		points.addPoint(30, 30);
 		points.addPoint(15, 45);
 
-		polylineElement.setPoints(points);
+		polylineElement.setPoints(points, true);
 
 		return polylineElement;
 	}

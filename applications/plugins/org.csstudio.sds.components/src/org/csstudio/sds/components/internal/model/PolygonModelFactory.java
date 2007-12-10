@@ -49,7 +49,7 @@ public final class PolygonModelFactory implements IWidgetModelFactory {
 		points.addPoint(1, 30);
 		points.addPoint(1, 15);
 
-		polygonElement.setPoints(points);
+		polygonElement.setPoints(points, true);
 
 		return polygonElement;
 	}

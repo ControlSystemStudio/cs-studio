@@ -66,7 +66,7 @@ public final class ChangePolyPointsCommand extends Command {
 	@Override
 	public void execute() {
 		_oldPoints = _polyModel.getPoints();
-		_polyModel.setPoints(_newPoints);
+		_polyModel.setPoints(_newPoints, true);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public final class ChangePolyPointsCommand extends Command {
 	 */
 	@Override
 	public void undo() {
-		_polyModel.setPoints(_oldPoints);
+		_polyModel.setPoints(_oldPoints, true);
 	}
 
 }
