@@ -1,9 +1,10 @@
 package org.csstudio.platform.internal.data;
 
-import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.ITimestamp;
+import org.eclipse.osgi.util.NLS;
 
 /** Implementation of {@link IEnumeratedValue}.
  *  @see IEnumeratedValue
@@ -11,7 +12,7 @@ import org.csstudio.platform.data.ISeverity;
  */
 public class EnumeratedValue extends Value implements IEnumeratedValue
 {
-	private final int values[];
+    final private int values[];
 	
     /** Constructor from pieces. */
 	public EnumeratedValue(ITimestamp time, ISeverity severity, String status,
@@ -23,26 +24,28 @@ public class EnumeratedValue extends Value implements IEnumeratedValue
 	}
 
     /** {@inheritDoc} */
-	public final int[] getValues()
+	final public int[] getValues()
 	{	return values;	}
 
     /** {@inheritDoc} */
-	public final int getValue()
+	final public int getValue()
 	{	return values[0];  }
 	
     /** {@inheritDoc} */
 	@Override
-    public final String format(Format how, int precision)
+	final public String format(final Format how, final int precision)
 	{
-		IEnumeratedMetaData enum_meta = (IEnumeratedMetaData)getMetaData();
-		StringBuffer buf = new StringBuffer();
+	    final IEnumeratedMetaData enum_meta = (IEnumeratedMetaData)getMetaData();
+	    final StringBuffer buf = new StringBuffer();
 		if (getSeverity().hasValue())
 		{
-			buf.append(enum_meta.getState(values[0]));
+			buf.append(NLS.bind(Messages.EnumStateNumberFormat,
+			        enum_meta.getState(values[0]), values[0]));
 			for (int i = 1; i < values.length; i++)
 			{
 				buf.append(Messages.ArrayElementSeparator);
-				buf.append(enum_meta.getState(values[i]));
+	            buf.append(NLS.bind(Messages.EnumStateNumberFormat,
+	                    enum_meta.getState(values[i]), values[i]));
 			}
 		}
 		else
@@ -52,11 +55,11 @@ public class EnumeratedValue extends Value implements IEnumeratedValue
 	
     /** {@inheritDoc} */
 	@Override
-	public final boolean equals(Object obj)
+	final public boolean equals(final Object obj)
 	{
 		if (! (obj instanceof EnumeratedValue))
 			return false;
-		EnumeratedValue rhs = (EnumeratedValue) obj;
+		final EnumeratedValue rhs = (EnumeratedValue) obj;
 		if (rhs.values.length != values.length)
 			return false;
 		for (int i=0; i<values.length; ++i)
@@ -67,7 +70,7 @@ public class EnumeratedValue extends Value implements IEnumeratedValue
 
     /** {@inheritDoc} */
 	@Override
-	public final int hashCode()
+	final public int hashCode()
 	{
 		int h = super.hashCode();
 		for (int i=0; i<values.length; ++i)

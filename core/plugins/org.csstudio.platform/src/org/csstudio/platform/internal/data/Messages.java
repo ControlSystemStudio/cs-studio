@@ -26,4 +26,6 @@ public class Messages
     final public static String SevInvalid = "INVALID";
 
     final public static String MiniMaxiFormat = " [ {0} ... {1} ]";
+
+    final public static String EnumStateNumberFormat = "{0} ({1})";
 }
