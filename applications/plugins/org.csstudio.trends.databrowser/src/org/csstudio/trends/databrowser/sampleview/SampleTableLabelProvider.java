@@ -47,7 +47,7 @@ public class SampleTableLabelProvider extends LabelProvider implements
             final IValue value = sample.getSample();
             final String sevr = value.getSeverity().toString();
             final String stat = value.getStatus();
-            return sevr + " " + stat; //$NON-NLS-1$
+            return sevr + ", " + stat; //$NON-NLS-1$
         case Quality:
             return QualityHelper.getString(sample.getSample().getQuality());
         default: // case Source:
