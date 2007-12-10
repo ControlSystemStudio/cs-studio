@@ -1,6 +1,7 @@
 package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.platform.data.IMinMaxDoubleValue;
+import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.chart.ChartSample;
@@ -67,6 +68,9 @@ public class ModelSample implements ChartSample
      */
     final public double getY()
     {
+        // Display string samples as points on the x axis.
+        if (sample instanceof IStringValue)
+            return Double.NEGATIVE_INFINITY;
         return ValueUtil.getDouble(sample);
     }
 

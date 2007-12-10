@@ -16,7 +16,11 @@ public interface ChartSample
         /** A normal sample, plot it together with the rest. */
         Normal,
         
-        /** A gap, terminating a "line", displayed as a single point. */
+        /** A gap, terminating a "line", displayed as a single point.
+         *  <p>
+         *  Can be used with <code>y == Double.NEGATIVE_INFINITY</code>
+         *  to mark a point on the x axis.
+         */
         Point
     }
     
@@ -26,7 +30,15 @@ public interface ChartSample
     /** @return The x value. */
     public double getX();
 
-    /** @return The y value. */
+    /** Value for the vertical (Y) axis.
+     *  <p>
+     *  <code>Double.NEGATIVE_INFINITY</code> is used to indicate
+     *  a value that should be on the horizontal axis,
+     *  typically used together with a <code>Point</code> type
+     *  and some Info to describe the sample.
+     *  
+     *  @return The y value.
+     */
     public double getY();
 
     /** @return <code>true</code> if this sample has Y error (range) info.

@@ -94,12 +94,11 @@ public class TracePainter
             if (new_line)
             {
                 if (have_pre_min_max) throw new Error("Invalid state"); // TODO remove after test //$NON-NLS-1$
+                // Immediately set x/y of the 'previous' point.
+                x0 = xaxis.getScreenCoord(sample.getX());
+                y0 = yaxis.getScreenCoord(y);
                 if (plottable)
                 {
-                    // Immediately set x/y of the 'previous' point.
-                    x0 = xaxis.getScreenCoord(sample.getX());
-                    y0 = yaxis.getScreenCoord(y);
-
                     new_line = false;
                     if (have_min_max)
                     {   // Show and remember min/max of this sample
