@@ -117,7 +117,8 @@ final class WorkspaceResourceContentProvider implements
 			// of accepted extensions
 			for (String ext : _fileExtensions) {
 				if (ext != null
-						&& ext.equals(resource.getFileExtension())) {
+						&& (ext.equals(resource.getFileExtension())
+						|| ext.equals("*") || ext.equals("*.*"))) {
 					return true;
 				}
 			}
