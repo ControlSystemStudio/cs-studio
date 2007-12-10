@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
+import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.IMinMaxDoubleValue;
 import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
@@ -103,13 +104,25 @@ public class ModelSample implements ChartSample
      */
     public String getInfo()
     {
-        final String val_info = ValueUtil.getInfo(sample);
+        // Chart already displays the time and the (numeric) value...
+        final StringBuffer info = new StringBuffer();
+        // For these, there was no numeric value, so show the text:
+        if (sample instanceof IStringValue  ||
+            sample instanceof IEnumeratedValue)
+        {
+            info.append(sample.format());
+            info.append("\n"); //$NON-NLS-1$
+        }
+        // Severity, Status
+        info.append(NLS.bind(Messages.ModelSample_SevrStat,
+                sample.getSeverity().toString(),
+                sample.getStatus()));
+        info.append("\n"); //$NON-NLS-1$
+        // Source, Quality    
         final String quality = QualityHelper.getString(sample.getQuality());
-        final String src_qual =
-            NLS.bind(Messages.ModelSample_SourceQuality, source, quality);
-        if (val_info == null)
-            return src_qual;
-        return val_info + "\n" + src_qual; //$NON-NLS-1$
+        info.append(
+            NLS.bind(Messages.ModelSample_SourceQuality, source, quality));
+        return info.toString();
     }
 
     @Override

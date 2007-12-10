@@ -5,6 +5,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.model.messages"; //$NON-NLS-1$
+
     
     public static String INVALID;
     public static String LastArchivedSample;
@@ -12,6 +13,7 @@ public class Messages extends NLS
     public static String LivePVDisconnected;
     public static String ModelSample_QualityOriginal;
     public static String ModelSample_QualityInterpolated;
+    public static String ModelSample_SevrStat;
     public static String ModelSample_SourceQuality;
     public static String NoNumericValue;
     public static String Request_optimized;
