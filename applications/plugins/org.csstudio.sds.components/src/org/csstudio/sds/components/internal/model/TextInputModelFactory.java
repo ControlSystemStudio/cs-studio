@@ -43,6 +43,7 @@ public final class TextInputModelFactory implements IWidgetModelFactory {
 	/**
 	 * {@inheritDoc}.
 	 */
+	@SuppressWarnings("unchecked")
 	public Class getWidgetModelType() {
 		return TextInputModel.class;
 	}
