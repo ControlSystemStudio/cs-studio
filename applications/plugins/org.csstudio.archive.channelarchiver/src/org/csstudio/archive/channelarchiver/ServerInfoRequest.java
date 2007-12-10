@@ -12,7 +12,12 @@ import org.apache.xmlrpc.XmlRpcException;
 @SuppressWarnings("nls")
 final class ServerInfoRequest
 {
-	private static final int EXPECTED_VERSION = 1;
+    final private static int EXPECTED_VERSION = 1;
+    
+    /** String used for an OK status and severity
+     *  (more generic than the EPICS 'NO_ALARM')
+     */
+    final private static String NO_ALARM = "OK";
     private String description;
 	private int version;
 	private String how_strings[];
@@ -64,18 +69,21 @@ final class ServerInfoRequest
 		for (int i=0; i<tmp.size(); ++i)
         {
             status_strings[i] = (String)tmp.get(i);
+            // Patch "NO ALARM" into "OK"
             if (status_strings[i].equals("NO_ALARM"))
-                status_strings[i] = "";
+                status_strings[i] = NO_ALARM;
         }
+        // Same silly code for the severity strings.
 		Vector sevr_info = (Vector) result.get("sevr");
 		severities = new Hashtable<Integer, SeverityImpl>();
 		for (Object sio : sevr_info)
 		{
-			Hashtable si = (Hashtable) sio;
+		    final Hashtable si = (Hashtable) sio;
 			
 			String sevr_txt = (String)si.get("sevr");
+            // Patch "NO ALARM" into "OK"
             if (sevr_txt.equals("NO_ALARM"))
-                sevr_txt = "";
+                sevr_txt = NO_ALARM;
 			severities.put((Integer) si.get("num"),
 					      new SeverityImpl(sevr_txt,
 							              (Boolean)si.get("has_value"),

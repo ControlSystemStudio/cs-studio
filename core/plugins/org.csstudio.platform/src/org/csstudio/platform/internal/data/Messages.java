@@ -20,7 +20,7 @@ public class Messages
     final public static String Infinite = "Inf";
     final public static String NaN = "NaN";
     
-    final public static String SevOK = "";
+    final public static String SevOK = "OK";
     final public static String SevMinor = "MINOR";
     final public static String SevMajor = "MAJOR";
     final public static String SevInvalid = "INVALID";

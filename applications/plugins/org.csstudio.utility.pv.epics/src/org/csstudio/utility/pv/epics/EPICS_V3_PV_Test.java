@@ -219,7 +219,7 @@ public class EPICS_V3_PV_Test
         assertTrue(pva.getValue() instanceof IEnumeratedValue);
         IEnumeratedValue e = (IEnumeratedValue) pva.getValue();
         assertEquals(6, e.getValue());
-        assertEquals("1 second", e.format());
+        assertEquals("1 second (6)", e.format());
         
         pva.stop();
 
@@ -232,7 +232,7 @@ public class EPICS_V3_PV_Test
         assertTrue(pva.getValue() instanceof IEnumeratedValue);
         e = (IEnumeratedValue) pva.getValue();
         assertEquals(1, e.getValue());
-        assertEquals("one", e.format());
+        assertEquals("one (1)", e.format());
         assertTrue(e.getMetaData() instanceof IEnumeratedMetaData);
         IEnumeratedMetaData meta = (IEnumeratedMetaData) e.getMetaData();
         assertEquals(4, meta.getStates().length);

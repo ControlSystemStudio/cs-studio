@@ -15,7 +15,7 @@ public class SeverityUtilTest extends TestCase
     public void testSeverityUtil() throws Exception
     {
         ISeverity ok = SeverityUtil.forCode(0);
-        assertEquals("", ok.toString());
+        assertEquals("OK", ok.toString());
         assertEquals(true, ok.isOK());
         System.out.println(ok);
         

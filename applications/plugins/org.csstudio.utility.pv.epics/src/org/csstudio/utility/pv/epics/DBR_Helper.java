@@ -180,10 +180,9 @@ public class DBR_Helper
                 v = ((DBR_Double)dbr).getDoubleValue();
             else
             {
-                DBR_TIME_Double dt = (DBR_TIME_Double) dbr;
+                final DBR_TIME_Double dt = (DBR_TIME_Double) dbr;
                 severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                Status stat = dt.getStatus();
-                status = stat.getValue() == 0 ? "" : stat.getName();
+                status = decodeStatus(dt.getStatus());
                 time = createTimeFromEPICS(dt.getTimeStamp());
                 v = dt.getDoubleValue();
             }
@@ -197,10 +196,9 @@ public class DBR_Helper
                 v = ((DBR_Float)dbr).getFloatValue();
             else
             {
-                DBR_TIME_Float dt = (DBR_TIME_Float) dbr;
+                final DBR_TIME_Float dt = (DBR_TIME_Float) dbr;
                 severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                Status stat = dt.getStatus();
-                status = stat.getValue() == 0 ? "" : stat.getName();
+                status = decodeStatus(dt.getStatus());
                 time = createTimeFromEPICS(dt.getTimeStamp());
                 v = dt.getFloatValue();
             }
@@ -215,10 +213,9 @@ public class DBR_Helper
                 v = ((DBR_Int)dbr).getIntValue();
             else
             {
-                DBR_TIME_Int dt = (DBR_TIME_Int) dbr;
+                final DBR_TIME_Int dt = (DBR_TIME_Int) dbr;
                 severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                Status stat = dt.getStatus();
-                status = stat.getValue() == 0 ? "" : stat.getName();
+                status = decodeStatus(dt.getStatus());
                 time = createTimeFromEPICS(dt.getTimeStamp());
                 v = dt.getIntValue();
             }
@@ -233,10 +230,9 @@ public class DBR_Helper
                 v = ((DBR_Short)dbr).getShortValue();
             else
             {
-                DBR_TIME_Short dt = (DBR_TIME_Short) dbr;
+                final DBR_TIME_Short dt = (DBR_TIME_Short) dbr;
                 severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                Status stat = dt.getStatus();
-                status = stat.getValue() == 0 ? "" : stat.getName();
+                status = decodeStatus(dt.getStatus());
                 time = createTimeFromEPICS(dt.getTimeStamp());
                 v = dt.getShortValue();
             }
@@ -251,10 +247,9 @@ public class DBR_Helper
                 v = ((DBR_String)dbr).getStringValue();
             else
             {
-                DBR_TIME_String dt = (DBR_TIME_String) dbr;
+                final DBR_TIME_String dt = (DBR_TIME_String) dbr;
                 severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                Status stat = dt.getStatus();
-                status = stat.getValue() == 0 ? "" : stat.getName();
+                status = decodeStatus(dt.getStatus());
                 time = createTimeFromEPICS(dt.getTimeStamp());
                 v = dt.getStringValue();
             }
@@ -266,10 +261,9 @@ public class DBR_Helper
             short v[];
             // 'plain' mode would subscribe to SHORT,
             // so this must be a TIME_Enum:
-            DBR_TIME_Enum dt = (DBR_TIME_Enum) dbr;
+            final DBR_TIME_Enum dt = (DBR_TIME_Enum) dbr;
             severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-            Status stat = dt.getStatus();
-            status = stat.getValue() == 0 ? "" : stat.getName();
+            status = decodeStatus(dt.getStatus());
             time = createTimeFromEPICS(dt.getTimeStamp());
             v = dt.getEnumValue();
             return ValueFactory.createEnumeratedValue(time, severity,
@@ -279,5 +273,13 @@ public class DBR_Helper
         else
             // handle many more types!!
             throw new Exception("Cannot decode " + dbr);
+    }
+    
+    /** @return String for Status */
+    final private static String decodeStatus(final Status status)
+    {
+        if (status.getValue() == 0)
+            return "OK";
+        return status.getName();
     }
 }
