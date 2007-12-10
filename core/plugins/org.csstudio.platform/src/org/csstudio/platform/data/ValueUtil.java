@@ -71,37 +71,37 @@ public class ValueUtil
      *  <p>
      *  For numeric values, which is probably the vast majority of
      *  all values, this is the severity and status information.
-     *  If they are 'OK', it's an empty string, otherwise its the 
-     *  severity/status text.
      *  <p>
      *  For 'enum' type values, <code>getDouble()</code> will return
      *  the numeric value, and <code>getInfo()</code> returns the associated
      *  enumeration string, appended to a possible severity/status text.
      *  <p>
-     *  For string type values, this is the string value,
-     *  appended to a possible severity/status text,
+     *  For string type values, this is the string value and
+     *  a possible severity/status text,
      *  while <code>getDouble()</code> will return <code>NaN</code>.
+     *  
+     *  TOFO Rethink this one. Only used in Data Browser??
      *  
      *  @param value The value to decode.
      *  @return The info string, never <code>null</code>.
      */
-    public static String getInfo(IValue value)
+    public static String getInfo(final IValue value)
     {
         String info = null;
         String val_txt = null;
-        String sevr = value.getSeverity().toString();
-        String stat = value.getStatus();
+        final String sevr = value.getSeverity().toString();
+        final String stat = value.getStatus();
         if (sevr.length() > 0  ||  stat.length() > 0)
             info = sevr + Messages.SevrStatSeparator + stat;
         if (value instanceof EnumeratedValue)
             val_txt = ((EnumeratedValue) value).format();
         else if (value instanceof StringValue)
             val_txt = ((IStringValue) value).getValue();
-        if (val_txt != null) // return value appended to info
+        if (val_txt != null) // return info appended to value 
         {
             if (info == null)
                 return val_txt;
-            return info + Messages.SevrStatSeparator + val_txt;
+            return val_txt + Messages.SevrStatSeparator + info;
         }
         if (info == null)
             return ""; //$NON-NLS-1$
@@ -113,7 +113,7 @@ public class ValueUtil
      *  @see Value#format()
      *  @see #getInfo(Value)
      */
-    public static String formatValueAndSeverity(IValue value)
+    public static String formatValueAndSeverity(final IValue value)
     {
         if (value == null)
             return ""; //$NON-NLS-1$

@@ -59,6 +59,6 @@ public class ValueTest extends TestCase
         System.out.println(enum_meta.toString());
         IValue en = ValueFactory.createEnumeratedValue(now, ok, "OK", enum_meta,
                                                  quality, new int[] { 1 });
-        assertEquals("Two", en.format());
+        assertEquals("Two (1)", en.format());
     }
 }

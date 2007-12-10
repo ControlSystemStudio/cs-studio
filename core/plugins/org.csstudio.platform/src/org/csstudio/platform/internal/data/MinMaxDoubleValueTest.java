@@ -29,6 +29,6 @@ public class MinMaxDoubleValueTest
         final String txt = value.toString();
         System.out.println(txt);
         // Compare all but the time stamp
-        assertEquals("\t3.14 [ 3.1 ... 3.2 ]\tMINOR OK", txt.substring(29));
+        assertEquals("\t3.14 [ 3.1 ... 3.2 ]\tMINOR, OK", txt.substring(29));
     }
 }

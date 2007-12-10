@@ -13,7 +13,7 @@ public class Messages
 {
     final public static String ColumnSeperator = "\t";
     final public static String ValueSevrStatSeparator = " [";
-    final public static String SevrStatSeparator = " ";
+    final public static String SevrStatSeparator = ", ";
     final public static String SevrStatEnd = "]";
     final public static String ArrayElementSeparator = ", ";
     final public static String NoValue = "#N/A";
