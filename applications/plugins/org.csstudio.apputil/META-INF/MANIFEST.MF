@@ -6,3 +6,4 @@ Bundle-Version: 1.0.3
 Bundle-Vendor: Kay Kasemir
 Export-Package: org.csstudio.apputil.time,
  org.csstudio.apputil.xml
+Require-Bundle: org.junit4
