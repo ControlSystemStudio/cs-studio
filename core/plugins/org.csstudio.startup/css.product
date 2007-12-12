@@ -48,7 +48,6 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -56,7 +55,6 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
-      <plugin id="org.apache.ant"/>
       <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.jasper"/>
@@ -68,16 +66,20 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.platform.ldapauthorization.ui"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
+      <plugin id="org.csstudio.platform.libs.dal.tine"/>
       <plugin id="org.csstudio.platform.libs.dcf"/>
       <plugin id="org.csstudio.platform.libs.dcf.ui"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.platform.libs.epics.prefs.DESY" fragment="true"/>
+      <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
+      <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.platform.libs.jms.ui"/>
       <plugin id="org.csstudio.platform.libs.xmpp"/>
       <plugin id="org.csstudio.platform.libs.xmpp.ui"/>
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.startup"/>
-      <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
@@ -95,7 +97,6 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
       <plugin id="org.eclipse.core.resources.win32" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
-      <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.equinox.app"/>
@@ -132,7 +133,13 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.eclipse.ui.carbon" fragment="true"/>
       <plugin id="org.eclipse.ui.console"/>
       <plugin id="org.eclipse.ui.forms"/>
+      <plugin id="org.eclipse.ui.ide"/>
       <plugin id="org.eclipse.ui.intro"/>
+      <plugin id="org.eclipse.ui.navigator"/>
+      <plugin id="org.eclipse.ui.navigator.resources"/>
+      <plugin id="org.eclipse.ui.views"/>
+      <plugin id="org.eclipse.ui.views.properties.tabbed"/>
+      <plugin id="org.eclipse.ui.win32" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.ui.workbench.texteditor"/>
       <plugin id="org.eclipse.update.configurator"/>
@@ -147,6 +154,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
 
    <features>
       <feature id="org.csstudio.platform.feature.product" version="0.9.9"/>
+      <feature id="org.csstudio.platform.feature" version="0.9.9"/>
    </features>
 
 </product>
