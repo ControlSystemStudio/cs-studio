@@ -108,7 +108,7 @@ public class Bargraph extends Widget {
                 //TODO: Bargraph --> clrmod
                 CentralLogger.getInstance().debug(this, "Bargraph --> clrmod -->"+row[0]);
             }else{ //Bargraph have no Parameter                
-                throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Parameter_Begin+row[0]);
+                throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Parameter_Begin+row[0]+" from "+bargraph);
             } 
         }
         _widget.setPropertyValue(BargraphModel.PROP_SHOW_MARKS, marksShowStatus); 

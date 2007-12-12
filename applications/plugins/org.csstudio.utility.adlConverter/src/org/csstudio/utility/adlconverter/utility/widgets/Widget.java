@@ -24,6 +24,8 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import java.io.File;
+
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.model.AbstractWidgetModel;

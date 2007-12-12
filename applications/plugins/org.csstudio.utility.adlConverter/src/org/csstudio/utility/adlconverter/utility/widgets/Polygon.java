@@ -27,7 +27,6 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 import org.csstudio.sds.components.model.PolygonModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
-import org.csstudio.utility.adlconverter.utility.widgetparts.ADLPoints;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**

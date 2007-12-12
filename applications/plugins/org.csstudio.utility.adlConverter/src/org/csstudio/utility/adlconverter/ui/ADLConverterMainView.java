@@ -179,6 +179,7 @@ public class ADLConverterMainView extends ViewPart {
                     } catch (Exception e1) {
                         CentralLogger.getInstance().error(this, e1);
                     }
+                    file = null;
 
                     avaibleFiles.setSelection(new StructuredSelection(list), true);
                 }

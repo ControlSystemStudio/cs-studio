@@ -89,9 +89,8 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
      */
     @Override
     public final boolean importDisplay(final String sourceFile, final IPath targetProject, final String targetFileName) throws CoreException {
-        File file = new File(sourceFile);
-        ParserADL pars = new ParserADL(file);
-        ADLWidget root = pars.getNextElement();
+//        ParserADL pars = new ParserADL(new File(sourceFile));
+        ADLWidget root = ParserADL.getNextElement(new File(sourceFile));
         
         // this is the target display model
         DisplayModel displayModel = new DisplayModel();
@@ -129,7 +128,9 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                 }else if(strings.getType().equals("polygon")){ //$NON-NLS-1$
                     displayModel.addWidget(new Polygon(strings).getElement());
                 }else if(strings.getType().equals("polyline")){ //$NON-NLS-1$
-                    displayModel.addWidget(new Polyline(strings).getElement());
+                    Polyline polyline = new Polyline(strings);
+                    displayModel.addWidget(polyline.getElement());
+                    polyline = null;
                 }else if(strings.getType().equals("rectangle")){ //$NON-NLS-1$
                     displayModel.addWidget(new Rectangle(strings).getElement());
                 }else if(strings.getType().equals("\"related display\"")){ //$NON-NLS-1$

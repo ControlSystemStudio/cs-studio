@@ -18,64 +18,48 @@ import org.csstudio.platform.logging.CentralLogger;
  * @version $Revision$
  * @since 08.10.2007
  */
-public class ParserADL {
-    /**
-     * The File to pars.
-     */
-	private File _file;
+public final class ParserADL {
 
-	/**
-	 * The Root Object of ADLWidget.
-	 */
-    private ADLWidget _root;
-    
-    /**
-     * The actual line number. 
-     */
-    private int _lineNr;
-
-	/**
-	 * Constructor, sets filename of a file to parse.
-	 * @param file the file to Parse.
-	 */
-	public ParserADL(final File file) {
-		_file = file;
-	}
-	
     /**
      * Main method of class ParserADL.<br/>
      * Reads form an adl file and creates a structure of ADLWidget.
      * @return the root Object with contain the structure of the Widget.
      */
-    public final ADLWidget getNextElement() {
-        if(_root==null){
-            _root  = new ADLWidget(_file.getAbsolutePath(),null,_lineNr++);
-            ADLWidget children= _root; 
-            try {        
+    public static ADLWidget getNextElement(File file) {
+        int lineNr=0;
+        ADLWidget root = new ADLWidget(file.getAbsolutePath(),null,lineNr++);
+        ADLWidget children= root;
+        BufferedReader buffRead = null;
+        try {        
 
-                BufferedReader buffRead = new BufferedReader(new FileReader(_file));
-                String line;
+            buffRead = new BufferedReader(new FileReader(file));
+            String line;
 
-                while((line = buffRead.readLine()) != null){
-                    if(line.trim().length()>0){
-                        if(line.contains("{")){ //$NON-NLS-1$
-                            children = new ADLWidget(line,children, _lineNr++);
-                        }else if (line.contains("}")){ //$NON-NLS-1$
-                            children.getParent().addObject(children);
-                            children = children.getParent();
-                        }else{
-                            children.addBody(line);
-                        }
+            while((line = buffRead.readLine()) != null){
+                if(line.trim().length()>0){
+                    if(line.contains("{")){ //$NON-NLS-1$
+                        children = new ADLWidget(line,children, lineNr++);
+                    }else if (line.contains("}")){ //$NON-NLS-1$
+                        children.getParent().addObject(children);
+                        children = children.getParent();
+                    }else{
+                        children.addBody(line);
                     }
                 }
-                return _root;
-            } catch (FileNotFoundException e) {
-                CentralLogger.getInstance().error(this, e);
-            } catch (IOException e) {
-                CentralLogger.getInstance().error(this, e);
             }
-            return null;
+        } catch (FileNotFoundException e) {
+            CentralLogger.getInstance().error(ParserADL.class, e);
+        } catch (IOException e) {
+            CentralLogger.getInstance().error(ParserADL.class, e);
+        } finally{
+            try {
+                if(buffRead!=null){
+                    buffRead.close();
+                }
+            } catch (IOException e) {
+                CentralLogger.getInstance().error(ParserADL.class,e);
+            }
         }
-        return _root;
+        return root;
     }
 }
