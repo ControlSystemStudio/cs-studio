@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.epics.css.dal.internal;
+package org.csstudio.dal;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.csstudio.dal.DalPlugin;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
@@ -44,7 +43,7 @@ import org.epics.css.dal.spi.Plugs;
  * @version $Revision$
  * 
  */
-public final class PlugRegistry {
+final class PlugRegistry {
 	/**
 	 * The shared instance of this class.
 	 */

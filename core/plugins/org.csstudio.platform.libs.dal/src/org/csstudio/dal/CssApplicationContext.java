@@ -19,9 +19,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.epics.css.dal.impl;
+package org.csstudio.dal;
 
-import org.epics.css.dal.internal.PlugRegistry;
+import org.epics.css.dal.impl.DefaultApplicationContext;
 
 /**
  * Default application context for the CSS environment. This particular context
