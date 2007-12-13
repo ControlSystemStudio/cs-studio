@@ -3,8 +3,8 @@ package org.csstudio.platform.model.pvs;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.dal.CssApplicationContext;
 import org.epics.css.dal.context.AbstractApplicationContext;
-import org.epics.css.dal.impl.CssApplicationContext;
 import org.epics.css.dal.spi.DefaultPropertyFactoryService;
 import org.epics.css.dal.spi.LinkPolicy;
 import org.epics.css.dal.spi.PropertyFactory;
