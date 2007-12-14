@@ -1,8 +1,12 @@
 package org.csstudio.platform.ui.dialogs;
 
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
+import org.csstudio.platform.security.SecurityFacade;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -15,6 +19,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbench;
 
 /**
  * A simple login dialog.
@@ -42,14 +47,29 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	 * Stores the credentials object after OK has been pressed.
 	 */
 	private Credentials _credentials;
+
+	/**
+	 * The name of the last User.
+	 */
+    private String _lastUser;
 	
 	/**
 	 * Creates a new login dialog.
 	 * @param parentShell the parent shell.
 	 */
 	public LoginDialog(final Shell parentShell) {
-		super(parentShell);
+		this(parentShell, "");
 	}
+	
+	/**
+     * Creates a new login dialog.
+     * @param parentShell the parent shell.
+     */
+    public LoginDialog(final Shell parentShell, String lastUser) {
+        super(parentShell);
+        _lastUser = lastUser;
+    }
+	
 	
 	/**
 	 * Creates the contents of this dialog.
@@ -79,7 +99,9 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		_username = new Text(contents, SWT.BORDER | SWT.FLAT);
 		_username.setFocus();
 		_username.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-
+		_username.setText(_lastUser);
+		
+		
 		// password
 		label = new Label(contents, SWT.NONE);
 		label.setText("Password:");
@@ -128,6 +150,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	protected final void okPressed() {
 		_credentials = new Credentials(this._username.getText(), 
 										this._password.getText());
+		Platform.getPreferencesService().getRootNode().put(Platform.getPreferencesService().getRootNode().get(SecurityFacade.LOGIN_LAST_USER_NAME, ""), this._username.getText());
 		// reset the username & password field
 		_username = null;
 		_password = null;

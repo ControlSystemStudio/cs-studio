@@ -89,6 +89,12 @@ public final class SecurityFacade {
 	 */
 	private static final String LOGIN_AVAILABLE_PROPERTY =
 		"org.csstudio.platform.loginAvailable";
+	
+	/**
+     * System property that stores where the last login User.
+     */
+    public static final String LOGIN_LAST_USER_NAME=
+        "org.csstudio.platform.lastUserName";
 
 	/**
 	 * Private constructor due to singleton pattern.

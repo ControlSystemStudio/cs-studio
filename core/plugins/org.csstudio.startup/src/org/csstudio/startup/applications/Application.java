@@ -31,6 +31,7 @@ import org.csstudio.platform.startupservice.ServiceProxy;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.csstudio.platform.ui.dialogs.LoginDialog;
 import org.csstudio.platform.ui.workbench.CssWorkbenchAdvisor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -64,7 +65,8 @@ public class Application implements IApplication {
 			int returnCode = EXIT_OK;
 			
 			SecurityFacade sf = SecurityFacade.getInstance();
-			sf.setLoginCallbackHandler(new LoginDialog(null));
+			String lastUser = Platform.getPreferencesService().getString(CSSPlatformPlugin.ID,SecurityFacade.LOGIN_LAST_USER_NAME , "", null);
+			sf.setLoginCallbackHandler(new LoginDialog(null,lastUser));
 			if (sf.isLoginOnStartupEnabled()) {
 				sf.authenticateApplicationUser();
 			}
