@@ -29,6 +29,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.platform.CSSPlatformPlugin;
@@ -53,7 +54,10 @@ import org.csstudio.platform.CSSPlatformPlugin;
  * 	CentralLogger.getInstance().debug(this, "test log message"); <br/>
  * 	CentralLogger.getInstance().info(this, "test log message");
  * </code>
- * 
+ * <p>
+ * In addition, <code>getLogger(Object o)</code> offers access to
+ * a plain <code>Log4j</code> logger that can be passed to libraries
+ * which understand Log4j but weren't specifically written for CSS.
  * @author Alexander Will, Sven Wende
  */
 public final class CentralLogger {
@@ -218,12 +222,32 @@ public final class CentralLogger {
 	 * Configure the log4j library.
 	 */
 	public void configure() {
-		Properties p = createLog4jProperties(CSSPlatformPlugin.getDefault()
-				.getPluginPreferences());
-
+		final CSSPlatformPlugin plugin = CSSPlatformPlugin.getDefault();
+		if (plugin == null)
+		{
+		    // Not running in full Eclipse environment, probably because
+		    // this is called from a JUnit test.
+		    // Setup basic console log.
+		    BasicConfigurator.configure();
+		    return;
+		}
+		// Else: Configure Log4j from plugin properties
+        final Properties p = createLog4jProperties(
+                plugin.getPluginPreferences());
 		PropertyConfigurator.configure(p);
 	}
 
+	/**
+	 * Obtain a logger for the given class.
+	 * @param caller Calling class, may be <code>null</code>.
+	 * @return A Log4j <code>Logger</code>.
+	 */
+    Logger getLogger(final Object caller) {
+        if (caller == null)
+            return Logger.getRootLogger();
+        return Logger.getLogger(caller.getClass());
+    }
+	
 	/**
 	 * Log a message with log level <i>info</i>. The reference to the calling
 	 * object is used to automatically generate more detailled log4j messages.
@@ -234,11 +258,7 @@ public final class CentralLogger {
 	 *            The log message.
 	 */
 	public void info(final Object caller, final String message) {
-		if (caller == null) {
-			Logger.getRootLogger().info(message);
-		} else {
-			Logger.getLogger(caller.getClass()).info(message);
-		}
+	    getLogger(caller).info(message);
 	}
 
 	/**
@@ -268,11 +288,7 @@ public final class CentralLogger {
 	 */
 	public void info(final Object caller, final String message,
 			final Throwable throwable) {
-		if (caller == null) {
-			Logger.getRootLogger().info(message, throwable);
-		} else {
-			Logger.getLogger(caller.getClass()).info(message, throwable);
-		}
+	    getLogger(caller).info(message, throwable);
 	}
 
 	/**
@@ -285,11 +301,7 @@ public final class CentralLogger {
 	 *            The log message.
 	 */
 	public void debug(final Object caller, final String message) {
-		if (caller == null) {
-			Logger.getRootLogger().debug(message);
-		} else {
-			Logger.getLogger(caller.getClass()).debug(message);
-		}
+	    getLogger(caller).debug(message);
 	}
 
 	/**
@@ -320,11 +332,7 @@ public final class CentralLogger {
 	 */
 	public void debug(final Object caller, final String message,
 			final Throwable throwable) {
-		if (caller == null) {
-			Logger.getRootLogger().debug(message, throwable);
-		} else {
-			Logger.getLogger(caller.getClass()).debug(message, throwable);
-		}
+	    getLogger(caller).debug(message, throwable);
 	}
 
 	/**
@@ -337,11 +345,7 @@ public final class CentralLogger {
 	 *            The log message.
 	 */
 	public void warn(final Object caller, final String message) {
-		if (caller == null) {
-			Logger.getRootLogger().warn(message);
-		} else {
-			Logger.getLogger(caller.getClass()).warn(message);
-		}
+	    getLogger(caller).warn(message);
 	}
 
 	/**
@@ -371,11 +375,7 @@ public final class CentralLogger {
 	 */
 	public void warn(final Object caller, final String message,
 			final Throwable throwable) {
-		if (caller == null) {
-			Logger.getRootLogger().warn(message, throwable);
-		} else {
-			Logger.getLogger(caller.getClass()).warn(message, throwable);
-		}
+	    getLogger(caller).warn(message, throwable);
 	}
 
 	/**
@@ -388,11 +388,7 @@ public final class CentralLogger {
 	 *            The log message.
 	 */
 	public void error(final Object caller, final String message) {
-		if (caller == null) {
-			Logger.getRootLogger().error(message);
-		} else {
-			Logger.getLogger(caller.getClass()).error(message);
-		}
+	    getLogger(caller).error(message);
 	}
 
 	/**
@@ -423,11 +419,7 @@ public final class CentralLogger {
 	 */
 	public void error(final Object caller, final String message,
 			final Throwable throwable) {
-		if (caller == null) {
-			Logger.getRootLogger().error(message, throwable);
-		} else {
-			Logger.getLogger(caller.getClass()).error(message, throwable);
-		}
+        getLogger(caller).error(message, throwable);
 	}
 
 	/**
@@ -440,11 +432,7 @@ public final class CentralLogger {
 	 *            The log message.
 	 */
 	public void fatal(final Object caller, final String message) {
-		if (caller == null) {
-			Logger.getRootLogger().fatal(message);
-		} else {
-			Logger.getLogger(caller.getClass()).fatal(message);
-		}
+	    getLogger(caller).fatal(message);
 	}
 
 	/**
@@ -475,11 +463,7 @@ public final class CentralLogger {
 	 */
 	public void fatal(final Object caller, final String message,
 			final Throwable throwable) {
-		if (caller == null) {
-			Logger.getRootLogger().fatal(message, throwable);
-		} else {
-			Logger.getLogger(caller.getClass()).fatal(message, throwable);
-		}
+	    getLogger(caller).fatal(message, throwable);
 	}
 
 	/**
