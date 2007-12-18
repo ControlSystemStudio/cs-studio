@@ -242,7 +242,7 @@ public final class CentralLogger {
 	 * @param caller Calling class, may be <code>null</code>.
 	 * @return A Log4j <code>Logger</code>.
 	 */
-    Logger getLogger(final Object caller) {
+    public Logger getLogger(final Object caller) {
         if (caller == null)
             return Logger.getRootLogger();
         return Logger.getLogger(caller.getClass());
