@@ -87,7 +87,7 @@ public class FormulaModelItem extends AbstractModelItem
         throws Exception
     {
         input_variables = new FormulaInputs(inputs);
-        formula = new Formula(formula_text, input_variables.getVariables());
+        formula = new Formula(Plugin.getLogger(), formula_text, input_variables.getVariables());
     }
     
     /** @return The formula. */

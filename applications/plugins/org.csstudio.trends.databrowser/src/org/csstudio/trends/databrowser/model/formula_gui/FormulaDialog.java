@@ -467,7 +467,7 @@ public class FormulaDialog extends Dialog
             final String form = formula_txt.getText().trim();
             if (form.length() < 1)
                 throw new Exception(Messages.Formula_EmptyFormulaError);
-            formula = new Formula(form, vars);
+            formula = new Formula(Plugin.getLogger(), form, vars);
         }
         catch (Exception ex)
         {

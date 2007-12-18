@@ -2,6 +2,7 @@ package org.csstudio.util.formula;
 
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.csstudio.util.formula.node.AddNode;
 import org.csstudio.util.formula.node.AndNode;
 import org.csstudio.util.formula.node.ConstantNode;
@@ -51,19 +52,22 @@ import org.csstudio.util.formula.node.SubNode;
 @SuppressWarnings("nls")
 public class Formula implements Node
 {
+    /** Log4j logger */
+    final private Logger log;
+    
     /** The original formula that we parsed */
-    private final String formula;
+    final private String formula;
     
-    private final Node tree;
+    final private Node tree;
     
-    private static VariableNode constants[] = new VariableNode[]
+    final private static VariableNode constants[] = new VariableNode[]
     {
         new VariableNode("E", Math.E),
     	new VariableNode("PI", Math.PI)
     };
 
     /** Names of functions that take one argument. */
-    final static private String one_arg_funcs[] = new String[]
+    final private static String one_arg_funcs[] = new String[]
     {
         "abs",
         "acos",
@@ -88,7 +92,7 @@ public class Formula implements Node
     };
 
     /** Names of functions that take two arguments, */
-    final static private String two_arg_funcs[] = new String[]
+    final private static String two_arg_funcs[] = new String[]
     {
         "atan2",
         "hypot",
@@ -100,9 +104,9 @@ public class Formula implements Node
      *  @param formula The formula to parse
      *  @throws Exception on parse error
      */
-    public Formula(String formula)  throws Exception
+    public Formula(final Logger log, final String formula)  throws Exception
     {
-        this(formula, null);
+        this(log, formula, null);
     }
 
     /** Create formula from string with variables.
@@ -110,11 +114,13 @@ public class Formula implements Node
      *  @param variables Array of variables
      *  @throws Exception on parse error
      */
-    public Formula(String formula, VariableNode[] variables)  throws Exception
+    public Formula(final Logger log, final String formula,
+            final VariableNode[] variables)  throws Exception
     {
+        this.log = log;
         this.formula = formula;
         this.variables = variables;
-        tree = parse(formula);
+        tree = parse();
     }
     
     /** @return Original formula that got parsed. */
@@ -128,17 +134,21 @@ public class Formula implements Node
     /** {@inheritDoc} */
     public double eval()
     {
-        return tree.eval();
+        final double result = tree.eval();
+        if (Double.isInfinite(result) ||
+            Double.isNaN(result))
+            log.debug("Formula '" + formula + "' resulted in " + result);
+        return result;
     }    
     
     /** {@inheritDoc} */
-    public boolean hasSubnode(Node node)
+    public boolean hasSubnode(final Node node)
     {
         return tree == node  ||  tree.hasSubnode(node);
     }
     
     /** Parse -0.1234 or variable or sub-expression in braces. */
-    private Node parseConstant(Scanner s) throws Exception
+    private Node parseConstant(final Scanner s) throws Exception
     {
         final String digits = "0123456789.";
         StringBuffer buf = new StringBuffer();     
@@ -202,7 +212,7 @@ public class Formula implements Node
     /** @return <code>true</code> if given char is allowed inside a
      *          function or variable name.
      */
-    private boolean isFunctionOrVariableChar(char c)
+    private boolean isFunctionOrVariableChar(final char c)
     {
         final String other_allowed_stuff = "_:";
         return Character.isLetterOrDigit(c)
@@ -213,7 +223,7 @@ public class Formula implements Node
      *  @return Returns Node that evaluates the function.
      *  @throws Exception
      */
-    private Node findFunction(Scanner s, String name) throws Exception
+    private Node findFunction(final Scanner s, final String name) throws Exception
     {
         final Node [] args = parseArgExpressions(s);
         // Check functions with one arg
@@ -257,7 +267,7 @@ public class Formula implements Node
     /** @return node for sub-expression arguments in (a1, a2, .. ) braces.
      *  @throws Exception when no closing ')' is found.
      */
-    private Node[] parseArgExpressions(Scanner s) throws Exception
+    private Node[] parseArgExpressions(final Scanner s) throws Exception
     {
         Vector<Node> args = new Vector<Node>();
         if (s.get() != '(')
@@ -285,7 +295,7 @@ public class Formula implements Node
      *  @return Returns VariableNode
      *  @throws Exception when not found.
      */
-    private Node findVariable(String name) throws Exception
+    private Node findVariable(final String name) throws Exception
     {
         if (variables != null)
         {   // Find the variable.
@@ -304,7 +314,7 @@ public class Formula implements Node
     /** @return node for sub-expression in ( .. ) braces.
      *  @throws Exception when no closing ')' is found.
      */
-    private Node parseBracedExpression(Scanner s) throws Exception
+    private Node parseBracedExpression(final Scanner s) throws Exception
     {
         Node result;
         if (s.get() != '(')
@@ -318,7 +328,7 @@ public class Formula implements Node
     }
 
     /** Parse multiplication, division, ... */
-    private Node parseMulDiv(Scanner s) throws Exception
+    private Node parseMulDiv(final Scanner s) throws Exception
     {
         // Expect a ...
         Node n = parseConstant(s);
@@ -346,7 +356,7 @@ public class Formula implements Node
     }
   
     /** Parse addition, subtraction, ... */
-    private Node parseAddSub(Scanner s) throws Exception
+    private Node parseAddSub(final Scanner s) throws Exception
     {
         // Expect a ...
         Node n = parseMulDiv(s);
@@ -369,7 +379,7 @@ public class Formula implements Node
     }
 
     /** Comparisons */
-    private Node parseCompare(Scanner s) throws Exception
+    private Node parseCompare(final Scanner s) throws Exception
     {
         // Expect a ...
         Node n = parseAddSub(s);
@@ -428,7 +438,7 @@ public class Formula implements Node
     }
 
     /** Boolean &, | */
-    private Node parseBool(Scanner s) throws Exception
+    private Node parseBool(final Scanner s) throws Exception
     {
         if (s.get() == '!')
         {
@@ -465,7 +475,7 @@ public class Formula implements Node
     }
 
     /** Parse formula. */
-    private Node parse(String formula) throws Exception
+    private Node parse() throws Exception
     {
         final Scanner scanner = new Scanner(formula);
         final Node tree = parseBool(scanner);
@@ -478,6 +488,6 @@ public class Formula implements Node
     @Override
     public String toString()
     {
-        return (tree != null) ? tree.toString() : "null";
+        return (tree != null) ? tree.toString() : "<empty formula>";
     }
 }

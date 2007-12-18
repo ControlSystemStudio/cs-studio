@@ -1,8 +1,8 @@
 package org.csstudio.trends.databrowser;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -20,6 +20,9 @@ public class Plugin extends AbstractCssUiPlugin
     /** The suggested file extension for DataBrowser config files. */
     public static final String FileExtension = "css-plt"; //$NON-NLS-1$
     
+    /** Lazily initialized Log4j Logger */
+    private static Logger log = null;
+
     /** The shared instance. */
     private static Plugin plugin = null;
 
@@ -52,37 +55,30 @@ public class Plugin extends AbstractCssUiPlugin
         plugin = null;
     }
 
+    /** @return Log4j Logger */
+    public static Logger getLogger()
+    {
+        if (log == null) // Also works with plugin==null during unit tests
+            log = CentralLogger.getInstance().getLogger(plugin);
+        return log;
+    }
+    
     /** Add info message to the plugin log. */
     public static void logInfo(String message)
     {
-        log(IStatus.INFO, message, null);
+        getLogger().info(message);
     }
     
     /** Add error message to the plugin log. */
     public static void logError(String message)
     {
-        log(IStatus.ERROR, message, null);
+        getLogger().error(message);
     }
   
     /** Add an exception to the plugin log. */
     public static void logException(String message, Throwable ex)
     {
-        log(IStatus.ERROR, message, ex);
-    }
-  
-    /** Add a message to the log.
-     *  @param type
-     *  @param message
-     *  @param e Exception or <code>null</code>
-     */
-    private static void log(int type, String message, Throwable ex)
-    {
-        if (plugin == null)
-            System.out.println(message);
-        else
-            plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
-        if (ex != null)
-            ex.printStackTrace();
+        getLogger().error(message, ex);
     }
     
     /** Returns an image descriptor for the image file.

@@ -16,8 +16,6 @@ public class DivNode extends AbstractBinaryNode
     {
         final double a = left.eval();
         final double b = right.eval();
-        if (b == 0)
-            return 0;
         return a / b;
     }
     

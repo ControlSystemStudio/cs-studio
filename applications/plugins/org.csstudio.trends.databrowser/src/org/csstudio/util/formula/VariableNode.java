@@ -6,13 +6,13 @@ package org.csstudio.util.formula;
 public class VariableNode implements Node
 {
     /** Name of the variable. */
-    private String name;
+    final private String name;
     
     /** Current value of the variable. */
     private double value;
     
     /** Create Variable with given name. */
-    public VariableNode(String name)
+    public VariableNode(final String name)
     {
         this.name = name;
     }
@@ -25,7 +25,7 @@ public class VariableNode implements Node
     }
 
     /** @return Returns the name. */
-    public String getName()
+    final public String getName()
     {
         return name;
     }

@@ -7,6 +7,7 @@ public interface Node
 {
     /** Evaluate the node, i.e. compute its value.
      *  @return The value of the node.
+     *  @exception on error
      */
     public double eval();
     
