@@ -78,7 +78,7 @@ public abstract class PlotAwareView extends ViewPart
                     if (part instanceof PlotEditor)
                         updateEditor((PlotEditor) part);
                     else
-                        Plugin.logError("PlotAwareView: expected PlotEditor, " +
+                        Plugin.getLogger().error("PlotAwareView: expected PlotEditor, " +
                                         "got " + part.getClass().getName());
                 }
             }

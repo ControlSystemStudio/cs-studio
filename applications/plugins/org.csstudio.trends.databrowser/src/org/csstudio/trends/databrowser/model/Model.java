@@ -107,7 +107,7 @@ public class Model
         }
         catch (Exception ex)
         {
-            Plugin.logException("Cannot init. time range", ex);
+            Plugin.getLogger().error("Cannot init. time range", ex);
         }
         scroll = start_end_times.isEndNow();
     }
@@ -219,7 +219,7 @@ public class Model
         }
         catch (Exception ex)
         {
-            Plugin.logException("Model start/end time update error", ex); //$NON-NLS-1$
+            Plugin.getLogger().error("Model start/end time update error", ex); //$NON-NLS-1$
         }
     }
     
@@ -468,7 +468,7 @@ public class Model
                 }
                 catch (Exception ex)
                 {
-                    Plugin.logException("Setting formula", ex); //$NON-NLS-1$
+                    Plugin.getLogger().error("Setting formula", ex); //$NON-NLS-1$
                 }
             }
             break;

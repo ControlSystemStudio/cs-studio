@@ -37,7 +37,7 @@ public class InputTableCellModifier implements ICellModifier
         }
         catch (Exception ex)
         {
-            Plugin.logException("Error", ex); //$NON-NLS-1$
+            Plugin.getLogger().error("Error", ex); //$NON-NLS-1$
         }
         return null;
     }
@@ -78,7 +78,7 @@ public class InputTableCellModifier implements ICellModifier
         }
         catch (Exception ex)
         {
-            Plugin.logException("Error", ex); //$NON-NLS-1$
+            Plugin.getLogger().error("Error", ex); //$NON-NLS-1$
         }
     }
 }

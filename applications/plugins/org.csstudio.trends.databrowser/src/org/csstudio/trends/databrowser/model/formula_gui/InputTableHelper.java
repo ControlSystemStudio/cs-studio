@@ -106,7 +106,7 @@ public class InputTableHelper
 		}
 		catch (Exception e)
 		{
-            Plugin.logException("InputTableHelper.getText:", e); //$NON-NLS-1$
+            Plugin.getLogger().error("InputTableHelper.getText:", e); //$NON-NLS-1$
 		}
 		return null;
 	}

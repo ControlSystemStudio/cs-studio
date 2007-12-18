@@ -161,7 +161,7 @@ public class FormulaModelItem extends AbstractModelItem
             catch (Exception ex)
             {
                 ex.printStackTrace();
-                Plugin.logException("Formula '" + getName() + "'", ex);  //$NON-NLS-1$//$NON-NLS-2$
+                Plugin.getLogger().error("Formula '" + getName() + "'", ex);  //$NON-NLS-1$//$NON-NLS-2$
             }
         }
     }

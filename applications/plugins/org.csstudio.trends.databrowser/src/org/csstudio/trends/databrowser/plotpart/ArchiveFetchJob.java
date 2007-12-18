@@ -91,7 +91,7 @@ class ArchiveFetchJob extends Job
             }
             catch (Exception ex)
             {
-                Plugin.logException("ArchiveFetchJob", ex);
+                Plugin.getLogger().error("ArchiveFetchJob", ex);
             }
             // Stop and ignore further results when canceled.
             if (monitor.isCanceled())

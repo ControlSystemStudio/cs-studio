@@ -63,24 +63,6 @@ public class Plugin extends AbstractCssUiPlugin
         return log;
     }
     
-    /** Add info message to the plugin log. */
-    public static void logInfo(String message)
-    {
-        getLogger().info(message);
-    }
-    
-    /** Add error message to the plugin log. */
-    public static void logError(String message)
-    {
-        getLogger().error(message);
-    }
-  
-    /** Add an exception to the plugin log. */
-    public static void logException(String message, Throwable ex)
-    {
-        getLogger().error(message, ex);
-    }
-    
     /** Returns an image descriptor for the image file.
      *  <p>
      *  Usually, this is the image found via the the given plug-in
@@ -106,9 +88,9 @@ public class Plugin extends AbstractCssUiPlugin
             final Image img = new Image(display, path);        
             return ImageDescriptor.createFromImage(img);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            logException("Cannot load image '" + path + "'", e);
+            getLogger().error("Cannot load image '" + path + "'", ex);
         }
         return null;
     }

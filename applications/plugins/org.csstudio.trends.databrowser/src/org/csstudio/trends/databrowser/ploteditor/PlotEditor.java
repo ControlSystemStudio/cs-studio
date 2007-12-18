@@ -135,7 +135,7 @@ public class PlotEditor extends EditorPart
         }
         catch (Exception ex)
         {
-            Plugin.logException("Cannot create Plot", ex); //$NON-NLS-1$
+            Plugin.getLogger().error("Cannot create Plot", ex); //$NON-NLS-1$
         }
         return null;
     }
@@ -179,7 +179,7 @@ public class PlotEditor extends EditorPart
         IFile file = (IFile) input.getAdapter(IFile.class);
         if (file != null)
             return file;
-        Plugin.logError("getEditorInputFile got " //$NON-NLS-1$
+        Plugin.getLogger().error("getEditorInputFile got " //$NON-NLS-1$
                         + input.getClass().getName());
         return null;
     }
@@ -225,7 +225,7 @@ public class PlotEditor extends EditorPart
             ok = false;
             if (monitor != null)
                 monitor.setCanceled(true);
-            Plugin.logException("Save error", e); //$NON-NLS-1$
+            Plugin.getLogger().error("Save error", e); //$NON-NLS-1$
         }
         finally
         {

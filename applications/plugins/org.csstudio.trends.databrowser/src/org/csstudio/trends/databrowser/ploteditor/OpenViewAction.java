@@ -50,7 +50,7 @@ public class OpenViewAction extends Action
         }
         catch (Exception e)
         {
-            Plugin.logException("Cannot open " + ID, e); //$NON-NLS-1$
+            Plugin.getLogger().error("Cannot open " + ID, e); //$NON-NLS-1$
         }
     }
 }

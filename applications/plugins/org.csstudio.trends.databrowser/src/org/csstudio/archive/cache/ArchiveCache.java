@@ -49,7 +49,7 @@ public class ArchiveCache
         for (ArchiveServer server : server_cache)
             if (server.getURL().equals(url))
                 return server;
-        Plugin.logInfo("ArchiveCache connects to " + url); //$NON-NLS-1$
+        Plugin.getLogger().debug("ArchiveCache connects to " + url); //$NON-NLS-1$
         // Not cached, create new connection.
         // Since we're 'synchronized', this blocks all other calls.
         // But the alternative would be to risk multiple concurrent

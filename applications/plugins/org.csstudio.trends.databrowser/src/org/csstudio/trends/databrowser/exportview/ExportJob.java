@@ -107,7 +107,7 @@ class ExportJob extends Job
     @Override
     protected IStatus run(final IProgressMonitor monitor)
     {
-        Plugin.logInfo("ExportJob starts");
+        Plugin.getLogger().debug("ExportJob starts");
         monitor.beginTask(Messages.ExportJobTask, IProgressMonitor.UNKNOWN);
         final ArchiveCache cache = ArchiveCache.getInstance();
         PrintWriter out = null;
@@ -168,7 +168,7 @@ class ExportJob extends Job
                     if (monitor.isCanceled())
                     {
                         out.println(Messages.Comment + Messages.Cancelled);
-                        Plugin.logInfo("ExportJob cancelled");
+                        Plugin.getLogger().info("ExportJob cancelled");
                         break;
                     }
                 }
@@ -176,7 +176,7 @@ class ExportJob extends Job
         }
         catch (final Exception ex)
         {
-            Plugin.logException("ExportJob error", ex);
+            Plugin.getLogger().error("ExportJob error", ex);
             if (out != null)
                 out.write("# Error: " + ex.getMessage());
             monitor.setCanceled(true);
@@ -191,7 +191,7 @@ class ExportJob extends Job
                 out.close();
         }
         monitor.done();
-        Plugin.logInfo("ExportJob finishes");
+        Plugin.getLogger().debug("ExportJob finishes");
         return Status.OK_STATUS;
     }
 
@@ -297,7 +297,7 @@ class ExportJob extends Job
             if (monitor.isCanceled())
             {
                 out.println(Messages.Comment + Messages.Cancelled);
-                Plugin.logInfo("ExportJob cancelled"); //$NON-NLS-1$
+                Plugin.getLogger().info("ExportJob cancelled"); //$NON-NLS-1$
                 break;
             }
         }

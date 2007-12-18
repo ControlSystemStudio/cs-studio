@@ -79,7 +79,7 @@ class SearchJob extends Job
         }
         catch (Exception e)
         {
-            Plugin.logException("Archive search error", e); //$NON-NLS-1$
+            Plugin.getLogger().error("Archive search error", e); //$NON-NLS-1$
             monitor.setCanceled(true);
             return Status.CANCEL_STATUS;
         }

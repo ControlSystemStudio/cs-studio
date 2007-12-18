@@ -31,7 +31,7 @@ public class ArchiveUpAction extends Action
         }
         catch (Exception e)
         {
-            Plugin.logException("Missing image", e); //$NON-NLS-1$
+            Plugin.getLogger().error("Missing image", e); //$NON-NLS-1$
         }
         setText(Messages.Up);
 		setToolTipText(Messages.MoveArchsUp);

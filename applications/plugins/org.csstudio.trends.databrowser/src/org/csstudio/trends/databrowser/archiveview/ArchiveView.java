@@ -527,7 +527,7 @@ public class ArchiveView extends ViewPart
         }
         catch (Exception e)
         {
-            Plugin.logException("Cannot add name", e); //$NON-NLS-1$
+            Plugin.getLogger().error("Cannot add name", e); //$NON-NLS-1$
         }
         name_table_viewer.setItemCount(name_table_items.size());
     }

@@ -173,7 +173,7 @@ public class PVTableHelper
 		}
 		catch (Exception e)
 		{
-            Plugin.logException("Error", e); //$NON-NLS-1$
+            Plugin.getLogger().error("Error", e); //$NON-NLS-1$
 		}
 		return null;
 	}

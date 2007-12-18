@@ -64,7 +64,7 @@ public class PlotView extends ViewPart
         }
         catch (Exception ex)
         {
-            Plugin.logException("createInstance with file " + file, ex); //$NON-NLS-1$
+            Plugin.getLogger().error("createInstance with file " + file, ex); //$NON-NLS-1$
             ex.printStackTrace();
         }
         return null;
@@ -85,7 +85,7 @@ public class PlotView extends ViewPart
         }
         catch (Exception ex)
         {
-            Plugin.logException("createInstance", ex); //$NON-NLS-1$
+            Plugin.getLogger().error("createInstance", ex); //$NON-NLS-1$
             ex.printStackTrace();
         }
         return null;

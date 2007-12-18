@@ -78,7 +78,7 @@ public class PVTableCellModifier implements ICellModifier
         }
         catch (Exception e)
         {
-            Plugin.logException("PVTableCellModifier: " + e.getMessage(), e); //$NON-NLS-1$
+            Plugin.getLogger().error("PVTableCellModifier: " + e.getMessage(), e); //$NON-NLS-1$
         }
         return null;
     }
@@ -160,7 +160,7 @@ public class PVTableCellModifier implements ICellModifier
         }
         catch (Exception e)
         {
-            Plugin.logException("Error", e); //$NON-NLS-1$
+            Plugin.getLogger().error("Error", e); //$NON-NLS-1$
         }
     }
 }

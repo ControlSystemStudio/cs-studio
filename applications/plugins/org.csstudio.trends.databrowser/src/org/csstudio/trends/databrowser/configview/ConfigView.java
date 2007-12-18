@@ -887,7 +887,7 @@ public class ConfigView extends PlotAwareView
     {
     	if (scan_period_text.isDisposed())
     	{   // We should have removed the model listener on disposal...
-    	    Plugin.logError("ConfigView.updateModel called after disposal"); //$NON-NLS-1$
+    	    Plugin.getLogger().error("ConfigView.updateModel called after disposal"); //$NON-NLS-1$
     		return;
     	}
         // Conditionally enable the 'add' action

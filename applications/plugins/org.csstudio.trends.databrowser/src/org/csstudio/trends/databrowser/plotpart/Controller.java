@@ -103,7 +103,7 @@ public class Controller
             }
             catch (Exception ex)
             {
-                Plugin.logException("Cannot scroll", ex);
+                Plugin.getLogger().error("Cannot scroll", ex);
             }
             finally
             {
@@ -224,7 +224,7 @@ public class Controller
             }
             catch (Exception ex)
             {
-                Plugin.logException("Cannot update model time range", ex); //$NON-NLS-1$
+                Plugin.getLogger().error("Cannot update model time range", ex); //$NON-NLS-1$
             }
             // Trigger archive retrieval for new time range
             getArchivedData(null);

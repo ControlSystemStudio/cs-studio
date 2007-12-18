@@ -55,7 +55,7 @@ public class NameTableItem
         }
         catch (Exception e)
         {
-            Plugin.logException("Archive NameTableItem: No name for key " //$NON-NLS-1$
+            Plugin.getLogger().warn("Archive NameTableItem: No name for key " //$NON-NLS-1$
                             + archive.getKey(), e);
             return "<unknown>"; //$NON-NLS-1$
         }

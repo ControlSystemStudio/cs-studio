@@ -105,7 +105,7 @@ public class BrowserUI extends Composite
                 }
                 catch (Exception ex)
                 {
-                    Plugin.logException("Error: ", ex);
+                    Plugin.getLogger().error("Error: ", ex);
                 }
             }
         });

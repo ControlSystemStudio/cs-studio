@@ -73,13 +73,13 @@ public class CachingArchiveServer extends ArchiveServer
         // See if we find the result for this request in the cache:
         SampleHashKey hash_key = new SampleHashKey(key, names[0],
                        start, end, request_type, request_parms);
-        Plugin.logInfo("CachingArchiveServer: " + hash_key);
+        Plugin.getLogger().debug("CachingArchiveServer: " + hash_key);
         for (SampleCacheEntry entry : sample_cache)
             if (entry.getKey().equals(hash_key))
             {
                 ArchiveValues result[] = new ArchiveValues[]
                 { entry.getData() };
-                Plugin.logInfo("Found data on cache: " +
+                Plugin.getLogger().debug("Found data on cache: " +
                                 result[0].getSamples().length + " samples");
                 return result;
             }
@@ -101,7 +101,7 @@ public class CachingArchiveServer extends ArchiveServer
             if (sample_cache.size() >= SAMPLE_CACHE_LENGTH-1)
                 sample_cache.removeLast().getKey();
             sample_cache.addFirst(new SampleCacheEntry(hash_key, samples));
-            Plugin.logInfo("Got " +
+            Plugin.getLogger().debug("Got " +
                             result[0].getSamples().length + " new samples");
         }
         return result;
@@ -122,7 +122,7 @@ public class CachingArchiveServer extends ArchiveServer
     @SuppressWarnings("nls")
     synchronized public void clearCache()
     {
-    	Plugin.logInfo("Cleared data on cache");
+    	Plugin.getLogger().debug("Cleared data on cache");
     	sample_cache.clear();
     }
 }

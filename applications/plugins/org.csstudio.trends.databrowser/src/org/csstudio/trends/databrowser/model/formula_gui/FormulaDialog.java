@@ -510,7 +510,7 @@ public class FormulaDialog extends Dialog
         }
         catch (Exception ex)
         {
-            Plugin.logException("Formula won't convert", ex); //$NON-NLS-1$
+            Plugin.getLogger().error("Formula won't convert", ex); //$NON-NLS-1$
         }
         
         super.okPressed();

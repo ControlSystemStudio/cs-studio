@@ -88,7 +88,7 @@ class ConnectJob extends Job
             // a bad server URL, so the user should learn about the error...
             new AsyncErrorDialog(shell, e.getMessage());
             // Also log it.
-            Plugin.logException("Archive connection error", e); //$NON-NLS-1$
+            Plugin.getLogger().error("Archive connection error", e); //$NON-NLS-1$
             monitor.setCanceled(true);
             return Status.CANCEL_STATUS;
         }

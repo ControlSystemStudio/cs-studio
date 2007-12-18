@@ -107,8 +107,7 @@ public class PVModelItem
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
-            Plugin.logException("Cannot create PV '" + pv_name + "'", ex);
+            Plugin.getLogger().error("Cannot create PV '" + pv_name + "'", ex);
         }
         return null;
     }    
@@ -268,7 +267,7 @@ public class PVModelItem
         }
         catch (Exception e)
         {
-        	Plugin.logException(pv.getName(), e);
+        	Plugin.getLogger().error(pv.getName(), e);
         }
     }
     
@@ -346,7 +345,7 @@ public class PVModelItem
                             quality,
                             ((IStringValue)new_sample).getValues());
         else
-            Plugin.logError("ModelItem cannot update timestamp of type " //$NON-NLS-1$
+            Plugin.getLogger().error("ModelItem cannot update timestamp of type " //$NON-NLS-1$
                             + new_sample.getClass().getName());
         samples.addLiveSample(new_sample);
         // See if there are (new) units
