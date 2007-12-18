@@ -1,8 +1,8 @@
 package org.csstudio.utility.pv;
 
+import org.apache.log4j.Logger;
 import org.csstudio.platform.AbstractCssPlugin;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
 
 /** Plugin-activator for the PV.
@@ -12,6 +12,9 @@ public class Plugin extends AbstractCssPlugin
 {
 	public final static String ID = "org.csstudio.utility.pv"; //$NON-NLS-1$
     
+    /** Lazily initialized Log4j Logger */
+    private static Logger log = null;
+
     /** The singleton instance */
 	private static Plugin plugin;
 
@@ -38,36 +41,11 @@ public class Plugin extends AbstractCssPlugin
         plugin = null;
     }
     
-    /** Add info message to the plugin log. */
-    public static void logInfo(String message)
+    /** @return Log4j Logger */
+    public static Logger getLogger()
     {
-        log(IStatus.INFO, message, null);
-    }
-    
-    /** Add error message to the plugin log. */
-    public static void logError(String message)
-    {
-        log(IStatus.ERROR, message, null);
-    }
-  
-    /** Add an exception to the plugin log. */
-    public static void logException(String message, Throwable ex)
-    {
-        log(IStatus.ERROR, message, ex);
-    }
-  
-    /** Add a message to the log.
-     *  @param type
-     *  @param message
-     *  @param e Exception or <code>null</code>
-     */
-    private static void log(int type, String message, Throwable ex)
-    {
-        if (plugin == null)
-            System.out.println(message);
-        else
-            plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
-        if (ex != null)
-            ex.printStackTrace();
+        if (log == null) // Also works with plugin==null during unit tests
+            log = CentralLogger.getInstance().getLogger(plugin);
+        return log;
     }
 }

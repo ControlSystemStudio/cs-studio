@@ -1,9 +1,9 @@
 package org.csstudio.utility.pv.epics;
 
+import org.apache.log4j.Logger;
 import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.platform.libs.epics.EpicsPlugin;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
 
 /** Plugin-activator for the EPICS PV.
@@ -13,6 +13,9 @@ public class Activator extends AbstractCssPlugin
 {
 	// The plug-in ID
 	public static final String ID = "org.csstudio.utility.pv.epics"; //$NON-NLS-1$
+
+    /** Lazily initialized Log4j Logger */
+    private static Logger log = null;
 
     /** The singleton instance */
 	private static Activator plugin;
@@ -35,11 +38,11 @@ public class Activator extends AbstractCssPlugin
             PVContext.use_pure_java = EpicsPlugin.getDefault().usePureJava();
             final String message = PVContext.use_pure_java ?
                                 "Using pure java CAJ" : "Using JCA with JNI";
-            getLog().log(new Status(IStatus.INFO, ID, IStatus.OK, message, null));
+            getLogger().debug(message);
         }
         catch (Throwable e)
         {
-            logException("Cannot load EPICS_V3_PV", e);
+            getLogger().error("Cannot load EPICS_V3_PV", e);
         }
     }
 
@@ -56,36 +59,11 @@ public class Activator extends AbstractCssPlugin
 		return plugin;
 	}
 
-    /** Add info message to the plugin log. */
-    public static void logInfo(String message)
+	/** @return Log4j Logger */
+    public static Logger getLogger()
     {
-        log(IStatus.INFO, message, null);
-    }
-    
-    /** Add error message to the plugin log. */
-    public static void logError(String message)
-    {
-        log(IStatus.ERROR, message, null);
-    }
-  
-    /** Add an exception to the plugin log. */
-    public static void logException(String message, Throwable ex)
-    {
-        log(IStatus.ERROR, message, ex);
-    }
-  
-    /** Add a message to the log.
-     *  @param type
-     *  @param message
-     *  @param e Exception or <code>null</code>
-     */
-    private static void log(int type, String message, Throwable ex)
-    {
-        if (plugin == null)
-            System.out.println(message);
-        else
-            plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
-        if (ex != null)
-            ex.printStackTrace();
+        if (log == null) // Also works with plugin==null during unit tests
+            log = CentralLogger.getInstance().getLogger(plugin);
+        return log;
     }
 }

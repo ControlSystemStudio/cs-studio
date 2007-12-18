@@ -74,7 +74,7 @@ class JCACommandThread extends Thread
         }
         catch (InterruptedException ex)
         {
-            Activator.logException("JCACommandThread shutdown", ex);
+            Activator.getLogger().error("JCACommandThread shutdown", ex);
         }
         // Activator.logInfo("JCACommandThread queue reached up to "
         //                + max_size_reached + " entries");
@@ -121,7 +121,7 @@ class JCACommandThread extends Thread
                 }
                 catch (Throwable ex)
                 {
-                    Activator.logException("JCACommandThread exception", ex);
+                    Activator.getLogger().error("JCACommandThread exception", ex);
                 }
                 // Get next command
                 command = getCommand();
@@ -136,7 +136,7 @@ class JCACommandThread extends Thread
             }
             catch (Throwable ex)
             {
-                Activator.logException("JCA Flush exception", ex);
+                Activator.getLogger().error("JCA Flush exception", ex);
             }
             // Then wait.
             try

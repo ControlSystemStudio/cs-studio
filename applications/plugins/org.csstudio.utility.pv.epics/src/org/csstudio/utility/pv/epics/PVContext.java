@@ -22,8 +22,6 @@ import java.util.HashMap;
 @SuppressWarnings("nls")
 public class PVContext
 {
-    final public static boolean debug = false;
-    
     /** In principle, we like to close the context when it is no longer needed.
      *  But as long as JCA with R3.14.8.2 causes
      *  "pthread_create error Invalid argument" errors,
@@ -60,9 +58,8 @@ public class PVContext
         {
             if (jca == null)
             {
-                if (debug)
-                    System.out.println("Initializing JCA "
-                                    + (use_pure_java ? "(pure Java)" : "(JNI)"));
+                Activator.getLogger().debug("Initializing JCA "
+                                + (use_pure_java ? "(pure Java)" : "(JNI)"));
                 jca = JCALibrary.getInstance();
                 final String type = use_pure_java ?
                     JCALibrary.CHANNEL_ACCESS_JAVA : JCALibrary.JNI_THREAD_SAFE;
@@ -86,18 +83,20 @@ public class PVContext
         command_thread.shutdown();
         command_thread = null;
         if (cleanup == false)
+        {
+            Activator.getLogger().debug("JCA not longer used, but kept open.");
             return;
+        }
         try
         {
             jca_context.destroy();
             jca_context = null;
             jca = null;
-            if (debug)
-                System.out.println("Finalized JCA");
+            Activator.getLogger().debug("Finalized JCA");
         }
         catch (Exception ex)
         {
-            Activator.logException("exitJCA", ex);
+            Activator.getLogger().error("exitJCA", ex);
         }
     }
 
@@ -114,8 +113,7 @@ public class PVContext
         RefCountedChannel channel_ref = channels.get(name);
         if (channel_ref == null)
         {
-            if (debug)
-                System.out.println("Creating CA channel " + name);
+            Activator.getLogger().debug("Creating CA channel " + name);
             final Channel channel = jca_context.createChannel(name, conn_callback);
             if (channel == null)
                 throw new Exception("Cannot create channel '" + name + "'");
@@ -129,8 +127,7 @@ public class PVContext
         {
             channel_ref.incRefs();
             channel_ref.getChannel().addConnectionListener(conn_callback);
-            if (debug)
-                System.out.println("Re-using CA channel " + name);
+            Activator.getLogger().debug("Re-using CA channel " + name);
         }
         return channel_ref;
     }
@@ -149,17 +146,16 @@ public class PVContext
         }
         catch (Exception ex)
         {
-            Activator.logException("Remove connection listener", ex);
+            Activator.getLogger().error("Remove connection listener", ex);
         }
         if (channel_ref.decRefs() <= 0)
         {
-            if (debug)
-                System.out.println("Deleting CA channel " + name);
+            Activator.getLogger().debug("Deleting CA channel " + name);
             channels.remove(name);
             channel_ref.dispose();
         }
-        else if (debug)
-            System.out.println("CA channel " + name + " still ref'ed");
+        else
+            Activator.getLogger().debug("CA channel " + name + " still ref'ed");
         exitJCA();
     }
     

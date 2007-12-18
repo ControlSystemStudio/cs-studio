@@ -57,7 +57,7 @@ public class PVFactory
             throw new Exception(PV_FACTORY_CONFIG
                                 + extension.getContributor().getName()
                                 + " is invalid");
-        Plugin.logInfo("Found PVFactory implementation "
+        Plugin.getLogger().info("Found PVFactory implementation "
                         + extension.getContributor().getName());
         // Create instance of that implementation
         final IConfigurationElement[] configs =
@@ -70,9 +70,12 @@ public class PVFactory
         if (! config.getName().equals(PV_FACTORY_CONFIG))
             throw new Exception("Expected " + PV_FACTORY_CONFIG + ", found "
                                 + config.getName());
-        // Should have attributes 'name' (ignored) and 'class'
-        for (String attr : config.getAttributeNames())
-            Plugin.logInfo("Attribute '" + attr + "' = '" + config.getAttribute(attr) + "'");
+        if (Plugin.getLogger().isDebugEnabled())
+        {
+            // Should have attributes 'name' (ignored) and 'class'
+            for (String attr : config.getAttributeNames())
+                Plugin.getLogger().debug("Attribute '" + attr + "' = '" + config.getAttribute(attr) + "'");
+        }
         pv_factory = (IPVFactory) config.createExecutableExtension("class");
     }
 }
