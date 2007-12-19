@@ -1,20 +1,37 @@
 package org.csstudio.apputil.plugin;
 
+//import org.apache.log4j.Logger;
+//import org.csstudio.platform.logging.CentralLogger;
+
 /** Copy/paste logging routines for the plugin class.
  *  <p>
- *  I happen to like to use the Plugin log via these
- *  routines.
- *  When the plugin is based on the CSS plugin classes,
- *  those messages of course also go into the CSS log.
- *  <p>
- *  Since not everybody might like this, they're added
- *  by copy/paste to the plugin activators in my apps,
- *  without having to change the CSS plugin base classes.
+ *  I happen to like to log like this:
+ *  Use Log4j, directly calling its log routines,
+ *  so that one can get source file & line info
+ *  into the log.
+ *  Use CSS CentralLogger only to configure the logger.
  *  
  *  @author Kay Kasemir
  */
 public interface PluginLogRoutines
 {
+//  /** Lazily initialized Log4j Logger */
+//  private static Logger log = null;
+//
+//  /** @return Log4j Logger */
+//  public static Logger getLogger()
+//  {
+//      if (log == null) // Also works with plugin==null during unit tests
+//          log = CentralLogger.getInstance().getLogger(plugin);
+//      return log;
+//  }
+//
+//  Then log like this:
+//     Plugin.getLogger().info(...);
+//
+//  For performance, sometimes consider isDebugEnabled()... as per Log4j docs.
+    
+//    Older alternative, using only the Eclipse plugin log:
 //    /** Add info message to the plugin log. */
 //    public static void logInfo(String message)
 //    {
