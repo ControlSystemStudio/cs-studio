@@ -153,8 +153,8 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    </plugins>
 
    <features>
-      <feature id="org.csstudio.platform.feature.product" version="0.9.9"/>
       <feature id="org.csstudio.platform.feature" version="0.9.9"/>
+      <feature id="org.csstudio.platform.feature.product" version="0.9.10"/>
    </features>
 
 </product>
