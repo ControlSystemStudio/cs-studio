@@ -84,17 +84,18 @@ public class EpicsPlugin extends Plugin
             // So the preferred method is to build a JCA JNILIB
             // without further dependencies, in which case it's
             // OK for the following two calls to fail:
+            Throwable com_ca_exception = null;
 			try
 			{
 				System.loadLibrary("Com");
 				System.loadLibrary("ca");
             }
-            catch (Throwable e)
+            catch (Throwable ex)
             {
-                // Only info, not necessarily an error
-                log(Status.INFO,
-                    "Cannot load Com and ca libraries. "
-                     + "Could be a problem if JCA binary depends on them", e);
+                // Remember the error because it might explain a follow-up
+                // jca load error.
+                // On the other hand, if jca loads OK, we can ignore this one.
+                com_ca_exception = ex;
             }
             // Load the JCA library.
             // This better works out OK.
@@ -102,9 +103,15 @@ public class EpicsPlugin extends Plugin
             {
 				System.loadLibrary("jca");
 			}
-			catch (Throwable e)
+			catch (Throwable ex)
 			{
-				log(Status.ERROR, "Cannot load JCA binary",	e);
+			    if (com_ca_exception != null)
+			        log(Status.INFO,
+		                "Cannot load Com and ca libraries. "
+		                + "Could be a problem if JCA binary depends on them",
+		                com_ca_exception);
+			    // This is an error for sure:
+			    log(Status.ERROR, "Cannot load JCA binary",	ex);
 			}
 		}
 	}
@@ -129,7 +136,6 @@ public class EpicsPlugin extends Plugin
 	{
 	    try
 	    {
-
 		    // TODO Avoid getPluginPreferences(), directly use IPreferencesService?
 	        // final IPreferencesService prefs = Platform.getPreferencesService();
 	        // ...
