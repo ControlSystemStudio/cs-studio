@@ -24,8 +24,6 @@ import org.w3c.dom.Element;
  */
 public class PVListModel
 {
-    private static final boolean debug = false;
-    
     private static final String file_header = "<pvtable version=\"1.0\">\n"; //$NON-NLS-1$
     private static final String file_tail = "</pvtable>\n"; //$NON-NLS-1$
 	private static final double DEFAULT_TOLERANCE = 0.001;    
@@ -195,9 +193,6 @@ public class PVListModel
     public void modifyReadbackPV(PVListEntry entry_to_change, String new_readback_name)
     {
         PVListModelEntry entry = (PVListModelEntry) entry_to_change;
-        if (debug)
-            System.out.println("Change readback PV to " + new_readback_name
-                    + " in entry " + entry);
         if (entries.indexOf(entry) < 0)
         {
             System.err.println("PVListModel.modifyReadbackPV: Cannot find " + entry);
@@ -261,7 +256,7 @@ public class PVListModel
             }
             catch (Exception e)
             {
-                Plugin.logException("Period update", e);
+                Plugin.getLogger().error("Period update", e);
             }
             
             // Get the <pvlist> entry

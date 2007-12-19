@@ -135,7 +135,7 @@ public class ConfigDialog extends Dialog
                 }
                 catch (Exception e)
                 {
-                    Plugin.logException("Parse " + txt, e); //$NON-NLS-1$
+                    Plugin.getLogger().error("Parse " + txt, e); //$NON-NLS-1$
                 }
                 
                 boolean ok = (help == null);
@@ -156,7 +156,7 @@ public class ConfigDialog extends Dialog
                 }
                 catch (Exception e)
                 {
-                    Plugin.logException("Parse " + txt, e); //$NON-NLS-1$
+                    Plugin.getLogger().error("Parse " + txt, e); //$NON-NLS-1$
                 }
                 
                 if (help != null)

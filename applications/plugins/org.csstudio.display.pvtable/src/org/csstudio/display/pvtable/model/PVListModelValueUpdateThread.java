@@ -6,7 +6,6 @@ package org.csstudio.display.pvtable.model;
  */
 public class PVListModelValueUpdateThread implements Runnable
 {
-    private static final boolean debug = false;
     private PVListModel pv_list;
     private Thread thread;
     private boolean go;
@@ -53,9 +52,6 @@ public class PVListModelValueUpdateThread implements Runnable
     {
         if (delay > 1)
             this.delay = delay;
-        if (debug)
-            System.out.println("PVListModelValueUpdateThread delay changed to "
-                    + this.delay);
     }
 
     /**  @see java.lang.Runnable#run() */
@@ -63,8 +59,6 @@ public class PVListModelValueUpdateThread implements Runnable
     {
         while (go)
         {
-            if (debug)
-                System.out.println("ValueUpdateThread checking"); //$NON-NLS-1$
             pv_list.updateAnyChangedEntries();
             try
             {

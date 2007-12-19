@@ -1,8 +1,8 @@
 package org.csstudio.display.pvtable;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -13,11 +13,16 @@ import org.osgi.framework.BundleContext;
  */
 public class Plugin extends AbstractCssUiPlugin
 {
+    /** The plug-in ID */
     final public static String ID = "org.csstudio.display.pvtable"; //$NON-NLS-1$
-    
+
+    /** File extension for config. files */
     final public static String FileExtension = "css-pvtable"; //$NON-NLS-1$
     
-    // The shared instance.
+    /** Lazily initialized Log4j Logger */
+    private static Logger log = null;
+    
+    /** The shared instance */
     private static Plugin plugin;
     
     /** The constructor. */
@@ -51,38 +56,12 @@ public class Plugin extends AbstractCssUiPlugin
         plugin = null;
     }
 
-    /** Add info message to the plugin log. */
-    public static void logInfo(String message)
+    /** @return Log4j Logger */
+    public static Logger getLogger()
     {
-        log(IStatus.INFO, message, null);
-    }
-    
-    /** Add error message to the plugin log. */
-    public static void logError(String message)
-    {
-        log(IStatus.ERROR, message, null);
-    }
-  
-    /** Add an exception to the plugin log. */
-    public static void logException(String message, Throwable ex)
-    {
-        ex.printStackTrace();
-        log(IStatus.ERROR, message, ex);
-    }
-  
-    /** Add a message to the log.
-     *  @param type
-     *  @param message
-     *  @param e Exception or <code>null</code>
-     */
-    private static void log(int type, String message, Throwable ex)
-    {
-        if (plugin == null)
-            System.out.println(message);
-        else
-            plugin.getLog().log(new Status(type, ID, IStatus.OK, message, ex));
-        if (ex != null)
-            ex.printStackTrace();
+        if (log == null) // Also works with plugin==null during unit tests
+            log = CentralLogger.getInstance().getLogger(plugin);
+        return log;
     }
 
     /** @return Returns an image descriptor for the image file at the given plug-in

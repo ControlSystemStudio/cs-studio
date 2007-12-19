@@ -27,13 +27,12 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 /** EditorPart for the PV Table
- * 
  *  @author Kay Kasemir
  */
 public class PVTableEditor extends EditorPart
 {
     public static final String ID = PVTableEditor.class.getName();
-    // private static final boolean debug = false;
+
     // The model, data, PV list.
     private PVListModel model;
     private PVListModelListener listener;
@@ -141,7 +140,7 @@ public class PVTableEditor extends EditorPart
         IFile file = (IFile) input.getAdapter(IFile.class);
         if (file != null)
             return file;
-        Plugin.logError("getEditorInputFile got " //$NON-NLS-1$
+        Plugin.getLogger().error("getEditorInputFile got " //$NON-NLS-1$
                         + input.getClass().getName());
         return null;
     }
@@ -186,7 +185,7 @@ public class PVTableEditor extends EditorPart
             ok = false;
             if (monitor != null)
                 monitor.setCanceled(true);
-            Plugin.logException("Save error", e); //$NON-NLS-1$
+            Plugin.getLogger().error("Save error", e); //$NON-NLS-1$
         }
         finally
         {

@@ -36,7 +36,7 @@ public class PromptForNewXMLFileDialog
         }
         catch (Exception ex)
         {
-            Plugin.logException("SaveAsDialog error", ex); //$NON-NLS-1$
+            Plugin.getLogger().error("SaveAsDialog error", ex); //$NON-NLS-1$
             return null;
         }
         if (new_resource_path == null)

@@ -58,7 +58,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry
         catch (Exception ex)
         {
             ex.printStackTrace();
-            Plugin.logException("Cannot create PV '" + name + "'", ex);
+            Plugin.getLogger().error("Cannot create PV '" + name + "'", ex);
         }
         return null;
     }

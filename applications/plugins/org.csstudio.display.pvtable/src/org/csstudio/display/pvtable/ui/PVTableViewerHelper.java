@@ -267,7 +267,7 @@ public class PVTableViewerHelper
             entries[i++] = entry;
             if (i > num)
             {
-                Plugin.logError("Selection grew beyond " + num); //$NON-NLS-1$
+                Plugin.getLogger().error("Selection grew beyond " + num); //$NON-NLS-1$
                 return null;
             }
         }
