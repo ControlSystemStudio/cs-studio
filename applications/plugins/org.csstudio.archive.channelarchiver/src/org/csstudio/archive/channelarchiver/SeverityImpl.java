@@ -8,11 +8,12 @@ import org.csstudio.platform.data.ISeverity;
 @SuppressWarnings("nls")
 public class SeverityImpl implements ISeverity
 {
-	private final String text;
-	private final boolean has_value;
-	private final boolean txt_stat;
+	final private String text;
+	final private boolean has_value;
+	final private boolean txt_stat;
 	
-	public SeverityImpl(String text, boolean has_value, boolean txt_stat)
+	public SeverityImpl(final String text, final boolean has_value,
+	        final boolean txt_stat)
 	{
 		this.text = text;
 		this.has_value = has_value;
@@ -27,7 +28,9 @@ public class SeverityImpl implements ISeverity
     
     public boolean isOK()
     {
-        return text.length() == 0  ||  text.equals("NO_ALARM");
+        return text.length() == 0
+                || text.equals(ServerInfoRequest.NO_ALARM)
+                || text.equals("NO_ALARM");
     }
 
     public boolean isMinor()

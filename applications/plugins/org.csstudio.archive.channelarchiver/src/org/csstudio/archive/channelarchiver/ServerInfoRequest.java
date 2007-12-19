@@ -17,7 +17,7 @@ final class ServerInfoRequest
     /** String used for an OK status and severity
      *  (more generic than the EPICS 'NO_ALARM')
      */
-    final private static String NO_ALARM = "OK";
+    final static String NO_ALARM = "OK";
     private String description;
 	private int version;
 	private String how_strings[];
@@ -26,7 +26,7 @@ final class ServerInfoRequest
 
 	/** Read info from data server */
     @SuppressWarnings("unchecked")
-    public void read(XmlRpcClient xmlrpc) throws Exception
+    public void read(final XmlRpcClient xmlrpc) throws Exception
 	{
 		Hashtable<String, Object> result;
 		try
@@ -74,7 +74,7 @@ final class ServerInfoRequest
                 status_strings[i] = NO_ALARM;
         }
         // Same silly code for the severity strings.
-		Vector sevr_info = (Vector) result.get("sevr");
+		final Vector sevr_info = (Vector) result.get("sevr");
 		severities = new Hashtable<Integer, SeverityImpl>();
 		for (Object sio : sevr_info)
 		{
@@ -119,7 +119,7 @@ final class ServerInfoRequest
     /** @return Returns the severity infos. */
 	public SeverityImpl getSeverity(int severity)
 	{
-        SeverityImpl sev = severities.get(new Integer(severity));
+        final SeverityImpl sev = severities.get(new Integer(severity));
         if (sev != null)
             return sev;
         return new SeverityImpl(
@@ -130,7 +130,7 @@ final class ServerInfoRequest
 	/** @return Returns a more or less useful string for debugging. */
 	@Override public String toString()
 	{
-		StringBuffer result = new StringBuffer();
+		final StringBuffer result = new StringBuffer();
 		result.append(String.format("Server version : %d\n", version));
 		result.append(String.format("Description    :\n%s", description));
 		result.append("Available request methods:\n");
