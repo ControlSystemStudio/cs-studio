@@ -4,6 +4,8 @@ import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
 import gov.aps.jca.event.ConnectionListener;
+import gov.aps.jca.event.ContextExceptionListener;
+import gov.aps.jca.event.ContextMessageListener;
 
 import java.util.HashMap;
 
@@ -58,12 +60,35 @@ public class PVContext
         {
             if (jca == null)
             {
-                Activator.getLogger().debug("Initializing JCA "
+                Activator.getLogger().info("Initializing JCA "
                                 + (use_pure_java ? "(pure Java)" : "(JNI)"));
                 jca = JCALibrary.getInstance();
                 final String type = use_pure_java ?
                     JCALibrary.CHANNEL_ACCESS_JAVA : JCALibrary.JNI_THREAD_SAFE;
                 jca_context = jca.createContext(type);
+                
+                // Per default, JNIContext adds a logger to System.err,
+                // but we want this one:
+                final ContextErrorHandler log_handler = new ContextErrorHandler();
+                jca_context.addContextExceptionListener(log_handler);
+                jca_context.addContextMessageListener(log_handler);
+
+                // Debugger shows that JNIContext adds the System.err
+                // loggers during initialize(), which for example happened
+                // in response to the last addContext... calls, so fix
+                // it after the fact:
+                final ContextExceptionListener[] ex_lsnrs =
+                    jca_context.getContextExceptionListeners();
+                for (ContextExceptionListener exl : ex_lsnrs)
+                    if (exl != log_handler)
+                        jca_context.removeContextExceptionListener(exl);
+                
+                // Same with message listeners
+                final ContextMessageListener[] msg_lsnrs =
+                    jca_context.getContextMessageListeners();
+                for (ContextMessageListener cml : msg_lsnrs)
+                    if (cml != log_handler)
+                        jca_context.removeContextMessageListener(cml);
             }
             command_thread = new JCACommandThread(jca_context);
         }
