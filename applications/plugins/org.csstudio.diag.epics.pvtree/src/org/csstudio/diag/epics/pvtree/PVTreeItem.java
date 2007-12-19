@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.Display;
  */
 class PVTreeItem extends PlatformObject implements IProcessVariable
 {
-    static final boolean debug = false;
-    
     /** sub record type */
     private static final String SUB = "sub"; //$NON-NLS-1$
 
@@ -127,7 +125,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                Plugin.logException("pvValueUpdate", e);
+                Plugin.getLogger().error("pvValueUpdate", e);
             }
         }
     };
@@ -150,7 +148,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                Plugin.logException("pvValueUpdate", e); //$NON-NLS-1$
+                Plugin.getLogger().error("pvValueUpdate", e); //$NON-NLS-1$
             }
         }
     };
@@ -185,7 +183,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                Plugin.logException("pvValueUpdate", e); //$NON-NLS-1$
+                Plugin.getLogger().error("pvValueUpdate", e); //$NON-NLS-1$
             }
         }
     };
@@ -217,11 +215,8 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         else
             record_name = pv_name;
 
-        if (debug)
-        {
-            System.out.print("New Tree item '" + pv_name + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-            System.out.println(", record name '" + record_name + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+        Plugin.getLogger().debug("New Tree item '" + pv_name
+                    + "', record name '" + record_name + "'");
         // Avoid loops.
         // If the model already contains an entry with this name,
         // we simply display this new item, but we won't
@@ -250,14 +245,13 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         catch (Exception e)
         {
-            Plugin.logException("PV creation error", e); //$NON-NLS-1$
+            Plugin.getLogger().error("PV creation error", e); //$NON-NLS-1$
         }
         // Get type from 'other', previously used PV or via CA
         if (other != null)
         {
             type = other.type;
-            if (debug)
-                System.out.println("Known item, not traversing inputs (again)"); //$NON-NLS-1$
+            Plugin.getLogger().debug("Known item, not traversing inputs (again)"); //$NON-NLS-1$
         }
         else
         {
@@ -269,7 +263,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                Plugin.logException("PV creation error", e); //$NON-NLS-1$
+                Plugin.getLogger().error("PV creation error", e); //$NON-NLS-1$
             }
         }
     }
@@ -300,7 +294,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         catch (Exception ex)
         {
             ex.printStackTrace();
-            Plugin.logException("Cannot create PV '" + name + "'", ex);
+            Plugin.getLogger().error("Cannot create PV '" + name + "'", ex);
         }
         return null;
     }
@@ -407,8 +401,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     @SuppressWarnings("nls")
     private void updateType()
     {
-        if (debug)
-            System.out.println(pv_name + " received type '" + type + "'");
+        Plugin.getLogger().debug(pv_name + " received type '" + type + "'");
         Display.getDefault().asyncExec(new Runnable()
         {
             public void run()
@@ -445,7 +438,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
                         return;
                     }
                     // Give up
-                    Plugin.logError("Unknown record type '" + type + "'");
+                    Plugin.getLogger().error("Unknown record type '" + type + "'");
                 }
             }
         });
@@ -483,7 +476,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         catch (Exception e)
         {
-            Plugin.logException("PV creation error", e); //$NON-NLS-1$
+            Plugin.getLogger().error("PV creation error", e); //$NON-NLS-1$
         }
     }
 
@@ -491,16 +484,14 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     @SuppressWarnings("nls")
     private void updateInput()
     {
-        if (debug)
-            System.out.println(link_pv.getName() + " received '" + link_value + "'");
+        Plugin.getLogger().debug(link_pv.getName() + " received '" + link_value + "'");
         Display.getDefault().asyncExec(new Runnable()
         {
             public void run()
             {
                 if (link_pv == null)
                 {
-                    if (debug)
-                        System.out.println(pv_name + " already disposed");
+                    Plugin.getLogger().debug(pv_name + " already disposed");
                     return;
                 }
                 final boolean is_output = link_pv.getName().endsWith(DOL);

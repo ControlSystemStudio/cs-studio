@@ -25,14 +25,14 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     private PVTreeItem root;
     
     /** @param view */
-    PVTreeModel(TreeViewer viewer)
+    PVTreeModel(final TreeViewer viewer)
     {
         this.viewer = viewer;
         root = null;
     }
     
     /** Re-initialize the model with a new root PV. */
-    public void setRootPV(String name)
+    public void setRootPV(final String name)
     {
         if (root != null)
         {
@@ -44,13 +44,13 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     }
     
     /** @return Returns a model item with given PV name or <code>null</code>. */
-    public PVTreeItem findPV(String pv_name)
+    public PVTreeItem findPV(final String pv_name)
     {
         return findPV(pv_name, root);
     }
 
     /** Searches for item from given item on down. */
-    private PVTreeItem findPV(String pv_name, PVTreeItem item)
+    private PVTreeItem findPV(final String pv_name, final PVTreeItem item)
     {
         // Dead end?
         if (item == null)
@@ -61,7 +61,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
         // Check each child recursively
         for (PVTreeItem child : item.getLinks())
         {
-            PVTreeItem found = findPV(pv_name, child);
+            final PVTreeItem found = findPV(pv_name, child);
             if (found != null)
                 return found;
         }
@@ -78,15 +78,14 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     {
         if (root != null)
         {
-            if (PVTreeItem.debug)
-                System.out.println("PVTreeModel disposed"); //$NON-NLS-1$
+            Plugin.getLogger().debug("PVTreeModel disposed"); //$NON-NLS-1$
             root.dispose();
             root = null;
         }
     }
 
     // IStructuredContentProvider
-    public Object[] getElements(Object parent)
+    public Object[] getElements(final Object parent)
     {
         if (parent instanceof PVTreeItem)
             return getChildren(parent);
@@ -96,7 +95,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     }
 
     // ITreeContentProvider
-    public Object getParent(Object child)
+    public Object getParent(final Object child)
     {
         if (child instanceof PVTreeItem)
             return ((PVTreeItem) child).getParent();
@@ -104,7 +103,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     }
     
     // ITreeContentProvider
-    public Object[] getChildren(Object parent)
+    public Object[] getChildren(final Object parent)
     {
         if (parent instanceof PVTreeItem)
             return ((PVTreeItem) parent).getLinks();
@@ -112,7 +111,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     }
 
     // ITreeContentProvider
-    public boolean hasChildren(Object parent)
+    public boolean hasChildren(final Object parent)
     {
         if (parent instanceof PVTreeItem)
             return ((PVTreeItem) parent).hasLinks();
@@ -120,7 +119,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     }
 
     /** Used by item to fresh the tree from the item on down. */
-    public void itemUpdated(PVTreeItem item)
+    public void itemUpdated(final PVTreeItem item)
     {
         if (viewer.getTree().isDisposed())
             return;
@@ -128,7 +127,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     }
 
     /** Used by item to fresh the tree from the item on down. */
-    public void itemChanged(PVTreeItem item)
+    public void itemChanged(final PVTreeItem item)
     {
         if (viewer.getTree().isDisposed())
             return;
