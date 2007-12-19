@@ -137,7 +137,7 @@ public class InteractiveChart extends Composite
         }
         catch (Exception e)
         {
-            Activator.logException("InteractiveChart cannot init. images", e);
+            Activator.getLogger().error("InteractiveChart cannot init. images", e);
         }
     }
 

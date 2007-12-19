@@ -222,7 +222,7 @@ public class Chart extends Canvas
                 }
                 catch (Throwable error)
                 {
-                    Activator.logException("Chart paint error", error);
+                    Activator.getLogger().error("Chart paint error", error);
                 }
             }
         });

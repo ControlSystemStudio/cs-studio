@@ -41,7 +41,7 @@ public class Application implements IApplication
         display = PlatformUI.createDisplay();
         if (display == null)
         {
-            PluginActivator.logError("No display");
+            PluginActivator.getLogger().error("No display");
             return IApplication.EXIT_OK;
         }
         final Object return_code = checkWorkspace();
@@ -115,7 +115,7 @@ public class Application implements IApplication
             }
             if (workspace == null)
             {
-                PluginActivator.logInfo("CSS Application Canceled");
+                PluginActivator.getLogger().debug("CSS Application Canceled");
                 return IApplication.EXIT_OK;
             }
             // Does this require a restart?
@@ -125,13 +125,13 @@ public class Application implements IApplication
                         Messages.Application_RestartTitle,
                         NLS.bind(Messages.Application_RestartMessage,
                                  workspace));
-                PluginActivator.logInfo("CSS Application Relaunch");
+                PluginActivator.getLogger().debug("CSS Application Relaunch");
                 return IApplication.EXIT_RELAUNCH;
             }
             
             // We are in the requested workspace.
             workspace_location = Platform.getInstanceLocation();
-            PluginActivator.logInfo("CSS Workspace: "
+            PluginActivator.getLogger().info("CSS Workspace: "
                             + workspace_location.getURL());
             // Lock the workspace
             try
@@ -141,7 +141,7 @@ public class Application implements IApplication
             }
             catch (IOException ex)
             {
-                PluginActivator.logException("Cannot lock workspace", ex);
+                PluginActivator.getLogger().error("Cannot lock workspace", ex);
             }
             // Cannot lock the workspace
             workspace_location = null;
@@ -174,7 +174,7 @@ public class Application implements IApplication
             }
             catch (CoreException ex)
             {
-                PluginActivator.logException(
+                PluginActivator.getLogger().error(
                                 "Cannot create " + project.getName(), ex); //$NON-NLS-1$
                 MessageDialog.openError(null,
                                 Messages.Application_ProjectError,
@@ -192,7 +192,7 @@ public class Application implements IApplication
         }
         catch (CoreException ex)
         {
-            PluginActivator.logException(
+            PluginActivator.getLogger().error(
                             "Cannot open " + project.getName(), ex); //$NON-NLS-1$
             MessageDialog.openError(null,
                             Messages.Application_ProjectError,
@@ -213,7 +213,7 @@ public class Application implements IApplication
         }
         catch (CoreException ex)
         {
-            PluginActivator.logException(
+            PluginActivator.getLogger().error(
                             "Error closing " + project.getName(), ex); //$NON-NLS-1$
             MessageDialog.openError(null,
                             Messages.Application_ProjectError,
@@ -228,7 +228,7 @@ public class Application implements IApplication
     private Object runApplication()
     {
         // Run the workbench
-        PluginActivator.logInfo("CSS Application Running"); //$NON-NLS-1$
+        PluginActivator.getLogger().debug("CSS Application Running"); //$NON-NLS-1$
         final int returnCode = PlatformUI.createAndRunWorkbench(display,
                         new ApplicationWorkbenchAdvisor());
         
@@ -239,9 +239,8 @@ public class Application implements IApplication
                 Integer.getInteger(RelaunchConstants.PROP_EXIT_CODE);
             if (IApplication.EXIT_RELAUNCH.equals(exit_code))
             {   // RELAUCH with new command line
-                PluginActivator.logInfo("RELAUNCH, command line:"); //$NON-NLS-1$
-                PluginActivator.logInfo(
-                     System.getProperty(RelaunchConstants.PROP_EXIT_DATA));
+                PluginActivator.getLogger().debug("RELAUNCH, command line:\n"
+                        + System.getProperty(RelaunchConstants.PROP_EXIT_DATA));
                 return IApplication.EXIT_RELAUNCH;
             }
             // RESTART without changes
@@ -255,7 +254,7 @@ public class Application implements IApplication
     @SuppressWarnings("nls")
     public void stop()
     {
-        PluginActivator.logInfo("CSS Application stopped"); //$NON-NLS-1$
+        PluginActivator.getLogger().debug("CSS Application stopped"); //$NON-NLS-1$
         final IWorkbench workbench = PlatformUI.getWorkbench();
         if (workbench == null  ||  display == null)
             return;

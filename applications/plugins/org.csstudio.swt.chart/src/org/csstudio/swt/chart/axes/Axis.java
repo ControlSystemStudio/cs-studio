@@ -128,7 +128,7 @@ public class Axis
             return false;
         if (low >= high)
         {
-            Activator.logError("Axis " + getLabel() 
+            Activator.getLogger().error("Axis " + getLabel() 
                       + ": Cannot set value range to " + low + " ... " + high);
             return false;
         }
