@@ -3,7 +3,6 @@ package org.csstudio.archive;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -79,7 +78,7 @@ public class ArchiveImplementationRegistry
             }
             catch (CoreException e)
             {
-                CentralLogger.getInstance().error(this,
+                Activator.getLogger().error(
                        "Error while creating '" + element.getName() + "'", e); 
             }
 
@@ -87,7 +86,7 @@ public class ArchiveImplementationRegistry
             if (_AALImpl.containsKey(prefix))
                 throw new IllegalArgumentException("URL prefix >>" + prefix
                                 + "<< is in use"); 
-            CentralLogger.getInstance().info(this,
+            Activator.getLogger().info(
                             "Registering handler for URL prefix '"
                             + prefix + "'");
             _AALImpl.put(prefix, new ArchiveImplementationDescriptor(element));
@@ -122,7 +121,7 @@ public class ArchiveImplementationRegistry
         if (aid == null)
         {
          
-            CentralLogger.getInstance().error(this,
+            Activator.getLogger().error(
                             "Unknown prefix in URL '" + url + "'");
             return null;
         }
@@ -132,7 +131,7 @@ public class ArchiveImplementationRegistry
         }
         catch (Exception e)
         {
-            CentralLogger.getInstance().error(this,
+            Activator.getLogger().error(
                             "Cannot resolve URL '" + url + "'", e);
             return null;
         }

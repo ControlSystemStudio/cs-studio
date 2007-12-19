@@ -1,6 +1,8 @@
 package org.csstudio.archive;
 
+import org.apache.log4j.Logger;
 import org.csstudio.platform.AbstractCssPlugin;
+import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
 
 /** The activator class controls the plug-in life cycle
@@ -44,4 +46,10 @@ public class Activator extends AbstractCssPlugin
 	/** @return shared instance */
 	public static Activator getDefault()
     {	return plugin;	}
+	
+    /** @return Log4j Logger */
+    public static Logger getLogger()
+    {
+        return CentralLogger.getInstance().getLogger(plugin);
+    }
 }

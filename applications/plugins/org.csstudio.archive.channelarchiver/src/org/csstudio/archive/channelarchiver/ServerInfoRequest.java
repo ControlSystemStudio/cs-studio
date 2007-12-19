@@ -52,7 +52,7 @@ final class ServerInfoRequest
 		//	} = archiver.info()
 		version = (Integer) result.get("ver");
         if (version < EXPECTED_VERSION)
-            Plugin.logInfo("Warning: "
+            Plugin.getLogger().warn("Warning: "
                             + "Expected ChannelArchiver "
                             + "XML-RPC Network Data Server Version "
                             + EXPECTED_VERSION

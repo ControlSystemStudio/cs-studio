@@ -1,6 +1,5 @@
 package org.csstudio.archive;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 
@@ -43,7 +42,7 @@ class ArchiveImplementationDescriptor
 			}
             catch (CoreException e)
             {
-                CentralLogger.getInstance().error(this,
+                Activator.getLogger().error(
                                 "Cannot create instance of '" +
                                 _configurationElement.getName() + "'", e);
 			}
