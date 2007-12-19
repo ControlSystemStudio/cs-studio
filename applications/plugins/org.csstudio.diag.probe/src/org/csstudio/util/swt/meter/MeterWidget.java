@@ -432,20 +432,23 @@ public class MeterWidget extends Canvas implements DisposeListener,
                     final float start_angle,
                     final float end_angle)
     {
-        // Would like to draw arc back, i.e. go clockwise,
-        // but SWT doesn't do that, so we draw the arc ourselves.
-        /*
-        path.addArc(x0 - x_radius, y0 - y_radius,
+        // TODO Would like to draw arc back, i.e. go clockwise,
+        // but SWT didn't do that on all platforms, so we draw the arc ourselves.
+        // OK on Linux
+        if (false)
+            path.addArc(x0 - x_radius, y0 - y_radius,
                      2*x_radius, 2*y_radius,
                      start_angle, end_angle-start_angle);
-        */
-        final double d_rad = Math.toRadians(1);
-        final double start_rad = Math.toRadians(start_angle);
-        final double end_rad = Math.toRadians(end_angle);
-        for (double rad=start_rad;  rad >= end_rad;  rad -= d_rad)
+        else
         {
-            path.lineTo((float)(x0 + x_radius*Math.cos(rad)),
-                         (float)(y0 - y_radius*Math.sin(rad)));
+            final double d_rad = Math.toRadians(1);
+            final double start_rad = Math.toRadians(start_angle);
+            final double end_rad = Math.toRadians(end_angle);
+            for (double rad=start_rad;  rad >= end_rad;  rad -= d_rad)
+            {
+                path.lineTo((float)(x0 + x_radius*Math.cos(rad)),
+                             (float)(y0 - y_radius*Math.sin(rad)));
+            }
         }
     }
 }
