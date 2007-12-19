@@ -25,9 +25,11 @@ public class Messages extends NLS
     public static String Menu_CSS_Editors;
     public static String Menu_CSS_Management;
     public static String Menu_CSS_Other;
+    public static String Menu_CSS_SNS;
     public static String Menu_CSS_Test;
     public static String Menu_CSS_Trends;
     public static String Menu_CSS_Utilities;
+    public static String Menu_SNS_Elog;
     public static String Menu_File;
     public static String Menu_Help;
     public static String Menu_New;

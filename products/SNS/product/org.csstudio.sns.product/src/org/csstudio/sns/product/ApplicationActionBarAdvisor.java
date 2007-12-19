@@ -1,6 +1,8 @@
 package org.csstudio.sns.product;
 
 import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -25,6 +27,9 @@ import org.eclipse.ui.part.CoolItemGroupMarker;
  */
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
+    /** ID of CSS SNS Menu */
+    private static final String CSS_SNS_MENU = "sns";
+    
     private IAction create_new;
     private IAction close;
     private IAction close_all;
@@ -39,6 +44,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IAction about;
     private IContributionItem menu_perspectives;
     private IContributionItem menu_views;
+
+    // SNS Actions
+    private IAction open_elog_action = null;
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer)
     {
@@ -87,6 +95,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         
         about = ActionFactory.ABOUT.create(window);
         register(about);
+        
+        // SNS Actions
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        String elog = prefs.getString(PluginActivator.ID, "sns_elog", null, null);
+        if (elog != null)
+            open_elog_action = new OpenWebBrowserAction(window,
+                    Messages.Menu_SNS_Elog, elog);
     }
 
     /** {@inheritDoc} */
@@ -157,6 +172,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
                         CssWorkbenchActionConstants.CSS_TEST_MENU));
         menu_css.add(new MenuManager(Messages.Menu_CSS_Other,
                         CssWorkbenchActionConstants.CSS_OTHER_MENU));
+        final MenuManager menu_sns = new MenuManager(Messages.Menu_CSS_SNS,
+                    CSS_SNS_MENU);
+        if (open_elog_action != null)
+            menu_sns.add(open_elog_action);
+        menu_css.add(menu_sns);
         menu_css.add(new Separator(CssWorkbenchActionConstants.CSS_END));
         menubar.add(menu_css);
     }
