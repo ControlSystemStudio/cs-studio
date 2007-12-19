@@ -65,9 +65,6 @@ public class Probe extends ViewPart implements PVListener
      */
     final public static String ID = "org.csstudio.diag.probe.Probe"; //$NON-NLS-1$
 
-    /** Compile-time debug flag */
-    final public static boolean debug = false;
-
     /** Memento tag */
     final private static String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
     /** Memento tag */
@@ -134,8 +131,7 @@ public class Probe extends ViewPart implements PVListener
                 }
                 meter.setValue(value.getDouble());
             }
-            if (Probe.debug)
-                System.out.println("Probe displays " //$NON-NLS-1$
+            Plugin.getLogger().debug("Probe displays " //$NON-NLS-1$
                                 + lbl_time.getText()
                                 + " " + lbl_value.getText()); //$NON-NLS-1$
 
@@ -175,7 +171,7 @@ public class Probe extends ViewPart implements PVListener
         }
         catch (Exception e)
         {
-            Plugin.logException("activateWithPV", e); //$NON-NLS-1$
+            Plugin.getLogger().error("activateWithPV", e); //$NON-NLS-1$
             e.printStackTrace();
         }
         return false;
@@ -488,8 +484,7 @@ public class Probe extends ViewPart implements PVListener
     @SuppressWarnings("nls")
     public boolean setPVName(String pv_name)
     {
-        if (Probe.debug)
-            Plugin.logInfo("setPVName(" + pv_name+ ")");
+        Plugin.getLogger().debug("setPVName(" + pv_name+ ")");
 
         // Close a previous channel
         disposeChannel();
@@ -527,7 +522,7 @@ public class Probe extends ViewPart implements PVListener
         }
         catch (Exception ex)
         {
-            Plugin.logException(Messages.S_CreateError, ex);
+            Plugin.getLogger().error(Messages.S_CreateError, ex);
             updateStatus(Messages.S_CreateError + ex.getMessage());
             return false;
         }
@@ -543,8 +538,7 @@ public class Probe extends ViewPart implements PVListener
     // PVListener
     public void pvValueUpdate(PV pv)
     {
-        if (Probe.debug)
-            Plugin.logInfo("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
+        Plugin.getLogger().debug("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
         // We might receive events after the view is already disposed....
         if (lbl_value.isDisposed())
             return;
@@ -556,7 +550,7 @@ public class Probe extends ViewPart implements PVListener
         }
         catch (Exception e)
         {
-            Plugin.logException("pvValueUpdate error", e); //$NON-NLS-1$
+            Plugin.getLogger().error("pvValueUpdate error", e); //$NON-NLS-1$
             updateStatus(e.getMessage());
         }
     }
@@ -566,8 +560,7 @@ public class Probe extends ViewPart implements PVListener
     {
         if (pv != null)
         {
-            if (debug)
-                System.out.println("Probe: disposeChannel " + pv.getName()); //$NON-NLS-1$
+            Plugin.getLogger().debug("Probe: disposeChannel " + pv.getName()); //$NON-NLS-1$
             pv.removeListener(this);
             pv.stop();
             pv = null;
@@ -653,7 +646,7 @@ public class Probe extends ViewPart implements PVListener
         }
         catch (Exception ex)
         {
-            Plugin.logException(Messages.S_AdjustFailed, ex);
+            Plugin.getLogger().error(Messages.S_AdjustFailed, ex);
             updateStatus(Messages.S_AdjustFailed + ex.getMessage());
         }
     }
