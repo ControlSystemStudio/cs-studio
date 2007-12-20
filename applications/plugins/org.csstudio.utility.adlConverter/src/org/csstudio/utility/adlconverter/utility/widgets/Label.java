@@ -67,6 +67,7 @@ public class Label extends Widget {
                 String[] textit = ADLHelper.cleanString(row[1]);
                 _widget.setPropertyValue(LabelModel.PROP_TEXTVALUE, textit[1]);
                 labelText = textit[1];
+                _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);
                 if(textit[1].startsWith("$")&&textit.length>2){ //$NON-NLS-1$
                     _widget.setAliasValue("channel", textit[2]); //$NON-NLS-1$
                     _widget.setPrimarPv(textit[2]);
