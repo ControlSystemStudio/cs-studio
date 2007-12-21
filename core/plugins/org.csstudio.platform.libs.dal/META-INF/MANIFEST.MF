@@ -14,7 +14,7 @@ Bundle-ClassPath: .,
  lib/java-common-4.0-SNAPSHOT.jar,
  lib/java-common-src-4.0-SNAPSHOT.jar,
  lib/junit-3.8.1.jar,
- lib/css-dal-0.7.jar
+ lib/css-dal-0.7.1.jar
 Export-Package: EDU.oswego.cs.dl.util.concurrent,
  EDU.oswego.cs.dl.util.concurrent.misc,
  EDU.oswego.cs.dl.util.concurrent.taskDemo,
