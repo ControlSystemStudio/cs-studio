@@ -58,6 +58,11 @@ public class ProcessVariableAdressFactoryTest {
 				null, null);
 		testPv("dal-tine://any||any||any[graphMin]2", ControlSystemEnum.UNKNOWN, "any||any||any[graphMin]2",
 				null, null);
+		
+		// test names with type hints
+		
+		testPv("dal-epics://any, doubleSeq", ControlSystemEnum.DAL_EPICS, "any",
+				null, null);
 
 	}
 

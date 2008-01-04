@@ -925,10 +925,6 @@ public class ProcessVariableConnectionService implements
 			_connector = connector;
 
 			if (_dynamicValueProperty.isConnected()) {
-				// the property is already connected -> we just need to add the
-				// dynamic value listener
-				_dynamicValueProperty.addDynamicValueListener(_connector);
-
 				init();
 			} else {
 				// the property is not connected -> we listen and wait for

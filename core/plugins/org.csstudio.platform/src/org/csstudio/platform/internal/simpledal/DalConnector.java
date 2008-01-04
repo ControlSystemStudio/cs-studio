@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
@@ -45,7 +46,7 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 * Constructor.
 	 */
 	public DalConnector(IProcessVariableAddress pvAddress, ValueType valueType) {
-		super(pvAddress,valueType);
+		super(pvAddress, valueType);
 	}
 
 	/**
@@ -175,14 +176,33 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 * {@inheritDoc}
 	 */
 	public void responseError(ResponseEvent event) {
-		doForwardError(event.getResponse().getError().getMessage());
+		Exception e = event.getResponse().getError();
+		doForwardError(e != null ? e.getMessage() : "Unkown error!");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void responseReceived(ResponseEvent event) {
-		doForwardValue(event.getResponse().getValue());
+		IProcessVariableAddress pv = getProcessVariableAddress();
+		String idTag = event.getResponse().getIdTag().toString();
+		
+		// Important: We need to check, that we forward only the right events because all Characteristics  are queried using the same DAL Property instance
+		boolean forward = false;
+
+		if (pv.isCharacteristic()) {
+			forward = pv.getCharacteristic().equals(idTag);
+		} else {
+			forward = "value".equals(idTag);
+		}
+
+		if (forward) {
+			CentralLogger.getInstance().info(
+					null,
+					"Value received for -> " + getProcessVariableAddress()
+							+ " -> " + event.getResponse().getValue());
+			doForwardValue(event.getResponse().getValue());
+		}
 	}
 
 	private void forwardConnectionEvent(ConnectionEvent e) {

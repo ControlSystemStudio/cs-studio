@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
@@ -194,11 +195,13 @@ abstract class AbstractConnector {
 	 */
 	protected void doForwardValue(final Object value) {
 		if (value != null) {
+			// memorize the latest value
+			_latestValue = value;
+			
 			execute(new IRunnable() {
 				public void doRun(IProcessVariableValueListener listener) {
 					listener.valueChanged(ConverterUtil.convert(value,
 							_valueType));
-					_latestValue = value;
 				}
 			});
 		}
