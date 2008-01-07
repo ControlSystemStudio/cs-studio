@@ -264,18 +264,22 @@ public final class SimpleSliderFigure extends Panel implements
 
 		_currentValue = (int) (_originalVal * _scrollbarPrecision);
 
+		int settedValue = _currentValue; 
 		// update scrollbar
-		if (_currentValue < _min || _currentValue > _max) {
+		if (_currentValue < _min) {
 			// current value is out of the sliders range -> disable the slider
-			_scrollBar.setEnabled(false);
-			_scrollBar.setValue(_currentValue);
-		} else {
-			_scrollBar.setEnabled(true);
-			_scrollBar.setValue(_currentValue);
-			_scrollBar.invalidate();
+			// 07.01.08 the slider shouldn't be disabled any more
+			//_scrollBar.setEnabled(false);
+			//_scrollBar.setValue(_currentValue);
+			settedValue = _min;
+		} else if (_currentValue > _max) {
+			settedValue = _max;
 		}
+		_scrollBar.setEnabled(true);
+		_scrollBar.setValue(settedValue);
+		_scrollBar.invalidate();
 
-		_scrollBar.setValue(_currentValue);
+		//_scrollBar.setValue(_currentValue);
 	}
 
 	/**
