@@ -85,7 +85,7 @@ public class JaasLoginModule implements ILoginModule {
 					user = subjectToUser(subject);
 					loggedIn = true;
 					SecureStore store = SecureStore.getInstance();
-					store.unlock(ch.credentials.getUsername(),
+					store.unlock(user.getUsername(),
 							ch.credentials.getPassword());
 				} catch (LoginException e) {
 					// Note: LoginContext unfortunately does not throw a
