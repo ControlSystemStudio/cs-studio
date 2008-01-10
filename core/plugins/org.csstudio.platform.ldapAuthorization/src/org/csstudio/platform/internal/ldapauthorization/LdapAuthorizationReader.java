@@ -1,8 +1,11 @@
 package org.csstudio.platform.internal.ldapauthorization;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -116,8 +119,33 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 				actionsrights.put(actionId, rights);
 			}
 		} catch (FileNotFoundException fnfe) {
-			CentralLogger.getInstance().warn(this,
-					"File could not be found. Known rights are empty", fnfe);
+			CentralLogger.getInstance().info(this,
+					"Rights configuration file could not be found. Creating a sample file.");
+			PrintStream out = null;
+			try {
+				out = new PrintStream(CONFIG_FILE);
+				out.println("# Rights configuration file for the Control System Studio");
+				out.println("# ");
+				out.println("# Rights are configured using the following syntax:");
+				out.println("# ");
+				out.println("# action = (role, group) ...");
+				out.println("# ");
+				out.println("# where action is the id of the action, and role and group are");
+				out.println("# the role and group of the users that are granted permission to");
+				out.println("# execute actions with the given id. To grant permission to more");
+				out.println("# than one role group combination, specify multiple role group");
+				out.println("# combinations separated by white space.");
+				out.println("");
+				out.println("# Example entry:");
+				out.println("example = (administrator, mks) (developer, mks)");
+			} catch (IOException e) {
+				CentralLogger.getInstance().warn(this,
+						"Error creating sample rights configuration file.", e);
+			} finally {
+				if (out != null) {
+					out.close();
+				}
+			}
 		} catch (IOException e) {
 			// Currently, ignore this error. Using a configuration file for
 			// the permissions is only a workaround until we have an LDAP-based
