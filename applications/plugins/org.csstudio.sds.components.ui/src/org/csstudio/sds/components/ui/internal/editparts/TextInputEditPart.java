@@ -49,6 +49,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
@@ -67,7 +68,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
      * The actual figure will be surrounded with a small frame that can be used
      * to drag the figure around (even if the cell editor is activated).
      */
-    private static final int FRAME_WIDTH = 10;
+    private static final int FRAME_WIDTH = 1;
 
     /**
      * The input field will be slightly brighter than the actual figure so it
@@ -96,6 +97,7 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		label.setPrimaryPV(model.getPrimaryPV());
         label.addMouseListener(new MouseListener() {
             public void mouseDoubleClicked(final MouseEvent me) {
+                System.out.println("Test TextInput mouseDoubleClicked -3");
                 performDirectEdit();
             }
 
@@ -123,11 +125,8 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
      */
     @Override
     public void performRequest(final Request req) {
-        if (req.getType().equals(RequestConstants.REQ_DIRECT_EDIT)) {
             performDirectEdit();
             return;
-        }
-        super.performRequest(req);
     }
 
     /**
@@ -214,16 +213,16 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
      */
     private void locateCellEditor(final CellEditor cellEditor) {
         Rectangle rect = TextInputEditPart.this.figure.getBounds().getCopy();
-
         rect.x = rect.x + FRAME_WIDTH;
         rect.y = rect.y + FRAME_WIDTH;
-        rect.height = rect.height - (FRAME_WIDTH * 2);
-        rect.width = rect.width - (FRAME_WIDTH * 2);
-
+        rect.height = rect.height - (FRAME_WIDTH * 1);
+        rect.width = rect.width - (FRAME_WIDTH * 1);
+        System.out.println("Test TextInput2");
         getFigure().translateToAbsolute(rect);
 
         cellEditor.getControl().setBounds(rect.x, rect.y, rect.width,
                 rect.height);
+        cellEditor.getControl().setLayoutData(new GridData(SWT.CENTER));
         cellEditor.getControl().setVisible(true);
     }
 
