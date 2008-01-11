@@ -43,7 +43,8 @@ class JCACommandThread extends Thread
     private boolean run = false;
     
     /** Construct, but don't start the thread.
-     * @param jca_context
+     *  @param jca_context
+     *  @see #start()
      */
     public JCACommandThread(final Context jca_context)
     {
@@ -51,7 +52,12 @@ class JCACommandThread extends Thread
         this.jca_context = jca_context;
     }
     
-    /** Version of start that may be called multiple times.
+    /** Version of <code>start</code> that may be called multiple times.
+     *  <p>
+     *  The thread must only be started after the first PV has been
+     *  created. Otherwise, if flush is called without PVs, JNI JCA
+     *  reports pthread errors.
+     *  <p>
      *  NOP when already running
      */
     @Override
