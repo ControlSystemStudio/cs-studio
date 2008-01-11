@@ -1,10 +1,13 @@
 package org.csstudio.trends.databrowser.sampleview;
 
+import org.apache.log4j.Logger;
 import org.csstudio.apputil.ui.swt.AutoSizeColumn;
 import org.csstudio.apputil.ui.swt.AutoSizeControlListener;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesDragSource;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.Model;
+import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.ploteditor.PlotAwareView;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -40,15 +43,45 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 public class SampleView extends PlotAwareView
 {
     public static final String ID = SampleView.class.getName();
+    static Logger log;
     private Model model = null;
     private Combo pv_name;
     private TableViewer table_viewer;
     private TableModel table_model = null;
     
+    /** Listen to model changes: Whenever the PVs change, update pv_name */
+    private ModelListener model_listener = new ModelListener()
+    {
+        public void entriesChanged()
+        {
+            refreshPVs();
+        }
+
+        public void entryAdded(IModelItem new_item)
+        {
+            refreshPVs();
+        }
+
+        public void entryRemoved(IModelItem removed_item)
+        {
+            refreshPVs();
+        }
+
+        // Ignore the rest
+        public void entryArchivesChanged(IModelItem item) { /* NOP */ }
+        public void entryConfigChanged(IModelItem item)   { /* NOP */ }
+        public void entryMetaDataChanged(IModelItem item) { /* NOP */ }
+        public void periodsChanged()                      { /* NOP */ }
+        public void timeRangeChanged()                    { /* NOP */ }
+        public void timeSpecificationsChanged()           { /* NOP */ }
+    };
+    
     /** {@inheritDoc} */
     @Override
     protected void doCreatePartControl(final Composite parent)
     {
+        log = CentralLogger.getInstance().getLogger(this);
+
         GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         parent.setLayout(layout);
@@ -138,27 +171,59 @@ public class SampleView extends PlotAwareView
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("nls")
     @Override
     protected void updateModel(final Model old_model, final Model new_model)
     {
-        if (new_model == null)
-        {   // Clear everyting
+        if (log.isDebugEnabled())
+        {
+            final String o = old_model == null ? "<null>" : old_model.toString();
+            final String n = new_model == null ? "<null>" : new_model.toString();
+            log.debug("Changing model from " + o + " to " + n);
+        }
+        // Any change at all?
+        if (new_model == model)
+            return;
+        // Model changed 
+        if (model != null)
+        {   // Disconnect from our current model
+            model.removeListener(model_listener);
             model = null;
+            // Clear everything
             pv_name.setText(Messages.NoPlot);
             pv_name.setEnabled(false);
             selectPV(null);
+        }
+        if (new_model == null)
+            return;
+        // Display PV names of new model?
+        model = new_model;
+        selectPV(null);
+        refreshPVs();
+        // Learn when PVs get added/removed...
+        model.addListener(model_listener);
+    }
+
+    /** Update PV name combo from the current model. */
+    private void refreshPVs()
+    {
+        final String old_pv_name = pv_name.getText();
+        if (model == null)
+        {
+            pv_name.removeAll();
+            pv_name.setEnabled(false);
             return;
         }
-        if (new_model == model)
-            return; // No change
-        // Display PV names of new model
-        model = new_model;
         final String pvs[] = new String[model.getNumItems()];
         for (int i=0; i<pvs.length; ++i)
             pvs[i] = model.getItem(i).getName();
         pv_name.setItems(pvs);
         pv_name.setEnabled(true);
-        selectPV(null);
+        // If there is a PV selected, select it again.
+        // In case it's no longer a valid PV name,
+        // this will clear the data.
+        if (old_pv_name.length() > 0)
+            selectPV(old_pv_name);
     }
 
     /** A PV name was entered or selected.
@@ -166,28 +231,33 @@ public class SampleView extends PlotAwareView
      *  Find it in the model, and display its samples.
      *  @param PV Name or <code>null</code> to reset everything.
      */
-    private void selectPV(String name)
+    @SuppressWarnings("nls")
+    private void selectPV(final String name)
     {
-        if (name == null)
+        if (name != null)
         {
-            pv_name.setText(""); //$NON-NLS-1$
-            table_viewer.setItemCount(0);
-            table_model = null;
-            return;
-        }
-        for (int i=0; i<model.getNumItems(); ++i)
-        {
-            IModelItem item = model.getItem(i);
-            if (item.getName().equals(name))
+            for (int i=0; i<model.getNumItems(); ++i)
             {
-                table_model = new TableModel(model, item);
-                table_viewer.setItemCount(table_model.size());
-                table_viewer.refresh();
-                return;
+                IModelItem item = model.getItem(i);
+                if (item.getName().equals(name))
+                {
+                    log.debug("Updating table for " + item.getName());
+                    table_model = new TableModel(model, item);
+                    table_viewer.setItemCount(table_model.size());
+                    table_viewer.refresh();
+                    return;
+                }
             }
         }
-        // Invalid PV name, not in model
-        selectPV(null);
+        // Name was null or not found in model
+        if (name == null)
+            log.debug("Clearing table");
+        else
+            log.debug("Clearing table, " + name + " not found");
+        pv_name.setText(""); //$NON-NLS-1$
+        table_viewer.setItemCount(0);
+        table_model = null;
+        table_viewer.refresh();
     }
 
     /** Create context menu for table.

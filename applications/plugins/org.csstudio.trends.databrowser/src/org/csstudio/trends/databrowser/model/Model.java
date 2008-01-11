@@ -764,4 +764,14 @@ public class Model
         for (ModelListener l : listeners)
             l.entriesChanged();
     }
+
+    /** @return Some string description of Model for debug/log purposes */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString()
+    {
+        if (items.size() <= 0)
+            return "empty Model";
+        return "Model (" + items.get(0).getName() + ", ...";
+    }
 }
