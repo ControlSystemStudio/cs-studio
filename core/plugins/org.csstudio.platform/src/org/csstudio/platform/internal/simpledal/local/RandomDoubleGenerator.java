@@ -5,13 +5,18 @@ import java.util.Random;
 public class RandomDoubleGenerator extends AbstractDataGenerator<Double> {
 	private double _min;
 	private double _max;
+	private Random _random;
 
 	public RandomDoubleGenerator(LocalChannel localChannel, int defaultPeriod,
 			String[] options) {
 		super(localChannel, defaultPeriod, options);
+		_random = new Random(System.currentTimeMillis()
+				+ localChannel.hashCode());
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void init(String[] options) {
 		try {
@@ -40,11 +45,12 @@ public class RandomDoubleGenerator extends AbstractDataGenerator<Double> {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected Double generateNextValue() {
-		Random rd = new Random(System.currentTimeMillis());
-
-		double d = rd.nextDouble();
+		double d = _random.nextDouble();
 
 		double result = _min + ((_max - _min) * d);
 

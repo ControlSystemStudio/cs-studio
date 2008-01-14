@@ -14,6 +14,8 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
  * 
  */
 public abstract class AbstractProcessVariableNameParser {
+	private static final Pattern CONTROL_SYSTEM_PREFIX_PATTERN = Pattern.compile("^.*://(.*)");
+	
 	/**
 	 * Parses the specified raw name and returns a pv adress.
 	 * 
@@ -63,10 +65,8 @@ public abstract class AbstractProcessVariableNameParser {
 	private String removeProtocol(final String rawName) {
 		String rawNameWithoutControlSystem = rawName;
 
-		// compile a regex pattern and parse the String
-		Pattern p = Pattern.compile("^.*://(.*)");
 
-		Matcher m = p.matcher(rawName);
+		Matcher m = CONTROL_SYSTEM_PREFIX_PATTERN.matcher(rawName);
 
 		if (m.find()) {
 			rawNameWithoutControlSystem = m.group(1);

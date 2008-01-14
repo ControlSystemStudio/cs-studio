@@ -11,6 +11,7 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ValueType;
+import org.csstudio.platform.util.PerformanceUtil;
 
 /**
  * Base class for connectors.
@@ -55,6 +56,7 @@ abstract class AbstractConnector {
 		_processVariableAddress = pvAddress;
 		_valueType = valueType;
 		_weakListenerReferences = new ArrayList<WeakReference<IProcessVariableValueListener>>();
+		PerformanceUtil.getInstance().constructorCalled(this);
 	}
 
 	/**
@@ -197,7 +199,7 @@ abstract class AbstractConnector {
 		if (value != null) {
 			// memorize the latest value
 			_latestValue = value;
-			
+
 			execute(new IRunnable() {
 				public void doRun(IProcessVariableValueListener listener) {
 					listener.valueChanged(ConverterUtil.convert(value,
@@ -269,7 +271,7 @@ abstract class AbstractConnector {
 			}
 
 			for (WeakReference wr : deletionCandidates) {
-				_weakListenerReferences.remove(wr);
+				boolean removed = _weakListenerReferences.remove(wr);
 			}
 		}
 	}
@@ -291,6 +293,11 @@ abstract class AbstractConnector {
 		 *            null)
 		 */
 		void doRun(IProcessVariableValueListener valueListeners);
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		PerformanceUtil.getInstance().finalizedCalled(this);
 	}
 
 }

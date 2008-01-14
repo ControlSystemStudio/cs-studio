@@ -72,7 +72,7 @@ public class ProcessVariableConnectionService implements
 		_cleanupThread = new CleanupThread();
 	}
 
-	public static IProcessVariableConnectionService getInstance() {
+	public static synchronized IProcessVariableConnectionService getInstance() {
 		if (_instance == null) {
 			_instance = new ProcessVariableConnectionService();
 		}
@@ -447,15 +447,15 @@ public class ProcessVariableConnectionService implements
 		doRegister(pv, ValueType.STRING, listener);
 	}
 
-	private synchronized void doGetCurrentValueAsync(
-			final IProcessVariableAddress pv, final ValueType valueType,
+	private void doGetCurrentValueAsync(final IProcessVariableAddress pv,
+			final ValueType valueType,
 			final IProcessVariableValueListener listener) {
 
 		if (pv.getControlSystem() == ControlSystemEnum.LOCAL) {
 			// FIXME: Momentan fragen wir lokale Werte auch hier synchron ab.
 			Object value = LocalChannelPool.getInstance().getChannel(pv,
-					valueType).getValue(valueType);
-			listener.valueChanged(value);
+					valueType).getValue();
+			listener.valueChanged(ConverterUtil.convert(value, valueType));
 		} else {
 
 			try {
@@ -549,8 +549,9 @@ public class ProcessVariableConnectionService implements
 		E result = null;
 
 		if (pv.getControlSystem() == ControlSystemEnum.LOCAL) {
-			result = (E) LocalChannelPool.getInstance().getChannel(pv,
-					valueType).getValue(valueType);
+			Object value = LocalChannelPool.getInstance().getChannel(pv,
+					valueType).getValue();
+			result = (E) value;
 		} else {
 			DynamicValueProperty property = null;
 			try {
@@ -593,6 +594,7 @@ public class ProcessVariableConnectionService implements
 	@SuppressWarnings("unchecked")
 	private boolean doSetValue(IProcessVariableAddress pv, ValueType valueType,
 			Object value) {
+
 		boolean result = false;
 
 		if (pv.getControlSystem() == ControlSystemEnum.LOCAL) {
@@ -600,40 +602,8 @@ public class ProcessVariableConnectionService implements
 					value);
 			result = true;
 		} else {
-
-			DynamicValueProperty property = null;
-			try {
-				property = createOrGetDalProperty(pv, valueType.getDalType());
-			} catch (Exception e) {
-				CentralLogger.getInstance().error(null, e);
-			}
-
-			if (property != null) {
-				try {
-					long timeout = System.currentTimeMillis() + 3000;
-
-					while (!property.isConnected()
-							&& System.currentTimeMillis() < timeout) {
-						try {
-							Thread.sleep(1);
-						} catch (InterruptedException e) {
-						}
-					}
-
-					if (property.isConnected() && property.isSettable()) {
-						property.setValue(value);
-						result = true;
-					}
-				} catch (DataExchangeException e) {
-					CentralLogger.getInstance().warn(
-							null,
-							pv + ": data exchange exception occured ("
-									+ e.getMessage() + ")");
-				}
-
-				// try to dispose the DAL property
-				disposeDalProperty(property, pv.getControlSystem());
-			}
+			WriteValueLinkListener listener = new WriteValueLinkListener(pv,
+					valueType, value);
 		}
 		return result;
 
@@ -654,32 +624,33 @@ public class ProcessVariableConnectionService implements
 	private void doRegister(IProcessVariableAddress pv, ValueType valueType,
 			IProcessVariableValueListener listener) {
 
-		// TODO: Verbindungsaufbau nebenläufig in eigenem Thread durchführen
+		// there is one connector for each pv-type-combination
 		MapKey key = new MapKey(pv, valueType);
 
-		AbstractConnector connector = (AbstractConnector) _connectors.get(key);
+		synchronized (_connectors) {
+			AbstractConnector connector = (AbstractConnector) _connectors
+					.get(key);
 
-		if (connector == null) {
-			connector = createConnector(pv, valueType);
+			if (connector == null) {
+				connector = createConnector(pv, valueType);
 
-			synchronized (_connectors) {
 				// Important: Connector needs to be added here, to prevent
 				// the cleanup thread from disposing the connector too early
 				connector.addProcessVariableValueListener(listener);
 				_connectors.put(key, connector);
+
+			} else {
+				connector.addProcessVariableValueListener(listener);
 			}
-		} else {
-			connector.addProcessVariableValueListener(listener);
 		}
 	}
 
 	public void unregister(IProcessVariableValueListener listener) {
-		doUnregister(listener);
-	}
-
-	private void doUnregister(IProcessVariableValueListener listener) {
-		for (AbstractConnector c : _connectors.values()) {
-			c.removeProcessVariableValueListener(listener);
+		// we remove the listener from all connectors
+		synchronized (_connectors) {
+			for (AbstractConnector c : _connectors.values()) {
+				c.removeProcessVariableValueListener(listener);
+			}
 		}
 	}
 
@@ -719,70 +690,6 @@ public class ProcessVariableConnectionService implements
 
 		return connector;
 	}
-
-	//
-	// /**
-	// * Registers the specified listener. We decouple DAL and those listeners
-	// * using a {@link DalConnector} construct. In fact, only the
-	// * {@link DalConnector} listens to the DAL directly and forwards any
-	// events
-	// * to appropriate methods on the {@link IProcessVariableValueListener}.
-	// *
-	// * @param pv
-	// * the process variable pointer
-	// * @param propertyType
-	// * the DAL property type
-	// * @param listener
-	// * the value listener
-	// * @throws Exception
-	// * an exception
-	// */
-	// @SuppressWarnings("unchecked")
-	// private void doRegisterForDal(IProcessVariableAddress pv,
-	// ValueType valueType, IProcessVariableValueListener listener) {
-	//
-	// // TODO: Zusammengesetzter Key aus PV und erwartetem Rückgabetyp
-	// if (!_dalConnectors.containsKey(pv)) {
-	// // get or create a real DAL property
-	// DynamicValueProperty dynamicValueProperty = null;
-	// dynamicValueProperty = createOrGetDalProperty(pv, valueType
-	// .getDalType());
-	//
-	// if (dynamicValueProperty != null) {
-	// // create a new connector
-	// final DalConnector connector = new DalConnector(pv);
-	//
-	// // add the connector as dynamic value listener on the DAL
-	// // property
-	// // (requires workaround)
-	// new ConnectionWorkarroundLinkListener(dynamicValueProperty,
-	// connector);
-	//
-	// // add the connector as link listener on the DAL property
-	// dynamicValueProperty.addLinkListener(connector);
-	//
-	// // send the initial connection state
-	// connector.forwardConnectionState(ConnectionState
-	// .translate(dynamicValueProperty.getConnectionState()));
-	//
-	// // keep the DAL property in mind
-	// connector.setDalProperty(dynamicValueProperty);
-	//
-	// synchronized (_dalConnectors) {
-	// assert connector.getDalProperty() != null;
-	// assert connector.getProcessVariableAddress() != null;
-	// // Important: Connector needs to be added here, to prevent
-	// // the cleanup thread from disposing the connector too early
-	// connector.addProcessVariableValueListener(listener);
-	// _dalConnectors.put(pv, connector);
-	// }
-	// }
-	// } else {
-	// // connect the connector to the process variable listener
-	// DalConnector connector = _dalConnectors.get(pv);
-	// connector.addProcessVariableValueListener(listener);
-	// }
-	// }
 
 	/**
 	 * Delivers a real DAL property. The delivered property may already be
@@ -831,12 +738,17 @@ public class ProcessVariableConnectionService implements
 	private void disposeConnector(DalConnector connector) {
 		DynamicValueProperty property = connector.getDalProperty();
 
+		connector.setDalProperty(null);
+
 		if (!property.isDestroyed()) {
 			// remove link listener
 			property.removeLinkListener(connector);
 
 			// remove value listeners
 			property.removeDynamicValueListener(connector);
+
+			// remove response listeners
+			property.removeResponseListener(connector);
 
 			// try to dispose the DAL property
 			disposeDalProperty(property, connector.getProcessVariableAddress()
@@ -858,10 +770,117 @@ public class ProcessVariableConnectionService implements
 					&& property.getResponseListeners().length <= 0) {
 				factory.getPropertyFamily().destroy(property);
 
+				// <**** Workarround (FIXME: Remove, when DAL is fixed) ***
+				// DAL caches a reference to a former ResponseListener
+				// via its latestResponse and latestRequest fields on
+				// DynamicValuePropertyImpl.class
+				// ********************************************************
+				try {
+					Object e = property.getLatestResponse();
+
+					property.getAsynchronous(null);
+
+					while (e == property.getLatestResponse()) {
+						Thread.sleep(1);
+					}
+
+				} catch (DataExchangeException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				// **** Workarround (Remove, when DAL is fixed)************>
+
 				assert !factory.getPropertyFamily().contains(property) : "!getPropertyFactory().getPropertyFamily().contains(property)";
 			}
 		}
 
+	}
+
+	class WriteValueLinkListener extends LinkAdapter {
+		private IProcessVariableAddress _processVariableAddress;
+		private ValueType _valueType;
+		private DynamicValueProperty _dynamicValueProperty;
+		private Object _valueToSet;
+
+		private WriteValueLinkListener(
+				IProcessVariableAddress processVariableAddress,
+				ValueType valueType, Object valueToSet) {
+			assert processVariableAddress != null;
+			assert valueType != null;
+			assert valueToSet != null;
+
+			_processVariableAddress = processVariableAddress;
+			_valueType = valueType;
+			_valueToSet = valueToSet;
+
+			// create or get the DAL property
+			try {
+				_dynamicValueProperty = createOrGetDalProperty(
+						_processVariableAddress, _valueType.getDalType());
+			} catch (Exception e) {
+				CentralLogger.getInstance().error(null, e);
+			}
+
+			if (_dynamicValueProperty != null
+					&& _dynamicValueProperty.isConnectionAlive()) {
+				doSetValue();
+			} else {
+				// the property is not connected -> we listen and wait for
+				// connection events
+				_dynamicValueProperty.addLinkListener(this);
+			}
+
+			// TODO: Timeout???
+		}
+
+		@Override
+		public void connectionFailed(ConnectionEvent e) {
+			_dynamicValueProperty.removeLinkListener(this);
+		}
+
+		@Override
+		public void connectionLost(ConnectionEvent e) {
+			_dynamicValueProperty.removeLinkListener(this);
+		}
+
+		@Override
+		public void destroyed(ConnectionEvent e) {
+			_dynamicValueProperty.removeLinkListener(this);
+		}
+
+		@Override
+		public void disconnected(ConnectionEvent e) {
+			_dynamicValueProperty.removeLinkListener(this);
+		}
+
+		@Override
+		public void suspended(ConnectionEvent e) {
+			_dynamicValueProperty.removeLinkListener(this);
+		}
+
+		public void connected(ConnectionEvent e) {
+			// disconnect this listener
+			_dynamicValueProperty.removeLinkListener(this);
+			doSetValue();
+		}
+
+		private void doSetValue() {
+			assert _dynamicValueProperty.isConnected() : "_dynamicValueProperty.isConnected()";
+
+			if (_dynamicValueProperty.isSettable()) {
+				try {
+					_dynamicValueProperty.setAsynchronous(_valueToSet);
+				} catch (DataExchangeException e) {
+					e.printStackTrace();
+				}
+			}
+
+			// try to dispose the DAL property
+			disposeDalProperty(_dynamicValueProperty, _processVariableAddress
+					.getControlSystem());
+		}
 	}
 
 	/**
@@ -1048,7 +1067,7 @@ public class ProcessVariableConnectionService implements
 		/**
 		 * Performs the cleanup.
 		 */
-		private synchronized void doCleanup() {
+		private void doCleanup() {
 			synchronized (_connectors) {
 				List<MapKey> deleteCandidates = new ArrayList<MapKey>();
 
@@ -1064,7 +1083,17 @@ public class ProcessVariableConnectionService implements
 				}
 
 				for (MapKey key : deleteCandidates) {
-					_connectors.remove(key);
+					AbstractConnector connector = _connectors.remove(key);
+
+					if (connector instanceof DalConnector) {
+						disposeConnector((DalConnector) connector);
+					} else if (connector instanceof LocalConnector) {
+						LocalChannelPool.getInstance().getChannel(
+								connector.getProcessVariableAddress(),
+								connector.getValueType()).removeListener(
+								(LocalConnector) connector);
+					}
+					// TODO: Local
 				}
 			}
 		}

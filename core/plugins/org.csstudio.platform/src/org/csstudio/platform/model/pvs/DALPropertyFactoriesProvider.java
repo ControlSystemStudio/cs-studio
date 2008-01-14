@@ -44,7 +44,7 @@ public final class DALPropertyFactoriesProvider {
 	 * 
 	 * @return the singleton instance
 	 */
-	public static DALPropertyFactoriesProvider getInstance() {
+	public static synchronized DALPropertyFactoriesProvider getInstance() {
 		if (_instance == null) {
 			_instance = new DALPropertyFactoriesProvider();
 		}

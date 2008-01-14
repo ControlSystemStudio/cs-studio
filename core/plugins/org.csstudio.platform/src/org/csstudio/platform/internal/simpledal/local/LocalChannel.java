@@ -23,12 +23,14 @@ package org.csstudio.platform.internal.simpledal.local;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
+import org.csstudio.platform.ExecutorAccess;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.simpledal.ValueType;
+import org.csstudio.platform.util.PerformanceUtil;
 
 /**
  * Represents a local channel.
@@ -38,13 +40,9 @@ import org.csstudio.platform.simpledal.ValueType;
  * @version $Revision$
  */
 public final class LocalChannel {
+	private ScheduledFuture _scheduledFuture;
 
-	private IProcessVariableAddress _processVariableAddress;
-
-	/**
-	 * The type of values this channel represents.
-	 */
-	private ValueType _valueType;
+	private AbstractDataGenerator _dataGenerator;
 
 	/**
 	 * The current value.
@@ -53,64 +51,100 @@ public final class LocalChannel {
 
 	private List<ILocalChannelListener> _listeners;
 
-	public LocalChannel(IProcessVariableAddress pv, ValueType valueType) {
+	public LocalChannel(IProcessVariableAddress pv) {
 		assert pv != null;
-		assert valueType != null;
-		_processVariableAddress = pv;
-		_valueType = valueType;
 		_currentValue = null;
 		_listeners = new ArrayList<ILocalChannelListener>();
 
-		for (GeneratedData gd : GeneratedData.values()) {
-			Pattern p = gd.getPattern();
+		// find data generator using regular expressions
+		boolean found = false;
+		for (DataGeneratorInfos dgInfo : DataGeneratorInfos.values()) {
+			if (!found) {
+				Pattern p = dgInfo.getPattern();
+				Matcher m = p.matcher(pv.getProperty());
 
-			Matcher m = p.matcher(pv.getProperty());
+				if (m.find()) {
+					found = true; // we apply only the first data generator
+					// that fits
 
-			if (m.find()) {
-				final String[] options = new String[m.groupCount()];
+					// get the options that are encoded in the name of the
+					// process variable
+					final String[] options = new String[m.groupCount()];
 
-				for (int i = 0; i < m.groupCount(); i++) {
-					options[i] = m.group(i+1);
+					for (int i = 0; i < m.groupCount(); i++) {
+						options[i] = m.group(i + 1);
+					}
+
+					// create and init the generator
+					_dataGenerator = dgInfo.getDataGeneratorFactory()
+							.createGenerator(this, 1000, options);
+
+					// init the current value
+					_currentValue = _dataGenerator.generateNextValue();
+
+					schedule();
 				}
-				
-				final AbstractDataGenerator generator = gd.getDataGeneratorFactory().createGenerator(this, 1000, options);
-
-				// init the current value
-				_currentValue = generator.generateNextValue();
-				
-				// start automatic value generators
-				// FIXME: Use a thread pool instead of a single thread for each value!!!!
-				Thread t = new Thread(generator);
-				t.start();
 			}
 		}
+
+		PerformanceUtil.getInstance().constructorCalled(this);
 	}
 
-	public Object getValue(ValueType valueType) {
-		return ConverterUtil.convert(_currentValue, valueType);
+	public Object getValue() {
+		return _currentValue;
 	}
 
 	public void setValue(Object value) {
-		_currentValue = ConverterUtil.convert(value, _valueType);
+		_currentValue = value;
 		fireValueChangeEvent();
 	}
 
 	public void addListener(ILocalChannelListener listener) {
 		if (!_listeners.contains(listener)) {
 			_listeners.add(listener);
+			schedule();
 		}
 	}
 
 	public void removeListener(ILocalChannelListener listener) {
-		if (_listeners.contains(listener)) {
-			_listeners.remove(listener);
+		boolean removed = _listeners.remove(listener);
+		if (removed) {
+			schedule();
 		}
 	}
 
 	private void fireValueChangeEvent() {
 		for (ILocalChannelListener listener : _listeners) {
-			listener.valueChanged(ConverterUtil.convert(_currentValue, listener
-					.getExpectedValueType()));
+			listener.valueChanged(_currentValue);
 		}
+	}
+
+	private void schedule() {
+		// we need a data generator
+		if (_dataGenerator != null) {
+			// if nobody listens, we do not need to generate any random data
+			if (_listeners.size() == 0) {
+				// we cancel all scheduled jobs
+				if (_scheduledFuture != null) {
+					boolean stopped = _scheduledFuture.cancel(false);
+					_scheduledFuture = null;
+				}
+			} else {
+				// we schedule the job if necessary
+				if (_scheduledFuture == null) {
+					_scheduledFuture = ExecutorAccess.getInstance()
+							.getScheduledExecutorService().scheduleAtFixedRate(
+									_dataGenerator, 1000,
+									_dataGenerator.getPeriod(),
+									TimeUnit.MILLISECONDS);
+				}
+			}
+		}
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		PerformanceUtil.getInstance().finalizedCalled(this);
 	}
 }

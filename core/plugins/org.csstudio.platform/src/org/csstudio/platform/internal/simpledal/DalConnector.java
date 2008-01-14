@@ -197,10 +197,6 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 		}
 
 		if (forward) {
-			CentralLogger.getInstance().info(
-					null,
-					"Value received for -> " + getProcessVariableAddress()
-							+ " -> " + event.getResponse().getValue());
 			doForwardValue(event.getResponse().getValue());
 		}
 	}

@@ -21,7 +21,11 @@
  */
 package org.csstudio.platform.internal.simpledal.local;
 
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ValueType;
@@ -49,7 +53,7 @@ public final class LocalChannelPool {
 	 * 
 	 * @return the singleton instance
 	 */
-	public static LocalChannelPool getInstance() {
+	public static synchronized LocalChannelPool getInstance() {
 		if (_instance == null) {
 			_instance = new LocalChannelPool();
 		}
@@ -60,14 +64,14 @@ public final class LocalChannelPool {
 	/**
 	 * {@inheritDoc}
 	 */
-	public LocalChannel getChannel(
+	public synchronized LocalChannel getChannel(
 			final IProcessVariableAddress processVariable, ValueType valueType) {
 		assert processVariable != null;
 
 		LocalChannel channel = _channels.get(processVariable);
 
 		if (channel == null) {
-			channel = new LocalChannel(processVariable, valueType);
+			channel = new LocalChannel(processVariable);
 			_channels.put(processVariable, channel);
 		}
 

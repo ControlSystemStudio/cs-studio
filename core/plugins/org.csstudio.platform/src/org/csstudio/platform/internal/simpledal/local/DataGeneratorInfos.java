@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import org.csstudio.platform.logging.CentralLogger;
 
-public enum GeneratedData {
+public enum DataGeneratorInfos {
 	/**
 	 * Pattern for ..
 	 */
@@ -13,7 +13,7 @@ public enum GeneratedData {
 	private Pattern _pattern;
 	private IDataGeneratorFactory _dataGeneratorFactory;
 	
-	private GeneratedData(String pattern, IDataGeneratorFactory dataGeneratorFactory) {
+	private DataGeneratorInfos(String pattern, IDataGeneratorFactory dataGeneratorFactory) {
 		assert pattern != null;
 		assert dataGeneratorFactory != null;
 		_pattern = Pattern.compile(pattern);
