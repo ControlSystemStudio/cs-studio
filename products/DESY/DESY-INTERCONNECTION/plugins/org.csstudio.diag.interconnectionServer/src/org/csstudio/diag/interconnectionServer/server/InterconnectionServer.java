@@ -476,6 +476,11 @@ public class InterconnectionServer
 	    		"dataPortNumber", "", null);  
 		
 		int dataPortNum = Integer.parseInt(dataPortNumber);
+		
+		//
+		// check beacon timeout of connections to IOCs
+		//
+		new BeaconWatchdog(5000);  // mS
 
         
         try
@@ -791,5 +796,17 @@ public class InterconnectionServer
 
 	public void setQuit(boolean quit) {
 		this.quit = quit;
+	}
+
+	public Connection getAlarmConnection() {
+		return alarmConnection;
+	}
+
+	public Connection getLogConnection() {
+		return logConnection;
+	}
+
+	public Connection getPutLogConnection() {
+		return putLogConnection;
 	}
 }

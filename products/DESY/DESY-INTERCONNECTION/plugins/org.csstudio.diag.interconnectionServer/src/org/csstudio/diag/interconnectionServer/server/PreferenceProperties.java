@@ -97,7 +97,8 @@ public class PreferenceProperties {
 	public static final int 	TAG_TYPE_IS_COMMAND = 5;
 	public static final String 	TAG_IS_COMMAND = "COMMAND";
 	
-	public static final int BEACON_TIMEOUT = 10;
+	public static final int BEACON_TIMEOUT = 10000;	// 10 sec
+	public static final int BEACON_ASK_IF_SELECTED_COUNTER = 10;	// wait for 10 beacons to come until we ask whether this IOC selected us
 	
 	public static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.S";
 	

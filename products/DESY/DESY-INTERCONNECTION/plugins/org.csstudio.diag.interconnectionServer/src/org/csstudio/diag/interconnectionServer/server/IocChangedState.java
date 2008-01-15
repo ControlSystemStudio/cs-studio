@@ -36,7 +36,6 @@ public class IocChangedState extends Thread{
 		CentralLogger.getInstance().debug(this,"IocChangedState: logical IOC name: " + logicalIocName); 
 		/*
 		 * depending on the running state ...
-		 * ... and whether we are the selected partner IC-Server of the IOC
 		 */
 		
 		if ( isRunning()) {
@@ -45,16 +44,24 @@ public class IocChangedState extends Thread{
 			 */
 			CentralLogger.getInstance().warn(this, "InterconnectionServer: All channels set to <connected> mode for Host: " + logicalIocName);
 			/*
-			 * generate JMS alarm message
+			 * TODO
+			 * generate JMS alarm message NAME: "Localhost:logicalIocName:connectState" VALUE: "CONNECTED" SEVERITY: "NO_ALARM"
 			 */
-			setAllRecordsToConnected ( logicalIocName);
+			/*
+			 * do NOT set the connect state for records in LDAP!
+			 * This is handled if the select state changes -> get all alarm states from the IOC
+			 * 
+			 * not necessary: setAllRecordsToConnected ( logicalIocName);
+			 */
+			
 		} else {
 			/*
 			 * set channels in LDAP to disconnected
 			 */
 			CentralLogger.getInstance().warn(this, "InterconnectionServer: All channels set to <disConnected> mode for Host: " + logicalIocName);
 			/*
-			 * generate JMS alarm message
+			 * TODO
+			 * generate JMS alarm message NAME: "Localhost:logicalIocName:connectState" VALUE: "NOT_CONNECTED" SEVERITY: "MAJOR"
 			 */
 			setAllRecordsToDisconnected ( logicalIocName);
 			

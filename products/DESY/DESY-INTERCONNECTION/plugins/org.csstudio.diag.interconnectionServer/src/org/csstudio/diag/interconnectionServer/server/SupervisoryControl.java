@@ -9,13 +9,15 @@ import org.csstudio.diag.interconnectionServer.server.Statistic.StatisticContent
 
 public class SupervisoryControl {
 	
+	static boolean isRunning = true;
+	
 	private static SupervisoryControl supervisoryControlInstance = null;
 	
 	public SupervisoryControl() {
 		//
 		// initialize
 		//
-		
+		scanManager( 2);
 	}
 	
 	
@@ -35,17 +37,17 @@ public class SupervisoryControl {
 	
 	public void scanManager ( int scanTime) {
 		
-		switch (scanTime) {
-		case Timer.scan1Sec:
+		while ( isRunning()) {
 			
 			checkBeaconTimeout();
-			break;
 			
-			default:
-				break;
-		
+			try {
+	       		Thread.sleep( scanTime * 100);
+	       	}
+	       	catch (InterruptedException  e) {
+	       		e.printStackTrace();
+	       	}
 		}
-		
 	}
 	
 	private void checkBeaconTimeout () {
@@ -57,7 +59,7 @@ public class SupervisoryControl {
 			 
 			 if ( thisContent.gregorianTimeDifferenceFromNow( thisContent.getTimeLastBeaconReceived()) > PreferenceProperties.BEACON_TIMEOUT) {
 				 thisContent.setConnectState( false);
-				 System.out.println("---------- Client disconnecte ---------------");
+				 System.out.println("---------- Client disconnected ---------------");
 				 System.out.println("Host:" +  thisContent.host + "  Port: " + thisContent.port +"\n");
 				 //
 				 // cannot send message from here ..
@@ -82,6 +84,16 @@ public class SupervisoryControl {
 			 
 		 }
 		
+	}
+
+
+	public static boolean isRunning() {
+		return isRunning;
+	}
+
+
+	public static void setRunning(boolean isRunning) {
+		SupervisoryControl.isRunning = isRunning;
 	}
 
 }

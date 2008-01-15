@@ -105,6 +105,13 @@ public class ClientRequest extends Thread
         
         address 	= packet.getAddress();
         hostName 	= address.getHostName();
+        /*
+         * in case the host name is null
+         * keep the IP address instead
+         */
+        if ( hostName == null) {
+        	hostName = address.getHostAddress();
+        }
         port 		= packet.getPort();
         length 		= packet.getLength();
         statisticId	= hostName + ":" + port;
@@ -147,6 +154,7 @@ public class ClientRequest extends Thread
         statisticContent = statistic.getContentObject( statisticId);
         statisticContent.setTime( received);
         statisticContent.setHost( hostName);
+        statisticContent.setIpAddress(address.toString());
         statisticContent.setPort( port);
         statisticContent.setLastMessage( daten);
         statisticContent.setLastMessageSize( length); 
@@ -190,9 +198,10 @@ public class ClientRequest extends Thread
         	//
         	
         	switch (TagList.getInstance().getMessageType( type.getValue())) {
-        	case TagList.ALARM_MESSAGE:
-        	case TagList.EVENT_MESSAGE:
-        	case TagList.ALARM_STATUS_MESSAGE:
+        	
+        	case TagList.ALARM_MESSAGE:				// compatibility with old version
+        	case TagList.ALARM_STATUS_MESSAGE:		// compatibility with old version
+        	case TagList.EVENT_MESSAGE:				// the real thing!
         		//
         		// ALARM jms server
         		//
@@ -233,6 +242,9 @@ public class ClientRequest extends Thread
         			icServer.checkSendMessageErrorCount();
                     System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
+        		//
+        		// just send a reply
+        		//
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
         		afterUdpAcknowledgeTime = new GregorianCalendar();
         		///System.out.println("Time-ALARM: - after send UDP reply	= " + dateToString(new GregorianCalendar()));
@@ -243,12 +255,42 @@ public class ClientRequest extends Thread
         		updateLdapEntry( tagValue);
         		//System.out.print("aLe");
         		afterLdapWriteTime = new GregorianCalendar();
+        		/*
+        		 * if we receive alarms - we MUSt be the selected interConnectionServer!
+        		 */
+        		if (!Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
+        			//remember we're selected
+        			Statistic.getInstance().getContentObject(statisticId).setSelectState(true);
+        			// send command to IOC - get ALL alarm states
+        			new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        			/*
+        			 * TODO
+        			 * send JMS message - we are selected
+        			 */
+        		}
         		
         		//checkPerformance( parseTime, afterJmsSendTime, afterUdpAcknowledgeTime, afterLdapWriteTime);
         		System.out.print("A");
         		break;
         		
         	case TagList.STATUS_MESSAGE:
+        		//
+        		// ALARM just a list of ALL alarm states from the IOC - do NOT send to JMS -> only to LDAP!
+        		//
+        		
+        		//
+        		// just send a reply
+        		//
+        		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
+
+        		//
+        		// time to update the LDAP server entry
+        		//
+
+        		updateLdapEntry( tagValue);
+        		System.out.print("AS");
+        		break;
+        		
         	case TagList.SYSTEM_LOG_MESSAGE:
         	case TagList.APPLICATION_LOG_MESSAGE:
         		
@@ -260,7 +302,7 @@ public class ClientRequest extends Thread
         			logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
                     // Create the destination (Topic or Queue)
-        			Destination logDestination = logSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+        			Destination logDestination = logSession.createTopic( PreferenceProperties.JMS_LOG_CONTEXT);
 
                     // Create a MessageProducer from the Session to the Topic or Queue
                 	MessageProducer logSender = logSession.createProducer( logDestination);
@@ -278,6 +320,9 @@ public class ClientRequest extends Thread
         			icServer.checkSendMessageErrorCount();
                     //System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
+        		//
+        		// just send a reply
+        		//
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
         		//
         		// time to update the LDAP server entry
@@ -298,6 +343,142 @@ public class ClientRequest extends Thread
         		// set beacon time locally
         		//
         		Statistic.getInstance().getContentObject(statisticId).setBeaconTime();
+        		/*
+        		 * since we do not know whether we are selected...
+        		 * ... we have to ask the IOC
+        		 * Ask IOC every BEACON_ASK_IF_SELECTED_COUNTER beacon
+        		 * In case the select state changes - we'll ask the IOC for ALL alarm states
+        		 * This is handled in the SendCommandToIoc class
+        		 */
+        		if (Statistic.getInstance().getContentObject(statisticId).getSelectStateCounter() > PreferenceProperties.BEACON_ASK_IF_SELECTED_COUNTER) {
+        			new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_STATUS);
+        			Statistic.getInstance().getContentObject(statisticId).setSelectStateCounter(0);
+        		} else {
+        			/*
+        			 * increment counter
+        			 */
+        			Statistic.getInstance().getContentObject(statisticId).incrementSelectStateCounter();
+        		}
+        		
+        		
+        		//
+        		// generate system log message if connection state changed
+        		//
+        		if ( !Statistic.getInstance().getContentObject(statisticId).connectState) {
+        			//
+        			// connect state changed!
+        			//
+        			Statistic.getInstance().getContentObject(statisticId).setConnectState (true);        			
+        			/*
+        			 * create JMS sender
+        			 * 
+        			 */
+        			try{
+            			logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+                        // Create the destination (Topic or Queue)
+            			Destination logDestination = logSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+
+                        // Create a MessageProducer from the Session to the Topic or Queue
+                    	MessageProducer logSender = logSession.createProducer( logDestination);
+                    	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
+                    	logSender.setTimeToLive(jmsTimeToLiveLogsInt);
+                    	icServer.sendLogMessage( icServer.prepareJmsMessage ( logSession.createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
+                    	logSender.close();
+            		}
+            		catch(JMSException jmse)
+                    {
+            			status = false;
+            			icServer.checkSendMessageErrorCount();
+                        //System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
+                    }
+        		}
+        		//System.out.print("B");
+        		break;
+        		
+        	case TagList.BEACON_MESSAGE_SELECTED:
+        		//
+        		// just send a reply
+        		//
+        		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
+        		///System.out.println("Time-Beacon: - after send UDP reply	=  " + dateToString(new GregorianCalendar()));
+        		//
+        		// set beacon time locally
+        		//
+        		Statistic.getInstance().getContentObject(statisticId).setBeaconTime();
+        		/*
+        		 * we are selected!
+        		 * in case we were not selected before - we'll ask the IOC for an update on ALL the alarm states
+        		 */
+        		if (!Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
+        			//remember we're selected
+        			Statistic.getInstance().getContentObject(statisticId).setSelectState(true);
+        			// send command to IOC - get ALL alarm states
+        			new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        			/*
+        			 * TODO
+        			 * send JMS message - we are selected
+        			 */
+        		}
+        		
+        		
+        		//
+        		// generate system log message if connection state changed
+        		//
+        		if ( !Statistic.getInstance().getContentObject(statisticId).connectState) {
+        			//
+        			// connect state changed!
+        			//
+        			Statistic.getInstance().getContentObject(statisticId).setConnectState (true);
+        			/*
+        			 * create JMS sender
+        			 * 
+        			 */
+        			try{
+            			logSession = logConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+                        // Create the destination (Topic or Queue)
+            			Destination logDestination = logSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+
+                        // Create a MessageProducer from the Session to the Topic or Queue
+                    	MessageProducer logSender = logSession.createProducer( logDestination);
+                    	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
+                    	logSender.setTimeToLive(jmsTimeToLiveLogsInt);
+                    	icServer.sendLogMessage( icServer.prepareJmsMessage ( logSession.createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
+                    	logSender.close();
+            		}
+            		catch(JMSException jmse)
+                    {
+            			status = false;
+            			icServer.checkSendMessageErrorCount();
+                        //System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
+                    }
+        		}
+        		//System.out.print("B");
+        		break;
+        		
+        	case TagList.BEACON_MESSAGE_NOT_SELECTED:
+        		//
+        		// just send a reply
+        		//
+        		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
+        		///System.out.println("Time-Beacon: - after send UDP reply	=  " + dateToString(new GregorianCalendar()));
+        		//
+        		// set beacon time locally
+        		//
+        		Statistic.getInstance().getContentObject(statisticId).setBeaconTime();
+        		/*
+        		 * we are not selected any more
+        		 * in case we were selected before - we'll have to create a JMS message
+        		 */
+        		if ( Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
+        			//remember we're not selected any more
+        			Statistic.getInstance().getContentObject(statisticId).setSelectState(false);
+        			/*
+        			 * TODO
+        			 * send JMS message - we are NOT selected
+        			 */
+        		}
         		//
         		// generate system log message if connection state changed
         		//
@@ -534,7 +715,7 @@ public class ClientRequest extends Thread
 			status = tagValue.get("STATUS");
 			severity = tagValue.get("SEVERITY");
 			/*
-			 * TODO: if we decide to use separate fields for event and create-time zhis is he place to change it!
+			 * TODO: if we decide to use separate fields for event and create-time this is he place to change it!
 			 */
 			if ( tagValue.containsKey("EVENTTIME")) {
 				timeStamp = tagValue.get("EVENTTIME");
@@ -552,7 +733,7 @@ public class ClientRequest extends Thread
 			//
 			// change time stamp written time (for now we use: epicsAlarmAcknTimeStamp)
 			//
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S");
+			SimpleDateFormat sdf = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT);
 	        java.util.Date currentDate = new java.util.Date();
 	        String eventTime = sdf.format(currentDate);
 	        /*

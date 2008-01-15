@@ -10,15 +10,17 @@ public class TagList {
 	private Hashtable<String,Integer>	replyTypes	= null;
 	
 	public static final int ALARM_MESSAGE = 1;
-	public static final int SYSTEM_LOG_MESSAGE = 2;
-	public static final int APPLICATION_LOG_MESSAGE = 3;
-	public static final int EVENT_MESSAGE = 4;
-	public static final int STATUS_MESSAGE = 5;
-	public static final int BEACON_MESSAGE = 6;
-	public static final int UNKNOWN_MESSAGE = 7;
-	public static final int PUT_LOG_MESSAGE = 8;
-	public static final int ALARM_STATUS_MESSAGE = 9;
-	public static final int TEST_COMMAND = 10;
+	public static final int ALARM_STATUS_MESSAGE = 2;
+	public static final int SYSTEM_LOG_MESSAGE = 3;
+	public static final int APPLICATION_LOG_MESSAGE = 4;
+	public static final int EVENT_MESSAGE = 5;
+	public static final int STATUS_MESSAGE = 6;
+	public static final int BEACON_MESSAGE = 7;
+	public static final int BEACON_MESSAGE_SELECTED = 8;
+	public static final int BEACON_MESSAGE_NOT_SELECTED = 9;
+	public static final int UNKNOWN_MESSAGE = 10;
+	public static final int PUT_LOG_MESSAGE = 11;
+	public static final int TEST_COMMAND = 12;
 	
 	public static final int REPLY_TYPE_DONE = 1;
 	public static final int REPLY_TYPE_OK = 2;
@@ -59,17 +61,19 @@ public class TagList {
 	
 	private void fillMessageTypes() {
 		
-		messageTypes.put("alarm", 			ALARM_MESSAGE);
-		messageTypes.put("alarmStatus", 	ALARM_STATUS_MESSAGE);
-		messageTypes.put("sysLog", 			SYSTEM_LOG_MESSAGE);
-		messageTypes.put("sysMsg", 			SYSTEM_LOG_MESSAGE);
-		messageTypes.put("appLog", 			APPLICATION_LOG_MESSAGE);
-		messageTypes.put("event", 			EVENT_MESSAGE);
-		messageTypes.put("status", 			STATUS_MESSAGE);
-		messageTypes.put("beacon", 			BEACON_MESSAGE);
-		messageTypes.put("unknown", 		UNKNOWN_MESSAGE);
-		messageTypes.put("putLog", 			PUT_LOG_MESSAGE);
-		messageTypes.put("TCom", 			TEST_COMMAND);
+		messageTypes.put("alarm", 				ALARM_MESSAGE);
+		messageTypes.put("alarmStatus", 		ALARM_STATUS_MESSAGE);
+		messageTypes.put("sysLog", 				SYSTEM_LOG_MESSAGE);
+		messageTypes.put("sysMsg", 				SYSTEM_LOG_MESSAGE);
+		messageTypes.put("appLog", 				APPLICATION_LOG_MESSAGE);
+		messageTypes.put("event", 				EVENT_MESSAGE);
+		messageTypes.put("status", 				STATUS_MESSAGE);
+		messageTypes.put("beacon", 				BEACON_MESSAGE);
+		messageTypes.put("beaconSelected", 		BEACON_MESSAGE_SELECTED);
+		messageTypes.put("beaconNotSelected", 	BEACON_MESSAGE_NOT_SELECTED);
+		messageTypes.put("unknown", 			UNKNOWN_MESSAGE);
+		messageTypes.put("putLog", 				PUT_LOG_MESSAGE);
+		messageTypes.put("TCom", 				TEST_COMMAND);
 	}
 	
 	private void fillReplyTypes() {

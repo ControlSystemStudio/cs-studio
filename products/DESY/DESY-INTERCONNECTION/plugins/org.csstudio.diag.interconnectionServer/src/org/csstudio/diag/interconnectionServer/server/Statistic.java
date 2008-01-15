@@ -78,6 +78,7 @@ public class Statistic {
 	
 	public class StatisticContent {
 		String host			= null;
+		String ipAddress	= null;
 		int	port			= 0;
 		String	lastMessage	= null;
 		int lastMessageSize = 0;
@@ -92,7 +93,21 @@ public class Statistic {
 		GregorianCalendar timeLastErrorOccured = null;
 		int errorCounter = 0;
 		boolean connectState = false;
+		boolean selectState = false;
+		int selectStateCounter = 0;
 		
+		public int getSelectStateCounter() {
+			return selectStateCounter;
+		}
+
+		public void setSelectStateCounter(int selectStateCounter) {
+			this.selectStateCounter = selectStateCounter;
+		}
+		
+		public void incrementSelectStateCounter() {
+			this.selectStateCounter++;
+		}
+
 		public StatisticContent () {
 			//
 			// init time
@@ -133,9 +148,17 @@ public class Statistic {
 			this.host = host;
 		}
 		
+		public String getHost () {
+			return host;
+		}
+		
 		public void setPort ( int port) {
 			
 			this.port = port;
+		}
+		
+		public int getPort () {
+			return port;
 		}
 		
 		public void setLastMessage ( String lastMessage) {
@@ -151,6 +174,10 @@ public class Statistic {
 		
 		public void setConnectState ( boolean state) {
 			this.connectState = state;
+		}
+		
+		public boolean getConnectState () {
+			return connectState;
 		}
 		
 		
@@ -234,6 +261,30 @@ public class Statistic {
 		
 		public String getStatisticId () {
 			return host + ":" + port;
+		}
+
+		public String getIpAddress() {
+			return ipAddress;
+		}
+
+		public void setIpAddress(String ipAddress) {
+			this.ipAddress = ipAddress;
+		}
+
+		public boolean isSelectState() {
+			return selectState;
+		}
+
+		public void setSelectState(boolean selectState) {
+			this.selectState = selectState;
+		}
+		
+		public String getCurrentSelectState () {
+			if( this.selectState) {
+				return "selected";
+			} else {
+				return "NOT selected";
+			}
 		}
 		
 
@@ -329,6 +380,24 @@ public class Statistic {
 			 while (connections.hasMoreElements()) {
 				 StatisticContent thisContent = (StatisticContent)connections.nextElement();
 				 nodeNames.add(thisContent.host);
+			 }
+		 } catch (Exception e) {
+			 nodeNames.add("NONE");
+		 }
+		 return nodeNames.toArray(new String[0]);
+		 
+	}
+	
+	public String[] getNodeNameStatusArray () {
+		 List<String> nodeNames = new ArrayList<String>();
+		 boolean first = true;
+		 
+		 try {
+			 // just in case no enum is possible
+			 Enumeration connections = this.connectionList.elements();
+			 while (connections.hasMoreElements()) {
+				 StatisticContent thisContent = (StatisticContent)connections.nextElement();
+				 nodeNames.add(thisContent.host + "  " + thisContent.getCurrentConnectState() + "  " + thisContent.getCurrentSelectState());
 			 }
 		 } catch (Exception e) {
 			 nodeNames.add("NONE");
