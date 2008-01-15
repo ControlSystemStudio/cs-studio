@@ -50,12 +50,12 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 	/**
 	 * The initial window width.
 	 */
-	public static final int MAX_WINDOW_WIDTH = 800;
+	public static final int MAX_WINDOW_WIDTH = 1024;
 
 	/**
 	 * The initial window height.
 	 */
-	public static final int MAX_WINDOW_HEIGHT = 600;
+	public static final int MAX_WINDOW_HEIGHT = 800;
 
 	/**
 	 * The action builder.
