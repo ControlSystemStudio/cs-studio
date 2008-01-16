@@ -204,16 +204,16 @@ public class InterconnectionServer
         		/*
         		 * using ActiveMQ
         		 */
-        		logConnection = connectionFactory.createConnection();
-        		logConnection.start();
+        		this.logConnection = connectionFactory.createConnection();
+        		this.logConnection.start();
         	} else {
         		/*
         		 * using standard JMS
         		 */
         		logContext     = new InitialContext(properties);            
                 logFactory     = (ConnectionFactory)logContext.lookup("ConnectionFactory");
-                logConnection  = logFactory.createConnection();
-                logConnection.start();
+                this.logConnection  = logFactory.createConnection();
+                this.logConnection.start();
         	}
         	/*
         	// Create a Session
@@ -250,16 +250,16 @@ public class InterconnectionServer
         		/*
         		 * using ActiveMQ
         		 */
-        		putLogConnection = connectionFactory.createConnection();
-        		putLogConnection.start();
+        		this.putLogConnection = connectionFactory.createConnection();
+        		this.putLogConnection.start();
         	} else {
         		/*
         		 * using standard JMS
         		 */
         		putLogContext     = new InitialContext(properties);            
                 putLogFactory     = (ConnectionFactory)putLogContext.lookup("ConnectionFactory");
-                putLogConnection  = putLogFactory.createConnection();
-                putLogConnection.start();
+                this.putLogConnection  = putLogFactory.createConnection();
+                this.putLogConnection.start();
         	}
         	/*
         	// Create a Session
@@ -799,14 +799,14 @@ public class InterconnectionServer
 	}
 
 	public Connection getAlarmConnection() {
-		return alarmConnection;
+		return this.alarmConnection;
 	}
 
 	public Connection getLogConnection() {
-		return logConnection;
+		return this.logConnection;
 	}
 
 	public Connection getPutLogConnection() {
-		return putLogConnection;
+		return this.putLogConnection;
 	}
 }

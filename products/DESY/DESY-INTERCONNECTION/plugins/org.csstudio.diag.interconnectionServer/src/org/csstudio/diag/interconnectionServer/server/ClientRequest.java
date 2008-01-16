@@ -32,6 +32,7 @@ import javax.jms.Session;
 
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.server.InterconnectionServer.TagValuePairs;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -154,10 +155,14 @@ public class ClientRequest extends Thread
         statisticContent = statistic.getContentObject( statisticId);
         statisticContent.setTime( received);
         statisticContent.setHost( hostName);
-        statisticContent.setIpAddress(address.toString());
+        statisticContent.setIpAddress(address.getHostAddress());
         statisticContent.setPort( port);
         statisticContent.setLastMessage( daten);
         statisticContent.setLastMessageSize( length); 
+        /*
+		 * find logical name of IOC by the IP address
+		 */
+        statisticContent.setLogicalIocName( LdapSupport.getInstance().getLogicalIocName ( address.getHostAddress()));
         
         Vector<TagValuePairs> tagValuePairs	= new Vector<TagValuePairs>();
         Hashtable<String,String> tagValue = new Hashtable<String,String>();	// could replace the Vector above
@@ -255,19 +260,6 @@ public class ClientRequest extends Thread
         		updateLdapEntry( tagValue);
         		//System.out.print("aLe");
         		afterLdapWriteTime = new GregorianCalendar();
-        		/*
-        		 * if we receive alarms - we MUSt be the selected interConnectionServer!
-        		 */
-        		if (!Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
-        			//remember we're selected
-        			Statistic.getInstance().getContentObject(statisticId).setSelectState(true);
-        			// send command to IOC - get ALL alarm states
-        			new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
-        			/*
-        			 * TODO
-        			 * send JMS message - we are selected
-        			 */
-        		}
         		
         		//checkPerformance( parseTime, afterJmsSendTime, afterUdpAcknowledgeTime, afterLdapWriteTime);
         		System.out.print("A");
@@ -342,7 +334,7 @@ public class ClientRequest extends Thread
         		//
         		// set beacon time locally
         		//
-        		Statistic.getInstance().getContentObject(statisticId).setBeaconTime();
+        		statisticContent.setBeaconTime();
         		/*
         		 * since we do not know whether we are selected...
         		 * ... we have to ask the IOC
@@ -350,25 +342,31 @@ public class ClientRequest extends Thread
         		 * In case the select state changes - we'll ask the IOC for ALL alarm states
         		 * This is handled in the SendCommandToIoc class
         		 */
-        		if (Statistic.getInstance().getContentObject(statisticId).getSelectStateCounter() > PreferenceProperties.BEACON_ASK_IF_SELECTED_COUNTER) {
+        		if (statisticContent.getSelectStateCounter() > PreferenceProperties.BEACON_ASK_IF_SELECTED_COUNTER) {
         			new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_STATUS);
-        			Statistic.getInstance().getContentObject(statisticId).setSelectStateCounter(0);
+        			statisticContent.setSelectStateCounter(0);
         		} else {
         			/*
         			 * increment counter
         			 */
-        			Statistic.getInstance().getContentObject(statisticId).incrementSelectStateCounter();
+        			statisticContent.incrementSelectStateCounter();
         		}
         		
         		
         		//
         		// generate system log message if connection state changed
         		//
-        		if ( !Statistic.getInstance().getContentObject(statisticId).connectState) {
+        		if ( !statisticContent.connectState) {
         			//
         			// connect state changed!
         			//
-        			Statistic.getInstance().getContentObject(statisticId).setConnectState (true);        			
+        			statisticContent.setConnectState (true);
+        			/*
+        			 * start IocChangeState thread
+        			 */
+        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), true);
+        			
+        			
         			/*
         			 * create JMS sender
         			 * 
@@ -384,6 +382,7 @@ public class ClientRequest extends Thread
                     	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
                     	logSender.setTimeToLive(jmsTimeToLiveLogsInt);
                     	icServer.sendLogMessage( icServer.prepareJmsMessage ( logSession.createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
+                    	
                     	logSender.close();
             		}
             		catch(JMSException jmse)
@@ -405,31 +404,52 @@ public class ClientRequest extends Thread
         		//
         		// set beacon time locally
         		//
-        		Statistic.getInstance().getContentObject(statisticId).setBeaconTime();
+        		statisticContent.setBeaconTime();
         		/*
         		 * we are selected!
         		 * in case we were not selected before - we'll ask the IOC for an update on ALL the alarm states
         		 */
-        		if (!Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
+        		if (!statisticContent.isSelectState()) {
         			//remember we're selected
-        			Statistic.getInstance().getContentObject(statisticId).setSelectState(true);
+        			statisticContent.setSelectState(true);
+        			/*
+        			 * get host name of interconnection server
+        			 */
+        			String localHostName = null;
+        			try {
+        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+        				localHostName = localMachine.getHostName();
+        			}
+        			catch (java.net.UnknownHostException uhe) { 
+        			}
+        			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+        					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+        					localHostName + ":" + statisticContent.getLogicalIocName() + ":selectState",					// name
+        					"SELECTED", 														// value
+        					JmsMessage.SEVERITY_NO_ALARM, 										// severity
+        					"SELECTED", 														// status
+        					hostName, 															// host
+        					null, 																// facility
+        					"virtual channel name", 											// text
+        					null);	
         			// send command to IOC - get ALL alarm states
         			new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
-        			/*
-        			 * TODO
-        			 * send JMS message - we are selected
-        			 */
         		}
         		
         		
         		//
         		// generate system log message if connection state changed
         		//
-        		if ( !Statistic.getInstance().getContentObject(statisticId).connectState) {
+        		if ( !statisticContent.connectState) {
         			//
         			// connect state changed!
         			//
-        			Statistic.getInstance().getContentObject(statisticId).setConnectState (true);
+        			statisticContent.setConnectState (true);
+        			/*
+        			 * start IocChangeState thread
+        			 */
+        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), true);
+        			
         			/*
         			 * create JMS sender
         			 * 
@@ -445,6 +465,7 @@ public class ClientRequest extends Thread
                     	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
                     	logSender.setTimeToLive(jmsTimeToLiveLogsInt);
                     	icServer.sendLogMessage( icServer.prepareJmsMessage ( logSession.createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
+
                     	logSender.close();
             		}
             		catch(JMSException jmse)
@@ -466,27 +487,48 @@ public class ClientRequest extends Thread
         		//
         		// set beacon time locally
         		//
-        		Statistic.getInstance().getContentObject(statisticId).setBeaconTime();
+        		statisticContent.setBeaconTime();
         		/*
         		 * we are not selected any more
         		 * in case we were selected before - we'll have to create a JMS message
         		 */
-        		if ( Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
+        		if ( statisticContent.isSelectState()) {
         			//remember we're not selected any more
-        			Statistic.getInstance().getContentObject(statisticId).setSelectState(false);
+        			statisticContent.setSelectState(false);
         			/*
-        			 * TODO
-        			 * send JMS message - we are NOT selected
+        			 * get host name of interconnection server
         			 */
+        			String localHostName = null;
+        			try {
+        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+        				localHostName = localMachine.getHostName();
+        			}
+        			catch (java.net.UnknownHostException uhe) { 
+        			}
+        			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+        					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+        					localHostName + ":" + statisticContent.getLogicalIocName() + ":selectState",	// name
+        					"NOT-SELECTED", 													// value
+        					JmsMessage.SEVERITY_MINOR, 											// severity
+        					"NOT-SELECTED", 													// status
+        					hostName, 															// host
+        					null, 																// facility
+        					"virtual channel name", 											// text
+        					null);	
         		}
         		//
         		// generate system log message if connection state changed
         		//
-        		if ( !Statistic.getInstance().getContentObject(statisticId).connectState) {
+        		if ( !statisticContent.connectState) {
         			//
         			// connect state changed!
         			//
-        			Statistic.getInstance().getContentObject(statisticId).setConnectState (true);
+        			statisticContent.setConnectState (true);
+        			/*
+        			 * start IocChangeState thread
+        			 */
+        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), true);
+        			
         			/*
         			 * create JMS sender
         			 * 
@@ -502,6 +544,26 @@ public class ClientRequest extends Thread
                     	logSender.setDeliveryMode( DeliveryMode.PERSISTENT);
                     	logSender.setTimeToLive(jmsTimeToLiveLogsInt);
                     	icServer.sendLogMessage( icServer.prepareJmsMessage ( logSession.createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
+                    	/*
+            			 * get host name of interconnection server
+            			 */
+            			String localHostName = null;
+            			try {
+            				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+            				localHostName = localMachine.getHostName();
+            			}
+            			catch (java.net.UnknownHostException uhe) { 
+            			}
+            			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+            					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+            					localHostName + ":" + hostName + ":connectState",					// name
+            					"CONNECTED", 														// value
+            					JmsMessage.SEVERITY_NO_ALARM, 										// severity
+            					"CONNECTED", 														// status
+            					hostName, 															// host
+            					null, 																// facility
+            					"virtual channel name", 											// text
+            					null);	
                     	logSender.close();
             		}
             		catch(JMSException jmse)

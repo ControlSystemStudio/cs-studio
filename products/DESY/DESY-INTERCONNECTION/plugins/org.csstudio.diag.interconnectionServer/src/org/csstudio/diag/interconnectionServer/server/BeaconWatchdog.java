@@ -69,8 +69,8 @@ public class BeaconWatchdog extends Thread{
 					  * ... but only if this InterconnectionServer is the selected one (from IOC point of view)
 					  */
 					  if ( thisContent.isSelectState()) {
-						  CentralLogger.getInstance().debug(this, "InterconnectionServer: trigger timeout actions");
-						  new IocChangedState (thisContent.getHost(), thisContent.getIpAddress(), false);
+						  CentralLogger.getInstance().debug(this, "InterconnectionServer: trigger IOC timeout actions");
+						  new IocChangedState (thisContent.getHost(), thisContent.getIpAddress(), thisContent.getLogicalIocName(), false);
 					  }
 					  
 					  /*

@@ -104,12 +104,31 @@ public class SendCommandToIoc extends Thread {
         			Statistic.getInstance().getContentObject(statisticId).setSelectState(true);
         			//create log message
         			CentralLogger.getInstance().warn(this, "IOC SELECTED this InterConnectionServer: " + hostName);
-        			// send command to IOC - get ALL alarm states
-        			new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
         			/*
-        			 * TODO
         			 * send JMS message - we are selected
         			 */
+        			/*
+        			 * get host name of interconnection server
+        			 */
+        			String localHostName = null;
+        			try {
+        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+        				localHostName = localMachine.getHostName();
+        			}
+        			catch (java.net.UnknownHostException uhe) { 
+        			}
+        			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+        					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+        					localHostName + ":" + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + ":selectState",					// name
+        					"SELECTED", 														// value
+        					JmsMessage.SEVERITY_NO_ALARM, 										// severity
+        					"SELECTED", 														// status
+        					hostName, 															// host
+        					null, 																// facility
+        					"virtual channel name", 											// text
+        					null);	
+        			// send command to IOC - get ALL alarm states
+        			new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
         		}           	
             } else if (TagList.getInstance().getReplyType(answer) == TagList.REPLY_TYPE_NOT_SELECTED) {
             	/*
@@ -121,9 +140,28 @@ public class SendCommandToIoc extends Thread {
         			//create log message
         			CentralLogger.getInstance().warn(this, "IOC DE-selected this InterConnectionServer: " + hostName);
         			/*
-        			 * TODO
         			 * send JMS message - we are NOT selected
         			 */
+        			/*
+        			 * get host name of interconnection server
+        			 */
+        			String localHostName = null;
+        			try {
+        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+        				localHostName = localMachine.getHostName();
+        			}
+        			catch (java.net.UnknownHostException uhe) { 
+        			}
+        			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+        					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+        					localHostName + ":" + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + ":selectState",					// name
+        					"NOT-SELECTED", 													// value
+        					JmsMessage.SEVERITY_MINOR, 											// severity
+        					"NOT-SELECTED", 													// status
+        					hostName, 															// host
+        					null, 																// facility
+        					"virtual channel name", 											// text
+        					null);	
         		}
         		//remember we're not selected any more
     			Statistic.getInstance().getContentObject(statisticId).setSelectState(false);

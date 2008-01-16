@@ -79,6 +79,7 @@ public class Statistic {
 	public class StatisticContent {
 		String host			= null;
 		String ipAddress	= null;
+		String logicalIocName = null;
 		int	port			= 0;
 		String	lastMessage	= null;
 		int lastMessageSize = 0;
@@ -285,6 +286,14 @@ public class Statistic {
 			} else {
 				return "NOT selected";
 			}
+		}
+
+		public String getLogicalIocName() {
+			return logicalIocName;
+		}
+
+		public void setLogicalIocName(String logicalIocName) {
+			this.logicalIocName = logicalIocName;
 		}
 		
 
