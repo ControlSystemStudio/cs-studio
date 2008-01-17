@@ -39,8 +39,6 @@ public abstract class AbstractControlSystemItem extends PlatformObject
 	 * The name of the control system item.
 	 */
 	private String _name;
-	
-XXXXXXXXXXXXXXXXXXXXXXX Error to test nightly build XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxx	
 
 	/**
 	 * Constructor.
