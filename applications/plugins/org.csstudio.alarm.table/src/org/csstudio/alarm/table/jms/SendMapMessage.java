@@ -42,11 +42,6 @@ public class SendMapMessage {
         connection = factory.createConnection();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-        // CHANGED BY: Markus Möller, 25.05.2007
-        /*
-        destination = (Destination)context.lookup(JmsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.QUEUE));
-		*/
-        
         if(acknowledge == false) {
         	destination = (Destination) session.createTopic(JmsLogsPlugin.getDefault().getPluginPreferences().getString(AlarmViewerPreferenceConstants.QUEUE));
         } else {
