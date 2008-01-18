@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: IOCremoteManagement Plug-in
+Bundle-SymbolicName: org.csstudio.diag.IOCremoteManagement;singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: org.csstudio.diag.IOCremoteManagement.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.help,
+ org.eclipse.help.appserver,
+ org.eclipse.help.base,
+ org.eclipse.help.ui,
+ org.eclipse.help.webapp,
+ org.eclipse.core.resources,
+ org.eclipse.ui.views,
+ org.csstudio.utility.IOC_Socket_Communication,
+ org.csstudio.utility.pv,
+ org.csstudio.platform.ui,
+ org.csstudio.platform,
+ org.csstudio.apputil,
+ org.csstudio.apputil.ui
+Eclipse-LazyStart: true
+Bundle-ClassPath: lib/jdom.jar,
+ .,
+ bin/
