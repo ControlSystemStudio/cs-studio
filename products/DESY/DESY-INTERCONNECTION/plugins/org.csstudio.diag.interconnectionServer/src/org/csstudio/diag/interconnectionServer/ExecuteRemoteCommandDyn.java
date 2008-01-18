@@ -31,6 +31,13 @@ public class ExecuteRemoteCommandDyn implements IAction {
 		Map m = (Map)param;
 		String command 	= m.get("Command").toString();
 		String client 	= m.get("IOC").toString();
+		/*
+		 * if the string consists of ipName|logicalName
+		 * -> we only take the ipName!
+		 */
+		if ( client.contains("|")) {
+			client = client.substring(0, client.indexOf("|"));
+		}
 		System.out.println("received param: " + command + " " + client);
 		int commandId = -1;
 		
