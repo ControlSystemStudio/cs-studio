@@ -120,12 +120,12 @@ public class SendCommandToIoc extends Thread {
         			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
         					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
         					localHostName + ":" + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + ":selectState",					// name
-        					"SELECTED", 														// value
+        					localHostName, 														// value
         					JmsMessage.SEVERITY_NO_ALARM, 										// severity
         					"SELECTED", 														// status
         					hostName, 															// host
         					null, 																// facility
-        					"virtual channel name", 											// text
+        					"virtual channel", 											// text
         					null);	
         			// send command to IOC - get ALL alarm states
         			new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
@@ -155,12 +155,12 @@ public class SendCommandToIoc extends Thread {
         			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
         					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
         					localHostName + ":" + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + ":selectState",					// name
-        					"NOT-SELECTED", 													// value
+        					localHostName, 														// value
         					JmsMessage.SEVERITY_MINOR, 											// severity
         					"NOT-SELECTED", 													// status
         					hostName, 															// host
         					null, 																// facility
-        					"virtual channel name", 											// text
+        					"virtual channel", 											// text
         					null);	
         		}
         		//remember we're not selected any more

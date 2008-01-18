@@ -27,6 +27,7 @@ public class JmsMessage {
 	public final static String MESSAGE_TYPE_IOC_ALARM	= "ioc-alarm";
 	public final static String MESSAGE_TYPE_EVENT		= "event";
 	public final static String MESSAGE_TYPE_D3_ALARM	= "d3-alarm";
+	public final static String MESSAGE_TYPE_STATUS		= "status";
 	
 	public final static int	JMS_MESSAGE_TYPE_ALARM		= 1;
 	public final static int	JMS_MESSAGE_TYPE_LOG		= 2;

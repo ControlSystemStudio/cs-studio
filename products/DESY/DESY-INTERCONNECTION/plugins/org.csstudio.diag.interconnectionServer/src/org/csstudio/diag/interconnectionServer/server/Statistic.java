@@ -388,7 +388,7 @@ public class Statistic {
 			 Enumeration connections = this.connectionList.elements();
 			 while (connections.hasMoreElements()) {
 				 StatisticContent thisContent = (StatisticContent)connections.nextElement();
-				 nodeNames.add(thisContent.host);
+				 nodeNames.add(thisContent.getHost() + "|" + thisContent.getLogicalIocName());
 			 }
 		 } catch (Exception e) {
 			 nodeNames.add("NONE");
@@ -406,7 +406,7 @@ public class Statistic {
 			 Enumeration connections = this.connectionList.elements();
 			 while (connections.hasMoreElements()) {
 				 StatisticContent thisContent = (StatisticContent)connections.nextElement();
-				 nodeNames.add(thisContent.host + "  " + thisContent.getCurrentConnectState() + "  " + thisContent.getCurrentSelectState());
+				 nodeNames.add(thisContent.getHost() + " | " + thisContent.getLogicalIocName() + "  " + thisContent.getCurrentConnectState() + "  " + thisContent.getCurrentSelectState());
 			 }
 		 } catch (Exception e) {
 			 nodeNames.add("NONE");

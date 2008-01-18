@@ -3,6 +3,7 @@ package org.csstudio.diag.interconnectionServer.server;
 import java.text.SimpleDateFormat;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.engine.Engine;
 
 public class LdapSupport {
 	
@@ -28,7 +29,7 @@ public class LdapSupport {
 	}
 	
 	
-	public String getLogicalIocName ( String ipAddress) {
+	public String getLogicalIocName ( String ipAddress, String ipName) {
 		
 		/*
 		 * error handling
@@ -64,7 +65,23 @@ public class LdapSupport {
 			return "krykWetter";
 		} else if ( ipAddress.equals("131.169.112.141")) {
 			return "Bernds_Test_IOC";
-		} else return "no logical IOC Name found for: " + ipAddress;
+		} else if ( ipAddress.equals("131.169.112.108")) {
+			return "-epicsVME39-";
+		} else if ( ipAddress.equals("131.169.112.104")) {
+			return "ttfKryoSK47a";
+		} else if ( ipAddress.equals("131.169.112.54")) {
+			return "ttfKryoCB";
+		} else if ( ipAddress.equals("131.169.112.68")) {
+			return "utilityIOC";
+		} else if ( ipAddress.equals("131.169.112.144")) {
+			return "heraKryoFel";
+		} else if ( ipAddress.equals("131.169.112.109")) {
+			return "ttfKryoVC2";
+		} else if ( ipAddress.equals("131.169.112.178")) {
+			return "-epicsVME19-";
+		} else if ( ipAddress.equals("131.169.112.225")) {
+			return "ttfDiagLinac";
+		} else return "~" + ipName + "~";
 		
 		/*
 		 *epicsGPFC01       mkk10KVA1       : Keine Datei Y:\directoryServer\mkk10KVA1.BootLine.dat gefunden
@@ -136,7 +153,7 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 	 * This will (partly) avoid congestion on the send queue in addLdapWriteRequest()
 	 */
 	synchronized private void setAllRecordsInLdapServer ( String logicalIocName, boolean connected) {
-		String status = null;
+		String status, severity = null;
 		/*
 		 * TODO
 		 */
@@ -150,8 +167,10 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 		 */
 		if ( connected) {
 			status = "ONLINE";
+			severity = "NO_ALARM";
 		} else {
-			status = "OFFLINE";
+			status = "DISCONNECTED";
+			severity = "INVALID";
 		}
 		
 		
@@ -176,8 +195,32 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
          * 		Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channel, status);
          * }
          */
-        
+        if (logicalIocName.equals("Bernds_Test_IOC")) {
+        	
+        	setSingleChannel( "alarmTest:RAMPA_calc", status, severity, eventTime, logicalIocName);
+        	setSingleChannel( "alarmTest:RAMPB_calc", status, severity, eventTime, logicalIocName);
+        	setSingleChannel( "alarmTest:RAMPC_calc", status, severity, eventTime, logicalIocName);
+        }
         CentralLogger.getInstance().debug(this,"IocChangeState: setAllRecordsInLdapServer - DONE");
+	}
+	
+	private void setSingleChannel ( String channelName, String status, String severity, String eventTime, String logicalIocName) {
+		
+		Engine.getInstance().addLdapWriteRequest( "epicsAlarmSeverity", channelName, severity);
+		Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channelName, status);
+		Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channelName, eventTime);	
+		
+		JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+				JmsMessage.MESSAGE_TYPE_STATUS, 									// type
+				channelName,														// name
+				null, 																// value
+				severity, 															// severity
+				status, 															// status
+				logicalIocName, 													// host
+				null, 																// facility
+				"alarm set by IC-Server", 											// text
+				null);																// howTo
+		
 	}
 
 }

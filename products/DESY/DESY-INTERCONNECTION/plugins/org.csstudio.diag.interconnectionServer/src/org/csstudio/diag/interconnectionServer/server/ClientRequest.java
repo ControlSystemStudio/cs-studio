@@ -162,7 +162,7 @@ public class ClientRequest extends Thread
         /*
 		 * find logical name of IOC by the IP address
 		 */
-        statisticContent.setLogicalIocName( LdapSupport.getInstance().getLogicalIocName ( address.getHostAddress()));
+        statisticContent.setLogicalIocName( LdapSupport.getInstance().getLogicalIocName ( address.getHostAddress(), hostName));
         
         Vector<TagValuePairs> tagValuePairs	= new Vector<TagValuePairs>();
         Hashtable<String,String> tagValue = new Hashtable<String,String>();	// could replace the Vector above
@@ -258,6 +258,12 @@ public class ClientRequest extends Thread
         		//
         		//System.out.print("aLs");
         		updateLdapEntry( tagValue);
+        		
+        		//
+        		// set beacon time locally
+        		//
+        		statisticContent.setBeaconTime();
+        		
         		//System.out.print("aLe");
         		afterLdapWriteTime = new GregorianCalendar();
         		
@@ -267,9 +273,44 @@ public class ClientRequest extends Thread
         		
         	case TagList.STATUS_MESSAGE:
         		//
-        		// ALARM just a list of ALL alarm states from the IOC - do NOT send to JMS -> only to LDAP!
+        		// ALARM just a list of ALL alarm states from the IOC - status messages do NOT get displayed in the ALARM view
+        		// they are important for the LDAP-Trees currently under display in the CSS-Alarm-Tree views!!!
         		//
-        		
+        		try {
+        			
+        			alarmSession = alarmConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+                    // Create the destination (Topic or Queue)
+        			Destination alarmDestination = alarmSession.createTopic( PreferenceProperties.JMS_ALARM_CONTEXT);
+
+                    // Create a MessageProducer from the Session to the Topic or Queue
+                	MessageProducer alarmSender = alarmSession.createProducer( alarmDestination);
+                	alarmSender.setDeliveryMode( DeliveryMode.PERSISTENT);
+                	alarmSender.setTimeToLive( jmsTimeToLiveAlarmsInt);
+                	
+            		//sender = alarmSession.createProducer(alarmDestination);
+            		//System.out.println("Time-ALARM: - after sender= 	= " + dateToString(new GregorianCalendar()));
+                    //message = alarmSession.createMapMessage();
+            		message = icServer.prepareTypedJmsMessage( alarmSession.createMapMessage(), tagValuePairs, type);
+            		///System.out.println("Time-APARM: - after message= 	= " + dateToString(new GregorianCalendar()));
+            		
+            		///alarmSender.setPriority( 9);
+            		///System.out.println("Time-ALARM: - before sender-send 	= " + dateToString(new GregorianCalendar()));
+            		alarmSender.send(message);
+            		
+            		alarmSender.close();
+            		
+            		//System.out.print("aJs");
+            		icServer.getJmsMessageWriteCollector().setValue(gregorianTimeDifference( parseTime, new GregorianCalendar()));
+            		//System.out.print("aJe");
+            		//System.out.println("Time-ALARM: - after sender-send 	= " + dateToString(new GregorianCalendar()));
+        		}
+        		catch(JMSException jmse)
+                {
+        			status = false;
+        			icServer.checkSendMessageErrorCount();
+                    System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
+                }
         		//
         		// just send a reply
         		//
@@ -280,6 +321,12 @@ public class ClientRequest extends Thread
         		//
 
         		updateLdapEntry( tagValue);
+        		
+        		//
+        		// set beacon time locally
+        		//
+        		statisticContent.setBeaconTime();
+        		
         		System.out.print("AS");
         		break;
         		
@@ -425,12 +472,12 @@ public class ClientRequest extends Thread
         			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
         					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
         					localHostName + ":" + statisticContent.getLogicalIocName() + ":selectState",					// name
-        					"SELECTED", 														// value
+        					localHostName, 														// value
         					JmsMessage.SEVERITY_NO_ALARM, 										// severity
         					"SELECTED", 														// status
         					hostName, 															// host
         					null, 																// facility
-        					"virtual channel name", 											// text
+        					"virtual channel", 											// text
         					null);	
         			// send command to IOC - get ALL alarm states
         			new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
@@ -466,6 +513,26 @@ public class ClientRequest extends Thread
                     	logSender.setTimeToLive(jmsTimeToLiveLogsInt);
                     	icServer.sendLogMessage( icServer.prepareJmsMessage ( logSession.createMapMessage(), icServer.jmsLogMessageNewClientConnected( statisticId)));
 
+                    	/*
+            			 * get host name of interconnection server
+            			 */
+            			String localHostName = null;
+            			try {
+            				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+            				localHostName = localMachine.getHostName();
+            			}
+            			catch (java.net.UnknownHostException uhe) { 
+            			}
+            			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+            					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+            					localHostName + ":" + hostName + ":connectState",					// name
+            					localHostName, 														// value
+            					JmsMessage.SEVERITY_NO_ALARM, 										// severity
+            					"CONNECTED", 														// status
+            					hostName, 															// host
+            					null, 																// facility
+            					"virtual channel", 											// text
+            					null);	
                     	logSender.close();
             		}
             		catch(JMSException jmse)
@@ -508,12 +575,12 @@ public class ClientRequest extends Thread
         			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
         					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
         					localHostName + ":" + statisticContent.getLogicalIocName() + ":selectState",	// name
-        					"NOT-SELECTED", 													// value
+        					localHostName, 														// value
         					JmsMessage.SEVERITY_MINOR, 											// severity
         					"NOT-SELECTED", 													// status
         					hostName, 															// host
         					null, 																// facility
-        					"virtual channel name", 											// text
+        					"virtual channel", 											// text
         					null);	
         		}
         		//
@@ -557,12 +624,12 @@ public class ClientRequest extends Thread
             			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
             					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
             					localHostName + ":" + hostName + ":connectState",					// name
-            					"CONNECTED", 														// value
+            					localHostName, 														// value
             					JmsMessage.SEVERITY_NO_ALARM, 										// severity
             					"CONNECTED", 														// status
             					hostName, 															// host
             					null, 																// facility
-            					"virtual channel name", 											// text
+            					"virtual channel", 											// text
             					null);	
                     	logSender.close();
             		}

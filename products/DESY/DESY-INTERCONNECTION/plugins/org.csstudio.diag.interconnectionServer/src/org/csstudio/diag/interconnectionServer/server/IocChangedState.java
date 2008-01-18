@@ -59,15 +59,28 @@ public class IocChangedState extends Thread{
 			 * generate JMS alarm message NAME: "Localhost:logicalIocName:connectState" VALUE: "CONNECTED" SEVERITY: "NO_ALARM"
 			 */
 			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 								// type
+					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
 					localHostName + ":" + logicalIocName + ":connectState",	// name
-					"CONNECTED", 											// value
-					JmsMessage.SEVERITY_NO_ALARM, 										// severity
-					"CONNECTED", 													// status
-					iocName, 										// host
+					localHostName, 											// value
+					JmsMessage.SEVERITY_NO_ALARM, 							// severity
+					"CONNECTED", 											// status
+					iocName, 												// host
 					null, 													// facility
-					"virtual channel name", 								// text
+					"virtual channel", 								// text
 					null);													// howTo
+			/*
+			 * second message without localHostName
+			 */
+			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
+					logicalIocName + ":connectState",	// name
+					localHostName, 											// value
+					JmsMessage.SEVERITY_NO_ALARM, 							// severity
+					"CONNECTED", 											// status
+					iocName, 												// host
+					null, 													// facility
+					"virtual channel", 								// text
+					null);	
 			/*
 			 * do NOT set the connect state for records in LDAP!
 			 * This is handled if the select state changes -> get all alarm states from the IOC
@@ -84,15 +97,41 @@ public class IocChangedState extends Thread{
 			 * generate JMS alarm message NAME: "Localhost:logicalIocName:connectState" VALUE: "NOT_CONNECTED" SEVERITY: "MAJOR"
 			 */
 			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 								// type
+					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
 					localHostName + ":" + logicalIocName + ":connectState",	// name
-					"NOT-CONNECTED", 										// value
-					JmsMessage.SEVERITY_MAJOR, 										// severity
-					"NOT-CONNECTED", 										// status
-					iocName, 										// host
+					localHostName, 											// value
+					JmsMessage.SEVERITY_MAJOR, 								// severity
+					"DISCONNECTED", 										// status
+					iocName, 												// host
 					null, 													// facility
-					"virtual channel name", 								// text
+					"virtual channel", 								// text
 					null);		
+			/*
+			 * second message without localHostName
+			 */
+			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
+					logicalIocName + ":connectState",						// name
+					localHostName, 											// value
+					JmsMessage.SEVERITY_MAJOR, 								// severity
+					"DISCONNECTED", 										// status
+					iocName, 												// host
+					null, 													// facility
+					"virtual channel", 								// text
+					null);		
+			/*
+			 * for sure we are not selected any more 
+			 */
+			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+					localHostName + ":" + logicalIocName + ":selectState",				// name
+					localHostName, 														// value
+					JmsMessage.SEVERITY_MINOR, 											// severity
+					"NOT-SELECTED", 													// status
+					iocName, 															// host
+					null, 																// facility
+					"virtual channel", 													// text
+					null);	
 			
 			LdapSupport.getInstance().setAllRecordsToDisconnected ( logicalIocName);
 			
