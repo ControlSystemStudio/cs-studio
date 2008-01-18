@@ -66,7 +66,7 @@ public class LdapSupport {
 		} else if ( ipAddress.equals("131.169.112.141")) {
 			return "Bernds_Test_IOC";
 		} else if ( ipAddress.equals("131.169.112.108")) {
-			return "-epicsVME39-";
+			return "ttfKryoLinac";
 		} else if ( ipAddress.equals("131.169.112.104")) {
 			return "ttfKryoSK47a";
 		} else if ( ipAddress.equals("131.169.112.54")) {
@@ -78,12 +78,16 @@ public class LdapSupport {
 		} else if ( ipAddress.equals("131.169.112.109")) {
 			return "ttfKryoVC2";
 		} else if ( ipAddress.equals("131.169.112.178")) {
-			return "-epicsVME19-";
+			return "mthKryoStand";
 		} else if ( ipAddress.equals("131.169.112.225")) {
 			return "ttfDiagLinac";
+		} else if ( ipAddress.equals("131.169.112.101")) {
+			return "ttfKryoFV";
 		} else return "~" + ipName + "~";
 		
 		/*
+		 * es fehlen: 131.169.112.178 und 131.169.112.108
+		 * 
 		 *epicsGPFC01       mkk10KVA1       : Keine Datei Y:\directoryServer\mkk10KVA1.BootLine.dat gefunden
 epicsGPFC02       mkk10KVB1       131.169.112.56
 epicsGPFC03       mkk10KVC1       131.169.112.69
