@@ -196,16 +196,36 @@ public class JmsRedundantReceiver
     }
     
     /**
-     * Returns the current message. It takes the messages from the internal queue first. If the
+     * Returns the current message. The method does not wait and returns immediately if no message
+     * have been received.
+     * <p>
+     * It takes the messages from the internal queue first. If the
      * queue does not contain a message, the method calls the receive() method of the MessageConsumer
      * object.
      * If more then one server hold a message, the messages will be stored in the internal queue.
      * 
-     * @param name
-     * @return
+     * @param name The internal name of the message consumer
+     * @return Current message from the JMS server
      */
-    
     public Message receive(String name)
+    {
+        return receive(name, 0);
+    }
+    
+    /**
+     * Returns the current message. The method waits <code>waitTime</code> miliseconds and returns if
+     * no message have been received.
+     * <p>
+     * It takes the messages from the internal queue first. If the
+     * queue does not contain a message, the method calls the receive() method of the MessageConsumer
+     * object.
+     * If more then one server hold a message, the messages will be stored in the internal queue.
+     * 
+     * @param name The internal name of the message consumer
+     * @param waitTime The time to wait(in ms) until the receive method returns
+     * @return Current message from the JMS server
+     */   
+    public Message receive(String name, long waitTime)
     {
         ConcurrentLinkedQueue<Message> queue = null;
         MessageConsumer[] c = null;
@@ -243,8 +263,14 @@ public class JmsRedundantReceiver
             {
                 try
                 {
-                    // m[i] = c[i].receive(1);
-                    m[i] = c[i].receiveNoWait();
+                    if(waitTime > 0)
+                    {
+                        m[i] = c[i].receive(waitTime);
+                    }
+                    else
+                    {
+                        m[i] = c[i].receiveNoWait();
+                    }
                 }
                 catch(JMSException jmse)
                 {
