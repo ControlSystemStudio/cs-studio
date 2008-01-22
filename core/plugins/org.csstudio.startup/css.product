@@ -43,7 +43,8 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       location="org.csstudio.startup" />
    <launcher name="css">
       <solaris/>
-      <win useIco="false">
+      <win useIco="true">
+         <ico path="/org.csstudio.startup/resources/css.ico"/>
          <bmp/>
       </win>
    </launcher>
@@ -53,6 +54,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
 
    <plugins>
       <plugin id="com.ibm.icu"/>
+      <plugin id="com.ibm.icu36.data.update" fragment="true"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="org.apache.commons.el"/>
