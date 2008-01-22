@@ -43,125 +43,125 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          id="com.ibm.icu"
          download-size="0"
          install-size="0"
-         version="3.6.1.v20070906"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="javax.servlet"
          download-size="0"
          install-size="0"
-         version="2.4.0.v200706111738"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="javax.servlet.jsp"
          download-size="0"
          install-size="0"
-         version="2.0.0.v200706191603"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.commons.el"
          download-size="0"
          install-size="0"
-         version="1.0.0.v200706111724"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.commons.logging"
          download-size="0"
          install-size="0"
-         version="1.0.4.v200706111724"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.jasper"
          download-size="0"
          install-size="0"
-         version="5.5.17.v200706111724"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.lucene"
          download-size="0"
          install-size="0"
-         version="1.9.1.v200706111724"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.lucene.analysis"
          download-size="0"
          install-size="0"
-         version="1.9.1.v200706181610"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.commands"
          download-size="0"
          install-size="0"
-         version="3.3.0.I20070605-0010"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.contenttype"
          download-size="0"
          install-size="0"
-         version="3.2.100.v20070319"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.databinding"
          download-size="0"
          install-size="0"
-         version="1.0.1.M20070822-0800"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.expressions"
          download-size="0"
          install-size="0"
-         version="3.3.0.v20070606-0010"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="com.ibm.icu.source"
          download-size="0"
          install-size="0"
-         version="3.6.1.v20070906"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.core.filesystem"
          download-size="0"
          install-size="0"
-         version="1.1.0.v20070606"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.jobs"
          download-size="0"
          install-size="0"
-         version="3.3.1.R33x_v20070709"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.net"
          download-size="0"
          install-size="0"
-         version="1.0.1.r33x_20070709"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.resources"
          download-size="0"
          install-size="0"
-         version="3.3.0.v20070604"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.resources.compatibility"
          download-size="0"
          install-size="0"
-         version="3.2.100.v20070502"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -169,312 +169,312 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          id="org.eclipse.core.runtime"
          download-size="0"
          install-size="0"
-         version="3.3.100.v20070530"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.runtime.compatibility.registry"
          download-size="0"
          install-size="0"
-         version="3.2.100.v20070316"
+         version="0.0.0"
          fragment="true"/>
 
    <plugin
          id="org.eclipse.core.variables"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20070426"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.app"
          download-size="0"
          install-size="0"
-         version="1.0.1.R33x_v20070828"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.common"
          download-size="0"
          install-size="0"
-         version="3.3.0.v20070426"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.http.jetty"
          download-size="0"
          install-size="0"
-         version="1.0.1.R33x_v20070816"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.http.registry"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20070608"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.http.servlet"
          download-size="0"
          install-size="0"
-         version="1.0.1.R33x_v20070816"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.jsp.jasper"
          download-size="0"
          install-size="0"
-         version="1.0.1.R33x_v20070816"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.jsp.jasper.registry"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20070607"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.preferences"
          download-size="0"
          install-size="0"
-         version="3.2.100.v20070522"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.registry"
          download-size="0"
          install-size="0"
-         version="3.3.1.R33x_v20070802"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.help"
          download-size="0"
          install-size="0"
-         version="3.3.1.v20070726_33x"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.help.appserver"
          download-size="0"
          install-size="0"
-         version="3.1.200.v20070510"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.help.base"
          download-size="0"
          install-size="0"
-         version="3.3.1.v20070813_33x"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.help.ui"
          download-size="0"
          install-size="0"
-         version="3.3.1.v20070726_33x"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.help.webapp"
          download-size="0"
          install-size="0"
-         version="3.3.1.v20070823_33x"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jface"
          download-size="0"
          install-size="0"
-         version="3.3.1.M20070910-0800b"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jface.databinding"
          download-size="0"
          install-size="0"
-         version="1.1.1.M20070910-0800b"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jface.text"
          download-size="0"
          install-size="0"
-         version="3.3.1.r331_v20070629"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.osgi"
          download-size="0"
          install-size="0"
-         version="3.3.1.R33x_v20070828"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="com.jcraft.jsch"
          download-size="0"
          install-size="0"
-         version="0.1.31"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.osgi.services"
          download-size="0"
          install-size="0"
-         version="3.1.200.v20070605"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.swt"
          download-size="0"
          install-size="0"
-         version="3.3.2.v3347"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.text"
          download-size="0"
          install-size="0"
-         version="3.3.0.v20070606-0010"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.tomcat"
          download-size="0"
          install-size="0"
-         version="4.1.230.v20070531"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.ui"
          download-size="0"
          install-size="0"
-         version="3.3.1.M20070910-0800b"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.console"
          download-size="0"
          install-size="0"
-         version="3.2.1.v20070824_r331"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.forms"
          download-size="0"
          install-size="0"
-         version="3.3.0.v20070511"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.ide"
          download-size="0"
          install-size="0"
-         version="3.3.1.M20070910-0800b"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.intro"
          download-size="0"
          install-size="0"
-         version="3.2.101.v20070827_33x"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.navigator"
          download-size="0"
          install-size="0"
-         version="3.3.2.M20071022-1600a"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.navigator.resources"
          download-size="0"
          install-size="0"
-         version="3.3.1.M20070831-2000"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.views"
          download-size="0"
          install-size="0"
-         version="3.2.101.M20070910-0800b"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.views.properties.tabbed"
          download-size="0"
          install-size="0"
-         version="3.3.1.M20070831-0800"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.workbench"
          download-size="0"
          install-size="0"
-         version="3.3.1.M20070921-1200"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.workbench.texteditor"
          download-size="0"
          install-size="0"
-         version="3.3.1.r331_v20070806"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.update.configurator"
          download-size="0"
          install-size="0"
-         version="3.2.101.R33x_v20070810"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.update.core"
          download-size="0"
          install-size="0"
-         version="3.2.101.R33x_v20070911"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.update.ui"
          download-size="0"
          install-size="0"
-         version="3.2.100.v20070615"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.junit"
          download-size="0"
          install-size="0"
-         version="3.8.2.v200706111738"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.junit4"
          download-size="0"
          install-size="0"
-         version="4.3.1"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.mortbay.jetty"
          download-size="0"
          install-size="0"
-         version="5.1.11.v200706111724"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.core.runtime.compatibility.auth"
          download-size="0"
          install-size="0"
-         version="3.2.100.v20070502"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ui.cheatsheets"
          download-size="0"
          install-size="0"
-         version="3.3.0.v20070507"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
