@@ -28,6 +28,8 @@ import java.util.Vector;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
@@ -38,12 +40,107 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
+import org.csstudio.utility.ldap.engine.LdapReferences.Entry;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
+import org.csstudio.utility.ldap.reader.ErgebnisListe;
+import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 public class Engine extends Job {
+    
+    /**
+     * An Objectclass as return Object for the setAttriebute and getAttriebute method.
+     * 
+     * @author hrickens
+     * @author $Author$
+     * @version $Revision$
+     * @since 23.01.2008
+     */
+    private class AttriebutSet{
+        private SearchControls _ctrl;
+        private String _path;
+        private String _filter;
+        
+        /**
+         * The default Constructor. Set default the Timelimit to 1000 ms.
+         */
+        public AttriebutSet(){
+            _ctrl = new SearchControls();
+            _ctrl.setTimeLimit(1000);
+        }
+        /**
+         * @param searchScope set the SearchScope of {@link SearchControls}.
+         */
+        public void setSearchScope(int searchScope) {
+            _ctrl.setSearchScope(searchScope);
+        }
+        /**
+         * 
+         * @param timeLimit set the timelimit of {@link SearchControls} in ms.
+         */
+        public void setSearchControlsTimeLimit(int timeLimit) {
+            _ctrl.setTimeLimit(timeLimit);
+        }
+        
+        /**
+         * @param filter set the Filter for the Search.
+         */
+        public void setFilter(String filter) {
+            _filter = filter;
+        }
+        /**
+         * @param path set the path for the Search.
+         */
+        public void setPath(String path) {
+            _path = path;
+        }
+        /**
+         * 
+         * @return the SearchControls. 
+         */
+        public SearchControls getSearchControls() {
+            return _ctrl;
+        }
+
+        /**
+         * @param path get the path for the Search.
+         */
+
+        public String getPath() {
+            return _path;
+        }
+
+        /**
+         * @param filter get the Filter for the Search.
+         */
+        public String getFilter() {
+            return _filter;
+        }
+        
+    }
+    
+    /**
+     * Contain all Attributes for Records.
+     */
+    public static enum ChannelAttribute {
+        epicsCssType,
+        epicsAlarmStatus,
+        epicsAlarmAcknTimeStamp,
+        epicsAlarmAckn,
+        epicsDatabaseType,
+        epicsAlarmSeverity,
+        epicsAlarmTimeStamp,
+        epicsRecordType,
+        epicsAlarmHighUnAckn,     
+        epicsCssAlarmDisplay,     
+        epicsCssDisplay,  
+        epicsHelpGuidance,    
+        epicsHelpPage    
+    }
     private LdapReferences ldapReferences = null;
     private Collector   ldapWriteTimeCollector = null;
     private Collector   ldapReadTimeCollector = null;
@@ -144,11 +241,11 @@ public class Engine extends Job {
         }
     }
 
-
+    /**
+     * 
+     * @return get an instance of our sigleton.
+     */
     public static Engine getInstance() {
-        //
-        // get an instance of our sigleton
-        //
         if ( thisEngine == null) {
             synchronized (Engine.class) {
                 if (thisEngine == null) {
@@ -193,6 +290,271 @@ public class Engine extends Job {
         // aleays trigger writing
         //
         doWrite = true;
+    }
+    
+    
+    private LDAPConnector getLDAPConnector(){
+        try {
+            return  new LDAPConnector();
+        } catch (NamingException e1) {
+            try {
+                Thread.sleep(100);
+                return new LDAPConnector();
+            } catch (InterruptedException e) {
+                CentralLogger.getInstance().error(this, e);
+                return null;
+            } catch (NamingException e) {
+                CentralLogger.getInstance().error(this, e);
+                return null;
+            }
+            
+        }
+    }
+    
+    private AttriebutSet helpAttriebut(String record) {
+        AttriebutSet attriebutSet = new AttriebutSet();
+        if(!record.contains("ou=epicsControls")&&!record.contains("econ=")&&ldapReferences!=null&&ldapReferences.hasEntry(record)){//&&!record.contains("ou=")){
+            Entry entry = ldapReferences.getEntry(record);
+            Vector<String> vector = entry.getNamesInNamespace();
+            for (String string : vector) {
+                if(string.contains("ou=EpicsControls")){
+                    record = string;
+                }
+            }
+            attriebutSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+        }else{
+            //TODO: Der record ist und wird noch nicht im ldapReferences gecachet.
+            attriebutSet.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        }
+        if(record.endsWith(",o=DESY,c=DE")){
+            record = record.substring(0, record.length()-12);
+        }else if(record.endsWith(",o=DESY")){
+            record = record.substring(0, record.length()-7);
+        }
+        if(record.startsWith("eren=")){
+            attriebutSet.setFilter(record.split(",")[0]);
+            attriebutSet.setPath(record.substring(attriebutSet.getFilter().length()+1));
+        }else{
+            attriebutSet.setPath("ou=epicsControls");
+            attriebutSet.setFilter("eren="+record);
+        }
+        return attriebutSet;
+    }
+    
+    /**
+     * Get the Value of an record attribute.
+     * @param recordPath The Record-Name or the complete LDAP path of the record. Which the attribute change.  
+     * @param attriebute The attribute from where get the value.
+     * @return the value of the record attribute. 
+     */
+    synchronized public String getAttriebute(final String recordPath,final ChannelAttribute attriebute) {
+        String record  = null;
+        DirContext ctx;
+        LDAPConnector ldpc = getLDAPConnector();
+        if((ctx = ldpc.getDirContext())!=null){
+            AttriebutSet attriebutSet = helpAttriebut(recordPath);
+            try {
+                NamingEnumeration<SearchResult> answerFacility = ctx.search(attriebutSet.getPath(),attriebutSet.getFilter(), attriebutSet.getSearchControls());
+                while(answerFacility.hasMore()){
+                    SearchResult result = answerFacility.next();
+                    Attribute attribute = result.getAttributes().get(attriebute.name());
+                    if(attribute!=null){
+                        if (attribute.get(0) instanceof String) {
+                            record = (String) attribute.get(0);
+                            if(answerFacility.hasMore()){
+                                CentralLogger.getInstance().error(this, "Found a record more then onetime. "+attriebutSet.getFilter());
+                            }
+                            break;
+                        }
+                    }
+                }
+                answerFacility.close();
+            } catch (NamingException e) {
+                CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad für Record suche.");
+                CentralLogger.getInstance().info(this,e);
+            } finally{
+                try {
+                    ctx.close();
+                } catch (NamingException e) {
+                    CentralLogger.getInstance().error(this,"DirContext don't closed", e);
+                }    
+            }
+            
+        }
+        return record;
+    }
+    
+    /**
+     * Set a Value of an record Attribute.
+     * @param recordPath The Record-Name or the complete LDAP path of the record. Which the attribute change.  
+     * @param attriebute The attribute to set the Value.
+     * @param value the value was set.
+     */  
+    synchronized public void setAttriebute(final String recordPath,final ChannelAttribute attriebute, final String value) {
+        DirContext ctx;
+        LDAPConnector ldpc = getLDAPConnector();
+        if((ctx = ldpc.getDirContext())!=null){
+            AttriebutSet attriebutSet = helpAttriebut(recordPath);
+            try {
+                NamingEnumeration<SearchResult> answerFacility = ctx.search(attriebutSet.getPath(),attriebutSet.getFilter(), attriebutSet.getSearchControls());
+                while(answerFacility.hasMore()){
+                    SearchResult result = answerFacility.next();
+                    Attributes atr = result.getAttributes();
+//                    LdapAtribute latr = new LdapAtribute(); 
+                    Attribute attribute = atr.put(attriebute.name(), value);
+                    System.out.println("attribute: "+attribute.get(0));
+                    if(attribute==null){
+                        CentralLogger.getInstance().error(this, "Set attribute faild");
+                    }
+                    if(answerFacility.hasMore()){
+                        CentralLogger.getInstance().error(this, String.format("Found the record %s more then onetime. The attribute %s of all record are set to %s",attriebutSet.getFilter(),attriebute.name(),value));
+                    }
+                }
+                answerFacility.close();
+            } catch (NamingException e) {
+                CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad für Record suche.");
+                CentralLogger.getInstance().info(this,e);
+            } finally{
+                try {
+                    ctx.close();
+                } catch (NamingException e) {
+                    CentralLogger.getInstance().error(this,"DirContext don't closed", e);
+                }    
+            }
+        }
+    }
+
+    /**
+     * Give back the logical name of a IP address from a IOC.<br>
+     * First search at LPDA.<br>
+     * Second search at a static table.<br>
+     * If in both not found return the alternate Name.<br> 
+     * 
+     * @param ipAddress The IP Address from a IOC to give the logical name.
+     * @param alternateName The name was given when dosn't found a IOC with the given IP Address. 
+     * @return The Logical Name of the given IOC IP Address.
+     */
+    synchronized public String getLogicalNameFromIPAdr(final String ipAddress, String alternateName) {
+        DirContext ctx;
+        LDAPConnector ldpc = getLDAPConnector();
+        if((ctx = ldpc.getDirContext())!=null){
+            SearchControls ctrl = new SearchControls();
+            ctrl.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+            ctrl.setTimeLimit(1000);
+            try{
+                NamingEnumeration<SearchResult> answerFacility = ctx.search("ou=epicsControls", "efan=*", ctrl);
+                try {
+                    while(answerFacility.hasMore()){
+                        String facilityName = answerFacility.next().getName();
+                        CentralLogger.getInstance().debug(this, "Facility found: "+facilityName);
+                        String path = "ecom=EPICS-IOC,"+facilityName+",ou=epicsControls";
+                        NamingEnumeration<SearchResult> answerIOC = ctx.search(path,"epicsIocIpAddress="+ipAddress , ctrl);
+                        if(answerIOC.hasMore()){
+                            String name = answerIOC.next().getName()+","+path;
+                            if(answerIOC.hasMore()){
+                                CentralLogger.getInstance().error(this, "More then one IOC whith this IP address: "+ipAddress);
+                            }
+                            answerIOC.close();
+                            answerFacility.close();
+                            ctx.close();
+                            return name;
+                        }
+                    }
+                } catch (NamingException e) {
+                    CentralLogger.getInstance().info(this,"LDAP Fehler");
+                    CentralLogger.getInstance().info(this,e);
+                }
+                answerFacility.close();
+                ctx.close();
+            } catch (NamingException e) {
+                CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
+                CentralLogger.getInstance().info(this,e);
+            }
+        }
+        if ( ipAddress.equals("131.169.112.56")) {
+            return "mkk10KVB1";
+        } else if ( ipAddress.equals("131.169.112.146")) {
+            return "mthKryoStand";
+        } else if ( ipAddress.equals("131.169.112.155")) {
+            return "ttfKryoCMTB";
+        } else if ( ipAddress.equals("131.169.112.68")) {
+            return "utilityIOC";
+        } else if ( ipAddress.equals("131.169.112.80")) {
+            return "ttfKryoLinac";
+        } else if ( ipAddress.equals("131.169.112.52")) {
+            return "krykWetter";
+        } else if ( ipAddress.equals("131.169.112.141")) {
+            return "Bernds_Test_IOC";
+        } else if ( ipAddress.equals("131.169.112.108")) {
+            return "ttfKryoLinac";
+        } else if ( ipAddress.equals("131.169.112.104")) {
+            return "ttfKryoSK47a";
+        } else if ( ipAddress.equals("131.169.112.54")) {
+            return "ttfKryoCB";
+        } else if ( ipAddress.equals("131.169.112.68")) {
+            return "utilityIOC";
+        } else if ( ipAddress.equals("131.169.112.144")) {
+            return "heraKryoFel";
+        } else if ( ipAddress.equals("131.169.112.109")) {
+            return "ttfKryoVC2";
+        } else if ( ipAddress.equals("131.169.112.178")) {
+            return "mthKryoStand";
+        } else if ( ipAddress.equals("131.169.112.225")) {
+            return "ttfDiagLinac";
+        } else if ( ipAddress.equals("131.169.112.101")) {
+            return "ttfKryoFV";
+        } else return alternateName;
+        
+        /*
+         * es fehlen: 131.169.112.178 und 131.169.112.108
+         * 
+         *  epicsGPFC01       mkk10KVA1       : Keine Datei Y:\directoryServer\mkk10KVA1.BootLine.dat gefunden
+         *  epicsGPFC02       mkk10KVB1       131.169.112.56
+         *  epicsGPFC03       mkk10KVC1       131.169.112.69
+         *  epicsGPFC04       mkk10KVC2       131.169.112.87
+            epicsGPFC05       mkk10KV6A       131.169.112.153
+            epicsGPFC06       mkk10KV2B       131.169.112.154
+            epicsGPFC07       mkk10KV3B       131.169.112.157
+            epicsPC21         mthKryoStand    131.169.112.146
+            epicsPC24         wienerVME       131.169.112.150
+            epicsPC25         ttfKryoCMTB     131.169.112.155
+            epicsPC26         ttfKryoXCB      131.169.112.170
+            epicsPPC02        mkkPPC02        131.169.112.224
+            epicsPPC11        mkkSender       : Keine Datei Y:\directoryServer\mkkSender.BootLine.dat gefunden
+            epicsPPC12        ttfKryoSK47a    131.169.112.104
+            epicsPPC13        mkkPPC03        : Keine Datei Y:\directoryServer\mkkPPC03.BootLine.dat gefunden
+            epicsPPC14        ttfKryoVC2      131.169.112.109
+            epicsPPC18        mkkModbus       131.169.113.52
+            epicsPPC19        ttfKryoVC1      131.169.113.53
+            epicsVME00        utilityIOC      131.169.112.68
+            epicsVME01        mkkTempPuls     : Keine Datei Y:\directoryServer\mkkTempPuls.BootLine.dat gefunden
+            epicsVME02        kryoCta         131.169.112.94
+            epicsVME04        ttfKryoLinac    131.169.112.80
+            epicsVME08        analyze         131.169.112.228
+            epicsVME11        heraKryoKoMag   131.169.112.92
+            epicsVME12        modulator       : Keine Datei Y:\directoryServer\modulator.BootLine.dat gefunden
+            epicsVME14        ttfDiagLinac    131.169.112.225
+            epicsVME15        mhf-irm-a       : Keine Datei Y:\directoryServer\mhf-irm-a.BootLine.dat gefunden
+            epicsVME16        mkkKlima3       131.169.112.227
+            epicsVME17        mkkPowStatC_B   131.169.112.176
+            epicsVME18        mkk-irm-b       131.169.112.177
+            epicsVME20        krykWetter      131.169.112.52
+            epicsVME22        ttfKryoCB       131.169.112.54
+            epicsVME27        heraKryoRefmag  : Keine Datei Y:\directoryServer\heraKryoRefmag.BootLine.dat gefunden
+            epicsVME28        heraKryoCavity  : Keine Datei Y:\directoryServer\heraKryoCavity.BootLine.dat gefunden
+            epicsVME29        tineDataSrv     131.169.112.229
+            epicsVME34        mkkKlima2       131.169.112.138
+            epicsVME35        heraKryoFel     131.169.112.144
+            epicsVME36        mkkKlima1       131.169.112.145
+            epicsVME37        mkk-irm-a       131.169.112.114
+            epicsVME40        ttfKryoFV       131.169.112.101
+            epicsVME62        mkkPowStatC_A   131.169.112.142
+            epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.BootLine.dat gefunden
+         */
+    
+        
+        
+        
     }
     
     private void performLdapWrite() {
@@ -499,6 +861,33 @@ public class Engine extends Job {
             return this.value;
         }
 
+    }
+    
+    /**
+     * Set the severity, status and eventTime to a record.
+     * 
+     * @param ldapPath the LDAP-Path to the record. 
+     * @param severity the severity to set. 
+     * @param status the status to set.
+     * @param eventTime the event time to set.
+     * @return ErgebnisList to receive all channel of a IOC. the ErgebnisList is Observable. 
+     */
+    public ErgebnisListe getAllChannelOfRecord(String ldapPath,final String severity, final String status,  final String eventTime) {
+        final ErgebnisListe allRecordsList = new ErgebnisListe();
+        allRecordsList.setStatus(status);
+        allRecordsList.setSeverity(severity);
+        allRecordsList.setEventTime(eventTime);
+        allRecordsList.setParentName(ldapPath);
+        LDAPReader recordReader = new LDAPReader(ldapPath,"eren=*",SearchControls.ONELEVEL_SCOPE,allRecordsList);
+        recordReader.addJobChangeListener(new JobChangeAdapter() {
+            public void done(IJobChangeEvent event) {
+                if (event.getResult().isOK()){
+                    allRecordsList.notifyView();
+                }
+            }
+        });
+        recordReader.schedule();
+        return allRecordsList;
     }
     
 
