@@ -38,11 +38,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 public class LDAPReader extends Job {
-	private String name;
-	private String filter;
+	private String _name;
+	private String _filter;
 	private int defaultScope=SearchControls.SUBTREE_SCOPE;
 	private ArrayList<String> list;
-	private ErgebnisListe ergebnisListe;
+	private ErgebnisListe _ergebnisListe;
 
 	/**
 	 * Used the connection settings from org.csstudio.utility.ldap.ui
@@ -62,8 +62,8 @@ public class LDAPReader extends Job {
 	 * (used with UI)
 	 *
 	 * @param nameUFilter<br> 0: name<br>1: = filter<br>
-	 * @param searchScope
-	 * @param ergebnisListe
+	 * @param searchScope set the Scope {@link SearchControls}
+	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
 	 */
 
 	public LDAPReader(String[] nameUFilter, int searchScope, ErgebnisListe ergebnisListe){
@@ -80,7 +80,7 @@ public class LDAPReader extends Job {
 	 *
 	 * @param name
 	 * @param filter
-	 * @param ergebnisListe
+	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
 	 */
 	public LDAPReader(String name, String filter, ErgebnisListe ergebnisListe){
 		super("LDAPReader");
@@ -94,7 +94,7 @@ public class LDAPReader extends Job {
 	 * @param name
 	 * @param filter
 	 * @param searchScope
-	 * @param ergebnisListe
+	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
 	 */
 	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe){
 		super("LDAPReader");
@@ -108,7 +108,7 @@ public class LDAPReader extends Job {
 	 * @param name
 	 * @param filter
 	 * @param searchScope
-	 * @param ergebnisListe
+	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
 	 * @param env connection settings.
 	 * 	@see javax.naming.directory.DirContext;
 	 * 	@see	javax.naming.Context;
@@ -168,9 +168,9 @@ public class LDAPReader extends Job {
 	 * @param ergebnisListe
 	 */
 	private void setBasics(String name, String filter, ErgebnisListe ergebnisListe) {
-		this.ergebnisListe = ergebnisListe;
-		this.name = name;
-		this.filter = filter;
+		_ergebnisListe = ergebnisListe;
+		_name = name;
+		_filter = filter;
 	}
 
 	@Override
@@ -197,13 +197,13 @@ public class LDAPReader extends Job {
 		if((ctx = ldpc.getDirContext())!=null){
 	        SearchControls ctrl = new SearchControls();
 	        ctrl.setSearchScope(defaultScope);
+//	        ctrl.setReturningAttributes(null);
 	        try{
 	        	list = new ArrayList<String>();
-	            NamingEnumeration answer = ctx.search(name, filter, ctrl);
-//	            ctx.search(name, filter, ctrl);
+	            NamingEnumeration answer = ctx.search(_name, _filter, ctrl);
 				try {
 					while(answer.hasMore()){
-						String name = ((SearchResult)answer.next()).getName();
+						String name = ((SearchResult)answer.next()).getName()+","+_name;
 						list.add(name);
 						if(monitor.isCanceled()) {
 							return Status.CANCEL_STATUS;
@@ -218,10 +218,9 @@ public class LDAPReader extends Job {
 				}
 				answer.close();
 				ctx.close();
-				ergebnisListe.setResultList(list);
+				_ergebnisListe.setResultList(list);
 				monitor.done();
 				return Status.OK_STATUS;
-//				return ASYNC_FINISH;
 			} catch (NamingException e) {
 				CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
                 CentralLogger.getInstance().info(this,e);
@@ -231,6 +230,10 @@ public class LDAPReader extends Job {
 		return Status.CANCEL_STATUS;
 	}
 
+	/**
+	 * Set the Scope. @link SearchControls.
+	 * @param defaultScope set the given Scope.
+	 */
 	private void setDefaultScope(int defaultScope) {
 		this.defaultScope = defaultScope;
 	}
