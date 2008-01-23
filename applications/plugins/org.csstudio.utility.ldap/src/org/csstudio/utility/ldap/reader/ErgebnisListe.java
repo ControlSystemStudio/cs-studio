@@ -32,6 +32,10 @@ import org.csstudio.utility.namespace.utility.ProcessVariable;
 public class ErgebnisListe extends NameSpaceResultList{
 
 	private ArrayList<String> ergbnis = new ArrayList<String>();
+	private String _eventTime;
+	private String _parentName;
+	private String _severity; 
+	private String _status;
 
 	public ArrayList<String> getAnswer() {
 		ArrayList<String> tmp = new ArrayList<String>();
@@ -69,7 +73,13 @@ public class ErgebnisListe extends NameSpaceResultList{
                     saubereListe = saubereListe.substring(1);
             }
             String[] token = saubereListe.split("[,=]"); //$NON-NLS-1$
-            if(token.length<2) {Activator.logError(Messages.getString("CSSView.Error1")+row+"'");break;} //$NON-NLS-1$ //$NON-NLS-2$
+            if(token.length<2) {
+                if(!token[0].equals("no entry found")){
+                    Activator.logError(Messages.getString("CSSView.Error1")+row+"'");//$NON-NLS-1$ //$NON-NLS-2$
+                }
+                break;
+                
+            } 
 
             if(token[0].compareTo("eren")==0){ //$NON-NLS-1$
                 tmp.add(new ProcessVariable(token[1], saubereListe));
@@ -78,6 +88,7 @@ public class ErgebnisListe extends NameSpaceResultList{
                 tmp.add(new ControlSystemItem(token[1], saubereListe));
             }
         }
+        ergbnis = new ArrayList<String>();
         return tmp;
    }
 
@@ -108,6 +119,38 @@ public class ErgebnisListe extends NameSpaceResultList{
     @Override
     public NameSpaceResultList getNew() {
         return new ErgebnisListe();
+    }
+
+    public String getEventTime() {
+        return _eventTime;
+    }
+
+    public void setEventTime(String eventTime) {
+        _eventTime = eventTime;
+    }
+
+    public String getSeverity() {
+        return _severity;
+    }
+
+    public void setSeverity(String severity) {
+        _severity = severity;
+    }
+
+    public String getStatus() {
+        return _status;
+    }
+
+    public void setStatus(String status) {
+        _status = status;
+    }
+
+    public String getParentName() {
+        return _parentName;
+    }
+
+    public void setParentName(String parentName) {
+        _parentName = parentName;
     }
 
 }
