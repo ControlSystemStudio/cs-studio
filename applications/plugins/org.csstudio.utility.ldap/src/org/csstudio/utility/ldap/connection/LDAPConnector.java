@@ -34,9 +34,11 @@ import javax.naming.directory.InitialDirContext;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * @author hrickens
@@ -45,48 +47,49 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
  * @since 12.04.2007
  */
 public class LDAPConnector {
-	private boolean debug = false;
-	InitialDirContext ctx = null;
+    private boolean debug = false;
+    InitialDirContext ctx = null;
     private Hashtable<Object, String> _env;
 
-	/**
-	 * The connection settings come from
-	 * {@link org.csstudio.utility.ldap.ui.preference}
-	 * @throws NamingException
-	 *
-	 */
-	public LDAPConnector () throws NamingException{// throws NamingException{
-		try {
-			setEnv(getUIenv());
-		} catch (NamingException e) {
+    /**
+     * The connection settings come from
+     * {@link org.csstudio.utility.ldap.ui.preference}
+     * @throws NamingException
+     *
+     */
+    public LDAPConnector () throws NamingException{// throws NamingException{
+        try {
+            getUIenv();
+            setEnv();
+        } catch (NamingException e) {
             CentralLogger.getInstance().error(this,e);
             CentralLogger.getInstance().error(this,"The follow setting(s) a invalid: \r\n"
                     +"RemainingName: "+e.getRemainingName()+"\r\n"
                     +"ResolvedObj: "+e.getResolvedObj()+"\r\n"
                     +"Explanation: "+e.getExplanation()
                     );
-			throw e;
-		}
-	}
+            throw e;
+        }
+    }
 
-	/**
-	 *
-	 * @param env connection settings.
-	 * @throws NamingException
-	 * 	@see javax.naming.directory.DirContext;
-	 * 	@see	javax.naming.Context;
-	 */
-	public LDAPConnector (Hashtable<Object,String> env) throws NamingException{
-		setEnv(env);
-	}
+    /**
+     *
+     * @param env connection settings.
+     * @throws NamingException
+     *  @see javax.naming.directory.DirContext;
+     *  @see    javax.naming.Context;
+     */
+    public LDAPConnector (Hashtable<Object,String> env) throws NamingException{
+        setEnv(env);
+    }
 
-	/**
-	 *
-	 * @return the LDAP Connection
-	 */
-	public DirContext getDirContext() {
-		return ctx;
-	}
+    /**
+     *
+     * @return the LDAP Connection
+     */
+    public DirContext getDirContext() {
+        return ctx;
+    }
 
     public DirContext reconect() throws NamingException{
         try {
@@ -103,132 +106,108 @@ public class LDAPConnector {
         return getDirContext();
 
     }
-	/**
-	 * @param env
-	 * @return
-	 */
-	private Hashtable<Object, String> makeENV(String[] env) {
-		// Set up the environment for creating the initial context
-		Hashtable<Object, String> tmpENV = new Hashtable<Object, String>(11);
-		tmpENV.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
-		int i=0;
-		switch(env.length){
-			default:
-			case 5:
-				i=4;
-				if(env[i]!=null){
-					tmpENV.put(Context.SECURITY_CREDENTIALS, env[i]);
-				}
-			case 4:
-				i=3;
-				if(env[i]!=null){
-					tmpENV.put(Context.SECURITY_PRINCIPAL, env[i]);
-				}
-			case 3:
-				i=2;
-				if(env[i]!=null){
-					tmpENV.put(Context.SECURITY_AUTHENTICATION, env[i]);
-				}
-			case 2:
-				i=1;
-				if(env[i]!=null){
-					tmpENV.put(Context.SECURITY_PROTOCOL, env[i]);
-				}
-			case 1:
-				i=0;
-				if(env[i]!=null){
-					tmpENV.put(Context.PROVIDER_URL, env[i]);
-				}
-			case 0:
-				break;
-		}
-		return tmpENV;
-	}
+    /**
+     * @param env
+     * @return
+     */
+    private void setDefaultENV(String[] env) {
+        // Set up the environment for creating the initial context
+        _env = new Hashtable<Object, String>(11);
+        _env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
+        int i=0;
+        switch(env.length){
+            default:
+            case 5:
+                i=4;
+                if(env[i]!=null){
+                    _env.put(Context.SECURITY_CREDENTIALS, env[i]);
+                }
+            case 4:
+                i=3;
+                if(env[i]!=null){
+                    _env.put(Context.SECURITY_PRINCIPAL, env[i]);
+                }
+            case 3:
+                i=2;
+                if(env[i]!=null){
+                    _env.put(Context.SECURITY_AUTHENTICATION, env[i]);
+                }
+            case 2:
+                i=1;
+                if(env[i]!=null){
+                    _env.put(Context.SECURITY_PROTOCOL, env[i]);
+                }
+            case 1:
+                i=0;
+                if(env[i]!=null){
+                    _env.put(Context.PROVIDER_URL, env[i]);
+                }
+            case 0:
+                break;
+        }
+    }
 
 
-	/**
-	 * Read first the preferences in instance scope and if there is no 
-	 * user defined setting, get them from default scope.
-	 * 
-	 * @return env with the setings from PreferencPage
-	 */
-	private Hashtable<Object, String> getUIenv() {
+    /**
+     * Read first the preferences in instance scope and if there is no 
+     * user defined setting, get them from default scope.
+     * 
+     * @return env with the setings from PreferencPage
+     */
+    private void getUIenv() {
 
-		IEclipsePreferences prefsInstance = new InstanceScope().getNode(Activator.PLUGIN_ID);
-		IEclipsePreferences prefsDefault = new DefaultScope().getNode(Activator.PLUGIN_ID);
-		// Set up the environment for creating the initial context
-		
-		CentralLogger.getInstance().debug(this,"Path: "+prefsInstance.absolutePath());
-		CentralLogger.getInstance().debug(this,"PLUGIN_ID: "+Activator.PLUGIN_ID);
-		CentralLogger.getInstance().debug(this,"P_STRING_URL: "+prefsInstance.get(PreferenceConstants.P_STRING_URL,"1"));
-		CentralLogger.getInstance().debug(this,"SECURITY_PROTOCOL: "+prefsInstance.get(PreferenceConstants.SECURITY_PROTOCOL,"2"));
-		CentralLogger.getInstance().debug(this,"SECURITY_AUTHENTICATION: "+prefsInstance.get(PreferenceConstants.SECURITY_AUTHENTICATION,"3"));
-		CentralLogger.getInstance().debug(this,"P_STRING_USER_DN: "+prefsInstance.get(PreferenceConstants.P_STRING_USER_DN,"4"));
-		CentralLogger.getInstance().debug(this,"P_STRING_USER_PASSWORD: "+prefsInstance.get(PreferenceConstants.P_STRING_USER_PASSWORD,"5"));
-		String[] env = null;
-		// password
-		if(prefsDefault.get(PreferenceConstants.P_STRING_USER_PASSWORD,"").trim().length()>0){
-			env = new String[5];
-			env[4]=prefsDefault.get(PreferenceConstants.P_STRING_USER_PASSWORD,"");
-		}
-		if(prefsInstance.get(PreferenceConstants.P_STRING_USER_PASSWORD,"").trim().length()>0){
-			env = new String[5];
-			env[4]=prefsInstance.get(PreferenceConstants.P_STRING_USER_PASSWORD,"");
-		}
-		// user
-		if(prefsDefault.get(PreferenceConstants.P_STRING_USER_DN,"").trim().length()>0){
-			if(env==null){
-				env = new String[4];
-			}
-			env[3]=prefsDefault.get(PreferenceConstants.P_STRING_USER_DN,"");
-		}
-		if(prefsInstance.get(PreferenceConstants.P_STRING_USER_DN,"").trim().length()>0){
-			if(env==null){
-				env = new String[4];
-			}
-			env[3]=prefsInstance.get(PreferenceConstants.P_STRING_USER_DN,"");
-		}
-		if(prefsDefault.get(PreferenceConstants.SECURITY_AUTHENTICATION,"").trim().length()>0){
-			if(env==null){
-				env = new String[3];
-			}
-			env[2]=prefsDefault.get(PreferenceConstants.SECURITY_AUTHENTICATION,"");
-		}
-		if(prefsInstance.get(PreferenceConstants.SECURITY_AUTHENTICATION,"").trim().length()>0){
-			if(env==null){
-				env = new String[3];
-			}
-			env[2]=prefsInstance.get(PreferenceConstants.SECURITY_AUTHENTICATION,"");
-		}
-		if(prefsDefault.get(PreferenceConstants.SECURITY_PROTOCOL,"").trim().length()>0){
-			if(env==null){
-				env = new String[2];
-			}
-			env[1]=prefsDefault.get(PreferenceConstants.SECURITY_PROTOCOL,"");
-		}
-		if(prefsInstance.get(PreferenceConstants.SECURITY_PROTOCOL,"").trim().length()>0){
-			if(env==null){
-				env = new String[2];
-			}
-			env[1]=prefsInstance.get(PreferenceConstants.SECURITY_PROTOCOL,"");
-		}
-		if(env==null){
-			env = new String[1];
-		}
-		env[0]=prefsInstance.get(PreferenceConstants.P_STRING_URL,"");
-		if(env[0].equals("")) {
-			env[0] = prefsDefault.get(PreferenceConstants.P_STRING_URL,"");
-		}
-		return makeENV(env);
-	}
+        Preferences prefs = Activator.getDefault().getPluginPreferences();          
+        // Set up the environment for creating the initial context
+        
+        CentralLogger.getInstance().debug(this,"++++++++++++++++++++++++++++++++++++++++++++++");
+        CentralLogger.getInstance().debug(this,"+ PLUGIN_ID: "+Activator.PLUGIN_ID);
+        CentralLogger.getInstance().debug(this,"+ P_STRING_URL: "+prefs.getString(PreferenceConstants.P_STRING_URL));
+        CentralLogger.getInstance().debug(this,"+ SECURITY_PROTOCOL: "+prefs.getString(PreferenceConstants.SECURITY_PROTOCOL));
+        CentralLogger.getInstance().debug(this,"+ SECURITY_AUTHENTICATION: "+prefs.getString(PreferenceConstants.SECURITY_AUTHENTICATION));
+        CentralLogger.getInstance().debug(this,"+ P_STRING_USER_DN: "+prefs.getString(PreferenceConstants.P_STRING_USER_DN));
+        CentralLogger.getInstance().debug(this,"+ P_STRING_USER_PASSWORD: "+prefs.getString(PreferenceConstants.P_STRING_USER_PASSWORD));
+        CentralLogger.getInstance().debug(this,"----------------------------------------------");
+        String[] env = null;
+        // password
+        if(prefs.getString(PreferenceConstants.P_STRING_USER_PASSWORD).trim().length()>0){
+              env = new String[5];
+              env[4] = prefs.getString(PreferenceConstants.P_STRING_USER_PASSWORD);
+        }
+        // user
+        if(prefs.getString(PreferenceConstants.P_STRING_USER_DN).trim().length()>0){
+            if(env==null){
+              env = new String[4];
+            }
+            env[3] = prefs.getString(PreferenceConstants.P_STRING_USER_DN);
+        }
+        
+        if(prefs.getString(PreferenceConstants.SECURITY_AUTHENTICATION).trim().length()>0){
+            if(env==null){
+                env = new String[3];
+            }
+            env[2]=prefs.getString(PreferenceConstants.SECURITY_AUTHENTICATION);
+        }
+        
+        if(prefs.getString(PreferenceConstants.SECURITY_PROTOCOL).trim().length()>0){
+            if(env==null){
+                env = new String[2];
+            }
+            env[1]=prefs.getString(PreferenceConstants.SECURITY_PROTOCOL);
+        }
+        
+        if(env==null){
+            env = new String[1];
+        }
+        env[0]=prefs.getString(PreferenceConstants.P_STRING_URL);
+        setDefaultENV(env);
+    }
 
 
-	private void setEnv(Hashtable<Object, String> env) throws NamingException {
+    private void setEnv(Hashtable<Object, String> env) throws NamingException {
         _env = new Hashtable<Object, String>();
         _env.putAll(env);
-//        setEnv();
-        ctx = new InitialDirContext(_env);
-	}
+        setEnv();
+    }
 
     private void setEnv() throws NamingException {
         ctx = new InitialDirContext(_env);
