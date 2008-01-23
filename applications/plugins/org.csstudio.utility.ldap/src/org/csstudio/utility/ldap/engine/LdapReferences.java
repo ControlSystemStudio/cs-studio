@@ -21,9 +21,9 @@ public class LdapReferences {
 		
 		private GregorianCalendar timeCreated = null;
 		private GregorianCalendar lastTimeUsed = null;
-		private Vector namesInNamespace = null;
+		private Vector<String> namesInNamespace = null;
 		
-		public Entry ( Vector namesInNamespace) {
+		public Entry ( Vector<String> namesInNamespace) {
 			//
 			// initialize timer
 			//
@@ -39,13 +39,13 @@ public class LdapReferences {
 		public void setLastTimeUsed(GregorianCalendar lastTimeUsed) {
 			this.lastTimeUsed = lastTimeUsed;
 		}
-		public Vector getNamesInNamespace() {
+		public Vector<String> getNamesInNamespace() {
 			return namesInNamespace;
 		}
-		public void setNamesInNamespace(Vector namesInNamespace) {
+		public void setNamesInNamespace(Vector<String> namesInNamespace) {
 			this.namesInNamespace = namesInNamespace;
 		}
-		public void replaceNamesInNamespace(Vector namesInNamespace) {
+		public void replaceNamesInNamespace(Vector<String> namesInNamespace) {
 			this.namesInNamespace = namesInNamespace;
 		}
 		public GregorianCalendar getTimeCreated() {
@@ -68,7 +68,7 @@ public class LdapReferences {
 		this.ldapEntries = ldapEntries;
 	}
 	
-	public void newLdapEntry ( String channelName, Vector namesInNamespace) {
+	public void newLdapEntry ( String channelName, Vector<String> namesInNamespace) {
 		//
 		// insert new entry
 		//
@@ -83,7 +83,7 @@ public class LdapReferences {
 		return this.ldapEntries.get( channelName);
 	}
 	
-	public void changeLdapEntry ( String channelName, Vector namesInNamespace) {
+	public void changeLdapEntry ( String channelName, Vector<String> namesInNamespace) {
 		//
 		// insert new entry
 		//
