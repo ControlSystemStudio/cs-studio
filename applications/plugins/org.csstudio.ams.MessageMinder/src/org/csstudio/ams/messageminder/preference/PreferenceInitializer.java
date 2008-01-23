@@ -43,8 +43,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         prefs.putLong(PreferenceConstants.P_LONG_TIME2CLEAN,60); //$NON-NLS-1$
         prefs.putLong(PreferenceConstants.P_LONG_TO_OLD_TIME,26); //$NON-NLS-1$
         prefs.put(PreferenceConstants.P_STRING_KEY_WORDS,"HOST,FACILITY,AMS-FILTERID"); //$NON-NLS-1$
-//        prefs.put(PreferenceConstants.P_STRING_XMPP_USER_NAME, "icserver-alarm");
-//        prefs.put(PreferenceConstants.P_STRING_XMPP_PASSWORD, "icserver");
         prefs.put(PreferenceConstants.P_STRING_XMPP_USER_NAME, "ams-message-minder");
         prefs.put(PreferenceConstants.P_STRING_XMPP_PASSWORD, "ams");
 

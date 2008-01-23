@@ -81,7 +81,9 @@ public class MainView extends ViewPart {
 								Messages.getString("CSSView_Record")
 		};
 		// Namend the Records
-		cssview = new CSSView(c, automat,new NameSpaceLDAP(), getSite(),defaultPVFilter,"ou=epicsControls", headlines, 0, new ErgebnisListe());
+		cssview = new CSSView(c, automat,new NameSpaceLDAP(), getSite(),defaultPVFilter,"", headlines, 0, new ErgebnisListe());
+		// Aufruf bevor LDAP Read geändert wurde für den Interconetiocn Server.
+//		cssview = new CSSView(c, automat,new NameSpaceLDAP(), getSite(),defaultPVFilter,"ou=epicsControls", headlines, 0, new ErgebnisListe());
 	}
 
 	@Override
