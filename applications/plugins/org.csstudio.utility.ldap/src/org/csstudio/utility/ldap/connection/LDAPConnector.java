@@ -158,15 +158,13 @@ public class LDAPConnector {
 		IEclipsePreferences prefsDefault = new DefaultScope().getNode(Activator.PLUGIN_ID);
 		// Set up the environment for creating the initial context
 		
-		if(debug){
-			System.out.println("Path: "+prefsInstance.absolutePath());
-			System.out.println("PLUGIN_ID: "+Activator.PLUGIN_ID);
-			System.out.println("P_STRING_URL: "+prefsInstance.get(PreferenceConstants.P_STRING_URL,"1"));
-			System.out.println("SECURITY_PROTOCOL: "+prefsInstance.get(PreferenceConstants.SECURITY_PROTOCOL,"2"));
-			System.out.println("SECURITY_AUTHENTICATION: "+prefsInstance.get(PreferenceConstants.SECURITY_AUTHENTICATION,"3"));
-			System.out.println("P_STRING_USER_DN: "+prefsInstance.get(PreferenceConstants.P_STRING_USER_DN,"4"));
-			System.out.println("P_STRING_USER_PASSWORD: "+prefsInstance.get(PreferenceConstants.P_STRING_USER_PASSWORD,"5"));
-		}
+		CentralLogger.getInstance().debug(this,"Path: "+prefsInstance.absolutePath());
+		CentralLogger.getInstance().debug(this,"PLUGIN_ID: "+Activator.PLUGIN_ID);
+		CentralLogger.getInstance().debug(this,"P_STRING_URL: "+prefsInstance.get(PreferenceConstants.P_STRING_URL,"1"));
+		CentralLogger.getInstance().debug(this,"SECURITY_PROTOCOL: "+prefsInstance.get(PreferenceConstants.SECURITY_PROTOCOL,"2"));
+		CentralLogger.getInstance().debug(this,"SECURITY_AUTHENTICATION: "+prefsInstance.get(PreferenceConstants.SECURITY_AUTHENTICATION,"3"));
+		CentralLogger.getInstance().debug(this,"P_STRING_USER_DN: "+prefsInstance.get(PreferenceConstants.P_STRING_USER_DN,"4"));
+		CentralLogger.getInstance().debug(this,"P_STRING_USER_PASSWORD: "+prefsInstance.get(PreferenceConstants.P_STRING_USER_PASSWORD,"5"));
 		String[] env = null;
 		// password
 		if(prefsDefault.get(PreferenceConstants.P_STRING_USER_PASSWORD,"").trim().length()>0){
