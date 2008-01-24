@@ -29,8 +29,6 @@ import java.util.Vector;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
@@ -44,13 +42,9 @@ import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.engine.LdapReferences.Entry;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
 import org.csstudio.utility.ldap.reader.ErgebnisListe;
-import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 public class Engine extends Job {
     
