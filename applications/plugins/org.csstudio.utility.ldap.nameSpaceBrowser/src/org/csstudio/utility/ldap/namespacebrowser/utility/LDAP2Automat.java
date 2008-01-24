@@ -46,6 +46,7 @@ public class LDAP2Automat extends Automat {
 	 */
 	@Override
 	public CSSViewParameter goDown(Ereignis ereignis, String select) {
+	    System.out.println("++++++++++++++++++++++++++++++++++++++++++");
 		CSSViewParameter parameter = new CSSViewParameter();
 		String aktuelleEbene = select.split("=")[0]+"=";
 		System.out.println("Selection: "+select);
@@ -63,11 +64,16 @@ public class LDAP2Automat extends Automat {
             if(select.indexOf("*")<0){
                 // new sub
     			if(index<0){
-    				parameter.name = "ecom=EPICS-IOC,"+select+storeName;
+//    				parameter.name = "ecom=EPICS-IOC,"+select+storeName;
+    			    if(select.endsWith(",")){
+    			        select = select.substring(0,select.length()-1);
+    			    }
+    				parameter.name = "ecom=EPICS-IOC,"+select;
                 // change sub
     			}else{
     				// Replace the start of the String to the first ',' after aktuelleEbene
-    				parameter.name = "ecom=EPICS-IOC,"+select+storeName.substring(storeName.indexOf(',',index)+1,storeName.length());
+//    				parameter.name = "ecom=EPICS-IOC,"+select+storeName.substring(storeName.indexOf(',',index)+1,storeName.length());
+    			    parameter.name = "ecom=EPICS-IOC,"+select;
     			}
             }else parameter.name = root;
 
@@ -80,14 +86,22 @@ public class LDAP2Automat extends Automat {
                 // new sub
     			if(index<0){
     				System.out.println("1");
-    				parameter.name = select+storeName;
+//    				parameter.name = select+storeName;
+    				parameter.name = select;
                 // change sub                    
     			}else{
     				System.out.println("2");
     				// Replace the start of the String to the first ',' after aktuelleEbene
-    				parameter.name = select+storeName.substring(storeName.indexOf(',',index)+1,storeName.length());
+    				parameter.name = select;
+//    				parameter.name = select+storeName.substring(storeName.indexOf(',',index)+1,storeName.length());
     			}
-            }else parameter.name = storeName;
+            }else{
+                if(storeName.startsWith("econ=")){
+                    parameter.name = storeName.substring(storeName.indexOf(',')+1);
+                }else{
+                    parameter.name = storeName;
+                }
+            }
 			parameter.filter = "eren=*";
 			parameter.newCSSView=false;
 			aktuell=Zustand.RECORD;
