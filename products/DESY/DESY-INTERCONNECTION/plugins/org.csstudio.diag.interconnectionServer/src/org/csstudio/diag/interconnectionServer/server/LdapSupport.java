@@ -2,17 +2,12 @@ package org.csstudio.diag.interconnectionServer.server;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.engine.Engine.ChannelAttribute;
-import org.csstudio.utility.ldap.reader.ErgebnisListe;
-//import org.csstudio.utility.namespace.utility.ControlSystemItem;
-import org.csstudio.utility.namespace.utility.ControlSystemItem;
 
-public class LdapSupport implements Observer{
+public class LdapSupport{
 	
 	private static LdapSupport thisLdapSupportInstance = null;
 
@@ -36,9 +31,8 @@ public class LdapSupport implements Observer{
 		return thisLdapSupportInstance;
 	}
 	
-	
 	public String getLogicalIocName ( String ipAddress, String ipName, String ldapIocName) {
-		
+	    
 		String logicalIocName = null;
 		
 		/*
@@ -51,7 +45,7 @@ public class LdapSupport implements Observer{
 			return "invalid IP address";
 		}
 		
-		ldapIocName = Engine.getInstance().getLogicalNameFromIPAdr(ipAddress, ipName);
+		ldapIocName = Engine.getInstance().getLogicalNameFromIPAdr(ipAddress);
 		System.out.println("ldapIocName = " + ldapIocName);
 		if ( ldapIocName != null) {
 			/*
@@ -180,13 +174,14 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 		setAllRecordsInLdapServer ( ldapIocName, status, severity);
 		
 	}
-	
+
 	/*
 	 * method is synchronized: In case several IOCs disconnect the threads to enter the changes in the LDAP server will be
 	 * started. But they will write in parallel to the LDAP server - but in sequence!
 	 * This will (partly) avoid congestion on the send queue in addLdapWriteRequest()
 	 */
-	synchronized private void setAllRecordsInLdapServer ( String ldapIocName, String status, String severity) {
+	synchronized private void setAllRecordsInLdapServer (final String ldapIocName, String status, String severity) {
+	    String logicalIocName = ldapIocName;
 		/*
 		 * find all records belonging to the IOC: logicalIocName
 		 * -> search for econ == logicalIocName
@@ -203,36 +198,35 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
         java.util.Date currentDate = new java.util.Date();
         String eventTime = sdf.format(currentDate);
 
-		ErgebnisListe allRecordList = Engine.getInstance().setAllChannelOfRecord(ldapIocName, severity, status, eventTime);
-		allRecordList.addObserver(this);
+		ArrayList<String> allRecordList = Engine.getInstance().setAllChannelOfRecord(ldapIocName, severity, status, eventTime);
 
-//        
-//        /*
-//         * TODO
-//         * Changes in LDAP support: We must make sure that we can make changes in really BIG databases.
-//         * The pool size in the LDAP addLdapWriteRequest class must be adjusted accordingly!
-//         * For now I would expect ~ 10.000 (ten thousand) records time two changes which makes 20.000 entries in the addLdapWriteRequest queue!
-//         */
-//        
-//        /*
-//         * for ( all the records we found) {
-//         * 		Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channel, eventTime);
-//         * 		Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channel, status);
-//         * }
-//         */
-//        if (logicalIocName.equals("Bernds_Test_IOC")) {
-//        	
-//        	setSingleChannel( "alarmTest:RAMPA_calc", status, severity, eventTime, logicalIocName);
-//        	setSingleChannel( "alarmTest:RAMPB_calc", status, severity, eventTime, logicalIocName);
-//        	setSingleChannel( "alarmTest:RAMPC_calc", status, severity, eventTime, logicalIocName);
-//        }
-//        CentralLogger.getInstance().debug(this,"IocChangeState: setAllRecordsInLdapServer - DONE");
-	}
-	
+        if(logicalIocName==null){
+            return;
+        }else if(logicalIocName.contains("=")){
+            logicalIocName  = logicalIocName.split("[=,]")[1];
+        }
+        for (String channelName : allRecordList) {
+            CentralLogger.getInstance().debug(this, "Found Channelname: "+channelName);
+            if(channelName!=null){
+                setSingleChannel(channelName, status ,severity, eventTime, logicalIocName);
+            }
+        }
+    }
+
+
 	private void setSingleChannel ( String channelName, String status, String severity, String eventTime, String logicalIocName) {
-		Engine.getInstance().addLdapWriteRequest( "epicsAlarmSeverity", channelName, severity);
-		Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channelName, status);
-		Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channelName, eventTime);
+        if(channelName==null){
+            return;
+        }
+        if(severity!=null){
+            Engine.getInstance().addLdapWriteRequest( "epicsAlarmSeverity", channelName, severity);
+        }
+        if(status!=null){
+            Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channelName, status);
+        }
+        if(eventTime!=null){
+            Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channelName, eventTime);
+        }  
 		
 		JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
 				JmsMessage.MESSAGE_TYPE_STATUS, 									// type
@@ -249,30 +243,10 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 	private String getRecordAttribut(String recordPath, ChannelAttribute attribut){
 	    return Engine.getInstance().getAttriebute(recordPath, attribut);
 	}
-	
+
+
     private void setRecordAttribut(String recordPath, ChannelAttribute attribut, String value){
-        getRecordAttribut("12", ChannelAttribute.epicsAlarmSeverity);
-        String attributValue;
-    }
-    
-    /* (non-Javadoc)
-     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-     */
-    public void update(Observable arg0, Object arg1) {
-        if (arg0 instanceof ErgebnisListe) {
-            ErgebnisListe allRecordList = (ErgebnisListe) arg0;
-            ArrayList<ControlSystemItem> controlSystemItemList =  allRecordList.getResultList();
-            String logicalIocName = allRecordList.getParentName();
-            logicalIocName  = logicalIocName.split("[=,]")[1];
-            String status = allRecordList.getStatus();
-            String severity = allRecordList.getSeverity();
-            String eventTime = allRecordList.getEventTime();
-            for (ControlSystemItem controlSystemItem : controlSystemItemList) {
-                String channelName = controlSystemItem.getName();
-                CentralLogger.getInstance().debug(this, "Found Channelname: "+channelName);
-                setSingleChannel(channelName, status ,severity, eventTime, logicalIocName);
-            }
-        }
+        Engine.getInstance().setAttriebute(recordPath, attribut, value);
     }
 
 }
