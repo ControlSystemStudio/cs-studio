@@ -92,6 +92,7 @@ public class ClientRequest extends Thread
 	    InetAddress    	address         = null;
 	    String			hostName		= null;
 	    String         	daten           = null;
+	    String 			ldapIocName 	= null;
 	    String         	answerString    = null;
 	    String[]       	attribute       = null;
 	    int            	length          = 0;
@@ -161,8 +162,19 @@ public class ClientRequest extends Thread
         statisticContent.setLastMessageSize( length); 
         /*
 		 * find logical name of IOC by the IP address
+		 * do NOT check on the LDAP server if the name was already found...
 		 */
-        statisticContent.setLogicalIocName( LdapSupport.getInstance().getLogicalIocName ( address.getHostAddress(), hostName));
+        if ( statisticContent.getLogicalIocName() == null) {
+        	/*
+        	 * new IOC - ask LDAP for logical name
+        	 */
+        	statisticContent.setLogicalIocName( LdapSupport.getInstance().getLogicalIocName ( address.getHostAddress(), hostName, ldapIocName));
+        	/*
+        	 * save ldapIocName 
+        	 */
+        	statisticContent.setLdapIocName(ldapIocName);
+        }
+        
         
         Vector<TagValuePairs> tagValuePairs	= new Vector<TagValuePairs>();
         Hashtable<String,String> tagValue = new Hashtable<String,String>();	// could replace the Vector above
@@ -411,7 +423,7 @@ public class ClientRequest extends Thread
         			/*
         			 * start IocChangeState thread
         			 */
-        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), true);
+        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), statisticContent.getLdapIocName(), true);
         			
         			
         			/*
@@ -495,7 +507,7 @@ public class ClientRequest extends Thread
         			/*
         			 * start IocChangeState thread
         			 */
-        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), true);
+        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), statisticContent.getLdapIocName(), true);
         			
         			/*
         			 * create JMS sender
@@ -594,7 +606,7 @@ public class ClientRequest extends Thread
         			/*
         			 * start IocChangeState thread
         			 */
-        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), true);
+        			new IocChangedState (statisticContent.getHost(), statisticContent.getIpAddress(), statisticContent.getLogicalIocName(), statisticContent.getLdapIocName(), true);
         			
         			/*
         			 * create JMS sender

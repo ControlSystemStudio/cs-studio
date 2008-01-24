@@ -1,5 +1,6 @@
 package org.csstudio.diag.interconnectionServer.server;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -36,64 +37,78 @@ public class LdapSupport implements Observer{
 	}
 	
 	
-	public String getLogicalIocName ( String ipAddress, String ipName) {
-	    
-	    return Engine.getInstance().getLogicalNameFromIPAdr(ipAddress, ipName);
-//		
-//		/*
-//		 * error handling
-//		 */
-//		if ( ipAddress.length() < 8) {
-//			/*
-//			 * can't be a valid IP address
-//			 */
-//			return "invalid IP address";
-//		}
-//		
-//		/*TODO
-//		 * connect to LDAP
-//		 * search in EpicsControls namespace
-//		 * find logical IOC name  stored in econ by matching epicsIocIpAddress with the IP address here
-//		 */
-//		
-//		/*
-//		 * in the meantime ...
-//		 */
-//
-//		if ( ipAddress.equals("131.169.112.56")) {
-//			return "mkk10KVB1";
-//		} else if ( ipAddress.equals("131.169.112.146")) {
-//			return "mthKryoStand";
-//		} else if ( ipAddress.equals("131.169.112.155")) {
-//			return "ttfKryoCMTB";
-//		} else if ( ipAddress.equals("131.169.112.68")) {
-//			return "utilityIOC";
-//		} else if ( ipAddress.equals("131.169.112.80")) {
-//			return "ttfKryoLinac";
-//		} else if ( ipAddress.equals("131.169.112.52")) {
-//			return "krykWetter";
-//		} else if ( ipAddress.equals("131.169.112.141")) {
-//			return "Bernds_Test_IOC";
-//		} else if ( ipAddress.equals("131.169.112.108")) {
-//			return "ttfKryoLinac";
-//		} else if ( ipAddress.equals("131.169.112.104")) {
-//			return "ttfKryoSK47a";
-//		} else if ( ipAddress.equals("131.169.112.54")) {
-//			return "ttfKryoCB";
-//		} else if ( ipAddress.equals("131.169.112.68")) {
-//			return "utilityIOC";
-//		} else if ( ipAddress.equals("131.169.112.144")) {
-//			return "heraKryoFel";
-//		} else if ( ipAddress.equals("131.169.112.109")) {
-//			return "ttfKryoVC2";
-//		} else if ( ipAddress.equals("131.169.112.178")) {
-//			return "mthKryoStand";
-//		} else if ( ipAddress.equals("131.169.112.225")) {
-//			return "ttfDiagLinac";
-//		} else if ( ipAddress.equals("131.169.112.101")) {
-//			return "ttfKryoFV";
-//		} else return "~" + ipName + "~";
-//		
+	public String getLogicalIocName ( String ipAddress, String ipName, String ldapIocName) {
+		
+		String logicalIocName = null;
+		
+		/*
+		 * error handling
+		 */
+		if ( ipAddress.length() < 8) {
+			/*
+			 * can't be a valid IP address
+			 */
+			return "invalid IP address";
+		}
+		
+		ldapIocName = Engine.getInstance().getLogicalNameFromIPAdr(ipAddress, ipName);
+		System.out.println("ldapIocName = " + ldapIocName);
+		if ( ldapIocName != null) {
+			/*
+			 * fortunately a valid name was found
+			 * the string returned looks like: econ=iocName, ....
+			 * make sure the string is a valid LDAP address - must contain "econ"
+			 */
+			if ( ldapIocName.contains("econ") ) {
+				logicalIocName = ldapIocName.substring( ldapIocName.indexOf("=")+1,ldapIocName.indexOf(","));
+				System.out.println("logicalIocName = " + logicalIocName);
+				return logicalIocName;
+			} else {
+				System.out.println("ldapIocName = " + ldapIocName);
+				return ldapIocName;
+			}
+		} else {
+			/*
+			 * in the meantime ...
+			 */
+
+			if ( ipAddress.equals("131.169.112.56")) {
+				return "mkk10KVB1";
+			} else if ( ipAddress.equals("131.169.112.146")) {
+				return "mthKryoStand";
+			} else if ( ipAddress.equals("131.169.112.155")) {
+				return "ttfKryoCMTB";
+			} else if ( ipAddress.equals("131.169.112.68")) {
+				return "utilityIOC";
+			} else if ( ipAddress.equals("131.169.112.80")) {
+				return "ttfKryoLinac";
+			} else if ( ipAddress.equals("131.169.112.52")) {
+				return "krykWetter";
+			} else if ( ipAddress.equals("131.169.112.141")) {
+				return "Bernds_Test_IOC";
+			} else if ( ipAddress.equals("131.169.112.108")) {
+				return "ttfKryoLinac";
+			} else if ( ipAddress.equals("131.169.112.104")) {
+				return "ttfKryoSK47a";
+			} else if ( ipAddress.equals("131.169.112.54")) {
+				return "ttfKryoCB";
+			} else if ( ipAddress.equals("131.169.112.68")) {
+				return "utilityIOC";
+			} else if ( ipAddress.equals("131.169.112.144")) {
+				return "heraKryoFel";
+			} else if ( ipAddress.equals("131.169.112.109")) {
+				return "ttfKryoVC2";
+			} else if ( ipAddress.equals("131.169.112.178")) {
+				return "mthKryoStand";
+			} else if ( ipAddress.equals("131.169.112.225")) {
+				return "ttfDiagLinac";
+			} else if ( ipAddress.equals("131.169.112.101")) {
+				return "ttfKryoFV";
+			} else return "~" + ipName + "~";
+		}
+		
+		
+		
 		/*
 		 * es fehlen: 131.169.112.178 und 131.169.112.108
 		 * 
@@ -142,7 +157,7 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 		 */
 	}
 	
-	public void setAllRecordsToConnected ( String logicalIocName, String eventTime) {
+	public void setAllRecordsToConnected ( String ldapIocName) {
 		/*
 		 * just a convenience method
 		 */
@@ -151,18 +166,18 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
         String severity = "NO_ALARM";
 
 		CentralLogger.getInstance().debug(this,"IocChangeState: setAllRecordsToConnected");
-		setAllRecordsInLdapServer ( logicalIocName, status, severity, eventTime);
+		setAllRecordsInLdapServer ( ldapIocName, status, severity);
 		
 	}
 	
-	public void setAllRecordsToDisconnected ( String logicalIocName, String eventTime) {
+	public void setAllRecordsToDisconnected ( String ldapIocName) {
 		/*
 		 * just a convenience method
 		 */
         String status = "DISCONNECTED";
         String severity = "INVALID";
 		CentralLogger.getInstance().debug(this,"IocChangeState: setAllRecordsToDisconnected");
-		setAllRecordsInLdapServer ( logicalIocName, status, severity, eventTime);
+		setAllRecordsInLdapServer ( ldapIocName, status, severity);
 		
 	}
 	
@@ -171,7 +186,7 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 	 * started. But they will write in parallel to the LDAP server - but in sequence!
 	 * This will (partly) avoid congestion on the send queue in addLdapWriteRequest()
 	 */
-	synchronized private void setAllRecordsInLdapServer ( String logicalIocName, String status, String severity, String eventTime) {
+	synchronized private void setAllRecordsInLdapServer ( String ldapIocName, String status, String severity) {
 		/*
 		 * find all records belonging to the IOC: logicalIocName
 		 * -> search for econ == logicalIocName
@@ -179,17 +194,18 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 		 * 
 		 * for each eren entry set the epicsAlarmStatus to 'OFFLINE' and the epicsAlarmTimeStamp to the actual time
 		 */
-
-		ErgebnisListe allRecordList = Engine.getInstance().setAllChannelOfRecord(logicalIocName, severity, status, eventTime);
-		allRecordList.addObserver(this);
 		
-//		//
-//		// create time stamp written to epicsAlarmTimeStamp
-//		// this is a copy from the class ClientRequest
-//		//
-//		SimpleDateFormat sdf = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT);
-//        java.util.Date currentDate = new java.util.Date();
-//        String eventTime = sdf.format(currentDate);
+		//
+		// create time stamp written to epicsAlarmTimeStamp
+		// this is a copy from the class ClientRequest
+		//
+		SimpleDateFormat sdf = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT);
+        java.util.Date currentDate = new java.util.Date();
+        String eventTime = sdf.format(currentDate);
+
+		ErgebnisListe allRecordList = Engine.getInstance().setAllChannelOfRecord(ldapIocName, severity, status, eventTime);
+		allRecordList.addObserver(this);
+
 //        
 //        /*
 //         * TODO
@@ -216,35 +232,22 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 	private void setSingleChannel ( String channelName, String status, String severity, String eventTime, String logicalIocName) {
 		Engine.getInstance().addLdapWriteRequest( "epicsAlarmSeverity", channelName, severity);
 		Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channelName, status);
-		Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channelName, eventTime);	
-//		JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-//				JmsMessage.MESSAGE_TYPE_STATUS, 									// type
-//				channelName,														// name
-//				null, 																// value
-//				severity, 															// severity
-//				status, 															// status
-//				logicalIocName, 													// host
-//				null, 																// facility
-//				"alarm set by IC-Server", 											// text
-//				null);																// howTo
+		Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channelName, eventTime);
+		
+		JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+				JmsMessage.MESSAGE_TYPE_STATUS, 									// type
+				channelName,														// name
+				null, 																// value
+				severity, 															// severity
+				status, 															// status
+				logicalIocName, 													// host
+				null, 																// facility
+				"alarm set by IC-Server", 											// text
+				null);																// howTo
 	}
 
 	private String getRecordAttribut(String recordPath, ChannelAttribute attribut){
 	    return Engine.getInstance().getAttriebute(recordPath, attribut);
-//	    recordPath = recordPath.replaceAll(" ", "");
-//	    String record = recordPath.split(",")[0];
-//	    String path = recordPath.replaceFirst(record+",", "");
-//	    
-//	    ErgebnisListe result = new ErgebnisListe();
-//	    LDAPReader reader = new LDAPReader(recordPath, record,result);
-//	    reader.schedule();
-//	    
-//	    String attributValue;
-//	    /***/
-//	    
-//	    
-//	    /***/
-//        return attributValue;
 	}
 	
     private void setRecordAttribut(String recordPath, ChannelAttribute attribut, String value){

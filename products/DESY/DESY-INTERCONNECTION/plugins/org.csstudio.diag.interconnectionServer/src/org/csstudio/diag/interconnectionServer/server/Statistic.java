@@ -80,6 +80,7 @@ public class Statistic {
 		String host			= null;
 		String ipAddress	= null;
 		String logicalIocName = null;
+		String ldapIocName = null;
 		int	port			= 0;
 		String	lastMessage	= null;
 		int lastMessageSize = 0;
@@ -294,6 +295,14 @@ public class Statistic {
 
 		public void setLogicalIocName(String logicalIocName) {
 			this.logicalIocName = logicalIocName;
+		}
+
+		public String getLdapIocName() {
+			return ldapIocName;
+		}
+
+		public void setLdapIocName(String ldapIocName) {
+			this.ldapIocName = ldapIocName;
 		}
 		
 

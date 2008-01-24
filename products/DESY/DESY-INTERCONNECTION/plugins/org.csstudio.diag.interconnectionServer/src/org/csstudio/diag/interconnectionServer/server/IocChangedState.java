@@ -19,13 +19,15 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 public class IocChangedState extends Thread{
 	private String iocName = "unknown Name";
+	private String ldapIocName = "unknown Name";
 	private String logicalIocName = "unknown logical Name";
 	private String iocIpAddress = "unknown IP Address";
 	private boolean isRunning = true;
 	
-	IocChangedState ( String iocName, String iocIpAddress, String logicalIocName, boolean isRunning) {
+	IocChangedState ( String iocName, String iocIpAddress, String logicalIocName, String ldapIocName, boolean isRunning) {
 		this.isRunning = isRunning;
 		this.iocName = iocName;
+		this.ldapIocName = ldapIocName;
 		this.iocIpAddress = iocIpAddress;
 		this.logicalIocName = logicalIocName;
 		
@@ -133,7 +135,7 @@ public class IocChangedState extends Thread{
 					"virtual channel", 													// text
 					null);	
 			
-			LdapSupport.getInstance().setAllRecordsToDisconnected ( logicalIocName);
+			LdapSupport.getInstance().setAllRecordsToDisconnected ( ldapIocName);
 			
 		}
 		
