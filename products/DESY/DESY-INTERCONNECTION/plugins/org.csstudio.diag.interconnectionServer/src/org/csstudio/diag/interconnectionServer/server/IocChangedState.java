@@ -60,16 +60,16 @@ public class IocChangedState extends Thread{
 			/*
 			 * generate JMS alarm message NAME: "Localhost:logicalIocName:connectState" VALUE: "CONNECTED" SEVERITY: "NO_ALARM"
 			 */
-			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
-					localHostName + ":" + logicalIocName + ":connectState",	// name
-					localHostName, 											// value
-					JmsMessage.SEVERITY_NO_ALARM, 							// severity
-					"CONNECTED", 											// status
-					logicalIocName, 										// host
-					null, 													// facility
-					"virtual channel", 								// text
-					null);													// howTo
+//			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+//					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
+//					localHostName + ":" + logicalIocName + ":connectState",	// name
+//					localHostName, 											// value
+//					JmsMessage.SEVERITY_NO_ALARM, 							// severity
+//					"CONNECTED", 											// status
+//					logicalIocName, 										// host
+//					null, 													// facility
+//					"virtual channel", 								// text
+//					null);													// howTo
 			/*
 			 * second message without localHostName
 			 */
@@ -98,16 +98,16 @@ public class IocChangedState extends Thread{
 			/*
 			 * generate JMS alarm message NAME: "Localhost:logicalIocName:connectState" VALUE: "NOT_CONNECTED" SEVERITY: "MAJOR"
 			 */
-			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
-					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
-					localHostName + ":" + logicalIocName + ":connectState",	// name
-					localHostName, 											// value
-					JmsMessage.SEVERITY_MAJOR, 								// severity
-					"DISCONNECTED", 										// status
-					logicalIocName, 										// host
-					null, 													// facility
-					"virtual channel", 								// text
-					null);		
+//			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+//					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 						// type
+//					localHostName + ":" + logicalIocName + ":connectState",	// name
+//					localHostName, 											// value
+//					JmsMessage.SEVERITY_MAJOR, 								// severity
+//					"DISCONNECTED", 										// status
+//					logicalIocName, 										// host
+//					null, 													// facility
+//					"virtual channel", 								// text
+//					null);		
 			/*
 			 * second message without localHostName
 			 */
