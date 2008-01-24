@@ -198,7 +198,7 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
         java.util.Date currentDate = new java.util.Date();
         String eventTime = sdf.format(currentDate);
 
-		ArrayList<String> allRecordList = Engine.getInstance().setAllChannelOfRecord(ldapIocName, severity, status, eventTime);
+		ArrayList<String> allRecordList = Engine.getInstance().getAllRecordofICO(ldapIocName, severity, status, eventTime);
 
         if(logicalIocName==null){
             return;
