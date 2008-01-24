@@ -81,8 +81,8 @@ public class Right {
 	public final boolean equals(final Object o) {
 		if (o instanceof Right) {
 			Right right = (Right) o;
-			return _role.equals(right.getRole())
-					&& _group.equals(right.getGroup());
+			return _role.equalsIgnoreCase(right.getRole())
+					&& _group.equalsIgnoreCase(right.getGroup());
 		}
 		return super.equals(o);
 	}
