@@ -1,0 +1,17 @@
+var returns = "java.lang.Double";
+var description = "Fill Grade Rule";
+var parameters = new Array("Current PV value", "Minimum PV value", "Maximum PV value");
+
+function execute(args) {
+	var currentValue = args[0];
+	var minValue = args[1];
+	var maxValue = args[2];
+
+	var result = currentValue;
+	
+	if (maxValue > minValue) {
+		result = (currentValue / (maxValue-minValue)) * 100;
+	}
+	
+	return result;
+}

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="widgetModelFactories" name="widgetModelFactories" schema="schema/widgetModelFactories.exsd"/>
+   <extension-point id="propertyPersistenceHandlers" name="propertyPersistenceHandlers" schema="schema/propertyPersistenceHandlers.exsd"/>
+   <extension-point id="rules" name="rules" schema="schema/rules.exsd"/>
+   <extension-point id="widgetModelInitializers" name="widgetModelInitializers" schema="schema/widgetModelInitializers.exsd"/>
+   <extension
+         point="org.csstudio.sds.propertyPersistenceHandlers">
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.DoublePropertyPersistenceHandler"
+            typeId="sds.double"/>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.IntegerPropertyPersistenceHandler"
+            typeId="sds.integer"/>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.StringPropertyPersistenceHandler"
+            typeId="sds.string"/>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.BooleanPropertyPersistenceHandler"
+            typeId="sds.boolean"/>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.PointListPropertyPersistenceHandler"
+            typeId="sds.pointlist"/>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.ColorPropertyPersistenceHandler"
+            typeId="sds.color"/>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.FontPropertyPersistenceHandler"
+            typeId="sds.font"/>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.OptionPropertyPersistenceHandler"
+            typeId="sds.option"/>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.DoubleArrayPropertyPersistenceHandler"
+            typeId="sds.doublearray"/>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.StringMapPropertyPersistenceHandler"
+            typeId="sds.map"/>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.ResourcePropertyPersistenceHandler"
+            typeId="sds.path"/>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.ProcessVariablePropertyPersistenceHandler"
+            typeId="sds.pv">
+      </propertyPersistenceHandler>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.ActionPropertyPersistenceHandler"
+            typeId="sds.action">
+      </propertyPersistenceHandler>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.model.properties.ParamStringPropertyPersistenceHandler"
+            typeId="sds.paramstring">
+      </propertyPersistenceHandler>
+   </extension>
+   <extension
+         point="org.csstudio.sds.rules">
+      <rule
+            class="org.csstudio.sds.model.logic.DirectConnectionRule"
+            name="Direct Connection"
+            returnType="java.lang.Number"
+            ruleId="directConnection">
+         <parameterDescription name="Value"/>
+      </rule>
+      <rule
+            class="org.csstudio.sds.model.logic.SimpleColorRule"
+            name="Simple Color Rule"
+            returnType="org.eclipse.swt.graphics.RGB"
+            ruleId="simpleColor">
+         <parameterDescription name="Value"/>
+      </rule>
+      <rule
+            class="org.csstudio.sds.model.logic.VisibilityRule"
+            name="Visibility Rule"
+            returnType="java.lang.Boolean"
+            ruleId="rule.visibility">
+         <parameterDescription name="Value"/>
+      </rule>
+       <rule
+             class="org.csstudio.sds.model.logic.NullRule"
+             name="NullRule"
+             returnType="java.lang.Object"
+             ruleId="rule.null">
+         <parameterDescription
+               name="Value">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.model.logic.SystemTimeRule"
+            name="System Time Rule"
+            returnType="java.lang.String"
+            ruleId="rule.systemTime">
+         <parameterDescription name="Value"/>
+      </rule>
+      <rule
+            class="org.csstudio.sds.model.logic.ActionDataRule"
+            name="Action Data From Enum"
+            returnType="org.csstudio.sds.model.properties.ActionData"
+            ruleId="rule.actionData">
+         <parameterDescription
+               name="Enum[]">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.model.logic.ConcatEnumValuesRule"
+            name="Concat Enum Values To String"
+            returnType="java.lang.String"
+            ruleId="rule.stringArray">
+         <parameterDescription
+               name="Enum[]">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.model.logic.TestStringRule"
+            name="TestStringRule"
+            returnType="java.lang.String"
+            ruleId="TestStringRule">
+         <parameterDescription
+               name="Angle"
+               type="java.lang.Double">
+         </parameterDescription>
+         <parameterDescription
+               name="Prefix"
+               type="java.lang.String">
+         </parameterDescription>
+      </rule>
+   </extension>
+   <extension
+         point="org.csstudio.sds.widgetModelInitializers">
+      <controlSystemSchema
+            class="org.csstudio.sds.internal.model.initializers.ManualSchema"
+            description="%manualSchema"
+            schemaId="schema.manual"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.sds.internal.SdsPreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.csstudio.sds.widgetModelFactories">
+      <widgetModelFactory
+            class="org.csstudio.sds.internal.model.LinkingContainerModelFactory"
+            description="A container widget which can show up other displays."
+            icon="icons/linkingcontainer.gif"
+            name="Linking Container"
+            typeId="org.csstudio.sds.components.LinkingContainer">
+      </widgetModelFactory>
+      <widgetModelFactory
+            class="org.csstudio.sds.internal.model.GroupingContainerModelFactory"
+            description="A container widget that can group other widgets."
+            icon="icons/groupcontainer.gif"
+            name="Grouping Container"
+            typeId="org.csstudio.sds.components.GroupingContainer">
+      </widgetModelFactory>
+   </extension>
+</plugin>

@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="widgetEditParts" name="widgetEditParts" schema="schema/widgetEditParts.exsd"/>
+   <extension-point id="graphicalFeedbackFactories" name="graphicalFeedbackFactories" schema="schema/graphicalFeedbackFactories.exsd"/>
+   <extension-point id="propertyDescriptorFactories" name="propertyDescriptorFactories" schema="schema/propertyDescriptorFactories.exsd"/>
+
+<extension point="org.eclipse.ui.editors">
+  <editor
+        class="org.csstudio.sds.ui.internal.editor.DisplayEditor"
+        contributorClass="org.csstudio.sds.ui.internal.editor.DisplayEditorActionBarContributor"
+        default="true"
+        extensions="css-sds"
+        icon="icons/sds.gif"
+        id="org.csstudio.sds.ui.internal.editor.DisplayEditor"
+        name="SDS Editor">
+  </editor>
+  <editor
+        class="org.csstudio.sds.ui.logic.ScriptEditor"
+        extensions="css-sdss"
+        icon="icons/rule_script.gif"
+        id="org.csstudio.sds.ui.logic.ScriptEditor"
+        name="SDS Script Editor">
+  </editor>
+  </extension>
+  <extension
+        point="org.eclipse.ui.actionSets">
+     <actionSet
+           id="synopticDisplayActions"
+           label="Synoptic Display Actions"
+           visible="true">
+        <action
+              class="org.csstudio.sds.ui.internal.actions.OpenDisplayEditorAction"
+              icon="icons/sds.gif"
+              id="org.csstudio.ui.sds.ui.internal.actions.OpenDisplayEditorAction"
+              label="Synoptic Display Editor"
+              menubarPath="css/display/"
+              style="push"/>
+        <action
+              class="org.csstudio.ui.sds.ui.internal.actions.GcAction"
+              icon="icons/connector.png"
+              id="org.csstudio.ui.sds.ui.internal.actions.GcAction"
+              label="Garbage Collection"
+              menubarPath="css/display/"
+              style="push"
+              toolbarPath="additions"/>
+     </actionSet>
+  </extension>
+  <extension
+        point="org.eclipse.ui.views">
+     <view
+           category="org.csstudio.sds.ui.viewCategory"
+           class="org.csstudio.sds.ui.internal.editor.ConnectionView"
+           icon="icons/connectionPerf.png"
+           id="org.csstudio.sds.ui.internal.editor.ConnectionView"
+           name="Connections &amp; Performance [For Experimental Use]"/>
+     <view
+           category="org.csstudio.sds.ui.viewCategory"
+           class="org.csstudio.sds.ui.internal.properties.view.PropertySheet"
+           icon="icons/sdsProp.png"
+           id="org.csstudio.sds.ui.internal.properties.view.PropertySheet"
+           name="Widget Properties"/>
+     <view
+           category="org.csstudio.sds.ui.viewCategory"
+           class="org.csstudio.sds.ui.internal.statistics.PerformanceMeasuresView"
+           icon="icons/connectionMeas.png"
+           id="org.csstudio.sds.ui.internal.statistics.PerformanceMeasuresView"
+           name="Performance Measures"/>
+     <view
+           allowMultiple="true"
+           category="org.csstudio.sds.ui.viewCategory"
+           class="org.csstudio.sds.ui.internal.runmode.DisplayViewPart"
+           icon="icons/sdsRun.png"
+           id="org.csstudio.sds.ui.internal.runmode.DisplayViewPart"
+           name="Run Mode View"/>
+     <view
+           category="org.csstudio.sds.ui.viewCategory"
+           class="org.csstudio.sds.ui.internal.connection.ConnectionStateView"
+           icon="icons/connectionStat.png"
+           id="org.csstudio.sds.ui.internal.connection.ConnectionStateView"
+           name="Connector Overview"/>
+     <category
+           id="org.csstudio.sds.ui.viewCategory"
+           name="Synoptic Display Studio"/>
+     <view
+           category="org.csstudio.sds.ui.viewCategory"
+           class="org.csstudio.sds.ui.internal.layers.LayerManagementView"
+           icon="icons/layer_view.gif"
+           id="org.csstudio.sds.ui.internal.layers.LayerManagementView"
+           name="Layer Management"/>
+  </extension>
+  <extension
+        point="org.eclipse.ui.perspectives">
+     <perspective
+           class="org.csstudio.sds.ui.internal.workbench.DisplayDevelopmentPerspective"
+           icon="icons/sds.gif"
+           id="org.csstudio.sds.ui.internal.workbench.SynopticDisplayStudioPerspective"
+           name="Display Development"/>
+     <perspective
+           class="org.csstudio.sds.ui.internal.workbench.DisplayTestingPerspective"
+           icon="icons/connectionStat.png"
+           id="org.csstudio.sds.ui.internal.workbench.DisplayTestingPerspective"
+           name="Display Testing"/>
+  </extension>
+  <extension
+        point="org.eclipse.ui.bindings">
+     <key
+           commandId="org.eclipse.ui.edit.delete"
+           schemeId="org.csstudio.sds.ui.acceleratorScheme"
+           sequence="DEL"/>
+     <scheme
+           description="Synoptic Display Studio Accelerators"
+           id="org.csstudio.sds.ui.acceleratorScheme"
+           name="Synoptic Display Studio Accelerators"/>
+  </extension>
+  <extension
+        point="org.eclipse.ui.newWizards">
+     <category
+           id="org.csstudio.sds.ui.newWizard.display"
+           name="Display"/>
+     <wizard
+           canFinishEarly="false"
+           category="org.csstudio.sds.ui.newWizard.display/"
+           class="org.csstudio.sds.ui.wizards.NewDisplayWizard"
+           hasPages="true"
+           icon="icons/sds.gif"
+           id="org.csstudio.sds.ui.internal.wizards.NewDisplayWizard"
+           name="Synoptic Display"/>
+     <wizard
+           canFinishEarly="false"
+           category="org.csstudio.sds.ui.newWizard.display/"
+           class="org.csstudio.sds.ui.wizards.NewScriptRuleWizard"
+           hasPages="true"
+           icon="icons/rule_script.gif"
+           id="org.csstudio.sds.ui.wizards.NewScriptRuleWizard"
+           name="Scripted Rule">
+     </wizard>
+  </extension>
+  <extension
+        point="org.csstudio.sds.ui.propertyDescriptorFactories">
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.BooleanPropertyDescriptorFactory"
+           typeId="sds.boolean"/>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.IntegerPropertyDescriptorFactory"
+           typeId="sds.integer"/>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.ColorPropertyDescriptorFactory"
+           typeId="sds.color"/>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.FontPropertyDescriptorFactory"
+           typeId="sds.font"/>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.StringPropertyDescriptorFactory"
+           typeId="sds.string"/>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.DoublePropertyDescriptorFactory"
+           typeId="sds.double"/>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.PointlistPropertyDescriptorFactory"
+           typeId="sds.pointlist"/>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.OptionPropertyDescriptorFactory"
+           typeId="sds.option"/>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.DoubleArrayPropertyDescriptorFactory"
+           typeId="sds.doublearray"/>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.StringMapPropertyDescriptorFactory"
+           typeId="sds.map"/>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.ResourcePropertyDescriptorFactory"
+           typeId="sds.path"/>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.ProcessVariablePropertyDescriptorFactory"
+           typeId="sds.pv">
+     </propertyDescriptorFactory>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.ActionDataPropertyDescriptorFactory"
+           typeId="sds.action">
+     </propertyDescriptorFactory>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.ParamStringPropertyDescriptorFactory"
+           typeId="sds.paramstring">
+     </propertyDescriptorFactory>
+  </extension>
+  <extension
+        point="org.eclipse.core.runtime.adapters">
+     <factory
+           adaptableType="org.csstudio.sds.model.AbstractWidgetModel"
+           class="org.csstudio.sds.ui.internal.adapters.WidgetModelAdapterFactory">
+        <adapter type="org.csstudio.sds.ui.internal.properties.view.IPropertySource"/>
+     </factory>
+     <factory
+           adaptableType="org.csstudio.sds.model.logic.RuleDescriptor"
+           class="org.csstudio.sds.ui.internal.adapters.RuleDescriptorAdapterFactory">
+        <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+     </factory>
+     <factory
+           adaptableType="org.csstudio.sds.internal.connection.Connector"
+           class="org.csstudio.sds.ui.internal.connection.ConnectorAdapterFactory">
+        <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+     </factory>
+     <factory
+           adaptableType="org.csstudio.sds.internal.connection.ChannelReference"
+           class="org.csstudio.sds.ui.internal.connection.ChannelReferenceAdapterFactory">
+        <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+     </factory>
+     <factory
+           adaptableType="org.csstudio.sds.model.DisplayModel"
+           class="org.csstudio.sds.ui.internal.adapters.DisplayModelAdapterFactory">
+        <adapter type="org.csstudio.sds.ui.internal.properties.view.IPropertySource"/>
+     </factory>
+     <factory
+           adaptableType="org.csstudio.sds.model.AbstractWidgetModel"
+           class="org.csstudio.sds.ui.internal.adapters.SdsActivationAdapterFactory">
+        <adapter type="org.csstudio.platform.security.IActivationAdapter"/>
+     </factory>
+     <factory
+           adaptableType="org.csstudio.sds.model.layers.Layer"
+           class="org.csstudio.sds.ui.internal.layers.LayerAdapterFactory">
+        <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+     </factory>
+     <factory
+           adaptableType="org.csstudio.sds.model.properties.actions.WidgetAction"
+           class="org.csstudio.sds.ui.internal.adapters.WidgetActionAdapterFactory">
+        <adapter
+              type="org.eclipse.ui.model.IWorkbenchAdapter">
+        </adapter>
+     </factory>
+  </extension>
+  <extension
+        point="org.eclipse.ui.preferencePages">
+     <page
+           category="org.csstudio.platform.ui.css.applications.display"
+           class="org.csstudio.sds.ui.internal.preferences.SchemaPreferencePage"
+           id="org.csstudio.sds.model.schemaPreferences"
+           name="%schemaPreferenceName"/>
+     <page
+           class="org.eclipse.ui.ExtensionFactory:keysPreferencePage"
+           id="org.eclipse.ui.preferencePages.Keys"
+           name="%PreferencePages.KeyboardShortcuts"/>
+     <page
+           category="org.csstudio.platform.ui.css.applications.display"
+           class="org.csstudio.sds.ui.internal.preferences.DisplayOptionsPreferencePage"
+           id="org.csstudio.sds.ui.internal.preferences.DisplayOptionsPreferencePage"
+           name="Display Options"/>
+  </extension>
+  <extension
+        point="org.eclipse.ui.popupMenus">
+     <objectContribution
+           adaptable="false"
+           id="RunModeActions"
+           nameFilter="*.css-sds"
+           objectClass="org.eclipse.core.resources.IResource">
+        <action
+              class="org.csstudio.sds.ui.internal.runmode.OpenAsViewAction"
+              icon="icons/run.gif"
+              id="org.csstudio.sds.ui.internal.parts.OpenRunModeAsViewAction"
+              label="Run As View"/>
+        <action
+              class="org.csstudio.sds.ui.internal.runmode.OpenAsShellAction"
+              icon="icons/run.gif"
+              id="org.csstudio.sds.ui.internal.parts.OpenRunModeAsShellAction2"
+              label="Run As Shell"/>
+     </objectContribution>
+  </extension>
+  <extension
+        point="org.eclipse.ui.editorActions">
+     <editorContribution
+           id="org.csstudio.sds.ui.internal.editor.DisplayEditor.Contribution"
+           targetID="org.csstudio.sds.ui.internal.editor.DisplayEditor">
+        <action
+              class="org.csstudio.sds.ui.internal.runmode.OpenAsShellEditorAction"
+              icon="icons/run.gif"
+              id="org.csstudio.sds.ui.internal.parts.OpenInRunModeAction"
+              label="Open in Run Mode"
+              style="push"
+              toolbarPath="additions"/>
+     </editorContribution>
+  </extension>
+  <extension
+        point="org.eclipse.ui.viewActions">
+     <viewContribution
+           id="RunModeViewContribution"
+           targetID="org.csstudio.sds.ui.internal.runmode.DisplayViewPart">
+        <action
+              class="org.csstudio.sds.ui.internal.runmode.ZoomInActionDelegate"
+              icon="icons/zoom_in.png"
+              id="org.csstudio.sds.ui.internal.runmode.ZoomInActionDelegate"
+              label="Zoom In"
+              style="push"
+              toolbarPath="additions"/>
+        <action
+              class="org.csstudio.sds.ui.internal.runmode.ZoomOutActionDelegate"
+              icon="icons/zoom_out.png"
+              id="org.csstudio.sds.ui.internal.runmode.ZoomOutActionDelegate"
+              label="Zoom Out"
+              style="push"
+              toolbarPath="additions"/>
+        <action
+              class="org.csstudio.sds.ui.internal.runmode.ChangeLayerVisibilityActionDelegate"
+              icon="icons/layer_view.gif"
+              id="org.csstudio.sds.ui.internal.runmode.ChangeLayerVisibilityActionDelegate"
+              label="Layer Visibility..."
+              toolbarPath="additions">
+        </action>
+     </viewContribution>
+  </extension>
+  <extension
+        point="org.eclipse.ui.commands">
+     <command
+           categoryId="org.eclipse.ui.category.edit"
+           description="Copy Widgets"
+           id="org.csstudio.sds.ui.copyWidgets"
+           name="Copy"/>
+     <command
+           categoryId="org.eclipse.ui.category.edit"
+           description="Paste Widgets"
+           id="org.csstudio.sds.ui.pasteWidgets"
+           name="Paste"/>
+  </extension>
+  <extension
+        point="org.eclipse.ui.bindings">
+     <scheme
+           description="SDS Accelerators"
+           id="org.csstudio.sds.ui.acceleratorScheme"
+           name="SDS Accelerators"/>
+  </extension>
+  <extension point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.ui.file.close"
+            sequence="M1+W"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.file.closeAll"
+            sequence="M1+M2+W"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.file.closeAll"
+            sequence="M1+M2+F4"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.file.save"
+            sequence="M1+S"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.file.saveAll"
+            sequence="M1+M2+S"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.undo"
+            sequence="M1+Z"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.redo"
+            sequence="M1+Y"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.cut"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M1+X"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.copy"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M1+C"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.paste"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M1+V"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.selectAll"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M1+A"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.delete"
+            sequence="DEL"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.cut"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M2+DEL"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.copy"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M1+INSERT"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.eclipse.ui.edit.paste"
+            contextId="org.eclipse.ui.contexts.dialogAndWindow"
+            sequence="M2+INSERT"
+            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+   </extension>
+  <extension
+        point="org.eclipse.ui.popupMenus">
+     <viewerContribution
+           id="LayerViewActionContribution"
+           targetID="org.csstudio.sds.ui.internal.layers.LayerManagementView">
+        <action
+              class="org.csstudio.sds.ui.internal.layers.AddLayerAction"
+              icon="icons/change_layer.gif"
+              id="org.csstudio.sds.ui.internal.layers.AddLayerAction"
+              label="Add Layer"
+              menubarPath="additions"/>
+        <action
+              class="org.csstudio.sds.ui.internal.layers.RemoveLayerAction"
+              enablesFor="1"
+              icon="icons/remove_layer.gif"
+              id="org.csstudio.sds.ui.internal.layers.RemoveLayerAction"
+              label="Remove Layer"
+              menubarPath="additions"/>
+        <action
+              class="org.csstudio.sds.ui.internal.layers.MoveLayerUpAction"
+              icon="icons/layer_up.gif"
+              id="org.csstudio.sds.ui.internal.layers.MoveLayerUpAction"
+              label="Move Layer Up"
+              menubarPath="additions"/>
+        <action
+              class="org.csstudio.sds.ui.internal.layers.MoveLayerDownAction"
+              icon="icons/layer_down.gif"
+              id="org.csstudio.sds.ui.internal.layers.MoveLayerDownAction"
+              label="Move Layer Down"
+              menubarPath="additions"/>
+        <action
+              class="org.csstudio.sds.ui.internal.layers.ToggleLayerVisibilityAction"
+              icon="icons/layer_visible.png"
+              id="org.csstudio.sds.ui.internal.layers.ToggleLayerVisibilityAction"
+              label="Toggle Visiblity"
+              menubarPath="additions"/>
+     </viewerContribution>
+  </extension>
+    <extension
+        point="org.eclipse.ui.menus">
+     <menuContribution
+           locationURI="popup:org.csstudio.sds.ui.internal.editor.DisplayEditor?before=additions">
+        <menu
+              id="LayerMenu"
+              label="Layers">
+           <dynamic
+                 class="org.csstudio.sds.ui.internal.editor.LayerCompoundContributionItem"
+                 id="org.csstudio.sds.ui.LayerMenu">
+           </dynamic>
+           <visibleWhen>
+              <and>
+                 <count
+                       value="+">
+                 </count>
+                 <not>
+                    <instanceof
+                          value="org.csstudio.sds.ui.internal.editparts.DisplayEditPart">
+                    </instanceof>
+                 </not>
+              </and>
+           </visibleWhen>
+        </menu>
+     </menuContribution>
+  </extension>
+    <extension
+          point="org.eclipse.ui.popupMenus">
+       <objectContribution
+             id="Contribs.IProcessVariableAdressProvider"
+             objectClass="org.csstudio.platform.model.pvs.IProcessVariableAdressProvider">
+          <action
+                class="org.csstudio.ui.sds.ui.internal.actions.PrintPvsAction"
+                id="org.csstudio.ui.sds.ui.internal.actions.PrintPvsAction"
+                label="Print Process Variable Names To Console"
+                menubarPath="css/additions">
+          </action>
+       </objectContribution>
+    </extension>
+    <extension
+          point="org.csstudio.sds.ui.widgetEditParts">
+       <widgetEditPart
+             class="org.csstudio.sds.ui.editparts.LinkingContainerEditPart"
+             typeId="org.csstudio.sds.components.LinkingContainer">
+       </widgetEditPart>
+       <widgetEditPart
+             class="org.csstudio.sds.ui.editparts.GroupingContainerEditPart"
+             typeId="org.csstudio.sds.components.GroupingContainer">
+       </widgetEditPart>
+    </extension>
+</plugin>
