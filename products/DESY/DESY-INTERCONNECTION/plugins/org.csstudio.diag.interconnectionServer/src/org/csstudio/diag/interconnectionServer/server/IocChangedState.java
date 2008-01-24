@@ -66,7 +66,7 @@ public class IocChangedState extends Thread{
 					localHostName, 											// value
 					JmsMessage.SEVERITY_NO_ALARM, 							// severity
 					"CONNECTED", 											// status
-					iocName, 												// host
+					logicalIocName, 										// host
 					null, 													// facility
 					"virtual channel", 								// text
 					null);													// howTo
@@ -79,7 +79,7 @@ public class IocChangedState extends Thread{
 					localHostName, 											// value
 					JmsMessage.SEVERITY_NO_ALARM, 							// severity
 					"CONNECTED", 											// status
-					iocName, 												// host
+					logicalIocName, 										// host
 					null, 													// facility
 					"virtual channel", 								// text
 					null);	
@@ -104,7 +104,7 @@ public class IocChangedState extends Thread{
 					localHostName, 											// value
 					JmsMessage.SEVERITY_MAJOR, 								// severity
 					"DISCONNECTED", 										// status
-					iocName, 												// host
+					logicalIocName, 										// host
 					null, 													// facility
 					"virtual channel", 								// text
 					null);		
@@ -117,7 +117,7 @@ public class IocChangedState extends Thread{
 					localHostName, 											// value
 					JmsMessage.SEVERITY_MAJOR, 								// severity
 					"DISCONNECTED", 										// status
-					iocName, 												// host
+					logicalIocName, 										// host
 					null, 													// facility
 					"virtual channel", 								// text
 					null);		
@@ -130,7 +130,7 @@ public class IocChangedState extends Thread{
 					localHostName, 														// value
 					JmsMessage.SEVERITY_MINOR, 											// severity
 					"NOT-SELECTED", 													// status
-					iocName, 															// host
+					logicalIocName, 													// host
 					null, 																// facility
 					"virtual channel", 													// text
 					null);	
