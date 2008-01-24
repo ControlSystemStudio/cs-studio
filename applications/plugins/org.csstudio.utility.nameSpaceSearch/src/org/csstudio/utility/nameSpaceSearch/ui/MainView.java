@@ -26,9 +26,12 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.naming.directory.DirContext;
+
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
+import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.reader.ErgebnisListe;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.nameSpaceSearch.Activator;
@@ -92,6 +95,7 @@ public class MainView extends ViewPart implements Observer{
     private Button searchButton;
     
     private String WILDCARD  = "*"; //$NON-NLS-1$
+    private static DirContext _ctx;
 
     class myTableLabelProvider implements ITableLabelProvider{
         // No Image
@@ -164,6 +168,9 @@ public class MainView extends ViewPart implements Observer{
      ***************************************************************************/
 
     public MainView() {
+        if(_ctx==null){
+            _ctx = Engine.getInstance().getLdapDirContext();
+        }
         ergebnisListe = new ErgebnisListe();
         ergebnisListe.addObserver(this);
     }
@@ -279,7 +286,7 @@ public class MainView extends ViewPart implements Observer{
             headline.put("eren", Messages.MainView_Record); //$NON-NLS-1$ //$NON-NLS-2$
         }
         ldapr = new LDAPReader(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
-                filter, ergebnisListe);
+                filter, ergebnisListe, _ctx);
         ldapr.addJobChangeListener(new JobChangeAdapter() {
             public void done(IJobChangeEvent event) {
             if (event.getResult().isOK())
