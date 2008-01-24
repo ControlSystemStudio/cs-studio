@@ -31,8 +31,6 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.connection.LDAPConnector;
-import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -193,10 +191,10 @@ public class LDAPReader extends Job {
 //	        ctrl.setReturningAttributes(null);
 	        try{
 	        	list = new ArrayList<String>();
-	            NamingEnumeration answer = _ctx.search(_name, _filter, ctrl);
+	            NamingEnumeration<SearchResult> answer = _ctx.search(_name, _filter, ctrl);
 				try {
 					while(answer.hasMore()){
-						String name = ((SearchResult)answer.next()).getName()+","+_name;
+						String name = answer.next().getName()+","+_name;
 						list.add(name);
 						if(monitor.isCanceled()) {
 							return Status.CANCEL_STATUS;

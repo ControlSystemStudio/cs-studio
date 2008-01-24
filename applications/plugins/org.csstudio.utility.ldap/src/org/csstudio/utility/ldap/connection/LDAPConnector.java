@@ -35,10 +35,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.Activator;
 import org.csstudio.utility.ldap.preference.PreferenceConstants;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * @author hrickens
@@ -47,7 +43,6 @@ import org.osgi.service.prefs.BackingStoreException;
  * @since 12.04.2007
  */
 public class LDAPConnector {
-    private boolean debug = false;
     InitialDirContext ctx = null;
     private Hashtable<Object, String> _env;
 

@@ -436,15 +436,18 @@ public class CSSView extends Composite implements Observer{
 		if(listViewer.getList().getSelectionIndex()>start||_fixFirst!=null){
 			if (itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1)) instanceof ProcessVariable) {
 				ProcessVariable pv = (ProcessVariable) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
-				children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,pv.getPath()+",",headlines,level+1, ergebnisListe.getNew()); //$NON-NLS-1$
+//				children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,pv.getPath()+",",headlines,level+1, ergebnisListe.getNew()); //$NON-NLS-1$
+                children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,pv.getPath(),headlines,level+1, ergebnisListe.getNew()); //$NON-NLS-1$
 			}
 			else{
 				if(_fixFirst==null){
 					ControlSystemItem csi = (ControlSystemItem) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
-					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew()); //$NON-NLS-1$
+//					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew()); //$NON-NLS-1$
+					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath(),headlines,level+1,ergebnisListe.getNew()); //$NON-NLS-1$
 				}else {
 					ControlSystemItem csi = (ControlSystemItem) itemList.get(listViewer.getSelection().toString().substring(1, listViewer.getSelection().toString().length()-1));
-					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew(),_fixFirst); //$NON-NLS-1$
+//					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath()+",",headlines,level+1,ergebnisListe.getNew(),_fixFirst); //$NON-NLS-1$
+					children = new CSSView(parent, automat, nameSpace,site,defaultPVFilter,csi.getPath(),headlines,level+1,ergebnisListe.getNew(),_fixFirst); //$NON-NLS-1$
 				}
 
 			}

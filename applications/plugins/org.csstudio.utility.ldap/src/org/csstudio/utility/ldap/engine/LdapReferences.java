@@ -57,7 +57,7 @@ public class LdapReferences {
 		
 	}
 
-	public Hashtable getLdapEntries() {
+	public Hashtable<String, Entry> getLdapEntries() {
 		//
 		// return hash table
 		//
