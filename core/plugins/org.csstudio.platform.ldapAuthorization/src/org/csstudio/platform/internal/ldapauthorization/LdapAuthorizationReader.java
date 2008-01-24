@@ -50,6 +50,13 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 	 */
 	public RightSet getRights(User user) {
 		String username = user.getUsername();
+		// If the user was authenticated via Kerberos, the username may be a
+		// fully qualified name (name@EXAMPLE.COM). We only want the first
+		// part of the name.
+		if (username.contains("@")) {
+			username = username.substring(0, username.indexOf('@'));
+		}
+		
 		RightSet rights = new RightSet("LDAP Rights");
 		try {
 			DirContext ctx = new InitialDirContext(createEnvironment());
