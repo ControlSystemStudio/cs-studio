@@ -10,5 +10,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.sds.ui,
  org.csstudio.sds.components,
  org.eclipse.gef,
- org.junit4
+ org.junit4,
+ org.eclipse.help
 Eclipse-LazyStart: true
