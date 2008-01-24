@@ -31,9 +31,19 @@ public class LdapSupport{
 		return thisLdapSupportInstance;
 	}
 	
-	public String getLogicalIocName ( String ipAddress, String ipName, String ldapIocName) {
+
+	
+	/**
+	 * 
+	 * @param ipAddress
+	 * @param ipName
+	 * @param ldapIocName
+	 * @return 1. Param = logicalIocName; 2. Param = ldapIocName
+	 */
+	public String[] getLogicalIocName ( String ipAddress, String ipName) {
 	    
-		String logicalIocName = null;
+		String[] stringReturnArray = new String[2];
+		String logicalIocName, ldapIocName = null;
 		
 		/*
 		 * error handling
@@ -42,11 +52,11 @@ public class LdapSupport{
 			/*
 			 * can't be a valid IP address
 			 */
-			return "invalid IP address";
+			return new String[]{"invalid logical address","invalid ldap name"}; 
 		}
 		
 		ldapIocName = Engine.getInstance().getLogicalNameFromIPAdr(ipAddress);
-		System.out.println("ldapIocName = " + ldapIocName);
+		System.out.println("LdapSupport:  ldapIocName = " + ldapIocName);
 		if ( ldapIocName != null) {
 			/*
 			 * fortunately a valid name was found
@@ -54,12 +64,16 @@ public class LdapSupport{
 			 * make sure the string is a valid LDAP address - must contain "econ"
 			 */
 			if ( ldapIocName.contains("econ") ) {
-				logicalIocName = ldapIocName.substring( ldapIocName.indexOf("=")+1,ldapIocName.indexOf(","));
+				logicalIocName = ldapIocName.substring( ldapIocName.indexOf("econ=")+5,ldapIocName.indexOf(","));
 				System.out.println("logicalIocName = " + logicalIocName);
-				return logicalIocName;
+				stringReturnArray[0] = logicalIocName;
+				stringReturnArray[1] = ldapIocName;
+				return stringReturnArray;
 			} else {
 				System.out.println("ldapIocName = " + ldapIocName);
-				return ldapIocName;
+				stringReturnArray[0] = ldapIocName;
+				stringReturnArray[1] = ldapIocName;
+				return stringReturnArray;
 			}
 		} else {
 			/*
@@ -67,38 +81,56 @@ public class LdapSupport{
 			 */
 
 			if ( ipAddress.equals("131.169.112.56")) {
-				return "mkk10KVB1";
+				stringReturnArray[0] = stringReturnArray[1] = "mkk10KVB1";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.146")) {
-				return "mthKryoStand";
+				stringReturnArray[0] = stringReturnArray[1] =  "mthKryoStand";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.155")) {
-				return "ttfKryoCMTB";
+				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoCMTB";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.68")) {
-				return "utilityIOC";
+				stringReturnArray[0] = stringReturnArray[1] =  "utilityIOC";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.80")) {
-				return "ttfKryoLinac";
+				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoLinac";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.52")) {
-				return "krykWetter";
+				stringReturnArray[0] = stringReturnArray[1] =  "krykWetter";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.141")) {
-				return "Bernds_Test_IOC";
+				stringReturnArray[0] = stringReturnArray[1] =  "Bernds_Test_IOC";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.108")) {
-				return "ttfKryoLinac";
+				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoLinac";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.104")) {
-				return "ttfKryoSK47a";
+				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoSK47a";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.54")) {
-				return "ttfKryoCB";
+				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoCB";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.68")) {
-				return "utilityIOC";
+				stringReturnArray[0] = stringReturnArray[1] =  "utilityIOC";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.144")) {
-				return "heraKryoFel";
+				stringReturnArray[0] = stringReturnArray[1] =  "heraKryoFel";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.109")) {
-				return "ttfKryoVC2";
+				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoVC2";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.178")) {
-				return "mthKryoStand";
+				stringReturnArray[0] = stringReturnArray[1] =  "mthKryoStand";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.225")) {
-				return "ttfDiagLinac";
+				stringReturnArray[0] = stringReturnArray[1] =  "ttfDiagLinac";
+				return stringReturnArray;
 			} else if ( ipAddress.equals("131.169.112.101")) {
-				return "ttfKryoFV";
-			} else return "~" + ipName + "~";
+				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoFV";
+				return stringReturnArray;
+			} else {
+				return new String[]{"~" + ipName + "~","~" + ipName + "~"}; 
+			}
 		}
 		
 		
@@ -226,7 +258,15 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
         }
         if(eventTime!=null){
             Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channelName, eventTime);
-        }  
+        }
+        /*
+         * up to this point the channelName is still the LDAP address
+         * eren=alarmTest:RAMPA_calc,econ=Bernds_Test_IOC,ecom=EPICS-IOC,efan=TEST,ou=epicsControls
+         * we need to extract the record name from this LDAP string
+         */
+        if(channelName.contains("=")){
+        	channelName  = channelName.split("[=,]")[1];
+        }
 		
 		JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
 				JmsMessage.MESSAGE_TYPE_STATUS, 									// type

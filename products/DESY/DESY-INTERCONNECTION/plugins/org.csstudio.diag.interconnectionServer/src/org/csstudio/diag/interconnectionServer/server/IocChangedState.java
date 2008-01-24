@@ -134,8 +134,9 @@ public class IocChangedState extends Thread{
 					null, 																// facility
 					"virtual channel", 													// text
 					null);	
-			
-			LdapSupport.getInstance().setAllRecordsToDisconnected ( ldapIocName);
+			LdapSupport instanceLdap = LdapSupport.getInstance();
+			instanceLdap.setAllRecordsToDisconnected ( ldapIocName);
+			//LdapSupport.getInstance().setAllRecordsToDisconnected ( ldapIocName);
 			
 		}
 		

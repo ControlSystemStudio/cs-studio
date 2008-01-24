@@ -168,11 +168,13 @@ public class ClientRequest extends Thread
         	/*
         	 * new IOC - ask LDAP for logical name
         	 */
-        	statisticContent.setLogicalIocName( LdapSupport.getInstance().getLogicalIocName ( address.getHostAddress(), hostName, ldapIocName));
+        	String[] iocNames = LdapSupport.getInstance().getLogicalIocName ( address.getHostAddress(), hostName);
+        	statisticContent.setLogicalIocName( iocNames[0]);
         	/*
         	 * save ldapIocName 
         	 */
-        	statisticContent.setLdapIocName(ldapIocName);
+        	System.out.println("ClientRequest:  ldapIocName = " + iocNames[1]);
+        	statisticContent.setLdapIocName(iocNames[1]);
         }
         
         
