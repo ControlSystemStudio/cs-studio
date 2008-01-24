@@ -22,6 +22,7 @@
 package org.csstudio.utility.ldap.engine;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Vector;
@@ -46,6 +47,7 @@ import org.csstudio.utility.ldap.reader.ErgebnisListe;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -120,7 +122,28 @@ public class Engine extends Job {
         public String getFilter() {
             return _filter;
         }
-        
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+            String scope;
+            switch(_ctrl.getSearchScope()){
+                case SearchControls.OBJECT_SCOPE:
+                    scope = "OBJECT_SCOPE";
+                    break;
+                case SearchControls.ONELEVEL_SCOPE:
+                    scope = "ONELEVEL_SCOPE";
+                    break;
+                case SearchControls.SUBTREE_SCOPE:
+                    scope = "SUBTREE_SCOPE";
+                    break;
+                default:
+                    scope="Unknow scope";
+                        
+            }
+            return String.format("Path: %s - Filter: %s", _path, _filter, scope);
+        }
     }
     
     /**
@@ -317,32 +340,36 @@ public class Engine extends Job {
     
     private AttriebutSet helpAttriebut(String record) {
         AttriebutSet attriebutSet = new AttriebutSet();
-        if(!record.contains("ou=epicsControls")&&!record.contains("econ=")&&ldapReferences!=null&&ldapReferences.hasEntry(record)){//&&!record.contains("ou=")){
-            Entry entry = ldapReferences.getEntry(record);
-            Vector<String> vector = entry.getNamesInNamespace();
-            for (String string : vector) {
-                if(string.contains("ou=EpicsControls")){
-                    record = string;
+        if(record!=null){
+            if(!record.contains("ou=epicsControls")&&!record.contains("econ=")&&ldapReferences!=null&&ldapReferences.hasEntry(record)){//&&!record.contains("ou=")){
+                Entry entry = ldapReferences.getEntry(record);
+                Vector<String> vector = entry.getNamesInNamespace();
+                for (String string : vector) {
+                    if(string.contains("ou=EpicsControls")){
+                        record = string;
+                    }
                 }
+                attriebutSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+            }else{
+                //TODO: Der record ist und wird noch nicht im ldapReferences gecachet.
+                attriebutSet.setSearchScope(SearchControls.SUBTREE_SCOPE);
             }
-            attriebutSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-        }else{
-            //TODO: Der record ist und wird noch nicht im ldapReferences gecachet.
-            attriebutSet.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            if(record.endsWith(",o=DESY,c=DE")){
+                record = record.substring(0, record.length()-12);
+            }else if(record.endsWith(",o=DESY")){
+                record = record.substring(0, record.length()-7);
+            }
+            if(record.startsWith("eren=")){
+                attriebutSet.setFilter(record.split(",")[0]);
+                attriebutSet.setPath(record.substring(attriebutSet.getFilter().length()+1));
+            }else{
+                attriebutSet.setPath("ou=epicsControls");
+                attriebutSet.setFilter("eren="+record);
+            }
+            return attriebutSet;
+        } else{
+            return null;
         }
-        if(record.endsWith(",o=DESY,c=DE")){
-            record = record.substring(0, record.length()-12);
-        }else if(record.endsWith(",o=DESY")){
-            record = record.substring(0, record.length()-7);
-        }
-        if(record.startsWith("eren=")){
-            attriebutSet.setFilter(record.split(",")[0]);
-            attriebutSet.setPath(record.substring(attriebutSet.getFilter().length()+1));
-        }else{
-            attriebutSet.setPath("ou=epicsControls");
-            attriebutSet.setFilter("eren="+record);
-        }
-        return attriebutSet;
     }
     
     /**
@@ -352,12 +379,16 @@ public class Engine extends Job {
      * @return the value of the record attribute. 
      */
     synchronized public String getAttriebute(final String recordPath,final ChannelAttribute attriebute) {
+        if (recordPath ==null||attriebute==null){
+            return null;
+        }
         String record  = null;
         if(_ctx==null){
             _ctx = getLdapDirContext();
         }
         if(_ctx !=null){
             AttriebutSet attriebutSet = helpAttriebut(recordPath);
+//            if()
             try {
                 record = _ctx.getAttributes(attriebutSet.getFilter()+","+attriebutSet.getPath()).get(attriebute.name()).get(0).toString();
             } catch (NamingException e) {
@@ -375,6 +406,7 @@ public class Engine extends Job {
      * @param value the value was set.
      */  
     synchronized public void setAttriebute(final String recordPath,final ChannelAttribute attriebute, final String value) {
+        assert recordPath !=null && attriebute!=null && value!=null :"The recordPath, attriebute and/or value are NULL";
         if(_ctx==null){
             _ctx = getLdapDirContext();
         }
@@ -398,11 +430,14 @@ public class Engine extends Job {
      * Second search at a static table.<br>
      * If in both not found return the alternate Name.<br> 
      * 
-     * @param ipAddress The IP Address from a IOC to give the logical name.
+     * @param ipAddress The IP Address from a IOC to give the logical name. Accept this format: "[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].*"
      * @param alternateName The name was given when dosn't found a IOC with the given IP Address. 
      * @return The Logical Name of the given IOC IP Address.
      */
-    synchronized public String getLogicalNameFromIPAdr(final String ipAddress, String alternateName) {
+    synchronized public String getLogicalNameFromIPAdr(final String ipAddress) {
+        if(ipAddress==null || !ipAddress.matches("[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].*")){
+            return null;
+        }
         if(_ctx==null){
             _ctx = getLdapDirContext();
         }
@@ -450,22 +485,61 @@ public class Engine extends Job {
      * @param eventTime the event time to set.
      * @return ErgebnisList to receive all channel of a IOC. the ErgebnisList is Observable. 
      */
-    public ErgebnisListe setAllChannelOfRecord(String ldapPath,final String severity, final String status,  final String eventTime) {
+    public ArrayList<String> getAllRecordofICO(final String ldapPath,final String severity, final String status,  final String eventTime) {
+        String path = ldapPath;
+        int searchControls = SearchControls.SUBTREE_SCOPE;
+        if(path==null){
+            return null;
+        }else if(path.contains(("ou=epicsControls"))){
+            if(path.endsWith(",o=DESY,c=DE")){
+                path = path.substring(0, path.length()-12);
+            }else if(path.endsWith(",o=DESY")){
+                path = path.substring(0, path.length()-7);
+            }
+            if(path.startsWith("econ=")){
+                searchControls = SearchControls.ONELEVEL_SCOPE;
+            }
+        }else if(path.contains(",")){
+            // Unbekannter LDAP Pfad
+            return null;
+        }else if(!path.startsWith("econ=")){
+            path = "econ="+path;
+        }
         final ErgebnisListe allRecordsList = new ErgebnisListe();
         allRecordsList.setStatus(status);
         allRecordsList.setSeverity(severity);
         allRecordsList.setEventTime(eventTime);
         allRecordsList.setParentName(ldapPath);
-        LDAPReader recordReader = new LDAPReader(ldapPath,"eren=*",SearchControls.ONELEVEL_SCOPE,allRecordsList, _ctx);
-        recordReader.addJobChangeListener(new JobChangeAdapter() {
-            public void done(IJobChangeEvent event) {
-                if (event.getResult().isOK()){
-                    allRecordsList.notifyView();
+
+        if(_ctx==null){
+            _ctx = getLdapDirContext();
+        }
+        if(_ctx !=null){
+            SearchControls ctrl = new SearchControls();
+            ctrl.setSearchScope(searchControls);
+            try{
+                ArrayList<String> list = new ArrayList<String>();
+                NamingEnumeration<SearchResult> answer = _ctx.search(ldapPath,"eren=*" , ctrl);
+                try {
+                    while(answer.hasMore()){
+                        String name = answer.next().getName()+","+ldapPath;
+                        list.add(name);
+                    }
+                    if(list.size()<1){
+                        list.add("no entry found");
+                    }
+                } catch (NamingException e) {
+                    CentralLogger.getInstance().info(this,"LDAP Fehler");
+                    CentralLogger.getInstance().info(this,e);
                 }
+                answer.close();
+                return list;
+            } catch (NamingException e) {
+                CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
+                CentralLogger.getInstance().info(this,e);
             }
-        });
-        recordReader.schedule();
-        return allRecordsList;
+        }
+        return null;
     }
     
     private void performLdapWrite() {
