@@ -14,6 +14,7 @@ public class ProcessVariableNode extends PlatformObject
 	private SubtreeNode parent;
 	private String name;
 	private Alarm activeAlarm;
+	private Alarm highestUnacknowledgedAlarm;
 	
 	/**
 	 * Creates a new node for a process variable as a child of the specified
@@ -30,6 +31,7 @@ public class ProcessVariableNode extends PlatformObject
 		parent.addChild(this);
 		this.name = name;
 		this.activeAlarm = null;
+		this.highestUnacknowledgedAlarm = null;
 	}
 	
 	/**
@@ -66,10 +68,22 @@ public class ProcessVariableNode extends PlatformObject
 	}
 	
 	/**
+	 * Returns the severity of the highest unacknowledged alarm for this node.
+	 * If there is no unacknowledged alarm for this node, returns NO_ALARM.
+	 */
+	public Severity getUnacknowledgedAlarmSeverity() {
+		if (highestUnacknowledgedAlarm != null) {
+			return highestUnacknowledgedAlarm.getSeverity();
+		} else {
+			return Severity.NO_ALARM;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	public boolean hasAlarm() {
-		return activeAlarm != null;
+		return activeAlarm != null || highestUnacknowledgedAlarm != null;
 	}
 	
 	/**
@@ -79,7 +93,7 @@ public class ProcessVariableNode extends PlatformObject
 	public void triggerAlarm(Alarm alarm) {
 		activeAlarm = alarm;
 		// propagate the severity of the alarm to the parent node
-		parent.propagateSeverity(alarm.getSeverity());
+		parent.childSeverityChanged(this);
 	}
 	
 	/**
@@ -88,7 +102,7 @@ public class ProcessVariableNode extends PlatformObject
 	public void cancelAlarm() {
 		if (activeAlarm != null) {
 			activeAlarm = null;
-			parent.propagateSeverity(Severity.NO_ALARM);
+			parent.childSeverityChanged(this);
 		}
 	}
 	

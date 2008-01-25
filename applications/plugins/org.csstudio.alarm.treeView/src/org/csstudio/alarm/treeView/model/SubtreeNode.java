@@ -17,6 +17,7 @@ public class SubtreeNode implements IAdaptable, IAlarmTreeNode {
 	private SubtreeNode parent;
 	private String name;
 	private Severity highestChildSeverity;
+	private Severity highestUnacknowledgedChildSeverity;
 
 	
 	/**
@@ -36,6 +37,7 @@ public class SubtreeNode implements IAdaptable, IAlarmTreeNode {
 			parent.children.add(this);
 		}
 		highestChildSeverity = Severity.NO_ALARM;
+		highestUnacknowledgedChildSeverity = Severity.NO_ALARM;
 	}
 	
 	/**
@@ -64,6 +66,14 @@ public class SubtreeNode implements IAdaptable, IAlarmTreeNode {
 	 */
 	public Severity getAlarmSeverity() {
 		return highestChildSeverity;
+	}
+	
+	/**
+	 * Returns the highest severity of the unacknowledged alarms in the subtree
+	 * below this node.
+	 */
+	public Severity getUnacknowledgedAlarmSeverity() {
+		return highestUnacknowledgedChildSeverity;
 	}
 	
 	/**
@@ -118,35 +128,52 @@ public class SubtreeNode implements IAdaptable, IAlarmTreeNode {
 	}
 
 	/**
-	 * Propagates the alarm severity of this node to its parents. When the
-	 * severity of a child of this node changes, it must call this method with
-	 * its updated severity. The propagation ensures that the highest severity
-	 * will be propagated to the root of the tree. Propagation will stop at
-	 * this node if the specified new severity is lower than the severity of
-	 * at least one other child.
+	 * Signals to this node that the alarm severity of one of its children
+	 * changed. This method must be called by children of this node when their
+	 * severity changes. If the change causes a severity change for this node,
+	 * this node will in turn notify its parent, so that the highest severity
+	 * is propagated to the root of the tree.
 	 * 
-	 * @param severity the new severity value of one of this node's children.
+	 * @param child the child node whose severity status has changed.
 	 */
-	void propagateSeverity(Severity severity) {
+	void childSeverityChanged(IAlarmTreeNode child) {
+		boolean thisNodeChanged = false;
+		
 		// If the severity is higher than the current highest severity, simply
 		// set it as the new highest severity and propagate it to the parent.
 		// Otherwise, there might still be other children with a higher
 		// severity. So we look for the highest severity of the children, and
 		// propagate that upwards (if it is different from the current
 		// severity).
-		if (severity.compareTo(highestChildSeverity) > 0) {
-			highestChildSeverity = severity;
-			if (parent != null) {
-				parent.propagateSeverity(severity);
-			}
+		
+		// Start with the active alarm severity
+		Severity active = child.getAlarmSeverity();
+		if (active.compareTo(highestChildSeverity) > 0) {
+			highestChildSeverity = active;
+			thisNodeChanged = true;
 		} else {
-			Severity updatedSeverity = findHighestChildSeverity();
-			if (!updatedSeverity.equals(highestChildSeverity)) {
-				highestChildSeverity = updatedSeverity;
-				if (parent != null) {
-					parent.propagateSeverity(updatedSeverity);
-				}
+			active = findHighestChildSeverity();
+			if (!active.equals(highestChildSeverity)) {
+				highestChildSeverity = active;
+				thisNodeChanged = true;
 			}
+		}
+		// Now the highest unacknowledged severity
+		Severity unack = child.getUnacknowledgedAlarmSeverity();
+		if (unack.compareTo(highestUnacknowledgedChildSeverity) > 0) {
+			highestUnacknowledgedChildSeverity = unack;
+			thisNodeChanged = true;
+		} else {
+			unack = findHighestUnacknowledgedChildSeverity();
+			if (!unack.equals(highestUnacknowledgedChildSeverity)) {
+				highestUnacknowledgedChildSeverity = unack;
+				thisNodeChanged = true;
+			}
+		}
+		
+		// Notify parent if this node changed
+		if (thisNodeChanged && parent != null) {
+			parent.childSeverityChanged(this);
 		}
 	}
 
@@ -158,6 +185,19 @@ public class SubtreeNode implements IAdaptable, IAlarmTreeNode {
 		for (IAlarmTreeNode node : children) {
 			if (node.getAlarmSeverity().compareTo(highest) > 0) {
 				highest = node.getAlarmSeverity();
+			}
+		}
+		return highest;
+	}
+	
+	/**
+	 * Returns the highest unacknowledged severity of the children of this node.
+	 */
+	private Severity findHighestUnacknowledgedChildSeverity() {
+		Severity highest = Severity.NO_ALARM;
+		for (IAlarmTreeNode node : children) {
+			if (node.getUnacknowledgedAlarmSeverity().compareTo(highest) > 0) {
+				highest = node.getUnacknowledgedAlarmSeverity();
 			}
 		}
 		return highest;
