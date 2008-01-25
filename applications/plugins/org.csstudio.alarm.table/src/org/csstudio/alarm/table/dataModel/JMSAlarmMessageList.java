@@ -30,8 +30,13 @@ public class JMSAlarmMessageList extends JMSMessageList {
 		if (mm == null) {
 			return;
 		}
-		//do not insert messges with type: 'status'
-		if ((mm.getString("TYPE") != null) && (mm.getString("TYPE").equalsIgnoreCase("status"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		if (mm.getString("TYPE") == null) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			return;
+		}
+		//do not insert messges with type: 'status', unless there is a previous message
+		//with the same NAME in the table.
+		if ((mm.getString("TYPE").equalsIgnoreCase("status") && 
+				(equalMessageNameInTable(mm) == false))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return;
 		} else {
 			String severity = null;
@@ -51,6 +56,25 @@ public class JMSAlarmMessageList extends JMSMessageList {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Searching for a previous message in alarm table with the sam NAME.
+	 * 
+	 * @param mm
+	 * @return boolean Is there a previous message
+	 */
+	private boolean equalMessageNameInTable(MapMessage mm) throws JMSException {
+		boolean messageInTable = false;
+		for (JMSMessage message : JMSMessages) {
+			String currentInList = message.getProperty("NAME");
+			String currentMessage = mm.getString("NAME");
+			if(currentInList.equalsIgnoreCase(currentMessage) == true) {
+				messageInTable = true;
+				break;
+			}
+		}
+		return messageInTable;
 	}
 
 	/**
