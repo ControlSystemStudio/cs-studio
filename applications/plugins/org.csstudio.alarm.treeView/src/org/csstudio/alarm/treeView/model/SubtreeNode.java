@@ -124,7 +124,7 @@ public class SubtreeNode implements IAdaptable, IAlarmTreeNode {
 	 * {@inheritDoc}
 	 */
 	public boolean hasAlarm() {
-		return highestChildSeverity.isAlarm();
+		return highestChildSeverity.isAlarm() || highestUnacknowledgedChildSeverity.isAlarm();
 	}
 
 	/**

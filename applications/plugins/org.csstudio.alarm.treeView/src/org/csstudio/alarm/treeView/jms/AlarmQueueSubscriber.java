@@ -123,14 +123,20 @@ public class AlarmQueueSubscriber implements MessageListener {
 	 */
 	private synchronized void processMessage(MapMessage message) {
 		try {
-			if (isAlarmMessage(message)) {
+			if (isAlarmAcknowledgement(message)) {
 				String name = message.getString("NAME");
-				Severity severity = new Severity(message.getString("SEVERITY"));
+				ProcessVariableNode node = tree.findProcessVariableNode(name);
+				if (node != null) {
+					node.removeHighestUnacknowledgedAlarm();
+				}
+			} else if (isAlarmMessage(message)) {
+				String name = message.getString("NAME");
+				Severity severity = Severity.parseSeverity(message.getString("SEVERITY"));
 				ProcessVariableNode node = tree.findProcessVariableNode(name);
 				if (node != null) {
 					if (severity.isAlarm()) {
 						Alarm alarm = new Alarm(name, severity);
-						node.triggerAlarm(alarm);
+						node.setActiveAlarm(alarm);
 					} else {
 						node.cancelAlarm();
 					}
@@ -142,8 +148,17 @@ public class AlarmQueueSubscriber implements MessageListener {
 		}
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IViewPart view = page.findView(AlarmTreeView.getID());
-		if (view instanceof AlarmTreeView){
+		if (view instanceof AlarmTreeView) {
 			((AlarmTreeView)view).refresh();
+		}
+	}
+
+	private boolean isAlarmAcknowledgement(MapMessage message) {
+		try {
+			String ack = message.getString("ACK");
+			return ack != null && ack.equals("TRUE");
+		} catch (JMSException e) {
+			return false;
 		}
 	}
 

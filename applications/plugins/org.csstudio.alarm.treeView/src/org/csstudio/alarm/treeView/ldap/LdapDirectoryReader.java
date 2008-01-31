@@ -162,57 +162,32 @@ public class LdapDirectoryReader extends Job {
 	 * @throws NamingException if something bad happens...
 	 */
 	private void evaluateAlarmAttributes(SearchResult result, ProcessVariableNode node) throws NamingException {
-		String fullyQualifiedName = result.getNameInNamespace();
-		fullyQualifiedName = LdapNameUtils.removeQuotes(fullyQualifiedName);
-		
-		String simpleName = LdapNameUtils.simpleName(fullyQualifiedName);
 		Attributes attrs = result.getAttributes();
 		Attribute severityAttr = attrs.get("epicsAlarmSeverity");
-		//Attribute statusAttr = attrs.get("epicsAlarmStatus");
 		Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
 		if (severityAttr != null) {
 			String severity = (String) severityAttr.get();
-			triggerAlarmIfNecessary(severity, simpleName, true, node);
+			if (severity != null) {
+				Severity s = Severity.parseSeverity(severity);
+				node.setActiveAlarm(new Alarm("", s));
+			}
 		}
-		else if (highUnAcknAttr != null) {
-			String unseverity = (String) highUnAcknAttr.get();
-			triggerAlarmIfNecessary(unseverity, simpleName, false, node);
+		Severity unack = Severity.NO_ALARM;
+		if (highUnAcknAttr != null) {
+			String severity = (String) highUnAcknAttr.get();
+			if (severity != null) {
+				unack = Severity.parseSeverity(severity);
+			}
 		}
-	}
-	
-	
-	/**
-	 * Triggers an alarm if the given severity is an alarm severity. The severity
-	 * is an alarm severity if it is not NO_ALARM or the empty string.
-	 * @param severity the severity.
-	 * @param simpleName the simple name of the object.
-	 * @param acknowledged whether the alarm is unacknowledged.
-	 * @param node the node on which to trigger the alarm.
-	 * @throws NamingException if something goes wrong.
-	 */
-	private void triggerAlarmIfNecessary(String severity, String simpleName,
-			boolean acknowledged, ProcessVariableNode node) throws NamingException {
-		if (!(severity.equals("NO_ALARM")) && !(severity.equals(""))) {
-			Severity sever = new Severity(severity);
-			Alarm alm = createAlarm(sever, simpleName, acknowledged);
-			node.triggerAlarm(alm);
+		node.setHighestUnacknowledgedAlarm(new Alarm("", unack));
+		
+		Attribute displayAttr = attrs.get("epicsCssAlarmDisplay");
+		if (displayAttr != null) {
+			String display = (String) displayAttr.get();
+			if (display != null) {
+				node.setCssAlarmDisplay(display);
+			}
 		}
-	}
-	
-	
-	/**
-	 * Creates an alarm object.
-	 * @param severity the severity of the alarm.
-	 * @param simpleName the simple name of the object.
-	 * @param acknowledged whether the alarm is unacknowledged.
-	 * @return the alarm object.
-	 */
-	private Alarm createAlarm(Severity severity, String simpleName, boolean acknowledged) {
-		Alarm alarm = new Alarm(simpleName, severity);
-		if (acknowledged) {
-			alarm.acknowledge();
-		}
-		return alarm;
 	}
 	
 	

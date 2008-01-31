@@ -10,7 +10,6 @@ package org.csstudio.alarm.treeView.model;
  */
 public class Alarm implements Comparable<Alarm> {
 
-	private boolean acknowledged;
 	private String objectName;
 	private Severity severity;
 
@@ -23,9 +22,6 @@ public class Alarm implements Comparable<Alarm> {
 	public Alarm(String objectName, Severity severity) {
 		this.objectName = objectName;
 		this.severity = severity;
-
-		// by default, assume this alarm is not acknowledged
-		this.acknowledged = false;
 	}
 	
 	
@@ -69,23 +65,5 @@ public class Alarm implements Comparable<Alarm> {
 	 */
 	public String toString() {
 		return "Alarm[" + objectName + "," + severity + "]";
-	}
-	
-	
-	/**
-	 * Acknowledges this alarm.
-	 */
-	public void acknowledge() {
-		acknowledged = true;
-	}
-	
-	
-	/**
-	 * Returns whether this alarm was acknowledged.
-	 * @return {@code true} if this alarm was acknowledged, {@code false}
-	 *         otherwise.
-	 */
-	public boolean isAcknowledged() {
-		return acknowledged;
 	}
 }

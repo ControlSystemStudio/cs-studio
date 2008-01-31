@@ -51,20 +51,18 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * @return the character that represents the given severity.
 	 */
 	private char getIconChar(Severity alarmSeverity) {
-		if (alarmSeverity == null)
-			return 'w';
-		
-		switch (alarmSeverity.toIntValue()) {
-		case 1:
+		switch (alarmSeverity) {
+		case NO_ALARM:
 			return 'g';
-		case 2:
+		case INVALID:
 			return 'b';
-		case 4:
+		case MINOR:
 			return 'y';
-		case 7:
+		case MAJOR:
 			return 'r';
 		default:
-			return 'w';
+			// should never get here
+		    return 'w';
 		}
 	}
 	
@@ -92,9 +90,11 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * @param node the node.
 	 */
 	private Image alarmImageFor(IAlarmTreeNode node) {
-		Severity severity = node.getAlarmSeverity();
-		char iconChar = getIconChar(severity);
-		String iconName = "./icons/" + iconChar + iconChar + ".gif";
+		Severity activeAlarmSeverity = node.getAlarmSeverity();
+		Severity unacknowledgedAlarmSeverity = node.getUnacknowledgedAlarmSeverity();
+		char rightIconChar = getIconChar(activeAlarmSeverity);
+		char leftIconChar = getIconChar(unacknowledgedAlarmSeverity);
+		String iconName = "./icons/" + leftIconChar + rightIconChar + ".gif";
 		return loadImage(iconName);
 	}
 	

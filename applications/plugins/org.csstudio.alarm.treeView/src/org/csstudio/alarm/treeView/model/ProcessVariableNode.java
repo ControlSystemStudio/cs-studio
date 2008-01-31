@@ -15,6 +15,7 @@ public class ProcessVariableNode extends PlatformObject
 	private String name;
 	private Alarm activeAlarm;
 	private Alarm highestUnacknowledgedAlarm;
+	private String cssAlarmDisplay;
 	
 	/**
 	 * Creates a new node for a process variable as a child of the specified
@@ -87,12 +88,30 @@ public class ProcessVariableNode extends PlatformObject
 	}
 	
 	/**
-	 * Triggers the specified alarm at this node.
+	 * Sets an active alarm at this node.
 	 * @param alarm the alarm.
 	 */
-	public void triggerAlarm(Alarm alarm) {
-		activeAlarm = alarm;
-		// propagate the severity of the alarm to the parent node
+	public void setActiveAlarm(Alarm alarm) {
+		this.activeAlarm = alarm;
+
+		// Increase the highest unacknowledged alarm if the new active alarm
+		// has a higher severity than the current highest unacknowledged
+		// alarm.
+		if (highestUnacknowledgedAlarm == null
+				|| alarm.compareTo(highestUnacknowledgedAlarm) > 0) {
+			highestUnacknowledgedAlarm = alarm;
+		}
+		
+		// propagate alarm to the parent node
+		parent.childSeverityChanged(this);
+	}
+	
+	/**
+	 * Sets the highest unacknowledged alarm at this node.
+	 * @param alarm the alarm.
+	 */
+	public void setHighestUnacknowledgedAlarm(Alarm alarm) {
+		this.highestUnacknowledgedAlarm = alarm;
 		parent.childSeverityChanged(this);
 	}
 	
@@ -104,6 +123,32 @@ public class ProcessVariableNode extends PlatformObject
 			activeAlarm = null;
 			parent.childSeverityChanged(this);
 		}
+	}
+
+	/**
+	 * Removes the highest unacknowledged alarm from this node.
+	 */
+	public void removeHighestUnacknowledgedAlarm() {
+		if (highestUnacknowledgedAlarm != null) {
+			highestUnacknowledgedAlarm = null;
+			parent.childSeverityChanged(this);
+		}
+	}
+	
+	/**
+	 * Sets the CSS alarm display for this node.
+	 * @param display the CSS alarm display for this node.
+	 */
+	public void setCssAlarmDisplay(String display) {
+		this.cssAlarmDisplay = display;
+	}
+	
+	/**
+	 * Returns the CSS alarm display for this node.
+	 * @return the CSS alarm display for this node.
+	 */
+	public String getCssAlarmDisplay() {
+		return cssAlarmDisplay;
 	}
 	
 	@Override
