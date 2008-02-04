@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#display" label="Synoptic Display Studio">
-	<topic label="Synoptic Display Studio">
-		<topic label="English" href="html/en/synoptic_display_studio.html">
-		    <topic label="First Startup"  href="html/en/sds_first_startup.html">
-		      <topic label="Start SDS Flash Demo"  href="html/flash/start/sds_first_startup_flash.htm"/>
-		    </topic>
-			<topic label="Navigator"  href="html/en/sds_navigator.html"/>
-			<topic label="Editor and Widget Palette"  href="html/en/sds_editor_and_widget.html">
-				<topic label="Widgets"  href="html/en/sds_editor_widget_support.html"/>
-			</topic>
-			<topic label="Property View"  href="html/en/sds_property_view.html">
-			    <topic label="Dynamic Attributs"  href="html/en/sds_dynamic_attributs.html"/>
-            </topic>
+<toc link_to="../org.csstudio.platform.ui/tocApps.xml#display" label="Synoptic Display Studio Widgets">
+	<topic label="Synoptic Display Studio Widgets">
+		<topic label="English" href="html/sds_widget_overview.html">
+			<topic label=""  href="html/sds_widget_overview.html"/>
 		</topic>
-		<topic label="German" href="html/de/synoptic_display_studio_de.html">
-		    <topic label="Erster Start"  href="html/en/sds_first_startup_de.html"/>
-	        <topic label="Navigator"  href="html/de/sds_navigator_de.html"/>
-	        <topic label="Editor and Widget"  href="html/de/sds_editor_and_widget_de.html"/>
-	        <topic label="Property View"  href="html/de/sds_property_view_de.html">
-	            <topic label="Dynamic Attributs"  href="html/de/sds_dynamic_attributs_de.html"/>
-	        </topic>
+		<topic label="German" href="html/sds_widget_overview_de.html">
+			<topic label=""  href="html/sds_widget_overview_de.html"/>
 		</topic>
 	</topic>
 </toc>
