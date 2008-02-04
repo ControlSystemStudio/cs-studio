@@ -4,7 +4,7 @@
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#display" label="Synoptic Display Studio Widgets">
 	<topic label="Synoptic Display Studio Widgets">
 		<topic label="English" href="html/sds_widget_overview.html">
-            <topic label="Acttion Data"  href="html/sds_widget_actiondata.html"/>
+            <topic label="Action Data"  href="html/sds_widget_actiondata.html"/>
 		    <topic label="Grouping Container"  href="html/sds_widget_groupingcontainer.html"/>
 		    <topic label="Linking Container"  href="html/sds_widget_linkingcontainer.html"/>
 		    <topic label="Timer"  href="html/sds_widget_timer.html"/>
