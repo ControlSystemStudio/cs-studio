@@ -390,9 +390,6 @@ public class Engine extends Job {
                 String[] attStrings = new String[] {attriebute.name()};
                 if(attriebutSet.getSearchControls().getSearchScope()==SearchControls.SUBTREE_SCOPE){
                     SearchControls sc = attriebutSet.getSearchControls();
-                    sc.setCountLimit(0);
-                    sc.setTimeLimit(0);
-//                    sc.setReturningAttributes(attStrings);
 //                    = new SearchControls(SearchControls.SUBTREE_SCOPE,1,1000,attStrings,true,true);
                     NamingEnumeration<SearchResult> searchResults = _ctx.search(attriebutSet.getPath(), attriebutSet.getFilter(), sc);
                     if(searchResults.hasMore()){
