@@ -335,6 +335,7 @@ public class Engine extends Job {
     private AttriebutSet helpAttriebut(String record) {
         AttriebutSet attriebutSet = new AttriebutSet();
         if(record!=null){
+            // Prüft ob der record schon in der ldapReferences gespeichert ist.
             if(!record.contains("ou=epicsControls")&&!record.contains("econ=")&&ldapReferences!=null&&ldapReferences.hasEntry(record)){//&&!record.contains("ou=")){
                 Entry entry = ldapReferences.getEntry(record);
                 Vector<String> vector = entry.getNamesInNamespace();
@@ -344,7 +345,10 @@ public class Engine extends Job {
                     }
                 }
                 attriebutSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-            }else{
+            }else if(record.contains("ou=epicsControls")&&record.contains("econ=")){
+                //TODO: Der record ist und wird noch nicht im ldapReferences gecachet. Enthält aber den kompletten Pfad.
+                attriebutSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+            }else {
                 //TODO: Der record ist und wird noch nicht im ldapReferences gecachet.
                 attriebutSet.setSearchScope(SearchControls.SUBTREE_SCOPE);
             }
@@ -353,7 +357,7 @@ public class Engine extends Job {
             }else if(record.endsWith(",o=DESY")){
                 record = record.substring(0, record.length()-7);
             }
-            if(record.startsWith("eren=")){
+            if(record.contains(",")){
                 attriebutSet.setFilter(record.split(",")[0]);
                 attriebutSet.setPath(record.substring(attriebutSet.getFilter().length()+1));
             }else{
@@ -376,7 +380,6 @@ public class Engine extends Job {
         if (recordPath ==null||attriebute==null){
             return null;
         }
-        String record  = null;
         if(_ctx==null){
             _ctx = getLdapDirContext();
         }
@@ -384,13 +387,29 @@ public class Engine extends Job {
             AttriebutSet attriebutSet = helpAttriebut(recordPath);
 //            if()
             try {
-                record = _ctx.getAttributes(attriebutSet.getFilter()+","+attriebutSet.getPath()).get(attriebute.name()).get(0).toString();
+                String[] attStrings = new String[] {attriebute.name()};
+                if(attriebutSet.getSearchControls().getSearchScope()==SearchControls.SUBTREE_SCOPE){
+                    SearchControls sc = attriebutSet.getSearchControls();
+                    sc.setCountLimit(0);
+                    sc.setTimeLimit(0);
+//                    sc.setReturningAttributes(attStrings);
+//                    = new SearchControls(SearchControls.SUBTREE_SCOPE,1,1000,attStrings,true,true);
+                    NamingEnumeration<SearchResult> searchResults = _ctx.search(attriebutSet.getPath(), attriebutSet.getFilter(), sc);
+                    if(searchResults.hasMore()){
+                        SearchResult element = searchResults.next();
+                        return element.getAttributes().get(attriebute.name()).get().toString();
+                    }else{
+                        return null;
+                    }
+                }else{
+                    return _ctx.getAttributes(attriebutSet.getFilter()+","+attriebutSet.getPath(),attStrings).get(attriebute.name()).get(0).toString();
+                }
             } catch (NamingException e) {
                 CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad für Record suche.");
                 CentralLogger.getInstance().info(this,e);
             } 
         }
-        return record;
+        return null;
     }
     
     /**
@@ -407,9 +426,21 @@ public class Engine extends Job {
         if(_ctx !=null){
             AttriebutSet attriebutSet = helpAttriebut(recordPath);
             try {
+                String path="";
+                if(attriebutSet.getSearchControls().getSearchScope()==SearchControls.SUBTREE_SCOPE){
+                    SearchControls sc = attriebutSet.getSearchControls();
+                    NamingEnumeration<SearchResult> searchResults = _ctx.search(attriebutSet.getPath(), attriebutSet.getFilter(), sc);
+                    if(searchResults.hasMore()){
+                        SearchResult element = searchResults.next();
+                        element.getAttributes().get(attriebute.name()).get().toString();
+                        attriebutSet = helpAttriebut(element.getNameInNamespace());
+                    }
+
+                }
+                path = attriebutSet.getFilter()+","+attriebutSet.getPath();    
                 BasicAttribute ba = new BasicAttribute(attriebute.name(), value);
                 ModificationItem[] modArray = new ModificationItem[] {new ModificationItem( DirContext.REPLACE_ATTRIBUTE,ba)};
-                String path = attriebutSet.getFilter()+","+attriebutSet.getPath();
+                
                 _ctx.modifyAttributes(path,modArray);
             } catch (NamingException e) {
                 CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad für Record suche.");
