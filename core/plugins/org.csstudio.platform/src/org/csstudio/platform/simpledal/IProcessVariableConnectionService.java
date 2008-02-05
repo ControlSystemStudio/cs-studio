@@ -14,6 +14,13 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 public interface IProcessVariableConnectionService {
 
 	/**
+	 * Returns the number of active connectors.
+	 * 
+	 * @return the number of active connectors
+	 */
+	int getConnectorCount();
+
+	/**
 	 * Sets a value for the specified process variable.
 	 * 
 	 * @param processVariableAddress
@@ -398,14 +405,14 @@ public interface IProcessVariableConnectionService {
 			IProcessVariableAddress processVariableAddress)
 			throws ConnectionException;
 
-	
 	/**
 	 * Unregisters the specified listener.
 	 * 
-	 * @param listener the listener
+	 * @param listener
+	 *            the listener
 	 */
 	void unregister(IProcessVariableValueListener listener);
-	
+
 	/**
 	 * Registers a listener for the specified process variable.
 	 * 

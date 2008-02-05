@@ -10,12 +10,40 @@ public class PerformanceUtil {
 	private static PerformanceUtil _instance;
 
 	private HashMap<Class, Integer> _createdInstances;
-	
+
 	private HashMap<Class, Integer> _finalizedInstances;
 
 	private PerformanceUtil() {
 		_createdInstances = new HashMap<Class, Integer>();
 		_finalizedInstances = new HashMap<Class, Integer>();
+	}
+
+	public static int countAll() {
+		int count = 0;
+		for (Class c : getInstance()._createdInstances.keySet()) {
+			int created = getInstance()._createdInstances.get(c);
+			int finalized = getInstance()._finalizedInstances.containsKey(c) ? getInstance()._finalizedInstances
+					.get(c)
+					: 0;
+			int diff = created - finalized;
+
+			count += diff;
+		}
+
+		return count;
+	}
+
+	public static String print() {
+		StringBuffer sb = new StringBuffer();
+
+		for (Class c : getInstance()._createdInstances.keySet()) {
+			sb.append(c.getName());
+			sb.append(": ");
+			sb.append(getInstance()._createdInstances.get(c));
+			sb.append("\r\n");
+		}
+
+		return sb.toString();
 	}
 
 	public static synchronized PerformanceUtil getInstance() {
@@ -70,15 +98,18 @@ public class PerformanceUtil {
 	}
 
 	public void printStates() {
-		for(Class c : _createdInstances.keySet()) {
+		for (Class c : _createdInstances.keySet()) {
 			int created = _createdInstances.get(c);
-			int finalized = _finalizedInstances.containsKey(c) ? _finalizedInstances.get(c) : 0;
-			int diff = created-finalized;
-			
+			int finalized = _finalizedInstances.containsKey(c) ? _finalizedInstances
+					.get(c)
+					: 0;
+			int diff = created - finalized;
+
 			CentralLogger.getInstance().info(
-					null, diff+ " instances of type ["
-							+ c + "] are alive (constructor calls: " + created
-							+ "; finalize() calls: "+finalized+")");
+					null,
+					diff + " instances of type [" + c
+							+ "] are alive (constructor calls: " + created
+							+ "; finalize() calls: " + finalized + ")");
 		}
 	}
 }

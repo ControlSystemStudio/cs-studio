@@ -72,41 +72,42 @@ class DalConnector extends AbstractConnector implements DynamicValueListener,
 	 * {@inheritDoc}
 	 */
 	public void conditionChange(DynamicValueEvent event) {
+		//FIXME: forward condition changes
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void errorResponse(DynamicValueEvent event) {
-
+		//FIXME: forward condition changes
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void timelagStarts(DynamicValueEvent event) {
-
+		//FIXME: forward condition changes
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void timelagStops(DynamicValueEvent event) {
-
+		//FIXME: forward condition changes
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void timeoutStarts(DynamicValueEvent event) {
-
+		//FIXME: forward condition changes
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void timeoutStops(DynamicValueEvent event) {
-
+		//FIXME: forward condition changes
 	}
 
 	/**

@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.ExecutorAccess;
+import org.csstudio.platform.ExecutionService;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.util.PerformanceUtil;
 
@@ -72,7 +72,7 @@ public final class LocalChannel {
 					final String[] options = new String[m.groupCount()];
 
 					for (int i = 0; i < m.groupCount(); i++) {
-						options[i] = m.group(i + 1);
+						options[i] = m.group(i+1);
 					}
 
 					// create and init the generator
@@ -132,7 +132,7 @@ public final class LocalChannel {
 			} else {
 				// we schedule the job if necessary
 				if (_scheduledFuture == null) {
-					_scheduledFuture = ExecutorAccess.getInstance()
+					_scheduledFuture = ExecutionService.getInstance()
 							.getScheduledExecutorService().scheduleAtFixedRate(
 									_dataGenerator, 1000,
 									_dataGenerator.getPeriod(),

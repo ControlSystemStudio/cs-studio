@@ -79,6 +79,13 @@ public class ProcessVariableConnectionService implements
 
 		return _instance;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getConnectorCount() {
+		return _connectors.keySet().size();
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -614,8 +621,14 @@ public class ProcessVariableConnectionService implements
 		AbstractConnector result = null;
 		if (pv.getControlSystem() == ControlSystemEnum.LOCAL) {
 			result = createConnectorForLocal(pv, valueType);
-		} else if (pv.getControlSystem().isSupportedByDAL()) {
+		} else if (pv.getControlSystem().isSupportedByDAL() || !pv.getControlSystem().isSupportedByDAL()) {
 			result = createConnectorForDal(pv, valueType);
+		} else {
+			result = new DalConnector(pv, valueType);
+			result.forwardError("Control System "
+					+ pv.getControlSystem() + " is not supported yet.");
+//			throw new IllegalArgumentException("Control System "
+//					+ pv.getControlSystem() + " is not supported yet.");
 		}
 
 		return result;
@@ -740,7 +753,7 @@ public class ProcessVariableConnectionService implements
 
 		connector.setDalProperty(null);
 
-		if (!property.isDestroyed()) {
+		if (property!=null && !property.isDestroyed()) {
 			// remove link listener
 			property.removeLinkListener(connector);
 

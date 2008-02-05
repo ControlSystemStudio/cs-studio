@@ -55,22 +55,31 @@ public final class DALPropertyFactoriesProvider {
 	/**
 	 * Returns a DAL {@link PropertyFactory} for the specified control system.
 	 * 
-	 * @param controlSystem the control system
+	 * @param controlSystem
+	 *            the control system
 	 * 
 	 * @return a DAL property factory
 	 */
 	public PropertyFactory getPropertyFactory(ControlSystemEnum controlSystem) {
-		PropertyFactory result = _propertyFactories.get(controlSystem);
+		if (!controlSystem.isSupportedByDAL()) {
+			throw new IllegalArgumentException(
+					"Control System "
+							+ controlSystem
+							+ " is currently not supported by the data access layer (DAL).");
+		} else {
+			PropertyFactory result = _propertyFactories.get(controlSystem);
 
-		if (result == null) {
-			result = DefaultPropertyFactoryService.getPropertyFactoryService()
-					.getPropertyFactory(_applicationContext,
-							LinkPolicy.ASYNC_LINK_POLICY,
-							controlSystem.getResponsibleDalPlugId());
-			
-			_propertyFactories.put(controlSystem, result);
+			if (result == null) {
+				result = DefaultPropertyFactoryService
+						.getPropertyFactoryService().getPropertyFactory(
+								_applicationContext,
+								LinkPolicy.ASYNC_LINK_POLICY,
+								controlSystem.getResponsibleDalPlugId());
+
+				_propertyFactories.put(controlSystem, result);
+			}
+
+			return result;
 		}
-
-		return result;
 	}
 }

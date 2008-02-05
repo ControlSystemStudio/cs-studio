@@ -29,7 +29,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 /**
  * 
  * @author Helge Rickens, Kai Meyer
- *
+ * 
  */
 public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 
@@ -43,23 +43,24 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		RefreshableLabelFigure label = new RefreshableLabelFigure();
 
 		label.setTextValue(model.getLabel());
-		label.setFont(CustomMediaFactory.getInstance().getFont(
+		label
+				.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont()));
 		label.setTextAlignment(model.getTextAlignment());
 		label.setTransparent(false);
-		label.setEnabled(model.isEnabled() && getExecutionMode().equals(ExecutionMode.RUN_MODE));
+		label.setEnabled(model.isEnabled()
+				&& getExecutionMode().equals(ExecutionMode.RUN_MODE));
 		label.addMouseListener(new MouseListener() {
 			public void mouseDoubleClicked(final MouseEvent me) {
 			}
 
-			public void mousePressed(final MouseEvent me) { 
-				if (me.button == 1 && getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-					final org.eclipse.swt.graphics.Point cursorLocation = Display.getCurrent().getCursorLocation();
-					new CheckedUiRunnable() {
-						protected void doRunInUi() {
-							performDirectEdit(me.getLocation(), cursorLocation.x, cursorLocation.y);	
-						}
-					};	
+			public void mousePressed(final MouseEvent me) {
+				if (me.button == 1
+						&& getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+					final org.eclipse.swt.graphics.Point cursorLocation = Display
+							.getCurrent().getCursorLocation();
+					performDirectEdit(me.getLocation(), cursorLocation.x,
+							cursorLocation.y);
 				}
 			}
 
@@ -72,40 +73,50 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 
 	/**
 	 * Open the cell editor for direct editing.
-	 * @param point the location of the mouse-event
-	 * @param absolutX The x coordinate of the mouse in the display
-	 * @param absolutY The y coordinate of the mouse in the display
+	 * 
+	 * @param point
+	 *            the location of the mouse-event
+	 * @param absolutX
+	 *            The x coordinate of the mouse in the display
+	 * @param absolutY
+	 *            The y coordinate of the mouse in the display
 	 */
-	private void performDirectEdit(final Point point, final int absolutX, final int absolutY) {
-		if (this.getCastedModel().isEnabled() && getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-			final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+	private void performDirectEdit(final Point point, final int absolutX,
+			final int absolutY) {
+		if (this.getCastedModel().isEnabled()
+				&& getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+			final Shell shell = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getShell();
 			MenuManager menuManager = new MenuManager();
-			for (WidgetAction action : ((MenuButtonModel)this.getCastedModel()).getActionData().getWidgetActions()) {
+			for (WidgetAction action : ((MenuButtonModel) this.getCastedModel())
+					.getActionData().getWidgetActions()) {
 				menuManager.add(new MenuAction(action));
 			}
 			Menu menu = menuManager.createContextMenu(shell);
-			
+
 			int x = absolutX;
 			int y = absolutY;
 			x = x - point.x + this.getCastedModel().getX();
-			y = y - point.y + this.getCastedModel().getY() + this.getCastedModel().getHeight();
-			
-			menu.setLocation(x,y);
+			y = y - point.y + this.getCastedModel().getY()
+					+ this.getCastedModel().getHeight();
+
+			menu.setLocation(x, y);
 			menu.setVisible(true);
-			while(!menu.isDisposed() && menu.isVisible()){
-				if(!Display.getCurrent().readAndDispatch()){
+			while (!menu.isDisposed() && menu.isVisible()) {
+				if (!Display.getCurrent().readAndDispatch()) {
 					Display.getCurrent().sleep();
 				}
 			}
-			menu.dispose();	
-			//shell.setFocus();
+			menu.dispose();
+			// shell.setFocus();
 		}
 	}
-	
+
 	/**
 	 * Returns the Figure of this EditPart.
-	 * @return RefreshableActionButtonFigure
-	 * 			The RefreshableActionButtonFigure of this EditPart
+	 * 
+	 * @return RefreshableActionButtonFigure The RefreshableActionButtonFigure
+	 *         of this EditPart
 	 */
 	protected RefreshableLabelFigure getCastedFigure() {
 		return (RefreshableLabelFigure) getFigure();
@@ -119,8 +130,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		// label
 		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure figure = getCastedFigure();
 				figure.setTextValue(newValue.toString());
 				return true;
@@ -130,8 +140,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		// font
 		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure figure = getCastedFigure();
 				FontData fontData = (FontData) newValue;
 				figure.setFont(CustomMediaFactory.getInstance().getFont(
@@ -141,46 +150,52 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
-		
+
 		// text alignment
 		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableLabelFigure figure = getCastedFigure();
-				figure.setTextAlignment((Integer)newValue);
+				figure.setTextAlignment((Integer) newValue);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
+		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT,
+				alignmentHandler);
 
 	}
-		
+
 	/**
 	 * An Action, which encapsulates a {@link WidgetAction}.
+	 * 
 	 * @author Kai Meyer
-	 *
+	 * 
 	 */
 	private final class MenuAction extends Action {
 		/**
 		 * The {@link WidgetAction}.
 		 */
 		private WidgetAction _widgetAction;
-		
+
 		/**
 		 * Constructor.
-		 * @param widgetAction The encapsulated {@link WidgetAction}
+		 * 
+		 * @param widgetAction
+		 *            The encapsulated {@link WidgetAction}
 		 */
 		public MenuAction(final WidgetAction widgetAction) {
 			_widgetAction = widgetAction;
 			this.setText(_widgetAction.getActionLabel());
-			IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform.getAdapterManager().getAdapter(widgetAction, IWorkbenchAdapter.class);
-			if (adapter!=null) {
-				this.setImageDescriptor(adapter.getImageDescriptor(widgetAction));
+			IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform
+					.getAdapterManager().getAdapter(widgetAction,
+							IWorkbenchAdapter.class);
+			if (adapter != null) {
+				this.setImageDescriptor(adapter
+						.getImageDescriptor(widgetAction));
 			}
 			this.setEnabled(_widgetAction.isEnabled());
 		}
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -188,7 +203,10 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 		public void run() {
 			Display.getCurrent().asyncExec(new Runnable() {
 				public void run() {
-					WidgetActionHandlerService.getInstance().performAction(getCastedModel().getProperty(AbstractWidgetModel.PROP_ACTIONDATA), _widgetAction);
+					WidgetActionHandlerService.getInstance().performAction(
+							getCastedModel().getProperty(
+									AbstractWidgetModel.PROP_ACTIONDATA),
+							_widgetAction);
 				}
 			});
 		}
