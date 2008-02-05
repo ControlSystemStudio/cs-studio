@@ -192,7 +192,7 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
         String severity = "NO_ALARM";
 
 		CentralLogger.getInstance().debug(this,"IocChangeState: setAllRecordsToConnected");
-		setAllRecordsInLdapServer ( ldapIocName, status, severity);
+		setAllRecordsInLdapServerAndJms ( ldapIocName, status, severity);
 		
 	}
 	
@@ -203,7 +203,7 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
         String status = "DISCONNECTED";
         String severity = "INVALID";
 		CentralLogger.getInstance().debug(this,"IocChangeState: setAllRecordsToDisconnected");
-		setAllRecordsInLdapServer ( ldapIocName, status, severity);
+		setAllRecordsInLdapServerAndJms ( ldapIocName, status, severity);
 		
 	}
 
@@ -212,11 +212,11 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 	 * started. But they will write in parallel to the LDAP server - but in sequence!
 	 * This will (partly) avoid congestion on the send queue in addLdapWriteRequest()
 	 */
-	synchronized private void setAllRecordsInLdapServer (final String ldapIocName, String status, String severity) {
+	synchronized private void setAllRecordsInLdapServerAndJms (final String ldapIocName, String status, String severity) {
 	    String logicalIocName = ldapIocName;
 		/*
 		 * find all records belonging to the IOC: logicalIocName
-		 * -> search for econ == logicalIocName
+		 * -> search for econ = logicalIocName
 		 * -> create list for all eren (record) entries
 		 * 
 		 * for each eren entry set the epicsAlarmStatus to 'OFFLINE' and the epicsAlarmTimeStamp to the actual time
@@ -240,6 +240,9 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
         for (String channelName : allRecordList) {
             CentralLogger.getInstance().debug(this, "Found Channelname: "+channelName);
             if(channelName!=null){
+            	/*
+            	 * set values in LDAP and create JMS message
+            	 */
                 setSingleChannel(channelName, status ,severity, eventTime, logicalIocName);
             }
         }
@@ -248,10 +251,21 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 
 	private void setSingleChannel ( String channelName, String status, String severity, String eventTime, String logicalIocName) {
         if(channelName==null){
+        	CentralLogger.getInstance().error(this, "no channel name set");
             return;
         }
+        /*
+         * TODO:
+         * addLdapWriteRequest does NOT support the usage of the full qualifies LDAP string
+         * So we remove it - for now until it's supported
+         */
+        if(channelName.contains("=")){
+        	channelName  = channelName.split("[=,]")[1];
+        }
+        
         if(severity!=null){
             Engine.getInstance().addLdapWriteRequest( "epicsAlarmSeverity", channelName, severity);
+            CentralLogger.getInstance().debug(this, "Set SEVERITY: " + severity + " for channel: " + channelName);
         }
         if(status!=null){
             Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channelName, status);

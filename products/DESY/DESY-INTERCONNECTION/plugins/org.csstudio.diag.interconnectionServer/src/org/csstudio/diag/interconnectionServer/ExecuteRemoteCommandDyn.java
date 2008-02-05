@@ -38,7 +38,7 @@ public class ExecuteRemoteCommandDyn implements IAction {
 		if ( client.contains("|")) {
 			client = client.substring(0, client.indexOf("|"));
 		}
-		System.out.println("received param: " + command + " " + client);
+//		System.out.println("received param: " + command + " " + client);
 		int commandId = -1;
 		
 		for ( int i=0; i < PreferenceProperties.COMMAND_LIST.length; i++) {

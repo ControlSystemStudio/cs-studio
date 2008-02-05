@@ -16,6 +16,12 @@ public class SendCommandToIoc extends Thread {
 	private String statisticId = "NONE";
 	private int id = 0;
 	
+	/**
+	 * Send a command to the IOC in an independent thread.
+	 * @param hostName IOC name.
+	 * @param port Port to be used.
+	 * @param command One of the supported commands.
+	 */
 	public SendCommandToIoc ( String hostName, int port, String command) {
 		
 		this.id = InterconnectionServer.getInstance().getSendCommandId();
@@ -26,6 +32,11 @@ public class SendCommandToIoc extends Thread {
 		this.start();
 	}
 	
+	/**
+	 * Send a command to the IOC in an independent thread.
+	 * @param statisticId
+	 * @param command
+	 */
 	public SendCommandToIoc ( String statisticId, String command) {
 		
 		this.id = InterconnectionServer.getInstance().getSendCommandId();
@@ -54,6 +65,14 @@ public class SendCommandToIoc extends Thread {
         	socket = new DatagramSocket( );	// do NOT specify the port
             
             // DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, packet.getAddress(), packet.getPort());
+        	/*
+        	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
+        	 * in any case: be prepared!
+        	 */
+        	if ( hostName.contains("|")) {
+        		System.out.println ("SendCommandToIoc: hostname contains >|< ! hostname = " + hostName);
+        		hostName = hostName.substring(0, hostName.indexOf("|"));
+    		}
             DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, InetAddress.getByName( hostName), PreferenceProperties.COMMAND_PORT_NUMBER);
             
             socket.send(newPacket);

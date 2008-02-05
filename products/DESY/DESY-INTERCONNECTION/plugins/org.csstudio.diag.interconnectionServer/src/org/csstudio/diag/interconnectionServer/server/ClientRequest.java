@@ -53,6 +53,8 @@ public class ClientRequest extends Thread
     public Statistic.StatisticContent  statisticContent = null;
     public TagList 				tagList			= null;
     InterconnectionServer icServer = null;
+    private boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_TRUE	= true;
+    private boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE = false;
     
 	/* 
 	 * 
@@ -271,7 +273,7 @@ public class ClientRequest extends Thread
         		// time to update the LDAP server entry
         		//
         		//System.out.print("aLs");
-        		updateLdapEntry( tagValue);
+        		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_TRUE);
         		
         		//
         		// set beacon time locally
@@ -334,7 +336,7 @@ public class ClientRequest extends Thread
         		// time to update the LDAP server entry
         		//
 
-        		updateLdapEntry( tagValue);
+        		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE);
         		
         		//
         		// set beacon time locally
@@ -381,7 +383,7 @@ public class ClientRequest extends Thread
         		// time to update the LDAP server entry
         		//
         		//System.out.print("sLs");
-        		updateLdapEntry( tagValue);
+        		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE);
         		//2System.out.print("sLe");
         		System.out.print("S");
         		break;
@@ -740,6 +742,7 @@ public class ClientRequest extends Thread
 		String[] attribute = null;
 		boolean gotTag 		= false;
     	boolean gotId 		= false;
+    	String	timeStamp = null;
 		
 		String daten = new String(this.packet.getData(), 0, this.packet.getLength());
 		//System.out.println("Message: " + daten);
@@ -793,6 +796,9 @@ public class ClientRequest extends Thread
 		                    	type.setValue(attribute[1].toString());
 		                    	gotTag = true;
 		                    } else {
+		                    	/*
+		                    	 * ID and type need special treatment - the rest goes here
+		                    	 */
 		                    	TagValuePairs newTagValuePair =  icServer.new TagValuePairs ( attribute[0].toString(), attribute[1].toString());
 		                    	tagValuePairs.add(newTagValuePair);
 		                    }
@@ -800,6 +806,29 @@ public class ClientRequest extends Thread
 	                } // if
                 } //while
         } // if tok
+        /*
+		 * check whether we've received a time stamp (any)
+		 */
+		if ( tagValue.containsKey("EVENTTIME")) {
+			// nothing to do
+		} else if ( tagValue.containsKey("CREATETIME")){
+			/*
+			 * if CREATETIME is set -> is it as EVENTTIME
+			 */
+			timeStamp = tagValue.get("CREATETIME");
+			TagValuePairs newTagValuePair =  icServer.new TagValuePairs ( "EVENTTIME", timeStamp);
+        	tagValuePairs.add(newTagValuePair);
+		} else {
+			/*
+			 * if no time is set -> create a new EVENTTIME locally
+			 */
+			SimpleDateFormat sdf = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT);
+	        java.util.Date currentDate = new java.util.Date();
+	        timeStamp = sdf.format(currentDate);
+	        TagValuePairs newTagValuePair =  icServer.new TagValuePairs ( "EVENTTIME", timeStamp);
+        	tagValuePairs.add(newTagValuePair);
+		}
+		
         if ( gotId && gotTag){
         	success = true;
         	return success;
@@ -844,27 +873,64 @@ public class ClientRequest extends Thread
 		System.out.println( "Time to add LDAP write request: " + timeDifference);
 	}
 	
-	
-	private void updateLdapEntry ( Hashtable<String,String> tagValue) {
+	/**
+	 * Update the LDAP database.
+	 * Analyse the tag/value pairs in tagValue (must contain at least: NAME and SEVERITY
+	 * If time is omitted - localTime will be used.
+	 * @param tagValue Hashtable with tag/value pairs.
+	 * @param resetHighestUnacknowledgedAlarm True/Flse defines whether - or not to reset the highest unacknowledged alarm in the LDAP database.
+	 * 
+	 */
+	private void updateLdapEntry ( Hashtable<String,String> tagValue, boolean resetHighestUnacknowledgedAlarm) {
 		//
 		// find necessary entries and activate ldapUpdateMethod
 		//
 		String channel,status,severity,timeStamp = null;
 		///System.out.println("tagValue : " + tagValue.toString());		
 		
-		if ( tagValue.containsKey("NAME") && tagValue.containsKey("STATUS") && tagValue.containsKey("SEVERITY") && (tagValue.containsKey("EVENTTIME") || tagValue.containsKey("CREATETIME"))) {
+		if ( tagValue.containsKey("NAME") && tagValue.containsKey("SEVERITY")) {
 			
 			channel = tagValue.get("NAME");
-			status = tagValue.get("STATUS");
 			severity = tagValue.get("SEVERITY");
+			
+			/*
+			 * is severity set?
+			 */
+			if ( tagValue.containsKey("STATUS")) {
+				status = tagValue.get("STATUS");
+			} else {
+				status = "unknown";
+			}
+
 			/*
 			 * TODO: if we decide to use separate fields for event and create-time this is he place to change it!
 			 */
 			if ( tagValue.containsKey("EVENTTIME")) {
 				timeStamp = tagValue.get("EVENTTIME");
-			} else {
+			} else if ( tagValue.containsKey("CREATETIME")){
 				timeStamp = tagValue.get("CREATETIME");
+			} else {
+				// no time available
+				SimpleDateFormat sdf = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT);
+		        java.util.Date currentDate = new java.util.Date();
+		        timeStamp = sdf.format(currentDate);
 			}
+			/*
+			 * check for actual alarm state
+			 */
+			String currentSeverity = Engine.getInstance().getAttriebute(channel, Engine.ChannelAttribute.epicsAlarmHighUnAckn);
+			//System.out.println ("Channel: " + channel + " current severity: " + currentSeverity + "[" +getSeverityEnum(currentSeverity)+ "]" + " new severity: " + severity + "[" +getSeverityEnum(severity)+ "]");
+			if ( resetHighestUnacknowledgedAlarm && (getSeverityEnum(severity) > getSeverityEnum(currentSeverity))) {
+				/*
+				 * new highest alarm!
+				 * set highest unacknowledged alarm to new severity
+				 * else we keep the highest unacknowledged alarm as it is
+				 * the highest unacknowledged alarm will be removed if an acknowledge from the alarm table, alarm tree view 
+				 * - or other applications will be set to ""
+				 */
+				Engine.getInstance().addLdapWriteRequest ("epicsAlarmHighUnAckn", channel, severity);
+			}
+			
 			//
 			// send values to LDAP engine
 			//
@@ -872,22 +938,37 @@ public class ClientRequest extends Thread
 			Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channel, status);
 			Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channel, timeStamp);		
 			
-			//System.out.println("### - write to LDAP done for NAME= " + channel);
-			//
-			// change time stamp written time (for now we use: epicsAlarmAcknTimeStamp)
-			//
-			SimpleDateFormat sdf = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT);
-	        java.util.Date currentDate = new java.util.Date();
-	        String eventTime = sdf.format(currentDate);
-	        /*
-	         * TODO: we need a new field in LDAP for the time when we actually wrote the message
-	         * for noew we leave it out
-	         */
-	        //Engine.getInstance().addLdapWriteRequest( "epicsAlarmAcknTimeStamp", channel, eventTime);		
 		} else {
 			//System.out.println("### - cannot write to LDAP done for NAME= " + tagValue.get("NAME"));
 		}
 		
 	}
-	
+	/**
+	 * return severity - as number -
+	 * - INVALID = 5
+	 * - NO_ALARM = 0
+	 * - MINOR = 1
+	 * - MAJOR = 2
+	 * @param severity
+	 * @return
+	 */
+	private int getSeverityEnum ( String severity) {
+		int severityAsNumber = 0;
+		if ( (severity != null) && severity.length()> 0) {
+			if (severity.startsWith( "INVALID")) {
+				severityAsNumber = 5;
+			} else if (severity.startsWith( "INVALID")) {
+				severityAsNumber = 5;
+			} else if (severity.startsWith( "NO_ALARM")) {
+				severityAsNumber = 0;
+			} else if (severity.startsWith( "MINOR")) {
+				severityAsNumber = 1;
+			} else if (severity.startsWith( "MAJOR")) {
+				severityAsNumber = 2;
+			} else {
+				severityAsNumber = 0;
+			}
+		}
+		return severityAsNumber;
+	}
 }

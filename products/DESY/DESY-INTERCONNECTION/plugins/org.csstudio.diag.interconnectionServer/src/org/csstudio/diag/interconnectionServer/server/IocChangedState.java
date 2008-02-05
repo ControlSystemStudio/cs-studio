@@ -133,10 +133,11 @@ public class IocChangedState extends Thread{
 					logicalIocName, 													// host
 					null, 																// facility
 					"virtual channel", 													// text
-					null);	
-			LdapSupport instanceLdap = LdapSupport.getInstance();
-			instanceLdap.setAllRecordsToDisconnected ( ldapIocName);
-			//LdapSupport.getInstance().setAllRecordsToDisconnected ( ldapIocName);
+					null);
+			/*
+			 * set changes in LDAP and generate JMS Alarm message
+			 */
+			LdapSupport.getInstance().setAllRecordsToDisconnected ( ldapIocName);
 			
 		}
 		
