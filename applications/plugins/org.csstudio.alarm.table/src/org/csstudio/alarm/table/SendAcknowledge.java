@@ -22,7 +22,7 @@
 
 package org.csstudio.alarm.table;
 
-import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +31,6 @@ import javax.jms.MapMessage;
 
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.jms.SendMapMessage;
-import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -49,6 +48,7 @@ import org.eclipse.core.runtime.jobs.Job;
 public class SendAcknowledge extends Job {
 
 	List<JMSMessage> messagesToSend;
+	private static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.S";
 	
 	/**
 	 * @param msg JMSMessage to acknowledge
@@ -73,7 +73,10 @@ public class SendAcknowledge extends Job {
 		
 		for (JMSMessage message : messagesToSend) {
 			
-	        String time = TimestampFactory.now().toString();
+			SimpleDateFormat sdf = new SimpleDateFormat( JMS_DATE_FORMAT);
+	        java.util.Date currentDate = new java.util.Date();
+	        String time = sdf.format(currentDate);
+
 	            MapMessage mapMessage = sender.getSessionMessageObject();
 	            HashMap<String, String> hm = message.getHashMap();
 	            Iterator<String> it = hm.keySet().iterator();
@@ -85,8 +88,9 @@ public class SendAcknowledge extends Job {
 	            }
 	            mapMessage.setString("ACK", "TRUE"); //$NON-NLS-1$ //$NON-NLS-2$
 	            mapMessage.setString("ACK_TIME", time); //$NON-NLS-1$
-	            Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack");
+	            //Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn", message.getName(), "ack"); epicsAlarmHighUnAckn
 	            Engine.getInstance().addLdapWriteRequest("epicsAlarmAcknTimeStamp", message.getName(), time);
+	            Engine.getInstance().addLdapWriteRequest("epicsAlarmHighUnAckn", message.getName(), "");
 	            JmsLogsPlugin.logInfo("LogTableViewer send Ack message, MsgName: " + 
 	            		message.getName() + " MsgTime: " + message.getProperty("EVENTTIME")); //$NON-NLS-2$
 	            sender.sendMessage();
