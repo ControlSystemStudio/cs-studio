@@ -188,7 +188,7 @@ abstract class AbstractPolyFeedbackFactory implements
 
 		PointList points = (PointList) request.getExtendedData().get(
 				PROP_POINTS);
-		// necessary if the call was occured by a "Drag and Drop" action
+		// necessary if the call was occurred by a "Drag and Drop" action
 		if (points==null) {
 			points = (PointList)widgetModel.getProperty(AbstractPolyModel.PROP_POINTS).getPropertyValue();
 		}
