@@ -322,7 +322,6 @@ public class Engine extends Job {
                     CentralLogger.getInstance().error(Engine.getInstance(), e);
                     return null;
                 }
-                
             }
             CentralLogger.getInstance().debug(Engine.getInstance(), "Engine.run - ctx: " + _ctx.toString());        
             if ( _ctx  != null) {
@@ -333,44 +332,7 @@ public class Engine extends Job {
         }
         return _ctx;
     }
-    
-    private AttriebutSet helpAttriebut(String record) {
-        AttriebutSet attriebutSet = new AttriebutSet();
-        if(record!=null){
-            // Prüft ob der record schon in der ldapReferences gespeichert ist.
-            if(!record.contains("ou=epicsControls")&&!record.contains("econ=")&&ldapReferences!=null&&ldapReferences.hasEntry(record)){//&&!record.contains("ou=")){
-                Entry entry = ldapReferences.getEntry(record);
-                Vector<String> vector = entry.getNamesInNamespace();
-                for (String string : vector) {
-                    if(string.contains("ou=EpicsControls")){
-                        record = string;
-                    }
-                }
-                attriebutSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-            }else if(record.contains("ou=epicsControls")&&record.contains("econ=")){
-                //TODO: Der record ist und wird noch nicht im ldapReferences gecachet. Enthält aber den kompletten Pfad.
-                attriebutSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-            }else {
-                //TODO: Der record ist und wird noch nicht im ldapReferences gecachet.
-                attriebutSet.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            }
-            if(record.endsWith(",o=DESY,c=DE")){
-                record = record.substring(0, record.length()-12);
-            }else if(record.endsWith(",o=DESY")){
-                record = record.substring(0, record.length()-7);
-            }
-            if(record.contains(",")){
-                attriebutSet.setFilter(record.split(",")[0]);
-                attriebutSet.setPath(record.substring(attriebutSet.getFilter().length()+1));
-            }else{
-                attriebutSet.setPath("ou=epicsControls");
-                attriebutSet.setFilter("eren="+record);
-            }
-            return attriebutSet;
-        } else{
-            return null;
-        }
-    }
+   
     
     /**
      * Get the Value of an record attribute.
@@ -387,26 +349,21 @@ public class Engine extends Job {
         }
         if(_ctx !=null){
             AttriebutSet attriebutSet = helpAttriebut(recordPath);
-//            if()
             try {
                 String[] attStrings = new String[] {attriebute.name()};
                 Attributes attributes=null;
                 if(attriebutSet.getSearchControls().getSearchScope()==SearchControls.SUBTREE_SCOPE){
                     SearchControls sc = attriebutSet.getSearchControls();
-//                    = new SearchControls(SearchControls.SUBTREE_SCOPE,1,1000,attStrings,true,true);
                     NamingEnumeration<SearchResult> searchResults = _ctx.search(attriebutSet.getPath(), attriebutSet.getFilter(), sc);
                     
                     if(searchResults.hasMore()){
                         SearchResult element = searchResults.next();
                         attributes = element.getAttributes();
-//                        return element.getAttributes().get(attriebute.name()).get().toString();
                     }else{
-                        return null;
+                        return "NOT_FOUND";
                     }
                 }else{
                 	attributes = _ctx.getAttributes(attriebutSet.getFilter()+","+attriebutSet.getPath(),attStrings);
-                	
-//                    return _ctx.getAttributes(attriebutSet.getFilter()+","+attriebutSet.getPath(),attStrings).get(attriebute.name()).get(0).toString();
                 }
                 if(attributes==null){
                 	return "NONE";
@@ -443,24 +400,29 @@ public class Engine extends Job {
         if(_ctx !=null){
             AttriebutSet attriebutSet = helpAttriebut(recordPath);
             try {
-                String path="";
+                String ldapChannelName="";
                 if(attriebutSet.getSearchControls().getSearchScope()==SearchControls.SUBTREE_SCOPE){
                     SearchControls sc = attriebutSet.getSearchControls();
                     NamingEnumeration<SearchResult> searchResults = _ctx.search(attriebutSet.getPath(), attriebutSet.getFilter(), sc);
                     if(searchResults.hasMore()){
                         SearchResult element = searchResults.next();
-                        element.getAttributes().get(attriebute.name()).get().toString();
+//                        element.getAttributes().get(attriebute.name()).get().toString();
                         attriebutSet = helpAttriebut(element.getNameInNamespace());
                     }
 
                 }
-                path = attriebutSet.getFilter()+","+attriebutSet.getPath();    
-                BasicAttribute ba = new BasicAttribute(attriebute.name(), value);
-                ModificationItem[] modArray = new ModificationItem[] {new ModificationItem( DirContext.REPLACE_ATTRIBUTE,ba)};
-                
-                _ctx.modifyAttributes(path,modArray);
+                if(attriebutSet!=null && attriebutSet.getFilter()!=null && attriebutSet.getPath()!=null){
+                    ldapChannelName = attriebutSet.getFilter()+","+attriebutSet.getPath();    
+                    BasicAttribute ba = new BasicAttribute(attriebute.name(), value);
+                    ModificationItem[] modItemTemp = new ModificationItem[] {new ModificationItem( DirContext.REPLACE_ATTRIBUTE,ba)};
+                    String channel = ldapChannelName.split("[=,]")[0];
+                    modifyAttributes(ldapChannelName, modItemTemp, channel, new GregorianCalendar());
+//                    _ctx.modifyAttributes(ldapChannelName,modItemTemp);
+                } else{
+                    CentralLogger.getInstance().warn(this,"Set attriebute faild. Record: "+recordPath+" with attriebute: "+attriebute.name()+" not found!");
+                }
             } catch (NamingException e) {
-                CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad für Record suche.");
+                CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad für Record suche. Beim setzen eines Atributes fehlgeschlagen.");
                 CentralLogger.getInstance().info(this,e);
             } 
         }
@@ -584,10 +546,22 @@ public class Engine extends Job {
         return null;
     }
     
+    public int gregorianTimeDifference ( GregorianCalendar fromTime, GregorianCalendar toTime) {
+        //
+        // calculate time difference
+        //
+        Date fromDate = fromTime.getTime();
+        Date toDate = toTime.getTime();
+        long fromLong = fromDate.getTime();
+        long toLong = toDate.getTime();
+        long timeDifference = toLong - fromLong;
+        int intDiff = (int)timeDifference;
+        return intDiff;
+    }
+
+    
     private void performLdapWrite() {
-//      int size= writeVector.size();
         int maxNumberOfWritesProcessed = 200;
-        //ModificationItem[] modItem = new ModificationItem[writeVector.size()];
         ModificationItem[] modItem = new ModificationItem[maxNumberOfWritesProcessed];
         int i = 0;
         String channel;
@@ -596,7 +570,6 @@ public class Engine extends Job {
 
         while(writeVector.size()>0) {
             
-            //WriteRequest writeReq = writeVector.firstElement();
             //
             // return first element and remove it from list
             //
@@ -625,7 +598,7 @@ public class Engine extends Job {
             //
             BasicAttribute ba = new BasicAttribute( writeReq.getAttribute(), writeReq.getValue());
             modItem[i++] = new ModificationItem( DirContext.REPLACE_ATTRIBUTE,ba);
-            //writeVector.remove(0);
+
             if( (writeVector.size()>100) &&(writeVector.size()%100)==0)
                 System.out.println("Engine.performLdapWrite buffer size: "+writeVector.size());
         }
@@ -691,43 +664,8 @@ public class Engine extends Job {
             //System.out.println ("Engine.changeValue : found entry for channel: " + channel);
             namesInNamespace = this.ldapReferences.getEntry( channel).getNamesInNamespace();
             for( int index = 0; index < namesInNamespace.size(); index++) {
-            	String localLdapChannelName = null;
-
                 String ldapChannelName = (String) namesInNamespace.elementAt(index);
-                //
-                // TODO put 'endsWith' into preference page
-                //
-                if(ldapChannelName.endsWith(",o=DESY,c=DE")){
-                    ldapChannelName=ldapChannelName.substring(0,ldapChannelName.length()-12);
-                }
-                try {
-                	localLdapChannelName = ldapChannelName.replace("/", "\\/");
-                    _ctx.modifyAttributes(localLdapChannelName, modItemTemp);
-                    //System.out.println ("Engine.changeValue : Time to write to LDAP: (known channel: " + ldapChannelName + ") [" + n + "] " + gregorianTimeDifference ( startTime, new GregorianCalendar()));
-                    ldapWriteTimeCollector.setInfo(channel);
-                    ldapWriteTimeCollector.setValue( gregorianTimeDifference ( startTime, new GregorianCalendar())/n);
-                } catch (NamingException e) {
-                	CentralLogger.getInstance().warn( this, "Engine.changeValue: Naming Exception! Channel: " +  localLdapChannelName);
-                    System.out.println("Engine.changeValue: Naming Exception! Channel: " +  localLdapChannelName);
-                    String errorCode = e.getExplanation();
-                    if ( errorCode.contains("10")) {
-                    	System.out.println( "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
-                    	CentralLogger.getInstance().warn( this, "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
-                    }
-//                    e.printStackTrace();
-                    //
-                    // too bad it did not work
-                    doWrite = false;    // wait for next time
-                    CentralLogger.getInstance().debug(this, "Engine.changeValue : cannot write to LDAP server (naming exception)"); 
-                    return;
-                }catch (Exception e) {
-                    e.printStackTrace();
-                    //
-                    // too bad it did not work
-                    doWrite = false;    // wait for next time
-                    CentralLogger.getInstance().debug(this, "Engine.changeValue : cannot write to LDAP server"); 
-                    return;
-                }
+                modifyAttributes(ldapChannelName, modItemTemp, channel, startTime);
             }
     
         } else {
@@ -744,50 +682,9 @@ public class Engine extends Job {
     //          System.out.println("Enter Engine.changeValue results for channnel: " + channel );
                 namesInNamespace = new Vector<String>();
                 while(results.hasMore()) {
-                	String localLdapChannelName = null;
-    //              System.out.println("Engine.changeValue in while channnel: " + channel );
                     String ldapChannelName = results.next().getNameInNamespace();
                     namesInNamespace.add( ldapChannelName);
-                    //
-                    // TODO put 'endsWith' into preference page
-                    //
-                    if(ldapChannelName.endsWith(",o=DESY,c=DE")){
-                        ldapChannelName=ldapChannelName.substring(0,ldapChannelName.length()-12);
-                    }
-                    try {
-                    	localLdapChannelName = ldapChannelName.replace("/", "\\/");
-                        _ctx.modifyAttributes(localLdapChannelName, modItemTemp);
-                        ldapWriteTimeCollector.setInfo(channel);
-                        ldapWriteTimeCollector.setValue( gregorianTimeDifference ( startTime, new GregorianCalendar())/n);
-                        //System.out.println ("Engine.changeValue : Time to write to LDAP: (" +  channel + ")" + gregorianTimeDifference ( startTime, new GregorianCalendar()));
-                    } catch (NamingException e) {
-                    	CentralLogger.getInstance().warn( this, "Engine.changeValue: Naming Exception in modifyAttributes! Channel: " +  localLdapChannelName);
-                        System.out.println("Engine.changeValue: Naming Exceptionin modifyAttributes! Channel: " +  localLdapChannelName + " search was: " + string+"=" + channel);
-                        for (ModificationItem modificationItem : modItemTemp) {
-							System.out.println(" - ModificationItem is: "+modificationItem.getAttribute().get().toString());
-						}
-                        String errorCode = e.getExplanation();
-                        if ( errorCode.contains("10")) {
-                        	System.out.println( "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
-                        	CentralLogger.getInstance().warn( this, "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
-                        }
-                    	//e.printStackTrace();
-                        //
-                        // too bad it did not work
-                        doWrite = false;    // wait for next time
-                        return;
-                    }catch (Exception e) {
-                        e.printStackTrace();
-                        //
-                        // too bad it did not work
-                        doWrite = false;    // wait for next time
-                        return;
-                    }
-                    
-    //              //
-    //              // reset for to get ready for values of next channel
-    //              //
-    //              modItemTemp = new ModificationItem[writeVector.size()];
+                    modifyAttributes(ldapChannelName, modItemTemp, channel, startTime);
                 }
     
             } catch (NamingException e1) {
@@ -811,66 +708,135 @@ public class Engine extends Job {
         //System.out.println ("Engine.changeValue : Time to write to LDAP-total: " + gregorianTimeDifference ( startTime, new GregorianCalendar()));
     }
     
-    public int gregorianTimeDifference ( GregorianCalendar fromTime, GregorianCalendar toTime) {
+    /**
+     * @param localLdapChannelName
+     * @param modItemTemp
+     * @param startTime 
+     */
+    private void modifyAttributes(String ldapChannelName,ModificationItem[] modItemTemp, String channel, GregorianCalendar startTime) {
         //
-        // calculate time difference
+        // TODO put 'endsWith' into preference page
         //
-        Date fromDate = fromTime.getTime();
-        Date toDate = toTime.getTime();
-        long fromLong = fromDate.getTime();
-        long toLong = toDate.getTime();
-        long timeDifference = toLong - fromLong;
-        int intDiff = (int)timeDifference;
-        return intDiff;
-    }
-
-    public void setLdapValueOld ( String channel, String severity, String status, String timeStamp) {
-        ModificationItem epicsStatus, epicsSeverity, epicsTimeStamp, epicsAcknowledgeTimeStamp ;
-        ModificationItem[] modItem = null;
-        int i = 0;
-
-        String channelName = "eren=" + channel;
-
-        //
-        // change severity if value is entered
-        //
-        if ((severity != null)&& (severity.length() > 0)) {
-            epicsSeverity = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute( "epicsAlarmSeverity", severity));
-            modItem[i++] = epicsSeverity;
+        if(ldapChannelName.endsWith(",o=DESY,c=DE")){
+            ldapChannelName=ldapChannelName.substring(0,ldapChannelName.length()-12);
         }
-
-        //
-        // change status if value is entered
-        //
-        if ((status != null) && (status.length() > 0)) {
-            epicsStatus = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmStatus", status));
-        }
-
-        //
-        // change alarm time stamp
-        //
-        if ((timeStamp != null) && (timeStamp.length() > 0)) {
-            epicsTimeStamp = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmTimeStamp", timeStamp));
-        }
-
-        //
-        // change time stamp acknowledged time
-        //
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S");
-        java.util.Date currentDate = new java.util.Date();
-        String eventTime = sdf.format(currentDate);
-
-        epicsAcknowledgeTimeStamp = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmAcknTimeStamp", eventTime));
-
         try {
-            _ctx.modifyAttributes(channelName, modItem);
+            ldapChannelName = ldapChannelName.replace("/", "\\/");
+            _ctx.modifyAttributes(ldapChannelName, modItemTemp);
+            ldapWriteTimeCollector.setInfo(channel);
+            ldapWriteTimeCollector.setValue( gregorianTimeDifference ( startTime, new GregorianCalendar())/modItemTemp.length);
+            //System.out.println ("Engine.changeValue : Time to write to LDAP: (" +  channel + ")" + gregorianTimeDifference ( startTime, new GregorianCalendar()));
         } catch (NamingException e) {
-            // TODO Auto-generated catch block
+            CentralLogger.getInstance().warn( this, "Engine.changeValue: Naming Exception in modifyAttributes! Channel: " +  ldapChannelName);
+            System.out.println("Engine.changeValue: Naming Exceptionin modifyAttributes! Channel: " +  ldapChannelName);
+//            for (ModificationItem modificationItem : modItemTemp) {
+//                System.out.println(" - ModificationItem is: "+modificationItem.getAttribute().get().toString());
+//            }
+            String errorCode = e.getExplanation();
+            if ( errorCode.contains("10")) {
+                System.out.println( "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
+                CentralLogger.getInstance().warn( this, "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
+            }
+            //e.printStackTrace();
+            //
+            // too bad it did not work
+            doWrite = false;    // wait for next time
+            return;
+        }catch (Exception e) {
             e.printStackTrace();
+            //
+            // too bad it did not work
+            doWrite = false;    // wait for next time
+            return;
         }
-
-
     }
+
+    private AttriebutSet helpAttriebut(String record) {
+        AttriebutSet attriebutSet = new AttriebutSet();
+        if(record!=null){
+            // Prüft ob der record schon in der ldapReferences gespeichert ist.
+            if(!record.contains("ou=epicsControls")&&!record.contains("econ=")&&ldapReferences!=null&&ldapReferences.hasEntry(record)){//&&!record.contains("ou=")){
+                Entry entry = ldapReferences.getEntry(record);
+                Vector<String> vector = entry.getNamesInNamespace();
+                for (String string : vector) {
+                    if(string.contains("ou=EpicsControls")){
+                        record = string;
+                    }
+                }
+                attriebutSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+            }else if(record.contains("ou=epicsControls")&&record.contains("econ=")){
+                //TODO: Der record ist und wird noch nicht im ldapReferences gecachet. Enthält aber den kompletten Pfad.
+                attriebutSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+            }else {
+                //TODO: Der record ist und wird noch nicht im ldapReferences gecachet.
+                attriebutSet.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            }
+            if(record.endsWith(",o=DESY,c=DE")){
+                record = record.substring(0, record.length()-12);
+            }else if(record.endsWith(",o=DESY")){
+                record = record.substring(0, record.length()-7);
+            }
+            if(record.contains(",")){
+                attriebutSet.setFilter(record.split(",")[0]);
+                attriebutSet.setPath(record.substring(attriebutSet.getFilter().length()+1));
+            }else{
+                attriebutSet.setPath("ou=epicsControls");
+                attriebutSet.setFilter("eren="+record);
+            }
+            return attriebutSet;
+        } else{
+            return null;
+        }
+    }
+
+//    public void setLdapValueOld ( String channel, String severity, String status, String timeStamp) {
+//        ModificationItem epicsStatus, epicsSeverity, epicsTimeStamp, epicsAcknowledgeTimeStamp ;
+//        ModificationItem[] modItem = null;
+//        int i = 0;
+//
+//        String channelName = "eren=" + channel;
+//
+//        //
+//        // change severity if value is entered
+//        //
+//        if ((severity != null)&& (severity.length() > 0)) {
+//            epicsSeverity = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute( "epicsAlarmSeverity", severity));
+//            modItem[i++] = epicsSeverity;
+//        }
+//
+//        //
+//        // change status if value is entered
+//        //
+//        if ((status != null) && (status.length() > 0)) {
+//            epicsStatus = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmStatus", status));
+//        }
+//
+//        //
+//        // change alarm time stamp
+//        //
+//        if ((timeStamp != null) && (timeStamp.length() > 0)) {
+//            epicsTimeStamp = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmTimeStamp", timeStamp));
+//        }
+//
+//        //
+//        // change time stamp acknowledged time
+//        //
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S");
+//        java.util.Date currentDate = new java.util.Date();
+//        String eventTime = sdf.format(currentDate);
+//
+//        epicsAcknowledgeTimeStamp = new ModificationItem( DirContext.REPLACE_ATTRIBUTE, new BasicAttribute("epicsAlarmAcknTimeStamp", eventTime));
+//
+//        try {
+//            _ctx.modifyAttributes(channelName, modItem);
+//        } catch (NamingException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//
+//
+//    }
+
     private class WriteRequest {
         private String  attribute = null;
         private String  channel = null;
