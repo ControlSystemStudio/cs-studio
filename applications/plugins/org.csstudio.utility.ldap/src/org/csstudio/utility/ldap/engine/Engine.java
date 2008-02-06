@@ -456,7 +456,8 @@ public class Engine extends Job {
                         String facilityName = answerFacility.next().getName();
                         CentralLogger.getInstance().debug(this, "Facility found: "+facilityName);
                         String path = "ecom=EPICS-IOC,"+facilityName+",ou=epicsControls";
-                        NamingEnumeration<SearchResult> answerIOC = _ctx.search(path,"epicsIocIpAddress="+ipAddress , ctrl);
+                        
+                        NamingEnumeration<SearchResult> answerIOC = _ctx.search(path,"epicsIPAddress="+ipAddress , ctrl);
                         if(answerIOC.hasMore()){
                             String name = answerIOC.next().getName()+","+path;
                             if(answerIOC.hasMore()){
