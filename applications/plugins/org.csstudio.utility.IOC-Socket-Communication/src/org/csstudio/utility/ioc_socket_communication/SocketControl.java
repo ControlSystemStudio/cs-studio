@@ -11,7 +11,7 @@ import java.util.Date;
 public class SocketControl extends Thread {	
 	final static boolean debug=false;
 	private String hostAddress;
-	private static int TIMEOUT_IN_MILISEC=8000;
+	private static int TIMEOUT_IN_MILISEC=10000;
 	private static int LOOP_TIME_IN_MILISEC=2000;
 	private ArrayList<SocketInfo> _socketsInfosList;
 	
