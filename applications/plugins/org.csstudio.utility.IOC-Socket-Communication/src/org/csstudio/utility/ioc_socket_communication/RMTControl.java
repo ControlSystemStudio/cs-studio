@@ -65,6 +65,8 @@ public class RMTControl {
 			sockControl.start();
 		}
 		Socket currentSocket=sockControl.update(socketsInfosList, address,this.port);
+		System.out.println("SocketID="+currentSocket);
+
 		Receiver rec = new Receiver(currentSocket, message, address, port, iocanswer);
 		rec.schedule();
 	}
