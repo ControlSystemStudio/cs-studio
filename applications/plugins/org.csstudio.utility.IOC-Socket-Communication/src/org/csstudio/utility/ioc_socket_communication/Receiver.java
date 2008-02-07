@@ -45,14 +45,15 @@ public class Receiver extends Job {
 	private int port;
 	private boolean transmitted = false;
 	private String message = null;
-
-	public Receiver(String message, String address, int port,
+	
+	public Receiver(Socket sock, String message, String address, int port,
 			IOCAnswer iocAnswer) {
 		super("IOCReader");
 		this.message = message;
 		this.iocAnswer = iocAnswer;
 		this.address = address;
 		this.port = port;
+		this.sock = sock;
 	}
 
 /**
@@ -61,14 +62,24 @@ public class Receiver extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
-			if (in == null) {
-				SocketAddress sockaddr = new InetSocketAddress(address, port);
-				sock = new Socket();
+		if (in == null) {
+			SocketAddress sockaddr = new InetSocketAddress(address, port);
+			sock = new Socket();
+			int timeoutMs = 3000;
+			sock.connect(sockaddr, timeoutMs);
+			in = sock.getInputStream();
+			sock.setSoTimeout(3000);
+		} else {
+		
+		
+//			if (in == null) {
+//				SocketAddress sockaddr = new InetSocketAddress(address, port);
+//				sock = new Socket();
 				int timeoutMs = 3000;
-				sock.connect(sockaddr, timeoutMs);
+//				sock.connect(sockaddr, timeoutMs);
 				in = sock.getInputStream();
 				sock.setSoTimeout(3000);
-			}
+		}
 		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
 			return Status.CANCEL_STATUS;
@@ -77,6 +88,7 @@ public class Receiver extends Job {
 			return Status.CANCEL_STATUS;
 		}
 
+		
 		if (transmitted == false) {
 			PrintStream os;
 			try {

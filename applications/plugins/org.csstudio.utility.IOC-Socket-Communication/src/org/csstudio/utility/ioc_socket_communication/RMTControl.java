@@ -21,34 +21,63 @@
  */
 package org.csstudio.utility.ioc_socket_communication;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+//class URL {String host; int port;}
 
 public class RMTControl {
-
+	final static boolean debug=false;
 	private static RMTControl _instance;
-
-	private Socket sock = null;
+	private SocketControl sockControl = null;//SocketControl.getInstance();
 	private int port = 9003;
 	private IOCAnswer iocanswer;
-
-	private RMTControl() {
-	}
-
+	private ArrayList<SocketInfo> socketsInfosList = new ArrayList<SocketInfo>();
+	private RMTControl() {}
 	public static RMTControl getInstance() {
 		if (_instance == null)
 			_instance = new RMTControl();
 		return _instance;
 	}
-
-	public void send(String address, String message, int port,
-			IOCAnswer iocanswer) {
+	public ArrayList<SocketInfo> getSocketsInfosList() {
+		return socketsInfosList;
+	}
+	synchronized	public void send(String address, String message, int port,IOCAnswer iocanswer) {
 		this.port = port;
 		send(address, message, iocanswer);
 	}
-
-	public void send(String address, String message, IOCAnswer ioca) {
+	synchronized public void send(String address, String message, IOCAnswer ioca) {
 		this.iocanswer = ioca;
-		Receiver rec = new Receiver(message, address, port, iocanswer);
+		//is tread already started??
+		//no -> start it
+		if (sockControl == null) {
+			sockControl = new SocketControl(socketsInfosList);
+		}
+		if(!sockControl.isAlive()) {
+			sockControl.start();
+		}
+		Socket currentSocket=sockControl.update(socketsInfosList, address,this.port);
+		Receiver rec = new Receiver(currentSocket, message, address, port, iocanswer);
 		rec.schedule();
+	}
+	
+	
+	public void closeAll() {
+		for (int i=0;i<socketsInfosList.size();i++) { 
+			try {
+				socketsInfosList.get(i).getSock().close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

@@ -117,9 +117,11 @@ public class RichTable  implements Observer {
 		for (int i=0;i<lenX;i++) widthArr[i]=normalWidth;
 		widthArr[0]=Width0;
 		Table varTable = new Table(_parent, SWT.BORDER|SWT.H_SCROLL|SWT.V_SCROLL);
-		if (lenX >10)
+		if (lenY >30){
+			if (debug)System.out.println("lenY="+lenY);
 			varTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-			else varTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 10));
+		}
+			//else varTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 10));
 			
 		varTable.setHeaderVisible(true);
 		TableColumn tableColumn[] = new TableColumn[lenX];

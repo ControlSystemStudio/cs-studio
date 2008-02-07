@@ -49,7 +49,8 @@ public class Activator extends AbstractCssPlugin {
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
 	public void doStart(BundleContext context) throws Exception {
-//		super.start(context);
+
+		//		super.start(context);
 	}
 
 	/*
@@ -57,6 +58,8 @@ public class Activator extends AbstractCssPlugin {
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void doStop(BundleContext context) throws Exception {
+		System.out.println("inside doStop");
+		RMTControl.getInstance().closeAll();
 		plugin = null;
 //		super.stop(context);
 	}

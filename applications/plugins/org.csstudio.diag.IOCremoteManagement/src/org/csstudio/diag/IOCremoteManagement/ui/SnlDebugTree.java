@@ -29,6 +29,7 @@ import java.util.StringTokenizer;
 import org.csstudio.diag.IOCremoteManagement.Activator;
 import org.csstudio.diag.IOCremoteManagement.Preference.PreferencePage;
 import org.csstudio.diag.IOCremoteManagement.ui.Node.typeOfHost;
+import org.csstudio.utility.ioc_socket_communication.RMTControl;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -103,6 +104,7 @@ public class SnlDebugTree extends Composite  {
     int dim=0;
     while (st.hasMoreTokens()) { 
     	IPlist[dim]=st.nextToken();
+//    	RMTControl.getInstance().addSocket(IPlist[dim]);
     	dim++;
     }
 }

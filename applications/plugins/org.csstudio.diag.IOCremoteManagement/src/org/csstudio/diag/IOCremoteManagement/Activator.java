@@ -23,6 +23,8 @@ package org.csstudio.diag.IOCremoteManagement;
 
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.csstudio.utility.ioc_socket_communication.IOCAnswer;
+import org.csstudio.utility.ioc_socket_communication.RMTControl;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -69,6 +71,7 @@ public class Activator extends AbstractCssUiPlugin {
 
 	@Override
 	protected void doStart(final BundleContext context) throws Exception {
+		System.out.println("inDoStart IOCRemote");
 		/*
 //		super.start(context);
 		File defaultFile = new File(getPluginPreferences().getString(SampleService.IOCremoteManagement_XML_FILE_PATH));
@@ -90,6 +93,9 @@ public class Activator extends AbstractCssUiPlugin {
 
 	@Override
 	protected void doStop(final BundleContext context) throws Exception {
+		System.out.println("inDoStop IOCRemote");
+//TODO		
+//		RMTControl.getInstance().close();
 		plugin = null;
 	}
 
