@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class SocketControl extends Thread {	
-	final static boolean debug=true;
+	final static boolean debug=false;
 	private String hostAddress;
-	private static int TIMEOUT_IN_MILISEC=10000;
-	private static int LOOP_TIME_IN_MILISEC=2000;
+	private static int TIMEOUT_IN_MILISEC=600000; // 10 min
+	private static int LOOP_TIME_IN_MILISEC=10000; // 10 sec
 	private ArrayList<SocketInfo> _socketsInfosList;
 	
 	public SocketControl(ArrayList<SocketInfo> infosList) {
