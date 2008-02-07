@@ -54,6 +54,17 @@ public class Receiver extends Job {
 		this.address = address;
 		this.port = port;
 		this.sock = sock;
+		
+		try {
+			in = sock.getInputStream();
+			sock.setSoTimeout(3000);
+		} catch (UnknownHostException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		
 	}
 
 /**
@@ -64,7 +75,9 @@ public class Receiver extends Job {
 		try {
 		if (in == null) {
 			SocketAddress sockaddr = new InetSocketAddress(address, port);
+			
 			sock = new Socket();
+			System.out.println("New Socket in Receiver"+sock);
 			int timeoutMs = 3000;
 			sock.connect(sockaddr, timeoutMs);
 			in = sock.getInputStream();
@@ -75,10 +88,10 @@ public class Receiver extends Job {
 //			if (in == null) {
 //				SocketAddress sockaddr = new InetSocketAddress(address, port);
 //				sock = new Socket();
-				int timeoutMs = 3000;
+//				int timeoutMs = 3000;
 //				sock.connect(sockaddr, timeoutMs);
-				in = sock.getInputStream();
-				sock.setSoTimeout(3000);
+//				in = sock.getInputStream();
+//				sock.setSoTimeout(3000);
 		}
 		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
