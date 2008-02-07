@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class SocketControl extends Thread {	
-	final static boolean debug=true;
+	final static boolean debug=false;
 	private String hostAddress;
 	private static int TIMEOUT_IN_MILISEC=8000;
 	private static int LOOP_TIME_IN_MILISEC=2000;
