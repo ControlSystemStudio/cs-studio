@@ -92,9 +92,14 @@ public class DoubleValue extends Value implements IDoubleValue
 		final DoubleValue rhs = (DoubleValue) obj;
 		if (rhs.values.length != values.length)
 			return false;
-		for (int i=0; i<values.length; ++i)
-			if (rhs.values[i] != values[i])
-				return false;
+        // Compare individual values...
+        for (int i=0; i<values.length; ++i)
+        {   
+            if (Double.isNaN(values[i])   &&   Double.isNaN(rhs.values[i]))
+                continue; // OK, we use NaN == NaN
+            if (values[i] != rhs.values[i])
+                return false;
+        }
 		return super.equals(obj);
 	}
 

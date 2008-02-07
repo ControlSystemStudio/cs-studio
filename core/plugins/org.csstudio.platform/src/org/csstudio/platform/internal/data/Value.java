@@ -92,6 +92,7 @@ abstract public class Value implements IValue
 			return false;
 		final Value rhs = (Value) obj;
 		if (! (rhs.time.equals(time) &&
+		       rhs.quality == quality &&
 			   rhs.status.equals(status) &&
 			   rhs.severity.toString().equals(severity.toString())))
 			   return false;
