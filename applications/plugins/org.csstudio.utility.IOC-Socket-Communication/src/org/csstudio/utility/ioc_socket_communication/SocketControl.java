@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class SocketControl extends Thread {	
-	final static boolean debug=false;
+	final static boolean debug=true;
 	private String hostAddress;
 	private static int TIMEOUT_IN_MILISEC=10000;
 	private static int LOOP_TIME_IN_MILISEC=2000;
@@ -43,6 +43,7 @@ public class SocketControl extends Thread {
 			currentInfo=socketInfos.get(i);
 			tmpDate = currentInfo.getDate();
 			if ( (nowLong - tmpDate.getTime()) > TIMEOUT_IN_MILISEC) {
+				if(debug) System.out.println("CLOSE: in run method: "+ hostAddress);
 				currentSocket=currentInfo.getSock();
 				try {currentSocket.close();} catch (IOException e) {e.printStackTrace();}// TODO Auto-generated catch block
 				socketInfos.remove(i);
@@ -57,11 +58,15 @@ public class SocketControl extends Thread {
 		SocketInfo currentInfo;
 		String currentHost;
 		int currentPort;
+		Date now = new Date();
 		for (int i=0;i<socketsList.size();i++) { 
 			currentInfo=socketsList.get(i);
 			currentHost=currentInfo.getHost();
 			currentPort=currentInfo.getPort();	
-			if((currentPort==port)&&(currentHost.compareTo(IPname)==0)) return currentInfo.getSock();
+			if((currentPort==port)&&(currentHost.compareTo(IPname)==0)) {
+				currentInfo.setDate(now);
+				return currentInfo.getSock();
+			}
 		}
 		return addSocket(socketsList,IPname,port);
 	}
