@@ -2,7 +2,6 @@ package org.csstudio.swt.chart.axes;
 
 import java.util.ArrayList;
 
-import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.Trace;
 import org.csstudio.swt.util.GraphicsUtils;
 import org.eclipse.swt.SWT;
@@ -16,7 +15,6 @@ import org.eclipse.swt.graphics.Point;
  *  Each trace to plot needs to be assigned to a Y axis.
  *  
  *  @see Trace
- *  @see Chart
  *  @author Kay Kasemir
  */
 public class TraceNameYAxis extends YAxis
