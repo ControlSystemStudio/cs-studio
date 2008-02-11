@@ -116,9 +116,10 @@ public class Request {
 			DocumentStart+=(blank+nextCommandReq+equality+apostrof+nextCommand+apostrof+blank+nextDestinationReq+equality+apostrof+nextDestination+apostrof);
 			if (debug)System.out.println("case 0 DocumentStart"+DocumentStart);
 		} else {
-			String answer=null;
+			
 			if (debug) System.out.println("case 1");	
 			DocumentStart=parent.getDocumentStart();
+			String answer=DocumentStart;
 			if(nextCommand != null)answer=replace(DocumentStart,nextCommandReq,nextCommand);
 			if(nextDestination != null)answer=replace(answer,nextDestinationReq,nextDestination);
 			if(answer==null) {
@@ -127,6 +128,20 @@ public class Request {
 			}
 			DocumentStart=answer;
 		}
+	}
+	
+	//new Request(parentReq,parAsArray,replace);
+	public Request(Request parent,String[][] par,int lenY,String replace) {
+		String replaceBig=replace+"\" ";
+		for (int i=0;i<lenY-1;i++) {
+			replaceBig += par[0][i]+"=\""+par[1][i]+"\" ";
+		}
+		replaceBig += par[0][lenY-1]+"=\""+par[1][lenY-1];
+		this.parent=parent;
+		DocumentStart=parent.getDocumentStart();
+		String answer=DocumentStart;
+		answer=replace(DocumentStart,nextCommandReq,replaceBig);
+		DocumentStart=answer;
 	}
 	
 	private String replace(String text,String par,String val) {
@@ -198,5 +213,8 @@ public class Request {
 		} else {
 			System.out.println("!!! bad XML request ");
 		}
+	}
+	public String toString() {
+		return getDocument();
 	}
 }

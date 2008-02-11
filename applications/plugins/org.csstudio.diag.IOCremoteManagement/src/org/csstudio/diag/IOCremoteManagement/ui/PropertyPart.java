@@ -34,7 +34,6 @@ import org.csstudio.utility.ioc_socket_communication.IOCAnswer;
 import org.csstudio.utility.ioc_socket_communication.RMTControl;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -44,10 +43,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 public class PropertyPart implements Observer  {
-	private final static boolean debug=false;
+	private final static boolean debug=true;
+	private final static String nameOfNextCommand="nextCommand";
 	private Group propTable=null;
 	private Composite secondTabMenu;
 	private Display disp;
@@ -55,14 +56,13 @@ public class PropertyPart implements Observer  {
 	private Request parentReq;
 	private IOCAnswer iocAnswer;
 	private String host;
-	private CCombo comboSsRunCtrl=null;
-	private CCombo comboCurrentState=null;
 	public Node endNode;
 	ListViewer listMB3=null;
 	IWorkbenchPartSite site;
-	public XMLDataSingle xml;
 	Button refreshButton;
 	Button callButton;
+	ParametersTable parTable;
+	XMLData data;
 	
 	PropertyPart(final Composite parent,IWorkbenchPartSite site) {
 		ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL|SWT.V_SCROLL);
@@ -126,8 +126,9 @@ public class PropertyPart implements Observer  {
 		secondTabMenu.layout(true);
 		return true;
 	}
-	public void createFinalLevelScreen(XMLData data,Node end)  { 
+	public void createFinalLevelScreen(XMLData _data,Node end)  { 
 		this.endNode=end;
+		this.data=_data;
 		if(propTable !=null) {
 			propTable.dispose();
 			if(debug) System.out.println("propTable is disposed");
@@ -160,16 +161,13 @@ public class PropertyPart implements Observer  {
             	 refreshButton.setEnabled(true);
             }
         });
-        
-        
-        
+               
         RichTable propertyRichTable=new RichTable(propTable,"propTable",site,parentReq,host,endNode,this);
 		RichTablePrepare preparation= new RichTablePrepare(propTable,data);
 		preparation.parser();
 		if(preparation.lengthY>0) propertyRichTable.createTable(preparation);
-        
-        
-		ParametersTable parTable=new ParametersTable(propTable,"paramTable");
+                
+		parTable=new ParametersTable(propTable,"paramTable");
 		ParametersTablePrepare ParPreparation= new ParametersTablePrepare(propTable,data);
 		ParPreparation.parser();
 		if(ParPreparation.lengthY>0) {
@@ -183,8 +181,34 @@ public class PropertyPart implements Observer  {
 	        callButton.addSelectionListener(new SelectionAdapter() {
 	            @Override
 	            public void widgetSelected(SelectionEvent e) {
+	            	 String replace=null;
 	            	 callButton.setEnabled(false);
-	            	 endNode.askNextLevel(null);
+	            	 Text[] text = parTable.txt; 
+	            	 String parAsArray[][] = new String [2][text.length]; 
+	            	 for (int i=0;i<text.length;i++) {
+	            		 parAsArray[0][i]=parTable.paramNameArray[i];
+	            		 parAsArray[1][i]=text[i].getText();
+	            	 }
+	            	 boolean find=false;
+	            	 for (int i=0;i<data.data.length;i++) {
+	            		 if (data.searchAtr(nameOfNextCommand, i) != null) {
+	            			 find=true;
+	            			 replace=data.data[i].searchAtr(nameOfNextCommand);
+	            			 if (replace==null) {
+	            				 System.out.println("IOCremoteManagement:PropertyPart: Bad Atr "+ nameOfNextCommand);  // TODO
+	            				 find=false;
+	            			 }
+	            			 break;
+	            		 }
+	            	 }
+	            	 if (!find) { 
+	            		 System.out.println("IOCremoteManagement:PropertyPart: Wrong Atr "+ nameOfNextCommand);  // TODO
+	            		 return;
+	            	 }
+	         		 Request parRequest = new Request(parentReq,parAsArray,text.length,replace);
+	         		 System.out.println("parRequest.getDocument="+parRequest.getDocument() );
+	        		 final RMTControl iocContr = RMTControl.getInstance();
+	        		 iocContr.send(host,parRequest.getDocument(), iocAnswer);	
 	            	 callButton.setEnabled(true);
 	            }
 	        });
@@ -193,44 +217,6 @@ public class PropertyPart implements Observer  {
 		} // data != null
 		secondTabMenu.layout(true);		
 	}
-	
-	private void valueChanged(String txt) {		
-		if (txt==null){
-			System.out.println("SNLdebugger Error: valueChanged"); //TODO
-		    return;
-		}
-		try {
-		double fValue = Double.parseDouble(txt);
-		} catch (NumberFormatException e) {
-			System.out.println("SNLdebugger Error: valueChanged bad Double fromat"); //TODO
-			 return;
-		}
-		String var = "newVarValue";
-		overwrite(var,txt);
-	}
-	
-	private int overwriteCS() {
-		String CurrentText = comboCurrentState.getText();
-		//String var = currentStateStr;	
-		String var = "newStateName";
-		if(debug) System.out.println("overwriteCS="+CurrentText);
-		return overwrite(var,CurrentText);
-	}
-	private int overwriteSS() {
-		String CurrentText = comboSsRunCtrl.getText();
-		String var = "ssRunControl";
-		if(debug) System.out.println("overwriteSS="+CurrentText);
-		return overwrite(var,CurrentText);
-	}
-	
-	private int overwrite(String tagName,String newValue) {
-	    request = new Request(parentReq,tagName,newValue);
-		final RMTControl iocContr = RMTControl.getInstance();
-		if(debug) System.out.println("host="+ host+" RMT req="+request.getDocument()+"\ndisp="+disp);
-		iocContr.send(host,request.getDocument(), iocAnswer);
-		return 0;
-	}
-
 	public void update(final Observable arg0, final Object arg1) {
 		disp.syncExec(new Runnable() {
 			public void run() {
@@ -242,17 +228,11 @@ public class PropertyPart implements Observer  {
 			}
 		});
 	}
-	
 	public int analyzeAnswer(String text) {
 		Parsing parser = new Parsing(text);
-		XMLData data=parser.Parse();
-		if ((data.operationStatus.compareToIgnoreCase("locked") == 0)||(data.infoResult.compareToIgnoreCase("failed") == 0)||(data.operationStatus.compareToIgnoreCase("error") == 0)) {
-			setActualData (host,request);
-			createFinalLevelScreen(data, endNode);
-		} else {
-			if(debug) System.out.println("*************** ss RMT 2nd request"+text);
-			endNode.askNextLevel(null);
-		}
+		XMLData data=parser.Parse();	
+		setActualData (host,request);
+		createFinalLevelScreen(data, endNode);
 		return 0;
 	}	
 }

@@ -21,7 +21,6 @@
  */
 package org.csstudio.diag.IOCremoteManagement.ui;
 
-
 /**
  * @author Albert Kagarmanov
  *
@@ -34,40 +33,33 @@ public class XMLDataSingle {
 	String[] atrValue;
 	String[] nextLevelNames;
 	String[] nextLevelValues;
-	private final static String attrNextAttr = "nextAttrToAdd";	
 	private final static String treeAttrName = "tree";	
-	public String searchAtr (String name) {
-		for(int i=0;i<atrName.length;i++) if(name.compareTo(atrName[i])==0) return atrValue[i];
-		return null;
-	}
-	public boolean singleProperties() {
-		if(searchAtr(treeAttrName) != null) return false;
-		//if(searchAtr(attrNextAttr) != null) return false;
-		return true;
-	}
-	public boolean prepare() {
-		return true;
-	}
 
-
-public String toString() {
-	String ret;
-		ret="";
-			ret+="tagName="+tagName+ ";\n";
-			ret+="tagValue="+tagValue+ ";\n";
-			ret+="atrNameLen="+atrName.length+ ";\n";
-			for (int j=0;j<atrName.length;j++) {
-				ret+="\tatrName="+atrName[j]+ ";\n";
-				ret+="\tatrValue="+atrValue[j]+ ";\n";
-			}
-			ret+="atrNextLevelValLen="+nextLevelValues.length+ ";\n";
-			for (int j=0;j<nextLevelNames.length;j++) {
-				ret+="\tnextLevelNames="+nextLevelNames[j]+ ";\n";
-				ret+="\tnextLevelValues="+nextLevelValues[j]+ ";\n";
-			}
-	return ret;
-	}
+public String searchAtr (String name) {
+	for(int i=0;i<atrName.length;i++) if(name.compareTo(atrName[i])==0) return atrValue[i];
+	return null;
 }
+public boolean singleProperties() {
+	if(searchAtr(treeAttrName) != null) return false;
+	return true;
+}
+public String toString() {
+	String ret="";
+	ret+="tagName="+tagName+ ";\n";
+	ret+="tagValue="+tagValue+ ";\n";
+	ret+="atrNameLen="+atrName.length+ ";\n";
+	for (int j=0;j<atrName.length;j++) {
+		ret+="\tatrName="+atrName[j]+ ";\n";
+		ret+="\tatrValue="+atrValue[j]+ ";\n";
+	}
+	ret+="atrNextLevelValLen="+nextLevelValues.length+ ";\n";
+	for (int j=0;j<nextLevelNames.length;j++) {
+		ret+="\tnextLevelNames="+nextLevelNames[j]+ ";\n";
+		ret+="\tnextLevelValues="+nextLevelValues[j]+ ";\n";
+	}
+	return ret;
+}
+}//EOC
 /*   Example 
    		<ResultRoot version="1.0.0" invokeid="1">
 		<Result result="SUCCESS" status="inactive" name="SNLEXEC">
@@ -105,8 +97,5 @@ nextLevelValues={null or {suspend,resume,singleStep} or {START,RAMP_UP,RAMP_DOWN
 		<previousState>RAMP_DOWN</previousState>
 		<nextState>RAMP_DOWN</nextState>
 		<Msg>Elapsed time since state was entered = 4.5 secondsQueued time delays:	delay[ 0]=5.000000</Msg>
-		</Result></ResultRoot>
-		
-		And last most  complicated structure:
-		
+		</Result></ResultRoot>		
  */

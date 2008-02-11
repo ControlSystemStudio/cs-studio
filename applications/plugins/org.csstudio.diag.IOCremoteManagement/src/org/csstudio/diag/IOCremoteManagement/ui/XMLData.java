@@ -35,4 +35,27 @@ public String searchAtr (String name,int index) {
 	for(int i=0;i<data[index].atrName.length;i++) if(name.compareTo(data[index].atrName[i])==0) return data[index].atrValue[i];
 	return null;
 	}
+public String toString() {
+	String ret;
+		ret="infoName="+infoName+ ";\n";
+		ret+="infoResult="+infoResult+ ";\n";
+		ret+="infoStatus="+infoStatus+ ";\n";
+		ret+="infoOperationStatus="+operationStatus+ ";\n";
+		ret+="length="+data.length+ ";\n";
+		for (int i=0;i<data.length;i++) {
+			ret+="\ttagName="+data[i].tagName+ ";\n";
+			ret+="\ttagValue="+data[i].tagValue+ ";\n";
+			ret+="\tatrNameLen="+data[i].atrName.length+ ";\n";
+			for (int j=0;j<data[i].atrName.length;j++) {
+				ret+="\t\tdata[i].atrName="+data[i].atrName[j]+ ";\n";
+				ret+="\t\tdata[i].atrValue="+data[i].atrValue[j]+ ";\n";
+			}
+			ret+="\tatrNextLevelValLen="+data[i].nextLevelValues.length+ ";\n";
+			for (int j=0;j<data[i].nextLevelNames.length;j++) {
+				ret+="\t\tdata[i].nextLevelNames="+data[i].nextLevelNames[j]+ ";\n";
+				ret+="\t\tdata[i].nextLevelValues="+data[i].nextLevelValues[j]+ ";\n";
+			}
+		}
+	return ret;
+	}
 }

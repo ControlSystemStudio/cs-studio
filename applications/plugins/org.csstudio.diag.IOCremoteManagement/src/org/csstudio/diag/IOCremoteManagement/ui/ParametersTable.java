@@ -49,6 +49,8 @@ public class ParametersTable   {
 	private String _label;
 	private String[] _columnName;
 	private Display _display;
+	public Text[] txt;
+	public String[] paramNameArray;
 	
 	ParametersTable(final Composite parent,String label) {
 		_parent=parent;
@@ -77,23 +79,26 @@ public class ParametersTable   {
 		}
 		TableItem Sp[] =  new TableItem[lenY];
 		String[] value= new String[lenX];
+		txt = new Text[lenY];
+		paramNameArray=new String[lenY];
+		for (int j=0;j<lenY;j++) paramNameArray[j]=dataArray[0][j];
+		
 		for (int j=0;j<lenY;j++) {
 			for (int i=0;i<lenX;i++) value[i]=dataArray[i][j];
 			Sp[j]=new TableItem(varTable, SWT.NONE);
 			Sp[j].setText(value);			
-				Text txt= new Text(varTable, SWT.SINGLE | SWT.BORDER);
-				txt.setText(dataArray[1][j]);
-				txt.addSelectionListener(new SelectionAdapter() {
+				txt[j]= new Text(varTable, SWT.SINGLE | SWT.BORDER);
+				txt[j].setText(dataArray[1][j]);
+				/* txt[j].addSelectionListener(new SelectionAdapter() {
 				public void widgetDefaultSelected(SelectionEvent e) {
 				  Text t = (Text) e.widget;
 				  //valueChanged(t.getText());
 				  System.out.println("DummyListenerPar");
 				}
-				});   
+				});*/   
 				TableEditor editor = new TableEditor(varTable);
 				editor.grabHorizontal = editor.grabVertical = true;
-				editor.setEditor(txt, Sp[j], 1);
-				
+				editor.setEditor(txt[j], Sp[j], 1);
 			}
 				
 		if(debug) System.out.println("result is OK");
