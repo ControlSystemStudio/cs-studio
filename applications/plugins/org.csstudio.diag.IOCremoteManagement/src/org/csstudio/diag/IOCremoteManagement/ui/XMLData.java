@@ -29,6 +29,7 @@ public class XMLData {
 	String infoName;
 	String infoStatus;
 	String operationStatus;
+	boolean isMaster;
 	XMLDataSingle[] data;
 public String searchAtr (String name,int index) {
 	for(int i=0;i<data[index].atrName.length;i++) if(name.compareTo(data[index].atrName[i])==0) return data[index].atrValue[i];

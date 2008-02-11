@@ -48,13 +48,14 @@ public abstract class Node implements Observer {
 	protected TreeViewer viewer;
 	protected PropertyPart propertyPart;
 	protected typeOfHost type;
+	protected Node IProot;
 	
 	abstract protected Request createNewRequest(Request request, XMLDataSingle data);
 	abstract protected  typeOfHost nextLevelType(XMLDataSingle data);
 	public Node(String name){this.name = name;}
 	public String toString(){return name;}
 	public typeOfHost getType() { return this.type;}
-	public Node(String name,String host,Object parent,TreeViewer viewer,PropertyPart property,Request req, XMLDataSingle data, typeOfHost type ) {
+	public Node(String name,String host,Object parent,TreeViewer viewer,PropertyPart property,Request req, XMLDataSingle data,Node root,typeOfHost type ) {
 		this.name = name;
 		this.host = host;
 		this.parent=parent;
@@ -68,7 +69,17 @@ public abstract class Node implements Observer {
 		this.parentData=data;
 		if(debugStrong) org.csstudio.diag.IOCremoteManagement.Activator.errorPrint("Constr type=",type.toString(),"name=",name);
 		this.request=createNewRequest(parentRequest, parentData);
+		if (root==null)this.IProot=this; 
+		else {
+			this.IProot=root;
+			checkRootStatus();
+		}
 	}
+	private  void checkRootStatus () {
+		if (parentData.isMaster) IProot.type=typeOfHost.master;
+		else IProot.type=typeOfHost.slave;	
+	}
+	
 	public int askNextLevel(PropertyPart p) {
 		if (p!=null) propertyPart = p;
 		final RMTControl iocContr = RMTControl.getInstance();
@@ -108,31 +119,6 @@ public abstract class Node implements Observer {
 	}
 	
 	protected int parsing(String text) {
-		{ /* Bug fix area!!!:
-			String bugStr="0<DriverStopTimeout>";
-			String fixStr="0</DriverStopTimeout>";
-			text=text.replaceAll(bugStr, fixStr);
-			
-			bugStr="1<PartnerPortPrivate>";
-			fixStr="1</PartnerPortPrivate>";
-			text=text.replaceAll(bugStr, fixStr);
-			
-			bugStr="0<PartnerPortPrivate>";
-			fixStr="0</PartnerPortPrivate>";
-			text=text.replaceAll(bugStr, fixStr);
-			
-			bugStr="</varValue>";
-			fixStr="</value>";
-			text=text.replaceAll(bugStr, fixStr);
-			
-			bugStr="Fileds>";
-			fixStr="Fields>";
-			text=text.replaceAll(bugStr, fixStr);
-			//LastFullSendFileds
-			 
-			 */
-		}
-		
 		if (propertyPart==null) {
 			org.csstudio.diag.IOCremoteManagement.Activator.errorPrint ("IOCremoteManagement Error:Node:propertyPart"); //TODO
 			return -1;
@@ -157,16 +143,16 @@ public abstract class Node implements Observer {
 				if(tHost==null){needFinalLevelScreen=true; continue;}
 				switch(tHost) {
 	            case knot:
-	            	child.add (new  Knot (name,host,this,viewer,propertyPart,request,data.data[i],typeOfHost.knot));
+	            	child.add (new  Knot (name,host,this,viewer,propertyPart,request,data.data[i],IProot,typeOfHost.knot));
             	break;
 	            case finalVar:
-	            	child.add(new EndNode(name,host,this,viewer,propertyPart,request,data.data[i],typeOfHost.finalVar));
+	            	child.add(new EndNode(name,host,this,viewer,propertyPart,request,data.data[i],IProot,typeOfHost.finalVar));
 	            	break;
 	            case finalSatateSet:
-	            	child.add(new EndNode(name,host,this,viewer,propertyPart,request,data.data[i],typeOfHost.finalSatateSet));
+	            	child.add(new EndNode(name,host,this,viewer,propertyPart,request,data.data[i],IProot,typeOfHost.finalSatateSet));
 	            	break;	
 	            case otherLeaf:
-	            	child.add(new EndNode(name,host,this,viewer,propertyPart,request,data.data[i],typeOfHost.otherLeaf));
+	            	child.add(new EndNode(name,host,this,viewer,propertyPart,request,data.data[i],IProot,typeOfHost.otherLeaf));
 	            	break;	
 	            default:
 	            	org.csstudio.diag.IOCremoteManagement.Activator.errorPrint("Node:parsing wrong case");
@@ -174,6 +160,7 @@ public abstract class Node implements Observer {
 				}
 			}
 		}
+		
 		viewer.expandToLevel(this, 1);
 		
 		if (!needFinalLevelScreen){

@@ -117,19 +117,12 @@ public class SnlDebugTree extends Composite  {
 	
 	private HostIP initInput() {
 		String[] IPlist = getIPlist();
-		
 		_invisibleRoot = new HostIP("HostList");
-				for( int i = 0; i < IPlist.length; i++ ) {			
-			if (i==0){
-				HostIP tmp = new HostIP(IPlist[i],IPlist[i],_invisibleRoot,_viewer,propertyPart,null,null,HostIP.typeOfHost.master);
-				_invisibleRoot.child.add(tmp);
-			} else {
-				HostIP tmp = new HostIP(IPlist[i],IPlist[i],_invisibleRoot,_viewer,propertyPart,null,null,HostIP.typeOfHost.slave);
-				_invisibleRoot.child.add(tmp);
-			}
+		for( int i = 0; i < IPlist.length; i++ ) {			
+			HostIP tmp = new HostIP(IPlist[i],IPlist[i],_invisibleRoot,_viewer,propertyPart,null,null,HostIP.typeOfHost.host);
+			_invisibleRoot.child.add(tmp);
 			if (debug) System.out.println("IP=" + IPlist[i] );
-			
-			} 
+		} 
         return _invisibleRoot;
 	}
 	

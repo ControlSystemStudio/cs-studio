@@ -36,7 +36,8 @@ public class Knot extends  org.csstudio.diag.IOCremoteManagement.ui.Node {
 	private final static String leafAttrValue = "leaf";
 	private final static String branchAttrValue = "branch";
 	
-	public Knot(String name,String host,Object parent,TreeViewer viewer,PropertyPart property,Request req,XMLDataSingle data, typeOfHost type ) {super(name,host,parent,viewer,property,req,data,type);}		
+	public Knot(String name,String host,Object parent,TreeViewer viewer,PropertyPart property,Request req,XMLDataSingle data,Node root,typeOfHost type ) {super(name,host,parent,viewer,property,req,data,root,type);}	
+
 	protected Request createNewRequest(Request req, XMLDataSingle data) {return new Request(req,data);}
 	protected  typeOfHost nextLevelType(XMLDataSingle data) {
 		String s;

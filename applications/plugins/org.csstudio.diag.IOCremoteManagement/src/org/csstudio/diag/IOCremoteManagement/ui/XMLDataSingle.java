@@ -29,6 +29,7 @@ package org.csstudio.diag.IOCremoteManagement.ui;
 public class XMLDataSingle {
 	String tagName;
 	String tagValue;
+	boolean isMaster;
 	String[] atrName;
 	String[] atrValue;
 	String[] nextLevelNames;

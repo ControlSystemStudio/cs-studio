@@ -27,7 +27,7 @@ package org.csstudio.diag.IOCremoteManagement.ui;
 import org.eclipse.jface.viewers.TreeViewer;
 public class HostIP extends  org.csstudio.diag.IOCremoteManagement.ui.Node  {
 	public HostIP(String name){super(name);}
-	public HostIP(String name,String host,Object parent,TreeViewer viewer,PropertyPart property,Request req, XMLDataSingle data,typeOfHost type ) {super(name,host,parent,viewer,property,req,data,type);}		
+	public HostIP(String name,String host,Object parent,TreeViewer viewer,PropertyPart property,Request req, XMLDataSingle data,typeOfHost type ) {super(name,host,parent,viewer,property,req,data,null,type);}		
 	protected Request createNewRequest(Request req, XMLDataSingle data) {return new Request();}
 	protected  typeOfHost nextLevelType(XMLDataSingle data) { return typeOfHost.knot;}
 }

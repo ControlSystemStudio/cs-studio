@@ -58,7 +58,7 @@ public class Parsing {
 		return data;
 	}
 
-	XMLData parserAnswer() {
+	private XMLData parserAnswer() {
 		if(wholeXML.length() < 5) {
 			org.csstudio.diag.IOCremoteManagement.Activator.errorPrint("SNLdebugger Error:  bad parserAnswer wholeXML is small");
 			System.out.println("SNLdebugger Error:  bad parserAnswer wholeXML is small ='" + wholeXML+"'");
@@ -85,17 +85,25 @@ public class Parsing {
 			final Element levelOne = (Element) rootIterator.next(); // <Result>
 			if ((atr= findAllAtributes(levelOne))==null) return null;
 			data = new XMLData();
+			data.infoResult="UNDEF";
+			data.infoName="UNDEF";
+			data.infoStatus="UNDEF";
+			data.isMaster =false;
 			if (atr.length <3) {
 				System.out.println("SNLdebugger:parserAnswer(): strange Result attribute");
-				data.infoResult="UNDEF";
-				data.infoName="UNDEF";
-				data.infoStatus="UNDEF";
 			}else {
-				data.infoResult=atr[0].value;  // TODO
-				data.infoName=atr[1].value;
-				data.infoStatus=atr[2].value;
+				for (int i=0;i<atr.length;i++)  { //result="SUCCESS" status="MASTER" name="RMT"
+					if ( atr[i].attribute.compareToIgnoreCase("result") == 0) data.infoResult=atr[i].value;
+					if ( atr[i].attribute.compareToIgnoreCase("name") == 0)   data.infoName=atr[i].value;
+					if ( atr[i].attribute.compareToIgnoreCase("status") == 0) {
+						data.infoStatus=atr[i].value;
+						if ((data.infoStatus.compareToIgnoreCase("master") == 0)||(data.infoStatus.compareToIgnoreCase("active") == 0))  
+							data.isMaster=true;
+					}
+				}				
 			}			
 			data.operationStatus=okString;  // TODO
+			
 			final List levelOneList = levelOne.getChildren();
 			
 			int len = levelOneList.size();
@@ -113,6 +121,7 @@ public class Parsing {
 				// Resolve Name and Value:
 				//
 				dataIterator[count] = new XMLDataSingle();
+				dataIterator[count].isMaster=data.isMaster;
 				dataIterator[count].tagName=elm.getName();
 				dataIterator[count].tagValue=elm.getTextNormalize();
 				if (debug) System.out.println("tagName ="+dataIterator[count].tagName);
@@ -197,8 +206,8 @@ public class Parsing {
 		Attribute att;
 		for(int i=0;i<len;i++) {
 			if ((att= (Attribute) list.get(i)) == null) {
-			System.out.println("SNLdebugger Error:findAllAtributes:index"); //TODO
-			return null;
+				System.out.println("SNLdebugger Error:findAllAtributes:index"); //TODO
+				return null;
 			}
 			ret[i] = new XMLattrValue();
 			ret[i].value=att.getValue();
