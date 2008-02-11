@@ -229,6 +229,9 @@ public class SnlDebugTree extends Composite  {
     	            case master:
     	            	descriptor = Activator.getImageDescriptor("icons/IPmaster.gif");
     	            	break;
+    	            case host:
+    	            	descriptor = Activator.getImageDescriptor("icons/IP.gif");
+    	            	break;
     	            default:
     	            	System.out.println("SnlDebug:ViewLabelProvider: strange HostIP subclass, will use default");
     	                break;

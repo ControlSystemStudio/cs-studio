@@ -278,12 +278,13 @@ public class RichTable  implements Observer {
 			System.out.println("SNLdebugger Error: valueChanged"); //TODO
 		    return;
 		}
-		try {
+       /*		try {
 		double fValue = Double.parseDouble(txt);
 		} catch (NumberFormatException e) {
 			System.out.println("SNLdebugger Error: valueChanged bad Double fromat"); //TODO
 			 return;
 		}
+		 Varible can be not only number but also STRING for variableAsAstring */
 		String var = "newVarValue";
 		overwrite(var,txt);
 	}
@@ -331,7 +332,7 @@ public class RichTable  implements Observer {
 			public void run() {
 				if(debug) System.out.println("update Run:\n");
 				final String text = iocAnswer.getAnswer();
-				if(!debug) System.out.println("RMT ans="+text);
+				if(debug) System.out.println("RMT ans="+text);
 				analyzeAnswer(text);
 				_display.update();
 			}
@@ -345,7 +346,7 @@ public class RichTable  implements Observer {
 			setActualData (_host,request);
 			_part.createFinalLevelScreen(data, endNode);
 		} else {
-			if(!debug) System.out.println("*************** ss RMT 2nd request"+text);
+			if(debug) System.out.println("*************** ss RMT 2nd request"+text);
 			endNode.askNextLevel(null);
 		}
 		return 0;

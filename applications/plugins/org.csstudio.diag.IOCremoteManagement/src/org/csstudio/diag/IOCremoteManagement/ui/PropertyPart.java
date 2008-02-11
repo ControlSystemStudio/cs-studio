@@ -236,7 +236,7 @@ public class PropertyPart implements Observer  {
 			public void run() {
 				if(debug) System.out.println("update Run:\n");
 				final String text = iocAnswer.getAnswer();
-				if(!debug) System.out.println("RMT ans="+text);
+				if(debug) System.out.println("RMT ans="+text);
 				analyzeAnswer(text);
 				disp.update();
 			}
@@ -250,7 +250,7 @@ public class PropertyPart implements Observer  {
 			setActualData (host,request);
 			createFinalLevelScreen(data, endNode);
 		} else {
-			if(!debug) System.out.println("*************** ss RMT 2nd request"+text);
+			if(debug) System.out.println("*************** ss RMT 2nd request"+text);
 			endNode.askNextLevel(null);
 		}
 		return 0;
