@@ -48,8 +48,26 @@ public class XMLDataSingle {
 	public boolean prepare() {
 		return true;
 	}
-}
 
+
+public String toString() {
+	String ret;
+		ret="";
+			ret+="tagName="+tagName+ ";\n";
+			ret+="tagValue="+tagValue+ ";\n";
+			ret+="atrNameLen="+atrName.length+ ";\n";
+			for (int j=0;j<atrName.length;j++) {
+				ret+="\tatrName="+atrName[j]+ ";\n";
+				ret+="\tatrValue="+atrValue[j]+ ";\n";
+			}
+			ret+="atrNextLevelValLen="+nextLevelValues.length+ ";\n";
+			for (int j=0;j<nextLevelNames.length;j++) {
+				ret+="\tnextLevelNames="+nextLevelNames[j]+ ";\n";
+				ret+="\tnextLevelValues="+nextLevelValues[j]+ ";\n";
+			}
+	return ret;
+	}
+}
 /*   Example 
    		<ResultRoot version="1.0.0" invokeid="1">
 		<Result result="SUCCESS" status="inactive" name="SNLEXEC">
