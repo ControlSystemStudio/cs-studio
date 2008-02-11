@@ -1,5 +1,7 @@
 package org.csstudio.sns.product;
 
+import java.util.ArrayList;
+
 import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -28,7 +30,7 @@ import org.eclipse.ui.part.CoolItemGroupMarker;
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
     /** ID of CSS SNS Menu */
-    private static final String CSS_SNS_MENU = "sns";
+    private static final String CSS_MENU_WEB = "web";
     
     private IAction create_new;
     private IAction close;
@@ -46,7 +48,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IContributionItem menu_views;
 
     // SNS Actions
-    private IAction open_elog_action = null;
+    private ArrayList<IAction> web_actions = new ArrayList<IAction>();
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer)
     {
@@ -96,12 +98,48 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         about = ActionFactory.ABOUT.create(window);
         register(about);
         
+        createWeblinkActions(window);
+    }
+
+    /** Create actions for web links.
+     *  <p>
+     *  Expects a preference "weblinks" that lists further prefs,
+     *  separated by space.
+     *  Each of those is then LABEL|URL.
+     *  Example:
+     *  <pre>
+     *   org.csstudio.sns.product/weblinks=sns_elog sns_wiki
+     *   org.csstudio.sns.product/sns_elog=E-Log|https://snsapp1.sns.ornl.gov/Logbook/WebObjects/Logbook.woa
+     *   org.csstudio.sns.product/sns_wiki=...
+     *  </pre>
+     */
+    private void createWeblinkActions(IWorkbenchWindow window)
+    {
         // SNS Actions
         final IPreferencesService prefs = Platform.getPreferencesService();
-        String elog = prefs.getString(PluginActivator.ID, "sns_elog", null, null);
-        if (elog != null)
-            open_elog_action = new OpenWebBrowserAction(window,
-                    Messages.Menu_SNS_Elog, elog);
+        final String weblinks = prefs.getString(PluginActivator.ID, "weblinks", null, null);
+        PluginActivator.getLogger().info("Web links: " + weblinks);
+        if (weblinks == null)
+            return;
+        final String[] link_prefs = weblinks.split("[ \t]+");
+        for (String pref : link_prefs)
+        {
+            final String descriptor = prefs.getString(PluginActivator.ID, pref, null, null);
+            if (descriptor == null)
+                continue;
+            final String[] link = descriptor.split("\\|");
+            if (link.length != 2)
+            {
+                PluginActivator.getLogger().warn("Web link '" + pref
+                        + " doesn't follow the LABEL|URL pattern");
+                continue;
+            }
+            final String label = link[0];
+            final String url = link[1];
+            PluginActivator.getLogger().info("Web link " + pref
+                    + " = " + label + " (" + url + ")");
+            web_actions.add(new OpenWebBrowserAction(window, label, url));
+        }
     }
 
     /** {@inheritDoc} */
@@ -172,10 +210,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
                         CssWorkbenchActionConstants.CSS_TEST_MENU));
         menu_css.add(new MenuManager(Messages.Menu_CSS_Other,
                         CssWorkbenchActionConstants.CSS_OTHER_MENU));
-        final MenuManager menu_sns = new MenuManager(Messages.Menu_CSS_SNS,
-                    CSS_SNS_MENU);
-        if (open_elog_action != null)
-            menu_sns.add(open_elog_action);
+        final MenuManager menu_sns = new MenuManager(Messages.Menu_CSS_Weblinks,
+                    CSS_MENU_WEB);
+        for (IAction weblink : web_actions)
+            menu_sns.add(weblink);
         menu_css.add(menu_sns);
         menu_css.add(new Separator(CssWorkbenchActionConstants.CSS_END));
         menubar.add(menu_css);

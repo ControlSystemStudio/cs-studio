@@ -8,6 +8,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.browser.IWebBrowser;
 
 /** Action that opens a web browser.
+ *  <p>
+ *  Used in ApplicationActionBarAdvisor.
  *  @author Kay Kasemir
  */
 public class OpenWebBrowserAction extends Action
