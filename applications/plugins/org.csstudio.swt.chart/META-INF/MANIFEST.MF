@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.jface,
  org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.platform.ui,
- org.eclipse.ui
+ org.eclipse.ui,
+ org.junit4
 Export-Package: org.csstudio.swt.chart,
  org.csstudio.swt.chart.actions,
  org.csstudio.swt.chart.axes,

@@ -6,7 +6,8 @@ Bundle-Version: 1.0.1
 Bundle-Activator: org.csstudio.archive.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform
+ org.csstudio.platform,
+ org.junit4
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.archive,
  org.csstudio.archive.crawl
