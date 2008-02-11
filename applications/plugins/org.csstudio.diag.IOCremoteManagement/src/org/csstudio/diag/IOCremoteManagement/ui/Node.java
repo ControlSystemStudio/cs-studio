@@ -35,6 +35,7 @@ import org.csstudio.utility.ioc_socket_communication.RMTControl;
 public abstract class Node implements Observer {
 	protected final static boolean debug=true;
 	protected final static boolean debugStrong=false;
+	protected final static boolean debugStatus=false;
 	public enum typeOfHost {master,slave,unresolve,host,knot,finalVar,finalSatateSet,otherLeaf};
 	protected Object parent;
 	public ArrayList child = new ArrayList();
@@ -72,18 +73,26 @@ public abstract class Node implements Observer {
 		if (root==null)this.IProot=this; 
 		else {
 			this.IProot=root;
-			checkRootStatus();
+			checkRootStatus(parentData.isMaster);
 		}
 	}
-	private  void checkRootStatus () {
-		if (parentData.isMaster) IProot.type=typeOfHost.master;
-		else IProot.type=typeOfHost.slave;	
+	public  void checkRootStatus (boolean var) {
+		if (var) {
+			if(debugStatus) System.out.println("checkRootStatus=isMaster");
+			IProot.type=typeOfHost.master;
+		}else {
+			if(debugStatus) System.out.println("checkRootStatus=isSlave");
+			IProot.type=typeOfHost.slave;	
+		}
+		viewer.refresh();
+		disp.update();
 	}
 	
 	public int askNextLevel(PropertyPart p) {
 		if (p!=null) propertyPart = p;
 		final RMTControl iocContr = RMTControl.getInstance();
 		if(debug) System.out.println("RMT req="+request.getDocument());
+		if(debugStatus) System.out.println("askNextLevel");
 		iocContr.send(host,request.getDocument(), iocAnswer);
 		return 0;
 	}
@@ -93,6 +102,7 @@ public abstract class Node implements Observer {
 				final String text = iocAnswer.getAnswer();
 				if(debug) System.out.println("RMT ans="+text);
 				parsing(text);	
+				if(debugStatus) System.out.println("update");
 				viewer.refresh();
 				disp.update();
 			}
@@ -126,6 +136,7 @@ public abstract class Node implements Observer {
 		typeOfHost tHost;
 		Parsing parser = new Parsing(text);
 		XMLData data=parser.Parse();
+		checkRootStatus(data.isMaster);
 		int size;
 		if (data != null) size = data.data.length;
 		else size =0;

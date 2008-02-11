@@ -47,7 +47,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 public class PropertyPart implements Observer  {
-	private final static boolean debug=true;
+	private final static boolean debug=false;
 	private final static String nameOfNextCommand="nextCommand";
 	private Group propTable=null;
 	private Composite secondTabMenu;
@@ -206,7 +206,7 @@ public class PropertyPart implements Observer  {
 	            		 return;
 	            	 }
 	         		 Request parRequest = new Request(parentReq,parAsArray,text.length,replace);
-	         		 System.out.println("parRequest.getDocument="+parRequest.getDocument() );
+	         		if(debug) System.out.println("parRequest.getDocument="+parRequest.getDocument() );
 	        		 final RMTControl iocContr = RMTControl.getInstance();
 	        		 iocContr.send(host,parRequest.getDocument(), iocAnswer);	
 	            	 callButton.setEnabled(true);
@@ -231,6 +231,7 @@ public class PropertyPart implements Observer  {
 	public int analyzeAnswer(String text) {
 		Parsing parser = new Parsing(text);
 		XMLData data=parser.Parse();	
+		if (endNode != null) endNode.checkRootStatus(data.isMaster);
 		setActualData (host,request);
 		createFinalLevelScreen(data, endNode);
 		return 0;

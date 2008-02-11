@@ -29,9 +29,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.csstudio.diag.IOCremoteManagement.Activator;
-import org.csstudio.diag.IOCremoteManagement.Messages;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -40,6 +37,7 @@ import org.jdom.input.SAXBuilder;
 public class Parsing {
 	final static boolean debug=false;
 	final static boolean debugFull=false;
+	final static boolean debugStatus=false;
 	final static String debugBrunch = "SNLDebugger";
 	final static String rootString = "Result";	
 	final static String rootPropertyResult = "Result";
@@ -89,6 +87,7 @@ public class Parsing {
 			data.infoName="UNDEF";
 			data.infoStatus="UNDEF";
 			data.isMaster =false;
+			if (debugStatus) System.out.println("parserAnswer init");
 			if (atr.length <3) {
 				System.out.println("SNLdebugger:parserAnswer(): strange Result attribute");
 			}else {
@@ -97,11 +96,15 @@ public class Parsing {
 					if ( atr[i].attribute.compareToIgnoreCase("name") == 0)   data.infoName=atr[i].value;
 					if ( atr[i].attribute.compareToIgnoreCase("status") == 0) {
 						data.infoStatus=atr[i].value;
-						if ((data.infoStatus.compareToIgnoreCase("master") == 0)||(data.infoStatus.compareToIgnoreCase("active") == 0))  
+						if ((data.infoStatus.compareToIgnoreCase("master") == 0)||(data.infoStatus.compareToIgnoreCase("active") == 0))  {
 							data.isMaster=true;
+							if (debugStatus) System.out.println("parserAnswer isMaster=true");
+					} else {
+						if (debugStatus) System.out.println("parserAnswer isMaster=false");
 					}
-				}				
-			}			
+				  }				
+				}
+			}
 			data.operationStatus=okString;  // TODO
 			
 			final List levelOneList = levelOne.getChildren();
