@@ -23,9 +23,12 @@
 package org.csstudio.alarm.table;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.jms.MapMessage;
 
@@ -57,6 +60,24 @@ public class SendAcknowledge extends Job {
 		super("Send Ack"); //$NON-NLS-1$
 		messagesToSend = msg;
 	}
+	
+	/**
+	 * @param msg JMSMessage to acknowledge
+	 */
+	public SendAcknowledge(LinkedList<Map<String,String>> listMap) {
+		super("Send Ack"); //$NON-NLS-1$
+		messagesToSend = new ArrayList<JMSMessage>();
+		for (Map<String, String> map : listMap) {
+			JMSMessage jmsMsg = new JMSMessage();
+			for (String	key : map.keySet()) {
+				jmsMsg.setProperty(key, map.get(key));	
+			}
+			messagesToSend.add(jmsMsg);
+		}
+	}
+	
+	
+	
 
 	/**
 	 * Sends for the list of JMSMessages an acknowledge
