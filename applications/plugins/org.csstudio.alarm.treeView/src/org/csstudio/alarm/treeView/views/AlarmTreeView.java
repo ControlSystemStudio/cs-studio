@@ -1,9 +1,20 @@
 package org.csstudio.alarm.treeView.views;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jms.AlarmQueueSubscriber;
 import org.csstudio.alarm.treeView.ldap.LdapDirectoryReader;
+import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.ProcessVariableNode;
+import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -13,13 +24,19 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
@@ -36,6 +53,7 @@ public class AlarmTreeView extends ViewPart {
 	private TreeViewer viewer;
 	private Action reloadAction;
 	private AlarmQueueSubscriber alarmQueueSubscriber;
+	private Action acknowledgeAction;
 	
 	/**
 	 * Returns the id of this view.
@@ -61,14 +79,22 @@ public class AlarmTreeView extends ViewPart {
 		viewer.setLabelProvider(new AlarmTreeLabelProvider());
 		viewer.setComparator(new ViewerComparator());
 
-		createActions();
 		initializeContextMenu();
+		makeActions();
 		contributeToActionBars();
 		
-        // The directory is read in the background. Until then, set the viewer's
+		getSite().setSelectionProvider(viewer);
+
+		// The directory is read in the background. Until then, set the viewer's
 		// input to a placeholder object.
 		viewer.setInput(new Object[] {new PendingUpdateAdapter()});
 		startDirectoryReaderJob();
+		
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				AlarmTreeView.this.selectionChanged(event);
+			}
+		});
 	}
 
 	/**
@@ -133,6 +159,35 @@ public class AlarmTreeView extends ViewPart {
 		disposeJmsListener();
 		super.dispose();
 	}
+	
+	/**
+	 * Called when the selection of the tree changes.
+	 * @param event the selection event.
+	 */
+	private void selectionChanged(SelectionChangedEvent event) {
+		IStructuredSelection sel = (IStructuredSelection) event.getSelection();
+		acknowledgeAction.setEnabled(containsNodeWithUnackAlarm(sel));
+	}
+
+	/**
+	 * Returns whether the given selection contains at least one node with
+	 * an unacknowledged alarm.
+	 * 
+	 * @param sel the selection.
+	 * @return <code>true</code> if the selection contains a node with an
+	 * unacknowledged alarm, <code>false</code> otherwise.
+	 */
+	private boolean containsNodeWithUnackAlarm(IStructuredSelection sel) {
+		Object selectedElement = sel.getFirstElement();
+		// Note: selectedElement is not instance of IAlarmTreeNode if nothing
+		// is selected (selectedElement == null), and during initialization,
+		// when it is an instance of PendingUpdateAdapter.
+		if (selectedElement instanceof IAlarmTreeNode) {
+			return ((IAlarmTreeNode) selectedElement)
+					.getUnacknowledgedAlarmSeverity() != Severity.NO_ALARM;
+		}
+		return false;
+	}
 
 	/**
 	 * Adds a context menu to the tree view.
@@ -144,17 +199,16 @@ public class AlarmTreeView extends ViewPart {
 		// add menu items to the context menu when it is about to show
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				fillContextMenu(manager);
+				AlarmTreeView.this.fillContextMenu(manager);
 			}
 		});
 		
 		// add the context menu to the tree viewer
-		Menu contextMenu = menuMgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(contextMenu);
+		Menu contextMenu = menuMgr.createContextMenu(viewer.getTree());
+		viewer.getTree().setMenu(contextMenu);
 		
 		// register the context menu for extension by other plug-ins
 		getSite().registerContextMenu(menuMgr, viewer);
-		getSite().setSelectionProvider(viewer);
 	}
 
 	/**
@@ -176,14 +230,18 @@ public class AlarmTreeView extends ViewPart {
 
 	/**
 	 * Adds the context menu actions.
-	 * @param manager the menu manager.
+	 * @param menu the menu manager.
 	 */
-	private void fillContextMenu(IMenuManager manager) {
-		// currently this plugin itself doesn't offer any context menu actions
+	private void fillContextMenu(IMenuManager menu) {
+		IStructuredSelection selection = (IStructuredSelection) viewer
+				.getSelection();
+		if (selection.size() > 0) {
+			menu.add(acknowledgeAction);
+		}
 		
 		// adds a separator after which contributed actions from other plug-ins
 		// will be displayed
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 	
 	/**
@@ -197,7 +255,7 @@ public class AlarmTreeView extends ViewPart {
 	/**
 	 * Creates the actions offered by this view.
 	 */
-	private void createActions() {
+	private void makeActions() {
 		reloadAction = new Action() {
 			public void run() {
 				startDirectoryReaderJob();
@@ -207,8 +265,48 @@ public class AlarmTreeView extends ViewPart {
 		reloadAction.setToolTipText("Reload");
 		reloadAction.setImageDescriptor(
 				AlarmTreePlugin.getImageDescriptor("./icons/refresh.gif"));
+		
+		acknowledgeAction = new Action() {
+			@Override
+			public void run() {
+				Set<Map<String, String>> messages = new HashSet<Map<String, String>>();
+				IStructuredSelection selection = (IStructuredSelection) viewer
+						.getSelection();
+				for (Iterator<?> i = selection.iterator(); i
+						.hasNext();) {
+					Object o = i.next();
+					if (o instanceof SubtreeNode) {
+						SubtreeNode snode = (SubtreeNode) o;
+						for (ProcessVariableNode pvnode : snode.collectUnacknowledgedAlarms()) {
+							String name = pvnode.getName();
+							Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
+							Map<String, String> properties = new HashMap<String, String>();
+							properties.put("NAME", name);
+							properties.put("SEVERITY", severity.toString());
+							messages.add(properties);
+						}
+					} else if (o instanceof ProcessVariableNode) {
+						ProcessVariableNode pvnode = (ProcessVariableNode) o;
+						String name = pvnode.getName();
+						Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
+						Map<String, String> properties = new HashMap<String, String>();
+						properties.put("NAME", name);
+						properties.put("SEVERITY", severity.toString());
+						messages.add(properties);
+					}
+				}
+				if (!messages.isEmpty()) {
+					CentralLogger.getInstance().debug(this, "Scheduling send acknowledgement (" + messages.size() + " messages)");
+					SendAcknowledge ackJob = SendAcknowledge.newFromProperties(messages);
+					ackJob.schedule();
+				}
+			}
+		};
+		acknowledgeAction.setText("Send acknowledgement");
+		acknowledgeAction.setToolTipText("Send alarm acknowledgement");
+		acknowledgeAction.setEnabled(false);
 	}
-
+	
 	/**
 	 * Passes the focus request to the viewer's control.
 	 */

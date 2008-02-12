@@ -1,6 +1,7 @@
 package org.csstudio.alarm.treeView.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -251,6 +252,36 @@ public class SubtreeNode implements IAdaptable, IAlarmTreeNode {
 		}
 		// not found
 		return null;
+	}
+	
+	/**
+	 * Returns a collection of the PV nodes (leaf nodes) below this subtree
+	 * node that have unacknowledged alarms.
+	 * 
+	 * @return a collection of the PV nodes with unacknowledged alarms.
+	 */
+	public Collection<ProcessVariableNode> collectUnacknowledgedAlarms() {
+		Collection<ProcessVariableNode> result = new ArrayList<ProcessVariableNode>();
+		this.recurseCollectUnack(result);
+		return result;
+	}
+
+	/**
+	 * Recursively collects nodes with unacknowledged alarms into the given
+	 * collection.
+	 * 
+	 * @param result the collection to which the nodes will be added.
+	 */
+	private void recurseCollectUnack(Collection<ProcessVariableNode> result) {
+		for (IAlarmTreeNode child : children) {
+			if (child instanceof SubtreeNode) {
+				((SubtreeNode) child).recurseCollectUnack(result);
+			} else if (child instanceof ProcessVariableNode) {
+				if (child.getUnacknowledgedAlarmSeverity() != Severity.NO_ALARM) {
+					result.add((ProcessVariableNode) child);
+				}
+			}
+		}
 	}
 
 }
