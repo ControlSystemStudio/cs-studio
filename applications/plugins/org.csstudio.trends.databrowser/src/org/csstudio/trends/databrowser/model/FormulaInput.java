@@ -11,13 +11,13 @@ public class FormulaInput
     private final IModelItem item;
     
     /** The variable assigned to the input. */
-    private final VariableNode variable;
+    private VariableNode variable;
 
     /** Constructor
      *  @param item ModelItem that provides the input data
      *  @param variable Variable unter which the data appears in formula
      */
-    public FormulaInput(IModelItem item, VariableNode variable)
+    public FormulaInput(final IModelItem item, final VariableNode variable)
     {
         this.item = item;
         this.variable = variable;
@@ -27,7 +27,7 @@ public class FormulaInput
      *  @param item ModelItem that provides the input data
      *  @param variable_name Variable unter which the data appears in formula
      */
-    public FormulaInput(IModelItem item, String variable_name)
+    public FormulaInput(final IModelItem item, final String variable_name)
     {
         this(item, new VariableNode(variable_name));
     }
@@ -35,16 +35,22 @@ public class FormulaInput
     /** Constructor
      *  @param item ModelItem that provides the input data
      */
-    public FormulaInput(IModelItem item)
+    public FormulaInput(final IModelItem item)
     {
         this(item, item.getName());
     }
 
     /** @return the item */
-    public final IModelItem getModelItem()
+    final public IModelItem getModelItem()
     {   return item;    }
 
     /** @return the variable */
-    public final VariableNode getVariable()
+    final public VariableNode getVariable()
     {   return variable;    }
+
+    /** Set a new variable name */
+    final public void setVariable(final String new_name)
+    {
+        variable = new VariableNode(new_name);
+    }
 }
