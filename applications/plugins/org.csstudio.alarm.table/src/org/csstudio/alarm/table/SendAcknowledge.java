@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jms.MapMessage;
 
@@ -68,7 +69,9 @@ public class SendAcknowledge extends Job {
 		super("Send Ack"); //$NON-NLS-1$
 		messagesToSend = new ArrayList<JMSMessage>();
 		for (Map<String, String> map : listMap) {
-			JMSMessage jmsMsg = new JMSMessage();
+			Set<String> keys = map.keySet();
+			String[] keyArray = keys.toArray(new String[0]);
+			JMSMessage jmsMsg = new JMSMessage(keyArray);
 			for (String	key : map.keySet()) {
 				jmsMsg.setProperty(key, map.get(key));	
 			}
