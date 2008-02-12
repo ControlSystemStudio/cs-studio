@@ -41,12 +41,6 @@ public class JMSMessage implements IProcessVariable {//,
 	}
 
 	/**
-	 * Default Constructor.
-	 */
-	public JMSMessage() {
-		super();
-	}
-	/**
 	 * Initialisation of HashMap with actual message properties.
 	 *
 	 */
