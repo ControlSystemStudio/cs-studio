@@ -24,6 +24,7 @@ package org.csstudio.alarm.table;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -63,25 +64,27 @@ public class SendAcknowledge extends Job {
 	}
 	
 	/**
-	 * @param msg JMSMessage to acknowledge
+	 * Creates a new job for sending acknowledgements from a collection of
+	 * messages to send. For each message to send, the collection
+	 * must contain a map of properties for that message.
+	 * 
+	 * @param messages the collection of messages to send.
+	 * @return the <code>SendAcknowledge</code> job.
 	 */
-	public SendAcknowledge(LinkedList<Map<String,String>> listMap) {
-		super("Send Ack"); //$NON-NLS-1$
-		messagesToSend = new ArrayList<JMSMessage>();
-		for (Map<String, String> map : listMap) {
+	public static SendAcknowledge newFromProperties(Collection<Map<String, String>> messages) {
+		List<JMSMessage> messagesToSend = new ArrayList<JMSMessage>(messages.size());
+		for (Map<String, String> map : messages) {
 			Set<String> keys = map.keySet();
 			String[] keyArray = keys.toArray(new String[0]);
 			JMSMessage jmsMsg = new JMSMessage(keyArray);
-			for (String	key : map.keySet()) {
-				jmsMsg.setProperty(key, map.get(key));	
+			for (String key : keys) {
+				jmsMsg.setProperty(key, map.get(key));
 			}
 			messagesToSend.add(jmsMsg);
 		}
+		return new SendAcknowledge(messagesToSend);
 	}
 	
-	
-	
-
 	/**
 	 * Sends for the list of JMSMessages an acknowledge
 	 * message to the jms- and ldap server.
