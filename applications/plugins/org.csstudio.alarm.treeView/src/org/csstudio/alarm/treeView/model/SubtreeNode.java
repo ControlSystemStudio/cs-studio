@@ -105,6 +105,9 @@ public class SubtreeNode implements IAdaptable, IAlarmTreeNode {
 		return parent;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Object getAdapter(@SuppressWarnings("unchecked") Class adapter) {
 		if (adapter == IPropertySource.class){
 			return new AlarmTreeNodePropertySource(this);
