@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -73,13 +74,11 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * for the element.
 	 */
 	public Image getImage(Object element) {
-		if (element instanceof IAlarmTreeNode) {
-			IAlarmTreeNode node = (IAlarmTreeNode) element;
-			if (node.hasAlarm()) {
-				return alarmImageFor(node);
-			} else {
-				return defaultImageFor(node);
-			}
+		if (element instanceof ProcessVariableNode) {
+			ProcessVariableNode node = (ProcessVariableNode) element;
+			return node.hasAlarm() ? alarmImageFor(node) : defaultNodeImage();
+		} else if (element instanceof SubtreeNode) {
+			return alarmImageFor((SubtreeNode) element);
 		} else {
 			return null;
 		}
@@ -99,13 +98,11 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	}
 	
 	/**
-	 * Returns the image for the given node if there is no alarm for that node.
-	 * @param node the node.
+	 * Returns the image for a leaf node that does not have any alarms set.
 	 */
-	private Image defaultImageFor(IAlarmTreeNode node) {
-		String image = (node instanceof SubtreeNode)
-			? ISharedImages.IMG_OBJ_FOLDER : ISharedImages.IMG_OBJ_ELEMENT;
-		return PlatformUI.getWorkbench().getSharedImages().getImage(image);
+	private Image defaultNodeImage() {
+		return PlatformUI.getWorkbench().getSharedImages().getImage(
+				ISharedImages.IMG_OBJ_ELEMENT);
 	}
 	
 	/**
