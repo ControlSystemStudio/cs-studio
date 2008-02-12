@@ -15,6 +15,9 @@ import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.sds.ui.runmode.RunModeService;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -54,6 +57,7 @@ public class AlarmTreeView extends ViewPart {
 	private Action reloadAction;
 	private AlarmQueueSubscriber alarmQueueSubscriber;
 	private Action acknowledgeAction;
+	private Action runCssAlarmDisplayAction;
 	
 	/**
 	 * Returns the id of this view.
@@ -167,6 +171,23 @@ public class AlarmTreeView extends ViewPart {
 	private void selectionChanged(SelectionChangedEvent event) {
 		IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 		acknowledgeAction.setEnabled(containsNodeWithUnackAlarm(sel));
+		runCssAlarmDisplayAction.setEnabled(hasCssAlarmDisplay(sel.getFirstElement()));
+	}
+	
+	/**
+	 * Returns whether the given process variable node in the tree has an
+	 * associated CSS alarm display configured.
+	 * 
+	 * @param pvNode the node.
+	 * @return <code>true</code> if a CSS alarm display is configured for the
+	 * node, <code>false</code> otherwise.
+	 */
+	private boolean hasCssAlarmDisplay(Object pvNode) {
+		if (pvNode instanceof ProcessVariableNode) {
+			String display = ((ProcessVariableNode) pvNode).getCssAlarmDisplay();
+			return display != null && display.matches(".+\\.css-sds");
+		}
+		return false;
 	}
 
 	/**
@@ -238,6 +259,10 @@ public class AlarmTreeView extends ViewPart {
 		if (selection.size() > 0) {
 			menu.add(acknowledgeAction);
 		}
+		if (selection.size() == 1
+				&& selection.getFirstElement() instanceof ProcessVariableNode) {
+			menu.add(runCssAlarmDisplayAction);
+		}
 		
 		// adds a separator after which contributed actions from other plug-ins
 		// will be displayed
@@ -305,6 +330,26 @@ public class AlarmTreeView extends ViewPart {
 		acknowledgeAction.setText("Send acknowledgement");
 		acknowledgeAction.setToolTipText("Send alarm acknowledgement");
 		acknowledgeAction.setEnabled(false);
+		
+		runCssAlarmDisplayAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection = (IStructuredSelection) viewer
+						.getSelection();
+				Object selected = selection.getFirstElement();
+				if (selected instanceof ProcessVariableNode) {
+					ProcessVariableNode pvNode = (ProcessVariableNode) selected;
+					IPath path = new Path(pvNode.getCssAlarmDisplay());
+					Map<String, String> aliases = new HashMap<String, String>();
+					aliases.put("channel", pvNode.getName());
+					CentralLogger.getInstance().debug(this, "Opening display: " + path);
+					RunModeService.getInstance().openDisplayShellInRunMode(path, aliases);
+				}
+			}
+		};
+		runCssAlarmDisplayAction.setText("Run alarm display");
+		runCssAlarmDisplayAction.setToolTipText("Run the alarm display for this PV");
+		runCssAlarmDisplayAction.setEnabled(false);
 	}
 	
 	/**
