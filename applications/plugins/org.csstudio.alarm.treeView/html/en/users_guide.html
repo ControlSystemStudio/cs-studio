@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Alarm Tree User's Guide</title>
+</head>
+
+<body>
+<h1>Alarm Tree User's Guide</h1>
+<p>This is the user's guide for the alarm tree.</p>
+<h2>Preferences</h2>
+<p>The preference page for the alarm tree is <i>CSS Applications &gt; Alarm
+&gt; Alarm Tree</i>.</p>
+<p>First, make sure that the LDAP directory server and the JMS servers are set
+up correctly. The alarm tree will listen to two JMS servers for redundancy.
+Chaning the JMS settings after the tree is already running requires a
+restart.</p>
+<p>After the servers are set up, you can use the <i>Facility names</i> list to
+add the facilities that you would like to display in the tree. You can select
+any number of facilities. You can change the LDAP settings and facility
+selection even when the tree is already running. Simply click the
+&quot;Reload&quot; button in the tree's toolbar after saving the new
+preferences. The alarm tree will use the new setting when reloading the
+tree.</p>
+
+<h2>Using the view</h2>
+<h3>Icons</h3>
+<p>The view displays each node with two vertical, colored rectangles as the
+node's icon. The left part of the icon indicates the node's highest
+unacknowledged alarm, the right part indicates the current alarm state. The
+colors represent the following severities:</p>
+<ul>
+<li>Red: major</li>
+<li>Yellow: minor</li>
+<li>Blue: invalid</li>
+<li>Green: no alarm</li>
+</ul>
+<p>For the leaf nodes which represent individual records (process variables),
+the icon indicates the alarm state of that record. For nodes which have child
+nodes, the icon indicates the highest severity of its children.</p>
+<h3>Acknowledging alarms</h3>
+<p>When a node has any unacknowledged alarms, as indicated by a color other
+than green for the left part of the icon, you can use the context menu of the
+node to send an acknowledgement message for that node. Note that the node will
+not be displayed as acknowledged immediately. The tree will update the node's
+state when it receives the acknowledgement message.</p>
+<p>When the selected node is a parent node, one acknowledgement message will be
+sent for each child that has an unacknowledged alarm.</p>
+<h3>Opening the alarm display</h3>
+<p>If an alarm display is configured for a record in the LDAP directory, you
+can open that alarm display from the context menu using the &quot;Run alarm
+display&quot; action. Note that this menu item appears only if a single leaf
+node (process variable node) is selected. It is not available for parent nodes
+or multi selections. If the menu item appears grayed out, no alarm display is
+configured for that process variable, or the attribute value does not look like
+a valid CSS display file name (the value must end with .css-sds).</p>
+</body>
+</html>

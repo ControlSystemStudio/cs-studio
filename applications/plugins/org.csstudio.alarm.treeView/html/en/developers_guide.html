@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Alarm Tree Developer's Guide</title>
+</head>
+
+<body>
+<h1>Alarm Tree Developer's Guide</h1>
+<p>This document describes the implementation of the alarm tree plug-in. The
+alarm tree reads its structure from an LDAP directory and receives updates of
+the alarm states via JMS. Alarm states are propagated in the hierarchy, so that
+parent nodes display as their severity the highest severity of their
+children.</p>
+<p>User actions are executed in the tree by selecting the nodes, and then
+running the actions from the tree's context menu.</p>
+<h2>Initialization</h2>
+<p>When the view is created, the plug-in first reads the structure from the
+LDAP directory server as set up by the user in the Eclipse preferences. After
+the structure has been read from the directory, a JMS listener is started to
+listen for alarm and acknowledgement messages.</p>
+<p>The LDAP reader is started in <code>AlarmTreeView#createPartControl</code>.
+It is created as a background job to prevent the user interface from freezing.
+A listener is attached to the job which will start the JMS listener as soon as
+the reader job is finished.</p>
+<h2>Propagating severity changes</h2>
+<p>Alarm severities are set at the leaf nodes by the LDAP reader and the JMS
+listener. The leaf nodes are of type <code>ProcessVariableNode</code> and
+represent process variable records. When their alarm state is modified (see
+methods <code>setActiveAlarm</code> and <code>setHighestUnacknowledgedAlarm</code>),
+they notify their parent node of this change. The parent node then checks if
+it needs to update its severity, notifies its parent if necessary, and so
+on, until the root of the tree is reached.</p>
+<h2>Context menu actions</h2>
+<p>Users can execute actions by using the tree's context menu. The actions are
+created in <code>AlarmTreeView#makeActions</code> and stored in instance fields
+of the <code>AlarmTreeView</code> instance. The context menu is created in the
+<code>initializeContextMenu</code> method and filled with items in the
+<code>fillContextMenu</code> method. This method adds menu items to the menu
+based on the current selection.</p>
+<p>For example, the &quot;Run alarm display&quot; action is added only if
+exactly one process variable node is selected (i.e. the action will not be
+available if multiple nodes are selected or if the selected node is not a 
+record but a parent node):</p>
+<pre>if (selection.size() == 1
+        && selection.getFirstElement() instanceof ProcessVariableNode) {
+    menu.add(runCssAlarmDisplayAction);
+}
+</pre>
+<p>The <code>AlarmTreeView</code> also listens for selection changes, and
+enables/disables the actions based on the selected nodes. For example, the
+&quot;Run alarm display&quot; action is disabled if no alarm display is
+configured for the selected node.</p>
+<p>To add additional items to the context menu, you must:</p>
+<ul>
+<li>Implement the action you want to run as a subclass of
+<code>org.eclipse.jface.action.Action</code>.</li>
+<li>Add the action to the context menu in the <code>fillContextMenu</code>
+method.</li>
+<li>Optionally, add code to the <code>selectionChanged</code> method to enable
+and disable the action based on the current selection.</li>
+</ul>
+</body>
+</html>
