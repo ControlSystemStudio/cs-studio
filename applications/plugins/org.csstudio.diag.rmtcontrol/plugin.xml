@@ -44,9 +44,6 @@
       <toc
             file="toc.xml"
             primary="true"/>
-      <toc
-            file="Defaulttoc.xml"
-            primary="true"/>
    </extension>
    <!--extension
          point="org.eclipse.ui.preferencePages">
