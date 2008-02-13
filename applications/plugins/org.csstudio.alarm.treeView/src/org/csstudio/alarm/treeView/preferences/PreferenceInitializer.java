@@ -26,7 +26,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.put(PreferenceConstants.JMS_URL_SECONDARY, "tcp://krynfs.desy.de:62616");
 		prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY_PRIMARY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 		prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY_SECONDARY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-		prefs.put(PreferenceConstants.JMS_QUEUE, "ALARM");
+		prefs.put(PreferenceConstants.JMS_QUEUE, "ALARM,ACK");
 	}
 
 }
