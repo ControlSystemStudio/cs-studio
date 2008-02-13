@@ -10,7 +10,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
-import org.eclipse.swt.widgets.FileDialog;
 
 /** An Action for saving the current image to a file.
  *  <p>
@@ -41,19 +40,10 @@ public class SaveCurrentImageAction extends Action
             return;
         try
         {
-            FileDialog dlg = new FileDialog(chart.getShell(), SWT.SAVE);
-            dlg.setText(Messages.SaveImage_ActionTitle);
-            final String ending = ".png"; //$NON-NLS-1$
-            dlg.setFilterExtensions(new String[] { "*" + ending }); //$NON-NLS-1$
-            dlg.setFilterNames(new String[] { "PNG" }); //$NON-NLS-1$
-            String filename = dlg.open();
-            if (filename == null)
-                return;
-            if (!filename.toLowerCase().endsWith(ending))
-                filename = filename + ending;
+            final String filename = ImageFileName.get(chart.getShell());
             try
             {
-                ImageLoader loader = new ImageLoader();
+                final ImageLoader loader = new ImageLoader();
                 loader.data = new ImageData[] { snapshot.getImageData() };
                 // PNG: Unsupported format
                 // PNG: Wrong depth under Eclipse 3.2, but OK with 3.3

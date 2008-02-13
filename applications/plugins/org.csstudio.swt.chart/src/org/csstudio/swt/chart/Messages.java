@@ -24,6 +24,8 @@ public class Messages extends NLS
     public static String Chart_ZoomAuto;
     public static String Chart_ZoomIn;
     public static String Chart_ZoomOut;
+    public static String PrintImage_ActionName;
+    public static String PrintImage_ActionName_TT;
     public static String RemoveMarkers;
     public static String RemoveMarkers_TT;
     public static String RemoveSelectedMarker;
