@@ -14,7 +14,7 @@ import org.csstudio.swt.chart.ChartSampleSequenceContainer;
 import org.csstudio.swt.chart.DefaultColors;
 import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.TraceType;
-import org.csstudio.swt.chart.actions.PrintImageAction;
+import org.csstudio.swt.chart.actions.PrintCurrentImageAction;
 import org.csstudio.swt.chart.actions.SaveCurrentImageAction;
 import org.csstudio.swt.chart.actions.ShowButtonBarAction;
 import org.csstudio.swt.chart.axes.XAxis;
@@ -153,7 +153,7 @@ public class ChartTest
             
             new ToolBarActionHook(ichart, new ShowButtonBarAction(ichart));
             new ToolBarActionHook(ichart, new SaveCurrentImageAction(chart));
-            new ToolBarActionHook(ichart, new PrintImageAction(chart));
+            new ToolBarActionHook(ichart, new PrintCurrentImageAction(chart));
         }
         chart.getXAxis().setLabel("The X Axis");
         if ((chart_flags & Chart.TIME_CHART) != 0)

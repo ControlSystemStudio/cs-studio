@@ -1,6 +1,7 @@
 package org.csstudio.trends.databrowser.plotview;
 
 import org.csstudio.swt.chart.Chart;
+import org.csstudio.swt.chart.actions.PrintCurrentImageAction;
 import org.csstudio.swt.chart.actions.RemoveMarkersAction;
 import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
 import org.csstudio.swt.chart.actions.SaveCurrentImageAction;
@@ -142,6 +143,7 @@ public class PlotView extends ViewPart
         context_menu.add(remove_marker_action);
         context_menu.add(new Separator());
         context_menu.add(new SaveCurrentImageAction(chart));
+        context_menu.add(new PrintCurrentImageAction(chart));
         context_menu.add(new Separator());
         context_menu.add(new OpenAsPlotEditorAction(plot_part));
         context_menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));

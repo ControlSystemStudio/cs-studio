@@ -19,7 +19,7 @@ import org.eclipse.swt.printing.PrinterData;
  *  
  *  @author Kay Kasemir
  */
-public class PrintImageAction extends Action
+public class PrintCurrentImageAction extends Action
 {
     /** Chart to print */
     private final Chart chart;
@@ -31,7 +31,7 @@ public class PrintImageAction extends Action
     private Printer printer;
 
     /** Constructor */
-    public PrintImageAction(Chart chart)
+    public PrintCurrentImageAction(Chart chart)
     {
         super(Messages.PrintImage_ActionName,
               Activator.getImageDescriptor("icons/snapshot.gif")); //$NON-NLS-1$

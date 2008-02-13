@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.csstudio.swt.chart.Chart;
+import org.csstudio.swt.chart.actions.PrintCurrentImageAction;
 import org.csstudio.swt.chart.actions.RemoveMarkersAction;
 import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
 import org.csstudio.swt.chart.actions.SaveCurrentImageAction;
@@ -63,6 +64,7 @@ public class PlotEditor extends EditorPart
     private Action waveform_action, export_action;
     private Action button_bar_action;
     private Action save_current_image_action;
+    private Action print_current_image_action;
     private Action view_action, perspective_action;
     private boolean is_dirty = false;
     /** In case of a model init (load) problem, we won't get to register
@@ -301,6 +303,7 @@ public class PlotEditor extends EditorPart
         final Chart chart = plot_part.getInteractiveChart().getChart();
         button_bar_action = new ShowButtonBarAction(plot_part.getInteractiveChart());
         save_current_image_action = new SaveCurrentImageAction(chart);
+        print_current_image_action = new PrintCurrentImageAction(chart);
         remove_markers_action = new RemoveMarkersAction(chart);
         remove_marker_action = new RemoveSelectedMarkersAction(chart);
         add_pv_action = new AddPVAction(plot_part.getModel());
@@ -334,6 +337,7 @@ public class PlotEditor extends EditorPart
         context_menu.add(waveform_action);
         context_menu.add(new Separator());
         context_menu.add(save_current_image_action);
+        context_menu.add(print_current_image_action);
         context_menu.add(new Separator());
         context_menu.add(view_action);
         context_menu.add(perspective_action);
