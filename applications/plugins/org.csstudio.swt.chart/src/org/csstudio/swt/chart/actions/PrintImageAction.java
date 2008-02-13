@@ -21,8 +21,13 @@ import org.eclipse.swt.printing.PrinterData;
  */
 public class PrintImageAction extends Action
 {
+    /** Chart to print */
     private final Chart chart;
+    
+    /** Snapshot of the chart at time of print command */
     private Image snapshot;
+    
+    /** Printer */
     private Printer printer;
 
     /** Constructor */
@@ -38,6 +43,7 @@ public class PrintImageAction extends Action
     @Override
     public void run()
     {
+        // Get snapshot. Disposed at end of printing
         snapshot = chart.createSnapshot();
         if (snapshot == null)
             return;
@@ -46,10 +52,16 @@ public class PrintImageAction extends Action
         PrintDialog dlg = new PrintDialog(chart.getShell());
         PrinterData data = dlg.open();
         if (data == null)
+        {
+            snapshot.dispose();
             return;
+        }
         // Get filename
         if (data.printToFile == true)
-            data.fileName = ImageFileName.get(chart.getShell());
+        {
+            // Inconsistent: On the Mac, the file name is already set...
+            // data.fileName = ImageFileName.get(chart.getShell());
+        }
         printer = new Printer(data);
         // Print in background thread
         final Thread print_thread = new Thread("Print Thread") //$NON-NLS-1$
@@ -63,12 +75,13 @@ public class PrintImageAction extends Action
         print_thread.start();
     }
 
+    /** Print the <code>snapshot</code> to the <code>printer</code> */
     private void print()
     {
-        if (!printer.startJob("Data Browser")) //$NON-NLS-1$
-            return;
         try
         {
+            if (!printer.startJob("Data Browser")) //$NON-NLS-1$
+                return;
             // Printer page info
             final Rectangle area = printer.getClientArea();
             final Rectangle trim = printer.computeTrim(0, 0, 0, 0);
@@ -76,22 +89,23 @@ public class PrintImageAction extends Action
             
             // Compute layout
             final Rectangle image_rect = snapshot.getBounds();
-            // Leave one inch on each border
+            // Leave one inch on each border.
+            // (copied the computeTrim stuff from an SWT example.
+            //  Really no clue...)
             final int left_right = dpi.x + trim.x;
             final int top_bottom = dpi.y + trim.y;
             final int printed_width = area.width - 2*left_right;
-            // Scale height to keep the on-screen aspect ratio
+            // Try to scale height according to on-screen aspect ratio.
             final int max_height = area.height - 2*top_bottom;
             final int printed_height = Math.min(max_height,
                image_rect.height * printed_width / image_rect.width);
             
-            final GC gc = new GC(printer);
             
             // Print one page
             printer.startPage();
+            final GC gc = new GC(printer);
             gc.drawImage(snapshot, 0, 0, image_rect.width, image_rect.height,
-                            left_right, top_bottom, printed_width, printed_height);
-            
+                        left_right, top_bottom, printed_width, printed_height);
             printer.endPage();
             // Done
             printer.endJob();
@@ -101,6 +115,5 @@ public class PrintImageAction extends Action
             snapshot.dispose();
         }
     }
-
 }
 
