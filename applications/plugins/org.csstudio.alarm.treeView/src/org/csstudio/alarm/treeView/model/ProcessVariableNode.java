@@ -16,6 +16,7 @@ public class ProcessVariableNode extends PlatformObject
 	private Alarm activeAlarm;
 	private Alarm highestUnacknowledgedAlarm;
 	private String cssAlarmDisplay;
+	private final Alarm NO_ALARM;
 	
 	/**
 	 * Creates a new node for a process variable as a child of the specified
@@ -33,6 +34,7 @@ public class ProcessVariableNode extends PlatformObject
 		this.name = name;
 		this.activeAlarm = null;
 		this.highestUnacknowledgedAlarm = null;
+		this.NO_ALARM = new Alarm(name, Severity.NO_ALARM);
 	}
 	
 	/**
@@ -120,7 +122,7 @@ public class ProcessVariableNode extends PlatformObject
 	 */
 	public void cancelAlarm() {
 		if (activeAlarm != null) {
-			activeAlarm = null;
+			activeAlarm = NO_ALARM;
 			parent.childSeverityChanged(this);
 		}
 	}
@@ -130,7 +132,7 @@ public class ProcessVariableNode extends PlatformObject
 	 */
 	public void removeHighestUnacknowledgedAlarm() {
 		if (highestUnacknowledgedAlarm != null) {
-			highestUnacknowledgedAlarm = null;
+			highestUnacknowledgedAlarm = NO_ALARM;
 			parent.childSeverityChanged(this);
 		}
 	}
