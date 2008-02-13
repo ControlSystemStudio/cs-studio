@@ -164,7 +164,7 @@ public class AlarmLogView extends LogView {
 					}
 
 				}
-				SendAcknowledge sendAck = new SendAcknowledge(msgList);
+				SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
 				sendAck.schedule();
 			}
 

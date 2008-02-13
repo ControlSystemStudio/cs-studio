@@ -58,7 +58,7 @@ public class SendAcknowledge extends Job {
 	/**
 	 * @param msg JMSMessage to acknowledge
 	 */
-	public SendAcknowledge(List<JMSMessage> msg) {
+	private SendAcknowledge(List<JMSMessage> msg) {
 		super("Send Ack"); //$NON-NLS-1$
 		messagesToSend = msg;
 	}
@@ -84,7 +84,18 @@ public class SendAcknowledge extends Job {
 		}
 		return new SendAcknowledge(messagesToSend);
 	}
-	
+
+	/**
+     * Creates a new job for sending acknowledgements from a List of
+     * {@link JMSMessage} to send. 
+     * 
+     * @param messages the List of JMSMessage to send.
+     * @return the <code>SendAcknowledge</code> job.
+     */
+    public static SendAcknowledge newFromJMSMessage(List<JMSMessage> messages) {
+        return new SendAcknowledge(messages);
+    }
+
 	/**
 	 * Sends for the list of JMSMessages an acknowledge
 	 * message to the jms- and ldap server.

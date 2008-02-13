@@ -98,8 +98,7 @@ public class JMSLogTableViewer extends TableViewer {
 						if (ti.getData() instanceof JMSMessage) {
 							List<JMSMessage> msgList = new ArrayList<JMSMessage>();
 							msgList.add((JMSMessage) event.item.getData());
-							SendAcknowledge sendAck = new SendAcknowledge(
-									msgList);
+							SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
 							sendAck.schedule();
 						} else {
 							return;
