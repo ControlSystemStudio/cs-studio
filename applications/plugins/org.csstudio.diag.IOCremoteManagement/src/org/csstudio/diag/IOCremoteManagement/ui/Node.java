@@ -84,8 +84,8 @@ public abstract class Node implements Observer {
 			if(debugStatus) System.out.println("checkRootStatus=isSlave");
 			IProot.type=typeOfHost.slave;	
 		}
-		viewer.refresh();
-		disp.update();
+		//viewer.refresh();
+		//disp.update();
 	}
 	
 	public int askNextLevel(PropertyPart p) {
@@ -175,7 +175,7 @@ public abstract class Node implements Observer {
 		viewer.expandToLevel(this, 1);
 		
 		if (!needFinalLevelScreen){
-		propertyPart.createInfoTabForVariable(data.infoResult,data.infoName, data.infoStatus,data.operationStatus);
+		propertyPart.createInfoTabForVariable(data.infoResult,data.infoName, data.infoStatus,data.internalStatus);
 		} else {
 			propertyPart.setActualData (host,request);
 			propertyPart.createFinalLevelScreen(data,(Node) this);

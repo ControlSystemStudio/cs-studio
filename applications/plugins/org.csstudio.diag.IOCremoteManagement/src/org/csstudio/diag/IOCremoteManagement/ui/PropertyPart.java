@@ -83,18 +83,18 @@ public class PropertyPart implements Observer  {
 	       this.host=host;
 
 	}
-	private boolean prepareInfoTable(String result,String draiverName,String draiverStatus, String operationStatus) {
+	private boolean prepareInfoTable(String result,String draiverName,String draiverStatus, String internalStatus) {
 		int lenX=2;
 		int lenY=4;
 		String[][] dataArray=new String[lenX][lenY];
-		dataArray[0][0]="TCP/IP status";
+		dataArray[0][0]="Request Status";
 		dataArray[0][1]="Driver Name";
 		dataArray[0][2]="Driver Status";
-		dataArray[0][3]="Operation Status";
+		dataArray[0][3]="Internal Status";
 		dataArray[1][0]=result;
 		dataArray[1][1]=draiverName;
 		dataArray[1][2]=draiverStatus;
-		dataArray[1][3]=operationStatus;
+		dataArray[1][3]=internalStatus;
 		typeOfCell[][] type = new typeOfCell[lenX][lenY];
 		Object[][] extra = new Object[lenX][lenY];
 		String[] columnName = {"variable","value"};
@@ -111,7 +111,7 @@ public class PropertyPart implements Observer  {
 		st.createTable(lenX,lenY,dataArray,type,extra);
 		return true;
 	}
-	public boolean createInfoTabForVariable(String result,String draiverName,String draiverStatus, String operationStatus){
+	public boolean createInfoTabForVariable(String result,String draiverName,String draiverStatus, String internalStatus){
 		if(propTable !=null) {
 			propTable.dispose();
 			if(debug) System.out.println("propTable is disposed");
@@ -121,7 +121,7 @@ public class PropertyPart implements Observer  {
 		propTable.setLayoutData(new GridData(GridData.FILL_BOTH));		
 		propTable.setText("infoWindow"); //$NON-NLS-1$	
 		
-		prepareInfoTable(result,draiverName,draiverStatus,operationStatus);
+		prepareInfoTable(result,draiverName,draiverStatus,internalStatus);
 		
 		secondTabMenu.layout(true);
 		return true;
@@ -144,7 +144,7 @@ public class PropertyPart implements Observer  {
 		propTable.setText("Property"); //$NON-NLS-1$
 		///////////////
 		if (data != null) {
-			prepareInfoTable(data.infoResult,data.infoName,data.infoStatus,data.operationStatus);
+			prepareInfoTable(data.infoResult,data.infoName,data.infoStatus,data.internalStatus);
 		
 		//////////////	
 		refreshButton = new Button(propTable, SWT.PUSH);

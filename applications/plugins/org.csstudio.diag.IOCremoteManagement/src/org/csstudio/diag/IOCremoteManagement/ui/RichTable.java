@@ -342,7 +342,7 @@ public class RichTable  implements Observer {
 	public int analyzeAnswer(String text) {
 		Parsing parser = new Parsing(text);
 		XMLData data=parser.Parse();
-		if ((data.operationStatus.compareToIgnoreCase("locked") == 0)||(data.infoResult.compareToIgnoreCase("failed") == 0)||(data.operationStatus.compareToIgnoreCase("error") == 0)) {
+		if ((data.internalStatus.compareToIgnoreCase("locked") == 0)||(data.infoResult.compareToIgnoreCase("failed") == 0)||(data.internalStatus.compareToIgnoreCase("error") == 0)) {
 			setActualData (_host,request);
 			_part.createFinalLevelScreen(data, endNode);
 		} else {

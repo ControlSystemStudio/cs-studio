@@ -28,7 +28,7 @@ public class XMLData {
 	String infoResult;
 	String infoName;
 	String infoStatus;
-	String operationStatus;
+	String internalStatus;
 	boolean isMaster;
 	XMLDataSingle[] data;
 public String searchAtr (String name,int index) {
@@ -40,7 +40,7 @@ public String toString() {
 		ret="infoName="+infoName+ ";\n";
 		ret+="infoResult="+infoResult+ ";\n";
 		ret+="infoStatus="+infoStatus+ ";\n";
-		ret+="infoOperationStatus="+operationStatus+ ";\n";
+		ret+="infointernalStatus="+internalStatus+ ";\n";
 		ret+="length="+data.length+ ";\n";
 		for (int i=0;i<data.length;i++) {
 			ret+="\ttagName="+data[i].tagName+ ";\n";

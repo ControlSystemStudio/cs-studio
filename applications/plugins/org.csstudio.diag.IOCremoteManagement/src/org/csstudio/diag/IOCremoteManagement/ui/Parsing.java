@@ -86,6 +86,7 @@ public class Parsing {
 			data.infoResult="UNDEF";
 			data.infoName="UNDEF";
 			data.infoStatus="UNDEF";
+			data.internalStatus=okString;
 			data.isMaster =false;
 			if (debugStatus) System.out.println("parserAnswer init");
 			if (atr.length <3) {
@@ -93,6 +94,7 @@ public class Parsing {
 			}else {
 				for (int i=0;i<atr.length;i++)  { //result="SUCCESS" status="MASTER" name="RMT"
 					if ( atr[i].attribute.compareToIgnoreCase("result") == 0) data.infoResult=atr[i].value;
+					if ( atr[i].attribute.compareToIgnoreCase("internalstatus") == 0) data.internalStatus=atr[i].value;
 					if ( atr[i].attribute.compareToIgnoreCase("name") == 0)   data.infoName=atr[i].value;
 					if ( atr[i].attribute.compareToIgnoreCase("status") == 0) {
 						data.infoStatus=atr[i].value;
@@ -105,7 +107,6 @@ public class Parsing {
 				  }				
 				}
 			}
-			data.operationStatus=okString;  // TODO
 			
 			final List levelOneList = levelOne.getChildren();
 			
@@ -177,7 +178,7 @@ public class Parsing {
 			System.out.println("data.infoName="+data.infoName+ ";");
 			System.out.println("data.infoResult="+data.infoResult+ ";");
 			System.out.println("data.infoStatus="+data.infoStatus+ ";");
-			System.out.println("data.infoOperationStatus="+data.operationStatus+ ";");
+			System.out.println("data.infointernalStatus="+data.internalStatus+ ";");
 			System.out.println("data.length="+data.data.length+ ";");
 			for (int i=0;i<data.data.length;i++) {
 				System.out.println("\tdata.data.tagName="+data.data[i].tagName+ ";");

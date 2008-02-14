@@ -68,7 +68,7 @@ public class RichTablePrepare {
 	private boolean isItLongTableCalx(){
 		// <Index_0000 timestamp="2007-12-12 15:53:49.692" instance="RMT"  trace="rmt is -245 ticks left / cycle time = 20 ticks" />
 		XMLDataSingle xml;
-		if ((data.operationStatus.compareToIgnoreCase("locked") == 0)||(data.infoResult.compareToIgnoreCase("failed") == 0)||(data.operationStatus.compareToIgnoreCase("error") == 0)) {
+		if ((data.internalStatus.compareToIgnoreCase("locked") == 0)||(data.infoResult.compareToIgnoreCase("failed") == 0)||(data.internalStatus.compareToIgnoreCase("error") == 0)) {
 			isWarning=true;
 		}		
 		for (int i=0;i<data.data.length;i++) {
