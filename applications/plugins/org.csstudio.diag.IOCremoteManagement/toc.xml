@@ -2,6 +2,6 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#diag" label="SNL Debugger">
-	<topic label="SNL Debugger" href="html/toc.html">
+	<topic label="IOC Remote Management" href="html/toc.html">
 	</topic>
 </toc>
