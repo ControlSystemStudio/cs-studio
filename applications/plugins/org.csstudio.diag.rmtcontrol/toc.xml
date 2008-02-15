@@ -2,6 +2,6 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#diag" label="RMT Control">
-	<topic label="RMT Control" href="html/toc.html">
+	<topic label="simple fixed string RMT Control" href="html/toc.html">
 	</topic>
 </toc>
