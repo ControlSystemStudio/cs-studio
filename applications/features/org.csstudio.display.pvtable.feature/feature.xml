@@ -42,8 +42,8 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
    </url>
 
    <requires>
-      <import feature="org.csstudio.utility.pv.feature" version="1.0.3" match="greaterOrEqual"/>
-      <import feature="org.csstudio.platform.feature.product" version="0.9.6" match="greaterOrEqual"/>
+      <import feature="org.csstudio.platform.feature.product" version="1.0.0" match="greaterOrEqual"/>
+      <import feature="org.csstudio.utilities.feature" version="1.0.0"/>
    </requires>
 
    <plugin
