@@ -24,13 +24,12 @@ package org.csstudio.diag.IOCremoteManagement.ui;
  * @author Albert Kagarmanov
  *
  */
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
-
 import org.csstudio.diag.IOCremoteManagement.Activator;
 import org.csstudio.diag.IOCremoteManagement.Preference.PreferencePage;
 import org.csstudio.diag.IOCremoteManagement.ui.Node.typeOfHost;
-import org.csstudio.utility.ioc_socket_communication.RMTControl;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -208,48 +207,88 @@ public class SnlDebugTree extends Composite  {
 		public Object getRootParent() {return _invisibleRoot;}
 	}	
 
-	private class ViewLabelProvider extends LabelProvider {    
+	private class ViewLabelProvider extends LabelProvider {  
+		private Map<String, Image> imageCache;
+		/**
+		 * Creates a new alarm tree label provider.
+		 */
+		public ViewLabelProvider() {
+			imageCache = new HashMap<String, Image>();
+		}
+				
+		/**
+		 * Loads an image. The image is added to a cache kept by this provider and
+		 * is disposed of when this provider is disposed of.
+		 * @param name the image file name.
+		 */
+		private Image loadImage(String name) {
+			if (imageCache.containsKey(name)) {
+				return imageCache.get(name);
+			} else {
+				Image image = Activator.getImageDescriptor(name).createImage();
+				imageCache.put(name, image);
+				return image;
+			}
+		}
+		
+		/**
+		 * Disposes of the images created by this label provider.
+		 */
+		@Override
+		public void dispose() {
+			for (Image image : imageCache.values()) {
+				image.dispose();
+			}
+		}
         /** {@inheritDoc} */
         @Override
         public String getText(final Object obj) {
             return obj.toString();
         }
+        
+		/**
+		 * Returns the icon for the given element.
+		 * @param element the element.
+		 * @return the icon for the element, or {@code null} if there is no icon
+		 * for the element.
+		 */
+
         public Image getImage(Object element) {
-    		ImageDescriptor descriptor = Activator.getImageDescriptor("icons/IP.gif"); // default pic
+        	String name="icons/IP.gif"; // default pic
     		if (element instanceof HostIP) {
     			HostIP host= (HostIP) element;
     			typeOfHost tHost=host.getType();
     			  switch(tHost) {
     	            case slave:
-    	            	descriptor = Activator.getImageDescriptor("icons/IPslave.gif");
+    	            	name="icons/IPslave.gif";
     	            	 break;
     	            case unresolve:
-    	            	descriptor = Activator.getImageDescriptor("icons/IPunresolve.gif");
+    	            	name = "icons/IPunresolve.gif";
     	            	break;
     	            case master:
-    	            	descriptor = Activator.getImageDescriptor("icons/IPmaster.gif");
+    	            	name = "icons/IPmaster.gif";
     	            	break;
     	            case host:
-    	            	descriptor = Activator.getImageDescriptor("icons/IP.gif");
+    	            	name = "icons/IP.gif";
     	            	break;
     	            default:
     	            	System.out.println("SnlDebug:ViewLabelProvider: strange HostIP subclass, will use default");
     	                break;
     	        }
     		} else if (element instanceof Knot) {
-    			descriptor = Activator.getImageDescriptor("icons/node_add.gif");
+    			name = "icons/node_add.gif";
     		}  else if (element instanceof EndNode) {
     		EndNode node= (EndNode) element;
     			typeOfHost tHost=node.getType();
     			  switch(tHost) {
   	            case finalSatateSet:
-  	            	descriptor = Activator.getImageDescriptor("icons/stateSet.gif");
+  	            	name = "icons/stateSet.gif";
   	            	 break;
   	            case finalVar:
-  	            	descriptor = Activator.getImageDescriptor("icons/variable.gif");
+  	            	name = "icons/variable.gif";
   	            	 break;
  	            case otherLeaf:
-  	            	descriptor = Activator.getImageDescriptor("icons/leaf.gif");
+  	            	name = "icons/leaf.gif";
   	            	break;
   	            default:
   	            	System.out.println("SnlDebug:ViewLabelProvider: strange FinalLevel subclass, will use default");
@@ -258,7 +297,7 @@ public class SnlDebugTree extends Composite  {
     		} else {
     			System.out.println("SnlDebug:ViewLabelProvider: Bad class; will use default");
     		}
-    		return descriptor.createImage();
+    		return loadImage(name);
     	}
     }
 }
