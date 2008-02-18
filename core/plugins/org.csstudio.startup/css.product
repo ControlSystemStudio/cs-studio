@@ -6,9 +6,9 @@
    <aboutInfo>
       <image path="/org.csstudio.startup/resources/css64x64.gif"/>
       <text>
-         Control System Studio 0.9.9
+         Control System Studio 1.0.0
 
-Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
+Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
 Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
 
 THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot; BASIS. 
@@ -49,12 +49,13 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       </win>
    </launcher>
 
+
    <vm>
    </vm>
 
    <plugins>
       <plugin id="com.ibm.icu"/>
-      <plugin id="com.ibm.icu36.data.update" fragment="true"/>
+      <plugin id="com.ibm.icu36.data.update"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="org.apache.commons.el"/>
@@ -155,8 +156,8 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    </plugins>
 
    <features>
-      <feature id="org.csstudio.platform.feature" version="0.9.9"/>
-      <feature id="org.csstudio.platform.feature.product" version="0.9.10"/>
+      <feature id="org.csstudio.platform.feature" version="1.0.0"/>
+      <feature id="org.csstudio.platform.feature.product" version="1.0.0"/>
    </features>
 
 </product>
