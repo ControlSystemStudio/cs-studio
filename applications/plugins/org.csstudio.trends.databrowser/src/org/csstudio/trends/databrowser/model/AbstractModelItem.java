@@ -162,12 +162,22 @@ public abstract class AbstractModelItem
     */
     final public IValue getSample(final int index)
     {
-        final IModelSamples all_samples = getSamples();
-        synchronized (all_samples)
-        {
-            return all_samples.get(start_index + index).getSample();
-        }
+        return getModelSample(index).getSample();
     }
+
+    /**  @param index of <u>visible</u> Sample 
+     *   @return the Sample with index
+     *   @see #size()
+     *   @see IProcessVariableWithSamples
+     */
+     final public ModelSample getModelSample(final int index)
+     {
+         final IModelSamples all_samples = getSamples();
+         synchronized (all_samples)
+         {
+             return all_samples.get(start_index + index);
+         }
+     }
     
     /** Base implementation for changing the name.
      *  Derived classes might also need to change PV names etc.

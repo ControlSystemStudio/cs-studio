@@ -47,7 +47,7 @@ public class SampleView extends PlotAwareView
     private Model model = null;
     private Combo pv_name;
     private TableViewer table_viewer;
-    private TableModel table_model = null;
+    private IModelItem model_item = null;
     
     /** Listen to model changes: Whenever the PVs change, update pv_name */
     private ModelListener model_listener = new ModelListener()
@@ -164,10 +164,10 @@ public class SampleView extends PlotAwareView
         table_viewer.getTable().setFocus();
     }
 
-    /** @return Current table model or <code>null</code>. */
-    TableModel getTableModel()
+    /** @return Current model item or <code>null</code>. */
+    IModelItem getModelItem()
     {
-        return table_model;
+        return model_item;
     }
 
     /** {@inheritDoc} */
@@ -242,8 +242,8 @@ public class SampleView extends PlotAwareView
                 if (item.getName().equals(name))
                 {
                     log.debug("Updating table for " + item.getName());
-                    table_model = new TableModel(model, item);
-                    table_viewer.setItemCount(table_model.size());
+                    model_item = item;
+                    table_viewer.setItemCount(model_item.size());
                     table_viewer.refresh();
                     return;
                 }
@@ -256,7 +256,7 @@ public class SampleView extends PlotAwareView
             log.debug("Clearing table, " + name + " not found");
         pv_name.setText(""); //$NON-NLS-1$
         table_viewer.setItemCount(0);
-        table_model = null;
+        model_item = null;
         table_viewer.refresh();
     }
 

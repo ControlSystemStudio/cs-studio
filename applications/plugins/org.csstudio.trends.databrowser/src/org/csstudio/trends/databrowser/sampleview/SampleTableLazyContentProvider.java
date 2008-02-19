@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.sampleview;
 
+import org.csstudio.trends.databrowser.model.IModelItem;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -23,10 +24,10 @@ public class SampleTableLazyContentProvider implements ILazyContentProvider
     {   /* NOP */ }
 
     /** Called by 'lazy' table, needs to 'replace' entry of given row. */
-	public void updateElement(int row)
+	public void updateElement(final int row)
 	{
-        TableModel table_model = sample_view.getTableModel();
-        TableItem item = table_model.getTableItem(row);
+        final IModelItem model_item = sample_view.getModelItem();
+        final TableItem item = new TableItem(model_item, row);
         table_viewer.replace(item, row);
 	}
 
