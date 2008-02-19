@@ -878,7 +878,7 @@ public class ClientRequest extends Thread
 	 * Analyse the tag/value pairs in tagValue (must contain at least: NAME and SEVERITY
 	 * If time is omitted - localTime will be used.
 	 * @param tagValue Hashtable with tag/value pairs.
-	 * @param resetHighestUnacknowledgedAlarm True/Flse defines whether - or not to reset the highest unacknowledged alarm in the LDAP database.
+	 * @param resetHighestUnacknowledgedAlarm True/False defines whether - or not to reset the highest unacknowledged alarm in the LDAP database.
 	 * 
 	 */
 	private void updateLdapEntry ( Hashtable<String,String> tagValue, boolean resetHighestUnacknowledgedAlarm) {
@@ -915,20 +915,28 @@ public class ClientRequest extends Thread
 		        java.util.Date currentDate = new java.util.Date();
 		        timeStamp = sdf.format(currentDate);
 			}
+			
 			/*
-			 * check for actual alarm state
+			 * change the epicsAlarmHighUnAckn field in the LDAP server?
 			 */
-			String currentSeverity = Engine.getInstance().getAttriebute(channel, Engine.ChannelAttribute.epicsAlarmHighUnAckn);
-			//System.out.println ("Channel: " + channel + " current severity: " + currentSeverity + "[" +getSeverityEnum(currentSeverity)+ "]" + " new severity: " + severity + "[" +getSeverityEnum(severity)+ "]");
-			if ( resetHighestUnacknowledgedAlarm && (getSeverityEnum(severity) > getSeverityEnum(currentSeverity))) {
+			
+			if ( resetHighestUnacknowledgedAlarm ) {
 				/*
-				 * new highest alarm!
-				 * set highest unacknowledged alarm to new severity
-				 * else we keep the highest unacknowledged alarm as it is
-				 * the highest unacknowledged alarm will be removed if an acknowledge from the alarm table, alarm tree view 
-				 * - or other applications will be set to ""
+				 * check for actual alarm state
 				 */
-				Engine.getInstance().addLdapWriteRequest ("epicsAlarmHighUnAckn", channel, severity);
+				String currentSeverity = Engine.getInstance().getAttriebute(channel, Engine.ChannelAttribute.epicsAlarmHighUnAckn);
+				CentralLogger.getInstance().debug( this, "Channel: " + channel + " current severity: " + currentSeverity + "[" +getSeverityEnum(currentSeverity)+ "]" + " new severity: " + severity + "[" +getSeverityEnum(severity)+ "]");
+				
+				if ( getSeverityEnum(severity) > getSeverityEnum(currentSeverity)) {
+					/*
+					 * new highest alarm!
+					 * set highest unacknowledged alarm to new severity
+					 * else we keep the highest unacknowledged alarm as it is
+					 * the highest unacknowledged alarm will be removed if an acknowledge from the alarm table, alarm tree view 
+					 * - or other applications will be set to ""
+					 */
+					Engine.getInstance().addLdapWriteRequest ("epicsAlarmHighUnAckn", channel, severity);
+				}
 			}
 			
 			//
@@ -949,6 +957,7 @@ public class ClientRequest extends Thread
 	 * - NO_ALARM = 0
 	 * - MINOR = 1
 	 * - MAJOR = 2
+	 * - NONE = -1
 	 * @param severity
 	 * @return
 	 */
@@ -965,6 +974,8 @@ public class ClientRequest extends Thread
 				severityAsNumber = 1;
 			} else if (severity.startsWith( "MAJOR")) {
 				severityAsNumber = 2;
+			} else if (severity.startsWith( "NONE")) {
+				severityAsNumber = -1;
 			} else {
 				severityAsNumber = 0;
 			}
