@@ -2,7 +2,6 @@ package org.csstudio.trends.databrowser.model.formula_gui;
 
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.FormulaInput;
-import org.csstudio.trends.databrowser.model.IModelItem;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Item;

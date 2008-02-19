@@ -1,12 +1,14 @@
-/**
- * 
- */
 package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLHelper;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
+import org.csstudio.swt.chart.ChartSampleSearch;
 import org.csstudio.swt.chart.TraceType;
+import org.csstudio.trends.databrowser.Plugin;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.graphics.Color;
 import org.w3c.dom.Element;
@@ -44,6 +46,9 @@ public abstract class AbstractModelItem
     
     /** The name of this item. */
     protected String name;
+    
+    /** Start/end index of visible sample range */
+    private int start_index, end_index;
     
     /** The units of this item. */
     protected String units = ""; //$NON-NLS-1$
@@ -114,13 +119,55 @@ public abstract class AbstractModelItem
     
     /** @see IProcessVariable */
     final public String getTypeId()
-    {   return IProcessVariable.TYPE_ID;   }
+    {   return IProcessVariableWithSamples.TYPE_ID;   }
 
     /** @return Name of PV or Formula
      *  @see IProcessVariable
      */
     final public String getName()
     {   return name;  }
+    
+    /** @return the Number of <u>visible</u> Samples
+     *  @see #getSample(int)
+     *  @see IProcessVariableWithSamples
+     */
+    @SuppressWarnings("nls")
+    final public int size()
+    {
+        // Determine visible start/end range
+        final ITimestamp start = model.getStartTime();
+        final ITimestamp end = model.getEndTime();
+        final IModelSamples all_samples = getSamples();
+        synchronized (all_samples)
+        {
+            start_index =
+                ChartSampleSearch.findClosestSample(all_samples, start.toDouble());
+            end_index =
+                ChartSampleSearch.findClosestSample(all_samples, end.toDouble());
+        }
+        if (start_index < end_index)
+        {
+            Plugin.getLogger().info(getName() + ".size(): " +
+                    start_index + " ... " + end_index);
+            return end_index - start_index + 1;
+        }
+        Plugin.getLogger().info(getName() + ".size(): 0");
+        return 0;
+    }
+    
+    /** @param index of <u>visible</u> Sample 
+    *   @return the Sample with index
+    *   @see #size()
+    *   @see IProcessVariableWithSamples
+    */
+    final public IValue getSample(final int index)
+    {
+        final IModelSamples all_samples = getSamples();
+        synchronized (all_samples)
+        {
+            return all_samples.get(start_index + index).getSample();
+        }
+    }
     
     /** Base implementation for changing the name.
      *  Derived classes might also need to change PV names etc.

@@ -1,14 +1,19 @@
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.swt.chart.TraceType;
 import org.eclipse.swt.graphics.Color;
 
 /** Public interface to one item of the Model.
+ *  <p>
+ *  Provides name, color, samples etc. for one item in the model.
+ *  In addition, it functions as an IProcessVariable so that other
+ *  CSS tools can get the PV, and an IProcessVariableWithSamples
+ *  to provide access to the <u>visible</u> samples of the item.
  *  @see Model
  *  @author Kay Kasemir
  */
-public interface IModelItem extends IProcessVariable
+public interface IModelItem extends IProcessVariableWithSamples
 {
     /** @return The engineering units string. */
     public abstract String getUnits();
