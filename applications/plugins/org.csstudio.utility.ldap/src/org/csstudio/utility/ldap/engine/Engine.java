@@ -21,7 +21,6 @@
  */
 package org.csstudio.utility.ldap.engine;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -174,7 +173,7 @@ public class Engine extends Job {
 
     boolean addVectorOK = true;
 
-    public Engine(String name) {
+    private Engine(String name) {
         super(name);
         this.ldapReferences = new LdapReferences();
         /*
