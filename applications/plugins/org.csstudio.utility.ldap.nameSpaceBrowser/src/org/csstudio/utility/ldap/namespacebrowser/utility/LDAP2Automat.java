@@ -46,10 +46,8 @@ public class LDAP2Automat extends Automat {
 	 */
 	@Override
 	public CSSViewParameter goDown(Ereignis ereignis, String select) {
-	    System.out.println("++++++++++++++++++++++++++++++++++++++++++");
 		CSSViewParameter parameter = new CSSViewParameter();
 		String aktuelleEbene = select.split("=")[0]+"=";
-		System.out.println("Selection: "+select);
 		int index = storeName.indexOf(aktuelleEbene);
 		if(aktuelleEbene.compareTo("ou=")==0){
             if(select.indexOf("*")<0){
@@ -85,12 +83,10 @@ public class LDAP2Automat extends Automat {
             if(select.indexOf("*")<0){
                 // new sub
     			if(index<0){
-    				System.out.println("1");
 //    				parameter.name = select+storeName;
     				parameter.name = select;
                 // change sub                    
     			}else{
-    				System.out.println("2");
     				// Replace the start of the String to the first ',' after aktuelleEbene
     				parameter.name = select;
 //    				parameter.name = select+storeName.substring(storeName.indexOf(',',index)+1,storeName.length());
@@ -107,8 +103,6 @@ public class LDAP2Automat extends Automat {
 			aktuell=Zustand.RECORD;
 		}
 		storeName = parameter.name; 		
-		System.out.println("Name: "+parameter.name+"\r\nfilter: "+parameter.filter);
-		System.out.println("------------------------------------------");
 		return parameter;
 	}
 
