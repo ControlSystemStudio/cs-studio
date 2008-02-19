@@ -1,5 +1,6 @@
 package org.csstudio.trends.databrowser.model;
 
+import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.swt.chart.TraceType;
 import org.eclipse.swt.graphics.Color;
 
@@ -7,11 +8,8 @@ import org.eclipse.swt.graphics.Color;
  *  @see Model
  *  @author Kay Kasemir
  */
-public interface IModelItem
+public interface IModelItem extends IProcessVariable
 {
-	/** @return The name to use for this item in the legend or axis label. */
-	public abstract String getName();
-
     /** @return The engineering units string. */
     public abstract String getUnits();
     

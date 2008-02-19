@@ -116,7 +116,9 @@ public abstract class AbstractModelItem
     final public String getTypeId()
     {   return IProcessVariable.TYPE_ID;   }
 
-    /** @see IModelItem#getName() */
+    /** @return Name of PV or Formula
+     *  @see IProcessVariable
+     */
     final public String getName()
     {   return name;  }
     

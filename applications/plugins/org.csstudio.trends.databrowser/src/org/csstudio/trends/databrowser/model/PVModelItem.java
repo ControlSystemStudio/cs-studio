@@ -16,7 +16,6 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.utility.pv.PV;
@@ -32,7 +31,7 @@ import org.w3c.dom.Element;
  */
 public class PVModelItem 
        extends AbstractModelItem
-       implements IPVModelItem, PVListener, IProcessVariable
+       implements IPVModelItem, PVListener
 {	
     /** <code>"request"</code> */
     private static final String TAG_REQUEST = "request"; //$NON-NLS-1$
