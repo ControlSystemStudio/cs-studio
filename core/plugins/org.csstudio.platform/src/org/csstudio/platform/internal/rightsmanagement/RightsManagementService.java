@@ -83,24 +83,46 @@ public final class RightsManagementService {
 	}
 
 	/**
-	 * Check if the given user has the rights to perform the action with the
-	 * given ID.
+	 * Checks if the given user has the rights to perform the action with the
+	 * given id. This method will return <code>true</code> if no rights are
+	 * configured for the given action, i.e. by default, all actions can be
+	 * executed by all non-anonymous users.
 	 * 
 	 * @param user
-	 *            The user.
+	 *            the user.
 	 * @param id
-	 *            The id of the requested action.
-	 * @return True, if the user has the permission to perform the action with
-	 *         the given ID.
+	 *            the action id.
+	 * @return <code>true</code> if the user is permitted to perform the
+	 *         action, <code>false</code> otherwise.
 	 */
 	public boolean hasRights(final User user, final String id) {
+		return hasRights(user, id, true);
+	}
+	
+	/**
+	 * Checks if the given user has the rights to perform the action with the
+	 * given id.
+	 * 
+	 * @param user
+	 *            the user.
+	 * @param id
+	 *            the action id.
+	 * @param defaultPermission
+	 *            this value will be returned if no rights are configured for
+	 *            the given action. Note that if you pass <code>false</code>
+	 *            here, the action will be disabled if no authorization plug-in
+	 *            is loaded.
+	 * @return <code>true</code> if the user is permitted to perform the
+	 *         action, <code>false</code> otherwise.
+	 */
+	public boolean hasRights(final User user, final String id,
+			final boolean defaultPermission) {
 		RightSet userRights = _rights.get(user);
 		RightSet actionRights = getRightsForAction(id);
 		if (actionRights.isEmpty()) {
-			// If no rights are configured for the action, executing it
-			// is permitted. This ensures that all actions can be executed
-			// if no authorization plug-in is installed.
-			return true;
+			// If no rights are configured for the action, the default
+			// permission passed by the caller is used.
+			return defaultPermission;
 		} else {
 			if (userRights == null) {
 				// Rights are configured for the action, but the user doesn't

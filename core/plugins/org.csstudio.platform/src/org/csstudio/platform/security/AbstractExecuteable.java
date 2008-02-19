@@ -76,7 +76,7 @@ public abstract class AbstractExecuteable {
 	 * 			The LoginContext, which contains the User
 	 */
 	public final void executeAs(final LoginContext lc) {
-		if (SecurityFacade.getInstance().canExecute(getRightId(), lc)) {
+		if (SecurityFacade.getInstance().canExecute(getRightId(), lc, true)) {
 			doWork();
 		}
 	}

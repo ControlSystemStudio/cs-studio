@@ -32,9 +32,7 @@ import org.csstudio.platform.internal.usermanagement.LoginContext;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /**
  * This Service executes instances of
@@ -180,29 +178,64 @@ public final class SecurityFacade {
 	}
 
 	/**
-	 * Checks if the current user has the permission referenced by the 
-	 * given ID.
+	 * Checks if the current user has the permission referenced by the given ID.
+	 * This method will return <code>true</code> if no rights are configured
+	 * for the given action, i.e. by default, the action can be executed by all
+	 * non-anonymous users.
 	 * 
 	 * @param id
 	 *            The ID of the right to check
-	 * @return True if the user has the permission; false otherwise
+	 * @return <code>true</code> if the user has the permission;
+	 *         <code>false</code> otherwise
 	 */
 	public boolean canExecute(final String id) {
-		return canExecute(id, _context);
+		return canExecute(id, _context, true);
 	}
 	
 	/**
-	 * Checks if the current user has the permission referenced by the
-	 * given ID based on the given login context.
-	 * @param id The ID of the right to check.
-	 * @param context The login context under which the right is needed.
-	 * @return Returns true if the user has permission and false otherwise.
+	 * Checks if the current user has the permission referenced by the given ID.
+	 * 
+	 * @param id
+	 *            The ID of the right to check
+	 * @param defaultPermission
+	 *            this value will be returned if no rights are configured for
+	 *            the given action. Note that if you pass <code>false</code>
+	 *            here, the action will be disabled if no authorization plug-in
+	 *            is loaded.
+	 * @return <code>true</code> if the user has the permission;
+	 *         <code>false</code> otherwise
 	 */
-	public boolean canExecute(final String id, final LoginContext context) {
+	public boolean canExecute(final String id, final boolean defaultPermission) {
+		return canExecute(id, _context, defaultPermission);
+	}
+	
+	/**
+	 * Checks if the current user has the permission referenced by the given ID
+	 * based on the given login context.
+	 * 
+	 * @param id
+	 *            The ID of the right to check.
+	 * @param context
+	 *            The login context under which the right is needed.
+	 * @param defaultPermission
+	 *            this value will be returned if no rights are configured for
+	 *            the given action. Note that if you pass <code>false</code>
+	 *            here, the action will be disabled if no authorization plug-in
+	 *            is loaded.
+	 * @return Returns <code>true</code> if the user has permission and
+	 *         <code>false</code> otherwise.
+	 */
+	public boolean canExecute(final String id, final LoginContext context,
+			final boolean defaultPermission) {
 		return RightsManagementService.getInstance().hasRights(
-				context.getUser(), id);
+				context.getUser(), id, defaultPermission);
 	}
 
+	/**
+	 * Returns the currently logged in user.
+	 * 
+	 * @return the currently logged in user.
+	 */
 	public User getCurrentUser() {
 		return _context.getUser();
 	}
@@ -243,18 +276,6 @@ public final class SecurityFacade {
 	 */
 	public void removeListener(final ISecurityListener listener) {
 		_listeners.remove(listener);
-	}
-
-	/**
-	 * Informs all registered ISecureContainerListeners.
-	 * 
-	 * @param event
-	 *            The event that the listeners are interested in.
-	 */
-	private void notifyListener(final SecurityEvent event) {
-		for (ISecurityListener listener : _listeners) {
-			listener.handleSecurityEvent(event);
-		}
 	}
 
 	public void addUserManagementListener(IUserManagementListener listener) {
