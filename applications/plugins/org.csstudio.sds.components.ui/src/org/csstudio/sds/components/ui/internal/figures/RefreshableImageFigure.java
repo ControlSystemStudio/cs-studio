@@ -3,6 +3,8 @@ package org.csstudio.sds.components.ui.internal.figures;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -101,8 +103,29 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 				try {
 					temp=new Image(Display.getDefault(),currentPath);
 				} catch (Exception e) {
-					currentPath  = fullPath.toString()+_path.toString();
-					temp=new Image(Display.getDefault(),currentPath);
+					try {
+						currentPath = fullPath.toString()+_path.toString();
+						temp=new Image(Display.getDefault(),currentPath);
+					} catch (Exception ex) {
+						String[] segments = _path.segments();
+						String projectName = segments[0];
+						IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+						int index = 1;
+						IFolder folder = null;
+						currentPath = null;
+						while (index < segments.length-1) {
+							folder = project.getFolder(segments[index]);
+							if (currentPath!=null) {
+								currentPath = currentPath+ IPath.SEPARATOR +segments[index];
+							}
+							if (folder.isLinked()) {
+								currentPath = folder.getLocation().toString();
+							}
+							index++;
+						}
+						currentPath = currentPath + IPath.SEPARATOR + segments[segments.length-1];
+						temp=new Image(Display.getDefault(),currentPath);
+					}
 				}
 				if (_stretch) {
 					_image=new Image(Display.getDefault(),
@@ -140,7 +163,7 @@ public final class RefreshableImageFigure extends Shape implements IAdaptable {
 				gfx.setForegroundColor(getForegroundColor());
 				gfx.fillRectangle(bound);
 				gfx.translate(bound.getLocation());
-				System.out.println("RefreshableImageFigure.paintFigure() ERROR loading image\n"+_path);
+				System.out.println("RefreshableImageFigure.paintFigure() ERROR loading image\n"+_path+"\nCaused by: "+e);
 				TextPainter.drawText(gfx,"ERROR loading image\n"+_path,bound.width/2,bound.height/2,TextPainter.CENTER);
 				f.dispose();
 			}
