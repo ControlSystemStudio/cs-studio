@@ -43,6 +43,11 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 * ID of the right necessary to execute this action.
 	 */
 	private String _rightId;
+	
+	/**
+	 * Whether the action should be permitted by default.
+	 */
+	private boolean _defaultPermission;
 
 	/**
 	 * Constructor. Registers this action as UserManagementListener and
@@ -52,9 +57,25 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 *            ID of the right necessary to execute this action.
 	 */
 	public AbstractUserDependentAction(final String rightId) {
+		this(rightId, true);
+	}
+	
+	/**
+	 * Constructor. Registers this action as UserManagementListener and
+	 * RightsManagementListener.
+	 * 
+	 * @param rightId
+	 *            ID of the right necessary to execute this action.
+	 * @param defaultPermission
+	 *            whether this action should be permitted if no rights are
+	 *            configured for the action.
+	 */
+	public AbstractUserDependentAction(final String rightId,
+			final boolean defaultPermission) {
 		assert rightId != null;
 		_rightId = rightId;
-
+		_defaultPermission = defaultPermission;
+		
 		SecurityFacade.getInstance().addUserManagementListener(this);
 		RightsManagementService.getInstance().addRightsManagementListener(this);
 		updateState();
@@ -71,7 +92,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 * Updates state depending on user permission.
 	 */
 	protected void updateState() {
-		setEnabled(SecurityFacade.getInstance().canExecute(getRightId()));
+		setEnabled(SecurityFacade.getInstance().canExecute(getRightId(), _defaultPermission));
 	}
 
 	/**
@@ -79,7 +100,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 */
 	@Override
 	public final void run() {
-		if (SecurityFacade.getInstance().canExecute(getRightId())) {
+		if (SecurityFacade.getInstance().canExecute(getRightId(), _defaultPermission)) {
 			doWork();
 		}
 	}
