@@ -5,8 +5,5 @@
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.csstudio.utility.ldap.preference.PreferenceInitializer"/>
    </extension>
-   <extension
-         point="org.eclipse.help.toc">
-   </extension>
 
 </plugin>

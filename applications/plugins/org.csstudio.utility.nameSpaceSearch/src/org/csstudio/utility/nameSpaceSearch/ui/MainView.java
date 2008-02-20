@@ -351,7 +351,6 @@ public class MainView extends ViewPart implements Observer{
          */
         
         int i=0;
-        boolean first = true;
         for (String row : list) {
             String[] elements = row.split(","); //$NON-NLS-1$
             String path =""; //$NON-NLS-1$

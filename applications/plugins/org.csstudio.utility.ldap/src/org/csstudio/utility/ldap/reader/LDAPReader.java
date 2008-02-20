@@ -204,6 +204,7 @@ public class LDAPReader extends Job {
 						list.add("no entry found");
 					}
 				} catch (NamingException e) {
+				    _ctx=null;
                     CentralLogger.getInstance().info(this,"LDAP Fehler");
                     CentralLogger.getInstance().info(this,e);
 				}
@@ -213,6 +214,7 @@ public class LDAPReader extends Job {
 				monitor.done();
 				return Status.OK_STATUS;
 			} catch (NamingException e) {
+			    _ctx=null;
 				CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
                 CentralLogger.getInstance().info(this,e);
 			}

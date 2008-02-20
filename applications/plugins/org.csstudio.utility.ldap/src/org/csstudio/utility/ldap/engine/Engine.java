@@ -378,6 +378,7 @@ public class Engine extends Job {
                 return object.toString();
 
             } catch (NamingException e) {
+                _ctx=null;
                 CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad für Record suche.");
                 CentralLogger.getInstance().info(this,e);
             } 
@@ -421,6 +422,7 @@ public class Engine extends Job {
                     CentralLogger.getInstance().warn(this,"Set attriebute faild. Record: "+recordPath+" with attriebute: "+attriebute.name()+" not found!");
                 }
             } catch (NamingException e) {
+                _ctx=null;
                 CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad für Record suche. Beim setzen eines Atributes fehlgeschlagen.");
                 CentralLogger.getInstance().info(this,e);
             } 
@@ -468,11 +470,13 @@ public class Engine extends Job {
                         }
                     }
                 } catch (NamingException e) {
+                    _ctx=null;
                     CentralLogger.getInstance().info(this,"LDAP Fehler");
                     CentralLogger.getInstance().info(this,e);
                 }
                 answerFacility.close();
             } catch (NamingException e) {
+                _ctx=null;
                 CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
                 CentralLogger.getInstance().info(this,e);
             }
@@ -524,21 +528,17 @@ public class Engine extends Job {
             try{
                 ArrayList<String> list = new ArrayList<String>();
                 NamingEnumeration<SearchResult> answer = _ctx.search(ldapPath,"eren=*" , ctrl);
-                try {
-                    while(answer.hasMore()){
-                        String name = answer.next().getName()+","+ldapPath;
-                        list.add(name);
-                    }
-                    if(list.size()<1){
-                        list.add("no entry found");
-                    }
-                } catch (NamingException e) {
-                    CentralLogger.getInstance().info(this,"LDAP Fehler");
-                    CentralLogger.getInstance().info(this,e);
+                while(answer.hasMore()){
+                    String name = answer.next().getName()+","+ldapPath;
+                    list.add(name);
+                }
+                if(list.size()<1){
+                    list.add("no entry found");
                 }
                 answer.close();
                 return list;
             } catch (NamingException e) {
+                _ctx=null;
                 CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
                 CentralLogger.getInstance().info(this,e);
             }
@@ -689,6 +689,7 @@ public class Engine extends Job {
     
             } catch (NamingException e1) {
                 // TODO Auto-generated catch block
+                _ctx=null;
                 e1.printStackTrace();
             }
             //
@@ -727,6 +728,7 @@ public class Engine extends Job {
             ldapWriteTimeCollector.setValue( gregorianTimeDifference ( startTime, new GregorianCalendar())/modItemTemp.length);
             //System.out.println ("Engine.changeValue : Time to write to LDAP: (" +  channel + ")" + gregorianTimeDifference ( startTime, new GregorianCalendar()));
         } catch (NamingException e) {
+            _ctx=null;
             CentralLogger.getInstance().warn( this, "Engine.changeValue: Naming Exception in modifyAttributes! Channel: " +  ldapChannelName);
             System.out.println("Engine.changeValue: Naming Exceptionin modifyAttributes! Channel: " +  ldapChannelName);
 //            for (ModificationItem modificationItem : modItemTemp) {

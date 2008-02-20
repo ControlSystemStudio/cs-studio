@@ -30,6 +30,7 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
+import javax.naming.ldap.Control;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.Activator;
@@ -43,8 +44,9 @@ import org.eclipse.core.runtime.Preferences;
  * @since 12.04.2007
  */
 public class LDAPConnector {
-    InitialDirContext ctx = null;
+    private InitialDirContext _ctx = null;
     private Hashtable<Object, String> _env;
+    private Control[] _control;
 
     /**
      * The connection settings come from
@@ -83,7 +85,7 @@ public class LDAPConnector {
      * @return the LDAP Connection
      */
     public DirContext getDirContext() {
-        return ctx;
+        return _ctx;
     }
 
     public DirContext reconect() throws NamingException{
@@ -205,7 +207,14 @@ public class LDAPConnector {
     }
 
     private void setEnv() throws NamingException {
-        ctx = new InitialDirContext(_env);
+//      try{
+//      }catch(CommunicationException ce){
+//          System.out.println("CommunicationException Test");
+//          throw ce;
+//      }
+        _control = null;
+        _ctx = new InitialCSSLdapContext(_env, _control);
+//        _ctx = new InitialDirContext(_env);
     }
 
 
