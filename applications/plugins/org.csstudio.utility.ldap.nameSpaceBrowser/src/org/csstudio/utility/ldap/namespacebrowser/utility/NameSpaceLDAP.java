@@ -24,17 +24,14 @@
  */
 package org.csstudio.utility.ldap.namespacebrowser.utility;
 
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-
-import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 
-import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.reader.ErgebnisListe;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 /**
  * @author hrickens
@@ -44,25 +41,20 @@ import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
  */
 public class NameSpaceLDAP extends NameSpace {
     
-    private static DirContext ctx;
-    
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpace#start()
 	 */
 	@Override
 	public void start() {
-	    if(ctx ==null){
-	        ctx = Engine.getInstance().getLdapDirContext();
-	    }
 		try{
 			LDAPReader ldapr;
             if (getNameSpaceResultList() instanceof ErgebnisListe) {
                 ErgebnisListe eListe = (ErgebnisListe) getNameSpaceResultList();
                 String tmp = getSelection();
         		if(tmp.endsWith("=*,")) //$NON-NLS-1$
-        			ldapr = new LDAPReader(getName(), getFilter(),SearchControls.SUBTREE_SCOPE, eListe, ctx);
+        			ldapr = new LDAPReader(getName(), getFilter(),SearchControls.SUBTREE_SCOPE, eListe);
         		else
-        			ldapr = new LDAPReader(getName(), getFilter(),SearchControls.ONELEVEL_SCOPE, eListe, ctx);
+        			ldapr = new LDAPReader(getName(), getFilter(),SearchControls.ONELEVEL_SCOPE, eListe);
         		ldapr.addJobChangeListener(new JobChangeAdapter() {
         	        public void done(IJobChangeEvent event) {
         		        if (event.getResult().isOK())

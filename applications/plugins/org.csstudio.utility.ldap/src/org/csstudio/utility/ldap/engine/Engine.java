@@ -332,6 +332,13 @@ public class Engine extends Job {
         return _ctx;
     }
    
+    synchronized public DirContext reconnectDirContext(){
+        try {
+            _ctx.close();
+        } catch (NamingException e) {}
+        _ctx = null;
+        return getLdapDirContext();
+    }
     
     /**
      * Get the Value of an record attribute.

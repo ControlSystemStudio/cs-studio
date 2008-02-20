@@ -26,12 +26,9 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.naming.directory.DirContext;
-
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.reader.ErgebnisListe;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.nameSpaceSearch.Activator;
@@ -77,26 +74,31 @@ import org.eclipse.ui.part.ViewPart;
 
 public class MainView extends ViewPart implements Observer{
     public static final String ID = MainView.class.getName();
-    private Text searchText;
-    private TableViewer ergebnissTableView;
-    private boolean lastSortBackward;
-    private int[] sorts = {0,0,0};
-    private Image up;
-    private Image up_old;
-    private Image down;
-    private Image down_old;
-    private HashMap<String, String> headline = new HashMap<String, String>();
-//  private Image world;
-    private Image work_disable;
-    private Label workIcon;
-    private LDAPReader ldapr;
-    private Display disp;
-    private ErgebnisListe ergebnisListe;
-    private Button searchButton;
+    private Text _searchText;
+    private TableViewer _ergebnissTableView;
+    private boolean _lastSortBackward;
+    private int[] _sorts = {0,0,0};
+    private Image _up;
+    private Image _upOld;
+    private Image _down;
+    private Image _downOld;
+    private HashMap<String, String> _headline = new HashMap<String, String>();
+    private Image _workDisable;
+    private Label _workIcon;
+    private LDAPReader _ldapr;
+    private Display _disp;
+    private ErgebnisListe _ergebnisListe;
+    private Button _searchButton;
     
-    private String WILDCARD  = "*"; //$NON-NLS-1$
-    private static DirContext _ctx;
+    private static final String WILDCARD  = "*"; //$NON-NLS-1$
 
+    /**
+     * 
+     * @author hrickens
+     * @author $Author$
+     * @version $Revision$
+     * @since 20.02.2008
+     */
     class myTableLabelProvider implements ITableLabelProvider{
         // No Image
         public Image getColumnImage(Object element, int columnIndex) {return null;}
@@ -156,82 +158,78 @@ public class MainView extends ViewPart implements Observer{
 
     }
 
-    /***************************************************************************
-     *
-     * Make the Plugin UI
-     * - A Textfield for the Searchword [searchText]
-     * - A Pushbutton to start search [serachButton]
-     * - A resulttable to view the resulte [ergebnissTable]
-     *   - Header as Button to Sort the table
-     *   - D&D/MB3 function on a row
-     *
-     ***************************************************************************/
-
     public MainView() {
-        if(_ctx==null){
-            _ctx = Engine.getInstance().getLdapDirContext();
-        }
-        ergebnisListe = new ErgebnisListe();
-        ergebnisListe.addObserver(this);
+        _ergebnisListe = new ErgebnisListe();
+        _ergebnisListe.addObserver(this);
     }
 
+    /**
+     * Make the Plugin UI.
+     * - A Text-field for the Searchword [searchText].
+     * - A Pushbutton to start search [serachButton].
+     * - A result-table to view the result [ergebnissTable].
+     *   - Header as Button to Sort the table.
+     *   - D&D/MB3 function on a row.
+     *  @param parent the Parent Composite.
+     *
+     **/
     @Override
-    public void createPartControl(Composite parent){
-        disp = parent.getDisplay();
+    public final void createPartControl(final Composite parent) {
+        _disp = parent.getDisplay();
         parent.setLayout(new GridLayout(3,false));
-        up = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up.gif").createImage(); //$NON-NLS-1$
-        down = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down.gif").createImage(); //$NON-NLS-1$
-        up_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up_old.gif").createImage(); //$NON-NLS-1$
-        down_old = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down_old.gif").createImage(); //$NON-NLS-1$
-        work_disable = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/LDAPLupe.gif").createImage(); //$NON-NLS-1$
+        _up = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up.gif").createImage(); //$NON-NLS-1$
+        _down = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down.gif").createImage(); //$NON-NLS-1$
+        _upOld = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/up_old.gif").createImage(); //$NON-NLS-1$
+        _downOld = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/down_old.gif").createImage(); //$NON-NLS-1$
+        _workDisable = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/LDAPLupe.gif").createImage(); //$NON-NLS-1$
 
-        searchText = makeSearchField(parent);
+        _searchText = makeSearchField(parent);
 
         // make Search Button
-        searchButton = new Button(parent,SWT.PUSH);
-        searchButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
-        searchButton.setFont(new Font(parent.getDisplay(),Messages.MainView_SearchButtonFont,10,SWT.NONE));
-        searchButton.setText(Messages.MainView_searchButton); //$NON-NLS-1$
+        _searchButton = new Button(parent,SWT.PUSH);
+        _searchButton.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
+        _searchButton.setFont(new Font(parent.getDisplay(),Messages.MainView_SearchButtonFont,10,SWT.NONE));
+        _searchButton.setText(Messages.MainView_searchButton); //$NON-NLS-1$
 
         // make Serach Activity Icon
-        workIcon = new Label(parent,SWT.NONE);
-        workIcon.setImage(work_disable);
-        workIcon.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
-        workIcon.setEnabled(false);
+        _workIcon = new Label(parent,SWT.NONE);
+        _workIcon.setImage(_workDisable);
+        _workIcon.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
+        _workIcon.setEnabled(false);
 //      world.getImageData().
 
         // make ErgebnisTable
-        ergebnissTableView = new TableViewer(parent,SWT.MULTI|SWT.FULL_SELECTION);
-        Table ergebnissTable = ergebnissTableView.getTable();
+        _ergebnissTableView = new TableViewer(parent,SWT.MULTI|SWT.FULL_SELECTION);
+        Table ergebnissTable = _ergebnissTableView.getTable();
         ergebnissTable.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,3,1));
         ergebnissTable.setLinesVisible (true);
         ergebnissTable.setHeaderVisible (true);
 
-        ergebnissTableView.setContentProvider(new myContentProvider());
-        ergebnissTableView.setLabelProvider(new myTableLabelProvider());
+        _ergebnissTableView.setContentProvider(new myContentProvider());
+        _ergebnissTableView.setLabelProvider(new myTableLabelProvider());
 
 
         // add Listeners
-        searchButton.addSelectionListener(new SelectionListener() {
+        _searchButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
-                workIcon.setEnabled(true);
-                searchButton.setEnabled(false);
+                _workIcon.setEnabled(true);
+                _searchButton.setEnabled(false);
 //              workIcon.setImage(world);
-                search(searchText.getText());
+                search(_searchText.getText());
             }
             public void widgetDefaultSelected(SelectionEvent e) {}
 
         });
 
-        searchText.addKeyListener(new KeyListener() {
+        _searchText.addKeyListener(new KeyListener() {
 
             public void keyReleased(KeyEvent e) {
                 if(e.keyCode==SWT.CR){
-                    workIcon.setEnabled(true);
-                    searchButton.setEnabled(false);
+                    _workIcon.setEnabled(true);
+                    _searchButton.setEnabled(false);
 //                  workIcon.setImage(world);
-                    search(searchText.getText());
+                    search(_searchText.getText());
                 }
             }
 
@@ -240,21 +238,21 @@ public class MainView extends ViewPart implements Observer{
         });
 
         // Make Table row Drageble
-        new ProcessVariableDragSource(ergebnissTableView.getControl(), ergebnissTableView);
+        new ProcessVariableDragSource(_ergebnissTableView.getControl(), _ergebnissTableView);
         // MB3
         makeContextMenu();
-        searchText.forceFocus();
+        _searchText.forceFocus();
         parent.update();
         parent.layout();
     }
 
         @Override
     public void setFocus() {
-        searchText.forceFocus();
+        _searchText.forceFocus();
     }
 
     public void startSearch(String search){
-        searchText.setText(search);
+        _searchText.setText(search);
         search(search);
     }
 
@@ -269,9 +267,9 @@ public class MainView extends ViewPart implements Observer{
      ***************************************************************************/
     protected void search(String search) {
         // Leere die Tabelle
-        ergebnissTableView.getTable().removeAll();
-        ergebnissTableView.getTable().clearAll();
-        ergebnissTableView.refresh();
+        _ergebnissTableView.getTable().removeAll();
+        _ergebnissTableView.getTable().clearAll();
+        _ergebnissTableView.refresh();
         // ersetzt mehrfach vorkommende '*' durch einen. Da die LDAP abfrage damit nicht zurecht kommt.
         search = search.replaceAll("\\*\\**", WILDCARD); //$NON-NLS-1$ //$NON-NLS-2$
         String filter = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_RECORD_ATTRIEBUT)+
@@ -279,29 +277,29 @@ public class MainView extends ViewPart implements Observer{
         if(search.compareTo(WILDCARD)!=0) //$NON-NLS-1$
             filter = filter.concat(WILDCARD); //$NON-NLS-1$
 
-        if(headline.isEmpty()){
-            headline.put("efan", Messages.MainView_facility); //$NON-NLS-1$ //$NON-NLS-2$
-            headline.put("ecom", Messages.MainView_ecom); //$NON-NLS-1$ //$NON-NLS-2$
-            headline.put("econ", Messages.MainView_Controller); //$NON-NLS-1$ //$NON-NLS-2$
-            headline.put("eren", Messages.MainView_Record); //$NON-NLS-1$ //$NON-NLS-2$
+        if(_headline.isEmpty()){
+            _headline.put("efan", Messages.MainView_facility); //$NON-NLS-1$ //$NON-NLS-2$
+            _headline.put("ecom", Messages.MainView_ecom); //$NON-NLS-1$ //$NON-NLS-2$
+            _headline.put("econ", Messages.MainView_Controller); //$NON-NLS-1$ //$NON-NLS-2$
+            _headline.put("eren", Messages.MainView_Record); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        ldapr = new LDAPReader(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
-                filter, ergebnisListe, _ctx);
-        ldapr.addJobChangeListener(new JobChangeAdapter() {
+        _ldapr = new LDAPReader(Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.P_STRING_SEARCH_ROOT),
+                filter, _ergebnisListe);
+        _ldapr.addJobChangeListener(new JobChangeAdapter() {
             public void done(IJobChangeEvent event) {
             if (event.getResult().isOK())
-                MainView.this.ergebnisListe.notifyView();
+                MainView.this._ergebnisListe.notifyView();
             }
          });
-        ldapr.schedule();
-        ergebnissTableView.getTable().layout();
+        _ldapr.schedule();
+        _ergebnissTableView.getTable().layout();
     }
 
     private void getText() {
-        ergebnissTableView.refresh(false);
+        _ergebnissTableView.refresh(false);
         ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
         ArrayList<String> list = new ArrayList<String>();
-        list.addAll(ergebnisListe.getAnswer());
+        list.addAll(_ergebnisListe.getAnswer());
         /*
          * Vorbereitung für die Nutzung der ersten Zeile als Filter Feld.
          */
@@ -355,11 +353,11 @@ public class MainView extends ViewPart implements Observer{
             String[] elements = row.split(","); //$NON-NLS-1$
             String path =""; //$NON-NLS-1$
             for(int j=0;j<elements.length;j++){
-                if(i==0&&j>=ergebnissTableView.getTable().getColumnCount()){
+                if(i==0&&j>=_ergebnissTableView.getTable().getColumnCount()){
 //                  lastSort = new int[elements.length-1];
-                    final TableColumn tc = new TableColumn(ergebnissTableView.getTable(),SWT.NONE);
+                    final TableColumn tc = new TableColumn(_ergebnissTableView.getTable(),SWT.NONE);
                     tc.setResizable(true);
-                    tc.setWidth(ergebnissTableView.getTable().getSize().x/4-4); // TODO: 4 replace whit true columsize
+                    tc.setWidth(_ergebnissTableView.getTable().getSize().x/4-4); // TODO: 4 replace whit true columsize
                     tc.setToolTipText(Messages.MainView_ToolTip_Sort);
                     tc.setMoveable(true);
                     final int spalte = j;
@@ -369,36 +367,36 @@ public class MainView extends ViewPart implements Observer{
                         public void widgetSelected(SelectionEvent e) {
                                 backward=!backward;
                                 tc.setAlignment(SWT.LEFT);
-                                if(sorts[0]!=spalte){
+                                if(_sorts[0]!=spalte){
                                     TableColumn[] chil = tc.getParent().getColumns();
-                                    chil[sorts[1]].setImage(null);
-                                    sorts[1]=sorts[0];
-                                    lastSortBackward=backward;
-                                    if(lastSortBackward)
-                                        chil[sorts[1]].setImage(down_old);
+                                    chil[_sorts[1]].setImage(null);
+                                    _sorts[1]=_sorts[0];
+                                    _lastSortBackward=backward;
+                                    if(_lastSortBackward)
+                                        chil[_sorts[1]].setImage(_downOld);
                                     else
-                                        chil[sorts[1]].setImage(up_old);
+                                        chil[_sorts[1]].setImage(_upOld);
                                 }
-                                sorts[0]=spalte;
-                                ergebnissTableView.setSorter(new TableSorter(sorts[0],backward,sorts[1], lastSortBackward));
+                                _sorts[0]=spalte;
+                                _ergebnissTableView.setSorter(new TableSorter(_sorts[0],backward,_sorts[1], _lastSortBackward));
                                 if(backward)
-                                    tc.setImage(down);
+                                    tc.setImage(_down);
                                 else
-                                    tc.setImage(up);
-                                lastSortBackward=backward;
+                                    tc.setImage(_up);
+                                _lastSortBackward=backward;
                         }
                     });
                     String temp;
-                    if((temp=headline.get(elements[j].split("=")[0]))==null) //$NON-NLS-1$
+                    if((temp=_headline.get(elements[j].split("=")[0]))==null) //$NON-NLS-1$
                          temp = elements[j].split("=")[0]; //$NON-NLS-1$
                     if(j==0){
                         temp=temp.concat(" ("+list.size()+")"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                     tc.setText(temp);
                 }else if(i==0&&j==0){
-                    String tmp = ergebnissTableView.getTable().getColumn(j).getText();
+                    String tmp = _ergebnissTableView.getTable().getColumn(j).getText();
                     tmp = tmp.substring(0,tmp.lastIndexOf("(")+1)+list.size()+")"; //$NON-NLS-1$ //$NON-NLS-2$
-                    ergebnissTableView.getTable().getColumn(j).setText(tmp);
+                    _ergebnissTableView.getTable().getColumn(j).setText(tmp);
                 }
                 path +=","+elements[j];
             }
@@ -414,13 +412,13 @@ public class MainView extends ViewPart implements Observer{
             i++;
         }
 //      System.out.println("Thread test 2");
-        ergebnissTableView.setContentProvider(new myContentProvider());
-        ergebnissTableView.setLabelProvider(new myTableLabelProvider());
-        ergebnissTableView.setInput(tableElements);
-        ergebnissTableView.refresh(true);
+        _ergebnissTableView.setContentProvider(new myContentProvider());
+        _ergebnissTableView.setLabelProvider(new myTableLabelProvider());
+        _ergebnissTableView.setInput(tableElements);
+        _ergebnissTableView.refresh(true);
 //      workIcon.setImage(work_disable);
-        searchButton.setEnabled(true);
-        workIcon.setEnabled(false);
+        _searchButton.setEnabled(true);
+        _workIcon.setEnabled(false);
 //      parent.layout();
 //      System.out.println("Thread test ende");
     }
@@ -431,7 +429,7 @@ public class MainView extends ViewPart implements Observer{
      */
     private void makeContextMenu() {
         MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-        Control contr = ergebnissTableView.getControl();
+        Control contr = _ergebnissTableView.getControl();
         manager.addMenuListener(new IMenuListener() {
             public void menuAboutToShow(IMenuManager manager) {
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -439,7 +437,7 @@ public class MainView extends ViewPart implements Observer{
         });
         Menu menu = manager.createContextMenu(contr);
         contr.setMenu(menu);
-        getSite().registerContextMenu(manager, ergebnissTableView);
+        getSite().registerContextMenu(manager, _ergebnissTableView);
     }
     /***
      *
@@ -450,14 +448,14 @@ public class MainView extends ViewPart implements Observer{
      * @return
      */
     private Text makeSearchField(Composite parent) {
-            searchText = new Text(parent,SWT.BORDER|SWT.SINGLE);
-            searchText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
-            searchText.setText(WILDCARD); //$NON-NLS-1$
-            searchText.setToolTipText(Messages.MainView_ToolTip);
+            _searchText = new Text(parent,SWT.BORDER|SWT.SINGLE);
+            _searchText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
+            _searchText.setText(WILDCARD); //$NON-NLS-1$
+            _searchText.setToolTipText(Messages.MainView_ToolTip);
 
             //   Eclipse
             int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
-            DropTarget target = new DropTarget(searchText, operations);
+            DropTarget target = new DropTarget(_searchText, operations);
 
             // Receive data in Text or File format
             final TextTransfer textTransfer = TextTransfer.getInstance();
@@ -488,16 +486,16 @@ public class MainView extends ViewPart implements Observer{
                 public void dropAccept(DropTargetEvent event) {     }
                 public void drop(DropTargetEvent event) {
                     if (textTransfer.isSupportedType(event.currentDataType)) {
-                       searchText.insert((String)event.data);
+                       _searchText.insert((String)event.data);
                     }
                 }
             });
 
-        return searchText;
+        return _searchText;
     }
 
     public void update(Observable arg0, Object arg1) {
-        disp.syncExec(new Runnable() {
+        _disp.syncExec(new Runnable() {
             public void run() {
                 getText();
 //              answer.setText(text);

@@ -31,6 +31,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -42,7 +43,6 @@ public class LDAPReader extends Job {
 	private int defaultScope=SearchControls.SUBTREE_SCOPE;
 	private ArrayList<String> list;
 	private ErgebnisListe _ergebnisListe;
-    private DirContext _ctx;
 
 	/**
 	 * Used the connection settings from org.csstudio.utility.ldap.ui
@@ -51,9 +51,9 @@ public class LDAPReader extends Job {
 	 * @param nameUFilter<br> 0: name<br>1: = filter<br>
 	 * @param ergebnisListe
 	 */
-	public LDAPReader(String[] nameUFilter, ErgebnisListe ergebnisListe, DirContext ctx){
+	public LDAPReader(String[] nameUFilter, ErgebnisListe ergebnisListe){
 		super("LDAPReader");
-		setBasics(nameUFilter[0], nameUFilter[1], ergebnisListe, ctx);
+		setBasics(nameUFilter[0], nameUFilter[1], ergebnisListe);
 	}
 
 
@@ -66,11 +66,11 @@ public class LDAPReader extends Job {
 	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
 	 */
 
-	public LDAPReader(String[] nameUFilter, int searchScope, ErgebnisListe ergebnisListe, DirContext ctx){
+	public LDAPReader(String[] nameUFilter, int searchScope, ErgebnisListe ergebnisListe){
 
 		super("LDAPReader");
 
-		setBasics(nameUFilter[0], nameUFilter[1], ergebnisListe, ctx);
+		setBasics(nameUFilter[0], nameUFilter[1], ergebnisListe);
 		setDefaultScope(searchScope);
 	}
 
@@ -82,9 +82,9 @@ public class LDAPReader extends Job {
 	 * @param filter
 	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
 	 */
-	public LDAPReader(String name, String filter, ErgebnisListe ergebnisListe, DirContext ctx){
+	public LDAPReader(String name, String filter, ErgebnisListe ergebnisListe){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe, ctx);
+		setBasics(name, filter, ergebnisListe);
 	}
 
 	/**
@@ -96,9 +96,9 @@ public class LDAPReader extends Job {
 	 * @param searchScope
 	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
 	 */
-	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe, DirContext ctx){
+	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe, ctx);
+		setBasics(name, filter, ergebnisListe);
 		setDefaultScope(searchScope);
 	}
 
@@ -110,13 +110,11 @@ public class LDAPReader extends Job {
 	 * @param searchScope
 	 * @param ergebnisListe the list for the result {@link ErgebnisListe}
 	 * @param env connection settings.
-	 * 	@see javax.naming.directory.DirContext;
-	 * 	@see	javax.naming.Context;
 	 */
 
-	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe, Hashtable<Object,String> env, DirContext ctx){
+	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe, Hashtable<Object,String> env){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe, ctx);
+		setBasics(name, filter, ergebnisListe);
 		setDefaultScope(searchScope);
 	}
 	/**
@@ -132,12 +130,10 @@ public class LDAPReader extends Job {
 	 *  3: Context.SECURITY_PRINCIPAL<br>
 	 *  4: Context.SECURITY_CREDENTIALS<br>
 	 *
-	 * 	@see javax.naming.directory.DirContext;
-	 * 	@see	javax.naming.Context;
 	 */
-	public LDAPReader(String name, String filter,  ErgebnisListe ergebnisListe, String[] env, DirContext ctx){
+	public LDAPReader(String name, String filter,  ErgebnisListe ergebnisListe, String[] env){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe,ctx);
+		setBasics(name, filter, ergebnisListe);
 	}
 	/**
 	 *
@@ -152,12 +148,10 @@ public class LDAPReader extends Job {
 	 *  3: Context.SECURITY_PRINCIPAL<br>
 	 *  4: Context.SECURITY_CREDENTIALS<br>
 	 *
-	 * 	@see javax.naming.directory.DirContext;
-	 * 	@see	javax.naming.Context;
 	 */
-	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe, String[] env, DirContext ctx){
+	public LDAPReader(String name, String filter, int searchScope, ErgebnisListe ergebnisListe, String[] env){
 		super("LDAPReader");
-		setBasics(name, filter, ergebnisListe, ctx);
+		setBasics(name, filter, ergebnisListe);
 		setDefaultScope(searchScope);
 	}
 
@@ -167,11 +161,10 @@ public class LDAPReader extends Job {
 	 * @param ergebnisListe
 	 * @param ctx 
 	 */
-	private void setBasics(String name, String filter, ErgebnisListe ergebnisListe, DirContext ctx) {
+	private void setBasics(String name, String filter, ErgebnisListe ergebnisListe) {
 		_ergebnisListe = ergebnisListe;
 		_name = name;
 		_filter = filter;
-		_ctx = ctx;
     }
 
 	/**
@@ -185,13 +178,14 @@ public class LDAPReader extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor ) {
 	    monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
-		if(_ctx !=null){
+	    DirContext ctx = Engine.getInstance().getLdapDirContext();
+		if(ctx !=null){
 	        SearchControls ctrl = new SearchControls();
 	        ctrl.setSearchScope(defaultScope);
 //	        ctrl.setReturningAttributes(null);
 	        try{
 	        	list = new ArrayList<String>();
-	            NamingEnumeration<SearchResult> answer = _ctx.search(_name, _filter, ctrl);
+	            NamingEnumeration<SearchResult> answer = ctx.search(_name, _filter, ctrl);
 				try {
 					while(answer.hasMore()){
 						String name = answer.next().getName()+","+_name;
@@ -204,17 +198,16 @@ public class LDAPReader extends Job {
 						list.add("no entry found");
 					}
 				} catch (NamingException e) {
-				    _ctx=null;
+				    ctx = Engine.getInstance().reconnectDirContext();
                     CentralLogger.getInstance().info(this,"LDAP Fehler");
                     CentralLogger.getInstance().info(this,e);
 				}
 				answer.close();
-//				ctx.close();
 				_ergebnisListe.setResultList(list);
 				monitor.done();
 				return Status.OK_STATUS;
 			} catch (NamingException e) {
-			    _ctx=null;
+			    Engine.getInstance().reconnectDirContext();
 				CentralLogger.getInstance().info(this,"Falscher LDAP Suchpfad.");
                 CentralLogger.getInstance().info(this,e);
 			}

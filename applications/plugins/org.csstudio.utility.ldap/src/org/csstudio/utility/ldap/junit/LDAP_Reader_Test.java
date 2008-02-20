@@ -54,7 +54,7 @@ public class LDAP_Reader_Test {
 	public void testLDAPReaderStringArrayErgebnisListe() {
 		ErgebnisListe el = new ErgebnisListe();
 		String nameUFilter[]= {"",""};
-		LDAPReader lr = new LDAPReader(nameUFilter,el,null);
+		LDAPReader lr = new LDAPReader(nameUFilter,el);
 		lr.schedule();
 		assertTrue(el.getAnswer().size()>0);
 //		fail("Not yet implemented");

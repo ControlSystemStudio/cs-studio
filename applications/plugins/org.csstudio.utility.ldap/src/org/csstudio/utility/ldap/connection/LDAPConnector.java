@@ -31,6 +31,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.ldap.Control;
+import javax.naming.ldap.InitialLdapContext;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.Activator;
@@ -213,7 +214,7 @@ public class LDAPConnector {
 //          throw ce;
 //      }
         _control = null;
-        _ctx = new InitialCSSLdapContext(_env, _control);
+        _ctx = new InitialLdapContext(_env, _control);
 //        _ctx = new InitialDirContext(_env);
     }
 
