@@ -97,7 +97,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		Label label = new Label(contents, SWT.NONE);
 		label.setText("User name:");
 		_username = new Text(contents, SWT.BORDER | SWT.FLAT);
-		_username.setFocus();
+
 		_username.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_username.setText(_lastUser);
 		
@@ -113,7 +113,12 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		_rememberLogin.setText("Remember my user name and password");
 		_rememberLogin.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 		_rememberLogin.setVisible(false);
-		
+
+		if(_lastUser!=null&&_lastUser.trim().length()>0){
+		    _password.setFocus();
+		}else{
+		    _username.setFocus();
+		}
 		return parentComposite;
 	}
 	
