@@ -1,5 +1,7 @@
 package org.csstudio.alarm.treeView.ldap;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Hashtable;
 
 import javax.naming.Context;
@@ -133,7 +135,7 @@ public class LdapDirectoryReader extends Job {
 				
 				// Read the object's alarm status, and trigger an alarm on the node
 				// that was just created if there is an alarm.
-				evaluateAlarmAttributes(result, node);
+				evaluateAttributes(result, node);
 			}
 		}
 		catch (SizeLimitExceededException e)
@@ -153,7 +155,7 @@ public class LdapDirectoryReader extends Job {
 	
 	
 	/**
-	 * Evaluates the alarm attributes (if any) of an object found in the
+	 * Evaluates the attributes (if any) of an object found in the
 	 * directory. If there is an alarm, triggers the alarm for the node
 	 * in the alarm tree.
 	 * 
@@ -161,7 +163,7 @@ public class LdapDirectoryReader extends Job {
 	 * @param node the node on which the alarm must be triggered.
 	 * @throws NamingException if something bad happens...
 	 */
-	private void evaluateAlarmAttributes(SearchResult result, ProcessVariableNode node) throws NamingException {
+	private void evaluateAttributes(SearchResult result, ProcessVariableNode node) throws NamingException {
 		Attributes attrs = result.getAttributes();
 		Attribute severityAttr = attrs.get("epicsAlarmSeverity");
 		Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
@@ -186,6 +188,26 @@ public class LdapDirectoryReader extends Job {
 			String display = (String) displayAttr.get();
 			if (display != null) {
 				node.setCssAlarmDisplay(display);
+			}
+		}
+		
+		Attribute helpPageAttr = attrs.get("epicsHelpPage");
+		if (helpPageAttr != null) {
+			String helpPage = (String) helpPageAttr.get();
+			if (helpPage != null && helpPage.matches("^http://.+")) {
+				try {
+					node.setHelpPage(new URL(helpPage));
+				} catch (MalformedURLException e) {
+					// ignore
+				}
+			}
+		}
+		
+		Attribute helpGuidanceAttr = attrs.get("epicsHelpGuidance");
+		if (helpGuidanceAttr != null) {
+			String helpGuidance = (String) helpGuidanceAttr.get();
+			if (helpGuidance != null) {
+				node.setHelpGuidance(helpGuidance);
 			}
 		}
 	}

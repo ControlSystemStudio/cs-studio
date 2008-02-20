@@ -1,5 +1,6 @@
 package org.csstudio.alarm.treeView.views;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -37,6 +39,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
@@ -55,6 +60,8 @@ public class AlarmTreeView extends ViewPart {
 	private AlarmQueueSubscriber alarmQueueSubscriber;
 	private Action acknowledgeAction;
 	private Action runCssAlarmDisplayAction;
+	private Action showHelpPageAction;
+	private Action showHelpGuidanceAction;
 	
 	/**
 	 * Returns the id of this view.
@@ -169,8 +176,37 @@ public class AlarmTreeView extends ViewPart {
 		IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 		acknowledgeAction.setEnabled(containsNodeWithUnackAlarm(sel));
 		runCssAlarmDisplayAction.setEnabled(hasCssAlarmDisplay(sel.getFirstElement()));
+		showHelpGuidanceAction.setEnabled(hasHelpGuidance(sel.getFirstElement()));
+		showHelpPageAction.setEnabled(hasHelpPage(sel.getFirstElement()));
 	}
 	
+	/**
+	 * Return whether help guidance is available for the given node.
+	 * @param pvNode the node.
+	 * @return <code>true</code> if the node has a help guidance string,
+	 * <code>false</code> otherwise.
+	 */
+	private boolean hasHelpGuidance(Object pvNode) {
+		if (pvNode instanceof ProcessVariableNode) {
+			return ((ProcessVariableNode) pvNode).getHelpGuidance() != null;
+		}
+		return false;
+	}
+
+	/**
+	 * Return whether the given node has an associated help page.
+	 * 
+	 * @param pvNode the node.
+	 * @return <code>true</code> if the node has an associated help page,
+	 * <code>false</code> otherwise.
+	 */
+	private boolean hasHelpPage(Object pvNode) {
+		if (pvNode instanceof ProcessVariableNode) {
+			return ((ProcessVariableNode) pvNode).getHelpPage() != null;
+		}
+		return false;
+	}
+
 	/**
 	 * Returns whether the given process variable node in the tree has an
 	 * associated CSS alarm display configured.
@@ -259,6 +295,8 @@ public class AlarmTreeView extends ViewPart {
 		if (selection.size() == 1
 				&& selection.getFirstElement() instanceof ProcessVariableNode) {
 			menu.add(runCssAlarmDisplayAction);
+			menu.add(showHelpGuidanceAction);
+			menu.add(showHelpPageAction);
 		}
 		
 		// adds a separator after which contributed actions from other plug-ins
@@ -324,7 +362,7 @@ public class AlarmTreeView extends ViewPart {
 				}
 			}
 		};
-		acknowledgeAction.setText("Send acknowledgement");
+		acknowledgeAction.setText("Send Acknowledgement");
 		acknowledgeAction.setToolTipText("Send alarm acknowledgement");
 		acknowledgeAction.setEnabled(false);
 		
@@ -344,9 +382,61 @@ public class AlarmTreeView extends ViewPart {
 				}
 			}
 		};
-		runCssAlarmDisplayAction.setText("Run alarm display");
+		runCssAlarmDisplayAction.setText("Run Alarm Display");
 		runCssAlarmDisplayAction.setToolTipText("Run the alarm display for this PV");
 		runCssAlarmDisplayAction.setEnabled(false);
+		
+		showHelpGuidanceAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection = (IStructuredSelection) viewer
+						.getSelection();
+				Object selected = selection.getFirstElement();
+				if (selected instanceof ProcessVariableNode) {
+					ProcessVariableNode pvNode = (ProcessVariableNode) selected;
+					String helpGuidance = pvNode.getHelpGuidance();
+					if (helpGuidance != null) {
+						MessageDialog.openInformation(getSite().getShell(),
+								pvNode.getName(), helpGuidance);
+					}
+				}
+			}
+		};
+		showHelpGuidanceAction.setText("Show Help Guidance");
+		showHelpGuidanceAction.setToolTipText("Show the help guidance for this node");
+		showHelpGuidanceAction.setEnabled(false);
+		
+		showHelpPageAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection = (IStructuredSelection) viewer
+						.getSelection();
+				Object selected = selection.getFirstElement();
+				if (selected instanceof ProcessVariableNode) {
+					ProcessVariableNode pvNode = (ProcessVariableNode) selected;
+					URL helpPage = pvNode.getHelpPage();
+					if (helpPage != null) {
+						try {
+							// Note: we have to pass a browser id here to work
+							// around a bug in eclipse. The method documentation
+							// says that createBrowser accepts null but it will
+							// throw a NullPointerException.
+							// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=194988
+							IWebBrowser browser = PlatformUI.getWorkbench()
+									.getBrowserSupport()
+									.createBrowser("workaround");
+							browser.openURL(helpPage);
+						} catch (PartInitException e) {
+							CentralLogger.getInstance().error(this,
+									"Failed to initialize workbench browser.", e);
+						}
+					}
+				}
+			}
+		};
+		showHelpPageAction.setText("Open Help Page");
+		showHelpPageAction.setToolTipText("Open the help page for this node in the web browser");
+		showHelpPageAction.setEnabled(false);
 	}
 	
 	/**
