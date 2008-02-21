@@ -35,6 +35,15 @@ public class ChartSampleContainer implements ChartSample
     }
 
     /** Construct new sample from values.
+     *  @see #ChartSampleContainer(Type, double, double, String)
+     */
+    public ChartSampleContainer(Type type, double x, double y, String info)
+    {
+        this(type, x, y, y, y, info);
+    }
+
+    
+    /** Construct new sample from values.
      *  @param type One of the Sample.TYPE_... values
      *  @param x X coordinate
      *  @param y Y coordinate
