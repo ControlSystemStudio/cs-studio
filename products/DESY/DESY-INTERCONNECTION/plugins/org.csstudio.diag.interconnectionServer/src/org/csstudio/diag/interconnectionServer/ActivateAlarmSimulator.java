@@ -21,20 +21,44 @@ package org.csstudio.diag.interconnectionServer;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-import org.csstudio.diag.interconnectionServer.server.Statistic;
+import java.util.Map;
+
+import org.csstudio.diag.interconnectionServer.server.AlarmSimulator;
+import org.csstudio.diag.interconnectionServer.server.PreferenceProperties;
+import org.csstudio.diag.interconnectionServer.server.SendCommandToIoc;
 import org.csstudio.platform.libs.dcf.actions.IAction;
-import org.csstudio.platform.statistic.CollectorSupervisor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+/**
+ * Use XMPP to activate the alarm simulator.
+ * 
+ * @author Matthias Clausen
+ *
+ */
+public class ActivateAlarmSimulator implements IAction {
 
-public class GetStatisticInformation implements IAction {
-
+	/**
+	 * run.
+	 */
 	public Object run(Object param) {
-		String result = null;
-		// TODO Auto-generated method stub
-		// test only CollectorSupervisor.getInstance().printCollection();
-		result = "----------- RESULT -----------\n";
-		result += CollectorSupervisor.getInstance().getCollectionAsString();
-		result += Statistic.getInstance().getStatisticAsString();
-		return result;
-	}
 
+	    /*
+	     * in case we need preferences here ...
+	     */
+//		IPreferencesService prefs = Platform.getPreferencesService();
+//	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
+//	    		"commandPortNumber", "", null);  
+//		int commandPortNum = Integer.parseInt(commandPortNumber);
+//		SendCommandToIoc sendCommandToIoc = null;
+		
+		if(!(param instanceof Map))
+			return null;
+		
+		Map m = (Map)param;
+		String command 	= m.get("Simulator").toString();
+		
+		return AlarmSimulator.getInstance().setCommand(command);
+		
+	}
+	
 }

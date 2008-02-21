@@ -1,4 +1,26 @@
 package org.csstudio.diag.interconnectionServer.server;
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -38,7 +60,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 /**
  * This version uses <code>DatagramSockets</code> instead of Sockets.
  * @author  Markus Moeller
- * @version 0.2
+ * @version 1.0.1
  *
  */
 
@@ -67,6 +89,8 @@ public class InterconnectionServer
     
     private Collector	jmsMessageWriteCollector = null;
     private Collector	clientRequestTheadCollector = null;
+    private Collector	numberOfMessagesCollector = null;
+    private Collector	numberOfIocFailoverCollector = null;
     
     
     synchronized public boolean setupConnections ( )
@@ -117,11 +141,11 @@ public class InterconnectionServer
         		connectionFactory = new ActiveMQConnectionFactory(primaryJmsUrl);
         		activeMqIsActive = true;
         		CentralLogger.getInstance().info(this, "Connect PRIMARY to Active-MQ-Server: " + primaryJmsUrl);
-        		System.out.println( "Connect PRIMARY to Active-MQ-Server: " + primaryJmsUrl);
+//        		System.out.println( "Connect PRIMARY to Active-MQ-Server: " + primaryJmsUrl);
         	} else {
         		properties.put(Context.PROVIDER_URL, primaryJmsUrl);
         		CentralLogger.getInstance().info(this, "Connect PRIMARY to JMS-Server: " + primaryJmsUrl);
-        		System.out.println( "Connect PRIMARY to JMS-Server: " + primaryJmsUrl);
+//        		System.out.println( "Connect PRIMARY to JMS-Server: " + primaryJmsUrl);
         	}
 
         	this.primaryServerUsed = false;
@@ -130,11 +154,11 @@ public class InterconnectionServer
         		connectionFactory = new ActiveMQConnectionFactory(primaryJmsUrl);
         		activeMqIsActive = true;
         		CentralLogger.getInstance().info(this, "Connect SECONDARY to Active-MQ-Server: " + secondaryJmsUrl);
-        		System.out.println( "Connect SECONDARY to Active-MQ-Server: " + secondaryJmsUrl);
+//        		System.out.println( "Connect SECONDARY to Active-MQ-Server: " + secondaryJmsUrl);
         	} else {
         		properties.put(Context.PROVIDER_URL, secondaryJmsUrl);
         		CentralLogger.getInstance().info(this, "Connect SECONDARY to JMS-Server: " + secondaryJmsUrl);
-        		System.out.println( "Connect SECONDARY to JMS-Server: " + secondaryJmsUrl);
+//        		System.out.println( "Connect SECONDARY to JMS-Server: " + secondaryJmsUrl);
         	}
         	this.primaryServerUsed = true;
         }
@@ -439,7 +463,7 @@ public class InterconnectionServer
         jmsMessageWriteCollector = new Collector();
         jmsMessageWriteCollector.setApplication("IC-Server");
         jmsMessageWriteCollector.setDescriptor("Time to write JMS message");
-        jmsMessageWriteCollector.setContinuousPrint(true);
+        jmsMessageWriteCollector.setContinuousPrint(false);
         jmsMessageWriteCollector.setContinuousPrintCount(1000.0);
         jmsMessageWriteCollector.getAlarmHandler().setDeadband(5.0);
         jmsMessageWriteCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);	// 500ms
@@ -450,12 +474,25 @@ public class InterconnectionServer
         clientRequestTheadCollector = new Collector();
         clientRequestTheadCollector.setApplication("IC-Server");
         clientRequestTheadCollector.setDescriptor("Number of Client request Threads");
-        clientRequestTheadCollector.setContinuousPrint(true);
+        clientRequestTheadCollector.setContinuousPrint(false);
         clientRequestTheadCollector.setContinuousPrintCount(1000.0);
         clientRequestTheadCollector.getAlarmHandler().setDeadband(5.0);
         clientRequestTheadCollector.getAlarmHandler().setHighAbsoluteLimit( PreferenceProperties.CLIENT_REQUEST_THREAD_MAX_NUMBER_ALARM_LIMIT);	// 500ms
         clientRequestTheadCollector.getAlarmHandler().setHighRelativeLimit(500.0);	// 500%
         clientRequestTheadCollector.setHardLimit( PreferenceProperties.MAX_NUMBER_OF_CLIENT_THREADS);
+        /*
+         * set up collectors (statistic)
+         */
+        numberOfMessagesCollector = new Collector();
+        numberOfMessagesCollector.setApplication("IC-Server");
+        numberOfMessagesCollector.setDescriptor("Number of Messages received");
+        /*
+         * set up collectors (statistic)
+         */
+        numberOfIocFailoverCollector = new Collector();
+        numberOfIocFailoverCollector.setApplication("IC-Server");
+        numberOfIocFailoverCollector.setDescriptor("Number of IOC failover");
+        
         
         if ( ! setupConnections()){
         	//
@@ -464,7 +501,7 @@ public class InterconnectionServer
         	setupConnections();
         }
         
-        System.out.println("\n" + NAME + VERSION + BUILD + "\nInternal Name: " + instanceName);
+//        System.out.println("\n" + NAME + VERSION + BUILD + "\nInternal Name: " + instanceName);
 
 //		//get properties from xml store.
 //		XMLStore store = XMLStore.getInstance();
@@ -553,6 +590,9 @@ public class InterconnectionServer
                      */
                     
                     new ClientWatchdog ( newClient, PreferenceProperties.CLIENT_REQUEST_THREAD_TIMEOUT);
+                    
+                    // increment statistics
+                    numberOfMessagesCollector.incrementCount();
                 }
                 catch(IOException ioe)
                 {
@@ -808,5 +848,22 @@ public class InterconnectionServer
 
 	public Connection getPutLogConnection() {
 		return this.putLogConnection;
+	}
+
+	public Collector getNumberOfMessagesCollector() {
+		return numberOfMessagesCollector;
+	}
+
+	public void setNumberOfMessagesCollector(Collector numberOfMessagesCollector) {
+		this.numberOfMessagesCollector = numberOfMessagesCollector;
+	}
+
+	public Collector getNumberOfIocFailoverCollector() {
+		return numberOfIocFailoverCollector;
+	}
+
+	public void setNumberOfIocFailoverCollector(
+			Collector numberOfIocFailoverCollector) {
+		this.numberOfIocFailoverCollector = numberOfIocFailoverCollector;
 	}
 }

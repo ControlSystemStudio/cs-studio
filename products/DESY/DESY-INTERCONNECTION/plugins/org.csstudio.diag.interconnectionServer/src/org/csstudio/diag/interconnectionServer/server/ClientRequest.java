@@ -1,16 +1,26 @@
-
-/*
- *  ClientRequest.java, v1.0, 2005-12-22
+package org.csstudio.diag.interconnectionServer.server;
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- *  Copyright (c) 2005 Markus Möller
- *  Deutsches Elektronen-Synchrotron DESY, Hamburg 
- *  Notkestraße 85, 22607 Hamburg, Germany
- * 
- *  All rights reserved.
- *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.diag.interconnectionServer.server;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -38,7 +48,12 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 //import de.desy.jms.server.InterconnectionServer.TagValuePairs;
-
+/**
+ * Thread created for each message which arrives from the IOC
+ * Initial implementation by Markus Moeller.
+ * 
+ * @author Matthias Clausen
+ */
 public class ClientRequest extends Thread
 {
     private DatagramSocket      socket          = null;
@@ -184,26 +199,6 @@ public class ClientRequest extends Thread
         Hashtable<String,String> tagValue = new Hashtable<String,String>();	// could replace the Vector above
         TagValuePairs	id		= icServer.new TagValuePairs();
         TagValuePairs	type	= icServer.new TagValuePairs();
-
-        
-        //
-        // you need debug information?
-        //
-        if (false) {
-        	
-        	daten = new String(packet.getData(), 0, length);
-        	
-            System.out.println("--------------------------------------------------------------------------------\n");
-            System.out.println("Adresse:                  " + address.toString());
-            System.out.println("Port:                     " + port);
-            System.out.println("Länge der Daten im Paket: " + length);
-            System.out.println("Länge des Datenstrings:   " + daten.length());
-            System.out.println("Der String:\n" + daten + "\n");
-        
-            StringTokenizer tok = new StringTokenizer(daten, PreferenceProperties.DATA_TOKENIZER);
-            
-            System.out.println("Anzahl der Token: " + tok.countTokens() + "\n");
-        }
         
         
         if ( parseMessage(  tagValue, tagValuePairs, id, type, statisticId)) {
@@ -864,13 +859,13 @@ public class ClientRequest extends Thread
 		
 		int timeDifference;
 		timeDifference = gregorianTimeDifference( parseTime, afterJmsSendTime);
-		System.out.println( "Time to send JMS message      : " + timeDifference);
+//		System.out.println( "Time to send JMS message      : " + timeDifference);
 		
 		timeDifference = gregorianTimeDifference( afterJmsSendTime, afterUdpAcknowledgeTime);
-		System.out.println( "Time to acknowledge message   : " + timeDifference);
+//		System.out.println( "Time to acknowledge message   : " + timeDifference);
 		
 		timeDifference = gregorianTimeDifference( afterUdpAcknowledgeTime, afterLdapWriteTime);
-		System.out.println( "Time to add LDAP write request: " + timeDifference);
+//		System.out.println( "Time to add LDAP write request: " + timeDifference);
 	}
 	
 	/**

@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 20067 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -22,6 +22,7 @@
 
 package org.csstudio.diag.interconnectionServer;
 
+import org.csstudio.diag.interconnectionServer.server.AlarmSimulator;
 import org.csstudio.diag.interconnectionServer.server.PreferenceProperties;
 import org.csstudio.diag.interconnectionServer.server.Statistic;
 import org.csstudio.platform.libs.dcf.actions.IAction;
@@ -37,6 +38,9 @@ public class GetDynParameters  implements IAction {
 		}
 		if ((param != null) && (param.toString().equals("Command"))) {
 			return PreferenceProperties.COMMAND_LIST;
+		}
+		if ((param != null) && (param.toString().equals("Simulator"))) {
+			return AlarmSimulator.commandList;
 		}
 		return null;
 	}

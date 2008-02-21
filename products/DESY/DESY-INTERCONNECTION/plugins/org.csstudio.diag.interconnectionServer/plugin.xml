@@ -62,6 +62,13 @@
             class="org.csstudio.diag.interconnectionServer.StopIcServer"
             id="org.csstudio.diag.interconnectionServer.StopIcServer"
             name="Stop IC-Server"/>
+      <dynamicValuesAction
+            class="org.csstudio.diag.interconnectionServer.ActivateAlarmSimulator"
+            id="org.csstudio.diag.interconnectionServer.ActivateAlarmSimulator"
+            loaderActionId="org.csstudio.diag.interconnectionServer.getDynParameters"
+            name="ActivateAlarmSimulator"
+            parameters="Simulator">
+      </dynamicValuesAction>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: InterconnectionServer Plug-in
 Bundle-SymbolicName: org.csstudio.diag.interconnectionServer;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-Activator: org.csstudio.diag.interconnectionServer.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
@@ -13,3 +13,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.ldap,
  org.csstudio.utility.namespace.utility
 Eclipse-LazyStart: true
+Bundle-Vendor: DESY
