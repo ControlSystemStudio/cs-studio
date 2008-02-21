@@ -9,6 +9,7 @@ import org.csstudio.swt.chart.axes.TraceSample;
 import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisListener;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -121,24 +122,25 @@ public class InteractiveChart extends Composite
         if (button_images != null)
             return;
         button_images = new ImageRegistry();
-        try
-        {
-            button_images.put(UP, Activator.getImageDescriptor("icons/up.gif"));
-            button_images.put(DOWN, Activator.getImageDescriptor("icons/down.gif"));
-            button_images.put(Y_IN, Activator.getImageDescriptor("icons/y_in.gif"));
-            button_images.put(Y_OUT, Activator.getImageDescriptor("icons/y_out.gif"));
-            button_images.put(ZOOM, Activator.getImageDescriptor("icons/autozoom.gif"));
-            button_images.put(STAGGER, Activator.getImageDescriptor("icons/stagger.gif"));
-            button_images.put(LEFT, Activator.getImageDescriptor("icons/left.gif"));
-            button_images.put(RIGHT, Activator.getImageDescriptor("icons/right.gif"));
-            button_images.put(X_IN, Activator.getImageDescriptor("icons/x_in.gif"));
-            button_images.put(X_OUT, Activator.getImageDescriptor("icons/x_out.gif"));
-            button_images.put(DEFAULT_ZOOM, Activator.getImageDescriptor("icons/defaultscale.gif"));
-        }
-        catch (Exception e)
-        {
-            Activator.getLogger().error("InteractiveChart cannot init. images", e);
-        }
+        addButtonImage(UP, "icons/up.gif");
+        addButtonImage(DOWN, "icons/down.gif");
+        addButtonImage(Y_IN, "icons/y_in.gif");
+        addButtonImage(Y_OUT, "icons/y_out.gif");
+        addButtonImage(ZOOM, "icons/autozoom.gif");
+        addButtonImage(STAGGER, "icons/stagger.gif");
+        addButtonImage(LEFT, "icons/left.gif");
+        addButtonImage(RIGHT, "icons/right.gif");
+        addButtonImage(X_IN, "icons/x_in.gif");
+        addButtonImage(X_OUT, "icons/x_out.gif");
+        addButtonImage(DEFAULT_ZOOM, "icons/defaultscale.gif");
+    }
+
+    /** Add image with given file name to registry under given id */
+    private void addButtonImage(final String id, final String filename)
+    {
+        final ImageDescriptor image = Activator.getImageDescriptor(filename);
+        if (image != null)
+            button_images.put(id, image);
     }
 
     /** Add all the button bar buttons. */
