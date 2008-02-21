@@ -142,7 +142,7 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 				out.println("# combinations separated by white space.");
 				out.println("");
 				out.println("# Example entry:");
-				out.println("example = (administrator, mks) (developer, mks)");
+				out.println("example = (admin, css) (developer, css)");
 			} catch (IOException e) {
 				CentralLogger.getInstance().warn(this,
 						"Error creating sample rights configuration file.", e);
