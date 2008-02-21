@@ -25,7 +25,7 @@ import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The activator class controls the plug-in life cycle.
  */
 public class Activator extends AbstractCssUiPlugin {
 
@@ -37,7 +37,7 @@ public class Activator extends AbstractCssUiPlugin {
 	/**
 	 * The shared instance.
 	 */
-	private static Activator plugin;
+	private static Activator _plugin;
 	
 	/**
 	 * The constructor.
@@ -49,16 +49,16 @@ public class Activator extends AbstractCssUiPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void doStart(BundleContext context) throws Exception {
-		plugin = this;
+	public final void doStart(final BundleContext context) throws Exception {
+		_plugin = this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void doStop(BundleContext context) throws Exception {
-		plugin = null;
+	public final void doStop(final BundleContext context) throws Exception {
+		_plugin = null;
 	}
 
 	/**
@@ -67,14 +67,14 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @return the shared instance.
 	 */
 	public static Activator getDefault() {
-		return plugin;
+		return _plugin;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getPluginId() {
+	public final String getPluginId() {
 		return PLUGIN_ID;
 	}
 }

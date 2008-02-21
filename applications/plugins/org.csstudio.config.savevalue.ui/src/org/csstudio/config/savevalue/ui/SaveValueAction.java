@@ -36,7 +36,7 @@ public class SaveValueAction extends ProcessVariablePopupAction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void handlePVs(IProcessVariable[] pv_names) {
+	public final void handlePVs(final IProcessVariable[] pvs) {
 		MessageDialog.openError(null, "Save Value", "Sorry, not implemented yet.");
 	}
 
