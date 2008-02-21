@@ -60,7 +60,7 @@ public class ServerCommands extends Thread{
 		// whenever we get a trigger -> execute statitic output
 		//
 		
-		Statistic.getInstance().createStatisticPrintout();
+//		Statistic.getInstance().createStatisticPrintout();
 		
 	}
 	
