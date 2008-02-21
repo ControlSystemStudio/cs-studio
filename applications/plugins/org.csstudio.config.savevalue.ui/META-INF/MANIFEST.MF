@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Save Value UI
+Bundle-SymbolicName: org.csstudio.config.savevalue.ui;singleton:=true
+Bundle-Version: 0.0.1
+Bundle-Activator: org.csstudio.config.savevalue.ui.Activator
+Bundle-Vendor: DESY
+Require-Bundle: org.eclipse.ui,
+ org.csstudio.platform.ui
+Eclipse-LazyStart: true

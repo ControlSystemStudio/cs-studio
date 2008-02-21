@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.csstudio.config.savevalue.ui.SaveValueAction"
+            objectClass="org.csstudio.platform.model.IProcessVariable">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS"
+               path="additions">
+            <groupMarker
+                  name="content">
+            </groupMarker>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+         <action
+               class="org.csstudio.config.savevalue.ui.SaveValueAction"
+               enablesFor="1"
+               icon="icon/save.gif"
+               id="org.csstudio.config.savevalue.ui.SaveValueAction"
+               label="Save Value"
+               menubarPath="org.csstudio.popmenu/content"
+               tooltip="Save the value of this process variable">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>
