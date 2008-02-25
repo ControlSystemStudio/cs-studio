@@ -29,11 +29,14 @@ package org.csstudio.diag.IOCremoteManagement.ui;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.StringTokenizer;
+
 import org.csstudio.diag.IOCremoteManagement.ui.RichTable.typeOfCell;
 import org.csstudio.utility.ioc_socket_communication.IOCAnswer;
 import org.csstudio.utility.ioc_socket_communication.RMTControl;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -184,10 +187,21 @@ public class PropertyPart implements Observer  {
 	            	 String replace=null;
 	            	 callButton.setEnabled(false);
 	            	 Text[] text = parTable.txt; 
+	            	 CCombo[] comboMenu=parTable.comboMenu;
 	            	 String parAsArray[][] = new String [2][text.length]; 
 	            	 for (int i=0;i<text.length;i++) {
 	            		 parAsArray[0][i]=parTable.paramNameArray[i];
-	            		 parAsArray[1][i]=text[i].getText();
+	            		 if(comboMenu[i]==null) parAsArray[1][i]=text[i].getText();
+	            		 else { 
+	            			 //parAsArray[1][i]=comboMenu[i].getText();
+	            			 String fullAction = comboMenu[i].getText();
+	            			 System.out.println("fullAction=" + fullAction);
+	            			 StringTokenizer st = new StringTokenizer(fullAction," ");  
+	            			 while (st.hasMoreTokens()) { 
+	            			    	parAsArray[1][i]=st.nextToken();
+	            			 }
+	            			 System.out.println("parAsArray[1][i]=" + parAsArray[1][i]);
+	            		 }
 	            	 }
 	            	 boolean find=false;
 	            	 for (int i=0;i<data.data.length;i++) {

@@ -55,6 +55,9 @@ public String toString() {
 				ret+="\t\tdata[i].nextLevelNames="+data[i].nextLevelNames[j]+ ";\n";
 				ret+="\t\tdata[i].nextLevelValues="+data[i].nextLevelValues[j]+ ";\n";
 			}
+			for (int j=0;j<data[i].nextValueEnum.length;j++) {
+				ret+="\t\t\tdata[i].nextValueEnum="+data[i].nextValueEnum[j]+ ";\n";
+			}
 		}
 	return ret;
 	}

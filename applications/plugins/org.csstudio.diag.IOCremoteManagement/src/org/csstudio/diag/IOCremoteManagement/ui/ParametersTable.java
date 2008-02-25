@@ -28,6 +28,7 @@ package org.csstudio.diag.IOCremoteManagement.ui;
  */
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -50,6 +51,7 @@ public class ParametersTable   {
 	private String[] _columnName;
 	private Display _display;
 	public Text[] txt;
+	CCombo[] comboMenu;
 	public String[] paramNameArray;
 	
 	ParametersTable(final Composite parent,String label) {
@@ -61,11 +63,11 @@ public class ParametersTable   {
 	
 	public boolean createTable( ParametersTablePrepare parser) {
 		setColumnName(parser.columnNameArr);
-		createTable(parser.lengthX,parser.lengthY,parser.dataArr);
+		createTable(parser.lengthX,parser.lengthY,parser.dataArr, parser.combo);
 		return true; 
 	}
 	
-	public boolean createTable(int lenX,int lenY, String[][] dataArray){
+	public boolean createTable(int lenX,int lenY, String[][] dataArray, String[][][] combo){
 		int[] widthArr = new int[lenX];
 		for (int i=0;i<lenX;i++) widthArr[i]=normalWidth;
 		widthArr[0]=Width0;
@@ -80,6 +82,7 @@ public class ParametersTable   {
 		TableItem Sp[] =  new TableItem[lenY];
 		String[] value= new String[lenX];
 		txt = new Text[lenY];
+		comboMenu = new CCombo[lenY];
 		paramNameArray=new String[lenY];
 		for (int j=0;j<lenY;j++) paramNameArray[j]=dataArray[0][j];
 		
@@ -89,16 +92,32 @@ public class ParametersTable   {
 			Sp[j].setText(value);			
 				txt[j]= new Text(varTable, SWT.SINGLE | SWT.BORDER);
 				txt[j].setText(dataArray[1][j]);
-				/* txt[j].addSelectionListener(new SelectionAdapter() {
-				public void widgetDefaultSelected(SelectionEvent e) {
-				  Text t = (Text) e.widget;
-				  //valueChanged(t.getText());
-				  System.out.println("DummyListenerPar");
+				
+				/* 
+				 * 
+				 * */
+				if (combo[1][j] == null) {
+					comboMenu[j]=null;
+					TableEditor editor = new TableEditor(varTable);
+					editor.grabHorizontal = editor.grabVertical = true;
+					editor.setEditor(txt[j], Sp[j], 1);
+				} else {
+					int len=combo[1][j].length;
+					comboMenu[j] = new CCombo(varTable, SWT.NONE);	
+					for(int k=0;k<len;k++) {	
+						comboMenu[j].add(combo[1][j][k]);				
+					}
+					comboMenu[j].select(0); 
+					TableEditor editor = new TableEditor(varTable);
+				    editor.grabHorizontal = editor.grabVertical = true;
+				    editor.setEditor (comboMenu[j], Sp[j], 1); //???
+				   /*comboMenu[j].addSelectionListener(new SelectionAdapter() {
+				    	public void widgetSelected(SelectionEvent e) {
+				        	;  //???
+				        }	    		    	
+				   });*/
+				        
 				}
-				});*/   
-				TableEditor editor = new TableEditor(varTable);
-				editor.grabHorizontal = editor.grabVertical = true;
-				editor.setEditor(txt[j], Sp[j], 1);
 			}
 				
 		if(debug) System.out.println("result is OK");
@@ -112,9 +131,13 @@ public class ParametersTable   {
 		int comboLen=7;
 		String[][] dataArray = new String[lenX][lenY];
 		String[] columnName = new String[lenX];
+		String[][][] comboStr = new String[lenX][lenY][];
 		for (int i=0;i<lenX;i++) {
 			for (int j=0;j<lenY;j++) {
 				dataArray[i][j]="elem"+i+"_"+j;
+				comboStr[i][j]=new String[3];
+				for(int k=0;k<3;k++) comboStr[i][j][k]="combo"+i+"_"+j+"_"+k;
+				
 			}
 			columnName[i]="col_"+i;
 		}
@@ -125,7 +148,7 @@ public class ParametersTable   {
 		
 		ParametersTable st=new ParametersTable(shell,"test");
 		st.setColumnName(columnName);
-		st.createTable(lenX,lenY,dataArray);
+		st.createTable(lenX,lenY,dataArray,comboStr);
 		
 		shell.open ();
 		while (!shell.isDisposed ()) {

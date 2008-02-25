@@ -35,6 +35,7 @@ public class ParametersTablePrepare {
 	int lengthX=2;
 	int lengthY=0;
 	String[][] dataArr;
+	String[][][] combo;
 	String[] columnNameArr;
 	Group propTable;
 	public ParametersTablePrepare(Group propTable,XMLData data) {this.propTable=propTable; this.data=data;}
@@ -44,11 +45,13 @@ public class ParametersTablePrepare {
 		XMLDataSingle xml;
 		String[] columnDefault={"parName","parValue"};
 		columnNameArr = columnDefault;
+		int comboLen=0;
 		for (int i=0;i<length;i++) {
 			xml=data.data[i];
 			if(xml==null)  continue;
 			if(!xml.singleProperties()) continue;
 			int extLen=xml.nextLevelNames.length;
+
 			if ( parNameStr.compareTo( xml.tagName) == 0 ) {
 				if (extLen <1) {
 					System.out.println("ParametersTablePrepare: Error XML");
@@ -57,9 +60,19 @@ public class ParametersTablePrepare {
 				}
 				lengthY=extLen;
 				dataArr=new String[lengthX][lengthY];
+				combo=new String[lengthX][lengthY][];
 				for (int j=0;j<lengthY;j++) {
+					combo[0][j] = null;
 					dataArr[0][j]=xml.nextLevelNames[j];
 					dataArr[1][j]=xml.nextLevelValues[j];
+					//
+					// Combo calculation
+					//
+					if(xml.nextValueEnum != null) {
+						comboLen=xml.nextValueEnum.length;
+						combo[1][j] = new String[comboLen];
+						for (int k=0;k<comboLen;k++) combo[1][j][k]=xml.nextValueEnum[k];
+					} else combo[1][j]=null;
 				}
 			} 			
 		} // end of cycle for i

@@ -38,6 +38,7 @@ public class Parsing {
 	final static boolean debug=false;
 	final static boolean debugFull=false;
 	final static boolean debugStatus=false;
+	final static boolean debugEnum=false;
 	final static String debugBrunch = "SNLDebugger";
 	final static String rootString = "Result";	
 	final static String rootPropertyResult = "Result";
@@ -152,16 +153,24 @@ public class Parsing {
 					}
 				}
 				//
-				// Resolve Next level Name and Value:
+				// Resolve Next level Name and Value and ENUM:
 				//
 				final List next = elm.getChildren();
 				dataIterator[count].nextLevelNames  = new String[next.size()];
 				dataIterator[count].nextLevelValues = new String[next.size()];
+				dataIterator[count].nextValueEnum=null;
 				for (int i=0;i<next.size();i++){
 					Element e = (Element) next.get(i);
 					dataIterator[count].nextLevelNames [i]=e.getName();
 					dataIterator[count].nextLevelValues[i]=e.getTextNormalize();
 					if (debugFull) System.out.println(" nextLevel="+dataIterator[count].nextLevelNames [i]+":"+dataIterator[count].nextLevelValues[i]);
+					final List nextEnum = e.getChildren();
+					dataIterator[count].nextValueEnum  = new String[nextEnum.size()];
+					for (int j=0;j<nextEnum.size();j++){
+						Element enumEl = (Element) nextEnum.get(j);
+						dataIterator[count].nextValueEnum[j]=enumEl.getTextNormalize();
+						if (debugEnum) System.out.println(" nextEnum="+dataIterator[count].nextValueEnum[j]+":"+enumEl.getName());
+					}
 				}
 				count++;
 			}

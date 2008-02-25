@@ -33,6 +33,7 @@ public class XMLDataSingle {
 	String[] atrValue;
 	String[] nextLevelNames;
 	String[] nextLevelValues;
+	String[] nextValueEnum;
 	private final static String treeAttrName = "tree";	
 
 public String searchAtr (String name) {
@@ -56,6 +57,9 @@ public String toString() {
 	for (int j=0;j<nextLevelNames.length;j++) {
 		ret+="\tnextLevelNames="+nextLevelNames[j]+ ";\n";
 		ret+="\tnextLevelValues="+nextLevelValues[j]+ ";\n";
+	}
+	for (int j=0;j<nextValueEnum.length;j++) {
+		ret+="\t\tnextValueEnum="+nextValueEnum[j]+ ";\n";
 	}
 	return ret;
 }
