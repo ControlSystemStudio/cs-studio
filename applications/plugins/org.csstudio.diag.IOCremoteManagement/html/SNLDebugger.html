@@ -96,16 +96,16 @@ You can choose the CSS application Data Browser to show the history of the recor
 <br>
 <h2><a name="stateset">Operate a state set</a></h2>
 There are eight properties are shown for a state set: threadName, ssRunControl, dbgRunState,
- firstState, currentState, previousState, nextState and Msg. There are pull-down menus for the
+ firstState, currentState, previousState, nextState and Msg. There are combos for the
  properties ssRunControl and currentState.<br>
 <img src="snlDebugger_11.PNG" alt="blank" border="0" vspace=15>	
 <br><br>
-You can jump to any state of the state set through selection from currentState's pull-down menu 
+You can jump to any state of the state set through selection from currentState's combo 
  provided that the IOC is master and dbgRunState is RUNNING.<br>
 <img src="snlDebugger_12.PNG" alt="blank" border="0" vspace=15>	
 <br><br>
-You can control the control the state set run mode through selection from ssRunControl's pull-down
- menu provided that the IOC is master. dbgRunState should be STOPPED for single-step mode.<br>
+You can control the control the state set run mode through selection from ssRunControl's combo
+ provided that the IOC is master. dbgRunState should be STOPPED for single-step mode.<br>
 <img src="snlDebugger_13.PNG" alt="blank" border="0" vspace=15>	
 <h3><a href="#contents">Return to Contents</a></h3>
 <hr>
@@ -148,7 +148,7 @@ snlStartSync is to start the synchronization.<br>
 <img src="snlDebugger_19.PNG" alt="blank" border="0" vspace=15>	
 <br><br>
 seqStop is to stop a running state program. The precondition is that the synchronization is stopped.
- You should click the button "call it" after inputting the thread id.<br>
+ You should click the button "call it" after selecting the thread id from the related combo.<br>
 <img src="snlDebugger_20.PNG" alt="blank" border="0" vspace=15>	
 <br><br>
 You can use the command snlShowAllSP to check the result. The thread id is related to state program
