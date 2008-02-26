@@ -84,7 +84,13 @@ public class SocketControl extends Thread {
 			currentInfo=socketsList.get(i);
 			currentHost=currentInfo.getHost();
 			currentPort=currentInfo.getPort();	
+			Socket sock=currentInfo.getSock();	
 			if((currentPort==port)&&(currentHost.compareTo(IPname)==0)) {
+				if((!sock.isConnected()) ||(sock.isClosed())) {
+					if(debug) System.out.println(hostAddress+"Socket is under unproper Condition, create new one" );
+					socketsList.remove(i);
+					break;
+				}
 				currentInfo.setDate(now);
 				return currentInfo.getSock();
 			}

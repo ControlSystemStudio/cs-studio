@@ -37,7 +37,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 public class Receiver extends Job {
-
+	final static int NUM_OF_TRYING=5;
+	final static boolean debug=false;
+	int count;
 	private Socket sock = null;
 	private InputStream in = null;
 	private IOCAnswer iocAnswer;
@@ -54,6 +56,7 @@ public class Receiver extends Job {
 		this.address = address;
 		this.port = port;
 		this.sock = sock;
+		count=0;
 		
 		try {
 			in = sock.getInputStream();
@@ -77,7 +80,7 @@ public class Receiver extends Job {
 			SocketAddress sockaddr = new InetSocketAddress(address, port);
 			
 			sock = new Socket();
-			System.out.println("New Socket in Receiver"+sock);
+			if(debug) System.out.println("New Socket in Receiver"+sock);
 			int timeoutMs = 3000;
 			sock.connect(sockaddr, timeoutMs);
 			in = sock.getInputStream();
@@ -133,7 +136,18 @@ public class Receiver extends Job {
 			}
 		}
 		if (finished == false) {
+			if(count++ >NUM_OF_TRYING) {
+				System.out.println("Receiver::timeout, check IP or wait reconnection");
+				try {
+					sock.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return Status.CANCEL_STATUS;
+			}
 			schedule(1000);
+			
 		} else {
 			iocAnswer.setAnswer(answer.toString());
 		}
