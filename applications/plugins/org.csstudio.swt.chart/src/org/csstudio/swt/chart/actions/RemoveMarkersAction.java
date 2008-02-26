@@ -1,5 +1,6 @@
 package org.csstudio.swt.chart.actions;
 
+import org.csstudio.swt.chart.Activator;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.Messages;
 import org.eclipse.jface.action.Action;
@@ -19,8 +20,16 @@ public class RemoveMarkersAction extends Action
         this.chart = chart;
         setText(Messages.RemoveMarkers);
         setToolTipText(Messages.RemoveMarkers_TT);
-        setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+        // This will fail in unit tests w/o workbench
+        try
+        {
+            setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
+        }
+        catch (Throwable ex)
+        {
+            Activator.getLogger().warn("RemoveMarkersAction cannot get 'delete' icon");
+        }
     }
     
     /** {@inheritDoc} */

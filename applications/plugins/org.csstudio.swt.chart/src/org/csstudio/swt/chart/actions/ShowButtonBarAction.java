@@ -5,6 +5,7 @@ import org.csstudio.swt.chart.InteractiveChart;
 import org.csstudio.swt.chart.InteractiveChartListener;
 import org.csstudio.swt.chart.Messages;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 
 /** An Action for showing or hiding the button bar of the InteractiveChart.
  *  <p>
@@ -21,8 +22,11 @@ public class ShowButtonBarAction extends Action
     public ShowButtonBarAction(InteractiveChart chart)
     {
         super(chart.isButtonBarVisible() ?
-              Messages.Chart_HideButtonBar : Messages.Chart_ShowButtonBar,
-              Activator.getImageDescriptor("icons/toolbar.gif")); //$NON-NLS-1$
+              Messages.Chart_HideButtonBar : Messages.Chart_ShowButtonBar);
+        
+        final ImageDescriptor icon = Activator.getImageDescriptor("icons/toolbar.gif"); //$NON-NLS-1$
+        if (icon != null)
+            setImageDescriptor(icon);
         this.chart = chart;
         chart.addListener(this);
     }

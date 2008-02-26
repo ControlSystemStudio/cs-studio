@@ -1,5 +1,6 @@
 package org.csstudio.swt.chart.actions;
 
+import org.csstudio.swt.chart.Activator;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.Messages;
 import org.eclipse.jface.action.Action;
@@ -19,8 +20,17 @@ public class RemoveSelectedMarkersAction extends Action
         this.chart = chart;
         setText(Messages.RemoveSelectedMarker);
         setToolTipText(Messages.RemoveSelectedMarker_TT);
-        setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+        // In unit tests w/o Workbench this can fail
+        try
+        {
+            setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
+        }
+        catch (Throwable ex)
+        {
+            Activator.getLogger().warn(
+                    "RemoveSelectedMarkersAction cannot get 'delete' image", ex);
+        }
     }
 
     /** Must be called to update the 'enabled' state of this action.
