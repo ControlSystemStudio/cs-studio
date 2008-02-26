@@ -79,7 +79,7 @@ public class Chart extends Canvas
     private Rectangle plot_region;
 
     /** Horizontal axis. */
-    final private XAxis xaxis;
+    private XAxis xaxis;
     final private XAxisListener xaxis_listener;
 
     /** One or more vertical axes. */
@@ -335,6 +335,19 @@ public class Chart extends Canvas
         listeners.remove(listener);
     }
    
+    /** Modify the type of X Axis.
+     *  <p>
+     *  This restores the axis range and label to some default settings.
+     */
+    public void changeXAxis(final boolean time_axis)
+    {
+        if (time_axis)
+            xaxis = new TimeAxis(Messages.Chart_Time, xaxis_listener);
+        else
+            xaxis = new XAxis(Messages.Chart_x, xaxis_listener);
+        redraw();
+    }
+    
     /** @return Returns the x axis. */
     public XAxis getXAxis()
     {
