@@ -41,7 +41,7 @@ public class BeaconWatchdog extends Thread{
 	
 	BeaconWatchdog ( int timeout) {
 		this.timeout = timeout;
-		
+		CentralLogger.getInstance().info(this, "Starting new beaconWatchdog @ " + timeout + " ms");
 		this.start();
 	}
 	

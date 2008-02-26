@@ -213,6 +213,12 @@ public class ClientRequest extends Thread
         	// now we'll send it to the jms server
         	//
         	
+        	//
+    		// set beacon time locally (set to current time - retrigger)
+        	// to be performed in ANY case
+    		//
+    		statisticContent.setBeaconTime();
+        	
         	switch (TagList.getInstance().getMessageType( type.getValue())) {
         	
         	case TagList.ALARM_MESSAGE:				// compatibility with old version
@@ -269,11 +275,6 @@ public class ClientRequest extends Thread
         		//
         		//System.out.print("aLs");
         		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_TRUE);
-        		
-        		//
-        		// set beacon time locally
-        		//
-        		statisticContent.setBeaconTime();
         		
         		//System.out.print("aLe");
         		afterLdapWriteTime = new GregorianCalendar();
@@ -333,11 +334,6 @@ public class ClientRequest extends Thread
 
         		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE);
         		
-        		//
-        		// set beacon time locally
-        		//
-        		statisticContent.setBeaconTime();
-        		
         		System.out.print("AS");
         		break;
         		
@@ -379,6 +375,7 @@ public class ClientRequest extends Thread
         		//
         		//System.out.print("sLs");
         		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE);
+        		
         		//2System.out.print("sLe");
         		System.out.print("S");
         		break;
@@ -389,10 +386,7 @@ public class ClientRequest extends Thread
         		//
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
         		///System.out.println("Time-Beacon: - after send UDP reply	=  " + dateToString(new GregorianCalendar()));
-        		//
-        		// set beacon time locally
-        		//
-        		statisticContent.setBeaconTime();
+
         		/*
         		 * since we do not know whether we are selected...
         		 * ... we have to ask the IOC
@@ -459,10 +453,7 @@ public class ClientRequest extends Thread
         		//
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
         		///System.out.println("Time-Beacon: - after send UDP reply	=  " + dateToString(new GregorianCalendar()));
-        		//
-        		// set beacon time locally
-        		//
-        		statisticContent.setBeaconTime();
+        		
         		/*
         		 * we are selected!
         		 * in case we were not selected before - we'll ask the IOC for an update on ALL the alarm states
@@ -562,10 +553,7 @@ public class ClientRequest extends Thread
         		//
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
         		///System.out.println("Time-Beacon: - after send UDP reply	=  " + dateToString(new GregorianCalendar()));
-        		//
-        		// set beacon time locally
-        		//
-        		statisticContent.setBeaconTime();
+        		
         		/*
         		 * we are not selected any more
         		 * in case we were selected before - we'll have to create a JMS message

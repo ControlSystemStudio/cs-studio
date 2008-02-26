@@ -515,10 +515,12 @@ public class InterconnectionServer
 		int dataPortNum = Integer.parseInt(dataPortNumber);
 		
 		//
-		// check beacon timeout of connections to IOCs
+		// check beacon timeout of connections to IOCs beaconTimeout
 		//
-		new BeaconWatchdog(5000);  // mS
-
+	    String beaconTimeout = prefs.getString(Activator.getDefault().getPluginId(),
+	    		"beaconTimeout", "", null); 
+	    int beaconTimeoutI = Integer.parseInt(beaconTimeout);
+		new BeaconWatchdog(beaconTimeoutI);  // mS
         
         try
         {
