@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fileset-config file-format-version="1.2.0" simple-config="true">
-    <local-check-config name="CSS Checkstyle Configuration" location="Config/checkstyle.xml" type="project" description="Configuration of the Coding Styles for the CSS development.">
+    <local-check-config name="DESY Checkstyle" location="/Config/checkstyle.xml" type="project" description="">
         <additional-data name="protect-config-file" value="false"/>
     </local-check-config>
-    <fileset name="Alle" enabled="true" check-config-name="CSS Desy" local="false">
+    <fileset name="Alle" enabled="true" check-config-name="DESY Checkstyle" local="true">
         <file-match-pattern match-pattern="." include-pattern="true"/>
     </fileset>
-    <filter name="FilesFromPackage" enabled="true">
-        <filter-data value="src/org/csstudio/platform/ui/internal/dataexchange/demo"/>
-        <filter-data value="src/org/csstudio/platform/ui/internal/vafada"/>
-        <filter-data value="src/org/csstudio/platform/ui/internal/vafada/swtcalendar"/>
-    </filter>
 </fileset-config>

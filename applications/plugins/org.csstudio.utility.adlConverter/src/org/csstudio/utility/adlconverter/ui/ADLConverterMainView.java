@@ -83,8 +83,6 @@ public class ADLConverterMainView extends ViewPart {
         targetOpenButton.setText(Messages.ADLConverterMainView_TargetOpernButton);
         targetOpenButton.setLayoutData(new GridData(SWT.CENTER,SWT.CENTER,false,false,3,1));
         
-        
-
         targetOpenButton.addSelectionListener(new SelectionListener(){
 
 

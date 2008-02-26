@@ -40,15 +40,16 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class ColumnPropertyChangeListener implements IPropertyChangeListener {
 
-	//String for the columns in the preference page
-	private String p_string;
+	/** String for the columns in the preference page. **/
+	private String _pString;
 	
-	//TableViewer for actualisation
-	private JMSLogTableViewer jlv;
+	/** TableViewer for actualisation. */
+	private JMSLogTableViewer _jlv;
+	
 	
 	public ColumnPropertyChangeListener(String p_string, JMSLogTableViewer jlv) {
-		this.p_string = p_string;
-		this.jlv = jlv;
+		this._pString = p_string;
+		this._jlv = jlv;
 	}
 	
 	/**
