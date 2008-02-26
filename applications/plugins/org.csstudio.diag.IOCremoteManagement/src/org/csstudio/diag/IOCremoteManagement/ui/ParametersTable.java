@@ -69,6 +69,7 @@ public class ParametersTable   {
 	
 	public boolean createTable(int lenX,int lenY, String[][] dataArray, String[][][] combo){
 		int[] widthArr = new int[lenX];
+		int len=0;
 		for (int i=0;i<lenX;i++) widthArr[i]=normalWidth;
 		widthArr[0]=Width0;
 		Table varTable = new Table(_parent, SWT.BORDER);
@@ -94,15 +95,15 @@ public class ParametersTable   {
 				txt[j].setText(dataArray[1][j]);
 				
 				/* 
-				 * 
+				 * ENUMS combo part here:
 				 * */
-				if (combo[1][j] == null) {
+				len=0;
+				if ((combo[1][j] == null) ||((len=combo[1][j].length)  <1) ) {
 					comboMenu[j]=null;
 					TableEditor editor = new TableEditor(varTable);
 					editor.grabHorizontal = editor.grabVertical = true;
 					editor.setEditor(txt[j], Sp[j], 1);
 				} else {
-					int len=combo[1][j].length;
 					comboMenu[j] = new CCombo(varTable, SWT.NONE);	
 					for(int k=0;k<len;k++) {	
 						comboMenu[j].add(combo[1][j][k]);				
@@ -110,13 +111,7 @@ public class ParametersTable   {
 					comboMenu[j].select(0); 
 					TableEditor editor = new TableEditor(varTable);
 				    editor.grabHorizontal = editor.grabVertical = true;
-				    editor.setEditor (comboMenu[j], Sp[j], 1); //???
-				   /*comboMenu[j].addSelectionListener(new SelectionAdapter() {
-				    	public void widgetSelected(SelectionEvent e) {
-				        	;  //???
-				        }	    		    	
-				   });*/
-				        
+				    editor.setEditor (comboMenu[j], Sp[j], 1);
 				}
 			}
 				

@@ -193,14 +193,15 @@ public class PropertyPart implements Observer  {
 	            		 parAsArray[0][i]=parTable.paramNameArray[i];
 	            		 if(comboMenu[i]==null) parAsArray[1][i]=text[i].getText();
 	            		 else { 
-	            			 //parAsArray[1][i]=comboMenu[i].getText();
-	            			 String fullAction = comboMenu[i].getText();
+	            			 parAsArray[1][i]=comboMenu[i].getText();
+	            			 /*String fullAction = comboMenu[i].getText();
 	            			 System.out.println("fullAction=" + fullAction);
 	            			 StringTokenizer st = new StringTokenizer(fullAction," ");  
 	            			 while (st.hasMoreTokens()) { 
 	            			    	parAsArray[1][i]=st.nextToken();
 	            			 }
 	            			 System.out.println("parAsArray[1][i]=" + parAsArray[1][i]);
+	            			 */
 	            		 }
 	            	 }
 	            	 boolean find=false;
