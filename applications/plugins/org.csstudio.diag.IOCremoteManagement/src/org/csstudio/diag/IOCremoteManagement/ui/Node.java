@@ -108,7 +108,7 @@ public abstract class Node implements Observer {
 			}
 		});
 	}
-	protected int indexOf(String name,ArrayList child) {
+	private int indexOf(String name,ArrayList child) {
 		String elementAsString=null;
 		
 		for (int i=0;i<child.size();i++) {
@@ -117,7 +117,10 @@ public abstract class Node implements Observer {
 			if (obj instanceof Node) elementAsString=((Node) obj).name; 
 			else if (obj instanceof HostIP) elementAsString=((HostIP) obj).name; 
 			else if (obj instanceof Knot) elementAsString=((Knot) obj).name; 
-			else org.csstudio.diag.IOCremoteManagement.Activator.errorPrint("Node:IndexOf bad class ");
+			else {
+				org.csstudio.diag.IOCremoteManagement.Activator.errorPrint("Node:IndexOf bad class ");
+				return -1;
+			}
 
 			if(debugStrong) org.csstudio.diag.IOCremoteManagement.Activator.errorPrint("name=",name," childName",elementAsString);
 			if ( name.compareTo(elementAsString) == 0) {
@@ -126,6 +129,32 @@ public abstract class Node implements Observer {
 			}
 		}
 		return -1;
+	}
+	
+	private void removeUnusedLeaves(ArrayList child, XMLData data) {
+		String elementAsString=null;		
+		for (int i=0;i<child.size();i++) {
+			if(debugStrong) org.csstudio.diag.IOCremoteManagement.Activator.errorPrint(" indexOf");
+			Object obj = child.get(i); 
+			if (obj instanceof Node) elementAsString=((Node) obj).name; 
+			else if (obj instanceof HostIP) elementAsString=((HostIP) obj).name; 
+			else if (obj instanceof Knot) elementAsString=((Knot) obj).name; 
+			else {
+				org.csstudio.diag.IOCremoteManagement.Activator.errorPrint("Node:IndexOf bad class ");
+				return;
+			}
+			boolean find=false;
+			for (int j=0;j<data.data.length;j++) {
+				String name = data.data[j].tagValue;
+				if ( name.compareTo(elementAsString) == 0) {
+					find=true;
+					break;
+				}
+			}
+			if (!find) {
+				child.remove(i);
+			}
+		}
 	}
 	
 	protected int parsing(String text) {
@@ -146,6 +175,7 @@ public abstract class Node implements Observer {
 			propertyPart.createFinalLevelScreen(data,(Node) this);
 			return 0;
 		}
+		removeUnusedLeaves(child,data);
 		boolean needFinalLevelScreen=false;
 		for (int i=0;i<size;i++) {
 			String name = data.data[i].tagValue;
