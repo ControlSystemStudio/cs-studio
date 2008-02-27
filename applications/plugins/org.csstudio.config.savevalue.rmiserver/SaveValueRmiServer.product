@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.1"?>
+
+<product name="Save Value RMI Server" id="org.csstudio.config.savevalue.rmiserver.SaveValueRmiServer" application="org.csstudio.config.savevalue.rmiserver.SaveValueRmiServer" useFeatures="false">
+
+   <configIni use="default"/>
+
+   <launcherArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+
+   <plugins>
+      <plugin id="org.csstudio.config.savevalue.rmiserver"/>
+      <plugin id="org.csstudio.config.savevalue.service"/>
+      <plugin id="org.csstudio.platform"/>
+      <plugin id="org.csstudio.platform.libs.dal"/>
+      <plugin id="org.csstudio.platform.libs.jmock"/>
+      <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.resources"/>
+      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
+      <plugin id="org.eclipse.core.resources.win32" fragment="true"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.junit4"/>
+   </plugins>
+
+</product>
