@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Save Value Service Interfaces
+Bundle-SymbolicName: org.csstudio.config.savevalue.service
+Bundle-Version: 0.0.1
+Bundle-Vendor: DESY
+Export-Package: org.csstudio.config.savevalue.service
