@@ -42,6 +42,7 @@ public class SendCommandToIoc extends Thread {
 	private String command = "NONE";
 	private String statisticId = "NONE";
 	private int id = 0;
+	private static String IOC_NOT_REACHABLE = "IOC_NOT_REACHABLE";
 	
 	/**
 	 * Send a command to the IOC in an independent thread.
@@ -83,7 +84,8 @@ public class SendCommandToIoc extends Thread {
 		byte[] buffer	=  new byte[1024];
 		DatagramSocket socket = null;
 		DatagramPacket packet = null;
-		String answer, answerMessage = null;
+		String answer = null;
+		String answerMessage = null;
         
         preparedMessage = prepareMessage ( command, id);
 
@@ -116,22 +118,31 @@ public class SendCommandToIoc extends Thread {
 			} catch (InterruptedIOException ioe) {
 				// TODO: handle exception
 				ioe.printStackTrace();
-			}            
-			/*
-             * check answer
-             * for now we only check for the string 'DONE'
-             */
-			answerMessage = new String(packet.getData(), 0, packet.getLength());
-			
-			/*
-			 * check whether this message contains the mandatory string: REPLY
-			 * if not it's not a valid answer
-			 */
-			if ( answerMessage.contains("REPLY")) {
-				answer = answerMessage.substring( answerMessage.indexOf("REPLY=")+6, answerMessage.length()-2);
-			} else {
-				answer = "invalid answer from IOC";
+				/*
+				 * error handling:
+				 * set answer message and use normal handling of state
+				 */
+				answerMessage = IOC_NOT_REACHABLE;
 			}
+			
+			if ( answerMessage == null) {
+				/*
+	             * check answer
+	             * for now we only check for the string 'DONE'
+	             */
+				answerMessage = new String(packet.getData(), 0, packet.getLength());
+				
+				/*
+				 * check whether this message contains the mandatory string: REPLY
+				 * if not it's not a valid answer
+				 */
+				if ( answerMessage.contains("REPLY")) {
+					answer = answerMessage.substring( answerMessage.indexOf("REPLY=")+6, answerMessage.length()-2);
+				} else {
+					answer = "invalid answer from IOC";
+				}
+			}
+			
 			
 			
 			//System.out.println ("IOC: " + hostName + " is " + answer);
@@ -211,7 +222,43 @@ public class SendCommandToIoc extends Thread {
         		}
         		//remember we're not selected any more
     			Statistic.getInstance().getContentObject(statisticId).setSelectState(false);
-            }else {
+    			
+            } else if ( (answerMessage != null) && answerMessage.equals(IOC_NOT_REACHABLE)) {
+            	/*
+        		 * we cannot reach the IOC
+        		 * in case we were selected before - we'll have to create a JMS message
+        		 */
+            	
+        		if ( Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
+        			//create log message
+        			CentralLogger.getInstance().warn(this, "IOC not reachable by this InterConnectionServer: " + hostName);
+        			/*
+        			 * send JMS message - we are NOT selected
+        			 */
+        			/*
+        			 * get host name of interconnection server
+        			 */
+        			String localHostName = null;
+        			try {
+        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+        				localHostName = localMachine.getHostName();
+        			}
+        			catch (java.net.UnknownHostException uhe) { 
+        			}
+        			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+        					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+        					localHostName + ":" + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + ":selectState",					// name
+        					localHostName, 														// value
+        					JmsMessage.SEVERITY_MINOR, 											// severity
+        					"NOT-SELECTED", 													// status
+        					hostName, 															// host
+        					null, 																// facility
+        					"virtual channel", 											// text
+        					null);	
+        		}
+        		//remember we're not selected any more
+    			Statistic.getInstance().getContentObject(statisticId).setSelectState(false);
+            } else {
             	CentralLogger.getInstance().info(this, "Command not accepted by IOC: " + hostName + " command: " + command + " answer: " + answer);
             }
 

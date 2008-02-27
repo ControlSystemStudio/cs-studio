@@ -123,11 +123,11 @@ public class InterconnectionServer
 
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String jmsContextFactory = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"jmsContextFactory", "", null);  
+	    		PreferenceConstants.JMS_CONTEXT_FACTORY, "", null);  
 	    String primaryJmsUrl = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"primaryJmsUrl", "", null);  
+	    		PreferenceConstants.PRIMARY_JMS_URL, "", null);  
 	    String secondaryJmsUrl = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"secondaryJmsUrl", "", null);  
+	    		PreferenceConstants.SECONDARY_JMS_URL, "", null);  
         
         
         properties = new Hashtable<String, String>();
@@ -348,7 +348,7 @@ public class InterconnectionServer
 
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"commandPortNumber", "", null);  
+	    		PreferenceConstants.COMMAND_PORT_NUMBER, "", null);  
         
 
 		
@@ -418,7 +418,7 @@ public class InterconnectionServer
     	
         IPreferencesService prefService = Platform.getPreferencesService();
 	    sendCommandId = prefService.getInt(Activator.getDefault().getPluginId(),
-	    		"sentStartID", 0, null);  
+	    		PreferenceConstants.SENT_START_ID, 0, null);  
 //		sendCommandId = Integer.parseInt(sentStartID);
 
     }
@@ -510,7 +510,7 @@ public class InterconnectionServer
 
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String dataPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"dataPortNumber", "", null);  
+	    		PreferenceConstants.DATA_PORT_NUMBER, "", null);  
 		
 		int dataPortNum = Integer.parseInt(dataPortNumber);
 		
@@ -518,7 +518,7 @@ public class InterconnectionServer
 		// check beacon timeout of connections to IOCs beaconTimeout
 		//
 	    String beaconTimeout = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"beaconTimeout", "", null); 
+	    		PreferenceConstants.BEACON_TIMEOUT, "", null); 
 	    int beaconTimeoutI = Integer.parseInt(beaconTimeout);
 		new BeaconWatchdog(beaconTimeoutI);  // mS
         

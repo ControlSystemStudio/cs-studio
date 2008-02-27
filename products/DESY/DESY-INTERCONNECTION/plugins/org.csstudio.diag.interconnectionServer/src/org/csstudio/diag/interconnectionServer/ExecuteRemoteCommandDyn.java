@@ -23,6 +23,7 @@ package org.csstudio.diag.interconnectionServer;
 
 import java.util.Map;
 
+import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.diag.interconnectionServer.server.PreferenceProperties;
 import org.csstudio.diag.interconnectionServer.server.SendCommandToIoc;
 import org.csstudio.platform.libs.dcf.actions.IAction;
@@ -40,7 +41,7 @@ public class ExecuteRemoteCommandDyn implements IAction {
 
 	    IPreferencesService prefs = Platform.getPreferencesService();
 	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"commandPortNumber", "", null);  
+	    		PreferenceConstants.COMMAND_PORT_NUMBER, "", null);  
 
 		
 		int commandPortNum = Integer.parseInt(commandPortNumber);

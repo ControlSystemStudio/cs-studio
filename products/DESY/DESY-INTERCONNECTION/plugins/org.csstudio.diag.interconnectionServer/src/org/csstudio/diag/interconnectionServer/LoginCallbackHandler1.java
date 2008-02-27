@@ -21,6 +21,7 @@ package org.csstudio.diag.interconnectionServer;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */ 
 
+import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
@@ -40,9 +41,9 @@ public class LoginCallbackHandler1 implements ILoginCallbackHandler {
 
 	    IPreferencesService prefs = Platform.getPreferencesService();
 	    String xmppUserName = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"xmppUserName", "", null);
+	    		PreferenceConstants.XMPP_USER_NAME, "", null);
 	    String xmppPassword = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"xmppPassword", "", null);  
+	    		PreferenceConstants.XMPP_PASSWORD, "", null);  
 		
 		return new Credentials(xmppUserName, xmppPassword);
 	}

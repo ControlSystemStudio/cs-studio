@@ -29,6 +29,7 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 import org.csstudio.diag.interconnectionServer.Activator;
+import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -70,11 +71,11 @@ public class SendCommands {
 
         IPreferencesService prefs = Platform.getPreferencesService();
 	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"commandPortNumber", "", null);  
+	    		PreferenceConstants.COMMAND_PORT_NUMBER, "", null);  
 	    String dataPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"dataPortNumber", "", null);  
+	    		PreferenceConstants.DATA_PORT_NUMBER, "", null);  
 	    String sentStartID = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"sentStartID", "", null);  
+	    		PreferenceConstants.SENT_START_ID, "", null);  
 
 		int commandPortNum = Integer.parseInt(commandPortNumber);
 		int dataPortNum = Integer.parseInt(dataPortNumber);

@@ -41,15 +41,6 @@ public class ActivateAlarmSimulator implements IAction {
 	 * run.
 	 */
 	public Object run(Object param) {
-
-	    /*
-	     * in case we need preferences here ...
-	     */
-//		IPreferencesService prefs = Platform.getPreferencesService();
-//	    String commandPortNumber = prefs.getString(Activator.getDefault().getPluginId(),
-//	    		"commandPortNumber", "", null);  
-//		int commandPortNum = Integer.parseInt(commandPortNumber);
-//		SendCommandToIoc sendCommandToIoc = null;
 		
 		if(!(param instanceof Map))
 			return null;

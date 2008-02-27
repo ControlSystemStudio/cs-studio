@@ -32,6 +32,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 import org.csstudio.diag.interconnectionServer.Activator;
+import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -91,11 +92,11 @@ public class JmsMessage {
 		 */
 		IPreferencesService prefs = Platform.getPreferencesService();
 	    String jmsTimeToLiveAlarms = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"jmsTimeToLiveAlarms", "", null);  
+	    		PreferenceConstants.JMS_TIME_TO_LIVE_ALARMS, "", null);  
 	    String jmsTimeToLiveLogs = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"jmsTimeToLiveLogs", "", null);  
+	    		PreferenceConstants.JMS_TIME_TO_LIVE_LOGS, "", null);  
 	    String jmsTimeToLivePutLogs = prefs.getString(Activator.getDefault().getPluginId(),
-	    		"jmsTimeToLivePutLogs", "", null);  
+	    		PreferenceConstants.JMS_TIME_TO_LIVE_PUT_LOGS, "", null);  
 	    
         int jmsTimeToLiveAlarmsInt = Integer.parseInt(jmsTimeToLiveAlarms);
 		int jmsTimeToLiveLogsInt = Integer.parseInt(jmsTimeToLiveLogs);
