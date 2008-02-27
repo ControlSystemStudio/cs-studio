@@ -23,7 +23,6 @@ package org.csstudio.config.savevalue.ui;
 
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 /**
  * The save value menu action.
@@ -37,7 +36,8 @@ public class SaveValueAction extends ProcessVariablePopupAction {
 	 */
 	@Override
 	public final void handlePVs(final IProcessVariable[] pvs) {
-		MessageDialog.openError(null, "Save Value", "Sorry, not implemented yet.");
+		SaveValueDialog dialog = new SaveValueDialog(null, pvs[0]);
+		dialog.open();
 	}
 
 }
