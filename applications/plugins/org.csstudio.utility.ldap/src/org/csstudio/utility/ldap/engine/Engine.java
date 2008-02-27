@@ -182,7 +182,7 @@ public class Engine extends Job {
         ldapWriteTimeCollector = new Collector();
         ldapWriteTimeCollector.setApplication(name);
         ldapWriteTimeCollector.setDescriptor("Time to write to LDAP server");
-        ldapWriteTimeCollector.setContinuousPrint(true);
+        ldapWriteTimeCollector.setContinuousPrint(false);
         ldapWriteTimeCollector.setContinuousPrintCount(1000.0);
         ldapWriteTimeCollector.getAlarmHandler().setDeadband(5.0);
         ldapWriteTimeCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);   // 500ms
@@ -191,7 +191,7 @@ public class Engine extends Job {
         ldapReadTimeCollector = new Collector();
         ldapReadTimeCollector.setApplication(name);
         ldapReadTimeCollector.setDescriptor("Time to find LDAP entries");
-        ldapReadTimeCollector.setContinuousPrint(true);
+        ldapReadTimeCollector.setContinuousPrint(false);
         ldapReadTimeCollector.setContinuousPrintCount(1000.0);
         ldapReadTimeCollector.getAlarmHandler().setDeadband(5.0);
         ldapReadTimeCollector.getAlarmHandler().setHighAbsoluteLimit(500.0);    // 500ms
@@ -200,7 +200,7 @@ public class Engine extends Job {
         ldapWriteRequests = new Collector();
         ldapWriteRequests.setApplication(name);
         ldapWriteRequests.setDescriptor("LDAP Write Request Buffer Size");
-        ldapWriteRequests.setContinuousPrint(true);
+        ldapWriteRequests.setContinuousPrint(false);
         ldapWriteRequests.setContinuousPrintCount(1000.0);
         ldapWriteRequests.getAlarmHandler().setDeadband(5.0);
         ldapWriteRequests.getAlarmHandler().setHighAbsoluteLimit(50.0);    // 500ms
