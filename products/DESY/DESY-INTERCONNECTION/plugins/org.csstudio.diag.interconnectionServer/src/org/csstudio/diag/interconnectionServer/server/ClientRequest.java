@@ -156,6 +156,15 @@ public class ClientRequest extends Thread
 	    		PreferenceConstants.JMS_TIME_TO_LIVE_LOGS, "", null);  
 	    String jmsTimeToLivePutLogs = prefs.getString(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.JMS_TIME_TO_LIVE_PUT_LOGS, "", null);  
+	    /*
+		 * do we want to write out message indicators?
+		 */
+		String showMessageIndicator = prefs.getString(Activator.getDefault().getPluginId(),
+	    		PreferenceConstants.SHOW_MESSAGE_INDICATOR, "", null); 
+		boolean showMessageIndicatorB = false;
+		if ( (showMessageIndicator !=null) && showMessageIndicator.equals("true")) {
+			showMessageIndicatorB = true;
+		}
 	    
         int jmsTimeToLiveAlarmsInt = Integer.parseInt(jmsTimeToLiveAlarms);
 		int jmsTimeToLiveLogsInt = Integer.parseInt(jmsTimeToLiveLogs);
@@ -281,7 +290,9 @@ public class ClientRequest extends Thread
         		afterLdapWriteTime = new GregorianCalendar();
         		
         		//checkPerformance( parseTime, afterJmsSendTime, afterUdpAcknowledgeTime, afterLdapWriteTime);
-        		System.out.print("A");
+        		if (showMessageIndicatorB) {
+        			System.out.print("A");
+        		}
         		break;
         		
         	case TagList.STATUS_MESSAGE:
@@ -335,7 +346,10 @@ public class ClientRequest extends Thread
 
         		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE);
         		
-        		System.out.print("AS");
+        		if (showMessageIndicatorB) {
+        			System.out.print("AS");
+        		}
+
         		break;
         		
         	case TagList.SYSTEM_LOG_MESSAGE:
@@ -378,7 +392,9 @@ public class ClientRequest extends Thread
         		updateLdapEntry( tagValue, RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE);
         		
         		//2System.out.print("sLe");
-        		System.out.print("S");
+        		if (showMessageIndicatorB) {
+        			System.out.print("S");
+        		}
         		break;
         		
         	case TagList.BEACON_MESSAGE:
@@ -445,7 +461,9 @@ public class ClientRequest extends Thread
                         //System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
                     }
         		}
-        		//System.out.print("B");
+        		if (showMessageIndicatorB) {
+        			System.out.print("B");
+        		}
         		break;
         		
         	case TagList.BEACON_MESSAGE_SELECTED:
@@ -545,7 +563,9 @@ public class ClientRequest extends Thread
                         //System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
                     }
         		}
-        		//System.out.print("B");
+        		if (showMessageIndicatorB) {
+        			System.out.print("B");
+        		}
         		break;
         		
         	case TagList.BEACON_MESSAGE_NOT_SELECTED:
@@ -640,7 +660,9 @@ public class ClientRequest extends Thread
                         //System.out.println("ClientRequest : send LOG message : *** EXCEPTION *** : " + jmse.getMessage());
                     }
         		}
-        		//System.out.print("B");
+        		if (showMessageIndicatorB) {
+        			System.out.print("B");
+        		}
         		break;
         		
         	case TagList.PUT_LOG_MESSAGE:
@@ -670,7 +692,9 @@ public class ClientRequest extends Thread
                     System.out.println("ClientRequest : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
                 }
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
-        		System.out.print("P");
+        		if (showMessageIndicatorB) {
+        			System.out.print("P");
+        		}
         		break;
         		
         	case 4711:
@@ -684,7 +708,9 @@ public class ClientRequest extends Thread
         		// execute command asynchronously
         		//
             	new ServerCommands (id.getTag(), id.getValue(), tagList.getTagProperties( id.getTag()), socket, packet);
-            	System.out.print("T");
+            	if (showMessageIndicatorB) {
+        			System.out.print("T");
+        		}
             	break;
             	
         		
@@ -692,7 +718,9 @@ public class ClientRequest extends Thread
         		default:
         		status = false;
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
-        		System.out.print("U");
+        		if (showMessageIndicatorB) {
+        			System.out.print("U");
+        		}
         	}
 
         }

@@ -37,11 +37,10 @@ public class AlarmSimulatorThread extends Thread{
 	private boolean isRunning = true;
 	private static String channelPrefix = "AlarmSimulator";
 	
-	
 	/**
 	 * Stating the AlarmSimulatorThread with the default scanTime of 1000ms.
 	 */
-	AlarmSimulatorThread ( ) {
+	AlarmSimulatorThread(){
 		this.start();
 	}
 	
@@ -85,6 +84,7 @@ public class AlarmSimulatorThread extends Thread{
 		
 		// tell logging - we are running
 		CentralLogger.getInstance().info(this, "AlarmSimulator started on: " + localHostName);
+		CentralLogger.getInstance().info(this, "The AlarmSimulator does NOT write to LDAP! -> avoid traffic!");
 		
 		while (isRunning()) {
 			/*
@@ -204,15 +204,27 @@ public class AlarmSimulatorThread extends Thread{
 	public boolean isRunning() {
 		return isRunning;
 	}
-
+	
+	/**
+	 * change the running state.
+	 * @param isRunning
+	 */
 	public void setRunning(boolean isRunning) {
 		this.isRunning = isRunning;
 	}
 
+	/**
+	 * what does the channel prefix look like.
+	 * @return current channel prefix.
+	 */
 	public static String getChannelPrefix() {
 		return channelPrefix;
 	}
 
+	/**
+	 * set channel prefix for simulated alarms.
+	 * @param channelPrefix
+	 */
 	public static void setChannelPrefix(String channelPrefix) {
 		AlarmSimulatorThread.channelPrefix = channelPrefix;
 	}

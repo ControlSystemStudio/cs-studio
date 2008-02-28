@@ -31,6 +31,7 @@ public class PreferenceConstants {
 	public static final String DATA_PORT_NUMBER = "dataPortNumber";
 	public static final String COMMAND_PORT_NUMBER = "commandPortNumber";
 	public static final String BEACON_TIMEOUT = "beaconTimeout";
+	public static final String SHOW_MESSAGE_INDICATOR = "showMessageIndicator";
 	public static final String SENT_START_ID = "sentStartID";
 	public static final String JMS_CONTEXT_FACTORY = "jmsContextFactory";
 	public static final String JMS_TIME_TO_LIVE_ALARMS = "jmsTimeToLiveAlarms";

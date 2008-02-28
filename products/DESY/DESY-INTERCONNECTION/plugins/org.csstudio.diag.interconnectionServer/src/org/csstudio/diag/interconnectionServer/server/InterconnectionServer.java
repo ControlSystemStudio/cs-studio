@@ -78,6 +78,7 @@ public class InterconnectionServer
 	private int							sendMessageErrorCount	= 0;
 	public int 							successfullJmsSentCountdown = PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN;
 	private	boolean         			quit        = false;
+	private int messageCounter = 0;
 	//private static int					errorContNamingException = 0;
     
     public final String NAME    = "IcServer";
@@ -521,7 +522,15 @@ public class InterconnectionServer
 	    		PreferenceConstants.BEACON_TIMEOUT, "", null); 
 	    int beaconTimeoutI = Integer.parseInt(beaconTimeout);
 		new BeaconWatchdog(beaconTimeoutI);  // mS
-        
+		/*
+		 * do we want to write out message indicators?
+		 */
+		String showMessageIndicator = prefs.getString(Activator.getDefault().getPluginId(),
+	    		PreferenceConstants.SHOW_MESSAGE_INDICATOR, "", null); 
+		boolean showMessageIndicatorB = false;
+		if ( (showMessageIndicator !=null) && showMessageIndicator.equals("true")) {
+			showMessageIndicatorB = true;
+		}
         try
         {
             serverSocket = new DatagramSocket( dataPortNum );
@@ -544,6 +553,14 @@ public class InterconnectionServer
         //       z.B. Receiver für Queue COMMAND einfügen
         while(!isQuit())
         {
+        	/*
+        	 * count the number of messages and write out one line after each 100 messages
+        	 */
+        	if ( showMessageIndicatorB && (messageCounter++ > 100)){
+        		messageCounter = 0;
+        		System.out.println ("100 messages complete");
+        	}
+        	
         	/*
         	 * check for the number of existing threads
         	 * do not create new threads
