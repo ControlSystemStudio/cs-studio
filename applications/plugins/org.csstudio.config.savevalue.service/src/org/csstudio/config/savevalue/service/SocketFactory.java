@@ -19,61 +19,64 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.config.savevalue.rmiserver;
+package org.csstudio.config.savevalue.service;
 
-import org.csstudio.platform.AbstractCssPlugin;
-import org.osgi.framework.BundleContext;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 
 /**
- * The activator class controls the plug-in life cycle.
+ * Custom socket factory that creates clients sockets with short (5 seconds)
+ * timeouts. The server sockets returned by this factory use the default
+ * timeout.
+ * 
+ * @author Joerg Rathlev
  */
-public class Activator extends AbstractCssPlugin {
+public class SocketFactory implements RMIClientSocketFactory,
+		RMIServerSocketFactory, Serializable {
 
 	/**
-	 * The plug-in ID.
+	 * The serial version UID.
 	 */
-	public static final String PLUGIN_ID = "org.csstudio.config.savevalue.rmiserver";
-
-	/**
-	 * The shared instance.
-	 */
-	private static Activator _plugin;
+	private static final long serialVersionUID = -5374474110426849095L;
 	
 	/**
-	 * The constructor.
+	 * The timeout value, in milliseconds.
 	 */
-	public Activator() {
+	private static final int TIMEOUT = 5000;
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Socket createSocket(String host, int port) throws IOException {
+		Socket s = new Socket(host, port);
+		s.setSoTimeout(TIMEOUT);
+		return s;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStart(final BundleContext context) throws Exception {
-		_plugin = this;
+	public ServerSocket createServerSocket(int port) throws IOException {
+		ServerSocket s = new ServerSocket(port);
+		return s;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void doStop(final BundleContext context) throws Exception {
-		_plugin = null;
+	public int hashCode() {
+		return getClass().hashCode();
 	}
-
-	/**
-	 * Returns the shared instance.
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return _plugin;
-	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public final String getPluginId() {
-		return PLUGIN_ID;
+	public boolean equals(Object o) {
+		return (getClass() == o.getClass());
 	}
 
 }

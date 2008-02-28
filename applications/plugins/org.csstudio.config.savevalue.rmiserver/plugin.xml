@@ -6,7 +6,6 @@
          name="Save Value RMI Server"
          point="org.eclipse.core.runtime.applications">
       <application
-            thread="any"
             visible="false">
          <run
                class="org.csstudio.config.savevalue.rmiserver.SaveValueServer">

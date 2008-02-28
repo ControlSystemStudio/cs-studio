@@ -27,6 +27,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 import org.csstudio.config.savevalue.service.SaveValueService;
+import org.csstudio.config.savevalue.service.SocketFactory;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -50,17 +51,19 @@ public class SaveValueServer implements IApplication {
 			// Create the registry
 			Registry reg = LocateRegistry.createRegistry(1099);
 			
+			SocketFactory sf = new SocketFactory();
+			
 			// Create the services and publish them
 			SaveValueService epicsOra = new EpicsOraService();
-			SaveValueService eoStub = (SaveValueService) UnicastRemoteObject.exportObject(epicsOra, 0);
+			SaveValueService eoStub = (SaveValueService) UnicastRemoteObject.exportObject(epicsOra, 0, sf, sf);
 			reg.bind("SaveValue.EpicsOra", eoStub);
 
 			SaveValueService db = new DatabaseService();
-			SaveValueService dbStub = (SaveValueService) UnicastRemoteObject.exportObject(db, 0);
+			SaveValueService dbStub = (SaveValueService) UnicastRemoteObject.exportObject(db, 0, sf, sf);
 			reg.bind("SaveValue.Database", dbStub);
 
 			SaveValueService caput = new CaPutService();
-			SaveValueService caputStub = (SaveValueService) UnicastRemoteObject.exportObject(caput, 0);
+			SaveValueService caputStub = (SaveValueService) UnicastRemoteObject.exportObject(caput, 0, sf, sf);
 			reg.bind("SaveValue.caput", caputStub);
 			
 			System.out.println("Server ready.");
