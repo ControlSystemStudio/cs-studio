@@ -23,7 +23,8 @@ public class ExportAction extends Action
     {
         final FileDialog dlg = new FileDialog(shell, SWT.SAVE);
         final String name = dlg.open();
-        if (name != null)
-            gui.exportToFile(name);
+        if (name == null)
+            return;
+        gui.exportToFile(name);
     }
 }

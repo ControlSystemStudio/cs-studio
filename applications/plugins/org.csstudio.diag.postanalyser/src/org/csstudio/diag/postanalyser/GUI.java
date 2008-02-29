@@ -23,6 +23,10 @@ import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
 import org.csstudio.swt.chart.actions.SaveCurrentImageAction;
 import org.csstudio.swt.chart.actions.ShowButtonBarAction;
 import org.csstudio.swt.chart.axes.TimeAxis;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -529,25 +533,50 @@ public class GUI implements ModelListener, AlgorithmJobListener
     /** Export analysis data to file
      *  @param filename
      */
-    @SuppressWarnings("nls")
     public void exportToFile(final String filename)
+    {
+        // Background job cannot access GUI elements, so read them here
+        final Algorithm algorithm = getCurrentAlgorithm();
+        final String channel_text = channel_name.getText();
+        final String alt_channel_text = alt_channel.getText();
+        final String fft_window_text = fft_window.getText();
+        final String message_text = message.getText();
+
+        final Job job = new Job("Export") //$NON-NLS-1$
+        {
+            @Override
+            protected IStatus run(IProgressMonitor monitor)
+            {
+                exportData(filename, algorithm, channel_text,
+                        alt_channel_text, fft_window_text, message_text);
+                return Status.OK_STATUS;
+            }
+            
+        };
+        job.schedule();
+    }
+
+    /** Helper for file export, runs in background job */
+    @SuppressWarnings("nls")
+    private void exportData(final String filename, final Algorithm algorithm,
+            final String channel_text, final String alt_channel_text,
+            final String fft_window_text, final String message_text)
     {
         try
         {
             final PrintWriter out = new PrintWriter(filename);
             out.println("# Postanalyzer Data File");
             out.println("#");
-            out.println("# Algorithm   : " + algorithm_name.getText());
-            out.println("# Channel     : " + channel_name.getText());
+            out.println("# Algorithm   : " + algorithm.getName());
+            out.println("# Channel     : " + channel_text);
             
-            final Algorithm algorithm = getCurrentAlgorithm();
             if (algorithm instanceof CorrelationAlgorithm)
-                out.println("# 2nd Channel :" + alt_channel.getText());
+                out.println("# 2nd Channel :" + alt_channel_text);
             if (algorithm instanceof FFTAlgorithm)
-                out.println("# Window      :" + fft_window.getText());
-            out.println("# Message     : " + message.getText());
+                out.println("# Window      :" + fft_window_text);
+            out.println("# Message     : " + message_text);
             out.println();
-
+    
             final Chart chart = ichart.getChart();
             final boolean time_axis = chart.getXAxis() instanceof TimeAxis;
             final int traces = chart.getNumTraces();
