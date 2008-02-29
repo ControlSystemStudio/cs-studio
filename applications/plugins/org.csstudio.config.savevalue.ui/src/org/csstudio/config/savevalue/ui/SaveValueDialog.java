@@ -21,6 +21,7 @@
  */
 package org.csstudio.config.savevalue.ui;
 
+import java.net.SocketTimeoutException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -209,8 +210,14 @@ public class SaveValueDialog extends Dialog {
 								SaveValueService service = (SaveValueService) reg.lookup(services[i]);
 								service.saveValue(_pv.getName(), ioc, pvValue);
 								result = "Success";
+							// TODO: log errors
 							} catch (RemoteException e) {
-								result = "Connection error: " + e.getMessage();
+								Throwable cause = e.getCause();
+								if (cause instanceof SocketTimeoutException) {
+									result = "Timeout";
+								} else {
+									result = "Connection error: " + e.getMessage();
+								}
 							} catch (SaveValueServiceException e) {
 								result = "Service error: " + e.getMessage();
 							} catch (NotBoundException e) {
