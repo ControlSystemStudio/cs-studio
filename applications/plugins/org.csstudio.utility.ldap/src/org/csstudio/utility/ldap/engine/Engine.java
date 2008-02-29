@@ -358,18 +358,22 @@ public class Engine extends Job {
             try {
                 String[] attStrings = new String[] {attriebute.name()};
                 Attributes attributes=null;
-                if(attriebutSet.getSearchControls().getSearchScope()==SearchControls.SUBTREE_SCOPE){
-                    SearchControls sc = attriebutSet.getSearchControls();
-                    NamingEnumeration<SearchResult> searchResults = _ctx.search(attriebutSet.getPath(), attriebutSet.getFilter(), sc);
-                    
-                    if(searchResults.hasMore()){
-                        SearchResult element = searchResults.next();
-                        attributes = element.getAttributes();
+                try{
+                    if(attriebutSet.getSearchControls().getSearchScope()==SearchControls.SUBTREE_SCOPE){
+                        SearchControls sc = attriebutSet.getSearchControls();
+                        NamingEnumeration<SearchResult> searchResults = _ctx.search(attriebutSet.getPath(), attriebutSet.getFilter(), sc);
+                        
+                        if(searchResults.hasMore()){
+                            SearchResult element = searchResults.next();
+                            attributes = element.getAttributes();
+                        }else{
+                            return "NOT_FOUND";
+                        }
                     }else{
-                        return "NOT_FOUND";
+                    	attributes = _ctx.getAttributes(attriebutSet.getFilter()+","+attriebutSet.getPath(),attStrings);
                     }
-                }else{
-                	attributes = _ctx.getAttributes(attriebutSet.getFilter()+","+attriebutSet.getPath(),attStrings);
+                }catch (NamingException ne){
+                    attributes=null; 
                 }
                 if(attributes==null){
                 	return "NONE";
