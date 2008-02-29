@@ -41,6 +41,8 @@ public class SaveCurrentImageAction extends Action
         try
         {
             final String filename = ImageFileName.get(chart.getShell());
+            if (filename == null)
+                return;
             try
             {
                 final ImageLoader loader = new ImageLoader();
