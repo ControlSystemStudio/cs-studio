@@ -31,6 +31,7 @@ public class Messages extends NLS
     public static String GUI_Channel_;
     public static String GUI_Crop;
     public static String GUI_Crop_TT;
+    public static String GUI_Export;
     public static String GUI_NoChannelError;
     public static String GUI_NoSecondChannelError;
     public static String GUI_SecondChannel_;

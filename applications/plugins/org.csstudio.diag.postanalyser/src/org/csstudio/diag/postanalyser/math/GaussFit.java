@@ -155,9 +155,7 @@ public class GaussFit extends Fit
     @Override
     public String toString()
     {
-        final long seconds = (long)center;
-        final long nano = (long) ((center - seconds)*1e9);
-        final ITimestamp time = TimestampFactory.createTimestamp(seconds, nano);
+        final ITimestamp time = TimestampFactory.fromDouble(center);
         return String.format(Messages.GaussFit_Message,
             base, amp, time.toString(), sigma);
     }

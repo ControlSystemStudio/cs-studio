@@ -1,5 +1,7 @@
 package org.csstudio.diag.postanalyser;
 
+import java.io.PrintWriter;
+
 import org.csstudio.diag.postanalyser.math.Filter;
 import org.csstudio.diag.postanalyser.model.Algorithm;
 import org.csstudio.diag.postanalyser.model.AlgorithmOutput;
@@ -7,15 +9,20 @@ import org.csstudio.diag.postanalyser.model.CorrelationAlgorithm;
 import org.csstudio.diag.postanalyser.model.FFTAlgorithm;
 import org.csstudio.diag.postanalyser.model.Model;
 import org.csstudio.diag.postanalyser.model.ModelListener;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.swt.chart.Chart;
+import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;
 import org.csstudio.swt.chart.DefaultColors;
 import org.csstudio.swt.chart.InteractiveChart;
+import org.csstudio.swt.chart.Trace;
 import org.csstudio.swt.chart.actions.PrintCurrentImageAction;
 import org.csstudio.swt.chart.actions.RemoveMarkersAction;
 import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
 import org.csstudio.swt.chart.actions.SaveCurrentImageAction;
 import org.csstudio.swt.chart.actions.ShowButtonBarAction;
+import org.csstudio.swt.chart.axes.TimeAxis;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -232,6 +239,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
         context_menu.add(new Separator());
         //context_menu.add(export_action);
         //context_menu.add(new Separator());
+        context_menu.add(new ExportAction(this, chart.getShell()));
         context_menu.add(new SaveCurrentImageAction(chart));
         context_menu.add(new PrintCurrentImageAction(chart));
         context_menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -277,8 +285,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
     /** Show or hide the algorithm-specific GUI elements. */
     private void updateConditionalGUIElements()
     {
-        final int alg_num = algorithm_name.getSelectionIndex();
-        final Algorithm algorithm = model.getAlgorithm(alg_num);
+        final Algorithm algorithm = getCurrentAlgorithm();
 
         boolean show_crop = true;
         
@@ -400,8 +407,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
         // Ask ongoing job to stop since we no longer care
         if (algorithm_job != null)
             algorithm_job.cancel();
-        final int alg_num = algorithm_name.getSelectionIndex();
-        final Algorithm algorithm = model.getAlgorithm(alg_num);
+        final Algorithm algorithm = getCurrentAlgorithm();
         try
         {
             final Chart chart = ichart.getChart();
@@ -442,6 +448,13 @@ public class GUI implements ModelListener, AlgorithmJobListener
         {
             algorithmFailed(algorithm, ex);
         }
+    }
+
+    private Algorithm getCurrentAlgorithm()
+    {
+        final int alg_num = algorithm_name.getSelectionIndex();
+        final Algorithm algorithm = model.getAlgorithm(alg_num);
+        return algorithm;
     }
 
     /** Algorithm started in <code>performAlgorithm</code> completed
@@ -511,5 +524,58 @@ public class GUI implements ModelListener, AlgorithmJobListener
                     message.setText(Messages.GUI_AlgorithmError);
             }
         });
+    }
+
+    /** Export analysis data to file
+     *  @param filename
+     */
+    @SuppressWarnings("nls")
+    public void exportToFile(final String filename)
+    {
+        try
+        {
+            final PrintWriter out = new PrintWriter(filename);
+            out.println("# Postanalyzer Data File");
+            out.println("#");
+            out.println("# Algorithm   : " + algorithm_name.getText());
+            out.println("# Channel     : " + channel_name.getText());
+            
+            final Algorithm algorithm = getCurrentAlgorithm();
+            if (algorithm instanceof CorrelationAlgorithm)
+                out.println("# 2nd Channel :" + alt_channel.getText());
+            if (algorithm instanceof FFTAlgorithm)
+                out.println("# Window      :" + fft_window.getText());
+            out.println("# Message     : " + message.getText());
+            out.println();
+
+            final Chart chart = ichart.getChart();
+            final boolean time_axis = chart.getXAxis() instanceof TimeAxis;
+            final int traces = chart.getNumTraces();
+            for (int t=0; t<traces; ++t)
+            {
+                final Trace trace = chart.getTrace(t);
+                out.println("# " + trace.getName());
+                final ChartSampleSequence samples = trace.getSampleSequence();
+                final int N = samples.size();
+                for (int i=0; i<N; ++i)
+                {
+                    final ChartSample sample = samples.get(i);
+                    if (time_axis)
+                    {
+                        final ITimestamp time =
+                            TimestampFactory.fromDouble(sample.getX());
+                        out.println(time.toString() + "\t" + sample.getY());
+                    }
+                    else
+                        out.println(sample.getX() + "\t" + sample.getY());
+                }
+                out.println();
+            }
+            out.close();
+        }
+        catch (Exception ex)
+        {
+            Activator.getLogger().error("Cannot write to " + filename, ex);
+        }
     }
 }
