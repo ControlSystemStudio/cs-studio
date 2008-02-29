@@ -378,7 +378,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
     private void autozoom_x()
     {
         double xmin = Double.MAX_VALUE;
-        double xmax = Double.MIN_VALUE;
+        double xmax = -Double.MAX_VALUE;
         final Chart chart = ichart.getChart();
         for (int i=0; i<chart.getNumTraces(); ++i)
         {
