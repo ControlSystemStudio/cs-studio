@@ -30,6 +30,8 @@ import java.rmi.registry.Registry;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.model.IProcessVariable;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -203,7 +205,12 @@ public class SaveValueDialog extends Dialog {
 						"SaveValue.EpicsOra", "SaveValue.Database", "SaveValue.caput"	
 					};
 					try {
-						Registry reg = LocateRegistry.getRegistry("localhost"); // TODO: get host from prefs
+						IPreferencesService prefs = Platform.getPreferencesService();
+						String registryHost = prefs.getString(
+								Activator.PLUGIN_ID,
+								PreferenceConstants.RMI_REGISTRY_SERVER,
+								null, null);
+						Registry reg = LocateRegistry.getRegistry(registryHost);
 						for (int i = 0; i < 3; i++) {
 							String result;
 							try {
