@@ -24,6 +24,8 @@ package org.csstudio.config.savevalue.rmiserver;
 
 import java.rmi.RemoteException;
 
+import org.csstudio.config.savevalue.service.SaveValueRequest;
+import org.csstudio.config.savevalue.service.SaveValueResult;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.logging.CentralLogger;
@@ -43,10 +45,9 @@ public class EpicsOraService implements SaveValueService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void saveValue(final String pvName, final String iocName, final String value)
+	public final SaveValueResult saveValue(final SaveValueRequest request)
 			throws SaveValueServiceException, RemoteException {
-		_log.info(this, "saveValue called with: "
-				+ "pvName=" + pvName + ", iocName=" + iocName + ", value=" + value);
+		_log.info(this, "saveValue called with: " + request);
 		// test: always fail
 		throw new SaveValueServiceException("Always fails (for testing)", null);
 	}

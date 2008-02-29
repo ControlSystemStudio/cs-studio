@@ -27,10 +27,14 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import org.csstudio.config.savevalue.service.SaveValueRequest;
+import org.csstudio.config.savevalue.service.SaveValueResult;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
+import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
@@ -225,8 +229,19 @@ public class SaveValueDialog extends Dialog {
 							try {
 								_log.debug(this, "Calling save value service: " + services[i]);
 								SaveValueService service = (SaveValueService) reg.lookup(services[i]);
-								service.saveValue(_pv.getName(), ioc, pvValue);
-								result = "Success";
+								SaveValueRequest req = new SaveValueRequest();
+								req.setPvName(_pv.getName());
+								req.setIocName(ioc);
+								req.setValue(pvValue);
+								req.setUsername(SecurityFacade.getInstance().getCurrentUser().getUsername());
+								req.setHostname(CSSPlatformInfo.getInstance().getQualifiedHostname());
+								SaveValueResult srr = service.saveValue(req);
+								String replacedValue = srr.getReplacedValue();
+								if (replacedValue != null) {
+									result = "Success: old value " + replacedValue + " replaced with new value";
+								} else {
+									result = "Success: new entry added to save button file";
+								}
 							} catch (RemoteException e) {
 								Throwable cause = e.getCause();
 								if (cause instanceof SocketTimeoutException) {
@@ -249,7 +264,7 @@ public class SaveValueDialog extends Dialog {
 								public void run() {
 									TableItem item = _resultsTable.getItem(index);
 									item.setText(1, resultCopy);
-									if (!resultCopy.equals("Success")) {
+									if (!resultCopy.startsWith("Success")) {
 										item.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 									} else {
 										item.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN));

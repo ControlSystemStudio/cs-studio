@@ -24,6 +24,8 @@ package org.csstudio.config.savevalue.rmiserver;
 
 import java.rmi.RemoteException;
 
+import org.csstudio.config.savevalue.service.SaveValueRequest;
+import org.csstudio.config.savevalue.service.SaveValueResult;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.logging.CentralLogger;
@@ -43,16 +45,16 @@ public class CaPutService implements SaveValueService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void saveValue(final String pvName, final String iocName, final String value)
+	public final SaveValueResult saveValue(final SaveValueRequest request)
 			throws SaveValueServiceException, RemoteException {
-		_log.info(this, "saveValue called with: "
-				+ "pvName=" + pvName + ", iocName=" + iocName + ", value=" + value);
+		_log.info(this, "saveValue called with: " + request);
 		try {
 			// wait for 10 sec for testing
-			Thread.sleep(10000);
+			Thread.sleep(4000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		return new SaveValueResult(null);
 	}
 
 }

@@ -19,37 +19,49 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.config.savevalue.service;
 
-package org.csstudio.config.savevalue.rmiserver;
-
-import java.rmi.RemoteException;
-
-import org.csstudio.config.savevalue.service.SaveValueRequest;
-import org.csstudio.config.savevalue.service.SaveValueResult;
-import org.csstudio.config.savevalue.service.SaveValueService;
-import org.csstudio.config.savevalue.service.SaveValueServiceException;
-import org.csstudio.platform.logging.CentralLogger;
+import java.io.Serializable;
 
 /**
- * Save value service that saves to a database.
+ * The result of a save value call. Objects of this class should only be used
+ * to represent the results of successful save value calls. If a save value
+ * call fails, it should throw a {@link SaveValueServiceException}.
  * 
  * @author Joerg Rathlev
  */
-public class DatabaseService implements SaveValueService {
+public final class SaveValueResult implements Serializable {
+
+	/**
+	 * Serial version UID.
+	 */
+	private static final long serialVersionUID = -3013941933990845967L;
 	
 	/**
-	 * The logger.
+	 * The old value that was replaced by the save value call, or
+	 * <code>null</code> if a new entry was added.
 	 */
-	private final CentralLogger _log = CentralLogger.getInstance();
+	private final String _replacedValue;
 
 	/**
-	 * {@inheritDoc}
+	 * Creates a new save value result.
+	 * 
+	 * @param replacedValue
+	 *            the old value that was replaced, or <code>null</code> if a
+	 *            new entry was added.
 	 */
-	public final SaveValueResult saveValue(final SaveValueRequest request)
-			throws SaveValueServiceException, RemoteException {
-		_log.info(this, "saveValue called with: " + request);
-		// always simply return (success for testing)
-		return new SaveValueResult("0");
+	public SaveValueResult(final String replacedValue) {
+		_replacedValue = replacedValue;
 	}
 
+	/**
+	 * Returns the value that was replaced by the save value call. If a new
+	 * entry was added, returns <code>null</code>.
+	 * 
+	 * @return the value that was replaced, or <code>null</code> if a new
+	 *         entry was added.
+	 */
+	public String getReplacedValue() {
+		return _replacedValue;
+	}
 }
