@@ -1,0 +1,72 @@
+<html>
+<body>
+This package contains an implementation of the Levenberg-Marquardt non-linear least squares fitting algorithm.
+This package manifest contains three pretty much unrelated sections:
+<ol>
+<li>How to use the <code>LevenbergMarquardt</code> class.</li>
+<li>How to roll your own <code>Matrix</code> implementaion.</li>
+<li>A description of the Levenberg-Marquardt algorithm (i.e. why it works).</li>
+</ol>
+
+
+<h1>Using the <code>LevenbergMarquardt</code> Class</h1>
+
+<h2>Length and Dimension</h2>
+Every <code>LevenbergMarquardt</code> instance has an associated <i>length</i> and a <i>dimension</i>.
+<i>Length</i> specifies the number of points your input data has, while <i>dimension</i> 
+specifies the dimension of each point. An important note here: The dimension of the input data
+does <u>not</u> include the <i>values</i> of each data point. For example, suppose you
+have a series of (x,y) points, and you wish to fit a function of the x-points to the y-values.
+(Notice I've been very sneaky in my semantics, here.)
+This would be considered <i>one dimensional</i> data, because the function you wish to
+fit (i.e. something of the form <code>y=f(x)</code>) takes a vector of one dimension (each data
+point has only a single component - x.
+<p>
+Here's a slightly more complex example: Suppose you have space-time points, i.e. three 
+spatial coordinates and a time coordinate; basically, you data looks something like this:
+<br>
+[ {x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>, t<sub>0</sub>}, 
+ {x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>, t<sub>1</sub>}, ... , 
+ {x<sub>n-1</sub>, y<sub>n-1</sub>, z<sub>n-1</sub>, t<sub>n-1</sub>} ]
+<br>
+And you wish to fit a function <code>t=f(x,y,z)</code>. This would be considered data
+of length <code>n</code> and dimension 3.
+<p>
+Basically, what I'm getting at here is that the dimension is simply the length of each
+input vector minus one; this works because Levenberg-Marquardt works only with one-dimensional
+cost functions (i.e., in the second example, it would not be possible to find a function
+<code>&lt;t,x&gt=f(y,z)</code> - that is a vector function mapping <code>&lt;y,z&gt</code> vectors
+to <code>&lt;t,x&gt</code> vectors.
+
+
+<h2>Cost Functions</h2>
+
+<h2>Guess Data</h2>
+
+<h2>Setting the Input Data and Values</h2>
+
+<h2>Stepping and Iterating</h2>
+
+<h2>Getting the Optimized Solution</h2>
+
+<h2>Clearing and Resetting</h2>
+
+<h2>Adjusting the Algorithm</h2>
+
+<p>
+
+<h1>Using Your Own Matrix Implementation</h1>
+
+<h2>The <code>Matrix</code> Interface</h2>
+
+<h2>The <code>MatrixFactory</code> Class</h2>
+
+
+<p>
+
+<h1>The Levenberg-Marquardt Algorithm</h1>
+
+
+@author Fran Lattanzio
+</body>
+</html>

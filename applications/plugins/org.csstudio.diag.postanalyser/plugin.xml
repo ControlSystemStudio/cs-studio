@@ -4,21 +4,22 @@
 
    <extension
          point="org.eclipse.ui.views">
-      <view
-            category="org.csstudio"
-            class="org.csstudio.diag.postanalyser.View"
-            id="org.csstudio.diag.postanalyser.view"
-            name="Post Analyser">
-      </view>
       <category
             id="org.csstudio"
             name="CSS"/>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.diag.postanalyser.View"
+            icon="icons/mainLabel.png"
+            id="org.csstudio.diag.postanalyser.view"
+            name="%PostAnalyzer">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
-            id="org.csstudio.diag.postanalyser.objectContribution1"
+            id="org.csstudio.diag.postanalyser.object_contrib"
             objectClass="org.csstudio.platform.model.IProcessVariableWithSamples">
          <menu
                id="org.csstudio.popmenu"
@@ -28,10 +29,10 @@
             <separator name="additions"/>
          </menu>
          <action
-               class="org.csstudio.diag.postanalyser.FFTPopupAction"
-               enablesFor="1"
+               class="org.csstudio.diag.postanalyser.ObjectContribPopupAction"
+               icon="icons/mainLabel.png"
                id="org.csstudio.diag.postanalyser.action1"
-               label="Post Analayser"
+               label="%PostAnalyzer"
                menubarPath="org.csstudio.popmenu/content"/>
       </objectContribution>
    </extension>
@@ -45,7 +46,7 @@
                class="org.csstudio.diag.postanalyser.ShowAnalyserAction"
                id="org.csstudio.diag.postanalyser.showAnalyser"
                icon="icons/mainLabel.png"
-               label="Post Analyser"
+               label="%PostAnalyzer"
                menubarPath="css/diag/"
                style="push"/>
       </actionSet>

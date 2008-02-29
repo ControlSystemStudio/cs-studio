@@ -22,33 +22,21 @@
 
 package org.csstudio.diag.postanalyser;
 
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesPopupAction;
 
-/**
- * @author jhatje
- *
+/** Activate a (new) view in response to object contrib. context menu.
+ *  @author jhatje
+ *  @author Kay Kasemir
  */
-public class FFTPopupAction extends ProcessVariableWithSamplesPopupAction{
-    /** @see org.csstudio.data.exchange.ProcessVariablePopupAction#handlePVs(]) */
-//    @Override
-//    public void handlePVs(IProcessVariable[] pv_names)
-//    {
-//        if (pv_names.length < 1)
-//            return;
-//        Probe.activateWithPV(pv_names[0].getName());
-//    }
-
-	/* (non-Javadoc)
-	 * @see org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesPopupAction#handlePVs(org.csstudio.platform.model.IProcessVariableWithSample[])
-	 */
-	@Override
-	public void handlePVs(IProcessVariableWithSamples[] pv_names) {
-		//System.out.println("handle PVs");
-    	if (pv_names.length < 1)
-    		return;  
-    	 boolean  err =View.activateWithPV(pv_names); 
-    	//View.activateWithPV(pv_names[0].getName());
-	}
+public class ObjectContribPopupAction extends ProcessVariableWithSamplesPopupAction
+{
+    /** {@inheritDoc} */
+    @Override
+    public void handlePVs(IProcessVariableWithSamples[] pv_names)
+    {
+        if (pv_names.length < 1)
+            return;
+        View.activateWithPVs(pv_names);
+    }
 }
