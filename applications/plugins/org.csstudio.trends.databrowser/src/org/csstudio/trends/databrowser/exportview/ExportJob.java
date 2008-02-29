@@ -136,7 +136,7 @@ class ExportJob extends Job
 
             // No spreadsheet?
             // Then we're done, since we already dumped each channel.
-            // Otherwise, dump the Spreadsheed:
+            // Otherwise, dump the Spreadsheet:
             if (format_spreadsheet)
             {
                 // Spreadsheet Header
