@@ -51,7 +51,7 @@ public class SocketFactory implements RMIClientSocketFactory,
 	/**
 	 * {@inheritDoc}
 	 */
-	public Socket createSocket(String host, int port) throws IOException {
+	public final Socket createSocket(final String host, final int port) throws IOException {
 		Socket s = new Socket(host, port);
 		s.setSoTimeout(TIMEOUT);
 		return s;
@@ -60,7 +60,7 @@ public class SocketFactory implements RMIClientSocketFactory,
 	/**
 	 * {@inheritDoc}
 	 */
-	public ServerSocket createServerSocket(int port) throws IOException {
+	public final ServerSocket createServerSocket(final int port) throws IOException {
 		ServerSocket s = new ServerSocket(port);
 		return s;
 	}
@@ -68,14 +68,14 @@ public class SocketFactory implements RMIClientSocketFactory,
 	/**
 	 * {@inheritDoc}
 	 */
-	public int hashCode() {
+	public final int hashCode() {
 		return getClass().hashCode();
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean equals(Object o) {
+	public final boolean equals(final Object o) {
 		return (getClass() == o.getClass());
 	}
 
