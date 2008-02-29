@@ -29,6 +29,7 @@ import java.rmi.registry.Registry;
 
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -55,6 +56,11 @@ import org.eclipse.swt.widgets.Text;
  */
 public class SaveValueDialog extends Dialog {
 	
+	/**
+	 * The logger.
+	 */
+	private final CentralLogger _log = CentralLogger.getInstance();
+
 	/**
 	 * Text box that displays the process variable. 
 	 */
@@ -196,8 +202,10 @@ public class SaveValueDialog extends Dialog {
 		getButton(IDialogConstants.CANCEL_ID).setEnabled(false);
 		_resultsTable.setEnabled(true);
 		
+		_log.debug(this, "Trying to find IOC for process variable: " + _pv);
 		final String ioc = IocFinder.getIoc(_pv);
 		if (ioc != null) {
+			_log.debug(this, "IOC found: " + ioc);
 			final String pvValue = _value.getText();
 			Runnable r = new Runnable() {
 				public void run() {
@@ -210,25 +218,30 @@ public class SaveValueDialog extends Dialog {
 								Activator.PLUGIN_ID,
 								PreferenceConstants.RMI_REGISTRY_SERVER,
 								null, null);
+						_log.debug(this, "Connecting to RMI registry.");
 						Registry reg = LocateRegistry.getRegistry(registryHost);
 						for (int i = 0; i < 3; i++) {
 							String result;
 							try {
+								_log.debug(this, "Calling save value service: " + services[i]);
 								SaveValueService service = (SaveValueService) reg.lookup(services[i]);
 								service.saveValue(_pv.getName(), ioc, pvValue);
 								result = "Success";
-							// TODO: log errors
 							} catch (RemoteException e) {
 								Throwable cause = e.getCause();
 								if (cause instanceof SocketTimeoutException) {
+									_log.warn(this, "Remote call to " + services[i] + " timed out");
 									result = "Timeout";
 								} else {
+									_log.error(this, "Remote call to " + services[i] + " failed with RemoteException", e);
 									result = "Connection error: " + e.getMessage();
 								}
 							} catch (SaveValueServiceException e) {
+								_log.warn(this, "Save Value service " + services[i] + " reported an error", e);
 								result = "Service error: " + e.getMessage();
 							} catch (NotBoundException e) {
-								result = "Service not available.";
+								_log.warn(this, "Save value service " + services[i] + " is not bound in RMI registry");
+								result = "Service not available";
 							}
 							final int index = i;
 							final String resultCopy = result;
@@ -245,6 +258,7 @@ public class SaveValueDialog extends Dialog {
 								}
 							});
 						}
+						_log.debug(this, "Finished calling remote Save Value services");
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
 								getButton(IDialogConstants.CANCEL_ID)
@@ -252,6 +266,7 @@ public class SaveValueDialog extends Dialog {
 							}
 						});
 					} catch (RemoteException e) {
+						_log.error(this, "Could not connect to RMI registry", e);
 						MessageDialog.openError(null, "Save Value", "Could not connect to RMI registry: " + e.getMessage());
 						SaveValueDialog.this.close();
 					}
@@ -259,6 +274,7 @@ public class SaveValueDialog extends Dialog {
 			};
 			new Thread(r).start();
 		} else {
+			_log.info(this, "Could not execute save value because no IOC was found for PV: " + _pv);
 			MessageDialog.openError(null, "Save Value", "The IOC of the process variable was not found.");
 			close();
 			return;
