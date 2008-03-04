@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,11 +63,73 @@ public class CaPutService implements SaveValueService {
 	 * Preference key for the ca file path preference.
 	 */
 	private static final String FILE_PATH_PREFERENCE = "caFilePath";
+	
+	/**
+	 * The character used to separate channel and value in ca file entries.
+	 */
+	private static final String CA_SEPARATOR = " ";
+	
+	/**
+	 * The character used to separate the columns (channel, value, user, host,
+	 * date) of changelog file entries.
+	 */
+	private static final String CHANGELOG_SEPARATOR = " ";
 
 	/**
-	 * File extension for ca files.
+	 * The date format to use for changelog entries.
 	 */
-	private static final String CA_FILE_EXTENSION = ".ca";
+	private static final SimpleDateFormat CHANGELOG_DATE_FORMAT =
+		new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	
+	/**
+	 * Utility class that returns the file names for an IOC.
+	 */
+	private static final class IocFiles {
+		/**
+		 * File extension for ca files.
+		 */
+		private static final String CA_FILE_EXTENSION = ".ca";
+		
+		/**
+		 * File extension for ca files.
+		 */
+		private static final String CA_BACKUP_FILE_EXTENSION = ".ca~";
+
+		/**
+		 * File extension for changelog files.
+		 */
+		private static final String CHANGELOG_FILE_EXTENSION = ".changelog";
+
+		/**
+		 * The ca file.
+		 */
+		private final File cafile;
+		
+		/**
+		 * The backup file.
+		 */
+		private final File backup;
+		
+		/**
+		 * The changelog file.
+		 */
+		private final File changelog;
+		
+		/**
+		 * Creates the set of file names for the given IOC.
+		 * 
+		 * @param iocName
+		 *            the name of the IOC.
+		 */
+		IocFiles(final String iocName) {
+			IPreferencesService prefs = Platform.getPreferencesService();
+			String path = prefs.getString(Activator.PLUGIN_ID,
+					FILE_PATH_PREFERENCE, "", null);
+			cafile = new File(path, iocName + CA_FILE_EXTENSION);
+			backup = new File(path, iocName + CA_BACKUP_FILE_EXTENSION);
+			changelog = new File(path, iocName + CHANGELOG_FILE_EXTENSION);
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -75,23 +139,71 @@ public class CaPutService implements SaveValueService {
 			RemoteException {
 		_log.info(this, "saveValue called with: " + request);
 		if (request.isValid()) {
-			String replacedValue = null;
-			File file = fileForIoc(request.getIocName());
-			_log.debug(this, "ca file is: " + file);
-			makeBackupCopy(file);
-			Map<String, String> entries = parseFile(file);
-			if (entries.containsKey(request.getPvName())) {
-				replacedValue = entries.get(request.getPvName());
-			}
-			entries.put(request.getPvName(), request.getValue());
-			replaceFile(file, entries);
-			
-			// TODO: write changelog
-			
+			IocFiles files = new IocFiles(request.getIocName());
+			makeBackupCopy(files);
+			String replacedValue = updateValueInFile(files.cafile, request.getPvName(), request.getValue());
+			writeChangelog(files.changelog, request);
 			return new SaveValueResult(replacedValue);
 		} else {
+			_log.warn(this, "Invalid request.");
 			throw new SaveValueServiceException("Invalid request", null);
 		}
+	}
+
+	/**
+	 * Writes a changelog entry to the given file.
+	 * 
+	 * @param file the changelog file.
+	 * @param request the request that was executed.
+	 */
+	private void writeChangelog(File file, SaveValueRequest request) {
+		PrintWriter writer = null;
+		try {
+			writer = new PrintWriter(new BufferedWriter(
+					new FileWriter(file, true)));
+			String date = CHANGELOG_DATE_FORMAT.format(new Date());
+			writer.println(
+					request.getPvName() + CHANGELOG_SEPARATOR
+					+ request.getValue() + CHANGELOG_SEPARATOR
+					+ request.getUsername() + CHANGELOG_SEPARATOR
+					+ request.getHostname() + CHANGELOG_SEPARATOR
+					+ date);
+		} catch (IOException e) {
+			_log.warn(this, "Error writing to changelog file", e);
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+		}
+	}
+
+	/**
+	 * Updates the value for the given PV in the given file. If the file has no
+	 * entry for the given PV, a new entry is added, otherwise, the existing
+	 * entry is replaced. Returns the old value that was replaced, or
+	 * <code>null</code> if a new entry was created.
+	 * 
+	 * @param file
+	 *            the file in which to update the value.
+	 * @param pvName
+	 *            the name of the process variable.
+	 * @param newValue
+	 *            the new value.
+	 * @return the previous value which was replaced by this method, or
+	 *         <code>null</code> if a new entry was added to the file.
+	 * @throws SaveValueServiceException
+	 *             if the file could not be updated.
+	 */
+	private String updateValueInFile(File file, String pvName, String newValue)
+			throws SaveValueServiceException {
+		String replacedValue = null;
+		Map<String, String> entries = parseFile(file);
+		if (entries.containsKey(pvName)) {
+			replacedValue = entries.get(pvName);
+		}
+		entries.put(pvName, newValue);
+		replaceFile(file, entries);
+		return replacedValue;
 	}
 
 	/**
@@ -121,7 +233,7 @@ public class CaPutService implements SaveValueService {
 						new FileWriter(temp)));
 				for (String channel : entries.keySet()) {
 					String value = entries.get(channel);
-					writer.println(channel + " " + value);
+					writer.println(channel + CA_SEPARATOR + value);
 				}
 			} finally {
 				if (writer != null) {
@@ -158,14 +270,13 @@ public class CaPutService implements SaveValueService {
 	 * @param original
 	 *            the file to copy.
 	 */
-	private void makeBackupCopy(final File original) {
-		if (original.exists()) {
+	private void makeBackupCopy(final IocFiles files) {
+		if (files.cafile.exists()) {
 			FileChannel in = null;
 			FileChannel out = null;
 			try {
-				File backup = new File(original.getAbsolutePath() + "~");
-				in = new FileInputStream(original).getChannel();
-				out = new FileOutputStream(backup).getChannel();
+				in = new FileInputStream(files.cafile).getChannel();
+				out = new FileOutputStream(files.backup).getChannel();
 
 				// see http://forum.java.sun.com/thread.jspa?threadID=439695&messageID=2917510
 				int maxCount = (64 * 1024 * 1024) - (32 * 1024);
@@ -175,7 +286,7 @@ public class CaPutService implements SaveValueService {
 				while (position < size) {
 					position += in.transferTo(position, maxCount, out);
 				}
-				_log.debug(this, "Created backup copy of " + original);
+				_log.debug(this, "Created backup copy of " + files.cafile);
 			} catch (FileNotFoundException e) {
 				_log.warn(this, "Backup failed with FileNotFoundException", e);
 			} catch (IOException e) {
@@ -256,27 +367,13 @@ public class CaPutService implements SaveValueService {
 	 */
 	private void parseLine(final String line, final Map<String, String> entries)
 			throws SaveValueServiceException {
-		String[] tokens = line.split(" ", 2);
+		String[] tokens = line.split(CA_SEPARATOR, 2);
 		if (tokens.length != 2) {
 			throw new SaveValueServiceException(
 					"Error parsing ca file, syntax error in the following line:\n"
 					+ line, null);
 		}
 		entries.put(tokens[0], tokens[1]);
-	}
-
-	/**
-	 * Returns the file name with entries for the given IOC.
-	 * 
-	 * @param iocName
-	 *            the name of the IOC.
-	 * @return the file name for the given IOC.
-	 */
-	private File fileForIoc(final String iocName) {
-		IPreferencesService prefs = Platform.getPreferencesService();
-		String path = prefs.getString(Activator.PLUGIN_ID,
-				FILE_PATH_PREFERENCE, "", null);
-		return new File(path, iocName + CA_FILE_EXTENSION);
 	}
 
 }
