@@ -374,14 +374,14 @@ public class InterconnectionServer
     	 * exit main loop
     	 */
     	setQuit(true);
-//    	while(running) {
+    	while(running) {
 //    		Thread.yield();
-////    		try {
-////				Thread.sleep( 1000);	// wait until 
-////			} catch (InterruptedException e) {
-////				// TODO: handle exception
-////			}
-//    	}
+//    		try {
+//				Thread.sleep( 1000);	// wait until 
+//			} catch (InterruptedException e) {
+//				// TODO: handle exception
+//			}
+    	}
     	
     	return success;
     }
@@ -655,6 +655,7 @@ public class InterconnectionServer
     	 * inform IOC's to disconnect
     	 * stop JMS connections
     	 */
+        
     	CentralLogger.getInstance().warn(this, "InterconnectionServer: finally Stopped");
         
         running = false;

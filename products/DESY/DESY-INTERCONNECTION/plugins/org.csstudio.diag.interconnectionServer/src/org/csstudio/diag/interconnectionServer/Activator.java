@@ -78,6 +78,11 @@ public class Activator extends AbstractCssPlugin {
 		// TODO Auto-generated method stub
 		CentralLogger.getInstance().info(this, "InterConnectionServer stopped"); 
 		InterconnectionServer.getInstance().stopIcServer();
+		try {
+			Thread.sleep( 30000);	// wait until REALLY stopped
+		} catch (InterruptedException e) {
+			// TODO: handle exception
+		}
 	}
 
 	@Override
