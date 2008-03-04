@@ -337,7 +337,13 @@ public class ClientRequest extends Thread
                 }
         		//
         		// just send a reply
+        		// BUT wait to give the queues a chance to empty (in case of status messages)
         		//
+        		try {
+    				Thread.sleep( PreferenceProperties.TIME_DELAY_FOR_STATUS_MESSSAGES);
+    			} catch (InterruptedException e) {
+    				// TODO: handle exception
+    			}
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
 
         		//

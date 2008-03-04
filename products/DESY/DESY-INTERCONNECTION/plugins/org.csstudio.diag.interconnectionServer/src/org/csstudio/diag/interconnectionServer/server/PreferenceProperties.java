@@ -138,5 +138,7 @@ public class PreferenceProperties {
 	// 2 minutes timout
 	public static final int CLIENT_REQUEST_THREAD_TIMEOUT							= 120000; // 2 minutes timout
 	
+	public static final int TIME_DELAY_FOR_STATUS_MESSSAGES = 200; // 100ms for status messages
+	
 
 }
