@@ -150,8 +150,8 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                 e.printStackTrace();
             }
         }
+        DisplayModelInputStream.setXMLHeader("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
         DisplayModelInputStream modelInputStream = (DisplayModelInputStream) PersistenceUtil.createStream(displayModel);
-        modelInputStream.setXMLHeader("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
 
         // create the target file in the workspace
         IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
