@@ -88,6 +88,26 @@ public class SendCommandToIoc extends Thread {
 		String answerMessage = null;
         
         preparedMessage = prepareMessage ( command, id);
+        
+        /*
+         * in case we have to send the 'get all alarms' to the IOC
+         * give us some time for the IOC to send the 'real' alarms first
+         * wait some ti8me and send the status messages afterwards
+         */
+        
+        if ( (this.command != null) && this.command.equals(PreferenceProperties.COMMAND_SEND_ALL_ALARMS)) {
+        	CentralLogger.getInstance().info(this, "Waiting " + PreferenceProperties.WAIT_UNTIL_SEND_ALL_ALARMS + " ms until sending the " +  PreferenceProperties.COMMAND_SEND_ALL_ALARMS + " to the IOC");
+
+        	try {
+				Thread.sleep( PreferenceProperties.WAIT_UNTIL_SEND_ALL_ALARMS);
+			} catch (InterruptedException e) {
+				// TODO: handle exception
+			}
+			/*
+			 * never execute this command
+			 */
+//        	return;
+        }
 
         try
         {

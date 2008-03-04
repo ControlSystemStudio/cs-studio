@@ -52,6 +52,7 @@ import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.platform.statistic.CollectorSupervisor;
+import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -77,7 +78,7 @@ public class InterconnectionServer
 	private boolean 					primaryServerUsed = true;
 	private int							sendMessageErrorCount	= 0;
 	public int 							successfullJmsSentCountdown = PreferenceProperties.CLIENT_REQUEST_THREAD_UNSUCCESSSFULL_COUNTDOWN;
-	private	boolean         			quit        = false;
+	private	volatile boolean         	quit        = false;
 	private int messageCounter = 0;
 	//private static int					errorContNamingException = 0;
     
@@ -92,6 +93,11 @@ public class InterconnectionServer
     private Collector	clientRequestTheadCollector = null;
     private Collector	numberOfMessagesCollector = null;
     private Collector	numberOfIocFailoverCollector = null;
+	
+    /**
+     * Indicates while-loop is running
+     */
+    private volatile boolean running;
     
     
     synchronized public boolean setupConnections ( )
@@ -363,18 +369,20 @@ public class InterconnectionServer
     
     public boolean stopIcServer () {
     	boolean success = true;
-    	/*
-    	 * send message
-    	 * inform IOC's to disconnect
-    	 * stop JMS connections
-    	 */
-    	CentralLogger.getInstance().warn(this, "InterconnectionServer: Stopped by Management Command");
-    	disconnectFromIocs();
-    	cleanupJms();
+    	CentralLogger.getInstance().warn(this, "Atempt to stop InterconnectionServer");
     	/*
     	 * exit main loop
     	 */
     	setQuit(true);
+//    	while(running) {
+//    		Thread.yield();
+////    		try {
+////				Thread.sleep( 1000);	// wait until 
+////			} catch (InterruptedException e) {
+////				// TODO: handle exception
+////			}
+//    	}
+    	
     	return success;
     }
     
@@ -551,6 +559,9 @@ public class InterconnectionServer
     
         // TODO: Abbruchbedingung einfügen
         //       z.B. Receiver für Queue COMMAND einfügen
+        
+        running = true;
+        
         while(!isQuit())
         {
         	/*
@@ -583,10 +594,10 @@ public class InterconnectionServer
             		receiveEnabled = false;
         		}
         		/*
-        		 * wait - otherwise we runn in an undefinite loop
+        		 * wait - otherwise we run in an undefinite loop
         		 */
             	try {
-               		Thread.sleep(100);
+               		Thread.sleep(1000);
                	}
                	catch (InterruptedException  e) {
                		e.printStackTrace();
@@ -622,7 +633,31 @@ public class InterconnectionServer
         }
         
         CentralLogger.getInstance().warn( this, "InterconnectionServer: leaving main loop - to STOP");
+
+        CentralLogger.getInstance().warn( this, "InterconnectionServer: waiting for client threads to stop");
+        /**
+         * wait until all client threads are stopped
+         * all? - well leave a mismatch of 10
+         */
+        while( getClientRequestTheadCollector().getActualValue().getValue() > 10) Thread.yield();
+
+        CentralLogger.getInstance().warn( this, "InterconnectionServer: all but " + getClientRequestTheadCollector().getActualValue().getValue() + "  clients threads stoped, closing connections...");
+        
+    	disconnectFromIocs();
+    	cleanupJms();
+//    	TODO
+    	Engine.getInstance().setRunning( false); // - gracefully stop LDAP engine
+    	
         serverSocket.close();
+        
+        /*
+    	 * send message
+    	 * inform IOC's to disconnect
+    	 * stop JMS connections
+    	 */
+    	CentralLogger.getInstance().warn(this, "InterconnectionServer: finally Stopped");
+        
+        running = false;
         return result;
     }
     

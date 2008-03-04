@@ -120,10 +120,15 @@ public class IocChangedState extends Thread{
 			 * not necessary: setAllRecordsToConnected ( logicalIocName);
 			 */
 			
-		} else {
+		} else if ( !InterconnectionServer.getInstance().isQuit()){
 			/*
 			 * set channels in LDAP to disconnected
+			 * send messages -> IOC is disconnected!
+			 * 
+			 * BUT: only if Interconnection Server is still running and was NOT stopped by command!
+			 * -> isQuit()
 			 */
+			
 			CentralLogger.getInstance().warn(this, "InterconnectionServer: All channels set to <disConnected> mode for Host: " + logicalIocName);
 			/*
 			 * generate JMS alarm message NAME: "Localhost:logicalIocName:connectState" VALUE: "NOT_CONNECTED" SEVERITY: "MAJOR"

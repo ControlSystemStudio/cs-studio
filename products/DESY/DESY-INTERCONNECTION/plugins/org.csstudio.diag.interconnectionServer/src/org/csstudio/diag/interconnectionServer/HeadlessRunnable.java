@@ -56,6 +56,7 @@ public class HeadlessRunnable implements IPlatformRunnable {
 			s.run();
 		}
         thisServer.executeMe();
+        System.out.println ("IC_Server should never get here.");
         
         if ( SHUTDOWN) {
         	return IPlatformRunnable.EXIT_OK;
