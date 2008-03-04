@@ -59,6 +59,7 @@ public class Engine extends Job {
      */
 	
 	private static int LDAP_MAX_BUFFER_SIZE = 20000;	// 1000 too small!!
+	private volatile boolean running = true;
 	
     private class AttriebutSet{
         private SearchControls _ctrl;
@@ -231,7 +232,7 @@ public class Engine extends Job {
             _ctx = getLdapDirContext();
         }
 
-        while (true) {
+        while ( isRunning() || doWrite) {
             //
             // do the work actually prepared
             //
@@ -253,7 +254,8 @@ public class Engine extends Job {
             catch (InterruptedException  e) {
                 return null;
             }
-        }
+        } 
+        return Job.ASYNC_FINISH;
     }
 
     /**
@@ -878,6 +880,14 @@ public class Engine extends Job {
         }
 
     }
+
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
     
     
 }
