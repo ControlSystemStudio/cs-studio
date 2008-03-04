@@ -57,6 +57,9 @@ public class Engine extends Job {
      * @version $Revision$
      * @since 23.01.2008
      */
+	
+	private static int LDAP_MAX_BUFFER_SIZE = 20000;	// 1000 too small!!
+	
     private class AttriebutSet{
         private SearchControls _ctrl;
         private String _path;
@@ -273,7 +276,7 @@ public class Engine extends Job {
     synchronized public void addLdapWriteRequest(String attribute, String channel, String value) {
         // boolean addVectorOK = true;
         WriteRequest writeRequest = new WriteRequest( attribute, channel, value);
-        int maxBuffersize = 1000;
+        int maxBuffersize = LDAP_MAX_BUFFER_SIZE;
         //
         // add request to vector
         //
