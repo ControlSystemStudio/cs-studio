@@ -47,7 +47,11 @@ abstract public class AbstractFitAlgorithm extends Algorithm
         }
         catch (Throwable ex)
         {
-            message = Messages.Algorithm_FitError;
+            final String msg = ex.getMessage();
+            if (msg != null)
+                message = msg;
+            else
+                message = Messages.Algorithm_FitError;
             outputs = new AlgorithmOutput[]
             {
                 new AlgorithmOutput(input.getName(), input, TraceType.Markers),
