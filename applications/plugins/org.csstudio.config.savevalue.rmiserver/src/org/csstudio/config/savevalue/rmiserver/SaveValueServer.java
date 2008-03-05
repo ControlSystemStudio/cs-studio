@@ -54,13 +54,16 @@ public class SaveValueServer implements IApplication {
 			SocketFactory sf = new SocketFactory();
 			
 			// Create the services and publish them
-			SaveValueService epicsOra = new EpicsOraService();
-			SaveValueService eoStub = (SaveValueService) UnicastRemoteObject.exportObject(epicsOra, 0, sf, sf);
-			reg.bind("SaveValue.EpicsOra", eoStub);
+			
+			// EPICS Ora is not implemented yet			
+//			SaveValueService epicsOra = new EpicsOraService();
+//			SaveValueService eoStub = (SaveValueService) UnicastRemoteObject.exportObject(epicsOra, 0, sf, sf);
+//			reg.bind("SaveValue.EpicsOra", eoStub);
 
-			SaveValueService db = new DatabaseService();
-			SaveValueService dbStub = (SaveValueService) UnicastRemoteObject.exportObject(db, 0, sf, sf);
-			reg.bind("SaveValue.Database", dbStub);
+			// Database Service is not implemented yet
+//			SaveValueService db = new DatabaseService();
+//			SaveValueService dbStub = (SaveValueService) UnicastRemoteObject.exportObject(db, 0, sf, sf);
+//			reg.bind("SaveValue.Database", dbStub);
 
 			SaveValueService caput = new CaPutService();
 			SaveValueService caputStub = (SaveValueService) UnicastRemoteObject.exportObject(caput, 0, sf, sf);
