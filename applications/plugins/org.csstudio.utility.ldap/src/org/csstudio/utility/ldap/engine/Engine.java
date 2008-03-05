@@ -58,7 +58,7 @@ public class Engine extends Job {
      * @since 23.01.2008
      */
 	
-	private static int LDAP_MAX_BUFFER_SIZE = 20000;	// 1000 too small!!
+	private static int LDAP_MAX_BUFFER_SIZE = 10000;	// 1000 too small!!
 	private volatile boolean running = true;
 	
     private class AttriebutSet{
@@ -887,6 +887,14 @@ public class Engine extends Job {
 
 	public void setRunning(boolean running) {
 		this.running = running;
+	}
+
+	public Vector<WriteRequest> getWriteVector() {
+		return writeVector;
+	}
+
+	public void setWriteVector(Vector<WriteRequest> writeVector) {
+		this.writeVector = writeVector;
 	}
     
     
