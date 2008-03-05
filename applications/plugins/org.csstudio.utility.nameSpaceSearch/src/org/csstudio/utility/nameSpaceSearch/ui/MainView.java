@@ -72,7 +72,17 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 
+/**
+ * 
+ * @author hrickens
+ * @author $Author$
+ * @version $Revision$
+ * @since 05.03.2008
+ */
 public class MainView extends ViewPart implements Observer{
+    /**
+     * The Class Id.
+     */
     public static final String ID = MainView.class.getName();
     private Text _searchText;
     private TableViewer _ergebnissTableView;
@@ -88,8 +98,14 @@ public class MainView extends ViewPart implements Observer{
     private LDAPReader _ldapr;
     private Display _disp;
     private ErgebnisListe _ergebnisListe;
+    /**
+     * The search Button.
+     */
     private Button _searchButton;
     
+    /**
+     * The Wildcard char.
+     */
     private static final String WILDCARD  = "*"; //$NON-NLS-1$
 
     /**
@@ -99,7 +115,7 @@ public class MainView extends ViewPart implements Observer{
      * @version $Revision$
      * @since 20.02.2008
      */
-    class myTableLabelProvider implements ITableLabelProvider{
+    class MyTableLabelProvider implements ITableLabelProvider{
         // No Image
         public Image getColumnImage(Object element, int columnIndex) {return null;}
 
@@ -206,7 +222,7 @@ public class MainView extends ViewPart implements Observer{
         ergebnissTable.setHeaderVisible (true);
 
         _ergebnissTableView.setContentProvider(new myContentProvider());
-        _ergebnissTableView.setLabelProvider(new myTableLabelProvider());
+        _ergebnissTableView.setLabelProvider(new MyTableLabelProvider());
 
 
         // add Listeners
@@ -372,23 +388,26 @@ public class MainView extends ViewPart implements Observer{
                                     chil[_sorts[1]].setImage(null);
                                     _sorts[1]=_sorts[0];
                                     _lastSortBackward=backward;
-                                    if(_lastSortBackward)
+                                    if(_lastSortBackward) {
                                         chil[_sorts[1]].setImage(_downOld);
-                                    else
+                                    } else {
                                         chil[_sorts[1]].setImage(_upOld);
+                                    }
                                 }
                                 _sorts[0]=spalte;
                                 _ergebnissTableView.setSorter(new TableSorter(_sorts[0],backward,_sorts[1], _lastSortBackward));
-                                if(backward)
+                                if(backward) {
                                     tc.setImage(_down);
-                                else
+                                } else {
                                     tc.setImage(_up);
+                                }
                                 _lastSortBackward=backward;
                         }
                     });
-                    String temp;
-                    if((temp=_headline.get(elements[j].split("=")[0]))==null) //$NON-NLS-1$
-                         temp = elements[j].split("=")[0]; //$NON-NLS-1$
+                    String temp=_headline.get(elements[j].split("=")[0]);
+                    if(temp==null) {
+                        temp = elements[j].split("=")[0]; //$NON-NLS-1$
+                    }
                     if(j==0){
                         temp=temp.concat(" ("+list.size()+")"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
@@ -413,7 +432,7 @@ public class MainView extends ViewPart implements Observer{
         }
 //      System.out.println("Thread test 2");
         _ergebnissTableView.setContentProvider(new myContentProvider());
-        _ergebnissTableView.setLabelProvider(new myTableLabelProvider());
+        _ergebnissTableView.setLabelProvider(new MyTableLabelProvider());
         _ergebnissTableView.setInput(tableElements);
         _ergebnissTableView.refresh(true);
 //      workIcon.setImage(work_disable);
@@ -423,9 +442,8 @@ public class MainView extends ViewPart implements Observer{
 //      System.out.println("Thread test ende");
     }
 
-    /*****************************************************************************
-     * Make the MB3-ContextMenu
-     *
+    /**
+     * Make the MB3-ContextMenu.
      */
     private void makeContextMenu() {
         MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
@@ -439,9 +457,9 @@ public class MainView extends ViewPart implements Observer{
         contr.setMenu(menu);
         getSite().registerContextMenu(manager, _ergebnissTableView);
     }
-    /***
+    /**
      *
-     * - Make the searchtext
+     * - Make the searchtext.
      *   - Layout
      *   - Dropsource
      *
@@ -498,8 +516,6 @@ public class MainView extends ViewPart implements Observer{
         _disp.syncExec(new Runnable() {
             public void run() {
                 getText();
-//              answer.setText(text);
-//              answer.getParent().layout();
             }
         });
     }
