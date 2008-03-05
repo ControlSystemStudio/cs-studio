@@ -26,8 +26,11 @@ import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.GregorianCalendar;
+import java.util.Random;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.engine.Engine;
 
 /**
  * The thread which actually is sending the command.
@@ -43,6 +46,7 @@ public class SendCommandToIoc extends Thread {
 	private String statisticId = "NONE";
 	private int id = 0;
 	private static String IOC_NOT_REACHABLE = "IOC_NOT_REACHABLE";
+	private int statusMessageDelay = 0;
 	
 	/**
 	 * Send a command to the IOC in an independent thread.
@@ -92,14 +96,20 @@ public class SendCommandToIoc extends Thread {
         /*
          * in case we have to send the 'get all alarms' to the IOC
          * give us some time for the IOC to send the 'real' alarms first
-         * wait some ti8me and send the status messages afterwards
+         * wait some time and send the status messages afterwards
          */
         
         if ( (this.command != null) && this.command.equals(PreferenceProperties.COMMAND_SEND_ALL_ALARMS)) {
-        	CentralLogger.getInstance().info(this, "Waiting " + PreferenceProperties.WAIT_UNTIL_SEND_ALL_ALARMS + " ms until sending the " +  PreferenceProperties.COMMAND_SEND_ALL_ALARMS + " to the IOC");
+        	
+        	if ( (Engine.getInstance().getWriteVector().size() >=0) && (100*Engine.getInstance().getWriteVector().size() < PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS)) {
+    			statusMessageDelay = 100*Engine.getInstance().getWriteVector().size() + (int)((new GregorianCalendar().getTimeInMillis())%10000);
+    		} else {
+    			statusMessageDelay = PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS + (int)((new GregorianCalendar().getTimeInMillis())%10000);	// ~ 5 minutes + random
+    		}
 
+        	CentralLogger.getInstance().info(this, "Waiting " + statusMessageDelay + " until sending " + PreferenceProperties.COMMAND_SEND_ALL_ALARMS + " to the IOC");
         	try {
-				Thread.sleep( PreferenceProperties.WAIT_UNTIL_SEND_ALL_ALARMS);
+				Thread.sleep( statusMessageDelay);
 			} catch (InterruptedException e) {
 				// TODO: handle exception
 			}

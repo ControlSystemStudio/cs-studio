@@ -71,6 +71,7 @@ public class ClientRequest extends Thread
     InterconnectionServer icServer = null;
     private boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_TRUE	= true;
     private boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE = false;
+    private int statusMessageDelay = 0;
     
 	/* 
 	 * 
@@ -276,7 +277,19 @@ public class ClientRequest extends Thread
                 }
         		//
         		// just send a reply
+        		// BUT wait to give the queues a chance to empty (depending on the size of the write vector in the LDAP engine)
         		//
+        		if ( (Engine.getInstance().getWriteVector().size() >=0) && (Engine.getInstance().getWriteVector().size() < PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES)) {
+        			statusMessageDelay = Engine.getInstance().getWriteVector().size();
+        		} else {
+        			statusMessageDelay = PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES;
+        		}
+        		 
+        		try {
+    				Thread.sleep( statusMessageDelay);
+    			} catch (InterruptedException e) {
+    				// TODO: handle exception
+    			}
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
         		afterUdpAcknowledgeTime = new GregorianCalendar();
         		///System.out.println("Time-ALARM: - after send UDP reply	= " + dateToString(new GregorianCalendar()));
@@ -337,10 +350,16 @@ public class ClientRequest extends Thread
                 }
         		//
         		// just send a reply
-        		// BUT wait to give the queues a chance to empty (in case of status messages)
+        		// BUT wait to give the queues a chance to empty (depending on the size of the write vector in the LDAP engine)
         		//
+        		if ( (Engine.getInstance().getWriteVector().size() >=0) && (Engine.getInstance().getWriteVector().size() < PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES)) {
+        			statusMessageDelay = Engine.getInstance().getWriteVector().size();
+        		} else {
+        			statusMessageDelay = PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES;
+        		}
+        		 
         		try {
-    				Thread.sleep( PreferenceProperties.TIME_DELAY_FOR_STATUS_MESSSAGES);
+    				Thread.sleep( statusMessageDelay);
     			} catch (InterruptedException e) {
     				// TODO: handle exception
     			}

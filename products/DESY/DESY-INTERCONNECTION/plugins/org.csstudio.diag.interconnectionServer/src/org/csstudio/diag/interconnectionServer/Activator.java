@@ -77,12 +77,12 @@ public class Activator extends AbstractCssPlugin {
 	protected void doStop(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
 		CentralLogger.getInstance().info(this, "InterConnectionServer stopped"); 
-		InterconnectionServer.getInstance().stopIcServer();
-		try {
-			Thread.sleep( 30000);	// wait until REALLY stopped
-		} catch (InterruptedException e) {
-			// TODO: handle exception
-		}
+		/*
+		 * calling the IC_Server's stop method does not really work
+		 * The process will never stop this way!
+		 */
+//		InterconnectionServer.getInstance().stopIcServer();
+		
 	}
 
 	@Override
