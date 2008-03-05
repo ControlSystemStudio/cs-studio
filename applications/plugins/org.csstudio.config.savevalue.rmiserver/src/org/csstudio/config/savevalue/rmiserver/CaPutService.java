@@ -82,9 +82,9 @@ public class CaPutService implements SaveValueService {
 		new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	
 	/**
-	 * Utility class that returns the file names for an IOC.
+	 * Class that returns the file names for an IOC.
 	 */
-	private static final class IocFiles {
+	private static class IocFiles {
 		/**
 		 * File extension for ca files.
 		 */
@@ -103,17 +103,17 @@ public class CaPutService implements SaveValueService {
 		/**
 		 * The ca file.
 		 */
-		private final File cafile;
+		private final File _cafile;
 		
 		/**
 		 * The backup file.
 		 */
-		private final File backup;
+		private final File _backup;
 		
 		/**
 		 * The changelog file.
 		 */
-		private final File changelog;
+		private final File _changelog;
 		
 		/**
 		 * Creates the set of file names for the given IOC.
@@ -125,9 +125,9 @@ public class CaPutService implements SaveValueService {
 			IPreferencesService prefs = Platform.getPreferencesService();
 			String path = prefs.getString(Activator.PLUGIN_ID,
 					FILE_PATH_PREFERENCE, "", null);
-			cafile = new File(path, iocName + CA_FILE_EXTENSION);
-			backup = new File(path, iocName + CA_BACKUP_FILE_EXTENSION);
-			changelog = new File(path, iocName + CHANGELOG_FILE_EXTENSION);
+			_cafile = new File(path, iocName + CA_FILE_EXTENSION);
+			_backup = new File(path, iocName + CA_BACKUP_FILE_EXTENSION);
+			_changelog = new File(path, iocName + CHANGELOG_FILE_EXTENSION);
 		}
 	}
 
@@ -141,8 +141,8 @@ public class CaPutService implements SaveValueService {
 		if (request.isValid()) {
 			IocFiles files = new IocFiles(request.getIocName());
 			makeBackupCopy(files);
-			String replacedValue = updateValueInFile(files.cafile, request.getPvName(), request.getValue());
-			writeChangelog(files.changelog, request);
+			String replacedValue = updateValueInFile(files._cafile, request.getPvName(), request.getValue());
+			writeChangelog(files._changelog, request);
 			return new SaveValueResult(replacedValue);
 		} else {
 			_log.warn(this, "Invalid request.");
@@ -156,7 +156,7 @@ public class CaPutService implements SaveValueService {
 	 * @param file the changelog file.
 	 * @param request the request that was executed.
 	 */
-	private void writeChangelog(File file, SaveValueRequest request) {
+	private void writeChangelog(final File file, final SaveValueRequest request) {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(new BufferedWriter(
@@ -194,7 +194,7 @@ public class CaPutService implements SaveValueService {
 	 * @throws SaveValueServiceException
 	 *             if the file could not be updated.
 	 */
-	private String updateValueInFile(File file, String pvName, String newValue)
+	private String updateValueInFile(final File file, final String pvName, final String newValue)
 			throws SaveValueServiceException {
 		String replacedValue = null;
 		Map<String, String> entries = parseFile(file);
@@ -263,20 +263,19 @@ public class CaPutService implements SaveValueService {
 	}
 
 	/**
-	 * Creates a backup copy of the given file. The backup copy will have the
-	 * same file name as the given file with an appended ~ character. If the
-	 * file to copy does not exist, no backup copy is created.
+	 * Creates a backup copy of the cafile of the given files. If the file does
+	 * not exist, no backup copy is created.
 	 * 
-	 * @param original
-	 *            the file to copy.
+	 * @param files
+	 *            the files.
 	 */
 	private void makeBackupCopy(final IocFiles files) {
-		if (files.cafile.exists()) {
+		if (files._cafile.exists()) {
 			FileChannel in = null;
 			FileChannel out = null;
 			try {
-				in = new FileInputStream(files.cafile).getChannel();
-				out = new FileOutputStream(files.backup).getChannel();
+				in = new FileInputStream(files._cafile).getChannel();
+				out = new FileOutputStream(files._backup).getChannel();
 
 				// see http://forum.java.sun.com/thread.jspa?threadID=439695&messageID=2917510
 				int maxCount = (64 * 1024 * 1024) - (32 * 1024);
@@ -286,7 +285,7 @@ public class CaPutService implements SaveValueService {
 				while (position < size) {
 					position += in.transferTo(position, maxCount, out);
 				}
-				_log.debug(this, "Created backup copy of " + files.cafile);
+				_log.debug(this, "Created backup copy of " + files._cafile);
 			} catch (FileNotFoundException e) {
 				_log.warn(this, "Backup failed with FileNotFoundException", e);
 			} catch (IOException e) {
