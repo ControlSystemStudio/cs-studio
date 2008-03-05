@@ -42,6 +42,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -85,6 +86,26 @@ public class SaveValueDialog extends Dialog {
 	 * The name of the process variable.
 	 */
 	private IProcessVariable _pv;
+
+	/**
+	 * The text field which displays the IOC name.
+	 */
+	private Text _ioc;
+
+	/**
+	 * The name of the IOC.
+	 */
+	private String _iocName;
+
+	/**
+	 * The label displaying the overall result.
+	 */
+	private Label _resultLabel;
+
+	/**
+	 * The image indicating the overall result.
+	 */
+	private Label _resultImage;
 	
 	/**
 	 * Creates a new Save Value Dialog.
@@ -131,7 +152,14 @@ public class SaveValueDialog extends Dialog {
 		_processVariable.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_processVariable.setText(_pv.getName());
 		
-		// password
+		// IOC Name
+		label = new Label(composite, SWT.NONE);
+		label.setText("IOC:");
+		_ioc = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
+		_ioc.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		_ioc.setText(_iocName);
+		
+		// value
 		label = new Label(composite, SWT.NONE);
 		label.setText("Value:");
 		_value = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
@@ -141,9 +169,10 @@ public class SaveValueDialog extends Dialog {
 		Label separator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
 		separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 		
+		// results table
 		_resultsTable = new Table(composite, SWT.BORDER);
 		GridData tableLayout = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1);
-		tableLayout.heightHint = 100;
+		tableLayout.heightHint = 70;
 		_resultsTable.setLayoutData(tableLayout);
 		_resultsTable.setHeaderVisible(true);
 		_resultsTable.setEnabled(false);
@@ -160,6 +189,16 @@ public class SaveValueDialog extends Dialog {
 		item2.setText(new String[] { "Database", "" });
 		TableItem item3 = new TableItem(_resultsTable, SWT.NONE);
 		item3.setText(new String[] { "ca_put", "" });
+		
+		// overall result
+		_resultImage = new Label(composite, SWT.NONE);
+		_resultImage.setLayoutData(new GridData(SWT.RIGHT, SWT.BEGINNING, false, false));
+		// load an image here to get the correct size
+		_resultImage.setImage(getErrorImage());
+		_resultImage.setVisible(false);
+		_resultLabel = new Label(composite, SWT.NONE);
+		_resultLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		_resultLabel.setVisible(false);
 
 		return composite;
 	}
@@ -171,6 +210,22 @@ public class SaveValueDialog extends Dialog {
 	protected final void createButtonsForButtonBar(final Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, "Save", true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int open() {
+		_log.debug(this, "Trying to find IOC for process variable: " + _pv);
+		_iocName = IocFinder.getIoc(_pv);
+		if (_iocName == null) {
+			_log.error(this, "Could not execute save value because no IOC was found for PV: " + _pv);
+			MessageDialog.openError(null, "Save Value", "The IOC of the process variable was not found.");
+			return CANCEL;
+		}
+		_log.debug(this, "IOC found: " + _iocName);
+		return super.open();
 	}
 	
 	/**
@@ -207,93 +262,145 @@ public class SaveValueDialog extends Dialog {
 		getButton(IDialogConstants.CANCEL_ID).setEnabled(false);
 		_resultsTable.setEnabled(true);
 		
-		_log.debug(this, "Trying to find IOC for process variable: " + _pv);
-		final String ioc = IocFinder.getIoc(_pv);
-		if (ioc != null) {
-			_log.debug(this, "IOC found: " + ioc);
-			final String pvValue = _value.getText();
-			Runnable r = new Runnable() {
-				public void run() {
-					String[] services = new String[] {
-						"SaveValue.EpicsOra", "SaveValue.Database", "SaveValue.caput"	
-					};
-					try {
-						IPreferencesService prefs = Platform.getPreferencesService();
-						String registryHost = prefs.getString(
-								Activator.PLUGIN_ID,
-								PreferenceConstants.RMI_REGISTRY_SERVER,
-								null, null);
-						_log.debug(this, "Connecting to RMI registry.");
-						Registry reg = LocateRegistry.getRegistry(registryHost);
-						for (int i = 0; i < 3; i++) {
-							String result;
-							try {
-								_log.debug(this, "Calling save value service: " + services[i]);
-								SaveValueService service = (SaveValueService) reg.lookup(services[i]);
-								SaveValueRequest req = new SaveValueRequest();
-								req.setPvName(_pv.getName());
-								req.setIocName(ioc);
-								req.setValue(pvValue);
-								req.setUsername(SecurityFacade.getInstance().getCurrentUser().getUsername());
-								req.setHostname(CSSPlatformInfo.getInstance().getQualifiedHostname());
-								SaveValueResult srr = service.saveValue(req);
-								String replacedValue = srr.getReplacedValue();
-								if (replacedValue != null) {
-									result = "Success: old value " + replacedValue + " replaced with new value";
-								} else {
-									result = "Success: new entry added to save button file";
-								}
-							} catch (RemoteException e) {
-								Throwable cause = e.getCause();
-								if (cause instanceof SocketTimeoutException) {
-									_log.warn(this, "Remote call to " + services[i] + " timed out");
-									result = "Timeout";
-								} else {
-									_log.error(this, "Remote call to " + services[i] + " failed with RemoteException", e);
-									result = "Connection error: " + e.getMessage();
-								}
-							} catch (SaveValueServiceException e) {
-								_log.warn(this, "Save Value service " + services[i] + " reported an error", e);
-								result = "Service error: " + e.getMessage();
-							} catch (NotBoundException e) {
-								_log.warn(this, "Save value service " + services[i] + " is not bound in RMI registry");
-								result = "Service not available";
+		final String pvValue = _value.getText();
+		Runnable r = new Runnable() {
+			public void run() {
+				String[] services = new String[] {
+					"SaveValue.EpicsOra", "SaveValue.Database", "SaveValue.caput"	
+				};
+				final boolean[] success = new boolean[3];
+				try {
+					IPreferencesService prefs = Platform.getPreferencesService();
+					String registryHost = prefs.getString(
+							Activator.PLUGIN_ID,
+							PreferenceConstants.RMI_REGISTRY_SERVER,
+							null, null);
+					_log.debug(this, "Connecting to RMI registry.");
+					Registry reg = LocateRegistry.getRegistry(registryHost);
+					for (int i = 0; i < 3; i++) {
+						String result;
+						try {
+							_log.debug(this, "Calling save value service: " + services[i]);
+							SaveValueService service = (SaveValueService) reg.lookup(services[i]);
+							SaveValueRequest req = new SaveValueRequest();
+							req.setPvName(_pv.getName());
+							req.setIocName(_iocName);
+							req.setValue(pvValue);
+							req.setUsername(SecurityFacade.getInstance().getCurrentUser().getUsername());
+							req.setHostname(CSSPlatformInfo.getInstance().getQualifiedHostname());
+							SaveValueResult srr = service.saveValue(req);
+							String replacedValue = srr.getReplacedValue();
+							if (replacedValue != null) {
+								result = "Success: old value " + replacedValue + " replaced with new value";
+							} else {
+								result = "Success: new entry added to save button file";
 							}
-							final int index = i;
-							final String resultCopy = result;
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									TableItem item = _resultsTable.getItem(index);
-									item.setText(1, resultCopy);
-									if (!resultCopy.startsWith("Success")) {
-										item.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-									} else {
-										item.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN));
-									}
-									_resultsTable.showItem(item);
-								}
-							});
+						} catch (RemoteException e) {
+							Throwable cause = e.getCause();
+							if (cause instanceof SocketTimeoutException) {
+								_log.warn(this, "Remote call to " + services[i] + " timed out");
+								result = "Timeout";
+							} else {
+								_log.error(this, "Remote call to " + services[i] + " failed with RemoteException", e);
+								result = "Connection error: " + e.getMessage();
+							}
+						} catch (SaveValueServiceException e) {
+							_log.warn(this, "Save Value service " + services[i] + " reported an error", e);
+							result = "Service error: " + e.getMessage();
+						} catch (NotBoundException e) {
+							_log.warn(this, "Save value service " + services[i] + " is not bound in RMI registry");
+							result = "Service not available";
 						}
-						_log.debug(this, "Finished calling remote Save Value services");
+						final int index = i;
+						final String resultCopy = result;
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
-								getButton(IDialogConstants.CANCEL_ID)
-										.setEnabled(true);
+								TableItem item = _resultsTable.getItem(index);
+								item.setText(1, resultCopy);
+								success[index] = resultCopy.startsWith("Success");
+								int color = success[index] ? SWT.COLOR_DARK_GREEN
+										: (index < 2) ? SWT.COLOR_DARK_YELLOW : SWT.COLOR_RED;
+								item.setForeground(Display.getCurrent().getSystemColor(color));
+								_resultsTable.showItem(item);
 							}
 						});
-					} catch (RemoteException e) {
-						_log.error(this, "Could not connect to RMI registry", e);
-						MessageDialog.openError(null, "Save Value", "Could not connect to RMI registry: " + e.getMessage());
-						SaveValueDialog.this.close();
 					}
+					_log.debug(this, "Finished calling remote Save Value services");
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							if (success[2]) {
+								_resultLabel.setText("The value was saved successfully.");
+								_resultImage.setImage(getInfoImage());
+							} else {
+								_resultLabel.setText("An error occurred. The value was NOT saved!");
+								_resultImage.setImage(getErrorImage());
+							}
+							_resultLabel.setVisible(true);
+							_resultImage.setVisible(true);
+							getButton(IDialogConstants.CANCEL_ID)
+									.setEnabled(true);
+						}
+					});
+				} catch (RemoteException e) {
+					_log.error(this, "Could not connect to RMI registry", e);
+					MessageDialog.openError(null, "Save Value", "Could not connect to RMI registry: " + e.getMessage());
+					SaveValueDialog.this.close();
 				}
-			};
-			new Thread(r).start();
-		} else {
-			_log.info(this, "Could not execute save value because no IOC was found for PV: " + _pv);
-			MessageDialog.openError(null, "Save Value", "The IOC of the process variable was not found.");
-			close();
-			return;
-		}
+			}
+		};
+		new Thread(r).start();
 	}
+
+
+	/**
+	 * Return the <code>Image</code> to be used when displaying information.
+	 * 
+	 * @return image the information image
+	 */
+	// copied from org.eclipse.jface.dialogs.IconAndMessageDialog
+	public Image getInfoImage() {
+		return getSWTImage(SWT.ICON_INFORMATION);
+	}
+
+	/**
+	 * Return the <code>Image</code> to be used when displaying an error.
+	 * 
+	 * @return image the error image
+	 */
+	// copied from org.eclipse.jface.dialogs.IconAndMessageDialog
+	public Image getErrorImage() {
+		return getSWTImage(SWT.ICON_ERROR);
+	}
+
+	/**
+	 * Get an <code>Image</code> from the provide SWT image constant.
+	 * 
+	 * @param imageID
+	 *            the SWT image constant
+	 * @return image the image
+	 */
+	// copied from org.eclipse.jface.dialogs.IconAndMessageDialog
+	private Image getSWTImage(final int imageID) {
+		Shell shell = getShell();
+		final Display display;
+		if (shell == null) {
+			shell = getParentShell();
+		}
+		if (shell == null) {
+			display = Display.getCurrent();
+		} else {
+			display = shell.getDisplay();
+		}
+
+		final Image[] image = new Image[1];
+		display.syncExec(new Runnable() {
+			public void run() {
+				image[0] = display.getSystemImage(imageID);
+			}
+		});
+
+		return image[0];
+
+	}
+
 }
