@@ -22,6 +22,7 @@ public class CSS_Perspective implements IPerspectiveFactory
     private static final String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
     private static final String ID_DATABROWSER_CONFIG = "org.csstudio.trends.databrowser.configview.ConfigView";
     private static final String ID_PROGRESS = "org.csstudio.platform.ui.views.progress";
+    final private static String ID_SNS_PV_UTIL = "org.csstudio.sns.pvutil.view.PVUtilView";
 
     public void createInitialLayout(IPageLayout layout)
     {
@@ -38,6 +39,7 @@ public class CSS_Perspective implements IPerspectiveFactory
         
         // Stuff for 'left'
         left.addView(ID_NAVIGATOR);
+        left.addPlaceholder(ID_SNS_PV_UTIL);
         
         // Stuff for 'bottom'
         bottom.addPlaceholder(ID_PROBE);

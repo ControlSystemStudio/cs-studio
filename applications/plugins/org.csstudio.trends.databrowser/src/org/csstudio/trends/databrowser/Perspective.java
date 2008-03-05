@@ -18,6 +18,9 @@ public class Perspective implements IPerspectiveFactory
         "org.csstudio.platform.ui.views.progress"; //$NON-NLS-1$
     private static final String ID_NAVIGATOR =
     	"org.eclipse.ui.views.ResourceNavigator"; //$NON-NLS-1$
+    final private static String ID_SNS_PV_UTIL = 
+        "org.csstudio.sns.pvutil.view.PVUtilView"; //$NON-NLS-1$
+
     
     @SuppressWarnings("nls")
     public void createInitialLayout(IPageLayout layout)
@@ -35,6 +38,7 @@ public class Perspective implements IPerspectiveFactory
         // Stuff for 'left'
         left.addView(ArchiveView.ID);
         left.addView(ID_NAVIGATOR);
+        left.addPlaceholder(ID_SNS_PV_UTIL);
         // Stuff for 'bottom'
         bottom.addView(ConfigView.ID);
         bottom.addView(ExportView.ID);
