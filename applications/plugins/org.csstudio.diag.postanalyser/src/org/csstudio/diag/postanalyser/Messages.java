@@ -13,10 +13,10 @@ public class Messages extends NLS
     public static String Algorithm_GaussFit;
     public static String Algorithm_LineFit;
     public static String Algorithm_NoDataPoints;
-    public static String Algorithm_NoInputError;
     public static String Algorithm_NoSecondChannelError;
     public static String Algorithm_Original;
     public static String Algorithm_TimeAxisLabel;
+    public static String Algorithm_XYArraysDiffer;
     public static String ExponentialFit_DecayMessage;
     public static String ExponentialFit_RiseMessage;
     public static String FFT_Message;

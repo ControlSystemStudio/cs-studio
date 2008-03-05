@@ -1,9 +1,11 @@
 package org.csstudio.diag.postanalyser.math;
 
+import org.csstudio.diag.postanalyser.Messages;
+import org.eclipse.osgi.util.NLS;
+
 /** Base class for fit.
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 abstract public class Fit
 {
     /** Helper: Check if arrays x[] and y[] have same length > 1
@@ -16,10 +18,10 @@ abstract public class Fit
         final int N = x.length;
         if (N != y.length)
             throw new IllegalArgumentException(
-                    String.format("x.length %d != y.length %d",
+                    NLS.bind(Messages.Algorithm_XYArraysDiffer,
                             N, y.length));
         if (N <= 1)
-            throw new IllegalArgumentException("Empty input arrays");
+            throw new IllegalArgumentException(Messages.Algorithm_NoDataPoints);
         return N;
     }
 
@@ -32,6 +34,6 @@ abstract public class Fit
     @Override
     public String toString()
     {
-        return String.format("Fit");
+        return String.format("Fit"); //$NON-NLS-1$
     }
 }

@@ -22,7 +22,7 @@ abstract public class AbstractFitAlgorithm extends Algorithm
     public void process() throws Exception
     {
         if (input == null)
-            throw new IllegalArgumentException(Messages.Algorithm_NoInputError);
+            throw new IllegalArgumentException(Messages.Algorithm_NoDataPoints);
         
         try
         {

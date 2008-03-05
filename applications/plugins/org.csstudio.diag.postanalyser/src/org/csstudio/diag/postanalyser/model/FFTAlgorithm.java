@@ -42,7 +42,7 @@ public class FFTAlgorithm extends Algorithm
     {
         x_axis_label = Messages.FFT_XAxisLabel;
         if (input == null)
-            throw new IllegalArgumentException(Messages.Algorithm_NoInputError);
+            throw new IllegalArgumentException(Messages.Algorithm_NoDataPoints);
         
         // Guess the signal period
         final int N = input.size();

@@ -18,7 +18,7 @@ public class RawAlgorithm extends Algorithm
     public void process() throws Exception
     {
         if (input == null)
-            throw new IllegalArgumentException(Messages.Algorithm_NoInputError);
+            throw new IllegalArgumentException(Messages.Algorithm_NoDataPoints);
         // Simply return the input points
         outputs = new AlgorithmOutput[]
         {

@@ -37,7 +37,7 @@ public class CorrelationAlgorithm extends Algorithm
     public void process() throws Exception
     {
         if (input == null)
-            throw new IllegalArgumentException(Messages.Algorithm_NoInputError);
+            throw new IllegalArgumentException(Messages.Algorithm_NoDataPoints);
         if (corr_channel == null)
             throw new IllegalArgumentException(Messages.Algorithm_NoSecondChannelError);
         
