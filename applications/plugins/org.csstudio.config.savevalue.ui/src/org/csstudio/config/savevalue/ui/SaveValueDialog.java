@@ -54,7 +54,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.osgi.service.prefs.PreferencesService;
 
 /**
  * Dialog for the Save Value function.
@@ -125,14 +124,20 @@ class SaveValueDialog extends Dialog {
 	public SaveValueDialog(final Shell parentShell, final IProcessVariable pv) {
 		super(parentShell);
 		_pv = pv;
-		
+		initializeServiceDescriptions();
+	}
+
+	/**
+	 * Initializes the descriptions of the services that will be used.
+	 */
+	private void initializeServiceDescriptions() {
 		IPreferencesService prefs = Platform.getPreferencesService();		
 		_services = new SaveValueServiceDescription[] {
 			new SaveValueServiceDescription("SaveValue.EpicsOra",
-						prefs.getBoolean(Activator.PLUGIN_ID,
-								PreferenceConstants.EPIS_ORA_REQUIRED, false,
-								null),
-						"EPICS Ora"),
+					prefs.getBoolean(Activator.PLUGIN_ID,
+							PreferenceConstants.EPIS_ORA_REQUIRED, false,
+							null),
+					"EPICS Ora"),
 			new SaveValueServiceDescription("SaveValue.Database",
 					prefs.getBoolean(Activator.PLUGIN_ID,
 							PreferenceConstants.DATABASE_REQUIRED, false,
@@ -242,17 +247,50 @@ class SaveValueDialog extends Dialog {
 	 */
 	@Override
 	public final int open() {
-		_log.debug(this, "Trying to find IOC for process variable: " + _pv);
-		_iocName = IocFinder.getIoc(_pv);
-		if (_iocName == null) {
-			_log.error(this, "Could not execute save value because no IOC was found for PV: " + _pv);
+		if (!hasRequiredService()) {
+			MessageDialog.openError(null, "Save Value", "No required services are configured. Please selected at least one service as required in the preferences.");
+			return CANCEL;
+		}
+		if (!findIoc()) {
 			MessageDialog.openError(null, "Save Value", "The IOC of the process variable was not found.");
 			return CANCEL;
 		}
-		_log.debug(this, "IOC found: " + _iocName);
 		return super.open();
 	}
+
+	/**
+	 * Finds the IOC for the PV.
+	 * 
+	 * @return <code>true</code> if the IOC was found, <code>false</code>
+	 *         otherwise.
+	 */
+	private boolean findIoc() {
+		_log.debug(this, "Trying to find IOC for process variable: " + _pv);
+		_iocName = IocFinder.getIoc(_pv);
+		if (_iocName == null) {
+			_log.error(this, "No IOC was found for PV: " + _pv);
+			return false;
+		}
+		_log.debug(this, "IOC found: " + _iocName);
+		return true;
+	}
 	
+	/**
+	 * Checks that at least one service is selected as required in the
+	 * preferences.
+	 * 
+	 * @return <code>true</code> if there is at least one required service,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean hasRequiredService() {
+		for (SaveValueServiceDescription service : _services) {
+			if (service.isRequired()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -289,28 +327,16 @@ class SaveValueDialog extends Dialog {
 		
 		final String pvValue = _value.getText();
 		Runnable r = new Runnable() {
+			private Registry _reg;
+
 			public void run() {
 				final boolean[] success = new boolean[3];
 				try {
-					IPreferencesService prefs = Platform.getPreferencesService();
-					String registryHost = prefs.getString(
-							Activator.PLUGIN_ID,
-							PreferenceConstants.RMI_REGISTRY_SERVER,
-							null, null);
-					_log.debug(this, "Connecting to RMI registry.");
-					Registry reg = LocateRegistry.getRegistry(registryHost);
+					locateRmiRegistry();
 					for (int i = 0; i < _services.length; i++) {
 						String result;
 						try {
-							_log.debug(this, "Calling save value service: " + _services[i]);
-							SaveValueService service = (SaveValueService) reg.lookup(_services[i].getRmiName());
-							SaveValueRequest req = new SaveValueRequest();
-							req.setPvName(_pv.getName());
-							req.setIocName(_iocName);
-							req.setValue(pvValue);
-							req.setUsername(SecurityFacade.getInstance().getCurrentUser().getUsername());
-							req.setHostname(CSSPlatformInfo.getInstance().getQualifiedHostname());
-							SaveValueResult srr = service.saveValue(req);
+							SaveValueResult srr = callService(_services[i], pvValue);
 							String replacedValue = srr.getReplacedValue();
 							if (replacedValue != null) {
 								result = "Success: old value " + replacedValue + " replaced with new value";
@@ -374,6 +400,42 @@ class SaveValueDialog extends Dialog {
 					MessageDialog.openError(null, "Save Value", "Could not connect to RMI registry: " + e.getMessage());
 					SaveValueDialog.this.close();
 				}
+			}
+
+			/**
+			 * @throws RemoteException
+			 */
+			private void locateRmiRegistry() throws RemoteException {
+				IPreferencesService prefs = Platform.getPreferencesService();
+				String registryHost = prefs.getString(
+						Activator.PLUGIN_ID,
+						PreferenceConstants.RMI_REGISTRY_SERVER,
+						null, null);
+				_log.debug(this, "Connecting to RMI registry.");
+				_reg = LocateRegistry.getRegistry(registryHost);
+			}
+
+			/**
+			 * @param service
+			 * @param pvValue
+			 * @return
+			 * @throws SaveValueServiceException
+			 * @throws RemoteException
+			 * @throws NotBoundException 
+			 */
+			private SaveValueResult callService(final SaveValueServiceDescription serviceDescr,
+					final String pvValue)
+					throws SaveValueServiceException, RemoteException, NotBoundException {
+				_log.debug(this, "Calling save value service: " + serviceDescr);
+				SaveValueService service = (SaveValueService) _reg.lookup(serviceDescr.getRmiName());
+				SaveValueRequest req = new SaveValueRequest();
+				req.setPvName(_pv.getName());
+				req.setIocName(_iocName);
+				req.setValue(pvValue);
+				req.setUsername(SecurityFacade.getInstance().getCurrentUser().getUsername());
+				req.setHostname(CSSPlatformInfo.getInstance().getQualifiedHostname());
+				SaveValueResult srr = service.saveValue(req);
+				return srr;
 			}
 		};
 		new Thread(r).start();
