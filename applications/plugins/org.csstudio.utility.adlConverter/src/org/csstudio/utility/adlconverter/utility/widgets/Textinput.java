@@ -81,12 +81,12 @@ public class Textinput extends Widget {
                     id = 4;
                 }else{
                     //TODO: Textinput --> align formats
-                    CentralLogger.getInstance().debug(this, "Align is "+row[0]);
+                    CentralLogger.getInstance().debug(this, Messages.Textinput_Align_Debug+row[0]);
                 }
                 _widget.setPropertyValue(TextInputModel.PROP_TEXT_ALIGNMENT, id);
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 //TODO: Textinput --> format
-                CentralLogger.getInstance().debug(this, "Format is "+row[0]);
+                CentralLogger.getInstance().debug(this, Messages.Textinput_Format_Debug+row[0]);
             }else{                
 
                 throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException_Parameter_Begin+row[0]);

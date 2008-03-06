@@ -185,7 +185,7 @@ public final class ADLHelper {
         }
         if(cleanString[1].startsWith("$")){ //$NON-NLS-1$
             String temp = cleanString[1].substring(cleanString[1].indexOf(')')+1);
-            cleanString[1]=cleanString[1].replace("(", "").replace(')', '$');
+            cleanString[1]=cleanString[1].replace("(", "").replace(')', '$'); //$NON-NLS-1$ //$NON-NLS-2$
 //            cleanString[1] ="$channel$"+temp; //$NON-NLS-1$
         }
 //        if(cleanString.length>2){
@@ -266,9 +266,9 @@ public final class ADLHelper {
 //            postfix = chan[chan.length-1];
 //        }
         if(chan.length>2){ //$NON-NLS-1$
-            postfix = "."+chan[chan.length-1];
+            postfix = "."+chan[chan.length-1]; //$NON-NLS-1$
         }
-        assert chan.length >3 : "Test Chan";
+        assert chan.length >3 : "Test Chan"; //$NON-NLS-1$
         return postfix;
     }
     

@@ -140,7 +140,7 @@ public class RelatedDisplayItem extends WidgetPart{
                     map.put(param[0], param[1]);
                 }else{
                     if(params[i].trim().length()>0){
-                        CentralLogger.getInstance().warn(this, "no empty Parametres :"+params[i]);
+                        CentralLogger.getInstance().warn(this, Messages.RelatedDisplayItem_Parameter_Error+params[i]);
                     }
                 }
             }

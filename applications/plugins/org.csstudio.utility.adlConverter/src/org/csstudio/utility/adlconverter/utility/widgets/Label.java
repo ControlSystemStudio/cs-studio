@@ -94,20 +94,20 @@ public class Label extends Widget {
                 //TODO: Label-->clrmod (CSS-SDS unterstüzung fehlt!)
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 String test = row[1];
-                CentralLogger.getInstance().debug(this,"Format = " + test);
-                if(test.equals("\"exponential\"")){
+                CentralLogger.getInstance().debug(this,Messages.Label_Format_Debug + test);
+                if(test.equals("\"exponential\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->exponential wird noch nicht vom ASDS unterstützt.
-                }else if(test.equals("\"decimal\"")){
+                }else if(test.equals("\"decimal\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_DOUBLE); 
-                }else if(test.equals("\"engr.notation\"")){
+                }else if(test.equals("\"engr.notation\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->engr.notation wird noch nicht vom ASDS unterstützt.
-                }else if(test.equals("\"compact\"")){
+                }else if(test.equals("\"compact\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->compact wird noch nicht vom ASDS unterstützt.
-                }else if(test.equals("\"octal\"")){
+                }else if(test.equals("\"octal\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);  //TODO: Label->format->octal wird noch nicht vom ASDS unterstützt.
-                }else if(test.equals("\"hexadecimal\"")){
+                }else if(test.equals("\"hexadecimal\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_HEX); 
-                }else if(test.equals("\"truncated\"")){
+                }else if(test.equals("\"truncated\"")){ //$NON-NLS-1$
                     _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT); //TODO: Label->format->truncated wird noch nicht vom ASDS unterstützt.
                 }else{// Unknown or String
                     _widget.setPropertyValue(LabelModel.PROP_TYPE, TextTypeEnum.TYPE_TEXT);

@@ -117,7 +117,7 @@ public class ADLSensitive extends WidgetPart {
             }
         }
         if(_chan==null&&_sensitiveMode!=null){
-            CentralLogger.getInstance().warn(this,"no channel :" + sensitive);
+            CentralLogger.getInstance().warn(this,Messages.ADLSensitive_No_Channel_Warning + sensitive);
         }
     }
 

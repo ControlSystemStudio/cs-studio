@@ -31,5 +31,19 @@
          </action>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml"
+            plugin="org.csstudio.sds.ui">
+      </contexts>
+   </extension>
 
 </plugin>

@@ -57,7 +57,7 @@ public class Image extends Widget {
             }else if(row[0].equals("\"image name\"")){ //$NON-NLS-1$ //$NON-NLS-2$
                 row[1] = ADLHelper.cleanString(row[1])[0];
                 IResource res = ResourcesPlugin.getWorkspace().getRoot();
-                IPath path = res.getFullPath().append("/CSS/SDS"+row[1]);
+                IPath path = res.getFullPath().append("/CSS/SDS"+row[1]); //$NON-NLS-1$
                 _widget.setPropertyValue(ImageModel.PROP_FILENAME, path);
             }else{                
                 throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ obj+Messages.Label_WrongADLFormatException_Parameter_End);

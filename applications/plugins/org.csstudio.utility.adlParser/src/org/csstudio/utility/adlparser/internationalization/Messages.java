@@ -56,7 +56,9 @@ public class Messages extends NLS {
     public static String ADLConverterMainView_ClearButtonText;
     public static String ADLConverterMainView_ConvcertButtonText;
     public static String ADLConverterMainView_DateiName;
+    public static String ADLConverterMainView_DestinationGroup;
     public static String ADLConverterMainView_DialogText;
+    public static String ADLConverterMainView_SourceGroup;
 	public static String ADLConverterMainView_TargetFolderSelectionMessage;
     public static String ADLConverterMainView_TargetOpernButton;
     public static String ADLDisplayImporter_ADLBargraphLayerDes;
@@ -91,10 +93,15 @@ public class Messages extends NLS {
     public static String ADLPoints_WrongADLFormatException_End;
     public static String ADLSensitive_AssertError_Begin;
     public static String ADLSensitive_AssertError_End;
+    public static String ADLSensitive_No_Channel_Warning;
     public static String ADLSensitive_WrongADLFormatException_Begin;
     public static String ADLSensitive_WrongADLFormatException_End;
     public static String Arc_WrongADLFormatException;
     public static String Bargraph_1;
+    public static String Bargraph_Clrmod_Debug;
+    public static String Bargraph_Format_Debug;
+    public static String Bargraph_Limit_Type_Debug;
+    public static String Bargraph_WrongADLFormatException;
     public static String Bargraph_WrongADLFormatException_Parameter_Begin;
     public static String Bargraph_WrongADLFormatException_Type;
     public static String Display_AssertError;
@@ -102,16 +109,20 @@ public class Messages extends NLS {
     public static String Display_WrongADLFormatException_End;
     public static String Display_WrongADLFormatException_Parameter_Begin;
     public static String Display_WrongADLFormatException_Parameter_End;
+    public static String Label_Format_Debug;
     public static String Label_WrongADLFormatException_Parameter_Begin;
     public static String Label_WrongADLFormatException_Parameter_End;
     public static String Polyline_AssertError;
     public static String RelatedDisplay_WrongADLFormatException_Parameter_Begin;
+    public static String RelatedDisplayItem_Parameter_Error;
     public static String RelatedDisplayItem_WrongADLFormatException_Begin;
     public static String RelatedDisplayItem_WrongADLFormatException_Middle;
     public static String RGBColor_WrongADLFormatException;
     public static String Polygon_AssertError;
     public static String GroupingContainer_WrongADLFormatException;
     public static String GroupingContainer_WrongADLFormatException2;
+    public static String Textinput_Align_Debug;
+    public static String Textinput_Format_Debug;
     public static String Textinput_WrongADLFormatException;
     public static String Textinput_WrongADLFormatException_Parameter_Begin;
         
