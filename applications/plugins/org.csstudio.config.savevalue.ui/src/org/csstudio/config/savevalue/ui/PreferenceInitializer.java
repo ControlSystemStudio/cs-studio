@@ -31,7 +31,7 @@ import org.osgi.service.prefs.Preferences;
  * 
  * @author Joerg Rathlev
  */
-public class PreferenceInitializer extends AbstractPreferenceInitializer {
+class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	/**
 	 * {@inheritDoc}
@@ -40,5 +40,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public final void initializeDefaultPreferences() {
 		Preferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
 		prefs.put(PreferenceConstants.RMI_REGISTRY_SERVER, "localhost");
+		prefs.putBoolean(PreferenceConstants.EPIS_ORA_REQUIRED, false);
+		prefs.putBoolean(PreferenceConstants.DATABASE_REQUIRED, false);
+		prefs.putBoolean(PreferenceConstants.CA_FILE_REQUIRED, true);
 	}
 }

@@ -22,8 +22,13 @@
 
 package org.csstudio.config.savevalue.ui;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -32,7 +37,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * 
  * @author Joerg Rathlev
  */
-public class SaveValuePreferencePage extends FieldEditorPreferencePage
+class SaveValuePreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
 	
 	/**
@@ -51,6 +56,14 @@ public class SaveValuePreferencePage extends FieldEditorPreferencePage
 	protected final void createFieldEditors() {
 		addField(new StringFieldEditor(PreferenceConstants.RMI_REGISTRY_SERVER,
 				"RMI Registry Server: ", getFieldEditorParent()));
+		
+		Group requiredServicesGroup = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
+		requiredServicesGroup.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+		requiredServicesGroup.setLayout(new RowLayout(SWT.VERTICAL));
+		requiredServicesGroup.setText("Required services");
+		addField(new BooleanFieldEditor(PreferenceConstants.EPIS_ORA_REQUIRED, "EPICS Ora", requiredServicesGroup));
+		addField(new BooleanFieldEditor(PreferenceConstants.DATABASE_REQUIRED, "Database", requiredServicesGroup));
+		addField(new BooleanFieldEditor(PreferenceConstants.CA_FILE_REQUIRED, "ca File", requiredServicesGroup));
 	}
 
 	/**

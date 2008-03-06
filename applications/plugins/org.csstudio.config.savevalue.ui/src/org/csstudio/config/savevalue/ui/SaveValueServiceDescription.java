@@ -19,25 +19,74 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.config.savevalue.ui;
 
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
 
 /**
- * The save value menu action.
+ * Describes a save value service.
  * 
  * @author Joerg Rathlev
  */
-class SaveValueAction extends ProcessVariablePopupAction {
+final class SaveValueServiceDescription {
 
 	/**
-	 * {@inheritDoc}
+	 * The RMI name of the service.
 	 */
-	@Override
-	public final void handlePVs(final IProcessVariable[] pvs) {
-		SaveValueDialog dialog = new SaveValueDialog(null, pvs[0]);
-		dialog.open();
+	private String _rmiName;
+	
+	/**
+	 * Whether the service is required.
+	 */
+	private boolean _required;
+
+	/**
+	 * A human-readable name for the service.
+	 */
+	private String _displayName;
+	
+
+	/**
+	 * Creates a new service description.
+	 * 
+	 * @param rmiName
+	 *            the RMI name of the service.
+	 * @param required
+	 *            whether the service is required.
+	 * @param displayName
+	 *            a name for the service that will be displayed to the user.
+	 */
+	SaveValueServiceDescription(final String rmiName,
+			final boolean required, final String displayName) {
+		_rmiName = rmiName;
+		_required = required;
+		_displayName = displayName;
 	}
 
+	/**
+	 * Returns the RMI name of the service.
+	 * 
+	 * @return the RMI name of the service.
+	 */
+	public String getRmiName() {
+		return _rmiName;
+	}
+
+	/**
+	 * Returns whether the service is required.
+	 * 
+	 * @return whether the service is required.
+	 */
+	public boolean isRequired() {
+		return _required;
+	}
+	
+	/**
+	 * Returns a human-readable name for the described service.
+	 * 
+	 * @return a human-readable name for the described service.
+	 */
+	public String getDisplayName() {
+		return _displayName;
+	}
 }

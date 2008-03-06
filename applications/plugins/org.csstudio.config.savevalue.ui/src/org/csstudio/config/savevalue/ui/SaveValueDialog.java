@@ -54,13 +54,14 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.osgi.service.prefs.PreferencesService;
 
 /**
  * Dialog for the Save Value function.
  * 
  * @author Joerg Rathlev
  */
-public class SaveValueDialog extends Dialog {
+class SaveValueDialog extends Dialog {
 	
 	/**
 	 * The logger.
@@ -108,6 +109,11 @@ public class SaveValueDialog extends Dialog {
 	private Label _resultImage;
 	
 	/**
+	 * The services.
+	 */
+	private SaveValueServiceDescription[] _services;
+	
+	/**
 	 * Creates a new Save Value Dialog.
 	 * 
 	 * @param parentShell
@@ -119,6 +125,25 @@ public class SaveValueDialog extends Dialog {
 	public SaveValueDialog(final Shell parentShell, final IProcessVariable pv) {
 		super(parentShell);
 		_pv = pv;
+		
+		IPreferencesService prefs = Platform.getPreferencesService();		
+		_services = new SaveValueServiceDescription[] {
+			new SaveValueServiceDescription("SaveValue.EpicsOra",
+						prefs.getBoolean(Activator.PLUGIN_ID,
+								PreferenceConstants.EPIS_ORA_REQUIRED, false,
+								null),
+						"EPICS Ora"),
+			new SaveValueServiceDescription("SaveValue.Database",
+					prefs.getBoolean(Activator.PLUGIN_ID,
+							PreferenceConstants.DATABASE_REQUIRED, false,
+							null),
+					"Database"),
+			new SaveValueServiceDescription("SaveValue.caput",
+					prefs.getBoolean(Activator.PLUGIN_ID,
+							PreferenceConstants.CA_FILE_REQUIRED, false,
+							null),
+					"ca File"),
+		};
 	}
 	
 	/**
@@ -183,17 +208,17 @@ public class SaveValueDialog extends Dialog {
 		resultColumn.setText("Result");
 		resultColumn.setWidth(350);
 		
-		TableItem item1 = new TableItem(_resultsTable, SWT.NONE);
-		item1.setText(new String[] { "EPICS Ora", "" });
-		TableItem item2 = new TableItem(_resultsTable, SWT.NONE);
-		item2.setText(new String[] { "Database", "" });
-		TableItem item3 = new TableItem(_resultsTable, SWT.NONE);
-		item3.setText(new String[] { "ca_put", "" });
+		for (SaveValueServiceDescription service : _services) {
+			TableItem item = new TableItem(_resultsTable, SWT.NONE);
+			item.setText(service.getDisplayName());
+		}
 		
 		// overall result
 		_resultImage = new Label(composite, SWT.NONE);
 		_resultImage.setLayoutData(new GridData(SWT.RIGHT, SWT.BEGINNING, false, false));
-		// load an image here to get the correct size
+		// Assign an image here so that the correct size for the label is
+		// computed. The actual image to be displayed is assigned when the
+		// result is displayed.
 		_resultImage.setImage(getErrorImage());
 		_resultImage.setVisible(false);
 		_resultLabel = new Label(composite, SWT.NONE);
@@ -265,9 +290,6 @@ public class SaveValueDialog extends Dialog {
 		final String pvValue = _value.getText();
 		Runnable r = new Runnable() {
 			public void run() {
-				String[] services = new String[] {
-					"SaveValue.EpicsOra", "SaveValue.Database", "SaveValue.caput"	
-				};
 				final boolean[] success = new boolean[3];
 				try {
 					IPreferencesService prefs = Platform.getPreferencesService();
@@ -277,11 +299,11 @@ public class SaveValueDialog extends Dialog {
 							null, null);
 					_log.debug(this, "Connecting to RMI registry.");
 					Registry reg = LocateRegistry.getRegistry(registryHost);
-					for (int i = 0; i < 3; i++) {
+					for (int i = 0; i < _services.length; i++) {
 						String result;
 						try {
-							_log.debug(this, "Calling save value service: " + services[i]);
-							SaveValueService service = (SaveValueService) reg.lookup(services[i]);
+							_log.debug(this, "Calling save value service: " + _services[i]);
+							SaveValueService service = (SaveValueService) reg.lookup(_services[i].getRmiName());
 							SaveValueRequest req = new SaveValueRequest();
 							req.setPvName(_pv.getName());
 							req.setIocName(_iocName);
@@ -298,17 +320,17 @@ public class SaveValueDialog extends Dialog {
 						} catch (RemoteException e) {
 							Throwable cause = e.getCause();
 							if (cause instanceof SocketTimeoutException) {
-								_log.warn(this, "Remote call to " + services[i] + " timed out");
+								_log.warn(this, "Remote call to " + _services[i] + " timed out");
 								result = "Timeout";
 							} else {
-								_log.error(this, "Remote call to " + services[i] + " failed with RemoteException", e);
+								_log.error(this, "Remote call to " + _services[i] + " failed with RemoteException", e);
 								result = "Connection error: " + e.getMessage();
 							}
 						} catch (SaveValueServiceException e) {
-							_log.warn(this, "Save Value service " + services[i] + " reported an error", e);
+							_log.warn(this, "Save Value service " + _services[i] + " reported an error", e);
 							result = "Service error: " + e.getMessage();
 						} catch (NotBoundException e) {
-							_log.warn(this, "Save value service " + services[i] + " is not bound in RMI registry");
+							_log.warn(this, "Save value service " + _services[i] + " is not bound in RMI registry");
 							result = "Service not available";
 						}
 						final int index = i;
@@ -319,7 +341,7 @@ public class SaveValueDialog extends Dialog {
 								item.setText(1, resultCopy);
 								success[index] = resultCopy.startsWith("Success");
 								int color = success[index] ? SWT.COLOR_DARK_GREEN
-										: (index < 2) ? SWT.COLOR_DARK_YELLOW : SWT.COLOR_RED;
+										: (_services[index].isRequired()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GRAY;
 								item.setForeground(Display.getCurrent().getSystemColor(color));
 								_resultsTable.showItem(item);
 							}
@@ -328,7 +350,13 @@ public class SaveValueDialog extends Dialog {
 					_log.debug(this, "Finished calling remote Save Value services");
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-							if (success[2]) {
+							boolean overallSuccess = true;
+							for (int i = 0; i < success.length; i++) {
+								if (_services[i].isRequired()) {
+									overallSuccess &= success[i];
+								}
+							}
+							if (overallSuccess) {
 								_resultLabel.setText("The value was saved successfully.");
 								_resultImage.setImage(getInfoImage());
 							} else {

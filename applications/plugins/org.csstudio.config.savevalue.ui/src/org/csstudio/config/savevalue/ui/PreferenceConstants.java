@@ -27,7 +27,7 @@ package org.csstudio.config.savevalue.ui;
  * 
  * @author Joerg Rathlev
  */
-public final class PreferenceConstants {
+final class PreferenceConstants {
 
 	/**
 	 * Private constructor.
@@ -39,4 +39,19 @@ public final class PreferenceConstants {
 	 * Preference id for the RMI Registry Server preference. 
 	 */
 	public static final String RMI_REGISTRY_SERVER = "RmiRegistryServer";
+	
+	/**
+	 * Preference id for the Epics Ora Required preference.
+	 */
+	public static final String EPIS_ORA_REQUIRED = "EpicsOraRequired";
+	
+	/**
+	 * Preference id for the Database Required preference.
+	 */
+	public static final String DATABASE_REQUIRED = "DatabaseRequired";
+	
+	/**
+	 * Preference id for the Ca File Required preference.
+	 */
+	public static final String CA_FILE_REQUIRED = "CaFileRequired";
 }
