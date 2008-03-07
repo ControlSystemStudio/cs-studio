@@ -4,7 +4,8 @@ Bundle-Name: MessageMinder Plug-in
 Bundle-SymbolicName: org.csstudio.ams.MessageMinder;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.ams.messageminder.MessageMinderActivator
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.platform.ui,
