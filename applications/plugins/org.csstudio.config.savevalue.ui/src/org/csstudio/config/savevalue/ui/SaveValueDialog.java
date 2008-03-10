@@ -34,6 +34,7 @@ import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.utility.ldap.reader.IocFinder;
 import org.eclipse.core.runtime.Platform;
@@ -85,7 +86,7 @@ class SaveValueDialog extends Dialog {
 	/**
 	 * The name of the process variable.
 	 */
-	private IProcessVariable _pv;
+	private IProcessVariableWithSamples _pv;
 
 	/**
 	 * The text field which displays the IOC name.
@@ -121,7 +122,7 @@ class SaveValueDialog extends Dialog {
 	 * @param pv
 	 *            the process variable.
 	 */
-	public SaveValueDialog(final Shell parentShell, final IProcessVariable pv) {
+	public SaveValueDialog(final Shell parentShell, final IProcessVariableWithSamples pv) {
 		super(parentShell);
 		_pv = pv;
 		initializeServiceDescriptions();
@@ -194,7 +195,7 @@ class SaveValueDialog extends Dialog {
 		label.setText("Value:");
 		_value = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		_value.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		_value.setText("42");
+		_value.setText(_pv.getSample(0).format());
 		
 		Label separator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
 		separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));

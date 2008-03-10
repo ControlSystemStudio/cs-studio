@@ -21,21 +21,21 @@
  */
 package org.csstudio.config.savevalue.ui;
 
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithSamplesPopupAction;
 
 /**
  * The save value menu action.
  * 
  * @author Joerg Rathlev
  */
-public class SaveValueAction extends ProcessVariablePopupAction {
+public class SaveValueAction extends ProcessVariableWithSamplesPopupAction {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void handlePVs(final IProcessVariable[] pvs) {
+	public final void handlePVs(final IProcessVariableWithSamples[] pvs) {
 		SaveValueDialog dialog = new SaveValueDialog(null, pvs[0]);
 		dialog.open();
 	}

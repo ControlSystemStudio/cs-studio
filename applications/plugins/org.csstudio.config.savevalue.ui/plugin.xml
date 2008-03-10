@@ -5,7 +5,7 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             id="org.csstudio.config.savevalue.ui.SaveValueAction"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
+            objectClass="org.csstudio.platform.model.IProcessVariableWithSamples">
          <menu
                id="org.csstudio.popmenu"
                label="CSS"
