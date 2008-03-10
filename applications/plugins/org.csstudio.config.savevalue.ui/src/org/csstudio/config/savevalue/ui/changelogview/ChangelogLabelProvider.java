@@ -20,38 +20,48 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.config.savevalue.ui;
+package org.csstudio.config.savevalue.ui.changelogview;
+
+import org.csstudio.config.savevalue.service.ChangelogEntry;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
 
 /**
- * Preference id constants for the save value client.
+ * Label provider for the changelog table.
  * 
  * @author Joerg Rathlev
  */
-public final class PreferenceConstants {
+class ChangelogLabelProvider extends LabelProvider implements ITableLabelProvider {
 
 	/**
-	 * Private constructor.
+	 * {@inheritDoc}
 	 */
-	private PreferenceConstants() {
+	public Image getColumnImage(final Object element, final int columnIndex) {
+		return null;
 	}
-	
+
 	/**
-	 * Preference id for the RMI Registry Server preference. 
+	 * {@inheritDoc}
 	 */
-	public static final String RMI_REGISTRY_SERVER = "RmiRegistryServer";
-	
-	/**
-	 * Preference id for the Epics Ora Required preference.
-	 */
-	public static final String EPIS_ORA_REQUIRED = "EpicsOraRequired";
-	
-	/**
-	 * Preference id for the Database Required preference.
-	 */
-	public static final String DATABASE_REQUIRED = "DatabaseRequired";
-	
-	/**
-	 * Preference id for the Ca File Required preference.
-	 */
-	public static final String CA_FILE_REQUIRED = "CaFileRequired";
+	public String getColumnText(final Object element, final int columnIndex) {
+		if (element instanceof ChangelogEntry) {
+			ChangelogEntry entry = (ChangelogEntry) element;
+			switch (columnIndex) {
+			case ChangelogViewPart.COL_PV:
+				return entry.getPvName();
+			case ChangelogViewPart.COL_VALUE:
+				return entry.getValue();
+			case ChangelogViewPart.COL_USER:
+				return entry.getUsername();
+			case ChangelogViewPart.COL_HOST:
+				return entry.getHostname();
+			case ChangelogViewPart.COL_MODIFIED:
+				return entry.getLastModified();
+			default:
+				return null;
+			}
+		}
+		return null;
+	}
 }

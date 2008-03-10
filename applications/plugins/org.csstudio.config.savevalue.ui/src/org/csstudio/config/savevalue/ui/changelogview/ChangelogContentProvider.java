@@ -20,38 +20,41 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.config.savevalue.ui;
+package org.csstudio.config.savevalue.ui.changelogview;
+
+import org.csstudio.config.savevalue.service.ChangelogEntry;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Preference id constants for the save value client.
+ * Content provider for the changelog table viewer.
  * 
  * @author Joerg Rathlev
  */
-public final class PreferenceConstants {
+class ChangelogContentProvider implements IStructuredContentProvider {
 
 	/**
-	 * Private constructor.
+	 * {@inheritDoc}
 	 */
-	private PreferenceConstants() {
+	public Object[] getElements(final Object inputElement) {
+		if (inputElement instanceof ChangelogEntry[]) {
+			return (Object[]) inputElement;
+		}
+		return new Object[] {};
 	}
-	
+
 	/**
-	 * Preference id for the RMI Registry Server preference. 
+	 * {@inheritDoc}
 	 */
-	public static final String RMI_REGISTRY_SERVER = "RmiRegistryServer";
-	
+	public void dispose() {
+		// nothing to do
+	}
+
 	/**
-	 * Preference id for the Epics Ora Required preference.
+	 * {@inheritDoc}
 	 */
-	public static final String EPIS_ORA_REQUIRED = "EpicsOraRequired";
-	
-	/**
-	 * Preference id for the Database Required preference.
-	 */
-	public static final String DATABASE_REQUIRED = "DatabaseRequired";
-	
-	/**
-	 * Preference id for the Ca File Required preference.
-	 */
-	public static final String CA_FILE_REQUIRED = "CaFileRequired";
+	public void inputChanged(final Viewer viewer, final Object oldInput,
+			final Object newInput) {
+		// nothing to do
+	}
 }

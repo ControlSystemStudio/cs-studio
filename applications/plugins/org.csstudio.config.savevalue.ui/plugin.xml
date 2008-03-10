@@ -43,5 +43,14 @@
             name="Save Value">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.csstudio"
+            class="org.csstudio.config.savevalue.ui.changelogview.ChangelogViewPart"
+            id="org.csstudio.config.savevalue.ui.ChangelogView"
+            name="Save Value Changelog">
+      </view>
+   </extension>
 
 </plugin>
