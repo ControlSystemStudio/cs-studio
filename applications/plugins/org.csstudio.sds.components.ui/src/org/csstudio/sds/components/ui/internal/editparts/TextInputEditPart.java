@@ -23,6 +23,12 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import java.util.Map;
 
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.platform.data.IValue.Quality;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -36,7 +42,6 @@ import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
-import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
@@ -63,7 +68,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Alexander Will
  * 
  */
-public final class TextInputEditPart extends AbstractWidgetEditPart {
+public final class TextInputEditPart extends AbstractWidgetEditPart implements IProcessVariableWithSamples {
     /**
      * The actual figure will be surrounded with a small frame that can be used
      * to drag the figure around (even if the cell editor is activated).
@@ -392,4 +397,26 @@ public final class TextInputEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(TextInputModel.PROP_PRIMARY_PV, pvHandler);
     }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IValue getSample(final int index) {
+		// simply take the input as a string value
+		String value = ((TextInputModel) getWidgetModel()).getInputText();
+		ITimestamp timestamp = TimestampFactory.now();
+		IValue result = ValueFactory.createStringValue(timestamp, ValueFactory
+				.createOKSeverity(), "", Quality.Original,
+				new String[] { value });
+		
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int size() {
+		// we always have one sample
+		return 1;
+	}
 }
