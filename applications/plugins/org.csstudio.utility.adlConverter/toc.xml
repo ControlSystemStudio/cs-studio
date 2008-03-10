@@ -4,6 +4,6 @@
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#display" label="ADL Converter">
 	<topic label="ADL Converter">
 		<topic label="ADL Converter (English)" href="html/en/adl_converter.html"/>
-        <topic label="ADL Converter (English)" href="html/de/adl_converter.html"/>
+        <topic label="ADL Converter (German)" href="html/de/adl_converter.html"/>
    	</topic>
 </toc>

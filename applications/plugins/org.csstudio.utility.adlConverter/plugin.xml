@@ -42,7 +42,7 @@
          point="org.eclipse.help.contexts">
       <contexts
             file="contexts.xml"
-            plugin="org.csstudio.sds.ui">
+            plugin="org.csstudio.utility.adlConverter">
       </contexts>
    </extension>
 
