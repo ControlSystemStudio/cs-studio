@@ -29,7 +29,7 @@ import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction
  * 
  * @author Joerg Rathlev
  */
-class SaveValueAction extends ProcessVariablePopupAction {
+public class SaveValueAction extends ProcessVariablePopupAction {
 
 	/**
 	 * {@inheritDoc}

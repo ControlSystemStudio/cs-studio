@@ -31,7 +31,7 @@ import org.osgi.service.prefs.Preferences;
  * 
  * @author Joerg Rathlev
  */
-class PreferenceInitializer extends AbstractPreferenceInitializer {
+public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	/**
 	 * {@inheritDoc}

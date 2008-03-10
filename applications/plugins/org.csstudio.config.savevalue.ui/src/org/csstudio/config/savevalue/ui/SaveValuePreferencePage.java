@@ -37,7 +37,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * 
  * @author Joerg Rathlev
  */
-class SaveValuePreferencePage extends FieldEditorPreferencePage
+public class SaveValuePreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
 	
 	/**
