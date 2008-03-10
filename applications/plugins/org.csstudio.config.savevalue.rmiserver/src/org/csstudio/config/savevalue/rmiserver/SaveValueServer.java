@@ -26,6 +26,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SocketFactory;
 import org.eclipse.equinox.app.IApplication;
@@ -68,6 +69,10 @@ public class SaveValueServer implements IApplication {
 			SaveValueService caput = new CaPutService();
 			SaveValueService caputStub = (SaveValueService) UnicastRemoteObject.exportObject(caput, 0, sf, sf);
 			reg.bind("SaveValue.caput", caputStub);
+			
+			ChangelogService changelog = new ChangelogServiceImpl();
+			ChangelogService changelogStub = (ChangelogService) UnicastRemoteObject.exportObject(changelog, 0, sf, sf);
+			reg.bind("SaveValue.changelog", changelogStub);
 			
 			System.out.println("Server ready.");
 			context.applicationRunning();

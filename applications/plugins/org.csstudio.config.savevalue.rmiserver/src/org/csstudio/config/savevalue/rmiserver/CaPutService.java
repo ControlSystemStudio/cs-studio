@@ -44,8 +44,6 @@ import org.csstudio.config.savevalue.service.SaveValueResult;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * Save value service that saves to a ca file.
@@ -62,7 +60,7 @@ public class CaPutService implements SaveValueService {
 	/**
 	 * Preference key for the ca file path preference.
 	 */
-	private static final String FILE_PATH_PREFERENCE = "caFilePath";
+	static final String FILE_PATH_PREFERENCE = "caFilePath";
 	
 	/**
 	 * The character used to separate channel and value in ca file entries.
@@ -82,56 +80,6 @@ public class CaPutService implements SaveValueService {
 		new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	
 	/**
-	 * Class that returns the file names for an IOC.
-	 */
-	private static class IocFiles {
-		/**
-		 * File extension for ca files.
-		 */
-		private static final String CA_FILE_EXTENSION = ".ca";
-		
-		/**
-		 * File extension for ca files.
-		 */
-		private static final String CA_BACKUP_FILE_EXTENSION = ".ca~";
-
-		/**
-		 * File extension for changelog files.
-		 */
-		private static final String CHANGELOG_FILE_EXTENSION = ".changelog";
-
-		/**
-		 * The ca file.
-		 */
-		private final File _cafile;
-		
-		/**
-		 * The backup file.
-		 */
-		private final File _backup;
-		
-		/**
-		 * The changelog file.
-		 */
-		private final File _changelog;
-		
-		/**
-		 * Creates the set of file names for the given IOC.
-		 * 
-		 * @param iocName
-		 *            the name of the IOC.
-		 */
-		IocFiles(final String iocName) {
-			IPreferencesService prefs = Platform.getPreferencesService();
-			String path = prefs.getString(Activator.PLUGIN_ID,
-					FILE_PATH_PREFERENCE, "", null);
-			_cafile = new File(path, iocName + CA_FILE_EXTENSION);
-			_backup = new File(path, iocName + CA_BACKUP_FILE_EXTENSION);
-			_changelog = new File(path, iocName + CHANGELOG_FILE_EXTENSION);
-		}
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public final synchronized SaveValueResult saveValue(
@@ -141,8 +89,8 @@ public class CaPutService implements SaveValueService {
 		if (request.isValid()) {
 			IocFiles files = new IocFiles(request.getIocName());
 			makeBackupCopy(files);
-			String replacedValue = updateValueInFile(files._cafile, request.getPvName(), request.getValue());
-			writeChangelog(files._changelog, request);
+			String replacedValue = updateValueInFile(files.getCafile(), request.getPvName(), request.getValue());
+			writeChangelog(files.getChangelog(), request);
 			return new SaveValueResult(replacedValue);
 		} else {
 			_log.warn(this, "Invalid request.");
@@ -270,12 +218,12 @@ public class CaPutService implements SaveValueService {
 	 *            the files.
 	 */
 	private void makeBackupCopy(final IocFiles files) {
-		if (files._cafile.exists()) {
+		if (files.getCafile().exists()) {
 			FileChannel in = null;
 			FileChannel out = null;
 			try {
-				in = new FileInputStream(files._cafile).getChannel();
-				out = new FileOutputStream(files._backup).getChannel();
+				in = new FileInputStream(files.getCafile()).getChannel();
+				out = new FileOutputStream(files.getBackup()).getChannel();
 
 				// see http://forum.java.sun.com/thread.jspa?threadID=439695&messageID=2917510
 				int maxCount = (64 * 1024 * 1024) - (32 * 1024);
@@ -285,7 +233,7 @@ public class CaPutService implements SaveValueService {
 				while (position < size) {
 					position += in.transferTo(position, maxCount, out);
 				}
-				_log.debug(this, "Created backup copy of " + files._cafile);
+				_log.debug(this, "Created backup copy of " + files.getCafile());
 			} catch (FileNotFoundException e) {
 				_log.warn(this, "Backup failed with FileNotFoundException", e);
 			} catch (IOException e) {
