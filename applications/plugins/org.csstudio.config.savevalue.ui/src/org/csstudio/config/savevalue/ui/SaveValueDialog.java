@@ -397,8 +397,15 @@ class SaveValueDialog extends Dialog {
 					});
 				} catch (RemoteException e) {
 					_log.error(this, "Could not connect to RMI registry", e);
-					MessageDialog.openError(null, "Save Value", "Could not connect to RMI registry: " + e.getMessage());
-					SaveValueDialog.this.close();
+					final String message = e.getMessage();
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							MessageDialog.openError(null, "Save Value",
+									"Could not connect to RMI registry: "
+											+ message);
+							SaveValueDialog.this.close();
+						}
+					});
 				}
 			}
 
