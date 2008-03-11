@@ -62,8 +62,8 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 //    static final String user = "KRYKLOGT";
 //    static final String password = "KRYKLOGT";
     
-    static final String user = "KRYKLOGT";
-    static final String password = "kryklogt";
+    static final String user = "KRYKAMS";
+    static final String password = "krykams";
 
 	//Text t = null;
 	{
