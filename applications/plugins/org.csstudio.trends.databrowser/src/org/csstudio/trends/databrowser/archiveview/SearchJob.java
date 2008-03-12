@@ -17,10 +17,10 @@ import org.eclipse.swt.widgets.Display;
  */
 class SearchJob extends Job
 {
-    private ArchiveView archives_view;
-    private ArchiveServer server;
-    private int keys[];
-    private String pattern;
+    final private ArchiveView archives_view;
+    final private ArchiveServer server;
+    final private int keys[];
+    final private String pattern;
     
     /** Helper for sending new name infos to the GUI. */
     private class ViewUpdateRunnable implements Runnable
@@ -43,14 +43,16 @@ class SearchJob extends Job
     /** Create job that searches given server's keys for pattern,
      *  then notifies view about received names.
      */
-    public SearchJob(ArchiveView archives_view,
-                    ArchiveServer server, int keys[], String pattern)
+    public SearchJob(final ArchiveView archives_view,
+                    final ArchiveServer server,
+                    final int keys[],
+                    final String pattern)
     {
         super(Messages.SearchJobName);
         this.archives_view = archives_view;
         this.server = server;
         this.keys = keys;
-        this.pattern = pattern;
+        this.pattern = pattern.trim();
     }
 
     /* @see org.eclipse.core.runtime.jobs.Job#run() */
