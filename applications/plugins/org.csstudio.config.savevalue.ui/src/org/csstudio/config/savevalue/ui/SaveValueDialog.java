@@ -32,8 +32,11 @@ import org.csstudio.config.savevalue.service.SaveValueResult;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.CSSPlatformInfo;
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.IStringValue;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.utility.ldap.reader.IocFinder;
@@ -76,7 +79,7 @@ class SaveValueDialog extends Dialog {
 	/**
 	 * Text box that displays the value that will be saved.
 	 */
-	private Text _value;
+	private Text _valueTextField;
 	
 	/**
 	 * Table that displays the save value service results.
@@ -87,6 +90,11 @@ class SaveValueDialog extends Dialog {
 	 * The name of the process variable.
 	 */
 	private IProcessVariableWithSamples _pv;
+	
+	/**
+	 * The value to be saved.
+	 */
+	private String _value;
 
 	/**
 	 * The text field which displays the IOC name.
@@ -193,9 +201,9 @@ class SaveValueDialog extends Dialog {
 		// value
 		label = new Label(composite, SWT.NONE);
 		label.setText("Value:");
-		_value = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
-		_value.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		_value.setText(_pv.getSample(0).format());
+		_valueTextField = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
+		_valueTextField.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		_valueTextField.setText(_value);
 		
 		Label separator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
 		separator.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
@@ -256,7 +264,38 @@ class SaveValueDialog extends Dialog {
 			MessageDialog.openError(null, "Save Value", "The IOC of the process variable was not found.");
 			return CANCEL;
 		}
+		try {
+			IValue value = _pv.getSample(0);
+			_value = valueToString(value);
+		} catch (IllegalStateException e) {
+			// This happens if the _pv is actually a TextInputEditPart with
+			// the value type set to "double", but the text input cannot be
+			// parsed as a double value.
+			MessageDialog.openError(null, "Save Value", "The entered text is not a valid floating point value. If you want to enter text, make sure that the text input's Value Type property is set up correctly.");
+			return CANCEL;
+		}
 		return super.open();
+	}
+
+	/**
+	 * Converts the given value into a string representation suitable for
+	 * writing into a CA file.
+	 * 
+	 * @param value
+	 *            the value.
+	 * @return the string representation of the value.
+	 */
+	private String valueToString(final IValue value) {
+		if (value instanceof IStringValue) {
+			return ((IStringValue) value).getValue();
+		} else if (value instanceof IDoubleValue) {
+			IDoubleValue idv = (IDoubleValue) value;
+			double dv = idv.getValue();
+			int precision = ((INumericMetaData) idv.getMetaData()).getPrecision();
+			return SaveValueClient.formatForCaFile(dv, precision);
+		} else {
+			return value.format();
+		}
 	}
 
 	/**
@@ -326,7 +365,6 @@ class SaveValueDialog extends Dialog {
 		getButton(IDialogConstants.CANCEL_ID).setEnabled(false);
 		_resultsTable.setEnabled(true);
 		
-		final String pvValue = _value.getText();
 		Runnable r = new Runnable() {
 			private Registry _reg;
 
@@ -337,7 +375,7 @@ class SaveValueDialog extends Dialog {
 					for (int i = 0; i < _services.length; i++) {
 						String result;
 						try {
-							SaveValueResult srr = callService(_services[i], pvValue);
+							SaveValueResult srr = callService(_services[i], _value);
 							String replacedValue = srr.getReplacedValue();
 							if (replacedValue != null) {
 								result = "Success: old value " + replacedValue + " replaced with new value";
