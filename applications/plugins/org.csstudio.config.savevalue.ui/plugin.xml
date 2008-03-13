@@ -22,9 +22,9 @@
                enablesFor="1"
                icon="icon/save.gif"
                id="org.csstudio.config.savevalue.ui.SaveValueAction"
-               label="Save Value"
+               label="%SaveValueAction.Label"
                menubarPath="org.csstudio.popmenu/content"
-               tooltip="Save the value of this process variable">
+               tooltip="%SaveValueAction.Tooltip">
          </action>
       </objectContribution>
    </extension>
@@ -40,7 +40,7 @@
             category="org.csstudio.platform.ui.css.applications"
             class="org.csstudio.config.savevalue.ui.SaveValuePreferencePage"
             id="org.csstudio.config.savevalue.ui.PreferencePage"
-            name="Save Value">
+            name="%PreferencePage.Label">
       </page>
    </extension>
    <extension
@@ -49,7 +49,7 @@
             category="org.csstudio"
             class="org.csstudio.config.savevalue.ui.changelogview.ChangelogViewPart"
             id="org.csstudio.config.savevalue.ui.ChangelogView"
-            name="Save Value Changelog">
+            name="%ChangelogView.Name">
       </view>
    </extension>
 

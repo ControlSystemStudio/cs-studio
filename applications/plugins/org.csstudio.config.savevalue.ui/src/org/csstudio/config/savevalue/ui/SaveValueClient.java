@@ -48,7 +48,7 @@ final class SaveValueClient {
 	private static DecimalFormat createCaFileDecimalFormat() {
 		DecimalFormatSymbols dcf = new DecimalFormatSymbols(Locale.US);
 		dcf.setDecimalSeparator('.');
-		DecimalFormat result = new DecimalFormat("0.#", dcf);
+		DecimalFormat result = new DecimalFormat("0.#", dcf); //$NON-NLS-1$
 		return result;
 	}
 	

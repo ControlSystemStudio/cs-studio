@@ -46,7 +46,7 @@ public class SaveValuePreferencePage extends FieldEditorPreferencePage
 	public SaveValuePreferencePage() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("Save Value preferences.");
+		setDescription(Messages.SaveValuePreferencePage_DESCRIPTION);
 	}
 
 	/**
@@ -55,15 +55,15 @@ public class SaveValuePreferencePage extends FieldEditorPreferencePage
 	@Override
 	protected final void createFieldEditors() {
 		addField(new StringFieldEditor(PreferenceConstants.RMI_REGISTRY_SERVER,
-				"RMI Registry Server: ", getFieldEditorParent()));
+				Messages.SaveValuePreferencePage_RMI_FIELD_LABEL, getFieldEditorParent()));
 		
 		Group requiredServicesGroup = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
 		requiredServicesGroup.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 		requiredServicesGroup.setLayout(new RowLayout(SWT.VERTICAL));
-		requiredServicesGroup.setText("Required services");
-		addField(new BooleanFieldEditor(PreferenceConstants.EPIS_ORA_REQUIRED, "EPICS Ora", requiredServicesGroup));
-		addField(new BooleanFieldEditor(PreferenceConstants.DATABASE_REQUIRED, "Database", requiredServicesGroup));
-		addField(new BooleanFieldEditor(PreferenceConstants.CA_FILE_REQUIRED, "ca File", requiredServicesGroup));
+		requiredServicesGroup.setText(Messages.SaveValuePreferencePage_REQUIRED_SERVICES_GROUP);
+		addField(new BooleanFieldEditor(PreferenceConstants.EPIS_ORA_REQUIRED, Messages.EPICS_ORA_SERVICE_NAME, requiredServicesGroup));
+		addField(new BooleanFieldEditor(PreferenceConstants.DATABASE_REQUIRED, Messages.DATABASE_SERVICE_NAME, requiredServicesGroup));
+		addField(new BooleanFieldEditor(PreferenceConstants.CA_FILE_REQUIRED, Messages.CA_FILE_SERVICE_NAME, requiredServicesGroup));
 	}
 
 	/**

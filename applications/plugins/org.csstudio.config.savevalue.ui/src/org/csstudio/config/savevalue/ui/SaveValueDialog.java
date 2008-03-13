@@ -45,6 +45,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -142,21 +143,21 @@ class SaveValueDialog extends Dialog {
 	private void initializeServiceDescriptions() {
 		IPreferencesService prefs = Platform.getPreferencesService();		
 		_services = new SaveValueServiceDescription[] {
-			new SaveValueServiceDescription("SaveValue.EpicsOra",
+			new SaveValueServiceDescription("SaveValue.EpicsOra", //$NON-NLS-1$
 					prefs.getBoolean(Activator.PLUGIN_ID,
 							PreferenceConstants.EPIS_ORA_REQUIRED, false,
 							null),
-					"EPICS Ora"),
-			new SaveValueServiceDescription("SaveValue.Database",
+					Messages.EPICS_ORA_SERVICE_NAME),
+			new SaveValueServiceDescription("SaveValue.Database", //$NON-NLS-1$
 					prefs.getBoolean(Activator.PLUGIN_ID,
 							PreferenceConstants.DATABASE_REQUIRED, false,
 							null),
-					"Database"),
-			new SaveValueServiceDescription("SaveValue.caput",
+					Messages.DATABASE_SERVICE_NAME),
+			new SaveValueServiceDescription("SaveValue.caput", //$NON-NLS-1$
 					prefs.getBoolean(Activator.PLUGIN_ID,
 							PreferenceConstants.CA_FILE_REQUIRED, false,
 							null),
-					"ca File"),
+					Messages.CA_FILE_SERVICE_NAME),
 		};
 	}
 	
@@ -166,7 +167,7 @@ class SaveValueDialog extends Dialog {
 	@Override
 	protected final void configureShell(final Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("Save Value");
+		newShell.setText(Messages.SaveValueDialog_DIALOG_TITLE);
 	}
 
 	/**
@@ -186,21 +187,21 @@ class SaveValueDialog extends Dialog {
 		
 		// PV Name
 		Label label = new Label(composite, SWT.NONE);
-		label.setText("Process Variable:");
+		label.setText(Messages.SaveValueDialog_PV_FIELD_LABEL);
 		_processVariable = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		_processVariable.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_processVariable.setText(_pv.getName());
 		
 		// IOC Name
 		label = new Label(composite, SWT.NONE);
-		label.setText("IOC:");
+		label.setText(Messages.SaveValueDialog_IOC_FIELD_LABEL);
 		_ioc = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		_ioc.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_ioc.setText(_iocName);
 		
 		// value
 		label = new Label(composite, SWT.NONE);
-		label.setText("Value:");
+		label.setText(Messages.SaveValueDialog_VALUE_FIELD_LABEL);
 		_valueTextField = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		_valueTextField.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_valueTextField.setText(_value);
@@ -216,10 +217,10 @@ class SaveValueDialog extends Dialog {
 		_resultsTable.setHeaderVisible(true);
 		_resultsTable.setEnabled(false);
 		TableColumn stepColumn = new TableColumn(_resultsTable, SWT.LEFT);
-		stepColumn.setText("Step");
+		stepColumn.setText(Messages.SaveValueDialog_STEP_COLUMN);
 		stepColumn.setWidth(80);
 		TableColumn resultColumn = new TableColumn(_resultsTable, SWT.LEFT);
-		resultColumn.setText("Result");
+		resultColumn.setText(Messages.SaveValueDialog_RESULT_COLUMN);
 		resultColumn.setWidth(350);
 		
 		for (SaveValueServiceDescription service : _services) {
@@ -247,7 +248,7 @@ class SaveValueDialog extends Dialog {
 	 */
 	@Override
 	protected final void createButtonsForButtonBar(final Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, "Save", true);
+		createButton(parent, IDialogConstants.OK_ID, Messages.SaveValueDialog_SAVE_BUTTON, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
 	
@@ -257,11 +258,11 @@ class SaveValueDialog extends Dialog {
 	@Override
 	public final int open() {
 		if (!hasRequiredService()) {
-			MessageDialog.openError(null, "Save Value", "No required services are configured. Please selected at least one service as required in the preferences.");
+			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_NO_REQUIRED_SERVICES);
 			return CANCEL;
 		}
 		if (!findIoc()) {
-			MessageDialog.openError(null, "Save Value", "The IOC of the process variable was not found.");
+			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_IOC_NOT_FOUND);
 			return CANCEL;
 		}
 		try {
@@ -271,7 +272,7 @@ class SaveValueDialog extends Dialog {
 			// This happens if the _pv is actually a TextInputEditPart with
 			// the value type set to "double", but the text input cannot be
 			// parsed as a double value.
-			MessageDialog.openError(null, "Save Value", "The entered text is not a valid floating point value. If you want to enter text, make sure that the text input's Value Type property is set up correctly.");
+			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_TEXT_IS_NOT_A_DOUBLE);
 			return CANCEL;
 		}
 		return super.open();
@@ -305,13 +306,13 @@ class SaveValueDialog extends Dialog {
 	 *         otherwise.
 	 */
 	private boolean findIoc() {
-		_log.debug(this, "Trying to find IOC for process variable: " + _pv);
+		_log.debug(this, "Trying to find IOC for process variable: " + _pv); //$NON-NLS-1$
 		_iocName = IocFinder.getIoc(_pv);
 		if (_iocName == null) {
-			_log.error(this, "No IOC was found for PV: " + _pv);
+			_log.error(this, "No IOC was found for PV: " + _pv); //$NON-NLS-1$
 			return false;
 		}
-		_log.debug(this, "IOC found: " + _iocName);
+		_log.debug(this, "IOC found: " + _iocName); //$NON-NLS-1$
 		return true;
 	}
 	
@@ -369,34 +370,36 @@ class SaveValueDialog extends Dialog {
 			private Registry _reg;
 
 			public void run() {
-				final boolean[] success = new boolean[3];
+				final boolean[] success = new boolean[_services.length];
 				try {
 					locateRmiRegistry();
 					for (int i = 0; i < _services.length; i++) {
 						String result;
+						success[i] = false;
 						try {
 							SaveValueResult srr = callService(_services[i], _value);
+							success[i] = true;
 							String replacedValue = srr.getReplacedValue();
 							if (replacedValue != null) {
-								result = "Success: old value " + replacedValue + " replaced with new value";
+								result = NLS.bind(Messages.SaveValueDialog_SUCCESS_REPLACED, replacedValue);
 							} else {
-								result = "Success: new entry added to save button file";
+								result = Messages.SaveValueDialog_SUCCESS_NEW_ENTRY;
 							}
 						} catch (RemoteException e) {
 							Throwable cause = e.getCause();
 							if (cause instanceof SocketTimeoutException) {
-								_log.warn(this, "Remote call to " + _services[i] + " timed out");
-								result = "Timeout";
+								_log.warn(this, "Remote call to " + _services[i] + " timed out"); //$NON-NLS-1$ //$NON-NLS-2$
+								result = Messages.SaveValueDialog_FAILED_TIMEOUT;
 							} else {
-								_log.error(this, "Remote call to " + _services[i] + " failed with RemoteException", e);
-								result = "Connection error: " + e.getMessage();
+								_log.error(this, "Remote call to " + _services[i] + " failed with RemoteException", e); //$NON-NLS-1$ //$NON-NLS-2$
+								result = Messages.SaveValueDialog_FAILED_WITH_REMOTE_EXCEPTION + e.getMessage();
 							}
 						} catch (SaveValueServiceException e) {
-							_log.warn(this, "Save Value service " + _services[i] + " reported an error", e);
-							result = "Service error: " + e.getMessage();
+							_log.warn(this, "Save Value service " + _services[i] + " reported an error", e); //$NON-NLS-1$ //$NON-NLS-2$
+							result = Messages.SaveValueDialog_FAILED_WITH_SERVICE_ERROR + e.getMessage();
 						} catch (NotBoundException e) {
-							_log.warn(this, "Save value service " + _services[i] + " is not bound in RMI registry");
-							result = "Service not available";
+							_log.warn(this, "Save value service " + _services[i] + " is not bound in RMI registry"); //$NON-NLS-1$ //$NON-NLS-2$
+							result = Messages.SaveValueDialog_NOT_BOUND;
 						}
 						final int index = i;
 						final String resultCopy = result;
@@ -404,7 +407,6 @@ class SaveValueDialog extends Dialog {
 							public void run() {
 								TableItem item = _resultsTable.getItem(index);
 								item.setText(1, resultCopy);
-								success[index] = resultCopy.startsWith("Success");
 								int color = success[index] ? SWT.COLOR_DARK_GREEN
 										: (_services[index].isRequired()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GRAY;
 								item.setForeground(Display.getCurrent().getSystemColor(color));
@@ -412,7 +414,7 @@ class SaveValueDialog extends Dialog {
 							}
 						});
 					}
-					_log.debug(this, "Finished calling remote Save Value services");
+					_log.debug(this, "Finished calling remote Save Value services"); //$NON-NLS-1$
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							boolean overallSuccess = true;
@@ -422,10 +424,10 @@ class SaveValueDialog extends Dialog {
 								}
 							}
 							if (overallSuccess) {
-								_resultLabel.setText("The value was saved successfully.");
+								_resultLabel.setText(Messages.SaveValueDialog_RESULT_SUCCESS);
 								_resultImage.setImage(getInfoImage());
 							} else {
-								_resultLabel.setText("An error occurred. The value was NOT saved!");
+								_resultLabel.setText(Messages.SaveValueDialog_RESULT_ERROR_VALUE_NOT_SAVED);
 								_resultImage.setImage(getErrorImage());
 							}
 							_resultLabel.setVisible(true);
@@ -435,12 +437,12 @@ class SaveValueDialog extends Dialog {
 						}
 					});
 				} catch (RemoteException e) {
-					_log.error(this, "Could not connect to RMI registry", e);
+					_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
 					final String message = e.getMessage();
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-							MessageDialog.openError(null, "Save Value",
-									"Could not connect to RMI registry: "
+							MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE,
+									Messages.SaveValueDialog_ERRMSG_NO_RMI_REGISTRY
 											+ message);
 							SaveValueDialog.this.close();
 						}
@@ -457,7 +459,7 @@ class SaveValueDialog extends Dialog {
 						Activator.PLUGIN_ID,
 						PreferenceConstants.RMI_REGISTRY_SERVER,
 						null, null);
-				_log.debug(this, "Connecting to RMI registry.");
+				_log.debug(this, "Connecting to RMI registry."); //$NON-NLS-1$
 				_reg = LocateRegistry.getRegistry(registryHost);
 			}
 
@@ -472,7 +474,7 @@ class SaveValueDialog extends Dialog {
 			private SaveValueResult callService(final SaveValueServiceDescription serviceDescr,
 					final String pvValue)
 					throws SaveValueServiceException, RemoteException, NotBoundException {
-				_log.debug(this, "Calling save value service: " + serviceDescr);
+				_log.debug(this, "Calling save value service: " + serviceDescr); //$NON-NLS-1$
 				SaveValueService service = (SaveValueService) _reg.lookup(serviceDescr.getRmiName());
 				SaveValueRequest req = new SaveValueRequest();
 				req.setPvName(_pv.getName());

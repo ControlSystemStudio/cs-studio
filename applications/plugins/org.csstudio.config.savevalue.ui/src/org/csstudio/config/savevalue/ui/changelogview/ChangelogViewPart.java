@@ -31,6 +31,7 @@ import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.config.savevalue.ui.Activator;
+import org.csstudio.config.savevalue.ui.Messages;
 import org.csstudio.config.savevalue.ui.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
@@ -107,13 +108,13 @@ public class ChangelogViewPart extends ViewPart {
 		iocBar.setLayout(new RowLayout(SWT.HORIZONTAL));
 		
 		Label iocLabel = new Label(iocBar, SWT.NONE);
-		iocLabel.setText("IOC:");
+		iocLabel.setText(Messages.ChangelogViewPart_IOC_FIELD_LABEL);
 		
 		final Text iocText = new Text(iocBar, SWT.BORDER);
 		iocText.setLayoutData(new RowData(100, SWT.DEFAULT));
 		
 		Button readChangelog = new Button(iocBar, SWT.PUSH);
-		readChangelog.setText("Get Changelog");
+		readChangelog.setText(Messages.ChangelogViewPart_GET_CHANGELOG_BUTTON);
 		readChangelog.addSelectionListener(new SelectionListener() {
 
 			public void widgetDefaultSelected(final SelectionEvent e) {
@@ -134,7 +135,7 @@ public class ChangelogViewPart extends ViewPart {
 						try {
 							locateRmiRegistry();
 							ChangelogService cs = (ChangelogService) _reg
-									.lookup("SaveValue.changelog");
+									.lookup("SaveValue.changelog"); //$NON-NLS-1$
 							final ChangelogEntry[] entries = cs.readChangelog(ioc);
 							Display.getDefault().asyncExec(new Runnable() {
 								public void run() {
@@ -142,30 +143,30 @@ public class ChangelogViewPart extends ViewPart {
 								}
 							});
 						} catch (RemoteException e) {
-							_log.error(this, "Could not connect to RMI registry", e);
+							_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
 							final String message = e.getMessage();
 							Display.getDefault().asyncExec(new Runnable() {
 								public void run() {
-									MessageDialog.openError(null, "Changelog",
-											"Could not connect to RMI registry: "
+									MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
+											Messages.ChangelogViewPart_ERRMSG_RMI_REGISTRY
 													+ message);
 								}
 							});
 						} catch (NotBoundException e) {
-							_log.error(this, "Changelog Service not bound in RMI registry", e);
+							_log.error(this, "Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
 							Display.getDefault().asyncExec(new Runnable() {
 								public void run() {
-									MessageDialog.openError(null, "Changelog",
-											"The changelog service is not available.");
+									MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
+											Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE);
 								}
 							});
 						} catch (SaveValueServiceException e) {
-							_log.error(this, "Server reported an rrror reading the changelog", e);
+							_log.error(this, "Server reported an rrror reading the changelog", e); //$NON-NLS-1$
 							final String message = e.getMessage();
 							Display.getDefault().asyncExec(new Runnable() {
 								public void run() {
-									MessageDialog.openError(null, "Changelog",
-											"Error reading the changelog: "
+									MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
+											Messages.ChangelogViewPart_ERRMSG_READ_ERROR
 													+ message);
 								}
 							});
@@ -181,7 +182,7 @@ public class ChangelogViewPart extends ViewPart {
 								Activator.PLUGIN_ID,
 								PreferenceConstants.RMI_REGISTRY_SERVER,
 								null, null);
-						_log.debug(this, "Connecting to RMI registry.");
+						_log.debug(this, "Connecting to RMI registry."); //$NON-NLS-1$
 						_reg = LocateRegistry.getRegistry(registryHost);
 					}
 				};
@@ -213,11 +214,11 @@ public class ChangelogViewPart extends ViewPart {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
-		addColumn(table, COL_PV, "PV", 180);
-		addColumn(table, COL_VALUE, "Value", 100);
-		addColumn(table, COL_USER, "User", 150);
-		addColumn(table, COL_HOST, "Host", 150);
-		addColumn(table, COL_MODIFIED, "Date Modified", 150);
+		addColumn(table, COL_PV, Messages.ChangelogViewPart_PV_COLUMN, 180);
+		addColumn(table, COL_VALUE, Messages.ChangelogViewPart_VALUE_COLUMN, 100);
+		addColumn(table, COL_USER, Messages.ChangelogViewPart_USER_COLUMN, 150);
+		addColumn(table, COL_HOST, Messages.ChangelogViewPart_HOST_COLUMN, 150);
+		addColumn(table, COL_MODIFIED, Messages.ChangelogViewPart_DATE_MODIFIED_COLUMN, 150);
 	}
 	
 	/**

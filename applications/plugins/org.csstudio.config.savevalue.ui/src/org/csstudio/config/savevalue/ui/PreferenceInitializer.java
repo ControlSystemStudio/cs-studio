@@ -39,7 +39,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	@Override
 	public final void initializeDefaultPreferences() {
 		Preferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
-		prefs.put(PreferenceConstants.RMI_REGISTRY_SERVER, "localhost");
+		prefs.put(PreferenceConstants.RMI_REGISTRY_SERVER, "localhost"); //$NON-NLS-1$
 		prefs.putBoolean(PreferenceConstants.EPIS_ORA_REQUIRED, false);
 		prefs.putBoolean(PreferenceConstants.DATABASE_REQUIRED, false);
 		prefs.putBoolean(PreferenceConstants.CA_FILE_REQUIRED, true);

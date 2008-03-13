@@ -38,20 +38,20 @@ public final class PreferenceConstants {
 	/**
 	 * Preference id for the RMI Registry Server preference. 
 	 */
-	public static final String RMI_REGISTRY_SERVER = "RmiRegistryServer";
+	public static final String RMI_REGISTRY_SERVER = "RmiRegistryServer"; //$NON-NLS-1$
 	
 	/**
 	 * Preference id for the Epics Ora Required preference.
 	 */
-	public static final String EPIS_ORA_REQUIRED = "EpicsOraRequired";
+	public static final String EPIS_ORA_REQUIRED = "EpicsOraRequired"; //$NON-NLS-1$
 	
 	/**
 	 * Preference id for the Database Required preference.
 	 */
-	public static final String DATABASE_REQUIRED = "DatabaseRequired";
+	public static final String DATABASE_REQUIRED = "DatabaseRequired"; //$NON-NLS-1$
 	
 	/**
 	 * Preference id for the Ca File Required preference.
 	 */
-	public static final String CA_FILE_REQUIRED = "CaFileRequired";
+	public static final String CA_FILE_REQUIRED = "CaFileRequired"; //$NON-NLS-1$
 }

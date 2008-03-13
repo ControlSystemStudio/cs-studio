@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.namespace.utility,
  org.csstudio.config.savevalue.service
 Eclipse-LazyStart: true
+Bundle-Localization: plugin

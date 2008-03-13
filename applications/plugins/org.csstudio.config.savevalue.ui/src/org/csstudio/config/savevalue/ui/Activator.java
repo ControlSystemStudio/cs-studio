@@ -32,7 +32,7 @@ public class Activator extends AbstractCssUiPlugin {
 	/**
 	 * The plug-in ID.
 	 */
-	public static final String PLUGIN_ID = "org.csstudio.config.savevalue.ui";
+	public static final String PLUGIN_ID = "org.csstudio.config.savevalue.ui"; //$NON-NLS-1$
 
 	/**
 	 * The shared instance.
