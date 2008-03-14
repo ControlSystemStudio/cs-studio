@@ -23,6 +23,8 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import java.util.Map;
 
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
@@ -33,6 +35,7 @@ import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetProperty;
+import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.util.CustomMediaFactory;
@@ -402,16 +405,58 @@ public final class TextInputEditPart extends AbstractWidgetEditPart implements I
 	 * {@inheritDoc}
 	 */
 	public IValue getSample(final int index) {
-		// simply take the input as a string value
-		String value = ((TextInputModel) getWidgetModel()).getInputText();
-		ITimestamp timestamp = TimestampFactory.now();
-		IValue result = ValueFactory.createStringValue(timestamp, ValueFactory
-				.createOKSeverity(), "", Quality.Original,
-				new String[] { value });
+		if (index != 0) {
+			throw new IndexOutOfBoundsException(index + " is not a valid sample index");
+		}
 		
+		TextInputModel model = (TextInputModel) getWidgetModel();
+		int type = model.getType();
+		ITimestamp timestamp = TimestampFactory.now();
+	
+		// Note: the IValue implementations require a Severity, otherwise the
+		// format() method will throw a NullPointerException. We don't really
+		// have a severity here, so we fake one. This may cause problems for
+		// clients who rely on getting a meaningful severity from the IValue.
+		ISeverity severity = ValueFactory.createOKSeverity();
+		
+		IValue result;
+		switch (TextTypeEnum.getEnumForIndex(type)) {
+		case DOUBLE:
+			// try to convert the input text to a double
+			double value = 0.0;
+			try {
+				value = Double.parseDouble(model.getInputText());
+			} catch (NumberFormatException e) {
+				// The interface IProcessVariableWithSamples doesn't define
+				// what to do in case of error and there aren't any declared
+				// checked exceptions for this method. So, the best we can
+				// do is to rethrow an unchecked exception and hope that the
+				// caller will handle it.
+				throw new IllegalStateException("Text input type is Double," +
+						" but text is not a floating point value.", e);
+			}
+			// Have to create a meta data object because otherwise DoubleValue's
+			// format() method might throw a NullPointerException :(
+			int precision = model.getPrecision();
+			INumericMetaData md = ValueFactory.createNumericMetaData(0, 0, 0,
+					0, 0, 0, precision, "");
+	
+			result = ValueFactory.createDoubleValue(timestamp, severity, null,
+					md, Quality.Original, new double[] { value });
+			break;
+		case TEXT:
+		case HEX:    // hex and alias are undocumented, so treating them
+		case ALIAS:  // like text for now
+			result = ValueFactory.createStringValue(timestamp, severity, null,
+					Quality.Original, new String[] { model.getInputText() });
+			break;
+		default:
+			throw new AssertionError("Never get here");
+		}
+	
 		return result;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
