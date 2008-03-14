@@ -21,7 +21,16 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.platform.data.IValue.Quality;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.sds.components.model.SimpleSliderModel;
 import org.csstudio.sds.components.ui.internal.figures.SimpleSliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
@@ -40,7 +49,7 @@ import org.eclipse.ui.progress.UIJob;
  * @author Sven Wende & Stefan Hofer
  * 
  */
-public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
+public final class SimpleSliderEditPart extends AbstractWidgetEditPart implements IProcessVariableWithSamples {
 
 	/**
 	 * A UI job, which is used to reset the manual value of the slider figure
@@ -222,5 +231,42 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(SimpleSliderModel.PROP_ORIENTATION,
 				orientationHandler);
 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IValue getSample(final int index) {
+		if (index != 0) {
+			throw new IndexOutOfBoundsException(index + " is not a valid sample index");
+		}
+		
+		SimpleSliderModel model = (SimpleSliderModel) getWidgetModel();
+		double value = model.getValue();
+		int precision = model.getPrecision();
+		ITimestamp timestamp = TimestampFactory.now();
+		
+		// Note: the IValue implementations require a Severity, otherwise the
+		// format() method will throw a NullPointerException. We don't really
+		// have a severity here, so we fake one. This may cause problems for
+		// clients who rely on getting a meaningful severity from the IValue.
+		ISeverity severity = ValueFactory.createOKSeverity();
+		
+		// Fake some metadata because it is required for an IValue.
+		INumericMetaData md = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0,
+				0, precision, "");
+		
+		IDoubleValue result = ValueFactory.createDoubleValue(timestamp,
+				severity, null, md, Quality.Original, new double[] { value });
+
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int size() {
+		// always one sample
+		return 1;
 	}
 }

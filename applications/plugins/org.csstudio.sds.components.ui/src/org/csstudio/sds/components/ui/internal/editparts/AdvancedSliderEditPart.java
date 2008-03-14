@@ -21,8 +21,19 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.ILongValue;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.platform.data.IValue.Quality;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.sds.components.model.AdvancedSliderModel;
+import org.csstudio.sds.components.model.SimpleSliderModel;
 import org.csstudio.sds.components.ui.internal.figures.AdvancedSliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
@@ -40,7 +51,7 @@ import org.eclipse.ui.progress.UIJob;
  * @author Sven Wende & Stefan Hofer
  * 
  */
-public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
+public final class AdvancedSliderEditPart extends AbstractWidgetEditPart implements IProcessVariableWithSamples {
 
 	/**
 	 * A UI job, which is used to reset the manual value of the slider figure
@@ -166,5 +177,41 @@ public final class AdvancedSliderEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(AdvancedSliderModel.PROP_ORIENTATION,
 				orientationHandler);
 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IValue getSample(final int index) {
+		if (index != 0) {
+			throw new IndexOutOfBoundsException(index + " is not a valid sample index");
+		}
+		
+		AdvancedSliderModel model = (AdvancedSliderModel) getWidgetModel();
+		int value = model.getValue();
+		ITimestamp timestamp = TimestampFactory.now();
+		
+		// Note: the IValue implementations require a Severity, otherwise the
+		// format() method will throw a NullPointerException. We don't really
+		// have a severity here, so we fake one. This may cause problems for
+		// clients who rely on getting a meaningful severity from the IValue.
+		ISeverity severity = ValueFactory.createOKSeverity();
+		
+		// Fake some metadata because it is required for an IValue.
+		INumericMetaData md = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0,
+				0, 0, "");
+		
+		ILongValue result = ValueFactory.createLongValue(timestamp,
+				severity, null, md, Quality.Original, new long[] { value });
+
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int size() {
+		// always one sample
+		return 1;
 	}
 }
