@@ -33,6 +33,7 @@ import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
@@ -294,6 +295,9 @@ class SaveValueDialog extends Dialog {
 			double dv = idv.getValue();
 			int precision = ((INumericMetaData) idv.getMetaData()).getPrecision();
 			return SaveValueClient.formatForCaFile(dv, precision);
+		} else if (value instanceof ILongValue) {
+			ILongValue lv = (ILongValue) value;
+			return Long.toString(lv.getValue());
 		} else {
 			return value.format();
 		}
