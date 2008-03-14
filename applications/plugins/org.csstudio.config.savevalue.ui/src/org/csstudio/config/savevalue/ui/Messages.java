@@ -16,6 +16,7 @@ public class Messages extends NLS {
 	public static String ChangelogViewPart_TITLE;
 	public static String ChangelogViewPart_USER_COLUMN;
 	public static String ChangelogViewPart_VALUE_COLUMN;
+	public static String ChangelogViewPart_GET_IOC_JOB;
 	public static String DATABASE_SERVICE_NAME;
 	public static String EPICS_ORA_SERVICE_NAME;
 	public static String SaveValueDialog_DIALOG_TITLE;

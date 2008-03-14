@@ -26,6 +26,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Collections;
+import java.util.List;
 
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
@@ -34,7 +36,17 @@ import org.csstudio.config.savevalue.ui.Activator;
 import org.csstudio.config.savevalue.ui.Messages;
 import org.csstudio.config.savevalue.ui.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.reader.ErgebnisListe;
+import org.csstudio.utility.ldap.reader.IocFinder;
+import org.csstudio.utility.ldap.reader.LDAPReader;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
@@ -46,6 +58,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -53,6 +66,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 /**
  * @author Joerg Rathlev
@@ -110,8 +124,29 @@ public class ChangelogViewPart extends ViewPart {
 		Label iocLabel = new Label(iocBar, SWT.NONE);
 		iocLabel.setText(Messages.ChangelogViewPart_IOC_FIELD_LABEL);
 		
-		final Text iocText = new Text(iocBar, SWT.BORDER);
+		final Combo iocText = new Combo(iocBar, SWT.BORDER);
 		iocText.setLayoutData(new RowData(100, SWT.DEFAULT));
+		
+		IWorkbenchSiteProgressService progressService =
+			(IWorkbenchSiteProgressService) getSite().getAdapter(
+					IWorkbenchSiteProgressService.class);
+		Job job = new Job(Messages.ChangelogViewPart_GET_IOC_JOB) {
+			@Override
+			protected IStatus run(final IProgressMonitor monitor) {
+				monitor.beginTask(Messages.ChangelogViewPart_GET_IOC_JOB,
+						IProgressMonitor.UNKNOWN);
+				final List<String> iocs = IocFinder.getIocList();
+				Collections.sort(iocs);
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						iocText.setItems(iocs.toArray(new String[iocs.size()]));
+					}
+				});
+				monitor.done();
+				return new Status(IStatus.OK, Activator.PLUGIN_ID, "");
+			}
+		};
+		progressService.schedule(job, 0, true);
 		
 		Button readChangelog = new Button(iocBar, SWT.PUSH);
 		readChangelog.setText(Messages.ChangelogViewPart_GET_CHANGELOG_BUTTON);
