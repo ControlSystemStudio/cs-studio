@@ -21,28 +21,22 @@
  */
  package org.csstudio.alarm.treeView.model;
 
-import java.net.URL;
 
 import org.csstudio.platform.model.IProcessVariable;
-import org.eclipse.core.runtime.PlatformObject;
 
 /**
  * A tree node that represents a process variable.
  * 
  * @author Joerg Rathlev
  */
-public class ProcessVariableNode extends PlatformObject 
+public class ProcessVariableNode extends AbstractAlarmTreeNode 
 		implements IAlarmTreeNode, IProcessVariable {
 	
 	private SubtreeNode parent;
 	private String name;
 	private Alarm activeAlarm;
 	private Alarm highestUnacknowledgedAlarm;
-	private String cssAlarmDisplay;
 	private final Alarm NO_ALARM;
-	private URL helpPage;
-	private String helpGuidance;
-	
 	/**
 	 * Creates a new node for a process variable as a child of the specified
 	 * parent.
@@ -162,56 +156,8 @@ public class ProcessVariableNode extends PlatformObject
 		}
 	}
 	
-	/**
-	 * Sets the CSS alarm display for this node.
-	 * @param display the CSS alarm display for this node.
-	 */
-	public void setCssAlarmDisplay(String display) {
-		this.cssAlarmDisplay = display;
-	}
-	
-	/**
-	 * Returns the CSS alarm display for this node.
-	 * @return the CSS alarm display for this node.
-	 */
-	public String getCssAlarmDisplay() {
-		return cssAlarmDisplay;
-	}
-	
 	@Override
 	public String toString() {
 		return name;
-	}
-
-	/**
-	 * Sets a help page for this node.
-	 * @param helpPage the help page URI.
-	 */
-	public void setHelpPage(URL helpPage) {
-		this.helpPage = helpPage;
-	}
-	
-	/**
-	 * Returns this node's help page.
-	 * @return this node's help page.
-	 */
-	public URL getHelpPage() {
-		return helpPage;
-	}
-
-	/**
-	 * Sets a help guidance string for this node.
-	 * @param helpGuidance a help guidance string.
-	 */
-	public void setHelpGuidance(String helpGuidance) {
-		this.helpGuidance = helpGuidance;
-	}
-	
-	/**
-	 * Returns this node's help guidance string.
-	 * @return this node's help guidance string.
-	 */
-	public String getHelpGuidance() {
-		return helpGuidance;
 	}
 }

@@ -33,7 +33,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * 
  * @author Joerg Rathlev
  */
-public class SubtreeNode implements IAdaptable, IAlarmTreeNode {
+public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IAlarmTreeNode {
 	
 	private List<IAlarmTreeNode> children;
 	private SubtreeNode parent;
@@ -41,7 +41,6 @@ public class SubtreeNode implements IAdaptable, IAlarmTreeNode {
 	private Severity highestChildSeverity;
 	private Severity highestUnacknowledgedChildSeverity;
 
-	
 	/**
 	 * Creates a new node with the specified parent. The node will register
 	 * itself as a child at the parent node.
@@ -304,5 +303,4 @@ public class SubtreeNode implements IAdaptable, IAlarmTreeNode {
 			}
 		}
 	}
-
 }

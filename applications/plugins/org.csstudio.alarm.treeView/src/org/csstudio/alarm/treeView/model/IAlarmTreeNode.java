@@ -21,6 +21,8 @@
  */
  package org.csstudio.alarm.treeView.model;
 
+import java.net.URL;
+
 
 /**
  * A node in the alarm tree.
@@ -65,5 +67,30 @@ public interface IAlarmTreeNode {
 	 * Returns {@code true} if there is an alarm for this node or its children.
 	 */
 	public boolean hasAlarm();
+
+	/**
+	 * Returns the URL of this node's help page.
+	 * 
+	 * @return the URL of this node's help page, or <code>null</code> if this
+	 *         node does not have a help page.
+	 */
+	public URL getHelpPage();
+
+	/**
+	 * Returns this node's help guidance string.
+	 * 
+	 * @return this node's help guidance string, or <code>null</code> if no
+	 *         help guidance string is configured for this node.
+	 */
+	public String getHelpGuidance();
+	
+	/**
+	 * Returns the name of the CSS-SDS alarm display file configured for this
+	 * node.
+	 * 
+	 * @return the name of this node's alarm display file, or <code>null</code>
+	 *         if no alarm display is configured for this node.
+	 */
+	public String getCssAlarmDisplay();
 
 }
