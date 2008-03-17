@@ -23,6 +23,7 @@
 package org.csstudio.utility.ldap.reader;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -134,6 +135,34 @@ public final class IocFinder {
         } else {
         	return null;
         }
+	}
+	
+	/**
+	 * Returns a list with the names of all IOCs configured in the LDAP
+	 * directory.
+	 * 
+	 * @return a list with the names of all IOCS.
+	 */
+	public static List<String> getIocList() {
+		final List<String> result = new ArrayList<String>();
+		final ErgebnisListe el = new ErgebnisListe();
+		LDAPReader lr = new LDAPReader("ou=EpicsControls", "econ=*", el);
+		lr.addJobChangeListener(new JobChangeAdapter() {
+			public void done(final IJobChangeEvent event) {
+				if (event.getResult().isOK()) {
+					for (String ioc : el.getAnswer()) {
+						result.add(ldapResultToControllerName(ioc));
+					}
+				}
+			}
+		});
+		lr.schedule();
+		try {
+			lr.join();
+		} catch (InterruptedException e1) {
+			// ignore
+		}
+		return result;
 	}
 
 	/**
