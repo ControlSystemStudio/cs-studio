@@ -21,6 +21,7 @@
  */
 package org.csstudio.platform.ui.util;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -33,10 +34,10 @@ import org.osgi.framework.Bundle;
 
 /**
  * Utility class, which provides access to images. Images returned by this
- * utility are managed by a ImageRegistry and must not explicitly be disposed, when they are
- * not used anymore.
+ * utility are managed by a ImageRegistry and must not explicitly be disposed,
+ * when they are not used anymore.
  * 
- * @see {@link ImageRegistry} 
+ * @see {@link ImageRegistry}
  * 
  * @author Sven Wende
  * 
@@ -73,11 +74,41 @@ public final class ImageUtil {
 	}
 
 	/**
-	 * Gets an ImageDescriptor for an image resource which is supposed to reside in the
-	 * plugin with the specified pluginId under the specified path.
+	 * Gets an ImageDescriptor for an image resource which is supposed to reside
+	 * in the plugin with the specified pluginId under the specified path.
 	 * 
-	 * @param pluginId the ID of the plugin that contains the image resource
-	 * @param path the path
+	 * @param pluginId
+	 *            the ID of the plugin that contains the image resource
+	 * @param fullPath
+	 *            the path
+	 * @return an ImageDescriptor or null
+	 */
+	public ImageDescriptor getImageDescriptorFromFile(final String fullPath) {
+		ImageDescriptor descriptor = _imageRegistry.getDescriptor(fullPath);
+
+		if (descriptor == null) {
+			try {
+				descriptor = ImageDescriptor.createFromURL(new File(fullPath).toURL());
+			} catch (MalformedURLException e) {
+				descriptor = null;
+			}
+
+			if (descriptor != null) {
+				_imageRegistry.put(fullPath, descriptor);
+			}
+		}
+
+		return descriptor;
+	}
+
+	/**
+	 * Gets an ImageDescriptor for an image resource which is supposed to reside
+	 * in the plugin with the specified pluginId under the specified path.
+	 * 
+	 * @param pluginId
+	 *            the ID of the plugin that contains the image resource
+	 * @param path
+	 *            the path
 	 * @return an ImageDescriptor or null
 	 */
 	public ImageDescriptor getImageDescriptor(final String pluginId,
@@ -119,19 +150,20 @@ public final class ImageUtil {
 	 *         found
 	 * @since 3.0
 	 */
-	private static ImageDescriptor imageDescriptorFromPlugin(final String pluginId,
-			final String imageFilePath) {
+	private static ImageDescriptor imageDescriptorFromPlugin(
+			final String pluginId, final String imageFilePath) {
 		if (pluginId == null || imageFilePath == null) {
 			throw new IllegalArgumentException();
 		}
 
 		// if the bundle is not ready then there is no image
 		Bundle bundle = Platform.getBundle(pluginId);
-		
+
 		// look for the image (this will check both the plugin and fragment
 		// folders
-		URL fullPathString = FileLocator.find(bundle, new Path(imageFilePath), null);
-		
+		URL fullPathString = FileLocator.find(bundle, new Path(imageFilePath),
+				null);
+
 		if (fullPathString == null) {
 			try {
 				fullPathString = new URL(imageFilePath);

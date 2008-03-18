@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.internal.simpledal;
+package org.csstudio.platform.internal.simpledal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,19 +62,12 @@ import org.epics.css.dal.spi.PropertyFactory;
  * 
  * TODO: Ping-Funktion
  * 
- * 
- * TODO: SDS auf diesen Service umstellen
- * 
  */
 public class ProcessVariableConnectionService implements
 		IProcessVariableConnectionService {
 
 	private Map<MapKey, AbstractConnector> _connectors;
 
-	/**
-	 * All DAL connectors that have been created.
-	 */
-	// private Map<IProcessVariableAddress, DalConnector> _dalConnectors;
 	/**
 	 * A cleanup thread which disposes unnecessary connections.
 	 */
@@ -100,7 +93,7 @@ public class ProcessVariableConnectionService implements
 
 		return _instance;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -642,14 +635,13 @@ public class ProcessVariableConnectionService implements
 		AbstractConnector result = null;
 		if (pv.getControlSystem() == ControlSystemEnum.LOCAL) {
 			result = createConnectorForLocal(pv, valueType);
-		} else if (pv.getControlSystem().isSupportedByDAL() || !pv.getControlSystem().isSupportedByDAL()) {
+		} else if (pv.getControlSystem().isSupportedByDAL()
+				|| !pv.getControlSystem().isSupportedByDAL()) {
 			result = createConnectorForDal(pv, valueType);
 		} else {
 			result = new DalConnector(pv, valueType);
-			result.forwardError("Control System "
-					+ pv.getControlSystem() + " is not supported yet.");
-//			throw new IllegalArgumentException("Control System "
-//					+ pv.getControlSystem() + " is not supported yet.");
+			result.forwardError("Control System " + pv.getControlSystem()
+					+ " is not supported yet.");
 		}
 
 		return result;
@@ -774,7 +766,7 @@ public class ProcessVariableConnectionService implements
 
 		connector.setDalProperty(null);
 
-		if (property!=null && !property.isDestroyed()) {
+		if (property != null && !property.isDestroyed()) {
 			// remove link listener
 			property.removeLinkListener(connector);
 
@@ -821,7 +813,6 @@ public class ProcessVariableConnectionService implements
 				} catch (DataExchangeException e) {
 					e.printStackTrace();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				// **** Workarround (Remove, when DAL is fixed)************>
@@ -1173,6 +1164,25 @@ public class ProcessVariableConnectionService implements
 			return result;
 		}
 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isSettable(IProcessVariableAddress pv) {
+		boolean result = false;
+		try {
+			DynamicValueProperty p = createOrGetDalProperty(pv,
+					ValueType.OBJECT.getDalType());
+
+			// DAL encapsulates the detection of the current user internally
+			// (probably via global system properties)
+			result = true;
+		} catch (Exception e) {
+			// nothing to do
+		}
+		
+		return result;
 	}
 
 }

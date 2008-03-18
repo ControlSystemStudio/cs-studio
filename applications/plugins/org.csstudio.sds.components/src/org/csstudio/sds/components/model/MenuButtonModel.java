@@ -27,7 +27,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
 import org.csstudio.sds.model.optionEnums.TextAlignmentEnum;
 import org.csstudio.sds.model.properties.FontProperty;
-import org.csstudio.sds.model.properties.OptionProperty;
+import org.csstudio.sds.model.properties.ArrayOptionProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -83,7 +83,7 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 		addProperty(PROP_FONT, new FontProperty("Font",
 				WidgetPropertyCategory.Display, new FontData(
 						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
-		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
+		addProperty(PROP_TEXT_ALIGNMENT, new ArrayOptionProperty("Text Alignment", 
 				WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
 //		addProperty(PROP_ACTIONDATA, new ActionDataProperty("Action Data",
 //				WidgetPropertyCategory.Behaviour, new ActionData()));

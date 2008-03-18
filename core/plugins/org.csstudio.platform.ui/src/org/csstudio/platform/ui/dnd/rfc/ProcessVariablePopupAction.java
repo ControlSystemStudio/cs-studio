@@ -22,7 +22,9 @@
  package org.csstudio.platform.ui.dnd.rfc;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
@@ -52,9 +54,13 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
 	}
 
 	public void run(IAction action) {
+		Set<IProcessVariableAddress> pvs = new HashSet<IProcessVariableAddress>();
+		
 		for (IProcessVariableAdressProvider provider : _pvAdressListProviders) {
-			handlePvs(provider.getProcessVariableAdresses());
+			pvs.addAll(provider.getProcessVariableAdresses());
 		}
+		
+		handlePvs(pvs);
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
@@ -72,6 +78,6 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
 
 	}
 
-	protected abstract void handlePvs(List<IProcessVariableAddress> pvs);
+	protected abstract void handlePvs(Set<IProcessVariableAddress> pvs);
 
 }

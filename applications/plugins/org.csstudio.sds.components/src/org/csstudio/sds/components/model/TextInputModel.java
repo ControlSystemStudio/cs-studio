@@ -28,7 +28,7 @@ import org.csstudio.sds.model.optionEnums.TextTypeEnum;
 import org.csstudio.sds.model.properties.BooleanProperty;
 import org.csstudio.sds.model.properties.FontProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.OptionProperty;
+import org.csstudio.sds.model.properties.ArrayOptionProperty;
 import org.csstudio.sds.model.properties.StringProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -112,10 +112,10 @@ public final class TextInputModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, "")); //$NON-NLS-1$
 		addProperty(PROP_FONT, new FontProperty("Font",
 				WidgetPropertyCategory.Display, new FontData("Arial", 8, SWT.NONE))); //$NON-NLS-1$
-		addProperty(PROP_TEXT_ALIGNMENT, new OptionProperty("Text Alignment", 
+		addProperty(PROP_TEXT_ALIGNMENT, new ArrayOptionProperty("Text Alignment", 
 				WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
-		addProperty(PROP_TYPE, new OptionProperty("Value Type",WidgetPropertyCategory.Behaviour, TextTypeEnum.getDisplayNames(), TextTypeEnum.DOUBLE.getIndex()));
+		addProperty(PROP_TYPE, new ArrayOptionProperty("Value Type",WidgetPropertyCategory.Behaviour, TextTypeEnum.getDisplayNames(), TextTypeEnum.DOUBLE.getIndex()));
 		addProperty(PROP_PRECISION, new IntegerProperty("Decimal places",
 				WidgetPropertyCategory.Behaviour, 2, 0, 6));
 	}

@@ -24,7 +24,7 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.OptionProperty;
+import org.csstudio.sds.model.properties.ArrayOptionProperty;
 
 /**
  * An ellipse widget model.
@@ -104,7 +104,7 @@ public final class AdvancedSliderModel extends AbstractWidgetModel {
 				WidgetPropertyCategory.Behaviour, 100, 0, Integer.MAX_VALUE));
 		addProperty(PROP_INCREMENT, new IntegerProperty("Increment",
 				WidgetPropertyCategory.Behaviour, 1, 0, Integer.MAX_VALUE));
-		addProperty(PROP_ORIENTATION, new OptionProperty("Orientation",
+		addProperty(PROP_ORIENTATION, new ArrayOptionProperty("Orientation",
 				WidgetPropertyCategory.Display, new String[] {"Horizontal", "Vertical"}, 0));
 	}
 	

@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.simpledal;
+package org.csstudio.platform.simpledal;
 
 import org.csstudio.platform.model.pvs.DalPropertyTypes;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
@@ -552,5 +552,18 @@ public interface IProcessVariableConnectionService {
 	void registerForObjectSequenceValues(
 			IProcessVariableValueListener<Object[]> listener,
 			IProcessVariableAddress pv);
+
+	/**
+	 * Returns true if the specified process variable can be manipulated by the
+	 * current user and false if the user is not allowed to set any values for
+	 * that process variable
+	 * 
+	 * @param pv
+	 *            the process variable address
+	 * 
+	 * @return true if the user can set a value for the specified process
+	 *         variable, false otherwise
+	 */
+	boolean isSettable(IProcessVariableAddress pv);
 
 }

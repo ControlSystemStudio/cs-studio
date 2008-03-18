@@ -24,7 +24,7 @@
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.OptionProperty;
+import org.csstudio.sds.model.properties.ArrayOptionProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
 
 import org.csstudio.sds.components.common.SwitchPlugins;
@@ -65,7 +65,7 @@ public final class SwitchModel extends AbstractWidgetModel {
 	protected void configureProperties() {
 		addProperty(PROP_TRANSPARENT, new BooleanProperty("Transparent Background",WidgetPropertyCategory.Display,true));
 		if (SwitchPlugins.names.length>0) {
-			addProperty(PROP_TYPE, new OptionProperty("Switch Type",WidgetPropertyCategory.Behaviour,SwitchPlugins.names,0));
+			addProperty(PROP_TYPE, new ArrayOptionProperty("Switch Type",WidgetPropertyCategory.Behaviour,SwitchPlugins.names,0));
 		}
 		addProperty(PROP_STATE, new IntegerProperty("Switch State",WidgetPropertyCategory.Display,0));
 		addProperty(PROP_ROTATE, new IntegerProperty("Rotation",WidgetPropertyCategory.Display,0,0,360));

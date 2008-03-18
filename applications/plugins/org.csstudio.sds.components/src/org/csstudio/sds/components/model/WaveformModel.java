@@ -28,7 +28,7 @@ import org.csstudio.sds.model.properties.ColorProperty;
 import org.csstudio.sds.model.properties.DoubleArrayProperty;
 import org.csstudio.sds.model.properties.DoubleProperty;
 import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.OptionProperty;
+import org.csstudio.sds.model.properties.ArrayOptionProperty;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -148,9 +148,9 @@ public final class WaveformModel extends AbstractWidgetModel {
 		addProperty(PROP_WAVE_FORM, new DoubleArrayProperty("Waveform Array",
 				WidgetPropertyCategory.Behaviour, new double[] { 20.0, 15.0,
 						33.0, 44.0, 22.0, 3.0, 25.0, 4.0 }));
-		addProperty(PROP_SHOW_SCALE, new OptionProperty("Scale",
+		addProperty(PROP_SHOW_SCALE, new ArrayOptionProperty("Scale",
 				WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
-		addProperty(PROP_SHOW_GRID_LINES, new OptionProperty("Grid lines",
+		addProperty(PROP_SHOW_GRID_LINES, new ArrayOptionProperty("Grid lines",
 				WidgetPropertyCategory.Display, DISPLAY_OPTIONS, 0));
 		addProperty(PROP_SHOW_CONNECTION_LINES, new BooleanProperty(
 				"Show connection lines", WidgetPropertyCategory.Display, false));

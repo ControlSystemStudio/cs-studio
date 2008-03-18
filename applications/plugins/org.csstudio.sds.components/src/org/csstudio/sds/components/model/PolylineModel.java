@@ -24,7 +24,7 @@ package org.csstudio.sds.components.model;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.OptionProperty;
+import org.csstudio.sds.model.properties.ArrayOptionProperty;
 
 /**
  * A line widget model.
@@ -64,7 +64,7 @@ public final class PolylineModel extends AbstractPolyModel {
 		super.configureProperties();
 		addProperty(PROP_LINE_WIDTH, new IntegerProperty("Line Width",
 				WidgetPropertyCategory.Display, 1, 1, 100));
-		addProperty(PROP_LINE_STYLE, new OptionProperty("Line Style",
+		addProperty(PROP_LINE_STYLE, new ArrayOptionProperty("Line Style",
 				WidgetPropertyCategory.Display, new String[] {"Solid", "Dash", "Dot", "DashDot", "DashDotDot"}, 0));
 	}
 	
