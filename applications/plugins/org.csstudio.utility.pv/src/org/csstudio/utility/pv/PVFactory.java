@@ -12,6 +12,25 @@ import org.eclipse.core.runtime.Platform;
  *  via an extension to the pvfactory extension point
  *  and creates the PV through it.
  *  
+ *  <pre>
+    // Create PV
+    final PV pv = PVFactory.createPV(pv_name);
+    // Register listener for updates
+    pv.addListener(new PVListener()
+    {
+        public void pvDisconnected(PV pv)
+        {
+            System.out.println(pv.getName() + " is disconnected");
+        }
+        public void pvValueUpdate(PV pv)
+        {
+            System.out.println(pv.getName() + " = " + pv.getValue());
+        }
+    });
+    // Start the PV
+    pv.start();
+    </pre>
+ *  
  *  @author Kay Kasemir
  */
 public class PVFactory
@@ -36,7 +55,7 @@ public class PVFactory
             locatePVFactory();
         return pv_factory.createPV(name);
     }
-
+    
     /** Locate the PV factory via the extension point registry */
     @SuppressWarnings("nls")
     private static final void locatePVFactory() throws Exception
