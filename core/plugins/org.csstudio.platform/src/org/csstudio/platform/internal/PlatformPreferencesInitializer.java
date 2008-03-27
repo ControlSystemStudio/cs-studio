@@ -141,7 +141,7 @@ public final class PlatformPreferencesInitializer extends
 				"org.apache.log4j.PatternLayout"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_JMS_PATTERN,
 				"%d{ISO8601} %-5p [%t] %c: %m%n"); //$NON-NLS-1$
-		node.put(CentralLogger.PROP_LOG4J_JMS_URL, "failover:(tcp://krykelog.desy.de:64616,tcp://krynfs.desy.de:62616)?maxReconnectDelay=2000"); //$NON-NLS-1$
+		node.put(CentralLogger.PROP_LOG4J_JMS_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=2000"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_JMS_ICFN,
 				"org.apache.activemq.jndi.ActiveMQInitialContextFactory"); //$NON-NLS-1$
 		node.put(CentralLogger.PROP_LOG4J_JMS_TCFBN, "ConnectionFactory"); //$NON-NLS-1$
