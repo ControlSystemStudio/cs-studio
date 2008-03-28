@@ -64,7 +64,7 @@ public class ProcessVariableDragSource implements DragSourceListener
      *  from the current selection.
      *  <p>
      *  @param control The GUI element from which "drag" should be supported.
-     *  @param selection_provider Interface to whatver provides the current selection
+     *  @param selection_provider Interface to whatever provides the current selection
      *  in your application.
      */
 	public ProcessVariableDragSource(Control control,
