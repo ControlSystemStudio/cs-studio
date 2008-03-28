@@ -50,18 +50,21 @@
                style="push"
                tooltip="%SaveValueAction.Tooltip">
             <visibleWhen>
-               <and>
-                  <count
-                        value="1">
-                  </count>
-                  <iterate
-                        ifEmpty="false"
-                        operator="and">
-                     <instanceof
-                           value="org.csstudio.platform.model.IProcessVariableWithSamples">
-                     </instanceof>
-                  </iterate>
-               </and>
+               <with
+                     variable="activeMenuSelection">
+                  <and>
+                     <count
+                           value="1">
+                     </count>
+                     <iterate
+                           ifEmpty="false"
+                           operator="and">
+                        <instanceof
+                              value="org.csstudio.platform.model.IProcessVariableWithSamples">
+                        </instanceof>
+                     </iterate>
+                  </and>
+               </with>
             </visibleWhen>
          </command>
       </menuContribution>

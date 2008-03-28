@@ -74,7 +74,7 @@ public class SaveValueCommandHandler extends AbstractHandler {
 			}
 		} else {
 			// called on a selection
-			ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
+			ISelection selection = HandlerUtil.getActiveMenuSelectionChecked(event);
 			IProcessVariableWithSamples pvWithSamples = getSelectedProcessVariable(selection);
 			pv = pvWithSamples.getName();
 			try {
