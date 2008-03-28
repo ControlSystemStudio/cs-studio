@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.eclipse"
       label="Eclipse Core Feature"
-      version="1.0.6"
+      version="1.0.7"
       provider-name="Kay Kasemir"
       os="linux,macosx,win32">
 
@@ -40,7 +40,7 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
    </license>
 
    <url>
-      <update label="SNS CSS Update Site" url="http://ics-web4.sns.ornl.gov/css/updates"/>
+      <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates"/>
    </url>
 
    <includes
@@ -431,6 +431,27 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
 
    <plugin
          id="org.eclipse.ui.views.properties.tabbed"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.filebuffers"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.gef"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.draw2d"
          download-size="0"
          install-size="0"
          version="0.0.0"
