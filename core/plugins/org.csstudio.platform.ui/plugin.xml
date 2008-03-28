@@ -269,6 +269,15 @@
               label="Print selected Pvs">
         </action>
      </objectContribution>
+     <objectContribution
+           id="org.csstudio.platform.ui.copyPvToClipboard"
+           objectClass="org.csstudio.platform.model.IProcessVariable">
+        <action
+              class="org.csstudio.platform.ui.internal.developmentsupport.util.CopyPvNameToClipboardAction"
+              id="CopyPvNameToClipboard"
+              label="Copy Pv Name to Clipboard">
+        </action>
+     </objectContribution>
   </extension>
   <extension
         point="org.eclipse.ui.commands">
