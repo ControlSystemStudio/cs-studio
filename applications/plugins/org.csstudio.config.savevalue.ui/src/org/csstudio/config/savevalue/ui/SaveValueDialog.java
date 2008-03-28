@@ -32,13 +32,7 @@ import org.csstudio.config.savevalue.service.SaveValueResult;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.CSSPlatformInfo;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.IStringValue;
-import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.utility.ldap.reader.IocFinder;
 import org.eclipse.core.runtime.Platform;
@@ -91,7 +85,7 @@ class SaveValueDialog extends Dialog {
 	/**
 	 * The name of the process variable.
 	 */
-	private IProcessVariableWithSamples _pv;
+	private String _pv;
 	
 	/**
 	 * The value to be saved.
@@ -131,10 +125,13 @@ class SaveValueDialog extends Dialog {
 	 *            shell.
 	 * @param pv
 	 *            the process variable.
+	 * @param value
+	 *            the value.
 	 */
-	public SaveValueDialog(final Shell parentShell, final IProcessVariableWithSamples pv) {
+	public SaveValueDialog(final Shell parentShell, final String pv, final String value) {
 		super(parentShell);
 		_pv = pv;
+		_value = value;
 		initializeServiceDescriptions();
 	}
 
@@ -191,7 +188,7 @@ class SaveValueDialog extends Dialog {
 		label.setText(Messages.SaveValueDialog_PV_FIELD_LABEL);
 		_processVariable = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
 		_processVariable.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		_processVariable.setText(_pv.getName());
+		_processVariable.setText(_pv);
 		
 		// IOC Name
 		label = new Label(composite, SWT.NONE);
@@ -266,41 +263,7 @@ class SaveValueDialog extends Dialog {
 			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_IOC_NOT_FOUND);
 			return CANCEL;
 		}
-		try {
-			IValue value = _pv.getSample(0);
-			_value = valueToString(value);
-		} catch (IllegalStateException e) {
-			// This happens if the _pv is actually a TextInputEditPart with
-			// the value type set to "double", but the text input cannot be
-			// parsed as a double value.
-			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_TEXT_IS_NOT_A_DOUBLE);
-			return CANCEL;
-		}
 		return super.open();
-	}
-
-	/**
-	 * Converts the given value into a string representation suitable for
-	 * writing into a CA file.
-	 * 
-	 * @param value
-	 *            the value.
-	 * @return the string representation of the value.
-	 */
-	private String valueToString(final IValue value) {
-		if (value instanceof IStringValue) {
-			return ((IStringValue) value).getValue();
-		} else if (value instanceof IDoubleValue) {
-			IDoubleValue idv = (IDoubleValue) value;
-			double dv = idv.getValue();
-			int precision = ((INumericMetaData) idv.getMetaData()).getPrecision();
-			return SaveValueClient.formatForCaFile(dv, precision);
-		} else if (value instanceof ILongValue) {
-			ILongValue lv = (ILongValue) value;
-			return Long.toString(lv.getValue());
-		} else {
-			return value.format();
-		}
 	}
 
 	/**
@@ -481,7 +444,7 @@ class SaveValueDialog extends Dialog {
 				_log.debug(this, "Calling save value service: " + serviceDescr); //$NON-NLS-1$
 				SaveValueService service = (SaveValueService) _reg.lookup(serviceDescr.getRmiName());
 				SaveValueRequest req = new SaveValueRequest();
-				req.setPvName(_pv.getName());
+				req.setPvName(_pv);
 				req.setIocName(_iocName);
 				req.setValue(pvValue);
 				req.setUsername(SecurityFacade.getInstance().getCurrentUser().getUsername());

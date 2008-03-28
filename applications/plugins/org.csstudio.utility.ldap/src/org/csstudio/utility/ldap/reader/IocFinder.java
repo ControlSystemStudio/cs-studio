@@ -27,7 +27,8 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
@@ -101,10 +102,10 @@ public final class IocFinder {
 	/**
 	 * Returns the name of the IOC of the given process variable.
 	 * 
-	 * @param pv the process variable.
+	 * @param pv the name of the process variable.
 	 * @return the name of the IOC.
 	 */
-	public static String getIoc(final IProcessVariable pv) {
+	public static String getIoc(final String pv) {
 		if (pv == null) {
 			throw new NullPointerException("pv must not be null");
 		}
@@ -113,7 +114,7 @@ public final class IocFinder {
 		ErgebnisListeObserver obs = new ErgebnisListeObserver();
 		ergebnisListe.addObserver(obs);
 		
-        String filter = "eren=" + pv.getName();
+        String filter = "eren=" + pvNameToRecordName(pv);
         LDAPReader ldapr = new LDAPReader("ou=EpicsControls",
                 filter, ergebnisListe);
         // For some reason the ErgebnisListe doesn't notify its observers
@@ -137,6 +138,35 @@ public final class IocFinder {
         }
 	}
 	
+	/**
+	 * Converts the given process variable name into a record name which can be
+	 * looked up in the LDAP directory. If the default control system is EPICS,
+	 * this will truncate everything after the first dot in the PV name.
+	 * 
+	 * @param pv
+	 *            the name of the process variable.
+	 * @return the name of the record in the LDAP directory.
+	 */
+	private static String pvNameToRecordName(String pv) {
+		if (pv.contains(".") && isEpicsDefaultControlSystem()) {
+			return pv.substring(0, pv.indexOf("."));
+		}
+		return pv;
+	}
+
+	/**
+	 * Returns <code>true</code> if EPICS is the default control system.
+	 * 
+	 * @return <code>true</code> if EPICS is the default control system,
+	 *         <code>false</code> otherwise.
+	 */
+	private static boolean isEpicsDefaultControlSystem() {
+		ControlSystemEnum controlSystem = ProcessVariableAdressFactory
+				.getInstance().getDefaultControlSystem();
+		return controlSystem == ControlSystemEnum.DAL_EPICS
+				|| controlSystem == ControlSystemEnum.EPICS;
+	}
+
 	/**
 	 * Returns a list with the names of all IOCs configured in the LDAP
 	 * directory.

@@ -2,33 +2,6 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.csstudio.config.savevalue.ui.SaveValueAction"
-            objectClass="org.csstudio.platform.model.IProcessVariableWithSamples">
-         <menu
-               id="org.csstudio.popmenu"
-               label="CSS"
-               path="additions">
-            <groupMarker
-                  name="content">
-            </groupMarker>
-            <separator
-                  name="additions">
-            </separator>
-         </menu>
-         <action
-               class="org.csstudio.config.savevalue.ui.SaveValueAction"
-               enablesFor="1"
-               icon="icon/save.gif"
-               id="org.csstudio.config.savevalue.ui.SaveValueAction"
-               label="%SaveValueAction.Label"
-               menubarPath="org.csstudio.popmenu/content"
-               tooltip="%SaveValueAction.Tooltip">
-         </action>
-      </objectContribution>
-   </extension>
-   <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="org.csstudio.config.savevalue.ui.PreferenceInitializer">
@@ -58,6 +31,47 @@
             file="toc.xml"
             primary="true">
       </toc>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.csstudio.config.savevalue.ui.SaveValueCommandHandler"
+            commandId="org.csstudio.platform.ui.commands.saveValue">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.csstudio.popmenu">
+         <command
+               commandId="org.csstudio.platform.ui.commands.saveValue"
+               icon="icon/save.gif"
+               label="%SaveValueAction.Label"
+               style="push"
+               tooltip="%SaveValueAction.Tooltip">
+            <visibleWhen>
+               <and>
+                  <count
+                        value="1">
+                  </count>
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+                     <instanceof
+                           value="org.csstudio.platform.model.IProcessVariableWithSamples">
+                     </instanceof>
+                  </iterate>
+               </and>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS">
+         </menu>
+      </menuContribution>
    </extension>
 
 </plugin>
