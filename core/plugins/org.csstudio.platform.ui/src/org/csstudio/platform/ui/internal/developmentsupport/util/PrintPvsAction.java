@@ -71,7 +71,7 @@ public class PrintPvsAction extends ProcessVariablePopupAction {
 		if (result == CopyToClipboardDialog.COPY_TO_CLIPBOARD_ID) {
 			Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench()
 					.getDisplay());
-			clipboard.setContents(new String[] { sb.toString() },
+			clipboard.setContents(new String[] { dialog.getTextToCopy() },
 					new Transfer[] { TextTransfer.getInstance() });
 		}
 	}
@@ -87,6 +87,8 @@ public class PrintPvsAction extends ProcessVariablePopupAction {
 		public static final int COPY_TO_CLIPBOARD_ID = 111119;
 
 		private String _text;
+
+		private Text _textField;
 
 		/**
 		 * Constructor.
@@ -120,10 +122,10 @@ public class PrintPvsAction extends ProcessVariablePopupAction {
 		@Override
 		protected Control createDialogArea(final Composite parent) {
 			final Composite c = (Composite) super.createDialogArea(parent);
-			Text text = new Text(c, SWT.MULTI | SWT.V_SCROLL);
-			text.setLayoutData(LayoutUtil
+			_textField = new Text(c, SWT.MULTI | SWT.V_SCROLL);
+			_textField.setLayoutData(LayoutUtil
 					.createGridDataForFillingCell(300, 150));
-			text.setText(_text);
+			_textField.setText(_text);
 			return c;
 		}
 
@@ -154,6 +156,25 @@ public class PrintPvsAction extends ProcessVariablePopupAction {
 			createButton(parent, COPY_TO_CLIPBOARD_ID, "Copy to Clipboard",
 					false);
 		}
+		
+		/**
+		 * Updates the text to be copied based on the current selection in the
+		 * text field.
+		 */
+		private void updateTextToCopy() {
+			if (_textField.getSelectionCount() != 0) {
+				_text = _textField.getSelectionText();
+			}
+		}
+		
+		/**
+		 * Returns the text to be copied into the clipboard.
+		 * 
+		 * @return the text to be copied into the clipboard.
+		 */
+		public String getTextToCopy() {
+			return _text;
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -163,6 +184,7 @@ public class PrintPvsAction extends ProcessVariablePopupAction {
 			super.buttonPressed(buttonId);
 
 			if (buttonId == COPY_TO_CLIPBOARD_ID) {
+				updateTextToCopy();
 				setReturnCode(COPY_TO_CLIPBOARD_ID);
 				close();
 			}
