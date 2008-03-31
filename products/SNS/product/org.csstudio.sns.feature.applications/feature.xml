@@ -42,10 +42,6 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
       <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates"/>
    </url>
 
-   <requires>
-      <import feature="org.csstudio.sns.feature.core" version="1.0.2" match="perfect"/>
-   </requires>
-
    <plugin
          id="org.csstudio.utility.clock"
          download-size="0"
