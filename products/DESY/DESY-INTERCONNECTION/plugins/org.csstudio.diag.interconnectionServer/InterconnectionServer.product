@@ -7,6 +7,7 @@
 
    <launcherArgs>
       <programArgs>-plugincustomization plugin_customization.ini</programArgs>
+      <vmArgs>-Xmx512m -Xms256m</vmArgs>
    </launcherArgs>
 
    <launcher>
