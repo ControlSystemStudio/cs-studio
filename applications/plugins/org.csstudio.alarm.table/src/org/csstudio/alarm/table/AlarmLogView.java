@@ -22,9 +22,11 @@
 
 package org.csstudio.alarm.table;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -43,7 +45,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableItem;
 
 /**
@@ -96,15 +98,16 @@ public class AlarmLogView extends LogView {
 		grid.numColumns = 1;
 		parent.setLayout(grid);
 		Composite comp = new Composite(parent, SWT.NONE);
+
 		comp.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
-		comp.setLayout(new GridLayout(4, true));
+		comp.setLayout(new GridLayout(4, false));
 
 		Button ackButton = new Button(comp, SWT.PUSH);
 		ackButton.setText("Acknowledge");
-		ackButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+		ackButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
 				1, 1));
 		final Combo ackCombo = new Combo(comp, SWT.SINGLE);
-		ackCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2,
+		ackCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2,
 				1));
 		ackCombo.add("ALL");
 		IPreferenceStore prefs = JmsLogsPlugin.getDefault()
@@ -130,7 +133,14 @@ public class AlarmLogView extends LogView {
 		if (prefs.getString(JmsLogPreferenceConstants.VALUE9).trim().length() > 0)
 			ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE9));
 		ackCombo.select(4);
-		
+
+		GregorianCalendar currentTime = new GregorianCalendar(TimeZone.getTimeZone("ECT"));
+	    SimpleDateFormat formater = new SimpleDateFormat();
+		Label runningSinceLabel = new Label(comp, SWT.NONE);
+		runningSinceLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1,
+				1));
+		runningSinceLabel.setText("Running Since: " + formater.format(currentTime.getTime()));
+
 		ackButton.addSelectionListener(new SelectionListener() {
 
 			/**

@@ -22,6 +22,11 @@
 
 package org.csstudio.alarm.table;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -41,6 +46,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
@@ -86,6 +92,12 @@ public class LogView extends ViewPart implements MessageListener {
 		GridLayout grid = new GridLayout();
 		grid.numColumns = 1;
 		parent.setLayout(grid);
+		GregorianCalendar currentTime = new GregorianCalendar(TimeZone.getTimeZone("ECT"));
+	    SimpleDateFormat formater = new SimpleDateFormat();
+		Label runningSinceLabel = new Label(parent, SWT.NONE);
+		runningSinceLabel.setText("Running Since: " + formater.format(currentTime.getTime()));
+		
+		
 		Composite comp = new Composite(parent, SWT.NONE);
 		comp.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1));
 		comp.setLayout(new GridLayout(4, true));
