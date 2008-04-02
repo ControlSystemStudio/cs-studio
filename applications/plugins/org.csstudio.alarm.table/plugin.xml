@@ -10,7 +10,7 @@
       <view
             category="org.csstudio"
             class="org.csstudio.alarm.table.LogViewArchive"
-            icon="icons/LogArchive.gif"
+            icon="icons/archiveTable.png"
             id="org.csstudio.alarm.table.LogViewArchive"
             name="JMS Log archive viewer"/>
    </extension>
@@ -23,7 +23,7 @@
       <view
             category="org.csstudio"
             class="org.csstudio.alarm.table.LogView"
-            icon="icons/Log.gif"
+            icon="icons/logTable.png"
             id="org.csstudio.alarm.table.LogView"
             name="JMS Log viewer"/>
    </extension>
@@ -36,7 +36,7 @@
       <view
             category="org.csstudio"
             class="org.csstudio.alarm.table.AlarmLogView"
-            icon="icons/Alarm.gif"
+            icon="icons/alarmTable.png"
             id="org.csstudio.alarm.table.AlarmLogView"
             name="JMS Alarm viewer"/>
    </extension>
@@ -79,7 +79,7 @@
             visible="true">
          <action
                class="org.csstudio.alarm.table.ShowLogArchive"
-               icon="icons/LogArchive.gif"
+               icon="icons/archiveTable.png"
                id="de.desy.css.jmsLogs.ShowViewArchiveAction"
                label="JMSLogsArchive"
                menubarPath="css/alarm/"
@@ -87,7 +87,7 @@
                tooltip="Show JMS Log archive"/>
          <action
                class="org.csstudio.alarm.table.ShowLog"
-               icon="icons/Log.gif"
+               icon="icons/logTable.png"
                id="de.desy.css.jmsLogs.ShowViewLogAction"
                label="JMSLogs"
                menubarPath="css/diag/"
@@ -95,7 +95,7 @@
                tooltip="Show JMS Log"/>
          <action
                class="org.csstudio.alarm.table.ShowAlarms"
-               icon="icons/Alarm.gif"
+               icon="icons/alarmTable.png"
                id="de.desy.css.jmsLogs.ShowViewAlarmAction"
                label="JMSAlarmLog"
                menubarPath="css/alarm/"

@@ -38,6 +38,9 @@ import org.csstudio.alarm.table.JmsLogsPlugin;
 
 public class JMSAlarmMessageList extends JMSMessageList {
 
+	/** number of alarm status changes in the message with the same pv name. */
+	private int alarmStatusChanges = 0;
+	
 	public JMSAlarmMessageList(String[] propNames) {
 		super(propNames);
 	}
@@ -48,16 +51,18 @@ public class JMSAlarmMessageList extends JMSMessageList {
 	 */
 	@Override
 	synchronized public void addJMSMessage(MapMessage mm) throws JMSException {
+
 		if (mm == null) {
 			return;
 		}
 		if (mm.getString("TYPE") == null) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return;
 		}
+		boolean equalMessageInTable = equalMessageNameInTable(mm);
 		//do not insert messges with type: 'status', unless there is a previous message
 		//with the same NAME in the table.
 		if ((mm.getString("TYPE").equalsIgnoreCase("status") && 
-				(equalMessageNameInTable(mm) == false))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				(equalMessageInTable == false))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return;
 		} else {
 			String severity = null;
@@ -69,6 +74,12 @@ public class JMSAlarmMessageList extends JMSMessageList {
 				if ((deleteOrGrayOutEqualMessages(mm))
 						|| (severity.equalsIgnoreCase("NO_ALARM")) == false) { //$NON-NLS-1$
 					JMSMessage jmsm = addMessageProperties(mm);
+					if (equalMessageInTable == false) {
+						jmsm.setProperty("COUNT", "0");
+					} else {
+						jmsm.setProperty("COUNT", String.valueOf(alarmStatusChanges +1));
+					}
+					jmsm.set_alarmChangeCount(alarmStatusChanges + 1);
 					JMSMessages.add(JMSMessages.size(), jmsm);
 					Iterator iterator = changeListeners.iterator();
 					while (iterator.hasNext())
@@ -79,8 +90,9 @@ public class JMSAlarmMessageList extends JMSMessageList {
 		}
 	}
 
+
 	/**
-	 * Searching for a previous message in alarm table with the sam NAME.
+	 * Searching for a previous message in alarm table with the same NAME.
 	 * 
 	 * @param mm
 	 * @return boolean Is there a previous message
@@ -91,6 +103,12 @@ public class JMSAlarmMessageList extends JMSMessageList {
 			String currentInList = message.getProperty("NAME");
 			String currentMessage = mm.getString("NAME");
 			if(currentInList.equalsIgnoreCase(currentMessage) == true) {
+				String alarmChangeCount = message.getProperty("COUNT");
+				try {
+					alarmStatusChanges = Integer.parseInt(alarmChangeCount);
+				} catch (NumberFormatException e) {
+					alarmStatusChanges = 0;
+				}
 				messageInTable = true;
 				break;
 			}

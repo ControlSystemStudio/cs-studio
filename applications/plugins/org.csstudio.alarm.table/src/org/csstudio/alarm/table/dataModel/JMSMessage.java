@@ -53,6 +53,11 @@ public class JMSMessage implements IProcessVariable {//,
 	 */
 	private boolean _ackknowledgement = false;
 	
+	/**
+	 * How many times has this pv changed the alarm status
+	 */
+	private int _alarmChangeCount = 0;
+	
 	public boolean is_ackknowledgement() {
 		return _ackknowledgement;
 	}
@@ -257,4 +262,12 @@ public class JMSMessage implements IProcessVariable {//,
 	public HashMap<String, String> getHashMap(){
 	    return messageProperties;
     }
+
+	public int get_alarmChangeCount() {
+		return _alarmChangeCount;
+	}
+
+	public void set_alarmChangeCount(int changeCount) {
+		_alarmChangeCount = changeCount;
+	}
 }
