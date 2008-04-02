@@ -107,7 +107,7 @@ public class SendCommandToIoc extends Thread {
     			statusMessageDelay = PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS + (int)((new GregorianCalendar().getTimeInMillis())%10000);	// ~ 5 minutes + random
     		}
 
-        	CentralLogger.getInstance().info(this, "Waiting " + statusMessageDelay + " until sending " + PreferenceProperties.COMMAND_SEND_ALL_ALARMS + " to the IOC");
+        	CentralLogger.getInstance().info(this, "Waiting " + statusMessageDelay + " until sending " + PreferenceProperties.COMMAND_SEND_ALL_ALARMS + " to the IOC " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")");
         	try {
 				Thread.sleep( statusMessageDelay);
 			} catch (InterruptedException e) {
@@ -181,7 +181,7 @@ public class SendCommandToIoc extends Thread {
             	/*
             	 * nothing to do
             	 */
-            	CentralLogger.getInstance().info(this, "Command accepted by IOC: " + hostName + " command: " + command);
+            	CentralLogger.getInstance().info(this, "Command accepted by IOC: " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")" + " command: " + command);
             } else if (TagList.getInstance().getReplyType(answer) == TagList.REPLY_TYPE_SELECTED) {
             	/*
             	 * did the select state change?
@@ -190,7 +190,7 @@ public class SendCommandToIoc extends Thread {
         			//remember we're selected
         			Statistic.getInstance().getContentObject(statisticId).setSelectState(true);
         			//create log message
-        			CentralLogger.getInstance().warn(this, "IOC SELECTED this InterConnectionServer: " + hostName);
+        			CentralLogger.getInstance().warn(this, "IOC SELECTED this InterConnectionServer: " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")");
         			/*
         			 * send JMS message - we are selected
         			 */
@@ -225,7 +225,7 @@ public class SendCommandToIoc extends Thread {
             	
         		if ( Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
         			//create log message
-        			CentralLogger.getInstance().warn(this, "IOC DE-selected this InterConnectionServer: " + hostName);
+        			CentralLogger.getInstance().warn(this, "IOC DE-selected this InterConnectionServer: " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")");
         			/*
         			 * send JMS message - we are NOT selected
         			 */
@@ -261,7 +261,7 @@ public class SendCommandToIoc extends Thread {
             	
         		if ( Statistic.getInstance().getContentObject(statisticId).isSelectState()) {
         			//create log message
-        			CentralLogger.getInstance().warn(this, "IOC not reachable by this InterConnectionServer: " + hostName);
+        			CentralLogger.getInstance().warn(this, "IOC not reachable by this InterConnectionServer: " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")");
         			/*
         			 * send JMS message - we are NOT selected
         			 */
@@ -289,7 +289,7 @@ public class SendCommandToIoc extends Thread {
         		//remember we're not selected any more
     			Statistic.getInstance().getContentObject(statisticId).setSelectState(false);
             } else {
-            	CentralLogger.getInstance().info(this, "Command not accepted by IOC: " + hostName + " command: " + command + " answer: " + answer);
+            	CentralLogger.getInstance().info(this, "Command not accepted by IOC: " + Statistic.getInstance().getContentObject(statisticId).getLogicalIocName() + " (" + hostName+ ")" + " command: " + command + " answer: " + answer);
             }
 
         }
