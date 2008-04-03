@@ -25,6 +25,10 @@ public class TestMain
         final double x[] = createX();
         model.addChannel(new Channel("Fred", x, createLine(x, 2.5, 3.0)));
         model.addChannel(new Channel("Jane", x, createLine(x, -3.0, 5.0)));
+        // TODO Line fit to flat line looks funny:
+        // Result is a line 0*x + 4.99999, and that gets displayed
+        // zoomed waaay in.
+        model.addChannel(new Channel("Flat", x, createLine(x, 0.0, 5.0, 0.0)));
         model.addChannel(new Channel("Narrow", x, createGauss(x, 0.3)));
         model.addChannel(new Channel("Wide", x, createGauss(x, 3.0)));
 
@@ -86,13 +90,31 @@ public class TestMain
         return x;
     }
 
-    /** @return Line values for x */
+    /** Create line 
+     *  @param x X axis locations
+     *  @param slope Line slope
+     *  @param intersect Intersection with Y axis
+     *  @return Line values for x
+     */
     private static double[] createLine(final double[] x, final double slope,
             final double intersect)
     {
+        return createLine(x, slope, intersect, 1.0);
+    }
+
+    /** Create line 
+     *  @param x X axis locations
+     *  @param slope Line slope
+     *  @param intersect Intersection with Y axis
+     *  @param noise Amplitude of added noise
+     *  @return Line values for x
+     */
+    private static double[] createLine(final double[] x, final double slope,
+            final double intersect, final double noise)
+    {
         final double y[] = new double[N];
         for (int i = 0; i < N; ++i)
-            y[i] = slope * x[i] + intersect + Math.random() - 0.5;
+            y[i] = slope * x[i] + intersect + noise * (Math.random() - 0.5);
         return y;
     }
 
