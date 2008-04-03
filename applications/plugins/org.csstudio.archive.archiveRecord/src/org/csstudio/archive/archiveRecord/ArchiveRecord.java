@@ -115,7 +115,7 @@ public class ArchiveRecord {
 			return -1;
 		}
 		// get VALUE field:
-		PV pvval = PVFactory.createPV(nvalName);//new EPICS_V3_PV(valName);
+		PV pvval = PVFactory.createPV(valName);//new EPICS_V3_PV(valName);
 		
 		try {
 			pvval.start();
@@ -143,7 +143,7 @@ public class ArchiveRecord {
 		}	
 		
 		// get TIME field:
-		PV pvtime = PVFactory.createPV(nvalName);//new EPICS_V3_PV(timeName);
+		PV pvtime = PVFactory.createPV(timeName);//new EPICS_V3_PV(timeName);
 		try {
 			pvtime.start();
 			for(int i=0;i<NUM_OF_ITER;i++) {
@@ -175,7 +175,7 @@ public class ArchiveRecord {
 		
 		// get Nsec field:
 		
-		PV pvntime = PVFactory.createPV(nvalName);// new EPICS_V3_PV(nsecName);
+		PV pvntime = PVFactory.createPV(nsecName);// new EPICS_V3_PV(nsecName);
 		try {
 			pvntime.start();
 			for(int i=0;i<NUM_OF_ITER;i++) {
@@ -206,7 +206,7 @@ public class ArchiveRecord {
 		}
 		
 		// get sevr field:
-		PV sevrname = PVFactory.createPV(nvalName);//new EPICS_V3_PV(sevrName);
+		PV sevrname = PVFactory.createPV(sevrName);//new EPICS_V3_PV(sevrName);
 		try {
 			sevrname.start();
 			for(int i=0;i<NUM_OF_ITER;i++) {
