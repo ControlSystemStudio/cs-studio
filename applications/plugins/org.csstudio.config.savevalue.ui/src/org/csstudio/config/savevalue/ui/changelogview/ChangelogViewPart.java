@@ -169,6 +169,15 @@ public class ChangelogViewPart extends ViewPart {
 							Display.getDefault().asyncExec(new Runnable() {
 								public void run() {
 									_table.setInput(entries);
+									
+									// if the list of entries is empty, we also
+									// display a message so the user knows
+									// what is going on
+									if (entries.length == 0) {
+										MessageDialog.openInformation(null,
+												Messages.ChangelogViewPart_TITLE,
+												Messages.ChangeLogViewPart_NO_ENTRIES);
+									}
 								}
 							});
 						} catch (RemoteException e) {

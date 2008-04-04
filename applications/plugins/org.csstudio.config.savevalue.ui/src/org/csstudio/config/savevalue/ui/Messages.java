@@ -4,6 +4,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.csstudio.config.savevalue.ui.messages"; //$NON-NLS-1$
+	public static String ChangeLogViewPart_NO_ENTRIES;
 	public static String CA_FILE_SERVICE_NAME;
 	public static String ChangelogViewPart_DATE_MODIFIED_COLUMN;
 	public static String ChangelogViewPart_ERRMSG_READ_ERROR;

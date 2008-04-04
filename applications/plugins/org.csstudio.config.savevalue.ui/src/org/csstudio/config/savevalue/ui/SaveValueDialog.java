@@ -34,6 +34,7 @@ import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.platform.security.User;
 import org.csstudio.utility.ldap.reader.IocFinder;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -260,7 +261,8 @@ class SaveValueDialog extends Dialog {
 			return CANCEL;
 		}
 		if (!findIoc()) {
-			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_IOC_NOT_FOUND);
+			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE,
+					NLS.bind(Messages.SaveValueDialog_ERRMSG_IOC_NOT_FOUND, _pv));
 			return CANCEL;
 		}
 		return super.open();
@@ -447,7 +449,12 @@ class SaveValueDialog extends Dialog {
 				req.setPvName(_pv);
 				req.setIocName(_iocName);
 				req.setValue(pvValue);
-				req.setUsername(SecurityFacade.getInstance().getCurrentUser().getUsername());
+				User user = SecurityFacade.getInstance().getCurrentUser();
+				if (user != null) {
+					req.setUsername(user.getUsername());
+				} else {
+					req.setUsername("");
+				}
 				req.setHostname(CSSPlatformInfo.getInstance().getQualifiedHostname());
 				SaveValueResult srr = service.saveValue(req);
 				return srr;
