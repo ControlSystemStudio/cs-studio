@@ -61,7 +61,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Joerg Rathlev
  */
-class SaveValueDialog extends Dialog {
+public class SaveValueDialog extends Dialog {
 	
 	/**
 	 * The logger.

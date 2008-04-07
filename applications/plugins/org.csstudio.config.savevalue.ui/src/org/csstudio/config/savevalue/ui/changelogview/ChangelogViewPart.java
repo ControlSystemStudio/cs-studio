@@ -35,6 +35,7 @@ import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.config.savevalue.ui.Activator;
 import org.csstudio.config.savevalue.ui.Messages;
 import org.csstudio.config.savevalue.ui.PreferenceConstants;
+import org.csstudio.config.savevalue.ui.SaveValueDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.reader.IocFinder;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -44,7 +45,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -56,6 +61,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -68,6 +74,52 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
  */
 public class ChangelogViewPart extends ViewPart {
 	
+	/**
+	 * The cell modifier for the view's table viewer.
+	 */
+	private class ChangelogViewCellModifier implements ICellModifier {
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean canModify(Object element, String property) {
+			// only the "value" column is modifiable
+			return "value".equals(property);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Object getValue(Object element, String property) {
+			if ("value".equals(property)) {
+				return ((ChangelogEntry) element).getValue();
+			}
+			return null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void modify(Object element, String property, Object value) {
+			// element may be Item, see ICellModifier#modify method comment
+			if (element instanceof Item) {
+				element = ((Item) element).getData();
+			}
+			
+			if ("value".equals(property)) {
+				ChangelogEntry entry = (ChangelogEntry) element;
+				String val = (String) value;
+				if (!val.equals(entry.getValue())) {
+					String pv = entry.getPvName();
+					SaveValueDialog dialog = new SaveValueDialog(null, pv, val);
+					if (Window.OK == dialog.open()) {
+						startChangelogRequest();
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * The logger.
 	 */
@@ -103,6 +155,18 @@ public class ChangelogViewPart extends ViewPart {
 	 */
 	static final int COL_MODIFIED = 4;
 	
+	/**
+	 * The column properties which are used to identify the columns in cell
+	 * modifiers.
+	 */
+	static final String[] COLUMN_PROPERTIES =
+		new String[] { "pv", "value", "user", "host", "modified" };
+
+	/**
+	 * The combo with the IOC names.
+	 */
+	private Combo _iocText;
+	
 
 	/**
 	 * {@inheritDoc}
@@ -118,8 +182,8 @@ public class ChangelogViewPart extends ViewPart {
 		Label iocLabel = new Label(iocBar, SWT.NONE);
 		iocLabel.setText(Messages.ChangelogViewPart_IOC_FIELD_LABEL);
 		
-		final Combo iocText = new Combo(iocBar, SWT.BORDER);
-		iocText.setLayoutData(new RowData(100, SWT.DEFAULT));
+		_iocText = new Combo(iocBar, SWT.BORDER);
+		_iocText.setLayoutData(new RowData(100, SWT.DEFAULT));
 		
 		IWorkbenchSiteProgressService progressService =
 			(IWorkbenchSiteProgressService) getSite().getAdapter(
@@ -133,7 +197,7 @@ public class ChangelogViewPart extends ViewPart {
 				Collections.sort(iocs);
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
-						iocText.setItems(iocs.toArray(new String[iocs.size()]));
+						_iocText.setItems(iocs.toArray(new String[iocs.size()]));
 					}
 				});
 				monitor.done();
@@ -151,82 +215,8 @@ public class ChangelogViewPart extends ViewPart {
 			}
 
 			public void widgetSelected(final SelectionEvent e) {
-				final String ioc = iocText.getText();
-				if (ioc == null) {
-					return;
-				}
-				// The RMI request is run in its own thread, not in the UI
-				// thread.
-				Runnable r = new Runnable() {
-					private Registry _reg;
-
-					public void run() {
-						try {
-							locateRmiRegistry();
-							ChangelogService cs = (ChangelogService) _reg
-									.lookup("SaveValue.changelog"); //$NON-NLS-1$
-							final ChangelogEntry[] entries = cs.readChangelog(ioc);
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									_table.setInput(entries);
-									
-									// if the list of entries is empty, we also
-									// display a message so the user knows
-									// what is going on
-									if (entries.length == 0) {
-										MessageDialog.openInformation(null,
-												Messages.ChangelogViewPart_TITLE,
-												Messages.ChangeLogViewPart_NO_ENTRIES);
-									}
-								}
-							});
-						} catch (RemoteException e) {
-							_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
-							final String message = e.getMessage();
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
-											Messages.ChangelogViewPart_ERRMSG_RMI_REGISTRY
-													+ message);
-								}
-							});
-						} catch (NotBoundException e) {
-							_log.error(this, "Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
-											Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE);
-								}
-							});
-						} catch (SaveValueServiceException e) {
-							_log.error(this, "Server reported an rrror reading the changelog", e); //$NON-NLS-1$
-							final String message = e.getMessage();
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
-											Messages.ChangelogViewPart_ERRMSG_READ_ERROR
-													+ message);
-								}
-							});
-						}
-					}
-
-					/**
-					 * @throws RemoteException
-					 */
-					private void locateRmiRegistry() throws RemoteException {
-						IPreferencesService prefs = Platform.getPreferencesService();
-						String registryHost = prefs.getString(
-								Activator.PLUGIN_ID,
-								PreferenceConstants.RMI_REGISTRY_SERVER,
-								null, null);
-						_log.debug(this, "Connecting to RMI registry."); //$NON-NLS-1$
-						_reg = LocateRegistry.getRegistry(registryHost);
-					}
-				};
-				new Thread(r).start();
+				startChangelogRequest();
 			}
-			
 		});
 		
 		// create the table viewer
@@ -241,12 +231,106 @@ public class ChangelogViewPart extends ViewPart {
 
 
 	/**
+	 * Starts a new changelog request. The request will run asynchronously and
+	 * will refresh the contents of the viewer when complete.
+	 */
+	private void startChangelogRequest() {
+		final String ioc = _iocText.getText();
+		if (ioc == null) {
+			return;
+		}
+		// The RMI request is run in its own thread, not in the UI
+		// thread.
+		Job job = new Job("") {
+			private Registry _reg;
+
+			/**
+			 * @throws RemoteException
+			 */
+			private void locateRmiRegistry() throws RemoteException {
+				IPreferencesService prefs = Platform.getPreferencesService();
+				String registryHost = prefs.getString(
+						Activator.PLUGIN_ID,
+						PreferenceConstants.RMI_REGISTRY_SERVER,
+						null, null);
+				_log.debug(this, "Connecting to RMI registry."); //$NON-NLS-1$
+				_reg = LocateRegistry.getRegistry(registryHost);
+			}
+
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				monitor.beginTask("",
+						IProgressMonitor.UNKNOWN);
+
+				try {
+					locateRmiRegistry();
+					ChangelogService cs = (ChangelogService) _reg
+							.lookup("SaveValue.changelog"); //$NON-NLS-1$
+					final ChangelogEntry[] entries = cs.readChangelog(ioc);
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							_table.setInput(entries);
+							
+							// if the list of entries is empty, we also
+							// display a message so the user knows
+							// what is going on
+							if (entries.length == 0) {
+								MessageDialog.openInformation(null,
+										Messages.ChangelogViewPart_TITLE,
+										Messages.ChangeLogViewPart_NO_ENTRIES);
+							}
+						}
+					});
+				} catch (RemoteException e) {
+					_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
+					final String message = e.getMessage();
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
+									Messages.ChangelogViewPart_ERRMSG_RMI_REGISTRY
+											+ message);
+						}
+					});
+				} catch (NotBoundException e) {
+					_log.error(this, "Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
+									Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE);
+						}
+					});
+				} catch (SaveValueServiceException e) {
+					_log.error(this, "Server reported an rrror reading the changelog", e); //$NON-NLS-1$
+					final String message = e.getMessage();
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							MessageDialog.openError(null, Messages.ChangelogViewPart_TITLE,
+									Messages.ChangelogViewPart_ERRMSG_READ_ERROR
+											+ message);
+						}
+					});
+				}
+				
+				monitor.done();
+				return new Status(IStatus.OK, Activator.PLUGIN_ID, "");
+			}
+		};
+		
+		IWorkbenchSiteProgressService progressService =
+			(IWorkbenchSiteProgressService) getSite().getAdapter(
+					IWorkbenchSiteProgressService.class);
+		progressService.schedule(job, 0, true);
+	}
+
+
+	/**
 	 * Creates the table viewer.
 	 * 
 	 * @param parent the parent composite.
 	 */
 	private void createTableViewer(final Composite parent) {
 		_table = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+		_table.setColumnProperties(COLUMN_PROPERTIES);
 		
 		Table table = _table.getTable();
 		table.setHeaderVisible(true);
@@ -257,6 +341,11 @@ public class ChangelogViewPart extends ViewPart {
 		addColumn(table, COL_USER, Messages.ChangelogViewPart_USER_COLUMN, 150);
 		addColumn(table, COL_HOST, Messages.ChangelogViewPart_HOST_COLUMN, 150);
 		addColumn(table, COL_MODIFIED, Messages.ChangelogViewPart_DATE_MODIFIED_COLUMN, 150);
+		
+		CellEditor[] editors = new CellEditor[5];
+		editors[1] = new TextCellEditor(table);
+		_table.setCellEditors(editors);
+		_table.setCellModifier(new ChangelogViewCellModifier());
 	}
 	
 	/**
