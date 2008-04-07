@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Voice Mail Plug-in
+Bundle-SymbolicName: org.csstudio.ams.connector.voicemail;singleton:=true
+Bundle-Version: 1.0.3
+Bundle-Activator: org.csstudio.ams.connector.voicemail.VoicemailConnectorPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform.ui,
+ org.csstudio.platform.libs.jms,
+ org.csstudio.ams,
+ org.csstudio.platform.libs.xmpp,
+ org.csstudio.platform.libs.dcf
+Eclipse-LazyStart: true
+Bundle-ClassPath: .

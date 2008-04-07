@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Sms Plug-in
+Bundle-SymbolicName: org.csstudio.ams.connector.sms;singleton:=true
+Bundle-Version: 1.0.3
+Bundle-Activator: org.csstudio.ams.connector.sms.SmsConnectorPlugin
+Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.csstudio.platform.ui,
+ org.csstudio.platform.libs.jms,
+ org.csstudio.ams,
+ org.csstudio.platform.libs.xmpp,
+ org.csstudio.platform.libs.dcf
+Eclipse-LazyStart: true
+Bundle-ClassPath: libs/RXTXcomm.jar,
+ libs/log4j.jar,
+ libs/smslib-rxtx-3.2.1.jar,
+ .

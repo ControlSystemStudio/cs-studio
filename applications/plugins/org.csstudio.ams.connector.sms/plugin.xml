@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="SmsConnector"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run class="org.csstudio.ams.connector.sms.SmsConnectorStart"/>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.ams.connector.sms.internal.PreferencesInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.ams.internal.pages.Page1"
+            class="org.csstudio.ams.connector.sms.internal.pages.SmsPreferencePage"
+            id="org.csstudio.ams.connector.sms.page1"
+            name="Connector SMS"/>
+   </extension>
+   <extension
+         id="AmsSmsConnector"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.connector.sms.SmsConnector"
+            name="Ams SMSConnector">
+         <property
+               name="appName"
+               value="Ams SMSConnector">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.ams.connector.sms.xmpp.SmsConnectorLoginCallbackHandler"
+            id="org.csstudio.ams.connector.sms.SmsConnectorLoginHandler"
+            name="SmsConnectorLoginHandler">
+      </loginHandler>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <simpleAction
+            class="org.csstudio.ams.connector.sms.actions.GetStateAction"
+            id="org.csstudio.ams.connector.sms.GetStateAction"
+            name="Get State">
+      </simpleAction>
+      <parametrizedAction
+            class="org.csstudio.ams.connector.sms.actions.SmsConnectorShutdownAction"
+            id="org.csstudio.ams.connector.sms.ShutdownAction"
+            name="Shutdown"
+            parameters="Password">
+      </parametrizedAction>
+      <parametrizedAction
+            class="org.csstudio.ams.connector.sms.actions.RestartAction"
+            id="org.csstudio.ams.connector.sms.SmsConnectorRestartAction"
+            name="Restart"
+            parameters="Password">
+      </parametrizedAction>
+   </extension>
+
+</plugin>

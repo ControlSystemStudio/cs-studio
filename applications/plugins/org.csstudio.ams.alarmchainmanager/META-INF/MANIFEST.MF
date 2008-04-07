@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: AlarmChainManager Plug-in
+Bundle-SymbolicName: org.csstudio.ams.alarmchainmanager;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.ams.alarmchainmanager.AlarmChainManagerPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.ams,
+ org.csstudio.platform.libs.jms,
+ org.csstudio.platform.ui
+Eclipse-LazyStart: true

@@ -1,0 +1,6 @@
+org.csstudio.ams.connector.sms
+org.csstudio.ams.connector.sms.actions
+org.csstudio.ams.connector.sms.internal
+org.csstudio.ams.connector.sms.internal.pages
+org.csstudio.ams.connector.sms.softmodem
+org.csstudio.ams.connector.sms.xmpp

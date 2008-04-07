@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="FilterManager"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            visible="true">
+         <run class="org.csstudio.ams.filtermanager.FilterManagerStart"/>
+      </application>
+   </extension>
+   <extension
+         id="FilterManager"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.filterManager.FilterManager"
+            name="AMS FilterManager">
+         <property
+               name="appName"
+               value="AMS FilterManager">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.ams.filtermanager.xmpp.FilterManagerLoginHandler"
+            id="org.csstudio.ams.filterManager.FilterManagerLoginHandler"
+            name="FilterManagerLoginHandler">
+      </loginHandler>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <parametrizedAction
+            class="org.csstudio.ams.filtermanager.actions.FilterManagerShutdownAction"
+            id="org.csstudio.ams.filterManager.parametrizedAction1"
+            name="Shutdown"
+            parameters="Password">
+      </parametrizedAction>
+   </extension>
+
+</plugin>

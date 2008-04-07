@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jms2ora Plug-in
+Bundle-SymbolicName: org.csstudio.alarm.jms2ora;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.alarm.jms2ora.Jms2OraPlugin
+Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.csstudio.platform.libs.jms,
+ org.csstudio.platform.libs.jdbc,
+ org.csstudio.platform.libs.xmpp,
+ org.csstudio.platform,
+ org.csstudio.platform.libs.dcf
+Eclipse-LazyStart: true
+Bundle-ClassPath: .,
+ lib/log4j-1.2.14.jar,
+ lib/EPICSSingleton.jar,
+ lib/concurrent-1.3.1.jar,
+ lib/caj-1.0.2d03.jar,
+ lib/jca-2.1.5.jar,
+ lib/commons-collections-3.2.jar,
+ lib/commons-configuration-1.5.jar,
+ lib/commons-lang-2.4.jar

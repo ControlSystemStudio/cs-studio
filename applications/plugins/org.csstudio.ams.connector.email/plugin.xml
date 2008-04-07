@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="EMailConnector"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run class="org.csstudio.ams.connector.email.EMailConnectorStart"/>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.ams.connector.email.internal.PreferencesInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.ams.internal.pages.Page1"
+            class="org.csstudio.ams.connector.email.internal.pages.Page1"
+            id="org.csstudio.ams.connector.email.page1"
+            name="Connector EMail"/>
+   </extension>
+   <extension
+         id="AmsEMailConnector"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.connector.email.EMailConnector"
+            name="Ams EMailConnector">
+         <property
+               name="appName"
+               value="Ams EMailConnector">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.ams.connector.email.xmpp.EMailLoginCallbackHandler"
+            id="org.csstudio.ams.connector.email.EMailLoginHandler"
+            name="EMailLoginHandler">
+      </loginHandler>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <parametrizedAction
+            class="org.csstudio.ams.connector.email.actions.EMailShutdownAction"
+            id="org.csstudio.ams.connector.email.ShutdownAction"
+            name="Shutdown"
+            parameters="Password">
+      </parametrizedAction>
+   </extension>
+
+</plugin>

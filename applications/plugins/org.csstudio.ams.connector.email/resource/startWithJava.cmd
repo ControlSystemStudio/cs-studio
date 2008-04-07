@@ -1,0 +1,1 @@
+start %JRE_HOME%\bin\javaw.exe -cp plugins/org.eclipse.equinox.launcher_1.0.1.R33x_v20070828.jar org.eclipse.equinox.launcher.Main -nosplash -plugincustomization plugin_customization.ini -application org.csstudio.ams.connector.email.EMailConnector

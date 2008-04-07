@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Email Plug-in
+Bundle-SymbolicName: org.csstudio.ams.connector.email;singleton:=true
+Bundle-Version: 1.0.3
+Bundle-Activator: org.csstudio.ams.connector.email.EMailConnectorPlugin
+Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform.ui,
+ org.csstudio.platform.libs.jms,
+ org.csstudio.ams,
+ org.csstudio.platform.libs.dcf,
+ org.csstudio.platform.libs.xmpp
+Eclipse-LazyStart: true
+Bundle-ClassPath: libs/activation.jar,
+ libs/dsn.jar,
+ libs/imap.jar,
+ libs/mailapi.jar,
+ libs/smtp.jar,
+ .

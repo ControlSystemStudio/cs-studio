@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="Distributor"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run class="org.csstudio.ams.distributor.DistributorStart"/>
+      </application>
+   </extension>
+   <extension
+         id="AmsDistributor"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.distributor.Distributor"
+            name="AmsDistributor">
+         <property
+               name="appName"
+               value="AmsDistributor">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.ams.distributor.xmpp.DistributorLoginCallbackHandler"
+            id="org.csstudio.ams.distributor.DistributorLoginHandler"
+            name="DistributorLoginHandler">
+      </loginHandler>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <parametrizedAction
+            class="org.csstudio.ams.distributor.actions.DistributorShutdownAction"
+            id="org.csstudio.ams.distributor.DistributorShutdownAction"
+            name="Shutdown"
+            parameters="Password">
+      </parametrizedAction>
+   </extension>
+
+</plugin>

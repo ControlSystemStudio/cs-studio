@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="VoicemailConnector"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run class="org.csstudio.ams.connector.voicemail.VoicemailConnectorStart"/>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.ams.connector.voicemail.internal.PreferencesInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.ams.internal.pages.Page1"
+            class="org.csstudio.ams.connector.voicemail.internal.pages.Page1"
+            id="org.csstudio.ams.connector.voicemail.page1"
+            name="Connector Voice Mail"/>
+   </extension>
+   <extension
+         id="AmsVoicemailConnector"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.connector.voicemail.VoicemailConnector"
+            name="Ams VoicemailConnector">
+         <property
+               name="appName"
+               value="Ams VoicemailConnector">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.ams.connector.voicemail.xmpp.VoicemailCallbackHandler"
+            id="org.csstudio.ams.connector.voicemail.VoicemailLoginHandler"
+            name="VoicemailLoginHandler">
+      </loginHandler>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <parametrizedAction
+            class="org.csstudio.ams.connector.voicemail.actions.VoicemalConnectorShutdownAction"
+            id="org.csstudio.ams.connector.voicemail.VoicemalConnectorShutdownAction"
+            name="Shutdown"
+            parameters="Password">
+      </parametrizedAction>
+   </extension>
+
+</plugin>

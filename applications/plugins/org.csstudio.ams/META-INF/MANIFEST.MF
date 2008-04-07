@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ams Plug-in
+Bundle-SymbolicName: org.csstudio.ams; singleton:=true
+Bundle-Version: 1.0.3
+Bundle-Activator: org.csstudio.ams.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform,
+ org.csstudio.platform.ui,
+ org.csstudio.platform.libs.jms,
+ org.csstudio.platform.libs.jdbc,
+ org.csstudio.platform.libs.dal,
+ org.csstudio.platform.libs.epics,
+ org.csstudio.platform.libs.epics.ui
+Eclipse-LazyStart: true
+Bundle-ClassPath: libs/derbyclient.jar,
+ libs/derbytools.jar,
+ .
+Export-Package: org.csstudio.ams,
+ org.csstudio.ams.configReplicator,
+ org.csstudio.ams.dbAccess,
+ org.csstudio.ams.dbAccess.configdb,
+ org.csstudio.ams.filter,
+ org.csstudio.ams.filter.ui,
+ org.csstudio.ams.gui,
+ org.csstudio.ams.internal,
+ org.csstudio.ams.internal.pages

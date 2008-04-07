@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="org.csstudio.alarm.jms2ora"
+         name="Jms2Ora"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            visible="true">
+         <run
+               class="org.csstudio.alarm.jms2ora.Jms2OraStart">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="Jms2OraProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.alarm.jms2ora"
+            name="Jms2Ora">
+         <property
+               name="appName"
+               value="Jms2Ora">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.alarm.jms2ora.xmpp.LoginCallbackHandler"
+            id="org.csstudio.alarm.jms2ora.loginHandler"
+            name="Jms2OraLoginHandler">
+      </loginHandler>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <simpleAction
+            class="org.csstudio.alarm.jms2ora.actions.RestartJms2OraAction"
+            id="org.csstudio.alarm.jms2ora.restartJms2OraAction"
+            name="Restart"
+            visible="true">
+      </simpleAction>
+      <simpleAction
+            class="org.csstudio.alarm.jms2ora.actions.GetQueuedMessagesAction"
+            id="org.csstudio.alarm.jms2ora.getQueuedMessagesAction"
+            name="Get Number Of Queued Messages"
+            visible="true">
+      </simpleAction>
+      <simpleAction
+            class="org.csstudio.alarm.jms2ora.actions.GetNumberOfWaifFilesAction"
+            id="org.csstudio.alarm.jms2ora.getNumberOfWaifFilesAction"
+            name="Get Number Of Waif Files"
+            visible="true">
+      </simpleAction>
+      <simpleAction
+            class="org.csstudio.alarm.jms2ora.actions.DeleteAllWaifFilesAction"
+            id="org.csstudio.alarm.jms2ora.deleteAllWaifFilesAction"
+            name="Delete All Waif Files"
+            visible="true">
+      </simpleAction>
+      <simpleAction
+            class="org.csstudio.alarm.jms2ora.actions.GetWaifFileContentAction"
+            id="org.csstudio.alarm.jms2ora.getWaifFileContentAction"
+            name="Get Waif File Content"
+            visible="true">
+      </simpleAction>
+      <simpleAction
+            class="org.csstudio.alarm.jms2ora.actions.GetNameOfWaifFilesAction"
+            id="org.csstudio.alarm.jms2ora.getNameOfWaifFilesAction"
+            name="Get Name Of Waif Files"
+            visible="true">
+      </simpleAction>
+      <parametrizedAction
+            class="org.csstudio.alarm.jms2ora.actions.StopJms2OraAction"
+            id="org.csstudio.alarm.jms2ora.stopJms2OraAction"
+            name="Shutdown"
+            parameters="Password">
+      </parametrizedAction>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.alarm.jms2ora.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+
+</plugin>

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Distributor Plug-in
+Bundle-SymbolicName: org.csstudio.ams.distributor;singleton:=true
+Bundle-Version: 1.0.3
+Bundle-Activator: org.csstudio.ams.distributor.DistributorPlugin
+Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.csstudio.platform.ui,
+ org.csstudio.platform.libs.jms,
+ org.csstudio.ams,
+ org.csstudio.platform.libs.xmpp,
+ org.csstudio.platform.libs.dcf
+Eclipse-LazyStart: true

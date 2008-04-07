@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.csstudio"
+            name="CSS">
+      </category>
+      <view
+            category="org.csstudio"
+            class="org.csstudio.ams.alarmchainmanager.views.AlarmChainManagerView"
+            icon="icons/ams.gif"
+            id="org.csstudio.ams.alarmchainmanager.views.AlarmChainManagerView"
+            name="AMS AlarmChainManager">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.ams.alarmchainmanager.ActionSet"
+            label="AMS AlarmChainManager"
+            visible="true">
+         <action
+               class="org.csstudio.ams.alarmchainmanager.actions.ShowViewAction"
+               icon="icons/ams.gif"
+               id="org.csstudio.ams.alarmchainmanager.ShowViewAction"
+               label="AMS AlarmChainManager"
+               menubarPath="css/configuration/"
+               style="push">
+         </action>
+      </actionSet>
+   </extension>
+
+</plugin>
