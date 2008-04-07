@@ -61,9 +61,17 @@ public class SendCommandToIoc extends Thread {
 		
 		this.id = InterconnectionServer.getInstance().getSendCommandId();
 		this.hostName = hostName;
+		/*
+    	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
+    	 * in any case: be prepared!
+    	 */
+    	if ( hostName.contains("|")) {
+    		System.out.println ("SendCommandToIoc(1): hostname contains >|< ! hostname = " + hostName);
+    		this.hostName = hostName.substring(0, hostName.indexOf("|"));
+		}
 		this.port = port;
 		this.command = command;
-		this.statisticId = hostName + ":" + Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
+		this.statisticId = this.hostName + ":" + Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.DATA_PORT_NUMBER, "", null));
 		if ( (this.hostName == null || this.statisticId == null ) || (this.hostName.equals("") || this.statisticId.equals("") ))  {
 			CentralLogger.getInstance().fatal(this, "Wrong StatiscitcID or HostName! ID: " + this.statisticId + "Host: " + hostName);
@@ -82,6 +90,14 @@ public class SendCommandToIoc extends Thread {
 		
 		this.id = InterconnectionServer.getInstance().getSendCommandId();
 		this.hostName = Statistic.getInstance().getContentObject(statisticId).getHost();
+		/*
+    	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
+    	 * in any case: be prepared!
+    	 */
+    	if ( hostName.contains("|")) {
+    		System.out.println ("SendCommandToIoc(2): hostname contains >|< ! hostname = " + hostName);
+    		this.hostName = hostName.substring(0, hostName.indexOf("|"));
+		}
 		this.port = Statistic.getInstance().getContentObject(statisticId).getPort();
 		this.command = command;
 		this.statisticId = statisticId;
@@ -138,14 +154,14 @@ public class SendCommandToIoc extends Thread {
         	socket = new DatagramSocket( );	// do NOT specify the port
             
             // DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, packet.getAddress(), packet.getPort());
-        	/*
-        	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
-        	 * in any case: be prepared!
-        	 */
-        	if ( hostName.contains("|")) {
-        		System.out.println ("SendCommandToIoc: hostname contains >|< ! hostname = " + hostName);
-        		hostName = hostName.substring(0, hostName.indexOf("|"));
-    		}
+//        	/*
+//        	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
+//        	 * in any case: be prepared!
+//        	 */
+//        	if ( hostName.contains("|")) {
+//        		System.out.println ("SendCommandToIoc: hostname contains >|< ! hostname = " + hostName);
+//        		hostName = hostName.substring(0, hostName.indexOf("|"));
+//    		}
             DatagramPacket newPacket = new DatagramPacket(preparedMessage, preparedMessage.length, InetAddress.getByName( hostName), PreferenceProperties.COMMAND_PORT_NUMBER);
             
             socket.send(newPacket);

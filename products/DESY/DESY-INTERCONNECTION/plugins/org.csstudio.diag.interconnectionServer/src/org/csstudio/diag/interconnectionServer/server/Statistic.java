@@ -438,6 +438,24 @@ public class Statistic {
 			 Enumeration connections = this.connectionList.elements();
 			 while (connections.hasMoreElements()) {
 				 StatisticContent thisContent = (StatisticContent)connections.nextElement();
+				 nodeNames.add(thisContent.getHost());
+			 }
+		 } catch (Exception e) {
+			 nodeNames.add("NONE");
+		 }
+		 return nodeNames.toArray(new String[0]);
+		 
+	}
+	
+	public String[] getNodeNameArrayWithLogicalName () {
+		 List<String> nodeNames = new ArrayList<String>();
+		 boolean first = true;
+		 
+		 try {
+			 // just in case no enum is possible
+			 Enumeration connections = this.connectionList.elements();
+			 while (connections.hasMoreElements()) {
+				 StatisticContent thisContent = (StatisticContent)connections.nextElement();
 				 nodeNames.add(thisContent.getHost() + "|" + thisContent.getLogicalIocName());
 			 }
 		 } catch (Exception e) {
