@@ -29,8 +29,11 @@ import java.net.InetAddress;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
+import org.csstudio.diag.interconnectionServer.Activator;
+import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.engine.Engine;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * The thread which actually is sending the command.
@@ -43,7 +46,7 @@ public class SendCommandToIoc extends Thread {
 	private String hostName = "locahost";
 	private int port = 0;
 	private String command = "NONE";
-	private String statisticId = "NONE";
+	private volatile String statisticId = "NONE";
 	private int id = 0;
 	private static String IOC_NOT_REACHABLE = "IOC_NOT_REACHABLE";
 	private int statusMessageDelay = 0;
@@ -60,8 +63,14 @@ public class SendCommandToIoc extends Thread {
 		this.hostName = hostName;
 		this.port = port;
 		this.command = command;
-		this.statisticId = hostName + ":" + port;
-		this.start();
+		this.statisticId = hostName + ":" + Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
+	    		PreferenceConstants.DATA_PORT_NUMBER, "", null));
+		if ( (this.hostName == null || this.statisticId == null ) || (this.hostName.equals("") || this.statisticId.equals("") ))  {
+			CentralLogger.getInstance().fatal(this, "Wrong StatiscitcID or HostName! ID: " + this.statisticId + "Host: " + hostName);
+			// do NOT start!
+		} else {
+			this.start();
+		}
 	}
 	
 	/**
@@ -76,7 +85,12 @@ public class SendCommandToIoc extends Thread {
 		this.port = Statistic.getInstance().getContentObject(statisticId).getPort();
 		this.command = command;
 		this.statisticId = statisticId;
-		this.start();
+		if ( (this.hostName == null || this.statisticId == null ) || (this.hostName.equals("") || this.statisticId.equals("") ))  {
+			CentralLogger.getInstance().fatal(this, "Wrong StatiscitcID or HostName! ID: " + this.statisticId + "Host: " + hostName);
+			// do NOT start!
+		} else {
+			this.start();
+		}
 	}
 	
 	public void run() {
@@ -215,7 +229,15 @@ public class SendCommandToIoc extends Thread {
         					"virtual channel", 											// text
         					null);	
         			// send command to IOC - get ALL alarm states
-        			new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        			
+        			/*
+        			 * if we received beacons within the last two beacon timeout periods we 'probably' did not loose any messages
+        			 * this is a switch over from one IC-Server to another and thus
+        			 * we DO NOT have to ask for an update on all alarms! 
+        			 */
+        			if ( ! Statistic.getInstance().getContentObject(statisticId).wasLastBeaconWithinTwoBeaconTimeouts()) {
+        				new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        			}
         		}           	
             } else if (TagList.getInstance().getReplyType(answer) == TagList.REPLY_TYPE_NOT_SELECTED) {
             	/*

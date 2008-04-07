@@ -113,6 +113,7 @@ public class Statistic {
 		GregorianCalendar timeLastReceived = null;
 		GregorianCalendar timeLastCommandSent = null;
 		GregorianCalendar timeLastBeaconReceived = null;
+		int deltaTimeLastBeaconReceived = 0;
 		GregorianCalendar timeLastErrorOccured = null;
 		int errorCounter = 0;
 		boolean connectState = false;
@@ -163,7 +164,9 @@ public class Statistic {
 			//
 			// init time
 			//
-			this.timeLastBeaconReceived = new GregorianCalendar();
+			GregorianCalendar newTime = new GregorianCalendar();
+			setDeltaTimeLastBeaconReceived( gregorianTimeDifference ( getTimeLastBeaconReceived(), newTime));
+			this.timeLastBeaconReceived = newTime;
 		}
 		
 		public void setHost ( String host) {
@@ -324,6 +327,23 @@ public class Statistic {
 
 		public void setLdapIocName(String ldapIocName) {
 			this.ldapIocName = ldapIocName;
+		}
+
+		public int getDeltaTimeLastBeaconReceived() {
+			return deltaTimeLastBeaconReceived;
+		}
+
+		public void setDeltaTimeLastBeaconReceived(
+				int deltaTimeLastBeaconReceived) {
+			this.deltaTimeLastBeaconReceived = deltaTimeLastBeaconReceived;
+		}
+		
+		public boolean wasLastBeaconWithinTwoBeaconTimeouts() {
+			if ( getDeltaTimeLastBeaconReceived() > 2*PreferenceProperties.BEACON_TIMEOUT) {
+				return false;
+			} else {
+				return true;
+			}
 		}
 		
 

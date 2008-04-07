@@ -48,6 +48,7 @@ public class TagList {
 	public static final int UNKNOWN_MESSAGE = 10;
 	public static final int PUT_LOG_MESSAGE = 11;
 	public static final int TEST_COMMAND = 12;
+	public static final int SWITCH_OVER = 13;
 	
 	public static final int REPLY_TYPE_DONE = 1;
 	public static final int REPLY_TYPE_OK = 2;
@@ -101,6 +102,8 @@ public class TagList {
 		messageTypes.put("unknown", 			UNKNOWN_MESSAGE);
 		messageTypes.put("putLog", 				PUT_LOG_MESSAGE);
 		messageTypes.put("TCom", 				TEST_COMMAND);
+		messageTypes.put("switchOver", 			SWITCH_OVER);
+		
 	}
 	
 	private void fillReplyTypes() {

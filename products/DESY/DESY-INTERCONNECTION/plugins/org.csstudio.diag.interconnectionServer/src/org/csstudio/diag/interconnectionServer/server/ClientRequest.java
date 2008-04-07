@@ -71,6 +71,7 @@ public class ClientRequest extends Thread
     InterconnectionServer icServer = null;
     private boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_TRUE	= true;
     private boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE = false;
+    private boolean				wasSwitchOver = false;				
     private int statusMessageDelay = 0;
     
 	/* 
@@ -508,7 +509,7 @@ public class ClientRequest extends Thread
         			/*
         			 * get host name of interconnection server
         			 */
-        			String localHostName = null;
+        			String localHostName = "localHost NOT defined";
         			try {
         				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
         				localHostName = localMachine.getHostName();
@@ -526,7 +527,14 @@ public class ClientRequest extends Thread
         					"virtual channel", 											// text
         					null);	
         			// send command to IOC - get ALL alarm states
-        			new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        			/*
+        			 * if we received beacons within the last two beacon timeout periods we 'probably' did not loose any messages
+        			 * this is a switch over from one IC-Server to another and thus
+        			 * we DO NOT have to ask for an update on all alarms! 
+        			 */
+        			if ( ! statisticContent.wasLastBeaconWithinTwoBeaconTimeouts()) {
+        				new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        			}
         		}
         		
         		
@@ -562,7 +570,7 @@ public class ClientRequest extends Thread
                     	/*
             			 * get host name of interconnection server
             			 */
-            			String localHostName = null;
+                    	String localHostName = "localHost NOT defined";
             			try {
             				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
             				localHostName = localMachine.getHostName();
@@ -593,6 +601,61 @@ public class ClientRequest extends Thread
         		}
         		break;
         		
+        	case TagList.SWITCH_OVER:
+        		//
+        		// the IOC changed state from NOT selected to selected
+        		// we do not have to check state and do NOT have to send all alarms!
+        		// this message should be sent IMMEDIATELY after a switch over and BEFORE any other messages get generated
+        		//
+        		
+        		//
+        		// just send a reply
+        		//
+        		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
+        		///System.out.println("Time-Beacon: - after send UDP reply	=  " + dateToString(new GregorianCalendar()));
+        		
+        		/*
+        		 * we are selected!
+        		 * in case we were not selected before - we'll ask the IOC for an update on ALL the alarm states
+        		 */
+//        		if (!statisticContent.isSelectState()) {
+        		if ( true) {
+        			//remember we're selected
+        			statisticContent.setSelectState(true);
+        			/*
+        			 * get host name of interconnection server
+        			 */
+        			String localHostName = "localHost NOT defined";
+        			try {
+        				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+        				localHostName = localMachine.getHostName();
+        			}
+        			catch (java.net.UnknownHostException uhe) { 
+        			}
+        			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+        					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
+        					localHostName + ":" + statisticContent.getLogicalIocName() + ":selectState",					// name
+        					localHostName, 														// value
+        					JmsMessage.SEVERITY_NO_ALARM, 										// severity
+        					"SELECTED - switch over", 												// status
+        					hostName, 															// host
+        					null, 																// facility
+        					"virtual channel", 													// text
+        					null);	
+        			// do NOT send command to IOC - get ALL alarm states
+//        			new SendCommandToIoc( statisticId, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        		}
+        		
+        		
+        		//
+        		// do NOT generate system log message : connection state my not have changed changed
+        		//
+        		
+        		if (showMessageIndicatorB) {
+        			System.out.print("SO");
+        		}
+        		break;
+        		
         	case TagList.BEACON_MESSAGE_NOT_SELECTED:
         		//
         		// just send a reply
@@ -610,7 +673,7 @@ public class ClientRequest extends Thread
         			/*
         			 * get host name of interconnection server
         			 */
-        			String localHostName = null;
+        			String localHostName = "localHost NOT defined";
         			try {
         				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
         				localHostName = localMachine.getHostName();

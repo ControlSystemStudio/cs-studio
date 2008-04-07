@@ -60,6 +60,13 @@ public class ExecuteRemoteCommandDyn implements IAction {
 		if ( client.contains("|")) {
 			client = client.substring(0, client.indexOf("|"));
 		}
+		
+		if ( (client != null) && (client.length()>0)) {
+			// must be valid
+		} else {
+			return command + ":" + client + " - invalid IOC name";
+		}
+		
 //		System.out.println("received param: " + command + " " + client);
 		int commandId = -1;
 		

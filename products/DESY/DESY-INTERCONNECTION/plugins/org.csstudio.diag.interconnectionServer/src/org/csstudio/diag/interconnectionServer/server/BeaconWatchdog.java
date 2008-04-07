@@ -91,7 +91,7 @@ public class BeaconWatchdog extends Thread{
 					 /*
 					  * send log message
 					  */
-					 CentralLogger.getInstance().warn(this, "InterconnectionServer: Beacon timeout for Host: " + thisContent.host);
+					 CentralLogger.getInstance().warn(this, "InterconnectionServer: Beacon timeout for Host: " + thisContent.host + "|" + thisContent.logicalIocName);
 					 /*
 					  * do the changed state stuff in a new thread
 					  * ... but only if this InterconnectionServer is the selected one (from IOC point of view)
