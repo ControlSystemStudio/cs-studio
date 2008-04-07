@@ -534,6 +534,9 @@ public class ClientRequest extends Thread
         			 */
         			if ( ! statisticContent.wasLastBeaconWithinTwoBeaconTimeouts()) {
         				new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+        				CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
+        			} else {
+        				CentralLogger.getInstance().info(this, "Just a switch over from one IC-Server to this one - no need to get an update on all alarms!");
         			}
         		}
         		
