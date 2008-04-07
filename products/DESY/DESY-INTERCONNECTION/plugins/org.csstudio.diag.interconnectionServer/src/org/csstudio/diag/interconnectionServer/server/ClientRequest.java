@@ -516,12 +516,16 @@ public class ClientRequest extends Thread
         			}
         			catch (java.net.UnknownHostException uhe) { 
         			}
+        			String selectMessage = "SELECTED";
+        			if ( statisticContent.wasLastBeaconWithinTwoBeaconTimeouts()) {
+        				selectMessage = "SELECTED - switch over";
+        			}
         			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
         					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 									// type
         					localHostName + ":" + statisticContent.getLogicalIocName() + ":selectState",					// name
         					localHostName, 														// value
         					JmsMessage.SEVERITY_NO_ALARM, 										// severity
-        					"SELECTED", 														// status
+        					selectMessage, 														// status
         					hostName, 															// host
         					null, 																// facility
         					"virtual channel", 											// text
