@@ -367,8 +367,8 @@ public class Statistic {
 				return false;
 			} else {
 				CentralLogger.getInstance().info(this, "Previous beacon within timeout period: " + getDeltaTime2ndPreviousBeaconReceived() + " [ms] < " + 3*PreferenceProperties.BEACON_TIMEOUT);
-				CentralLogger.getInstance().info(this, "LastBeacon " + getDeltaTimePreviousBeaconReceived() + " [ms]");
-				CentralLogger.getInstance().info(this, "LastBeacon " + getDeltaTimeLastBeaconReceived() + " [ms]");
+//				CentralLogger.getInstance().info(this, "LastBeacon " + getDeltaTimePreviousBeaconReceived() + " [ms]");
+//				CentralLogger.getInstance().info(this, "LastBeacon " + getDeltaTimeLastBeaconReceived() + " [ms]");
 				return true;
 			}
 		}

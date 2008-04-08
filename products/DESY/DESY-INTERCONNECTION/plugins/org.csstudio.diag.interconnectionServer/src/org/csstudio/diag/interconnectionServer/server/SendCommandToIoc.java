@@ -61,14 +61,14 @@ public class SendCommandToIoc extends Thread {
 		
 		this.id = InterconnectionServer.getInstance().getSendCommandId();
 		this.hostName = hostName;
-		/*
-    	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
-    	 * in any case: be prepared!
-    	 */
-    	if ( hostName.contains("|")) {
-    		System.out.println ("SendCommandToIoc(1): hostname contains >|< ! hostname = " + hostName);
-    		this.hostName = hostName.substring(0, hostName.indexOf("|"));
-		}
+//		/*
+//    	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
+//    	 * in any case: be prepared!
+//    	 */
+//    	if ( hostName.contains("|")) {
+//    		System.out.println ("SendCommandToIoc(1): hostname contains >|< ! hostname = " + hostName);
+//    		this.hostName = hostName.substring(0, hostName.indexOf("|"));
+//		}
 		this.port = port;
 		this.command = command;
 		this.statisticId = this.hostName + ":" + Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
@@ -90,14 +90,14 @@ public class SendCommandToIoc extends Thread {
 		
 		this.id = InterconnectionServer.getInstance().getSendCommandId();
 		this.hostName = Statistic.getInstance().getContentObject(statisticId).getHost();
-		/*
-    	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
-    	 * in any case: be prepared!
-    	 */
-    	if ( hostName.contains("|")) {
-    		System.out.println ("SendCommandToIoc(2): hostname contains >|< ! hostname = " + hostName);
-    		this.hostName = hostName.substring(0, hostName.indexOf("|"));
-		}
+//		/*
+//    	 * it happened that the host name looked like: ipName|logicalIocName - but Why?? and from where?
+//    	 * in any case: be prepared!
+//    	 */
+//    	if ( hostName.contains("|")) {
+//    		System.out.println ("SendCommandToIoc(2): hostname contains >|< ! hostname = " + hostName);
+//    		this.hostName = hostName.substring(0, hostName.indexOf("|"));
+//		}
 		this.port = Statistic.getInstance().getContentObject(statisticId).getPort();
 		this.command = command;
 		this.statisticId = statisticId;
