@@ -7,15 +7,9 @@ public class Messages extends NLS
     private static final String BUNDLE_NAME = "org.csstudio.sns.product.messages"; //$NON-NLS-1$
 
     public static String Application_DefaultProject;
-    public static String Application_FatalWorkspaceMessage;
-    public static String Application_FatalWorkspaceError;
     public static String Application_ProjectError;
     public static String Application_ProjectExitErrorMessage;
     public static String Application_ProjectInitErrorMessage;
-    public static String Application_RestartMessage;
-    public static String Application_RestartTitle;
-    public static String Application_WorkspaceInUseError;
-    public static String Application_WorkspaceInUseInfo;
     public static String Menu_CSS_Alarm;
     public static String Menu_CSS_Configuration;
     public static String Menu_CSS_CSS;
