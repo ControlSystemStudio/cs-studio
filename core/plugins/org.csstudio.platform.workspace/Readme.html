@@ -1,0 +1,28 @@
+<h1>Workspace Utils</h1>
+
+Code for selecting and switching the workspace.
+This is mostly adapted from
+org.eclipse.ui.ide, where some 
+org.eclipse.ui.internal code was not accessible
+to ordinary applications.
+<p>
+
+Alexander Will had previously provided something
+very much like this within org.csstudio.platform.ui,
+but that leads to problems:<br>
+
+When loading the CSS platform plugin, it reads certain
+preferences. That in turn activates the default workspace.
+When invoking a "Workspace Select" dialog from the
+CSS platform plugin, there is consequently already
+a workspace active, and one cannot select the one that
+the user picked in the "Workspace Select" dialog.
+The only way out is a restart as performed in the 
+SwitchWorkspaceAction, but that takes a long time.
+<p>
+
+This plugin is therefore as much as possible standalone,
+so that applications can prompt for a workspace and then
+select it.
+The org.csstudio.sns.product will show an example of
+using it in a way similar to the IDE.
