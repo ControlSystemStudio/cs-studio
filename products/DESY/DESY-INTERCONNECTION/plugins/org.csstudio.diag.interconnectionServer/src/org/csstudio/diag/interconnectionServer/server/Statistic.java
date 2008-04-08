@@ -21,9 +21,10 @@ package org.csstudio.diag.interconnectionServer.server;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-import java.util.GregorianCalendar;
 import java.util.*;
 import java.text.*;
+
+import org.csstudio.platform.logging.CentralLogger;
 
 public class Statistic {
 	
@@ -113,7 +114,11 @@ public class Statistic {
 		GregorianCalendar timeLastReceived = null;
 		GregorianCalendar timeLastCommandSent = null;
 		GregorianCalendar timeLastBeaconReceived = null;
+		GregorianCalendar timePreviousBeaconReceived = null;
+		GregorianCalendar time2ndPreviousBeaconReceived = null;
 		int deltaTimeLastBeaconReceived = 0;
+		int deltaTimePreviousBeaconReceived = 0;
+		int deltaTime2ndPreviousBeaconReceived = 0;
 		GregorianCalendar timeLastErrorOccured = null;
 		int errorCounter = 0;
 		boolean connectState = false;
@@ -140,6 +145,8 @@ public class Statistic {
 			this.timeLastReceived = new GregorianCalendar(1970,1,1);
 			this.timeLastCommandSent = new GregorianCalendar(1970,1,1);
 			this.timeLastBeaconReceived = new GregorianCalendar(1970,1,1);
+			this.timePreviousBeaconReceived = new GregorianCalendar(1970,1,1);
+			this.time2ndPreviousBeaconReceived = new GregorianCalendar(1970,1,1);
 			this.timeLastErrorOccured = new GregorianCalendar(1970,1,1);
 			
 		}
@@ -164,8 +171,24 @@ public class Statistic {
 			//
 			// init time
 			//
+			/*
+			 * Why is it so complicated?
+			 * Order:
+			 * IOC new connected:
+			 * (1)Beacon  ->setBeaconTime()
+			 * (2)Message -> setBeaconTime() - process message - find out we are selected - check for beacon time
+			 * In this case:
+			 * - 2ndprevious == old
+			 * - previous    == set by (1) -> most recent ~ as old as the beacon update time
+			 * - last        == set by (2) -> the current time
+			 * ==> we have to check against the 2ndprevious time
+			 */
 			GregorianCalendar newTime = new GregorianCalendar();
-			setDeltaTimeLastBeaconReceived( gregorianTimeDifference ( getTimeLastBeaconReceived(), newTime));
+			setDeltaTimeLastBeaconReceived( gregorianTimeDifference ( this.timeLastBeaconReceived, newTime));
+			setDeltaTimePreviousBeaconReceived( gregorianTimeDifference ( this.timePreviousBeaconReceived, newTime));
+			setDeltaTime2ndPreviousBeaconReceived( gregorianTimeDifference ( this.time2ndPreviousBeaconReceived, newTime));
+			this.time2ndPreviousBeaconReceived = this.timePreviousBeaconReceived;
+			this.timePreviousBeaconReceived = this.timeLastBeaconReceived;
 			this.timeLastBeaconReceived = newTime;
 		}
 		
@@ -338,12 +361,52 @@ public class Statistic {
 			this.deltaTimeLastBeaconReceived = deltaTimeLastBeaconReceived;
 		}
 		
-		public boolean wasLastBeaconWithinTwoBeaconTimeouts() {
-			if ( getDeltaTimeLastBeaconReceived() > 2*PreferenceProperties.BEACON_TIMEOUT) {
+		public boolean wasPreviousBeaconWithinThreeBeaconTimeouts() {
+			if ( getDeltaTime2ndPreviousBeaconReceived() > 3*PreferenceProperties.BEACON_TIMEOUT) {
+				CentralLogger.getInstance().info(this, "Previous beacon timeout: " + getDeltaTime2ndPreviousBeaconReceived() + " [ms]");
 				return false;
 			} else {
+				CentralLogger.getInstance().info(this, "Previous beacon within timeout period: " + getDeltaTime2ndPreviousBeaconReceived() + " [ms] < " + 3*PreferenceProperties.BEACON_TIMEOUT);
+				CentralLogger.getInstance().info(this, "LastBeacon " + getDeltaTimePreviousBeaconReceived() + " [ms]");
+				CentralLogger.getInstance().info(this, "LastBeacon " + getDeltaTimeLastBeaconReceived() + " [ms]");
 				return true;
 			}
+		}
+
+		public int getDeltaTimePreviousBeaconReceived() {
+			return deltaTimePreviousBeaconReceived;
+		}
+
+		public void setDeltaTimePreviousBeaconReceived(
+				int deltaTimePreviousBeaconReceived) {
+			this.deltaTimePreviousBeaconReceived = deltaTimePreviousBeaconReceived;
+		}
+
+		public GregorianCalendar getTimePreviousBeaconReceived() {
+			return timePreviousBeaconReceived;
+		}
+
+		public void setTimePreviousBeaconReceived(
+				GregorianCalendar timePreviousBeaconReceived) {
+			this.timePreviousBeaconReceived = timePreviousBeaconReceived;
+		}
+
+		public GregorianCalendar getTime2ndPreviousBeaconReceived() {
+			return time2ndPreviousBeaconReceived;
+		}
+
+		public void setTime2ndPreviousBeaconReceived(
+				GregorianCalendar time2ndPreviousBeaconReceived) {
+			this.time2ndPreviousBeaconReceived = time2ndPreviousBeaconReceived;
+		}
+
+		public int getDeltaTime2ndPreviousBeaconReceived() {
+			return deltaTime2ndPreviousBeaconReceived;
+		}
+
+		public void setDeltaTime2ndPreviousBeaconReceived(
+				int deltaTime2ndPreviousBeaconReceived) {
+			this.deltaTime2ndPreviousBeaconReceived = deltaTime2ndPreviousBeaconReceived;
 		}
 		
 

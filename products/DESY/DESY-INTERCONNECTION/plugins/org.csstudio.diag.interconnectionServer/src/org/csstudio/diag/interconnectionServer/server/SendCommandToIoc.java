@@ -235,7 +235,7 @@ public class SendCommandToIoc extends Thread {
         			catch (java.net.UnknownHostException uhe) { 
         			}
         			String selectMessage = "SELECTED";
-        			if ( Statistic.getInstance().getContentObject(statisticId).wasLastBeaconWithinTwoBeaconTimeouts()) {
+        			if ( Statistic.getInstance().getContentObject(statisticId).wasPreviousBeaconWithinThreeBeaconTimeouts()) {
         				selectMessage = "SELECTED - switch over";
         			}
         			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
@@ -255,7 +255,7 @@ public class SendCommandToIoc extends Thread {
         			 * this is a switch over from one IC-Server to another and thus
         			 * we DO NOT have to ask for an update on all alarms! 
         			 */
-        			if ( ! Statistic.getInstance().getContentObject(statisticId).wasLastBeaconWithinTwoBeaconTimeouts()) {
+        			if ( ! Statistic.getInstance().getContentObject(statisticId).wasPreviousBeaconWithinThreeBeaconTimeouts()) {
         				new SendCommandToIoc( hostName, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
         				CentralLogger.getInstance().info(this, "This is a fail over from one IC-Server to this one - get an update on all alarms!");
         			} else {
