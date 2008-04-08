@@ -229,7 +229,7 @@ public class ClientRequest extends Thread
     		// set beacon time locally (set to current time - retrigger)
         	// to be performed in ANY case
     		//
-    		statisticContent.setBeaconTime();
+//    		statisticContent.setBeaconTime();	// set beacon ONLY for beacon messages!
         	
         	switch (TagList.getInstance().getMessageType( type.getValue())) {
         	
@@ -425,6 +425,12 @@ public class ClientRequest extends Thread
         		
         	case TagList.BEACON_MESSAGE:
         		//
+        		// set beacon time locally (set to current time - retrigger)
+        		// set beacon ONLY for beacon messages!
+        		//
+        		statisticContent.setBeaconTime();	
+        		
+        		//
         		// just send a reply
         		//
         		ServerCommands.sendMesssage( ServerCommands.prepareMessage( id.getTag(), id.getValue(), status), socket, packet);
@@ -493,6 +499,12 @@ public class ClientRequest extends Thread
         		break;
         		
         	case TagList.BEACON_MESSAGE_SELECTED:
+        		//
+        		// set beacon time locally (set to current time - retrigger)
+        		// set beacon ONLY for beacon messages!
+        		//
+        		statisticContent.setBeaconTime();
+        		
         		//
         		// just send a reply
         		//
@@ -610,6 +622,12 @@ public class ClientRequest extends Thread
         		
         	case TagList.SWITCH_OVER:
         		//
+        		// set beacon time locally (set to current time - retrigger)
+        		// set beacon ONLY for beacon messages!
+        		//
+        		statisticContent.setBeaconTime();
+        		
+        		//
         		// the IOC changed state from NOT selected to selected
         		// we do not have to check state and do NOT have to send all alarms!
         		// this message should be sent IMMEDIATELY after a switch over and BEFORE any other messages get generated
@@ -664,6 +682,12 @@ public class ClientRequest extends Thread
         		break;
         		
         	case TagList.BEACON_MESSAGE_NOT_SELECTED:
+        		//
+        		// set beacon time locally (set to current time - retrigger)
+        		// set beacon ONLY for beacon messages!
+        		//
+        		statisticContent.setBeaconTime();
+        		
         		//
         		// just send a reply
         		//
