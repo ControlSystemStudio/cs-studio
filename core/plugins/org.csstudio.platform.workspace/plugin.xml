@@ -11,14 +11,14 @@
                class="org.csstudio.platform.workspace.actions.RestartAction"
                id="org.csstudio.platform.workspace.actions.restart"
                label="%restart"
-               menubarPath="file/additions"
+               menubarPath="file/fileEnd"
                style="push"
                tooltip="%restart_tt"/>
          <action
                class="org.csstudio.platform.workspace.actions.SwitchWorkspaceAction"
                id="org.csstudio.platform.workspace.actions.openworkspace"
                label="%switch"
-               menubarPath="file/additions"
+               menubarPath="file/fileEnd"
                style="push"
                tooltip="%switch_tt"/>
       </actionSet>
