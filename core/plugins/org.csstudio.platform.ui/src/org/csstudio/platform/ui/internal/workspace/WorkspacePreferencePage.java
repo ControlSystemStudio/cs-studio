@@ -51,16 +51,24 @@ import org.eclipse.ui.internal.dialogs.StartupPreferencePage;
  */
 public final class WorkspacePreferencePage extends StartupPreferencePage
 		implements IWorkbenchPreferencePage {
+    /**
+     * <p>
+     * Stores the "refresh workspace on startup" flag.
+     * </p>
+     */
+    public static final String REFRESH_WORKSPACE_ON_STARTUP = "REFRESH_WORKSPACE_ON_STARTUP"; //$NON-NLS-1$
+
+    /**
+     * <p>
+     * Stores the "exit prompt on close last window" flag.
+     * </p>
+     */
+    public static final String EXIT_PROMPT_ON_CLOSE_LAST_WINDOW = "EXIT_PROMPT_ON_CLOSE_LAST_WINDOW"; //$NON-NLS-1$
 
 	/**
 	 * Refresh workspace on startup button.
 	 */
 	private Button _refreshButton;
-
-	/**
-	 * Prompt for workspace on startup button.
-	 */
-	private Button _launchPromptButton;
 
 	/**
 	 * Confirm exit button.
@@ -74,7 +82,6 @@ public final class WorkspacePreferencePage extends StartupPreferencePage
 	protected Control createContents(final Composite parent) {
 		Composite composite = createComposite(parent);
 
-		createLaunchPromptPref(composite);
 		createRefreshWorkspaceOnStartupPref(composite);
 		createExitPromptPref(composite);
 
@@ -92,14 +99,12 @@ public final class WorkspacePreferencePage extends StartupPreferencePage
 	protected void performDefaults() {
 		IPreferenceStore store = getCorePreferenceStore();
 
-		_launchPromptButton.setSelection(true);
-
 		_refreshButton
 				.setSelection(store
-						.getDefaultBoolean(ChooseWorkspaceData.REFRESH_WORKSPACE_ON_STARTUP));
+						.getDefaultBoolean(REFRESH_WORKSPACE_ON_STARTUP));
 		_exitPromptButton
 				.setSelection(store
-						.getDefaultBoolean(ChooseWorkspaceData.EXIT_PROMPT_ON_CLOSE_LAST_WINDOW));
+						.getDefaultBoolean(EXIT_PROMPT_ON_CLOSE_LAST_WINDOW));
 
 		super.performDefaults();
 	}
@@ -112,19 +117,11 @@ public final class WorkspacePreferencePage extends StartupPreferencePage
 		IPreferenceStore store = getCorePreferenceStore();
 
 		// store the refresh workspace on startup setting
-		store.setValue(ChooseWorkspaceData.REFRESH_WORKSPACE_ON_STARTUP,
+		store.setValue(REFRESH_WORKSPACE_ON_STARTUP,
 				_refreshButton.getSelection());
 
-		// TODO: This should get the value from the configuration preference
-		// area, but dj said we shouldn't use it yet; some final details are
-		// being worked out. Hopefully it will be available soon, at which time
-		// the entire recentWorkspaces.xml file can be removed. But until then,
-		// this preference reads/writes the file each time.
-		ChooseWorkspaceData.setShowDialogValue(_launchPromptButton
-				.getSelection());
-
 		// store the exit prompt on last window close setting
-		store.setValue(ChooseWorkspaceData.EXIT_PROMPT_ON_CLOSE_LAST_WINDOW,
+		store.setValue(EXIT_PROMPT_ON_CLOSE_LAST_WINDOW,
 				_exitPromptButton.getSelection());
 
 		CSSPlatformUiPlugin.getDefault().savePluginPreferences();
@@ -144,28 +141,7 @@ public final class WorkspacePreferencePage extends StartupPreferencePage
 				.WorkspacePreferencePage_REFRESH_ON_STARTUP);
 		_refreshButton.setFont(composite.getFont());
 		_refreshButton.setSelection(getCorePreferenceStore().getBoolean(
-				ChooseWorkspaceData.REFRESH_WORKSPACE_ON_STARTUP));
-	}
-
-	/**
-	 * Create the "Prompt for &workspace on startup" button.
-	 * 
-	 * @param composite
-	 *            The parent composite.
-	 */
-	protected void createLaunchPromptPref(final Composite composite) {
-		_launchPromptButton = new Button(composite, SWT.CHECK);
-		_launchPromptButton.setText(Messages
-				.WorkspacePreferencePage_PROMPT_FOR_WORKSPACE);
-		_launchPromptButton.setFont(composite.getFont());
-
-		// TODO: This should get the value from the configuration preference
-		// area, but dj said we shouldn't use it yet; some final details are
-		// being worked out. Hopefully it will be available soon, at which time
-		// the entire recentWorkspaces.xml file can be removed. But until then,
-		// this preference reads/writes the file each time.
-		_launchPromptButton.setSelection(ChooseWorkspaceData
-				.getShowDialogValue());
+				REFRESH_WORKSPACE_ON_STARTUP));
 	}
 
 	/**
@@ -180,7 +156,7 @@ public final class WorkspacePreferencePage extends StartupPreferencePage
 				.WorkspacePreferencePage_CONFIRM_EXIT);
 		_exitPromptButton.setFont(composite.getFont());
 		_exitPromptButton.setSelection(getCorePreferenceStore().getBoolean(
-				ChooseWorkspaceData.EXIT_PROMPT_ON_CLOSE_LAST_WINDOW));
+				EXIT_PROMPT_ON_CLOSE_LAST_WINDOW));
 	}
 
 	/**

@@ -94,12 +94,6 @@
             label="System Actions"
             visible="true">
          <action
-               class="org.csstudio.platform.ui.internal.actions.RestartAction"
-               id="org.csstudio.platform.ui.internal.actions.RestartAction"
-               label="%menuRestart"
-               menubarPath="file/fileEnd"
-               style="push"/>
-         <action
                class="org.csstudio.platform.ui.internal.actions.OpenWorkspaceExplorerAction"
                icon="icons/workspaceExplorer.png"
                id="org.csstudio.platform.ui.internal.actions.OpenWorkspaceExplorerAction"
@@ -108,12 +102,6 @@
                style="push"
                toolbarPath="fileEnd"
                tooltip="%menuOpenExplorer"/>                 
-         <action
-               class="org.csstudio.platform.ui.workspace.OpenWorkspaceAction"
-               id="org.csstudio.platform.ui.workspace.OpenWorkspaceAction"
-               label="%menuSwitchWorkspace"
-               menubarPath="file/fileEnd"
-               style="push"/>
          <action
                class="org.csstudio.platform.ui.internal.actions.LoginAction"
                id="org.csstudio.platform.ui.LoginAction"
