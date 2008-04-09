@@ -90,17 +90,17 @@ public class Probe extends ViewPart implements PVListener
 	 * Id of the save value command.
 	 */
 	private static final String SAVE_VALUE_COMMAND_ID =
-		"org.csstudio.platform.ui.commands.saveValue";
+		"org.csstudio.platform.ui.commands.saveValue"; //$NON-NLS-1$
 	/**
 	 * Id of the PV parameter to the save value command.
 	 */
 	private static final String PV_PARAMETER_ID =
-		"org.csstudio.platform.ui.commands.saveValue.pv";
+		"org.csstudio.platform.ui.commands.saveValue.pv"; //$NON-NLS-1$
 	/**
 	 * Id of the value parameter to the save value command.
 	 */
 	private static final String VALUE_PARAMETER_ID =
-		"org.csstudio.platform.ui.commands.saveValue.value";
+		"org.csstudio.platform.ui.commands.saveValue.value"; //$NON-NLS-1$
 
 	/** Instance number, used to create a unique ID
      *  @see #createNewInstance()
@@ -285,15 +285,16 @@ public class Probe extends ViewPart implements PVListener
         // 3 Boxes, connected via form layout: Top, meter, bottom
         //
         // PV Name: ____ name ____________________ [Info]
-        //              Meter
-        // Value     : ____ value ______________________
-        //             [Adjust] [Save to IOC]  [x] meter
-        // Timestamp : ____ time _______________________
+        // +---------------------------------------------------+
+        // |                    Meter                          |
+        // +---------------------------------------------------+
+        // Value     : ____ value ________________ [Adjust]
+        // Timestamp : ____ time _________________ [Save to IOC]
+        //                                         [x] meter
         // ---------------
         // Status: ...
         //
         // Inside top & bottom, it's a grid layout
-        
         top_box = new Composite(parent, 0);
         GridLayout grid = new GridLayout();
         grid.numColumns = 3;
@@ -319,54 +320,52 @@ public class Probe extends ViewPart implements PVListener
         meter = new MeterWidget(parent, 0);
         meter.setEnabled(false);
 
+        // Botton Box
         bottom_box = new Composite(parent, 0);
         grid = new GridLayout();
-        grid.numColumns = 4;
+        grid.numColumns = 3;
         bottom_box.setLayout(grid);
         
         label = new Label(bottom_box, 0);
         label.setText(Messages.S_Value);
         label.setLayoutData(new GridData());
         
-        lbl_value = new Label(bottom_box, 0);
+        lbl_value = new Label(bottom_box, SWT.BORDER);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        gd.horizontalSpan = 3;
         lbl_value.setLayoutData(gd);
-        
-        // New Row
-        new Label(bottom_box, SWT.NONE);  // keep first cell of layout empty
         
         final Button btn_adjust = new Button(bottom_box, SWT.PUSH);
         btn_adjust.setText(Messages.S_Adjust);
         btn_adjust.setToolTipText(Messages.S_ModValue);
         btn_adjust.setLayoutData(new GridData());
-        
-        btn_save_to_ioc = new Button(bottom_box, SWT.PUSH);
-        btn_save_to_ioc.setText(Messages.S_SaveToIoc);
-        btn_save_to_ioc.setToolTipText(Messages.S_SaveToIocTooltip);
-        btn_save_to_ioc.setLayoutData(new GridData());
-
-        show_meter = new Button(bottom_box, SWT.CHECK);
-        show_meter.setText(Messages.S_Meter);
-        show_meter.setToolTipText(Messages.S_Meter_TT);
-        show_meter.setSelection(true);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.END;
-        show_meter.setLayoutData(gd);
 
         // New Row
         label = new Label(bottom_box, 0);
         label.setText(Messages.S_Timestamp);
         label.setLayoutData(new GridData());
 
-        lbl_time = new Label(bottom_box, 0);
+        lbl_time = new Label(bottom_box, SWT.BORDER);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        gd.horizontalSpan = 3;
         lbl_time.setLayoutData(gd);
+        
+        btn_save_to_ioc = new Button(bottom_box, SWT.PUSH);
+        btn_save_to_ioc.setText(Messages.S_SaveToIoc);
+        btn_save_to_ioc.setToolTipText(Messages.S_SaveToIocTooltip);
+        btn_save_to_ioc.setLayoutData(new GridData());
+
+        // New Row
+        show_meter = new Button(bottom_box, SWT.CHECK);
+        show_meter.setText(Messages.S_Meter);
+        show_meter.setToolTipText(Messages.S_Meter_TT);
+        show_meter.setSelection(true);
+        gd = new GridData();
+        gd.horizontalAlignment = SWT.END;
+        gd.horizontalSpan = grid.numColumns;
+        show_meter.setLayoutData(gd);
         
         // Status bar
         label = new Label(bottom_box, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -461,13 +460,13 @@ public class Probe extends ViewPart implements PVListener
 			{
 				if (commandEvent.isEnabledChanged())
 				{
-					btn_save_to_ioc.setEnabled(
+					btn_save_to_ioc.setVisible(
 							commandEvent.getCommand().isEnabled());
 				}
 			}
         };
-        // Set the initial enablement of the button 
-        updateSaveToIocButtonEnablement();
+        // Set the initial vilibility of the button 
+        updateSaveToIocButtonVisibility();
 
         show_meter.addSelectionListener(new SelectionAdapter()
         {
@@ -515,7 +514,7 @@ public class Probe extends ViewPart implements PVListener
 			handlerService.executeCommand(cmd, null);
 		} catch (ExecutionException e) {
 			// Execution of the command handler failed.
-			Plugin.getLogger().error("Error executing save value command.", e);
+			Plugin.getLogger().error("Error executing save value command.", e); //$NON-NLS-1$
 			MessageDialog.openError(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocExecutionError);
@@ -523,7 +522,7 @@ public class Probe extends ViewPart implements PVListener
 			// Thrown if the command or one of the parameters is undefined.
 			// This should never happen (the command id is defined in the
 			// platform). Log an error, disable the button, and return.
-			Plugin.getLogger().error("Save value command is not defined.", e);
+			Plugin.getLogger().error("Save value command is not defined.", e); //$NON-NLS-1$
 			MessageDialog.openError(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocNotDefinedError);
@@ -532,21 +531,21 @@ public class Probe extends ViewPart implements PVListener
 			MessageDialog.openWarning(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocNotEnabled);
-			updateSaveToIocButtonEnablement();
+			updateSaveToIocButtonVisibility();
 		} catch (NotHandledException e) {
 			MessageDialog.openWarning(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocNotEnabled);
-			updateSaveToIocButtonEnablement();
+			updateSaveToIocButtonVisibility();
 		}
 	}
 
 	/**
-	 * Updates the enabled state of the Save to IOC button.
+	 * Updates the visibility state of the Save to IOC button.
 	 */
-	private void updateSaveToIocButtonEnablement()
+	private void updateSaveToIocButtonVisibility()
 	{
-		btn_save_to_ioc.setEnabled(getSaveValueCommand().isEnabled());
+		btn_save_to_ioc.setVisible(getSaveValueCommand().isEnabled());
 	}
 
 	/**
