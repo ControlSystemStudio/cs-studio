@@ -21,13 +21,19 @@
  */
  package org.csstudio.sds.components.ui.internal.editparts;
 
+import org.csstudio.platform.data.ISeverity;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.platform.data.IValue.Quality;
+import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.model.LabelModel;
 import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.actions.WidgetAction;
-import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
@@ -52,7 +58,8 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * @author Helge Rickens, Kai Meyer
  * 
  */
-public final class MenuButtonEditPart extends AbstractWidgetEditPart {
+public final class MenuButtonEditPart extends AbstractWidgetEditPart
+		implements IProcessVariableWithSamples {
 
 	/**
 	 * {@inheritDoc}
@@ -231,6 +238,37 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart {
 				}
 			});
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IValue getSample(final int index) {
+		if (index != 0) {
+			throw new IndexOutOfBoundsException(index + " is not a valid sample index");
+		}
+		
+		MenuButtonModel model = (MenuButtonModel) getWidgetModel();
+		ITimestamp timestamp = TimestampFactory.now();
+		
+		// Note: the IValue implementations require a Severity, otherwise the
+		// format() method will throw a NullPointerException. We don't really
+		// have a severity here, so we fake one. This may cause problems for
+		// clients who rely on getting a meaningful severity from the IValue.
+		ISeverity severity = ValueFactory.createOKSeverity();
+
+		IValue result = ValueFactory.createStringValue(timestamp, severity,
+				null, Quality.Original, new String[] { model.getLabel() });
+		
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int size() {
+		// always one sample
+		return 1;
 	}
 
 }
