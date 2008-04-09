@@ -50,7 +50,7 @@ import org.eclipse.ui.PlatformUI;
 public class Application implements IApplication
 {
     private static final String HELP = "-help"; //$NON-NLS-1$
-    private static final String FORCE_WORKSPACE_PROMPT = "-force_workspace_prompt"; //$NON-NLS-1$
+    private static final String WORKSPACE_PROMPT = "-workspace_prompt"; //$NON-NLS-1$
     
     /** {@inheritDoc} */
     public Object start(IApplicationContext context) throws Exception
@@ -68,8 +68,10 @@ public class Application implements IApplication
             final String args[] =
                 (String []) context.getArguments().get("application.args"); //$NON-NLS-1$
             boolean force_workspace_prompt = false;
-            for (String arg : args)
+            URL default_workspace = null;
+            for (int i=0; i<args.length; ++i)
             {
+                final String arg = args[i];
                 if (arg.equalsIgnoreCase(HELP) ||
                     arg.equalsIgnoreCase("-?")) //$NON-NLS-1$
                 {
@@ -78,11 +80,23 @@ public class Application implements IApplication
                     System.exit(0);
                     return EXIT_OK;
                 }
-                if (arg.equalsIgnoreCase(FORCE_WORKSPACE_PROMPT))
+                if (arg.equalsIgnoreCase(WORKSPACE_PROMPT))
+                {
                     force_workspace_prompt = true;
+                    if ((i + 1) < args.length)
+                    {
+                        final String next = args[i+1];
+                        if (!next.startsWith("-")) //$NON-NLS-1$
+                        {
+                            default_workspace = new URL("file:" + next); //$NON-NLS-1$
+                            ++i;
+                        }
+                    }
+                }
             }
                 
-            if (! checkInstanceLocation(force_workspace_prompt))
+            if (! checkInstanceLocation(force_workspace_prompt,
+                                        default_workspace))
             {
                 // The <code>stop()</code> routine of many UI plugins writes
                 // the current settings to the workspace.
@@ -121,17 +135,19 @@ public class Application implements IApplication
     }
 
     /** Display help on stdout */
-    @SuppressWarnings("nls") //$NON-NLS-1$
+    @SuppressWarnings("nls")
     private void showHelp()
     {
-        System.out.println("Command-line options:"); //$NON-NLS-1$
-        System.out.format("    %-30s : This help\n", HELP); //$NON-NLS-1$
-        System.out.format("    %-30s : Always present workspace dialog, with preconfigured default\n", //$NON-NLS-1$
-                FORCE_WORKSPACE_PROMPT);
-        System.out.format("    %-30s : Log all messages to the console\n", //$NON-NLS-1$
-                "-consoleLog"); //$NON-NLS-1$
-        System.out.format("    %-30s : Select workspace on command-line\n", //$NON-NLS-1$
-                "-data <some_workspace>"); //$NON-NLS-1$
+        System.out.println("Command-line options:");
+        System.out.format("  %-35s : This help\n", HELP);
+        System.out.format("  %-35s : Always present workspace dialog, with preconfigured default\n",
+                WORKSPACE_PROMPT);
+        System.out.format("  %-35s : Present workspace dialog with given default\n",
+                WORKSPACE_PROMPT + " /some/workspace");
+        System.out.format("  %-35s : Log all messages to the console\n",
+                "-consoleLog");
+        System.out.format("  %-35s : Select workspace on command-line, no prompt\n",
+                "-data <some_workspace>");
     }
 
     /** Check or select the workspace.
@@ -152,9 +168,11 @@ public class Application implements IApplication
      *         Set <code>false</code> in an Office setting where users can
      *         uncheck the "ask again" option and use the last workspace as
      *         a default. 
+     * @param  default_workspace Default to use
      *  @return <code>true</code> if all OK
      */
-    private boolean checkInstanceLocation(final boolean force_prompt)
+    private boolean checkInstanceLocation(final boolean force_prompt,
+                                          URL default_workspace)
     {
         // Was "-data @none" specified on command line?
         final Location instanceLoc = Platform.getInstanceLocation();
@@ -198,8 +216,10 @@ public class Application implements IApplication
         }
         
         // -data @noDefault or -data not specified, prompt and set
+        if (default_workspace == null)
+            default_workspace = instanceLoc.getDefault();
         final WorkspaceInfo workspace_info =
-            new WorkspaceInfo(instanceLoc.getDefault(), !force_prompt);
+            new WorkspaceInfo(default_workspace, !force_prompt);
         // Prompt in any case? Or did user decide to be asked again?
         boolean show_dialog = force_prompt | workspace_info.getShowDialog();
         while (true)
