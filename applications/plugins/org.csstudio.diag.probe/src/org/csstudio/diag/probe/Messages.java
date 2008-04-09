@@ -6,6 +6,12 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.diag.probe.messages"; //$NON-NLS-1$
 
+	public static String S_SaveToIoc;
+	public static String S_SaveToIocTooltip;
+	public static String S_ErrorDialogTitle;
+	public static String S_SaveToIocExecutionError;
+	public static String S_SaveToIocNotDefinedError;
+	public static String S_SaveToIocNotEnabled;
     public static String S_Adjust;
     public static String S_AdjustFailed;
     public static String S_AdjustValue;

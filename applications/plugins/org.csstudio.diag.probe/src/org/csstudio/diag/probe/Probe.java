@@ -14,11 +14,22 @@ import org.csstudio.util.swt.meter.MeterWidget;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.CommandEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.ICommandListener;
+import org.eclipse.core.commands.IParameter;
+import org.eclipse.core.commands.NotEnabledException;
+import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.core.commands.Parameterization;
+import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -48,6 +59,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -57,6 +70,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author Kay Kasemir
  * @author Jan Hatje
  * @author Helge Rickens
+ * @author Joerg Rathlev
  */
 public class Probe extends ViewPart implements PVListener
 {
@@ -72,7 +86,23 @@ public class Probe extends ViewPart implements PVListener
     /** Memento tag */
     final private static String METER_TAG = "meter"; //$NON-NLS-1$
     
-    /** Instance number, used to create a unique ID
+	/**
+	 * Id of the save value command.
+	 */
+	private static final String SAVE_VALUE_COMMAND_ID =
+		"org.csstudio.platform.ui.commands.saveValue";
+	/**
+	 * Id of the PV parameter to the save value command.
+	 */
+	private static final String PV_PARAMETER_ID =
+		"org.csstudio.platform.ui.commands.saveValue.pv";
+	/**
+	 * Id of the value parameter to the save value command.
+	 */
+	private static final String VALUE_PARAMETER_ID =
+		"org.csstudio.platform.ui.commands.saveValue.value";
+
+	/** Instance number, used to create a unique ID
      *  @see #createNewInstance()
      */
     private static int instance = 0;
@@ -105,7 +135,7 @@ public class Probe extends ViewPart implements PVListener
         {   // Might run after the view is already disposed...
             if (lbl_value.isDisposed())
                 return;
-            lbl_value.setText(value.getValueText());
+            lbl_value.setText(value.getValueDisplayText());
             lbl_time.setText(value.getTimeText());
 
             INumericMetaData meta = value.getNumericMetaData();
@@ -148,6 +178,8 @@ public class Probe extends ViewPart implements PVListener
     private Composite top_box;
     private Composite bottom_box;
     private Button show_meter;
+    private Button btn_save_to_ioc;
+    private ICommandListener saveToIocCmdListener;
 
 
     /** Create or re-display a probe view with the given PV name.
@@ -252,10 +284,11 @@ public class Probe extends ViewPart implements PVListener
 
         // 3 Boxes, connected via form layout: Top, meter, bottom
         //
-        // PV Name: ____ name ___________ [Info]
+        // PV Name: ____ name ____________________ [Info]
         //              Meter
-        // Value     : ____ value ________ [Adjust]
-        // Timestamp : ____ time ________  [x] meter
+        // Value     : ____ value ______________________
+        //             [Adjust] [Save to IOC]  [x] meter
+        // Timestamp : ____ time _______________________
         // ---------------
         // Status: ...
         //
@@ -288,7 +321,7 @@ public class Probe extends ViewPart implements PVListener
 
         bottom_box = new Composite(parent, 0);
         grid = new GridLayout();
-        grid.numColumns = 3;
+        grid.numColumns = 4;
         bottom_box.setLayout(grid);
         
         label = new Label(bottom_box, 0);
@@ -299,12 +332,29 @@ public class Probe extends ViewPart implements PVListener
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
+        gd.horizontalSpan = 3;
         lbl_value.setLayoutData(gd);
-
+        
+        // New Row
+        new Label(bottom_box, SWT.NONE);  // keep first cell of layout empty
+        
         final Button btn_adjust = new Button(bottom_box, SWT.PUSH);
         btn_adjust.setText(Messages.S_Adjust);
         btn_adjust.setToolTipText(Messages.S_ModValue);
         btn_adjust.setLayoutData(new GridData());
+        
+        btn_save_to_ioc = new Button(bottom_box, SWT.PUSH);
+        btn_save_to_ioc.setText(Messages.S_SaveToIoc);
+        btn_save_to_ioc.setToolTipText(Messages.S_SaveToIocTooltip);
+        btn_save_to_ioc.setLayoutData(new GridData());
+
+        show_meter = new Button(bottom_box, SWT.CHECK);
+        show_meter.setText(Messages.S_Meter);
+        show_meter.setToolTipText(Messages.S_Meter_TT);
+        show_meter.setSelection(true);
+        gd = new GridData();
+        gd.horizontalAlignment = SWT.END;
+        show_meter.setLayoutData(gd);
 
         // New Row
         label = new Label(bottom_box, 0);
@@ -315,13 +365,8 @@ public class Probe extends ViewPart implements PVListener
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
+        gd.horizontalSpan = 3;
         lbl_time.setLayoutData(gd);
-
-        show_meter = new Button(bottom_box, SWT.CHECK);
-        show_meter.setText(Messages.S_Meter);
-        show_meter.setToolTipText(Messages.S_Meter_TT);
-        show_meter.setSelection(true);
-        show_meter.setLayoutData(new GridData());
         
         // Status bar
         label = new Label(bottom_box, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -399,6 +444,30 @@ public class Probe extends ViewPart implements PVListener
             public void widgetSelected(SelectionEvent ev)
             {   adjustValue();   }
         });
+        
+        btn_save_to_ioc.addSelectionListener(new SelectionAdapter()
+        {
+        	@Override
+        	public void widgetSelected(SelectionEvent e)
+        	{
+        		saveToIoc();
+        	}
+        });
+        // Create a listener to enable/disable the Save to IOC button based on
+        // the availability of a command handler.
+        saveToIocCmdListener = new ICommandListener()
+        {
+			public void commandChanged(CommandEvent commandEvent)
+			{
+				if (commandEvent.isEnabledChanged())
+				{
+					btn_save_to_ioc.setEnabled(
+							commandEvent.getCommand().isEnabled());
+				}
+			}
+        };
+        // Set the initial enablement of the button 
+        updateSaveToIocButtonEnablement();
 
         show_meter.addSelectionListener(new SelectionAdapter()
         {
@@ -422,8 +491,102 @@ public class Probe extends ViewPart implements PVListener
         	}
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void dispose() {
+	   	if (saveToIocCmdListener != null) {
+    		Command svc = getSaveValueCommand();
+    		svc.removeCommandListener(saveToIocCmdListener);
+    	}
+    }
 
-    /** Show or hide the meter */
+    /**
+     * Saves the current value to the IOC.
+     */
+    private void saveToIoc()
+    {
+		IHandlerService handlerService =
+			(IHandlerService) getSite().getService(IHandlerService.class);
+		try {
+			ParameterizedCommand cmd = createParameterizedSaveValueCommand();
+			handlerService.executeCommand(cmd, null);
+		} catch (ExecutionException e) {
+			// Execution of the command handler failed.
+			Plugin.getLogger().error("Error executing save value command.", e);
+			MessageDialog.openError(getSite().getShell(),
+					Messages.S_ErrorDialogTitle,
+					Messages.S_SaveToIocExecutionError);
+		} catch (NotDefinedException e) {
+			// Thrown if the command or one of the parameters is undefined.
+			// This should never happen (the command id is defined in the
+			// platform). Log an error, disable the button, and return.
+			Plugin.getLogger().error("Save value command is not defined.", e);
+			MessageDialog.openError(getSite().getShell(),
+					Messages.S_ErrorDialogTitle,
+					Messages.S_SaveToIocNotDefinedError);
+			btn_save_to_ioc.setEnabled(false);
+		} catch (NotEnabledException e) {
+			MessageDialog.openWarning(getSite().getShell(),
+					Messages.S_ErrorDialogTitle,
+					Messages.S_SaveToIocNotEnabled);
+			updateSaveToIocButtonEnablement();
+		} catch (NotHandledException e) {
+			MessageDialog.openWarning(getSite().getShell(),
+					Messages.S_ErrorDialogTitle,
+					Messages.S_SaveToIocNotEnabled);
+			updateSaveToIocButtonEnablement();
+		}
+	}
+
+	/**
+	 * Updates the enabled state of the Save to IOC button.
+	 */
+	private void updateSaveToIocButtonEnablement()
+	{
+		btn_save_to_ioc.setEnabled(getSaveValueCommand().isEnabled());
+	}
+
+	/**
+	 * Creates a save value command parameterized for saving the currently
+	 * displayed value.
+	 * 
+	 * @return the parameterized command.
+	 * @throws NotDefinedException
+	 *             if one of the parameter ids is undefined (this should never
+	 *             happen).
+	 */
+	private ParameterizedCommand createParameterizedSaveValueCommand()
+			throws NotDefinedException
+	{
+		Command saveValueCommand = getSaveValueCommand();
+		IParameter pvParamter = saveValueCommand.getParameter(PV_PARAMETER_ID);
+		Parameterization pvParameterization = new Parameterization(
+				pvParamter, pv.getName());
+		IParameter valueParameter = saveValueCommand.getParameter(VALUE_PARAMETER_ID);
+		Parameterization valueParameterization = new Parameterization(
+				valueParameter, value.getValueString());
+		ParameterizedCommand cmd =
+			new ParameterizedCommand(saveValueCommand,
+					new Parameterization[] { pvParameterization, valueParameterization });
+		return cmd;
+	}
+
+	/**
+	 * Returns the save value command.
+	 * 
+	 * @return the save value command.
+	 */
+	private Command getSaveValueCommand()
+	{
+		ICommandService commandService =
+			(ICommandService) getSite().getService(ICommandService.class);
+		return commandService.getCommand(SAVE_VALUE_COMMAND_ID);
+	}
+
+	/** Show or hide the meter */
     protected void showMeter(final boolean show)
     {
         if (show)
@@ -640,7 +803,7 @@ public class Probe extends ViewPart implements PVListener
             InputDialog inputDialog =
                     new InputDialog(lbl_value.getShell(),
                         Messages.S_AdjustValue, Messages.S_Value,
-                        value.getValueText(), null);
+                        value.getValueString(), null);
                 if (inputDialog.open() == Window.OK)
                     pv.setValue(inputDialog.getValue());
         }

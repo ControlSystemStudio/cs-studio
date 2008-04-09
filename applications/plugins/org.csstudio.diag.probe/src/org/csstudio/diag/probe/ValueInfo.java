@@ -33,9 +33,19 @@ public class ValueInfo
     /** Smoothed period in seconds between received values. */
     private SmoothedDouble value_period = new SmoothedDouble();
 
-    synchronized public String getValueText()
+	/**
+	 * The most recent value of the PV, as a string.
+	 */
+	private String value_str = ""; //$NON-NLS-1$
+
+    synchronized public String getValueDisplayText()
     {
         return value_txt == null ? "" : value_txt; //$NON-NLS-1$
+    }
+    
+    synchronized public String getValueString()
+    {
+    	return value_str == null ? "" : value_str; //$NON-NLS-1$
     }
     
     synchronized INumericMetaData getNumericMetaData()
@@ -67,6 +77,7 @@ public class ValueInfo
     synchronized public void update(IValue value)
     {
         value_txt = ValueUtil.formatValueAndSeverity(value);
+        value_str = ValueUtil.getString(value);
         
         final IMetaData meta = value.getMetaData();
         if (meta instanceof INumericMetaData)
