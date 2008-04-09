@@ -91,7 +91,8 @@ public class MessageGuardCommander extends Job {
      */
     private String[] _keyWords;
     private Collector _messageControlTimeCollector;
-    private Collector _messageDeleteTimeCollector; 
+    private Collector _messageDeleteTimeCollector;
+    private boolean _run = true; 
     
     /**
      * @param name The name of this Job.
@@ -193,7 +194,7 @@ public class MessageGuardCommander extends Job {
         ITimestamp now;
         System.out.println("StartTime: "+TimestampFactory.now());
         // int counter =0;
-        while(true){
+        while(_run ){
             now = TimestampFactory.now();
             
             while(null != (message = _amsReceiver.receive("amsSubscriberMessageMinder"))){// receiveNoWait has a bug with acknowledging in openjms 3
@@ -298,5 +299,9 @@ public class MessageGuardCommander extends Job {
         if(!_amsProducer.isClosed()){
             _amsProducer.send(_producerID, sendMessage);
         }
+    }
+
+    public void setRun(boolean run) {
+        _run = run;
     }
 }

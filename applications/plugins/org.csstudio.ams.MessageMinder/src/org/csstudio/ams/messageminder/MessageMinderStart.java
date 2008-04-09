@@ -38,27 +38,36 @@ import org.eclipse.equinox.app.IApplicationContext;
  * @version $Revision$
  * @since 01.11.2007
  */
-public class MessageMinderStart implements IApplication {
+public final class MessageMinderStart implements IApplication {
+
+    private boolean _restart;
+    private boolean _run;
+    private MessageGuardCommander _commander;
+    private static MessageMinderStart _instance;
 
     /* (non-Javadoc)
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
     public Object start(IApplicationContext context) throws Exception {
-        
+        _instance = this;
         for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
             System.out.println("Service: " + s.toString());
             s.run();
         }
         CentralLogger.getInstance().info(this, "MessageMinder started...");
 
-        MessageGuardCommander commander = new MessageGuardCommander("MessageMinder");
-        commander.schedule();
+        _commander = new MessageGuardCommander("MessageMinder");
+        _commander.schedule();
         
-        while(commander.getState()!=Thread.State.TERMINATED.ordinal()){
+        while(_commander.getState()!=Thread.State.TERMINATED.ordinal()){
             Thread.sleep(10000);
         }
-        
-        return null;
+        _commander.cancel();
+        if(_restart){
+            return EXIT_RESTART;
+        }else{
+            return EXIT_OK;
+        }
     }
 
     /* (non-Javadoc)
@@ -67,6 +76,25 @@ public class MessageMinderStart implements IApplication {
     public void stop() {
         // TODO Auto-generated method stub
 
+    }
+
+    public boolean isRestart() {
+        return _restart;
+    }
+
+    public void setRestart(boolean restart) {
+        _restart = restart;
+    }
+
+
+    public void setRun(boolean run) {
+        if(_commander!=null){
+            _commander.setRun(run);
+        }
+    }
+
+    public static MessageMinderStart getInstance() {
+        return _instance;
     }
 
 }

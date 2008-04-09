@@ -22,7 +22,7 @@
 /*
  * $Id$
  */
-package org.csstudio.ams.messageminder;
+package org.csstudio.ams.messageminder.actionns;
 
 import org.csstudio.platform.libs.dcf.actions.IAction;
 import org.csstudio.platform.statistic.CollectorSupervisor;
@@ -33,7 +33,7 @@ import org.csstudio.platform.statistic.CollectorSupervisor;
  * @version $Revision$
  * @since 13.11.2007
  */
-public class GetStatisticInformation implements IAction {
+public class GetStatisticInformationAction implements IAction {
 
     /* (non-Javadoc)
      * @see org.csstudio.platform.libs.dcf.actions.IAction#run(java.lang.Object)

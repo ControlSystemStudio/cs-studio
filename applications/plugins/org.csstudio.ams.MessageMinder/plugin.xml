@@ -19,10 +19,16 @@
    <extension
          point="org.csstudio.platform.libs.dcf.action">
       <simpleAction
-            class="org.csstudio.ams.messageminder.GetStatisticInformation"
-            id="org.csstudio.ams.messageminder.GetStatisticInformation"
+            class="org.csstudio.ams.messageminder.actionns.GetStatisticInformationAction"
+            id="org.csstudio.ams.messageminder.GetStatisticInformationAction"
             name="GetStatisticInformation">
       </simpleAction>
+      <parametrizedAction
+            class="org.csstudio.ams.messageminder.actionns.MassageMinderShutdownAction"
+            id="org.csstudio.ams.MessageMinder.MassageMinderShutdownAction"
+            name="Shutdown"
+            parameters="Password">
+      </parametrizedAction>
    </extension>
    <extension
          point="org.csstudio.platform.libs.xmpp.loginHandlers">
