@@ -104,6 +104,9 @@ public class SaveValueCommandHandler extends AbstractHandler {
 	 * @return the string representation of the value.
 	 */
 	private String valueToString(final IValue value) {
+		
+		// TODO: replace with ValueUtil#getString ?
+		
 		if (value instanceof IStringValue) {
 			return ((IStringValue) value).getValue();
 		} else if (value instanceof IDoubleValue) {
