@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.workspace.RelaunchConstants;
 import org.csstudio.platform.workspace.WorkspaceDialog;
 import org.csstudio.platform.workspace.WorkspaceInfo;
@@ -57,7 +58,7 @@ public class Application implements IApplication
         final Display display = PlatformUI.createDisplay();
         if (display == null)
         {
-            PluginActivator.getLogger().error("No display");
+            PluginActivator.getLogger().error("No display"); //$NON-NLS-1$
             return EXIT_OK;
         }
         
@@ -78,24 +79,28 @@ public class Application implements IApplication
                     return EXIT_OK;
                 }
                 if (arg.equalsIgnoreCase(FORCE_WORKSPACE_PROMPT))
-                {
                     force_workspace_prompt = true;
-                    break;
-                }
             }
                 
             if (! checkInstanceLocation(force_workspace_prompt))
             {
-                // We'd like to exit ASAP. Unfortunately, the <code>stop()</code>
-                // routine of many UI plugins writes the current settings to
-                // the workspace. Even though we have not yet opened any
-                // workspace, this will open - even create the default workspace.
+                // The <code>stop()</code> routine of many UI plugins writes
+                // the current settings to the workspace.
+                // Even though we have not yet opened any workspace, that would
+                // open, even create the default workspace.
                 // So exit right away:
                 System.exit(0);
-                //
+                // .. instead of:
                 //Platform.endSplash();
                 //return EXIT_OK;
             }
+
+            // Must call something from the CSS UI plugin.
+            // Exact mechanism unclear, but when NOT doing this,
+            // the initial Navigator instance won't show
+            // the 'CSS' project that we're about to create/open?!
+            PluginActivator.getLogger().debug("CSS UI plugin: " +  //$NON-NLS-1$
+                    CSSPlatformUiPlugin.getDefault().getPluginId());
 
             final IProject project = openProject();
             if (project == null)
