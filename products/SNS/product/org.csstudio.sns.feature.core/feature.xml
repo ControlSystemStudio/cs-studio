@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.core"
       label="CSS Core"
-      version="1.0.7"
+      version="1.0.8"
       provider-name="Kay Kasemir"
       plugin="org.csstudio.sns.product">
 
@@ -155,6 +155,13 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
 
    <plugin
          id="org.csstudio.utility.rdb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.workspace"
          download-size="0"
          install-size="0"
          version="0.0.0"
