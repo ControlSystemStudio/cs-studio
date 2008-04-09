@@ -21,6 +21,10 @@
  */
  package org.csstudio.platform.data;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
 import org.csstudio.platform.internal.data.EnumeratedValue;
 import org.csstudio.platform.internal.data.Messages;
 import org.csstudio.platform.internal.data.StringValue;
@@ -146,5 +150,38 @@ public class ValueUtil
                + Messages.SevrStatSeparator
                + value.getStatus()
                + Messages.SevrStatEnd;
+    }
+    
+    /**
+	 * Converts the given value into a string representation. For string values,
+	 * returns the value. For numeric (double and long) values, returns a
+	 * non-localized string representation. Double values use a point as the
+	 * decimal seperator. For other types of values, the value's
+	 * {@link IValue#format()} method is called and its result returned.
+	 * 
+	 * @param value
+	 *            the value.
+	 * @return a string representation of the value.
+	 */
+    public static String getString(final IValue value)
+    {
+		if (value instanceof IStringValue) {
+			return ((IStringValue) value).getValue();
+		} else if (value instanceof IDoubleValue) {
+			IDoubleValue idv = (IDoubleValue) value;
+			double dv = idv.getValue();
+			int precision = ((INumericMetaData) idv.getMetaData()).getPrecision();
+			DecimalFormatSymbols dcf = new DecimalFormatSymbols(Locale.US);
+			dcf.setDecimalSeparator('.');
+			DecimalFormat format = new DecimalFormat("0.#", dcf); //$NON-NLS-1$
+			format.setMinimumFractionDigits(precision);
+			format.setMaximumFractionDigits(precision);
+			return format.format(dv);
+		} else if (value instanceof ILongValue) {
+			ILongValue lv = (ILongValue) value;
+			return Long.toString(lv.getValue());
+		} else {
+			return (value == null) ? "" : value.format();
+		}
     }
 }
