@@ -60,7 +60,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * This version uses <code>DatagramSockets</code> instead of Sockets.
- * @author  Markus Moeller
+ * @author  Markus Moeller 
  * @version 1.0.1
  *
  */
