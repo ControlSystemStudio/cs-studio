@@ -339,7 +339,9 @@ public class Probe extends ViewPart implements PVListener
         final Button btn_adjust = new Button(bottom_box, SWT.PUSH);
         btn_adjust.setText(Messages.S_Adjust);
         btn_adjust.setToolTipText(Messages.S_ModValue);
-        btn_adjust.setLayoutData(new GridData());
+        gd = new GridData();
+        gd.horizontalAlignment = SWT.FILL;
+        btn_adjust.setLayoutData(gd);
 
         // New Row
         label = new Label(bottom_box, 0);
@@ -355,7 +357,9 @@ public class Probe extends ViewPart implements PVListener
         btn_save_to_ioc = new Button(bottom_box, SWT.PUSH);
         btn_save_to_ioc.setText(Messages.S_SaveToIoc);
         btn_save_to_ioc.setToolTipText(Messages.S_SaveToIocTooltip);
-        btn_save_to_ioc.setLayoutData(new GridData());
+        gd = new GridData();
+        gd.horizontalAlignment = SWT.FILL;
+        btn_save_to_ioc.setLayoutData(gd);
 
         // New Row
         show_meter = new Button(bottom_box, SWT.CHECK);
