@@ -301,7 +301,7 @@ public class MessageGuardCommander extends Job {
         }
     }
 
-    public void setRun(boolean run) {
+    public synchronized void setRun(boolean run) {
         _run = run;
     }
 }

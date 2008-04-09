@@ -29,6 +29,7 @@ package org.csstudio.ams.messageminder;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 import org.csstudio.platform.startupservice.StartupServiceEnumerator;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -40,8 +41,8 @@ import org.eclipse.equinox.app.IApplicationContext;
  */
 public final class MessageMinderStart implements IApplication {
 
-    private boolean _restart;
-    private boolean _run;
+    private boolean _restart = false;
+    private boolean _run = true;
     private MessageGuardCommander _commander;
     private static MessageMinderStart _instance;
 
@@ -59,7 +60,8 @@ public final class MessageMinderStart implements IApplication {
         _commander = new MessageGuardCommander("MessageMinder");
         _commander.schedule();
         
-        while(_commander.getState()!=Thread.State.TERMINATED.ordinal()){
+        while(_commander.getState()!=Job.NONE){
+            System.out.println(_commander.getState());
             Thread.sleep(10000);
         }
         _commander.cancel();
@@ -82,12 +84,12 @@ public final class MessageMinderStart implements IApplication {
         return _restart;
     }
 
-    public void setRestart(boolean restart) {
+    public synchronized void setRestart(boolean restart) {
         _restart = restart;
     }
 
 
-    public void setRun(boolean run) {
+    public synchronized void setRun(boolean run) {
         if(_commander!=null){
             _commander.setRun(run);
         }
