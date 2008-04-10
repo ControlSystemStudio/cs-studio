@@ -85,7 +85,8 @@ public class SwitchWorkspaceAction implements IWorkbenchWindowActionDelegate
             MessageDialog.openError(window.getShell(),
                 "Error",
                 "Cannot determine virtual machine, need '"
-                + RelaunchConstants.PROP_VM + " ...' command-line argument");
+                + RelaunchConstants.PROP_VM + " ...' command-line argument\n"
+                + "Workspace switch does not work when started from within IDE!");
             
             return null;
         }
