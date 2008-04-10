@@ -132,6 +132,10 @@ public class LdapDirectoryReader extends Job {
 	}
 	
 	
+	// This is currently not used on purpose. Additional testing is needed
+	// before this implementation can be used. It is also a lot slower than
+	// the currently used implementation (populateSubTree).
+	@SuppressWarnings("unused")
 	private void populateSubTree2(String efan) throws NamingException {
 		String searchRootDN = "efan=" + efan + "," + ALARM_ROOT;
 		

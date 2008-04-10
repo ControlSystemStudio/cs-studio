@@ -313,8 +313,7 @@ public class AlarmTreeView extends ViewPart {
 		if (selection.size() > 0) {
 			menu.add(acknowledgeAction);
 		}
-		if (selection.size() == 1
-				&& selection.getFirstElement() instanceof ProcessVariableNode) {
+		if (selection.size() == 1) {
 			menu.add(runCssAlarmDisplayAction);
 			menu.add(showHelpGuidanceAction);
 			menu.add(showHelpPageAction);
