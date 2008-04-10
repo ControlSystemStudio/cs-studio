@@ -123,6 +123,7 @@ public class SaveValueServer implements IApplication {
 	 * {@inheritDoc}
 	 */
 	public final synchronized void stop() {
+		_log.debug(this, "stop() was called, stopping server");
 		_stopped = true;
 		notifyAll();
 	}

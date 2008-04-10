@@ -25,6 +25,7 @@ package org.csstudio.config.savevalue.rmiserver;
 import java.util.Map;
 
 import org.csstudio.platform.libs.dcf.actions.IAction;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -35,6 +36,11 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class ShutdownAction implements IAction {
 
+	/**
+	 * The logger used by this class.
+	 */
+	private CentralLogger _log = CentralLogger.getInstance();
+	
 	/**
 	 * Shuts down the server.
 	 * 
@@ -54,9 +60,11 @@ public class ShutdownAction implements IAction {
 		password = params.get("password");
 		
 		if (isCorrectPassword(password)) {
+			_log.info(this, "Received shutdown command, shutting down now.");
 			SaveValueServer.getRunningServer().stop();
 			return "Save Value RMI Server is shutting down...";
 		} else {
+			_log.warn(this, "Received shutdown command with invalid password.");
 			return "Incorrect password.";
 		}
 	}
