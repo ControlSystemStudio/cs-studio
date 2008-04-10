@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.Hashtable;
 
 import javax.naming.Context;
+import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.SizeLimitExceededException;
@@ -37,6 +38,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
@@ -130,6 +132,34 @@ public class LdapDirectoryReader extends Job {
 	}
 	
 	
+	private void populateSubTree2(String efan) throws NamingException {
+		String searchRootDN = "efan=" + efan + "," + ALARM_ROOT;
+		
+		SubtreeNode efanNode = new SubtreeNode(treeRoot, efan);
+		populateTreeRecursively(searchRootDN, efanNode);
+	}
+	
+	
+	private void populateTreeRecursively(String rootDN, SubtreeNode parent) throws NamingException {
+		NamingEnumeration<NameClassPair> results = directory.list(rootDN);
+		while (results.hasMore()) {
+			NameClassPair entry = results.next();
+			String relativeName = LdapNameUtils.removeQuotes(entry.getName());
+			String fullName = relativeName + "," + rootDN;
+			Attributes attrs = directory.getAttributes(fullName);
+			if (fullName.startsWith("eren=")) {
+				ProcessVariableNode node = new ProcessVariableNode(parent, LdapNameUtils.simpleName(relativeName));
+				setAlarmState(node, attrs);
+				setEpicsAttributes(node, attrs);
+			} else {
+				SubtreeNode node = new SubtreeNode(parent, LdapNameUtils.simpleName(relativeName));
+				setEpicsAttributes(node, attrs);
+				populateTreeRecursively(fullName, node);
+			}
+		}
+	}
+	
+	
 	/**
 	 * Reads all process variables below the given facility name into the tree.
 	 * @param efan the EPICS facility name.
@@ -186,24 +216,24 @@ public class LdapDirectoryReader extends Job {
 	 */
 	private void evaluateAttributes(SearchResult result, ProcessVariableNode node) throws NamingException {
 		Attributes attrs = result.getAttributes();
-		Attribute severityAttr = attrs.get("epicsAlarmSeverity");
-		Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
-		if (severityAttr != null) {
-			String severity = (String) severityAttr.get();
-			if (severity != null) {
-				Severity s = Severity.parseSeverity(severity);
-				node.setActiveAlarm(new Alarm("", s));
-			}
-		}
-		Severity unack = Severity.NO_ALARM;
-		if (highUnAcknAttr != null) {
-			String severity = (String) highUnAcknAttr.get();
-			if (severity != null) {
-				unack = Severity.parseSeverity(severity);
-			}
-		}
-		node.setHighestUnacknowledgedAlarm(new Alarm("", unack));
-		
+		setAlarmState(node, attrs);
+		setEpicsAttributes(node, attrs);
+	}
+
+
+	/**
+	 * Sets the EPICS attributes of the given node based on the given
+	 * attributes.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @param attrs
+	 *            the attributes.
+	 * @throws NamingException
+	 *             if an error occurs.
+	 */
+	private void setEpicsAttributes(AbstractAlarmTreeNode node, Attributes attrs)
+			throws NamingException {
 		Attribute displayAttr = attrs.get("epicsCssAlarmDisplay");
 		if (displayAttr != null) {
 			String display = (String) displayAttr.get();
@@ -231,6 +261,38 @@ public class LdapDirectoryReader extends Job {
 				node.setHelpGuidance(helpGuidance);
 			}
 		}
+	}
+
+
+	/**
+	 * Sets the alarm state of the given node based on the given attributes.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @param attrs
+	 *            the attributes.
+	 * @throws NamingException
+	 *             if an error occurs.
+	 */
+	private void setAlarmState(ProcessVariableNode node, Attributes attrs)
+			throws NamingException {
+		Attribute severityAttr = attrs.get("epicsAlarmSeverity");
+		Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
+		if (severityAttr != null) {
+			String severity = (String) severityAttr.get();
+			if (severity != null) {
+				Severity s = Severity.parseSeverity(severity);
+				node.setActiveAlarm(new Alarm("", s));
+			}
+		}
+		Severity unack = Severity.NO_ALARM;
+		if (highUnAcknAttr != null) {
+			String severity = (String) highUnAcknAttr.get();
+			if (severity != null) {
+				unack = Severity.parseSeverity(severity);
+			}
+		}
+		node.setHighestUnacknowledgedAlarm(new Alarm("", unack));
 	}
 	
 	
@@ -302,11 +364,14 @@ public class LdapDirectoryReader extends Job {
 	public IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Initializing Alarm Tree", IProgressMonitor.UNKNOWN);
 		try {
+			long startTime = System.currentTimeMillis();
 			initializeConnection();
 			for (String facility : facilityNames) {
 				populateSubTree(facility);
 			}
 			closeConnection();
+			long endTime = System.currentTimeMillis();
+			log.debug(this, "Directory reader time: " + (endTime-startTime) + "ms");
 		} catch (NamingException e) {
 			return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID,
 					IStatus.ERROR, "Error reading from directory: " + e.getMessage(), e);
