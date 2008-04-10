@@ -6,6 +6,8 @@
          name="Save Value RMI Server"
          point="org.eclipse.core.runtime.applications">
       <application
+            cardinality="1"
+            thread="any"
             visible="false">
          <run
                class="org.csstudio.config.savevalue.rmiserver.SaveValueServer">
@@ -23,6 +25,29 @@
                value="Save Value RMI Server">
          </property>
       </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.xmpp.loginHandlers">
+      <loginHandler
+            class="org.csstudio.config.savevalue.rmiserver.XmppLoginCallbackHandler"
+            id="org.csstudio.config.savevalue.rmiserver.xmppLoginHandler"
+            name="Save Value RMI Server XMPP Login Handler">
+      </loginHandler>
+   </extension>
+   <extension
+         point="org.csstudio.platform.libs.dcf.action">
+      <parametrizedAction
+            class="org.csstudio.config.savevalue.rmiserver.ShutdownAction"
+            id="org.csstudio.config.savevalue.rmiserver.ShutdownAction"
+            name="Shutdown"
+            parameters="password">
+      </parametrizedAction>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.preferences.preferences">
+      <initializer
+            class="org.csstudio.config.savevalue.rmiserver.PreferenceInitializer">
+      </initializer>
    </extension>
 
 </plugin>

@@ -29,6 +29,9 @@ import java.rmi.server.UnicastRemoteObject;
 import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SocketFactory;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.csstudio.platform.startupservice.StartupServiceEnumerator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -43,11 +46,39 @@ public class SaveValueServer implements IApplication {
 	 * Whether this application should stop.
 	 */
 	private boolean _stopped = false;
+	
+	/**
+	 * The logger that is used by this class.
+	 */
+	private CentralLogger _log = CentralLogger.getInstance();
+	
+	/**
+	 * The running instance of this server.
+	 */
+	private static SaveValueServer _instance;
+	
+	/**
+	 * Returns a reference to the currently running server instance. Note: it
+	 * would probably be better to use the OSGi Application Admin service.
+	 * 
+	 * @return the running server.
+	 */
+	static SaveValueServer getRunningServer() {
+		return _instance;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public final Object start(final IApplicationContext context) throws Exception {
+		
+		_instance = this;
+		
+        for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
+            _log.debug(this, "Running startup service: " + s.toString());
+            s.run();
+        }
+ 		
 		try {
 			// Create the registry
 			Registry reg = LocateRegistry.createRegistry(1099);
@@ -74,7 +105,7 @@ public class SaveValueServer implements IApplication {
 			ChangelogService changelogStub = (ChangelogService) UnicastRemoteObject.exportObject(changelog, 0, sf, sf);
 			reg.bind("SaveValue.changelog", changelogStub);
 			
-			System.out.println("Server ready.");
+			_log.info(this, "Server ready.");
 			context.applicationRunning();
 			synchronized (this) {
 				while (!_stopped) {
@@ -82,7 +113,7 @@ public class SaveValueServer implements IApplication {
 				}
 			}
 		} catch (Exception e) {
-			System.err.println("Server error: " + e.getMessage());
+			_log.error(this, "Server error.", e);
 			e.printStackTrace();
 		}
 		return IApplication.EXIT_OK;

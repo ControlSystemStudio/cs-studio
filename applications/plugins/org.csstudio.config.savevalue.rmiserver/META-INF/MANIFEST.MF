@@ -7,5 +7,7 @@ Bundle-Activator: org.csstudio.config.savevalue.rmiserver.Activator
 Bundle-Vendor: DESY
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.config.savevalue.service,
- org.csstudio.platform
+ org.csstudio.platform,
+ org.csstudio.platform.libs.xmpp,
+ org.csstudio.platform.libs.dcf
 Eclipse-LazyStart: true

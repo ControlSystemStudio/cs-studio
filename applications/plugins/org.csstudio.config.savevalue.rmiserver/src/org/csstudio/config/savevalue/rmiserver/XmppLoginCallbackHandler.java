@@ -22,83 +22,36 @@
 
 package org.csstudio.config.savevalue.rmiserver;
 
-import java.io.File;
-
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.security.Credentials;
+import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
- * Class that returns the file names for an IOC.
+ * Provides username and password for the XMPP login.
  * 
  * @author Joerg Rathlev
  */
-class IocFiles {
-	/**
-	 * File extension for ca files.
-	 */
-	private static final String CA_FILE_EXTENSION = ".ca";
-	
-	/**
-	 * File extension for ca files.
-	 */
-	private static final String CA_BACKUP_FILE_EXTENSION = ".ca~";
+public class XmppLoginCallbackHandler implements ILoginCallbackHandler {
 
 	/**
-	 * File extension for changelog files.
+	 * {@inheritDoc}
 	 */
-	private static final String CHANGELOG_FILE_EXTENSION = ".changelog";
-
-	/**
-	 * The ca file.
-	 */
-	private final File _cafile;
-	
-	/**
-	 * The backup file.
-	 */
-	private final File _backup;
-	
-	/**
-	 * The changelog file.
-	 */
-	private final File _changelog;
-	
-	/**
-	 * Creates the set of file names for the given IOC.
-	 * 
-	 * @param iocName
-	 *            the name of the IOC.
-	 */
-	IocFiles(final String iocName) {
+	public final Credentials getCredentials() {
 		IPreferencesService prefs = Platform.getPreferencesService();
-		String path = prefs.getString(Activator.PLUGIN_ID,
-				PreferenceConstants.FILE_PATH_PREFERENCE, "", null);
-		_cafile = new File(path, iocName + CA_FILE_EXTENSION);
-		_backup = new File(path, iocName + CA_BACKUP_FILE_EXTENSION);
-		_changelog = new File(path, iocName + CHANGELOG_FILE_EXTENSION);
+		String username = prefs.getString(Activator.PLUGIN_ID,
+				PreferenceConstants.XMPP_USERNAME, "", null);
+		String password = prefs.getString(Activator.PLUGIN_ID,
+				PreferenceConstants.XMPP_PASSWORD, "", null);
+		return new Credentials(username, password);
 	}
 
 	/**
-	 * Returns the ca file.
-	 * @return the ca file.
+	 * {@inheritDoc}
 	 */
-	File getCafile() {
-		return _cafile;
+	public final void signalFailedLoginAttempt() {
+		CentralLogger.getInstance().error(this, "XMPP login failed");
 	}
 
-	/**
-	 * Returns the backup file.
-	 * @return the backup file.
-	 */
-	File getBackup() {
-		return _backup;
-	}
-
-	/**
-	 * Returns the changelog file.
-	 * @return the changelog file.
-	 */
-	File getChangelog() {
-		return _changelog;
-	}
 }

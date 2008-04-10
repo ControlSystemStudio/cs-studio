@@ -58,11 +58,6 @@ public class CaPutService implements SaveValueService {
 	private final CentralLogger _log = CentralLogger.getInstance();
 	
 	/**
-	 * Preference key for the ca file path preference.
-	 */
-	static final String FILE_PATH_PREFERENCE = "caFilePath";
-	
-	/**
 	 * The character used to separate channel and value in ca file entries.
 	 */
 	private static final String CA_SEPARATOR = " ";

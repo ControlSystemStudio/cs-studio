@@ -22,83 +22,58 @@
 
 package org.csstudio.config.savevalue.rmiserver;
 
-import java.io.File;
+import java.util.Map;
 
+import org.csstudio.platform.libs.dcf.actions.IAction;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
- * Class that returns the file names for an IOC.
+ * Remote action for shutting down the server.
  * 
  * @author Joerg Rathlev
  */
-class IocFiles {
-	/**
-	 * File extension for ca files.
-	 */
-	private static final String CA_FILE_EXTENSION = ".ca";
-	
-	/**
-	 * File extension for ca files.
-	 */
-	private static final String CA_BACKUP_FILE_EXTENSION = ".ca~";
+public class ShutdownAction implements IAction {
 
 	/**
-	 * File extension for changelog files.
-	 */
-	private static final String CHANGELOG_FILE_EXTENSION = ".changelog";
-
-	/**
-	 * The ca file.
-	 */
-	private final File _cafile;
-	
-	/**
-	 * The backup file.
-	 */
-	private final File _backup;
-	
-	/**
-	 * The changelog file.
-	 */
-	private final File _changelog;
-	
-	/**
-	 * Creates the set of file names for the given IOC.
+	 * Shuts down the server.
 	 * 
-	 * @param iocName
-	 *            the name of the IOC.
+	 * @param param
+	 *            the parameter supplied by the client. This must be a
+	 *            <code>Map</code> containing a password string.
+	 * @return a message.
 	 */
-	IocFiles(final String iocName) {
+	public final Object run(final Object param) {
+		String password = null;
+		if (!(param instanceof Map)) {
+			return "Parameter not available.";
+		}
+		
+		@SuppressWarnings("unchecked")
+		Map<String, String> params = (Map<String, String>) param;
+		password = params.get("password");
+		
+		if (isCorrectPassword(password)) {
+			SaveValueServer.getRunningServer().stop();
+			return "Save Value RMI Server is shutting down...";
+		} else {
+			return "Incorrect password.";
+		}
+	}
+
+	/**
+	 * Checks whether the given password is correct.
+	 * 
+	 * @param password
+	 *            the password to check.
+	 * @return <code>true</code> if the password is correct,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean isCorrectPassword(final String password) {
 		IPreferencesService prefs = Platform.getPreferencesService();
-		String path = prefs.getString(Activator.PLUGIN_ID,
-				PreferenceConstants.FILE_PATH_PREFERENCE, "", null);
-		_cafile = new File(path, iocName + CA_FILE_EXTENSION);
-		_backup = new File(path, iocName + CA_BACKUP_FILE_EXTENSION);
-		_changelog = new File(path, iocName + CHANGELOG_FILE_EXTENSION);
+		String correctPassword = prefs.getString(Activator.PLUGIN_ID, 
+				PreferenceConstants.SHUTDOWN_PASSWORD, "", null);
+		return correctPassword.equals(password);
 	}
 
-	/**
-	 * Returns the ca file.
-	 * @return the ca file.
-	 */
-	File getCafile() {
-		return _cafile;
-	}
-
-	/**
-	 * Returns the backup file.
-	 * @return the backup file.
-	 */
-	File getBackup() {
-		return _backup;
-	}
-
-	/**
-	 * Returns the changelog file.
-	 * @return the changelog file.
-	 */
-	File getChangelog() {
-		return _changelog;
-	}
 }
