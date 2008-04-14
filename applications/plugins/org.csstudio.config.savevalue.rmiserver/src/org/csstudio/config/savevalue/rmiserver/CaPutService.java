@@ -167,6 +167,8 @@ public class CaPutService implements SaveValueService {
 		try {
 			File directory = file.getAbsoluteFile().getParentFile();
 			// create a temporary file to write into
+			_log.info(this, "Trying to create temporary file with prefix \""
+					+ file.getName() + "\" in directory: " + directory);
 			File temp = File.createTempFile(file.getName(), null, directory);
 			_log.debug(this, "Writing to temporary file: " + temp);
 			PrintWriter writer = null;
