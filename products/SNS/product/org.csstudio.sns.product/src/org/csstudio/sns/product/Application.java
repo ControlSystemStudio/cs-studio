@@ -8,7 +8,6 @@ import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.workspace.RelaunchConstants;
 import org.csstudio.platform.workspace.WorkspaceDialog;
 import org.csstudio.platform.workspace.WorkspaceInfo;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -23,7 +22,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
@@ -54,8 +52,14 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Application implements IApplication
 {
+    /** Command-line switch for help */
     private static final String HELP = "-help"; //$NON-NLS-1$
+    
+    /** Command-line switch to force workspace dialog */
     private static final String WORKSPACE_PROMPT = "-workspace_prompt"; //$NON-NLS-1$
+
+    /** Command-line switch to provide link behind <code>SHARE_NAME</code> */
+    private static final String SHARE_LINK = "-share_link"; //$NON-NLS-1$
     
     /** {@inheritDoc} */
     public Object start(IApplicationContext context) throws Exception
@@ -74,6 +78,7 @@ public class Application implements IApplication
                 (String []) context.getArguments().get("application.args"); //$NON-NLS-1$
             boolean force_workspace_prompt = false;
             URL default_workspace = null;
+            String share_link = null;
             for (int i=0; i<args.length; ++i)
             {
                 final String arg = args[i];
@@ -96,6 +101,26 @@ public class Application implements IApplication
                             default_workspace = new URL("file:" + next); //$NON-NLS-1$
                             ++i;
                         }
+                    }
+                }
+                if (arg.equalsIgnoreCase(SHARE_LINK))
+                {
+                    if ((i + 1) < args.length)
+                    {
+                        final String next = args[i+1];
+                        if (!next.startsWith("-")) //$NON-NLS-1$
+                        {
+                            share_link = next;
+                            ++i;
+                        }
+                    }
+                    if (share_link == null)
+                    {
+                        System.out.println("Error: Missing name of shared folder"); //$NON-NLS-1$
+                        showHelp();
+                        // Exit ASAP, see comment below.
+                        System.exit(0);
+                        return EXIT_OK;
                     }
                 }
             }
@@ -121,9 +146,13 @@ public class Application implements IApplication
             PluginActivator.getLogger().debug("CSS UI plugin: " +  //$NON-NLS-1$
                     CSSPlatformUiPlugin.getDefault().getPluginId());
 
+            // Open the default project
             final IProject project = openProject();
             if (project == null)
                 return IApplication.EXIT_OK;
+            // Was a common folder link requested?
+            if (share_link != null)
+                linkSharedFolder(project, share_link);
             try
             {
                 return runApplication(display);
@@ -152,7 +181,10 @@ public class Application implements IApplication
         System.out.format("  %-35s : Log all messages to the console\n",
                 "-consoleLog");
         System.out.format("  %-35s : Select workspace on command-line, no prompt\n",
-                "-data <some_workspace>");
+                "-data /some/workspace");
+        System.out.format("  %-35s : Create '%s' link to shared folder\n",
+                SHARE_LINK + " /path/to/some/folder",
+                Messages.Project_SharedFolderName);
     }
 
     /** Check or select the workspace.
@@ -300,31 +332,6 @@ public class Application implements IApplication
         try
         {
             project.open(new NullProgressMonitor());
-
-            // TODO get from command-line 
-            final String common_name = "Common";
-            final String common_location = "/Users/ky9/CSS-Workspaces/Common";
-            // Was a common folder link requested?
-            if (common_location != null)
-            {
-                // Assert/update link to common folder
-                final IFolder common = project.getFolder(new Path(common_name));
-                if (! common.exists())
-                {
-                    try
-                    {
-                        common.createLink(new Path(common_location),
-                                    IResource.REPLACE, new NullProgressMonitor());
-                    }
-                    catch (CoreException ex)
-                    {
-                        // TODO externalize strings
-                        MessageDialog.openError(null, "Common Folder Error",
-                            NLS.bind("Cannot link the 'Common' folder to\n{0}, error: {1}\n",
-                                common_location, ex.getMessage()));
-                    }
-                }
-            }
             return project;
         }
         catch (CoreException ex)
@@ -337,6 +344,30 @@ public class Application implements IApplication
                                       project.getName()));
         }
         return null;
+    }
+
+    /** Assert/update link to common folder.
+     *  @param project Project
+     *  @param share_link Folder to which the 'Share' entry should link
+     */
+    private void linkSharedFolder(final IProject project,
+            final String share_link)
+    {
+        final IFolder common = project.getFolder(
+            new Path(Messages.Project_SharedFolderName));
+        // if (common.exists()) ...? No. Re-create in any case
+        // to assert that it has the correct link
+        try
+        {
+            common.createLink(new Path(share_link),
+                        IResource.REPLACE, new NullProgressMonitor());
+        }
+        catch (CoreException ex)
+        {
+            MessageDialog.openError(null, Messages.Project_ShareError,
+                NLS.bind(Messages.Project_ShareErrorDetail,
+                    share_link, ex.getMessage()));
+        }
     }
     
     /** Close the project, handling all exceptions */

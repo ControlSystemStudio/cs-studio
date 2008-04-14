@@ -29,6 +29,9 @@ public class Messages extends NLS
     public static String Menu_Perspectives;
     public static String Menu_Views;
     public static String Menu_Window;
+    public static String Project_SharedFolderName; 
+    public static String Project_ShareError;
+    public static String Project_ShareErrorDetail;
     public static String Window_Title;
     
     static
