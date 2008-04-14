@@ -8,10 +8,14 @@ import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.workspace.RelaunchConstants;
 import org.csstudio.platform.workspace.WorkspaceDialog;
 import org.csstudio.platform.workspace.WorkspaceInfo;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -19,6 +23,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
@@ -295,6 +300,31 @@ public class Application implements IApplication
         try
         {
             project.open(new NullProgressMonitor());
+
+            // TODO get from command-line 
+            final String common_name = "Common";
+            final String common_location = "/Users/ky9/CSS-Workspaces/Common";
+            // Was a common folder link requested?
+            if (common_location != null)
+            {
+                // Assert/update link to common folder
+                final IFolder common = project.getFolder(new Path(common_name));
+                if (! common.exists())
+                {
+                    try
+                    {
+                        common.createLink(new Path(common_location),
+                                    IResource.REPLACE, new NullProgressMonitor());
+                    }
+                    catch (CoreException ex)
+                    {
+                        // TODO externalize strings
+                        MessageDialog.openError(null, "Common Folder Error",
+                            NLS.bind("Cannot link the 'Common' folder to\n{0}, error: {1}\n",
+                                common_location, ex.getMessage()));
+                    }
+                }
+            }
             return project;
         }
         catch (CoreException ex)
