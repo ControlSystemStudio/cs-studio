@@ -32,11 +32,31 @@ import org.csstudio.platform.model.IProcessVariable;
 public class ProcessVariableNode extends AbstractAlarmTreeNode 
 		implements IAlarmTreeNode, IProcessVariable {
 	
-	private SubtreeNode parent;
-	private String name;
-	private Alarm activeAlarm;
-	private Alarm highestUnacknowledgedAlarm;
-	private final Alarm NO_ALARM;
+	/**
+	 * This node's parent node.
+	 */
+	private SubtreeNode _parent;
+	
+	/**
+	 * The name of this node.
+	 */
+	private String _name;
+	
+	/**
+	 * The active alarm for this node.
+	 */
+	private Alarm _activeAlarm;
+	
+	/**
+	 * The highest unacknowledged alarm for this node.
+	 */
+	private Alarm _highestUnacknowledgedAlarm;
+	
+	/**
+	 * An alarm object representing NO_ALARM for this node.
+	 */
+	private final Alarm _noAlarm;
+	
 	/**
 	 * Creates a new node for a process variable as a child of the specified
 	 * parent.
@@ -44,46 +64,49 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	 * @param parent the parent node for the node.
 	 * @param name the name of the node.
 	 */
-	public ProcessVariableNode(SubtreeNode parent, String name) {
-		if (parent == null || name == null)
+	public ProcessVariableNode(final SubtreeNode parent, final String name) {
+		if (parent == null || name == null) {
 			throw new NullPointerException("parent and name must not be null");
+		}
 		
-		this.parent = parent;
+		this._parent = parent;
 		parent.addChild(this);
-		this.name = name;
-		this.activeAlarm = null;
-		this.highestUnacknowledgedAlarm = null;
-		this.NO_ALARM = new Alarm(name, Severity.NO_ALARM);
+		this._name = name;
+		this._activeAlarm = null;
+		this._highestUnacknowledgedAlarm = null;
+		this._noAlarm = new Alarm(name, Severity.NO_ALARM);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getName() {
-		return name;
+	public final String getName() {
+		return _name;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	public IAlarmTreeNode getParent() {
-		return parent;
+	public final IAlarmTreeNode getParent() {
+		return _parent;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getTypeId() {
+	public final String getTypeId() {
 		return IProcessVariable.TYPE_ID;
 	}
 	
 	/**
 	 * Returns the severity of the alarm for this node. If there is no alarm
 	 * for this node, returns NO_ALARM.
+	 * 
+	 * @return the severity of the alarm for this node.
 	 */
-	public Severity getAlarmSeverity() {
-		if (activeAlarm != null) {
-			return activeAlarm.getSeverity();
+	public final Severity getAlarmSeverity() {
+		if (_activeAlarm != null) {
+			return _activeAlarm.getSeverity();
 		} else {
 			return Severity.NO_ALARM;
 		}
@@ -92,10 +115,12 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	/**
 	 * Returns the severity of the highest unacknowledged alarm for this node.
 	 * If there is no unacknowledged alarm for this node, returns NO_ALARM.
+	 * 
+	 * @return the severity of the highest unacknowledged alarm for this node.
 	 */
-	public Severity getUnacknowledgedAlarmSeverity() {
-		if (highestUnacknowledgedAlarm != null) {
-			return highestUnacknowledgedAlarm.getSeverity();
+	public final Severity getUnacknowledgedAlarmSeverity() {
+		if (_highestUnacknowledgedAlarm != null) {
+			return _highestUnacknowledgedAlarm.getSeverity();
 		} else {
 			return Severity.NO_ALARM;
 		}
@@ -104,60 +129,63 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean hasAlarm() {
-		return activeAlarm != null || highestUnacknowledgedAlarm != null;
+	public final boolean hasAlarm() {
+		return _activeAlarm != null || _highestUnacknowledgedAlarm != null;
 	}
 	
 	/**
 	 * Sets an active alarm at this node.
 	 * @param alarm the alarm.
 	 */
-	public void setActiveAlarm(Alarm alarm) {
-		this.activeAlarm = alarm;
+	public final void setActiveAlarm(final Alarm alarm) {
+		this._activeAlarm = alarm;
 
 		// Increase the highest unacknowledged alarm if the new active alarm
 		// has a higher severity than the current highest unacknowledged
 		// alarm.
-		if (highestUnacknowledgedAlarm == null
-				|| alarm.compareTo(highestUnacknowledgedAlarm) > 0) {
-			highestUnacknowledgedAlarm = alarm;
+		if (_highestUnacknowledgedAlarm == null
+				|| alarm.compareTo(_highestUnacknowledgedAlarm) > 0) {
+			_highestUnacknowledgedAlarm = alarm;
 		}
 		
 		// propagate alarm to the parent node
-		parent.childSeverityChanged(this);
+		_parent.childSeverityChanged(this);
 	}
 	
 	/**
 	 * Sets the highest unacknowledged alarm at this node.
 	 * @param alarm the alarm.
 	 */
-	public void setHighestUnacknowledgedAlarm(Alarm alarm) {
-		this.highestUnacknowledgedAlarm = alarm;
-		parent.childSeverityChanged(this);
+	public final void setHighestUnacknowledgedAlarm(final Alarm alarm) {
+		this._highestUnacknowledgedAlarm = alarm;
+		_parent.childSeverityChanged(this);
 	}
 	
 	/**
 	 * Cancels the alarm at this node. If there is no alarm, does nothing.
 	 */
-	public void cancelAlarm() {
-		if (activeAlarm != null) {
-			activeAlarm = NO_ALARM;
-			parent.childSeverityChanged(this);
+	public final void cancelAlarm() {
+		if (_activeAlarm != null) {
+			_activeAlarm = _noAlarm;
+			_parent.childSeverityChanged(this);
 		}
 	}
 
 	/**
 	 * Removes the highest unacknowledged alarm from this node.
 	 */
-	public void removeHighestUnacknowledgedAlarm() {
-		if (highestUnacknowledgedAlarm != null) {
-			highestUnacknowledgedAlarm = NO_ALARM;
-			parent.childSeverityChanged(this);
+	public final void removeHighestUnacknowledgedAlarm() {
+		if (_highestUnacknowledgedAlarm != null) {
+			_highestUnacknowledgedAlarm = _noAlarm;
+			_parent.childSeverityChanged(this);
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String toString() {
-		return name;
+	public final String toString() {
+		return _name;
 	}
 }

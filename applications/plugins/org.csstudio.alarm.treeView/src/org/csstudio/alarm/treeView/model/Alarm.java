@@ -31,8 +31,15 @@ package org.csstudio.alarm.treeView.model;
  */
 public class Alarm implements Comparable<Alarm> {
 
-	private String objectName;
-	private Severity severity;
+	/**
+	 * The name of the object to which this alarm applies.
+	 */
+	private String _objectName;
+	
+	/**
+	 * The severity of this alarm.
+	 */
+	private Severity _severity;
 
 
 	/**
@@ -40,9 +47,9 @@ public class Alarm implements Comparable<Alarm> {
 	 * @param objectName the name of the object on which this alarm occured.
 	 * @param severity the severity of the alarm.
 	 */
-	public Alarm(String objectName, Severity severity) {
-		this.objectName = objectName;
-		this.severity = severity;
+	public Alarm(final String objectName, final Severity severity) {
+		this._objectName = objectName;
+		this._severity = severity;
 	}
 	
 	
@@ -50,8 +57,8 @@ public class Alarm implements Comparable<Alarm> {
 	 * Returns the severity of this alarm.
 	 * @return the severity of this alarm.
 	 */
-	public Severity getSeverity() {
-		return severity;
+	public final Severity getSeverity() {
+		return _severity;
 	}
 
 	
@@ -66,8 +73,8 @@ public class Alarm implements Comparable<Alarm> {
 	 *         less severe than, equally severe as or more severe than the
 	 *         other alarm.
 	 */
-	public int compareTo(Alarm other) {
-		return severity.compareTo(other.severity);
+	public final int compareTo(final Alarm other) {
+		return _severity.compareTo(other._severity);
 	}
 	
 	
@@ -75,8 +82,8 @@ public class Alarm implements Comparable<Alarm> {
 	 * Returns the name of the object on which this alarm occured.
 	 * @return the name of the object on which this alarm occured.
 	 */
-	public String getObjectName() {
-		return objectName;
+	public final String getObjectName() {
+		return _objectName;
 	}
 	
 	
@@ -84,7 +91,7 @@ public class Alarm implements Comparable<Alarm> {
 	 * Returns a string representation of this alarm.
 	 * @return a string representation of this alarm.
 	 */
-	public String toString() {
-		return "Alarm[" + objectName + "," + severity + "]";
+	public final String toString() {
+		return "Alarm[" + _objectName + "," + _severity + "]";
 	}
 }

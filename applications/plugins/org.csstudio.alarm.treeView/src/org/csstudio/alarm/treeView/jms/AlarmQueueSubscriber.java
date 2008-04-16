@@ -50,77 +50,92 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AlarmQueueSubscriber implements MessageListener {
 	
-//	private static final String ALARM_TYPE = "ALARM";
-	
-	private static final CentralLogger log = CentralLogger.getInstance();
+	/**
+	 * The logger used by this class.
+	 */
+	private static final CentralLogger LOG = CentralLogger.getInstance();
 
-	private MessageReceiver receiver1;
-	private MessageReceiver receiver2;
-	private SubtreeNode tree;
+	/**
+	 * The first receiver.
+	 */
+	private MessageReceiver _receiver1;
+	
+	/**
+	 * The second receiver.
+	 */
+	private MessageReceiver _receiver2;
+	
+	/**
+	 * The tree which will be updated by this subscriber.
+	 */
+	private SubtreeNode _tree;
 	
 	
 	/**
 	 * Creates a new alarm queue subscriber.
 	 * @param tree the root node of the tree to which updates will be written.
 	 */
-	public AlarmQueueSubscriber(SubtreeNode tree) {
-		if (tree == null)
+	public AlarmQueueSubscriber(final SubtreeNode tree) {
+		if (tree == null) {
 			throw new NullPointerException("tree must not be null");
+		}
 		
-		this.tree = tree;
+		this._tree = tree;
 	}
 	
 	/**
 	 * Sets the tree wo which updates will be applied.
 	 * @param tree the root node of the tree.
 	 */
-	public void setTree(SubtreeNode tree) {
-		this.tree = tree;
+	public final void setTree(final SubtreeNode tree) {
+		this._tree = tree;
 	}
 
 	/**
 	 * Connects to the JMS server.
 	 */
-	public void openConnection() {
+	public final void openConnection() {
 		Preferences prefs = AlarmTreePlugin.getDefault().getPluginPreferences();
 		String[] queues = prefs.getString(PreferenceConstants.JMS_QUEUE).split(",");
 		try {
-			receiver1 = new MessageReceiver(
+			_receiver1 = new MessageReceiver(
 					prefs.getString(PreferenceConstants.JMS_CONTEXT_FACTORY_PRIMARY),
 					prefs.getString(PreferenceConstants.JMS_URL_PRIMARY),
 					queues);
-			receiver1.startListener(this);
+			_receiver1.startListener(this);
 		} catch (Exception e) {
-			log.error(this, "Error initializing JMS listener for primary server.", e);
+			LOG.error(this, "Error initializing JMS listener for primary server.", e);
 		}
 		
 		try {
-			receiver2 = new MessageReceiver(
+			_receiver2 = new MessageReceiver(
 					prefs.getString(PreferenceConstants.JMS_CONTEXT_FACTORY_SECONDARY),
 					prefs.getString(PreferenceConstants.JMS_URL_SECONDARY),
 					queues);
-			receiver2.startListener(this);
+			_receiver2.startListener(this);
 		} catch (Exception e) {
-			log.error(this, "Error initializing JMS listener for secondary server.", e);
+			LOG.error(this, "Error initializing JMS listener for secondary server.", e);
 		}
 	}
 
 	/**
 	 * Disconnects from the JMS server.
 	 */
-	public void closeConnection() {
+	public final void closeConnection() {
 		try {
-			if (receiver1 != null)
-				receiver1.stopListening();
+			if (_receiver1 != null) {
+				_receiver1.stopListening();
+			}
 		} catch (Exception e) {
-			log.warn(this, "Error stopping primary JMS listener", e);
+			LOG.warn(this, "Error stopping primary JMS listener", e);
 		}
 		
 		try {
-			if (receiver2 != null)
-				receiver2.stopListening();
+			if (_receiver2 != null) {
+				_receiver2.stopListening();
+			}
 		} catch (Exception e) {
-			log.warn(this, "Error stopping secondary JMS listener", e);
+			LOG.warn(this, "Error stopping secondary JMS listener", e);
 		}
 	}
 
@@ -128,7 +143,7 @@ public class AlarmQueueSubscriber implements MessageListener {
 	 * Called when a message is received via JMS.
 	 * @param message the message.
 	 */
-	public void onMessage(final Message message) {
+	public final void onMessage(final Message message) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if (message instanceof MapMessage) {
@@ -142,18 +157,18 @@ public class AlarmQueueSubscriber implements MessageListener {
 	 * Updates the alarm tree based on the specified message.
 	 * @param message an alarm message.
 	 */
-	private synchronized void processMessage(MapMessage message) {
+	private synchronized void processMessage(final MapMessage message) {
 		try {
 			if (isAlarmAcknowledgement(message)) {
 				String name = message.getString("NAME");
-				ProcessVariableNode node = tree.findProcessVariableNode(name);
+				ProcessVariableNode node = _tree.findProcessVariableNode(name);
 				if (node != null) {
 					node.removeHighestUnacknowledgedAlarm();
 				}
 			} else if (isAlarmMessage(message)) {
 				String name = message.getString("NAME");
 				Severity severity = Severity.parseSeverity(message.getString("SEVERITY"));
-				ProcessVariableNode node = tree.findProcessVariableNode(name);
+				ProcessVariableNode node = _tree.findProcessVariableNode(name);
 				if (node != null) {
 					if (severity.isAlarm()) {
 						Alarm alarm = new Alarm(name, severity);
@@ -165,7 +180,7 @@ public class AlarmQueueSubscriber implements MessageListener {
 			}
 			message.acknowledge();
 		} catch (JMSException e) {
-			log.error(this, "Error processing JMS message", e);
+			LOG.error(this, "Error processing JMS message", e);
 		}
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IViewPart view = page.findView(AlarmTreeView.getID());
@@ -174,7 +189,15 @@ public class AlarmQueueSubscriber implements MessageListener {
 		}
 	}
 
-	private boolean isAlarmAcknowledgement(MapMessage message) {
+	/**
+	 * Returns whether the given message is an alarm acknowledgement.
+	 * 
+	 * @param message
+	 *            the message.
+	 * @return <code>true</code> if the message is an alarm acknowledgement,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean isAlarmAcknowledgement(final MapMessage message) {
 		try {
 			String ack = message.getString("ACK");
 			return ack != null && ack.equals("TRUE");
@@ -186,14 +209,10 @@ public class AlarmQueueSubscriber implements MessageListener {
 	/**
 	 * Returns whether the specified message is an alarm message.
 	 * @param msg the message.
+	 * @return <code>true</code>.
 	 */
-	private boolean isAlarmMessage(MapMessage msg) {
+	private boolean isAlarmMessage(final MapMessage msg) {
 		// We currently assume that all received mesages are alarm messages
 		return true;
-//		try {
-//			return ALARM_TYPE.equalsIgnoreCase(msg.getString("TYPE"));
-//		} catch (JMSException e) {
-//			return false;
-//		}
 	}
 }

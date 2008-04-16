@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Shell;
 
 // used for preferences
 // TODO: move into preferences package?
+// FIXME: this is still from the first alarm tree (by Jurij Kodre?) and should probably be rewritten
 public class AddMountPointDlg extends Dialog {
 	public AddMountPointDlg(Shell parentShell, Hashtable<String,String> env) {
 		super(parentShell);

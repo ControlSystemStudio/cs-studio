@@ -41,13 +41,16 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
  */
 public class AlarmTreeLabelProvider extends LabelProvider {
 
-	private Map<String, Image> imageCache;
+	/**
+	 * Cache for Image objects.
+	 */
+	private Map<String, Image> _imageCache;
 	
 	/**
 	 * Creates a new alarm tree label provider.
 	 */
 	public AlarmTreeLabelProvider() {
-		imageCache = new HashMap<String, Image>();
+		_imageCache = new HashMap<String, Image>();
 	}
 
 	/**
@@ -56,7 +59,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * @return the element's name, or an empty string if the element doesn't
 	 * have a name.
 	 */
-	public String getText(Object element) {
+	public final String getText(final Object element) {
 		if (element instanceof IAlarmTreeNode){
 			return ((IAlarmTreeNode)element).getName();
 		}
@@ -72,7 +75,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * @param alarmSeverity the severity.
 	 * @return the character that represents the given severity.
 	 */
-	private char getIconChar(Severity alarmSeverity) {
+	private char getIconChar(final Severity alarmSeverity) {
 		switch (alarmSeverity) {
 		case NO_ALARM:
 			return 'g';
@@ -94,7 +97,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * @return the icon for the element, or {@code null} if there is no icon
 	 * for the element.
 	 */
-	public Image getImage(Object element) {
+	public final Image getImage(final Object element) {
 		if (element instanceof ProcessVariableNode) {
 			ProcessVariableNode node = (ProcessVariableNode) element;
 			return node.hasAlarm() ? alarmImageFor(node) : defaultNodeImage();
@@ -108,8 +111,9 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	/**
 	 * Returns the image for the given node if that node is in an alarm state.
 	 * @param node the node.
+	 * @return the image.
 	 */
-	private Image alarmImageFor(IAlarmTreeNode node) {
+	private Image alarmImageFor(final IAlarmTreeNode node) {
 		Severity activeAlarmSeverity = node.getAlarmSeverity();
 		Severity unacknowledgedAlarmSeverity = node.getUnacknowledgedAlarmSeverity();
 		char rightIconChar = getIconChar(activeAlarmSeverity);
@@ -120,6 +124,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	
 	/**
 	 * Returns the image for a leaf node that does not have any alarms set.
+	 * @return the image.
 	 */
 	private Image defaultNodeImage() {
 		return PlatformUI.getWorkbench().getSharedImages().getImage(
@@ -130,13 +135,14 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * Loads an image. The image is added to a cache kept by this provider and
 	 * is disposed of when this provider is disposed of.
 	 * @param name the image file name.
+	 * @return the image.
 	 */
-	private Image loadImage(String name) {
-		if (imageCache.containsKey(name)) {
-			return imageCache.get(name);
+	private Image loadImage(final String name) {
+		if (_imageCache.containsKey(name)) {
+			return _imageCache.get(name);
 		} else {
 			Image image = AlarmTreePlugin.getImageDescriptor(name).createImage();
-			imageCache.put(name, image);
+			_imageCache.put(name, image);
 			return image;
 		}
 	}
@@ -145,8 +151,8 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * Disposes of the images created by this label provider.
 	 */
 	@Override
-	public void dispose() {
-		for (Image image : imageCache.values()) {
+	public final void dispose() {
+		for (Image image : _imageCache.values()) {
 			image.dispose();
 		}
 	}

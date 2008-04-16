@@ -34,6 +34,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 /**
+ * Action that opens the Alarm Tree view in the CSS workbench.
+ * 
  * @author hrickens
  * @author $Author$
  * @version $Revision$
@@ -41,44 +43,36 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ShowTreeView implements IWorkbenchWindowActionDelegate {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
+	/**
+	 * {@inheritDoc}
 	 */
 	public void dispose() {
-		// TODO Auto-generated method stub
-
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
+	/**
+	 * {@inheritDoc}
 	 */
-	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stub
-
+	public void init(final IWorkbenchWindow window) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+	/**
+	 * {@inheritDoc}
 	 */
-	public void run(IAction action) {
+	public final void run(final IAction action) {
 		IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         IWorkbenchPage page = window.getActivePage();
 	    try {
 	        page.showView(AlarmTreeView.getID());
-	    }
-	    catch (PartInitException e)
-	    {
+	    } catch (PartInitException e) {
 	        e.printStackTrace();
 	    }
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+	/**
+	 * {@inheritDoc}
 	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-
+	public void selectionChanged(final IAction action, final ISelection selection) {
 	}
 
 }

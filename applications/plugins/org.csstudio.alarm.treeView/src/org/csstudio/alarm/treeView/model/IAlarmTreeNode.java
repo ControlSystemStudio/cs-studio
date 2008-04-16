@@ -33,14 +33,16 @@ public interface IAlarmTreeNode {
 
 	/**
 	 * Returns the name of this node.
+	 * @return the name of this node.
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * Returns the parent node of this node. If this node does not have a
 	 * parent, returns {@code null}.
+	 * @return the parent node of this node.
 	 */
-	public IAlarmTreeNode getParent();
+	IAlarmTreeNode getParent();
 	
 	/**
 	 * Returns the alarm severity for this node. If this node has children,
@@ -48,9 +50,11 @@ public interface IAlarmTreeNode {
 	 * NO_ALARM if this node is a subtree root without any children or if this
 	 * node represents a process variable which is not in an alarm state.
 	 * 
+	 * @return the alarm severity for this node.
+	 * 
 	 * @see #getUnacknowledgedAlarmSeverity()
 	 */
-	public Severity getAlarmSeverity();
+	Severity getAlarmSeverity();
 	
 	/**
 	 * Returns the severity of the highest unacknowledged alarm for this node.
@@ -59,14 +63,17 @@ public interface IAlarmTreeNode {
 	 * subtree root without any children or if this node represents a process
 	 * variable which doesn't have any unacknowledged alarms.
 	 * 
+	 * @return the severity of the highest unacknowledged alarm for this node.
+	 * 
 	 * @see #getAlarmSeverity()
 	 */
-	public Severity getUnacknowledgedAlarmSeverity();
+	Severity getUnacknowledgedAlarmSeverity();
 
 	/**
 	 * Returns {@code true} if there is an alarm for this node or its children.
+	 * @return whether there is an alarm for this node or its children.
 	 */
-	public boolean hasAlarm();
+	boolean hasAlarm();
 
 	/**
 	 * Returns the URL of this node's help page.
@@ -74,7 +81,7 @@ public interface IAlarmTreeNode {
 	 * @return the URL of this node's help page, or <code>null</code> if this
 	 *         node does not have a help page.
 	 */
-	public URL getHelpPage();
+	URL getHelpPage();
 
 	/**
 	 * Returns this node's help guidance string.
@@ -82,7 +89,7 @@ public interface IAlarmTreeNode {
 	 * @return this node's help guidance string, or <code>null</code> if no
 	 *         help guidance string is configured for this node.
 	 */
-	public String getHelpGuidance();
+	String getHelpGuidance();
 	
 	/**
 	 * Returns the name of the CSS-SDS alarm display file configured for this
@@ -91,6 +98,6 @@ public interface IAlarmTreeNode {
 	 * @return the name of this node's alarm display file, or <code>null</code>
 	 *         if no alarm display is configured for this node.
 	 */
-	public String getCssAlarmDisplay();
+	String getCssAlarmDisplay();
 
 }

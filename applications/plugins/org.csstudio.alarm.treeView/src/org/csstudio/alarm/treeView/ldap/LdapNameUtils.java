@@ -27,12 +27,20 @@
  * 
  * @author Jurij Kodre
  */
-public class LdapNameUtils {
+public final class LdapNameUtils {
+	
+	/**
+	 * Constructor.
+	 */
+	private LdapNameUtils() {
+	}
 
 	/**
 	 * Removes double quotes from a string.
+	 * @param toClean the string to be cleaned.
+	 * @return the cleaned string.
 	 */
-	public static String removeQuotes(String toClean){
+	public static String removeQuotes(final String toClean) {
 		StringBuffer tc = new StringBuffer(toClean);
 		String grr = "\"";
 		int pos = tc.indexOf(grr);
@@ -46,8 +54,10 @@ public class LdapNameUtils {
 	/**
 	 * Returns the simple name of the given name.
 	 * For example, given &quot;a=x,b=y,c=z&quot;, returns &quot;x&quot;.
+	 * @param name the name.
+	 * @return the simple name.
 	 */
-	public static String simpleName(String name){
+	public static String simpleName(final String name){
 		int pos1 = name.indexOf("=");
 		int pos2= name.indexOf(",");
 		if (pos2 ==-1 ) {pos2=name.length();} //if comma is not present, we must take last character
@@ -58,12 +68,16 @@ public class LdapNameUtils {
 	 * Returns the qualified name of the parent of the given name.
 	 * For example, given &quot;a=x,b=y,c=z&quot;, returns &quot;b=y,c=z&quot;.
 	 * Returns {@code null} if there is no parent.
+	 * @param name the name.
+	 * @return the parent name or {@code null}.
 	 */
-	public static String parentName(String name){
+	public static String parentName(final String name){
 		String dum = name;
 		if (dum ==null) {dum ="";}
 		int pos=dum.indexOf(",");
-		if (pos==-1) return null;
+		if (pos==-1) {
+			return null;
+		}
 		return dum.substring(pos+1);
 	}
 }

@@ -61,22 +61,22 @@ public class LdapDirectoryReader extends Job {
 	/**
 	 * Maximum number of entries to return in a search.
 	 */
-	private long COUNT_LIMIT = 0;  // 0 means unlimited
+	private static final long COUNT_LIMIT = 0;  // 0 means unlimited
 	
 	/**
 	 * The directory that is searched.
 	 */
-	private DirContext directory;
+	private DirContext _directory;
 	
 	/**
 	 * The root node of the tree that is built by this reader.
 	 */
-	private SubtreeNode treeRoot;
+	private SubtreeNode _treeRoot;
 	
 	/**
 	 * The facility names which are read from the directory.
 	 */
-	private String[] facilityNames;
+	private String[] _facilityNames;
 	
 	/**
 	 * The root below which the direcoty is searched.
@@ -86,30 +86,34 @@ public class LdapDirectoryReader extends Job {
 	// in case of different directory structure protocol
 	private static final String ALARM_ROOT = "ou=EpicsAlarmCfg";
 	
-	private static final CentralLogger log = CentralLogger.getInstance();
+	/**
+	 * The logger that is used by this class.
+	 */
+	private static final CentralLogger LOG = CentralLogger.getInstance();
 	
 	/**
 	 * Creates a new CachingThread instance.
 	 * 
 	 * @param treeRoot the root node of the tree to which items are added.
 	 */
-	public LdapDirectoryReader(SubtreeNode treeRoot) {
+	public LdapDirectoryReader(final SubtreeNode treeRoot) {
 		super("Alarm Tree Directory Reader");
-		this.treeRoot = treeRoot;
+		this._treeRoot = treeRoot;
 		
 		Preferences prefs = AlarmTreePlugin.getDefault().getPluginPreferences();
-		facilityNames = prefs.getString(PreferenceConstants.FACILITIES).split(";");
+		_facilityNames = prefs.getString(PreferenceConstants.FACILITIES).split(";");
 	}
 	
 	
 	/**
 	 * Initializes Connection with connection parameters set up in the
 	 * preferences.
+	 * @throws NamingException if an LDAP error occurs.
 	 */
 	private void initializeConnection() throws NamingException {
 		Hashtable<String, String> env = environmentFromPreferences();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-		directory = new InitialDirContext(env);
+		_directory = new InitialDirContext(env);
 	}
 	
 	
@@ -132,25 +136,43 @@ public class LdapDirectoryReader extends Job {
 	}
 	
 	
+	/**
+	 * Reads all records below the given facility name into the tree.
+	 * 
+	 * @param efan the facility.
+	 * @throws NamingException if an LDAP error occurs.
+	 */
 	// This is currently not used on purpose. Additional testing is needed
 	// before this implementation can be used. It is also a lot slower than
 	// the currently used implementation (populateSubTree).
 	@SuppressWarnings("unused")
-	private void populateSubTree2(String efan) throws NamingException {
+	private void populateSubTree2(final String efan) throws NamingException {
 		String searchRootDN = "efan=" + efan + "," + ALARM_ROOT;
 		
-		SubtreeNode efanNode = new SubtreeNode(treeRoot, efan);
+		SubtreeNode efanNode = new SubtreeNode(_treeRoot, efan);
 		populateTreeRecursively(searchRootDN, efanNode);
 	}
 	
 	
-	private void populateTreeRecursively(String rootDN, SubtreeNode parent) throws NamingException {
-		NamingEnumeration<NameClassPair> results = directory.list(rootDN);
+	/**
+	 * Recursively reads all nodes from the LDAP directory starting from the
+	 * given root DN.
+	 * 
+	 * @param rootDN
+	 *            the root DN.
+	 * @param parent
+	 *            the parent node below which the new nodes should be inserted
+	 *            into the tree.
+	 * @throws NamingException
+	 *             if an LDAP error occurs.
+	 */
+	private void populateTreeRecursively(final String rootDN, final SubtreeNode parent) throws NamingException {
+		NamingEnumeration<NameClassPair> results = _directory.list(rootDN);
 		while (results.hasMore()) {
 			NameClassPair entry = results.next();
 			String relativeName = LdapNameUtils.removeQuotes(entry.getName());
 			String fullName = relativeName + "," + rootDN;
-			Attributes attrs = directory.getAttributes(fullName);
+			Attributes attrs = _directory.getAttributes(fullName);
 			if (fullName.startsWith("eren=")) {
 				ProcessVariableNode node = new ProcessVariableNode(parent, LdapNameUtils.simpleName(relativeName));
 				setAlarmState(node, attrs);
@@ -167,8 +189,9 @@ public class LdapDirectoryReader extends Job {
 	/**
 	 * Reads all process variables below the given facility name into the tree.
 	 * @param efan the EPICS facility name.
+	 * @throws NamingException if an LDAP error occurs.
 	 */
-	private void populateSubTree(String efan) throws NamingException {
+	private void populateSubTree(final String efan) throws NamingException {
 		// build dn of the efan object below which we want to search
 		String searchRootDN = "efan=" + efan + "," + ALARM_ROOT;
 
@@ -178,9 +201,8 @@ public class LdapDirectoryReader extends Job {
 		
 		// search all EPICS record names (eren) below the base object
 		NamingEnumeration<SearchResult> searchResults =
-			directory.search(searchRootDN, "eren=*", ctrl);
-		try
-		{
+			_directory.search(searchRootDN, "eren=*", ctrl);
+		try {
 			while (searchResults.hasMore()){
 				SearchResult result = searchResults.next();
 				String relativeName = result.getName();
@@ -192,18 +214,14 @@ public class LdapDirectoryReader extends Job {
 				// that was just created if there is an alarm.
 				evaluateAttributes(result, node);
 			}
-		}
-		catch (SizeLimitExceededException e)
-		{
-			log.error(this, "Size limit exceeded while reading search results: "
+		} catch (SizeLimitExceededException e) {
+			LOG.error(this, "Size limit exceeded while reading search results: "
 					+ e.getExplanation(), e);
-		}
-		finally {
+		} finally {
 			try {
 				searchResults.close();
-			}
-			catch (NamingException e) {
-				log.warn(this, "Error cloing search results", e);
+			} catch (NamingException e) {
+				LOG.warn(this, "Error cloing search results", e);
 			}
 		}
 	}
@@ -218,7 +236,8 @@ public class LdapDirectoryReader extends Job {
 	 * @param node the node on which the alarm must be triggered.
 	 * @throws NamingException if something bad happens...
 	 */
-	private void evaluateAttributes(SearchResult result, ProcessVariableNode node) throws NamingException {
+	private void evaluateAttributes(final SearchResult result,
+			final ProcessVariableNode node) throws NamingException {
 		Attributes attrs = result.getAttributes();
 		setAlarmState(node, attrs);
 		setEpicsAttributes(node, attrs);
@@ -236,7 +255,7 @@ public class LdapDirectoryReader extends Job {
 	 * @throws NamingException
 	 *             if an error occurs.
 	 */
-	private void setEpicsAttributes(AbstractAlarmTreeNode node, Attributes attrs)
+	private void setEpicsAttributes(final AbstractAlarmTreeNode node, final Attributes attrs)
 			throws NamingException {
 		Attribute displayAttr = attrs.get("epicsCssAlarmDisplay");
 		if (displayAttr != null) {
@@ -278,7 +297,7 @@ public class LdapDirectoryReader extends Job {
 	 * @throws NamingException
 	 *             if an error occurs.
 	 */
-	private void setAlarmState(ProcessVariableNode node, Attributes attrs)
+	private void setAlarmState(final ProcessVariableNode node, final Attributes attrs)
 			throws NamingException {
 		Attribute severityAttr = attrs.get("epicsAlarmSeverity");
 		Attribute highUnAcknAttr = attrs.get("epicsAlarmHighUnAckn");
@@ -304,9 +323,10 @@ public class LdapDirectoryReader extends Job {
 	 * Creates a tree item for the object with the given name.
 	 * @param relativeName the object's relative name. This name will be used to determine
 	 *        where in the tree to put the object.
+	 * @return the tree item for the given object.
 	 */
-	private ProcessVariableNode createTreeNode(String relativeName) {
-		return createTreeNode(relativeName, treeRoot);
+	private ProcessVariableNode createTreeNode(final String relativeName) {
+		return createTreeNode(relativeName, _treeRoot);
 	}
 	
 	
@@ -319,8 +339,8 @@ public class LdapDirectoryReader extends Job {
 	 * @param rootNode the root node of the tree.
 	 * @return the created node.
 	 */
-	private ProcessVariableNode createTreeNode(String relativeName,
-			SubtreeNode rootNode) {
+	private ProcessVariableNode createTreeNode(final String relativeName,
+			final SubtreeNode rootNode) {
 		SubtreeNode parentNode = findParentNode(relativeName, rootNode);
 		String name = LdapNameUtils.simpleName(relativeName);
 		ProcessVariableNode node = new ProcessVariableNode(parentNode, name);
@@ -337,7 +357,7 @@ public class LdapDirectoryReader extends Job {
 	 * @param root the root node of the tree which is searched.
 	 * @return the parent node of the node with the specified name.
 	 */
-	private SubtreeNode findParentNode(String relativeName, SubtreeNode root) {
+	private SubtreeNode findParentNode(final String relativeName, final SubtreeNode root) {
 		String relativeParentName = LdapNameUtils.parentName(relativeName);
 		if (relativeParentName != null) {
 			// first, find the parent's parent
@@ -365,17 +385,17 @@ public class LdapDirectoryReader extends Job {
 	 * @param monitor the progress monitor to which progress is reported.
 	 * @return a status representing the outcome of this job.
 	 */
-	public IStatus run(IProgressMonitor monitor) {
+	public final IStatus run(final IProgressMonitor monitor) {
 		monitor.beginTask("Initializing Alarm Tree", IProgressMonitor.UNKNOWN);
 		try {
 			long startTime = System.currentTimeMillis();
 			initializeConnection();
-			for (String facility : facilityNames) {
+			for (String facility : _facilityNames) {
 				populateSubTree(facility);
 			}
 			closeConnection();
 			long endTime = System.currentTimeMillis();
-			log.debug(this, "Directory reader time: " + (endTime-startTime) + "ms");
+			LOG.debug(this, "Directory reader time: " + (endTime-startTime) + "ms");
 		} catch (NamingException e) {
 			return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID,
 					IStatus.ERROR, "Error reading from directory: " + e.getMessage(), e);
@@ -390,10 +410,10 @@ public class LdapDirectoryReader extends Job {
 	 * Closes the connection to the directory.
 	 */
 	private void closeConnection() {
-		if (directory != null) {
+		if (_directory != null) {
 			try {
-				directory.close();
-				directory = null;
+				_directory.close();
+				_directory = null;
 			} catch (NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -402,4 +422,3 @@ public class LdapDirectoryReader extends Job {
 	}
 	
 }
- 

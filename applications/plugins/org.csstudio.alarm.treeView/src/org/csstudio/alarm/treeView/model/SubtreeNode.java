@@ -35,11 +35,30 @@ import org.eclipse.ui.views.properties.IPropertySource;
  */
 public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IAlarmTreeNode {
 	
-	private List<IAlarmTreeNode> children;
-	private SubtreeNode parent;
-	private String name;
-	private Severity highestChildSeverity;
-	private Severity highestUnacknowledgedChildSeverity;
+	/**
+	 * This node's children.
+	 */
+	private List<IAlarmTreeNode> _children;
+	
+	/**
+	 * This node's parent node.
+	 */
+	private SubtreeNode _parent;
+	
+	/**
+	 * The name of this node.
+	 */
+	private String _name;
+	
+	/**
+	 * The highest severity of the child nodes.
+	 */
+	private Severity _highestChildSeverity;
+	
+	/**
+	 * The highest unacknowledged severity of the child nodes.
+	 */
+	private Severity _highestUnacknowledgedChildSeverity;
 
 	/**
 	 * Creates a new node with the specified parent. The node will register
@@ -47,25 +66,26 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * @param parent the parent node.
 	 * @param name the name of this node.
 	 */
-	public SubtreeNode(SubtreeNode parent, String name) {
-		if (name == null) 
+	public SubtreeNode(final SubtreeNode parent, final String name) {
+		if (name == null) {
 			throw new NullPointerException("name must not be null");
-		
-		this.parent = parent;
-		this.name = name;
-		children = new ArrayList<IAlarmTreeNode>();
-		if (parent != null) {
-			parent.children.add(this);
 		}
-		highestChildSeverity = Severity.NO_ALARM;
-		highestUnacknowledgedChildSeverity = Severity.NO_ALARM;
+		
+		this._parent = parent;
+		this._name = name;
+		_children = new ArrayList<IAlarmTreeNode>();
+		if (parent != null) {
+			parent._children.add(this);
+		}
+		_highestChildSeverity = Severity.NO_ALARM;
+		_highestUnacknowledgedChildSeverity = Severity.NO_ALARM;
 	}
 	
 	/**
 	 * Creates a new node that does not have a parent node.
 	 * @param name the name of this node.
 	 */
-	public SubtreeNode(String name){
+	public SubtreeNode(final String name){
 		this(null, name);
 	}
 	
@@ -77,59 +97,65 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * 
 	 * @param child the child node to add. 
 	 */
-	void addChild(IAlarmTreeNode child) {
-		children.add(child);
+	final void addChild(final IAlarmTreeNode child) {
+		_children.add(child);
 	}
 	
 	/**
 	 * Returns the highest severity of the alarms in the subtree below this
 	 * node.
+	 * 
+	 * @return the alarm severity for this node.
 	 */
-	public Severity getAlarmSeverity() {
-		return highestChildSeverity;
+	public final Severity getAlarmSeverity() {
+		return _highestChildSeverity;
 	}
 	
 	/**
 	 * Returns the highest severity of the unacknowledged alarms in the subtree
 	 * below this node.
+	 * 
+	 * @return the unacknowledged alarm severity for this node.
 	 */
-	public Severity getUnacknowledgedAlarmSeverity() {
-		return highestUnacknowledgedChildSeverity;
+	public final Severity getUnacknowledgedAlarmSeverity() {
+		return _highestUnacknowledgedChildSeverity;
 	}
 	
 	/**
 	 * Returns whether this node has any children.
 	 * @return {@code true} if this node has children, {@code false} otherwise.
 	 */
-	public boolean hasChildren() {
-		return children.size() > 0;
+	public final boolean hasChildren() {
+		return _children.size() > 0;
 	}
 	
 	/**
 	 * Returns the children of this node.
+	 * @return the children of this node.
 	 */
-	public IAlarmTreeNode[] getChildren() {
-		return children.toArray(new IAlarmTreeNode[children.size()]);		
+	public final IAlarmTreeNode[] getChildren() {
+		return _children.toArray(new IAlarmTreeNode[_children.size()]);		
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getName() {
-		return name;
+	public final String getName() {
+		return _name;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IAlarmTreeNode getParent() {
-		return parent;
+	public final IAlarmTreeNode getParent() {
+		return _parent;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object getAdapter(@SuppressWarnings("unchecked") Class adapter) {
+	public final Object getAdapter(
+			@SuppressWarnings("unchecked") final Class adapter) {
 		if (adapter == IPropertySource.class){
 			return new AlarmTreeNodePropertySource(this);
 		}
@@ -137,18 +163,18 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	}
 
 	/**
-	 * Returns a string representation of this node.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
-		return name;
+	public final String toString() {
+		return _name;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean hasAlarm() {
-		return highestChildSeverity.isAlarm() || highestUnacknowledgedChildSeverity.isAlarm();
+	public final boolean hasAlarm() {
+		return _highestChildSeverity.isAlarm() || _highestUnacknowledgedChildSeverity.isAlarm();
 	}
 
 	/**
@@ -160,7 +186,7 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * 
 	 * @param child the child node whose severity status has changed.
 	 */
-	void childSeverityChanged(IAlarmTreeNode child) {
+	final void childSeverityChanged(final IAlarmTreeNode child) {
 		boolean thisNodeChanged = false;
 		
 		// If the severity is higher than the current highest severity, simply
@@ -172,41 +198,42 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 		
 		// Start with the active alarm severity
 		Severity active = child.getAlarmSeverity();
-		if (active.compareTo(highestChildSeverity) > 0) {
-			highestChildSeverity = active;
+		if (active.compareTo(_highestChildSeverity) > 0) {
+			_highestChildSeverity = active;
 			thisNodeChanged = true;
 		} else {
 			active = findHighestChildSeverity();
-			if (!active.equals(highestChildSeverity)) {
-				highestChildSeverity = active;
+			if (!active.equals(_highestChildSeverity)) {
+				_highestChildSeverity = active;
 				thisNodeChanged = true;
 			}
 		}
 		// Now the highest unacknowledged severity
 		Severity unack = child.getUnacknowledgedAlarmSeverity();
-		if (unack.compareTo(highestUnacknowledgedChildSeverity) > 0) {
-			highestUnacknowledgedChildSeverity = unack;
+		if (unack.compareTo(_highestUnacknowledgedChildSeverity) > 0) {
+			_highestUnacknowledgedChildSeverity = unack;
 			thisNodeChanged = true;
 		} else {
 			unack = findHighestUnacknowledgedChildSeverity();
-			if (!unack.equals(highestUnacknowledgedChildSeverity)) {
-				highestUnacknowledgedChildSeverity = unack;
+			if (!unack.equals(_highestUnacknowledgedChildSeverity)) {
+				_highestUnacknowledgedChildSeverity = unack;
 				thisNodeChanged = true;
 			}
 		}
 		
 		// Notify parent if this node changed
-		if (thisNodeChanged && parent != null) {
-			parent.childSeverityChanged(this);
+		if (thisNodeChanged && _parent != null) {
+			_parent.childSeverityChanged(this);
 		}
 	}
 
 	/**
 	 * Returns the highest severity of the children of this node.
+	 * @return the highest severity of the children of this node.
 	 */
 	private Severity findHighestChildSeverity() {
 		Severity highest = Severity.NO_ALARM;
-		for (IAlarmTreeNode node : children) {
+		for (IAlarmTreeNode node : _children) {
 			if (node.getAlarmSeverity().compareTo(highest) > 0) {
 				highest = node.getAlarmSeverity();
 			}
@@ -216,10 +243,11 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	
 	/**
 	 * Returns the highest unacknowledged severity of the children of this node.
+	 * @return the highest unacknowledged severity of the children of this node.
 	 */
 	private Severity findHighestUnacknowledgedChildSeverity() {
 		Severity highest = Severity.NO_ALARM;
-		for (IAlarmTreeNode node : children) {
+		for (IAlarmTreeNode node : _children) {
 			if (node.getUnacknowledgedAlarmSeverity().compareTo(highest) > 0) {
 				highest = node.getUnacknowledgedAlarmSeverity();
 			}
@@ -231,8 +259,9 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * Returns the direct child with the specified name. If no such child
 	 * exists, returns {@code null}.
 	 * @param name the name of the child.
+	 * @return the direct child with the specified name.
 	 */
-	public IAlarmTreeNode getChild(String name) {
+	public final IAlarmTreeNode getChild(final String name) {
 		return searchNode(name, false);
 	}
 	
@@ -240,8 +269,9 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * Searches the subtree rooted at this node for a node with the specified
 	 * name. If the node is not found, returns {@code null}.
 	 * @param name the name of the node.
+	 * @return the node.
 	 */
-	public ProcessVariableNode findProcessVariableNode(String name) {
+	public final ProcessVariableNode findProcessVariableNode(final String name) {
 		return (ProcessVariableNode) searchNode(name, true);
 	}
 
@@ -257,8 +287,8 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * @return the node with the specified name, or {@code null} if no such
 	 *        node was found.
 	 */
-	private IAlarmTreeNode searchNode(String name, boolean recursive) {
-		for (IAlarmTreeNode child : children) {
+	private IAlarmTreeNode searchNode(final String name, final boolean recursive) {
+		for (IAlarmTreeNode child : _children) {
 			if (child.getName().equals(name)) {
 				return child;
 			}
@@ -280,7 +310,7 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * 
 	 * @return a collection of the PV nodes with unacknowledged alarms.
 	 */
-	public Collection<ProcessVariableNode> collectUnacknowledgedAlarms() {
+	public final Collection<ProcessVariableNode> collectUnacknowledgedAlarms() {
 		Collection<ProcessVariableNode> result = new ArrayList<ProcessVariableNode>();
 		this.recurseCollectUnack(result);
 		return result;
@@ -292,8 +322,8 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * 
 	 * @param result the collection to which the nodes will be added.
 	 */
-	private void recurseCollectUnack(Collection<ProcessVariableNode> result) {
-		for (IAlarmTreeNode child : children) {
+	private void recurseCollectUnack(final Collection<ProcessVariableNode> result) {
+		for (IAlarmTreeNode child : _children) {
 			if (child instanceof SubtreeNode) {
 				((SubtreeNode) child).recurseCollectUnack(result);
 			} else if (child instanceof ProcessVariableNode) {

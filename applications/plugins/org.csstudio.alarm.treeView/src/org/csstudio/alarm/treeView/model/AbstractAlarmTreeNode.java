@@ -33,10 +33,24 @@ import org.eclipse.core.runtime.PlatformObject;
 public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 		IAlarmTreeNode {
 
-	private String cssAlarmDisplay;
-	private URL helpPage;
-	private String helpGuidance;
+	/**
+	 * The name of the CSS alarm display associated with this node.
+	 */
+	private String _cssAlarmDisplay;
+	
+	/**
+	 * The URL of the help page for this node.
+	 */
+	private URL _helpPage;
+	
+	/**
+	 * The help guidance string for this node.
+	 */
+	private String _helpGuidance;
 
+	/**
+	 * Creates a new abstract alarm tree node.
+	 */
 	public AbstractAlarmTreeNode() {
 		super();
 	}
@@ -45,45 +59,45 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 * Sets the CSS alarm display for this node.
 	 * @param display the CSS alarm display for this node.
 	 */
-	public void setCssAlarmDisplay(String display) {
-		this.cssAlarmDisplay = display;
+	public final void setCssAlarmDisplay(final String display) {
+		this._cssAlarmDisplay = display;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getCssAlarmDisplay() {
-		return cssAlarmDisplay;
+	public final String getCssAlarmDisplay() {
+		return _cssAlarmDisplay;
 	}
 
 	/**
 	 * Sets a help page for this node.
 	 * @param helpPage the help page URI.
 	 */
-	public void setHelpPage(URL helpPage) {
-		this.helpPage = helpPage;
+	public final void setHelpPage(final URL helpPage) {
+		this._helpPage = helpPage;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public URL getHelpPage() {
-		return helpPage;
+	public final URL getHelpPage() {
+		return _helpPage;
 	}
 
 	/**
 	 * Sets a help guidance string for this node.
 	 * @param helpGuidance a help guidance string.
 	 */
-	public void setHelpGuidance(String helpGuidance) {
-		this.helpGuidance = helpGuidance;
+	public final void setHelpGuidance(final String helpGuidance) {
+		this._helpGuidance = helpGuidance;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getHelpGuidance() {
-		return helpGuidance;
+	public final String getHelpGuidance() {
+		return _helpGuidance;
 	}
 
 }

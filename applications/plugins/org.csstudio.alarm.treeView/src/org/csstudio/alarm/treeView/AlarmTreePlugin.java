@@ -29,6 +29,8 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class of the LdapTree-Plug-In. This manages the plug-in's
  * lifecycle.
+ * 
+ * @author Joerg Rathlev
  */
 public class AlarmTreePlugin extends AbstractCssUiPlugin {
 
@@ -40,30 +42,37 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
 	/**
 	 * Shared instance of this class.
 	 */
-	private static AlarmTreePlugin plugin;
+	private static AlarmTreePlugin _plugin;
 	
 	/**
 	 * Returns the shared instance.
+	 * @return the shared instance.
 	 */
 	public static AlarmTreePlugin getDefault() {
-		return plugin;
+		return _plugin;
 	}
 
 	/**
 	 * The constructor.
 	 */
 	public AlarmTreePlugin() {
-		plugin = this;
+		_plugin = this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void doStart(BundleContext context) throws Exception {
+	protected void doStart(final BundleContext context) throws Exception {
 		// do nothing
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected void doStop(BundleContext context) throws Exception {
-		plugin = null;
+	protected final void doStop(final BundleContext context) throws Exception {
+		_plugin = null;
 	}
 
 	/**
@@ -73,15 +82,16 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
 	 * @param path the path
 	 * @return the image descriptor
 	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
+	public static ImageDescriptor getImageDescriptor(final String path) {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 	
 	/**
 	 * Return this plug-in's id.
+	 * @return this plug-in's id.
 	 */
 	@Override
-	public String getPluginId() {
+	public final String getPluginId() {
 		return PLUGIN_ID;
 	}
 	

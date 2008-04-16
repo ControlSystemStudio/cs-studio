@@ -32,12 +32,10 @@ import org.osgi.service.prefs.Preferences;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+	/**
+	 * {@inheritDoc}
 	 */
-	public void initializeDefaultPreferences() {
+	public final void initializeDefaultPreferences() {
 		Preferences prefs = new DefaultScope().getNode(AlarmTreePlugin.PLUGIN_ID);
 		prefs.put(PreferenceConstants.LDAP_URL, "ldap://krynfs.desy.de:389/o=DESY,c=DE");
 		prefs.put(PreferenceConstants.LDAP_USER, "");

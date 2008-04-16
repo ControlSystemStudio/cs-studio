@@ -75,14 +75,45 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
  */
 public class AlarmTreeView extends ViewPart {
 
-	private final static String ID = "org.csstudio.alarm.treeView.views.LdapTView";
-	private TreeViewer viewer;
-	private Action reloadAction;
-	private AlarmQueueSubscriber alarmQueueSubscriber;
-	private Action acknowledgeAction;
-	private Action runCssAlarmDisplayAction;
-	private Action showHelpPageAction;
-	private Action showHelpGuidanceAction;
+	/**
+	 * The ID of this view.
+	 */
+	private static final String ID = "org.csstudio.alarm.treeView.views.LdapTView";
+	
+	/**
+	 * The tree viewer that displays the alarm objects.
+	 */
+	private TreeViewer _viewer;
+	
+	/**
+	 * The reload action.
+	 */
+	private Action _reloadAction;
+	
+	/**
+	 * The subscriber to the JMS alarm topic.
+	 */
+	private AlarmQueueSubscriber _alarmTopicSubscriber;
+	
+	/**
+	 * The acknowledge action.
+	 */
+	private Action _acknowledgeAction;
+	
+	/**
+	 * The Run CSS Alarm Display action.
+	 */
+	private Action _runCssAlarmDisplayAction;
+	
+	/**
+	 * The Show Help Page action.
+	 */
+	private Action _showHelpPageAction;
+	
+	/**
+	 * The Show Help Guidance action.
+	 */
+	private Action _showHelpGuidanceAction;
 	
 	/**
 	 * Returns the id of this view.
@@ -99,28 +130,27 @@ public class AlarmTreeView extends ViewPart {
 	}
 
 	/**
-	 * Creates the controls for this view. This method is called by the
-	 * workbench.
+	 * {@inheritDoc}
 	 */
-	public void createPartControl(Composite parent) {
-		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		viewer.setContentProvider(new AlarmTreeContentProvider());
-		viewer.setLabelProvider(new AlarmTreeLabelProvider());
-		viewer.setComparator(new ViewerComparator());
+	public final void createPartControl(final Composite parent) {
+		_viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		_viewer.setContentProvider(new AlarmTreeContentProvider());
+		_viewer.setLabelProvider(new AlarmTreeLabelProvider());
+		_viewer.setComparator(new ViewerComparator());
 
 		initializeContextMenu();
 		makeActions();
 		contributeToActionBars();
 		
-		getSite().setSelectionProvider(viewer);
+		getSite().setSelectionProvider(_viewer);
 
 		// The directory is read in the background. Until then, set the viewer's
 		// input to a placeholder object.
-		viewer.setInput(new Object[] {new PendingUpdateAdapter()});
+		_viewer.setInput(new Object[] {new PendingUpdateAdapter()});
 		startDirectoryReaderJob();
 		
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
+		_viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(final SelectionChangedEvent event) {
 				AlarmTreeView.this.selectionChanged(event);
 			}
 		});
@@ -140,7 +170,7 @@ public class AlarmTreeView extends ViewPart {
 		// when the reader job is finished.
 		directoryReader.addJobChangeListener(new JobChangeAdapter() {
 			@Override
-			public void done(IJobChangeEvent event) {
+			public void done(final IJobChangeEvent event) {
 				setJmsListenerTree(rootNode);
 				asyncSetViewerInput(rootNode);
 			}
@@ -155,11 +185,11 @@ public class AlarmTreeView extends ViewPart {
 	 * @param tree the tree to which updates should be applied.
 	 */
 	private void setJmsListenerTree(final SubtreeNode tree) {
-		if (alarmQueueSubscriber == null) {
-			alarmQueueSubscriber = new AlarmQueueSubscriber(tree);
-			alarmQueueSubscriber.openConnection();
+		if (_alarmTopicSubscriber == null) {
+			_alarmTopicSubscriber = new AlarmQueueSubscriber(tree);
+			_alarmTopicSubscriber.openConnection();
 		} else {
-			alarmQueueSubscriber.setTree(tree);
+			_alarmTopicSubscriber.setTree(tree);
 		}
 	}
 	
@@ -167,7 +197,7 @@ public class AlarmTreeView extends ViewPart {
 	 * Stops the alarm queue subscriber.
 	 */
 	private void disposeJmsListener() {
-		alarmQueueSubscriber.closeConnection();
+		_alarmTopicSubscriber.closeConnection();
 	}
 
 	/**
@@ -178,13 +208,16 @@ public class AlarmTreeView extends ViewPart {
 	private void asyncSetViewerInput(final SubtreeNode inputElement) {
 		getSite().getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
-				viewer.setInput(inputElement);
+				_viewer.setInput(inputElement);
 			}
 		});
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void dispose() {
+	public final void dispose() {
 		disposeJmsListener();
 		super.dispose();
 	}
@@ -193,12 +226,12 @@ public class AlarmTreeView extends ViewPart {
 	 * Called when the selection of the tree changes.
 	 * @param event the selection event.
 	 */
-	private void selectionChanged(SelectionChangedEvent event) {
+	private void selectionChanged(final SelectionChangedEvent event) {
 		IStructuredSelection sel = (IStructuredSelection) event.getSelection();
-		acknowledgeAction.setEnabled(containsNodeWithUnackAlarm(sel));
-		runCssAlarmDisplayAction.setEnabled(hasCssAlarmDisplay(sel.getFirstElement()));
-		showHelpGuidanceAction.setEnabled(hasHelpGuidance(sel.getFirstElement()));
-		showHelpPageAction.setEnabled(hasHelpPage(sel.getFirstElement()));
+		_acknowledgeAction.setEnabled(containsNodeWithUnackAlarm(sel));
+		_runCssAlarmDisplayAction.setEnabled(hasCssAlarmDisplay(sel.getFirstElement()));
+		_showHelpGuidanceAction.setEnabled(hasHelpGuidance(sel.getFirstElement()));
+		_showHelpPageAction.setEnabled(hasHelpPage(sel.getFirstElement()));
 	}
 	
 	/**
@@ -207,7 +240,7 @@ public class AlarmTreeView extends ViewPart {
 	 * @return <code>true</code> if the node has a help guidance string,
 	 * <code>false</code> otherwise.
 	 */
-	private boolean hasHelpGuidance(Object pvNode) {
+	private boolean hasHelpGuidance(final Object pvNode) {
 		if (pvNode instanceof ProcessVariableNode) {
 			return ((ProcessVariableNode) pvNode).getHelpGuidance() != null;
 		}
@@ -221,7 +254,7 @@ public class AlarmTreeView extends ViewPart {
 	 * @return <code>true</code> if the node has an associated help page,
 	 * <code>false</code> otherwise.
 	 */
-	private boolean hasHelpPage(Object pvNode) {
+	private boolean hasHelpPage(final Object pvNode) {
 		if (pvNode instanceof ProcessVariableNode) {
 			return ((ProcessVariableNode) pvNode).getHelpPage() != null;
 		}
@@ -236,7 +269,7 @@ public class AlarmTreeView extends ViewPart {
 	 * @return <code>true</code> if a CSS alarm display is configured for the
 	 * node, <code>false</code> otherwise.
 	 */
-	private boolean hasCssAlarmDisplay(Object pvNode) {
+	private boolean hasCssAlarmDisplay(final Object pvNode) {
 		if (pvNode instanceof ProcessVariableNode) {
 			String display = ((ProcessVariableNode) pvNode).getCssAlarmDisplay();
 			return display != null && display.matches(".+\\.css-sds");
@@ -252,7 +285,7 @@ public class AlarmTreeView extends ViewPart {
 	 * @return <code>true</code> if the selection contains a node with an
 	 * unacknowledged alarm, <code>false</code> otherwise.
 	 */
-	private boolean containsNodeWithUnackAlarm(IStructuredSelection sel) {
+	private boolean containsNodeWithUnackAlarm(final IStructuredSelection sel) {
 		Object selectedElement = sel.getFirstElement();
 		// Note: selectedElement is not instance of IAlarmTreeNode if nothing
 		// is selected (selectedElement == null), and during initialization,
@@ -273,17 +306,17 @@ public class AlarmTreeView extends ViewPart {
 		
 		// add menu items to the context menu when it is about to show
 		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
+			public void menuAboutToShow(final IMenuManager manager) {
 				AlarmTreeView.this.fillContextMenu(manager);
 			}
 		});
 		
 		// add the context menu to the tree viewer
-		Menu contextMenu = menuMgr.createContextMenu(viewer.getTree());
-		viewer.getTree().setMenu(contextMenu);
+		Menu contextMenu = menuMgr.createContextMenu(_viewer.getTree());
+		_viewer.getTree().setMenu(contextMenu);
 		
 		// register the context menu for extension by other plug-ins
-		getSite().registerContextMenu(menuMgr, viewer);
+		getSite().registerContextMenu(menuMgr, _viewer);
 	}
 
 	/**
@@ -299,7 +332,7 @@ public class AlarmTreeView extends ViewPart {
 	 * Adds the actions for the action bar's pull down menu.
 	 * @param manager the menu manager.
 	 */
-	private void fillLocalPullDown(IMenuManager manager) {
+	private void fillLocalPullDown(final IMenuManager manager) {
 		// currently there are no actions in the pulldown menu
 	}
 
@@ -307,16 +340,16 @@ public class AlarmTreeView extends ViewPart {
 	 * Adds the context menu actions.
 	 * @param menu the menu manager.
 	 */
-	private void fillContextMenu(IMenuManager menu) {
-		IStructuredSelection selection = (IStructuredSelection) viewer
+	private void fillContextMenu(final IMenuManager menu) {
+		IStructuredSelection selection = (IStructuredSelection) _viewer
 				.getSelection();
 		if (selection.size() > 0) {
-			menu.add(acknowledgeAction);
+			menu.add(_acknowledgeAction);
 		}
 		if (selection.size() == 1) {
-			menu.add(runCssAlarmDisplayAction);
-			menu.add(showHelpGuidanceAction);
-			menu.add(showHelpPageAction);
+			menu.add(_runCssAlarmDisplayAction);
+			menu.add(_showHelpGuidanceAction);
+			menu.add(_showHelpPageAction);
 		}
 		
 		// adds a separator after which contributed actions from other plug-ins
@@ -328,29 +361,29 @@ public class AlarmTreeView extends ViewPart {
 	 * Adds the tool bar actions.
 	 * @param manager the menu manager.
 	 */
-	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(reloadAction);
+	private void fillLocalToolBar(final IToolBarManager manager) {
+		manager.add(_reloadAction);
 	}
 
 	/**
 	 * Creates the actions offered by this view.
 	 */
 	private void makeActions() {
-		reloadAction = new Action() {
+		_reloadAction = new Action() {
 			public void run() {
 				startDirectoryReaderJob();
 			}
 		};
-		reloadAction.setText("Reload");
-		reloadAction.setToolTipText("Reload");
-		reloadAction.setImageDescriptor(
+		_reloadAction.setText("Reload");
+		_reloadAction.setToolTipText("Reload");
+		_reloadAction.setImageDescriptor(
 				AlarmTreePlugin.getImageDescriptor("./icons/refresh.gif"));
 		
-		acknowledgeAction = new Action() {
+		_acknowledgeAction = new Action() {
 			@Override
 			public void run() {
 				Set<Map<String, String>> messages = new HashSet<Map<String, String>>();
-				IStructuredSelection selection = (IStructuredSelection) viewer
+				IStructuredSelection selection = (IStructuredSelection) _viewer
 						.getSelection();
 				for (Iterator<?> i = selection.iterator(); i
 						.hasNext();) {
@@ -382,14 +415,14 @@ public class AlarmTreeView extends ViewPart {
 				}
 			}
 		};
-		acknowledgeAction.setText("Send Acknowledgement");
-		acknowledgeAction.setToolTipText("Send alarm acknowledgement");
-		acknowledgeAction.setEnabled(false);
+		_acknowledgeAction.setText("Send Acknowledgement");
+		_acknowledgeAction.setToolTipText("Send alarm acknowledgement");
+		_acknowledgeAction.setEnabled(false);
 		
-		runCssAlarmDisplayAction = new Action() {
+		_runCssAlarmDisplayAction = new Action() {
 			@Override
 			public void run() {
-				IStructuredSelection selection = (IStructuredSelection) viewer
+				IStructuredSelection selection = (IStructuredSelection) _viewer
 						.getSelection();
 				Object selected = selection.getFirstElement();
 				if (selected instanceof ProcessVariableNode) {
@@ -402,14 +435,14 @@ public class AlarmTreeView extends ViewPart {
 				}
 			}
 		};
-		runCssAlarmDisplayAction.setText("Run Alarm Display");
-		runCssAlarmDisplayAction.setToolTipText("Run the alarm display for this PV");
-		runCssAlarmDisplayAction.setEnabled(false);
+		_runCssAlarmDisplayAction.setText("Run Alarm Display");
+		_runCssAlarmDisplayAction.setToolTipText("Run the alarm display for this PV");
+		_runCssAlarmDisplayAction.setEnabled(false);
 		
-		showHelpGuidanceAction = new Action() {
+		_showHelpGuidanceAction = new Action() {
 			@Override
 			public void run() {
-				IStructuredSelection selection = (IStructuredSelection) viewer
+				IStructuredSelection selection = (IStructuredSelection) _viewer
 						.getSelection();
 				Object selected = selection.getFirstElement();
 				if (selected instanceof ProcessVariableNode) {
@@ -422,14 +455,14 @@ public class AlarmTreeView extends ViewPart {
 				}
 			}
 		};
-		showHelpGuidanceAction.setText("Show Help Guidance");
-		showHelpGuidanceAction.setToolTipText("Show the help guidance for this node");
-		showHelpGuidanceAction.setEnabled(false);
+		_showHelpGuidanceAction.setText("Show Help Guidance");
+		_showHelpGuidanceAction.setToolTipText("Show the help guidance for this node");
+		_showHelpGuidanceAction.setEnabled(false);
 		
-		showHelpPageAction = new Action() {
+		_showHelpPageAction = new Action() {
 			@Override
 			public void run() {
-				IStructuredSelection selection = (IStructuredSelection) viewer
+				IStructuredSelection selection = (IStructuredSelection) _viewer
 						.getSelection();
 				Object selected = selection.getFirstElement();
 				if (selected instanceof ProcessVariableNode) {
@@ -454,22 +487,22 @@ public class AlarmTreeView extends ViewPart {
 				}
 			}
 		};
-		showHelpPageAction.setText("Open Help Page");
-		showHelpPageAction.setToolTipText("Open the help page for this node in the web browser");
-		showHelpPageAction.setEnabled(false);
+		_showHelpPageAction.setText("Open Help Page");
+		_showHelpPageAction.setToolTipText("Open the help page for this node in the web browser");
+		_showHelpPageAction.setEnabled(false);
 	}
 	
 	/**
 	 * Passes the focus request to the viewer's control.
 	 */
-	public void setFocus() {
-		viewer.getControl().setFocus();
+	public final void setFocus() {
+		_viewer.getControl().setFocus();
 	}
 	
 	/**
 	 * Refreshes this view.
 	 */
-	public void refresh(){
-		viewer.refresh();
+	public final void refresh(){
+		_viewer.refresh();
 	}
 }

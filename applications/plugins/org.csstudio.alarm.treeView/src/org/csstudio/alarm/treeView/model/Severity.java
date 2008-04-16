@@ -58,17 +58,24 @@ public enum Severity {
 	 * @param severityString the severity represented as a string value.
 	 * @return the severity represented by the given string.
 	 */
-	public static Severity parseSeverity(String severityString) {
-		if (severityString.equals("MAJOR")) return MAJOR;
-		if (severityString.equals("MINOR")) return MINOR;
-		if (severityString.equals("INVALID")) return INVALID;
-		return NO_ALARM;
+	public static Severity parseSeverity(final String severityString) {
+		if (severityString.equals("MAJOR")) {
+			return MAJOR;
+		} else if (severityString.equals("MINOR")) {
+			return MINOR;
+		} else if (severityString.equals("INVALID")) {
+			return INVALID;
+		} else {
+			return NO_ALARM;
+		}
 	}
 	
 	
 	/**
 	 * Returns {@code true} if this severity is an actual alarm severity,
 	 * {@code false} if it represents NO_ALARM severity.
+	 * 
+	 * @return whether this alarm is an actual alarm severity.
 	 */
 	public boolean isAlarm() {
 		return this != NO_ALARM;

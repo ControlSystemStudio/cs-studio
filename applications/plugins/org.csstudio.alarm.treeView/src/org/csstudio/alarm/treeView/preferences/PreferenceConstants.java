@@ -22,11 +22,13 @@
  package org.csstudio.alarm.treeView.preferences;
 
 /**
- * Constant definitions for plug-in preferences
+ * Constant definitions for plug-in preferences.
  */
-public class PreferenceConstants {
+public final class PreferenceConstants {
 	
-	// prevent instanciation of this class
+	/**
+	 * Private constructor.
+	 */
 	private PreferenceConstants() {
 	}
 

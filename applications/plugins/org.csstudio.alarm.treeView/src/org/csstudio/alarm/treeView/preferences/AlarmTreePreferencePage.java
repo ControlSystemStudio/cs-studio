@@ -45,6 +45,9 @@ public class AlarmTreePreferencePage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
+	/**
+	 * Creates a new alarm tree preference page.
+	 */
 	public AlarmTreePreferencePage() {
 		super(GRID);
 		setPreferenceStore(AlarmTreePlugin.getDefault().getPreferenceStore());
@@ -57,7 +60,7 @@ public class AlarmTreePreferencePage
 	 * of preferences. Each field editor knows how to save and
 	 * restore itself.
 	 */
-	public void createFieldEditors() {
+	public final void createFieldEditors() {
 		addField(
 			new StringFieldEditor(PreferenceConstants.LDAP_URL, "&URL:", getFieldEditorParent()));
 		addField(
@@ -66,7 +69,7 @@ public class AlarmTreePreferencePage
 		sfe.getTextControl(getFieldEditorParent()).setEchoChar('*');
 		addField(new ListEditor(PreferenceConstants.FACILITIES, "&Facility names: ", getFieldEditorParent()){
 			
-			public String[] parseString(String stringList){
+			public String[] parseString(final String stringList){
 				return stringList.split(";");
 			}
 			
@@ -83,7 +86,7 @@ public class AlarmTreePreferencePage
 				return null;
 			}
 			
-			public String createList(String[] items){
+			public String createList(final String[] items){
 				String temp = "";
 				for(int i = 0; i < items.length;i++){
 					temp = temp + items[i] + ";";
@@ -125,10 +128,11 @@ public class AlarmTreePreferencePage
 				"Queue:", g2));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+
+	/**
+	 * {@inheritDoc}
 	 */
-	public void init(IWorkbench workbench) {
+	public void init(final IWorkbench workbench) {
 	}
 	
 }

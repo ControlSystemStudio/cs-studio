@@ -35,65 +35,85 @@ public class AlarmTreeNodePropertySource implements IPropertySource {
 	/**
 	 * The descriptors of the properties provided by this source.
 	 */
-	private static final IPropertyDescriptor[] propertyDescriptors;
+	private static final IPropertyDescriptor[] PROPERTY_DESCRIPTORS;
 	
 	/**
 	 * The node for which this property source provides properties.
 	 */
-	private IAlarmTreeNode node;
+	private IAlarmTreeNode _node;
 	
 	/**
 	 * IDs for the properties.
 	 */
 	private static enum PropertyID {
+		/**
+		 * Property ID for the name property.
+		 */
 		NAME,
+		/**
+		 * Property ID for the alarm property.
+		 */
 		ALARM,
 	}
 
 	static {
-		propertyDescriptors = new IPropertyDescriptor[2];
+		PROPERTY_DESCRIPTORS = new IPropertyDescriptor[2];
 		PropertyDescriptor descriptor;
 		
 		// name
 		descriptor = new PropertyDescriptor(PropertyID.NAME, "Name");
 		descriptor.setAlwaysIncompatible(true);
-		propertyDescriptors[0] = descriptor;
+		PROPERTY_DESCRIPTORS[0] = descriptor;
 		
 		// alarm state
 		descriptor = new PropertyDescriptor(PropertyID.ALARM, "Alarm");
-		propertyDescriptors[1] = descriptor;
+		PROPERTY_DESCRIPTORS[1] = descriptor;
 	}
 	
 	/**
 	 * Creates a new property source for the given node.
 	 * @param node the node.
 	 */
-	public AlarmTreeNodePropertySource(IAlarmTreeNode node) {
-		this.node = node;
+	public AlarmTreeNodePropertySource(final IAlarmTreeNode node) {
+		this._node = node;
 	}
 	
-	public Object getEditableValue() {
+	/**
+	 * {@inheritDoc}
+	 */
+	public final Object getEditableValue() {
 		// not editable
 		return null;
 	}
 
-	public IPropertyDescriptor[] getPropertyDescriptors() {
-		return propertyDescriptors;
+	/**
+	 * {@inheritDoc}
+	 */
+	public final IPropertyDescriptor[] getPropertyDescriptors() {
+		return PROPERTY_DESCRIPTORS;
 	}
 	
-	public Object getPropertyValue(Object id) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public final Object getPropertyValue(final Object id) {
 		if (id instanceof PropertyID) {
 			switch ((PropertyID) id) {
 			case NAME:
-				return node.getName();
+				return _node.getName();
 			case ALARM:
-				return node.getAlarmSeverity();
+				return _node.getAlarmSeverity();
+			default:
+				return null;
 			}
 		}
 		return null;
 	}
 
-	public boolean isPropertySet(Object id) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public final boolean isPropertySet(final Object id) {
 		if (id instanceof PropertyID) {
 			switch ((PropertyID) id) {
 			case NAME:
@@ -102,17 +122,25 @@ public class AlarmTreeNodePropertySource implements IPropertySource {
 			case ALARM:
 				// For alarms, the default is NO_ALARM. Return true if the
 				// current value is different from that default.
-				return !node.getAlarmSeverity().equals(Severity.NO_ALARM);
+				return !_node.getAlarmSeverity().equals(Severity.NO_ALARM);
+			default:
+				return false;
 			}
 		}
 		return false;
 	}
 
-	public void resetPropertyValue(Object id) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public void resetPropertyValue(final Object id) {
 		// do nothing (values cannot be reset)
 	}
 
-	public void setPropertyValue(Object id, Object value) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setPropertyValue(final Object id, final Object value) {
 		// do nothing (values cannot be changed)
 	}
 }
