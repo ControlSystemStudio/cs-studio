@@ -155,5 +155,6 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 		for (Image image : _imageCache.values()) {
 			image.dispose();
 		}
+		super.dispose();
 	}
 }
