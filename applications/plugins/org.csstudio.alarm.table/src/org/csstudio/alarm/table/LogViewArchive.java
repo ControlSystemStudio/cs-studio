@@ -222,7 +222,7 @@ public class LogViewArchive extends ViewPart implements Observer {
         b24hSearch.addSelectionListener(new SelectionAdapter() {
  
 			public void widgetSelected(final SelectionEvent e) {
-                ILogMessageArchiveAccess adba = new ArchiveDBAccess();
+//                ILogMessageArchiveAccess adba = new ArchiveDBAccess();
                 GregorianCalendar to = new GregorianCalendar();
                 GregorianCalendar from = (GregorianCalendar) to.clone();
                 from.add(GregorianCalendar.HOUR_OF_DAY, -24);
@@ -247,7 +247,7 @@ public class LogViewArchive extends ViewPart implements Observer {
 
 		b72hSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(final SelectionEvent e) {
-				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
+//				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
 				GregorianCalendar to = new GregorianCalendar();
 				GregorianCalendar from = (GregorianCalendar) to.clone();
 				from.add(GregorianCalendar.HOUR_OF_DAY, -72);
@@ -366,7 +366,7 @@ public class LogViewArchive extends ViewPart implements Observer {
 
 					_filter = dlg.getFilterString();
 				}
-				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
+//				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
 //				from.add(GregorianCalendar.HOUR, -504);
 				showNewTime(from, to);
 //				ArrayList<HashMap<String, String>> am;
@@ -429,6 +429,7 @@ public class LogViewArchive extends ViewPart implements Observer {
     @Override
     public final void dispose() {
 		super.dispose();
+		ArchiveDBAccess.getInstance().close();
 		JmsLogsPlugin.getDefault().getPluginPreferences()
 				.removePropertyChangeListener(_columnPropertyChangeListener);
 	}

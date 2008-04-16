@@ -75,7 +75,7 @@ public class ReadDBJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		
-        ILogMessageArchiveAccess adba = new ArchiveDBAccess();
+        ILogMessageArchiveAccess adba = ArchiveDBAccess.getInstance();
         ArrayList<HashMap<String, String>> am = new ArrayList<HashMap<String,String>>();
         if (_filter == null) {
         	am = adba.getLogMessages(from, _to, _maxAnswerSize);

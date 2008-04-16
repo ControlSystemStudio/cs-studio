@@ -115,18 +115,4 @@ public class Activator extends AbstractCssPlugin {
         getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
     }
 
-	public Connection getDatabaseConnection( String url, String user, String password) {
-		
-		if (databaseConnection== null) {
-			try {
-				this.databaseConnection = DriverManager.getConnection(url, user, password);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return databaseConnection;
-	}
-
-
 }

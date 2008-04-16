@@ -22,6 +22,7 @@
  package org.csstudio.alarm.table.expertSearch;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
@@ -173,7 +174,8 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
     /** {@inheritDoc} */
     @Override
     protected final Control createDialogArea(final Composite parent){
-         String[][] answer = ArchiveDBAccess.getMsgTypes();
+        
+        String[][] answer = ArchiveDBAccess.getInstance().getMsgTypes();
         _msgTypes = new MsgType[answer.length];
         for (int i = 0; i < answer.length; i++) {
             _msgTypes[i]=new MsgType(Integer.parseInt(answer[i][0]),answer[i][1]);
@@ -193,7 +195,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
                 org.csstudio.util.time.swt.Messages.StartEnd_RelStart_TT);
         _fromAbsWidget=(CalendarWidget) c2[0];
         _fromRelWidget=(RelativeTimeWidget) c2[1];
-        c2 = makeTimeSelect(box,Messages.ExpertSearchDialog_startTime,
+        c2 = makeTimeSelect(box,Messages.ExpertSearchDialog_endTime,
                 org.csstudio.util.time.swt.Messages.StartEnd_AbsEnd,
                 org.csstudio.util.time.swt.Messages.StartEnd_AbsEnd_TT,
                 org.csstudio.util.time.swt.Messages.StartEnd_RelEnd,
@@ -207,13 +209,15 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         gd = new GridData();
         l.setLayoutData(gd);
         
+        Calendar stamp = new GregorianCalendar();
         _fromText = new Text(box, SWT.LEFT);
         _fromText.setToolTipText(org.csstudio.util.time.swt.Messages.StartEnd_StartTime_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         _fromText.setLayoutData(gd);
-
+        _fromText.setText(AbsoluteTimeParser.format(_fromAbsWidget.getCalendar()));
+        
         l = new Label(box, SWT.NULL);
         l.setText(org.csstudio.util.time.swt.Messages.StartEnd_EndTime);
         gd = new GridData();
@@ -225,6 +229,7 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         _toText.setLayoutData(gd);
+        _toText.setText(AbsoluteTimeParser.format(_toAbsWidget.getCalendar()));
 // __________________________________________________-
         info = new Label(box, SWT.NULL);
         info.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
@@ -543,10 +548,10 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
 
         if (source == _fromAbsWidget){
             _fromText.setText(AbsoluteTimeParser.format(stamp));
-//            _start = TimestampFactory.fromCalendar(stamp);
+            _start = TimestampFactory.fromCalendar(stamp);
         } else{
             _toText.setText(AbsoluteTimeParser.format(stamp));
-//            _end = TimestampFactory.fromCalendar(stamp);
+            _end = TimestampFactory.fromCalendar(stamp);
         }
         if (_start.isGreaterOrEqual(_end)){
             info.setText(Messages.ExpertSearchDialog_startEndMessage);
@@ -559,6 +564,13 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
     public final void updatedTime(final RelativeTimeWidget source, final RelativeTime time) {
         if (source == _fromRelWidget){
             _fromText.setText(time.toString());
+            long sec = 0; 
+            sec += time.SECONDS;
+            sec += time.HOURS*60;
+            sec += time.DAYS*24*60;
+            sec += time.DAYS*24*60;
+//            _start = TimestampFactory.
+//            _start = TimestampFactory.fromCalendar(time.);
         } else{
             _toText.setText(time.toString());
         }
