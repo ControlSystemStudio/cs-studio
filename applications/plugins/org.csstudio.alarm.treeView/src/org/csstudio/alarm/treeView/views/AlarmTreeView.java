@@ -32,6 +32,7 @@ import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jms.AlarmQueueSubscriber;
 import org.csstudio.alarm.treeView.ldap.LdapDirectoryReader;
+import org.csstudio.alarm.treeView.ldap.LdapDirectoryStructureReader;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
@@ -160,7 +161,7 @@ public class AlarmTreeView extends ViewPart {
 	 * Starts a job which reads the contents of the directory in the background.
 	 */
 	private void startDirectoryReaderJob() {
-		IWorkbenchSiteProgressService progressService =
+		final IWorkbenchSiteProgressService progressService =
 			(IWorkbenchSiteProgressService) getSite().getAdapter(
 					IWorkbenchSiteProgressService.class);
 		final SubtreeNode rootNode = new SubtreeNode("ROOT");
@@ -173,6 +174,19 @@ public class AlarmTreeView extends ViewPart {
 			public void done(final IJobChangeEvent event) {
 				setJmsListenerTree(rootNode);
 				asyncSetViewerInput(rootNode);
+				
+				Job directoryUpdater = new LdapDirectoryStructureReader(rootNode);
+				directoryUpdater.addJobChangeListener(new JobChangeAdapter() {
+					@Override
+					public void done(final IJobChangeEvent event) {
+						getSite().getShell().getDisplay().asyncExec(new Runnable() {
+							public void run() {
+								_viewer.refresh();
+							}
+						});
+					}
+				});
+				progressService.schedule(directoryUpdater, 0, true);
 			}
 		});
 		progressService.schedule(directoryReader, 0, true);
@@ -236,13 +250,13 @@ public class AlarmTreeView extends ViewPart {
 	
 	/**
 	 * Return whether help guidance is available for the given node.
-	 * @param pvNode the node.
+	 * @param node the node.
 	 * @return <code>true</code> if the node has a help guidance string,
 	 * <code>false</code> otherwise.
 	 */
-	private boolean hasHelpGuidance(final Object pvNode) {
-		if (pvNode instanceof ProcessVariableNode) {
-			return ((ProcessVariableNode) pvNode).getHelpGuidance() != null;
+	private boolean hasHelpGuidance(final Object node) {
+		if (node instanceof IAlarmTreeNode) {
+			return ((IAlarmTreeNode) node).getHelpGuidance() != null;
 		}
 		return false;
 	}
@@ -250,13 +264,13 @@ public class AlarmTreeView extends ViewPart {
 	/**
 	 * Return whether the given node has an associated help page.
 	 * 
-	 * @param pvNode the node.
+	 * @param node the node.
 	 * @return <code>true</code> if the node has an associated help page,
 	 * <code>false</code> otherwise.
 	 */
-	private boolean hasHelpPage(final Object pvNode) {
-		if (pvNode instanceof ProcessVariableNode) {
-			return ((ProcessVariableNode) pvNode).getHelpPage() != null;
+	private boolean hasHelpPage(final Object node) {
+		if (node instanceof IAlarmTreeNode) {
+			return ((IAlarmTreeNode) node).getHelpPage() != null;
 		}
 		return false;
 	}
@@ -265,13 +279,13 @@ public class AlarmTreeView extends ViewPart {
 	 * Returns whether the given process variable node in the tree has an
 	 * associated CSS alarm display configured.
 	 * 
-	 * @param pvNode the node.
+	 * @param node the node.
 	 * @return <code>true</code> if a CSS alarm display is configured for the
 	 * node, <code>false</code> otherwise.
 	 */
-	private boolean hasCssAlarmDisplay(final Object pvNode) {
-		if (pvNode instanceof ProcessVariableNode) {
-			String display = ((ProcessVariableNode) pvNode).getCssAlarmDisplay();
+	private boolean hasCssAlarmDisplay(final Object node) {
+		if (node instanceof IAlarmTreeNode) {
+			String display = ((IAlarmTreeNode) node).getCssAlarmDisplay();
 			return display != null && display.matches(".+\\.css-sds");
 		}
 		return false;
@@ -425,11 +439,13 @@ public class AlarmTreeView extends ViewPart {
 				IStructuredSelection selection = (IStructuredSelection) _viewer
 						.getSelection();
 				Object selected = selection.getFirstElement();
-				if (selected instanceof ProcessVariableNode) {
-					ProcessVariableNode pvNode = (ProcessVariableNode) selected;
-					IPath path = new Path(pvNode.getCssAlarmDisplay());
+				if (selected instanceof IAlarmTreeNode) {
+					IAlarmTreeNode node = (IAlarmTreeNode) selected;
+					IPath path = new Path(node.getCssAlarmDisplay());
 					Map<String, String> aliases = new HashMap<String, String>();
-					aliases.put("channel", pvNode.getName());
+					if (node instanceof ProcessVariableNode) {
+						aliases.put("channel", node.getName());
+					}
 					CentralLogger.getInstance().debug(this, "Opening display: " + path);
 					RunModeService.getInstance().openDisplayShellInRunMode(path, aliases);
 				}
@@ -445,12 +461,12 @@ public class AlarmTreeView extends ViewPart {
 				IStructuredSelection selection = (IStructuredSelection) _viewer
 						.getSelection();
 				Object selected = selection.getFirstElement();
-				if (selected instanceof ProcessVariableNode) {
-					ProcessVariableNode pvNode = (ProcessVariableNode) selected;
-					String helpGuidance = pvNode.getHelpGuidance();
+				if (selected instanceof IAlarmTreeNode) {
+					IAlarmTreeNode node = (IAlarmTreeNode) selected;
+					String helpGuidance = node.getHelpGuidance();
 					if (helpGuidance != null) {
 						MessageDialog.openInformation(getSite().getShell(),
-								pvNode.getName(), helpGuidance);
+								node.getName(), helpGuidance);
 					}
 				}
 			}
@@ -465,9 +481,9 @@ public class AlarmTreeView extends ViewPart {
 				IStructuredSelection selection = (IStructuredSelection) _viewer
 						.getSelection();
 				Object selected = selection.getFirstElement();
-				if (selected instanceof ProcessVariableNode) {
-					ProcessVariableNode pvNode = (ProcessVariableNode) selected;
-					URL helpPage = pvNode.getHelpPage();
+				if (selected instanceof IAlarmTreeNode) {
+					IAlarmTreeNode node = (IAlarmTreeNode) selected;
+					URL helpPage = node.getHelpPage();
 					if (helpPage != null) {
 						try {
 							// Note: we have to pass a browser id here to work

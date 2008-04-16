@@ -52,7 +52,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
- * This job reads the directory structure from the server.
+ * This job reads the record entries (eren) from the LDAP directory and creates
+ * the nodes representing them in the tree. The parent nodes are also created,
+ * but their attributes are not read by this job. Empty nodes which do not
+ * contain any eren objects are not created by this job.
  * 
  * @author Joerg Rathlev, Jurij Kodre
  */
@@ -92,7 +95,7 @@ public class LdapDirectoryReader extends Job {
 	private static final CentralLogger LOG = CentralLogger.getInstance();
 	
 	/**
-	 * Creates a new CachingThread instance.
+	 * Creates a new LDAP directory reader.
 	 * 
 	 * @param treeRoot the root node of the tree to which items are added.
 	 */
@@ -272,7 +275,8 @@ public class LdapDirectoryReader extends Job {
 				try {
 					node.setHelpPage(new URL(helpPage));
 				} catch (MalformedURLException e) {
-					// ignore
+					LOG.warn(this, "epicsHelpPage attribute for node "
+							+ node + " contains a malformed URL");
 				}
 			}
 		}
