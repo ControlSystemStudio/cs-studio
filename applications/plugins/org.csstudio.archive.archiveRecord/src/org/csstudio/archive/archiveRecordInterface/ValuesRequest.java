@@ -90,10 +90,12 @@ public class ValuesRequest implements ClientRequest
         	ArchiveRecord ar = new ArchiveRecord(this.channels[COUNT]);
     		int dim = ar.getDimension();
     		if (dim<=0) {
-    			System.out.println("bad Dim");
-    			throw new Exception("Expected 'Integer count' for " + this.channels[COUNT]);
+    			if(debug) System.out.println("bad Dim");
+    			error = -1;
+    			dim=0;
+    			//throw new Exception("Expected 'Integer count' for " + this.channels[COUNT]);
     		}
-    		ar.getAllFromCA();
+    		if (dim>0) ar.getAllFromCA();
 			int type = TYPE_DOUBLE; //  TODO answerClass.getType(); AR return only Double
 			int count = 1; // do not use WF answerClass.getCount();
 			int num_samples=dim;

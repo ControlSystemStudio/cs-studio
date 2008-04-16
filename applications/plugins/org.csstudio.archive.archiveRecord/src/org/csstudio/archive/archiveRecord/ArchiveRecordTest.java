@@ -27,7 +27,7 @@ public class ArchiveRecordTest {
 	public static void main(String args[]) throws Exception { 
 	    System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", "131.169.115.236");
 	    System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list","YES");
-		final String PV = "RZ:K:KL:P1:B50_T_Raum_ai";  
+		final String PV = "RZ:K:KL:P1:B50_T_Raum_ai_h";  
 		ArchiveRecord ar= new ArchiveRecord(PV);
 		int dim = ar.getDimension();
 		if (dim<=0) {

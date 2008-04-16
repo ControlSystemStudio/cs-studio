@@ -97,12 +97,12 @@ public class ArchiveRecord {
 			if(debug)System.out.println("dim="+dim);
 			pvdim.stop();
 		} catch (InterruptedException e) {
-			System.out.println ("Bad CAGET-command for archive field " + nvalName +" InterruptedException:");
-			e.printStackTrace();
+			if(debug) System.out.println ("Bad first CAGET-command for archive record " + archivePVname +" InterruptedException:");
+			if(debug) e.printStackTrace();
 			return -1;
 		} catch (Exception e) {
-			System.out.println ("Bad CAGET-command for archive field " + nvalName +" Exception:");
-			e.printStackTrace();
+			if(debug) System.out.println ("Bad first CAGET-command for archive record " + archivePVname +" Exception:");
+			if(debug) e.printStackTrace();
 			return -1;
 		}		
  		return dim;

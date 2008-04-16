@@ -103,8 +103,8 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 		return null; // no info
 	}
 
-    /* @see org.csstudio.archiveArchiveServer#getNames() */
-	public ArchiveValues[] getSamples(int key, String[] names,
+//    /* @see org.csstudio.archiveArchiveServer#getNames() */
+/*	public ArchiveValues[] getSamples(int key, String[] names,
 			ITimestamp start, ITimestamp end, int request_type,
             Object request_parms[]) 
         throws Exception
@@ -114,7 +114,7 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 		return values.getArchivedSamples();
 		
 	}
-
+*/
 //	@Override
 //	public int getLastRequestError() {
 //		return last_request_error;
