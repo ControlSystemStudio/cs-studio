@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
@@ -46,7 +47,7 @@ import javax.naming.NamingException;
  * 
  * @author C1 WPS / Kai Meyer, Matthias Zeimer
  */
-public class JmsRedundantProducer {
+public class JmsRedundantProducer implements IJmsProducer {
 
 	/**
 	 * An Id for Message-Producers.
@@ -188,10 +189,8 @@ public class JmsRedundantProducer {
 		return copy;
 	}
 
-	/**
-	 * Closes all sessions/connections. The producer can not be used afterwards.
-	 * 
-	 * @require !isClosed()
+	/* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IJmsRedundantProducer#closeAll()
 	 */
 	public void closeAll() {
 		assert !isClosed() : "Precondition violated: !isClosed()";
@@ -267,16 +266,8 @@ public class JmsRedundantProducer {
 
 	}
 
-	/**
-	 * Creates a MessageProducer with given topic-destination.
-	 * 
-	 * @param topicName
-	 *            Name of the destination topic (could be null)
-	 * @return The Id for the created Producer.
-	 * @throws RuntimeException
-	 *             If no producer could be created for given topic (the nested
-	 *             exception will be the JMSException)!
-	 * @require !isClosed()
+	/* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IJmsRedundantProducer#createProducer(java.lang.String)
 	 */
 	public ProducerId createProducer(String topicName) throws RuntimeException {
 		assert !isClosed() : "Precondition violated: !isClosed()";
@@ -314,18 +305,8 @@ public class JmsRedundantProducer {
 		return id;
 	}
 
-	/**
-	 * Determines if producers on id have an initial destination topic.
-	 * 
-	 * @param id
-	 *            The id of the producers
-	 * @return {@code true}, if the producers on the id have an initial
-	 *         destination topic, {@code false} otherwise.
-	 * @throws RuntimeException
-	 *             If destination couldn't be retrieved on at least one producer
-	 *             (the nested exception will be the JMSException)!
-	 * @require !isClosed()
-	 * @require knowsProducer(id)
+	/* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IJmsRedundantProducer#hasProducerDestiantion(org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId)
 	 */
 	public boolean hasProducerDestiantion(ProducerId id)
 			throws RuntimeException {
@@ -360,41 +341,22 @@ public class JmsRedundantProducer {
 		return result;
 	}
 
-	/**
-	 * Checks if this RedundantProducer knows the specified producer.
-	 * 
-	 * @param id
-	 *            Id of producer to check
-	 * @return {@code true} if producer is known, {@code false} otherwise.
+	/* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IJmsRedundantProducer#knowsProducer(org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId)
 	 */
 	public boolean knowsProducer(final ProducerId id) {
 		return this._producers.containsKey(id);
 	}
 
-	/**
-	 * Determines if the producer has been closed.
-	 * 
-	 * @return {@code true} if producers is closed, {@code false} otherwise.
+	/* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IJmsRedundantProducer#isClosed()
 	 */
 	public boolean isClosed() {
 		return _sessions == null;
 	}
 
-	/**
-	 * Sends the given message to the producers specified by the id. Should only
-	 * be called if the producers have an initial topic (see
-	 * {@link #hasProducerDestiantion(org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId)}).
-	 * 
-	 * @param id
-	 *            The id of the producer
-	 * @param message
-	 *            The Message to send
-	 * @return An array of URLs, where the message could successfully send to
-	 * @throws RuntimeException
-	 *             If the message couldn't be send to at least one producer (the
-	 *             nested exception will be the JMSException)!
-	 * @require !isClosed()
-	 * @require knowsProducer(id)
+	/* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IJmsRedundantProducer#send(org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId, javax.jms.Message)
 	 */
 	public String[] send(ProducerId id, Message message)
 			throws RuntimeException {
@@ -404,23 +366,8 @@ public class JmsRedundantProducer {
 		return this.send(id, null, message);
 	}
 
-	/**
-	 * Sends the given message to the producers specified by the id.
-	 * 
-	 * @param id
-	 *            The id of the producer
-	 * @param topicName
-	 *            The name of the topic to send the message (could be null if
-	 *            producer has initial topic (see
-	 *            {@link #hasProducerDestiantion(org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId)}))
-	 * @param message
-	 *            The Message to send
-	 * @return An array of URLs, where the message could successfully send to
-	 * @throws RuntimeException
-	 *             If the message couldn't be send to at least one producer (the
-	 *             nested exception will be the JMSException)!
-	 * @require !isClosed()
-	 * @require knowsProducer(id)
+	/* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IJmsRedundantProducer#send(org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId, java.lang.String, javax.jms.Message)
 	 */
 	public String[] send(ProducerId id, String topicName, Message message)
 			throws RuntimeException {
@@ -459,5 +406,14 @@ public class JmsRedundantProducer {
 		}
 
 		return result.toArray(new String[result.size()]);
+	}
+
+	@Override
+	public MapMessage createMapMessage() throws RuntimeException {
+		try {
+			return _sessions[0].createMapMessage();
+		} catch (JMSException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

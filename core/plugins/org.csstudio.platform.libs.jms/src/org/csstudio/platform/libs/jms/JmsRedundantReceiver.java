@@ -51,7 +51,7 @@ import javax.naming.NamingException;
  * 
  */
 
-public class JmsRedundantReceiver
+public class JmsRedundantReceiver implements IjmsRedundantReceiver
 {
     /** Number of redundant connections */
     private final int CONNECTION_COUNT = 2;
@@ -136,13 +136,9 @@ public class JmsRedundantReceiver
         }
     }
     
-    /**
-     * 
-     * @param name Name of the subscriber
-     * @param destination Name of the topic
-     * @return True - Subscriber have been created, false - Subscriber have not been created
-     * 
-     */
+    /* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String)
+	 */
     
     public boolean createRedundantSubscriber(String name, String destination)
     {
@@ -195,36 +191,17 @@ public class JmsRedundantReceiver
         return result;
     }
     
-    /**
-     * Returns the current message. The method does not wait and returns immediately if no message
-     * have been received.
-     * <p>
-     * It takes the messages from the internal queue first. If the
-     * queue does not contain a message, the method calls the receive() method of the MessageConsumer
-     * object.
-     * If more then one server hold a message, the messages will be stored in the internal queue.
-     * 
-     * @param name The internal name of the message consumer
-     * @return Current message from the JMS server
-     */
+    /* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String)
+	 */
     public Message receive(String name)
     {
         return receive(name, 0);
     }
     
-    /**
-     * Returns the current message. The method waits <code>waitTime</code> miliseconds and returns if
-     * no message have been received.
-     * <p>
-     * It takes the messages from the internal queue first. If the
-     * queue does not contain a message, the method calls the receive() method of the MessageConsumer
-     * object.
-     * If more then one server hold a message, the messages will be stored in the internal queue.
-     * 
-     * @param name The internal name of the message consumer
-     * @param waitTime The time to wait(in ms) until the receive method returns
-     * @return Current message from the JMS server
-     */   
+    /* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String, long)
+	 */   
     public Message receive(String name, long waitTime)
     {
         ConcurrentLinkedQueue<Message> queue = null;
@@ -328,16 +305,18 @@ public class JmsRedundantReceiver
         return result;
     }
     
-    /**
-     * 
-     * @return True, if the receiver is connected. False otherwise
-     */
+    /* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#isConnected()
+	 */
     
     public boolean isConnected()
     {
         return connected;
     }
     
+    /* (non-Javadoc)
+	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#closeAll()
+	 */
     public void closeAll()
     {
         MessageConsumer[] c = null;
