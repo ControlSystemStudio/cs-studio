@@ -65,6 +65,17 @@ public final class LdapNameUtils {
 	}
 	
 	/**
+	 * Returns the object class of the given name.
+	 * For example, given &quot;a=x,b=y,c=z&quot;, returns &quot;a&quot;.
+	 * @param name the name.
+	 * @return the object class.
+	 */
+	public static String objectClass(final String name) {
+		int pos1 = name.indexOf("=");
+		return name.substring(0, pos1);
+	}
+	
+	/**
 	 * Returns the qualified name of the parent of the given name.
 	 * For example, given &quot;a=x,b=y,c=z&quot;, returns &quot;b=y,c=z&quot;.
 	 * Returns {@code null} if there is no parent.

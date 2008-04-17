@@ -46,48 +46,58 @@ public class TreeBuilderTest {
 	 * 
 	 * <pre>
 	 * root           [SubtreeNode]
-	 *   +--a         [SubtreeNode]
-	 *      +--b      [SubtreeNode]
-	 *      +--pv:1   [ProcessVariableNode]
+	 *   +--a         [SubtreeNode, efan=a]
+	 *      +--b      [SubtreeNode, ecom=b,efan=a]
+	 *      +--pv:1   [ProcessVariableNode, eren=pv:1,efan=a]
 	 * </pre>
 	 */
 	@Before
 	public void setUp() throws Exception {
 		_tree = new SubtreeNode("root");
 		_a = new SubtreeNode(_tree, "a");
+		_a.setObjectClass("efan");
 		_b = new SubtreeNode(_a, "b");
+		_b.setObjectClass("ecom");
 		_pv1 = new ProcessVariableNode(_a, "pv:1");
 	}
 	
 	@Test
+	public void testDirectoryNames() throws Exception {
+		assertEquals("efan=a", _a.getDirectoryName());
+		assertEquals("ecom=b,efan=a", _b.getDirectoryName());
+	}
+	
+	@Test
 	public void testFindExistingSubtreeNode() {
-		String name = "x=b,y=a";
+		String name = "ecom=b,efan=a";
 		SubtreeNode node = TreeBuilder.findCreateSubtreeNode(_tree, name);
 		assertSame(_b, node);
 	}
 	
 	@Test
 	public void testCreateNewSubtreeNode() throws Exception {
-		String name = "x=c,y=a";
+		String name = "ecom=c,efan=a";
 		SubtreeNode node = TreeBuilder.findCreateSubtreeNode(_tree, name);
 		// _a should now have a child called "c"
 		assertTrue(_a.getChild("c") instanceof SubtreeNode);
 		assertSame(_a, node.getParent());
+		assertEquals("ecom=c,efan=a", node.getDirectoryName());
 	}
 	
 	@Test
 	public void testFindParentOfPv() throws Exception {
-		String name = "x=pv:1,y=a";
+		String name = "eren=pv:1,efan=a";
 		SubtreeNode parent = TreeBuilder.findCreateParentNode(_tree, name);
 		assertSame(_a, parent);
 	}
 	
 	@Test
 	public void testCreateParentForPv() throws Exception {
-		String name = "x=pv:2,y=c,z=a";
+		String name = "efen=pv:2,ecom=c,efan=a";
 		SubtreeNode parent = TreeBuilder.findCreateParentNode(_tree, name);
 		assertTrue(_a.getChild("c") instanceof SubtreeNode);
 		assertSame(_a, parent.getParent());
+		assertEquals("ecom=c,efan=a", parent.getDirectoryName());
 	}
 
 }

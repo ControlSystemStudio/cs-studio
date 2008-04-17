@@ -31,6 +31,8 @@ import java.util.Set;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jms.AlarmQueueSubscriber;
+import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
+import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.ldap.LdapDirectoryReader;
 import org.csstudio.alarm.treeView.ldap.LdapDirectoryStructureReader;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
@@ -50,12 +52,15 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
@@ -115,6 +120,21 @@ public class AlarmTreeView extends ViewPart {
 	 * The Show Help Guidance action.
 	 */
 	private Action _showHelpGuidanceAction;
+	
+	/**
+	 * The Create Record action.
+	 */
+	private Action _createRecordAction;
+
+	/**
+	 * The Create Component action.
+	 */
+	private Action _createComponentAction;
+
+	/**
+	 * The Delete action.
+	 */
+	private Action _deleteNodeAction;
 	
 	/**
 	 * Returns the id of this view.
@@ -364,6 +384,13 @@ public class AlarmTreeView extends ViewPart {
 			menu.add(_runCssAlarmDisplayAction);
 			menu.add(_showHelpGuidanceAction);
 			menu.add(_showHelpPageAction);
+			menu.add(new Separator("edit"));
+			menu.add(_deleteNodeAction);
+		}
+		if (selection.size() == 1
+				&& selection.getFirstElement() instanceof SubtreeNode) {
+			menu.add(_createRecordAction);
+			menu.add(_createComponentAction);
 		}
 		
 		// adds a separator after which contributed actions from other plug-ins
@@ -506,6 +533,121 @@ public class AlarmTreeView extends ViewPart {
 		_showHelpPageAction.setText("Open Help Page");
 		_showHelpPageAction.setToolTipText("Open the help page for this node in the web browser");
 		_showHelpPageAction.setEnabled(false);
+		
+		_createRecordAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection =
+					(IStructuredSelection) _viewer.getSelection();
+				Object selected = selection.getFirstElement();
+				if (selected instanceof SubtreeNode) {
+					SubtreeNode parent = (SubtreeNode) selected;
+					String name = promptForRecordName();
+					if (name != null && !name.equals("")) {
+						try {
+							DirectoryEditor.createProcessVariableRecord(parent,
+									name);
+						} catch (DirectoryEditException e) {
+							MessageDialog.openError(getSite().getShell(), 
+									"Create New Record",
+									"Could not create the new record: " + e.getMessage());
+						}
+						_viewer.refresh(parent);
+					}
+				}
+			}
+
+			private String promptForRecordName() {
+				InputDialog dialog = new InputDialog(getSite().getShell(),
+						"Create New Record", "Record name:", null,
+						new IInputValidator() {
+					public String isValid(final String newText) {
+						if (newText.equals("")) {
+							return "Please enter a name.";
+						} else if (newText.indexOf("=") != -1
+								|| newText.indexOf("/") != -1
+								|| newText.indexOf(",") != -1) {
+							return "The following characters are not allowed "
+									+ "in names: = / ,";
+						} else {
+							return null;
+						}
+					}
+				});
+				if (Window.OK == dialog.open()) {
+					return dialog.getValue();
+				}
+				return null;
+			}
+		};
+		_createRecordAction.setText("Create Record");
+
+		_createComponentAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection =
+					(IStructuredSelection) _viewer.getSelection();
+				Object selected = selection.getFirstElement();
+				if (selected instanceof SubtreeNode) {
+					SubtreeNode parent = (SubtreeNode) selected;
+					String name = promptForRecordName();
+					if (name != null && !name.equals("")) {
+						try {
+							DirectoryEditor.createComponent(parent, name);
+						} catch (DirectoryEditException e) {
+							MessageDialog.openError(getSite().getShell(), 
+									"Create New Component",
+									"Could not create the new component: " + e.getMessage());
+						}
+						_viewer.refresh(parent);
+					}
+				}
+			}
+
+			private String promptForRecordName() {
+				InputDialog dialog = new InputDialog(getSite().getShell(),
+						"Create New Component", "Component name:", null,
+						new IInputValidator() {
+					public String isValid(final String newText) {
+						if (newText.equals("")) {
+							return "Please enter a name.";
+						} else if (newText.indexOf("=") != -1
+								|| newText.indexOf("/") != -1
+								|| newText.indexOf(",") != -1) {
+							return "The following characters are not allowed "
+									+ "in names: = / ,";
+						} else {
+							return null;
+						}
+					}
+				});
+				if (Window.OK == dialog.open()) {
+					return dialog.getValue();
+				}
+				return null;
+			}
+		};
+		_createComponentAction.setText("Create Component");
+
+		_deleteNodeAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection =
+					(IStructuredSelection) _viewer.getSelection();
+				Object selected = selection.getFirstElement();
+				if (selected instanceof IAlarmTreeNode) {
+					try {
+						DirectoryEditor.delete((IAlarmTreeNode) selected);
+					} catch (DirectoryEditException e) {
+						MessageDialog.openError(getSite().getShell(), 
+								"Delete",
+								"Could not delete this node: " + e.getMessage());
+					}
+					//_viewer.refresh(parent);
+				}
+			}
+		};
+		_deleteNodeAction.setText("Delete");
 	}
 	
 	/**

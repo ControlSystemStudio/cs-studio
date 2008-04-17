@@ -51,6 +51,11 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	private String _name;
 	
 	/**
+	 * The object class of this node in the directory.
+	 */
+	private String _objectClass;
+	
+	/**
 	 * The highest severity of the child nodes.
 	 */
 	private Severity _highestChildSeverity;
@@ -87,6 +92,34 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 */
 	public SubtreeNode(final String name){
 		this(null, name);
+	}
+	
+	/**
+	 * Sets the object class of this node in the directory.
+	 * @param objectClass the object class of this node.
+	 */
+	public final void setObjectClass(final String objectClass) {
+		_objectClass = objectClass;
+	}
+	
+	/**
+	 * Returns the name of object in the directory which this node represents.
+	 * The name depends on the object class and name of this node and the
+	 * object classes and names of this node's parent nodes.
+	 * @return the name of this node in the directory.
+	 */
+	public final String getDirectoryName() {
+		StringBuilder result = new StringBuilder();
+		result.append(_objectClass);
+		result.append("=");
+		result.append(_name);
+		if (_parent._objectClass != null) {
+			// If the parent has an object class (i.e., it is not the root node
+			// of the tree), its directory name must be appended to the result
+			result.append(",");
+			result.append(_parent.getDirectoryName());
+		}
+		return result.toString();
 	}
 	
 	/**
