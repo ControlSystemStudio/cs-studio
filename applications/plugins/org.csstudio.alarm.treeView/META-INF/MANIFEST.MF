@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.csstudio.platform.libs.jms,
  org.csstudio.alarm.table,
- org.csstudio.sds.ui
+ org.csstudio.sds.ui,
+ org.csstudio.utility.ldap
 Eclipse-LazyStart: true
 Bundle-Vendor: DESY

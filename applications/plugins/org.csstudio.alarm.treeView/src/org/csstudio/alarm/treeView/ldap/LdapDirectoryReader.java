@@ -23,17 +23,13 @@
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Hashtable;
 
-import javax.naming.Context;
-import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.SizeLimitExceededException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
@@ -45,6 +41,7 @@ import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Preferences;
@@ -109,83 +106,10 @@ public class LdapDirectoryReader extends Job {
 	
 	
 	/**
-	 * Initializes Connection with connection parameters set up in the
-	 * preferences.
-	 * @throws NamingException if an LDAP error occurs.
+	 * Gets the directory context from the LDAP engine.
 	 */
-	private void initializeConnection() throws NamingException {
-		Hashtable<String, String> env = environmentFromPreferences();
-        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-		_directory = new InitialDirContext(env);
-	}
-	
-	
-	/**
-	 * Initializes the LDAP environment (URL, username and password) from this
-	 * plug-in's preferences.
-	 * @return the LDAP environment.
-	 */
-	private Hashtable<String, String> environmentFromPreferences() {
-		Preferences prefs = AlarmTreePlugin.getDefault().getPluginPreferences();
-		String url = prefs.getString(PreferenceConstants.LDAP_URL);
-		String user = prefs.getString(PreferenceConstants.LDAP_USER);
-		String password = prefs.getString(PreferenceConstants.LDAP_PASSWORD);
-		
-		Hashtable<String, String> env = new Hashtable<String, String>();
-		env.put(Context.PROVIDER_URL, url);
-		env.put(Context.SECURITY_PRINCIPAL, user);
-		env.put(Context.SECURITY_CREDENTIALS, password);
-		return env;
-	}
-	
-	
-	/**
-	 * Reads all records below the given facility name into the tree.
-	 * 
-	 * @param efan the facility.
-	 * @throws NamingException if an LDAP error occurs.
-	 */
-	// This is currently not used on purpose. Additional testing is needed
-	// before this implementation can be used. It is also a lot slower than
-	// the currently used implementation (populateSubTree).
-	@SuppressWarnings("unused")
-	private void populateSubTree2(final String efan) throws NamingException {
-		String searchRootDN = "efan=" + efan + "," + ALARM_ROOT;
-		
-		SubtreeNode efanNode = new SubtreeNode(_treeRoot, efan);
-		populateTreeRecursively(searchRootDN, efanNode);
-	}
-	
-	
-	/**
-	 * Recursively reads all nodes from the LDAP directory starting from the
-	 * given root DN.
-	 * 
-	 * @param rootDN
-	 *            the root DN.
-	 * @param parent
-	 *            the parent node below which the new nodes should be inserted
-	 *            into the tree.
-	 * @throws NamingException
-	 *             if an LDAP error occurs.
-	 */
-	private void populateTreeRecursively(final String rootDN, final SubtreeNode parent) throws NamingException {
-		NamingEnumeration<NameClassPair> results = _directory.list(rootDN);
-		while (results.hasMore()) {
-			NameClassPair entry = results.next();
-			String relativeName = LdapNameUtils.removeQuotes(entry.getName());
-			String fullName = relativeName + "," + rootDN;
-			Attributes attrs = _directory.getAttributes(fullName);
-			if (fullName.startsWith("eren=")) {
-				ProcessVariableNode node = new ProcessVariableNode(parent, LdapNameUtils.simpleName(relativeName));
-				setAlarmState(node, attrs);
-				setEpicsAttributes(node, attrs);
-			} else {
-				SubtreeNode node = new SubtreeNode(parent, LdapNameUtils.simpleName(relativeName));
-				setEpicsAttributes(node, attrs);
-				populateTreeRecursively(fullName, node);
-			}
-		}
+	private void initializeDirectoryContext() {
+		_directory = Engine.getInstance().getLdapDirContext();
 	}
 	
 	
@@ -345,42 +269,10 @@ public class LdapDirectoryReader extends Job {
 	 */
 	private ProcessVariableNode createTreeNode(final String relativeName,
 			final SubtreeNode rootNode) {
-		SubtreeNode parentNode = findParentNode(relativeName, rootNode);
+		SubtreeNode parentNode = TreeBuilder.findCreateParentNode(rootNode, relativeName);
 		String name = LdapNameUtils.simpleName(relativeName);
 		ProcessVariableNode node = new ProcessVariableNode(parentNode, name);
 		return node;
-	}
-	
-	
-	/**
-	 * Finds the parent node of the node with the specified name. If the parent
-	 * node does not exist, it is created.
-	 * 
-	 * @param relativeName the relative name of the node whose parent is to be
-	 *        found.
-	 * @param root the root node of the tree which is searched.
-	 * @return the parent node of the node with the specified name.
-	 */
-	private SubtreeNode findParentNode(final String relativeName, final SubtreeNode root) {
-		String relativeParentName = LdapNameUtils.parentName(relativeName);
-		if (relativeParentName != null) {
-			// first, find the parent's parent
-			SubtreeNode parentParent = findParentNode(relativeParentName, root);
-			// Then, see if the parent's parent already contains the parent
-			// we're looking for. If it does, return the existing parent,
-			// otherwise create it below its parent.
-			String parentName = LdapNameUtils.simpleName(relativeParentName);
-			SubtreeNode parent = (SubtreeNode) parentParent.getChild(parentName);
-			if (parent != null) {
-				return parent;
-			} else {
-				parent = new SubtreeNode(parentParent, parentName);
-				return parent;
-			}
-		} else {
-			// there is no parent node, so return the root node
-			return root;
-		}
 	}
 	
 	
@@ -393,11 +285,10 @@ public class LdapDirectoryReader extends Job {
 		monitor.beginTask("Initializing Alarm Tree", IProgressMonitor.UNKNOWN);
 		try {
 			long startTime = System.currentTimeMillis();
-			initializeConnection();
+			initializeDirectoryContext();
 			for (String facility : _facilityNames) {
 				populateSubTree(facility);
 			}
-			closeConnection();
 			long endTime = System.currentTimeMillis();
 			LOG.debug(this, "Directory reader time: " + (endTime-startTime) + "ms");
 		} catch (NamingException e) {
@@ -407,22 +298,6 @@ public class LdapDirectoryReader extends Job {
 			monitor.done();
 		}
 		return Status.OK_STATUS;
-	}
-	
-	
-	/**
-	 * Closes the connection to the directory.
-	 */
-	private void closeConnection() {
-		if (_directory != null) {
-			try {
-				_directory.close();
-				_directory = null;
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
 	
 }
