@@ -408,7 +408,6 @@ public class JmsRedundantProducer implements IJmsProducer {
 		return result.toArray(new String[result.size()]);
 	}
 
-//	@Override
 	public MapMessage createMapMessage() throws RuntimeException {
 		try {
 			return _sessions[0].createMapMessage();
