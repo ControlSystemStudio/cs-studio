@@ -1,7 +1,9 @@
-package org.csstudio.utility.eliza;
+package originals;
 
 import java.awt.*;
 import java.applet.*;
+
+import org.csstudio.utility.eliza.ElizaParse;
 
 /**
  * Eliza in Java. Adapted from a BASIC program I found floating on the net.

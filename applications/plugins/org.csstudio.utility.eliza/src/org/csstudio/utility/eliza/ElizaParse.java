@@ -31,7 +31,7 @@ public class ElizaParse
         "",
     };
 
-    String[] getIntroMsg()
+    public String[] getIntroMsg()
     {
         return intromsg;
     }
