@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            name="%Eliza"
+            icon="icons/eliza.png"
+            category="org.csstudio"
+            class="org.csstudio.utility.eliza.ElizaView"
+            id="org.csstudio.utility.eliza.ElizeView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.utility.eliza.cssmenu"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.utility.eliza.ShowElizaAction"
+               icon="icons/eliza.png"
+               id="org.csstudio.utility.eliza.ShowElizaAction"
+               label="%Eliza"
+               menubarPath="css/utility/"
+               style="push"
+               tooltip="%ShowEliza"/>
+      </actionSet>
+   </extension>
+
+</plugin>
