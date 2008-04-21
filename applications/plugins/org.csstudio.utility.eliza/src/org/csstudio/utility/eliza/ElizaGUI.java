@@ -51,6 +51,8 @@ public class ElizaGUI
                 textentry.setText(""); //$NON-NLS-1$
             }
         });
+        textentry.setText("<Enter your sorrows here>"); //$NON-NLS-1$
+        textentry.selectAll();
         
         addText(eliza.getIntroMsg());
         printAccumulatedMessages();
