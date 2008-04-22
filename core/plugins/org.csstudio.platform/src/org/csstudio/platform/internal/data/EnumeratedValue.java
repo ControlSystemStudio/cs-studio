@@ -25,7 +25,6 @@ import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
-import org.eclipse.osgi.util.NLS;
 
 /** Implementation of {@link IEnumeratedValue}.
  *  @see IEnumeratedValue
@@ -60,13 +59,11 @@ public class EnumeratedValue extends Value implements IEnumeratedValue
 	    final StringBuffer buf = new StringBuffer();
 		if (getSeverity().hasValue())
 		{
-			buf.append(NLS.bind(Messages.EnumStateNumberFormat,
-			        enum_meta.getState(values[0]), values[0]));
+			buf.append(enum_meta.getState(values[0]));
 			for (int i = 1; i < values.length; i++)
 			{
 				buf.append(Messages.ArrayElementSeparator);
-	            buf.append(NLS.bind(Messages.EnumStateNumberFormat,
-	                    enum_meta.getState(values[i]), values[i]));
+	            buf.append(enum_meta.getState(values[i]));
 			}
 		}
 		else
