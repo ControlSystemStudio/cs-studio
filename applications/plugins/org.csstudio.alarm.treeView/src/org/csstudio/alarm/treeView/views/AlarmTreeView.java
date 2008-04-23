@@ -40,6 +40,8 @@ import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -62,8 +64,14 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
@@ -78,8 +86,119 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
  * to get a hierarchy of process variables and displays them in a tree view.
  * Process variables which are in an alarm state are visually marked in the
  * view.
+ * 
+ * @author Joerg Rathlev
  */
 public class AlarmTreeView extends ViewPart {
+
+	/**
+	 * Implements drop support for the alarm tree. This implementation supports
+	 * dropping process variables (<code>IProcessVariable</code>) onto subtree
+	 * nodes.
+	 */
+	private final class AlarmTreeDropListener extends DropTargetAdapter {
+		
+		/**
+		 * This implementation of <code>dragEnter</code> selects copy as the
+		 * default drop operation.
+		 * 
+		 * @param event
+		 *            the event.
+		 * @see DropTargetListener#dragEnter(DropTargetEvent)
+		 */
+		@Override
+		public void dragEnter(final DropTargetEvent event) {
+			if (event.detail == DND.DROP_DEFAULT) {
+				event.detail = DND.DROP_COPY;
+			}
+		}
+
+		/**
+		 * This implementation of <code>dragOperationChanged</code> selects
+		 * copy as the default drop operation.
+		 * 
+		 * @param event
+		 *            the event.
+		 * @see DropTargetListener#dragOperationChanged(DropTargetEvent)
+		 */
+		@Override
+		public void dragOperationChanged(final DropTargetEvent event) {
+			if (event.detail == DND.DROP_DEFAULT) {
+				event.detail = DND.DROP_COPY;
+			}
+		}
+
+		/**
+		 * This implementation of <code>dragOver</code> permits dropping if the
+		 * target item is a subtree node. If the mouse is not hovering over any
+		 * item in the tree or if the item is a process variable node, dropping
+		 * is not permitted.
+		 * 
+		 * @param event
+		 *            the event.
+		 * @see DropTargetListener#dragOver(DropTargetEvent)
+		 */
+		@Override
+		public void dragOver(final DropTargetEvent event) {
+			event.feedback = DND.FEEDBACK_SCROLL | DND.FEEDBACK_EXPAND;				
+			
+			// Check which item the mouse is hovering over. If none,
+			// disallow the drop. If there is an item, check that it is a
+			// subtree node, not a pv node.
+			TreeItem item = (TreeItem) event.item;
+			if (item == null) {
+				event.detail = DND.DROP_NONE;
+				return;
+			}
+			Object node = item.getData();
+			if (node instanceof SubtreeNode) {
+				// Check that copy is supported
+				if ((event.operations & DND.DROP_COPY) == DND.DROP_COPY) {
+					event.detail = DND.DROP_COPY;
+				}
+				event.feedback |= DND.FEEDBACK_SELECT;
+				return;
+			} else {
+				event.detail = DND.DROP_NONE;
+				return;
+			}
+		}
+
+		/**
+		 * This implementation of <code>drop</code> performs the drop, if
+		 * possible.
+		 * 
+		 * @param event
+		 *            the event.
+		 * @see DropTargetListener#drop(DropTargetEvent)
+		 */
+		@Override
+		public void drop(final DropTargetEvent event) {
+			// Get the node the PVs are dropped into. If for some reason
+			// the node is not a subtree node, reject the drop.
+			TreeItem item = (TreeItem) event.item;
+			if (item != null && item.getData() instanceof SubtreeNode) {
+				SubtreeNode node = (SubtreeNode) item.getData();
+				IProcessVariable[] data = (IProcessVariable[]) event.data;
+				boolean errors = false;
+				for (IProcessVariable pv : data) {
+					try {
+						DirectoryEditor.createProcessVariableRecord(node, pv.getName());
+					} catch (DirectoryEditException e) {
+						errors = true;
+					}
+				}
+				_viewer.refresh(node);
+				if (errors) {
+					MessageDialog.openError(getSite().getShell(),
+							"Create New Records",
+							"One or more of the records could not be created.");
+				}
+			} else {
+				event.detail = DND.DROP_NONE;
+			}
+		}
+	}
 
 	/**
 	 * The ID of this view.
@@ -172,6 +291,22 @@ public class AlarmTreeView extends ViewPart {
 				AlarmTreeView.this.selectionChanged(event);
 			}
 		});
+		
+		addDragAndDropSupport();
+	}
+
+	/**
+	 * Adds drag and drop support to the tree viewer.
+	 */
+	private void addDragAndDropSupport() {
+		// The transfer types
+		final Transfer pvTransfer = ProcessVariableNameTransfer.getInstance();
+		
+		// Drop support
+		Transfer[] dropTransfer = new Transfer[] { pvTransfer };
+		int dropOperations = DND.DROP_COPY;
+		DropTargetListener dropListener = new AlarmTreeDropListener();
+		_viewer.addDropSupport(dropOperations, dropTransfer, dropListener);
 	}
 
 	/**
