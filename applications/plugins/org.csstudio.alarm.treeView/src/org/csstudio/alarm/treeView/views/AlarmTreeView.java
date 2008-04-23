@@ -165,9 +165,6 @@ public class AlarmTreeView extends ViewPart {
 		
 		getSite().setSelectionProvider(_viewer);
 
-		// The directory is read in the background. Until then, set the viewer's
-		// input to a placeholder object.
-		_viewer.setInput(new Object[] {new PendingUpdateAdapter()});
 		startDirectoryReaderJob();
 		
 		_viewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -209,6 +206,9 @@ public class AlarmTreeView extends ViewPart {
 				progressService.schedule(directoryUpdater, 0, true);
 			}
 		});
+		// The directory is read in the background. Until then, set the viewer's
+		// input to a placeholder object.
+		_viewer.setInput(new Object[] {new PendingUpdateAdapter()});
 		progressService.schedule(directoryReader, 0, true);
 	}
 	
