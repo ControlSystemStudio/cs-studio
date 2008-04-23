@@ -39,6 +39,7 @@ import AAPI.RequestData;
  */
 public class ValuesRequest implements ClientRequest
 {
+	private static final boolean debug = false;
 	public void read(){};
 	private ArchiveServer server;
 	private int key;
@@ -102,6 +103,7 @@ public class ValuesRequest implements ClientRequest
         	input.setNum(numOfBeans);
         } else throw new Exception("read(AAPI aapi): bad parms");
        
+        if(debug)System.out.println("AAPI conversionTag="+this.how);
         input.setConversionTag(this.how );
         /*
          * This is temporary solution for SPLINE<->AVERAGE permutate
@@ -125,11 +127,17 @@ public class ValuesRequest implements ClientRequest
             input.setPV_size(pvCount);
             input.setPV(strArray);            	    
 	        AnswerData answerClass=aapi.getData(input);
-	        error = Math.max(answerClass.getError(), error);
+	        
 	        if (answerClass == null) {
 	            System.out.println("AAPI client:bad getData command");
-	            throw new Exception("AAPI getData call failed");
-	        }   
+	            error = -1;
+	            IValue samples[]= new IValue[0];
+	            archived_samples[COUNT] = new ArchiveValues(server, strArray[0], samples );
+				return error;    
+	            //throw new Exception("AAPI getData call failed");
+	        } 	
+	        error = Math.max(answerClass.getError(), error);
+	        
 			int type = TYPE_DOUBLE; //  TODO answerClass.getType(); AAPI return only Double
 			int count = 1; // do not use WF answerClass.getCount();
 			int num_samples=answerClass.getCount();
@@ -202,6 +210,7 @@ public class ValuesRequest implements ClientRequest
 			
 			
         } // end of foreach COUNT=0 ... channels.length 
+       
         return error;
 	}
 

@@ -116,6 +116,7 @@ public class AnswerData
                     status[j]=readStream.readInt();
                     data[j]  =readStream.readDouble();
                     status[j]=0;// AAPI curently return old VAX-VMS-style status
+                    if(false)System.out.println("to="+time[j]+"U="+u_time[j] );
                 }
                 
                 precision  =readStream.readInt();
