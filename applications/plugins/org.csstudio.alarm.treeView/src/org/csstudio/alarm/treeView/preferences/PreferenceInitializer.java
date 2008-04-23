@@ -37,9 +37,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public final void initializeDefaultPreferences() {
 		Preferences prefs = new DefaultScope().getNode(AlarmTreePlugin.PLUGIN_ID);
-		prefs.put(PreferenceConstants.LDAP_URL, "ldap://krynfs.desy.de:389/o=DESY,c=DE");
-		prefs.put(PreferenceConstants.LDAP_USER, "");
-		prefs.put(PreferenceConstants.LDAP_PASSWORD, "");
 		prefs.put(PreferenceConstants.FACILITIES, "");
 		prefs.put(PreferenceConstants.JMS_URL_PRIMARY, "tcp://elogbook.desy.de:64616");
 		prefs.put(PreferenceConstants.JMS_URL_SECONDARY, "tcp://krynfs.desy.de:62616");

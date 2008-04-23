@@ -22,16 +22,14 @@
  package org.csstudio.alarm.treeView.views;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.alarm.treeView.ldap.LdapNameUtils;
+import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -46,37 +44,18 @@ import org.eclipse.swt.widgets.Shell;
 // TODO: move into preferences package?
 // FIXME: this is still from the first alarm tree (by Jurij Kodre?) and should probably be rewritten
 public class AddMountPointDlg extends Dialog {
-	public AddMountPointDlg(Shell parentShell, Hashtable<String,String> env) {
+	public AddMountPointDlg(Shell parentShell) {
 		super(parentShell);
-		this.env = env;
 		// TODO Auto-generated constructor stub
 	}
 
-	Hashtable<String,String> env;
 	protected DirContext connection;
 	private List mountPoints;
 	public static final String alarmCfgRoot = "ou=EpicsAlarmCfg";
 	public String[] result= new String[0];
 	
 	private void initializeConnection() throws Exception{
-		if (env==null) {
-			throw new Exception("Parameters for connection not given.");
-		}
-		else {
-	        env.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
-			connection=new InitialDirContext(env);
-		}
-	}
-
-	private void resetConnection(){
-		if (connection != null)
-			try {
-				connection.close();
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		connection = null;
+		connection= Engine.getInstance().getLdapDirContext();
 	}
 
 	private String[] getSubDirs(){
@@ -101,9 +80,6 @@ public class AddMountPointDlg extends Dialog {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		finally {
-			resetConnection();
 		}
 		try {
 			return (String[])(strcoll.toArray(new String[strcoll.size()]));

@@ -31,21 +31,6 @@ public final class PreferenceConstants {
 	 */
 	private PreferenceConstants() {
 	}
-
-	/**
-	 * A preference that stores the URL of the LDAP server to read from.
-	 */
-	public static final String LDAP_URL = "url";
-
-	/**
-	 * A preference that stores the username for the LDAP server.
-	 */
-	public static final String LDAP_USER = "user";
-
-	/**
-	 * A preference that stores the password for the LDAP server.
-	 */
-	public static final String LDAP_PASSWORD = "password";
 	
 	/**
 	 * A preference that stores the URL for the primary JMS server.

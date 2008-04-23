@@ -21,8 +21,6 @@
  */
  package org.csstudio.alarm.treeView.preferences;
 
-import java.util.Hashtable;
-
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.views.AddMountPointDlg;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -61,12 +59,6 @@ public class AlarmTreePreferencePage
 	 * restore itself.
 	 */
 	public final void createFieldEditors() {
-		addField(
-			new StringFieldEditor(PreferenceConstants.LDAP_URL, "&URL:", getFieldEditorParent()));
-		addField(
-				new StringFieldEditor(PreferenceConstants.LDAP_USER, "&User:", getFieldEditorParent()));
-		StringFieldEditor sfe = new StringFieldEditor(PreferenceConstants.LDAP_PASSWORD, "&Password:", getFieldEditorParent());
-		sfe.getTextControl(getFieldEditorParent()).setEchoChar('*');
 		addField(new ListEditor(PreferenceConstants.FACILITIES, "&Facility names: ", getFieldEditorParent()){
 			
 			public String[] parseString(final String stringList){
@@ -74,12 +66,7 @@ public class AlarmTreePreferencePage
 			}
 			
 			public String getNewInputObject(){
-				AlarmTreePlugin myPluginInstance = AlarmTreePlugin.getDefault();
-				Hashtable<String,String> env = new Hashtable<String,String>();
-	            env.put("java.naming.provider.url", myPluginInstance.getPluginPreferences().getString(PreferenceConstants.LDAP_URL));
-	            env.put("java.naming.security.principal", myPluginInstance.getPluginPreferences().getString(PreferenceConstants.LDAP_USER));
-	            env.put("java.naming.security.credentials", myPluginInstance.getPluginPreferences().getString(PreferenceConstants.LDAP_PASSWORD));		
-				AddMountPointDlg inputDialog = new AddMountPointDlg(getFieldEditorParent().getShell(), env);
+				AddMountPointDlg inputDialog = new AddMountPointDlg(getFieldEditorParent().getShell());
 				if (inputDialog.open() == Window.OK) {
 					return ((AddMountPointDlg) inputDialog).getResult();
 				}
