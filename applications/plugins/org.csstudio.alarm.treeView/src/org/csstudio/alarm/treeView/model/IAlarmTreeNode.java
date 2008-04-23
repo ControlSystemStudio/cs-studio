@@ -42,7 +42,7 @@ public interface IAlarmTreeNode {
 	 * parent, returns {@code null}.
 	 * @return the parent node of this node.
 	 */
-	IAlarmTreeNode getParent();
+	SubtreeNode getParent();
 	
 	/**
 	 * Returns the alarm severity for this node. If this node has children,

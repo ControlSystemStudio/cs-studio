@@ -636,14 +636,17 @@ public class AlarmTreeView extends ViewPart {
 					(IStructuredSelection) _viewer.getSelection();
 				Object selected = selection.getFirstElement();
 				if (selected instanceof IAlarmTreeNode) {
+					IAlarmTreeNode nodeToDelete = (IAlarmTreeNode) selected;
+					SubtreeNode parent = nodeToDelete.getParent();
 					try {
-						DirectoryEditor.delete((IAlarmTreeNode) selected);
+						DirectoryEditor.delete(nodeToDelete);
+						parent.remove(nodeToDelete);
+						_viewer.refresh(parent);
 					} catch (DirectoryEditException e) {
 						MessageDialog.openError(getSite().getShell(), 
 								"Delete",
 								"Could not delete this node: " + e.getMessage());
 					}
-					//_viewer.refresh(parent);
 				}
 			}
 		};

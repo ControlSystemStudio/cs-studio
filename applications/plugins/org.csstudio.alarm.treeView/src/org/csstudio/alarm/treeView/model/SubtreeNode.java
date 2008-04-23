@@ -95,6 +95,26 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	}
 	
 	/**
+	 * Removes the given child from this node. If the given node is not a direct
+	 * child of this subtree, does nothing. The child node must not have any
+	 * children itself. If the child node has children, this method does
+	 * nothing.
+	 * 
+	 * @param child
+	 *            the child node to remove.
+	 */
+	public final void remove(final IAlarmTreeNode child) {
+		if (!_children.contains(child)) {
+			return;
+		}
+		if (child instanceof SubtreeNode
+				&& ((SubtreeNode) child).hasChildren()) {
+			return;
+		}
+		_children.remove(child);
+	}
+	
+	/**
 	 * Sets the object class of this node in the directory.
 	 * @param objectClass the object class of this node.
 	 */
@@ -180,7 +200,7 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	/**
 	 * {@inheritDoc}
 	 */
-	public final IAlarmTreeNode getParent() {
+	public final SubtreeNode getParent() {
 		return _parent;
 	}
 
