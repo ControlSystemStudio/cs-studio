@@ -19,18 +19,26 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.treeView.model;
+package org.csstudio.alarm.treeView.model;
 
+import java.net.URL;
+
+import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
+import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertySource;
+import org.eclipse.ui.views.properties.IPropertySource2;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
- * Provides the properties of an {@link IAlarmTreeNode}.
+ * Adapter to provide property support for {@link IAlarmTreeNode}s. Note that
+ * the alarm state of the node is not provided as a property. This is
+ * intentional, as updates of the alarm state would not be relected in the
+ * property sheet until the selection in the tree is updated or modified.
  * 
  * @author Joerg Rathlev
  */
-public class AlarmTreeNodePropertySource implements IPropertySource {
+public class AlarmTreeNodePropertySource implements IPropertySource2 {
 
 	/**
 	 * The descriptors of the properties provided by this source.
@@ -40,41 +48,90 @@ public class AlarmTreeNodePropertySource implements IPropertySource {
 	/**
 	 * The node for which this property source provides properties.
 	 */
-	private IAlarmTreeNode _node;
+	private AbstractAlarmTreeNode _node;
 	
 	/**
 	 * IDs for the properties.
 	 */
 	private static enum PropertyID {
+		
 		/**
 		 * Property ID for the name property.
 		 */
 		NAME,
+		
 		/**
-		 * Property ID for the alarm property.
+		 * Property ID of the object class property. 
 		 */
-		ALARM,
+		OBJECT_CLASS,
+		
+		/**
+		 * Property ID of the help page property.
+		 */
+		HELP_PAGE,
+		
+		/**
+		 * Property ID of the help guidance property.
+		 */
+		HELP_GUIDANCE,
+		
+		/**
+		 * Property ID of the CSS alarm display property.
+		 */
+		CSS_ALARM_DISPLAY,
+		
+		/**
+		 * Property ID of the CSS display property.
+		 */
+		CSS_DISPLAY,
+		
+//		/**
+//		 * Property ID of the CSS strip chart property.
+//		 */
+//		CSS_STRIP_CHART,
 	}
 
 	static {
-		PROPERTY_DESCRIPTORS = new IPropertyDescriptor[2];
+		PROPERTY_DESCRIPTORS = new IPropertyDescriptor[6];
 		PropertyDescriptor descriptor;
 		
 		// name
-		descriptor = new PropertyDescriptor(PropertyID.NAME, "Name");
+		descriptor = new PropertyDescriptor(PropertyID.NAME, "name");
 		descriptor.setAlwaysIncompatible(true);
+		descriptor.setDescription("The name of the object.");
 		PROPERTY_DESCRIPTORS[0] = descriptor;
 		
-		// alarm state
-		descriptor = new PropertyDescriptor(PropertyID.ALARM, "Alarm");
+		// object class
+		descriptor = new PropertyDescriptor(PropertyID.OBJECT_CLASS, "object class");
+		descriptor.setDescription("The object class of the object.");
 		PROPERTY_DESCRIPTORS[1] = descriptor;
+		
+		// help page
+		descriptor = new TextPropertyDescriptor(PropertyID.HELP_PAGE, "help page");
+		descriptor.setDescription("The help page. This should be the URL of a web page.");
+		PROPERTY_DESCRIPTORS[2] = descriptor;
+		
+		// help guidance
+		descriptor = new TextPropertyDescriptor(PropertyID.HELP_GUIDANCE, "help guidance");
+		descriptor.setDescription("A short description of the object.");
+		PROPERTY_DESCRIPTORS[3] = descriptor;
+		
+		// CSS alarm display
+		descriptor = new TextPropertyDescriptor(PropertyID.CSS_ALARM_DISPLAY, "alarm display");
+		descriptor.setDescription("The CSS alarm display.");
+		PROPERTY_DESCRIPTORS[4] = descriptor;
+		
+		// CSS display
+		descriptor = new TextPropertyDescriptor(PropertyID.CSS_DISPLAY, "display");
+		descriptor.setDescription("The CSS display.");
+		PROPERTY_DESCRIPTORS[5] = descriptor;
 	}
 	
 	/**
 	 * Creates a new property source for the given node.
 	 * @param node the node.
 	 */
-	public AlarmTreeNodePropertySource(final IAlarmTreeNode node) {
+	public AlarmTreeNodePropertySource(final AbstractAlarmTreeNode node) {
 		this._node = node;
 	}
 	
@@ -101,8 +158,19 @@ public class AlarmTreeNodePropertySource implements IPropertySource {
 			switch ((PropertyID) id) {
 			case NAME:
 				return _node.getName();
-			case ALARM:
-				return _node.getAlarmSeverity();
+			case OBJECT_CLASS:
+				// TODO: not supported by nodes yet
+				return null;
+			case HELP_PAGE:
+				URL page = _node.getHelpPage();
+				return (page != null) ? page.toString() : "";
+			case HELP_GUIDANCE:
+				return _node.getHelpGuidance();
+			case CSS_ALARM_DISPLAY:
+				return _node.getCssAlarmDisplay();
+			case CSS_DISPLAY:
+				// TODO: not supported by nodes yet
+				return null;
 			default:
 				return null;
 			}
@@ -117,13 +185,22 @@ public class AlarmTreeNodePropertySource implements IPropertySource {
 		if (id instanceof PropertyID) {
 			switch ((PropertyID) id) {
 			case NAME:
-				// Name doesn't have a default value, always return false.
+				// Name doesn't have a default value, always return true.
+				return true;
+			case OBJECT_CLASS:
+				// TODO: not supported by nodes yet
 				return false;
-			case ALARM:
-				// For alarms, the default is NO_ALARM. Return true if the
-				// current value is different from that default.
-				return !_node.getAlarmSeverity().equals(Severity.NO_ALARM);
+			case HELP_PAGE:
+				return _node.getHelpPage() != null;
+			case HELP_GUIDANCE:
+				return _node.getHelpGuidance() != null;
+			case CSS_ALARM_DISPLAY:
+				return _node.getCssAlarmDisplay() != null;
+			case CSS_DISPLAY:
+				// TODO: not supported by nodes yet
+				return false;
 			default:
+				// this source does not have the specified property
 				return false;
 			}
 		}
@@ -133,14 +210,53 @@ public class AlarmTreeNodePropertySource implements IPropertySource {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void resetPropertyValue(final Object id) {
-		// do nothing (values cannot be reset)
+	public final void resetPropertyValue(final Object id) {
+		if (id instanceof PropertyID) {
+			switch ((PropertyID) id) {
+			case HELP_PAGE:
+				// TODO: edit in LDAP
+				_node.setHelpPage(null);
+			case HELP_GUIDANCE:
+				// TODO: edit in LDAP
+				_node.setHelpGuidance(null);
+			case CSS_ALARM_DISPLAY:
+				// TODO: edit in LDAP
+				_node.setCssAlarmDisplay(null);
+			default:
+				// do nothing
+			}
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setPropertyValue(final Object id, final Object value) {
-		// do nothing (values cannot be changed)
+	public final void setPropertyValue(final Object id, final Object value) {
+		if (id instanceof PropertyID) {
+			switch ((PropertyID) id) {
+			case HELP_GUIDANCE:
+				try {
+					String str = (String) value;
+					if (str.equals("")) {
+						str = null;
+					}
+					DirectoryEditor.modifyHelpGuidance(_node, str);
+				} catch (DirectoryEditException e) {
+					// TODO Auto-generated catch block
+				}
+				break;
+			default:
+				// do nothing
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public final boolean isPropertyResettable(final Object id) {
+		return id == PropertyID.HELP_PAGE
+			|| id == PropertyID.HELP_GUIDANCE
+			|| id == PropertyID.CSS_ALARM_DISPLAY;
 	}
 }

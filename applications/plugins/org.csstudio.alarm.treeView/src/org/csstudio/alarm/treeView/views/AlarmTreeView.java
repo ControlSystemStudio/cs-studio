@@ -775,7 +775,6 @@ public class AlarmTreeView extends ViewPart {
 					SubtreeNode parent = nodeToDelete.getParent();
 					try {
 						DirectoryEditor.delete(nodeToDelete);
-						parent.remove(nodeToDelete);
 						_viewer.refresh(parent);
 					} catch (DirectoryEditException e) {
 						MessageDialog.openError(getSite().getShell(), 

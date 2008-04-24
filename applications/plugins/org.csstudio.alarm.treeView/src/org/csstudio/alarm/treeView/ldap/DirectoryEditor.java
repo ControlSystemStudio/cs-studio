@@ -23,10 +23,14 @@
 package org.csstudio.alarm.treeView.ldap;
 
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
 
+import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
@@ -78,34 +82,64 @@ public final class DirectoryEditor {
 	 */
 	public static void delete(final IAlarmTreeNode node)
 			throws DirectoryEditException {
-		String name;
-		if (node instanceof ProcessVariableNode) {
-			name = "eren=" + node.getName() + ","
-				+ ((SubtreeNode) node.getParent()).getDirectoryName();
-		} else {
-			name = ((SubtreeNode) node).getDirectoryName();
+		String name = fullName(node);
+		try {
+			LOG.debug(DirectoryEditor.class, "Unbinding " + name);
+			_directory.unbind(name);
+			node.getParent().remove(node);
+		} catch (NamingException e) {
+			LOG.error(DirectoryEditor.class,
+					"Error unbinding directory entry", e);
+			throw new DirectoryEditException(e.getMessage(), e);
 		}
-		name += "," + ALARM_ROOT;
-		delete(name);
 	}
 	
 	
 	/**
-	 * Deletes the object with the given name from the directory.
+	 * Modifies the help guidance attribute of the given node in the directory.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @param value
+	 *            the new value for the attribute. Use <code>null</code> to
+	 *            remove the attribute.
+	 * @throws DirectoryEditException
+	 *             if the attribute could not be modified.
+	 */
+	public static void modifyHelpGuidance(final AbstractAlarmTreeNode node,
+			final String value) throws DirectoryEditException {
+		String name = fullName(node);
+		modifyAttribute(name, "epicsHelpGuidance", value);
+		node.setHelpGuidance(value);
+	}
+	
+	
+	/**
+	 * Modifies an attribute of a directory entry.
 	 * 
 	 * @param name
-	 *            the object's name.
+	 *            the full name of the directory entry.
+	 * @param attribute
+	 *            the id of the attribute to modify.
+	 * @param value
+	 *            the new attribute value. Use <code>null</code> to remove the
+	 *            attribute.
 	 * @throws DirectoryEditException
-	 *             if the entry could not be deleted.
+	 *             if the attribute could not be modified.
 	 */
-	private static void delete(final String name)
+	private static void modifyAttribute(final String name,
+			final String attribute, final String value)
 			throws DirectoryEditException {
+		Attribute attr = new BasicAttribute(attribute, value);
+		int op = value == null
+				? DirContext.REMOVE_ATTRIBUTE : DirContext.REPLACE_ATTRIBUTE;
+		ModificationItem[] mods = new ModificationItem[] {
+				new ModificationItem(op, attr) };
 		try {
-			LOG.debug(DirectoryEditor.class, "Unbinding " + name);
-			_directory.unbind(name);
+			LOG.debug(DirectoryEditor.class, name + ": " + mods[0]);
+			_directory.modifyAttributes(name, mods);
 		} catch (NamingException e) {
-			LOG.error(DirectoryEditor.class,
-					"Error unbinding directory entry", e);
+			LOG.error(DirectoryEditor.class, "Failed: " + name + ": " + mods[0], e);
 			throw new DirectoryEditException(e.getMessage(), e);
 		}
 	}
@@ -125,8 +159,7 @@ public final class DirectoryEditor {
 	public static ProcessVariableNode createProcessVariableRecord(
 			final SubtreeNode parent, final String recordName)
 			throws DirectoryEditException {
-		String parentName = parent.getDirectoryName();
-		String erenName = "eren=" + recordName + "," + parentName + "," + ALARM_ROOT;
+		String erenName = "eren=" + recordName + "," + fullName(parent);
 		Attributes attrs = attributesForRecord(recordName);
 		try {
 			LOG.debug(DirectoryEditor.class,
@@ -155,8 +188,7 @@ public final class DirectoryEditor {
 	 */
 	public static SubtreeNode createComponent(final SubtreeNode parent,
 			final String componentName) throws DirectoryEditException {
-		String parentName = parent.getDirectoryName();
-		String ecomName = "ecom=" + componentName + "," + parentName + "," + ALARM_ROOT;
+		String ecomName = "ecom=" + componentName + "," + fullName(parent);
 		Attributes attrs = attributesForComponent(componentName);
 		try {
 			LOG.debug(DirectoryEditor.class,
@@ -170,6 +202,26 @@ public final class DirectoryEditor {
 		SubtreeNode node = new SubtreeNode(parent, componentName);
 		node.setObjectClass("ecom");
 		return node;
+	}
+
+
+	/**
+	 * Returns the full name of the given node in the directory.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @return the full name of the node in the directory.
+	 */
+	private static String fullName(final IAlarmTreeNode node) {
+		StringBuilder sb = new StringBuilder();
+		if (node instanceof ProcessVariableNode) {
+			sb.append("eren=").append(node.getName()).append(",")
+				.append(node.getParent().getDirectoryName());
+		} else {
+			sb.append(((SubtreeNode) node).getDirectoryName());
+		}
+		sb.append(",").append(ALARM_ROOT);
+		return sb.toString();
 	}
 	
 
