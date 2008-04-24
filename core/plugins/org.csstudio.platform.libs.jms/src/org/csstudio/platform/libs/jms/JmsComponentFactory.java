@@ -20,7 +20,7 @@ public class JmsComponentFactory implements IJmsComponentFactory {
 	/* (non-Javadoc)
 	 * @see org.csstudio.platform.libs.jms.IJmsComponentFactory#createIjmsRedundantReceiver(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public IjmsRedundantReceiver createIjmsRedundantReceiver(String id, String url1, String url2) {
+	public IJmsRedundantReceiver createIjmsRedundantReceiver(String id, String url1, String url2) {
 		return new JmsRedundantReceiver(id, url1, url2);
 	}
 }
