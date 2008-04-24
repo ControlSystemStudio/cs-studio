@@ -2,7 +2,7 @@ package org.csstudio.platform.libs.jms;
 
 import javax.jms.Message;
 
-public interface IjmsRedundantReceiver {
+public interface IJmsRedundantReceiver {
 
 	/**
 	 * 

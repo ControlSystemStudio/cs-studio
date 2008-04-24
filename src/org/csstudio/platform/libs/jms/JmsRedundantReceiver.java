@@ -51,7 +51,7 @@ import javax.naming.NamingException;
  * 
  */
 
-public class JmsRedundantReceiver implements IjmsRedundantReceiver
+public class JmsRedundantReceiver implements IJmsRedundantReceiver
 {
     /** Number of redundant connections */
     private final int CONNECTION_COUNT = 2;
