@@ -1,5 +1,9 @@
 package org.csstudio.nams.service.messaging;
 
+import org.csstudio.nams.service.messaging.extensionPoint.ConsumerFactoryServiceFactory;
+import org.csstudio.nams.service.messaging.extensionPoint.ProducerFactoryServiceFactory;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -24,31 +28,29 @@ public class MessagingActivator extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 
-		// TODO Use extension
-//		final String classname = ConsumerFactoryService.class.getName();
-//		_ensureJustOneInstanceTracker = new ServiceTracker(context, classname,
-//				null) {
-//			private boolean _addedBefore = false;
-//
-//			@Override
-//			public Object addingService(ServiceReference reference) {
-//				if (_addedBefore) {
-//					throw new RuntimeException(
-//							"Duplicated registration of service " + classname
-//									+ " is prohibed.");
-//				}
-//				_addedBefore = true;
-//				return super.addingService(reference);
-//			}
-//
-//			@Override
-//			public void removedService(ServiceReference reference,
-//					Object service) {
-//				throw new RuntimeException("Removeval of service " + classname
-//						+ " is prohibed.");
-//			}
-//		};
-//		_ensureJustOneInstanceTracker.open();
+		// ConsumerFactoryServiceFactory
+		String extensionPointIdConsumerServiceFactory = ConsumerFactoryServiceFactory.class.getName();
+		IConfigurationElement[] elementsConsumerFactoryServiceFactory = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(extensionPointIdConsumerServiceFactory);
+
+		if (elementsConsumerFactoryServiceFactory.length != 1) {
+			throw new RuntimeException("One and only one extension for extension point \""
+							+ extensionPointIdConsumerServiceFactory + "\" should be present in current runtime configuration!");
+		} else {
+			// TODO
+		}
+		
+		// ProducerFactoryServiceFactory
+		String extensionPointIdProducerServiceFactory = ProducerFactoryServiceFactory.class.getName();
+		IConfigurationElement[] elementsProducerFactoryServiceFactory = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(extensionPointIdProducerServiceFactory);
+
+		if (elementsProducerFactoryServiceFactory.length != 1) {
+			throw new RuntimeException("One and only one extension for extension point \""
+							+ extensionPointIdProducerServiceFactory + "\" should be present in current runtime configuration!");
+		} else {
+			// TODO
+		}
 	}
 
 	/**
