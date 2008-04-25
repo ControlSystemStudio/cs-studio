@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="824.47">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; min-height: 14.0px}
+    span.s1 {font: 12.0px Helvetica}
+    table.t1 {border-collapse: collapse}
+    td.td1 {width: 120.0px; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #bfbfbf #bfbfbf #bfbfbf #bfbfbf; padding: 0.0px 5.0px 0.0px 5.0px}
+    td.td2 {width: 1272.0px; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #bfbfbf #bfbfbf #bfbfbf #bfbfbf; padding: 0.0px 5.0px 0.0px 5.0px}
+  </style>
+</head>
+<body>
+<h1>New Alarm Management System (NAMS)</h1>
+<h2>Package-Benamungen</h2>
+<p class="p1">Root aller packages ist <code>org.csstudio.nams</code></p>
+<table cellspacing="0" cellpadding="0" class="t1">
+  <tbody>
+    <tr>
+      <th valign="middle" class="td1">
+        <p class="p1">Package</p>
+      </th>
+      <th valign="middle" class="td2">
+        <p class="p1">Erl&auml;uterung</p>
+      </th>
+    </tr>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p1"><code>.service.*</code></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p1">Die verschiedenen Services, diese exportieren lediglich Ihre Deklaration und registrieren eine Implementation in der OSGi service registry.</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p1"><code>.service.impl.*</code></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p1">Eine Serviceimplementation die als austauschbar entworfen ist, diese registriert sich via extension am service-Plug in, dieses Plug in exportiert nichts und sollte nicht direkt benutzt werden.</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p1"><code>.common.*</code></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p1">Gemeinsame Bibliotheken und gemeinsam verwendete Datentypen. Kein aktives Verhalten.</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p1"><code>.application.*</code></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p1">Die Anwendungen (MessageHandler, Distributor, ...)</p>
+      </td>
+    </tr>
+    <tr>
+      <td valign="middle" class="td1">
+        <p class="p1"><code>.documentation</code></p>
+      </td>
+      <td valign="middle" class="td2">
+        <p class="p1">Dieses Plug in.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p class="p3"><span class="s1"></span><br></p>
+</body>
+</html>
