@@ -3,7 +3,7 @@ package org.csstudio.nams.service.messaging.impl.jms;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 
-public class JMSQueueConsumer implements Consumer {
+class JMSQueueConsumer implements Consumer {
 
 	public JMSQueueConsumer(String clientId, String messageSourceName,
 			String[] messageServerURLs) {

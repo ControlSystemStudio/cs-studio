@@ -6,8 +6,8 @@ import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.service.messaging.declaration.Producer;
 import org.csstudio.platform.libs.jms.JmsRedundantProducer;
 import org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId;
-
-public class JMSTopicProducer implements Producer {
+// TODO exception handling in RedundantPruducer
+class JMSTopicProducer implements Producer {
 
 	private JmsRedundantProducer jmsRedundantProducer;
 	private ProducerId producerId;

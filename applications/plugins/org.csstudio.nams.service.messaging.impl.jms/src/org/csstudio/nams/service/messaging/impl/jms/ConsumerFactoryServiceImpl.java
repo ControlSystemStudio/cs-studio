@@ -4,7 +4,7 @@ import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.ConsumerFactoryService;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 
-public class ConsumerFactoryServiceImpl implements ConsumerFactoryService {
+class ConsumerFactoryServiceImpl implements ConsumerFactoryService {
 
 	public Consumer createConsumer(String clientId, String messageSourceName,
 			PostfachArt artDesPostfaches, String[] messageServerURLs) {
@@ -14,7 +14,7 @@ public class ConsumerFactoryServiceImpl implements ConsumerFactoryService {
 		case TOPIC:
 			return new JMSTopicConsumer(clientId, messageSourceName, messageServerURLs);
 		}
-		return null;
+		return null; // TODO Exception handling
 	}
 
 }

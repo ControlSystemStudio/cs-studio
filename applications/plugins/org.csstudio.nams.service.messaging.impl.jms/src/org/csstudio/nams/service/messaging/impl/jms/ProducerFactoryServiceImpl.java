@@ -4,7 +4,7 @@ import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
 import org.csstudio.nams.service.messaging.declaration.ProducerFactoryService;
 
-public class ProducerFactoryServiceImpl implements ProducerFactoryService {
+class ProducerFactoryServiceImpl implements ProducerFactoryService {
 
 	public Producer createProducer(String clientId,
 			String messageDestinationName, PostfachArt artDesPostfaches,
@@ -15,7 +15,7 @@ public class ProducerFactoryServiceImpl implements ProducerFactoryService {
 		case TOPIC:
 			return new JMSTopicProducer(clientId, messageDestinationName, messageServerURLs);
 		}
-		return null;
+		return null;// TODO Exception handling
 	}
 
 }
