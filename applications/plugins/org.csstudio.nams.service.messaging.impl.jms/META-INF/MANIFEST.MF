@@ -5,5 +5,7 @@ Bundle-SymbolicName: org.csstudio.nams.service.messaging.impl.jms;singleton:=tru
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.nams.service.messaging.impl.jms.JMSActivator
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.nams.service.messaging
+ org.csstudio.nams.service.messaging,
+ org.csstudio.nams.common,
+ org.csstudio.platform.libs.jms
 Eclipse-LazyStart: true
