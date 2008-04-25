@@ -73,13 +73,20 @@ public class DecisionDepartmentActivator extends Plugin implements IApplication 
 		// TODO Lade configuration, konvertiere diese und ewrzeuge die bŸros und
 		// starte deren Arbeit
 		// lock until application ready to quit.
-		logger.logInfoMessage(this, "Application start...");
+		logger.logInfoMessage(this, "Decision department application is going to be initialized...");
 		_arbeitFortsetzen = true;
 
+		logger.logInfoMessage(this, "Decision department application successfully initialized, begining work...");
 		while (_arbeitFortsetzen) {
+			/*-
+			 * try jms.receive if result != null (tue was)
+			 */
+			
 			Thread.yield();
 		}
+		// TODO stoppe bŸros
 
+		logger.logInfoMessage(this, "Decision department application successfully shuted down.");
 		return IApplication.EXIT_OK;
 	}
 
@@ -87,7 +94,8 @@ public class DecisionDepartmentActivator extends Plugin implements IApplication 
 	 * Stop the application.
 	 */
 	public void stop() {
+		logger.logInfoMessage(this, "Shuting down decision department application...");
 		_arbeitFortsetzen = false;
-		// TODO stoppe bŸros
+		// TODO JMS Close -> recieve abgebrochen mit null return
 	}
 }
