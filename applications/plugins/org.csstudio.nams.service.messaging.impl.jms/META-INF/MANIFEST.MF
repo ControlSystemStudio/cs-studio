@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jms Plug-in
+Bundle-SymbolicName: org.csstudio.nams.service.messaging.impl.jms
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.nams.service.messaging.impl.jms.JMSActivator
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.nams.service.messaging
+Eclipse-LazyStart: true

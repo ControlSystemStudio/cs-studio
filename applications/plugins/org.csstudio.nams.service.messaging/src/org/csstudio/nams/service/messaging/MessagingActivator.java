@@ -18,8 +18,6 @@ public class MessagingActivator extends Plugin {
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.messaging";
 
-	// private ServiceTracker _ensureJustOneInstanceTracker;
-
 	/**
 	 * The constructor
 	 */
@@ -92,6 +90,5 @@ public class MessagingActivator extends Plugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		// _ensureJustOneInstanceTracker.close();
 	}
 }
