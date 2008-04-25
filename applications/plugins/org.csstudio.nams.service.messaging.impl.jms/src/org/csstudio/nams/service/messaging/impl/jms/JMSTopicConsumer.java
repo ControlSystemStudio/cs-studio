@@ -5,18 +5,24 @@ import org.csstudio.nams.service.messaging.declaration.Consumer;
 
 public class JMSTopicConsumer implements Consumer {
 
+	
+
 	public JMSTopicConsumer(String clientId, String messageSourceName,
 			String[] messageServerURLs) {
-		// TODO Auto-generated constructor stub
+		
+		
+		for (String url : messageServerURLs) {
+			
+		}
+		
+		
 	}
 
 	public void close() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	public boolean isClosed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
