@@ -1,6 +1,5 @@
 package org.csstudio.nams.application.department.decision;
 
-
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.equinox.app.IApplication;
@@ -16,8 +15,22 @@ public class DecisionDepartmentActivator extends Plugin implements IApplication 
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.application.department.decision";
+
+	/**
+	 * Feld des Activators: ServiceTracker des Loggers.
+	 */
 	private ServiceTracker _serviceTrackerLogger;
+
+	/**
+	 * Gemeinsames Feld des Activators und der Application: Der Logger.
+	 */
 	private static Logger logger;
+
+	/**
+	 * Feld der Application: Feld das angibt, ob die Application weiter arbeiten
+	 * soll.
+	 */
+	private volatile boolean _arbeitFortsetzen = false;
 
 	/**
 	 * TODO Beachten: Eclipse wird 2 Exemplare dieser Klasse anlegen! Dies
@@ -37,7 +50,7 @@ public class DecisionDepartmentActivator extends Plugin implements IApplication 
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		
+
 		_serviceTrackerLogger = new ServiceTracker(context, Logger.class
 				.getName(), null);
 		_serviceTrackerLogger.open();
@@ -61,7 +74,12 @@ public class DecisionDepartmentActivator extends Plugin implements IApplication 
 		// starte deren Arbeit
 		// lock until application ready to quit.
 		logger.logInfoMessage(this, "Application start...");
-		
+		_arbeitFortsetzen = true;
+
+		while (_arbeitFortsetzen) {
+			Thread.yield();
+		}
+
 		return IApplication.EXIT_OK;
 	}
 
@@ -69,6 +87,7 @@ public class DecisionDepartmentActivator extends Plugin implements IApplication 
 	 * Stop the application.
 	 */
 	public void stop() {
+		_arbeitFortsetzen = false;
 		// TODO stoppe büros
 	}
 }
