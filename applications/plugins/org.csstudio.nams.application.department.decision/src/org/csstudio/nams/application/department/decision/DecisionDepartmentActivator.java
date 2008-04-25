@@ -1,9 +1,12 @@
 package org.csstudio.nams.application.department.decision;
 
+
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator and application class controls the plug-in and application life
@@ -13,6 +16,8 @@ public class DecisionDepartmentActivator extends Plugin implements IApplication 
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.application.department.decision";
+	private ServiceTracker _serviceTrackerLogger;
+	private static Logger logger;
 
 	/**
 	 * TODO Beachten: Eclipse wird 2 Exemplare dieser Klasse anlegen! Dies
@@ -31,9 +36,12 @@ public class DecisionDepartmentActivator extends Plugin implements IApplication 
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		// TODO sammle benötigte services aus dem Bundle context.
-
 		super.start(context);
+		
+		_serviceTrackerLogger = new ServiceTracker(context, Logger.class
+				.getName(), null);
+		_serviceTrackerLogger.open();
+		logger = (Logger) _serviceTrackerLogger.getService();
 	}
 
 	/**
@@ -42,7 +50,7 @@ public class DecisionDepartmentActivator extends Plugin implements IApplication 
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 
-		// TODO scliesse serviceTracker.
+		_serviceTrackerLogger.close();
 	}
 
 	/**
@@ -52,6 +60,8 @@ public class DecisionDepartmentActivator extends Plugin implements IApplication 
 		// TODO Lade configuration, konvertiere diese und ewrzeuge die büros und
 		// starte deren Arbeit
 		// lock until application ready to quit.
+		logger.logInfoMessage(this, "Application start...");
+		
 		return IApplication.EXIT_OK;
 	}
 

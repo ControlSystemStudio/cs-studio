@@ -4,5 +4,6 @@ Bundle-Name: Decision Plug-in
 Bundle-SymbolicName: org.csstudio.nams.application.department.decision; singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.nams.application.department.decision.DecisionDepartmentActivator
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.nams.service.logging
 Eclipse-LazyStart: true
