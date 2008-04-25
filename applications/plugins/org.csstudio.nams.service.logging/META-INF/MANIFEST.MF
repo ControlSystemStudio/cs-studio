@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Logging Plug-in
+Bundle-SymbolicName: org.csstudio.nams.service.logging
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.nams.service.logging.LoggingServiceActivator
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform
+Eclipse-LazyStart: true
