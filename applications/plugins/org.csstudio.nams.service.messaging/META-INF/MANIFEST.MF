@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Messaging Plug-in
+Bundle-SymbolicName: org.csstudio.nams.service.messaging
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.nams.service.messaging.MessagingActivator
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.nams.common
+Eclipse-LazyStart: true
