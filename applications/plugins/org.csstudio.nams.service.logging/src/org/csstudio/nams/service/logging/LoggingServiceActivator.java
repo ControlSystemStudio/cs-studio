@@ -1,6 +1,5 @@
 /* 
- * Copyright (c) 2008 C1 WPS mbH, 
- * HAMBURG, GERMANY.
+ * Copyright (c) C1 WPS mbH, HAMBURG, GERMANY. All Rights Reserved.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
  * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT
@@ -26,18 +25,18 @@ package org.csstudio.nams.service.logging;
 
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.logging.impl.LoggerImpl;
-import org.eclipse.core.runtime.Plugin;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  * 
- * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>, <a
- *         href="mailto:gs@c1-wps.de">Goesta Steen</a>, <a
- *         href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
+ * @author <a href="mailto:tr@c1-wps.de">Tobias Rathjen</a>
+ * @author <a href="mailto:gs@c1-wps.de">Goesta Steen</a>
+ * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 18.04.2008
  */
-public class LoggingServiceActivator extends Plugin {
+public class LoggingServiceActivator implements BundleActivator {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.logging";
@@ -52,16 +51,12 @@ public class LoggingServiceActivator extends Plugin {
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		
-		context.registerService(Logger.class.getName(),
-				new LoggerImpl(), null);
+		context.registerService(Logger.class.getName(), new LoggerImpl(), null);
 	}
 
 	/**
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
 	}
 }
