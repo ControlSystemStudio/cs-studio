@@ -24,6 +24,7 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.platform.logging.CentralLogger;
@@ -56,6 +57,19 @@ public class Jms2OraPlugin extends AbstractCssPlugin
     @Override
     protected void doStart(BundleContext context) throws Exception
     {
+        PropertiesConfiguration config = new PropertiesConfiguration();
+        
+        try
+        {
+            config.load("./jms2ora-config.properties");
+            
+            this.config = config;
+        }
+        catch(ConfigurationException e)
+        {
+            CentralLogger.getInstance().error(this, "Configuration not loadable...");
+        }
+
         for(IStartupServiceListener s : StartupServiceEnumerator.getServices())
         {
             s.run();

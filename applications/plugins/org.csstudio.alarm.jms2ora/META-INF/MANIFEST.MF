@@ -5,8 +5,8 @@ Bundle-SymbolicName: org.csstudio.alarm.jms2ora;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.alarm.jms2ora.Jms2OraPlugin
 Require-Bundle: org.eclipse.core.runtime.compatibility.auth,
- org.eclipse.core.runtime,
  org.eclipse.core.resources,
+ org.eclipse.core.runtime,
  org.csstudio.platform.libs.jms,
  org.csstudio.platform.libs.jdbc,
  org.csstudio.platform.libs.xmpp,

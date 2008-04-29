@@ -77,7 +77,7 @@ import java.sql.SQLException;
  * 6. If the last step fails, delete all created entries in MESSAGE and MESSAGE_CONTENT
  * 
  * @author  Markus Moeller
- * @version 1.2.2
+ * @version 1.3.0
  */
 
 /*
@@ -128,9 +128,12 @@ public class StoreMessages implements MessageListener
     
     /** Indicates wether or not the application should shut down */
     private boolean running = true;
+    
+    /** True if the folder 'nirvana' exists. This folder holds the stored message object content. */
+    private boolean existsObjectFolder = false;
 
-    private final String version = " 1.2.2";
-    private final String build = " - BUILD 2008-04-04 13:34";
+    private final String version = " 1.3.0";
+    private final String build = " - BUILD 2008-04-29 14:10";
     private final String application = "Jms2Ora";
     private final String formatStd = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}";
     private final String formatTwoDigits = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{2}";
@@ -165,6 +168,8 @@ public class StoreMessages implements MessageListener
         checkObjectFolder();
         
         config = Jms2OraPlugin.getDefault().getConfiguration();
+        
+        System.out.println(config);
         
         oracle = new OracleService(logger, config.getString("oracle.user"), config.getString("oracle.password"));
         initialized = readMessageTypeAndProperties();
@@ -591,6 +596,22 @@ public class StoreMessages implements MessageListener
         ObjectOutputStream  oos         = null;
         String              fn          = null;
 
+        // Create a hash table with the content of the MapMessage object
+        Hashtable<String, String> content = getMessageContent(mm);
+        if(content.isEmpty())
+        {
+            logger.warn("Content of MapMessage can not be read or MapMessage is empty.");
+            
+            return;
+        }
+
+        if(existsObjectFolder == false)
+        {
+            logger.warn("Object folder 'nirvana' does not exist. Message cannot be stored.");
+            
+            return;
+        }
+        
         cal = new GregorianCalendar();
         fn  = "waif_" + dfm.format(cal.getTime());                
 
@@ -599,7 +620,9 @@ public class StoreMessages implements MessageListener
             fos = new FileOutputStream(".\\nirvana\\" + fn + ".ser");
             oos = new ObjectOutputStream(fos);
             
-            oos.writeObject(mm);            
+            // Write the Hashtable to disk
+            // MapMessage does not implement the interface Serializable
+            oos.writeObject(content);            
         }
         catch(FileNotFoundException fnfe)
         {
@@ -616,9 +639,36 @@ public class StoreMessages implements MessageListener
             
             oos = null;
             fos = null;
+            
+            content.clear();
+            content = null;
         }
     }
     
+    public Hashtable<String, String> getMessageContent(MapMessage msg)
+    {
+        String key = null;
+        Hashtable<String, String> content = new Hashtable<String, String>();
+        
+        try
+        {
+            Enumeration<?> e = msg.getMapNames();
+            
+            while(e.hasMoreElements())
+            {
+                key = (String)e.nextElement();
+                
+                content.put(key, msg.getString(key));
+            }
+        }
+        catch(JMSException jmse)
+        {
+            content.clear();
+        }
+        
+        return content;
+    }
+
     public long getMessageTypeId(String type)
     {
         long    result = 0;
@@ -1036,10 +1086,14 @@ public class StoreMessages implements MessageListener
             if(result)
             {
                 logger.info("Folder 'nirvana' was created.");
+                
+                existsObjectFolder = true;
             }
             else
             {
                 logger.warn("Folder 'nirvana' was NOT created.");
+                
+                existsObjectFolder = false;
             }
         }
     }

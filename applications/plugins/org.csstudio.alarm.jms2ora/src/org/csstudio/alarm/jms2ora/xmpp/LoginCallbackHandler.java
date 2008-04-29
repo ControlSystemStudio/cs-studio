@@ -24,8 +24,6 @@
 
 package org.csstudio.alarm.jms2ora.xmpp;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.Credentials;
@@ -35,21 +33,9 @@ public class LoginCallbackHandler implements ILoginCallbackHandler
 {
     public Credentials getCredentials()
     {        
-        PropertiesConfiguration config = new PropertiesConfiguration();
         
-        try
-        {
-            config.load("./jms2ora-config.properties");
-        }
-        catch(ConfigurationException e)
-        {
-            CentralLogger.getInstance().error(this, "Configuration not loadable...");
-        }
-
-        Jms2OraPlugin.getDefault().setConfiguration(config);
-        
-        String xmppUserName = config.getString("xmpp.user", "jms2oracle");
-        String xmppPassword = config.getString("xmpp.password", "jms2oracle");
+        String xmppUserName = Jms2OraPlugin.getDefault().getConfiguration().getString("xmpp.user", "jms2oracle");
+        String xmppPassword = Jms2OraPlugin.getDefault().getConfiguration().getString("xmpp.password", "jms2oracle");
         
         return new Credentials(xmppUserName, xmppPassword);
     }
