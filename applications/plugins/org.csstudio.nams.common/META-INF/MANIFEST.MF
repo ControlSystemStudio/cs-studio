@@ -9,4 +9,5 @@ Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.common.contract,
  org.csstudio.nams.common.material,
  org.csstudio.nams.common.plugin.utils,
- org.csstudio.nams.common.wam
+ org.csstudio.nams.common.wam,
+ org.easymock
