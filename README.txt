@@ -4,8 +4,27 @@ and initializes their settings from Eclipse preferences.
 For GUI Applications, consider adding
 org.csstudio.platform.libs.epics.ui.
 
-jca-2.3.1.jar was built from the jca-2.3.1 sources "out of the box".
+jca-2.3.1.jar was built from the jca-2.3.1 sources with the following changes:
+- Updated ThreadSafeContext.java. Based on findings by Tom Pelaia and
+  Kay Kasemir, the pause() call in the run() loop was replaced by a blocking
+  queue. The original implementation would be quite slow on fast CPUs(!)
+  because the code would sit in pause() instead of handling requests.
+  Now it wakes immediately when new requests arrive.
+  
 caj-1.1.3 sources were changed to turn debug="on".
+
+
+* Basic Build Instructions
+Set EPICS_BASE_RELEASE,  env.EPICS_EXTENSIONS, then:
+  cd some_place
+  tar vzxf org.csstudio.platform.libs.epics/lib/jca-2.3.1.tgz
+  cd jca-2.3.1
+  ant
+  
+This creates two items of interest:
+1) Java library O.core/jca.jar
+2) OS-specific JNI lib like O.linux-x86/libjca.so, which typically
+   should be re-linked as described below.
 
 * Mac OS X binary
 The 'ant' build ends like this:
