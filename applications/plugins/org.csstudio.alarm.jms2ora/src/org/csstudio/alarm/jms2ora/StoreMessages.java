@@ -169,8 +169,6 @@ public class StoreMessages implements MessageListener
         
         config = Jms2OraPlugin.getDefault().getConfiguration();
         
-        System.out.println(config);
-        
         oracle = new OracleService(logger, config.getString("oracle.user"), config.getString("oracle.password"));
         initialized = readMessageTypeAndProperties();
         
@@ -1079,6 +1077,8 @@ public class StoreMessages implements MessageListener
     private void checkObjectFolder()
     {
         File folder = new File(".\\nirvana\\");
+        
+        existsObjectFolder = true;
         
         if(!folder.exists())
         {
