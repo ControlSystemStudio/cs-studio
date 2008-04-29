@@ -82,7 +82,7 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * @see BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		logger = BundleActivatorUtils.getCurrentAvailService(context,
+		logger = BundleActivatorUtils.getAvailableService(context,
 				Logger.class);
 		logger.logInfoMessage(this, "bundle " + PLUGIN_ID
 				+ " started succesfully.");

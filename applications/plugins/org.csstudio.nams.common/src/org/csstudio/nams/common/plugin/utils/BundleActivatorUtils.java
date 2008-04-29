@@ -58,7 +58,7 @@ public final class BundleActivatorUtils {
 	 *             name is {@link Class#isAssignableFrom(Class) not assignable}
 	 *             to the requested type.
 	 */
-	static public <T> T getCurrentAvailService(BundleContext bundleContext,
+	static public <T> T getAvailableService(BundleContext bundleContext,
 			Class<T> requestedServiceType) throws ClassCastException {
 		ServiceTracker serviceTracker = new ServiceTracker(bundleContext,
 				requestedServiceType.getName(), null);

@@ -7,7 +7,10 @@ import org.osgi.framework.BundleContext;
  * An abstract bundle activator to provide common behaviour.
  * 
  * TODO Decide if use this abstract class or {@link BundleActivatorUtils}.
+ * 
+ * @deprecated Vererbung nicht nštig, somit ist eine Util Klasse sinnhafter.
  */
+@Deprecated
 public abstract class AbstractBundleActivator implements BundleActivator {
 
 	final public void start(BundleContext context) throws Exception {
