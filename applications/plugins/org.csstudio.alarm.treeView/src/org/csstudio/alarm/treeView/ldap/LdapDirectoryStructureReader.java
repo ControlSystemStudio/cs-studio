@@ -132,10 +132,11 @@ public class LdapDirectoryStructureReader extends Job {
 	 *            the facility.
 	 */
 	private void updateStructureOfSubTree(final String facility) {
-		String searchRootDN = "efan=" + facility + "," + ALARM_ROOT;
+		String efanNodeRelativeName = "efan=" + facility;
+		String efanNodeFullName = efanNodeRelativeName + "," + ALARM_ROOT;
 		
-		SubtreeNode efanNode = TreeBuilder.findCreateSubtreeNode(_treeRoot, "efan=" + facility);
-		updateStructureOfSubTreeInternal(searchRootDN, efanNode);
+		SubtreeNode efanNode = updateNode(_treeRoot, efanNodeRelativeName, efanNodeFullName);
+		updateStructureOfSubTreeInternal(efanNodeFullName, efanNode);
 	}
 
 
@@ -208,9 +209,9 @@ public class LdapDirectoryStructureReader extends Job {
 	// TODO: refactor (code duplication, see LdapDirectoryReader)
 	private void setEpicsAttributes(final AbstractAlarmTreeNode node,
 			final Attributes attrs) throws NamingException {
-		Attribute displayAttr = attrs.get("epicsCssAlarmDisplay");
-		if (displayAttr != null) {
-			String display = (String) displayAttr.get();
+		Attribute alarmDisplayAttr = attrs.get("epicsCssAlarmDisplay");
+		if (alarmDisplayAttr != null) {
+			String display = (String) alarmDisplayAttr.get();
 			if (display != null) {
 				node.setCssAlarmDisplay(display);
 			}
@@ -234,6 +235,22 @@ public class LdapDirectoryStructureReader extends Job {
 			String helpGuidance = (String) helpGuidanceAttr.get();
 			if (helpGuidance != null) {
 				node.setHelpGuidance(helpGuidance);
+			}
+		}
+		
+		Attribute displayAttr = attrs.get("epicsCssDisplay");
+		if (displayAttr != null) {
+			String display = (String) displayAttr.get();
+			if (display != null) {
+				node.setCssDisplay(display);
+			}
+		}
+		
+		Attribute chartAttr = attrs.get("epicsCssStripChart");
+		if (chartAttr != null) {
+			String chart = (String) chartAttr.get();
+			if (chart != null) {
+				node.setCssStripChart(chart);
 			}
 		}
 	}
