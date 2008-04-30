@@ -70,14 +70,16 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * itself as a child at the parent node.
 	 * @param parent the parent node.
 	 * @param name the name of this node.
+	 * @param objectClass the object class of this node.
 	 */
-	public SubtreeNode(final SubtreeNode parent, final String name) {
+	public SubtreeNode(final SubtreeNode parent, final String name, final ObjectClass objectClass) {
 		if (name == null) {
 			throw new NullPointerException("name must not be null");
 		}
 		
 		this._parent = parent;
 		this._name = name;
+		this._objectClass = objectClass;
 		_children = new ArrayList<IAlarmTreeNode>();
 		if (parent != null) {
 			parent._children.add(this);
@@ -91,7 +93,7 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	 * @param name the name of this node.
 	 */
 	public SubtreeNode(final String name){
-		this(null, name);
+		this(null, name, null);
 	}
 	
 	/**
@@ -112,14 +114,6 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 			return;
 		}
 		_children.remove(child);
-	}
-	
-	/**
-	 * Sets the object class of this node in the directory.
-	 * @param objectClass the object class of this node.
-	 */
-	public final void setObjectClass(final ObjectClass objectClass) {
-		_objectClass = objectClass;
 	}
 	
 	/**

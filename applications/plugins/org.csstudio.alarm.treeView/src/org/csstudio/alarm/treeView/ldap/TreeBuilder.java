@@ -56,8 +56,7 @@ final class TreeBuilder {
 		String simpleName = LdapNameUtils.simpleName(name);
 		SubtreeNode result = (SubtreeNode) directParent.getChild(simpleName);
 		if (result == null) {
-			result = new SubtreeNode(directParent, simpleName);
-			result.setObjectClass(LdapNameUtils.objectClass(name));
+			result = new SubtreeNode(directParent, simpleName, LdapNameUtils.objectClass(name));
 		}
 		return result;
 	}

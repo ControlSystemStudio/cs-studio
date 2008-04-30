@@ -232,24 +232,13 @@ public final class DirectoryEditor {
 	 *            the parent node.
 	 * @param recordName
 	 *            the name of the process variable record.
-	 * @return the process variable node representing the new entry.
 	 * @throws DirectoryEditException if the entry could not be created.
 	 */
-	public static ProcessVariableNode createProcessVariableRecord(
+	public static void createProcessVariableRecord(
 			final SubtreeNode parent, final String recordName)
 			throws DirectoryEditException {
-		String erenName = "eren=" + recordName + "," + fullName(parent);
-		Attributes attrs = attributesForRecord(recordName);
-		try {
-			LOG.debug(DirectoryEditor.class,
-					"Creating entry " + erenName + " with attributes " + attrs);
-			_directory.bind(erenName, null, attrs);
-		} catch (NamingException e) {
-			LOG.error(DirectoryEditor.class,
-					"Error creating directory entry", e);
-			throw new DirectoryEditException(e.getMessage(), e);
-		}
-		return new ProcessVariableNode(parent, recordName);
+		createEntry(fullName(parent), recordName, ObjectClass.RECORD);
+		new ProcessVariableNode(parent, recordName);
 	}
 	
 	
@@ -261,26 +250,42 @@ public final class DirectoryEditor {
 	 *            the parent node.
 	 * @param componentName
 	 *            the name of the component.
-	 * @return the subtree node representing the new entry.
 	 * @throws DirectoryEditException
 	 *             if the entry could not be created.
 	 */
-	public static SubtreeNode createComponent(final SubtreeNode parent,
+	public static void createComponent(final SubtreeNode parent,
 			final String componentName) throws DirectoryEditException {
-		String ecomName = "ecom=" + componentName + "," + fullName(parent);
-		Attributes attrs = attributesForComponent(componentName);
+		createEntry(fullName(parent), componentName, ObjectClass.COMPONENT);
+		new SubtreeNode(parent, componentName, ObjectClass.COMPONENT);
+	}
+	
+	
+	/**
+	 * Creates a new directory entry.
+	 * 
+	 * @param parentName
+	 *            the full name of the parent entry.
+	 * @param name
+	 *            the name of the entry to be created.
+	 * @param objectClass
+	 *            the object class of the entry to be created.
+	 * @throws DirectoryEditException
+	 *             if the entry could not be created.
+	 */
+	private static void createEntry(final String parentName, final String name,
+			final ObjectClass objectClass) throws DirectoryEditException {
+		String fullName = objectClass.getRdnAttribute() + "=" + name
+				+ "," + parentName;
+		Attributes attrs = attributesForEntry(objectClass, name);
 		try {
 			LOG.debug(DirectoryEditor.class,
-					"Creating entry " + ecomName + " with attributes " + attrs);
-			_directory.bind(ecomName, null, attrs);
+					"Creating entry " + fullName + " with attributes " + attrs);
+			_directory.bind(fullName, null, attrs);
 		} catch (NamingException e) {
 			LOG.error(DirectoryEditor.class,
 					"Error creating directory entry", e);
 			throw new DirectoryEditException(e.getMessage(), e);
 		}
-		SubtreeNode node = new SubtreeNode(parent, componentName);
-		node.setObjectClass(ObjectClass.COMPONENT);
-		return node;
 	}
 
 
@@ -305,31 +310,21 @@ public final class DirectoryEditor {
 	
 
 	/**
-	 * Returns the attributes for a new component with the given name.
+	 * Returns the attributes for a new entry with the given object class and
+	 * name.
 	 * 
-	 * @param componentName
-	 *            the name of the component.
-	 * @return the attributes.
+	 * @param objectClass
+	 *            the object class of the new entry.
+	 * @param name
+	 *            the name of the new entry.
+	 * @return the attributes for the new entry.
 	 */
-	private static Attributes attributesForComponent(final String componentName) {
+	private static Attributes attributesForEntry(final ObjectClass objectClass,
+			final String name) {
 		BasicAttributes result = new BasicAttributes();
-		result.put("objectClass", "epicsComponent");
-		result.put("ecom", componentName);
-		return result;
-	}
-
-
-	/**
-	 * Returns the attributes for a new record with the given name.
-	 * 
-	 * @param recordName
-	 *            the name of the record.
-	 * @return the attributes for the new record.
-	 */
-	private static Attributes attributesForRecord(final String recordName) {
-		BasicAttributes result = new BasicAttributes();
-		result.put("objectClass", "epicsRecord");
-		result.put("eren", recordName);
+		result.put("objectClass", objectClass.getObjectClassName());
+		result.put(objectClass.getRdnAttribute(), name);
+		result.put("epicsCssType", objectClass.getCssType());
 		return result;
 	}
 }

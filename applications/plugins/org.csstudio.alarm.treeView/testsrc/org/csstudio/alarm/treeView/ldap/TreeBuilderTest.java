@@ -55,10 +55,8 @@ public class TreeBuilderTest {
 	@Before
 	public void setUp() throws Exception {
 		_tree = new SubtreeNode("root");
-		_a = new SubtreeNode(_tree, "a");
-		_a.setObjectClass(ObjectClass.FACILITY);
-		_b = new SubtreeNode(_a, "b");
-		_b.setObjectClass(ObjectClass.COMPONENT);
+		_a = new SubtreeNode(_tree, "a", ObjectClass.FACILITY);
+		_b = new SubtreeNode(_a, "b", ObjectClass.COMPONENT);
 		_pv1 = new ProcessVariableNode(_a, "pv:1");
 	}
 	
