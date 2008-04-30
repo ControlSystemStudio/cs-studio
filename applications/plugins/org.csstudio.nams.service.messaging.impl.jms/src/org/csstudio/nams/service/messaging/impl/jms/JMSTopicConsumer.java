@@ -115,6 +115,8 @@ class JMSTopicConsumer implements Consumer {
 		// TODO AlarrmNachricht bauen
 		try {
 			Message message = messageQueue.take();
+			// TODO AlarrmNachricht bauen
+			System.out.println(message.toString());
 		} catch (InterruptedException e) {
 			// TODO exception handling
 			e.printStackTrace();

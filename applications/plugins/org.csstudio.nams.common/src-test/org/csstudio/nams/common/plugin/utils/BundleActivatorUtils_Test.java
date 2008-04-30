@@ -6,7 +6,6 @@ import org.easymock.EasyMock;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
-import org.osgi.framework.ServiceReference;
 
 public class BundleActivatorUtils_Test {
 
