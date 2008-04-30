@@ -1,7 +1,7 @@
 package org.csstudio.nams.service.messaging.declaration;
 
-public interface ProducerFactoryService {
+import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
-	
-	public Producer createProducer(String clientId, String messageDestinationName, PostfachArt artDesPostfaches, String[] messageServerURLs);
+public interface ProducerFactoryService {
+	public Producer createProducer(String clientId, String messageDestinationName, PostfachArt artDesPostfaches, String[] messageServerURLs) throws MessagingException;
 }

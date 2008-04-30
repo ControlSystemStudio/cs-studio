@@ -28,7 +28,7 @@ class JMSTopicConsumer implements Consumer {
 	private LinkedBlockingQueue<Message> messageQueue;
 
 	public JMSTopicConsumer(String clientId, String messageSourceName,
-			String[] messageServerURLs) {
+			String[] messageServerURLs) throws NamingException, JMSException {
 
 		messageQueue = new LinkedBlockingQueue<Message>();
 
@@ -44,29 +44,20 @@ class JMSTopicConsumer implements Consumer {
 					"org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 			properties.put(Context.PROVIDER_URL, messageServerURLs[i]);
 
-			try {
-				contexts[i] = new InitialContext(properties);
-				factorys[i] = (ConnectionFactory) contexts[i]
-						.lookup("ConnectionFactory");
-				connections[i] = factorys[i].createConnection();
-				connections[i].setClientID(clientId);
-				sessions[i] = connections[i].createSession(false,
-						Session.CLIENT_ACKNOWLEDGE);
+			contexts[i] = new InitialContext(properties);
+			factorys[i] = (ConnectionFactory) contexts[i]
+					.lookup("ConnectionFactory");
+			connections[i] = factorys[i].createConnection();
+			connections[i].setClientID(clientId);
+			sessions[i] = connections[i].createSession(false,
+					Session.CLIENT_ACKNOWLEDGE);
 
-				connections[i].start();
+			connections[i].start();
 
-				workers[i] = new WorkThread(messageQueue, sessions[i],
-						messageSourceName);
-				workers[i].start();
-			} catch (NamingException ne) {
-				// TODO Exception handling
-				ne.printStackTrace();
-			} catch (JMSException jmse) {
-				// TODO Exception handling
-				jmse.printStackTrace();
-			}
+			workers[i] = new WorkThread(messageQueue, sessions[i],
+					messageSourceName);
+			workers[i].start();
 		}
-
 	}
 
 	public void close() {
@@ -119,7 +110,7 @@ class JMSTopicConsumer implements Consumer {
 			System.out.println(message.toString());
 		} catch (InterruptedException e) {
 			// TODO exception handling
-//			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		return null;
 	}
@@ -148,8 +139,6 @@ class JMSTopicConsumer implements Consumer {
 					Message message = consumer.receive();
 					if (message != null) {
 						messageQueue.add(message);
-					} else {
-						
 					}
 				} catch (JMSException e) {
 					// TODO exception handling

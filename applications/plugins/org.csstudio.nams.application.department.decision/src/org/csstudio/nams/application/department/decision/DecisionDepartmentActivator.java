@@ -25,18 +25,16 @@ package org.csstudio.nams.application.department.decision;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Set;
 
+import org.csstudio.nams.application.department.decision.exceptions.InitPropertiesException;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.ConsumerFactoryService;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
+import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
@@ -88,6 +86,12 @@ public class DecisionDepartmentActivator implements IApplication,
 	private static Logger logger;
 
 	/**
+	 * Gemeinsames Attribut des Activators und der Application: Fatory for
+	 * creating Consumers
+	 */
+	private static ConsumerFactoryService consumerFactoryService;
+
+	/**
 	 * Indicates if the application instance should continue working. Unused in
 	 * the activator instance.
 	 * 
@@ -97,11 +101,9 @@ public class DecisionDepartmentActivator implements IApplication,
 	private volatile boolean _continueWorking;
 
 	/**
-	 * Fatory for creating Consumers 
+	 * wir nur von der Application benutzt
 	 */
-	private static ConsumerFactoryService consumerFactoryService;
-
-	private Consumer consumer;
+	private Consumer _consumer;
 
 	private Thread _receiverThread;
 
@@ -111,10 +113,10 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * @see BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		logger = BundleActivatorUtils.getAvailableService(context,
-				Logger.class);
-		consumerFactoryService = BundleActivatorUtils.getAvailableService(context,
-				ConsumerFactoryService.class);
+		logger = BundleActivatorUtils
+				.getAvailableService(context, Logger.class);
+		consumerFactoryService = BundleActivatorUtils.getAvailableService(
+				context, ConsumerFactoryService.class);
 		if (consumerFactoryService == null)
 			throw new RuntimeException("BUBU");
 		logger.logInfoMessage(this, "plugin " + PLUGIN_ID
@@ -136,67 +138,94 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * 
 	 * @see IApplication#start(IApplicationContext)
 	 */
-	public Object start(IApplicationContext context) throws Exception {
-		logger
-				.logInfoMessage(this,
-						"Decision department application is going to be initialized...");
+	public Object start(IApplicationContext context) {
+		logger.logInfoMessage(this, "Decision department application is going to be initialized...");
 
-		// TODO Lade configuration, konvertiere diese und ewrzeuge die bueros
-		// und
-		// starte deren Arbeit
-		// lock until application ready to quit.
-		
 		Properties properties;
 		try {
-			String configFileName = System.getProperty(PROPERTY_KEY_CONFIG_FILE);
-			if (configFileName == null) {
-				logger.logFatalMessage(this, "No config file in Property \"" + PROPERTY_KEY_CONFIG_FILE + "\".");
-				return IApplication.EXIT_OK;
-			}
-			
-			File file = new File(configFileName);
-			if (!file.exists() && !file.canRead()) {
-				logger.logFatalMessage(this, "config file not readable.");
-				return IApplication.EXIT_OK;
-			}
-			
-			FileInputStream fileInputStream = new FileInputStream(file);
-			properties = new Properties();
-			properties.load(fileInputStream);
-			
-			// TODO prüpfen ob die nötigen infos enthalten sind
-			
-		} catch (Exception e) {
-			logger.logFatalMessage(this, "Exception while loading config.", e);
+			// initialisieren der properties
+			properties = initProperties();
+			// erzeugen des consumers
+			_consumer = consumerFactoryService
+			.createConsumer(
+					properties.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID),
+					properties.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME),
+					PostfachArt.TOPIC,
+					properties.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS).split(","));
+			// erzeuge und starte Buero
+			// TODO Lade configuration, konvertiere diese und ewrzeuge die bueros
+			// und
+			// TODO starte deren Arbeit
+		} catch (InitPropertiesException e) {
+			logger.logFatalMessage(this, "Exception while initializing properties.", e);
+			return IApplication.EXIT_OK;
+		} catch (MessagingException e) {
+			logger.logFatalMessage(this, "Exception while creating the consumer.", e);
+			return IApplication.EXIT_OK;
+		} catch (Exception e) { //TODO noch eine andere Exception wählen
+			logger.logFatalMessage(this, "Exception while initializing the alarm decision department.", e);
 			return IApplication.EXIT_OK;
 		}
 		
-		String[] urls = properties.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS).split(",");
-		
-		String clientId = properties.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID);
-		String sourceName = properties.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME);
-		consumer = consumerFactoryService.createConsumer(clientId, sourceName, PostfachArt.TOPIC, urls);
-		
+		_receiverThread = Thread.currentThread();
 		_continueWorking = true;
-		logger
-				.logInfoMessage(this,
-						"Decision department application successfully initialized, begining work...");
-		
-		this._receiverThread = Thread.currentThread();
-		while (_continueWorking) {
-			/*-
-			 * try jms.receive if result != null (tue was)
-			 */
+		logger.logInfoMessage(this, "Decision department application successfully initialized, begining work...");
 
-			consumer.recieveMessage();
-			
-			//Thread.yield();
-		}
+		receiveMessages();
+
 		// TODO stoppe bueros
 
-		logger.logInfoMessage(this,
-				"Decision department application successfully shuted down.");
+		logger.logInfoMessage(this, "Decision department application successfully shuted down.");
 		return IApplication.EXIT_OK;
+	}
+
+	private void receiveMessages() {
+		while (_continueWorking) {
+			/*-
+			 * jms.receive (tue was)
+			 */
+
+			_consumer.recieveMessage();
+
+			Thread.yield();
+		}
+	}
+
+	private Properties initProperties() throws InitPropertiesException {
+		String configFileName = System.getProperty(PROPERTY_KEY_CONFIG_FILE);
+		if (configFileName == null) {
+			String message = "No config file in Property \""
+					+ PROPERTY_KEY_CONFIG_FILE + "\".";
+			logger.logFatalMessage(this, message);
+			throw new InitPropertiesException(message);
+		}
+
+		File file = new File(configFileName);
+		if (!file.exists() && !file.canRead()) {
+			String message = "config file not readable.";
+			logger.logFatalMessage(this, message);
+			throw new InitPropertiesException(message);
+		}
+
+		try {
+			FileInputStream fileInputStream = new FileInputStream(file);
+			Properties properties = new Properties();
+			properties.load(fileInputStream);
+			
+			// prüpfen ob die nötigen key enthalten sind
+			Set<Object> keySet = properties.keySet();
+			if (!keySet.contains(PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID)
+					|| !keySet
+							.contains(PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS)
+					|| !keySet
+							.contains(PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME)) {
+				throw new Exception("config file not valid.");
+			}
+
+			return properties;
+		} catch (Exception e) {
+			throw new InitPropertiesException(e);
+		}
 	}
 
 	/**
@@ -208,8 +237,7 @@ public class DecisionDepartmentActivator implements IApplication,
 		logger.logInfoMessage(this,
 				"Shuting down decision department application...");
 		_continueWorking = false;
-		// TODO JMS Close -> recieve abgebrochen mit null return
-		consumer.close();
+		_consumer.close();
 		_receiverThread.interrupt();
 	}
 }
