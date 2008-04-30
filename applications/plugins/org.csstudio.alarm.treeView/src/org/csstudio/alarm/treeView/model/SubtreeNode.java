@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.ui.views.properties.IPropertySource;
 
 /**
  * A tree node that is the root node of a subtree.
