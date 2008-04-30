@@ -84,7 +84,7 @@ public class DecisionDepartmentActivator implements IApplication,
 	public void start(BundleContext context) throws Exception {
 		logger = BundleActivatorUtils.getAvailableService(context,
 				Logger.class);
-		logger.logInfoMessage(this, "bundle " + PLUGIN_ID
+		logger.logInfoMessage(this, "plugin " + PLUGIN_ID
 				+ " started succesfully.");
 	}
 
@@ -94,7 +94,7 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * @see BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		logger.logInfoMessage(this, "bundle " + PLUGIN_ID
+		logger.logInfoMessage(this, "plugin " + PLUGIN_ID
 				+ " stopped succesfully.");
 	}
 
