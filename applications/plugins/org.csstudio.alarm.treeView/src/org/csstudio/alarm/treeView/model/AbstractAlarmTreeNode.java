@@ -47,6 +47,16 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 * The help guidance string for this node.
 	 */
 	private String _helpGuidance;
+	
+	/**
+	 * The name of the CSS display file associated with this node.
+	 */
+	private String _cssDisplay;
+	
+	/**
+	 * The name of the CSS strip chart file associated with this node.
+	 */
+	private String _cssStripChart;
 
 	/**
 	 * Creates a new abstract alarm tree node.
@@ -68,6 +78,21 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 */
 	public final String getCssAlarmDisplay() {
 		return _cssAlarmDisplay;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public final String getCssDisplay() {
+		return _cssDisplay;
+	}
+
+	/**
+	 * Sets the name of the CSS display for this node.
+	 * @param cssDisplay the name of the CSS display for this node.
+	 */
+	public final void setCssDisplay(final String cssDisplay) {
+		_cssDisplay = cssDisplay;
 	}
 
 	/**
@@ -98,6 +123,21 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 */
 	public final String getHelpGuidance() {
 		return _helpGuidance;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public final String getCssStripChart() {
+		return _cssStripChart;
+	}
+
+	/**
+	 * Sets the CSS strip chart file for this node.
+	 * @param cssStripChart the name of the file.
+	 */
+	public final void setCssStripChart(final String cssStripChart) {
+		_cssStripChart = cssStripChart;
 	}
 
 }

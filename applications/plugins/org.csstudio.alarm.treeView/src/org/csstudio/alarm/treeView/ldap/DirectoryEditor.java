@@ -22,6 +22,8 @@
 
 package org.csstudio.alarm.treeView.ldap;
 
+import java.net.URL;
+
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -62,9 +64,11 @@ public final class DirectoryEditor {
 	 */
 	private static DirContext _directory;
 	
+	
 	static {
 		_directory = Engine.getInstance().getLdapDirContext();
 	}
+	
 	
 	/**
 	 * Private constructor.
@@ -109,17 +113,90 @@ public final class DirectoryEditor {
 	 */
 	public static void modifyHelpGuidance(final AbstractAlarmTreeNode node,
 			final String value) throws DirectoryEditException {
-		String name = fullName(node);
-		modifyAttribute(name, "epicsHelpGuidance", value);
+		modifyAttribute(node, "epicsHelpGuidance", value);
 		node.setHelpGuidance(value);
+	}
+	
+	
+	/**
+	 * Modifies the help page attribute of the given node in the directory.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @param value
+	 *            the new value for the attribute. Use <code>null</code> to
+	 *            remove the attribute.
+	 * @throws DirectoryEditException
+	 *             if the attribute could not be modified.
+	 */
+	public static void modifyHelpPage(final AbstractAlarmTreeNode node,
+			final URL value) throws DirectoryEditException {
+		modifyAttribute(node, "epicsHelpPage", value.toString());
+		node.setHelpPage(value);
+	}
+	
+	
+	/**
+	 * Modifies the CSS alarm display attribute of the given node in the
+	 * directory.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @param value
+	 *            the new value for the attribute. Use <code>null</code> to
+	 *            remove the attribute.
+	 * @throws DirectoryEditException
+	 *             if the attribute could not be modified.
+	 */
+	public static void modifyCssAlarmDisplay(final AbstractAlarmTreeNode node,
+			final String value) throws DirectoryEditException {
+		modifyAttribute(node, "epicsCssAlarmDisplay", value);
+		node.setCssAlarmDisplay(value);
+	}
+	
+	
+	/**
+	 * Modifies the CSS display attribute of the given node in the directory.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @param value
+	 *            the new value for the attribute. Use <code>null</code> to
+	 *            remove the attribute.
+	 * @throws DirectoryEditException
+	 *             if the attribute could not be modified.
+	 */
+	public static void modifyCssDisplay(final AbstractAlarmTreeNode node,
+			final String value) throws DirectoryEditException {
+		modifyAttribute(node, "epicsCssDisplay", value);
+		node.setCssDisplay(value);
+	}
+	
+	
+	/**
+	 * Modifies the CSS strip chart attribute of the given node in the
+	 * directory.
+	 * 
+	 * @param node
+	 *            the node.
+	 * @param value
+	 *            the new value for the attribute. Use <code>null</code> to
+	 *            remove the attribute.
+	 * @throws DirectoryEditException
+	 *             if the attribute could not be modified.
+	 */
+	public static void modifyCssStripChart(final AbstractAlarmTreeNode node,
+			final String value) throws DirectoryEditException {
+		modifyAttribute(node, "epicsCssStripChart", value);
+		node.setCssStripChart(value);
 	}
 	
 	
 	/**
 	 * Modifies an attribute of a directory entry.
 	 * 
-	 * @param name
-	 *            the full name of the directory entry.
+	 * @param node
+	 *            the node.
 	 * @param attribute
 	 *            the id of the attribute to modify.
 	 * @param value
@@ -128,9 +205,10 @@ public final class DirectoryEditor {
 	 * @throws DirectoryEditException
 	 *             if the attribute could not be modified.
 	 */
-	private static void modifyAttribute(final String name,
+	private static void modifyAttribute(final AbstractAlarmTreeNode node,
 			final String attribute, final String value)
 			throws DirectoryEditException {
+		String name = fullName(node);
 		Attribute attr = new BasicAttribute(attribute, value);
 		int op = value == null
 				? DirContext.REMOVE_ATTRIBUTE : DirContext.REPLACE_ATTRIBUTE;

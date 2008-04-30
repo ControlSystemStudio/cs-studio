@@ -184,9 +184,9 @@ public class LdapDirectoryReader extends Job {
 	 */
 	private void setEpicsAttributes(final AbstractAlarmTreeNode node, final Attributes attrs)
 			throws NamingException {
-		Attribute displayAttr = attrs.get("epicsCssAlarmDisplay");
-		if (displayAttr != null) {
-			String display = (String) displayAttr.get();
+		Attribute alarmDisplayAttr = attrs.get("epicsCssAlarmDisplay");
+		if (alarmDisplayAttr != null) {
+			String display = (String) alarmDisplayAttr.get();
 			if (display != null) {
 				node.setCssAlarmDisplay(display);
 			}
@@ -210,6 +210,22 @@ public class LdapDirectoryReader extends Job {
 			String helpGuidance = (String) helpGuidanceAttr.get();
 			if (helpGuidance != null) {
 				node.setHelpGuidance(helpGuidance);
+			}
+		}
+		
+		Attribute displayAttr = attrs.get("epicsCssDisplay");
+		if (displayAttr != null) {
+			String display = (String) displayAttr.get();
+			if (display != null) {
+				node.setCssDisplay(display);
+			}
+		}
+		
+		Attribute chartAttr = attrs.get("epicsCssStripChart");
+		if (chartAttr != null) {
+			String chart = (String) chartAttr.get();
+			if (chart != null) {
+				node.setCssStripChart(chart);
 			}
 		}
 	}

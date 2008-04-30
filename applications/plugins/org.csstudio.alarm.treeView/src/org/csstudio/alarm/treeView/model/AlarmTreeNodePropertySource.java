@@ -21,10 +21,12 @@
  */
 package org.csstudio.alarm.treeView.model;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource2;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -85,14 +87,14 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 		 */
 		CSS_DISPLAY,
 		
-//		/**
-//		 * Property ID of the CSS strip chart property.
-//		 */
-//		CSS_STRIP_CHART,
+		/**
+		 * Property ID of the CSS strip chart property.
+		 */
+		CSS_STRIP_CHART,
 	}
 
 	static {
-		PROPERTY_DESCRIPTORS = new IPropertyDescriptor[6];
+		PROPERTY_DESCRIPTORS = new IPropertyDescriptor[7];
 		PropertyDescriptor descriptor;
 		
 		// name
@@ -125,6 +127,11 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 		descriptor = new TextPropertyDescriptor(PropertyID.CSS_DISPLAY, "display");
 		descriptor.setDescription("The CSS display.");
 		PROPERTY_DESCRIPTORS[5] = descriptor;
+		
+		// CSS strip chart
+		descriptor = new TextPropertyDescriptor(PropertyID.CSS_STRIP_CHART, "strip chart");
+		descriptor.setDescription("The CSS strip chart.");
+		PROPERTY_DESCRIPTORS[6] = descriptor;
 	}
 	
 	/**
@@ -155,6 +162,7 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 */
 	public final Object getPropertyValue(final Object id) {
 		if (id instanceof PropertyID) {
+			String result;
 			switch ((PropertyID) id) {
 			case NAME:
 				return _node.getName();
@@ -164,12 +172,17 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 				URL page = _node.getHelpPage();
 				return (page != null) ? page.toString() : "";
 			case HELP_GUIDANCE:
-				return _node.getHelpGuidance();
+				result = _node.getHelpGuidance();
+				return (result != null) ? result : "";
 			case CSS_ALARM_DISPLAY:
-				return _node.getCssAlarmDisplay();
+				result = _node.getCssAlarmDisplay();
+				return (result != null) ? result : "";
 			case CSS_DISPLAY:
-				// TODO: not supported by nodes yet
-				return null;
+				result = _node.getCssDisplay();
+				return (result != null) ? result : "";
+			case CSS_STRIP_CHART:
+				result = _node.getCssStripChart();
+				return (result != null) ? result : "";
 			default:
 				return null;
 			}
@@ -184,9 +197,8 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 		if (id instanceof PropertyID) {
 			switch ((PropertyID) id) {
 			case NAME:
-				// Name doesn't have a default value, always return true.
-				return true;
 			case OBJECT_CLASS:
+				// no default value, always return true.
 				return true;
 			case HELP_PAGE:
 				return _node.getHelpPage() != null;
@@ -195,8 +207,9 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 			case CSS_ALARM_DISPLAY:
 				return _node.getCssAlarmDisplay() != null;
 			case CSS_DISPLAY:
-				// TODO: not supported by nodes yet
-				return false;
+				return _node.getCssDisplay() != null;
+			case CSS_STRIP_CHART:
+				return _node.getCssStripChart() != null;
 			default:
 				// this source does not have the specified property
 				return false;
@@ -210,18 +223,29 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 */
 	public final void resetPropertyValue(final Object id) {
 		if (id instanceof PropertyID) {
-			switch ((PropertyID) id) {
-			case HELP_PAGE:
-				// TODO: edit in LDAP
-				_node.setHelpPage(null);
-			case HELP_GUIDANCE:
-				// TODO: edit in LDAP
-				_node.setHelpGuidance(null);
-			case CSS_ALARM_DISPLAY:
-				// TODO: edit in LDAP
-				_node.setCssAlarmDisplay(null);
-			default:
-				// do nothing
+			try {
+				switch ((PropertyID) id) {
+				case HELP_PAGE:
+					DirectoryEditor.modifyHelpPage(_node, null);
+					break;
+				case HELP_GUIDANCE:
+					DirectoryEditor.modifyHelpGuidance(_node, null);
+					break;
+				case CSS_ALARM_DISPLAY:
+					DirectoryEditor.modifyCssAlarmDisplay(_node, null);
+					break;
+				case CSS_DISPLAY:
+					DirectoryEditor.modifyCssDisplay(_node, null);
+					break;
+				case CSS_STRIP_CHART:
+					DirectoryEditor.modifyCssStripChart(_node, null);
+					break;
+				default:
+					// do nothing
+				}
+			} catch (DirectoryEditException e) {
+				MessageDialog.openError(null, "Alarm Tree",
+						"The attribute could not be modified. " + e.getMessage());
 			}
 		}
 	}
@@ -231,20 +255,39 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 */
 	public final void setPropertyValue(final Object id, final Object value) {
 		if (id instanceof PropertyID) {
-			switch ((PropertyID) id) {
-			case HELP_GUIDANCE:
-				try {
-					String str = (String) value;
-					if (str.equals("")) {
-						str = null;
-					}
-					DirectoryEditor.modifyHelpGuidance(_node, str);
-				} catch (DirectoryEditException e) {
-					// TODO Auto-generated catch block
+			try {
+				String str = (String) value;
+				if (str.equals("")) {
+					str = null;
 				}
-				break;
-			default:
-				// do nothing
+				switch ((PropertyID) id) {
+				case HELP_GUIDANCE:
+					DirectoryEditor.modifyHelpGuidance(_node, str);
+					break;
+				case HELP_PAGE:
+					try {
+						URL url = new URL(str);
+						DirectoryEditor.modifyHelpPage(_node, url);
+					} catch (MalformedURLException e) {
+						MessageDialog.openError(null, "Alarm Tree",
+								"The value is not a valid URL.");
+					}
+					break;
+				case CSS_ALARM_DISPLAY:
+					DirectoryEditor.modifyCssAlarmDisplay(_node, str);
+					break;
+				case CSS_DISPLAY:
+					DirectoryEditor.modifyCssDisplay(_node, str);
+					break;
+				case CSS_STRIP_CHART:
+					DirectoryEditor.modifyCssStripChart(_node, str);
+					break;
+				default:
+					// do nothing
+				}
+			} catch (DirectoryEditException e) {
+				MessageDialog.openError(null, "Alarm Tree",
+						"The attribute could not be modified. " + e.getMessage());
 			}
 		}
 	}
@@ -255,6 +298,8 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	public final boolean isPropertyResettable(final Object id) {
 		return id == PropertyID.HELP_PAGE
 			|| id == PropertyID.HELP_GUIDANCE
-			|| id == PropertyID.CSS_ALARM_DISPLAY;
+			|| id == PropertyID.CSS_ALARM_DISPLAY
+			|| id == PropertyID.CSS_DISPLAY
+			|| id == PropertyID.CSS_STRIP_CHART;
 	}
 }

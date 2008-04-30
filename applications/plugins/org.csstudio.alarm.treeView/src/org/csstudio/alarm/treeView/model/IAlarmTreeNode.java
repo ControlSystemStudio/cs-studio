@@ -110,5 +110,19 @@ public interface IAlarmTreeNode {
 	 *         if no alarm display is configured for this node.
 	 */
 	String getCssAlarmDisplay();
+	
+	/**
+	 * Returns the name of the CSS-SDS display file configured for this node.
+	 * 
+	 * @return the name of this node's display file, or <code>null</code> if
+	 *         no display is configured for this node.
+	 */
+	String getCssDisplay();
 
+	/**
+	 * Returns the name of the CSS strip chart file associated with this node.
+	 * 
+	 * @return the name of the CSS strip chart file for this node.
+	 */
+	String getCssStripChart();
 }
