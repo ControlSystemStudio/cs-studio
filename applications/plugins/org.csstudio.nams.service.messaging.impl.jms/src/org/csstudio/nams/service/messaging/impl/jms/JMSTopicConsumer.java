@@ -119,7 +119,7 @@ class JMSTopicConsumer implements Consumer {
 			System.out.println(message.toString());
 		} catch (InterruptedException e) {
 			// TODO exception handling
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		return null;
 	}
@@ -148,6 +148,8 @@ class JMSTopicConsumer implements Consumer {
 					Message message = consumer.receive();
 					if (message != null) {
 						messageQueue.add(message);
+					} else {
+						
 					}
 				} catch (JMSException e) {
 					// TODO exception handling

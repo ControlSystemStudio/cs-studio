@@ -6,5 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.nams.application.department.decision.DecisionDepartmentActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.logging,
- org.csstudio.nams.common
+ org.csstudio.nams.common,
+ org.csstudio.nams.service.messaging
 Eclipse-LazyStart: true
