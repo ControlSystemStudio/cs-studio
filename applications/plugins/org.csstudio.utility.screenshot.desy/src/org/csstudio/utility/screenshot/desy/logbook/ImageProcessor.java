@@ -135,7 +135,7 @@ public class ImageProcessor implements IImageWorker
                     msg.setFrom(addressFrom);
                     
                     addressTo = new InternetAddress[1];
-                    addressTo[0] = new InternetAddress("elogbook." + dialog.getLogbookEntry().getLogbookName() + "@krykelog.desy.de");
+                    addressTo[0] = new InternetAddress("elogbook." + dialog.getLogbookEntry().getLogbookName() + "@krykmail.desy.de");
                     
                     msg.setRecipients(Message.RecipientType.TO, addressTo);
                                         
