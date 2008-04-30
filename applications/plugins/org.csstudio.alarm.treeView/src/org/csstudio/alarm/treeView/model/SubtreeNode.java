@@ -208,17 +208,6 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	/**
 	 * {@inheritDoc}
 	 */
-	public final Object getAdapter(
-			@SuppressWarnings("unchecked") final Class adapter) {
-		if (adapter == IPropertySource.class){
-			return new AlarmTreeNodePropertySource(this);
-		}
-		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public final String toString() {
 		return _name;
