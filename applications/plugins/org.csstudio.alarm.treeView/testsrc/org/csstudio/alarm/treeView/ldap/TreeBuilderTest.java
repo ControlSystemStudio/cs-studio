@@ -22,6 +22,7 @@
 
 package org.csstudio.alarm.treeView.ldap;
 
+import org.csstudio.alarm.treeView.model.ObjectClass;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.junit.Before;
@@ -55,9 +56,9 @@ public class TreeBuilderTest {
 	public void setUp() throws Exception {
 		_tree = new SubtreeNode("root");
 		_a = new SubtreeNode(_tree, "a");
-		_a.setObjectClass("efan");
+		_a.setObjectClass(ObjectClass.FACILITY);
 		_b = new SubtreeNode(_a, "b");
-		_b.setObjectClass("ecom");
+		_b.setObjectClass(ObjectClass.COMPONENT);
 		_pv1 = new ProcessVariableNode(_a, "pv:1");
 	}
 	

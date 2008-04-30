@@ -33,6 +33,7 @@ public interface IAlarmTreeNode {
 
 	/**
 	 * Returns the name of this node.
+	 * 
 	 * @return the name of this node.
 	 */
 	String getName();
@@ -40,6 +41,7 @@ public interface IAlarmTreeNode {
 	/**
 	 * Returns the parent node of this node. If this node does not have a
 	 * parent, returns {@code null}.
+	 * 
 	 * @return the parent node of this node.
 	 */
 	SubtreeNode getParent();
@@ -71,9 +73,18 @@ public interface IAlarmTreeNode {
 
 	/**
 	 * Returns {@code true} if there is an alarm for this node or its children.
+	 * 
 	 * @return whether there is an alarm for this node or its children.
 	 */
 	boolean hasAlarm();
+	
+	/**
+	 * Returns the object class of this node in the directory. If this node does
+	 * not correspond to an entry in the directory, returns <code>null</code>.
+	 * 
+	 * @return the object class of this node in the directory.
+	 */
+	ObjectClass getObjectClass();
 
 	/**
 	 * Returns the URL of this node's help page.

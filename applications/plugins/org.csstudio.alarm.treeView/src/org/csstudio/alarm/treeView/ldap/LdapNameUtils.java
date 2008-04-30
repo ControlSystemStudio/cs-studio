@@ -21,6 +21,8 @@
  */
  package org.csstudio.alarm.treeView.ldap;
 
+import org.csstudio.alarm.treeView.model.ObjectClass;
+
 
 /**
  * Utility functions for working with names from an LDAP directory.
@@ -70,9 +72,21 @@ public final class LdapNameUtils {
 	 * @param name the name.
 	 * @return the object class.
 	 */
-	public static String objectClass(final String name) {
-		int pos1 = name.indexOf("=");
-		return name.substring(0, pos1);
+	public static ObjectClass objectClass(final String name) {
+		String objectClass = name.substring(0, name.indexOf("="));
+		if (objectClass.equals("efan")) {
+			return ObjectClass.FACILITY;
+		} else if (objectClass.equals("ecom")) {
+			return ObjectClass.COMPONENT;
+		} else if (objectClass.equals("esco")) {
+			return ObjectClass.SUBCOMPONENT;
+		} else if (objectClass.equals("econ")) {
+			return ObjectClass.IOC;
+		} else if (objectClass.equals("eren")) {
+			return ObjectClass.RECORD;
+		} else {
+			throw new IllegalArgumentException("Unknown object class: " + name);
+		}
 	}
 	
 	/**

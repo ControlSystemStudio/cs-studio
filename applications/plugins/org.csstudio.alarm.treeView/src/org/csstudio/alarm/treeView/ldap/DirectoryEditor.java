@@ -32,6 +32,7 @@ import javax.naming.directory.ModificationItem;
 
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.ObjectClass;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
@@ -200,7 +201,7 @@ public final class DirectoryEditor {
 			throw new DirectoryEditException(e.getMessage(), e);
 		}
 		SubtreeNode node = new SubtreeNode(parent, componentName);
-		node.setObjectClass("ecom");
+		node.setObjectClass(ObjectClass.COMPONENT);
 		return node;
 	}
 

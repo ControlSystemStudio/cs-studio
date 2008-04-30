@@ -159,8 +159,7 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 			case NAME:
 				return _node.getName();
 			case OBJECT_CLASS:
-				// TODO: not supported by nodes yet
-				return null;
+				return _node.getObjectClass().getObjectClassName();
 			case HELP_PAGE:
 				URL page = _node.getHelpPage();
 				return (page != null) ? page.toString() : "";
@@ -188,8 +187,7 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 				// Name doesn't have a default value, always return true.
 				return true;
 			case OBJECT_CLASS:
-				// TODO: not supported by nodes yet
-				return false;
+				return true;
 			case HELP_PAGE:
 				return _node.getHelpPage() != null;
 			case HELP_GUIDANCE:
