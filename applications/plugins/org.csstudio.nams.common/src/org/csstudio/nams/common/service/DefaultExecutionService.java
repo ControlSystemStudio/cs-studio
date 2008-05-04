@@ -3,6 +3,13 @@ package org.csstudio.nams.common.service;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Der Standard execution service, verwendet {@link Thread}s.
+ * 
+ * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
+ * 
+ * XXX This class is in draft state
+ */
 public class DefaultExecutionService implements ExecutionService {
 
 	private Map<Enum<?>, ThreadGroup> groups = new HashMap<Enum<?>, ThreadGroup>();
