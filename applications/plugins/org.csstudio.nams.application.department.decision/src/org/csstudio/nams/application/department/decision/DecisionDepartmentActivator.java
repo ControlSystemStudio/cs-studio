@@ -27,9 +27,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 import org.csstudio.nams.application.department.decision.exceptions.InitPropertiesException;
+import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
+import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.ConsumerFactoryService;
@@ -107,6 +110,8 @@ public class DecisionDepartmentActivator implements IApplication,
 
 	private Thread _receiverThread;
 
+	private static ExecutionService executorService;
+
 	/**
 	 * Starts the bundle activator instance. First Step.
 	 * 
@@ -115,10 +120,17 @@ public class DecisionDepartmentActivator implements IApplication,
 	public void start(BundleContext context) throws Exception {
 		logger = BundleActivatorUtils
 				.getAvailableService(context, Logger.class);
+
 		consumerFactoryService = BundleActivatorUtils.getAvailableService(
 				context, ConsumerFactoryService.class);
 		if (consumerFactoryService == null)
-			throw new RuntimeException("BUBU");
+			throw new RuntimeException("no consumer factory service avail!");
+
+		executorService = BundleActivatorUtils.getAvailableService(context,
+				ExecutionService.class);
+		if (executorService == null)
+			throw new RuntimeException("No executor service avail!");
+
 		logger.logInfoMessage(this, "plugin " + PLUGIN_ID
 				+ " started succesfully.");
 	}
@@ -139,52 +151,76 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * @see IApplication#start(IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) {
-		logger.logInfoMessage(this, "Decision department application is going to be initialized...");
+		logger
+				.logInfoMessage(this,
+						"Decision department application is going to be initialized...");
 
 		try {
 			Properties properties = initProperties();
 			// erzeugen des consumers
 			_consumer = consumerFactoryService
-			.createConsumer(
-					properties.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID),
-					properties.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME),
-					PostfachArt.TOPIC,
-					properties.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS).split(","));
+					.createConsumer(
+							properties
+									.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID),
+							properties
+									.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME),
+							PostfachArt.TOPIC,
+							properties
+									.getProperty(
+											PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS)
+									.split(","));
 			// erzeuge und starte Buero
-			// TODO Lade configuration, konvertiere diese und ewrzeuge die bueros
+			// TODO Lade configuration, konvertiere diese und ewrzeuge die
+			// bueros
 			// und
 			// TODO starte deren Arbeit
+			// TODO use the executorService to create Threads in office
+			// subsystem!
+
 		} catch (InitPropertiesException e) {
-			logger.logFatalMessage(this, "Exception while initializing properties.", e);
+			logger.logFatalMessage(this,
+					"Exception while initializing properties.", e);
 			return IApplication.EXIT_OK;
 		} catch (MessagingException e) {
-			logger.logFatalMessage(this, "Exception while creating the consumer.", e);
+			logger.logFatalMessage(this,
+					"Exception while creating the consumer.", e);
 			return IApplication.EXIT_OK;
-		} catch (Exception e) { //TODO noch eine andere Exception wählen
-			logger.logFatalMessage(this, "Exception while initializing the alarm decision department.", e);
+		} catch (Exception e) { // TODO noch eine andere Exception wählen
+			logger
+					.logFatalMessage(
+							this,
+							"Exception while initializing the alarm decision department.",
+							e);
 			return IApplication.EXIT_OK;
 		}
-		
+
 		_receiverThread = Thread.currentThread();
 		_continueWorking = true;
-		logger.logInfoMessage(this, "Decision department application successfully initialized, begining work...");
+		logger
+				.logInfoMessage(this,
+						"Decision department application successfully initialized, begining work...");
 
 		// start receiving Messages, runs while _continueWorking is true.
-		receiveMessages();
+		receiveMessagesUntilApplicationQuits();
 
 		// TODO stoppe bueros
 
-		logger.logInfoMessage(this, "Decision department application successfully shuted down.");
+		logger.logInfoMessage(this,
+				"Decision department application successfully shuted down.");
 		return IApplication.EXIT_OK;
 	}
 
-	private void receiveMessages() {
+	private void receiveMessagesUntilApplicationQuits() {
 		while (_continueWorking) {
 			/*-
 			 * jms.receive (tue was)
 			 */
 
-			_consumer.recieveMessage();
+			AlarmNachricht recievedMessage = _consumer.recieveMessage();
+			logger.logInfoMessage(this, "Neue Alarmnachricht erhalten: "
+					+ recievedMessage.toString());
+
+			// TODO an das Büro übergeben!
 
 			Thread.yield();
 		}
@@ -210,7 +246,7 @@ public class DecisionDepartmentActivator implements IApplication,
 			FileInputStream fileInputStream = new FileInputStream(file);
 			Properties properties = new Properties();
 			properties.load(fileInputStream);
-			
+
 			// prüpfen ob die nötigen key enthalten sind
 			Set<Object> keySet = properties.keySet();
 			if (!keySet.contains(PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID)
