@@ -24,4 +24,26 @@ public interface ExecutionService {
 	 */
 	public <GT extends Enum<?>> void executeAsynchronsly(GT groupId,
 			Runnable runnable);
+
+	/**
+	 * Liefert alle bis dato benutzten Gruppen-Ids.
+	 * 
+	 * @param <GT>
+	 *            Der Typ der Gruppenidentifikation - ein beliebiges
+	 *            Enum-Element.
+	 * @return Etwas aufzählbare, welches über die Gruppen-Ids iterieren kann.
+	 */
+	public Iterable<Enum<?>> getCurrentlyUsedGroupIds();
+
+	/**
+	 * 
+	 * Der Typ der Gruppenidentifikation - ein beliebiges Enum-Element.
+	 * 
+	 * @param groupId
+	 *            Die Gruppenidentifikation, zu der die zu liefernden Runnable
+	 *            zählen.
+	 * @return Etwas aufzählbare, welches über die Runnables iterieren kann.
+	 */
+	public <GT extends Enum<?>> Iterable<Runnable> getRunnablesOfGroupId(
+			GT groupId);
 }

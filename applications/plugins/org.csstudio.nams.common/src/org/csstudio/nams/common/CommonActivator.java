@@ -1,5 +1,6 @@
 package org.csstudio.nams.common;
 
+import org.csstudio.nams.common.service.ExecutionService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -18,6 +19,8 @@ public class CommonActivator implements BundleActivator {
 	}
 
 	public void start(BundleContext context) throws Exception {
+		context.registerService(ExecutionService.class.getName(),
+				new DefaultExecutionService(), null);
 	}
 
 	public void stop(BundleContext context) throws Exception {
