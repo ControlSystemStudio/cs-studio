@@ -141,10 +141,8 @@ public class DecisionDepartmentActivator implements IApplication,
 	public Object start(IApplicationContext context) {
 		logger.logInfoMessage(this, "Decision department application is going to be initialized...");
 
-		Properties properties;
 		try {
-			// initialisieren der properties
-			properties = initProperties();
+			Properties properties = initProperties();
 			// erzeugen des consumers
 			_consumer = consumerFactoryService
 			.createConsumer(
@@ -171,6 +169,7 @@ public class DecisionDepartmentActivator implements IApplication,
 		_continueWorking = true;
 		logger.logInfoMessage(this, "Decision department application successfully initialized, begining work...");
 
+		// start receiving Messages, runs while _continueWorking is true.
 		receiveMessages();
 
 		// TODO stoppe bueros
