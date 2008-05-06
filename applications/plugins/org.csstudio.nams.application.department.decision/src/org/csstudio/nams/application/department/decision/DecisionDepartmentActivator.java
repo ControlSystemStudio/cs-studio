@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 
 import org.csstudio.nams.application.department.decision.exceptions.InitPropertiesException;
 import org.csstudio.nams.common.material.AlarmNachricht;
@@ -75,13 +74,42 @@ public class DecisionDepartmentActivator implements IApplication,
 	 */
 	public static final String PLUGIN_ID = "org.csstudio.nams.application.department.decision";
 
-	private static final String PROPERTY_KEY_CONFIG_FILE = "configFile";
+	/**
+	 * Schluesel für die Property-Datei dieser Anwendung. Die Namen der Elemente ({@link Enum#name()})
+	 * sind die Schlüssel der Einträge.
+	 */
+	private static enum PropertiesFileKeys {
+		/**
+		 * Id des Properties-Dateinamen in den System-Properties der VM.
+		 * 
+		 * Ehemalig: "configFile"
+		 */
+		PROPERTY_KEY_CONFIG_FILE,
 
-	private static final String PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID = "CONSUMER_CLIENT_ID";
+		/**
+		 * Der Schlüssel des Properties-Datei-Eintrages für die client id des
+		 * jms message consumer(s).
+		 * 
+		 * Ehemalig: "CONSUMER_CLIENT_ID"
+		 */
+		PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID,
 
-	private static final String PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME = "CONSUMER_SOURCE_NAME";
+		/**
+		 * Der Schlüssel des Properties-Datei-Eintrages für den source name des
+		 * jms message consumer(s).
+		 * 
+		 * Ehemalig: "CONSUMER_SOURCE_NAME"
+		 */
+		PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME,
 
-	private static final String PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS = "CONSUMER_SERVER_URLS";
+		/**
+		 * Der Schlüssel des Properties-Datei-Eintrages für die server urls für
+		 * den jms message consumer.
+		 * 
+		 * Ehemalig: "CONSUMER_SERVER_URLS"
+		 */
+		PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS
+	}
 
 	/**
 	 * Gemeinsames Attribut des Activators und der Application: Der Logger.
@@ -157,18 +185,21 @@ public class DecisionDepartmentActivator implements IApplication,
 
 		try {
 			Properties properties = initProperties();
+
 			// erzeugen des consumers
 			_consumer = consumerFactoryService
 					.createConsumer(
 							properties
-									.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID),
+									.getProperty(PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID
+											.name()),
 							properties
-									.getProperty(PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME),
+									.getProperty(PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME
+											.name()),
 							PostfachArt.TOPIC,
 							properties
 									.getProperty(
-											PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS)
-									.split(","));
+											PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS
+													.name()).split(","));
 			// erzeuge und starte Buero
 			// TODO Lade configuration, konvertiere diese und ewrzeuge die
 			// bueros
@@ -183,7 +214,7 @@ public class DecisionDepartmentActivator implements IApplication,
 			return IApplication.EXIT_OK;
 		} catch (MessagingException e) {
 			logger.logFatalMessage(this,
-					"Exception while creating the consumer.", e);
+					"Exception during creation of the jms consumer.", e);
 			return IApplication.EXIT_OK;
 		} catch (Exception e) { // TODO noch eine andere Exception w√§hlen
 			logger
@@ -227,17 +258,20 @@ public class DecisionDepartmentActivator implements IApplication,
 	}
 
 	private Properties initProperties() throws InitPropertiesException {
-		String configFileName = System.getProperty(PROPERTY_KEY_CONFIG_FILE);
+		String configFileName = System
+				.getProperty(PropertiesFileKeys.PROPERTY_KEY_CONFIG_FILE.name());
 		if (configFileName == null) {
-			String message = "No config file in Property \""
-					+ PROPERTY_KEY_CONFIG_FILE + "\".";
+			String message = "No config file avail on Property-Id \""
+					+ PropertiesFileKeys.PROPERTY_KEY_CONFIG_FILE.name()
+					+ "\" specified.";
 			logger.logFatalMessage(this, message);
 			throw new InitPropertiesException(message);
 		}
 
 		File file = new File(configFileName);
 		if (!file.exists() && !file.canRead()) {
-			String message = "config file not readable.";
+			String message = "config file named \"" + file.getAbsolutePath()
+					+ "\" is not readable.";
 			logger.logFatalMessage(this, message);
 			throw new InitPropertiesException(message);
 		}
@@ -249,18 +283,27 @@ public class DecisionDepartmentActivator implements IApplication,
 
 			// pr√ºpfen ob die n√∂tigen key enthalten sind
 			Set<Object> keySet = properties.keySet();
-			if (!keySet.contains(PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID)
+			if (!keySet
+					.contains(PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID
+							.name())
 					|| !keySet
-							.contains(PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS)
+							.contains(PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS
+									.name())
 					|| !keySet
-							.contains(PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME)) {
-				throw new Exception("config file not valid.");
+							.contains(PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME
+									.name())) {
+				throw new Exception("config file named \""
+						+ file.getAbsolutePath() + "\" not valid.");
 			}
 
+			logger.logInfoMessage(this,
+					"Configuration properties loaded from configuration file \""
+							+ file.getAbsolutePath() + "\"");
 			return properties;
 		} catch (Exception e) {
 			throw new InitPropertiesException(e);
 		}
+
 	}
 
 	/**
