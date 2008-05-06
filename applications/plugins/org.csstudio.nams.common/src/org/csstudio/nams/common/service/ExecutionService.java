@@ -1,8 +1,8 @@
 package org.csstudio.nams.common.service;
 
 /**
- * This service is used to execute {@link Runnable}s asynchronously instead of
- * usind new {@link Thread}(myRunnable).
+ * This service is used to execute {@link StepByStepProcessor}s asynchronously
+ * instead of usind new {@link Thread}(myRunnable).
  * 
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * 
@@ -11,6 +11,49 @@ package org.csstudio.nams.common.service;
 public interface ExecutionService {
 
 	/**
+	 * Registriert eine neue {@link ThreadGroup}.
+	 * 
+	 * @param <GT>
+	 *            Der Typ der Gruppenidentifikation - ein beliebiges
+	 *            Enum-Element.
+	 * @param groupId
+	 *            Die Gruppenidentifikation, über welche die {@link ThreadGroup}
+	 *            identifiziert wird.
+	 * @param group
+	 *            Die {@link ThreadGroup}.
+	 */
+	public <GT extends Enum<?> & ThreadType> void registerGroup(GT groupId, ThreadGroup group);
+
+	/**
+	 * Prüft, ob unter der angegebenen Id eine Gruppe registriert ist.
+	 * 
+	 * @param <GT>
+	 *            Der Typ der Gruppenidentifikation - ein beliebiges
+	 *            Enum-Element.
+	 * @param groupId
+	 *            Die Gruppenidentifikation, über welche die {@link ThreadGroup}
+	 *            identifiziert wird.
+	 * @return {@code true} wenn eine Gruppe mit der angegebenen Id existiert,
+	 *         {@code false} sonst.
+	 */
+	public <GT extends Enum<?>> boolean hasGroupRegistered(GT groupId);
+	
+	/**
+	 * Liefert die Gruppe, welche unter der angegebenen Id registriert ist.
+	 * 
+	 * @param <GT>
+	 *            Der Typ der Gruppenidentifikation - ein beliebiges
+	 *            Enum-Element.
+	 * @param groupId
+	 *            Die Gruppenidentifikation, über welche die {@link ThreadGroup}
+	 *            identifiziert wird.
+	 * @return Liefert die ThreadGroup.
+	 * @require hasGroupRegistered(groupId)
+	 */
+	public <GT extends Enum<?>> ThreadGroup getRegisteredGroup(GT groupId);
+	
+	
+	/**
 	 * Führt das Runnable asynchron aus.
 	 * 
 	 * @param <GT>
@@ -18,12 +61,16 @@ public interface ExecutionService {
 	 *            Enum-Element.
 	 * @param group
 	 *            Die Gruppenidentifikation, zu der das Runnable gehört
-	 *            (vornehmlich zur Identifikation bei Tests.
+	 *            (vornehmlich zur Identifikation bei Tests); existiert diese
+	 *            Gruppe nicht, so wird eine Fehler verursacht.
 	 * @param runnable
 	 *            Das Runnable, welches ausgeführt werden soll.
+	 * @require hasGroupRegistered(groupId)
 	 */
 	public <GT extends Enum<?>> void executeAsynchronsly(GT groupId,
-			Runnable runnable); // FIXME Use StepByStepProcessor!!!
+			StepByStepProcessor runnable); // FIXME Use StepByStepProcessor!!!
+
+	
 
 	/**
 	 * Liefert alle bis dato benutzten Gruppen-Ids.
@@ -44,6 +91,6 @@ public interface ExecutionService {
 	 *            zählen.
 	 * @return Etwas aufzählbare, welches über die Runnables iterieren kann.
 	 */
-	public <GT extends Enum<?>> Iterable<Runnable> getRunnablesOfGroupId(
+	public <GT extends Enum<?>> Iterable<StepByStepProcessor> getRunnablesOfGroupId(
 			GT groupId);
 }

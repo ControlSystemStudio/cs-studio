@@ -10,7 +10,7 @@ package org.csstudio.nams.common.service;
 public abstract class StepByStepProcessor implements Runnable {
 
 	private volatile Thread executionThread = null;
-	private volatile boolean continureRunning = false;
+	private volatile boolean continueRunning = false;
 
 	public final void run() {
 		if (executionThread != null) {
@@ -18,11 +18,12 @@ public abstract class StepByStepProcessor implements Runnable {
 					"This runnable is already running!");
 		}
 		executionThread = Thread.currentThread();
-		continureRunning = true;
+		continueRunning = true;
 
-		while (continureRunning) {
+		while (continueRunning) {
 			try {
 				runOneSingleStep();
+				Thread.yield();
 			} catch (InterruptedException e) {
 				// This is expected behaviour to stop this runnable, so nothing
 				// to do here!
@@ -66,7 +67,7 @@ public abstract class StepByStepProcessor implements Runnable {
 	 *             if interrupting the execution thread is not permitted.
 	 */
 	public final void stopWorking() throws SecurityException {
-		this.continureRunning = false;
+		this.continueRunning = false;
 		this.executionThread.interrupt();
 	}
 }

@@ -1,7 +1,6 @@
 package org.csstudio.nams.common.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,10 +66,38 @@ public class ExecutionServiceMock implements ExecutionService {
 		return errors;
 	}
 
-	public <GT extends Enum<?>> Iterable<Runnable> getRunnablesOfGroupId(
-			GT groupId) {
-		List<Runnable> list = allRunnables.get(groupId);
-		List<Runnable> emptyList = Collections.emptyList();
-		return list == null ? emptyList : list;
+	public <GT extends Enum<?>> void executeAsynchronsly(GT groupId,
+			StepByStepProcessor runnable) {
+		// TODO Auto-generated method stub
+
 	}
+
+	public <GT extends Enum<?>> ThreadGroup getRegisteredGroup(GT groupId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public <GT extends Enum<?>> Iterable<StepByStepProcessor> getRunnablesOfGroupId(
+			GT groupId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public <GT extends Enum<?>> boolean hasGroupRegistered(GT groupId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public <GT extends Enum<?> & ThreadType> void registerGroup(GT groupId,
+			ThreadGroup group) {
+		// TODO Auto-generated method stub
+
+	}
+
+	// public <GT extends Enum<?>> Iterable<Runnable> getRunnablesOfGroupId(
+	// GT groupId) {
+	// List<Runnable> list = allRunnables.get(groupId);
+	// List<Runnable> emptyList = Collections.emptyList();
+	// return list == null ? emptyList : list;
+	// }
 }
