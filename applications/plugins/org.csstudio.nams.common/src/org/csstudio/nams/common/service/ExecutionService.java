@@ -23,7 +23,7 @@ public interface ExecutionService {
 	 *            Das Runnable, welches ausgeführt werden soll.
 	 */
 	public <GT extends Enum<?>> void executeAsynchronsly(GT groupId,
-			Runnable runnable);
+			Runnable runnable); // FIXME Use StepByStepProcessor!!!
 
 	/**
 	 * Liefert alle bis dato benutzten Gruppen-Ids.
