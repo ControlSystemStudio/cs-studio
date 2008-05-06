@@ -136,8 +136,16 @@ public class DecisionDepartmentActivator implements IApplication,
 	 */
 	private Consumer _consumer;
 
+	/**
+	 * Referenz auf den Thread, welcher die JMS Nachrichten anfragt. Wird
+	 * genutzt um den Thread zu "interrupten".
+	 */
 	private Thread _receiverThread;
 
+	/**
+	 * Service für das Entscheidungsbüro um das starten der asynchronen
+	 * Ausführung von Einzelaufgaben (Threads) zu kapseln.
+	 */
 	private static ExecutionService executorService;
 
 	/**
