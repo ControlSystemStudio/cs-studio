@@ -11,49 +11,6 @@ package org.csstudio.nams.common.service;
 public interface ExecutionService {
 
 	/**
-	 * Registriert eine neue {@link ThreadGroup}.
-	 * 
-	 * @param <GT>
-	 *            Der Typ der Gruppenidentifikation - ein beliebiges
-	 *            Enum-Element.
-	 * @param groupId
-	 *            Die Gruppenidentifikation, über welche die {@link ThreadGroup}
-	 *            identifiziert wird.
-	 * @param group
-	 *            Die {@link ThreadGroup}.
-	 */
-	public <GT extends Enum<?> & ThreadType> void registerGroup(GT groupId, ThreadGroup group);
-
-	/**
-	 * Prüft, ob unter der angegebenen Id eine Gruppe registriert ist.
-	 * 
-	 * @param <GT>
-	 *            Der Typ der Gruppenidentifikation - ein beliebiges
-	 *            Enum-Element.
-	 * @param groupId
-	 *            Die Gruppenidentifikation, über welche die {@link ThreadGroup}
-	 *            identifiziert wird.
-	 * @return {@code true} wenn eine Gruppe mit der angegebenen Id existiert,
-	 *         {@code false} sonst.
-	 */
-	public <GT extends Enum<?>> boolean hasGroupRegistered(GT groupId);
-	
-	/**
-	 * Liefert die Gruppe, welche unter der angegebenen Id registriert ist.
-	 * 
-	 * @param <GT>
-	 *            Der Typ der Gruppenidentifikation - ein beliebiges
-	 *            Enum-Element.
-	 * @param groupId
-	 *            Die Gruppenidentifikation, über welche die {@link ThreadGroup}
-	 *            identifiziert wird.
-	 * @return Liefert die ThreadGroup.
-	 * @require hasGroupRegistered(groupId)
-	 */
-	public <GT extends Enum<?>> ThreadGroup getRegisteredGroup(GT groupId);
-	
-	
-	/**
 	 * Führt das Runnable asynchron aus.
 	 * 
 	 * @param <GT>
@@ -67,10 +24,8 @@ public interface ExecutionService {
 	 *            Das Runnable, welches ausgeführt werden soll.
 	 * @require hasGroupRegistered(groupId)
 	 */
-	public <GT extends Enum<?>> void executeAsynchronsly(GT groupId,
+	public <GT extends Enum<?> & ThreadType> void executeAsynchronsly(GT groupId,
 			StepByStepProcessor runnable); // FIXME Use StepByStepProcessor!!!
-
-	
 
 	/**
 	 * Liefert alle bis dato benutzten Gruppen-Ids.
@@ -80,8 +35,23 @@ public interface ExecutionService {
 	 *            Enum-Element.
 	 * @return Etwas aufzählbare, welches über die Gruppen-Ids iterieren kann.
 	 */
-	public Iterable<Enum<?>> getCurrentlyUsedGroupIds();
-
+	public <GT extends Enum<?> & ThreadType> Iterable<GT> getCurrentlyUsedGroupIds();
+	
+	/**
+	 * Liefert die Gruppe, welche unter der angegebenen Id registriert ist.
+	 * 
+	 * @param <GT>
+	 *            Der Typ der Gruppenidentifikation - ein beliebiges
+	 *            Enum-Element.
+	 * @param groupId
+	 *            Die Gruppenidentifikation, über welche die {@link ThreadGroup}
+	 *            identifiziert wird.
+	 * @return Liefert die ThreadGroup.
+	 * @require hasGroupRegistered(groupId)
+	 */
+	public <GT extends Enum<?> & ThreadType> ThreadGroup getRegisteredGroup(GT groupId);
+	
+	
 	/**
 	 * 
 	 * Der Typ der Gruppenidentifikation - ein beliebiges Enum-Element.
@@ -91,6 +61,36 @@ public interface ExecutionService {
 	 *            zählen.
 	 * @return Etwas aufzählbare, welches über die Runnables iterieren kann.
 	 */
-	public <GT extends Enum<?>> Iterable<StepByStepProcessor> getRunnablesOfGroupId(
+	public <GT extends Enum<?> & ThreadType> Iterable<StepByStepProcessor> getRunnablesOfGroupId(
 			GT groupId);
+
+	
+
+	/**
+	 * Prüft, ob unter der angegebenen Id eine Gruppe registriert ist.
+	 * 
+	 * @param <GT>
+	 *            Der Typ der Gruppenidentifikation - ein beliebiges
+	 *            Enum-Element.
+	 * @param groupId
+	 *            Die Gruppenidentifikation, über welche die {@link ThreadGroup}
+	 *            identifiziert wird.
+	 * @return {@code true} wenn eine Gruppe mit der angegebenen Id existiert,
+	 *         {@code false} sonst.
+	 */
+	public <GT extends Enum<?> & ThreadType> boolean hasGroupRegistered(GT groupId);
+
+	/**
+	 * Registriert eine neue {@link ThreadGroup}.
+	 * 
+	 * @param <GT>
+	 *            Der Typ der Gruppenidentifikation - ein beliebiges
+	 *            Enum-Element.
+	 * @param groupId
+	 *            Die Gruppenidentifikation, über welche die {@link ThreadGroup}
+	 *            identifiziert wird.
+	 * @param group
+	 *            Die {@link ThreadGroup}.
+	 */
+	public <GT extends Enum<?> & ThreadType> void registerGroup(GT groupId, ThreadGroup group);
 }
