@@ -25,7 +25,7 @@ public interface ExecutionService {
 	 * @require hasGroupRegistered(groupId)
 	 */
 	public <GT extends Enum<?> & ThreadType> void executeAsynchronsly(GT groupId,
-			StepByStepProcessor runnable); // FIXME Use StepByStepProcessor!!!
+			StepByStepProcessor runnable);
 
 	/**
 	 * Liefert alle bis dato benutzten Gruppen-Ids.
