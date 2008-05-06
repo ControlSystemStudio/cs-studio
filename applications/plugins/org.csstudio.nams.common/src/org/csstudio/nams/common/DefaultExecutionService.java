@@ -1,11 +1,5 @@
 package org.csstudio.nams.common;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.service.StepByStepProcessor;
 import org.csstudio.nams.common.service.ThreadType;
@@ -19,29 +13,31 @@ import org.csstudio.nams.common.service.ThreadType;
  */
 class DefaultExecutionService implements ExecutionService {
 
-	public <GT extends Enum<?>> void executeAsynchronsly(GT groupId,
-			StepByStepProcessor runnable) {
+	public <GT extends Enum<?> & ThreadType> void executeAsynchronsly(
+			GT groupId, StepByStepProcessor runnable) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public Iterable<Enum<?>> getCurrentlyUsedGroupIds() {
+	public <GT extends Enum<?> & ThreadType> Iterable<GT> getCurrentlyUsedGroupIds() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public <GT extends Enum<?>> ThreadGroup getRegisteredGroup(GT groupId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public <GT extends Enum<?>> Iterable<StepByStepProcessor> getRunnablesOfGroupId(
+	public <GT extends Enum<?> & ThreadType> ThreadGroup getRegisteredGroup(
 			GT groupId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public <GT extends Enum<?>> boolean hasGroupRegistered(GT groupId) {
+	public <GT extends Enum<?> & ThreadType> Iterable<StepByStepProcessor> getRunnablesOfGroupId(
+			GT groupId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public <GT extends Enum<?> & ThreadType> boolean hasGroupRegistered(
+			GT groupId) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -51,6 +47,8 @@ class DefaultExecutionService implements ExecutionService {
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 
 //	private Map<Enum<?>, ThreadGroup> groups = new HashMap<Enum<?>, ThreadGroup>();
 //	private Map<Enum<?>, List<Runnable>> runnables = new HashMap<Enum<?>, List<Runnable>>();

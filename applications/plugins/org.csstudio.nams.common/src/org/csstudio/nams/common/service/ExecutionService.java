@@ -64,8 +64,6 @@ public interface ExecutionService {
 	public <GT extends Enum<?> & ThreadType> Iterable<StepByStepProcessor> getRunnablesOfGroupId(
 			GT groupId);
 
-	
-
 	/**
 	 * Prüft, ob unter der angegebenen Id eine Gruppe registriert ist.
 	 * 
