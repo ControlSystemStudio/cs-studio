@@ -50,7 +50,7 @@ public class AlarmEntscheidungsBuero {
 
 	private Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb;
 	private Ausgangskorb<Vorgangsmappe> ausgangskorb;
-	
+
 	private TerminAssistenz _assistenz;
 	private Abteilungsleiter _abteilungsleiter;
 	private List<Sachbearbeiter> _sachbearbeiterList;
@@ -60,7 +60,8 @@ public class AlarmEntscheidungsBuero {
 	 * angeforderte system-externe Komponenten in diesem sub-System verwendet
 	 * werden.
 	 * 
-	 * TODO Logger-Service hinzufuegen/reinreichen um das Logging testbar zu machen, da dieses wichtig fuer Nachweiszwecke ist.
+	 * TODO Logger-Service hinzufuegen/reinreichen um das Logging testbar zu
+	 * machen, da dieses wichtig fuer Nachweiszwecke ist.
 	 */
 	public AlarmEntscheidungsBuero(Regelwerk[] regelwerke) {
 		alarmVorgangEingangskorb = new StandardAblagekorb<Vorgangsmappe>();
@@ -75,28 +76,25 @@ public class AlarmEntscheidungsBuero {
 			eingangskorbe[zaehler] = eingangskorb;
 			StandardAblagekorb<Terminnotiz> terminEingangskorb = new StandardAblagekorb<Terminnotiz>();
 			Sachbearbeiter sachbearbeiter = new Sachbearbeiter("" + zaehler,
-					eingangskorb,
-					terminEingangskorb,
+					eingangskorb, terminEingangskorb,
 					new StandardAblagekorb<Vorgangsmappe>(),
-					terminAssistenzEingangskorb,
-					ausgangskorb
+					terminAssistenzEingangskorb, ausgangskorb
 					/*
-															 * TODO ggf. in
-															 * selben
-															 * Ausgangskorb
-															 * legen
-															 */, regelwerke[zaehler]);
-			
-			terminEingangskoerbeDerSachbearbeiter.put(sachbearbeiter.gibName(), terminEingangskorb);
+					 * TODO ggf. in selben Ausgangskorb legen
+					 */, regelwerke[zaehler]);
+
+			terminEingangskoerbeDerSachbearbeiter.put(sachbearbeiter.gibName(),
+					terminEingangskorb);
 			_sachbearbeiterList.add(sachbearbeiter);
 			sachbearbeiter.beginneArbeit();
 		}
 
-		_assistenz = new TerminAssistenz(terminAssistenzEingangskorb, terminEingangskoerbeDerSachbearbeiter, new Timer());
+		_assistenz = new TerminAssistenz(terminAssistenzEingangskorb,
+				terminEingangskoerbeDerSachbearbeiter, new Timer());
 		_assistenz.beginneArbeit();
-		
-		_abteilungsleiter = new Abteilungsleiter(
-				gibAlarmVorgangEingangskorb(), eingangskorbe);
+
+		_abteilungsleiter = new Abteilungsleiter(gibAlarmVorgangEingangskorb(),
+				eingangskorbe);
 		// Starten...
 		_abteilungsleiter.beginneArbeit();
 	}
@@ -116,32 +114,42 @@ public class AlarmEntscheidungsBuero {
 	public Eingangskorb<Vorgangsmappe> gibAlarmVorgangEingangskorb() {
 		return alarmVorgangEingangskorb;
 	}
-	
+
 	/**
-	 * Liefert den Ausgangskorb, in dem die bearbeiteten Vorgaenge abgelegt werden.
+	 * Liefert den Ausgangskorb, in dem die bearbeiteten Vorgaenge abgelegt
+	 * werden.
 	 */
 	public Ausgangskorb<Vorgangsmappe> gibAlarmVorgangAusgangskorb() {
 		return ausgangskorb;
 	}
-	
+
 	/**
 	 * Inspector fuer Tests. Liefert die Referenz auf die Terminassistenz.
 	 */
 	TerminAssistenz gibAssistenzFuerTest() {
 		return _assistenz;
 	}
-	
+
 	/**
 	 * Inspector fuer Tests. Liefert die Referenz auf den Abteilungsleiter.
 	 */
 	Abteilungsleiter gibAbteilungsleiterFuerTest() {
 		return _abteilungsleiter;
 	}
-	
+
 	/**
 	 * Inspector fuer Tests. Liefert die Referenzen auf alle Sachbearbeiter.
 	 */
 	Collection<Sachbearbeiter> gibListeDerSachbearbeiterFuerTest() {
 		return _sachbearbeiterList;
+	}
+
+	/**
+	 * Beendet die Arbeit des Büros. Diese Operation kehrt zurück, wenn alle
+	 * Arbeitsgänge erldigt sind und alle offenen Vorgänge in den Ausgangskorb
+	 * zum senden gelegt wurden.
+	 */
+	public void beendeArbeitUndSendeSofortAlleOffeneneVorgaenge() {
+		// TODO Implementieren!
 	}
 }

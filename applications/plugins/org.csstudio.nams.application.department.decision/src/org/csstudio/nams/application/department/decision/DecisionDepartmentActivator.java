@@ -42,6 +42,11 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
+import de.c1wps.desy.ams.allgemeines.Eingangskorb;
+import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
+import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerk;
+
 /**
  * <p>
  * The decision department or more precise the activator and application class
@@ -109,7 +114,7 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * Service für das Entscheidungsbüro um das starten der asynchronen
 	 * Ausführung von Einzelaufgaben (Threads) zu kapseln.
 	 */
-	private static ExecutionService executorService;
+	private static ExecutionService executionService;
 
 	/**
 	 * Starts the bundle activator instance. First Step.
@@ -125,9 +130,9 @@ public class DecisionDepartmentActivator implements IApplication,
 		if (consumerFactoryService == null)
 			throw new RuntimeException("no consumer factory service avail!");
 
-		executorService = BundleActivatorUtils.getAvailableService(context,
+		executionService = BundleActivatorUtils.getAvailableService(context,
 				ExecutionService.class);
-		if (executorService == null)
+		if (executionService == null)
 			throw new RuntimeException("No executor service avail!");
 
 		logger.logInfoMessage(this, "plugin " + PLUGIN_ID
@@ -150,14 +155,18 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * @see IApplication#start(IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) {
+		AlarmEntscheidungsBuero alarmEntscheidungsBuero = null;
+
 		logger
 				.logInfoMessage(this,
 						"Decision department application is going to be initialized...");
 
 		try {
+			logger.logInfoMessage(this,
+					"Decision department application is loading properies...");
 			Properties properties = initProperties();
-
-			// erzeugen des consumers
+			logger.logInfoMessage(this,
+					"Decision department application is creating consumers...");
 			_consumer = consumerFactoryService
 					.createConsumer(
 							properties
@@ -171,12 +180,22 @@ public class DecisionDepartmentActivator implements IApplication,
 									.getProperty(
 											PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS
 													.name()).split(","));
-			// TODO Lade configuration aus DB, konvertiere diese f�r das
-			// Regelwerk
-			// TODO erzeuge und starte Buero
-			// TODO use the executorService to create Threads in office
-			// subsystem!
+			
+			logger
+					.logInfoMessage(this,
+							"Decision department application is creating configuring execution service...");
+			initialisiereThredGroupTypes(executionService);
 
+			logger
+					.logInfoMessage(this,
+							"Decision department application is creating decision office...");
+
+			// FIXME Das Regelwerk aus der Konfiguration bauen bzw. aus einem
+			// passenden fachlichen Service holen.
+			Regelwerk[] regelwerke = new Regelwerk[0];
+			// ---ende
+
+			alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(regelwerke);
 		} catch (InitPropertiesException e) {
 			logger.logFatalMessage(this,
 					"Exception while initializing properties.", e);
@@ -200,25 +219,45 @@ public class DecisionDepartmentActivator implements IApplication,
 				.logInfoMessage(this,
 						"Decision department application successfully initialized, begining work...");
 
-		// start receiving Messages, runs while _continueWorking is true.
-		receiveMessagesUntilApplicationQuits();
+		// TODO Thread zum auslesen des Ausgangskorbes...
 
-		// TODO stoppe bueros
+		// start receiving Messages, runs while _continueWorking is true.
+		receiveMessagesUntilApplicationQuits(alarmEntscheidungsBuero 
+				.gibAlarmVorgangEingangskorb());
+
+		logger.logInfoMessage(this,
+				"Decision department application is shutting down...");
+
+		alarmEntscheidungsBuero
+				.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
 
 		logger.logInfoMessage(this,
 				"Decision department application successfully shuted down.");
 		return IApplication.EXIT_OK;
 	}
 
-	private void receiveMessagesUntilApplicationQuits() {
+	private void initialisiereThredGroupTypes(
+			ExecutionService executionServiceToBeInitialize) {
+		executionServiceToBeInitialize
+				.registerGroup(
+						ThreadTypesOfDecisionDepartment.ABTEILUNGSLEITER,
+						new ThreadGroup(
+								ThreadTypesOfDecisionDepartment.ABTEILUNGSLEITER
+										.name()));
+		// TODO here more...
+	}
+
+	private void receiveMessagesUntilApplicationQuits(
+			Eingangskorb<Vorgangsmappe> eingangskorb) {
 		while (_continueWorking) {
 			/*-
 			 * jms.receive (tue was)
 			 */
 
-			AlarmNachricht recievedMessage = _consumer.recieveMessage();
+			AlarmNachricht receivedMessage = _consumer.receiveMessage();
 			logger.logInfoMessage(this, "Neue Alarmnachricht erhalten: "
-					+ recievedMessage.toString());
+					+ receivedMessage.toString());
+//			eingangskorb.ablegen(recievedMessage);
 
 			// TODO an das Büro übergeben!
 

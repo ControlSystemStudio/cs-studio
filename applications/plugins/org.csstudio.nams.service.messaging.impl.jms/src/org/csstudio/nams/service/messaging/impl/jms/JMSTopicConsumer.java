@@ -102,7 +102,7 @@ class JMSTopicConsumer implements Consumer {
 		return isClosed;
 	}
 
-	public AlarmNachricht recieveMessage() {
+	public AlarmNachricht receiveMessage() {
 		// TODO AlarrmNachricht bauen
 		try {
 			Message message = messageQueue.take();

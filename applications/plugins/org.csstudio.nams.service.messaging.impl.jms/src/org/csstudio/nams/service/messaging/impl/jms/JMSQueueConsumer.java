@@ -20,7 +20,7 @@ class JMSQueueConsumer implements Consumer {
 		return false;
 	}
 
-	public AlarmNachricht recieveMessage() {
+	public AlarmNachricht receiveMessage() {
 		// TODO Auto-generated method stub
 		return null;
 	}

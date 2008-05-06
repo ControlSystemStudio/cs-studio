@@ -7,5 +7,5 @@ public interface Consumer {
 	public boolean isClosed();
 	// FIXME einen eigenen Nachrichten Typ da nicht nur Alarmnachrichten rein kommen
 	@Deprecated
-	public AlarmNachricht recieveMessage();
+	public AlarmNachricht receiveMessage();
 }
