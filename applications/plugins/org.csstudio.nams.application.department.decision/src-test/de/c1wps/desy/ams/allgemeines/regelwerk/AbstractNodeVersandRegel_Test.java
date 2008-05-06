@@ -25,15 +25,13 @@
 
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
-import static org.junit.Assert.*;
-
 import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.csstudio.nams.common.material.AlarmNachricht;
 import org.junit.Test;
 
-import de.c1wps.desy.ams.allgemeines.AlarmNachricht;
 import de.c1wps.desy.ams.allgemeines.Millisekunden;
 
 /**

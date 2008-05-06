@@ -5,10 +5,11 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Date;
 
+import junit.framework.TestCase;
+
+import org.csstudio.nams.common.material.AlarmNachricht;
 import org.junit.Test;
 
-import junit.framework.TestCase;
-import de.c1wps.desy.ams.allgemeines.AlarmNachricht;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
 import de.c1wps.desy.ams.allgemeines.Millisekunden;
 import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;

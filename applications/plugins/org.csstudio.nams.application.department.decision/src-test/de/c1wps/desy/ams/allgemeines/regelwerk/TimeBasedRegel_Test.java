@@ -25,10 +25,10 @@
 
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
+import org.csstudio.nams.common.material.AlarmNachricht;
 import org.junit.Test;
 
 import de.c1wps.desy.ams.AbstractObject_TestCase;
-import de.c1wps.desy.ams.allgemeines.AlarmNachricht;
 import de.c1wps.desy.ams.allgemeines.Millisekunden;
 
 /**

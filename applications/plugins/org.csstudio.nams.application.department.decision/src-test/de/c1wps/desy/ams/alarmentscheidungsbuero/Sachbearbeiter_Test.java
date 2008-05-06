@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.csstudio.nams.common.material.AlarmNachricht;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.LogicalOperator;
@@ -15,7 +16,6 @@ import org.junit.Test;
 
 import de.c1wps.desy.ams.AbstractObject_TestCase;
 import de.c1wps.desy.ams.allgemeines.Ablagefaehig;
-import de.c1wps.desy.ams.allgemeines.AlarmNachricht;
 import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
 import de.c1wps.desy.ams.allgemeines.Millisekunden;

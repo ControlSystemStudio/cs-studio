@@ -24,9 +24,6 @@
  */
 package de.c1wps.desy.ams.alarmentscheidungsbuero;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import de.c1wps.desy.ams.allgemeines.Ablagefaehig;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
 

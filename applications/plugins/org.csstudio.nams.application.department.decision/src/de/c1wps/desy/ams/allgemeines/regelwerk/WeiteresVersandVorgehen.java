@@ -25,7 +25,8 @@
 
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
-import de.c1wps.desy.ams.allgemeines.AlarmNachricht;
+import org.csstudio.nams.common.material.AlarmNachricht;
+
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
 import de.c1wps.desy.ams.allgemeines.wam.Fachwert;
 

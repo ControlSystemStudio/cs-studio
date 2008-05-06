@@ -15,61 +15,61 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.csstudio.nams.common.material.AlarmNachricht;
+
 import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
 import de.c1wps.desy.ams.alarmentscheidungsbuero.DokumentVerbraucherArbeiter;
 import de.c1wps.desy.ams.alarmentscheidungsbuero.DokumentenBearbeiter;
-import de.c1wps.desy.ams.allgemeines.AlarmNachricht;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
 import de.c1wps.desy.ams.allgemeines.Millisekunden;
 import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 import de.c1wps.desy.ams.allgemeines.regelwerk.OderVersandRegel;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste;
-import de.c1wps.desy.ams.allgemeines.regelwerk.RegelErgebnis;
 import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerk;
 import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerkskennung;
 import de.c1wps.desy.ams.allgemeines.regelwerk.StandardRegelwerk;
+import de.c1wps.desy.ams.allgemeines.regelwerk.StringRegel;
 import de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel;
 import de.c1wps.desy.ams.allgemeines.regelwerk.UndVersandRegel;
 import de.c1wps.desy.ams.allgemeines.regelwerk.VersandRegel;
 
 public class Testapp implements Runnable, ActionListener {
 
-	static class SehrSimpleTextRegel implements VersandRegel {
-
-		private final String muster;
-
-		public SehrSimpleTextRegel(String muster) {
-			this.muster = muster;
-		}
-
-		public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
-				AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
-			if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
-				pruefeNachrichtErstmalig(nachricht, bisherigesErgebnis);
-			}
-		}
-
-		public Millisekunden pruefeNachrichtAufTimeOuts(
-				Pruefliste bisherigesErgebnis,
-				Millisekunden verstricheneZeitSeitErsterPruefung) {
-			return null;
-		}
-
-		public Millisekunden pruefeNachrichtErstmalig(AlarmNachricht nachricht,
-				Pruefliste bisherigesErgebnis) {
-			if (muster.equals(nachricht.gibNachrichtenText())) {
-				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
-						RegelErgebnis.ZUTREFFEND);
-			} else {
-				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
-						RegelErgebnis.NICHT_ZUTREFFEND);
-			}
-			return null;
-		}
-
-	}
+//	static class SehrSimpleTextRegel implements VersandRegel {
+//
+//		private final String muster;
+//
+//		public SehrSimpleTextRegel(String muster) {
+//			this.muster = muster;
+//		}
+//
+//		public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
+//				AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
+//			if (!bisherigesErgebnis.gibErgebnisFuerRegel(this).istEntschieden()) {
+//				pruefeNachrichtErstmalig(nachricht, bisherigesErgebnis);
+//			}
+//		}
+//
+//		public Millisekunden pruefeNachrichtAufTimeOuts(
+//				Pruefliste bisherigesErgebnis,
+//				Millisekunden verstricheneZeitSeitErsterPruefung) {
+//			return null;
+//		}
+//
+//		public Millisekunden pruefeNachrichtErstmalig(AlarmNachricht nachricht,
+//				Pruefliste bisherigesErgebnis) {
+//			if (muster.equals(nachricht.gibNachrichtenText())) {
+//				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
+//						RegelErgebnis.ZUTREFFEND);
+//			} else {
+//				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
+//						RegelErgebnis.NICHT_ZUTREFFEND);
+//			}
+//			return null;
+//		}
+//
+//	}
 
 	private JTextArea textArea;
 	private Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb;
@@ -123,21 +123,22 @@ public class Testapp implements Runnable, ActionListener {
 
 	private void initAlarmBuero() {
 
-		VersandRegel sofort1 = new SehrSimpleTextRegel("sofort");
-		VersandRegel sofort2 = new SehrSimpleTextRegel("sofort2");
+		VersandRegel sofort1 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","sofort");
+		VersandRegel sofort2 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","sofort2");
+		VersandRegel sofort3 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "", "*bubu*");
 		VersandRegel oder = new OderVersandRegel(new VersandRegel[] { sofort1,
-				sofort2 });
+				sofort2, sofort3 });
 
-		VersandRegel aufhebung = new SehrSimpleTextRegel("stop");
-		VersandRegel bestaetigung = new SehrSimpleTextRegel("feuer");
-		VersandRegel ausloeser = new SehrSimpleTextRegel("start");
+		VersandRegel aufhebung = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","stop");
+		VersandRegel bestaetigung = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","feuer");
+		VersandRegel ausloeser = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","*start*");
 
 		VersandRegel timebasedRegel = new TimeBasedRegel(ausloeser, aufhebung,
 				bestaetigung, Millisekunden.valueOf(10000));
 		
-		VersandRegel aufhebung2 = new SehrSimpleTextRegel("stop2");
-		VersandRegel bestaetigung2 = new SehrSimpleTextRegel("feuer2");
-		VersandRegel ausloeser2 = new SehrSimpleTextRegel("start");
+		VersandRegel aufhebung2 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","stop2");
+		VersandRegel bestaetigung2 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","feuer2");
+		VersandRegel ausloeser2 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","*start*");
 
 		VersandRegel timebasedRegel2 = new TimeBasedRegel(ausloeser2, aufhebung2,
 				bestaetigung2, Millisekunden.valueOf(20000));

@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 
+import org.csstudio.nams.common.material.AlarmNachricht;
 import org.junit.Test;
 
 import de.c1wps.desy.ams.AbstractObject_TestCase;

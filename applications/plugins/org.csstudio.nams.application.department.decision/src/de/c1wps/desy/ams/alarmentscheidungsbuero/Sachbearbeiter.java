@@ -25,11 +25,10 @@
 package de.c1wps.desy.ams.alarmentscheidungsbuero;
 
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.csstudio.nams.common.material.AlarmNachricht;
 
 import de.c1wps.desy.ams.allgemeines.Ablagefaehig;
-import de.c1wps.desy.ams.allgemeines.AlarmNachricht;
 import de.c1wps.desy.ams.allgemeines.Arbeitsfaehig;
 import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;

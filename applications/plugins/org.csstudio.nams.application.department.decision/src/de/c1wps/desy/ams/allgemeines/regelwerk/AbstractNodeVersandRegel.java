@@ -3,7 +3,8 @@ package de.c1wps.desy.ams.allgemeines.regelwerk;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.c1wps.desy.ams.allgemeines.AlarmNachricht;
+import org.csstudio.nams.common.material.AlarmNachricht;
+
 import de.c1wps.desy.ams.allgemeines.Millisekunden;
 
 public abstract class AbstractNodeVersandRegel implements VersandRegel {

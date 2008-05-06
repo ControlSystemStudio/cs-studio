@@ -12,7 +12,6 @@ public class Allgemeines_SubSystemTestSuite extends TestCase {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(StandardAblagekorb_Test.class);
 		suite.addTestSuite(Vorgangsmappe_Test.class);
-		suite.addTestSuite(AlarmNachricht_Test.class);
 		suite.addTestSuite(Millisekunden_Test.class);
 		suite.addTestSuite(Vorgangsmappenkennung_Test.class);
 		//$JUnit-END$

@@ -26,8 +26,9 @@ package de.c1wps.desy.ams.allgemeines.regelwerk;
 
 import java.util.HashMap;
 
+import org.csstudio.nams.common.contract.Contract;
+
 import de.c1wps.desy.ams.allgemeines.Millisekunden;
-import de.c1wps.desy.ams.allgemeines.contract.Contract;
 import de.c1wps.desy.ams.allgemeines.wam.Material;
 
 @Material

@@ -14,6 +14,16 @@
 		<fileset dir="${junit.dir}">
 			<include name="*.jar" />
 		</fileset>
+		<!-- Referenced plugin sources -->
+		<fileset dir="../../org.csstudio.nams.service.logging/bin">
+			<include name="*.class" />
+		</fileset>
+		<fileset dir="../../org.csstudio.nams.common/bin">
+			<include name="*.class" />
+		</fileset>
+		<fileset dir="../../org.csstudio.nams.service.messaging/bin">
+			<include name="*.class" />
+		</fileset>
 	</path>
 
 	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
@@ -97,8 +107,10 @@
 				-->
 			<classpath refid="cobertura.classpath" />
 
-			<assertions><enable/></assertions>
-			
+			<assertions>
+				<enable />
+			</assertions>
+
 			<formatter type="xml" />
 			<test name="${testcase}" todir="${reports.xml.dir}" if="testcase" />
 			<batchtest todir="${reports.xml.dir}" unless="testcase">

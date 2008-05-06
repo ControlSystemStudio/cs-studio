@@ -8,7 +8,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
-import de.c1wps.desy.ams.allgemeines.AlarmNachricht;
+import org.csstudio.nams.common.material.AlarmNachricht;
+
 import de.c1wps.desy.ams.allgemeines.Millisekunden;
 
 /**
@@ -156,8 +157,12 @@ public class StringRegel implements VersandRegel {
 	}
 
 	private boolean wildcardStringCompare(String value, String wildcardString2) {
-		// TODO den Wildcardcomparator benutzen
-		return false;
+		try {
+			return WildcardStringCompare.compare(value, wildcardString2);
+		} catch (Exception e) {
+			// TODO handle Exception
+			return true;
+		}
 	}
 
 }
