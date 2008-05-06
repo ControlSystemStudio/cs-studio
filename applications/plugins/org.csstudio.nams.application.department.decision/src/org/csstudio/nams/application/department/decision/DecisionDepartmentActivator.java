@@ -106,8 +106,8 @@ public class DecisionDepartmentActivator implements IApplication,
 	private Thread _receiverThread;
 
 	/**
-	 * Service für das Entscheidungsbüro um das starten der asynchronen
-	 * Ausführung von Einzelaufgaben (Threads) zu kapseln.
+	 * Service f√ºr das Entscheidungsb√ºro um das starten der asynchronen
+	 * Ausf√ºhrung von Einzelaufgaben (Threads) zu kapseln.
 	 */
 	private static ExecutionService executorService;
 
@@ -171,7 +171,7 @@ public class DecisionDepartmentActivator implements IApplication,
 									.getProperty(
 											PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS
 													.name()).split(","));
-			// TODO Lade configuration aus DB, konvertiere diese für das
+			// TODO Lade configuration aus DB, konvertiere diese fÔøΩr das
 			// Regelwerk
 			// TODO erzeuge und starte Buero
 			// TODO use the executorService to create Threads in office
