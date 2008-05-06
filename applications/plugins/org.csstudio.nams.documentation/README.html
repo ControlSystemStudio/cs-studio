@@ -108,7 +108,14 @@
 	    	</p>
 	      </td>
 	      <td valign="top" class="td2">
-	        <p class="p1">Dieses Plug-in ist verantwortlich für XXX:</p>
+	        <p class="p1">Dieses Plug-in löst den alten Filtermanager ab. Das Alarmentscheidungsbüro
+	        entscheidet, ob ausgelöste Alarme weitergeleitet werden. Es
+	       besteht im Wesentlichen aus Abteilungsleiter, Sachbearbeiter und Assistenz. Durch die Zusammenarbeit
+	       dieser, können Alarme verarbeitet, überprüft und versendet bzw. verworfen werden.
+	        <p>
+	        <p class="p1">Das Alarmentscheidungsbüro ist lediglich für die Entscheidung zuständig, ob Alarme versendet werden oder nicht.
+	        Der tatsächlichen Versand der Alarme wird an einer anderer Stelle abgewickelt (@see <code>org.csstudio.nams.service.messaging</code>).
+	        </p>
 	      </td>
 	    </tr>
 	    <!-- +++ Plugin org.csstudio.nams.common +++ -->
@@ -135,7 +142,7 @@
 	    	</p>
 	      </td>
 	      <td valign="top" class="td2">
-	        <p class="p1">Dieses Plug-in ist verantwortlich für XXX:</p>
+	        <p class="p1">Dieses Plug-in stellt gemeinsame Funktionalität für alle AMS Plugins zur Verfügung.</p>
 	      </td>
 	    </tr>
 	    
@@ -159,7 +166,7 @@
 	      </td>
 	      <td valign="top" class="td2">
 	        <p class="p1">Dieses Plug-in ist verantwortlich für die Dokumentation. Es dokumentiert
-	        die Abhängigkeit zwischen den Plugins sowie deren Beziehungen zueinander</p>
+	        die Abhängigkeit zwischen den Plugins sowie deren Beziehungen zueinander.</p>
 	      </td>
 	    </tr>
 	    
@@ -209,7 +216,15 @@
 	    	</p>
 	      </td>
 	      <td valign="top" class="td2">
-	        <p class="p1">Dieses Plug-in ist verantwortlich für XXX</p>
+	        <p class="p1">Dieses Plug-in ist verantwortlich für den Versand der Alarmnachrichten. 
+	        Diese werden auf folgende Weise versendet:
+	       		<ul>
+	    		<li><code>JMS</code></li>
+	    		<li><code>SMS</code></li>
+	    		<li><code>Voicemail</code></li>
+	    		<li><code>Email</code></li>
+	    	  </ul>
+	        </p>
 	      </td>
 	    </tr>
 	    
@@ -235,7 +250,12 @@
 	    	</p>
 	      </td>
 	      <td valign="top" class="td2">
-	        <p class="p1">Dieses Plug-in ist verantwortlich für XXX</p>
+	        <p class="p1">Dieses Plug-in regelt den Versand von JSM Nachrichten. Der Versand erfolg über:
+	        	<ul>
+	    		<li><code>Topics</code></li>
+	    		<li><code>Queues</code></li>
+	    	  </ul>
+	        </p>
 	      </td>
 	    </tr>
 	</tbody>
