@@ -72,6 +72,174 @@
     </tr>
   </tbody>
 </table>
+
+<!-- ***** Tabelle Beziehungen zwischen Plugins ***** -->
+<br>
+<h2>Beziehungen zwischen den Plug-ins:</h2>
+<table cellspacing="0" cellpadding="0" class="t1">
+	<tbody>
+	    <tr>
+      		<th valign="middle" class="td1">
+        		<p class="p1">Plugin</p>
+      		</th>
+      		<th valign="middle" class="td2">
+        		<p class="p1">Erl&auml;uterung</p>
+      		</th>
+    	</tr>
+    	<!-- +++ Plugin org.csstudio.nams.application.department.decision +++ -->
+    	<tr>
+	      <td valign="middle" class="td1">
+	        <p class="p1"><code><b>org.csstudio.nams.application.department.decision</b></code></p>
+	        <p>
+	        <p class="p1">Abhängigkeiten:
+	          <ul>
+	          	<li><code>org.eclipse.core.runtime</code></li>
+	    		<li><code>org.csstudio.nams.service.logging</code></li>
+	    		<li><code>org.csstudio.nams.service.messaging</code></li>
+	    		<li><code>org.csstudio.nams.common</code></li>
+	    	  </ul>
+	    	</p>
+	    	
+	    	<p>
+	        <p class="p1">Exportierte Packages:
+	          <ul>
+	    		<li><code>keine</code></li>
+	    	  </ul>
+	    	</p>
+	      </td>
+	      <td valign="top" class="td2">
+	        <p class="p1">Dieses Plug-in ist verantwortlich für XXX:</p>
+	      </td>
+	    </tr>
+	    <!-- +++ Plugin org.csstudio.nams.common +++ -->
+	    <tr>
+	      <td valign="middle" class="td1">
+	        <p class="p1"><code><b>org.csstudio.nams.common</b></code></p>
+	        <p>
+	        <p class="p1">Abhängigkeiten:
+	          <ul>
+	    		<li><code>org.eclipse.core.runtime</code></li>
+	    	  </ul>
+	    	</p>
+	    	
+	    	<p>
+	        <p class="p1">Exportierte Packages:
+	          <ul>
+	    		<li><code>org.csstudio.nams.common.contract</code></li>
+	    		<li><code>org.csstudio.nams.common.material</code></li>
+	    		<li><code>org.csstudio.nams.common.plugin.utils</code></li>
+	    		<li><code>org.csstudio.nams.common.service</code></li>
+	    		<li><code>org.csstudio.nams.common.wam</code></li>
+	    		<li><code>org.easymock</code></li>
+	    	  </ul>
+	    	</p>
+	      </td>
+	      <td valign="top" class="td2">
+	        <p class="p1">Dieses Plug-in ist verantwortlich für XXX:</p>
+	      </td>
+	    </tr>
+	    
+	   	<!-- +++ Plugin org.csstudio.nams.documentation +++ -->
+	    <tr>
+	      <td valign="middle" class="td1">
+	        <p class="p1"><code><b>org.csstudio.nams.documentation</b></code></p>
+	        <p>
+	        <p class="p1">Abhängigkeiten:
+	          <ul>
+	    		<li><code>keine</code></li>
+	    	  </ul>
+	    	</p>
+	    	
+	    	<p>
+	        <p class="p1">Exportierte Packages:
+	          <ul>
+	    		<li><code>keine</code></li>
+	    	  </ul>
+	    	</p>
+	      </td>
+	      <td valign="top" class="td2">
+	        <p class="p1">Dieses Plug-in ist verantwortlich für die Dokumentation. Es dokumentiert
+	        die Abhängigkeit zwischen den Plugins sowie deren Beziehungen zueinander</p>
+	      </td>
+	    </tr>
+	    
+	   	<!-- +++ Plugin org.csstudio.nams.service.logging +++ -->
+	    <tr>
+	      <td valign="middle" class="td1">
+	        <p class="p1"><code><b>org.csstudio.nams.service.logging</b></code></p>
+	        <p>
+	        <p class="p1">Abhängigkeiten:
+	          <ul>
+	    		<li><code>org.eclipse.core.runtime</code></li>
+	    		<li><code>org.cssstudio.platform</code></li>
+	    	  </ul>
+	    	</p>
+	    	
+	    	<p>
+	        <p class="p1">Exportierte Packages:
+	          <ul>
+	    		<li><code>org.csstudio.nams.service.logging.declaration</code></li>
+	    	  </ul>
+	    	</p>
+	      </td>
+	      <td valign="top" class="td2">
+	        <p class="p1">Dieses Plug-in stellt einen Logger bereit. Die Implementation des Loggers erlaubt einen leichten Austausch der Logger.</p>
+	      </td>
+	    </tr>
+	    
+	    <!-- +++ Plugin org.csstudio.nams.service.messaging +++ -->
+	    <tr>
+	      <td valign="middle" class="td1">
+	        <p class="p1"><code><b>org.csstudio.nams.service.messaging</b></code></p>
+	        <p>
+	        <p class="p1">Abhängigkeiten:
+	          <ul>
+	    		<li><code>org.eclipse.core.runtime</code></li>
+	    		<li><code>org.cssstudio.nams.common</code></li>
+	    	  </ul>
+	    	</p>
+	    	
+	    	<p>
+	        <p class="p1">Exportierte Packages:
+	          <ul>
+	    		<li><code>org.csstudio.nams.service.messaging.declaration</code></li>
+	    		<li><code>org.csstudio.nams.service.messaging.exceptions</code></li>
+	    		<li><code>org.csstudio.nams.service.messaging.extensionPoint</code></li>
+	    	  </ul>
+	    	</p>
+	      </td>
+	      <td valign="top" class="td2">
+	        <p class="p1">Dieses Plug-in ist verantwortlich für XXX</p>
+	      </td>
+	    </tr>
+	    
+	   	<!-- +++ Plugin org.csstudio.nams.service.messaging.impl.jms +++ -->
+	    <tr>
+	      <td valign="middle" class="td1">
+	        <p class="p1"><code><b>org.csstudio.nams.service.messaging.impl.jms</b></code></p>
+	        <p>
+	        <p class="p1">Abhängigkeiten:
+	          <ul>
+	    		<li><code>org.eclipse.core.runtime</code></li>
+	    		<li><code>org.csstudio.nams.service.messaging</code></li>
+	    		<li><code>org.csstudio.nams.common</code></li>
+	    		<li><code>org.csstudio.platform.libs.jms</code></li>
+	    	  </ul>
+	    	</p>
+	    	
+	    	<p>
+	        <p class="p1">Exportierte Packages:
+	          <ul>
+	    		<li><code>keine</code></li>
+	    	  </ul>
+	    	</p>
+	      </td>
+	      <td valign="top" class="td2">
+	        <p class="p1">Dieses Plug-in ist verantwortlich für XXX</p>
+	      </td>
+	    </tr>
+	</tbody>
+</table>
 <p class="p3"><span class="s1"></span><br></p>
 </body>
 </html>
