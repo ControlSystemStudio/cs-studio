@@ -29,13 +29,15 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.csstudio.nams.application.department.decision.exceptions.InitPropertiesException;
-import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.ConsumerFactoryService;
+import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
+import org.csstudio.nams.service.messaging.declaration.Producer;
+import org.csstudio.nams.service.messaging.declaration.ProducerFactoryService;
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -89,6 +91,12 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * creating Consumers
 	 */
 	private static ConsumerFactoryService consumerFactoryService;
+	
+	/**
+	 * Gemeinsames Attribut des Activators und der Application: Fatory for
+	 * creating Producers
+	 */
+	private static ProducerFactoryService producerFactoryService;
 
 	/**
 	 * Indicates if the application instance should continue working. Unused in
@@ -103,12 +111,16 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * wir nur von der Application benutzt
 	 */
 	private Consumer _consumer;
+	private Producer _producer;
 
+	
 	/**
 	 * Referenz auf den Thread, welcher die JMS Nachrichten anfragt. Wird
 	 * genutzt um den Thread zu "interrupten".
 	 */
 	private Thread _receiverThread;
+
+
 
 	/**
 	 * Service für das Entscheidungsbüro um das starten der asynchronen
@@ -130,6 +142,11 @@ public class DecisionDepartmentActivator implements IApplication,
 		if (consumerFactoryService == null)
 			throw new RuntimeException("no consumer factory service avail!");
 
+		producerFactoryService = BundleActivatorUtils.getAvailableService(
+				context, ProducerFactoryService.class);
+		if (producerFactoryService == null)
+			throw new RuntimeException("no consumer factory service avail!");
+		
 		executionService = BundleActivatorUtils.getAvailableService(context,
 				ExecutionService.class);
 		if (executionService == null)
@@ -175,11 +192,19 @@ public class DecisionDepartmentActivator implements IApplication,
 							properties
 									.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
 											.name()),
-							PostfachArt.TOPIC,
+							PostfachArt.QUEUE,
 							properties
 									.getProperty(
 											PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS
 													.name()).split(","));
+			
+			logger.logInfoMessage(this,
+				"Decision department application is creating producers...");
+			_producer = producerFactoryService.createProducer(
+					properties.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_CLIENT_ID.name()), 
+					properties.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_DESTINATION_NAME.name()),
+					PostfachArt.TOPIC,
+					properties.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_SERVER_URLS.name()).split(","));
 			
 			logger
 					.logInfoMessage(this,
@@ -202,7 +227,7 @@ public class DecisionDepartmentActivator implements IApplication,
 			return IApplication.EXIT_OK;
 		} catch (MessagingException e) {
 			logger.logFatalMessage(this,
-					"Exception during creation of the jms consumer.", e);
+					"Exception during creation of the jms consumer or producer.", e);
 			return IApplication.EXIT_OK;
 		} catch (Exception e) { // TODO noch eine andere Exception wählen
 			logger
@@ -231,6 +256,8 @@ public class DecisionDepartmentActivator implements IApplication,
 		alarmEntscheidungsBuero
 				.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
 
+		_producer.close();
+		
 		logger.logInfoMessage(this,
 				"Decision department application successfully shuted down.");
 		return IApplication.EXIT_OK;
@@ -251,16 +278,30 @@ public class DecisionDepartmentActivator implements IApplication,
 			Eingangskorb<Vorgangsmappe> eingangskorb) {
 		while (_continueWorking) {
 			
-			// TODO es kommen nicht nur Alarmniachrichten rein.
+			// es kommen nicht nur Alarmniachrichten rein.
 			// deshalb brauchen wir einen eigenen Message Typ 
 			// um zu entscheiden was weiter damit gemacht werden soll.
-			AlarmNachricht receivedMessage = _consumer.receiveMessage();
-			logger.logInfoMessage(this, "Neue Alarmnachricht erhalten: "
-					+ receivedMessage.toString());
+			NAMSMessage receivedMessage = _consumer.receiveMessage();
 			
-			// TODO Vorgangsmappe anlegen und in den Eingangskorb des Büros legen
-//			eingangskorb.ablegen(receivedMessage);
+			if(receivedMessage != null) {
+				logger.logInfoMessage(this, "Neue Nachricht erhalten: "
+						+ receivedMessage.toString());
+				_producer.sendMessage(receivedMessage);
 
+				// TODO prüfen um was für eine neue Nachricht es sich handelt
+
+				// TODO falls es sich um eine Alarmnachricht handelt
+				// Vorgangsmappe anlegen und in den Eingangskorb des Büros legen
+				// eingangskorb.ablegen(receivedMessage);
+
+				// TODO andere Nachrichten Typen behandeln
+				// steuer Nachrichten wie z.B.: "Regelwerke neu laden" 
+				// oder "einzelne Regelwerke kurzfristig deaktivieren" oder "shutdown" 
+			} else {
+				// sollte nur beim beenden der Anwendung vorkommen
+				logger.logInfoMessage(this, "null Nachricht erhalten");
+			}
+			
 			Thread.yield();
 		}
 	}
@@ -299,8 +340,18 @@ public class DecisionDepartmentActivator implements IApplication,
 									.name())
 					|| !keySet
 							.contains(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
+									.name())
+					|| !keySet
+							.contains(PropertiesFileKeys.MESSAGING_PRODUCER_CLIENT_ID
+									.name())
+					|| !keySet
+							.contains(PropertiesFileKeys.MESSAGING_PRODUCER_DESTINATION_NAME
+									.name())
+					|| !keySet
+							.contains(PropertiesFileKeys.MESSAGING_PRODUCER_SERVER_URLS
 									.name())) {
-				String message = "config file named \"" + file.getAbsolutePath() + "\" not valid.";
+				String message = "config file named \""
+						+ file.getAbsolutePath() + "\" not valid.";
 				logger.logFatalMessage(this, message);
 				throw new Exception(message);
 			}

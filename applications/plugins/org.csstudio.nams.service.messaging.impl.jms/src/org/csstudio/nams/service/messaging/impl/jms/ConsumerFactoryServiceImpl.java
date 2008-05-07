@@ -11,20 +11,17 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 class ConsumerFactoryServiceImpl implements ConsumerFactoryService {
 
 	public Consumer createConsumer(String clientId, String messageSourceName,
-			PostfachArt artDesPostfaches, String[] messageServerURLs) throws MessagingException {
-		switch (artDesPostfaches) {
-		case QUEUE:
-			return new JMSQueueConsumer(clientId, messageSourceName, messageServerURLs);	
-		case TOPIC:
-			try {
-					return new JMSTopicConsumer(clientId, messageSourceName, messageServerURLs);
-				} catch (NamingException e) {
-					throw new MessagingException(e);
-				} catch (JMSException e) {
-					throw new MessagingException(e);
-				}
+			PostfachArt artDesPostfaches, String[] messageServerURLs)
+			throws MessagingException {
+		try {
+			return new JMSConsumer(clientId, messageSourceName,
+					messageServerURLs, artDesPostfaches);
+		} catch (NamingException e) {
+			throw new MessagingException(e);
+		} catch (JMSException e) {
+			throw new MessagingException(e);
 		}
-		return null; // TODO Exception handling
+		// TODO Exception handling
 	}
 
 }

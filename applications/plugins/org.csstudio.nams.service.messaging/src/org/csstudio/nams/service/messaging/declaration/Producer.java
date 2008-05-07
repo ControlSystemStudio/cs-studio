@@ -1,10 +1,10 @@
 package org.csstudio.nams.service.messaging.declaration;
 
-import org.csstudio.nams.common.material.AlarmNachricht;
 
 public interface Producer {
 	public void close();
 	public boolean isClosed();
-	public void sendMessage(AlarmNachricht message);
+	//@Deprecated //sollte einen eigenen Message Typ geben
+	public void sendMessage(NAMSMessage message);
 	// TODO Irgendwann: public void sendVorgangsmappe(Vorgangsmappe vorgangsmappe);
 }

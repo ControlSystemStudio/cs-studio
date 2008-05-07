@@ -1,6 +1,6 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
-import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.Producer;
 
 class JMSQueueProducer implements Producer {
@@ -20,7 +20,7 @@ class JMSQueueProducer implements Producer {
 		return false;
 	}
 
-	public void sendMessage(AlarmNachricht message) {
+	public void sendMessage(NAMSMessage message) {
 		// TODO Auto-generated method stub
 
 	}

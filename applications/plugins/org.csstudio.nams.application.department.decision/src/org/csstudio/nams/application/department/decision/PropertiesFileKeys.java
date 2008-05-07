@@ -34,5 +34,23 @@ enum PropertiesFileKeys {
 	 * 
 	 * Ehemalig: "CONSUMER_SERVER_URLS"
 	 */
-	MESSAGING_CONSUMER_SERVER_URLS
+	MESSAGING_CONSUMER_SERVER_URLS,
+	
+	/**
+	 * Der Schlüssel des Properties-Datei-Eintrages für die client id des
+	 * jms message producer(s).
+	 */
+	MESSAGING_PRODUCER_CLIENT_ID,
+
+	/**
+	 * Der Schlüssel des Properties-Datei-Eintrages für den destination name des
+	 * jms message producer(s).
+	 */
+	MESSAGING_PRODUCER_DESTINATION_NAME,
+
+	/**
+	 * Der Schlüssel des Properties-Datei-Eintrages für die server urls für
+	 * den jms message producer.
+	 */
+	MESSAGING_PRODUCER_SERVER_URLS
 }

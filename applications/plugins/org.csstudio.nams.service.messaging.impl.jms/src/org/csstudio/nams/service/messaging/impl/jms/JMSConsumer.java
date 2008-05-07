@@ -8,16 +8,18 @@ import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
+import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
+import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 
-class JMSTopicConsumer implements Consumer {
+class JMSConsumer implements Consumer {
 
 	private Context[] contexts;
 	private ConnectionFactory[] factorys;
@@ -27,8 +29,8 @@ class JMSTopicConsumer implements Consumer {
 	private WorkThread[] workers;
 	private LinkedBlockingQueue<Message> messageQueue;
 
-	public JMSTopicConsumer(String clientId, String messageSourceName,
-			String[] messageServerURLs) throws NamingException, JMSException {
+	public JMSConsumer(String clientId, String messageSourceName,
+			String[] messageServerURLs, PostfachArt art) throws NamingException, JMSException {
 
 		messageQueue = new LinkedBlockingQueue<Message>();
 
@@ -55,7 +57,7 @@ class JMSTopicConsumer implements Consumer {
 			connections[i].start();
 
 			workers[i] = new WorkThread(messageQueue, sessions[i],
-					messageSourceName);
+					messageSourceName, clientId, art);
 			workers[i].start();
 		}
 	}
@@ -102,17 +104,16 @@ class JMSTopicConsumer implements Consumer {
 		return isClosed;
 	}
 
-	public AlarmNachricht receiveMessage() {
-		// TODO AlarrmNachricht bauen
+	public NAMSMessage receiveMessage() {
+		NAMSMessageJMSImpl namsMessage = null;
 		try {
 			Message message = messageQueue.take();
-			// TODO AlarrmNachricht bauen
-			System.out.println(message.toString());
+			namsMessage = new NAMSMessageJMSImpl(message);
 		} catch (InterruptedException e) {
 			// TODO exception handling
 			// e.printStackTrace();
 		}
-		return null;
+		return namsMessage;
 	}
 
 	private static class WorkThread extends Thread {
@@ -121,10 +122,24 @@ class JMSTopicConsumer implements Consumer {
 		private MessageConsumer consumer;
 
 		public WorkThread(LinkedBlockingQueue<Message> messageQueue,
-				Session session, String topic) throws JMSException {
+				Session session, String source, String clientId, PostfachArt art) throws JMSException {
 			this.messageQueue = messageQueue;
-			Topic topic2 = session.createTopic(topic);
-			consumer = session.createConsumer(topic2);
+			
+			switch (art) {
+			case QUEUE:
+				Queue queue = session.createQueue(source);
+				consumer = session.createConsumer(queue);
+				
+				break;
+			case TOPIC:
+				Topic topic = session.createTopic(source);
+				consumer = session.createDurableSubscriber(topic, clientId);
+				
+				break;
+			default:
+				// TODO exception handling
+				break;
+			}
 		}
 
 		public void close() throws JMSException {
