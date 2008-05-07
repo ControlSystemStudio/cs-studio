@@ -231,6 +231,11 @@ public class AlarmTreeView extends ViewPart {
 	private Action _runCssAlarmDisplayAction;
 	
 	/**
+	 * The Run CSS Display Action.
+	 */
+	private Action _runCssDisplayAction;
+	
+	/**
 	 * The Show Help Page action.
 	 */
 	private Action _showHelpPageAction;
@@ -399,10 +404,25 @@ public class AlarmTreeView extends ViewPart {
 		IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 		_acknowledgeAction.setEnabled(containsNodeWithUnackAlarm(sel));
 		_runCssAlarmDisplayAction.setEnabled(hasCssAlarmDisplay(sel.getFirstElement()));
+		_runCssDisplayAction.setEnabled(hasCssDisplay(sel.getFirstElement()));
 		_showHelpGuidanceAction.setEnabled(hasHelpGuidance(sel.getFirstElement()));
 		_showHelpPageAction.setEnabled(hasHelpPage(sel.getFirstElement()));
 	}
 	
+	/**
+	 * Returns whether the given node has a CSS display.
+	 * 
+	 * @param node the node.
+	 * @return <code>true</code> if the node has a display, <code>false</code>
+	 *         otherwise.
+	 */
+	private boolean hasCssDisplay(final Object node) {
+		if (node instanceof IAlarmTreeNode) {
+			return ((IAlarmTreeNode) node).getCssDisplay() != null;
+		}
+		return false;
+	}
+
 	/**
 	 * Return whether help guidance is available for the given node.
 	 * @param node the node.
@@ -517,6 +537,7 @@ public class AlarmTreeView extends ViewPart {
 		}
 		if (selection.size() == 1) {
 			menu.add(_runCssAlarmDisplayAction);
+			menu.add(_runCssDisplayAction);
 			menu.add(_showHelpGuidanceAction);
 			menu.add(_showHelpPageAction);
 			menu.add(new Separator("edit"));
@@ -616,6 +637,28 @@ public class AlarmTreeView extends ViewPart {
 		_runCssAlarmDisplayAction.setText("Run Alarm Display");
 		_runCssAlarmDisplayAction.setToolTipText("Run the alarm display for this PV");
 		_runCssAlarmDisplayAction.setEnabled(false);
+		
+		_runCssDisplayAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection = (IStructuredSelection)
+						_viewer.getSelection();
+				Object selected = selection.getFirstElement();
+				if (selected instanceof IAlarmTreeNode) {
+					IAlarmTreeNode node = (IAlarmTreeNode) selected;
+					IPath path = new Path(node.getCssDisplay());
+					Map<String,String> aliases = new HashMap<String, String>();
+					if (node instanceof ProcessVariableNode) {
+						aliases.put("channel", node.getName());
+					}
+					CentralLogger.getInstance().debug(this, "Opening display: " + path);
+					RunModeService.getInstance().openDisplayShellInRunMode(path, aliases);
+				}
+			}
+		};
+		_runCssDisplayAction.setText("Run Display");
+		_runCssDisplayAction.setToolTipText("Run the display for this PV");
+		_runCssDisplayAction.setEnabled(false);
 		
 		_showHelpGuidanceAction = new Action() {
 			@Override
