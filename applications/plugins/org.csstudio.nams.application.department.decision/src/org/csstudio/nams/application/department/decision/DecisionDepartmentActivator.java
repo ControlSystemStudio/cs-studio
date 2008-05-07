@@ -192,7 +192,7 @@ public class DecisionDepartmentActivator implements IApplication,
 							properties
 									.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
 											.name()),
-							PostfachArt.QUEUE,
+							PostfachArt.TOPIC,
 							properties
 									.getProperty(
 											PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS

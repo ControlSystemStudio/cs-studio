@@ -5,6 +5,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -108,10 +109,18 @@ class JMSConsumer implements Consumer {
 		NAMSMessageJMSImpl namsMessage = null;
 		try {
 			Message message = messageQueue.take();
+			
+			// FIXME das sollte erst später gemacht werden.
+			// am besten erst wenn die Nachricht fertig bearbeitet 
+			// und im ausgangs Korb liegt
+			message.acknowledge();
 			namsMessage = new NAMSMessageJMSImpl(message);
 		} catch (InterruptedException e) {
 			// TODO exception handling
 			// e.printStackTrace();
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return namsMessage;
 	}
