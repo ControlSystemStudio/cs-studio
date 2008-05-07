@@ -170,20 +170,20 @@ public class DecisionDepartmentActivator implements IApplication,
 			_consumer = consumerFactoryService
 					.createConsumer(
 							properties
-									.getProperty(PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID
+									.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_CLIENT_ID
 											.name()),
 							properties
-									.getProperty(PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME
+									.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
 											.name()),
 							PostfachArt.TOPIC,
 							properties
 									.getProperty(
-											PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS
+											PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS
 													.name()).split(","));
 			
 			logger
 					.logInfoMessage(this,
-							"Decision department application is creating configuring execution service...");
+							"Decision department application is configuring execution service...");
 			initialisiereThredGroupTypes(executionService);
 
 			logger
@@ -250,16 +250,16 @@ public class DecisionDepartmentActivator implements IApplication,
 	private void receiveMessagesUntilApplicationQuits(
 			Eingangskorb<Vorgangsmappe> eingangskorb) {
 		while (_continueWorking) {
-			/*-
-			 * jms.receive (tue was)
-			 */
-
+			
+			// TODO es kommen nicht nur Alarmniachrichten rein.
+			// deshalb brauchen wir einen eigenen Message Typ 
+			// um zu entscheiden was weiter damit gemacht werden soll.
 			AlarmNachricht receivedMessage = _consumer.receiveMessage();
 			logger.logInfoMessage(this, "Neue Alarmnachricht erhalten: "
 					+ receivedMessage.toString());
-//			eingangskorb.ablegen(recievedMessage);
-
-			// TODO an das Büro übergeben!
+			
+			// TODO Vorgangsmappe anlegen und in den Eingangskorb des Büros legen
+//			eingangskorb.ablegen(receivedMessage);
 
 			Thread.yield();
 		}
@@ -267,10 +267,10 @@ public class DecisionDepartmentActivator implements IApplication,
 
 	private Properties initProperties() throws InitPropertiesException {
 		String configFileName = System
-				.getProperty(PropertiesFileKeys.PROPERTY_KEY_CONFIG_FILE.name());
+				.getProperty(PropertiesFileKeys.CONFIG_FILE.name());
 		if (configFileName == null) {
 			String message = "No config file avail on Property-Id \""
-					+ PropertiesFileKeys.PROPERTY_KEY_CONFIG_FILE.name()
+					+ PropertiesFileKeys.CONFIG_FILE.name()
 					+ "\" specified.";
 			logger.logFatalMessage(this, message);
 			throw new InitPropertiesException(message);
@@ -279,7 +279,7 @@ public class DecisionDepartmentActivator implements IApplication,
 		File file = new File(configFileName);
 		if (!file.exists() && !file.canRead()) {
 			String message = "config file named \"" + file.getAbsolutePath()
-					+ "\" is not readable.";
+					+ "\" does not exist or is not readable.";
 			logger.logFatalMessage(this, message);
 			throw new InitPropertiesException(message);
 		}
@@ -292,16 +292,17 @@ public class DecisionDepartmentActivator implements IApplication,
 			// prüpfen ob die nötigen key enthalten sind
 			Set<Object> keySet = properties.keySet();
 			if (!keySet
-					.contains(PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID
+					.contains(PropertiesFileKeys.MESSAGING_CONSUMER_CLIENT_ID
 							.name())
 					|| !keySet
-							.contains(PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS
+							.contains(PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS
 									.name())
 					|| !keySet
-							.contains(PropertiesFileKeys.PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME
+							.contains(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
 									.name())) {
-				throw new Exception("config file named \""
-						+ file.getAbsolutePath() + "\" not valid.");
+				String message = "config file named \"" + file.getAbsolutePath() + "\" not valid.";
+				logger.logFatalMessage(this, message);
+				throw new Exception(message);
 			}
 
 			logger.logInfoMessage(this,

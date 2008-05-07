@@ -1,8 +1,8 @@
 package org.csstudio.nams.application.department.decision;
 
 /**
- * Schluesel f웦 die Property-Datei dieser Anwendung. Die Namen der Elemente ({@link Enum#name()})
- * sind die Schl웧sel der Eintr둮e.
+ * Schluesel f체r die Property-Datei dieser Anwendung. Die Namen der Elemente ({@link Enum#name()})
+ * sind die Schl체ssel der Eintr채ge.
  */
 enum PropertiesFileKeys {
 	/**
@@ -10,29 +10,29 @@ enum PropertiesFileKeys {
 	 * 
 	 * Ehemalig: "configFile"
 	 */
-	PROPERTY_KEY_CONFIG_FILE,
+	CONFIG_FILE,
 
 	/**
-	 * Der Schl웧sel des Properties-Datei-Eintrages f웦 die client id des
+	 * Der Schl체ssel des Properties-Datei-Eintrages f체r die client id des
 	 * jms message consumer(s).
 	 * 
 	 * Ehemalig: "CONSUMER_CLIENT_ID"
 	 */
-	PROPERTY_KEY_MESSAGING_CONSUMER_CLIENT_ID,
+	MESSAGING_CONSUMER_CLIENT_ID,
 
 	/**
-	 * Der Schl웧sel des Properties-Datei-Eintrages f웦 den source name des
+	 * Der Schl체ssel des Properties-Datei-Eintrages f체r den source name des
 	 * jms message consumer(s).
 	 * 
 	 * Ehemalig: "CONSUMER_SOURCE_NAME"
 	 */
-	PROPERTY_KEY_MESSAGING_CONSUMER_SOURCE_NAME,
+	MESSAGING_CONSUMER_SOURCE_NAME,
 
 	/**
-	 * Der Schl웧sel des Properties-Datei-Eintrages f웦 die server urls f웦
+	 * Der Schl체ssel des Properties-Datei-Eintrages f체r die server urls f체r
 	 * den jms message consumer.
 	 * 
 	 * Ehemalig: "CONSUMER_SERVER_URLS"
 	 */
-	PROPERTY_KEY_MESSAGING_CONSUMER_SERVER_URLS
+	MESSAGING_CONSUMER_SERVER_URLS
 }
