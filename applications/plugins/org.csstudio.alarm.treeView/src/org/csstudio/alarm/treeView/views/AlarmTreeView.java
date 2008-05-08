@@ -90,6 +90,8 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
+import org.eclipse.ui.views.IViewDescriptor;
+import org.eclipse.ui.views.IViewRegistry;
 
 /**
  * Tree view of process variables and their alarm state. This view uses LDAP
@@ -359,6 +361,11 @@ public class AlarmTreeView extends ViewPart {
 	 * The ID of this view.
 	 */
 	private static final String ID = "org.csstudio.alarm.treeView.views.LdapTView";
+
+	/**
+	 * The ID of the property view.
+	 */
+	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
 	
 	/**
 	 * The tree viewer that displays the alarm objects.
@@ -419,6 +426,11 @@ public class AlarmTreeView extends ViewPart {
 	 * The Delete action.
 	 */
 	private Action _deleteNodeAction;
+	
+	/**
+	 * The Show Property View action.
+	 */
+	private Action _showPropertyViewAction;
 	
 	/**
 	 * Returns the id of this view.
@@ -735,6 +747,7 @@ public class AlarmTreeView extends ViewPart {
 	 * @param manager the menu manager.
 	 */
 	private void fillLocalToolBar(final IToolBarManager manager) {
+		manager.add(_showPropertyViewAction);
 		manager.add(_reloadAction);
 	}
 
@@ -1009,6 +1022,24 @@ public class AlarmTreeView extends ViewPart {
 			}
 		};
 		_deleteNodeAction.setText("Delete");
+		
+		_showPropertyViewAction = new Action() {
+			@Override
+			public void run() {
+				try {
+					getSite().getPage().showView(PROPERTY_VIEW_ID);
+				} catch (PartInitException e) {
+					MessageDialog.openError(getSite().getShell(), "Alarm Tree",
+							e.getMessage());
+				}
+			}
+		};
+		_showPropertyViewAction.setText("Properties");
+		_showPropertyViewAction.setToolTipText("Show property view");
+		
+		IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench().getViewRegistry();
+		IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
+		_showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
 	}
 	
 	/**
