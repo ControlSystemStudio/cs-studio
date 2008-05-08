@@ -39,8 +39,10 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.ScrollBar;
 
 /**
+ *  Some code is borrowed from the basic image viewer.
+ *  http://www.eclipse.org/articles/Article-Image-Viewer/Image_viewer.html
  *  @author Markus Moeller
- *
+ *  @author Chengdong Li (some borrowed parts)
  */
 public class PaintSurface
 {
