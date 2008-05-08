@@ -171,8 +171,7 @@ public class ScreenshotView extends ViewPart
         tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/screen.gif"));
         toolbarManager.add(tempAction);
         toolbarManager.add(new Separator());
-        
-        
+       
         MenuManager restartMenu = new MenuManager("Restart");
         restartMenu.add(new RestartBeepAction(worker));
         restartMenu.add(new Separator());

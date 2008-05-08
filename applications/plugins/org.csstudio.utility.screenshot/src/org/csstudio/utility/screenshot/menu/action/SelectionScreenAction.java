@@ -36,7 +36,7 @@ public class SelectionScreenAction extends Action
         
         this.setText("Screen");
 
-        this.setToolTipText("Capture a screen.");
+        this.setToolTipText("Show the captured screen.");
         
         if(worker.getAllImages() != null)
         {         

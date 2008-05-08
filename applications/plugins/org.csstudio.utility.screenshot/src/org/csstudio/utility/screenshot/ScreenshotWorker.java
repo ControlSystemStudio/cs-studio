@@ -109,9 +109,9 @@ public class ScreenshotWorker
         paintCanvas.setBackground(paintColorWhite);
         
         // status text
-        final Text statusText = new Text(displayArea, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
-        gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL);
-        statusText.setLayoutData(gridData);
+        // final Text statusText = new Text(displayArea, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
+        // gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL);
+        // statusText.setLayoutData(gridData);
 
         /*** Create the remaining application elements inside the principal GUI layout elements ***/    
         // paintSurface
