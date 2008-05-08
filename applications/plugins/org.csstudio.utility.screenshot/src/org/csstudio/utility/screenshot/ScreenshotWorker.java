@@ -23,7 +23,6 @@
 
 package org.csstudio.utility.screenshot;
 
-import java.text.MessageFormat;
 import java.util.*;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.csstudio.utility.screenshot.util.*;
@@ -41,7 +40,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ScreenshotWorker
 {
-    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("screenshot");
     private Hashtable<String, String> messageContent  = null;
     private Display display = null;
     private Composite mainComposite;
@@ -156,36 +154,6 @@ public class ScreenshotWorker
      */
     public Display getDisplay() {
         return mainComposite.getDisplay();
-    }
-    
-    /**
-     * Gets a string from the resource bundle.
-     * We don't want to crash because of a missing String.
-     * Returns the key if not found.
-     */
-    public static String getResourceString(String key) {
-        try {
-            return resourceBundle.getString(key);
-        } catch (MissingResourceException e) {
-            return key;
-        } catch (NullPointerException e) {
-            return "!" + key + "!";
-        }           
-    }
-
-    /**
-     * Gets a string from the resource bundle and binds it
-     * with the given arguments. If the key is not found,
-     * return the key.
-     */
-    public static String getResourceString(String key, Object[] args) {
-        try {
-            return MessageFormat.format(getResourceString(key), args);
-        } catch (MissingResourceException e) {
-            return key;
-        } catch (NullPointerException e) {
-            return "!" + key + "!";
-        }
     }
 
     /**
