@@ -55,5 +55,61 @@ node (process variable node) is selected. It is not available for parent nodes
 or multi selections. If the menu item appears grayed out, no alarm display is
 configured for that process variable, or the attribute value does not look like
 a valid CSS display file name (the value must end with .css-sds).</p>
+
+<h2>Editing Support</h2>
+<p>The view contains support for editing the LDAP directory which defines the
+structure of the node displayed in the view.</p>
+<h3>Using the context menu</h3>
+<p>The context menu for a node contains menu items for deleting the node. For
+nodes which are not channels, it also contains menu items for creating a new
+component or subcomponent below the selected node, and for creating a new
+channel within the selected node. Whether a component or a subcomponent is
+created is determined automatically: if the selected node is a facility, you
+can create component nodes, if it is a component or a subcomponent, you can
+create subcomponents.</p>
+<p>Note that deletion does not work recursively, i.e., you can only delete nodes
+that do not have any subnodes. This is because of restrictions of the underlying
+LDAP server and also to prevent accidental deletion of large trees.</p>
+<h3>Using drag&amp;drop</h3>
+<p>In addition to using the context menu, you can also use the drag&amp;drop
+features of the Control System Studio to add additional channels to the tree.
+Simply select one or more channels in any view that supports drag&amp;drop and
+drag them into the alarm tree. While you are dragging items over the tree, the
+mouse cursor will change to indicate where you can drop those items.</p>
+<p>Note that the tree currently only supports dragging items into the tree. You
+cannot drag channel names or other nodes out of the tree into other views.
+Support for dragging will probably be added in a later version.</p>
+<h3>Editing the properties of nodes</h3>
+<p>You can use the Eclipse Property View to edit the properties of the nodes
+in the tree. The properties are stored as attributes in the LDAP directory. The
+property view can be opened by clicking the &quot;Property View&quot; button in
+the view's toolbar.</p>
+<p>The available properties are:</p>
+<dl>
+<dt>Alarm display</dt>
+<dd>The filename of the alarm display associated with the node. If this
+property contains the name of a CSS-SDS display file, you can open the display
+from the context menu in the Alarm Tree.</dd>
+<dt>Display</dt>
+<dd>The filename of the display associated with the node. If this
+property contains the name of a CSS-SDS display file, you can open the display
+from the context menu in the Alarm Tree.</dd>
+<dt>Help guidance</dt>
+<dd>A short description of the node.</dd>
+<dt>Help page</dt>
+<dd>URL of a web page which provides further information for the node.</dd>
+<dt>Name</dt>
+<dd>The name of the node. This property cannot be edited.</dd>
+<dt>Object class</dt>
+<dd>The object class of the entry in the LDAP directory. This property
+cannot be edited.</dd>
+<dt>Strip chart</dt>
+<dd>The filename of a strip chart file associated with the node. If this
+property is set, the file can be opened from the context menu.</dd>
+</dl>
+<p>Note that filenames must be relative to your CSS workspace. For example, the
+filename &quot;/SDS/displays/example.css-sds&quot; points to the file
+&quot;example.css-sds&quot; in the &quot;displays&quot; folder contained in the
+&quot;SDS&quot; project in your workspace.</p>
 </body>
 </html>
