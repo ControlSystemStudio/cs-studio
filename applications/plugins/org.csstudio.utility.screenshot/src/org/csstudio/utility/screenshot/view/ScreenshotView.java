@@ -108,6 +108,12 @@ public class ScreenshotView extends ViewPart
                 if(imageWorker[i] instanceof MailImageWorker)
                 {
                     tempAction = new FileSendImageAction(worker, imageWorker[i]);
+                    tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/email.gif"));
+                    toolbarManager.add(tempAction);
+                }
+                else
+                {
+                    tempAction = new FileSendImageAction(worker, imageWorker[i]);
                     tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/send.gif"));
                     toolbarManager.add(tempAction);
                 }
