@@ -101,7 +101,7 @@ public class ScreenshotWorker
         // this can be very tedious.
         
         // paint canvas
-        Canvas paintCanvas = new Canvas(displayArea, SWT.BORDER | SWT.NO_REDRAW_RESIZE | SWT.NO_BACKGROUND);
+        Canvas paintCanvas = new Canvas(displayArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_REDRAW_RESIZE | SWT.NO_BACKGROUND);
         gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
         paintCanvas.setLayoutData(gridData);
         paintCanvas.setBackground(paintColorWhite);
@@ -586,7 +586,7 @@ public class ScreenshotWorker
     {
         imageBundle.setDisplayedImage(i);
         
-        paintSurface.redraw();
+        paintSurface.syncScrollBars();
     }
 
     /*public void setDisplayedImage(ImageData i)

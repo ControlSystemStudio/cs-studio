@@ -24,14 +24,19 @@
 
 package org.csstudio.utility.screenshot.util;
 
+import java.awt.geom.AffineTransform;
 import org.csstudio.utility.screenshot.ImageBundle;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.ScrollBar;
 
 /**
  *  @author Markus Moeller
@@ -41,7 +46,9 @@ public class PaintSurface
 {
     private Canvas paintCanvas = null;
     private ImageBundle imageBundle = null;
-
+    private AffineTransform transform = new AffineTransform();
+    private Image screenImage = null;
+    
     public PaintSurface(Canvas paintCanvas, ImageBundle bundle)
     {
         this.paintCanvas = paintCanvas;
@@ -51,17 +58,14 @@ public class PaintSurface
         {       
             if(imageBundle.getSectionImage() != null)
             {
-                // setCapturedImage(imageBundle.getSectionImage());
                 imageBundle.setDisplayedImage(imageBundle.getSectionImage());
             }
             else if(imageBundle.getWindowImage() != null)
             {
-                // setCapturedImage(imageBundle.getWindowImage());
                 imageBundle.setDisplayedImage(imageBundle.getWindowImage());
             }
             else if(imageBundle.getScreenImage() != null)
             {
-                // setCapturedImage(imageBundle.getScreenImage());
                 imageBundle.setDisplayedImage(imageBundle.getScreenImage());
             }
         }
@@ -70,136 +74,161 @@ public class PaintSurface
         {
             public void paintControl(PaintEvent event)
             {
-                Canvas widget = (Canvas)event.widget;
-                Rectangle r = widget.getClientArea();
+                Rectangle clientRect = null;
                 
-                // float xScale = (float)(imageBundle.getImageWidth() / r.width);
-                // float yScale = (float)(imageBundle.getImageHeight() / r.height);
-
-                event.gc.drawImage(imageBundle.getDisplayedImage(), 0, 0, imageBundle.getImageWidth(),
-                        imageBundle.getImageHeight(), 0, 0, r.width, r.height);
-                
+                if(imageBundle.getDisplayedImage() != null)
+                {
+                    Canvas widget = (Canvas)event.widget;
+                    clientRect = widget.getClientArea();
+                    
+                    Rectangle imageRect=SWT2Dutil.inverseTransformRect(transform, clientRect);
+                    int gap = 2; /* find a better start point to render. */
+                    imageRect.x -= gap; imageRect.y -= gap;
+                    imageRect.width += 2 * gap; imageRect.height += 2 * gap;
+    
+                    Rectangle imageBound = imageBundle.getDisplayedImage().getBounds();
+                    imageRect = imageRect.intersection(imageBound);
+                    Rectangle destRect = SWT2Dutil.transformRect(transform, imageRect);
+         
+                    if(screenImage != null){screenImage.dispose();}
+                    screenImage = new Image(widget.getDisplay(), clientRect.width, clientRect.height);
+                    GC newGC = new GC(screenImage);
+                    newGC.setClipping(clientRect);
+                    newGC.drawImage( imageBundle.getDisplayedImage(),
+                            imageRect.x,
+                            imageRect.y,
+                            imageRect.width,
+                            imageRect.height,
+                            destRect.x,
+                            destRect.y,
+                            destRect.width,
+                            destRect.height);
+                    newGC.dispose();
+    
+                    event.gc.drawImage(screenImage, 0, 0);
+                }
+                else
+                {
+                    event.gc.setClipping(clientRect);
+                    event.gc.fillRectangle(clientRect);
+                    initScrollBars();
+                }
             }            
         });
-        
+                
         paintCanvas.addControlListener(new ControlAdapter()
         {
             public void controlResized(ControlEvent event)
             {
-                handleResize();
+                syncScrollBars();
             }           
         });
-//        
-//        /* Set up the paint canvas scroll bars */
-//        ScrollBar horizontal = paintCanvas.getHorizontalBar();
-//        horizontal.setVisible(true);
-//        horizontal.addSelectionListener(new SelectionAdapter() {
-//            public void widgetSelected(SelectionEvent event) {
-//                scrollHorizontally((ScrollBar)event.widget);
-//            }
-//        });
-//        ScrollBar vertical = paintCanvas.getVerticalBar();
-//        vertical.setVisible(true);
-//        vertical.addSelectionListener(new SelectionAdapter() {
-//            public void widgetSelected(SelectionEvent event) {
-//                scrollVertically((ScrollBar)event.widget);
-//            }
-//        });
+        
+        initScrollBars();
+    }
+
+    /* Initalize the scrollbar and register listeners. */
+    private void initScrollBars() {
+        ScrollBar horizontal = paintCanvas.getHorizontalBar();
+        horizontal.setEnabled(false);
+        horizontal.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                scrollHorizontally((ScrollBar) event.widget);
+            }
+        });
+        
+        ScrollBar vertical = paintCanvas.getVerticalBar();
+        vertical.setEnabled(false);
+        vertical.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                scrollVertically((ScrollBar) event.widget);
+            }
+        });
     }
 
     /**
-     * Handles a horizontal scroll event
-     * 
-     * @param scrollbar the horizontal scroll bar that posted this event
+     * Synchronize the scrollbar with the image. If the transform is out
+     * of range, it will correct it. This function considers only following
+     * factors :<b> transform, image size, client area</b>.
      */
-//    public void scrollHorizontally(ScrollBar scrollBar)
-//    {
-//        if(imageBundle.getDisplayedImage() == null) return;
-//        if(imageWidth > visibleWidth)
-//        {
-//            final int oldOffset = displayFDC.xOffset;
-//            final int newOffset = Math.min(scrollBar.getSelection(), imageWidth - visibleWidth);
-//            
-//            if(oldOffset != newOffset)
-//            {
-//                paintCanvas.update();
-//                displayFDC.xOffset = newOffset;
-//                paintCanvas.scroll(Math.max(oldOffset - newOffset, 0), 0, Math.max(newOffset - oldOffset, 0), 0,
-//                    visibleWidth, visibleHeight, false);
-//            }
-//        }
-//    }
-
-    /**
-     * Handles a vertical scroll event
-     * 
-     * @param scrollbar the vertical scroll bar that posted this event
-     */
-//    public void scrollVertically(ScrollBar scrollBar)
-//    {
-//        if(imageBundle.getDisplayedImage() == null) return;
-//        if (imageHeight > visibleHeight)
-//        {
-//            final int oldOffset = displayFDC.yOffset;
-//            final int newOffset = Math.min(scrollBar.getSelection(), imageHeight - visibleHeight);
-//            
-//            if (oldOffset != newOffset)
-//            {
-//                paintCanvas.update();
-//                displayFDC.yOffset = newOffset;
-//                paintCanvas.scroll(0, Math.max(oldOffset - newOffset, 0), 0, Math.max(newOffset - oldOffset, 0),
-//                    visibleWidth, visibleHeight, false);
-//            }
-//        }
-//    }
-
-    /**
-     * Handles resize events
-     */
-    private void handleResize()
+    public void syncScrollBars()
     {
+        if(imageBundle.getDisplayedImage() == null)
+        {
+            redraw();
+            return;
+        }
+
+        AffineTransform af = transform;
+        double sx = af.getScaleX(), sy = af.getScaleY();
+        double tx = af.getTranslateX(), ty = af.getTranslateY();
+        if (tx > 0) tx = 0;
+        if (ty > 0) ty = 0;
+
+        ScrollBar horizontal = paintCanvas.getHorizontalBar();
+        horizontal.setIncrement((int) (paintCanvas.getClientArea().width / 100));
+        horizontal.setPageIncrement(paintCanvas.getClientArea().width);
+        Rectangle imageBound = imageBundle.getDisplayedImage().getBounds();
+        int cw = paintCanvas.getClientArea().width, ch = paintCanvas.getClientArea().height;
+        if (imageBound.width * sx > cw) { /* image is wider than client area */
+            horizontal.setMaximum((int) (imageBound.width * sx));
+            horizontal.setEnabled(true);
+            if (((int) - tx) > horizontal.getMaximum() - cw)
+                tx = -horizontal.getMaximum() + cw;
+        } else { /* image is narrower than client area */
+            horizontal.setEnabled(false);
+            tx = (cw - imageBound.width * sx) / 2; //center if too small.
+        }
+        horizontal.setSelection((int) (-tx));
+        horizontal.setThumb((int) (paintCanvas.getClientArea().width));
+
+        ScrollBar vertical = paintCanvas.getVerticalBar();
+        vertical.setIncrement((int) (paintCanvas.getClientArea().height / 100));
+        vertical.setPageIncrement((int) (paintCanvas.getClientArea().height));
+        if (imageBound.height * sy > ch) { /* image is higher than client area */
+            vertical.setMaximum((int) (imageBound.height * sy));
+            vertical.setEnabled(true);
+            if (((int) - ty) > vertical.getMaximum() - ch)
+                ty = -vertical.getMaximum() + ch;
+        } else { /* image is less higher than client area */
+            vertical.setEnabled(false);
+            ty = (ch - imageBound.height * sy) / 2; //center if too small.
+        }
+        vertical.setSelection((int) (-ty));
+        vertical.setThumb((int) (paintCanvas.getClientArea().height));
+
+        /* update transform. */
+        af = AffineTransform.getScaleInstance(sx, sy);
+        af.preConcatenate(AffineTransform.getTranslateInstance(tx, ty));
+        transform = af;
+
         paintCanvas.redraw();
-//        
-//        Rectangle visibleRect = paintCanvas.getClientArea();
-//        
-//        visibleWidth = visibleRect.width;
-//        visibleHeight = visibleRect.height;
-//
-//        ScrollBar horizontal = paintCanvas.getHorizontalBar();
-//        if (horizontal != null)
-//        {
-//            displayFDC.xOffset = Math.min(horizontal.getSelection(), imageWidth - visibleWidth);
-//            
-//            if (imageWidth <= visibleWidth)
-//            {
-//                horizontal.setEnabled(false);
-//                horizontal.setSelection(0);
-//            }
-//            else
-//            {
-//                horizontal.setEnabled(true);
-//                horizontal.setValues(displayFDC.xOffset, 0, imageWidth, visibleWidth,
-//                    8, visibleWidth);
-//            }
-//        }
-//
-//        ScrollBar vertical = paintCanvas.getVerticalBar();
-//        if (vertical != null)
-//        {
-//            displayFDC.yOffset = Math.min(vertical.getSelection(), imageHeight - visibleHeight);
-//            
-//            if (imageHeight <= visibleHeight)
-//            {
-//                vertical.setEnabled(false);
-//                vertical.setSelection(0);
-//            }
-//            else
-//            {
-//                vertical.setEnabled(true);
-//                vertical.setValues(displayFDC.yOffset, 0, imageHeight, visibleHeight,
-//                    8, visibleHeight);
-//            }
-//        }
+    }
+
+    /* Scroll horizontally */
+    private void scrollHorizontally(ScrollBar scrollBar) {
+        if (imageBundle.getDisplayedImage() == null)
+            return;
+
+        AffineTransform af = transform;
+        double tx = af.getTranslateX();
+        double select = -scrollBar.getSelection();
+        af.preConcatenate(AffineTransform.getTranslateInstance(select - tx, 0));
+        transform = af;
+        syncScrollBars();
+    }
+
+    /* Scroll vertically */
+    private void scrollVertically(ScrollBar scrollBar) {
+        if (imageBundle.getDisplayedImage() == null)
+            return;
+
+        AffineTransform af = transform;
+        double ty = af.getTranslateY();
+        double select = -scrollBar.getSelection();
+        af.preConcatenate(AffineTransform.getTranslateInstance(0, select - ty));
+        transform = af;
+        syncScrollBars();
     }
 
     public void redraw()
@@ -211,6 +240,16 @@ public class PaintSurface
     {
         paintCanvas = null;
         imageBundle = null;
+        
+        if(screenImage != null)
+        {
+            if(!screenImage.isDisposed())
+            {
+                screenImage.dispose();
+            }
+            
+            screenImage = null;
+        }
     }
 
     public Image getImage()
