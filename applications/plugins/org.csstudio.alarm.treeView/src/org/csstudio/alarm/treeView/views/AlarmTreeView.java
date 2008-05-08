@@ -43,8 +43,14 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
 import org.csstudio.sds.ui.runmode.RunModeService;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -73,10 +79,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
@@ -199,6 +209,151 @@ public class AlarmTreeView extends ViewPart {
 			}
 		}
 	}
+	
+	/**
+	 * The persistent property key used on IFile resources to contain the
+	 * preferred editor ID to use.
+	 */
+	// Note: this is from org.eclipse.ui.ide.IDE, but seems to be used by
+	// non-IDE code as well. I don't know if this is officially documented
+	// anywhere.
+	private static final QualifiedName EDITOR_KEY = new QualifiedName(
+			"org.eclipse.ui.internal.registry.ResourceEditorRegistry", "EditorProperty");
+	
+	/**
+	 * This action opens the strip chart associated with the selected node.
+	 */
+	private class OpenStripChartAction extends Action {
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void run() {
+			IAlarmTreeNode node = getSelectedNode();
+			if (node != null) {
+				IPath path = new Path(node.getCssStripChart());
+				
+				// The following code assumes that the path is relative to
+				// the Eclipse workspace.
+				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+				IWorkbenchPage page = getSite().getPage();
+				try {
+					openEditor(page, file);
+				} catch (PartInitException e) {
+					MessageDialog.openError(getSite().getShell(), "Alarm Tree",
+							e.getMessage());
+				}
+			}
+		}
+
+		/**
+		 * <p>
+		 * Opens an editor on the given file resource. This method will attempt
+		 * to resolve the editor based on content-type bindings as well as
+		 * traditional name/extension bindings.
+		 * </p>
+		 * 
+		 * <p>
+		 * If the page already has an editor open on the target object then that
+		 * editor is brought to front; otherwise, a new editor is opened. If
+		 * <code>activate == true</code> the editor will be activated.
+		 * </p>
+		 * 
+		 * @param page
+		 *            the page in which the editor will be opened.
+		 * @param input
+		 *            the editor input.
+		 * @throws PartInitException
+		 *             if the editor could not be initialized.
+		 * @see IWorkbenchPage#openEditor(org.eclipse.ui.IEditorInput, String)
+		 */
+		private void openEditor(IWorkbenchPage page, IFile input) throws PartInitException {
+			IEditorDescriptor editorDesc = getEditorDescriptor(input);
+			page.openEditor(new FileEditorInput(input), editorDesc.getId());
+		}
+
+		/**
+		 * Returns an editor descriptor appropriate for opening the given file
+		 * resource.
+		 * 
+		 * @param file
+		 *            the file.
+		 * @return an editor descriptor.
+		 * @throws PartInitException
+		 *             if no editor can be found.
+		 */
+		private IEditorDescriptor getEditorDescriptor(IFile file) throws PartInitException {
+			IEditorDescriptor editorDesc = getDefaultEditor(file);
+			if (editorDesc == null) {
+				throw new PartInitException("No editor found.");
+			}
+			return editorDesc;
+		}
+
+		/**
+		 * Returns the editor for the given file.
+		 * 
+		 * @param file
+		 *            the file.
+		 * @return the descriptor of the default editor, or <code>null</code>
+		 *         if not found.
+		 */
+		private IEditorDescriptor getDefaultEditor(IFile file) {
+			IEditorRegistry editorReg =
+					PlatformUI.getWorkbench().getEditorRegistry();
+			
+			// Try file specific editor.
+			try {
+				String editorId = file.getPersistentProperty(EDITOR_KEY);
+				if (editorId != null) {
+					IEditorDescriptor editorDesc = editorReg.findEditor(editorId);
+					if (editorDesc != null) {
+						return editorDesc;
+					}
+				}
+			} catch (CoreException e) {
+				// do nothing
+			}
+			
+			IContentType contentType = getContentType(file);
+			// Try lookup with filename
+			return editorReg.getDefaultEditor(file.getName(), contentType);
+		}
+
+		/**
+		 * Returns the content type for the given file.
+		 * 
+		 * @param file
+		 *            the file to test.
+		 * @return the content type, or <code>null</code> if it cannot be
+		 *         determined.
+		 */
+		private IContentType getContentType(IFile file) {
+			try {
+				IContentDescription contentDesc = file.getContentDescription();
+				return contentDesc == null ? null : contentDesc.getContentType();
+			} catch (CoreException e) {
+				return null;
+			}
+		}
+
+		/**
+		 * Returns the node that is currently selected in the tree.
+		 * 
+		 * @return the selected node, or <code>null</code> if the selection is
+		 *         empty or the selected node is not of type
+		 *         <code>IAlarmTreeNode</code>.
+		 */
+		private IAlarmTreeNode getSelectedNode() {
+			IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
+			Object selected = selection.getFirstElement();
+			if (selected instanceof IAlarmTreeNode) {
+				return (IAlarmTreeNode) selected;
+			}
+			return null;
+		}
+	}
 
 	/**
 	 * The ID of this view.
@@ -231,9 +386,14 @@ public class AlarmTreeView extends ViewPart {
 	private Action _runCssAlarmDisplayAction;
 	
 	/**
-	 * The Run CSS Display Action.
+	 * The Run CSS Display action.
 	 */
 	private Action _runCssDisplayAction;
+	
+	/**
+	 * The Open CSS Strip Chart action.
+	 */
+	private Action _openCssStripChartAction;
 	
 	/**
 	 * The Show Help Page action.
@@ -405,10 +565,25 @@ public class AlarmTreeView extends ViewPart {
 		_acknowledgeAction.setEnabled(containsNodeWithUnackAlarm(sel));
 		_runCssAlarmDisplayAction.setEnabled(hasCssAlarmDisplay(sel.getFirstElement()));
 		_runCssDisplayAction.setEnabled(hasCssDisplay(sel.getFirstElement()));
+		_openCssStripChartAction.setEnabled(hasCssStripChart(sel.getFirstElement()));
 		_showHelpGuidanceAction.setEnabled(hasHelpGuidance(sel.getFirstElement()));
 		_showHelpPageAction.setEnabled(hasHelpPage(sel.getFirstElement()));
 	}
 	
+	/**
+	 * Returns whether the given node has a CSS strip chart.
+	 * 
+	 * @param node the node.
+	 * @return <code>true</code> if the node has a strip chart,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean hasCssStripChart(final Object node) {
+		if (node instanceof IAlarmTreeNode) {
+			return ((IAlarmTreeNode) node).getCssStripChart() != null;
+		}
+		return false;
+	}
+
 	/**
 	 * Returns whether the given node has a CSS display.
 	 * 
@@ -538,6 +713,7 @@ public class AlarmTreeView extends ViewPart {
 		if (selection.size() == 1) {
 			menu.add(_runCssAlarmDisplayAction);
 			menu.add(_runCssDisplayAction);
+			menu.add(_openCssStripChartAction);
 			menu.add(_showHelpGuidanceAction);
 			menu.add(_showHelpPageAction);
 			menu.add(new Separator("edit"));
@@ -659,6 +835,11 @@ public class AlarmTreeView extends ViewPart {
 		_runCssDisplayAction.setText("Run Display");
 		_runCssDisplayAction.setToolTipText("Run the display for this PV");
 		_runCssDisplayAction.setEnabled(false);
+		
+		_openCssStripChartAction = new OpenStripChartAction();
+		_openCssStripChartAction.setText("Open Strip Chart");
+		_openCssStripChartAction.setToolTipText("Open the strip chart for this node");
+		_openCssStripChartAction.setEnabled(false);
 		
 		_showHelpGuidanceAction = new Action() {
 			@Override
