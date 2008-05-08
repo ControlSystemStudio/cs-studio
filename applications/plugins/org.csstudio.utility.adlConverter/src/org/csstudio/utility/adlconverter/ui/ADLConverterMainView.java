@@ -196,6 +196,7 @@ public class ADLConverterMainView extends ViewPart {
                     file = null;
 
                     avaibleFiles.setSelection(new StructuredSelection(list), true);
+                    avaibleFiles.getList().getParent().layout();
                 }
 //                int[] index = avaibleFiles.getList().getSelectionIndices();
 //                
