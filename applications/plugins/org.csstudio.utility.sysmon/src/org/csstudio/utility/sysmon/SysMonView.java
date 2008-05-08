@@ -22,9 +22,12 @@ public class SysMonView extends ViewPart
     final public static String ID = "org.csstudio.utility.sysmon.SysMonView"; //$NON-NLS-1$
 
     private SysInfoBuffer sysinfos;
+
+    /** Delay between scans */
+    private int scan_delay_millis;
     
     // GUI Elements
-    private Text free, total, max;
+    private Text time_span, free, total, max;
     private PlotWidget plot;
 
     /** Runnable that runs the update */
@@ -35,6 +38,7 @@ public class SysMonView extends ViewPart
             update();
         }
     };
+
     
     /** Create GUI */
     @Override
@@ -47,6 +51,7 @@ public class SysMonView extends ViewPart
         parent.setLayout(layout);
         
         // ........ Plot .......
+        // Span:  __time span__
         // Total: __total__
         // Free:  __free___
         // Max:   __max____ [GC]
@@ -62,6 +67,26 @@ public class SysMonView extends ViewPart
         
         // New Row
         Label l = new Label(parent, 0);
+        l.setText(Messages.SysMon_SpanLabel);
+        l.setLayoutData(new GridData());
+
+        time_span = new Text(parent, SWT.READ_ONLY);
+        time_span.setToolTipText(Messages.SysMon_Span_TT);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        time_span.setLayoutData(gd);
+
+        final Button run_gc = new Button(parent, SWT.PUSH);
+        run_gc.setText(Messages.SysMon_GCLabel);
+        run_gc.setToolTipText(Messages.SysMon_GC_TT);
+        gd = new GridData();
+        gd.verticalSpan = 3;
+        gd.verticalAlignment = SWT.BOTTOM;
+        run_gc.setLayoutData(gd);
+        
+        // New Row
+        l = new Label(parent, 0);
         l.setText(Messages.SysMon_TotalLabel);
         l.setLayoutData(new GridData());
 
@@ -72,14 +97,6 @@ public class SysMonView extends ViewPart
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         total.setLayoutData(gd);
-
-        Button run_gc = new Button(parent, SWT.PUSH);
-        run_gc.setText(Messages.SysMon_GCLabel);
-        run_gc.setToolTipText(Messages.SysMon_GC_TT);
-        gd = new GridData();
-        gd.verticalSpan = 3;
-        gd.verticalAlignment = SWT.BOTTOM;
-        run_gc.setLayoutData(gd);
 
         // New Row
         l = new Label(parent, 0);
@@ -115,6 +132,7 @@ public class SysMonView extends ViewPart
             }
         });
         
+        scan_delay_millis = PreferencePage.getScanDelaySecs() * 1000;
         update();
     }
 
@@ -133,10 +151,14 @@ public class SysMonView extends ViewPart
         
         final SysInfo info = new SysInfo();
         sysinfos.add(info);
+        // Compute displayed time span
+        final double displayed_hours =
+            sysinfos.getSampleCount() * scan_delay_millis/1000.0/60.0/60.0;
+        time_span.setText(String.format(Messages.SysMon_TimeSpanFormat, displayed_hours));
         free.setText(String.format(Messages.SysMon_MemFormat, info.getFreeMB()));
         total.setText(String.format(Messages.SysMon_MemFormat, info.getTotalMB()));
         max.setText(String.format(Messages.SysMon_MemFormat, info.getMaxMB()));
         plot.redraw();
-        Display.getDefault().timerExec(PreferencePage.getScanDelayMillis(), updater);
+        Display.getDefault().timerExec(scan_delay_millis, updater);
     }
 }
