@@ -294,7 +294,7 @@ public class ScreenshotWorker
     
     public void captureImages(ImageBundle in)
     {
-        ImageLoader loader  = null;
+//        ImageLoader loader  = null;
         Rectangle   rect    = null;
         Image       img     = null;
         Image       dispImg = null;
@@ -310,11 +310,11 @@ public class ScreenshotWorker
         gc = null;
         
         // ------ TEST -------
-        loader = new ImageLoader();
-        ImageData[] imageData = new ImageData[1];
-        imageData[0] = dispImg.getImageData();
-        loader.data = imageData;
-        loader.save("D:\\screen.bmp", SWT.IMAGE_BMP);
+//        loader = new ImageLoader();
+//        ImageData[] imageData = new ImageData[1];
+//        imageData[0] = dispImg.getImageData();
+//        loader.data = imageData;
+//        loader.save("D:\\screen.bmp", SWT.IMAGE_BMP);
         
         // Window dump
         rect = getPartControl(display, false, true);
@@ -331,9 +331,9 @@ public class ScreenshotWorker
             gc.dispose();
             gc = null;
             
-            imageData[0] = img.getImageData();
-            loader.data = imageData;
-            loader.save("D:\\window.bmp", SWT.IMAGE_BMP);
+//            imageData[0] = img.getImageData();
+//            loader.data = imageData;
+//            loader.save("D:\\window.bmp", SWT.IMAGE_BMP);
 
             img.dispose();           
             img = null;
@@ -358,9 +358,9 @@ public class ScreenshotWorker
             gc.dispose();
             gc = null;
             
-            imageData[0] = img.getImageData();
-            loader.data = imageData;
-            loader.save("D:\\section.bmp", SWT.IMAGE_BMP);
+//            imageData[0] = img.getImageData();
+//            loader.data = imageData;
+//            loader.save("D:\\section.bmp", SWT.IMAGE_BMP);
             
             img.dispose();
             img = null;
