@@ -177,7 +177,11 @@ public class ADLDynamicAttribute extends WidgetPart{
                 if(_clr.equals("alarm")){ //$NON-NLS-1$
                     _color = true;
                     _adlColorDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_background"); //$NON-NLS-1$
-                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(_chan[0]+".SEVR",Double.class)); //$NON-NLS-1$
+                    String temp = _chan[0];
+                    if(!temp.endsWith(".SEVR")){
+                        temp= temp.concat(".SEVR");
+                    }
+                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(temp,Double.class)); //$NON-NLS-1$
                 }
             }
         }
