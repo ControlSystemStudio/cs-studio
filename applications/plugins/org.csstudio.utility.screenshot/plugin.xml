@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="ImageWorker" name="ImageWorker" schema="schema/ImageWorker.exsd"/>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Opens the screenshot window."
+            id="ScreenshotActionSet"
+            label="Screenshot Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.utility.screenshot.action.OpenScreenshotWindowAction"
+               icon="icons/camera16.gif"
+               id="OpenScreenshotWindow"
+               label="Screenshot"
+               menubarPath="css/utility/"
+               style="push"
+               toolbarPath="Normal/additions"
+               tooltip="Opens the screenshot window.">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.utilities"
+            class="org.csstudio.utility.screenshot.preference.ScreenshotPreferencePage"
+            id="org.csstudio.utility.screenshot.preferencepage"
+            name="Screenshot Preferences"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.utility.screenshot.preference.ScreenshotPreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.csstudio.utility.screenshot.ImageWorker">
+      <ImageWorker
+            class="org.csstudio.utility.screenshot.destination.MailImageWorker"
+            id="org.csstudio.utility.screenshot.InternalImageWorker"
+            name="internalImageWorker"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.csstudio.utility.screenshot.view.ScreenshotView"
+            id="screenshotView"
+            name="Screenshot"/>
+   </extension>
+
+</plugin>
