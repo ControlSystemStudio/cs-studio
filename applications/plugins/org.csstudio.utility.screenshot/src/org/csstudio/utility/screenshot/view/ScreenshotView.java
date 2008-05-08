@@ -93,6 +93,24 @@ public class ScreenshotView extends ViewPart
         IToolBarManager toolbarManager = actionBars.getToolBarManager();
         IMenuManager menuBar = actionBars.getMenuManager();
         
+        tempAction = new ZoomInAction(worker);
+        tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/zoomin.gif"));
+        toolbarManager.add(tempAction);
+        
+        tempAction = new ZoomOutAction(worker);
+        tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/zoomout.gif"));
+        toolbarManager.add(tempAction);
+        
+        tempAction = new FitImageAction(worker);
+        tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/fitimage.gif"));
+        toolbarManager.add(tempAction);
+
+        tempAction = new ShowOriginalAction(worker);
+        tempAction.setImageDescriptor(ScreenshotPlugin.getImageDescriptor("icons/original.gif"));
+        toolbarManager.add(tempAction);
+
+        toolbarManager.add(new Separator());
+
         // Create the menu
         MenuManager fileMenu = new MenuManager("File");
 

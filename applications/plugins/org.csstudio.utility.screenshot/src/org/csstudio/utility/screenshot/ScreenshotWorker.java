@@ -594,6 +594,11 @@ public class ScreenshotWorker
         paintSurface.setCapturedImage(i);
     }*/
 
+    public PaintSurface getPaintSurface()
+    {
+        return paintSurface;
+    }
+    
     public ImageBundle getAllImages()
     {
         return imageBundle;

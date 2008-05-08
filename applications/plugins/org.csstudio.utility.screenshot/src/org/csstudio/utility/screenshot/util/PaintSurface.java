@@ -46,6 +46,10 @@ import org.eclipse.swt.widgets.ScrollBar;
  */
 public class PaintSurface
 {
+    /* zooming rates in x and y direction are equal.*/
+    final float ZOOMIN_RATE = 1.1f; /* zoomin rate */
+    final float ZOOMOUT_RATE = 0.9f; /* zoomout rate */
+
     private Canvas paintCanvas = null;
     private ImageBundle imageBundle = null;
     private AffineTransform transform = new AffineTransform();
@@ -252,6 +256,79 @@ public class PaintSurface
             
             screenImage = null;
         }
+    }
+    
+    /**
+     * Perform a zooming operation centered on the given point
+     * (dx, dy) and using the given scale factor. 
+     * The given AffineTransform instance is preconcatenated.
+     * @param dx center x
+     * @param dy center y
+     * @param scale zoom rate
+     * @param af original affinetransform
+     */
+    public void centerZoom(
+        double dx,
+        double dy,
+        double scale,
+        AffineTransform af) {
+        af.preConcatenate(AffineTransform.getTranslateInstance(-dx, -dy));
+        af.preConcatenate(AffineTransform.getScaleInstance(scale, scale));
+        af.preConcatenate(AffineTransform.getTranslateInstance(dx, dy));
+        transform = af;
+        syncScrollBars();
+    }
+
+    /**
+     * Fit the image onto the canvas
+     */
+    public void fitCanvas() {
+        if (imageBundle.getDisplayedImage() == null)
+            return;
+        Rectangle imageBound = imageBundle.getDisplayedImage().getBounds();
+        Rectangle destRect = paintCanvas.getClientArea();
+        double sx = (double) destRect.width / (double) imageBound.width;
+        double sy = (double) destRect.height / (double) imageBound.height;
+        double s = Math.min(sx, sy);
+        double dx = 0.5 * destRect.width;
+        double dy = 0.5 * destRect.height;
+        centerZoom(dx, dy, s, new AffineTransform());
+    }
+
+    /**
+     * Zoom in around the center of client Area.
+     */
+    public void zoomIn() {
+        if (imageBundle.getDisplayedImage() == null)
+            return;
+        Rectangle rect = paintCanvas.getClientArea();
+        int w = rect.width, h = rect.height;
+        double dx = ((double) w) / 2;
+        double dy = ((double) h) / 2;
+        centerZoom(dx, dy, ZOOMIN_RATE, transform);
+    }
+
+    /**
+     * Zoom out around the center of client Area.
+     */
+    public void zoomOut() {
+        if (imageBundle.getDisplayedImage() == null)
+            return;
+        Rectangle rect = paintCanvas.getClientArea();
+        int w = rect.width, h = rect.height;
+        double dx = ((double) w) / 2;
+        double dy = ((double) h) / 2;
+        centerZoom(dx, dy, ZOOMOUT_RATE, transform);
+    }
+
+    /**
+     * Show the image with the original size
+     */
+    public void showOriginal() {
+        if (imageBundle.getDisplayedImage() == null)
+            return;
+        transform = new AffineTransform();
+        syncScrollBars();
     }
 
     public Image getImage()
