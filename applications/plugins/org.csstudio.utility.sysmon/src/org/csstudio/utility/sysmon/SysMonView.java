@@ -77,14 +77,10 @@ public class SysMonView extends ViewPart
         gd.horizontalAlignment = SWT.FILL;
         time_span.setLayoutData(gd);
 
-        final Button run_gc = new Button(parent, SWT.PUSH);
-        run_gc.setText(Messages.SysMon_GCLabel);
-        run_gc.setToolTipText(Messages.SysMon_GC_TT);
-        gd = new GridData();
-        gd.verticalSpan = 3;
-        gd.verticalAlignment = SWT.BOTTOM;
-        run_gc.setLayoutData(gd);
-        
+        // Placeholder for last column
+        l = new Label(parent, 0);
+        l.setLayoutData(new GridData());
+
         // New Row
         l = new Label(parent, 0);
         l.setText(Messages.SysMon_TotalLabel);
@@ -97,6 +93,10 @@ public class SysMonView extends ViewPart
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         total.setLayoutData(gd);
+
+        // Placeholder for last column
+        l = new Label(parent, 0);
+        l.setLayoutData(new GridData());
 
         // New Row
         l = new Label(parent, 0);
@@ -111,6 +111,10 @@ public class SysMonView extends ViewPart
         gd.horizontalAlignment = SWT.FILL;
         free.setLayoutData(gd);
         
+        // Placeholder for last column
+        l = new Label(parent, 0);
+        l.setLayoutData(new GridData());
+
         // New Row
         l = new Label(parent, 0);
         l.setText(Messages.SysMon_MaxLabel);
@@ -122,6 +126,13 @@ public class SysMonView extends ViewPart
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         max.setLayoutData(gd);
+        
+        final Button run_gc = new Button(parent, SWT.PUSH);
+        run_gc.setText(Messages.SysMon_GCLabel);
+        run_gc.setToolTipText(Messages.SysMon_GC_TT);
+        gd = new GridData();
+        gd.verticalAlignment = SWT.BOTTOM;
+        run_gc.setLayoutData(gd);
         
         run_gc.addSelectionListener(new SelectionAdapter()
         {
