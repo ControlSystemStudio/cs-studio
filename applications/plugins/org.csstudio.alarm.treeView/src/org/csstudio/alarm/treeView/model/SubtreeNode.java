@@ -123,6 +123,17 @@ public class SubtreeNode extends AbstractAlarmTreeNode implements IAdaptable, IA
 	}
 	
 	/**
+	 * Returns the object class recommended for a <code>SubtreeNode</code>
+	 * that is a child of this node.
+	 * 
+	 * @return the object class recommended for subtree children of this node.
+	 *         <code>null</code> if there is no recommended class.
+	 */
+	public final ObjectClass getRecommendedChildSubtreeClass() {
+		return _objectClass.getNestedContainerClass();
+	}
+	
+	/**
 	 * Returns the name of object in the directory which this node represents.
 	 * The name depends on the object class and name of this node and the
 	 * object classes and names of this node's parent nodes.

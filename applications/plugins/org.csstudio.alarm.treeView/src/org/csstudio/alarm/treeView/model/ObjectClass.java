@@ -57,6 +57,13 @@ public enum ObjectClass {
 	 */
 	RECORD("epicsRecord", "eren", "record");
 	
+	static {
+		// Initialize the _nestedClass attribute
+		FACILITY._nestedClass = COMPONENT;
+		COMPONENT._nestedClass = SUBCOMPONENT;
+		SUBCOMPONENT._nestedClass = SUBCOMPONENT;
+	}
+	
 	/**
 	 * The name of this object class in the directory.
 	 */
@@ -73,6 +80,13 @@ public enum ObjectClass {
 	 * directory.
 	 */
 	private final String _cssType;
+	
+	/**
+	 * The object class of a container nested within a container of this object
+	 * class. <code>null</code> if this object class is not a container or if
+	 * there is no standard nested class for this class.
+	 */
+	private ObjectClass _nestedClass;
 
 	/**
 	 * Creates a new object class.
@@ -114,5 +128,19 @@ public enum ObjectClass {
 	 */
 	public String getCssType() {
 		return _cssType;
+	}
+	
+	/**
+	 * Returns the object class that a container entry nested within this an
+	 * entry of this object class should have. If this object class is not a
+	 * container class or if there is no recommended class for nested
+	 * containers, this method returns <code>null</code>.
+	 * 
+	 * @return the recommended object class for a container within a container
+	 *         of this object class. <code>null</code> if there is no
+	 *         recommended class.
+	 */
+	public ObjectClass getNestedContainerClass() {
+		return _nestedClass;
 	}
 }

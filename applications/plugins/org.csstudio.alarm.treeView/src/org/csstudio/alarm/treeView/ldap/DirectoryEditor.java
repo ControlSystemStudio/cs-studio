@@ -255,8 +255,12 @@ public final class DirectoryEditor {
 	 */
 	public static void createComponent(final SubtreeNode parent,
 			final String componentName) throws DirectoryEditException {
-		createEntry(fullName(parent), componentName, ObjectClass.COMPONENT);
-		new SubtreeNode(parent, componentName, ObjectClass.COMPONENT);
+		ObjectClass oclass = parent.getRecommendedChildSubtreeClass();
+		if (oclass == null) {
+			oclass = ObjectClass.COMPONENT;
+		}
+		createEntry(fullName(parent), componentName, oclass);
+		new SubtreeNode(parent, componentName, oclass);
 	}
 	
 	

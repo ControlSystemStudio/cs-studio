@@ -36,6 +36,7 @@ import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.ldap.LdapDirectoryReader;
 import org.csstudio.alarm.treeView.ldap.LdapDirectoryStructureReader;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.ObjectClass;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
@@ -734,6 +735,7 @@ public class AlarmTreeView extends ViewPart {
 		if (selection.size() == 1
 				&& selection.getFirstElement() instanceof SubtreeNode) {
 			menu.add(_createRecordAction);
+			updateCreateComponentActionText();
 			menu.add(_createComponentAction);
 		}
 		
@@ -742,6 +744,21 @@ public class AlarmTreeView extends ViewPart {
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 	
+	/**
+	 * Updates the text of the Create Component action based on the object class
+	 * of the currently selected node.
+	 */
+	private void updateCreateComponentActionText() {
+		SubtreeNode node = (SubtreeNode) ((IStructuredSelection) _viewer.
+				getSelection()).getFirstElement();
+		ObjectClass oclass = node.getRecommendedChildSubtreeClass();
+		if (oclass == ObjectClass.SUBCOMPONENT) {
+			_createComponentAction.setText("Create Subcomponent");
+		} else {
+			_createComponentAction.setText("Create Component");
+		}
+	}
+
 	/**
 	 * Adds the tool bar actions.
 	 * @param manager the menu manager.
