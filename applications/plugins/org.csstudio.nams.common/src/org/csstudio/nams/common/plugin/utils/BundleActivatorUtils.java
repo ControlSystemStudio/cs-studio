@@ -29,8 +29,6 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * A set of utilities to be used by bundle activators
  * 
- * TODO Decide if use this abstract class or {@link AbstractBundleActivator}.
- * 
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1-2008-04-28: Created.
  */
@@ -55,7 +53,7 @@ public final class BundleActivatorUtils {
 	 * @return The currently avail service or null if currently not avail.
 	 * @throws ClassCastException
 	 *             If a found service registered on the full qualified class
-	 *             name is {@link Class#isAssignableFrom(Class) not assignable}
+	 *             name is {@linkplain Class#isAssignableFrom(Class) not assignable}
 	 *             to the requested type.
 	 */
 	static public <T> T getAvailableService(BundleContext bundleContext,
