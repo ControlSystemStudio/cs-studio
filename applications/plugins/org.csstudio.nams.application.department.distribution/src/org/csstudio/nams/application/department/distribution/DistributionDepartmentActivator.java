@@ -32,6 +32,8 @@ import org.osgi.framework.BundleContext;
  * 
  * TODO Das Verhalten des Distributors hier realisieren, das hier vorhandene Gerüst verwenden.
  *      Ähnlichkeiten zum decission dept. abgleichen, ggf. in common herausziehen.
+ *      JMS Nachricht empfangen / Voregangsmappe auspacken / Zeil raussuchen und Topic aus der 
+ *      lokalen Einstellungsdatei holen / Vorgangsmappe verpacken / Als JMS Nachricht an das nächste Topic.
  * 
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * 
