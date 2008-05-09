@@ -64,12 +64,12 @@ public class Meter extends Widget {
 
         _widget.setPropertyValue(MeterModel.PROP_HIBOUND, 6.0);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HI",Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.HIGH",Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_HIBOUND, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_LOBOUND, 4.0);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LO",Object.class)); //$NON-NLS-1$
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$.LOW",Object.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_LOBOUND, dynamicsDescriptor);
 
         _widget.setPropertyValue(MeterModel.PROP_LOLOBOUND, 2.0);

@@ -182,7 +182,13 @@ public class Bargraph extends Widget {
 //          <inputChannel name="dal-epics://&lt;&lt;Channel&gt;&gt;" type="java.lang.Double" />
 //      </dynamicsDescriptor>
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
-        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$."+id.toUpperCase(),Double.class)); //$NON-NLS-1$
+        String temp = id.toUpperCase();
+        if(temp.equals("HI")){
+            temp="HIGH";
+        }else if(temp.equals("LO")){
+            temp="LOW";
+        }
+        dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$."+temp,Double.class)); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(id+"Level", dynamicsDescriptor ); //$NON-NLS-1$
 //      <property type="sds.color" id="loColor">
 //          <color red="255" green="100" blue="100" />
