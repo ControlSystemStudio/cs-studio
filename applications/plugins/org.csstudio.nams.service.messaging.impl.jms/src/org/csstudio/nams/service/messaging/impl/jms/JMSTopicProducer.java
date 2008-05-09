@@ -1,8 +1,6 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
-import javax.jms.MapMessage;
-
-import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
+import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.messaging.declaration.Producer;
 import org.csstudio.platform.libs.jms.JmsRedundantProducer;
 import org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId;
@@ -26,10 +24,10 @@ class JMSTopicProducer implements Producer {
 		return jmsRedundantProducer.isClosed();
 	}
 
-	public void sendMessage(NAMSMessage message) {
-		MapMessage mapMessage = jmsRedundantProducer.createMapMessage();
-		// TODO aus der NAMSMessage eine jms Message holen
-		jmsRedundantProducer.send(producerId, mapMessage);
+
+	public void sendeSystemnachricht(SystemNachricht vorgangsmappe) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

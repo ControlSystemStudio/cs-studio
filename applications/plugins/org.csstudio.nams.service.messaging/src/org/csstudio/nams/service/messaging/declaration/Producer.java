@@ -1,10 +1,12 @@
 package org.csstudio.nams.service.messaging.declaration;
 
+import org.csstudio.nams.common.material.SystemNachricht;
+
 
 public interface Producer {
 	public void close();
 	public boolean isClosed();
-	//@Deprecated //sollte einen eigenen Message Typ geben
-	public void sendMessage(NAMSMessage message);
-	// TODO Irgendwann: public void sendVorgangsmappe(Vorgangsmappe vorgangsmappe);
+	
+	// TODO Irgendwann:	public void sendeVorgangsmappe(Vorgangsmappe vorgangsmappe);
+	public void sendeSystemnachricht(SystemNachricht vorgangsmappe);
 }

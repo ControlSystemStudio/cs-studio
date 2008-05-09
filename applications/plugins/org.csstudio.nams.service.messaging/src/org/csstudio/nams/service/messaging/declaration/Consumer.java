@@ -1,5 +1,7 @@
 package org.csstudio.nams.service.messaging.declaration;
 
+import org.csstudio.nams.service.messaging.exceptions.MessagingException;
+
 
 public interface Consumer {
 	public void close();
@@ -9,5 +11,5 @@ public interface Consumer {
 	 * liefert null wenn der Consumer beendet wird
 	 */
 	//einen eigenen Nachrichten Typ da nicht nur Alarmnachrichten rein kommen
-	public NAMSMessage receiveMessage();
+	public NAMSMessage receiveMessage() throws MessagingException;
 }

@@ -3,5 +3,6 @@
 <plugin>
    <extension-point id="org.csstudio.nams.service.messaging.extensionPoint.ProducerFactoryServiceFactory" name="org.csstudio.nams.service.messaging.extensionPoint.ProducerFactoryServiceFactory" schema="schema/org.csstudio.nams.service.messaging.extensionPoint.ProducerFactoryServiceFactory.exsd"/>
    <extension-point id="org.csstudio.nams.service.messaging.extensionPoint.ConsumerFactoryServiceFactory" name="org.csstudio.nams.service.messaging.extensionPoint.ConsumerFactoryServiceFactory" schema="schema/org.csstudio.nams.service.messaging.extensionPoint.ConsumerFactoryServiceFactory.exsd"/>
+   <extension-point id="org.csstudio.nams.service.messaging.extensionPoint.MessagingServiceFactory" name="org.csstudio.nams.service.messaging.extensionPoint.MessagingServiceFactory" schema="schema/org.csstudio.nams.service.messaging.extensionPoint.MessagingServiceFactory.exsd"/>
 
 </plugin>

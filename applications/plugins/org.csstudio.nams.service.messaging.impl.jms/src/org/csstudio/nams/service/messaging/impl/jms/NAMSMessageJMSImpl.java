@@ -1,8 +1,13 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
+import javax.jms.JMSException;
 import javax.jms.Message;
 
+import org.csstudio.nams.common.contract.Contract;
+import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
+import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
 public class NAMSMessageJMSImpl implements NAMSMessage {
 
@@ -10,12 +15,44 @@ public class NAMSMessageJMSImpl implements NAMSMessage {
 
 	public NAMSMessageJMSImpl(Message message) {
 		this.message = message;
-		
+
 	}
-	
+
 	@Override
 	public String toString() {
 		return message.toString();
+	}
+
+	public AlarmNachricht alsAlarmnachricht() {
+		Contract.require(istAlarmnachricht(), "istAlarmnachricht()");
+
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public SystemNachricht alsSystemachricht() {
+		Contract.require(istSystemnachricht(), "istSystemnachricht()");
+
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean istAlarmnachricht() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean istSystemnachricht() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void acknowledge() throws MessagingException {
+		try {
+			message.acknowledge();
+		} catch (JMSException e) {
+			throw new MessagingException("acknowledgment failed", e);
+		}
 	}
 
 }

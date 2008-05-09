@@ -281,12 +281,18 @@ public class DecisionDepartmentActivator implements IApplication,
 			// es kommen nicht nur Alarmniachrichten rein.
 			// deshalb brauchen wir einen eigenen Message Typ 
 			// um zu entscheiden was weiter damit gemacht werden soll.
-			NAMSMessage receivedMessage = _consumer.receiveMessage();
+			NAMSMessage receivedMessage = null;
+			try {
+				receivedMessage = _consumer.receiveMessage();
+			} catch (MessagingException e) {
+				// Ignore this... just retry.
+				logger.logWarningMessage(this, "an exception chaught during message recieving", e);
+			}
 			
 			if(receivedMessage != null) {
 				logger.logInfoMessage(this, "Neue Nachricht erhalten: "
 						+ receivedMessage.toString());
-				_producer.sendMessage(receivedMessage);
+//				_producer.sendMessage(receivedMessage);
 
 				// TODO prüfen um was für eine neue Nachricht es sich handelt
 
