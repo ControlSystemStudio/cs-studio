@@ -91,7 +91,7 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * creating Consumers
 	 */
 	private static ConsumerFactoryService consumerFactoryService;
-	
+
 	/**
 	 * Gemeinsames Attribut des Activators und der Application: Fatory for
 	 * creating Producers
@@ -113,14 +113,11 @@ public class DecisionDepartmentActivator implements IApplication,
 	private Consumer _consumer;
 	private Producer _producer;
 
-	
 	/**
 	 * Referenz auf den Thread, welcher die JMS Nachrichten anfragt. Wird
 	 * genutzt um den Thread zu "interrupten".
 	 */
 	private Thread _receiverThread;
-
-
 
 	/**
 	 * Service für das Entscheidungsbüro um das starten der asynchronen
@@ -146,7 +143,7 @@ public class DecisionDepartmentActivator implements IApplication,
 				context, ProducerFactoryService.class);
 		if (producerFactoryService == null)
 			throw new RuntimeException("no consumer factory service avail!");
-		
+
 		executionService = BundleActivatorUtils.getAvailableService(context,
 				ExecutionService.class);
 		if (executionService == null)
@@ -197,15 +194,23 @@ public class DecisionDepartmentActivator implements IApplication,
 									.getProperty(
 											PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS
 													.name()).split(","));
-			
+
 			logger.logInfoMessage(this,
-				"Decision department application is creating producers...");
-			_producer = producerFactoryService.createProducer(
-					properties.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_CLIENT_ID.name()), 
-					properties.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_DESTINATION_NAME.name()),
-					PostfachArt.TOPIC,
-					properties.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_SERVER_URLS.name()).split(","));
-			
+					"Decision department application is creating producers...");
+			_producer = producerFactoryService
+					.createProducer(
+							properties
+									.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_CLIENT_ID
+											.name()),
+							properties
+									.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_DESTINATION_NAME
+											.name()),
+							PostfachArt.TOPIC,
+							properties
+									.getProperty(
+											PropertiesFileKeys.MESSAGING_PRODUCER_SERVER_URLS
+													.name()).split(","));
+
 			logger
 					.logInfoMessage(this,
 							"Decision department application is configuring execution service...");
@@ -226,8 +231,11 @@ public class DecisionDepartmentActivator implements IApplication,
 					"Exception while initializing properties.", e);
 			return IApplication.EXIT_OK;
 		} catch (MessagingException e) {
-			logger.logFatalMessage(this,
-					"Exception during creation of the jms consumer or producer.", e);
+			logger
+					.logFatalMessage(
+							this,
+							"Exception during creation of the jms consumer or producer.",
+							e);
 			return IApplication.EXIT_OK;
 		} catch (Exception e) { // TODO noch eine andere Exception wählen
 			logger
@@ -247,7 +255,7 @@ public class DecisionDepartmentActivator implements IApplication,
 		// TODO Thread zum auslesen des Ausgangskorbes...
 
 		// start receiving Messages, runs while _continueWorking is true.
-		receiveMessagesUntilApplicationQuits(alarmEntscheidungsBuero 
+		receiveMessagesUntilApplicationQuits(alarmEntscheidungsBuero
 				.gibAlarmVorgangEingangskorb());
 
 		logger.logInfoMessage(this,
@@ -257,7 +265,7 @@ public class DecisionDepartmentActivator implements IApplication,
 				.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
 
 		_producer.close();
-		
+
 		logger.logInfoMessage(this,
 				"Decision department application successfully shuted down.");
 		return IApplication.EXIT_OK;
@@ -277,22 +285,31 @@ public class DecisionDepartmentActivator implements IApplication,
 	private void receiveMessagesUntilApplicationQuits(
 			Eingangskorb<Vorgangsmappe> eingangskorb) {
 		while (_continueWorking) {
-			
+
 			// es kommen nicht nur Alarmniachrichten rein.
-			// deshalb brauchen wir einen eigenen Message Typ 
+			// deshalb brauchen wir einen eigenen Message Typ
 			// um zu entscheiden was weiter damit gemacht werden soll.
+
+			// TODO Zweite Schleife für Systemnachrichten!! ANDERES Topic!
+			// -> 2 Schleifen werfen in eine Queue die hier abgearbeitet wird!
+
+			// TODO Schaufeln in BlockingQueue : Maximum size auf 1 oder 2,
+			// damit nicht hunderte Nachrichten während eines updates gepuufert
+			// werden, das ablegen in der Queue blockiert, wenn diese voll ist.
+			// Siehe java.util.concurrent.BlockingQueue.
 			NAMSMessage receivedMessage = null;
 			try {
 				receivedMessage = _consumer.receiveMessage();
 			} catch (MessagingException e) {
 				// Ignore this... just retry.
-				logger.logWarningMessage(this, "an exception chaught during message recieving", e);
+				logger.logWarningMessage(this,
+						"an exception chaught during message recieving", e);
 			}
-			
-			if(receivedMessage != null) {
+
+			if (receivedMessage != null) {
 				logger.logInfoMessage(this, "Neue Nachricht erhalten: "
 						+ receivedMessage.toString());
-//				_producer.sendMessage(receivedMessage);
+				// _producer.sendMessage(receivedMessage);
 
 				// TODO prüfen um was für eine neue Nachricht es sich handelt
 
@@ -301,13 +318,14 @@ public class DecisionDepartmentActivator implements IApplication,
 				// eingangskorb.ablegen(receivedMessage);
 
 				// TODO andere Nachrichten Typen behandeln
-				// steuer Nachrichten wie z.B.: "Regelwerke neu laden" 
-				// oder "einzelne Regelwerke kurzfristig deaktivieren" oder "shutdown" 
+				// steuer Nachrichten wie z.B.: "Regelwerke neu laden"
+				// oder "einzelne Regelwerke kurzfristig deaktivieren" oder
+				// "shutdown"
 			} else {
 				// sollte nur beim beenden der Anwendung vorkommen
 				logger.logInfoMessage(this, "null Nachricht erhalten");
 			}
-			
+
 			Thread.yield();
 		}
 	}
@@ -317,8 +335,7 @@ public class DecisionDepartmentActivator implements IApplication,
 				.getProperty(PropertiesFileKeys.CONFIG_FILE.name());
 		if (configFileName == null) {
 			String message = "No config file avail on Property-Id \""
-					+ PropertiesFileKeys.CONFIG_FILE.name()
-					+ "\" specified.";
+					+ PropertiesFileKeys.CONFIG_FILE.name() + "\" specified.";
 			logger.logFatalMessage(this, message);
 			throw new InitPropertiesException(message);
 		}

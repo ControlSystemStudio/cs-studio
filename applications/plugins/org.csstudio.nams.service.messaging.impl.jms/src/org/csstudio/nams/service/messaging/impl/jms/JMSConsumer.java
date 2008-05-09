@@ -30,9 +30,14 @@ class JMSConsumer implements Consumer {
 	private LinkedBlockingQueue<Message> messageQueue;
 
 	public JMSConsumer(String clientId, String messageSourceName,
-			String[] messageServerURLs, PostfachArt art) throws NamingException, JMSException {
+			String[] messageServerURLs, PostfachArt art)
+			throws NamingException, JMSException {
 
-		messageQueue = new LinkedBlockingQueue<Message>();
+		// TODO Schaufeln in BlockingQueue : Maximum size auf 1 oder 2,
+		// damit nicht hunderte Nachrichten während eines updates gepuufert
+		// werden, das ablegen in der Queue blockiert, wenn diese voll ist.
+		// Siehe java.util.concurrent.BlockingQueue.
+		messageQueue = new LinkedBlockingQueue<Message>(1);
 
 		contexts = new Context[messageServerURLs.length];
 		factorys = new ConnectionFactory[messageServerURLs.length];
@@ -108,9 +113,9 @@ class JMSConsumer implements Consumer {
 		NAMSMessageJMSImpl namsMessage = null;
 		try {
 			Message message = messageQueue.take();
-			
+
 			// FIXME das sollte erst später gemacht werden.
-			// am besten erst wenn die Nachricht fertig bearbeitet 
+			// am besten erst wenn die Nachricht fertig bearbeitet
 			// und im ausgangs Korb liegt
 			message.acknowledge();
 			namsMessage = new NAMSMessageJMSImpl(message);
@@ -130,19 +135,20 @@ class JMSConsumer implements Consumer {
 		private MessageConsumer consumer;
 
 		public WorkThread(LinkedBlockingQueue<Message> messageQueue,
-				Session session, String source, String clientId, PostfachArt art) throws JMSException {
+				Session session, String source, String clientId, PostfachArt art)
+				throws JMSException {
 			this.messageQueue = messageQueue;
-			
+
 			switch (art) {
 			case QUEUE:
 				Queue queue = session.createQueue(source);
 				consumer = session.createConsumer(queue);
-				
+
 				break;
 			case TOPIC:
 				Topic topic = session.createTopic(source);
 				consumer = session.createDurableSubscriber(topic, clientId);
-				
+
 				break;
 			default:
 				// TODO exception handling
@@ -153,6 +159,8 @@ class JMSConsumer implements Consumer {
 		public void close() throws JMSException {
 			arbeitFortsetzen = false;
 			consumer.close();
+			this.interrupt(); // Keine Sorge, unbehandelte Nachricht wird
+								// nicht acknowledged und kommt daher wieder.
 		}
 
 		@Override
@@ -161,9 +169,12 @@ class JMSConsumer implements Consumer {
 				try {
 					Message message = consumer.receive();
 					if (message != null) {
-						messageQueue.add(message);
+						messageQueue.put(message);
 					}
 				} catch (JMSException e) {
+					// TODO exception handling
+					e.printStackTrace();
+				} catch (InterruptedException e) {
 					// TODO exception handling
 					e.printStackTrace();
 				}
