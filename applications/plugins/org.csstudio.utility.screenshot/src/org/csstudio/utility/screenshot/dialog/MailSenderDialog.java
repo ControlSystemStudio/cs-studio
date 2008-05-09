@@ -142,7 +142,7 @@ public class MailSenderDialog extends Dialog implements SelectionListener
         labelDummyRow1.setLayoutData(gd);
 
         btnClearMEntry = new Button(parent, SWT.PUSH);
-        btnClearMEntry.setText("Clear");
+        btnClearMEntry.setText(ScreenshotMessages.getString("MailSenderDialog.BUTTON_CLEAR"));
         btnClearMEntry.addSelectionListener(this);
         gd = new GridData();
         gd.horizontalSpan = 1;
@@ -329,7 +329,7 @@ public class MailSenderDialog extends Dialog implements SelectionListener
         
         // Button OK
         buttonSend = new Button(parent, SWT.PUSH);
-        buttonSend.setText("Send");
+        buttonSend.setText(ScreenshotMessages.getString("MailSenderDialog.BUTTON_SEND"));
         buttonSend.addSelectionListener(this);
         gd = new GridData();        
         gd.horizontalSpan = 1;
@@ -340,7 +340,7 @@ public class MailSenderDialog extends Dialog implements SelectionListener
         
         // Button Cancel
         buttonCancel = new Button(parent, SWT.PUSH);
-        buttonCancel.setText("Cancel");
+        buttonCancel.setText(ScreenshotMessages.getString("MailSenderDialog.BUTTON_CANCEL"));
         buttonCancel.addSelectionListener(this);
         gd = new GridData();        
         gd.horizontalSpan = 1;
@@ -416,7 +416,7 @@ public class MailSenderDialog extends Dialog implements SelectionListener
         {
             Button source = (Button)event.widget;
             
-            if(source.getText().compareToIgnoreCase("Send") == 0)
+            if(source.getText().compareToIgnoreCase(ScreenshotMessages.getString("MailSenderDialog.BUTTON_SEND")) == 0)
             {
                 createMailEntry();
                 
@@ -424,13 +424,13 @@ public class MailSenderDialog extends Dialog implements SelectionListener
                                 
                 this.close();
             }
-            else if(source.getText().compareToIgnoreCase("Cancel") == 0)
+            else if(source.getText().compareToIgnoreCase(ScreenshotMessages.getString("MailSenderDialog.BUTTON_CANCEL")) == 0)
             {
                 this.setReturnCode(Dialog.CANCEL);
     
                 this.close();
             }
-            else if(source.getText().compareToIgnoreCase("Clear") == 0)
+            else if(source.getText().compareToIgnoreCase(ScreenshotMessages.getString("MailSenderDialog.BUTTON_CLEAR")) == 0)
             {
                 textTo.setText("");
                 textSubject.setText("");

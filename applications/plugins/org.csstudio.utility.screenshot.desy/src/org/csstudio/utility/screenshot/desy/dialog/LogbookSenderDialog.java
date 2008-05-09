@@ -202,7 +202,7 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         labelDummyRow1.setLayoutData(gd);
 
         btnClearLbEntry = new Button(parent, SWT.PUSH);
-        btnClearLbEntry.setText("Reset");
+        btnClearLbEntry.setText(LogbookSenderMessages.getString("LogbookSenderDialog.BUTTON_RESET"));
         btnClearLbEntry.addSelectionListener(this);
         gd = new GridData();
         gd.horizontalSpan = 1;
@@ -504,7 +504,7 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         
         // Button OK
         buttonSend = new Button(parent, SWT.PUSH);
-        buttonSend.setText("Send");
+        buttonSend.setText(LogbookSenderMessages.getString("LogbookSenderDialog.BUTTON_SEND"));
         buttonSend.addSelectionListener(this);
         gd = new GridData();        
         gd.horizontalSpan = 1;
@@ -515,7 +515,7 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         
         // Button Cancel
         buttonCancel = new Button(parent, SWT.PUSH);
-        buttonCancel.setText("Cancel");
+        buttonCancel.setText(LogbookSenderMessages.getString("LogbookSenderDialog.BUTTON_CANCEL"));
         buttonCancel.addSelectionListener(this);
         gd = new GridData();        
         gd.horizontalSpan = 1;
@@ -649,7 +649,7 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         {
             Button source = (Button)event.widget;
             
-            if(source.getText().compareToIgnoreCase("Send") == 0)
+            if(source.getText().compareToIgnoreCase(LogbookSenderMessages.getString("LogbookSenderDialog.BUTTON_SEND")) == 0)
             {
                 createLogbookEntry();
                     
@@ -657,13 +657,13 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
                                 
                 this.close();
             }
-            else if(source.getText().compareToIgnoreCase("Cancel") == 0)
+            else if(source.getText().compareToIgnoreCase(LogbookSenderMessages.getString("LogbookSenderDialog.BUTTON_CANCEL")) == 0)
             {
                 this.setReturnCode(Dialog.CANCEL);
     
                 this.close();
             }
-            else if(source.getText().compareToIgnoreCase("Reset") == 0)
+            else if(source.getText().compareToIgnoreCase(LogbookSenderMessages.getString("LogbookSenderDialog.BUTTON_RESET")) == 0)
             {
                 initDateAndTimeFields(true);
                                 

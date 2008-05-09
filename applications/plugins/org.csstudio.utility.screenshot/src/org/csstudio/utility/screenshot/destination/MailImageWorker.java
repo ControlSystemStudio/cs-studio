@@ -83,7 +83,7 @@ public class MailImageWorker implements IImageWorker
         
         if(image == null)
         {
-            MessageDialog.openInformation(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), ScreenshotMessages.getString("FileSendMailAction.NO_IMAGE"));
+            MessageDialog.openInformation(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), ScreenshotMessages.getString("MailImageWorker.NO_IMAGE"));
         
             return;
         }
@@ -155,7 +155,7 @@ public class MailImageWorker implements IImageWorker
                     
                     Transport.send(msg);
                     
-                    MessageDialog.openInformation(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), ScreenshotMessages.getString("FileSendMailAction.Mail_sent"));
+                    MessageDialog.openInformation(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), ScreenshotMessages.getString("MailImageWorker.MAIL_SENT"));
                 }
                 catch(MessagingException me)
                 {
