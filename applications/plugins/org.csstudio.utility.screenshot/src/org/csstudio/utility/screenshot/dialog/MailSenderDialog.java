@@ -178,7 +178,7 @@ public class MailSenderDialog extends Dialog implements SelectionListener
         
         btnCarbonCopy = new Button(parent, SWT.CHECK);
         btnCarbonCopy.setText(ScreenshotMessages.getString("MailSenderDialog.LABEL_COPY"));
-        btnCarbonCopy.setSelection(true);
+        btnCarbonCopy.setSelection(false);
         gd = new GridData();
         gd.horizontalSpan = 2;
         gd.grabExcessHorizontalSpace = true;
