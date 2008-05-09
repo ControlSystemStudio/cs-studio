@@ -72,8 +72,17 @@ public class Display extends Widget{
             }else if(row[0].trim().toLowerCase().equals("cmap")){ //$NON-NLS-1$
                 _cmap=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("type")){ //$NON-NLS-1$
-                CentralLogger.getInstance().debug(this, display.toString());
+                CentralLogger.getInstance().debug(this, "type:"+display.toString());
                 // TODO: Display --> type
+            }else if(row[0].trim().toLowerCase().equals("gridspacing")){ //$NON-NLS-1$
+                CentralLogger.getInstance().debug(this, "gridspacing"+display.toString());
+                // TODO: Display --> gridSpacing
+            }else if(row[0].trim().toLowerCase().equals("gridon")){ //$NON-NLS-1$
+                CentralLogger.getInstance().debug(this, "gridon"+display.toString());
+                // TODO: Display --> gridOn
+            }else if(row[0].trim().toLowerCase().equals("snaptogrid")){ //$NON-NLS-1$
+                CentralLogger.getInstance().debug(this, "snaptogrid"+display.toString());
+                // TODO: Display --> snapToGrid
             }else {
                 throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+parameter+Messages.Display_WrongADLFormatException_Parameter_End);
             }

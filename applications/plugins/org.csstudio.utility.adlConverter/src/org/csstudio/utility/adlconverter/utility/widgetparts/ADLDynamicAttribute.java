@@ -26,6 +26,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 
 import java.util.HashMap;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
@@ -123,8 +124,12 @@ public class ADLDynamicAttribute extends WidgetPart{
                 _vis=row[0];
             }else if(head.equals("chan")){ //$NON-NLS-1$
                 _chan=row;
+            }else if(head.equals("chanb")){ //$NON-NLS-1$
+//                CentralLogger.getInstance().debug(this, "chanB"+adlDynamicAttribute.toString());
             }else if(head.equals("colorrule")){ //$NON-NLS-1$
                 _colorRule=row[0];
+            }else if(head.equals("calc")){ //$NON-NLS-1$
+//                CentralLogger.getInstance().debug(this, "calc"+adlDynamicAttribute.toString());
             }else {
                 throw new WrongADLFormatException(Messages.ADLDynamicAttribute_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLDynamicAttribute_WrongADLFormatException_Parameter_End);
             }

@@ -76,7 +76,8 @@ public abstract class Widget extends AbstractDisplayImporter{
         try {
             makeObject(widget);
         } catch (WrongADLFormatException e) {
-            CentralLogger.getInstance().error(this, e);
+               // FIXME: Workaround. Der CentralLogger wurde deaktivbiert da viele Nachrichten in Kurzerzeit zum absturz von CSS führen 
+//            CentralLogger.getInstance().error(this, e);
         }
     }
     
