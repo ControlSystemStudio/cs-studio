@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Distribution Plug-in
+Bundle-SymbolicName: org.csstudio.nams.application.department.distribution
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.nams.application.department.distribution.DistributionDepartmentActivator
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.nams.service.logging,
+ org.csstudio.nams.common,
+ org.csstudio.nams.service.messaging
+Eclipse-LazyStart: true
