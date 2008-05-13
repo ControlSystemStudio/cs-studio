@@ -38,8 +38,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public final void initializeDefaultPreferences() {
 		Preferences prefs = new DefaultScope().getNode(AlarmTreePlugin.PLUGIN_ID);
 		prefs.put(PreferenceConstants.FACILITIES, "");
-		prefs.put(PreferenceConstants.JMS_URL_PRIMARY, "tcp://elogbook.desy.de:64616");
-		prefs.put(PreferenceConstants.JMS_URL_SECONDARY, "tcp://krynfs.desy.de:62616");
+		prefs.put(PreferenceConstants.JMS_URL_PRIMARY, "tcp://krykjmsb.desy.de:64616");
+		prefs.put(PreferenceConstants.JMS_URL_SECONDARY, "tcp://krykjmsa.desy.de:62616");
 		prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY_PRIMARY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 		prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY_SECONDARY, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 		prefs.put(PreferenceConstants.JMS_QUEUE, "ALARM,ACK");
