@@ -55,7 +55,9 @@ public class Display extends Widget{
         for (ADLWidget widget : display.getObjects()) {
             if(widget.isType("object")){ //$NON-NLS-1$
                     _object = new ADLObject(widget,_widget);
-                    _object.setHeight(_object.getHeight()+20);
+                    // TODO: Überprüfen ob die +20 auf die Höhe einen Grund hatten. Auf den ersten Blick ist nichts zu finden.
+//                    _object.setHeight(_object.getHeight()+20);
+                    _object.setHeight(_object.getHeight());
             }else {
                 throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+widget.getType()+Messages.Display_WrongADLFormatException_Parameter_End);
             } 
