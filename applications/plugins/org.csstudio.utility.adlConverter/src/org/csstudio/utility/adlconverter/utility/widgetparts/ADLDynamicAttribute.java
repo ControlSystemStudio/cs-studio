@@ -24,21 +24,13 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
-import java.util.HashMap;
-
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.logic.ParameterDescriptor;
-import org.csstudio.sds.model.properties.ActionData;
-import org.csstudio.sds.model.properties.ActionType;
-import org.csstudio.sds.model.properties.actions.CommitValueWidgetAction;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
-import org.eclipse.draw2d.ColorConstants;
-import org.epics.css.dal.context.ConnectionState;
 
 /**
  * @author hrickens
@@ -142,32 +134,30 @@ public class ADLDynamicAttribute extends WidgetPart{
     final void generateElements() {
 //        _adlDynamicAttribute= new Element[1];
         if(_chan!=null){
+            ADLHelper.setChan(_parentWidgetModel, _chan);
+            String channel = "$channel$";
+            if(_chan.length>2){ //$NON-NLS-1$
+                channel = channel.concat("."+_chan[2]);
+            }
             if(_vis!=null && _vis.equals("if not zero")){ //$NON-NLS-1$
                 _bool=true;
                 _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
-                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("dal-epics://"+_chan[0],Double.class)); //$NON-NLS-1$
+                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,Double.class)); //$NON-NLS-1$
             }else if(_vis!=null && _vis.equals("if zero")){ //$NON-NLS-1$
                 _bool=true;
                 _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
-                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor("dal-epics://"+_chan[0],Double.class)); //$NON-NLS-1$
+                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,Double.class)); //$NON-NLS-1$
             }else if( _colorRule!=null){
                 _color = true;
             //            <dynamicsDescriptor ruleId="cosyrules.color.aend_dlog">
             //                <inputChannel name="$channel$" type="java.lang.Double" />
             //            </dynamicsDescriptor>
                 _adlColorDynamicAttribute = new DynamicsDescriptor("cosyrules.color."+_colorRule.toLowerCase()); //$NON-NLS-1$
-//                _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor("$channel$",Double.class));
-//                _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(""));
-
-                if(_chan.length>2&&_chan[2].startsWith("$")){ //$NON-NLS-1$
-                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(_chan[2],Double.class));
-                    ADLHelper.setChan(_parentWidgetModel, _chan);
-                }else{
-                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor("dal-epics://"+_chan[0],Double.class)); //$NON-NLS-1$
-                }
-                
+                _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,Double.class));
+//                if(_chan.length>2&&_chan[2].startsWith("$")){ //$NON-NLS-1$
+//                    ADLHelper.setChan(_parentWidgetModel, _chan);
+//                }
                 ADLHelper.setConnectionState(_adlColorDynamicAttribute);
-
             }
 //            else {
 //                _color = true;
