@@ -2,10 +2,16 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#utility" label="Screenshot">
-	<topic label="English">
-		<topic label="Screenshot" href="html/screenshot.html"/> 
-	</topic>
-    <topic label="German">
-	      <topic label="Screenshot" href="html/screenshot_de.html"/>
+	<topic label="Screenshot">
+		<topic label="English">
+			<topic label="Overview" href="html/en/overview.html"/> 
+		    <topic label="First Steps" href="html/en/firststeps.html"/>
+		    <topic label="Preferences" href="html/en/preferences.html"/>
+		</topic>
+	    <topic label="German">
+		    <topic label="Übersicht" href="html/de/overview_de.html"/>
+		    <topic label="Erste Schritte" href="html/de/firststeps_de.html"/>
+		    <topic label="Preferences" href="html/de/preferences_de.html"/>
+		</topic>
 	</topic>
 </toc>
