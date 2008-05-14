@@ -2,16 +2,10 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.csstudio.nams.service.messaging.extensionPoint.ConsumerFactoryServiceFactory">
-      <ConsumerFactoryServiceFactory
-            implementation="org.csstudio.nams.service.messaging.impl.jms.ConsumerFactoryServiceFactoryImpl">
-      </ConsumerFactoryServiceFactory>
-   </extension>
-   <extension
-         point="org.csstudio.nams.service.messaging.extensionPoint.ProducerFactoryServiceFactory">
-      <ProducerFactoryServiceFactory
-            implementation="org.csstudio.nams.service.messaging.impl.jms.ProducerFactoryServiceFactoryImpl">
-      </ProducerFactoryServiceFactory>
+         point="org.csstudio.nams.service.messaging.extensionPoint.MessagingServiceFactory">
+      <MessagingServiceFactory
+            implementation="org.csstudio.nams.service.messaging.impl.jms.MessagingServiceFactoryImpl">
+      </MessagingServiceFactory>
    </extension>
 
 </plugin>

@@ -1,19 +1,13 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
-import java.util.Hashtable;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
@@ -21,85 +15,36 @@ import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 
 class JMSConsumer implements Consumer {
 
-	private Context[] contexts;
-	private ConnectionFactory[] factorys;
-	private Connection[] connections;
-	private Session[] sessions;
 	private boolean isClosed = false;
 	private WorkThread[] workers;
 	private LinkedBlockingQueue<Message> messageQueue;
 
-	public JMSConsumer(String clientId, String messageSourceName,
-			String[] messageServerURLs, PostfachArt art)
-			throws NamingException, JMSException {
+	public JMSConsumer(String clientId, String messageSourceName, PostfachArt art, Session[] sessions) throws JMSException {
 
 		// TODO Schaufeln in BlockingQueue : Maximum size auf 1 oder 2,
-		// damit nicht hunderte Nachrichten während eines updates gepuufert
+		// damit nicht hunderte Nachrichten während eines updates gepufert
 		// werden, das ablegen in der Queue blockiert, wenn diese voll ist.
 		// Siehe java.util.concurrent.BlockingQueue.
 		messageQueue = new LinkedBlockingQueue<Message>(1);
 
-		contexts = new Context[messageServerURLs.length];
-		factorys = new ConnectionFactory[messageServerURLs.length];
-		connections = new Connection[messageServerURLs.length];
-		sessions = new Session[messageServerURLs.length];
-		workers = new WorkThread[messageServerURLs.length];
-
-		for (int i = 0; i < messageServerURLs.length; i++) {
-			Hashtable<String, String> properties = new Hashtable<String, String>();
-			properties.put(Context.INITIAL_CONTEXT_FACTORY,
-					"org.apache.activemq.jndi.ActiveMQInitialContextFactory");
-			properties.put(Context.PROVIDER_URL, messageServerURLs[i]);
-
-			contexts[i] = new InitialContext(properties);
-			factorys[i] = (ConnectionFactory) contexts[i]
-					.lookup("ConnectionFactory");
-			connections[i] = factorys[i].createConnection();
-			connections[i].setClientID(clientId);
-			sessions[i] = connections[i].createSession(false,
-					Session.CLIENT_ACKNOWLEDGE);
-
-			connections[i].start();
-
-			workers[i] = new WorkThread(messageQueue, sessions[i],
-					messageSourceName, clientId, art);
-			workers[i].start();
+		workers = new WorkThread[sessions.length];
+		
+		try {
+			for (int i = 0; i < sessions.length; i++) {
+				workers[i] = new WorkThread(messageQueue, sessions[i], messageSourceName, clientId, art);
+			}
+		} catch (JMSException e) {
+			close();
+			throw e;
 		}
 	}
 
 	public void close() {
 		for (WorkThread worker : workers) {
-			try {
-				worker.close();
-			} catch (JMSException e) {
-			}
-		}
-
-		for (Session session : sessions) {
-			if (session != null) {
+			if (worker != null) {
 				try {
-					session.close();
-				} catch (JMSException jmse) {
-				}
-			}
-
-		}
-
-		for (Connection connection : connections) {
-			if (connection != null) {
-				try {
-					connection.stop();
-				} catch (JMSException jmse) {
-				}
-			}
-		}
-
-		for (Context context : contexts) {
-			if (context != null) {
-				try {
-					context.close();
-				} catch (NamingException ne) {
-				}
+					worker.close();
+				} catch (JMSException e) {}
 			}
 		}
 		isClosed = true;
@@ -147,6 +92,7 @@ class JMSConsumer implements Consumer {
 				break;
 			case TOPIC:
 				Topic topic = session.createTopic(source);
+				// TODO ist durableSubscriber ok?
 				consumer = session.createDurableSubscriber(topic, clientId);
 
 				break;
@@ -171,6 +117,8 @@ class JMSConsumer implements Consumer {
 					if (message != null) {
 						messageQueue.put(message);
 					}
+					// Beachten das die connection geschlossen sein könnte
+					// und auch auf das failover protokoll achten
 				} catch (JMSException e) {
 					// TODO exception handling
 					e.printStackTrace();

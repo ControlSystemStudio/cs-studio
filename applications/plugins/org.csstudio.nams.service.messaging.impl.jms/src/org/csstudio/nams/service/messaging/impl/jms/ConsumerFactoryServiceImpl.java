@@ -55,14 +55,14 @@ class ConsumerFactoryServiceImpl implements ConsumerFactoryService {
 //		
 //		return new JMSConsumer(sessions, clientId, messageSourceName, artDesPostfaches);
 		
-		try {
-			return new JMSConsumer(clientId, messageSourceName,
-					messageServerURLs, artDesPostfaches);
-		} catch (NamingException e) {
-			throw new MessagingException(e);
-		} catch (JMSException e) {
-			throw new MessagingException(e);
-		}
+//		try {
+			return null;// new JMSConsumer(clientId, messageSourceName,
+//					messageServerURLs, artDesPostfaches);
+//		} catch (NamingException e) {
+//			throw new MessagingException(e);
+//		} catch (JMSException e) {
+//			throw new MessagingException(e);
+//		}
 		// TODO Exception handling
 	}
 
