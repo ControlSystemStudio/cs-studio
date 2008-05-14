@@ -24,13 +24,15 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
-import org.csstudio.utility.adlconverter.utility.ADLHelper;
+import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.sds.model.logic.ParameterDescriptor;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLBasicAttribute;
@@ -41,6 +43,8 @@ import org.csstudio.utility.adlconverter.utility.widgetparts.ADLObject;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLPoints;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLSensitive;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.swt.graphics.RGB;
+import org.epics.css.dal.context.ConnectionState;
 
 /**
  * @author hrickens
@@ -48,13 +52,13 @@ import org.eclipse.core.runtime.IPath;
  * @version $Revision$
  * @since 12.09.2007
  */
-public abstract class Widget extends AbstractDisplayImporter{
-    /** The ADL Widget element as CSS-SDS element.*/
+public abstract class Widget extends AbstractDisplayImporter {
+    /** The ADL Widget element as CSS-SDS element. */
     protected AbstractWidgetModel _widget;
     /** The Widget object parameter. */
     private ADLObject _object = null;
     /** The Widget Basic Attribute . */
-    private ADLBasicAttribute _basicAttribute = null ;
+    private ADLBasicAttribute _basicAttribute = null;
     /** The Widget Dynamic Attribute . */
     private ADLDynamicAttribute _dynamicAttribute = null;
     /** The Widget Pointslist. */
@@ -63,12 +67,17 @@ public abstract class Widget extends AbstractDisplayImporter{
     private ADLMonitor _monitor;
     /** The Widget control Attribute. */
     private ADLControl _control;
-    /** The Number of this object in the Display. useful for Debugging and Error handling.*/
+    /**
+     * The Number of this object in the Display. useful for Debugging and Error
+     * handling.
+     */
     private int _objectNr;
     private ADLSensitive _sensitive;
-    
+    private ADLWidget _parent;
+
     /**
-     * @param widget ADLWidget that describe the Widget.
+     * @param widget
+     *            ADLWidget that describe the Widget.
      */
     public Widget(final ADLWidget widget) {
         setDefaults();
@@ -76,17 +85,19 @@ public abstract class Widget extends AbstractDisplayImporter{
         try {
             makeObject(widget);
         } catch (WrongADLFormatException e) {
-               // FIXME: Workaround. Der CentralLogger wurde deaktivbiert da viele Nachrichten in Kurzerzeit zum absturz von CSS führen 
-//            CentralLogger.getInstance().error(this, e);
+            // FIXME: Workaround. Der CentralLogger wurde deaktivbiert da viele
+            // Nachrichten in Kurzerzeit zum absturz von CSS führen
+            // CentralLogger.getInstance().error(this, e);
         }
     }
-    
+
     /**
      * @param widget
      * @param root
      */
     public Widget(ADLWidget widget, DisplayModel root) {
-        _widget=root;
+        _parent = widget;
+        _widget = root;
         _objectNr = widget.getObjectNr();
         try {
             makeObject(widget);
@@ -111,62 +122,106 @@ public abstract class Widget extends AbstractDisplayImporter{
 
     /**
      * Generate the XML-Element.
+     * 
+     * @throws WrongADLFormatException
      */
-    private void makeElemnet() {
+    private void makeElemnet() throws WrongADLFormatException {
 
         _widget.setVisible(true);
         /**
          * Check for dynamic Attribute.
          */
-        if((_basicAttribute!=null&&_dynamicAttribute!=null)){ 
-            if(_dynamicAttribute.isBoolean()){
-                _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_VISIBILITY, _dynamicAttribute.getBooleanAdlDynamicAttributes());
+        if ((_basicAttribute != null && _dynamicAttribute != null)) {
+            if (_dynamicAttribute.isBoolean()) {
+                _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_VISIBILITY,
+                        _dynamicAttribute.getBooleanAdlDynamicAttributes());
             }
-            if(_dynamicAttribute.isColor()){
-                _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, _dynamicAttribute.getColorAdlDynamicAttributes());
-                if(getControl()==null&&getMonitor()==null){
-//                    ADLHelper.setChan(_widget, chan);
-//                    _widget.setAliasValue("channel", "$param$"); //$NON-NLS-1$ //$NON-NLS-2$//TODO: param
-//                    _widget.setPrimarPv("$param$"); //$NON-NLS-1$
+            if (_dynamicAttribute.isColor()) {
+                _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
+                        _dynamicAttribute.getColorAdlDynamicAttributes());
+                if (getControl() == null && getMonitor() == null) {
+                    // ADLHelper.setChan(_widget, chan);
+                    // _widget.setAliasValue("channel", "$param$");
+                    // //$NON-NLS-1$ //$NON-NLS-2$//TODO: param
+                    // _widget.setPrimarPv("$param$"); //$NON-NLS-1$
                 }
             }
+        }
+        makeConnectionState();
+    }
+
+    /**
+     * Generate the default Desy Connenction State XML-Element.
+     */
+    protected void makeConnectionState() {
+        if (Messages.Widget_DesySwitch.equals("DESY")) {
+            // Desy Settings
+            // -- Set ConnectionState Border width
+            DynamicsDescriptor state = new DynamicsDescriptor("directConnection");
+            state.addInputChannel(new ParameterDescriptor("$channel$", Double.class));
+            Map<ConnectionState, Object> cState = new HashMap<ConnectionState, Object>();
+            cState.put(ConnectionState.DISCONNECTED, Integer.valueOf(3));
+            cState.put(ConnectionState.CONNECTION_FAILED, Integer.valueOf(3));
+            cState.put(ConnectionState.CONNECTING, Integer.valueOf(2));
+            cState.put(ConnectionState.INITIAL, Integer.valueOf(2));
+            cState.put(ConnectionState.CONNECTION_LOST, Integer.valueOf(3));
+            cState.put(ConnectionState.DISCONNECTING, Integer.valueOf(3));
+            cState.put(ConnectionState.DESTROYED, Integer.valueOf(3));
+            state.setConnectionStateDependentPropertyValues(cState);
+            _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_WIDTH, state);
+            // -- Set ConnectionState Border color
+            state = new DynamicsDescriptor("directConnection");
+            state.addInputChannel(new ParameterDescriptor("$channel$", Double.class));
+            cState = new HashMap<ConnectionState, Object>();
+            cState.put(ConnectionState.DISCONNECTED, new RGB(255, 255, 255));
+            cState.put(ConnectionState.CONNECTION_FAILED, new RGB(255, 128, 0));
+            cState.put(ConnectionState.CONNECTING, new RGB(128, 255, 0));
+            cState.put(ConnectionState.INITIAL, new RGB(0, 255, 0));
+            cState.put(ConnectionState.CONNECTION_LOST, new RGB(255, 128, 0));
+            cState.put(ConnectionState.DISCONNECTING, new RGB(255, 255, 0));
+            cState.put(ConnectionState.DESTROYED, new RGB(255, 0, 0));
+            state.setConnectionStateDependentPropertyValues(cState);
+            _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_COLOR, state);
         }
     }
 
     /**
      * Scan the ADLWidget Object.
      * 
-     * @param widget The ADLWidget to generate the XML-Element.
-     * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
+     * @param widget
+     *            The ADLWidget to generate the XML-Element.
+     * @throws WrongADLFormatException
+     *             WrongADLFormatException Wrong ADL format or untreated
+     *             parameter found.
      */
     private void makeObject(final ADLWidget widget) throws WrongADLFormatException {
         for (ADLWidget obj : widget.getObjects()) {
-            if(obj.isType("object")){ //$NON-NLS-1$
+            if (obj.isType("object")) { //$NON-NLS-1$
                 _object = new ADLObject(obj, _widget);
-            }else if(obj.isType("\"basic attribute\"")){ //$NON-NLS-1$
-                _basicAttribute = new ADLBasicAttribute(obj,_widget);
-            }else if(obj.isType("\"dynamic attribute\"")){ //$NON-NLS-1$
-                _dynamicAttribute = new ADLDynamicAttribute(obj,_widget);
-            }else if(obj.isType("points")){ //$NON-NLS-1$
-                _points = new ADLPoints(obj,_widget);
-            }else if(obj.isType("monitor")){ //$NON-NLS-1$
-                _monitor = new ADLMonitor(obj,_widget);
-            }else if(obj.isType("control")){ //$NON-NLS-1$
+            } else if (obj.isType("\"basic attribute\"")) { //$NON-NLS-1$
+                _basicAttribute = new ADLBasicAttribute(obj, _widget);
+            } else if (obj.isType("\"dynamic attribute\"")) { //$NON-NLS-1$
+                _dynamicAttribute = new ADLDynamicAttribute(obj, _widget);
+            } else if (obj.isType("points")) { //$NON-NLS-1$
+                _points = new ADLPoints(obj, _widget);
+            } else if (obj.isType("monitor")) { //$NON-NLS-1$
+                _monitor = new ADLMonitor(obj, _widget);
+            } else if (obj.isType("control")) { //$NON-NLS-1$
                 _control = new ADLControl(obj, _widget);
-            }else if(obj.isType("sensitive")){ //$NON-NLS-1$
+            } else if (obj.isType("sensitive")) { //$NON-NLS-1$
                 _sensitive = new ADLSensitive(obj, _widget);
             } // else{} polygon have no Parameter
         }
     }
-    
+
     /**
      * @return the WidgetModel
+     * @throws WrongADLFormatException
      */
-    public AbstractWidgetModel getElement() {
+    public AbstractWidgetModel getElement() throws WrongADLFormatException {
         makeElemnet();
         return _widget;
     }
-
 
     /**
      * 
@@ -199,6 +254,7 @@ public abstract class Widget extends AbstractDisplayImporter{
     public ADLPoints getPoints() {
         return _points;
     }
+
     /**
      * 
      * @return the Widgetpart {@link ADLMonitor} of this Widget.
@@ -224,24 +280,32 @@ public abstract class Widget extends AbstractDisplayImporter{
     }
 
     /**
-     * Convert the absolute coordinate to the relative coordinate of this Widget. 
-     * @param x the x coordinate.
-     * @param y the y coordinate.
+     * Convert the absolute coordinate to the relative coordinate of this
+     * Widget.
+     * 
+     * @param x
+     *            the x coordinate.
+     * @param y
+     *            the y coordinate.
      */
-    public void convertCoordinate(final String x, final String y){
+    public void convertCoordinate(final String x, final String y) {
         int iX = Integer.parseInt(x);
         int iY = Integer.parseInt(y);
         convertCoordinate(iX, iY);
     }
 
     /**
-     * Convert the absolute coordinate to the relative coordinate of this Widget. 
-     * @param x the x coordinate.
-     * @param y the y coordinate.
+     * Convert the absolute coordinate to the relative coordinate of this
+     * Widget.
+     * 
+     * @param x
+     *            the x coordinate.
+     * @param y
+     *            the y coordinate.
      */
     protected void convertCoordinate(final int x, final int y) {
-        getObject().setX(getObject().getX()-x);
-        getObject().setY(getObject().getY()-y);
+        getObject().setX(getObject().getX() - x);
+        getObject().setY(getObject().getY() - y);
     }
 
     /**
