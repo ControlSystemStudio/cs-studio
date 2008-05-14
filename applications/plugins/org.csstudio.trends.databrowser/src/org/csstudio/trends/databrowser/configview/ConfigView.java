@@ -13,6 +13,7 @@ import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDa
 import org.csstudio.swt.chart.TraceType;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.configview.PVTableHelper.Column;
+import org.csstudio.trends.databrowser.fileimport.ImportFileAction;
 import org.csstudio.trends.databrowser.model.FormulaModelItem;
 import org.csstudio.trends.databrowser.model.IModelItem;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
@@ -106,6 +107,7 @@ public class ConfigView extends PlotAwareView
     private Action delete_pv_action;
     private Action archive_up_action, archive_down_action;
     private Action delete_archive_action;
+    private Action import_from_file_action;
 
     // Sash Section for ArchiveDataSources
     private TableViewer archive_table_viewer;
@@ -260,6 +262,7 @@ public class ConfigView extends PlotAwareView
         archive_up_action = new ArchiveUpAction(this);
         archive_down_action = new ArchiveDownAction(this);
         delete_archive_action = new DeleteArchiveAction(this);
+        import_from_file_action = new ImportFileAction(this);
         makePVContextMenu(getSite());
         makeArchiveContextMenu(getSite());
 
@@ -769,6 +772,11 @@ public class ConfigView extends PlotAwareView
         MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         manager.add(add_pv_action);
         manager.add(add_formula_action);
+        //show the import file action only if preference 'show sample file import action'
+        //is set to true.
+        if (Preferences.getShowSampleFileImportAction().equalsIgnoreCase("true")) {
+        	manager.add(import_from_file_action);
+        }
         manager.add(delete_pv_action);
         // Other plug-ins can contribute their actions here
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));

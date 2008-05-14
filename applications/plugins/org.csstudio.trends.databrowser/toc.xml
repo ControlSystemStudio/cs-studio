@@ -14,6 +14,7 @@
 	  <topic label="Export View" href="html/export_view.html"/>
 	  <topic label="Preferences" href="html/preferences.html"/>
 	  <topic label="View Mode" href="html/view_mode.html"/>
+	  <topic label="Sample Files Import" href="html/sample_file_import.html"/>
 	  <topic label="Internals" href="html/sampling.html"/>
 	</topic>
 </toc>

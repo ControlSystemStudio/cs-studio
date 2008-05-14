@@ -52,6 +52,10 @@ public class Preferences
     /** Identifier for the Archives preference. */
     public static final String P_ARCHIVES = "archives";
     
+    /** Identifier if the 'SampleFileImportAction' should be shown in the 
+     * Config View.*/
+    public static final String SHOW_SAMPLE_FILE_IMPORT_ACTION = "show_sample_file_import_action";
+    
     /** @return Default start time specification. */
     static public String getStartSpecification()
     {
@@ -85,6 +89,14 @@ public class Preferences
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
         return store.getBoolean(P_SHOW_REQUEST_TYPES);
     }
+
+    /** @return Default setting for 'show sample file import action'. */
+    static public String getShowSampleFileImportAction()
+    {
+        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        return store.getString(SHOW_SAMPLE_FILE_IMPORT_ACTION);
+    }
+
     
     /** @return Default archive server URLs. */
     static public String[] getArchiveServerURLs()

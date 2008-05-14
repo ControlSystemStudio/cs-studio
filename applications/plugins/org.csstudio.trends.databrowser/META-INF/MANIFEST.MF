@@ -21,3 +21,6 @@ Require-Bundle: org.eclipse.ui,
 Eclipse-LazyStart: true
 Bundle-Vendor: Kay Kasemir
 Export-Package: org.csstudio.trends.databrowser
+Bundle-ClassPath: lib/ext-1.1.1.jar,
+ lib/jep-2.4.1.jar,
+ .
