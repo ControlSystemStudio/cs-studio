@@ -1,4 +1,5 @@
 package org.csstudio.utility.adlconverter;
+
 import org.csstudio.utility.adlconverter.ui.ADLConverterMainView;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -44,11 +45,12 @@ public class ShowADLConverterMainView implements IWorkbenchWindowActionDelegate 
 
     /** A workbench window handle. */
     private IWorkbenchWindow _window;
-    
-    public void dispose() { }
 
-    public void init(IWorkbenchWindow window) { 
-        _window = window;   
+    public void dispose() {
+    }
+
+    public void init(IWorkbenchWindow window) {
+        _window = window;
     }
 
     public void run(IAction action) {
@@ -62,10 +64,10 @@ public class ShowADLConverterMainView implements IWorkbenchWindowActionDelegate 
         }
     }
 
-    public void selectionChanged(IAction action, ISelection selection) {    }
+    public void selectionChanged(IAction action, ISelection selection) {
+    }
 
-    public IWorkbenchWindow getWorkbenchWindow()
-    {
+    public IWorkbenchWindow getWorkbenchWindow() {
         return _window;
     }
 }

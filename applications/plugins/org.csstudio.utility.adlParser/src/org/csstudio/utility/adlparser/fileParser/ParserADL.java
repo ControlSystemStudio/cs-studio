@@ -42,13 +42,20 @@ import org.csstudio.platform.logging.CentralLogger;
 public final class ParserADL {
 
     /**
+     * Default Constructor.
+     */
+    private ParserADL(){}
+    
+    /**
      * Main method of class ParserADL.<br/>
      * Reads form an adl file and creates a structure of ADLWidget.
+     * 
+     * @param file The ADL File to parse.
      * @return the root Object with contain the structure of the Widget.
      */
-    public static ADLWidget getNextElement(File file) {
+    public static ADLWidget getNextElement(final File file) {
         int lineNr=0;
-        ADLWidget root = new ADLWidget(file.getAbsolutePath(),null,lineNr++);
+        final ADLWidget root = new ADLWidget(file.getAbsolutePath(),null,lineNr++);
         ADLWidget children= root;
         BufferedReader buffRead = null;
         try {        
@@ -68,16 +75,16 @@ public final class ParserADL {
                     }
                 }
             }
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             CentralLogger.getInstance().error(ParserADL.class, e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             CentralLogger.getInstance().error(ParserADL.class, e);
         } finally{
             try {
                 if(buffRead!=null){
                     buffRead.close();
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 CentralLogger.getInstance().error(ParserADL.class,e);
             }
         }

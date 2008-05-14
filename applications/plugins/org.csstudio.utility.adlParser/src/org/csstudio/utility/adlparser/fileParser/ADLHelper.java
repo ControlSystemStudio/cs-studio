@@ -31,7 +31,6 @@ import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.TextLayout;
@@ -162,7 +161,6 @@ public final class ADLHelper {
         String delimiter =""; //$NON-NLS-1$
         String[] tempString; //0=record, 1=_pid, 2=.LOLO
         String[] cleanString;
-        String param=null;
         delimiter = dirtyString.replaceAll("\"", "").trim(); // use variable delimiter in wrong context. //$NON-NLS-1$ //$NON-NLS-2$
         tempString = delimiter.split("[\\.]"); //$NON-NLS-1$
         delimiter =""; //$NON-NLS-1$
@@ -184,7 +182,7 @@ public final class ADLHelper {
             cleanString[0] = cleanString[0].replaceAll("\\.adl", ".css-sds"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if(cleanString[1].startsWith("$")){ //$NON-NLS-1$
-            String temp = cleanString[1].substring(cleanString[1].indexOf(')')+1);
+//            String temp = cleanString[1].substring(cleanString[1].indexOf(')')+1);
             cleanString[1]=cleanString[1].replace("(", "").replace(')', '$'); //$NON-NLS-1$ //$NON-NLS-2$
 //            cleanString[1] ="$channel$"+temp; //$NON-NLS-1$
         }
@@ -233,7 +231,6 @@ public final class ADLHelper {
         if(text!=null&&text.length()>0){
             TextLayout tl = new TextLayout(null);
             tl.setText(text);
-            Device d = null;
             Font f = CustomMediaFactory.getInstance().getFont(font,fontSize,0);
             tl.setFont(f);
             while(maxWidth<tl.getBounds().width&&fontSize>1){
@@ -248,8 +245,8 @@ public final class ADLHelper {
 
     /**
      * @param widgetModel
-     * @param chan
-     * @return
+     * @param chan the was set to Primery PV and as channel alias 
+     * @return the Channel field.
      */
     public static String setChan(AbstractWidgetModel widgetModel, String[] chan) {
         String postfix = ""; //$NON-NLS-1$
