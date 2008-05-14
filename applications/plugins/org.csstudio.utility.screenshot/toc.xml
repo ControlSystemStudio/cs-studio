@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc link_to="../org.csstudio.platform.ui/tocApps.xml#utility" label="Screenshot">
+	<topic label="English">
+		<topic label="Screenshot" href="html/screenshot.html"/> 
+	</topic>
+    <topic label="German">
+	      <topic label="Screenshot" href="html/screenshot_de.html"/>
+	</topic>
+</toc>
