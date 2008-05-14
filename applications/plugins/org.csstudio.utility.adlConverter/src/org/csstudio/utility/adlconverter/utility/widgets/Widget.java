@@ -67,12 +67,14 @@ public abstract class Widget extends AbstractDisplayImporter {
     private ADLMonitor _monitor;
     /** The Widget control Attribute. */
     private ADLControl _control;
+    /** The Widget sensitive Attribute. */
+    private ADLSensitive _sensitive;
     /**
      * The Number of this object in the Display. useful for Debugging and Error
      * handling.
      */
     private int _objectNr;
-    private ADLSensitive _sensitive;
+    
     private ADLWidget _parent;
 
     /**

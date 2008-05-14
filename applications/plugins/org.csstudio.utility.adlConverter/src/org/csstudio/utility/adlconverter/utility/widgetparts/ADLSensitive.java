@@ -54,7 +54,6 @@ public class ADLSensitive extends WidgetPart {
      * The Record property/Feldname.
      */
     private String _postfix;
-    private ADLWidget _sen;
 
     /**
      * The default constructor.
@@ -71,7 +70,7 @@ public class ADLSensitive extends WidgetPart {
      * {@inheritDoc}
      */
     @Override
-    void generateElements() {
+    final void generateElements() {
         if(_chan!=null&&_chan[0].length()>0){
             _postfix = ADLHelper.setChan(_widgetModel,_chan);
             if(_sensitiveMode!=null && _sensitiveMode.equals("if not zero")){ //$NON-NLS-1$

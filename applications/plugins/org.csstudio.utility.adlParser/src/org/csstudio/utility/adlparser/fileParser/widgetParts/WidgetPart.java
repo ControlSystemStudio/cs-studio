@@ -40,6 +40,7 @@ public abstract class WidgetPart {
      * The Widget that set the parameter from ADLWidget.
      */
     protected AbstractWidgetModel _widgetModel;
+    
     protected AbstractWidgetModel _parentWidgetModel;
 
     /**

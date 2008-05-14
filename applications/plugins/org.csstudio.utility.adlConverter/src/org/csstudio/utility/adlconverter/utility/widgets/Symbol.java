@@ -36,7 +36,7 @@ import org.csstudio.utility.adlconverter.utility.ADLWidget;
 public class Symbol extends Widget {
 
     /**
-     * @param symbol
+     * @param symbol ADLWidget that describe the Symbol.
      */
     public Symbol(final ADLWidget symbol) {
         super(symbol);

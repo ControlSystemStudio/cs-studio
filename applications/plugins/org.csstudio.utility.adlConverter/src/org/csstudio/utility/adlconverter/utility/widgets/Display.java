@@ -40,24 +40,35 @@ import org.csstudio.utility.adlconverter.utility.widgetparts.ADLObject;
  */
 public class Display extends Widget{
 
-    private ADLObject _object;
+    /** 
+     * The Color of (front?) Object.
+     */
     private String _clr;
+    
+    /**
+     * The background color of the Display.
+     */
     private String _bclr;
+    
+    /**
+     * The string from ADL File with the Colormap. 
+     */
     private String _cmap;
 
     /**
-     * @param display
-     * @param root 
+     * 
+     * @param display ADLWidget that describe the Display.
+     * @param root Root Model for the Display.
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public Display(final ADLWidget display, final DisplayModel root) throws WrongADLFormatException {
         super(display, root);
         for (ADLWidget widget : display.getObjects()) {
             if(widget.isType("object")){ //$NON-NLS-1$
-                    _object = new ADLObject(widget,_widget);
+                    ADLObject object = new ADLObject(widget,_widget);
                     // TODO: Überprüfen ob die +20 auf die Höhe einen Grund hatten. Auf den ersten Blick ist nichts zu finden.
 //                    _object.setHeight(_object.getHeight()+20);
-                    _object.setHeight(_object.getHeight());
+                    object.setHeight(object.getHeight());
             }else {
                 throw new WrongADLFormatException(Messages.Display_WrongADLFormatException_Parameter_Begin+widget.getType()+Messages.Display_WrongADLFormatException_Parameter_End);
             } 

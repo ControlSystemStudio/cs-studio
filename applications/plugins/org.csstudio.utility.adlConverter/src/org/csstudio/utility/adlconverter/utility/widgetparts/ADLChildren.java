@@ -60,7 +60,7 @@ public class ADLChildren {
     private ArrayList<Widget> _childrens = new ArrayList<Widget>();
 
     /**
-     * @param adlChildren
+     * @param adlChildren 
      */
     public ADLChildren(final ADLWidget adlChildren) {
         for (ADLWidget strings : adlChildren.getObjects()) {
