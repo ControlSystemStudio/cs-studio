@@ -36,6 +36,7 @@ import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 /**
@@ -127,8 +128,10 @@ public class RelatedDisplayItem extends WidgetPart{
             .setPropertyValue(_label);
         }
         if(_name!=null){
+            IPath path = new Path(_path);
+            path = path.append(_name);
             action.getProperty(OpenDisplayWidgetAction.PROP_RESOURCE)
-            .setPropertyValue(new Path(_path+_name));
+            .setPropertyValue(path);
         }
         if(_args!=null){
             Map<String, String> map = new HashMap<String, String>();

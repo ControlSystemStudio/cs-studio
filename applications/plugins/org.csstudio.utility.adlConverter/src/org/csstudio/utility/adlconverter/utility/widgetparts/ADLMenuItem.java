@@ -36,6 +36,7 @@ import org.csstudio.sds.model.properties.actions.OpenDisplayWidgetAction;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 /**
@@ -126,8 +127,10 @@ public class ADLMenuItem extends WidgetPart{
             .getActionFactory().createWidgetAction();
             
             //Set the Resource
+            IPath path = new Path(_path);
+            path = path.append(_command.replaceAll("\"", "").replace(".adl", ".css-sds"));
             action.getProperty(OpenDisplayWidgetAction.PROP_RESOURCE)
-            .setPropertyValue(new Path(_path+_command.replaceAll("\"", "").replace(".adl", ".css-sds")));//TODO: set the correct Path //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            .setPropertyValue(path);//TODO: set the correct Path //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             actionData.addAction(action);
 
 //            _actionAttribut.addContent(propertyAttribut);
