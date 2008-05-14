@@ -10,5 +10,6 @@ Export-Package: org.csstudio.nams.common.contract,
  org.csstudio.nams.common.material,
  org.csstudio.nams.common.plugin.utils,
  org.csstudio.nams.common.service,
+ org.csstudio.nams.common.testhelper,
  org.csstudio.nams.common.wam,
  org.easymock
