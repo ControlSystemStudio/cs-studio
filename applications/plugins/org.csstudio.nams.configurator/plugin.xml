@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="AMS"
+            id="org.csstudio.nams.configurator">
+      </category>
+      <view
+            name="AMS Configuration Tree"
+            icon="icons/ams.gif"
+            category="org.csstudio.nams.configurator"
+            class="org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView"
+            id="org.csstudio.nams.configurator.views.ConfigurationTreeView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.nams.configurator.PerspectiveFactory"
+            icon="icons/ams.gif"
+            id="org.csstudio.nams.configurator.perspective"
+            name="AMS Configurator">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.nams.configurator.editor.ConfigurationEditor"
+            icon="icons/ams.gif"
+            id="org.csstudio.nams.configurator.ConfigurationEditor"
+            name="Configuration Editor">
+      </editor>
+   </extension>
+
+</plugin>
