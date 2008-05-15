@@ -1,5 +1,7 @@
 package org.csstudio.nams.service.messaging.declaration;
 
+import java.util.Map;
+
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
@@ -15,13 +17,15 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
  * den "deliver type persistent" setzen!
  */
 public interface NAMSMessage {
-	public boolean istAlarmnachricht();
+	public boolean enthaeltAlarmnachricht();
 
-	public boolean istSystemnachricht();
-
+	public boolean enthaeltSystemnachricht();
+	
 	public AlarmNachricht alsAlarmnachricht();
 
 	public SystemNachricht alsSystemachricht();
+	
+	public Map<String, String> alsMap();
 
 	public String toString();
 

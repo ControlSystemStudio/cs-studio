@@ -1,5 +1,7 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
+import java.util.Map;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 
@@ -53,6 +55,11 @@ public class NAMSMessageJMSImpl implements NAMSMessage {
 		} catch (JMSException e) {
 			throw new MessagingException("acknowledgment failed", e);
 		}
+	}
+
+	public Map<String, String> alsMap() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

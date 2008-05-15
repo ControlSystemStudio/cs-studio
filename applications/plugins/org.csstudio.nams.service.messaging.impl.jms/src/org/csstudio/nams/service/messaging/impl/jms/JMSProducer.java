@@ -1,5 +1,7 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
+import java.util.Map;
+
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -61,6 +63,11 @@ public class JMSProducer implements Producer {
 
 	public void sendeSystemnachricht(SystemNachricht vorgangsmappe) {
 		// TODO implementieren
+	}
+
+	public void sendeMap(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

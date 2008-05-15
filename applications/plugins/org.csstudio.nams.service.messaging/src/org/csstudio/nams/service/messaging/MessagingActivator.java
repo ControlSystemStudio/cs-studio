@@ -23,10 +23,8 @@
  */
 package org.csstudio.nams.service.messaging;
 
-import org.csstudio.nams.service.messaging.declaration.ConsumerFactoryService;
-import org.csstudio.nams.service.messaging.declaration.ProducerFactoryService;
-import org.csstudio.nams.service.messaging.extensionPoint.ConsumerFactoryServiceFactory;
-import org.csstudio.nams.service.messaging.extensionPoint.ProducerFactoryServiceFactory;
+import org.csstudio.nams.service.messaging.declaration.MessagingService;
+import org.csstudio.nams.service.messaging.extensionPoint.MessagingServiceFactory;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
@@ -51,58 +49,31 @@ public class MessagingActivator implements BundleActivator {
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		// ConsumerFactoryServiceFactory
-		String extensionPointIdConsumerServiceFactory = ConsumerFactoryServiceFactory.class
+		// MessagingServiceFactory
+		String extensionPointIdMessagingServiceFactory = MessagingServiceFactory.class
 				.getName();
-		IConfigurationElement[] elementsConsumerFactoryServiceFactory = Platform
+		IConfigurationElement[] elementsMessagingServiceFactory = Platform
 				.getExtensionRegistry().getConfigurationElementsFor(
-						extensionPointIdConsumerServiceFactory);
+						extensionPointIdMessagingServiceFactory);
 
-		if (elementsConsumerFactoryServiceFactory.length != 1) {
+		if (elementsMessagingServiceFactory.length != 1) {
 			throw new RuntimeException(
 					"One and only one extension for extension point \""
-							+ extensionPointIdConsumerServiceFactory
+							+ extensionPointIdMessagingServiceFactory
 							+ "\" should be present in current runtime configuration!");
 		} else {
-			Object executableExtension = elementsConsumerFactoryServiceFactory[0]
+			Object executableExtension = elementsMessagingServiceFactory[0]
 					.createExecutableExtension(NAME_OF_IMPLEMENTATION_ELEMENT_OF_EXTENSION_POINT);
-			if (!(executableExtension instanceof ConsumerFactoryServiceFactory)) {
+			if (!(executableExtension instanceof MessagingServiceFactory)) {
 				throw new RuntimeException("Only a extension of type "
-						+ ConsumerFactoryServiceFactory.class.getName()
+						+ MessagingServiceFactory.class.getName()
 						+ " for extension point \""
-						+ extensionPointIdConsumerServiceFactory
+						+ extensionPointIdMessagingServiceFactory
 						+ "\" is valid!");
 			}
-			ConsumerFactoryServiceFactory factory = (ConsumerFactoryServiceFactory) executableExtension;
-			context.registerService(ConsumerFactoryService.class.getName(),
-					factory.createConsumerFactoryService(), null);
-		}
-
-		// ProducerFactoryServiceFactory
-		String extensionPointIdProducerServiceFactory = ProducerFactoryServiceFactory.class
-				.getName();
-		IConfigurationElement[] elementsProducerFactoryServiceFactory = Platform
-				.getExtensionRegistry().getConfigurationElementsFor(
-						extensionPointIdProducerServiceFactory);
-
-		if (elementsProducerFactoryServiceFactory.length != 1) {
-			throw new RuntimeException(
-					"One and only one extension for extension point \""
-							+ extensionPointIdProducerServiceFactory
-							+ "\" should be present in current runtime configuration!");
-		} else {
-			Object executableExtension = elementsProducerFactoryServiceFactory[0]
-					.createExecutableExtension(NAME_OF_IMPLEMENTATION_ELEMENT_OF_EXTENSION_POINT);
-			if (!(executableExtension instanceof ProducerFactoryServiceFactory)) {
-				throw new RuntimeException("Only a extension of type "
-						+ ProducerFactoryServiceFactory.class.getName()
-						+ " for extension point \""
-						+ extensionPointIdProducerServiceFactory
-						+ "\" is valid!");
-			}
-			ProducerFactoryServiceFactory factory = (ProducerFactoryServiceFactory) executableExtension;
-			context.registerService(ProducerFactoryService.class.getName(),
-					factory.createProducerFactoryService(), null);
+			MessagingServiceFactory factory = (MessagingServiceFactory) executableExtension;
+			context.registerService(MessagingService.class.getName(),
+					factory.createService(), null);
 		}
 	}
 
