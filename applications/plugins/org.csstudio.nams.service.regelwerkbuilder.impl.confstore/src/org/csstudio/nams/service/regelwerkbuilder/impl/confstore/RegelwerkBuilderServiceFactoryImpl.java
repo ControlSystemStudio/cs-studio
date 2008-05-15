@@ -12,7 +12,7 @@ public class RegelwerkBuilderServiceFactoryImpl implements
 
 	public RegelwerkBuilderService createService() {
 		// TODO Auto-generated method stub
-		return null;
+		return new RegelwerkBuilderServiceImpl();
 	}
 
 }

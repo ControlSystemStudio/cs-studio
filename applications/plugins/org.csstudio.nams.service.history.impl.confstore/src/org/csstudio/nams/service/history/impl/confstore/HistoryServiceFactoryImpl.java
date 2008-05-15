@@ -11,7 +11,7 @@ public class HistoryServiceFactoryImpl implements HistoryServiceFactory {
 
 	public HistoryService createService() {
 		// TODO Auto-generated method stub
-		return null;
+		return new HistoryServiceImpl();
 	}
 
 }
