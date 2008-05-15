@@ -9,6 +9,7 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
 
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
@@ -18,10 +19,12 @@ class JMSConsumer implements Consumer {
 	private boolean isClosed = false;
 	private WorkThread[] workers;
 	private LinkedBlockingQueue<Message> messageQueue;
+	private Logger logger;
 
 	public JMSConsumer(String clientId, String messageSourceName, PostfachArt art, Session[] sessions) throws JMSException {
 
-		// TODO Schaufeln in BlockingQueue : Maximum size auf 1 oder 2,
+		logger = JMSActivator.getLogger();
+		// Schaufeln in BlockingQueue : Maximum size auf 1,
 		// damit nicht hunderte Nachrichten während eines updates gepufert
 		// werden, das ablegen in der Queue blockiert, wenn diese voll ist.
 		// Siehe java.util.concurrent.BlockingQueue.
@@ -31,7 +34,8 @@ class JMSConsumer implements Consumer {
 		
 		try {
 			for (int i = 0; i < sessions.length; i++) {
-				workers[i] = new WorkThread(messageQueue, sessions[i], messageSourceName, clientId, art);
+				workers[i] = new WorkThread(messageQueue, sessions[i], messageSourceName, clientId, art, logger);
+				workers[i].start();
 			}
 		} catch (JMSException e) {
 			close();
@@ -42,12 +46,11 @@ class JMSConsumer implements Consumer {
 	public void close() {
 		for (WorkThread worker : workers) {
 			if (worker != null) {
-				try {
-					worker.close();
-				} catch (JMSException e) {}
+				worker.close();
 			}
 		}
 		isClosed = true;
+		logger.logDebugMessage(this, "Consumer closed");
 	}
 
 	public boolean isClosed() {
@@ -66,9 +69,11 @@ class JMSConsumer implements Consumer {
 			namsMessage = new NAMSMessageJMSImpl(message);
 		} catch (InterruptedException e) {
 			// TODO exception handling
+			// wird von messageQueue.take() geworfen
 			// e.printStackTrace();
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
+			// TODO wird vom message.acknowledge() geworfen.
+			// fliegt hier eh noch raus
 			e.printStackTrace();
 		}
 		return namsMessage;
@@ -78,11 +83,13 @@ class JMSConsumer implements Consumer {
 		private final LinkedBlockingQueue<Message> messageQueue;
 		private volatile boolean arbeitFortsetzen = true;
 		private MessageConsumer consumer;
+		private final Logger logger;
 
 		public WorkThread(LinkedBlockingQueue<Message> messageQueue,
-				Session session, String source, String clientId, PostfachArt art)
+				Session session, String source, String clientId, PostfachArt art, Logger logger)
 				throws JMSException {
 			this.messageQueue = messageQueue;
+			this.logger = logger;
 
 			switch (art) {
 			case QUEUE:
@@ -102,11 +109,14 @@ class JMSConsumer implements Consumer {
 			}
 		}
 
-		public void close() throws JMSException {
+		public void close() {
 			arbeitFortsetzen = false;
-			consumer.close();
+			try {
+				consumer.close();
+			} catch (JMSException e) {}
 			this.interrupt(); // Keine Sorge, unbehandelte Nachricht wird
 								// nicht acknowledged und kommt daher wieder.
+			logger.logDebugMessage(this, "Consumer WorkThread stoped");
 		}
 
 		@Override
@@ -121,9 +131,11 @@ class JMSConsumer implements Consumer {
 					// und auch auf das failover protokoll achten
 				} catch (JMSException e) {
 					// TODO exception handling
+					// wird von consumer.receive() geworfen
 					e.printStackTrace();
 				} catch (InterruptedException e) {
 					// TODO exception handling
+					// wird von messageQueue.put(message) geworfen
 					e.printStackTrace();
 				}
 				Thread.yield();

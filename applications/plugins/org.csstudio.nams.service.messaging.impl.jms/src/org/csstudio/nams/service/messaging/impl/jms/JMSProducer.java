@@ -6,6 +6,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 import org.csstudio.nams.common.material.SystemNachricht;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
 
@@ -13,9 +14,12 @@ public class JMSProducer implements Producer {
 
 	private MessageProducer[] producers;
 	private boolean isClosed;
+	private Logger logger;
 
 	public JMSProducer(String messageDestinationName,
 			PostfachArt artDesPostfaches, Session[] sessions) throws JMSException {
+		
+		logger = JMSActivator.getLogger();
 		
 		producers = new MessageProducer[sessions.length];
 		try {
@@ -33,6 +37,7 @@ public class JMSProducer implements Producer {
 			}
 		} catch (JMSException e) {
 			close();
+			logger.logErrorMessage(this, e.getLocalizedMessage(), e);
 			throw e;
 		}
 		isClosed = false;
@@ -47,6 +52,7 @@ public class JMSProducer implements Producer {
 			}
 		}
 		isClosed = true;
+		logger.logDebugMessage(this, "Producer closed");
 	}
 
 	public boolean isClosed() {

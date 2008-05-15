@@ -7,5 +7,6 @@ Bundle-Activator: org.csstudio.nams.service.messaging.impl.jms.JMSActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.messaging,
  org.csstudio.nams.common,
- org.csstudio.platform.libs.jms
+ org.csstudio.platform.libs.jms,
+ org.csstudio.nams.service.logging
 Eclipse-LazyStart: true

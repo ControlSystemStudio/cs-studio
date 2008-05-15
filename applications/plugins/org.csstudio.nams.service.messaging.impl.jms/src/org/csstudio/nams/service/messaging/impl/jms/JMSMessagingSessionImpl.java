@@ -97,7 +97,7 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 		try {
 			consumer = new JMSConsumer(environmentUniqueClientId, messageSourceName, artDesPostfaches, sessions);
 		} catch (JMSException e) {
-			throw new MessagingException(e);
+			throw new MessagingException("JMSException during creation of JMSConsumer",e);
 		}
 		
 		return consumer;
@@ -110,7 +110,7 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 		try {
 			producer = new JMSProducer(messageDestinationName, artDesPostfaches, sessions);
 		} catch (JMSException e) {
-			throw new MessagingException(e);
+			throw new MessagingException("JMSException during creation of JMSProducer",e);
 		}
 		
 		return producer;

@@ -24,25 +24,25 @@ public class NAMSMessageJMSImpl implements NAMSMessage {
 	}
 
 	public AlarmNachricht alsAlarmnachricht() {
-		Contract.require(istAlarmnachricht(), "istAlarmnachricht()");
+		Contract.require(enthaeltAlarmnachricht(), "istAlarmnachricht()");
 
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public SystemNachricht alsSystemachricht() {
-		Contract.require(istSystemnachricht(), "istSystemnachricht()");
+		Contract.require(enthaeltSystemnachricht(), "istSystemnachricht()");
 
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public boolean istAlarmnachricht() {
+	public boolean enthaeltAlarmnachricht() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean istSystemnachricht() {
+	public boolean enthaeltSystemnachricht() {
 		// TODO Auto-generated method stub
 		return false;
 	}

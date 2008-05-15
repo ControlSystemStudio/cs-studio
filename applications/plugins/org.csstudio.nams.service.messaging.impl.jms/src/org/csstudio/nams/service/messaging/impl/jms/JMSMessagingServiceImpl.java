@@ -18,11 +18,11 @@ public class JMSMessagingServiceImpl implements MessagingService {
 		try {
 			return new JMSMessagingSessionImpl(environmentUniqueClientId, urls);
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			throw new MessagingException(e);
+			// TODO exception handling
+			throw new MessagingException("NamingException during creation of JMSMessagingSessionImpl",e);
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			throw new MessagingException(e);
+			// TODO exception handling
+			throw new MessagingException("JMSException during creation of JMSMessagingSessionImpl",e);
 		}
 	}
 
