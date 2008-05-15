@@ -774,9 +774,8 @@ public class ConfigView extends PlotAwareView
         manager.add(add_formula_action);
         //show the import file action only if preference 'show sample file import action'
         //is set to true.
-        if (Preferences.getShowSampleFileImportAction().equalsIgnoreCase("true")) {
+        if (Preferences.getShowSampleFileImportAction())
         	manager.add(import_from_file_action);
-        }
         manager.add(delete_pv_action);
         // Other plug-ins can contribute their actions here
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));

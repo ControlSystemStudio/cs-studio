@@ -91,10 +91,10 @@ public class Preferences
     }
 
     /** @return Default setting for 'show sample file import action'. */
-    static public String getShowSampleFileImportAction()
+    static public boolean getShowSampleFileImportAction()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getString(SHOW_SAMPLE_FILE_IMPORT_ACTION);
+        return store.getBoolean(SHOW_SAMPLE_FILE_IMPORT_ACTION);
     }
 
     
