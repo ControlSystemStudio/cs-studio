@@ -843,12 +843,8 @@ public class Chart extends Canvas
             }
             // No marker selected.
             // Pass click on to listeners.
-            YAxis current = getSelectedOrFirstYAxis();
-            double xval = xaxis.getValue(x);
-            double yval = current.getValue(y);
-            // firePointSelected
-            for (ChartListener listener : listeners)
-                listener.pointSelected(xaxis, current, xval, yval);
+            final YAxis current = getSelectedOrFirstYAxis();
+            firePointSelected(current, xaxis.getValue(x), current.getValue(y));
             return;
         }
         // A click on a Y axis selects it, and de-selects the others.
@@ -868,10 +864,25 @@ public class Chart extends Canvas
         if (any_selected)
             return;
     }
+
+    /** Send aboutToZoomOrPan event to listeners */
+    protected void fireAboutToZoomOrPan()
+    {
+        for (ChartListener listener : listeners)
+            listener.aboutToZoomOrPan();
+    }
+    
+    /** Send pointSelected event to listeners */
+    private void firePointSelected(YAxis current, double xval, double yval)
+    {
+        for (ChartListener listener : listeners)
+            listener.pointSelected(xaxis, current, xval, yval);
+    }
     
     /** Handle a rubber-band-zoom for the given region. */
-    private void rubberZoom(Rectangle zoom)
+    private void rubberZoom(final Rectangle zoom)
     {
+        fireAboutToZoomOrPan();
         setRedraw(false); // defer per-axis redraws
         boolean selections = false;
         // Zoom only the selected axes?

@@ -88,6 +88,9 @@ public class InteractiveChart extends Composite
         
         chart.addListener(new ChartListener()
         {
+            public void aboutToZoomOrPan()
+            { /* NOP */ }
+
             public void changedXAxis(XAxis xaxis)
             { /* NOP */ }
             
@@ -153,6 +156,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                chart.fireAboutToZoomOrPan();
                 moveUpDown(SHIFT_FACTOR);
             }
         });
@@ -161,6 +165,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                chart.fireAboutToZoomOrPan();
                 moveUpDown(-SHIFT_FACTOR);
             }
         });
@@ -169,6 +174,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                chart.fireAboutToZoomOrPan();
                 zoomInOutY(ZOOM_FACTOR);
             }
         });
@@ -177,6 +183,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                chart.fireAboutToZoomOrPan();
                 zoomInOutY(1.0/ZOOM_FACTOR);
             }
         });
@@ -185,6 +192,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                chart.fireAboutToZoomOrPan();
                 chart.autozoom();
             }
         });
@@ -193,6 +201,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                chart.fireAboutToZoomOrPan();
                 chart.stagger();
             }
         });
@@ -201,6 +210,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                chart.fireAboutToZoomOrPan();
                 chart.setDefaultZoom();
             }
         });
@@ -212,6 +222,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                chart.fireAboutToZoomOrPan();
                 moveLeftRight(PAN_FACTOR);
             }
         });
@@ -220,6 +231,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                chart.fireAboutToZoomOrPan();
                 moveLeftRight(-PAN_FACTOR);
             }
         });
@@ -228,6 +240,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                chart.fireAboutToZoomOrPan();
                 if (zoom_from_end)
                     zoomFromEnd(chart.getXAxis(), ZOOM_FACTOR);
                 else
@@ -239,6 +252,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                chart.fireAboutToZoomOrPan();
                 if (zoom_from_end)
                     zoomFromEnd(chart.getXAxis(), 1.0/ZOOM_FACTOR);
                 else

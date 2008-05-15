@@ -188,6 +188,11 @@ public class Controller
     /** React to chart changes by updating the model. */
     final private ChartListener chart_listener = new ChartListener()
     {
+        public void aboutToZoomOrPan()
+        {
+            // TODO Get snapshot of axes for UNDO
+        }
+
         @SuppressWarnings("nls")
         public void changedXAxis(XAxis xaxis)
         {

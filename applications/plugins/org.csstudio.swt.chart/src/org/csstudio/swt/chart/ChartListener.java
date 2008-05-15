@@ -11,6 +11,11 @@ import org.csstudio.swt.chart.axes.YAxisListener;
  */
 public interface ChartListener extends XAxisListener, YAxisListener
 {
+    /** The Chart is about to zoom or pan, so an application might want to
+     *  take a snapshot of axis settings for 'undo'
+     */
+    public void aboutToZoomOrPan();
+    
     /** A coordinate was selected.
      *  Somebody clicked the mouse on the graph area.
      */
