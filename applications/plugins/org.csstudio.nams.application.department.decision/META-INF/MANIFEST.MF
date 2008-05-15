@@ -7,5 +7,8 @@ Bundle-Activator: org.csstudio.nams.application.department.decision.DecisionDepa
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.logging,
  org.csstudio.nams.common,
- org.csstudio.nams.service.messaging
+ org.csstudio.nams.service.messaging,
+ org.csstudio.ams.service.preferenceservice,
+ org.csstudio.nams.service.regelwerkbuilder,
+ org.csstudio.nams.service.history
 Eclipse-LazyStart: true

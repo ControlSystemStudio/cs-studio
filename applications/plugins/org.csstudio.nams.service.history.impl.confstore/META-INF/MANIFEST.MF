@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Confstore Plug-in
+Bundle-SymbolicName: org.csstudio.nams.service.history.impl.confstore
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.nams.service.history.impl.confstore.Activator
+Bundle-Vendor: C1 WPS
+Require-Bundle: org.eclipse.core.runtime
+Eclipse-LazyStart: true

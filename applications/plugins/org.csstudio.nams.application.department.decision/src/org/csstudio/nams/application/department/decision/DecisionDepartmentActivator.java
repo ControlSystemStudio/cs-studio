@@ -28,17 +28,20 @@ import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.Set;
 
+import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.nams.application.department.decision.exceptions.InitPropertiesException;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.csstudio.nams.common.service.ExecutionService;
+import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
-import org.csstudio.nams.service.messaging.declaration.ConsumerFactoryService;
+import org.csstudio.nams.service.messaging.declaration.MessagingService;
+import org.csstudio.nams.service.messaging.declaration.MessagingSession;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
-import org.csstudio.nams.service.messaging.declaration.ProducerFactoryService;
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
+import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
@@ -90,13 +93,7 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * Gemeinsames Attribut des Activators und der Application: Fatory for
 	 * creating Consumers
 	 */
-	private static ConsumerFactoryService consumerFactoryService;
-
-	/**
-	 * Gemeinsames Attribut des Activators und der Application: Fatory for
-	 * creating Producers
-	 */
-	private static ProducerFactoryService producerFactoryService;
+	private static MessagingService messagingService;
 
 	/**
 	 * Indicates if the application instance should continue working. Unused in
@@ -125,29 +122,55 @@ public class DecisionDepartmentActivator implements IApplication,
 	 */
 	private static ExecutionService executionService;
 
+	private static PreferenceService preferenceService;
+
+	private static RegelwerkBuilderService regelwerkBuilderService;
+
+	private static HistoryService historyService;
+
 	/**
 	 * Starts the bundle activator instance. First Step.
 	 * 
 	 * @see BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
+		
+		// Services holen
+		
+		// Logging Service
 		logger = BundleActivatorUtils
 				.getAvailableService(context, Logger.class);
 
-		consumerFactoryService = BundleActivatorUtils.getAvailableService(
-				context, ConsumerFactoryService.class);
-		if (consumerFactoryService == null)
-			throw new RuntimeException("no consumer factory service avail!");
-
-		producerFactoryService = BundleActivatorUtils.getAvailableService(
-				context, ProducerFactoryService.class);
-		if (producerFactoryService == null)
-			throw new RuntimeException("no consumer factory service avail!");
-
+		logger.logInfoMessage(this, "plugin " + PLUGIN_ID
+				+ " initializing Services");
+		
+		// Messaging Service
+		messagingService = BundleActivatorUtils.getAvailableService(
+				context, MessagingService.class);
+		if (messagingService == null)
+			throw new RuntimeException("no messaging service available!");
+		
+		// Preference Service (wird als konfiguration verwendet!!)
+		preferenceService = BundleActivatorUtils.getAvailableService(context, PreferenceService.class);
+		if (preferenceService == null)
+			throw new RuntimeException("no preference service available!");
+		
+		// RegelwerkBuilder Service
+		regelwerkBuilderService = BundleActivatorUtils.getAvailableService(context, RegelwerkBuilderService.class);
+		if (regelwerkBuilderService == null)
+			throw new RuntimeException("no regelwerk builder service available!");
+		
+		// History Service
+		historyService = BundleActivatorUtils.getAvailableService(context, HistoryService.class);
+		if (historyService == null)
+			throw new RuntimeException("no history service available!");
+		
+		// Execution Service
+		// TODO wird noch nicht benutzt!!
 		executionService = BundleActivatorUtils.getAvailableService(context,
 				ExecutionService.class);
 		if (executionService == null)
-			throw new RuntimeException("No executor service avail!");
+			throw new RuntimeException("No executor service available!");
 
 		logger.logInfoMessage(this, "plugin " + PLUGIN_ID
 				+ " started succesfully.");
@@ -181,35 +204,33 @@ public class DecisionDepartmentActivator implements IApplication,
 			Properties properties = initProperties();
 			logger.logInfoMessage(this,
 					"Decision department application is creating consumers...");
-			_consumer = consumerFactoryService
-					.createConsumer(
-							properties
+			MessagingSession messagingSession = messagingService.createNewMessagingSession(properties
 									.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_CLIENT_ID
-											.name()),
-							properties
-									.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
-											.name()),
-							PostfachArt.TOPIC,
-							properties
+											.name()), properties
 									.getProperty(
 											PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS
 													.name()).split(","));
+			_consumer = messagingSession.createConsumer(properties
+					.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
+							.name()), PostfachArt.TOPIC);
+				
 
 			logger.logInfoMessage(this,
 					"Decision department application is creating producers...");
-			_producer = producerFactoryService
-					.createProducer(
-							properties
-									.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_CLIENT_ID
-											.name()),
-							properties
-									.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_DESTINATION_NAME
-											.name()),
-							PostfachArt.TOPIC,
-							properties
-									.getProperty(
-											PropertiesFileKeys.MESSAGING_PRODUCER_SERVER_URLS
-													.name()).split(","));
+		
+//			_producer = producerFactoryService
+//					.createProducer(
+//							properties
+//									.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_CLIENT_ID
+//											.name()),
+//							properties
+//									.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_DESTINATION_NAME
+//											.name()),
+//							PostfachArt.TOPIC,
+//							properties
+//									.getProperty(
+//											PropertiesFileKeys.MESSAGING_PRODUCER_SERVER_URLS
+//													.name()).split(","));
 
 			logger
 					.logInfoMessage(this,
@@ -264,7 +285,7 @@ public class DecisionDepartmentActivator implements IApplication,
 		alarmEntscheidungsBuero
 				.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
 
-		_producer.close();
+//		_producer.close();
 
 		logger.logInfoMessage(this,
 				"Decision department application successfully shuted down.");
