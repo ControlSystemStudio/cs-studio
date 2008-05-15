@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
+import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.csstudio.nams.application.department.decision.exceptions.InitPropertiesException;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.csstudio.nams.common.service.ExecutionService;
@@ -155,6 +156,8 @@ public class DecisionDepartmentActivator implements IApplication,
 		if (preferenceService == null)
 			throw new RuntimeException("no preference service available!");
 		
+		System.out.println("bubu "+preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DISTRIBUTOR));
+		
 		// RegelwerkBuilder Service
 		regelwerkBuilderService = BundleActivatorUtils.getAvailableService(context, RegelwerkBuilderService.class);
 		if (regelwerkBuilderService == null)
@@ -201,18 +204,18 @@ public class DecisionDepartmentActivator implements IApplication,
 		try {
 			logger.logInfoMessage(this,
 					"Decision department application is loading properies...");
-			Properties properties = initProperties();
+//			Properties properties = initProperties();
 			logger.logInfoMessage(this,
 					"Decision department application is creating consumers...");
-			MessagingSession messagingSession = messagingService.createNewMessagingSession(properties
-									.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_CLIENT_ID
-											.name()), properties
-									.getProperty(
-											PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS
-													.name()).split(","));
-			_consumer = messagingSession.createConsumer(properties
-					.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
-							.name()), PostfachArt.TOPIC);
+//			MessagingSession messagingSession = messagingService.createNewMessagingSession(properties
+//									.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_CLIENT_ID
+//											.name()), properties
+//									.getProperty(
+//											PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS
+//													.name()).split(","));
+//			_consumer = messagingSession.createConsumer(properties
+//					.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
+//							.name()), PostfachArt.TOPIC);
 				
 
 			logger.logInfoMessage(this,
@@ -247,17 +250,17 @@ public class DecisionDepartmentActivator implements IApplication,
 			// ---ende
 
 			alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(regelwerke);
-		} catch (InitPropertiesException e) {
-			logger.logFatalMessage(this,
-					"Exception while initializing properties.", e);
-			return IApplication.EXIT_OK;
-		} catch (MessagingException e) {
-			logger
-					.logFatalMessage(
-							this,
-							"Exception during creation of the jms consumer or producer.",
-							e);
-			return IApplication.EXIT_OK;
+//		} catch (InitPropertiesException e) {
+//			logger.logFatalMessage(this,
+//					"Exception while initializing properties.", e);
+//			return IApplication.EXIT_OK;
+//		} catch (MessagingException e) {
+//			logger
+//					.logFatalMessage(
+//							this,
+//							"Exception during creation of the jms consumer or producer.",
+//							e);
+//			return IApplication.EXIT_OK;
 		} catch (Exception e) { // TODO noch eine andere Exception wählen
 			logger
 					.logFatalMessage(
