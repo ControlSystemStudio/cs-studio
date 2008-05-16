@@ -217,9 +217,10 @@ public class BrowserUI extends Composite
             undo.setEnabled(true);
     }
 
+    /** Restore model to given zoom state */
     public void restoreZoomState(final ZoomState zoom_state)
     {
-        // Remove zoom_state and newer entries from undo stack
+        // Remove zoom_state and subsequent entries from undo stack
         for (int i = undo_stack.size()-1;  i >= 0;  --i)
         {
             final boolean found = undo_stack.get(i) == zoom_state;
@@ -229,7 +230,25 @@ public class BrowserUI extends Composite
         }
         if (undo_stack.size() <= 0)
             undo.setEnabled(false);
-        // TODO Restore the settings stored in the zoom_state
-        System.out.println("Need to restore " + zoom_state);
+        // Restore the settings stored in the zoom_state: Y Axes
+        final int N = zoom_state.getYAxisInfoCount();
+        for (int i=0; i<N; ++i)
+        {
+            i_chart.getChart().getYAxis(i).setValueRange(
+                    zoom_state.getYAxisStart(i),
+                    zoom_state.getYAxisEnd(i));
+        }
+        // Time Axis and scrolling
+        try
+        {
+            model.setTimeSpecifications(zoom_state.getStartSpecification(),
+                    zoom_state.getEndSpecification());
+        }
+        catch (Exception ex)
+        {
+            Plugin.getLogger().error(ex);
+        }
+        if (zoom_state.wasScrolling() != model.isScrollEnabled())
+            model.enableScroll(zoom_state.wasScrolling());
     }    
 }

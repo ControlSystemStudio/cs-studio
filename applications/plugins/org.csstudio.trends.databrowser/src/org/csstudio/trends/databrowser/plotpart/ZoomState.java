@@ -1,9 +1,8 @@
 package org.csstudio.trends.databrowser.plotpart;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.widgets.Event;
 
-/** Description of the current zoom state.
+/** Description of a zoom state.
  *  @author Kay Kasemir
  */
 public class ZoomState extends Action
@@ -39,6 +38,44 @@ public class ZoomState extends Action
         this.ends = ends;
     }
     
+    /** @return Was scrolling? */
+    public boolean wasScrolling()
+    {
+        return scrolling;
+    }
+
+    /** @return Start time specification */
+    public String getStartSpecification()
+    {
+        return start_specification;
+    }
+
+    /** @return End time specification */
+    public String getEndSpecification()
+    {
+        return end_specification;
+    }
+
+    /** @return Number of Y-Axis start/end range infos */
+    public int getYAxisInfoCount()
+    {
+        return starts.length;
+    }
+
+    /** @param axis_index Index of Y Axis, 0..getYAxisInfoCount()-1
+     *  @return Start of Y axis range */
+    public double getYAxisStart(int axis_index)
+    {
+        return starts[axis_index];
+    }
+
+    /** @param axis_index Index of Y Axis, 0..getYAxisInfoCount()-1
+     *  @return End of Y axis range */
+    public double getYAxisEnd(int axis_index)
+    {
+        return ends[axis_index];
+    }
+
     /** Restore model to the zoom state that we captured */
     @Override
     public void run()
@@ -52,7 +89,8 @@ public class ZoomState extends Action
     public String toString()
     {
         final StringBuffer buf = new StringBuffer();
-        buf.append(scrolling ? "Scrolling" : "Not scrolling");
+        buf.append(getText());
+        buf.append(scrolling ? ": Scrolling" : ": Not scrolling");
         buf.append(", ");
         buf.append(start_specification);
         buf.append(" ... ");
