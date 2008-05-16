@@ -190,7 +190,7 @@ public class Controller
     {
         public void aboutToZoomOrPan()
         {
-            // TODO Get snapshot of axes for UNDO
+            gui.addCurrentZoomToUndoStack();
         }
 
         @SuppressWarnings("nls")
@@ -509,5 +509,5 @@ public class Controller
         // Cache saves us, but the code should still be smarter.
     	final ArchiveFetchJob job = new ArchiveFetchJob(item, start, end);
         job.schedule();
-    }    
+    }
 }

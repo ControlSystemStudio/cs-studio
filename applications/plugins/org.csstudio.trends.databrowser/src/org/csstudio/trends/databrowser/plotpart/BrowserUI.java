@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.plotpart;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.InteractiveChart;
+import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.util.time.swt.StartEndDialog;
@@ -32,6 +33,7 @@ public class BrowserUI extends Composite
     static private ImageRegistry images = null;
     static private final String SCROLL_ON = "scroll_on"; //$NON-NLS-1$
     static private final String SCROLL_OFF = "scroll_off"; //$NON-NLS-1$
+    static private final String UNDO = "undo"; //$NON-NLS-1$
 
     /** Create browser UI
      *  @param parent Parent widget
@@ -47,6 +49,7 @@ public class BrowserUI extends Composite
             images = new ImageRegistry(parent.getDisplay());
             images.put(SCROLL_ON, Plugin.getImageDescriptor("icons/scroll_on.gif")); //$NON-NLS-1$
             images.put(SCROLL_OFF, Plugin.getImageDescriptor("icons/scroll_off.gif")); //$NON-NLS-1$
+            images.put(UNDO, Plugin.getImageDescriptor("icons/undo.gif")); //$NON-NLS-1$
         }
         makeGUI();
     }
@@ -69,7 +72,11 @@ public class BrowserUI extends Composite
                       | InteractiveChart.ZOOM_X_FROM_END);
         setTimeRange(model.getStartTime(), model.getEndTime());
                 
-        // Add scroll button
+        // Add Data-Browser specific buttons to chart: Undo...
+        final Button undo = new Button(i_chart.getButtonBar(), SWT.CENTER);
+        undo.setImage(images.get(UNDO));
+        
+        /// Scroll button
         scroll_pause = new Button(i_chart.getButtonBar(), SWT.CENTER);        
         updateScrollPauseButton(model.isScrollEnabled());
         scroll_pause.addSelectionListener(new SelectionAdapter()
@@ -82,6 +89,7 @@ public class BrowserUI extends Composite
             }
         });
         
+        // Start/end time button
         Button time_config = new Button(i_chart.getButtonBar(), SWT.CENTER);
         time_config.setText(Messages.TimeConfig);
         time_config.setToolTipText(Messages.TimeConfig_TT);
@@ -131,4 +139,24 @@ public class BrowserUI extends Composite
             scroll_pause.setToolTipText(Messages.StartScroll_TT);
         }
     }
+    
+    /** Memorize the current zoom state for 'undo' */
+    public void addCurrentZoomToUndoStack()
+    {
+        final Chart chart = i_chart.getChart();
+        final int N = chart.getNumYAxes();
+        final double starts[] = new double[N];
+        final double ends[] = new double[N];
+        for (int i=0; i<N; ++i)
+        {
+            final YAxis yaxis = chart.getYAxis(i);
+            starts[i] = yaxis.getLowValue();
+            ends[i] = yaxis.getHighValue();
+        }
+        final ZoomState zoom_state = new ZoomState(model.isScrollEnabled(),
+                model.getStartSpecification(), model.getEndSpecification(),
+                starts, ends);
+        System.out.println(zoom_state);
+        // TODO Add to stack, ...
+    }    
 }
