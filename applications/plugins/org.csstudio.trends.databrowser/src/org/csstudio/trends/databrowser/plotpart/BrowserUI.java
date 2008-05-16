@@ -1,5 +1,7 @@
 package org.csstudio.trends.databrowser.plotpart;
 
+import java.util.ArrayList;
+
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.InteractiveChart;
@@ -7,13 +9,21 @@ import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.util.time.swt.StartEndDialog;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
 /** The user interface of the data browser.
  *  <p>
@@ -34,6 +44,8 @@ public class BrowserUI extends Composite
     static private final String SCROLL_ON = "scroll_on"; //$NON-NLS-1$
     static private final String SCROLL_OFF = "scroll_off"; //$NON-NLS-1$
     static private final String UNDO = "undo"; //$NON-NLS-1$
+    
+    final private ArrayList<ZoomState> undo_stack = new ArrayList<ZoomState>();
 
     /** Create browser UI
      *  @param parent Parent widget
@@ -72,9 +84,40 @@ public class BrowserUI extends Composite
                       | InteractiveChart.ZOOM_X_FROM_END);
         setTimeRange(model.getStartTime(), model.getEndTime());
                 
-        // Add Data-Browser specific buttons to chart: Undo...
+        // Add Data-Browser specific buttons to chart.
+        // Undo Button that opens popup with undo-able steps
+        // TODO Would like to use the widget that the IDE's undo/redo,
+        // last/previous edit location buttons use, but don't know how that's
+        // done. So we use a plain button with popup, and we handle the popup
+        // activation ourselves.
         final Button undo = new Button(i_chart.getButtonBar(), SWT.CENTER);
         undo.setImage(images.get(UNDO));
+
+        final MenuManager undo_menu_manager = new MenuManager("#PopupMenu");
+        undo_menu_manager.setRemoveAllWhenShown(true);
+        undo_menu_manager.addMenuListener(new IMenuListener()
+        {
+            public void menuAboutToShow(IMenuManager manager)
+            {
+                // Show undo stack in reverse order
+                final int N = undo_stack.size();
+                for (int i=N-1;  i>=0;  --i)
+                    manager.add(undo_stack.get(i));
+            }
+        });
+        final Menu undo_menu = undo_menu_manager.createContextMenu(undo);
+        undo.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                final Rectangle rect = undo.getBounds ();
+                final Point menu_pt = 
+                    i_chart.getButtonBar().toDisplay(rect.x, rect.y + rect.height);
+                undo_menu.setLocation(menu_pt);
+                undo_menu.setVisible (true);
+            }
+        });
         
         /// Scroll button
         scroll_pause = new Button(i_chart.getButtonBar(), SWT.CENTER);        
@@ -140,9 +183,12 @@ public class BrowserUI extends Composite
         }
     }
     
+    private int zoom_steps = 0;
+    
     /** Memorize the current zoom state for 'undo' */
     public void addCurrentZoomToUndoStack()
     {
+        // Get current state
         final Chart chart = i_chart.getChart();
         final int N = chart.getNumYAxes();
         final double starts[] = new double[N];
@@ -153,10 +199,13 @@ public class BrowserUI extends Composite
             starts[i] = yaxis.getLowValue();
             ends[i] = yaxis.getHighValue();
         }
-        final ZoomState zoom_state = new ZoomState(model.isScrollEnabled(),
+        // Wrap as ZoomState and remember in undo stack
+        // TODO get better description
+        ++zoom_steps;
+        final ZoomState zoom_state = new ZoomState("Undo #" + zoom_steps,
+                model.isScrollEnabled(),
                 model.getStartSpecification(), model.getEndSpecification(),
                 starts, ends);
-        System.out.println(zoom_state);
-        // TODO Add to stack, ...
+        undo_stack.add(zoom_state);
     }    
 }
