@@ -19,13 +19,15 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
-public class ConfigurationEditor extends EditorPart {
+public class ConfigurationEditor extends EditorPart implements DirtyFlagProvider {
 	
 	public static final String ID = "org.csstudio.nams.configurator.ConfigurationEditor";
 
 	private StackLayout _stackLayout;
 	
 	private List<AbstractStackPart> _stackParts;
+	
+	private AbstractStackPart _showedStackPart;
 
 	private ConfigurationEditorInput _input;
 
@@ -42,7 +44,7 @@ public class ConfigurationEditor extends EditorPart {
 
 	@Override
 	public void doSaveAs() {
-
+		throw new RuntimeException("This method (doSaveAs) is not supported");
 	}
 
 	@Override
@@ -59,6 +61,7 @@ public class ConfigurationEditor extends EditorPart {
 	private void showCorrespondingStackPart(TObject input) {
 		AbstractStackPart stackPart = this.getStackPartfor(input.getClass());
 		Control mainControl = stackPart.getMainControl();
+		_showedStackPart = stackPart;
 		_stackLayout.topControl = mainControl;
 	}
 
@@ -73,7 +76,7 @@ public class ConfigurationEditor extends EditorPart {
 
 	@Override
 	public boolean isDirty() {
-		return false;
+		return _showedStackPart.isDirty();
 	}
 
 	@Override
@@ -100,14 +103,18 @@ public class ConfigurationEditor extends EditorPart {
 	}
 	
 	private void createAndAddEditorStackParts(Composite parent) {
-		_defaultStackPart = new DefaultStackPart(parent);
-		_stackParts.add(new UserStackPart(parent));
-		_stackParts.add(new TopicStackPart(parent));
+		_defaultStackPart = new DefaultStackPart(this, parent);
+		_stackParts.add(new UserStackPart(this, parent));
+		_stackParts.add(new TopicStackPart(this, parent));
 	}
 
 	@Override
 	public void setFocus() {
 
+	}
+
+	public void fireDirtyFlagChanged() {
+		this.firePropertyChange(EditorPart.PROP_DIRTY);
 	}
 
 }

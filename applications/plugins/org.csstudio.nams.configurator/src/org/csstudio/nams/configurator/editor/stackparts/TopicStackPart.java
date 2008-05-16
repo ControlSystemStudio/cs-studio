@@ -1,8 +1,11 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
 import org.csstudio.ams.configurationStoreService.knownTObjects.TopicTObject;
+import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -19,8 +22,10 @@ public class TopicStackPart extends AbstractStackPart {
 	private Text _topicNameTextEntry;
 	private Text _descriptionTextEntry;
 	
-	public TopicStackPart(Composite parent) {
-		super(TopicTObject.class, 2);
+	private boolean _isDirty = false;
+	
+	public TopicStackPart(DirtyFlagProvider flagProvider, Composite parent) {
+		super(flagProvider, TopicTObject.class, 2);
 		_main = new Composite(parent, SWT.NONE);
 		_main.setLayout(new GridLayout(NUM_COLUMNS,false));
 		_idTextEntry = this.createTextEntry(_main, "ID:", false);
@@ -31,6 +36,14 @@ public class TopicStackPart extends AbstractStackPart {
 		this.addSeparator(_main);
 		_topicNameTextEntry = this.createTextEntry(_main, "Topic name:", true);
 		_descriptionTextEntry = this.createDescriptionTextEntry(_main, "Description:");
+		
+		//TODO only for simulation! has to be removed soon (2008-05-16: Kai Meyer)
+		_topicIdTextEntry.addModifyListener(new ModifyListener(){
+			public void modifyText(ModifyEvent e) {
+				_isDirty = true;
+				getDirtyFlagProvider().fireDirtyFlagChanged();
+			}
+		});
 	}
 	
 	private Text createDescriptionTextEntry(Composite parent, String labeltext) {
@@ -50,6 +63,11 @@ public class TopicStackPart extends AbstractStackPart {
 	@Override
 	public Control getMainControl() {
 		return _main;
+	}
+
+	@Override
+	public boolean isDirty() {
+		return _isDirty;
 	}
 	
 }

@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
 import org.csstudio.ams.configurationStoreService.knownTObjects.UserTObject;
+import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.layout.GridLayout;
@@ -23,8 +24,8 @@ public class UserStackPart extends AbstractStackPart {
 	private Text _confirmCodeTextEntry;
 	private Button _activeCheckBoxEntry;
 
-	public UserStackPart(Composite parent) {
-		super(UserTObject.class, 2);
+	public UserStackPart(DirtyFlagProvider flagProvider, Composite parent) {
+		super(flagProvider, UserTObject.class, 2);
 		_main = new Composite(parent, SWT.NONE);
 		_main.setLayout(new GridLayout(NUM_COLUMNS,false));
 		_idTextEntry = this.createTextEntry(_main, "ID:", false);
@@ -90,6 +91,12 @@ public class UserStackPart extends AbstractStackPart {
 			}
 			return PreferedAlarm.NOSELECTION;
 		}
+	}
+
+	@Override
+	public boolean isDirty() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

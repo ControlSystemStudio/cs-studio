@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
 import org.csstudio.ams.configurationStoreService.util.TObject;
+import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.layout.GridData;
@@ -16,10 +17,16 @@ public abstract class AbstractStackPart {
 	protected final int NUM_COLUMNS;
 	protected final int MIN_WIDTH = 300;
 	private Class<? extends TObject> _associatedTObject;
+	private DirtyFlagProvider _dirtyFlagProvider;
 	
-	public AbstractStackPart(Class<? extends TObject> associatedTObject, int numColumns) {
+	public AbstractStackPart(DirtyFlagProvider flagProvider, Class<? extends TObject> associatedTObject, int numColumns) {
+		_dirtyFlagProvider = flagProvider;
 		_associatedTObject = associatedTObject;
 		NUM_COLUMNS = numColumns;
+	}
+	
+	protected DirtyFlagProvider getDirtyFlagProvider() {
+		return _dirtyFlagProvider;
 	}
 	
 	protected Text createTextEntry(Composite parent, String labeltext, boolean editable) {
@@ -74,5 +81,7 @@ public abstract class AbstractStackPart {
 	public Class<? extends TObject> getAssociatedTObject() {
 		return _associatedTObject;
 	}
+
+	public abstract boolean isDirty();
 
 }
