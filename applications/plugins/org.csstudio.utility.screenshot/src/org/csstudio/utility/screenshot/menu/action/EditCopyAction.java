@@ -24,6 +24,7 @@
 package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -37,21 +38,20 @@ public class EditCopyAction extends Action implements IMenuListener
     {
         worker = w;
         
-        this.setText("Copy");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_EDIT_COPY"));
 
-        this.setToolTipText("Copy the image to the clipboard.");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_EDIT_COPY_TT"));
         
         this.setEnabled(true);
     }
     
     public void run()
     {
-        MessageDialog.openInformation(null, "Nothing", "Mu");
+        MessageDialog.openInformation(null, ScreenshotMessages.getString("ScreenshotPlugin.Screenshot"), ScreenshotMessages.getString("ScreenshotView.MESSAGE_NOT_IMPLEMENTED"));
     }
 
     public void menuAboutToShow(IMenuManager manager)
     {
-        // TODO Auto-generated method stub
         
     }
 }

@@ -28,6 +28,7 @@ import org.csstudio.utility.screenshot.IImageWorker;
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.csstudio.utility.screenshot.ScreenshotWorker;
 import org.csstudio.utility.screenshot.destination.MailImageWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.csstudio.utility.screenshot.menu.action.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -112,11 +113,11 @@ public class ScreenshotView extends ViewPart
         toolbarManager.add(new Separator());
 
         // Create the menu
-        MenuManager fileMenu = new MenuManager("File");
+        MenuManager fileMenu = new MenuManager(ScreenshotMessages.getString("ScreenshotView.MENU_FILE"));
 
         if(imageWorker != null)
         {
-            MenuManager fileSendMenu = new MenuManager("Send");
+            MenuManager fileSendMenu = new MenuManager(ScreenshotMessages.getString("ScreenshotView.MENU_FILE_SEND"));
             
             for(int i = 0;i < imageWorker.length;i++)
             {
@@ -161,7 +162,7 @@ public class ScreenshotView extends ViewPart
         toolbarManager.add(tempAction);
         toolbarManager.add(new Separator());
 
-        MenuManager editMenu = new MenuManager("Edit");
+        MenuManager editMenu = new MenuManager(ScreenshotMessages.getString("ScreenshotView.MENU_EDIT"));
         EditCopyAction copyAction = new EditCopyAction(worker);
         editMenu.add(copyAction);
         editMenu.addMenuListener(copyAction);
@@ -172,7 +173,7 @@ public class ScreenshotView extends ViewPart
         editMenu.add(new Separator());
         editMenu.add(new EditClearAction(worker));
         
-        MenuManager captureMenu = new MenuManager("Selection");
+        MenuManager captureMenu = new MenuManager(ScreenshotMessages.getString("ScreenshotView.MENU_SELECTION"));
         captureMenu.add(new SelectionSectionAction(worker));
         captureMenu.add(new Separator());
         captureMenu.add(new SelectionWindowAction(worker));
@@ -190,17 +191,15 @@ public class ScreenshotView extends ViewPart
         toolbarManager.add(tempAction);
         toolbarManager.add(new Separator());
        
-        MenuManager restartMenu = new MenuManager("Restart");
+        MenuManager restartMenu = new MenuManager(ScreenshotMessages.getString("ScreenshotView.MENU_RESTART"));
         restartMenu.add(new RestartBeepAction(worker));
         restartMenu.add(new Separator());
         restartMenu.add(new RestartThreeAction(worker));
         restartMenu.add(new RestartFiveAction(worker));
         restartMenu.add(new RestartSevenAction(worker));
         
-        MenuManager helpMenu = new MenuManager("Help");
+        MenuManager helpMenu = new MenuManager(ScreenshotMessages.getString("ScreenshotView.MENU_HELP"));
         helpMenu.add(new HelpDocumentationAction(worker));
-        helpMenu.add(new Separator());
-        helpMenu.add(new HelpAboutAction(worker));
                 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);

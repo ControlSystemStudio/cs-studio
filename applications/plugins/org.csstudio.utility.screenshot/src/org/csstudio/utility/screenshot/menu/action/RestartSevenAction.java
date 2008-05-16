@@ -24,6 +24,7 @@
 package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 
 public class RestartSevenAction extends Action
@@ -34,9 +35,9 @@ public class RestartSevenAction extends Action
     {
         worker = w;
         
-        this.setText("7 Sec.");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_RESTART_BEEP_7SEC"));
 
-        this.setToolTipText("Close and restart after 7 seconds.");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_RESTART_BEEP_7SEC_TT"));
         
         this.setEnabled(false);
     }

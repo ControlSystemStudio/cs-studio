@@ -25,6 +25,7 @@ package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 
@@ -36,14 +37,14 @@ public class EditClearAction extends Action
     {
         worker = w;
         
-        this.setText("Clear");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_EDIT_CLEAR"));
 
-        this.setToolTipText("Delete the image.");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_EDIT_CLEAR_TT"));
     }
 
     public void run()
     {
-        if(MessageDialog.openConfirm(ScreenshotPlugin.getDefault().getDisplay().getActiveShell(), ScreenshotPlugin.getDefault().getNameAndVersion() + " - Delete image", "Do you realy want to delete the image?"))
+        if(MessageDialog.openConfirm(ScreenshotPlugin.getDefault().getDisplay().getActiveShell(), ScreenshotPlugin.getDefault().getNameAndVersion() + ScreenshotMessages.getString("ScreenshotView.MENU_EDIT_CLEAR_TITLE"), ScreenshotMessages.getString("ScreenshotView.MENU_EDIT_CLEAR_MSG")))
         {
             worker.setDisplayedImage(null);
         }

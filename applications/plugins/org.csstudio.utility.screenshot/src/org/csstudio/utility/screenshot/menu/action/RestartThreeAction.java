@@ -24,6 +24,7 @@
 package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 
 public class RestartThreeAction extends Action
@@ -34,9 +35,9 @@ public class RestartThreeAction extends Action
     {
         worker = w;
         
-        this.setText("3 Sec.");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_RESTART_BEEP_3SEC"));
 
-        this.setToolTipText("Close and restart after 3 seconds.");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_RESTART_BEEP_3SEC_TT"));
         
         this.setEnabled(false);
     }

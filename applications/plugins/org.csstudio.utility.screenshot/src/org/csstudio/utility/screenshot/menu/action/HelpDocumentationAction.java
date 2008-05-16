@@ -24,6 +24,7 @@
 package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 
@@ -35,16 +36,15 @@ public class HelpDocumentationAction extends Action
     {
         worker = w;
         
-        this.setText("Documentation");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_HELP_DOC"));
 
-        this.setToolTipText("A nice documentation.");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_HELP_DOC_TT"));
         
         this.setEnabled(false);
     }
     
     public void run()
     {
-        MessageDialog.openInformation(null, "Nothing", "Mu");
+        MessageDialog.openInformation(null, ScreenshotMessages.getString("ScreenshotPlugin.Screenshot"), ScreenshotMessages.getString("ScreenshotView.MESSAGE_NOT_IMPLEMENTED"));
     }
-
 }

@@ -24,6 +24,7 @@
 package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 
 public class SelectionWindowAction extends Action
@@ -34,9 +35,9 @@ public class SelectionWindowAction extends Action
     {
         worker = w;
         
-        this.setText("Window");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_SELECTION_WINDOW"));
 
-        this.setToolTipText("Show the captured window.");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_SELECTION_WINDOW_TT"));
         
         if(worker.getAllImages() != null)
         {         

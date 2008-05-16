@@ -32,6 +32,7 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -51,9 +52,9 @@ public class EditPasteAction extends Action  implements IMenuListener
     {
         worker = w;
         
-        this.setText("Paste");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_EDIT_PASTE"));
 
-        this.setToolTipText("Paste the image from the clipboard to the plugin.");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_EDIT_PASTE_TT"));
         
         this.setEnabled(false);
     }

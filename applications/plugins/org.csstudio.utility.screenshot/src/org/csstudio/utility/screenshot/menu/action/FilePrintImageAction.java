@@ -25,6 +25,7 @@ package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.csstudio.utility.screenshot.printing.ImagePrinter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.Image;
@@ -43,13 +44,13 @@ public class FilePrintImageAction extends Action
         
         if(invert)
         {
-            this.setText("Print Image inverted...");
-            this.setToolTipText("Prints the current image with unverted colors."); 
+            this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_FILE_PRINTINVERTED"));
+            this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_FILE_PRINTINVERTED_TT")); 
         }
         else
         {
-            this.setText("Print Image...");
-            this.setToolTipText("Prints the current image."); 
+            this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_FILE_PRINT"));
+            this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_FILE_PRINT_TT")); 
         }
     }
     

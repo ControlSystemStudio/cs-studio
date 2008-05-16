@@ -24,6 +24,7 @@
 package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 
 public class RestartFiveAction extends Action
@@ -34,9 +35,9 @@ public class RestartFiveAction extends Action
     {
         worker = w;
         
-        this.setText("5 Sec.");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_RESTART_BEEP_5SEC"));
 
-        this.setToolTipText("Close and restart after 5 second.");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_RESTART_BEEP_5SEC_TT"));
         
         this.setEnabled(false);
     }

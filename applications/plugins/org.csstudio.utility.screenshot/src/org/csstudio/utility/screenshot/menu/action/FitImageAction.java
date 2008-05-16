@@ -25,6 +25,7 @@
 package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 
 /**
@@ -39,9 +40,9 @@ public class FitImageAction extends Action
     {
         worker = w;
         
-        this.setText("Fit image");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.TOOL_FIT"));
 
-        this.setToolTipText("Fit image");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.TOOL_FIT_TT"));
         
         if(worker.getAllImages() != null)
         {         

@@ -25,6 +25,7 @@
 package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 
 /**
@@ -39,9 +40,9 @@ public class ShowOriginalAction extends Action
     {
         worker = w;
         
-        this.setText("Original size");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.TOOL_NORMAL_SIZE"));
 
-        this.setToolTipText("Original size");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.TOOL_NORMAL_SIZE_TT"));
         
         if(worker.getAllImages() != null)
         {         

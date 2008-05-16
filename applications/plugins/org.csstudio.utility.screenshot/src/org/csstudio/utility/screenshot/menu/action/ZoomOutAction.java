@@ -25,6 +25,7 @@
 package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 
 public class ZoomOutAction extends Action
@@ -35,9 +36,9 @@ public class ZoomOutAction extends Action
     {
         worker = w;
         
-        this.setText("Zoom In");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.TOOL_ZOOM_OUT"));
 
-        this.setToolTipText("Zoom In");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.TOOL_ZOOM_OUT_TT"));
         
         if(worker.getAllImages() != null)
         {         

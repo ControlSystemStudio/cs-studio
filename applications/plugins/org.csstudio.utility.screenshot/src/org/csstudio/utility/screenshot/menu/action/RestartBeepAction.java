@@ -24,6 +24,7 @@
 package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 
 public class RestartBeepAction extends Action
@@ -34,11 +35,11 @@ public class RestartBeepAction extends Action
     {
         worker = w;
         
-        this.setText("Set Beep");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_RESTART_BEEP"));
         
         this.setChecked(worker.getBeep());
 
-        this.setToolTipText("Beep before restarting.");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_RESTART_BEEP_TT"));
         
         this.setEnabled(false);
     }

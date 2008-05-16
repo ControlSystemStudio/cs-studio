@@ -24,6 +24,7 @@
 package org.csstudio.utility.screenshot.menu.action;
 
 import org.csstudio.utility.screenshot.ScreenshotWorker;
+import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -48,9 +49,9 @@ public class FileSaveImageAsAction extends Action
     {
         worker = w;
         
-        this.setText("Save Image as ...");
+        this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_FILE_SAVE"));
 
-        this.setToolTipText("Save the image.");
+        this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_FILE_SAVE_TT"));
         
         this.setEnabled(true);
     }
