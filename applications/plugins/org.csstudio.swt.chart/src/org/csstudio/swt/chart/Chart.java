@@ -866,10 +866,10 @@ public class Chart extends Canvas
     }
 
     /** Send aboutToZoomOrPan event to listeners */
-    protected void fireAboutToZoomOrPan()
+    protected void fireAboutToZoomOrPan(final String description)
     {
         for (ChartListener listener : listeners)
-            listener.aboutToZoomOrPan();
+            listener.aboutToZoomOrPan(description);
     }
     
     /** Send pointSelected event to listeners */
@@ -882,7 +882,7 @@ public class Chart extends Canvas
     /** Handle a rubber-band-zoom for the given region. */
     private void rubberZoom(final Rectangle zoom)
     {
-        fireAboutToZoomOrPan();
+        fireAboutToZoomOrPan(Messages.Chart_Rubberzoom);
         setRedraw(false); // defer per-axis redraws
         boolean selections = false;
         // Zoom only the selected axes?

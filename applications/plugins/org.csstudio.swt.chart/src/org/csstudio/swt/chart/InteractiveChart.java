@@ -88,7 +88,7 @@ public class InteractiveChart extends Composite
         
         chart.addListener(new ChartListener()
         {
-            public void aboutToZoomOrPan()
+            public void aboutToZoomOrPan(String description)
             { /* NOP */ }
 
             public void changedXAxis(XAxis xaxis)
@@ -156,7 +156,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                chart.fireAboutToZoomOrPan();
+                chart.fireAboutToZoomOrPan(Messages.Chart_MoveUp);
                 moveUpDown(SHIFT_FACTOR);
             }
         });
@@ -165,7 +165,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                chart.fireAboutToZoomOrPan();
+                chart.fireAboutToZoomOrPan(Messages.Chart_MoveDown);
                 moveUpDown(-SHIFT_FACTOR);
             }
         });
@@ -174,7 +174,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                chart.fireAboutToZoomOrPan();
+                chart.fireAboutToZoomOrPan(Messages.Chart_ZoomIn);
                 zoomInOutY(ZOOM_FACTOR);
             }
         });
@@ -183,7 +183,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                chart.fireAboutToZoomOrPan();
+                chart.fireAboutToZoomOrPan(Messages.Chart_ZoomOut);
                 zoomInOutY(1.0/ZOOM_FACTOR);
             }
         });
@@ -192,7 +192,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                chart.fireAboutToZoomOrPan();
+                chart.fireAboutToZoomOrPan(Messages.Chart_ZoomAuto);
                 chart.autozoom();
             }
         });
@@ -201,7 +201,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                chart.fireAboutToZoomOrPan();
+                chart.fireAboutToZoomOrPan(Messages.Chart_Stagger);
                 chart.stagger();
             }
         });
@@ -210,7 +210,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                chart.fireAboutToZoomOrPan();
+                chart.fireAboutToZoomOrPan(Messages.Chart_Default_Scale);
                 chart.setDefaultZoom();
             }
         });
@@ -222,7 +222,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                chart.fireAboutToZoomOrPan();
+                chart.fireAboutToZoomOrPan(Messages.Chart_MoveLeft);
                 moveLeftRight(PAN_FACTOR);
             }
         });
@@ -231,7 +231,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                chart.fireAboutToZoomOrPan();
+                chart.fireAboutToZoomOrPan(Messages.Chart_MoveRight);
                 moveLeftRight(-PAN_FACTOR);
             }
         });
@@ -240,7 +240,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                chart.fireAboutToZoomOrPan();
+                chart.fireAboutToZoomOrPan(Messages.Chart_TimeIn);
                 if (zoom_from_end)
                     zoomFromEnd(chart.getXAxis(), ZOOM_FACTOR);
                 else
@@ -252,7 +252,7 @@ public class InteractiveChart extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                chart.fireAboutToZoomOrPan();
+                chart.fireAboutToZoomOrPan(Messages.Chart_TimeOut);
                 if (zoom_from_end)
                     zoomFromEnd(chart.getXAxis(), 1.0/ZOOM_FACTOR);
                 else

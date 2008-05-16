@@ -60,9 +60,10 @@ public class ChartTest
         // Listener Demo   
         chart.addListener(new ChartListener()
         {
-            public void aboutToZoomOrPan()
+            public void aboutToZoomOrPan(final String description)
             {
-                System.out.println("ChartTest ChartListener: aboutToZoomOrPan");
+                System.out.println("ChartTest ChartListener: aboutToZoomOrPan "
+                        + description);
             }
 
             public void changedXAxis(XAxis xaxis)

@@ -9,11 +9,11 @@ import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.util.time.swt.StartEndDialog;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -23,7 +23,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 
 /** The user interface of the data browser.
  *  <p>
@@ -38,12 +37,15 @@ public class BrowserUI extends Composite
     final private Model model;
 
     private InteractiveChart i_chart;
+    private Button undo;
     private Button scroll_pause;
     
-    static private ImageRegistry images = null;
     static private final String SCROLL_ON = "scroll_on"; //$NON-NLS-1$
     static private final String SCROLL_OFF = "scroll_off"; //$NON-NLS-1$
     static private final String UNDO = "undo"; //$NON-NLS-1$
+    static private ImageRegistry images = null;
+
+    private static final int MAX_UNDO_STACK_SIZE = 10;
     
     final private ArrayList<ZoomState> undo_stack = new ArrayList<ZoomState>();
 
@@ -84,15 +86,15 @@ public class BrowserUI extends Composite
                       | InteractiveChart.ZOOM_X_FROM_END);
         setTimeRange(model.getStartTime(), model.getEndTime());
                 
-        // Add Data-Browser specific buttons to chart.
         // Undo Button that opens popup with undo-able steps
         // TODO Would like to use the widget that the IDE's undo/redo,
         // last/previous edit location buttons use, but don't know how that's
         // done. So we use a plain button with popup, and we handle the popup
         // activation ourselves.
-        final Button undo = new Button(i_chart.getButtonBar(), SWT.CENTER);
+        undo = new Button(i_chart.getButtonBar(), SWT.CENTER);
         undo.setImage(images.get(UNDO));
-
+        undo.setToolTipText(Messages.Undo_TT);
+        undo.setEnabled(false);
         final MenuManager undo_menu_manager = new MenuManager("#PopupMenu");
         undo_menu_manager.setRemoveAllWhenShown(true);
         undo_menu_manager.addMenuListener(new IMenuListener()
@@ -127,6 +129,7 @@ public class BrowserUI extends Composite
             @Override
             public void widgetSelected(SelectionEvent e)
             {
+                addCurrentZoomToUndoStack(scroll_pause.getToolTipText());
                 // Toggle scroll mode
                 model.enableScroll(! model.isScrollEnabled());
             }
@@ -147,6 +150,7 @@ public class BrowserUI extends Composite
                                        model.getEndSpecification());
                 if (dlg.open() != StartEndDialog.OK)
                     return;
+                addCurrentZoomToUndoStack(Messages.TimeConfig_TT);
                 try
                 {
                     // If we request some_start ... 'now',
@@ -183,10 +187,8 @@ public class BrowserUI extends Composite
         }
     }
     
-    private int zoom_steps = 0;
-    
     /** Memorize the current zoom state for 'undo' */
-    public void addCurrentZoomToUndoStack()
+    public void addCurrentZoomToUndoStack(final String description)
     {
         // Get current state
         final Chart chart = i_chart.getChart();
@@ -200,12 +202,34 @@ public class BrowserUI extends Composite
             ends[i] = yaxis.getHighValue();
         }
         // Wrap as ZoomState and remember in undo stack
-        // TODO get better description
-        ++zoom_steps;
-        final ZoomState zoom_state = new ZoomState("Undo #" + zoom_steps,
+        final ZoomState zoom_state = new ZoomState(this,
+                NLS.bind(Messages.Undo_Format, description),
                 model.isScrollEnabled(),
                 model.getStartSpecification(), model.getEndSpecification(),
                 starts, ends);
+        // Prevent undo-stack from growing out of bounds
+        if (undo_stack.size() > MAX_UNDO_STACK_SIZE)
+            undo_stack.remove(0);
+        // Add new item to end of array
         undo_stack.add(zoom_state);
+        // Now have something to undo
+        if (!undo.getEnabled())
+            undo.setEnabled(true);
+    }
+
+    public void restoreZoomState(final ZoomState zoom_state)
+    {
+        // Remove zoom_state and newer entries from undo stack
+        for (int i = undo_stack.size()-1;  i >= 0;  --i)
+        {
+            final boolean found = undo_stack.get(i) == zoom_state;
+            undo_stack.remove(i);
+            if (found)
+                break;
+        }
+        if (undo_stack.size() <= 0)
+            undo.setEnabled(false);
+        // TODO Restore the settings stored in the zoom_state
+        System.out.println("Need to restore " + zoom_state);
     }    
 }

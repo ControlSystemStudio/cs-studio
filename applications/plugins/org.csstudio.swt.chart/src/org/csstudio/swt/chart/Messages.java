@@ -13,6 +13,7 @@ public class Messages extends NLS
     public static String Chart_MoveLeft;
     public static String Chart_MoveRight;
     public static String Chart_MoveUp;
+    public static String Chart_Rubberzoom;
     public static String Chart_ShowButtonBar;
     public static String Chart_Stagger;
     public static String Chart_SelectY_TT;

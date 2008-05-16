@@ -22,6 +22,8 @@ public class Messages extends NLS
     public static String TimeConfig;
     public static String TimeConfig_TT;
 
+    public static String Undo_Format;
+    public static String Undo_TT;
     public static String UnitMarkerEnd;
     public static String UnitMarkerStart;
 

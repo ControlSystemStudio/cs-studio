@@ -1,17 +1,20 @@
 package org.csstudio.trends.databrowser.plotpart;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.swt.widgets.Event;
 
 /** Description of the current zoom state.
  *  @author Kay Kasemir
  */
 public class ZoomState extends Action
 {
+    final private BrowserUI browserUI;
     final private boolean scrolling;
     final private String start_specification, end_specification;
     final double starts[], ends[];
                                              
     /** Constructor
+     *  @param browserUI 
      *  @param description Text shown in GUI to describe this step
      *  @param scrolling <code>true</code> if scrolling enabled
      *  @param start_specification Time axis start spec.
@@ -19,7 +22,7 @@ public class ZoomState extends Action
      *  @param starts Y Axes range start points
      *  @param ends Y Axes range end points
      */
-    public ZoomState(final String description,
+    public ZoomState(BrowserUI browserUI, final String description,
             final boolean scrolling,
             final String start_specification,
             final String end_specification,
@@ -28,6 +31,7 @@ public class ZoomState extends Action
         super(description);
         if (starts.length != ends.length)
             throw new Error("Size of start and end arrays don't match"); //$NON-NLS-1$
+        this.browserUI = browserUI;
         this.scrolling = scrolling;
         this.start_specification = start_specification;
         this.end_specification = end_specification;
@@ -35,7 +39,12 @@ public class ZoomState extends Action
         this.ends = ends;
     }
     
-    // TODO run()
+    /** Restore model to the zoom state that we captured */
+    @Override
+    public void run()
+    {
+        browserUI.restoreZoomState(this);
+    }
 
     /** {@inheritDoc} */
     @SuppressWarnings("nls")

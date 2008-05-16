@@ -188,9 +188,9 @@ public class Controller
     /** React to chart changes by updating the model. */
     final private ChartListener chart_listener = new ChartListener()
     {
-        public void aboutToZoomOrPan()
+        public void aboutToZoomOrPan(final String description)
         {
-            gui.addCurrentZoomToUndoStack();
+            gui.addCurrentZoomToUndoStack(description);
         }
 
         @SuppressWarnings("nls")
