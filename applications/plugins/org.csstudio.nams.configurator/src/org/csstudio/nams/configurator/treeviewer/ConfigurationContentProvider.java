@@ -1,15 +1,14 @@
 package org.csstudio.nams.configurator.treeviewer;
 
-import org.csstudio.nams.configurator.treeviewer.treecomponents.AbstractNode;
-import org.csstudio.nams.configurator.treeviewer.treecomponents.Categories;
-import org.csstudio.nams.configurator.treeviewer.treecomponents.CategoryNode;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.Categories;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.CategoryNode;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 public class ConfigurationContentProvider implements ITreeContentProvider {
 
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof AbstractNode) {
+		if (parentElement instanceof CategoryNode) {
 			return ((CategoryNode)parentElement).getChildren();
 		}
 		return null;
@@ -20,14 +19,14 @@ public class ConfigurationContentProvider implements ITreeContentProvider {
 	}
 
 	public boolean hasChildren(Object element) {
-		if (element instanceof AbstractNode) {
+		if (element instanceof CategoryNode) {
 			return ((CategoryNode)element).getChildren().length>0;
 		}
 		return false;
 	}
 
 	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof AbstractNode) {
+		if (inputElement instanceof CategoryNode) {
 			if (!(inputElement instanceof CategoryNode) || ((CategoryNode)inputElement).getCategory().equals(Categories.ROOT)) {
 				System.out
 						.println("ConfigurationContentProvider.getElements() WARNING: no CategoryNode for ROOT found");

@@ -3,7 +3,7 @@ package org.csstudio.nams.configurator.treeviewer.actions;
 import org.csstudio.ams.configurationStoreService.util.TObject;
 import org.csstudio.nams.configurator.editor.ConfigurationEditor;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
-import org.csstudio.nams.configurator.treeviewer.treecomponents.CategoryNode;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.CategoryNode;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;

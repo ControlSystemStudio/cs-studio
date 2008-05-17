@@ -1,6 +1,8 @@
 package org.csstudio.nams.configurator;
 
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditingStoreService;
+import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
+import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -18,6 +20,10 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 
 	private ConfigurationEditingStoreService _editingStoreService;
+
+	private ConfigurationStoreService _storeService;
+
+	private Logger _logger;
 	
 	/**
 	 * The constructor
@@ -34,6 +40,8 @@ public class Activator extends AbstractUIPlugin {
 		plugin = this;
 		
 		_editingStoreService = BundleActivatorUtils.getAvailableService(context, ConfigurationEditingStoreService.class);
+		_storeService = BundleActivatorUtils.getAvailableService(context, ConfigurationStoreService.class);
+		_logger = BundleActivatorUtils.getAvailableService(context, Logger.class);
 	}
 
 	/*
@@ -68,4 +76,13 @@ public class Activator extends AbstractUIPlugin {
 	public ConfigurationEditingStoreService getEditingStoreService() {
 		return _editingStoreService;
 	}
+
+	public ConfigurationStoreService getStoreService() {
+		return _storeService;
+	}
+
+	public Logger getLogger() {
+		return _logger;
+	}
+
 }

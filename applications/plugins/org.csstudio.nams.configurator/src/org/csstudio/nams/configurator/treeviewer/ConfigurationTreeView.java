@@ -1,9 +1,12 @@
 package org.csstudio.nams.configurator.treeviewer;
 
+import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditingStoreService;
+import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
+import org.csstudio.ams.service.logging.declaration.Logger;
+import org.csstudio.nams.configurator.Activator;
 import org.csstudio.nams.configurator.treeviewer.actions.NewEntryAction;
-import org.csstudio.nams.configurator.treeviewer.treecomponents.AbstractNode;
-import org.csstudio.nams.configurator.treeviewer.treecomponents.Categories;
-import org.csstudio.nams.configurator.treeviewer.treecomponents.CategoryNode;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModelCreater;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.CategoryNode;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -25,38 +28,28 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 public class ConfigurationTreeView extends ViewPart {
-	
+
 	public static final String ID = "org.csstudio.nams.configurator.views.ConfigurationTreeView";
-	
+
 	private TreeViewer _viewer;
 	private DrillDownAdapter drillDownAdapter;
 	private Action _newAction;
 	private Action doubleClickAction;
-	private AbstractNode _root;
+	private CategoryNode _root;
 
 	/**
 	 * The constructor.
 	 */
 	public ConfigurationTreeView() {
-		_root = this.createTreeModel();
-	}
-
-	private AbstractNode createTreeModel() {
-		AbstractNode root = new CategoryNode(Categories.ROOT);
-		root.addChild(new CategoryNode(Categories.USER));
-		root.addChild(new CategoryNode(Categories.TOPIC));
-		root.addChild(new CategoryNode(Categories.USERGROUP));
-		root.addChild(new CategoryNode(Categories.FILTERCONDITION));
-		root.addChild(new CategoryNode(Categories.FILTER));
-		return root;
+		_root = new ConfigurationModelCreater(this.getConfigurationStoreService(), this.getLogger()).createTreeModel();
 	}
 
 	/**
-	 * This is a callback that will allow us
-	 * to create the viewer and initialize it.
+	 * {@inheritDoc}
 	 */
 	public void createPartControl(Composite parent) {
-		_viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		_viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(_viewer);
 		_viewer.setContentProvider(new ConfigurationContentProvider());
 		_viewer.setLabelProvider(new ConfigurationLabelProvider());
@@ -66,7 +59,7 @@ public class ConfigurationTreeView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
-		
+
 		this.getSite().setSelectionProvider(_viewer);
 	}
 
@@ -103,7 +96,7 @@ public class ConfigurationTreeView extends ViewPart {
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
-	
+
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(_newAction);
 		manager.add(new Separator());
@@ -112,12 +105,13 @@ public class ConfigurationTreeView extends ViewPart {
 
 	private void makeActions() {
 		_newAction = new NewEntryAction(_viewer);
-		
+
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = _viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on "+obj.toString());
+				Object obj = ((IStructuredSelection) selection)
+						.getFirstElement();
+				showMessage("Double-click detected on " + obj.toString());
 			}
 		};
 	}
@@ -129,11 +123,10 @@ public class ConfigurationTreeView extends ViewPart {
 			}
 		});
 	}
+
 	private void showMessage(String message) {
-		MessageDialog.openInformation(
-			_viewer.getControl().getShell(),
-			"Configuration Tree Viewer",
-			message);
+		MessageDialog.openInformation(_viewer.getControl().getShell(),
+				"Configuration Tree Viewer", message);
 	}
 
 	/**
@@ -141,5 +134,17 @@ public class ConfigurationTreeView extends ViewPart {
 	 */
 	public void setFocus() {
 		_viewer.getControl().setFocus();
+	}
+
+	protected ConfigurationStoreService getConfigurationStoreService() {
+		return Activator.getDefault().getStoreService();
+	}
+
+	protected ConfigurationEditingStoreService getConfigurationEditingStoreService() {
+		return Activator.getDefault().getEditingStoreService();
+	}
+
+	protected Logger getLogger() {
+		return Activator.getDefault().getLogger();
 	}
 }

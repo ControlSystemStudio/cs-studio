@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.treeviewer.treecomponents;
+package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionTObject;
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterTObject;
@@ -16,7 +16,8 @@ public enum Categories {
 	USERGROUP("Usergroup", UserGroupTObject.class),
 	FILTERCONDITION("Filter Condition", FilterConditionTObject.class),
  	FILTER("Filter", FilterTObject.class),
-	GROUP("Group", GroupsTObject.class);
+	GROUP("Group", GroupsTObject.class),
+	LEAF("Leaf", null);
 	
 	private String _description;
 	private Class<? extends TObject> _tObjectClass;

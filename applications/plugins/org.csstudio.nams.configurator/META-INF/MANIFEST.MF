@@ -7,5 +7,6 @@ Bundle-Activator: org.csstudio.nams.configurator.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.ams.configurationStore,
- org.csstudio.nams.common
+ org.csstudio.nams.common,
+ org.csstudio.ams.service.logging
 Eclipse-LazyStart: true
