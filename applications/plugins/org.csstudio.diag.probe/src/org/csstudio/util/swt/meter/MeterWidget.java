@@ -81,7 +81,8 @@ public class MeterWidget extends Canvas implements DisposeListener,
 	/** Constructor */
 	public MeterWidget(Composite parent, int style)
 	{
-		super(parent, style);
+	    // To reduce flicker, don't clear the background!
+		super(parent, style | SWT.NO_BACKGROUND);
 		background_color = new Color(null, 255, 255, 255);
 		face_color = new Color(null, 20, 10, 10);
 		needle_color = new Color(null, 20, 0, 200);
@@ -201,7 +202,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
     }
     
 	/** @see org.eclipse.swt.events.PaintListener */
-    public void paintControl(PaintEvent e)
+    public void paintControl(final PaintEvent e)
     {
         final GC gc = e.gc;
         
@@ -216,12 +217,17 @@ public class MeterWidget extends Canvas implements DisposeListener,
         gc.setLineCap(SWT.CAP_ROUND);
         gc.setLineJoin(SWT.JOIN_ROUND);
         
+        // To reduce flicker, the scale is drawn as a prepared image into
+        // the widget whose background has not been cleared.
         createScaleImage(gc, client_rect);
         if (getEnabled())
         {
             gc.drawImage(scale_image, 0, 0);
 
-            // Needle
+            // Needle is added, so the needle could 'flicker'.
+            // Alternative would be to copy the scale image,
+            // add needle to copy, then draw the scale-with-needle.
+            // Sounds like added overhead, unclear if that's necessary.
             final double needle_angle = getAngle(value);
             
             final int needle_x_radius = (int)((1 - 0.5*scale_width)*x_radius);
@@ -233,7 +239,8 @@ public class MeterWidget extends Canvas implements DisposeListener,
         }
         else
         {   // Not enabled
-            Image grayed = new Image(gc.getDevice(), scale_image, SWT.IMAGE_DISABLE);
+            final Image grayed =
+                new Image(gc.getDevice(), scale_image, SWT.IMAGE_DISABLE);
             gc.drawImage(grayed, 0, 0);
             grayed.dispose();
             
@@ -265,7 +272,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         if (scale_image != null)
             scale_image.dispose();
         scale_image = new Image(gc.getDevice(), client_rect);
-        GC scale_gc = new GC(scale_image);
+        final GC scale_gc = new GC(scale_image);
         scale_gc.setForeground(face_color);
         scale_gc.setBackground(background_color);
         scale_gc.setLineWidth(LINE_WIDTH);
