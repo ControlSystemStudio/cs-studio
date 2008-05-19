@@ -23,11 +23,15 @@ import org.eclipse.swt.widgets.Composite;
 public class MeterWidget extends Canvas implements DisposeListener,
 		PaintListener
 {
+    /** Line width for scale outline (rest uses width 1) */
 	final private static int LINE_WIDTH = 5;
+	
+	/** Number of labels (and ticks) */
+	final private static int LABEL_COUNT = 5;
     
     final private static int start_angle = 140;
     final private static int end_angle = 40;
-    final private static double scale_width = 0.3;
+    final private static double scale_width = 0.35;
 
     final private Color background_color;
     final private Color face_color;
@@ -49,7 +53,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
     private double high_warning = 4.0;
     
     /** Upper alarm limit. */
-    private double high_alarm = 6.0;
+    private double high_alarm = 5.0;
     
     /** Maximum value. */
     private double max = +10.0;
@@ -226,16 +230,16 @@ public class MeterWidget extends Canvas implements DisposeListener,
 
             // Needle is added, so the needle could 'flicker'.
             // Alternative would be to copy the scale image,
-            // add needle to copy, then draw the scale-with-needle.
-            // Sounds like added overhead, unclear if that's necessary.
+            // add needle to copy, then draw the scale-with-needle image.
+            // The added image copy sounds like overhead best avoided until
+            // needle flicker turns into an actual problem.
             final double needle_angle = getAngle(value);
-            
             final int needle_x_radius = (int)((1 - 0.5*scale_width)*x_radius);
             final int needle_y_radius = (int)((1 - 0.5*scale_width)*y_radius);
             gc.setForeground(needle_color);
             gc.drawLine(pivot_x, pivot_y,
-                        (int)(pivot_x + needle_x_radius*Math.cos(Math.toRadians(needle_angle))),
-                        (int)(pivot_y - needle_y_radius*Math.sin(Math.toRadians(needle_angle))));
+                (int)(pivot_x + needle_x_radius*Math.cos(Math.toRadians(needle_angle))),
+                (int)(pivot_y - needle_y_radius*Math.sin(Math.toRadians(needle_angle))));
         }
         else
         {   // Not enabled
@@ -267,8 +271,8 @@ public class MeterWidget extends Canvas implements DisposeListener,
             new Rectangle(client_rect.x, client_rect.y,
                           client_rect.width-1, client_rect.height-1);
 
-        // Create image buffer, prepate GC for it
-        // In case there's old one, delete it
+        // Create image buffer, prepare GC for it.
+        // In case there's old one, delete it.
         if (scale_image != null)
             scale_image.dispose();
         scale_image = new Image(gc.getDevice(), client_rect);
@@ -305,32 +309,8 @@ public class MeterWidget extends Canvas implements DisposeListener,
         // Lower end of ticks.
         final int tick_x_radius2 = (int)(0.6*x_radius2);
         final int tick_y_radius2 = (int)(0.6*y_radius2);
-        
-        // Labels
-        final int label_count = 5;
-        scale_gc.setLineWidth(1);
-        for (int i=0; i<label_count; ++i)
-        {
-            final double label_value = min+(max-min)*i/(label_count-1);
-            final double angle = getAngle(label_value);
-            final double cos_angle = Math.cos(Math.toRadians(angle));
-            final double sin_angle = Math.sin(Math.toRadians(angle));
-            scale_gc.drawLine(
-                (int)(pivot_x + tick_x_radius2*cos_angle),
-                (int)(pivot_y - tick_y_radius2*sin_angle),
-                (int)(pivot_x + tick_x_radius*cos_angle),
-                (int)(pivot_y - tick_y_radius*sin_angle));
-            
-            final String label_text = fmt.format(label_value);
-            final Point size = scale_gc.textExtent(label_text);
-            scale_gc.drawString(label_text,
-                          (int)(pivot_x + tick_x_radius*cos_angle)-size.x/2,
-                          (int)(pivot_y - tick_y_radius*sin_angle)-size.y,
-                          true);
-        }
-        scale_gc.setLineWidth(LINE_WIDTH);
-        
-        // Path for scale
+                
+        // Path for outline of scale
         final Path scale_path = createSectionPath(scale_gc.getDevice(),
                         pivot_x, pivot_y,
                         x_radius, y_radius,
@@ -339,9 +319,9 @@ public class MeterWidget extends Canvas implements DisposeListener,
         // Fill scale with 'ok' color
         scale_gc.setBackground(ok_color);
         scale_gc.fillPath(scale_path);
-        // Scale outline drawn later...
+        // Border around the scale drawn later...
    
-        // Alarm sections
+        // Colored alarm sections
         final int high_alarm_start = (int) getAngle(high_alarm);
         final Path high_alarm_path = createSectionPath(scale_gc.getDevice(),
                         pivot_x, pivot_y,
@@ -381,9 +361,31 @@ public class MeterWidget extends Canvas implements DisposeListener,
         scale_gc.fillPath(low_warning_path);
         low_warning_path.dispose();
         
-        // Scale outline:
+        // Scale outline
         scale_gc.drawPath(scale_path);
         scale_path.dispose();
+
+        // Labels and tick marks
+        scale_gc.setLineWidth(1);
+        for (int i=0; i<LABEL_COUNT; ++i)
+        {
+            final double label_value = min+(max-min)*i/(LABEL_COUNT-1);
+            final double angle = getAngle(label_value);
+            final double cos_angle = Math.cos(Math.toRadians(angle));
+            final double sin_angle = Math.sin(Math.toRadians(angle));
+            scale_gc.drawLine(
+                (int)(pivot_x + tick_x_radius2*cos_angle),
+                (int)(pivot_y - tick_y_radius2*sin_angle),
+                (int)(pivot_x + tick_x_radius*cos_angle),
+                (int)(pivot_y - tick_y_radius*sin_angle));
+            
+            final String label_text = fmt.format(label_value);
+            final Point size = scale_gc.textExtent(label_text);
+            scale_gc.drawString(label_text,
+                          (int)(pivot_x + tick_x_radius*cos_angle)-size.x/2,
+                          (int)(pivot_y - tick_y_radius*sin_angle)-size.y,
+                          true);
+        }
 
         scale_gc.dispose();
     }
