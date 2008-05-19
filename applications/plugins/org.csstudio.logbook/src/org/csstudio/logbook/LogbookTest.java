@@ -2,6 +2,9 @@ package org.csstudio.logbook;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import org.junit.Test;
 
 /** JUnit Plugin test, requires exactly one plugin that provides the
@@ -10,9 +13,9 @@ import org.junit.Test;
  *  Can run with the application set to "Headless Mode".
  *  
  *  Pretty much everything in there depends on the particular setup:
- *  User, password, test image will likely require changes to work
- *  for you.
- *
+ *  User, password, test image, so it'll prompt for them.
+ *  Not a true unit test that runs on its own.
+ *  
  *  @author nypaver
  *  @author Kay Kasemir
  */
@@ -22,23 +25,27 @@ public class LogbookTest
     @Test
     public void testLoogbook() throws Exception
     {
-        final String user = "EPICS_MON";
-        // TODO Don't put the pw into CVS
-        final String password = "RCK26WRZ";
+        final BufferedReader command_line
+            = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.print("User      : ");
+        final String user = command_line.readLine();
+        
+        System.out.print("Password  : ");
+        final String password = command_line.readLine();
+
+        System.out.print("Image File: ");
+        final String image = command_line.readLine();
 
         ILogbook logbook = LogbookFactory.connect(user, password);
         assertNotNull(logbook);
 
-        String title = "Test Image Entry";
+        String title = "Test Entry";
         final String text = "This is a test entry";
-
-        // final String image = "/home/ky9/css_empty_databrowser.png";
-        final String image = "/home/nypaver/hprf.jpg";
-
-        logbook.createEntry(title, text, image);
+        logbook.createEntry(title, text, null);
 
         title = "Another Test Entry";
-        logbook.createEntry(title, text, null);
+        logbook.createEntry(title, text, image);
 
         logbook.close();
     }
