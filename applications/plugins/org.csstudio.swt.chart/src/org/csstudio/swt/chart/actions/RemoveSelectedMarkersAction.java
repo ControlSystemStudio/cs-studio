@@ -29,7 +29,7 @@ public class RemoveSelectedMarkersAction extends Action
         catch (Throwable ex)
         {
             Activator.getLogger().warn(
-                    "RemoveSelectedMarkersAction cannot get 'delete' image", ex);
+                    "RemoveSelectedMarkersAction cannot get 'delete' image", ex); //$NON-NLS-1$
         }
     }
 

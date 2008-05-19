@@ -28,7 +28,7 @@ public class RemoveMarkersAction extends Action
         }
         catch (Throwable ex)
         {
-            Activator.getLogger().warn("RemoveMarkersAction cannot get 'delete' icon");
+            Activator.getLogger().warn("RemoveMarkersAction cannot get 'delete' icon"); //$NON-NLS-1$
         }
     }
     
