@@ -2,6 +2,8 @@ package org.csstudio.swt.chart.actions;
 
 import java.io.File;
 
+import org.csstudio.logbook.ILogbook;
+import org.csstudio.logbook.LogbookFactory;
 import org.csstudio.swt.chart.Activator;
 import org.csstudio.swt.chart.Chart;
 import org.eclipse.jface.action.Action;
@@ -60,27 +62,56 @@ public class ExportToElogAction extends Action
             return;
         }
         // Add to elog
+        makeElogEntry(filename);
+        // Remove snapshot file
         try
         {
-            do
-            {
-                // Try to make entry
-
-                MessageDialog.openError(chart.getShell(),
-                        "Error", "Error demo");
-            }
-            while (promptForInfo());
+            tmp_file.delete();
         }
-        finally
+        catch (Exception ex)
+        {
+            // NOP
+        }
+    }
+
+    /** Try to add image file to elog.
+     *  On errors, prompt again for user/password so one can try again.
+     *  @param image_filename
+     */
+    private void makeElogEntry(final String image_filename)
+    {
+        ILogbook logbook = null;
+        while (logbook == null)
         {
             try
             {
-                tmp_file.delete();
+                logbook =
+                    LogbookFactory.connect(info.getUser(), info.getPassword());
+                // If we get here, we connected
+                break;
             }
             catch (Exception ex)
             {
-                // NOP
+                MessageDialog.openError(chart.getShell(),
+                    "Logbook connection error",
+                    NLS.bind("Error while connecting to logbook:{0}", ex.getMessage()));
+                logbook = null;
             }
+            // Ask for new user/pw info
+            promptForInfo();
+        }
+        
+        try
+        {
+            logbook.createEntry(info.getTitle(), info.getBody(), image_filename);
+        }
+        catch (Exception ex)
+        {
+            Activator.getLogger().error(ex);
+        }
+        finally
+        {
+            logbook.close();
         }
     }
 
