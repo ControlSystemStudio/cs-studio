@@ -8,10 +8,10 @@ import org.eclipse.swt.widgets.Shell;
 /** Helper that prompts for an image file name.
  *  @author Kay Kasemir
  */
-class ImageFileName
+public class ImageFileName
 {
     /** File name ending (enforced) */
-    final static String ending = ".png"; //$NON-NLS-1$
+    final public static String ending = ".png"; //$NON-NLS-1$
 
     /** Open "Save As" dialog for file name.
      *  @param shell Parent shell

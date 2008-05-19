@@ -25,6 +25,8 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
@@ -680,6 +682,28 @@ public class Chart extends Canvas
             fake.gc.dispose();
         }
         return snapshot;
+    }
+    
+    /** Save a snapshot of the current plot to file.
+     *  @param filename Full path to file name, including "png".
+     *  @throws Exception on error
+     */
+    public void createSnapshotFile(final String filename) throws Exception
+    {
+        final Image snapshot = createSnapshot();
+        if (snapshot == null)
+            throw new Exception("Cannot create snapshot image"); //$NON-NLS-1$
+        try
+        {
+            final ImageLoader loader = new ImageLoader();
+            loader.data = new ImageData[] { snapshot.getImageData() };
+            // PNG: Wrong depth under Eclipse 3.2, but OK with 3.3
+            loader.save(filename, SWT.IMAGE_PNG);
+        }
+        finally
+        {
+            snapshot.dispose();
+        }
     }
     
     /** Paint almost everything, using the paint event's region

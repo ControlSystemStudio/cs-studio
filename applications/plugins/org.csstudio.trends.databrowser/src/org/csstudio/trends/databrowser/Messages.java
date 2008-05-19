@@ -2,7 +2,7 @@ package org.csstudio.trends.databrowser;
 
 import org.eclipse.osgi.util.NLS;
 
-class Messages extends NLS
+public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.trends.databrowser.messages"; //$NON-NLS-1$
 

@@ -6,10 +6,6 @@ import org.csstudio.swt.chart.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 
 /** An Action for saving the current image to a file.
  *  <p>
@@ -35,32 +31,18 @@ public class SaveCurrentImageAction extends Action
     @Override
     public void run()
     {
-        final Image snapshot = chart.createSnapshot();
-        if (snapshot == null)
+        final String filename = ImageFileName.get(chart.getShell());
+        if (filename == null)
             return;
         try
         {
-            final String filename = ImageFileName.get(chart.getShell());
-            if (filename == null)
-                return;
-            try
-            {
-                final ImageLoader loader = new ImageLoader();
-                loader.data = new ImageData[] { snapshot.getImageData() };
-                // PNG: Unsupported format
-                // PNG: Wrong depth under Eclipse 3.2, but OK with 3.3
-                loader.save(filename, SWT.IMAGE_PNG);
-            }
-            catch (Exception ex)
-            {
-                MessageDialog.openError(chart.getShell(), Messages.SaveImage_ErrorTitle,
-                NLS.bind(Messages.SaveImage_ErrorMessage,
-                filename, ex.getMessage()));
-            }
+            chart.createSnapshotFile(filename);
         }
-        finally
+        catch (Exception ex)
         {
-            snapshot.dispose();
+            MessageDialog.openError(chart.getShell(), Messages.SaveImage_ErrorTitle,
+            NLS.bind(Messages.SaveImage_ErrorMessage,
+            filename, ex.getMessage()));
         }
     }
 }

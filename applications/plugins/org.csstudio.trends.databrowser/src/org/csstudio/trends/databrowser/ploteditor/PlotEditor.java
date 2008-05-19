@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.csstudio.swt.chart.Chart;
+import org.csstudio.swt.chart.actions.ExportToElogAction;
 import org.csstudio.swt.chart.actions.PrintCurrentImageAction;
 import org.csstudio.swt.chart.actions.RemoveMarkersAction;
 import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
@@ -20,6 +21,7 @@ import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.plotpart.AddFormulaAction;
 import org.csstudio.trends.databrowser.plotpart.AddPVAction;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
+import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.trends.databrowser.sampleview.SampleView;
 import org.csstudio.trends.databrowser.waveformview.WaveformView;
 import org.csstudio.util.editor.EmptyEditorInput;
@@ -65,6 +67,7 @@ public class PlotEditor extends EditorPart
     private Action button_bar_action;
     private Action save_current_image_action;
     private Action print_current_image_action;
+    private Action elog_current_image_action;
     private Action view_action, perspective_action;
     private boolean is_dirty = false;
     /** In case of a model init (load) problem, we won't get to register
@@ -304,6 +307,11 @@ public class PlotEditor extends EditorPart
         button_bar_action = new ShowButtonBarAction(plot_part.getInteractiveChart());
         save_current_image_action = new SaveCurrentImageAction(chart);
         print_current_image_action = new PrintCurrentImageAction(chart);
+        if (Preferences.getShowElogExportAction())
+            elog_current_image_action = new ExportToElogAction(chart,
+                    org.csstudio.trends.databrowser.Messages.DataBrowser);
+        else
+            elog_current_image_action = null;
         remove_markers_action = new RemoveMarkersAction(chart);
         remove_marker_action = new RemoveSelectedMarkersAction(chart);
         add_pv_action = new AddPVAction(plot_part.getModel());
@@ -338,6 +346,8 @@ public class PlotEditor extends EditorPart
         context_menu.add(new Separator());
         context_menu.add(save_current_image_action);
         context_menu.add(print_current_image_action);
+        if (elog_current_image_action != null)
+            context_menu.add(elog_current_image_action);
         context_menu.add(new Separator());
         context_menu.add(view_action);
         context_menu.add(perspective_action);

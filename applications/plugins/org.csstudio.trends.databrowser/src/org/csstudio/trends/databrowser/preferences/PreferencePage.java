@@ -50,23 +50,23 @@ public class PreferencePage extends FieldEditorPreferencePage implements
     public void createFieldEditors()
     {
         final Composite parent = getFieldEditorParent();
-        addField(new BooleanFieldEditor(Preferences.P_AUTOSCALE,
+        addField(new BooleanFieldEditor(Preferences.AUTOSCALE,
                         Messages.Label_Autoscale, parent));
-        addField(new BooleanFieldEditor(Preferences.P_SHOW_REQUEST_TYPES,
+        addField(new BooleanFieldEditor(Preferences.SHOW_REQUEST_TYPES,
                         Messages.Label_Show_Request_Types, parent));
         
-        final IntegerFieldEditor plot_bins = new IntegerFieldEditor(Preferences.P_PLOT_BINS,
+        final IntegerFieldEditor plot_bins = new IntegerFieldEditor(Preferences.PLOT_BINS,
                                 Messages.PlotBins, parent);
         plot_bins.setValidRange(MIN_BINS, MAX_BINS);
         plot_bins.setErrorMessage(NLS.bind(Messages.PlotBinsError,
                                            MIN_BINS, MAX_BINS));
         addField(plot_bins);
         
-        addField(new StringFieldEditor(Preferences.P_START_TIME_SPEC,
+        addField(new StringFieldEditor(Preferences.START_TIME_SPEC,
                                         Messages.StartTime, parent));
-        addField(new StringFieldEditor(Preferences.P_END_TIME_SPEC,
+        addField(new StringFieldEditor(Preferences.END_TIME_SPEC,
                         Messages.EndTime, parent));
-        addField(new URLListEditor(Preferences.P_URLS, parent));
-        addField(new ArchiveListEditor(Preferences.P_ARCHIVES, parent));
+        addField(new URLListEditor(Preferences.URLS, parent));
+        addField(new ArchiveListEditor(Preferences.ARCHIVES, parent));
     }
 }

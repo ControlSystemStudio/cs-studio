@@ -32,62 +32,64 @@ public class Preferences
     private static final char ARCHIVE_SEPARATOR = '|';
 
     /** Identifier for start time preference. */
-    public static final String P_START_TIME_SPEC = "start_time";
+    public static final String START_TIME_SPEC = "start_time";
     
     /** Identifier for end time preference. */
-    public static final String P_END_TIME_SPEC = "end_time";
+    public static final String END_TIME_SPEC = "end_time";
 
     /** Identifier for the auto-scale preference. */
-    public static final String P_AUTOSCALE = "autoscale";
+    public static final String AUTOSCALE = "autoscale";
 
     /** Identifier for the plot bin preference. */
-    public static final String P_PLOT_BINS = "plot_bins";
+    public static final String PLOT_BINS = "plot_bins";
     
     /** Identifier for the show-request-types preference. */
-    public static final String P_SHOW_REQUEST_TYPES = "show_request_types";
+    public static final String SHOW_REQUEST_TYPES = "show_request_types";
 
     /** Identifier for the Archive Server URLs preference. */
-    public static final String P_URLS = "urls";
+    public static final String URLS = "urls";
 
     /** Identifier for the Archives preference. */
-    public static final String P_ARCHIVES = "archives";
+    public static final String ARCHIVES = "archives";
     
-    /** Identifier if the 'SampleFileImportAction' should be shown in the 
-     * Config View.*/
+    /** Preference Identifier: Show 'SampleFileImportAction' in Config View? */
     public static final String SHOW_SAMPLE_FILE_IMPORT_ACTION = "show_sample_file_import_action";
+    
+    /** Preference Identifier: Show 'ExportToElogAction' in Config View? */
+    public static final String SHOW_ELOG_EXPORT_ACTION = "show_elog_export_action";
     
     /** @return Default start time specification. */
     static public String getStartSpecification()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getString(P_START_TIME_SPEC);
+        return store.getString(START_TIME_SPEC);
     }
 
     /** @return Default end time specification. */
     static public String getEndSpecification()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getString(P_END_TIME_SPEC);
+        return store.getString(END_TIME_SPEC);
     }
     
     /** @return Default auto-scale setting */
     static public boolean getAutoScale()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getBoolean(P_AUTOSCALE);
+        return store.getBoolean(AUTOSCALE);
     }
 
     static public int getPlotBins()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getInt(P_PLOT_BINS);
+        return store.getInt(PLOT_BINS);
     }
     
     /** @return Default auto-scale setting */
     static public boolean getShowRequestTypes()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getBoolean(P_SHOW_REQUEST_TYPES);
+        return store.getBoolean(SHOW_REQUEST_TYPES);
     }
 
     /** @return Default setting for 'show sample file import action'. */
@@ -97,12 +99,18 @@ public class Preferences
         return store.getBoolean(SHOW_SAMPLE_FILE_IMPORT_ACTION);
     }
 
+    /** @return Default setting for 'export to elog action'. */
+    static public boolean getShowElogExportAction()
+    {
+        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        return store.getBoolean(SHOW_ELOG_EXPORT_ACTION);
+    }
     
     /** @return Default archive server URLs. */
     static public String[] getArchiveServerURLs()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        String concat = store.getString(P_URLS);
+        String concat = store.getString(URLS);
         return splitListItems(concat);
     }
 
@@ -110,7 +118,7 @@ public class Preferences
     static public IArchiveDataSource[] getArchiveDataSources()
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        String concat = store.getString(P_ARCHIVES);
+        String concat = store.getString(ARCHIVES);
         String encoded_sources[] = splitListItems(concat);
         IArchiveDataSource sources[] = new IArchiveDataSource[encoded_sources.length];
         for (int i = 0; i < sources.length; ++i)
