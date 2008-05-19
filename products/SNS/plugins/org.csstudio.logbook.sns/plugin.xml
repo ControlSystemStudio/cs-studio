@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.csstudio.logbook.logbookfactory">
+      <logbookfactory
+            class="org.csstudio.logbook.sns.SNSLogbookFactory"
+            name="org.csstudio.logbook.sns.snslogbookfactory">
+      </logbookfactory>
+   </extension>
+
+</plugin>

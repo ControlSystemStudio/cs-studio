@@ -1,0 +1,4 @@
+# Default Preferences
+log_rdb_url=jdbc:oracle:thin:@//snsdev3.sns.ornl.gov:1521/devl
+logbook_name=Scratch Pad
+

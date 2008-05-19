@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Logbook Plug-in
+Bundle-SymbolicName: org.csstudio.logbook;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: SNS
+Export-Package: org.csstudio.logbook
+Require-Bundle: org.eclipse.platform,
+ org.eclipse.core.runtime,
+ org.junit4
+Eclipse-LazyStart: false
