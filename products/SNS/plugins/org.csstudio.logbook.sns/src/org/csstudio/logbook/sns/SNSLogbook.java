@@ -22,20 +22,29 @@ import org.csstudio.logbook.ILogbook;
  */
 public class SNSLogbook implements ILogbook
 {
+    private static final String DEFAULT_BADGE_NUMBER = "999992"; //$NON-NLS-1$
     final private Connection connection;
     final private String logbook;
+    final String badge_number;
 
-    public SNSLogbook(final Connection connection, final String logbook)
+    /** Constructor
+     *  @param connection RDB connection
+     *  @param user User (for which we'll try to get the badge number)
+     *  @param logbook SNS logbook to use
+     *  @throws Exception on error
+     */
+    public SNSLogbook(final Connection connection, final String user,
+            final String logbook) throws Exception
     {
         this.connection = connection;
         this.logbook = logbook;
+        badge_number = getBadgeNumber(user);
     }
 
     @SuppressWarnings("nls")
     public void createEntry(String title, String text, String imageName)
             throws Exception
     {
-        final String badge_number = "999992";
         if (imageName == null)
         {
             final String mysql = "call logbook.logbook_pkg.insert_logbook_entry"
@@ -90,33 +99,33 @@ public class SNSLogbook implements ILogbook
         }
     }
     
-    /** TODO Not used.
-     *  Use it to get the badge number for the 'user' that connected to the logbook?
-     *  
-     *  Get the badge number for the user in the connection dictionary
-     *  @param connection the database connection
-     *  @return the badge number for the specified user or null if none was found
-     *  @throws gov.sns.tools.database.DatabaseException if a database exception occurs while fetching the badge number
+    /** Get the badge number for the user in the connection dictionary
+     *  @return the badge number for the specified user or a default
      */
-    @SuppressWarnings({ "nls", "unused" })
-    private String getBadgeNumber(final Connection connection, String user)
+    @SuppressWarnings("nls")
+    private String getBadgeNumber(final String user) throws Exception
     {
+        final PreparedStatement statement = connection
+        .prepareStatement("select bn from OPER.EMPLOYEE_V where user_id=?");
         try
         {
-            final String userID = user;
-            final PreparedStatement statement = connection
-                    .prepareStatement("select bn from OPER.EMPLOYEE_V where user_id = ?");
-            statement.setString(1, userID);
+            // OPER.EMPLOYEE_V seems to only keep uppercase user_id entries
+            statement.setString(1, user.trim().toUpperCase());
             statement.execute();
-            connection.commit();
             final ResultSet result = statement.getResultSet();
-            return (result.next()) ? result.getString("bn") : null;
+            if (result.next())
+            {
+                final String badge = result.getString("bn");
+                if (badge.length() > 1)
+                    return badge;
+            }
+            // No error, but also not found: fall through
         }
-        catch (Exception exception)
+        finally
         {
-            System.out.println("error " + exception.getMessage());
+            statement.close();
         }
-        return "";
+        return DEFAULT_BADGE_NUMBER;
     }
 
     public void close()

@@ -21,7 +21,6 @@ public class SNSLogbookFactory implements ILogbookFactory
         Class.forName("oracle.jdbc.driver.OracleDriver").newInstance(); //$NON-NLS-1$
         final Connection connection = DriverManager.getConnection(
                 Preferences.getURL(), user, password);
-        return new SNSLogbook(connection, Preferences.getLogBookName());
+        return new SNSLogbook(connection, user, Preferences.getLogBookName());
     }
-
 }
