@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.csstudio.swt.chart.Messages;
 
 /** Dialog for creating elog entry.
  *  @author Kay Kasemir
@@ -35,14 +36,14 @@ public class ExportToElogDialog extends TitleAreaDialog
     protected void configureShell(Shell shell)
     {
         super.configureShell(shell);
-        shell.setText("Send to Logbook");
+        shell.setText(Messages.ELog_Dialog_WindowTitle);
     }
     
     /** Create the GUI. */
     @Override
     protected Control createDialogArea(final Composite parent)
     {
-        setTitle("Send plot to electronic logbook");
+        setTitle(Messages.ELog_Dialog_DialogTitle);
 
         // From peeking at super.createDialogArea we happen to expect a Compos.
         final Composite area = (Composite) super.createDialogArea(parent);
@@ -65,11 +66,11 @@ public class ExportToElogDialog extends TitleAreaDialog
         // Text:
         // _____________text _______
         Label l = new Label(box, 0);
-        l.setText("User name:");
+        l.setText(Messages.ELog_Dialog_User);
         l.setLayoutData(new GridData());
 
         user = new Text(box, SWT.BORDER);
-        user.setToolTipText("Enter user name for access to logbook");
+        user.setToolTipText(Messages.ELog_Dialog_User_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -77,11 +78,11 @@ public class ExportToElogDialog extends TitleAreaDialog
 
         // New Row
         l = new Label(box, 0);
-        l.setText("Password:");
+        l.setText(Messages.ELog_Dialog_Password);
         l.setLayoutData(new GridData());
 
         password = new Text(box, SWT.BORDER | SWT.PASSWORD);
-        password.setToolTipText("Enter password for access to logbook");
+        password.setToolTipText(Messages.ELog_Dialog_Password_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -89,11 +90,11 @@ public class ExportToElogDialog extends TitleAreaDialog
 
         // New Row
         l = new Label(box, 0);
-        l.setText("Title:");
+        l.setText(Messages.ELog_Dialog_Title);
         l.setLayoutData(new GridData());
 
         title = new Text(box, SWT.BORDER);
-        title.setToolTipText("Enter title of logbook entry");
+        title.setToolTipText(Messages.ELog_Dialog_Title_TT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
@@ -101,14 +102,14 @@ public class ExportToElogDialog extends TitleAreaDialog
 
         // New Row
         l = new Label(box, 0);
-        l.setText("Text:");
+        l.setText(Messages.ELog_Dialog_Body);
         gd = new GridData();
         gd.horizontalSpan = layout.numColumns;
         l.setLayoutData(gd);
 
         // New Row
         body = new Text(box, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-        body.setToolTipText("Enter text of logbook entry");
+        body.setToolTipText(Messages.ELog_Dialog_Body_TT);
         gd = new GridData();
         gd.heightHint = 550; // Size guess. Hope that 'RESIZE' works as well.
         gd.widthHint = 400;

@@ -25,6 +25,24 @@ public class Messages extends NLS
     public static String Chart_ZoomAuto;
     public static String Chart_ZoomIn;
     public static String Chart_ZoomOut;
+    
+    public static String ELog_ActionName;
+    public static String ELog_ActionName_TT;
+    public static String ELog_ConnectError;
+    public static String ELog_ConnectErrorMessage;
+    public static String ELog_Dialog_Body;
+    public static String ELog_Dialog_Body_TT;
+    public static String ELog_Dialog_DialogTitle;
+    public static String ELog_Dialog_Password;
+    public static String ELog_Dialog_Password_TT;
+    public static String ELog_Dialog_Title;
+    public static String ELog_Dialog_Title_TT;
+    public static String ELog_Dialog_User;
+    public static String ELog_Dialog_User_TT;
+    public static String ELog_Dialog_WindowTitle;
+    public static String ELog_TitleFormat;
+    public static String ELog_BodyFormat;
+    
     public static String PrintImage_ActionName;
     public static String PrintImage_ActionName_TT;
     public static String RemoveMarkers;
