@@ -13,12 +13,13 @@ class SampleHashKey
     final private ITimestamp end;
     final private String request_type;
     final private Object request_parms[];
+    final private int hash_code;
     
-    /** Construct a key from pieces that identify a sample request on a server.
-     */
-    SampleHashKey(int key, String name,
-                  ITimestamp start, ITimestamp end, String request_type,
-                  Object request_parms[])
+    /** Construct a key from pieces that identify a sample request */
+    SampleHashKey(final int key, final String name,
+            final ITimestamp start, final ITimestamp end,
+            final String request_type,
+            final Object request_parms[])
     {
         this.key = key;
         this.name = name;
@@ -26,18 +27,22 @@ class SampleHashKey
         this.end = end;
         this.request_type = request_type;
         this.request_parms = request_parms;
+        // Compute hash code once because it's relatively expensive
+        hash_code = key + name.hashCode() + start.hashCode() + end.hashCode()
+            + request_type.hashCode();
     }
 
     /** Keys are equal when all their pieces match. */
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         if (obj == null)
             return false;
         if (! (obj instanceof SampleHashKey))
             return false;
-        SampleHashKey o = (SampleHashKey) obj;
-        return key == o.key    &&
+        final SampleHashKey o = (SampleHashKey) obj;
+        return hash_code == o.hash_code &&
+               key == o.key &&
                name.equals(o.name) &&
                start.equals(o.start) &&
                end.equals(o.end) &&
@@ -59,8 +64,7 @@ class SampleHashKey
     @Override
     public int hashCode()
     {
-        return key + name.hashCode() + start.hashCode() + end.hashCode()
-            + request_type.hashCode() + request_parms.hashCode();
+        return hash_code;
     }
 
     @SuppressWarnings("nls")
@@ -70,6 +74,6 @@ class SampleHashKey
         return "'" + name
            + "', key " + key
            + ", " + start.toString() + " - " + end.toString()
-           + ", as " + request_type;
+           + ", as " + request_type + " (" + hash_code + ")";
     }
 }

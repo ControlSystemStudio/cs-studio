@@ -1,7 +1,9 @@
 package org.csstudio.archive.cache;
 
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
 import org.csstudio.archive.ArchiveInfo;
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.ArchiveValues;
@@ -27,11 +29,23 @@ public class CachingArchiveServer extends ArchiveServer
     // Since keeping data cached consumes a lot of memory, this cache uses
     // a list of finite length. Assuming the 'undo' kind of usage, where
     // recent additions are most likely to be used again, we add entries
-    // to the front, and remove the (old) entries from the tail when
+    // to the front, and remove the (old) entries when
     // exceeding the SAMPLE_CACHE_LENGTH.
     private static int SAMPLE_CACHE_LENGTH = 40;
-    final private LinkedList<SampleCacheEntry> sample_cache =
-                                new LinkedList<SampleCacheEntry>();
+    final private LinkedHashMap<SampleHashKey, ArchiveValues> sample_cache =
+                            new LinkedHashMap<SampleHashKey, ArchiveValues>()
+    {
+        // Keep compiler happy 
+        private static final long serialVersionUID = 1L;
+
+        /** Keep cache size limited to SAMPLE_CACHE_LENGTH */
+        @Override
+        protected boolean removeEldestEntry(
+                Entry<SampleHashKey, ArchiveValues> eldest)
+        {
+            return size() > SAMPLE_CACHE_LENGTH;
+        }
+    };
 
     /** Constructor.
      *  @param server The 'real' server.
@@ -70,22 +84,23 @@ public class CachingArchiveServer extends ArchiveServer
     {
         if (names.length != 1)
             throw new Exception("Only supporting single-name requests.");
-        // See if we find the result for this request in the cache:
-        SampleHashKey hash_key = new SampleHashKey(key, names[0],
-                       start, end, request_type, request_parms);
-        Plugin.getLogger().debug("CachingArchiveServer: " + hash_key);
-        for (SampleCacheEntry entry : sample_cache)
-            if (entry.getKey().equals(hash_key))
-            {
-                ArchiveValues result[] = new ArchiveValues[]
-                { entry.getData() };
-                Plugin.getLogger().debug("Found data on cache: " +
-                                result[0].getSamples().length + " samples");
-                return result;
-            }
+        // Is result for this request in cache?
+        final SampleHashKey hash_key = new SampleHashKey(key, names[0],
+                                       start, end, request_type, request_parms);
+        ArchiveValues samples = sample_cache.get(hash_key);
+        final Logger logger = Plugin.getLogger();
+        if (samples != null)
+        {
+            if (logger.isDebugEnabled())
+                logger.debug("Found data on cache ("
+                        + sample_cache.size() +	" entries) : "
+                        + samples.getSamples().length
+                        + " samples for " + hash_key);
+            return new ArchiveValues[] { samples };
+        }
         
         // Fall back to server
-        ArchiveValues result[] = server.getSamples(key,
+        final ArchiveValues result[] = server.getSamples(key,
                         names, start, end, request_type, request_parms);
         // Nothing? That's OK, but don't cache, since a later request might
         // actually find data that's just been added.
@@ -94,15 +109,14 @@ public class CachingArchiveServer extends ArchiveServer
         // Expect one result for single-name request.
         if (result.length != 1)
             throw new Exception("Received " + result.length + " responses");
-        final ArchiveValues samples = result[0];
-        // Remember the result
+        samples = result[0];
+        // Remember the result - if it contained data
         if (samples != null)
         {
-            if (sample_cache.size() >= SAMPLE_CACHE_LENGTH-1)
-                sample_cache.removeLast().getKey();
-            sample_cache.addFirst(new SampleCacheEntry(hash_key, samples));
-            Plugin.getLogger().debug("Got " +
-                            result[0].getSamples().length + " new samples");
+            sample_cache.put(hash_key, samples);
+            if (logger.isDebugEnabled())
+                logger.debug("Got " + result[0].getSamples().length
+                        + " new samples for " + hash_key);
         }
         return result;
     }
