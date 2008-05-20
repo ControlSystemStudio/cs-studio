@@ -83,10 +83,13 @@ public class MeterWidget extends Canvas implements DisposeListener,
     private int y_radius;
     
 	/** Constructor */
-	public MeterWidget(Composite parent, int style)
+	public MeterWidget(final Composite parent, final int style)
 	{
-	    // To reduce flicker, don't clear the background!
-		super(parent, style | SWT.NO_BACKGROUND);
+	    // To reduce flicker, don't clear the background.
+	    // On Linux, however, that seems to corrupt the overall
+	    // widget layout, so we don't use that option.
+	    // super(parent, style | SWT.NO_BACKGROUND);
+        super(parent, style);
 		background_color = new Color(null, 255, 255, 255);
 		face_color = new Color(null, 20, 10, 10);
 		needle_color = new Color(null, 20, 0, 200);
