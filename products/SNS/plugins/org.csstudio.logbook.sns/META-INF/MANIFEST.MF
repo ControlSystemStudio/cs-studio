@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.csstudio.logbook.sns;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.logbook.sns.Activator
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.logbook
+ org.csstudio.logbook,
+ org.csstudio.platform.libs.jdbc
 Eclipse-LazyStart: true
 Bundle-ClassPath: lib/ojdbc14.jar,
  .
