@@ -45,7 +45,10 @@ public class BrowserUI extends Composite
     static private final String UNDO = "undo"; //$NON-NLS-1$
     static private ImageRegistry images = null;
 
-    private static final int MAX_UNDO_STACK_SIZE = 10;
+    /** Size of undo-stack; older entries are dropped */
+    private static final int MAX_UNDO_STACK_SIZE = 50;
+    /** Visible size, since all won't fit on screen */
+    private static final int VISIBLE_UNDO_STACK_SIZE = 10;
     
     final private ArrayList<ZoomState> undo_stack = new ArrayList<ZoomState>();
 
@@ -101,9 +104,12 @@ public class BrowserUI extends Composite
         {
             public void menuAboutToShow(IMenuManager manager)
             {
-                // Show undo stack in reverse order
-                final int N = undo_stack.size();
-                for (int i=N-1;  i>=0;  --i)
+                // Show undo stack in reverse order, up tp VISIBLE.. elements
+                final int last = undo_stack.size();
+                final int first = (last > VISIBLE_UNDO_STACK_SIZE)
+                    ? last - VISIBLE_UNDO_STACK_SIZE
+                    : 0;
+                for (int i=last-1;  i>=first;  --i)
                     manager.add(undo_stack.get(i));
             }
         });
