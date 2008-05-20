@@ -31,15 +31,14 @@ import java.util.Set;
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.csstudio.nams.application.department.decision.exceptions.InitPropertiesException;
+import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.MessagingService;
-import org.csstudio.nams.service.messaging.declaration.MessagingSession;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
-import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
@@ -51,7 +50,6 @@ import org.osgi.framework.BundleContext;
 import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerk;
 
 /**
  * <p>

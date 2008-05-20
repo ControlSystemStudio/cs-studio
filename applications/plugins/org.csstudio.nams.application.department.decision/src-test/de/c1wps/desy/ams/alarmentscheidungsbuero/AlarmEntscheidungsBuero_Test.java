@@ -7,23 +7,23 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
+import org.csstudio.nams.common.material.regelwerk.Pruefliste;
+import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
+import org.csstudio.nams.common.material.regelwerk.Regelwerk;
+import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
+import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
+import org.csstudio.nams.common.material.regelwerk.VersandRegel;
+import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.junit.Test;
 
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
-import de.c1wps.desy.ams.allgemeines.regelwerk.OderVersandRegel;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste;
-import de.c1wps.desy.ams.allgemeines.regelwerk.RegelErgebnis;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerk;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerkskennung;
-import de.c1wps.desy.ams.allgemeines.regelwerk.StandardRegelwerk;
-import de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel;
-import de.c1wps.desy.ams.allgemeines.regelwerk.VersandRegel;
-import de.c1wps.desy.ams.allgemeines.regelwerk.WeiteresVersandVorgehen;
 
 public class AlarmEntscheidungsBuero_Test extends TestCase {
 

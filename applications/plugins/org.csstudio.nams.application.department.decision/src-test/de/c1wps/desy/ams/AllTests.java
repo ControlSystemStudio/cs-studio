@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import de.c1wps.desy.ams.alarmentscheidungsbuero.Alarmentscheidungsbuero_SubSystemTestSuite;
 import de.c1wps.desy.ams.allgemeines.Allgemeines_SubSystemTestSuite;
-import de.c1wps.desy.ams.allgemeines.regelwerk.AllgemeinesRegelwerk_SubSystemTestSuite;
 
 public class AllTests extends TestCase {
 
@@ -17,7 +16,7 @@ public class AllTests extends TestCase {
 		suite.addTestSuite(AllTests.class);
 		suite.addTest(Allgemeines_SubSystemTestSuite.suite());
 		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
-		suite.addTest(AllgemeinesRegelwerk_SubSystemTestSuite.suite());
+		//suite.addTest(AllgemeinesRegelwerk_SubSystemTestSuite.suite());
 		//$JUnit-END$
 		return suite;
 	}

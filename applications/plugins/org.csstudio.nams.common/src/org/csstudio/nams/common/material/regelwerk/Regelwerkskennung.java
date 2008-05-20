@@ -1,6 +1,6 @@
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
-import de.c1wps.desy.ams.allgemeines.wam.Fachwert;
+import org.csstudio.nams.common.wam.Fachwert;
 
 @Fachwert
 public final class Regelwerkskennung {

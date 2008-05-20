@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package de.c1wps.desy.ams.allgemeines.regelwerk;
+ package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.regex.Pattern;
 
@@ -49,7 +49,7 @@ System.out.println(WildcardStringCompare.compare(str, "*H*aLLo*"));// true
 System.out.println(WildcardStringCompare.compare(str, "*hallo*hallo*"));// true
 System.out.println(WildcardStringCompare.compare(str, "*hallo?hallo*"));// false
 System.out.println();
-String string = new String("!§$%&/()=+#-._.gM@");
+String string = new String("!ï¿½$%&/()=+#-._.gM@");
 System.out.println(WildcardStringCompare.compare(string, "*"));// true
 System.out.println(WildcardStringCompare.compare(string, "*!*"));// true
 System.out.println(WildcardStringCompare.compare(string, "*@"));// true
@@ -63,7 +63,7 @@ System.out.println(WildcardStringCompare.compare(string, "*=*.*"));// true
 System.out.println(WildcardStringCompare.compare(string, "*!*@*"));// true
 System.out.println();
 */
-// TODO Ist diese Klasse wirklich nštig?
+// TODO Ist diese Klasse wirklich nï¿½tig?
 abstract class WildcardStringCompare
 {
 	/**

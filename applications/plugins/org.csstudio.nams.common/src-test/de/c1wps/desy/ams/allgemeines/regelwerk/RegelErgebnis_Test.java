@@ -1,8 +1,8 @@
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
+import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
+import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Test;
-
-import de.c1wps.desy.ams.AbstractObject_TestCase;
 
 public class RegelErgebnis_Test extends AbstractObject_TestCase<RegelErgebnis>/*
 																				 * TODO

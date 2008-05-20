@@ -22,14 +22,14 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.HashMap;
 
 import org.csstudio.nams.common.contract.Contract;
-
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
-import de.c1wps.desy.ams.allgemeines.wam.Material;
+import org.csstudio.nams.common.fachwert.Millisekunden;
+import org.csstudio.nams.common.testhelper.ForTesting;
+import org.csstudio.nams.common.wam.Material;
 
 @Material
 public class Pruefliste implements Cloneable {
@@ -49,7 +49,9 @@ public class Pruefliste implements Cloneable {
 		return new Pruefliste(regelwerkskennung, hauptRegel);
 	}
 
-	protected Pruefliste(Regelwerkskennung regelwerkskennung,
+	@Deprecated
+	@ForTesting
+	public Pruefliste(Regelwerkskennung regelwerkskennung,
 			VersandRegel hauptRegel) {
 		this.hauptRegel = hauptRegel;
 		Contract.require(regelwerkskennung != null, "regelwerkskennung!=null");

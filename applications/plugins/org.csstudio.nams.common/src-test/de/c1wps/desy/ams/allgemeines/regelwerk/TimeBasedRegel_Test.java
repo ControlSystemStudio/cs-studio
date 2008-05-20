@@ -25,11 +25,15 @@
 
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.regelwerk.Pruefliste;
+import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
+import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
+import org.csstudio.nams.common.material.regelwerk.VersandRegel;
+import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Test;
-
-import de.c1wps.desy.ams.AbstractObject_TestCase;
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 
 /**
  * TODO Add comment here.
@@ -110,7 +114,7 @@ public class TimeBasedRegel_Test extends AbstractObject_TestCase<TimeBasedRegel>
 	}
 
 	/**
-	 * Test method for {@link de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufOK() {
@@ -124,7 +128,7 @@ public class TimeBasedRegel_Test extends AbstractObject_TestCase<TimeBasedRegel>
 	}
 	
 	/**
-	 * Test method for {@link de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufNichtOK() {
@@ -161,7 +165,7 @@ public class TimeBasedRegel_Test extends AbstractObject_TestCase<TimeBasedRegel>
 	}
 	
 	/**
-	 * Test method for {@link de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufNichtFertig() {
@@ -198,7 +202,7 @@ public class TimeBasedRegel_Test extends AbstractObject_TestCase<TimeBasedRegel>
 	}
 	
 	/**
-	 * Test method for {@link de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufBereitsFertigZutreffend() {
@@ -238,7 +242,7 @@ public class TimeBasedRegel_Test extends AbstractObject_TestCase<TimeBasedRegel>
 	}
 	
 	/**
-	 * Test method for {@link de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtAufBereitsFertigNichtZutreffend() {
@@ -278,7 +282,7 @@ public class TimeBasedRegel_Test extends AbstractObject_TestCase<TimeBasedRegel>
 	}
 
 	/**
-	 * Test method for {@link de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel#pruefeNachrichtAufTimeOuts(de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste, de.c1wps.desy.ams.allgemeines.Millisekunden)}.
+	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufTimeOuts(org.csstudio.nams.common.material.regelwerk.Pruefliste, org.csstudio.nams.common.fachwert.Millisekunden)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufTimeOutsBevorTimeOut() {
@@ -297,7 +301,7 @@ public class TimeBasedRegel_Test extends AbstractObject_TestCase<TimeBasedRegel>
 	}
 	
 	/**
-	 * Test method for {@link de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel#pruefeNachrichtAufTimeOuts(de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste, de.c1wps.desy.ams.allgemeines.Millisekunden)}.
+	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtAufTimeOuts(org.csstudio.nams.common.material.regelwerk.Pruefliste, org.csstudio.nams.common.fachwert.Millisekunden)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufTimeOutsNachTimeOut() {
@@ -316,7 +320,7 @@ public class TimeBasedRegel_Test extends AbstractObject_TestCase<TimeBasedRegel>
 	}
 
 	/**
-	 * Test method for {@link de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht, de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtErstmaligAusloesungZutreffend() {
@@ -330,7 +334,7 @@ public class TimeBasedRegel_Test extends AbstractObject_TestCase<TimeBasedRegel>
 	}
 	
 	/**
-	 * Test method for {@link de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht, de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.TimeBasedRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtErstmaligAusloesungNichtZutreffend() {

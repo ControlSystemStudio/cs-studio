@@ -1,8 +1,13 @@
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
+
+import org.csstudio.nams.common.testhelper.ForTesting;
+
 
 public class DummyPruefliste extends Pruefliste {
 
-	DummyPruefliste(Regelwerkskennung regelwerkskennung) {
+	@Deprecated
+	@ForTesting
+	public DummyPruefliste(Regelwerkskennung regelwerkskennung) {
 		super(regelwerkskennung, null);
 	}
 

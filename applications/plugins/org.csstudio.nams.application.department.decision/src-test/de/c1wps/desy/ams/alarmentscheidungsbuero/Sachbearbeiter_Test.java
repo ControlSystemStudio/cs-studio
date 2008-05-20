@@ -6,7 +6,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.regelwerk.Pruefliste;
+import org.csstudio.nams.common.material.regelwerk.Regelwerk;
+import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
+import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.easymock.LogicalOperator;
@@ -18,16 +24,10 @@ import de.c1wps.desy.ams.AbstractObject_TestCase;
 import de.c1wps.desy.ams.allgemeines.Ablagefaehig;
 import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 import de.c1wps.desy.ams.allgemeines.Zwischenablagekorb;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerk;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerkskennung;
-import de.c1wps.desy.ams.allgemeines.regelwerk.StandardRegelwerk;
-import de.c1wps.desy.ams.allgemeines.regelwerk.WeiteresVersandVorgehen;
 
 public class Sachbearbeiter_Test extends
 		AbstractObject_TestCase<Sachbearbeiter> {

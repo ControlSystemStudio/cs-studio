@@ -1,16 +1,15 @@
 /**
  * 
  */
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
-
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 
 /**
  * @author Goesta Steen

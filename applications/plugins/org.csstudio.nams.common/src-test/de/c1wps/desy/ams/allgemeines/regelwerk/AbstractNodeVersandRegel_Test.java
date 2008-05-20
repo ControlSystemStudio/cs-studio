@@ -29,10 +29,15 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.regelwerk.AbstractNodeVersandRegel;
+import org.csstudio.nams.common.material.regelwerk.Pruefliste;
+import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
+import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 import org.junit.Test;
 
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 
 /**
  * TODO Add comment here.
@@ -48,19 +53,19 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.c1wps.desy.ams.allgemeines.regelwerk.AbstractNodeVersandRegel#addChild(de.c1wps.desy.ams.allgemeines.regelwerk.VersandRegel)}.
+	 * {@link org.csstudio.nams.common.material.regelwerk.AbstractNodeVersandRegel#addChild(org.csstudio.nams.common.material.regelwerk.VersandRegel)}.
 	 */
 	@Test
 	public void testAddChild() {
 		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
-			RegelErgebnis auswerten(Pruefliste ergebnisListe) {
+			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return null;
 			}
 		};
 		VersandRegel childRegel = new AbstractNodeVersandRegel() {
 			@Override
-			RegelErgebnis auswerten(Pruefliste ergebnisListe) {
+			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return null;
 			}
 		};
@@ -71,25 +76,25 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.c1wps.desy.ams.allgemeines.regelwerk.AbstractNodeVersandRegel#gibKinderErgebnisse(de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * {@link org.csstudio.nams.common.material.regelwerk.AbstractNodeVersandRegel#gibKinderErgebnisse(org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testGibKinderErgebnisse() {
 		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
-			RegelErgebnis auswerten(Pruefliste ergebnisListe) {
+			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return null;
 			}
 		};
 		VersandRegel childRegel = new AbstractNodeVersandRegel() {
 			@Override
-			RegelErgebnis auswerten(Pruefliste ergebnisListe) {
+			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return null;
 			}
 		};
 		AbstractNodeVersandRegel childRegel2 = new AbstractNodeVersandRegel() {
 			@Override
-			RegelErgebnis auswerten(Pruefliste ergebnisListe) {
+			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return null;
 			}
 		};
@@ -119,7 +124,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.c1wps.desy.ams.allgemeines.regelwerk.AbstractNodeVersandRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * {@link org.csstudio.nams.common.material.regelwerk.AbstractNodeVersandRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtErfolgreich() {
@@ -130,7 +135,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
-			RegelErgebnis auswerten(Pruefliste ergebnisListe) {
+			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};
@@ -191,7 +196,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.c1wps.desy.ams.allgemeines.regelwerk.AbstractNodeVersandRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * {@link org.csstudio.nams.common.material.regelwerk.AbstractNodeVersandRegel#pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufBestaetigungsUndAufhebungsNachrichtSchonEntschieden() {
@@ -202,7 +207,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
-			RegelErgebnis auswerten(Pruefliste ergebnisListe) {
+			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};
@@ -266,7 +271,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.c1wps.desy.ams.allgemeines.regelwerk.AbstractNodeVersandRegel#pruefeNachrichtAufTimeOuts(de.c1wps.desy.ams.allgemeines.AlarmNachricht, de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste, de.c1wps.desy.ams.allgemeines.Millisekunden)}.
+	 * {@link org.csstudio.nams.common.material.regelwerk.AbstractNodeVersandRegel#pruefeNachrichtAufTimeOuts(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste, org.csstudio.nams.common.fachwert.Millisekunden)}.
 	 */
 	@Test
 	public void testPruefeNachrichtAufTimeOuts() {
@@ -275,7 +280,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
-			RegelErgebnis auswerten(Pruefliste ergebnisListe) {
+			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};
@@ -350,7 +355,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 	/**
 	 * Test method for
-	 * {@link de.c1wps.desy.ams.allgemeines.regelwerk.AbstractNodeVersandRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht, de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * {@link org.csstudio.nams.common.material.regelwerk.AbstractNodeVersandRegel#pruefeNachrichtErstmalig(de.c1wps.desy.ams.allgemeines.AlarmNachricht, org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testPruefeNachrichtErstmalig() {
@@ -359,7 +364,7 @@ public class AbstractNodeVersandRegel_Test extends TestCase {
 
 		AbstractNodeVersandRegel parentRegel = new AbstractNodeVersandRegel() {
 			@Override
-			RegelErgebnis auswerten(Pruefliste ergebnisListe) {
+			public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 				return RegelErgebnis.ZUTREFFEND;
 			}
 		};

@@ -26,20 +26,20 @@ package de.c1wps.desy.ams.alarmentscheidungsbuero;
 
 import java.util.Iterator;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.regelwerk.Pruefliste;
+import org.csstudio.nams.common.material.regelwerk.Regelwerk;
+import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 
 import de.c1wps.desy.ams.allgemeines.Ablagefaehig;
 import de.c1wps.desy.ams.allgemeines.Arbeitsfaehig;
 import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 import de.c1wps.desy.ams.allgemeines.Zwischenablagekorb;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerk;
-import de.c1wps.desy.ams.allgemeines.regelwerk.WeiteresVersandVorgehen;
 import de.c1wps.desy.ams.allgemeines.wam.Automat;
 
 /**

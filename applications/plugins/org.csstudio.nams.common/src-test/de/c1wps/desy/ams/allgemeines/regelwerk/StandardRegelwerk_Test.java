@@ -1,11 +1,16 @@
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.regelwerk.DummyPruefliste;
+import org.csstudio.nams.common.material.regelwerk.Pruefliste;
+import org.csstudio.nams.common.material.regelwerk.Regelwerk;
+import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
+import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
+import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import de.c1wps.desy.ams.AbstractObject_TestCase;
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 
 public class StandardRegelwerk_Test extends
 		AbstractObject_TestCase<StandardRegelwerk> {

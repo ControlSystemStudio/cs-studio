@@ -1,8 +1,7 @@
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
-
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 
 
 public interface Regelwerk {

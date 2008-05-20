@@ -1,8 +1,8 @@
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
+import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
 import org.junit.Test;
-
-import de.c1wps.desy.ams.AbstractValue_TestCase;
 
 public class Regelwerkskennung_Test extends
 		AbstractValue_TestCase<Regelwerkskennung> {

@@ -7,7 +7,9 @@ Bundle-Activator: org.csstudio.nams.common.CommonActivator
 Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.common.contract,
+ org.csstudio.nams.common.fachwert,
  org.csstudio.nams.common.material,
+ org.csstudio.nams.common.material.regelwerk,
  org.csstudio.nams.common.plugin.utils,
  org.csstudio.nams.common.service,
  org.csstudio.nams.common.testhelper,

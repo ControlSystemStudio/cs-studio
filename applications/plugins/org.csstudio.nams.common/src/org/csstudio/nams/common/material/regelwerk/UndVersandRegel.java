@@ -1,6 +1,8 @@
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.Set;
+
+import org.csstudio.nams.common.testhelper.ForTesting;
 
 public class UndVersandRegel extends AbstractNodeVersandRegel {
 
@@ -8,7 +10,9 @@ public class UndVersandRegel extends AbstractNodeVersandRegel {
 		super(versandRegels);
 	}
 
-	RegelErgebnis auswerten(Pruefliste ergebnisListe) {
+	@Deprecated
+	@ForTesting
+	public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 		Set<RegelErgebnis> kinderErgebnisse = gibKinderErgebnisse(ergebnisListe);
 		if (kinderErgebnisse.contains(RegelErgebnis.NICHT_ZUTREFFEND))
 			return RegelErgebnis.NICHT_ZUTREFFEND;

@@ -15,24 +15,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
+import org.csstudio.nams.common.material.regelwerk.Regelwerk;
+import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
+import org.csstudio.nams.common.material.regelwerk.StringRegel;
+import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
+import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
+import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 
 import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
 import de.c1wps.desy.ams.alarmentscheidungsbuero.DokumentVerbraucherArbeiter;
 import de.c1wps.desy.ams.alarmentscheidungsbuero.DokumentenBearbeiter;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
-import de.c1wps.desy.ams.allgemeines.regelwerk.OderVersandRegel;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerk;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerkskennung;
-import de.c1wps.desy.ams.allgemeines.regelwerk.StandardRegelwerk;
-import de.c1wps.desy.ams.allgemeines.regelwerk.StringRegel;
-import de.c1wps.desy.ams.allgemeines.regelwerk.TimeBasedRegel;
-import de.c1wps.desy.ams.allgemeines.regelwerk.UndVersandRegel;
-import de.c1wps.desy.ams.allgemeines.regelwerk.VersandRegel;
 
 public class Testapp implements Runnable, ActionListener {
 

@@ -27,10 +27,15 @@ package de.c1wps.desy.ams.allgemeines.regelwerk;
 
 import junit.framework.TestCase;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.regelwerk.Pruefliste;
+import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
+import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
+import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 import org.junit.Test;
 
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 
 /**
  * TODO Add comment here.
@@ -45,7 +50,7 @@ import de.c1wps.desy.ams.allgemeines.Millisekunden;
 public class UndVersandRegel_Test extends TestCase {
 
 	/**
-	 * Test method for {@link de.c1wps.desy.ams.allgemeines.regelwerk.UndVersandRegel#auswerten(de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste)}.
+	 * Test method for {@link org.csstudio.nams.common.material.regelwerk.UndVersandRegel#auswerten(org.csstudio.nams.common.material.regelwerk.Pruefliste)}.
 	 */
 	@Test
 	public void testAuswerten() {

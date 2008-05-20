@@ -31,11 +31,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 
+import org.csstudio.nams.common.material.regelwerk.Regelwerk;
+
 import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
 import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerk;
 import de.c1wps.desy.ams.allgemeines.wam.Arbeitsumgebung;
 
 /**

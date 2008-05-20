@@ -1,6 +1,9 @@
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
-import de.c1wps.desy.ams.AbstractObject_TestCase;
+import org.csstudio.nams.common.material.regelwerk.Pruefliste;
+import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
+import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 
 public class Pruefliste_Test extends AbstractObject_TestCase<Pruefliste> {
 	public void testPruefliste() {

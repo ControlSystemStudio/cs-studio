@@ -4,9 +4,10 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
+
 import de.c1wps.desy.ams.allgemeines.Arbeitsfaehig;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 
 /**
  * Terminassitenzen informieren über zuvor zugereichte Termine.

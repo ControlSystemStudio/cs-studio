@@ -5,12 +5,12 @@ import java.net.UnknownHostException;
 import java.util.Date;
 
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.regelwerk.Pruefliste;
+import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
 import org.junit.Test;
 
 import de.c1wps.desy.ams.AbstractObject_TestCase;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste;
-import de.c1wps.desy.ams.allgemeines.regelwerk.Regelwerkskennung;
-import de.c1wps.desy.ams.allgemeines.regelwerk.StandardRegelwerk;
 
 public class Vorgangsmappe_Test extends AbstractObject_TestCase<Vorgangsmappe> {
 

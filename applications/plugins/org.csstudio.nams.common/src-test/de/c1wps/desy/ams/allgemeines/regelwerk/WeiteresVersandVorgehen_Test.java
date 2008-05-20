@@ -1,6 +1,7 @@
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
-import de.c1wps.desy.ams.AbstractObject_TestCase;
+import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
+import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 
 public class WeiteresVersandVorgehen_Test extends
 		AbstractObject_TestCase<WeiteresVersandVorgehen> /*

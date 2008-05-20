@@ -1,11 +1,11 @@
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
-
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
+import org.csstudio.nams.common.testhelper.ForTesting;
 
 public abstract class AbstractNodeVersandRegel implements VersandRegel {
 
@@ -16,7 +16,8 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 	}
 	
 	@Deprecated
-	AbstractNodeVersandRegel() {
+	@ForTesting
+	public AbstractNodeVersandRegel() {
 		
 	}
 	
@@ -33,13 +34,18 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 	// return kuerzesteWartezeit;
 	// }
 
-	Set<VersandRegel> children = new HashSet<VersandRegel>();
+	@Deprecated
+	@ForTesting
+	public Set<VersandRegel> children = new HashSet<VersandRegel>();
 
-	void addChild(VersandRegel child) {
+	@Deprecated
+	@ForTesting
+	public void addChild(VersandRegel child) {
 		children.add(child);
 	}
-
-	protected Set<RegelErgebnis> gibKinderErgebnisse(Pruefliste pruefliste) {
+	@Deprecated
+	@ForTesting
+	public Set<RegelErgebnis> gibKinderErgebnisse(Pruefliste pruefliste) {
 		Set<RegelErgebnis> ergebnis = new HashSet<RegelErgebnis>();
 
 		for (VersandRegel regel : children) {
@@ -55,7 +61,9 @@ public abstract class AbstractNodeVersandRegel implements VersandRegel {
 	 * @param ergebnisListe
 	 * @return
 	 */
-	abstract RegelErgebnis auswerten(Pruefliste ergebnisListe);
+	@Deprecated
+	@ForTesting
+	public abstract RegelErgebnis auswerten(Pruefliste ergebnisListe);
 
 	/**
 	 * 

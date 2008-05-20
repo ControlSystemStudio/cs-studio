@@ -1,5 +1,6 @@
 package de.c1wps.desy.ams.allgemeines;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.junit.Test;
 
 import de.c1wps.desy.ams.AbstractValue_TestCase;

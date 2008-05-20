@@ -22,11 +22,10 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
-package de.c1wps.desy.ams.allgemeines;
+package org.csstudio.nams.common.fachwert;
 
 import org.csstudio.nams.common.contract.Contract;
-
-import de.c1wps.desy.ams.allgemeines.wam.Fachwert;
+import org.csstudio.nams.common.wam.Fachwert;
 
 /**
  * Repräsentiert Millisekunden als Fachwert.

@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 
+import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.junit.Test;
 
 import de.c1wps.desy.ams.AbstractObject_TestCase;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
-import de.c1wps.desy.ams.allgemeines.Millisekunden;
 import de.c1wps.desy.ams.allgemeines.StandardAblagekorb;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 

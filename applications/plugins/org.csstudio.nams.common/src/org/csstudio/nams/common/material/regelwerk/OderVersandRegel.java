@@ -1,6 +1,8 @@
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
 import java.util.Set;
+
+import org.csstudio.nams.common.testhelper.ForTesting;
 
 public class OderVersandRegel extends AbstractNodeVersandRegel {
 
@@ -9,14 +11,17 @@ public class OderVersandRegel extends AbstractNodeVersandRegel {
 	}
 
 	@Deprecated
-	OderVersandRegel()
+	@ForTesting
+	public OderVersandRegel()
 	{
 		
 	}
 			
 	
 	@Override
-	RegelErgebnis auswerten(Pruefliste ergebnisListe) {
+	@ForTesting
+	@Deprecated
+	public RegelErgebnis auswerten(Pruefliste ergebnisListe) {
 		Set<RegelErgebnis> kinderErgebnisse = gibKinderErgebnisse(ergebnisListe);
 		if (kinderErgebnisse.contains(RegelErgebnis.ZUTREFFEND))
 			return RegelErgebnis.ZUTREFFEND;

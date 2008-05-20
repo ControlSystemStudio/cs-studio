@@ -1,4 +1,4 @@
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common.material.regelwerk;
 
 public enum RegelErgebnis {
 	ZUTREFFEND, NICHT_ZUTREFFEND, VIELLEICHT_ZUTREFFEND, NOCH_NICHT_GEPRUEFT;

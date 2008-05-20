@@ -26,8 +26,8 @@ package de.c1wps.desy.ams.allgemeines;
 
 import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 
-import de.c1wps.desy.ams.allgemeines.regelwerk.Pruefliste;
 import de.c1wps.desy.ams.allgemeines.wam.Material;
 
 @Material
