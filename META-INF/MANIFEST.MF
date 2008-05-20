@@ -4,16 +4,10 @@ Bundle-Name: Jdbc Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.jdbc;singleton:=true
 Bundle-Version: 1.0.1
 Bundle-Activator: org.csstudio.platform.libs.jdbc.JdbcPlugin
-Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.help,
- org.eclipse.help.appserver,
- org.eclipse.help.base,
- org.eclipse.help.ui,
- org.eclipse.help.webapp
+Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
 Bundle-ClassPath: libs/ojdbc14.jar,
+ libs/mysql-connector-java-5.0.4-bin.jar,
  .
 Export-Package: com.mysql.jdbc,
  com.mysql.jdbc.exceptions,
