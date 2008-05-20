@@ -8,5 +8,4 @@
             name="org.csstudio.logbook.sns.snslogbookfactory">
       </logbookfactory>
    </extension>
-
 </plugin>
