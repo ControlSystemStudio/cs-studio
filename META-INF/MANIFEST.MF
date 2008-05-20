@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jdbc Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.jdbc;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-Activator: org.csstudio.platform.libs.jdbc.JdbcPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -15,7 +15,10 @@ Require-Bundle: org.eclipse.ui,
 Eclipse-LazyStart: true
 Bundle-ClassPath: libs/ojdbc14.jar,
  .
-Export-Package: oracle.core.lmx,
+Export-Package: com.mysql.jdbc,
+ com.mysql.jdbc.exceptions,
+ com.mysql.jdbc.util,
+ oracle.core.lmx,
  oracle.core.lvf,
  oracle.jdbc,
  oracle.jdbc.connector,
@@ -41,4 +44,5 @@ Export-Package: oracle.core.lmx,
  oracle.security.o3logon,
  oracle.sql,
  oracle.sql.converter,
- org.csstudio.platform.libs.jdbc
+ org.csstudio.platform.libs.jdbc,
+ org.gjt.mm.mysql

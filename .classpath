@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="libs/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="libs/mysql-connector-java-5.0.4-bin.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
