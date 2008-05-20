@@ -17,19 +17,11 @@ import org.csstudio.nams.common.material.AlarmNachricht;
  */
 public class StringRegel implements VersandRegel {
 
-	private final Operator operator;
+	private final StringRegelOperator operator;
 	private final String compareString;
 	private final String narichtKey;
 
-	public enum Operator {
-		OPERATOR_TEXT_EQUAL, OPERATOR_TEXT_NOT_EQUAL,
-
-		OPERATOR_NUMERIC_LT, OPERATOR_NUMERIC_LT_EQUAL, OPERATOR_NUMERIC_EQUAL, OPERATOR_NUMERIC_GT_EQUAL, OPERATOR_NUMERIC_GT, OPERATOR_NUMERIC_NOT_EQUAL,
-
-		OPERATOR_TIME_BEFORE, OPERATOR_TIME_BEFORE_EQUAL, OPERATOR_TIME_EQUAL, OPERATOR_TIME_AFTER_EQUAL, OPERATOR_TIME_AFTER, OPERATOR_TIME_NOT_EQUAL
-	}
-
-	public StringRegel(Operator operator, String narichtKey,
+	public StringRegel(StringRegelOperator operator, String narichtKey,
 			String compareString) {
 		this.operator = operator;
 		this.narichtKey = narichtKey;

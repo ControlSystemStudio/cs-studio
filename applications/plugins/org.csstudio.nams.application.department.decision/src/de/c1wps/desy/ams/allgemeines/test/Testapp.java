@@ -21,6 +21,7 @@ import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
 import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
+import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.common.material.regelwerk.StringRegel;
 import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
 import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
@@ -123,22 +124,22 @@ public class Testapp implements Runnable, ActionListener {
 
 	private void initAlarmBuero() {
 
-		VersandRegel sofort1 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","sofort");
-		VersandRegel sofort2 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","sofort2");
-		VersandRegel sofort3 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "", "*bubu*");
+		VersandRegel sofort1 = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, "","sofort");
+		VersandRegel sofort2 = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, "","sofort2");
+		VersandRegel sofort3 = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, "", "*bubu*");
 		VersandRegel oder = new OderVersandRegel(new VersandRegel[] { sofort1,
 				sofort2, sofort3 });
 
-		VersandRegel aufhebung = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","stop");
-		VersandRegel bestaetigung = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","feuer");
-		VersandRegel ausloeser = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","*start*");
+		VersandRegel aufhebung = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, "","stop");
+		VersandRegel bestaetigung = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, "","feuer");
+		VersandRegel ausloeser = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, "","*start*");
 
 		VersandRegel timebasedRegel = new TimeBasedRegel(ausloeser, aufhebung,
 				bestaetigung, Millisekunden.valueOf(10000));
 		
-		VersandRegel aufhebung2 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","stop2");
-		VersandRegel bestaetigung2 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","feuer2");
-		VersandRegel ausloeser2 = new StringRegel(StringRegel.Operator.OPERATOR_TEXT_EQUAL, "","*start*");
+		VersandRegel aufhebung2 = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, "","stop2");
+		VersandRegel bestaetigung2 = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, "","feuer2");
+		VersandRegel ausloeser2 = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, "","*start*");
 
 		VersandRegel timebasedRegel2 = new TimeBasedRegel(ausloeser2, aufhebung2,
 				bestaetigung2, Millisekunden.valueOf(20000));

@@ -31,6 +31,8 @@ public class StandardRegelwerk implements Regelwerk {
 	private final Regelwerkskennung regelwerkskennung;
 	private final VersandRegel hauptRegel;
 
+
+	
 	// still in for testing purposes
 	@Deprecated
 	public StandardRegelwerk(Regelwerkskennung regelwerkskennung) {
@@ -41,6 +43,11 @@ public class StandardRegelwerk implements Regelwerk {
 			VersandRegel hauptRegel) {
 		this.regelwerkskennung = regelwerkskennung;
 		this.hauptRegel = hauptRegel;
+	}
+	
+	public StandardRegelwerk(VersandRegel hauptRegel){
+		this.hauptRegel = hauptRegel;
+		this.regelwerkskennung = Regelwerkskennung.valueOf();
 	}
 
 	/*

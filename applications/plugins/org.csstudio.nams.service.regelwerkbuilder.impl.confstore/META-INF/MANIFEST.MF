@@ -6,5 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.nams.service.regelwerkbuilder.impl.confstore.Activator
 Bundle-Vendor: C1 WPS
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.nams.service.regelwerkbuilder
+ org.csstudio.nams.service.regelwerkbuilder,
+ org.csstudio.nams.common,
+ org.csstudio.ams.configurationStore
 Eclipse-LazyStart: true
