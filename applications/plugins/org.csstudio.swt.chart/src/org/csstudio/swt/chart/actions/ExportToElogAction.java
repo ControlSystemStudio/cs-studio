@@ -99,7 +99,8 @@ public class ExportToElogAction extends Action
                 logbook = null;
             }
             // Ask for new user/pw info
-            promptForInfo();
+            if (!promptForInfo())
+               return; // cancelled
         }
         
         try
