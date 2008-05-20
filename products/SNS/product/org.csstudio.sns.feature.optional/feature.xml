@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.optional"
       label="Optional Features"
-      version="1.0.0">
+      version="1.0.10">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
