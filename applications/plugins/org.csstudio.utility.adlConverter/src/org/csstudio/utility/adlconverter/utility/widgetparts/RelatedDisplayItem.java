@@ -136,11 +136,11 @@ public class RelatedDisplayItem extends WidgetPart{
         if(_args!=null){
             Map<String, String> map = new HashMap<String, String>();
             String[] params = _args[0].split(",");//$NON-NLS-1$
-            String[] param = params[0].split("=");//$NON-NLS-1$
+//            String[] param = params[0].split("=");//$NON-NLS-1$
             for(int i=0;i<params.length;i++){
-                param = params[i].split("=");//$NON-NLS-1$
+                String[] param = params[i].split("=");//$NON-NLS-1$
                 if(param.length==2){
-                    map.put(param[0], param[1]);
+                    map.put(param[0].trim(), param[1].trim());
                 }else{
                     if(params[i].trim().length()>0){
                         CentralLogger.getInstance().warn(this, Messages.RelatedDisplayItem_Parameter_Error+params[i]);
