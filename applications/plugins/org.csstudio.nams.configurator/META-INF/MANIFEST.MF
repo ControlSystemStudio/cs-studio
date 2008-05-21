@@ -8,5 +8,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.ams.configurationStore,
  org.csstudio.nams.common,
- org.csstudio.ams.service.logging
+ org.csstudio.ams.service.logging,
+ org.eclipse.jface.databinding,
+ org.eclipse.core.databinding,
+ org.eclipse.core.databinding.beans
 Eclipse-LazyStart: true
