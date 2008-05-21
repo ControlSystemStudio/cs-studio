@@ -1,0 +1,5 @@
+package org.csstudio.nams.configurator.treeviewer.model;
+
+public class ConfigurationModelTest {
+
+}
