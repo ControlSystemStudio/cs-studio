@@ -27,4 +27,8 @@ public class ObservableBean {
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 		pcs.removePropertyChangeListener(listener);
 	}
+	
+	protected PropertyChangeSupport getPropertyChangeSupport() {
+		return pcs;
+	}
 }
