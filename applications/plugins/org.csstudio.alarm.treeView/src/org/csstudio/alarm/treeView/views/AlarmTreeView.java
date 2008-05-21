@@ -43,6 +43,7 @@ import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
+import org.csstudio.platform.ui.util.EditorUtil;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -214,16 +215,6 @@ public class AlarmTreeView extends ViewPart {
 	}
 	
 	/**
-	 * The persistent property key used on IFile resources to contain the
-	 * preferred editor ID to use.
-	 */
-	// Note: this is from org.eclipse.ui.ide.IDE, but seems to be used by
-	// non-IDE code as well. I don't know if this is officially documented
-	// anywhere.
-	private static final QualifiedName EDITOR_KEY = new QualifiedName(
-			"org.eclipse.ui.internal.registry.ResourceEditorRegistry", "EditorProperty");
-	
-	/**
 	 * This action opens the strip chart associated with the selected node.
 	 */
 	private class OpenStripChartAction extends Action {
@@ -242,102 +233,11 @@ public class AlarmTreeView extends ViewPart {
 				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 				IWorkbenchPage page = getSite().getPage();
 				try {
-					openEditor(page, file);
+					EditorUtil.openEditor(page, file);
 				} catch (PartInitException e) {
 					MessageDialog.openError(getSite().getShell(), "Alarm Tree",
 							e.getMessage());
 				}
-			}
-		}
-
-		/**
-		 * <p>
-		 * Opens an editor on the given file resource. This method will attempt
-		 * to resolve the editor based on content-type bindings as well as
-		 * traditional name/extension bindings.
-		 * </p>
-		 * 
-		 * <p>
-		 * If the page already has an editor open on the target object then that
-		 * editor is brought to front; otherwise, a new editor is opened. If
-		 * <code>activate == true</code> the editor will be activated.
-		 * </p>
-		 * 
-		 * @param page
-		 *            the page in which the editor will be opened.
-		 * @param input
-		 *            the editor input.
-		 * @throws PartInitException
-		 *             if the editor could not be initialized.
-		 * @see IWorkbenchPage#openEditor(org.eclipse.ui.IEditorInput, String)
-		 */
-		private void openEditor(IWorkbenchPage page, IFile input) throws PartInitException {
-			IEditorDescriptor editorDesc = getEditorDescriptor(input);
-			page.openEditor(new FileEditorInput(input), editorDesc.getId());
-		}
-
-		/**
-		 * Returns an editor descriptor appropriate for opening the given file
-		 * resource.
-		 * 
-		 * @param file
-		 *            the file.
-		 * @return an editor descriptor.
-		 * @throws PartInitException
-		 *             if no editor can be found.
-		 */
-		private IEditorDescriptor getEditorDescriptor(IFile file) throws PartInitException {
-			IEditorDescriptor editorDesc = getDefaultEditor(file);
-			if (editorDesc == null) {
-				throw new PartInitException("No editor found.");
-			}
-			return editorDesc;
-		}
-
-		/**
-		 * Returns the editor for the given file.
-		 * 
-		 * @param file
-		 *            the file.
-		 * @return the descriptor of the default editor, or <code>null</code>
-		 *         if not found.
-		 */
-		private IEditorDescriptor getDefaultEditor(IFile file) {
-			IEditorRegistry editorReg =
-					PlatformUI.getWorkbench().getEditorRegistry();
-			
-			// Try file specific editor.
-			try {
-				String editorId = file.getPersistentProperty(EDITOR_KEY);
-				if (editorId != null) {
-					IEditorDescriptor editorDesc = editorReg.findEditor(editorId);
-					if (editorDesc != null) {
-						return editorDesc;
-					}
-				}
-			} catch (CoreException e) {
-				// do nothing
-			}
-			
-			IContentType contentType = getContentType(file);
-			// Try lookup with filename
-			return editorReg.getDefaultEditor(file.getName(), contentType);
-		}
-
-		/**
-		 * Returns the content type for the given file.
-		 * 
-		 * @param file
-		 *            the file to test.
-		 * @return the content type, or <code>null</code> if it cannot be
-		 *         determined.
-		 */
-		private IContentType getContentType(IFile file) {
-			try {
-				IContentDescription contentDesc = file.getContentDescription();
-				return contentDesc == null ? null : contentDesc.getContentType();
-			} catch (CoreException e) {
-				return null;
 			}
 		}
 
