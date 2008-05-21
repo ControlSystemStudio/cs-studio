@@ -10,16 +10,14 @@ import org.csstudio.ams.configurationStoreService.knownTObjects.AggrFilterCondit
 import org.csstudio.ams.configurationStoreService.knownTObjects.AggrFilterTObject;
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionStringTObject;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
-import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
 import org.csstudio.nams.common.material.regelwerk.StringRegel;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
-import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 
 public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
-	@Override
+
 	public List<Regelwerk> gibAlleRegelwerke() {
 		// hole alle Filter TObject aus dem confstore
 
