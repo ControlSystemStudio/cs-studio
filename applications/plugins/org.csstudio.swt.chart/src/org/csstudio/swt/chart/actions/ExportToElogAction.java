@@ -7,6 +7,10 @@ import org.csstudio.logbook.LogbookFactory;
 import org.csstudio.swt.chart.Activator;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.Messages;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
@@ -19,7 +23,7 @@ public class ExportToElogAction extends Action
 {
     final private Chart chart;
     final private String application;
-    static ExportToElogInfo info;
+    private static ExportToElogInfo info;
     
     /** Construct action that exports chart to elog.
      *  @param chart Chart to act on
@@ -37,9 +41,28 @@ public class ExportToElogAction extends Action
     @Override
     public void run()
     {
+        // Perform elog entry in background (as far as that's possible)
+        final Job job = new Job(Messages.ELog_ActionName)
+        {
+            @Override
+            protected IStatus run(final IProgressMonitor monitor)
+            {
+                perform_background_task(monitor);
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
+    }
+
+    /** Make elog entry, run in background job */
+    private void perform_background_task(final IProgressMonitor monitor)
+    {
+        monitor.beginTask(Messages.ELog_ActionName, 3);
+        // Get info
         if (!promptForInfo())
             return;
-        // Create snapshot file
+        monitor.worked(1);
+        // Get name for snapshot file
         final File tmp_file;
         try
         {
@@ -52,17 +75,25 @@ public class ExportToElogAction extends Action
             return;
         }
         final String filename = tmp_file.getAbsolutePath();
-        try
+        // Create snapshot file in UI thread
+        chart.getDisplay().syncExec(new Runnable()
         {
-            chart.createSnapshotFile(filename);
-        }
-        catch (Exception ex)
-        {
-            Activator.getLogger().error(
-                    "Cannot create snapshot " + filename, ex); //$NON-NLS-1$
-            return;
-        }
-        // Add to elog
+            public void run()
+            {
+                try
+                {
+                    chart.createSnapshotFile(filename);
+                }
+                catch (Exception ex)
+                {
+                    Activator.getLogger().error(
+                            "Cannot create snapshot " + filename, ex); //$NON-NLS-1$
+                    return;
+                }
+            }
+        });        
+        monitor.worked(1);
+        // Write snapshot to elog
         makeElogEntry(filename);
         // Remove snapshot file
         try
@@ -73,6 +104,7 @@ public class ExportToElogAction extends Action
         {
             // NOP
         }
+        monitor.done();
     }
 
     /** Try to add image file to elog.
@@ -81,26 +113,31 @@ public class ExportToElogAction extends Action
      */
     private void makeElogEntry(final String image_filename)
     {
-        ILogbook logbook = null;
-        while (logbook == null)
+        ILogbook logbook;
+        while (true)
         {
             try
             {
                 logbook =
                     LogbookFactory.connect(info.getUser(), info.getPassword());
-                // If we get here, we connected
+                // If we get here, connection was successful
                 break;
             }
-            catch (Exception ex)
-            {
-                MessageDialog.openError(chart.getShell(),
-                    Messages.ELog_ConnectError,
-                    NLS.bind(Messages.ELog_ConnectErrorMessage, ex.getMessage()));
-                logbook = null;
+            catch (final Exception ex)
+            {   // Display error in UI thread
+                chart.getDisplay().syncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        MessageDialog.openError(chart.getShell(),
+                                Messages.ELog_ConnectError,
+                                NLS.bind(Messages.ELog_ConnectErrorMessage,
+                                         ex.getMessage()));
+                    }
+                });
             }
-            // Ask for new user/pw info
             if (!promptForInfo())
-               return; // cancelled
+               return; // canceled
         }
         
         try
@@ -117,6 +154,10 @@ public class ExportToElogAction extends Action
         }
     }
 
+    /** Prompt for entry info: user, password, title, ...
+     *  Called from non-UI thread, blocks until entry made
+     *  @return <code>true</code> if OK, <code>false</code> if canceled
+     */
     @SuppressWarnings("nls")
     private boolean promptForInfo()
     {
@@ -125,13 +166,18 @@ public class ExportToElogAction extends Action
             info = new ExportToElogInfo("", "",
                     NLS.bind(Messages.ELog_TitleFormat, application),
                     NLS.bind(Messages.ELog_BodyFormat, application));
-        final Shell shell = chart.getShell();
-        final ExportToElogDialog dialog = new ExportToElogDialog(shell, info);
-        if (dialog.open() == ExportToElogDialog.OK)
+        chart.getDisplay().syncExec(new Runnable()
         {
-            info = dialog.getInfo();
-            return true;
-        }
-        return false;
+            public void run()
+            {
+                final Shell shell = chart.getShell();
+                final ExportToElogDialog dialog = new ExportToElogDialog(shell, info);
+                if (dialog.open() == ExportToElogDialog.OK)
+                    info = dialog.getInfo();
+                else
+                    info = null;
+            }
+        });
+        return info != null;
     }
 }
