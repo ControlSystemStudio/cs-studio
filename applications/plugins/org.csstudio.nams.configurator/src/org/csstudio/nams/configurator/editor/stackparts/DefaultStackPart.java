@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
+import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;

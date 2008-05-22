@@ -1,6 +1,5 @@
 package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
-import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
 public class FilterbedingungBean extends AbstractConfigurationBean {
 	@Override

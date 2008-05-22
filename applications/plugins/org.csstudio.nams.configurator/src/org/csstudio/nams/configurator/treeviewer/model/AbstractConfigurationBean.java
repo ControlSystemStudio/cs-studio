@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.treeviewer.model;
 
-public interface ConfigurationBean {
+public abstract class AbstractConfigurationBean
+		extends AbstractObservableBean implements ConfigurationBean {
 
 	/**
 	 * Liefertm den bezeichnenden Namen, der in einer UI für diese, konkrete

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 
 public class FilterbedingungNode implements IConfigurationNode {
 
@@ -19,8 +19,8 @@ public class FilterbedingungNode implements IConfigurationNode {
 		return name;
 	}
 
-	public Collection<AbstractConfigurationBean> getChildren() {
-		Collection<AbstractConfigurationBean> filterbedingungBeans = new ArrayList<AbstractConfigurationBean>();
+	public Collection<ConfigurationBean> getChildren() {
+		Collection<ConfigurationBean> filterbedingungBeans = new ArrayList<ConfigurationBean>();
 
 		/*
 		 * Filter AlarmbearbeiterBeans heraus

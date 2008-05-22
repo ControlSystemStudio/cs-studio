@@ -1,9 +1,11 @@
-package org.csstudio.nams.configurator.treeviewer.model;
+package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public abstract class AbstractObservableBean {
+import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
+
+abstract class AbstractObservableBean implements ObservableBean {
 
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 

@@ -2,7 +2,6 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
 public class AlarmbearbeiterBean extends AbstractConfigurationBean {
 

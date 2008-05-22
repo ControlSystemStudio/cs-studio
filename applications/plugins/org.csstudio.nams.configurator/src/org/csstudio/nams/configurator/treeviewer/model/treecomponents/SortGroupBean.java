@@ -2,7 +2,6 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.util.Collection;
 
-import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
 /**
  * Die {@link SortGroupBean} enthält Kider, die im TreeViewer des Configurators
