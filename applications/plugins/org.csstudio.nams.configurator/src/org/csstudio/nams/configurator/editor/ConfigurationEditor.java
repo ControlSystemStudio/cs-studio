@@ -7,6 +7,7 @@ import org.csstudio.nams.configurator.editor.stackparts.AbstractStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.DefaultStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.TopicStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.UserStackPart;
+import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -19,6 +20,11 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
+/**
+ * This Editor will create a working copy of the bean to edit. On save is will
+ * transfer all changes to the original bean - in other words: saving means to
+ * change the given model bean.
+ */
 public class ConfigurationEditor extends EditorPart implements
 		DirtyFlagProvider {
 
@@ -34,13 +40,15 @@ public class ConfigurationEditor extends EditorPart implements
 
 	private DefaultStackPart _defaultStackPart;
 
+	private ConfigurationBean<?> _originalModel;
+
 	public ConfigurationEditor() {
 		_stackParts = new ArrayList<AbstractStackPart>();
 	}
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-
+		_showedStackPart.save(_originalModel);
 	}
 
 	@Override
@@ -54,8 +62,9 @@ public class ConfigurationEditor extends EditorPart implements
 		this.setSite(site);
 		this.setInput(input);
 		_input = (ConfigurationEditorInput) input;
+		_originalModel = _input.getBean();
 		if (_defaultStackPart != null) {
-			this.showCorrespondingStackPart(_input.getBean());
+			this.showCorrespondingStackPart(_originalModel);
 		}
 	}
 

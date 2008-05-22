@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
 public class SortgroupNode {
 
@@ -25,8 +25,8 @@ public class SortgroupNode {
 		return groupType; 
 	}
 
-	public Collection<ConfigurationBean> getChildren() {
-		Collection<ConfigurationBean> filterBeans = new ArrayList<ConfigurationBean>();
+	public Collection<AbstractConfigurationBean> getChildren() {
+		Collection<AbstractConfigurationBean> filterBeans = new ArrayList<AbstractConfigurationBean>();
 
 		/*
 		 * Filter AlarmbearbeiterBeans heraus

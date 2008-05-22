@@ -2,9 +2,9 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
-public class FilterBean extends ConfigurationBean {
+public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
 	public static enum FilterBeanPropertyNames {
 		filterID, name, defaultMessage
@@ -56,5 +56,11 @@ public class FilterBean extends ConfigurationBean {
 	@Override
 	public String getDisplayName() {
 		return getName() != null ? getName() : "(ohne Namen)";
+	}
+
+	@Override
+	public void copyStateOf(FilterBean otherBean) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("not implemented yet.");
 	}
 }

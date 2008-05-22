@@ -2,7 +2,7 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.util.Collection;
 
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
 /**
  * Die {@link SortGroupBean} enthält Kider, die im TreeViewer des Configurators
@@ -13,7 +13,7 @@ import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
  * @author Eugen Reiswich
  * 
  */
-public class SortGroupBean extends ConfigurationBean {
+public class SortGroupBean extends AbstractConfigurationBean<SortGroupBean> {
 
 	private String groupName;
 
@@ -73,5 +73,11 @@ public class SortGroupBean extends ConfigurationBean {
 	@Override
 	public String getDisplayName() {
 		return getGroupName();
+	}
+
+	@Override
+	public void copyStateOf(SortGroupBean otherBean) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("not implemented yet.");
 	}
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
 public class AlarmtopicNode implements IConfigurationNode {
 
@@ -19,8 +19,8 @@ public class AlarmtopicNode implements IConfigurationNode {
 		return name;
 	}
 
-	public Collection<ConfigurationBean> getChildren() {
-		Collection<ConfigurationBean> alarmtopicBeans = new ArrayList<ConfigurationBean>();
+	public Collection<AbstractConfigurationBean> getChildren() {
+		Collection<AbstractConfigurationBean> alarmtopicBeans = new ArrayList<AbstractConfigurationBean>();
 
 		for (SortGroupBean bean : groupBeans.values()) {
 			if (!bean.getAlarmtopicBeans().isEmpty()) {

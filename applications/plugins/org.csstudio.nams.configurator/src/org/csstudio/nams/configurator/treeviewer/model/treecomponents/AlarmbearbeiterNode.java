@@ -3,7 +3,7 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 import java.util.Collection;
 import java.util.Map;
 
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
 public class AlarmbearbeiterNode implements IConfigurationNode {
 
@@ -24,7 +24,7 @@ public class AlarmbearbeiterNode implements IConfigurationNode {
 		return name;
 	}
 
-	public Collection<ConfigurationBean> getChildren() {
+	public Collection<AbstractConfigurationBean> getChildren() {
 		return this.sortgroupNode.getChildren();
 	}
 

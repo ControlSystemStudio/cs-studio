@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
+import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -12,12 +13,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public abstract class AbstractStackPart {
+public abstract class AbstractStackPart<ConfigurationType extends ConfigurationBean<ConfigurationType>> {
 	
 	protected final int NUM_COLUMNS;
 	protected final int MIN_WIDTH = 300;
 	private Class<? extends ConfigurationBean> _associatedBean;
 	private DirtyFlagProvider _dirtyFlagProvider;
+	private ConfigurationType bean;
 	
 	public AbstractStackPart(DirtyFlagProvider flagProvider, Class<? extends ConfigurationBean> associatedBean, int numColumns) {
 		_dirtyFlagProvider = flagProvider;
@@ -27,6 +29,11 @@ public abstract class AbstractStackPart {
 	
 	protected DirtyFlagProvider getDirtyFlagProvider() {
 		return _dirtyFlagProvider;
+	}
+	
+	public void editConfiguration(ConfigurationType bean) {
+		this.bean = bean;
+		
 	}
 	
 	protected Text createTextEntry(Composite parent, String labeltext, boolean editable) {
@@ -83,5 +90,9 @@ public abstract class AbstractStackPart {
 	}
 
 	public abstract boolean isDirty();
+
+	public void save(ConfigurationType original) {
+		original.copyStateOf(bean);
+	}
 
 }

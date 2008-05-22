@@ -2,11 +2,11 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.util.Collection;
 
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
 public interface IConfigurationNode {
 
-	public Collection<ConfigurationBean> getChildren();
+	public Collection<AbstractConfigurationBean> getChildren();
 
 	public String getName();
 
