@@ -119,24 +119,27 @@ public class RelatedDisplayItem extends WidgetPart{
         if(actionData==null){
             actionData = new ActionData();
         }
+        
+        // new Open Shell Action
         OpenDisplayWidgetAction action = (OpenDisplayWidgetAction) ActionType.OPEN_SHELL
         .getActionFactory().createWidgetAction();
         
         if(_label!=null){
-            //Set the Resource
             action.getProperty(OpenDisplayWidgetAction.PROP_DESCRIPTION)
-            .setPropertyValue(_label);
+            .setPropertyValue(_label.replaceAll("\"","")); //$NON-NLS-1$ //$NON-NLS-2$
         }
+        
+        // Set the Resource
         if(_name!=null){
             IPath path = new Path(_path);
             path = path.append(_name);
             action.getProperty(OpenDisplayWidgetAction.PROP_RESOURCE)
             .setPropertyValue(path);
         }
+        
         if(_args!=null){
             Map<String, String> map = new HashMap<String, String>();
             String[] params = _args[0].split(",");//$NON-NLS-1$
-//            String[] param = params[0].split("=");//$NON-NLS-1$
             for(int i=0;i<params.length;i++){
                 String[] param = params[i].split("=");//$NON-NLS-1$
                 if(param.length==2){

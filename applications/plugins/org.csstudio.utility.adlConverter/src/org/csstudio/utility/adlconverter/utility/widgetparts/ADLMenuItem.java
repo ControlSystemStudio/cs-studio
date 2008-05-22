@@ -120,38 +120,55 @@ public class ADLMenuItem extends WidgetPart{
      */
     @Override
     final void generateElements(){
-        ActionData actionData = new ActionData();
         if(_type.equals("\"New Display\"")){ //$NON-NLS-1$
+            ActionData actionData = _widgetModel.getActionData();
+            if(actionData==null){
+                actionData = new ActionData();
+            }
+            
             // new Open Shell Action
             OpenDisplayWidgetAction action = (OpenDisplayWidgetAction) ActionType.OPEN_SHELL
             .getActionFactory().createWidgetAction();
             
-            //Set the Resource
-            IPath path = new Path(_path);
-            path = path.append(_command.replaceAll("\"", "").replace(".adl", ".css-sds"));
-            action.getProperty(OpenDisplayWidgetAction.PROP_RESOURCE)
-            .setPropertyValue(path);//TODO: set the correct Path //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            actionData.addAction(action);
-
-//            _actionAttribut.addContent(propertyAttribut);
-            
-            String[] maps = _args.split(","); // TODO: es werde teilweise mehrere Argumente über geben.  Momenatan wird aber nur das erste ausgewertet. //$NON-NLS-1$
-            String[] map = maps[0].split("="); //$NON-NLS-1$
-            if(map.length==2){
-                Map<String, String> test = new HashMap<String,String>();
-                test.put("param", map[1]); //$NON-NLS-1$ //TODO:param
-                // Set the aliases
-                action.getProperty(OpenDisplayWidgetAction.PROP_ALIASES)
-                .setPropertyValue(test);
-            } else if(map.length==1){
-                //TODO: was ist das für ein parameter? dateiendung = stc.
-            } else{
-                CentralLogger.getInstance().warn(this,"Ungültige länge"); //$NON-NLS-1$
+            if(_label!=null){
+                action.getProperty(OpenDisplayWidgetAction.PROP_DESCRIPTION)
+                .setPropertyValue(_label.replaceAll("\"","")); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            action.getProperty(OpenDisplayWidgetAction.PROP_DESCRIPTION)
-            .setPropertyValue(_label.replaceAll("\"","")); //$NON-NLS-1$ //$NON-NLS-2$
 
+            // Set the Resource
+            if(_path!=null){
+                IPath path = new Path(_path);
+                path = path.append(_command.replaceAll("\"", "").replace(".adl", ".css-sds")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                action.getProperty(OpenDisplayWidgetAction.PROP_RESOURCE)
+                .setPropertyValue(path);//TODO: set the correct Path 
+                actionData.addAction(action);
+            }
+
+            if(_args!=null){  
+                Map<String, String> map = new HashMap<String, String>();            
+                String[] params = _args.split(","); // TODO: es werde teilweise mehrere Argumente über geben.  Momenatan wird aber nur das erste ausgewertet. //$NON-NLS-1$
+                // copierte art
+                for(int i=0;i<params.length;i++){
+                    String[] param = params[i].split("=");//$NON-NLS-1$
+                    if(param.length==2){
+                        map.put(param[0].trim(), param[1].trim());
+                    }else{
+                        if(params[i].trim().length()>0){
+                            CentralLogger.getInstance().warn(this, Messages.RelatedDisplayItem_Parameter_Error+params[i]);
+                        }
+                    }
+                }
+                
+                action.getProperty(OpenDisplayWidgetAction.PROP_ALIASES)
+                .setPropertyValue(map);
+            }
+            actionData.addAction(action);
+            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, actionData);            
         }else if(_type.equals("\"System script\"")){ //$NON-NLS-1$
+            ActionData actionData = _widgetModel.getActionData();
+            if(actionData==null){
+                actionData = new ActionData();
+            }
             CommitValueWidgetAction action = (CommitValueWidgetAction) ActionType.COMMIT_VALUE
             .getActionFactory().createWidgetAction();
 
@@ -162,9 +179,9 @@ public class ADLMenuItem extends WidgetPart{
             action.getProperty(CommitValueWidgetAction.PROP_DESCRIPTION)
             .setPropertyValue(new Path(_label.replaceAll("\"",""))); //$NON-NLS-1$ //$NON-NLS-2$
             actionData.addAction(action);
-
+            _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, actionData);
         }
         
-        _widgetModel.setPropertyValue(AbstractWidgetModel.PROP_ACTIONDATA, actionData);
+        
     }
 }
