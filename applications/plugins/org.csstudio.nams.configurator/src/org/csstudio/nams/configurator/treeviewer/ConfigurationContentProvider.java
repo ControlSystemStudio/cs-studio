@@ -1,5 +1,7 @@
 package org.csstudio.nams.configurator.treeviewer;
 
+import java.util.List;
+
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortGroupBean;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -31,17 +33,19 @@ public class ConfigurationContentProvider implements ITreeContentProvider {
 	}
 
 	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof IConfigurationNode) {
-			// TODO forstsetzen
-//			if (!(inputElement instanceof IConfigurationNode)
-//					|| ((IConfigurationNode) inputElement).getCategory().equals(
-//							Categories.ROOT)) {
-//				System.out
-//						.println("ConfigurationContentProvider.getElements() WARNING: no CategoryNode for ROOT found");
-//			}
-			return ((IConfigurationNode) inputElement).getChildren().toArray();
-		}
-		return null;
+		return ((List)inputElement).toArray();
+		// if (inputElement instanceof IConfigurationNode) {
+		// // TODO forstsetzen
+		// // if (!(inputElement instanceof IConfigurationNode)
+		// // || ((IConfigurationNode) inputElement).getCategory().equals(
+		// // Categories.ROOT)) {
+		// // System.out
+		// // .println("ConfigurationContentProvider.getElements() WARNING: no
+		// CategoryNode for ROOT found");
+		// // }
+		// return ((IConfigurationNode) inputElement).getChildren().toArray();
+		// }
+		//		return null;
 	}
 
 	public void dispose() {

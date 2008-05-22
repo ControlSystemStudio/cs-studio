@@ -1,10 +1,13 @@
 package org.csstudio.nams.configurator.treeviewer;
 
+import java.util.ArrayList;
+
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditingStoreService;
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
 import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.configurator.treeviewer.actions.NewEntryAction;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortGroupBean;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -47,7 +50,8 @@ public class ConfigurationTreeView extends ViewPart {
 	 */
 	public ConfigurationTreeView() {
 		// TODO: hier sollten Gruppen übergeben werden
-		this.configurationModel = new ConfigurationModel(null);
+		this.configurationModel = new ConfigurationModel(
+				new ArrayList<SortGroupBean>());
 	}
 
 	/**
@@ -156,12 +160,12 @@ public class ConfigurationTreeView extends ViewPart {
 
 	public static void staticInjectEditingStoreService(
 			ConfigurationEditingStoreService editingStoreService) {
-				ConfigurationTreeView.editingStoreService = editingStoreService;
+		ConfigurationTreeView.editingStoreService = editingStoreService;
 	}
 
 	public static void staticInjectStoreService(
 			ConfigurationStoreService configurationService) {
-				ConfigurationTreeView.configurationService = configurationService;
+		ConfigurationTreeView.configurationService = configurationService;
 	}
 
 	public static void staticInjectLogger(Logger logger) {
