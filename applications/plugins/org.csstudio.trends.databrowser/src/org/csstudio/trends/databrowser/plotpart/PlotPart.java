@@ -2,9 +2,22 @@ package org.csstudio.trends.databrowser.plotpart;
 
 import java.io.InputStream;
 
+import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.InteractiveChart;
+import org.csstudio.swt.chart.actions.ExportToElogAction;
+import org.csstudio.swt.chart.actions.PrintCurrentImageAction;
+import org.csstudio.swt.chart.actions.RemoveMarkersAction;
+import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
+import org.csstudio.swt.chart.actions.SaveCurrentImageAction;
+import org.csstudio.swt.chart.actions.ShowButtonBarAction;
 import org.csstudio.trends.databrowser.model.Model;
+import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
@@ -81,6 +94,50 @@ public class PlotPart
         gui = new BrowserUI(model, parent, 0);
         controller = new Controller(model, gui, allow_drop);
     }
+    
+    private Action remove_markers_action;
+    private RemoveSelectedMarkersAction remove_marker_action;
+
+    /** Add plot actions that are common to editor and view:
+     *  Button bar, Markers, ...
+     */
+    public void addContextMenuPlotActions(final MenuManager context_menu)
+    {
+        final InteractiveChart ichart = getInteractiveChart();
+        final Chart chart = ichart.getChart();
+        remove_markers_action = new RemoveMarkersAction(chart);
+        remove_marker_action = new RemoveSelectedMarkersAction(chart);
+        context_menu.add(new ShowButtonBarAction(ichart));
+        context_menu.add(remove_markers_action);
+        context_menu.add(remove_marker_action);
+        
+        context_menu.addMenuListener(new IMenuListener()
+        {
+            public void menuAboutToShow(IMenuManager manager)
+            {
+                remove_marker_action.updateEnablement();
+            }
+        });
+    }
+
+    /** Add export actions that are common to editor and view:
+     *  To file, printer, logbook, ...
+     */
+    public void addContextMenuExportActions(final MenuManager context_menu)
+    {
+        final InteractiveChart ichart = getInteractiveChart();
+        final Chart chart = ichart.getChart();
+
+        context_menu.add(new Separator());
+        context_menu.add(new SaveCurrentImageAction(chart));
+        context_menu.add(new PrintCurrentImageAction(chart));
+        if (Preferences.getShowElogExportAction())
+            context_menu.add(new ExportToElogAction(chart,
+                    org.csstudio.trends.databrowser.Messages.DataBrowser));
+
+        
+    }
+
     
     /** @see IWorkbenchPart#setFocus */
     public void setFocus()

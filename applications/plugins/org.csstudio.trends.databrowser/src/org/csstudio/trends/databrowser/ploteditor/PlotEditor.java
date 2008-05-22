@@ -3,13 +3,6 @@ package org.csstudio.trends.databrowser.ploteditor;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.csstudio.swt.chart.Chart;
-import org.csstudio.swt.chart.actions.ExportToElogAction;
-import org.csstudio.swt.chart.actions.PrintCurrentImageAction;
-import org.csstudio.swt.chart.actions.RemoveMarkersAction;
-import org.csstudio.swt.chart.actions.RemoveSelectedMarkersAction;
-import org.csstudio.swt.chart.actions.SaveCurrentImageAction;
-import org.csstudio.swt.chart.actions.ShowButtonBarAction;
 import org.csstudio.trends.databrowser.Perspective;
 import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.archiveview.ArchiveView;
@@ -21,7 +14,6 @@ import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.plotpart.AddFormulaAction;
 import org.csstudio.trends.databrowser.plotpart.AddPVAction;
 import org.csstudio.trends.databrowser.plotpart.PlotPart;
-import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.trends.databrowser.sampleview.SampleView;
 import org.csstudio.trends.databrowser.waveformview.WaveformView;
 import org.csstudio.util.editor.EmptyEditorInput;
@@ -59,16 +51,6 @@ public class PlotEditor extends EditorPart
     public static final String ID = PlotEditor.class.getName();
     
     private final PlotPart plot_part = new PlotPart();
-    private Action remove_markers_action;
-    private RemoveSelectedMarkersAction remove_marker_action;
-    private Action add_pv_action, add_formula_action;
-    private Action config_action, archive_action, sample_action;
-    private Action waveform_action, export_action;
-    private Action button_bar_action;
-    private Action save_current_image_action;
-    private Action print_current_image_action;
-    private Action elog_current_image_action;
-    private Action view_action, perspective_action;
     private boolean is_dirty = false;
     /** In case of a model init (load) problem, we won't get to register
      *  the model listener, and hence we shouldn't remove it in dispose().
@@ -113,8 +95,6 @@ public class PlotEditor extends EditorPart
         public void entryRemoved(IModelItem removed_item) 
         {   entriesChanged();  }
     };
-
-    private MenuManager context_menu;
 
     /** Create a new, empty editor, not attached to a file.
      *  @return Returns the new editor or <code>null</code>.
@@ -267,7 +247,6 @@ public class PlotEditor extends EditorPart
     public void createPartControl(Composite parent)
     {
         plot_part.createPartControl(parent, true);
-        createActions();
         createContextMenu();
         updateTitle();
     }
@@ -300,57 +279,30 @@ public class PlotEditor extends EditorPart
         setTitleToolTip(input.getToolTipText());
     }
 
-    /** Create all actions. */
-    private void createActions()
-    {
-        final Chart chart = plot_part.getInteractiveChart().getChart();
-        button_bar_action = new ShowButtonBarAction(plot_part.getInteractiveChart());
-        save_current_image_action = new SaveCurrentImageAction(chart);
-        print_current_image_action = new PrintCurrentImageAction(chart);
-        if (Preferences.getShowElogExportAction())
-            elog_current_image_action = new ExportToElogAction(chart,
-                    org.csstudio.trends.databrowser.Messages.DataBrowser);
-        else
-            elog_current_image_action = null;
-        remove_markers_action = new RemoveMarkersAction(chart);
-        remove_marker_action = new RemoveSelectedMarkersAction(chart);
-        add_pv_action = new AddPVAction(plot_part.getModel());
-        add_formula_action = new AddFormulaAction(chart.getShell(), plot_part.getModel());
-        config_action = new OpenViewAction(this, Messages.OpenConfigView, ConfigView.ID);
-        archive_action = new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID);
-        sample_action = new OpenViewAction(this, Messages.OpenSampleView, SampleView.ID);
-        waveform_action = new OpenViewAction(this, Messages.OpenWaveformView,
-                                            "icons/wavesample.gif", //$NON-NLS-1$
-                                             WaveformView.ID);
-        export_action = new OpenViewAction(this, Messages.OpenExportView,
-                                           "icons/export.gif", ExportView.ID); //$NON-NLS-1$
-        view_action = new OpenPlotEditorAsViewAction(this);
-        perspective_action = new OpenPerspectiveAction(Messages.OpenPerspective, Perspective.ID);
-    }
-
     /** Create and connect the context menu. */
     private void createContextMenu()
     {
-        context_menu = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-        context_menu.add(button_bar_action);
-        context_menu.add(remove_markers_action);
-        context_menu.add(remove_marker_action);
-        context_menu.add(add_pv_action);
-        context_menu.add(add_formula_action);
+        final Control ctl = plot_part.getInteractiveChart().getChart();
+        final MenuManager context_menu = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        plot_part.addContextMenuPlotActions(context_menu);
+        context_menu.add(new AddPVAction(plot_part.getModel()));
+        context_menu.add(new AddFormulaAction(ctl.getShell(), plot_part.getModel()));
+        
         context_menu.add(new Separator());
-        context_menu.add(config_action);
-        context_menu.add(archive_action);
-        context_menu.add(sample_action);
-        context_menu.add(export_action);
-        context_menu.add(waveform_action);
+        context_menu.add(new OpenViewAction(this, Messages.OpenConfigView, ConfigView.ID));
+        context_menu.add(new OpenViewAction(this, Messages.OpenArchiveView, ArchiveView.ID));
+        context_menu.add(new OpenViewAction(this, Messages.OpenSampleView, SampleView.ID));
+        context_menu.add(new OpenViewAction(this, Messages.OpenExportView,
+                "icons/export.gif", ExportView.ID)); //$NON-NLS-1$
+        context_menu.add(new OpenViewAction(this, Messages.OpenWaveformView,
+                "icons/wavesample.gif", //$NON-NLS-1$
+                WaveformView.ID));
+        plot_part.addContextMenuExportActions(context_menu);
+        
         context_menu.add(new Separator());
-        context_menu.add(save_current_image_action);
-        context_menu.add(print_current_image_action);
-        if (elog_current_image_action != null)
-            context_menu.add(elog_current_image_action);
-        context_menu.add(new Separator());
+        final Action view_action = new OpenPlotEditorAsViewAction(this);
         context_menu.add(view_action);
-        context_menu.add(perspective_action);
+        context_menu.add(new OpenPerspectiveAction(Messages.OpenPerspective, Perspective.ID));
         context_menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
         context_menu.addMenuListener(new IMenuListener()
@@ -358,11 +310,9 @@ public class PlotEditor extends EditorPart
             public void menuAboutToShow(IMenuManager manager)
             {
                 view_action.setEnabled(getEditorInputFile() != null);
-                remove_marker_action.updateEnablement();
             }
         });
         
-        Control ctl = plot_part.getInteractiveChart().getChart();
         Menu menu = context_menu.createContextMenu(ctl);
         ctl.setMenu(menu);
     }
