@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import org.csstudio.nams.configurator.editor.ConfigurationEditor;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
-import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeitergruppenBean;
@@ -45,7 +45,7 @@ public class NewEntryAction extends Action {
 				IConfigurationNode selectedNode = (IConfigurationNode) selection
 						.getFirstElement();
 
-				ObservableBean newElement = null;
+				ConfigurationBean newElement = null;
 
 				/*
 				 * prüfe, welches Element neu angelegt werden soll

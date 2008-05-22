@@ -2,9 +2,9 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 
-public class AlarmbearbeitergruppenBean extends ObservableBean {
+public class AlarmbearbeitergruppenBean extends ConfigurationBean {
 
 	public static enum AlarmbearbeitergruppenBeanPropertyNames {
 		groupID, name, minGroupMember, timeOutSec, active
@@ -82,6 +82,11 @@ public class AlarmbearbeitergruppenBean extends ObservableBean {
 		propertyChangeSupport.firePropertyChange(
 				AlarmbearbeitergruppenBeanPropertyNames.active.name(),
 				oldValue, isActive());
+	}
+
+	@Override
+	public String getDisplayName() {
+		return getName() != null ? getName() : "(ohne Name)";
 	}
 
 }

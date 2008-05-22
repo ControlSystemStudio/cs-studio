@@ -2,9 +2,9 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 
-public class AlarmtopicBean extends ObservableBean{
+public class AlarmtopicBean extends ConfigurationBean {
 	
 	public static enum AlarmtopicBeanPropertyNames {
 		topicID, topicName, humanReadableName, description
@@ -60,6 +60,11 @@ public class AlarmtopicBean extends ObservableBean{
 		String oldValue = getDescription();
 		this.description = description;
 		propertyChangeSupport.firePropertyChange(AlarmtopicBeanPropertyNames.description.name(), oldValue, getDescription());
+	}
+
+	@Override
+	public String getDisplayName() {
+		return getHumanReadableName() != null ? getHumanReadableName() : "(ohne Namen)";
 	}
 	
 	

@@ -3,7 +3,7 @@ package org.csstudio.nams.configurator.treeviewer.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class ObservableBean {
+public abstract class AbstractObservableBean {
 
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 

@@ -2,9 +2,9 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 
-public class FilterBean extends ObservableBean {
+public class FilterBean extends ConfigurationBean {
 
 	public static enum FilterBeanPropertyNames {
 		filterID, name, defaultMessage
@@ -53,5 +53,8 @@ public class FilterBean extends ObservableBean {
 		propertyChangeSupport.firePropertyChange(FilterBeanPropertyNames.defaultMessage.name(), oldValue, getDefaultMessage());
 	}
 	
-	
+	@Override
+	public String getDisplayName() {
+		return getName() != null ? getName() : "(ohne Namen)";
+	}
 }

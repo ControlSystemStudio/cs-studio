@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 
 public class FilterNode implements IConfigurationNode {
 
@@ -19,8 +19,8 @@ public class FilterNode implements IConfigurationNode {
 		return name;
 	}
 
-	public Collection<ObservableBean> getChildren() {
-		Collection<ObservableBean> filterBeans = new ArrayList<ObservableBean>();
+	public Collection<ConfigurationBean> getChildren() {
+		Collection<ConfigurationBean> filterBeans = new ArrayList<ConfigurationBean>();
 
 		/*
 		 * Filter AlarmbearbeiterBeans heraus

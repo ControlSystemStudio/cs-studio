@@ -1,7 +1,7 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -13,7 +13,7 @@ public class DefaultStackPart extends AbstractStackPart {
 	private Composite _main;
 
 	public DefaultStackPart(DirtyFlagProvider flagProvider, Composite parent) {
-		super(flagProvider, ObservableBean.class, 0);
+		super(flagProvider, ConfigurationBean.class, 0);
 		_main = new Composite(parent, SWT.NONE);
 		_main.setLayout(new GridLayout(1, false));
 		Label label = new Label(_main, SWT.NONE);

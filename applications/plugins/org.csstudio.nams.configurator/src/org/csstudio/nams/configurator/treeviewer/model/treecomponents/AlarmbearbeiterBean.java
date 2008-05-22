@@ -2,9 +2,9 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 
-public class AlarmbearbeiterBean extends ObservableBean {
+public class AlarmbearbeiterBean extends ConfigurationBean {
 
 	public static enum PreferedAlarmType {
 		NONE, EMAIL, SMS, VOICE;
@@ -138,5 +138,10 @@ public class AlarmbearbeiterBean extends ObservableBean {
 		propertyChangeSupport.firePropertyChange(
 				AlarmbearbeiterBeanPropertyNames.preferedAlarmType.name(),
 				oldValue, getPreferedAlarmType());
+	}
+
+	@Override
+	public String getDisplayName() {
+		return getName() != null ? getName() : "(ohne Name)";
 	}
 }

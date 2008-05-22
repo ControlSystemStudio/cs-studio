@@ -83,7 +83,7 @@ public class ConfigurationModel {
 		return sortgroupBeans.keySet();
 	}
 
-	public void save(ObservableBean bean, String groupName) {
+	public void save(ConfigurationBean bean, String groupName) {
 
 	}
 
