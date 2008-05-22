@@ -4,19 +4,19 @@ import java.beans.PropertyChangeSupport;
 
 import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
-public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
-	
+public class AlarmtopicBean extends AbstractConfigurationBean {
+
 	public static enum AlarmtopicBeanPropertyNames {
 		topicID, topicName, humanReadableName, description
-			
+
 	}
-	
+
 	private int topicID;// PRIMARY KEY
 	private String topicName;
 	private String humanReadableName;
 	private String description;
 	private PropertyChangeSupport propertyChangeSupport;
-	
+
 	public AlarmtopicBean() {
 		topicID = -1;
 		propertyChangeSupport = getPropertyChangeSupport();
@@ -29,7 +29,9 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	public void setTopicID(int topicID) {
 		int oldValue = getTopicID();
 		this.topicID = topicID;
-		propertyChangeSupport.firePropertyChange(AlarmtopicBeanPropertyNames.topicID.name(), oldValue, getTopicID());
+		propertyChangeSupport.firePropertyChange(
+				AlarmtopicBeanPropertyNames.topicID.name(), oldValue,
+				getTopicID());
 	}
 
 	public String getTopicName() {
@@ -39,7 +41,9 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	public void setTopicName(String topicName) {
 		String oldValue = getTopicName();
 		this.topicName = topicName;
-		propertyChangeSupport.firePropertyChange(AlarmtopicBeanPropertyNames.topicName.name(), oldValue, getTopicName());
+		propertyChangeSupport.firePropertyChange(
+				AlarmtopicBeanPropertyNames.topicName.name(), oldValue,
+				getTopicName());
 	}
 
 	public String getHumanReadableName() {
@@ -49,7 +53,9 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	public void setHumanReadableName(String humanReadableName) {
 		String oldValue = getHumanReadableName();
 		this.humanReadableName = humanReadableName;
-		propertyChangeSupport.firePropertyChange(AlarmtopicBeanPropertyNames.humanReadableName.name(), oldValue, getHumanReadableName());
+		propertyChangeSupport.firePropertyChange(
+				AlarmtopicBeanPropertyNames.humanReadableName.name(), oldValue,
+				getHumanReadableName());
 	}
 
 	public String getDescription() {
@@ -59,21 +65,20 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	public void setDescription(String description) {
 		String oldValue = getDescription();
 		this.description = description;
-		propertyChangeSupport.firePropertyChange(AlarmtopicBeanPropertyNames.description.name(), oldValue, getDescription());
+		propertyChangeSupport.firePropertyChange(
+				AlarmtopicBeanPropertyNames.description.name(), oldValue,
+				getDescription());
 	}
 
 	@Override
 	public String getDisplayName() {
-		return getHumanReadableName() != null ? getHumanReadableName() : "(ohne Namen)";
+		return getHumanReadableName() != null ? getHumanReadableName()
+				: "(ohne Namen)";
 	}
 
-	@Override
 	public void copyStateOf(AlarmtopicBean otherBean) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("not implemented yet.");
 	}
 
-	
-	
-	
 }

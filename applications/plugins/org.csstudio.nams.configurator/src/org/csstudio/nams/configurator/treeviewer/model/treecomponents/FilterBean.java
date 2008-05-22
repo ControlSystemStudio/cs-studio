@@ -4,7 +4,7 @@ import java.beans.PropertyChangeSupport;
 
 import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
-public class FilterBean extends AbstractConfigurationBean<FilterBean> {
+public class FilterBean extends AbstractConfigurationBean {
 
 	public static enum FilterBeanPropertyNames {
 		filterID, name, defaultMessage
@@ -58,7 +58,6 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 		return getName() != null ? getName() : "(ohne Namen)";
 	}
 
-	@Override
 	public void copyStateOf(FilterBean otherBean) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("not implemented yet.");

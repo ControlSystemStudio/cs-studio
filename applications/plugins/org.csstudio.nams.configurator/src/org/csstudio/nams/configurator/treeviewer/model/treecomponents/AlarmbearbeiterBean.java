@@ -4,7 +4,7 @@ import java.beans.PropertyChangeSupport;
 
 import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
-public class AlarmbearbeiterBean extends AbstractConfigurationBean<AlarmbearbeiterBean> {
+public class AlarmbearbeiterBean extends AbstractConfigurationBean {
 
 	public static enum PreferedAlarmType {
 		NONE, EMAIL, SMS, VOICE;
@@ -145,7 +145,6 @@ public class AlarmbearbeiterBean extends AbstractConfigurationBean<Alarmbearbeit
 		return getName() != null ? getName() : "(ohne Name)";
 	}
 
-	@Override
 	public void copyStateOf(AlarmbearbeiterBean otherBean) {
 		throw new UnsupportedOperationException("not implemented yet.");
 	}

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 
 public class AlarmbearbeitergruppenNode implements IConfigurationNode {
 
@@ -15,8 +16,8 @@ public class AlarmbearbeitergruppenNode implements IConfigurationNode {
 		this.groupBeans = map;
 	}
 
-	public Collection<AbstractConfigurationBean> getChildren() {
-		Collection<AbstractConfigurationBean> alarmbearbeitergruppenBeans = new ArrayList<AbstractConfigurationBean>();
+	public Collection<ConfigurationBean> getChildren() {
+		Collection<ConfigurationBean> alarmbearbeitergruppenBeans = new ArrayList<ConfigurationBean>();
 
 		/*
 		 * Filter Alarmbearbeitergruppen-Beans heraus

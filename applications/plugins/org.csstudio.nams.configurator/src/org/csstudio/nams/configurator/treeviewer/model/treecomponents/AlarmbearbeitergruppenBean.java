@@ -4,7 +4,7 @@ import java.beans.PropertyChangeSupport;
 
 import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 
-public class AlarmbearbeitergruppenBean extends AbstractConfigurationBean<AlarmbearbeitergruppenBean> {
+public class AlarmbearbeitergruppenBean extends AbstractConfigurationBean {
 
 	public static enum AlarmbearbeitergruppenBeanPropertyNames {
 		groupID, name, minGroupMember, timeOutSec, active
@@ -89,7 +89,6 @@ public class AlarmbearbeitergruppenBean extends AbstractConfigurationBean<Alarmb
 		return getName() != null ? getName() : "(ohne Name)";
 	}
 
-	@Override
 	public void copyStateOf(AlarmbearbeitergruppenBean otherBean) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("not implemented yet.");

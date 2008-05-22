@@ -13,7 +13,7 @@ import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean
  * @author Eugen Reiswich
  * 
  */
-public class SortGroupBean extends AbstractConfigurationBean<SortGroupBean> {
+public class SortGroupBean extends AbstractConfigurationBean {
 
 	private String groupName;
 
@@ -75,7 +75,6 @@ public class SortGroupBean extends AbstractConfigurationBean<SortGroupBean> {
 		return getGroupName();
 	}
 
-	@Override
 	public void copyStateOf(SortGroupBean otherBean) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("not implemented yet.");
