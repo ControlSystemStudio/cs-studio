@@ -25,6 +25,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.SharedImages;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
@@ -38,6 +40,8 @@ public class ConfigurationTreeView extends ViewPart {
 	private Action doubleClickAction;
 
 	private ConfigurationModel configurationModel;
+
+	private Action _transferChnagesToConfigurationsDB;
 
 	private static ConfigurationEditingStoreService editingStoreService;
 
@@ -95,6 +99,7 @@ public class ConfigurationTreeView extends ViewPart {
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(_newAction);
 		manager.add(new Separator());
+		manager.add(_transferChnagesToConfigurationsDB);		
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
@@ -102,6 +107,7 @@ public class ConfigurationTreeView extends ViewPart {
 			manager.add(_newAction);
 		}
 		manager.add(new Separator());
+		manager.add(_transferChnagesToConfigurationsDB);
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -110,6 +116,7 @@ public class ConfigurationTreeView extends ViewPart {
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(_newAction);
 		manager.add(new Separator());
+		manager.add(_transferChnagesToConfigurationsDB);
 		drillDownAdapter.addNavigationActions(manager);
 	}
 
@@ -124,6 +131,15 @@ public class ConfigurationTreeView extends ViewPart {
 				showMessage("Double-click detected on " + obj.toString());
 			}
 		};
+		
+		_transferChnagesToConfigurationsDB = new Action() {
+			public void run() {
+				showMessage("Transfering changes to Oracle database!");
+			}
+		};
+		_transferChnagesToConfigurationsDB.setText("Transfer changes to configuration database");
+		_transferChnagesToConfigurationsDB.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+				.getImageDescriptor(SharedImages.IMG_TOOL_REDO));
 	}
 
 	private void hookDoubleClickAction() {

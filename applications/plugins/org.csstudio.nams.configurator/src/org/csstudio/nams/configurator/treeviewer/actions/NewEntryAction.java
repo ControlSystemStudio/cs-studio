@@ -32,7 +32,7 @@ public class NewEntryAction extends Action {
 		this.model = model;
 		this.setText("New");
 		this.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-				.getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+				.getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
 	}
 
 	@Override
