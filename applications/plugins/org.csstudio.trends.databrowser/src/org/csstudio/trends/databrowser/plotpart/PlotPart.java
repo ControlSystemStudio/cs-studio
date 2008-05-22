@@ -134,11 +134,8 @@ public class PlotPart
         if (Preferences.getShowElogExportAction())
             context_menu.add(new ExportToElogAction(chart,
                     org.csstudio.trends.databrowser.Messages.DataBrowser));
-
-        
     }
 
-    
     /** @see IWorkbenchPart#setFocus */
     public void setFocus()
     {   
