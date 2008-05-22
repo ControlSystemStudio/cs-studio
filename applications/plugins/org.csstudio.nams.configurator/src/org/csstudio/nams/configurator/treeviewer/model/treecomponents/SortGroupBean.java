@@ -1,7 +1,7 @@
 package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
+import java.util.ArrayList;
 import java.util.Collection;
-
 
 /**
  * Die {@link SortGroupBean} enthält Kider, die im TreeViewer des Configurators
@@ -39,6 +39,13 @@ public class SortGroupBean extends AbstractConfigurationBean {
 	public SortGroupBean(int ID, String name) {
 		this.groupID = ID;
 		this.groupName = name;
+
+		// init collections
+		this.alarmbearbeiterBeans = new ArrayList<AlarmbearbeiterBean>();
+		this.alarmtopicBeans = new ArrayList<AlarmtopicBean>();
+		this.alarmbearbeitergruppenBeans = new ArrayList<AlarmbearbeitergruppenBean>();
+		this.filterbedingungBeans = new ArrayList<FilterbedingungBean>();
+		this.filterBeans = new ArrayList<FilterBean>();
 	}
 
 	public Collection<AlarmbearbeiterBean> getAlarmbearbeiterBeans() {
@@ -77,5 +84,32 @@ public class SortGroupBean extends AbstractConfigurationBean {
 	public void copyStateOf(SortGroupBean otherBean) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("not implemented yet.");
+	}
+
+	public void setAlarmbearbeiterBeans(
+			Collection<AlarmbearbeiterBean> alarmbearbeiterBeans) {
+		this.alarmbearbeiterBeans = alarmbearbeiterBeans;
+	}
+
+	public void setAlarmtopicBeans(Collection<AlarmtopicBean> alarmtopicBeans) {
+		this.alarmtopicBeans = alarmtopicBeans;
+	}
+
+	public void setAlarmbearbeitergruppenBeans(
+			Collection<AlarmbearbeitergruppenBean> alarmbearbeitergruppenBeans) {
+		this.alarmbearbeitergruppenBeans = alarmbearbeitergruppenBeans;
+	}
+
+	public void setFilterbedingungBeans(
+			Collection<FilterbedingungBean> filterbedingungBeans) {
+		this.filterbedingungBeans = filterbedingungBeans;
+	}
+
+	public void setFilterBeans(Collection<FilterBean> filterBeans) {
+		this.filterBeans = filterBeans;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 }

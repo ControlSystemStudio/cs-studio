@@ -7,11 +7,10 @@ import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeitergruppenBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeitergruppenNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicNode;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterbedingungBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -46,16 +45,25 @@ public class NewEntryAction extends Action {
 						.getFirstElement();
 
 				ConfigurationBean newElement = null;
-
 				/*
 				 * prüfe, welches Element neu angelegt werden soll
 				 */
-				if (selectedNode instanceof AlarmbearbeiterNode) {
+				switch (selectedNode.getConfigurationType()) {
+				case ALARMBEATERBEITER:
 					newElement = new AlarmbearbeiterBean();
-				} else if (selectedNode instanceof AlarmbearbeitergruppenNode) {
+					break;
+				case ALARMBEATERBEITERGRUPPE:
 					newElement = new AlarmbearbeitergruppenBean();
-				} else if (selectedNode instanceof AlarmtopicNode) {
+					break;
+				case ALARMTOPIC:
 					newElement = new AlarmtopicBean();
+					break;
+				case FILTER:
+					newElement = new FilterBean();
+					break;
+				case FILTERBEDINGUNG:
+					newElement = new FilterbedingungBean();
+					break;
 				}
 
 				Collection<String> sortgroupNames = this.model

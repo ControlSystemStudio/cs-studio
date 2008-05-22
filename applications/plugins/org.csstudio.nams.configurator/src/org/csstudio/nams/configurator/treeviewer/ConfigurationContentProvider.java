@@ -1,9 +1,9 @@
 package org.csstudio.nams.configurator.treeviewer;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortGroupBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupNode;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -13,10 +13,10 @@ public class ConfigurationContentProvider implements ITreeContentProvider {
 		if (parentElement instanceof IConfigurationNode) {
 			return ((IConfigurationNode) parentElement).getChildren().toArray();
 		}
-		
-		if(parentElement instanceof SortGroupBean){
-			// TODO forstsetzen
-//			return ((SortGroupBean)parentElement).get
+
+		if (parentElement instanceof SortgroupNode) {
+			SortgroupNode groupNode = (SortgroupNode) parentElement;
+			return groupNode.getChildren().toArray();
 		}
 		return null;
 	}
@@ -29,23 +29,15 @@ public class ConfigurationContentProvider implements ITreeContentProvider {
 		if (element instanceof IConfigurationNode) {
 			return ((IConfigurationNode) element).getChildren().size() > 0;
 		}
+
+		if (element instanceof SortgroupNode) {
+			return ((SortgroupNode) element).getChildren().size() > 0;
+		}
 		return false;
 	}
 
 	public Object[] getElements(Object inputElement) {
-		return ((List)inputElement).toArray();
-		// if (inputElement instanceof IConfigurationNode) {
-		// // TODO forstsetzen
-		// // if (!(inputElement instanceof IConfigurationNode)
-		// // || ((IConfigurationNode) inputElement).getCategory().equals(
-		// // Categories.ROOT)) {
-		// // System.out
-		// // .println("ConfigurationContentProvider.getElements() WARNING: no
-		// CategoryNode for ROOT found");
-		// // }
-		// return ((IConfigurationNode) inputElement).getChildren().toArray();
-		// }
-		//		return null;
+		return ((Collection) inputElement).toArray();
 	}
 
 	public void dispose() {
