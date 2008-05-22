@@ -1,7 +1,7 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
-import org.csstudio.ams.configurationStoreService.knownTObjects.TopicTObject;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicBean;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
@@ -25,7 +25,7 @@ public class TopicStackPart extends AbstractStackPart {
 	private boolean _isDirty = false;
 	
 	public TopicStackPart(DirtyFlagProvider flagProvider, Composite parent) {
-		super(flagProvider, TopicTObject.class, 2);
+		super(flagProvider, AlarmtopicBean.class, 2);
 		_main = new Composite(parent, SWT.NONE);
 		_main.setLayout(new GridLayout(NUM_COLUMNS,false));
 		_idTextEntry = this.createTextEntry(_main, "ID:", false);

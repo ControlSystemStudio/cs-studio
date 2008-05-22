@@ -11,12 +11,11 @@ public class AlarmbearbeiterBean extends ObservableBean {
 	}
 
 	public static enum AlarmbearbeiterBeanPropertyNames {
-		userID, confirmCode, name, email, mobilePhone, phone, statusCode, active, preferedAlarmType, groupID
+		userID, confirmCode, name, email, mobilePhone, phone, statusCode, active, preferedAlarmType
 
 	}
 
 	private int userID;// PRIMARY KEY
-	private int groupID;
 	private String name;
 	private String email;
 	private String mobilePhone;
@@ -139,17 +138,5 @@ public class AlarmbearbeiterBean extends ObservableBean {
 		propertyChangeSupport.firePropertyChange(
 				AlarmbearbeiterBeanPropertyNames.preferedAlarmType.name(),
 				oldValue, getPreferedAlarmType());
-	}
-
-	public int getGroupID() {
-		return groupID;
-	}
-
-	public void setGroupID(int groupID) {
-		int oldGroupID = getGroupID();
-		this.groupID = groupID;
-		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeiterBeanPropertyNames.groupID.name(), oldGroupID,
-				groupID);
 	}
 }

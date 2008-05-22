@@ -1,7 +1,7 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
-import org.csstudio.ams.configurationStoreService.util.TObject;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
+import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.layout.GridData;
@@ -16,12 +16,12 @@ public abstract class AbstractStackPart {
 	
 	protected final int NUM_COLUMNS;
 	protected final int MIN_WIDTH = 300;
-	private Class<? extends TObject> _associatedTObject;
+	private Class<? extends ObservableBean> _associatedBean;
 	private DirtyFlagProvider _dirtyFlagProvider;
 	
-	public AbstractStackPart(DirtyFlagProvider flagProvider, Class<? extends TObject> associatedTObject, int numColumns) {
+	public AbstractStackPart(DirtyFlagProvider flagProvider, Class<? extends ObservableBean> associatedBean, int numColumns) {
 		_dirtyFlagProvider = flagProvider;
-		_associatedTObject = associatedTObject;
+		_associatedBean = associatedBean;
 		NUM_COLUMNS = numColumns;
 	}
 	
@@ -78,8 +78,8 @@ public abstract class AbstractStackPart {
 	
 	public abstract Control getMainControl();
 	
-	public Class<? extends TObject> getAssociatedTObject() {
-		return _associatedTObject;
+	public Class<? extends ObservableBean> getAssociatedBean() {
+		return _associatedBean;
 	}
 
 	public abstract boolean isDirty();

@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src-easyMock2.3"/>
 	<classpathentry kind="src" path="src-test"/>
+	<classpathentry exported="true" kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="lib/junit.jar" sourcepath="lib/junit-4.4-src.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

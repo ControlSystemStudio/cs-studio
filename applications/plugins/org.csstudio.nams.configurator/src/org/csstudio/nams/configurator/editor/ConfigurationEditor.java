@@ -3,11 +3,11 @@ package org.csstudio.nams.configurator.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.ams.configurationStoreService.util.TObject;
 import org.csstudio.nams.configurator.editor.stackparts.AbstractStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.DefaultStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.TopicStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.UserStackPart;
+import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -19,14 +19,15 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
-public class ConfigurationEditor extends EditorPart implements DirtyFlagProvider {
-	
+public class ConfigurationEditor extends EditorPart implements
+		DirtyFlagProvider {
+
 	public static final String ID = "org.csstudio.nams.configurator.ConfigurationEditor";
 
 	private StackLayout _stackLayout;
-	
+
 	private List<AbstractStackPart> _stackParts;
-	
+
 	private AbstractStackPart _showedStackPart;
 
 	private ConfigurationEditorInput _input;
@@ -53,21 +54,22 @@ public class ConfigurationEditor extends EditorPart implements DirtyFlagProvider
 		this.setSite(site);
 		this.setInput(input);
 		_input = (ConfigurationEditorInput) input;
-		if (_defaultStackPart!=null) {
-			this.showCorrespondingStackPart(_input.getInput());
+		if (_defaultStackPart != null) {
+			this.showCorrespondingStackPart(_input.getBean());
 		}
 	}
-	
-	private void showCorrespondingStackPart(TObject input) {
+
+	private void showCorrespondingStackPart(ObservableBean input) {
 		AbstractStackPart stackPart = this.getStackPartfor(input.getClass());
 		Control mainControl = stackPart.getMainControl();
 		_showedStackPart = stackPart;
 		_stackLayout.topControl = mainControl;
 	}
 
-	private AbstractStackPart getStackPartfor(Class<? extends TObject> tObjectClass) {
+	private AbstractStackPart getStackPartfor(
+			Class<? extends ObservableBean> tObjectClass) {
 		for (AbstractStackPart part : _stackParts) {
-			if (tObjectClass.equals(part.getAssociatedTObject())) {
+			if (tObjectClass.equals(part.getAssociatedBean())) {
 				return part;
 			}
 		}
@@ -86,22 +88,23 @@ public class ConfigurationEditor extends EditorPart implements DirtyFlagProvider
 
 	@Override
 	public void createPartControl(Composite parent) {
-		ScrolledComposite scrollPane = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		ScrolledComposite scrollPane = new ScrolledComposite(parent,
+				SWT.H_SCROLL | SWT.V_SCROLL);
 		scrollPane.setExpandHorizontal(true);
 		scrollPane.setExpandVertical(true);
-		
+
 		Composite main = new Composite(scrollPane, SWT.NONE);
 		_stackLayout = new StackLayout();
 		main.setLayout(_stackLayout);
-		
+
 		this.createAndAddEditorStackParts(main);
-		
+
 		scrollPane.setContent(main);
 		scrollPane.setMinSize(scrollPane.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		
-		this.showCorrespondingStackPart(_input.getInput());
+
+		this.showCorrespondingStackPart(_input.getBean());
 	}
-	
+
 	private void createAndAddEditorStackParts(Composite parent) {
 		_defaultStackPart = new DefaultStackPart(this, parent);
 		_stackParts.add(new UserStackPart(this, parent));

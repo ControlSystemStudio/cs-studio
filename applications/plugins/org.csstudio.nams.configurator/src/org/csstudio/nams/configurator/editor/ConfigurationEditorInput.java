@@ -1,20 +1,29 @@
 package org.csstudio.nams.configurator.editor;
 
-import org.csstudio.ams.configurationStoreService.util.TObject;
+import java.util.Collection;
+
+import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 public class ConfigurationEditorInput implements IEditorInput {
-	
-	private TObject _input;
 
-	public ConfigurationEditorInput(TObject input) {
-		_input = input;
+	private final ObservableBean bean;
+	private final Collection<String> sortgroupNames;
+
+	public ConfigurationEditorInput(ObservableBean newElement,
+			Collection<String> sortgroupNames) {
+		this.bean = newElement;
+		this.sortgroupNames = sortgroupNames;
 	}
 
-	public TObject getInput() {
-		return _input;
+	public ObservableBean getBean() {
+		return bean;
+	}
+
+	public Collection<String> getSortgroupNames() {
+		return sortgroupNames;
 	}
 
 	public boolean exists() {
@@ -34,15 +43,20 @@ public class ConfigurationEditorInput implements IEditorInput {
 	}
 
 	public String getToolTipText() {
-		return "Configuration Editor" ;
+		return "Configuration Editor";
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object getAdapter(Class adapter) {
 		return null;
 	}
-	@Override
+
+	/**
+	 * Da nur ein ConfigurationEditor geöffnet werden woll, muss equals immer
+	 * true liefern
+	 */
 	public boolean equals(Object obj) {
-		return (obj instanceof ConfigurationEditorInput); 
+		return (obj instanceof ConfigurationEditorInput);
 	}
 
 }

@@ -6,7 +6,11 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.nams.common.CommonActivator
 Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
-Export-Package: org.csstudio.nams.common.contract,
+Export-Package: junit.extensions,
+ junit.framework,
+ junit.runner,
+ junit.textui,
+ org.csstudio.nams.common.contract,
  org.csstudio.nams.common.fachwert,
  org.csstudio.nams.common.material,
  org.csstudio.nams.common.material.regelwerk,
@@ -14,4 +18,14 @@ Export-Package: org.csstudio.nams.common.contract,
  org.csstudio.nams.common.service,
  org.csstudio.nams.common.testhelper,
  org.csstudio.nams.common.wam,
- org.easymock
+ org.easymock,
+ org.junit,
+ org.junit.internal,
+ org.junit.internal.requests,
+ org.junit.internal.runners,
+ org.junit.runner,
+ org.junit.runner.manipulation,
+ org.junit.runner.notification,
+ org.junit.runners
+Bundle-ClassPath: .,
+ lib/junit.jar

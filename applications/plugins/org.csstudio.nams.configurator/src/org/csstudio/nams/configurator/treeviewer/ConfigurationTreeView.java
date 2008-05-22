@@ -5,8 +5,7 @@ import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStore
 import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.configurator.Activator;
 import org.csstudio.nams.configurator.treeviewer.actions.NewEntryAction;
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModelCreater;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.CategoryNode;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -35,13 +34,15 @@ public class ConfigurationTreeView extends ViewPart {
 	private DrillDownAdapter drillDownAdapter;
 	private Action _newAction;
 	private Action doubleClickAction;
-	private CategoryNode _root;
+
+	private ConfigurationModel configurationModel;
 
 	/**
 	 * The constructor.
 	 */
 	public ConfigurationTreeView() {
-		_root = new ConfigurationModelCreater(this.getConfigurationStoreService(), this.getLogger()).createTreeModel();
+		// TODO: hier sollten Gruppen übergeben werden
+		this.configurationModel = new ConfigurationModel(null);
 	}
 
 	/**
@@ -54,7 +55,7 @@ public class ConfigurationTreeView extends ViewPart {
 		_viewer.setContentProvider(new ConfigurationContentProvider());
 		_viewer.setLabelProvider(new ConfigurationLabelProvider());
 		_viewer.setSorter(new ConfigurationSorter());
-		_viewer.setInput(_root);
+		_viewer.setInput(configurationModel.getChildren());
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
@@ -104,7 +105,7 @@ public class ConfigurationTreeView extends ViewPart {
 	}
 
 	private void makeActions() {
-		_newAction = new NewEntryAction(_viewer);
+		_newAction = new NewEntryAction(_viewer, this.configurationModel);
 
 		doubleClickAction = new Action() {
 			public void run() {
