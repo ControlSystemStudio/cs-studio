@@ -7,7 +7,6 @@ import org.csstudio.nams.configurator.editor.stackparts.AbstractStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.DefaultStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.TopicStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.UserStackPart;
-import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -32,18 +31,18 @@ public class ConfigurationEditor extends EditorPart implements
 
 	private StackLayout _stackLayout;
 
-	private List<AbstractStackPart> _stackParts;
+	private List<AbstractStackPart<?>> _stackParts;
 
-	private AbstractStackPart _showedStackPart;
+	private AbstractStackPart<?> _showedStackPart;
 
 	private ConfigurationEditorInput _input;
 
 	private DefaultStackPart _defaultStackPart;
 
-	private ConfigurationBean<?> _originalModel;
+	private ConfigurationBean _originalModel;
 
 	public ConfigurationEditor() {
-		_stackParts = new ArrayList<AbstractStackPart>();
+		_stackParts = new ArrayList<AbstractStackPart<?>>();
 	}
 
 	@Override
@@ -75,7 +74,7 @@ public class ConfigurationEditor extends EditorPart implements
 		_stackLayout.topControl = mainControl;
 	}
 
-	private AbstractStackPart getStackPartfor(
+	private AbstractStackPart<?> getStackPartfor(
 			Class<? extends ConfigurationBean> tObjectClass) {
 		for (AbstractStackPart part : _stackParts) {
 			if (tObjectClass.equals(part.getAssociatedBean())) {

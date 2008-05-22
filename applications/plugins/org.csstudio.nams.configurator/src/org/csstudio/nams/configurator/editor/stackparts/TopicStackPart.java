@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicBean;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -13,7 +14,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class TopicStackPart extends AbstractStackPart {
+public class TopicStackPart extends AbstractStackPart<AlarmtopicBean> {
 	
 	private Text _idTextEntry;
 	private Text _topicIdTextEntry;
@@ -68,6 +69,12 @@ public class TopicStackPart extends AbstractStackPart {
 	@Override
 	public boolean isDirty() {
 		return _isDirty;
+	}
+
+	@Override
+	public void save(ConfigurationBean original) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("not implemented yet.");
 	}
 	
 }

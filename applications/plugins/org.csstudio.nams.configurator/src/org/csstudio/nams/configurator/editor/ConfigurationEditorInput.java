@@ -2,7 +2,6 @@ package org.csstudio.nams.configurator.editor;
 
 import java.util.Collection;
 
-import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -13,7 +12,7 @@ public class ConfigurationEditorInput implements IEditorInput {
 	private final ConfigurationBean bean;
 	private final Collection<String> sortgroupNames;
 
-	public ConfigurationEditorInput(AbstractConfigurationBean newElement,
+	public ConfigurationEditorInput(ConfigurationBean newElement,
 			Collection<String> sortgroupNames) {
 		this.bean = newElement;
 		this.sortgroupNames = sortgroupNames;
