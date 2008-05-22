@@ -93,7 +93,7 @@ public class TracePainter
             // No previous sample from which to draw a connection?
             if (new_line)
             {
-                if (have_pre_min_max) throw new Error("Invalid state"); // TODO remove after test //$NON-NLS-1$
+                if (have_pre_min_max) throw new Error("Invalid state"); //$NON-NLS-1$
                 // Immediately set x/y of the 'previous' point.
                 x0 = xaxis.getScreenCoord(sample.getX());
                 y0 = yaxis.getScreenCoord(y);
