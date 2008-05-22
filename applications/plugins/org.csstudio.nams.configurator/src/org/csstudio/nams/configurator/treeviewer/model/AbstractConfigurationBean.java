@@ -1,6 +1,7 @@
 package org.csstudio.nams.configurator.treeviewer.model;
 
-public abstract class AbstractConfigurationBean<BeanType extends AbstractConfigurationBean<?>> extends AbstractObservableBean implements ConfigurationBean<BeanType> {
+public abstract class AbstractConfigurationBean<BeanType extends ConfigurationBean<?>>
+		extends AbstractObservableBean implements ConfigurationBean<BeanType> {
 
 	/**
 	 * Liefertm den bezeichnenden Namen, der in einer UI für diese, konkrete
@@ -9,6 +10,6 @@ public abstract class AbstractConfigurationBean<BeanType extends AbstractConfigu
 	 * @return Not {@code null}.
 	 */
 	public abstract String getDisplayName();
-	
+
 	public abstract void copyStateOf(BeanType otherBean);
 }
