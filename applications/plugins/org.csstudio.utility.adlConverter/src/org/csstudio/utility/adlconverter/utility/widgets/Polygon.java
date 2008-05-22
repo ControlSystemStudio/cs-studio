@@ -25,7 +25,10 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.PolygonModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
+import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.eclipse.draw2d.geometry.PointList;
 
@@ -43,7 +46,7 @@ public class Polygon extends Widget{
     /**
      * @param polygon The ADL String for a Polygon
      */
-    public Polygon(final ADLWidget polygon){
+    public Polygon(final ADLWidget polygon, AbstractWidgetModel abstractWidgetModel){
         super(polygon);
         if(getBasicAttribute()!=null){
             getBasicAttribute().setStyle("0"); //$NON-NLS-1$
@@ -51,6 +54,7 @@ public class Polygon extends Widget{
         _widget.setPropertyValue(PolygonModel.PROP_FILL, 100.0);
         _widget.setPropertyValue(PolygonModel.PROP_BORDER_STYLE, 0);
         _widget.setPropertyValue(PolygonModel.PROP_BORDER_COLOR, _widget.getForegroundColor());
+        ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
     }
 
 

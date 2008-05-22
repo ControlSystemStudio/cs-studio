@@ -25,7 +25,10 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.ArcModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
+import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
@@ -41,7 +44,7 @@ public class Arc extends Widget {
      * @param arc The ADLWidget that describe the Arc.
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public Arc(final ADLWidget arc) throws WrongADLFormatException {
+    public Arc(final ADLWidget arc, AbstractWidgetModel abstractWidgetModel) throws WrongADLFormatException {
         super(arc);
         for (String obj : arc.getBody()) {
             String[] row = obj.trim().split("="); //$NON-NLS-1$
@@ -66,6 +69,8 @@ public class Arc extends Widget {
             _widget.setPropertyValue(ArcModel.PROP_LINEWIDTH, getBasicAttribute().getWidth());
             getBasicAttribute().setWidth("0"); //$NON-NLS-1$
         }
+        
+        ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
         
     }
 

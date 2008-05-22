@@ -25,6 +25,9 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.RectangleModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.ContainerModel;
+import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 
 /**
@@ -37,14 +40,17 @@ public class Rectangle extends Widget{
     
     /**
      * @param rectangle ADLWidget that describe the groupingContainer.
+     * @param displayModel 
      */
-    public Rectangle(final ADLWidget rectangle) {
+    public Rectangle(final ADLWidget rectangle, AbstractWidgetModel abstractWidgetModel) {
         super(rectangle);
         if(getBasicAttribute()!=null&&getBasicAttribute().getFill()!=null){
             _widget.setPropertyValue(RectangleModel.PROP_FILL, getBasicAttribute().getFill());
         }
-
+        ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
     }
+    
+
 
     /**
      * {@inheritDoc}

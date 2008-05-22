@@ -26,6 +26,7 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import java.util.ArrayList;
 
+import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.GroupingContainerModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
@@ -69,7 +70,7 @@ public class GroupingContainer extends Widget {
     private void handleObject(final ArrayList<ADLWidget> objects) throws WrongADLFormatException {
         for (ADLWidget obj : objects) {
             if(obj.isType("children")){ //$NON-NLS-1$
-                _children = new ADLChildren(obj);
+                _children = new ADLChildren(obj,_widget);
                 for (Widget elem : _children.getAdlChildrens()) {
                     elem.convertCoordinate(getObject().getX(), getObject().getY());
                     ((GroupingContainerModel) _widget).addWidget(elem.getElement());

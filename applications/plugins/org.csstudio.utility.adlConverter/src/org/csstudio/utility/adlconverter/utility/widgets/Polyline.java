@@ -25,7 +25,10 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.PolylineModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
+import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.eclipse.draw2d.geometry.PointList;
 
@@ -40,7 +43,7 @@ public class Polyline extends Widget{
     /**
      * @param polyline The ADL String for a Polyline
      */
-    public Polyline(final ADLWidget polyline) {
+    public Polyline(final ADLWidget polyline, AbstractWidgetModel abstractWidgetModel) {
         super(polyline);
         if(getBasicAttribute()!=null){
             if(getBasicAttribute().getWidth()!=null){
@@ -54,6 +57,8 @@ public class Polyline extends Widget{
         _widget.setWidth(getObject().getWidth());
         _widget.setHeight(getObject().getHeight());
         _widget.setPropertyValue(PolylineModel.PROP_FILL, 100.0);
+        ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
+        
     }
 
    

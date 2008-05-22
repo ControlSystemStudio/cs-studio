@@ -26,8 +26,7 @@ package org.csstudio.utility.adlconverter.utility.widgetparts;
 
 import java.util.ArrayList;
 
-import org.csstudio.utility.adlconverter.internationalization.Messages;
-import org.csstudio.utility.adlconverter.utility.ADLHelper;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 import org.csstudio.utility.adlconverter.utility.widgets.ActionButton;
 import org.csstudio.utility.adlconverter.utility.widgets.Arc;
@@ -62,7 +61,7 @@ public class ADLChildren {
     /**
      * @param adlChildren 
      */
-    public ADLChildren(final ADLWidget adlChildren) {
+    public ADLChildren(final ADLWidget adlChildren, AbstractWidgetModel abstractWidgetModel) {
         for (ADLWidget strings : adlChildren.getObjects()) {
             try {
                 
@@ -95,13 +94,13 @@ public class ADLChildren {
 //                
                 //_-----------------
                 if(strings.getType().equals("arc")){ //$NON-NLS-1$
-                    _childrens.add(new Arc(strings));
+                    _childrens.add(new Arc(strings,abstractWidgetModel));
                 }else if(strings.getType().equals("bar")){ //$NON-NLS-1$
                     _childrens.add(new Bargraph(strings));
                 }else if(strings.getType().equals("composite")){ //$NON-NLS-1$
                     _childrens.add(new GroupingContainer(strings));
                 }else if(strings.getType().equals("image")){ //$NON-NLS-1$
-                    _childrens.add(new Image(strings));
+                    _childrens.add(new Image(strings, abstractWidgetModel));
                 }else if(strings.getType().equals("indicator")){ //$NON-NLS-1$
                     _childrens.add(new Bargraph(strings));
                 }else if(strings.getType().equals("menu")){ //$NON-NLS-1$
@@ -111,13 +110,13 @@ public class ADLChildren {
                 }else if(strings.getType().equals("meter")){ //$NON-NLS-1$
                     _childrens.add(new Meter(strings));
                 }else if(strings.getType().equals("oval")){ //$NON-NLS-1$
-                    _childrens.add(new Ellipse(strings));
+                    _childrens.add(new Ellipse(strings, abstractWidgetModel));
                 }else if(strings.getType().equals("polygon")){ //$NON-NLS-1$
-                    _childrens.add(new Polygon(strings));
+                    _childrens.add(new Polygon(strings, abstractWidgetModel));
                 }else if(strings.getType().equals("polyline")){ //$NON-NLS-1$
-                    _childrens.add(new Polyline(strings));
+                    _childrens.add(new Polyline(strings, abstractWidgetModel));
                 }else if(strings.getType().equals("rectangle")){ //$NON-NLS-1$
-                    _childrens.add(new Rectangle(strings));
+                    _childrens.add(new Rectangle(strings, abstractWidgetModel));
                 }else if(strings.getType().equals("\"related display\"")){ //$NON-NLS-1$
                     _childrens.add(new RelatedDisplay(strings));
                 }else if(strings.getType().equals("\"strip chart\"")){ //$NON-NLS-1$

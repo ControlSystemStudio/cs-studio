@@ -25,6 +25,8 @@
 package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.ImageModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
@@ -45,7 +47,7 @@ public class Image extends Widget {
      * @param image ADLWidget that describe the Image.
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public Image(final ADLWidget image) throws WrongADLFormatException {
+    public Image(final ADLWidget image, AbstractWidgetModel abstractWidgetModel) throws WrongADLFormatException {
         super(image);
         for (String obj : image.getBody()) {
             String[] row = obj.trim().split("="); //$NON-NLS-1$
@@ -64,7 +66,7 @@ public class Image extends Widget {
                 throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ obj+Messages.Label_WrongADLFormatException_Parameter_End);
             } //image have no Parameter
         }
-
+        ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
     }
 
     /**

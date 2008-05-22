@@ -97,13 +97,13 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
         _colormapSet=false;
         _displaySave=false;
         _storDisplay = null;
-        
-        displayModel.getLayerSupport().addLayer(new Layer(Messages.ADLDisplayImporter_ADLBargraphLayerName,Messages.ADLDisplayImporter_ADLBargraphLayerDes));
+        displayModel.getLayerSupport().addLayer(new Layer(Messages.ADLDisplayImporter_ADLBackgroundLayerName,Messages.ADLDisplayImporter_ADLBackgroundLayerDes),0);
+        displayModel.getLayerSupport().addLayer(new Layer(Messages.ADLDisplayImporter_ADLBargraphLayerName,Messages.ADLDisplayImporter_ADLBargraphLayerDes),2);
         for (ADLWidget strings : root.getObjects()) {
             try {
                 display(strings, displayModel);
                 if(strings.getType().equals("arc")){ //$NON-NLS-1$
-                    displayModel.addWidget(new Arc(strings).getElement());
+                    displayModel.addWidget(new Arc(strings, displayModel).getElement());
                 }else if(strings.getType().equals("bar")){ //$NON-NLS-1$
                     displayModel.addWidget(new Bargraph(strings).getElement());
                 }else if(strings.getType().equals("\"color map\"")){ //$NON-NLS-1$
@@ -114,7 +114,7 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                 }else if(strings.getType().equals("\"dynamic symbol\"")){ //$NON-NLS-1$
                     displayModel.addWidget(new Symbol(strings).getElement());
                 }else if(strings.getType().equals("image")){ //$NON-NLS-1$
-                    displayModel.addWidget(new Image(strings).getElement());
+                    displayModel.addWidget(new Image(strings, displayModel).getElement());
                 }else if(strings.getType().equals("indicator")){ //$NON-NLS-1$
                     displayModel.addWidget(new Bargraph(strings).getElement());
                 }else if(strings.getType().equals("menu")){ //$NON-NLS-1$
@@ -124,15 +124,15 @@ public class ADLDisplayImporter extends AbstractDisplayImporter {
                 }else if(strings.getType().equals("meter")){ //$NON-NLS-1$
                     displayModel.addWidget(new Meter(strings).getElement());
                 }else if(strings.getType().equals("oval")){ //$NON-NLS-1$
-                    displayModel.addWidget(new Ellipse(strings).getElement());
+                    displayModel.addWidget(new Ellipse(strings, displayModel).getElement());
                 }else if(strings.getType().equals("polygon")){ //$NON-NLS-1$
-                    displayModel.addWidget(new Polygon(strings).getElement());
+                    displayModel.addWidget(new Polygon(strings, displayModel).getElement());
                 }else if(strings.getType().equals("polyline")){ //$NON-NLS-1$
-                    Polyline polyline = new Polyline(strings);
+                    Polyline polyline = new Polyline(strings, displayModel);
                     displayModel.addWidget(polyline.getElement());
                     polyline = null;
                 }else if(strings.getType().equals("rectangle")){ //$NON-NLS-1$
-                    displayModel.addWidget(new Rectangle(strings).getElement());
+                    displayModel.addWidget(new Rectangle(strings, displayModel).getElement());
                 }else if(strings.getType().equals("\"related display\"")){ //$NON-NLS-1$
                     displayModel.addWidget(new RelatedDisplay(strings).getElement());
                 }else if(strings.getType().equals("\"strip chart\"")){ //$NON-NLS-1$

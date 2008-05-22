@@ -61,6 +61,8 @@ public class Messages extends NLS {
     public static String ADLConverterMainView_SourceGroup;
 	public static String ADLConverterMainView_TargetFolderSelectionMessage;
     public static String ADLConverterMainView_TargetOpernButton;
+    public static String ADLDisplayImporter_ADLBackgroundLayerName;
+    public static String ADLDisplayImporter_ADLBackgroundLayerDes;
     public static String ADLDisplayImporter_ADLBargraphLayerDes;
     public static String ADLDisplayImporter_ADLBargraphLayerName;
     public static String ADLDynamicAttribute_AssertError_Begin;

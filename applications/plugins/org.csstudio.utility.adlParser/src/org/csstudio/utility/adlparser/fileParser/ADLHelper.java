@@ -27,9 +27,13 @@ package org.csstudio.utility.adlconverter.utility;
 import java.util.HashMap;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.ContainerModel;
+import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.util.CustomMediaFactory;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
+import org.csstudio.utility.adlconverter.utility.widgets.Display;
+import org.csstudio.utility.adlconverter.utility.widgets.Widget;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
@@ -267,6 +271,20 @@ public final class ADLHelper {
         }
         assert chan.length >3 : "Test Chan"; //$NON-NLS-1$
         return postfix;
+    }
+
+    /**
+     * @param widget
+     * @param rectangle 
+     */
+    public static void checkAndSetLayer(AbstractWidgetModel widget, AbstractWidgetModel abstractWidgetModel) {
+        if (abstractWidgetModel instanceof DisplayModel) {
+            if((abstractWidgetModel.getWidth()/4)<widget.getWidth()||(abstractWidgetModel.getHeight()/4)<widget.getHeight()){
+                widget.setLayer(Messages.ADLDisplayImporter_ADLBackgroundLayerDes);
+            }
+        }
+        
+        
     }
     
 }

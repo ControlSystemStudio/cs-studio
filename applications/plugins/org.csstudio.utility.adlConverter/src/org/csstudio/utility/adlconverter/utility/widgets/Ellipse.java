@@ -26,6 +26,9 @@ package org.csstudio.utility.adlconverter.utility.widgets;
 
 import org.csstudio.sds.components.model.EllipseModel;
 import org.csstudio.sds.components.model.PolygonModel;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.ContainerModel;
+import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
 
 
@@ -40,7 +43,7 @@ public class Ellipse extends Widget {
     /**
      * @param ellipse The ADLWidget that describe the Ellipse.
      */
-    public Ellipse(final ADLWidget ellipse) {
+    public Ellipse(final ADLWidget ellipse, AbstractWidgetModel abstractWidgetModel) {
         super(ellipse);
         if(getBasicAttribute()!=null){
             if((getBasicAttribute()!=null&&(getBasicAttribute().getWidth()==null||getBasicAttribute().getWidth().equals("0")))){ //$NON-NLS-1$
@@ -53,6 +56,7 @@ public class Ellipse extends Widget {
             _widget.setPropertyValue(EllipseModel.PROP_FILL, getBasicAttribute().getFill());
         }
         _widget.setPropertyValue(PolygonModel.PROP_BORDER_STYLE, 6);
+        ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
     }
 
     
