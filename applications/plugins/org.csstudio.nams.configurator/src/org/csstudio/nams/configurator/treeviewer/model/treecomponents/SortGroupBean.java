@@ -2,6 +2,8 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.util.Collection;
 
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+
 /**
  * Die {@link SortGroupBean} enthält Kider, die im TreeViewer des Configurators
  * dargestellt werden. Da eine Gruppe "global" verwendet wird, kann (muss aber
@@ -11,7 +13,7 @@ import java.util.Collection;
  * @author Eugen Reiswich
  * 
  */
-public class SortGroupBean {
+public class SortGroupBean extends ConfigurationBean {
 
 	private String groupName;
 
@@ -66,5 +68,10 @@ public class SortGroupBean {
 
 	public int getGroupID() {
 		return groupID;
+	}
+
+	@Override
+	public String getDisplayName() {
+		return getGroupName();
 	}
 }
