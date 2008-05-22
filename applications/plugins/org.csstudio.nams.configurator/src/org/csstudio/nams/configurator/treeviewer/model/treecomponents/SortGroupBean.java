@@ -13,7 +13,9 @@ import java.util.Collection;
  */
 public class SortGroupBean {
 
-	String groupName;
+	private String groupName;
+
+	private int groupID;
 
 	private Collection<AlarmbearbeiterBean> alarmbearbeiterBeans;
 
@@ -24,6 +26,19 @@ public class SortGroupBean {
 	private Collection<FilterbedingungBean> filterbedingungBeans;
 
 	private Collection<FilterBean> filterBeans;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param ID
+	 *            Die Gruppen ID
+	 * @param name
+	 *            Der Gruppenname
+	 */
+	public SortGroupBean(int ID, String name) {
+		this.groupID = ID;
+		this.groupName = name;
+	}
 
 	public Collection<AlarmbearbeiterBean> getAlarmbearbeiterBeans() {
 		return alarmbearbeiterBeans;
@@ -43,5 +58,13 @@ public class SortGroupBean {
 
 	public Collection<FilterBean> getFilterBeans() {
 		return filterBeans;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public int getGroupID() {
+		return groupID;
 	}
 }
