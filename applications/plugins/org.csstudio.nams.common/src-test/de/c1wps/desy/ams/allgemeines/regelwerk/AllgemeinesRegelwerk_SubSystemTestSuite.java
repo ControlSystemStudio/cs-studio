@@ -20,6 +20,7 @@ public class AllgemeinesRegelwerk_SubSystemTestSuite extends TestCase {
 		suite.addTestSuite(NichtVersandRegel_Test.class);
 		suite.addTestSuite(AbstractNodeVersandRegel_Test.class);
 		suite.addTestSuite(TimeBasedRegel_Test.class);
+		suite.addTestSuite(TimeBasedRegelAlarmBeiBestaetigung_Test.class);
 		//$JUnit-END$
 		return suite;
 	}

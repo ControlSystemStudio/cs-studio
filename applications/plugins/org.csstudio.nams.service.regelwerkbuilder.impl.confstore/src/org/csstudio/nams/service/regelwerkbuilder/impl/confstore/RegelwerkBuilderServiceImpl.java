@@ -10,11 +10,13 @@ import org.csstudio.ams.configurationStoreService.knownTObjects.AggrFilterCondit
 import org.csstudio.ams.configurationStoreService.knownTObjects.AggrFilterTObject;
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionStringTObject;
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionTimeBasedTObject;
+import org.csstudio.ams.configurationStoreService.util.AmsConstants;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
 import org.csstudio.nams.common.material.regelwerk.StringRegel;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
+import org.csstudio.nams.common.material.regelwerk.TimeBasedAlarmBeiBestaetigungRegel;
 import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
 import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.VersandRegel;
@@ -78,17 +80,23 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 					.valueOf(timeBasedCondition.getStartOperator()),
 					timeBasedCondition.getStartKeyValue(), timeBasedCondition
 							.getStartCompValue());
-			VersandRegel confirmRegel = new StringRegel(StringRegelOperator
-					.valueOf(timeBasedCondition.getConfirmOperator()),
-					timeBasedCondition.getConfirmKeyValue(), timeBasedCondition
+			VersandRegel confirmCancelRegel = new StringRegel(
+					StringRegelOperator.valueOf(timeBasedCondition
+							.getConfirmOperator()), timeBasedCondition
+							.getConfirmKeyValue(), timeBasedCondition
 							.getConfirmCompValue());
 
-			// FIXME short erscheint mir als eine zu kleine Domäne, was
-			// für eine Zeiteinheit ist das?
-			short delayUntilAlarm = timeBasedCondition.getTimePeriod();
+			Millisekunden delayUntilAlarm = Millisekunden.valueOf(timeBasedCondition.getTimePeriod()*1000);
+			short timeBehaviorAlarm = timeBasedCondition.getTimeBehavior();
 
-			VersandRegel timeBasedRegel = new TimeBasedRegel(startRegel, null,
-					confirmRegel, Millisekunden.valueOf(delayUntilAlarm));
+			VersandRegel timeBasedRegel = null;
+			if (timeBehaviorAlarm == AmsConstants.TIMEBEHAVIOR_CONFIRMED_THEN_ALARM)
+				timeBasedRegel = new TimeBasedAlarmBeiBestaetigungRegel(startRegel,
+						confirmCancelRegel, delayUntilAlarm);
+			else if (timeBehaviorAlarm == AmsConstants.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM)
+				timeBasedRegel = new TimeBasedRegel(startRegel,
+						confirmCancelRegel, null, delayUntilAlarm);
+			else throw new IllegalArgumentException("Unsupported Timebehavior");
 			return timeBasedRegel;
 		}
 			// case ODER: {
