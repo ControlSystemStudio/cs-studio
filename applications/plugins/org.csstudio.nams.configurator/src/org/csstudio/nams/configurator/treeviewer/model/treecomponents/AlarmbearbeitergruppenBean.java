@@ -98,4 +98,13 @@ public class AlarmbearbeitergruppenBean extends
 		return null;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof AlarmbearbeitergruppenBean) {
+			AlarmbearbeitergruppenBean bean = (AlarmbearbeitergruppenBean) obj;
+			return this.getGroupID() == bean.getGroupID();
+		}
+		return super.equals(obj);
+	}
+
 }

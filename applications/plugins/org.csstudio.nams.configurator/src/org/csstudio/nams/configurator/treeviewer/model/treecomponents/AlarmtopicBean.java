@@ -84,5 +84,13 @@ public class AlarmtopicBean extends AbstractObservableBean<AlarmtopicBean> {
 		return null;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof AlarmtopicBean) {
+			AlarmtopicBean bean = (AlarmtopicBean) obj;
+			return this.getTopicID() == bean.getTopicID();
+		}
+		return super.equals(obj);
+	}
 
 }

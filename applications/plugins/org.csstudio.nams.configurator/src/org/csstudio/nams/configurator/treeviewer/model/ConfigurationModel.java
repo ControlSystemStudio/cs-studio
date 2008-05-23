@@ -10,6 +10,7 @@ import org.csstudio.nams.configurator.treeviewer.model.treecomponents.Configurat
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortGroupBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupNode;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean.PreferedAlarmType;
 
 /**
  * Diese Klasse ist das Model für den TreeViewer des AMS-Configurators.
@@ -69,13 +70,6 @@ public class ConfigurationModel {
 				alarmBearbeitergroupNodes.add(groupNodeAlarmbearbeiter);
 			}
 
-			// else {
-			// SortgroupNode emptyNode = new SortgroupNode(bean
-			// .getDisplayName(), null,
-			// ConfigurationType.ALARMBEATERBEITER);
-			// emptygroupNodes.add(emptyNode);
-			// }
-
 			// ALARMBEATERBEITERGRUPPE
 			if (!bean.getAlarmbearbeitergruppenBeans().isEmpty()) {
 				SortgroupNode groupNodeAlarmbearbeitergruppe = new SortgroupNode(
@@ -87,13 +81,6 @@ public class ConfigurationModel {
 						.add(groupNodeAlarmbearbeitergruppe);
 			}
 
-			// else {
-			// SortgroupNode emptyNode = new SortgroupNode(bean
-			// .getDisplayName(), null,
-			// ConfigurationType.ALARMBEATERBEITERGRUPPE);
-			// emptygroupNodes.add(emptyNode);
-			// }
-
 			// ALARMTOPIC
 			if (!bean.getAlarmtopicBeans().isEmpty()) {
 				SortgroupNode groupNodeAlarmtopic = new SortgroupNode(bean
@@ -101,12 +88,6 @@ public class ConfigurationModel {
 						ConfigurationType.ALARMTOPIC);
 				alarmTopicgroupNodes.add(groupNodeAlarmtopic);
 			}
-
-			// else {
-			// SortgroupNode emptyNode = new SortgroupNode(bean
-			// .getDisplayName(), null, ConfigurationType.ALARMTOPIC);
-			// emptygroupNodes.add(emptyNode);
-			// }
 
 			// FILTERBEDINGUNG
 			if (!bean.getFilterbedingungBeans().isEmpty()) {
@@ -116,13 +97,6 @@ public class ConfigurationModel {
 				filterBedingunggroupNodes.add(groupNodeFilterbedingung);
 			}
 
-			// else {
-			// SortgroupNode emptyNode = new SortgroupNode(bean
-			// .getDisplayName(), null,
-			// ConfigurationType.FILTERBEDINGUNG);
-			// emptygroupNodes.add(emptyNode);
-			// }
-
 			// FILTER
 			if (!bean.getFilterBeans().isEmpty()) {
 				SortgroupNode groupNodeFilter = new SortgroupNode(bean
@@ -130,11 +104,6 @@ public class ConfigurationModel {
 						ConfigurationType.FILTER);
 				filtergroupNodes.add(groupNodeFilter);
 			}
-			// else {
-			// SortgroupNode emptyNode = new SortgroupNode(bean
-			// .getDisplayName(), null, ConfigurationType.FILTER);
-			// emptygroupNodes.add(emptyNode);
-			// }
 
 			this.checkEmptyGroup(bean, emptygroupNodes);
 		}
@@ -211,6 +180,14 @@ public class ConfigurationModel {
 		// Beans erzeugen
 		AlarmbearbeiterBean testAlarmbearbeiterBean1 = new AlarmbearbeiterBean();
 		testAlarmbearbeiterBean1.setName("Klaus");
+		testAlarmbearbeiterBean1.setActive(true);
+		testAlarmbearbeiterBean1.setConfirmCode("Confirmation Code");
+		testAlarmbearbeiterBean1.setEmail("alarm@test.de");
+		testAlarmbearbeiterBean1.setMobilePhone("0170/rufmichan");
+		testAlarmbearbeiterBean1.setPhone("040/don't call");
+		testAlarmbearbeiterBean1.setPreferedAlarmType(PreferedAlarmType.EMAIL);
+		testAlarmbearbeiterBean1.setStatusCode("Statuc Code");
+		testAlarmbearbeiterBean1.setUserID(0);
 
 		AlarmbearbeiterBean testAlarmbearbeiterBean2 = new AlarmbearbeiterBean();
 		testAlarmbearbeiterBean2.setName("Susi");

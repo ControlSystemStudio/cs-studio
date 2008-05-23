@@ -6,28 +6,20 @@ import java.util.Collection;
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditingStoreService;
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
 import org.csstudio.ams.service.logging.declaration.Logger;
+import org.csstudio.nams.configurator.treeviewer.actions.OpenConfigurationEditor;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AbstractObservableBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortGroupBean;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.SharedImages;
-import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 public class ConfigurationTreeView extends ViewPart {
@@ -83,7 +75,16 @@ public class ConfigurationTreeView extends ViewPart {
 	private void hookDoubleClickAction() {
 		_viewer.addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {
-				doubleClickAction.run();
+				// prüfe, ob ein ChildElement ausgewählt wurde
+				IStructuredSelection selection = (IStructuredSelection) event
+						.getSelection();
+				if (selection.getFirstElement() instanceof AbstractObservableBean<?>) {
+					doubleClickAction = new OpenConfigurationEditor(
+							(IConfigurationBean) selection.getFirstElement(),
+							configurationModel.getSortgroupNames());
+
+					doubleClickAction.run();
+				}
 			}
 		});
 	}

@@ -1,5 +1,8 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
+import java.beans.PropertyChangeListener;
+import java.util.Collection;
+
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
 import org.eclipse.swt.SWT;
@@ -34,6 +37,24 @@ public class DefaultStackPart extends AbstractStackPart {
 	public void save(IConfigurationBean original) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("not implemented yet.");
+	}
+
+	@Override
+	public void setInput(IConfigurationBean input, Collection groupNames) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setPropertyChangedListener(PropertyChangeListener listener) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setFocus() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

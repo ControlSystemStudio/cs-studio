@@ -17,4 +17,13 @@ public class FilterbedingungBean extends
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof FilterbedingungBean) {
+			// TODO compare IDs
+			// FilterbedingungBean bean = (FilterbedingungBean) obj;
+		}
+		return super.equals(obj);
+	}
 }

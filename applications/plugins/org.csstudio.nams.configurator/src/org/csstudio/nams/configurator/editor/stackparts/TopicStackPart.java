@@ -1,14 +1,17 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
+import java.beans.PropertyChangeListener;
+import java.util.Collection;
+
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicBean;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -19,7 +22,7 @@ public class TopicStackPart extends AbstractStackPart<AlarmtopicBean> {
 	private Text _idTextEntry;
 	private Text _topicIdTextEntry;
 	private Composite _main;
-	private CCombo _groupComboEntry;
+	private Combo _groupComboEntry;
 	private Text _topicNameTextEntry;
 	private Text _descriptionTextEntry;
 	
@@ -76,5 +79,25 @@ public class TopicStackPart extends AbstractStackPart<AlarmtopicBean> {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("not implemented yet.");
 	}
+
+	@Override
+	public void setInput(IConfigurationBean input, Collection<String> groupNames) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setPropertyChangedListener(PropertyChangeListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setFocus() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	
 }

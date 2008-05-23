@@ -71,4 +71,13 @@ public class FilterBean extends AbstractObservableBean<FilterBean> {
 		return null;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof FilterBean) {
+			FilterBean bean = (FilterBean) obj;
+			return this.getFilterID() == bean.getFilterID();
+		}
+		return super.equals(obj);
+	}
+
 }

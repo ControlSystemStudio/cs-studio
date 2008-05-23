@@ -9,26 +9,27 @@ public class AlarmbearbeiterBean extends
 		NONE, EMAIL, SMS, VOICE;
 	}
 
-	public static enum AlarmbearbeiterBeanPropertyNames {
+	public static enum PropertyNames {
 		userID, confirmCode, name, email, mobilePhone, phone, statusCode, active, preferedAlarmType
 
 	}
 
 	private int userID;// PRIMARY KEY
-	private String name;
-	private String email;
-	private String mobilePhone;
-	private String phone;
-	private String statusCode;
-	private String confirmCode;
-	private boolean isActive;
-	private PreferedAlarmType preferedAlarmType;
+	private String name = "";
+	private String email = "";
+	private String mobilePhone = "";
+	private String phone = "";
+	private String statusCode = "";
+	private String confirmCode = "";
+	private boolean isActive = false;
+	private PreferedAlarmType preferedAlarmType = PreferedAlarmType.NONE;
 
 	private PropertyChangeSupport propertyChangeSupport;
 
 	public AlarmbearbeiterBean() {
 		userID = -1;
 		propertyChangeSupport = getPropertyChangeSupport();
+
 	}
 
 	public int getUserID() {
@@ -38,9 +39,8 @@ public class AlarmbearbeiterBean extends
 	public void setUserID(int userID) {
 		int oldValue = getUserID();
 		this.userID = userID;
-		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeiterBeanPropertyNames.userID.name(), oldValue,
-				getUserID());
+		propertyChangeSupport.firePropertyChange(PropertyNames.userID.name(),
+				oldValue, getUserID());
 	}
 
 	public String getConfirmCode() {
@@ -50,9 +50,8 @@ public class AlarmbearbeiterBean extends
 	public void setConfirmCode(String confirmCode) {
 		String oldValue = getConfirmCode();
 		this.confirmCode = confirmCode;
-		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeiterBeanPropertyNames.confirmCode.name(), oldValue,
-				getConfirmCode());
+		propertyChangeSupport.firePropertyChange(PropertyNames.confirmCode
+				.name(), oldValue, getConfirmCode());
 	}
 
 	public String getName() {
@@ -62,9 +61,8 @@ public class AlarmbearbeiterBean extends
 	public void setName(String name) {
 		String oldValue = getName();
 		this.name = name;
-		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeiterBeanPropertyNames.name.name(), oldValue,
-				getName());
+		propertyChangeSupport.firePropertyChange(PropertyNames.name.name(),
+				oldValue, getName());
 	}
 
 	public String getEmail() {
@@ -74,9 +72,8 @@ public class AlarmbearbeiterBean extends
 	public void setEmail(String email) {
 		String oldValue = getEmail();
 		this.email = email;
-		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeiterBeanPropertyNames.email.name(), oldValue,
-				getEmail());
+		propertyChangeSupport.firePropertyChange(PropertyNames.email.name(),
+				oldValue, getEmail());
 	}
 
 	public String getMobilePhone() {
@@ -86,9 +83,8 @@ public class AlarmbearbeiterBean extends
 	public void setMobilePhone(String mobilePhone) {
 		String oldValue = getMobilePhone();
 		this.mobilePhone = mobilePhone;
-		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeiterBeanPropertyNames.mobilePhone.name(), oldValue,
-				getMobilePhone());
+		propertyChangeSupport.firePropertyChange(PropertyNames.mobilePhone
+				.name(), oldValue, getMobilePhone());
 	}
 
 	public String getPhone() {
@@ -98,9 +94,8 @@ public class AlarmbearbeiterBean extends
 	public void setPhone(String phone) {
 		String oldValue = getPhone();
 		this.phone = phone;
-		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeiterBeanPropertyNames.phone.name(), oldValue,
-				getPhone());
+		propertyChangeSupport.firePropertyChange(PropertyNames.phone.name(),
+				oldValue, getPhone());
 	}
 
 	public String getStatusCode() {
@@ -110,9 +105,8 @@ public class AlarmbearbeiterBean extends
 	public void setStatusCode(String statusCode) {
 		String oldValue = getStatusCode();
 		this.statusCode = statusCode;
-		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeiterBeanPropertyNames.statusCode.name(), oldValue,
-				getStatusCode());
+		propertyChangeSupport.firePropertyChange(PropertyNames.statusCode
+				.name(), oldValue, getStatusCode());
 	}
 
 	public boolean isActive() {
@@ -122,9 +116,8 @@ public class AlarmbearbeiterBean extends
 	public void setActive(boolean isActive) {
 		boolean oldValue = isActive();
 		this.isActive = isActive;
-		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeiterBeanPropertyNames.active.name(), oldValue,
-				isActive());
+		propertyChangeSupport.firePropertyChange(PropertyNames.active.name(),
+				oldValue, isActive());
 	}
 
 	public PreferedAlarmType getPreferedAlarmType() {
@@ -135,8 +128,8 @@ public class AlarmbearbeiterBean extends
 		PreferedAlarmType oldValue = getPreferedAlarmType();
 		this.preferedAlarmType = preferedAlarmType;
 		propertyChangeSupport.firePropertyChange(
-				AlarmbearbeiterBeanPropertyNames.preferedAlarmType.name(),
-				oldValue, getPreferedAlarmType());
+				PropertyNames.preferedAlarmType.name(), oldValue,
+				getPreferedAlarmType());
 	}
 
 	public void copyStateOf(AlarmbearbeiterBean otherBean) {
@@ -145,11 +138,44 @@ public class AlarmbearbeiterBean extends
 
 	@Override
 	public AlarmbearbeiterBean getClone() {
-		// TODO Auto-generated method stub
-		return null;
+
+		AlarmbearbeiterBean bean = new AlarmbearbeiterBean();
+		bean.setUserID(this.getUserID());
+		bean.setActive(this.isActive);
+		bean.setConfirmCode(this.getConfirmCode());
+		bean.setEmail(this.getEmail());
+		bean.setMobilePhone(this.getMobilePhone());
+		bean.setName(this.getName());
+		bean.setPhone(this.getPhone());
+		bean.setPreferedAlarmType(this.getPreferedAlarmType());
+		bean.setStatusCode(this.getStatusCode());
+
+		return bean;
 	}
 
 	public String getDisplayName() {
 		return getName() != null ? getName() : "(ohne Name)";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof AlarmbearbeiterBean) {
+			AlarmbearbeiterBean bean = (AlarmbearbeiterBean) obj;
+			boolean isEqual = false;
+			if (this.getUserID() == bean.getUserID()
+					&& this.getConfirmCode().equals(bean.getConfirmCode())
+					&& this.getEmail().equals(bean.getEmail())
+					&& this.getMobilePhone().equals(bean.getMobilePhone())
+					&& this.getName().equals(bean.getName())
+					&& this.getPhone().equals(bean.getPhone())
+					&& this.getPreferedAlarmType() == bean
+							.getPreferedAlarmType()
+					&& this.getStatusCode().equals(bean.getStatusCode())) {
+				isEqual = true;
+
+			}
+			return isEqual;
+		}
+		return super.equals(obj);
 	}
 }

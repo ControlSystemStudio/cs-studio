@@ -1,6 +1,9 @@
 package org.csstudio.nams.configurator.editor;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.csstudio.nams.configurator.editor.stackparts.AbstractStackPart;
@@ -8,6 +11,7 @@ import org.csstudio.nams.configurator.editor.stackparts.DefaultStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.TopicStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.UserStackPart;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AbstractObservableBean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -41,6 +45,8 @@ public class ConfigurationEditor extends EditorPart implements
 
 	private IConfigurationBean _originalModel;
 
+	private Collection<String> sortgroupNames;
+
 	public ConfigurationEditor() {
 		_stackParts = new ArrayList<AbstractStackPart<?>>();
 	}
@@ -62,26 +68,42 @@ public class ConfigurationEditor extends EditorPart implements
 		this.setInput(input);
 		_input = (ConfigurationEditorInput) input;
 		_originalModel = _input.getBean();
+
+		sortgroupNames = _input.getSortgroupNames();
 		if (_defaultStackPart != null) {
 			this.showCorrespondingStackPart(_originalModel);
 		}
 	}
 
 	private void showCorrespondingStackPart(IConfigurationBean input) {
-		AbstractStackPart stackPart = this.getStackPartfor(input.getClass());
+		AbstractStackPart<?> stackPart = this.getStackPartfor(input.getClass());
 		Control mainControl = stackPart.getMainControl();
 		_showedStackPart = stackPart;
+
+		// init showedStackPart with input
+		_showedStackPart.setInput(_originalModel, sortgroupNames);
+		_showedStackPart.setPropertyChangedListener(this
+				.getPropertyChangeListener());
+
 		_stackLayout.topControl = mainControl;
 	}
 
 	private AbstractStackPart<?> getStackPartfor(
 			Class<? extends IConfigurationBean> tObjectClass) {
-		for (AbstractStackPart part : _stackParts) {
+		for (AbstractStackPart<?> part : _stackParts) {
 			if (tObjectClass.equals(part.getAssociatedBean())) {
 				return part;
 			}
 		}
 		return _defaultStackPart;
+	}
+
+	private PropertyChangeListener getPropertyChangeListener() {
+		return new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent evt) {
+				fireDirtyFlagChanged();
+			}
+		};
 	}
 
 	@Override
@@ -121,7 +143,7 @@ public class ConfigurationEditor extends EditorPart implements
 
 	@Override
 	public void setFocus() {
-
+		_showedStackPart.setFocus();
 	}
 
 	public void fireDirtyFlagChanged() {

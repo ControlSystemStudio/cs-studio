@@ -5,8 +5,8 @@ import java.beans.PropertyChangeSupport;
 
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
 
-abstract class AbstractObservableBean<T extends IConfigurationBean> implements
-		IConfigurationBean {
+public abstract class AbstractObservableBean<T extends IConfigurationBean>
+		implements IConfigurationBean {
 
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
