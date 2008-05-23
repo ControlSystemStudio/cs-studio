@@ -1,11 +1,11 @@
 package org.csstudio.nams.configurator.treeviewer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditingStoreService;
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
 import org.csstudio.ams.service.logging.declaration.Logger;
-import org.csstudio.nams.configurator.treeviewer.actions.NewEntryAction;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortGroupBean;
 import org.eclipse.jface.action.Action;
@@ -35,13 +35,10 @@ public class ConfigurationTreeView extends ViewPart {
 	public static final String ID = "org.csstudio.nams.configurator.views.ConfigurationTreeView";
 
 	private TreeViewer _viewer;
-	private DrillDownAdapter drillDownAdapter;
-	private Action _newAction;
+
 	private Action doubleClickAction;
 
 	private ConfigurationModel configurationModel;
-
-	private Action _transferChnagesToConfigurationsDB;
 
 	private static ConfigurationEditingStoreService editingStoreService;
 
@@ -64,16 +61,13 @@ public class ConfigurationTreeView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		_viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
-		drillDownAdapter = new DrillDownAdapter(_viewer);
 		_viewer.setContentProvider(new ConfigurationContentProvider());
 		_viewer.setLabelProvider(new ConfigurationLabelProvider());
 		_viewer.setSorter(new ConfigurationSorter());
 		_viewer.setInput(configurationModel.getChildren());
 		_viewer.setSorter(new ConfiguratorViewerSorter());
-		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
-		contributeToActionBars();
 
 		this.getSite().setSelectionProvider(_viewer);
 	}
@@ -81,68 +75,9 @@ public class ConfigurationTreeView extends ViewPart {
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				ConfigurationTreeView.this.fillContextMenu(manager);
-			}
-		});
 		Menu menu = menuMgr.createContextMenu(_viewer.getControl());
 		_viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuMgr, _viewer);
-	}
-
-	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
-	}
-
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(_newAction);
-		manager.add(new Separator());
-		manager.add(_transferChnagesToConfigurationsDB);
-	}
-
-	private void fillContextMenu(IMenuManager manager) {
-		if (!_viewer.getSelection().isEmpty()) {
-			manager.add(_newAction);
-		}
-		manager.add(new Separator());
-		manager.add(_transferChnagesToConfigurationsDB);
-		drillDownAdapter.addNavigationActions(manager);
-		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	}
-
-	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(_newAction);
-		manager.add(new Separator());
-		manager.add(_transferChnagesToConfigurationsDB);
-		drillDownAdapter.addNavigationActions(manager);
-	}
-
-	private void makeActions() {
-		_newAction = new NewEntryAction(_viewer, this.configurationModel);
-
-		doubleClickAction = new Action() {
-			public void run() {
-				ISelection selection = _viewer.getSelection();
-				Object obj = ((IStructuredSelection) selection)
-						.getFirstElement();
-				showMessage("Double-click detected on " + obj.toString());
-			}
-		};
-
-		_transferChnagesToConfigurationsDB = new Action() {
-			public void run() {
-				showMessage("Transfering changes to Oracle database!");
-			}
-		};
-		_transferChnagesToConfigurationsDB
-				.setText("Transfer changes to configuration database");
-		_transferChnagesToConfigurationsDB.setImageDescriptor(PlatformUI
-				.getWorkbench().getSharedImages().getImageDescriptor(
-						SharedImages.IMG_TOOL_REDO));
 	}
 
 	private void hookDoubleClickAction() {
@@ -151,11 +86,6 @@ public class ConfigurationTreeView extends ViewPart {
 				doubleClickAction.run();
 			}
 		});
-	}
-
-	private void showMessage(String message) {
-		MessageDialog.openInformation(_viewer.getControl().getShell(),
-				"Configuration Tree Viewer", message);
 	}
 
 	/**
@@ -189,5 +119,15 @@ public class ConfigurationTreeView extends ViewPart {
 
 	public static void staticInjectLogger(Logger logger) {
 		ConfigurationTreeView.logger = logger;
+	}
+
+	/**
+	 * Diese Methode wird von den NewEntryActions aufgerufen, um den EditorPart
+	 * zu initialisieren
+	 * 
+	 * @return
+	 */
+	public Collection<String> getGroupNames() {
+		return this.configurationModel.getSortgroupNames();
 	}
 }

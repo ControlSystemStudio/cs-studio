@@ -25,12 +25,15 @@ public class ConfigurationModel {
 	 */
 	private Collection<IConfigurationNode> configurationNodes;
 
-	private final Collection<SortGroupBean> sortgroupBeans;
+	private Collection<SortGroupBean> sortgroupBeans;
 
 	public ConfigurationModel(Collection<SortGroupBean> sortgroupBeans) {
 		this.sortgroupBeans = sortgroupBeans;
 
-		this.initBeans(getTestconfigurationNodes());
+		// XXX Test only
+		this.sortgroupBeans = getTestconfigurationNodes();
+
+		this.initBeans(this.sortgroupBeans);
 	}
 
 	/**

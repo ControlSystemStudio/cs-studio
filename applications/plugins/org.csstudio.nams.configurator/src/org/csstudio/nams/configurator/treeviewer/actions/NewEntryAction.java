@@ -4,45 +4,48 @@ import java.util.Collection;
 
 import org.csstudio.nams.configurator.editor.ConfigurationEditor;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
+import org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeitergruppenBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterbedingungBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ISelectionProvider;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupNode;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class NewEntryAction extends Action {
+public class NewEntryAction implements IObjectActionDelegate {
 
-	private ISelectionProvider _provider;
-	private final ConfigurationModel model;
+	private Collection<String> groupNames;
+	private ConfigurationTreeView targetPart;
+	private IStructuredSelection selection;
 
-	public NewEntryAction(ISelectionProvider provider, ConfigurationModel model) {
-		_provider = provider;
-		this.model = model;
-		this.setText("New");
-		this.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-				.getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
+	// public NewEntryAction(Collection<String> groupNames) {
+	// this.groupNames = groupNames;
+	// }
+
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		this.targetPart = (ConfigurationTreeView) targetPart;
 	}
 
-	@Override
-	public void run() {
-		IStructuredSelection selection = (IStructuredSelection) _provider
-				.getSelection();
+	public void run(IAction action) {
+
 		if (!selection.isEmpty()) {
 			if (selection.getFirstElement() instanceof IConfigurationNode) {
 
 				IConfigurationNode selectedNode = (IConfigurationNode) selection
 						.getFirstElement();
+
+				this.groupNames = this.targetPart.getGroupNames();
 
 				ConfigurationBean newElement = null;
 				/*
@@ -66,13 +69,10 @@ public class NewEntryAction extends Action {
 					break;
 				}
 
-				Collection<String> sortgroupNames = this.model
-						.getSortgroupNames();
-
 				try {
 
 					ConfigurationEditorInput editorInput = new ConfigurationEditorInput(
-							newElement, sortgroupNames);
+							newElement, this.groupNames);
 
 					IWorkbenchPage activePage = PlatformUI.getWorkbench()
 							.getActiveWorkbenchWindow().getActivePage();
@@ -86,5 +86,23 @@ public class NewEntryAction extends Action {
 				}
 			}
 		}
+	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+		this.selection = (IStructuredSelection) selection;
+		boolean isEnabled = false;
+
+		// enable/disable selection
+		if (!this.selection.isEmpty()) {
+			if (this.selection.getFirstElement() instanceof IConfigurationNode) {
+				isEnabled = true;
+			}
+
+			if (this.selection.getFirstElement() instanceof SortgroupNode) {
+				isEnabled = true;
+			}
+		}
+
+		action.setEnabled(isEnabled);
 	}
 }

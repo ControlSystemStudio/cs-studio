@@ -34,5 +34,31 @@
             name="Configuration Editor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.csstudio.nams.configurator.configurationNodeContribution"
+            objectClass="org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode">
+         <action
+               class="org.csstudio.nams.configurator.treeviewer.actions.NewEntryAction"
+               icon="icons/abiword_abi.png"
+               id="org.csstudio.nams.configurator.newEntryaction"
+               label="New Entry"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="org.csstudio.nams.configurator.configurationGroupContribution"
+            objectClass="org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupNode">
+         <action
+               class="org.csstudio.nams.configurator.treeviewer.actions.NewEntryAction"
+               icon="icons/abiword_abi.png"
+               id="org.csstudio.nams.configurator.newGroupAction"
+               label="New Group Entry">
+         </action>
+      </objectContribution>
+   </extension>
 
 </plugin>
