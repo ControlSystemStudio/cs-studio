@@ -15,12 +15,16 @@ public class DefaultNAMSMessage implements NAMSMessage {
 	final static String MSGVALUE_TCMD_RELOAD_CFG_START = MSGVALUE_TCMD_RELOAD + "_START";
 	final static String MSGVALUE_TCMD_RELOAD_CFG_END = MSGVALUE_TCMD_RELOAD + "_END";
 	
-	private final Map<String, String> map;
+//	private final Map<String, String> map;
 	private final AcknowledgeHandler handler;
 	private SystemNachricht systemNachricht;
 
+	public DefaultNAMSMessage(Map<String, String> map) {
+		this(map, null);
+	}
+	
 	public DefaultNAMSMessage(Map<String, String> map, AcknowledgeHandler handler) {
-		this.map = map;
+//		this.map = map;
 		this.handler = handler;
 		
 		if (map.containsKey(MSGPROP_COMMAND)) {
@@ -38,10 +42,12 @@ public class DefaultNAMSMessage implements NAMSMessage {
 	}
 	
 	public void acknowledge() throws MessagingException {
-		try {
-			this.handler.acknowledge();
-		} catch (Throwable e) {
-			throw new MessagingException(e);
+		if (this.handler != null) {
+			try {
+				this.handler.acknowledge();
+			} catch (Throwable e) {
+				throw new MessagingException(e);
+			}
 		}
 	}
 
@@ -50,6 +56,7 @@ public class DefaultNAMSMessage implements NAMSMessage {
 		return null;
 	}
 
+	@Deprecated
 	public Map<String, String> alsMap() {
 		throw new UnsupportedOperationException();
 	}

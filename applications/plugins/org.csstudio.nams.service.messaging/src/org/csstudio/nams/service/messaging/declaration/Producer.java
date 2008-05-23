@@ -11,5 +11,6 @@ public interface Producer {
 	
 	// TODO Irgendwann:	public void sendeVorgangsmappe(Vorgangsmappe vorgangsmappe);
 	public void sendeSystemnachricht(SystemNachricht vorgangsmappe);
+	@Deprecated
 	public void sendeMap(Map<String, String> map);
 }

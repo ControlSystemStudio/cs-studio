@@ -23,27 +23,25 @@
  */
 package org.csstudio.nams.application.department.decision;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
-import org.csstudio.nams.application.department.decision.exceptions.InitPropertiesException;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.messaging.declaration.AbstractMultiConsumerMessageHandler;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.MessagingService;
 import org.csstudio.nams.service.messaging.declaration.MessagingSession;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
-import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -54,6 +52,7 @@ import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
 import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
+import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
 
 /**
  * <p>
@@ -223,23 +222,29 @@ public class DecisionDepartmentActivator implements IApplication,
 
 			logger.logInfoMessage(this,
 					"Decision department application is creating consumers...");
+			// TODO clientid!!
 			MessagingSession amsMessagingSessionForConsumer = messagingService
 					.createNewMessagingSession(
-							"TODO",
+							"amsConsumer",
 							new String[] {
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1),
-									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) });
+											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1)
+//											,
+//									preferenceService
+//											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) 
+											});
 
+			// TODO clientid!!
 			extMessagingSessionForConsumer = messagingService
 					.createNewMessagingSession(
-							"TODO",
+							"extConsumer",
 							new String[] {
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1),
-									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) });
+											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1)
+//											,
+//									preferenceService
+//											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) 
+											});
 
 			Consumer extAlarmConsumer = extMessagingSessionForConsumer
 					.createConsumer(
@@ -257,13 +262,13 @@ public class DecisionDepartmentActivator implements IApplication,
 									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND),
 							PostfachArt.TOPIC);
 
-			
-			 logger.logInfoMessage(this,
+			logger.logInfoMessage(this,
 					"Decision department application is creating producers...");
 
+			// TODO clientid!!
 			amsMessagingSessionForProducer = messagingService
 					.createNewMessagingSession(
-							"TODO",
+							"amsProducer",
 							new String[] { preferenceService
 									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL) });
 
@@ -280,9 +285,12 @@ public class DecisionDepartmentActivator implements IApplication,
 			 * solange, bis der Distributor bestaetigt, dass die Synchronisation
 			 * erfolgreich ausgefuehrt wurde.
 			 */
-			logger.logInfoMessage(this,
-			"Decision department application is orders distributor to synchronize configuration...");
-			SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(amsAusgangsProducer, amsCommandConsumer);
+			logger
+					.logInfoMessage(
+							this,
+							"Decision department application orders distributor to synchronize configuration...");
+			SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(
+					amsAusgangsProducer, amsCommandConsumer);
 
 			logger
 					.logInfoMessage(this,
@@ -352,8 +360,45 @@ public class DecisionDepartmentActivator implements IApplication,
 	}
 
 	private void receiveMessagesUntilApplicationQuits(
-			Eingangskorb<Vorgangsmappe> eingangskorb) {
+			final Eingangskorb<Vorgangsmappe> eingangskorb) {
+
+		Consumer[] consumerArray = new Consumer[0];
+
+		AbstractMultiConsumerMessageHandler messageHandler = new AbstractMultiConsumerMessageHandler(
+				consumerArray, executionService) {
+
+			public void handleMessage(NAMSMessage message) {
+				if (message.enthaeltAlarmnachricht()) {
+					try {
+						eingangskorb.ablegen(new Vorgangsmappe(
+								Vorgangsmappenkennung.createNew(InetAddress
+										.getLocalHost(), new Date()), message
+										.alsAlarmnachricht()));
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else if (message.enthaeltSystemnachricht()) {
+					if (message.alsSystemachricht()
+							.istSyncronisationsAufforderung()) {
+						// TODO wir müssen syncronisieren
+					}
+				}
+			}
+
+		};
+
 		while (_continueWorking) {
+
+			try {
+				this._receiverThread.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				// e.printStackTrace();
+			}
 
 			// es kommen nicht nur Alarmniachrichten rein.
 			// deshalb brauchen wir einen eigenen Message Typ
@@ -366,36 +411,36 @@ public class DecisionDepartmentActivator implements IApplication,
 			// damit nicht hunderte Nachrichten während eines updates gepuufert
 			// werden, das ablegen in der Queue blockiert, wenn diese voll ist.
 			// Siehe java.util.concurrent.BlockingQueue.
-			NAMSMessage receivedMessage = null;
-			try {
-				receivedMessage = _consumer.receiveMessage();
-			} catch (MessagingException e) {
-				// Ignore this... just retry.
-				logger.logWarningMessage(this,
-						"an exception chaught during message recieving", e);
-			}
-
-			if (receivedMessage != null) {
-				logger.logInfoMessage(this, "Neue Nachricht erhalten: "
-						+ receivedMessage.toString());
-				// _producer.sendMessage(receivedMessage);
-
-				// TODO prüfen um was für eine neue Nachricht es sich handelt
-
-				// TODO falls es sich um eine Alarmnachricht handelt
-				// Vorgangsmappe anlegen und in den Eingangskorb des Büros legen
-				// eingangskorb.ablegen(receivedMessage);
-
-				// TODO andere Nachrichten Typen behandeln
-				// steuer Nachrichten wie z.B.: "Regelwerke neu laden"
-				// oder "einzelne Regelwerke kurzfristig deaktivieren" oder
-				// "shutdown"
-			} else {
-				// sollte nur beim beenden der Anwendung vorkommen
-				logger.logInfoMessage(this, "null Nachricht erhalten");
-			}
-
-			Thread.yield();
+			// NAMSMessage receivedMessage = null;
+			// try {
+			// receivedMessage = _consumer.receiveMessage();
+			// } catch (MessagingException e) {
+			// // Ignore this... just retry.
+			// logger.logWarningMessage(this,
+			// "an exception chaught during message recieving", e);
+			// }
+			//
+			// if (receivedMessage != null) {
+			// logger.logInfoMessage(this, "Neue Nachricht erhalten: "
+			// + receivedMessage.toString());
+			// // _producer.sendMessage(receivedMessage);
+			//
+			// // TODO prüfen um was für eine neue Nachricht es sich handelt
+			//
+			// // TODO falls es sich um eine Alarmnachricht handelt
+			// // Vorgangsmappe anlegen und in den Eingangskorb des Büros legen
+			// // eingangskorb.ablegen(receivedMessage);
+			//
+			// // TODO andere Nachrichten Typen behandeln
+			// // steuer Nachrichten wie z.B.: "Regelwerke neu laden"
+			// // oder "einzelne Regelwerke kurzfristig deaktivieren" oder
+			// // "shutdown"
+			// } else {
+			// // sollte nur beim beenden der Anwendung vorkommen
+			// logger.logInfoMessage(this, "null Nachricht erhalten");
+			// }
+			//
+			// Thread.yield();
 		}
 	}
 

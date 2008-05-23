@@ -61,10 +61,11 @@ public class JMSProducer implements Producer {
 		return isClosed;
 	}
 
-	public void sendeSystemnachricht(SystemNachricht vorgangsmappe) {
+	public void sendeSystemnachricht(SystemNachricht systemNachricht) {
 		// TODO implementieren
 	}
 
+	@Deprecated
 	public void sendeMap(Map<String, String> map) {
 		// TODO Auto-generated method stub
 		

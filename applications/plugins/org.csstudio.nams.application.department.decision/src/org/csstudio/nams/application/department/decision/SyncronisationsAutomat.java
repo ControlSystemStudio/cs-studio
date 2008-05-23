@@ -1,10 +1,10 @@
 package org.csstudio.nams.application.department.decision;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
+import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.Producer;
+import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
 /**
  * 
@@ -12,10 +12,6 @@ import org.csstudio.nams.service.messaging.declaration.Producer;
  */
 public class SyncronisationsAutomat {
 	
-//	private final static String MSGPROP_COMMAND = "COMMAND"; 
-//	private final static String MSGVALUE_TCMD_RELOAD= "AMS_RELOAD_CFG";
-//	private final static String MSGVALUE_TCMD_RELOAD_CFG_START = MSGVALUE_TCMD_RELOAD + "_START";
-//	
 	/**
 	 * Fordert distributor auf die globale Konfiguration in die lokale zu
 	 * uebertragen. Die Zugangsdaten zu den Datenbanken kennt der distributor
@@ -23,18 +19,32 @@ public class SyncronisationsAutomat {
 	 * einem interrupt auf dem ausführerendem Thread. Es ist erforderlich das
 	 * vor der ausführung dieser Operation keine Zugriffe auf die lokale DB
 	 * erfolgen.
+	 * @throws MessagingException 
 	 */
 	public static void syncronisationUeberDistributorAusfueren(
-			Producer amsAusgangsProducer, Consumer amsCommandConsumer) {
-		Map<String, String> map = new HashMap<String, String>();
+			Producer producer, Consumer consumer) throws MessagingException {
 		
-//		map.put(MSGPROP_COMMAND, MSGVALUE_TCMD_RELOAD_CFG_START);
+		producer.sendeSystemnachricht(new SyncronisationsAufforderungsSystemNachchricht());
 		
-		amsAusgangsProducer.sendeMap(map);
-		
-//		while(amsCommandConsumer.receiveMessage()) {
-//			
-//		}
+		boolean macheweiter = true;
+		while (macheweiter) {
+			try {
+				NAMSMessage receiveMessage = consumer.receiveMessage();
+				
+				if (receiveMessage.enthaeltSystemnachricht()) {
+					if (receiveMessage.alsSystemachricht().istSyncronisationsBestaetigung()) {
+						macheweiter = false;
+					} else {
+						// TODO systemnachricht die uns nicht interresiert?!?
+					}
+				} else {
+					// TODO keine systemnachricht behandeln 
+					System.out.println("falsche nachricht");
+				}
+			} catch (MessagingException e) {
+				throw new MessagingException(e);
+			}
+		}
 		
 //		// MapMessage mapMsg = amsSenderSession.createMapMessage();
 //		MapMessage mapMsg = amsPublisherDist2.createMapMessage();
@@ -57,8 +67,6 @@ public class SyncronisationsAutomat {
 //			// needed
 //		}
 		
-		
-//		amsAusgangsProducer.s
 	}
 
 }

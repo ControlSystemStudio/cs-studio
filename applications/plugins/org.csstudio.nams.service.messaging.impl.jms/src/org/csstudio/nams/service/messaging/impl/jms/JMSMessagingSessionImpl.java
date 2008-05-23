@@ -37,6 +37,7 @@ public class JMSMessagingSessionImpl implements MessagingSession {
 		try {
 			for (int i = 0; i < urls.length; i++) {
 				Hashtable<String, String> properties = new Hashtable<String, String>();
+				//FIXME aus dem preference store holen!
 				properties.put(Context.INITIAL_CONTEXT_FACTORY,
 						"org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 				properties.put(Context.PROVIDER_URL, urls[i]);
