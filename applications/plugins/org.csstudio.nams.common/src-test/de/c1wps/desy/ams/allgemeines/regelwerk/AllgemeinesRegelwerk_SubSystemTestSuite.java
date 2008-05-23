@@ -17,6 +17,7 @@ public class AllgemeinesRegelwerk_SubSystemTestSuite extends TestCase {
 		suite.addTestSuite(Regelwerkskennung_Test.class);
 		suite.addTestSuite(UndVersandRegel_Test.class);
 		suite.addTestSuite(OderVersandRegel_Test.class);
+		suite.addTestSuite(NichtVersandRegel_Test.class);
 		suite.addTestSuite(AbstractNodeVersandRegel_Test.class);
 		suite.addTestSuite(TimeBasedRegel_Test.class);
 		//$JUnit-END$
