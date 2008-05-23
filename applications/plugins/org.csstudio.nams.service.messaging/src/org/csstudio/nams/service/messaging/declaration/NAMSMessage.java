@@ -25,6 +25,7 @@ public interface NAMSMessage {
 
 	public SystemNachricht alsSystemachricht();
 	
+	@Deprecated
 	public Map<String, String> alsMap();
 
 	public String toString();

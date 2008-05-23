@@ -15,6 +15,12 @@ public class NAMSMessageJMSImpl implements NAMSMessage {
 
 	private final Message message;
 
+	/**
+	 * 
+	 * @param message
+	 * @deprecated ersetzen durch DefaultNAMSMessage
+	 */
+	@Deprecated
 	public NAMSMessageJMSImpl(Message message) {
 		this.message = message;
 

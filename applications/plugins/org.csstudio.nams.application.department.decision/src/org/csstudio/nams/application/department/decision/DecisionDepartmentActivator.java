@@ -25,6 +25,7 @@ package org.csstudio.nams.application.department.decision;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -38,7 +39,9 @@ import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.MessagingService;
+import org.csstudio.nams.service.messaging.declaration.MessagingSession;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
+import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
@@ -48,6 +51,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
+import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
 import de.c1wps.desy.ams.allgemeines.Vorgangsmappe;
 
@@ -133,39 +137,46 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * @see BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		
+
 		// Services holen
-		
+
 		// Logging Service
 		logger = BundleActivatorUtils
 				.getAvailableService(context, Logger.class);
 
 		logger.logInfoMessage(this, "plugin " + PLUGIN_ID
 				+ " initializing Services");
-		
+
 		// Messaging Service
-		messagingService = BundleActivatorUtils.getAvailableService(
-				context, MessagingService.class);
+		messagingService = BundleActivatorUtils.getAvailableService(context,
+				MessagingService.class);
 		if (messagingService == null)
 			throw new RuntimeException("no messaging service available!");
-		
+
 		// Preference Service (wird als konfiguration verwendet!!)
-		preferenceService = BundleActivatorUtils.getAvailableService(context, PreferenceService.class);
+		preferenceService = BundleActivatorUtils.getAvailableService(context,
+				PreferenceService.class);
 		if (preferenceService == null)
 			throw new RuntimeException("no preference service available!");
-		
-		System.out.println("bubu "+preferenceService.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DISTRIBUTOR));
-		
+
+		System.out
+				.println("bubu "
+						+ preferenceService
+								.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DISTRIBUTOR));
+
 		// RegelwerkBuilder Service
-		regelwerkBuilderService = BundleActivatorUtils.getAvailableService(context, RegelwerkBuilderService.class);
+		regelwerkBuilderService = BundleActivatorUtils.getAvailableService(
+				context, RegelwerkBuilderService.class);
 		if (regelwerkBuilderService == null)
-			throw new RuntimeException("no regelwerk builder service available!");
-		
+			throw new RuntimeException(
+					"no regelwerk builder service available!");
+
 		// History Service
-		historyService = BundleActivatorUtils.getAvailableService(context, HistoryService.class);
+		historyService = BundleActivatorUtils.getAvailableService(context,
+				HistoryService.class);
 		if (historyService == null)
 			throw new RuntimeException("no history service available!");
-		
+
 		// Execution Service
 		// TODO wird noch nicht benutzt!!
 		executionService = BundleActivatorUtils.getAvailableService(context,
@@ -193,72 +204,104 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * @see IApplication#start(IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) {
+		_receiverThread = Thread.currentThread();
 		AlarmEntscheidungsBuero alarmEntscheidungsBuero = null;
+		MessagingSession extMessagingSessionForConsumer = null;
+		MessagingSession amsMessagingSessionForProducer = null;
 
 		logger
 				.logInfoMessage(this,
 						"Decision department application is going to be initialized...");
 
 		try {
-			logger.logInfoMessage(this,
-					"Decision department application is loading properies...");
-//			Properties properties = initProperties();
-			logger.logInfoMessage(this,
-					"Decision department application is creating consumers...");
-//			MessagingSession messagingSession = messagingService.createNewMessagingSession(properties
-//									.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_CLIENT_ID
-//											.name()), properties
-//									.getProperty(
-//											PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS
-//													.name()).split(","));
-//			_consumer = messagingSession.createConsumer(properties
-//					.getProperty(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
-//							.name()), PostfachArt.TOPIC);
-				
+			// haben wir durch den preferenceService schon
+			// TODO soll diese noch auf gültige Werte geprüft werden
+			// logger.logInfoMessage(this,
+			// "Decision department application is loading configuration...");
+
+			// Properties properties = initProperties();
 
 			logger.logInfoMessage(this,
+					"Decision department application is creating consumers...");
+			MessagingSession amsMessagingSessionForConsumer = messagingService
+					.createNewMessagingSession(
+							"TODO",
+							new String[] {
+									preferenceService
+											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1),
+									preferenceService
+											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) });
+
+			extMessagingSessionForConsumer = messagingService
+					.createNewMessagingSession(
+							"TODO",
+							new String[] {
+									preferenceService
+											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1),
+									preferenceService
+											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) });
+
+			Consumer extAlarmConsumer = extMessagingSessionForConsumer
+					.createConsumer(
+							preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM),
+							PostfachArt.TOPIC);
+			Consumer extCommandConsumer = extMessagingSessionForConsumer
+					.createConsumer(
+							preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
+							PostfachArt.TOPIC);
+			Consumer amsCommandConsumer = amsMessagingSessionForConsumer
+					.createConsumer(
+							preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND),
+							PostfachArt.TOPIC);
+
+			
+			 logger.logInfoMessage(this,
 					"Decision department application is creating producers...");
-		
-//			_producer = producerFactoryService
-//					.createProducer(
-//							properties
-//									.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_CLIENT_ID
-//											.name()),
-//							properties
-//									.getProperty(PropertiesFileKeys.MESSAGING_PRODUCER_DESTINATION_NAME
-//											.name()),
-//							PostfachArt.TOPIC,
-//							properties
-//									.getProperty(
-//											PropertiesFileKeys.MESSAGING_PRODUCER_SERVER_URLS
-//													.name()).split(","));
+
+			amsMessagingSessionForProducer = messagingService
+					.createNewMessagingSession(
+							"TODO",
+							new String[] { preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL) });
+
+			Producer amsAusgangsProducer = amsMessagingSessionForProducer
+					.createProducer(
+							preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER),
+							PostfachArt.TOPIC);
+
+			/*-
+			 * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
+			 * Cofigurations-DB (application-DB) erfolgen, da zuvor dort noch
+			 * keine validen Daten liegen. Der folgende Aufruf blockiert
+			 * solange, bis der Distributor bestaetigt, dass die Synchronisation
+			 * erfolgreich ausgefuehrt wurde.
+			 */
+			logger.logInfoMessage(this,
+			"Decision department application is orders distributor to synchronize configuration...");
+			SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(amsAusgangsProducer, amsCommandConsumer);
 
 			logger
 					.logInfoMessage(this,
 							"Decision department application is configuring execution service...");
 			initialisiereThredGroupTypes(executionService);
 
+			// TODO
+
 			logger
 					.logInfoMessage(this,
 							"Decision department application is creating decision office...");
 
-			// FIXME Das Regelwerk aus der Konfiguration bauen bzw. aus einem
-			// passenden fachlichen Service holen.
-			Regelwerk[] regelwerke = new Regelwerk[0];
-			// ---ende
+			List<Regelwerk> alleRegelwerke = regelwerkBuilderService
+					.gibAlleRegelwerke();
 
-			alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(regelwerke);
-//		} catch (InitPropertiesException e) {
-//			logger.logFatalMessage(this,
-//					"Exception while initializing properties.", e);
-//			return IApplication.EXIT_OK;
-//		} catch (MessagingException e) {
-//			logger
-//					.logFatalMessage(
-//							this,
-//							"Exception during creation of the jms consumer or producer.",
-//							e);
-//			return IApplication.EXIT_OK;
+			alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
+					alleRegelwerke
+							.toArray(new Regelwerk[alleRegelwerke.size()]));
+
 		} catch (Exception e) { // TODO noch eine andere Exception wählen
 			logger
 					.logFatalMessage(
@@ -268,7 +311,6 @@ public class DecisionDepartmentActivator implements IApplication,
 			return IApplication.EXIT_OK;
 		}
 
-		_receiverThread = Thread.currentThread();
 		_continueWorking = true;
 		logger
 				.logInfoMessage(this,
@@ -276,9 +318,13 @@ public class DecisionDepartmentActivator implements IApplication,
 
 		// TODO Thread zum auslesen des Ausgangskorbes...
 
+		Ausgangskorb<Vorgangsmappe> vorgangAusgangskorb = alarmEntscheidungsBuero
+				.gibAlarmVorgangAusgangskorb();
+		Eingangskorb<Vorgangsmappe> vorgangEingangskorb = alarmEntscheidungsBuero
+				.gibAlarmVorgangEingangskorb();
+
 		// start receiving Messages, runs while _continueWorking is true.
-		receiveMessagesUntilApplicationQuits(alarmEntscheidungsBuero
-				.gibAlarmVorgangEingangskorb());
+		receiveMessagesUntilApplicationQuits(vorgangEingangskorb);
 
 		logger.logInfoMessage(this,
 				"Decision department application is shutting down...");
@@ -286,7 +332,8 @@ public class DecisionDepartmentActivator implements IApplication,
 		alarmEntscheidungsBuero
 				.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
 
-//		_producer.close();
+		amsMessagingSessionForProducer.close();
+		extMessagingSessionForConsumer.close();
 
 		logger.logInfoMessage(this,
 				"Decision department application successfully shuted down.");
@@ -352,64 +399,64 @@ public class DecisionDepartmentActivator implements IApplication,
 		}
 	}
 
-	private Properties initProperties() throws InitPropertiesException {
-		String configFileName = System
-				.getProperty(PropertiesFileKeys.CONFIG_FILE.name());
-		if (configFileName == null) {
-			String message = "No config file avail on Property-Id \""
-					+ PropertiesFileKeys.CONFIG_FILE.name() + "\" specified.";
-			logger.logFatalMessage(this, message);
-			throw new InitPropertiesException(message);
-		}
-
-		File file = new File(configFileName);
-		if (!file.exists() && !file.canRead()) {
-			String message = "config file named \"" + file.getAbsolutePath()
-					+ "\" does not exist or is not readable.";
-			logger.logFatalMessage(this, message);
-			throw new InitPropertiesException(message);
-		}
-
-		try {
-			FileInputStream fileInputStream = new FileInputStream(file);
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
-			// prüpfen ob die nötigen key enthalten sind
-			Set<Object> keySet = properties.keySet();
-			if (!keySet
-					.contains(PropertiesFileKeys.MESSAGING_CONSUMER_CLIENT_ID
-							.name())
-					|| !keySet
-							.contains(PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS
-									.name())
-					|| !keySet
-							.contains(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
-									.name())
-					|| !keySet
-							.contains(PropertiesFileKeys.MESSAGING_PRODUCER_CLIENT_ID
-									.name())
-					|| !keySet
-							.contains(PropertiesFileKeys.MESSAGING_PRODUCER_DESTINATION_NAME
-									.name())
-					|| !keySet
-							.contains(PropertiesFileKeys.MESSAGING_PRODUCER_SERVER_URLS
-									.name())) {
-				String message = "config file named \""
-						+ file.getAbsolutePath() + "\" not valid.";
-				logger.logFatalMessage(this, message);
-				throw new Exception(message);
-			}
-
-			logger.logInfoMessage(this,
-					"Configuration properties loaded from configuration file \""
-							+ file.getAbsolutePath() + "\"");
-			return properties;
-		} catch (Exception e) {
-			throw new InitPropertiesException(e);
-		}
-
-	}
+	// private Properties initProperties() throws InitPropertiesException {
+	// String configFileName = System
+	// .getProperty(PropertiesFileKeys.CONFIG_FILE.name());
+	// if (configFileName == null) {
+	// String message = "No config file avail on Property-Id \""
+	// + PropertiesFileKeys.CONFIG_FILE.name() + "\" specified.";
+	// logger.logFatalMessage(this, message);
+	// throw new InitPropertiesException(message);
+	// }
+	//
+	// File file = new File(configFileName);
+	// if (!file.exists() && !file.canRead()) {
+	// String message = "config file named \"" + file.getAbsolutePath()
+	// + "\" does not exist or is not readable.";
+	// logger.logFatalMessage(this, message);
+	// throw new InitPropertiesException(message);
+	// }
+	//
+	// try {
+	// FileInputStream fileInputStream = new FileInputStream(file);
+	// Properties properties = new Properties();
+	// properties.load(fileInputStream);
+	//
+	// // prüpfen ob die nötigen key enthalten sind
+	// Set<Object> keySet = properties.keySet();
+	// if (!keySet
+	// .contains(PropertiesFileKeys.MESSAGING_CONSUMER_CLIENT_ID
+	// .name())
+	// || !keySet
+	// .contains(PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS
+	// .name())
+	// || !keySet
+	// .contains(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
+	// .name())
+	// || !keySet
+	// .contains(PropertiesFileKeys.MESSAGING_PRODUCER_CLIENT_ID
+	// .name())
+	// || !keySet
+	// .contains(PropertiesFileKeys.MESSAGING_PRODUCER_DESTINATION_NAME
+	// .name())
+	// || !keySet
+	// .contains(PropertiesFileKeys.MESSAGING_PRODUCER_SERVER_URLS
+	// .name())) {
+	// String message = "config file named \""
+	// + file.getAbsolutePath() + "\" not valid.";
+	// logger.logFatalMessage(this, message);
+	// throw new Exception(message);
+	// }
+	//
+	// logger.logInfoMessage(this,
+	// "Configuration properties loaded from configuration file \""
+	// + file.getAbsolutePath() + "\"");
+	// return properties;
+	// } catch (Exception e) {
+	// throw new InitPropertiesException(e);
+	// }
+	//
+	// }
 
 	/**
 	 * Stops the bundle application instance.Ppenultimate Step.

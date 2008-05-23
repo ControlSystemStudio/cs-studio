@@ -4,6 +4,8 @@ package org.csstudio.nams.common.service;
  * This service is used to execute {@link StepByStepProcessor}s asynchronously
  * instead of usind new {@link Thread}(myRunnable).
  * 
+ * TODO interupt aller Thread ermöglichen
+ * 
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  */
 public interface ExecutionService {
