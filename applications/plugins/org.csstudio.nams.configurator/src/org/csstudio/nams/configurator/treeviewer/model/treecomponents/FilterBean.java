@@ -2,7 +2,7 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.beans.PropertyChangeSupport;
 
-public class FilterBean extends AbstractObservableBean<FilterBean> {
+public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
 	public static enum FilterBeanPropertyNames {
 		filterID, name, defaultMessage
@@ -78,6 +78,12 @@ public class FilterBean extends AbstractObservableBean<FilterBean> {
 			return this.getFilterID() == bean.getFilterID();
 		}
 		return super.equals(obj);
+	}
+
+	@Override
+	public void updateState(FilterBean bean) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -1,7 +1,6 @@
 package org.csstudio.nams.configurator.treeviewer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditingStoreService;
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
@@ -9,7 +8,8 @@ import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.configurator.treeviewer.actions.OpenConfigurationEditor;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AbstractObservableBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortGroupBean;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -78,10 +78,10 @@ public class ConfigurationTreeView extends ViewPart {
 				// prüfe, ob ein ChildElement ausgewählt wurde
 				IStructuredSelection selection = (IStructuredSelection) event
 						.getSelection();
-				if (selection.getFirstElement() instanceof AbstractObservableBean<?>) {
+				if (selection.getFirstElement() instanceof AbstractConfigurationBean<?>) {
 					doubleClickAction = new OpenConfigurationEditor(
 							(IConfigurationBean) selection.getFirstElement(),
-							configurationModel.getSortgroupNames());
+							configurationModel);
 
 					doubleClickAction.run();
 				}
@@ -128,7 +128,7 @@ public class ConfigurationTreeView extends ViewPart {
 	 * 
 	 * @return
 	 */
-	public Collection<String> getGroupNames() {
-		return this.configurationModel.getSortgroupNames();
+	public IConfigurationModel getModel() {
+		return this.configurationModel;
 	}
 }

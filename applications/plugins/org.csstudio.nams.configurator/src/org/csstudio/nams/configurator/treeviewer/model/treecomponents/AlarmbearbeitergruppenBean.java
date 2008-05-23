@@ -3,7 +3,7 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 import java.beans.PropertyChangeSupport;
 
 public class AlarmbearbeitergruppenBean extends
-		AbstractObservableBean<AlarmbearbeitergruppenBean> {
+		AbstractConfigurationBean<AlarmbearbeitergruppenBean> {
 
 	public static enum AlarmbearbeitergruppenBeanPropertyNames {
 		groupID, name, minGroupMember, timeOutSec, active
@@ -105,6 +105,12 @@ public class AlarmbearbeitergruppenBean extends
 			return this.getGroupID() == bean.getGroupID();
 		}
 		return super.equals(obj);
+	}
+
+	@Override
+	public void updateState(AlarmbearbeitergruppenBean bean) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

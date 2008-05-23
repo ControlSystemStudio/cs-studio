@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -34,15 +35,9 @@ public class DefaultStackPart extends AbstractStackPart {
 	}
 
 	@Override
-	public void save(IConfigurationBean original) {
+	public void save() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("not implemented yet.");
-	}
-
-	@Override
-	public void setInput(IConfigurationBean input, Collection groupNames) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -54,7 +49,13 @@ public class DefaultStackPart extends AbstractStackPart {
 	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public void setInput(IConfigurationBean input, IConfigurationModel model) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

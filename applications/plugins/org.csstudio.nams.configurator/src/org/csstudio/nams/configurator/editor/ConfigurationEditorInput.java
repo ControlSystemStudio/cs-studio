@@ -1,8 +1,7 @@
 package org.csstudio.nams.configurator.editor;
 
-import java.util.Collection;
-
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -10,20 +9,20 @@ import org.eclipse.ui.IPersistableElement;
 public class ConfigurationEditorInput implements IEditorInput {
 
 	private final IConfigurationBean bean;
-	private final Collection<String> sortgroupNames;
+	private final IConfigurationModel model;
 
 	public ConfigurationEditorInput(IConfigurationBean newElement,
-			Collection<String> sortgroupNames) {
+			IConfigurationModel model) {
 		this.bean = newElement;
-		this.sortgroupNames = sortgroupNames;
+		this.model = model;
 	}
 
 	public IConfigurationBean getBean() {
 		return bean;
 	}
 
-	public Collection<String> getSortgroupNames() {
-		return sortgroupNames;
+	public IConfigurationModel getModel() {
+		return this.model;
 	}
 
 	public boolean exists() {

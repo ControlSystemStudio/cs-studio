@@ -3,7 +3,7 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 import java.beans.PropertyChangeSupport;
 
 public class AlarmbearbeiterBean extends
-		AbstractObservableBean<AlarmbearbeiterBean> {
+		AbstractConfigurationBean<AlarmbearbeiterBean> {
 
 	public static enum PreferedAlarmType {
 		NONE, EMAIL, SMS, VOICE;
@@ -177,5 +177,19 @@ public class AlarmbearbeiterBean extends
 			return isEqual;
 		}
 		return super.equals(obj);
+	}
+
+	@Override
+	public void updateState(AlarmbearbeiterBean bean) {
+		this.setUserID(bean.getUserID());
+		this.setActive(bean.isActive);
+		this.setConfirmCode(bean.getConfirmCode());
+		this.setEmail(bean.getEmail());
+		this.setMobilePhone(bean.getMobilePhone());
+		this.setName(bean.getName());
+		this.setPhone(bean.getPhone());
+		this.setPreferedAlarmType(bean.getPreferedAlarmType());
+		this.setStatusCode(this.getStatusCode());
+
 	}
 }

@@ -3,6 +3,7 @@ package org.csstudio.nams.configurator.treeviewer.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AbstractObservableBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.ConfigurationNode;
@@ -18,7 +19,8 @@ import org.csstudio.nams.configurator.treeviewer.model.treecomponents.Alarmbearb
  * @author eugrei
  * 
  */
-public class ConfigurationModel {
+public class ConfigurationModel extends AbstractObservableBean implements
+		IConfigurationModel {
 
 	/*
 	 * Die Collection configurationNodes enthält alle Elemente des
@@ -165,7 +167,12 @@ public class ConfigurationModel {
 	}
 
 	public void save(IConfigurationBean bean, String groupName) {
-		// not implmented yet
+		for (SortGroupBean groupBean : this.sortgroupBeans) {
+
+		}
+
+		// aktualisiere Model
+		this.initBeans(this.sortgroupBeans);
 	}
 
 	private Collection<SortGroupBean> getTestconfigurationNodes() {

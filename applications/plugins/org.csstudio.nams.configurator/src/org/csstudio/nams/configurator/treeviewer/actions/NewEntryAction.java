@@ -6,6 +6,7 @@ import org.csstudio.nams.configurator.editor.ConfigurationEditor;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
 import org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeitergruppenBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicBean;
@@ -14,6 +15,7 @@ import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterBean
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterbedingungBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupNode;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -26,7 +28,6 @@ import org.eclipse.ui.PlatformUI;
 
 public class NewEntryAction implements IObjectActionDelegate {
 
-	private Collection<String> groupNames;
 	private ConfigurationTreeView targetPart;
 	private IStructuredSelection selection;
 
@@ -41,7 +42,8 @@ public class NewEntryAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 
 		if (!selection.isEmpty()) {
-			this.groupNames = this.targetPart.getGroupNames();
+			IConfigurationModel model = this.targetPart.getModel();
+			Assert.isNotNull(model);
 
 			IConfigurationBean newElement = null;
 			ConfigurationType configurationType = null;
@@ -55,9 +57,12 @@ public class NewEntryAction implements IObjectActionDelegate {
 
 			// new element auf gruppe
 			if (selection.getFirstElement() instanceof SortgroupNode) {
-				SortgroupNode node = (SortgroupNode) selection.getFirstElement();
+				SortgroupNode node = (SortgroupNode) selection
+						.getFirstElement();
 				configurationType = node.getGroupType();
 			}
+
+			Assert.isNotNull(configurationType);
 
 			/*
 			 * prüfe, welches Element neu angelegt werden soll
@@ -80,10 +85,12 @@ public class NewEntryAction implements IObjectActionDelegate {
 				break;
 			}
 
+			Assert.isNotNull(newElement);
+
 			try {
 
 				ConfigurationEditorInput editorInput = new ConfigurationEditorInput(
-						newElement, this.groupNames);
+						newElement, model);
 
 				IWorkbenchPage activePage = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow().getActivePage();

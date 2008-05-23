@@ -2,7 +2,7 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.beans.PropertyChangeSupport;
 
-public class AlarmtopicBean extends AbstractObservableBean<AlarmtopicBean> {
+public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 
 	public static enum AlarmtopicBeanPropertyNames {
 		topicID, topicName, humanReadableName, description
@@ -91,6 +91,12 @@ public class AlarmtopicBean extends AbstractObservableBean<AlarmtopicBean> {
 			return this.getTopicID() == bean.getTopicID();
 		}
 		return super.equals(obj);
+	}
+
+	@Override
+	public void updateState(AlarmtopicBean bean) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

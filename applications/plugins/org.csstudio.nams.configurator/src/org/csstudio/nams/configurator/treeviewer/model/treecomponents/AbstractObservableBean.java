@@ -3,10 +3,14 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
-
-public abstract class AbstractObservableBean<T extends IConfigurationBean>
-		implements IConfigurationBean {
+/**
+ * Diese Bean kapselt den grundlegenden PropertyChangeSupport. Beans, die
+ * lediglich den PropertyChangeSupport benötigen, können hiervon erben
+ * 
+ * @author Eugen Reiswich
+ * 
+ */
+public abstract class AbstractObservableBean {
 
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -34,6 +38,4 @@ public abstract class AbstractObservableBean<T extends IConfigurationBean>
 	protected PropertyChangeSupport getPropertyChangeSupport() {
 		return pcs;
 	}
-
-	public abstract T getClone();
 }

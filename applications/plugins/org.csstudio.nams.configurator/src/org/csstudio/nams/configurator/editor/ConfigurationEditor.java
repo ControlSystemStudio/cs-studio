@@ -3,7 +3,6 @@ package org.csstudio.nams.configurator.editor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.csstudio.nams.configurator.editor.stackparts.AbstractStackPart;
@@ -11,7 +10,7 @@ import org.csstudio.nams.configurator.editor.stackparts.DefaultStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.TopicStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.UserStackPart;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AbstractObservableBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -45,7 +44,7 @@ public class ConfigurationEditor extends EditorPart implements
 
 	private IConfigurationBean _originalModel;
 
-	private Collection<String> sortgroupNames;
+	private IConfigurationModel model;
 
 	public ConfigurationEditor() {
 		_stackParts = new ArrayList<AbstractStackPart<?>>();
@@ -53,7 +52,7 @@ public class ConfigurationEditor extends EditorPart implements
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		_showedStackPart.save(_originalModel);
+		_showedStackPart.save();
 	}
 
 	@Override
@@ -69,7 +68,7 @@ public class ConfigurationEditor extends EditorPart implements
 		_input = (ConfigurationEditorInput) input;
 		_originalModel = _input.getBean();
 
-		sortgroupNames = _input.getSortgroupNames();
+		model = _input.getModel();
 		if (_defaultStackPart != null) {
 			this.showCorrespondingStackPart(_originalModel);
 		}
@@ -81,7 +80,7 @@ public class ConfigurationEditor extends EditorPart implements
 		_showedStackPart = stackPart;
 
 		// init showedStackPart with input
-		_showedStackPart.setInput(_originalModel, sortgroupNames);
+		_showedStackPart.setInput(_originalModel, this.model);
 		_showedStackPart.setPropertyChangedListener(this
 				.getPropertyChangeListener());
 

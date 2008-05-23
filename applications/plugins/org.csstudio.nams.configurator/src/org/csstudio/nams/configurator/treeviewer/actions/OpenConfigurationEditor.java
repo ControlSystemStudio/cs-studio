@@ -1,10 +1,9 @@
 package org.csstudio.nams.configurator.treeviewer.actions;
 
-import java.util.Collection;
-
 import org.csstudio.nams.configurator.editor.ConfigurationEditor;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -13,20 +12,20 @@ import org.eclipse.ui.PlatformUI;
 
 public class OpenConfigurationEditor extends Action {
 
-	private final Collection<String> groupNames;
 	private final IConfigurationBean bean;
+	private final IConfigurationModel model;
 
 	public OpenConfigurationEditor(IConfigurationBean bean,
-			Collection<String> groupNames) {
+			IConfigurationModel model) {
 		this.bean = bean;
-		this.groupNames = groupNames;
+		this.model = model;
 	}
 
 	@Override
 	public void run() {
 
 		ConfigurationEditorInput editorInput = new ConfigurationEditorInput(
-				bean, this.groupNames);
+				bean, this.model);
 
 		IWorkbenchPage activePage = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage();

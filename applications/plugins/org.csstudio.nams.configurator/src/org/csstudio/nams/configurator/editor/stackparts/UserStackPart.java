@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean.PreferedAlarmType;
 import org.eclipse.core.databinding.DataBindingContext;
@@ -34,11 +35,10 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	private Text _confirmCodeTextEntry;
 	private Button _activeCheckBoxEntry;
 
-	private Collection<String> groupNames;
-
 	private AlarmbearbeiterBean alarmbearbeiterBean;
 
 	private AlarmbearbeiterBean alarmbearbeiterClone;
+	private IConfigurationModel model;
 
 	public UserStackPart(DirtyFlagProvider flagProvider, Composite parent) {
 		super(flagProvider, AlarmbearbeiterBean.class, 2);
@@ -71,10 +71,10 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	}
 
 	@Override
-	public void setInput(IConfigurationBean input, Collection<String> groupNames) {
+	public void setInput(IConfigurationBean input, IConfigurationModel model) {
+		this.model = model;
 		this.alarmbearbeiterBean = (AlarmbearbeiterBean) input;
 		this.alarmbearbeiterClone = ((AlarmbearbeiterBean) input).getClone();
-		this.groupNames = groupNames;
 
 		// init JFaceDatabinding after input is set
 		this.initDataBinding();
@@ -82,7 +82,7 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	}
 
 	private void initGroupCombo() {
-		for (String groupName : this.groupNames) {
+		for (String groupName : this.model.getSortgroupNames()) {
 			this._groupComboEntry.add(groupName);
 		}
 	}
@@ -105,8 +105,19 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	}
 
 	@Override
-	public void save(IConfigurationBean original) {
-		throw new UnsupportedOperationException("not implemented yet.");
+	public void save() {
+		// welche gruppe hat user gewählt?
+		String group = this._groupComboEntry.getItem(this._groupComboEntry
+				.getSelectionIndex());
+
+		// speicher Änderungen im lokalen Model
+		this.model.save(this.alarmbearbeiterClone, group);
+
+		// copy clonse state to original bean
+		this.alarmbearbeiterBean.updateState(this.alarmbearbeiterClone);
+
+		// create new clone
+		this.alarmbearbeiterClone = this.alarmbearbeiterBean.getClone();
 	}
 
 	private void initDataBinding() {
@@ -175,4 +186,5 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 		this._nameTextEntry.setFocus();
 
 	}
+
 }

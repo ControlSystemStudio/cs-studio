@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -102,10 +103,10 @@ public abstract class AbstractStackPart<ConfigurationType extends IConfiguration
 
 	public abstract boolean isDirty();
 
-	public abstract void save(IConfigurationBean original);
+	public abstract void save();
 
 	public abstract void setInput(IConfigurationBean input,
-			Collection<String> groupNames);
+			IConfigurationModel model);
 
 	public abstract void setPropertyChangedListener(
 			PropertyChangeListener listener);

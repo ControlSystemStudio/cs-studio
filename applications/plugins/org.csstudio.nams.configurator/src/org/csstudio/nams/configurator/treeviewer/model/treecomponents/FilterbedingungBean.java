@@ -1,7 +1,7 @@
 package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 public class FilterbedingungBean extends
-		AbstractObservableBean<FilterbedingungBean> {
+		AbstractConfigurationBean<FilterbedingungBean> {
 
 	public String getDisplayName() {
 		return "(ohne Namen)";
@@ -25,5 +25,11 @@ public class FilterbedingungBean extends
 			// FilterbedingungBean bean = (FilterbedingungBean) obj;
 		}
 		return super.equals(obj);
+	}
+
+	@Override
+	public void updateState(FilterbedingungBean bean) {
+		// TODO Auto-generated method stub
+
 	}
 }
