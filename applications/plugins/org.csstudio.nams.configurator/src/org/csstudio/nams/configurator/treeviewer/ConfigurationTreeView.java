@@ -69,6 +69,7 @@ public class ConfigurationTreeView extends ViewPart {
 		_viewer.setLabelProvider(new ConfigurationLabelProvider());
 		_viewer.setSorter(new ConfigurationSorter());
 		_viewer.setInput(configurationModel.getChildren());
+		_viewer.setSorter(new ConfiguratorViewerSorter());
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
@@ -99,7 +100,7 @@ public class ConfigurationTreeView extends ViewPart {
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(_newAction);
 		manager.add(new Separator());
-		manager.add(_transferChnagesToConfigurationsDB);		
+		manager.add(_transferChnagesToConfigurationsDB);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
@@ -131,15 +132,17 @@ public class ConfigurationTreeView extends ViewPart {
 				showMessage("Double-click detected on " + obj.toString());
 			}
 		};
-		
+
 		_transferChnagesToConfigurationsDB = new Action() {
 			public void run() {
 				showMessage("Transfering changes to Oracle database!");
 			}
 		};
-		_transferChnagesToConfigurationsDB.setText("Transfer changes to configuration database");
-		_transferChnagesToConfigurationsDB.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-				.getImageDescriptor(SharedImages.IMG_TOOL_REDO));
+		_transferChnagesToConfigurationsDB
+				.setText("Transfer changes to configuration database");
+		_transferChnagesToConfigurationsDB.setImageDescriptor(PlatformUI
+				.getWorkbench().getSharedImages().getImageDescriptor(
+						SharedImages.IMG_TOOL_REDO));
 	}
 
 	private void hookDoubleClickAction() {

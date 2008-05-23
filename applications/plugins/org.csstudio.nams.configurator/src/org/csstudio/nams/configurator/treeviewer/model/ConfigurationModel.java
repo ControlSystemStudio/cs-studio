@@ -19,7 +19,12 @@ import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupN
  */
 public class ConfigurationModel {
 
+	/*
+	 * Die Collection configurationNodes enthält alle Elemente des
+	 * Configuration-TreeViewer
+	 */
 	private Collection<IConfigurationNode> configurationNodes;
+
 	private final Collection<SortGroupBean> sortgroupBeans;
 
 	public ConfigurationModel(Collection<SortGroupBean> sortgroupBeans) {
@@ -38,37 +43,97 @@ public class ConfigurationModel {
 
 		this.configurationNodes = new ArrayList<IConfigurationNode>();
 
+		// root node alarmbearbeiter
 		Collection<SortgroupNode> alarmBearbeitergroupNodes = new ArrayList<SortgroupNode>();
+		// root node alarmbearbeitergruppen
 		Collection<SortgroupNode> alarmBearbeiterGruppengroupNodes = new ArrayList<SortgroupNode>();
+		// root node alarmtopics
 		Collection<SortgroupNode> alarmTopicgroupNodes = new ArrayList<SortgroupNode>();
+		// root node filterbedingungen
 		Collection<SortgroupNode> filterBedingunggroupNodes = new ArrayList<SortgroupNode>();
+		// root node filter
 		Collection<SortgroupNode> filtergroupNodes = new ArrayList<SortgroupNode>();
+		// root node empty groups
+		Collection<SortgroupNode> emptygroupNodes = new ArrayList<SortgroupNode>();
 
 		for (SortGroupBean bean : groupBeans) {
-			if (!bean.getAlarmbearbeiterBeans().isEmpty())
-				alarmBearbeitergroupNodes.add(new SortgroupNode(bean
+
+			// ALARMBEATERBEITER
+			if (!bean.getAlarmbearbeiterBeans().isEmpty()) {
+				SortgroupNode groupNodeAlarmbearbeiter = new SortgroupNode(bean
 						.getDisplayName(), bean.getAlarmbearbeiterBeans(),
-						ConfigurationType.ALARMBEATERBEITER));
+						ConfigurationType.ALARMBEATERBEITER);
+				alarmBearbeitergroupNodes.add(groupNodeAlarmbearbeiter);
+			}
 
-			if (!bean.getAlarmbearbeitergruppenBeans().isEmpty())
-				alarmBearbeiterGruppengroupNodes.add(new SortgroupNode(bean
-						.getDisplayName(), bean
-						.getAlarmbearbeitergruppenBeans(),
-						ConfigurationType.ALARMBEATERBEITERGRUPPE));
+			// else {
+			// SortgroupNode emptyNode = new SortgroupNode(bean
+			// .getDisplayName(), null,
+			// ConfigurationType.ALARMBEATERBEITER);
+			// emptygroupNodes.add(emptyNode);
+			// }
 
-			if (!bean.getAlarmtopicBeans().isEmpty())
-				alarmTopicgroupNodes.add(new SortgroupNode(bean
+			// ALARMBEATERBEITERGRUPPE
+			if (!bean.getAlarmbearbeitergruppenBeans().isEmpty()) {
+				SortgroupNode groupNodeAlarmbearbeitergruppe = new SortgroupNode(
+						bean.getDisplayName(), bean
+								.getAlarmbearbeitergruppenBeans(),
+						ConfigurationType.ALARMBEATERBEITERGRUPPE);
+
+				alarmBearbeiterGruppengroupNodes
+						.add(groupNodeAlarmbearbeitergruppe);
+			}
+
+			// else {
+			// SortgroupNode emptyNode = new SortgroupNode(bean
+			// .getDisplayName(), null,
+			// ConfigurationType.ALARMBEATERBEITERGRUPPE);
+			// emptygroupNodes.add(emptyNode);
+			// }
+
+			// ALARMTOPIC
+			if (!bean.getAlarmtopicBeans().isEmpty()) {
+				SortgroupNode groupNodeAlarmtopic = new SortgroupNode(bean
 						.getDisplayName(), bean.getAlarmtopicBeans(),
-						ConfigurationType.ALARMTOPIC));
+						ConfigurationType.ALARMTOPIC);
+				alarmTopicgroupNodes.add(groupNodeAlarmtopic);
+			}
 
-			if (!bean.getFilterbedingungBeans().isEmpty())
-				filterBedingunggroupNodes.add(new SortgroupNode(bean
+			// else {
+			// SortgroupNode emptyNode = new SortgroupNode(bean
+			// .getDisplayName(), null, ConfigurationType.ALARMTOPIC);
+			// emptygroupNodes.add(emptyNode);
+			// }
+
+			// FILTERBEDINGUNG
+			if (!bean.getFilterbedingungBeans().isEmpty()) {
+				SortgroupNode groupNodeFilterbedingung = new SortgroupNode(bean
 						.getDisplayName(), bean.getFilterbedingungBeans(),
-						ConfigurationType.FILTERBEDINGUNG));
+						ConfigurationType.FILTERBEDINGUNG);
+				filterBedingunggroupNodes.add(groupNodeFilterbedingung);
+			}
 
-			if (!bean.getFilterBeans().isEmpty())
-				filtergroupNodes.add(new SortgroupNode(bean.getDisplayName(),
-						bean.getFilterBeans(), ConfigurationType.FILTER));
+			// else {
+			// SortgroupNode emptyNode = new SortgroupNode(bean
+			// .getDisplayName(), null,
+			// ConfigurationType.FILTERBEDINGUNG);
+			// emptygroupNodes.add(emptyNode);
+			// }
+
+			// FILTER
+			if (!bean.getFilterBeans().isEmpty()) {
+				SortgroupNode groupNodeFilter = new SortgroupNode(bean
+						.getDisplayName(), bean.getFilterBeans(),
+						ConfigurationType.FILTER);
+				filtergroupNodes.add(groupNodeFilter);
+			}
+			// else {
+			// SortgroupNode emptyNode = new SortgroupNode(bean
+			// .getDisplayName(), null, ConfigurationType.FILTER);
+			// emptygroupNodes.add(emptyNode);
+			// }
+
+			this.checkEmptyGroup(bean, emptygroupNodes);
 		}
 
 		this.configurationNodes
@@ -83,6 +148,30 @@ public class ConfigurationModel {
 				filterBedingunggroupNodes, ConfigurationType.FILTERBEDINGUNG));
 		this.configurationNodes.add(new ConfigurationNode(filtergroupNodes,
 				ConfigurationType.FILTER));
+		this.configurationNodes.add(new ConfigurationNode(emptygroupNodes,
+				ConfigurationType.EMPTYGROUPS));
+	}
+
+	/*
+	 * Prüfe, ob eine Gruppe keine Kinder enthält und füge sie in dem Fall in
+	 * den RootNode EmptyGroups. Dadurch werden leere Gruppen im TreeViewer
+	 * sichtbar gemacht und können vom User bei Bedarf gelöscht werden.
+	 * 
+	 * @param groupBean @param emptygroupNodes
+	 */
+	private void checkEmptyGroup(SortGroupBean groupBean,
+			Collection<SortgroupNode> emptygroupNodes) {
+
+		if (groupBean.getAlarmbearbeiterBeans().isEmpty()
+				&& groupBean.getAlarmbearbeitergruppenBeans().isEmpty()
+				&& groupBean.getAlarmtopicBeans().isEmpty()
+				&& groupBean.getFilterbedingungBeans().isEmpty()
+				&& groupBean.getFilterBeans().isEmpty()) {
+			SortgroupNode emptyNode = new SortgroupNode(groupBean
+					.getDisplayName(), null, ConfigurationType.EMPTYGROUPS);
+
+			emptygroupNodes.add(emptyNode);
+		}
 	}
 
 	/**
@@ -112,6 +201,7 @@ public class ConfigurationModel {
 		Collection<SortGroupBean> initialData = new ArrayList<SortGroupBean>();
 
 		SortGroupBean sortgroupBean = new SortGroupBean(0, "Strasse 1");
+		SortGroupBean emptyGroup = new SortGroupBean(0, "Strasse 2");
 
 		Collection<AlarmbearbeiterBean> beans1 = new ArrayList<AlarmbearbeiterBean>();
 
@@ -135,6 +225,7 @@ public class ConfigurationModel {
 		sortgroupBean.setAlarmtopicBeans(beans2);
 
 		initialData.add(sortgroupBean);
+		initialData.add(emptyGroup);
 
 		return initialData;
 	}

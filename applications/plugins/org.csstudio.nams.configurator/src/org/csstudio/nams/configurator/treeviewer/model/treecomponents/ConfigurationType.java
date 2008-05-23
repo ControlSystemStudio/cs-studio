@@ -4,7 +4,7 @@ public enum ConfigurationType {
 
 	ALARMBEATERBEITER("Alarmbearbeiter"), ALARMBEATERBEITERGRUPPE(
 			"Alarmbearbeitergruppe"), ALARMTOPIC("Alarmtopics"), FILTERBEDINGUNG(
-			"Filterbedingungen"), FILTER("Filter");
+			"Filterbedingungen"), FILTER("Filter"), EMPTYGROUPS("Empty groups");
 
 	private final String displayName;
 

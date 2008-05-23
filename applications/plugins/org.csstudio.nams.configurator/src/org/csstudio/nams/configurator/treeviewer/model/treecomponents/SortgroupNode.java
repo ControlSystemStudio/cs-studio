@@ -1,5 +1,6 @@
 package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
@@ -28,7 +29,12 @@ public class SortgroupNode {
 	 * @return
 	 */
 	public Collection<? extends ConfigurationBean> getChildren() {
-		return beans;
+		/*
+		 * falls Kinder null sind, erzeuge eine leere Liste. Andernfalls wird
+		 * eine NullpointerException im TreeViewer in der Methode hasChildren
+		 * geworfen
+		 */
+		return beans == null ? new ArrayList<ConfigurationBean>() : beans;
 	}
 
 	public String getDisplayName() {
