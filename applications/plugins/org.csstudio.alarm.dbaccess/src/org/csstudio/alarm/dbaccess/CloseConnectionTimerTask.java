@@ -19,17 +19,51 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.dbaccess.archivedb;
+package org.csstudio.alarm.dbaccess;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.TimerTask;
 
-import org.csstudio.alarm.dbaccess.FilterSetting;
+import org.csstudio.platform.logging.CentralLogger;
 
-public interface ILogMessageArchiveAccess {
+/**
+ * The TimerTask checks the period of the last dbAccess
+ * and closes the connection if the period is longer than a
+ * threshold.
+ * 
+ * @author jhatje
+ * @author $Author$
+ * @version $Revision$
+ * @since 15.05.2008
+ */
+public class CloseConnectionTimerTask extends TimerTask {
 
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, int maxAnswerSize);
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, String filter, ArrayList<FilterSetting> settings, int maxAnswerSize);
+	private long _lastDBAcccessInMillisec;
+	
+	private Connection _dbConnection;
+	
+	private long _closeThresholdInMillisec = 30 * 60 * 1000;
+	
+	public CloseConnectionTimerTask(Connection con) {
+		_dbConnection = con;
+	}
+	
+	@Override
+	public void run() {
+		long lastConnectionPeriod = System.currentTimeMillis() - _lastDBAcccessInMillisec;
+		if (lastConnectionPeriod > _closeThresholdInMillisec) {
+			try {
+				_dbConnection.close();
+				this.cancel();
+			} catch (SQLException e) {
+				CentralLogger.getInstance().error(this, "Close SQL Connection error " + e.getMessage());
+			}
+		}
+	}
+
+	public void set_lastDBAcccessInMillisec(long acccessInMillisec) {
+		_lastDBAcccessInMillisec = acccessInMillisec;
+	}
+
 }

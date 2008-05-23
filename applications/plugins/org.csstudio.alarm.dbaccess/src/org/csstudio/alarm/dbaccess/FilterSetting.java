@@ -19,17 +19,60 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.dbaccess.archivedb;
+ package org.csstudio.alarm.dbaccess;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
+/**
+ * Holds the setting for one filter condition of the archive search
+ * (Property, value, AND /OR relation).
+ * The data is set by the 'ExpertSearchDialog'.
+ * 
+ * @author jhatje
+ * @author $Author$
+ * @version $Revision$
+ * @since 14.05.2008
+ */
+public class FilterSetting {
 
-import org.csstudio.alarm.dbaccess.FilterSetting;
+	private String _property;
 
-public interface ILogMessageArchiveAccess {
+	private String _value;
+	
+	private String _relation;
 
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, int maxAnswerSize);
-	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to, String filter, ArrayList<FilterSetting> settings, int maxAnswerSize);
+	public FilterSetting(String _property, String _value, String _relation) {
+		super();
+		this._property = _property;
+		this._value = _value;
+		this._relation = _relation;
+	}
+
+	public FilterSetting() {
+	}
+
+	public String get_property() {
+		return _property.toUpperCase();
+	}
+
+	public void set_property(String _property) {
+		this._property = _property;
+	}
+
+	public String get_value() {
+		return _value;
+	}
+
+	public void set_value(String _value) {
+		this._value = _value;
+	}
+
+	public String get_relation() {
+		return _relation;
+	}
+
+	public void set_relation(String _relation) {
+		this._relation = _relation;
+	}
+	
+	
+	
 }

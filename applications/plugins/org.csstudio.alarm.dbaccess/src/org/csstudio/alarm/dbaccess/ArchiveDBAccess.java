@@ -21,305 +21,256 @@
  */
 package org.csstudio.alarm.dbaccess;
 
-import oracle.jdbc.OracleDriver;
 import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleStatement;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import org.csstudio.alarm.dbaccess.archivedb.Activator;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * 
- * @author hrickens
+ * @author jhatje
  * @author $Author$
  * @version $Revision$
- * @since 28.08.2007
+ * @since 22.05.2008
  */
 public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
-    static final String _url = "jdbc:oracle:thin:@(DESCRIPTION = "
-            + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521)) "
-            + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv02.desy.de)(PORT = 1521)) "
-            + "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv03.desy.de)(PORT = 1521)) "
-            + "(LOAD_BALANCE = yes) " + "(CONNECT_DATA = " + "(SERVER = DEDICATED) "
-            + "(SERVICE_NAME = desy_db.desy.de) " + "(FAILOVER_MODE = " + "(TYPE = NONE) "
-            + "(METHOD = BASIC) " + "(RETRIES = 180) " + "(DELAY = 5) " + ")" + ")" + ")";
-    // static final String user = "KRYKLOGT";
-    // static final String password = "KRYKLOGT";
 
-    static final String _user = "KRYKAMS";
-    static final String _password = "krykams";
+	private Connection _databaseConnection;
+	private static ArchiveDBAccess _archiveDBAccess;
 
-    private Connection _databaseConnection;
-    private static ArchiveDBAccess _archiveDBAccess;
+	private ArchiveDBAccess() {
+	}
 
-    // Text t = null;
-    {
-        try {
-            DriverManager.registerDriver(new OracleDriver());
+	public static ArchiveDBAccess getInstance() {
+		if (_archiveDBAccess == null) {
+			_archiveDBAccess = new ArchiveDBAccess();
+		}
+		return _archiveDBAccess;
+	}
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
+			Calendar to, int maxAnserSize) {
+		ArrayList<ResultSet> result = queryDatabase(null, from, to);
+		ArrayList<HashMap<String, String>> ergebniss = processResult(result);
+		return ergebniss;
+	}
 
-    private ArchiveDBAccess() {
-        // TODO Auto-generated constructor stub
-    }
+	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
+			Calendar to, String filter, ArrayList<FilterSetting> filterSetting,
+			int maxAnserSize) {
+		ArrayList<ResultSet> result = queryDatabase(filterSetting, from, to);
+		ArrayList<HashMap<String, String>> ergebniss = processResult(result);
+		return ergebniss;
+	}
 
-    public static ArchiveDBAccess getInstance(){
-        if(_archiveDBAccess==null){
-            _archiveDBAccess = new ArchiveDBAccess();
-        }
-        return _archiveDBAccess;
-    }
-    
-    private void createDatabaseConnection() {
+	private ArrayList<HashMap<String, String>> processResult(
+			ArrayList<ResultSet> result) {
+		ArrayList<HashMap<String, String>> messageResultList = new ArrayList<HashMap<String, String>>();
+		try {
+			HashMap<String, String> message = null;
+			for (ResultSet resultSet : result) {
+				int currentMessageID = -1;
+				while (resultSet.next()) {
+					if (currentMessageID == resultSet.getInt(1)) {
+						// this result row belongs to the current message
+						if (message != null) {
+							message.put(resultSet.getString(4), resultSet
+									.getString(5));
+						}
+					} else {
+						// this result row belongs to a new message
+						// if there is already a message put it to the
+						// messageResultList.
+						if (message != null) {
+							messageResultList.add(message);
+						}
+						currentMessageID = Integer.parseInt(resultSet
+								.getString(1));
+						message = new HashMap<String, String>();
+						message.put(resultSet.getString(4), resultSet
+								.getString(5));
+					}
+					System.out.println(resultSet.getString(1));
+				}
+				// put the last message to the messageResultList
+				// (the message should be not null anyway)
+				if (message != null) {
+					messageResultList.add(message);
+				}
+			}
+		} catch (SQLException e) {
+			CentralLogger.getInstance().error(this, e.getMessage());
+		}
+		return messageResultList;
+	}
 
-        if (_databaseConnection == null) {
-            try {
-                _databaseConnection = DriverManager.getConnection(_url, _user, _password);
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
+	private ArrayList<ResultSet> queryDatabase(ArrayList<FilterSetting> filter,
+			Calendar from, Calendar to) {
 
-    private ArrayList<HashMap<String, String>> sendSQLStatement(String sqlStatement,
-            int maxAnswerSize, Calendar from, Calendar to) {
+		ArrayList<ResultSet> resultSetList = new ArrayList<ResultSet>();
 
-        ArrayList<HashMap<String, String>> message = new ArrayList<HashMap<String, String>>();
-        int messageCount = 0;
-        OracleResultSet rset;
+		try {
+			_databaseConnection = DBConnection.getInstance().getConnection();
+			PreparedStatement getMessages = null;
+			ArrayList<ArrayList<FilterSetting>> separatedFilterSettings = separateFilterSettings(filter);
+			ResultSet result = null;
+			for (ArrayList<FilterSetting> currentFilterSettingList : separatedFilterSettings) {
+				switch (currentFilterSettingList.size()) {
+				case 0:
+					getMessages = _databaseConnection
+							.prepareStatement(SQLStatements.ARCHIVE_SIMPLE);
+					break;
+				case 1:
+					getMessages = _databaseConnection
+							.prepareStatement(SQLStatements.ARCHIVE_MESSAGES_1);
+					break;
+				case 2:
+					getMessages = _databaseConnection
+							.prepareStatement(SQLStatements.ARCHIVE_MESSAGES_2);
+					break;
+				case 3:
+					getMessages = _databaseConnection
+							.prepareStatement(SQLStatements.ARCHIVE_MESSAGES_3);
+					break;
+				default:
+					break;
+				}
+				int parameterIndex = 0;
+				if (getMessages != null) {
+					for (FilterSetting filterSetting : currentFilterSettingList) {
+						parameterIndex++;
+						getMessages.setString(parameterIndex, filterSetting
+								.get_property());
+						parameterIndex++;
+						getMessages.setString(parameterIndex, filterSetting
+								.get_value());
+					}
+				}
+				String fromDate = buildDateString(from);
+				String toDate = buildDateString(to);
+				parameterIndex++;
+				getMessages.setString(parameterIndex, fromDate);
+				parameterIndex++;
+				getMessages.setString(parameterIndex, toDate);
 
-        try {
-            createDatabaseConnection();
-            OracleStatement stmt = (OracleStatement) _databaseConnection.createStatement();
+				// getMessages.setString(1, "NAME");
+				// getMessages.setString(2, "CMTBSTP4R21_temp");
+				// getMessages.setString(3, "2008-05-21 15:6:49");
+				// getMessages.setString(4, "2008-05-22 15:6:49");
+				result = getMessages.executeQuery();
+				resultSetList.add(result);
+			}
+		} catch (SQLException e) {
+			CentralLogger.getInstance().error(this, e.getMessage());
+		}
 
-            stmt.execute(sqlStatement);
+		return resultSetList;
+	}
 
-            rset = (OracleResultSet) stmt.getResultSet();
-            int id = -1;
-            int i = 0;
-            HashMap<String, String> hm = null;
-            boolean haveMessage = false;
-            while (rset.next()) {
-                if ((id != rset.getNUMBER(1).intValue()) /*
-                                                             * && (i <
-                                                             * maxAnserSize)
-                                                             */) {
-                    if (hm != null) {
-                        message.add(hm);
-                        i++;
-                    }
-                    haveMessage = true;
-                    hm = new HashMap<String, String>();
-                }
-                hm.put(rset.getString(4), rset.getString(5));
-                id = rset.getNUMBER(1).intValue();
-            }
-            rset.close();
-            stmt.close();
-            if (haveMessage) {
-                message.add(hm);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            // try{
-            // if(con != null) con.close();
-            // }catch(Exception e){}
-        }
-        return message;
-    }
+	private String buildDateString(Calendar date) {
+		return date.get(GregorianCalendar.YEAR) + "-"
+				+ (date.get(GregorianCalendar.MONTH) + 1) + "-"
+				+ date.get(GregorianCalendar.DAY_OF_MONTH) + " "
+				+ date.get(GregorianCalendar.HOUR_OF_DAY) + ":"
+				+ date.get(GregorianCalendar.MINUTE) + ":"
+				+ date.get(GregorianCalendar.SECOND);
+	}
 
-    private String buildSQLStatement(Calendar from, Calendar to, int maxAnswerSize) {
-        /*
-         * old style
-         * 
-         * "select * from (" + "select * from alarm_archive_messages aam where
-         * aam.datum "+ "between to_date('"+from.get(GregorianCalendar.YEAR)+
-         * "-"+(from.get(GregorianCalendar.MONTH)+1)+
-         * "-"+from.get(GregorianCalendar.DAY_OF_MONTH)+ "
-         * "+from.get(GregorianCalendar.HOUR)+
-         * ":"+from.get(GregorianCalendar.MINUTE)+
-         * ":"+from.get(GregorianCalendar.SECOND)+ "', 'YYYY-MM-DD HH24:MI:SS') "+
-         * "and to_date('"+to.get(GregorianCalendar.YEAR)+
-         * "-"+(to.get(GregorianCalendar.MONTH)+1)+
-         * "-"+to.get(GregorianCalendar.DAY_OF_MONTH)+ "
-         * "+to.get(GregorianCalendar.HOUR)+
-         * ":"+to.get(GregorianCalendar.MINUTE)+
-         * ":"+to.get(GregorianCalendar.SECOND)+ "', 'YYYY-MM-DD HH24:MI:SS') "+ "
-         * order by aam.message_id desc " + ") where ROWNUM < " +
-         * maxAnswerSize*10;
-         */
+	/**
+	 * The list of Filter settings consists of of property value pairs
+	 * associated with AND or OR. Because the sql statement is created only for
+	 * the AND parts (for a better performance the or will be merged in java)
+	 * this method split the FilterSetting list on the OR association and
+	 * returns a list of lists of filtersettings associated only with AND.
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	private ArrayList<ArrayList<FilterSetting>> separateFilterSettings(
+			ArrayList<FilterSetting> filter) {
+		ArrayList<ArrayList<FilterSetting>> separatedFilterSettings = new ArrayList<ArrayList<FilterSetting>>();
+		ArrayList<FilterSetting> filterSettingsAndAssociated = null;
+		// if filter is null (user searches only for time period) set one
+		// empty list of filter settings.
+		if (filter == null) {
+			filterSettingsAndAssociated = new ArrayList<FilterSetting>();
+			separatedFilterSettings.add(filterSettingsAndAssociated);
+			return separatedFilterSettings;
+		}
+		String association = "BEGIN";
+		for (FilterSetting setting : filter) {
+			if (association.equalsIgnoreCase("AND")) {
+				if (filterSettingsAndAssociated != null) {
+					association = setting.get_relation();
+					filterSettingsAndAssociated.add(setting);
+				} else {
+					CentralLogger.getInstance().error(this,
+							"invalid filter configuration");
+				}
+				continue;
+			}
+			if (association.equalsIgnoreCase("OR")) {
+				separatedFilterSettings.add(filterSettingsAndAssociated);
+				association = setting.get_relation();
+				filterSettingsAndAssociated = new ArrayList<FilterSetting>();
+				filterSettingsAndAssociated.add(setting);
+				continue;
+			}
+			if (association.equalsIgnoreCase("BEGIN")) {
+				filterSettingsAndAssociated = new ArrayList<FilterSetting>();
+				filterSettingsAndAssociated.add(setting);
+				association = setting.get_relation();
+				continue;
+			}
 
-        String sql = "select myTable.* , rownum myRownum from ("
-                + "select mc.message_id, mc.id , m.datum, mpt.name,  mc.value "
-                + "from msg_property_type mpt, message m, message_content mc " + "where "
-                + "m.datum " + "between to_date('"
-                + from.get(GregorianCalendar.YEAR)
-                + "-"
-                + (from.get(GregorianCalendar.MONTH) + 1)
-                + "-"
-                + from.get(GregorianCalendar.DAY_OF_MONTH)
-                + " "
-                + from.get(GregorianCalendar.HOUR_OF_DAY)
-                + ":"
-                + from.get(GregorianCalendar.MINUTE)
-                + ":"
-                + from.get(GregorianCalendar.SECOND)
-                + "', 'YYYY-MM-DD HH24:MI:SS') "
-                + "and to_date('"
-                + to.get(GregorianCalendar.YEAR)
-                + "-"
-                + (to.get(GregorianCalendar.MONTH) + 1)
-                + "-"
-                + to.get(GregorianCalendar.DAY_OF_MONTH)
-                + " "
-                + to.get(GregorianCalendar.HOUR_OF_DAY)
-                + ":"
-                + to.get(GregorianCalendar.MINUTE)
-                + ":"
-                + to.get(GregorianCalendar.SECOND)
-                + "', 'YYYY-MM-DD HH24:MI:SS') "
-                + "and mc.message_id = m.id "
-                + "and mpt.id = mc.msg_property_type_id "
-                + " order by mc.message_id desc"
-                + " ) myTable where rownum < "
-                + maxAnswerSize
-                * 10 + "  order by myRownum ";
-        return sql;
-    }
+		}
+		separatedFilterSettings.add(filterSettingsAndAssociated);
 
-    private String buildSQLStatement(Calendar from, Calendar to, String filter, int maxAnswerSize) {
-        /*
-         * TODO change statement accordingly like the upper one for now it's
-         * still the old one - so the FILTER will not break
-         */
-        String sql = /* "select * from (" + */
-        "select aam2.* from alarm_archive_messages aam2 ,(select aam.MESSAGE_ID from alarm_archive_messages aam where aam.datum "
-                + "between to_date('"
-                + from.get(GregorianCalendar.YEAR)
-                + "-"
-                + (from.get(GregorianCalendar.MONTH) + 1)
-                + "-"
-                + from.get(GregorianCalendar.DAY_OF_MONTH)
-                + " "
-                + from.get(GregorianCalendar.HOUR_OF_DAY)
-                + ":"
-                + from.get(GregorianCalendar.MINUTE)
-                + ":"
-                + from.get(GregorianCalendar.SECOND)
-                + "', 'YYYY-MM-DD HH24:MI:SS') "
-                + "and to_date('"
-                + to.get(GregorianCalendar.YEAR)
-                + "-"
-                + (to.get(GregorianCalendar.MONTH) + 1)
-                + "-"
-                + to.get(GregorianCalendar.DAY_OF_MONTH)
-                + " "
-                + to.get(GregorianCalendar.HOUR_OF_DAY)
-                + ":"
-                + to.get(GregorianCalendar.MINUTE)
-                + ":"
-                + to.get(GregorianCalendar.SECOND)
-                + "', 'YYYY-MM-DD HH24:MI:SS') "
-                + filter
-                + " order by aam.message_id desc) typeid where aam2.message_id = typeid.MESSAGE_ID "
-                +
-                /* " ) where */" and ROWNUM < "
-                + maxAnswerSize
-                * 10
-                + " order by aam2.message_id desc";
-        return sql;
-        // String sql =
-        // "select myTable.* , rownum myRownum from (" +
-        // "select mc.message_id, mc.id , m.datum, mpt.name, mc.value "+
-        // "from msg_property_type mpt, message m, message_content mc,("+
-        // "select mc.message_id "+
-        // "from msg_property_type mpt, message m, message_content mc "+
-        // "where m.datum "+
-        // "between to_date('"+from.get(GregorianCalendar.YEAR)+
-        // "-"+(from.get(GregorianCalendar.MONTH)+1)+
-        // "-"+from.get(GregorianCalendar.DAY_OF_MONTH)+
-        // " "+from.get(GregorianCalendar.HOUR)+
-        // ":"+from.get(GregorianCalendar.MINUTE)+
-        // ":"+from.get(GregorianCalendar.SECOND)+
-        // "', 'YYYY-MM-DD HH24:MI:SS') "+
-        // "and to_date('"+to.get(GregorianCalendar.YEAR)+
-        // "-"+(to.get(GregorianCalendar.MONTH)+1)+
-        // "-"+to.get(GregorianCalendar.DAY_OF_MONTH)+
-        // " "+to.get(GregorianCalendar.HOUR)+
-        // ":"+to.get(GregorianCalendar.MINUTE)+
-        // ":"+to.get(GregorianCalendar.SECOND)+
-        // "', 'YYYY-MM-DD HH24:MI:SS') "+
-        // "and mc.message_id = m.id " +
-        // "and mpt.id = mc.msg_property_type_id " +
-        // filter+
-        // " order by mc.message_id desc"+
-        // ")" +
-        // ") myTable where rownum < " + maxAnswerSize*10 +
-        // " order by myRownum " ;
-        // return sql;
-    }
+		return separatedFilterSettings;
+	}
 
-    public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to,
-            int maxAnserSize) {
-        String sql = buildSQLStatement(from, to, maxAnserSize);
-        Activator.logInfo(sql);
-        ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql, maxAnserSize, from, to);
-        return ergebniss;
-    }
+	/**
+	 * @return the Answer [0] is the Id and [1] is the Type.
+	 * 
+	 */
+	public String[][] getMsgTypes() {
+		String sql = "select * from msg_property_type mpt order by id";
+		try {
+			_databaseConnection = DBConnection.getInstance().getConnection();
+			OracleStatement stmt = (OracleStatement) _databaseConnection
+					.createStatement();
 
-    public ArrayList<HashMap<String, String>> getLogMessages(Calendar from, Calendar to,
-            String filter, int maxAnserSize) {
-        String sql = buildSQLStatement(from, to, filter, maxAnserSize);
-        Activator.logInfo(sql);
-        ArrayList<HashMap<String, String>> ergebniss = sendSQLStatement(sql, maxAnserSize, from, to);
-        return ergebniss;
-    }
+			stmt.execute(sql);
 
-    /**
-     * @return the Answer [0] is the Id and [1] is the Type.
-     * 
-     */
-    public String[][] getMsgTypes() {
-        String sql = "select * from msg_property_type mpt order by id";
-        try {
-            createDatabaseConnection();
-            OracleStatement stmt = (OracleStatement) _databaseConnection.createStatement();
+			OracleResultSet rset = (OracleResultSet) stmt.getResultSet();
+			ArrayList<String[]> ans = new ArrayList<String[]>();
+			while (rset.next()) {
+				String id = rset.getString("ID");
+				String name = rset.getString(2);
+				ans.add(new String[] { id, name });
+			}
+			return ans.toArray(new String[0][2]);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
-            stmt.execute(sql);
-
-            OracleResultSet rset = (OracleResultSet) stmt.getResultSet();
-            ArrayList<String[]> ans = new ArrayList<String[]>();
-            while (rset.next()) {
-                String id = rset.getString("ID");
-                String name = rset.getString(2);
-                ans.add(new String[] { id, name });
-            }
-            return ans.toArray(new String[0][2]);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-
-    }
-
-    public void close(){
-        try {
-            _databaseConnection.close();
-        } catch (SQLException e) {
-            CentralLogger.getInstance().warn(this, "Can not close DB connection", e);
-        }
-    }
+	public void close() {
+		try {
+			_databaseConnection.close();
+		} catch (SQLException e) {
+			CentralLogger.getInstance().warn(this,
+					"Can not close DB connection", e);
+		}
+	}
 }
