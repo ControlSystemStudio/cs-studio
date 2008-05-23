@@ -195,7 +195,7 @@ public class ConfigurationModel {
 		return groupNames;
 	}
 
-	public void save(ConfigurationBean bean, String groupName) {
+	public void save(IConfigurationBean bean, String groupName) {
 		// not implmented yet
 	}
 

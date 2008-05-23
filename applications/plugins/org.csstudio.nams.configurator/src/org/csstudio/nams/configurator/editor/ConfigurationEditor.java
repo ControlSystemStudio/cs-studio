@@ -7,7 +7,7 @@ import org.csstudio.nams.configurator.editor.stackparts.AbstractStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.DefaultStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.TopicStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.UserStackPart;
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -39,7 +39,7 @@ public class ConfigurationEditor extends EditorPart implements
 
 	private DefaultStackPart _defaultStackPart;
 
-	private ConfigurationBean _originalModel;
+	private IConfigurationBean _originalModel;
 
 	public ConfigurationEditor() {
 		_stackParts = new ArrayList<AbstractStackPart<?>>();
@@ -67,7 +67,7 @@ public class ConfigurationEditor extends EditorPart implements
 		}
 	}
 
-	private void showCorrespondingStackPart(ConfigurationBean input) {
+	private void showCorrespondingStackPart(IConfigurationBean input) {
 		AbstractStackPart stackPart = this.getStackPartfor(input.getClass());
 		Control mainControl = stackPart.getMainControl();
 		_showedStackPart = stackPart;
@@ -75,7 +75,7 @@ public class ConfigurationEditor extends EditorPart implements
 	}
 
 	private AbstractStackPart<?> getStackPartfor(
-			Class<? extends ConfigurationBean> tObjectClass) {
+			Class<? extends IConfigurationBean> tObjectClass) {
 		for (AbstractStackPart part : _stackParts) {
 			if (tObjectClass.equals(part.getAssociatedBean())) {
 				return part;

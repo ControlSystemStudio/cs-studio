@@ -3,16 +3,16 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
 
 public class SortgroupNode {
 
 	private final ConfigurationType groupType;
-	private final Collection<? extends ConfigurationBean> beans;
+	private final Collection<? extends IConfigurationBean> beans;
 	private final String name;
 
 	public SortgroupNode(String name,
-			Collection<? extends ConfigurationBean> collection,
+			Collection<? extends IConfigurationBean> collection,
 			ConfigurationType groupType) {
 		this.name = name;
 		this.beans = collection;
@@ -28,13 +28,13 @@ public class SortgroupNode {
 	 * 
 	 * @return
 	 */
-	public Collection<? extends ConfigurationBean> getChildren() {
+	public Collection<? extends IConfigurationBean> getChildren() {
 		/*
 		 * falls Kinder null sind, erzeuge eine leere Liste. Andernfalls wird
 		 * eine NullpointerException im TreeViewer in der Methode hasChildren
 		 * geworfen
 		 */
-		return beans == null ? new ArrayList<ConfigurationBean>() : beans;
+		return beans == null ? new ArrayList<IConfigurationBean>() : beans;
 	}
 
 	public String getDisplayName() {

@@ -2,7 +2,7 @@ package org.csstudio.nams.configurator.editor.stackparts;
 
 import org.csstudio.ams.configurationStoreService.knownTObjects.UserTObject;
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -106,7 +106,7 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	}
 
 	@Override
-	public void save(ConfigurationBean original) {
+	public void save(IConfigurationBean original) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("not implemented yet.");
 	}

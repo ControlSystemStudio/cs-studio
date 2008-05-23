@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.csstudio.nams.configurator.editor.ConfigurationEditor;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
 import org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView;
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeitergruppenBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicBean;
@@ -43,7 +43,7 @@ public class NewEntryAction implements IObjectActionDelegate {
 		if (!selection.isEmpty()) {
 			this.groupNames = this.targetPart.getGroupNames();
 
-			ConfigurationBean newElement = null;
+			IConfigurationBean newElement = null;
 			ConfigurationType configurationType = null;
 
 			// new element auf root

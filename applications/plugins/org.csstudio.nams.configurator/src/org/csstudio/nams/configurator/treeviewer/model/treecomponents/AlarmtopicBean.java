@@ -2,8 +2,7 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.beans.PropertyChangeSupport;
 
-
-public class AlarmtopicBean extends AbstractConfigurationBean {
+public class AlarmtopicBean extends AbstractObservableBean<AlarmtopicBean> {
 
 	public static enum AlarmtopicBeanPropertyNames {
 		topicID, topicName, humanReadableName, description
@@ -69,7 +68,6 @@ public class AlarmtopicBean extends AbstractConfigurationBean {
 				getDescription());
 	}
 
-	@Override
 	public String getDisplayName() {
 		return getHumanReadableName() != null ? getHumanReadableName()
 				: "(ohne Namen)";
@@ -79,5 +77,12 @@ public class AlarmtopicBean extends AbstractConfigurationBean {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("not implemented yet.");
 	}
+
+	@Override
+	public AlarmtopicBean getClone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

@@ -2,21 +2,20 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 
 import java.beans.PropertyChangeSupport;
 
-
-public class FilterBean extends AbstractConfigurationBean {
+public class FilterBean extends AbstractObservableBean<FilterBean> {
 
 	public static enum FilterBeanPropertyNames {
 		filterID, name, defaultMessage
-			
+
 	}
-	
-	private int 	filterID;// PRIMARY KEY
-	private String 	name;
-	private String 	defaultMessage;
-	//TODO hier fehlt noch einiges (Beans für FilterConditions)
-	
+
+	private int filterID;// PRIMARY KEY
+	private String name;
+	private String defaultMessage;
+	// TODO hier fehlt noch einiges (Beans für FilterConditions)
+
 	private PropertyChangeSupport propertyChangeSupport;
-	
+
 	public FilterBean() {
 		filterID = -1;
 		propertyChangeSupport = getPropertyChangeSupport();
@@ -29,7 +28,9 @@ public class FilterBean extends AbstractConfigurationBean {
 	public void setFilterID(int filterID) {
 		int oldValue = getFilterID();
 		this.filterID = filterID;
-		propertyChangeSupport.firePropertyChange(FilterBeanPropertyNames.filterID.name(), oldValue, getFilterID());
+		propertyChangeSupport.firePropertyChange(
+				FilterBeanPropertyNames.filterID.name(), oldValue,
+				getFilterID());
 	}
 
 	public String getName() {
@@ -39,7 +40,8 @@ public class FilterBean extends AbstractConfigurationBean {
 	public void setName(String name) {
 		String oldValue = getName();
 		this.name = name;
-		propertyChangeSupport.firePropertyChange(FilterBeanPropertyNames.name.name(), oldValue, getName());
+		propertyChangeSupport.firePropertyChange(FilterBeanPropertyNames.name
+				.name(), oldValue, getName());
 	}
 
 	public String getDefaultMessage() {
@@ -49,10 +51,11 @@ public class FilterBean extends AbstractConfigurationBean {
 	public void setDefaultMessage(String defaultMessage) {
 		String oldValue = getDefaultMessage();
 		this.defaultMessage = defaultMessage;
-		propertyChangeSupport.firePropertyChange(FilterBeanPropertyNames.defaultMessage.name(), oldValue, getDefaultMessage());
+		propertyChangeSupport.firePropertyChange(
+				FilterBeanPropertyNames.defaultMessage.name(), oldValue,
+				getDefaultMessage());
 	}
-	
-	@Override
+
 	public String getDisplayName() {
 		return getName() != null ? getName() : "(ohne Namen)";
 	}
@@ -61,4 +64,11 @@ public class FilterBean extends AbstractConfigurationBean {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("not implemented yet.");
 	}
+
+	@Override
+	public FilterBean getClone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

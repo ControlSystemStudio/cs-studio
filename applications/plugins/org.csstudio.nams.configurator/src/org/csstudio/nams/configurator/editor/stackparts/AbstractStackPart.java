@@ -1,8 +1,7 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.ConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.layout.GridData;
@@ -13,15 +12,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public abstract class AbstractStackPart<ConfigurationType extends ConfigurationBean> {
+public abstract class AbstractStackPart<ConfigurationType extends IConfigurationBean> {
 	
 	protected final int NUM_COLUMNS;
 	protected final int MIN_WIDTH = 300;
-	private Class<? extends ConfigurationBean> _associatedBean;
+	private Class<? extends IConfigurationBean> _associatedBean;
 	private DirtyFlagProvider _dirtyFlagProvider;
 	private ConfigurationType bean;
 	
-	public AbstractStackPart(DirtyFlagProvider flagProvider, Class<? extends ConfigurationBean> associatedBean, int numColumns) {
+	public AbstractStackPart(DirtyFlagProvider flagProvider, Class<? extends IConfigurationBean> associatedBean, int numColumns) {
 		_dirtyFlagProvider = flagProvider;
 		_associatedBean = associatedBean;
 		NUM_COLUMNS = numColumns;
@@ -85,12 +84,12 @@ public abstract class AbstractStackPart<ConfigurationType extends ConfigurationB
 	
 	public abstract Control getMainControl();
 	
-	public Class<? extends ConfigurationBean> getAssociatedBean() {
+	public Class<? extends IConfigurationBean> getAssociatedBean() {
 		return _associatedBean;
 	}
 
 	public abstract boolean isDirty();
 
-	public abstract void save(ConfigurationBean original);
+	public abstract void save(IConfigurationBean original);
 
 }

@@ -3,9 +3,10 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.csstudio.nams.configurator.treeviewer.model.ObservableBean;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
 
-abstract class AbstractObservableBean implements ObservableBean {
+abstract class AbstractObservableBean<T extends IConfigurationBean> implements
+		IConfigurationBean {
 
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -29,8 +30,10 @@ abstract class AbstractObservableBean implements ObservableBean {
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 		pcs.removePropertyChangeListener(listener);
 	}
-	
+
 	protected PropertyChangeSupport getPropertyChangeSupport() {
 		return pcs;
 	}
+
+	public abstract T getClone();
 }
