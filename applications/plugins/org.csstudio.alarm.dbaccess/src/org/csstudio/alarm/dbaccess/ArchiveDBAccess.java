@@ -50,6 +50,11 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	private ArchiveDBAccess() {
 	}
 
+	/**
+	 * Singleton instance.
+	 * 
+	 * @return instance
+	 */
 	public static ArchiveDBAccess getInstance() {
 		if (_archiveDBAccess == null) {
 			_archiveDBAccess = new ArchiveDBAccess();
@@ -57,6 +62,11 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		return _archiveDBAccess;
 	}
 
+	/**
+	 * Get messages from DB for a time period.
+	 * 
+	 * @return ArrayList of messages in a HashMap 
+	 */
 	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
 			Calendar to, int maxAnserSize) {
 		ArrayList<ResultSet> result = queryDatabase(null, from, to);
@@ -64,6 +74,12 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		return ergebniss;
 	}
 
+	/**
+	 * Get messages from DB for a time period and filter
+	 * conditions.
+	 * 
+	 * @return ArrayList of messages in a HashMap 
+	 */
 	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
 			Calendar to, String filter, ArrayList<FilterSetting> filterSetting,
 			int maxAnserSize) {
