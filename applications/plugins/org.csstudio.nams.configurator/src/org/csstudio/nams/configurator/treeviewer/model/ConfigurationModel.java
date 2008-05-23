@@ -5,9 +5,12 @@ import java.util.Collection;
 
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AbstractObservableBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeitergruppenBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.ConfigurationNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.ConfigurationType;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterbedingungBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortGroupBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupNode;
@@ -167,12 +170,103 @@ public class ConfigurationModel extends AbstractObservableBean implements
 	}
 
 	public void save(IConfigurationBean bean, String groupName) {
-		for (SortGroupBean groupBean : this.sortgroupBeans) {
+		// bestimme den Bean-Typen
+		boolean groupChanged = this.checkGroupChanged(bean, groupName);
+		ConfigurationType type = getBeanType(bean);
+
+		if (groupChanged) {
+			SortGroupBean groupBean = getGroupByName(groupName);
+
+			switch (type) {
+			case ALARMBEATERBEITER:
+				groupBean.getAlarmbearbeiterBeans().add(
+						(AlarmbearbeiterBean) bean);
+				break;
+			case ALARMBEATERBEITERGRUPPE:
+				break;
+			case ALARMTOPIC:
+				break;
+			case FILTER:
+				break;
+			case FILTERBEDINGUNG:
+				break;
+			}
 
 		}
 
 		// aktualisiere Model
 		this.initBeans(this.sortgroupBeans);
+	}
+
+	/*
+	 * Prüfe, ob die übergebene Bean zu einer anderen Gruppe hinzugefügt wurde.
+	 * In diesem Fall lösche diese Bean aus der alten Gruppe und füge sie der
+	 * neuen Gruppe hinzu
+	 */
+	private boolean checkGroupChanged(IConfigurationBean bean, String groupName) {
+		ConfigurationType type = getBeanType(bean);
+		boolean groupChanged = false;
+
+		for (SortGroupBean groupBean : this.sortgroupBeans) {
+			// prüfe, ob die Gruppe der Bean geändert wurde
+			switch (type) {
+			case ALARMBEATERBEITER:
+				if (groupBean.getAlarmbearbeiterBeans().contains(bean)) {
+					// prüfe ob beanname geändert wurde
+					if (!groupBean.getDisplayName().equals(groupName)) {
+						groupBean.getAlarmbearbeiterBeans().remove(bean);
+						groupChanged = true;
+					}
+				}
+				break;
+			case ALARMBEATERBEITERGRUPPE:
+				if (groupBean.getAlarmbearbeitergruppenBeans().contains(bean)) {
+					if (!groupBean.getDisplayName().equalsIgnoreCase(groupName)) {
+						groupBean.getAlarmbearbeitergruppenBeans().remove(bean);
+						groupChanged = true;
+					}
+				}
+				break;
+			case ALARMTOPIC:
+				// TODO weiter machen
+				break;
+			case FILTER:
+				// TODO weiter machen
+				break;
+			case FILTERBEDINGUNG:
+				// TODO: weiter machen
+				break;
+			}
+		}
+
+		return groupChanged;
+	}
+
+	private SortGroupBean getGroupByName(String name) {
+		for (SortGroupBean bean : this.sortgroupBeans) {
+			if (bean.getDisplayName().equalsIgnoreCase(name)) {
+				return bean;
+			}
+		}
+
+		return null;
+	}
+
+	private ConfigurationType getBeanType(IConfigurationBean bean) {
+		ConfigurationType type = null;
+
+		if (bean instanceof AlarmbearbeiterBean) {
+			return ConfigurationType.ALARMBEATERBEITER;
+		} else if (bean instanceof AlarmbearbeitergruppenBean) {
+			return ConfigurationType.ALARMBEATERBEITERGRUPPE;
+		} else if (bean instanceof AlarmtopicBean) {
+			return ConfigurationType.ALARMTOPIC;
+		} else if (bean instanceof FilterbedingungBean) {
+			return ConfigurationType.FILTERBEDINGUNG;
+		} else if (bean instanceof FilterBean) {
+			return ConfigurationType.FILTER;
+		}
+		return type;
 	}
 
 	private Collection<SortGroupBean> getTestconfigurationNodes() {
