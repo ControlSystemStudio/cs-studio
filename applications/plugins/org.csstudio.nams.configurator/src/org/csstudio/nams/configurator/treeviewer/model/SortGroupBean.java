@@ -130,38 +130,46 @@ public class SortGroupBean {
 	}
 
 	public IConfigurationBean findBean(IConfigurationBean bean) {
+		/*
+		 * Falls parent null ist, dann wurde die Bean neu angelegt
+		 */
+		if (bean.getParent() == null) {
+			return null;
+		} else {
 
-		ConfigurationType type = bean.getParent().getConfigurationType();
+			ConfigurationType type = bean.getParent().getConfigurationType();
 
-		switch (type) {
-		case ALARMBEATERBEITER:
-			for (AlarmbearbeiterBean alarmbearbeiterBean : getAlarmbearbeiterBeans()) {
-				if (alarmbearbeiterBean.getUserID() == bean.getID()) {
-					return alarmbearbeiterBean;
+			switch (type) {
+			case ALARMBEATERBEITER:
+				for (AlarmbearbeiterBean alarmbearbeiterBean : getAlarmbearbeiterBeans()) {
+					if (alarmbearbeiterBean.getUserID() == bean.getID()) {
+						return alarmbearbeiterBean;
+					}
 				}
-			}
-		case ALARMBEATERBEITERGRUPPE:
-			for (AlarmbearbeitergruppenBean alarmbearbeiterGruppenBean : getAlarmbearbeitergruppenBeans()) {
-				if (alarmbearbeiterGruppenBean.getGroupID() == bean.getID()) {
-					return alarmbearbeiterGruppenBean;
+			case ALARMBEATERBEITERGRUPPE:
+				for (AlarmbearbeitergruppenBean alarmbearbeiterGruppenBean : getAlarmbearbeitergruppenBeans()) {
+					if (alarmbearbeiterGruppenBean.getGroupID() == bean.getID()) {
+						return alarmbearbeiterGruppenBean;
+					}
 				}
-			}
-		case ALARMTOPIC:
-			for (AlarmtopicBean alarmtopicBean : getAlarmtopicBeans()) {
-				if (alarmtopicBean.getTopicID() == bean.getID()) {
-					return alarmtopicBean;
+			case ALARMTOPIC:
+				for (AlarmtopicBean alarmtopicBean : getAlarmtopicBeans()) {
+					if (alarmtopicBean.getTopicID() == bean.getID()) {
+						return alarmtopicBean;
+					}
 				}
-			}
-		case FILTER:
-			for (FilterBean filterBean : getFilterBeans()) {
-				if (filterBean.getFilterID() == bean.getID()) {
-					return filterBean;
+			case FILTER:
+				for (FilterBean filterBean : getFilterBeans()) {
+					if (filterBean.getFilterID() == bean.getID()) {
+						return filterBean;
+					}
 				}
-			}
-		case FILTERBEDINGUNG:
-			for (FilterbedingungBean filterbedingungBean : getFilterbedingungBeans()) {
-				if (filterbedingungBean.getFilterbedinungID() == bean.getID()) {
-					return filterbedingungBean;
+			case FILTERBEDINGUNG:
+				for (FilterbedingungBean filterbedingungBean : getFilterbedingungBeans()) {
+					if (filterbedingungBean.getFilterbedinungID() == bean
+							.getID()) {
+						return filterbedingungBean;
+					}
 				}
 			}
 		}
@@ -222,10 +230,24 @@ public class SortGroupBean {
 	}
 
 	public void addConfigurationItem(IConfigurationBean bean) {
-		IConfigurationGroup parent = bean.getParent();
-		Assert.isNotNull(parent);
 
-		ConfigurationType beanType = parent.getConfigurationType();
+		/*
+		 * Da die übergebene Bean neue angelegt sein kann und daher kein Parent
+		 * hat, muss hier statt bean.getParent().getConfigurationType() mit
+		 * instanceof gearbeitet werden.
+		 */
+		ConfigurationType beanType = null;
+		if (bean instanceof AlarmbearbeiterBean) {
+			beanType = ConfigurationType.ALARMBEATERBEITER;
+		} else if (bean instanceof AlarmbearbeitergruppenBean) {
+			beanType = ConfigurationType.ALARMBEATERBEITERGRUPPE;
+		} else if (bean instanceof AlarmtopicBean) {
+			beanType = ConfigurationType.ALARMTOPIC;
+		} else if (bean instanceof FilterBean) {
+			beanType = ConfigurationType.FILTER;
+		} else if (bean instanceof FilterbedingungBean) {
+			beanType = ConfigurationType.FILTERBEDINGUNG;
+		}
 
 		switch (beanType) {
 		case ALARMBEATERBEITER:

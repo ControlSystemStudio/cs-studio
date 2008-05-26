@@ -100,10 +100,15 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 
 		int selection = 0;
 		for (int groupName = 0; groupName < groupNames.length; groupName++) {
-			this._groupComboEntry.add((String) groupNames[groupName]);
+			this._groupComboEntry.add(((String) groupNames[groupName]).trim());
 
-			if (this.alarmbearbeiterBean.getParent().getDisplayName().equals(
-					groupNames[groupName])) {
+			/*
+			 * Falls Bean zu einer Gruppe hinzugefügt wurde, wähle die Gruppe in
+			 * der Combobox aus.
+			 */
+			if (this.alarmbearbeiterBean.getParent() != null
+					&& this.alarmbearbeiterBean.getDisplayName().equals(
+							groupNames[groupName])) {
 				selection = groupName;
 			}
 		}
@@ -124,18 +129,27 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 			boolean beansAreEqual = this.alarmbearbeiterBean
 					.equals(this.alarmbearbeiterClone);
 
-			String beanGroup = this.alarmbearbeiterBean.getParent()
-					.getDisplayName();
+			/*
+			 * Neue Beans haben evtl. noch keine Gruppenzugehörigkeit, beachte
+			 * das
+			 */
+			if (this.alarmbearbeiterBean.getParent() != null) {
 
-			boolean groupsAreEqual = beanGroup
-					.equalsIgnoreCase(this._groupComboEntry.getText());
+				String beanGroup = this.alarmbearbeiterBean.getParent()
+						.getDisplayName();
 
-			if (beansAreEqual && groupsAreEqual) {
-				return false;
+				boolean groupsAreEqual = beanGroup
+						.equalsIgnoreCase(this._groupComboEntry.getText());
+				if (beansAreEqual && groupsAreEqual) {
+					return false;
+				} else {
+
+					return true;
+				}
 			} else {
-
-				return true;
+				return !beansAreEqual;
 			}
+
 		} else
 			return false;
 	}

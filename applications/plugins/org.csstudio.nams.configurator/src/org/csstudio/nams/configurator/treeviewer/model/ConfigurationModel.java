@@ -8,7 +8,6 @@ import org.csstudio.nams.configurator.treeviewer.model.treecomponents.Configurat
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.ConfigurationType;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationGroup;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationRoot;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupNode;
 import org.eclipse.core.runtime.Assert;
