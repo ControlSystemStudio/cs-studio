@@ -195,19 +195,21 @@ public class ConfigurationModel extends AbstractObservableBean implements
 			 * prüfe, ob Gruppenzugehörigkeit der Bean geändert wurde und
 			 * verschiebe die Bean ggf. in die neue Gruppe
 			 */
-			String beanParentGroup = ((IConfigurationGroup) bean.getParent())
-					.getDisplayName();
-			if (beanParentGroup.equalsIgnoreCase(groupName)) {
-				/*
-				 * Gruppe wurde nicht geändert, einfach nur Bean updaten
-				 */
-				this.updateBeanState(bean, groupName);
-			} else {
+			if (bean.getParent() != null
+					&& !bean.getParent().getDisplayName().equalsIgnoreCase(
+							groupName)) {
 				/*
 				 * ändere Gruppenzugehörigkeit
 				 */
 				this.changeGroup(bean, groupName);
+			} else {
+				/*
+				 * Gruppe wurde nicht geändert, einfach nur Bean updaten
+				 */
+				this.updateBeanState(bean, groupName);
+
 			}
+
 		}
 
 		Collection<IConfigurationRoot> oldValue = this.rootNodes;
@@ -233,12 +235,14 @@ public class ConfigurationModel extends AbstractObservableBean implements
 	 * Lösung
 	 */
 	private void updateBeanState(IConfigurationBean bean, String groupName) {
+		boolean beanFound = false;
 		/*
 		 * Finde zuerst die Bean.
 		 */
 		for (SortGroupBean groupBean : this.groupBeans) {
 			IConfigurationBean foundBean = groupBean.findBean(bean);
 			if (foundBean != null) {
+				beanFound = true;
 				/*
 				 * Bestimmte den Bean-Typ
 				 */
@@ -266,6 +270,13 @@ public class ConfigurationModel extends AbstractObservableBean implements
 					break;
 				}
 			}
+		}
+
+		if (!beanFound) {
+			// neue Bean wurde angelegt
+			SortGroupBean group = getGroupBeanByName(groupName);
+			Assert.isNotNull(group);
+			group.addConfigurationItem(bean);
 		}
 	}
 
