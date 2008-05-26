@@ -1,16 +1,21 @@
 package org.csstudio.nams.configurator.treeviewer;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditingStoreService;
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
 import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.configurator.treeviewer.actions.OpenConfigurationEditor;
+import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
-import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AbstractConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortGroupBean;
+import org.csstudio.nams.configurator.treeviewer.model.SortGroupBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationRoot;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -19,6 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 
@@ -45,6 +51,10 @@ public class ConfigurationTreeView extends ViewPart {
 		// TODO: hier sollten Gruppen übergeben werden
 		this.configurationModel = new ConfigurationModel(
 				new ArrayList<SortGroupBean>());
+
+		// melde dich beim Model als Listener an
+		this.configurationModel.addPropertyChangeListener(this
+				.getPropertyChangeListener());
 	}
 
 	/**
@@ -78,7 +88,7 @@ public class ConfigurationTreeView extends ViewPart {
 				// prüfe, ob ein ChildElement ausgewählt wurde
 				IStructuredSelection selection = (IStructuredSelection) event
 						.getSelection();
-				if (selection.getFirstElement() instanceof AbstractConfigurationBean<?>) {
+				if (selection.getFirstElement() instanceof IConfigurationBean) {
 					doubleClickAction = new OpenConfigurationEditor(
 							(IConfigurationBean) selection.getFirstElement(),
 							configurationModel);
@@ -130,5 +140,22 @@ public class ConfigurationTreeView extends ViewPart {
 	 */
 	public IConfigurationModel getModel() {
 		return this.configurationModel;
+	}
+
+	private PropertyChangeListener getPropertyChangeListener() {
+		return new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent arg0) {
+				// beau TreeViewer neu auf
+				final Collection<IConfigurationRoot> children = configurationModel
+						.getChildren();
+
+				Display.getCurrent().asyncExec(new Runnable() {
+					public void run() {
+						_viewer.setInput(children);
+
+					}
+				});
+			}
+		};
 	}
 }

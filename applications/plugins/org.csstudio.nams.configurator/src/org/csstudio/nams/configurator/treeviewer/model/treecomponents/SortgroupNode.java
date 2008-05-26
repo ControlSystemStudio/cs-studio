@@ -3,24 +3,21 @@ package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
+/**
+ * Diese Klasse repräsentiert eine Gruppe im TreeViewer. Die
+ * {@link SortgroupNode} ist immer einem bestimmten Root-Element und damit einem
+ * bestimmten {@link ConfigurationType} zugeordnet.
+ * 
+ * @author Eugen Reiswich
+ * 
+ */
+public class SortgroupNode extends AbstractConfigurationNode implements
+		IConfigurationGroup {
 
-public class SortgroupNode {
+	private Collection<? extends IConfigurationBean> beans;
 
-	private final ConfigurationType groupType;
-	private final Collection<? extends IConfigurationBean> beans;
-	private final String name;
-
-	public SortgroupNode(String name,
-			Collection<? extends IConfigurationBean> collection,
-			ConfigurationType groupType) {
-		this.name = name;
-		this.beans = collection;
-		this.groupType = groupType;
-	}
-
-	public ConfigurationType getGroupType() {
-		return groupType;
+	public SortgroupNode(String name, IConfigurationRoot parent) {
+		super(name, parent);
 	}
 
 	/**
@@ -37,7 +34,23 @@ public class SortgroupNode {
 		return beans == null ? new ArrayList<IConfigurationBean>() : beans;
 	}
 
-	public String getDisplayName() {
-		return name;
+	/**
+	 * Setze die Kinder einer Gruppe. Hier wird auch gleichzeitig die
+	 * Parent-Gruppe gesetzt
+	 */
+	public void setChildren(Collection<? extends IConfigurationBean> children) {
+		Collection<IConfigurationBean> items = new ArrayList<IConfigurationBean>();
+		for (IConfigurationBean bean : children) {
+			bean.setParent(this);
+			items.add(bean);
+		}
+		this.beans = items;
+	}
+
+	/**
+	 * Liefert den {@link ConfigurationType} der Gruppe.
+	 */
+	public ConfigurationType getConfigurationType() {
+		return ((IConfigurationRoot) getParent()).getConfigurationType();
 	}
 }

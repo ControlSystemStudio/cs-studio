@@ -1,19 +1,19 @@
 package org.csstudio.nams.configurator.treeviewer.actions;
 
-import java.util.Collection;
-
 import org.csstudio.nams.configurator.editor.ConfigurationEditor;
 import org.csstudio.nams.configurator.editor.ConfigurationEditorInput;
 import org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView;
-import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeitergruppenBean;
+import org.csstudio.nams.configurator.treeviewer.model.AlarmtopicBean;
+import org.csstudio.nams.configurator.treeviewer.model.FilterBean;
+import org.csstudio.nams.configurator.treeviewer.model.FilterbedingungBean;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeitergruppenBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.ConfigurationType;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterbedingungBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationGroup;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationRoot;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupNode;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.IAction;
@@ -26,14 +26,12 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 public class NewEntryAction implements IObjectActionDelegate {
 
 	private ConfigurationTreeView targetPart;
 	private IStructuredSelection selection;
-
-	// public NewEntryAction(Collection<String> groupNames) {
-	// this.groupNames = groupNames;
-	// }
 
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		this.targetPart = (ConfigurationTreeView) targetPart;
@@ -48,18 +46,24 @@ public class NewEntryAction implements IObjectActionDelegate {
 			IConfigurationBean newElement = null;
 			ConfigurationType configurationType = null;
 
+			/*
+			 * Falls neuer Eintrag für eine bestehende Gruppe ausgewählt wurde,
+			 * wird die ausgewählte Gruppe als parent element verwendet.
+			 * Andernfalls ist parent == null
+			 */
+			IConfigurationGroup groupNode = null;
+
 			// new element auf root
-			if (selection.getFirstElement() instanceof IConfigurationNode) {
-				IConfigurationNode selectedNode = (IConfigurationNode) selection
+			if (selection.getFirstElement() instanceof IConfigurationRoot) {
+				IConfigurationRoot selectedNode = (IConfigurationRoot) selection
 						.getFirstElement();
 				configurationType = selectedNode.getConfigurationType();
 			}
 
 			// new element auf gruppe
-			if (selection.getFirstElement() instanceof SortgroupNode) {
-				SortgroupNode node = (SortgroupNode) selection
-						.getFirstElement();
-				configurationType = node.getGroupType();
+			if (selection.getFirstElement() instanceof IConfigurationGroup) {
+				groupNode = (IConfigurationGroup) selection.getFirstElement();
+				configurationType = groupNode.getConfigurationType();
 			}
 
 			Assert.isNotNull(configurationType);
@@ -84,6 +88,9 @@ public class NewEntryAction implements IObjectActionDelegate {
 				newElement = new FilterbedingungBean();
 				break;
 			}
+
+			// setze Gruppenzugehörigkeit, falls welche existiert
+			newElement.setParent(groupNode);
 
 			Assert.isNotNull(newElement);
 
@@ -112,7 +119,7 @@ public class NewEntryAction implements IObjectActionDelegate {
 
 		// enable/disable selection
 		if (!this.selection.isEmpty()) {
-			if (this.selection.getFirstElement() instanceof IConfigurationNode) {
+			if (this.selection.getFirstElement() instanceof IConfigurationRoot) {
 				isEnabled = true;
 			}
 

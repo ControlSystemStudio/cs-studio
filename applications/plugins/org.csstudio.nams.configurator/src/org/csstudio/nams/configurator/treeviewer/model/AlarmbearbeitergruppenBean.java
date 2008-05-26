@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
+package org.csstudio.nams.configurator.treeviewer.model;
 
 import java.beans.PropertyChangeSupport;
 
@@ -111,6 +111,11 @@ public class AlarmbearbeitergruppenBean extends
 	public void updateState(AlarmbearbeitergruppenBean bean) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public int getID() {
+		return this.getGroupID();
 	}
 
 }

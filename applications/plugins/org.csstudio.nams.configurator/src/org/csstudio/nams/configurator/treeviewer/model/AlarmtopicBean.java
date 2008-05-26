@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
+package org.csstudio.nams.configurator.treeviewer.model;
 
 import java.beans.PropertyChangeSupport;
 
@@ -97,6 +97,11 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean> {
 	public void updateState(AlarmtopicBean bean) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public int getID() {
+		return this.getTopicID();
 	}
 
 }

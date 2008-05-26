@@ -9,8 +9,9 @@ import org.csstudio.nams.configurator.editor.stackparts.AbstractStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.DefaultStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.TopicStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.UserStackPart;
-import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -53,6 +54,8 @@ public class ConfigurationEditor extends EditorPart implements
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		_showedStackPart.save();
+
+		this.fireDirtyFlagChanged();
 	}
 
 	@Override

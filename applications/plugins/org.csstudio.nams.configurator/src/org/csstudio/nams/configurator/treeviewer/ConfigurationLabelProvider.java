@@ -1,8 +1,8 @@
 package org.csstudio.nams.configurator.treeviewer;
 
-import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupNode;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationGroup;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationRoot;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 
@@ -11,16 +11,19 @@ public class ConfigurationLabelProvider extends LabelProvider implements
 
 	@Override
 	public String getText(Object element) {
-		if (element instanceof IConfigurationNode) {
-			IConfigurationNode node = (IConfigurationNode) element;
-			return node.getName();
+		// Root Node
+		if (element instanceof IConfigurationRoot) {
+			IConfigurationRoot node = (IConfigurationRoot) element;
+			return node.getDisplayName();
 		}
 
-		if (element instanceof SortgroupNode) {
-			SortgroupNode groupNode = (SortgroupNode) element;
+		// Group Node
+		if (element instanceof IConfigurationGroup) {
+			IConfigurationGroup groupNode = (IConfigurationGroup) element;
 			return groupNode.getDisplayName();
 		}
 
+		// Beans
 		if (element instanceof IConfigurationBean) {
 			IConfigurationBean bean = (IConfigurationBean) element;
 			return bean.getDisplayName();

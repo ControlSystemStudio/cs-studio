@@ -39,7 +39,7 @@
       <objectContribution
             adaptable="true"
             id="org.csstudio.nams.configurator.configurationNodeContribution"
-            objectClass="org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode">
+            objectClass="org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationRoot">
          <action
                class="org.csstudio.nams.configurator.treeviewer.actions.NewEntryAction"
                icon="icons/abiword_abi.png"

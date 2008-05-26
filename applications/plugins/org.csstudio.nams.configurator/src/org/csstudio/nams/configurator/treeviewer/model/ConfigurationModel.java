@@ -3,151 +3,151 @@ package org.csstudio.nams.configurator.treeviewer.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AbstractObservableBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeitergruppenBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmtopicBean;
+import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean.PreferedAlarmType;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.ConfigurationNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.ConfigurationType;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.FilterbedingungBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationGroup;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortGroupBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationRoot;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupNode;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean.PreferedAlarmType;
+import org.eclipse.core.runtime.Assert;
 
 /**
  * Diese Klasse ist das Model für den TreeViewer des AMS-Configurators.
  * 
- * @author eugrei
+ * Beim DESY besteht die Anforderung, dass Gruppen global verwendet werden
+ * sollen, d.h. auf eine Gruppe - angelegt z.B. im Alarmbearbeiter-Editor -
+ * können auch weitere Beans wie z.B. der Alarmtopic zugreifen. Diese
+ * Anforderung ist mit dem JFace TreeViewer nicht umsetzbar, daher gehen wir wie
+ * folgt vor:
+ * 
+ * 1. Wir definieren ein Modell, dass die DESY-Anforderungen erfüllt (Collection<SortGroupBean>
+ * groupBeans)
+ * 
+ * 2. Basierend auf diesem Modell erstellen wir ein JFace TreeViewer geeignetes
+ * Modell in der Methode initBeans();
+ * 
+ * 3. Beim Speichern von Änderungen wird zunächst das ursprüngliche DESY-Modell
+ * angepasst. Anschließend erfolgt wieder ein Aufbau des Modells für den JFace
+ * TreeViewer.
+ * 
+ * Das Arbeiten mit zwei Modellen ist jedoch sehr fehleranfällig und führt zu
+ * vielen Problemen...
+ * 
+ * @author Eugen Reiswich
  * 
  */
 public class ConfigurationModel extends AbstractObservableBean implements
 		IConfigurationModel {
 
 	/*
-	 * Die Collection configurationNodes enthält alle Elemente des
+	 * Die Collection rootNodes enthält alle Elemente des
 	 * Configuration-TreeViewer
 	 */
-	private Collection<IConfigurationNode> configurationNodes;
+	private Collection<IConfigurationRoot> rootNodes;
 
-	private Collection<SortGroupBean> sortgroupBeans;
+	/*
+	 * Die Collection configurationGroups enthällt globale Gruppen, die von
+	 * allen ConfigurationsTypen im TreeViewer verwendet werden können. Diese
+	 * Collecion wird aus der Datenbank erstellt und enthällt initialdaten für
+	 * den TreeViewer.
+	 */
+	private Collection<SortGroupBean> groupBeans;
 
-	public ConfigurationModel(Collection<SortGroupBean> sortgroupBeans) {
-		this.sortgroupBeans = sortgroupBeans;
+	// private Collection<SortGroupBean> sortgroupBeans;
+
+	public ConfigurationModel(Collection<SortGroupBean> configurationGroups) {
+		this.groupBeans = configurationGroups;
 
 		// XXX Test only
-		this.sortgroupBeans = getTestconfigurationNodes();
+		this.groupBeans = getTestconfigurationNodes();
 
-		this.initBeans(this.sortgroupBeans);
-	}
-
-	/**
-	 * Initialisiert die GroupBeans-Map, indem als key der Gruppenname verwendet
-	 * wird und als value die Gruppe an sich
-	 * 
-	 * @param groupBeans
-	 */
-	private void initBeans(Collection<SortGroupBean> groupBeans) {
-
-		this.configurationNodes = new ArrayList<IConfigurationNode>();
-
-		// root node alarmbearbeiter
-		Collection<SortgroupNode> alarmBearbeitergroupNodes = new ArrayList<SortgroupNode>();
-		// root node alarmbearbeitergruppen
-		Collection<SortgroupNode> alarmBearbeiterGruppengroupNodes = new ArrayList<SortgroupNode>();
-		// root node alarmtopics
-		Collection<SortgroupNode> alarmTopicgroupNodes = new ArrayList<SortgroupNode>();
-		// root node filterbedingungen
-		Collection<SortgroupNode> filterBedingunggroupNodes = new ArrayList<SortgroupNode>();
-		// root node filter
-		Collection<SortgroupNode> filtergroupNodes = new ArrayList<SortgroupNode>();
-		// root node empty groups
-		Collection<SortgroupNode> emptygroupNodes = new ArrayList<SortgroupNode>();
-
-		for (SortGroupBean bean : groupBeans) {
-
-			// ALARMBEATERBEITER
-			if (!bean.getAlarmbearbeiterBeans().isEmpty()) {
-				SortgroupNode groupNodeAlarmbearbeiter = new SortgroupNode(bean
-						.getDisplayName(), bean.getAlarmbearbeiterBeans(),
-						ConfigurationType.ALARMBEATERBEITER);
-				alarmBearbeitergroupNodes.add(groupNodeAlarmbearbeiter);
-			}
-
-			// ALARMBEATERBEITERGRUPPE
-			if (!bean.getAlarmbearbeitergruppenBeans().isEmpty()) {
-				SortgroupNode groupNodeAlarmbearbeitergruppe = new SortgroupNode(
-						bean.getDisplayName(), bean
-								.getAlarmbearbeitergruppenBeans(),
-						ConfigurationType.ALARMBEATERBEITERGRUPPE);
-
-				alarmBearbeiterGruppengroupNodes
-						.add(groupNodeAlarmbearbeitergruppe);
-			}
-
-			// ALARMTOPIC
-			if (!bean.getAlarmtopicBeans().isEmpty()) {
-				SortgroupNode groupNodeAlarmtopic = new SortgroupNode(bean
-						.getDisplayName(), bean.getAlarmtopicBeans(),
-						ConfigurationType.ALARMTOPIC);
-				alarmTopicgroupNodes.add(groupNodeAlarmtopic);
-			}
-
-			// FILTERBEDINGUNG
-			if (!bean.getFilterbedingungBeans().isEmpty()) {
-				SortgroupNode groupNodeFilterbedingung = new SortgroupNode(bean
-						.getDisplayName(), bean.getFilterbedingungBeans(),
-						ConfigurationType.FILTERBEDINGUNG);
-				filterBedingunggroupNodes.add(groupNodeFilterbedingung);
-			}
-
-			// FILTER
-			if (!bean.getFilterBeans().isEmpty()) {
-				SortgroupNode groupNodeFilter = new SortgroupNode(bean
-						.getDisplayName(), bean.getFilterBeans(),
-						ConfigurationType.FILTER);
-				filtergroupNodes.add(groupNodeFilter);
-			}
-
-			this.checkEmptyGroup(bean, emptygroupNodes);
-		}
-
-		this.configurationNodes
-				.add(new ConfigurationNode(alarmBearbeitergroupNodes,
-						ConfigurationType.ALARMBEATERBEITER));
-		this.configurationNodes.add(new ConfigurationNode(
-				alarmBearbeiterGruppengroupNodes,
-				ConfigurationType.ALARMBEATERBEITERGRUPPE));
-		this.configurationNodes.add(new ConfigurationNode(alarmTopicgroupNodes,
-				ConfigurationType.ALARMTOPIC));
-		this.configurationNodes.add(new ConfigurationNode(
-				filterBedingunggroupNodes, ConfigurationType.FILTERBEDINGUNG));
-		this.configurationNodes.add(new ConfigurationNode(filtergroupNodes,
-				ConfigurationType.FILTER));
-		this.configurationNodes.add(new ConfigurationNode(emptygroupNodes,
-				ConfigurationType.EMPTYGROUPS));
+		this.initBeans();
 	}
 
 	/*
-	 * Prüfe, ob eine Gruppe keine Kinder enthält und füge sie in dem Fall in
-	 * den RootNode EmptyGroups. Dadurch werden leere Gruppen im TreeViewer
-	 * sichtbar gemacht und können vom User bei Bedarf gelöscht werden.
-	 * 
-	 * @param groupBean @param emptygroupNodes
+	 * In dieser Methode erfolgt die Erstellung des Modells für den TreeViewer.
+	 * Hier werden Gruppen zu RootNodes zusamengestellt.
 	 */
-	private void checkEmptyGroup(SortGroupBean groupBean,
-			Collection<SortgroupNode> emptygroupNodes) {
+	private void initBeans() {
+		this.rootNodes = new ArrayList<IConfigurationRoot>();
 
-		if (groupBean.getAlarmbearbeiterBeans().isEmpty()
-				&& groupBean.getAlarmbearbeitergruppenBeans().isEmpty()
-				&& groupBean.getAlarmtopicBeans().isEmpty()
-				&& groupBean.getFilterbedingungBeans().isEmpty()
-				&& groupBean.getFilterBeans().isEmpty()) {
-			SortgroupNode emptyNode = new SortgroupNode(groupBean
-					.getDisplayName(), null, ConfigurationType.EMPTYGROUPS);
+		IConfigurationRoot alarmbearbeiterRootNode = new ConfigurationNode(
+				ConfigurationType.ALARMBEATERBEITER);
+		IConfigurationRoot alarmbearbeiterGruppenRootNode = new ConfigurationNode(
+				ConfigurationType.ALARMBEATERBEITERGRUPPE);
+		IConfigurationRoot alarmtopicRootNode = new ConfigurationNode(
+				ConfigurationType.ALARMTOPIC);
+		IConfigurationRoot filterRootNode = new ConfigurationNode(
+				ConfigurationType.FILTER);
+		IConfigurationRoot filterbedingungRootNode = new ConfigurationNode(
+				ConfigurationType.FILTERBEDINGUNG);
+		IConfigurationRoot emptyRootNode = new ConfigurationNode(
+				ConfigurationType.EMPTYGROUPS);
 
-			emptygroupNodes.add(emptyNode);
+		this.rootNodes.add(alarmbearbeiterRootNode);
+		this.rootNodes.add(alarmbearbeiterGruppenRootNode);
+		this.rootNodes.add(alarmtopicRootNode);
+		this.rootNodes.add(filterRootNode);
+		this.rootNodes.add(filterbedingungRootNode);
+		this.rootNodes.add(emptyRootNode);
+
+		for (SortGroupBean groupBean : this.groupBeans) {
+
+			// ALARMBEATERBEITER
+			if (!groupBean.getAlarmbearbeiterBeans().isEmpty()) {
+				SortgroupNode groupNodeAlarmbearbeiter = new SortgroupNode(
+						groupBean.getDisplayName(), alarmbearbeiterRootNode);
+				// set children
+				groupNodeAlarmbearbeiter.setChildren(groupBean
+						.getAlarmbearbeiterBeans());
+				alarmbearbeiterRootNode.addChild(groupNodeAlarmbearbeiter);
+			}
+
+			// ALARMBEATERBEITERGRUPPE
+			if (!groupBean.getAlarmbearbeitergruppenBeans().isEmpty()) {
+				SortgroupNode groupNodeAlarmbearbeitergruppen = new SortgroupNode(
+						groupBean.getDisplayName(),
+						alarmbearbeiterGruppenRootNode);
+				// set children
+				groupNodeAlarmbearbeitergruppen.setChildren(groupBean
+						.getAlarmbearbeitergruppenBeans());
+				alarmbearbeiterGruppenRootNode
+						.addChild(groupNodeAlarmbearbeitergruppen);
+			}
+
+			// ALARMTOPIC
+			if (!groupBean.getAlarmtopicBeans().isEmpty()) {
+				SortgroupNode groupNodeAlarmtopic = new SortgroupNode(groupBean
+						.getDisplayName(), alarmtopicRootNode);
+				groupNodeAlarmtopic.setChildren(groupBean.getAlarmtopicBeans());
+				alarmtopicRootNode.addChild(groupNodeAlarmtopic);
+			}
+
+			// FILTER
+			if (!groupBean.getFilterBeans().isEmpty()) {
+				SortgroupNode groupNodeFilter = new SortgroupNode(groupBean
+						.getDisplayName(), filterRootNode);
+				groupNodeFilter.setChildren(groupBean.getFilterBeans());
+				filterRootNode.addChild(groupNodeFilter);
+			}
+
+			// FILTERBEDINGUNG
+			if (!groupBean.getFilterbedingungBeans().isEmpty()) {
+				SortgroupNode groupNodeFilterbedingung = new SortgroupNode(
+						groupBean.getDisplayName(), filterbedingungRootNode);
+				groupNodeFilterbedingung.setChildren(groupBean
+						.getFilterbedingungBeans());
+				filterbedingungRootNode.addChild(groupNodeFilterbedingung);
+			}
+
+			// EMPTY GROUPS
+			if (groupBean.isEmpty()) {
+				SortgroupNode groupNodeEmpty = new SortgroupNode(groupBean
+						.getDisplayName(), emptyRootNode);
+				emptyRootNode.addChild(groupNodeEmpty);
+			}
 		}
 	}
 
@@ -156,157 +156,249 @@ public class ConfigurationModel extends AbstractObservableBean implements
 	 * 
 	 * @return
 	 */
-	public Collection<IConfigurationNode> getChildren() {
-		return configurationNodes;
+	public Collection<IConfigurationRoot> getChildren() {
+		return this.rootNodes;
 	}
 
+	/**
+	 * Liefert alle Gruppennamen
+	 */
 	public Collection<String> getSortgroupNames() {
 		Collection<String> groupNames = new ArrayList<String>();
 
-		for (SortGroupBean groupBean : sortgroupBeans) {
+		for (SortGroupBean groupBean : this.groupBeans) {
 			groupNames.add(groupBean.getDisplayName());
 		}
 		return groupNames;
 	}
 
-	public void save(IConfigurationBean bean, String groupName) {
-		// bestimme den Bean-Typen
-		boolean groupChanged = this.checkGroupChanged(bean, groupName);
-		ConfigurationType type = getBeanType(bean);
+	/**
+	 * Speichert eine Bean im lokalen Modell. Die Speicherung in der DB wir per
+	 * Synchronisation durchgeführt (Synchronize-Button in der Toolbar)
+	 * 
+	 * @param bean
+	 *            Die Bean, die gespeichert werden soll
+	 * @param groupName
+	 *            Die Gruppe der Bean (kann auch eine neue Gruppe sein)
+	 * @return {@link IConfigurationBean} Die übergebene Bean, jedoch mit
+	 *         geändertem inneren Zustand. So hat die Bean evtl. andere
+	 *         Gruppenzugehörigkeit bekommen.
+	 */
+	public IConfigurationBean save(IConfigurationBean bean, String groupName) {
+		// wurde eine neue Gruppe angelegt ?
+		SortGroupBean group = this.getGroupBeanByName(groupName);
 
-		if (groupChanged) {
-			SortGroupBean groupBean = getGroupByName(groupName);
-
-			switch (type) {
-			case ALARMBEATERBEITER:
-				groupBean.getAlarmbearbeiterBeans().add(
-						(AlarmbearbeiterBean) bean);
-				break;
-			case ALARMBEATERBEITERGRUPPE:
-				break;
-			case ALARMTOPIC:
-				break;
-			case FILTER:
-				break;
-			case FILTERBEDINGUNG:
-				break;
+		if (group == null) {
+			this.createNewGroup(bean, groupName);
+		} else {
+			/*
+			 * prüfe, ob Gruppenzugehörigkeit der Bean geändert wurde und
+			 * verschiebe die Bean ggf. in die neue Gruppe
+			 */
+			String beanParentGroup = ((IConfigurationGroup) bean.getParent())
+					.getDisplayName();
+			if (beanParentGroup.equalsIgnoreCase(groupName)) {
+				/*
+				 * Gruppe wurde nicht geändert, einfach nur Bean updaten
+				 */
+				this.updateBeanState(bean, groupName);
+			} else {
+				/*
+				 * ändere Gruppenzugehörigkeit
+				 */
+				this.changeGroup(bean, groupName);
 			}
-
 		}
 
+		Collection<IConfigurationRoot> oldValue = this.rootNodes;
+
 		// aktualisiere Model
-		this.initBeans(this.sortgroupBeans);
+		this.initBeans();
+
+		/*
+		 * Benachrichtige Listener, das dürfte eigentlich nur der TreeViewer
+		 * sein.
+		 */
+		getPropertyChangeSupport().firePropertyChange("model", oldValue,
+				this.rootNodes);
+
+		IConfigurationBean updatedConfigurationItem = this
+				.getUpdatedConfigurationItem(bean);
+
+		return updatedConfigurationItem;
 	}
 
 	/*
-	 * Prüfe, ob die übergebene Bean zu einer anderen Gruppe hinzugefügt wurde.
-	 * In diesem Fall lösche diese Bean aus der alten Gruppe und füge sie der
-	 * neuen Gruppe hinzu
+	 * TODO: das Casten könnte hier zu Fehlern führen, überlege alternative
+	 * Lösung
 	 */
-	private boolean checkGroupChanged(IConfigurationBean bean, String groupName) {
-		ConfigurationType type = getBeanType(bean);
-		boolean groupChanged = false;
-
-		for (SortGroupBean groupBean : this.sortgroupBeans) {
-			// prüfe, ob die Gruppe der Bean geändert wurde
-			switch (type) {
-			case ALARMBEATERBEITER:
-				if (groupBean.getAlarmbearbeiterBeans().contains(bean)) {
-					// prüfe ob beanname geändert wurde
-					if (!groupBean.getDisplayName().equals(groupName)) {
-						groupBean.getAlarmbearbeiterBeans().remove(bean);
-						groupChanged = true;
-					}
+	private void updateBeanState(IConfigurationBean bean, String groupName) {
+		/*
+		 * Finde zuerst die Bean.
+		 */
+		for (SortGroupBean groupBean : this.groupBeans) {
+			IConfigurationBean foundBean = groupBean.findBean(bean);
+			if (foundBean != null) {
+				/*
+				 * Bestimmte den Bean-Typ
+				 */
+				ConfigurationType beanType = bean.getParent()
+						.getConfigurationType();
+				switch (beanType) {
+				case ALARMBEATERBEITER:
+					((AlarmbearbeiterBean) foundBean)
+							.updateState((AlarmbearbeiterBean) bean);
+					break;
+				case ALARMBEATERBEITERGRUPPE:
+					((AlarmbearbeitergruppenBean) foundBean)
+							.updateState((AlarmbearbeitergruppenBean) bean);
+					break;
+				case ALARMTOPIC:
+					((AlarmtopicBean) foundBean)
+							.updateState((AlarmtopicBean) bean);
+					break;
+				case FILTER:
+					((FilterBean) foundBean).updateState((FilterBean) bean);
+					break;
+				case FILTERBEDINGUNG:
+					((FilterbedingungBean) foundBean)
+							.updateState((FilterbedingungBean) bean);
+					break;
 				}
-				break;
-			case ALARMBEATERBEITERGRUPPE:
-				if (groupBean.getAlarmbearbeitergruppenBeans().contains(bean)) {
-					if (!groupBean.getDisplayName().equalsIgnoreCase(groupName)) {
-						groupBean.getAlarmbearbeitergruppenBeans().remove(bean);
-						groupChanged = true;
-					}
-				}
-				break;
-			case ALARMTOPIC:
-				// TODO weiter machen
-				break;
-			case FILTER:
-				// TODO weiter machen
-				break;
-			case FILTERBEDINGUNG:
-				// TODO: weiter machen
-				break;
 			}
 		}
-
-		return groupChanged;
 	}
 
-	private SortGroupBean getGroupByName(String name) {
-		for (SortGroupBean bean : this.sortgroupBeans) {
-			if (bean.getDisplayName().equalsIgnoreCase(name)) {
+	/*
+	 * Ändert die Gruppe einer Bean. Vorbedingung: Gruppe für übergebenen
+	 * Gruppennamen muss existieren
+	 */
+	private void changeGroup(IConfigurationBean bean, String groupName) {
+		/*
+		 * Lösche zunächst Bean aus alter Gruppe
+		 */
+		for (SortGroupBean groupBean : this.groupBeans) {
+			groupBean.removeBean(bean);
+		}
+
+		// füge Bean in die übergebene Gruppe
+		SortGroupBean groupBean = this.getGroupBeanByName(groupName);
+		groupBean.addConfigurationItem(bean);
+	}
+
+	private SortGroupBean getGroupBeanByName(String groupName) {
+		for (SortGroupBean bean : this.groupBeans) {
+			if (bean.getDisplayName().equalsIgnoreCase(groupName)) {
 				return bean;
 			}
 		}
-
 		return null;
 	}
 
-	private ConfigurationType getBeanType(IConfigurationBean bean) {
-		ConfigurationType type = null;
+	/*
+	 * Da nach dem Speichern die ursprüngliche Bean eine andere
+	 * Gruppenzugehörigkeit hat, wird hier nach dieser Bean gesucht, um einen
+	 * übergreifenden konsistenten Zustand zu bewahren.
+	 */
+	private IConfigurationBean getUpdatedConfigurationItem(
+			IConfigurationBean bean) {
+		IConfigurationGroup parent = bean.getParent();
+		Assert.isNotNull(parent);
+		ConfigurationType beanType = parent.getConfigurationType();
 
-		if (bean instanceof AlarmbearbeiterBean) {
-			return ConfigurationType.ALARMBEATERBEITER;
-		} else if (bean instanceof AlarmbearbeitergruppenBean) {
-			return ConfigurationType.ALARMBEATERBEITERGRUPPE;
-		} else if (bean instanceof AlarmtopicBean) {
-			return ConfigurationType.ALARMTOPIC;
-		} else if (bean instanceof FilterbedingungBean) {
-			return ConfigurationType.FILTERBEDINGUNG;
-		} else if (bean instanceof FilterBean) {
-			return ConfigurationType.FILTER;
+		for (IConfigurationRoot root : this.rootNodes) {
+			if (root.getConfigurationType() == beanType) {
+				/*
+				 * richtigen Root-Node gefunden, suche in den Gruppen weiter
+				 */
+				for (IConfigurationGroup group : root.getChildren()) {
+					for (IConfigurationBean configurationBean : group
+							.getChildren()) {
+						if (configurationBean.getID() == bean.getID()) {
+							return configurationBean;
+						}
+					}
+				}
+			}
 		}
-		return type;
+		return null;
 	}
 
+	/*
+	 * Erstellt eine neue Gruppe und befüllt je nach ConfigurationType die
+	 * entsprechende Collection mit dem übergebenen Bean.
+	 */
+	private void createNewGroup(IConfigurationBean bean, String groupName) {
+		SortGroupBean groupBean = new SortGroupBean(-1, groupName);
+
+		ConfigurationType type = bean.getParent().getConfigurationType();
+
+		switch (type) {
+		case ALARMBEATERBEITER:
+			groupBean.getAlarmbearbeiterBeans().add((AlarmbearbeiterBean) bean);
+			break;
+		case ALARMBEATERBEITERGRUPPE:
+			groupBean.getAlarmbearbeitergruppenBeans().add(
+					(AlarmbearbeitergruppenBean) bean);
+			break;
+		case ALARMTOPIC:
+			groupBean.getAlarmtopicBeans().add((AlarmtopicBean) bean);
+			break;
+		case FILTER:
+			groupBean.getFilterBeans().add((FilterBean) bean);
+			break;
+		case FILTERBEDINGUNG:
+			groupBean.getFilterbedingungBeans().add((FilterbedingungBean) bean);
+			break;
+		}
+	}
+
+	/*
+	 * XXX: For Tests only!!!
+	 */
 	private Collection<SortGroupBean> getTestconfigurationNodes() {
 
 		Collection<SortGroupBean> initialData = new ArrayList<SortGroupBean>();
 
-		SortGroupBean sortgroupBean = new SortGroupBean(0, "Strasse 1");
-		SortGroupBean emptyGroup = new SortGroupBean(0, "Strasse 2");
+		SortGroupBean groupBean1 = new SortGroupBean(0, "Strasse 1");
+		SortGroupBean emptyGroupBean = new SortGroupBean(1, "Strasse 2");
+		SortGroupBean topicGroupBean = new SortGroupBean(2, "Topic 1");
 
-		Collection<AlarmbearbeiterBean> beans1 = new ArrayList<AlarmbearbeiterBean>();
+		Collection<AlarmbearbeiterBean> alarmbearbeiterBeans = new ArrayList<AlarmbearbeiterBean>();
 
-		// Beans erzeugen
-		AlarmbearbeiterBean testAlarmbearbeiterBean1 = new AlarmbearbeiterBean();
-		testAlarmbearbeiterBean1.setName("Klaus");
-		testAlarmbearbeiterBean1.setActive(true);
-		testAlarmbearbeiterBean1.setConfirmCode("Confirmation Code");
-		testAlarmbearbeiterBean1.setEmail("alarm@test.de");
-		testAlarmbearbeiterBean1.setMobilePhone("0170/rufmichan");
-		testAlarmbearbeiterBean1.setPhone("040/don't call");
-		testAlarmbearbeiterBean1.setPreferedAlarmType(PreferedAlarmType.EMAIL);
-		testAlarmbearbeiterBean1.setStatusCode("Statuc Code");
-		testAlarmbearbeiterBean1.setUserID(0);
+		// AlarmbearbeiterBeans erzeugen
+		AlarmbearbeiterBean alarmbearbeiterBean1 = new AlarmbearbeiterBean();
+		alarmbearbeiterBean1.setName("Klaus");
+		alarmbearbeiterBean1.setActive(true);
+		alarmbearbeiterBean1.setConfirmCode("Confirmation Code");
+		alarmbearbeiterBean1.setEmail("alarm@test.de");
+		alarmbearbeiterBean1.setMobilePhone("0170/rufmichan");
+		alarmbearbeiterBean1.setPhone("040/don't call");
+		alarmbearbeiterBean1.setPreferedAlarmType(PreferedAlarmType.EMAIL);
+		alarmbearbeiterBean1.setStatusCode("Statuc Code");
+		alarmbearbeiterBean1.setUserID(0);
 
-		AlarmbearbeiterBean testAlarmbearbeiterBean2 = new AlarmbearbeiterBean();
-		testAlarmbearbeiterBean2.setName("Susi");
+		AlarmbearbeiterBean alarmbearbeiterBean2 = new AlarmbearbeiterBean();
+		alarmbearbeiterBean2.setName("Susi");
+		alarmbearbeiterBean2.setUserID(1);
 
-		beans1.add(testAlarmbearbeiterBean1);
-		beans1.add(testAlarmbearbeiterBean2);
+		alarmbearbeiterBeans.add(alarmbearbeiterBean1);
+		alarmbearbeiterBeans.add(alarmbearbeiterBean2);
 
-		sortgroupBean.setAlarmbearbeiterBeans(beans1);
+		groupBean1.setAlarmbearbeiterBeans(alarmbearbeiterBeans);
 
+		// Alarmtopic Beans
 		Collection<AlarmtopicBean> beans2 = new ArrayList<AlarmtopicBean>();
 		AlarmtopicBean topicBean1 = new AlarmtopicBean();
-		topicBean1.setHumanReadableName("Topic 1");
+		topicBean1.setHumanReadableName("Mein Topic");
+		topicBean1.setTopicID(1);
 		beans2.add(topicBean1);
 
-		sortgroupBean.setAlarmtopicBeans(beans2);
+		groupBean1.setAlarmtopicBeans(beans2);
 
-		initialData.add(sortgroupBean);
-		initialData.add(emptyGroup);
+		initialData.add(groupBean1);
+		initialData.add(topicGroupBean);
+		initialData.add(emptyGroupBean);
 
 		return initialData;
 	}

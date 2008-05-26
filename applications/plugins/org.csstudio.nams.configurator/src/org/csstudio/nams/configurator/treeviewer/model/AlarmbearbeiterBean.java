@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
+package org.csstudio.nams.configurator.treeviewer.model;
 
 import java.beans.PropertyChangeSupport;
 
@@ -29,7 +29,6 @@ public class AlarmbearbeiterBean extends
 	public AlarmbearbeiterBean() {
 		userID = -1;
 		propertyChangeSupport = getPropertyChangeSupport();
-
 	}
 
 	public int getUserID() {
@@ -149,6 +148,7 @@ public class AlarmbearbeiterBean extends
 		bean.setPhone(this.getPhone());
 		bean.setPreferedAlarmType(this.getPreferedAlarmType());
 		bean.setStatusCode(this.getStatusCode());
+		bean.setParent(this.getParent());
 
 		return bean;
 	}
@@ -191,5 +191,10 @@ public class AlarmbearbeiterBean extends
 		this.setPreferedAlarmType(bean.getPreferedAlarmType());
 		this.setStatusCode(this.getStatusCode());
 
+	}
+
+	@Override
+	public int getID() {
+		return this.getUserID();
 	}
 }

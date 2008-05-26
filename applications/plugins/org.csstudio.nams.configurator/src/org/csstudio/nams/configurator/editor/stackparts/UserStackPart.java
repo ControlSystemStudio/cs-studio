@@ -1,20 +1,22 @@
 package org.csstudio.nams.configurator.editor.stackparts;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 
 import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
-import org.csstudio.nams.configurator.treeviewer.model.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.AlarmbearbeiterBean.PreferedAlarmType;
+import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean.PreferedAlarmType;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationGroup;
+import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -39,6 +41,7 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 
 	private AlarmbearbeiterBean alarmbearbeiterClone;
 	private IConfigurationModel model;
+	private PropertyChangeListener listener;
 
 	public UserStackPart(DirtyFlagProvider flagProvider, Composite parent) {
 		super(flagProvider, AlarmbearbeiterBean.class, 2);
@@ -47,6 +50,16 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 		this.addSeparator(_main);
 		_nameTextEntry = this.createTextEntry(_main, "Name:", true);
 		_groupComboEntry = this.createComboEntry(_main, "Group:", true);
+		_groupComboEntry.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				/*
+				 * Feuer property change event ab, damit der Dirty-Flag geändert
+				 * wird. Persistiert wird erst beim Klick auf "Speichern"
+				 */
+				listener.propertyChange(null);
+			}
+		});
 		this.addSeparator(_main);
 		_emailTextEntry = this.createTextEntry(_main, "Email:", true);
 		_smsTextEntry = this.createTextEntry(_main, "SMS number:", true);
@@ -82,9 +95,20 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	}
 
 	private void initGroupCombo() {
-		for (String groupName : this.model.getSortgroupNames()) {
-			this._groupComboEntry.add(groupName);
+		Collection<String> sortgroupNames = this.model.getSortgroupNames();
+		Object[] groupNames = sortgroupNames.toArray();
+
+		int selection = 0;
+		for (int groupName = 0; groupName < groupNames.length; groupName++) {
+			this._groupComboEntry.add((String) groupNames[groupName]);
+
+			if (this.alarmbearbeiterBean.getParent().getDisplayName().equals(
+					groupNames[groupName])) {
+				selection = groupName;
+			}
 		}
+
+		this._groupComboEntry.select(selection);
 	}
 
 	private void initPrefAlarmingCombo() {
@@ -97,9 +121,21 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 	public boolean isDirty() {
 		if (this.alarmbearbeiterBean != null
 				&& this.alarmbearbeiterClone != null) {
-			boolean dirty = !this.alarmbearbeiterBean
+			boolean beansAreEqual = this.alarmbearbeiterBean
 					.equals(this.alarmbearbeiterClone);
-			return dirty;
+
+			String beanGroup = this.alarmbearbeiterBean.getParent()
+					.getDisplayName();
+
+			boolean groupsAreEqual = beanGroup
+					.equalsIgnoreCase(this._groupComboEntry.getText());
+
+			if (beansAreEqual && groupsAreEqual) {
+				return false;
+			} else {
+
+				return true;
+			}
 		} else
 			return false;
 	}
@@ -111,10 +147,11 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 				.getSelectionIndex());
 
 		// speicher Änderungen im lokalen Model
-		this.model.save(this.alarmbearbeiterClone, group);
+		IConfigurationBean updatedBean = this.model.save(
+				this.alarmbearbeiterClone, group);
 
-		// copy clonse state to original bean
-		this.alarmbearbeiterBean.updateState(this.alarmbearbeiterClone);
+		// copy clone state to original bean
+		this.alarmbearbeiterBean = (AlarmbearbeiterBean) updatedBean;
 
 		// create new clone
 		this.alarmbearbeiterClone = this.alarmbearbeiterBean.getClone();
@@ -178,6 +215,7 @@ public class UserStackPart extends AbstractStackPart<AlarmbearbeiterBean> {
 
 	@Override
 	public void setPropertyChangedListener(PropertyChangeListener listener) {
+		this.listener = listener;
 		this.alarmbearbeiterClone.addPropertyChangeListener(listener);
 	}
 

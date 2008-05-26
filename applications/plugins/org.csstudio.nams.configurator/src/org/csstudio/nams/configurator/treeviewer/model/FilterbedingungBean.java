@@ -1,7 +1,20 @@
-package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
+package org.csstudio.nams.configurator.treeviewer.model;
 
 public class FilterbedingungBean extends
 		AbstractConfigurationBean<FilterbedingungBean> {
+
+	private int filterbedinungID;
+
+	public int getFilterbedinungID() {
+		return filterbedinungID;
+	}
+
+	public void setFilterbedinungID(int filterbedinungID) {
+		this.filterbedinungID = filterbedinungID;
+	}
+
+	public FilterbedingungBean() {
+	}
 
 	public String getDisplayName() {
 		return "(ohne Namen)";
@@ -31,5 +44,10 @@ public class FilterbedingungBean extends
 	public void updateState(FilterbedingungBean bean) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public int getID() {
+		return this.getFilterbedinungID();
 	}
 }

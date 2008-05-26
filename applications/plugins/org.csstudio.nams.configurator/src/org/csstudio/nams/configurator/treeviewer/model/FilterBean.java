@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.treeviewer.model.treecomponents;
+package org.csstudio.nams.configurator.treeviewer.model;
 
 import java.beans.PropertyChangeSupport;
 
@@ -86,4 +86,8 @@ public class FilterBean extends AbstractConfigurationBean<FilterBean> {
 
 	}
 
+	@Override
+	public int getID() {
+		return this.getFilterID();
+	}
 }
