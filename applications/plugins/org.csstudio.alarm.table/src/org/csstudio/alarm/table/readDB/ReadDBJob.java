@@ -27,6 +27,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
+import org.csstudio.alarm.dbaccess.FilterSetting;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -48,6 +49,7 @@ public class ReadDBJob extends Job {
 	private final DBAnswer dbAnswer;
 	private final String _filter;
 	private final int _maxAnswerSize;
+	private ArrayList<FilterSetting> _filterSettings;
 	
 	public ReadDBJob(String name, DBAnswer dbAnswer,
 			Calendar from, Calendar to) {
@@ -61,12 +63,13 @@ public class ReadDBJob extends Job {
 	}
 
 	public ReadDBJob(String name, DBAnswer dbAnswer,
-			Calendar from, Calendar to, String filter) {
+			Calendar from, Calendar to, String filter, ArrayList<FilterSetting> filterSettings) {
 		super(name);
 		this.dbAnswer = dbAnswer;
 		this.from = from;
 		this._to = to;
 		_filter = filter;
+		_filterSettings = filterSettings;
 		String maxAnswerSize = JmsLogsPlugin.getDefault().getPluginPreferences().getString("maximum answer size");
 		_maxAnswerSize = Integer.parseInt(maxAnswerSize);
 	}
@@ -80,7 +83,7 @@ public class ReadDBJob extends Job {
         if (_filter == null) {
         	am = adba.getLogMessages(from, _to, _maxAnswerSize);
         } else {
-        	am = adba.getLogMessages(from, _to, _filter, _maxAnswerSize);
+        	am = adba.getLogMessages(from, _to, _filter, _filterSettings, _maxAnswerSize);
         }
         dbAnswer.setDBAnswer(am);
 		return Status.OK_STATUS;

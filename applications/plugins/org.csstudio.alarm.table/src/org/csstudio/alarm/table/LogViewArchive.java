@@ -32,6 +32,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
+import org.csstudio.alarm.dbaccess.FilterSetting;
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.table.dataModel.JMSMessage;
 import org.csstudio.alarm.table.dataModel.JMSMessageList;
@@ -365,6 +366,7 @@ public class LogViewArchive extends ViewPart implements Observer {
 					showNewTime(from, to);
 
 					_filter = dlg.getFilterString();
+					
 				}
 //				ILogMessageArchiveAccess adba = new ArchiveDBAccess();
 //				from.add(GregorianCalendar.HOUR, -504);
@@ -379,7 +381,8 @@ public class LogViewArchive extends ViewPart implements Observer {
 //				_jmsLogTableViewer.refresh();
 //				_jmsMessageList.addJMSMessageList(am);
                 ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
-                		LogViewArchive.this._dbAnswer, from, to, _filter);
+                		LogViewArchive.this._dbAnswer, from, to, _filter, 
+                		dlg.get_filterConditions());
                 readDB.schedule();
 
 			}
@@ -394,8 +397,10 @@ public class LogViewArchive extends ViewPart implements Observer {
     	System.out.println("from: " + from.toString() + "   to: " + to.toString()); //$NON-NLS-1$ //$NON-NLS-2$
     	_filter = "AND ( (lower(aam.PROPERTY) like lower('NAME') AND lower(aam.VALUE) like lower('" + //$NON-NLS-1$
     	pv.getName() + "')))"; //$NON-NLS-1$
+    	ArrayList<FilterSetting> filterSettings = new ArrayList<FilterSetting>();
+    	filterSettings.add(new FilterSetting("name", pv.getName(), "END"));
         ReadDBJob readDB = new ReadDBJob("DB Reader",  //$NON-NLS-1$
-        		LogViewArchive.this._dbAnswer, from, to, _filter);
+        		LogViewArchive.this._dbAnswer, from, to, _filter, filterSettings);
         readDB.schedule();
 
     }

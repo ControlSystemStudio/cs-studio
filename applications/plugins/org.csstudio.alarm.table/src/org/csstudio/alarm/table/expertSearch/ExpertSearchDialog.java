@@ -21,11 +21,13 @@
  */
  package org.csstudio.alarm.table.expertSearch;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import org.csstudio.alarm.dbaccess.ArchiveDBAccess;
+import org.csstudio.alarm.dbaccess.FilterSetting;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.LogArchiveViewerPreferenceConstants;
@@ -126,6 +128,10 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
 	private HashMap<String, String> _filterMap;
 	private Group down;
 	private String filterString;
+	
+	/** List of all conditions (Property, Value, AND /OR relation) for the filter settings. */
+	private ArrayList<FilterSetting> _filterConditions = new ArrayList<FilterSetting>();
+	
 	private Label info;
     /** The widht of the Dialog. */
 	private final int _windowXSize = 650;
@@ -499,6 +505,9 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
                     // The Composite consists of two parts (Composite)
                     if(typeAndValueComposite.length==2 && typeAndValueComposite[0] instanceof Composite && typeAndValueComposite[1] instanceof Composite){
                         Control[] typeComboAndValueText = ((Composite)typeAndValueComposite[0]).getChildren();
+
+                        FilterSetting filterSetting = new FilterSetting();
+
                         // First part a Composite with a Combo for the Typ and a Text for the value.
                         if(typeComboAndValueText[0] instanceof Combo && typeComboAndValueText[1] instanceof Text){
                             filterString    += " (lower(mpt.NAME) like lower('" //$NON-NLS-1$
@@ -507,17 +516,21 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
                                             +" AND lower(mc.VALUE) like lower('" //$NON-NLS-1$
                                             +((Text)typeComboAndValueText[1]).getText()+
                                             "'))"; //$NON-NLS-1$
+                            filterSetting.set_property(((Combo)typeComboAndValueText[0]).getItem(((Combo)typeComboAndValueText[0]).getSelectionIndex()));
+                            filterSetting.set_value(((Text)typeComboAndValueText[1]).getText());
                         }
                         Control[] logic = ((Composite)typeAndValueComposite[1]).getChildren();
                         // Second part a Composite with two Button or a Lable and a Button.
                         if (logic[0] instanceof Label){
                             filterString += " "+((Label)logic[0]).getText()+" "; //$NON-NLS-1$ //$NON-NLS-2$
-
+                            filterSetting.set_relation(((Label)logic[0]).getText());
                         } else if (logic[0] instanceof Button){
                             filterString += ")"; //$NON-NLS-1$
+                            filterSetting.set_relation("end");
                         } else{
                             JmsLogsPlugin.logInfo("\t\tERROR Ungültige Strucktur"); //$NON-NLS-1$
                         }
+                    _filterConditions.add(filterSetting);
                     }
                 }
             }
@@ -575,5 +588,9 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
             _toText.setText(time.toString());
         }
     }
+
+	public ArrayList<FilterSetting> get_filterConditions() {
+		return _filterConditions;
+	}
 
 }
