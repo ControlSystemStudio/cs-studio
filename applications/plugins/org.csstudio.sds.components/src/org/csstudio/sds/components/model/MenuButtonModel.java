@@ -95,7 +95,7 @@ public final class MenuButtonModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append(createParameter(PROP_ALIASES)+"\n");
 		buffer.append("Actions:\t");
 		buffer.append(createParameter(PROP_ACTIONDATA));
 		return buffer.toString();

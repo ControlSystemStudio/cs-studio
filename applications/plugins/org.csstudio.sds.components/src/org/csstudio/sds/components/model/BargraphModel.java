@@ -205,7 +205,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append(createParameter(PROP_ALIASES)+"\n");
 		buffer.append("Maximum:\t");
 		buffer.append(createParameter(PROP_MAX)+"\n");
 		buffer.append("Minimum:\t");

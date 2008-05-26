@@ -126,7 +126,7 @@ public final class TextInputModel extends AbstractWidgetModel {
 	@Override
 	protected String getDefaultToolTip() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(createParameter(PROP_NAME)+"\n");
+		buffer.append(createParameter(PROP_ALIASES)+"\n");
 		buffer.append("Text:\t");
 		buffer.append(createParameter(PROP_INPUT_TEXT));
 		return buffer.toString();
