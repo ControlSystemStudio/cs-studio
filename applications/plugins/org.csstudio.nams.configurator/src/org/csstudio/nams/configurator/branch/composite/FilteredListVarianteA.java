@@ -64,7 +64,7 @@ public class FilteredListVarianteA {
 		}
 
 		{
-			table = new TableViewer(main);
+			table = new TableViewer(main, SWT.FULL_SELECTION);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					table.getControl());
 			table.setContentProvider(new ArrayContentProvider());
