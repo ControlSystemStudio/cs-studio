@@ -10,12 +10,18 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
@@ -34,6 +40,8 @@ public class FilteredListVarianteA {
 		Composite main = new Composite(parent, style);
 		main.setLayout(new GridLayout(1, false));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(main);
+
+		TableColumn column = null;
 
 		{
 			Composite compDown = new Composite(main, SWT.None);
@@ -80,8 +88,8 @@ public class FilteredListVarianteA {
 
 		{
 			table = new TableViewer(main, SWT.FULL_SELECTION);
-			TableColumn column = new TableColumn(table.getTable(), SWT.LEFT);
-			column.setWidth(450);
+			column = new TableColumn(table.getTable(), SWT.LEFT);
+			// column.setWidth(450);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					table.getControl());
 			table.setContentProvider(new ArrayContentProvider());
@@ -90,6 +98,56 @@ public class FilteredListVarianteA {
 			table.setFilters(new ViewerFilter[] { new TableFilter() });
 		}
 
+		main.addControlListener(new TableColumnResizeAdapter(main, table
+				.getTable(), column));
+	}
+
+	/**
+	 * Setzt die Spaltenbreite einer Tabelle nach dem Style SWT.FILL
+	 * 
+	 * @author eugrei
+	 * 
+	 */
+	private class TableColumnResizeAdapter extends ControlAdapter {
+		private Table table;
+		private final Composite parent;
+		private final TableColumn column;
+
+		public TableColumnResizeAdapter(Composite parent, Table table,
+				TableColumn column) {
+			this.parent = parent;
+			this.table = table;
+			this.column = column;
+		}
+
+		@Override
+		public void controlResized(ControlEvent e) {
+			Rectangle area = parent.getClientArea();
+			Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+			ScrollBar vBar = table.getVerticalBar();
+			int width = area.width - table.computeTrim(0, 0, 0, 0).width
+					- vBar.getSize().x;
+			if (size.y > area.height + table.getHeaderHeight()) {
+				// Subtract the scrollbar width from the total column width
+				// if a vertical scrollbar will be required
+				Point vBarSize = vBar.getSize();
+				width -= vBarSize.x;
+			}
+			Point oldSize = table.getSize();
+			if (oldSize.x > area.width) {
+				// table is getting smaller so make the columns
+				// smaller first and then resize the table to
+				// match the client area width
+				column.setWidth(width);
+				table.setSize(area.width, area.height);
+			} else {
+				// table is getting bigger so make the table
+				// bigger first and then make the columns wider
+				// to match the client area width
+				table.setSize(area.width, area.height);
+				column.setWidth(width);
+			}
+		}
 	}
 
 	protected Object[] getTableInput() {
