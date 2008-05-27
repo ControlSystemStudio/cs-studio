@@ -100,5 +100,66 @@
          </action>
       </objectContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.nams.configurator.amsconfiguratorbranch">
+         <view
+               closeable="false"
+               id="org.csstudio.nams.configurator.alarmbearbeiter"
+               minimized="false"
+               moveable="true"
+               ratio="0.5f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.csstudio.nams.configurator.alarmbearbeitergruppen"
+               minimized="false"
+               moveable="true"
+               ratio="0.5f"
+               relationship="top"
+               relative="org.csstudio.nams.configurator.alarmbearbeiter"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.csstudio.nams.configurator.filterbedingung"
+               minimized="false"
+               moveable="true"
+               ratio="0.5f"
+               relationship="stack"
+               relative="org.csstudio.nams.configurator.alarmbearbeiter"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.csstudio.nams.configurator.alarmtopic"
+               minimized="false"
+               moveable="true"
+               ratio="0.5f"
+               relationship="stack"
+               relative="org.csstudio.nams.configurator.filterbedingung"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.csstudio.nams.configurator.filter"
+               minimized="false"
+               moveable="true"
+               ratio="0.5f"
+               relationship="stack"
+               relative="org.csstudio.nams.configurator.alarmbearbeitergruppen"
+               showTitle="true"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>
