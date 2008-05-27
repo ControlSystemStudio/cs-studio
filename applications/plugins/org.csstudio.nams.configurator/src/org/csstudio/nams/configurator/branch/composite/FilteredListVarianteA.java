@@ -114,10 +114,18 @@ public class FilteredListVarianteA {
 		@Override
 		public boolean select(Viewer viewer, Object parentElement,
 				Object element) {
-			if( gruppenname.length() > 0 )
+			if( gruppenname.length() > 0 && !gruppenname.equals("ALLE"))
 			{
 				if( gruppenname.equals("Kryo OPS")) {
 					if( !Arrays.asList(getKryoOps()).contains(element) ) return false;
+				}
+				
+				if( gruppenname.equals("C1-WPS")) {
+					if( !Arrays.asList(getWPS()).contains(element) ) return false;
+				}
+				
+				if( gruppenname.equals("Ohne Rubrik")) {
+					return false;
 				}
 			}
 			
