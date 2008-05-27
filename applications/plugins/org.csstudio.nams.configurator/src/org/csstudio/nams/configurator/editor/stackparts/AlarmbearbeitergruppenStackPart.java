@@ -113,8 +113,9 @@ public class AlarmbearbeitergruppenStackPart extends
 							buttonsComp);
 					{
 
-						Button upup = new Button(buttonsComp, SWT.PUSH);
-						upup.setText("UpUp");
+						Button upup = new Button(buttonsComp, SWT.ARROW
+								| SWT.UP);
+						// upup.setText("UpUp");
 						Button up = new Button(buttonsComp, SWT.PUSH);
 						up.setText("Up");
 						Button down = new Button(buttonsComp, SWT.PUSH);
