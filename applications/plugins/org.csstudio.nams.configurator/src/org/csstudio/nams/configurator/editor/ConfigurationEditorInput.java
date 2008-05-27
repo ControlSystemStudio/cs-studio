@@ -2,7 +2,6 @@ package org.csstudio.nams.configurator.editor;
 
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -56,7 +55,15 @@ public class ConfigurationEditorInput implements IEditorInput {
 	 * true liefern
 	 */
 	public boolean equals(Object obj) {
-		return (obj instanceof ConfigurationEditorInput);
+		// ConfigurationEditorInput editorInput = (ConfigurationEditorInput)
+		// obj;
+		//
+		// if
+		// (editorInput.getBean().getClass().equals(this.getBean().getClass()))
+		// {
+		// return true;
+		//		}
+		return false;
 	}
 
 }

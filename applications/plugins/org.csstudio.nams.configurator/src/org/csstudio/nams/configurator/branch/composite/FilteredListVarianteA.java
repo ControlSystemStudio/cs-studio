@@ -2,10 +2,19 @@ package org.csstudio.nams.configurator.branch.composite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.csstudio.nams.configurator.branch.actions.OpenConfigurationEditor;
+import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean;
+import org.csstudio.nams.configurator.treeviewer.model.AlarmtopicBean;
+import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
+import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -51,7 +60,8 @@ public class FilteredListVarianteA {
 			{
 				new Label(compDown, SWT.READ_ONLY).setText("Rubrik");
 
-				final Combo gruppen = new Combo(compDown, SWT.BORDER | SWT.READ_ONLY);
+				final Combo gruppen = new Combo(compDown, SWT.BORDER
+						| SWT.READ_ONLY);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
 						gruppen);
 				gruppen.add("ALLE");
@@ -60,10 +70,11 @@ public class FilteredListVarianteA {
 				gruppen.add("Kryo OPS");
 				gruppen.add("C1-WPS");
 				gruppen.select(0);
-				
+
 				gruppen.addListener(SWT.Modify, new Listener() {
 					public void handleEvent(Event event) {
-						gruppenname = gruppen.getItem(gruppen.getSelectionIndex());
+						gruppenname = gruppen.getItem(gruppen
+								.getSelectionIndex());
 						table.refresh();
 					}
 				});
@@ -81,8 +92,7 @@ public class FilteredListVarianteA {
 						table.refresh();
 					}
 				});
-				
-				
+
 			}
 		}
 
@@ -96,10 +106,34 @@ public class FilteredListVarianteA {
 			// table.setLabelProvider(new S)
 			table.setInput(this.getTableInput());
 			table.setFilters(new ViewerFilter[] { new TableFilter() });
+			table.addDoubleClickListener(new IDoubleClickListener() {
+				public void doubleClick(DoubleClickEvent event) {
+					openEditor(event);
+				}
+			});
 		}
 
 		main.addControlListener(new TableColumnResizeAdapter(main, table
 				.getTable(), column));
+	}
+
+	protected void openEditor(DoubleClickEvent event) {
+		IStructuredSelection selection = (IStructuredSelection) event
+				.getSelection();
+		Object source = selection.getFirstElement();
+		AlarmbearbeiterBean alarmbearbeiterBean = new AlarmbearbeiterBean();
+		alarmbearbeiterBean.setName((String) source);
+		IConfigurationModel model = new ConfigurationModel(null) {
+			@Override
+			public Collection<String> getSortgroupNames() {
+				Collection<String> groupNames = new ArrayList<String>();
+				groupNames.add("Kryo OPS");
+				groupNames.add("C1-WPS");
+				return groupNames;
+			}
+		};
+
+		new OpenConfigurationEditor(alarmbearbeiterBean, model).run();
 	}
 
 	/**
@@ -172,21 +206,22 @@ public class FilteredListVarianteA {
 		@Override
 		public boolean select(Viewer viewer, Object parentElement,
 				Object element) {
-			if( gruppenname.length() > 0 && !gruppenname.equals("ALLE"))
-			{
-				if( gruppenname.equals("Kryo OPS")) {
-					if( !Arrays.asList(getKryoOps()).contains(element) ) return false;
+			if (gruppenname.length() > 0 && !gruppenname.equals("ALLE")) {
+				if (gruppenname.equals("Kryo OPS")) {
+					if (!Arrays.asList(getKryoOps()).contains(element))
+						return false;
 				}
-				
-				if( gruppenname.equals("C1-WPS")) {
-					if( !Arrays.asList(getWPS()).contains(element) ) return false;
+
+				if (gruppenname.equals("C1-WPS")) {
+					if (!Arrays.asList(getWPS()).contains(element))
+						return false;
 				}
-				
-				if( gruppenname.equals("Ohne Rubrik")) {
+
+				if (gruppenname.equals("Ohne Rubrik")) {
 					return false;
 				}
 			}
-			
+
 			return ((String) element).toLowerCase().contains(
 					filterkriterium.toLowerCase());
 		}

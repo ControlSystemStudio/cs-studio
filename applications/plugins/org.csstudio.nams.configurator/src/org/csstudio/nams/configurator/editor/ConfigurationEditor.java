@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.nams.configurator.editor.stackparts.AbstractStackPart;
+import org.csstudio.nams.configurator.editor.stackparts.AlarmbearbeitergruppenStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.DefaultStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.TopicStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.UserStackPart;
@@ -141,6 +142,7 @@ public class ConfigurationEditor extends EditorPart implements
 		_defaultStackPart = new DefaultStackPart(this, parent);
 		_stackParts.add(new UserStackPart(this, parent));
 		_stackParts.add(new TopicStackPart(this, parent));
+		_stackParts.add(new AlarmbearbeitergruppenStackPart(this, parent));
 	}
 
 	@Override
