@@ -1,5 +1,9 @@
 package org.csstudio.nams.configurator.branch.composite;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -18,6 +22,7 @@ import org.eclipse.swt.widgets.Text;
 public class FilteredListVarianteA {
 
 	private String filterkriterium = "";
+	private String gruppenname = "";
 
 	private TableViewer table;
 
@@ -38,7 +43,7 @@ public class FilteredListVarianteA {
 			{
 				new Label(compDown, SWT.READ_ONLY).setText("Rubrik");
 
-				Combo gruppen = new Combo(compDown, SWT.BORDER | SWT.READ_ONLY);
+				final Combo gruppen = new Combo(compDown, SWT.BORDER | SWT.READ_ONLY);
 				GridDataFactory.fillDefaults().grab(true, false).applyTo(
 						gruppen);
 				gruppen.add("ALLE");
@@ -47,6 +52,13 @@ public class FilteredListVarianteA {
 				gruppen.add("Kryo OPS");
 				gruppen.add("C1-WPS");
 				gruppen.select(0);
+				
+				gruppen.addListener(SWT.Modify, new Listener() {
+					public void handleEvent(Event event) {
+						gruppenname = gruppen.getItem(gruppen.getSelectionIndex());
+						table.refresh();
+					}
+				});
 			}
 
 			{
@@ -61,6 +73,8 @@ public class FilteredListVarianteA {
 						table.refresh();
 					}
 				});
+				
+				
 			}
 		}
 
@@ -79,7 +93,20 @@ public class FilteredListVarianteA {
 	}
 
 	protected Object[] getTableInput() {
-		return new String[] { "Hans Otto", "Max Mayer", "Thomas D" };
+		List<Object> list = new ArrayList<Object>();
+		list.addAll(Arrays.asList(getKryoOps()));
+		list.addAll(Arrays.asList(getWPS()));
+		return list.toArray();
+	}
+
+	protected Object[] getKryoOps() {
+		return new String[] { "Max Mayer", "Thomas D", "Max Peter",
+				"Hugo Balder", "Nora Jones", "Andre B", "Julius Caesar",
+				"Emy Winehouse" };
+	}
+
+	protected Object[] getWPS() {
+		return new String[] { "Hans Otto", "Thomas Otto", "M C Clausen" };
 	}
 
 	private class TableFilter extends ViewerFilter {
@@ -87,6 +114,13 @@ public class FilteredListVarianteA {
 		@Override
 		public boolean select(Viewer viewer, Object parentElement,
 				Object element) {
+			if( gruppenname.length() > 0 )
+			{
+				if( gruppenname.equals("Kryo OPS")) {
+					if( !Arrays.asList(getKryoOps()).contains(element) ) return false;
+				}
+			}
+			
 			return ((String) element).toLowerCase().contains(
 					filterkriterium.toLowerCase());
 		}
