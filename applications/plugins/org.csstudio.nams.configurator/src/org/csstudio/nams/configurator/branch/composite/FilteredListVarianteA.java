@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 public class FilteredListVarianteA {
@@ -65,6 +66,8 @@ public class FilteredListVarianteA {
 
 		{
 			table = new TableViewer(main, SWT.FULL_SELECTION);
+			TableColumn column = new TableColumn(table.getTable(), SWT.LEFT);
+			column.setWidth(450);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					table.getControl());
 			table.setContentProvider(new ArrayContentProvider());
