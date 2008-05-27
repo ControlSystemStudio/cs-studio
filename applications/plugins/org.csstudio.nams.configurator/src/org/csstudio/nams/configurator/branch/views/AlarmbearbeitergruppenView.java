@@ -47,7 +47,14 @@ public class AlarmbearbeitergruppenView extends ViewPart {
 					}
 				};
 
-				new OpenConfigurationEditor(alarmbearbeitergruppenBean, model).run();
+				new OpenConfigurationEditor(alarmbearbeitergruppenBean, model)
+						.run();
+			}
+
+			@Override
+			protected Object[] getTableInput() {
+				String[] input = new String[] { "AMS", "C1-WPS", "FLASH" };
+				return input;
 			}
 		};
 
