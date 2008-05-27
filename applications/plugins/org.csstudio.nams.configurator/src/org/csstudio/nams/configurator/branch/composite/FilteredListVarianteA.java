@@ -97,7 +97,7 @@ public class FilteredListVarianteA {
 		}
 
 		{
-			table = new TableViewer(main, SWT.FULL_SELECTION);
+			table = new TableViewer(main, SWT.FULL_SELECTION | SWT.MULTI);
 			column = new TableColumn(table.getTable(), SWT.LEFT);
 			// column.setWidth(450);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
