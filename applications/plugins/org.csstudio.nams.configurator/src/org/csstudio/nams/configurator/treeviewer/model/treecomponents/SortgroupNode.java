@@ -20,6 +20,12 @@ public class SortgroupNode extends AbstractConfigurationNode implements
 		super(name, parent);
 	}
 
+	public SortgroupNode(String name, IConfigurationRoot parent,
+			Collection<? extends IConfigurationBean> children) {
+		super(name, parent);
+		this.setChildren(children);
+	}
+
 	/**
 	 * Liefert die Mitglieder einer Gruppe abhängig vom GroupType
 	 * 

@@ -15,6 +15,41 @@
             class="org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView"
             id="org.csstudio.nams.configurator.views.ConfigurationTreeView">
       </view>
+      <view
+            allowMultiple="false"
+            class="org.csstudio.nams.configurator.branch.views.AlarmbearbeiterView"
+            fastViewWidthRatio=".5f"
+            id="org.csstudio.nams.configurator.alarmbearbeiter"
+            name="Alarmbearbeiter">
+      </view>
+      <view
+            allowMultiple="false"
+            class="org.csstudio.nams.configurator.branch.views.AlarmbearbeitergruppenView"
+            fastViewWidthRatio=".5f"
+            id="org.csstudio.nams.configurator.alarmbearbeitergruppen"
+            name="Alarmbearbeitergruppen">
+      </view>
+      <view
+            allowMultiple="false"
+            class="org.csstudio.nams.configurator.branch.views.AlarmtopicView"
+            fastViewWidthRatio=".5f"
+            id="org.csstudio.nams.configurator.alarmtopic"
+            name="Alarmtopic">
+      </view>
+      <view
+            allowMultiple="false"
+            class="org.csstudio.nams.configurator.branch.views.FilterView"
+            fastViewWidthRatio=".5f"
+            id="org.csstudio.nams.configurator.filter"
+            name="Filter">
+      </view>
+      <view
+            allowMultiple="false"
+            class="org.csstudio.nams.configurator.branch.views.FilterbedingungView"
+            fastViewWidthRatio="0.5f"
+            id="org.csstudio.nams.configurator.filterbedingung"
+            name="Filterbedingung">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -23,6 +58,11 @@
             icon="icons/ams.gif"
             id="org.csstudio.nams.configurator.perspective"
             name="AMS Configurator">
+      </perspective>
+      <perspective
+            class="org.csstudio.nams.configurator.branch.perspective.AMSConfiguratorPerspective"
+            id="org.csstudio.nams.configurator.amsconfiguratorbranch"
+            name="AMS configurator (branch)">
       </perspective>
    </extension>
    <extension

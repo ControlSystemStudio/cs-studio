@@ -21,6 +21,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -151,8 +152,11 @@ public class ConfigurationTreeView extends ViewPart {
 
 				Display.getCurrent().asyncExec(new Runnable() {
 					public void run() {
+						TreePath[] expandedTreePaths = _viewer
+								.getExpandedTreePaths();
 						_viewer.setInput(children);
-
+						_viewer.setExpandedTreePaths(expandedTreePaths);
+						// _viewer.refresh();
 					}
 				});
 			}
