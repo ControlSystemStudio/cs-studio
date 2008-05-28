@@ -175,7 +175,6 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
         super.configureShell(shell);
         this._shell=shell;
         shell.setText(Messages.ExpertSearchDialog_expertButton);
-        shell.setSize(_windowXSize,445);
     }
     /** {@inheritDoc} */
     @Override
