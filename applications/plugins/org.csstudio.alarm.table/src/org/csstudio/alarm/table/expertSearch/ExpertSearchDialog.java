@@ -198,14 +198,16 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
                 org.csstudio.util.time.swt.Messages.StartEnd_AbsStart,
                 org.csstudio.util.time.swt.Messages.StartEnd_AbsStart_TT,
                 org.csstudio.util.time.swt.Messages.StartEnd_RelStart,
-                org.csstudio.util.time.swt.Messages.StartEnd_RelStart_TT);
+                org.csstudio.util.time.swt.Messages.StartEnd_RelStart_TT,
+                _start.toCalendar());
         _fromAbsWidget=(CalendarWidget) c2[0];
         _fromRelWidget=(RelativeTimeWidget) c2[1];
         c2 = makeTimeSelect(box,Messages.ExpertSearchDialog_endTime,
                 org.csstudio.util.time.swt.Messages.StartEnd_AbsEnd,
                 org.csstudio.util.time.swt.Messages.StartEnd_AbsEnd_TT,
                 org.csstudio.util.time.swt.Messages.StartEnd_RelEnd,
-                org.csstudio.util.time.swt.Messages.StartEnd_RelEnd_TT);
+                org.csstudio.util.time.swt.Messages.StartEnd_RelEnd_TT,
+                _end.toCalendar());
         _toAbsWidget=(CalendarWidget) c2[0];
         _toRelWidget=(RelativeTimeWidget) c2[1];
 
@@ -302,32 +304,31 @@ public class ExpertSearchDialog extends Dialog implements CalendarWidgetListener
 //        _shell.pack();
         down.setRedraw(true);
 //        _shell.setSize(windowXSize,_shell.getSize().y);
-
         return box;
     }
     /**
      * @param box the parent Composite
      * @param groupName The Text for the Group
-     * @param absStart the Text for the tab from abs 
-     * @param absStartTT the Tooltip text for the tab from abs 
-     * @param relStart the Text for the tab from rel
-     * @param relStartTT the Tooltip text for the tab from rel
+     * @param absTime the Text for the tab from abs 
+     * @param absTimeTT the Tooltip text for the tab from abs 
+     * @param relTime the Text for the tab from rel
+     * @param relTimeTT the Tooltip text for the tab from rel
      * @return CalendarWidget absWidget and RelativeTimeWidget relWidget 
      */
-    private Composite [] makeTimeSelect(final Composite box, final String groupName, final String absStart, final String absStartTT, final String relStart, final String relStartTT) {
+    private Composite [] makeTimeSelect(final Composite box, final String groupName, final String absTime, final String absTimeTT, final String relTime, final String relTimeTT, Calendar defaultTime) {
         TabFolder leftTab = new TabFolder(timeBox(box,groupName)
                 , SWT.BORDER);
         TabItem tab = new TabItem(leftTab, 0);
-        tab.setText(absStart);
-        tab.setToolTipText(absStartTT);
+        tab.setText(absTime);
+        tab.setToolTipText(absTimeTT);
         CalendarWidget absWidget = new CalendarWidget(leftTab,
-        0,_start.toCalendar());
+        0,defaultTime);
         absWidget.addListener(this);
         tab.setControl(absWidget);
         
         tab = new TabItem(leftTab, 0);
-        tab.setText(relStart);
-        tab.setToolTipText(relStart);
+        tab.setText(relTime);
+        tab.setToolTipText(relTime);
         RelativeTimeWidget relWidget = new RelativeTimeWidget(leftTab, 0);
         relWidget.addListener(this);
         tab.setControl(relWidget);
