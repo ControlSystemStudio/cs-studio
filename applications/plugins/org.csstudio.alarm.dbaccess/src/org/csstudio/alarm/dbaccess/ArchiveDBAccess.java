@@ -36,6 +36,9 @@ import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
+ * Main Class for DB query. Builds accordingly to the current FilterSettings the
+ * SQL Statement, assembles the log messages from the DB result and returns the
+ * messages in an ArrayList.
  * 
  * @author jhatje
  * @author $Author$
@@ -45,13 +48,15 @@ import org.csstudio.platform.logging.CentralLogger;
 public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 
 	private Connection _databaseConnection;
+
+	/** Singleton instance */
 	private static ArchiveDBAccess _archiveDBAccess;
 
 	private ArchiveDBAccess() {
 	}
 
 	/**
-	 * Singleton instance.
+	 * Get singleton instance.
 	 * 
 	 * @return instance
 	 */
@@ -63,9 +68,9 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	}
 
 	/**
-	 * Get messages from DB for a time period.
+	 * Get messages from DB for a time period without FilterSettings.
 	 * 
-	 * @return ArrayList of messages in a HashMap 
+	 * @return ArrayList of messages in a HashMap
 	 */
 	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
 			Calendar to, int maxAnserSize) {
@@ -75,10 +80,9 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	}
 
 	/**
-	 * Get messages from DB for a time period and filter
-	 * conditions.
+	 * Get messages from DB for a time period and filter conditions.
 	 * 
-	 * @return ArrayList of messages in a HashMap 
+	 * @return ArrayList of messages in a HashMap
 	 */
 	public ArrayList<HashMap<String, String>> getLogMessages(Calendar from,
 			Calendar to, String filter, ArrayList<FilterSetting> filterSetting,
@@ -88,34 +92,57 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		return ergebniss;
 	}
 
+	/**
+	 * Assemble 'real' log messages from DBResult. The DB query returns a list
+	 * of message_id with property and value. To get a complete log message you
+	 * have to put all property-value pairs with the same message_id in one log
+	 * message together.
+	 * 
+	 * @param result
+	 *            List of Result Sets (we get more than one result set if there
+	 *            is an OR relation, because the SQL Statement is designed only
+	 *            for AND relations)
+	 * @return
+	 */
 	private ArrayList<HashMap<String, String>> processResult(
 			ArrayList<ResultSet> result) {
+
+		// List of 'real' log messages (we want to see in the table)
 		ArrayList<HashMap<String, String>> messageResultList = new ArrayList<HashMap<String, String>>();
 		try {
+			// the current 'real' log message
 			HashMap<String, String> message = null;
+			// run through all result sets (for each OR relation in the
+			// FilterSetting
+			// we get one more resultSet)
 			for (ResultSet resultSet : result) {
+				// identifier for the current message. initialized with a not
+				// existing message id
 				int currentMessageID = -1;
 				while (resultSet.next()) {
 					if (currentMessageID == resultSet.getInt(1)) {
-						// this result row belongs to the current message
+						// current row has the same message_id->
+						// it belongs to the current message
 						if (message != null) {
 							message.put(resultSet.getString(4), resultSet
 									.getString(5));
 						}
 					} else {
 						// this result row belongs to a new message
-						// if there is already a message put it to the
+						// if there is already a previous message put it to the
 						// messageResultList.
 						if (message != null) {
 							messageResultList.add(message);
 						}
+						// update current message id and
+						// put the first property value pair in the new
+						// message
 						currentMessageID = Integer.parseInt(resultSet
 								.getString(1));
 						message = new HashMap<String, String>();
 						message.put(resultSet.getString(4), resultSet
 								.getString(5));
 					}
-					System.out.println(resultSet.getString(1));
 				}
 				// put the last message to the messageResultList
 				// (the message should be not null anyway)
@@ -129,14 +156,27 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		return messageResultList;
 	}
 
+	/**
+	 * Select the appropriate SQL statement depending on the FilterSetting, set
+	 * the parameters for the prepared statement and executes the DB query.
+	 * 
+	 * @param filter
+	 * @param from
+	 * @param to
+	 * @return
+	 */
 	private ArrayList<ResultSet> queryDatabase(ArrayList<FilterSetting> filter,
 			Calendar from, Calendar to) {
 
+		// list of result sets (for each OR relation in the FilterSetting
+		// we get one more resultSet)
 		ArrayList<ResultSet> resultSetList = new ArrayList<ResultSet>();
 
 		try {
 			_databaseConnection = DBConnection.getInstance().getConnection();
 			PreparedStatement getMessages = null;
+			// the filter setting has to be separated at the OR relation
+			// because the SQL statement is designed only for AND.
 			ArrayList<ArrayList<FilterSetting>> separatedFilterSettings = separateFilterSettings(filter);
 			ResultSet result = null;
 			for (ArrayList<FilterSetting> currentFilterSettingList : separatedFilterSettings) {
@@ -161,6 +201,7 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 					break;
 				}
 				int parameterIndex = 0;
+				// set the preparedStatement parameters
 				if (getMessages != null) {
 					for (FilterSetting filterSetting : currentFilterSettingList) {
 						parameterIndex++;
@@ -169,6 +210,14 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 						parameterIndex++;
 						getMessages.setString(parameterIndex, filterSetting
 								.get_value());
+						CentralLogger.getInstance().debug(
+								this,
+								"DB query, filter Property: "
+										+ filterSetting.get_property()
+										+ "  Value: "
+										+ filterSetting.get_value()
+										+ "  Realtion: "
+										+ filterSetting.get_relation());
 					}
 				}
 				String fromDate = buildDateString(from);
@@ -177,6 +226,10 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 				getMessages.setString(parameterIndex, fromDate);
 				parameterIndex++;
 				getMessages.setString(parameterIndex, toDate);
+				CentralLogger.getInstance().debug(
+						this,
+						"DB query, start time: " + fromDate + "  end time: "
+								+ toDate);
 
 				// getMessages.setString(1, "NAME");
 				// getMessages.setString(2, "CMTBSTP4R21_temp");
@@ -192,6 +245,13 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 		return resultSetList;
 	}
 
+	/**
+	 * Create from Calendar a date of type String in the format of the SQL
+	 * statement.
+	 * 
+	 * @param date
+	 * @return
+	 */
 	private String buildDateString(Calendar date) {
 		return date.get(GregorianCalendar.YEAR) + "-"
 				+ (date.get(GregorianCalendar.MONTH) + 1) + "-"
@@ -213,7 +273,11 @@ public final class ArchiveDBAccess implements ILogMessageArchiveAccess {
 	 */
 	private ArrayList<ArrayList<FilterSetting>> separateFilterSettings(
 			ArrayList<FilterSetting> filter) {
+
+		// list of list of AND associated Filter settings we want to return.
 		ArrayList<ArrayList<FilterSetting>> separatedFilterSettings = new ArrayList<ArrayList<FilterSetting>>();
+		// list of filterSettings associated with AND to put in
+		// separatedFilterSettings.
 		ArrayList<FilterSetting> filterSettingsAndAssociated = null;
 		// if filter is null (user searches only for time period) set one
 		// empty list of filter settings.

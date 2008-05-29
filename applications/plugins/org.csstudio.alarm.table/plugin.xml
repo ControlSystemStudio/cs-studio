@@ -133,7 +133,7 @@
          <action
                class="org.csstudio.alarm.table.ArchivePopupAction"
                enablesFor="1"
-               icon="icons/LogArchive.gif"
+               icon="icons/archiveTable.png"
                id="org.csstudio.alarm.table.archivepopupAction"
                label="Log Archive"
                menubarPath="org.csstudio.popmenu/content"/>
