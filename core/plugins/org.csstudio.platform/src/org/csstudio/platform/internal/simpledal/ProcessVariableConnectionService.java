@@ -48,6 +48,8 @@ import org.epics.css.dal.context.LinkAdapter;
 import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.spi.PropertyFactory;
 
+import com.sun.java_cup.internal.emit;
+
 /**
  * Standard implementation of {@link IProcessVariableConnectionService}.
  * 
@@ -1171,17 +1173,28 @@ public class ProcessVariableConnectionService implements
 	 */
 	public boolean isSettable(IProcessVariableAddress pv) {
 		boolean result = false;
-		try {
-			DynamicValueProperty p = createOrGetDalProperty(pv,
-					ValueType.OBJECT.getDalType());
 
-			// DAL encapsulates the detection of the current user internally
-			// (probably via global system properties)
+		if (pv.getControlSystem() == ControlSystemEnum.LOCAL) {
 			result = true;
-		} catch (Exception e) {
-			// nothing to do
+		} else {
+			try {
+				ValueType valueType = pv.getValueTypeHint() != null ? pv
+						.getValueTypeHint() : ValueType.DOUBLE;
+
+				DynamicValueProperty p = createOrGetDalProperty(pv, valueType
+						.getDalType());
+
+				// DAL encapsulates the detection of the current user internally
+				// (probably via global system properties)
+				result = p.isSettable();
+			} catch (Exception e) {
+				CentralLogger.getInstance().error(
+						this,
+						"We could not check the settable-state of ["
+								+ pv.toString() + "]");
+			}
 		}
-		
+
 		return result;
 	}
 
