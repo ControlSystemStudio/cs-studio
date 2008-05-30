@@ -48,8 +48,6 @@ import org.epics.css.dal.context.LinkAdapter;
 import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.spi.PropertyFactory;
 
-import com.sun.java_cup.internal.emit;
-
 /**
  * Standard implementation of {@link IProcessVariableConnectionService}.
  * 
