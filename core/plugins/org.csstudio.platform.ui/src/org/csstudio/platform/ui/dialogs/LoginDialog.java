@@ -22,12 +22,10 @@
  package org.csstudio.platform.ui.dialogs;
 
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -40,12 +38,17 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbench;
 
 /**
- * A simple login dialog.
+ * <p>A simple login dialog.</p>
  * 
- * @author Alexander Will, Jõrg Rathlev, Anže Vodovnik
+ * <p>Warning: Do not use an instance of this class as an
+ * <code>ILoginCallbackHandler</code>. This class's implementation of that
+ * interface incorrectly assumes that it will be called in the UI thread
+ * and may not work correctly if called in another thread. Future versions of
+ * this class will no longer implement <code>ILoginCallbackHandler</code>.</p>
+ * 
+ * @author Alexander Will, Jörg Rathlev, Anže Vodovnik
  */
 public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandler  {
 
@@ -73,6 +76,16 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	 * The name of the last User.
 	 */
     private String _lastUser;
+
+	/**
+	 * The dialog title.
+	 */
+	private final String _title;
+
+	/**
+	 * The message displayed in the dialog.
+	 */
+	private final String _message;
 	
 	/**
 	 * Creates a new login dialog.
@@ -84,11 +97,44 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	
 	/**
      * Creates a new login dialog.
-     * @param parentShell the parent shell.
+     * 
+	 * @param parentShell
+	 *            the parent shell.
+	 * @param lastUser
+	 *            the initial user name.
      */
     public LoginDialog(final Shell parentShell, String lastUser) {
-        super(parentShell);
-        _lastUser = lastUser;
+        this(parentShell, "Login", "Please enter your user name and password.",
+        		lastUser);
+    }
+    
+    /**
+	 * Creates a new login dialog.
+	 * 
+	 * @param parentShell
+	 *            the parent shell.
+	 * @param title
+	 *            the dialog title.
+	 * @param message
+	 *            the message that is displayed in the dialog.
+	 * @param lastUser
+	 *            the initial user name.
+	 */
+    public LoginDialog(final Shell parentShell, final String title,
+    		final String message, final String lastUser) {
+    	super(parentShell);
+		_title = title;
+		_message = message;
+		_lastUser = lastUser;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureShell(Shell newShell) {
+    	super.configureShell(newShell);
+    	newShell.setText(_title);
     }
 	
 	
@@ -99,9 +145,8 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	protected Control createDialogArea(final Composite parent) {
 		Composite parentComposite = (Composite) super.createDialogArea(parent);
 
-		getShell().setText("Login - Control System Studio");
-		setTitle("Login");
-		setMessage("Please enter your user name and password.");
+		setTitle(_title);
+		setMessage(_message);
 
 		// Create the layout
 		Composite contents = new Composite(parent, SWT.NONE);
@@ -120,7 +165,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		_username = new Text(contents, SWT.BORDER | SWT.FLAT);
 
 		_username.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		_username.setText(_lastUser);
+		_username.setText(_lastUser != null ? _lastUser : "");
 		
 		
 		// password
@@ -184,8 +229,20 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	}
 	
 	/**
+	 * Returns the credentials that were entered by the user.
+	 * 
+	 * @return the credentials entered by the user, or <code>null</code> if
+	 *         the user did not enter any credentials.
+	 */
+	public Credentials getLoginCredentials() {
+		return _credentials;
+	}
+	
+	/**
 	 * Opens the login window and queries the user
 	 * for credentials which it returns.
+	 * 
+	 * @deprecated Do not use this class as an <code>ILoginCallbackHandler</code>.
 	 */
 	public Credentials getCredentials() {
 		_credentials = null;
@@ -194,6 +251,11 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		return _credentials;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @deprecated Do not use this class as an <code>ILoginCallbackHandler</code>.
+	 */
 	public void signalFailedLoginAttempt() {
 		MessageDialog.openError(null, "Login", "Login failed. Please try again.");
 	}
