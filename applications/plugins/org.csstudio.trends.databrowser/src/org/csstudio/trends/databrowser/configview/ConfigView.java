@@ -601,8 +601,16 @@ public class ConfigView extends PlotAwareView
         scan_period_text.addSelectionListener(validator);
         update_period_text.addSelectionListener(validator);
         ring_size_text.addSelectionListener(validator);
-        
+
         // Row 5
+        l = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+        gd = new GridData();
+        gd.horizontalSpan = 2;
+        gd.horizontalAlignment = SWT.FILL;
+        gd.grabExcessHorizontalSpace = true;
+        l.setLayoutData(gd);
+
+        // Row 6
         help = new Label(parent, SWT.LEFT);
         gd = new GridData();
         gd.horizontalSpan = 2;
