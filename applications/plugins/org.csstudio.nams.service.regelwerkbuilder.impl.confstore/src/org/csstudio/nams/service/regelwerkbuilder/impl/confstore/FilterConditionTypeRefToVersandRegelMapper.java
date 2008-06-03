@@ -10,9 +10,12 @@ import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 public enum FilterConditionTypeRefToVersandRegelMapper {
 	// TODO find a nice place to settle
 
-	UND(0, UndVersandRegel.class), STRING(1, StringRegel.class), TIMEBASED(2,
-			TimeBasedRegel.class), STRING_ARRAY(3, null), PV(4,
-			ProcessVariableRegel.class), ODER(5, OderVersandRegel.class);
+	UND(0, UndVersandRegel.class), 
+	STRING(1, StringRegel.class), 
+	TIMEBASED(2, TimeBasedRegel.class), 
+	STRING_ARRAY(3, null), 
+	PV(4,ProcessVariableRegel.class), 
+	ODER(5, OderVersandRegel.class);
 
 	private final int id;
 	private final Class<?> clazz;

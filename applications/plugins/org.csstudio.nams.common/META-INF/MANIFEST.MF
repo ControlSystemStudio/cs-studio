@@ -4,7 +4,9 @@ Bundle-Name: Common Plug-in
 Bundle-SymbolicName: org.csstudio.nams.common
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.nams.common.CommonActivator
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform,
+ org.csstudio.nams.service.logging
 Eclipse-LazyStart: true
 Export-Package: junit.extensions,
  junit.framework,

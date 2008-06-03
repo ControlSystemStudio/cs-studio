@@ -8,10 +8,13 @@ import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStore
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationId.IdType;
 import org.csstudio.ams.configurationStoreService.knownTObjects.AggrFilterConditionTObject;
 import org.csstudio.ams.configurationStoreService.knownTObjects.AggrFilterTObject;
+import org.csstudio.ams.configurationStoreService.knownTObjects.CommonConjunctionFilterConditionTObject;
+import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionArrayStringTObject;
+import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionProcessVariableTObject;
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionStringTObject;
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionTimeBasedTObject;
-import org.csstudio.ams.configurationStoreService.util.AmsConstants;
 import org.csstudio.nams.common.fachwert.Millisekunden;
+import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
 import org.csstudio.nams.common.material.regelwerk.StringRegel;
@@ -24,6 +27,11 @@ import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderSe
 
 public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
+	// bestätigungsalarm bei timeout kein alarm?
+	private static final short TIMEBEHAVIOR_CONFIRMED_THEN_ALARM = 0;
+	// aufhebungsalarm und bei timeout alarm?
+	private static final short TIMEBEHAVIOR_TIMEOUT_THEN_ALARM = 1;
+
 	public List<Regelwerk> gibAlleRegelwerke() {
 		// hole alle Filter TObject aus dem confstore
 
@@ -31,17 +39,18 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
 		ConfigurationStoreService confStoreService = Activator.getDefault()
 				.getConfigurationStoreService();
-
+		// get all filters
 		List<AggrFilterTObject> listOfFilters = confStoreService
 				.getListOfConfigurations(AggrFilterTObject.class);
 
+		// we do assume, that the first level filtercondition are conjugated
 		for (AggrFilterTObject filterTObject : listOfFilters) {
 
 			List<AggrFilterConditionTObject> filterConditions = filterTObject
 					.getFilterConditions();
 
+			// create a list of first level filterconditions
 			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
-
 			for (AggrFilterConditionTObject aggrFilterConditionTObject : filterConditions) {
 				versandRegels.add(createVersandRegel(
 						aggrFilterConditionTObject, confStoreService));
@@ -57,9 +66,12 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 	private VersandRegel createVersandRegel(
 			AggrFilterConditionTObject aggrFilterConditionTObject,
 			ConfigurationStoreService confStoreService) {
+		// mapping the type information in the aggrFilterConditionTObject to a
+		// VersandRegel
 		FilterConditionTypeRefToVersandRegelMapper fctr = FilterConditionTypeRefToVersandRegelMapper
 				.valueOf(aggrFilterConditionTObject.getFilterConditionTypeRef());
 		switch (fctr) {
+		//
 		case STRING: {
 			FilterConditionStringTObject stringCondition = confStoreService
 					.getConfiguration(ConfigurationId.valueOf(
@@ -86,35 +98,80 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 							.getConfirmKeyValue(), timeBasedCondition
 							.getConfirmCompValue());
 
-			Millisekunden delayUntilAlarm = Millisekunden.valueOf(timeBasedCondition.getTimePeriod()*1000);
+			Millisekunden delayUntilAlarm = Millisekunden
+					.valueOf(timeBasedCondition.getTimePeriod() * 1000);
 			short timeBehaviorAlarm = timeBasedCondition.getTimeBehavior();
 
 			VersandRegel timeBasedRegel = null;
-			if (timeBehaviorAlarm == AmsConstants.TIMEBEHAVIOR_CONFIRMED_THEN_ALARM)
-				timeBasedRegel = new TimeBasedAlarmBeiBestaetigungRegel(startRegel,
-						confirmCancelRegel, delayUntilAlarm);
-			else if (timeBehaviorAlarm == AmsConstants.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM)
+			if (timeBehaviorAlarm == TIMEBEHAVIOR_CONFIRMED_THEN_ALARM)
+				timeBasedRegel = new TimeBasedAlarmBeiBestaetigungRegel(
+						startRegel, confirmCancelRegel, delayUntilAlarm);
+			else if (timeBehaviorAlarm == TIMEBEHAVIOR_TIMEOUT_THEN_ALARM)
 				timeBasedRegel = new TimeBasedRegel(startRegel,
 						confirmCancelRegel, null, delayUntilAlarm);
-			else throw new IllegalArgumentException("Unsupported Timebehavior");
+			else
+				throw new IllegalArgumentException("Unsupported Timebehavior");
 			return timeBasedRegel;
 		}
-			// case ODER: {
-			// //in der DB sollten nur oder mit 2 argumenten vorkommen
-			// }
-			// case STRING_ARRAY: {
-			//		
-			// }
-			// case PV: {
-			//		
-			// }
-			// case UND: {
-			// CommonConjunctionFilterConditionTObject undCondition =
-			// confStoreService.getConfiguration(ConfigurationId.valueOf(aggrFilterConditionTObject.getFilterConditionID(),
-			// IdType.COMMON_CONJUNCTION_FILTER_CONDITION),
-			// CommonConjunctionFilterConditionTObject.class);
-			// // undCondition.getFirstFilterConditionReference()
-			// }
+		case ODER: {
+			// FIXME merkwüdigeBenamung CommonConjunctionFilterCondition
+			// realsiert derzeit nur die Disjunktion
+			VersandRegel[] versandRegels = new VersandRegel[2];
+
+			CommonConjunctionFilterConditionTObject orCondition = confStoreService
+					.getConfiguration(ConfigurationId.valueOf(
+							aggrFilterConditionTObject.getFilterConditionID(),
+							IdType.COMMON_CONJUNCTION_FILTER_CONDITION),
+							CommonConjunctionFilterConditionTObject.class);
+			int firstFilterConditionReference = orCondition
+					.getFirstFilterConditionReference();
+
+			AggrFilterConditionTObject firstFilterConditionTObject = confStoreService
+					.getConfiguration(ConfigurationId.valueOf(
+							firstFilterConditionReference,
+							IdType.FILTER_CONDITIONS),
+							AggrFilterConditionTObject.class);
+
+			int secondFilterConditionReference = orCondition.getSecondFilterConditionReference();
+			
+			versandRegels[0] = createVersandRegel(firstFilterConditionTObject,
+					confStoreService);
+
+			AggrFilterConditionTObject secondFilterConditionTObject = confStoreService
+					.getConfiguration(ConfigurationId.valueOf(
+							secondFilterConditionReference,
+							IdType.FILTER_CONDITIONS),
+							AggrFilterConditionTObject.class);
+
+			versandRegels[1] = createVersandRegel(secondFilterConditionTObject,
+					confStoreService);
+
+			return new OderVersandRegel(versandRegels);
+		}
+		//TODO implement StringArray
+//		case STRING_ARRAY: {
+//			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>(); 
+//			
+//			FilterConditionArrayStringTObject arrayStringCondition = confStoreService
+//			.getConfiguration(ConfigurationId.valueOf(
+//					aggrFilterConditionTObject.getFilterConditionID(),
+//					IdType.AGGR_FILTER_CONDITION_ARRAY_STRING),
+//					FilterConditionArrayStringTObject.class);
+//			
+//			arrayStringCondition.
+//			
+//			return new UndVersandRegel(versandRegels.toArray(new VersandRegel[0]));
+//		}
+		case PV: {
+			FilterConditionProcessVariableTObject pvCondition = confStoreService
+			.getConfiguration(ConfigurationId.valueOf(
+					aggrFilterConditionTObject.getFilterConditionID(),
+					IdType.PROCESS_VARIABLE_FILTER_CONDITION),
+					FilterConditionProcessVariableTObject.class);
+//			pvCondition.
+		}
+		case UND: {
+		}
 		default:
 			throw new IllegalArgumentException("Unsupported FilterType, see "
 					+ this.getClass().getPackage() + "."
