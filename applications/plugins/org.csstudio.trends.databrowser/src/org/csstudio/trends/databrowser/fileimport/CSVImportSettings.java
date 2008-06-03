@@ -32,4 +32,5 @@ package org.csstudio.trends.databrowser.fileimport;
  * @since 28.04.2008
  */
 public class CSVImportSettings {
+    // NOP
 }

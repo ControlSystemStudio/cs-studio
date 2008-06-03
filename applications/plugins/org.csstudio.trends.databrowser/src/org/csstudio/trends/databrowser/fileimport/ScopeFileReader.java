@@ -32,12 +32,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Formatter;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ploteditor.PlotEditor;
 import org.eclipse.core.runtime.IProgressMonitor;
