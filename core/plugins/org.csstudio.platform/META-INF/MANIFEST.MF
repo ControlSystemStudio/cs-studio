@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core Plug-in
 Bundle-SymbolicName: org.csstudio.platform;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.4
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.junit4,
@@ -48,7 +48,14 @@ Export-Package: org.apache.log4j,
  org.csstudio.platform.simpledal,
  org.csstudio.platform.startupservice,
  org.csstudio.platform.statistic,
- org.csstudio.platform.util
+ org.csstudio.platform.util,
+ org.jdom,
+ org.jdom.adapters,
+ org.jdom.filter,
+ org.jdom.input,
+ org.jdom.output,
+ org.jdom.transform,
+ org.jdom.xpath
 Bundle-ClassPath: .,
  lib/log4j/log4j-1.2.14.jar,
  lib/jdom.jar
