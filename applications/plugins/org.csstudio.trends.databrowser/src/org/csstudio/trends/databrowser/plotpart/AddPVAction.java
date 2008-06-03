@@ -4,6 +4,7 @@ import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 
 /** Action that adds a new PV to the model.
  *  <p>
@@ -14,10 +15,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
  */
 public class AddPVAction extends AbstractAddModelItemAction
 {
+    final private Shell shell;
+
     /** Constructor */
-	public AddPVAction(final Model model)
+	public AddPVAction(final Shell shell, final Model model)
 	{
 	    super(model);
+        this.shell = shell;
         setText(Messages.AddPV);
         setToolTipText(Messages.AddPV_TT);
 	}
@@ -33,7 +37,9 @@ public class AddPVAction extends AbstractAddModelItemAction
 	    catch (Throwable ex)
 	    {
 	        Plugin.getLogger().error(ex);
-            MessageDialog.openError(null, "Error", ex.getMessage()); //$NON-NLS-1$
+            MessageDialog.openError(shell,
+                    org.csstudio.trends.databrowser.Messages.ErrorMessageTitle,
+                    ex.getMessage());
 	    }
     }
 }

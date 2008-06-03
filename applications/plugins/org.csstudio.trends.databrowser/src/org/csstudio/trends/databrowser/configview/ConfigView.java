@@ -258,7 +258,7 @@ public class ConfigView extends PlotAwareView
         });
              
         // Create actions, hook them to menues
-        add_pv_action = new AddPVAction(getModel());
+        add_pv_action = new AddPVAction(parent.getShell(), getModel());
         add_formula_action = new AddFormulaAction(parent.getShell(), getModel());
         delete_pv_action = new DeletePVAction(this);
         archive_up_action = new ArchiveUpAction(this);
@@ -987,7 +987,8 @@ public class ConfigView extends PlotAwareView
         {
             Plugin.getLogger().error(ex);
             MessageDialog.openError(pv_form.getShell(),
-                    "Error", ex.getMessage()); //$NON-NLS-1$
+                    org.csstudio.trends.databrowser.Messages.ErrorMessageTitle,
+                    ex.getMessage());
         }
         return null;
     }

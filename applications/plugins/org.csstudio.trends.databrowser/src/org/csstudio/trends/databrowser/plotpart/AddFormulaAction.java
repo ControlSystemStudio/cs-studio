@@ -3,6 +3,7 @@ package org.csstudio.trends.databrowser.plotpart;
 import org.csstudio.trends.databrowser.model.FormulaModelItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.formula_gui.FormulaDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /** Add a formula via the ConfigView.
@@ -23,9 +24,18 @@ public class AddFormulaAction extends AbstractAddModelItemAction
     @Override
     protected void addPV(String name)
     {
-        final FormulaModelItem item = (FormulaModelItem)
-                model.add(Model.ItemType.Formula, name);
-        final FormulaDialog dlg = new FormulaDialog(shell, item);
-        dlg.open();
+        try
+        {
+            final FormulaModelItem item = (FormulaModelItem)
+                    model.add(Model.ItemType.Formula, name);
+            final FormulaDialog dlg = new FormulaDialog(shell, item);
+            dlg.open();
+        }
+        catch (Throwable ex)
+        {
+            MessageDialog.openError(shell,
+                org.csstudio.trends.databrowser.Messages.ErrorMessageTitle,
+                ex.getMessage());
+        }
     }
 }

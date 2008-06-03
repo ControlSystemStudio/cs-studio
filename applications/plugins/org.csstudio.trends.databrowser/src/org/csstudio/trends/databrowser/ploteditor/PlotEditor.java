@@ -285,7 +285,7 @@ public class PlotEditor extends EditorPart
         final Control ctl = plot_part.getInteractiveChart().getChart();
         final MenuManager context_menu = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         plot_part.addContextMenuPlotActions(context_menu);
-        context_menu.add(new AddPVAction(plot_part.getModel()));
+        context_menu.add(new AddPVAction(ctl.getShell(), plot_part.getModel()));
         context_menu.add(new AddFormulaAction(ctl.getShell(), plot_part.getModel()));
         
         context_menu.add(new Separator());
