@@ -29,6 +29,7 @@ import org.csstudio.util.time.swt.StartEndDialog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -38,6 +39,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -134,7 +136,7 @@ public class ConfigView extends PlotAwareView
         {   // Ignore changes to 'current' time range from scroll
         }
 
-        public void periodsChanged()
+        public void samplingChanged()
         {   entriesChanged(); }
 
         public void entriesChanged()
@@ -355,12 +357,12 @@ public class ConfigView extends PlotAwareView
     }
     
     /** SashForm item for PVs */
-    private void createPVTabListItem(SashForm pv_form)
+    private void createPVTabListItem(final SashForm pv_form)
     {
-        Composite box = new Composite(pv_form, SWT.NULL);
+        final Composite box = new Composite(pv_form, SWT.NULL);
 		box.setBackground(tab_bg);
 
-        GridLayout layout = new GridLayout();
+		final GridLayout layout = new GridLayout();
         layout.numColumns = 1;
         box.setLayout(layout);
 
@@ -369,7 +371,7 @@ public class ConfigView extends PlotAwareView
         GridData gd = new GridData();
         l.setLayoutData(gd);
         
-        Table table = new Table(box,
+        final Table table = new Table(box,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
                 | SWT.VIRTUAL);
         table.setHeaderVisible(true);
@@ -442,7 +444,7 @@ public class ConfigView extends PlotAwareView
     }
     
     /** SashForm item for archives or formulas of current PV */
-    private void createPVTabInfoItem(SashForm pv_form)
+    private void createPVTabInfoItem(final SashForm pv_form)
     {
         final Composite box = new Composite(pv_form, 0);
 		box.setBackground(tab_bg);
@@ -470,8 +472,8 @@ public class ConfigView extends PlotAwareView
         GridData gd = new GridData();
         l.setLayoutData(gd);
         
-        Table table = new Table(archive_box,
-                        SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
+        final Table table = new Table(archive_box,
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         gd = new GridData();
@@ -534,15 +536,15 @@ public class ConfigView extends PlotAwareView
     }     
 
     /** Create one tab of the TabFolder GUI. */
-    private void createLiveTab(TabFolder tabs)
+    private void createLiveTab(final TabFolder tabs)
     {
-        TabItem tab = new TabItem(tabs, 0);
+        final TabItem tab = new TabItem(tabs, 0);
         tab.setText(Messages.LiveConfig);
         tab.setToolTipText(Messages.ConfigPVUpdates);
-        Composite parent = new Composite(tabs, 0);
+        final Composite parent = new Composite(tabs, 0);
 		parent.setBackground(tab_bg);
         
-        GridLayout gl = new GridLayout();
+		final GridLayout gl = new GridLayout();
         gl.numColumns = 2;
         parent.setLayout(gl);
         GridData gd;
@@ -590,7 +592,7 @@ public class ConfigView extends PlotAwareView
         gd.grabExcessHorizontalSpace = true;
         ring_size_text.setLayoutData(gd);
 
-        SelectionListener validator = new SelectionAdapter()
+        final SelectionListener validator = new SelectionAdapter()
         {
             @Override
             public void widgetDefaultSelected(SelectionEvent e)
@@ -612,15 +614,15 @@ public class ConfigView extends PlotAwareView
     }
     
     /** Create one tab of the TabFolder GUI. */
-    private void createTimeTab(TabFolder tabs)
+    private void createTimeTab(final TabFolder tabs)
     {
-        TabItem tab = new TabItem(tabs, 0);
+        final TabItem tab = new TabItem(tabs, 0);
         tab.setText(Messages.TimeAxisConfig);
         tab.setToolTipText(Messages.TimeAxisConfig_TT);
         Composite parent = new Composite(tabs, SWT.SHADOW_ETCHED_IN);
 		parent.setBackground(tab_bg);
         
-        GridLayout layout = new GridLayout();
+		final GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         parent.setLayout(layout);
         GridData gd;
@@ -801,70 +803,100 @@ public class ConfigView extends PlotAwareView
     /** Check the current input to the various 'live PV' tab text fields. */
     private void checkLivePVInputs()
     {
-        String help_text = null;
         final Model model = getModel();
         if (model == null)
+        {
+            help.setText(""); //$NON-NLS-1$
             return;
+        }
         double scan_period = model.getScanPeriod();
         double update_period = model.getUpdatePeriod();
-        int ring_size = model.getRingSize();
-        // no loop, just a construct from which to 'break' on first error.
-        while (true)
+        final int old_ring_size = model.getRingSize();
+        int ring_size = old_ring_size;
+        try
         {
-            try
+            scan_period = Double.parseDouble(scan_period_text.getText());
+            if (scan_period < Model.MIN_SCAN_RATE)
             {
-                scan_period = Double.parseDouble(scan_period_text.getText());
-                if (scan_period < Model.MIN_SCAN_RATE)
-                {
-                    help_text = Messages.ScanPeriodMustBeGt + Model.MIN_SCAN_RATE;
-                    break;
-                }
-
-                update_period = Double.parseDouble(update_period_text.getText());
-                if (update_period < Model.MIN_UPDATE_RATE)
-                {
-                    help_text = Messages.UpdatePeriodMustBeGt + Model.MIN_UPDATE_RATE;
-                    break;
-                }
-
-                if (update_period < scan_period)
-                {
-                    help_text = Messages.UpdateVsScanPeriod;
-                    update_period = scan_period;
-                }
-
-                ring_size = Integer.parseInt(ring_size_text.getText());
-                if (ring_size <= 10)
-                {
-                    help_text = Messages.RingBufferMinSize;
-                    ring_size = 10;
-                    break;
-                }
+                help.setText(Messages.ScanPeriodMustBeGt + Model.MIN_SCAN_RATE);
+                return;
             }
-            catch (Exception e)
+
+            update_period = Double.parseDouble(update_period_text.getText());
+            if (update_period < Model.MIN_UPDATE_RATE)
             {
-                help_text = e.getMessage();
+                help.setText(Messages.UpdatePeriodMustBeGt + Model.MIN_UPDATE_RATE);
+                return;
             }
-            break;
+
+            if (update_period < scan_period)
+            {
+                help.setText(Messages.UpdateVsScanPeriod);
+                return;
+            }
+
+            ring_size = Integer.parseInt(ring_size_text.getText());
+            if (ring_size <= 10)
+            {
+                help.setText(Messages.RingBufferMinSize);
+                return;
+            }
         }
-        // Was there any error?
-        if (help_text != null)
+        catch (Exception e)
         {
-            help.setText(help_text);
+            help.setText(e.getMessage());
             return;
         }
         // Update model with anything that changed.
         if (scan_period != model.getScanPeriod()  ||
             update_period != model.getUpdatePeriod())
             model.setPeriods(scan_period, update_period);
-        if (ring_size != model.getRingSize())
-            model.setRingSize(ring_size);
+        if (ring_size != old_ring_size)
+        {
+            try
+            {
+                model.setRingSize(ring_size);
+            }
+            catch (Exception ex)
+            {
+                help.setText(ex.getMessage());
+                try // revert back to previous setting
+                {
+                    model.setRingSize(old_ring_size);
+                }
+                catch (Exception another_ex)
+                {
+                    Plugin.getLogger().error(another_ex);
+                }
+            }
+        }
         // Display resulting buffer size in seconds
         final double seconds = ring_size * scan_period;
         final RelativeTime span = new RelativeTime(seconds);
-        help.setText(Messages.RingBuffer + span.toString());
+        help.setText(NLS.bind(Messages.RingBufferInfoFmt,
+                span.toString(),
+                String.format("%.1f", getUsedMemoryPercentage()))); //$NON-NLS-1$
     }
 
+    /** @return Percentage [0..100] of used memory */
+    private double getUsedMemoryPercentage()
+    {
+        final Runtime runtime = Runtime.getRuntime();
+        // Max bytes that the JVM will ever try to get 
+        final long max = runtime.maxMemory();
+        // Quite unclear how to interpret this...
+        // Amount of memory used, including what the JVM reserved for
+        // new objects, so it's really 'free' at this time...
+        final long total = runtime.totalMemory();
+        // Additional 'free' memory?!
+        final long free = runtime.freeMemory();
+        
+        // 'total' = allocated mem; used + free lists etc.
+        // real free mem = max - total + free
+        // real used = total - free
+        return (total-free)*100.0/max;
+    }
+    
     /** Validate inputs into the 'Time' tab. */
     private void checkTimeConfigInputs()
     {
@@ -930,9 +962,10 @@ public class ConfigView extends PlotAwareView
             start_specification.setText(model.getStartSpecification());
             end_specification.setText(model.getEndSpecification());
         }
-        help.setText(""); //$NON-NLS-1$
         pv_table_viewer.refresh();
         updateLowerSash();
+        // Initialize the ring buffer info
+        checkLivePVInputs();
     }
    
     /** Add a new PV to the model. */
@@ -941,12 +974,22 @@ public class ConfigView extends PlotAwareView
         name = name.trim();
         if (name.length() < 1)
             return null;
-        Model model = getModel();
+        final Model model = getModel();
         if (model == null)
             return null;
-        IPVModelItem pv_item = model.addPV(name);
-        model.addDefaultArchiveSources(pv_item);
-        return pv_item;
+        try
+        {
+            final IPVModelItem pv_item = model.addPV(name);
+            model.addDefaultArchiveSources(pv_item);
+            return pv_item;
+        }
+        catch (Throwable ex)
+        {
+            Plugin.getLogger().error(ex);
+            MessageDialog.openError(pv_form.getShell(),
+                    "Error", ex.getMessage()); //$NON-NLS-1$
+        }
+        return null;
     }
     
     /** Add an archive source to a specific or all items.

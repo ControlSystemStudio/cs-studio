@@ -144,7 +144,7 @@ public class Controller
         	}
         }
         
-        public void periodsChanged()
+        public void samplingChanged()
         {
             if (scanner_scroller != null)
                 scanner_scroller.periodsChanged();

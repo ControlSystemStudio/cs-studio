@@ -16,8 +16,8 @@ public interface ModelListener
      */
     public void timeRangeChanged();
 
-    /** Invoked when the scan or update periods changed. */
-    public void periodsChanged();
+    /** Invoked when the scan, update period or ring buffer size changed. */
+    public void samplingChanged();
     
     /** Invoked when many entries were added, removed or changed. */
     public void entriesChanged();

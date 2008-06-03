@@ -47,7 +47,7 @@ public class Messages extends NLS
     public static String RemoveFormulaInputError;
 
     public static String Request;
-    public static String RingBuffer;
+    public static String RingBufferInfoFmt;
     public static String RingBufferMinSize;
     public static String ScanPeriodMustBeGt;
     public static String ScanPeriodSecs;

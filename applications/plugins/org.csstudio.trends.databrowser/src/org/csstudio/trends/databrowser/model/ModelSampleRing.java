@@ -43,28 +43,37 @@ public class ModelSampleRing
 
     /** Set new capacity.
      *  <p>
-     *  Tries to preserve newest samples.
+     *  Tries to preserve the newest samples.
+     *  @param new_capacity New sample count capacity
+     *  @throws Exception on out-of-memory error
      */
-    public void setCapacity(int new_capacity)
+    public void setCapacity(int new_capacity) throws Exception
     {
-        ModelSample new_samples[] = new ModelSample[new_capacity];
-        // Copy old samples over
-        if (samples != null)
-        {   // How many can be copied?
-            int copy_size = size;
-            if (copy_size > new_capacity)
-                copy_size = new_capacity;
-            // First 'old' sample
-            final int copy_start = size - copy_size;
-            for (int i=0; i<copy_size; ++i)
-                new_samples[i] = get(copy_start + i);
-            size = copy_size;
+        try
+        {
+            final ModelSample new_samples[] = new ModelSample[new_capacity];        
+            // Copy old samples over
+            if (samples != null)
+            {   // How many can be copied?
+                int copy_size = size;
+                if (copy_size > new_capacity)
+                    copy_size = new_capacity;
+                // First 'old' sample
+                final int copy_start = size - copy_size;
+                for (int i=0; i<copy_size; ++i)
+                    new_samples[i] = get(copy_start + i);
+                size = copy_size;
+            }
+            else
+                size = 0;
+            samples = new_samples;
+            start = 0;
+            capacity = new_capacity;
         }
-        else
-            size = 0;
-        samples = new_samples;
-        start = 0;
-        capacity = new_capacity;
+        catch (OutOfMemoryError err)
+        {
+            throw new Exception("Out of memory: " + err.getMessage()); //$NON-NLS-1$
+        }
     }
 
     /** @return Returns the current capacity.

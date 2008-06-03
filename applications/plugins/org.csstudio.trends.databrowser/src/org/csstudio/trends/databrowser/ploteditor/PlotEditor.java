@@ -67,7 +67,7 @@ public class PlotEditor extends EditorPart
         public void timeRangeChanged()
         { /* NOP */ }
         
-        public void periodsChanged()
+        public void samplingChanged()
         {   entriesChanged();  }
 
         public void entriesChanged()

@@ -71,7 +71,7 @@ public class SampleView extends PlotAwareView
         public void entryArchivesChanged(IModelItem item) { /* NOP */ }
         public void entryConfigChanged(IModelItem item)   { /* NOP */ }
         public void entryMetaDataChanged(IModelItem item) { /* NOP */ }
-        public void periodsChanged()                      { /* NOP */ }
+        public void samplingChanged()                     { /* NOP */ }
         public void timeRangeChanged()                    { /* NOP */ }
         public void timeSpecificationsChanged()           { /* NOP */ }
     };

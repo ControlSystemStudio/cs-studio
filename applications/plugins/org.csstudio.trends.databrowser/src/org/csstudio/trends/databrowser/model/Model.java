@@ -284,24 +284,25 @@ public class Model
             update = scan;
         scan_period = scan;
         update_period = update;
-        // firePeriodsChanged
-        for (ModelListener l : listeners)
-            l.periodsChanged();
+        fireSamplingChanged();
     }
-    
+
     /** @return Returns the current ring buffer size. */
     public int getRingSize()
     {   return ring_size; }
 
-    /** @param ring_size The ring_size to set. */
-    public void setRingSize(int ring_size)
+    /** @param ring_size The ring_size to set.
+     *  @throws Exception on out-of-mem error
+     */
+    public void setRingSize(int ring_size) throws Exception
     {
-        this.ring_size = ring_size;
         for (AbstractModelItem item : items)
         {
             if (item instanceof PVModelItem)
                 ((PVModelItem)item).setRingSize(ring_size);
         }
+        this.ring_size = ring_size;
+        fireSamplingChanged();
     }
 
     /** @return Returns the number of chart items. */
@@ -728,6 +729,22 @@ public class Model
     {
         for (ModelListener l : listeners)
             l.entryConfigChanged(item);
+    }
+    
+    /** @see ModelListener#fireSamplingChanged() */
+    private void fireSamplingChanged()
+    {
+        for (ModelListener l : listeners)
+        {
+            try
+            {
+                l.samplingChanged();
+            }
+            catch (Throwable ex)
+            {
+                Plugin.getLogger().error(ex);
+            }
+        }
     }
     
     /** @see ModelListener#entryMetaDataChanged(IModelItem) */

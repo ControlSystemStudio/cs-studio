@@ -250,8 +250,10 @@ public class PVModelItem
         return RequestType.fromOrdinal(ordinal);
     }
 
-    /** @param ring_size The ring_size to set. */
-    public final void setRingSize(int ring_size)
+    /** @param ring_size The ring_size to set.
+     *  @throws Exception on out-of-memory error
+     */
+    public final void setRingSize(int ring_size) throws Exception
     {
         samples.setLiveCapacity(ring_size);
     }

@@ -50,8 +50,11 @@ public class ModelSamples implements IModelSamples // , ChartSampleSequence
         live_samples = new ModelSampleRing(ring_size);
     }
     
-    /** Change the number of 'live' samples. */
-    void setLiveCapacity(int size)
+    /** Change the number of 'live' samples.
+     *  @param size Requested sample count size
+     *  @throws Exception on error
+     */
+    void setLiveCapacity(int size) throws Exception
     {
         synchronized (this)
         {

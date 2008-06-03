@@ -1,7 +1,9 @@
 package org.csstudio.trends.databrowser.plotpart;
 
+import org.csstudio.trends.databrowser.Plugin;
 import org.csstudio.trends.databrowser.model.IPVModelItem;
 import org.csstudio.trends.databrowser.model.Model;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 /** Action that adds a new PV to the model.
  *  <p>
@@ -23,7 +25,15 @@ public class AddPVAction extends AbstractAddModelItemAction
 	@Override
     protected void addPV(final String pv_name)
     {
-        final IPVModelItem pv_item = model.addPV(pv_name);
-        model.addDefaultArchiveSources(pv_item);
+	    try
+	    {
+	        final IPVModelItem pv_item = model.addPV(pv_name);
+	        model.addDefaultArchiveSources(pv_item);
+	    }
+	    catch (Throwable ex)
+	    {
+	        Plugin.getLogger().error(ex);
+            MessageDialog.openError(null, "Error", ex.getMessage()); //$NON-NLS-1$
+	    }
     }
 }
