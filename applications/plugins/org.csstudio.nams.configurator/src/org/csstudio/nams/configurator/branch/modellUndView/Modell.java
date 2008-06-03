@@ -20,6 +20,6 @@ public class Modell {
 	}
 	
 	public void tryToSave(GUIMemento aktuellesGUIMemento) throws SaveException {
-		
+		// Übertrage Änderungen auf die Bean.
 	}
 }
