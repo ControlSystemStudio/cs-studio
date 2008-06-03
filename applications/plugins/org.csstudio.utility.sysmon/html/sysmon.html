@@ -10,9 +10,30 @@
 <h1>CSS System Monitor</h1>
 
 A simple system monitor for tracking memory usage.
+<p>
+The displayed "max", "total" and "free" memory is obtained from the Java
+<b>Runtime</b> API, and its meaning is not immediately obvious:
+<ul>
+<li>"Max" Memory:<br>
+    The maximum amount of memory that the Java Virtual Machine (JVM) will
+    ever attempt to use. It is an upper bound that prevents the JVM from using
+    all of the computer's memory.
+<li>"Total":<br>
+    The amount of memory that the JVM currently uses for objects in-use as well
+    as new objects. So this includes what most people would call "available"
+    memory, i.e. memory that the JVM has reserved for new objects but doesn't
+    currently use.
+<li>"Free":<br>
+    Memory that the JVM considers "free".
+</ul>
+
+One guess of the author is that one can consider "max - total + free" the
+actual "available" memory, but the behavior of the JVM's garbage collection
+is very unpredictable: It will sometimes hold on to memory that was freed
+after closing some part of the application, while at other times such
+memory shows up as "free" right away.
 
 <h2>Setup</h2>
-
 All the settings are adjusted via the System Monitor preference page.
 
 </body>
