@@ -1,7 +1,6 @@
 package org.csstudio.nams.configurator.branch.views;
 
 import org.csstudio.nams.configurator.branch.composite.FilteredListVarianteA;
-import org.csstudio.nams.configurator.branch.composite.FilteredListVarianteB;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
@@ -15,7 +14,12 @@ public class AlarmtopicView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		//new FilteredListVarianteB(parent, SWT.None);
-		new FilteredListVarianteA(parent, SWT.None);
+		new FilteredListVarianteA(parent, SWT.None)  {
+			@Override
+			protected Object[] getTableInput() {
+				return new String[] { "Topic A", "History 08", "Another Topic" };
+			}
+		};
 
 	}
 

@@ -102,7 +102,7 @@ public class AlarmbearbeitergruppenBean extends
 	public boolean equals(Object obj) {
 		if (obj instanceof AlarmbearbeitergruppenBean) {
 			AlarmbearbeitergruppenBean bean = (AlarmbearbeitergruppenBean) obj;
-			return this.getGroupID() == bean.getGroupID();
+			return this.getName().equals(bean.getName());
 		}
 		return super.equals(obj);
 	}

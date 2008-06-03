@@ -30,20 +30,24 @@ public class OpenConfigurationEditor extends Action {
 		IWorkbenchPage activePage = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage();
 		IEditorPart activeEditor = activePage.getActiveEditor();
-
+		//
+		IConfigurationBean openEditorBean = null;
 		if (activeEditor instanceof ConfigurationEditor) {
 			ConfigurationEditor editor = (ConfigurationEditor) activeEditor;
-			IConfigurationBean openEditorBean = ((ConfigurationEditorInput) editor
+			openEditorBean = ((ConfigurationEditorInput) editor
 					.getEditorInput()).getBean();
-			if (openEditorBean.getClass().equals(this.bean.getClass())) {
-				activePage.closeEditor(activeEditor, true);
-			}
+
 		}
 
-		try {
-			activePage.openEditor(editorInput, ConfigurationEditor.ID);
-		} catch (PartInitException e) {
-			e.printStackTrace();
+		if (openEditorBean != null && openEditorBean.equals(this.bean)) {
+			activePage.activate(activeEditor);
+		} else {
+
+			try {
+				activePage.openEditor(editorInput, ConfigurationEditor.ID);
+			} catch (PartInitException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

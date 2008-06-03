@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.csstudio.nams.configurator.branch.actions.OpenConfigurationEditor;
 import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean;
-import org.csstudio.nams.configurator.treeviewer.model.AlarmtopicBean;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -104,7 +103,11 @@ public class FilteredListVarianteA {
 					table.getControl());
 			table.setContentProvider(new ArrayContentProvider());
 			// table.setLabelProvider(new S)
-			table.setInput(this.getTableInput());
+			Object[] tableInput = this.getTableInput();
+			
+			Arrays.sort(tableInput);
+			
+			table.setInput(tableInput);
 			table.setFilters(new ViewerFilter[] { new TableFilter() });
 			table.addDoubleClickListener(new IDoubleClickListener() {
 				public void doubleClick(DoubleClickEvent event) {
@@ -194,7 +197,7 @@ public class FilteredListVarianteA {
 	protected Object[] getKryoOps() {
 		return new String[] { "Max Mayer", "Thomas D", "Max Peter",
 				"Hugo Balder", "Nora Jones", "Andre B", "Julius Caesar",
-				"Emy Winehouse" };
+				"Amy Winehouse" };
 	}
 
 	protected Object[] getWPS() {
