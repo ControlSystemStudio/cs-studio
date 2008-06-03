@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alarm Tree View
 Bundle-SymbolicName: org.csstudio.alarm.treeView; singleton:=true
-Bundle-Version: 1.1.2
+Bundle-Version: 1.1.3
 Bundle-Activator: org.csstudio.alarm.treeView.AlarmTreePlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
