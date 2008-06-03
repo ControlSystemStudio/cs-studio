@@ -1,11 +1,11 @@
 package org.csstudio.nams.application.department.decision;
 
-import static org.junit.Assert.fail;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+
+import junit.framework.TestCase;
 
 import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
@@ -17,7 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SyncronisationsAutomat_Test {
+public class SyncronisationsAutomat_Test extends TestCase {
 	protected SystemNachricht zuletzGesendeteNachricht;
 	protected Queue<NAMSMessage> neuZuEmpfangedeNachrichten;
 	private Producer amsAusgangsProducer;

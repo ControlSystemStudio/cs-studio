@@ -1,5 +1,7 @@
 package de.c1wps.desy.ams;
 
+import org.csstudio.nams.application.department.decision.SyncronisationsAutomat_Test;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -16,6 +18,7 @@ public class AllTests extends TestCase {
 		suite.addTestSuite(AllTests.class);
 		suite.addTest(Allgemeines_SubSystemTestSuite.suite());
 		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
+		suite.addTestSuite(SyncronisationsAutomat_Test.class);
 		//suite.addTest(AllgemeinesRegelwerk_SubSystemTestSuite.suite());
 		//$JUnit-END$
 		return suite;
