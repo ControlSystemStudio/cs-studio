@@ -15,6 +15,7 @@ import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionS
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionTimeBasedTObject;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
+import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
 import org.csstudio.nams.common.material.regelwerk.StringRegel;
@@ -24,6 +25,8 @@ import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
 import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
+import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 
 public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
@@ -31,14 +34,15 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 	private static final short TIMEBEHAVIOR_CONFIRMED_THEN_ALARM = 0;
 	// aufhebungsalarm und bei timeout alarm?
 	private static final short TIMEBEHAVIOR_TIMEOUT_THEN_ALARM = 1;
+	private static IProcessVariableConnectionService pvConnectionService;
+	private static ConfigurationStoreService configurationStoreService;
 
 	public List<Regelwerk> gibAlleRegelwerke() {
 		// hole alle Filter TObject aus dem confstore
 
 		List<Regelwerk> results = new LinkedList<Regelwerk>();
 
-		ConfigurationStoreService confStoreService = Activator.getDefault()
-				.getConfigurationStoreService();
+		ConfigurationStoreService confStoreService = configurationStoreService;
 		// get all filters
 		List<AggrFilterTObject> listOfFilters = confStoreService
 				.getListOfConfigurations(AggrFilterTObject.class);
@@ -168,14 +172,25 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 					aggrFilterConditionTObject.getFilterConditionID(),
 					IdType.PROCESS_VARIABLE_FILTER_CONDITION),
 					FilterConditionProcessVariableTObject.class);
-//			pvCondition.
+			return new ProcessVariableRegel(pvConnectionService, ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(pvCondition.getProcessVariableChannelName()), pvCondition.getOperator(), pvCondition.getSuggestedType(), pvCondition.getCompValue());
 		}
-		case UND: {
-		}
+		//TODO implement UndVersandRegel
+//		case UND: {
+//		}
 		default:
 			throw new IllegalArgumentException("Unsupported FilterType, see "
 					+ this.getClass().getPackage() + "."
 					+ this.getClass().getName());
 		}
+	}
+
+	public static void staticInject(
+			IProcessVariableConnectionService pvConnectionService) {
+				RegelwerkBuilderServiceImpl.pvConnectionService = pvConnectionService;
+	}
+
+	public static void staticInject(
+			ConfigurationStoreService configurationStoreService) {
+				RegelwerkBuilderServiceImpl.configurationStoreService = configurationStoreService;
 	}
 }

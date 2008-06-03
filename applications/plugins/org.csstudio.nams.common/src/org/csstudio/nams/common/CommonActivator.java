@@ -1,5 +1,6 @@
 package org.csstudio.nams.common;
 
+import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.service.logging.declaration.Logger;
@@ -29,13 +30,10 @@ public class CommonActivator implements BundleActivator {
 		context.registerService(ExecutionService.class.getName(),
 				new DefaultExecutionService(), null);
 		logger = BundleActivatorUtils.getAvailableService(context, Logger.class);
-
+		ProcessVariableRegel.staticInject(logger);
+		
 	}
 
-	public static Logger getLogger(){
-		return logger;
-	}
-	
 	public void stop(BundleContext context) throws Exception {
 	}
 }

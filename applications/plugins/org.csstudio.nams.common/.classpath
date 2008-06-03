@@ -7,5 +7,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="/org.csstudio.ams.configurationStore"/>
+	<classpathentry kind="src" path="/org.csstudio.platform.libs.dal"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

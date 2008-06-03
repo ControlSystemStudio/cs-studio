@@ -3,10 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Confstore Plug-in
 Bundle-SymbolicName: org.csstudio.nams.service.regelwerkbuilder.impl.confstore;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.csstudio.nams.service.regelwerkbuilder.impl.confstore.Activator
+Bundle-Activator: org.csstudio.nams.service.regelwerkbuilder.impl.confstore.RegelwerkBuilderImplActivator
 Bundle-Vendor: C1 WPS
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.regelwerkbuilder,
  org.csstudio.nams.common,
- org.csstudio.ams.configurationStore
+ org.csstudio.ams.configurationStore,
+ org.csstudio.platform
 Eclipse-LazyStart: true

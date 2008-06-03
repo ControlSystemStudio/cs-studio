@@ -2,26 +2,23 @@ package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
+import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
+import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends Plugin {
+public class RegelwerkBuilderImplActivator extends Plugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.regelwerkbuilder.impl.confstore";
-
-	// The shared instance
-	private static Activator plugin;
-
-	private ConfigurationStoreService configurationStoreService;
 	
 	/**
 	 * The constructor
 	 */
-	public Activator() {
+	public RegelwerkBuilderImplActivator() {
 	}
 
 	/*
@@ -30,8 +27,10 @@ public class Activator extends Plugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		configurationStoreService = BundleActivatorUtils.getAvailableService(context, ConfigurationStoreService.class);
-		plugin = this;
+		ConfigurationStoreService configurationStoreService = BundleActivatorUtils.getAvailableService(context, ConfigurationStoreService.class);
+		IProcessVariableConnectionService pvConnectionService = ProcessVariableConnectionServiceFactory.getProcessVariableConnectionService();
+		RegelwerkBuilderServiceImpl.staticInject(pvConnectionService);
+		RegelwerkBuilderServiceImpl.staticInject(configurationStoreService);
 	}
 
 	/*
@@ -39,21 +38,7 @@ public class Activator extends Plugin {
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		plugin = null;
 		super.stop(context);
-	}
-
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return plugin;
-	}
-
-	public ConfigurationStoreService getConfigurationStoreService() {
-		return configurationStoreService;
 	}
 
 }
