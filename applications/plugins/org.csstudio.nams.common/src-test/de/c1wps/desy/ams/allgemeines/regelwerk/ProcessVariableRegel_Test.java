@@ -30,65 +30,55 @@ public class ProcessVariableRegel_Test extends
 		_connectionServiceMock = createPVServiceMock();
 		ProcessVariableRegel.staticInject(new Logger(){
 
-			@Override
 			public void logDebugMessage(Object caller, String message) {
 				// TODO Auto-generated method stub
 				
 			}
 
-			@Override
 			public void logDebugMessage(Object caller, String message,
 					Throwable throwable) {
 				// TODO Auto-generated method stub
 				
 			}
 
-			@Override
 			public void logErrorMessage(Object caller, String message) {
 				// TODO Auto-generated method stub
 				
 			}
 
-			@Override
 			public void logErrorMessage(Object caller, String message,
 					Throwable throwable) {
 				// TODO Auto-generated method stub
 				
 			}
 
-			@Override
 			public void logFatalMessage(Object caller, String message) {
 				// TODO Auto-generated method stub
 				
 			}
-
-			@Override
+			
 			public void logFatalMessage(Object caller, String message,
 					Throwable throwable) {
 				// TODO Auto-generated method stub
 				
 			}
 
-			@Override
 			public void logInfoMessage(Object caller, String message) {
 				// TODO Auto-generated method stub
 				
 			}
 
-			@Override
 			public void logInfoMessage(Object caller, String message,
 					Throwable throwable) {
 				// TODO Auto-generated method stub
 				
 			}
 
-			@Override
 			public void logWarningMessage(Object caller, String message) {
 				// TODO Auto-generated method stub
 				
 			}
 
-			@Override
 			public void logWarningMessage(Object caller, String message,
 					Throwable throwable) {
 				// TODO Auto-generated method stub
