@@ -3,9 +3,9 @@ package org.csstudio.nams.service.configurationaccess.localstore;
 import java.util.Iterator;
 import java.util.List;
 
-import org.csstudio.nams.service.configurationaccess.localstore.configurationElements.TopicConfigurationId;
-import org.csstudio.nams.service.configurationaccess.localstore.configurationElements.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicConfigurationId;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 

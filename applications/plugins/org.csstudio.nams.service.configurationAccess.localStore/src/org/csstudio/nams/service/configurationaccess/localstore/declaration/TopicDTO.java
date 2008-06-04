@@ -1,4 +1,4 @@
-package org.csstudio.nams.service.configurationaccess.localstore.configurationElements;
+package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

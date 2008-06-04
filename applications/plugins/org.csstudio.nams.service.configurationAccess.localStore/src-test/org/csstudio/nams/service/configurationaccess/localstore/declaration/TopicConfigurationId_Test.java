@@ -1,7 +1,6 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
-import org.csstudio.nams.service.configurationaccess.localstore.configurationElements.TopicConfigurationId;
 
 public class TopicConfigurationId_Test extends AbstractValue_TestCase<TopicConfigurationId> {
 
