@@ -2,6 +2,7 @@ package org.csstudio.nams.service.messaging.declaration;
 
 import java.util.Map;
 
+import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
@@ -18,6 +19,7 @@ public class DefaultNAMSMessage implements NAMSMessage {
 //	private final Map<String, String> map;
 	private final AcknowledgeHandler handler;
 	private SystemNachricht systemNachricht;
+	private AlarmNachricht alarmNachricht;
 
 	public DefaultNAMSMessage(Map<String, String> map) {
 		this(map, null);
@@ -31,13 +33,17 @@ public class DefaultNAMSMessage implements NAMSMessage {
 			String command = map.get(MSGPROP_COMMAND);
 			if (command.equals(MSGVALUE_TCMD_RELOAD_CFG_START)) {
 				systemNachricht = new SyncronisationsAufforderungsSystemNachchricht();
+				alarmNachricht = null;
 			} else if (command.equals(MSGVALUE_TCMD_RELOAD_CFG_END)) {
 				systemNachricht = new SyncronisationsBestaetigungSystemNachricht();
+				alarmNachricht = null;
 			} else {
-				throw new RuntimeException("unbekannte Systemnachricht: "+command);
+				alarmNachricht = new AlarmNachricht(map);
+				systemNachricht = null;
 			}
 		} else {
 			systemNachricht = null;
+			alarmNachricht = null;
 		}
 	}
 	
@@ -52,8 +58,8 @@ public class DefaultNAMSMessage implements NAMSMessage {
 	}
 
 	public AlarmNachricht alsAlarmnachricht() {
-		// TODO Auto-generated method stub
-		return null;
+		Contract.ensure(enthaeltAlarmnachricht(), "NAMS Message is AlarmNachricht");
+		return alarmNachricht;
 	}
 
 	@Deprecated
@@ -62,12 +68,12 @@ public class DefaultNAMSMessage implements NAMSMessage {
 	}
 
 	public SystemNachricht alsSystemachricht() {
+		Contract.ensure(enthaeltSystemnachricht(), "NAMS Message is SystemNachricht");
 		return systemNachricht;
 	}
 
 	public boolean enthaeltAlarmnachricht() {
-		// TODO Auto-generated method stub
-		return false;
+		return alarmNachricht != null;
 	}
 
 	public boolean enthaeltSystemnachricht() {

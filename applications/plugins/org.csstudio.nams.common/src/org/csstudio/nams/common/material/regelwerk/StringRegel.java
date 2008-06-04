@@ -10,6 +10,7 @@ import java.util.Locale;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.service.logging.declaration.Logger;
 
 /**
  * @author Goesta Steen
@@ -20,6 +21,7 @@ public class StringRegel implements VersandRegel {
 	private final StringRegelOperator operator;
 	private final String compareString;
 	private final String narichtKey;
+	private static Logger logger;
 
 	public StringRegel(StringRegelOperator operator, String narichtKey,
 			String compareString) {
@@ -64,7 +66,7 @@ public class StringRegel implements VersandRegel {
 		boolean istGueltig = false;
 		
 		// TODO hier muss noch der richtige Schlüssel gewählt werden
-		String value = nachricht.gibNachrichtenText();
+		String value = nachricht.getValueFor(narichtKey);
 
 		try {
 			switch (operator) {
@@ -154,6 +156,10 @@ public class StringRegel implements VersandRegel {
 			// TODO handle Exception
 			return true;
 		}
+	}
+
+	public static void staticInject(Logger logger) {
+		StringRegel.logger = logger;
 	}
 
 }

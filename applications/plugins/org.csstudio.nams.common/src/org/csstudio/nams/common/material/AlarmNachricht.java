@@ -25,6 +25,8 @@
 package org.csstudio.nams.common.material;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.common.wam.Material;
@@ -37,13 +39,29 @@ import org.csstudio.nams.common.wam.Material;
 public class AlarmNachricht implements Cloneable {
 	private String nachricht;
 	private Date zeitFuerToString;
-
+	private final Map<String, String> map;
+	
+	@Deprecated
 	public AlarmNachricht(String nachricht) {
 		Contract.requireNotNull("nachricht", nachricht);
-
 		this.nachricht = nachricht;
 		this.zeitFuerToString = new Date(); // TODO Entfernen!
+		
+		this.map = new HashMap<String, String>();
+
 		// TODO Auto-generated constructor stub
+	}
+
+	public AlarmNachricht(Map<String, String> map) {
+		this.map = map;
+	}
+
+	public String getValueFor(String key){
+		String result = "";
+		if(map.containsKey(key)){
+			result = map.get(key);
+		}
+		return result;
 	}
 	
 	@Override
@@ -52,6 +70,7 @@ public class AlarmNachricht implements Cloneable {
 	}
 
 	@Override
+	// TODO add MAP
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -60,6 +79,7 @@ public class AlarmNachricht implements Cloneable {
 	}
 
 	@Override
+	// TODO add MAP
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

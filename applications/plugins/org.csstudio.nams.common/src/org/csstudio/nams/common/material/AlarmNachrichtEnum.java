@@ -1,0 +1,7 @@
+package org.csstudio.nams.common.material;
+
+public enum AlarmNachrichtEnum {
+	TYPE, EVENTTIME, TEXT, USER, HOST, APPLICATION_ID,
+	PROCESS_ID, NAME, CLASS, DOMAIN, FACILITY, LOCATION,
+	SEVERITY, STATUS, VALUE, DESTINATION, AMS_REINSERTED
+}
