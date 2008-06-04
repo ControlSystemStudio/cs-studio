@@ -49,3 +49,4 @@ Bundle-ClassPath: .,
  lib-hibernate/versioncheck.jar,
  lib-hibernate/xerces-2.6.2.jar,
  lib-hibernate/xml-apis.jar
+Export-Package: org.csstudio.nams.service.configurationaccess.localstore.configurationElements

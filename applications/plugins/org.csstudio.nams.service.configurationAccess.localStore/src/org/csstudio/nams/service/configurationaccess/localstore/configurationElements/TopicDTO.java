@@ -79,7 +79,7 @@ public class TopicDTO {
 	 *            Die Beschreibung des Topics; 256 Zeichen oder kürzer.
 	 */
 	public void setDescription(final String description) {
-		Contract.require(this.topicName.length() <= 256,
+		Contract.require(description.length() <= 256,
 				"topicName.length() <= 256");
 
 		this.description = description;
@@ -100,7 +100,7 @@ public class TopicDTO {
 	 *            Der Name/Identifizierung des Topics; 128 Zeichen oder kürzer.
 	 */
 	public void setName(final String name) {
-		Contract.require(this.topicName.length() <= 128,
+		Contract.require(name.length() <= 128,
 				"topicName.length() <= 128");
 
 		this.name = name;

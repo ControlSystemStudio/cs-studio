@@ -34,7 +34,7 @@
   				<property name="hibernate.mapping.precedence">class, hbm</property>
   				
   				
-  				<mapping class="hibernate_test.TopicDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.configurationElements.TopicDTO"/>
 	</session-factory>
 
 </hibernate-configuration>
