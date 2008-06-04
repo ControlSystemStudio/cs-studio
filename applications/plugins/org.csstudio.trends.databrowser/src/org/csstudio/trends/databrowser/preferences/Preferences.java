@@ -36,7 +36,25 @@ public class Preferences
     
     /** Identifier for end time preference. */
     public static final String END_TIME_SPEC = "end_time";
+    
+    /** Minimum for scan_period. */
+    public static final double MIN_SCAN_PERIOD = 0.1;
+    
+    /** Identifier for scan period [seconds] preference. */
+    public static final String SCAN_PERIOD = "scan_period";
+    
+    /** Minimum for update_period. */
+    public static final double MIN_UPDATE_PERIOD = 0.5;
 
+    /** Identifier for update period [seconds] preference. */
+    public static final String UPDATE_PERIOD = "update_period";
+    
+    /** Minimum for live buffer sample count. */
+    public static final int MIN_LIVE_BUFFER_SIZE = 10;
+    
+    /** Identifier for live buffer sample count preference. */
+    public static final String LIVE_BUFFER_SIZE = "live_buffer_size";
+    
     /** Identifier for the auto-scale preference. */
     public static final String AUTOSCALE = "autoscale";
 
@@ -70,6 +88,27 @@ public class Preferences
     {
         IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
         return store.getString(END_TIME_SPEC);
+    }
+    
+    /** @return Default scan period [seconds]. */
+    static public double getScanPeriod()
+    {
+        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        return store.getDouble(SCAN_PERIOD);
+    }
+
+    /** @return Default update period [seconds]. */
+    static public double getUpdatePeriod()
+    {
+        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        return store.getDouble(UPDATE_PERIOD);
+    }
+
+    /** @return Default update period [seconds]. */
+    static public int getLiveBufferSize()
+    {
+        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
+        return store.getInt(LIVE_BUFFER_SIZE);
     }
     
     /** @return Default auto-scale setting */
@@ -166,12 +205,12 @@ public class Preferences
     static IArchiveDataSource parseArchiveDataSource(String text)
     {
         text = text.trim();
-        int i1 = text.indexOf(ARCHIVE_SEPARATOR);
+        final int i1 = text.indexOf(ARCHIVE_SEPARATOR);
         if (i1 < 0)
             return null;
-        String name = text.substring(0, i1);
-        int i2 = text.indexOf(ARCHIVE_SEPARATOR, i1+1);
-        if (i2 < 1) // need some minumum length
+        final String name = text.substring(0, i1);
+        final int i2 = text.indexOf(ARCHIVE_SEPARATOR, i1+1);
+        if (i2 < 1) // need some minimum length
             return null;
         int key;
         try
@@ -182,7 +221,7 @@ public class Preferences
         {
             return null;
         }
-        String url = text.substring(i2 + 1);
+        final String url = text.substring(i2 + 1);
         if (url.length() < 1)
             return null;
         return CentralItemFactory.createArchiveDataSource(url, key, name);

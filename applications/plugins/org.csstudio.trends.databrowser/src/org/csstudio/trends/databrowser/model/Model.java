@@ -65,17 +65,11 @@ public class Model
     /** Scan period for 'live' data in seconds. */
     private double scan_period = 0.5;
     
-    /** Minimum for scan_period. */
-    public static final double MIN_SCAN_RATE = 0.1;
-    
     /** Update period of the plot in seconds. */
     private double update_period = 1.0;
     
-    /** Minumum for update_period. */
-    public static final double MIN_UPDATE_RATE = 0.5;
-
     /** Ring buffer size, number of elements, for 'live' data. */
-    private int ring_size = 1024;
+    private int live_buffer_size = 1024;
 
     private ArrayList<AbstractModelItem> items = new ArrayList<AbstractModelItem>();
     
@@ -94,6 +88,9 @@ public class Model
         {
             start = Preferences.getStartSpecification();
             end = Preferences.getEndSpecification();
+            setPeriods(Preferences.getScanPeriod(),
+                    Preferences.getUpdatePeriod());
+            setLiveBufferSize(Preferences.getLiveBufferSize());
         }
         catch (Exception ex)
         {   // No prefs because running as unit test?
@@ -275,10 +272,10 @@ public class Model
     public void setPeriods(double scan, double update)
     {
         // Don't allow 'too fast'
-        if (scan < MIN_SCAN_RATE)
-            scan = MIN_SCAN_RATE;
-        if (update < MIN_UPDATE_RATE)
-            update = MIN_UPDATE_RATE;
+        if (scan < Preferences.MIN_SCAN_PERIOD)
+            scan = Preferences.MIN_SCAN_PERIOD;
+        if (update < Preferences.MIN_UPDATE_PERIOD)
+            update = Preferences.MIN_UPDATE_PERIOD;
         // No sense in redrawing faster than the data can change.
         if (update < scan)
             update = scan;
@@ -288,20 +285,20 @@ public class Model
     }
 
     /** @return Returns the current ring buffer size. */
-    public int getRingSize()
-    {   return ring_size; }
+    public int getLiveBufferSize()
+    {   return live_buffer_size; }
 
     /** @param ring_size The ring_size to set.
      *  @throws Exception on out-of-mem error
      */
-    public void setRingSize(int ring_size) throws Exception
+    public void setLiveBufferSize(final int ring_size) throws Exception
     {
         for (AbstractModelItem item : items)
         {
             if (item instanceof PVModelItem)
-                ((PVModelItem)item).setRingSize(ring_size);
+                ((PVModelItem)item).setLiveBufferSize(ring_size);
         }
-        this.ring_size = ring_size;
+        this.live_buffer_size = ring_size;
         fireSamplingChanged();
     }
 
@@ -444,7 +441,7 @@ public class Model
         switch (type)
         {
         case ProcessVariable:
-            item = new PVModelItem(this, pv_name, ring_size,
+            item = new PVModelItem(this, pv_name, live_buffer_size,
                             		axis_index, low, high, visible, auto_scale,
                                     red, green, blue, line_width, trace_type,
                                     log_scale,
@@ -645,7 +642,7 @@ public class Model
         XMLHelper.XML(b, 1, "scroll", Boolean.toString(scroll));
         XMLHelper.XML(b, 1, "scan_period", Double.toString(scan_period));
         XMLHelper.XML(b, 1, "update_period", Double.toString(update_period));
-        XMLHelper.XML(b, 1, "ring_size", Integer.toString(ring_size));
+        XMLHelper.XML(b, 1, "ring_size", Integer.toString(live_buffer_size));
         b.append("    <pvlist>\n");
         for (AbstractModelItem item : items)
             b.append(item.getXMLContent());
@@ -695,7 +692,7 @@ public class Model
                                                 start_end_times.isEndNow());
         final double scan = DOMHelper.getSubelementDouble(root_node, "scan_period");
         final double update = DOMHelper.getSubelementDouble(root_node, "update_period");
-        ring_size = DOMHelper.getSubelementInt(root_node, "ring_size");
+        live_buffer_size = DOMHelper.getSubelementInt(root_node, "ring_size");
         Element pvlist = DOMHelper.findFirstElementNode(root_node
                 .getFirstChild(), "pvlist");
         if (pvlist != null)
@@ -705,7 +702,7 @@ public class Model
             		pvlist.getFirstChild(), PVModelItem.TAG_PV);
             while (pv != null)
             {
-                silentAdd(PVModelItem.loadFromDOM(this, pv, ring_size));
+                silentAdd(PVModelItem.loadFromDOM(this, pv, live_buffer_size));
                 pv = DOMHelper.findNextElementNode(pv, PVModelItem.TAG_PV);
             }
             // Load the Formula items

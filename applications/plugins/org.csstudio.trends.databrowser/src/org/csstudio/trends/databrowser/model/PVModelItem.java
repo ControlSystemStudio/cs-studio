@@ -66,19 +66,27 @@ public class PVModelItem
     private RequestType request_type;
     
     /** Constructor
+     *  @param model Model
      *  @param pv_name Name of the PV
+     *  @param live_buffer_size Live sample buffer size
      *  @param axis_index The Y axis to use [0, 1, ...]
      *  @param min,
      *  @param max The Y axis range
+     *  @param visible
+     *  @param auto_scale
      *  @param red,
      *  @param green,
-     *  @param blue The color to use.
+     *  @param blue The color to use
+     *  @param line_width
+     *  @param trace_type
+     *  @param log_scale
+     *  @param request_type
      *  <p>
      *  There is no <code>dispose()</code>,
      *  but the ChartItem must not be running when released.
      *  @see #stop
      */
-    public PVModelItem(Model model, String pv_name, int ring_size,
+    public PVModelItem(Model model, String pv_name, int live_buffer_size,
     		int axis_index, double min, double max,
             boolean visible,
             boolean auto_scale,
@@ -91,7 +99,7 @@ public class PVModelItem
         super(model, pv_name, axis_index, min, max, visible, auto_scale,
               red, green , blue, line_width, trace_type, log_scale);
         pv = createPV(pv_name);
-        samples = new ModelSamples(ring_size);
+        samples = new ModelSamples(live_buffer_size);
         this.request_type = request_type;
     }
 
@@ -253,7 +261,7 @@ public class PVModelItem
     /** @param ring_size The ring_size to set.
      *  @throws Exception on out-of-memory error
      */
-    public final void setRingSize(int ring_size) throws Exception
+    public final void setLiveBufferSize(int ring_size) throws Exception
     {
         samples.setLiveCapacity(ring_size);
     }

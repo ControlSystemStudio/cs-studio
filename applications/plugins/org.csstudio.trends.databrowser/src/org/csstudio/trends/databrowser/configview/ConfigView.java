@@ -819,21 +819,21 @@ public class ConfigView extends PlotAwareView
         }
         double scan_period = model.getScanPeriod();
         double update_period = model.getUpdatePeriod();
-        final int old_ring_size = model.getRingSize();
+        final int old_ring_size = model.getLiveBufferSize();
         int ring_size = old_ring_size;
         try
         {
             scan_period = Double.parseDouble(scan_period_text.getText());
-            if (scan_period < Model.MIN_SCAN_RATE)
+            if (scan_period < Preferences.MIN_SCAN_PERIOD)
             {
-                help.setText(Messages.ScanPeriodMustBeGt + Model.MIN_SCAN_RATE);
+                help.setText(Messages.ScanPeriodMustBeGt + Preferences.MIN_SCAN_PERIOD);
                 return;
             }
 
             update_period = Double.parseDouble(update_period_text.getText());
-            if (update_period < Model.MIN_UPDATE_RATE)
+            if (update_period < Preferences.MIN_UPDATE_PERIOD)
             {
-                help.setText(Messages.UpdatePeriodMustBeGt + Model.MIN_UPDATE_RATE);
+                help.setText(Messages.UpdatePeriodMustBeGt + Preferences.MIN_UPDATE_PERIOD);
                 return;
             }
 
@@ -844,7 +844,7 @@ public class ConfigView extends PlotAwareView
             }
 
             ring_size = Integer.parseInt(ring_size_text.getText());
-            if (ring_size <= 10)
+            if (ring_size <= Preferences.MIN_LIVE_BUFFER_SIZE)
             {
                 help.setText(Messages.RingBufferMinSize);
                 return;
@@ -863,14 +863,14 @@ public class ConfigView extends PlotAwareView
         {
             try
             {
-                model.setRingSize(ring_size);
+                model.setLiveBufferSize(ring_size);
             }
             catch (Exception ex)
             {
                 help.setText(ex.getMessage());
                 try // revert back to previous setting
                 {
-                    model.setRingSize(old_ring_size);
+                    model.setLiveBufferSize(old_ring_size);
                 }
                 catch (Exception another_ex)
                 {
@@ -964,7 +964,7 @@ public class ConfigView extends PlotAwareView
         {
             scan_period_text.setText(Double.toString(model.getScanPeriod()));
             update_period_text.setText(Double.toString(model.getUpdatePeriod()));
-            ring_size_text.setText(Integer.toString(model.getRingSize()));
+            ring_size_text.setText(Integer.toString(model.getLiveBufferSize()));
             // The '+1' is the line that allows entry of new PVs!!
             pv_table_viewer.setItemCount(model.getNumItems() + 1);
             start_specification.setText(model.getStartSpecification());
