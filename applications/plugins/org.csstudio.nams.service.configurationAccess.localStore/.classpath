@@ -2,10 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src-test"/>
-	<classpathentry exported="true" kind="lib" path="lib-hibernate/ant-1.6.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib-hibernate/ant-antlr-1.6.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib-hibernate/ant-junit-1.6.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib-hibernate/ant-launcher-1.6.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/antlr-2.7.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/ant-swing-1.6.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/asm.jar"/>
@@ -31,7 +27,6 @@
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/jboss-system.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/jgroups-2.2.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/jta.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib-hibernate/junit-3.8.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/log4j-1.2.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/oscache-2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib-hibernate/proxool-0.8.3.jar"/>

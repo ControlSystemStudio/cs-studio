@@ -1,6 +1,6 @@
 package org.csstudio.nams.service.configurationaccess.localstore.configurationElements;
 
-public class TopicConfigurationId {
+public final class TopicConfigurationId {
 
 	private final int id;
 
