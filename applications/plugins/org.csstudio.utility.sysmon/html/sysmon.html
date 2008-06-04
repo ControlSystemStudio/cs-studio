@@ -27,11 +27,20 @@ The displayed "max", "total" and "free" memory is obtained from the Java
     Memory that the JVM considers "free".
 </ul>
 
-One guess of the author is that one can consider "max - total + free" the
-actual "available" memory, but the behavior of the JVM's garbage collection
-is very unpredictable: It will sometimes hold on to memory that was freed
-after closing some part of the application, while at other times such
-memory shows up as "free" right away.
+In simple terms of "available" and "used" memory
+one can consider "max - total + free" the available memory,
+but the behavior of the JVM's garbage collection is very unpredictable:
+It will sometimes hold on to memory that was freed after closing some part
+of the application, while at other times such memory shows up as free
+right away.
+
+
+<h2>Manual Garbage Collection</h2>
+Pressing the "GC" button will trigger a garbage collection.
+This could be useful for tests, but in general the garbage collection
+mechanism is best left to the JVM, i.e. there is no need for end users
+to periodically trigger a GC.
+
 
 <h2>Setup</h2>
 All the settings are adjusted via the System Monitor preference page.
