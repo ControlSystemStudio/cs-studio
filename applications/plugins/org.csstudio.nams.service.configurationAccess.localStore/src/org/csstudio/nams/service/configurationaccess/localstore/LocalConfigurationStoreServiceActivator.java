@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 
+import org.csstudio.nams.service.configurationaccess.localstore.configurationElements.TopicDTO;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
@@ -29,11 +30,10 @@ public class LocalConfigurationStoreServiceActivator implements BundleActivator 
 
 	private void initializeHibernate() {
 		AnnotationConfiguration configuration = new AnnotationConfiguration();
-//    	configuration= configuration.addAnnotatedClass(TopicDTO.class);
+    	configuration= configuration.addAnnotatedClass(TopicDTO.class);
     	
     	AnnotationConfiguration configured = configuration.configure();
     	sessionFactory = configured.buildSessionFactory();
-    	
 	}
 
 	public void stop(BundleContext context) throws Exception {
