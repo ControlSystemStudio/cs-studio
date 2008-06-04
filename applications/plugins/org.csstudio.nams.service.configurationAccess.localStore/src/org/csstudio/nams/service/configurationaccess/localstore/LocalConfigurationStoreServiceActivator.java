@@ -24,6 +24,10 @@ public class LocalConfigurationStoreServiceActivator implements BundleActivator 
 
 	public void start(BundleContext context) throws Exception {
 		try {
+			// TODO Extension point auslesen
+			// TODO configuration abfragen
+			// TODO configuration Hibernate mitteilen.
+			
 			initializeHibernate();
 			session = sessionFactory.openSession();
 

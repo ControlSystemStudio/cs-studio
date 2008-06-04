@@ -51,6 +51,13 @@ public interface LocalStoreConfigurationService {
 	public void saveCurrentSyncronizeFlagState(SyncronizeFlagDTO currentState)
 			throws StorageError, StorageException,
 			UnknownConfigurationElementError;
-	
-	
+
+	/*-
+	 * TODO Add a method like:
+	 * Configuration getEntireConfiguration()
+	 *     throws StorageError, StorageException, InconsistentConfiguration;
+	 * 
+	 * Configuration will be a class that contain a consitent set of all
+	 * configuration elements loaded by exactly one transaction.
+	 */
 }
