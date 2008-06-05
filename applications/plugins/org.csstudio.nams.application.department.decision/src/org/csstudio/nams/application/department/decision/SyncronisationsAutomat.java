@@ -16,6 +16,7 @@ public class SyncronisationsAutomat {
 	private static volatile boolean macheweiter;
 	private static Thread workingThread;
 	private static volatile boolean isRunning;
+	private static boolean canceled;
 
 	/**
 	 * Fordert distributor auf die globale Konfiguration in die lokale zu
@@ -38,6 +39,7 @@ public class SyncronisationsAutomat {
 		
 		macheweiter = true;
 		workingThread = Thread.currentThread();
+		canceled = false;
 		isRunning = true;
 		while (macheweiter) {
 			try {
@@ -88,9 +90,14 @@ public class SyncronisationsAutomat {
 		return isRunning;
 	}
 	
+	public static boolean hasBeenCanceled() {
+		return canceled;
+	}
+	
 	public static void cancel() {
 		macheweiter = false;
 		workingThread.interrupt();
+		canceled = true;
 		while( isRunning() ) {
 			Thread.yield();
 		}

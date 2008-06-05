@@ -33,6 +33,7 @@ import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJ
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.csstudio.nams.common.service.ExecutionService;
+import org.csstudio.nams.common.service.StepByStepProcessor;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.logging.declaration.Logger;
@@ -131,18 +132,41 @@ public class DecisionDepartmentActivator implements IApplication,
 
 	private MessagingSession amsMessagingSessionForConsumer;
 
+	/**
+	 * Consumer zum Lesen auf Alarmnachrichten-Quelle.
+	 */
 	private Consumer extAlarmConsumer;
 
+	/**
+	 * Consumer zum Lesen auf externer-Komando-Quelle.
+	 */
 	private Consumer extCommandConsumer;
 
+	/**
+	 * Consumer zum Lesen auf ams-Komando-Quelle.
+	 */
 	private Consumer amsCommandConsumer;
 
+	/**
+	 * Producer zum Senden auf ams-Zielablage (normally Distributor or
+	 * MessageMinder).
+	 */
 	private Producer amsAusgangsProducer;
 
+	/**
+	 * Service to receive configuration-data. Used by
+	 * {@link RegelwerkBuilderService}.
+	 */
 	private static LocalStoreConfigurationService localStoreConfigurationService;
 
+	/**
+	 * MessageSession für externe Quellen und Ziele.
+	 */
 	private MessagingSession extMessagingSessionForConsumer;
 
+	/**
+	 * MessageSession für ams interne Quellen und Ziele.
+	 */
 	private MessagingSession amsMessagingSessionForProducer;
 
 	/**
@@ -152,7 +176,7 @@ public class DecisionDepartmentActivator implements IApplication,
 	 */
 	public void start(BundleContext context) throws Exception {
 
-		// Services holen
+		// Services holen...
 
 		// Logging Service
 		logger = BundleActivatorUtils
@@ -195,7 +219,7 @@ public class DecisionDepartmentActivator implements IApplication,
 					"no LocalStoreConfigurationService service available!");
 
 		// Execution Service
-		// TODO wird noch nicht vollstaendig benutzt!!
+		// TODO wird noch nicht vollstaendig benutzt! Ins Dec-Office einbauen
 		executionService = BundleActivatorUtils.getAvailableService(context,
 				ExecutionService.class);
 		if (executionService == null)
@@ -211,7 +235,7 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * @see BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		logger.logInfoMessage(this, "plugin " + PLUGIN_ID
+		logger.logInfoMessage(this, "Plugin " + PLUGIN_ID
 				+ " stopped succesfully.");
 	}
 
@@ -223,6 +247,7 @@ public class DecisionDepartmentActivator implements IApplication,
 	public Object start(IApplicationContext context) {
 		_receiverThread = Thread.currentThread();
 		AlarmEntscheidungsBuero alarmEntscheidungsBuero = null;
+		StepByStepProcessor ausgangskorbBearbeiter = null;
 		_continueWorking = true;
 
 		logger
@@ -304,48 +329,76 @@ public class DecisionDepartmentActivator implements IApplication,
 					amsAusgangsProducer, amsCommandConsumer,
 					localStoreConfigurationService);
 			// TODO Hier splitten...
+			if (SyncronisationsAutomat.hasBeenCanceled()) {
+				// Abbruch bei Syncrinisation
+				logger
+						.logInfoMessage(
+								this,
+								"Decision department application was interrupted and requested to shut down during synchroisation of configuration.");
+			} else {
+				logger
+						.logInfoMessage(this,
+								"Decision department application is configuring execution service...");
+				initialisiereThredGroupTypes(executionService);
 
-			logger
-					.logInfoMessage(this,
-							"Decision department application is configuring execution service...");
-			initialisiereThredGroupTypes(executionService);
+				logger
+						.logInfoMessage(this,
+								"Decision department application is creating decision office...");
 
-			logger
-					.logInfoMessage(this,
-							"Decision department application is creating decision office...");
+				List<Regelwerk> alleRegelwerke = regelwerkBuilderService
+						.gibAlleRegelwerke();
 
-			List<Regelwerk> alleRegelwerke = regelwerkBuilderService
-					.gibAlleRegelwerke();
-
-			alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
-					alleRegelwerke
-							.toArray(new Regelwerk[alleRegelwerke.size()]));
-
+				alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
+						alleRegelwerke.toArray(new Regelwerk[alleRegelwerke
+								.size()]));
+			}
 		} catch (Throwable e) {
 			logger
 					.logFatalMessage(
 							this,
 							"Exception while initializing the alarm decision department.",
 							e);
-			return IApplication.EXIT_OK;
+			_continueWorking = false;
 		}
 
-		if (!_continueWorking) { // TODO vor den Aufbau des offices.
-			// Abbruch bei Syncrinisation
-			logger
-					.logInfoMessage(this,
-							"Decision department application was interrupted in synchroisation mode.");
-		} else {
+		if (_continueWorking) {
 			logger
 					.logInfoMessage(this,
 							"Decision department application successfully initialized, begining work...");
 
 			// TODO Thread zum auslesen des Ausgangskorbes...
 
-			Ausgangskorb<Vorgangsmappe> vorgangAusgangskorb = alarmEntscheidungsBuero
+			final Ausgangskorb<Vorgangsmappe> vorgangAusgangskorb = alarmEntscheidungsBuero
 					.gibAlarmVorgangAusgangskorb();
-			Eingangskorb<Vorgangsmappe> vorgangEingangskorb = alarmEntscheidungsBuero
+			final Eingangskorb<Vorgangsmappe> vorgangEingangskorb = alarmEntscheidungsBuero
 					.gibAlarmVorgangEingangskorb();
+
+			// Ausgangskoerbe nebenläufig abfragen
+			ausgangskorbBearbeiter = new StepByStepProcessor() {
+				@Override
+				protected void doRunOneSingleStep() throws Throwable {
+					// Vorgangsmappe vorgangZumSenden = vorgangAusgangskorb.???
+					// TODO Sende Vorgangsmappe.... (Ausgangskorb erweitern eine
+					// entnehme-Operation zu haben).
+					// TODO Besser: Decission Office erhält einen "Ausgangskorb"
+					// der in Wirklichkeit ein StandardAblagekorb ist
+					// der selber auch ein Eingangskorb ist und so kann der
+					// DokumentVerbraucher korrekt darauf arbeiten...
+					// new DokumentVerbraucherArbeiter<Vorgangsmappe>(new
+					// DokumentenBearbeiter<Vorgangsmappe>() {
+					//
+					// public void bearbeiteVorgang(
+					// Vorgangsmappe entnehmeAeltestenEingang)
+					// throws InterruptedException {
+					// // TODO mache was mit
+					//					
+					// }
+					//				
+					// },
+					// vorgangAusgangskorb);
+				}
+			};
+			// ausgangskorbBearbeiter.runAsynchronous();
 
 			// start receiving Messages, runs while _continueWorking is true.
 			receiveMessagesUntilApplicationQuits(vorgangEingangskorb);
@@ -357,9 +410,14 @@ public class DecisionDepartmentActivator implements IApplication,
 			alarmEntscheidungsBuero
 					.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
 		}
-		
-		// TODO warte auf Thread für ausgangskorb
 
+		// Warte auf Thread für Ausgangskorb-Bearbeitung
+		if (ausgangskorbBearbeiter != null
+				&& ausgangskorbBearbeiter.isCurrentlyRunning()) {
+			ausgangskorbBearbeiter.stopWorking();
+		}
+
+		// Alle Verbindungen schließen
 		amsAusgangsProducer.close();
 		amsCommandConsumer.close();
 		amsMessagingSessionForConsumer.close();
@@ -394,9 +452,16 @@ public class DecisionDepartmentActivator implements IApplication,
 						new ThreadGroup(
 								AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.HANDLER_THREAD
 										.name()));
-		// TODO here more...
+		// TODO Register remaining types!
 	}
 
+	/**
+	 * This method is receiving Messages and handle them. It will block until
+	 * _continueWorking get false.
+	 * 
+	 * @param eingangskorb
+	 *            Der {@link Eingangskorb} to read on.
+	 */
 	private void receiveMessagesUntilApplicationQuits(
 			final Eingangskorb<Vorgangsmappe> eingangskorb) {
 
@@ -410,10 +475,18 @@ public class DecisionDepartmentActivator implements IApplication,
 				if (message.enthaeltAlarmnachricht()) {
 					try {
 						eingangskorb.ablegen(new Vorgangsmappe(
-								Vorgangsmappenkennung.createNew(InetAddress
-										.getLocalHost(), /**
+								Vorgangsmappenkennung.createNew(/**
+																 * TODO Host
+																 * Service statt
+																 * new
+																 * InetAddress()
+																 * .getLocalHost
+																 * benutzen
+																 */
+								InetAddress.getLocalHost(), /**
 															 * TODO Calender
-															 * Service benutzen
+															 * Service statt new
+															 * Date() benutzen
 															 */
 								new Date()), message.alsAlarmnachricht()));
 					} catch (UnknownHostException e) {
