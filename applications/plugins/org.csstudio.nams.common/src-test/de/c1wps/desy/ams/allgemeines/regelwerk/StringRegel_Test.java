@@ -3,8 +3,8 @@ package de.c1wps.desy.ams.allgemeines.regelwerk;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.AlarmNachricht;
-import org.csstudio.nams.common.material.AlarmNachrichtEnum;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
 import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
@@ -82,194 +82,194 @@ public class StringRegel_Test extends
 	public void testNumeric() throws Throwable {
 
 		// equal StringRegel - true
-		StringRegel sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_EQUAL, AlarmNachrichtEnum.AMS_REINSERTED.toString(), "5");
+		StringRegel sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_EQUAL, MessageKeyEnum.AMS_REINSERTED, "5");
 		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel);
-		Map<String, String> map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.AMS_REINSERTED.toString(), "5");
+		Map<MessageKeyEnum, String> map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.AMS_REINSERTED, "5");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// equal StringRegel - non true - greater
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_EQUAL, AlarmNachrichtEnum.AMS_REINSERTED.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_EQUAL, MessageKeyEnum.AMS_REINSERTED, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.AMS_REINSERTED.toString(), "6");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.AMS_REINSERTED, "6");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// equal StringRegel - non true - smaller
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_EQUAL, AlarmNachrichtEnum.AMS_REINSERTED.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_EQUAL, MessageKeyEnum.AMS_REINSERTED, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.AMS_REINSERTED.toString(), "4");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.AMS_REINSERTED, "4");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// gt StringRegel - true 
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT, AlarmNachrichtEnum.APPLICATION_ID.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT, MessageKeyEnum.APPLICATION_ID, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.APPLICATION_ID.toString(), "6");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.APPLICATION_ID, "6");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 
 		// gt StringRegel - non true - equal
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT, AlarmNachrichtEnum.APPLICATION_ID.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT, MessageKeyEnum.APPLICATION_ID, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.APPLICATION_ID.toString(), "5");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.APPLICATION_ID, "5");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// gt StringRegel - non true - smaller
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT, AlarmNachrichtEnum.APPLICATION_ID.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT, MessageKeyEnum.APPLICATION_ID, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.APPLICATION_ID.toString(), "4");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.APPLICATION_ID, "4");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// gtEqual StringRegel - true - greater
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT_EQUAL, AlarmNachrichtEnum.CLASS.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT_EQUAL, MessageKeyEnum.CLASS, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.CLASS.toString(), "6");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.CLASS, "6");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 
 		// gtEqual StringRegel - true - slightly greater
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT_EQUAL, AlarmNachrichtEnum.CLASS.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT_EQUAL, MessageKeyEnum.CLASS, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.CLASS.toString(), "5.001");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.CLASS, "5.001");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// gtEqual StringRegel - true - equal
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT_EQUAL, AlarmNachrichtEnum.CLASS.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT_EQUAL, MessageKeyEnum.CLASS, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.CLASS.toString(), "5");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.CLASS, "5");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// gtEqual StringRegel - not true - smaller
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT_EQUAL, AlarmNachrichtEnum.CLASS.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT_EQUAL, MessageKeyEnum.CLASS, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.CLASS.toString(), "4");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.CLASS, "4");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// lt StringRegel - not true - greater
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT, AlarmNachrichtEnum.DESTINATION.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT, MessageKeyEnum.DESTINATION, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.DESTINATION.toString(), "6");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.DESTINATION, "6");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 
 		// lt StringRegel - not true - equal
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT, AlarmNachrichtEnum.DESTINATION.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT, MessageKeyEnum.DESTINATION, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.DESTINATION.toString(), "5");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.DESTINATION, "5");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 
 		// lt StringRegel - true - slightly smaller
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT, AlarmNachrichtEnum.DESTINATION.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT, MessageKeyEnum.DESTINATION, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.DESTINATION.toString(), "4.999");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.DESTINATION, "4.999");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// lt StringRegel - true - smaller
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT, AlarmNachrichtEnum.DESTINATION.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT, MessageKeyEnum.DESTINATION, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.DESTINATION.toString(), "4");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.DESTINATION, "4");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// ltEqual StringRegel - not true - greater
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT_EQUAL, AlarmNachrichtEnum.DOMAIN.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT_EQUAL, MessageKeyEnum.DOMAIN, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.DOMAIN.toString(), "6");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.DOMAIN, "6");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 
 		// ltEqual StringRegel - true - equal
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT_EQUAL, AlarmNachrichtEnum.DOMAIN.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT_EQUAL, MessageKeyEnum.DOMAIN, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.DOMAIN.toString(), "5");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.DOMAIN, "5");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 
 		// ltEqual StringRegel - true - slightly smaller
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT_EQUAL, AlarmNachrichtEnum.DOMAIN.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT_EQUAL, MessageKeyEnum.DOMAIN, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.DOMAIN.toString(), "4.999");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.DOMAIN, "4.999");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 
 		// ltEqual StringRegel - not true - slightly greater
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT_EQUAL, AlarmNachrichtEnum.DOMAIN.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT_EQUAL, MessageKeyEnum.DOMAIN, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.DOMAIN.toString(), "5.001");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.DOMAIN, "5.001");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// ltEqual StringRegel - true - smaller
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT_EQUAL, AlarmNachrichtEnum.DOMAIN.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_LT_EQUAL, MessageKeyEnum.DOMAIN, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.DOMAIN.toString(), "4");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.DOMAIN, "4");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// not Equal StringRegel - true - greater
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_NOT_EQUAL, AlarmNachrichtEnum.EVENTTIME.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_NOT_EQUAL, MessageKeyEnum.EVENTTIME, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.EVENTTIME.toString(), "6");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.EVENTTIME, "6");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 
 		// not Equal StringRegel - not true - equal
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_NOT_EQUAL, AlarmNachrichtEnum.EVENTTIME.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_NOT_EQUAL, MessageKeyEnum.EVENTTIME, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.EVENTTIME.toString(), "5");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.EVENTTIME, "5");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 
 		// not Equal StringRegel - true - slightly smaller
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_NOT_EQUAL, AlarmNachrichtEnum.EVENTTIME.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_NOT_EQUAL, MessageKeyEnum.EVENTTIME, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.EVENTTIME.toString(), "4.999");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.EVENTTIME, "4.999");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 
 		// not Equal StringRegel - true - slightly greater
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_NOT_EQUAL, AlarmNachrichtEnum.EVENTTIME.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_NOT_EQUAL, MessageKeyEnum.EVENTTIME, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.EVENTTIME.toString(), "5.001");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.EVENTTIME, "5.001");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// not Equal StringRegel - true - smaller
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_NOT_EQUAL, AlarmNachrichtEnum.EVENTTIME.toString(), "5");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_NOT_EQUAL, MessageKeyEnum.EVENTTIME, "5");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel); 
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.EVENTTIME.toString(), "4");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.EVENTTIME, "4");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 	}
@@ -277,34 +277,34 @@ public class StringRegel_Test extends
 	@Test
 	public void testText() throws Throwable {
 		// equal StringRegel - true
-		StringRegel sRegel = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, AlarmNachrichtEnum.FACILITY.toString(), "Some Test-Text");
+		StringRegel sRegel = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, MessageKeyEnum.FACILITY, "Some Test-Text");
 		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel);
-		Map<String, String> map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.FACILITY.toString(), "Some Test-Text");
+		Map<MessageKeyEnum, String> map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.FACILITY, "Some Test-Text");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// equal StringRegel - not true
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, AlarmNachrichtEnum.FACILITY.toString(), "Some Test-Text");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, MessageKeyEnum.FACILITY, "Some Test-Text");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel);
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.FACILITY.toString(), "Some Test-Text2");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.FACILITY, "Some Test-Text2");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// not equal StringRegel - true
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TEXT_NOT_EQUAL, AlarmNachrichtEnum.HOST.toString(), "Some Test-Text");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TEXT_NOT_EQUAL, MessageKeyEnum.HOST, "Some Test-Text");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel);
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.HOST.toString(), "Some Test-Text2");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.HOST, "Some Test-Text2");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// not equal StringRegel - not true
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TEXT_NOT_EQUAL, AlarmNachrichtEnum.HOST.toString(), "Some Test-Text");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TEXT_NOT_EQUAL, MessageKeyEnum.HOST, "Some Test-Text");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel);
-		map = new HashMap<String, String>();
-		map.put(AlarmNachrichtEnum.HOST.toString(), "Some Test-Text");
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.HOST, "Some Test-Text");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 	}
@@ -312,134 +312,134 @@ public class StringRegel_Test extends
 	@Test
 	public void testTime() throws Throwable {
 		// timeAfter StringRegel
-		StringRegel sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_AFTER, AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		StringRegel sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_AFTER, MessageKeyEnum.LOCATION, "5/26/2008");
 		Pruefliste pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel);
-		Map<String, String> map = new HashMap<String, String>();
+		Map<MessageKeyEnum, String> map = new HashMap<MessageKeyEnum, String>();
 		
 		// one day later
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/27/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/27/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 				
 		// same day
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/26/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// one day before
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/25/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/25/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		
 		// timeAfterEqual StringRegel
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_AFTER_EQUAL, AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_AFTER_EQUAL, MessageKeyEnum.LOCATION, "5/26/2008");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel);
-		map = new HashMap<String, String>();
+		map = new HashMap<MessageKeyEnum, String>();
 		
 		// one day later
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/27/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/27/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 				
 		// same day
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/26/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// one day before
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/25/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/25/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		
 		// timeBefore StringRegel
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_BEFORE, AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_BEFORE, MessageKeyEnum.LOCATION, "5/26/2008");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel);
-		map = new HashMap<String, String>();
+		map = new HashMap<MessageKeyEnum, String>();
 		
 		// one day later
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/27/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/27/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 				
 		// same day
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/26/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// one day before
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/25/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/25/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		
 		// timeBeforeEqual StringRegel
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_BEFORE_EQUAL, AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_BEFORE_EQUAL, MessageKeyEnum.LOCATION, "5/26/2008");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel);
-		map = new HashMap<String, String>();
+		map = new HashMap<MessageKeyEnum, String>();
 		
 		// one day later
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/27/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/27/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 				
 		// same day
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/26/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// one day before
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/25/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/25/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		
 		// equal StringRegel
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_EQUAL, AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_EQUAL, MessageKeyEnum.LOCATION, "5/26/2008");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel);
-		map = new HashMap<String, String>();
+		map = new HashMap<MessageKeyEnum, String>();
 		
 		// one day later
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/27/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/27/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 				
 		// same day
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/26/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// one day before
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/25/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/25/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		
 		// timeAfterEqual StringRegel
-		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_NOT_EQUAL, AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		sRegel = new StringRegel(StringRegelOperator.OPERATOR_TIME_NOT_EQUAL, MessageKeyEnum.LOCATION, "5/26/2008");
 		pListe = new Pruefliste(Regelwerkskennung.valueOf("Test1"),sRegel);
-		map = new HashMap<String, String>();
+		map = new HashMap<MessageKeyEnum, String>();
 		
 		// one day later
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/27/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/27/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 				
 		// same day
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/26/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/26/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.NICHT_ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 		
 		// one day before
-		map.put(AlarmNachrichtEnum.LOCATION.toString(), "5/25/2008");
+		map.put(MessageKeyEnum.LOCATION, "5/25/2008");
 		sRegel.pruefeNachrichtErstmalig(new AlarmNachricht(map), pListe);
 		assertEquals(RegelErgebnis.ZUTREFFEND, pListe.gibErgebnisFuerRegel(sRegel));
 	}
 	
 	@Override
 	protected StringRegel getNewInstanceOfClassUnderTest() {
-		return new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_EQUAL, "egal", "5");
+		return new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_EQUAL, MessageKeyEnum.AMS_REINSERTED, "5");
 	}
 
 	@Override
@@ -450,9 +450,9 @@ public class StringRegel_Test extends
 	@Override
 	protected StringRegel[] getThreeDiffrentNewInstanceOfClassUnderTest() {
 		StringRegel[] regels = new StringRegel[3];
-		regels[0] = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_EQUAL, "egal", "5");
-		regels[1] = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT_EQUAL, "egal1", "6");
-		regels[2] = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, "egal2", "7");
+		regels[0] = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_EQUAL, MessageKeyEnum.APPLICATION_ID, "5");
+		regels[1] = new StringRegel(StringRegelOperator.OPERATOR_NUMERIC_GT_EQUAL, MessageKeyEnum.CLASS, "6");
+		regels[2] = new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, MessageKeyEnum.DESTINATION, "7");
 		
 		return regels;
 	}

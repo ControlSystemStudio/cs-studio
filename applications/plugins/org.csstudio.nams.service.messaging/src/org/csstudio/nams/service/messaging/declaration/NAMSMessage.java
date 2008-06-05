@@ -1,7 +1,5 @@
 package org.csstudio.nams.service.messaging.declaration;
 
-import java.util.Map;
-
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
@@ -25,9 +23,6 @@ public interface NAMSMessage {
 
 	public SystemNachricht alsSystemachricht();
 	
-	@Deprecated
-	public Map<String, String> alsMap();
-
 	public String toString();
 
 	/**

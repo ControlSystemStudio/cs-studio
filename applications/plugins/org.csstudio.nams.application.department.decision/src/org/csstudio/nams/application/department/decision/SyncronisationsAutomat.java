@@ -20,9 +20,11 @@ public class SyncronisationsAutomat {
 	 * vor der ausführung dieser Operation keine Zugriffe auf die lokale DB
 	 * erfolgen.
 	 * @throws MessagingException 
+	 * 
+	 * FIXME Database-Flags setzen mit LocalStoreConfigurationServie (TEST!!).
 	 */
 	public static void syncronisationUeberDistributorAusfueren(
-			Producer producer, Consumer consumer) throws MessagingException {
+			Producer producer, Consumer consumer /*TODO Add LSCS*/) throws MessagingException {
 		
 		
 		
@@ -43,6 +45,8 @@ public class SyncronisationsAutomat {
 					// TODO keine systemnachricht behandeln 
 					System.out.println("falsche nachricht");
 				}
+				// TODO Klären: Alle Arten von Nachrichten acknowledgen?
+				receiveMessage.acknowledge();
 			} catch (MessagingException e) {
 				throw new MessagingException(e);
 			}

@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.service.logging.declaration.Logger;
@@ -20,13 +21,13 @@ public class StringRegel implements VersandRegel {
 
 	private final StringRegelOperator operator;
 	private final String compareString;
-	private final String narichtKey;
+	private final MessageKeyEnum messageKey;
 	private static Logger logger;
 
-	public StringRegel(StringRegelOperator operator, String narichtKey,
+	public StringRegel(StringRegelOperator operator, MessageKeyEnum messageKey,
 			String compareString) {
 		this.operator = operator;
-		this.narichtKey = narichtKey;
+		this.messageKey = messageKey;
 		this.compareString = compareString;
 	}
 
@@ -66,7 +67,7 @@ public class StringRegel implements VersandRegel {
 		boolean istGueltig = false;
 		
 		// TODO hier muss noch der richtige Schlüssel gewählt werden
-		String value = nachricht.getValueFor(narichtKey);
+		String value = nachricht.getValueFor(messageKey);
 
 		try {
 			switch (operator) {

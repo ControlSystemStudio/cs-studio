@@ -13,6 +13,7 @@ import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionA
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionProcessVariableTObject;
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionStringTObject;
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionTimeBasedTObject;
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
@@ -83,8 +84,12 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 							IdType.STRING_FILTER_CONDITION),
 							FilterConditionStringTObject.class);
 			return new StringRegel(StringRegelOperator.valueOf(stringCondition
-					.getOperator()), stringCondition.getKeyValue(),
+					.getOperator()), MessageKeyEnum.valueOf(stringCondition.getKeyValue()),
 					stringCondition.getCompValue());
+			// FIXME DTO Use real MessageKeyEnum for MessageKey instead of .valueOf(stringCondition.getKeyValue()).
+//			return new StringRegel(StringRegelOperator.valueOf(stringCondition
+//					.getOperator()), stringCondition.getKeyValue(),
+//					stringCondition.getCompValue());
 		}
 		case TIMEBASED: {
 			FilterConditionTimeBasedTObject timeBasedCondition = confStoreService
@@ -94,12 +99,14 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 							FilterConditionTimeBasedTObject.class);
 			VersandRegel startRegel = new StringRegel(StringRegelOperator
 					.valueOf(timeBasedCondition.getStartOperator()),
-					timeBasedCondition.getStartKeyValue(), timeBasedCondition
+					// FIXME DTO Use real MessageKeyEnum for MessageKey instead of .valueOf(timeBasedCondition.getStartKeyValue()).
+					MessageKeyEnum.valueOf(timeBasedCondition.getStartKeyValue()), timeBasedCondition
 							.getStartCompValue());
 			VersandRegel confirmCancelRegel = new StringRegel(
 					StringRegelOperator.valueOf(timeBasedCondition
-							.getConfirmOperator()), timeBasedCondition
-							.getConfirmKeyValue(), timeBasedCondition
+							.getConfirmOperator()), MessageKeyEnum.valueOf(timeBasedCondition
+							// FIXME DTO Use real MessageKeyEnum for MessageKey instead of .valueOf(timeBasedCondition..getConfirmKeyValue()).
+							.getConfirmKeyValue()), timeBasedCondition
 							.getConfirmCompValue());
 
 			Millisekunden delayUntilAlarm = Millisekunden

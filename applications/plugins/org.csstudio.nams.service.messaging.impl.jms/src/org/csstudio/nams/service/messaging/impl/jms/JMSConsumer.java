@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -12,12 +13,17 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
 
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
+import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
+import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage.AcknowledgeHandler;
+import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
 class JMSConsumer implements Consumer {
 
@@ -26,7 +32,8 @@ class JMSConsumer implements Consumer {
 	private LinkedBlockingQueue<Message> messageQueue;
 	private Logger logger;
 
-	public JMSConsumer(String clientId, String messageSourceName, PostfachArt art, Session[] sessions) throws JMSException {
+	public JMSConsumer(String clientId, String messageSourceName,
+			PostfachArt art, Session[] sessions) throws JMSException {
 
 		logger = JMSActivator.getLogger();
 		// Schaufeln in BlockingQueue : Maximum size auf 1,
@@ -36,10 +43,11 @@ class JMSConsumer implements Consumer {
 		messageQueue = new LinkedBlockingQueue<Message>(1);
 
 		workers = new WorkThread[sessions.length];
-		
+
 		try {
 			for (int i = 0; i < sessions.length; i++) {
-				workers[i] = new WorkThread(messageQueue, sessions[i], messageSourceName, clientId, art, logger);
+				workers[i] = new WorkThread(messageQueue, sessions[i],
+						messageSourceName, clientId, art, logger);
 				workers[i].start();
 			}
 		} catch (JMSException e) {
@@ -62,43 +70,63 @@ class JMSConsumer implements Consumer {
 		return isClosed;
 	}
 
-	public NAMSMessage receiveMessage() {
-		NAMSMessageJMSImpl namsMessage = null;
+	public NAMSMessage receiveMessage() throws MessagingException {
+		NAMSMessage result = null;
 		try {
+			// TODO Überlegen, ob zwischenpuffern hier sinnhaft.
 			Message message = messageQueue.take();
 
 			if (message instanceof MapMessage) {
 				final MapMessage mapMessage = (MapMessage) message;
-				//Map<K, V>
-				Enumeration mapNames = mapMessage.getMapNames();
+				Map<MessageKeyEnum, String> map = new HashMap<MessageKeyEnum, String>();
+				Enumeration<?> mapNames = mapMessage.getMapNames();
 				while (mapNames.hasMoreElements()) {
-					
+					String currentElement = mapNames.nextElement().toString();
+					MessageKeyEnum messageKeyEnum = MessageKeyConverter
+							.getEnumKeyFor(currentElement);
+					if (messageKeyEnum != null) {
+						String value = mapMessage.getString(currentElement);
+						if (value == null) {
+							value = "";
+						}
+						map.put(messageKeyEnum, value);
+					}
 				}
-				new DefaultNAMSMessage(null, new AcknowledgeHandler() {
+
+				
+				AcknowledgeHandler ackHandler = new AcknowledgeHandler() {
 					public void acknowledge() throws Throwable {
 						mapMessage.acknowledge();
 					}
-				});
-				
+				};
+
+				if (MessageKeyConverter.istSynchronisationAuforderung(map)) {
+					result = new DefaultNAMSMessage(
+							new SyncronisationsAufforderungsSystemNachchricht(),
+							ackHandler);
+				} else if (MessageKeyConverter.istSynchronisationBestaetigung(map)) {
+					result = new DefaultNAMSMessage(
+							new SyncronisationsBestaetigungSystemNachricht(),
+							ackHandler);
+				} else {
+					// Alarmnachricht
+					result = new DefaultNAMSMessage(new AlarmNachricht(map),
+							ackHandler);
+				}
 			} else {
-				logger.logWarningMessage(this, "unknown Message type received: " + message.toString());
+				logger.logWarningMessage(this,
+						"unknown Message type received: " + message.toString());
 			}
-			
-			// FIXME das sollte erst später gemacht werden.
-			// am besten erst wenn die Nachricht fertig bearbeitet
-			// und im ausgangs Korb liegt
-			namsMessage = new NAMSMessageJMSImpl(message);
 		} catch (InterruptedException e) {
-			// TODO exception handling
-			// wird von messageQueue.take() geworfen
-			// e.printStackTrace();
+			throw new MessagingException("message receiving interrupted", e);
 		} catch (JMSException e) {
-			// TODO wird vom message.acknowledge() geworfen.
-			// fliegt hier eh noch raus
-			e.printStackTrace();
+			throw new MessagingException("message receiving failed", e);
 		}
-		return namsMessage;
+		return result;
 	}
+
+	
+	
 
 	private static class WorkThread extends Thread {
 		private final LinkedBlockingQueue<Message> messageQueue;
@@ -107,8 +135,8 @@ class JMSConsumer implements Consumer {
 		private final Logger logger;
 
 		public WorkThread(LinkedBlockingQueue<Message> messageQueue,
-				Session session, String source, String clientId, PostfachArt art, Logger logger)
-				throws JMSException {
+				Session session, String source, String clientId,
+				PostfachArt art, Logger logger) throws JMSException {
 			this.messageQueue = messageQueue;
 			this.logger = logger;
 
@@ -121,7 +149,8 @@ class JMSConsumer implements Consumer {
 			case TOPIC:
 				Topic topic = session.createTopic(source);
 				// TODO ist durableSubscriber ok?
-				consumer = session.createDurableSubscriber(topic, clientId+"-"+topic.getTopicName());
+				consumer = session.createDurableSubscriber(topic, clientId
+						+ "-" + topic.getTopicName());
 
 				break;
 			default:
@@ -134,9 +163,10 @@ class JMSConsumer implements Consumer {
 			arbeitFortsetzen = false;
 			try {
 				consumer.close();
-			} catch (JMSException e) {}
+			} catch (JMSException e) {
+			}
 			this.interrupt(); // Keine Sorge, unbehandelte Nachricht wird
-								// nicht acknowledged und kommt daher wieder.
+			// nicht acknowledged und kommt daher wieder.
 			logger.logDebugMessage(this, "Consumer WorkThread stoped");
 		}
 

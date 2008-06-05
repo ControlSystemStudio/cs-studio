@@ -1,11 +1,14 @@
 package org.csstudio.nams.service.messaging.declaration;
 
 
+
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
+import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
@@ -31,9 +34,7 @@ public class DefaultNAMSMessage_Test {
 	@Test
 	public void testStdImplementation() {
 		// Bestaetigungsnachricht erstellen
-		Map<String, String> map = new HashMap<String, String>();
-		map.put(DefaultNAMSMessage.MSGPROP_COMMAND, DefaultNAMSMessage.MSGVALUE_TCMD_RELOAD_CFG_END);
-		NAMSMessage msg = new DefaultNAMSMessage(map, new AcknowledgeHandler() {
+		NAMSMessage msg = new DefaultNAMSMessage(new SyncronisationsBestaetigungSystemNachricht(), new AcknowledgeHandler() {
 			public void acknowledge() throws Throwable {
 				acknowledged = true;
 			}
@@ -46,9 +47,7 @@ public class DefaultNAMSMessage_Test {
 		Assert.assertFalse(systemNachricht.istSyncronisationsAufforderung());
 		
 		// Aufforderungsnachricht erstellen
-		map = new HashMap<String, String>();
-		map.put(DefaultNAMSMessage.MSGPROP_COMMAND, DefaultNAMSMessage.MSGVALUE_TCMD_RELOAD_CFG_START);
-		msg = new DefaultNAMSMessage(map, new AcknowledgeHandler() {
+		msg = new DefaultNAMSMessage(new SyncronisationsAufforderungsSystemNachchricht(), new AcknowledgeHandler() {
 			public void acknowledge() throws Throwable {
 				acknowledged = true;
 			}

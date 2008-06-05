@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.nams.common.contract.Contract;
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.wam.Material;
 
 
@@ -39,7 +40,7 @@ import org.csstudio.nams.common.wam.Material;
 public class AlarmNachricht implements Cloneable {
 	private String nachricht;
 	private Date zeitFuerToString;
-	private final Map<String, String> map;
+	private final Map<MessageKeyEnum, String> map;
 	
 	@Deprecated
 	public AlarmNachricht(String nachricht) {
@@ -47,16 +48,16 @@ public class AlarmNachricht implements Cloneable {
 		this.nachricht = nachricht;
 		this.zeitFuerToString = new Date(); // TODO Entfernen!
 		
-		this.map = new HashMap<String, String>();
+		this.map = new HashMap<MessageKeyEnum, String>();
 
 		// TODO Auto-generated constructor stub
 	}
 
-	public AlarmNachricht(Map<String, String> map) {
+	public AlarmNachricht(Map<MessageKeyEnum, String> map) {
 		this.map = map;
 	}
 
-	public String getValueFor(String key){
+	public String getValueFor(MessageKeyEnum key){
 		String result = "";
 		if(map.containsKey(key)){
 			result = map.get(key);
