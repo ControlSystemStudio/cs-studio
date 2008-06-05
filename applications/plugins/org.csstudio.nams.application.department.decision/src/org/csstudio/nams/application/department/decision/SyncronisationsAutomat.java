@@ -13,6 +13,10 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
  */
 public class SyncronisationsAutomat {
 	
+	private static volatile boolean macheweiter;
+	private static Thread workingThread;
+	private static volatile boolean isRunning;
+
 	/**
 	 * Fordert distributor auf die globale Konfiguration in die lokale zu
 	 * uebertragen. Die Zugangsdaten zu den Datenbanken kennt der distributor
@@ -32,7 +36,9 @@ public class SyncronisationsAutomat {
 		
 		producer.sendeSystemnachricht(new SyncronisationsAufforderungsSystemNachchricht());
 		
-		boolean macheweiter = true;
+		macheweiter = true;
+		workingThread = Thread.currentThread();
+		isRunning = true;
 		while (macheweiter) {
 			try {
 				NAMSMessage receiveMessage = consumer.receiveMessage();
@@ -53,6 +59,7 @@ public class SyncronisationsAutomat {
 				throw new MessagingException(e);
 			}
 		}
+		isRunning = false;
 		
 //		// MapMessage mapMsg = amsSenderSession.createMapMessage();
 //		MapMessage mapMsg = amsPublisherDist2.createMapMessage();
@@ -75,6 +82,18 @@ public class SyncronisationsAutomat {
 //			// needed
 //		}
 		
+	}
+	
+	public static boolean isRunning() {
+		return isRunning;
+	}
+	
+	public static void cancel() {
+		macheweiter = false;
+		workingThread.interrupt();
+		while( isRunning() ) {
+			Thread.yield();
+		}
 	}
 
 }

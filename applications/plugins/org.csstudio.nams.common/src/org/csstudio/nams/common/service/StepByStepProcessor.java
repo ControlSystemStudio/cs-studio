@@ -69,5 +69,9 @@ public abstract class StepByStepProcessor implements Runnable {
 	public final void stopWorking() throws SecurityException {
 		this.continueRunning = false;
 		this.executionThread.interrupt();
+		while( isCurrentlyRunning() )
+		{
+			Thread.yield();
+		}
 	}
 }

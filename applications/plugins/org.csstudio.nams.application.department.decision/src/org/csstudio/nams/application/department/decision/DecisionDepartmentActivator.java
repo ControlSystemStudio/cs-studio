@@ -187,10 +187,13 @@ public class DecisionDepartmentActivator implements IApplication,
 			throw new RuntimeException("no history service available!");
 
 		// LocalStoreConfigurationService
-		localStoreConfigurationService = BundleActivatorUtils.getAvailableService(context, LocalStoreConfigurationService.class);
+		localStoreConfigurationService = BundleActivatorUtils
+				.getAvailableService(context,
+						LocalStoreConfigurationService.class);
 		if (localStoreConfigurationService == null)
-			throw new RuntimeException("no LocalStoreConfigurationService service available!");
-		
+			throw new RuntimeException(
+					"no LocalStoreConfigurationService service available!");
+
 		// Execution Service
 		// TODO wird noch nicht vollstaendig benutzt!!
 		executionService = BundleActivatorUtils.getAvailableService(context,
@@ -220,7 +223,8 @@ public class DecisionDepartmentActivator implements IApplication,
 	public Object start(IApplicationContext context) {
 		_receiverThread = Thread.currentThread();
 		AlarmEntscheidungsBuero alarmEntscheidungsBuero = null;
-		
+		_continueWorking = true;
+
 		logger
 				.logInfoMessage(this,
 						"Decision department application is going to be initialized...");
@@ -233,33 +237,28 @@ public class DecisionDepartmentActivator implements IApplication,
 
 			// Properties properties = initProperties();
 
+			// TODO clientid!! gegebenenfalls aus preferencestore holen
 			logger.logInfoMessage(this,
 					"Decision department application is creating consumers...");
+
 			amsMessagingSessionForConsumer = messagingService
 					.createNewMessagingSession(
 							"amsConsumer",
 							new String[] {
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1)
-//											,
-//									preferenceService
-//											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) 
-											});
-			// TODO clientid!!
+											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1),
+									preferenceService
+											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) });
+			// TODO clientid!! gegebenenfalls aus preferencestore holen
 			extMessagingSessionForConsumer = messagingService
 					.createNewMessagingSession(
 							"extConsumer",
 							new String[] {
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1)
-//											,
-//									preferenceService
-//											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) 
-											});
+											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1),
+									preferenceService
+											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) });
 
-//			System.out.println("P_JMS_EXT_TOPIC_ALARM "+preferenceService
-//									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM));
-			
 			extAlarmConsumer = extMessagingSessionForConsumer
 					.createConsumer(
 							preferenceService
@@ -285,9 +284,6 @@ public class DecisionDepartmentActivator implements IApplication,
 							new String[] { preferenceService
 									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL) });
 
-			System.out.println("P_JMS_AMS_TOPIC_MESSAGEMINDER "+preferenceService
-									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER));
-			
 			amsAusgangsProducer = amsMessagingSessionForProducer
 					.createProducer(
 							preferenceService
@@ -305,14 +301,14 @@ public class DecisionDepartmentActivator implements IApplication,
 							this,
 							"Decision department application orders distributor to synchronize configuration...");
 			SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(
-					amsAusgangsProducer, amsCommandConsumer, localStoreConfigurationService);
+					amsAusgangsProducer, amsCommandConsumer,
+					localStoreConfigurationService);
+			// TODO Hier splitten...
 
 			logger
 					.logInfoMessage(this,
 							"Decision department application is configuring execution service...");
 			initialisiereThredGroupTypes(executionService);
-
-			// TODO
 
 			logger
 					.logInfoMessage(this,
@@ -325,7 +321,7 @@ public class DecisionDepartmentActivator implements IApplication,
 					alleRegelwerke
 							.toArray(new Regelwerk[alleRegelwerke.size()]));
 
-		} catch (Exception e) { // TODO noch eine andere Exception wählen
+		} catch (Throwable e) {
 			logger
 					.logFatalMessage(
 							this,
@@ -334,28 +330,43 @@ public class DecisionDepartmentActivator implements IApplication,
 			return IApplication.EXIT_OK;
 		}
 
-		_continueWorking = true;
-		logger
-				.logInfoMessage(this,
-						"Decision department application successfully initialized, begining work...");
+		if (!_continueWorking) { // TODO vor den Aufbau des offices.
+			// Abbruch bei Syncrinisation
+			logger
+					.logInfoMessage(this,
+							"Decision department application was interrupted in synchroisation mode.");
+		} else {
+			logger
+					.logInfoMessage(this,
+							"Decision department application successfully initialized, begining work...");
 
-		// TODO Thread zum auslesen des Ausgangskorbes...
+			// TODO Thread zum auslesen des Ausgangskorbes...
 
-		Ausgangskorb<Vorgangsmappe> vorgangAusgangskorb = alarmEntscheidungsBuero
-				.gibAlarmVorgangAusgangskorb();
-		Eingangskorb<Vorgangsmappe> vorgangEingangskorb = alarmEntscheidungsBuero
-				.gibAlarmVorgangEingangskorb();
+			Ausgangskorb<Vorgangsmappe> vorgangAusgangskorb = alarmEntscheidungsBuero
+					.gibAlarmVorgangAusgangskorb();
+			Eingangskorb<Vorgangsmappe> vorgangEingangskorb = alarmEntscheidungsBuero
+					.gibAlarmVorgangEingangskorb();
 
-		// start receiving Messages, runs while _continueWorking is true.
-		receiveMessagesUntilApplicationQuits(vorgangEingangskorb);
-
+			// start receiving Messages, runs while _continueWorking is true.
+			receiveMessagesUntilApplicationQuits(vorgangEingangskorb);
+		}
 		logger.logInfoMessage(this,
 				"Decision department application is shutting down...");
 
-		alarmEntscheidungsBuero
-				.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
+		if (alarmEntscheidungsBuero != null) {
+			alarmEntscheidungsBuero
+					.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
+		}
+		
+		// TODO warte auf Thread für ausgangskorb
 
+		amsAusgangsProducer.close();
+		amsCommandConsumer.close();
+		amsMessagingSessionForConsumer.close();
 		amsMessagingSessionForProducer.close();
+
+		extAlarmConsumer.close();
+		extCommandConsumer.close();
 		extMessagingSessionForConsumer.close();
 
 		logger.logInfoMessage(this,
@@ -371,13 +382,26 @@ public class DecisionDepartmentActivator implements IApplication,
 						new ThreadGroup(
 								ThreadTypesOfDecisionDepartment.ABTEILUNGSLEITER
 										.name()));
+		executionServiceToBeInitialize
+				.registerGroup(
+						AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.CONSUMER_THREAD,
+						new ThreadGroup(
+								AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.CONSUMER_THREAD
+										.name()));
+		executionServiceToBeInitialize
+				.registerGroup(
+						AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.HANDLER_THREAD,
+						new ThreadGroup(
+								AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.HANDLER_THREAD
+										.name()));
 		// TODO here more...
 	}
 
 	private void receiveMessagesUntilApplicationQuits(
 			final Eingangskorb<Vorgangsmappe> eingangskorb) {
 
-		Consumer[] consumerArray = new Consumer[] {amsCommandConsumer, extAlarmConsumer, extCommandConsumer};
+		Consumer[] consumerArray = new Consumer[] { amsCommandConsumer,
+				extAlarmConsumer, extCommandConsumer };
 
 		AbstractMultiConsumerMessageHandler messageHandler = new AbstractMultiConsumerMessageHandler(
 				consumerArray, executionService) {
@@ -387,21 +411,33 @@ public class DecisionDepartmentActivator implements IApplication,
 					try {
 						eingangskorb.ablegen(new Vorgangsmappe(
 								Vorgangsmappenkennung.createNew(InetAddress
-										.getLocalHost(), new Date()), message
-										.alsAlarmnachricht()));
+										.getLocalHost(), /**
+															 * TODO Calender
+															 * Service benutzen
+															 */
+								new Date()), message.alsAlarmnachricht()));
 					} catch (UnknownHostException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.logFatalMessage(this, "Host unreachable", e);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.logInfoMessage(this,
+								"Message receiving interrupted");
 					}
 				} else if (message.enthaeltSystemnachricht()) {
 					if (message.alsSystemachricht()
 							.istSyncronisationsAufforderung()) {
 						// TODO wir müssen syncronisieren
+						// 1. altes office runterfahren und noch offene
+						// vorgaenge schicken
+						// 2. sychronizieren
+						// 3. regel neu laden
+						// 4. neues office anlegen
+						// 5. neues office straten
 					}
 				}
+				// // TODO andere Nachrichten Typen behandeln
+				// // steuer Nachrichten wie z.B.: "Regelwerke neu laden"
+				// // oder "einzelne Regelwerke kurzfristig deaktivieren" oder
+				// // "shutdown"
 			}
 
 		};
@@ -411,112 +447,16 @@ public class DecisionDepartmentActivator implements IApplication,
 			try {
 				this._receiverThread.wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				// e.printStackTrace();
+				// moeglicher interrupt ist ohne auswirkung auf das verhalten
+				// des systems
+				logger.logDebugMessage(this,
+						"wait for receiver thred interrupted", e);
 			}
-
-			// es kommen nicht nur Alarmniachrichten rein.
-			// deshalb brauchen wir einen eigenen Message Typ
-			// um zu entscheiden was weiter damit gemacht werden soll.
-
-			// TODO Zweite Schleife für Systemnachrichten!! ANDERES Topic!
-			// -> 2 Schleifen werfen in eine Queue die hier abgearbeitet wird!
-
-			// TODO Schaufeln in BlockingQueue : Maximum size auf 1 oder 2,
-			// damit nicht hunderte Nachrichten während eines updates gepuufert
-			// werden, das ablegen in der Queue blockiert, wenn diese voll ist.
-			// Siehe java.util.concurrent.BlockingQueue.
-			// NAMSMessage receivedMessage = null;
-			// try {
-			// receivedMessage = _consumer.receiveMessage();
-			// } catch (MessagingException e) {
-			// // Ignore this... just retry.
-			// logger.logWarningMessage(this,
-			// "an exception chaught during message recieving", e);
-			// }
-			//
-			// if (receivedMessage != null) {
-			// logger.logInfoMessage(this, "Neue Nachricht erhalten: "
-			// + receivedMessage.toString());
-			// // _producer.sendMessage(receivedMessage);
-			//
-			// // TODO prüfen um was für eine neue Nachricht es sich handelt
-			//
-			// // TODO falls es sich um eine Alarmnachricht handelt
-			// // Vorgangsmappe anlegen und in den Eingangskorb des Büros legen
-			// // eingangskorb.ablegen(receivedMessage);
-			//
-			// // TODO andere Nachrichten Typen behandeln
-			// // steuer Nachrichten wie z.B.: "Regelwerke neu laden"
-			// // oder "einzelne Regelwerke kurzfristig deaktivieren" oder
-			// // "shutdown"
-			// } else {
-			// // sollte nur beim beenden der Anwendung vorkommen
-			// logger.logInfoMessage(this, "null Nachricht erhalten");
-			// }
-			//
-			// Thread.yield();
+			Thread.yield();
 		}
-	}
 
-	// private Properties initProperties() throws InitPropertiesException {
-	// String configFileName = System
-	// .getProperty(PropertiesFileKeys.CONFIG_FILE.name());
-	// if (configFileName == null) {
-	// String message = "No config file avail on Property-Id \""
-	// + PropertiesFileKeys.CONFIG_FILE.name() + "\" specified.";
-	// logger.logFatalMessage(this, message);
-	// throw new InitPropertiesException(message);
-	// }
-	//
-	// File file = new File(configFileName);
-	// if (!file.exists() && !file.canRead()) {
-	// String message = "config file named \"" + file.getAbsolutePath()
-	// + "\" does not exist or is not readable.";
-	// logger.logFatalMessage(this, message);
-	// throw new InitPropertiesException(message);
-	// }
-	//
-	// try {
-	// FileInputStream fileInputStream = new FileInputStream(file);
-	// Properties properties = new Properties();
-	// properties.load(fileInputStream);
-	//
-	// // prüpfen ob die nötigen key enthalten sind
-	// Set<Object> keySet = properties.keySet();
-	// if (!keySet
-	// .contains(PropertiesFileKeys.MESSAGING_CONSUMER_CLIENT_ID
-	// .name())
-	// || !keySet
-	// .contains(PropertiesFileKeys.MESSAGING_CONSUMER_SERVER_URLS
-	// .name())
-	// || !keySet
-	// .contains(PropertiesFileKeys.MESSAGING_CONSUMER_SOURCE_NAME
-	// .name())
-	// || !keySet
-	// .contains(PropertiesFileKeys.MESSAGING_PRODUCER_CLIENT_ID
-	// .name())
-	// || !keySet
-	// .contains(PropertiesFileKeys.MESSAGING_PRODUCER_DESTINATION_NAME
-	// .name())
-	// || !keySet
-	// .contains(PropertiesFileKeys.MESSAGING_PRODUCER_SERVER_URLS
-	// .name())) {
-	// String message = "config file named \""
-	// + file.getAbsolutePath() + "\" not valid.";
-	// logger.logFatalMessage(this, message);
-	// throw new Exception(message);
-	// }
-	//
-	// logger.logInfoMessage(this,
-	// "Configuration properties loaded from configuration file \""
-	// + file.getAbsolutePath() + "\"");
-	// return properties;
-	// } catch (Exception e) {
-	// throw new InitPropertiesException(e);
-	// }
-	//
-	// }
+		messageHandler.beendeArbeit();
+	}
 
 	/**
 	 * Stops the bundle application instance.Ppenultimate Step.
@@ -527,15 +467,9 @@ public class DecisionDepartmentActivator implements IApplication,
 		logger.logInfoMessage(this,
 				"Shuting down decision department application...");
 		_continueWorking = false;
+		if (SyncronisationsAutomat.isRunning()) {
+			SyncronisationsAutomat.cancel();
+		}
 		_receiverThread.interrupt();
-		
-		amsAusgangsProducer.close();
-		amsCommandConsumer.close();
-		amsMessagingSessionForConsumer.close();
-		amsMessagingSessionForProducer.close();
-		
-		extAlarmConsumer.close();
-		extCommandConsumer.close();
-		extMessagingSessionForConsumer.close();
 	}
 }
