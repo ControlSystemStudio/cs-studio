@@ -10,5 +10,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.messaging,
  org.csstudio.ams.service.preferenceservice,
  org.csstudio.nams.service.regelwerkbuilder,
- org.csstudio.nams.service.history
+ org.csstudio.nams.service.history,
+ org.csstudio.nams.service.configurationAccess.localStore
 Eclipse-LazyStart: true

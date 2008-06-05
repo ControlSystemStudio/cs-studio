@@ -1,6 +1,7 @@
 package org.csstudio.nams.application.department.decision;
 
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.Producer;
@@ -19,12 +20,13 @@ public class SyncronisationsAutomat {
 	 * einem interrupt auf dem ausführerendem Thread. Es ist erforderlich das
 	 * vor der ausführung dieser Operation keine Zugriffe auf die lokale DB
 	 * erfolgen.
+	 * @param localStoreConfigurationService 
 	 * @throws MessagingException 
 	 * 
 	 * FIXME Database-Flags setzen mit LocalStoreConfigurationServie (TEST!!).
 	 */
 	public static void syncronisationUeberDistributorAusfueren(
-			Producer producer, Consumer consumer /*TODO Add LSCS*/) throws MessagingException {
+			Producer producer, Consumer consumer, LocalStoreConfigurationService localStoreConfigurationService) throws MessagingException {
 		
 		
 		

@@ -33,6 +33,7 @@ import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJ
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.csstudio.nams.common.service.ExecutionService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.AbstractMultiConsumerMessageHandler;
@@ -130,6 +131,8 @@ public class DecisionDepartmentActivator implements IApplication,
 
 	private static HistoryService historyService;
 
+	private static LocalStoreConfigurationService localStoreConfigurationService;
+
 	/**
 	 * Starts the bundle activator instance. First Step.
 	 * 
@@ -171,8 +174,13 @@ public class DecisionDepartmentActivator implements IApplication,
 		if (historyService == null)
 			throw new RuntimeException("no history service available!");
 
+		// LocalStoreConfigurationService
+		localStoreConfigurationService = BundleActivatorUtils.getAvailableService(context, LocalStoreConfigurationService.class);
+		if (localStoreConfigurationService == null)
+			throw new RuntimeException("no LocalStoreConfigurationService service available!");
+		
 		// Execution Service
-		// TODO wird noch nicht benutzt!!
+		// TODO wird noch nicht vollstaendig benutzt!!
 		executionService = BundleActivatorUtils.getAvailableService(context,
 				ExecutionService.class);
 		if (executionService == null)
@@ -241,8 +249,8 @@ public class DecisionDepartmentActivator implements IApplication,
 //											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) 
 											});
 
-			System.out.println("P_JMS_EXT_TOPIC_ALARM "+preferenceService
-									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM));
+//			System.out.println("P_JMS_EXT_TOPIC_ALARM "+preferenceService
+//									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM));
 			
 			Consumer extAlarmConsumer = extMessagingSessionForConsumer
 					.createConsumer(
@@ -291,7 +299,7 @@ public class DecisionDepartmentActivator implements IApplication,
 							this,
 							"Decision department application orders distributor to synchronize configuration...");
 			SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(
-					amsAusgangsProducer, amsCommandConsumer);
+					amsAusgangsProducer, amsCommandConsumer, localStoreConfigurationService);
 
 			logger
 					.logInfoMessage(this,

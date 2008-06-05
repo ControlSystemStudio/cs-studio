@@ -9,6 +9,15 @@ import junit.framework.TestCase;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicConfigurationId;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.UnknownConfigurationElementError;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
@@ -32,7 +41,7 @@ public class SyncronisationsAutomat_Test extends TestCase {
 		neuZuEmpfangedeNachrichten = null;
 		amsAusgangsProducer = null;
 		amsCommandConsumer = null;
-		
+
 		neuZuEmpfangedeNachrichten = new LinkedList<NAMSMessage>();
 		amsAusgangsProducer = new Producer() {
 
@@ -49,8 +58,7 @@ public class SyncronisationsAutomat_Test extends TestCase {
 			}
 
 			public void sendeSystemnachricht(SystemNachricht systemNachricht) {
-				if( zuletzGesendeteNachricht != null )
-				{
+				if (zuletzGesendeteNachricht != null) {
 					fail();
 				}
 				zuletzGesendeteNachricht = systemNachricht;
@@ -98,6 +106,9 @@ public class SyncronisationsAutomat_Test extends TestCase {
 
 	int ackHandlerCallCount;
 
+	ReplicationStateDTO nextToBeDelivered = null;
+	ReplicationStateDTO lastSended = null;
+
 	@Test
 	public void testSyncronisationUeberDistributorAusfueren()
 			throws MessagingException {
@@ -114,10 +125,43 @@ public class SyncronisationsAutomat_Test extends TestCase {
 				new SyncronisationsAufforderungsSystemNachchricht(), handler));
 		neuZuEmpfangedeNachrichten.add(new DefaultNAMSMessage(
 				new SyncronisationsBestaetigungSystemNachricht(), handler));
-		
+
 		SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(
-				amsAusgangsProducer, amsCommandConsumer);
-		
+				amsAusgangsProducer, amsCommandConsumer,
+				new LocalStoreConfigurationService() {
+
+					public ReplicationStateDTO getCurrentReplicationState()
+							throws StorageError, StorageException,
+							InconsistentConfiguration {
+						if (nextToBeDelivered == null)
+							fail("missing init of nextToBeDelivered");
+						return nextToBeDelivered;
+					}
+
+					public ConfigurationDTO getEntireConfiguration()
+							throws StorageError, StorageException,
+							InconsistentConfiguration {
+						fail("unexpected method call!");
+						return null;
+					}
+
+					public TopicDTO getTopicConfigurations(
+							TopicConfigurationId topicConfigurationDatabaseId) {
+						fail("unexpected method call!");
+						return null;
+					}
+
+					public void saveCurrentReplicationState(
+							ReplicationStateDTO currentState)
+							throws StorageError, StorageException,
+							UnknownConfigurationElementError {
+						if (nextToBeDelivered != null)
+							fail("missing clean of of lastSended");
+						lastSended = currentState;
+					}
+
+				});
+
 		assertNotNull(zuletzGesendeteNachricht);
 		assertTrue(zuletzGesendeteNachricht instanceof SyncronisationsAufforderungsSystemNachchricht);
 		assertEquals("Alle Nachrichten wurden acknowledged.", 3,
