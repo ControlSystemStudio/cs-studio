@@ -158,11 +158,6 @@ public class DecisionDepartmentActivator implements IApplication,
 		if (preferenceService == null)
 			throw new RuntimeException("no preference service available!");
 
-		System.out
-				.println("bubu "
-						+ preferenceService
-								.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_DISTRIBUTOR));
-
 		// RegelwerkBuilder Service
 		regelwerkBuilderService = BundleActivatorUtils.getAvailableService(
 				context, RegelwerkBuilderService.class);
@@ -246,6 +241,9 @@ public class DecisionDepartmentActivator implements IApplication,
 //											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) 
 											});
 
+			System.out.println("P_JMS_EXT_TOPIC_ALARM "+preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM));
+			
 			Consumer extAlarmConsumer = extMessagingSessionForConsumer
 					.createConsumer(
 							preferenceService
@@ -272,6 +270,9 @@ public class DecisionDepartmentActivator implements IApplication,
 							new String[] { preferenceService
 									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL) });
 
+			System.out.println("P_JMS_AMS_TOPIC_MESSAGEMINDER "+preferenceService
+									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER));
+			
 			Producer amsAusgangsProducer = amsMessagingSessionForProducer
 					.createProducer(
 							preferenceService

@@ -1,8 +1,11 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
+import java.util.Enumeration;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.jms.JMSException;
+import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Queue;
@@ -11,8 +14,10 @@ import javax.jms.Topic;
 
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
+import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
+import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage.AcknowledgeHandler;
 
 class JMSConsumer implements Consumer {
 
@@ -62,10 +67,26 @@ class JMSConsumer implements Consumer {
 		try {
 			Message message = messageQueue.take();
 
+			if (message instanceof MapMessage) {
+				final MapMessage mapMessage = (MapMessage) message;
+				//Map<K, V>
+				Enumeration mapNames = mapMessage.getMapNames();
+				while (mapNames.hasMoreElements()) {
+					
+				}
+				new DefaultNAMSMessage(null, new AcknowledgeHandler() {
+					public void acknowledge() throws Throwable {
+						mapMessage.acknowledge();
+					}
+				});
+				
+			} else {
+				logger.logWarningMessage(this, "unknown Message type received: " + message.toString());
+			}
+			
 			// FIXME das sollte erst später gemacht werden.
 			// am besten erst wenn die Nachricht fertig bearbeitet
 			// und im ausgangs Korb liegt
-			message.acknowledge();
 			namsMessage = new NAMSMessageJMSImpl(message);
 		} catch (InterruptedException e) {
 			// TODO exception handling

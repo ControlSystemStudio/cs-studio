@@ -24,6 +24,8 @@ public class SyncronisationsAutomat {
 	public static void syncronisationUeberDistributorAusfueren(
 			Producer producer, Consumer consumer) throws MessagingException {
 		
+		
+		
 		producer.sendeSystemnachricht(new SyncronisationsAufforderungsSystemNachchricht());
 		
 		boolean macheweiter = true;
