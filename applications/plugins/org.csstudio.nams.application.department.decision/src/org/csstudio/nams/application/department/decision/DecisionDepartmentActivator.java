@@ -110,8 +110,6 @@ public class DecisionDepartmentActivator implements IApplication,
 	/**
 	 * wir nur von der Application benutzt
 	 */
-	private Consumer _consumer;
-	private Producer _producer;
 
 	/**
 	 * Referenz auf den Thread, welcher die JMS Nachrichten anfragt. Wird
@@ -130,6 +128,16 @@ public class DecisionDepartmentActivator implements IApplication,
 	private static RegelwerkBuilderService regelwerkBuilderService;
 
 	private static HistoryService historyService;
+
+	private MessagingSession amsMessagingSessionForConsumer;
+
+	private Consumer extAlarmConsumer;
+
+	private Consumer extCommandConsumer;
+
+	private Consumer amsCommandConsumer;
+
+	private Producer amsAusgangsProducer;
 
 	private static LocalStoreConfigurationService localStoreConfigurationService;
 
@@ -225,8 +233,7 @@ public class DecisionDepartmentActivator implements IApplication,
 
 			logger.logInfoMessage(this,
 					"Decision department application is creating consumers...");
-			// TODO clientid!!
-			MessagingSession amsMessagingSessionForConsumer = messagingService
+			amsMessagingSessionForConsumer = messagingService
 					.createNewMessagingSession(
 							"amsConsumer",
 							new String[] {
@@ -236,7 +243,6 @@ public class DecisionDepartmentActivator implements IApplication,
 //									preferenceService
 //											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) 
 											});
-
 			// TODO clientid!!
 			extMessagingSessionForConsumer = messagingService
 					.createNewMessagingSession(
@@ -252,22 +258,21 @@ public class DecisionDepartmentActivator implements IApplication,
 //			System.out.println("P_JMS_EXT_TOPIC_ALARM "+preferenceService
 //									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM));
 			
-			Consumer extAlarmConsumer = extMessagingSessionForConsumer
+			extAlarmConsumer = extMessagingSessionForConsumer
 					.createConsumer(
 							preferenceService
 									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM),
 							PostfachArt.TOPIC);
-			Consumer extCommandConsumer = extMessagingSessionForConsumer
+			extCommandConsumer = extMessagingSessionForConsumer
 					.createConsumer(
 							preferenceService
 									.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND),
 							PostfachArt.TOPIC);
-			Consumer amsCommandConsumer = amsMessagingSessionForConsumer
+			amsCommandConsumer = amsMessagingSessionForConsumer
 					.createConsumer(
 							preferenceService
 									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND),
 							PostfachArt.TOPIC);
-
 			logger.logInfoMessage(this,
 					"Decision department application is creating producers...");
 
@@ -281,12 +286,11 @@ public class DecisionDepartmentActivator implements IApplication,
 			System.out.println("P_JMS_AMS_TOPIC_MESSAGEMINDER "+preferenceService
 									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER));
 			
-			Producer amsAusgangsProducer = amsMessagingSessionForProducer
+			amsAusgangsProducer = amsMessagingSessionForProducer
 					.createProducer(
 							preferenceService
 									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER),
 							PostfachArt.TOPIC);
-
 			/*-
 			 * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
 			 * Cofigurations-DB (application-DB) erfolgen, da zuvor dort noch
@@ -521,7 +525,6 @@ public class DecisionDepartmentActivator implements IApplication,
 		logger.logInfoMessage(this,
 				"Shuting down decision department application...");
 		_continueWorking = false;
-		_consumer.close();
 		_receiverThread.interrupt();
 	}
 }
