@@ -8,11 +8,12 @@ public class UnknownConfigurationElementError extends Exception {
 
 	private static final long serialVersionUID = 1296085075276490743L;
 
-	public UnknownConfigurationElementError(String message) {
+	public UnknownConfigurationElementError(final String message) {
 		super(message);
 	}
 
-	public UnknownConfigurationElementError(String message, Throwable cause) {
+	public UnknownConfigurationElementError(final String message,
+			final Throwable cause) {
 		super(message, cause);
 	}
 }

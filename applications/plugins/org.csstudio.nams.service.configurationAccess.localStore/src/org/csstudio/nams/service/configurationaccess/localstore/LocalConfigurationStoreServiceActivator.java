@@ -1,12 +1,8 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
 import org.osgi.framework.BundleActivator;
@@ -22,34 +18,35 @@ public class LocalConfigurationStoreServiceActivator implements BundleActivator 
 	private SessionFactory sessionFactory;
 	private Session session;
 
-	public void start(BundleContext context) throws Exception {
+	private void initializeHibernate() {
+		AnnotationConfiguration configuration = new AnnotationConfiguration();
+		configuration = configuration.addAnnotatedClass(TopicDTO.class);
+
+		final AnnotationConfiguration configured = configuration.configure();
+		this.sessionFactory = configured.buildSessionFactory();
+	}
+
+	public void start(final BundleContext context) throws Exception {
 		try {
 			// TODO Extension point auslesen
 			// TODO configuration abfragen
 			// TODO configuration Hibernate mitteilen.
-			
-			initializeHibernate();
-			session = sessionFactory.openSession();
+
+			this.initializeHibernate();
+			this.session = this.sessionFactory.openSession();
 
 			context.registerService(LocalStoreConfigurationService.class
-					.getName(), new LocalStoreConfigurationServiceImpl(session), null);
-		} catch (Throwable t) {
+					.getName(), new LocalStoreConfigurationServiceImpl(
+					this.session), null);
+		} catch (final Throwable t) {
 			throw new RuntimeException(
 					"Failed to start LocalConfigurationStoreService's bundle",
 					t);
 		}
 	}
 
-	private void initializeHibernate() {
-		AnnotationConfiguration configuration = new AnnotationConfiguration();
-		configuration = configuration.addAnnotatedClass(TopicDTO.class);
-
-		AnnotationConfiguration configured = configuration.configure();
-		sessionFactory = configured.buildSessionFactory();
-	}
-
-	public void stop(BundleContext context) throws Exception {
-		session.close();
-		sessionFactory.close();
+	public void stop(final BundleContext context) throws Exception {
+		this.session.close();
+		this.sessionFactory.close();
 	}
 }

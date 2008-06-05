@@ -1,7 +1,5 @@
 package org.csstudio.nams.service.configurationaccess.localstore.extensionPoint;
 
-import java.net.URL;
-
 import org.hibernate.dialect.Dialect;
 
 /**
@@ -17,9 +15,9 @@ public interface DatabaseAccessConfiguration {
 	 */
 	public Class<? extends java.sql.Driver> getConnectionDriverClass();
 
-	public URL getDatabaseConnectionURL();
+	public String getDatabaseJDBCConnectionURL();
 
-	public char[] getDatabaseUserName();
+	public String getDatabaseUserName();
 
 	public char[] getDatabaseUserPassword();
 

@@ -8,11 +8,11 @@ public class StorageException extends Exception {
 
 	private static final long serialVersionUID = -1541451576222179297L;
 
-	public StorageException(String message) {
+	public StorageException(final String message) {
 		super(message);
 	}
 
-	public StorageException(String message, Throwable cause) {
+	public StorageException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 }

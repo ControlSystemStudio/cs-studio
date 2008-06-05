@@ -47,6 +47,51 @@ public class TopicDTO {
 	@Column(name = "IGROUPREF")
 	private int groupRef;
 
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof TopicDTO)) {
+			return false;
+		}
+		final TopicDTO other = (TopicDTO) obj;
+		if (this.description == null) {
+			if (other.description != null) {
+				return false;
+			}
+		} else if (!this.description.equals(other.description)) {
+			return false;
+		}
+		if (this.groupRef != other.groupRef) {
+			return false;
+		}
+		if (this.id != other.id) {
+			return false;
+		}
+		if (this.name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!this.name.equals(other.name)) {
+			return false;
+		}
+		if (this.topicName == null) {
+			if (other.topicName != null) {
+				return false;
+			}
+		} else if (!this.topicName.equals(other.topicName)) {
+			return false;
+		}
+		return true;
+	}
+
 	public String getDescription() {
 		return this.description;
 	}
@@ -71,6 +116,25 @@ public class TopicDTO {
 
 	public String getTopicName() {
 		return this.topicName;
+	}
+
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((this.description == null) ? 0 : this.description.hashCode());
+		result = prime * result + this.groupRef;
+		result = prime * result + this.id;
+		result = prime * result
+				+ ((this.name == null) ? 0 : this.name.hashCode());
+		result = prime * result
+				+ ((this.topicName == null) ? 0 : this.topicName.hashCode());
+		return result;
 	}
 
 	/**
@@ -100,8 +164,7 @@ public class TopicDTO {
 	 *            Der Name/Identifizierung des Topics; 128 Zeichen oder kürzer.
 	 */
 	public void setName(final String name) {
-		Contract.require(name.length() <= 128,
-				"topicName.length() <= 128");
+		Contract.require(name.length() <= 128, "topicName.length() <= 128");
 
 		this.name = name;
 	}
@@ -120,7 +183,7 @@ public class TopicDTO {
 
 	@Override
 	public String toString() {
-		StringBuilder resultBuilder = new StringBuilder("TopicDTO: ");
+		final StringBuilder resultBuilder = new StringBuilder("TopicDTO: ");
 		resultBuilder.append(this.getTopicName());
 		resultBuilder.append(" (");
 		resultBuilder.append(this.getId());
@@ -131,57 +194,6 @@ public class TopicDTO {
 		resultBuilder.append(", ");
 		resultBuilder.append(this.getDescription());
 		return resultBuilder.toString();
-	}
-	
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result + groupRef;
-		result = prime * result + id;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result
-				+ ((topicName == null) ? 0 : topicName.hashCode());
-		return result;
-	}
-
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof TopicDTO))
-			return false;
-		final TopicDTO other = (TopicDTO) obj;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (groupRef != other.groupRef)
-			return false;
-		if (id != other.id)
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (topicName == null) {
-			if (other.topicName != null)
-				return false;
-		} else if (!topicName.equals(other.topicName))
-			return false;
-		return true;
 	}
 
 }
