@@ -84,7 +84,10 @@ class LocalStoreConfigurationServiceImpl implements
 	public void saveCurrentReplicationState(
 			final ReplicationStateDTO currentState) throws StorageError,
 			StorageException, UnknownConfigurationElementError {
-		// TODO Auto-generated method stub
-		throw new RuntimeException("Not implemented yet.");
+		
+		final Transaction newTransaction = this.session.beginTransaction();
+		this.session.saveOrUpdate(currentState);
+		newTransaction.commit();		
+//		throw new RuntimeException("Not implemented yet.");
 	}
 }

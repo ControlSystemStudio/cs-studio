@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.csstudio.nams.service.configurationAccess.localStore;si
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.nams.service.configurationaccess.localstore.LocalConfigurationStoreServiceActivator
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.nams.common,
- org.csstudio.platform.libs.jdbc
+ org.csstudio.nams.common
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  lib/hibernate3.jar,
@@ -48,5 +47,7 @@ Bundle-ClassPath: .,
  lib-hibernate/syndiag2.jar,
  lib-hibernate/versioncheck.jar,
  lib-hibernate/xerces-2.6.2.jar,
- lib-hibernate/xml-apis.jar
+ lib-hibernate/xml-apis.jar,
+ lib-db/derbyclient.jar,
+ lib-db/derbytools.jar
 Export-Package: org.csstudio.nams.service.configurationaccess.localstore.declaration
