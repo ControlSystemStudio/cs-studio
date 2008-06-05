@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: TestSuites Plug-in
+Bundle-SymbolicName: org.csstudio.nams.testUtils.testSuites
+Bundle-Version: 1.0.0
+Bundle-Activator: org.csstudio.nams.testutils.testsuites.TestSuitesActivator
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.nams.application.department.decision
+Eclipse-LazyStart: true
