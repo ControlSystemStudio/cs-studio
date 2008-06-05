@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
@@ -21,6 +22,7 @@ public class LocalConfigurationStoreServiceActivator implements BundleActivator 
 	private void initializeHibernate() {
 		AnnotationConfiguration configuration = new AnnotationConfiguration();
 		configuration = configuration.addAnnotatedClass(TopicDTO.class);
+		configuration = configuration.addAnnotatedClass(ReplicationStateDTO.class);
 
 		final AnnotationConfiguration configured = configuration.configure();
 		this.sessionFactory = configured.buildSessionFactory();

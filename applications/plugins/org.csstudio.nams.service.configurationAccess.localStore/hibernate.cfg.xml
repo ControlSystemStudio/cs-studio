@@ -35,6 +35,7 @@
   				
   				
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO"/>
 	</session-factory>
 
 </hibernate-configuration>
