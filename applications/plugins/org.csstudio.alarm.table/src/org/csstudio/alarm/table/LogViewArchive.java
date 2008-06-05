@@ -48,6 +48,9 @@ import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.util.time.StartEndTimeParser;
 import org.csstudio.util.time.swt.StartEndDialog;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -62,7 +65,11 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.views.IViewDescriptor;
+import org.eclipse.ui.views.IViewRegistry;
 
 /**
  * Simple view more like console, used to write log messages.
@@ -115,6 +122,17 @@ public class LogViewArchive extends ViewPart implements Observer {
 
 	/** The count of results. */
     private Label _countLabel;
+
+    
+	/**
+	 * The Show Property View action.
+	 */
+	private Action _showPropertyViewAction;
+
+	/**
+	 * The ID of the property view.
+	 */
+	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
 
     
     public LogViewArchive() {
@@ -199,6 +217,12 @@ public class LogViewArchive extends ViewPart implements Observer {
 		
 		_jmsLogTableViewer = new JMSLogTableViewer(parent, getSite(), _columnNames, _jmsMessageList, 3,SWT.SINGLE | SWT.FULL_SELECTION);
 		_jmsLogTableViewer.setAlarmSorting(false);
+		
+		getSite().setSelectionProvider(_jmsLogTableViewer);
+		makeActions();
+		IActionBars bars = getViewSite().getActionBars();
+		fillLocalToolBar(bars.getToolBarManager());
+
 		parent.pack();
 		
 		_columnPropertyChangeListener = new ColumnPropertyChangeListener(
@@ -210,6 +234,40 @@ public class LogViewArchive extends ViewPart implements Observer {
 		
 	}
 
+	/**
+	 * Creates the actions offered by this view.
+	 */
+	private void makeActions() {
+		_showPropertyViewAction = new Action() {
+			@Override
+			public void run() {
+				try {
+					getSite().getPage().showView(PROPERTY_VIEW_ID);
+				} catch (PartInitException e) {
+					MessageDialog.openError(getSite().getShell(), "Alarm Tree",
+							e.getMessage());
+				}
+			}
+		};
+		_showPropertyViewAction.setText("Properties");
+		_showPropertyViewAction.setToolTipText("Show property view");
+		
+		IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench().getViewRegistry();
+		IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
+		_showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
+	}
+	
+	
+	/**
+	 * Adds the tool bar actions.
+	 * @param manager the menu manager.
+	 */
+	private void fillLocalToolBar(final IToolBarManager manager) {
+		manager.add(_showPropertyViewAction);
+	}
+	
+
+	
     /** 
      * Create a Button to selet the last 24 hour.
      * @param comp the parent Composite for the Button. 

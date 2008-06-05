@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IActionBars;
 
 /**
  * Add to the base class {@code LogView}:
@@ -187,7 +188,12 @@ public class AlarmLogView extends LogView {
 				SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
 
 		jlv.setAlarmSorting(true);
+		makeActions();
+		IActionBars bars = getViewSite().getActionBars();
+		fillLocalToolBar(bars.getToolBarManager());
+		getSite().setSelectionProvider(jlv);
 
+		
 		parent.pack();
 
 		cl = new ColumnPropertyChangeListener(

@@ -6,6 +6,7 @@ Bundle-Version: 1.0.4
 Bundle-Activator: org.csstudio.alarm.table.JmsLogsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
  org.csstudio.alarm.dbaccess,
  org.csstudio.platform.ui,
  org.csstudio.platform.libs.jms,

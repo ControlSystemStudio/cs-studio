@@ -32,10 +32,11 @@ import org.csstudio.platform.model.IProcessVariable;
 //import org.csstudio.data.exchange.ProcessVariableName;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 
-public class JMSMessage implements IProcessVariable {//,
+public class JMSMessage extends PlatformObject implements IProcessVariable {//,
 //		org.csstudio.data.exchange.IFrontEndControllerName{
 
 	private HashMap<String, String> messageProperties = new HashMap<String, String>();
@@ -228,23 +229,23 @@ public class JMSMessage implements IProcessVariable {//,
 		return messageProperties.get("NAME"); //$NON-NLS-1$
 	}
 
-	public Object getAdapter(Class adapter) {
-		JmsLogsPlugin.logInfo("get adapter: " + adapter);
-		
-		
-//	    if (adapter.equals(IProcessVariableName.class)) {
-//	    	IProcessVariableName pvn = new ProcessVariableName("hallo jan");
-//	    	return pvn;
-//	    } 
-        return null;
-		
-//		if (adapter.isInstance(ipvn)) {
-//			IProcessVariableName pvn = new ProcessVariableName("hallo jan");
-//			return pvn;
-//		}
-//		// TODO Auto-generated method stub
-//		return Platform.getAdapterManager().getAdapter(this, adapter);
-	}
+//	public Object getAdapter(Class adapter) {
+//		JmsLogsPlugin.logInfo("get adapter: " + adapter);
+//		
+//		
+////	    if (adapter.equals(IProcessVariableName.class)) {
+////	    	IProcessVariableName pvn = new ProcessVariableName("hallo jan");
+////	    	return pvn;
+////	    } 
+//        return null;
+//		
+////		if (adapter.isInstance(ipvn)) {
+////			IProcessVariableName pvn = new ProcessVariableName("hallo jan");
+////			return pvn;
+////		}
+////		// TODO Auto-generated method stub
+////		return Platform.getAdapterManager().getAdapter(this, adapter);
+//	}
 
 	public String getTypeId() {
 		// TODO Auto-generated method stub

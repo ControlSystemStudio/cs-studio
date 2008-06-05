@@ -40,6 +40,9 @@ import org.csstudio.alarm.table.logTable.JMSLogTableViewer;
 import org.csstudio.alarm.table.preferences.AlarmViewerPreferenceConstants;
 import org.csstudio.alarm.table.preferences.LogViewerPreferenceConstants;
 import org.csstudio.platform.libs.jms.MessageReceiver;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -50,7 +53,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.views.IViewDescriptor;
+import org.eclipse.ui.views.IViewRegistry;
 
 /**
  * View with table for all log messages from JMS. Creates the TableViewer
@@ -74,7 +81,18 @@ public class LogView extends ViewPart implements MessageListener {
 	public String[] columnNames;
 
 	public ColumnPropertyChangeListener cl;
+	
+	/**
+	 * The Show Property View action.
+	 */
+	private Action _showPropertyViewAction;
 
+	/**
+	 * The ID of the property view.
+	 */
+	private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
+
+	
 	public void createPartControl(Composite parent) {
 		columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
 				.getString(LogViewerPreferenceConstants.P_STRING).split(";"); //$NON-NLS-1$
@@ -106,14 +124,54 @@ public class LogView extends ViewPart implements MessageListener {
 		jlv.setAlarmSorting(false);
 		parent.pack();
 		
+		getSite().setSelectionProvider(jlv);
+
+		makeActions();
+		IActionBars bars = getViewSite().getActionBars();
+		fillLocalToolBar(bars.getToolBarManager());
+
+		
 		cl = new ColumnPropertyChangeListener(
 				LogViewerPreferenceConstants.P_STRING,
 				jlv);
 		
 		JmsLogsPlugin.getDefault().getPluginPreferences()
 				.addPropertyChangeListener(cl);
-		
+
 	}
+	
+	/**
+	 * Creates the actions offered by this view.
+	 */
+	void makeActions() {
+		_showPropertyViewAction = new Action() {
+			@Override
+			public void run() {
+				try {
+					getSite().getPage().showView(PROPERTY_VIEW_ID);
+				} catch (PartInitException e) {
+					MessageDialog.openError(getSite().getShell(), "Alarm Tree",
+							e.getMessage());
+				}
+			}
+		};
+		_showPropertyViewAction.setText("Properties");
+		_showPropertyViewAction.setToolTipText("Show property view");
+		
+		IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench().getViewRegistry();
+		IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
+		_showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
+	}
+	
+	
+	/**
+	 * Adds the tool bar actions.
+	 * @param manager the menu manager.
+	 */
+	void fillLocalToolBar(final IToolBarManager manager) {
+		manager.add(_showPropertyViewAction);
+	}
+	
 
 	public void initializeJMSReceiver(Shell ps, String primCtxFactory, String primURL,
 			String secCtxFactory, String secURL, String queue) {

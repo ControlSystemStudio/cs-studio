@@ -205,6 +205,8 @@ public class JMSLogTableViewer extends TableViewer {
 	private void makeContextMenu(IWorkbenchPartSite site) {
 		MenuManager manager = new MenuManager("#PopupMenu");
 		Control contr = this.getControl();
+		manager.add(new ShowMessagePropertiesAction(this));
+		
 		if ((tableType == 1) || (tableType == 2)) {
 			manager.add(new DeleteAction(this));
 			manager.add(new DeleteAllAction(this));
