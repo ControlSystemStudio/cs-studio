@@ -141,6 +141,10 @@ public class DecisionDepartmentActivator implements IApplication,
 
 	private static LocalStoreConfigurationService localStoreConfigurationService;
 
+	private MessagingSession extMessagingSessionForConsumer;
+
+	private MessagingSession amsMessagingSessionForProducer;
+
 	/**
 	 * Starts the bundle activator instance. First Step.
 	 * 
@@ -216,9 +220,7 @@ public class DecisionDepartmentActivator implements IApplication,
 	public Object start(IApplicationContext context) {
 		_receiverThread = Thread.currentThread();
 		AlarmEntscheidungsBuero alarmEntscheidungsBuero = null;
-		MessagingSession extMessagingSessionForConsumer = null;
-		MessagingSession amsMessagingSessionForProducer = null;
-
+		
 		logger
 				.logInfoMessage(this,
 						"Decision department application is going to be initialized...");
@@ -375,7 +377,7 @@ public class DecisionDepartmentActivator implements IApplication,
 	private void receiveMessagesUntilApplicationQuits(
 			final Eingangskorb<Vorgangsmappe> eingangskorb) {
 
-		Consumer[] consumerArray = new Consumer[0];
+		Consumer[] consumerArray = new Consumer[] {amsCommandConsumer, extAlarmConsumer, extCommandConsumer};
 
 		AbstractMultiConsumerMessageHandler messageHandler = new AbstractMultiConsumerMessageHandler(
 				consumerArray, executionService) {
@@ -526,5 +528,14 @@ public class DecisionDepartmentActivator implements IApplication,
 				"Shuting down decision department application...");
 		_continueWorking = false;
 		_receiverThread.interrupt();
+		
+		amsAusgangsProducer.close();
+		amsCommandConsumer.close();
+		amsMessagingSessionForConsumer.close();
+		amsMessagingSessionForProducer.close();
+		
+		extAlarmConsumer.close();
+		extCommandConsumer.close();
+		extMessagingSessionForConsumer.close();
 	}
 }
