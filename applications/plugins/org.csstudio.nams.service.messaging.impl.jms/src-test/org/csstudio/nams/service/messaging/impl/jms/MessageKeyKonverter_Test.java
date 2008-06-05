@@ -1,5 +1,8 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.junit.Assert;
 import org.junit.Test;
@@ -83,5 +86,19 @@ public class MessageKeyKonverter_Test {
 		// VALUE
 		Assert.assertEquals(MessageKeyEnum.VALUE, MessageKeyConverter.getEnumKeyFor("value"));
 		Assert.assertEquals(MessageKeyEnum.VALUE, MessageKeyConverter.getEnumKeyFor("VALUE"));
+	}
+
+	@Test
+	public void testIstSynchronisation(){
+		
+		Map<MessageKeyEnum, String> map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.MSGPROP_COMMAND, "AMS_RELOAD_CFG_START");
+		Assert.assertTrue(MessageKeyConverter.istSynchronisationAuforderung(map));
+		Assert.assertFalse(MessageKeyConverter.istSynchronisationBestaetigung(map));
+		
+		map = new HashMap<MessageKeyEnum, String>();
+		map.put(MessageKeyEnum.MSGPROP_COMMAND, "AMS_RELOAD_CFG_END");
+		Assert.assertTrue(MessageKeyConverter.istSynchronisationBestaetigung(map)); 
+		Assert.assertFalse(MessageKeyConverter.istSynchronisationAuforderung(map));
 	}
 }
