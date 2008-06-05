@@ -7,7 +7,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Inco
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.SyncronizeFlagDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicConfigurationId;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.UnknownConfigurationElementError;
@@ -23,7 +23,7 @@ class LocalStoreConfigurationServiceImpl implements
 		this.session = session;
 	}
 
-	public SyncronizeFlagDTO getCurrentSyncronizeFlagState()
+	public ReplicationStateDTO getCurrentReplicationState()
 			throws StorageError, StorageException, InconsistentConfiguration {
 		// TODO Auto-generated method stub
 		throw new RuntimeException("Not implemented yet.");
@@ -71,8 +71,8 @@ class LocalStoreConfigurationServiceImpl implements
 		return result;
 	}
 
-	public void saveCurrentSyncronizeFlagState(
-			final SyncronizeFlagDTO currentState) throws StorageError,
+	public void saveCurrentReplicationState(
+			final ReplicationStateDTO currentState) throws StorageError,
 			StorageException, UnknownConfigurationElementError {
 		// TODO Auto-generated method stub
 		throw new RuntimeException("Not implemented yet.");

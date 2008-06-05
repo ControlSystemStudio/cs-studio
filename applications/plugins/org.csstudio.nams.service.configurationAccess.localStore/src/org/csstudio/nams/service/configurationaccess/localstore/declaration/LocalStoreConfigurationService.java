@@ -19,7 +19,7 @@ public interface LocalStoreConfigurationService {
 	 * @throws InconsistentConfiguration
 	 *             If the stored configuration is inconsistent.
 	 */
-	public SyncronizeFlagDTO getCurrentSyncronizeFlagState()
+	public ReplicationStateDTO getCurrentReplicationState()
 			throws StorageError, StorageException, InconsistentConfiguration;
 
 	/**
@@ -66,7 +66,7 @@ public interface LocalStoreConfigurationService {
 	 *             If the flag-object to be stored is not known by this
 	 *             configuration database..
 	 */
-	public void saveCurrentSyncronizeFlagState(SyncronizeFlagDTO currentState)
+	public void saveCurrentReplicationState(ReplicationStateDTO currentState)
 			throws StorageError, StorageException,
 			UnknownConfigurationElementError;
 }
