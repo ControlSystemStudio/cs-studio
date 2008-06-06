@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -30,6 +32,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AMS_FilterCondition")
+@Inheritance(strategy=InheritanceType.JOINED)
 public class FilterConditionDTO {
 
 	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)

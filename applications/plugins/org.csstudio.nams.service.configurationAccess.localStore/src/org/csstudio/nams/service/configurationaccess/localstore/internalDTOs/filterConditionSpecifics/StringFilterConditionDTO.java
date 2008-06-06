@@ -3,7 +3,11 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fi
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.hibernate.annotations.ForeignKey;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
@@ -23,10 +27,11 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AMS_FilterCondition_String")
-public class StringFilterConditionDTO {
+@PrimaryKeyJoinColumn(name="iFilterConditionRef", referencedColumnName="iFilterConditionID")
+public class StringFilterConditionDTO extends FilterConditionDTO {
 
-	@Id
-	@Column(name = "iFilterConditionRef", nullable = false)
+	//ForeignKey(name="iFilterConditionID", inverseName="iFilterConditionRef")
+	@Column(name="iFilterConditionRef", nullable=false, updatable=false, insertable=false)
 	private int filterConditionRef;
 
 	@Column(name = "cKeyValue", length = 16)
