@@ -2,6 +2,7 @@ package org.csstudio.nams.service.messaging.impl.jms;
 
 import java.util.Map;
 
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -80,12 +81,14 @@ public class JMSProducer implements Producer {
 				for (int i = 0; i < sessions.length; i++) {
 					MapMessage mapMessage = sessions[i].createMapMessage();
 					mapMessage.setString(MSGPROP_COMMAND, MSGVALUE_TCMD_RELOAD_CFG_START);
+					mapMessage.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
 					producers[i].send(mapMessage);
 				}
 			} else if (systemNachricht.istSyncronisationsBestaetigung()) {
 				for (int i = 0; i < sessions.length; i++) {
 					MapMessage mapMessage = sessions[i].createMapMessage();
 					mapMessage.setString(MSGPROP_COMMAND, MSGVALUE_TCMD_RELOAD_CFG_END);
+					mapMessage.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
 					producers[i].send(mapMessage);
 				}
 			} else {

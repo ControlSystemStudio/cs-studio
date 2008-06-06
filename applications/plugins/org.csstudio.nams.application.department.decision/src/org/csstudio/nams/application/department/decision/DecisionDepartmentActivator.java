@@ -271,18 +271,22 @@ public class DecisionDepartmentActivator implements IApplication,
 							"amsConsumer",
 							new String[] {
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1),
+											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1)
+											,
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) });
+											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) 
+											});
 			// TODO clientid!! gegebenenfalls aus preferencestore holen
 			extMessagingSessionForConsumer = messagingService
 					.createNewMessagingSession(
 							"extConsumer",
 							new String[] {
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1),
+											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1)
+											,
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) });
+											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) 
+											});
 
 			extAlarmConsumer = extMessagingSessionForConsumer
 					.createConsumer(

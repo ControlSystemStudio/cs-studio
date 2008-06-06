@@ -1,7 +1,13 @@
 package org.csstudio.nams.application.department.decision;
 
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.InconsistentConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.UnknownConfigurationElementError;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO.ReplicationState;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.Producer;
@@ -29,24 +35,40 @@ public class SyncronisationsAutomat {
 	 * @throws MessagingException 
 	 * 
 	 * FIXME Database-Flags setzen mit LocalStoreConfigurationServie (TEST!!).
+	 * @throws InconsistentConfiguration 
+	 * @throws StorageException 
+	 * @throws StorageError 
+	 * @throws UnknownConfigurationElementError 
 	 */
 	public static void syncronisationUeberDistributorAusfueren(
-			Producer producer, Consumer consumer, LocalStoreConfigurationService localStoreConfigurationService) throws MessagingException {
+			Producer producer, Consumer consumer, LocalStoreConfigurationService localStoreConfigurationService) throws MessagingException, StorageError, StorageException, InconsistentConfiguration, UnknownConfigurationElementError {
 		
+		// TODO logger benutzen und nicht sysout
 		
+		/**
+		 * Wenn der ReplicationState gerade auf einem Zustand des Distributors ist keine neue Aufforderung an ihn zum synchronisieren senden
+		 */
+		ReplicationStateDTO stateDTO = localStoreConfigurationService.getCurrentReplicationState();
+		ReplicationState replicationState = stateDTO.getReplicationState();
+		if (replicationState != ReplicationState.FLAGVALUE_SYNCH_DIST_RPL && replicationState != ReplicationState.FLAGVALUE_SYNCH_DIST_NOTIFY_FMR) {
+			stateDTO.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
+			localStoreConfigurationService.saveCurrentReplicationState(stateDTO);
+			producer.sendeSystemnachricht(new SyncronisationsAufforderungsSystemNachchricht());
+		}
 		
-		producer.sendeSystemnachricht(new SyncronisationsAufforderungsSystemNachchricht());
 		
 		macheweiter = true;
 		workingThread = Thread.currentThread();
 		canceled = false;
 		isRunning = true;
+		System.out.println("vor");
 		while (macheweiter) {
 			try {
 				NAMSMessage receiveMessage = consumer.receiveMessage();
 				
 				if (receiveMessage.enthaeltSystemnachricht()) {
 					if (receiveMessage.alsSystemachricht().istSyncronisationsBestaetigung()) {
+						System.out.println("richtige nachricht");
 						macheweiter = false;
 					} else {
 						// TODO systemnachricht die uns nicht interresiert?!?
@@ -61,6 +83,7 @@ public class SyncronisationsAutomat {
 				throw new MessagingException(e);
 			}
 		}
+		System.out.println("ende");
 		isRunning = false;
 		
 //		// MapMessage mapMsg = amsSenderSession.createMapMessage();

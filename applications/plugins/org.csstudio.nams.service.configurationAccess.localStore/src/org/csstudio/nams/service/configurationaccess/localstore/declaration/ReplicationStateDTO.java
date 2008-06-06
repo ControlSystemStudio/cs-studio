@@ -44,12 +44,12 @@ public class ReplicationStateDTO {
 	
 	public static enum ReplicationState {
 		/**
-		 * Es muss nicht Repliziert werden
+		 * (0) Es muss nicht Repliziert werden
 		 */
 		FLAGVALUE_SYNCH_IDLE((short) 0),
 
 		/**
-		 * FilterManager beginnt zu Replizieren und schreibt history Eintrag.
+		 * (1) FilterManager beginnt zu Replizieren und schreibt history Eintrag.
 		 * 
 		 * <pre>
 		 * private static void logHistoryRplStart(java.sql.Connection conDb, boolean bStart) {
@@ -77,24 +77,24 @@ public class ReplicationStateDTO {
 		FLAGVALUE_SYNCH_FMR_RPL((short) 1),
 
 		/**
-		 * FilterManager sendet eine Synchronizationsnachricht ueber das
+		 * (2) FilterManager sendet eine Synchronizationsnachricht ueber das
 		 * Nachrichten Topic an den Distributor und wartet auf Antwort.
 		 */
 		FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED((short) 2),
 
 		/**
-		 * Distributor leitet Replication ein.
+		 * (3) Distributor leitet Replication ein.
 		 */
 		FLAGVALUE_SYNCH_DIST_RPL((short) 3),
 
 		/**
-		 * Distributor ist fertig mit Replizieren und sendet Command an das interne JMS Topic.
+		 * (4) Distributor ist fertig mit Replizieren und sendet Command an das interne JMS Topic.
 		 * Der Distributor setzt den Status wieder auf FLAGVALUE_SYNCH_IDLE (0).
 		 */
 		FLAGVALUE_SYNCH_DIST_NOTIFY_FMR((short) 4),
 
 		/**
-		 * Ungültiger Zustand. Daten Fehler.
+		 * (-1) Ungültiger Zustand. Daten Fehler.
 		 */
 		INVALID_STATE((short) -1);
 

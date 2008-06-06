@@ -97,6 +97,8 @@ class JMSConsumer implements Consumer {
 				AcknowledgeHandler ackHandler = new AcknowledgeHandler() {
 					public void acknowledge() throws Throwable {
 						mapMessage.acknowledge();
+						// TODO logger nutzen
+						System.out.println(".acknowledge()");
 					}
 				};
 

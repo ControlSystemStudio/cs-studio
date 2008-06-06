@@ -114,7 +114,7 @@ public class SyncronisationsAutomat_Test extends TestCase {
 
 	@Test
 	public void testSyncronisationUeberDistributorAusfueren()
-			throws MessagingException {
+			throws MessagingException, StorageError, StorageException, InconsistentConfiguration, UnknownConfigurationElementError {
 		AcknowledgeHandler handler = new AcknowledgeHandler() {
 			public void acknowledge() throws Throwable {
 				ackHandlerCallCount++;
