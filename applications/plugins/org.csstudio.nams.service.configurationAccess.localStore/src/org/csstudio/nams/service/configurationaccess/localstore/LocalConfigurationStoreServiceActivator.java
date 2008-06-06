@@ -3,6 +3,8 @@ package org.csstudio.nams.service.configurationaccess.localstore;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
@@ -23,6 +25,8 @@ public class LocalConfigurationStoreServiceActivator implements BundleActivator 
 		AnnotationConfiguration configuration = new AnnotationConfiguration();
 		configuration = configuration.addAnnotatedClass(TopicDTO.class);
 		configuration = configuration.addAnnotatedClass(ReplicationStateDTO.class);
+		configuration = configuration.addAnnotatedClass(FilterConditionTypeDTO.class);
+		configuration = configuration.addAnnotatedClass(FilterConditionDTO.class);
 
 		final AnnotationConfiguration configured = configuration.configure();
 		this.sessionFactory = configured.buildSessionFactory();

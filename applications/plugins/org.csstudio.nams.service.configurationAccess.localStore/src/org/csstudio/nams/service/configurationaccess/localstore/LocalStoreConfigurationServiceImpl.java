@@ -5,12 +5,13 @@ import java.util.List;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.InconsistentConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicConfigurationId;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.UnknownConfigurationElementError;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 
@@ -89,5 +90,17 @@ class LocalStoreConfigurationServiceImpl implements
 		this.session.saveOrUpdate(currentState);
 		newTransaction.commit();		
 //		throw new RuntimeException("Not implemented yet.");
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<FilterConditionDTO> getFilterConditionDTOConfigurations() {
+		final Transaction newTransaction = this.session.beginTransaction();
+		final List<FilterConditionDTO> vrs = this.session.createQuery(
+				"from FilterConditionDTO t").list();
+		System.out.println(vrs.size() + " TOPIC(s) found:");
+
+		newTransaction.commit();
+
+		return vrs;
 	}
 }

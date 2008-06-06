@@ -1,5 +1,9 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
+import java.util.List;
+
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+
 public interface LocalStoreConfigurationService {
 
 	/**
@@ -46,6 +50,12 @@ public interface LocalStoreConfigurationService {
 	@Deprecated
 	public TopicDTO getTopicConfigurations(
 			TopicConfigurationId topicConfigurationDatabaseId);
+	
+	/**
+	 * @deprecated Just for testing the functionality - not for production use!
+	 */
+	@Deprecated
+	public List<FilterConditionDTO> getFilterConditionDTOConfigurations();
 
 	/**
 	 * Saves a new current syncronize-state. This method is only used to enable
