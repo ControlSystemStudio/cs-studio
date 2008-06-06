@@ -20,6 +20,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Unkn
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
@@ -163,6 +164,11 @@ public class SyncronisationsAutomat_Test extends TestCase {
 					}
 
 					public List<FilterConditionDTO> getFilterConditionDTOConfigurations() {
+						fail("unexpected method call!");
+						return null;
+					}
+
+					public List<StringArrayFilterConditionDTO> getStringArrayFilterConditionDTOConfigurations() {
 						fail("unexpected method call!");
 						return null;
 					}

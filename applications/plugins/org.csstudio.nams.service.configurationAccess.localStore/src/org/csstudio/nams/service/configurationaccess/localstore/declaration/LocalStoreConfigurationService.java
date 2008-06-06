@@ -5,6 +5,7 @@ import java.util.List;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 
 public interface LocalStoreConfigurationService {
 
@@ -58,6 +59,12 @@ public interface LocalStoreConfigurationService {
 	 */
 	@Deprecated
 	public List<FilterConditionDTO> getFilterConditionDTOConfigurations();
+	
+	/**
+	 * @deprecated Just for testing the functionality - not for production use!
+	 */
+	@Deprecated
+	public List<StringArrayFilterConditionDTO> getStringArrayFilterConditionDTOConfigurations();
 
 	/**
 	 * Saves a new current syncronize-state. This method is only used to enable

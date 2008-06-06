@@ -12,6 +12,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Unkn
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 
@@ -97,7 +98,19 @@ class LocalStoreConfigurationServiceImpl implements
 		final Transaction newTransaction = this.session.beginTransaction();
 		final List<FilterConditionDTO> vrs = this.session.createQuery(
 				"from FilterConditionDTO t").list();
-		System.out.println(vrs.size() + " TOPIC(s) found:");
+		System.out.println(vrs.size() + " FilterConditionDTO(s) found:");
+
+		newTransaction.commit();
+
+		return vrs;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<StringArrayFilterConditionDTO> getStringArrayFilterConditionDTOConfigurations() {
+		final Transaction newTransaction = this.session.beginTransaction();
+		final List<StringArrayFilterConditionDTO> vrs = this.session.createQuery(
+				"from StringArrayFilterConditionDTO t").list();
+		System.out.println(vrs.size() + " StringArrayFilterConditionDTO(s) found:");
 
 		newTransaction.commit();
 

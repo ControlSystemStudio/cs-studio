@@ -40,12 +40,16 @@
 
   				<property name="hibernate.mapping.precedence">class, hbm</property>
   				
-  				
-  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO"/>
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO"/>
-  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO"/>
-  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO"/>
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterGruppenDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterGruppenZuAlarmbearbeiterDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO"/>
   				
 	</session-factory>
 
