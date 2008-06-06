@@ -15,6 +15,7 @@ import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionS
 import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionTimeBasedTObject;
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
+import org.csstudio.nams.common.material.regelwerk.NichtVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
@@ -84,12 +85,14 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 							IdType.STRING_FILTER_CONDITION),
 							FilterConditionStringTObject.class);
 			return new StringRegel(StringRegelOperator.valueOf(stringCondition
-					.getOperator()), MessageKeyEnum.valueOf(stringCondition.getKeyValue()),
-					stringCondition.getCompValue());
-			// FIXME DTO Use real MessageKeyEnum for MessageKey instead of .valueOf(stringCondition.getKeyValue()).
-//			return new StringRegel(StringRegelOperator.valueOf(stringCondition
-//					.getOperator()), stringCondition.getKeyValue(),
-//					stringCondition.getCompValue());
+					.getOperator()), MessageKeyEnum.valueOf(stringCondition
+					.getKeyValue()), stringCondition.getCompValue());
+			// FIXME DTO Use real MessageKeyEnum for MessageKey instead of
+			// .valueOf(stringCondition.getKeyValue()).
+			// return new
+			// StringRegel(StringRegelOperator.valueOf(stringCondition
+			// .getOperator()), stringCondition.getKeyValue(),
+			// stringCondition.getCompValue());
 		}
 		case TIMEBASED: {
 			FilterConditionTimeBasedTObject timeBasedCondition = confStoreService
@@ -99,14 +102,19 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 							FilterConditionTimeBasedTObject.class);
 			VersandRegel startRegel = new StringRegel(StringRegelOperator
 					.valueOf(timeBasedCondition.getStartOperator()),
-					// FIXME DTO Use real MessageKeyEnum for MessageKey instead of .valueOf(timeBasedCondition.getStartKeyValue()).
-					MessageKeyEnum.valueOf(timeBasedCondition.getStartKeyValue()), timeBasedCondition
+			// FIXME DTO Use real MessageKeyEnum for MessageKey instead of
+					// .valueOf(timeBasedCondition.getStartKeyValue()).
+					MessageKeyEnum.valueOf(timeBasedCondition
+							.getStartKeyValue()), timeBasedCondition
 							.getStartCompValue());
 			VersandRegel confirmCancelRegel = new StringRegel(
 					StringRegelOperator.valueOf(timeBasedCondition
-							.getConfirmOperator()), MessageKeyEnum.valueOf(timeBasedCondition
-							// FIXME DTO Use real MessageKeyEnum for MessageKey instead of .valueOf(timeBasedCondition..getConfirmKeyValue()).
-							.getConfirmKeyValue()), timeBasedCondition
+							.getConfirmOperator()), MessageKeyEnum
+							.valueOf(timeBasedCondition
+							// FIXME DTO Use real MessageKeyEnum for MessageKey
+									// instead of
+									// .valueOf(timeBasedCondition..getConfirmKeyValue()).
+									.getConfirmKeyValue()), timeBasedCondition
 							.getConfirmCompValue());
 
 			Millisekunden delayUntilAlarm = Millisekunden
@@ -124,17 +132,17 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 				throw new IllegalArgumentException("Unsupported Timebehavior");
 			return timeBasedRegel;
 		}
-		case ODER: {
+		case JUNCTOR: {
 			// FIXME merkwüdigeBenamung CommonConjunctionFilterCondition
 			// realsiert derzeit nur die Disjunktion
 			VersandRegel[] versandRegels = new VersandRegel[2];
 
-			CommonConjunctionFilterConditionTObject orCondition = confStoreService
+			CommonConjunctionFilterConditionTObject junctorCondition = confStoreService
 					.getConfiguration(ConfigurationId.valueOf(
 							aggrFilterConditionTObject.getFilterConditionID(),
 							IdType.COMMON_CONJUNCTION_FILTER_CONDITION),
 							CommonConjunctionFilterConditionTObject.class);
-			int firstFilterConditionReference = orCondition
+			int firstFilterConditionReference = junctorCondition
 					.getFirstFilterConditionReference();
 
 			AggrFilterConditionTObject firstFilterConditionTObject = confStoreService
@@ -143,8 +151,9 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 							IdType.FILTER_CONDITIONS),
 							AggrFilterConditionTObject.class);
 
-			int secondFilterConditionReference = orCondition.getSecondFilterConditionReference();
-			
+			int secondFilterConditionReference = junctorCondition
+					.getSecondFilterConditionReference();
+
 			versandRegels[0] = createVersandRegel(firstFilterConditionTObject,
 					confStoreService);
 
@@ -156,34 +165,46 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
 			versandRegels[1] = createVersandRegel(secondFilterConditionTObject,
 					confStoreService);
-
-			return new OderVersandRegel(versandRegels);
+//TODO reimplement with adapted getOperand method
+//			switch (junctorCondition.getOperand()) {
+//			case OR:
+//				return new OderVersandRegel(versandRegels);
+//			case AND:
+//				return new UndVersandRegel(versandRegels);
+//			case NOT:
+//				return new NichtVersandRegel(versandRegels[0]);
+//			default:
+//				throw new IllegalArgumentException("Unsupported Junctor.");
+//			}
 		}
-		//TODO implement StringArray
-//		case STRING_ARRAY: {
-//			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>(); 
-//			
-//			FilterConditionArrayStringTObject arrayStringCondition = confStoreService
-//			.getConfiguration(ConfigurationId.valueOf(
-//					aggrFilterConditionTObject.getFilterConditionID(),
-//					IdType.AGGR_FILTER_CONDITION_ARRAY_STRING),
-//					FilterConditionArrayStringTObject.class);
-//			
-//			arrayStringCondition.
-//			
-//			return new UndVersandRegel(versandRegels.toArray(new VersandRegel[0]));
-//		}
+			// oder verknüpfte Stringregeln
+		case STRING_ARRAY: {
+			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
+
+			FilterConditionArrayStringTObject arrayStringCondition = confStoreService
+					.getConfiguration(ConfigurationId.valueOf(
+							aggrFilterConditionTObject.getFilterConditionID(),
+							IdType.AGGR_FILTER_CONDITION_ARRAY_STRING),
+							FilterConditionArrayStringTObject.class);
+
+			return new OderVersandRegel(versandRegels
+					.toArray(new VersandRegel[0]));
+		}
 		case PV: {
 			FilterConditionProcessVariableTObject pvCondition = confStoreService
-			.getConfiguration(ConfigurationId.valueOf(
-					aggrFilterConditionTObject.getFilterConditionID(),
-					IdType.PROCESS_VARIABLE_FILTER_CONDITION),
-					FilterConditionProcessVariableTObject.class);
-			return new ProcessVariableRegel(pvConnectionService, ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(pvCondition.getProcessVariableChannelName()), pvCondition.getOperator(), pvCondition.getSuggestedType(), pvCondition.getCompValue());
+					.getConfiguration(ConfigurationId.valueOf(
+							aggrFilterConditionTObject.getFilterConditionID(),
+							IdType.PROCESS_VARIABLE_FILTER_CONDITION),
+							FilterConditionProcessVariableTObject.class);
+			return new ProcessVariableRegel(
+					pvConnectionService,
+					ProcessVariableAdressFactory
+							.getInstance()
+							.createProcessVariableAdress(
+									pvCondition.getProcessVariableChannelName()),
+					pvCondition.getOperator(), pvCondition.getSuggestedType(),
+					pvCondition.getCompValue());
 		}
-		//TODO implement UndVersandRegel
-//		case UND: {
-//		}
 		default:
 			throw new IllegalArgumentException("Unsupported FilterType, see "
 					+ this.getClass().getPackage() + "."
@@ -193,11 +214,11 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
 	public static void staticInject(
 			IProcessVariableConnectionService pvConnectionService) {
-				RegelwerkBuilderServiceImpl.pvConnectionService = pvConnectionService;
+		RegelwerkBuilderServiceImpl.pvConnectionService = pvConnectionService;
 	}
 
 	public static void staticInject(
 			ConfigurationStoreService configurationStoreService) {
-				RegelwerkBuilderServiceImpl.configurationStoreService = configurationStoreService;
+		RegelwerkBuilderServiceImpl.configurationStoreService = configurationStoreService;
 	}
 }

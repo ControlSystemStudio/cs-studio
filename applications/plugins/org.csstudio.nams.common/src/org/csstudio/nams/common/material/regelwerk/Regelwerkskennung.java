@@ -4,6 +4,7 @@ import org.csstudio.nams.common.wam.Fachwert;
 
 @Fachwert
 public final class Regelwerkskennung {
+	@Deprecated
 	public static Regelwerkskennung valueOf() {
 		return new Regelwerkskennung();
 	}
@@ -11,6 +12,16 @@ public final class Regelwerkskennung {
 	private static int zaehler = 0;
 	private final int meinZaehlerWert;
 	private final String name;
+	
+	public static Regelwerkskennung valueOf(int filterId, String regelwerkName){
+		return new Regelwerkskennung(filterId, regelwerkName);
+	}
+	
+	private Regelwerkskennung(int filterId, String regelwerkName){
+		this.name = regelwerkName;
+		this.meinZaehlerWert = filterId;
+//		this.meinZaehlerWert = zaehler++;
+	}
 	
 	private Regelwerkskennung(String name) {
 		this.name = name;
@@ -37,6 +48,10 @@ public final class Regelwerkskennung {
 
 	public static Regelwerkskennung valueOf(String name) {
 		return new Regelwerkskennung(name);
+	}
+	
+	public int getRegelwerksId(){
+		return meinZaehlerWert;
 	}
 
 //  Eine eigene equals()-Methode ist nicht erforderlich, da Regelwerkskennungen nur gleich sind, wenn sie identisch sind! 

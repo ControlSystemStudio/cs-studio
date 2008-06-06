@@ -30,8 +30,9 @@ import java.util.Map;
 
 import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
+import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.wam.Material;
-
 
 /**
  * Eine Alarmnachricht einer Maschine.
@@ -40,65 +41,93 @@ import org.csstudio.nams.common.wam.Material;
 public class AlarmNachricht implements Cloneable {
 	private String nachricht;
 	private Date zeitFuerToString;
-	private final Map<MessageKeyEnum, String> map;
-	
+	private final Map<MessageKeyEnum, String> content;
+
 	@Deprecated
 	public AlarmNachricht(String nachricht) {
 		Contract.requireNotNull("nachricht", nachricht);
 		this.nachricht = nachricht;
 		this.zeitFuerToString = new Date(); // TODO Entfernen!
-		
-		this.map = new HashMap<MessageKeyEnum, String>();
+
+		this.content = new HashMap<MessageKeyEnum, String>();
 
 		// TODO Auto-generated constructor stub
 	}
 
+	private AlarmNachricht(String nachricht, Date zeitFuerToString, Map<MessageKeyEnum, String> content){
+		this.nachricht = nachricht;
+		this.zeitFuerToString = zeitFuerToString;
+		this.content = content;
+		
+	}
+	
 	public AlarmNachricht(Map<MessageKeyEnum, String> map) {
-		this.map = map;
+		this.content = map;
 	}
 
-	public String getValueFor(MessageKeyEnum key){
+	public String getValueFor(MessageKeyEnum key) {
 		String result = "";
-		if(map.containsKey(key)){
-			result = map.get(key);
+		if (content.containsKey(key)) {
+			result = content.get(key);
 		}
 		return result;
 	}
-	
+
 	@Override
 	public AlarmNachricht clone() {
-		return new AlarmNachricht(nachricht);
+		return new AlarmNachricht(nachricht, zeitFuerToString, content);
 	}
 
 	@Override
-	// TODO add MAP
+	public String toString() {
+		return nachricht + "\t" + zeitFuerToString;
+	}
+
+	public void matchedMessageWithRegelwerk(Regelwerkskennung kennung) {
+		content.put(MessageKeyEnum.AMS_REINSERTED, Integer.valueOf(
+				kennung.getRegelwerksId()).toString());
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + nachricht.hashCode();
+		result = prime * result + ((content == null) ? 0 : content.hashCode());
+		result = prime * result
+				+ ((nachricht == null) ? 0 : nachricht.hashCode());
+		result = prime
+				* result
+				+ ((zeitFuerToString == null) ? 0 : zeitFuerToString.hashCode());
 		return result;
 	}
 
 	@Override
-	// TODO add MAP
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
-		if (!getClass().isAssignableFrom(obj.getClass()))
+		if (getClass() != obj.getClass())
 			return false;
 		final AlarmNachricht other = (AlarmNachricht) obj;
-		if (!nachricht.equals(other.nachricht))
+		if (content == null) {
+			if (other.content != null)
+				return false;
+		} else if (!content.equals(other.content))
+			return false;
+		if (nachricht == null) {
+			if (other.nachricht != null)
+				return false;
+		} else if (!nachricht.equals(other.nachricht))
+			return false;
+		if (zeitFuerToString == null) {
+			if (other.zeitFuerToString != null)
+				return false;
+		} else if (!zeitFuerToString.equals(other.zeitFuerToString))
 			return false;
 		return true;
 	}
-	
-	@Override
-	public String toString() {
-		return nachricht + "\t" + zeitFuerToString;
-	}
-	
+
 	public String gibNachrichtenText() {
 		return nachricht;
 	}
