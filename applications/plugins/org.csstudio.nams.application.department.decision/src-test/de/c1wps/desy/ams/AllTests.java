@@ -1,12 +1,14 @@
 package de.c1wps.desy.ams;
 
-import org.csstudio.nams.application.department.decision.SyncronisationsAutomat_Test;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.csstudio.nams.application.department.decision.SyncronisationsAutomat_Test;
+
 import de.c1wps.desy.ams.alarmentscheidungsbuero.Alarmentscheidungsbuero_SubSystemTestSuite;
 import de.c1wps.desy.ams.allgemeines.Allgemeines_SubSystemTestSuite;
+import de.c1wps.desy.ams.allgemeines.regelwerk.AllgemeinesRegelwerk_SubSystemTestSuite;
 
 public class AllTests extends TestCase {
 
@@ -19,7 +21,7 @@ public class AllTests extends TestCase {
 		suite.addTest(Allgemeines_SubSystemTestSuite.suite());
 		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
 		suite.addTestSuite(SyncronisationsAutomat_Test.class);
-		//suite.addTest(AllgemeinesRegelwerk_SubSystemTestSuite.suite());
+		suite.addTest(AllgemeinesRegelwerk_SubSystemTestSuite.suite());
 		//$JUnit-END$
 		return suite;
 	}

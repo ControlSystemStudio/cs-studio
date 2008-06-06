@@ -4,7 +4,7 @@ package org.csstudio.nams.common.material;
 /**
  * Systemnachricht wie Aktualisieren im NAMS
  */
-public abstract class SystemNachricht {
+public interface SystemNachricht {
 
 //	final static String MSGPROP_COMMAND = "COMMAND"; 
 //	final static String MSGVALUE_TCMD_RELOAD = "AMS_RELOAD_CFG";
@@ -18,12 +18,12 @@ public abstract class SystemNachricht {
 //		Contract.require(this.map.containsKey(MSGPROP_COMMAND), "map.containsKey(MSGPROP_COMMAND)");
 //	}
 
-	public abstract boolean istSyncronisationsBestaetigung();
+	public boolean istSyncronisationsBestaetigung();
 //	{
 //		return map.get(MSGPROP_COMMAND).equals(MSGVALUE_TCMD_RELOAD_CFG_END);
 //	}
 
-	public abstract boolean istSyncronisationsAufforderung();
+	public boolean istSyncronisationsAufforderung();
 //	{
 //		return map.get(MSGPROP_COMMAND).equals(MSGVALUE_TCMD_RELOAD_CFG_START);
 //	}

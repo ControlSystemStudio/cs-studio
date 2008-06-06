@@ -1,10 +1,9 @@
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
-import org.csstudio.nams.common.material.AlarmNachricht_Test;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 
 public class AllgemeinesRegelwerk_SubSystemTestSuite extends TestCase {
 
@@ -24,6 +23,8 @@ public class AllgemeinesRegelwerk_SubSystemTestSuite extends TestCase {
 		suite.addTestSuite(TimeBasedRegel_Test.class);
 		suite.addTestSuite(TimeBasedRegelAlarmBeiBestaetigung_Test.class);
 		suite.addTestSuite(AlarmNachricht_Test.class);
+		suite.addTestSuite(ProcessVariableRegel_Test.class);
+		suite.addTestSuite(StringRegel_Test.class);
 		//$JUnit-END$
 		return suite;
 	}

@@ -63,6 +63,7 @@ public class AlarmNachricht implements Cloneable {
 	
 	public AlarmNachricht(Map<MessageKeyEnum, String> map) {
 		this.content = map;
+		this.zeitFuerToString = new Date();
 	}
 
 	public String getValueFor(MessageKeyEnum key) {
