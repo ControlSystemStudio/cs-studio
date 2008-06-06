@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.csstudio.platform.libs.jms;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.platform.libs.jms.JmsPlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.junit4
 Eclipse-LazyStart: true
 Bundle-ClassPath: libs/apache-activemq-4.1.1.jar,
  libs/spring-2.0.jar,
