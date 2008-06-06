@@ -32,13 +32,9 @@ import javax.persistence.Table;
 @Table(name = "AMS_FilterCondition")
 public class FilterConditionDTO {
 
-//	//OneToOne(cascade=CascadeType.ALL, mappedBy="iFilterConditionID")
-//	
 	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="iFilterConditionTypeRef", referencedColumnName="iFilterConditionTypeID")
 	private FilterConditionTypeDTO type;
-	
-	
 	
 	/**
 	 * @return the type
@@ -58,16 +54,16 @@ public class FilterConditionDTO {
 	
 	@Id
 	@GeneratedValue
-	@Column(name = "iFilterConditionID")
+	@Column(name = "iFilterConditionID", nullable=false, unique=true)
 	private int iFilterConditionID;
 
-	@Column(name = "iGroupRef")
-	private int iGroupRef;
+	@Column(name = "iGroupRef", nullable=false)
+	private int iGroupRef = -1;
 
-	@Column(name = "cName")
+	@Column(name = "cName", length=128)
 	private String cName;
 
-	@Column(name = "cDesc")
+	@Column(name = "cDesc", length=256)
 	private String cDesc;
 
 	@Column(name = "iFilterConditionTypeRef", insertable=false, updatable=false)

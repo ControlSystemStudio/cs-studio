@@ -1,6 +1,7 @@
 package org.csstudio.nams.application.department.decision;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -15,9 +16,10 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Loca
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicConfigurationId;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.UnknownConfigurationElementError;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
@@ -158,6 +160,11 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						if (nextToBeDelivered != null)
 							fail("missing clean of of lastSended");
 						lastSended = currentState;
+					}
+
+					public List<FilterConditionDTO> getFilterConditionDTOConfigurations() {
+						fail("unexpected method call!");
+						return null;
 					}
 
 				});

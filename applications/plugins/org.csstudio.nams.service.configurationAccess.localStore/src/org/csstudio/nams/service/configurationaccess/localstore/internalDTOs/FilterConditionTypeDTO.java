@@ -29,20 +29,20 @@ public class FilterConditionTypeDTO {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "iFilterConditionTypeID")
+	@Column(name = "iFilterConditionTypeID", nullable=false, unique=true)
 	private int iFilterConditionTypeID;
 
-	@Column(name = "cName")
+	@Column(name = "cName", length=128)
 	private String cName;
 
-	@Column(name = "cClass")
+	@Column(name = "cClass", length=256)
 	private String cClass;
 
 	/**
 	 * @deprecated No more in use.
 	 */
 	@Deprecated
-	@Column(name = "cClassUI")
+	@Column(name = "cClassUI", length=256)
 	private String cClassUI = null;
 
 	/**

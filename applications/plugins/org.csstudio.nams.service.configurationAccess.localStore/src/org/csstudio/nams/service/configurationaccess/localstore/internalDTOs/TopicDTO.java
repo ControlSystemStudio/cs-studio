@@ -1,4 +1,4 @@
-package org.csstudio.nams.service.configurationaccess.localstore.declaration;
+package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,17 +31,18 @@ import org.csstudio.nams.common.contract.Contract;
 @Table(name = "AMS_TOPIC")
 public class TopicDTO {
 
-	@Column(name = "CDESCRIPTION")
+	@Column(name = "CDESCRIPTION", length=256)
 	private String description;
 
-	@Column(name = "CNAME")
+	@Column(name = "CNAME", length=128)
 	private String name;
-	@Column(name = "CTOPICNAME")
+	
+	@Column(name = "CTOPICNAME", length=128)
 	private String topicName;
 
 	@Id
 	@GeneratedValue
-	@Column(name = "ITOPICID")
+	@Column(name = "ITOPICID", nullable=false, unique=true)
 	private int id = -1;
 
 	@Column(name = "IGROUPREF")

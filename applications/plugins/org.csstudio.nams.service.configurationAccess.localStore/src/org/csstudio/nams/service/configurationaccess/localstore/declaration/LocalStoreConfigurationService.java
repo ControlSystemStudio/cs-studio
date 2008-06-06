@@ -3,6 +3,8 @@ package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 import java.util.List;
 
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
 
 public interface LocalStoreConfigurationService {
 
