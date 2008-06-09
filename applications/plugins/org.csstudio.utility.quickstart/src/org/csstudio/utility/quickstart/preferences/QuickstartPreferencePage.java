@@ -21,6 +21,7 @@
  */
  package org.csstudio.utility.quickstart.preferences;
 
+import org.csstudio.utility.quickstart.Activator;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -46,8 +47,8 @@ public class QuickstartPreferencePage
 	 */
 	public QuickstartPreferencePage() {
 		super(GRID);
-		setPreferenceStore(AlarmTreePlugin.getDefault().getPreferenceStore());
-		setDescription("Alarm tree preferences");
+		setPreferenceStore(Activator.getDefault().getPreferenceStore());
+		setDescription("Quickstart preferences");
 	}
 	
 	/**
@@ -57,17 +58,13 @@ public class QuickstartPreferencePage
 	 * restore itself.
 	 */
 	public final void createFieldEditors() {
-		addField(new ListEditor(PreferenceConstants.FACILITIES, "&Facility names: ", getFieldEditorParent()){
+		addField(new ListEditor(PreferenceConstants.SDS_FILE_1, "&Facility names: ", getFieldEditorParent()){
 			
 			public String[] parseString(final String stringList){
 				return stringList.split(";");
 			}
 			
 			public String getNewInputObject(){
-				AddMountPointDlg inputDialog = new AddMountPointDlg(getFieldEditorParent().getShell());
-				if (inputDialog.open() == Window.OK) {
-					return ((AddMountPointDlg) inputDialog).getResult();
-				}
 				return null;
 			}
 			
@@ -82,37 +79,7 @@ public class QuickstartPreferencePage
 			
 		});
 		
-		// JMS Server Settings
-		Group g2 = new Group(getFieldEditorParent(), SWT.NONE);
-		g2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,2,1));
-		g2.setLayout(new GridLayout(2,false));
-		// -- Primery Server
-		Label l1 = new Label(g2,SWT.NONE);
-		l1.setText("Primary server");
-		l1.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
-		addField(new StringFieldEditor(
-				PreferenceConstants.JMS_CONTEXT_FACTORY_PRIMARY,
-				"Context factory:", g2));
-		addField(new StringFieldEditor(
-				PreferenceConstants.JMS_URL_PRIMARY,
-				"Provider URL:", g2));
-		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
-		// -- Secondary Server
-		Label l2 = new Label(g2,SWT.NONE);
-		l2.setText("Secondary server");
-		l2.setLayoutData(new GridData(SWT.LEFT,SWT.CENTER, false, false,2,1));
-		addField(new StringFieldEditor(
-				PreferenceConstants.JMS_CONTEXT_FACTORY_SECONDARY,
-				"Context factory:", g2));
-		addField(new StringFieldEditor(
-				PreferenceConstants.JMS_URL_SECONDARY,
-				"Provider URL:", g2));
-		// --INITIAL_CONTEXT_FACTORY
-		new Label(g2,SWT.HORIZONTAL|SWT.SEPARATOR|SWT.CENTER).setLayoutData(new GridData(SWT.FILL,SWT.FILL, false, false,2,1));
-		addField(new StringFieldEditor(PreferenceConstants.JMS_QUEUE,
-				"Queue:", g2));
 	}
-
 
 	/**
 	 * {@inheritDoc}

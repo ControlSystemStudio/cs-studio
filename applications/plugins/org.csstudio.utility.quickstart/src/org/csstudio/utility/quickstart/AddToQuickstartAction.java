@@ -1,6 +1,8 @@
 package org.csstudio.utility.quickstart;
 
+import org.csstudio.utility.quickstart.preferences.PreferenceConstants;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -14,7 +16,7 @@ public class AddToQuickstartAction implements IObjectActionDelegate {
 	 */
 	private IStructuredSelection _selection;
 
-	public static IFile sdsFile;
+//	public static IFile sdsFile;
 	
 	public AddToQuickstartAction() {
 		super();
@@ -30,7 +32,12 @@ public class AddToQuickstartAction implements IObjectActionDelegate {
 			Object element = _selection.getFirstElement();
 
 			if (element instanceof IFile) {
-				sdsFile = (IFile) element;
+//				sdsFile = (IFile) element;
+				Preferences prefs = Activator.getDefault().getPluginPreferences();
+				String sdsFileList = prefs.getString(PreferenceConstants.SDS_FILE_1);
+				IFile file = (IFile) element;
+				sdsFileList = file.getLocation().toString() + ";" + sdsFileList;
+				prefs.setValue("sdsFile1", sdsFileList);
 //				RunModeService.getInstance().openDisplayShellInRunMode(file.getLocation());
 			}
 		}
