@@ -9,12 +9,10 @@ import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditi
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
 import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.configurator.treeviewer.actions.OpenConfigurationEditor;
-import org.csstudio.nams.configurator.treeviewer.model.AbstractConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.SortGroupBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationRoot;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -115,7 +113,7 @@ public class ConfigurationTreeView extends ViewPart {
 		return ConfigurationTreeView.editingStoreService;
 	}
 
-	protected Logger getLogger() {
+	public static Logger getLogger() {
 		return ConfigurationTreeView.logger;
 	}
 
@@ -161,5 +159,13 @@ public class ConfigurationTreeView extends ViewPart {
 				});
 			}
 		};
+	}
+
+	public static ConfigurationEditingStoreService getEditingStoreService() {
+		return editingStoreService;
+	}
+
+	public static ConfigurationStoreService getConfigurationService() {
+		return configurationService;
 	}
 }
