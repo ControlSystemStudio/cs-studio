@@ -120,7 +120,12 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 		ServiceTracker serviceTracker = new ServiceTracker(bundleContext,
 				requestedServiceType.getName(), null);
 		serviceTracker.open();
-		T result = requestedServiceType.cast(serviceTracker.getService());
+		Object service = serviceTracker.getService();
+		T result = null;
+		if( service != null )
+		{
+			result = requestedServiceType.cast(service);
+		}
 		serviceTracker.close();
 		return result;
 	}
