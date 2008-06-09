@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.testutils;
+package org.csstudio.nams.common.plugin.utils;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

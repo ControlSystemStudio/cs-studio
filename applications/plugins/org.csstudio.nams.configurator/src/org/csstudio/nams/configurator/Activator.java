@@ -3,10 +3,10 @@ package org.csstudio.nams.configurator;
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditingStoreService;
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
 import org.csstudio.ams.service.logging.declaration.Logger;
-import org.csstudio.nams.configurator.testutils.AbstractBundleActivator;
-import org.csstudio.nams.configurator.testutils.OSGiBundleActivationMethod;
-import org.csstudio.nams.configurator.testutils.OSGiService;
-import org.csstudio.nams.configurator.testutils.Required;
+import org.csstudio.nams.common.plugin.utils.AbstractBundleActivator;
+import org.csstudio.nams.common.plugin.utils.OSGiBundleActivationMethod;
+import org.csstudio.nams.common.plugin.utils.OSGiService;
+import org.csstudio.nams.common.plugin.utils.Required;
 import org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView;
 import org.osgi.framework.BundleActivator;
 
@@ -22,33 +22,15 @@ public class Activator extends AbstractBundleActivator implements
 	public static final String PLUGIN_ID = "org.csstudio.nams.configurator";
 
 	/**
-	 * The constructor
-	 */
-	public Activator() {
-	}
-
-	/**
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	// public void start(BundleContext context) throws Exception {
 	@OSGiBundleActivationMethod
-	public void bundleStart(@OSGiService
-	@Required
-	ConfigurationEditingStoreService editingStoreService, @OSGiService
-	@Required
-	ConfigurationStoreService storeService, @OSGiService
-	@Required
-	Logger logger) {
-
-		// ConfigurationEditingStoreService editingStoreService =
-		// BundleActivatorUtils.getAvailableService(context,
-		// ConfigurationEditingStoreService.class);
-		// ConfigurationStoreService storeService =
-		// BundleActivatorUtils.getAvailableService(context,
-		// ConfigurationStoreService.class);
-		// Logger logger = BundleActivatorUtils.getAvailableService(context,
-		// Logger.class);
-
+	public void bundleStart(
+			@OSGiService @Required ConfigurationEditingStoreService editingStoreService,
+			@OSGiService @Required ConfigurationStoreService storeService,
+			@OSGiService @Required Logger logger
+	) {
+		// for debugging : Alle Services injected?
 		if (editingStoreService != null && storeService != null
 				&& logger != null) {
 			logger.logInfoMessage(this, "activated...");
@@ -60,11 +42,4 @@ public class Activator extends AbstractBundleActivator implements
 		ConfigurationTreeView.staticInjectStoreService(storeService);
 		ConfigurationTreeView.staticInjectLogger(logger);
 	}
-
-	/**
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	// public void stop(BundleContext context) throws Exception {
-	// // nothing to do.
-	// }
 }

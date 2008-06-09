@@ -1,4 +1,4 @@
-package org.csstudio.nams.configurator.testutils;
+package org.csstudio.nams.common.plugin.utils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
