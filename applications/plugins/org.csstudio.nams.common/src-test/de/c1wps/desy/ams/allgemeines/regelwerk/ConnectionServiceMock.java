@@ -8,6 +8,7 @@ import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 
 class ConnectionServiceMock implements
@@ -295,9 +296,9 @@ class ConnectionServiceMock implements
 		return 0;
 	}
 
-    public boolean isSettable(IProcessVariableAddress pv)
+    public SettableState isSettable(IProcessVariableAddress pv)
     {
         // TODO Auto-generated method stub
-        return false;
+        return null;
     }
 }
