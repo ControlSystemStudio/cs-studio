@@ -21,9 +21,14 @@
  */
  package org.csstudio.sds.components.epics;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.components.model.RectangleModel;
 import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
 import org.csstudio.sds.model.initializers.AbstractWidgetModelInitializer;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * Initializes a rectangle with EPICS specific property values.
@@ -41,7 +46,13 @@ public final class RectangleInitializer extends AbstractWidgetModelInitializer {
 	protected void initialize(final AbstractControlSystemSchema schema) {
 		initializeStaticProperty(RectangleModel.PROP_FILL, 50.0);
 		initializeDynamicProperty(RectangleModel.PROP_FILL, "$channel$");
-		// initializeDynamicProperty(RectangleModel.PROP_FILL, "$channel$.VAL");
+		
+		initializeStaticProperty(RectangleModel.PROP_BORDER_WIDTH, new Integer(2));
+		Map<ConnectionState, Object> colorsByConnectionState = new HashMap<ConnectionState, Object>();
+		colorsByConnectionState.put(ConnectionState.CONNECTED, new RGB(255,255,255));
+		colorsByConnectionState.put(ConnectionState.CONNECTION_LOST, new RGB(255,0,0));
+		
+		initializeDynamicPropertyForConnectionState(RectangleModel.PROP_BORDER_COLOR, "$channel$", colorsByConnectionState);
 	}
 
 }

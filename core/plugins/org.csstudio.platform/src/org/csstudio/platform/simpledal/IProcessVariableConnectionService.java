@@ -554,16 +554,18 @@ public interface IProcessVariableConnectionService {
 			IProcessVariableAddress pv);
 
 	/**
-	 * Returns true if the specified process variable can be manipulated by the
-	 * current user and false if the user is not allowed to set any values for
-	 * that process variable
+	 * Returns {@link SettableState#SETTABLE} if the specified process variable
+	 * can be manipulated by the current user,
+	 * {@link SettableState#NOT_SETTABLE} if the user is not allowed to set any
+	 * values for that process variable and {@link SettableState#UNKNOWN} if the
+	 * state could not be determined (this also happens when a pv cannot be
+	 * connected within a certain time period)
 	 * 
 	 * @param pv
 	 *            the process variable address
 	 * 
-	 * @return true if the user can set a value for the specified process
-	 *         variable, false otherwise
+	 * @return one of {@link SettableState#values()}
 	 */
-	boolean isSettable(IProcessVariableAddress pv);
+	SettableState isSettable(IProcessVariableAddress pv);
 
 }

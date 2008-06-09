@@ -37,6 +37,7 @@ import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
+import org.csstudio.platform.simpledal.SettableState;
 import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueProperty;
@@ -47,6 +48,8 @@ import org.epics.css.dal.context.ConnectionEvent;
 import org.epics.css.dal.context.LinkAdapter;
 import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.spi.PropertyFactory;
+
+import com.sun.java_cup.internal.emit;
 
 /**
  * Standard implementation of {@link IProcessVariableConnectionService}.
@@ -1169,11 +1172,11 @@ public class ProcessVariableConnectionService implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isSettable(IProcessVariableAddress pv) {
-		boolean result = false;
+	public SettableState isSettable(IProcessVariableAddress pv) {
+		SettableState result = SettableState.UNKNOWN;
 
 		if (pv.getControlSystem() == ControlSystemEnum.LOCAL) {
-			result = true;
+			result = SettableState.SETTABLE;
 		} else {
 			try {
 				ValueType valueType = pv.getValueTypeHint() != null ? pv
@@ -1182,14 +1185,28 @@ public class ProcessVariableConnectionService implements
 				DynamicValueProperty p = createOrGetDalProperty(pv, valueType
 						.getDalType());
 
+
+				long timeout = System.currentTimeMillis() + 1000;
+
+				while (!p.isConnected()
+						&& System.currentTimeMillis() < timeout) {
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException e) {
+					}
+				}
+				
 				// DAL encapsulates the detection of the current user internally
 				// (probably via global system properties)
-				result = p.isSettable();
+				if(p.isConnected()) {
+					result = p.isSettable() ? SettableState.SETTABLE : SettableState.NOT_SETTABLE;
+				}
 			} catch (Exception e) {
 				CentralLogger.getInstance().error(
 						this,
 						"We could not check the settable-state of ["
-								+ pv.toString() + "]");
+								+ pv.toString() + "]", e);
+				result = SettableState.UNKNOWN;
 			}
 		}
 
