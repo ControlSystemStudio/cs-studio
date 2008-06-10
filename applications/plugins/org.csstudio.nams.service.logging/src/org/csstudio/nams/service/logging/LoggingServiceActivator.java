@@ -23,10 +23,12 @@
  */
 package org.csstudio.nams.service.logging;
 
+import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
+import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
+import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.logging.impl.LoggerImpl;
 import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -36,27 +38,19 @@ import org.osgi.framework.BundleContext;
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 18.04.2008
  */
-public class LoggingServiceActivator implements BundleActivator {
+public class LoggingServiceActivator extends AbstractBundleActivator implements BundleActivator {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.logging";
 
 	/**
-	 * The constructor
-	 */
-	public LoggingServiceActivator() {
-	}
-
-	/**
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(BundleContext context) throws Exception {
-		context.registerService(Logger.class.getName(), new LoggerImpl(), null);
-	}
-
-	/**
-	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
+	@OSGiBundleActivationMethod
+	public OSGiServiceOffers startBundle() throws Exception {
+		OSGiServiceOffers offers = new OSGiServiceOffers();
+		
+		offers.put(Logger.class, new LoggerImpl());
+		return offers;
 	}
 }
