@@ -3,6 +3,7 @@ package org.csstudio.platform.logging;
 import static org.junit.Assert.*;
 
 import java.util.Calendar;
+import java.util.Enumeration;
 
 import javax.jms.Connection;
 import javax.jms.ExceptionListener;
@@ -71,15 +72,23 @@ public class JMSLogThreadTest
         }
 
         /** @see MessageListener */
+        @SuppressWarnings("unchecked")
         public void onMessage(final Message message)
         {
             try
             {
                 if (message instanceof MapMessage)
                 {
-                    final JMSLogMessage log =
-                        JMSLogMessage.fromMapMessage((MapMessage) message);
+                    final MapMessage map = (MapMessage) message;
+                    final JMSLogMessage log = JMSLogMessage.fromMapMessage(map);
                     System.out.println("Received " + log);
+                    final Enumeration<String> elements = map.getMapNames();
+                    while (elements.hasMoreElements())
+                    {
+                        final String element = elements.nextElement();
+                        System.out.format("%20s: %s\n",
+                                element, map.getString(element));
+                    }
                 }
                 else
                     System.out.println("Received " + message.getClass().getName());
@@ -118,13 +127,13 @@ public class JMSLogThreadTest
             final Calendar now = Calendar.getInstance();
             Calendar earlier = (Calendar) now.clone();
             earlier.add(Calendar.HOUR, -1);
-            final JMSLogMessage log_msg = new JMSLogMessage("Test" + i,
+            final JMSLogMessage log_msg = new JMSLogMessage("Test " + i,
                     now, earlier,
                     "SomeClass", "some_method",
                     "SomeClass.java:315",
                     "MyApp", "localhost", "fred");
             log_thread.addLogMessage(log_msg);
-            Thread.sleep(1000);
+            Thread.sleep(100);
         }
         
         // Wait for receiver to have received what it wants to receive
