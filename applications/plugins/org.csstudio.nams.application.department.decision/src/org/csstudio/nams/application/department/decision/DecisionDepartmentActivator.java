@@ -179,22 +179,14 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 * @see BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	@OSGiBundleActivationMethod
-	public void startBundle(@OSGiService
-	@Required
-	Logger injectedLogger, @OSGiService
-	@Required
-	MessagingService injectedMessagingService, @OSGiService
-	@Required
-	PreferenceService injectedPreferenceService, @OSGiService
-	@Required
-	RegelwerkBuilderService injectedBuilderService, @OSGiService
-	@Required
-	HistoryService injectedHistoryService, @OSGiService
-	@Required
-	LocalStoreConfigurationService injectedLocalStoreConfigurationService,
-			@OSGiService
-			@Required
-			ExecutionService injectedExecutionService) throws Exception {
+	public void startBundle(
+			@OSGiService @Required Logger injectedLogger,
+			@OSGiService @Required MessagingService injectedMessagingService,
+			@OSGiService @Required PreferenceService injectedPreferenceService,
+			@OSGiService @Required RegelwerkBuilderService injectedBuilderService,
+			@OSGiService @Required HistoryService injectedHistoryService,
+			@OSGiService @Required LocalStoreConfigurationService injectedLocalStoreConfigurationService,
+			@OSGiService @Required ExecutionService injectedExecutionService) throws Exception {
 
 		// ** Services holen...
 

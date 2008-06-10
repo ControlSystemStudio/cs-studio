@@ -1,12 +1,13 @@
 package org.csstudio.nams.common.activatorUtils;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class OSGiServiceOffers implements Map<Class<?>, Object> {
 
-	private Map<Class<?>, Object> contents;
+	private Map<Class<?>, Object> contents = new HashMap<Class<?>, Object>();
 	
 	public void clear() {
 		contents.clear();

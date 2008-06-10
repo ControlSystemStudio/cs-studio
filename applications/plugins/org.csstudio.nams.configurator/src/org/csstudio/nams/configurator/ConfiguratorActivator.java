@@ -5,6 +5,7 @@ import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStore
 import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
+import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiService;
 import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView;
@@ -41,5 +42,11 @@ public class ConfiguratorActivator extends AbstractBundleActivator implements
 				.staticInjectEditingStoreService(editingStoreService);
 		ConfigurationTreeView.staticInjectStoreService(storeService);
 		ConfigurationTreeView.staticInjectLogger(logger);
+	}
+	
+	@OSGiBundleDeactivationMethod
+	public void stopBundle(@OSGiService @Required Logger logger) throws Exception {
+		logger.logInfoMessage(this, "Plugin " + PLUGIN_ID
+				+ " stopped succesfully.");
 	}
 }
