@@ -3,6 +3,9 @@ package org.csstudio.nams.common.activatorUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -10,15 +13,21 @@ import org.osgi.util.tracker.ServiceTracker;
 public abstract class AbstractBundleActivator implements BundleActivator {
 
 	private static class RequestedParam {
-		final boolean isOSGiServiceRequest;
+		public static enum RequestType {
+			OSGiServiceRequest, ExecuteableExtensionRequest
+		}
+
 		final boolean required;
 		final Class<?> type;
+		final RequestType requestType;
+		final Annotation annotation;
 
 		public RequestedParam(final Class<?> type, final boolean required,
-				final boolean isOSGiServiceRequest) {
+				final RequestType requestType, Annotation annotation) {
 			this.type = type;
 			this.required = required;
-			this.isOSGiServiceRequest = isOSGiServiceRequest;
+			this.requestType = requestType;
+			this.annotation = annotation;
 		}
 	}
 
@@ -28,17 +37,52 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 		Object[] result = new Object[requestedParams.length];
 
 		for (int paramIndex = 0; paramIndex < requestedParams.length; paramIndex++) {
-			result[paramIndex] = getAvailableService(context,
-					requestedParams[paramIndex].type);
-			if (result[paramIndex] == null
-					&& requestedParams[paramIndex].required) {
-				throw new RuntimeException(
-						"Unable to solve required param of type: "
-								+ requestedParams[paramIndex].type.getName()
-								+ "; service currently not avail in the OSGi service registry!");
+			if (RequestedParam.RequestType.OSGiServiceRequest
+					.equals(requestedParams[paramIndex].requestType)) {
+				result[paramIndex] = getAvailableService(context,
+						requestedParams[paramIndex].type);
+				if (result[paramIndex] == null
+						&& requestedParams[paramIndex].required) {
+					throw new RuntimeException(
+							"Unable to solve required param of type: "
+									+ requestedParams[paramIndex].type
+											.getName()
+									+ "; service currently not avail in the OSGi service registry!");
+				}
+			} else if (RequestedParam.RequestType.ExecuteableExtensionRequest
+					.equals(requestedParams[paramIndex].requestType)) {
+				result[paramIndex] = getExecuteableExtension((ExecutableEclipseRCPExtension)requestedParams[paramIndex].annotation);
+				if (result[paramIndex] == null
+						&& requestedParams[paramIndex].required) {
+					throw new RuntimeException(
+							"Unable to solve required param of type: "
+									+ requestedParams[paramIndex].type
+											.getName()
+									+ "; extension currently not avail in the extension registry!");
+				}
+			} else {
+				throw new RuntimeException("unsupported request type: "
+						+ requestedParams[paramIndex].requestType);
 			}
 		}
 
+		return result;
+	}
+
+	private static Object getExecuteableExtension(ExecutableEclipseRCPExtension annotation) {
+		IConfigurationElement[] elements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(annotation.extensionId());
+		if( ! (elements.length == 1) ) {
+			return null;
+		}
+		
+		Object result;
+		try {
+			result = elements[0].createExecutableExtension(annotation.executeableName());
+		} catch (CoreException e) {
+			throw new RuntimeException("unable to create extension", e);
+		}
+		
 		return result;
 	}
 
@@ -48,7 +92,8 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 	 * @throws RuntimeException
 	 *             If no or more than one matching {@link Method} is present.
 	 */
-	static private <T extends Annotation> Method findAnnotatedMethod(Object objectToInspect, Class<T> annotationType) {
+	static private <T extends Annotation> Method findAnnotatedMethod(
+			Object objectToInspect, Class<T> annotationType) {
 		Method result = null;
 
 		Method[] methods = objectToInspect.getClass().getMethods();
@@ -77,17 +122,22 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 			Annotation[] annotationsOfParam = parameterAnnotations[paramIndex];
 			Class<?> paramType = parameterTypes[paramIndex];
 
-			boolean isOSGiService = false;
+			RequestedParam.RequestType requestType = null;
 			boolean isRequired = false;
+			Annotation requestAnnotation = null;
 			for (Annotation annotation : annotationsOfParam) {
 				if (annotation instanceof OSGiService) {
-					isOSGiService = true;
+					requestType = RequestedParam.RequestType.OSGiServiceRequest;
+					requestAnnotation = annotation;
+				} else if (annotation instanceof ExecutableEclipseRCPExtension) {
+					requestType = RequestedParam.RequestType.ExecuteableExtensionRequest;
+					requestAnnotation = annotation;
 				} else if (annotation instanceof Required) {
 					isRequired = true;
 				}
 			}
 			result[paramIndex] = new RequestedParam(paramType, isRequired,
-					isOSGiService);
+					requestType, requestAnnotation);
 		}
 		return result;
 	}
@@ -126,18 +176,21 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 	}
 
 	final public void start(BundleContext context) throws Exception {
-		Method bundleStartMethod = findAnnotatedMethod(this, OSGiBundleActivationMethod.class);
-		
+		Method bundleStartMethod = findAnnotatedMethod(this,
+				OSGiBundleActivationMethod.class);
+
 		if (bundleStartMethod == null) {
 			throw new RuntimeException("No Activator-start-method present!");
 		}
-		
+
 		RequestedParam[] requestedParams = getAllRequestedMethodParams(bundleStartMethod);
 
 		// check is all requested params are valid...
 		for (RequestedParam requestedParam : requestedParams) {
 			// currently only OSGiService injection is supported
-			if (!requestedParam.isOSGiServiceRequest) {
+			if (!(RequestedParam.RequestType.OSGiServiceRequest
+					.equals(requestedParam.requestType) || RequestedParam.RequestType.ExecuteableExtensionRequest
+					.equals(requestedParam.requestType))) {
 				throw new RuntimeException(
 						"Can not inject not annotated param of type "
 								+ requestedParam.type.getName()
@@ -176,30 +229,36 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 	}
 
 	final public void stop(BundleContext context) throws Exception {
-		Method bundleSopMethod = findAnnotatedMethod(this, OSGiBundleDeactivationMethod.class);
-		RequestedParam[] requestedParams = getAllRequestedMethodParams(bundleSopMethod);
+		Method bundleSopMethod = findAnnotatedMethod(this,
+				OSGiBundleDeactivationMethod.class);
 
-		// check is all requested params are valid...
-		for (RequestedParam requestedParam : requestedParams) {
-			// currently only OSGiService injection is supported
-			if (!requestedParam.isOSGiServiceRequest) {
-				throw new RuntimeException(
-						"Can not inject not annotated param of type "
-								+ requestedParam.type.getName()
-								+ "; currently only OSGi service injection is supported.");
+		if (bundleSopMethod != null) {
+			RequestedParam[] requestedParams = getAllRequestedMethodParams(bundleSopMethod);
+
+			// check is all requested params are valid...
+			for (RequestedParam requestedParam : requestedParams) {
+				// currently only OSGiService injection is supported
+				if (!RequestedParam.RequestType.OSGiServiceRequest
+						.equals(requestedParam.requestType)) {
+					throw new RuntimeException(
+							"Can not inject not annotated param of type "
+									+ requestedParam.type.getName()
+									+ "; currently only OSGi service injection is supported.");
+				}
 			}
-		}
 
-		// check if return value is void.
-		Class<?> returnType = bundleSopMethod.getReturnType();
-		if (!Void.TYPE.isAssignableFrom(returnType)) {
-			throw new RuntimeException("Illegal return value of stop-method. "
-					+ returnType.getName()
-					+ "; currently only void is supported.");
-		}
+			// check if return value is void.
+			Class<?> returnType = bundleSopMethod.getReturnType();
+			if (!Void.TYPE.isAssignableFrom(returnType)) {
+				throw new RuntimeException(
+						"Illegal return value of stop-method. "
+								+ returnType.getName()
+								+ "; currently only void is supported.");
+			}
 
-		// INVOKE
-		Object[] paramValues = evaluateParamValues(context, requestedParams);
-		bundleSopMethod.invoke(this, paramValues);
+			// INVOKE
+			Object[] paramValues = evaluateParamValues(context, requestedParams);
+			bundleSopMethod.invoke(this, paramValues);
+		}
 	}
 }
