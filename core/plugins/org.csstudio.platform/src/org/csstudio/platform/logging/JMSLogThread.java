@@ -25,15 +25,11 @@ public class JMSLogThread extends Thread
     /** Connection delay in milliseconds */
     private static final int CONNECT_DELAY_MS = 5000;
     
-    /** JMS server URL.
-     *  TODO cannot be a fixed URL
-     */
-    final private static String URL = "tcp://ics-srv02.sns.ornl.gov:61616";
-    
-    /** JMS topic
-     *  TODO cannot be a fixed topic
-     */
-    final private static String TOPIC = "LOG";
+    /** URL of the JMS server */
+    private String server_url;
+
+    /** Name of the JMS topic */
+    private String topic_name;
 
     /** Flag to stop the thread.
      *  @see #cancel()
@@ -52,6 +48,27 @@ public class JMSLogThread extends Thread
 
     /** JMS message producer, bound to topic, or <code>null</code> */
     private MessageProducer producer = null;
+
+    /** Create JMS log thread
+     *  @param server_url Initial JMS server URL
+     *  @param topic_name Initial JMS queue topic
+     */
+    public JMSLogThread(final String server_url, final String topic_name)
+    {
+        this.server_url = server_url;
+        this.topic_name = topic_name;
+    }
+    
+    /** Switch thread to new JMS server/topic
+     *  @param server_url New JMS server URL
+     *  @param topic_name New JMS queue topic
+     */
+    public void setTarget(final String server_url, final String topic_name)
+    {
+        this.server_url = server_url;
+        this.topic_name = topic_name;
+        // TODO trigger (re-)connect
+    }
     
     /** Add a message to the queue.
      *  @param message Message to add.
@@ -66,7 +83,7 @@ public class JMSLogThread extends Thread
         }
         catch (InterruptedException ex)
         {
-            // TODO what now?
+            System.out.println(ex);
         }
     }
     
@@ -110,20 +127,20 @@ public class JMSLogThread extends Thread
     {
         try
         {
-            connection = JMSConnectionFactory.connect(URL);
+            connection = JMSConnectionFactory.connect(server_url);
             connection.start();
             session = connection.createSession(/* transacted */false,
                     Session.AUTO_ACKNOWLEDGE);
-            final Topic topic = session.createTopic(TOPIC);
+            final Topic topic = session.createTopic(topic_name);
             producer = session.createProducer(topic);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
             if (debug)
-                System.out.println("JMSLogThread connected " + URL);
+                System.out.println("JMSLogThread connected " + server_url);
             return true;
         }
         catch (Exception ex)
         {
-            System.out.println("JMSLogThread connect error for " + URL
+            System.out.println("JMSLogThread connect error for " + server_url
                     +": " + ex.getMessage());
         }
         return false;
