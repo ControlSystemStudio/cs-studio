@@ -9,7 +9,7 @@ import org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView;
 import org.easymock.EasyMock;
 
 public class Activator_Test extends TestCase {
-	public void testBundleStart() {
+	public void testBundleStart() throws Exception {
 		// Service-Mocks vorbereiten...
 		ConfigurationEditingStoreService editingStoreService = EasyMock
 				.createMock(ConfigurationEditingStoreService.class);
@@ -25,5 +25,7 @@ public class Activator_Test extends TestCase {
 		assertSame(editingStoreService, ConfigurationTreeView.getEditingStoreService());
 		assertSame(storeService, ConfigurationTreeView.getConfigurationService());
 		assertSame(logger, ConfigurationTreeView.getLogger());
+		
+		activator.stopBundle(logger);
 	}
 }
