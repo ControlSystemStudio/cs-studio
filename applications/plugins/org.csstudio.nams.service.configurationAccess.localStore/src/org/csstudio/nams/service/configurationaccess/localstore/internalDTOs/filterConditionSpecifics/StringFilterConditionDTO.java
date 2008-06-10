@@ -27,12 +27,12 @@ import org.hibernate.annotations.ForeignKey;
  */
 @Entity
 @Table(name = "AMS_FilterCondition_String")
-@PrimaryKeyJoinColumn(name="iFilterConditionRef", referencedColumnName="iFilterConditionID")
+@PrimaryKeyJoinColumn(name="iFilterConditionID"/*, referencedColumnName="iFilterConditionID"*/)
 public class StringFilterConditionDTO extends FilterConditionDTO {
 
 	//ForeignKey(name="iFilterConditionID", inverseName="iFilterConditionRef")
 	@Column(name="iFilterConditionRef", nullable=false, updatable=false, insertable=false)
-	private int filterConditionRef;
+	private int iFilterConditionRef;
 
 	@Column(name = "cKeyValue", length = 16)
 	private int keyValue;
@@ -47,8 +47,8 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 * @return the filterConditionRef
 	 */
 	@SuppressWarnings("unused")
-	private int getFilterConditionRef() {
-		return filterConditionRef;
+	public int getIFilterConditionRef() {
+		return iFilterConditionRef;
 	}
 
 	/**
@@ -56,8 +56,8 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 *            the filterConditionRef to set
 	 */
 	@SuppressWarnings("unused")
-	private void setFilterConditionRef(int filterConditionRef) {
-		this.filterConditionRef = filterConditionRef;
+	private void setIFilterConditionRef(int filterConditionRef) {
+		this.iFilterConditionRef = filterConditionRef;
 	}
 
 	/**

@@ -49,8 +49,6 @@ import org.epics.css.dal.context.LinkAdapter;
 import org.epics.css.dal.context.RemoteInfo;
 import org.epics.css.dal.spi.PropertyFactory;
 
-import com.sun.java_cup.internal.emit;
-
 /**
  * Standard implementation of {@link IProcessVariableConnectionService}.
  * 
@@ -59,7 +57,7 @@ import com.sun.java_cup.internal.emit;
  * 
  * @author Sven Wende
  * 
- * TODO: Schreiben von Werten ermöglichen!
+ * TODO: Schreiben von Werten ermï¿½glichen!
  * 
  * TODO: Sync/Async Lesen von Werten (x)
  * 
@@ -500,7 +498,7 @@ public class ProcessVariableConnectionService implements
 							// }
 						}
 
-						// FIXME: eigene Subklasse für diesen ResponseListener
+						// FIXME: eigene Subklasse fï¿½r diesen ResponseListener
 						ResponseListener responseListener = new ResponseListener() {
 							public void responseError(ResponseEvent event) {
 								// forward the error
@@ -794,7 +792,7 @@ public class ProcessVariableConnectionService implements
 			// if the property is not used anymore by other connectors,
 			// destroy it
 			// FIXME: Dies ist nur ein Workarround. Igor bitten, das
-			// Zerstören von Properties tranparent zu gestalten.
+			// Zerstï¿½ren von Properties tranparent zu gestalten.
 			if (property.getDynamicValueListeners().length <= 1
 					&& property.getResponseListeners().length <= 0) {
 				factory.getPropertyFamily().destroy(property);
@@ -916,7 +914,7 @@ public class ProcessVariableConnectionService implements
 	 * a DynamicValueProperty when the DynamicValueProperty is connected.
 	 * 
 	 * This is a just a workaround, which is necessary because
-	 * DynamicValueListener´s cannot be attached to DynamicValueProperty before
+	 * DynamicValueListenerï¿½s cannot be attached to DynamicValueProperty before
 	 * they are connected to a channel. (//TODO: Cosylab! Please fix this!)
 	 * 
 	 * @author Sven Wende

@@ -5,7 +5,9 @@ import java.util.List;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 
 public interface LocalStoreConfigurationService {
 
@@ -64,6 +66,12 @@ public interface LocalStoreConfigurationService {
 	 * @deprecated Just for testing the functionality - not for production use!
 	 */
 	@Deprecated
+	public List<JunctorConditionDTO> getJunctorConditionDTOConfigurations();
+	
+	/**
+	 * @deprecated Just for testing the functionality - not for production use!
+	 */
+	@Deprecated
 	public List<StringArrayFilterConditionDTO> getStringArrayFilterConditionDTOConfigurations();
 
 	/**
@@ -88,4 +96,10 @@ public interface LocalStoreConfigurationService {
 	public void saveCurrentReplicationState(ReplicationStateDTO currentState)
 			throws StorageError, StorageException,
 			UnknownConfigurationElementError;
+	
+	@Deprecated
+	public void saveJunctorConditionDTO(JunctorConditionDTO junctorConditionDTO);
+	
+	@Deprecated
+	public void saveStringFilterConditionDTO(StringFilterConditionDTO stringConditionDTO);
 }

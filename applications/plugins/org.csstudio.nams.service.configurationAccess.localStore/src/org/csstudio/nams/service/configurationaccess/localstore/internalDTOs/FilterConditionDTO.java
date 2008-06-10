@@ -5,12 +5,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.ForeignKey;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
@@ -34,7 +37,8 @@ import javax.persistence.Table;
 @Table(name = "AMS_FilterCondition")
 @Inheritance(strategy=InheritanceType.JOINED)
 public class FilterConditionDTO {
-
+	
+	@ForeignKey(name="iFilterConditionTypeID")
 	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="iFilterConditionTypeRef", referencedColumnName="iFilterConditionTypeID")
 	private FilterConditionTypeDTO type;
@@ -56,7 +60,7 @@ public class FilterConditionDTO {
 	}
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "iFilterConditionID", nullable=false, unique=true)
 	private int iFilterConditionID;
 
@@ -69,14 +73,14 @@ public class FilterConditionDTO {
 	@Column(name = "cDesc", length=256)
 	private String cDesc;
 
-	@Column(name = "iFilterConditionTypeRef", insertable=false, updatable=false)
-	private int iFilterConditionTypeRef;
+//	@Column(name = "iFilterConditionTypeRef", insertable=false, updatable=false)
+//	private int iFilterConditionTypeRef;
 
 	/**
 	 * @return the iFilterConditionID
 	 */
 	@SuppressWarnings("unused")
-	private int getIFilterConditionID() {
+	public int getIFilterConditionRef() {
 		return iFilterConditionID;
 	}
 
@@ -136,21 +140,21 @@ public class FilterConditionDTO {
 		cDesc = desc;
 	}
 
-	/**
-	 * @return the iFilterConditionTypeRef
-	 */
-	@SuppressWarnings("unused")
-	private int getIFilterConditionTypeRef() {
-		return iFilterConditionTypeRef;
-	}
-
-	/**
-	 * @param filterConditionTypeRef the iFilterConditionTypeRef to set
-	 */
-	@SuppressWarnings("unused")
-	private void setIFilterConditionTypeRef(int filterConditionTypeRef) {
-		iFilterConditionTypeRef = filterConditionTypeRef;
-	}
+//	/**
+//	 * @return the iFilterConditionTypeRef
+//	 */
+//	@SuppressWarnings("unused")
+//	private int getIFilterConditionTypeRef() {
+//		return iFilterConditionTypeRef;
+//	}
+//
+//	/**
+//	 * @param filterConditionTypeRef the iFilterConditionTypeRef to set
+//	 */
+//	@SuppressWarnings("unused")
+//	public void setIFilterConditionTypeRef(int filterConditionTypeRef) {
+//		iFilterConditionTypeRef = filterConditionTypeRef;
+//	}
 
 	@Override
 	public String toString() {
@@ -158,13 +162,13 @@ public class FilterConditionDTO {
 		resultBuilder.append(": ");
 		resultBuilder.append(this.getCName());
 		resultBuilder.append(" (");
-		resultBuilder.append(this.getIFilterConditionID());
+		resultBuilder.append(this.getIFilterConditionRef());
 		resultBuilder.append("), refers to type: ");
 		FilterConditionTypeDTO conditionTypeDTO = this.getType();
 		resultBuilder.append(conditionTypeDTO != null ? conditionTypeDTO.toString() : "NULL");
-		resultBuilder.append(" (");
-		resultBuilder.append(this.getIFilterConditionTypeRef());
-		resultBuilder.append("), ");
+//		resultBuilder.append(" (");
+//		resultBuilder.append(this.getIFilterConditionTypeRef());
+//		resultBuilder.append("), ");
 		resultBuilder.append(this.getIGroupRef());
 		resultBuilder.append(", ");
 		resultBuilder.append(this.getCDesc());

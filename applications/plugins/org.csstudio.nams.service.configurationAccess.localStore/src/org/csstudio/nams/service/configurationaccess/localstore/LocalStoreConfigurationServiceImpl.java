@@ -12,9 +12,12 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Unkn
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
+import org.hibernate.criterion.Conjunction;
 
 class LocalStoreConfigurationServiceImpl implements
 		LocalStoreConfigurationService {
@@ -68,6 +71,26 @@ class LocalStoreConfigurationServiceImpl implements
 		throw new RuntimeException("Not implemented yet.");
 	}
 
+	public List<JunctorConditionDTO> getJunctorConditionDTOConfigurations() {
+		final Transaction newTransaction = this.session.beginTransaction();
+		final List<JunctorConditionDTO> junctorConditionDTOs = this.session.createQuery(
+				"from JunctorConditionDTO").list();
+
+		newTransaction.commit();
+		System.out.println(junctorConditionDTOs.toString());
+
+		return junctorConditionDTOs;
+	}
+	
+	public void saveJunctorConditionDTO(JunctorConditionDTO junctorConditionDTO){
+		 Transaction tx = session.beginTransaction();
+		 Integer msgId = (Integer) session.save(junctorConditionDTO);
+//		 final List<?> messages = this.session.createQuery(
+//					"from JunctorConditionDTO r where r.iFilterConditionID = '"+ junctorConditionDTO.getIFilterConditionID()+"'").list();
+		 System.out.println("New JunctorConditionDTO id: " + msgId);
+		 tx.commit();
+	}
+	
 	public TopicDTO getTopicConfigurations(final TopicConfigurationId id) {
 		final Transaction newTransaction = this.session.beginTransaction();
 		final List<?> messages = this.session.createQuery(
@@ -116,4 +139,16 @@ class LocalStoreConfigurationServiceImpl implements
 
 		return vrs;
 	}
+
+	public void saveStringFilterConditionDTO(
+			StringFilterConditionDTO stringConditionDTO) {
+		 Transaction tx = session.beginTransaction();
+		 Integer msgId = (Integer) session.save(stringConditionDTO);
+//		 final List<?> messages = this.session.createQuery(
+//					"from JunctorConditionDTO r where r.iFilterConditionID = '"+ junctorConditionDTO.getIFilterConditionID()+"'").list();
+		 System.out.println("New StringrConditionDTO id: " + msgId);
+		 tx.commit();
+		
+	}
+
 }

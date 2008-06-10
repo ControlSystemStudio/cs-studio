@@ -15,7 +15,7 @@
 		-->
 		
 		<property name="connection.driver_class">org.apache.derby.jdbc.ClientDriver</property>
-		<property name="connection.url">jdbc:derby://localhost:1527/amsdb</property>
+		<property name="connection.url">jdbc:derby://134.100.12.94:1527/amsdb</property>
 		<property name="connection.username">APP</property>
 		<property name="connection.password">APP</property>
 		
@@ -50,6 +50,7 @@
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO"/>
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO"/>
   				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO"/>
+  				<mapping class="org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO"/>
   				
 	</session-factory>
 

@@ -1,5 +1,6 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
+
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
@@ -12,6 +13,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Ala
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
@@ -48,13 +50,11 @@ public class LocalConfigurationStoreServiceActivator extends
 				.addAnnotatedClass(FilterConditionTypeDTO.class);
 		configuration = configuration.addAnnotatedClass(TopicDTO.class);
 
-		configuration = configuration
-				.addAnnotatedClass(StringFilterConditionDTO.class);
-		configuration = configuration
-				.addAnnotatedClass(StringArrayFilterConditionDTO.class);
-		configuration = configuration
-				.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class);
-
+		configuration = configuration.addAnnotatedClass(StringFilterConditionDTO.class);
+		configuration = configuration.addAnnotatedClass(StringArrayFilterConditionDTO.class);
+		configuration = configuration.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class);
+		configuration = configuration.addAnnotatedClass(JunctorConditionDTO.class);
+		
 		final AnnotationConfiguration configured = configuration.configure();
 		this.sessionFactory = configured.buildSessionFactory();
 	}
