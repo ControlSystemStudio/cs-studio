@@ -52,7 +52,8 @@ public class JMSLogMessage
     
     // Components of the Log Message
     final private String text;
-    final private Calendar time;
+    final private Calendar create_time;
+    final private Calendar event_time;
     final private String class_name;
     final private String method_name;
     final private String file_name;
@@ -62,7 +63,8 @@ public class JMSLogMessage
 
     /** Construct a new log message
      *  @param text Message text
-     *  @param time Time stamp
+     *  @param create_time Time of message creation
+     *  @param event_time Time of original event
      *  @param class_name Generating class or <code>null</code>
      *  @param method_name Generating method or <code>null</code>
      *  @param file_name Generating source file name or <code>null</code>
@@ -70,13 +72,15 @@ public class JMSLogMessage
      *  @param host Host name or <code>null</code>
      *  @param user User name or <code>null</code>
      */
-    public JMSLogMessage(final String text, final Calendar time,
+    public JMSLogMessage(final String text,
+            final Calendar create_time, final Calendar event_time,
             final String class_name, final String method_name,
             final String file_name,
             final String application_id, final String host, final String user)
     {
         this.text = text;
-        this.time = time;
+        this.create_time = create_time;
+        this.event_time = event_time;
         this.class_name = class_name;
         this.method_name = method_name;
         this.file_name = file_name;
@@ -98,10 +102,15 @@ public class JMSLogMessage
             throw new Exception("Got " + type
                     + " instead of " + JMSLogMessage.TYPE_LOG);
         
-        final String time_text = map.getString(JMSLogMessage.EVENTTIME);
-        final Calendar time = Calendar.getInstance();
-        time.clear();
-        time.setTime(JMSLogMessage.date_format.parse(time_text));
+        String time_text = map.getString(JMSLogMessage.CREATETIME);
+        final Calendar create_time = Calendar.getInstance();
+        create_time.clear();
+        create_time.setTime(JMSLogMessage.date_format.parse(time_text));
+
+        time_text = map.getString(JMSLogMessage.EVENTTIME);
+        final Calendar event_time = Calendar.getInstance();
+        event_time.clear();
+        event_time.setTime(JMSLogMessage.date_format.parse(time_text));
 
         final String text = map.getString(JMSLogMessage.TEXT);
         final String class_name = map.getString(JMSLogMessage.CLASS);
@@ -110,8 +119,8 @@ public class JMSLogMessage
         final String application_id = map.getString(JMSLogMessage.APPLICATION_ID);
         final String host = map.getString(JMSLogMessage.HOST);
         final String user = map.getString(JMSLogMessage.USER);
-        return new JMSLogMessage(text, time, class_name, method_name,
-                file_name, application_id, host, user);
+        return new JMSLogMessage(text, create_time, event_time,
+                class_name, method_name, file_name, application_id, host, user);
     }
     
     /** Fill MapMessage with info from this JMSLogMessage
@@ -123,8 +132,9 @@ public class JMSLogMessage
     {
         map.setString(JMSLogMessage.TYPE, JMSLogMessage.TYPE_LOG);
         map.setString(JMSLogMessage.TEXT, text);
-        final String time_text = JMSLogMessage.date_format.format(time.getTime());
+        String time_text = JMSLogMessage.date_format.format(create_time.getTime());
         map.setString(JMSLogMessage.CREATETIME, time_text);
+        time_text = JMSLogMessage.date_format.format(event_time.getTime());
         map.setString(JMSLogMessage.EVENTTIME, time_text);
         setMapValue(map, JMSLogMessage.CLASS, class_name);
         setMapValue(map, JMSLogMessage.NAME, method_name);
@@ -154,10 +164,16 @@ public class JMSLogMessage
         return text;
     }
 
-    /** @return Time stamp */
-    public Calendar getTime()
+    /** @return Time of message creation */
+    public Calendar getCreateTime()
     {
-        return time;
+        return create_time;
+    }
+
+    /** @return Time of original event */
+    public Calendar getEventTime()
+    {
+        return event_time;
     }
 
     /** @return Generating class or <code>null</code> */
@@ -196,13 +212,21 @@ public class JMSLogMessage
         return user;
     }
 
-    /** {@inheritDoc} */
+    /** @return One-line representation of the message
+     *          (except for TEXT that spans multiple lines)
+     */
     @Override
     public String toString()
     {
         final StringBuffer buf = new StringBuffer();
-        buf.append("LOG Message ");
-        buf.append(date_format.format(time.getTime()));
+        buf.append("LOG ");
+        buf.append(date_format.format(create_time.getTime()));
+        if (! event_time.equals(create_time))
+        {
+            buf.append(" [");
+            buf.append(date_format.format(event_time.getTime()));
+            buf.append("]");
+        }
         buf.append(": '");
         buf.append(text);
         buf.append("'");

@@ -17,7 +17,9 @@ import javax.jms.Topic;
 import org.csstudio.platform.libs.jms.JMSConnectionFactory;
 import org.junit.Test;
 
-/** Stand-alone test of the JMSLogThread */
+/** Stand-alone test of the JMSLogThread.
+ *  @author Kay Kasemir
+ */
 @SuppressWarnings("nls")
 public class JMSLogThreadTest
 {
@@ -30,6 +32,7 @@ public class JMSLogThreadTest
     {
         private int message_count = 0;
         
+        /** {@inheritDoc} */
         @Override
         public void run()
         {
@@ -112,8 +115,11 @@ public class JMSLogThreadTest
         log_thread.start();
         for (int i=0; i<MESSAGE_COUNT; ++i)
         {
-            final JMSLogMessage log_msg = new JMSLogMessage("Test " + i,
-                    Calendar.getInstance(),
+            final Calendar now = Calendar.getInstance();
+            Calendar earlier = (Calendar) now.clone();
+            earlier.add(Calendar.HOUR, -1);
+            final JMSLogMessage log_msg = new JMSLogMessage("Test" + i,
+                    now, earlier,
                     "SomeClass", "some_method",
                     "SomeClass.java:315",
                     "MyApp", "localhost", "fred");
