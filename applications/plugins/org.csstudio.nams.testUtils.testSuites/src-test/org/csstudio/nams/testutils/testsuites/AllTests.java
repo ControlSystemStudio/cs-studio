@@ -13,6 +13,9 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+/**
+ * MIT ECLEMMA STARTEN!!!
+ */
 public class AllTests extends TestCase {
 
 	private static final String TEST_CLASS_SUFFIX = "_Test.class";
