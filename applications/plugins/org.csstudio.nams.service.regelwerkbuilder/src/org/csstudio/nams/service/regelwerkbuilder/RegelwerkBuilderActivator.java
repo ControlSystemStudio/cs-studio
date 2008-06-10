@@ -1,58 +1,32 @@
 package org.csstudio.nams.service.regelwerkbuilder;
 
+import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
+import org.csstudio.nams.common.activatorUtils.ExecutableEclipseRCPExtension;
+import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
+import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
+import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.csstudio.nams.service.regelwerkbuilder.extensionPoint.RegelwerkBuilderServiceFactory;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Plugin;
-import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class RegelwerkBuilderActivator extends Plugin {
+public class RegelwerkBuilderActivator extends AbstractBundleActivator
+		implements BundleActivator {
 
-	private static final String NAME_OF_IMPLEMENTATION_ELEMENT_OF_EXTENSION_POINT = "implementation";
-	// The plug-in ID
+	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.regelwerkbuilder";
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext context) throws Exception {
-		String extensionPointId = RegelwerkBuilderServiceFactory.class
-				.getName();
+	@OSGiBundleActivationMethod
+	public OSGiServiceOffers startBundle(
+			@ExecutableEclipseRCPExtension(extensionId = RegelwerkBuilderServiceFactory.class)
+			@Required
+			Object regelwerkBuilderServiceFactory) {
+		OSGiServiceOffers result = new OSGiServiceOffers();
 
-		IConfigurationElement[] elements = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor(extensionPointId);
-
-		if (elements.length != 1) {
-			throw new RuntimeException(
-					"One and only one extension for extension point \""
-							+ extensionPointId
-							+ "\" should be present in current runtime configuration!");
-		} else {
-			Object executableExtension = elements[0]
-					.createExecutableExtension(NAME_OF_IMPLEMENTATION_ELEMENT_OF_EXTENSION_POINT);
-			if (!(executableExtension instanceof RegelwerkBuilderServiceFactory)) {
-				throw new RuntimeException("Only a extension of type "
-						+ RegelwerkBuilderServiceFactory.class.getName()
-						+ " for extension point \"" + extensionPointId
-						+ "\" is valid!");
-			}
-			RegelwerkBuilderServiceFactory factory = (RegelwerkBuilderServiceFactory) executableExtension;
-			context.registerService(RegelwerkBuilderService.class.getName(),
-					factory.createService(), null);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
+		RegelwerkBuilderServiceFactory factory = (RegelwerkBuilderServiceFactory) regelwerkBuilderServiceFactory;
+		result.put(RegelwerkBuilderService.class, factory.createService());
+		return result;
 	}
 }
