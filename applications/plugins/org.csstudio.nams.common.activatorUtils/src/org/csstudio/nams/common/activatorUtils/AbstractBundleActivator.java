@@ -73,6 +73,12 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(annotation.extensionId().getName());
 		if( ! (elements.length == 1) ) {
+			// TODO Decide about using:
+//			throw new RuntimeException(
+//			"One and only one extension for extension point \""
+//					+ id
+//					+ "\" should be present in current runtime configuration!");
+			
 			return null;
 		}
 		
@@ -180,7 +186,7 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 				OSGiBundleActivationMethod.class);
 
 		if (bundleStartMethod == null) {
-			throw new RuntimeException("No Activator-start-method present!");
+			throw new RuntimeException("No Activator-start-method present! (start-method has to be annotated with: @OSGiBundleActivationMethod)");
 		}
 
 		RequestedParam[] requestedParams = getAllRequestedMethodParams(bundleStartMethod);

@@ -17,8 +17,6 @@ import org.osgi.framework.BundleActivator;
 public class HistoryActivator extends AbstractBundleActivator implements
 		BundleActivator {
 
-	// private static final String
-	// NAME_OF_IMPLEMENTATION_ELEMENT_OF_EXTENSION_POINT = "implementation";
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.history";
 
@@ -29,12 +27,12 @@ public class HistoryActivator extends AbstractBundleActivator implements
 			Logger logger,
 			@ExecutableEclipseRCPExtension(extensionId = HistoryServiceFactory.class)
 			@Required
-			Object executableExtension) throws Exception {
+			Object historyServiceFactory) throws Exception {
 		OSGiServiceOffers result = new OSGiServiceOffers();
 
 		logger.logInfoMessage(this, "starting bundle: " + PLUGIN_ID);
 
-		HistoryServiceFactory factory = (HistoryServiceFactory) executableExtension;
+		HistoryServiceFactory factory = (HistoryServiceFactory) historyServiceFactory;
 		result.put(HistoryService.class, factory.createService());
 		return result;
 	}

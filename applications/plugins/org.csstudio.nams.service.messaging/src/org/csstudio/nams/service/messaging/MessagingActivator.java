@@ -23,63 +23,36 @@
  */
 package org.csstudio.nams.service.messaging;
 
+import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
+import org.csstudio.nams.common.activatorUtils.ExecutableEclipseRCPExtension;
+import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
+import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
+import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.service.messaging.declaration.MessagingService;
 import org.csstudio.nams.service.messaging.extensionPoint.MessagingServiceFactory;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class MessagingActivator implements BundleActivator {
+public class MessagingActivator extends AbstractBundleActivator implements
+		BundleActivator {
 
-	private static final String NAME_OF_IMPLEMENTATION_ELEMENT_OF_EXTENSION_POINT = "implementation";
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.messaging";
 
 	/**
-	 * The constructor
-	 */
-	public MessagingActivator() {
-	}
-
-	/**
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(BundleContext context) throws Exception {
-		// MessagingServiceFactory
-		String extensionPointIdMessagingServiceFactory = MessagingServiceFactory.class
-				.getName();
-		IConfigurationElement[] elementsMessagingServiceFactory = Platform
-				.getExtensionRegistry().getConfigurationElementsFor(
-						extensionPointIdMessagingServiceFactory);
+	@OSGiBundleActivationMethod
+	public OSGiServiceOffers startBundle(
+			@ExecutableEclipseRCPExtension(extensionId = MessagingServiceFactory.class)
+			@Required
+			Object messagingServiceFactory) throws Exception {
+		OSGiServiceOffers offers = new OSGiServiceOffers();
 
-		if (elementsMessagingServiceFactory.length != 1) {
-			throw new RuntimeException(
-					"One and only one extension for extension point \""
-							+ extensionPointIdMessagingServiceFactory
-							+ "\" should be present in current runtime configuration!");
-		} else {
-			Object executableExtension = elementsMessagingServiceFactory[0]
-					.createExecutableExtension(NAME_OF_IMPLEMENTATION_ELEMENT_OF_EXTENSION_POINT);
-			if (!(executableExtension instanceof MessagingServiceFactory)) {
-				throw new RuntimeException("Only a extension of type "
-						+ MessagingServiceFactory.class.getName()
-						+ " for extension point \""
-						+ extensionPointIdMessagingServiceFactory
-						+ "\" is valid!");
-			}
-			MessagingServiceFactory factory = (MessagingServiceFactory) executableExtension;
-			context.registerService(MessagingService.class.getName(),
-					factory.createService(), null);
-		}
-	}
-
-	/**
-	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
+		MessagingServiceFactory factory = (MessagingServiceFactory) messagingServiceFactory;
+		offers.put(MessagingService.class, factory.createService());
+		return offers;
 	}
 }

@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Can only be used in start-method.
+ * Can only be used in start-method. requires that exact one extension is present, in other cases, null is injected.
  * @author mz
  *
  */
