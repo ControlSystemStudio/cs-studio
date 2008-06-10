@@ -16,6 +16,12 @@ import org.csstudio.nams.service.messaging.declaration.Producer;
 
 public class JMSProducer implements Producer {
 
+	private static Logger injectedLogger;
+
+	public static void staticInjectLogger(Logger logger) {
+		injectedLogger = logger;
+	}
+	
 	private MessageProducer[] producers;
 	private boolean isClosed;
 	private Logger logger;
@@ -26,7 +32,7 @@ public class JMSProducer implements Producer {
 			throws JMSException {
 
 		this.sessions = sessions;
-		logger = JMSActivator.getLogger();
+		logger = injectedLogger;
 
 		producers = new MessageProducer[sessions.length];
 		try {

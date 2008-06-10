@@ -27,6 +27,12 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
 class JMSConsumer implements Consumer {
 
+	private static Logger injectedLogger;
+
+	public static void staticInjectLogger(Logger logger) {
+		injectedLogger = logger;
+	}
+	
 	private boolean isClosed = false;
 	private WorkThread[] workers;
 	private LinkedBlockingQueue<Message> messageQueue;
@@ -35,7 +41,7 @@ class JMSConsumer implements Consumer {
 	public JMSConsumer(String clientId, String messageSourceName,
 			PostfachArt art, Session[] sessions) throws JMSException {
 
-		logger = JMSActivator.getLogger();
+		logger = injectedLogger;
 		// Schaufeln in BlockingQueue : Maximum size auf 1,
 		// damit nicht hunderte Nachrichten während eines updates gepufert
 		// werden, das ablegen in der Queue blockiert, wenn diese voll ist.
