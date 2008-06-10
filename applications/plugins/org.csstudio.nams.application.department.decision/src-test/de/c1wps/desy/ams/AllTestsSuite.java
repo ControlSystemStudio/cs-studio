@@ -10,14 +10,14 @@ import de.c1wps.desy.ams.alarmentscheidungsbuero.Alarmentscheidungsbuero_SubSyst
 import de.c1wps.desy.ams.allgemeines.Allgemeines_SubSystemTestSuite;
 import de.c1wps.desy.ams.allgemeines.regelwerk.AllgemeinesRegelwerk_SubSystemTestSuite;
 
-public class AllTests extends TestCase {
+public class AllTestsSuite extends TestCase {
 
 	public static Test suite() throws Throwable {
 		// TODO System.setErr(new PrintStream(new OutputStreamWriter(new StringWriter())));
 		
 		TestSuite suite = new TestSuite("Test for de.c1wps.desy.ams");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(AllTests.class);
+		suite.addTestSuite(AllTestsSuite.class);
 		suite.addTest(Allgemeines_SubSystemTestSuite.suite());
 		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
 		suite.addTestSuite(SyncronisationsAutomat_Test.class);
