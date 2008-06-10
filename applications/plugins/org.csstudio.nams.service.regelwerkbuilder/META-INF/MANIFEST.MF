@@ -8,5 +8,6 @@ Bundle-Vendor: C1 WPS
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.common
 Eclipse-LazyStart: true
-Export-Package: org.csstudio.nams.service.regelwerkbuilder.declaration,
+Export-Package: org.csstudio.nams.service.regelwerkbuilder;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.service.regelwerkbuilder.declaration,
  org.csstudio.nams.service.regelwerkbuilder.extensionPoint

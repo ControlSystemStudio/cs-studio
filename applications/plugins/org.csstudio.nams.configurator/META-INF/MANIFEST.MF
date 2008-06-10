@@ -13,3 +13,15 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.databinding,
  org.eclipse.core.databinding.beans
 Eclipse-LazyStart: true
+Export-Package: org.csstudio.nams.configurator;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.branch.actions;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.branch.composite;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.branch.modellUndView;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.branch.perspective;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.branch.views;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.editor;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.editor.stackparts;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.treeviewer;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.treeviewer.actions;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.treeviewer.model;x-friends:="org.csstudio.nams.testUtils.testSuites",
+ org.csstudio.nams.configurator.treeviewer.model.treecomponents;x-friends:="org.csstudio.nams.testUtils.testSuites"

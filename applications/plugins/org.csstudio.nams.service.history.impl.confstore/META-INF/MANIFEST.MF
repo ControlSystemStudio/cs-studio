@@ -8,3 +8,4 @@ Bundle-Vendor: C1 WPS
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.history
 Eclipse-LazyStart: true
+Export-Package: org.csstudio.nams.service.history.impl.confstore;x-friends:="org.csstudio.nams.testUtils.testSuites"
