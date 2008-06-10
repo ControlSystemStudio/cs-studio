@@ -300,7 +300,7 @@
      <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.csstudio.platform.ui.css.applications."
+            category="org.csstudio.platform.ui.css.applications.utilities"
             class="org.csstudio.utility.quickstart.preferences.QuickstartPreferencePage"
             id="org.csstudio.utility.quickstart.preferences.QuickstartPreferencePage"
             name="Quickstart"/>
@@ -309,6 +309,12 @@
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.csstudio.utility.quickstart.preferences.PreferenceInitializer"/>
    </extension>
-  
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>  
 
 </plugin>

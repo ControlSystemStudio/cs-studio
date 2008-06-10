@@ -67,7 +67,7 @@ public class AddToQuickstartAction implements IObjectActionDelegate {
 		//list length is too long.	
 		} else {
 			int indexOfColon = sdsFileList.lastIndexOf(";");
-			sdsFileList = sdsFileList.substring(0, indexOfColon);
+			sdsFileList = sdsFileList.substring(0, (indexOfColon + 1));
 		}
 		return sdsFileList;
 	}
