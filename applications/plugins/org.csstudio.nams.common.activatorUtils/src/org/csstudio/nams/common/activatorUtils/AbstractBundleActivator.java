@@ -71,7 +71,7 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 
 	private static Object getExecuteableExtension(ExecutableEclipseRCPExtension annotation) {
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor(annotation.extensionId());
+				.getConfigurationElementsFor(annotation.extensionId().getName());
 		if( ! (elements.length == 1) ) {
 			return null;
 		}

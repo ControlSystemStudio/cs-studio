@@ -13,6 +13,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
 public @interface ExecutableEclipseRCPExtension {
-	public String extensionId();
-	public String executeableName() default "impl";
+	/**
+	 * {@link Class#getName()} will be used as Id-String.
+	 */
+	public Class<?> extensionId();
+	
+	/**
+	 * Default is "implementation".
+	 */
+	public String executeableName() default "implementation";
 }
