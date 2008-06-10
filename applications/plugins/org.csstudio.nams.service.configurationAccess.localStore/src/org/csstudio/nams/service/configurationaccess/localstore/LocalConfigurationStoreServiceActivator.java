@@ -1,5 +1,9 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
+import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
+import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
+import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
+import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterDTO;
@@ -15,12 +19,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
 import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class LocalConfigurationStoreServiceActivator implements BundleActivator {
+public class LocalConfigurationStoreServiceActivator extends
+		AbstractBundleActivator implements BundleActivator {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.configurationAccess.localStore";
@@ -29,24 +33,35 @@ public class LocalConfigurationStoreServiceActivator implements BundleActivator 
 
 	private void initializeHibernate() {
 		AnnotationConfiguration configuration = new AnnotationConfiguration();
-		configuration = configuration.addAnnotatedClass(ReplicationStateDTO.class);
+		configuration = configuration
+				.addAnnotatedClass(ReplicationStateDTO.class);
 
-		configuration = configuration.addAnnotatedClass(AlarmbearbeiterDTO.class);
-		configuration = configuration.addAnnotatedClass(AlarmbearbeiterGruppenDTO.class);
-		configuration = configuration.addAnnotatedClass(AlarmbearbeiterGruppenZuAlarmbearbeiterDTO.class);
-		configuration = configuration.addAnnotatedClass(FilterConditionDTO.class);
-		configuration = configuration.addAnnotatedClass(FilterConditionTypeDTO.class);
+		configuration = configuration
+				.addAnnotatedClass(AlarmbearbeiterDTO.class);
+		configuration = configuration
+				.addAnnotatedClass(AlarmbearbeiterGruppenDTO.class);
+		configuration = configuration
+				.addAnnotatedClass(AlarmbearbeiterGruppenZuAlarmbearbeiterDTO.class);
+		configuration = configuration
+				.addAnnotatedClass(FilterConditionDTO.class);
+		configuration = configuration
+				.addAnnotatedClass(FilterConditionTypeDTO.class);
 		configuration = configuration.addAnnotatedClass(TopicDTO.class);
 
-		configuration = configuration.addAnnotatedClass(StringFilterConditionDTO.class);
-		configuration = configuration.addAnnotatedClass(StringArrayFilterConditionDTO.class);
-		configuration = configuration.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class);
-		
+		configuration = configuration
+				.addAnnotatedClass(StringFilterConditionDTO.class);
+		configuration = configuration
+				.addAnnotatedClass(StringArrayFilterConditionDTO.class);
+		configuration = configuration
+				.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class);
+
 		final AnnotationConfiguration configured = configuration.configure();
 		this.sessionFactory = configured.buildSessionFactory();
 	}
 
-	public void start(final BundleContext context) throws Exception {
+	@OSGiBundleActivationMethod
+	public OSGiServiceOffers startBundle() throws Exception {
+		OSGiServiceOffers result = new OSGiServiceOffers();
 		try {
 			// TODO Extension point auslesen
 			// TODO configuration abfragen
@@ -55,17 +70,18 @@ public class LocalConfigurationStoreServiceActivator implements BundleActivator 
 			this.initializeHibernate();
 			this.session = this.sessionFactory.openSession();
 
-			context.registerService(LocalStoreConfigurationService.class
-					.getName(), new LocalStoreConfigurationServiceImpl(
-					this.session), null);
+			result.put(LocalStoreConfigurationService.class,
+					new LocalStoreConfigurationServiceImpl(this.session));
 		} catch (final Throwable t) {
 			throw new RuntimeException(
 					"Failed to start LocalConfigurationStoreService's bundle",
 					t);
 		}
+		return result;
 	}
 
-	public void stop(final BundleContext context) throws Exception {
+	@OSGiBundleDeactivationMethod
+	public void stopBundle() throws Exception {
 		this.session.close();
 		this.sessionFactory.close();
 	}
