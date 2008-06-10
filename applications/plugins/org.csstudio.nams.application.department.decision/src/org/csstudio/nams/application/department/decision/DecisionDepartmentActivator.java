@@ -30,7 +30,12 @@ import java.util.List;
 
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
+import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.BundleActivatorUtils;
+import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
+import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
+import org.csstudio.nams.common.activatorUtils.OSGiService;
+import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.service.StepByStepProcessor;
@@ -48,7 +53,6 @@ import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderSe
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 
 import de.c1wps.desy.ams.alarmentscheidungsbuero.AlarmEntscheidungsBuero;
 import de.c1wps.desy.ams.allgemeines.Ausgangskorb;
@@ -80,8 +84,8 @@ import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
  * @version 0.1-2008-04-25: Created.
  * @version 0.1.1-2008-04-28 (MZ): Change to use {@link BundleActivatorUtils}.
  */
-public class DecisionDepartmentActivator implements IApplication,
-		BundleActivator {
+public class DecisionDepartmentActivator extends AbstractBundleActivator
+		implements IApplication, BundleActivator {
 
 	/**
 	 * The plug-in ID of this bundle.
@@ -174,56 +178,50 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * 
 	 * @see BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(BundleContext context) throws Exception {
+	@OSGiBundleActivationMethod
+	public void startBundle(@OSGiService
+	@Required
+	Logger injectedLogger, @OSGiService
+	@Required
+	MessagingService injectedMessagingService, @OSGiService
+	@Required
+	PreferenceService injectedPreferenceService, @OSGiService
+	@Required
+	RegelwerkBuilderService injectedBuilderService, @OSGiService
+	@Required
+	HistoryService injectedHistoryService, @OSGiService
+	@Required
+	LocalStoreConfigurationService injectedLocalStoreConfigurationService,
+			@OSGiService
+			@Required
+			ExecutionService injectedExecutionService) throws Exception {
 
-		// Services holen...
+		// ** Services holen...
 
 		// Logging Service
-		logger = BundleActivatorUtils
-				.getAvailableService(context, Logger.class);
+		logger = injectedLogger;
 
 		logger.logInfoMessage(this, "plugin " + PLUGIN_ID
 				+ " initializing Services");
 
 		// Messaging Service
-		messagingService = BundleActivatorUtils.getAvailableService(context,
-				MessagingService.class);
-		if (messagingService == null)
-			throw new RuntimeException("no messaging service available!");
+		messagingService = injectedMessagingService;
 
 		// Preference Service (wird als konfiguration verwendet!!)
-		preferenceService = BundleActivatorUtils.getAvailableService(context,
-				PreferenceService.class);
-		if (preferenceService == null)
-			throw new RuntimeException("no preference service available!");
+		preferenceService = injectedPreferenceService;
 
 		// RegelwerkBuilder Service
-		regelwerkBuilderService = BundleActivatorUtils.getAvailableService(
-				context, RegelwerkBuilderService.class);
-		if (regelwerkBuilderService == null)
-			throw new RuntimeException(
-					"no regelwerk builder service available!");
+		regelwerkBuilderService = injectedBuilderService;
 
 		// History Service
-		historyService = BundleActivatorUtils.getAvailableService(context,
-				HistoryService.class);
-		if (historyService == null)
-			throw new RuntimeException("no history service available!");
+		historyService = injectedHistoryService;
 
 		// LocalStoreConfigurationService
-		localStoreConfigurationService = BundleActivatorUtils
-				.getAvailableService(context,
-						LocalStoreConfigurationService.class);
-		if (localStoreConfigurationService == null)
-			throw new RuntimeException(
-					"no LocalStoreConfigurationService service available!");
+		localStoreConfigurationService = injectedLocalStoreConfigurationService;
 
 		// Execution Service
 		// TODO wird noch nicht vollstaendig benutzt! Ins Dec-Office einbauen
-		executionService = BundleActivatorUtils.getAvailableService(context,
-				ExecutionService.class);
-		if (executionService == null)
-			throw new RuntimeException("No executor service available!");
+		executionService = injectedExecutionService;
 
 		logger.logInfoMessage(this, "plugin " + PLUGIN_ID
 				+ " started succesfully.");
@@ -234,7 +232,8 @@ public class DecisionDepartmentActivator implements IApplication,
 	 * 
 	 * @see BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
-	public void stop(BundleContext context) throws Exception {
+	@OSGiBundleDeactivationMethod
+	public void stopBundle(@OSGiService @Required Logger logger) throws Exception {
 		logger.logInfoMessage(this, "Plugin " + PLUGIN_ID
 				+ " stopped succesfully.");
 	}
@@ -271,22 +270,18 @@ public class DecisionDepartmentActivator implements IApplication,
 							"amsConsumer",
 							new String[] {
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1)
-											,
+											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1),
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) 
-											});
+											.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2) });
 			// TODO clientid!! gegebenenfalls aus preferencestore holen
 			extMessagingSessionForConsumer = messagingService
 					.createNewMessagingSession(
 							"extConsumer",
 							new String[] {
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1)
-											,
+											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1),
 									preferenceService
-											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) 
-											});
+											.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2) });
 
 			extAlarmConsumer = extMessagingSessionForConsumer
 					.createConsumer(
@@ -422,14 +417,27 @@ public class DecisionDepartmentActivator implements IApplication,
 		}
 
 		// Alle Verbindungen schließen
-		amsAusgangsProducer.close();
-		amsCommandConsumer.close();
-		amsMessagingSessionForConsumer.close();
-		amsMessagingSessionForProducer.close();
-
-		extAlarmConsumer.close();
-		extCommandConsumer.close();
-		extMessagingSessionForConsumer.close();
+		if (amsAusgangsProducer != null) {
+			amsAusgangsProducer.close();
+		}
+		if (amsCommandConsumer != null) {
+			amsCommandConsumer.close();
+		}
+		if (amsMessagingSessionForConsumer != null) {
+			amsMessagingSessionForConsumer.close();
+		}
+		if (amsMessagingSessionForProducer != null) {
+			amsMessagingSessionForProducer.close();
+		}
+		if (extAlarmConsumer != null) {
+			extAlarmConsumer.close();
+		}
+		if (extCommandConsumer != null) {
+			extCommandConsumer.close();
+		}
+		if (extMessagingSessionForConsumer != null) {
+			extMessagingSessionForConsumer.close();
+		}
 
 		logger.logInfoMessage(this,
 				"Decision department application successfully shuted down.");
