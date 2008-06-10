@@ -4,7 +4,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
-import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
@@ -21,7 +20,7 @@ public class JMSLogThread extends Thread
     /** Debug messages to stdout?
      *  Can't use Log4j because we handle Log4j messages...
      */
-    public static boolean debug = true;
+    public static boolean debug = false;
     
     /** Connection delay in milliseconds */
     private static final int CONNECT_DELAY_MS = 5000;
@@ -174,7 +173,7 @@ public class JMSLogThread extends Thread
         if (debug)
             System.out.println("JMSLogThread waiting for messages");
         while (run)
-        {
+        {   // Wait for next message
             JMSLogMessage log_message;
             try
             {
@@ -184,11 +183,11 @@ public class JMSLogThread extends Thread
             {   // Should be the result of cancel(), so quit
                 return;
             }
-            
             // Try to send message to JMS
             try
             {
-                final MapMessage map = createMapMessage(log_message);
+                final MapMessage map = session.createMapMessage();
+                log_message.toMapMessage(map);
                 producer.send(map);
                 if (debug)
                     System.out.println("JMSLogThread sent " + log_message);
@@ -198,40 +197,5 @@ public class JMSLogThread extends Thread
                 ex.printStackTrace();
             }
         }
-    }
-
-    /** Create MapMessage from JMSLogMessage
-     *  @param log JMSLogMessage to convert
-     *  @return MapMessage
-     *  @throws JMSException on error
-     */
-    private MapMessage createMapMessage(final JMSLogMessage log) throws JMSException
-    {
-        final MapMessage map = session.createMapMessage();
-        map.setString(JMSLogMessage.TYPE, JMSLogMessage.TYPE_LOG);
-        map.setString(JMSLogMessage.TEXT, log.getText());
-        final String time = JMSLogMessage.date_format.format(log.getTime().getTime());
-        map.setString(JMSLogMessage.CREATETIME, time);
-        map.setString(JMSLogMessage.EVENTTIME, time);
-        setMapValue(map, JMSLogMessage.CLASS, log.getClassName());
-        setMapValue(map, JMSLogMessage.NAME, log.getMethodName());
-        setMapValue(map, JMSLogMessage.FILENAME, log.getFileName());
-        setMapValue(map, JMSLogMessage.APPLICATION_ID, log.getApplicationID());
-        setMapValue(map, JMSLogMessage.HOST, log.getHost());
-        setMapValue(map, JMSLogMessage.USER, log.getUser());
-        return map;
-    }
-
-    /** Set element of map to value UNLESS value is <code>null</code>
-     *  @param map
-     *  @param element
-     *  @param value
-     *  @throws JMSException 
-     */
-    private void setMapValue(final MapMessage map,
-            final String element, final String value) throws JMSException
-    {
-        if (value != null)
-            map.setString(element, value);
     }
 }

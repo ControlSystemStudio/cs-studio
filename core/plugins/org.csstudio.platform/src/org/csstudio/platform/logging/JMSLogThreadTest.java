@@ -17,7 +17,7 @@ import javax.jms.Topic;
 import org.csstudio.platform.libs.jms.JMSConnectionFactory;
 import org.junit.Test;
 
-/** Standalone test of the JMSLogThread */
+/** Stand-alone test of the JMSLogThread */
 @SuppressWarnings("nls")
 public class JMSLogThreadTest
 {
@@ -25,6 +25,7 @@ public class JMSLogThreadTest
     final private static String URL = "tcp://ics-srv02.sns.ornl.gov:61616";
     final private static String TOPIC = "LOG";
 
+    /** JMS Receiver that runs until MESSAGE_COUNT messages were received */
     class Receiver extends Thread implements ExceptionListener, MessageListener
     {
         private int message_count = 0;
@@ -33,7 +34,7 @@ public class JMSLogThreadTest
         public void run()
         {
             try
-            {
+            {   // Connect
                 final Connection connection = JMSConnectionFactory.connect(URL);
                 connection.setExceptionListener(this);
                 connection.start();
@@ -46,8 +47,9 @@ public class JMSLogThreadTest
                 System.out.println("Receiver is listening...");
                 synchronized (this)
                 {
-                    this.wait();
+                    wait();
                 }
+                // Shutdown
                 consumer.close();
                 session.close();
                 connection.close();
@@ -68,16 +70,13 @@ public class JMSLogThreadTest
         /** @see MessageListener */
         public void onMessage(final Message message)
         {
-            ++message_count;
             try
             {
                 if (message instanceof MapMessage)
-                {   // CSS 'LOG' messages are MapMessage with many fields.
-                    // 'TEXT' has the actual message.
-                    final MapMessage map = (MapMessage) message;
-                    String text = map.getString("TEXT").trim();
-                    System.out.println("Received " + text);
-                    return;
+                {
+                    final JMSLogMessage log =
+                        JMSLogMessage.fromMapMessage((MapMessage) message);
+                    System.out.println("Received " + log);
                 }
                 else
                     System.out.println("Received " + message.getClass().getName());
@@ -85,6 +84,13 @@ public class JMSLogThreadTest
             catch (Exception ex)
             {
                 ex.printStackTrace();
+            }
+            if (++message_count >= MESSAGE_COUNT)
+            {
+                synchronized (this)
+                {
+                    notifyAll();
+                }
             }
         }
 
@@ -114,19 +120,13 @@ public class JMSLogThreadTest
             log_thread.addLogMessage(log_msg);
             Thread.sleep(1000);
         }
-        // Simplistic wait for the send thread to start and send messages:
-        Thread.sleep(5000);
+        
+        // Wait for receiver to have received what it wants to receive
+        receiver.join(10000);
         
         // Stop sender
         log_thread.cancel();
         log_thread.join();
-        
-        // Stop receiver
-        synchronized (receiver)
-        {
-            receiver.notifyAll();
-        }
-        receiver.join();
         
         // Did we receive all messages?
         assertEquals(MESSAGE_COUNT, receiver.getMessageCount());

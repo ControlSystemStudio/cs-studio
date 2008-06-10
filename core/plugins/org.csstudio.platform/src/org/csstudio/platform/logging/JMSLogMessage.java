@@ -3,6 +3,13 @@ package org.csstudio.platform.logging;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+
+/** Description of a JMS 'LOG' message
+ *  and routines to convert to/from a JMS MapMessage.
+ *  @author Kay Kasemir
+ */
 @SuppressWarnings("nls")
 public class JMSLogMessage
 {
@@ -13,6 +20,7 @@ public class JMSLogMessage
     /** Mandatory MapMessage element: type */
     final public static String TYPE = "TYPE";
     
+    /** Value of the TYPE element */
     final public static String TYPE_LOG = "log";
     
     /** Mandatory MapMessage element: content */
@@ -77,6 +85,69 @@ public class JMSLogMessage
         this.user = user;
     }
 
+    /** Create JMSLogMessage from JMS MapMessage
+     *  @param map MapMessage to parse/convert
+     *  @return JMSLogMessage
+     *  @throws Exception on error
+     */
+    public static JMSLogMessage fromMapMessage(final MapMessage map)
+        throws Exception
+    {
+        final String type = map.getString(JMSLogMessage.TYPE);
+        if (!JMSLogMessage.TYPE_LOG.equals(type))
+            throw new Exception("Got " + type
+                    + " instead of " + JMSLogMessage.TYPE_LOG);
+        
+        final String time_text = map.getString(JMSLogMessage.EVENTTIME);
+        final Calendar time = Calendar.getInstance();
+        time.clear();
+        time.setTime(JMSLogMessage.date_format.parse(time_text));
+
+        final String text = map.getString(JMSLogMessage.TEXT);
+        final String class_name = map.getString(JMSLogMessage.CLASS);
+        final String method_name = map.getString(JMSLogMessage.NAME);
+        final String file_name = map.getString(JMSLogMessage.FILENAME);
+        final String application_id = map.getString(JMSLogMessage.APPLICATION_ID);
+        final String host = map.getString(JMSLogMessage.HOST);
+        final String user = map.getString(JMSLogMessage.USER);
+        return new JMSLogMessage(text, time, class_name, method_name,
+                file_name, application_id, host, user);
+    }
+    
+    /** Fill MapMessage with info from this JMSLogMessage
+     *  @param map (empty) MapMessage to fill
+     *  @return MapMessage
+     *  @throws JMSException on error
+     */
+    public MapMessage toMapMessage(final MapMessage map) throws JMSException
+    {
+        map.setString(JMSLogMessage.TYPE, JMSLogMessage.TYPE_LOG);
+        map.setString(JMSLogMessage.TEXT, text);
+        final String time_text = JMSLogMessage.date_format.format(time.getTime());
+        map.setString(JMSLogMessage.CREATETIME, time_text);
+        map.setString(JMSLogMessage.EVENTTIME, time_text);
+        setMapValue(map, JMSLogMessage.CLASS, class_name);
+        setMapValue(map, JMSLogMessage.NAME, method_name);
+        setMapValue(map, JMSLogMessage.FILENAME, file_name);
+        setMapValue(map, JMSLogMessage.APPLICATION_ID, application_id);
+        setMapValue(map, JMSLogMessage.HOST, host);
+        setMapValue(map, JMSLogMessage.USER, user);
+        return map;
+    }
+
+    /** Set element of map to value UNLESS value is <code>null</code>
+     *  @param map
+     *  @param element
+     *  @param value
+     *  @throws JMSException 
+     */
+    private void setMapValue(final MapMessage map,
+            final String element, final String value) throws JMSException
+    {
+        if (value != null)
+            map.setString(element, value);
+    }
+    
     /** @return Message text */
     public String getText()
     {
@@ -132,9 +203,21 @@ public class JMSLogMessage
         final StringBuffer buf = new StringBuffer();
         buf.append("LOG Message ");
         buf.append(date_format.format(time.getTime()));
-        buf.append(": ");
+        buf.append(": '");
         buf.append(text);
-        // buf.append("\n");
+        buf.append("'");
+        if (class_name != null)
+        {
+            buf.append(" (" + class_name);
+            buf.append("." + method_name);
+            buf.append(" in " + file_name + ")");
+        }
+        if (application_id != null)
+        {
+            buf.append(" (" + application_id);
+            buf.append(" on " + host);
+            buf.append(", user " + user + ")");
+        }
         return buf.toString();
     }
 }
