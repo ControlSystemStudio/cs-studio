@@ -48,12 +48,12 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 	 * @throws RuntimeException
 	 *             If no or more than one matching {@link Method} is present.
 	 */
-	static private Method findBundleStartMethod(Object objectToInspect) {
+	static private <T extends Annotation> Method findAnnotatedMethod(Object objectToInspect, Class<T> annotationType) {
 		Method result = null;
 
 		Method[] methods = objectToInspect.getClass().getMethods();
 		for (Method method : methods) {
-			if (method.getAnnotation(OSGiBundleActivationMethod.class) != null) {
+			if (method.getAnnotation(annotationType) != null) {
 				if (result == null) {
 					// if( method.getModifiers() ) // check public
 					result = method;
@@ -62,10 +62,6 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 							"More than one Activator-start-method present!");
 				}
 			}
-		}
-
-		if (result == null) {
-			throw new RuntimeException("No Activator-start-method present!");
 		}
 
 		return result;
@@ -130,7 +126,12 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 	}
 
 	final public void start(BundleContext context) throws Exception {
-		Method bundleStartMethod = findBundleStartMethod(this);
+		Method bundleStartMethod = findAnnotatedMethod(this, OSGiBundleActivationMethod.class);
+		
+		if (bundleStartMethod == null) {
+			throw new RuntimeException("No Activator-start-method present!");
+		}
+		
 		RequestedParam[] requestedParams = getAllRequestedMethodParams(bundleStartMethod);
 
 		// check is all requested params are valid...
@@ -146,12 +147,12 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 
 		// check if optional return value is valid.
 		Class<?> returnType = bundleStartMethod.getReturnType();
-		if (!Void.TYPE.isAssignableFrom(returnType) ) {
+		if (!Void.TYPE.isAssignableFrom(returnType)) {
 			if (!OSGiServiceOffers.class.isAssignableFrom(returnType)) {
 				throw new RuntimeException(
 						"illegal return value of start-method. "
 								+ returnType.getName()
-								+ "; currently only OSGiServiceOffers is supported.");
+								+ "; currently only OSGiServiceOffers and void is supported.");
 			}
 		}
 
@@ -159,7 +160,8 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 		Object[] paramValues = evaluateParamValues(context, requestedParams);
 		Object result = bundleStartMethod.invoke(this, paramValues);
 
-		if (result != null && OSGiServiceOffers.class.isAssignableFrom(result.getClass())) {
+		if (result != null
+				&& OSGiServiceOffers.class.isAssignableFrom(result.getClass())) {
 			OSGiServiceOffers offers = (OSGiServiceOffers) result;
 			for (Class<?> key : offers.keySet()) {
 				Object service = offers.get(key);
@@ -174,8 +176,30 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 	}
 
 	final public void stop(BundleContext context) throws Exception {
-		// TODO Auto-generated method stub
-		// throw new RuntimeException("Not implemented yet.");
+		Method bundleSopMethod = findAnnotatedMethod(this, OSGiBundleDeactivationMethod.class);
+		RequestedParam[] requestedParams = getAllRequestedMethodParams(bundleSopMethod);
 
+		// check is all requested params are valid...
+		for (RequestedParam requestedParam : requestedParams) {
+			// currently only OSGiService injection is supported
+			if (!requestedParam.isOSGiServiceRequest) {
+				throw new RuntimeException(
+						"Can not inject not annotated param of type "
+								+ requestedParam.type.getName()
+								+ "; currently only OSGi service injection is supported.");
+			}
+		}
+
+		// check if return value is void.
+		Class<?> returnType = bundleSopMethod.getReturnType();
+		if (!Void.TYPE.isAssignableFrom(returnType)) {
+			throw new RuntimeException("Illegal return value of stop-method. "
+					+ returnType.getName()
+					+ "; currently only void is supported.");
+		}
+
+		// INVOKE
+		Object[] paramValues = evaluateParamValues(context, requestedParams);
+		bundleSopMethod.invoke(this, paramValues);
 	}
 }
