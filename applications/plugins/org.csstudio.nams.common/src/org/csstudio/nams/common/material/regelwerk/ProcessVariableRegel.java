@@ -323,5 +323,9 @@ public class ProcessVariableRegel implements VersandRegel {
 		ProcessVariableRegel.logger = logger;
 		
 	}
+
+	public static Logger getLogger() {
+		return logger;
+	}
 	
 }
