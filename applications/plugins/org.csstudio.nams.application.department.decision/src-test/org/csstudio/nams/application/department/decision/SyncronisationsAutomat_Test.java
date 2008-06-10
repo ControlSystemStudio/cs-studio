@@ -17,6 +17,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Repl
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.UnknownConfigurationElementError;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO.ReplicationState;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
@@ -129,6 +130,9 @@ public class SyncronisationsAutomat_Test extends TestCase {
 		neuZuEmpfangedeNachrichten.add(new DefaultNAMSMessage(
 				new SyncronisationsBestaetigungSystemNachricht(), handler));
 
+		nextToBeDelivered = new ReplicationStateDTO();
+		nextToBeDelivered.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_IDLE);
+		
 		SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(
 				amsAusgangsProducer, amsCommandConsumer,
 				new LocalStoreConfigurationService() {
@@ -158,7 +162,7 @@ public class SyncronisationsAutomat_Test extends TestCase {
 							ReplicationStateDTO currentState)
 							throws StorageError, StorageException,
 							UnknownConfigurationElementError {
-						if (nextToBeDelivered != null)
+						if (lastSended != null)
 							fail("missing clean of of lastSended");
 						lastSended = currentState;
 					}
@@ -179,6 +183,7 @@ public class SyncronisationsAutomat_Test extends TestCase {
 		assertTrue(zuletzGesendeteNachricht instanceof SyncronisationsAufforderungsSystemNachchricht);
 		assertEquals("Alle Nachrichten wurden acknowledged.", 3,
 				ackHandlerCallCount);
+		assertEquals(ReplicationState.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED, lastSended.getReplicationState());
 	}
 
 }

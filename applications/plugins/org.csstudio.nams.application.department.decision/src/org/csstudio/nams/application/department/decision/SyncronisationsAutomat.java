@@ -61,21 +61,21 @@ public class SyncronisationsAutomat {
 		workingThread = Thread.currentThread();
 		canceled = false;
 		isRunning = true;
-		System.out.println("vor");
+//		System.out.println("vor");
 		while (macheweiter) {
 			try {
 				NAMSMessage receiveMessage = consumer.receiveMessage();
 				
 				if (receiveMessage.enthaeltSystemnachricht()) {
 					if (receiveMessage.alsSystemachricht().istSyncronisationsBestaetigung()) {
-						System.out.println("richtige nachricht");
+//						System.out.println("richtige nachricht");
 						macheweiter = false;
 					} else {
 						// TODO systemnachricht die uns nicht interresiert?!?
 					}
 				} else {
 					// TODO keine systemnachricht behandeln 
-					System.out.println("falsche nachricht");
+//					System.out.println("falsche nachricht");
 				}
 				// TODO Klären: Alle Arten von Nachrichten acknowledgen?
 				receiveMessage.acknowledge();
@@ -83,7 +83,7 @@ public class SyncronisationsAutomat {
 				throw new MessagingException(e);
 			}
 		}
-		System.out.println("ende");
+//		System.out.println("ende");
 		isRunning = false;
 		
 //		// MapMessage mapMsg = amsSenderSession.createMapMessage();
