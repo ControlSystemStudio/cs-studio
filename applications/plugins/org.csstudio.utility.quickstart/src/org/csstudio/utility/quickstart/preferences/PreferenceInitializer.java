@@ -37,7 +37,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public final void initializeDefaultPreferences() {
 		Preferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
-		prefs.put(PreferenceConstants.SDS_FILE_1, "");
-		prefs.put(PreferenceConstants.SDS_FILE_2, "");
+		prefs.put(PreferenceConstants.SDS_FILES, "");
 	}
 }

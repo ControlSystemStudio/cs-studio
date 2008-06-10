@@ -24,26 +24,19 @@
 import org.csstudio.utility.quickstart.Activator;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;
-import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.jface.window.Window;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 
 /**
- * Preference page for the alarm tree.
+ * Preference page for the quickstart.
  */
 public class QuickstartPreferencePage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
 	/**
-	 * Creates a new alarm tree preference page.
+	 * Creates a new quickstart preference page.
 	 */
 	public QuickstartPreferencePage() {
 		super(GRID);
@@ -52,13 +45,10 @@ public class QuickstartPreferencePage
 	}
 	
 	/**
-	 * Creates the field editors. Field editors are abstractions of
-	 * the common GUI blocks needed to manipulate various types
-	 * of preferences. Each field editor knows how to save and
-	 * restore itself.
+	 * List of selected files in quickstart menu.
 	 */
 	public final void createFieldEditors() {
-		addField(new ListEditor(PreferenceConstants.SDS_FILE_1, "&Facility names: ", getFieldEditorParent()){
+		addField(new ListEditor(PreferenceConstants.SDS_FILES, "&Facility names: ", getFieldEditorParent()){
 			
 			public String[] parseString(final String stringList){
 				return stringList.split(";");

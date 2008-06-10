@@ -33,13 +33,8 @@ public final class PreferenceConstants {
 	}
 	
 	/**
-	 * SDS file 1 to put in quickstart menu.
+	 * SDS files to put in quickstart menu. List separated with
+	 * ';'.
 	 */
-	public static final String SDS_FILE_1 = "sdsFile1";
-
-	/**
-	 * SDS file 1 to put in quickstart menu.
-	 */
-	public static final String SDS_FILE_2 = "sdsFile2";
-
+	public static final String SDS_FILES = "sdsFiles";
 }
