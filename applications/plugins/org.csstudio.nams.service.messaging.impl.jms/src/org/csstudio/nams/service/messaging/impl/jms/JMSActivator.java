@@ -1,6 +1,6 @@
 package org.csstudio.nams.service.messaging.impl.jms;
 
-import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
+import org.csstudio.nams.common.activatorUtils.BundleActivatorUtils;
 import org.csstudio.nams.common.testhelper.ForTesting;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.eclipse.core.runtime.Plugin;

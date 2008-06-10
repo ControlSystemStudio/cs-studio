@@ -21,7 +21,7 @@
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
-package org.csstudio.nams.common.plugin.utils;
+package org.csstudio.nams.common.activatorUtils;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;

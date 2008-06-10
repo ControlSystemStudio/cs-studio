@@ -1,4 +1,4 @@
-package org.csstudio.nams.common.plugin.utils;
+package org.csstudio.nams.common.activatorUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -55,7 +55,7 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 		for (Method method : methods) {
 			if (method.getAnnotation(OSGiBundleActivationMethod.class) != null) {
 				if (result == null) {
-//					if( method.getModifiers() ) // check public
+					// if( method.getModifiers() ) // check public
 					result = method;
 				} else {
 					throw new RuntimeException(
@@ -122,8 +122,7 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 		serviceTracker.open();
 		Object service = serviceTracker.getService();
 		T result = null;
-		if( service != null )
-		{
+		if (service != null) {
 			result = requestedServiceType.cast(service);
 		}
 		serviceTracker.close();
@@ -145,8 +144,33 @@ public abstract class AbstractBundleActivator implements BundleActivator {
 			}
 		}
 
+		// check if optional return value is valid.
+		Class<?> returnType = bundleStartMethod.getReturnType();
+		if (!Void.TYPE.isAssignableFrom(returnType) ) {
+			if (!OSGiServiceOffers.class.isAssignableFrom(returnType)) {
+				throw new RuntimeException(
+						"illegal return value of start-method. "
+								+ returnType.getName()
+								+ "; currently only OSGiServiceOffers is supported.");
+			}
+		}
+
+		// INVOKE
 		Object[] paramValues = evaluateParamValues(context, requestedParams);
-		bundleStartMethod.invoke(this, paramValues);
+		Object result = bundleStartMethod.invoke(this, paramValues);
+
+		if (result != null && OSGiServiceOffers.class.isAssignableFrom(result.getClass())) {
+			OSGiServiceOffers offers = (OSGiServiceOffers) result;
+			for (Class<?> key : offers.keySet()) {
+				Object service = offers.get(key);
+				if (service == null) {
+					throw new RuntimeException(
+							"illegal service offer for type. " + key.getName()
+									+ "; offer may not be null.");
+				}
+				context.registerService(key.getName(), service, null);
+			}
+		}
 	}
 
 	final public void stop(BundleContext context) throws Exception {

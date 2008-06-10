@@ -1,7 +1,7 @@
 package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
-import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
+import org.csstudio.nams.common.activatorUtils.BundleActivatorUtils;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.eclipse.core.runtime.Plugin;

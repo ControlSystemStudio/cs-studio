@@ -1,39 +1,32 @@
 package org.csstudio.nams.common;
 
+import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
+import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
+import org.csstudio.nams.common.activatorUtils.OSGiService;
+import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
+import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
-import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class CommonActivator implements BundleActivator {
+public class CommonActivator extends AbstractBundleActivator implements BundleActivator {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.nams.common";
 
-	/**
-	 * The constructor
-	 */
-	public CommonActivator() {
-	}
-
-	/**
-	 * Logger
-	 */
-	private static Logger logger;
-	
-	public void start(BundleContext context) throws Exception {
-		context.registerService(ExecutionService.class.getName(),
-				new DefaultExecutionService(), null);
-		logger = BundleActivatorUtils.getAvailableService(context, Logger.class);
-		ProcessVariableRegel.staticInject(logger);
+	@OSGiBundleActivationMethod
+	public OSGiServiceOffers bundleStart(
+			@OSGiService @Required Logger logger
+	) {
+		OSGiServiceOffers serviceOffers = new OSGiServiceOffers();
+		serviceOffers.put(ExecutionService.class, new DefaultExecutionService());
 		
-	}
+		ProcessVariableRegel.staticInject(logger);
 
-	public void stop(BundleContext context) throws Exception {
+		return serviceOffers;
 	}
 }

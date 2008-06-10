@@ -3,17 +3,17 @@ package org.csstudio.nams.configurator;
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditingStoreService;
 import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
 import org.csstudio.ams.service.logging.declaration.Logger;
-import org.csstudio.nams.common.plugin.utils.AbstractBundleActivator;
-import org.csstudio.nams.common.plugin.utils.OSGiBundleActivationMethod;
-import org.csstudio.nams.common.plugin.utils.OSGiService;
-import org.csstudio.nams.common.plugin.utils.Required;
+import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
+import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
+import org.csstudio.nams.common.activatorUtils.OSGiService;
+import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.configurator.treeviewer.ConfigurationTreeView;
 import org.osgi.framework.BundleActivator;
 
 /**
  * The activator class controls the bundles life cycle
  */
-public class Activator extends AbstractBundleActivator implements
+public class ConfiguratorActivator extends AbstractBundleActivator implements
 		BundleActivator {
 
 	/**

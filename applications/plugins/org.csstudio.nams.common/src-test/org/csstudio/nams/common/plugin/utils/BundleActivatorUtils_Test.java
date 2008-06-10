@@ -2,6 +2,7 @@ package org.csstudio.nams.common.plugin.utils;
 
 import static org.junit.Assert.assertEquals;
 
+import org.csstudio.nams.common.activatorUtils.BundleActivatorUtils;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;

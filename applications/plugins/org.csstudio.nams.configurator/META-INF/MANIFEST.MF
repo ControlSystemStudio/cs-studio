@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Configurator Plug-in
 Bundle-SymbolicName: org.csstudio.nams.configurator; singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.csstudio.nams.configurator.Activator
+Bundle-Activator: org.csstudio.nams.configurator.ConfiguratorActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.ams.configurationStore,
@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.ams.service.logging,
  org.eclipse.jface.databinding,
  org.eclipse.core.databinding,
- org.eclipse.core.databinding.beans
+ org.eclipse.core.databinding.beans,
+ org.csstudio.nams.common.activatorUtils
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.configurator;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.configurator.branch.actions;x-friends:="org.csstudio.nams.testUtils.testSuites",

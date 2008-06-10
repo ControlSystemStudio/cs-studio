@@ -1,4 +1,4 @@
-package org.csstudio.nams.common.plugin.utils;
+package org.csstudio.nams.common.activatorUtils;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

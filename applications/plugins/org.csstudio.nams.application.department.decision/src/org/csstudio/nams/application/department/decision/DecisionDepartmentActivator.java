@@ -30,8 +30,8 @@ import java.util.List;
 
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.ams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
+import org.csstudio.nams.common.activatorUtils.BundleActivatorUtils;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
-import org.csstudio.nams.common.plugin.utils.BundleActivatorUtils;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.service.StepByStepProcessor;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;

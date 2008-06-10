@@ -19,7 +19,7 @@ public class Activator_Test extends TestCase {
 		EasyMock.replay(editingStoreService, storeService, logger);
 
 		// Activator starten...
-		Activator activator = new Activator();
+		ConfiguratorActivator activator = new ConfiguratorActivator();
 		activator.bundleStart(editingStoreService, storeService, logger);
 
 		assertSame(editingStoreService, ConfigurationTreeView.getEditingStoreService());
