@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.hibernate.annotations.CollectionOfElements;
 
 
@@ -32,7 +33,7 @@ import org.hibernate.annotations.CollectionOfElements;
  */
 @Entity
 @Table(name = "AMS_FilterCond_ArrStr")
-public class StringArrayFilterConditionDTO {
+public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="iFilterConditionRef", referencedColumnName="iFilterConditionRef")
