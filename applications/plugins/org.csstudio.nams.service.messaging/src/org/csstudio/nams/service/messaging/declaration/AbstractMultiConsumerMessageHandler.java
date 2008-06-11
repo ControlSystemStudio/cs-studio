@@ -22,6 +22,7 @@ public abstract class AbstractMultiConsumerMessageHandler implements MessageHand
 	 */
 	private final BlockingQueue<NAMSMessage> queue = new ArrayBlockingQueue<NAMSMessage>(1);
 	private List<StepByStepProcessor> processors;
+	private StepByStepProcessor masterProcessor;
 	
 	public AbstractMultiConsumerMessageHandler(Consumer[] consumerArray, ExecutionService executionService) {
 		processors = new LinkedList<StepByStepProcessor>();
@@ -40,16 +41,24 @@ public abstract class AbstractMultiConsumerMessageHandler implements MessageHand
 			processors.add(stepByStepProcessor);
 		}
 		
-		StepByStepProcessor stepByStepProcessor = new StepByStepProcessor() {
+		masterProcessor = new StepByStepProcessor() {
 			@Override
 			protected void doRunOneSingleStep() throws Throwable {
 				handleMessage(queue.take());
 			}
 		};
-		executionService.executeAsynchronsly(MultiConsumerMessageThreads.HANDLER_THREAD, stepByStepProcessor);
-		processors.add(stepByStepProcessor);
+		executionService.executeAsynchronsly(MultiConsumerMessageThreads.HANDLER_THREAD, masterProcessor);
+		processors.add(masterProcessor);
 	}
 
+	/**
+	 * Joined mit dem Thread des Master-Processor, wartet also auf die interne Queue "to be interrupted."
+	 * @throws InterruptedException 
+	 */
+	public void joinMasterProcessor() throws InterruptedException {
+		masterProcessor.joinThread();
+	}
+	
 	public void beendeArbeit() {
 		for (StepByStepProcessor processor : processors) {
 			processor.stopWorking();

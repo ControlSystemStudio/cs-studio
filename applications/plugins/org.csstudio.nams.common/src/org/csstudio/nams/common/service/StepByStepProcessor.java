@@ -74,4 +74,8 @@ public abstract class StepByStepProcessor implements Runnable {
 			Thread.yield();
 		}
 	}
+
+	public void joinThread() throws InterruptedException {
+		executionThread.join();
+	}
 }

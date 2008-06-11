@@ -49,6 +49,7 @@ import org.csstudio.nams.service.messaging.declaration.MessagingSession;
 import org.csstudio.nams.service.messaging.declaration.NAMSMessage;
 import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
+import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -113,12 +114,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	private volatile boolean _continueWorking;
 
 	/**
-	 * wir nur von der Application benutzt
-	 */
-
-	/**
 	 * Referenz auf den Thread, welcher die JMS Nachrichten anfragt. Wird
-	 * genutzt um den Thread zu "interrupten".
+	 * genutzt um den Thread zu "interrupten". Wird nur von der Application
+	 * benutzt.
 	 */
 	private Thread _receiverThread;
 
@@ -179,14 +177,22 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 * @see BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	@OSGiBundleActivationMethod
-	public void startBundle(
-			@OSGiService @Required Logger injectedLogger,
-			@OSGiService @Required MessagingService injectedMessagingService,
-			@OSGiService @Required PreferenceService injectedPreferenceService,
-			@OSGiService @Required RegelwerkBuilderService injectedBuilderService,
-			@OSGiService @Required HistoryService injectedHistoryService,
-			@OSGiService @Required LocalStoreConfigurationService injectedLocalStoreConfigurationService,
-			@OSGiService @Required ExecutionService injectedExecutionService) throws Exception {
+	public void startBundle(@OSGiService
+	@Required
+	Logger injectedLogger, @OSGiService
+	@Required
+	MessagingService injectedMessagingService, @OSGiService
+	@Required
+	PreferenceService injectedPreferenceService, @OSGiService
+	@Required
+	RegelwerkBuilderService injectedBuilderService, @OSGiService
+	@Required
+	HistoryService injectedHistoryService, @OSGiService
+	@Required
+	LocalStoreConfigurationService injectedLocalStoreConfigurationService,
+			@OSGiService
+			@Required
+			ExecutionService injectedExecutionService) throws Exception {
 
 		// ** Services holen...
 
@@ -225,7 +231,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 * @see BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	@OSGiBundleDeactivationMethod
-	public void stopBundle(@OSGiService @Required Logger logger) throws Exception {
+	public void stopBundle(@OSGiService
+	@Required
+	Logger logger) throws Exception {
 		logger.logInfoMessage(this, "Plugin " + PLUGIN_ID
 				+ " stopped succesfully.");
 	}
@@ -305,44 +313,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 							preferenceService
 									.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER),
 							PostfachArt.TOPIC);
-			/*-
-			 * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
-			 * Cofigurations-DB (application-DB) erfolgen, da zuvor dort noch
-			 * keine validen Daten liegen. Der folgende Aufruf blockiert
-			 * solange, bis der Distributor bestaetigt, dass die Synchronisation
-			 * erfolgreich ausgefuehrt wurde.
-			 */
-			logger
-					.logInfoMessage(
-							this,
-							"Decision department application orders distributor to synchronize configuration...");
-			SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(
-					amsAusgangsProducer, amsCommandConsumer,
-					localStoreConfigurationService);
-			// TODO Hier splitten...
-			if (SyncronisationsAutomat.hasBeenCanceled()) {
-				// Abbruch bei Syncrinisation
-				logger
-						.logInfoMessage(
-								this,
-								"Decision department application was interrupted and requested to shut down during synchroisation of configuration.");
-			} else {
-				logger
-						.logInfoMessage(this,
-								"Decision department application is configuring execution service...");
-				initialisiereThredGroupTypes(executionService);
 
-				logger
-						.logInfoMessage(this,
-								"Decision department application is creating decision office...");
-
-				List<Regelwerk> alleRegelwerke = regelwerkBuilderService
-						.gibAlleRegelwerke();
-
-				alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
-						alleRegelwerke.toArray(new Regelwerk[alleRegelwerke
-								.size()]));
-			}
 		} catch (Throwable e) {
 			logger
 					.logFatalMessage(
@@ -350,6 +321,70 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 							"Exception while initializing the alarm decision department.",
 							e);
 			_continueWorking = false;
+		}
+		if (_continueWorking) {
+			try {
+				/*-
+				 * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
+				 * Cofigurations-DB (application-DB) erfolgen, da zuvor dort noch
+				 * keine validen Daten liegen. Der folgende Aufruf blockiert
+				 * solange, bis der Distributor bestaetigt, dass die Synchronisation
+				 * erfolgreich ausgefuehrt wurde.
+				 */
+				logger
+						.logInfoMessage(
+								this,
+								"Decision department application orders distributor to synchronize configuration...");
+				MessagingException occuredMessagingException = null;
+				try {
+					SyncronisationsAutomat
+							.syncronisationUeberDistributorAusfueren(
+									amsAusgangsProducer, amsCommandConsumer,
+									localStoreConfigurationService);
+				} catch (MessagingException me) {
+					occuredMessagingException = me;
+				}
+				// TODO Hier splitten...
+				if (SyncronisationsAutomat.hasBeenCanceled()) {
+					// Abbruch bei Syncrinisation
+					logger
+							.logInfoMessage(
+									this,
+									"Decision department application was interrupted and requested to shut down during synchroisation of configuration.");
+				} else {
+					if (occuredMessagingException != null) {
+						logger.logFatalMessage(this,
+								"Exception while synchronizing configuration.",
+								occuredMessagingException);
+						_continueWorking = false;
+					} else {
+
+						logger
+								.logInfoMessage(this,
+										"Decision department application is configuring execution service...");
+						initialisiereThredGroupTypes(executionService);
+
+						logger
+								.logInfoMessage(this,
+										"Decision department application is creating decision office...");
+
+						List<Regelwerk> alleRegelwerke = regelwerkBuilderService
+								.gibAlleRegelwerke();
+
+						alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
+								alleRegelwerke
+										.toArray(new Regelwerk[alleRegelwerke
+												.size()]));
+					}
+				}
+			} catch (Throwable e) {
+				logger
+						.logFatalMessage(
+								this,
+								"Exception while initializing the alarm decision department.",
+								e);
+				_continueWorking = false;
+			}
 		}
 
 		if (_continueWorking) {
@@ -520,17 +555,28 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		};
 
 		while (_continueWorking) {
-
 			try {
-				this._receiverThread.wait();
+				messageHandler.joinMasterProcessor();
 			} catch (InterruptedException e) {
 				// moeglicher interrupt ist ohne auswirkung auf das verhalten
 				// des systems
 				logger.logDebugMessage(this,
 						"wait for receiver thred interrupted", e);
 			}
-			Thread.yield();
 		}
+
+		// while (_continueWorking) {
+		//
+		// try {
+		// this._receiverThread.wait();
+		// } catch (InterruptedException e) {
+		// // moeglicher interrupt ist ohne auswirkung auf das verhalten
+		// // des systems
+		// logger.logDebugMessage(this,
+		// "wait for receiver thred interrupted", e);
+		// }
+		// Thread.yield();
+		// }
 
 		messageHandler.beendeArbeit();
 	}

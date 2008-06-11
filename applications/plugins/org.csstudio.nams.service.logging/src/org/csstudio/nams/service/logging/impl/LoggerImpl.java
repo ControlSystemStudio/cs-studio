@@ -73,7 +73,7 @@ public class LoggerImpl implements Logger {
 
 	synchronized public void logInfoMessage(final Object caller, final String message) {
 		this.centralLogger.info(caller, message);
-		System.out.println(caller.getClass().getCanonicalName() + message);
+//		System.out.println(caller.getClass().getCanonicalName() + message);
 	}
 
 	synchronized public void logInfoMessage(final Object caller, final String message,
