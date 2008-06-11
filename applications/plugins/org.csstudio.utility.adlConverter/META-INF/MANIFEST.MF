@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name.0
 Bundle-SymbolicName: org.csstudio.utility.adlConverter;singleton:=true
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.2
 Bundle-Activator: org.csstudio.utility.adlconverter.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,

@@ -25,7 +25,9 @@
 package org.csstudio.utility.adlconverter.utility;
 
 import java.util.HashMap;
+import java.util.Map;
 
+import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
@@ -35,7 +37,6 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.TextLayout;
-import org.epics.css.dal.context.ConnectionState;
 
 /**
  * @author hrickens
@@ -223,8 +224,9 @@ public final class ADLHelper {
      *            set at this dynamicsDescriptor the ConnectionState.
      */
     public static void setConnectionState(final DynamicsDescriptor dynamicsDescriptor) {
-        HashMap<ConnectionState, Object> connectionState = new HashMap<ConnectionState, Object>();
-        connectionState.put(ConnectionState.INITIAL, ColorConstants.white.getRGB());
+        Map<ConnectionState, Object> connectionState = new HashMap<ConnectionState, Object>();
+//TODO: Check new Connection State !!!!        connectionState.put(ConnectionState.INITIAL, ColorConstants.white.getRGB());
+        connectionState.put(ConnectionState.DISCONNECTED, ColorConstants.white.getRGB());
         dynamicsDescriptor.setConnectionStateDependentPropertyValues(connectionState);
     }
 

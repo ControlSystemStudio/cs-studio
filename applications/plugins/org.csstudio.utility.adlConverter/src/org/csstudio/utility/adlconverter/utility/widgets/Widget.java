@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.importer.AbstractDisplayImporter;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
@@ -44,7 +45,6 @@ import org.csstudio.utility.adlconverter.utility.widgetparts.ADLPoints;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLSensitive;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.graphics.RGB;
-import org.epics.css.dal.context.ConnectionState;
 
 /**
  * @author hrickens
@@ -157,18 +157,19 @@ public abstract class Widget extends AbstractDisplayImporter {
      */
     protected void makeConnectionState() {
         if (Messages.Widget_DesySwitch.equals("DESY")) {
-            // Desy Settings
+//TODO: check new connection states
+        	// Desy Settings
             // -- Set ConnectionState Border width
             DynamicsDescriptor state = new DynamicsDescriptor("directConnection");
             state.addInputChannel(new ParameterDescriptor("$channel$", Double.class));
             Map<ConnectionState, Object> cState = new HashMap<ConnectionState, Object>();
             cState.put(ConnectionState.DISCONNECTED, Integer.valueOf(3));
             cState.put(ConnectionState.CONNECTION_FAILED, Integer.valueOf(3));
-            cState.put(ConnectionState.CONNECTING, Integer.valueOf(2));
-            cState.put(ConnectionState.INITIAL, Integer.valueOf(2));
+//            cState.put(ConnectionState.CONNECTING, Integer.valueOf(2));
+//            cState.put(ConnectionState.INITIAL, Integer.valueOf(2));
             cState.put(ConnectionState.CONNECTION_LOST, Integer.valueOf(3));
-            cState.put(ConnectionState.DISCONNECTING, Integer.valueOf(3));
-            cState.put(ConnectionState.DESTROYED, Integer.valueOf(3));
+//            cState.put(ConnectionState.DISCONNECTING, Integer.valueOf(3));
+//            cState.put(ConnectionState.DESTROYED, Integer.valueOf(3));
             state.setConnectionStateDependentPropertyValues(cState);
             _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_WIDTH, state);
             // -- Set ConnectionState Border color
@@ -177,11 +178,11 @@ public abstract class Widget extends AbstractDisplayImporter {
             cState = new HashMap<ConnectionState, Object>();
             cState.put(ConnectionState.DISCONNECTED, new RGB(255, 255, 255));
             cState.put(ConnectionState.CONNECTION_FAILED, new RGB(255, 128, 0));
-            cState.put(ConnectionState.CONNECTING, new RGB(128, 255, 0));
-            cState.put(ConnectionState.INITIAL, new RGB(0, 255, 0));
+//            cState.put(ConnectionState.CONNECTING, new RGB(128, 255, 0));
+//            cState.put(ConnectionState.INITIAL, new RGB(0, 255, 0));
             cState.put(ConnectionState.CONNECTION_LOST, new RGB(255, 128, 0));
-            cState.put(ConnectionState.DISCONNECTING, new RGB(255, 255, 0));
-            cState.put(ConnectionState.DESTROYED, new RGB(255, 0, 0));
+//            cState.put(ConnectionState.DISCONNECTING, new RGB(255, 255, 0));
+//            cState.put(ConnectionState.DESTROYED, new RGB(255, 0, 0));
             state.setConnectionStateDependentPropertyValues(cState);
             _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_COLOR, state);
         }
