@@ -72,6 +72,12 @@ public interface LocalStoreConfigurationService {
 	 * @deprecated Just for testing the functionality - not for production use!
 	 */
 	@Deprecated
+	public List<StringFilterConditionDTO> getStringFilterConditionDTOConfigurations();
+	
+	/**
+	 * @deprecated Just for testing the functionality - not for production use!
+	 */
+	@Deprecated
 	public List<StringArrayFilterConditionDTO> getStringArrayFilterConditionDTOConfigurations();
 
 	/**

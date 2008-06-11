@@ -7,11 +7,13 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.hibernate.annotations.ForeignKey;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
@@ -32,10 +34,10 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 @Entity
 @Table(name = "AMS_FilterCond_Conj_Common")
 
-@PrimaryKeyJoinColumn(name = "iFilterConditionRef"/*, referencedColumnName = "iFilterConditionID"*/)
+@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
 public class JunctorConditionDTO extends FilterConditionDTO {
 
-	// ForeignKey(name="iFilterConditionID", inverseName="iFilterConditionRef")
+//	@ForeignKey(name="iFilterConditionRef", inverseName="iFilterConditionID")
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
 	private int iFilterConditionRef;
 
@@ -44,12 +46,13 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 //
 //	@Column(name = "SecondFilterConditionRef", length = 16)
 //	private int secondFilterConditionRef;
-
-	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	@JoinColumn(name="FirstFilterConditionID"/*, referencedColumnName="iFilterConditionID"*/)
+//	@ForeignKey(name="FirstFilterConditionRef", inverseName="iFilterConditionID")
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	@JoinColumn(name="FirstFilterConditionRef", referencedColumnName="iFilterConditionID")
 	private FilterConditionDTO firstFilterCondition;
 	
-	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+//	@ForeignKey(name="SecondFilterConditionRef", inverseName="iFilterConditionID")
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="SecondFilterConditionRef", referencedColumnName="iFilterConditionID")
 	private FilterConditionDTO secondFilterCondition;
 	

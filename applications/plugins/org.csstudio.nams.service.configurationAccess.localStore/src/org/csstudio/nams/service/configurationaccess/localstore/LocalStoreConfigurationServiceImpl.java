@@ -151,4 +151,15 @@ class LocalStoreConfigurationServiceImpl implements
 		
 	}
 
+	public List<StringFilterConditionDTO> getStringFilterConditionDTOConfigurations() {
+		final Transaction newTransaction = this.session.beginTransaction();
+		final List<StringFilterConditionDTO> stringFilterConditionDTOs = this.session.createQuery(
+				"from StringFilterConditionDTO").list();
+
+		newTransaction.commit();
+		System.out.println(stringFilterConditionDTOs.toString());
+
+		return stringFilterConditionDTOs;
+	}
+
 }

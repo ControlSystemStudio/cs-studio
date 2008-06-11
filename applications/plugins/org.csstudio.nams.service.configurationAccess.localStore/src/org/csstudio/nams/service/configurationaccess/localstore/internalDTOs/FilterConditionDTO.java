@@ -38,26 +38,26 @@ import org.hibernate.annotations.ForeignKey;
 @Inheritance(strategy=InheritanceType.JOINED)
 public class FilterConditionDTO {
 	
-	@ForeignKey(name="iFilterConditionTypeID")
-	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	@JoinColumn(name="iFilterConditionTypeRef", referencedColumnName="iFilterConditionTypeID")
-	private FilterConditionTypeDTO type;
+//	@ForeignKey(name="iFilterConditionTypeID")
+//	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+//	@JoinColumn(name="iFilterConditionTypeRef", referencedColumnName="iFilterConditionTypeID")
+//	private FilterConditionTypeDTO type;
 	
-	/**
-	 * @return the type
-	 */
-	@SuppressWarnings("unused")
-	private FilterConditionTypeDTO getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	@SuppressWarnings("unused")
-	private void setType(FilterConditionTypeDTO type) {
-		this.type = type;
-	}
+//	/**
+//	 * @return the type
+//	 */
+//	@SuppressWarnings("unused")
+//	private FilterConditionTypeDTO getType() {
+//		return type;
+//	}
+//
+//	/**
+//	 * @param type the type to set
+//	 */
+//	@SuppressWarnings("unused")
+//	private void setType(FilterConditionTypeDTO type) {
+//		this.type = type;
+//	}
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -164,8 +164,8 @@ public class FilterConditionDTO {
 		resultBuilder.append(" (");
 		resultBuilder.append(this.getIFilterConditionRef());
 		resultBuilder.append("), refers to type: ");
-		FilterConditionTypeDTO conditionTypeDTO = this.getType();
-		resultBuilder.append(conditionTypeDTO != null ? conditionTypeDTO.toString() : "NULL");
+//		FilterConditionTypeDTO conditionTypeDTO = this.getType();
+//		resultBuilder.append(conditionTypeDTO != null ? conditionTypeDTO.toString() : "NULL");
 //		resultBuilder.append(" (");
 //		resultBuilder.append(this.getIFilterConditionTypeRef());
 //		resultBuilder.append("), ");

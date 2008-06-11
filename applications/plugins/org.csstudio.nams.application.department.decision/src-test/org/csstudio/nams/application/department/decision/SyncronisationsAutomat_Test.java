@@ -196,6 +196,11 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						
 					}
 
+					public List<StringFilterConditionDTO> getStringFilterConditionDTOConfigurations() {
+						fail("unexpected method call!");
+						return null;
+					}
+
 				});
 
 		assertNotNull(zuletzGesendeteNachricht);
