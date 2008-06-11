@@ -25,7 +25,8 @@ import org.junit.Test;
 public class JMSLogThreadTest
 {
     private static final int MESSAGE_COUNT = 3;
-    final private static String URL = "tcp://ics-srv02.sns.ornl.gov:61616";
+    final private static String URL =
+        "failover:(tcp://ics-srv02.sns.ornl.gov:61616)";
     final private static String TOPIC = "LOG";
 
     /** JMS Receiver that runs until MESSAGE_COUNT messages were received */
@@ -132,13 +133,13 @@ public class JMSLogThreadTest
                     "SomeClass", "some_method",
                     "SomeClass.java:315",
                     "MyApp", "localhost", "fred");
-            log_thread.addLogMessage(log_msg);
+            log_thread.addMessage(log_msg);
             Thread.sleep(100);
         }
         
         // Wait for receiver to have received what it wants to receive
-        receiver.join(10000);
-        
+        receiver.join(10 * 1000);
+
         // Stop sender
         log_thread.cancel();
         log_thread.join();

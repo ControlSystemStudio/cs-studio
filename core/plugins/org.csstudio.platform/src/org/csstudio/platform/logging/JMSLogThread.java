@@ -1,9 +1,13 @@
 package org.csstudio.platform.logging;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
+import javax.jms.ExceptionListener;
+import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
@@ -11,34 +15,51 @@ import javax.jms.Topic;
 
 import org.csstudio.platform.libs.jms.JMSConnectionFactory;
 
-/** Thread that keeps log messages in a queue and tries to send them to JMS.
+/** Thread that reads log messages from a queue and tries to send them to JMS.
+ *  <p>
+ *  This thread will disconnect and try to re-connect in case
+ *  of errors, but is is preferred to have the underlying JMS library
+ *  handle this, for example ActiveMQ with "failover:..." JMS server URLs.
+ *  <p>
+ *  One drawback of ActiveMQ and "failover:..." is that the library can
+ *  hang in infinite reconnect attempts when all JMS servers are inaccessible,
+ *  and then there is no graceful way to interrrupt/cancel this thread.
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class JMSLogThread extends Thread
+public class JMSLogThread extends Thread implements ExceptionListener
 {
     /** Debug messages to stdout?
      *  Can't use Log4j because we handle Log4j messages...
      */
-    public static boolean debug = false;
-    
-    /** Connection delay in milliseconds */
+    public static boolean debug = true;
+
+    /** Interval between queue polls in ms.
+     *  Determines the response time to <code>cancel()</code>.
+     */
+    private static final int POLL_PERIOD_MS = 500;
+
+    /** Re-connection delay in milliseconds */
     private static final int CONNECT_DELAY_MS = 5000;
     
+    /** Queue of log messages */
+    final private BlockingQueue<JMSLogMessage> queue =
+        new LinkedBlockingQueue<JMSLogMessage>();
+    
+    /** Message that we should have sent or <code>null</code> */
+    private JMSLogMessage pending_message = null;
+    
     /** URL of the JMS server */
-    private String server_url;
+    final private String server_url;
 
     /** Name of the JMS topic */
-    private String topic_name;
+    final private String topic_name;
 
     /** Flag to stop the thread.
      *  @see #cancel()
      */
     private boolean run = true;
-
-    /** Queue of log messages */
-    private LinkedBlockingQueue<JMSLogMessage> queue =
-        new LinkedBlockingQueue<JMSLogMessage>();
 
     /** JMS Connection or <code>null</code> */
     private Connection connection = null;
@@ -55,46 +76,33 @@ public class JMSLogThread extends Thread
      */
     public JMSLogThread(final String server_url, final String topic_name)
     {
+        super("JMSLogThread");
         this.server_url = server_url;
         this.topic_name = topic_name;
     }
     
-    /** Switch thread to new JMS server/topic
-     *  @param server_url New JMS server URL
-     *  @param topic_name New JMS queue topic
+    /** Add message to queue.
+     *  @param message
      */
-    public void setTarget(final String server_url, final String topic_name)
+    public void addMessage(final JMSLogMessage message)
     {
-        this.server_url = server_url;
-        this.topic_name = topic_name;
-        // TODO trigger (re-)connect
+        // TODO limit the queue size
+        queue.offer(message);
     }
     
-    /** Add a message to the queue.
-     *  @param message Message to add.
+    /** Ask thread to stop.
+     *  Doesn't wait for the thread to stop.
+     *  Ideally, thread will soon notice that there's nothing more on the queue
+     *  and quit. But it it's stuck in an ongoing JMS library call,
+     *  there is no good way to stop it.
+     *  @see JMSLogThread
      */
-    public void addLogMessage(final JMSLogMessage message)
-    {
-        try
-        {
-            if (debug)
-                System.out.println("JMSLogThread addded " + message);
-            queue.put(message);
-        }
-        catch (InterruptedException ex)
-        {
-            System.out.println(ex);
-        }
-    }
-    
-    /** Ask thread to stop. Doesn't wait for the thread to stop! */
     public void cancel()
     {
         run = false;
-        interrupt();
     }
     
-    /** {@inheritDoc} */
+    /** Thread's Runnable */
     @Override
     public void run()
     {
@@ -117,7 +125,7 @@ public class JMSLogThread extends Thread
             }
         }
         if (debug)
-            System.out.println("JMSLogThread start");
+            System.out.println("JMSLogThread ends");
     }
 
     /** Connect to JMS
@@ -128,17 +136,19 @@ public class JMSLogThread extends Thread
         try
         {
             connection = JMSConnectionFactory.connect(server_url);
+            connection.setExceptionListener(this);
             connection.start();
             session = connection.createSession(/* transacted */false,
-                    Session.AUTO_ACKNOWLEDGE);
+                                               Session.AUTO_ACKNOWLEDGE);
             final Topic topic = session.createTopic(topic_name);
             producer = session.createProducer(topic);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
             if (debug)
-                System.out.println("JMSLogThread connected " + server_url);
+                System.out.println("JMSLogThread connected " + server_url
+                        + " (" + producer.getDestination() + ")");
             return true;
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             System.out.println("JMSLogThread connect error for " + server_url
                     +": " + ex.getMessage());
@@ -148,27 +158,11 @@ public class JMSLogThread extends Thread
 
     /** Disconnect from JMS.
      *  Safe to call even when already disconnected.
+     *  Depending on the <code>run</code> flag, thread should
+     *  attempt a re-connect or quit.
      */
     private void disconnect()
     {
-        if (producer != null)
-        {
-            try
-            {
-                producer.close();
-            }
-            catch (Exception ex) { /* NOP */ }
-            producer = null;
-        }
-        if (session != null)
-        {
-            try
-            {
-                session.close();
-            }
-            catch (Exception ex) { /* NOP */ }
-            session = null;
-        }
         if (connection != null)
         {
             try
@@ -178,6 +172,8 @@ public class JMSLogThread extends Thread
             catch (Exception ex) { /* NOP */ }
             connection = null;
         }
+        session = null;
+        producer = null;
         if (debug)
             System.out.println("JMSLogThread disconnected");
     }
@@ -190,17 +186,12 @@ public class JMSLogThread extends Thread
         if (debug)
             System.out.println("JMSLogThread waiting for messages");
         while (run)
-        {   // Wait for next message
-            JMSLogMessage log_message;
-            try
-            {
-                log_message = queue.take();
-            }
-            catch (InterruptedException ex)
-            {   // Should be the result of cancel(), so quit
-                return;
-            }
-            // Try to send message to JMS
+        {   
+            final JMSLogMessage log_message = getNextMessage();
+            if (log_message == null)
+                continue;
+            // Try to send message to JMS. This could fail because the
+            // connection was closed.
             try
             {
                 final MapMessage map = session.createMapMessage();
@@ -209,10 +200,39 @@ public class JMSLogThread extends Thread
                 if (debug)
                     System.out.println("JMSLogThread sent " + log_message);
             }
-            catch (Exception ex)
+            catch (Throwable ex)
             {
                 ex.printStackTrace();
+                // Queue again, then return to trigger re-connect
+                pending_message = log_message;
+                return;
             }
         }
+    }
+
+    /** @return Next message or <code>null</code> if there is none */
+    private JMSLogMessage getNextMessage()
+    {
+        // Previously undelivered message?
+        if (pending_message != null)
+        {
+            final JMSLogMessage result = pending_message;
+            pending_message = null;
+            return result;
+        }
+        // Else: Get a new message from queue
+        try
+        {
+            return queue.poll(POLL_PERIOD_MS, TimeUnit.MILLISECONDS);
+        }
+        catch (InterruptedException ex)
+        { /* NOP */ }
+        return null;
+    }
+
+    /** @see javax.jms.ExceptionListener */
+    public void onException(final JMSException ex)
+    {
+        ex.printStackTrace();
     }
 }
