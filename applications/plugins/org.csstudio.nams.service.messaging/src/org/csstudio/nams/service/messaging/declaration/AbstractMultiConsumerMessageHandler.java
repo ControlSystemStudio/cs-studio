@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.service.StepByStepProcessor;
 import org.csstudio.nams.common.service.ThreadType;
+import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
 /**
  * Ein abstakter {@link MessageHandler} der auf mehreren {@link Consumer}n ließt.
@@ -31,9 +32,17 @@ public abstract class AbstractMultiConsumerMessageHandler implements MessageHand
 			StepByStepProcessor stepByStepProcessor = new StepByStepProcessor() {
 				@Override
 				protected void doRunOneSingleStep() throws Throwable {
+					try {
 					NAMSMessage receivedMessage = consumer.receiveMessage();
 					if (receivedMessage != null) {
-						queue.add(receivedMessage);
+						queue.put(receivedMessage);
+					}
+					} catch( MessagingException me ) {
+						if( me.getCause() instanceof InterruptedException ) {
+							// Ok, soll beendet werden....
+						} else {
+							throw me.fillInStackTrace();
+						}
 					}
 				}
 			};
@@ -44,7 +53,11 @@ public abstract class AbstractMultiConsumerMessageHandler implements MessageHand
 		masterProcessor = new StepByStepProcessor() {
 			@Override
 			protected void doRunOneSingleStep() throws Throwable {
-				handleMessage(queue.take());
+				try {
+					handleMessage(queue.take());
+				} catch(InterruptedException ie) {
+					// Ok... alles gut. Gewolltest Verhalten.
+				}
 			}
 		};
 		executionService.executeAsynchronsly(MultiConsumerMessageThreads.HANDLER_THREAD, masterProcessor);

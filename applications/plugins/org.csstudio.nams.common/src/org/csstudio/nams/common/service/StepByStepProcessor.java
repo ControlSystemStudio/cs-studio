@@ -68,24 +68,27 @@ public abstract class StepByStepProcessor implements Runnable {
 	 */
 	public final void stopWorking() throws SecurityException {
 		this.continueRunning = false;
-		this.executionThread.interrupt(); // FIXME : Nicht sich selbst interrupten!!!! Execution anders lagern! (siehe benutzung im DDA)
-		while( isCurrentlyRunning() )
-		{
+		if (executionThread != null) {
+			this.executionThread.interrupt(); // FIXME : Nicht sich selbst
+												// interrupten!!!! Execution
+												// anders lagern! (siehe
+												// benutzung im DDA)
+		}
+		while (isCurrentlyRunning()) {
 			Thread.yield();
 		}
 	}
 
 	/**
 	 * Wartet bis fertig.
+	 * 
 	 * @throws InterruptedException
 	 */
 	public void joinThread() throws InterruptedException {
-		while( continueRunning && !isCurrentlyRunning() )
-		{
+		while (continueRunning && !isCurrentlyRunning()) {
 			Thread.yield();
 		}
-		if( isCurrentlyRunning() )
-		{
+		if (isCurrentlyRunning()) {
 			executionThread.join();
 		}
 	}
