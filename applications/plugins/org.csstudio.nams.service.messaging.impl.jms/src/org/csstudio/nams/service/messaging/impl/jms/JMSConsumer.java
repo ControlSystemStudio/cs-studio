@@ -90,6 +90,7 @@ class JMSConsumer implements Consumer {
 					logger.logWarningMessage(this,
 							"Message does not contain any content: "
 									+ mapMessage.toString());
+					mapMessage.acknowledge();
 				} else {
 					while (mapNames.hasMoreElements()) {
 						String currentElement = mapNames.nextElement()
@@ -109,8 +110,7 @@ class JMSConsumer implements Consumer {
 						public void acknowledge() throws Throwable {
 							mapMessage.acknowledge();
 							// TODO logger nutzen
-							System.out
-									.println("JMSConsumer.ackHandler.acknowledge()");
+							logger.logDebugMessage(this, "JMSConsumer.ackHandler.acknowledge() called for message "+ mapMessage.toString());
 						}
 					};
 
@@ -132,6 +132,7 @@ class JMSConsumer implements Consumer {
 			} else {
 				logger.logWarningMessage(this,
 						"unknown Message type received: " + message.toString());
+				message.acknowledge();
 			}
 		} catch (InterruptedException e) {
 			throw new MessagingException("message receiving interrupted", e);
@@ -192,7 +193,7 @@ class JMSConsumer implements Consumer {
 						// ----
 //						System.out.println("WorkThread.run() "
 //								+ message.toString());
-						message.acknowledge(); // FIXME Gehört hier nicht her,
+//						message.acknowledge(); // FIXME Gehört hier nicht her,
 						// ging aber anderes nicht -
 						// klären waurm!?!?!?!
 						// Stichwort AcknowledgeHandler!
