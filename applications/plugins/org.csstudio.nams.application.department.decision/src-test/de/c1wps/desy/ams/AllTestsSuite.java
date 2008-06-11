@@ -4,6 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.csstudio.nams.application.department.decision.DecisionDepartmentActivator_Test;
 import org.csstudio.nams.application.department.decision.SyncronisationsAutomat_Test;
 
 import de.c1wps.desy.ams.alarmentscheidungsbuero.Alarmentscheidungsbuero_SubSystemTestSuite;
@@ -22,6 +23,8 @@ public class AllTestsSuite extends TestCase {
 		suite.addTest(Alarmentscheidungsbuero_SubSystemTestSuite.suite());
 		suite.addTestSuite(SyncronisationsAutomat_Test.class);
 		suite.addTest(AllgemeinesRegelwerk_SubSystemTestSuite.suite());
+		
+		suite.addTestSuite(DecisionDepartmentActivator_Test.class);
 		//$JUnit-END$
 		return suite;
 	}

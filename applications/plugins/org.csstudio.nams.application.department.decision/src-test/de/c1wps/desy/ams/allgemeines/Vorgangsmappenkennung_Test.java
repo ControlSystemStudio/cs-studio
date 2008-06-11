@@ -151,7 +151,7 @@ public class Vorgangsmappenkennung_Test extends
 	}
 	
 	@Test
-	public final void testHashCode2() {
+	public final void testHashCode2() throws Throwable {
 		Vorgangsmappenkennung x = getAValueOfTypeUnderTest();
 		Vorgangsmappenkennung y = getAValueOfTypeUnderTest();
 		Vorgangsmappenkennung z = Vorgangsmappenkennung.valueOf(x, "Horst Seidel");

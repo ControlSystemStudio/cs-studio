@@ -20,15 +20,18 @@ public class AllTests extends TestCase {
 
 	private static final String TEST_CLASS_SUFFIX = "_Test.class";
 
-	public static Test suite() {
+	public static Test suite() throws Throwable {
 		System.out.println("AllTests.suite()");
 		TestSuite suite = new TestSuite(
 				"Test for org.csstudio.nams.testutils.testsuites");
 		// $JUnit-BEGIN$
 		suite.addTestSuite(AllTests.class);
+		suite.addTestSuite(de.c1wps.desy.ams.AllTestsSuite.class);
+		suite.addTest(de.c1wps.desy.ams.AllTestsSuite.suite());
+//		collectTestCasesOfPackageAndSubPackages(suite, "de.c1wps.desy.ams");
+		
 		collectTestCasesOfPackageAndSubPackages(suite,
 				"org.csstudio.nams.testutils.testsuites");
-		collectTestCasesOfPackageAndSubPackages(suite, "de.c1wps.desy.ams");
 		collectTestCasesOfPackageAndSubPackages(suite, "org.csstudio.nams");
 		// $JUnit-END$
 		System.out.println("AllTests.suite() - found: "

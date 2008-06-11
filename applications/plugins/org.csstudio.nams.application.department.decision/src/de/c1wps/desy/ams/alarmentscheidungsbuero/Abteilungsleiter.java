@@ -33,7 +33,8 @@ import de.c1wps.desy.ams.allgemeines.wam.Automat;
  * Der Abteilungsleiter ist verantwortlich für die Bearbeitung von Nachrichten.
  */
 @Automat
-class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>, Arbeitsfaehig {
+class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
+		Arbeitsfaehig {
 	private DokumentVerbraucherArbeiter<Vorgangsmappe> achteAufEingaenge;
 	private final Eingangskorb<Vorgangsmappe>[] sachbearbeiterEingangkoerbe;
 
@@ -52,10 +53,9 @@ class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>, Arbeitsfa
 			final Eingangskorb<Vorgangsmappe>[] sachbearbeiterEingangkoerbe) {
 		this.sachbearbeiterEingangkoerbe = sachbearbeiterEingangkoerbe;
 
-		achteAufEingaenge = new DokumentVerbraucherArbeiter<Vorgangsmappe>(this, eingangskorbNeuerAlarmVorgaenge);
+		achteAufEingaenge = new DokumentVerbraucherArbeiter<Vorgangsmappe>(
+				this, eingangskorbNeuerAlarmVorgaenge);
 	}
-
-	
 
 	/**
 	 * Delegiert Vorgaende an die {@link Sachbearbeiter}.
@@ -63,27 +63,30 @@ class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>, Arbeitsfa
 	public void bearbeiteVorgang(Vorgangsmappe mappe) {
 		// Nachricht kopieren.
 		for (Eingangskorb<Vorgangsmappe> eingangskorb : sachbearbeiterEingangkoerbe) {
-			Vorgangsmappe erstelleKopieFuer = mappe.erstelleKopieFuer(eingangskorb.toString());
+			Vorgangsmappe erstelleKopieFuer = mappe
+					.erstelleKopieFuer(eingangskorb.toString());
 			try {
 				eingangskorb.ablegen(erstelleKopieFuer);
 			} catch (InterruptedException e) {
-				// TODO Handle this error
+				// TODO Ist ein Interrupt hier OK? Wenn ja, wie mit der
+				// Vorgangsmappe verfahren, wenn nein, wie den Fehler behandeln?
 				e.printStackTrace();
 			}
 		}
 	}
 
 	/**
-	 * Beginnt mit der Arbeit, das auslesen neuer Nachrichten und das delegieren der Aufgaben etc..
+	 * Beginnt mit der Arbeit, das auslesen neuer Nachrichten und das delegieren
+	 * der Aufgaben etc..
 	 */
 	public void beginneArbeit() {
 		achteAufEingaenge.start();
 	}
-	
+
 	public boolean istAmArbeiten() {
 		return achteAufEingaenge.isAlive();
 	}
-	
+
 	/**
 	 * Beendet die Arbeit.
 	 */
