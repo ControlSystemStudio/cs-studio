@@ -10,7 +10,7 @@ package org.csstudio.nams.common.service;
 public abstract class StepByStepProcessor implements Runnable {
 
 	private volatile Thread executionThread = null;
-	private volatile boolean continueRunning = false;
+	private volatile boolean continueRunning = true;
 
 	public final void run() {
 		if (executionThread != null) {
@@ -75,7 +75,18 @@ public abstract class StepByStepProcessor implements Runnable {
 		}
 	}
 
+	/**
+	 * Wartet bis fertig.
+	 * @throws InterruptedException
+	 */
 	public void joinThread() throws InterruptedException {
-		executionThread.join();
+		while( continueRunning && !isCurrentlyRunning() )
+		{
+			Thread.yield();
+		}
+		if( isCurrentlyRunning() )
+		{
+			executionThread.join();
+		}
 	}
 }

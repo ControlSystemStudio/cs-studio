@@ -7,6 +7,7 @@ import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.logging.declaration.Logger;
+import org.csstudio.nams.service.logging.declaration.LoggerMock;
 import org.csstudio.nams.service.messaging.declaration.MessagingService;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.easymock.EasyMock;
@@ -47,7 +48,7 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 	@Before
 	public void setUp() {
 		// Prepare Mocks...
-		logger = EasyMock.createNiceMock(Logger.class);
+		logger = new LoggerMock();
 		messagingService = EasyMock.createNiceMock(MessagingService.class);
 		preferenceService = EasyMock.createNiceMock(PreferenceService.class);
 		regelwerksBuilderService = EasyMock.createNiceMock(RegelwerkBuilderService.class);
@@ -56,12 +57,12 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		executionService = EasyMock.createNiceMock(ExecutionService.class);
 		
 		// Replay....
-		EasyMock.replay(logger, messagingService, preferenceService, regelwerksBuilderService, historyService, localStoreConfigurationService, executionService);
+		EasyMock.replay(messagingService, preferenceService, regelwerksBuilderService, historyService, localStoreConfigurationService, executionService);
 	}
 	
 	@After
 	public void tearDown() {
 		// Verify Mocks...
-		EasyMock.verify(logger, messagingService, preferenceService, regelwerksBuilderService, historyService, localStoreConfigurationService, executionService);
+		EasyMock.verify(messagingService, preferenceService, regelwerksBuilderService, historyService, localStoreConfigurationService, executionService);
 	}
 }

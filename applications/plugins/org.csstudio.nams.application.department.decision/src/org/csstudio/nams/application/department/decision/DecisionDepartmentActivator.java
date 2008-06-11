@@ -39,7 +39,10 @@ import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.service.StepByStepProcessor;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.InconsistentConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.UnknownConfigurationElementError;
 import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.AbstractMultiConsumerMessageHandler;
@@ -322,61 +325,74 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 							e);
 			_continueWorking = false;
 		}
+
+		/*-
+		 * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
+		 * Cofigurations-DB (application-DB) erfolgen, da zuvor dort noch
+		 * keine validen Daten liegen. Der folgende Aufruf blockiert
+		 * solange, bis der Distributor bestaetigt, dass die Synchronisation
+		 * erfolgreich ausgefuehrt wurde.
+		 */
+		_continueWorking = versucheZuSynchronisieren(this, logger,
+				amsAusgangsProducer, amsCommandConsumer,
+				localStoreConfigurationService);
+
 		if (_continueWorking) {
+			// try {
+			// /*-
+			// * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
+			// * Cofigurations-DB (application-DB) erfolgen, da zuvor dort noch
+			// * keine validen Daten liegen. Der folgende Aufruf blockiert
+			// * solange, bis der Distributor bestaetigt, dass die
+			// Synchronisation
+			// * erfolgreich ausgefuehrt wurde.
+			// */
+			// logger
+			// .logInfoMessage(
+			// this,
+			// "Decision department application orders distributor to
+			// synchronize configuration...");
+			// MessagingException occuredMessagingException = null;
+			// try {
+			// SyncronisationsAutomat
+			// .syncronisationUeberDistributorAusfueren(
+			// amsAusgangsProducer, amsCommandConsumer,
+			// localStoreConfigurationService);
+			// } catch (MessagingException me) {
+			// occuredMessagingException = me;
+			// }
+			// if (SyncronisationsAutomat.hasBeenCanceled()) {
+			// // Abbruch bei Syncrinisation
+			// logger
+			// .logInfoMessage(
+			// this,
+			// "Decision department application was interrupted and requested to
+			// shut down during synchroisation of configuration.");
+			// } else {
+			// if (occuredMessagingException != null) {
+			// logger.logFatalMessage(this,
+			// "Exception while synchronizing configuration.",
+			// occuredMessagingException);
+			// _continueWorking = false;
+			// } else {
 			try {
-				/*-
-				 * Vor der naechsten Zeile darf niemals ein Zugriff auf die lokale
-				 * Cofigurations-DB (application-DB) erfolgen, da zuvor dort noch
-				 * keine validen Daten liegen. Der folgende Aufruf blockiert
-				 * solange, bis der Distributor bestaetigt, dass die Synchronisation
-				 * erfolgreich ausgefuehrt wurde.
-				 */
 				logger
-						.logInfoMessage(
-								this,
-								"Decision department application orders distributor to synchronize configuration...");
-				MessagingException occuredMessagingException = null;
-				try {
-					SyncronisationsAutomat
-							.syncronisationUeberDistributorAusfueren(
-									amsAusgangsProducer, amsCommandConsumer,
-									localStoreConfigurationService);
-				} catch (MessagingException me) {
-					occuredMessagingException = me;
-				}
-				// TODO Hier splitten...
-				if (SyncronisationsAutomat.hasBeenCanceled()) {
-					// Abbruch bei Syncrinisation
-					logger
-							.logInfoMessage(
-									this,
-									"Decision department application was interrupted and requested to shut down during synchroisation of configuration.");
-				} else {
-					if (occuredMessagingException != null) {
-						logger.logFatalMessage(this,
-								"Exception while synchronizing configuration.",
-								occuredMessagingException);
-						_continueWorking = false;
-					} else {
+						.logInfoMessage(this,
+								"Decision department application is configuring execution service...");
+				initialisiereThredGroupTypes(executionService);
 
-						logger
-								.logInfoMessage(this,
-										"Decision department application is configuring execution service...");
-						initialisiereThredGroupTypes(executionService);
+				logger
+						.logInfoMessage(this,
+								"Decision department application is creating decision office...");
 
-						logger
-								.logInfoMessage(this,
-										"Decision department application is creating decision office...");
+				List<Regelwerk> alleRegelwerke = regelwerkBuilderService
+						.gibAlleRegelwerke();
 
-						List<Regelwerk> alleRegelwerke = regelwerkBuilderService
-								.gibAlleRegelwerke();
-
-						alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
-								alleRegelwerke
-										.toArray(new Regelwerk[alleRegelwerke
-												.size()]));
-					}
-				}
+				alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
+						alleRegelwerke.toArray(new Regelwerk[alleRegelwerke
+								.size()]));
+				// }
+				// }
 			} catch (Throwable e) {
 				logger
 						.logFatalMessage(
@@ -444,6 +460,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		}
 
 		// Alle Verbindungen schließen
+		logger.logInfoMessage(this,
+		"Decision department application is closing opened connections...");
 		if (amsAusgangsProducer != null) {
 			amsAusgangsProducer.close();
 		}
@@ -469,6 +487,70 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		logger.logInfoMessage(this,
 				"Decision department application successfully shuted down.");
 		return IApplication.EXIT_OK;
+	}
+
+	/**
+	 * Versucht via dem Distributor eine Synchronisation auszufürehn. Das
+	 * Ergebnis gibt an, ob weitergearbeitet werden soll.
+	 * 
+	 * @param instance
+	 * @param logger
+	 * @param amsAusgangsProducer
+	 * @param amsCommandConsumer
+	 * @param localStoreConfigurationService
+	 * @return {@code true} bei Erfolg, {@false} sonst.
+	 */
+	private static boolean versucheZuSynchronisieren(
+			DecisionDepartmentActivator instance, Logger logger,
+			Producer amsAusgangsProducer, Consumer amsCommandConsumer,
+			LocalStoreConfigurationService localStoreConfigurationService) {
+		boolean result = false;
+		try {
+
+			logger
+					.logInfoMessage(
+							instance,
+							"Decision department application orders distributor to synchronize configuration...");
+			SyncronisationsAutomat.syncronisationUeberDistributorAusfueren(
+					amsAusgangsProducer, amsCommandConsumer,
+					localStoreConfigurationService);
+			if (!SyncronisationsAutomat.hasBeenCanceled()) {
+				// Abbruch bei Syncrinisation
+				result = true;
+			}
+		} catch (MessagingException messagingException) {
+			if (SyncronisationsAutomat.hasBeenCanceled()) {
+				// Abbruch bei Syncrinisation
+				logger
+						.logInfoMessage(
+								instance,
+								"Decision department application was interrupted and requested to shut down during synchroisation of configuration.");
+
+			} else {
+
+				logger.logFatalMessage(instance,
+						"Exception while synchronizing configuration.",
+						messagingException);
+				result = false;
+
+			}
+		} catch (StorageException storageException) {
+			logger.logFatalMessage(instance,
+					"Exception while synchronizing configuration.",
+					storageException);
+			result = false;
+		} catch (UnknownConfigurationElementError unknownConfigurationElementError) {
+			logger.logFatalMessage(instance,
+					"Exception while synchronizing configuration.",
+					unknownConfigurationElementError);
+			result = false;
+		} catch (InconsistentConfiguration inconsistentConfiguration) {
+			logger.logFatalMessage(instance,
+					"Exception while synchronizing configuration.",
+					inconsistentConfiguration);
+			result = false;
+		}
+		return result;
 	}
 
 	private void initialisiereThredGroupTypes(
@@ -564,19 +646,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 						"wait for receiver thred interrupted", e);
 			}
 		}
-
-		// while (_continueWorking) {
-		//
-		// try {
-		// this._receiverThread.wait();
-		// } catch (InterruptedException e) {
-		// // moeglicher interrupt ist ohne auswirkung auf das verhalten
-		// // des systems
-		// logger.logDebugMessage(this,
-		// "wait for receiver thred interrupted", e);
-		// }
-		// Thread.yield();
-		// }
 
 		messageHandler.beendeArbeit();
 	}

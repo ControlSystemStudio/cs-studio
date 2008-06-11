@@ -56,6 +56,7 @@ public abstract class AbstractMultiConsumerMessageHandler implements MessageHand
 	 * @throws InterruptedException 
 	 */
 	public void joinMasterProcessor() throws InterruptedException {
+		Thread.yield();
 		masterProcessor.joinThread();
 	}
 	

@@ -18,7 +18,7 @@ import org.csstudio.nams.service.messaging.exceptions.MessagingException;
  * Automat zum syncronisieren der globalen und lokalen Konfiguration.
  */
 public class SyncronisationsAutomat {
-	
+
 	private static volatile boolean macheweiter;
 	private static Thread workingThread;
 	private static volatile boolean isRunning;
@@ -31,97 +31,117 @@ public class SyncronisationsAutomat {
 	 * einem interrupt auf dem ausführerendem Thread. Es ist erforderlich das
 	 * vor der ausführung dieser Operation keine Zugriffe auf die lokale DB
 	 * erfolgen.
-	 * @param localStoreConfigurationService 
-	 * @throws MessagingException 
+	 * 
+	 * @param localStoreConfigurationService
+	 * @throws MessagingException
 	 * 
 	 * FIXME Database-Flags setzen mit LocalStoreConfigurationServie (TEST!!).
-	 * @throws InconsistentConfiguration 
-	 * @throws StorageException 
-	 * @throws StorageError 
-	 * @throws UnknownConfigurationElementError 
+	 * @throws InconsistentConfiguration
+	 * @throws StorageException
+	 * @throws StorageError
+	 * @throws UnknownConfigurationElementError
 	 */
 	public static void syncronisationUeberDistributorAusfueren(
-			Producer producer, Consumer consumer, LocalStoreConfigurationService localStoreConfigurationService) throws MessagingException, StorageError, StorageException, InconsistentConfiguration, UnknownConfigurationElementError {
-		
+			Producer producer, Consumer consumer,
+			LocalStoreConfigurationService localStoreConfigurationService)
+			throws MessagingException, StorageError, StorageException,
+			InconsistentConfiguration, UnknownConfigurationElementError {
+
 		// TODO logger benutzen und nicht sysout
-		
+
 		/**
-		 * Wenn der ReplicationState gerade auf einem Zustand des Distributors ist keine neue Aufforderung an ihn zum synchronisieren senden
+		 * Wenn der ReplicationState gerade auf einem Zustand des Distributors
+		 * ist keine neue Aufforderung an ihn zum synchronisieren senden
 		 */
-		ReplicationStateDTO stateDTO = localStoreConfigurationService.getCurrentReplicationState();
+		ReplicationStateDTO stateDTO = localStoreConfigurationService
+				.getCurrentReplicationState();
 		ReplicationState replicationState = stateDTO.getReplicationState();
-		if (replicationState != ReplicationState.FLAGVALUE_SYNCH_DIST_RPL && replicationState != ReplicationState.FLAGVALUE_SYNCH_DIST_NOTIFY_FMR) {
-			stateDTO.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
-			localStoreConfigurationService.saveCurrentReplicationState(stateDTO);
-			producer.sendeSystemnachricht(new SyncronisationsAufforderungsSystemNachchricht());
+		if (replicationState != ReplicationState.FLAGVALUE_SYNCH_DIST_RPL
+				&& replicationState != ReplicationState.FLAGVALUE_SYNCH_DIST_NOTIFY_FMR) {
+			stateDTO
+					.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
+			localStoreConfigurationService
+					.saveCurrentReplicationState(stateDTO);
+			producer
+					.sendeSystemnachricht(new SyncronisationsAufforderungsSystemNachchricht());
 		}
-		
-		
+
 		macheweiter = true;
 		workingThread = Thread.currentThread();
 		canceled = false;
 		isRunning = true;
-//		System.out.println("vor");
+		// System.out.println("vor");
 		while (macheweiter) {
 			try {
 				NAMSMessage receiveMessage = consumer.receiveMessage();
-				
+
 				if (receiveMessage.enthaeltSystemnachricht()) {
-					if (receiveMessage.alsSystemachricht().istSyncronisationsBestaetigung()) {
-//						System.out.println("richtige nachricht");
+					if (receiveMessage.alsSystemachricht()
+							.istSyncronisationsBestaetigung()) {
+						// System.out.println("richtige nachricht");
 						macheweiter = false;
 					} else {
 						// TODO systemnachricht die uns nicht interresiert?!?
 					}
 				} else {
-					// TODO keine systemnachricht behandeln 
-//					System.out.println("falsche nachricht");
+					// TODO keine systemnachricht behandeln
+					// System.out.println("falsche nachricht");
 				}
 				// TODO Klären: Alle Arten von Nachrichten acknowledgen?
 				receiveMessage.acknowledge();
 			} catch (MessagingException e) {
+				if (e.getCause() instanceof InterruptedException) {
+					canceled = true;
+				}
 				throw new MessagingException(e);
 			}
 		}
-//		System.out.println("ende");
+		// System.out.println("ende");
 		isRunning = false;
-		
-//		// MapMessage mapMsg = amsSenderSession.createMapMessage();
-//		MapMessage mapMsg = amsPublisherDist2.createMapMessage();
-//		mapMsg.setString(MSGPROP_COMMAND,
-//				MSGVALUE_TCMD_RELOAD_CFG_START);
-//		// amsPublisherDist.send(mapMsg);
-//		amsPublisherDist2.send(producerId, mapMsg);
-//		boolean bRet = FlagDAO.bUpdateFlag(conDb, FLG_RPL,
-//				FLAGVALUE_SYNCH_FMR_RPL,
-//				FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
-//		if (bRet) {
-//			iCmd = CMD_RPL_WAITFOR_DIST;
-//		} else {
-//			Log.log(this, Log.FATAL,
-//					"update not successful, could not update db flag to "
-//							+ FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
-//			return FilterManagerStart.STAT_ERR_FLG_RPL; // force new
-//			// initialization,
-//			// no recover()
-//			// needed
-//		}
-		
+
+		// // MapMessage mapMsg = amsSenderSession.createMapMessage();
+		// MapMessage mapMsg = amsPublisherDist2.createMapMessage();
+		// mapMsg.setString(MSGPROP_COMMAND,
+		// MSGVALUE_TCMD_RELOAD_CFG_START);
+		// // amsPublisherDist.send(mapMsg);
+		// amsPublisherDist2.send(producerId, mapMsg);
+		// boolean bRet = FlagDAO.bUpdateFlag(conDb, FLG_RPL,
+		// FLAGVALUE_SYNCH_FMR_RPL,
+		// FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
+		// if (bRet) {
+		// iCmd = CMD_RPL_WAITFOR_DIST;
+		// } else {
+		// Log.log(this, Log.FATAL,
+		// "update not successful, could not update db flag to "
+		// + FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
+		// return FilterManagerStart.STAT_ERR_FLG_RPL; // force new
+		// // initialization,
+		// // no recover()
+		// // needed
+		// }
+
 	}
-	
+
 	public static boolean isRunning() {
 		return isRunning;
 	}
-	
+
+	/**
+	 * Indicates weather this automaton has been canceled. This may be done by
+	 * calling {@link #cancel()} or if an error has been occured during
+	 * processing.
+	 * 
+	 * @return true is canceled.
+	 */
 	public static boolean hasBeenCanceled() {
 		return canceled;
 	}
-	
+
 	public static void cancel() {
 		macheweiter = false;
 		workingThread.interrupt();
 		canceled = true;
-		while( isRunning() ) {
+		while (isRunning()) {
 			Thread.yield();
 		}
 	}

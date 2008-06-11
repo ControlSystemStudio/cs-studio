@@ -30,16 +30,20 @@ class LocalStoreConfigurationServiceImpl implements
 
 	public ReplicationStateDTO getCurrentReplicationState()
 			throws StorageError, StorageException, InconsistentConfiguration {
+		ReplicationStateDTO result = null;
+		try {
 		final Transaction newTransaction = this.session.beginTransaction();
 		final List<?> messages = this.session.createQuery(
 				"from ReplicationStateDTO r where r.flagName = '"+ ReplicationStateDTO.DB_FLAG_NAME+"'").list();
 
-		ReplicationStateDTO result = null;
 		if (!messages.isEmpty()) {
 			result = (ReplicationStateDTO) messages.get(0);
 		}
 		newTransaction.commit();
 
+		} catch(Throwable t ){
+			new StorageError("Failed to write replication flag", t);
+		}
 		return result;
 //		throw new RuntimeException("Not implemented yet.");
 	}
