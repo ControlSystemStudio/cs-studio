@@ -174,6 +174,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 */
 	private MessagingSession amsMessagingSessionForProducer;
 
+	private AbstractMultiConsumerMessageHandler messageHandlerToRecieveUntilApplicationQuits;
+
 	/**
 	 * Starts the bundle activator instance. First Step.
 	 * 
@@ -446,7 +448,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			receiveMessagesUntilApplicationQuits(vorgangEingangskorb);
 		}
 		logger.logInfoMessage(this,
-				"Decision department application is shutting down...");
+				"Decision department has stopped message processing and continue shutting down...");
 
 		if (alarmEntscheidungsBuero != null) {
 			alarmEntscheidungsBuero
@@ -460,8 +462,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		}
 
 		// Alle Verbindungen schließen
-		logger.logInfoMessage(this,
-		"Decision department application is closing opened connections...");
+		logger
+				.logInfoMessage(this,
+						"Decision department application is closing opened connections...");
 		if (amsAusgangsProducer != null) {
 			amsAusgangsProducer.close();
 		}
@@ -589,7 +592,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		Consumer[] consumerArray = new Consumer[] { amsCommandConsumer,
 				extAlarmConsumer, extCommandConsumer };
 
-		AbstractMultiConsumerMessageHandler messageHandler = new AbstractMultiConsumerMessageHandler(
+		messageHandlerToRecieveUntilApplicationQuits = new AbstractMultiConsumerMessageHandler(
 				consumerArray, executionService) {
 
 			public void handleMessage(NAMSMessage message) {
@@ -635,10 +638,10 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			}
 
 		};
-
 		while (_continueWorking) {
 			try {
-				messageHandler.joinMasterProcessor();
+				messageHandlerToRecieveUntilApplicationQuits
+						.joinMasterProcessor();
 			} catch (InterruptedException e) {
 				// moeglicher interrupt ist ohne auswirkung auf das verhalten
 				// des systems
@@ -647,7 +650,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			}
 		}
 
-		messageHandler.beendeArbeit();
+		messageHandlerToRecieveUntilApplicationQuits.beendeArbeit();
 	}
 
 	/**
@@ -657,11 +660,17 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 */
 	public void stop() {
 		logger.logInfoMessage(this,
-				"Shuting down decision department application...");
+				"Start to shut down decision department application on user request...");
 		_continueWorking = false;
 		if (SyncronisationsAutomat.isRunning()) {
+			logger.logInfoMessage(this, "Canceling running syncronisation...");
 			SyncronisationsAutomat.cancel();
 		}
+		if (messageHandlerToRecieveUntilApplicationQuits != null) {
+			logger.logInfoMessage(this, "Stopping message recieving...");
+			messageHandlerToRecieveUntilApplicationQuits.beendeArbeit();
+		}
+		logger.logInfoMessage(this, "Interrupting working thread...");
 		_receiverThread.interrupt();
 	}
 }
