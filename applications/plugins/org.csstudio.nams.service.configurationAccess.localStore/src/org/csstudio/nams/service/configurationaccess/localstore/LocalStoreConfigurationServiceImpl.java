@@ -17,7 +17,6 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
-import org.hibernate.criterion.Conjunction;
 
 class LocalStoreConfigurationServiceImpl implements
 		LocalStoreConfigurationService {
@@ -44,8 +43,13 @@ class LocalStoreConfigurationServiceImpl implements
 		} catch(Throwable t ){
 			new StorageError("Failed to write replication flag", t);
 		}
+		
+		if( result == null )
+		{
+			throw new InconsistentConfiguration("Replication state unavailable.");
+		}
+		
 		return result;
-//		throw new RuntimeException("Not implemented yet.");
 	}
 
 	// private void test() {
