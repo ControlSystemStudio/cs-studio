@@ -17,6 +17,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
@@ -54,7 +55,8 @@ public class LocalConfigurationStoreServiceActivator extends
 		configuration = configuration.addAnnotatedClass(StringArrayFilterConditionDTO.class);
 		configuration = configuration.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class);
 		configuration = configuration.addAnnotatedClass(JunctorConditionDTO.class);
-		
+		configuration = configuration.addAnnotatedClass(ProcessVariableFilterConditionDTO.class);
+
 		final AnnotationConfiguration configured = configuration.configure();
 		this.sessionFactory = configured.buildSessionFactory();
 	}

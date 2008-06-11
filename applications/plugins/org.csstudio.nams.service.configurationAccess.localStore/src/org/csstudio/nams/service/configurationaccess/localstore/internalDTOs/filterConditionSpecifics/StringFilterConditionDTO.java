@@ -46,7 +46,7 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 * @return the filterConditionRef
 	 */
 	@SuppressWarnings("unused")
-	public int getIFilterConditionRef() {
+	private int getIFilterConditionRef() {
 		return iFilterConditionRef;
 	}
 
