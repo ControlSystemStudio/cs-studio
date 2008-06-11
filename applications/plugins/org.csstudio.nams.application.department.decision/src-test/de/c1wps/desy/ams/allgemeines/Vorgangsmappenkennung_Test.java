@@ -115,7 +115,7 @@ public class Vorgangsmappenkennung_Test extends
 	}
 	
 	@Test
-	public final void testContractValueOf() throws Throwable {
+	public void testContractValueOf() throws Throwable {
 		InetAddress hostAdress = InetAddress.getByAddress(new byte[] { 127, 0,
 				0, 1 });
 		Date time1 = new Date(123456);

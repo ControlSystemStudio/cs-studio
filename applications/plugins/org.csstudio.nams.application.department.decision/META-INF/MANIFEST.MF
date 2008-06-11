@@ -19,6 +19,5 @@ Export-Package: de.c1wps.desy.ams;x-friends:="org.csstudio.nams.testUtils.testSu
  de.c1wps.desy.ams.allgemeines;x-friends:="org.csstudio.nams.testUtils.testSuites",
  de.c1wps.desy.ams.allgemeines.test;x-friends:="org.csstudio.nams.testUtils.testSuites",
  de.c1wps.desy.ams.allgemeines.wam;x-friends:="org.csstudio.nams.testUtils.testSuites",
- org.csstudio.nams.application.department.decision;x-friends:="org.csstudio.nams.testUtils.testSuites",
- org.csstudio.nams.application.department.decision.exceptions;x-friends:="org.csstudio.nams.testUtils.testSuites"
+ org.csstudio.nams.application.department.decision;x-friends:="org.csstudio.nams.testUtils.testSuites"
 Import-Package: de.c1wps.desy.ams.allgemeines.regelwerk

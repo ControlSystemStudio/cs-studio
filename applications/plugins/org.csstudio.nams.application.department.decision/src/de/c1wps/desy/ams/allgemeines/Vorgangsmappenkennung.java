@@ -13,6 +13,11 @@ public final class Vorgangsmappenkennung {
 	private final String hostAdress;
 	private final long timeInMS;
 	private final String ergaenzung;
+	
+	/**
+	 * @deprecated TODO Klären, ob der Counter notwendig und überhaupt sinnhaft ist.
+	 */
+	@Deprecated
 	private final long counter;
 	private static long zaehler = 0;
 

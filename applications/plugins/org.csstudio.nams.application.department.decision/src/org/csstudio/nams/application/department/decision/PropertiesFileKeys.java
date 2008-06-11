@@ -3,7 +3,10 @@ package org.csstudio.nams.application.department.decision;
 /**
  * Schluesel für die Property-Datei dieser Anwendung. Die Namen der Elemente ({@link Enum#name()})
  * sind die Schlüssel der Einträge.
+ * 
+ * @deprecated War Entwurf für eine lokale Properties-Datei
  */
+@Deprecated
 enum PropertiesFileKeys {
 	/**
 	 * Id des Properties-Dateinamen in den System-Properties der VM.
