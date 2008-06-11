@@ -15,8 +15,8 @@ class DefaultExecutionService implements ExecutionService {
 
 	public <GT extends Enum<?> & ThreadType> void executeAsynchronsly(
 			GT groupId, StepByStepProcessor runnable) {
-		// TODO Auto-generated method stub
-		
+		// TODO ThreadGroup anlegen!
+		new Thread(runnable).start();
 	}
 
 	public <GT extends Enum<?> & ThreadType> Iterable<GT> getCurrentlyUsedGroupIds() {

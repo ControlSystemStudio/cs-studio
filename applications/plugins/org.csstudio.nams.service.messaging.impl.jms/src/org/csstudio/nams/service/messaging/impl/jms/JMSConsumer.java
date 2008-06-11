@@ -32,7 +32,7 @@ class JMSConsumer implements Consumer {
 	public static void staticInjectLogger(Logger logger) {
 		injectedLogger = logger;
 	}
-	
+
 	private boolean isClosed = false;
 	private WorkThread[] workers;
 	private LinkedBlockingQueue<Message> messageQueue;
@@ -86,40 +86,48 @@ class JMSConsumer implements Consumer {
 				final MapMessage mapMessage = (MapMessage) message;
 				Map<MessageKeyEnum, String> map = new HashMap<MessageKeyEnum, String>();
 				Enumeration<?> mapNames = mapMessage.getMapNames();
-				while (mapNames.hasMoreElements()) {
-					String currentElement = mapNames.nextElement().toString();
-					MessageKeyEnum messageKeyEnum = MessageKeyConverter
-							.getEnumKeyFor(currentElement);
-					if (messageKeyEnum != null) {
-						String value = mapMessage.getString(currentElement);
-						if (value == null) {
-							value = "";
-						}
-						map.put(messageKeyEnum, value);
-					}
-				}
-
-				
-				AcknowledgeHandler ackHandler = new AcknowledgeHandler() {
-					public void acknowledge() throws Throwable {
-						mapMessage.acknowledge();
-						// TODO logger nutzen
-						System.out.println(".acknowledge()");
-					}
-				};
-
-				if (MessageKeyConverter.istSynchronisationAuforderung(map)) {
-					result = new DefaultNAMSMessage(
-							new SyncronisationsAufforderungsSystemNachchricht(),
-							ackHandler);
-				} else if (MessageKeyConverter.istSynchronisationBestaetigung(map)) {
-					result = new DefaultNAMSMessage(
-							new SyncronisationsBestaetigungSystemNachricht(),
-							ackHandler);
+				if (!mapNames.hasMoreElements()) {
+					logger.logWarningMessage(this,
+							"Message does not contain any content: "
+									+ mapMessage.toString());
 				} else {
-					// Alarmnachricht
-					result = new DefaultNAMSMessage(new AlarmNachricht(map),
-							ackHandler);
+					while (mapNames.hasMoreElements()) {
+						String currentElement = mapNames.nextElement()
+								.toString();
+						MessageKeyEnum messageKeyEnum = MessageKeyConverter
+								.getEnumKeyFor(currentElement);
+						if (messageKeyEnum != null) {
+							String value = mapMessage.getString(currentElement);
+							if (value == null) {
+								value = "";
+							}
+							map.put(messageKeyEnum, value);
+						}
+					}
+
+					AcknowledgeHandler ackHandler = new AcknowledgeHandler() {
+						public void acknowledge() throws Throwable {
+							mapMessage.acknowledge();
+							// TODO logger nutzen
+							System.out
+									.println("JMSConsumer.ackHandler.acknowledge()");
+						}
+					};
+
+					if (MessageKeyConverter.istSynchronisationAuforderung(map)) {
+						result = new DefaultNAMSMessage(
+								new SyncronisationsAufforderungsSystemNachchricht(),
+								ackHandler);
+					} else if (MessageKeyConverter
+							.istSynchronisationBestaetigung(map)) {
+						result = new DefaultNAMSMessage(
+								new SyncronisationsBestaetigungSystemNachricht(),
+								ackHandler);
+					} else {
+						// Alarmnachricht
+						result = new DefaultNAMSMessage(
+								new AlarmNachricht(map), ackHandler);
+					}
 				}
 			} else {
 				logger.logWarningMessage(this,
@@ -132,9 +140,6 @@ class JMSConsumer implements Consumer {
 		}
 		return result;
 	}
-
-	
-	
 
 	private static class WorkThread extends Thread {
 		private final LinkedBlockingQueue<Message> messageQueue;
@@ -184,7 +189,17 @@ class JMSConsumer implements Consumer {
 				try {
 					Message message = consumer.receive();
 					if (message != null) {
+						// ----
+//						System.out.println("WorkThread.run() "
+//								+ message.toString());
+						message.acknowledge(); // FIXME Gehört hier nicht her,
+						// ging aber anderes nicht -
+						// klären waurm!?!?!?!
+						// Stichwort AcknowledgeHandler!
+						// ----
+						logger.logInfoMessage(this, "Recieved message: " + message.toString());
 						messageQueue.put(message);
+						logger.logDebugMessage(this, "Message put to working queue");
 					}
 					// Beachten das die connection geschlossen sein könnte
 					// und auch auf das failover protokoll achten
