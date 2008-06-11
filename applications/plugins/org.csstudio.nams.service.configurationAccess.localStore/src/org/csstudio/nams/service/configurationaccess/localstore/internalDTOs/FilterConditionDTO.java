@@ -80,7 +80,7 @@ public class FilterConditionDTO {
 	 * @return the iFilterConditionID
 	 */
 	@SuppressWarnings("unused")
-	public int getIFilterConditionRef() {
+	public int getIFilterConditionID() {
 		return iFilterConditionID;
 	}
 
@@ -88,7 +88,7 @@ public class FilterConditionDTO {
 	 * @param filterConditionID the iFilterConditionID to set
 	 */
 	@SuppressWarnings("unused")
-	private void setIFilterConditionID(int filterConditionID) {
+	public void setIFilterConditionID(int filterConditionID) {
 		iFilterConditionID = filterConditionID;
 	}
 
@@ -162,7 +162,7 @@ public class FilterConditionDTO {
 		resultBuilder.append(": ");
 		resultBuilder.append(this.getCName());
 		resultBuilder.append(" (");
-		resultBuilder.append(this.getIFilterConditionRef());
+		resultBuilder.append(this.getIFilterConditionID());
 		resultBuilder.append("), refers to type: ");
 //		FilterConditionTypeDTO conditionTypeDTO = this.getType();
 //		resultBuilder.append(conditionTypeDTO != null ? conditionTypeDTO.toString() : "NULL");
@@ -173,6 +173,43 @@ public class FilterConditionDTO {
 		resultBuilder.append(", ");
 		resultBuilder.append(this.getCDesc());
 		return resultBuilder.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cDesc == null) ? 0 : cDesc.hashCode());
+		result = prime * result + ((cName == null) ? 0 : cName.hashCode());
+		result = prime * result + iFilterConditionID;
+		result = prime * result + iGroupRef;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final FilterConditionDTO other = (FilterConditionDTO) obj;
+		if (cDesc == null) {
+			if (other.cDesc != null)
+				return false;
+		} else if (!cDesc.equals(other.cDesc))
+			return false;
+		if (cName == null) {
+			if (other.cName != null)
+				return false;
+		} else if (!cName.equals(other.cName))
+			return false;
+		if (iFilterConditionID != other.iFilterConditionID)
+			return false;
+		if (iGroupRef != other.iGroupRef)
+			return false;
+		return true;
 	}
 
 	

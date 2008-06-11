@@ -27,10 +27,9 @@ import org.hibernate.annotations.ForeignKey;
  */
 @Entity
 @Table(name = "AMS_FilterCondition_String")
-@PrimaryKeyJoinColumn(name="iFilterConditionRef", referencedColumnName="iFilterConditionID")
+@PrimaryKeyJoinColumn(name="iFilterConditionRef")
 public class StringFilterConditionDTO extends FilterConditionDTO {
 
-	@ForeignKey(name="iFilterConditionRef", inverseName="iFilterConditionID")
 	@Column(name="iFilterConditionRef", nullable=false, updatable=false, insertable=false)
 	private int iFilterConditionRef;
 

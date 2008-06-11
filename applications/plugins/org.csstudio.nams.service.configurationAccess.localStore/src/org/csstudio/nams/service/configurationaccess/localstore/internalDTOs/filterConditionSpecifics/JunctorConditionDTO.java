@@ -33,32 +33,31 @@ import org.hibernate.annotations.ForeignKey;
  */
 @Entity
 @Table(name = "AMS_FilterCond_Conj_Common")
-
-@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName = "iFilterConditionID")
+@PrimaryKeyJoinColumn(name = "iFilterConditionRef")
 public class JunctorConditionDTO extends FilterConditionDTO {
 
-//	@ForeignKey(name="iFilterConditionRef", inverseName="iFilterConditionID")
 	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
 	private int iFilterConditionRef;
 
-//	@Column(name = "FirstFilterConditionRef", length = 16)
-//	private int firstFilterConditionRef;
-//
-//	@Column(name = "SecondFilterConditionRef", length = 16)
-//	private int secondFilterConditionRef;
-//	@ForeignKey(name="FirstFilterConditionRef", inverseName="iFilterConditionID")
+	@Column(name = "iFirstFilterConditionRef")
+	private int firstFilterConditionRef;
+
+	@Column(name = "iSecondFilterConditionRef")
+	private int secondFilterConditionRef;
+	
+	@ForeignKey(name="AMS_FilterCondition")
 	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="FirstFilterConditionRef", referencedColumnName="iFilterConditionID")
 	private FilterConditionDTO firstFilterCondition;
 	
-//	@ForeignKey(name="SecondFilterConditionRef", inverseName="iFilterConditionID")
+	@ForeignKey(name="AMS_FilterCondition")
 	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="SecondFilterConditionRef", referencedColumnName="iFilterConditionID")
 	private FilterConditionDTO secondFilterCondition;
 	
 	@Column(name = "Operand", length = 16)
 	private short operand;
-
+	
 	/**
 	 * @return the filterConditionRef
 	 */
@@ -102,12 +101,28 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 		this.secondFilterCondition = secondFilterCondition;
 //		this.secondFilterConditionRef = secondFilterCondition.getIFilterConditionID();
 	}
-
+	@SuppressWarnings("unused")
+	private int getFirstFilterConditionRef() {
+		return firstFilterCondition.getIFilterConditionID();
+	}
+	@SuppressWarnings("unused")
+	private void setFirstFilterConditionRef(int firstFilterConditionRef) {
+		firstFilterCondition.setIFilterConditionID(firstFilterConditionRef);
+	}
+	@SuppressWarnings("unused")
+	private int getSecondFilterConditionRef() {
+		return secondFilterCondition.getIFilterConditionID();
+	}
+	@SuppressWarnings("unused")
+	private void setSecondFilterConditionRef(int secondFilterConditionRef) {
+		firstFilterCondition.setIFilterConditionID(secondFilterConditionRef);
+	}
+//
 //	private int getFirstFilterConditionRef() {
 //		return firstFilterConditionRef;
 //	}
 //
-//	private void setFirstFilterConditionRef(int firstFilterConditionRef) {
+//	public void setFirstFilterConditionRef(int firstFilterConditionRef) {
 //		this.firstFilterConditionRef = firstFilterConditionRef;
 //	}
 //
@@ -115,9 +130,52 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 //		return secondFilterConditionRef;
 //	}
 //
-//	private void setSecondFilterConditionRef(int secondFilterConditionRef) {
+//	public void setSecondFilterConditionRef(int secondFilterConditionRef) {
 //		this.secondFilterConditionRef = secondFilterConditionRef;
 //	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((firstFilterCondition == null) ? 0 : firstFilterCondition
+						.hashCode());
+		result = prime * result + iFilterConditionRef;
+		result = prime * result + operand;
+		result = prime
+				* result
+				+ ((secondFilterCondition == null) ? 0 : secondFilterCondition
+						.hashCode());
+		return result;
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final JunctorConditionDTO other = (JunctorConditionDTO) obj;
+		if (firstFilterCondition == null) {
+			if (other.firstFilterCondition != null)
+				return false;
+		} else if (!firstFilterCondition.equals(other.firstFilterCondition))
+			return false;
+		if (iFilterConditionRef != other.iFilterConditionRef)
+			return false;
+		if (operand != other.operand)
+			return false;
+		if (secondFilterCondition == null) {
+			if (other.secondFilterCondition != null)
+				return false;
+		} else if (!secondFilterCondition.equals(other.secondFilterCondition))
+			return false;
+		return true;
+	}
+
+	
 }
