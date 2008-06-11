@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.CommonConjunctionJunctorMapper;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.hibernate.annotations.ForeignKey;
 
@@ -75,6 +76,14 @@ public class JunctorConditionDTO extends FilterConditionDTO {
 		this.iFilterConditionRef = filterConditionRef;
 	}
 
+	public CommonConjunctionJunctorMapper getJunctor() {
+		return CommonConjunctionJunctorMapper.valueOf(operand);
+	}
+	
+	public void setJunctor(CommonConjunctionJunctorMapper junctor) {
+		operand = junctor.shortOf(junctor);
+	}
+	
 	@SuppressWarnings("unused")
 	private short getOperand() {
 		return operand;
