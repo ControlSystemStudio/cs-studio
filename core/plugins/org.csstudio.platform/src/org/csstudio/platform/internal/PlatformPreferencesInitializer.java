@@ -132,6 +132,7 @@ public final class PlatformPreferencesInitializer extends
 	 *
 	 * @param node
 	 *            the preferences node to use
+	 * TODO Review which properties are actually used
 	 */
 	private void initializeJmsAppenderPreferences(final IEclipsePreferences node) {
 		node.put(CentralLogger.PROP_LOG4J_JMS_APPENDER,

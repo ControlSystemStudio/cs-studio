@@ -548,6 +548,8 @@ public final class CentralLogger {
 	 * @param p
 	 *            System properties.
 	 * @return True, if the JMS settings are valid.
+	 * 
+	 * TODO remove this, let CSSJmsAppender or JMSLogThread handle it
 	 */
 	private boolean checkJmsSettings(final Properties p) {
 		boolean result = true;

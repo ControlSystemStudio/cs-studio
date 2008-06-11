@@ -1,0 +1,235 @@
+
+/*
+ * Copyright 1999-2005 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.csstudio.platform.logging;
+
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Layout;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ErrorCode;
+import org.apache.log4j.helpers.LogLog;
+import org.csstudio.platform.CSSPlatformInfo;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Properties;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
+import javax.jms.Topic;
+import javax.jms.TopicPublisher;
+import javax.jms.TopicSession;
+import javax.jms.Session;
+import javax.jms.MapMessage;
+import javax.naming.InitialContext;
+import javax.naming.Context;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
+
+/**
+ * Log4j appender that publishes events to a JMS Topic as described
+ * in <code>JMSLogMessage</code>.
+ *
+ * The configuration of the appender is somewhat convoluted:
+ * Eclipse Preferences are read on startup as usual or later
+ * modified from preference pages.
+ * CentralLogger.configure() is invoked on startup or from the CSS
+ * JMS preference page onOK(), which in in turn creates properties
+ * with the following names for the Log4j PropertyConfigurator:
+     log4j.appender.css_jms.Threshold
+     log4j.appender.css_jms.layout
+     log4j.appender.css_jms.layout.ConversionPattern
+     log4j.appender.css_jms.providerURL
+     log4j.appender.css_jms.initialContextFactoryName
+     log4j.appender.css_jms.topicConnectionFactoryBindingName
+     log4j.appender.css_jms.topicBindingName
+     log4j.appender.css_jms.userName
+     log4j.appender.css_jms.password
+ * TODO review which of the CentralLogger.PROP_LOG4J_JMS_* are obsolete:
+ * 
+ * @author Ceki G&uuml;lc&uuml;: Original version
+ * @author Markus Moeller: Changes for CSS
+ * @author Kay Kasemir: Using JMSLogThread
+*/
+public class NewCSSJmsAppender extends AppenderSkeleton
+{
+    private String providerURL;
+    private String topicBindingName;
+    private String userName;
+    private String password;
+    
+    /** Thread that performs the actual logging.
+     *  When parameters change, a new/different thread will be created.
+     *  <p>
+     *  NOTE: Synchronize on <code>this</code> when accessing!
+     */
+    private JMSLogThread log_thread = null;
+
+    /** @return JMS server URL */
+    public String getProviderURL()
+    {
+        return providerURL;    
+    }
+
+    /** @param providerURL JMS server URL */
+    public void setProviderURL(final String providerURL)
+    {
+        this.providerURL = providerURL.trim();
+    }
+
+    /** @returns JMS topic used for logging */
+    public String getTopicBindingName()
+    {
+        return topicBindingName;
+    }
+
+    /** @param topic JMS topic used for logging */
+    public void setTopicBindingName(final String topic)
+    {
+        this.topicBindingName = topic.trim();
+    }
+    
+    /** @returns JMS user name */
+    public String getUserName()
+    {
+        return userName;    
+    }
+
+    /** @param user JMS user name */
+    public void setUserName(final String user)
+    {
+        this.userName = user.trim();
+    }
+
+    /** @returns JMS password */
+    public String getPassword()
+    {
+        return password;    
+    }
+
+    /** @param password JMS user name */
+    public void setPassword(final String password)
+    {
+        this.password = password.trim();
+    }
+    
+    /** Options are activated and become effective only after calling
+     *  this method.
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public void activateOptions()
+    {
+        if (providerURL == null)
+        {
+            LogLog.error(name + " no URL");
+            return;
+        }
+        if (topicBindingName == null)
+        {
+            LogLog.error(name + " no topic");
+            return;
+        }
+        synchronized (this)
+        {
+            if (log_thread != null)
+            {   // Ask to cancel, but can't wait for that to actually happen
+                log_thread.cancel();
+                log_thread = null;
+            }
+            log_thread = new JMSLogThread(providerURL, topicBindingName);
+            log_thread.start();
+        }
+        LogLog.debug(name + " activated for '" + topicBindingName
+                + "' on " + providerURL);
+    }
+
+    /**
+     * Close this JMSAppender. Closing releases all resources used by the
+     * appender. A closed appender cannot be re-opened.
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public void close()
+    {
+        closed = true;
+        synchronized (this)
+        {
+            if (log_thread != null)
+            {
+                log_thread.cancel();
+                log_thread = null;
+            }
+        }
+        LogLog.debug(name + " closed.");
+    }
+
+    /** This method called by {@link AppenderSkeleton#doAppend} method to
+     *  do most of the real appending work.
+     */
+    @Override
+    public void append(final LoggingEvent event)
+    {
+        final String text = layout.format(event).trim();
+
+        final Calendar create_time = Calendar.getInstance();
+
+        final Calendar event_time = Calendar.getInstance();
+        create_time.setTimeInMillis(event.timeStamp);
+        
+        String clazz = null;
+        String method = null;
+        String file = null;
+        final LocationInfo location = event.getLocationInformation();
+        if(location != null)
+        {
+            clazz = location.getClassName();
+            method = location.getMethodName();
+            file = location.getFileName();
+        }
+
+        String app = null;
+        String host = null;
+        String user = null;
+        final CSSPlatformInfo pinfo = CSSPlatformInfo.getInstance();
+        if(pinfo != null)
+        {
+            app = pinfo.getApplicationId();
+            host = pinfo.getHostId();
+            user = pinfo.getUserId();
+        }
+        
+        final JMSLogMessage log_msg = new JMSLogMessage(text,
+                create_time, event_time,
+                clazz, method, file, app, host, user);
+        synchronized (this)
+        {
+            if (log_thread == null)
+                errorHandler.error(name + " not configured."); //$NON-NLS-1$
+            else
+                log_thread.addMessage(log_msg);
+        }
+    }
+  
+    /** The JMSAppender for CSS sends requires a layout. */
+    @Override
+    public boolean requiresLayout()
+    {
+        return true;
+    }
+}

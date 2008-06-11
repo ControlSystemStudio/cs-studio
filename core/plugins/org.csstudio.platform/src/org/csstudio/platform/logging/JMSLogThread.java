@@ -87,6 +87,8 @@ public class JMSLogThread extends Thread implements ExceptionListener
     public void addMessage(final JMSLogMessage message)
     {
         // TODO limit the queue size
+        if (debug)
+            System.out.println("Adding " + message);
         queue.offer(message);
     }
     
