@@ -447,8 +447,10 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			// start receiving Messages, runs while _continueWorking is true.
 			receiveMessagesUntilApplicationQuits(vorgangEingangskorb);
 		}
-		logger.logInfoMessage(this,
-				"Decision department has stopped message processing and continue shutting down...");
+		logger
+				.logInfoMessage(
+						this,
+						"Decision department has stopped message processing and continue shutting down...");
 
 		if (alarmEntscheidungsBuero != null) {
 			alarmEntscheidungsBuero
@@ -596,45 +598,60 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				consumerArray, executionService) {
 
 			public void handleMessage(NAMSMessage message) {
-				if (message.enthaeltAlarmnachricht()) {
-					try {
-						eingangskorb.ablegen(new Vorgangsmappe(
-								Vorgangsmappenkennung.createNew(/**
-																 * TODO Host
+				try {
+					logger.logInfoMessage(this,
+							"Decision department recieves a message to handle: "
+									+ message.toString());
+					if (message.enthaeltAlarmnachricht()) {
+						try {
+							eingangskorb.ablegen(new Vorgangsmappe(
+									Vorgangsmappenkennung.createNew(/**
+																	 * TODO Host
+																	 * Service
+																	 * statt new
+																	 * InetAddress()
+																	 * .getLocalHost
+																	 * benutzen
+																	 */
+									InetAddress.getLocalHost(), /**
+																 * TODO Calender
 																 * Service statt
-																 * new
-																 * InetAddress()
-																 * .getLocalHost
+																 * new Date()
 																 * benutzen
 																 */
-								InetAddress.getLocalHost(), /**
-															 * TODO Calender
-															 * Service statt new
-															 * Date() benutzen
-															 */
-								new Date()), message.alsAlarmnachricht()));
-					} catch (UnknownHostException e) {
-						logger.logFatalMessage(this, "Host unreachable", e);
-					} catch (InterruptedException e) {
-						logger.logInfoMessage(this,
-								"Message receiving interrupted");
+									new Date()), message.alsAlarmnachricht()));
+						} catch (UnknownHostException e) {
+							logger.logFatalMessage(this, "Host unreachable", e);
+						} catch (InterruptedException e) {
+							logger.logInfoMessage(this,
+									"Message receiving interrupted");
+						}
+					} else if (message.enthaeltSystemnachricht()) {
+						if (message.alsSystemachricht()
+								.istSyncronisationsAufforderung()) {
+							// TODO wir müssen syncronisieren
+							// 1. altes office runterfahren und noch offene
+							// vorgaenge schicken
+							// 2. sychronizieren
+							// 3. regel neu laden
+							// 4. neues office anlegen
+							// 5. neues office straten
+						}
 					}
-				} else if (message.enthaeltSystemnachricht()) {
-					if (message.alsSystemachricht()
-							.istSyncronisationsAufforderung()) {
-						// TODO wir müssen syncronisieren
-						// 1. altes office runterfahren und noch offene
-						// vorgaenge schicken
-						// 2. sychronizieren
-						// 3. regel neu laden
-						// 4. neues office anlegen
-						// 5. neues office straten
+					// // TODO andere Nachrichten Typen behandeln
+					// // steuer Nachrichten wie z.B.: "Regelwerke neu laden"
+					// // oder "einzelne Regelwerke kurzfristig deaktivieren"
+					// oder
+					// // "shutdown"
+				} finally {
+					try {
+						message.acknowledge();
+					} catch (MessagingException e) {
+						logger.logWarningMessage(this,
+								"unable to ackknowlwedge message: "
+										+ message.toString(), e);
 					}
 				}
-				// // TODO andere Nachrichten Typen behandeln
-				// // steuer Nachrichten wie z.B.: "Regelwerke neu laden"
-				// // oder "einzelne Regelwerke kurzfristig deaktivieren" oder
-				// // "shutdown"
 			}
 
 		};
@@ -659,8 +676,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 * @see IApplication#start(IApplicationContext)
 	 */
 	public void stop() {
-		logger.logInfoMessage(this,
-				"Start to shut down decision department application on user request...");
+		logger
+				.logInfoMessage(this,
+						"Start to shut down decision department application on user request...");
 		_continueWorking = false;
 		if (SyncronisationsAutomat.isRunning()) {
 			logger.logInfoMessage(this, "Canceling running syncronisation...");

@@ -110,23 +110,40 @@ class JMSConsumer implements Consumer {
 						public void acknowledge() throws Throwable {
 							mapMessage.acknowledge();
 							// TODO logger nutzen
-							logger.logDebugMessage(this, "JMSConsumer.ackHandler.acknowledge() called for message "+ mapMessage.toString());
+							logger.logDebugMessage(this,
+									"JMSConsumer.ackHandler.acknowledge() called for message "
+											+ mapMessage.toString());
 						}
 					};
 
 					if (MessageKeyConverter.istSynchronisationAuforderung(map)) {
 						result = new DefaultNAMSMessage(
 								new SyncronisationsAufforderungsSystemNachchricht(),
-								ackHandler);
+								ackHandler) {
+							@Override
+							public String toString() {
+								return "SyncronisationsAufforderungsSystemNachchricht: JMS-Message: " + mapMessage.toString();
+							}
+						};
 					} else if (MessageKeyConverter
 							.istSynchronisationBestaetigung(map)) {
 						result = new DefaultNAMSMessage(
 								new SyncronisationsBestaetigungSystemNachricht(),
-								ackHandler);
+								ackHandler) {
+							@Override
+							public String toString() {
+								return "SyncronisationsBestaetigungSystemNachricht: JMS-Message: " + mapMessage.toString();
+							}
+						};
 					} else {
 						// Alarmnachricht
 						result = new DefaultNAMSMessage(
-								new AlarmNachricht(map), ackHandler);
+								new AlarmNachricht(map), ackHandler) {
+							@Override
+							public String toString() {
+								return "Alarmnachricht: JMS-Message: " + mapMessage.toString();
+							}
+						};
 					}
 				}
 			} else {
@@ -191,16 +208,19 @@ class JMSConsumer implements Consumer {
 					Message message = consumer.receive();
 					if (message != null) {
 						// ----
-//						System.out.println("WorkThread.run() "
-//								+ message.toString());
-//						message.acknowledge(); // FIXME Gehört hier nicht her,
+						// System.out.println("WorkThread.run() "
+						// + message.toString());
+						// message.acknowledge(); // FIXME Gehört hier nicht
+						// her,
 						// ging aber anderes nicht -
 						// klären waurm!?!?!?!
 						// Stichwort AcknowledgeHandler!
 						// ----
-						logger.logInfoMessage(this, "Recieved message: " + message.toString());
+						logger.logInfoMessage(this, "Recieved message: "
+								+ message.toString());
 						messageQueue.put(message);
-						logger.logDebugMessage(this, "Message put to working queue");
+						logger.logDebugMessage(this,
+								"Message put to working queue");
 					}
 					// Beachten das die connection geschlossen sein könnte
 					// und auch auf das failover protokoll achten
