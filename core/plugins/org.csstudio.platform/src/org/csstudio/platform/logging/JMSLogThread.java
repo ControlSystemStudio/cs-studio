@@ -1,5 +1,6 @@
 package org.csstudio.platform.logging;
 
+import java.util.Calendar;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -13,6 +14,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
 
+import org.apache.log4j.helpers.LogLog;
 import org.csstudio.platform.libs.jms.JMSConnectionFactory;
 
 /** Thread that reads log messages from a queue and tries to send them to JMS.
@@ -24,17 +26,18 @@ import org.csstudio.platform.libs.jms.JMSConnectionFactory;
  *  One drawback of ActiveMQ and "failover:..." is that the library can
  *  hang in infinite reconnect attempts when all JMS servers are inaccessible,
  *  and then there is no graceful way to interrrupt/cancel this thread.
+ *  <p>
+ *  To debug this and Log4j in general, set the property
+ *  <pre>log4j.debug=true</pre>
+ *  Unfortunately this cannot be done via the CSS preferences page for
+ *  system properties because LogLog will check before those become
+ *  effective. So it has to be done via a command-line parameter.
  *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class JMSLogThread extends Thread implements ExceptionListener
 {
-    /** Debug messages to stdout?
-     *  Can't use Log4j because we handle Log4j messages...
-     */
-    public static boolean debug = true;
-
     /** Interval between queue polls in ms.
      *  Determines the response time to <code>cancel()</code>.
      */
@@ -43,9 +46,15 @@ public class JMSLogThread extends Thread implements ExceptionListener
     /** Re-connection delay in milliseconds */
     private static final int CONNECT_DELAY_MS = 5000;
     
+    /** Maximum number of messages that will queue up */
+    private static final int MAX_QUEUE_SIZE = 100;
+    
     /** Queue of log messages */
     final private BlockingQueue<JMSLogMessage> queue =
         new LinkedBlockingQueue<JMSLogMessage>();
+    
+    /** Flag used to throttle messages when hitting MAX_QUEUE_SIZE */
+    private boolean queue_is_full = false;
     
     /** Message that we should have sent or <code>null</code> */
     private JMSLogMessage pending_message = null;
@@ -84,12 +93,25 @@ public class JMSLogThread extends Thread implements ExceptionListener
     /** Add message to queue.
      *  @param message
      */
-    public void addMessage(final JMSLogMessage message)
+    public synchronized void addMessage(final JMSLogMessage message)
     {
-        // TODO limit the queue size
-        if (debug)
-            System.out.println("Adding " + message);
-        queue.offer(message);
+        // Limit the queue size
+        if (queue.size() < MAX_QUEUE_SIZE)
+        {
+            LogLog.debug("Adding " + message);
+            queue.offer(message);
+            queue_is_full = false;
+            return;
+        }
+        if (queue_is_full)
+            return;
+        // Entering 'full' mode, add one final note about it
+        queue_is_full = true;
+        final Calendar now = Calendar.getInstance();
+        final JMSLogMessage error = new JMSLogMessage("WARN: JMSLogThread queue is full",
+                now, now, null, null, null, null, null, null);
+        LogLog.error(error.toString());
+        queue.offer(error);
     }
     
     /** Ask thread to stop.
@@ -108,8 +130,7 @@ public class JMSLogThread extends Thread implements ExceptionListener
     @Override
     public void run()
     {
-        if (debug)
-            System.out.println("JMSLogThread start");
+        LogLog.debug("JMSLogThread start");
         while (run)
         {
             if (connect())
@@ -126,8 +147,7 @@ public class JMSLogThread extends Thread implements ExceptionListener
                 { /* NOP */ }
             }
         }
-        if (debug)
-            System.out.println("JMSLogThread ends");
+        LogLog.debug("JMSLogThread ends");
     }
 
     /** Connect to JMS
@@ -145,15 +165,14 @@ public class JMSLogThread extends Thread implements ExceptionListener
             final Topic topic = session.createTopic(topic_name);
             producer = session.createProducer(topic);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-            if (debug)
-                System.out.println("JMSLogThread connected " + server_url
+            LogLog.debug("JMSLogThread connected " + server_url
                         + " (" + producer.getDestination() + ")");
             return true;
         }
         catch (Throwable ex)
         {
-            System.out.println("JMSLogThread connect error for " + server_url
-                    +": " + ex.getMessage());
+            LogLog.error("JMSLogThread connect error for " + server_url
+                    +": " + ex.getMessage(), ex);
         }
         return false;
     }        
@@ -176,8 +195,7 @@ public class JMSLogThread extends Thread implements ExceptionListener
         }
         session = null;
         producer = null;
-        if (debug)
-            System.out.println("JMSLogThread disconnected");
+        LogLog.debug("JMSLogThread disconnected");
     }
 
     /** Log messages until there's an error
@@ -185,8 +203,7 @@ public class JMSLogThread extends Thread implements ExceptionListener
      */
     private void perform_logging()
     {
-        if (debug)
-            System.out.println("JMSLogThread waiting for messages");
+        LogLog.debug("JMSLogThread waiting for messages");
         while (run)
         {   
             final JMSLogMessage log_message = getNextMessage();
@@ -199,12 +216,11 @@ public class JMSLogThread extends Thread implements ExceptionListener
                 final MapMessage map = session.createMapMessage();
                 log_message.toMapMessage(map);
                 producer.send(map);
-                if (debug)
-                    System.out.println("JMSLogThread sent " + log_message);
+                LogLog.debug("JMSLogThread sent " + log_message);
             }
             catch (Throwable ex)
             {
-                ex.printStackTrace();
+                LogLog.error("Error sending log message to JMS", ex);
                 // Queue again, then return to trigger re-connect
                 pending_message = log_message;
                 return;
@@ -235,6 +251,6 @@ public class JMSLogThread extends Thread implements ExceptionListener
     /** @see javax.jms.ExceptionListener */
     public void onException(final JMSException ex)
     {
-        ex.printStackTrace();
+        LogLog.error("JMSLogThread received JMS Exception", ex);
     }
 }

@@ -23,42 +23,35 @@ package org.csstudio.platform.logging;
 
 import java.util.Properties;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.csstudio.platform.CSSPlatformPlugin;
 
 /**
- * The central logging service of the CSS platform. The service is implemented
- * as singleton. A reference can be obtained by
- * 
- * <p/>
- * 
- * <code>
- * 	CentralLogger.getInstance()
- * </code>
- * 
- * <p/>
+ * The central logging service of the CSS platform, based on Log4j.
+ * The service is implemented as singleton. A reference can be obtained by
+ * <pre>
+ *  CentralLogger.getInstance()
+ * </pre>
  * 
  * Logging is straight forward. For example, you can use the Logger this way:
+ * <pre>
+ *  final Logger log = CentralLogger.getInstance().getLogger(this);
+ *  log.debug("test log message");
+ *  log.info("test log message");
+ * </pre>
  * 
  * <p/>
- * 
- * <code>
- * 	CentralLogger.getInstance().debug(this, "test log message"); <br/>
- * 	CentralLogger.getInstance().info(this, "test log message");
- * </code>
- * <p>
- * In addition, <code>getLogger(Object o)</code> offers access to
- * a plain <code>Log4j</code> logger that can be passed to libraries
- * which understand Log4j but weren't specifically written for CSS.
- * @author Alexander Will, Sven Wende
+ * Alternatively, the following style is still supported, but with the drawback
+ * that the source file info of the log calls will not reflect where your code
+ * actually invoked the logger. Instead, they will show where 'debug', 'info'
+ * etc. are defined inside the CentralLogger.
+ * <pre>
+ *  CentralLogger.getInstance().debug(this, "test log message");
+ *  CentralLogger.getInstance().info(this, "test log message");
+ * </pre>
+ * @author Alexander Will, Sven Wende, Kay Kasemir
  */
 public final class CentralLogger {
 
@@ -172,16 +165,6 @@ public final class CentralLogger {
 	 * Log4j property for the css JMS appender provider url.
 	 */
 	public static final String PROP_LOG4J_JMS_URL = "log4j.appender.css_jms.providerURL"; //$NON-NLS-1$
-
-	/**
-	 * Log4j property for the css JMS appender context factory name.
-	 */
-	public static final String PROP_LOG4J_JMS_ICFN = "log4j.appender.css_jms.initialContextFactoryName"; //$NON-NLS-1$
-
-	/**
-	 * Log4j property fot the css JMS appender connection factory name.
-	 */
-	public static final String PROP_LOG4J_JMS_TCFBN = "log4j.appender.css_jms.topicConnectionFactoryBindingName"; //$NON-NLS-1$
 
 	/**
 	 * Log4j property for the css JMS appender topic binding name.
@@ -499,11 +482,9 @@ public final class CentralLogger {
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_LAYOUT);
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_PATTERN);
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_URL);
-		fillFromStore(result, prefs, PROP_LOG4J_JMS_ICFN);
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_TOPIC);
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_USER);
 		fillFromStore(result, prefs, PROP_LOG4J_JMS_PASSWORD);
-		fillFromStore(result, prefs, PROP_LOG4J_JMS_TCFBN);
 
 		// create the log4j root property
 		String rootProperty = "debug"; //$NON-NLS-1$
@@ -515,7 +496,7 @@ public final class CentralLogger {
 			rootProperty += "," + "css_file"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		if ((prefs.getBoolean(PROP_LOG4J_JMS) && checkJmsSettings(result))) {
+		if (prefs.getBoolean(PROP_LOG4J_JMS)) {
 			rootProperty += "," + "css_jms"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
@@ -540,38 +521,5 @@ public final class CentralLogger {
 			final org.eclipse.core.runtime.Preferences prefs,
 			final String propertyID) {
 		p.setProperty(propertyID, prefs.getString(propertyID));
-	}
-
-	/**
-	 * Check if the given JMS settings are valid.
-	 * 
-	 * @param p
-	 *            System properties.
-	 * @return True, if the JMS settings are valid.
-	 * 
-	 * TODO remove this, let CSSJmsAppender or JMSLogThread handle it
-	 */
-	private boolean checkJmsSettings(final Properties p) {
-		boolean result = true;
-
-		try {
-			p.put(Context.INITIAL_CONTEXT_FACTORY, p
-					.getProperty(PROP_LOG4J_JMS_ICFN));
-			p.put(Context.PROVIDER_URL, p.getProperty(PROP_LOG4J_JMS_URL));
-
-			Context context = new InitialContext(p);
-			ConnectionFactory factory = (ConnectionFactory) context
-					.lookup("ConnectionFactory"); //$NON-NLS-1$
-			factory.createConnection();
-		} catch (NamingException e) {
-			result = false;
-		} catch (JMSException e) {
-			result = false;
-		} finally {
-			p.remove(p.getProperty(PROP_LOG4J_JMS_ICFN));
-			p.remove(p.getProperty(PROP_LOG4J_JMS_URL));
-		}
-
-		return result;
 	}
 }

@@ -17,585 +17,221 @@
 
 package org.csstudio.platform.logging;
 
+import java.util.Calendar;
+
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Layout;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ErrorCode;
-import org.apache.log4j.helpers.LogLog;
 import org.csstudio.platform.CSSPlatformInfo;
 
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
-import java.util.Properties;
-import javax.jms.TopicConnection;
-import javax.jms.TopicConnectionFactory;
-import javax.jms.Topic;
-import javax.jms.TopicPublisher;
-import javax.jms.TopicSession;
-import javax.jms.Session;
-import javax.jms.MapMessage;
-import javax.naming.InitialContext;
-import javax.naming.Context;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
-
-/**
- * A simple appender that publishes events to a JMS Topic. The events
- * are serialized and transmitted as JMS message type {@link
- * ObjectMessage}.
-
- * <p>JMS {@link Topic topics} and {@link TopicConnectionFactory topic
- * connection factories} are administered objects that are retrieved
- * using JNDI messaging which in turn requires the retreival of a JNDI
- * {@link Context}.
-
- * <p>There are two common methods for retrieving a JNDI {@link
- * Context}. If a file resource named <em>jndi.properties</em> is
- * available to the JNDI API, it will use the information found
- * therein to retrieve an initial JNDI context. To obtain an initial
- * context, your code will simply call:
-
-   <pre>
-   InitialContext jndiContext = new InitialContext();
-   </pre>
-  
- * <p>Calling the no-argument <code>InitialContext()</code> method
- * will also work from within Enterprise Java Beans (EJBs) because it
- * is part of the EJB contract for application servers to provide each
- * bean an environment naming context (ENC).
-    
- * <p>In the second approach, several predetermined properties are set
- * and these properties are passed to the <code>InitialContext</code>
- * contructor to connect to the naming service provider. For example,
- * to connect to JBoss naming service one would write:
-
-<pre>
-   Properties env = new Properties( );
-   env.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
-   env.put(Context.PROVIDER_URL, "jnp://hostname:1099");
-   env.put(Context.URL_PKG_PREFIXES, "org.jboss.naming:org.jnp.interfaces");
-   InitialContext jndiContext = new InitialContext(env);
-</pre>
-
-   * where <em>hostname</em> is the host where the JBoss applicaiton
-   * server is running.
-   *
-   * <p>To connect to the the naming service of Weblogic application
-   * server one would write:
-
-<pre>
-   Properties env = new Properties( );
-   env.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-   env.put(Context.PROVIDER_URL, "t3://localhost:7001");
-   InitialContext jndiContext = new InitialContext(env);
-</pre>
-
-  * <p>Other JMS providers will obviously require different values.
-  * 
-  * The initial JNDI context can be obtained by calling the
-  * no-argument <code>InitialContext()</code> method in EJBs. Only
-  * clients running in a separate JVM need to be concerned about the
-  * <em>jndi.properties</em> file and calling {@link
-  * InitialContext#InitialContext()} or alternatively correctly
-  * setting the different properties before calling {@link
-  * InitialContext#InitialContext(java.util.Hashtable)} method.
-
-
-   @author Ceki G&uuml;lc&uuml;, Changes for CSS by Markus Moeller
-*/
-
+/** Log4j appender that publishes events to a JMS Topic as described
+ *  in <code>JMSLogMessage</code>.
+ *
+ *  The configuration of the appender is somewhat convoluted:
+ *  Eclipse Preferences are read on startup, or later
+ *  modified from preference pages.
+ *  CentralLogger.configure() is invoked on startup or from the CSS
+ *  JMS preference page onOK(), which in in turn creates properties
+ *  with the following names for the Log4j PropertyConfigurator,
+ *  which then uses Java Bean get/set calls to configure this class:
+ *  <pre>
+ *    log4j.appender.css_jms.Threshold
+ *    log4j.appender.css_jms.layout
+ *    log4j.appender.css_jms.layout.ConversionPattern
+ *    log4j.appender.css_jms.providerURL
+ *    log4j.appender.css_jms.topicBindingName
+ *    log4j.appender.css_jms.userName
+ *    log4j.appender.css_jms.password
+ *  </pre>
+ *  
+ *  @author Ceki G&uuml;lc&uuml;: Original version
+ *  @author Markus Moeller: Changes for CSS
+ *  @author Kay Kasemir: Using JMSLogThread
+ *  
+ *  @see PlatformPreferencesInitializer for defaults
+ *  @see JMSLogMessage for message format
+ */
 public class CSSJmsAppender extends AppenderSkeleton
 {
-    private String securityPrincipalName;
-    private String securityCredentials;
-    private String initialContextFactoryName;
-    private String urlPkgPrefixes;
-    private String providerURL;
-    private String topicBindingName;
-    private String tcfBindingName;
-    private String userName;
+    /** JMS server URL */
+    private String url;
+    
+    /** JMS queue topic */
+    private String topic;
+    
+    /** Unused user name */
+    private String user_name;
+    
+    /** Unused password */
     private String password;
-    private String messageType;
-
-    private boolean locationInfo;
-
-    private TopicConnection  topicConnection;
-    private TopicSession topicSession;
-    private TopicPublisher  topicPublisher;
-
-    /**
-     * CSS needs a Constructor without any parameter. 
-     *
-     */
     
-    public CSSJmsAppender()
-    {
-        setMessageType("log"); /* Default message type */
-        setLocationInfo(true);
-    }
-    
-    public CSSJmsAppender(Layout l)
-    {
-        setLayout(l);
-        setMessageType("log"); /* Default message type */
-        setLocationInfo(true);
-    }
-
-    public CSSJmsAppender(Layout l, String t)
-    {
-        setLayout(l);
-        setMessageType(t);
-        setLocationInfo(true);
-    }
-
-    public void setMessageType(String t)
-    {
-        this.messageType = t;
-    }
-  
-    public String getMessageType()
-    {
-        return this.messageType;
-    }
-  
-    /**
-     * The <b>TopicConnectionFactoryBindingName</b> option takes a
-     * string value. Its value will be used to lookup the appropriate
-     * <code>TopicConnectionFactory</code> from the JNDI context.
+    /** Thread that performs the actual logging.
+     *  When parameters change, a new/different thread will be created.
+     *  <p>
+     *  NOTE: Synchronize on <code>this</code> when accessing!
      */
-    
-    public void setTopicConnectionFactoryBindingName(String tcfBindingName)
+    private JMSLogThread log_thread = null;
+
+    /** @return JMS server URL */
+    public String getProviderURL()
     {
-        this.tcfBindingName = tcfBindingName;
+        return url;    
     }
 
-    /**
-     * Returns the value of the <b>TopicConnectionFactoryBindingName</b> option.
-     */
-
-    public String getTopicConnectionFactoryBindingName()
+    /** @param providerURL JMS server URL */
+    public void setProviderURL(final String url)
     {
-        return tcfBindingName;
+        this.url = url.trim();
     }
 
-    /**
-     * The <b>TopicBindingName</b> option takes a
-     * string value. Its value will be used to lookup the appropriate
-     * <code>Topic</code> from the JNDI context.
-     */
-
-    public void setTopicBindingName(String topicBindingName)
-    {
-        this.topicBindingName = topicBindingName;
-    }
-    
-    /**
-     * Returns the value of the <b>TopicBindingName</b> option.
-     */
-  
+    /** @returns JMS topic used for logging */
     public String getTopicBindingName()
     {
-        return topicBindingName;
+        return topic;
     }
 
-    /**
-     * Returns value of the <b>LocationInfo</b> property which
-     * determines whether location (stack) info is sent to the remote
-     * subscriber.
-     */
-
-    public boolean getLocationInfo()
+    /** @param topic JMS topic used for logging */
+    public void setTopicBindingName(final String topic)
     {
-        return locationInfo;
+        this.topic = topic.trim();
+    }
+    
+    /** @returns JMS user name */
+    public String getUserName()
+    {
+        return user_name;    
     }
 
-    /**
-     *  Options are activated and become effective only after calling
+    /** @param user JMS user name */
+    public void setUserName(final String user)
+    {
+        this.user_name = user.trim();
+    }
+
+    /** @returns JMS password */
+    public String getPassword()
+    {
+        return password;    
+    }
+
+    /** @param password JMS user name */
+    public void setPassword(final String password)
+    {
+        this.password = password.trim();
+    }
+    
+    /** Options are activated and become effective only after calling
      *  this method.
      */
-    
+    @SuppressWarnings("nls")
+    @Override
     public void activateOptions()
     {
-        TopicConnectionFactory  topicConnectionFactory;
-
-        try
+        if (url == null)
         {
-            Context jndi;
-
-            LogLog.debug("Getting initial context.");
-            
-            if(initialContextFactoryName != null)
-            {
-                Properties env = new Properties( );
-                env.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactoryName);
-
-                if(providerURL != null)
-                {
-                    env.put(Context.PROVIDER_URL, providerURL);
-                }
-                else
-                {
-                    LogLog.warn("You have set InitialContextFactoryName option but not the ProviderURL. This is likely to cause problems.");
-                }
-
-                if(urlPkgPrefixes != null)
-                {
-                    env.put(Context.URL_PKG_PREFIXES, urlPkgPrefixes);
-                }
-    
-                if(securityPrincipalName != null)
-                {
-                    env.put(Context.SECURITY_PRINCIPAL, securityPrincipalName);
-
-                    if(securityCredentials != null)
-                    {
-                        env.put(Context.SECURITY_CREDENTIALS, securityCredentials);
-                    }
-                    else
-                    {
-                        LogLog.warn("You have set SecurityPrincipalName option but not the SecurityCredentials. This is likely to cause problems.");
-                    }
-                }   
-
-                jndi = new InitialContext(env);
-
+            LogLog.error(name + " no URL");
+            return;
+        }
+        if (topic == null)
+        {
+            LogLog.error(name + " no topic");
+            return;
+        }
+        synchronized (this)
+        {
+            if (log_thread != null)
+            {   // Ask to cancel, but can't wait for that to actually happen
+                log_thread.cancel();
+                log_thread = null;
             }
-            else
-            {
-                jndi = new InitialContext();
-            }
-
-            LogLog.debug("Looking up ["+tcfBindingName+"]");
-
-            topicConnectionFactory = (TopicConnectionFactory) lookup(jndi, tcfBindingName);
-
-            LogLog.debug("About to create TopicConnection.");
-
-            if(userName != null)
-            {
-                topicConnection = topicConnectionFactory.createTopicConnection(userName, password); 
-            }
-            else
-            {
-                topicConnection = topicConnectionFactory.createTopicConnection();
-            }
-
-            LogLog.debug("Creating TopicSession, non-transactional, in AUTO_ACKNOWLEDGE mode.");
-            
-            topicSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-
-            LogLog.debug("Looking up topic name ["+topicBindingName+"].");
-            // CHANGED BY Markus Moeller, 2007-11-27
-            // Topic topic = (Topic) lookup(jndi, topicBindingName);
-            Topic topic = topicSession.createTopic(topicBindingName);
-
-            LogLog.debug("Creating TopicPublisher.");
-            topicPublisher = topicSession.createPublisher(topic);
-      
-            LogLog.debug("Starting TopicConnection.");
-            topicConnection.start();
-
-            jndi.close();
+            log_thread = new JMSLogThread(url, topic);
+            log_thread.start();
         }
-        catch(Exception e)
-        {
-            errorHandler.error("Error while activating options for appender named [" + name + "].", e, ErrorCode.GENERIC_FAILURE);
-        }
-    }
-
-    protected Object lookup(Context ctx, String name) throws NamingException
-    {
-        try
-        {
-            return ctx.lookup(name);
-        }
-        catch(NameNotFoundException e)
-        {
-            LogLog.error("Could not find name [" + name + "].");
-            
-            throw e;
-        }
-    }
-
-    protected boolean checkEntryConditions()
-    {
-        String fail = null;
-
-        if(this.topicConnection == null)
-        {
-            fail = "No TopicConnection";
-        }
-        else if(this.topicSession == null)
-        {
-            fail = "No TopicSession";
-        }
-        else if(this.topicPublisher == null)
-        {
-            fail = "No TopicPublisher";
-        }
-
-        if(fail != null)
-        {
-            errorHandler.error(fail +" for JMSAppender named [" + name + "].");
-
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        LogLog.debug(name + " activated for '" + topic
+                + "' on " + url);
     }
 
     /**
      * Close this JMSAppender. Closing releases all resources used by the
      * appender. A closed appender cannot be re-opened.
      */
-    
-    public synchronized void close()
+    @Override
+    @SuppressWarnings("nls")
+    public void close()
     {
-        // The synchronized modifier avoids concurrent append and close operations
-
-        if(this.closed)
+        closed = true;
+        synchronized (this)
         {
-            return;
+            if (log_thread != null)
+            {
+                log_thread.cancel();
+                log_thread = null;
+            }
+        }
+        LogLog.debug(name + " closed.");
+    }
+
+    /** This method called by {@link AppenderSkeleton#doAppend} method to
+     *  do most of the real appending work.
+     */
+    @Override
+    public void append(final LoggingEvent event)
+    {
+        final String text = layout.format(event).trim();
+
+        final Calendar create_time = Calendar.getInstance();
+
+        final Calendar event_time = Calendar.getInstance();
+        create_time.setTimeInMillis(event.timeStamp);
+        
+        String clazz = null;
+        String method = null;
+        String file = null;
+        final LocationInfo location = event.getLocationInformation();
+        if(location != null)
+        {
+            clazz = location.getClassName();
+            method = location.getMethodName();
+            file = location.getFileName();
+        }
+
+        String app = null;
+        String host = null;
+        String user = null;
+        final CSSPlatformInfo pinfo = CSSPlatformInfo.getInstance();
+        if(pinfo != null)
+        {
+            app = pinfo.getApplicationId();
+            host = pinfo.getHostId();
+            user = pinfo.getUserId();
         }
         
-        LogLog.debug("Closing appender [" + name + "].");
-        
-        this.closed = true;
-
-        try
+        final JMSLogMessage log_msg = new JMSLogMessage(text,
+                create_time, event_time,
+                clazz, method, file, app, host, user);
+        synchronized (this)
         {
-            if(topicSession != null)
-            {
-                topicSession.close();
-            }
-            
-            if(topicConnection != null)
-            {
-                topicConnection.close();
-            }
+            if (log_thread == null)
+                errorHandler.error(name + " not configured."); //$NON-NLS-1$
+            else
+                log_thread.addMessage(log_msg);
         }
-        catch(Exception e)
-        {
-            LogLog.error("Error while closing JMSAppender ["+name+"].", e);
-        }
-
-        // Help garbage collection
-        topicPublisher = null;
-        topicSession = null;
-        topicConnection = null;
-    }
-
-    /**
-     * This method called by {@link AppenderSkeleton#doAppend} method to
-     * do most of the real appending work.
-     */
-
-    public void append(LoggingEvent event)
-    {
-        GregorianCalendar   cal         = new GregorianCalendar();
-        SimpleDateFormat    format      = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        MapMessage          msg         = null;
-        LocationInfo        location    = null;
-      
-        if(!checkEntryConditions())
-        {
-            return;
-        }
-    
-        try
-        {
-            msg = topicSession.createMapMessage();
-          
-            if(locationInfo)
-            {
-                location = event.getLocationInformation();
-            }
-          
-            msg.setString("TYPE", getMessageType());
-            msg.setString("TEXT", this.layout.format(event).trim());
-            
-            msg.setString("CREATETIME", format.format(cal.getTime()));
-            
-            cal.setTimeInMillis(event.timeStamp);
-            
-            msg.setString("EVENTTIME", format.format(cal.getTime()));
-            
-            // Help the GC
-            cal    = null;
-            format = null;
-            
-            if(location != null)
-            {
-                msg.setString("CLASS", location.getClassName());
-                msg.setString("NAME", location.getMethodName());
-                msg.setString("FILENAME", location.getFileName());
-            }
-
-            CSSPlatformInfo pinfo = CSSPlatformInfo.getInstance();
-            
-            if(pinfo != null)
-            {
-                msg.setString("APPLICATION-ID", pinfo.getApplicationId());
-                msg.setString("HOST", pinfo.getHostId());
-                msg.setString("USER", pinfo.getUserId());
-            }
-
-            topicPublisher.publish(msg);
-        }
-        catch(Exception e)
-        {
-            errorHandler.error("Could not publish message in JMSAppender [" + name + "].", e, ErrorCode.GENERIC_FAILURE);
-        }
-    }
-
-    /**
-     * Returns the value of the <b>InitialContextFactoryName</b> option.
-     * See {@link #setInitialContextFactoryName} for more details on the
-     * meaning of this option.
-     */
-    
-    public String getInitialContextFactoryName()
-    {
-        return initialContextFactoryName;    
     }
   
-    /**
-     * Setting the <b>InitialContextFactoryName</b> method will cause
-     * this <code>JMSAppender</code> instance to use the {@link
-     * InitialContext#InitialContext(Hashtable)} method instead of the
-     * no-argument constructor. If you set this option, you should also
-     * at least set the <b>ProviderURL</b> option.
-     * 
-     * <p>See also {@link #setProviderURL(String)}.
-     */
-    
-    public void setInitialContextFactoryName(String initialContextFactoryName)
-    {
-        this.initialContextFactoryName = initialContextFactoryName;
-    }
-
-    public String getProviderURL()
-    {
-        return providerURL;    
-    }
-
-    public void setProviderURL(String providerURL)
-    {
-        this.providerURL = providerURL;
-    }
-
-    public String getURLPkgPrefixes( )
-    {
-        return urlPkgPrefixes;
-    }
-
-    public void setURLPkgPrefixes(String urlPkgPrefixes )
-    {
-        this.urlPkgPrefixes = urlPkgPrefixes;
-    }
-  
-    public String getSecurityCredentials()
-    {
-        return securityCredentials;    
-    }
-
-    public void setSecurityCredentials(String securityCredentials)
-    {
-        this.securityCredentials = securityCredentials;
-    }
-
-    public String getSecurityPrincipalName()
-    {
-        return securityPrincipalName;    
-    }
-
-    public void setSecurityPrincipalName(String securityPrincipalName)
-    {
-        this.securityPrincipalName = securityPrincipalName;
-    }
-
-    public String getUserName()
-    {
-        return userName;    
-    }
-
-    /**
-     * The user name to use when {@link
-     * TopicConnectionFactory#createTopicConnection(String, String)
-     * creating a topic session}.  If you set this option, you should
-     * also set the <b>Password</b> option. See {@link #setPassword(String)}.
-     */
-  
-    public void setUserName(String userName)
-    {
-        this.userName = userName;
-    }
-
-    public String getPassword()
-    {
-        return password;    
-    }
-
-    /**
-     * The paswword to use when creating a topic session.  
-     */
-    
-    public void setPassword(String password)
-    {
-        this.password = password;
-    }
-
-
-    /**
-     * If true, the information sent to the remote subscriber will
-     * include caller's location information. By default no location
-     * information is sent to the subscriber.
-     */
-    
-    public void setLocationInfo(boolean locationInfo)
-    {
-        this.locationInfo = locationInfo;
-    }
-
-    /**
-     * Returns the TopicConnection used for this appender.  Only valid after
-     * activateOptions() method has been invoked.
-     */
-    
-    protected TopicConnection  getTopicConnection()
-    {
-        return topicConnection;
-    }
-
-    /**
-     * Returns the TopicSession used for this appender.  Only valid after
-     * activateOptions() method has been invoked.
-     */
-
-    protected TopicSession getTopicSession()
-    {
-        return topicSession;
-    }
-
-    /**
-     * Returns the TopicPublisher used for this appender.  Only valid after
-     * activateOptions() method has been invoked.
-     */
-
-    protected TopicPublisher  getTopicPublisher()
-    {
-        return topicPublisher;
-    }
-  
-    /** 
-     * The JMSAppender for CSS sends requires a layout.
-     */
-
+    /** The JMSAppender for CSS sends requires a layout. */
+    @Override
     public boolean requiresLayout()
     {
         return true;
     }
+
+    /** String representation for debugging */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString()
+    {
+        return String.format("Log4j appender '%s': '%s' @ '%s'\n",
+                name, topic, url);
+    }   
 }
