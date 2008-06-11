@@ -145,7 +145,7 @@ public class CSSJmsAppender extends AppenderSkeleton
                 log_thread.cancel();
                 log_thread = null;
             }
-            log_thread = new JMSLogThread(url, topic);
+            log_thread = new JMSLogThread(url, topic, user_name, password);
             log_thread.start();
         }
         LogLog.debug(name + " activated for '" + topic

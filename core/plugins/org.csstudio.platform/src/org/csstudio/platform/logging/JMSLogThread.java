@@ -64,6 +64,12 @@ public class JMSLogThread extends Thread implements ExceptionListener
 
     /** Name of the JMS topic */
     final private String topic_name;
+    
+    /** JMS user */
+    final private String user_name;
+
+    /** JMS password */
+    final private String password;
 
     /** Flag to stop the thread.
      *  @see #cancel()
@@ -82,12 +88,17 @@ public class JMSLogThread extends Thread implements ExceptionListener
     /** Create JMS log thread
      *  @param server_url Initial JMS server URL
      *  @param topic_name Initial JMS queue topic
+     *  @param user_name JMS user
+     *  @param password  JMS password
      */
-    public JMSLogThread(final String server_url, final String topic_name)
+    public JMSLogThread(final String server_url, final String topic_name,
+            final String user_name, final String password)
     {
         super("JMSLogThread");
         this.server_url = server_url;
         this.topic_name = topic_name;
+        this.user_name = user_name;
+        this.password = password;
     }
     
     /** Add message to queue.
@@ -157,7 +168,11 @@ public class JMSLogThread extends Thread implements ExceptionListener
     {
         try
         {
-            connection = JMSConnectionFactory.connect(server_url);
+            if (user_name == null || user_name.length() <= 0)
+                connection = JMSConnectionFactory.connect(server_url);
+            else
+                connection = JMSConnectionFactory.connect(server_url,
+                        user_name, password);
             connection.setExceptionListener(this);
             connection.start();
             session = connection.createSession(/* transacted */false,

@@ -121,7 +121,7 @@ public class JMSLogThreadTest
         // Simplistic wait for the receiver to actually receive:
         Thread.sleep(5000);        
         
-        final JMSLogThread log_thread = new JMSLogThread(URL, TOPIC);
+        final JMSLogThread log_thread = new JMSLogThread(URL, TOPIC, null, null);
         log_thread.start();
         for (int i=0; i<MESSAGE_COUNT; ++i)
         {
