@@ -174,7 +174,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	 */
 	private MessagingSession amsMessagingSessionForProducer;
 
-//	private AbstractMultiConsumerMessageHandler messageHandlerToRecieveUntilApplicationQuits;
+	// private AbstractMultiConsumerMessageHandler
+	// messageHandlerToRecieveUntilApplicationQuits;
 
 	/**
 	 * Starts the bundle activator instance. First Step.
@@ -408,7 +409,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		if (_continueWorking) {
 			logger
 					.logInfoMessage(this,
-							"Decision department application successfully initialized, begining work...");
+							"******* Decision department application successfully initialized, beginning work... *******");
 
 			// TODO Thread zum auslesen des Ausgangskorbes...
 
@@ -566,24 +567,24 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 						new ThreadGroup(
 								ThreadTypesOfDecisionDepartment.ABTEILUNGSLEITER
 										.name()));
-//		executionServiceToBeInitialize
-//				.registerGroup(
-//						AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.CONSUMER_THREAD,
-//						new ThreadGroup(
-//								AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.CONSUMER_THREAD
-//										.name()));
-//		executionServiceToBeInitialize
-//				.registerGroup(
-//						AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.HANDLER_THREAD,
-//						new ThreadGroup(
-//								AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.HANDLER_THREAD
-//										.name()));
+		// executionServiceToBeInitialize
+		// .registerGroup(
+		// AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.CONSUMER_THREAD,
+		// new ThreadGroup(
+		// AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.CONSUMER_THREAD
+		// .name()));
+		// executionServiceToBeInitialize
+		// .registerGroup(
+		// AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.HANDLER_THREAD,
+		// new ThreadGroup(
+		// AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads.HANDLER_THREAD
+		// .name()));
 		executionServiceToBeInitialize
-		.registerGroup(
-				MultiConsumersConsumer.MultiConsumerConsumerThreads.CONSUMER_THREAD,
-				new ThreadGroup(
-						MultiConsumersConsumer.MultiConsumerConsumerThreads.CONSUMER_THREAD
-								.name()));
+				.registerGroup(
+						MultiConsumersConsumer.MultiConsumerConsumerThreads.CONSUMER_THREAD,
+						new ThreadGroup(
+								MultiConsumersConsumer.MultiConsumerConsumerThreads.CONSUMER_THREAD
+										.name()));
 		// TODO Register remaining types!
 	}
 
@@ -600,7 +601,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		Consumer[] consumerArray = new Consumer[] { amsCommandConsumer,
 				extAlarmConsumer, extCommandConsumer };
 
-		MultiConsumersConsumer consumersConsumer = new MultiConsumersConsumer(consumerArray, executionService);
+		MultiConsumersConsumer consumersConsumer = new MultiConsumersConsumer(
+				logger, consumerArray, executionService);
 
 		while (_continueWorking) {
 			try {
@@ -631,7 +633,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 							logger.logFatalMessage(this, "Host unreachable", e);
 						} catch (InterruptedException e) {
 							logger.logInfoMessage(this,
-									"Message receiving interrupted");
+									"Message processing interrupted", e);
 						}
 					} else if (message.enthaeltSystemnachricht()) {
 						if (message.alsSystemachricht()
@@ -661,34 +663,39 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				}
 			} catch (MessagingException e) {
 				// TODO was soll hier geschehen?
-				e.printStackTrace();
-			};
+				logger.logErrorMessage(this,
+						"Exception during recieve of message.", e);
+			} catch (InterruptedException ie) {
+				logger.logInfoMessage(this, "Recieve of message interrupted",
+						ie);
+			}
 		}
-		
+
 		consumersConsumer.close();
-		
-//		messageHandlerToRecieveUntilApplicationQuits = new AbstractMultiConsumerMessageHandler(
-//				consumerArray, executionService) {
-//
-//			public void handleMessage(NAMSMessage message) {
-//				
-//			}
-//
-//		};
-//		while (_continueWorking) {
-//			try {
-//				messageHandlerToRecieveUntilApplicationQuits
-//						.joinMasterProcessor();
-//			} catch (InterruptedException e) {
-//				// moeglicher interrupt ist ohne auswirkung auf das verhalten
-//				// des systems
-//				logger.logDebugMessage(this,
-//						"wait for receiver thred interrupted", e);
-//			}
-//		}
-//
-//		
-//		messageHandlerToRecieveUntilApplicationQuits.beendeArbeit();
+
+		// messageHandlerToRecieveUntilApplicationQuits = new
+		// AbstractMultiConsumerMessageHandler(
+		// consumerArray, executionService) {
+		//
+		// public void handleMessage(NAMSMessage message) {
+		//				
+		// }
+		//
+		// };
+		// while (_continueWorking) {
+		// try {
+		// messageHandlerToRecieveUntilApplicationQuits
+		// .joinMasterProcessor();
+		// } catch (InterruptedException e) {
+		// // moeglicher interrupt ist ohne auswirkung auf das verhalten
+		// // des systems
+		// logger.logDebugMessage(this,
+		// "wait for receiver thred interrupted", e);
+		// }
+		// }
+		//
+		//		
+		// messageHandlerToRecieveUntilApplicationQuits.beendeArbeit();
 	}
 
 	/**
@@ -705,10 +712,10 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			logger.logInfoMessage(this, "Canceling running syncronisation...");
 			SyncronisationsAutomat.cancel();
 		}
-//		if (messageHandlerToRecieveUntilApplicationQuits != null) {
-//			logger.logInfoMessage(this, "Stopping message recieving...");
-//			messageHandlerToRecieveUntilApplicationQuits.beendeArbeit();
-//		}
+		// if (messageHandlerToRecieveUntilApplicationQuits != null) {
+		// logger.logInfoMessage(this, "Stopping message recieving...");
+		// messageHandlerToRecieveUntilApplicationQuits.beendeArbeit();
+		// }
 		logger.logInfoMessage(this, "Interrupting working thread...");
 		_receiverThread.interrupt();
 	}

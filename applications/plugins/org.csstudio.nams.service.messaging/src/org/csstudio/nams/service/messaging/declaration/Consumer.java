@@ -11,5 +11,5 @@ public interface Consumer {
 	 * liefert null wenn der Consumer beendet wird
 	 */
 	//einen eigenen Nachrichten Typ da nicht nur Alarmnachrichten rein kommen
-	public NAMSMessage receiveMessage() throws MessagingException;
+	public NAMSMessage receiveMessage() throws MessagingException, InterruptedException;
 }

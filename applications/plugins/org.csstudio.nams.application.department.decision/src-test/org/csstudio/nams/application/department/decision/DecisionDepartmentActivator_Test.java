@@ -11,6 +11,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Loca
 import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.logging.declaration.LoggerMock;
+import org.csstudio.nams.service.messaging.declaration.MessagingService;
 import org.csstudio.nams.service.messaging.declaration.MessagingServiceMock;
 import org.csstudio.nams.service.messaging.declaration.MessagingSession;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
@@ -36,7 +37,7 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		
 		bundleInsance.startBundle(
 				(Logger) logger, 
-				messagingService, 
+				(MessagingService) messagingService, 
 				preferenceService, 
 				regelwerksBuilderService, 
 				historyService, 

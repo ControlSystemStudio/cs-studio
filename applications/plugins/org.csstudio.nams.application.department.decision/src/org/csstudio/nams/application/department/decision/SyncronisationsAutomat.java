@@ -90,10 +90,13 @@ public class SyncronisationsAutomat {
 				// TODO Klären: Alle Arten von Nachrichten acknowledgen?
 				receiveMessage.acknowledge();
 			} catch (MessagingException e) {
+				// TODO Prüfen ob nötig.
 				if (e.getCause() instanceof InterruptedException) {
 					canceled = true;
 				}
 				throw new MessagingException(e);
+			} catch (InterruptedException is) {
+				canceled = true;
 			}
 		}
 		// System.out.println("ende");

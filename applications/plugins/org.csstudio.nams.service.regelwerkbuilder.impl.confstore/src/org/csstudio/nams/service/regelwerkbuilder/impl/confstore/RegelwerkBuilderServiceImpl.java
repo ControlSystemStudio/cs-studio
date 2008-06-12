@@ -1,5 +1,6 @@
 package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
@@ -10,7 +11,7 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
 	public List<Regelwerk> gibAlleRegelwerke() {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 //	// bestätigungsalarm bei timeout kein alarm?

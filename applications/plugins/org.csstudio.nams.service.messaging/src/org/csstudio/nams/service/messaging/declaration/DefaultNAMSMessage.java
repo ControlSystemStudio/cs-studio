@@ -30,7 +30,6 @@ public class DefaultNAMSMessage implements NAMSMessage {
 	
 	public final void acknowledge() throws MessagingException {
 		try {
-			System.out.println("DefaultNAMSMessage.acknowledge()"); // TODO remove this line
 			ackHandler.acknowledge();
 		} catch (Throwable e) {
 			throw new MessagingException("acknowledge failed",e);

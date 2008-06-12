@@ -8,28 +8,33 @@ import java.util.concurrent.BlockingQueue;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.service.StepByStepProcessor;
 import org.csstudio.nams.common.service.ThreadType;
+import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.nams.service.messaging.declaration.AbstractMultiConsumerMessageHandler.MultiConsumerMessageThreads;
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 
 /**
  * Ein {@link Consumer} der auf mehreren {@link Consumer}n ließt.
  */
-public class MultiConsumersConsumer  implements Consumer {
+public class MultiConsumersConsumer implements Consumer {
 
-	public static enum MultiConsumerConsumerThreads implements ThreadType {CONSUMER_THREAD};
-	
+	public static enum MultiConsumerConsumerThreads implements ThreadType {
+		CONSUMER_THREAD
+	};
+
 	/**
-	 * Queue zum zwischen speichern empfangener Nachrichten.
-	 * BlockingQueue mit max groeße 1 damit keine Nachrichten auf Vorrat geholt werden.
+	 * Queue zum zwischen speichern empfangener Nachrichten. BlockingQueue mit
+	 * max groeße 1 damit keine Nachrichten auf Vorrat geholt werden.
 	 */
-	private final BlockingQueue<NAMSMessage> queue = new ArrayBlockingQueue<NAMSMessage>(1);
+	private final BlockingQueue<NAMSMessage> queue = new ArrayBlockingQueue<NAMSMessage>(
+			1);
 	private List<StepByStepProcessor> processors;
 	private boolean isClosed = true;
-	
-	public MultiConsumersConsumer(Consumer[] consumerArray, ExecutionService executionService) {
+
+	public MultiConsumersConsumer(final Logger logger, Consumer[] consumerArray,
+			ExecutionService executionService) {
 		processors = new LinkedList<StepByStepProcessor>();
-		
-		for (final Consumer consumer: consumerArray) {
+
+		for (final Consumer consumer : consumerArray) {
 			StepByStepProcessor stepByStepProcessor = new StepByStepProcessor() {
 				@Override
 				protected void doRunOneSingleStep() throws Throwable {
@@ -38,21 +43,27 @@ public class MultiConsumersConsumer  implements Consumer {
 						if (receivedMessage != null) {
 							queue.put(receivedMessage);
 						}
-					} catch( MessagingException me ) {
-						if( me.getCause() instanceof InterruptedException ) {
+					} catch (MessagingException me) {
+						if (me.getCause() instanceof InterruptedException) {
 							// Ok, soll beendet werden....
 						} else {
-							throw me.fillInStackTrace();
+							// TODO Handling überlegen:
+							// Sollen die Exceptions gespeichert und beim
+							// "globalen" recieve zurückgeliefert werden??
+							// throw me.fillInStackTrace();
+							logger.logErrorMessage(this, "Exception during recieving message from: "+consumer.toString(), me);
 						}
 					}
 				}
 			};
-			executionService.executeAsynchronsly(MultiConsumerMessageThreads.CONSUMER_THREAD, stepByStepProcessor);
+			executionService.executeAsynchronsly(
+					MultiConsumerMessageThreads.CONSUMER_THREAD,
+					stepByStepProcessor);
 			processors.add(stepByStepProcessor);
 		}
 		isClosed = false;
 	}
-	
+
 	public void close() {
 		for (StepByStepProcessor processor : processors) {
 			processor.stopWorking();
@@ -64,12 +75,9 @@ public class MultiConsumersConsumer  implements Consumer {
 		return isClosed;
 	}
 
-	public NAMSMessage receiveMessage() throws MessagingException {
-		try {
-			return queue.take();
-		} catch (InterruptedException e) {
-			throw new MessagingException("MultiConsumersConsumer.receiveMessage() interrupted", e);
-		}
+	public NAMSMessage receiveMessage() throws MessagingException,
+			InterruptedException {
+		return queue.take();
 	}
 
 }

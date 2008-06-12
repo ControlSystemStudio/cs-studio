@@ -220,6 +220,8 @@ class JMSConsumer implements Consumer {
 					// TODO exception handling
 					// wird von messageQueue.put(message) geworfen
 					logger.logInfoMessage(this, "Put of recieved jms-message to local queue has been interrupted", e);
+				} catch( Throwable t ) {
+					logger.logFatalMessage(this, "Unexpected exception during recieving message from jms", t);
 				}
 				Thread.yield();
 			}
