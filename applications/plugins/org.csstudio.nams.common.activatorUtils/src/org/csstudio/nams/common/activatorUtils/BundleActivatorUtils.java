@@ -31,7 +31,10 @@ import org.osgi.util.tracker.ServiceTracker;
  * 
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1-2008-04-28: Created.
+ * @deprecated Use {@link AbstractBundleActivator} as superclass of activator
+ *             instead!
  */
+@Deprecated
 public final class BundleActivatorUtils {
 
 	private BundleActivatorUtils() {
@@ -53,8 +56,9 @@ public final class BundleActivatorUtils {
 	 * @return The currently avail service or null if currently not avail.
 	 * @throws ClassCastException
 	 *             If a found service registered on the full qualified class
-	 *             name is {@linkplain Class#isAssignableFrom(Class) not assignable}
-	 *             to the requested type.
+	 *             name is
+	 *             {@linkplain Class#isAssignableFrom(Class) not assignable} to
+	 *             the requested type.
 	 */
 	static public <T> T getAvailableService(BundleContext bundleContext,
 			Class<T> requestedServiceType) throws ClassCastException {

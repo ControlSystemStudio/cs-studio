@@ -87,6 +87,7 @@ import de.c1wps.desy.ams.allgemeines.Vorgangsmappenkennung;
  * 
  * @version 0.1-2008-04-25: Created.
  * @version 0.1.1-2008-04-28 (MZ): Change to use {@link BundleActivatorUtils}.
+ * @version 0.2.0-2008-06-10 (MZ): Change to use {@link AbstractBundleActivator}.
  */
 public class DecisionDepartmentActivator extends AbstractBundleActivator
 		implements IApplication, BundleActivator {
