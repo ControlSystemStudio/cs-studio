@@ -17,10 +17,18 @@ public class JMSLogMessage
     final public static SimpleDateFormat date_format =
         new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
+    /** Default name of the JMS Queue used for log messages.
+     *  @see #TYPE_LOG
+     */
+    final public static String DEFAULT_TOPIC = "LOG";
+    
     /** Mandatory MapMessage element: type */
     final public static String TYPE = "TYPE";
     
-    /** Value of the TYPE element */
+    /** Value of the TYPE element.
+     *  @see #TYPE
+     *  @see #DEFAULT_TOPIC
+     */
     final public static String TYPE_LOG = "log";
     
     /** Mandatory MapMessage element: content */

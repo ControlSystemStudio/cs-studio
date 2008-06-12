@@ -25,6 +25,7 @@ import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.LocaleService;
 import org.csstudio.platform.OnsiteSubnetPreferences;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.security.SecurityFacade;
@@ -143,7 +144,7 @@ public final class PlatformPreferencesInitializer extends
 				"%d{ISO8601} %-5p [%t] %c: %m%n");
 		node.put(CentralLogger.PROP_LOG4J_JMS_URL,
 		        "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=2000");
-		node.put(CentralLogger.PROP_LOG4J_JMS_TOPIC, "LOG");
+		node.put(CentralLogger.PROP_LOG4J_JMS_TOPIC, JMSLogMessage.DEFAULT_TOPIC);
 		node.put(CentralLogger.PROP_LOG4J_JMS_USER, "");
 		node.put(CentralLogger.PROP_LOG4J_JMS_PASSWORD, "");
 	}
