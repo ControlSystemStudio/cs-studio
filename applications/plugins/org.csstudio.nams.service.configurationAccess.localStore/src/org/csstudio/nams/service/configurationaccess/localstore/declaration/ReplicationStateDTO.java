@@ -149,5 +149,34 @@ public class ReplicationStateDTO {
 		this.value = value;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((flagName == null) ? 0 : flagName.hashCode());
+		result = prime * result + value;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof ReplicationStateDTO))
+			return false;
+		final ReplicationStateDTO other = (ReplicationStateDTO) obj;
+		if (flagName == null) {
+			if (other.flagName != null)
+				return false;
+		} else if (!flagName.equals(other.flagName))
+			return false;
+		if (value != other.value)
+			return false;
+		return true;
+	}
+
 
 }
