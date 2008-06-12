@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Httpd Plug-in
+Bundle-SymbolicName: org.csstudio.utility.httpd;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Vendor: Kay Kasemir
+Require-Bundle: org.eclipse.equinox.http.jetty,
+ org.eclipse.equinox.http.registry,
+ javax.servlet

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <extension point="org.eclipse.equinox.http.registry.resources">
+    <resource
+      alias="/root"
+      base-name="/webroot"/>
+  </extension>
+
+  <extension point="org.eclipse.equinox.http.registry.servlets">
+    <servlet
+      alias="/server_test"
+      class="org.csstudio.platform.httpd.servlets.ServerTest"/>
+  </extension>
+</plugin>
