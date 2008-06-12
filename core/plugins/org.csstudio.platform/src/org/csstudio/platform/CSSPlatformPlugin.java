@@ -83,7 +83,8 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 			// the system property is not already set to some other value
 			if (System.getProperty(entry.getKey()) == null) {
 				System.setProperty(entry.getKey(), entry.getValue());
-				CentralLogger.getInstance().debug(this, "Setting system property: " + entry);
+				CentralLogger.getInstance().getLogger(this).debug(
+				        "Setting system property: " + entry); //$NON-NLS-1$
 			}
 		}
 	}
@@ -126,7 +127,8 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 * @throws CoreException
 	 *             if the export fails.
 	 */
-	public final void exportPluginCustomization(String file,
+	@SuppressWarnings("nls")
+    public final void exportPluginCustomization(String file,
 			boolean includeDefaults) throws CoreException {
 		OutputStream os = null;
 		try {
@@ -141,7 +143,8 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 				try {
 					os.close();
 				} catch (IOException e) {
-					CentralLogger.getInstance().warn(this, "Error closing output file: " + file, e);
+					CentralLogger.getInstance().getLogger(this).warn(
+					        "Error closing output file: " + file, e);
 				}
 			}
 		}

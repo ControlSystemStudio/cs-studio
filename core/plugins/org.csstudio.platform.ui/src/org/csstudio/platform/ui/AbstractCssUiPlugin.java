@@ -63,7 +63,7 @@ public abstract class AbstractCssUiPlugin extends AbstractUIPlugin {
 		super.start(context);
 		getLog().addLogListener(_logListener);
 		doStart(context);
-		CentralLogger.getInstance().info(this,
+		CentralLogger.getInstance().getLogger(this).info(
 				"Plugin with ID " + getPluginId() + " started"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
@@ -87,7 +87,7 @@ public abstract class AbstractCssUiPlugin extends AbstractUIPlugin {
 		super.stop(context);
 		savePluginPreferences();
 		doStop(context);
-		CentralLogger.getInstance().info(this,
+		CentralLogger.getInstance().getLogger(this).info(
 				"Plugin with ID " + getPluginId() + " stopped"); //$NON-NLS-1$ //$NON-NLS-2$			
 		getLog().removeLogListener(_logListener);
 	}

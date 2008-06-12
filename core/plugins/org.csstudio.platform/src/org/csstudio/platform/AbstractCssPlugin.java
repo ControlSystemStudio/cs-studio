@@ -21,6 +21,7 @@
  */
 package org.csstudio.platform;
 
+import org.apache.log4j.Logger;
 import org.csstudio.platform.internal.logging.CssLogListener;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.ILogListener;
@@ -35,12 +36,11 @@ import org.osgi.framework.BundleContext;
  * 
  */
 public abstract class AbstractCssPlugin extends Plugin {
-
-	/**
+    /**
 	 * Log listener that catches log events and redirects them to the central
 	 * log service.
 	 */
-	private ILogListener _logListener;
+    final private ILogListener _logListener;
 
 	/**
 	 * Standard constructor.
@@ -57,8 +57,8 @@ public abstract class AbstractCssPlugin extends Plugin {
 		super.start(context);
 		getLog().addLogListener(_logListener);
 		doStart(context);
-		CentralLogger.getInstance().info(this,
-				"Plugin with ID " + getPluginId() + " started"); //$NON-NLS-1$ //$NON-NLS-2$	
+		CentralLogger.getInstance().getLogger(this).info(
+		    "Plugin with ID " + getPluginId() + " started"); //$NON-NLS-1$ //$NON-NLS-2$	
 	}
 
 	/**
@@ -78,10 +78,10 @@ public abstract class AbstractCssPlugin extends Plugin {
 	 */
 	@Override
 	public final void stop(final BundleContext context) throws Exception {
-		super.stop(context);
+		super.stop(context); // TODO Should't super.stop happen last?
 		savePluginPreferences();
 		doStop(context);
-		CentralLogger.getInstance().info(this,
+		CentralLogger.getInstance().getLogger(this).info(
 				"Plugin with ID " + getPluginId() + " stopped"); //$NON-NLS-1$ //$NON-NLS-2$				
 		getLog().removeLogListener(_logListener);
 	}
