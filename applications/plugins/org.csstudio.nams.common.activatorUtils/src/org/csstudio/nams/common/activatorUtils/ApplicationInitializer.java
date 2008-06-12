@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
  * Marker-Annotation to mark application-initialiser of a RCP-application. The
  * annotated method have to be public.
  * 
+ * The method may additionally offers services to the OSGi-Registry.
+ * 
  * @author Matthias Zeimer
  * @version 0.1
  */

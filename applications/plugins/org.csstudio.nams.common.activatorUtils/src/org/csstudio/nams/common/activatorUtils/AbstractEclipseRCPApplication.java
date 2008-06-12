@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
  * public class MyApplication extends {@link AbstractEclipseRCPApplication} {
  * 
  *     &#064;{@link ApplicationInitializer}
- *     public void initializeApplication(
+ *     public {@link OSGiServiceOffers} initializeApplication(
  *         &#064;{@link OSGiService} MyService service, 
  *         &#064;{@link ExecutableEclipseRCPExtension}(extensionId = MyExtensionType.class)
  *             Object myExtension)
@@ -65,21 +65,37 @@ public abstract class AbstractEclipseRCPApplication implements BundleActivator,
 
 	static private BundleContext bundleContext;
 
+	/**
+	 * This method should only be called by the Eclipse-framework; do never call
+	 * it directly!
+	 */
 	final public void start(final BundleContext bundleContext) throws Exception {
 		AbstractEclipseRCPApplication.bundleContext = bundleContext;
 
 	}
 
-	public void stop(final BundleContext bundleContext) throws Exception {
+	/**
+	 * This method should only be called by the Eclipse-framework; do never call
+	 * it directly!
+	 */
+	final public void stop(final BundleContext bundleContext) throws Exception {
 		AbstractEclipseRCPApplication.bundleContext = null;
 	}
 
-	public Object start(IApplicationContext context) throws Exception {
+	/**
+	 * This method should only be called by the Eclipse-framework; do never call
+	 * it directly!
+	 */
+	final public Object start(IApplicationContext context) throws Exception {
 		// TODO Auto-generated method stub
 		throw new RuntimeException("Not implemented yet.");
 	}
 
-	public void stop() {
+	/**
+	 * This method should only be called by the Eclipse-framework; do never call
+	 * it directly!
+	 */
+	final public void stop() {
 		// TODO Auto-generated method stub
 		throw new RuntimeException("Not implemented yet.");
 
