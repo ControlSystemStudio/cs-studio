@@ -52,10 +52,17 @@ public class LocalConfigurationStoreServiceActivator extends
 				.setProperty("connection.driver_class", "org.apache.derby.jdbc.ClientDriver")
 				.setProperty("connection.url", "jdbc:derby://134.100.12.94:1527/amsdb")
 				.setProperty("connection.username", "APP")
-				.setProperty("connection.password", "APP");
+				.setProperty("connection.password", "APP")
+				.setProperty("dialect", "org.hibernate.dialect.DerbyDialect")
+				.setProperty("connection.pool_size", "1")
+				.setProperty("current_session_context_class", "thread")
+				.setProperty("cache.provider_class", "org.hibernate.cache.NoCacheProvider")
+				.setProperty("show_sql", "true")
+				.setProperty("hbm2ddl.auto", "update")
+				.setProperty("hibernate.mapping.precedence", "class");
 
-		final AnnotationConfiguration configured = configuration.configure();
-		this.sessionFactory = configured.buildSessionFactory();
+//		final AnnotationConfiguration configured = configuration.configure();
+		this.sessionFactory = configuration.buildSessionFactory();
 	}
 
 	@OSGiBundleActivationMethod
