@@ -79,7 +79,6 @@ class JMSConsumer implements Consumer {
 	public NAMSMessage receiveMessage() throws MessagingException {
 		NAMSMessage result = null;
 		try {
-			// TODO Überlegen, ob zwischenpuffern hier sinnhaft.
 			Message message = messageQueue.take();
 
 			if (message instanceof MapMessage) {
@@ -109,7 +108,6 @@ class JMSConsumer implements Consumer {
 					AcknowledgeHandler ackHandler = new AcknowledgeHandler() {
 						public void acknowledge() throws Throwable {
 							mapMessage.acknowledge();
-							// TODO logger nutzen
 							logger.logDebugMessage(this,
 									"JMSConsumer.ackHandler.acknowledge() called for message "
 											+ mapMessage.toString());
@@ -179,7 +177,6 @@ class JMSConsumer implements Consumer {
 				break;
 			case TOPIC:
 				Topic topic = session.createTopic(source);
-				// TODO ist durableSubscriber ok?
 				consumer = session.createDurableSubscriber(topic, clientId
 						+ "-" + topic.getTopicName());
 
@@ -207,15 +204,6 @@ class JMSConsumer implements Consumer {
 				try {
 					Message message = consumer.receive();
 					if (message != null) {
-						// ----
-						// System.out.println("WorkThread.run() "
-						// + message.toString());
-						// message.acknowledge(); // FIXME Gehört hier nicht
-						// her,
-						// ging aber anderes nicht -
-						// klären waurm!?!?!?!
-						// Stichwort AcknowledgeHandler!
-						// ----
 						logger.logInfoMessage(this, "Recieved message: "
 								+ message.toString());
 						messageQueue.put(message);
@@ -227,11 +215,11 @@ class JMSConsumer implements Consumer {
 				} catch (JMSException e) {
 					// TODO exception handling
 					// wird von consumer.receive() geworfen
-					e.printStackTrace();
+					logger.logInfoMessage(this, "Exception during recieving message from jms", e);
 				} catch (InterruptedException e) {
 					// TODO exception handling
 					// wird von messageQueue.put(message) geworfen
-					e.printStackTrace();
+					logger.logInfoMessage(this, "Put of recieved jms-message to local queue has been interrupted", e);
 				}
 				Thread.yield();
 			}
