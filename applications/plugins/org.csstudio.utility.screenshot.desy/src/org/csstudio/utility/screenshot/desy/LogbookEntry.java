@@ -26,6 +26,13 @@ package org.csstudio.utility.screenshot.desy;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+/**
+ * The class represents an entry in the logbook. It holds all available data for a specific
+ * entry.
+ * 
+ *  @author Markus Moeller
+ *
+ */
 public class LogbookEntry
 {
     private Hashtable<String, String>   content = null;
@@ -66,7 +73,7 @@ public class LogbookEntry
         
         content = new Hashtable<String, String>(20);
         
-        keyList = new String[20];
+        keyList = new String[PROPERTYCOUNT];
         
         keyList[0] = PROPERTY_IDENTIFYER;
         keyList[1] = PROPERTY_ACCOUNTNAME;
