@@ -16,7 +16,7 @@ public class MessagingServiceMock implements MessagingService {
 
 	public MessagingServiceMock(Map<String, String[]> expectedUrlsToConnectTo,
 			Map<String, MessagingSession> sessions) {
-		Assert.assertEquals(expectedUrlsToConnectTo.size(), sessions.size());
+		Assert.assertEquals(expectedUrlsToConnectTo.keySet().size(), sessions.keySet().size());
 		this.expectedEnvironmentUniqueClientIds = expectedUrlsToConnectTo
 				.keySet();
 		Assert.assertEquals(this.expectedEnvironmentUniqueClientIds.size(),
