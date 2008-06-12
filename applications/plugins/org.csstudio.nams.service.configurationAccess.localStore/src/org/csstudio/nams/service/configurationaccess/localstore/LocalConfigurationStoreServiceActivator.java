@@ -36,26 +36,23 @@ public class LocalConfigurationStoreServiceActivator extends
 
 	private void initializeHibernate() {
 		AnnotationConfiguration configuration = new AnnotationConfiguration();
-		configuration = configuration
-				.addAnnotatedClass(ReplicationStateDTO.class);
-
-		configuration = configuration
-				.addAnnotatedClass(AlarmbearbeiterDTO.class);
-		configuration = configuration
-				.addAnnotatedClass(AlarmbearbeiterGruppenDTO.class);
-		configuration = configuration
-				.addAnnotatedClass(AlarmbearbeiterGruppenZuAlarmbearbeiterDTO.class);
-		configuration = configuration
-				.addAnnotatedClass(FilterConditionDTO.class);
-		configuration = configuration
-				.addAnnotatedClass(FilterConditionTypeDTO.class);
-		configuration = configuration.addAnnotatedClass(TopicDTO.class);
-
-		configuration = configuration.addAnnotatedClass(StringFilterConditionDTO.class);
-		configuration = configuration.addAnnotatedClass(StringArrayFilterConditionDTO.class);
-		configuration = configuration.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class);
-		configuration = configuration.addAnnotatedClass(JunctorConditionDTO.class);
-		configuration = configuration.addAnnotatedClass(ProcessVariableFilterConditionDTO.class);
+		configuration
+				.addAnnotatedClass(ReplicationStateDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterGruppenDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterGruppenZuAlarmbearbeiterDTO.class)
+				.addAnnotatedClass(FilterConditionDTO.class)
+				.addAnnotatedClass(FilterConditionTypeDTO.class)
+				.addAnnotatedClass(TopicDTO.class)
+				.addAnnotatedClass(StringFilterConditionDTO.class)
+				.addAnnotatedClass(StringArrayFilterConditionDTO.class)
+				.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class)
+				.addAnnotatedClass(JunctorConditionDTO.class)
+				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
+				.setProperty("connection.driver_class", "org.apache.derby.jdbc.ClientDriver")
+				.setProperty("connection.url", "jdbc:derby://134.100.12.94:1527/amsdb")
+				.setProperty("connection.username", "APP")
+				.setProperty("connection.password", "APP");
 
 		final AnnotationConfiguration configured = configuration.configure();
 		this.sessionFactory = configured.buildSessionFactory();
