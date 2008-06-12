@@ -60,8 +60,14 @@ time), this option doesn't work.
 
 * B. Start Web Server Programmatically
 
-This allows the application to start one or more web servers,
+The JettyConfigurator allows the application to start one or more web servers,
 for example one for each model item, at a known time with
 a specific port.
 
-... stuff from archive engine to be pulled in...
+Don't define any resources or servlets in the plugin.xml file,
+instead use the HttpServiceHelper to create HttpService instances,
+then add the resources and servlets manually.
+
+Might have to set command-line option
+   -Dorg.eclipse.equinox.http.jetty.autostart=false
+to prevent additional auto-started web server instances.

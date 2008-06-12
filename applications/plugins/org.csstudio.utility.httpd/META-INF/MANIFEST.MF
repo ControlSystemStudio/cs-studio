@@ -1,9 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Httpd Plug-in
+Bundle-Name: HTTP Server Utility
 Bundle-SymbolicName: org.csstudio.utility.httpd;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kay Kasemir
-Require-Bundle: org.eclipse.equinox.http.jetty,
- org.eclipse.equinox.http.registry,
- javax.servlet
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.osgi.services,
+ org.eclipse.equinox.http.jetty,
+ javax.servlet 
+Bundle-Activator: org.csstudio.platform.httpd.Activator
+Eclipse-LazyStart: true
