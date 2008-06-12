@@ -22,9 +22,19 @@ public class MessagingSessionMock implements MessagingSession {
 
 		this.expectedPostfachArtenForSources = expectedPostfachArtenForSources;
 		this.consumerForSources = consumerForSources;
+		Assert.assertEquals(expectedPostfachArtenForSources.keySet(), consumerForSources.keySet());
+		Assert.assertFalse(expectedPostfachArtenForSources.keySet().contains(null));
+		Assert.assertFalse(expectedPostfachArtenForSources.values().contains(null));
+		Assert.assertFalse(consumerForSources.keySet().contains(null));
+		Assert.assertFalse(consumerForSources.values().contains(null));
 
 		this.expectedPostfachArtenForDestination = expectedPostfachArtenForDestination;
 		this.producerForDestination = producerForDestination;
+		Assert.assertEquals(expectedPostfachArtenForDestination.keySet(), producerForDestination.keySet());
+		Assert.assertFalse(expectedPostfachArtenForDestination.keySet().contains(null));
+		Assert.assertFalse(expectedPostfachArtenForDestination.values().contains(null));
+		Assert.assertFalse(producerForDestination.keySet().contains(null));
+		Assert.assertFalse(producerForDestination.values().contains(null));
 	}
 
 	public void close() {
@@ -34,15 +44,29 @@ public class MessagingSessionMock implements MessagingSession {
 	public Consumer createConsumer(String messageSourceName,
 			PostfachArt artDesPostfaches) throws MessagingException {
 		Assert.assertFalse("Session is not closed.", isClosed());
-		// TODO Auto-generated method stub
-		return null;
+
+		Assert.assertTrue(expectedPostfachArtenForSources.keySet().contains(
+				messageSourceName));
+		Assert.assertEquals(expectedPostfachArtenForSources
+				.get(messageSourceName), artDesPostfaches);
+
+		Consumer consumer = consumerForSources.get(messageSourceName);
+		Assert.assertNotNull(consumer);
+		return consumer;
 	}
 
 	public Producer createProducer(String messageDestinationName,
 			PostfachArt artDesPostfaches) throws MessagingException {
 		Assert.assertFalse("Session is not closed.", isClosed());
-		// TODO Auto-generated method stub
-		return null;
+
+		Assert.assertTrue(expectedPostfachArtenForDestination.keySet()
+				.contains(messageDestinationName));
+		Assert.assertEquals(expectedPostfachArtenForDestination
+				.get(messageDestinationName), artDesPostfaches);
+
+		Producer producer = producerForDestination.get(messageDestinationName);
+		Assert.assertNotNull(producer);
+		return producer;
 	}
 
 	public boolean isClosed() {
