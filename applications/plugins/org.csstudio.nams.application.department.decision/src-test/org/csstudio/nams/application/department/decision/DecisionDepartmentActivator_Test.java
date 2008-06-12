@@ -33,6 +33,7 @@ import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
 import org.csstudio.nams.service.messaging.declaration.ProducerMock;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage.AcknowledgeHandler;
+import org.csstudio.nams.service.messaging.declaration.MultiConsumersConsumer.MultiConsumerConsumerThreads;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.easymock.EasyMock;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -53,9 +54,18 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 	private ConsumerMock amsCommandConsumerMock;
 
 	boolean syncronisationBestaetigungAcknowledged;
-	
+
+	volatile Throwable occuredThrowable = null;
+	private ThreadGroup catchingThreadGroup = new ThreadGroup(Thread
+			.currentThread().getThreadGroup(), "DDA") {
+		@Override
+		public void uncaughtException(Thread t, Throwable e) {
+			occuredThrowable = e;
+		}
+	};
+
 	@Test
-	public void testBundleAndApplicationLifecycle() throws Exception {
+	public void testBundleAndApplicationLifecycle() throws Throwable {
 		final DecisionDepartmentActivator bundleInsance = new DecisionDepartmentActivator();
 		final DecisionDepartmentActivator applicationInsance = new DecisionDepartmentActivator();
 
@@ -65,28 +75,46 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 				localStoreConfigurationService, executionService);
 
 		Thread.yield();
-		
+
 		syncronisationBestaetigungAcknowledged = false;
-		amsCommandConsumerMock.mockSetNextToBeDelivered(new DefaultNAMSMessage(new SyncronisationsBestaetigungSystemNachricht(), new AcknowledgeHandler() {
-			public void acknowledge() throws Throwable {
-				syncronisationBestaetigungAcknowledged = true;
-			}
-		}));
-		
+		amsCommandConsumerMock.mockSetNextToBeDelivered(new DefaultNAMSMessage(
+				new SyncronisationsBestaetigungSystemNachricht(),
+				new AcknowledgeHandler() {
+					public void acknowledge() throws Throwable {
+						syncronisationBestaetigungAcknowledged = true;
+					}
+				}));
+
 		Runnable appRun = new Runnable() {
 			public void run() {
-				applicationInsance.start((IApplicationContext)null); // ApplicationContext wird nicht verwendet!
+				try {
+					Thread.sleep(2000); // FIXME Was besseres übelegen!
+										// (Application Konzept mit einer run
+										// ist nicht gut - init müsste
+										// ausgelagert werden.)
+
+					// Hier läuft der Test!!!!!!!!!!!
+					executionService
+							.mockExecuteOneStepOf(MultiConsumerConsumerThreads.CONSUMER_THREAD);
+
+					Thread.sleep(2000);
+
+					applicationInsance.stop();
+
+					bundleInsance.stopBundle(logger);
+
+					assertTrue(syncronisationBestaetigungAcknowledged);
+
+				} catch (Throwable e) {
+					occuredThrowable = e;
+				}
 			}
 		};
-		new Thread(appRun).start();
-		
-		Thread.sleep(2000);
-		
-		applicationInsance.stop();
-		
-		bundleInsance.stopBundle(logger);
+		new Thread(catchingThreadGroup, appRun).start();
 
-		assertTrue(syncronisationBestaetigungAcknowledged);
+		// ApplicationContext wird nicht verwendet!
+		// Blockiert bis Test-Thread stop() rufft.
+		applicationInsance.start((IApplicationContext) null);
 	}
 
 	@Before
@@ -100,77 +128,97 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 
 		// * PrefeenceService
 		preferenceService = createPreferenceServiceMock();
-		
+
 		// * LocalStoreConfigurationService
 		localStoreConfigurationService = createLocalStoreConfigurationService();
 
 		// * Andere...
 		// * Andere...
 		regelwerksBuilderService = EasyMock
-		.createMock(RegelwerkBuilderService.class);
+				.createMock(RegelwerkBuilderService.class);
 		List<Regelwerk> list = Collections.emptyList();
-		EasyMock.expect(regelwerksBuilderService.gibAlleRegelwerke()).andReturn(list).once();
-		
+		EasyMock.expect(regelwerksBuilderService.gibAlleRegelwerke())
+				.andReturn(list).once();
+
 		historyService = EasyMock.createNiceMock(HistoryService.class);
-		
+
 		executionService = new ExecutionServiceMock();
 
 		// Replay....
 		EasyMock.replay(preferenceService, regelwerksBuilderService,
-				historyService, localStoreConfigurationService
-				);
+				historyService, localStoreConfigurationService);
 	}
 
-	private LocalStoreConfigurationService createLocalStoreConfigurationService() throws StorageError,
-			StorageException, InconsistentConfiguration,
+	private LocalStoreConfigurationService createLocalStoreConfigurationService()
+			throws StorageError, StorageException, InconsistentConfiguration,
 			UnknownConfigurationElementError {
 		LocalStoreConfigurationService result = EasyMock
 				.createMock(LocalStoreConfigurationService.class);
-		
+
 		ReplicationStateDTO rplStateIdle = new ReplicationStateDTO();
 		rplStateIdle.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_IDLE);
-		EasyMock.expect(result.getCurrentReplicationState()).andReturn(rplStateIdle).once();
-		
+		EasyMock.expect(result.getCurrentReplicationState()).andReturn(
+				rplStateIdle).once();
+
 		ReplicationStateDTO rplStartSyncronisation = new ReplicationStateDTO();
-		rplStartSyncronisation.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
+		rplStartSyncronisation
+				.setReplicationState(ReplicationState.FLAGVALUE_SYNCH_FMR_TO_DIST_SENDED);
 		result.saveCurrentReplicationState(EasyMock.eq(rplStartSyncronisation));
 		EasyMock.expectLastCall().once();
-		
+
 		return result;
 	}
 
 	private PreferenceService createPreferenceServiceMock() {
 		PreferenceService result = EasyMock.createMock(PreferenceService.class);
-		
-		EasyMock.expect(result
-				.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1))
+
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_1))
 				.andReturn("P_JMS_AMS_PROVIDER_URL_1").anyTimes();
-		EasyMock.expect(result
-				.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2))
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceJMSKeys.P_JMS_AMS_PROVIDER_URL_2))
 				.andReturn("P_JMS_AMS_PROVIDER_URL_2").anyTimes();
-		
-		EasyMock.expect(result
-				.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1))
+
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_1))
 				.andReturn("P_JMS_EXTERN_PROVIDER_URL_1").anyTimes();
-		EasyMock.expect(result
-				.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2))
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceJMSKeys.P_JMS_EXTERN_PROVIDER_URL_2))
 				.andReturn("P_JMS_EXTERN_PROVIDER_URL_2").anyTimes();
-		
-		EasyMock.expect(result
-				.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM))
+
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_ALARM))
 				.andReturn("P_JMS_EXT_TOPIC_ALARM").anyTimes();
-		EasyMock.expect(result
-				.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND))
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceJMSKeys.P_JMS_EXT_TOPIC_COMMAND))
 				.andReturn("P_JMS_EXT_TOPIC_COMMAND").anyTimes();
-		EasyMock.expect(result
-				.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND))
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_COMMAND))
 				.andReturn("P_JMS_AMS_TOPIC_COMMAND").anyTimes();
-		
-		EasyMock.expect(result
-				.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL))
+
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceJMSKeys.P_JMS_AMS_SENDER_PROVIDER_URL))
 				.andReturn("P_JMS_AMS_SENDER_PROVIDER_URL").anyTimes();
-		EasyMock.expect(result
-				.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER))
+		EasyMock
+				.expect(
+						result
+								.getString(PreferenceServiceJMSKeys.P_JMS_AMS_TOPIC_MESSAGEMINDER))
 				.andReturn("P_JMS_AMS_TOPIC_MESSAGEMINDER").anyTimes();
 
 		return result;
@@ -181,9 +229,10 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		Map<String, String[]> expectedUrlsForClientIds = new HashMap<String, String[]>();
 		expectedUrlsForClientIds.put("amsConsumer", new String[] {
 				"P_JMS_AMS_PROVIDER_URL_1", "P_JMS_AMS_PROVIDER_URL_2" });
-		expectedUrlsForClientIds.put("extConsumer",
-				new String[] { "P_JMS_EXTERN_PROVIDER_URL_1" , "P_JMS_EXTERN_PROVIDER_URL_2" });
-		expectedUrlsForClientIds.put("amsProducer", new String[] {"P_JMS_AMS_SENDER_PROVIDER_URL"});
+		expectedUrlsForClientIds.put("extConsumer", new String[] {
+				"P_JMS_EXTERN_PROVIDER_URL_1", "P_JMS_EXTERN_PROVIDER_URL_2" });
+		expectedUrlsForClientIds.put("amsProducer",
+				new String[] { "P_JMS_AMS_SENDER_PROVIDER_URL" });
 		// Session
 		Map<String, MessagingSession> sessionsForClientIds = new HashMap<String, MessagingSession>();
 		sessionsForClientIds.put("amsConsumer", createAMSConsumerSession());
@@ -200,12 +249,14 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		Map<String, Consumer> consumerForSources = new HashMap<String, Consumer>();
 		Map<String, PostfachArt> expectedPostfachArtenForDestination = new HashMap<String, PostfachArt>();
 		Map<String, Producer> producerForDestination = new HashMap<String, Producer>();
-		
-		expectedPostfachArtenForDestination.put("P_JMS_AMS_TOPIC_MESSAGEMINDER", PostfachArt.TOPIC);
-		
+
+		expectedPostfachArtenForDestination.put(
+				"P_JMS_AMS_TOPIC_MESSAGEMINDER", PostfachArt.TOPIC);
+
 		amsToDistributorProducerMock = new ProducerMock();
-		producerForDestination.put("P_JMS_AMS_TOPIC_MESSAGEMINDER", amsToDistributorProducerMock);
-		
+		producerForDestination.put("P_JMS_AMS_TOPIC_MESSAGEMINDER",
+				amsToDistributorProducerMock);
+
 		MessagingSessionMock amsProducerSession = new MessagingSessionMock(
 				expectedPostfachArtenForSources, consumerForSources,
 				expectedPostfachArtenForDestination, producerForDestination);
@@ -221,11 +272,13 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		Map<String, Consumer> consumerForSources = new HashMap<String, Consumer>();
 		Map<String, PostfachArt> expectedPostfachArtenForDestination = new HashMap<String, PostfachArt>();
 		Map<String, Producer> producerForDestination = new HashMap<String, Producer>();
-		
-		expectedPostfachArtenForSources.put("P_JMS_AMS_TOPIC_COMMAND", PostfachArt.TOPIC);
+
+		expectedPostfachArtenForSources.put("P_JMS_AMS_TOPIC_COMMAND",
+				PostfachArt.TOPIC);
 		amsCommandConsumerMock = new ConsumerMock();
-		consumerForSources.put("P_JMS_AMS_TOPIC_COMMAND", amsCommandConsumerMock);
-		
+		consumerForSources.put("P_JMS_AMS_TOPIC_COMMAND",
+				amsCommandConsumerMock);
+
 		MessagingSessionMock amsConsumerSession = new MessagingSessionMock(
 				expectedPostfachArtenForSources, consumerForSources,
 				expectedPostfachArtenForDestination, producerForDestination);
@@ -240,14 +293,17 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		Map<String, Consumer> consumerForSources = new HashMap<String, Consumer>();
 		Map<String, PostfachArt> expectedPostfachArtenForDestination = new HashMap<String, PostfachArt>();
 		Map<String, Producer> producerForDestination = new HashMap<String, Producer>();
-		
-		expectedPostfachArtenForSources.put("P_JMS_EXT_TOPIC_COMMAND", PostfachArt.TOPIC);
+
+		expectedPostfachArtenForSources.put("P_JMS_EXT_TOPIC_COMMAND",
+				PostfachArt.TOPIC);
 		ConsumerMock extCommandConsumerMock = new ConsumerMock();
-		consumerForSources.put("P_JMS_EXT_TOPIC_COMMAND", extCommandConsumerMock);
-		expectedPostfachArtenForSources.put("P_JMS_EXT_TOPIC_ALARM", PostfachArt.TOPIC);
+		consumerForSources.put("P_JMS_EXT_TOPIC_COMMAND",
+				extCommandConsumerMock);
+		expectedPostfachArtenForSources.put("P_JMS_EXT_TOPIC_ALARM",
+				PostfachArt.TOPIC);
 		ConsumerMock extAlarmConsumerMock = new ConsumerMock();
 		consumerForSources.put("P_JMS_EXT_TOPIC_ALARM", extAlarmConsumerMock);
-		
+
 		MessagingSessionMock amsConsumerSession = new MessagingSessionMock(
 				expectedPostfachArtenForSources, consumerForSources,
 				expectedPostfachArtenForDestination, producerForDestination);
@@ -256,9 +312,13 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 
 	@After
 	public void tearDown() {
+		// Clean-Ups.
+		if (occuredThrowable != null) {
+			throw new RuntimeException("Unhandled exception occurred.",
+					occuredThrowable);
+		}
 		// Verify Mocks...
 		EasyMock.verify(preferenceService, regelwerksBuilderService,
-				historyService, localStoreConfigurationService
-				);
+				historyService, localStoreConfigurationService);
 	}
 }

@@ -259,6 +259,11 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				.logInfoMessage(this,
 						"Decision department application is going to be initialized...");
 
+		logger
+				.logInfoMessage(this,
+						"Decision department application is configuring execution service...");
+		initialisiereThredGroupTypes(executionService);
+
 		try {
 			// haben wir durch den preferenceService schon
 			// TODO soll diese noch auf gültige Werte geprüft werden
@@ -381,11 +386,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 			try {
 				logger
 						.logInfoMessage(this,
-								"Decision department application is configuring execution service...");
-				initialisiereThredGroupTypes(executionService);
-
-				logger
-						.logInfoMessage(this,
 								"Decision department application is creating decision office...");
 
 				List<Regelwerk> alleRegelwerke = regelwerkBuilderService
@@ -408,7 +408,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 		if (_continueWorking) {
 			logger
-					.logInfoMessage(this,
+					.logInfoMessage(
+							this,
 							"******* Decision department application successfully initialized, beginning work... *******");
 
 			// TODO Thread zum auslesen des Ausgangskorbes...
@@ -666,8 +667,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				logger.logErrorMessage(this,
 						"Exception during recieve of message.", e);
 			} catch (InterruptedException ie) {
-				logger.logInfoMessage(this, "Recieving of message has benn interrupted",
-						ie);
+				logger.logInfoMessage(this,
+						"Recieving of message has benn interrupted", ie);
 			}
 		}
 
