@@ -28,7 +28,6 @@ public class AllTests extends TestCase {
 		suite.addTestSuite(AllTests.class);
 		suite.addTestSuite(de.c1wps.desy.ams.AllTestsSuite.class);
 		suite.addTest(de.c1wps.desy.ams.AllTestsSuite.suite());
-//		collectTestCasesOfPackageAndSubPackages(suite, "de.c1wps.desy.ams");
 		
 		collectTestCasesOfPackageAndSubPackages(suite,
 				"org.csstudio.nams.testutils.testsuites");
