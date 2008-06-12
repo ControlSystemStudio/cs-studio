@@ -40,7 +40,7 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=StringArrayFilterConditionCompareValuesDTO.class)
 	private List<StringArrayFilterConditionCompareValuesDTO> compareValues;
 	
-	@Id
+//	@Id  FIXME Klären wie die ID anders angebunden wird, da ovveride hier nicht erlaubt.
 	@Column(name = "iFilterConditionRef", nullable = false, unique = true)
 	private int filterConditionRef;
 
