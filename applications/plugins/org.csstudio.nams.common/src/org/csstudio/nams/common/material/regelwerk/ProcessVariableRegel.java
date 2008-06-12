@@ -5,8 +5,6 @@ package org.csstudio.nams.common.material.regelwerk;
 
 import java.math.BigDecimal;
 
-import org.csstudio.ams.configurationStoreService.util.Operator;
-import org.csstudio.ams.configurationStoreService.util.SuggestedProcessVariableType;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.service.logging.declaration.Logger;

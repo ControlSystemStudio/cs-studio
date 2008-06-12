@@ -5,8 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-import org.csstudio.ams.configurationStoreService.util.Operator;
 import org.csstudio.nams.common.fachwert.Millisekunden;
+import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
 /**

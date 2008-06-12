@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.csstudio.nams.configurator.ConfiguratorActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.ams.configurationStore,
  org.csstudio.nams.common,
  org.csstudio.ams.service.logging,
  org.eclipse.jface.databinding,

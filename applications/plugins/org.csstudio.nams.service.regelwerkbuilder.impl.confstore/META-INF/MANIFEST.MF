@@ -8,7 +8,6 @@ Bundle-Vendor: C1 WPS
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.regelwerkbuilder,
  org.csstudio.nams.common,
- org.csstudio.ams.configurationStore,
  org.csstudio.platform,
  org.csstudio.nams.common.activatorUtils,
  org.csstudio.nams.service.configurationAccess.localStore

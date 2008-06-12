@@ -1,7 +1,5 @@
 package org.csstudio.nams.configurator;
 
-import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditingStoreService;
-import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
 import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
@@ -27,20 +25,20 @@ public class ConfiguratorActivator extends AbstractBundleActivator implements
 	 */
 	@OSGiBundleActivationMethod
 	public void bundleStart(
-			@OSGiService @Required ConfigurationEditingStoreService editingStoreService,
-			@OSGiService @Required ConfigurationStoreService storeService,
+//			@OSGiService @Required ConfigurationEditingStoreService editingStoreService,
+//			@OSGiService @Required ConfigurationStoreService storeService,
 			@OSGiService @Required Logger logger
 	) {
 		// for debugging : Alle Services injected?
-		if (editingStoreService != null && storeService != null
-				&& logger != null) {
-			logger.logInfoMessage(this, "activated...");
-		}
+//		if (editingStoreService != null && storeService != null
+//				&& logger != null) {
+//			logger.logInfoMessage(this, "activated...");
+//		}
 
 		// Inject into extension classes.
-		ConfigurationTreeView
-				.staticInjectEditingStoreService(editingStoreService);
-		ConfigurationTreeView.staticInjectStoreService(storeService);
+//		ConfigurationTreeView
+//				.staticInjectEditingStoreService(editingStoreService);
+//		ConfigurationTreeView.staticInjectStoreService(storeService);
 		ConfigurationTreeView.staticInjectLogger(logger);
 	}
 	

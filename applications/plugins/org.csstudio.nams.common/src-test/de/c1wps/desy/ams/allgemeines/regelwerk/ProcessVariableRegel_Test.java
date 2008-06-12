@@ -1,12 +1,12 @@
 package de.c1wps.desy.ams.allgemeines.regelwerk;
 
-import org.csstudio.ams.configurationStoreService.util.Operator;
-import org.csstudio.ams.configurationStoreService.util.SuggestedProcessVariableType;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
 import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.SuggestedProcessVariableType;
 import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;

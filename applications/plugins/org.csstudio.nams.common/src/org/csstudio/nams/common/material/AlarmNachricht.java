@@ -31,7 +31,6 @@ import java.util.Map;
 import org.csstudio.nams.common.contract.Contract;
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
-import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
 import org.csstudio.nams.common.wam.Material;
 
 /**

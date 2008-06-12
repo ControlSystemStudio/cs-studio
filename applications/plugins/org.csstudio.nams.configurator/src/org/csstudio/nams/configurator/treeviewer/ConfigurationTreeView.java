@@ -5,8 +5,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.csstudio.ams.configurationStoreService.declaration.ConfigurationEditingStoreService;
-import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
 import org.csstudio.ams.service.logging.declaration.Logger;
 import org.csstudio.nams.configurator.treeviewer.actions.OpenConfigurationEditor;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
@@ -37,9 +35,9 @@ public class ConfigurationTreeView extends ViewPart {
 
 	private ConfigurationModel configurationModel;
 
-	private static ConfigurationEditingStoreService editingStoreService;
-
-	private static ConfigurationStoreService configurationService;
+//	private static ConfigurationEditingStoreService editingStoreService;
+//
+//	private static ConfigurationStoreService configurationService;
 
 	private static Logger logger;
 
@@ -105,27 +103,27 @@ public class ConfigurationTreeView extends ViewPart {
 		_viewer.getControl().setFocus();
 	}
 
-	protected ConfigurationStoreService getConfigurationStoreService() {
-		return ConfigurationTreeView.configurationService;
-	}
-
-	protected ConfigurationEditingStoreService getConfigurationEditingStoreService() {
-		return ConfigurationTreeView.editingStoreService;
-	}
+//	protected ConfigurationStoreService getConfigurationStoreService() {
+//		return ConfigurationTreeView.configurationService;
+//	}
+//
+//	protected ConfigurationEditingStoreService getConfigurationEditingStoreService() {
+//		return ConfigurationTreeView.editingStoreService;
+//	}
 
 	public static Logger getLogger() {
 		return ConfigurationTreeView.logger;
 	}
-
-	public static void staticInjectEditingStoreService(
-			ConfigurationEditingStoreService editingStoreService) {
-		ConfigurationTreeView.editingStoreService = editingStoreService;
-	}
-
-	public static void staticInjectStoreService(
-			ConfigurationStoreService configurationService) {
-		ConfigurationTreeView.configurationService = configurationService;
-	}
+//
+//	public static void staticInjectEditingStoreService(
+//			ConfigurationEditingStoreService editingStoreService) {
+//		ConfigurationTreeView.editingStoreService = editingStoreService;
+//	}
+//
+//	public static void staticInjectStoreService(
+//			ConfigurationStoreService configurationService) {
+//		ConfigurationTreeView.configurationService = configurationService;
+//	}
 
 	public static void staticInjectLogger(Logger logger) {
 		ConfigurationTreeView.logger = logger;
@@ -161,11 +159,11 @@ public class ConfigurationTreeView extends ViewPart {
 		};
 	}
 
-	public static ConfigurationEditingStoreService getEditingStoreService() {
-		return editingStoreService;
-	}
-
-	public static ConfigurationStoreService getConfigurationService() {
-		return configurationService;
-	}
+//	public static ConfigurationEditingStoreService getEditingStoreService() {
+//		return editingStoreService;
+//	}
+//
+//	public static ConfigurationStoreService getConfigurationService() {
+//		return configurationService;
+//	}
 }

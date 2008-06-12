@@ -4,12 +4,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+
+import org.csstudio.nams.common.material.regelwerk.Operator;
+import org.csstudio.nams.common.material.regelwerk.SuggestedProcessVariableType;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.csstudio.ams.configurationStoreService.util.Operator;
-import org.csstudio.ams.configurationStoreService.util.SuggestedProcessVariableType;
-
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer

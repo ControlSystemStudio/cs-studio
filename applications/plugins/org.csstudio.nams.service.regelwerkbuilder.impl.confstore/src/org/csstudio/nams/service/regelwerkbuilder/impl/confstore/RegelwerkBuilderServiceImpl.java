@@ -1,34 +1,9 @@
 package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import org.csstudio.ams.configurationStoreService.declaration.ConfigurationId;
-import org.csstudio.ams.configurationStoreService.declaration.ConfigurationStoreService;
-import org.csstudio.ams.configurationStoreService.declaration.ConfigurationId.IdType;
-import org.csstudio.ams.configurationStoreService.knownTObjects.AggrFilterConditionTObject;
-import org.csstudio.ams.configurationStoreService.knownTObjects.AggrFilterTObject;
-import org.csstudio.ams.configurationStoreService.knownTObjects.CommonConjunctionFilterConditionTObject;
-import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionArrayStringTObject;
-import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionProcessVariableTObject;
-import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionStringTObject;
-import org.csstudio.ams.configurationStoreService.knownTObjects.FilterConditionTimeBasedTObject;
-import org.csstudio.nams.common.fachwert.MessageKeyEnum;
-import org.csstudio.nams.common.fachwert.Millisekunden;
-import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
-import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
-import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
-import org.csstudio.nams.common.material.regelwerk.StringRegel;
-import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
-import org.csstudio.nams.common.material.regelwerk.TimeBasedAlarmBeiBestaetigungRegel;
-import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
-import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
-import org.csstudio.nams.common.material.regelwerk.VersandRegel;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
-import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 
 public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
@@ -223,8 +198,8 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 //		RegelwerkBuilderServiceImpl.pvConnectionService = pvConnectionService;
 	}
 
-	public static void staticInject(
-			ConfigurationStoreService configurationStoreService) {
-//		RegelwerkBuilderServiceImpl.configurationStoreService = configurationStoreService;
-	}
+//	public static void staticInject(
+//			ConfigurationStoreService configurationStoreService) {
+////		RegelwerkBuilderServiceImpl.configurationStoreService = configurationStoreService;
+//	}
 }
