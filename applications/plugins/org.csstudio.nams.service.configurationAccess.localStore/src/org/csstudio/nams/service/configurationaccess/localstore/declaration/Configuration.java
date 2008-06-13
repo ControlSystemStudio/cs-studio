@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import org.hibernate.Session;
 @Entity
 public class Configuration {
 	private Collection<FilterDTO> allFilters;
+	private Collection<FilterConditionDTO> allFilterCondition;
 	private Collection<AlarmbearbeiterDTO> alleAlarmbarbeiter;
 	private Collection<TopicDTO> alleAlarmtopics;
 	private Collection<AlarmbearbeiterGruppenDTO> alleAlarmbearbeiterGruppen;
@@ -26,6 +28,9 @@ public class Configuration {
 		alleAlarmbearbeiterGruppen = session.createCriteria(AlarmbearbeiterGruppenDTO.class).list();
 		
 		allFilters = session.createCriteria(FilterDTO.class).list();
+		
+		
+		allFilterCondition = Collections.emptyList(); //session.createCriteria(FilterConditionDTO.class).list();
 	}
 	
 	/**
@@ -61,6 +66,6 @@ public class Configuration {
 		return null;
 	}
 	public Collection<FilterConditionDTO> getAllFilterConditions() {
-		return null;
+		return allFilterCondition;
 	}
 }
