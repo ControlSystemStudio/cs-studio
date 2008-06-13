@@ -54,14 +54,11 @@ public class FilterDTO {
 	@Column(name="cDefaultMessage")
 	private String cDefaultMessage; //	VARCHAR(1024),
 
+	@Deprecated
 	public List<FilterConditionDTO> getFilterCondition() {
 //		return filterCondition;
 		return Collections.emptyList();
 	}
-//
-//	public void setFilterCondition(List<FilterConditionDTO> filterCondition) {
-//		this.filterCondition = filterCondition;
-//	}
 
 	private int getIFilterID() {
 		return iFilterID;

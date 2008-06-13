@@ -9,11 +9,11 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Loca
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterGruppenDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterGruppenZuAlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.AlarmbearbeiterZuAlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
@@ -42,7 +42,6 @@ public class LocalConfigurationStoreServiceActivator extends
 				.addAnnotatedClass(ReplicationStateDTO.class)
 				.addAnnotatedClass(AlarmbearbeiterDTO.class)
 				.addAnnotatedClass(AlarmbearbeiterGruppenDTO.class)
-				.addAnnotatedClass(AlarmbearbeiterGruppenZuAlarmbearbeiterDTO.class)
 				.addAnnotatedClass(FilterConditionDTO.class)
 				.addAnnotatedClass(FilterConditionTypeDTO.class)
 				.addAnnotatedClass(TopicDTO.class)
@@ -53,6 +52,7 @@ public class LocalConfigurationStoreServiceActivator extends
 				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
 				.addAnnotatedClass(FilterDTO.class)
 				.addAnnotatedClass(FilterConditionsToFilterDTO.class)
+				.addAnnotatedClass(AlarmbearbeiterZuAlarmbearbeiterGruppenDTO.class)
 //				.setProperty("hibernate.connection.driver_class", "org.apache.derby.jdbc.ClientDriver")
 				.setProperty("hibernate.connection.driver_class", "oracle.jdbc.driver.OracleDriver")
 //				.setProperty("hibernate.connection.url", "jdbc:derby://134.100.12.94:1527/amsdb")

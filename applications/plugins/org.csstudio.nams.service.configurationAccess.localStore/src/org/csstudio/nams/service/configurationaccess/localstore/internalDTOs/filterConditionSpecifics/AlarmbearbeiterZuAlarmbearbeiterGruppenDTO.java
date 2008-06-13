@@ -1,4 +1,4 @@
-package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
+package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +26,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "AMS_UserGroup_User")
-public class AlarmbearbeiterGruppenZuAlarmbearbeiterDTO {
+public class AlarmbearbeiterZuAlarmbearbeiterGruppenDTO {
 	@Id
 	@Column(name="iUserGroupRef", nullable=false)
 	private int userGroupRef;
@@ -144,5 +144,62 @@ public class AlarmbearbeiterGruppenZuAlarmbearbeiterDTO {
 		this.timeChange = timeChange;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + active;
+		result = prime * result
+				+ ((activeReason == null) ? 0 : activeReason.hashCode());
+		result = prime * result + pos;
+		result = prime * result + (int) (timeChange ^ (timeChange >>> 32));
+		result = prime * result + userGroupRef;
+		result = prime * result + userRef;
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof AlarmbearbeiterZuAlarmbearbeiterGruppenDTO))
+			return false;
+		final AlarmbearbeiterZuAlarmbearbeiterGruppenDTO other = (AlarmbearbeiterZuAlarmbearbeiterGruppenDTO) obj;
+		if (active != other.active)
+			return false;
+		if (activeReason == null) {
+			if (other.activeReason != null)
+				return false;
+		} else if (!activeReason.equals(other.activeReason))
+			return false;
+		if (pos != other.pos)
+			return false;
+		if (timeChange != other.timeChange)
+			return false;
+		if (userGroupRef != other.userGroupRef)
+			return false;
+		if (userRef != other.userRef)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
+		builder.append(": ");
+		builder.append("iUserGroupRef: ");
+		builder.append(userGroupRef);
+		builder.append(", iUserRef: ");
+		builder.append(userRef);
+		return builder.toString();
+	}
 	
 }
