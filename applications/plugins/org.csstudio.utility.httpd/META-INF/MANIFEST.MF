@@ -5,8 +5,10 @@ Bundle-SymbolicName: org.csstudio.utility.httpd;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.osgi.services,
+ org.eclipse.osgi.services;visibility:=reexport,
  org.eclipse.equinox.http.jetty,
- javax.servlet 
+ javax.servlet;visibility:=reexport
 Bundle-Activator: org.csstudio.platform.httpd.Activator
 Eclipse-LazyStart: true
+Export-Package: org.csstudio.platform.httpd,
+ org.csstudio.platform.httpd.servlets

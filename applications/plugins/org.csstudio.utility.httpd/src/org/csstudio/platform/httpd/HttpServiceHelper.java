@@ -30,7 +30,7 @@ public class HttpServiceHelper
     }
 
     /** Create HttpService
-     *  @param context Bundle context
+     *  @param context Bundle context (see Plugin.getBundle().getBundleContext())
      *  @param port TCP port for server
      *  @return HttpService
      *  @throws Exception on error
