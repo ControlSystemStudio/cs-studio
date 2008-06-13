@@ -12,10 +12,9 @@ public class ConfigurationDAO {
 	// TODO implement methods(move methods in the corresponding DTO's)
 
 	private Collection<FilterDTO> allFilters;
-	private final Session session;
 	
+	@SuppressWarnings("unchecked")
 	public ConfigurationDAO(Session session) {
-		this.session = session;
 		allFilters = session.createCriteria(FilterDTO.class).list();
 	}
 	
@@ -25,7 +24,6 @@ public class ConfigurationDAO {
 	 * @return
 	 */
 	public Collection<FilterDTO> getAllFilters() {
-		
 		return allFilters;
 	}
 }

@@ -9,6 +9,7 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.regelwerk.Operator;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.TimeBasedType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
 /**
@@ -73,10 +74,20 @@ public class TimeBasedFilterConditionDTO extends FilterConditionDTO {
 		cConfirmCompValue = confirmCompValue;
 	}
 	
-	public short getSTimeBehavior() {
+	public TimeBasedType getTimeBehavior() {
+		return TimeBasedType.valueOf(sTimeBehavior);
+	}
+	
+	public void setTimeBehavior(TimeBasedType timeBasedType){
+		sTimeBehavior = timeBasedType.asShort();
+	}
+	
+	@SuppressWarnings("unused")
+	private short getSTimeBehavior() {
 		return sTimeBehavior;
 	}
-	public void setSTimeBehavior(short timeBehavior) {
+	@SuppressWarnings("unused")
+	private void setSTimeBehavior(short timeBehavior) {
 		sTimeBehavior = timeBehavior;
 	}
 	public Millisekunden getTimePeriod() {

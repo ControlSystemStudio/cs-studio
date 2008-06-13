@@ -21,6 +21,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Inco
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.TimeBasedType;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
@@ -29,15 +30,10 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
-import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 
 public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
-	// bestätigungsalarm bei timeout kein alarm?
-	private static final short TIMEBEHAVIOR_CONFIRMED_THEN_ALARM = 0;
-	// aufhebungsalarm und bei timeout alarm?
-	private static final short TIMEBEHAVIOR_TIMEOUT_THEN_ALARM = 1;
 	private static IProcessVariableConnectionService pvConnectionService;
 	private static LocalStoreConfigurationService configurationStoreService;
 
@@ -97,19 +93,11 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			return new StringRegel(StringRegelOperator.valueOf(stringCondition
 					.getOperator()), stringCondition.getKeyValueEnum(),
 					stringCondition.getCompValue());
-			// FIXME DTO Use real MessageKeyEnum for MessageKey instead of
-			// .valueOf(stringCondition.getKeyValue()).
-			// return new
-			// StringRegel(StringRegelOperator.valueOf(stringCondition
-			// .getOperator()), stringCondition.getKeyValue(),
-			// stringCondition.getCompValue());
 		}
 		case TIMEBASED: {
 			TimeBasedFilterConditionDTO timeBasedCondition = (TimeBasedFilterConditionDTO) filterConditionDTO;
 			VersandRegel startRegel = new StringRegel(timeBasedCondition
 					.getTBStartOperator(),
-			// FIXME DTO Use real MessageKeyEnum for MessageKey instead of
-					// .valueOf(timeBasedCondition.getStartKeyValue()).
 					timeBasedCondition.getStartKeyValue(), timeBasedCondition
 							.getCStartCompValue());
 			VersandRegel confirmCancelRegel = new StringRegel(
@@ -118,13 +106,13 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 							.getCConfirmCompValue());
 
 			Millisekunden delayUntilAlarm = timeBasedCondition.getTimePeriod();
-			short timeBehaviorAlarm = timeBasedCondition.getSTimeBehavior();
+			TimeBasedType timeBehaviorAlarm = timeBasedCondition.getTimeBehavior();
 
 			VersandRegel timeBasedRegel = null;
-			if (timeBehaviorAlarm == TIMEBEHAVIOR_CONFIRMED_THEN_ALARM)
+			if (timeBehaviorAlarm == TimeBasedType.TIMEBEHAVIOR_CONFIRMED_THEN_ALARM)
 				timeBasedRegel = new TimeBasedAlarmBeiBestaetigungRegel(
 						startRegel, confirmCancelRegel, delayUntilAlarm);
-			else if (timeBehaviorAlarm == TIMEBEHAVIOR_TIMEOUT_THEN_ALARM)
+			else if (timeBehaviorAlarm == TimeBasedType.TIMEBEHAVIOR_TIMEOUT_THEN_ALARM)
 				timeBasedRegel = new TimeBasedRegel(startRegel,
 						confirmCancelRegel, null, delayUntilAlarm);
 			else
@@ -132,8 +120,6 @@ public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 			return timeBasedRegel;
 		}
 		case JUNCTOR: {
-			// FIXME merkwüdigeBenamung CommonConjunctionFilterCondition
-			// realsiert derzeit nur die Disjunktion
 			VersandRegel[] versandRegels = new VersandRegel[2];
 
 			JunctorConditionDTO junctorCondition = (JunctorConditionDTO) filterConditionDTO;
