@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 import javax.persistence.Entity;
 
@@ -40,6 +41,16 @@ public class Configuration {
 	
 	public Collection<AlarmbearbeiterDTO> gibAlleAlarmbearbeiter() {
 		return alleAlarmbarbeiter;
+	}
+	public Collection<AlarmbearbeiterDTO> gibAlarmbearbeiterFuerAlarmbearbeiterGruppe(AlarmbearbeiterGruppenDTO gruppe) {
+		Collection<AlarmbearbeiterDTO> result = new LinkedList<AlarmbearbeiterDTO>();
+		
+		for (AlarmbearbeiterDTO alarmbearbeiterDTO : gibAlleAlarmbearbeiter()) {
+			if( gruppe.istBearbeiterEnthalten(alarmbearbeiterDTO) ) {
+				result.add(alarmbearbeiterDTO);
+			}
+		}
+		return result;
 	}
 
 	public Collection<AlarmbearbeiterGruppenDTO> gibAlleAlarmbearbeiterGruppen() {

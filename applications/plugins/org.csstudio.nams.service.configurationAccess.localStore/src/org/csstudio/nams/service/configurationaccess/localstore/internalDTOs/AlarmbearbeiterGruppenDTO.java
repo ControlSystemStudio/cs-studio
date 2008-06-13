@@ -59,7 +59,7 @@ public class AlarmbearbeiterGruppenDTO {
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="iUserGroupRef", referencedColumnName="iUserGroupId")
 	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=AlarmbearbeiterZuAlarmbearbeiterGruppenDTO.class)
-	private Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> conditionsAggregators;
+	private Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> alarmbearbeiterAggregators;
 	
 	/**
 	 * @return the userGroupId
@@ -168,7 +168,7 @@ public class AlarmbearbeiterGruppenDTO {
 		builder.append(", cName: ");
 		builder.append(this.userGroupName);
 		builder.append(", linked Alarmbearbeiter: ");
-		builder.append(conditionsAggregators.toString());
+		builder.append(alarmbearbeiterAggregators.toString());
 		return builder.toString();
 	}
 
@@ -176,7 +176,7 @@ public class AlarmbearbeiterGruppenDTO {
 	 * @return the conditionsAggregators
 	 */
 	private Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> getConditionsAggregators() {
-		return conditionsAggregators;
+		return alarmbearbeiterAggregators;
 	}
 
 	/**
@@ -184,7 +184,7 @@ public class AlarmbearbeiterGruppenDTO {
 	 */
 	private void setConditionsAggregators(
 			Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> conditionsAggregators) {
-		this.conditionsAggregators = conditionsAggregators;
+		this.alarmbearbeiterAggregators = conditionsAggregators;
 	}
 
 	/* (non-Javadoc)
@@ -197,7 +197,7 @@ public class AlarmbearbeiterGruppenDTO {
 		result = prime * result + active;
 		result = prime
 				* result
-				+ ((conditionsAggregators == null) ? 0 : conditionsAggregators
+				+ ((alarmbearbeiterAggregators == null) ? 0 : alarmbearbeiterAggregators
 						.hashCode());
 		result = prime * result + groupRef;
 		result = prime * result + minGroupMember;
@@ -222,10 +222,10 @@ public class AlarmbearbeiterGruppenDTO {
 		final AlarmbearbeiterGruppenDTO other = (AlarmbearbeiterGruppenDTO) obj;
 		if (active != other.active)
 			return false;
-		if (conditionsAggregators == null) {
-			if (other.conditionsAggregators != null)
+		if (alarmbearbeiterAggregators == null) {
+			if (other.alarmbearbeiterAggregators != null)
 				return false;
-		} else if (!conditionsAggregators.equals(other.conditionsAggregators))
+		} else if (!alarmbearbeiterAggregators.equals(other.alarmbearbeiterAggregators))
 			return false;
 		if (groupRef != other.groupRef)
 			return false;
@@ -241,6 +241,15 @@ public class AlarmbearbeiterGruppenDTO {
 		} else if (!userGroupName.equals(other.userGroupName))
 			return false;
 		return true;
+	}
+
+	public boolean istBearbeiterEnthalten(AlarmbearbeiterDTO alarmbearbeiterDTO) {
+		for (AlarmbearbeiterZuAlarmbearbeiterGruppenDTO alarmbearbeiterZuAlarmbearbeiterGruppenDTO : this.alarmbearbeiterAggregators) {
+			if( alarmbearbeiterDTO.wirdReferenziertVon(alarmbearbeiterZuAlarmbearbeiterGruppenDTO) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	

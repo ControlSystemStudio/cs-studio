@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.AlarmbearbeiterZuAlarmbearbeiterGruppenDTO;
+
 import sun.tools.tree.ThisExpression;
 
 /**
@@ -292,5 +294,10 @@ public class AlarmbearbeiterDTO {
 		builder.append(", active: ");
 		builder.append(this.active);
 		return builder.toString();
+	}
+
+	public boolean wirdReferenziertVon(
+			AlarmbearbeiterZuAlarmbearbeiterGruppenDTO alarmbearbeiterZuAlarmbearbeiterGruppenDTO) {
+		return alarmbearbeiterZuAlarmbearbeiterGruppenDTO.getUserRef() == this.userId;
 	}
 }

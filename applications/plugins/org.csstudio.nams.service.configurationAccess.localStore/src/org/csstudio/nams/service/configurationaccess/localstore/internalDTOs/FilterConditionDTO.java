@@ -32,27 +32,6 @@ import javax.persistence.Table;
 @Inheritance(strategy=InheritanceType.JOINED)
 public class FilterConditionDTO {
 	
-//	@ForeignKey(name="iFilterConditionTypeID")
-//	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-//	@JoinColumn(name="iFilterConditionTypeRef", referencedColumnName="iFilterConditionTypeID")
-//	private FilterConditionTypeDTO type;
-	
-//	/**
-//	 * @return the type
-//	 */
-//	@SuppressWarnings("unused")
-//	private FilterConditionTypeDTO getType() {
-//		return type;
-//	}
-//
-//	/**
-//	 * @param type the type to set
-//	 */
-//	@SuppressWarnings("unused")
-//	private void setType(FilterConditionTypeDTO type) {
-//		this.type = type;
-//	}
-	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "iFilterConditionID", nullable=false, unique=true)
@@ -66,9 +45,6 @@ public class FilterConditionDTO {
 
 	@Column(name = "cDesc", length=256)
 	private String cDesc;
-
-//	@Column(name = "iFilterConditionTypeRef", insertable=false, updatable=false)
-//	private int iFilterConditionTypeRef;
 
 	/**
 	 * @return the iFilterConditionID
@@ -134,22 +110,6 @@ public class FilterConditionDTO {
 		cDesc = desc;
 	}
 
-//	/**
-//	 * @return the iFilterConditionTypeRef
-//	 */
-//	@SuppressWarnings("unused")
-//	private int getIFilterConditionTypeRef() {
-//		return iFilterConditionTypeRef;
-//	}
-//
-//	/**
-//	 * @param filterConditionTypeRef the iFilterConditionTypeRef to set
-//	 */
-//	@SuppressWarnings("unused")
-//	public void setIFilterConditionTypeRef(int filterConditionTypeRef) {
-//		iFilterConditionTypeRef = filterConditionTypeRef;
-//	}
-
 	@Override
 	public String toString() {
 		final StringBuilder resultBuilder = new StringBuilder(this.getClass().getSimpleName());
@@ -158,11 +118,6 @@ public class FilterConditionDTO {
 		resultBuilder.append(" (");
 		resultBuilder.append(this.getIFilterConditionID());
 		resultBuilder.append("), refers to type: ");
-//		FilterConditionTypeDTO conditionTypeDTO = this.getType();
-//		resultBuilder.append(conditionTypeDTO != null ? conditionTypeDTO.toString() : "NULL");
-//		resultBuilder.append(" (");
-//		resultBuilder.append(this.getIFilterConditionTypeRef());
-//		resultBuilder.append("), ");
 		resultBuilder.append(this.getIGroupRef());
 		resultBuilder.append(", ");
 		resultBuilder.append(this.getCDesc());
