@@ -3,7 +3,11 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fi
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
@@ -23,11 +27,24 @@ import javax.persistence.Table;
 @Table(name = "AMS_FilterCond_ArrStrVal")
 public class StringArrayFilterConditionCompareValuesDTO {
 	@Id
-	@Column(name = "iFilterConditionRef", nullable = false, unique = true)
+	@Column(name = "iFilterConditionRef", nullable = false, insertable=false, updatable=false)
 	private int filterConditionRef;
 
+	@Id
 	@Column(name = "cCompValue", length = 128)
 	private String compValue;
+
+	@ManyToOne
+	@JoinColumn(name="iFilterConditionID")
+	private StringArrayFilterConditionDTO filterCond;
+	
+	private StringArrayFilterConditionDTO getFilterCond() {
+		return filterCond;
+	}
+
+	private void setFilterCond(StringArrayFilterConditionDTO filterCond) {
+		this.filterCond = filterCond;
+	}
 
 	/**
 	 * @return the filterConditionRef

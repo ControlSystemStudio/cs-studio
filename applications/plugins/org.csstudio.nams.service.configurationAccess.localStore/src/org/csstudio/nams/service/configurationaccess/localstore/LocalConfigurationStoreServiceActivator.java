@@ -52,7 +52,8 @@ public class LocalConfigurationStoreServiceActivator extends
 				.addAnnotatedClass(StringFilterConditionDTO.class)
 				.addAnnotatedClass(StringArrayFilterConditionDTO.class)
 				
-//				.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class)
+//				.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class) // TODO Mapping in Configuration!!!
+				
 //				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
 //				.addAnnotatedClass(FilterDTO.class)
 //				.setProperty("hibernate.connection.driver_class", "org.apache.derby.jdbc.ClientDriver")
