@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.hibernate.annotations.ForeignKey;
 
@@ -27,20 +28,20 @@ import org.hibernate.annotations.ForeignKey;
  */
 @Entity
 @Table(name = "AMS_FilterCondition_String")
-@PrimaryKeyJoinColumn(name="iFilterConditionRef")
+@PrimaryKeyJoinColumn(name = "iFilterConditionRef")
 public class StringFilterConditionDTO extends FilterConditionDTO {
 
-	@Column(name="iFilterConditionRef", nullable=false, updatable=false, insertable=false)
+	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
 	private int iFilterConditionRef;
 
 	@Column(name = "cKeyValue", length = 16)
-	private int keyValue;
+	private String keyValue;
 
 	@Column(name = "sOperator")
 	private short operator;
 
 	@Column(name = "cCompValue", length = 128)
-	private int compValue;
+	private String compValue;
 
 	/**
 	 * @return the filterConditionRef
@@ -63,8 +64,12 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 * @return the keyValue
 	 */
 	@SuppressWarnings("unused")
-	private int getKeyValue() {
+	public String getKeyValue() {
 		return keyValue;
+	}
+
+	public MessageKeyEnum getKeyValueEnum() {
+		return MessageKeyEnum.valueOf(keyValue);
 	}
 
 	/**
@@ -72,7 +77,7 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 *            the keyValue to set
 	 */
 	@SuppressWarnings("unused")
-	private void setKeyValue(int keyValue) {
+	private void setKeyValue(String keyValue) {
 		this.keyValue = keyValue;
 	}
 
@@ -80,7 +85,7 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 * @return the operator
 	 */
 	@SuppressWarnings("unused")
-	private short getOperator() {
+	public short getOperator() {
 		return operator;
 	}
 
@@ -97,7 +102,7 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 * @return the compValue
 	 */
 	@SuppressWarnings("unused")
-	private int getCompValue() {
+	public String getCompValue() {
 		return compValue;
 	}
 
@@ -106,7 +111,7 @@ public class StringFilterConditionDTO extends FilterConditionDTO {
 	 *            the compValue to set
 	 */
 	@SuppressWarnings("unused")
-	private void setCompValue(int compValue) {
+	private void setCompValue(String compValue) {
 		this.compValue = compValue;
 	}
 

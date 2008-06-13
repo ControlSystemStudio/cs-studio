@@ -46,7 +46,7 @@ public interface LocalStoreConfigurationService {
 	 * @throws InconsistentConfiguration
 	 *             If the stored configuration is inconsistent.
 	 */
-	public ConfigurationDTO getEntireConfiguration() throws StorageError,
+	public ConfigurationDAO getEntireConfiguration() throws StorageError,
 			StorageException, InconsistentConfiguration;
 
 	/**

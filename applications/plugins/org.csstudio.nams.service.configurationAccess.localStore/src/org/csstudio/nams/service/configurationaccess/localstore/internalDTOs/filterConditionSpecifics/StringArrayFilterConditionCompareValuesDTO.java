@@ -47,7 +47,7 @@ public class StringArrayFilterConditionCompareValuesDTO {
 	/**
 	 * @return the compValue
 	 */
-	private String getCompValue() {
+	public String getCompValue() {
 		return compValue;
 	}
 

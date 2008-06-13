@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationDAO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.InconsistentConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
@@ -147,7 +147,7 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						return nextToBeDelivered;
 					}
 
-					public ConfigurationDTO getEntireConfiguration()
+					public ConfigurationDAO getEntireConfiguration()
 							throws StorageError, StorageException,
 							InconsistentConfiguration {
 						fail("unexpected method call!");

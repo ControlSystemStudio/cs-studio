@@ -26,8 +26,8 @@ import org.hibernate.annotations.ForeignKey;
  * create table AMS_FilterCond_Conj_Common
  * 
  * FilterConditionRef			INT NOT NULL,
- * FirstFilterConditionRef	INT NOT NULL,
- * SecondFilterConditionRef   INT NOT NULL,
+ * iFirstFilterConditionRef	INT NOT NULL,
+ * iSecondFilterConditionRef   INT NOT NULL,
  * Operand                    SMALLINT
  * ;
  * </pre>

@@ -1,17 +1,19 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
+import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.hibernate.annotations.CollectionOfElements;
 
@@ -75,6 +77,10 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 		return keyValue;
 	}
 
+	public MessageKeyEnum getKeyValueEnum() {
+		return MessageKeyEnum.valueOf(keyValue);
+	}
+	
 	/**
 	 * @param keyValue
 	 *            the keyValue to set
@@ -92,6 +98,10 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 		return operator;
 	}
 
+	public StringRegelOperator getOperatorEnum(){
+		return StringRegelOperator.valueOf(operator);
+	}
+	
 	/**
 	 * @param operator
 	 *            the operator to set
@@ -106,6 +116,14 @@ public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 	 */
 	private List<StringArrayFilterConditionCompareValuesDTO> getCompareValues() {
 		return compareValues;
+	}
+	
+	public List<String> getCompareValueList(){
+		LinkedList<String> list = new LinkedList<String>();
+		for (StringArrayFilterConditionCompareValuesDTO compareValueDTO : compareValues) {
+			list.add(compareValueDTO.getCompValue());
+		}
+		return list;
 	}
 
 	/**

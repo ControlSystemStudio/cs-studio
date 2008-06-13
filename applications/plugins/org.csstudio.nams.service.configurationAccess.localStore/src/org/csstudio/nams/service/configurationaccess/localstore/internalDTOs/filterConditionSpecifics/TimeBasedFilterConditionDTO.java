@@ -5,8 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.regelwerk.Operator;
+import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 
 /**
@@ -38,18 +40,29 @@ public class TimeBasedFilterConditionDTO extends FilterConditionDTO {
 	public String getCStartKeyValue() {
 		return cStartKeyValue;
 	}
-	public void setCStartKeyValue(String startKeyValue) {
+	@SuppressWarnings("unused")
+	private void setCStartKeyValue(String startKeyValue) {
 		cStartKeyValue = startKeyValue;
 	}
+	
+	public MessageKeyEnum getStartKeyValue(){
+		return MessageKeyEnum.valueOf(cStartKeyValue);
+	}
+	
 	public String getCStartCompValue() {
 		return cStartCompValue;
 	}
 	public void setCStartCompValue(String startCompValue) {
 		cStartCompValue = startCompValue;
 	}
-	public String getCConfirmKeyValue() {
+	@SuppressWarnings("unused")
+	private String getCConfirmKeyValue() {
 		return cConfirmKeyValue;
 	}
+	public MessageKeyEnum getConfirmKeyValue(){
+		return MessageKeyEnum.valueOf(cConfirmKeyValue);
+	}
+	
 	public void setCConfirmKeyValue(String confirmKeyValue) {
 		cConfirmKeyValue = confirmKeyValue;
 	}
@@ -72,14 +85,14 @@ public class TimeBasedFilterConditionDTO extends FilterConditionDTO {
 	public void setTimePeriod(Millisekunden millisekunden) {
 		sTimePeriod = (short) (millisekunden.alsLongVonMillisekunden() / 1000);
 	}
-	public Operator getTBStartOperator () {
-		return Operator.findOperatorOfDBId(sStartOperator);
+	public StringRegelOperator getTBStartOperator () {
+		return StringRegelOperator.valueOf(sStartOperator);
 	}
 	public void setTBStartOperator (Operator operator) {
 		sStartOperator = operator.asDatabaseId();
 	}
-	public Operator getTBConfirmOperator () {
-		return Operator.findOperatorOfDBId(sConfirmOperator);
+	public StringRegelOperator getTBConfirmOperator () {
+		return StringRegelOperator.valueOf(sConfirmOperator);
 	}
 	public void setTBConfirmOperator (Operator operator) {
 		sConfirmOperator = operator.asDatabaseId();

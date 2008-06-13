@@ -1,206 +1,201 @@
 package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
-import java.util.Collections;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.csstudio.nams.common.fachwert.MessageKeyEnum;
+import org.csstudio.nams.common.fachwert.Millisekunden;
+import org.csstudio.nams.common.material.regelwerk.NichtVersandRegel;
+import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
+import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
+import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
+import org.csstudio.nams.common.material.regelwerk.StringRegel;
+import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
+import org.csstudio.nams.common.material.regelwerk.TimeBasedAlarmBeiBestaetigungRegel;
+import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
+import org.csstudio.nams.common.material.regelwerk.UndVersandRegel;
+import org.csstudio.nams.common.material.regelwerk.VersandRegel;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.InconsistentConfiguration;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.TimeBasedFilterConditionDTO;
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 
 public class RegelwerkBuilderServiceImpl implements RegelwerkBuilderService {
 
+	// bestätigungsalarm bei timeout kein alarm?
+	private static final short TIMEBEHAVIOR_CONFIRMED_THEN_ALARM = 0;
+	// aufhebungsalarm und bei timeout alarm?
+	private static final short TIMEBEHAVIOR_TIMEOUT_THEN_ALARM = 1;
+	private static IProcessVariableConnectionService pvConnectionService;
+	private static LocalStoreConfigurationService configurationStoreService;
+
 	public List<Regelwerk> gibAlleRegelwerke() {
-		// TODO Auto-generated method stub
-		return Collections.emptyList();
+		// hole alle Filter TObject aus dem confstore
+
+		List<Regelwerk> results = new LinkedList<Regelwerk>();
+
+		LocalStoreConfigurationService confStoreService = configurationStoreService;
+		// get all filters
+		Collection<FilterDTO> listOfFilters = null;
+		try {
+			listOfFilters = confStoreService.getEntireConfiguration()
+					.getAllFilters();
+		} catch (StorageError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (StorageException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InconsistentConfiguration e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// we do assume, that the first level filtercondition are conjugated
+		for (FilterDTO filterDTO : listOfFilters) {
+
+			List<FilterConditionDTO> filterConditions = filterDTO
+					.getFilterCondition();
+
+			// create a list of first level filterconditions
+			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
+			for (FilterConditionDTO filterConditionDTO : filterConditions) {
+				versandRegels.add(createVersandRegel(filterConditionDTO,
+						confStoreService));
+			}
+			VersandRegel hauptRegel = new UndVersandRegel(versandRegels
+					.toArray(new VersandRegel[0]));
+			results.add(new StandardRegelwerk(hauptRegel));
+		}
+
+		return results;
 	}
 
-//	// bestätigungsalarm bei timeout kein alarm?
-//	private static final short TIMEBEHAVIOR_CONFIRMED_THEN_ALARM = 0;
-//	// aufhebungsalarm und bei timeout alarm?
-//	private static final short TIMEBEHAVIOR_TIMEOUT_THEN_ALARM = 1;
-//	private static IProcessVariableConnectionService pvConnectionService;
-//	private static LocalStoreConfigurationService configurationStoreService;
-//
-//	public List<Regelwerk> gibAlleRegelwerke() {
-//		// hole alle Filter TObject aus dem confstore
-//
-//		List<Regelwerk> results = new LinkedList<Regelwerk>();
-//
-//		LocalStoreConfigurationService confStoreService = configurationStoreService;
-//		// get all filters
-//		List<AggrFilterTObject> listOfFilters = confStoreService
-//				.getEntireConfiguration().;
-//
-//		// we do assume, that the first level filtercondition are conjugated
-//		for (AggrFilterTObject filterTObject : listOfFilters) {
-//
-//			List<AggrFilterConditionTObject> filterConditions = filterTObject
-//					.getFilterConditions();
-//
-//			// create a list of first level filterconditions
-//			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
-//			for (AggrFilterConditionTObject aggrFilterConditionTObject : filterConditions) {
-//				versandRegels.add(createVersandRegel(
-//						aggrFilterConditionTObject, confStoreService));
-//			}
-//			VersandRegel hauptRegel = new UndVersandRegel(versandRegels
-//					.toArray(new VersandRegel[0]));
-//			results.add(new StandardRegelwerk(hauptRegel));
-//		}
-//
-//		return results;
-//	}
-//
-//	private VersandRegel createVersandRegel(
-//			FilterConditionDTO filterConditionDTO,
-//			LocalStoreConfigurationService confStoreService) {
-//		// mapping the type information in the aggrFilterConditionTObject to a
-//		// VersandRegel
-//		FilterConditionTypeRefToVersandRegelMapper fctr = FilterConditionTypeRefToVersandRegelMapper
-//				.valueOf(filterConditionDTO.getClass());
-//		switch (fctr) {
-//		//
-//		case STRING: {
-//			FilterConditionStringTObject stringCondition = confStoreService
-//					.getConfiguration(ConfigurationId.valueOf(
-//							filterConditionDTO.getFilterConditionID(),
-//							IdType.STRING_FILTER_CONDITION),
-//							FilterConditionStringTObject.class);
-//			return new StringRegel(StringRegelOperator.valueOf(stringCondition
-//					.getOperator()), MessageKeyEnum.valueOf(stringCondition
-//					.getKeyValue()), stringCondition.getCompValue());
-//			// FIXME DTO Use real MessageKeyEnum for MessageKey instead of
-//			// .valueOf(stringCondition.getKeyValue()).
-//			// return new
-//			// StringRegel(StringRegelOperator.valueOf(stringCondition
-//			// .getOperator()), stringCondition.getKeyValue(),
-//			// stringCondition.getCompValue());
-//		}
-//		case TIMEBASED: {
-//			FilterConditionTimeBasedTObject timeBasedCondition = confStoreService
-//					.getConfiguration(ConfigurationId.valueOf(
-//							filterConditionDTO.getFilterConditionID(),
-//							IdType.TIME_BASED_FILTER_CONDITION),
-//							FilterConditionTimeBasedTObject.class);
-//			VersandRegel startRegel = new StringRegel(StringRegelOperator
-//					.valueOf(timeBasedCondition.getStartOperator()),
-//			// FIXME DTO Use real MessageKeyEnum for MessageKey instead of
-//					// .valueOf(timeBasedCondition.getStartKeyValue()).
-//					MessageKeyEnum.valueOf(timeBasedCondition
-//							.getStartKeyValue()), timeBasedCondition
-//							.getStartCompValue());
-//			VersandRegel confirmCancelRegel = new StringRegel(
-//					StringRegelOperator.valueOf(timeBasedCondition
-//							.getConfirmOperator()), MessageKeyEnum
-//							.valueOf(timeBasedCondition
-//							// FIXME DTO Use real MessageKeyEnum for MessageKey
-//									// instead of
-//									// .valueOf(timeBasedCondition..getConfirmKeyValue()).
-//									.getConfirmKeyValue()), timeBasedCondition
-//							.getConfirmCompValue());
-//
-//			Millisekunden delayUntilAlarm = Millisekunden
-//					.valueOf(timeBasedCondition.getTimePeriod() * 1000);
-//			short timeBehaviorAlarm = timeBasedCondition.getTimeBehavior();
-//
-//			VersandRegel timeBasedRegel = null;
-//			if (timeBehaviorAlarm == TIMEBEHAVIOR_CONFIRMED_THEN_ALARM)
-//				timeBasedRegel = new TimeBasedAlarmBeiBestaetigungRegel(
-//						startRegel, confirmCancelRegel, delayUntilAlarm);
-//			else if (timeBehaviorAlarm == TIMEBEHAVIOR_TIMEOUT_THEN_ALARM)
-//				timeBasedRegel = new TimeBasedRegel(startRegel,
-//						confirmCancelRegel, null, delayUntilAlarm);
-//			else
-//				throw new IllegalArgumentException("Unsupported Timebehavior");
-//			return timeBasedRegel;
-//		}
-//		case JUNCTOR: {
-//			// FIXME merkwüdigeBenamung CommonConjunctionFilterCondition
-//			// realsiert derzeit nur die Disjunktion
-//			VersandRegel[] versandRegels = new VersandRegel[2];
-//
-//			CommonConjunctionFilterConditionTObject junctorCondition = confStoreService
-//					.getConfiguration(ConfigurationId.valueOf(
-//							filterConditionDTO.getFilterConditionID(),
-//							IdType.COMMON_CONJUNCTION_FILTER_CONDITION),
-//							CommonConjunctionFilterConditionTObject.class);
-//			int firstFilterConditionReference = junctorCondition
-//					.getFirstFilterConditionReference();
-//
-//			AggrFilterConditionTObject firstFilterConditionTObject = confStoreService
-//					.getConfiguration(ConfigurationId.valueOf(
-//							firstFilterConditionReference,
-//							IdType.FILTER_CONDITIONS),
-//							AggrFilterConditionTObject.class);
-//
-//			int secondFilterConditionReference = junctorCondition
-//					.getSecondFilterConditionReference();
-//
-//			versandRegels[0] = createVersandRegel(firstFilterConditionTObject,
-//					confStoreService);
-//
-//			AggrFilterConditionTObject secondFilterConditionTObject = confStoreService
-//					.getConfiguration(ConfigurationId.valueOf(
-//							secondFilterConditionReference,
-//							IdType.FILTER_CONDITIONS),
-//							AggrFilterConditionTObject.class);
-//
-//			versandRegels[1] = createVersandRegel(secondFilterConditionTObject,
-//					confStoreService);
-////TODO reimplement with adapted getOperand method
-////			switch (junctorCondition.getOperand()) {
-////			case OR:
-////				return new OderVersandRegel(versandRegels);
-////			case AND:
-////				return new UndVersandRegel(versandRegels);
-////			case NOT:
-////				return new NichtVersandRegel(versandRegels[0]);
-////			default:
-////				throw new IllegalArgumentException("Unsupported Junctor.");
-////			}
-//		}
-//			// oder verknüpfte Stringregeln
-//		case STRING_ARRAY: {
-//			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
-//
-//			FilterConditionArrayStringTObject arrayStringCondition = confStoreService
-//					.getConfiguration(ConfigurationId.valueOf(
-//							filterConditionDTO.getFilterConditionID(),
-//							IdType.AGGR_FILTER_CONDITION_ARRAY_STRING),
-//							FilterConditionArrayStringTObject.class);
-//
-//			return new OderVersandRegel(versandRegels
-//					.toArray(new VersandRegel[0]));
-//		}
-//		case PV: {
-//			FilterConditionProcessVariableTObject pvCondition = confStoreService
-//					.getConfiguration(ConfigurationId.valueOf(
-//							filterConditionDTO.getFilterConditionID(),
-//							IdType.PROCESS_VARIABLE_FILTER_CONDITION),
-//							FilterConditionProcessVariableTObject.class);
-//			return new ProcessVariableRegel(
-//					pvConnectionService,
-//					ProcessVariableAdressFactory
-//							.getInstance()
-//							.createProcessVariableAdress(
-//									pvCondition.getProcessVariableChannelName()),
-//					pvCondition.getOperator(), pvCondition.getSuggestedType(),
-//					pvCondition.getCompValue());
-//		}
-//		default:
-//			throw new IllegalArgumentException("Unsupported FilterType, see "
-//					+ this.getClass().getPackage() + "."
-//					+ this.getClass().getName());
-//		}
-//	}
-//
+	private VersandRegel createVersandRegel(
+			FilterConditionDTO filterConditionDTO,
+			LocalStoreConfigurationService confStoreService) {
+		// mapping the type information in the aggrFilterConditionTObject to a
+		// VersandRegel
+		FilterConditionTypeRefToVersandRegelMapper fctr = FilterConditionTypeRefToVersandRegelMapper
+				.valueOf(filterConditionDTO.getClass());
+		switch (fctr) {
+		//
+		case STRING: {
+			StringFilterConditionDTO stringCondition = (StringFilterConditionDTO) filterConditionDTO;
+			return new StringRegel(StringRegelOperator.valueOf(stringCondition
+					.getOperator()), stringCondition.getKeyValueEnum(),
+					stringCondition.getCompValue());
+			// FIXME DTO Use real MessageKeyEnum for MessageKey instead of
+			// .valueOf(stringCondition.getKeyValue()).
+			// return new
+			// StringRegel(StringRegelOperator.valueOf(stringCondition
+			// .getOperator()), stringCondition.getKeyValue(),
+			// stringCondition.getCompValue());
+		}
+		case TIMEBASED: {
+			TimeBasedFilterConditionDTO timeBasedCondition = (TimeBasedFilterConditionDTO) filterConditionDTO;
+			VersandRegel startRegel = new StringRegel(timeBasedCondition
+					.getTBStartOperator(),
+			// FIXME DTO Use real MessageKeyEnum for MessageKey instead of
+					// .valueOf(timeBasedCondition.getStartKeyValue()).
+					timeBasedCondition.getStartKeyValue(), timeBasedCondition
+							.getCStartCompValue());
+			VersandRegel confirmCancelRegel = new StringRegel(
+					timeBasedCondition.getTBConfirmOperator(),
+					timeBasedCondition.getConfirmKeyValue(), timeBasedCondition
+							.getCConfirmCompValue());
+
+			Millisekunden delayUntilAlarm = timeBasedCondition.getTimePeriod();
+			short timeBehaviorAlarm = timeBasedCondition.getSTimeBehavior();
+
+			VersandRegel timeBasedRegel = null;
+			if (timeBehaviorAlarm == TIMEBEHAVIOR_CONFIRMED_THEN_ALARM)
+				timeBasedRegel = new TimeBasedAlarmBeiBestaetigungRegel(
+						startRegel, confirmCancelRegel, delayUntilAlarm);
+			else if (timeBehaviorAlarm == TIMEBEHAVIOR_TIMEOUT_THEN_ALARM)
+				timeBasedRegel = new TimeBasedRegel(startRegel,
+						confirmCancelRegel, null, delayUntilAlarm);
+			else
+				throw new IllegalArgumentException("Unsupported Timebehavior");
+			return timeBasedRegel;
+		}
+		case JUNCTOR: {
+			// FIXME merkwüdigeBenamung CommonConjunctionFilterCondition
+			// realsiert derzeit nur die Disjunktion
+			VersandRegel[] versandRegels = new VersandRegel[2];
+
+			JunctorConditionDTO junctorCondition = (JunctorConditionDTO) filterConditionDTO;
+			FilterConditionDTO firstFilterCondition = junctorCondition
+					.getFirstFilterCondition();
+			FilterConditionDTO secondFilterCondition = junctorCondition
+					.getSecondFilterCondition();
+
+			versandRegels[0] = createVersandRegel(firstFilterCondition,
+					confStoreService);
+			versandRegels[1] = createVersandRegel(secondFilterCondition,
+					confStoreService);
+			switch (junctorCondition.getJunctor()) {
+			case OR:
+				return new OderVersandRegel(versandRegels);
+			case AND:
+				return new UndVersandRegel(versandRegels);
+			case NOT:
+				return new NichtVersandRegel(versandRegels[0]);
+			default:
+				throw new IllegalArgumentException("Unsupported Junctor.");
+			}
+		}
+			// oder verknüpfte Stringregeln
+		case STRING_ARRAY: {
+			List<VersandRegel> versandRegels = new LinkedList<VersandRegel>();
+
+			StringArrayFilterConditionDTO stringArayCondition = (StringArrayFilterConditionDTO) filterConditionDTO;
+			
+			List<String> compareValueList = stringArayCondition.getCompareValueList();
+			
+			MessageKeyEnum keyValue = stringArayCondition.getKeyValueEnum();
+			StringRegelOperator operatorEnum = stringArayCondition.getOperatorEnum();
+			for (String string : compareValueList) {
+				versandRegels.add(new StringRegel(operatorEnum, keyValue, string));
+			}
+			return new OderVersandRegel(versandRegels
+					.toArray(new VersandRegel[0]));
+		}
+		case PV: {
+			ProcessVariableFilterConditionDTO pvCondition = (ProcessVariableFilterConditionDTO) filterConditionDTO;
+			return new ProcessVariableRegel(
+					pvConnectionService,
+					pvCondition.getPVAddress(),
+					pvCondition.getPVOperator(), pvCondition.getSuggestedPVType(),
+					pvCondition.getCCompValue());
+		}
+		default:
+			throw new IllegalArgumentException("Unsupported FilterType, see "
+					+ this.getClass().getPackage() + "."
+					+ this.getClass().getName());
+		}
+	}
+
 	public static void staticInject(
 			IProcessVariableConnectionService pvConnectionService) {
-//		RegelwerkBuilderServiceImpl.pvConnectionService = pvConnectionService;
+		RegelwerkBuilderServiceImpl.pvConnectionService = pvConnectionService;
 	}
 
-//	public static void staticInject(
-//			ConfigurationStoreService configurationStoreService) {
-////		RegelwerkBuilderServiceImpl.configurationStoreService = configurationStoreService;
-//	}
+	public static void staticInject(
+			LocalStoreConfigurationService configurationStoreService) {
+		 RegelwerkBuilderServiceImpl.configurationStoreService =
+		 configurationStoreService;
+	}
 }
