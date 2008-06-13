@@ -38,7 +38,7 @@ public class Configuration {
 		alleAlarmtopics = session.createCriteria(TopicDTO.class).list();
 		allFilters = session.createCriteria(FilterDTO.class).list();
 		
-		allFilterCondition = session.createCriteria(FilterConditionDTO.class).list();
+		allFilterCondition = session.createCriteria(FilterConditionDTO.class).addOrder(Order.asc("iFilterConditionID")).list();
 
 		
 		// PRIVATEs

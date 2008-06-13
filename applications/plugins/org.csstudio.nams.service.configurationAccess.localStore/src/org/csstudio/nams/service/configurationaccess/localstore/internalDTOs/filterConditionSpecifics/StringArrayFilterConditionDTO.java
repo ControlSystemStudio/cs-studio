@@ -1,21 +1,19 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
-import org.hibernate.annotations.CollectionOfElements;
 
 
 /**
@@ -35,15 +33,16 @@ import org.hibernate.annotations.CollectionOfElements;
  */
 @Entity
 @Table(name = "AMS_FilterCond_ArrStr")
+@PrimaryKeyJoinColumn(name = "iFilterConditionRef", referencedColumnName="iFilterConditionID")
 public class StringArrayFilterConditionDTO extends FilterConditionDTO{
 
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	@JoinColumn(name="iFilterConditionRef", referencedColumnName="iFilterConditionRef")
-	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=StringArrayFilterConditionCompareValuesDTO.class)
-	private List<StringArrayFilterConditionCompareValuesDTO> compareValues;
+//	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+//	@JoinColumn(name="iFilterConditionRef", referencedColumnName="iFilterConditionRef")
+//	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=StringArrayFilterConditionCompareValuesDTO.class)
+	@Transient // TODO Wieder auswerten!
+	private List<StringArrayFilterConditionCompareValuesDTO> compareValues = Collections.emptyList();
 	
-//	Id  FIXME Klären wie die ID anders angebunden wird, da ovveride hier nicht erlaubt.
-	@Column(name = "iFilterConditionRef", nullable = false, unique = true)
+	@Column(name = "iFilterConditionRef", nullable = false, updatable = false, insertable = false)
 	private int filterConditionRef;
 
 	@Column(name = "cKeyValue", length = 16)

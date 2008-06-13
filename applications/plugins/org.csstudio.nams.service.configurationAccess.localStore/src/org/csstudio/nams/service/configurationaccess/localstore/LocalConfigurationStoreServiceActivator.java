@@ -50,8 +50,8 @@ public class LocalConfigurationStoreServiceActivator extends
 
 				.addAnnotatedClass(JunctorConditionDTO.class)
 				.addAnnotatedClass(StringFilterConditionDTO.class)
+				.addAnnotatedClass(StringArrayFilterConditionDTO.class)
 				
-//				.addAnnotatedClass(StringArrayFilterConditionDTO.class)
 //				.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class)
 //				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
 //				.addAnnotatedClass(FilterDTO.class)
