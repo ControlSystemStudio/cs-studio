@@ -75,8 +75,10 @@ class LocalStoreConfigurationServiceImpl implements
 
 	public Configuration getEntireConfiguration() throws StorageError,
 			StorageException, InconsistentConfiguration {
-		
-		return new Configuration(session);
+		final Transaction transaction = this.session.beginTransaction();
+		Configuration result = new Configuration(session);
+		transaction.commit();
+		return result;
 	}
 
 	public List<JunctorConditionDTO> getJunctorConditionDTOConfigurations() {
