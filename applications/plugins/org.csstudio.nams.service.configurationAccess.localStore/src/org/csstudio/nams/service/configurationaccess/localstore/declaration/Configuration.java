@@ -11,6 +11,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.exce
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.AlarmbearbeiterZuAlarmbearbeiterGruppenDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
@@ -23,6 +24,7 @@ public class Configuration {
 
 	private Collection<FilterConditionDTO> allFilterCondition;
 
+	@SuppressWarnings("unchecked")
 	public Configuration(Session session) throws InconsistentConfiguration,
 			StorageError, StorageException {
 
@@ -35,7 +37,10 @@ public class Configuration {
 
 		alleAlarmtopics = session.createCriteria(TopicDTO.class).list();
 		allFilters = session.createCriteria(FilterDTO.class).list();
+		
+		allFilterCondition = Collections.emptyList();// session.createCriteria(FilterConditionDTO.class).list();
 
+		
 		// PRIVATEs
 		Collection<AlarmbearbeiterZuAlarmbearbeiterGruppenDTO> allUserUserGroupAggregation = session
 		.createCriteria(
@@ -43,13 +48,19 @@ public class Configuration {
 				.list();
 		pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu(allUserUserGroupAggregation);
 
-		
 		Collection<FilterConditionTypeDTO> allFilterConditionsTypes = session
 				.createCriteria(FilterConditionTypeDTO.class).list();
 		pruefeUndOrdneTypenDenFilterConditionsZu(allFilterConditionsTypes);
 
-		// TODO
-		allFilterCondition = Collections.emptyList();// session.createCriteria(FilterConditionDTO.class).list();
+		Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter = session
+		.createCriteria(FilterConditionsToFilterDTO.class).list();
+		pruefeUndOrdnerFilterDieFilterConditionsZu(allFilterConditionToFilter);
+	}
+
+	private void pruefeUndOrdnerFilterDieFilterConditionsZu(
+			Collection<FilterConditionsToFilterDTO> allFilterConditionToFilter) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void pruefeUndOrdneAlarmbearbeiterDenAlarmbearbeiterGruppenZu(
