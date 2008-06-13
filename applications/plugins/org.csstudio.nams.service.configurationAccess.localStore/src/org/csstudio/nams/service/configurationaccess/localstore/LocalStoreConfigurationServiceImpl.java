@@ -2,7 +2,7 @@ package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.util.List;
 
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationDAO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.InconsistentConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
@@ -73,10 +73,10 @@ class LocalStoreConfigurationServiceImpl implements
 	// newTransaction.commit();
 	// }
 
-	public ConfigurationDAO getEntireConfiguration() throws StorageError,
+	public Configuration getEntireConfiguration() throws StorageError,
 			StorageException, InconsistentConfiguration {
 		
-		return new ConfigurationDAO(session);
+		return new Configuration(session);
 	}
 
 	public List<JunctorConditionDTO> getJunctorConditionDTOConfigurations() {

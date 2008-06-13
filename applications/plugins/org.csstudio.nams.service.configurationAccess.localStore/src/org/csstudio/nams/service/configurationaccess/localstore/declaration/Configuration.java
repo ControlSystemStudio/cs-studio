@@ -8,14 +8,15 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.hibernate.Session;
 
 @Entity
-public class ConfigurationDAO {
+public class Configuration {
 	// TODO implement methods(move methods in the corresponding DTO's)
 
 	private Collection<FilterDTO> allFilters;
+	private final Session session;
 	
-	@SuppressWarnings("unchecked")
-	public ConfigurationDAO(Session session) {
-		allFilters = session.createCriteria(FilterDTO.class).list();
+	public Configuration(Session session) {
+		this.session = session;
+		allFilters = this.session.createCriteria(FilterDTO.class).list();//.createQuery("from FilterDTO t").list();
 	}
 	
 	/**
@@ -24,6 +25,7 @@ public class ConfigurationDAO {
 	 * @return
 	 */
 	public Collection<FilterDTO> getAllFilters() {
+		
 		return allFilters;
 	}
 }

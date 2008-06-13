@@ -1,12 +1,15 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -32,11 +35,14 @@ import org.hibernate.annotations.CollectionOfElements;
 @Table(name = "AMS_Filter")
 public class FilterDTO {
 
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	@JoinColumn(name="iFilterConditionRef", referencedColumnName="iFilterConditionRef")
-	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=FilterConditionDTO.class)
-	private List<FilterConditionDTO> filterCondition;
+//	@OneToMany(cascade=CascadeType.ALL)
+//	@JoinTable(name="AMS_Filter_FilterCondition", joinColumns= {
+//			@JoinColumn(name="iFilterRef", referencedColumnName="iFilterID")
+//	})
+//	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=FilterConditionDTO.class)
+//	private List<FilterConditionDTO> filterCondition;
 	
+	@Id
 	@Column(name="iFilterID")
 	private int iFilterID; //		INT,
 	
@@ -50,12 +56,13 @@ public class FilterDTO {
 	private String cDefaultMessage; //	VARCHAR(1024),
 
 	public List<FilterConditionDTO> getFilterCondition() {
-		return filterCondition;
+//		return filterCondition;
+		return Collections.emptyList();
 	}
-
-	public void setFilterCondition(List<FilterConditionDTO> filterCondition) {
-		this.filterCondition = filterCondition;
-	}
+//
+//	public void setFilterCondition(List<FilterConditionDTO> filterCondition) {
+//		this.filterCondition = filterCondition;
+//	}
 
 	private int getIFilterID() {
 		return iFilterID;
@@ -87,5 +94,13 @@ public class FilterDTO {
 
 	private void setCDefaultMessage(String defaultMessage) {
 		cDefaultMessage = defaultMessage;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "id "+iFilterID+" groupref "+iGroupRef+" name "+cName+" defaultMessage "+cDefaultMessage;
 	}
 }

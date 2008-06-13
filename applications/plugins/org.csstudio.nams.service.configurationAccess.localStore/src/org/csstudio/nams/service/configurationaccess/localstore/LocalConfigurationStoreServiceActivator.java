@@ -12,12 +12,13 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Ala
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.AlarmbearbeiterGruppenZuAlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
-import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
@@ -49,12 +50,16 @@ public class LocalConfigurationStoreServiceActivator extends
 				.addAnnotatedClass(StringArrayFilterConditionCompareValuesDTO.class)
 				.addAnnotatedClass(JunctorConditionDTO.class)
 				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
-				.setProperty("hibernate.connection.driver_class", "org.apache.derby.jdbc.ClientDriver")
-				.setProperty("hibernate.connection.url", "jdbc:derby://134.100.12.94:1527/amsdb")
-				.setProperty("hibernate.connection.username", "APP")
-				.setProperty("hibernate.connection.password", "APP")
+				.addAnnotatedClass(FilterDTO.class)
+//				.setProperty("hibernate.connection.driver_class", "org.apache.derby.jdbc.ClientDriver")
+				.setProperty("hibernate.connection.driver_class", "oracle.jdbc.driver.OracleDriver")
+//				.setProperty("hibernate.connection.url", "jdbc:derby://134.100.12.94:1527/amsdb")
+				.setProperty("hibernate.connection.url", "jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 134.100.7.235)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(FAILOVER_MODE =(TYPE = NONE)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))")
+				.setProperty("hibernate.connection.username", "DESY")
+				.setProperty("hibernate.connection.password", "DESY")
 				.setProperty("hibernate.connection.pool_size", "1")
-				.setProperty("hibernate.dialect", "org.hibernate.dialect.DerbyDialect")
+//				.setProperty("hibernate.dialect", "org.hibernate.dialect.DerbyDialect")
+				.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect")
 				.setProperty("current_session_context_class", "thread")
 				.setProperty("cache.provider_class", "org.hibernate.cache.NoCacheProvider")
 				.setProperty("show_sql", "true")
