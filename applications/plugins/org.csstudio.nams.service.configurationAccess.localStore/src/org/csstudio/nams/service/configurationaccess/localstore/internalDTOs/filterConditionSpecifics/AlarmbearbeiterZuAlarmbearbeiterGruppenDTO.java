@@ -51,8 +51,7 @@ public class AlarmbearbeiterZuAlarmbearbeiterGruppenDTO {
 	/**
 	 * @return the userGroupRef
 	 */
-	@SuppressWarnings("unused")
-	private int getUserGroupRef() {
+	public int getUserGroupRef() {
 		return userGroupRef;
 	}
 

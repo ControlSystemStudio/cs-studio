@@ -1,13 +1,18 @@
-package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
+package org.csstudio.nams.service.configurationaccess.localstore.declaration;
+
+import java.util.Collections;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
- * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer AMS_UserGroup.
+ * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer
+ * AMS_UserGroup.
  * 
  * Das Create-Statement für die Datenbank hat folgendes Aussehen:
  * 
@@ -27,38 +32,47 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "AMS_UserGroup")
 public class AlarmbearbeiterGruppenDTO {
-	
+
 	// HAT funktuioniert, ist Vorlage für auto-mapping.
-//	@OneToMany
-//	@JoinTable(name="AMS_UserGroup_User", joinColumns=@JoinColumn(name="iUserGroupRef"), inverseJoinColumns=@JoinColumn(name="iUserRef"))
-//	public Set<AlarmbearbeiterDTO> bearbeiter;
-//	
-//	public void setBearbeiter(Set<AlarmbearbeiterDTO> bearbeiter) {
-//		this.bearbeiter = bearbeiter;
-//	}
-//	
-//	public Set<AlarmbearbeiterDTO> getBearbeiter() {
-//		return bearbeiter;
-//	}
-	
-	@Id @GeneratedValue
-	@Column(name="iUserGroupId", nullable=false, unique=true)
+	// @OneToMany
+	// @JoinTable(name="AMS_UserGroup_User",
+	// joinColumns=@JoinColumn(name="iUserGroupRef"),
+	// inverseJoinColumns=@JoinColumn(name="iUserRef"))
+	// public Set<AlarmbearbeiterDTO> bearbeiter;
+	//	
+	// public void setBearbeiter(Set<AlarmbearbeiterDTO> bearbeiter) {
+	// this.bearbeiter = bearbeiter;
+	// }
+	//	
+	// public Set<AlarmbearbeiterDTO> getBearbeiter() {
+	// return bearbeiter;
+	// }
+
+	@Id
+	@GeneratedValue
+	@Column(name = "iUserGroupId", nullable = false, unique = true)
 	private int userGroupId;
-	
-	@Column(name="iGroupRef", nullable=false)
+
+	@Column(name = "iGroupRef", nullable = false)
 	private int groupRef = -1;
-	
-	@Column(name="cUserGroupName", length=128)
+
+	@Column(name = "cUserGroupName", length = 128)
 	private String userGroupName;
-	
-	@Column(name="sMinGroupMember")
+
+	@Column(name = "sMinGroupMember")
 	private short minGroupMember;
-	
-	@Column(name="iTimeOutSec")
+
+	@Column(name = "iTimeOutSec")
 	private int timeOutSec;
-	
-	@Column(name="sActive")
+
+	@Column(name = "sActive")
 	private short active = 1;
+
+	/**
+	 * Dieses Feld wird nachträglich manuelle gestzt!! Um Object-Identität zu gewährleisten.
+	 */
+	@Transient
+	private Set<AlarmbearbeiterDTO> alarmbearbeiterDieserGruppe;
 
 	/**
 	 * @return the userGroupId
@@ -68,7 +82,8 @@ public class AlarmbearbeiterGruppenDTO {
 	}
 
 	/**
-	 * @param userGroupId the userGroupId to set
+	 * @param userGroupId
+	 *            the userGroupId to set
 	 */
 	@SuppressWarnings("unused")
 	private void setUserGroupId(int userGroupId) {
@@ -83,7 +98,8 @@ public class AlarmbearbeiterGruppenDTO {
 	}
 
 	/**
-	 * @param groupRef the groupRef to set
+	 * @param groupRef
+	 *            the groupRef to set
 	 */
 	@SuppressWarnings("unused")
 	private void setGroupRef(int groupRef) {
@@ -98,7 +114,8 @@ public class AlarmbearbeiterGruppenDTO {
 	}
 
 	/**
-	 * @param userGroupName the userGroupName to set
+	 * @param userGroupName
+	 *            the userGroupName to set
 	 */
 	@SuppressWarnings("unused")
 	private void setUserGroupName(String userGroupName) {
@@ -113,7 +130,8 @@ public class AlarmbearbeiterGruppenDTO {
 	}
 
 	/**
-	 * @param minGroupMember the minGroupMember to set
+	 * @param minGroupMember
+	 *            the minGroupMember to set
 	 */
 	@SuppressWarnings("unused")
 	private void setMinGroupMember(short minGroupMember) {
@@ -128,7 +146,8 @@ public class AlarmbearbeiterGruppenDTO {
 	}
 
 	/**
-	 * @param timeOutSec the timeOutSec to set
+	 * @param timeOutSec
+	 *            the timeOutSec to set
 	 */
 	@SuppressWarnings("unused")
 	private void setTimeOutSec(int timeOutSec) {
@@ -144,25 +163,27 @@ public class AlarmbearbeiterGruppenDTO {
 	}
 
 	/**
-	 * @param active the active to set
+	 * @param active
+	 *            the active to set
 	 */
 	@SuppressWarnings("unused")
 	private void setActive(short active) {
 		this.active = active;
 	}
-	
+
 	public boolean isActive() {
 		return getActive() == 1;
 	}
 
 	@SuppressWarnings("unused")
 	private void setActive(boolean active) {
-		setActive((short)(active ? 1 : 0));
+		setActive((short) (active ? 1 : 0));
 	}
-	
+
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
+		StringBuilder builder = new StringBuilder(this.getClass()
+				.getSimpleName());
 		builder.append(": ");
 		builder.append("iUserGroupId: ");
 		builder.append(userGroupId);
@@ -170,6 +191,11 @@ public class AlarmbearbeiterGruppenDTO {
 		builder.append(groupRef);
 		builder.append(", cName: ");
 		builder.append(this.userGroupName);
+		if( alarmbearbeiterDieserGruppe != null ) 
+		{
+			builder.append(", alarmbearbeiter: ");
+			builder.append(alarmbearbeiterDieserGruppe.toString());
+		}
 		return builder.toString();
 	}
 
@@ -178,8 +204,7 @@ public class AlarmbearbeiterGruppenDTO {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + active;
-		result = prime
-				* result;
+		result = prime * result;
 		result = prime * result + groupRef;
 		result = prime * result + minGroupMember;
 		result = prime * result + timeOutSec;
@@ -214,6 +239,18 @@ public class AlarmbearbeiterGruppenDTO {
 		} else if (!userGroupName.equals(other.userGroupName))
 			return false;
 		return true;
+	}
+
+	void setzeZugehoerigeAlarmbearbeiter(
+			Set<AlarmbearbeiterDTO> bearbeiterFuerDieseGruppe) {
+		this.alarmbearbeiterDieserGruppe = bearbeiterFuerDieseGruppe;
+	}
+
+	/**
+	 * Liefert alle zugehörigen Alarmbearbeiter.
+	 */
+	public Set<AlarmbearbeiterDTO> gibZugehoerigeAlarmbearbeiter() {
+		return Collections.unmodifiableSet(this.alarmbearbeiterDieserGruppe);
 	}
 
 }
