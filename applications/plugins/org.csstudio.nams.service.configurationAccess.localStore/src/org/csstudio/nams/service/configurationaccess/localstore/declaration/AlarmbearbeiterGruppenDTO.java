@@ -1,6 +1,7 @@
 package org.csstudio.nams.service.configurationaccess.localstore.declaration;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -72,7 +73,7 @@ public class AlarmbearbeiterGruppenDTO {
 	 * Dieses Feld wird nachträglich manuelle gestzt!! Um Object-Identität zu gewährleisten.
 	 */
 	@Transient
-	private Set<AlarmbearbeiterDTO> alarmbearbeiterDieserGruppe;
+	private Set<AlarmbearbeiterDTO> alarmbearbeiterDieserGruppe = new HashSet<AlarmbearbeiterDTO>();
 
 	/**
 	 * @return the userGroupId
@@ -241,11 +242,6 @@ public class AlarmbearbeiterGruppenDTO {
 		return true;
 	}
 
-	void setzeZugehoerigeAlarmbearbeiter(
-			Set<AlarmbearbeiterDTO> bearbeiterFuerDieseGruppe) {
-		this.alarmbearbeiterDieserGruppe = bearbeiterFuerDieseGruppe;
-	}
-
 	/**
 	 * Liefert alle zugehörigen Alarmbearbeiter.
 	 */
@@ -253,4 +249,7 @@ public class AlarmbearbeiterGruppenDTO {
 		return Collections.unmodifiableSet(this.alarmbearbeiterDieserGruppe);
 	}
 
+    void alarmbearbeiterZuordnen(AlarmbearbeiterDTO alarmbearbeiter) {
+    	alarmbearbeiterDieserGruppe.add(alarmbearbeiter);
+	}
 }

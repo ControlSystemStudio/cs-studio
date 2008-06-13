@@ -1,8 +1,10 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 /**
@@ -25,18 +27,13 @@ import javax.persistence.Table;
  * </pre>
  */
 @Entity
-@Table(name = "AMS_UserGroup_User")
+@Table(name = "AMS_USERGROUP_USER")
 public class AlarmbearbeiterZuAlarmbearbeiterGruppenDTO {
-	@Id
-	@Column(name="iUserGroupRef", nullable=false)
-	private int userGroupRef;
 	
-	@Id
-	@Column(name="iUserRef", nullable=false)
-	private int userRef;
+	@EmbeddedId
+	private AlarmbearbeiterZuAlarmbearbeiterGruppenDTO_PK pk;
 	
-	@Id
-	@Column(name="iPos", nullable=false)
+	@Column(name="IPOS", nullable=false)
 	private int pos;
 	
 	@Column(name="sActive")
@@ -52,32 +49,32 @@ public class AlarmbearbeiterZuAlarmbearbeiterGruppenDTO {
 	 * @return the userGroupRef
 	 */
 	public int getUserGroupRef() {
-		return userGroupRef;
+		return getPk().getUserGroupRef();
 	}
 
-	/**
-	 * @param userGroupRef the userGroupRef to set
-	 */
-	@SuppressWarnings("unused")
-	private void setUserGroupRef(int userGroupRef) {
-		this.userGroupRef = userGroupRef;
-	}
+//	/**
+//	 * @param userGroupRef the userGroupRef to set
+//	 */
+//	@SuppressWarnings("unused")
+//	private void setUserGroupRef(int userGroupRef) {
+//		this.userGroupRef = userGroupRef;
+//	}
 
 	/**
 	 * @return the userRef
 	 */
 	@SuppressWarnings("unused")
 	public int getUserRef() {
-		return userRef;
+		return getPk().getUserRef();
 	}
 
-	/**
-	 * @param userRef the userRef to set
-	 */
-	@SuppressWarnings("unused")
-	private void setUserRef(int userRef) {
-		this.userRef = userRef;
-	}
+//	/**
+//	 * @param userRef the userRef to set
+//	 */
+//	@SuppressWarnings("unused")
+//	private void setUserRef(int userRef) {
+//		this.userRef = userRef;
+//	}
 
 	/**
 	 * @return the pos
@@ -152,8 +149,8 @@ public class AlarmbearbeiterZuAlarmbearbeiterGruppenDTO {
 				+ ((activeReason == null) ? 0 : activeReason.hashCode());
 		result = prime * result + pos;
 		result = prime * result + (int) (timeChange ^ (timeChange >>> 32));
-		result = prime * result + userGroupRef;
-		result = prime * result + userRef;
+//		result = prime * result + userGroupRef;
+//		result = prime * result + userRef;
 		return result;
 	}
 
@@ -177,10 +174,10 @@ public class AlarmbearbeiterZuAlarmbearbeiterGruppenDTO {
 			return false;
 		if (timeChange != other.timeChange)
 			return false;
-		if (userGroupRef != other.userGroupRef)
-			return false;
-		if (userRef != other.userRef)
-			return false;
+//		if (userGroupRef != other.userGroupRef)
+//			return false;
+//		if (userRef != other.userRef)
+//			return false;
 		return true;
 	}
 
@@ -188,11 +185,21 @@ public class AlarmbearbeiterZuAlarmbearbeiterGruppenDTO {
 	public String toString() {
 		StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
 		builder.append(": ");
-		builder.append("iUserGroupRef: ");
-		builder.append(userGroupRef);
-		builder.append(", iUserRef: ");
-		builder.append(userRef);
+//		builder.append("iUserGroupRef: ");
+//		builder.append(userGroupRef);
+//		builder.append(", iUserRef: ");
+//		builder.append(userRef);
+		builder.append(", PK: ");
+		builder.append(pk.toString());
 		return builder.toString();
+	}
+
+	public AlarmbearbeiterZuAlarmbearbeiterGruppenDTO_PK getPk() {
+		return pk;
+	}
+
+	public void setPk(AlarmbearbeiterZuAlarmbearbeiterGruppenDTO_PK pk) {
+		this.pk = pk;
 	}
 	
 }
