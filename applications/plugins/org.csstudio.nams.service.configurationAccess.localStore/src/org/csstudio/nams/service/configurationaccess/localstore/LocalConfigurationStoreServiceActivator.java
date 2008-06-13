@@ -14,6 +14,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.Fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionTypeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.ProcessVariableFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionCompareValuesDTO;
@@ -51,6 +52,7 @@ public class LocalConfigurationStoreServiceActivator extends
 				.addAnnotatedClass(JunctorConditionDTO.class)
 				.addAnnotatedClass(ProcessVariableFilterConditionDTO.class)
 				.addAnnotatedClass(FilterDTO.class)
+				.addAnnotatedClass(FilterConditionsToFilterDTO.class)
 //				.setProperty("hibernate.connection.driver_class", "org.apache.derby.jdbc.ClientDriver")
 				.setProperty("hibernate.connection.driver_class", "oracle.jdbc.driver.OracleDriver")
 //				.setProperty("hibernate.connection.url", "jdbc:derby://134.100.12.94:1527/amsdb")

@@ -1,5 +1,6 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,10 +10,10 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.FilterConditionsToFilterDTO;
 import org.hibernate.annotations.CollectionOfElements;
 
 /**
@@ -35,12 +36,10 @@ import org.hibernate.annotations.CollectionOfElements;
 @Table(name = "AMS_Filter")
 public class FilterDTO {
 
-//	@OneToMany(cascade=CascadeType.ALL)
-//	@JoinTable(name="AMS_Filter_FilterCondition", joinColumns= {
-//			@JoinColumn(name="iFilterRef", referencedColumnName="iFilterID")
-//	})
-//	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=FilterConditionDTO.class)
-//	private List<FilterConditionDTO> filterCondition;
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	@JoinColumn(name="iFilterRef", referencedColumnName="iFilterID")
+	@CollectionOfElements(fetch=FetchType.EAGER, targetElement=FilterConditionsToFilterDTO.class)
+	private Collection<FilterConditionsToFilterDTO> conditionsAggregators;
 	
 	@Id
 	@Column(name="iFilterID")
@@ -101,7 +100,17 @@ public class FilterDTO {
 	 */
 	@Override
 	public String toString() {
-		return "id "+iFilterID+" groupref "+iGroupRef+" name "+cName;
+		StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
+		builder.append(": ");
+		builder.append("iFilterID: ");
+		builder.append(iFilterID);
+		builder.append(", iGroupRef: ");
+		builder.append(iGroupRef);
+		builder.append(", cName: ");
+		builder.append(cName);
+		builder.append(", linked Conditions: ");
+		builder.append(conditionsAggregators.toString());
+		return builder.toString();
 	}
 
 	/* (non-Javadoc)

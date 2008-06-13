@@ -282,7 +282,7 @@ public class AlarmbearbeiterDTO {
 	
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder(this.getClass().getName());
+		StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
 		builder.append(": name: ");
 		builder.append(this.userName);
 		builder.append(", GroupRef: ");
