@@ -1,6 +1,6 @@
-package de.c1wps.desy.ams.allgemeines.regelwerk;
+package org.csstudio.nams.common;
 
-import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
+import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
 import org.junit.Test;
 

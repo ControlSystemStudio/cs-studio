@@ -5,8 +5,8 @@ import java.net.UnknownHostException;
 import java.util.Date;
 
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
-import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
 import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
 import org.junit.Test;
 

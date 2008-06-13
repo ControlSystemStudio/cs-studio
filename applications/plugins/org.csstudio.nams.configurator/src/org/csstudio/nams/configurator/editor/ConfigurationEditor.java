@@ -12,7 +12,6 @@ import org.csstudio.nams.configurator.editor.stackparts.TopicStackPart;
 import org.csstudio.nams.configurator.editor.stackparts.UserStackPart;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;

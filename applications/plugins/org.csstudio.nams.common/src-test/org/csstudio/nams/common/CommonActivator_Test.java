@@ -3,7 +3,6 @@ package org.csstudio.nams.common;
 import junit.framework.TestCase;
 
 import org.csstudio.nams.common.activatorUtils.OSGiServiceOffers;
-import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.easymock.EasyMock;
@@ -20,7 +19,7 @@ public class CommonActivator_Test extends TestCase {
 		
 		OSGiServiceOffers serviceOffers = activator.bundleStart(logger);
 		
-		assertSame(logger, ProcessVariableRegel.getLogger());
+//		assertSame(logger, ProcessVariableRegel.getLogger());
 		
 		Object offeredService = serviceOffers.get(ExecutionService.class);
 		assertNotNull(offeredService);

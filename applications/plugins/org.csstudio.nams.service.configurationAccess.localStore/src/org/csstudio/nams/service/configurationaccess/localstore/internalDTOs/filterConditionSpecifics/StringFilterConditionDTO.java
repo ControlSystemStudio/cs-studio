@@ -2,13 +2,11 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fi
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
-import org.hibernate.annotations.ForeignKey;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration einer

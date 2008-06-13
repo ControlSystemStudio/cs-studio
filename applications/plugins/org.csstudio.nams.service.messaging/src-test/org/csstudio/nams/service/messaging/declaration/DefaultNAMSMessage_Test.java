@@ -2,13 +2,8 @@ package org.csstudio.nams.service.messaging.declaration;
 
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.Assert;
 
-import org.csstudio.nams.common.fachwert.MessageKeyEnum;
-import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;

@@ -6,7 +6,6 @@ import org.csstudio.nams.configurator.editor.DirtyFlagProvider;
 import org.csstudio.nams.configurator.treeviewer.model.AlarmtopicBean;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;

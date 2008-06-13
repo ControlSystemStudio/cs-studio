@@ -3,20 +3,13 @@ package org.csstudio.nams.configurator.branch.views;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.swing.text.TableView;
-
 import org.csstudio.nams.configurator.branch.actions.OpenConfigurationEditor;
 import org.csstudio.nams.configurator.branch.composite.FilteredListVarianteA;
-import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeitergruppenBean;
 import org.csstudio.nams.configurator.treeviewer.model.ConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;

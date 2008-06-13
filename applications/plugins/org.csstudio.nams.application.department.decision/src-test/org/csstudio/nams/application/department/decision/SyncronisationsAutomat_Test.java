@@ -11,15 +11,17 @@ import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachc
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.JunctorConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.InconsistentConfiguration;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageError;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.StorageException;
+import org.csstudio.nams.service.configurationaccess.localstore.declaration.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ReplicationStateDTO.ReplicationState;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.InconsistentConfiguration;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageError;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.StorageException;
-import org.csstudio.nams.service.configurationaccess.localstore.declaration.exceptions.UnknownConfigurationElementError;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicConfigurationId;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.TopicDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringArrayFilterConditionDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 import org.csstudio.nams.service.messaging.declaration.Consumer;
@@ -152,11 +154,11 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						return null;
 					}
 
-//					public TopicDTO getTopicConfigurations(
-//							TopicConfigurationId topicConfigurationDatabaseId) {
-//						fail("unexpected method call!");
-//						return null;
-//					}
+					public TopicDTO getTopicConfigurations(
+							TopicConfigurationId topicConfigurationDatabaseId) {
+						fail("unexpected method call!");
+						return null;
+					}
 
 					public void saveCurrentReplicationState(
 							ReplicationStateDTO currentState)
@@ -199,7 +201,7 @@ public class SyncronisationsAutomat_Test extends TestCase {
 						return null;
 					}
 
-				});
+				}, null);
 
 		assertNotNull(zuletzGesendeteNachricht);
 		assertTrue(zuletzGesendeteNachricht instanceof SyncronisationsAufforderungsSystemNachchricht);

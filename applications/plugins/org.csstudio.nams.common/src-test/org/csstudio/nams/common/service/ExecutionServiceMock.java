@@ -1,15 +1,12 @@
 package org.csstudio.nams.common.service;
 
 import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
-
-import org.csstudio.nams.common.service.ThreadType;
 
 
 /**

@@ -1,4 +1,5 @@
-package org.csstudio.nams.common.material.regelwerk;
+package org.csstudio.nams.common.material;
+
 
 import org.csstudio.nams.common.wam.Fachwert;
 

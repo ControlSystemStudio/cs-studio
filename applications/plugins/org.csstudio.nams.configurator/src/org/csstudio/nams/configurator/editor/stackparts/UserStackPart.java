@@ -8,8 +8,6 @@ import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean;
 import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.AlarmbearbeiterBean.PreferedAlarmType;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationGroup;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.value.IObservableValue;

@@ -9,15 +9,17 @@ import junit.framework.TestCase;
 
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
+import org.csstudio.nams.common.material.Regelwerkskennung;
+import org.csstudio.nams.common.material.regelwerk.AbstractVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.OderVersandRegel;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.RegelErgebnis;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
-import org.csstudio.nams.common.material.regelwerk.Regelwerkskennung;
 import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
 import org.csstudio.nams.common.material.regelwerk.TimeBasedRegel;
 import org.csstudio.nams.common.material.regelwerk.VersandRegel;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
+import org.csstudio.nams.service.history.declaration.HistoryService;
 import org.junit.Test;
 
 import de.c1wps.desy.ams.allgemeines.Eingangskorb;
@@ -58,6 +60,11 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 						RegelErgebnis.NICHT_ZUTREFFEND);
 			}
 			return null;
+		}
+
+		public void setHistoryService(HistoryService historyService) {
+			// TODO Auto-generated method stub
+			
 		}
 
 	}
@@ -246,7 +253,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 		Regelwerk[] regelwerke = new Regelwerk[ANZAHL_REGELWERKE];
 		for (int i = 0; i < ANZAHL_REGELWERKE; i++) {
 			regelwerke[i] = new StandardRegelwerk(Regelwerkskennung.valueOf(),
-					new VersandRegel() {
+					new AbstractVersandRegel() {
 						// Impl hier egal!
 						public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 								AlarmNachricht nachricht,
@@ -289,7 +296,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 
 	public void testIntegration() throws InterruptedException,
 			UnknownHostException {
-		VersandRegel regel = new VersandRegel() {
+		VersandRegel regel = new AbstractVersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 				bisherigesErgebnis.setzeErgebnisFuerRegelFallsVeraendert(this,
@@ -312,7 +319,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 			}
 
 		};
-		VersandRegel regel2 = new VersandRegel() {
+		VersandRegel regel2 = new AbstractVersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 
@@ -334,7 +341,7 @@ public class AlarmEntscheidungsBuero_Test extends TestCase {
 			}
 
 		};
-		VersandRegel regel3 = new VersandRegel() {
+		VersandRegel regel3 = new AbstractVersandRegel() {
 			public void pruefeNachrichtAufBestaetigungsUndAufhebungsNachricht(
 					AlarmNachricht nachricht, Pruefliste bisherigesErgebnis) {
 

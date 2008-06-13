@@ -12,7 +12,6 @@ import org.csstudio.nams.configurator.treeviewer.model.IConfigurationModel;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.ConfigurationType;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationBean;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationGroup;
-import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationNode;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.IConfigurationRoot;
 import org.csstudio.nams.configurator.treeviewer.model.treecomponents.SortgroupNode;
 import org.eclipse.core.runtime.Assert;
@@ -25,8 +24,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 public class NewEntryAction implements IObjectActionDelegate {
 
